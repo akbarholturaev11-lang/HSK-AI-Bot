@@ -135,11 +135,8 @@ def create_android_push_router(*, session_factory, settings_obj: Any) -> APIRout
                 raise DesktopAuthError("android_request_invalid", status_code=422)
             async with session_factory() as session:
                 current = await context(session, request)
-                payment = await PaymentRepository(session).get_by_id(payment_id)
-                if (
-                    payment is None
-                    or payment.user_telegram_id != current.user.telegram_id
-                ):
+                payment = await PaymentRepository(session).get_by_id(payment_id, actor=current.user)
+                if payment is None:
                     raise DesktopAuthError("payment_not_found", status_code=404)
                 result = {
                     "ok": True,
@@ -165,7 +162,7 @@ def create_android_push_router(*, session_factory, settings_obj: Any) -> APIRout
             async with session_factory() as session:
                 current = await context(session, request)
                 notice = await NotificationDeliveryService(session, settings_obj).claim(
-                    notice_id, telegram_id=current.user.telegram_id
+                    notice_id, telegram_id=current.user
                 )
             if notice is None:
                 raise DesktopAuthError("notice_not_found", status_code=404)
@@ -191,7 +188,7 @@ def create_android_push_router(*, session_factory, settings_obj: Any) -> APIRout
                 current = await context(session, request)
                 known = await NotificationDeliveryService(session, settings_obj).acknowledge(
                     notice_id,
-                    telegram_id=current.user.telegram_id,
+                    telegram_id=current.user,
                     device_id=current.device.id,
                     shown=payload.shown,
                 )

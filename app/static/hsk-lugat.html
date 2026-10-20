@@ -730,7 +730,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
           charDataLoader:function(c,onComplete,onError){
             var xhr=new XMLHttpRequest();
             xhr.overrideMimeType && xhr.overrideMimeType('application/json');
-            xhr.open('GET','https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0.1/'+encodeURIComponent(c)+'.json',true);
+            xhr.open('GET','/api/v3/stroke?char='+encodeURIComponent(c),true);
             xhr.timeout=4000;
             xhr.onreadystatechange=function(){
               if(xhr.readyState!==4)return;
@@ -1302,7 +1302,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 
     var xhr = new XMLHttpRequest();
     xhr.overrideMimeType && xhr.overrideMimeType('application/json');
-    xhr.open('GET','https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0.1/'+encodeURIComponent(ch)+'.json',true);
+    xhr.open('GET','/api/v3/stroke?char='+encodeURIComponent(ch),true);
     xhr.timeout = 3500;
     xhr.onreadystatechange = function(){
       if(xhr.readyState !== 4) return;

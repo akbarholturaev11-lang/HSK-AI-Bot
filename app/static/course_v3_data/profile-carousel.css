@@ -61,3 +61,22 @@
 .hp-promo-copy p{font-size:12px;margin-top:4px;line-height:1.35}
 .hp-promo-action{min-height:36px;padding:8px 12px;font-size:12px}
 .hp-promo-chevron{font-size:18px}
+
+/* Full-width cards follow the finger; the browser owns momentum and snapping. */
+.hp-promo{display:block;padding:0;gap:0;touch-action:auto;isolation:isolate}
+.hp-promo-track{display:flex;width:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x pan-y;user-select:none;border-radius:inherit}
+.hp-promo-track::-webkit-scrollbar{display:none}
+.hp-promo-slide{box-sizing:border-box;position:relative;isolation:isolate;flex:0 0 100%;min-width:0;min-height:150px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;gap:10px;scroll-snap-align:start;scroll-snap-stop:always}
+.hp-promo-slide .hp-promo-content,.hp-promo-slide .hp-promo-footer{animation:none}
+.hp-promo-slide .hp-promo-footer{padding-right:var(--hp-dots-width,0px)}
+.hp-promo-slide .hp-promo-action{max-width:100%;flex-shrink:1;overflow-wrap:anywhere}
+.hp-promo>.hp-promo-dots{position:absolute;right:14px;bottom:25px;z-index:2}
+.hp-promo>.hp-promo-dots button{position:relative;min-height:6px}
+.hp-promo>.hp-promo-dots button::after{content:"";position:absolute;inset:-12px -2px}
+.hp-promo-slide.hp-promo-link-google{background:radial-gradient(ellipse at 100% 100%,rgba(93,151,181,.28),transparent 62%),linear-gradient(115deg,#20302c,#243c3d)}
+.hp-promo-slide.hp-promo-link-apple{background:radial-gradient(ellipse at 100% 100%,rgba(177,168,196,.22),transparent 62%),linear-gradient(115deg,#252329,#39343d)}
+.hp-promo-link-google .hp-promo-icon{color:#c4e3f5;background:rgba(190,218,231,.12)}
+.hp-promo-link-apple .hp-promo-icon{color:#f5f1ea;background:rgba(245,241,234,.12)}
+.hp-promo-slide .hp-promo-action:disabled{opacity:.65;cursor:wait}
+@media(prefers-reduced-motion:reduce){.hp-promo-track{scroll-behavior:auto}}
+.hp-promo-note{margin:0 16px 12px;color:var(--ink2);font-size:12px;line-height:1.4}

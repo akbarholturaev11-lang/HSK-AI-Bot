@@ -1,0 +1,37 @@
+name: Universal QA live OAuth smoke
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/universal-qa-live-oauth-probe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-staging-providers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify independently deployed QA server and exposed providers
+        run: |
+          python - <<'PY'
+          import json
+          import urllib.request
+          base = "https://hsk-qa-api-qa.up.railway.app"
+          def get(path):
+              request=urllib.request.Request(base+path,headers={"User-Agent":"hsk-universal-qa-oauth-smoke/1.0"})
+              with urllib.request.urlopen(request,timeout=15) as resp:
+                  assert resp.status == 200, (path,resp.status)
+                  return json.loads(resp.read(4096).decode())
+          health=get("/health")
+          print("QA health:",health)
+          for platform in ("macos","windows","android","miniapp"):
+              result=get("/api/v3/native-auth/providers?platform="+platform)
+              assert result.get("ok") is True, (platform,result)
+              providers=result.get("providers")
+              assert isinstance(providers,list), (platform,result)
+              print("QA Google provider",platform,":", ",".join(providers) if providers else "not configured")
+              if platform=="macos":
+                  assert "google" in providers, "Desktop Google OAuth not active on QA server"
+          PY

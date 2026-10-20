@@ -21,6 +21,7 @@ from app.db.models.user import User
 from app.db.models.payment import Payment
 from app.db.models.course_progress import CourseProgress
 from app.db.models.referral import Referral
+from app.repositories.referral_repo import referral_owner_clause
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.ai_usage import AIUsageBudget
 from app.services.ai_usage_budget_service import (
@@ -31,6 +32,7 @@ from app.services.ai_usage_budget_service import (
 from app.services.referral_service import REFERRAL_TRIAL_ACCESS_DAYS
 from app.services.admin_stats_service import approved_revenue_text, feature_usage_stats, top_referrers
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.account_identity import owner_clause
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_release_manifest_service import (
@@ -765,30 +767,30 @@ def _homework_status_label(value: str | None) -> str:
 async def _admin_user_info_text(session, user: User) -> str:
     payment_rows = await session.execute(
         select(Payment)
-        .where(Payment.user_telegram_id == user.telegram_id)
+        .where(owner_clause(Payment, user))
         .order_by(Payment.submitted_at.desc())
         .limit(5)
     )
     payments = list(payment_rows.scalars().all())
     payment_count = (await session.execute(
-        select(func.count()).select_from(Payment).where(Payment.user_telegram_id == user.telegram_id)
+        select(func.count()).select_from(Payment).where(owner_clause(Payment, user))
     )).scalar() or 0
     approved_totals = (await session.execute(
         select(Payment.currency, func.sum(Payment.amount).label("total_sum")).where(
-            Payment.user_telegram_id == user.telegram_id,
+            owner_clause(Payment, user),
             Payment.payment_status == "approved",
         ).group_by(Payment.currency)
     )).fetchall()
 
     referral_rows = await session.execute(
         select(Referral.status, func.count().label("cnt"))
-        .where(Referral.referrer_telegram_id == user.telegram_id)
+        .where(referral_owner_clause("referrer", user))
         .group_by(Referral.status)
     )
     referral_counts = {row.status: row.cnt for row in referral_rows.fetchall()}
     referral_total = sum(referral_counts.values())
     invited_by = await session.execute(
-        select(Referral).where(Referral.invited_user_telegram_id == user.telegram_id).limit(1)
+        select(Referral).where(referral_owner_clause("invited", user)).limit(1)
     )
     invited_ref = invited_by.scalar_one_or_none()
 
@@ -811,7 +813,7 @@ async def _admin_user_info_text(session, user: User) -> str:
     latest_approved_plan = (await session.execute(
         select(Payment.plan_type)
         .where(
-            Payment.user_telegram_id == user.telegram_id,
+            owner_clause(Payment, user),
             Payment.payment_status == "approved",
         )
         .order_by(Payment.submitted_at.desc())
@@ -822,7 +824,7 @@ async def _admin_user_info_text(session, user: User) -> str:
     referral_trial_budget = (await session.execute(
         select(AIUsageBudget)
         .where(
-            AIUsageBudget.user_telegram_id == user.telegram_id,
+            owner_clause(AIUsageBudget, user),
             AIUsageBudget.plan_type == REFERRAL_TRIAL_PLAN_TYPE,
             AIUsageBudget.ends_at > now,
         )
@@ -932,7 +934,7 @@ async def _admin_user_info_text(session, user: User) -> str:
             else "Referral sovg'asi: <b>—</b>"
         ),
         *discount_lines,
-        f"Taklif qilgan foydalanuvchi: <code>{invited_ref.referrer_telegram_id if invited_ref else '—'}</code>",
+        f"Taklif qilgan foydalanuvchi: <code>{('Account ' + str(invited_ref.referrer_user_id) if invited_ref.referrer_user_id else invited_ref.referrer_telegram_id) if invited_ref else '—'}</code>",
         "",
         "💳 <b>To'lovlar</b>",
         f"Jami arizalar: <b>{payment_count}</b>",
@@ -2565,7 +2567,7 @@ async def admin_broadcast_handler(message: Message, session):
         await message.answer("Foydalanish: <code>/broadcast_all Xabar matni</code>", parse_mode="HTML")
         return
 
-    result = await session.execute(select(User.telegram_id))
+    result = await session.execute(select(User.telegram_id).where(User.telegram_id.is_not(None)))
     all_ids = [row.telegram_id for row in result.fetchall()]
 
     sent = 0

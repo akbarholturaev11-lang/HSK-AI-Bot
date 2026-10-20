@@ -29,6 +29,8 @@ from typing import Any, Iterable, Mapping
 
 from sqlalchemy import func, select
 
+from app.services.admin_analytics_identity import analytics_account_key, analytics_row_key
+
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.desktop import DesktopDevice
 from app.services.desktop_auth_service import MOBILE_PLATFORMS
@@ -116,7 +118,7 @@ class AndroidAnalyticsService:
             await self.session.execute(
                 select(
                     CourseMiniAppEvent.event_name,
-                    func.count(func.distinct(CourseMiniAppEvent.telegram_id)),
+                    func.count(func.distinct(analytics_account_key(CourseMiniAppEvent))),
                     func.count(),
                 )
                 .where(*conditions)
@@ -134,7 +136,7 @@ class AndroidAnalyticsService:
                 await self.session.execute(
                     select(
                         CourseMiniAppEvent.created_at,
-                        CourseMiniAppEvent.telegram_id,
+                        analytics_account_key(CourseMiniAppEvent).label("account_key"),
                         CourseMiniAppEvent.payload_json,
                     ).where(
                         CourseMiniAppEvent.event_name == ANDROID_OPEN_EVENT,
@@ -274,7 +276,7 @@ class AndroidAnalyticsService:
             created_at = cls._as_utc(getattr(row, "created_at", None))
             if created_at is None:
                 continue
-            telegram_id = int(getattr(row, "telegram_id", 0) or 0)
+            telegram_id = analytics_row_key(row)
             payload = cls._payload(getattr(row, "payload_json", None))
             device_id = str(payload.get("device_id") or "").strip()
             if not device_id or device_id not in current_device_ids:

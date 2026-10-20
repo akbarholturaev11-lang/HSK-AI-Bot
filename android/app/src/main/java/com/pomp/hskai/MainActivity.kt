@@ -56,6 +56,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.auth.AuthState
+import com.pomp.hskai.core.auth.authActivity
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompHskAiTheme
 import com.pomp.hskai.core.design.components.HskBrandLoader
@@ -202,6 +203,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun deliverDestination(raw: String?) {
+        // Returning from the browser must preserve the current auth proof and
+        // any course destination queued before sign-in. URI data proves nothing.
+        if (DeepLinkRouter.isAuthReturn(raw)) return
+        com.pomp.hskai.core.auth.SignupReferral.fromUri(raw)?.let { code ->
+            (application as HskAiApplication).authRepository.updateSignupReferralCode(code)
+            return
+        }
         requestedDestination.value = DeepLinkRouter.resolve(raw)?.let { destination ->
             DestinationRequest(
                 id = UUID.randomUUID().toString(),
@@ -283,8 +291,10 @@ private fun AppRoot(
                 onContinueWithTelegram = {
                     viewModel.continueWithTelegram(AppLocale.current(localeHost))
                 },
-                onSignInWithGoogle = { viewModel.signInWithGoogle(localeHost as? Activity) },
-                onSignInWithApple = viewModel::signInWithApple,
+                onSignInWithGoogle = {
+                    viewModel.signInWithGoogle(localeHost.authActivity(), AppLocale.current(localeHost))
+                },
+                onSignInWithApple = { viewModel.signInWithApple(AppLocale.current(localeHost)) },
                 onBrowserUrlOpened = viewModel::browserUrlOpened,
                 onTelegramUrlOpened = viewModel::telegramUrlOpened,
                 onDismissWaiting = viewModel::dismissWaiting,
@@ -377,7 +387,7 @@ private fun AppRoot(
             val profileState by profileViewModel.state.collectAsStateWithLifecycle()
             val identitiesViewModel: IdentitiesViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
-                factory = IdentitiesViewModelFactory(app.authRepository),
+                factory = IdentitiesViewModelFactory(app.authRepository, onLinked = profileViewModel::load),
             )
             val identitiesState by identitiesViewModel.state.collectAsStateWithLifecycle()
             val hintsViewModel: HintsViewModel = viewModel(
@@ -1572,6 +1582,8 @@ private fun AppRoot(
                                 onConnectIdentity = identitiesViewModel::connect,
                                 onDisconnectIdentity = identitiesViewModel::disconnect,
                                 onIdentitiesBrowserOpened = identitiesViewModel::browserUrlOpened,
+                                onCancelIdentityConnection = identitiesViewModel::cancelConnection,
+                                onReopenIdentityTelegram = identitiesViewModel::reopenTelegram,
                                 onSaveProfile = profileViewModel::saveProfile,
                                 profileSaving = profileState.profileSaving,
                                 onOpenSubscription = { renewal ->

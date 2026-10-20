@@ -23,6 +23,7 @@
 
     <string name="profile_account_title">Аккаунт</string>
     <string name="profile_account_subtitle">Профиль и подключённые способы входа</string>
+    <string name="profile_account_sign_in_methods">Способы входа</string>
     <string name="profile_account_name">Имя</string>
     <string name="profile_account_telegram">Ник в Telegram</string>
     <string name="profile_account_phone">Телефон</string>
@@ -46,7 +47,7 @@
     <string name="profile_delete_account">Запросить удаление аккаунта</string>
     <string name="profile_app_permissions">Разрешения приложения</string>
     <string name="profile_app_permissions_desc">Микрофон и уведомления можно контролировать в настройках Android.</string>
-    <string name="profile_security_note">Ник Telegram здесь не изменяется. Google и Apple подключаются только как дополнительные способы входа в тот же аккаунт HSK AI.</string>
+    <string name="profile_security_note">В аккаунт можно войти через Telegram, Google или Apple. Подключённые способы относятся к одному аккаунту HSK AI, подписке и прогрессу.</string>
     <string name="profile_app_version">Версия приложения</string>
     <string name="profile_promo_apps">Приложения HSK AI</string>
     <string name="profile_promo_apps_body">Приложения для Android, MacBook и Windows</string>
@@ -60,4 +61,6 @@
     <string name="profile_promo_trial_days">Осталось дней: %1$d</string>
     <string name="profile_promo_trial_hours">Осталось часов: %1$d</string>
     <string name="profile_promo_trial_soon">Осталось меньше часа</string>
+    <string name="profile_promo_link_body">Входите в этот профиль и через %1$s. Pro и учебный прогресс сохранятся в этом аккаунте.</string>
+    <string name="profile_promo_page">Карточка %1$d из %2$d</string>
 </resources>

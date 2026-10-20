@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.course_track_state_repo import CourseTrackStateRepository
+from app.repositories.user_repo import UserRepository
 from app.services.course_levels import (
     TRACK_HSK20,
     TRACK_HSK30,
@@ -119,6 +120,16 @@ class CourseTrackService:
         for_update: bool = False,
     ):
         return await self.state_repo.get(user_id, track, for_update=for_update)
+
+    async def _lock_owner(self, user):
+        # Match checkout/admin grants: User -> progress -> track state.
+        # Refresh before reading levels or access after another request commits.
+        owner = await UserRepository(self.session).get_by_user_id(int(user.id), lock=True)
+        if owner is None:
+            raise CourseTrackError("access_start_first", status_code=403)
+        if owner.status == "blocked":
+            raise CourseTrackError("user_blocked", status_code=403)
+        return owner
 
     async def hsk30_access(self, user) -> CourseTrackAccess:
         enabled = await self.hsk30_feature.is_enabled()
@@ -247,6 +258,7 @@ class CourseTrackService:
         same band instead of an older one.
         """
 
+        user = await self._lock_owner(user)
         current_track = self.track_for_level(getattr(user, "level", None))
         requested_spec = level_spec(requested_level)
         if (
@@ -328,6 +340,7 @@ class CourseTrackService:
         if target_track not in {TRACK_HSK20, TRACK_HSK30}:
             raise CourseTrackError("invalid_course_track", status_code=422)
 
+        user = await self._lock_owner(user)
         current_track = self.track_for_level(getattr(user, "level", None))
         live_levels: tuple[str, ...] = ()
         if target_track == TRACK_HSK30:

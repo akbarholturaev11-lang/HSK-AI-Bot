@@ -6,7 +6,6 @@ from aiogram import Bot
 from aiogram.types import InlineKeyboardMarkup
 
 from app.bot.keyboards.release_feedback import (
-    release_feedback_discount_keyboard,
     release_feedback_rating_keyboard,
 )
 from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackResponse
@@ -14,6 +13,7 @@ from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.release_feedback_repo import ReleaseFeedbackRepository, decode_languages
 from app.repositories.user_repo import UserRepository
 from app.services.ai_usage_budget_service import AIUsageBudgetService
+from app.services.account_identity import actual_telegram_id
 from app.services.broadcast_translation_service import localized_broadcast_text_for_language
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.config import settings
@@ -184,7 +184,8 @@ class ReleaseFeedbackService:
         already_done = await self.repo.list_delivery_user_ids(campaign.id)
         return [
             user for user in users
-            if user.status != "blocked"
+            if actual_telegram_id(user) is not None
+            and user.status != "blocked"
             and not BotBlockStatusService.is_bot_blocked(user)
             and user.telegram_id not in admin_ids
             and user.telegram_id not in already_done

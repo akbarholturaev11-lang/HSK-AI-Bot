@@ -34,7 +34,7 @@
 
     <!-- Login screen: welcome and the three ways in -->
     <string name="auth_welcome_greeting">Xush kelibsiz</string>
-    <string name="auth_choose_method">Kirish yo\u2018lini tanlang</string>
+    <string name="auth_choose_method">Kirish yoki yangi hisob ochish usulini tanlang</string>
     <string name="auth_tagline">Yaxshiroq kelajak \u2014 bilim bilan</string>
     <string name="auth_continue_telegram" translatable="false">Telegram</string>
     <string name="auth_continue_google_short" translatable="false">Google</string>
@@ -61,7 +61,7 @@
     <!-- Profile / session -->
     <string name="profile_logout">Chiqish</string>
     <string name="profile_unlink_device">Bu qurilmani uzish</string>
-    <string name="profile_unlink_explain">Qurilma uziladi va keyingi safar Telegram orqali qayta ulanasiz.</string>
+    <string name="profile_unlink_explain">Qurilma uziladi. Keyingi safar hisobingizga ulangan kirish usuli bilan qayta kirasiz.</string>
     <string name="profile_refresh">Yangilash</string>
     <string name="profile_xp">XP</string>
     <string name="profile_streak">Streak</string>
@@ -82,6 +82,9 @@
     <string name="profile_subscription_restore">Obunani tiklash</string>
     <string name="profile_subscription_renew">Obunani uzaytirish</string>
     <string name="profile_subscription_play_blocked">Google Play Billing sozlamalari repo tashqarisida. Hozir obuna holati ko‘rsatiladi, xarid keyin ulanadi.</string>
+    <string name="auth_referral_code">Taklif kodi (ixtiyoriy)</string>
+    <string name="auth_referral_hint">Do‘stingiz bergan kod. Faqat yangi akkaunt uchun.</string>
+    <string name="auth_referral_invalid">Taklif kodini tekshiring yoki maydonni bo‘sh qoldiring.</string>
     <string name="profile_referral_title">Do‘st taklif qilish</string>
     <string name="profile_referral_progress">%1$d / %2$d aktiv do‘st</string>
 
@@ -101,10 +104,11 @@
     <string name="error_timeout">Server javob bermadi. Qayta urinib ko\'ring.</string>
     <string name="error_server">Serverda vaqtinchalik nosozlik. Birozdan so\'ng urinib ko\'ring.</string>
     <string name="error_unknown">Kutilmagan xatolik yuz berdi.</string>
-    <string name="error_session_expired">Sessiya muddati tugadi. Telegram orqali qayta ulanish kerak.</string>
+    <string name="error_session_expired">Sessiya muddati tugadi. Hisobingizga qayta kiring.</string>
+    <string name="error_telegram_account_required">Bu imkoniyat hozir mavjud emas. Keyinroq qayta urinib ko‘ring.</string>
     <string name="error_link_invalid">Kod noto\'g\'ri, eskirgan yoki allaqachon ishlatilgan.</string>
     <string name="error_link_rate_limited">Juda ko\'p urinish bo\'ldi. Bir necha daqiqadan so\'ng urinib ko\'ring.</string>
-    <string name="error_device_bound">Bu qurilma boshqa Telegram hisobiga ulangan. Avval uni uzish kerak.</string>
+    <string name="error_device_bound">Bu qurilma boshqa HSK AI hisobiga ulangan. Avval uni uzish kerak.</string>
     <string name="error_auth_unavailable">Ulash xizmati vaqtincha ishlamayapti.</string>
     <string name="error_feature_limit">Bepul limit tugadi. Premium bilan davom eting.</string>
     <string name="error_no_mistakes">Hozircha takrorlanadigan xato yo‘q.</string>
@@ -517,7 +521,7 @@
     <string name="challenge_decline">Rad etish</string>
     <string name="challenge_start">Boshlash</string>
     <string name="challenge_waiting">Javobini kutyapmiz</string>
-    <string name="profile_avatar_note">Avatar Telegram profilingizdan olinadi</string>
+    <string name="profile_avatar_note">Avatarni Hisob bo‘limida o‘zgartirishingiz mumkin.</string>
     <string name="profile_friends">Do‘stlar</string>
     <string name="profile_referral_copy">Havolani nusxalash</string>
     <string name="profile_referral_share">Ulashish</string>
@@ -538,8 +542,8 @@
     <string name="hint_open">Tushuntirish</string>
     <string name="auth_provider_waiting">Tasdiqlash kutilmoqda…</string>
     <string name="error_provider_cancelled">Kirish bekor qilindi.</string>
-    <string name="error_provider_unavailable">Bu usul hozir mavjud emas. Telegram orqali kiring.</string>
-    <string name="error_oauth_needs_telegram">Bu akkaunt hali ulanmagan. Avval Telegram orqali kiring, so‘ng profilda uni ulang.</string>
+    <string name="error_provider_unavailable">Bu kirish usuli hozir mavjud emas. Qayta urinib ko‘ring yoki hisobingizga ulangan boshqa usulni tanlang.</string>
+    <string name="error_oauth_needs_telegram">Bu kirish usuli hisobingizga ulanmagan. Ulangan usul orqali kiring, so‘ng uni profilda ulang.</string>
     <string name="error_oauth_other_account">Bu akkaunt boshqa foydalanuvchiga ulangan.</string>
     <string name="error_oauth_already_linked">Bu usul allaqachon ulangan. Avval uzing.</string>
     <string name="error_oauth_last_identity">Bu yagona kirish usuli — uni uzib bo‘lmaydi.</string>
@@ -638,4 +642,6 @@
     <string name="bug_report_pick_screenshot">Galereyadan skrinshot tanlash</string>
     <string name="bug_report_screenshot_required">Skrinshotni tanlang yoki uni yuborishni o‘chiring.</string>
     <string name="bug_report_thanks_title">Fikringiz uchun rahmat!</string>
+    <string name="profile_telegram_link_hint">Telegram botida tasdiqlab ulang.</string>
+    <string name="profile_telegram_link_waiting">Botdagi so‘rovni tekshiring va Telegramni shu akkauntga ulashni tasdiqlang. Boshqa akkauntlar birlashtirilmaydi.</string>
 </resources>

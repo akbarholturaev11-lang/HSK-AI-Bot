@@ -172,9 +172,9 @@ LESSON = {
                 # foydalanuvchi uni shundayligicha ko'rardi. O'q belgisi
                 # "yoziladi → o'qiladi" ni so'zsiz aytadi.
                 {"zh": "你好", "pinyin": "nǐ hǎo → ní hǎo",
-                 "uz": "salom (nǐ hǎo deb yoziladi)",
-                 "ru": "привет (пишется nǐ hǎo)",
-                 "tj": "салом (навишта мешавад nǐ hǎo)"},
+                 "uz": "salom",
+                 "ru": "привет",
+                 "tj": "салом"},
             ]
         },
     ], ensure_ascii=False),

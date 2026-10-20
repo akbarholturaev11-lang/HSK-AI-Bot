@@ -98,14 +98,14 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
         self.record = AsyncMock(return_value=recorded)
         return service
 
-    async def _run(self, recorded: bool, bot):
+    async def _run(self, recorded: bool, bot, *, user=None):
         service = self._service(recorded)
         with patch(
             "app.services.limit_notification_service.CourseNotificationService"
         ) as notifications:
             notifications.return_value.record = self.record
             return await service.lesson_progress(
-                SimpleNamespace(id=1, telegram_id=99, language="uz"),
+                user or SimpleNamespace(id=1, telegram_id=99, language="uz"),
                 level="hsk1",
                 completed_parts=6,
                 free_parts=6,
@@ -135,6 +135,21 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
         # later caller that does pass one is not deduped away.
         self.assertIsNone(await self._run(True, None))
         self.record.assert_not_awaited()
+
+    async def test_native_account_keeps_feed_notice_without_attempting_telegram_or_block_checks(self):
+        user = SimpleNamespace(id=1, telegram_id=None, language="uz")
+        bot = SimpleNamespace(send_message=AsyncMock())
+        with patch("app.services.limit_notification_service.BotBlockStatusService") as blocks:
+            self.assertEqual("spent", await self._run(True, bot, user=user))
+        self.assertIs(self.record.await_args.args[0], user)
+        bot.send_message.assert_not_awaited()
+        blocks.assert_not_called()
+
+    async def test_native_account_repeated_crossing_does_not_attempt_delivery(self):
+        user = SimpleNamespace(id=2, telegram_id=None, language="tj")
+        bot = SimpleNamespace(send_message=AsyncMock())
+        self.assertIsNone(await self._run(False, bot, user=user))
+        bot.send_message.assert_not_awaited()
 
 
 if __name__ == "__main__":

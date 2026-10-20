@@ -12,6 +12,7 @@ from app.db.models.course_mistake import COURSE_MISTAKE_CATEGORIES, CourseMistak
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
+from app.services.account_identity import actual_telegram_id
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_analytics_service import (
     MAX_EVENT_PAYLOAD_CHARS,
@@ -693,7 +694,7 @@ class CourseMistakeService:
 
     async def overview(
         self,
-        telegram_id: int,
+        telegram_id: int | User,
         *,
         category: str | None = None,
         limit: int = 50,
@@ -701,7 +702,7 @@ class CourseMistakeService:
         view: str | None = None,
         language: str | None = None,
     ) -> dict:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (telegram_id if isinstance(telegram_id, User) else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
         track = self._track_for_level(getattr(user, "level", None))
@@ -1186,7 +1187,7 @@ class CourseMistakeService:
 
     async def start_review(
         self,
-        telegram_id: int,
+        telegram_id: int | User,
         *,
         ad_supported: bool = False,
         access_ref: str = "",
@@ -1194,7 +1195,7 @@ class CourseMistakeService:
         formats=None,
         language: str | None = None,
     ) -> dict:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (telegram_id if isinstance(telegram_id, User) else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
         try:
@@ -1313,7 +1314,7 @@ class CourseMistakeService:
             return {"ok": False, "error": "mistake_review_material_too_large"}
         event = await CourseMiniAppAnalyticsService(self.session).record_server_event(
             event_name="mistake_review_started",
-            telegram_id=telegram_id,
+            telegram_id=actual_telegram_id(user),
             user_id=user.id,
             session_id=session_id,
             dedupe_key=f"{session_id}:started",
@@ -1379,7 +1380,7 @@ class CourseMistakeService:
 
     async def answer_review_question(
         self,
-        telegram_id: int,
+        telegram_id: int | User,
         *,
         session_id: str,
         question_id: str,
@@ -1387,7 +1388,7 @@ class CourseMistakeService:
     ) -> dict:
         """Commit one exact interaction answer before revealing feedback."""
 
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (telegram_id if isinstance(telegram_id, User) else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
         if not self._valid_review_session_id(user.id, session_id):
@@ -1499,7 +1500,7 @@ class CourseMistakeService:
 
         event = await CourseMiniAppAnalyticsService(self.session).record_server_event(
             event_name="mistake_review_answered",
-            telegram_id=telegram_id,
+            telegram_id=actual_telegram_id(user),
             user_id=user.id,
             session_id=session_id,
             dedupe_key=dedupe_key,
@@ -1595,7 +1596,7 @@ class CourseMistakeService:
         except Exception:  # noqa: BLE001
             logger.exception("Word mastery hand-off failed for user %s", getattr(user, "id", None))
 
-    async def _complete_review_v3(self, user, telegram_id: int, session_id: str, started_payload: dict) -> dict:
+    async def _complete_review_v3(self, user, telegram_id: int | User, session_id: str, started_payload: dict) -> dict:
         snapshot = started_payload.get("questions")
         if not isinstance(snapshot, list) or not snapshot:
             return {"ok": False, "error": "invalid_mistake_review_session"}
@@ -1703,7 +1704,7 @@ class CourseMistakeService:
         ]
         event = await CourseMiniAppAnalyticsService(self.session).record_server_event(
             event_name="mistake_review_completed",
-            telegram_id=telegram_id,
+            telegram_id=actual_telegram_id(user),
             user_id=user.id,
             session_id=session_id,
             dedupe_key=f"{session_id}:completed",
@@ -1745,8 +1746,8 @@ class CourseMistakeService:
             "reward": reward,
         }
 
-    async def complete_review(self, telegram_id: int, *, session_id: str, answers: list) -> dict:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+    async def complete_review(self, telegram_id: int | User, *, session_id: str, answers: list) -> dict:
+        user = (telegram_id if isinstance(telegram_id, User) else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
         if not self._valid_review_session_id(user.id, session_id):
@@ -1933,7 +1934,7 @@ class CourseMistakeService:
             reward = {"awarded_xp": 0, "duplicate": False}
         event = await CourseMiniAppAnalyticsService(self.session).record_server_event(
             event_name="mistake_review_completed",
-            telegram_id=telegram_id,
+            telegram_id=actual_telegram_id(user),
             user_id=user.id,
             session_id=session_id,
             dedupe_key=f"{session_id}:completed",

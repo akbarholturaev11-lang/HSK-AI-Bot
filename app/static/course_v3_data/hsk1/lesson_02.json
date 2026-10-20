@@ -68,9 +68,9 @@
           "zh": "你好",
           "pinyin": "nǐ hǎo → ní hǎo",
           "translation": {
-            "uz": "salom (nǐ hǎo deb yoziladi)",
-            "ru": "привет (пишется nǐ hǎo)",
-            "tj": "салом (навишта мешавад nǐ hǎo)"
+            "uz": "salom",
+            "ru": "привет",
+            "tj": "салом"
           }
         }
       ]
@@ -389,9 +389,9 @@
                 "zh": "你好",
                 "pinyin": "nǐ hǎo → ní hǎo",
                 "translation": {
-                  "uz": "salom (nǐ hǎo deb yoziladi)",
-                  "ru": "привет (пишется nǐ hǎo)",
-                  "tj": "салом (навишта мешавад nǐ hǎo)"
+                  "uz": "salom",
+                  "ru": "привет",
+                  "tj": "салом"
                 }
               }
             ]
@@ -400,9 +400,9 @@
         {
           "type": "sentence_builder",
           "sentence": {
-            "uz": "salom (nǐ hǎo deb yoziladi)",
-            "ru": "привет (пишется nǐ hǎo)",
-            "tj": "салом (навишта мешавад nǐ hǎo)"
+            "uz": "salom",
+            "ru": "привет",
+            "tj": "салом"
           },
           "tokens": [
             "你们",

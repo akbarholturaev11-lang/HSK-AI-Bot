@@ -23,7 +23,7 @@ import logging
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
-from app.repositories.user_repo import UserRepository
+from app.services.admin_user_target import parse_admin_user_target, resolve_admin_user_target
 from app.services.ad_placement_service import AdPlacementService
 from app.services.entitlements.limits_config import LimitConfigService
 from app.services.pro_trial_service import ProTrialService
@@ -146,17 +146,18 @@ def create_admin_entitlements_router(*, session_factory, admin_guard) -> APIRout
             return auth_error
         payload = await _body(request)
         try:
-            target_id = int(payload.get("telegram_id") or 0)
+            target = parse_admin_user_target(payload)
         except (TypeError, ValueError):
-            target_id = 0
-        if not target_id:
             return JSONResponse(
-                status_code=400, content={"ok": False, "error": "invalid_telegram_id"}
+                status_code=400, content={"ok": False, "error": "invalid_user_target"}
             )
         reason = str(payload.get("reason") or "").strip()[:200]
 
         async with session_factory() as session:
-            user = await UserRepository(session).get_by_telegram_id(target_id)
+            try:
+                user = await resolve_admin_user_target(session, target, lock=True)
+            except ValueError as exc:
+                return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)})
             if not user:
                 return JSONResponse(
                     status_code=404, content={"ok": False, "error": "user_not_found"}
@@ -170,7 +171,7 @@ def create_admin_entitlements_router(*, session_factory, admin_guard) -> APIRout
                     content={"ok": False, "error": "no_active_trial"},
                 )
             await session.commit()
-        return JSONResponse(content={"ok": True, "telegram_id": target_id})
+        return JSONResponse(content={"ok": True, "user_id": user.id, "telegram_id": user.telegram_id})
 
     @router.post("/api/admin-miniapp/entitlement-shadow")
     async def admin_entitlement_shadow(request: Request):

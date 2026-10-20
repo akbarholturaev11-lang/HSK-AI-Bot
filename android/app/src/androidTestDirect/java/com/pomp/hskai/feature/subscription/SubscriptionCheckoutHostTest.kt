@@ -322,9 +322,10 @@ class SubscriptionCheckoutHostTest {
         show()
 
         compose.onNodeWithText(copy.getString(R.string.sub_pending_title)).assertIsDisplayed()
-        compose.onNodeWithText(copy.getString(R.string.sub_payment_refresh)).assertDoesNotExist()
-        compose.onNodeWithContentDescription(context.getString(R.string.action_close)).assertIsDisplayed()
-        compose.onNodeWithText(copy.getString(R.string.sub_return_app)).performClick()
+        // Pending payments may be refreshed without losing the way back.
+        compose.onNodeWithText(copy.getString(R.string.sub_payment_refresh)).assertIsDisplayed()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_close)).assertIsDisplayed()
+        compose.onNodeWithText(copy.getString(R.string.sub_return_app)).assertIsDisplayed().performClick()
         compose.runOnIdle { assertEquals(1, closeCount) }
     }
 

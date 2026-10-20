@@ -28,6 +28,7 @@ from sqlalchemy import select
 
 from app.db.models.ai_usage import AIUsageBudget
 from app.db.models.user import User
+from app.services.account_identity import owner_clause
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.entitlements.limits_config import LimitConfigService
@@ -115,7 +116,7 @@ class ProTrialService:
         """
         result = await self.session.execute(
             select(AIUsageBudget.id).where(
-                AIUsageBudget.user_telegram_id == int(user.telegram_id),
+                owner_clause(AIUsageBudget, user),
                 AIUsageBudget.status == "active",
             )
         )
@@ -180,7 +181,7 @@ class ProTrialService:
         budget_usd = verdict["ai_budget_usd"]
         if budget_usd > 0:
             await AIUsageBudgetService(self.session).create_fixed_budget(
-                telegram_id=int(user.telegram_id),
+                telegram_id=user,
                 plan_type=PRO_TRIAL_PLAN_TYPE,
                 amount=int(budget_usd),
                 currency="usd",
@@ -231,7 +232,7 @@ class ProTrialService:
             )
         if users:
             await self.session.flush()
-        return len(users), [int(user.telegram_id) for user in users]
+        return len(users), [int(user.telegram_id) for user in users if user.telegram_id]
 
     async def revoke(self, user, *, admin_telegram_id: int, reason: str = "") -> bool:
         """Adminning qo'lda yopishi (masalan suiiste'mol aniqlansa)."""

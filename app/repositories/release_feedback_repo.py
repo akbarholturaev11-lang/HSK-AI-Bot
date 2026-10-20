@@ -6,6 +6,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.payment import Payment
+from app.services.admin_analytics_identity import analytics_account_key
 from app.db.models.release_feedback import (
     ReleaseFeedbackCampaign,
     ReleaseFeedbackDelivery,
@@ -313,7 +314,7 @@ class ReleaseFeedbackRepository:
             .where(ReleaseFeedbackResponse.discount_campaign_id.is_not(None))
         )).scalar() or 0
         discount_used = (await self.session.execute(
-            select(func.count(func.distinct(Payment.user_telegram_id)))
+            select(func.count(func.distinct(analytics_account_key(Payment, telegram_column="user_telegram_id"))))
             .select_from(Payment)
             .join(
                 ReleaseFeedbackResponse,

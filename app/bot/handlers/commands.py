@@ -11,7 +11,7 @@ from aiogram.types import (
     InlineKeyboardButton,
     WebAppInfo,
 )
-from sqlalchemy import select, func
+from sqlalchemy import and_, or_, select, func
 from app.db.models.user import User
 
 from app.repositories.user_repo import UserRepository
@@ -21,13 +21,10 @@ from app.services.course_levels import TRACK_HSK30, level_spec
 from app.services.course_track_service import CourseTrackError, CourseTrackService
 from app.services.hsk30_feature_service import Hsk30FeatureService
 from app.services.referral_service import ReferralService
-from app.bot.handlers.subscription import build_subscription_main_text_for_user
-from app.bot.keyboards.main_menu import main_menu_keyboard
 from app.bot.keyboards.subscription import (
     subscription_miniapp_button,
     subscription_miniapp_keyboard,
 )
-from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.handlers.android_app import reply_chat_id
 from app.bot.utils.course_miniapp import course_v3_miniapp_url
 from app.bot.keyboards.help import help_contact_keyboard
@@ -599,7 +596,7 @@ async def command_level_callback_handler(callback: CallbackQuery, session):
     try:
         await CourseTrackService(session).change_level(user, level)
         await session.commit()
-    except CourseTrackError as exc:
+    except CourseTrackError:
         await session.rollback()
         messages = {
             "uz": "Bu darajani hozir tanlab bo'lmaydi. Kurs versiyasini Mini App ichidan almashtiring.",
@@ -787,9 +784,9 @@ async def admin_stats_handler(message: Message, session):
         )
     )).scalar() or 0
     trial_paid_after_start = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
+        select(func.count(func.distinct(User.id)))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at.is_not(None),
@@ -800,7 +797,7 @@ async def admin_stats_handler(message: Message, session):
     trial_revenue_after_start = (await session.execute(
         select(func.sum(Payment.amount))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at.is_not(None),
@@ -809,9 +806,9 @@ async def admin_stats_handler(message: Message, session):
         )
     )).scalar() or 0
     checkpoint_paid_after = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
+        select(func.count(func.distinct(User.id)))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at.is_not(None),
@@ -820,9 +817,9 @@ async def admin_stats_handler(message: Message, session):
         )
     )).scalar() or 0
     completed_paid_after = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
+        select(func.count(func.distinct(User.id)))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at.is_not(None),
@@ -837,9 +834,9 @@ async def admin_stats_handler(message: Message, session):
         select(func.count()).select_from(User).where(User.trial_course_completed_at >= week_ago)
     )).scalar() or 0
     trial_paid_week = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
+        select(func.count(func.distinct(User.id)))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at >= week_ago,
@@ -876,9 +873,9 @@ async def admin_stats_handler(message: Message, session):
         )
     )).scalar() or 0
     daily_completed_paid = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
+        select(func.count(func.distinct(User.id)))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at.is_not(None),
@@ -922,9 +919,9 @@ async def admin_stats_handler(message: Message, session):
         )
     )).scalar() or 0
     daily_completed_paid = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
+        select(func.count(func.distinct(User.id)))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at.is_not(None),

@@ -1,5 +1,8 @@
 import { previewInvoke } from "./preview-mock.js";
 
+const DEFAULT_API_ORIGIN = "https://telegram-chinese-bot-production.up.railway.app";
+let buildApiOrigin = DEFAULT_API_ORIGIN;
+
 const COMMANDS = Object.freeze({
   appInfo: "desktop_app_info",
   authStatus: "desktop_auth_status",
@@ -9,6 +12,12 @@ const COMMANDS = Object.freeze({
   oauthProviders: "desktop_oauth_providers",
   oauthStart: "desktop_oauth_start",
   oauthOpen: "desktop_oauth_open",
+  identityMethods: "desktop_identity_methods",
+  telegramIdentityStart: "desktop_telegram_identity_start",
+  oauthIdentityStart: "desktop_oauth_identity_start",
+  identityLinkPoll: "desktop_identity_link_poll",
+  identityLinkOpen: "desktop_identity_link_open",
+  identityLinkCancel: "desktop_identity_link_cancel",
   openExternalUrl: "desktop_open_external_url",
   bootstrap: "desktop_bootstrap",
   logout: "desktop_logout",
@@ -48,6 +57,12 @@ const COMMANDS = Object.freeze({
 });
 
 const ALLOWED_COMMANDS = new Set(Object.values(COMMANDS));
+function assertIdentityAttempt(value) {
+  if (typeof value !== "string" || !/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(value)) {
+    throw new DesktopBridgeError("desktop_identity_attempt_invalid");
+  }
+  return value;
+}
 const SUPPORTED_LANGUAGES = new Set(["uz", "ru", "tj"]);
 const SUBSCRIPTION_PLANS = new Set(["10_days", "1_month", "3_months", "hsk30_unlock"]);
 const SUBSCRIPTION_METHODS = new Set(["visa", "alipay", "wechat"]);
@@ -134,13 +149,13 @@ function stableErrorCode(error) {
         : "";
   const normalized = raw.toLowerCase();
   const stableMatch = normalized.match(
-    /\b(desktop|course|auth|link|local_ai|practice|rating|notifications)_[a-z0-9_]{2,72}\b/,
+    /\b(desktop|course|auth|link|oauth|oidc|local_ai|practice|rating|notifications)_[a-z0-9_]{2,72}\b/,
   );
   if (stableMatch) {
     return stableMatch[0];
   }
   const accessMatch = normalized.match(
-    /\b(free_feature_limit_reached|invalid_lesson_order|invalid_language|invalid_screenshot|invalid_practice_session|unknown_training_skill|payment_invalid_plan|payment_details_missing|qr_not_ready|admin_notification_failed|checkout_attempt_not_opened)\b/,
+    /\b(user_blocked|payment_telegram_required|free_feature_limit_reached|invalid_lesson_order|invalid_language|invalid_screenshot|invalid_practice_session|unknown_training_skill|payment_invalid_plan|payment_details_missing|qr_not_ready|admin_notification_failed|checkout_attempt_not_opened)\b/,
   );
   if (accessMatch) {
     return accessMatch[0];
@@ -186,20 +201,17 @@ function isAllowedReferralShareLink(value) {
   } catch {
     return false;
   }
+  if (parsed.protocol !== "https:" || parsed.username || parsed.password || parsed.port || parsed.hash) return false;
+  if (parsed.origin === buildApiOrigin) {
+    return parsed.pathname === "/apps" &&
+      /^[0-9a-f]{8}$/.test(singleSearchValue(parsed, "ref") || "") &&
+      hasOnlySearchKeys(parsed, ["ref", "mode"]) &&
+      (["trial", "discount"].includes(singleSearchValue(parsed, "mode")) || !parsed.searchParams.has("mode"));
+  }
   const handle = parsed.pathname.replace(/^\/+|\/+$/g, "");
-  const start = parsed.searchParams.get("start") || "";
-  return (
-    parsed.protocol === "https:" &&
-    parsed.hostname === "t.me" &&
-    !parsed.username &&
-    !parsed.password &&
-    !parsed.port &&
-    !parsed.hash &&
-    /^[A-Za-z0-9_]{5,32}$/.test(handle) &&
-    /^ref_[A-Za-z0-9_-]{1,124}$/.test(start) &&
-    parsed.searchParams.getAll("start").length === 1 &&
-    [...parsed.searchParams.keys()].length === 1
-  );
+  return parsed.hostname === "t.me" && /^[A-Za-z0-9_]{5,32}$/.test(handle) &&
+    /^[A-Za-z0-9_-]{1,128}$/.test(singleSearchValue(parsed, "start") || "") &&
+    [...parsed.searchParams.keys()].length === 1;
 }
 
 function isAllowedShareText(value) {
@@ -302,6 +314,15 @@ function assertLanguage(value) {
     throw new DesktopBridgeError("desktop_language_invalid");
   }
   return language;
+}
+
+function assertSignupReferral(value) {
+  const code = String(value ?? "").trim();
+  if (!code) return null;
+  if (code.length > 64 || !/^(?:ref_|r[ai]_)?[0-9a-f]{8}$/.test(code)) {
+    throw new DesktopBridgeError("signup_referral_invalid");
+  }
+  return code;
 }
 
 function normalizedSubscriptionValue(value) {
@@ -661,6 +682,15 @@ export async function listenDesktopUpdate(eventName, handler) {
   }
 }
 
+export async function listenAuthReturn(handler) {
+  if (typeof handler !== "function") throw new DesktopBridgeError("desktop_operation_not_allowed");
+  const listen = globalThis.__TAURI__?.event?.listen;
+  if (typeof listen !== "function") return () => {};
+  // No URL, status or credential is accepted from this event. It only asks
+  // the existing server-authenticated polling paths to run sooner.
+  return listen("desktop-auth://return", () => handler());
+}
+
 async function invokeCommand(command, args = {}) {
   if (!ALLOWED_COMMANDS.has(command)) {
     throw new DesktopBridgeError("desktop_operation_not_allowed");
@@ -686,16 +716,31 @@ async function invokeCommand(command, args = {}) {
 export const desktopBridge = Object.freeze({
   preview: explicitPreviewEnabled(),
 
-  appInfo() {
-    return invokeCommand(COMMANDS.appInfo);
+  async appInfo() {
+    const info = await invokeCommand(COMMANDS.appInfo);
+    const origin = info?.apiOrigin ?? DEFAULT_API_ORIGIN;
+    if (typeof origin !== "string" || origin.length > 261 ||
+        !/^https:\/\/[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(origin) ||
+        origin.slice(8).split(".").some(label => !label || label.length > 63 || label.startsWith("-") || label.endsWith("-"))) {
+      throw new DesktopBridgeError("desktop_api_origin_invalid");
+    }
+    buildApiOrigin = origin;
+    return info;
+  },
+
+  apiOrigin() {
+    return buildApiOrigin;
   },
 
   authStatus() {
     return invokeCommand(COMMANDS.authStatus);
   },
 
-  linkStart() {
-    return invokeCommand(COMMANDS.linkStart);
+  linkStart(language = null, referralCode = null) {
+    return invokeCommand(COMMANDS.linkStart, {
+      language: language == null ? null : assertLanguage(language),
+      referralCode: assertSignupReferral(referralCode),
+    });
   },
 
   linkPoll() {
@@ -704,6 +749,50 @@ export const desktopBridge = Object.freeze({
 
   linkOpenTelegram() {
     return invokeCommand(COMMANDS.linkOpenTelegram);
+  },
+
+  oauthProviders() {
+    return invokeCommand(COMMANDS.oauthProviders);
+  },
+
+  oauthStart(provider, language = null, referralCode = null) {
+    if (provider !== "google" && provider !== "apple") {
+      throw new DesktopBridgeError("oauth_provider_unsupported");
+    }
+    return invokeCommand(COMMANDS.oauthStart, {
+      provider,
+      language: language == null ? null : assertLanguage(language),
+      referralCode: assertSignupReferral(referralCode),
+    });
+  },
+
+  oauthOpen() {
+    return invokeCommand(COMMANDS.oauthOpen);
+  },
+
+  identityMethods() {
+    return invokeCommand(COMMANDS.identityMethods);
+  },
+
+  telegramIdentityStart(attemptId) {
+    return invokeCommand(COMMANDS.telegramIdentityStart, { attemptId: assertIdentityAttempt(attemptId) });
+  },
+
+  oauthIdentityStart(provider, attemptId) {
+    if (provider !== "google" && provider !== "apple") throw new DesktopBridgeError("oauth_provider_unsupported");
+    return invokeCommand(COMMANDS.oauthIdentityStart, { provider, attemptId: assertIdentityAttempt(attemptId) });
+  },
+
+  identityLinkPoll(attemptId) {
+    return invokeCommand(COMMANDS.identityLinkPoll, { attemptId: assertIdentityAttempt(attemptId) });
+  },
+
+  identityLinkOpen(attemptId) {
+    return invokeCommand(COMMANDS.identityLinkOpen, { attemptId: assertIdentityAttempt(attemptId) });
+  },
+
+  identityLinkCancel(attemptId) {
+    return invokeCommand(COMMANDS.identityLinkCancel, { attemptId: assertIdentityAttempt(attemptId) });
   },
 
   openExternalUrl(url) {

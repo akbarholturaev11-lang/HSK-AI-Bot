@@ -73,9 +73,12 @@ class SubscriptionCheckoutPaymentReviewTest {
     }
 
     @Test
-    fun `ordinary pending payment in HSK checkout does not lock navigation or use HSK status check`() =
+    fun `ordinary pending payment checks its own Pro plan without locking navigation`() =
         runTest(dispatcher) {
             overviews.add(pending("hsk30_unlock", "1_month"))
+            decisions.add(PaymentDecisionStatusResponse(
+                ok = true, paymentId = 71, status = "pending", planType = "1_month",
+            ))
             val model = model()
             model.load()
             advanceUntilIdle()
@@ -84,8 +87,20 @@ class SubscriptionCheckoutPaymentReviewTest {
             assertFalse(model.state.value.isWaitingForHsk30Review)
             model.refreshPaymentStatus()
             advanceUntilIdle()
-            assertEquals(0, statusCalls)
+            assertEquals(1, statusCalls)
             assertEquals(null, model.state.value.errorRes)
+        }
+
+    @Test
+    fun `ordinary pending Pro receipt preserves its own provisional grant`() =
+        runTest(dispatcher) {
+            overviews.add(pending("subscription", "1_month", provisional = true))
+            val model = model()
+            model.load()
+            advanceUntilIdle()
+            assertFalse(model.state.value.isHsk30Unlock)
+            assertTrue(model.state.value.provisionalAccess)
+            assertFalse(model.state.value.isWaitingForHsk30Review)
         }
 
     @Test
@@ -171,4 +186,37 @@ class SubscriptionCheckoutPaymentReviewTest {
         assertEquals(R.string.sub_status_check_failed, model.state.value.errorRes)
         assertTrue(model.state.value.isWaitingForHsk30Review)
     }
+    @Test
+    fun `Pro receipt accepts only its own approved or rejected decision`() = runTest(dispatcher) {
+        for (decision in listOf("approved", "rejected")) {
+            overviews.add(pending("subscription", "1_month"))
+            decisions.add(PaymentDecisionStatusResponse(
+                ok = true, paymentId = 71, status = decision, planType = "1_month",
+            ))
+            val model = model()
+            model.load()
+            advanceUntilIdle()
+            model.refreshPaymentStatus()
+            advanceUntilIdle()
+            assertEquals(decision, model.state.value.paymentDecision)
+            assertFalse(model.state.value.isWaitingForHsk30Review)
+            assertEquals(null, model.state.value.errorRes)
+        }
+    }
+
+    @Test
+    fun `HSK unlock approval cannot approve a pending Pro receipt`() = runTest(dispatcher) {
+        overviews.add(pending("subscription", "1_month"))
+        decisions.add(PaymentDecisionStatusResponse(
+            ok = true, paymentId = 71, status = "approved", planType = "hsk30_unlock",
+        ))
+        val model = model()
+        model.load()
+        advanceUntilIdle()
+        model.refreshPaymentStatus()
+        advanceUntilIdle()
+        assertEquals("", model.state.value.paymentDecision)
+        assertEquals(R.string.sub_status_check_failed, model.state.value.errorRes)
+    }
+
 }

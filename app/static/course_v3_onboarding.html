@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>HSK AI</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <style>
 /* HSK AI palette + course mascot; the reference supplies the screen hierarchy. */
@@ -511,7 +511,7 @@ function finish(){
     var lesson=Number(launch.lesson||1);
     if(isHsk30Level(sel)){query.delete("lesson");query.delete("autostart")}
     else if(lesson>0&&!launch.placement){query.set("lesson",String(lesson));query.set("autostart","1")}
-    location.href="/course-v3.html?"+query.toString();
+    location.href="/course-v3.html?"+query.toString()+location.hash;
   }
   function fail(reason){
     saveNeedsVerification=true;

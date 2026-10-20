@@ -8,6 +8,7 @@ from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
 from app.services.qa_service import QAService
+from app.services.account_identity import account_user_id
 from app.services.course_engine_service import CourseEngineService
 from app.services.course_trial_service import CourseTrialService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
@@ -84,7 +85,9 @@ class StudyMiniAppService:
         return "hsk1"
 
     async def get_access_payload(self, telegram_id: int) -> dict:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
 
@@ -122,7 +125,9 @@ class StudyMiniAppService:
         }
 
     async def get_profile_payload(self, telegram_id: int) -> dict:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
         paid = self.is_paid_user(user)

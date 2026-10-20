@@ -12,7 +12,7 @@ from app.services.entitlements import decision as D
 from app.services.entitlements.engine import EntitlementEngine
 from app.services.entitlements.limits_config import WINDOW_NONE
 from app.services.entitlements.state import EntitlementState, resolve_state
-from app.services.course_miniapp_access_service import CourseMiniAppAccessService, COURSE_DAILY_EVENT_NAME
+from app.services.course_miniapp_access_service import COURSE_DAILY_EVENT_NAME
 from app.services.course_access_policy_service import CourseAccessPolicyService
 from app.services.course_track_service import CourseTrackService
 
@@ -27,7 +27,7 @@ class LessonAccessService:
 
     async def _reserved(self, user, reference):
         result = await self.session.execute(select(CourseMiniAppEvent.id).where(
-            CourseMiniAppEvent.telegram_id == user.telegram_id,
+            CourseMiniAppEvent.user_id == user.id,
             CourseMiniAppEvent.event_name == COURSE_DAILY_EVENT_NAME,
             CourseMiniAppEvent.session_id == "lesson",
             CourseMiniAppEvent.dedupe_key.endswith(f":ref:{reference}"),
@@ -38,7 +38,6 @@ class LessonAccessService:
         # Serialize starts across Mini App, bot, Android and desktop.
         if consume:
             await self.session.execute(select(User.id).where(User.id == user.id).with_for_update())
-        access = CourseMiniAppAccessService(self.session)
         engine = EntitlementEngine(self.session)
         state = resolve_state(user)
         unlimited_course_access = state in {

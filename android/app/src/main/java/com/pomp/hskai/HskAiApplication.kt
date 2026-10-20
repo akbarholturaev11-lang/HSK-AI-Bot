@@ -200,8 +200,8 @@ class HskAiApplication : Application() {
             store = credentialStore,
             appVersion = BuildConfig.VERSION_NAME,
             oauthApi = retrofit.create(NativeOAuthApi::class.java),
-            // A blank client id leaves the provider reporting itself
-            // unavailable, so the Google button is simply never shown.
+            // Optional compatibility API only; browser-based Google buttons
+            // use server discovery independently of this compiled client ID.
             googleIdTokens = CredentialManagerGoogleIdTokenProvider(
                 context = this,
                 webClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID,

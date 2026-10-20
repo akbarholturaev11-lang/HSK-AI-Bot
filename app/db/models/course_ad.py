@@ -98,7 +98,7 @@ class CourseAdView(Base):
         index=True,
         nullable=True,
     )
-    user_telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    user_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     level: Mapped[str] = mapped_column(String(16), index=True, nullable=False)
     lesson_order: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
     placement: Mapped[str] = mapped_column(String(16), index=True, nullable=False)

@@ -13,10 +13,13 @@ from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.referral import Referral
+from app.db.models.message import Message
 from app.db.models.desktop import DesktopDevice
 from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
-from app.repositories.referral_repo import ReferralRepository
+from app.repositories.referral_repo import ReferralRepository, referral_owner_clause, referral_user_join
+from app.services.account_identity import actual_telegram_id
+from app.public_site.render import public_origin
 from app.services.ai_usage_budget_service import AIUsageBudgetService, REFERRAL_TRIAL_PLAN_TYPE
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
@@ -52,6 +55,14 @@ def normalize_referral_code(referral_code: Optional[str]) -> str:
     if code.startswith(REFERRAL_START_PREFIX):
         code = code[len(REFERRAL_START_PREFIX):]
     return code
+
+
+def public_apps_url(settings_obj, code: str, *, trial: bool = False) -> str:
+    if not code:
+        return ""
+    suffix = "&mode=trial" if trial else ""
+    origin_settings = settings_obj if getattr(settings_obj, "PUBLIC_SITE_URL", "") or getattr(settings_obj, "MINI_APP_BASE_URL", "") else settings
+    return f"{public_origin(origin_settings)}/apps?ref={code}{suffix}"
 
 
 REFERRAL_TRIAL_REQUIRED_ACTIVE = 5
@@ -92,7 +103,7 @@ class ReferralService:
 
         started_at = await self._ensure_trial_counter_started_at(referrer)
         count = await self.referral_repo.count_active_since(
-            referrer_telegram_id=referrer.telegram_id,
+            referrer_telegram_id=referrer,
             started_at=started_at,
         )
         return min(count, REFERRAL_TRIAL_REQUIRED_ACTIVE)
@@ -100,8 +111,8 @@ class ReferralService:
     async def build_trial_progress_text(self, referrer) -> tuple[str, str]:
         await self.user_repo.ensure_referral_code(referrer)
         active_count = await self.get_trial_activation_progress(referrer)
-        joined_count = await self.referral_repo.count_by_referrer(referrer.telegram_id)
-        referral_link = f"https://t.me/{settings.BOT_USERNAME}?start={referrer.referral_code}"
+        joined_count = await self.referral_repo.count_by_referrer(referrer)
+        referral_link = public_apps_url(settings, referrer.referral_code, trial=True)
         lang = referrer.language if referrer.language else "ru"
         return lang, t(
             "referral_invite_text",
@@ -155,11 +166,11 @@ class ReferralService:
                 CourseProgress.completed_lessons_count,
                 func.coalesce(weekly.c.weekly_xp, 0),
             )
-            .join(User, User.telegram_id == Referral.invited_user_telegram_id)
+            .join(User, referral_user_join("invited"))
             .outerjoin(CourseMiniAppProfile, CourseMiniAppProfile.user_id == User.id)
             .outerjoin(CourseProgress, CourseProgress.user_id == User.id)
             .outerjoin(weekly, weekly.c.user_id == User.id)
-            .where(Referral.referrer_telegram_id == referrer.telegram_id)
+            .where(referral_owner_clause("referrer", referrer))
             .order_by(Referral.created_at.desc(), User.id.asc())
             .limit(max_items)
         )
@@ -261,7 +272,7 @@ class ReferralService:
             fallback=activated_at,
         )
         active_count = await self.referral_repo.count_active_since(
-            referrer_telegram_id=referrer.telegram_id,
+            referrer_telegram_id=referrer,
             started_at=started_at,
         )
         if active_count < REFERRAL_TRIAL_REQUIRED_ACTIVE:
@@ -285,7 +296,7 @@ class ReferralService:
         referrer.referral_trial_count_started_at = reward_end
 
         await AIUsageBudgetService(self.session).create_fixed_budget(
-            telegram_id=referrer.telegram_id,
+            telegram_id=referrer,
             plan_type=REFERRAL_TRIAL_PLAN_TYPE,
             amount=int(REFERRAL_TRIAL_AI_BUDGET_USD),
             currency="usd",
@@ -297,80 +308,53 @@ class ReferralService:
         await self.session.flush()
         return True
 
+    async def qualifying_question_count(self, user) -> int:
+        # Native Assistant persists these user turns only after a successful
+        # model answer. Procedural help, failed requests and replayed requests
+        # never add another qualifying turn. Keep legacy quota counters intact.
+        await self.session.flush()
+        native_count = await self.session.scalar(select(func.count()).select_from(Message).where(
+            Message.user_id == user.id, Message.role == "user",
+            Message.conversation_id.is_not(None), Message.content_type.in_(("text", "image", "voice")),
+        )) or 0
+        return int(getattr(user, "questions_used", 0) or 0) + int(native_count)
+
     async def attach_referral_if_needed(
-        self,
-        invited_user_telegram_id: int,
-        referral_code: Optional[str],
-        bot: Optional[Bot] = None,
+        self, invited_user_telegram_id, referral_code: Optional[str],
+        bot: Optional[Bot] = None, *, commit: bool = True,
     ) -> None:
         if not referral_code:
             return
-
-        invited_user = await self.user_repo.get_by_telegram_id(invited_user_telegram_id)
-        if not invited_user:
+        invited_user = await self.user_repo.get_by_actor(invited_user_telegram_id)
+        if not invited_user or invited_user.status == "blocked":
             return
-
-        if invited_user.referred_by_telegram_id:
-            existing_referral = await self.referral_repo.get_by_invited_user_telegram_id(
-                invited_user_telegram_id
-            )
-            if (
-                existing_referral
-                and existing_referral.status != "active"
-                and int(getattr(invited_user, "questions_used", 0) or 0) >= 2
-            ):
-                await self.activate_referral_if_eligible(
-                    bot=bot,
-                    invited_user_telegram_id=invited_user_telegram_id,
-                )
+        existing = await self.referral_repo.get_by_invited_user_telegram_id(invited_user)
+        if invited_user.referrer_id or invited_user.referred_by_telegram_id or existing:
+            if existing and commit:
+                await self.activate_referral_if_eligible(bot, invited_user)
             return
-
         code = normalize_referral_code(referral_code)
-        if not code:
+        if not re.fullmatch(r"[0-9a-f]{8}", code):
             return
-
         referrer = await self.user_repo.get_by_referral_code(code)
-        if not referrer:
+        if not referrer or referrer.id == invited_user.id or referrer.status == "blocked":
             return
-
-        if referrer.telegram_id == invited_user_telegram_id:
-            return
-
-        existing_referral = await self.referral_repo.get_by_invited_user_telegram_id(
-            invited_user_telegram_id
-        )
-        if existing_referral:
-            if (
-                existing_referral.referrer_telegram_id == referrer.telegram_id
-                and existing_referral.status != "active"
-                and int(getattr(invited_user, "questions_used", 0) or 0) >= 2
-            ):
-                await self.activate_referral_if_eligible(
-                    bot=bot,
-                    invited_user_telegram_id=invited_user_telegram_id,
-                )
-            return
-
-        await self.user_repo.set_referred_by(invited_user, referrer.telegram_id)
+        await self.user_repo.set_referred_by(invited_user, referrer)
         await self.referral_repo.create(
-            referrer_telegram_id=referrer.telegram_id,
-            invited_user_telegram_id=invited_user_telegram_id,
+            referrer_telegram_id=referrer, invited_user_telegram_id=invited_user,
             discount_platform=discount_platform_from_payload(referral_code),
         )
+        if not commit:
+            return
         await self.session.commit()
         if discount_platform_from_payload(referral_code) == "android":
-            await self.qualify_android_discount_referral(invited_user_telegram_id)
-        if int(getattr(invited_user, "questions_used", 0) or 0) >= 2:
-            await self.activate_referral_if_eligible(
-                bot=bot,
-                invited_user_telegram_id=invited_user_telegram_id,
-            )
-            return
-        if bot:
+            await self.qualify_android_discount_referral(invited_user)
+        await self.activate_referral_if_eligible(bot, invited_user)
+        if bot and actual_telegram_id(referrer):
             await self.update_trial_progress_message(bot, referrer)
 
-    async def qualify_android_discount_referral(self, invited_user_telegram_id: int) -> bool:
-        """Count an Android invite only after native Telegram account linking."""
+    async def qualify_android_discount_referral(self, invited_user_telegram_id) -> bool:
+        """Count an Android invite only after a verified native account session."""
         referral = await self.referral_repo.get_by_invited_user_telegram_id(
             invited_user_telegram_id, for_update=True,
         )
@@ -378,19 +362,20 @@ class ReferralService:
             return False
         if referral.discount_qualified_at is not None:
             return False
+        invited_user = await self.user_repo.get_by_actor(invited_user_telegram_id)
+        if not invited_user or invited_user.status == "blocked":
+            return False
         linked = await self.session.scalar(
             select(DesktopDevice.id)
-            .where(DesktopDevice.telegram_id == invited_user_telegram_id)
+            .where(DesktopDevice.user_id == invited_user.id)
             .where(DesktopDevice.platform == "android")
             .where(DesktopDevice.revoked_at.is_(None))
             .limit(1)
         )
         if not linked:
             return False
-        referrer = await self.user_repo.get_by_telegram_id_for_update(
-            referral.referrer_telegram_id
-        )
-        if not referrer:
+        referrer = await self.referral_repo.get_referrer(referral, lock=True)
+        if not referrer or referrer.status == "blocked":
             return False
         referral.discount_qualified_at = datetime.now(timezone.utc)
         referral.counts_for_discount = True
@@ -401,7 +386,7 @@ class ReferralService:
     async def activate_referral_if_eligible(
         self,
         bot: Optional[Bot],
-        invited_user_telegram_id: int,
+        invited_user_telegram_id,
     ) -> None:
         referral = await self.referral_repo.get_by_invited_user_telegram_id(
             invited_user_telegram_id,
@@ -413,19 +398,17 @@ class ReferralService:
         if referral.status == "active":
             return
 
-        invited_user = await self.user_repo.get_by_telegram_id(invited_user_telegram_id)
-        if not invited_user:
+        invited_user = await self.user_repo.get_by_actor(invited_user_telegram_id)
+        if not invited_user or invited_user.status == "blocked":
             return
 
-        if invited_user.questions_used < 2:
+        if await self.qualifying_question_count(invited_user) < 2:
             return
 
         await self.referral_repo.activate(referral)
 
-        referrer = await self.user_repo.get_by_telegram_id_for_update(
-            referral.referrer_telegram_id
-        )
-        if not referrer:
+        referrer = await self.referral_repo.get_referrer(referral, lock=True)
+        if not referrer or referrer.status == "blocked":
             await self.session.commit()
             return
 
@@ -455,7 +438,7 @@ class ReferralService:
         )
 
         await self.session.commit()
-        if not bot:
+        if not bot or actual_telegram_id(referrer) is None:
             return
 
         await self.update_trial_progress_message(bot, referrer)

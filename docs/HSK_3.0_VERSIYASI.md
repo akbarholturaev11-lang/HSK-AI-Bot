@@ -161,9 +161,10 @@ o'zgartirilmaydi.
 - **Kutish holati:** chek yuborilgach "To'lov tekshirilmoqda". Shu vaqtda
   user HSK 2.0 da o'qiy oladi ("Keyinroq"). Tasdiqlangach xabar keladi va
   3.0 ochiladi.
-- **Android:** Google Play build'da to'lov olinmaydi (Google qoidasi) —
-  Telegram'ga yuboriladi, obuna bilan bir xil. Direct build mavjud direct
-  checkout orqali to'laydi. Desktop ham mavjud obuna oqimi orqali.
+- **Android:** hozirgi Google Play build xaridsiz; unda tashqi to‘lovga
+  yo‘naltirish yo‘q. Direct APK va desktop mavjud chek/admin tasdiqlash
+  oqimidan foydalanadi. Pro va alohida HSK 3.0 xaridi canonical `users.id`ga
+  tegishli: Google/Apple orqali kirgan hisobga Telegram talab qilinmaydi.
 
 ### 5. Nima alohida, nima umumiy
 
@@ -422,8 +423,9 @@ Istalgan user:
 
 ### 4-bosqich — Android va Desktop paritet
 
-- Android: onboarding, sozlamalar, to'lov ekrani (direct — checkout, play —
-  Telegram'ga), promo, xarita, lug'at filtri, Test markazi "Tez orada",
+- Android: onboarding, sozlamalar, Direct checkout; Play mavjud kirish
+  holatini ko‘rsatadi, xarid va tashqi to‘lovga yo‘naltirishsiz. Promo,
+  xarita, lug'at filtri, Test markazi "Tez orada",
   offline lug'at asseti, to'lov push xabari. `android/tools/check_*.py`
   tekshiruvlari (`check_flavor_parity.py` ham), 3 til, `appVersionCode` +1.
 - Desktop: macOS va Windows bir vaqtda (DMG/EXE parity qoidasi).

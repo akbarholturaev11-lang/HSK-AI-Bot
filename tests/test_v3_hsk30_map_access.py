@@ -18,6 +18,11 @@ from sqlalchemy.pool import StaticPool
 
 from app.db import models  # noqa: F401
 from app.db.base import Base
+from app.db.models.payment import Payment
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.api.course_tracks import create_course_tracks_router
+from sqlalchemy import select
+from app.repositories.payment_repo import PaymentRepository
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
@@ -91,6 +96,7 @@ class Hsk30MapAccessTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
         app = FastAPI()
         app.get("/api/v3/map")(map_handler(self.sessions))
+        app.include_router(create_course_tracks_router(session_factory=self.sessions, settings_obj=SimpleNamespace(BOT_TOKEN=BOT_TOKEN)))
         self.client = AsyncClient(transport=ASGITransport(app=app), base_url="https://map.test")
 
     async def asyncTearDown(self):
@@ -103,12 +109,52 @@ class Hsk30MapAccessTests(unittest.IsolatedAsyncioTestCase):
         data = response.json()
         self.assertEqual("hsk30_unlock_required", data["error"])
         self.assertFalse(data["hsk30_access"]["allowed"])
+        self.assertEqual("nhsk1", data["level"])
         self.assertNotIn("units", data)
         async with self.sessions() as session:
             user = await UserRepository(session).get_by_telegram_id(7100)
             material = await LessonAccessService(session).status(user, level="nhsk1", lesson_order=1, consume=True)
         self.assertFalse(material["allowed"])
         self.assertEqual("hsk30_unlock_required", material["error"])
+
+    async def test_rejected_receipt_revokes_pending_access_and_returns_track_context(self):
+        async with self.sessions() as session:
+            payment = Payment(user_id=1, user_telegram_id=7100, plan_type="hsk30_unlock",
+                              amount=10, payment_status="pending", screenshot_file_id="test-receipt")
+            session.add(payment)
+            await session.commit()
+            payment_id = payment.id
+            user = await session.get(User, 1)
+            self.assertTrue((await CourseTrackService(session).hsk30_access(user)).allowed)
+        async with self.sessions() as session:
+            payment = await session.get(Payment, payment_id)
+            self.assertTrue(await PaymentRepository(session).reject(payment))
+            await session.commit()
+        response = await self.client.get("/api/v3/map", headers={"X-Telegram-Init-Data": signed_init_data()})
+        self.assertEqual(403, response.status_code)
+        self.assertEqual("payment_rejected", response.json()["error"])
+        self.assertEqual("nhsk1", response.json()["level"])
+        self.assertTrue(response.json()["hsk30_access"]["payment_rejected"])
+        self.assertNotIn("units", response.json())
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            lesson = await LessonAccessService(session).status(user, level="nhsk1", lesson_order=1, consume=True)
+        self.assertFalse(lesson["allowed"])
+        self.assertEqual("payment_rejected", lesson["error"])
+
+    async def test_switch_analytics_records_canonical_owner_without_keyword_error(self):
+        async with self.sessions() as session:
+            await Hsk30UnlockService(session).set_payment_enabled(False)
+            await session.commit()
+        headers = {"X-Telegram-Init-Data": signed_init_data()}
+        legacy = await self.client.post("/api/v3/course-tracks/switch", headers=headers, json={"target_track": "hsk20"})
+        self.assertEqual(200, legacy.status_code, legacy.text)
+        modern = await self.client.post("/api/v3/course-tracks/switch", headers=headers, json={"target_track": "hsk30"})
+        self.assertEqual(200, modern.status_code, modern.text)
+        async with self.sessions() as session:
+            events = (await session.execute(select(CourseMiniAppEvent).where(CourseMiniAppEvent.event_name == "course_track_switched"))).scalars().all()
+        self.assertEqual(1, len(events))
+        self.assertEqual(1, events[0].user_id)
 
     async def test_admin_disabling_entry_payment_opens_free_map_but_not_pro(self):
         async with self.sessions() as session:

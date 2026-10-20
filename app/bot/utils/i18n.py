@@ -136,6 +136,7 @@ TEXTS = {
       
         "payment_details_label": "Реквизити пардохт",
         "payment_invalid_plan": "Тарифи интихобшуда нодуруст аст.",
+        "payment_already_reviewed": "Ин пардохт аллакай баррасӣ шудааст. Ҳолати обунаро санҷед.",
 
         "user_payment_approved": "Пардохт қабул шуд ✅\n\nHSK AI Pro фаъол шуд.",
         "user_payment_rejected": "Пардохт тасдиқ нашуд ❌\n\nПардохтро санҷед ва дубора кӯшиш кунед.",
@@ -282,6 +283,7 @@ TEXTS = {
         
         "payment_details_label": "Реквизиты для оплаты",
         "payment_invalid_plan": "Выбран неверный тариф.",
+        "payment_already_reviewed": "Этот платёж уже рассмотрен. Проверьте статус подписки.",
 
         "user_payment_approved": "Платёж принят ✅\n\nHSK AI Pro активирован.",
         "user_payment_rejected": "Платёж не подтверждён ❌\n\nПроверьте оплату и попробуйте ещё раз.",
@@ -426,6 +428,7 @@ TEXTS = {
 
         "payment_details_label": "To‘lov rekviziti",   
         "payment_invalid_plan": "Tanlangan tarif noto‘g‘ri.",
+        "payment_already_reviewed": "Bu to‘lov allaqachon ko‘rib chiqilgan. Obuna holatini tekshiring.",
 
         "user_payment_approved": "To'lov qabul qilindi ✅\n\nHSK AI Pro faollashdi.",
         "user_payment_rejected": "To'lov tasdiqlanmadi ❌\n\nTo'lovni tekshirib, qayta urinib ko'ring.",

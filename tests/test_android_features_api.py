@@ -9,6 +9,7 @@ the two things that *are* the adapter's responsibility:
    Entitlement still changes only after admin review.
 """
 
+import asyncio
 import json
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -24,7 +25,6 @@ from sqlalchemy.pool import StaticPool
 from app.api.desktop_rating import challenge_ref
 from app.api.android_features import (
     _bot_url,
-    _invite_link,
     _localize_android_checkout_prices,
     _public_android_referral_item,
     _service_response,
@@ -39,7 +39,6 @@ from app.db.models.user import User
 from app.services.course_ad_service import CourseAdService
 from app.services.course_miniapp_access_service import COURSE_AD_ATTEMPT_EVENT_NAME
 from app.services.desktop_auth_service import DesktopAuthService
-from app.services.referral_service import normalize_referral_code
 from app.services.subscription_currency_service import SubscriptionCurrencyService
 
 
@@ -267,29 +266,13 @@ class AndroidReferralRouteTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(200, response.status_code)
         payload = response.json()
-        self.assertEqual("https://t.me/pomp_test_bot?start=invite42", payload["link"])
+        self.assertTrue(payload["link"].endswith("/apps?ref=invite42&mode=trial"))
         self.assertEqual(1, payload["invited"])
         self.assertEqual(1, payload["activated"])
         self.assertEqual("Li Friend", payload["items"][0]["name"])
         self.assertEqual("panda_streak", payload["items"][0]["avatar_key"])
         self.assertTrue(payload["items"][0]["challenge_ref"])
         self.assertNotIn("telegram_id", payload["items"][0])
-
-
-class AndroidInviteLinkTests(unittest.TestCase):
-    def test_invite_payload_is_the_code_the_bot_looks_up(self):
-        # `/start <payload>` resolves the payload against the stored referral
-        # code with an exact match, so a decorated payload would reach the bot
-        # and match nobody: the invite would be lost without any error.
-        link = _invite_link("pomp_bot", "a1b2c3d4")
-
-        self.assertEqual("https://t.me/pomp_bot?start=a1b2c3d4", link)
-        payload = link.split("?start=", 1)[1]
-        self.assertEqual("a1b2c3d4", normalize_referral_code(payload))
-
-    def test_missing_parts_yield_no_link_instead_of_a_broken_one(self):
-        self.assertEqual("", _invite_link("", "a1b2c3d4"))
-        self.assertEqual("", _invite_link("pomp_bot", ""))
 
 
 class AndroidLimitPassthroughTests(unittest.TestCase):
@@ -1094,6 +1077,32 @@ class AndroidChallengeRouteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(404, response.status_code)
         self.assertEqual([], [call for call in self.calls if call[0] == "create"])
 
+    async def test_native_opponent_reference_resolves_its_internal_account(self):
+        async with self.sessions() as session:
+            session.add(_user(2, None, "Provider opponent"))
+            await session.commit()
+        board = SimpleNamespace(leaderboard=AsyncMock(return_value={
+            "leaderboard": [{"user_id": 2, "telegram_id": None, "rank": 1, "name": "Provider opponent"}],
+        }))
+        challenges = SimpleNamespace(create=AsyncMock(return_value={"ok": True, "challenge": {"id": 5}}))
+        app = FastAPI()
+        app.include_router(create_android_features_router(
+            session_factory=self.sessions, settings_obj=_settings(),
+            gamification_service_factory=lambda session: board,
+            challenge_service_factory=lambda session: challenges,
+        ))
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://android.test") as client:
+            response = await client.post("/api/v3/android/challenges", headers=self._headers(), json={
+                "opponent_ref": challenge_ref(None, _settings().DESKTOP_AUTH_SIGNING_SECRET, user_id=2),
+                "level": "hsk2", "language": "uz",
+            })
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(challenges.create.await_args.args[0], 4242)
+        opponent = challenges.create.await_args.kwargs["opponent_telegram_id"]
+        self.assertIsInstance(opponent, User)
+        self.assertEqual(opponent.id, 2)
+        self.assertIsNone(opponent.telegram_id)
+
     async def test_an_invited_friend_can_be_challenged_outside_the_leaderboard(self):
         ref = challenge_ref(778, _settings().DESKTOP_AUTH_SIGNING_SECRET)
 
@@ -1294,6 +1303,110 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(body["ad"]["available"])
         # Qachon qayta ochilishi Mini App'dagidek aytiladi.
         self.assertIn("reset_at", body)
+
+    async def test_google_only_gate_releases_user_lock_before_shadow_insert(self):
+        """A Google-only account must not time out on shadow's user FK lock.
+
+        The production gate holds users.id FOR UPDATE while reserving the free
+        attempt. Shadow writes through another DB session and requires a
+        PostgreSQL KEY SHARE lock on that same user. A commit MUST occur first.
+        """
+        from app.api import android_features
+        from app.db.models.entitlement_shadow_event import EntitlementShadowEvent
+
+        google_user = _user(2, None, "Google-only learner")
+        async with self.sessions() as session:
+            session.add(google_user)
+            await session.commit()
+
+        shadow_transaction_states = []
+        real_shadow = android_features.shadow_compare_gate
+
+        async def verify_shadow(session, **kwargs):
+            shadow_transaction_states.append(session.in_transaction())
+            await real_shadow(session, **kwargs)
+
+        with (
+            patch.object(
+                DesktopAuthService, "authenticate",
+                AsyncMock(return_value=SimpleNamespace(user=google_user)),
+            ),
+            patch.object(android_features, "shadow_compare_gate", verify_shadow),
+        ):
+            first = await asyncio.wait_for(
+                self.client.post(
+                    "/api/v3/android/practice/gate",
+                    headers=self._headers(),
+                    json={"feature": "recognition", "ref": "google-first"},
+                ), timeout=5,
+            )
+            duplicate = await asyncio.wait_for(
+                self.client.post(
+                    "/api/v3/android/practice/gate",
+                    headers=self._headers(),
+                    json={"feature": "recognition", "ref": "google-first"},
+                ), timeout=5,
+            )
+            blocked = await asyncio.wait_for(
+                self.client.post(
+                    "/api/v3/android/practice/gate",
+                    headers=self._headers(),
+                    json={"feature": "recognition", "ref": "google-second"},
+                ), timeout=5,
+            )
+
+        self.assertEqual(200, first.status_code)
+        self.assertEqual(200, duplicate.status_code)
+        self.assertEqual(403, blocked.status_code)
+        self.assertEqual("free_feature_limit_reached", blocked.json()["error"])
+        self.assertEqual([False, False, False], shadow_transaction_states)
+        async with self.sessions() as session:
+            events = (
+                await session.execute(
+                    select(CourseMiniAppEvent).where(
+                        CourseMiniAppEvent.user_id == google_user.id,
+                        CourseMiniAppEvent.event_name == "practice_daily_used",
+                    )
+                )
+            ).scalars().all()
+            shadows = (
+                await session.execute(
+                    select(EntitlementShadowEvent).where(
+                        EntitlementShadowEvent.user_id == google_user.id,
+                        EntitlementShadowEvent.client == "android",
+                    )
+                )
+            ).scalars().all()
+        self.assertEqual(1, len(events))
+        self.assertIsNone(events[0].telegram_id)
+        self.assertGreaterEqual(len(shadows), 1)
+        self.assertIsNone(shadows[0].telegram_id)
+
+    async def test_practice_gate_commits_before_shadow_audit(self):
+        """The audit's independent DB transaction must never wait on the gate's
+        uncommitted FOR UPDATE user lock (Google-only accounts especially).
+        """
+        called = []
+
+        async def verify_shadow_order(session, **_kwargs):
+            called.append(True)
+            self.assertFalse(
+                session.in_transaction(),
+                "The free-allowance write must commit before the shadow audit",
+            )
+
+        with patch(
+            "app.api.android_features.shadow_compare_gate",
+            new=verify_shadow_order,
+        ):
+            result = await self.client.post(
+                "/api/v3/android/practice/gate",
+                headers=self._headers(),
+                json={"feature": "recognition", "ref": "shadow-lock-check"},
+            )
+        self.assertEqual(200, result.status_code)
+        self.assertTrue(result.json()["allowed"])
+        self.assertEqual([True], called)
 
     async def test_a_spent_allowance_is_shown_in_the_app_not_in_telegram(self):
         """The app shows the closed door itself; Telegram stays quiet.

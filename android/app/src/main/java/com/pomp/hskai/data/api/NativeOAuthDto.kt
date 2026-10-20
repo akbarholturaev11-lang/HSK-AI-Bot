@@ -17,8 +17,12 @@ data class OAuthStartRequest(
     @SerialName("app_version") val appVersion: String,
     @SerialName("installation_key") val installationKey: String,
     @SerialName("provider") val provider: String,
-    /** `native_id_token` for Google (Credential Manager), `browser_redirect` for Apple. */
+    /** `browser_redirect` for Google/Apple UI, optional Google `native_id_token`, or `telegram_approval` for attaching Telegram. */
     @SerialName("mode") val mode: String,
+    /** Initial language for a new account; existing account preferences are server-owned. */
+    @SerialName("language") val language: String? = null,
+    /** Creation-only attribution. Never supplied when linking an existing account. */
+    @SerialName("referral_code") val referralCode: String? = null,
 )
 
 @Serializable
@@ -30,7 +34,7 @@ data class OAuthStartResponse(
     @SerialName("expires_in") val expiresIn: Int = 0,
     /** Present for `native_id_token`; must be passed to Credential Manager. */
     @SerialName("nonce") val nonce: String = "",
-    /** Present for `browser_redirect`; opened in a Custom Tab, never rendered. */
+    /** Browser authorization or the dedicated Telegram attachment bot URL. */
     @SerialName("authorize_url") val authorizeUrl: String = "",
 )
 
@@ -38,7 +42,9 @@ data class OAuthStartResponse(
 data class OAuthAssertRequest(
     @SerialName("link_request_id") val linkRequestId: String,
     @SerialName("polling_secret") val pollingSecret: String,
-    @SerialName("provider") val provider: String = "google",
+    // Required by FastAPI: no default, or kotlinx.serialization omits it
+    // with encodeDefaults=false and /oauth/assert rejects the payload (422).
+    @SerialName("provider") val provider: String,
     @SerialName("id_token") val idToken: String,
 )
 
@@ -77,7 +83,7 @@ data class IdentityLinkStatusRequest(
 @Serializable
 data class IdentityLinkStatusResponse(
     @SerialName("ok") val ok: Boolean = false,
-    /** `pending` | `linked` | `failed` | `expired`. Never carries a token. */
+    /** `pending` | `linked` | `failed` | `denied` | `expired`. Never carries a token. */
     @SerialName("status") val status: String = "",
     @SerialName("provider") val provider: String = "",
     @SerialName("error") val error: String? = null,

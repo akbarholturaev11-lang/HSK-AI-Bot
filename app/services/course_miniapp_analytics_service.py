@@ -49,7 +49,7 @@ class CourseMiniAppAnalyticsService:
         self,
         *,
         event_name: str,
-        telegram_id: int,
+        telegram_id: int | None = None,
         user_id: int | None = None,
         source: str = "course_miniapp",
         level: str | None = None,
@@ -62,13 +62,15 @@ class CourseMiniAppAnalyticsService:
         event_name = str(event_name or "").strip()
         if event_name not in COURSE_MINIAPP_EVENT_NAMES:
             return {"ok": False, "error": "course_event_not_allowed"}
-        if not telegram_id:
+        if not user_id and not telegram_id:
             return {"ok": False, "error": "course_event_user_required"}
 
         # Mini App'dagi har qanday haqiqiy faollik ham "aktiv" deb hisoblansin.
         # (Bot chat last_active_at'ni middleware yangilaydi; Mini App esa
         # FastAPI orqali kelgani uchun shu yerda yangilanadi.)
-        await self._touch_user_active(telegram_id)
+        await self._touch_user_active(telegram_id, user_id=user_id)
+        owner = (CourseMiniAppEvent.user_id == int(user_id) if user_id is not None
+                 else CourseMiniAppEvent.telegram_id == int(telegram_id))
 
         source = str(source or "course_miniapp").strip()[:40] or "course_miniapp"
         level = (str(level).strip()[:32] if level else None) or None
@@ -78,7 +80,7 @@ class CourseMiniAppAnalyticsService:
         if dedupe_key:
             existing_result = await self.session.execute(
                 select(CourseMiniAppEvent.id).where(
-                    CourseMiniAppEvent.telegram_id == int(telegram_id),
+                    owner,
                     CourseMiniAppEvent.event_name == event_name,
                     CourseMiniAppEvent.dedupe_key == dedupe_key,
                 )
@@ -88,7 +90,7 @@ class CourseMiniAppAnalyticsService:
 
         item = CourseMiniAppEvent(
             user_id=user_id,
-            telegram_id=int(telegram_id),
+            telegram_id=int(telegram_id) if telegram_id is not None else None,
             event_name=event_name,
             source=source,
             level=level,
@@ -106,7 +108,7 @@ class CourseMiniAppAnalyticsService:
             if dedupe_key:
                 duplicate_result = await self.session.execute(
                     select(CourseMiniAppEvent.id).where(
-                        CourseMiniAppEvent.telegram_id == int(telegram_id),
+                        owner,
                         CourseMiniAppEvent.event_name == event_name,
                         CourseMiniAppEvent.dedupe_key == dedupe_key,
                     )
@@ -116,11 +118,11 @@ class CourseMiniAppAnalyticsService:
             raise
         return {"ok": True, "recorded": True, "duplicate": False}
 
-    async def _touch_user_active(self, telegram_id: int) -> None:
+    async def _touch_user_active(self, telegram_id: int | None, *, user_id: int | None = None) -> None:
         try:
             await self.session.execute(
                 update(User)
-                .where(User.telegram_id == int(telegram_id))
+                .where(User.id == int(user_id) if user_id is not None else User.telegram_id == int(telegram_id))
                 .values(last_active_at=datetime.now(timezone.utc))
             )
         except Exception:

@@ -1,11 +1,21 @@
 # Pomp HSK AI — Android client
 
-Native Kotlin/Compose client of the shared HSK AI backend. Android, Telegram
-bot/Mini App and macOS/Windows Desktop use the same internal learner account,
-entitlement, subscription and course-progress contracts. Telegram is one login
-method; Google and Apple can be linked as provider identities to the **same**
-internal user, not an independent billing/progress account. Verify provider
-availability at runtime; never infer account ownership from email alone.
+Native Kotlin/Compose client of the existing HSK AI backend. One canonical
+`users.id` owns subscriptions, HSK 3.0 purchases, referrals and course progress
+across Android, macOS, Windows and explicitly linked Telegram clients.
+Google or Apple can create an account without Telegram. Add another sign-in
+method from the existing account's profile; equal email addresses do not merge
+accounts. Verify provider availability at runtime. The Android client reuses the shared backend auth and course contracts.
+
+The current Play flavor has no purchase flow. The website-distributed Direct
+APK keeps manual payment and receipt review for every sign-in method. Universal
+registration remains held from `main` and production pending the acceptance
+checks in `../docs/UNIVERSAL_NATIVE_ACCOUNTS.md`.
+
+Provider-first learners can attach an unused Telegram identity from Profile.
+The dedicated private-bot confirmation requires explicit approval; dismissal
+cancels a pending proof. Existing Telegram owners are never moved or merged,
+and attachment preserves Pro, progress and AI/Voice usage.
 
 ## One-time bootstrap: the Gradle wrapper
 
@@ -85,12 +95,29 @@ matches the desktop client's allowlisted origin and is a public value, not a
 secret. Requests to any other host are rejected at runtime by
 `OriginGuardInterceptor`.
 
-`POMP_GOOGLE_WEB_CLIENT_ID` is the OAuth **Web** client id used by Google
-Sign-In. Credential Manager mints an ID token whose audience is that id, which
-is exactly what the server verifies, so the app needs neither the
-`google-services` plugin nor a `google-services.json`. Unlike `POMP_API_ORIGIN`
-it is deliberately not required: leave it blank and the Google button is simply
-never shown, rather than every build failing.
+The Android Google and Apple buttons use the system browser and the server's
+configured confidential web-client credentials. Google discovery therefore
+does not require `POMP_GOOGLE_WEB_CLIENT_ID` in the APK or Google Play Services.
+That optional public Web client ID remains for the separately supported
+Credential Manager API, whose token audience is verified by the backend.
+Neither flow requires the `google-services` plugin or `google-services.json`.
+
+For isolated staging acceptance, build a debug client with the actual staging
+HTTPS origin after its separate backend and OAuth callback configuration exist:
+
+```bash
+./gradlew :app:assembleDirectDebug \
+  -PPOMP_QA_API_ORIGIN=https://YOUR_STAGING_HOST
+```
+
+This opt-in builds `com.pomp.hskai.qa` labelled **HSK AI QA**, with separate
+Android storage/Keystore credentials and the fixed `pomp-hsk-ai-qa` deep-link
+scheme. Set the staging server's `OAUTH_NATIVE_RETURN_SCHEME=pomp-hsk-ai-qa`;
+the production default stays `pomp-hsk-ai`. The QA client disables Firebase
+registration and Direct APK update checks/downloads/install actions. Its
+release variants are disabled, and its API origin must differ from the normal
+build origin. Omitting this property keeps existing release/debug behavior.
+Never distribute an APK built with an example or placeholder staging host.
 
 Payment decision alerts use Firebase Cloud Messaging when configured. Supply
 the Android Firebase app's public `POMP_FIREBASE_APP_ID`,

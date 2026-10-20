@@ -18,7 +18,7 @@
 
     <!-- Login screen: welcome and the three ways in -->
     <string name="auth_welcome_greeting">Добро пожаловать</string>
-    <string name="auth_choose_method">Выберите способ входа</string>
+    <string name="auth_choose_method">Выберите способ входа или создания аккаунта</string>
     <string name="auth_tagline">Лучшее будущее — со знаниями</string>
     <string name="auth_waiting_telegram">Ждём подтверждения в Telegram…</string>
     <string name="auth_open_telegram_again">Открыть Telegram снова</string>
@@ -36,7 +36,7 @@
 
     <string name="profile_logout">Выйти</string>
     <string name="profile_unlink_device">Отвязать это устройство</string>
-    <string name="profile_unlink_explain">Устройство будет отвязано, и в следующий раз нужно подключиться через Telegram заново.</string>
+    <string name="profile_unlink_explain">Устройство будет отвязано. В следующий раз войдите способом, подключённым к вашему аккаунту.</string>
     <string name="profile_refresh">Обновить</string>
     <string name="profile_xp">XP</string>
     <string name="profile_streak">Серия</string>
@@ -57,6 +57,9 @@
     <string name="profile_subscription_restore">Возобновить подписку</string>
     <string name="profile_subscription_renew">Продлить подписку</string>
     <string name="profile_subscription_play_blocked">Google Play Billing настраивается вне репозитория. Сейчас показываем статус подписки, покупка подключается позже.</string>
+    <string name="auth_referral_code">Код приглашения (необязательно)</string>
+    <string name="auth_referral_hint">Код от друга. Только для нового аккаунта.</string>
+    <string name="auth_referral_invalid">Проверьте код приглашения или оставьте поле пустым.</string>
     <string name="profile_referral_title">Пригласить друга</string>
     <string name="profile_referral_progress">%1$d / %2$d активных друзей</string>
 
@@ -74,10 +77,11 @@
     <string name="error_timeout">Сервер не ответил. Попробуйте ещё раз.</string>
     <string name="error_server">Временная ошибка сервера. Попробуйте немного позже.</string>
     <string name="error_unknown">Произошла непредвиденная ошибка.</string>
-    <string name="error_session_expired">Сессия истекла. Нужно снова подключиться через Telegram.</string>
+    <string name="error_session_expired">Сессия истекла. Войдите в свой аккаунт снова.</string>
+    <string name="error_telegram_account_required">Эта возможность сейчас недоступна. Попробуйте позже.</string>
     <string name="error_link_invalid">Код неверный, истёк или уже использован.</string>
     <string name="error_link_rate_limited">Слишком много попыток. Попробуйте через несколько минут.</string>
-    <string name="error_device_bound">Это устройство привязано к другому аккаунту Telegram. Сначала отвяжите его.</string>
+    <string name="error_device_bound">Это устройство привязано к другому аккаунту HSK AI. Сначала отвяжите его.</string>
     <string name="error_auth_unavailable">Сервис подключения временно недоступен.</string>
     <string name="error_feature_limit">Бесплатный лимит закончился. Продолжите с Premium.</string>
     <string name="error_no_mistakes">Пока нет ошибок для повторения.</string>
@@ -478,7 +482,7 @@
     <string name="challenge_decline">Отклонить</string>
     <string name="challenge_start">Начать</string>
     <string name="challenge_waiting">Ждём ответа</string>
-    <string name="profile_avatar_note">Аватар берётся из вашего профиля Telegram</string>
+    <string name="profile_avatar_note">Аватар можно изменить в разделе «Аккаунт».</string>
     <string name="profile_friends">Друзья</string>
     <string name="profile_referral_copy">Скопировать ссылку</string>
     <string name="profile_referral_share">Поделиться</string>
@@ -499,8 +503,8 @@
     <string name="hint_open">Пояснение</string>
     <string name="auth_provider_waiting">Ожидаем подтверждение…</string>
     <string name="error_provider_cancelled">Вход отменён.</string>
-    <string name="error_provider_unavailable">Этот способ сейчас недоступен. Войдите через Telegram.</string>
-    <string name="error_oauth_needs_telegram">Этот аккаунт ещё не подключён. Сначала войдите через Telegram, затем подключите его в профиле.</string>
+    <string name="error_provider_unavailable">Этот способ входа сейчас недоступен. Повторите попытку или выберите другой способ, подключённый к вашему аккаунту.</string>
+    <string name="error_oauth_needs_telegram">Этот способ входа не подключён к вашему аккаунту. Войдите подключённым способом, затем добавьте новый в профиле.</string>
     <string name="error_oauth_other_account">Этот аккаунт уже привязан к другому пользователю.</string>
     <string name="error_oauth_already_linked">Этот способ уже подключён. Сначала отключите его.</string>
     <string name="error_oauth_last_identity">Это единственный способ входа — его нельзя отключить.</string>
@@ -599,4 +603,6 @@
     <string name="bug_report_pick_screenshot">Выбрать снимок из галереи</string>
     <string name="bug_report_screenshot_required">Выберите снимок экрана или отключите его отправку.</string>
     <string name="bug_report_thanks_title">Спасибо за ваш отзыв!</string>
+    <string name="profile_telegram_link_hint">Подключите с подтверждением в Telegram-боте.</string>
+    <string name="profile_telegram_link_waiting">Проверьте запрос в боте и подтвердите подключение Telegram к этому аккаунту. Другие аккаунты не объединяются.</string>
 </resources>

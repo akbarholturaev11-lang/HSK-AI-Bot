@@ -472,6 +472,59 @@ class CourseSalesExperimentServiceTests(unittest.IsolatedAsyncioTestCase):
             )
             self.assertEqual(invalid_action["error"], "sales_offer_action_invalid")
 
+    async def test_native_personal_campaign_does_not_suppress_unrelated_telegram_cohort(self):
+        async with self.sessions() as session:
+            await self._enable(session, mode="treatment", percent=100)
+            native = _user(None, created_at=self.started_at + timedelta(seconds=1))
+            telegram = _user(7007, created_at=self.started_at + timedelta(seconds=1))
+            session.add_all((native, telegram))
+            await session.flush()
+            session.add(DiscountCampaign(title="Personal", percent=25, target_user_id=native.id,
+                starts_at=self.started_at, ends_at=self.started_at + timedelta(days=1)))
+            await session.flush()
+            service = CourseSalesExperimentService(session)
+            offer = await service.resolve_offer(user=telegram, level="hsk1", access_policy=_access(),
+                now=self.started_at + timedelta(minutes=1))
+            self.assertIsNotNone(offer)
+            self.assertEqual(offer["arm"], "treatment")
+            # Native registration does not silently enroll a Telegram experiment.
+            self.assertIsNone(await service.resolve_offer(user=native, level="hsk1", access_policy=_access(),
+                now=self.started_at + timedelta(minutes=1)))
+
+    async def test_personal_campaign_uses_canonical_target_before_stale_telegram_metadata(self):
+        async with self.sessions() as session:
+            own = _user(8008, created_at=self.started_at + timedelta(seconds=1))
+            neighbour = _user(9009, created_at=self.started_at + timedelta(seconds=1))
+            session.add_all((own, neighbour))
+            await session.flush()
+            session.add(DiscountCampaign(title="Personal", percent=25,
+                target_user_id=own.id, target_telegram_id=neighbour.telegram_id,
+                starts_at=self.started_at, ends_at=self.started_at + timedelta(days=1)))
+            await session.flush()
+            service = CourseSalesExperimentService(session)
+            now = self.started_at + timedelta(minutes=1)
+            self.assertTrue(await service._has_active_campaign(own, now=now))
+            self.assertFalse(await service._has_active_campaign(neighbour, now=now))
+
+    async def test_special_checkout_exclusion_uses_canonical_payment_owner(self):
+        async with self.sessions() as session:
+            own = _user(1111, created_at=self.started_at + timedelta(seconds=1))
+            neighbour = _user(2222, created_at=self.started_at + timedelta(seconds=1))
+            session.add_all((own, neighbour))
+            await session.flush()
+            foreign_payment = Payment(user_id=neighbour.id, user_telegram_id=own.telegram_id,
+                plan_type="1_month", amount=10, currency="USD", payment_status="draft",
+                discount_source="admin_campaign")
+            session.add(foreign_payment)
+            await session.flush()
+            service = CourseSalesExperimentService(session)
+            self.assertFalse(await service._has_special_checkout(own.telegram_id))
+            foreign_payment.user_telegram_id = neighbour.telegram_id
+            session.add(Payment(user_id=own.id, user_telegram_id=None, plan_type="1_month",
+                amount=10, currency="USD", payment_status="draft", discount_source="admin_campaign"))
+            await session.flush()
+            self.assertTrue(await service._has_special_checkout(own.telegram_id))
+
     def test_event_allowlist_keeps_assignment_server_only(self):
         self.assertIn(SALES_OFFER_ASSIGNED_EVENT, COURSE_MINIAPP_EVENT_NAMES)
         self.assertNotIn(

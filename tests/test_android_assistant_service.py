@@ -4,7 +4,7 @@ import unittest
 from io import BytesIO
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -140,6 +140,38 @@ class AndroidAssistantServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([], payload["actions"])
         self.assertIn("imtihon", payload["text"].lower())
         self.assertEqual(["assistant_help", "text"], [msg.content_type for msg in messages])
+
+    async def test_two_successful_native_answers_activate_referral_without_changing_legacy_quota(self):
+        from app.services.referral_service import ReferralService
+        from app.repositories.user_repo import UserRepository
+        from app.db.models.referral import Referral
+        async with self.sessions() as session:
+            owner = await UserRepository(session).create(telegram_id=None)
+            learner = await UserRepository(session).create(telegram_id=None)
+            await session.commit()
+            await ReferralService(session).attach_referral_if_needed(learner, owner.referral_code)
+            service = AssistantService(session)
+            service.record_usage = AsyncMock()
+            conversation = await service.new_conversation(learner)
+            for index in range(2):
+                data = AssistantInput(client_message_id=str(__import__("uuid").uuid4()), text="Explain Chinese", kind="text", context=ScreenContext(screen="practice"))
+                row = AssistantRequest(id=str(__import__("uuid").uuid4()), user_id=learner.id,
+                    conversation_id=conversation["id"], client_message_id=str(data.client_message_id),
+                    fingerprint="x" * 64, kind="text", context_json=data.context.model_dump_json(),
+                    expires_at=datetime.now(timezone.utc) + timedelta(minutes=2))
+                session.add(row)
+                await session.commit()
+                with patch("app.services.assistant_service.AIService") as factory:
+                    factory.return_value._language_name.return_value = "Uzbek"
+                    factory.return_value.complete_messages_with_usage = AsyncMock(return_value=SimpleNamespace(content='{"text":"你好 ni hao — Salom", "actions":[]}'))
+                    await service.answer(row.id, data, None)
+                    # Completed retries are inert and cannot award twice.
+                    await service.answer(row.id, data, None)
+                referral = await session.scalar(select(Referral).where(Referral.invited_user_id == learner.id))
+                self.assertEqual(referral.status, "active" if index else "pending")
+            self.assertEqual(learner.questions_used, 0)
+            self.assertEqual(owner.bonus_questions, 5)
+
 
 
 class AssistantAnswerParsingTests(unittest.TestCase):

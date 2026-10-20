@@ -1,7 +1,6 @@
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, FSInputFile
-from aiogram.utils.keyboard import InlineKeyboardBuilder
 import json
 import logging
 from pathlib import Path
@@ -37,7 +36,6 @@ from app.bot.keyboards.course import (
     course_intro_keyboard,
     course_dialogue_keyboard,
     course_grammar_keyboard,
-    course_homework_keyboard,
     course_next_step_keyboard,
     course_dialogue_n_keyboard,
     hsk4_part_selection_keyboard,
@@ -68,9 +66,6 @@ from app.bot.utils.course_miniapp import (
 )
 from app.bot.utils.course_formatter import (
     format_intro,
-    format_vocab,
-    format_dialogue,
-    format_exercise,
     format_step,
 )
 from app.services.course_v3_parts import (

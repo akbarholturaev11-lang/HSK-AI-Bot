@@ -9,6 +9,7 @@ from sqlalchemy import select
 from app.config import settings
 from app.db.models.ai_usage import AIUsageBudget, AIUsageEvent
 from app.services.ai_service import AIUsageResult
+from app.services.account_identity import account_user_id, actual_telegram_id, owner_clause
 from app.services.subscription_currency_service import DEFAULT_USD_CNY_RATE, DEFAULT_VISA_LOCAL_RATES, SubscriptionCurrencyService
 
 
@@ -105,6 +106,10 @@ class AIUsageBudgetService:
         *,
         preserve_existing: bool = False,
     ) -> Optional[AIUsageBudget]:
+        canonical_id = getattr(payment, "user_id", None)
+        telegram_id = actual_telegram_id(getattr(payment, "user_telegram_id", None))
+        if canonical_id is None and telegram_id is None:
+            return None
         rates = await self._live_or_manual_usd_rates()
         total_budget = self._ai_budget_usd(payment.amount, payment.currency, rates)
         budget_amount = payment.amount
@@ -120,12 +125,13 @@ class AIUsageBudgetService:
         # Keep its budget alive until its own end date; the new payment gets a
         # separate budget row for the next period.
         if not preserve_existing:
-            await self.expire_active_budgets(payment.user_telegram_id)
+            await self.expire_active_budgets(telegram_id, user_id=canonical_id)
 
         now = datetime.now(timezone.utc)
         segment_budget = total_budget / SEGMENT_COUNT
         budget = AIUsageBudget(
-            user_telegram_id=payment.user_telegram_id,
+            user_id=canonical_id,
+            user_telegram_id=telegram_id,
             payment_id=payment.id,
             plan_type=payment.plan_type,
             amount=budget_amount,
@@ -158,13 +164,15 @@ class AIUsageBudgetService:
         total_budget_usd: float,
         starts_at: datetime,
         ends_at: datetime,
+        user_id: int | None = None,
     ) -> AIUsageBudget:
-        await self.expire_active_budgets(telegram_id)
+        await self.expire_active_budgets(telegram_id, user_id=user_id)
 
         now = datetime.now(timezone.utc)
         segment_budget = total_budget_usd / SEGMENT_COUNT
         budget = AIUsageBudget(
-            user_telegram_id=telegram_id,
+            user_id=user_id if user_id is not None else account_user_id(telegram_id),
+            user_telegram_id=actual_telegram_id(telegram_id),
             payment_id=None,
             plan_type=plan_type,
             amount=amount,
@@ -195,7 +203,7 @@ class AIUsageBudgetService:
         """
         now = datetime.now(timezone.utc)
         starts_at = now
-        existing = await self.get_active_budget(int(user.telegram_id))
+        existing = await self.get_active_budget(user)
         if existing:
             starts_at = max(now, self._as_utc(existing.ends_at))
         # A paid subscriber may have no tracked AI budget (legacy/imported
@@ -209,7 +217,8 @@ class AIUsageBudgetService:
             if trial_end > now:
                 starts_at = max(starts_at, trial_end)
         budget = AIUsageBudget(
-            user_telegram_id=int(user.telegram_id),
+            user_id=account_user_id(user),
+            user_telegram_id=actual_telegram_id(user),
             payment_id=int(payment.id),
             plan_type=PAYMENT_PREVIEW_PLAN_TYPE,
             amount=0,
@@ -243,11 +252,13 @@ class AIUsageBudgetService:
         for budget in result.scalars().all():
             await self.expire_budget(budget)
 
-    async def can_use_payment_preview_ai(self, telegram_id: int, payment_id: int) -> BudgetAccessResult:
+    async def can_use_payment_preview_ai(
+        self, telegram_id: int, payment_id: int, *, user_id=None
+    ) -> BudgetAccessResult:
         """Fail closed if a preview cap is exhausted or its budget was revoked."""
         result = await self.session.execute(
             select(AIUsageBudget).where(
-                AIUsageBudget.user_telegram_id == int(telegram_id),
+                owner_clause(AIUsageBudget, telegram_id, user_id=user_id),
                 AIUsageBudget.payment_id == int(payment_id),
                 AIUsageBudget.plan_type == PAYMENT_PREVIEW_PLAN_TYPE,
             )
@@ -259,12 +270,12 @@ class AIUsageBudgetService:
         # budget. If the original budget disappeared, do not treat the gap
         # as an unlimited AI allowance.
         if self._as_utc(preview.starts_at) > datetime.now(timezone.utc):
-            if await self.get_active_budget(telegram_id) is None:
+            if await self.get_active_budget(telegram_id, user_id=user_id) is None:
                 return BudgetAccessResult(allowed=False, message_key="ai_budget_depleted", budget_depleted=True)
-        return await self.can_use_ai(telegram_id)
+        return await self.can_use_ai(telegram_id, user_id=user_id)
 
-    async def expire_active_budgets(self, telegram_id: int) -> None:
-        budgets = await self._list_active_budgets(telegram_id)
+    async def expire_active_budgets(self, telegram_id: int, *, user_id=None) -> None:
+        budgets = await self._list_active_budgets(telegram_id, user_id=user_id)
         now = datetime.now(timezone.utc)
         for budget in budgets:
             budget.status = "expired"
@@ -298,10 +309,10 @@ class AIUsageBudgetService:
     def is_total_budget_depleted(self, budget: AIUsageBudget) -> bool:
         return self.remaining_total_budget_usd(budget) <= BUDGET_EPSILON_USD
 
-    async def _list_active_budgets(self, telegram_id: int) -> list[AIUsageBudget]:
+    async def _list_active_budgets(self, telegram_id: int, *, user_id=None) -> list[AIUsageBudget]:
         result = await self.session.execute(
             select(AIUsageBudget)
-            .where(AIUsageBudget.user_telegram_id == telegram_id)
+            .where(owner_clause(AIUsageBudget, telegram_id, user_id=user_id))
             .where(AIUsageBudget.status == "active")
             .order_by(AIUsageBudget.created_at.desc())
         )
@@ -311,17 +322,18 @@ class AIUsageBudgetService:
         self,
         telegram_id: int,
         plan_type: Optional[str] = None,
+        *, user_id=None,
     ) -> Optional[AIUsageBudget]:
-        query = select(AIUsageBudget).where(AIUsageBudget.user_telegram_id == telegram_id)
+        query = select(AIUsageBudget).where(owner_clause(AIUsageBudget, telegram_id, user_id=user_id))
         if plan_type:
             query = query.where(AIUsageBudget.plan_type == plan_type)
         query = query.order_by(AIUsageBudget.created_at.desc()).limit(1)
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
-    async def get_active_budget(self, telegram_id: int) -> Optional[AIUsageBudget]:
+    async def get_active_budget(self, telegram_id: int, *, user_id=None) -> Optional[AIUsageBudget]:
         now = datetime.now(timezone.utc)
-        budgets = await self._list_active_budgets(telegram_id)
+        budgets = await self._list_active_budgets(telegram_id, user_id=user_id)
         eligible: list[AIUsageBudget] = []
         changed = False
         for budget in budgets:
@@ -403,8 +415,8 @@ class AIUsageBudgetService:
         budget.updated_at = now
         await self.session.flush()
 
-    async def can_use_ai(self, telegram_id: int) -> BudgetAccessResult:
-        budget = await self.get_active_budget(telegram_id)
+    async def can_use_ai(self, telegram_id: int, *, user_id=None) -> BudgetAccessResult:
+        budget = await self.get_active_budget(telegram_id, user_id=user_id)
         if not budget:
             return BudgetAccessResult(allowed=True)
 
@@ -458,17 +470,19 @@ class AIUsageBudgetService:
         telegram_id: int,
         result: Optional[AIUsageResult],
         source: str,
+        *, user_id=None,
     ) -> BudgetRecordResult:
         if not result:
             return BudgetRecordResult(cost_usd=0.0)
 
         cost_usd = self.calculate_cost_usd(result)
-        budget = await self.get_active_budget(telegram_id)
+        budget = await self.get_active_budget(telegram_id, user_id=user_id)
         now = datetime.now(timezone.utc)
 
         event = AIUsageEvent(
             budget_id=budget.id if budget else None,
-            user_telegram_id=telegram_id,
+            user_id=user_id if user_id is not None else account_user_id(telegram_id),
+            user_telegram_id=actual_telegram_id(telegram_id),
             source=source,
             model=result.model,
             prompt_tokens=result.prompt_tokens,

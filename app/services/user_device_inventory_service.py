@@ -4,13 +4,15 @@ import json
 from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.desktop import DesktopDevice
+from app.db.models.user import User
 from app.db.models.user_client_presence import UserClientPresence
 from app.repositories.user_repo import UserRepository
+from app.services.account_identity import owner_clause
 
 
 MINIAPP_SURFACE = "telegram_miniapp"
@@ -128,11 +130,11 @@ class UserDeviceInventoryService:
         await self.session.flush()
         return item
 
-    async def installed_native_platforms(self, telegram_id: int) -> set[str]:
+    async def installed_native_platforms(self, telegram_id: int | User) -> set[str]:
         rows = (
             await self.session.execute(
                 select(DesktopDevice.platform).where(
-                    DesktopDevice.telegram_id == int(telegram_id),
+                    owner_clause(DesktopDevice, telegram_id, telegram_column="telegram_id"),
                     DesktopDevice.revoked_at.is_(None),
                 )
             )
@@ -153,13 +155,12 @@ class UserDeviceInventoryService:
             return {}
         return parsed if isinstance(parsed, dict) else {}
 
-    async def snapshot(self, telegram_id: int) -> dict[str, Any]:
-        telegram_id = int(telegram_id)
+    async def snapshot(self, telegram_id: int | User) -> dict[str, Any]:
         presence_rows = list(
             (
                 await self.session.execute(
                     select(UserClientPresence)
-                    .where(UserClientPresence.telegram_id == telegram_id)
+                    .where(owner_clause(UserClientPresence, telegram_id, telegram_column="telegram_id"))
                     .order_by(UserClientPresence.last_foreground_at.desc())
                 )
             ).scalars().all()
@@ -168,7 +169,7 @@ class UserDeviceInventoryService:
             (
                 await self.session.execute(
                     select(DesktopDevice)
-                    .where(DesktopDevice.telegram_id == telegram_id)
+                    .where(owner_clause(DesktopDevice, telegram_id, telegram_column="telegram_id"))
                     .order_by(DesktopDevice.created_at.asc())
                 )
             ).scalars().all()
@@ -182,7 +183,7 @@ class UserDeviceInventoryService:
                     CourseMiniAppEvent.created_at,
                 )
                 .where(
-                    CourseMiniAppEvent.telegram_id == telegram_id,
+                    owner_clause(CourseMiniAppEvent, telegram_id, telegram_column="telegram_id"),
                     CourseMiniAppEvent.event_name.in_(
                         ("android_app_opened", "desktop_app_opened")
                     ),

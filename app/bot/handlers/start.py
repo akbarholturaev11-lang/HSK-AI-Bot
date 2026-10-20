@@ -10,7 +10,6 @@ from app.bot.keyboards.onboarding import (
     daily_practice_check_keyboard,
     daily_practice_finish_keyboard,
     language_keyboard,
-    level_keyboard,
     trial_lesson_selection_keyboard,
 )
 from app.bot.utils.i18n import t
@@ -50,7 +49,7 @@ async def _send_android_referral_apk(
     if (
         not referrer
         or not referral
-        or referral.referrer_telegram_id != referrer.telegram_id
+        or (referral.referrer_user_id != referrer.id if referral.referrer_user_id is not None else referral.referrer_telegram_id != referrer.telegram_id)
         or referral.discount_platform != "android"
     ):
         return False

@@ -10,8 +10,11 @@ from typing import Any
 
 from sqlalchemy import select
 
+from app.db.models.user import User
+
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.repositories.user_repo import UserRepository
+from app.services.account_identity import actual_telegram_id
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
@@ -175,7 +178,6 @@ class CourseHskExamService:
             select(CourseMiniAppEvent)
             .where(
                 CourseMiniAppEvent.user_id == user.id,
-                CourseMiniAppEvent.telegram_id == int(user.telegram_id),
                 CourseMiniAppEvent.event_name == "test_started",
                 CourseMiniAppEvent.session_id == session_id,
                 CourseMiniAppEvent.source == HSK_EXAM_EVENT_SOURCE,
@@ -189,7 +191,6 @@ class CourseHskExamService:
             select(CourseMiniAppEvent)
             .where(
                 CourseMiniAppEvent.user_id == user.id,
-                CourseMiniAppEvent.telegram_id == int(user.telegram_id),
                 CourseMiniAppEvent.event_name == "test_started",
                 CourseMiniAppEvent.source == HSK_EXAM_EVENT_SOURCE,
                 CourseMiniAppEvent.dedupe_key == self._started_dedupe_key(access_key),
@@ -202,7 +203,6 @@ class CourseHskExamService:
         result = await self.session.execute(
             select(CourseMiniAppEvent).where(
                 CourseMiniAppEvent.user_id == user.id,
-                CourseMiniAppEvent.telegram_id == int(user.telegram_id),
                 CourseMiniAppEvent.event_name == "test_completed",
                 CourseMiniAppEvent.session_id == session_id,
                 CourseMiniAppEvent.source == HSK_EXAM_EVENT_SOURCE,
@@ -394,7 +394,7 @@ class CourseHskExamService:
 
     async def start(
         self,
-        telegram_id: int,
+        telegram_id: int | User,
         *,
         level: str,
         lang: str,
@@ -403,7 +403,7 @@ class CourseHskExamService:
     ) -> dict[str, Any]:
         level = normalize_hsk_level(level)
         lang = normalize_material_language(lang)
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (telegram_id if isinstance(telegram_id, User) else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
 
@@ -473,7 +473,7 @@ class CourseHskExamService:
         }
         event = await self.analytics.record_server_event(
             event_name="test_started",
-            telegram_id=int(user.telegram_id),
+            telegram_id=actual_telegram_id(user),
             user_id=user.id,
             source=HSK_EXAM_EVENT_SOURCE,
             level=level,
@@ -536,14 +536,14 @@ class CourseHskExamService:
 
     async def complete(
         self,
-        telegram_id: int,
+        telegram_id: int | User,
         *,
         session_id: str,
         answers: list,
         level: str | None = None,
         lang: str | None = None,
     ) -> dict[str, Any]:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (telegram_id if isinstance(telegram_id, User) else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
         session_id = str(session_id or "").strip()
@@ -687,7 +687,7 @@ class CourseHskExamService:
         }
         event = await self.analytics.record_server_event(
             event_name="test_completed",
-            telegram_id=int(user.telegram_id),
+            telegram_id=actual_telegram_id(user),
             user_id=user.id,
             source=HSK_EXAM_EVENT_SOURCE,
             level=session_data["level"],

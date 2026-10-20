@@ -18,6 +18,7 @@ from app.db.models.discount_campaign import DiscountCampaign
 from app.db.models.partner import Partner, PartnerReferral
 from app.db.models.payment import Payment
 from app.db.models.portfolio import PortfolioTransaction
+from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
 from app.repositories.user_repo import UserRepository
@@ -82,6 +83,7 @@ class AccountDeletionCleanupTests(unittest.IsolatedAsyncioTestCase):
                     AccountNoticeDelivery(id=uid, user_id=uid, telegram_id=tid,
                                           key="subscription", title="Notice", body="Account",
                                           status="android_pending"),
+                    SubscriptionEntryEvent(id=uid, user_id=uid, telegram_id=tid, source="checkout"),
                 ])
                 for provider in ("google", "apple"):
                     session.add(UserIdentity(
@@ -107,6 +109,7 @@ class AccountDeletionCleanupTests(unittest.IsolatedAsyncioTestCase):
                                    app_version="1.0.0", expires_at=now + timedelta(minutes=10)),
                 PortfolioTransaction(id=10, transaction_type="profit", source="manual",
                                      user_telegram_id=None, amount_usd=25.0, note="Company ledger"),
+                SubscriptionEntryEvent(id=3, user_id=None, telegram_id=None if telegramless else 1002, source="anonymous"),
             ])
             for cid, target in ((2, 1002), (3, None)):
                 session.add(DiscountCampaign(
@@ -135,6 +138,7 @@ class AccountDeletionCleanupTests(unittest.IsolatedAsyncioTestCase):
                          {"link-2", "unowned-link"})
         self.assertEqual({e.id for e in await self._rows(session, CourseMiniAppEvent)}, {2, 3})
         self.assertEqual({n.id for n in await self._rows(session, AccountNoticeDelivery)}, {2})
+        self.assertEqual({e.id for e in await self._rows(session, SubscriptionEntryEvent)}, {2, 3})
         self.assertEqual({c.id for c in await self._rows(session, DiscountCampaign)}, {2, 3})
         kept = await session.get(User, 2)
         independent = await session.get(User, 3)
@@ -203,6 +207,56 @@ class AccountDeletionCleanupTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(await UserRepository(session).delete_by_user_id(1))
             await session.commit()
             await self._assert_account_cleanup(session)
+
+    async def test_native_payment_purge_anonymizes_approved_facts_and_keeps_other_null_owners(self):
+        await self._seed_accounts(telegramless=True)
+        async with self.sessions() as session:
+            session.add_all([
+                Payment(id=1, user_id=1, user_telegram_id=None, plan_type="1_month", amount=95,
+                        payment_status="approved", screenshot_file_id="private-receipt",
+                        admin_comment="private-name", checkout_msg_id=1, screenshot_msg_id=2, waiting_msg_id=3),
+                Payment(id=2, user_id=1, user_telegram_id=None, plan_type="1_month", amount=95, payment_status="pending"),
+                Payment(id=3, user_id=1, user_telegram_id=None, plan_type="1_month", amount=95, payment_status="draft"),
+                Payment(id=4, user_id=1, user_telegram_id=None, plan_type="1_month", amount=95, payment_status="rejected"),
+                Payment(id=5, user_id=2, user_telegram_id=None, plan_type="1_month", amount=250, payment_status="approved"),
+                Payment(id=6, user_id=None, user_telegram_id=None, plan_type="1_month", amount=50, payment_status="approved"),
+                PortfolioTransaction(id=1, transaction_type="profit", source="subscription_profit",
+                                     payment_id=1, user_telegram_id=None, amount_usd=9.5),
+                PortfolioTransaction(id=2, transaction_type="profit", source="subscription_profit",
+                                     payment_id=5, user_telegram_id=None, amount_usd=25),
+            ])
+            await session.commit()
+            self.assertTrue(await UserRepository(session).delete_by_user_id(1))
+            await session.commit()
+            await self._assert_account_cleanup(session)
+            payments = {p.id: p for p in await self._rows(session, Payment)}
+            self.assertEqual(set(payments), {1, 5, 6})
+            self.assertEqual((payments[1].user_id, payments[1].user_telegram_id, payments[1].amount), (None, -1, 95))
+            for field in ("screenshot_file_id", "admin_comment", "checkout_msg_id", "screenshot_msg_id", "waiting_msg_id"):
+                self.assertIsNone(getattr(payments[1], field))
+            self.assertEqual((payments[5].user_id, payments[5].user_telegram_id, payments[5].amount), (2, None, 250))
+            self.assertEqual((payments[6].user_id, payments[6].user_telegram_id), (None, None))
+            self.assertEqual((await session.get(PortfolioTransaction, 1)).user_telegram_id, -1)
+            self.assertIsNone((await session.get(PortfolioTransaction, 2)).user_telegram_id)
+
+    async def test_payment_canonical_owner_overrides_conflicting_legacy_metadata_during_purge(self):
+        await self._seed_accounts()
+        async with self.sessions() as session:
+            session.add_all([
+                Payment(id=1, user_id=2, user_telegram_id=1001, plan_type="1_month", amount=95, payment_status="approved"),
+                Payment(id=2, user_id=2, user_telegram_id=1001, plan_type="1_month", amount=95, payment_status="pending"),
+                PortfolioTransaction(id=1, transaction_type="profit", source="subscription_profit",
+                                     payment_id=1, user_telegram_id=1001, amount_usd=9.5),
+                SubscriptionEntryEvent(id=4, user_id=2, telegram_id=1001, source="canonical-other"),
+            ])
+            await session.commit()
+            self.assertTrue(await UserRepository(session).delete_by_user_id(1))
+            await session.commit()
+            self.assertEqual({p.id for p in await self._rows(session, Payment)}, {1, 2})
+            for payment in await self._rows(session, Payment):
+                self.assertEqual((payment.user_id, payment.user_telegram_id), (2, 1001))
+            self.assertEqual((await session.get(PortfolioTransaction, 1)).user_telegram_id, 1001)
+            self.assertEqual({e.id for e in await self._rows(session, SubscriptionEntryEvent)}, {2, 3, 4})
 
     async def test_legacy_telegram_entry_point_uses_same_cleanup(self):
         await self._seed_accounts()

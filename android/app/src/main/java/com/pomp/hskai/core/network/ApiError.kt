@@ -21,7 +21,7 @@ sealed interface ApiError {
         override val messageRes = R.string.error_timeout
     }
 
-    /** The session is gone; the caller must return to Telegram linking. */
+    /** The session is gone; the caller must choose a sign-in method again. */
     data object SessionExpired : ApiError {
         override val messageRes = R.string.error_session_expired
     }
@@ -78,17 +78,22 @@ sealed interface ApiError {
                 "desktop_link_already_approved",
                 -> R.string.error_link_invalid
 
+                "signup_referral_invalid" -> R.string.auth_referral_invalid
+
                 "desktop_link_rate_limited" -> R.string.error_link_rate_limited
                 "desktop_device_bound_to_other_user" -> R.string.error_device_bound
+
+                "payment_telegram_required",
+                "referral_telegram_required",
+                "telegram_account_required",
+                -> R.string.error_telegram_account_required
 
                 "desktop_auth_unavailable",
                 "android_auth_unavailable",
                 "oauth_unavailable",
                 -> R.string.error_auth_unavailable
 
-                // Phase 1: a provider identity only ever attaches to an account
-                // Telegram already created, so this is the one the user sees
-                // most and it must point at the fix, not just fail.
+                // Compatibility with older servers that only supported linking.
                 "oauth_telegram_account_required" -> R.string.error_oauth_needs_telegram
                 "oauth_identity_bound_to_other_user" -> R.string.error_oauth_other_account
                 "oauth_identity_already_linked" -> R.string.error_oauth_already_linked

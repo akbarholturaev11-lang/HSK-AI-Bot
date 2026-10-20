@@ -311,6 +311,7 @@ class CourseGamificationService:
                         "rank": index,
                         "name": str(profile_display_name or full_name or "HSK Student").strip()[:40],
                         "telegram_id": int(telegram_id) if telegram_id else None,
+                        "user_id": int(user_id),
                         "username": str(username or "").strip().lstrip("@")[:32],
                         "avatar_key": str(avatar_key or "").strip()[:32],
                         "xp": int(weekly_xp or 0),

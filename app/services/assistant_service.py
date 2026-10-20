@@ -204,7 +204,7 @@ class AssistantService:
         if not restricted:
             access = AccessService(self.session)
             decision = await EntitlementEngine(self.session).check(user, KINDS[data.kind])
-            allowed, reason = await access.can_use_text_ai(user.telegram_id, enforce_daily_limit=False)
+            allowed, reason = await access.can_use_text_ai(user, enforce_daily_limit=False)
             if not decision.allowed:
                 allowed, reason = False, "free_feature_limit_reached"
             if not allowed:
@@ -331,12 +331,16 @@ class AssistantService:
         conversation = await self.session.get(AssistantConversation, row.conversation_id)
         if conversation.title == "HSK AI":
             conversation.title = (data.text or ctx.title or "HSK AI")[:100]
+        await self.session.flush()
+        if not restricted:
+            from app.services.referral_service import ReferralService
+            await ReferralService(self.session).activate_referral_if_eligible(None, user)
         await self.session.commit()
         logger.info("assistant_completed kind=%s restricted=%s", data.kind, restricted)
 
     async def record_usage(self, user, usage, source):
         if usage:
-            await AIUsageBudgetService(self.session).record_usage(telegram_id=user.telegram_id, result=usage, source=source)
+            await AIUsageBudgetService(self.session).record_usage(telegram_id=user, result=usage, source=source)
             await self.session.commit()
 
     @staticmethod

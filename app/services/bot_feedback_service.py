@@ -86,6 +86,7 @@ class BotFeedbackService:
 
         result = await self.session.execute(
             select(User)
+            .where(User.telegram_id > 0)
             .where(User.created_at <= oldest_join_time)
             .where(User.status != "blocked")
             .where(User.last_active_at >= now - FEEDBACK_ACTIVE_WINDOW)

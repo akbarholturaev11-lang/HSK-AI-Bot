@@ -6,6 +6,12 @@ Bu fayl esdan chiqmasligi uchun. Har safar ochib, ustidan yurib chiqing.
 
 ## 0. JORIY RELEASE HOLATINI TEKSHIRISH
 
+Universal akkaunt o‘zgarishlari `codex/universal-sign-in`da ushlab turiladi.
+Kod va `docs/UNIVERSAL_NATIVE_ACCOUNTS.md`dagi qabul tekshiruvlari tugamaguncha
+ularni `main`ga push/merge qilmang, production backend yoki yangi ilovani
+tarqatmang. Hozirgi Play release uchun xarid talab qilinmaydi: u mavjud
+entitlement’ni o‘qiydi; Direct APK chek/admin orqali xaridni qo‘llaydi.
+
 Bu faylda jonli release holati saqlanmaydi. Release yoki muammoni tekshirishdan
 oldin:
 

@@ -31,6 +31,8 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 
+from app.services.account_identity import owner_clause
+
 from sqlalchemy import func, select
 from app.db.models.message import Message
 from app.db.models.assistant import AssistantRequest
@@ -153,7 +155,7 @@ class EntitlementEngine:
             return used + int((await self.session.execute(pending)).scalar() or 0)
         if action == A.SPEAKING_SESSION:
             query = select(func.count(VoicePracticeSession.id)).where(
-                VoicePracticeSession.user_telegram_id == user.telegram_id,
+                owner_clause(VoicePracticeSession, user),
                 VoicePracticeSession.turn_count > 0,
             )
             if since is not None:
@@ -164,7 +166,7 @@ class EntitlementEngine:
             return used
         legacy_key = A.LEGACY_FEATURE_KEYS.get(action, action)
         used = await self._access._daily_used_today(
-            user.telegram_id, legacy_key, lifetime=lifetime, offset_minutes=offset
+            user, legacy_key, lifetime=lifetime, offset_minutes=offset
         )
         # Lifetime history must never poison a DAILY rule after a reset.
         if lifetime and legacy_key in COURSE_FEATURE_KEYS:
@@ -338,10 +340,10 @@ class EntitlementEngine:
         analitika limitni hech qachon buzmasin.
         """
         try:
-            telegram_id = int(getattr(user, "telegram_id", 0) or 0)
-            if not telegram_id:
-                return
+            telegram_id = getattr(user, "telegram_id", None)
             user_id = getattr(user, "id", None)
+            if user_id is None and telegram_id is None:
+                return
             # Bu faqat analytics dedupe kaliti. User limit oynasini ko'rsatish
             # uchun profil timezone SELECT qilmaymiz; aks holda limit javobi
             # yana qo'shimcha DB ishiga bog'lanadi.

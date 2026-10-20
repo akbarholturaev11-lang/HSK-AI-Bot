@@ -1,0 +1,135 @@
+{
+  "date": "2026-10-18",
+  "timezone": "Asia/Shanghai",
+  "branch": "codex/universal-sign-in",
+  "release_status": "HOLD_REAL_PROVIDER_AND_INSTALLED_CLIENT_ACCEPTANCE",
+  "upstream_reviewed_through": "3a191cccd3c228dd6d63077d31cb94a271bec6dd",
+  "source_commit": "dde0ee04affdeb646f89f40f92b9a21114b30d5d",
+  "desktop_ci_checkout_fix": "082dd56d",
+  "main_rechecked": "160a51d69f3324e3162375213ec61b5587b19533",
+  "main_already_ancestor": true,
+  "main_pushed": false,
+  "production_changed": false,
+  "migration_added": false,
+  "local_checks": {
+    "backend": {
+      "passed": 415,
+      "subtests_passed": 209,
+      "skipped": 0,
+      "postgresql_major": 15
+    },
+    "android_direct_jvm": {
+      "passed": 580,
+      "skipped": 0
+    },
+    "android_play_jvm": {
+      "passed": 534,
+      "skipped": 0
+    },
+    "android_emulator": {
+      "passed": 25,
+      "skipped": 0
+    },
+    "android_qa_jvm": {
+      "passed": 57,
+      "skipped": 0,
+      "placeholder_origin_config_check_only": true
+    },
+    "desktop_native_default": {
+      "passed": 40
+    },
+    "desktop_native_qa": {
+      "passed": 40,
+      "placeholder_origin_config_check_only": true
+    },
+    "desktop_js": {
+      "passed": 36
+    },
+    "desktop_provider_telegram_signin_browser": {
+      "passed": 38
+    },
+    "desktop_adjacent_browser": {
+      "passed": 10
+    },
+    "miniapp_profile_and_deletion_browser": {
+      "passed": 48
+    },
+    "compileall": "passed",
+    "rustfmt": "passed",
+    "clippy_all_targets_all_features": "passed",
+    "diff_check": "passed",
+    "alembic_single_head": "0107_canonical_referral_owners",
+    "graphify": {
+      "nodes": 16904,
+      "edges": 51704,
+      "semantic_nodes_preserved": 59,
+      "prior_inferred_edges_lost": 0
+    }
+  },
+  "ci": {
+    "backend": {
+      "run_id": 39085031888,
+      "source_commit": "dde0ee04",
+      "status": "success",
+      "url": "https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39085031888",
+      "postgresql_major": 18,
+      "test_executions": 986,
+      "test_groups": 15,
+      "skipped": 0
+    },
+    "desktop": {
+      "run_id": 39085216859,
+      "source_commit": "082dd56d",
+      "status": "success",
+      "url": "https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39085216859",
+      "jobs": [
+        {
+          "name": "ui-contract",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native auth (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native auth (macos-14)",
+          "conclusion": "success"
+        }
+      ],
+      "windows_native_passed": 40,
+      "macos_native_passed": 40,
+      "js_contracts_passed": 36,
+      "provider_telegram_browser_passed": 34,
+      "formatting": "passed",
+      "clippy_all_targets_all_features": "passed"
+    },
+    "earlier_desktop_run": {
+      "run_id": 39085030861,
+      "windows_checkout": "failed_before_compilation_due_to_unrelated_audio_path_length",
+      "fix": "sparse checkout of desktop and workflow files",
+      "macos_native": "success",
+      "ui_contract": "success"
+    }
+  },
+  "read_only_server_findings": {
+    "production_application": "healthy_on_main",
+    "old_android_oauth_assert_422_observed": true,
+    "later_oauth_start_429_observed": true,
+    "request_response_bodies_available": false,
+    "missing_provider_serialization_defect_reproduced": true,
+    "google_live_provider_discovery": "advertised_not_real_callback_verified",
+    "google_credential_values_inspected": false,
+    "apple_configuration": "absent",
+    "staging_universal_application": "not_deployed"
+  },
+  "remaining_real_acceptance": [
+    "Deploy a separate staging application with its own test database, bot, receipt storage and provider callbacks.",
+    "Configure real Google and Apple test credentials without copying production secrets into QA.",
+    "Build and install origin-bound Android QA, macOS QA and Windows QA artifacts; none were delivered by the compile-only checks.",
+    "Verify real provider sign-in/link, browser auto-return and fallback, cancellation, process restart and cross-client canonical data.",
+    "Verify upstream Voice and manual Pro/HSK 3.0 review on Direct/desktop; keep Play consumption-only.",
+    "Record all seven owner acceptance gates before main/production promotion."
+  ],
+  "qa_guide": "UNIVERSAL_NATIVE_ACCOUNT_QA.md",
+  "historic_postgresql18_rehearsal_evidence_unchanged": true
+}

@@ -79,6 +79,7 @@ class MainModuleImportTests(unittest.TestCase):
             "/api/v3/ad",
             "/api/admin-miniapp/limits/save",
             "/api/admin-miniapp/ad-placements/save",
+            "/api/admin-miniapp/public-site-traffic",
             "/assets/hsk-ai-devices.jpg",
             "/api/account-deletion/prepare",
             "/api/account-deletion/start",

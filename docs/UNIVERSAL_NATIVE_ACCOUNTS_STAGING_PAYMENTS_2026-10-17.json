@@ -1,0 +1,142 @@
+{
+  "date": "2026-10-17",
+  "timezone": "Asia/Shanghai",
+  "release_status": "HOLD",
+  "schema_source_commit": "706b86d1",
+  "environment": "Railway isolated staging database only",
+  "postgresql_major": 18,
+  "source_schema_revision": "0102_payment_review_preview",
+  "migrated_schema_revision": "0106_canonical_payment_ownership",
+  "source_inventory_matched": true,
+  "source_inventory_counts": {
+    "columns": 835,
+    "constraints": 682,
+    "indexes": 301
+  },
+  "data_tables": 61,
+  "legacy_rows": 190155,
+  "representative_legacy_counts": {
+    "users": 2118,
+    "payments": 100,
+    "course_progress": 1331,
+    "course_attempts": 1447,
+    "course_miniapp_profiles": 780,
+    "course_xp_events": 2190
+  },
+  "canonical_owner_backfills_verified": 13905,
+  "owner_backfills_by_table": {
+    "account_notice_deliveries": 0,
+    "ai_usage_budgets": 83,
+    "ai_usage_events": 13414,
+    "conversion_funnel_events": 0,
+    "course_ad_views": 0,
+    "course_miniapp_events": 0,
+    "course_user_notifications": 0,
+    "payments": 97,
+    "subscription_entry_events": 0,
+    "trial_risk_events": 0,
+    "voice_practice_sessions": 311
+  },
+  "comparisons": {
+    "restore-before": {
+      "critical_values_preserved": {
+        "billing": true,
+        "progress": true,
+        "xp_rating": true
+      },
+      "failures": [],
+      "migration_head": [
+        "0102_payment_review_preview"
+      ],
+      "mode": "restore",
+      "ok": true,
+      "owner_backfill_verified": false
+    },
+    "migration": {
+      "critical_values_preserved": {
+        "billing": true,
+        "progress": true,
+        "xp_rating": true
+      },
+      "failures": [],
+      "migration_head": [
+        "0106_canonical_payment_ownership"
+      ],
+      "mode": "migration",
+      "ok": true,
+      "owner_backfill_verified": true
+    },
+    "restore-after": {
+      "critical_values_preserved": {
+        "billing": true,
+        "progress": true,
+        "xp_rating": true
+      },
+      "failures": [],
+      "migration_head": [
+        "0106_canonical_payment_ownership"
+      ],
+      "mode": "restore",
+      "ok": true,
+      "owner_backfill_verified": false
+    }
+  },
+  "account_keys_preserved": true,
+  "sequence_state_preserved": true,
+  "receipt_preview_flags_and_pointer_preserved": true,
+  "financial_values_and_legacy_retention_preserved": true,
+  "payment_owner_has_no_cascading_account_fk": true,
+  "before_backup": {
+    "bytes": 9712076,
+    "sha256": "871a524998529853acdef032cf34222eb60045089c8a9c667ba8a0fe5a284055"
+  },
+  "after_backup": {
+    "bytes": 9734109,
+    "sha256": "cb519f58d264a80433e7b69b404341a359ad86e3428466b7bb516665b3b53a2a"
+  },
+  "source_backup_reused_from_verified_0102_rehearsal": true,
+  "production_schema_head_rechecked_read_only": true,
+  "backups_retained_privately_outside_git": true,
+  "payment_concurrency": {
+    "postgresql_major": 18,
+    "tests_passed": 2,
+    "same_account_parallel_requests_use_one_pending_payment": true,
+    "different_accounts_remain_independent": true
+  },
+  "receipt_review_concurrency": {
+    "local_postgresql_major": 15,
+    "tests_passed": 2,
+    "railway_postgresql_major": 18,
+    "railway_tests_passed": 2,
+    "admin_first_cannot_open_replacement_payment_or_preview": true,
+    "receipt_first_then_admin_review_has_no_deadlock": true
+  },
+  "isolation": {
+    "production_writes": false,
+    "production_migration": false,
+    "production_deployment": false,
+    "staging_app_or_bot_deployed": false,
+    "main_pushed": false,
+    "public_registration_opened": false
+  },
+  "scope_limit": "Database preservation and fixture-based payment concurrency do not prove real OAuth, upstream AI Voice, installed-client parity or completed bank/store transactions.",
+  "outstanding_release_gates": [
+    "Real Google/Apple signup, upstream AI Voice and manual purchase walkthroughs.",
+    "Google Play Billing implementation, Console products/base plans, license testers and real purchase/lifecycle tests.",
+    "Installed Android, macOS, Windows and signed Telegram Mini App parity walkthroughs."
+  ],
+  "source_backup_schema_reference_commit": "3fffa42ecd9b53bf06f39c7c5f12dde08fcc030f",
+  "runtime_source_commit": "09aa4d4802ddc3337a8edb17ba090179b3b020b1",
+  "latest_main_reviewed_commit": "160a51d69f3324e3162375213ec61b5587b19533",
+  "latest_main_schema_auth_or_payment_changes_since_reference": false,
+  "backend_regression": {
+    "source_commit": "09aa4d4802ddc3337a8edb17ba090179b3b020b1",
+    "tests_passed": 1070,
+    "subtests_passed": 766,
+    "postgresql_cases_run_separately": 4,
+    "warnings": 7,
+    "modules": 83
+  },
+  "current_desktop_browser_checkout_checks_passed": 3,
+  "approved_receipt_cannot_unblock_account": true
+}

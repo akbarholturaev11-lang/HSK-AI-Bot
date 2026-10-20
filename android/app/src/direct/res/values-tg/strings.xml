@@ -165,8 +165,8 @@
     <string name="update_gate_downloaded">Боргирӣ шуд. Барои оғоз кардани насб тугмаро пахш кунед.</string>
     <string name="update_gate_failed">Боргирӣ нашуд. Боз кӯшиш кунед.</string>
     <string name="update_gate_permission">Пеш аз навсозӣ иҷозати насби барномаро диҳед.</string>
-    <string name="sub_hsk30_pending_title">Пардохти HSK 3.0 санҷида мешавад</string>
-    <string name="sub_hsk30_pending_body">Дархост ба администратор фиристода шуд. HSK 3.0 пас аз тасдиқ кушода мешавад. Ҳолатро нав кунед.</string>
+    <string name="sub_hsk30_pending_title">Дархости шумо дар санҷиш аст</string>
+    <string name="sub_hsk30_pending_body">Дархости пардохти шумо дар санҷиш аст. Лутфан то тасдиқ интизор шавед. Барои тезонидани санҷиш метавонед ба маъмур нависед.</string>
     <string name="sub_hsk30_provisional_title">HSK 3.0 муваққатан кушода шуд</string>
     <string name="sub_hsk30_provisional_body">Дархости аввал санҷида мешавад. Агар пардохт тасдиқ нашавад, дастрасӣ ба HSK 3.0 баста мешавад.</string>
     <string name="sub_hsk30_rejected_title">Пардохти HSK 3.0 қабул нашуд</string>
@@ -179,4 +179,10 @@
     <string name="sub_payment_checking">Ҳолат санҷида мешавад…</string>
     <string name="sub_payment_still_pending">Пардохт ҳанӯз аз ҷониби администратор санҷида мешавад.</string>
     <string name="sub_status_check_failed">Ҳолатро санҷида нашуд. Интернетро тафтиш карда, боз кӯшиш кунед.</string>
+    <string name="sub_pro_review_title">Расид барои санҷиш фиристода шуд</string>
+    <string name="sub_pro_review_access">Пардохт барои санҷиш фиристода шуд. Ҳангоми санҷиш шумо метавонед аз Pro истифода баред.</string>
+    <string name="sub_pro_review_wait">Пардохт барои санҷиш фиристода шуд. Дастрасии муваққатӣ аллакай истифода шудааст, бинобар ин Pro пас аз тасдиқи маъмур кушода мешавад. Барои тезонидани санҷиш метавонед ба маъмур нависед.</string>
+    <string name="sub_pro_approved_title">Пардохт тасдиқ шуд</string>
+    <string name="sub_pro_approved_body">Pro тасдиқ шуд. Метавонед машғулиятро идома диҳед.</string>
+    <string name="sub_pro_rejected_title">Пардохт қабул нашуд</string>
 </resources>

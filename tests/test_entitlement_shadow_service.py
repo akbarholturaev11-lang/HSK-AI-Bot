@@ -23,6 +23,8 @@ from sqlalchemy.pool import StaticPool
 from app.db import models  # noqa: F401
 from app.db.base import Base
 from app.db.models.entitlement_shadow_event import EntitlementShadowEvent
+from app.db.models.user import User
+from app.services import course_daily_window
 from app.services.entitlements import actions as A
 from app.services.entitlements import decision as D
 from app.services.entitlements.shadow import (
@@ -63,6 +65,11 @@ class ShadowComparisonTests(unittest.IsolatedAsyncioTestCase):
         )
         self.patch.start()
         self.user = SimpleNamespace(id=1, telegram_id=5150)
+        async with self.sessions() as session:
+            session.add_all([User(id=uid, telegram_id=tid) for uid, tid in (
+                (1, 5150), (9, None), (10, None),
+            )])
+            await session.commit()
 
     async def asyncTearDown(self):
         self.patch.stop()
@@ -91,6 +98,7 @@ class ShadowComparisonTests(unittest.IsolatedAsyncioTestCase):
         rows = await self._rows()
         self.assertEqual(1, len(rows))
         self.assertTrue(rows[0].agree)
+        self.assertEqual((rows[0].user_id, rows[0].telegram_id), (1, 5150))
         self.assertEqual(EntitlementState.FREE, rows[0].state)
 
     async def test_a_differing_verdict_is_recorded_as_a_mismatch(self):
@@ -160,19 +168,75 @@ class ShadowComparisonTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(4, len(await self._rows()))
 
-    async def test_a_user_without_a_telegram_id_is_skipped_quietly(self):
+    async def test_an_actor_without_a_valid_canonical_id_is_skipped_quietly(self):
         service = await self._service()
-
-        agree = await service.compare(
-            user=SimpleNamespace(id=9, telegram_id=None),
-            action=A.PRACTICE_RECOGNITION,
-            client="miniapp",
-            legacy={"allowed": True},
-            engine=_engine_decision(True),
-        )
-
-        self.assertTrue(agree)
+        for actor in (None, SimpleNamespace(telegram_id=5150),
+                      SimpleNamespace(id=None, telegram_id=None),
+                      SimpleNamespace(id=0, telegram_id=5150),
+                      SimpleNamespace(id=-1, telegram_id=5150)):
+            agree = await service.compare(
+                user=actor, action=A.PRACTICE_RECOGNITION, client="miniapp",
+                legacy={"allowed": False}, engine=_engine_decision(True),
+            )
+            self.assertTrue(agree)
         self.assertEqual([], await self._rows())
+
+    async def test_provider_accounts_record_and_dedupe_separately_without_telegram(self):
+        service = await self._service()
+        for uid in (9, 10):
+            for _ in range(3):
+                for allowed in (True, False):
+                    agree = await service.compare(
+                        user=SimpleNamespace(id=uid, telegram_id=None),
+                        action=A.PRACTICE_RECOGNITION, client="android",
+                        legacy={"allowed": allowed}, engine=_engine_decision(True),
+                    )
+                    self.assertEqual(agree, allowed)
+        rows = await self._rows()
+        self.assertEqual(len(rows), 4)
+        self.assertEqual({(row.user_id, row.telegram_id, row.agree) for row in rows}, {
+            (uid, None, agree) for uid in (9, 10) for agree in (True, False)
+        })
+        async with self.sessions() as session:
+            report = await EntitlementShadowService(session).disagreement_report()
+            examples = await EntitlementShadowService(session).examples(
+                action=A.PRACTICE_RECOGNITION, client="android")
+        self.assertEqual((report[0]["samples"], report[0]["disagreements"]), (4, 2))
+        self.assertFalse(report[0]["ready_to_enable"])
+        self.assertEqual({(row["user_id"], row["telegram_id"]) for row in examples}, {(9, None), (10, None)})
+
+    async def test_attaching_telegram_does_not_create_a_second_daily_sample(self):
+        service = await self._service()
+        user = SimpleNamespace(id=9, telegram_id=None)
+        args = dict(action=A.PRACTICE_RECOGNITION, client="android",
+                    legacy={"allowed": False}, engine=_engine_decision(True))
+        self.assertFalse(await service.compare(user=user, **args))
+        async with self.sessions() as session:
+            (await session.get(User, 9)).telegram_id = 9191
+            await session.commit()
+        user.telegram_id = 9191
+        self.assertFalse(await service.compare(user=user, **args))
+        rows = await self._rows()
+        self.assertEqual([(row.user_id, row.telegram_id, row.agree) for row in rows], [(9, None, False)])
+
+    async def test_foreign_canonical_owner_with_stale_telegram_metadata_is_not_merged(self):
+        async with self.sessions() as session:
+            session.add(EntitlementShadowEvent(user_id=10, telegram_id=5150,
+                action=A.PRACTICE_RECOGNITION, client="android", agree=False,
+                engine_allowed=True, legacy_allowed=False,
+                day_key=course_daily_window.local_day_key(0)))
+            await session.commit()
+        service = await self._service()
+        self.assertFalse(await service.compare(
+            user=SimpleNamespace(id=9, telegram_id=None),
+            action=A.PRACTICE_RECOGNITION, client="android",
+            legacy={"allowed": False}, engine=_engine_decision(True)))
+        # Canonical dedupe never reattributes another owner's old TG metadata.
+        self.assertFalse(await service.compare(
+            user=SimpleNamespace(id=10, telegram_id=None),
+            action=A.PRACTICE_RECOGNITION, client="android",
+            legacy={"allowed": False}, engine=_engine_decision(True)))
+        self.assertEqual({(row.user_id, row.telegram_id) for row in await self._rows()}, {(9, None), (10, 5150)})
 
     async def test_a_write_failure_never_reaches_the_caller(self):
         # Bu chaqiruv jonli so'rov ichida turadi. Baza yiqilsa ham

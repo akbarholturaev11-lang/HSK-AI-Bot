@@ -37,13 +37,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.HeadsetMic
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -60,7 +60,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -209,13 +208,14 @@ fun SubscriptionCheckoutHost(
                     Icon(Icons.Filled.HeadsetMic, contentDescription = copy.getString(R.string.sub_help_title),
                         tint = C.accentInk, modifier = Modifier.size(20.dp))
                 }
-                if (state.isWaitingForHsk30Review) {
-                    Spacer(Modifier.size(44.dp))
-                } else {
-                    IconButton(onClick = onClose, modifier = Modifier.size(44.dp)) {
-                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.action_close),
-                            tint = C.muted, modifier = Modifier.size(19.dp))
-                    }
+                Spacer(Modifier.width(8.dp))
+                // Always provide an explicit exit, including when an old PRO
+                // payment is pending while opened from the HSK 3.0 course.
+                Box(Modifier.size(44.dp).border(1.dp, C.line, CircleShape)
+                    .background(C.surface, CircleShape).clickable { onClose() },
+                    contentAlignment = Alignment.Center) {
+                    Icon(Icons.Filled.Close, contentDescription = copy.getString(R.string.action_close),
+                        tint = C.accentInk, modifier = Modifier.size(20.dp))
                 }
             }
             Spacer(Modifier.height(16.dp))
@@ -233,6 +233,7 @@ fun SubscriptionCheckoutHost(
                     onClose = onClose,
                     onRefreshStatus = model::refreshPaymentStatus,
                     onRetry = model::retryAfterRejection,
+                    onSupport = { openUrl(context, state.overview?.supportUrl.orEmpty()) },
                 )
             } else if (state.overview?.checkoutAllowed != true) {
                 MessageCard(copy.getString(R.string.sub_unavailable))
@@ -283,6 +284,7 @@ fun SubscriptionCheckoutHost(
                         onClose = onClose,
                         onRefreshStatus = model::refreshPaymentStatus,
                         onRetry = model::retryAfterRejection,
+                        onSupport = { openUrl(context, state.overview?.supportUrl.orEmpty()) },
                     )
                 }
             }
@@ -960,6 +962,7 @@ private fun DoneContent(
     onClose: () -> Unit,
     onRefreshStatus: () -> Unit,
     onRetry: () -> Unit,
+    onSupport: () -> Unit,
 ) {
     val isHsk30 = state.isHsk30Unlock
     val pending = state.paymentDecision.isBlank() &&
@@ -967,25 +970,28 @@ private fun DoneContent(
     val rejected = state.paymentDecision == "rejected"
     val approved = state.paymentDecision == "approved"
     val titleRes = when {
-        isHsk30 && rejected -> R.string.sub_hsk30_rejected_title
-        isHsk30 && approved -> R.string.sub_hsk30_approved_title
+        rejected -> if (isHsk30) R.string.sub_hsk30_rejected_title else R.string.sub_pro_rejected_title
+        approved -> if (isHsk30) R.string.sub_hsk30_approved_title else R.string.sub_pro_approved_title
         isHsk30 && pending && state.provisionalAccess -> R.string.sub_hsk30_provisional_title
         isHsk30 && pending -> R.string.sub_hsk30_pending_title
-        pending -> R.string.sub_pending_title
+        pending && !state.provisionalAccess -> R.string.sub_hsk30_pending_title
+        pending -> R.string.sub_pro_review_title
         else -> R.string.sub_done_title
     }
     val bodyRes = when {
-        isHsk30 && rejected -> R.string.sub_hsk30_rejected_body
-        isHsk30 && approved -> R.string.sub_hsk30_approved_body
+        rejected -> R.string.sub_hsk30_rejected_body
+        approved -> if (isHsk30) R.string.sub_hsk30_approved_body else R.string.sub_pro_approved_body
         isHsk30 && pending && state.provisionalAccess -> R.string.sub_hsk30_provisional_body
         isHsk30 && pending -> R.string.sub_hsk30_pending_body
-        pending -> R.string.sub_pending_body
+        pending && state.provisionalAccess -> R.string.sub_pro_review_access
+        pending -> R.string.sub_hsk30_pending_body
         else -> R.string.sub_done_body
     }
     Column(Modifier.fillMaxWidth().padding(top = 54.dp), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Box(Modifier.size(64.dp).background(if (rejected) C.accentSoft else PompColors.Jade, CircleShape), contentAlignment = Alignment.Center) {
-            Text(if (pending) "…" else if (rejected) "!" else "✓", color = if (rejected) C.accentInk else PompColors.OnJade,
+            if (pending) Icon(Icons.Filled.Schedule, contentDescription = null, tint = PompColors.OnJade, modifier = Modifier.size(34.dp))
+            else Text(if (rejected) "!" else "✓", color = if (rejected) C.accentInk else PompColors.OnJade,
                 fontSize = 34.sp, fontWeight = FontWeight.Black)
         }
         Text(copy.getString(titleRes),
@@ -996,7 +1002,7 @@ private fun DoneContent(
             MessageCard(copy.getString(message))
         }
         when {
-            isHsk30 && rejected -> CheckoutButton(
+            rejected -> CheckoutButton(
                 copy.getString(R.string.sub_hsk30_retry), false, true, onRetry,
             )
             isHsk30 && approved -> CheckoutButton(
@@ -1006,13 +1012,22 @@ private fun DoneContent(
                 CheckoutButton(copy.getString(R.string.sub_hsk30_open_course), false, true, onClose)
                 SmallAction(copy.getString(R.string.sub_payment_refresh), onRefreshStatus)
             }
-            isHsk30 && pending -> CheckoutButton(
+            pending && !state.provisionalAccess -> CheckoutButton(
                 copy.getString(if (state.checkingPaymentStatus) R.string.sub_payment_checking else R.string.sub_payment_refresh),
                 state.checkingPaymentStatus,
                 !state.checkingPaymentStatus,
                 onRefreshStatus,
             )
             else -> CheckoutButton(copy.getString(R.string.sub_return_app), false, true, onClose)
+        }
+        if (pending && !state.provisionalAccess) {
+            // An ordinary PRO payment opened from the HSK 3.0 entry must
+            // retain a working way back; status refresh is not navigation.
+            SmallAction(copy.getString(R.string.sub_return_app), onClose)
+            CheckoutButton(
+                copy.getString(R.string.sub_help_button), false,
+                state.overview?.supportUrl?.isNotBlank() == true, onSupport, secondary = true,
+            )
         }
     }
 }

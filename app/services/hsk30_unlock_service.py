@@ -72,13 +72,12 @@ class Hsk30UnlockService:
                 "provisional_access": False,
             }
 
-        telegram_id = int(getattr(user, "telegram_id", 0) or 0)
         pending = await self.payment_repo.get_latest_pending_by_user_and_plan(
-            telegram_id,
+            user,
             HSK30_UNLOCK_PLAN_TYPE,
         )
         has_rejected = await self.payment_repo.has_rejected_by_user_and_plan(
-            telegram_id,
+            user,
             HSK30_UNLOCK_PLAN_TYPE,
         )
         feature_enabled = await self.feature.is_enabled()
@@ -90,6 +89,7 @@ class Hsk30UnlockService:
             and feature_enabled
             and not permanently_unlocked
             and not paid_access
+            and getattr(user, "status", None) != "blocked"
         )
         return {
             "pending_payment": pending,
@@ -103,8 +103,7 @@ class Hsk30UnlockService:
             or not payment
             or str(getattr(payment, "plan_type", "") or "") != HSK30_UNLOCK_PLAN_TYPE
             or str(getattr(payment, "payment_status", "") or "") != "pending"
-            or int(getattr(payment, "user_telegram_id", 0) or 0)
-            != int(getattr(user, "telegram_id", 0) or 0)
+            or not self.payment_repo.is_owned_by(payment, user)
         ):
             return False
         state = await self.review_state(user)
@@ -125,7 +124,10 @@ class Hsk30UnlockService:
         permanently_unlocked = await self.is_permanently_unlocked(user)
         paid_access = UserAccessStateService.is_paid(user)
 
-        if not feature_enabled:
+        if getattr(user, "status", None) == "blocked":
+            reason = "user_blocked"
+            allowed = False
+        elif not feature_enabled:
             reason = "hsk30_disabled"
             allowed = False
         elif permanently_unlocked:
@@ -198,8 +200,13 @@ class Hsk30UnlockService:
             return False
         if str(getattr(payment, "payment_status", "") or "") != "approved":
             return False
-        if int(getattr(payment, "user_telegram_id", 0) or 0) != int(
-            getattr(user, "telegram_id", 0) or 0
+        # Serialize creation of a first track state with checkout/admin review.
+        # The canonical owner is authoritative even if old TG metadata differs.
+        user = await self.payment_repo.resolve_owner(user, lock=True)
+        if (
+            not user
+            or user.status == "blocked"
+            or not self.payment_repo.is_owned_by(payment, user)
         ):
             return False
 

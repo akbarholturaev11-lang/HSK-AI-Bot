@@ -12,6 +12,7 @@ from app.db.models.bot_feedback import BotFeedback
 from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.account_identity import actual_telegram_id
 
 
 FOLLOWUP_DELAY = timedelta(hours=24)
@@ -115,6 +116,8 @@ class SubscriptionChurnService:
         sent_count = 0
         blocks = BotBlockStatusService(self.session)
         for user in users:
+            if actual_telegram_id(user) is None:
+                continue
             if BotBlockStatusService.is_bot_blocked(user):
                 continue
             lang = user.language if user.language else "ru"

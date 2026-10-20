@@ -3,6 +3,7 @@ package com.pomp.hskai.core.auth
 import android.app.Activity
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.storage.CredentialStore
 import com.pomp.hskai.data.api.AndroidAuthApi
 import com.pomp.hskai.data.api.BootstrapResponse
@@ -26,6 +27,11 @@ import com.pomp.hskai.data.api.RefreshRequest
 import com.pomp.hskai.data.api.RefreshResponse
 import com.pomp.hskai.data.api.RevokeRequest
 import com.pomp.hskai.data.api.RevokeResponse
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.encodeToString
@@ -38,7 +44,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import retrofit2.Response
 
-private class OauthFakeStore : CredentialStore {
+private open class OauthFakeStore : CredentialStore {
     var storedRefresh: String? = null
     override suspend fun installationKey(): String = "installation-key-" + "k".repeat(40)
     override suspend fun refreshToken(): String? = storedRefresh
@@ -91,16 +97,20 @@ private open class OauthFakeAuthApi : AndroidAuthApi {
     ): Response<BootstrapResponse> = throw NotImplementedError()
 }
 
+private const val TELEGRAM_IDENTITY_URL = "https://t.me/HSKAI_bot?start=tg_identity_3f2504e0-4f89-11d3-9a0c-0305e82c3301"
+
 private open class OauthFakeApi : NativeOAuthApi {
     var startCalls = 0
     var linkStartCalls = 0
     var lastAssert: OAuthAssertRequest? = null
+    var lastStart: OAuthStartRequest? = null
 
     override suspend fun providers(platform: String): Response<ProvidersResponse> =
         Response.success(ProvidersResponse(ok = true, providers = listOf("google", "apple")))
 
     override suspend fun oauthStart(body: OAuthStartRequest): Response<OAuthStartResponse> {
         startCalls++
+        lastStart = body
         return Response.success(
             OAuthStartResponse(
                 ok = true,
@@ -110,7 +120,10 @@ private open class OauthFakeApi : NativeOAuthApi {
                 expiresIn = 600,
                 nonce = if (body.mode == "native_id_token") "n".repeat(64) else "",
                 authorizeUrl = if (body.mode == "browser_redirect") {
-                    "https://appleid.apple.com/auth/authorize?client_id=x"
+                    if (body.provider == "google") "https://accounts.google.com/o/oauth2/v2/auth?client_id=x"
+                    else "https://appleid.apple.com/auth/authorize?client_id=x"
+                } else if (body.mode == "telegram_approval") {
+                    TELEGRAM_IDENTITY_URL
                 } else {
                     ""
                 },
@@ -149,6 +162,13 @@ private open class OauthFakeApi : NativeOAuthApi {
     ): Response<IdentityLinkStatusResponse> =
         Response.success(IdentityLinkStatusResponse(ok = true, status = "linked", provider = "google"))
 
+    override suspend fun identityLinkCancel(
+        authorization: String,
+        body: IdentityLinkStatusRequest,
+    ): Response<IdentityLinkStatusResponse> = Response.success(
+        IdentityLinkStatusResponse(ok = true, status = "denied", provider = "telegram"),
+    )
+
     override suspend fun identityUnlink(
         authorization: String,
         body: IdentityUnlinkRequest,
@@ -174,6 +194,20 @@ private fun ApiResult<*>.failure(): ApiError = (this as ApiResult.Failure).error
 @OptIn(ExperimentalCoroutinesApi::class)
 class AuthRepositoryOauthTest {
 
+    @Test
+    fun `QA build keeps package credentials callback and Firebase separate`() {
+        if (com.pomp.hskai.BuildConfig.QA_BUILD) {
+            assertTrue(com.pomp.hskai.BuildConfig.APPLICATION_ID.endsWith(".qa"))
+            assertEquals("pomp-hsk-ai-qa", com.pomp.hskai.BuildConfig.DEEP_LINK_SCHEME)
+            assertEquals("", com.pomp.hskai.BuildConfig.FIREBASE_APP_ID)
+            assertEquals("", com.pomp.hskai.BuildConfig.FIREBASE_API_KEY)
+            assertTrue(com.pomp.hskai.BuildConfig.DEBUG)
+        } else {
+            assertFalse(com.pomp.hskai.BuildConfig.APPLICATION_ID.endsWith(".qa"))
+            assertEquals("pomp-hsk-ai", com.pomp.hskai.BuildConfig.DEEP_LINK_SCHEME)
+        }
+    }
+
     private var clock = 1_000_000L
 
     private fun repository(
@@ -191,6 +225,135 @@ class AuthRepositoryOauthTest {
     )
 
     @Test
+    fun `browser start only opens the chosen provider endpoint`() = runTest {
+        for ((provider, endpoint) in listOf(
+            AuthProvider.GOOGLE to "https://accounts.google.com/o/oauth2/v2/auth",
+            AuthProvider.APPLE to "https://appleid.apple.com/auth/authorize",
+        )) {
+            val unsafe = listOf(
+                "https://example.com/authorize",
+                endpoint.replace("https://", "http://"),
+                endpoint.replace(".com/", ".com.evil.test/"),
+                endpoint.replace("https://", "https://user@"),
+                endpoint.replace(".com/", ".com:443/"),
+                "$endpoint/extra", "$endpoint#token=untrusted",
+                if (provider == AuthProvider.GOOGLE) "https://appleid.apple.com/auth/authorize"
+                else "https://accounts.google.com/o/oauth2/v2/auth",
+            )
+            for (url in unsafe) {
+                val oauth = object : OauthFakeApi() {
+                    override suspend fun oauthStart(body: OAuthStartRequest) =
+                        Response.success(super.oauthStart(body).body()!!.copy(authorizeUrl = url))
+                }
+                val repo = repository(oauth = oauth)
+                val result = if (provider == AuthProvider.GOOGLE) repo.startGoogleBrowserSignIn()
+                    else repo.startAppleSignIn()
+                assertEquals("$provider: $url", ApiError.Unknown, result.failure())
+            }
+        }
+    }
+
+    @Test
+    fun `invalid browser proof never becomes a pending request`() = runTest {
+        val valid = OAuthStartResponse(ok = true, status = "pending",
+            linkRequestId = "3f2504e0-4f89-11d3-9a0c-0305e82c3301", pollingSecret = "s".repeat(43),
+            expiresIn = 600, authorizeUrl = "https://accounts.google.com/o/oauth2/v2/auth?state=opaque")
+        for (invalid in listOf(
+            valid.copy(ok = false), valid.copy(status = "linked"), valid.copy(status = ""),
+            valid.copy(linkRequestId = "not-a-request-id"), valid.copy(linkRequestId = ""),
+            valid.copy(pollingSecret = "s".repeat(31)), valid.copy(pollingSecret = "s".repeat(513)),
+            valid.copy(pollingSecret = "s".repeat(42) + "\n"),
+            valid.copy(expiresIn = 0), valid.copy(expiresIn = -1), valid.copy(expiresIn = 1801),
+        )) {
+            val oauth = object : OauthFakeApi() {
+                override suspend fun oauthStart(body: OAuthStartRequest) = Response.success(invalid)
+            }
+            assertEquals(ApiError.Unknown, repository(oauth = oauth).startGoogleBrowserSignIn().failure())
+        }
+    }
+
+    @Test
+    fun `google browser linking uses bearer proof without asserting or minting a session`() = runTest {
+        val oauth = OauthFakeApi()
+        val auth = OauthFakeAuthApi()
+        val store = OauthFakeStore().apply { storedRefresh = "existing-refresh" }
+        val repo = repository(oauth = oauth, auth = auth, store = store)
+        val pending = repo.startGoogleBrowserSignIn(bindToCurrentAccount = true).success()
+        assertEquals(1, oauth.linkStartCalls)
+        assertEquals("browser_redirect", oauth.lastStart?.mode)
+        assertEquals(AuthProvider.GOOGLE, pending.provider)
+        assertEquals(null, oauth.lastAssert)
+        assertEquals("linked", repo.pollIdentityLink(pending).success())
+        assertEquals(0, auth.linkStatusCalls)
+        assertEquals("pomp_r1_rotated", store.storedRefresh)
+    }
+
+    @Test
+    fun `browser discovery ignores unknown and duplicate providers`() = runTest {
+        val oauth = object : OauthFakeApi() {
+            override suspend fun providers(platform: String) = Response.success(
+                ProvidersResponse(ok = true, providers = listOf("google", "google", "unknown", "apple")))
+        }
+        assertEquals(listOf(AuthProvider.GOOGLE, AuthProvider.APPLE), repository(oauth = oauth).availableBrowserProviders())
+    }
+
+    @Test
+    fun `terminal or unsuccessful sign in poll cannot persist tokens`() = runTest {
+        for (response in listOf(
+            LinkStatusResponse(ok = false, status = "linked", accessToken = "untrusted", refreshToken = "untrusted", accessExpiresIn = 900),
+            LinkStatusResponse(ok = true, status = "linked", accessToken = "access", refreshToken = "refresh", accessExpiresIn = 0),
+            LinkStatusResponse(ok = true, status = "linked", accessToken = "", refreshToken = "refresh", accessExpiresIn = 900),
+            LinkStatusResponse(ok = true, status = "denied"),
+            LinkStatusResponse(ok = true, status = "expired"),
+            LinkStatusResponse(ok = true, status = "failed", error = "user_blocked"),
+            LinkStatusResponse(ok = true, status = "unexpected"),
+        )) {
+            val auth = object : OauthFakeAuthApi() {
+                override suspend fun linkStatus(body: LinkStatusRequest) = Response.success(response)
+            }
+            val store = OauthFakeStore()
+            val repo = repository(auth = auth, store = store)
+            val pending = repo.startGoogleBrowserSignIn().success()
+            assertTrue(repo.pollLink(pending) is ApiResult.Failure)
+            assertEquals(null, store.storedRefresh)
+        }
+    }
+
+    @Test
+    fun `blocked sign in status retains the stable error instead of waiting forever`() = runTest {
+        val auth = object : OauthFakeAuthApi() {
+            override suspend fun linkStatus(body: LinkStatusRequest) = Response.success(
+                LinkStatusResponse(ok = true, status = "failed", error = "user_blocked"))
+        }
+        val repo = repository(auth = auth)
+        val error = repo.pollLink(repo.startGoogleBrowserSignIn().success()).failure()
+        assertEquals("user_blocked", (error as ApiError.Server).code)
+    }
+
+    @Test
+    fun `google and apple attachments cancel using their original authenticated proof`() = runTest {
+        for (provider in listOf(AuthProvider.GOOGLE, AuthProvider.APPLE)) {
+            var cancelled: IdentityLinkStatusRequest? = null
+            var bearer: String? = null
+            val oauth = object : OauthFakeApi() {
+                override suspend fun identityLinkCancel(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
+                    bearer = authorization
+                    cancelled = body
+                    return Response.success(IdentityLinkStatusResponse(ok = true, status = "denied", provider = provider.wire))
+                }
+            }
+            val store = OauthFakeStore().apply { storedRefresh = "existing-refresh" }
+            val repo = repository(oauth = oauth, store = store)
+            val pending = if (provider == AuthProvider.GOOGLE) repo.startGoogleBrowserSignIn(bindToCurrentAccount = true).success()
+                else repo.startAppleSignIn(bindToCurrentAccount = true).success()
+            assertEquals("denied", repo.cancelIdentityLink(pending).success())
+            assertEquals("Bearer access-token", bearer)
+            assertEquals(pending.linkRequestId, cancelled?.linkRequestId)
+            assertEquals(pending.pollingSecret, cancelled?.pollingSecret)
+        }
+    }
+
+    @Test
     fun `google sign-in passes the server nonce to credential manager`() = runTest {
         val google = FakeGoogleIdTokens(GoogleIdTokenResult.Success("id-token"))
         val oauth = OauthFakeApi()
@@ -202,6 +365,47 @@ class AuthRepositoryOauthTest {
         assertEquals("id-token", oauth.lastAssert?.idToken)
         assertEquals(AuthProvider.GOOGLE, pending.provider)
         assertEquals(clock + 600_000L, pending.expiresAtMillis)
+    }
+
+    @Test
+    fun `google browser sign in skips Credential Manager and returns a browser link`() = runTest {
+        val google = FakeGoogleIdTokens(GoogleIdTokenResult.Failed)
+        val oauth = OauthFakeApi()
+        val pending = repository(oauth = oauth, google = google)
+            .startGoogleBrowserSignIn(language = AppLanguage.UZBEK).success()
+
+        assertEquals("android", oauth.lastStart?.platform)
+        assertEquals("browser_redirect", oauth.lastStart?.mode)
+        assertEquals("google", oauth.lastStart?.provider)
+        assertEquals("uz", oauth.lastStart?.language)
+        assertTrue(pending.authorizeUrl.startsWith("https://accounts.google.com/o/oauth2/v2/auth?"))
+        assertEquals(null, google.lastNonce)
+        assertEquals(null, oauth.lastAssert)
+    }
+
+    @Test
+    fun `google browser sign in polls original token path`() = runTest {
+        val oauth = OauthFakeApi()
+        val auth = OauthFakeAuthApi()
+        val store = OauthFakeStore()
+        val repo = repository(oauth = oauth, auth = auth, store = store)
+        val pending = repo.startGoogleBrowserSignIn().success()
+
+        assertTrue(repo.pollLink(pending).success())
+        assertEquals(1, auth.linkStatusCalls)
+        assertEquals("pomp_r1_refresh", store.storedRefresh)
+        assertEquals(null, oauth.lastAssert)
+    }
+
+    @Test
+    fun `browser providers do not require a compiled Google client ID`() = runTest {
+        val repo = repository(
+            google = FakeGoogleIdTokens(GoogleIdTokenResult.Unavailable, isAvailable = false)
+        )
+        assertEquals(
+            listOf(AuthProvider.GOOGLE, AuthProvider.APPLE),
+            repo.availableBrowserProviders(),
+        )
     }
 
     @Test
@@ -217,6 +421,19 @@ class AuthRepositoryOauthTest {
         )
 
         assertTrue(payload.contains("\"platform\":\"android\""))
+    }
+
+    @Test
+    fun `Google assertion always serializes required provider for FastAPI`() {
+        val json = Json.encodeToString(
+            OAuthAssertRequest(
+                linkRequestId = "link-id",
+                pollingSecret = "secret",
+                provider = "google",
+                idToken = "jwt-token",
+            )
+        )
+        assertTrue(json.contains("\"provider\":\"google\""))
     }
 
     @Test
@@ -292,10 +509,87 @@ class AuthRepositoryOauthTest {
     }
 
     @Test
+    fun `both provider signups carry the chosen language while linking leaves preferences unchanged`() = runTest {
+        val oauth = OauthFakeApi()
+        val store = OauthFakeStore().apply { storedRefresh = "pomp_r1_existing" }
+        val repo = repository(oauth = oauth, store = store)
+
+        repo.startGoogleSignIn(language = AppLanguage.UZBEK).success()
+        assertEquals("uz", oauth.lastStart?.language)
+        repo.startAppleSignIn(language = AppLanguage.TAJIK).success()
+        assertEquals("tj", oauth.lastStart?.language)
+        repo.startGoogleSignIn(bindToCurrentAccount = true, language = AppLanguage.UZBEK).success()
+        assertEquals(null, oauth.lastStart?.language)
+        repo.startAppleSignIn(bindToCurrentAccount = true, language = AppLanguage.TAJIK).success()
+        assertEquals(null, oauth.lastStart?.language)
+    }
+
+    @Test
+    fun `invite metadata reaches both signup providers but never explicit identity linking`() = runTest {
+        val oauth = OauthFakeApi()
+        val store = OauthFakeStore().apply { storedRefresh = "pomp_r1_existing" }
+        val repo = repository(oauth = oauth, store = store)
+        repo.updateSignupReferralCode("ra_abcdef12")
+        repo.startGoogleSignIn().success()
+        assertEquals("ra_abcdef12", oauth.lastStart?.referralCode)
+        repo.startAppleSignIn().success()
+        assertEquals("ra_abcdef12", oauth.lastStart?.referralCode)
+        repo.startGoogleSignIn(bindToCurrentAccount = true).success()
+        assertEquals(null, oauth.lastStart?.referralCode)
+        assertFalse(Json.encodeToString(oauth.lastStart!!).contains("referral_code"))
+        repo.startAppleSignIn(bindToCurrentAccount = true).success()
+        assertEquals(null, oauth.lastStart?.referralCode)
+    }
+
+    @Test
+    fun `invite is captured before the first suspension and cleared only after login`() = runTest {
+        val installation = CompletableDeferred<Unit>()
+        val store = object : OauthFakeStore() {
+            override suspend fun installationKey(): String {
+                installation.await()
+                return "k".repeat(64)
+            }
+        }
+        val oauth = OauthFakeApi()
+        val repo = repository(oauth = oauth, store = store)
+        repo.updateSignupReferralCode("ref_abcdef12")
+        val attempt = async { repo.startAppleSignIn().success() }
+        runCurrent()
+        repo.updateSignupReferralCode("ra_12345678")
+        installation.complete(Unit)
+        val pending = attempt.await()
+        assertEquals("ref_abcdef12", oauth.lastStart?.referralCode)
+        assertEquals("ra_12345678", repo.signupReferralCode.value)
+        assertTrue(repo.pollLink(pending).success())
+        assertEquals("", repo.signupReferralCode.value)
+        repo.updateSignupReferralCode("abcdef12")
+        assertEquals("", repo.signupReferralCode.value)
+    }
+
+    @Test
+    fun `provider only identities retain the absence of Telegram and malformed envelopes fail closed`() = runTest {
+        val store = OauthFakeStore().apply { storedRefresh = "pomp_r1_existing" }
+        val oauth = object : OauthFakeApi() {
+            var ok = true
+            override suspend fun identities(authorization: String): Response<IdentitiesResponse> =
+                Response.success(IdentitiesResponse(ok = ok, telegramLinked = false,
+                    identities = listOf(IdentityDto(id = "google-only", provider = "google"))))
+        }
+        val repo = repository(oauth = oauth, store = store)
+        val methods = repo.linkedIdentities().success()
+        assertFalse(methods.telegramLinked)
+        assertEquals("google-only", methods.identities.single().id)
+        oauth.ok = false
+        assertEquals(ApiError.Unknown, repo.linkedIdentities().failure())
+    }
+
+    @Test
     fun `unknown providers are dropped instead of being rendered`() = runTest {
         val store = OauthFakeStore().apply { storedRefresh = "pomp_r1_existing" }
-        val identities = repository(store = store).linkedIdentities().success()
+        val linked = repository(store = store).linkedIdentities().success()
+        val identities = linked.identities
 
+        assertTrue(linked.telegramLinked)
         assertEquals(1, identities.size)
         assertEquals(AuthProvider.GOOGLE, identities.first().provider)
         assertEquals("a***e@example.com", identities.first().emailMasked)
@@ -386,4 +680,228 @@ class AuthRepositoryOauthTest {
         assertEquals("oauth_telegram_account_required", (error as ApiError.Server).code)
         assertFalse(error.messageRes == 0)
     }
+    @Test
+    fun `telegram attachment is authenticated and never invokes sign in or assertion endpoints`() = runTest {
+        var authorization = ""
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStart(auth: String, body: OAuthStartRequest): Response<OAuthStartResponse> {
+                authorization = auth
+                return super.identityLinkStart(auth, body)
+            }
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "pomp_r1_existing" }
+        val repo = repository(oauth = oauth, store = store)
+        repo.updateSignupReferralCode("ra_abcdef12")
+        val pending = repo.startTelegramIdentityLink().success()
+        assertEquals("Bearer access-token", authorization)
+        assertEquals(1, oauth.linkStartCalls)
+        assertEquals("telegram", oauth.lastStart?.provider)
+        assertEquals("telegram_approval", oauth.lastStart?.mode)
+        assertEquals("android", oauth.lastStart?.platform)
+        assertEquals(null, oauth.lastStart?.language)
+        assertEquals(null, oauth.lastStart?.referralCode)
+        assertEquals(null, oauth.lastAssert)
+        assertEquals(AuthProvider.TELEGRAM, pending.provider)
+        assertEquals(TELEGRAM_IDENTITY_URL, pending.authorizeUrl)
+        assertTrue(pending.botDeepLink.isEmpty())
+        assertTrue(pending.displayCode.isEmpty())
+    }
+
+    @Test
+    fun `telegram attachment cannot start without the existing account session`() = runTest {
+        val oauth = OauthFakeApi()
+        assertEquals(ApiError.SessionExpired, repository(oauth = oauth).startTelegramIdentityLink().failure())
+        assertEquals(0, oauth.linkStartCalls)
+        assertEquals(0, oauth.startCalls)
+    }
+
+    @Test
+    fun `telegram proof URL allows only the dedicated bot confirmation link`() {
+        assertTrue(isTelegramIdentityLinkUrl(TELEGRAM_IDENTITY_URL))
+        assertTrue(isTelegramIdentityLinkUrl(TELEGRAM_IDENTITY_URL, "3f2504e0-4f89-11d3-9a0c-0305e82c3301"))
+        assertFalse(isTelegramIdentityLinkUrl(TELEGRAM_IDENTITY_URL, "3f2504e0-4f89-11d3-9a0c-0305e82c3302"))
+        for (url in listOf(
+            TELEGRAM_IDENTITY_URL.replace("https://", "http://"),
+            TELEGRAM_IDENTITY_URL.replace("t.me/", "t.me.evil.example/"),
+            TELEGRAM_IDENTITY_URL.replace("t.me/", "evil.example@t.me/"),
+            TELEGRAM_IDENTITY_URL.replace("t.me/", "t.me:443/"),
+            TELEGRAM_IDENTITY_URL.replace("tg_identity_", "android_link_"),
+            TELEGRAM_IDENTITY_URL + "&other=1",
+            TELEGRAM_IDENTITY_URL + "#fragment",
+            "https://t.me/HSKAI_bot?start=tg_identity_bad",
+            "tg://resolve?domain=HSKAI_bot",
+        )) assertFalse(url, isTelegramIdentityLinkUrl(url))
+    }
+
+    @Test
+    fun `an unsafe Telegram authorization URL is refused before browser navigation`() = runTest {
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStart(authorization: String, body: OAuthStartRequest) =
+                Response.success(OAuthStartResponse(ok = true, linkRequestId = "id", pollingSecret = "secret",
+                    expiresIn = 600, authorizeUrl = "https://evil.example/?start=tg_identity_test"))
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        assertEquals(ApiError.Unknown, repository(oauth = oauth, store = store).startTelegramIdentityLink().failure())
+    }
+
+    @Test
+    fun `Telegram URL must name the same pending request returned to this account`() = runTest {
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStart(authorization: String, body: OAuthStartRequest) =
+                Response.success(OAuthStartResponse(ok = true,
+                    linkRequestId = "3f2504e0-4f89-11d3-9a0c-0305e82c3302",
+                    pollingSecret = "s".repeat(43), expiresIn = 600, authorizeUrl = TELEGRAM_IDENTITY_URL))
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        assertEquals(ApiError.Unknown, repository(oauth = oauth, store = store).startTelegramIdentityLink().failure())
+    }
+
+    @Test
+    fun `Telegram linked denied and expired statuses never collect another session token`() = runTest {
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val auth = OauthFakeAuthApi()
+        val oauth = object : OauthFakeApi() {
+            var status = "pending"
+            override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest) =
+                Response.success(IdentityLinkStatusResponse(ok = true, status = status, provider = "telegram"))
+        }
+        val repo = repository(oauth = oauth, auth = auth, store = store)
+        val pending = repo.startTelegramIdentityLink().success()
+        val existingRefresh = store.storedRefresh
+        for (status in listOf("pending", "denied", "expired", "linked")) {
+            oauth.status = status
+            assertEquals(status, repo.pollIdentityLink(pending).success())
+        }
+        assertEquals(0, auth.linkStatusCalls)
+        assertEquals(existingRefresh, store.storedRefresh)
+    }
+
+    @Test
+    fun `telegram identity collision stays a server failure and keeps the current account`() = runTest {
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest) =
+                Response.success(IdentityLinkStatusResponse(ok = true, status = "denied", provider = "telegram",
+                    error = "oauth_identity_bound_to_other_user"))
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val repo = repository(oauth = oauth, store = store)
+        val pending = repo.startTelegramIdentityLink().success()
+        val previous = store.storedRefresh
+        assertEquals(ApiError.fromCode("oauth_identity_bound_to_other_user"), repo.pollIdentityLink(pending).failure())
+        assertEquals(previous, store.storedRefresh)
+    }
+
+    @Test
+    fun `telegram cancellation uses the original request proof with current bearer`() = runTest {
+        var received: IdentityLinkStatusRequest? = null
+        var authorization = ""
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkCancel(auth: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
+                authorization = auth
+                received = body
+                return Response.success(IdentityLinkStatusResponse(ok = true, status = "denied", provider = "telegram"))
+            }
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val repo = repository(oauth = oauth, store = store)
+        val pending = repo.startTelegramIdentityLink().success()
+        val previous = store.storedRefresh
+        assertEquals("denied", repo.cancelIdentityLink(pending).success())
+        assertEquals("Bearer access-token", authorization)
+        assertEquals(pending.linkRequestId, received?.linkRequestId)
+        assertEquals(pending.pollingSecret, received?.pollingSecret)
+        assertEquals(previous, store.storedRefresh)
+    }
+
+    @Test
+    fun `a late Telegram start response after logout cannot open a proof`() = runTest {
+        val started = CompletableDeferred<Unit>()
+        val reply = CompletableDeferred<Unit>()
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStart(authorization: String, body: OAuthStartRequest): Response<OAuthStartResponse> {
+                started.complete(Unit)
+                reply.await()
+                return super.identityLinkStart(authorization, body)
+            }
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val repo = repository(oauth = oauth, store = store)
+        val attempt = async { repo.startTelegramIdentityLink() }
+        started.await()
+        repo.invalidateSession()
+        reply.complete(Unit)
+        assertEquals(ApiError.SessionExpired, attempt.await().failure())
+        assertEquals(null, store.storedRefresh)
+    }
+
+    @Test
+    fun `pending Telegram proof cannot poll or cancel under a replacement session`() = runTest {
+        var statusCalls = 0
+        var cancelCalls = 0
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
+                statusCalls++
+                return super.identityLinkStatus(authorization, body)
+            }
+            override suspend fun identityLinkCancel(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
+                cancelCalls++
+                return super.identityLinkCancel(authorization, body)
+            }
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val repo = repository(oauth = oauth, store = store)
+        val pending = repo.startTelegramIdentityLink().success()
+        repo.invalidateSession()
+        store.storedRefresh = "replacement-account-refresh"
+        assertEquals(ApiError.SessionExpired, repo.pollIdentityLink(pending).failure())
+        assertEquals(ApiError.SessionExpired, repo.cancelIdentityLink(pending).failure())
+        assertEquals(0, statusCalls)
+        assertEquals(0, cancelCalls)
+    }
+
+    @Test
+    fun `a cancelled identity poll cannot publish its late linked response`() = runTest {
+        val waiting = CompletableDeferred<Unit>()
+        val reply = CompletableDeferred<Unit>()
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
+                waiting.complete(Unit)
+                withContext(NonCancellable) { reply.await() }
+                return Response.success(IdentityLinkStatusResponse(ok = true, status = "linked", provider = "telegram"))
+            }
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val repo = repository(oauth = oauth, store = store)
+        val pending = repo.startTelegramIdentityLink().success()
+        var linked = false
+        val poll = async { linked = repo.pollIdentityLink(pending) is ApiResult.Success }
+        waiting.await()
+        poll.cancel()
+        reply.complete(Unit)
+        poll.join()
+        assertFalse(linked)
+    }
+
+    @Test
+    fun `identity poll response arriving after logout cannot refresh another account`() = runTest {
+        val waiting = CompletableDeferred<Unit>()
+        val reply = CompletableDeferred<Unit>()
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
+                waiting.complete(Unit)
+                reply.await()
+                return Response.success(IdentityLinkStatusResponse(ok = true, status = "linked", provider = "telegram"))
+            }
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val repo = repository(oauth = oauth, store = store)
+        val pending = repo.startTelegramIdentityLink().success()
+        val poll = async { repo.pollIdentityLink(pending) }
+        waiting.await()
+        repo.invalidateSession()
+        reply.complete(Unit)
+        assertEquals(ApiError.SessionExpired, poll.await().failure())
+        assertEquals(null, store.storedRefresh)
+    }
+
 }

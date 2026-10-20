@@ -11,6 +11,7 @@ from app.db.models.course_challenge import CourseChallenge
 from app.db.models.user import User
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
+from app.services.account_identity import actual_telegram_id
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
@@ -50,7 +51,7 @@ class CourseChallengeService:
             return {"id": None, "name": "HSK AI", "username": ""}
         return {
             "id": int(user.id),
-            "telegram_id": int(user.telegram_id),
+            "telegram_id": actual_telegram_id(user),
             "name": str(user.full_name or user.username or "HSK Student").strip()[:40],
             "username": str(user.username or "").strip().lstrip("@")[:32],
         }
@@ -245,8 +246,8 @@ class CourseChallengeService:
         )
         return self._remaining_cooldown_seconds(result.scalar_one_or_none())
 
-    async def list_for_user(self, telegram_id: int) -> dict:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+    async def list_for_user(self, telegram_id: int | User) -> dict:
+        user = (telegram_id if isinstance(telegram_id, User) else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
         result = await self.session.execute(
@@ -273,15 +274,15 @@ class CourseChallengeService:
 
     async def create(
         self,
-        telegram_id: int,
+        telegram_id: int | User,
         *,
-        opponent_telegram_id: int,
+        opponent_telegram_id: int | User,
         level: str,
         lang: str,
         bot=None,
     ) -> dict:
-        challenger = await self.user_repo.get_by_telegram_id(telegram_id)
-        opponent = await self.user_repo.get_by_telegram_id(opponent_telegram_id)
+        challenger = (telegram_id if isinstance(telegram_id, User) else await self.user_repo.get_by_telegram_id(telegram_id))
+        opponent = (opponent_telegram_id if isinstance(opponent_telegram_id, User) else await self.user_repo.get_by_telegram_id(opponent_telegram_id))
         if not challenger or not opponent:
             return {"ok": False, "error": "challenge_user_not_found"}
         if int(challenger.id) == int(opponent.id):
@@ -333,8 +334,8 @@ class CourseChallengeService:
             ),
         }
 
-    async def get_for_user(self, telegram_id: int, challenge_id: int) -> tuple[User | None, CourseChallenge | None]:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+    async def get_for_user(self, telegram_id: int | User, challenge_id: int) -> tuple[User | None, CourseChallenge | None]:
+        user = (telegram_id if isinstance(telegram_id, User) else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return None, None
         result = await self.session.execute(
@@ -348,7 +349,7 @@ class CourseChallengeService:
         )
         return user, result.scalar_one_or_none()
 
-    async def respond(self, telegram_id: int, challenge_id: int, action: str, *, bot=None) -> dict:
+    async def respond(self, telegram_id: int | User, challenge_id: int, action: str, *, bot=None) -> dict:
         user, challenge = await self.get_for_user(telegram_id, challenge_id)
         if not user or not challenge:
             return {"ok": False, "error": "challenge_not_found"}
@@ -373,7 +374,7 @@ class CourseChallengeService:
             await self.notify_response(bot, challenge, users, accepted=action == "accept")
         return {"ok": True, "challenge": self._challenge_payload(challenge, user, users)}
 
-    async def start(self, telegram_id: int, challenge_id: int) -> dict:
+    async def start(self, telegram_id: int | User, challenge_id: int) -> dict:
         user, challenge = await self.get_for_user(telegram_id, challenge_id)
         if not user or not challenge:
             return {"ok": False, "error": "challenge_not_found"}
@@ -401,7 +402,7 @@ class CourseChallengeService:
             },
         }
 
-    async def submit(self, telegram_id: int, challenge_id: int, answers: list, *, duration_seconds: int = 0, bot=None) -> dict:
+    async def submit(self, telegram_id: int | User, challenge_id: int, answers: list, *, duration_seconds: int = 0, bot=None) -> dict:
         user, challenge = await self.get_for_user(telegram_id, challenge_id)
         if not user or not challenge:
             return {"ok": False, "error": "challenge_not_found"}
@@ -716,10 +717,13 @@ class CourseChallengeService:
         challenger: User,
         opponent: User,
     ) -> bool:
+        telegram_id = actual_telegram_id(opponent)
+        if telegram_id is None:
+            return False
         lang = normalize_miniapp_lang(opponent.language)
         try:
             await bot.send_message(
-                chat_id=int(opponent.telegram_id),
+                chat_id=telegram_id,
                 text=self.invite_text(challenge, challenger, lang),
                 reply_markup=self._invite_keyboard(int(challenge.id), lang, challenge.level),
             )
@@ -731,6 +735,9 @@ class CourseChallengeService:
         challenger = users.get(int(challenge.challenger_user_id))
         opponent = users.get(int(challenge.opponent_user_id))
         if not challenger or not opponent:
+            return
+        telegram_id = actual_telegram_id(challenger)
+        if telegram_id is None:
             return
         lang = normalize_miniapp_lang(challenger.language)
         name = opponent.full_name or opponent.username or "User"
@@ -748,7 +755,7 @@ class CourseChallengeService:
             }.get(lang)
         try:
             await bot.send_message(
-                chat_id=int(challenger.telegram_id),
+                chat_id=telegram_id,
                 text=text,
                 reply_markup=self._open_keyboard(lang, int(challenge.id), challenge.level) if accepted else None,
             )
@@ -759,6 +766,9 @@ class CourseChallengeService:
         other_id = int(challenge.opponent_user_id) if int(user.id) == int(challenge.challenger_user_id) else int(challenge.challenger_user_id)
         other = users.get(other_id)
         if not other:
+            return
+        telegram_id = actual_telegram_id(other)
+        if telegram_id is None:
             return
         lang = normalize_miniapp_lang(other.language)
         role = "challenger" if int(user.id) == int(challenge.challenger_user_id) else "opponent"
@@ -796,7 +806,7 @@ class CourseChallengeService:
             }.get(lang)
         try:
             await bot.send_message(
-                chat_id=int(other.telegram_id),
+                chat_id=telegram_id,
                 text=text,
                 reply_markup=self._open_keyboard(lang, int(challenge.id), challenge.level),
             )

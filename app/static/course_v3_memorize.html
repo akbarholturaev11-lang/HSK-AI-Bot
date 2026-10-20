@@ -161,7 +161,7 @@ var LIM={
   back:{uz:"Orqaga",ru:"Назад",tj:"Бозгашт"}
 };
 function initData(){return (tg&&tg.initData)?tg.initData:""}
-function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_memorize_limit&mode=subscription"}
+function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_memorize_limit&mode=subscription&return_to=course&return_page=course_v3_memorize.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 /* Foydalanuvchi darajasi: server (users.level) asosiy manba — kartalar userning
    haqiqiy HSK darajasidagi ierogliflardan tuziladi (lesson_gate xaritasi orqali).
    CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar belgilari chiqadi. */
@@ -444,12 +444,16 @@ function boot(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){
 /* Sessiya boshlashdan oldin kunlik limitni tekshiramiz (server tomonda). */
 function gateStart(newAttempt){
   var ref=gateRef(newAttempt!==false);
-
-  B.innerHTML=HSKStudyPreparing.render(LANG);
+  var preparing=true;
+  SCRIPTS_READY.then(function(){
+    if(preparing&&ref===ATTEMPT_REF)B.innerHTML=HSKStudyPreparing.render(LANG);
+  });
   runGate(ref).then(function(o){
+    preparing=false;
     if(ref!==ATTEMPT_REF)return;
     if(o.status===403){showLimit(o.j);return}boot();
   }).catch(function(){
+    preparing=false;
     if(ref!==ATTEMPT_REF)return;
     var t=practiceGateErrorCopy();
     B.innerHTML='<div class="done"><p>'+gateEscape(t.body)+'</p><button onclick="gateStart(false)">'+gateEscape(t.retry)+'</button><button class="ghost" onclick="goBack()">'+gateEscape(t.back)+'</button></div>';

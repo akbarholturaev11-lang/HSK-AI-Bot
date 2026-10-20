@@ -11,6 +11,7 @@ from sqlalchemy import select
 from app.bot.utils.course_miniapp import normalize_miniapp_lang
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
+from app.services.account_identity import owner_clause
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.course_gamification_service import CourseGamificationService
@@ -27,9 +28,6 @@ from app.services.course_lesson_mistake_material_service import (
 )
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.entitlements.state import has_full_access, resolve_state
-from app.services.course_miniapp_access_service import (
-    CourseMiniAppAccessService,
-)
 from app.services.course_miniapp_analytics_service import (
     CourseMiniAppAnalyticsService,
 )
@@ -290,10 +288,7 @@ class DesktopCourseService:
             user,
             profile=profile,
         )
-        # Kontent qulfi uchun YAGONA predikat. Ilgari bu yerda tor
-        # `is_paid_user` turardi, Mini App esa kengrog'ini ishlatardi —
-        # shuning uchun referral yoki otziv bonusi olgan odam telefonda
-        # darsni ochardi, desktopda esa ocholmasdi.
+        # Darsga ruxsatni barcha klientlar uchun umumiy LessonAccessService hal qiladi.
         access_state = resolve_state(user)
         is_paid = has_full_access(access_state)
         data = self._read_json(
@@ -461,7 +456,7 @@ class DesktopCourseService:
             await CourseMiniAppAnalyticsService(self.session).record_server_event(
                 event_name="course_track_switched",
                 user_id=int(user.id),
-                telegram_id=int(user.telegram_id),
+                telegram_id=user.telegram_id,
                 source="desktop_course_track",
                 level=after_level,
                 payload={
@@ -485,7 +480,7 @@ class DesktopCourseService:
             await CourseMiniAppAnalyticsService(self.session).record_server_event(
                 event_name="hsk30_promo_shown",
                 user_id=int(user.id),
-                telegram_id=int(user.telegram_id),
+                telegram_id=user.telegram_id,
                 source="desktop_course_track",
                 level=str(getattr(user, "level", "") or ""),
                 payload={"shown_count": int(result.get("shown_count") or 0)},
@@ -527,7 +522,6 @@ class DesktopCourseService:
         # `is_paid_user` turardi, Mini App esa kengrog'ini ishlatardi —
         # shuning uchun referral yoki otziv bonusi olgan odam telefonda
         # darsni ochardi, desktopda esa ocholmasdi.
-        is_paid = has_full_access(resolve_state(user))
         # No bot: every client shows the limit on its own screen, so the
         # learner is not also told in Telegram (owner decision 2026-09-29).
         limit_status = await LessonAccessService(self.session).status(
@@ -598,7 +592,7 @@ class DesktopCourseService:
 
         existing_result = await self.session.execute(
             select(CourseMiniAppEvent).where(
-                CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                owner_clause(CourseMiniAppEvent, user, telegram_column="telegram_id"),
                 CourseMiniAppEvent.event_name == "lesson_completed",
                 CourseMiniAppEvent.dedupe_key == event_dedupe_key,
             )
@@ -642,13 +636,9 @@ class DesktopCourseService:
             level,
             lesson_order,
         )
-        access = CourseMiniAppAccessService(self.session)
-        # Kontent qulfi uchun YAGONA predikat. Ilgari bu yerda tor
-        # `is_paid_user` turardi, Mini App esa kengrog'ini ishlatardi —
-        # shuning uchun referral yoki otziv bonusi olgan odam telefonda
-        # darsni ochardi, desktopda esa ocholmasdi.
+        # Analitika uchun barcha klientlarda bir xil kengaytirilgan kirishni qayd etamiz.
+        # Kontent qulfi uchun esa yagona LessonAccessService ishlaydi.
         is_paid = has_full_access(resolve_state(user))
-
         progress_repository = CourseProgressRepository(self.session)
         progress = await self._progress(user, for_update=True)
         completed = int(progress.completed_lessons_count or 0)
@@ -778,7 +768,7 @@ class DesktopCourseService:
         persisted_event = (
             await self.session.execute(
                 select(CourseMiniAppEvent.id).where(
-                    CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                    owner_clause(CourseMiniAppEvent, user, telegram_column="telegram_id"),
                     CourseMiniAppEvent.event_name == "lesson_completed",
                     CourseMiniAppEvent.dedupe_key == event_dedupe_key,
                 )

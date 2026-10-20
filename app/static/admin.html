@@ -665,6 +665,12 @@
           <div class="explain" id="sourceAttributionExplain">Ҳар бир тўлов обуна саҳифасига киришнинг энг яқин манбасига боғланади.</div>
         </div>
 
+        <div class="block">
+          <div class="block-head"><span class="bi">🌐</span><div><h3>Ижтимоий тармоқдан сайтга киришлар</h3><p>Сўнгги 7 кун, 30 кун ва бутун давр</p></div></div>
+          <div id="publicSiteTraffic"><p class="empty">Юкланмоқда…</p></div>
+          <div class="explain">Instagram, TikTok ва YouTube UTM ҳаволалари орқали бош саҳифа очилишлари. Ҳар бир очилиш саналиб, такрорий киришлар ҳам алоҳида ҳисобланади.</div>
+        </div>
+
         <!-- General overview report -->
         <div class="block">
           <div class="block-head"><span class="bi">📋</span><div><h3>Умумий кўрсаткичлар</h3><p>Фойдаланувчилар, тўловлар ва курс фаоллиги</p></div></div>
@@ -875,13 +881,13 @@
       const k = e&&e.data&&e.data.error ? e.data.error : "";
       const m = {
         invalid_telegram_init_data:"Telegram сеанси нотўғри", admin_only:"Админ рухсати йўқ",
-        invalid_access_payload:"Telegram ID ёки муддат нотўғри (1–36500 кун)", user_or_plan_not_found:"Фойдаланувчи топилмади",
+        invalid_access_payload:"User ID ёки муддат нотўғри (1–36500 кун)", user_or_plan_not_found:"Фойдаланувчи топилмади",
         payment_already_reviewed:"Бу тўлов аллақачон кўриб чиқилган", payment_not_found:"Тўлов топилмади",
         user_not_found:"Фойдаланувчи топилмади", invalid_price_payload:"Нарх маълумоти нотўғри",
-        invalid_channel_payload:"Канал маълумоти нотўғри", delete_confirmation_required:"Ўчириш учун тасдиқ майдонига Telegram IDни киритинг",
+        invalid_channel_payload:"Канал маълумоти нотўғри", delete_confirmation_required:"Ўчириш учун тасдиқ майдонига User IDни киритинг",
         cannot_delete_admin:"Админ профилини ўчириб бўлмайди", delete_failed:"Фойдаланувчининг маълумотларини тўлиқ ўчириб бўлмади. Ҳеч нарса қисман сақланмади. Қайта уриниб кўринг.",
         cannot_block_admin:"Админни блоклаб бўлмайди", invalid_block_payload:"Блоклаш маълумоти нотўғри",
-        invalid_user_payload:"Telegram ID нотўғри", user_is_blocked:"Фойдаланувчи блокланган. Аввал блокдан чиқаринг.",
+        invalid_user_payload:"User ID нотўғри", invalid_user_target:"User ID нотўғри", user_target_mismatch:"User ID ва Telegram ID бошқа аккаунтларга тегишли", telegram_not_linked:"Бу аккаунтга Telegram уланмаган", user_is_blocked:"Фойдаланувчи блокланган. Аввал блокдан чиқаринг.",
         bot_blocked_by_user:"Фойдаланувчи ботни блоклаган", send_failed:"Хабар юборилмади",
         invalid_help_url:"Ёрдам ҳаволаси нотўғри", invalid_contact:"Админ алоқаси нотўғри",
         invalid_course_access_policy:"Курсга кириш режими ёки муддат нотўғри",
@@ -956,7 +962,7 @@
       renderUserFilters(); renderUsers();
       renderPayments();
       renderModules();
-      loadSubEntry(); loadNotifications(); loadCourseAds();
+      loadSubEntry(); loadPublicSiteTraffic(); loadNotifications(); loadCourseAds();
       loadManagement(true).then(renderAiModel).catch(()=>{});
     }
 
@@ -1431,6 +1437,18 @@
       }catch(e){ $("subEntryStats").innerHTML="<p class='empty'>Хатолик</p>"; }
     }
 
+    async function loadPublicSiteTraffic(){
+      const box=$("publicSiteTraffic");
+      if(!box) return;
+      try{
+        const d=await apiPost("/api/admin-miniapp/public-site-traffic",{});
+        const rows=d.rows||[];
+        box.innerHTML=rows.length?`<table class="tbl"><thead><tr><th>Манба</th><th class="r">7 кун</th><th class="r">30 кун</th><th class="r">Жами</th></tr></thead>
+          <tbody>${rows.map(r=>`<tr><td><b>${esc(r.label)}</b></td><td class="r">${Number(r.visits_7_days||0)}</td><td class="r">${Number(r.visits_30_days||0)}</td><td class="r"><b>${Number(r.visits_all_time||0)}</b></td></tr>`).join("")}</tbody></table>`
+          : "<p class='empty'>Маълумот йўқ</p>";
+      }catch(e){ box.innerHTML="<p class='empty'>Сайт манбалари статистикаси юкланмади.</p>"; }
+    }
+
     function botReachabilitySourceLabel(source){
       const labels={
         my_chat_member_blocked:"Telegram бот блокланганини аниқ билдирди",
@@ -1472,6 +1490,7 @@
       return type||"Ҳолат";
     }
     function botReachabilityDiagnosis(f){
+      if(!f.id) return {title:"Telegram уланмаган",tone:"",text:"Бу аккаунт Google ёки Apple орқали ишлайди. Telegram хабари учун аввал Telegram уланиши керак."};
       if(!f.bot_blocked) return {
         title:"Telegram алоқаси очиқ",
         tone:"green",
@@ -1492,6 +1511,14 @@
     }
 
     /* ---------- USERS ---------- */
+    function adminUserKey(u){return u.account_id||u.id;}
+    function adminUserTarget(id){
+      const rows=(state.remoteUsers||[]).concat(state.overview.users||[],state.activeUser?[state.activeUser]:[]);
+      const row=rows.find(u=>String(adminUserKey(u))===String(id));
+      // Old server rows explicitly named their real Telegram identity in id.
+      // New rows and manually entered IDs always name the canonical account.
+      return row&&!row.account_id ? {telegram_id:Number(row.id)} : {user_id:Number(id)};
+    }
     function statusTone(u){
       if(u.has_pending_payment||u.payment_status==="pending") return ["Тўлов текширувда","amber"];
       if(u.bot_blocked) return ["Telegram етиб бормайди","red"];
@@ -1517,7 +1544,7 @@
           || (state.filter==="expired"&&u.status==="expired")
           || (state.filter==="blocked"&&u.status==="blocked")
           || (state.filter==="bot_blocked"&&u.bot_blocked);
-        const hay = `${u.id} ${u.name} ${u.username||""} ${u.language} ${u.level} ${u.status_label} ${u.payment_label} ${u.plan} ${u.method}`.toLowerCase();
+        const hay = `${u.account_id||""} ${u.id||""} ${u.name} ${u.username||""} ${u.language} ${u.level} ${u.status_label} ${u.payment_label} ${u.plan} ${u.method}`.toLowerCase();
         return f && (!q || hay.includes(q));
       });
     }
@@ -1580,9 +1607,9 @@
       $("userList").innerHTML = rows.length ? rows.map(u=>{
         const t = statusTone(u),end=u.access_ends_at||u.end_date;
         const accessTag=end?tag((u.payment_status==="approved"?"обуна":"кириш ҳуқуқи")+(u.status==="expired"?" тугаган ":" тугайди ")+end,u.status==="expired"?"":u.payment_status==="approved"?"green":"violet"):"";
-        return `<button class="ucard" data-user="${u.id}">
+        return `<button class="ucard" data-user="${adminUserKey(u)}">
           <div class="uhead"><div><div class="uname">${esc(u.name)}</div>
-            <div class="usub">${u.username?"@"+esc(u.username)+" · ":""}${u.id}<br>${esc(adminLanguageLabel(u.language))} · ${esc(u.level)} · ${esc(metricLabel(u.last_active))}</div></div>
+            <div class="usub">${u.username?"@"+esc(u.username)+" · ":""}User ID ${esc(adminUserKey(u))}${u.id?" · Telegram "+esc(u.id):" · Telegram уланмаган"}<br>${esc(adminLanguageLabel(u.language))} · ${esc(u.level)} · ${esc(metricLabel(u.last_active))}</div></div>
             ${tag(t[0],t[1])}</div>
           <div class="tags">${tag(adminPlanLabel(u.plan),"blue")}${tag(metricLabel(u.method),"")}${u.bot_blocked?tag("ТГ ёпиқ","red"):""}${accessTag}</div>
           <div class="mini2"><div class="mini"><b>${esc(u.questions)}</b><span>Сунъий интеллектга саволлар</span></div><div class="mini"><b>${esc(u.streak)}</b><span>серия</span></div></div>
@@ -1617,7 +1644,7 @@
           <div class="grid pboard">
             ${g[1].map(p=>`<article class="pcard">
               <div class="phead"><div><div class="uname">${esc(p.name)}</div>
-                <div class="usub">${p.username?"@"+esc(p.username)+" · ":""}${p.telegram_id}<br>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.submitted_at||"—")}</div></div>
+                <div class="usub">${p.username?"@"+esc(p.username)+" · ":""}User ID ${esc(p.account_id||"—")}${p.telegram_id?" · Telegram "+esc(p.telegram_id):""}<br>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.submitted_at||"—")}</div></div>
                 <div class="amount">${esc(p.amount)}</div></div>
               <div class="tags">${tag(p.status_label,p.status==="approved"?"green":p.status==="pending"?"amber":"red")}${tag(paymentSourceLabel(p.source),p.source==="android"?"amber":"")}${tag(p.has_screenshot?"расм бор":"расм йўқ","")}</div>
               ${p.status==="pending"?`<div class="row"><button class="btn" data-pay="${p.id}" data-pact="approve">Тасдиқлаш</button><button class="btn danger" data-pay="${p.id}" data-pact="reject">Рад этиш</button></div>`:""}
@@ -1694,14 +1721,14 @@
 
     async function openUser(id){
       if($("app").hidden) return;
-      const u = ((state.remoteUsers||[]).concat(state.overview.users||[])).find(x=>String(x.id)===String(id));
+      const u = ((state.remoteUsers||[]).concat(state.overview.users||[])).find(x=>String(adminUserKey(x))===String(id));
       if(!u) return;
       if(state.moduleInline) closeDrawer();
       state.moduleInline=false; state.activeModule=null; state.modulePrefill=null;
       const requestId=++moduleRequestId;
-      openDrawer(u.name, `${u.username?"@"+u.username+" · ":""}${u.id} · ${metricLabel(u.last_active)}`, "<p class='empty'>Юкланмоқда…</p>");
+      openDrawer(u.name, `${u.username?"@"+u.username+" · ":""}User ID ${adminUserKey(u)} · ${metricLabel(u.last_active)}`, "<p class='empty'>Юкланмоқда…</p>");
       let detail=null;
-      try{ detail=await apiPost("/api/admin-miniapp/users/detail",{telegram_id:u.id}); }catch(e){ if(requestId===moduleRequestId&&!$("app").hidden) toast(apiErr(e,"Тафсилот юкланмади")); }
+      try{ detail=await apiPost("/api/admin-miniapp/users/detail",adminUserTarget(id)); }catch(e){ if(requestId===moduleRequestId&&!$("app").hidden) toast(apiErr(e,"Тафсилот юкланмади")); }
       if(requestId!==moduleRequestId||$("app").hidden) return;
       const f=(detail&&detail.user)||u, pays=(detail&&detail.payments)||[];
       const access=f.access||{};
@@ -1709,9 +1736,10 @@
       const bonus=f.bonus||{total:f.bonus_left||0,used:0,left:f.bonus_left||0};
       const referredBy=referral.referred_by||null;
       const referrerText=referredBy
-        ? ((referredBy.username?"@"+referredBy.username+" · ":"")+(referredBy.name?referredBy.name+" · ":"")+referredBy.telegram_id)
+        ? ((referredBy.username?"@"+referredBy.username+" · ":"")+(referredBy.name?referredBy.name+" · ":"")+(referredBy.user_id?"User ID "+referredBy.user_id:referredBy.telegram_id||"—"))
         : "—";
-      state.activeUser={id:f.id,name:f.name,username:f.username||u.username||""};
+      const userKey=adminUserKey(f);
+      state.activeUser={id:f.id,account_id:f.account_id,name:f.name,username:f.username||u.username||""};
       const afterBlock=f.client_activity_after_bot_block||{};
       const deviceInfo=f.devices||{};
       const devicePlatformLabel=(p)=>({android:"Android",ios:"iPhone/iPad",windows:"Windows",macos:"macOS",web:"Веб",unknown:"Номаълум"}[String(p||"").toLowerCase()]||String(p||"—"));
@@ -1733,8 +1761,9 @@
       const causeHtml=f.bot_blocked?`<div class="mcard" style="margin-top:12px"><div class="uhead"><div><div class="uname">Эҳтимолий блок сабаби</div><div class="usub">Реал ҳодисалар асосида. Telegram фойдаланувчининг сабабини матн кўринишида бермайди.</div></div>${tag((blockCause.confidence||"паст")+" ишонч",causeTone)}</div><div style="margin-top:10px"><b>${esc(blockCause.title||"Сабабни ишончли ажратиб бўлмади")}</b></div>${blockCause.score?`<div class="tags" style="margin-top:8px">${tag("Далил кучи: "+blockCause.score+"/100",causeTone)}${tag(blockCause.data_quality_label||"Маълумот сифати номаълум","")}</div>`:""}${causeEvidence?`<div class="ncnote" style="margin-top:10px"><b>Нимага шундай деяпмиз:</b><br>${causeEvidence}</div>`:""}${blockCause.note?`<div class="explain" style="margin-top:8px">${esc(blockCause.note)}</div>`:""}${causeAlternatives?`<details class="acc" style="margin-top:10px"><summary>Бошқа эҳтимоллар</summary><div class="accbody">${causeAlternatives}</div></details>`:""}<div class="ncnote" style="margin-top:10px"><b>Муҳим:</b> ${esc(blockCause.disclaimer||"Бу эҳтимолий хулоса, аниқ сабаб эмас.")}</div></div>`:"";
       $("drawerBody").innerHTML = `
         <section class="dsec"><div class="dtitle-sm">Рухсат ва обуна</div>
-          <div class="idrow"><span style="color:var(--muted);font-size:13px">Telegram ID</span><b>${esc(f.id)}</b>
-            <button class="btn sec" style="height:32px;padding:0 11px" data-copy="${esc(f.id)}">Нусха олиш</button></div>
+          <div class="idrow"><span style="color:var(--muted);font-size:13px">User ID</span><b>${esc(userKey)}</b>
+            <button class="btn sec" style="height:32px;padding:0 11px" data-copy="${esc(userKey)}">Нусха олиш</button></div>
+          <div class="ncnote">${f.id?"Telegram ID: "+esc(f.id):"Telegram уланмаган"}</div>
           <div class="kv" style="margin-top:9px">
           <span>Кириш ҳуқуқи тури</span><b>${esc(access.label||f.access_label||f.status_label||f.status)}</b>
           <span>Сабаб</span><b>${esc(access.source_label||"—")}</b>
@@ -1750,7 +1779,7 @@
           <div class="dtitle-sm">Telegram алоқа ва HSK AI фаоллиги</div>
           <div class="ncnote" style="margin-top:8px"><b>${esc(tgDiag.title)}</b><br>${esc(tgDiag.text)}</div>
           <div class="kv" style="margin-top:10px">
-            <span>Telegram хабари</span><b>${f.bot_blocked?"етиб бормайди":"етиб бориши мумкин"}</b>
+            <span>Telegram хабари</span><b>${!f.id?"Telegram уланмаган":f.bot_blocked?"етиб бормайди":"етиб бориши мумкин"}</b>
             <span>блоклаш биринчи аниқланган</span><b>${esc(f.bot_blocked_at||"—")}</b>
             <span>Аниқлаш манбаси</span><b>${esc(botReachabilitySourceLabel(f.bot_block_reason))}</b>
             <span>Telegram алоқаси охирги текширилган</span><b>${esc(f.last_bot_block_check_at||"—")}</b>
@@ -1803,19 +1832,19 @@
         <section class="dsec"><div class="dtitle-sm">Админ амаллари</div><div class="panel">
           <div class="mcard"><h3>Қўлда обуна бериш</h3>
             ${durationControlHtml("qaDays")}
-            <button class="btn" data-uaccess="${f.id}" data-uname="${esc(f.name)}" data-current-end="${esc(f.end_date||"")}">Обунани фаоллаштириш</button></div>
+            <button class="btn" data-uaccess="${userKey}" data-uname="${esc(f.name)}" data-current-end="${esc(f.end_date||"")}">Обунани фаоллаштириш</button></div>
           ${f.status==="blocked"
-            ? `<button class="btn sec" data-ublock="${f.id}" data-blocked="0">🔓 Блокдан чиқариш</button>`
-            : `<button class="btn sec" data-ublock="${f.id}" data-blocked="1">🚫 Блоклаш</button>`}
+            ? `<button class="btn sec" data-ublock="${userKey}" data-blocked="0">🔓 Блокдан чиқариш</button>`
+            : `<button class="btn sec" data-ublock="${userKey}" data-blocked="1">🚫 Блоклаш</button>`}
           <details class="acc"><summary>Қўшимча амаллар</summary>
             <div class="accbody">
-              ${f.username
+              ${f.id&&f.username
                 ? `<button class="btn sec" data-uchat="${esc(f.username)}">💬 Telegram чатини очиш</button>`
-                : `<div class="ncnote">Telegram чатини тўғридан-тўғри очиш учун фойдаланувчида фойдаланувчи номи бўлиши керак. Бу фойдаланувчида йўқ — қуйидаги шахсий хабардан фойдаланинг.</div>`}
-              <button class="btn sec" data-umsg="${f.id}" data-uname="${esc(f.name)}">✉️ Шахсий хабар юбориш</button>
-              <button class="btn sec" data-module="give_access" data-prefill="${f.id}" data-uback="${f.id}">✅ Обуна бериш</button>
-              <button class="btn sec" data-module="discount" data-prefill="${f.id}" data-uback="${f.id}">🎁 Шу фойдаланувчига чегирма</button>
-              <button class="btn danger" data-module="delete_user" data-prefill="${f.id}" data-uback="${f.id}">🗑 Фойдаланувчини ўчириш</button>
+                : `<div class="ncnote">${f.id?"Telegram чатини очиш учун фойдаланувчи номи керак.":"Telegram уланмаган: шахсий бот хабари юборилмайди."}</div>`}
+              <button class="btn sec" data-umsg="${userKey}" data-uname="${esc(f.name)}" ${f.id?"":"disabled"}>✉️ Шахсий хабар юбориш</button>
+              <button class="btn sec" data-module="give_access" data-prefill="${userKey}" data-uback="${userKey}">✅ Обуна бериш</button>
+              <button class="btn sec" data-module="discount" data-prefill="${userKey}" data-uback="${userKey}">🎁 Шу фойдаланувчига чегирма</button>
+              <button class="btn danger" data-module="delete_user" data-prefill="${userKey}" data-uback="${userKey}">🗑 Фойдаланувчини ўчириш</button>
             </div></details>
         </div></section>`;
     }
@@ -1843,7 +1872,7 @@
        ko'rinib tursin. Kontekst bo'lmasa oddiy izoh qoladi. */
     function moduleSub(fallback){
       const u=state.drawerBack&&state.activeUser;
-      return u ? `${u.name} · ${u.id}` : (fallback||"");
+      return u ? `${u.name} · ${adminUserKey(u)}` : (fallback||"");
     }
 
     /* Telegram chatini ochish faqat username bo'lsa ishlaydi: Mini App ichidan
@@ -2627,9 +2656,7 @@
     function renderCampaign(d,kind,prefill){
       state.cm={content_type:"text",media_file_id:null};
       // Profildan ochilgan chegirma bitta foydalanuvchiga tegishli bo'ladi.
-      // Backend `target_telegram_id` ni allaqachon qo'llab-quvvatlaydi
-      // (discount_service, discount_notification_service), shuning uchun
-      // segment tanlash o'rniga aniq target ko'rsatiladi.
+      // Canonical user ownership is independent of notification transport.
       const targetId = kind==="discount" ? (prefill||"") : "";
       const cfg={ad:["📣 Реклама кампанияси","ads","Сегмент + медиа + тугма билан реклама."],release_feedback:["🆕 Янгилик фикри","release_feedback","Янгилик фикри баҳолаш оқими билан."],discount:["🎁 Чегирма","discounts","Сегмент аудиторияга чегирма."]}[kind];
       const rows=((d.campaigns||{})[cfg[1]]||[]);
@@ -2655,8 +2682,9 @@
       } else if(kind==="discount"){
         const audience = targetId
           ? `<input type="hidden" id="cmTarget" value="${esc(targetId)}">
-             <div class="ncnote">Бу чегирма фақат <b>${esc((state.activeUser&&state.activeUser.name)||targetId)}</b> · ${esc(targetId)} учун амал қилади. Сегмент танлаш керак эмас.</div>
-             <label class="ncsw"><input type="checkbox" id="cmNotify" checked> Фойдаланувчига чегирма ҳақида хабар юборилсин</label>`
+             <div class="ncnote">Бу чегирма фақат <b>${esc((state.activeUser&&state.activeUser.name)||targetId)}</b> · User ID ${esc(targetId)} учун амал қилади. Сегмент танлаш керак эмас.</div>
+             <label class="ncsw"><input type="checkbox" id="cmNotify" checked> Фойдаланувчига чегирма ҳақида хабар юборилсин</label>
+             <div class="ncnote">Чегирма обуна олиш ойнасида кўринади. Хабар мавжуд илова ёки уланган Telegram орқали етказилади.</div>`
           : `${sel("cm_status","👤 Аудитория статус",[["","Ҳаммаси"],["free","Бепул"],["trial","Синов"],["active","Фаол"],["expired","Тугаган"]])}
              ${sel("cm_language","🌐 Тил",[["","Ҳаммаси"],["tj","TJ"],["uz","UZ"],["ru","RU"]])}
              ${sel("cm_level","📚 Даража",[["","Ҳаммаси"],["beginner","Бошланғич"],["hsk1","HSK1"],["hsk2","HSK2"],["hsk3","HSK3"],["hsk4","HSK4"]])}
@@ -2715,9 +2743,9 @@
         p.percent=$("cmPercent").value;
         const target=$("cmTarget");
         if(target && target.value){
-          // Bitta foydalanuvchiga chegirma: segment maydonlari yuborilmaydi —
-          // Telegram bot admin oqimidagi bilan bir xil xatti-harakat.
-          p.target_telegram_id=target.value;
+          const owner=adminUserTarget(target.value);
+          if(owner.user_id) p.target_user_id=owner.user_id;
+          else p.target_telegram_id=target.value;
           p.notify_enabled=$("cmNotify") ? $("cmNotify").checked : false;
         } else {
           p.status=$("cm_status").value; const lng=$("cm_language").value; p.languages=lng?[lng]:[];
@@ -2765,7 +2793,7 @@
     }
     function renderGiveAccess(prefill){
       openDrawer("✅ Обунани бериш",moduleSub("Фойдаланувчи ID ва муддатни киритинг"),`<div class="panel"><div class="mcard">
-        <div class="frow"><label>Telegram ID</label><input id="gaId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
+        <div class="frow"><label>User ID</label><input id="gaId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
         ${durationControlHtml("gaDays")}
         <button class="btn" data-gasave>Обунани фаоллаштириш</button></div></div>`);
     }
@@ -2777,9 +2805,9 @@
         <button class="btn" data-umsend="${esc(id)}">Юбориш</button></div></div>`);
     }
     function renderDeleteUser(prefill){
-      openDrawer("🗑 Фойдаланувчини ўчириш",moduleSub("Хавфли амал. Telegram ID орқали тасдиқланади."),`<div class="panel">
+      openDrawer("🗑 Фойдаланувчини ўчириш",moduleSub("Хавфли амал. User ID орқали тасдиқланади."),`<div class="panel">
         <div class="danger-note">Фойдаланувчининг маълумотлари ва курс, хабар, фикр, таклиф ҳамда қурилма маълумотлари ўчирилади. Тасдиқланган тўловлар шахсдан ажратилган ҳолда молиявий ҳисобда қолади. Бу амални қайтариб бўлмайди.</div>
-        <div class="mcard"><div class="frow"><label>Telegram ID</label><input id="delId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
+        <div class="mcard"><div class="frow"><label>User ID</label><input id="delId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
           <div class="frow"><label>Тасдиқлаш учун шу IDни қайта киритинг</label><input id="delConfirm" class="input" inputmode="numeric"></div>
           <button class="btn danger" data-deluser>Ўчириш</button></div></div>`);
     }
@@ -2812,7 +2840,7 @@
       const current=o.currentEnd?`\nҲозирги тугаш санаси: ${o.currentEnd}`:"";
       if(!confirm(`${target} фойдаланувчига ${durationDays} кунлик обуна берилсинми?${current}\nФаол обуна бўлса, муддат узайтирилади.`)) return null;
       const requestId=moduleRequestId;
-      const result=await apiPost("/api/admin-miniapp/users/give-access",{telegram_id:targetId,duration_days:durationDays});
+      const result=await apiPost("/api/admin-miniapp/users/give-access",{...adminUserTarget(targetId),duration_days:durationDays});
       state.management=null;
       await loadData();
       if(requestId===moduleRequestId){
@@ -3223,9 +3251,9 @@
       if((el=T("[data-admin-module]")))return openAdminModule(el.dataset.adminModule);
       if((el=T("[data-pay]"))) return reviewPayment(el);
       if((el=T("[data-duration-target]"))){ const input=$(el.dataset.durationTarget); if(input) input.value=el.dataset.durationDays; return; }
-      if((el=T("[data-copy]"))) return copyText(el.dataset.copy,"Telegram ID нусхаланди");
+      if((el=T("[data-copy]"))) return copyText(el.dataset.copy,"ID нусхаланди");
       if((el=T("[data-umsg]"))){ state.drawerBack=(()=>openUser(el.dataset.umsg)); return renderUserMessage(el.dataset.umsg,el.dataset.uname); }
-      if((el=T("[data-umsend]"))){ const text=($("umText").value||"").trim(); if(text.length<2){ toast("Матн жуда қисқа"); return; } el.disabled=true; return apiPost("/api/admin-miniapp/users/message",{telegram_id:Number(el.dataset.umsend),text,translate:$("umTranslate").checked}).then(()=>{closeDrawer();toast("Хабар юборилди");}).catch(x=>{toast(apiErr(x,"Хабар юборилмади"));el.disabled=false;}); }
+      if((el=T("[data-umsend]"))){ const text=($("umText").value||"").trim(); if(text.length<2){ toast("Матн жуда қисқа"); return; } el.disabled=true; return apiPost("/api/admin-miniapp/users/message",{...adminUserTarget(el.dataset.umsend),text,translate:$("umTranslate").checked}).then(()=>{closeDrawer();toast("Хабар юборилди");}).catch(x=>{toast(apiErr(x,"Хабар юборилмади"));el.disabled=false;}); }
       if((el=T("[data-uchat]"))) return openUserChat(el.dataset.uchat);
       if((el=T("[data-ad-rules-open]"))) return openAdRulesModal();
       if((el=T("[data-ad-rules-close]"))) return closeAdRulesModal();
@@ -3322,8 +3350,8 @@
       if((el=T("[data-cmcreate]"))){ if(!confirm("Кампания режалаштирилади. Давом этасизми?")) return; el.disabled=true; return cmCreate(el.dataset.cmcreate).then(()=>afterModule("Кампания яратилди")).catch(x=>{toast(apiErr(x,"Яратилмади"));el.disabled=false;}); }
       if((el=T("[data-partner]"))){ const act=el.dataset.partner; if((act==="reject"||act==="block")&&!confirm("Давом этасизми?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/partners/action",{partner_id:Number(el.dataset.pid||0),action:act}).then(()=>afterModule("Ҳамкор ҳолати янгиланди")).catch(x=>{toast(apiErr(x,"Бажарилмади"));el.disabled=false;}); }
       if((el=T("[data-gasave]"))){ el.disabled=true; return grantAccess($("gaId").value,$("gaDays").value).catch(x=>toast(apiErr(x,"Обуна берилмади"))).finally(()=>{if(el.isConnected)el.disabled=false;}); }
-      if((el=T("[data-deluser]"))){ const id=$("delId").value.trim(), verify=$("delConfirm").value.trim(); if(!id||verify!==id){toast("Тасдиқ майдонига айнан шу Telegram IDни киритинг"); $("delConfirm").focus(); return;} if(!confirm("Фойдаланувчининг барча маълумотлари ўчирилади. Давом этасизми?")) return; const oldText=el.textContent; el.disabled=true; el.textContent="Ўчирилмоқда…"; return apiPost("/api/admin-miniapp/users/delete",{telegram_id:id,confirm:verify}).then(()=>{closeDrawer();return loadData();}).then(()=>toast("Фойдаланувчи тўлиқ ўчирилди")).catch(x=>{toast(apiErr(x,"Ўчириб бўлмади")); if(document.body.contains(el)){el.disabled=false;el.textContent=oldText;}}); }
-      if((el=T("[data-ublock]"))){ const blocked=el.dataset.blocked==="1"; if(!confirm(blocked?"Фойдаланувчи блокланади. Давом этасизми?":"Фойдаланувчи блокдан чиқарилади. Давом этасизми?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/users/block",{telegram_id:Number(el.dataset.ublock),blocked}).then(()=>{return openUser(el.dataset.ublock);}).then(()=>{loadData();toast(blocked?"Фойдаланувчи блокланди":"Блокдан чиқарилди");}).catch(x=>{toast(apiErr(x,"Бажарилмади"));el.disabled=false;}); }
+      if((el=T("[data-deluser]"))){ const id=$("delId").value.trim(), verify=$("delConfirm").value.trim(); if(!id||verify!==id){toast("Тасдиқ майдонига айнан шу User IDни киритинг"); $("delConfirm").focus(); return;} if(!confirm("Фойдаланувчининг барча маълумотлари ўчирилади. Давом этасизми?")) return; const oldText=el.textContent; el.disabled=true; el.textContent="Ўчирилмоқда…"; return apiPost("/api/admin-miniapp/users/delete",{...adminUserTarget(id),confirm:verify}).then(()=>{closeDrawer();return loadData();}).then(()=>toast("Фойдаланувчи тўлиқ ўчирилди")).catch(x=>{toast(apiErr(x,"Ўчириб бўлмади")); if(document.body.contains(el)){el.disabled=false;el.textContent=oldText;}}); }
+      if((el=T("[data-ublock]"))){ const blocked=el.dataset.blocked==="1"; if(!confirm(blocked?"Фойдаланувчи блокланади. Давом этасизми?":"Фойдаланувчи блокдан чиқарилади. Давом этасизми?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/users/block",{...adminUserTarget(el.dataset.ublock),blocked}).then(()=>{return openUser(el.dataset.ublock);}).then(()=>{loadData();toast(blocked?"Фойдаланувчи блокланди":"Блокдан чиқарилди");}).catch(x=>{toast(apiErr(x,"Бажарилмади"));el.disabled=false;}); }
       if((el=T("[data-catoggle]"))){ const id=Number(el.dataset.catoggle), a=el.dataset.active==="1"; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/toggle",{ad_id:id,is_active:a}).then(()=>{toast(a?"Реклама ёқилди":"Реклама ўчирилди");loadCourseAds();}).catch(()=>{toast("Ҳолатни ўзгартириб бўлмади");el.disabled=false;}); }
       if((el=T("[data-cadel]"))){ const id=Number(el.dataset.cadel); if(!confirm("Бу рекламани бутунлай ўчирасизми? Видео файл ҳам ўчади.")) return; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/delete",{ad_id:id}).then(()=>{toast("Реклама ўчирилди");loadCourseAds();}).catch(()=>{toast("Ўчириб бўлмади");el.disabled=false;}); }
       if((el=T("[data-cafilter]"))){ caFilter=el.dataset.cafilter; renderCaLangFilter(); renderCourseAds(); return; }

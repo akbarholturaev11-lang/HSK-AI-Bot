@@ -59,6 +59,11 @@
     }
   },
   "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["pomp-hsk-ai"]
+      }
+    },
     "updater": {
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE0RDE1QTMyMjE4Q0JFMwpSV1RqeXhnaW94Vk5BV1RiUFduUmQrcTlDUWNjRTJaYnd6Z1J6VkdURHh1MXlJRElOKzhYU2R6Mwo=",
       "endpoints": [

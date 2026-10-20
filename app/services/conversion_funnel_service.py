@@ -3,13 +3,15 @@ import logging
 from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import String, case, cast, func, literal, select
 
 from app.db.models.conversion_funnel_event import (
     CONVERSION_FUNNEL_EVENT_NAMES,
     ConversionFunnelEvent,
 )
 from app.db.session import async_session_maker
+from app.db.models.user import User
+from app.services.account_identity import owner_clause
 
 
 logger = logging.getLogger(__name__)
@@ -91,13 +93,13 @@ class ConversionFunnelService:
             user_id = getattr(user, "id", None) if user_id is None else user_id
             telegram_id = getattr(user, "telegram_id", None) if telegram_id is None else telegram_id
 
-        if not telegram_id:
-            logger.warning("Conversion funnel event skipped without telegram_id: %s", event_name)
+        if not telegram_id and not user_id:
+            logger.warning("Conversion funnel event skipped without account: %s", event_name)
             return False
 
         event = ConversionFunnelEvent(
             user_id=user_id,
-            telegram_id=int(telegram_id),
+            telegram_id=int(telegram_id) if telegram_id else None,
             event_name=event_name,
             source=(source or None),
             lesson_id=lesson_id,
@@ -140,14 +142,15 @@ class ConversionFunnelService:
             user_id = getattr(user, "id", None) if user_id is None else user_id
             telegram_id = getattr(user, "telegram_id", None) if telegram_id is None else telegram_id
 
-        if not telegram_id:
-            logger.warning("Conversion funnel event skipped without telegram_id: %s", event_name)
+        if not telegram_id and not user_id:
+            logger.warning("Conversion funnel event skipped without account: %s", event_name)
             return False
 
         try:
             async with async_session_maker() as write_session:
                 exists = await ConversionFunnelService(write_session).has_event(
-                    telegram_id=int(telegram_id),
+                    telegram_id=int(telegram_id) if telegram_id else None,
+                    user_id=user_id,
                     event_name=event_name,
                     source=source,
                     lesson_id=lesson_id,
@@ -158,7 +161,7 @@ class ConversionFunnelService:
                 write_session.add(
                     ConversionFunnelEvent(
                         user_id=user_id,
-                        telegram_id=int(telegram_id),
+                        telegram_id=int(telegram_id) if telegram_id else None,
                         event_name=event_name,
                         source=(source or None),
                         lesson_id=lesson_id,
@@ -176,8 +179,9 @@ class ConversionFunnelService:
     async def has_event(
         self,
         *,
-        telegram_id: int,
+        telegram_id: int | None,
         event_name: str,
+        user_id: int | None = None,
         source: str | None = None,
         lesson_id: int | None = None,
         payment_id: int | None = None,
@@ -189,7 +193,7 @@ class ConversionFunnelService:
             select(func.count())
             .select_from(ConversionFunnelEvent)
             .where(
-                ConversionFunnelEvent.telegram_id == telegram_id,
+                owner_clause(ConversionFunnelEvent, telegram_id, telegram_column="telegram_id", user_id=user_id),
                 ConversionFunnelEvent.event_name == event_name,
             )
         )
@@ -222,12 +226,18 @@ class ConversionFunnelService:
         if self.session is None:
             raise RuntimeError("unique_users_by_event requires a read session")
 
+        owner_id = func.coalesce(ConversionFunnelEvent.user_id, User.id)
+        identity = case(
+            (owner_id.is_not(None), literal("user:") + cast(owner_id, String)),
+            else_=literal("telegram:") + cast(ConversionFunnelEvent.telegram_id, String),
+        )
         stmt = (
             select(
                 ConversionFunnelEvent.event_name,
-                func.count(func.distinct(ConversionFunnelEvent.telegram_id)).label("cnt"),
+                func.count(func.distinct(identity)).label("cnt"),
             )
             .select_from(ConversionFunnelEvent)
+            .outerjoin(User, User.telegram_id == ConversionFunnelEvent.telegram_id)
             .group_by(ConversionFunnelEvent.event_name)
         )
         if since is not None:

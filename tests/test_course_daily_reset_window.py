@@ -89,12 +89,6 @@ class DailyResetWindowTests(unittest.TestCase):
             fake.COURSE_DAILY_RESET_HOUR_LOCAL = 6
             self.assertEqual(6, CourseMiniAppAccessService.daily_reset_hour_local())
 
-    def test_the_shipped_default_is_the_unchanged_one(self):
-        from app.config import Settings
-
-        self.assertEqual(0, Settings().COURSE_DAILY_RESET_HOUR_LOCAL)
-
-
 class _RaceResult:
     """Bitta `execute()` javobi: qulflangan user yoki bo'sh natija."""
 

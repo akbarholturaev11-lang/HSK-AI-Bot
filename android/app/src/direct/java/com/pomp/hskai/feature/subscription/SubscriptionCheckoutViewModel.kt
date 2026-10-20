@@ -494,7 +494,7 @@ class SubscriptionCheckoutViewModel(
             when (result) {
                 is ApiResult.Success -> {
                     val success = result.value.ok && result.value.status == "pending"
-                    val provisional = success && current.isHsk30Unlock && result.value.provisionalAccess
+                    val provisional = success && result.value.provisionalAccess
                     if (success) {
                         clearReceipt()
                     }
@@ -507,7 +507,7 @@ class SubscriptionCheckoutViewModel(
                         paymentStatusMessageRes = null,
                         step = if (success) CheckoutStep.DONE else it.step,
                         errorRes = if (success) null else R.string.sub_unavailable) }
-                    if (provisional && !result.value.alreadyPending) _provisionalAccess.tryEmit(Unit)
+                    if (provisional && current.isHsk30Unlock && !result.value.alreadyPending) _provisionalAccess.tryEmit(Unit)
                 }
                 is ApiResult.Failure -> _state.update {
                     it.copy(submitting = false, errorRes = result.error.messageRes)
@@ -518,7 +518,8 @@ class SubscriptionCheckoutViewModel(
 
     fun refreshPaymentStatus() {
         val paymentId = _state.value.pendingPaymentId
-        if (paymentId <= 0 || !_state.value.isHsk30Unlock || _state.value.checkingPaymentStatus) return
+        val paymentPlan = _state.value.overview?.pendingPayment?.planType ?: _state.value.plan
+        if (paymentId <= 0 || paymentPlan.isBlank() || _state.value.checkingPaymentStatus) return
         _state.update {
             it.copy(checkingPaymentStatus = true, paymentStatusMessageRes = null, errorRes = null)
         }
@@ -530,7 +531,7 @@ class SubscriptionCheckoutViewModel(
                 is ApiResult.Success -> {
                     val status = result.value
                     if (!status.ok || status.paymentId != paymentId ||
-                        status.planType != "hsk30_unlock"
+                        status.planType != paymentPlan
                     ) {
                         _state.update {
                             it.copy(

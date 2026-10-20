@@ -70,6 +70,34 @@ class LinkScreenProviderTest {
     }
 
     @Test
+    fun invitationCodeStaysOutOfSignInScreen() {
+        compose.setContent {
+            PompHskAiTheme {
+                LinkScreen(
+                    state = LinkUiState(providers = listOf(AuthProvider.GOOGLE), referralCode = "ra_abcdef12"),
+                )
+            }
+        }
+        compose.onNodeWithText(strings.getString(R.string.auth_referral_code))
+            .assertDoesNotExist()
+        compose.onNodeWithText(strings.getString(R.string.auth_continue_google_short))
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun malformedInvitationDoesNotBlockProviderChoices() {
+        compose.setContent {
+            PompHskAiTheme {
+                LinkScreen(state = LinkUiState(referralCode = "bad", referralInvalid = true))
+            }
+        }
+        compose.onNodeWithText(strings.getString(R.string.auth_referral_invalid))
+            .assertDoesNotExist()
+        compose.onNodeWithText(strings.getString(R.string.auth_continue_telegram))
+            .assertIsDisplayed()
+    }
+
+    @Test
     fun withoutProvidersTheScreenIsTelegramOnly() {
         show(providers = emptyList())
 

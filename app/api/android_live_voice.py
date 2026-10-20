@@ -12,7 +12,6 @@ import time
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from types import SimpleNamespace
 from typing import Callable
 from urllib.parse import urlparse
 
@@ -22,6 +21,7 @@ from starlette.websockets import WebSocketState
 from sqlalchemy import or_, select, update
 
 from app.db.models.voice_practice_session import VoicePracticeSession
+from app.services.account_identity import owner_clause, actual_telegram_id
 from app.services.android_live_voice_service import (
     connect_gemini_live,
     live_voice_available,
@@ -45,7 +45,7 @@ PCM_OUTPUT_BYTES_PER_SECOND = 24_000 * 2
 @dataclass(frozen=True)
 class LiveSessionContext:
     id: str
-    user_telegram_id: int
+    user_telegram_id: int | None
     mode: str
     role: str
     level: str
@@ -211,14 +211,14 @@ def create_android_live_voice_router(
                     await voice_service_factory(session).validate_live_session(telegram_id, session_id=session_id)
                 else:
                     context = await DesktopAuthService(session, settings_obj).authenticate(token)
-                    telegram_id = int(context.user.telegram_id)
+                    telegram_id = context.user
                 if not live_voice_available(settings_obj, telegram_id):
                     raise DesktopAuthError("live_voice_unavailable", status_code=403)
                 claimed = await session.execute(
                     update(VoicePracticeSession)
                     .where(
                         VoicePracticeSession.id == session_id,
-                        VoicePracticeSession.user_telegram_id == telegram_id,
+                        owner_clause(VoicePracticeSession, telegram_id),
                         VoicePracticeSession.mode == "live",
                         VoicePracticeSession.status == "active",
                         or_(
@@ -237,7 +237,7 @@ def create_android_live_voice_router(
                 result = await session.execute(
                     select(VoicePracticeSession).where(
                         VoicePracticeSession.id == session_id,
-                        VoicePracticeSession.user_telegram_id == telegram_id,
+                        owner_clause(VoicePracticeSession, telegram_id),
                         VoicePracticeSession.live_connection_token == connection_token,
                     )
                 )
@@ -246,7 +246,7 @@ def create_android_live_voice_router(
                     raise VoicePracticeError("SESSION_NOT_FOUND", "Voice session not found.", 404)
                 live_item = LiveSessionContext(
                     id=row.id,
-                    user_telegram_id=telegram_id,
+                    user_telegram_id=actual_telegram_id(telegram_id),
                     mode=row.mode,
                     role=row.role,
                     level=row.level,
@@ -370,7 +370,7 @@ def create_android_live_voice_router(
                                     update(VoicePracticeSession)
                                     .where(
                                         VoicePracticeSession.id == session_id,
-                                        VoicePracticeSession.user_telegram_id == telegram_id,
+                                        owner_clause(VoicePracticeSession, telegram_id),
                                         VoicePracticeSession.live_connection_token == connection_token,
                                     )
                                     .values(live_resumption_handle=resumption_handle)
@@ -515,7 +515,7 @@ def create_android_live_voice_router(
                                 update(VoicePracticeSession)
                                 .where(
                                     VoicePracticeSession.id == session_id,
-                                    VoicePracticeSession.user_telegram_id == telegram_id,
+                                    owner_clause(VoicePracticeSession, telegram_id),
                                     VoicePracticeSession.live_connection_token == connection_token,
                                 )
                                 .values(

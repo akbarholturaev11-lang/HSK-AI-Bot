@@ -13,18 +13,34 @@ class UserRepository:
         self.session = session
 
     async def get_by_telegram_id(self, telegram_id: int) -> Optional[User]:
+        if telegram_id is None or int(telegram_id) <= 0:
+            return None
         result = await self.session.execute(
             select(User).where(User.telegram_id == telegram_id)
         )
         return result.scalar_one_or_none()
 
     async def get_by_telegram_id_for_update(self, telegram_id: int) -> Optional[User]:
+        if telegram_id is None or int(telegram_id) <= 0:
+            return None
         result = await self.session.execute(
             select(User)
             .where(User.telegram_id == telegram_id)
             .with_for_update()
         )
         return result.scalar_one_or_none()
+
+    async def get_by_user_id(self, user_id: int, *, lock: bool = False) -> Optional[User]:
+        query = select(User).where(User.id == int(user_id))
+        if lock:
+            query = query.with_for_update()
+        return (await self.session.execute(query.execution_options(populate_existing=True))).scalar_one_or_none()
+
+    async def get_by_actor(self, actor) -> Optional[User]:
+        """Re-read canonical ownership and current access state for native calls."""
+        if hasattr(actor, "id") and hasattr(actor, "telegram_id"):
+            return await self.get_by_user_id(actor.id)
+        return await self.get_by_telegram_id(actor)
 
     async def find_by_identifier(self, identifier: str) -> Optional[User]:
         value = (identifier or "").strip()
@@ -70,7 +86,7 @@ class UserRepository:
 
     async def create(
         self,
-        telegram_id: int,
+        telegram_id: int | None,
         full_name: Optional[str] = None,
         username: Optional[str] = None,
         language: str = "tj",
@@ -107,6 +123,14 @@ class UserRepository:
         await self.session.flush()
         return user
 
+    async def create_provider_account(self, *, full_name: str | None, language: str | None) -> User:
+        """Same starter access policy, without inventing a Telegram identity."""
+        return await self.create(
+            telegram_id=None, full_name=(full_name or "HSK Student")[:255],
+            language=language if language in {"uz", "ru", "tj"} else "ru",
+            learning_mode="course",
+        )
+
     async def update_last_active(self, user: User) -> None:
         user.last_active_at = datetime.now(timezone.utc)
         await self.session.flush()
@@ -122,15 +146,14 @@ class UserRepository:
     async def set_referred_by(
         self,
         user: User,
-        referrer_telegram_id: int,
+        referrer_telegram_id: int | User,
     ) -> None:
         # already set → skip
         if user.referrer_id:
             return
 
-        user.referred_by_telegram_id = referrer_telegram_id
-
-        referrer = await self.get_by_telegram_id(referrer_telegram_id)
+        referrer = await self.get_by_actor(referrer_telegram_id)
+        user.referred_by_telegram_id = getattr(referrer, "telegram_id", None)
         if referrer:
             user.referrer_id = referrer.id
 
@@ -184,8 +207,14 @@ class UserRepository:
     async def ensure_referral_code(self, user: User) -> None:
         if user.referral_code:
             return
-
-        user.referral_code = self._generate_referral_code()
+        # Existing provider accounts can first open this screen on several
+        # clients at once. Serialize initialization so a returned share URL
+        # cannot be replaced by a second concurrently generated code.
+        await self.session.flush()
+        owner = await self.get_by_user_id(user.id, lock=True)
+        if owner is None or owner.referral_code:
+            return
+        owner.referral_code = self._generate_referral_code()
         await self.session.flush()
 
     async def set_referral_trial_progress_message(
@@ -322,7 +351,7 @@ class UserRepository:
         level: Optional[str] = None,
         include_active_subscribers: bool = False,
     ) -> list[User]:
-        query = select(User).where(User.status != "blocked")
+        query = select(User).where(User.status != "blocked", User.telegram_id > 0)
         if languages:
             query = query.where(User.language.in_(languages))
         if course_track == "hsk30":
@@ -387,7 +416,7 @@ class UserRepository:
 
         Barcha amallar caller ochgan BITTA DB transaction ichida bajariladi.
         """
-        from sqlalchemy import delete as sql_delete, false, update as sql_update
+        from sqlalchemy import and_, delete as sql_delete, false, update as sql_update
 
         from app.db.models.account_notice_delivery import AccountNoticeDelivery
         from app.db.models.ad_campaign import AdCampaignDelivery
@@ -434,6 +463,7 @@ class UserRepository:
         from app.db.models.user_client_presence import AppPromoState, UserClientPresence
         from app.db.models.user_identity import UserIdentity
         from app.db.models.voice_practice_session import VoicePracticeSession
+        from app.services.account_identity import owner_clause
 
         # Both entry points already hold the users row lock. Commit/rollback
         # remains owned by the caller.
@@ -448,13 +478,9 @@ class UserRepository:
         # Bu ustunlar tarixan FK emas, shuning uchun DB CASCADE yordam bermaydi.
         await self.session.execute(
             sql_update(User)
-            .where(User.referrer_id == uid)
-            .values(referrer_id=None)
-        )
-        await self.session.execute(
-            sql_update(User)
-            .where(telegram_match(User.referred_by_telegram_id))
-            .values(referred_by_telegram_id=None)
+            .where(or_(User.referrer_id == uid, and_(User.referrer_id.is_(None),
+                telegram_match(User.referred_by_telegram_id))))
+            .values(referrer_id=None, referred_by_telegram_id=None)
         )
 
         # Tasdiqlangan to'lovlar kompaniyaning accounting/business tarixi.
@@ -466,15 +492,23 @@ class UserRepository:
         # Manfiy users.id real Telegram user ID bo'la olmaydi va har bir o'chirilgan
         # account uchun unique bo'ladi.
         anonymous_telegram_id = -uid
+        payment_owner = owner_clause(Payment, user)
         approved_payment_ids = select(Payment.id).where(
-            telegram_match(Payment.user_telegram_id),
+            payment_owner,
             Payment.payment_status == "approved",
         )
+        owned_payment_ids = select(Payment.id).where(payment_owner)
+        all_payment_ids = select(Payment.id)
         await self.session.execute(
             sql_update(PortfolioTransaction)
             .where(
                 or_(
-                    telegram_match(PortfolioTransaction.user_telegram_id),
+                    and_(
+                        telegram_match(PortfolioTransaction.user_telegram_id),
+                        or_(PortfolioTransaction.payment_id.is_(None),
+                            PortfolioTransaction.payment_id.in_(owned_payment_ids),
+                            PortfolioTransaction.payment_id.not_in(all_payment_ids)),
+                    ),
                     PortfolioTransaction.payment_id.in_(approved_payment_ids),
                 )
             )
@@ -483,10 +517,11 @@ class UserRepository:
         await self.session.execute(
             sql_update(Payment)
             .where(
-                telegram_match(Payment.user_telegram_id),
+                payment_owner,
                 Payment.payment_status == "approved",
             )
             .values(
+                user_id=None,
                 user_telegram_id=anonymous_telegram_id,
                 screenshot_file_id=None,
                 admin_comment=None,
@@ -498,7 +533,7 @@ class UserRepository:
         # Draft/pending/rejected payment account state; accountingga kirmaydi.
         await self.session.execute(
             sql_delete(Payment).where(
-                telegram_match(Payment.user_telegram_id),
+                payment_owner,
                 Payment.payment_status != "approved",
             )
         )
@@ -526,10 +561,7 @@ class UserRepository:
         # Native/desktop auth zanjiri. SQLite test muhitida ham FK CASCADEga
         # suyanib qolmaslik uchun child rowlar aniq tartibda o'chiriladi.
         device_ids = select(DesktopDevice.id).where(
-            or_(
-                DesktopDevice.user_id == uid,
-                telegram_match(DesktopDevice.telegram_id),
-            )
+            owner_clause(DesktopDevice, user, telegram_column="telegram_id")
         )
         await self.session.execute(
             sql_delete(AndroidPushToken).where(AndroidPushToken.device_id.in_(device_ids))
@@ -539,10 +571,7 @@ class UserRepository:
         )
         await self.session.execute(
             sql_delete(DesktopDevice).where(
-                or_(
-                    DesktopDevice.user_id == uid,
-                    telegram_match(DesktopDevice.telegram_id),
-                )
+                owner_clause(DesktopDevice, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
@@ -550,7 +579,9 @@ class UserRepository:
                 or_(
                     DesktopLinkRequest.bind_user_id == uid,
                     DesktopLinkRequest.approved_user_id == uid,
-                    telegram_match(DesktopLinkRequest.approved_telegram_id),
+                    and_(DesktopLinkRequest.bind_user_id.is_(None),
+                         DesktopLinkRequest.approved_user_id.is_(None),
+                         telegram_match(DesktopLinkRequest.approved_telegram_id)),
                 )
             )
         )
@@ -568,6 +599,9 @@ class UserRepository:
 
         # Faqat users.id bilan bog'langan account state.
         by_user_id = [
+            (AIUsageEvent, AIUsageEvent.user_id),
+            (AIUsageBudget, AIUsageBudget.user_id),
+            (VoicePracticeSession, VoicePracticeSession.user_id),
             (OnboardingTipEvent, OnboardingTipEvent.user_id),
             (CourseAttempt, CourseAttempt.user_id),
             (CourseProgress, CourseProgress.user_id),
@@ -598,97 +632,65 @@ class UserRepository:
         ]
         for model, column in by_telegram_id:
             await self.session.execute(
-                sql_delete(model).where(telegram_match(column))
+                sql_delete(model).where(owner_clause(model, user, telegram_column=column.key)
+                    if hasattr(model, "user_id") else telegram_match(column))
             )
 
         # user_id SET NULL bo'lishi mumkin bo'lgan yoki legacy rowlarda user_id
         # yo'q bo'lib, Telegram ID saqlanib qolishi mumkin bo'lgan jadvallar.
         await self.session.execute(
             sql_delete(AccountNoticeDelivery).where(
-                or_(
-                    AccountNoticeDelivery.user_id == uid,
-                    telegram_match(AccountNoticeDelivery.telegram_id),
-                )
+                owner_clause(AccountNoticeDelivery, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(BotOutboundEvent).where(
-                or_(
-                    BotOutboundEvent.user_id == uid,
-                    telegram_match(BotOutboundEvent.telegram_id),
-                )
+                owner_clause(BotOutboundEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(BotReachabilityEvent).where(
-                or_(
-                    BotReachabilityEvent.user_id == uid,
-                    telegram_match(BotReachabilityEvent.telegram_id),
-                )
+                owner_clause(BotReachabilityEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(ConversionFunnelEvent).where(
-                or_(
-                    ConversionFunnelEvent.user_id == uid,
-                    telegram_match(ConversionFunnelEvent.telegram_id),
-                )
+                owner_clause(ConversionFunnelEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(CourseMiniAppEvent).where(
-                or_(
-                    CourseMiniAppEvent.user_id == uid,
-                    telegram_match(CourseMiniAppEvent.telegram_id),
-                )
+                owner_clause(CourseMiniAppEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(CoursePilotEvent).where(
-                or_(
-                    CoursePilotEvent.user_id == uid,
-                    telegram_match(CoursePilotEvent.telegram_id),
-                )
+                owner_clause(CoursePilotEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(CourseUserNotification).where(
-                or_(
-                    CourseUserNotification.user_id == uid,
-                    telegram_match(CourseUserNotification.telegram_id),
-                )
+                owner_clause(CourseUserNotification, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(SubscriptionEntryEvent).where(
-                or_(
-                    SubscriptionEntryEvent.user_id == uid,
-                    telegram_match(SubscriptionEntryEvent.telegram_id),
-                )
+                owner_clause(SubscriptionEntryEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(TrialRiskEvent).where(
-                or_(
-                    TrialRiskEvent.user_id == uid,
-                    telegram_match(TrialRiskEvent.telegram_id),
-                )
+                owner_clause(TrialRiskEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(BotFeedback).where(
-                or_(
-                    BotFeedback.user_id == uid,
-                    telegram_match(BotFeedback.telegram_id),
-                )
+                owner_clause(BotFeedback, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(CourseAdView).where(
-                or_(
-                    CourseAdView.user_id == uid,
-                    telegram_match(CourseAdView.user_telegram_id),
-                )
+                owner_clause(CourseAdView, user, telegram_column="user_telegram_id")
             )
         )
 
@@ -712,8 +714,10 @@ class UserRepository:
         await self.session.execute(
             sql_delete(Referral).where(
                 or_(
-                    telegram_match(Referral.referrer_telegram_id),
-                    telegram_match(Referral.invited_user_telegram_id),
+                    Referral.referrer_user_id == uid,
+                    Referral.invited_user_id == uid,
+                    and_(Referral.referrer_user_id.is_(None), telegram_match(Referral.referrer_telegram_id)),
+                    and_(Referral.invited_user_id.is_(None), telegram_match(Referral.invited_user_telegram_id)),
                 )
             )
         )
@@ -722,7 +726,9 @@ class UserRepository:
         # (NULL target) and campaigns for every other learner are preserved.
         await self.session.execute(
             sql_delete(DiscountCampaign).where(
-                telegram_match(DiscountCampaign.target_telegram_id)
+                or_(DiscountCampaign.target_user_id == uid,
+                    and_(DiscountCampaign.target_user_id.is_(None),
+                         telegram_match(DiscountCampaign.target_telegram_id)))
             )
         )
 
@@ -730,13 +736,13 @@ class UserRepository:
         await self.session.flush()
         return True
 
-    async def set_blocked(self, telegram_id: int, blocked: bool) -> Optional[User]:
+    async def set_blocked(self, telegram_id: int | User, blocked: bool) -> Optional[User]:
         """Foydalanuvchini admin tomonidan bloklaydi yoki blokdan chiqaradi.
 
         Blokdan chiqarilganda holat obuna muddatiga qarab tiklanadi:
         muddati o'tmagan tasdiqlangan obuna bo'lsa "active", aks holda "free".
         """
-        user = await self.get_by_telegram_id(telegram_id)
+        user = await self.get_by_actor(telegram_id)
         if not user:
             return None
         if blocked:

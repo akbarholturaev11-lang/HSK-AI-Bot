@@ -12,6 +12,7 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.message import Message
 from app.services.app_error_context_service import APP_ERROR_CONTENT_TYPE
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.account_identity import owner_clause
 
 
 class BotBlockCauseService:
@@ -116,6 +117,13 @@ class BotBlockCauseService:
         }
 
     async def analyze(self, user) -> dict:
+        if not getattr(user, "telegram_id", None):
+            return {
+                "available": False, "title": "Telegram ulanmagan", "key": "telegram_not_linked",
+                "confidence": "—", "score": 0, "data_quality": "not_linked",
+                "data_quality_label": "Telegram ulanmagan", "evidence": [], "alternatives": [],
+                "disclaimer": "Telegram block sababi faqat Telegram ulangan akkaunt uchun hisoblanadi.",
+            }
         if not BotBlockStatusService.is_bot_blocked(user):
             return {
                 "available": False,
@@ -210,7 +218,7 @@ class BotBlockCauseService:
             await self.session.execute(
                 select(BotReachabilityEvent)
                 .where(
-                    BotReachabilityEvent.telegram_id == int(user.telegram_id),
+                    owner_clause(BotReachabilityEvent, user, telegram_column="telegram_id"),
                     BotReachabilityEvent.event_type == "blocked",
                     BotReachabilityEvent.created_at >= block_at - timedelta(minutes=2),
                     BotReachabilityEvent.created_at <= block_at + timedelta(minutes=2),
@@ -231,7 +239,7 @@ class BotBlockCauseService:
                     func.count().label("cnt"),
                 )
                 .where(
-                    CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                    owner_clause(CourseMiniAppEvent, user, telegram_column="telegram_id"),
                     CourseMiniAppEvent.event_name.in_(self.APP_OPEN_EVENTS),
                     CourseMiniAppEvent.created_at >= block_at,
                 )
@@ -329,7 +337,7 @@ class BotBlockCauseService:
                 await self.session.execute(
                     select(BotOutboundEvent)
                     .where(
-                        BotOutboundEvent.telegram_id == int(user.telegram_id),
+                        owner_clause(BotOutboundEvent, user, telegram_column="telegram_id"),
                         BotOutboundEvent.status == "sent",
                         BotOutboundEvent.created_at >= start,
                         BotOutboundEvent.created_at <= block_at,
@@ -383,7 +391,7 @@ class BotBlockCauseService:
             await self.session.execute(
                 select(ConversionFunnelEvent)
                 .where(
-                    ConversionFunnelEvent.telegram_id == int(user.telegram_id),
+                    owner_clause(ConversionFunnelEvent, user, telegram_column="telegram_id"),
                     ConversionFunnelEvent.event_name.in_(self.FRICTION_EVENTS),
                     ConversionFunnelEvent.created_at >= start,
                     ConversionFunnelEvent.created_at <= block_at,
@@ -443,7 +451,7 @@ class BotBlockCauseService:
                     select(func.count())
                     .select_from(CourseMiniAppEvent)
                     .where(
-                        CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                        owner_clause(CourseMiniAppEvent, user, telegram_column="telegram_id"),
                         CourseMiniAppEvent.event_name.in_(("lesson_started", "android_lesson_started")),
                         CourseMiniAppEvent.created_at <= block_at,
                     )

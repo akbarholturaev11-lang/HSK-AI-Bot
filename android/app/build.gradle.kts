@@ -1,4 +1,5 @@
 import java.util.Properties
+import java.net.URI
 
 plugins {
     alias(libs.plugins.android.application)
@@ -41,8 +42,8 @@ val hasReleaseSigning = releaseStoreFile != null &&
  * APK. `app-direct-release.apk` would leave the admin typing the version from
  * memory on every upload, so the artifact carries it instead.
  */
-val appVersionName = "1.7.17"
-val appVersionCode = 48
+val appVersionName = "1.7.21"
+val appVersionCode = 52
 
 val audioCdnOrigin: String = (
     (project.findProperty("POMP_AUDIO_CDN_ORIGIN") as String?)
@@ -60,6 +61,20 @@ val apiOrigin: String = (project.findProperty("POMP_API_ORIGIN") as String?)
 
 require(apiOrigin.startsWith("https://")) {
     "POMP_API_ORIGIN must be an https origin. Set it in gradle.properties."
+}
+
+// A staging client must never overwrite a learner's production/debug install
+// or reuse its credentials. This opt-in affects debug variants only.
+val qaOriginProperty = project.findProperty("POMP_QA_API_ORIGIN") as String?
+val qaApiOrigin = qaOriginProperty.orEmpty().trim().trimEnd('/')
+val qaBuild = qaOriginProperty != null
+if (qaBuild) {
+    val uri = runCatching { URI(qaApiOrigin) }.getOrNull()
+    require(uri != null && uri.scheme == "https" && !uri.host.isNullOrBlank() &&
+        uri.rawUserInfo == null && uri.rawPath.orEmpty().isEmpty() &&
+        uri.rawQuery == null && uri.rawFragment == null && qaApiOrigin != apiOrigin) {
+        "POMP_QA_API_ORIGIN must be a distinct https staging origin without credentials or a path"
+    }
 }
 
 // Google Sign-In uses the WEB client id (Credential Manager mints a token
@@ -101,13 +116,16 @@ android {
         buildConfigField("String", "API_ORIGIN", "\"$apiOrigin\"")
         buildConfigField("String", "AUDIO_CDN_ORIGIN", buildString(audioCdnOrigin))
         buildConfigField("String", "DEEP_LINK_SCHEME", "\"pomp-hsk-ai\"")
+        buildConfigField("boolean", "QA_BUILD", "false")
+        manifestPlaceholders["pompDeepLinkScheme"] = "pomp-hsk-ai"
+        manifestPlaceholders["pompApplicationLabel"] = "@string/app_name"
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
         buildConfigField("String", "FIREBASE_APP_ID", buildString(firebaseOption("POMP_FIREBASE_APP_ID")))
         buildConfigField("String", "FIREBASE_SENDER_ID", buildString(firebaseOption("POMP_FIREBASE_SENDER_ID")))
         buildConfigField("String", "FIREBASE_PROJECT_ID", buildString(firebaseOption("POMP_FIREBASE_PROJECT_ID")))
         buildConfigField("String", "FIREBASE_API_KEY", buildString(firebaseOption("POMP_FIREBASE_API_KEY")))
 
-        resourceConfigurations += listOf("uz", "ru", "tg")
+        androidResources.localeFilters += listOf("uz", "ru", "tg")
     }
 
     // The two distribution channels differ in exactly one thing: whether the
@@ -146,9 +164,20 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".debug"
-            versionNameSuffix = "-debug"
+            applicationIdSuffix = if (qaBuild) ".qa" else ".debug"
+            versionNameSuffix = if (qaBuild) "-qa" else "-debug"
             isMinifyEnabled = false
+            if (qaBuild) {
+                buildConfigField("String", "API_ORIGIN", buildString(qaApiOrigin))
+                buildConfigField("String", "DEEP_LINK_SCHEME", "\"pomp-hsk-ai-qa\"")
+                buildConfigField("boolean", "QA_BUILD", "true")
+                manifestPlaceholders["pompDeepLinkScheme"] = "pomp-hsk-ai-qa"
+                resValue("string", "qa_app_name", "HSK AI QA")
+                manifestPlaceholders["pompApplicationLabel"] = "@string/qa_app_name"
+                // Never register this separate test package in production FCM.
+                listOf("FIREBASE_APP_ID", "FIREBASE_SENDER_ID", "FIREBASE_PROJECT_ID", "FIREBASE_API_KEY")
+                    .forEach { buildConfigField("String", it, "\"\"") }
+            }
         }
         release {
             isMinifyEnabled = true
@@ -195,6 +224,13 @@ android {
         warningsAsErrors = false
         abortOnError = true
         disable += "GradleDependency"
+    }
+}
+
+androidComponents {
+    beforeVariants(selector().withBuildType("release")) {
+        // A QA invocation cannot accidentally produce a production release.
+        if (qaBuild) it.enable = false
     }
 }
 

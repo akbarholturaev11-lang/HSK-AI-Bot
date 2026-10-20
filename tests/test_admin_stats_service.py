@@ -139,20 +139,15 @@ class _QueuedSession:
 class TopReferrersTests(unittest.IsolatedAsyncioTestCase):
     async def test_top_referrers_prefers_username_then_full_name(self):
         rows = [
-            SimpleNamespace(tid=101, total=9, activated=5),
-            SimpleNamespace(tid=102, total=4, activated=4),
-            SimpleNamespace(tid=103, total=2, activated=0),
+            SimpleNamespace(id=1, telegram_id=101, username="alisher", full_name="Alisher A", total=9, activated=5),
+            SimpleNamespace(id=2, telegram_id=102, username=None, full_name="Bobur B", total=4, activated=4),
+            SimpleNamespace(id=3, telegram_id=None, username=None, full_name=None, total=2, activated=0),
         ]
-        users = [
-            SimpleNamespace(telegram_id=101, username="alisher", full_name="Alisher A"),
-            SimpleNamespace(telegram_id=102, username=None, full_name="Bobur B"),
-            # 103 ataylab yo'q — telegram_id ko'rsatilishi kerak
-        ]
-        session = _QueuedSession([_FetchResult(rows), _ScalarsResult(users)])
+        session = _QueuedSession([_FetchResult(rows)])
 
         result = await top_referrers(session, limit=5)
 
-        self.assertEqual([r.name for r in result], ["@alisher", "Bobur B", "103"])
+        self.assertEqual([r.name for r in result], ["@alisher", "Bobur B", "Account 3"])
         self.assertEqual([r.total for r in result], [9, 4, 2])
         self.assertEqual(result[0].activated, 5)
 

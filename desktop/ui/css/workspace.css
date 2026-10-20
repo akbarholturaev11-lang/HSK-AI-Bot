@@ -5647,6 +5647,18 @@ html.lesson-active .ai-drawer.is-open {
   border-bottom: 0;
 }
 
+.auth-referral {
+  display: grid;
+  gap: 6px;
+  margin: 14px 0;
+  font-size: 12px;
+  text-align: left;
+}
+
+.auth-referral input {
+  width: 100%;
+}
+
 .setting-select,
 .setting-time {
   flex: 0 0 auto;
@@ -8439,4 +8451,13 @@ html.lesson-active .ai-drawer.is-open {
   .ai-message.is-user {
     max-width: 90%;
   }
+}
+
+.identity-link-shell {
+  width: min(560px, calc(100vw - 32px));
+  padding: 28px;
+}
+
+.identity-link-shell h2 {
+  margin-top: 0;
 }

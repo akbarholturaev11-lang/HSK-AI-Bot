@@ -7,7 +7,6 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from app.api.android_features import _access_token, _validated_payload, AndroidFeatureError
 from app.db.models.assistant import AssistantConversation, AssistantRequest
-from app.repositories.user_repo import UserRepository
 from app.services.desktop_auth_service import DesktopAuthService, DesktopAuthError
 from app.services.assistant_service import AssistantService, AssistantInput, AssistantError, decode_media, request_payload, process_request
 from app.services.assistant_assessment_service import assessment_finished
@@ -25,7 +24,7 @@ def create_android_assistant_router(*, session_factory, settings_obj):
         if not getattr(settings_obj, "ANDROID_ASSISTANT_ENABLED", True):
             raise AssistantError("assistant_disabled", 503)
         auth = await DesktopAuthService(session, settings_obj).authenticate(_access_token(request))
-        user = await UserRepository(session).get_by_telegram_id(auth.user.telegram_id)
+        user = auth.user
         if user is None or user.status == "blocked":
             raise AssistantError("access_blocked", 403)
         return user

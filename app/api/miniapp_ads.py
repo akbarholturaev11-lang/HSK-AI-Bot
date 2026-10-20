@@ -27,7 +27,6 @@ from app.services.ad_placement_service import (
     normalize_placement,
 )
 from app.services.conversion_funnel_service import ConversionFunnelService
-from app.services.course_ad_service import CourseAdService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 
 

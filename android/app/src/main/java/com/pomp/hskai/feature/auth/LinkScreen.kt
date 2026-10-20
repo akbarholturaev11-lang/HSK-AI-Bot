@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.auth
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,9 +48,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -68,18 +73,18 @@ import com.pomp.hskai.core.design.components.HskCharacterMood
 import com.pomp.hskai.core.design.components.HskCharacterStage
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.i18n.AppLanguage
+import kotlin.math.ceil
 
 /**
  * The way into the app: one card per sign-in provider.
  *
- * Telegram is always offered, because it is the only flow that can create an
- * account. Google and Apple appear only when the server reports them, so a
+ * Telegram is always offered. Google and Apple sign in or create an account
+ * when the server reports them, so a
  * build or deployment without OAuth credentials shows a Telegram-only screen
  * rather than a button that fails when tapped.
  *
- * Nothing on this screen asks the learner to read, copy or type a code: the
- * Telegram card opens the bot, the bot shows one confirm button, and the
- * session arrives through the poll that is already running.
+ * Invitation attribution comes from the launch link and stays outside this
+ * screen; signing in must not ask the learner to type a code.
  */
 @Composable
 fun LinkScreen(
@@ -95,9 +100,8 @@ fun LinkScreen(
     onDismissWaiting: () -> Unit = {},
 ) {
     val context = LocalContext.current
-    // Apple has no native SDK, so its leg runs in a Custom Tab. The result
-    // comes back through the poll that is already running, which is why the
-    // app needs no inbound auth deep link and no new allowlisted destination.
+    // Google and Apple use a Custom Tab. Browser return reopens the app;
+    // the result comes only through the original request's proof poll.
     LaunchedEffect(state.pendingBrowserUrl) {
         val url = state.pendingBrowserUrl
         if (!url.isNullOrEmpty()) {
@@ -116,54 +120,116 @@ fun LinkScreen(
         }
     }
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-                .navigationBarsPadding()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            BrandHeader(language = language, onLanguageSelected = onLanguageSelected)
-            Spacer(Modifier.height(12.dp))
-            HeroPanda()
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.auth_welcome_greeting),
-                style = MaterialTheme.typography.headlineLarge,
-                color = PompColors.Ink,
-                textAlign = TextAlign.Center,
-            )
-            Spacer(Modifier.height(6.dp))
-            Text(
-                text = stringResource(R.string.auth_choose_method),
-                style = MaterialTheme.typography.bodyLarge,
-                color = PompColors.InkSecondary,
-                textAlign = TextAlign.Center,
-            )
-            Spacer(Modifier.height(24.dp))
-            val started = state.busyProvider != null && state.isWaitingForApproval
-            if (started || state.isRequestingCode || state.isLinked) {
-                WaitingBlock(
-                    telegram = state.busyProvider != AuthProvider.GOOGLE &&
-                        state.busyProvider != AuthProvider.APPLE,
-                    onOpenTelegramAgain = onContinueWithTelegram,
-                    onDismiss = onDismissWaiting,
+        Box(Modifier.fillMaxSize()) {
+            ChineseMotifBackground()
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .navigationBarsPadding()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                BrandHeader(language = language, onLanguageSelected = onLanguageSelected)
+                Spacer(Modifier.height(12.dp))
+                HeroPanda()
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.auth_welcome_greeting),
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = PompColors.Ink,
+                    textAlign = TextAlign.Center,
                 )
-            } else {
-                ProviderCards(
-                    state = state,
-                    onContinueWithTelegram = onContinueWithTelegram,
-                    onSignInWithGoogle = onSignInWithGoogle,
-                    onSignInWithApple = onSignInWithApple,
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = stringResource(R.string.auth_choose_method),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = PompColors.InkSecondary,
+                    textAlign = TextAlign.Center,
                 )
+                Spacer(Modifier.height(24.dp))
+                val started = state.busyProvider != null && state.isWaitingForApproval
+                if (started || state.isRequestingCode || state.isLinked) {
+                    WaitingBlock(
+                        telegram = state.busyProvider != AuthProvider.GOOGLE &&
+                            state.busyProvider != AuthProvider.APPLE,
+                        onOpenTelegramAgain = onContinueWithTelegram,
+                        onDismiss = onDismissWaiting,
+                    )
+                } else {
+                    ProviderCards(
+                        state = state,
+                        onContinueWithTelegram = onContinueWithTelegram,
+                        onSignInWithGoogle = onSignInWithGoogle,
+                        onSignInWithApple = onSignInWithApple,
+                    )
+                }
+                Spacer(Modifier.height(28.dp))
+                Tagline()
+                Spacer(Modifier.height(12.dp))
             }
-            Spacer(Modifier.height(28.dp))
-            Tagline()
-            Spacer(Modifier.height(12.dp))
         }
     }
+}
+
+/** Quiet ruyi clouds and huiwen (square-fret) trim, drawn below every sign-in control. */
+@Composable
+private fun ChineseMotifBackground() {
+    val cloudColor = PompColors.CinnabarDark.copy(alpha = if (PompColors.IsDark) 0.22f else 0.13f)
+    val fretColor = PompColors.GoldInk.copy(alpha = if (PompColors.IsDark) 0.27f else 0.18f)
+    Canvas(Modifier.fillMaxSize()) {
+        val cloudWidth = 166.dp.toPx()
+        drawRuyiCloud(Offset(-cloudWidth * 0.27f, size.height * 0.25f), cloudWidth, cloudColor)
+        drawRuyiCloud(Offset(size.width - cloudWidth * 0.63f, size.height * 0.68f), cloudWidth, cloudColor)
+
+        val tile = 34.dp.toPx()
+        val count = ceil(size.width / tile).toInt()
+        val trimY = size.height - 74.dp.toPx()
+        repeat(count) { index ->
+            drawSquareFret(index * tile + (size.width - count * tile) / 2f, trimY, tile, fretColor)
+        }
+    }
+}
+
+private fun DrawScope.drawRuyiCloud(origin: Offset, width: Float, color: Color) {
+    fun x(value: Float) = origin.x + value * width / 120f
+    fun y(value: Float) = origin.y + value * width / 120f
+    val outer = Path().apply {
+        moveTo(x(2f), y(51f))
+        cubicTo(x(21f), y(51f), x(24f), y(43f), x(20f), y(35f))
+        cubicTo(x(16f), y(28f), x(6f), y(29f), x(7f), y(36f))
+        cubicTo(x(9f), y(43f), x(20f), y(41f), x(27f), y(31f))
+        cubicTo(x(35f), y(18f), x(45f), y(17f), x(52f), y(26f))
+        cubicTo(x(58f), y(7f), x(79f), y(8f), x(88f), y(27f))
+        cubicTo(x(99f), y(20f), x(113f), y(28f), x(112f), y(39f))
+        cubicTo(x(111f), y(51f), x(96f), y(52f), x(94f), y(43f))
+        cubicTo(x(93f), y(37f), x(102f), y(36f), x(103f), y(42f))
+        cubicTo(x(104f), y(50f), x(94f), y(58f), x(83f), y(52f))
+        cubicTo(x(71f), y(46f), x(70f), y(39f), x(75f), y(34f))
+    }
+    drawPath(outer, color, style = Stroke(width = 1.5.dp.toPx()))
+    val lower = Path().apply {
+        moveTo(x(27f), y(54f))
+        cubicTo(x(44f), y(54f), x(47f), y(45f), x(43f), y(40f))
+        cubicTo(x(38f), y(34f), x(32f), y(40f), x(36f), y(44f))
+        cubicTo(x(40f), y(49f), x(56f), y(49f), x(63f), y(41f))
+    }
+    drawPath(lower, color, style = Stroke(width = 1.5.dp.toPx()))
+}
+
+private fun DrawScope.drawSquareFret(left: Float, top: Float, tile: Float, color: Color) {
+    val fret = Path().apply {
+        moveTo(left + tile * 0.06f, top + tile * 0.10f)
+        lineTo(left + tile * 0.90f, top + tile * 0.10f)
+        lineTo(left + tile * 0.90f, top + tile * 0.90f)
+        lineTo(left + tile * 0.12f, top + tile * 0.90f)
+        lineTo(left + tile * 0.12f, top + tile * 0.32f)
+        lineTo(left + tile * 0.68f, top + tile * 0.32f)
+        lineTo(left + tile * 0.68f, top + tile * 0.69f)
+        lineTo(left + tile * 0.39f, top + tile * 0.69f)
+    }
+    drawPath(fret, color, style = Stroke(width = 1.dp.toPx()))
 }
 
 /**

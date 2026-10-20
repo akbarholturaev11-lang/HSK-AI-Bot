@@ -14,6 +14,7 @@ from app.db.models.payment import Payment
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.payment_repo import PaymentRepository
+from app.services.account_identity import account_user_id, actual_telegram_id, owner_clause
 from app.services.course_access_policy_service import COURSE_ACCESS_MODE_SUBSCRIPTION
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 
@@ -421,7 +422,7 @@ class CourseSalesExperimentService:
         result = await self.session.execute(
             select(Payment.id)
             .where(
-                Payment.user_telegram_id == int(telegram_id),
+                owner_clause(Payment, telegram_id),
                 Payment.payment_status.in_(("draft", "pending")),
                 or_(
                     Payment.discount_campaign_id.is_not(None),
@@ -440,11 +441,13 @@ class CourseSalesExperimentService:
         keeping them in the cohort would mix campaign lift into sales_value_v1.
         """
         for campaign in await DiscountCampaignRepository(self.session).list_current(now):
-            if (
-                campaign.target_telegram_id
-                and int(campaign.target_telegram_id) != int(user.telegram_id)
-            ):
-                continue
+            target_user_id = getattr(campaign, "target_user_id", None)
+            if target_user_id is not None:
+                if target_user_id != account_user_id(user):
+                    continue
+            elif campaign.target_telegram_id is not None:
+                if campaign.target_telegram_id != actual_telegram_id(user):
+                    continue
             audience_checks = (
                 (campaign.audience_status, getattr(user, "status", None)),
                 (campaign.audience_language, getattr(user, "language", None)),

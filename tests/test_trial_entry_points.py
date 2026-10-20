@@ -95,8 +95,8 @@ class TrialEntryPointTests(unittest.TestCase):
     def test_only_explicit_trial_cta_can_start_the_trial(self):
         # Clicking the body of a trial-eligible Pro card opens checkout;
         # clicking the dedicated 7-day CTA starts the server-authorised trial.
-        self.assertIn('function doAction(explicitCta){', CAROUSEL)
-        self.assertIn('act.addEventListener("click",function(event){event.stopPropagation();doAction(true)})', CAROUSEL)
+        self.assertIn('function doAction(explicitCta,kind){', CAROUSEL)
+        self.assertIn('event.stopPropagation();doAction(true,slide.dataset.promoKind)', CAROUSEL)
         self.assertIn('if(p.action==="trial"&&explicitCta===true)', CAROUSEL)
         self.assertIn('App.goPay(p.renew?', CAROUSEL)
         self.assertNotIn('if(p.action==="trial"){', CAROUSEL)

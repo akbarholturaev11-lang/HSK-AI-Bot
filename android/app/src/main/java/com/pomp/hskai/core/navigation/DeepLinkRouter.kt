@@ -1,5 +1,8 @@
 package com.pomp.hskai.core.navigation
 
+import java.net.URI
+import com.pomp.hskai.BuildConfig
+
 /**
  * Every internal destination the app is willing to open from a URI.
  *
@@ -56,7 +59,7 @@ enum class PracticeTool(val slug: String) {
 
 object DeepLinkRouter {
 
-    const val SCHEME = "pomp-hsk-ai"
+    const val SCHEME = BuildConfig.DEEP_LINK_SCHEME
 
     /**
      * Canonical mini-lesson bounds, matching the backend contract in
@@ -66,6 +69,13 @@ object DeepLinkRouter {
 
     /** Digits only, no leading zero and no sign, so `01`/`+5` are rejected. */
     private val LESSON_ORDER_FORMAT = Regex("^[1-9][0-9]{0,2}$")
+
+    /** Fixed wake-up only: identity and tokens come from the existing bound proof poll. */
+    fun isAuthReturn(raw: String?): Boolean = runCatching {
+        val uri = URI(raw?.trim().orEmpty())
+        uri.scheme == SCHEME && uri.rawAuthority == "oauth-return" &&
+            uri.rawPath.orEmpty().isEmpty() && uri.rawQuery == null && uri.rawFragment == null
+    }.getOrDefault(false)
 
     /**
      * Resolves a deep link to a known destination, or null when the URI is not

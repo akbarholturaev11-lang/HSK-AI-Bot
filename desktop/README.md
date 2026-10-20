@@ -102,14 +102,24 @@ its separate bot-chat delivery path when the current release is available by
 Telegram `file_id`. Desktop installers are downloaded directly; the Mini App
 does not close or send a desktop installer through the bot.
 
-After installation, the desktop app shows a short code. The bot displays the
+When Telegram is selected after installation, the desktop app shows a short code. The bot displays the
 device information and requires an explicit approve/cancel action. Opening the
 deep-link alone never links an account.
 
-Desktop has Google and Apple OAuth flows. Provider identities link to the same
-internal `users.id`, so course progress and subscription are shared rather than
-creating a separate provider account. Email is metadata, not an account lookup
-or ownership proof. See `../DESKTOP_AUTH_CONTRACT.md` and `../OAUTH_SETUP.md`.
+Google and Apple OAuth can each create a canonical `users.id` without Telegram;
+an already linked provider opens its existing owner. Course progress, Pro,
+the separate HSK 3.0 purchase and referrals belong to that account. Add another
+sign-in method from its profile; email is metadata, never a merge or ownership
+proof. An optional invitation code is entered before creating a new account.
+macOS and Windows share this flow and the existing manual receipt checkout.
+See `../DESKTOP_AUTH_CONTRACT.md`, `../OAUTH_SETUP.md` and the release hold in
+`../docs/UNIVERSAL_NATIVE_ACCOUNTS.md`.
+
+Provider-first accounts can connect an unused Telegram identity from Profile
+on both macOS and Windows. The bot names the canonical target account and
+requires explicit private-chat confirmation. Closing the pending flow cancels
+its proof; it never signs into another account, merges existing owners or
+replaces the desktop session.
 
 ## Local preview
 
@@ -153,6 +163,44 @@ cargo check --locked
 cargo test --locked
 cargo clippy --locked --all-targets -- -D warnings
 ```
+
+### Isolated staging acceptance builds
+
+`POMP_API_ORIGIN` is captured at compile time. It accepts a canonical HTTPS
+origin without a trailing slash, credentials, port, path, query or fragment.
+The default remains production. Changing a running process environment cannot
+redirect an installed app. Nonproduction builds use an origin-specific keyring
+namespace and disable production update checks/install, so they cannot send a
+production refresh token to staging or replace themselves during acceptance.
+
+Build the paired QA bundle with the QA config as well as the staging origin:
+
+```bash
+# macOS, from desktop/
+POMP_API_ORIGIN=https://your-staging.example npm run tauri -- build --config src-tauri/tauri.qa.conf.json --bundles app,dmg
+```
+
+```powershell
+# Windows, from desktop/
+$env:POMP_API_ORIGIN = 'https://your-staging.example'
+npm run tauri -- build --config src-tauri/tauri.qa.conf.json --bundles nsis
+Remove-Item Env:POMP_API_ORIGIN
+```
+
+The QA config uses `com.pomp.hskai.qa` and only the
+`pomp-hsk-ai-qa://oauth-return` protocol. Its staging backend must set
+`OAUTH_NATIVE_RETURN_SCHEME=pomp-hsk-ai-qa`. Production retains
+`pomp-hsk-ai://oauth-return`. A callback only brings an existing pending browser
+flow to the foreground and resumes proof-authenticated polling; it never
+carries a session token or proves account ownership. macOS protocol activation
+requires the bundled app to be installed; test the Windows NSIS installation
+too. Browser policy may require clicking the visible HSK AI return link.
+
+For a distinct staging avatar host, add only that HTTPS origin to `img-src`
+through an additional local Tauri config; keep `connect-src` restricted to IPC.
+Do not publish these QA artifacts or reuse production learner data for signup
+and payment acceptance. Neither QA commands nor fixture tests clear the
+universal account production release hold.
 
 Focused backend/UI checks from the repository root:
 

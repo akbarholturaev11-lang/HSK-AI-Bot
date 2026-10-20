@@ -10,7 +10,7 @@ haqida xulosa bermaydi.
 
 Joriy checkout'dagi source defaultlari Live'ni yopiq tutadi: feature flag `false`,
 Gemini billing tier `free`, allowlist bo'sh. `live_voice_available()` flag,
-API key, `paid` tier, aynan `gemini-3.8-live` modeli, musbat sessiya budjeti va
+API key, aynan `gemini-3.8-live` modeli, musbat sessiya budjeti va
 aniq user allowlist (yoki `*`)ni talab qiladi. Ishlab turgan deployment override
 va provider holati bu source'dan aniqlanmaydi.
 
@@ -18,13 +18,15 @@ O'sha snapshot scope'i: migration `0095_android_live_voice`, authenticated Andro
 relay, `turn/live` sessiya ajratilishi, sessiya ulanish lease/resumption,
 usage log, 180 soniya/`$0.15` Live sessiya chegarasi va Android PCM audio
 ekrani. 7 dialog — o‘quv yakunlanish mezoni, Live sessiya limiti emas.
-`ANDROID_VOICE_LIVE_ENABLED` default `false`; paid Gemini billing,
+`ANDROID_VOICE_LIVE_ENABLED` default `false`; Gemini API kirishi,
 musbat cap va aniq user allowlist ham talab qilinadi. Rejaning worker bilan
 kechiktirilgan enrichment, billing rezerv/reconciliation, qayta yuklangandan
 keyin UI sessiyasini tiklash, fon lifecycle va to'liq telemetriya bosqichlari
 hali bajarilmagan.
 
 Maqsad: foydalanuvchi suhbatni bir marta boshlaydi, odatdagidek xitoycha gapiradi va AI ovozda javob beradi. AI gapirayotganda foydalanuvchi gap boshlasa, javob to'xtaydi va AI yangi gapni tinglaydi. Kurs darajasi, dars so'zlari, pinyin, tarjima, xatolar va yakuniy o'quv natijasi shu suhbat bilan bog'lanadi.
+
+2026-10-18 tekshiruvi: rasmiy narx jadvali `gemini-3.8-live` uchun Free Tier'ni qo‘llaydi; QA kaliti bilan haqiqiy Live setup muvaffaqiyatli tekshirildi. Billing tier feature gate emas; flag, allowlist, sessiya/budjet va access tekshiruvlari saqlanadi. Manba: https://ai.google.dev/gemini-api/docs/pricing
 
 **1. Tanlangan yechim va uning chegarasi**
 
@@ -34,7 +36,7 @@ Backend foydalanuvchini tekshiradi, kurs kontekstini beradi, provayder bilan ula
 
 V1 Android'dagi mavjud AI Voice joyida ishlaydi. Amaldagi navbat bilan audio yuborish oqimi texnik zaxira sifatida ishlatiladi. Zaxiraga o'tish ekranda tushuntiriladi va foydalanuvchining tugatilgan dialoglari bitta sessiya tarixida saqlanadi.
 
-Hozirgi gate mavjud `GEMINI_API_KEY` va `GEMINI_BILLING_TIER=paid` qiymatlarini ishlatadi, alohida Live billing profili yo'q. Shu sababli flag real provider usage va xarajat akkauntda tekshirilmaguncha o'chirilgan qoladi. Pilotdan oldin Live audio usage metadata'sining turnmi yoki yig'ilgan counter ekanini aniqlash va `$0.15` cap'ni invoice bilan solishtirish kerak; unknown usage uchun konservativ taxmin bor, u provider invoice'iga teng kafolat emas.
+Hozirgi gate mavjud `GEMINI_API_KEY` qiymatini ishlatadi; `GEMINI_BILLING_TIER` haqiqiy `free` yoki `paid` holatida saqlanadi, alohida Live billing profili yo'q. Shu sababli flag real provider usage va xarajat akkauntda tekshirilmaguncha o'chirilgan qoladi. Pilotdan oldin Live audio usage metadata'sining turnmi yoki yig'ilgan counter ekanini aniqlash va `$0.15` cap'ni invoice bilan solishtirish kerak; unknown usage uchun konservativ taxmin bor, u provider invoice'iga teng kafolat emas.
 
 OpenAI Realtime ham nutqdan nutqqa suhbat, foydalanuvchining AI gapini bo'lishi va WebRTC/WebSocket ulanishini qo'llab-quvvatlaydi. Hozirgi Gemini SDK/provayder infratuzilmasi sabab reja bitta Live integratsiyasiga tayangan. Gemini prototipi sifat yoki mavjudlik mezonidan o'tmasa, provider qarori qayta ko'rib chiqiladi. [Official OpenAI documentation](https://developers.openai.com/api/docs/guides/realtime).
 
