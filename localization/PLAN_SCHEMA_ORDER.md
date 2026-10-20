@@ -1,18 +1,8 @@
-## Current branch override — 2026-10-20 (integration, not production)
+## Current integration handoff — 2026-10-20 (P2 ongoing, NOT production)
 
-**Owner-confirmed active work target:** `codex/p3-main-integration-20261020`.
-The original P3 feature branch named in historical sections below has been merged
-into this branch. **Do not edit `main`** until release QA and a separate owner
-decision. The authoritative detailed checkpoint is
-`localization/P3_ACTIVE_HANDOFF.md`. At commit
-`3d24cbb5475c20a70de021bbbebab8a5f74fb900`, the
-[P0 source/localization run 39373412750](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39373412750)
-passed **349 tests at code commit d766f7550888e1a048041692a5aeef861200575a** (run 39373412750), with 823 static UZ/RU/TJ course message keys, content-pinned
-cache invalidation for 12 HTML consumers, zero baseline review blockers and
-zero generated artifact drift. **P2 remains partial**; P3 source-pinned grammar
-display overlay tests pass but authenticated multi-provider/device and live
-release QA remain outstanding. Earlier status tables are chronological, not
-current release readiness.
+**Use `localization/RESUME_NEXT_CHAT.md` then `localization/P3_ACTIVE_HANDOFF.md` as the current state.** This document preserves historical milestones; references below to the original `codex/i18n-local-first-foundation-20261017` branch are superseded for current work by **`codex/p3-main-integration-20261020`**. Owner explicitly prohibits edits to `main` and production deployment until separately authorized. The historical `main` SHA is `055de820db10b32fadffa942938a16e2070f0d52`.
+
+Last verified integration code/document HEAD **`33e14d811b96cbcb11288628bc2aa368622bf69e`**, [P0 run 39373684091](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39373684091) **SUCCESS (349 tests)**, no frozen-source blockers or stale locale generator resources. UZ/RU/TJ course catalogs contain **823 keys per locale**; 12 HTML consumers use content-pinned bundle cache version `20261020-1fee76a7803b`. P3 protected lesson translation paths have 136 source-bound contexts and require remaining full semantics, authenticated backend, multi-provider and real-device QA; **do not claim release readiness**. The next agent must verify the HEAD and tests again before committing.
 
 ## Controlling P3 language QA decision — 2026-10-19
 

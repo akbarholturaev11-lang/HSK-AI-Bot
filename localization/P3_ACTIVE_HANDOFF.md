@@ -1,10 +1,12 @@
 # HSK AI P3 — ACTIVE handoff for a new ChatGPT agent
+
+**Fast start for the next chat:** [`localization/RESUME_NEXT_CHAT.md`](RESUME_NEXT_CHAT.md). Follow that branch/CI checkpoint first; older entries are historical.
 Updated: 2026-10-20. **The latest integration checkpoint below supersedes the earlier 815-key snapshot. Historical feature-branch entries do not describe the latest branch.**
 
 ## 2026-10-20 — CURRENT P2 rating/social copy + P3 semantics checkpoint (CI SUCCESS)
 
 - **Working branch ONLY:** `codex/p3-main-integration-20261020`. Do not modify `main`, deploy, migrate real DB, or merge original PR #179 based on this checkpoint.
-- **Latest verified code HEAD:** `d766f7550888e1a048041692a5aeef861200575a`; [P0 GitHub Actions run 39373412750](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39373412750) **SUCCESS**: **349 tests**, 0 failures; 811 frozen files including 746 lessons, 13 strictly pinned unchanged current-main blobs, **0 baseline blockers**, 6 Mini App lesson fetch callsites with 0 regressions and 6 generated locale artifacts with 0 stale outputs.
+- **Latest verified integration HEAD:** `33e14d811b96cbcb11288628bc2aa368622bf69e`; [P0 GitHub Actions run 39373684091](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39373684091) **SUCCESS**: **349 tests**, 0 failures; 811 frozen files including 746 lessons, 13 strictly pinned unchanged current-main blobs, **0 baseline blockers**, 6 Mini App lesson fetch callsites with 0 regressions and 6 generated locale artifacts with 0 stale outputs.
 - **P2 actual migration:** 8 rating, Telegram username, challenge/duel, retry and copied-toast message keys, across 9 existing Mini App callsites, are read from the offline `hsk-course-i18n.js` bundle with exact UZ/RU/TJ original inline fallback. Existing social operations, auth, user linking, rating and scoring were not changed. Course catalog is now **823 keys per locale (UZ/RU/TJ)**, not 815. Updated the Android/Mini App/Desktop/Bot six resources deterministically.
 - **Cache parity:** all 12 static HTML consumers of the course bundle now reference the same pinned content-hash version `?v=20261020-1fee76a7803b`. The existing test asserts the hash is derived from the current generated bundle, preventing unbumped local-first changes.
 - **P3 focused semantic regression:** two additional source-bound tests added at `d766f75`: `G001/G003` past experience vs 没去过 negation, and `G013/G015/G017` motion/directional 来/去, checked against Chinese grammar-source context and actual UZ/RU/TJ catalog. Existing 136-context/408-value, 48-lesson/408-display-map, source-SHA/grading/entitlement tests are retained. These five focused contexts **are not** a full 136-context linguistic certification.

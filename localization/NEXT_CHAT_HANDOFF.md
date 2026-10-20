@@ -1,8 +1,8 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
-> **FOR NEW CHATS / AGENTS — READ `localization/P3_ACTIVE_HANDOFF.md` FIRST.** This ~historical handoff preserves chronological records; older 'latest' sections or failed CI runs do not override the current active snapshot. Keep all source/access/QA gates intact.
+> **FOR NEW CHATS / AGENTS — READ `localization/RESUME_NEXT_CHAT.md`, THEN `localization/P3_ACTIVE_HANDOFF.md` FIRST.** This ~historical handoff preserves chronological records; older 'latest' sections or failed CI runs do not override the current active snapshot. Keep all source/access/QA gates intact.
 
-## CURRENT STATE — read this first (2026-10-19)
+## HISTORICAL 2026-10-19 STATE — superseded by the current integration handoff
 
 ## P3 completed-lesson explicit denial and 48-lesson parity (2026-10-19)
 
