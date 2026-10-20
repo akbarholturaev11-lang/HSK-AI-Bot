@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "361c2ce61a10d1956ac31ea3ebd1f0cf17f54279",
+  "source_revision": "b887fe08e7b62fb49ab193c069cf49ade5bcee21",
   "counting_note": "61 unique physical source lines cover all 128 current LANG ==/=== literal-locale predicates in course-v3.html after main/P3 integration. Multiple predicates per line remain one classification; these are reviewed source decisions, not runtime UI verification.",
   "coverage_note": "Current merged course-v3.html source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified, including two new main navigation/accessibility sites. All other localized source expressions, dynamic content, other files and rendered UI remain separately audited.",
   "classifications": [
@@ -250,7 +250,7 @@
       "line": 5041,
       "anchor": "LANG===\"ru\"",
       "category": "lesson_example_translation",
-      "reason": "Written/natural pronunciation captions; leave Chinese/pinyin unchanged",
+      "reason": "Written/natural pronunciation captions use local-first foundation keys with exact original UZ/RU/TJ fallback; Chinese and pinyin remain unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 4
     },

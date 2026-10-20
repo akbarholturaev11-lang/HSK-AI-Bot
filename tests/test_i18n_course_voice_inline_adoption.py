@@ -40,7 +40,7 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
             catalog = json.loads(
                 (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
             )["messages"]
-            self.assertEqual(len(catalog), 892)
+            self.assertEqual(len(catalog), 894)
             self.assertEqual(set(original[locale]), set(original["ru"]))
             self.assertEqual(set(live_text[locale]), set(live_text["ru"]))
             for key, value in {**original[locale], **live_text[locale]}.items():
@@ -54,7 +54,7 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
     def test_preload_static_catalog_before_voice_and_keep_original_runtime(self):
         html, main, live = source_parts()
         self.assertLess(
-            html.index("hsk-course-i18n.js?v=20261020-779fc95f8460"),
+            html.index("hsk-course-i18n.js?v=20261020-eaff685fb700"),
             html.index("var VOICE=(function(){"),
         )
         self.assertIn('messages["courseVoiceInline."+key]', html)

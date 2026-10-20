@@ -239,6 +239,7 @@
     <string name="hsk_course_finish_prev" formatted="false">Avvalgi darsni tugating</string>
     <string name="hsk_course_foundation_guided_repair_body" formatted="false">To\'g\'ri javobni ko\'ring va o\'zingiz tasdiqlang.</string>
     <string name="hsk_course_foundation_internet_retry" formatted="false">Internetni tekshiring va qayta yuklang.</string>
+    <string name="hsk_course_foundation_natural_pronunciation" formatted="false">tabiiy talaffuzi</string>
     <string name="hsk_course_foundation_recheck_title" formatted="false">Qayta tekshiruv</string>
     <string name="hsk_course_foundation_repair_reminder" formatted="false">Javobni yana bir bor ko\'ring — birozdan keyin o\'zingiz topasiz.</string>
     <string name="hsk_course_foundation_retry" formatted="false">Qayta urinish</string>
@@ -246,6 +247,7 @@
     <string name="hsk_course_foundation_save_failed" formatted="false">Natija saqlanmadi. Qayta urinib ko\'ring.</string>
     <string name="hsk_course_foundation_saving" formatted="false">Saqlanmoqda…</string>
     <string name="hsk_course_foundation_unavailable" formatted="false">Asoslar hozircha ochilmadi</string>
+    <string name="hsk_course_foundation_written_form" formatted="false">yozilishi</string>
     <string name="hsk_course_foundation_zero_title" formatted="false">0 dan asoslar</string>
     <string name="hsk_course_friends" formatted="false">Do\'stlar</string>
     <string name="hsk_course_goal" formatted="false">Kunlik maqsad</string>

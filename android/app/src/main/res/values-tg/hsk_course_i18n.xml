@@ -239,6 +239,7 @@
     <string name="hsk_course_finish_prev" formatted="false">Дарси пешинаро анҷом диҳед</string>
     <string name="hsk_course_foundation_guided_repair_body" formatted="false">Ҷавоби дурустро бинед ва тасдиқ кунед.</string>
     <string name="hsk_course_foundation_internet_retry" formatted="false">Интернетро санҷед ва аз нав бор кунед.</string>
+    <string name="hsk_course_foundation_natural_pronunciation" formatted="false">талаффузи табиӣ</string>
     <string name="hsk_course_foundation_recheck_title" formatted="false">Санҷиши такрорӣ</string>
     <string name="hsk_course_foundation_repair_reminder" formatted="false">Ҷавобро боз як бор бинед — каме пас худатон меёбед.</string>
     <string name="hsk_course_foundation_retry" formatted="false">Аз нав</string>
@@ -246,6 +247,7 @@
     <string name="hsk_course_foundation_save_failed" formatted="false">Натиҷа сабт нашуд. Боз кӯшиш кунед.</string>
     <string name="hsk_course_foundation_saving" formatted="false">Сабт мешавад…</string>
     <string name="hsk_course_foundation_unavailable" formatted="false">Асосҳо ҳоло дастрас нестанд</string>
+    <string name="hsk_course_foundation_written_form" formatted="false">навишт</string>
     <string name="hsk_course_foundation_zero_title" formatted="false">Асосҳо аз сифр</string>
     <string name="hsk_course_friends" formatted="false">Дӯстон</string>
     <string name="hsk_course_goal" formatted="false">Ҳадафи рӯзона</string>

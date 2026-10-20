@@ -239,6 +239,7 @@
     <string name="hsk_course_finish_prev" formatted="false">Завершите предыдущий урок</string>
     <string name="hsk_course_foundation_guided_repair_body" formatted="false">Посмотрите на правильный ответ и подтвердите его.</string>
     <string name="hsk_course_foundation_internet_retry" formatted="false">Проверьте интернет и повторите загрузку.</string>
+    <string name="hsk_course_foundation_natural_pronunciation" formatted="false">естественное произношение</string>
     <string name="hsk_course_foundation_recheck_title" formatted="false">Повторная проверка</string>
     <string name="hsk_course_foundation_repair_reminder" formatted="false">Посмотрите на ответ ещё раз — скоро вы найдёте его сами.</string>
     <string name="hsk_course_foundation_retry" formatted="false">Повторить</string>
@@ -246,6 +247,7 @@
     <string name="hsk_course_foundation_save_failed" formatted="false">Не удалось сохранить результат. Попробуйте ещё раз.</string>
     <string name="hsk_course_foundation_saving" formatted="false">Сохраняем…</string>
     <string name="hsk_course_foundation_unavailable" formatted="false">Основы пока недоступны</string>
+    <string name="hsk_course_foundation_written_form" formatted="false">на письме</string>
     <string name="hsk_course_foundation_zero_title" formatted="false">Основы с нуля</string>
     <string name="hsk_course_friends" formatted="false">Друзья</string>
     <string name="hsk_course_goal" formatted="false">Дневная цель</string>
