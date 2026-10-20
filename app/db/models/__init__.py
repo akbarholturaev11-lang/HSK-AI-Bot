@@ -44,5 +44,6 @@ from .entitlement_shadow_event import EntitlementShadowEvent
 from .trial_risk_event import TrialRiskEvent
 from .user_identity import UserIdentity
 from .account_deletion import AccountDeletionRequest
+from .public_site_traffic import PublicSiteTrafficDaily
 
 from .user_client_presence import UserClientPresence, AppPromoState

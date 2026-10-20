@@ -188,6 +188,7 @@ from app.services.subscription_currency_service import format_subscription_price
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_ALIF_KEY, PAYMENT_DETAILS_KEY
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
+from app.services.public_site_analytics_service import PublicSiteAnalyticsService
 from app.services.admin_miniapp_service import (
     HOT_LEAD_ACTIVITY_WINDOW,
     AdminMiniAppService,
@@ -663,7 +664,10 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(create_public_site_router(settings_obj=settings))
+app.include_router(create_public_site_router(
+    settings_obj=settings,
+    session_factory=async_session_maker,
+))
 app.include_router(create_account_deletion_router(
     session_factory=async_session_maker, settings_obj=settings,
     notifier=lambda result: notify_deletion_request(bot, settings, result),
@@ -3346,6 +3350,17 @@ async def admin_miniapp_sub_entry_stats(request: Request):
             for r in rows
         ],
     })
+
+
+@app.post("/api/admin-miniapp/public-site-traffic")
+async def admin_miniapp_public_site_traffic(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    async with async_session_maker() as session:
+        rows = await PublicSiteAnalyticsService(session).source_stats()
+    return JSONResponse(content={"ok": True, "rows": rows})
 
 
 @app.post("/api/admin-miniapp/desktop-stats")
