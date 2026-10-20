@@ -1,12 +1,24 @@
-## Current integration handoff — 2026-10-21 (subscription-copy batch CI green; external release QA open)
+## Current integration checkpoint — 2026-10-21 (independent review fixes)
 
-**Use `localization/RESUME_NEXT_CHAT.md` then `localization/P3_ACTIVE_HANDOFF.md` for the current branch/CI state.** Work only on `codex/p3-main-integration-20261020`; do not push/merge `main`, force-push, rebase or deploy production.
+Read `localization/RESUME_NEXT_CHAT.md`, then `localization/P3_ACTIVE_HANDOFF.md`.
+Work only on `codex/p3-main-integration-20261020`; code
+`46e38fbbe8d5540ea4e7bd1e88b677a07a9f4a70` is pushed. Main remains
+`ed527c55eaf8d63acd04902b570c6a66aef8fe3c`, an ancestor. No main push/merge or deploy.
 
-- **Active branch only:** `codex/p3-main-integration-20261020`; latest code commit `f3e2bddfb9833a1960bff3884b4491fb2a1a1ade`; last fully tested code snapshot `678978baa6266fa05973c58bc8011b2800c2bc47` (subsequent commits update only this handoff). No main push/merge or deployment. `origin/main` `ed527c55eaf8d63acd04902b570c6a66aef8fe3c` is an ancestor. No main push/merge or deployment. Draft PR #179 remains attached to the old source branch and is conflicting.
-- **Latest UI batches (`7dedd1d8`, `7fc9dc82`, `f3e2bddf`):** previously completed Bot menu/promo/course/practice/onboarding copy and Android badges remain centralized. The last six Bot subscription button labels now use the common local catalog with exact legacy wording and callbacks preserved; no screens were rebuilt.
-- **Verification:** local P0 workflow-equivalent after `f3e2bddf` passed **386 tests** and all **25 read-only audits** (812 frozen sources, 746 lessons, 0 baseline blockers, 895 course UI keys/locale, 126 common UI keys/locale, 0 stale generated artifacts). Exact-head GitHub Actions at `678978baa6266fa05973c58bc8011b2800c2bc47` succeeded: P0 39473731653, Backend 39473732052, Android 39473840883, Desktop 39473841418. All 18 registered Mini App locale dictionaries have matching locale keys and no parser/placeholder drift.
-- **Remaining release gates:** user-run real Bot test, staging/authenticated account and Free/Trial/Pro/payment/referral checks, old-client refresh, offline and installed Android/WebView/macOS/Windows QA. These require the applicable test environment and accounts; source CI does not establish them.
-- Keep `main` and production untouched.
+- Fixed the three UI/P3 script HTTP 404s and the locked-lesson skip-test regression.
+  Signed/shared access checks protect the six-question projection; full
+  content/start still enforce sequence. Desktop/Android test analytics now stay
+  in fixture SQLite.
+- An independent read of all 136 contexts/408 values corrected seven cells in
+  five contexts and added semantic regressions; source hashes/Chinese/answers
+  and original lesson JSON are unchanged.
+- Local checks passed: **394 P0 tests**, **113 API/HTTP tests**, **25 audits**;
+  812 frozen sources/746 lessons/0 blockers, 895 course and 126 common UI keys
+  per locale, twelve current artifacts. Three-locale mobile smoke used real
+  asset HTTP with synthetic APIs and had 0 JS/console errors.
+- All four code CI runs completed SUCCESS; links: `RESUME_NEXT_CHAT.md`. Real Telegram,
+  authenticated staging/access/payment, old-client, offline and installed
+  platform acceptance remain open. Release requires separate owner authorization.
 
 ## Controlling P3 language QA decision — 2026-10-19
 
@@ -31,14 +43,16 @@ staging and cross-platform QA remain pending.
 > `docs/I18N_MULTILANGUAGE_MIGRATION.md`, and
 > `localization/surface_registry.json`.
 >
-> Status: **P0 source guards and P1 local catalogs implemented; P2 exact-copy adoption continues only where source and context match; P3 agent-owned review and the 136-context canonical catalog are source-bound and delivered display-only behind access checks. Latest implementation SHA `7fc9dc8249816565750d1ac3f629003e2a90ef03` passed local P0 (383 tests) and all 25 read-only audits; exact-head GitHub P0, Android, Backend and Desktop runs succeeded. Course catalog is 895 keys/locale, common catalog 68 keys/locale; all 12 generated UI artifacts (six course and six common) are current. Staging/platform acceptance remains open. Feature branch only.** Earlier dated entries preserve historical states and do not override this checkpoint.
+> Status: P0/P1 source and catalog tooling is implemented; P2 reviewed UI surfaces and P3 authenticated display overlays are integrated on the feature branch. Code `46e38fbb` fixes the independent review findings. Current counts and CI evidence are in RESUME_NEXT_CHAT.md; staging and installed-client acceptance remain open.
 
 ## 0. Where to resume
 
-- Repository: `akbarholturaev11-lang/HSK-AI-Bot`; active branch `codex/p3-main-integration-20261020`; latest implementation SHA `7fc9dc8249816565750d1ac3f629003e2a90ef03`. `origin/main` `ed527c55eaf8d63acd04902b570c6a66aef8fe3c` is an ancestor.
-- Exact-head GitHub P0 39455687320, Android 39455710809, Backend targeted 39458523003 and Desktop UI 39458522328 succeeded; local P0 passed 383 tests and 25 read-only audits. Course catalog 895 keys/locale, common catalog 68 keys/locale, all generated artifacts current.
-- Latest P2 slice localizes dictionary/phrase iframe names, writer controls, lesson-settings accessibility and the new-section badge; all 12 course HTML bundle consumers pin `20261020-57ce728d755d`. The affected three-locale Mini App smoke passed 3 tests.
-- Keep main and production untouched. Staging HTTP, authenticated account/access, old-client, offline and installed-client QA remain open.
+- Continue the existing `codex/p3-main-integration-20261020` worktree and current
+  `localization/RESUME_NEXT_CHAT.md`; do not restart the completed UI batches.
+- The independent review fixes are in code `46e38fbb`. CI results, source
+  coverage, tests and remaining functional acceptance are recorded in the short
+  resume and active P3 handoff; dated entries below are historical evidence.
+- Keep main and production untouched until separately authorized.
 
 ## 1. Architecture / schema
 
@@ -190,10 +204,10 @@ Do not mark implementation complete based on the plan being written.
 | Isolated branch from main | DONE | branch exists |
 | Local-first architecture decision | DONE | plan + `PROJECT_MEMORY.md` |
 | Surface source registry | INITIAL | `localization/surface_registry.json` |
-| Full reviewed inventory/baselines (P0) | IN PROGRESS | 811 frozen sources / 746 lessons / 0 baseline blockers; route security, staging and real-client QA remain open |
-| Generated canonical catalogs + validators (P1) | IMPLEMENTED | deterministic UZ/RU/TJ resources for Android/Mini App/Desktop/Bot; 892 course UI keys and 6 current generated artifacts |
-| Platform runtime migrations (P2) | IN PROGRESS | Mini App uses local course catalog; remaining inline UI and Android/native, Desktop and Bot adoption are still under review |
-| Versioned lesson locale overlays (P3) | IN PROGRESS | 136 contexts / 408 agent-reviewed locale strings; authenticated display-only runtime implemented; release QA pending |
+| Full reviewed inventory/baselines (P0) | IN PROGRESS | 812 frozen sources / 746 lessons / 0 baseline blockers; actual asset HTTP regression added; staging and installed-client acceptance remain open |
+| Generated canonical catalogs + validators (P1) | IMPLEMENTED | 895 course + 126 common UI keys/locale; twelve deterministic local artifacts current |
+| Platform runtime migrations (P2) | IN PROGRESS | Reviewed Mini App/Android/Desktop/Bot surfaces use local catalogs; independent regression fixes passed local checks; installed-platform acceptance remains open |
+| Versioned lesson locale overlays (P3) | IN PROGRESS | 136 contexts / 408 agent-reviewed locale cells; seven corrections source-bound; authenticated display-only runtime implemented; functional acceptance pending |
 | Any new language enabled (P4) | NOT STARTED | prohibited until gates |
 
 ### P0 progress (evidence at the time of this update)

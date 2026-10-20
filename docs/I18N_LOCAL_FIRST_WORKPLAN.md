@@ -1,7 +1,7 @@
 # HSK AI — local-first localization work branch
 
 **Status:** local-first UZ/RU/TJ implementation is in progress on the integration feature branch; no main merge or production release.
-**Active branch:** `codex/p3-main-integration-20261020` (code `f3e2bddf`, last fully tested source snapshot `678978ba`; exact-head P0/Backend/Android/Desktop CI all passed).
+**Active branch:** `codex/p3-main-integration-20261020` (code `46e38fbb`; local P0 394 tests, API/HTTP 113 tests and all 25 audits passed; P0/Backend/Android/Desktop GitHub CI all SUCCESS, linked in `localization/RESUME_NEXT_CHAT.md`).
 **Main starting point:** `160a51d69f3324e3162375213ec61b5587b19533`.
 **Source-of-truth decision:** edit translations once in GitHub; build **separate local artifacts**
 for Android, Mini App, Desktop and Python bot/backend. No per-string translation API.
@@ -104,7 +104,15 @@ without any new runtime per-string network request.
 all 3 existing languages match frozen behavior, and lessons/entitlements are
 independently validated. Do not delete legacy sources before client rollover.
 
-## P3 — optional fourth language launch gate
+## P3 — source-bound lesson locale overlays
+
+Existing UZ/RU/TJ display translations are checked against Chinese context and
+integrated through source-bound overlays after the existing account/lesson
+access decisions. Original Chinese, pinyin, answer identity, grade and progress
+remain protected. Current implementation and verification are tracked in
+`localization/RESUME_NEXT_CHAT.md` and `localization/PLAN_SCHEMA_ORDER.md`.
+
+## P4 — optional fourth language launch gate
 
 All enabled levels, onboarding, subscriptions, failures, notifications,
 accessibility, offline/cached states, bot and live client targets must pass
@@ -133,7 +141,7 @@ No speculative language activation.
 5. Expand to Desktop, Bot, notifications and lesson overlays.
 6. After every slice, compare against baseline and verify `main` remains untouched.
 
-## Confirmed audit hotspots (source paths)
+## Original audit hotspots (2026-10-17 baseline; current status is in RESUME_NEXT_CHAT.md)
 
 - `scripts/gen_course_v3_from_seed.py` hardcodes `uz/ru/tj` when generating
   reverse-builder tokens and explanations.
@@ -154,7 +162,7 @@ No speculative language activation.
 Run from a clean checkout of **this branch**:
 
 ```sh
-git checkout codex/i18n-local-first-foundation-20261017
+git checkout codex/p3-main-integration-20261020
 python3 -m unittest tests.test_i18n_inventory tests.test_i18n_ui_regressions
 python3 scripts/i18n_inventory.py --output /tmp/hsk-i18n-inventory.json
 cd android && python3 tools/check_strings_translated.py

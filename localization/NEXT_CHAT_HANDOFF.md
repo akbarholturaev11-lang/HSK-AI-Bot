@@ -2,7 +2,14 @@
 
 > **FOR NEW CHATS / AGENTS — READ `localization/RESUME_NEXT_CHAT.md`, THEN `localization/P3_ACTIVE_HANDOFF.md` FIRST.** This ~historical handoff preserves chronological records; older 'latest' sections or failed CI runs do not override the current active snapshot. Keep all source/access/QA gates intact.
 
-## Current checkpoint — 2026-10-20 (latest code `79b1516f`)
+## Current checkpoint — 2026-10-21 (review fixes `46e38fbb`)
+
+- Work only on `codex/p3-main-integration-20261020`. Code `46e38fbbe8d5540ea4e7bd1e88b677a07a9f4a70` is pushed; main is unchanged. Detailed current CI and next work: `RESUME_NEXT_CHAT.md`, then `P3_ACTIVE_HANDOFF.md`.
+- Fixed missing public JS asset routes, restored the entitlement-checked locked-lesson skip-test projection, corrected seven grammar translation cells and isolated Desktop/Android test analytics sessions. Required UI scripts must remain public by explicit name, while full lesson/exam JSON stays private. Skip-test question reads may target locked lessons; full lesson content/start still enforce sequence.
+- Local checks: **394 P0 tests**, **113 API/HTTP tests**, **25 read-only audits**, 0 stale artifacts/baseline blockers. Real local asset HTTP + synthetic API mobile smoke passed all UZ/RU/TJ with 0 JS/console errors. Independent source review covered all 136 grammar contexts and 408 locale values; this is not native-speaker certification or installed-client QA.
+- P0, Backend, Android and Desktop CI all completed SUCCESS on code `46e38fbb`; links are recorded in the short resume checkpoint. Real Bot, staging account/access/payment, old-client/offline and installed-platform acceptance remain separate. Keep main/production untouched pending explicit release authorization.
+
+## Historical checkpoint — 2026-10-20 (code `79b1516f`)
 
 - **Active branch only:** `codex/p3-main-integration-20261020`; latest code SHA `79b1516fdd63aa9e4df91b6d425b96c1488cb64e` is pushed to origin. At that code commit, `origin/main` is `ed527c55eaf8d63acd04902b570c6a66aef8fe3c` and is an ancestor (520 commits ahead, 0 behind). No main push/merge or deployment.
 - **Latest P2 UI changes (`a2fe7617`, `79b1516f`):** added the UZ/RU/TJ `newSectionBadge` catalog key; dictionary/phrase resource pane and iframe names, character-writer button/iframe title, and lesson-settings accessible name now follow the selected locale. The old “NEW” remains the missing-bundle fallback. All six course artifacts were regenerated and the 12 HTML consumers pin `20261020-57ce728d755d`. Learning, lesson, assessment, access and payment behavior are unchanged.

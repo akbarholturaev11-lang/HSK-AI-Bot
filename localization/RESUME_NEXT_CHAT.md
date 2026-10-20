@@ -5,10 +5,10 @@ Updated: 2026-10-21. **This is the short authoritative checkpoint, not evidence 
 ## Git and protected scope
 
 - Repository: `akbarholturaev11-lang/HSK-AI-Bot`.
-- **ONLY active work branch:** `codex/p3-main-integration-20261020`; latest code commit: `f3e2bddfb9833a1960bff3884b4491fb2a1a1ade`; latest fully tested code snapshot: `678978baa6266fa05973c58bc8011b2800c2bc47`; later commits only refresh this handoff.
+- **ONLY active work branch:** `codex/p3-main-integration-20261020`; latest code commit: `46e38fbbe8d5540ea4e7bd1e88b677a07a9f4a70`. A later handoff-only commit may advance HEAD without changing the tested application code.
 - `origin/main` is `ed527c55eaf8d63acd04902b570c6a66aef8fe3c`, an ancestor of this branch. No main merge/push, force-push or production deployment. Draft PR #179 still targets the old `codex/i18n-local-first-foundation-20261017` head and is conflicting; it is not this integration branch or release authorization.
-- Exact-head GitHub Actions at `678978baa6266fa05973c58bc8011b2800c2bc47`: P0 [39473731653](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39473731653), Backend [39473732052](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39473732052), Android [39473840883](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39473840883), and Desktop [39473841418](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39473841418) all **SUCCESS**.
-- Local P0 workflow-equivalent after `f3e2bddf`: **386 tests passed**; **25 read-only audits passed**. Inventory: 2,717 files, 71,125 locale maps, 0 parse/read errors; 812 frozen sources, 746 lessons, 0 baseline blockers; 48 source gaps all covered by 2,094 valid locale overlays. No staging, authenticated-user or installed-device QA is inferred from these checks.
+- GitHub Actions for `46e38fbb`: P0 [39488146572](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39488146572), Backend [39488146998](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39488146998), Android [39488199809](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39488199809), Desktop [39488206023](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39488206023). **All four runs completed SUCCESS on this exact code commit.** Android includes unit/lint, Direct/Play emulator regressions, debug assembly and unsigned release bundles; Desktop includes browser contracts and Windows/macOS native auth.
+- Local P0 workflow-equivalent: **394 tests passed**; combined HTTP/reservation/Desktop/Android API suites: **113 tests passed**; **25 read-only audits passed**. Inventory: 2,717 files, 71,125 locale maps, 0 parse/read errors; 812 frozen sources, 746 lessons, 0 baseline blockers; 48 source gaps all covered by 2,094 valid locale overlays. Three-locale mobile smoke used real local HTML/asset HTTP routes with synthetic API responses: lessons opened after splash at 390×844, all three required scripts returned 200, and no JS or console errors occurred. This is not live-account or installed-device acceptance.
 - Unrelated local `graphify-out/GRAPH_REPORT.md` and `graphify-out/graph.json` changes are user-owned; keep them out of commits.
 
 
@@ -22,14 +22,22 @@ Updated: 2026-10-21. **This is the short authoritative checkpoint, not evidence 
 ## Implemented security checkpoint
 
 - Mini App full lesson content now comes from signed `GET /api/v3/lesson/content/{level}/{lesson_order}`. The endpoint verifies the Telegram identity and canonical account, selected course level, lesson sequence, required HSK1 foundation and shared lesson entitlement; it never consumes quota and sends `Cache-Control: no-store`.
-- The old `/course_v3_data/{level}/lesson_*.json` route now returns 404; root JSON access is restricted to the seven curriculum maps. Sales preview, foundation and skip-test use separate projections. Skip-test returns at most six randomized questions, denies skip-ahead and does not grant progress or consume quota. Source/review manifests and contract audits were updated.
-- Commit `b887fe08` contains the route change; its GitHub P0 and Backend targeted runs both succeeded. Latest `10cff3b6` P0 passed 368 tests. The current foundation-label Chrome smoke is documented above.
+- The old `/course_v3_data/{level}/lesson_*.json` route returns 404; root JSON access is restricted to seven curriculum maps, with required UI/P3 scripts explicitly public. Sales preview, foundation and skip-test use separate projections. A signed, entitled learner may read at most six randomized questions for a locked in-range lesson after level/foundation/shared-access checks. Reading questions grants no progress and consumes no quota; full lesson content/start still enforce sequence. Do not restore the incorrect skip-test sequence denial.
+- Historical evidence: `b887fe08` introduced the route change and passed GitHub P0/Backend; the later `10cff3b6` snapshot passed 368 P0 tests. The current code and browser verification are recorded above.
+
+## Independent review fixes — 2026-10-21
+
+- Fixed three real HTTP 404s for `hsk-common-i18n.js`, `hsk-course-i18n.js`, and `p3-grammar-reservation.js`; actual lesson starts previously failed when the helper was absent. HTTP tests now collect HTML script/styles and request exact bytes through FastAPI, also checking private lesson/exam and unknown-file 404s. Backend CI runs this regression on route/HTML/browser-asset changes.
+- Restored the existing locked-lesson skip-test flow, matching the native contract. Signed ASGI tests cover eligible Free/Pro locked reads, blocked/exhausted-allowance/track/auth/level/bounds/foundation denials, bounded output and unchanged content/start sequence guards. Both source audits now protect the intended distinction.
+- Isolated conversion/shadow analytics into SQLite in the affected Desktop and all three Android course fixtures; denied-allowance tests prove canonical `limit_hit` records remain in the fixture. Local checks used synthetic credentials and a loopback-only DB address. No external database writes were attempted in this fix batch.
+- Reviewed all 136 grammar contexts / 408 locale cells against Chinese and available grammar/dialogue context; corrected seven cells across `G022`, `G027`, `G065`, `G070`, `G127`. Five source-bound semantic regressions and cause/fix/prevention notes were added. IDs, context hashes, original lesson JSON/answers and mirror targets are unchanged. This agent review is not native-speaker certification.
+- Follow-up source review checked 121 local HTML script/stylesheet references and found no other missing routes. Prevention notes: `knowledge/bugs/local-first-browser-delivery.md` and `localization/AI_CONTENT_QA_POLICY.md`.
 
 ## Main-readiness blockers and next work
 
 - Staging HTTP probe was not executed (0 requests). Real Telegram account-switch, Free/Trial/Pro, old-client refresh, offline and installed Android/WebView/Windows/macOS QA remain open. Do not claim these from source or mocked browser checks.
 - The registered Mini App sweep checked all 18 selected UZ/RU/TJ page-local dictionaries: locale key counts match, with 0 parser or placeholder drift. Existing pages load local catalogs before applying copy and set accessibility attributes from the selected locale; the P0 adoption tests cover these paths. No further exact-copy Mini App patch was identified in this pass.
-- **Remaining release gates:** the user’s real Telegram bot test, staging HTTP/authenticated account and Free/Trial/Pro/payment/referral checks, old-client refresh, offline and installed Android/WebView/Windows/macOS QA remain. The user plans an independent linguistic audit after code work; this must not be confused with source CI. Keep `main` and production untouched.
+- **Remaining release gates:** the user’s real Telegram bot test, staging HTTP/authenticated account and Free/Trial/Pro/payment/referral checks, old-client refresh, offline and installed Android/WebView/Windows/macOS QA remain. The independent agent language review above is complete within its stated scope; it does not establish those functional results. Keep `main` and production untouched.
 
 ## Verified batches since the previous handoff
 
@@ -49,10 +57,9 @@ Updated: 2026-10-21. **This is the short authoritative checkpoint, not evidence 
 
 ## Next precise tasks (in this order)
 
-1. Run the user’s real Telegram bot test and fix any reproducible issue it reveals; rerun the affected tests and P0. The latest registered Mini App source-to-catalog sweep found no additional exact-copy migration in the 18 reviewed page dictionaries.
-2. After code work, run the independent linguistic audit the user plans for all 136 source-pinned grammar contexts; fix any findings, keep mirror/source guards intact, and rerun P0.
-3. Complete authenticated staging/account/access, old-client, offline and installed Android/WebView/Windows/macOS QA when the test environment and identities are available. These remain outside the verified GitHub CI.
-4. Before any main release, recheck current main ancestry and exact-head Actions. Keep main and production untouched until the user separately authorizes the release.
+1. Apply any reproducible findings from the user’s real Telegram bot test and rerun affected checks plus P0. All four code-commit CI runs above have already succeeded; do not repeat completed source/UI work without a new finding.
+2. Complete authenticated staging/account/access, old-client, offline and installed Android/WebView/Windows/macOS QA when the test environment and identities are available. These remain outside source CI and the synthetic local browser smoke.
+3. Before any main release, recheck current main ancestry and current Actions. Keep main and production untouched until the user separately authorizes release.
 
 ## Read before coding
 
