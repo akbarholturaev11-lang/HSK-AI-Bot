@@ -6,9 +6,11 @@ Updated: 2026-10-20. **This is the short authoritative checkpoint, not evidence 
 
 - Repository: `akbarholturaev11-lang/HSK-AI-Bot`.
 - **ONLY active work branch:** `codex/p3-main-integration-20261020`.
-- Latest pushed code is `f62344838cf18884c1809e262469ee0f273bcacc`; `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5` is an ancestor, so this code head is 514 commits ahead and 0 behind. GitHub refs confirmed the same branch and main SHAs. Continue only on this branch; do not push/merge `main`, force-push, rebase or deploy production.
+- Current code checkpoint is merge commit `e6a2c21b94f6f5ca742b53ffbd6e3e02ecf0a015`, integrating current `origin/main` `ed527c55eaf8d63acd04902b570c6a66aef8fe3c`; main is an ancestor (516 feature commits ahead, 0 behind). It is committed locally but not yet pushed. Only `codex/p3-main-integration-20261020` may be pushed; never push/merge `main`, force-push, rebase or deploy production.
+- The merge brought in the 14 latest main commits for the public website, download page, and Alembic test assertion. Its single HTML conflict was resolved by retaining main's shared navigation/language loader and this branch's local course catalog loader. `main` and production remain unchanged.
 - Old source branch `codex/i18n-local-first-foundation-20261017` is integrated. Do not redo the merge. Draft PR #179 is not release authorization.
-- Exact-head GitHub P0 [`39438909149`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39438909149) **SUCCESS** on `f6234483`, with 370 tests in the workflow-equivalent local run. Android `:app:compilePlayDebugKotlin :app:compileDirectDebugKotlin` also succeeded. Read-only checks found 812 frozen sources, 746 lessons, 0 baseline blockers, 894 course UI keys, 55 common UI keys and 0 stale generated artifacts. No Backend workflow was required for this Android display-copy-only commit. Staging HTTP checks and installed-client QA have not been run.
+- Current local P0 workflow-equivalent passed **370 tests** on the merge result; 25 read-only CI audits passed. Public-site and migration tests passed (**19 tests**); the browser smoke passed 25 pages at 320/390/1440px with no overflow or console errors, including locale persistence, UTM links, CTA redirect and JavaScript-disabled content. Exact-head GitHub Actions for the new branch head are pending push. The preview server now serves the generated course UI bundle needed by the download page. Prior Android Play/Direct Kotlin compilation succeeded; no Android sources changed in this merge.
+- Read-only checks found 812 frozen sources, 746 lessons, 0 baseline blockers, 894 course UI keys, 55 common UI keys, and 0 stale generated artifacts. Staging HTTP, authenticated account/access, old-client, offline, and installed-client QA remain open.
 
 ## Implemented local-first i18n
 
@@ -26,7 +28,7 @@ Updated: 2026-10-20. **This is the short authoritative checkpoint, not evidence 
 
 - Staging HTTP probe was not executed (0 requests). Real Telegram account-switch, Free/Trial/Pro, old-client refresh, offline and installed Android/WebView/Windows/macOS QA remain open. Do not claim these from source or mocked browser checks.
 - The current exact-copy sweep found and migrated three Android duplicates. Desktop and Bot scans found no additional unaliased exact UZ/RU/TJ catalog copies; the reviewed `course-v3.html` language branches already use local catalog lookups except locale logic and the fixed lesson-example gloss. This does not certify every rendered screen or every feature-local UI dictionary.
-- Next code-side task: finish a source-to-catalog usage pass over the remaining registered Mini App page-local dictionaries and static attributes; migrate only context-matched copy with exact local fallbacks, then run P0 and affected browser tests. Keep `main` and production untouched.
+- Next code-side task: finish the source-to-catalog usage pass over the remaining registered Mini App page-local dictionaries and static attributes; migrate only context-matched copy with exact local fallbacks, then run P0 and affected browser tests. Keep `main` and production untouched.
 
 ## Verified batches since the previous handoff
 
