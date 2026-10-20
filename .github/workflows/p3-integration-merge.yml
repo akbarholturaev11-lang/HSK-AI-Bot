@@ -54,6 +54,11 @@ jobs:
           node --check app/static/course_v3_data/p3-grammar-reservation.js
           # Exact generated local-first UZ/RU/TJ artifacts remain consistent.
           python scripts/i18n_build_local_catalogs.py --check
+          # Export the exact post-conflict backend CI blob for the authorized connector merge.
+          echo "MERGED_BACKEND_CI_BASE64_BEGIN"
+          base64 -w0 .github/workflows/backend-ci.yml
+          echo
+          echo "MERGED_BACKEND_CI_BASE64_END"
           echo "---- INTEGRATION MERGE PRE-COMMIT SUMMARY ----"
           git status --short | tail -n 32
           git diff --cached --stat | tail -n 8
@@ -70,5 +75,5 @@ jobs:
           git commit -m "stage: conflict-resolved P3 non-workflow merge payload"
           echo "PAYLOAD_HEAD=$(git rev-parse HEAD)"
           echo "PAYLOAD_PARENTS=$(git rev-list --parents -n 1 HEAD)"
-          git push origin "HEAD:refs/heads/codex/p3-merge-payload-20261020"
+          git push origin "HEAD:refs/heads/codex/p3-merge-payload-with-ci-20261020"
           echo "PAYLOAD_PUSH_SUCCESS"
