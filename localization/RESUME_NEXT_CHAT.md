@@ -6,9 +6,9 @@ Updated: 2026-10-20. **This is the short authoritative checkpoint, not evidence 
 
 - Repository: `akbarholturaev11-lang/HSK-AI-Bot`.
 - **ONLY active work branch:** `codex/p3-main-integration-20261020`.
-- Latest pushed code is `b887fe08e7b62fb49ab193c069cf49ade5bcee21`; `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5` is an ancestor, so this branch is 503 commits ahead and 0 behind. Continue only on this branch; do not push/merge `main`, force-push, rebase or deploy production.
+- Latest pushed code is `10cff3b60ad0a84b430449b9cd19c61d879af50f`; `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5` is an ancestor, so this branch is 504 commits ahead and 0 behind. Continue only on this branch; do not push/merge `main`, force-push, rebase or deploy production.
 - Old source branch `codex/i18n-local-first-foundation-20261017` is integrated. Do not redo the merge. Draft PR #179 is not release authorization.
-- Exact-head GitHub P0 [`39427932502`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39427932502) and Backend targeted [`39427932361`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39427932361) both **SUCCESS** on `b887fe08`. The current local P2 batch adds two HSK1 pronunciation UI labels; workflow-equivalent P0 passed **368 tests** on this worktree. Read-only audits found 811 frozen sources, 746 lessons, 0 baseline blockers, 894 UI keys per locale and 6 generated artifacts with 0 stale. Mobile Chrome smoke rendered UZ/RU/TJ labels at 390×844 with no console or HTTP errors. The new batch is not yet pushed; run exact-head Actions after its push.
+- Exact-head GitHub P0 [`39429482563`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39429482563) **SUCCESS** on `10cff3b6` (368 tests). Backend targeted [`39427932361`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39427932361) **SUCCESS** on preceding security commit `b887fe08`; this UI-only commit did not trigger Backend CI. The P2 batch adds two HSK1 pronunciation UI labels. Read-only audits found 811 frozen sources, 746 lessons, 0 baseline blockers, 894 UI keys per locale and 6 generated artifacts with 0 stale. Mobile Chrome smoke rendered UZ/RU/TJ labels at 390×844 with no console or HTTP errors.
 
 ## Implemented local-first i18n
 
@@ -20,13 +20,13 @@ Updated: 2026-10-20. **This is the short authoritative checkpoint, not evidence 
 
 - Mini App full lesson content now comes from signed `GET /api/v3/lesson/content/{level}/{lesson_order}`. The endpoint verifies the Telegram identity and canonical account, selected course level, lesson sequence, required HSK1 foundation and shared lesson entitlement; it never consumes quota and sends `Cache-Control: no-store`.
 - The old `/course_v3_data/{level}/lesson_*.json` route now returns 404; root JSON access is restricted to the seven curriculum maps. Sales preview, foundation and skip-test use separate projections. Skip-test returns at most six randomized questions, denies skip-ahead and does not grant progress or consume quota. Source/review manifests and contract audits were updated.
-- Commit `b887fe08` contains the route change. Local P0-equivalent **367 tests** and four browser smoke tests passed; exact-head GitHub P0 and Backend Actions are in progress as listed above.
+- Commit `b887fe08` contains the route change; its GitHub P0 and Backend targeted runs both succeeded. Latest `10cff3b6` P0 passed 368 tests. The current foundation-label Chrome smoke is documented above.
 
 ## Main-readiness blockers and next work
 
 - Staging HTTP probe was not executed (0 requests). Real Telegram account-switch, Free/Trial/Pro, old-client refresh, offline and installed Android/WebView/Windows/macOS QA remain open. Do not claim these from source or mocked browser checks.
 - P2 UI adoption remains in progress across the remaining classified Mini App/native/Desktop/Bot surfaces. Continue from the surface registry and existing triage; keep exact UZ/RU/TJ legacy fallbacks and do not redo completed slices.
-- Commit/push the locally tested two-label batch to this feature branch, then verify exact-head P0/backend Actions. Continue remaining P2 adoption and applicable client QA; keep `main` and production untouched.
+- Continue the remaining P2 adoption and applicable client QA on this feature branch; exact-head P0 is green at `10cff3b6`. Keep `main` and production untouched.
 
 ## Verified batches since the previous handoff
 
