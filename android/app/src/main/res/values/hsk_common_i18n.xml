@@ -11,6 +11,30 @@
     <string name="hsk_common_action_start" formatted="false">Boshlash</string>
     <string name="hsk_common_auth_expires" formatted="false">Kirishni tasdiqlash uchun {time} qoldi</string>
     <string name="hsk_common_common_refresh" formatted="false">Yangilash</string>
+    <string name="hsk_common_desktopAuth_appleContinue" formatted="false">Apple bilan davom etish</string>
+    <string name="hsk_common_desktopAuth_cancelled" formatted="false">Kirish bekor qilindi. Qayta urinib ko‘rishingiz mumkin.</string>
+    <string name="hsk_common_desktopAuth_codeLabel" formatted="false">Tasdiqlash kodi</string>
+    <string name="hsk_common_desktopAuth_copied" formatted="false">Kod nusxalandi</string>
+    <string name="hsk_common_desktopAuth_copyCode" formatted="false">Kodni nusxalash</string>
+    <string name="hsk_common_desktopAuth_description" formatted="false">Google, Apple yoki Telegram bilan davom eting. Yangi foydalanuvchi uchun hisob avtomatik yaratiladi.</string>
+    <string name="hsk_common_desktopAuth_expired" formatted="false">Kirishni tasdiqlash muddati tugadi. Qayta urinib ko‘ring.</string>
+    <string name="hsk_common_desktopAuth_googleContinue" formatted="false">Google bilan davom etish</string>
+    <string name="hsk_common_desktopAuth_linked" formatted="false">Akkaunt muvaffaqiyatli ulandi.</string>
+    <string name="hsk_common_desktopAuth_openTelegram" formatted="false">Telegramni ochish</string>
+    <string name="hsk_common_desktopAuth_providerFailed" formatted="false">Kirishni tasdiqlab bo‘lmadi. Qayta urinib ko‘ring.</string>
+    <string name="hsk_common_desktopAuth_providerWaiting" formatted="false">Brauzerda tasdiqlashni kuting…</string>
+    <string name="hsk_common_desktopAuth_referralCode" formatted="false">Taklif kodi (ixtiyoriy)</string>
+    <string name="hsk_common_desktopAuth_referralHint" formatted="false">Do‘stingiz bergan kod. Faqat yangi akkaunt uchun.</string>
+    <string name="hsk_common_desktopAuth_referralInvalid" formatted="false">Taklif kodini tekshiring yoki maydonni bo‘sh qoldiring.</string>
+    <string name="hsk_common_desktopAuth_retry" formatted="false">Qayta urinish</string>
+    <string name="hsk_common_desktopAuth_starting" formatted="false">Xavfsiz kirish tayyorlanmoqda…</string>
+    <string name="hsk_common_desktopAuth_step1" formatted="false">Telegramni oching.</string>
+    <string name="hsk_common_desktopAuth_step2" formatted="false">Ekrandagi 8 belgili kodni bot chatiga qo‘lda yuboring.</string>
+    <string name="hsk_common_desktopAuth_step3" formatted="false">Qurilmani tekshirib, tasdiqlash tugmasini bosing.</string>
+    <string name="hsk_common_desktopAuth_telegramContinue" formatted="false">Telegram bilan davom etish</string>
+    <string name="hsk_common_desktopAuth_telegramOpened" formatted="false">Telegram ochildi. Kodni bot chatiga qo‘lda yuboring.</string>
+    <string name="hsk_common_desktopAuth_title" formatted="false">HSK AI’ga kiring yoki ro‘yxatdan o‘ting</string>
+    <string name="hsk_common_desktopAuth_waiting" formatted="false">Telegramni ochib, kodni chatga qo‘lda yuboring.</string>
     <string name="hsk_common_lesson_continue" formatted="false">Darsni davom ettirish</string>
     <string name="hsk_common_lesson_locked" formatted="false">Oldingi darsni yakunlang</string>
     <string name="hsk_common_lesson_notFound" formatted="false">Bu daraja uchun darslar hali topilmadi.</string>

@@ -11,6 +11,30 @@
     <string name="hsk_common_action_start" formatted="false">Начать</string>
     <string name="hsk_common_auth_expires" formatted="false">На подтверждение входа осталось {time}</string>
     <string name="hsk_common_common_refresh" formatted="false">Обновить</string>
+    <string name="hsk_common_desktopAuth_appleContinue" formatted="false">Продолжить с Apple</string>
+    <string name="hsk_common_desktopAuth_cancelled" formatted="false">Вход отменён. Можно попробовать снова.</string>
+    <string name="hsk_common_desktopAuth_codeLabel" formatted="false">Код подтверждения</string>
+    <string name="hsk_common_desktopAuth_copied" formatted="false">Код скопирован</string>
+    <string name="hsk_common_desktopAuth_copyCode" formatted="false">Скопировать код</string>
+    <string name="hsk_common_desktopAuth_description" formatted="false">Продолжите с Google, Apple или Telegram. Для нового пользователя аккаунт создаётся автоматически.</string>
+    <string name="hsk_common_desktopAuth_expired" formatted="false">Время подтверждения входа истекло. Попробуйте снова.</string>
+    <string name="hsk_common_desktopAuth_googleContinue" formatted="false">Продолжить с Google</string>
+    <string name="hsk_common_desktopAuth_linked" formatted="false">Аккаунт успешно подключён.</string>
+    <string name="hsk_common_desktopAuth_openTelegram" formatted="false">Открыть Telegram</string>
+    <string name="hsk_common_desktopAuth_providerFailed" formatted="false">Не удалось подтвердить вход. Попробуйте ещё раз.</string>
+    <string name="hsk_common_desktopAuth_providerWaiting" formatted="false">Подтвердите вход в браузере…</string>
+    <string name="hsk_common_desktopAuth_referralCode" formatted="false">Код приглашения (необязательно)</string>
+    <string name="hsk_common_desktopAuth_referralHint" formatted="false">Код от друга. Только для нового аккаунта.</string>
+    <string name="hsk_common_desktopAuth_referralInvalid" formatted="false">Проверьте код приглашения или оставьте поле пустым.</string>
+    <string name="hsk_common_desktopAuth_retry" formatted="false">Попробовать снова</string>
+    <string name="hsk_common_desktopAuth_starting" formatted="false">Подготавливаем безопасный вход…</string>
+    <string name="hsk_common_desktopAuth_step1" formatted="false">Откройте Telegram.</string>
+    <string name="hsk_common_desktopAuth_step2" formatted="false">Вручную отправьте 8-значный код с экрана в чат с ботом.</string>
+    <string name="hsk_common_desktopAuth_step3" formatted="false">Проверьте устройство и нажмите подтверждение.</string>
+    <string name="hsk_common_desktopAuth_telegramContinue" formatted="false">Продолжить с Telegram</string>
+    <string name="hsk_common_desktopAuth_telegramOpened" formatted="false">Telegram открыт. Вручную отправьте код в чат с ботом.</string>
+    <string name="hsk_common_desktopAuth_title" formatted="false">Войдите или создайте аккаунт HSK AI</string>
+    <string name="hsk_common_desktopAuth_waiting" formatted="false">Откройте Telegram и вручную отправьте код в чат.</string>
     <string name="hsk_common_lesson_continue" formatted="false">Продолжить урок</string>
     <string name="hsk_common_lesson_locked" formatted="false">Сначала завершите предыдущий урок</string>
     <string name="hsk_common_lesson_notFound" formatted="false">Для этого уровня уроки пока не найдены.</string>

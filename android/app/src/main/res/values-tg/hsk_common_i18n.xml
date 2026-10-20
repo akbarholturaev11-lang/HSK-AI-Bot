@@ -11,6 +11,30 @@
     <string name="hsk_common_action_start" formatted="false">Оғоз</string>
     <string name="hsk_common_auth_expires" formatted="false">Барои тасдиқи вуруд {time} монд</string>
     <string name="hsk_common_common_refresh" formatted="false">Навсозӣ</string>
+    <string name="hsk_common_desktopAuth_appleContinue" formatted="false">Бо Apple идома додан</string>
+    <string name="hsk_common_desktopAuth_cancelled" formatted="false">Вуруд бекор шуд. Боз кӯшиш карда метавонед.</string>
+    <string name="hsk_common_desktopAuth_codeLabel" formatted="false">Рамзи тасдиқ</string>
+    <string name="hsk_common_desktopAuth_copied" formatted="false">Рамз нусхабардорӣ шуд</string>
+    <string name="hsk_common_desktopAuth_copyCode" formatted="false">Нусхабардории рамз</string>
+    <string name="hsk_common_desktopAuth_description" formatted="false">Бо Google, Apple ё Telegram идома диҳед. Барои корбари нав ҳисоб худкор сохта мешавад.</string>
+    <string name="hsk_common_desktopAuth_expired" formatted="false">Муҳлати тасдиқи вуруд гузашт. Боз кӯшиш кунед.</string>
+    <string name="hsk_common_desktopAuth_googleContinue" formatted="false">Бо Google идома додан</string>
+    <string name="hsk_common_desktopAuth_linked" formatted="false">Ҳисоб бо муваффақият пайваст шуд.</string>
+    <string name="hsk_common_desktopAuth_openTelegram" formatted="false">Кушодани Telegram</string>
+    <string name="hsk_common_desktopAuth_providerFailed" formatted="false">Вурудро тасдиқ кардан нашуд. Боз кӯшиш кунед.</string>
+    <string name="hsk_common_desktopAuth_providerWaiting" formatted="false">Дар браузер тасдиқро интизор шавед…</string>
+    <string name="hsk_common_desktopAuth_referralCode" formatted="false">Рамзи даъват (ихтиёрӣ)</string>
+    <string name="hsk_common_desktopAuth_referralHint" formatted="false">Рамзи дӯстатон. Танҳо барои ҳисоби нав.</string>
+    <string name="hsk_common_desktopAuth_referralInvalid" formatted="false">Рамзи даъватро санҷед ё майдонро холӣ гузоред.</string>
+    <string name="hsk_common_desktopAuth_retry" formatted="false">Боз кӯшиш кардан</string>
+    <string name="hsk_common_desktopAuth_starting" formatted="false">Вуруди бехатар омода мешавад…</string>
+    <string name="hsk_common_desktopAuth_step1" formatted="false">Telegram-ро кушоед.</string>
+    <string name="hsk_common_desktopAuth_step2" formatted="false">Рамзи 8-аломатиро аз экран ба чати бот дастӣ фиристед.</string>
+    <string name="hsk_common_desktopAuth_step3" formatted="false">Дастгоҳро санҷида, тугмаи тасдиқро пахш кунед.</string>
+    <string name="hsk_common_desktopAuth_telegramContinue" formatted="false">Бо Telegram идома додан</string>
+    <string name="hsk_common_desktopAuth_telegramOpened" formatted="false">Telegram кушода шуд. Рамзро ба чати бот дастӣ фиристед.</string>
+    <string name="hsk_common_desktopAuth_title" formatted="false">Ба HSK AI ворид шавед ё сабти ном кунед</string>
+    <string name="hsk_common_desktopAuth_waiting" formatted="false">Telegram-ро кушоед ва рамзро ба чат дастӣ фиристед.</string>
     <string name="hsk_common_lesson_continue" formatted="false">Идомаи дарс</string>
     <string name="hsk_common_lesson_locked" formatted="false">Аввал дарси пешинаро анҷом диҳед</string>
     <string name="hsk_common_lesson_notFound" formatted="false">Барои ин сатҳ ҳоло дарс ёфт нашуд.</string>

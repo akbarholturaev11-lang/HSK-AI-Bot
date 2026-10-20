@@ -58,7 +58,31 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn("messages[activeLanguage]?.[key] ?? messages.uz[key]", source)
         for key in ["course", "practice", "profile", "rating",
                     "subscription", "startLesson", "continueLesson",
-                    "lockedLesson", "courseEmpty", "refresh", "authExpires"]:
+                    "lockedLesson", "courseEmpty", "refresh", "authExpires",
+                    "authReferralCode",
+                    "authReferralHint",
+                    "authReferralInvalid",
+                    "authTitle",
+                    "authDescription",
+                    "authCodeLabel",
+                    "authStart",
+                    "authGoogle",
+                    "authApple",
+                    "authProviderWaiting",
+                    "authProviderFailed",
+                    "authOpen",
+                    "authRetry",
+                    "authStep1",
+                    "authStep2",
+                    "authStep3",
+                    "authExpired",
+                    "authCancelled",
+                    "authWaiting",
+                    "authTelegramOpened",
+                    "authStarting",
+                    "authLinked",
+                    "copyCode",
+                    "copied"]:
             self.assertIn(key + ":", source)
         self.assertNotIn("/api/i18n/", source)
 

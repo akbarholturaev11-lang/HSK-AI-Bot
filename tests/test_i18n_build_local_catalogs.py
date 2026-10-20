@@ -17,7 +17,7 @@ class CommonLocalCatalogTests(unittest.TestCase):
     def test_all_existing_reviewed_desktop_copy_is_ported(self):
         catalogs = read_sources(ROOT)
         self.assertEqual(set(catalogs), set(LANGUAGES))
-        self.assertEqual(len(catalogs["uz"]), 20)
+        self.assertEqual(len(catalogs["uz"]), 44)
         self.assertEqual(set(catalogs["ru"]), set(catalogs["tj"]))
         self.assertEqual(catalogs["tj"]["navigation.profile"], "Профил")
         self.assertEqual(catalogs["ru"]["lesson.continue"], "Продолжить урок")
@@ -39,6 +39,30 @@ class CommonLocalCatalogTests(unittest.TestCase):
             "courseEmpty": "lesson.notFound",
             "refresh": "common.refresh",
             "authExpires": "auth.expires",
+            "authReferralCode": "desktopAuth.referralCode",
+            "authReferralHint": "desktopAuth.referralHint",
+            "authReferralInvalid": "desktopAuth.referralInvalid",
+            "authTitle": "desktopAuth.title",
+            "authDescription": "desktopAuth.description",
+            "authCodeLabel": "desktopAuth.codeLabel",
+            "authStart": "desktopAuth.telegramContinue",
+            "authGoogle": "desktopAuth.googleContinue",
+            "authApple": "desktopAuth.appleContinue",
+            "authProviderWaiting": "desktopAuth.providerWaiting",
+            "authProviderFailed": "desktopAuth.providerFailed",
+            "authOpen": "desktopAuth.openTelegram",
+            "authRetry": "desktopAuth.retry",
+            "authStep1": "desktopAuth.step1",
+            "authStep2": "desktopAuth.step2",
+            "authStep3": "desktopAuth.step3",
+            "authExpired": "desktopAuth.expired",
+            "authCancelled": "desktopAuth.cancelled",
+            "authWaiting": "desktopAuth.waiting",
+            "authTelegramOpened": "desktopAuth.telegramOpened",
+            "authStarting": "desktopAuth.starting",
+            "authLinked": "desktopAuth.linked",
+            "copyCode": "desktopAuth.copyCode",
+            "copied": "desktopAuth.copied",
         }
         catalogs = read_sources(ROOT)
         for source_key, common_key in mapping.items():
