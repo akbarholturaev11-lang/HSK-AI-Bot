@@ -1,0 +1,53 @@
+name: P3 main integration conflict inventory
+
+on:
+  push:
+    branches:
+      - codex/p3-main-integration-20261020
+    paths:
+      - ".github/workflows/p3-integration-diff.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Attempt real git three-way merge without pushing
+        shell: bash
+        run: |
+          set -u
+          git config user.name "HSK AI integration probe"
+          git config user.email "hsk-integration@users.noreply.github.com"
+          git fetch origin codex/i18n-local-first-foundation-20261017
+          printf 'MAIN_SNAPSHOT=%s\nP3_HEAD=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse FETCH_HEAD)"
+          git merge --no-commit --no-ff FETCH_HEAD
+          merge_status=$?
+          echo "MERGE_EXIT_STATUS=$merge_status"
+          echo "---- UNMERGED PATHS ----"
+          git diff --name-only --diff-filter=U | tee /tmp/hsk-merge-conflicts.txt
+          echo "---- UNMERGED STAGES ----"
+          git ls-files -u | head -n 100
+          echo "---- FILE STATUS COUNTS ----"
+          git status --short | awk '{print substr($0,1,2)}' | sort | uniq -c | sort -rn
+          printf 'unmerged_total=%s\n' "$(git diff --name-only --diff-filter=U | wc -l)"
+          mkdir -p /tmp/hsk-merge
+          cp /tmp/hsk-merge-conflicts.txt /tmp/hsk-merge/conflicts.txt
+          git status --short > /tmp/hsk-merge/status.txt
+          if [ "$merge_status" -eq 0 ]; then
+            echo "Native merge is clean; no push occurred."
+          else
+            echo "Merge has conflicts; the integration branch was NOT modified."
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: p3-integration-conflicts
+          path: /tmp/hsk-merge/
+          retention-days: 5
