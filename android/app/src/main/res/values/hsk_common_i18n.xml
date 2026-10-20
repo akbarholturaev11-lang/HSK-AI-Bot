@@ -26,6 +26,7 @@
     <string name="hsk_common_bot_languagePicker_russian" formatted="false">🇷🇺 Русский</string>
     <string name="hsk_common_bot_languagePicker_tajik" formatted="false">🇹🇯 Тоҷикӣ</string>
     <string name="hsk_common_bot_languagePicker_uzbek" formatted="false">🇺🇿 O‘zbek</string>
+    <string name="hsk_common_bot_languagePicker_uzbekOnboarding" formatted="false">🇺🇿 O\'zbek</string>
     <string name="hsk_common_bot_menu_barHint" formatted="false">⌨️ Pastdagi menyudan profil, obuna va kurs rejimini ochasiz.</string>
     <string name="hsk_common_bot_menu_courseMode" formatted="false">📚 Kurs rejimi</string>
     <string name="hsk_common_bot_menu_help" formatted="false">❓ Yordam</string>

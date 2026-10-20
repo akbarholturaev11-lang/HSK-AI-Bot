@@ -242,6 +242,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             "language_picker_tj": "bot.languagePicker.tajik",
             "language_picker_ru": "bot.languagePicker.russian",
             "language_picker_uz": "bot.languagePicker.uzbek",
+            "language_picker_uz_onboarding": "bot.languagePicker.uzbekOnboarding",
             "course_reminder_set_button": "bot.promoButton.reminder",
             "hint_section_course_title": "navigation.course",
             "hint_section_practice_title": "navigation.practice",
@@ -262,6 +263,16 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             self.assertNotIn('"🇹🇯 Тоҷикӣ"', source)
             self.assertNotIn('"🇷🇺 Русский"', source)
             self.assertNotIn('"🇺🇿 O‘zbek"', source)
+        onboarding = (ROOT / "app/bot/keyboards/onboarding.py").read_text(encoding="utf-8")
+        for key in ("language_picker_tj", "language_picker_ru"):
+            self.assertIn(f't("{key}", "ru")', onboarding)
+        self.assertIn('t("language_picker_uz_onboarding", "ru")', onboarding)
+        for callback in ('callback_data="lang:tj"', 'callback_data="lang:ru"',
+                         'callback_data="lang:uz"'):
+            self.assertIn(callback, onboarding)
+        self.assertNotIn('"🇹🇯 Тоҷикӣ"', onboarding)
+        self.assertNotIn('"🇷🇺 Русский"', onboarding)
+        self.assertNotIn('"🇺🇿 O\'zbek"', onboarding)
         for bot_key, catalog_key, catalog in (
             *((key, value, COMMON_MESSAGES) for key, value in expected_common.items()),
             *((key, value, COURSE_MESSAGES) for key, value in expected_course.items()),

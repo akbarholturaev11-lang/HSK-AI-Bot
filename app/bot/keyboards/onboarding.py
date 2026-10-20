@@ -8,9 +8,16 @@ def language_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="🇹🇯 Тоҷикӣ", callback_data="lang:tj"),
-                InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang:ru"),
-                InlineKeyboardButton(text="🇺🇿 O'zbek", callback_data="lang:uz"),
+                InlineKeyboardButton(
+                    text=t("language_picker_tj", "ru"), callback_data="lang:tj"
+                ),
+                InlineKeyboardButton(
+                    text=t("language_picker_ru", "ru"), callback_data="lang:ru"
+                ),
+                InlineKeyboardButton(
+                    text=t("language_picker_uz_onboarding", "ru"),
+                    callback_data="lang:uz",
+                ),
             ]
         ]
     )

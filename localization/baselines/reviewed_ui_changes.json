@@ -20,7 +20,7 @@
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",
-      "reviewed_sha1": "d28b1e8cbb126c7e80359372f112c8bf8189f95a",
+      "reviewed_sha1": "f60e1cbd5991f839ce0095771b8b0518bbb79806",
       "reason": "Expose generated canonical common UI keys through a namespaced Bot t() branch and route four exact UZ/RU/TJ navigation-title aliases through the common bundle plus the exact AI Voice and subscription-reminder Later aliases through the course bundle, retaining Bot dictionaries as fallback. The six localized aliases match all three existing Bot values exactly; the reminder callback and subscription behavior stay unchanged. Other legacy key dispatch, Gemini variants, and fallback behavior stay unchanged. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks. P2 Bot menu migration: the saved-language reply keyboard and its menu hint now resolve from generated local common resources, with byte-identical legacy locale fallback and unchanged button layout/callback behavior. P2 Bot language-selection labels now resolve from the generated local common catalog with exact per-locale legacy fallback; callback IDs and selected language behavior are unchanged."
     },
     "app/static/course_v3_onboarding.html": {

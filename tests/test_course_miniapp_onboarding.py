@@ -9,7 +9,7 @@ from app.bot.handlers.course import (
     _show_required_channel_for_pending_action,
 )
 from app.bot.handlers.required_channel import force_sub_check
-from app.bot.keyboards.onboarding import course_mode_entry_keyboard
+from app.bot.keyboards.onboarding import course_mode_entry_keyboard, language_keyboard
 from app.bot.middlewares.required_channel import (
     FORCE_SUB_ACTION_OPEN_COURSE,
     FORCE_SUB_ACTION_OPEN_FREE_QA,
@@ -29,6 +29,18 @@ class CourseModeEntryKeyboardTests(unittest.TestCase):
         self.assertEqual(course_button.callback_data, "mode:course")
         self.assertIsNone(course_button.web_app)
         self.assertEqual(qa_button.callback_data, "mode:free_qa")
+
+    def test_language_keyboard_uses_shared_labels_and_keeps_callbacks(self):
+        buttons = language_keyboard().inline_keyboard[0]
+
+        self.assertEqual(
+            [button.text for button in buttons],
+            ["🇹🇯 Тоҷикӣ", "🇷🇺 Русский", "🇺🇿 O'zbek"],
+        )
+        self.assertEqual(
+            [button.callback_data for button in buttons],
+            ["lang:tj", "lang:ru", "lang:uz"],
+        )
 
 
 class _CourseEntryMessage:
