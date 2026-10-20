@@ -6,7 +6,7 @@
 <title>Talaffuz mashqi</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261020-7eba899ffe2f"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261020-96b42704ca5a"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <style>
@@ -214,7 +214,7 @@ function speak(t){
 }
 function haptic(ok){try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(ok?"success":"error")}catch(e){}}
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
-function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
+function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}function practiceMessage(key,fallback){var value=PRONUNCIATION_UI[key];return typeof value==="string"&&value?value:tr(fallback)}
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 
 var TOTAL=10,list=[],i=0,okCount=0,busy=false;
@@ -421,7 +421,7 @@ function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function
     if(pool.length<8)pool=all.filter(function(w){var l=wordLvNum(w);return l&&l<=n});
     if(pool.length<8)pool=all;
   }
-  if(!pool.length){document.getElementById('stage').innerHTML='<div class="loading">'+tr({uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"})+'</div>';return}
+  if(!pool.length){document.getElementById('stage').innerHTML='<div class="loading">'+practiceMessage("practice.dataNotLoaded",{uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"})+'</div>';return}
   /* Server tartibi birinchi; qolgani mavjud pooldan to'ldiriladi.
      Ro'yxat SHU YERDA qotadi va sessiya davomida o'zgarmaydi — reklama
      oralig'i `list.length` ga tayanadi. */

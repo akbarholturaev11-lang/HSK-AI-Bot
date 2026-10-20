@@ -307,6 +307,13 @@
     <string name="hsk_course_locked_lesson" formatted="false">Этот урок в HSK AI Pro</string>
     <string name="hsk_course_mashq_sub" formatted="false">Закрепление и проверка</string>
     <string name="hsk_course_match_pairs" formatted="false">Соедините пары</string>
+    <string name="hsk_course_memorize_complete_meaning" formatted="false">значение</string>
+    <string name="hsk_course_memorize_complete_sentence" formatted="false">предложение</string>
+    <string name="hsk_course_memorize_complete_word" formatted="false">слово</string>
+    <string name="hsk_course_memorize_finish" formatted="false">Завершить</string>
+    <string name="hsk_course_memorize_prompt_confusion" formatted="false">Что можно спутать с {hanzi}?</string>
+    <string name="hsk_course_memorize_prompt_remember" formatted="false">Для запоминания</string>
+    <string name="hsk_course_memorize_return_to_exercises" formatted="false">К упражнениям</string>
     <string name="hsk_course_memorize_limit_back" formatted="false">Назад</string>
     <string name="hsk_course_memorize_limit_pay" formatted="false">Получить HSK AI Pro ⭐️</string>
     <string name="hsk_course_memorize_limit_sub" formatted="false">В бесплатном режиме этот раздел доступен 1 раз в день. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.</string>
@@ -457,6 +464,7 @@
     <string name="hsk_course_plan_pay" formatted="false">Оформить HSK AI Pro</string>
     <string name="hsk_course_plan_title" formatted="false">Ваш личный план готов</string>
     <string name="hsk_course_practice_checking_access" formatted="false">Проверяем доступ…</string>
+    <string name="hsk_course_practice_data_not_loaded" formatted="false">Не удалось загрузить данные</string>
     <string name="hsk_course_practice_preparing" formatted="false">Готовим упражнение</string>
     <string name="hsk_course_practice_auth_required_body" formatted="false">Откройте мини-приложение заново через Telegram. Без проверки доступа упражнение недоступно.</string>
     <string name="hsk_course_practice_auth_required_retry" formatted="false">Открыть заново</string>

@@ -85,7 +85,9 @@ class MiniappCatalogAuditTests(unittest.TestCase):
         self.assertEqual(onboarding["catalog"], "ONBOARDING_LEGACY")
         self.assertEqual(onboarding["leaf_counts"], {"uz": 31, "ru": 31, "tj": 31})
         self.assertGreater(report["source_hotspots"]["course-v3.html"]["language_branch"]["candidate_count"], 0)
-        self.assertGreater(report["source_hotspots"]["course_v3_memorize.html"]["inline_locale_call"]["candidate_count"], 0)
+        self.assertEqual(report["source_hotspots"]["course_v3_memorize.html"]["inline_locale_call"]["candidate_count"], 0)
+        self.assertEqual(report["source_hotspots"]["course_v3_pronunciation.html"]["inline_locale_call"]["candidate_count"], 0)
+        self.assertEqual(report["source_hotspots"]["course_v3_recognition.html"]["inline_locale_call"]["candidate_count"], 0)
         for row in report["catalogs"]:
             self.assertEqual(set(row["leaf_counts"]), {"uz","ru","tj"})
             self.assertGreater(min(row["leaf_counts"].values()), 0)

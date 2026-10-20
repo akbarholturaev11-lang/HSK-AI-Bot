@@ -877,6 +877,14 @@
     "rating.countdownDaysHours": "{days}k {hours}s",
     "rating.countdownHoursMinutes": "{hours}s {minutes}m",
     "rating.countdownMinutes": "{minutes}m",
-    "today.go": "Идома аз рӯи нақша"
+    "today.go": "Идома аз рӯи нақша",
+    "memorize.prompt.remember": "Барои дар хотир мондан",
+    "memorize.prompt.confusion": "Кадомро бо {hanzi} хато кардан мумкин?",
+    "memorize.complete.meaning": "маъно",
+    "memorize.complete.word": "калима",
+    "memorize.complete.sentence": "ҷумла",
+    "memorize.finish": "Анҷом",
+    "memorize.returnToExercises": "Ба машқҳо",
+    "practice.dataNotLoaded": "Маълумот бор нашуд"
   }
 }

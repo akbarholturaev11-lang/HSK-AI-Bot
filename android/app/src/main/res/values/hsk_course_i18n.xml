@@ -307,6 +307,13 @@
     <string name="hsk_course_locked_lesson" formatted="false">Bu dars HSK AI Pro\'da</string>
     <string name="hsk_course_mashq_sub" formatted="false">Mustahkamlash va sinash</string>
     <string name="hsk_course_match_pairs" formatted="false">Juftlarni moslang</string>
+    <string name="hsk_course_memorize_complete_meaning" formatted="false">ma\'no</string>
+    <string name="hsk_course_memorize_complete_sentence" formatted="false">gap</string>
+    <string name="hsk_course_memorize_complete_word" formatted="false">so\'z</string>
+    <string name="hsk_course_memorize_finish" formatted="false">Tugatish</string>
+    <string name="hsk_course_memorize_prompt_confusion" formatted="false">Qaysini {hanzi} bilan adashtirishingiz mumkin?</string>
+    <string name="hsk_course_memorize_prompt_remember" formatted="false">Eslab qolish uchun</string>
+    <string name="hsk_course_memorize_return_to_exercises" formatted="false">Mashqlarga qaytish</string>
     <string name="hsk_course_memorize_limit_back" formatted="false">Orqaga</string>
     <string name="hsk_course_memorize_limit_pay" formatted="false">HSK AI Pro ⭐️ olish</string>
     <string name="hsk_course_memorize_limit_sub" formatted="false">Bepul rejimda bu bo\'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun HSK AI Pro oling yoki ertaga qaytib keling.</string>
@@ -457,6 +464,7 @@
     <string name="hsk_course_plan_pay" formatted="false">HSK AI Pro olish</string>
     <string name="hsk_course_plan_title" formatted="false">Shaxsiy rejangiz tayyor</string>
     <string name="hsk_course_practice_checking_access" formatted="false">Ruxsat tekshirilmoqda…</string>
+    <string name="hsk_course_practice_data_not_loaded" formatted="false">Ma\'lumot yuklanmadi</string>
     <string name="hsk_course_practice_preparing" formatted="false">Mashq tayyorlanmoqda</string>
     <string name="hsk_course_practice_auth_required_body" formatted="false">Mashq uchun Telegram orqali qayta kiring. Ruxsat tekshirilmaguncha mashq ochilmaydi.</string>
     <string name="hsk_course_practice_auth_required_retry" formatted="false">Qayta ochish</string>

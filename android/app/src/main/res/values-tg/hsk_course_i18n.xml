@@ -307,6 +307,13 @@
     <string name="hsk_course_locked_lesson" formatted="false">Ин дарс дар HSK AI Pro аст</string>
     <string name="hsk_course_mashq_sub" formatted="false">Мустаҳкам ва санҷиш</string>
     <string name="hsk_course_match_pairs" formatted="false">Ҷуфтҳоро мувофиқ кунед</string>
+    <string name="hsk_course_memorize_complete_meaning" formatted="false">маъно</string>
+    <string name="hsk_course_memorize_complete_sentence" formatted="false">ҷумла</string>
+    <string name="hsk_course_memorize_complete_word" formatted="false">калима</string>
+    <string name="hsk_course_memorize_finish" formatted="false">Анҷом</string>
+    <string name="hsk_course_memorize_prompt_confusion" formatted="false">Кадомро бо {hanzi} хато кардан мумкин?</string>
+    <string name="hsk_course_memorize_prompt_remember" formatted="false">Барои дар хотир мондан</string>
+    <string name="hsk_course_memorize_return_to_exercises" formatted="false">Ба машқҳо</string>
     <string name="hsk_course_memorize_limit_back" formatted="false">Бозгашт</string>
     <string name="hsk_course_memorize_limit_pay" formatted="false">HSK AI Pro ⭐️ гирифтан</string>
     <string name="hsk_course_memorize_limit_sub" formatted="false">Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён HSK AI Pro гиред ё фардо баргардед.</string>
@@ -457,6 +464,7 @@
     <string name="hsk_course_plan_pay" formatted="false">HSK AI Pro гирифтан</string>
     <string name="hsk_course_plan_title" formatted="false">Нақшаи шахсии шумо тайёр</string>
     <string name="hsk_course_practice_checking_access" formatted="false">Дастрасӣ санҷида мешавад…</string>
+    <string name="hsk_course_practice_data_not_loaded" formatted="false">Маълумот бор нашуд</string>
     <string name="hsk_course_practice_preparing" formatted="false">Машқ омода мешавад</string>
     <string name="hsk_course_practice_auth_required_body" formatted="false">Мини-барномаро аз Telegram дубора кушоед. Бе санҷиши дастрасӣ машқ оғоз намешавад.</string>
     <string name="hsk_course_practice_auth_required_retry" formatted="false">Аз нав кушодан</string>

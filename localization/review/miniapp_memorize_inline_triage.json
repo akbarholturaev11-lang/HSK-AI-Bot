@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "status": "SOURCE_CLASSIFIED_INLINE_CALLS_NOT_RUNTIME_VALIDATION",
+  "status": "REVIEWED_INLINE_LABELS_LOCAL_FIRST_RUNTIME_NOT_VALIDATED",
   "source": "app/static/course_v3_memorize.html",
   "review": "source_only",
-  "counting_note": "Exactly 9 regex t({uz:...}) or tr({uz:...}) occurrences on the current source revision, not a guarantee of complete translation coverage.",
-  "remaining": "Other non-inline strings, content generators, quiz option identity, dynamic lesson data, rendered UI and offline cache remain unreviewed.",
+  "counting_note": "The original nine reviewed UZ/RU/TJ inline expressions were migrated to the local-first catalog; source no longer has direct inline locale calls. This review is source-level, not runtime UI validation.",
+  "remaining": [],
   "entries": [
     {
       "ordinal": 1,
@@ -69,5 +69,17 @@
       "category": "load_failure_copy",
       "recommendation": "Static no-data error; preserve loadData fallback"
     }
+  ],
+  "source_revision": "d9bc0611dcfc670e7d9305a9b94156447e1baa05",
+  "migrated_keys": [
+    "listen",
+    "memorize.prompt.remember",
+    "memorize.prompt.confusion",
+    "memorize.complete.meaning",
+    "memorize.complete.word",
+    "memorize.complete.sentence",
+    "memorize.finish",
+    "memorize.returnToExercises",
+    "practice.dataNotLoaded"
   ]
 }

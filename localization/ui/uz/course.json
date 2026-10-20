@@ -877,6 +877,14 @@
     "rating.countdownDaysHours": "{days}k {hours}s",
     "rating.countdownHoursMinutes": "{hours}s {minutes}m",
     "rating.countdownMinutes": "{minutes}m",
-    "today.go": "Reja bo'yicha davom etish"
+    "today.go": "Reja bo'yicha davom etish",
+    "memorize.prompt.remember": "Eslab qolish uchun",
+    "memorize.prompt.confusion": "Qaysini {hanzi} bilan adashtirishingiz mumkin?",
+    "memorize.complete.meaning": "ma'no",
+    "memorize.complete.word": "so'z",
+    "memorize.complete.sentence": "gap",
+    "memorize.finish": "Tugatish",
+    "memorize.returnToExercises": "Mashqlarga qaytish",
+    "practice.dataNotLoaded": "Ma'lumot yuklanmadi"
   }
 }

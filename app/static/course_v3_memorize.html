@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Tez eslab qolish</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
-<script src="https://telegram.org/js/telegram-web-app.js"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261020-7eba899ffe2f"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261020-96b42704ca5a"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <style>
@@ -160,7 +160,7 @@ var LIM={
   pay:{uz:"HSK AI Pro ⭐️ olish",ru:"Получить HSK AI Pro ⭐️",tj:"HSK AI Pro ⭐️ гирифтан"},
   back:{uz:"Orqaga",ru:"Назад",tj:"Бозгашт"}
 };
-var MEMORIZE_LIMIT_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};Object.keys(LIM).forEach(function(key){var value=MEMORIZE_LIMIT_UI["memorizeLimit."+key];if(typeof value==="string"&&value)LIM[key][LANG]=value});function initData(){return (tg&&tg.initData)?tg.initData:""}
+var MEMORIZE_LIMIT_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};Object.keys(LIM).forEach(function(key){var value=MEMORIZE_LIMIT_UI["memorizeLimit."+key];if(typeof value==="string"&&value)LIM[key][LANG]=value});function memoMessage(key,fallback){var value=MEMORIZE_LIMIT_UI[key];return typeof value==="string"&&value?value:t(fallback)}function initData(){return (tg&&tg.initData)?tg.initData:""}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_memorize_limit&mode=subscription&return_to=course&return_page=course_v3_memorize.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 /* Foydalanuvchi darajasi: server (users.level) asosiy manba — kartalar userning
    haqiqiy HSK darajasidagi ierogliflardan tuziladi (lesson_gate xaritasi orqali).
@@ -315,7 +315,7 @@ function sGuess(){
 /* B2 — meaning */
 function sMeaning(){
   speak(H);
-  setHTML('<div class="card"><div class="bigchar han" style="margin:0">'+H+'</div><div class="py">'+pin(H)+'</div><div class="mn">'+mean(H)+'</div><div class="nt">'+t(D.note)+'</div><button class="au" onclick="speak(\''+H+'\')"><i class="ti ti-volume"></i>'+t({uz:"Tinglash",ru:"Послушать",tj:"Гӯш кардан"})+'</button></div><div id="ct"></div>');
+  setHTML('<div class="card"><div class="bigchar han" style="margin:0">'+H+'</div><div class="py">'+pin(H)+'</div><div class="mn">'+mean(H)+'</div><div class="nt">'+t(D.note)+'</div><button class="au" onclick="speak(\''+H+'\')"><i class="ti ti-volume"></i>'+memoMessage("listen",{uz:"Tinglash",ru:"Послушать",tj:"Гӯш кардан"})+'</button></div><div id="ct"></div>');
   showCont();
 }
 /* B3 — radical */
@@ -337,14 +337,14 @@ function sHook(){
   var ic={story:"ti-book",visual:"ti-eye",radical:"ti-key"};
   var hl=D.hooks.map(function(hk){return '<div class="hk"><span class="ic"><i class="ti '+(ic[hk.type]||"ti-bulb")+'"></i></span><span class="tx">'+t(hk.t)+'</span></div>'}).join("");
   var items=D.hooks.map(function(hk){return {h:t(UI.hookTypes[hk.type]||{uz:hk.type})}});
-  setHTML('<div class="q">'+t({uz:"Eslab qolish uchun",ru:"Для запоминания",tj:"Барои дар хотир мондан"})+'</div><div class="hooklist">'+hl+'</div><div class="lead">'+t(UI.hookPrompt)+'</div>'+optHTML(items)+'<div id="ct"></div>');
+  setHTML('<div class="q">'+memoMessage("memorize.prompt.remember",{uz:"Eslab qolish uchun",ru:"Для запоминания",tj:"Барои дар хотир мондан"})+'</div><div class="hooklist">'+hl+'</div><div class="lead">'+t(UI.hookPrompt)+'</div>'+optHTML(items)+'<div id="ct"></div>');
   wireOpts(function(i,bs){lock(bs);bs[i].classList.add("ok");setPref(D.hooks[i].type);showCont()});
 }
 /* B6 — confusion */
 function sConfusion(){
   var cs=D.confusables;
   var items=cs.map(function(c){return {h:c.h+'  '+c.p,han:false,s:t(c.m)}});
-  setHTML('<div class="q">'+t({uz:"Qaysini "+H+" bilan adashtirishingiz mumkin?",ru:"Что можно спутать с "+H+"?",tj:"Кадомро бо "+H+" хато кардан мумкин?"})+'</div>'+optHTML(items)+'<div class="fb" id="fb"></div><div id="ct"></div>');
+  setHTML('<div class="q">'+memoMessage("memorize.prompt.confusion",{uz:"Qaysini {hanzi} bilan adashtirishingiz mumkin?",ru:"Что можно спутать с {hanzi}?",tj:"Кадомро бо {hanzi} хато кардан мумкин?"}).replace("{hanzi}",H)+'</div>'+optHTML(items)+'<div class="fb" id="fb"></div><div id="ct"></div>');
   wireOpts(function(i,bs){lock(bs);bs[i].classList.add("ok");setFB(t(cs[i].diff),"neu");showCont()});
 }
 /* B7 — words */
@@ -428,9 +428,9 @@ function finishChar(){
   var sc=getM(H).score||0;
   setHTML('<div class="done"><div class="st"><i class="ti ti-check"></i></div><h3>'+t(UI.completeTitle)+'</h3>'
     +'<p>'+H+' · '+pin(H)+' — '+mean(H)+'</p>'
-    +'<div class="checks"><i class="ti ti-check"></i> '+t({uz:"ma'no",ru:"значение",tj:"маъно"})+'  ·  <i class="ti ti-check"></i> '+t({uz:"so'z",ru:"слово",tj:"калима"})+'  ·  <i class="ti ti-check"></i> '+t({uz:"gap",ru:"предложение",tj:"ҷумла"})+'</div>'
-    +(DI<deck.length-1?'<button onclick="nextChar()"><i class="ti ti-arrow-right"></i> '+t(UI.next)+'</button>':'<button onclick="goBack()"><i class="ti ti-check"></i> '+t({uz:"Tugatish",ru:"Завершить",tj:"Анҷом"})+'</button>')
-    +'<button class="ghost" onclick="goBack()">'+t({uz:"Mashqlarga qaytish",ru:"К упражнениям",tj:"Ба машқҳо"})+'</button></div>');
+    +'<div class="checks"><i class="ti ti-check"></i> '+memoMessage("memorize.complete.meaning",{uz:"ma'no",ru:"значение",tj:"маъно"})+'  ·  <i class="ti ti-check"></i> '+memoMessage("memorize.complete.word",{uz:"so'z",ru:"слово",tj:"калима"})+'  ·  <i class="ti ti-check"></i> '+memoMessage("memorize.complete.sentence",{uz:"gap",ru:"предложение",tj:"ҷумла"})+'</div>'
+    +(DI<deck.length-1?'<button onclick="nextChar()"><i class="ti ti-arrow-right"></i> '+t(UI.next)+'</button>':'<button onclick="goBack()"><i class="ti ti-check"></i> '+memoMessage("memorize.finish",{uz:"Tugatish",ru:"Завершить",tj:"Анҷом"})+'</button>')
+    +'<button class="ghost" onclick="goBack()">'+memoMessage("memorize.returnToExercises",{uz:"Mashqlarga qaytish",ru:"К упражнениям",tj:"Ба машқҳо"})+'</button></div>');
   haptic(true);
 }
 function nextChar(){DI++;startChar()}
@@ -438,7 +438,7 @@ function nextChar(){DI++;startChar()}
 /* boot */
 function boot(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){
   loadData();
-  if(!KEYS.length){B.innerHTML='<div class="loading">'+t({uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"})+'</div>';return}
+  if(!KEYS.length){B.innerHTML='<div class="loading">'+memoMessage("practice.dataNotLoaded",{uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"})+'</div>';return}
   buildDeck();DI=0;startChar();
 })}
 /* Sessiya boshlashdan oldin kunlik limitni tekshiramiz (server tomonda). */

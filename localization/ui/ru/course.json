@@ -877,6 +877,14 @@
     "rating.countdownDaysHours": "{days}д {hours}ч",
     "rating.countdownHoursMinutes": "{hours}ч {minutes}m",
     "rating.countdownMinutes": "{minutes}m",
-    "today.go": "Продолжить по плану"
+    "today.go": "Продолжить по плану",
+    "memorize.prompt.remember": "Для запоминания",
+    "memorize.prompt.confusion": "Что можно спутать с {hanzi}?",
+    "memorize.complete.meaning": "значение",
+    "memorize.complete.word": "слово",
+    "memorize.complete.sentence": "предложение",
+    "memorize.finish": "Завершить",
+    "memorize.returnToExercises": "К упражнениям",
+    "practice.dataNotLoaded": "Не удалось загрузить данные"
   }
 }
