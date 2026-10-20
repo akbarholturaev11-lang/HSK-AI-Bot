@@ -30,7 +30,17 @@ class LessonOverlayFullAuditTests(unittest.TestCase):
         )
         self.assertEqual(len(report["blocked_sources"]),
                          report["totals"]["blocked_lessons"])
-        self.assertEqual(report["status"], "P3_FULL_SOURCE_GAPS_REQUIRE_REVIEW")
+        self.assertEqual(
+            report["status"],
+            "P3_CANONICAL_DISPLAY_OVERLAYS_VALIDATED_RUNTIME_SECURITY_QA_REQUIRED",
+        )
+        self.assertEqual(report["source_gap_lessons"], 48)
+        self.assertEqual(report["canonical_catalog_covered_gap_lessons"], 48)
+        self.assertEqual(report["uncovered_source_gap_lessons"], 0)
+        self.assertEqual(report["canonical_catalog"]["unique_contexts"], 136)
+        self.assertEqual(report["canonical_catalog"]["independent_locale_values"], 408)
+        self.assertEqual(report["canonical_catalog"]["original_maps"], 272)
+        self.assertEqual(report["canonical_catalog"]["mirror_maps"], 136)
         self.assertGreater(report["totals"]["assessment_key_occurrences"], 0)
         self.assertGreater(report["totals"]["reverse_builder_cards_excluded"], 0)
         self.assertTrue(any(

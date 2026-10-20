@@ -24,6 +24,7 @@ if __package__:
     from scripts.i18n_lesson_display_overlay_contract import (
         LOCALES, apply_display_overlay, build_display_overlay,
     )
+    from scripts.i18n_canonical_grammar_catalog import audit_canonical_grammar
 else:
     from i18n_legacy_lesson_content_risk_audit import (
         ROOT, TRACKS, _lesson_files, _sensitive_field_counts,
@@ -34,6 +35,7 @@ else:
     from i18n_lesson_display_overlay_contract import (
         LOCALES, apply_display_overlay, build_display_overlay,
     )
+    from i18n_canonical_grammar_catalog import audit_canonical_grammar
 
 FIELD_KEYS = (
     "complete_display_maps",
@@ -101,7 +103,7 @@ def _evaluate(data: Any, track: str, lesson_number: int) -> tuple[dict, list[str
 
 
 def audit_all_lessons(root: Path = ROOT) -> dict[str, Any]:
-    """Review every numbered lesson, report blockers instead of dropping files."""
+    """Review source completeness and whether canonical overlays cover its gaps."""
     totals = Counter()
     per_track: dict[str, dict[str, int]] = {}
     blocked: list[dict[str, Any]] = []
@@ -138,14 +140,50 @@ def audit_all_lessons(root: Path = ROOT) -> dict[str, Any]:
                 })
         per_track[track] = dict(sorted(track_totals.items()))
 
+    canonical_catalog = None
+    covered_sources: set[str] = set()
+    try:
+        drafts, canonical_counts = audit_canonical_grammar(root)
+        covered_sources = set(drafts)
+        canonical_catalog = {
+            "status": "SOURCE_SHA_AND_CONTEXT_VALID",
+            "unique_contexts": canonical_counts["contexts"],
+            "independent_locale_values": canonical_counts["independent_values"],
+            "source_lessons": canonical_counts["source_lessons"],
+            "original_maps": canonical_counts["original_maps"],
+            "mirror_maps": canonical_counts["mirror_maps"],
+        }
+    except (OSError, ValueError, TypeError, KeyError, IndexError, UnicodeError):
+        # Source-only synthetic fixtures intentionally have no private P3 catalog.
+        canonical_catalog = {"status": "NOT_VALIDATED"}
+
+    covered_gap_count = 0
+    for item in blocked:
+        item["canonical_catalog_covers_source_gap"] = (
+            canonical_catalog.get("status") == "SOURCE_SHA_AND_CONTEXT_VALID"
+            and item["source_file"] in covered_sources
+            and item["issues"] == ["incomplete_source_locales"]
+        )
+        covered_gap_count += int(item["canonical_catalog_covers_source_gap"])
+    source_gap_count = len(blocked)
+    uncovered_gap_count = source_gap_count - covered_gap_count
+    if source_gap_count and uncovered_gap_count == 0:
+        status = "P3_CANONICAL_DISPLAY_OVERLAYS_VALIDATED_RUNTIME_SECURITY_QA_REQUIRED"
+    elif source_gap_count:
+        status = "P3_FULL_SOURCE_GAPS_REQUIRE_REVIEW"
+    else:
+        status = "P3_FULL_SOURCE_STRUCTURE_OK_RUNTIME_NOT_ENABLED"
+
     return {
         "schema_version": 1,
-        "status": ("P3_FULL_SOURCE_GAPS_REQUIRE_REVIEW"
-                   if totals["blocked_lessons"] else
-                   "P3_FULL_SOURCE_STRUCTURE_OK_RUNTIME_NOT_ENABLED"),
+        "status": status,
         "scope": "all_existing_seven_track_source_lessons",
         "lesson_source_counts": source_counts,
         "totals": dict(sorted(totals.items())),
+        "source_gap_lessons": source_gap_count,
+        "canonical_catalog_covered_gap_lessons": covered_gap_count,
+        "uncovered_source_gap_lessons": uncovered_gap_count,
+        "canonical_catalog": canonical_catalog,
         "issue_counts": dict(sorted(reasons.items())),
         "per_track": per_track,
         "blocked_sources": blocked,
@@ -153,7 +191,7 @@ def audit_all_lessons(root: Path = ROOT) -> dict[str, Any]:
             "Source checks are structural only, not semantic translation review.",
             "No lesson content, answers, answer options, source-language strings or user data are emitted.",
             "Existing public route and paid-content exposure risks remain unresolved.",
-            "This is NOT a public or deployable overlay pack, authenticated runtime or entitlement verification.",
+            "This audit does not execute the authenticated runtime or entitlement boundary; reservation/API and device QA remain separate.",
         ],
     }
 
@@ -175,7 +213,9 @@ def main() -> int:
         return 1
     print(
         "P3 full lesson audit:", report["totals"]["source_lessons"],
-        "sources,", report["totals"]["blocked_lessons"], "blocked,",
+        "sources,", report["source_gap_lessons"], "source gaps,",
+        report["canonical_catalog_covered_gap_lessons"], "catalog-covered,",
+        report["uncovered_source_gap_lessons"], "uncovered,",
         report["totals"]["validated_locale_overlays"], "valid locale overlays",
     )
     return 0
