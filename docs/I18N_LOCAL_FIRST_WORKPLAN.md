@@ -1,7 +1,7 @@
 # HSK AI — local-first localization work branch
 
-**Status:** preparation only; the existing 3 languages and all runtime behavior remain unchanged.
-**Isolated branch:** `codex/i18n-local-first-foundation-20261017`.
+**Status:** local-first UZ/RU/TJ implementation is in progress on the integration feature branch; no main merge or production release.
+**Active branch:** `codex/p3-main-integration-20261020` (latest implementation commit `f3e2bddf`; exact-head CI pending).
 **Main starting point:** `160a51d69f3324e3162375213ec61b5587b19533`.
 **Source-of-truth decision:** edit translations once in GitHub; build **separate local artifacts**
 for Android, Mini App, Desktop and Python bot/backend. No per-string translation API.
