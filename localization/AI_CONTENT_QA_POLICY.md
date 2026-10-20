@@ -355,3 +355,26 @@ malformed success, and valid explicit 200 grant, as well as clearing
 stale P3 state. Keep this test in P0 CI. Legacy anonymous/offline
 static lesson JSON remains a *separate unresolved security review risk*;
 this narrow fix does not make publicly served lesson JSON private.
+
+## G066/G069/G130 semantic actor and implied-event corrections (2026-10-20)
+
+- **Root cause:** In lesson 43, `G066` `李文等了她一个小时。` and `G069`
+  `李文等她等了一个小时。` say that Li Wen **waited for her** for one hour.
+  Prior Russian `На ожидание её прихода...` asserted her eventual **arrival**
+  without evidence, turning waiting into a result. Both RU rows now use
+  `Ли Вэнь ждал её целый час.`; UZ and TJ remain source-aligned.
+- **Root cause:** In lesson 70 (and repeated lesson 73), `G130`
+  `李文见了杨同乐两次。` has Li Wen as the subject and Yang Tongle as
+  the object of two sightings. The former Russian plural
+  `встречались дважды` turned the subject-object statement into
+  a mutual meeting. The canonical RU row now reads
+  `Ли Вэнь дважды видел Ян Тунлэ.` UZ and TJ are unchanged.
+- **Fix and prevention:** Change only the three Russian cells of the
+  exact 136-row, source-SHA-pinned canonical TSV. The reviewed original
+  lesson blobs, Chinese and grammar rules, pinyin, answer tokens, scoring,
+  access checks and mirror targets stay unchanged. New source-bound
+  `tests/test_i18n_canonical_grammar_catalog.py` regressions assert exact
+  Chinese contexts, retention of time and direction/agent, and absence of
+  invented outcomes. Structural/source/mirror CI and authenticated
+  cross-platform rendering still need separate verification; these three
+  corrections do not certify all 408 localized values.

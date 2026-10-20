@@ -151,6 +151,30 @@ class CanonicalGrammarCatalogTests(unittest.TestCase):
         self.assertIn("bo‘lsa kerak", uzbek)
         self.assertNotIn("kirdimi", uzbek)
 
+    def test_g066_g069_russian_wait_does_not_invent_arrival(self):
+        """Chinese 等 only says Li Wen waited for her; it does not guarantee arrival."""
+        contexts = {c["review_id"]: c for c in self.queue["contexts"]}
+        self.assertEqual(contexts["G066"]["chinese_example"], "李文等了她一个小时。")
+        self.assertEqual(contexts["G069"]["chinese_example"], "李文等她等了一个小时。")
+        reviewed = read_canonical_catalog(self.catalog_path)
+        for key in ("G066", "G069"):
+            with self.subTest(review_id=key):
+                russian = reviewed[key]["translations"]["ru"]
+                self.assertEqual(russian, "Ли Вэнь ждал её целый час.")
+                self.assertNotIn("прихода", russian)
+                self.assertIn("bir soat", reviewed[key]["translations"]["uz"])
+                self.assertIn("як соат", reviewed[key]["translations"]["tj"])
+
+    def test_g130_russian_keeps_chinese_subject_and_sightings(self):
+        """见了...两次 means Li Wen saw Yang Tongle twice; not a mutual meetup."""
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G130")
+        self.assertEqual(context["chinese_example"], "李文见了杨同乐两次。")
+        translations = read_canonical_catalog(self.catalog_path)["G130"]["translations"]
+        self.assertEqual(translations["ru"], "Ли Вэнь дважды видел Ян Тунлэ.")
+        self.assertNotIn("встречались", translations["ru"])
+        self.assertIn("ikki marta", translations["uz"])
+        self.assertIn("ду бор", translations["tj"])
+
     def test_context_hash_changes_with_source_rule_or_occurrence(self):
         original = context_source_sha256(self.first_context)
         mutations = []
