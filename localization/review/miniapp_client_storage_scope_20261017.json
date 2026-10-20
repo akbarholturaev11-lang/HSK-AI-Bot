@@ -122,9 +122,9 @@
     {
       "source": "course",
       "function": "lessonDataKey",
-      "expected_identity_scope": false,
+      "expected_identity_scope": true,
       "purpose": "in_memory_lesson_json_cache_key",
-      "privacy_review": "Shared source lesson JSON is not user progress; entitlement exposure is evaluated by the separate static-route audit."
+      "privacy_review": "Cache is namespaced by localUserScope to avoid cross-account reuse; in-flight reads reject if scope changes. Client identity is not server authorization; runtime switching QA remains required."
     },
     {
       "source": "course",
@@ -163,12 +163,6 @@
     }
   ],
   "risks": [
-    {
-      "id": "in_memory_lesson_data_no_identity",
-      "severity": "classified_shared_source_content_access_reviewed_separately",
-      "key": "lessonDataKey",
-      "scope": "page memory including in-flight promises; cache contains source lesson JSON, not user progress. Route entitlement is evaluated by the separate static-route audit."
-    },
     {
       "id": "unverified_user_scope_source",
       "severity": "review_only",

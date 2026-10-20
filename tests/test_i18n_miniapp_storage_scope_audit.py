@@ -31,7 +31,7 @@ class MiniAppStorageScopeTests(unittest.TestCase):
     def test_identity_contrasts_are_preserved_and_flagged_for_qa(self):
         report = audit()
         keys = report["dynamic_cache_key_functions"]
-        self.assertFalse(keys["lessonDataKey"]["local_user_scope_called"])
+        self.assertTrue(keys["lessonDataKey"]["local_user_scope_called"])
         self.assertTrue(keys["lessonResumeKey"]["local_user_scope_called"])
         self.assertTrue(keys["lessonMasteryKey"]["local_user_scope_called"])
         self.assertTrue(keys["foundationCacheKey"]["local_user_scope_called"])
@@ -44,7 +44,7 @@ class MiniAppStorageScopeTests(unittest.TestCase):
         self.assertIn('scope==="preview"?"hsk_memo":"hsk_memo:v2:"+scope',
                       self.sources["memorize"])
         self.assertEqual({r["id"] for r in report["risks"]}, {
-            "in_memory_lesson_data_no_identity", "unverified_user_scope_source",
+            "unverified_user_scope_source",
         })
 
     def test_new_storage_key_requires_classification(self):

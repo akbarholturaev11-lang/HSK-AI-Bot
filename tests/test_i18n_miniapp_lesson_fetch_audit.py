@@ -1,6 +1,7 @@
 """P0 Mini App lesson loader: prefetch cannot become entitlement consumption."""
 import json
 from pathlib import Path
+import shutil
 import unittest
 
 from scripts.i18n_miniapp_lesson_fetch_audit import (
@@ -68,14 +69,57 @@ class MiniAppLessonFetchIntentTests(unittest.TestCase):
     def test_memory_resume_keys_need_manual_account_switch_qa(self):
         report = audit(ROOT)
         self.assertEqual(report["cache_scope"], {
-            "memory_lesson_key_contains_identity": False,
+            "memory_lesson_key_contains_identity": True,
             "resume_key_contains_identity": True,
             "mastery_key_contains_identity": True,
         })
         self.assertTrue(any(row["issue"] ==
-                            "shared_lesson_content_and_scoped_resume_require_runtime_QA"
+                            "identity_scoped_lesson_cache_requires_runtime_QA"
                             for row in report["review_findings"]))
         self.assertNotIn("correct_index", json.dumps(report))
+
+    @unittest.skipUnless(shutil.which("node"), "Node is needed for JavaScript runtime smoke")
+    def test_lesson_data_cache_isolated_when_identity_changes_mid_fetch(self):
+        import subprocess
+
+        start = self.source.index("var LESSON_DATA_CACHE={},LESSON_DATA_PROMISES={}")
+        end = self.source.index("function idleRun(fn){", start)
+        loader = self.source[start:end]
+        js = r"""
+const vm=require("node:vm");
+const assert=require("node:assert/strict");
+let scope="account-a", fetchCount=0, finishFirst;
+const env={
+  localUserScope:()=>scope,
+  normalizeLevel:x=>String(x||"hsk1"),
+  cloneJson:x=>JSON.parse(JSON.stringify(x)),
+  lessonDataUrl:(level,n)=>"/"+level+"/"+n,
+  fetch:()=>{
+    fetchCount++;
+    if(fetchCount===1)return new Promise(resolve=>{finishFirst=resolve});
+    return Promise.resolve({ok:true,json:()=>Promise.resolve({owner:scope})});
+  }
+};
+vm.runInNewContext(JSON.parse(process.argv[1]),env);
+(async()=>{
+  const first=env.loadLessonData("nhsk2",16);
+  scope="account-b";
+  finishFirst({ok:true,json:()=>Promise.resolve({owner:"account-a"})});
+  await assert.rejects(first,/lesson_identity_changed/);
+  const second=await env.loadLessonData("nhsk2",16);
+  assert.equal(second.owner,"account-b");
+  assert.equal(fetchCount,2);
+  scope="account-a";
+  const third=await env.loadLessonData("nhsk2",16);
+  assert.equal(third.owner,"account-a");
+  assert.equal(fetchCount,3);
+})().catch(err=>{console.error(err);process.exitCode=1});
+"""
+        completed = subprocess.run(
+            ["node", "-e", js, json.dumps(loader)],
+            text=True, capture_output=True, timeout=15,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr[-2500:])
 
 
 if __name__ == "__main__":

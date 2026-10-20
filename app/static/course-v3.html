@@ -2890,7 +2890,7 @@ function allLessons(){var a=[];(MAP.units||[]).forEach(function(u){(u.lessons||[
 var LESSON_DATA_CACHE={},LESSON_DATA_PROMISES={},PRACTICE_PREFETCHED=false;
 var PRACTICE_LIMIT_STATUS_CACHE={},PRACTICE_LIMIT_STATUS_PROMISES={},PRACTICE_LIMIT_STATUS_VERSIONS={};
 function cloneJson(v){return JSON.parse(JSON.stringify(v))}
-function lessonDataKey(lv,n){return normalizeLevel(lv)+"-"+String(Number(n)||0)}
+function lessonDataKey(lv,n){return localUserScope()+":"+normalizeLevel(lv)+"-"+String(Number(n)||0)}
 /* N1 checkpoint revision: a new teaching edition must not be hidden by
    the browser/CDN cache's long lifetime for lesson JSON.
    One URL across iOS and Android Mini App, without changing other tracks. */
@@ -2902,14 +2902,14 @@ function lessonDataUrl(lv,n){
   return level==="nhsk1"?url+"?content_rev="+N1_LESSON_CONTENT_REV:url;
 }
 function loadLessonData(lv,n){
-  var key=lessonDataKey(lv,n);
+  var key=lessonDataKey(lv,n),scope=localUserScope();
   if(LESSON_DATA_CACHE[key])return Promise.resolve(cloneJson(LESSON_DATA_CACHE[key]));
   if(LESSON_DATA_PROMISES[key])return LESSON_DATA_PROMISES[key].then(cloneJson);
   LESSON_DATA_PROMISES[key]=fetch(lessonDataUrl(lv,n),normalizeLevel(lv)==="nhsk1"?{cache:"no-store"}:{}).then(function(r){
     if(!r.ok)throw new Error("not_found");
     return r.json();
   }).then(function(d){
-    LESSON_DATA_CACHE[key]=d;
+    if(scope!==localUserScope())throw new Error("lesson_identity_changed");LESSON_DATA_CACHE[key]=d;
     delete LESSON_DATA_PROMISES[key];
     return d;
   }).catch(function(err){

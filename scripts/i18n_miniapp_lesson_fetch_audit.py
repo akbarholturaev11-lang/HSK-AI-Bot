@@ -71,10 +71,10 @@ def audit_source(source: str, registry: dict) -> dict:
     ):
         failures.append({"issue": "legacy_source_fetch_contract_changed"})
     if not re.search(
-        r"function lessonDataKey\([^)]*\)\{return normalizeLevel\(lv\)\+",
+        r"function lessonDataKey\([^)]*\)\{return localUserScope\(\)\+",
         source,
     ):
-        failures.append({"issue": "page_lesson_data_cache_key_changed"})
+        failures.append({"issue": "lesson_data_cache_identity_scope_missing"})
     if not re.search(
         r"function lessonResumeKey\([^)]*\)\{var scope=localUserScope\(\).*hsk_v3_lesson_resume:v3:",
         source,
@@ -113,7 +113,7 @@ def audit_source(source: str, registry: dict) -> dict:
         "review_findings": [
             {"issue": "background_or_preview_reads_must_not_consume_lesson_quota",
              "status": "P0_manual_migration_blocker"},
-            {"issue": "shared_lesson_content_and_scoped_resume_require_runtime_QA",
+            {"issue": "identity_scoped_lesson_cache_requires_runtime_QA",
              "status": "P0_manual_account_switch_review"},
             {"issue": "skip_test_and_foundation_need_distinct_content_policy",
              "status": "P0_manual_access_review"},
