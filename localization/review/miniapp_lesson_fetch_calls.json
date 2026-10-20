@@ -1,62 +1,32 @@
 {
   "schema_version": 1,
-  "status": "SIX_DIRECT_READ_CALLS_SOURCE_REVIEWED_NO_RUNTIME_MIGRATION",
+  "status": "PURPOSE_SPECIFIC_APIS_SOURCE_REVIEWED",
   "source": "app/static/course-v3.html",
-  "source_revision": "361c2ce61a10d1956ac31ea3ebd1f0cf17f54279",
-  "scope": "All six direct loadLessonData(...) expressions, not the function declaration, on this Mini App page. Indirect callers to warmLessonPreviewAudio, prefetchNearbyLessons and primeSalesValueContent are separately described in the notes. Updated review after main/P3 integration: all six exact direct GET callsite anchors and four indirect callers are re-identified; no access policy migration.",
+  "source_revision": "c70e4befd802133a8e6e18fe5501c59289715ce7",
+  "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route.",
   "read_calls": [
     {
       "ordinal": 1,
-      "line": 2053,
-      "anchor": "loadLessonData(\"hsk1\",3)",
-      "owner": "primeSalesValueContent",
-      "intent": "paywall_preview_prime",
-      "expected_future_policy": "public_redacted_preview_only",
-      "cost_sensitive": true,
-      "reason": "Marketing/sales preview executes without starting a lesson; do not spend Free lesson quota or publish all of lesson 3."
-    },
-    {
-      "ordinal": 2,
       "line": 2203,
       "anchor": "loadLessonData(lv,n)",
       "owner": "warmLessonPreviewAudio",
       "intent": "audio_preload_before_continue",
-      "expected_future_policy": "public_or_previous_authorized_audio_only",
+      "expected_future_policy": "authenticated_non_consuming_authorized_lesson_only",
       "cost_sensitive": true,
-      "reason": "Called before the learner taps Continue; speculative audio warming must not consume entitlement or fetch protected cards."
+      "reason": "Audio warming is optional; the signed lesson read must never consume quota and may return only a completed, reserved, or otherwise unlimited-access lesson."
     },
     {
-      "ordinal": 3,
+      "ordinal": 2,
       "line": 3008,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "prefetchNearbyLessons",
       "intent": "background_nearby_prefetch",
-      "expected_future_policy": "non_consuming_metadata_only",
+      "expected_future_policy": "authenticated_non_consuming_authorized_lesson_only",
       "cost_sensitive": true,
-      "reason": "Idle prefetch may fetch next lesson including locked content; moving to a consume=True endpoint would silently spend the daily limit."
+      "reason": "Idle prefetch may target the next locked lesson; server sequence, track, foundation, and entitlement checks must deny it without quota consumption."
     },
     {
-      "ordinal": 4,
-      "line": 3629,
-      "anchor": "loadLessonData(MAP.level||\"hsk1\",l.n)",
-      "owner": "startSkipTest",
-      "intent": "skip_test_question_generation",
-      "expected_future_policy": "separately_authorized_skip_test_material",
-      "cost_sensitive": true,
-      "reason": "Skip-test currently builds a quiz from static lesson content, not from the normal interactive lesson-start entitlement path."
-    },
-    {
-      "ordinal": 5,
-      "line": 3761,
-      "anchor": "loadLessonData(\"hsk1\",1)",
-      "owner": "startFoundationFromMap",
-      "intent": "starter_foundation_content",
-      "expected_future_policy": "foundation_specific_access_or_public_safe_bootstrap",
-      "cost_sensitive": true,
-      "reason": "Starter 0 prerequisite must remain reachable under the established foundation policy and cannot burn unrelated daily lesson quota."
-    },
-    {
-      "ordinal": 6,
+      "ordinal": 3,
       "line": 4091,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "startLesson",
@@ -81,17 +51,12 @@
       "line": 8582,
       "name": "prefetchNearbyLessons",
       "intent": "initial_course_boot_background"
-    },
-    {
-      "line": 2366,
-      "name": "primeSalesValueContent",
-      "intent": "subscription_paywall_lazy_prime"
     }
   ],
   "cache_scope_review": [
     {
       "key": "LESSON_DATA_CACHE",
-      "observation": "Page memory cache keys include localUserScope and in-flight reads reject when scope changes; this is client-side isolation only. Static-route entitlement remains a separate review gate."
+      "observation": "Page lesson cache and pending reads include localUserScope; the server still revalidates signed identity and access on each cache miss. Runtime identity-switch QA remains."
     },
     {
       "key": "lessonResumeKey",
@@ -102,5 +67,22 @@
       "observation": "Mastery key includes localUserScope(); keep identity-aware versioning."
     }
   ],
-  "limits": "Source call-site classification only. Does not inspect real credentials, static URL network permissions, mobile binaries, browser cache invalidation or QA screenshots. No runtime or payment policy changed."
+  "limits": "Source call-site classification and isolated API regression tests only. Does not inspect real credentials, deployed HTTP responses, installed-client cache invalidation or QA screenshots.",
+  "purpose_specific_endpoints": [
+    {
+      "path": "/api/v3/lesson/sales-preview",
+      "owner": "primeSalesValueContent",
+      "policy": "public_fixed_allowlist_projection"
+    },
+    {
+      "path": "/api/v3/lesson/foundation",
+      "owner": "startFoundationFromMap",
+      "policy": "signed_identity_foundation_only"
+    },
+    {
+      "path": "/api/v3/lesson/skip-test",
+      "owner": "startSkipTest",
+      "policy": "signed_identity_entitlement_checked_max_six_questions"
+    }
+  ]
 }

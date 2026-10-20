@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Read-only source contract for Mini App reserved starts versus public JSON GET.
+"""Read-only source contract for Mini App lesson start and content access.
 
 No FastAPI imports, secrets, DB, HTTP or course answer values are accessed.
-Source checks do not certify live entitlement; legacy JSON remains a P0
-manual-review blocker even when the authenticated start gate passes.
+Source checks do not certify live entitlement or deployed route behavior.
 """
 from __future__ import annotations
 
@@ -49,20 +48,43 @@ def _guarded_unauthorized(node: ast.AST) -> bool:
 
 def _server_checks(source: str) -> dict[str, bool]:
     tree = ast.parse(source)
-    nodes = [
+    start_nodes = [
         n for n in ast.walk(tree)
         if isinstance(n, ast.AsyncFunctionDef) and n.name == "v3_course_lesson_start"
     ]
-    if len(nodes) != 1:
+    content_nodes = [
+        n for n in ast.walk(tree)
+        if isinstance(n, ast.AsyncFunctionDef) and n.name == "v3_course_lesson_content"
+    ]
+    skip_nodes = [
+        n for n in ast.walk(tree)
+        if isinstance(n, ast.AsyncFunctionDef) and n.name == "v3_course_lesson_skip_test"
+    ]
+    if len(start_nodes) != 1:
         raise ValueError("Mini App lesson start handler identity changed")
-    fn = nodes[0]
+    if len(content_nodes) != 1:
+        raise ValueError("Mini App lesson content handler identity changed")
+    if len(skip_nodes) != 1:
+        raise ValueError("Mini App lesson skip-test handler identity changed")
+    fn = start_nodes[0]
+    content_fn = content_nodes[0]
+    skip_fn = skip_nodes[0]
     pretty = ast.unparse(fn)
+    content_pretty = ast.unparse(content_fn)
+    skip_pretty = ast.unparse(skip_fn)
     calls = _calls(fn, "status")
+    content_calls = _calls(content_fn, "status")
     consumed = any(
         "LessonAccessService(" in ast.unparse(call.func)
         and any(kw.arg == "consume" and isinstance(kw.value, ast.Constant)
                 and kw.value.value is True for kw in call.keywords)
         for call in calls
+    )
+    content_non_consuming = any(
+        "LessonAccessService(" in ast.unparse(call.func)
+        and any(kw.arg == "consume" and isinstance(kw.value, ast.Constant)
+                and kw.value.value is False for kw in call.keywords)
+        for call in content_calls
     )
     return {
         "verifies_telegram_init_data": bool(_calls(fn, "extract_verified_webapp_user_id")),
@@ -78,6 +100,23 @@ def _server_checks(source: str) -> dict[str, bool]:
         ),
         "uses_lesson_access_consume_true": consumed,
         "commits_entitlement_result": bool(_calls(fn, "commit")),
+        "content_uses_authenticated_identity_helper": bool(_calls(content_fn, "_authenticated")),
+        "content_rejects_missing_identity_401": _guarded_unauthorized(content_fn),
+        "content_uses_verified_account_lookup": bool(_calls(content_fn, "get_by_telegram_id")),
+        "content_rejects_out_of_sequence_lesson": (
+            "lesson_order > completed + 1" in content_pretty
+            and "course_lesson_not_unlocked" in content_pretty
+        ),
+        "content_enforces_numbered_lesson_bounds": (
+            "lesson_order < 1" in content_pretty
+            and "lesson_order > total" in content_pretty
+        ),
+        "content_checks_non_consuming_entitlement": content_non_consuming,
+        "content_uses_no_store_response": bool(_calls(content_fn, "_private_content_response")),
+        "skip_test_rejects_out_of_sequence_lesson": (
+            "lesson_order > completed + 1" in skip_pretty
+            and "course_lesson_not_unlocked" in skip_pretty
+        ),
     }
 
 
@@ -115,26 +154,16 @@ def audit_source(api: str, client: str) -> dict:
     ]
     return {
         "schema_version": 1,
-        "status": "SOURCE_REGRESSION" if missing else "SOURCE_AUTH_GATE_PRESENT_LEGACY_GET_REVIEW",
+        "status": "SOURCE_REGRESSION" if missing else "SOURCE_AUTHENTICATED_CONTENT_GATE_PRESENT",
         "server": server,
         "miniapp": frontend,
         "regressions": missing,
-        "review_findings": [
-            {
-                "issue": "static_lesson_json_not_tied_to_user_reservation",
-                "severity": "P0_manual_migration_blocker",
-            },
-            {
-                "issue": "client_skips_reservation_without_telegram_initdata",
-                "severity": "P0_compatibility_review",
-            },
-        ],
+        "review_findings": [],
         "limits": [
-            "This checks source AST and Mini App call expressions only; no requests or account tests.",
-            "The start API authenticates/reserves, but the legacy JSON GET does not carry this access decision.",
-            "A successful entitlement reservation does not itself make the separate static JSON URL private.",
+            "This checks source AST and Mini App call expressions only; no requests or deployed account tests.",
+            "The lesson content API revalidates signed identity, sequence, foundation and entitlement without consuming quota.",
             "Do not replace speculative preview/background calls with a consume=True API.",
-            "Does not prove a paid-billing bypass, grade data exposure or production deployment behavior.",
+            "Does not certify paid billing, grade exposure or production deployment behavior.",
         ],
     }
 

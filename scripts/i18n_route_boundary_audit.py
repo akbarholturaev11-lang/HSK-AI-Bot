@@ -19,6 +19,10 @@ LESSON_ROUTE = "/course_v3_data/{level}/{filename}"
 EXAM_ROUTE = "/course_v3_data/exams/{filename}"
 MAP_ROUTE = "/course_v3_data/{filename}"
 GUARD_PREFIX = "/api/"
+PUBLIC_MAP_FILES = frozenset({
+    "hsk1.json", "hsk2.json", "hsk3.json", "hsk4.json",
+    "nhsk1.json", "nhsk2.json", "nhsk3.json",
+})
 
 
 def routes(source: str) -> dict[str, ast.AsyncFunctionDef | ast.FunctionDef]:
@@ -95,6 +99,32 @@ def _lesson_filename_validation(route: ast.AST) -> bool:
             and ("lesson_\\d+\\.json", "filename") in patterns)
 
 
+def _public_map_allowlist(source: str, route: ast.AST) -> bool:
+    tree = ast.parse(source)
+    assignment = next((node for node in tree.body if isinstance(node, ast.Assign)
+                       and any(isinstance(target, ast.Name)
+                               and target.id == "COURSE_V3_PUBLIC_MAP_FILES"
+                               for target in node.targets)), None)
+    if not assignment or not isinstance(assignment.value, ast.Call):
+        return False
+    if _call_name(assignment.value.func) != "frozenset" or not assignment.value.args:
+        return False
+    values = assignment.value.args[0]
+    names = ({item.value for item in values.elts
+              if isinstance(item, ast.Constant) and isinstance(item.value, str)}
+             if isinstance(values, (ast.Set, ast.List, ast.Tuple)) else set())
+    constrained = any(
+        isinstance(node, ast.Compare)
+        and isinstance(node.left, ast.Name) and node.left.id == "filename"
+        and any(isinstance(op, ast.NotIn) for op in node.ops)
+        and any(isinstance(value, ast.Name)
+                and value.id == "COURSE_V3_PUBLIC_MAP_FILES"
+                for value in node.comparators)
+        for node in ast.walk(route)
+    )
+    return names == PUBLIC_MAP_FILES and constrained
+
+
 def middleware_boundary(guard_source: str) -> dict:
     tree = ast.parse(guard_source)
     prefixes = [
@@ -135,17 +165,25 @@ def audit(main_source: str, guard_source: str) -> dict:
         })
     file_serve = _uses_file_serve(lesson)
     auth_dependency = _has_dependency(lesson)
+    legacy_lesson_disabled = _returns_explicit_exam_404(lesson) and not file_serve
+    if not legacy_lesson_disabled:
+        findings.append({
+            "route": LESSON_ROUTE,
+            "issue": "legacy_public_lesson_route_must_remain_disabled",
+            "severity": "stop_the_release",
+        })
     if file_serve and not auth_dependency and not middleware["guard_applies_to_course_json"]:
         findings.append({
             "route": LESSON_ROUTE,
             "issue": "source_level_public_lesson_file_exposure",
             "severity": "manual_entitlement_review_blocker",
         })
-    if _uses_file_serve(overview) and not _has_dependency(overview):
+    map_allowlist = _public_map_allowlist(main_source, overview)
+    if _uses_file_serve(overview) and not _has_dependency(overview) and not map_allowlist:
         findings.append({
             "route": MAP_ROUTE,
-            "issue": "source_level_public_curriculum_map",
-            "severity": "classify_map_payload_before_public_locale_pack",
+            "issue": "public_course_json_route_missing_fixed_allowlist",
+            "severity": "manual_entitlement_review_blocker",
         })
     return {
         "schema_version": 1,
@@ -154,6 +192,7 @@ def audit(main_source: str, guard_source: str) -> dict:
             "route": LESSON_ROUTE, "handler": lesson.name,
             "serves_file": file_serve,
             "handler_dependency": auth_dependency,
+            "explicit_404_return": legacy_lesson_disabled,
             "has_level_and_filename_pattern_validation": _lesson_filename_validation(lesson),
         },
         "exam": {
@@ -165,6 +204,7 @@ def audit(main_source: str, guard_source: str) -> dict:
             "route": MAP_ROUTE, "handler": overview.name,
             "serves_file": _uses_file_serve(overview),
             "handler_dependency": _has_dependency(overview),
+            "fixed_public_map_allowlist": map_allowlist,
         },
         "middleware": middleware,
         "findings": findings,
@@ -173,6 +213,7 @@ def audit(main_source: str, guard_source: str) -> dict:
             "Source-level route findings do not certify a production vulnerability or actual billing bypass.",
             "Does not inspect learner answers, private exam JSON, payment policies, trial or progress state.",
             "The existing lesson URL may be required by older Android, Desktop and Mini App clients.",
+            "Route source checks are not a live staging HTTP authorization test.",
         ],
     }
 

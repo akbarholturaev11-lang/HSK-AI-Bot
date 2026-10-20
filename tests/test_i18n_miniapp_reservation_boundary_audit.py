@@ -14,16 +14,13 @@ class MiniAppReservationBoundaryTests(unittest.TestCase):
         cls.api = (ROOT / API).read_text(encoding="utf-8")
         cls.client = (ROOT / MINIAPP).read_text(encoding="utf-8")
 
-    def test_existing_reservation_auth_limit_contract_and_legacy_finding(self):
+    def test_reservation_and_authenticated_content_contract(self):
         result = audit(ROOT)
-        self.assertEqual(result["status"], "SOURCE_AUTH_GATE_PRESENT_LEGACY_GET_REVIEW")
+        self.assertEqual(result["status"], "SOURCE_AUTHENTICATED_CONTENT_GATE_PRESENT")
         self.assertEqual(result["regressions"], [])
         self.assertTrue(all(result["server"].values()))
         self.assertTrue(all(result["miniapp"].values()))
-        self.assertIn(
-            "static_lesson_json_not_tied_to_user_reservation",
-            {row["issue"] for row in result["review_findings"]},
-        )
+        self.assertEqual(result["review_findings"], [])
         self.assertNotIn("correct_index", json.dumps(result))
         self.assertNotIn("BOT_TOKEN", json.dumps(result))
 
@@ -52,7 +49,29 @@ class MiniAppReservationBoundaryTests(unittest.TestCase):
                                    "order > completed + 999", 1)
         result = audit_source(changed, self.client)
         self.assertIn(
+            "server.content_rejects_out_of_sequence_lesson",
+            {row["check"] for row in result["regressions"]},
+        )
+
+    def test_start_reservation_sequence_guard_change_is_detected(self):
+        start = self.api.index("async def v3_course_lesson_start(")
+        changed = self.api[:start] + self.api[start:].replace(
+            "order > completed + 1", "order > completed + 999", 1,
+        )
+        result = audit_source(changed, self.client)
+        self.assertIn(
             "server.rejects_out_of_sequence_lesson",
+            {row["check"] for row in result["regressions"]},
+        )
+
+    def test_skip_test_sequence_guard_change_is_detected(self):
+        skip_test = self.api.index("async def v3_course_lesson_skip_test(")
+        changed = self.api[:skip_test] + self.api[skip_test:].replace(
+            "lesson_order > completed + 1", "lesson_order > completed + 999", 1,
+        )
+        result = audit_source(changed, self.client)
+        self.assertIn(
+            "server.skip_test_rejects_out_of_sequence_lesson",
             {row["check"] for row in result["regressions"]},
         )
 
@@ -66,7 +85,7 @@ class MiniAppReservationBoundaryTests(unittest.TestCase):
             {row["check"] for row in result["regressions"]},
         )
 
-    def test_moving_json_fetch_requires_independent_review(self):
+    def test_moving_shared_lesson_fetch_requires_contract_review(self):
         exact = "fetch(lessonDataUrl(lv,n),"
         self.assertIn(exact, self.client)
         changed = self.client.replace(exact, "fetch('/api/lesson/new',", 1)

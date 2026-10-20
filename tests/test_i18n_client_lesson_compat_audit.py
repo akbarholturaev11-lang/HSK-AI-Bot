@@ -7,12 +7,59 @@ from scripts.i18n_client_lesson_compat_audit import FILES, audit, contract
 class ClientLessonTransportTests(unittest.TestCase):
     def test_current_client_transport_contracts(self):
         report = audit()
-        self.assertEqual(report["status"], "SOURCE_CONTRACT_OK_LEGACY_MINIAPP_REVIEW")
+        self.assertEqual(report["status"], "SOURCE_CONTRACT_OK_AUTHENTICATED_MINIAPP_REVIEW")
         self.assertEqual(report["failures"], [])
         self.assertTrue(all(all(v for v in checks.values())
                             for checks in report["checks"].values()))
         self.assertEqual(report["migration_priority"],
-                         "miniapp_legacy_public_lesson_fetch")
+                         "miniapp_authenticated_lesson_api_runtime_verification")
+
+    def test_miniapp_auth_and_legacy_route_guards_fail_closed(self):
+        from pathlib import Path
+        from scripts.i18n_client_lesson_compat_audit import ROOT
+        sources = {
+            key: (ROOT / path).read_text(encoding="utf-8")
+            for key, path in FILES.items()
+        }
+        broken = dict(sources)
+        broken["miniapp"] = broken["miniapp"].replace(
+            '"X-Telegram-Init-Data":INIT_DATA', '"Content-Type":"application/json"',
+        )
+        report = contract(broken)
+        self.assertTrue(any(row["platform"] == "miniapp"
+                            and row["check"] == "fetches_with_signed_identity_and_no_store"
+                            for row in report["failures"]))
+
+        broken = dict(sources)
+        main = sources["backend_main"]
+        legacy_start = main.index("async def course_v3_lesson_file(")
+        legacy_end = main.index("@app.get(", legacy_start)
+        broken["backend_main"] = (
+            main[:legacy_start]
+            + main[legacy_start:legacy_end].replace(
+                'status_code=404,\n        content={"ok": False, "error": "lesson_content_not_found"}',
+                'status_code=200,\n        content={"ok": True}',
+            )
+            + main[legacy_end:]
+        )
+        report = contract(broken)
+        self.assertTrue(any(row["platform"] == "legacy_public_route"
+                            and row["check"] == "old_lesson_json_route_returns_404"
+                            for row in report["failures"]))
+
+        broken = dict(sources)
+        backend = sources["backend_miniapp_content"]
+        skip_start = backend.index("async def v3_course_lesson_skip_test(")
+        broken["backend_miniapp_content"] = (
+            backend[:skip_start]
+            + backend[skip_start:].replace(
+                "lesson_order > completed + 1", "lesson_order > completed + 999", 1,
+            )
+        )
+        report = contract(broken)
+        self.assertTrue(any(row["platform"] == "miniapp_server"
+                            and row["check"] == "skip_test_sequence_is_checked"
+                            for row in report["failures"]))
 
     def test_missing_credential_or_cache_rule_requires_manual_review(self):
         from pathlib import Path

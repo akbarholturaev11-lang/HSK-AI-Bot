@@ -17,9 +17,8 @@ PAGE = "app/static/course-v3.html"
 REGISTRY = "localization/review/miniapp_lesson_fetch_calls.json"
 CALL = re.compile(r"\bloadLessonData\s*\(")
 KNOWN_INTENTS = {
-    "paywall_preview_prime", "audio_preload_before_continue",
-    "background_nearby_prefetch", "skip_test_question_generation",
-    "starter_foundation_content", "interactive_lesson_after_reservation",
+    "audio_preload_before_continue", "background_nearby_prefetch",
+    "interactive_lesson_after_reservation",
 }
 
 
@@ -65,11 +64,23 @@ def audit_source(source: str, registry: dict) -> dict:
         source,
     ):
         failures.append({"issue": "interactive_lesson_reservation_order_changed"})
+    if not re.search(r'var url="/api/v3/lesson/content/"\+level\+"/"', source):
+        failures.append({"issue": "lesson_content_no_longer_uses_authenticated_api"})
     if not re.search(
-        r"fetch\(lessonDataUrl\(lv,n\),normalizeLevel\(lv\)===.nhsk1.",
+        r'fetch\(lessonDataUrl\(lv,n\),\{headers:\{"X-Telegram-Init-Data":INIT_DATA\},cache:"no-store"\}\)',
         source,
     ):
-        failures.append({"issue": "legacy_source_fetch_contract_changed"})
+        failures.append({"issue": "lesson_content_missing_signed_no_store_request"})
+    if not re.search(r'fetch\("/api/v3/lesson/sales-preview"', source):
+        failures.append({"issue": "sales_preview_projection_endpoint_missing"})
+    if not re.search(r'fetch\("/api/v3/lesson/foundation"', source):
+        failures.append({"issue": "foundation_projection_endpoint_missing"})
+    if not re.search(r'_apiPost\("/api/v3/lesson/skip-test"', source):
+        failures.append({"issue": "skip_test_projection_endpoint_missing"})
+    if not re.search(r"Array\.isArray\(d&&d\.questions\).*slice\(0,6\)", source):
+        failures.append({"issue": "skip_test_must_consume_bounded_server_questions"})
+    if not re.search(r"if\(!q\.length\)\{toast\(skipI18n\(\)\.notReady", source):
+        failures.append({"issue": "empty_skip_test_must_fail_closed"})
     if not re.search(
         r"function lessonDataKey\([^)]*\)\{return localUserScope\(\)\+",
         source,
@@ -91,7 +102,7 @@ def audit_source(source: str, registry: dict) -> dict:
     mastery_return = _function_return_line(source, "lessonMasteryKey")
     return {
         "schema_version": 1,
-        "status": "SOURCE_CALLS_CLASSIFIED_REVIEW_REQUIRED" if not failures else "SOURCE_CONTRACT_REGRESSION",
+        "status": "PURPOSE_SPECIFIC_API_CALLS_CLASSIFIED_REVIEW_REQUIRED" if not failures else "SOURCE_CONTRACT_REGRESSION",
         "source": PAGE,
         "classified_direct_calls": len(actual),
         "calls": [
@@ -111,19 +122,17 @@ def audit_source(source: str, registry: dict) -> dict:
             "mastery_key_contains_identity": "localUserScope()" in mastery_return,
         },
         "review_findings": [
-            {"issue": "background_or_preview_reads_must_not_consume_lesson_quota",
-             "status": "P0_manual_migration_blocker"},
             {"issue": "identity_scoped_lesson_cache_requires_runtime_QA",
              "status": "P0_manual_account_switch_review"},
-            {"issue": "skip_test_and_foundation_need_distinct_content_policy",
-             "status": "P0_manual_access_review"},
+            {"issue": "authenticated_lesson_content_requires_staging_HTTP_and_old_client_QA",
+             "status": "P0_release_verification_open"},
         ],
         "regression_failures": failures,
         "limitations": [
             "Source syntax and existing six callsites only; not complete function call graph or deployed behavior.",
-            "The existing Mini App direct JSON URL is public from code-level inspection, not a production HTTP test.",
+            "Mini App requests now target authenticated APIs in source; this scanner does not execute their server authorization.",
             "No future content, token, correct answer, translation text or user state is included in the report.",
-            "Lesson JSON is shared source content; scoped resume and signed-user separation still require device account-switch QA.",
+            "Lesson JSON delivery, account switching and cached older Mini App clients still require staging/device QA.",
         ],
     }
 

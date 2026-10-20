@@ -2224,9 +2224,14 @@ async def course_v3_ads_script():
     return static_asset_response("app/static/course_v3_data/ads.js", "application/javascript")
 
 
+COURSE_V3_PUBLIC_MAP_FILES = frozenset({
+    "hsk1.json", "hsk2.json", "hsk3.json", "hsk4.json",
+    "nhsk1.json", "nhsk2.json", "nhsk3.json",
+})
+
+
 @app.get("/course_v3_data/{filename}")
 async def course_v3_data_file(filename: str):
-    import re
     public_assets = {
         "design-tokens.css": "text/css",
         "desktop-download.css": "text/css",
@@ -2245,7 +2250,7 @@ async def course_v3_data_file(filename: str):
             f"app/static/course_v3_data/{filename}",
             public_assets[filename],
         )
-    if not re.fullmatch(r"[a-z0-9_\-]+\.json", filename):
+    if filename not in COURSE_V3_PUBLIC_MAP_FILES:
         return JSONResponse(status_code=404, content={"error": "not_found"})
     return static_json_response(f"app/static/course_v3_data/{filename}")
 
@@ -2259,12 +2264,19 @@ async def course_v3_exam_file(filename: str):
 
 @app.get("/course_v3_data/{level}/{filename}")
 async def course_v3_lesson_file(level: str, filename: str):
+    # Old lesson-file URLs are retired. Mini App uses the signed, entitlement-
+    # checked /api/v3/lesson/content endpoint; never serve answer-bearing JSON
+    # from this public static route.
     import re
     if not re.fullmatch(r"(?:hsk[1-4]|nhsk[1-3])", level):
         return JSONResponse(status_code=404, content={"error": "not_found"})
     if not re.fullmatch(r"lesson_\d+\.json", filename):
         return JSONResponse(status_code=404, content={"error": "not_found"})
-    return static_json_response(f"app/static/course_v3_data/{level}/{filename}")
+    return JSONResponse(
+        status_code=404,
+        content={"ok": False, "error": "lesson_content_not_found"},
+        headers={"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"},
+    )
 
 
 @app.get("/audio/tour/{lang}/{filename}")

@@ -10,8 +10,11 @@ from scripts.i18n_route_boundary_audit import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLE = '''
+COURSE_V3_PUBLIC_MAP_FILES = frozenset({"hsk1.json", "hsk2.json", "hsk3.json", "hsk4.json", "nhsk1.json", "nhsk2.json", "nhsk3.json"})
 @app.get("/course_v3_data/{filename}")
 async def course_v3_data_file(filename: str):
+    if filename not in COURSE_V3_PUBLIC_MAP_FILES:
+        return JSONResponse(status_code=404, content={})
     return static_json_response(filename)
 @app.get("/course_v3_data/exams/{filename}")
 async def course_v3_exam_file(filename: str):
@@ -22,7 +25,7 @@ async def course_v3_lesson_file(level: str, filename: str):
         return JSONResponse(status_code=404, content={})
     if not re.fullmatch(r"lesson_\\d+\\.json", filename):
         return JSONResponse(status_code=404, content={})
-    return static_json_response(filename)
+    return JSONResponse(status_code=404, content={})
 '''
 GUARD = 'GUARDED_PATH_PREFIX = "/api/"'
 
@@ -30,14 +33,15 @@ GUARD = 'GUARDED_PATH_PREFIX = "/api/"'
 class RouteBoundaryContractTests(unittest.TestCase):
     def test_private_exam_remains_server_only(self):
         result = audit(SAMPLE, GUARD)
+        self.assertEqual(result["status"], "SOURCE_CHECK_NO_FINDINGS")
         self.assertTrue(result["exam"]["explicit_404_return"])
         self.assertFalse(result["exam"]["serves_file"])
-        self.assertTrue(result["lesson"]["serves_file"])
+        self.assertFalse(result["lesson"]["serves_file"])
         self.assertFalse(result["lesson"]["handler_dependency"])
+        self.assertTrue(result["lesson"]["explicit_404_return"])
         self.assertTrue(result["lesson"]["has_level_and_filename_pattern_validation"])
         self.assertFalse(result["middleware"]["guard_applies_to_course_json"])
-        self.assertIn("source_level_public_lesson_file_exposure",
-                      {row["issue"] for row in result["findings"]})
+        self.assertTrue(result["map"]["fixed_public_map_allowlist"])
 
     def test_exam_file_response_or_200_is_a_release_blocker(self):
         changed = SAMPLE.replace(
@@ -54,6 +58,15 @@ class RouteBoundaryContractTests(unittest.TestCase):
         changed = SAMPLE.replace('r"lesson_\\d+\\.json"', 'r".+\\.json"')
         result = audit(changed, GUARD)
         self.assertIn("lesson_level_or_filename_validation_changed",
+                      {row["issue"] for row in result["findings"]})
+
+    def test_generic_root_json_response_requires_fixed_map_allowlist(self):
+        changed = SAMPLE.replace(
+            'if filename not in COURSE_V3_PUBLIC_MAP_FILES:',
+            'if not filename.endswith(".json"):',
+        )
+        result = audit(changed, GUARD)
+        self.assertIn("public_course_json_route_missing_fixed_allowlist",
                       {row["issue"] for row in result["findings"]})
 
     def test_middleware_scope_change_is_not_guessed(self):
@@ -110,13 +123,15 @@ class RouteBoundaryContractTests(unittest.TestCase):
         main = (ROOT / "app/main.py").read_text(encoding="utf-8")
         guard = (ROOT / "app/services/blocked_user_guard.py").read_text(encoding="utf-8")
         result = audit(main, guard)
-        self.assertEqual(result["status"], "SOURCE_REVIEW_REQUIRED")
+        self.assertEqual(result["status"], "SOURCE_CHECK_NO_FINDINGS")
         self.assertTrue(result["exam"]["explicit_404_return"])
         self.assertFalse(result["exam"]["serves_file"])
         self.assertTrue(result["lesson"]["has_level_and_filename_pattern_validation"])
+        self.assertTrue(result["lesson"]["explicit_404_return"])
+        self.assertFalse(result["lesson"]["serves_file"])
+        self.assertTrue(result["map"]["fixed_public_map_allowlist"])
         self.assertEqual(result["middleware"]["guarded_prefix"], "/api/")
-        self.assertIn("source_level_public_lesson_file_exposure",
-                      {row["issue"] for row in result["findings"]})
+        self.assertEqual(result["findings"], [])
         self.assertNotIn("private", json.dumps(result["lesson"]))
 
 

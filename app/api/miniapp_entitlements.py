@@ -15,7 +15,10 @@ farqni yozadi. Qaror baribir ESKI yo'ldan chiqadi, toki sozlama uni
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
+import secrets
+from pathlib import Path
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
@@ -27,8 +30,10 @@ from app.services.course_p3_grammar_localization import miniapp_reserved_grammar
 from app.services.course_v3_parts import total_parts
 from app.services.course_levels import content_level
 from app.services.course_access_policy_service import CourseAccessPolicyService
+from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.entitlements.gate_shadow import shadow_compare_gate
+from app.services.entitlements.state import EntitlementState, resolve_state
 from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
@@ -49,6 +54,16 @@ COURSE_DAILY_GATE_FEATURES = frozenset(
 COURSE_AD_GATE_FEATURES = COURSE_DAILY_GATE_FEATURES | {"mistake_review", "lesson"}
 
 MAX_INIT_DATA_CHARS = 4096
+COURSE_DATA_ROOT = Path(__file__).resolve().parents[1] / "static" / "course_v3_data"
+COURSE_LEVELS = frozenset({"hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"})
+SKIP_TEST_CARD_TYPES = frozenset({
+    "meaning_guess", "pinyin_choice", "translation_choice", "hanzi_choice",
+    "gap_fill", "listening_choice", "quick_quiz", "sentence_builder", "match_pairs",
+})
+PRIVATE_CONTENT_HEADERS = {
+    "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff",
+}
 
 
 def _init_data(request: Request, payload: dict) -> str:
@@ -71,6 +86,103 @@ def _ref(payload: dict) -> str | None:
     return str(raw).strip()[:48] if raw else None
 
 
+def _read_course_lesson(level: str, lesson_order: int) -> dict | None:
+    path = COURSE_DATA_ROOT / level / f"lesson_{lesson_order:02d}.json"
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return None
+    if (
+        not isinstance(value, dict)
+        or str(value.get("level") or "").strip().lower() != level
+        or value.get("lesson_id") != lesson_order
+    ):
+        return None
+    return value
+
+
+def _sales_value_projection(lesson: dict) -> dict | None:
+    """Expose only the fixed, authored marketing examples from HSK1 lesson 3."""
+    def example(value):
+        if not isinstance(value, dict):
+            return None
+        projected = {key: value[key] for key in ("zh", "pinyin", "translation") if key in value}
+        translation = projected.get("translation")
+        if (
+            not projected.get("zh")
+            or not projected.get("pinyin")
+            or not all(
+                isinstance(translation, dict)
+                and isinstance(translation.get(lang), str)
+                and translation.get(lang)
+                for lang in ("uz", "ru", "tj")
+            )
+        ):
+            return None
+        projected["translation"] = {lang: translation[lang] for lang in ("uz", "ru", "tj")}
+        return projected
+
+    outcome = lesson.get("outcome")
+    next_outcome = lesson.get("next_outcome_preview")
+    if not isinstance(outcome, dict) or not isinstance(next_outcome, dict):
+        return None
+    can_do = outcome.get("can_do")
+    if not isinstance(can_do, list) or len(can_do) != 3:
+        return None
+    examples = [example(item) for item in can_do]
+    next_example = example(next_outcome.get("example"))
+    title = outcome.get("title")
+    next_title = next_outcome.get("title")
+    if (not all(examples) or not next_example
+            or not all(isinstance(title, dict) and title.get(lang) for lang in ("uz", "ru", "tj"))
+            or not all(isinstance(next_title, dict) and next_title.get(lang) for lang in ("uz", "ru", "tj"))):
+        return None
+    return {
+        "outcome": {
+            **({"id": outcome["id"]} if isinstance(outcome.get("id"), str) else {}),
+            "title": {lang: title[lang] for lang in ("uz", "ru", "tj")},
+            "can_do": examples,
+        },
+        "next_outcome_preview": {
+            **({"id": next_outcome["id"]} if isinstance(next_outcome.get("id"), str) else {}),
+            "title": {lang: next_title[lang] for lang in ("uz", "ru", "tj")},
+            "example": next_example,
+        },
+    }
+
+
+def _skip_test_questions(lesson: dict) -> list[dict]:
+    """Build a small randomized question set; never return the full lesson."""
+    candidates = []
+    for section in lesson.get("sections") or []:
+        if not isinstance(section, dict):
+            continue
+        for card in section.get("cards") or []:
+            if isinstance(card, dict) and card.get("type") in SKIP_TEST_CARD_TYPES:
+                candidates.append(card)
+
+    words = (lesson.get("active_words") or [])[:8]
+    word_choices = [{"word": word} for word in words]
+    for index, word in enumerate(words):
+        candidates.append({
+            "type": "_word_pick_hanzi" if index % 2 else "_word_pick_meaning",
+            "word": word,
+            "words": word_choices,
+        })
+    if not candidates:
+        return []
+    selected = secrets.SystemRandom().sample(candidates, min(6, len(candidates)))
+    return [dict(card) for card in selected]
+
+
+def _private_content_response(content: dict, *, status_code: int = 200) -> JSONResponse:
+    return JSONResponse(
+        status_code=status_code,
+        content=content,
+        headers=PRIVATE_CONTENT_HEADERS,
+    )
+
+
 def create_miniapp_entitlements_router(
     *,
     session_factory,
@@ -88,6 +200,175 @@ def create_miniapp_entitlements_router(
             else None
         )
         return telegram_id, payload
+
+    async def _foundation_is_blocked(session, user, level: str) -> bool:
+        if (level != "hsk1"
+                or str(getattr(user, "level", "") or "").strip().lower() != "beginner"):
+            return False
+        state = await CourseMiniAppProfileService(session).foundation_status(user)
+        return bool(state.get("required") and not state.get("completed"))
+
+    @router.get("/api/v3/lesson/sales-preview")
+    async def v3_course_lesson_sales_preview():
+        lesson = _read_course_lesson("hsk1", 3)
+        projection = _sales_value_projection(lesson) if lesson else None
+        if projection is None:
+            return JSONResponse(
+                status_code=503,
+                content={"ok": False, "error": "sales_preview_unavailable"},
+                headers={"Cache-Control": "no-store"},
+            )
+        return JSONResponse(content={"ok": True, **projection}, headers={
+            "Cache-Control": "public, max-age=3600",
+            "X-Content-Type-Options": "nosniff",
+        })
+
+    @router.get("/api/v3/lesson/foundation")
+    async def v3_course_lesson_foundation(request: Request):
+        telegram_id, _ = await _authenticated(request)
+        if not telegram_id:
+            return _private_content_response(
+                {"ok": False, "error": "invalid_telegram_init_data"}, status_code=401,
+            )
+        async with session_factory() as session:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if not user:
+                return _private_content_response(
+                    {"ok": False, "error": "access_start_first"}, status_code=403,
+                )
+            lesson = _read_course_lesson("hsk1", 1)
+            foundation = lesson.get("foundation") if lesson else None
+            if not isinstance(foundation, dict) or not foundation.get("cards"):
+                return _private_content_response(
+                    {"ok": False, "error": "foundation_unavailable"}, status_code=503,
+                )
+            return _private_content_response({"ok": True, "foundation": foundation})
+
+    @router.get("/api/v3/lesson/content/{level}/{lesson_order}")
+    async def v3_course_lesson_content(request: Request, level: str, lesson_order: int):
+        telegram_id, _ = await _authenticated(request)
+        if not telegram_id:
+            return _private_content_response(
+                {"ok": False, "error": "invalid_telegram_init_data"}, status_code=401,
+            )
+        normalized_level = str(level or "").strip().lower()
+        if normalized_level not in COURSE_LEVELS or lesson_order < 1:
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+            )
+        async with session_factory() as session:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if not user:
+                return _private_content_response(
+                    {"ok": False, "error": "access_start_first"}, status_code=403,
+                )
+            user_level = content_level(getattr(user, "level", None))
+            if normalized_level != user_level:
+                return _private_content_response(
+                    {"ok": False, "error": "course_level_not_allowed"}, status_code=403,
+                )
+            total = total_parts(normalized_level)
+            if not total or lesson_order > total:
+                return _private_content_response(
+                    {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+                )
+            progress = await CourseProgressRepository(session).get_by_user_id(user.id)
+            completed = (
+                int(getattr(progress, "completed_lessons_count", 0) or 0)
+                if progress and getattr(progress, "level", None) == normalized_level
+                else 0
+            )
+            if lesson_order > completed + 1:
+                return _private_content_response(
+                    {"ok": False, "error": "course_lesson_not_unlocked"}, status_code=403,
+                )
+            if await _foundation_is_blocked(session, user, normalized_level):
+                return _private_content_response(
+                    {"ok": False, "error": "android_foundation_required"}, status_code=403,
+                )
+            access = await LessonAccessService(session).status(
+                user, level=normalized_level, lesson_order=lesson_order,
+                completed=completed, consume=False,
+            )
+            if not access.get("allowed"):
+                return _private_content_response(access, status_code=403)
+            unlimited_access = resolve_state(user) in {
+                EntitlementState.PRO_ACTIVE, EntitlementState.TEMP_ACCESS,
+            }
+            if (lesson_order > completed and not access.get("idempotent")
+                    and not access.get("policy_free") and not unlimited_access):
+                return _private_content_response(
+                    {"ok": False, "error": "lesson_start_required"}, status_code=403,
+                )
+            lesson = _read_course_lesson(normalized_level, lesson_order)
+            if not lesson:
+                return _private_content_response(
+                    {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+                )
+            return _private_content_response(lesson)
+
+    @router.post("/api/v3/lesson/skip-test")
+    async def v3_course_lesson_skip_test(request: Request):
+        telegram_id, payload = await _authenticated(request)
+        if not telegram_id:
+            return _private_content_response(
+                {"ok": False, "error": "invalid_telegram_init_data"}, status_code=401,
+            )
+        level = str(payload.get("level") or "").strip().lower()
+        try:
+            lesson_order = int(payload.get("lesson_id") or 0)
+        except (TypeError, ValueError):
+            lesson_order = 0
+        if level not in COURSE_LEVELS or lesson_order < 1:
+            return _private_content_response(
+                {"ok": False, "error": "invalid_lesson_payload"}, status_code=400,
+            )
+        async with session_factory() as session:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if not user:
+                return _private_content_response(
+                    {"ok": False, "error": "access_start_first"}, status_code=403,
+                )
+            user_level = content_level(getattr(user, "level", None))
+            if level != user_level:
+                return _private_content_response(
+                    {"ok": False, "error": "course_level_not_allowed"}, status_code=403,
+                )
+            total = total_parts(level)
+            if not total or lesson_order > total:
+                return _private_content_response(
+                    {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+                )
+            if await _foundation_is_blocked(session, user, level):
+                return _private_content_response(
+                    {"ok": False, "error": "android_foundation_required"}, status_code=403,
+                )
+            progress = await CourseProgressRepository(session).get_by_user_id(user.id)
+            completed = (
+                int(getattr(progress, "completed_lessons_count", 0) or 0)
+                if progress and getattr(progress, "level", None) == level
+                else 0
+            )
+            if lesson_order > completed + 1:
+                return _private_content_response(
+                    {"ok": False, "error": "course_lesson_not_unlocked"}, status_code=403,
+                )
+            access = await LessonAccessService(session).status(
+                user, level=level, lesson_order=lesson_order,
+                completed=completed, consume=False,
+            )
+            if not access.get("allowed"):
+                return _private_content_response(access, status_code=403)
+            lesson = _read_course_lesson(level, lesson_order)
+            questions = _skip_test_questions(lesson) if lesson else []
+            if not questions:
+                return _private_content_response(
+                    {"ok": False, "error": "skip_test_unavailable"}, status_code=409,
+                )
+            return _private_content_response({
+                "ok": True, "level": level, "lesson_order": lesson_order,
+                "questions": questions,
+            })
 
     @router.post("/api/v3/practice/daily-gate")
     async def v3_practice_daily_gate(request: Request):

@@ -15,25 +15,25 @@ class MiniAppLessonFetchIntentTests(unittest.TestCase):
         cls.source = (ROOT / PAGE).read_text(encoding="utf-8")
         cls.registry = json.loads((ROOT / REGISTRY).read_text(encoding="utf-8"))
 
-    def test_existing_six_distinct_direct_reads_are_classified(self):
+    def test_remaining_direct_reads_are_classified_and_special_intents_use_their_apis(self):
         report = audit(ROOT)
-        self.assertEqual(report["status"], "SOURCE_CALLS_CLASSIFIED_REVIEW_REQUIRED")
-        self.assertEqual(report["classified_direct_calls"], 6)
+        self.assertEqual(report["status"], "PURPOSE_SPECIFIC_API_CALLS_CLASSIFIED_REVIEW_REQUIRED")
+        self.assertEqual(report["classified_direct_calls"], 3)
         self.assertEqual(report["regression_failures"], [])
         expected = [
-            "paywall_preview_prime",
             "audio_preload_before_continue",
             "background_nearby_prefetch",
-            "skip_test_question_generation",
-            "starter_foundation_content",
             "interactive_lesson_after_reservation",
         ]
         self.assertEqual([row["intent"] for row in report["calls"]], expected)
         self.assertTrue(all(row["cost_sensitive"] for row in report["calls"]))
         self.assertEqual(
             [row["line"] for row in report["calls"]],
-            [2053, 2203, 3008, 3629, 3761, 4091],
+            [2203, 3008, 4091],
         )
+        self.assertIn('fetch("/api/v3/lesson/sales-preview"', self.source)
+        self.assertIn('fetch("/api/v3/lesson/foundation"', self.source)
+        self.assertIn('_apiPost("/api/v3/lesson/skip-test"', self.source)
 
     def test_speculative_reads_are_not_the_reservation_flow(self):
         report = audit(ROOT)
@@ -43,7 +43,7 @@ class MiniAppLessonFetchIntentTests(unittest.TestCase):
                             for row in report["calls"][:-1]))
         self.assertIn("reserveLessonStart(l).then(function(){return loadLessonData(lv,l.n)}",
                       self.source)
-        self.assertEqual(len(extract_calls(self.source)), 6)
+        self.assertEqual(len(extract_calls(self.source)), 3)
 
     def test_added_background_fetch_requires_human_review(self):
         altered = self.source + '\nfunction unsafePrefetch(){loadLessonData("hsk3",50)}\n'
@@ -93,8 +93,11 @@ const env={
   localUserScope:()=>scope,
   normalizeLevel:x=>String(x||"hsk1"),
   cloneJson:x=>JSON.parse(JSON.stringify(x)),
-  lessonDataUrl:(level,n)=>"/"+level+"/"+n,
-  fetch:()=>{
+  INIT_DATA:"signed-test-initdata",
+  lessonDataUrl:(level,n)=>"/api/v3/lesson/content/"+level+"/"+n,
+  fetch:(url,options)=>{
+    if(url!=="/api/v3/lesson/content/nhsk2/16")throw new Error("unexpected lesson URL: "+url);
+    if(!options||options.cache!=="no-store"||options.headers["X-Telegram-Init-Data"]!=="signed-test-initdata")throw new Error("missing private request contract");
     fetchCount++;
     if(fetchCount===1)return new Promise(resolve=>{finishFirst=resolve});
     return Promise.resolve({ok:true,json:()=>Promise.resolve({owner:scope})});

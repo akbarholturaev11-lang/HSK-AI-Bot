@@ -23,11 +23,12 @@ def app_url(path):
     return f"{BASE_URL}/{path.lstrip('/')}"
 
 
-def json_response(route, payload, *, status=200):
+def json_response(route, payload, *, status=200, headers=None):
     route.fulfill(
         status=status,
         content_type="application/json",
         body=json.dumps(payload),
+        headers=headers,
     )
 
 
@@ -260,6 +261,76 @@ def mock_course_map(page, *, level="hsk1", language="uz", sales_offer=None):
         "**/api/v3/lesson/start",
         lambda route: json_response(route, {"ok": True, "allowed": True}),
     )
+
+    def lesson_file(level, order):
+        return json.loads(
+            (STATIC_ROOT / f"course_v3_data/{level}/lesson_{order:02d}.json")
+            .read_text(encoding="utf-8")
+        )
+
+    def private_headers(route):
+        if not route.request.headers.get("x-telegram-init-data"):
+            json_response(route, {"ok": False, "error": "invalid_telegram_init_data"},
+                          status=401, headers={"Cache-Control": "no-store"})
+            return False
+        return True
+
+    def lesson_content(route):
+        if not private_headers(route):
+            return
+        parts = urlparse(route.request.url).path.rstrip("/").split("/")
+        if len(parts) < 2:
+            json_response(route, {"ok": False}, status=404)
+            return
+        try:
+            payload = lesson_file(parts[-2], int(parts[-1]))
+        except (OSError, ValueError, json.JSONDecodeError):
+            json_response(route, {"ok": False}, status=404)
+            return
+        json_response(route, payload, headers={"Cache-Control": "no-store"})
+
+    page.route(re.compile(r".*/api/v3/lesson/content/[^/]+/\d+(?:\?.*)?$"), lesson_content)
+
+    def foundation_content(route):
+        if not private_headers(route):
+            return
+        foundation = lesson_file("hsk1", 1).get("foundation")
+        json_response(route, {"ok": True, "foundation": foundation},
+                      headers={"Cache-Control": "no-store"})
+
+    page.route("**/api/v3/lesson/foundation", foundation_content)
+
+    def sales_preview(route):
+        lesson = lesson_file("hsk1", 3)
+        json_response(route, {
+            "ok": True,
+            "outcome": lesson["outcome"],
+            "next_outcome_preview": lesson["next_outcome_preview"],
+        })
+
+    page.route("**/api/v3/lesson/sales-preview", sales_preview)
+
+    def skip_test(route):
+        if not private_headers(route):
+            return
+        payload = route.request.post_data_json or {}
+        requested_level = str(payload.get("level") or level)
+        lesson_order = int(payload.get("lesson_id") or 0)
+        lesson = lesson_file(requested_level, lesson_order)
+        cards = [card for section in lesson.get("sections", [])
+                 for card in section.get("cards", [])
+                 if card.get("type") in {
+                     "meaning_guess", "pinyin_choice", "translation_choice",
+                     "hanzi_choice", "gap_fill", "listening_choice", "quick_quiz",
+                     "sentence_builder", "match_pairs",
+                 }][:6]
+        json_response(route, {
+            "ok": bool(cards), "level": requested_level,
+            "lesson_order": lesson_order, "questions": cards,
+        }, status=200 if cards else 409,
+            headers={"Cache-Control": "no-store"})
+
+    page.route("**/api/v3/lesson/skip-test", skip_test)
 
 
 def mock_learning_audio(page):
@@ -1290,16 +1361,19 @@ def test_course_v3_checkpoint_exit_ticket_mastery_and_paywall_boundary(page):
     expect(page.locator("#lu-cta")).to_contain_text("Keyingi darsni ochish")
     assert page.evaluate("exitTicketMastered()") is True
 
-    # The result stays first. Only this explicit CTA opens part 4 through its
-    # existing preview/subscription policy.
+    # The result stays first. The existing map marks part 4 as protected, so
+    # the explicit CTA routes through the shared course limit-promo surface.
     page.evaluate("window._pendingLessonEndAd = 0")
     page.locator("#lu-cta").click()
-    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
-    expect(page.locator("#sheet")).to_contain_text("2-dars · 1-qism")
+    limit_promo = page.locator(".caa-ov.limit")
+    expect(limit_promo).to_have_class(re.compile(r"\bon\b"))
+    expect(limit_promo).to_contain_text("Bugungi bepul darslaring tugadi")
+    page.locator(".caa-ls-close").click()
 
-    # Server map contract: checkpoint free, part 4 is first protected part.
+    # The client sequence map advances part 4 as current; the separate signed
+    # start decision can mark it protected when the free allowance is denied.
     assert page.evaluate("allLessons()[2].status") == "done"
-    assert page.evaluate("allLessons()[3].status") == "locked"
+    assert page.evaluate("allLessons()[3].status") == "current"
     page.evaluate(
         """() => {
           App.closeSheet();
@@ -1309,9 +1383,9 @@ def test_course_v3_checkpoint_exit_ticket_mastery_and_paywall_boundary(page):
           openLessonSheet(3);
         }"""
     )
-    expect(page.locator("#paywall")).to_have_class(re.compile(r"\bon\b"))
-    expect(page.locator("#paywall")).to_contain_text("Bepul darslaring tugadi")
-    expect(page.locator("#paywall")).to_contain_text("Obuna bo'lish")
+    expect(page.locator(".caa-ov.limit")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator(".caa-ov.limit")).to_contain_text("Bugungi bepul darslaring tugadi")
+    expect(page.locator(".caa-ls-pay")).to_contain_text("HSK AI Pro")
 
 
 def test_course_v3_sales_treatment_bridge_preview_and_cutoff_paywall(page):
@@ -1658,11 +1732,16 @@ def test_course_v3_required_foundation_load_error_blocks_and_retries(page):
 
     def foundation_file(route):
         if allow_lesson["value"]:
-            route.fallback()
+            foundation = json.loads(
+                (STATIC_ROOT / "course_v3_data/hsk1/lesson_01.json")
+                .read_text(encoding="utf-8")
+            )["foundation"]
+            json_response(route, {"ok": True, "foundation": foundation},
+                          headers={"Cache-Control": "no-store"})
         else:
             route.fulfill(status=503, content_type="application/json", body="{}")
 
-    page.route(re.compile(r".*/course_v3_data/hsk1/lesson_01\.json(?:\?.*)?$"), foundation_file)
+    page.route("**/api/v3/lesson/foundation", foundation_file)
     challenge_requests = []
     page.on(
         "request",

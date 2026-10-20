@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """P0 client lesson delivery audit; read-only, source-level evidence only.
 
-Protects the existing separation between Mini App's legacy unauthenticated
-lesson GET and the two native bearer-authenticated lesson APIs. Does not make
-network requests, import server modules, load secrets or touch application data.
-A known Mini App gap remains a human review blocker, not a test failure.
+Checks the Mini App signed lesson-content APIs and the native bearer lesson
+APIs. Does not make network requests, import server modules, load secrets or
+touch application data. Staging and installed-client acceptance remain open.
 """
 from __future__ import annotations
 
@@ -29,8 +28,9 @@ FILES = {
     "backend_desktop_api": "app/api/desktop_course.py",
     "backend_desktop_service": "app/services/desktop_course_service.py",
     "backend_android_service": "app/services/android_course_service.py",
+    "backend_miniapp_content": "app/api/miniapp_entitlements.py",
+    "backend_main": "app/main.py",
 }
-MINIAPP_PUBLIC = "/course_v3_data/"
 ANDROID_PRIVATE = "api/v3/android/course/lesson/{lessonOrder}"
 DESKTOP_PRIVATE = "/api/v3/desktop/course/lesson/{lesson_order}"
 
@@ -55,18 +55,66 @@ def contract(sources: dict[str, str]) -> dict:
     backend_desktop = sources["backend_desktop_api"]
     backend_service = sources["backend_desktop_service"]
     android_service = sources["backend_android_service"]
+    backend_miniapp = sources["backend_miniapp_content"]
+    backend_main = sources["backend_main"]
 
     checks = {
         "miniapp": {
-            "legacy_public_lesson_url": _has(
+            "authenticated_lesson_url": _has(
                 miniapp,
-                r'var url="/course_v3_data/"\+level\+"/lesson_"\+',
+                r'var url="/api/v3/lesson/content/"\+level\+"/"',
             ),
-            "fetches_legacy_url_directly": _has(
-                miniapp, r"fetch\(lessonDataUrl\(lv,n\)",
+            "fetches_with_signed_identity_and_no_store": _has(
+                miniapp,
+                r'fetch\(lessonDataUrl\(lv,n\),\{headers:\{"X-Telegram-Init-Data":INIT_DATA\},cache:"no-store"\}\)',
             ),
             "n1_revision_bound_to_url": _has(
                 miniapp, r'return level==="nhsk1"\?url\+"\?content_rev="',
+            ),
+            "sales_preview_has_dedicated_projection": _has(
+                miniapp, r'fetch\("/api/v3/lesson/sales-preview"',
+            ),
+            "foundation_has_dedicated_authenticated_read": _has(
+                miniapp, r'fetch\("/api/v3/lesson/foundation"',
+            ),
+            "skip_test_uses_dedicated_bounded_read": _has(
+                miniapp, r'_apiPost\("/api/v3/lesson/skip-test"',
+            ),
+        },
+        "miniapp_server": {
+            "signed_telegram_identity": _has(
+                backend_miniapp,
+                r'def _authenticated\([\s\S]{0,500}extract_verified_webapp_user_id',
+            ),
+            "lesson_access_is_non_consuming": _has(
+                backend_miniapp,
+                r'v3_course_lesson_content\([\s\S]{0,2200}LessonAccessService\(session\)\.status\([\s\S]{0,250}consume=False',
+            ),
+            "lesson_sequence_is_checked": _has(
+                backend_miniapp,
+                r'v3_course_lesson_content\([\s\S]{0,2000}lesson_order > completed \+ 1',
+            ),
+            "skip_test_sequence_is_checked": _has(
+                backend_miniapp,
+                r'v3_course_lesson_skip_test\([\s\S]{0,3500}lesson_order > completed \+ 1',
+            ),
+            "skip_test_is_bounded": _has(
+                backend_miniapp,
+                r'secrets\.SystemRandom\(\)\.sample\(candidates, min\(6, len\(candidates\)\)\)',
+            ),
+            "all_private_content_responses_are_no_store": '"Cache-Control": "no-store"' in backend_miniapp,
+        },
+        "legacy_public_route": {
+            "old_lesson_json_route_returns_404": _has(
+                backend_main,
+                r'status_code=404,\s*content=\{"ok": False, "error": "lesson_content_not_found"\}',
+            ),
+            "root_json_route_allows_fixed_maps_only": _has(
+                backend_main,
+                r'COURSE_V3_PUBLIC_MAP_FILES = frozenset\([\s\S]{0,200}nhsk3\.json',
+            ) and _has(
+                backend_main,
+                r'async def course_v3_data_file\([\s\S]{0,1800}filename not in COURSE_V3_PUBLIC_MAP_FILES',
             ),
         },
         "android": {
@@ -159,16 +207,17 @@ def contract(sources: dict[str, str]) -> dict:
     # authentication tests or proving no other call site exists.
     return {
         "schema_version": 1,
-        "status": "REGRESSION" if failures else "SOURCE_CONTRACT_OK_LEGACY_MINIAPP_REVIEW",
+        "status": "REGRESSION" if failures else "SOURCE_CONTRACT_OK_AUTHENTICATED_MINIAPP_REVIEW",
         "checks": checks,
         "failures": failures,
-        "migration_priority": "miniapp_legacy_public_lesson_fetch",
+        "migration_priority": "miniapp_authenticated_lesson_api_runtime_verification",
         "limitations": [
-            "Mini App current public lesson GET still has no request authentication and needs a separate design.",
+            "Mini App source now uses signed per-request lesson APIs; source contracts do not prove deployed authorization or cache behavior.",
             "Android and Desktop secure API source contracts do not prove live deployment or account-state behavior.",
             "Native Android offline cache reuses already-fetched lessons only on Offline/Timeout errors, per source.",
             "Account session cache clearing is evidenced by source call chains; an actual device/session switch still needs E2E QA.",
             "Play/direct share main-source Retrofit lesson transport; build/flavor E2E remains untested.",
+            "Old cached Mini App pages and previously released clients may still call the retired public URL; verify refresh and migration behavior in staging.",
             "Does not inspect every native WebView/network call site or old released APK/desktop binaries.",
         ],
     }

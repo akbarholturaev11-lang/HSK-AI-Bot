@@ -60,6 +60,10 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         self.lesson_service.status = AsyncMock(return_value={
             "ok": True, "allowed": True, "remaining": 1, "limit": 2,
         })
+        self.profile_service = MagicMock()
+        self.profile_service.foundation_status = AsyncMock(return_value={
+            "required": False, "completed": False,
+        })
         self.patches = [
             patch("app.api.miniapp_entitlements.UserRepository",
                   return_value=self.user_repo),
@@ -67,6 +71,8 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
                   return_value=self.progress_repo),
             patch("app.api.miniapp_entitlements.LessonAccessService",
                   return_value=self.lesson_service),
+            patch("app.api.miniapp_entitlements.CourseMiniAppProfileService",
+                  return_value=self.profile_service),
         ]
         for item in self.patches:
             item.start()
@@ -247,6 +253,206 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(response.status_code, 400)
                 self.assertEqual(response.json()["error"], "invalid_lesson_payload")
         self.lesson_service.status.assert_not_awaited()
+
+    async def test_lesson_content_requires_signed_identity_and_never_commits(self):
+        self.lesson_service.status.return_value = {
+            "ok": True, "allowed": True, "idempotent": True,
+        }
+        with patch("app.api.miniapp_entitlements._read_course_lesson",
+                   return_value={"level": "hsk1", "lesson_id": 1, "sections": []}) as read_lesson:
+            response = await self.client.get("/api/v3/lesson/content/hsk1/1")
+            self.assertEqual(response.status_code, 401)
+            self.assertEqual(self.entered_session, 0)
+            read_lesson.assert_not_called()
+
+            response = await self.client.get(
+                "/api/v3/lesson/content/hsk1/1",
+                headers={"X-Telegram-Init-Data": synthetic_init_data()},
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.headers["cache-control"], "no-store")
+            self.assertEqual(response.headers["x-content-type-options"], "nosniff")
+            read_lesson.assert_called_once_with("hsk1", 1)
+        kwargs = self.lesson_service.status.await_args.kwargs
+        self.assertEqual(kwargs["level"], "hsk1")
+        self.assertEqual(kwargs["lesson_order"], 1)
+        self.assertEqual(kwargs["completed"], 0)
+        self.assertIs(kwargs["consume"], False)
+        self.session.commit.assert_not_awaited()
+
+    async def test_lesson_content_rejects_skip_ahead_and_unreserved_free_start(self):
+        headers = {"X-Telegram-Init-Data": synthetic_init_data()}
+        with patch("app.api.miniapp_entitlements.total_parts", return_value=100), \
+             patch("app.api.miniapp_entitlements._read_course_lesson") as read_lesson:
+            response = await self.client.get(
+                "/api/v3/lesson/content/hsk1/2", headers=headers,
+            )
+            self.assertEqual(response.status_code, 403)
+            self.assertEqual(response.json()["error"], "course_lesson_not_unlocked")
+            self.lesson_service.status.assert_not_awaited()
+            read_lesson.assert_not_called()
+
+            self.lesson_service.status.return_value = {
+                "ok": True, "allowed": True, "remaining": 1, "limit": 2,
+            }
+            response = await self.client.get(
+                "/api/v3/lesson/content/hsk1/1", headers=headers,
+            )
+            self.assertEqual(response.status_code, 403)
+            self.assertEqual(response.json()["error"], "lesson_start_required")
+            read_lesson.assert_not_called()
+            self.assertIs(self.lesson_service.status.await_args.kwargs["consume"], False)
+            self.session.commit.assert_not_awaited()
+
+    async def test_lesson_content_accepts_reserved_or_completed_reads_and_denies_revoked_access(self):
+        headers = {"X-Telegram-Init-Data": synthetic_init_data()}
+        with patch("app.api.miniapp_entitlements.total_parts", return_value=100), \
+             patch("app.api.miniapp_entitlements._read_course_lesson",
+                   return_value={"level": "hsk1", "lesson_id": 1, "sections": []}) as read_lesson:
+            self.lesson_service.status.return_value = {
+                "ok": True, "allowed": True, "idempotent": True,
+            }
+            response = await self.client.get(
+                "/api/v3/lesson/content/hsk1/1", headers=headers,
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json()["lesson_id"], 1)
+            self.assertEqual(self.lesson_service.status.await_args.kwargs["consume"], False)
+            self.session.commit.assert_not_awaited()
+
+            self.progress.completed_lessons_count = 1
+            self.lesson_service.status.reset_mock()
+            self.lesson_service.status.return_value = {
+                "ok": False, "allowed": False, "error": "hsk30_access_required",
+            }
+            response = await self.client.get(
+                "/api/v3/lesson/content/hsk1/1", headers=headers,
+            )
+            self.assertEqual(response.status_code, 403)
+            self.assertEqual(response.json()["error"], "hsk30_access_required")
+            self.assertEqual(read_lesson.call_count, 1)
+            self.session.commit.assert_not_awaited()
+
+    async def test_lesson_content_enforces_required_foundation(self):
+        headers = {"X-Telegram-Init-Data": synthetic_init_data()}
+        self.user.level = "beginner"
+        self.profile_service.foundation_status.return_value = {
+            "required": True, "completed": False,
+        }
+        with patch("app.api.miniapp_entitlements.total_parts", return_value=100), \
+             patch("app.api.miniapp_entitlements._read_course_lesson") as read_lesson:
+            response = await self.client.get(
+                "/api/v3/lesson/content/hsk1/1", headers=headers,
+            )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()["error"], "android_foundation_required")
+        self.lesson_service.status.assert_not_awaited()
+        read_lesson.assert_not_called()
+
+    async def test_foundation_endpoint_returns_only_foundation_to_signed_account(self):
+        headers = {"X-Telegram-Init-Data": synthetic_init_data()}
+        foundation = {"id": "starter0_hsk1", "cards": [{"type": "intro"}]}
+        with patch("app.api.miniapp_entitlements._read_course_lesson",
+                   return_value={"level": "hsk1", "lesson_id": 1,
+                                 "foundation": foundation, "sections": [{"cards": ["private"]}]}) as read_lesson:
+            response = await self.client.get(
+                "/api/v3/lesson/foundation", headers=headers,
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"ok": True, "foundation": foundation})
+        self.assertEqual(response.headers["cache-control"], "no-store")
+        read_lesson.assert_called_once_with("hsk1", 1)
+        self.lesson_service.status.assert_not_awaited()
+
+    async def test_skip_test_returns_at_most_six_authorized_questions_without_consuming(self):
+        headers = {"X-Telegram-Init-Data": synthetic_init_data()}
+        lesson = {
+            "level": "hsk1", "lesson_id": 1,
+            "sections": [{"cards": [
+                {"type": "quick_quiz", "question_id": str(i), "correct_index": 0}
+                for i in range(12)
+            ]}],
+            "active_words": [],
+            "correct_index": "private-top-level",
+        }
+        with patch("app.api.miniapp_entitlements.total_parts", return_value=100), \
+             patch("app.api.miniapp_entitlements._read_course_lesson",
+                   return_value=lesson) as read_lesson:
+            response = await self.client.post(
+                "/api/v3/lesson/skip-test", headers=headers,
+                json={"level": "hsk1", "lesson_id": 1},
+            )
+        self.assertEqual(response.status_code, 200)
+        result = response.json()
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["lesson_order"], 1)
+        self.assertEqual(len(result["questions"]), 6)
+        self.assertTrue(all("correct_index" in question for question in result["questions"]))
+        self.assertNotIn("correct_index", result)
+        self.assertEqual(response.headers["cache-control"], "no-store")
+        read_lesson.assert_called_once_with("hsk1", 1)
+        self.assertIs(self.lesson_service.status.await_args.kwargs["consume"], False)
+        self.session.commit.assert_not_awaited()
+
+    async def test_skip_test_rejects_future_lesson_without_reading_questions(self):
+        headers = {"X-Telegram-Init-Data": synthetic_init_data()}
+        with patch("app.api.miniapp_entitlements.total_parts", return_value=100), \
+             patch("app.api.miniapp_entitlements._read_course_lesson") as read_lesson:
+            response = await self.client.post(
+                "/api/v3/lesson/skip-test", headers=headers,
+                json={"level": "hsk1", "lesson_id": 2},
+            )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()["error"], "course_lesson_not_unlocked")
+        self.lesson_service.status.assert_not_awaited()
+        read_lesson.assert_not_called()
+        self.session.commit.assert_not_awaited()
+
+    async def test_skip_test_empty_question_set_is_not_an_automatic_unlock(self):
+        headers = {"X-Telegram-Init-Data": synthetic_init_data()}
+        with patch("app.api.miniapp_entitlements.total_parts", return_value=100), \
+             patch("app.api.miniapp_entitlements._read_course_lesson",
+                   return_value={"level": "hsk1", "lesson_id": 1, "sections": []}):
+            response = await self.client.post(
+                "/api/v3/lesson/skip-test", headers=headers,
+                json={"level": "hsk1", "lesson_id": 1},
+            )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.json()["error"], "skip_test_unavailable")
+        self.session.commit.assert_not_awaited()
+
+    async def test_skip_test_keeps_bounded_word_choice_question_shapes(self):
+        headers = {"X-Telegram-Init-Data": synthetic_init_data()}
+        lesson = {
+            "level": "hsk1", "lesson_id": 1, "sections": [],
+            "active_words": [{"id": str(i), "zh": "你好"} for i in range(12)],
+        }
+        with patch("app.api.miniapp_entitlements.total_parts", return_value=100), \
+             patch("app.api.miniapp_entitlements._read_course_lesson", return_value=lesson):
+            response = await self.client.post(
+                "/api/v3/lesson/skip-test", headers=headers,
+                json={"level": "hsk1", "lesson_id": 1},
+            )
+        self.assertEqual(response.status_code, 200)
+        questions = response.json()["questions"]
+        self.assertEqual(len(questions), 6)
+        self.assertTrue(all(question["type"] in {
+            "_word_pick_hanzi", "_word_pick_meaning",
+        } for question in questions))
+        self.assertTrue(all(len(question["words"]) == 8 for question in questions))
+        self.session.commit.assert_not_awaited()
+
+    async def test_sales_preview_exposes_only_allowlisted_public_content(self):
+        response = await self.client.get("/api/v3/lesson/sales-preview")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(set(data), {"ok", "outcome", "next_outcome_preview"})
+        self.assertEqual(set(data["outcome"]), {"id", "title", "can_do"})
+        self.assertEqual(set(data["next_outcome_preview"]), {"id", "title", "example"})
+        self.assertEqual(len(data["outcome"]["can_do"]), 3)
+        self.assertNotIn("sections", json.dumps(data))
+        self.assertNotIn("correct_index", json.dumps(data))
+        self.assertEqual(self.entered_session, 0)
 
     async def test_uncompleted_lesson_cannot_use_p3_review_only(self):
         self.user.level = "nhsk2"

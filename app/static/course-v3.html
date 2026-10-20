@@ -2050,7 +2050,7 @@ function primeSalesValueContent(){
   if(!salesValueTreatment())return Promise.resolve(false);
   if(salesValueContentValid(SALES_VALUE_STATE.outcome,SALES_VALUE_STATE.nextOutcome)){SALES_VALUE_PRIME_DONE=true;return Promise.resolve(true)}
   if(SALES_VALUE_PRIME_PROMISE)return SALES_VALUE_PRIME_PROMISE;
-  SALES_VALUE_PRIME_PROMISE=loadLessonData("hsk1",3).then(function(d){return rememberSalesValueContent(d)}).catch(function(){return false}).then(function(ok){SALES_VALUE_PRIME_DONE=true;SALES_VALUE_PRIME_PROMISE=null;return ok});
+  SALES_VALUE_PRIME_PROMISE=fetch("/api/v3/lesson/sales-preview",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("sales_preview_unavailable");return r.json()}).then(function(d){return rememberSalesValueContent(d)}).catch(function(){return false}).then(function(ok){SALES_VALUE_PRIME_DONE=true;SALES_VALUE_PRIME_PROMISE=null;return ok});
   return SALES_VALUE_PRIME_PROMISE;
 }
 function hideSalesBridgeOverlay(){
@@ -2897,7 +2897,7 @@ function lessonDataKey(lv,n){return localUserScope()+":"+normalizeLevel(lv)+"-"+
 var N1_LESSON_CONTENT_REV="n1-learning-check-20261012-v2";
 function lessonDataUrl(lv,n){
   var level=normalizeLevel(lv);
-  var url="/course_v3_data/"+level+"/lesson_"+String(Number(n)||0).padStart(2,"0")+".json";
+  var url="/api/v3/lesson/content/"+level+"/"+String(Number(n)||0);
   if(level==="hsk1"&&Number(n)>=1&&Number(n)<=3)return url+"?content_rev=hsk1-translation-20261019-v1";
   return level==="nhsk1"?url+"?content_rev="+N1_LESSON_CONTENT_REV:url;
 }
@@ -2905,7 +2905,7 @@ function loadLessonData(lv,n){
   var key=lessonDataKey(lv,n),scope=localUserScope();
   if(LESSON_DATA_CACHE[key])return Promise.resolve(cloneJson(LESSON_DATA_CACHE[key]));
   if(LESSON_DATA_PROMISES[key])return LESSON_DATA_PROMISES[key].then(cloneJson);
-  LESSON_DATA_PROMISES[key]=fetch(lessonDataUrl(lv,n),normalizeLevel(lv)==="nhsk1"?{cache:"no-store"}:{}).then(function(r){
+  LESSON_DATA_PROMISES[key]=fetch(lessonDataUrl(lv,n),{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"}).then(function(r){
     if(!r.ok)throw new Error("not_found");
     return r.json();
   }).then(function(d){
@@ -3612,13 +3612,13 @@ function offerSkipTest(idx){
     +'<button class="scta" onclick="startSkipTest('+idx+')"><i class="ti ti-bolt"></i> '+esc(s.offerBtn)+'</button>');
 }
 function buildTestQueue(d){
-  var GR=["meaning_guess","pinyin_choice","translation_choice","hanzi_choice","gap_fill","listening_choice","quick_quiz","sentence_builder","match_pairs"];
-  var pool=[];
-  (d.sections||[]).forEach(function(sec){(sec.cards||[]).forEach(function(c){if(GR.indexOf(c.type)>=0){var cc={};for(var k in c)cc[k]=c[k];pool.push(cc)}})});
-  var wordsArr=(d.active_words||[]).map(function(w){return {word:w}});
-  (d.active_words||[]).slice(0,8).forEach(function(w,i){pool.push({type:(i%2?"_word_pick_hanzi":"_word_pick_meaning"),word:w,words:wordsArr})});
-  pool=pool.map(function(v){return {v:v,s:Math.random()}}).sort(function(a,b){return a.s-b.s}).map(function(x){return x.v}).slice(0,6);
+  var pool=Array.isArray(d&&d.questions)?d.questions.slice(0,6):[];
+  // The signed endpoint selects a bounded question set after access checks.
+  // Client code must not fetch the whole lesson to build this test.
+  // Empty sets fail closed; they never count as an automatic pass.
+  // Keep these checks here so malformed responses cannot start an empty quiz.
   var lbl=skipI18n().offerTag;
+  pool=pool.map(function(v){var c={};for(var k in v)c[k]=v[k];return c});
   pool.forEach(function(c){c._sNo=1;c._sTitle=lbl});
   return pool;
 }
@@ -3626,9 +3626,9 @@ function startSkipTest(idx){
   if(requireFoundationBefore(function(){startSkipTest(idx)}))return;
   var l=allLessons()[idx];App.closeSheet();if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
-  loadLessonData(MAP.level||"hsk1",l.n).then(function(d){
+  _apiPost("/api/v3/lesson/skip-test",{level:MAP.level||"hsk1",lesson_id:l.n}).then(function(r){return r.json().then(function(d){if(!r.ok||d.ok!==true)throw new Error(d.error||"skip_test_denied");return d})}).then(function(d){
     var q=buildTestQueue(d);
-    if(!q.length){completeSkipUnlock(100,idx);return}
+    if(!q.length){toast(skipI18n().notReady,2500);return}
     Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test={idx:idx};Flow.challenge=null;Flow.lessonIdx=null;Flow.ad=null;setLessonFlowControls();HP=5;$("#f-hp").textContent=HP;
     trackCourseEvent("test_started",{source:"course_v3_skip_test",lesson_order:l.n,dedupe_key:lessonEventKey("skip_test_started",l.n)});
     $("#flow").classList.add("on");renderFlowCard();
@@ -3758,7 +3758,7 @@ Foundation.start=function(data,opts){
 };
 function startFoundationFromMap(restart,afterComplete){
   var s=foundationMapState(),required=!!((s.required||s.foundation_required)&&!foundationIsComplete());
-  return loadLessonData("hsk1",1).then(function(d){Foundation.start(d.foundation,{restart:!!restart,required:required,afterComplete:afterComplete})}).catch(function(){
+  return fetch("/api/v3/lesson/foundation",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("foundation_unavailable");return r.json()}).then(function(d){if(!d||!d.foundation)throw new Error("foundation_unavailable");Foundation.start(d.foundation,{restart:!!restart,required:required,afterComplete:afterComplete})}).catch(function(){
     var unavailable=courseMessage("foundation.unavailable",LANG==="ru"?"Основы пока недоступны":LANG==="tj"?"Асосҳо ҳоло дастрас нестанд":"Asoslar hozircha ochilmadi");
     toast(unavailable,2600);
     if(required){
