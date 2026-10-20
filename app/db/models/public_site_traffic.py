@@ -10,7 +10,7 @@ PUBLIC_SITE_TRAFFIC_SOURCES = ("instagram", "tiktok", "youtube", "other")
 
 
 class PublicSiteTrafficDaily(Base):
-    """Anonymous daily counts for tagged visits to the public-site home page."""
+    """Anonymous daily counts for tagged visits to public-site entry pages."""
 
     __tablename__ = "public_site_traffic_daily"
     __table_args__ = (
