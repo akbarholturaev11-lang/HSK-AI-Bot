@@ -244,6 +244,8 @@ def create_public_site_router(*, settings_obj, session_factory=None):
         router.add_api_route("/" + key + ".txt", verification, methods=["GET"])
 
     assets = {"site.css": (STATIC / "public-site.css", "text/css"),
+              "navigation.css": (STATIC / "public-site-navigation.css", "text/css"),
+              "language.js": (STATIC / "public-site-language.js", "application/javascript"),
               "account-deletion.js": (STATIC / "account-deletion.js", "application/javascript"),
               "avatar.webp": (STATIC / "assets/hsk-ai-avatar.webp", "image/webp"),
               "logo.png": (STATIC / "assets/hsk-ai-logo-256.png", "image/png"),
