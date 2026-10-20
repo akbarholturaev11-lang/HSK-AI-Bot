@@ -287,7 +287,12 @@ fun RatingChallengesScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    AssistantScreen(ratingChallengesAssistantContext(state), bottomBar = false, priority = 10)
+    val challengesTitle = stringResource(R.string.hsk_common_navigation_challenges)
+    AssistantScreen(
+        ratingChallengesAssistantContext(state, challengesTitle),
+        bottomBar = false,
+        priority = 10,
+    )
     BackHandler(onBack = onBack)
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         LazyColumn(
@@ -300,7 +305,7 @@ fun RatingChallengesScreen(
         ) {
             item {
                 RatingScreenHeader(
-                    title = stringResource(R.string.rating_challenges_title),
+                    title = challengesTitle,
                     onBack = onBack,
                 )
             }

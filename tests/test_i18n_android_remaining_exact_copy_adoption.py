@@ -46,6 +46,7 @@ LEGACY_TO_GENERATED = {
     "rating_weekly_top_five": "hsk_course_rating_weekly_top_five",
     "rating_friends_joined": "hsk_course_rating_referral_joined",
     "rating_weekly_result": "hsk_course_rating_weekly_heading",
+    "rating_challenges_title": "hsk_common_navigation_challenges",
     "writing_finish": "hsk_common_action_done",
     "writing_start": "hsk_common_action_start",
     "profile_lessons": "hsk_common_desktopA11y_courseNavigation",
@@ -87,6 +88,7 @@ EXPECTED_GENERATED_CALLS = {
     "hsk_common_desktopA11y_courseNavigation": 1,
     "hsk_course_memorize_finish": 1,
     "hsk_course_rating_write_telegram": 1,
+    "hsk_common_navigation_challenges": 1,
 }
 
 LOCALES = (("", "uz"), ("-ru", "ru"), ("-tg", "tj"))
@@ -99,7 +101,7 @@ def _strings(path: Path) -> dict[str, str]:
 
 class AndroidRemainingExactCopyAdoptionTests(unittest.TestCase):
     def test_legacy_android_values_match_generated_resources_in_all_locales(self):
-        self.assertEqual(len(LEGACY_TO_GENERATED), 40)
+        self.assertEqual(len(LEGACY_TO_GENERATED), 41)
         for qualifier, locale in LOCALES:
             with self.subTest(locale=locale):
                 legacy = _strings(ANDROID_RES / f"values{qualifier}/strings.xml")
@@ -127,6 +129,18 @@ class AndroidRemainingExactCopyAdoptionTests(unittest.TestCase):
             for resource in EXPECTED_GENERATED_CALLS
         }
         self.assertEqual(actual, EXPECTED_GENERATED_CALLS)
+        rating = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/rating/RatingScreen.kt").read_text(
+            encoding="utf-8"
+        )
+        assistant = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/assistant/AssistantContexts.kt").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn(
+            "val challengesTitle = stringResource(R.string.hsk_common_navigation_challenges)",
+            rating,
+        )
+        self.assertIn("ratingChallengesAssistantContext(state, challengesTitle)", rating)
+        self.assertIn("title = localizedTitle", assistant)
 
 
 if __name__ == "__main__":

@@ -94,6 +94,7 @@ Yangilikni sinab ko\'ring va 1-5 ball bering. Fikr qoldirsangiz, obunangiz bo\'l
     <string name="hsk_common_lesson_locked" formatted="false">Oldingi darsni yakunlang</string>
     <string name="hsk_common_lesson_notFound" formatted="false">Bu daraja uchun darslar hali topilmadi.</string>
     <string name="hsk_common_lesson_start" formatted="false">Darsni boshlash</string>
+    <string name="hsk_common_navigation_challenges" formatted="false">Bellashuvlar</string>
     <string name="hsk_common_navigation_course" formatted="false">Kurs</string>
     <string name="hsk_common_navigation_practice" formatted="false">Mashq</string>
     <string name="hsk_common_navigation_profile" formatted="false">Profil</string>
