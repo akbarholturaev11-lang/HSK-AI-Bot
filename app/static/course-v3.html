@@ -3368,7 +3368,7 @@ function foundationMapState(){
   var s=(MAP&&MAP.foundation)||(PROF&&PROF.foundation)||{};
   return s&&typeof s==="object"?s:{};
 }
-function localUserScope(){try{var u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;if(u&&u.id)return String(u.id)}catch(e){}return INIT_DATA?"auth":"preview"}
+function localUserScope(){try{var u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;if(u&&u.id)return String(u.id)}catch(e){}return"preview"}
 function foundationCacheKey(id,version){return"hsk_v3_foundation:"+localUserScope()+":"+String(id||"starter0_hsk1")+":v"+Number(version||1)}
 function foundationCachedState(id,version){try{return JSON.parse(localStorage.getItem(foundationCacheKey(id,version))||"null")||{}}catch(e){return{}}}
 function foundationIsComplete(){
@@ -3857,7 +3857,7 @@ var LESSON_RESUME_TTL_MS=7*24*60*60*1000;
 var MASTERY_VERSION=1;
 /* "v2" — darslar mini-qismlarga bo'linib raqamlash o'zgardi; eski kalitlardagi
    pozitsiya yangi qismga adashib ulanmasligi uchun prefiks yangilandi. */
-function lessonResumeKey(level,lessonOrder){return"hsk_v3_lesson_resume:v2:"+normalizeLevel(level||"hsk1")+":"+Number(lessonOrder||0)}
+function lessonResumeKey(level,lessonOrder){var scope=localUserScope(),legacy="hsk_v3_lesson_resume:v2:"+normalizeLevel(level||"hsk1")+":"+Number(lessonOrder||0);return scope==="preview"?legacy:"hsk_v3_lesson_resume:v3:"+scope+":"+normalizeLevel(level||"hsk1")+":"+Number(lessonOrder||0)}
 function loadLessonResume(level,lessonOrder,queueLength){
   try{
     var saved=JSON.parse(localStorage.getItem(lessonResumeKey(level,lessonOrder))||"null");

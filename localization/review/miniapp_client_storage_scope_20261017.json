@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "SOURCE_CLASSIFIED_NO_ACCOUNT_SWITCH_RUNTIME_CHANGE",
+  "status": "SOURCE_CLASSIFIED_ACCOUNT_SCOPED_RUNTIME_QA_REQUIRED",
   "sources": {
     "course": "app/static/course-v3.html",
     "memorize": "app/static/course_v3_memorize.html"
@@ -109,17 +109,6 @@
     {
       "source": "memorize",
       "storage": "localStorage",
-      "key": "hsk_memo",
-      "expected_operations": [
-        "getItem",
-        "setItem"
-      ],
-      "category": "unscoped_personal_character_mastery",
-      "account_data_review": true
-    },
-    {
-      "source": "memorize",
-      "storage": "localStorage",
       "key": "hsk_memo_pref",
       "expected_operations": [
         "getItem",
@@ -135,14 +124,14 @@
       "function": "lessonDataKey",
       "expected_identity_scope": false,
       "purpose": "in_memory_lesson_json_cache_key",
-      "privacy_review": "full cached lesson body may be reused by same WebView; source currently keyed by track/lesson only"
+      "privacy_review": "Shared source lesson JSON is not user progress; entitlement exposure is evaluated by the separate static-route audit."
     },
     {
       "source": "course",
       "function": "lessonResumeKey",
-      "expected_identity_scope": false,
+      "expected_identity_scope": true,
       "purpose": "persistent_lesson_position",
-      "privacy_review": "seven-day resume cursor localStorage shared across account identities"
+      "privacy_review": "Seven-day resume cursor is namespaced by localUserScope for signed Telegram users; unauthenticated preview keeps the legacy non-account key. Old shared account cursor is not migrated."
     },
     {
       "source": "course",
@@ -164,26 +153,21 @@
       "expected_identity_scope": false,
       "purpose": "setup_time_completion_per_user_suffix",
       "privacy_review": "uses explicit Telegram userId suffix instead of localUserScope; do not infer identity-free behavior from absence of helper"
+    },
+    {
+      "source": "memorize",
+      "function": "memorizationStateKey",
+      "expected_identity_scope": true,
+      "purpose": "persistent_personal_character_mastery",
+      "privacy_review": "Signed Telegram user id scopes mastery; unauthenticated preview retains the existing hsk_memo key. Old shared account state is not migrated."
     }
   ],
   "risks": [
     {
-      "id": "unscoped_memorization_mastery",
-      "severity": "manual_account_switch_qa_required",
-      "key": "hsk_memo",
-      "scope": "same WebView shared origin"
-    },
-    {
-      "id": "unscoped_lesson_resume",
-      "severity": "manual_account_switch_qa_required",
-      "key": "lessonResumeKey",
-      "scope": "same WebView shared origin"
-    },
-    {
       "id": "in_memory_lesson_data_no_identity",
-      "severity": "manual_authorized_cache_migration_required",
+      "severity": "classified_shared_source_content_access_reviewed_separately",
       "key": "lessonDataKey",
-      "scope": "page memory including in-flight promises"
+      "scope": "page memory including in-flight promises; cache contains source lesson JSON, not user progress. Route entitlement is evaluated by the separate static-route audit."
     },
     {
       "id": "unverified_user_scope_source",

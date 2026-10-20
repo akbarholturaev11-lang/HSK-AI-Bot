@@ -69,11 +69,11 @@ class MiniAppLessonFetchIntentTests(unittest.TestCase):
         report = audit(ROOT)
         self.assertEqual(report["cache_scope"], {
             "memory_lesson_key_contains_identity": False,
-            "resume_key_contains_identity": False,
+            "resume_key_contains_identity": True,
             "mastery_key_contains_identity": True,
         })
         self.assertTrue(any(row["issue"] ==
-                            "shared_page_lesson_cache_and_resume_identity_scope_requires_QA"
+                            "shared_lesson_content_and_scoped_resume_require_runtime_QA"
                             for row in report["review_findings"]))
         self.assertNotIn("correct_index", json.dumps(report))
 

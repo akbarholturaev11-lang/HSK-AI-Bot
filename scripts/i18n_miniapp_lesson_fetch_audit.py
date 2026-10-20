@@ -76,10 +76,10 @@ def audit_source(source: str, registry: dict) -> dict:
     ):
         failures.append({"issue": "page_lesson_data_cache_key_changed"})
     if not re.search(
-        r"function lessonResumeKey\([^)]*\)\{return.hsk_v3_lesson_resume:v2:",
+        r"function lessonResumeKey\([^)]*\)\{var scope=localUserScope\(\).*hsk_v3_lesson_resume:v3:",
         source,
     ):
-        failures.append({"issue": "lesson_resume_cache_key_changed"})
+        failures.append({"issue": "lesson_resume_account_scope_missing"})
     if not re.search(
         r"function lessonMasteryKey\([^)]*\)\{return.hsk_v3_mastery:v",
         source,
@@ -113,7 +113,7 @@ def audit_source(source: str, registry: dict) -> dict:
         "review_findings": [
             {"issue": "background_or_preview_reads_must_not_consume_lesson_quota",
              "status": "P0_manual_migration_blocker"},
-            {"issue": "shared_page_lesson_cache_and_resume_identity_scope_requires_QA",
+            {"issue": "shared_lesson_content_and_scoped_resume_require_runtime_QA",
              "status": "P0_manual_account_switch_review"},
             {"issue": "skip_test_and_foundation_need_distinct_content_policy",
              "status": "P0_manual_access_review"},
@@ -123,7 +123,7 @@ def audit_source(source: str, registry: dict) -> dict:
             "Source syntax and existing six callsites only; not complete function call graph or deployed behavior.",
             "The existing Mini App direct JSON URL is public from code-level inspection, not a production HTTP test.",
             "No future content, token, correct answer, translation text or user state is included in the report.",
-            "Cached lessons, score/resume and account switching require device QA and approved privacy decisions.",
+            "Lesson JSON is shared source content; scoped resume and signed-user separation still require device account-switch QA.",
         ],
     }
 

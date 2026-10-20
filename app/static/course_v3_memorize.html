@@ -200,9 +200,9 @@ function showLimitNow(){
 }
 
 /* ---- mastery (localStorage) ---- */
-function allM(){try{return JSON.parse(localStorage.getItem("hsk_memo")||"{}")}catch(e){return {}}}
+function localUserScope(){try{var u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;if(u&&u.id)return String(u.id)}catch(e){}return"preview"}function memorizationStateKey(){var scope=localUserScope();return scope==="preview"?"hsk_memo":"hsk_memo:v2:"+scope}function allM(){try{return JSON.parse(localStorage.getItem(memorizationStateKey())||"{}")}catch(e){return {}}}
 function getM(h){return allM()[h]||{score:0,errors:{},seen:0}}
-function setM(h,o){var a=allM();a[h]=o;try{localStorage.setItem("hsk_memo",JSON.stringify(a))}catch(e){}}
+function setM(h,o){var a=allM();a[h]=o;try{localStorage.setItem(memorizationStateKey(),JSON.stringify(a))}catch(e){}}
 function bump(h,d,err){var o=getM(h);o.score=Math.max(0,Math.min(4,(o.score||0)+d));if(err){o.errors=o.errors||{};o.errors[err]=(o.errors[err]||0)+1}o.seen=(o.seen||0)+1;o.ts=Date.now();setM(h,o)}
 function getPref(){try{return localStorage.getItem("hsk_memo_pref")||""}catch(e){return ""}}
 function setPref(v){try{localStorage.setItem("hsk_memo_pref",v)}catch(e){}}

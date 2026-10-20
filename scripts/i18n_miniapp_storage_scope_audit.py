@@ -21,7 +21,7 @@ STORAGE_CALL = re.compile(
 )
 REQUIRED_KEY_FUNCTIONS = {
     "lessonDataKey", "lessonResumeKey", "lessonMasteryKey",
-    "foundationCacheKey", "studySetupTimeKey",
+    "foundationCacheKey", "studySetupTimeKey", "memorizationStateKey",
 }
 
 
@@ -50,7 +50,7 @@ def audit_source(sources: dict[str, str], registry: dict) -> dict:
             raise ValueError("Unknown storage source alias in registry")
         for op in row.get("expected_operations", []):
             expected[(row["source"], row["storage"], row["key"], op)] += 1
-    if len(registry.get("literal_key_classes", [])) != 11:
+    if len(registry.get("literal_key_classes", [])) != 10:
         raise ValueError("Missing literal key classification")
 
     regressions = []
@@ -88,14 +88,15 @@ def audit_source(sources: dict[str, str], registry: dict) -> dict:
     if "localUserScope()" not in _function_line(sources["course"], "foundationCacheKey"):
         regressions.append({"kind": "foundation_identity_scope_missing"})
 
-    if 'localStorage.getItem("hsk_memo")' not in sources["memorize"] or (
-        'localStorage.setItem("hsk_memo",' not in sources["memorize"]
-    ):
-        regressions.append({"kind": "memorize_mastery_storage_changed"})
+    if "localUserScope()" not in _function_line(sources["memorize"], "memorizationStateKey"):
+        regressions.append({"kind": "memorization_identity_scope_missing"})
+    if ('localStorage.getItem(memorizationStateKey())' not in sources["memorize"]
+            or 'localStorage.setItem(memorizationStateKey(),' not in sources["memorize"]):
+        regressions.append({"kind": "memorization_dynamic_key_access_changed"})
 
     return {
         "schema_version": 1,
-        "status": "SOURCE_REVIEW_PENDING_ACCOUNT_SWITCH_QA" if not regressions else "REGRESSION",
+        "status": "SOURCE_IDENTITY_SCOPE_RUNTIME_QA_REQUIRED" if not regressions else "REGRESSION",
         "literal_storage_calls": sum(found.values()),
         "classified_literal_keys": len(registry["literal_key_classes"]),
         "dynamic_cache_key_functions": dynamic,
