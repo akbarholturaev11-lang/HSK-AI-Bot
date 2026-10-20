@@ -238,7 +238,10 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             "hint_section_profile_title": "navigation.profile",
             "hint_section_rating_title": "navigation.rating",
         }
-        expected_course = {"hint_section_voice_title": "nav.voice"}
+        expected_course = {
+            "hint_section_voice_title": "nav.voice",
+            "subscription_expired_later_button": "onboardingNotification.later",
+        }
         self.assertEqual(BOT_SHARED_COMMON_KEYS, expected_common)
         self.assertEqual(BOT_SHARED_COURSE_KEYS, expected_course)
         for bot_key, catalog_key, catalog in (

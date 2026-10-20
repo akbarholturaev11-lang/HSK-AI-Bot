@@ -20,8 +20,8 @@
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",
-      "reviewed_sha1": "6e43fab479bacd8f8775d58ffa770e9f0b1d76f2",
-      "reason": "Expose generated canonical common UI keys through a namespaced Bot t() branch and route four exact UZ/RU/TJ navigation-title aliases through the common bundle plus the exact AI Voice alias through the course bundle, retaining Bot dictionaries as fallback. Other legacy key dispatch, Gemini variants, and fallback behavior stay unchanged. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
+      "reviewed_sha1": "248a65a3f71e69778d4bb56bfb4acba013fcf3e1",
+      "reason": "Expose generated canonical common UI keys through a namespaced Bot t() branch and route four exact UZ/RU/TJ navigation-title aliases through the common bundle plus the exact AI Voice and subscription-reminder Later aliases through the course bundle, retaining Bot dictionaries as fallback. The six localized aliases match all three existing Bot values exactly; the reminder callback and subscription behavior stay unchanged. Other legacy key dispatch, Gemini variants, and fallback behavior stay unchanged. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/static/course_v3_onboarding.html": {
       "baseline_sha1": "321c28c34cf4ed0550bb5187d8f6b680654ea51e",

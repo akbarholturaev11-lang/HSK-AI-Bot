@@ -459,11 +459,12 @@ BOT_SHARED_COMMON_KEYS = {
 }
 BOT_SHARED_COURSE_KEYS = {
     "hint_section_voice_title": "nav.voice",
+    "subscription_expired_later_button": "onboardingNotification.later",
 }
 
 
 def _lookup_text(key: str, lang: str):
-    # These five Bot labels exactly match shared UZ/RU/TJ catalogs. Keep the
+    # These six Bot labels exactly match shared UZ/RU/TJ catalogs. Keep the
     # old Bot dictionaries as fallback for safe rollout and source drift.
     shared_common_key = BOT_SHARED_COMMON_KEYS.get(key)
     text = (COMMON_MESSAGES.get(lang, {}).get(shared_common_key)
