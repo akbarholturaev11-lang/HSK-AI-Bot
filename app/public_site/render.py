@@ -170,10 +170,10 @@ def render_page(path, settings_obj, tags=None):
 <link rel="canonical" href="{esc(canonical)}">{hreflang}{verification}
 <meta property="og:title" content="{esc(page['title'])}"><meta property="og:description" content="{esc(page['description'])}">
 <meta property="og:type" content="website"><meta property="og:url" content="{esc(canonical)}">
-<meta property="og:site_name" content="HSK AI"><meta property="og:image" content="{esc(origin)}/public-assets/social-cover.webp">
+<meta property="og:site_name" content="HSK AI"><meta property="og:image" content="{esc(origin)}/public-assets/social-cover.webp?v=2">
 <meta property="og:image:alt" content="HSK AI"><meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{esc(page['title'])}"><meta name="twitter:description" content="{esc(page['description'])}">
-<meta name="twitter:image" content="{esc(origin)}/public-assets/social-cover.webp">
+<meta name="twitter:image" content="{esc(origin)}/public-assets/social-cover.webp?v=2">
 <link rel="icon" href="/public-assets/logo.png" type="image/png">
 <link rel="stylesheet" href="/public-assets/site.css?v=3">
 <script type="application/ld+json">{schema}</script></head>
