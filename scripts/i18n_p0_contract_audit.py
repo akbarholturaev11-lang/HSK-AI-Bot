@@ -32,9 +32,9 @@ def locale_contract(manifest: dict, registry: dict) -> dict:
     if manifest.get("schema_version") != 1 or registry.get("schema_version") != 1:
         raise ValueError("unsupported localization schema")
     if manifest.get("status") != "preparation_only_no_runtime_switch":
-        raise ValueError("P0 must not enable runtime localization")
-    if registry.get("runtime_changes_authorized") is not False:
-        raise ValueError("P0 registry must forbid runtime changes")
+        raise ValueError("P0 must not enable a new locale before its release gates pass")
+    if registry.get("runtime_changes_authorized") is not True:
+        raise ValueError("feature-branch runtime implementation is not authorized")
     languages = manifest.get("locales")
     if not isinstance(languages, list) or any(not isinstance(x, dict) for x in languages):
         raise ValueError("invalid locales array")
@@ -62,7 +62,7 @@ def locale_contract(manifest: dict, registry: dict) -> dict:
         "display_tags": LOCALE_TAGS,
         "default_locale": manifest["default_locale"],
         "compatibility_aliases": sorted(aliases),
-        "runtime_changes_authorized": False,
+        "runtime_changes_authorized": True,
     }
 
 

@@ -114,7 +114,8 @@ jobs:
             tests.test_i18n_editor_grammar_local_catalog \
             tests.test_i18n_canonical_grammar_catalog \
             tests.test_i18n_native_grammar_localization \
-            tests.test_i18n_miniapp_grammar_reservation
+            tests.test_i18n_miniapp_grammar_reservation \
+            tests.test_i18n_miniapp_lesson_settings_ui_adoption
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0

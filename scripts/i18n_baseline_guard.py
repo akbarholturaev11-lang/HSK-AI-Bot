@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BASELINE_FILE = ROOT / "localization/baselines/source_git_blobs.json"
 REVIEWED_UI_FILE = ROOT / "localization/baselines/reviewed_ui_changes.json"
 UPSTREAM_MAIN_FILE = ROOT / "localization/baselines/reviewed_main_source_changes.json"
-VERIFIED_UPSTREAM_MAIN_COMMIT = "055de820db10b32fadffa942938a16e2070f0d52"
+VERIFIED_UPSTREAM_MAIN_COMMIT = "66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5"
 LESSON_FILE = re.compile(
     r"^app/static/course_v3_data/(hsk[1-4]|nhsk[1-3])/lesson_(\d+)\.json$"
 )

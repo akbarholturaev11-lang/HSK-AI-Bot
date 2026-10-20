@@ -1,8 +1,10 @@
-## Current integration handoff — 2026-10-20 (P2/P3 ongoing, NOT production)
+## Current integration handoff — 2026-10-20 (P2/P3 ongoing, NOT main-ready)
 
-**Use `localization/RESUME_NEXT_CHAT.md` then `localization/P3_ACTIVE_HANDOFF.md` as the current state.** This document preserves historical milestones; references below to the original `codex/i18n-local-first-foundation-20261017` branch are superseded for current work by **`codex/p3-main-integration-20261020`**. Owner explicitly prohibits edits to `main` and production deployment until separately authorized. The historical `main` SHA is `055de820db10b32fadffa942938a16e2070f0d52`.
+**Use `localization/RESUME_NEXT_CHAT.md` then `localization/P3_ACTIVE_HANDOFF.md` for the latest state.** Current work is only on `codex/p3-main-integration-20261020`; `main` and production are not targets. Local HEAD `569e321e3c28238880c57793ba5f5bf3ee6dc5f` includes `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5`; remote feature is still at `4b6d52122f55f7886e47ff5e2bbe6f3331628370` pending the current tested push. Migration `0109_public_site_traffic_daily` is Alembic's single head. Local analytics/import tests passed (7); main Android CI `39413938035` and TTS both succeeded at `66ac3d4`.
 
-Current integration code base is **`ce427ab2e21b4dbcd2c4ea15b7cc66caf46e77e2`** on `codex/p3-main-integration-20261020`. Latest `origin/main` is **`16cc47cddbed62f75850db41b89b8be2ec6709d7`**, one commit ahead with public-site traffic analytics/migration `0109`; a dry merge reports no content conflict, but synchronization and exact-head CI are pending. The current local P2 batch raises UZ/RU/TJ course catalogs from 866 to **874 keys** and pins all 12 HTML consumers to `20261020-ed284a21dc2c`. Local P0 passes 356 tests and the Android direct/play unit-test tasks pass; exact-head GitHub CI for the new batch is pending. P3 has 136 source-bound contexts / 408 agent-reviewed strings and an authenticated display-only runtime overlay; public lesson-route, account-switch, staging and installed-client release gates remain open. Do not claim release readiness from local tests alone.
+P2 course UI has **874 keys per UZ/RU/TJ locale**, six local generated artifacts and 12 cache-pinned HTML consumers. The previous eight-key repair-copy slice is source-bound and its exact feature-head P0 run `39413799147` passed 356 tests. This batch registered the previously omitted settings-adoption test, corrected its stale expected count to 874, advanced the reviewed-main provenance pin for `app/static/admin.html` to exact current `origin/main` `66ac3d4`, and changed the contract guard to distinguish authorized branch implementation from enabling a new locale. Local 64-module/358-test P0 and read-only audits passed; exact-head GitHub CI is pending the feature push.
+
+P3's 136 source-bound Chinese contexts / 408 agent-checked UZ/RU/TJ strings are integrated as access-gated display-only overlays; original lesson source, answers, grading, entitlement and progress remain protected. Main-readiness is still **blocked** by direct public lesson JSON reads (source lessons contain `answer_tokens` / `correct_index`), unscoped in-memory/resume cache keys, and missing approved staging/account-switch/installed-client QA. The six direct Mini App reads include preview, prefetch, foundation and skip-test cases; do not replace them all with `consume=True`. No main push or deployment.
 
 ## Controlling P3 language QA decision — 2026-10-19
 
@@ -32,14 +34,12 @@ staging and cross-platform QA remain pending.
 ## 0. Where to resume
 
 - Repository: `akbarholturaev11-lang/HSK-AI-Bot`.
-- Isolated development branch: `codex/i18n-local-first-foundation-20261017`.
-- Branch was cut from `main` at `160a51d69f3324e3162375213ec61b5587b19533`.
-- **Do not silently merge into main during setup.** Any later merge requires
-  the repository's testing rules and an explicit implementation scope.
-- Baseline languages: `uz`, `ru`, `tj`; Android/BCP-47 Tajik is `tg`.
-- Read `AGENTS.md`, `AI_RULES.md` and `PROJECT_MEMORY.md` before editing.
-- **Latest verified head:** `6afb1176b967b02a835e486160f7927d0ef77aa2`; exact-head P0 run `39246448037` SUCCESS (322 local regression tests). Android CI `39244193222` SUCCESS on `1ee7fc8b`; no Android source changed after that SHA.
-- **Next concrete action:** resolve the existing lesson-file and curriculum-map delivery boundary before runtime overlay publication; continue remaining P2 adoption/client checks on this branch. Preserve Free/Trial/Pro, grading and old-client behavior; no main merge or deployment.
+- Active integration branch: `codex/p3-main-integration-20261020`; the original `codex/i18n-local-first-foundation-20261017` work is already integrated. Branch was originally cut from `main` at `160a51d69f3324e3162375213ec61b5587b19533`.
+- Local HEAD `569e321e3c28238880c57793ba5f5bf3ee6dc5f` includes current fetched `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5`; remote feature remains at `4b6d52122f55f7886e47ff5e2bbe6f3331628370`. Recheck both refs and Actions before continuing or pushing.
+- Branch-only work; do not push/merge `main`, deploy, force-push or run live DB migrations. Keep `uz`, `ru`, `tj` canonical (`tg` for Android resource qualifier).
+- Current catalog: 874 course keys per locale; six generated offline artifacts current; 12 HTML consumers pinned to `20261020-ed284a21dc2c`. The exact P0 suite has 64 modules / 358 tests after registering the missing lesson-settings adoption regression; run and confirm exact-head CI before treating it as green.
+- The exact `origin/main` `app/static/admin.html` change is pinned in `reviewed_main_source_changes.json`; `scripts/i18n_baseline_guard.py` now verifies main SHA `66ac3d4`. This is source provenance, not product QA.
+- **Next concrete work:** continue P2 platform adoption, review public lesson GET and identity-scoped cache boundaries without breaking legacy/Free/Pro behavior, and complete approved staging/auth/account-switch/installed-client QA. Preserve lesson content and grading.
 
 ## 1. Architecture / schema
 

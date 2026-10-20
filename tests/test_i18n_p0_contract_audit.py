@@ -23,7 +23,7 @@ def sample_manifest():
 
 
 def sample_registry():
-    return {"schema_version": 1, "runtime_changes_authorized": False,
+    return {"schema_version": 1, "runtime_changes_authorized": True,
             "existing_languages": ["uz", "ru", "tj"]}
 
 
@@ -33,7 +33,7 @@ class P0ContractAuditTests(unittest.TestCase):
         self.assertEqual(result["display_tags"]["tj"], "tg")
         self.assertEqual(result["backend_codes"], ["ru", "tj", "uz"])
 
-    def test_rejects_early_locale_activation_or_tajik_rename(self):
+    def test_rejects_new_locale_activation_tajik_rename_or_unauthorized_runtime(self):
         m = sample_manifest()
         m["locales"].append({"id": "en", "tag": "en"})
         with self.assertRaisesRegex(ValueError, "locale mapping"):
@@ -42,9 +42,9 @@ class P0ContractAuditTests(unittest.TestCase):
         m["backend_compatibility_aliases"]["tg"] = "tg"
         with self.assertRaisesRegex(ValueError, "Tajik"):
             locale_contract(m, sample_registry())
-        with self.assertRaisesRegex(ValueError, "runtime changes"):
+        with self.assertRaisesRegex(ValueError, "runtime implementation is not authorized"):
             locale_contract(sample_manifest(), {
-                **sample_registry(), "runtime_changes_authorized": True
+                **sample_registry(), "runtime_changes_authorized": False
             })
 
     def test_route_requires_security_review_without_inventing_verdict(self):

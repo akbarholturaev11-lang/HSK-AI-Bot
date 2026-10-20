@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "planning_and_inventory_only",
+  "status": "implementation_in_progress",
   "baseline_main_commit": "160a51d69f3324e3162375213ec61b5587b19533",
   "source_of_truth_target": "localization",
   "existing_languages": [
@@ -8,8 +8,8 @@
     "ru",
     "tj"
   ],
-  "runtime_changes_authorized": false,
-  "purpose": "Registry of implementation surfaces that must be audited before local-first localization migration. Not a generated translation catalog.",
+  "runtime_changes_authorized": true,
+  "purpose": "Registry of local-first implementation surfaces for the authorized feature-branch migration. Not a generated translation catalog; main/production promotion has separate gates.",
   "surfaces": [
     {
       "id": "miniapp_ui",

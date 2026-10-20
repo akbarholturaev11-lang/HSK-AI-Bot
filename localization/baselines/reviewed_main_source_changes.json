@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "baseline_main_commit": "160a51d69f3324e3162375213ec61b5587b19533",
-  "upstream_main_commit": "055de820db10b32fadffa942938a16e2070f0d52",
+  "upstream_main_commit": "66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5",
   "status": "VERIFIED_MAIN_BLOB_PROVENANCE_ONLY_NOT_ASSESSMENT_CERTIFICATION",
   "purpose": "Retain historical P0 frozen baseline and authorize only 13 exact byte-for-byte newer main revisions after merge. Never change a source or accepted grading field by translation shortcut.",
   "files": {
@@ -79,9 +79,9 @@
     },
     "app/static/admin.html": {
       "baseline_sha1": "67ca1e578f701ad523344d8599556d790e36a6cb",
-      "upstream_main_sha1": "532c783e033f48c8f0a1b397ae02ed040d377f10",
+      "upstream_main_sha1": "4cde89f1992c5d495fd6e47df01084149b2e6e24",
       "group": "ui_catalog_origins",
-      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
+      "reason": "Verified exact app/static/admin.html blob at current origin/main 66ac3d4e; includes main's 16cc47cd public-site traffic panel and canonical account-ID display. Main provenance only, not UI/runtime QA certification."
     }
   }
 }
