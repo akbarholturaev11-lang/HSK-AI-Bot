@@ -58,7 +58,7 @@ PAGES = {
         "h1": "Забони чиниро қадам ба қадам омӯзед",
         "intro": "HSK AI курси пайдарпайи забони чинӣ, машқи луғат ва саволу ҷавоби AI-ро дар Android, desktop ва Telegram Mini App муттаҳид мекунад. Шарҳҳоро ба тоҷикӣ, русӣ ё ӯзбекӣ интихоб кунед.",
         "sections": [
-            ("Аз курси HSK оғоз кунед", "Боти @darsi_chini_bot-ро кушоед ва ба Mini App гузаред. Дарсҳои HSK 1–4 калима, грамматика, гуфтугӯ ва санҷишро ба ҳам мепайванданд."),
+            ("Курсҳои HSK 1–4", "Курси пайдарпайи HSK 1–4 луғат, грамматика, гуфтугӯ ва тестҳоро дар як роҳи омӯзиш мепайвандад. Пешравии дарсҳо дар ҳисоби HSK AI нигоҳ дошта мешавад."),
             ("Шарҳро бо забони худ хонед", "Тоҷикӣ, русӣ ё ӯзбекиро интихоб кунед. Иероглиф, пинйин ва тарҷума ба шумо калимаро хондан, шунидан ва маънояшро санҷидан кӯмак мекунанд."),
             ("Бо AI ва овоз машқ кунед", "Дар бораи калима ё ҷумла саволи мушаххас диҳед, намунаи талаффузро гӯш кунед ва ҷавобро бо маводи дарс муқоиса намоед."),
             ("Барномаи мувофиқро интихоб кунед", "Барномаи Android, macOS ё Windows-ро аз саҳифаи зеркашӣ гиред. Дар барнома бо Google, Apple ё Telegram, агар пешниҳод шавад, ворид шавед. Telegram Mini App низ дастрас аст."),
@@ -66,7 +66,7 @@ PAGES = {
     },
     "/tj/": {
         "lang": "tg", "title": "Омӯзиши забони чинӣ ба тоҷикӣ — HSK AI",
-        "description": "Забони чиниро ба тоҷикӣ бо HSK AI омӯзед: курсҳои HSK 1–4, шарҳи AI, машқи талаффуз, луғат ва тестҳо дар Telegram Mini App.",
+        "description": "HSK AI — платформаи омӯзиши чинӣ ба тоҷикӣ: HSK 1–4, луғат, тестҳо, AI ва барномаҳои Android, macOS, Windows ё Telegram Mini App.",
         "h1": "Забони чиниро ба тоҷикӣ омӯзед",
         "intro": "HSK AI — платформаи омӯзиши забони чинӣ бо ёрии AI барои омӯзандагони тоҷикзабон. Дарсро хонед, маъноро ба тоҷикӣ фаҳмед ва баъд бо ҷумлаи худ машқ кунед. Русӣ ва ӯзбекӣ низ дастгирӣ мешаванд.",
         "sections": [
@@ -82,7 +82,7 @@ PAGES = {
         "h1": "Учите китайский шаг за шагом",
         "intro": "HSK AI объединяет последовательный курс китайского языка, практику лексики и ответы AI в Android, desktop и Telegram Mini App. Выберите объяснения на русском, таджикском или узбекском.",
         "sections": [
-            ("Начните с курса HSK", "Откройте @darsi_chini_bot и перейдите в Mini App. Уроки HSK 1–4 объединяют лексику, грамматику, диалоги и задания."),
+            ("Курсы HSK 1–4", "Последовательные уроки HSK 1–4 объединяют лексику, грамматику, диалоги и задания. Результаты обучения сохраняются в аккаунте HSK AI."),
             ("Читайте объяснения на своём языке", "Выберите русский, таджикский или узбекский. Иероглиф, пиньинь и перевод помогают прочитать новое слово, услышать его и проверить значение."),
             ("Практикуйтесь с AI и аудио", "Задавайте конкретные вопросы о словах и предложениях, слушайте образец произношения и сверяйте ответы с уроком."),
             ("Выберите способ обучения", "Скачайте приложение для Android, macOS или Windows со страницы загрузки. Войдите через Google, Apple или Telegram, если этот способ предложен. Также доступен Telegram Mini App."),
@@ -94,7 +94,7 @@ PAGES = {
         "h1": "Xitoy tilini bosqichma-bosqich o‘rganing",
         "intro": "HSK AI xitoy tili kursi, lug‘at mashqlari va AI savol-javobini Android, desktop va Telegram Mini App’da birlashtiradi. O‘zbekcha, ruscha yoki tojikcha izohlarni tanlang.",
         "sections": [
-            ("HSK kursidan boshlang", "@darsi_chini_bot botini oching va Mini App’ga o‘ting. HSK 1–4 darslari lug‘at, grammatika, dialog va topshiriqlarni birlashtiradi."),
+            ("HSK 1–4 kurslari", "Bosqichma-bosqich HSK 1–4 darslari lug‘at, grammatika, dialog va mashqlarni birlashtiradi. O‘quv natijalari HSK AI hisobida saqlanadi."),
             ("Izohlarni o‘z tilingizda o‘qing", "O‘zbek, rus yoki tojik tilini tanlang. Iyeroglif, pinyin va tarjima yangi so‘zni o‘qish, tinglash va ma’nosini tekshirishga yordam beradi."),
             ("AI va audio bilan mashq qiling", "So‘z yoki gap haqida aniq savol bering, talaffuz namunasini tinglang va javobni dars bilan solishtiring."),
             ("O‘rganish usulini tanlang", "Yuklab olish sahifasidan Android, macOS yoki Windows ilovasini oling. Ilovada taklif qilingan Google, Apple yoki Telegram orqali kiring. Telegram Mini App’dan ham foydalanish mumkin."),
@@ -454,9 +454,9 @@ for path, page in PAGES.items():
         page["sections"].append(_ACCOUNT_GUIDANCE[page["lang"]])
 
 NAV_LABELS = {
-    "tg": {"courses": "Курсҳои HSK", "guide": "Роҳнамо", "download": "Боргирӣ", "language": "Забон", "more": "Идома диҳед", "home": "Саҳифаи асосӣ"},
-    "ru": {"courses": "Курсы HSK", "guide": "Руководство", "download": "Скачать", "language": "Язык", "more": "Продолжить", "home": "Главная"},
-    "uz": {"courses": "HSK kurslari", "guide": "Qo‘llanma", "download": "Yuklab olish", "language": "Til", "more": "Davom eting", "home": "Bosh sahifa"},
+    "tg": {"courses": "Курсҳои HSK", "features": "Имкониятҳо", "guide": "Роҳнамо", "download": "Боргирӣ", "language": "Забон", "more": "Идома диҳед", "home": "Саҳифаи асосӣ"},
+    "ru": {"courses": "Курсы HSK", "features": "Возможности", "guide": "Руководство", "download": "Скачать", "language": "Язык", "more": "Продолжить", "home": "Главная"},
+    "uz": {"courses": "HSK kurslari", "features": "Imkoniyatlar", "guide": "Qo‘llanma", "download": "Yuklab olish", "language": "Til", "more": "Davom eting", "home": "Bosh sahifa"},
 }
 
 RELATED_LINKS = {
