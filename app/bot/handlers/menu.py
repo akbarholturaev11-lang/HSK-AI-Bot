@@ -82,12 +82,7 @@ async def handle_promo_action_callback(callback: CallbackQuery, state: FSMContex
 
         await callback.answer()
         if not COURSE_MODE_ENABLED:
-            msg_map = {
-                "uz": "🚧 Kurs rejimi hozircha ishlab chiqilmoqda.",
-                "ru": "🚧 Режим курса сейчас в разработке.",
-                "tj": "🚧 Реҷаи курс ҳоло дар навсози аст.",
-            }
-            await callback.message.answer(msg_map.get(lang, msg_map["ru"]))
+            await callback.message.answer(t("common.bot.courseModeUnavailable", lang))
             return
         await send_course_miniapp_entry(
             session=session,
@@ -131,7 +126,7 @@ async def handle_promo_action_callback(callback: CallbackQuery, state: FSMContex
         )
         return
 
-    await callback.answer("Button eskirgan yoki noto'g'ri.", show_alert=True)
+    await callback.answer(t("common.bot.buttonInvalid", lang), show_alert=True)
 
 # ──────────────────────────────────────────────
 # QA rejim menyusi — barcha tugmalar handleri

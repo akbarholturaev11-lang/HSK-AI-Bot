@@ -295,7 +295,7 @@ private fun NewSectionBadge(releasedAtMillis: Long, modifier: Modifier = Modifie
     if (visible) {
         Surface(color = PompColors.JadeSoft, shape = CircleShape, modifier = modifier) {
             Text(
-                text = "NEW",
+                text = stringResource(R.string.hsk_course_new_section_badge),
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp),
                 color = PompColors.JadeInk,
                 fontSize = 9.sp,

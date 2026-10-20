@@ -58,6 +58,7 @@
     "action.logout": "Баромадан",
     "action.start": "Оғоз",
     "bot.courseModeUnavailable": "🚧 Реҷаи курс ҳоло дар таҳия аст.",
+    "bot.buttonInvalid": "Тугма дигар эътибор надорад ё нодуруст аст.",
     "bot.accountDeletion.webStarted": "Дар сомонаи HSK AI дархости нест кардани ҳисоб оғоз шуд. Танҳо дар сурате тасдиқ кунед, ки онро худатон оғоз карда бошед. Пас аз тасдиқ метавонед дар браузер дархости нест кардани ҳисобро фиристед.",
     "bot.accountDeletion.webConfirmButton": "Ин ҳисоби ман аст",
     "bot.accountDeletion.privateChatOnly": "Дархостро аз чати хусусӣ фиристед.",

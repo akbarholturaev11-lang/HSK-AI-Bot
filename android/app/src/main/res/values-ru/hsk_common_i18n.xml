@@ -21,6 +21,7 @@
     <string name="hsk_common_bot_accountDeletion_submitFailed" formatted="false">Не удалось отправить запрос. Попробуйте позже.</string>
     <string name="hsk_common_bot_accountDeletion_webConfirmButton" formatted="false">Это мой аккаунт</string>
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">На сайте HSK AI начат запрос на удаление аккаунта. Подтвердите его, только если вы сами начали этот процесс. После подтверждения можно будет отправить запрос на удаление аккаунта в браузере.</string>
+    <string name="hsk_common_bot_buttonInvalid" formatted="false">Кнопка устарела или некорректна.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Режим курса сейчас в разработке.</string>
     <string name="hsk_common_common_refresh" formatted="false">Обновить</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">Вопрос о китайском языке</string>

@@ -21,6 +21,7 @@
     <string name="hsk_common_bot_accountDeletion_submitFailed" formatted="false">So‘rov yuborilmadi. Keyinroq qayta urinib ko‘ring.</string>
     <string name="hsk_common_bot_accountDeletion_webConfirmButton" formatted="false">Bu mening hisobim</string>
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">HSK AI veb-sahifasida hisobni o‘chirish so‘rovi boshlandi. Faqat uni o‘zingiz boshlagan bo‘lsangiz tasdiqlang. Tasdiqdan keyin brauzerda hisobni o‘chirish so‘rovini yuborishingiz mumkin.</string>
+    <string name="hsk_common_bot_buttonInvalid" formatted="false">Tugma eskirgan yoki noto‘g‘ri.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Kurs rejimi hozircha ishlab chiqilmoqda.</string>
     <string name="hsk_common_common_refresh" formatted="false">Yangilash</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">AI uchun savol</string>

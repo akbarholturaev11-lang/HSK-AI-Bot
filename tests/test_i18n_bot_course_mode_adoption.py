@@ -72,6 +72,53 @@ class BotCourseModeAdoptionTests(unittest.TestCase):
             for node in ast.walk(guard)
         ))
 
+    def test_promo_callback_course_guard_uses_the_same_local_catalog(self):
+        path = ROOT / "app/bot/handlers/menu.py"
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        handler = next(
+            node for node in tree.body
+            if isinstance(node, ast.AsyncFunctionDef)
+            and node.name == "handle_promo_action_callback"
+        )
+        course_branch = next(
+            node for node in handler.body
+            if isinstance(node, ast.If)
+            and isinstance(node.test, ast.Compare)
+            and isinstance(node.test.left, ast.Name)
+            and node.test.left.id == "action"
+            and any(
+                isinstance(value, ast.Constant) and value.value == "course"
+                for value in node.test.comparators
+            )
+        )
+        guard = next(
+            node for node in course_branch.body
+            if isinstance(node, ast.If)
+            and isinstance(node.test, ast.UnaryOp)
+            and isinstance(node.test.op, ast.Not)
+            and isinstance(node.test.operand, ast.Name)
+            and node.test.operand.id == "COURSE_MODE_ENABLED"
+        )
+        self.assertTrue(any(
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id == "t"
+            and len(node.args) >= 2
+            and isinstance(node.args[0], ast.Constant)
+            and node.args[0].value == "common.bot.courseModeUnavailable"
+            and isinstance(node.args[1], ast.Name)
+            and node.args[1].id == "lang"
+            for node in ast.walk(guard)
+        ))
+        self.assertTrue(any(isinstance(node, ast.Return) for node in guard.body))
+        self.assertFalse(any(
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id == "send_course_miniapp_entry"
+            for node in ast.walk(guard)
+        ))
+        self.assertFalse(any(isinstance(node, ast.Dict) for node in ast.walk(course_branch)))
+
 
 if __name__ == "__main__":
     unittest.main()

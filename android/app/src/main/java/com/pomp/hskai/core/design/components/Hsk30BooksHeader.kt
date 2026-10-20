@@ -49,7 +49,7 @@ fun Hsk30BooksHeader(isNew: Boolean, modifier: Modifier = Modifier) {
             if (isNew) {
                 Surface(color = PompColors.JadeSoft, shape = RoundedCornerShape(5.dp)) {
                     Text(
-                        "NEW",
+                        stringResource(R.string.hsk_course_new_section_badge),
                         color = if (PompColors.IsDark) PompColors.Jade else PompColors.DoneDepth,
                         fontSize = 9.sp,
                         fontWeight = FontWeight.Bold,

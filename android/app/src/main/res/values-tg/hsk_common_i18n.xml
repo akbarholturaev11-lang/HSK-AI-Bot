@@ -21,6 +21,7 @@
     <string name="hsk_common_bot_accountDeletion_submitFailed" formatted="false">Дархост фиристода нашуд. Баъдтар аз нав кӯшиш кунед.</string>
     <string name="hsk_common_bot_accountDeletion_webConfirmButton" formatted="false">Ин ҳисоби ман аст</string>
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">Дар сомонаи HSK AI дархости нест кардани ҳисоб оғоз шуд. Танҳо дар сурате тасдиқ кунед, ки онро худатон оғоз карда бошед. Пас аз тасдиқ метавонед дар браузер дархости нест кардани ҳисобро фиристед.</string>
+    <string name="hsk_common_bot_buttonInvalid" formatted="false">Тугма дигар эътибор надорад ё нодуруст аст.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Реҷаи курс ҳоло дар таҳия аст.</string>
     <string name="hsk_common_common_refresh" formatted="false">Навсозӣ</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">Савол оид ба забони чинӣ</string>

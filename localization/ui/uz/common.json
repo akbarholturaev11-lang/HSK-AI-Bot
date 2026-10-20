@@ -58,6 +58,7 @@
     "action.logout": "Chiqish",
     "action.start": "Boshlash",
     "bot.courseModeUnavailable": "🚧 Kurs rejimi hozircha ishlab chiqilmoqda.",
+    "bot.buttonInvalid": "Tugma eskirgan yoki noto‘g‘ri.",
     "bot.accountDeletion.webStarted": "HSK AI veb-sahifasida hisobni o‘chirish so‘rovi boshlandi. Faqat uni o‘zingiz boshlagan bo‘lsangiz tasdiqlang. Tasdiqdan keyin brauzerda hisobni o‘chirish so‘rovini yuborishingiz mumkin.",
     "bot.accountDeletion.webConfirmButton": "Bu mening hisobim",
     "bot.accountDeletion.privateChatOnly": "So‘rovni shaxsiy chatdan yuboring.",
