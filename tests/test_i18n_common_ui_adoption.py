@@ -248,8 +248,19 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             "daily_practice_finish_course": "bot.practiceFinish.course",
             "daily_practice_finish_chat": "bot.practiceFinish.freeChat",
             "daily_practice_check_view_answers": "bot.practiceCheck.viewAnswers",
-            "trial_lesson_previous": "bot.trialLessons.previous",
-            "trial_lesson_next": "bot.trialLessons.next",
+            "trial_lesson_previous": "bot.lessonNavigation.previous",
+            "trial_lesson_next": "bot.lessonNavigation.next",
+            "course_miniapp_open": "bot.courseKeyboard.miniAppOpen",
+            "course_intro_vocab": "bot.courseKeyboard.introVocab",
+            "course_dialogue_grammar": "bot.courseKeyboard.dialogueGrammar",
+            "course_grammar_exercises": "bot.courseKeyboard.grammarExercises",
+            "course_homework_next_lesson": "bot.courseKeyboard.homeworkNextLesson",
+            "course_continue": "bot.courseKeyboard.continue",
+            "course_review_yes": "bot.courseKeyboard.reviewYes",
+            "course_review_no": "bot.courseKeyboard.reviewNo",
+            "course_reminder_cancel": "bot.courseKeyboard.reminderCancel",
+            "course_v3_open": "bot.courseKeyboard.v3Open",
+            "course_study_open": "bot.courseKeyboard.studyOpen",
             "course_reminder_set_button": "bot.promoButton.reminder",
             "hint_section_course_title": "navigation.course",
             "hint_section_practice_title": "navigation.practice",
@@ -287,6 +298,16 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('t("daily_practice_check_view_answers", lang)', onboarding)
         self.assertIn('t("trial_lesson_previous", lang)', onboarding)
         self.assertIn('t("trial_lesson_next", lang)', onboarding)
+        course_keyboard = (ROOT / "app/bot/keyboards/course.py").read_text(encoding="utf-8")
+        course_miniapp = (ROOT / "app/bot/keyboards/course_miniapp.py").read_text(encoding="utf-8")
+        for key in (
+            "course_miniapp_open", "course_intro_vocab", "course_dialogue_grammar",
+            "course_grammar_exercises", "course_homework_next_lesson", "course_continue",
+            "course_review_yes", "course_review_no", "course_reminder_cancel",
+        ):
+            self.assertIn(f't("{key}", lang)', course_keyboard)
+        for key in ("course_v3_open", "course_study_open", "course_miniapp_open", "course_continue"):
+            self.assertIn(f't("{key}", lang)', course_miniapp)
         for bot_key, catalog_key, catalog in (
             *((key, value, COMMON_MESSAGES) for key, value in expected_common.items()),
             *((key, value, COURSE_MESSAGES) for key, value in expected_course.items()),

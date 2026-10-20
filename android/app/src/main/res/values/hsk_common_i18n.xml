@@ -22,11 +22,24 @@
     <string name="hsk_common_bot_accountDeletion_webConfirmButton" formatted="false">Bu mening hisobim</string>
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">HSK AI veb-sahifasida hisobni o‘chirish so‘rovi boshlandi. Faqat uni o‘zingiz boshlagan bo‘lsangiz tasdiqlang. Tasdiqdan keyin brauzerda hisobni o‘chirish so‘rovini yuborishingiz mumkin.</string>
     <string name="hsk_common_bot_buttonInvalid" formatted="false">Tugma eskirgan yoki noto‘g‘ri.</string>
+    <string name="hsk_common_bot_courseKeyboard_continue" formatted="false">▶️ Davom etamiz</string>
+    <string name="hsk_common_bot_courseKeyboard_dialogueGrammar" formatted="false">📐 Grammatikaga o\'tamiz</string>
+    <string name="hsk_common_bot_courseKeyboard_grammarExercises" formatted="false">✏️ Mashqlarga o\'tamiz</string>
+    <string name="hsk_common_bot_courseKeyboard_homeworkNextLesson" formatted="false">✅ Dars tugadi — Keyingi darsga</string>
+    <string name="hsk_common_bot_courseKeyboard_introVocab" formatted="false">📖 So\'zlarni o\'rganamiz</string>
+    <string name="hsk_common_bot_courseKeyboard_miniAppOpen" formatted="false">📚 Mini Appda ochish</string>
+    <string name="hsk_common_bot_courseKeyboard_reminderCancel" formatted="false">❌ Bekor qilish</string>
+    <string name="hsk_common_bot_courseKeyboard_reviewNo" formatted="false">➡️ Yo\'q, keyingisiga</string>
+    <string name="hsk_common_bot_courseKeyboard_reviewYes" formatted="false">✅ Ha, takrorlaymiz</string>
+    <string name="hsk_common_bot_courseKeyboard_studyOpen" formatted="false">📚 Kursni Mini Appda ochish</string>
+    <string name="hsk_common_bot_courseKeyboard_v3Open" formatted="false">📚 Kursni ochish</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Kurs rejimi hozircha ishlab chiqilmoqda.</string>
     <string name="hsk_common_bot_languagePicker_russian" formatted="false">🇷🇺 Русский</string>
     <string name="hsk_common_bot_languagePicker_tajik" formatted="false">🇹🇯 Тоҷикӣ</string>
     <string name="hsk_common_bot_languagePicker_uzbek" formatted="false">🇺🇿 O‘zbek</string>
     <string name="hsk_common_bot_languagePicker_uzbekOnboarding" formatted="false">🇺🇿 O\'zbek</string>
+    <string name="hsk_common_bot_lessonNavigation_next" formatted="false">Keyingi ➡️</string>
+    <string name="hsk_common_bot_lessonNavigation_previous" formatted="false">⬅️ Oldingi</string>
     <string name="hsk_common_bot_menu_barHint" formatted="false">⌨️ Pastdagi menyudan profil, obuna va kurs rejimini ochasiz.</string>
     <string name="hsk_common_bot_menu_courseMode" formatted="false">📚 Kurs rejimi</string>
     <string name="hsk_common_bot_menu_help" formatted="false">❓ Yordam</string>
@@ -63,8 +76,6 @@ Yangilikni sinab ko\'ring va 1-5 ball bering. Fikr qoldirsangiz, obunangiz bo\'l
     <string name="hsk_common_bot_releaseFeedback_tryAlready" formatted="false">Sizda bu funksiyani sinab ko\'rish uchun access bor.</string>
     <string name="hsk_common_bot_releaseFeedback_tryButton" formatted="false">🚀 Sinab ko\'rish</string>
     <string name="hsk_common_bot_releaseFeedback_tryGranted" formatted="false">Test access ochildi: 30 minut ichida yangilangan joyni limitsiz sinab ko\'ring.</string>
-    <string name="hsk_common_bot_trialLessons_next" formatted="false">Keyingi ➡️</string>
-    <string name="hsk_common_bot_trialLessons_previous" formatted="false">⬅️ Oldingi</string>
     <string name="hsk_common_common_refresh" formatted="false">Yangilash</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">AI uchun savol</string>
     <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Panelni yig‘ish</string>

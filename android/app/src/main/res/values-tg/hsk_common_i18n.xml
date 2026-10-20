@@ -22,11 +22,24 @@
     <string name="hsk_common_bot_accountDeletion_webConfirmButton" formatted="false">Ин ҳисоби ман аст</string>
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">Дар сомонаи HSK AI дархости нест кардани ҳисоб оғоз шуд. Танҳо дар сурате тасдиқ кунед, ки онро худатон оғоз карда бошед. Пас аз тасдиқ метавонед дар браузер дархости нест кардани ҳисобро фиристед.</string>
     <string name="hsk_common_bot_buttonInvalid" formatted="false">Тугма дигар эътибор надорад ё нодуруст аст.</string>
+    <string name="hsk_common_bot_courseKeyboard_continue" formatted="false">▶️ Идома медиҳем</string>
+    <string name="hsk_common_bot_courseKeyboard_dialogueGrammar" formatted="false">📐 Ба грамматика мегузарем</string>
+    <string name="hsk_common_bot_courseKeyboard_grammarExercises" formatted="false">✏️ Ба машқҳо мегузарем</string>
+    <string name="hsk_common_bot_courseKeyboard_homeworkNextLesson" formatted="false">✅ Дарс тамом шуд — Ба дарси навбатӣ</string>
+    <string name="hsk_common_bot_courseKeyboard_introVocab" formatted="false">📖 Калимаҳоро меомӯзем</string>
+    <string name="hsk_common_bot_courseKeyboard_miniAppOpen" formatted="false">📚 Дар Mini App кушодан</string>
+    <string name="hsk_common_bot_courseKeyboard_reminderCancel" formatted="false">❌ Бекор кардан</string>
+    <string name="hsk_common_bot_courseKeyboard_reviewNo" formatted="false">➡️ Не, ба навбатӣ</string>
+    <string name="hsk_common_bot_courseKeyboard_reviewYes" formatted="false">✅ Бале, такрор мекунем</string>
+    <string name="hsk_common_bot_courseKeyboard_studyOpen" formatted="false">📚 Курсро дар Mini App кушодан</string>
+    <string name="hsk_common_bot_courseKeyboard_v3Open" formatted="false">📚 Курсро кушодан</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Реҷаи курс ҳоло дар таҳия аст.</string>
     <string name="hsk_common_bot_languagePicker_russian" formatted="false">🇷🇺 Русский</string>
     <string name="hsk_common_bot_languagePicker_tajik" formatted="false">🇹🇯 Тоҷикӣ</string>
     <string name="hsk_common_bot_languagePicker_uzbek" formatted="false">🇺🇿 O‘zbek</string>
     <string name="hsk_common_bot_languagePicker_uzbekOnboarding" formatted="false">🇺🇿 O\'zbek</string>
+    <string name="hsk_common_bot_lessonNavigation_next" formatted="false">Баъд ➡️</string>
+    <string name="hsk_common_bot_lessonNavigation_previous" formatted="false">⬅️ Қабл</string>
     <string name="hsk_common_bot_menu_barHint" formatted="false">⌨️ Аз менюи поён профил, обуна ва реҷаи курсро мекушоед.</string>
     <string name="hsk_common_bot_menu_courseMode" formatted="false">📚 Режими курс</string>
     <string name="hsk_common_bot_menu_help" formatted="false">❓ Ёрдам</string>
@@ -63,8 +76,6 @@
     <string name="hsk_common_bot_releaseFeedback_tryAlready" formatted="false">Шумо аллакай барои санҷидани ин функсия дастрасӣ доред.</string>
     <string name="hsk_common_bot_releaseFeedback_tryButton" formatted="false">🚀 Санҷидан</string>
     <string name="hsk_common_bot_releaseFeedback_tryGranted" formatted="false">Дастрасии тестӣ кушода шуд: дар 30 дақиқа қисми навшударо бе лимит санҷед.</string>
-    <string name="hsk_common_bot_trialLessons_next" formatted="false">Баъд ➡️</string>
-    <string name="hsk_common_bot_trialLessons_previous" formatted="false">⬅️ Қабл</string>
     <string name="hsk_common_common_refresh" formatted="false">Навсозӣ</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">Савол оид ба забони чинӣ</string>
     <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Панелро ҷамъ кардан</string>

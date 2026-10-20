@@ -22,11 +22,24 @@
     <string name="hsk_common_bot_accountDeletion_webConfirmButton" formatted="false">Это мой аккаунт</string>
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">На сайте HSK AI начат запрос на удаление аккаунта. Подтвердите его, только если вы сами начали этот процесс. После подтверждения можно будет отправить запрос на удаление аккаунта в браузере.</string>
     <string name="hsk_common_bot_buttonInvalid" formatted="false">Кнопка устарела или некорректна.</string>
+    <string name="hsk_common_bot_courseKeyboard_continue" formatted="false">▶️ Продолжаем</string>
+    <string name="hsk_common_bot_courseKeyboard_dialogueGrammar" formatted="false">📐 Переходим к грамматике</string>
+    <string name="hsk_common_bot_courseKeyboard_grammarExercises" formatted="false">✏️ Переходим к упражнениям</string>
+    <string name="hsk_common_bot_courseKeyboard_homeworkNextLesson" formatted="false">✅ Урок завершён — К следующему уроку</string>
+    <string name="hsk_common_bot_courseKeyboard_introVocab" formatted="false">📖 Изучаем слова</string>
+    <string name="hsk_common_bot_courseKeyboard_miniAppOpen" formatted="false">📚 Открыть в Mini App</string>
+    <string name="hsk_common_bot_courseKeyboard_reminderCancel" formatted="false">❌ Отмена</string>
+    <string name="hsk_common_bot_courseKeyboard_reviewNo" formatted="false">➡️ Нет, к следующему</string>
+    <string name="hsk_common_bot_courseKeyboard_reviewYes" formatted="false">✅ Да, повторим</string>
+    <string name="hsk_common_bot_courseKeyboard_studyOpen" formatted="false">📚 Открыть курс в Mini App</string>
+    <string name="hsk_common_bot_courseKeyboard_v3Open" formatted="false">📚 Открыть курс</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Режим курса сейчас в разработке.</string>
     <string name="hsk_common_bot_languagePicker_russian" formatted="false">🇷🇺 Русский</string>
     <string name="hsk_common_bot_languagePicker_tajik" formatted="false">🇹🇯 Тоҷикӣ</string>
     <string name="hsk_common_bot_languagePicker_uzbek" formatted="false">🇺🇿 O‘zbek</string>
     <string name="hsk_common_bot_languagePicker_uzbekOnboarding" formatted="false">🇺🇿 O\'zbek</string>
+    <string name="hsk_common_bot_lessonNavigation_next" formatted="false">Далее ➡️</string>
+    <string name="hsk_common_bot_lessonNavigation_previous" formatted="false">⬅️ Назад</string>
     <string name="hsk_common_bot_menu_barHint" formatted="false">⌨️ Через меню снизу открываются профиль, подписка и режим курса.</string>
     <string name="hsk_common_bot_menu_courseMode" formatted="false">📚 Режим курса</string>
     <string name="hsk_common_bot_menu_help" formatted="false">❓ Помощь</string>
@@ -63,8 +76,6 @@
     <string name="hsk_common_bot_releaseFeedback_tryAlready" formatted="false">У вас уже есть доступ, чтобы попробовать эту функцию.</string>
     <string name="hsk_common_bot_releaseFeedback_tryButton" formatted="false">🚀 Попробовать</string>
     <string name="hsk_common_bot_releaseFeedback_tryGranted" formatted="false">Тестовый доступ открыт: в течение 30 минут пробуйте обновлённый раздел без лимита.</string>
-    <string name="hsk_common_bot_trialLessons_next" formatted="false">Далее ➡️</string>
-    <string name="hsk_common_bot_trialLessons_previous" formatted="false">⬅️ Назад</string>
     <string name="hsk_common_common_refresh" formatted="false">Обновить</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">Вопрос о китайском языке</string>
     <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Свернуть панель</string>

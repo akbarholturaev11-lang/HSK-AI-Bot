@@ -5,16 +5,11 @@ from app.bot.utils.i18n import t
 
 
 def course_v3_miniapp_keyboard(lang: str) -> InlineKeyboardMarkup:
-    labels = {
-        "uz": "📚 Kursni ochish",
-        "ru": "📚 Открыть курс",
-        "tj": "📚 Курсро кушодан",
-    }
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text=labels.get(lang, labels["ru"]),
+                    text=t("course_v3_open", lang),
                     web_app=WebAppInfo(url=course_v3_miniapp_url(lang=lang)),
                 )
             ]
@@ -53,13 +48,8 @@ def course_study_miniapp_button(
     tab: str | None = None,
     text: str | None = None,
 ) -> InlineKeyboardButton:
-    labels = {
-        "uz": "📚 Kursni Mini Appda ochish",
-        "ru": "📚 Открыть курс в Mini App",
-        "tj": "📚 Курсро дар Mini App кушодан",
-    }
     return InlineKeyboardButton(
-        text=text or labels.get(lang, labels["ru"]),
+        text=text or t("course_study_open", lang),
         web_app=WebAppInfo(
             url=course_study_miniapp_url(
                 lang=lang,
@@ -71,18 +61,11 @@ def course_study_miniapp_button(
     )
 
 
-_MAIN_MINIAPP_LABELS = {
-    "uz": "📚 Mini Appda ochish",
-    "ru": "📚 Открыть в Mini App",
-    "tj": "📚 Дар Mini App кушодан",
-}
-
-
 def _main_miniapp_row(lang: str) -> list[InlineKeyboardButton]:
     return [
         course_study_miniapp_button(
             lang,
-            text=_MAIN_MINIAPP_LABELS.get(lang, _MAIN_MINIAPP_LABELS["ru"]),
+            text=t("course_miniapp_open", lang),
         )
     ]
 
@@ -121,11 +104,6 @@ def course_vocab_stroke_order_keyboard(
     vocab_page: int | None = None,
     next_callback: str = "course:go_next_step",
 ) -> InlineKeyboardMarkup:
-    next_labels = {
-        "uz": "▶️ Davom etamiz",
-        "ru": "▶️ Продолжаем",
-        "tj": "▶️ Идома медиҳем",
-    }
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -141,7 +119,7 @@ def course_vocab_stroke_order_keyboard(
                     ),
                 ),
                 InlineKeyboardButton(
-                    text=next_labels.get(lang, next_labels["ru"]),
+                    text=t("course_continue", lang),
                     callback_data=next_callback,
                 )
             ],
