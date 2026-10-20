@@ -97,6 +97,13 @@ def main() -> None:
             f" extra={sorted(set(found)-set(CASES))}"
         )
     for path in found:
+        if path.startswith("graphify-out/"):
+            # The generated snapshots have dozens of unrelated graph hunks.
+            # Keep main as a coherent revision, then regenerate from the merged tree.
+            subprocess.check_call(["git", "checkout", "--ours", "--", path])
+            subprocess.check_call(["git", "add", "--", path])
+            print("RESOLVED GENERATED SNAPSHOT", path, "(main revision; requires rebuild)", flush=True)
+            continue
         file = Path(path)
         source = file.read_text(encoding="utf-8")
         actual = 0
