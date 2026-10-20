@@ -5,16 +5,16 @@ Updated: 2026-10-20. **This is the short authoritative checkpoint, not evidence 
 ## Git and protected scope
 
 - Repository: `akbarholturaev11-lang/HSK-AI-Bot`.
-- **ONLY active work branch:** `codex/p3-main-integration-20261020`.
-- Current code checkpoint is merge commit `e6a2c21b94f6f5ca742b53ffbd6e3e02ecf0a015`, integrating current `origin/main` `ed527c55eaf8d63acd04902b570c6a66aef8fe3c`; main is an ancestor (516 feature commits ahead, 0 behind). It is committed locally but not yet pushed. Only `codex/p3-main-integration-20261020` may be pushed; never push/merge `main`, force-push, rebase or deploy production.
-- The merge brought in the 14 latest main commits for the public website, download page, and Alembic test assertion. Its single HTML conflict was resolved by retaining main's shared navigation/language loader and this branch's local course catalog loader. `main` and production remain unchanged.
-- Old source branch `codex/i18n-local-first-foundation-20261017` is integrated. Do not redo the merge. Draft PR #179 is not release authorization.
-- Current local P0 workflow-equivalent passed **370 tests** on the merge result; 25 read-only CI audits passed. Public-site and migration tests passed (**19 tests**); the browser smoke passed 25 pages at 320/390/1440px with no overflow or console errors, including locale persistence, UTM links, CTA redirect and JavaScript-disabled content. Exact-head GitHub Actions for the new branch head are pending push. The preview server now serves the generated course UI bundle needed by the download page. Prior Android Play/Direct Kotlin compilation succeeded; no Android sources changed in this merge.
-- Read-only checks found 812 frozen sources, 746 lessons, 0 baseline blockers, 894 course UI keys, 55 common UI keys, and 0 stale generated artifacts. Staging HTTP, authenticated account/access, old-client, offline, and installed-client QA remain open.
+- **ONLY active work branch:** `codex/p3-main-integration-20261020`; latest pushed code SHA: `79b1516fdd63aa9e4df91b6d425b96c1488cb64e`.
+- `origin/main` is `ed527c55eaf8d63acd04902b570c6a66aef8fe3c`, an ancestor at latest code SHA (520 commits ahead, 0 behind). No main merge/push, force-push or production deployment. The old source branch is integrated; draft PR #179 is not release authorization.
+- The latest code is committed and pushed. P0 run 39446740186 succeeded on `a2fe7617`; exact-head GitHub P0 run 39447233283 succeeded on `79b1516fdd63aa9e4df91b6d425b96c1488cb64e`.
+- Local P0 workflow-equivalent: **373 tests passed**; **25 read-only audits passed**. The affected browser smoke passed **3 tests**. No staging, authenticated-user or installed-device QA is inferred from those checks.
+- Unrelated local `graphify-out/GRAPH_REPORT.md` and `graphify-out/graph.json` changes are user-owned; keep them out of commits.
+
 
 ## Implemented local-first i18n
 
-- **P0/P1:** source baselines and deterministic UZ/RU/TJ catalogs/generators; no per-string AI/server calls. Current course UI catalog has **894 keys per locale**, and the common UI catalog has **55 keys per locale**; each generator writes six local artifacts for Android, Mini App, Desktop and Bot. All 12 course HTML bundle consumers use `?v=20261020-eaff685fb700`.
+- **P0/P1:** source baselines and deterministic UZ/RU/TJ catalogs/generators; no per-string AI/server calls. Current course UI catalog has **895 keys per locale**, and the common UI catalog has **55 keys per locale**; each generator writes six local artifacts for Android, Mini App, Desktop and Bot. All 12 course HTML bundle consumers use `?v=20261020-57ce728d755d`.
 - **Latest Android P2:** `f6234483` switches three remaining exact UZ/RU/TJ Android label copies—profile lesson count, Telegram identity label and Voice call accessibility label—to existing generated local resources. The old XML translations remain exact fallbacks; a 40-entry parity/call-site regression guards reuse. Earlier commits `df004ba6`, `c9edc41c`, and `2f9a818e` cover dictionary plural messages, subscription close names and the ready-phrases list. The `0a3e21a0` follow-up scopes Mini App lesson cache and in-flight fetches by `localUserScope`; account-switch behavior still needs real-client QA.
 - **P3 display-only:** `localization/lessons/nhsk2_grammar_uz_ru_tj.tsv` holds 136 unique Chinese grammar contexts × 3 locales = 408 agent-checked translations, projected into 272 original + 136 mirror maps across 48 `nhsk2` lessons. Original Chinese, pinyin, answers, score, XP and lesson JSON remain unchanged. Mini App patch is returned only after signed `POST /api/v3/lesson/start` approval; native Android/Desktop use existing entitlement-gated service.
 
