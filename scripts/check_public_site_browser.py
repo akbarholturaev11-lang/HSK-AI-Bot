@@ -31,8 +31,11 @@ def main():
                 Path("/tmp/hsk-seo").mkdir(exist_ok=True)
                 page.screenshot(path="/tmp/hsk-seo/mobile.png", full_page=True)
         page.goto("http://127.0.0.1:8765/tj/?utm_source=bing&utm_campaign=hsk")
-        page.locator('nav a[lang="ru"]').click()
+        page.locator(".site-header details.language-switch summary").click()
+        page.locator('.site-header a[lang="ru"]').click()
         assert "utm_source=bing" in page.url
+        assert page.locator(".site-header details.language-switch summary").inner_text().strip() == "Русский"
+        assert page.locator('[data-site-nav="download"]').first.get_attribute("href").startswith("/download?lang=ru")
         assert "utm_campaign=hsk" in page.locator("a.cta").first.get_attribute("href")
         # Inspect the real local 302, then stop navigation before Telegram.
         redirects = []
