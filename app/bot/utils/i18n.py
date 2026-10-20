@@ -452,6 +452,13 @@ def _gemini_texts_active() -> bool:
 
 
 BOT_SHARED_COMMON_KEYS = {
+    "menu_bar_hint": "bot.menu.barHint",
+    "menu_profile": "bot.menu.profile",
+    "menu_subscription": "bot.menu.subscription",
+    "menu_course_mode": "bot.menu.courseMode",
+    "menu_partner": "bot.menu.partner",
+    "menu_help": "bot.menu.help",
+    "course_reminder_set_button": "bot.promoButton.reminder",
     "hint_section_course_title": "navigation.course",
     "hint_section_practice_title": "navigation.practice",
     "hint_section_profile_title": "navigation.profile",
@@ -464,8 +471,8 @@ BOT_SHARED_COURSE_KEYS = {
 
 
 def _lookup_text(key: str, lang: str):
-    # These six Bot labels exactly match shared UZ/RU/TJ catalogs. Keep the
-    # old Bot dictionaries as fallback for safe rollout and source drift.
+    # Shared Bot UI copy uses generated local catalogs. Keep the old Bot
+    # dictionaries as fallback for safe rollout and source drift.
     shared_common_key = BOT_SHARED_COMMON_KEYS.get(key)
     text = (COMMON_MESSAGES.get(lang, {}).get(shared_common_key)
             if shared_common_key else None)

@@ -225,14 +225,21 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                          "common.not_approved")
         self.assertEqual(t("welcome", lang="uz", name="QA"), "Xush kelibsiz, QA!")
 
-    def test_bot_shared_navigation_aliases_use_exact_local_catalog_values(self):
+    def test_bot_shared_labels_use_exact_local_catalog_values(self):
         from app.bot.generated.common_i18n import COMMON_MESSAGES
         from app.bot.generated.course_i18n import COURSE_MESSAGES
         from app.bot.utils.i18n import (
-            BOT_SHARED_COMMON_KEYS, BOT_SHARED_COURSE_KEYS, TEXTS, t,
+            BOT_SHARED_COMMON_KEYS, BOT_SHARED_COURSE_KEYS, COURSE_I18N, TEXTS, t,
         )
 
         expected_common = {
+            "menu_bar_hint": "bot.menu.barHint",
+            "menu_profile": "bot.menu.profile",
+            "menu_subscription": "bot.menu.subscription",
+            "menu_course_mode": "bot.menu.courseMode",
+            "menu_partner": "bot.menu.partner",
+            "menu_help": "bot.menu.help",
+            "course_reminder_set_button": "bot.promoButton.reminder",
             "hint_section_course_title": "navigation.course",
             "hint_section_practice_title": "navigation.practice",
             "hint_section_profile_title": "navigation.profile",
@@ -250,11 +257,15 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         ):
             for locale in ("uz", "ru", "tj"):
                 with self.subTest(bot_key=bot_key, locale=locale):
+                    legacy = TEXTS.get(locale, {}).get(bot_key)
+                    if legacy is None:
+                        legacy = COURSE_I18N.get(locale, {}).get(bot_key)
+                    self.assertIsNotNone(legacy)
                     self.assertEqual(
                         catalog[locale][catalog_key],
-                        TEXTS[locale][bot_key],
+                        legacy,
                     )
-                    self.assertEqual(t(bot_key, lang=locale), TEXTS[locale][bot_key])
+                    self.assertEqual(t(bot_key, lang=locale), legacy)
         # An unrelated Bot hint remains owned by the legacy Bot table.
         self.assertEqual(t("hint_section_course_body", lang="uz"),
                          TEXTS["uz"]["hint_section_course_body"])
