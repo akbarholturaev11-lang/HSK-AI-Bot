@@ -6,8 +6,8 @@ into this branch. **Do not edit `main`** until release QA and a separate owner
 decision. The authoritative detailed checkpoint is
 `localization/P3_ACTIVE_HANDOFF.md`. At commit
 `3d24cbb5475c20a70de021bbbebab8a5f74fb900`, the
-[P0 source/localization run 39371112480](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39371112480)
-passed **346 tests**, with 815 static UZ/RU/TJ course message keys, content-pinned
+[P0 source/localization run 39373412750](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39373412750)
+passed **349 tests at code commit d766f7550888e1a048041692a5aeef861200575a** (run 39373412750), with 823 static UZ/RU/TJ course message keys, content-pinned
 cache invalidation for 12 HTML consumers, zero baseline review blockers and
 zero generated artifact drift. **P2 remains partial**; P3 source-pinned grammar
 display overlay tests pass but authenticated multi-provider/device and live
