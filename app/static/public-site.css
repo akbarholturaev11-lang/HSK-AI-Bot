@@ -153,3 +153,23 @@ h1 { max-width: 800px; margin: 18px 0 20px; font-family: "Iowan Old Style", "Pal
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+
+/* Product-first public hub — the learning platform, not just the Telegram entry. */
+.course-cta { display:inline-flex; min-height:52px; padding:13px 20px; align-items:center; justify-content:center; gap:18px; border:1px solid var(--cinnabar); border-radius:12px; background:var(--cinnabar); color:#fffdf8; font-size:14px; font-weight:800; text-decoration:none; }
+.course-cta:hover { background:var(--cinnabar-dark); color:#fffdf8; }
+.product-summary { padding:30px; border:1px solid var(--line); border-radius:22px; background:var(--surface); box-shadow:0 24px 70px rgba(72,51,27,.12); }
+.product-summary h2 { margin:14px 0 22px; font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif; font-size:clamp(26px,3vw,36px); line-height:1.2; }
+.product-summary dl { display:grid; gap:0; margin:0; }
+.product-summary dl>div { padding:14px 0; border-top:1px solid var(--line); }
+.product-summary dt { font-size:16px; font-weight:800; }
+.product-summary dd { margin:5px 0 0; color:var(--muted); font-size:13px; line-height:1.55; }
+.closing { display:flex; align-items:center; gap:15px; flex-wrap:wrap; }
+.closing p { margin:0; color:var(--muted); font-size:13px; }
+.closing .cta { min-height:42px; padding:9px 15px; border-color:var(--line); background:transparent; color:var(--ink); font-size:12px; }
+.closing .cta:hover { background:var(--paper-deep); color:var(--ink); }
+@media(max-width:620px) {
+  .product-summary { padding:22px; }
+  .product-summary dl { grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:14px; }
+  .course-cta { width:100%; }
+  .closing { align-items:stretch; flex-direction:column; }
+}
