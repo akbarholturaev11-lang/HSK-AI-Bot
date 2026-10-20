@@ -4,7 +4,7 @@
 
 ## Current checkpoint — 2026-10-20
 
-Work continues only on `codex/p3-main-integration-20261020`. Local HEAD `569e321e3c28238880c57793ba5f5bf3ee6dc5f` contains `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5`; the remote feature branch is still at `4b6d52122f55f7886e47ff5e2bbe6f3331628370`. The P2 course UI batch is 874 keys per locale with six generated artifacts and 12 cache-pinned HTML consumers. Current local P0 hardening adds the previously omitted lesson-settings adoption test and pins verified `admin.html` provenance to current main; the exact local suite passed 358 tests / 64 modules. Main Android CI `39413938035` and TTS succeeded. Exact-head GitHub Actions is pending a feature-only push. Open gates: direct public lesson JSON access, unscoped lesson/resume cache keys, and approved staging/account-switch/installed-client QA. Do not push `main` or deploy.
+Work continues only on `codex/p3-main-integration-20261020`. Verified pushed feature HEAD `37d679dd1670f457b6f2a411e196e958f73273aa` includes `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5`. The P2 course UI batch is 874 keys per locale with six generated artifacts and 12 cache-pinned HTML consumers. P0 hardening added the previously omitted lesson-settings adoption test and pins verified `admin.html` provenance to current main. Local P0 passed 358 tests / 64 modules; exact-head GitHub P0 `39415014206` succeeded. Main Android CI `39413938035` and TTS succeeded. Open gates: direct public lesson JSON access, unscoped lesson/resume caches, and approved staging/account-switch/installed-client QA. Do not push `main` or deploy.
 
 ## HISTORICAL 2026-10-19 STATE — superseded by the current integration handoff
 
