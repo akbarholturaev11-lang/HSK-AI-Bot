@@ -6,6 +6,7 @@ on:
       - codex/p3-main-integration-20261020
     paths:
       - ".github/workflows/p3-integration-merge.yml"
+      - "scripts/p3_merge_resolve.py"
 
 permissions:
   contents: write
