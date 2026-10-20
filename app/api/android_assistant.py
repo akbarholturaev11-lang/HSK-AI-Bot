@@ -7,7 +7,6 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from app.api.android_features import _access_token, _validated_payload, AndroidFeatureError
 from app.db.models.assistant import AssistantConversation, AssistantRequest
-from app.repositories.user_repo import UserRepository
 from app.services.desktop_auth_service import DesktopAuthService, DesktopAuthError
 from app.services.assistant_service import AssistantService, AssistantInput, AssistantError, decode_media, request_payload, process_request
 from app.services.assistant_assessment_service import assessment_finished

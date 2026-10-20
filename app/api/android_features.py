@@ -44,7 +44,6 @@ from app.api.desktop_rating import (
 )
 from app.api.desktop_referral import (
     MAX_REFERRAL_ITEMS,
-    _invite_link,
     _public_item as _public_referral_item,
 )
 from app.api.desktop_subscription import (
@@ -67,7 +66,6 @@ from app.api.desktop_voice import (
 from app.repositories.user_repo import UserRepository
 from app.services.account_identity import actual_telegram_id
 from app.services.assistant_assessment_service import assessment_started, assessment_finished, assessment_abandoned
-from app.services.course_ad_service import CourseAdService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_drill_signal_service import CourseDrillSignalService
 from app.services.course_gamification_service import CourseGamificationService

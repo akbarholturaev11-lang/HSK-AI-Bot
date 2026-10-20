@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from aiogram import Router, F
-from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import CallbackQuery, InlineKeyboardMarkup
 
 from app.config import settings
 from app.repositories.payment_repo import PaymentRepository
@@ -9,7 +9,6 @@ from app.repositories.bot_feedback_repo import BotFeedbackRepository
 from app.repositories.user_repo import UserRepository
 from app.services.discount_service import DiscountService
 from app.services.payment_qr_code_service import PaymentQrCodeService
-from app.services.payment_service import PaymentService
 from app.services.subscription_currency_service import (
     format_subscription_price,
 )

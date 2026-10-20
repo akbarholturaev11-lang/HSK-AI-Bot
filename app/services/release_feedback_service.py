@@ -6,7 +6,6 @@ from aiogram import Bot
 from aiogram.types import InlineKeyboardMarkup
 
 from app.bot.keyboards.release_feedback import (
-    release_feedback_discount_keyboard,
     release_feedback_rating_keyboard,
 )
 from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackResponse

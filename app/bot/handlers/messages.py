@@ -66,7 +66,6 @@ from app.repositories.message_repo import MessageRepository
 from app.repositories.user_repo import UserRepository
 from app.services.access_service import AccessService
 from app.services.entitlements.state import has_full_access, resolve_state
-from app.services.ai_provider import gemini_active
 from app.services.ai_service import AIService
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.app_error_context_service import AppErrorContextService

@@ -146,7 +146,6 @@ from app.services.course_hsk_exam_service import CourseHskExamService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_miniapp_access_service import (
-    COURSE_AI_PRACTICE_FEATURES,
     CourseMiniAppAccessService,
 )
 from app.services.course_access_policy_service import (
@@ -189,6 +188,7 @@ from app.services.subscription_currency_service import format_subscription_price
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_ALIF_KEY, PAYMENT_DETAILS_KEY
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
+from app.services.public_site_analytics_service import PublicSiteAnalyticsService
 from app.services.admin_miniapp_service import (
     HOT_LEAD_ACTIVITY_WINDOW,
     AdminMiniAppService,
@@ -197,10 +197,8 @@ from app.services.admin_miniapp_service import (
     is_admin_hot_lead,
 )
 from app.services.admin_finance_stats_service import AdminFinanceStatsService
-from app.services.broadcast_translation_service import localized_broadcast_text_for_language
 from app.services.admin_broadcast_service import (
     AdminBroadcastService,
-    BROADCAST_FILTER_OPTIONS,
     parse_broadcast_filters,
     parse_button_config,
 )
@@ -666,7 +664,10 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(create_public_site_router(settings_obj=settings))
+app.include_router(create_public_site_router(
+    settings_obj=settings,
+    session_factory=async_session_maker,
+))
 app.include_router(create_account_deletion_router(
     session_factory=async_session_maker, settings_obj=settings,
     notifier=lambda result: notify_deletion_request(bot, settings, result),
@@ -2655,7 +2656,6 @@ async def v3_invite_payload(request: Request, lang: str = "uz"):
         active_count = await service.get_trial_activation_progress(user)
         joined_count = await service.referral_repo.count_by_referrer(user)
         referrals = await service.list_miniapp_referrals(user, timezone_offset_minutes=tz_offset)
-        bot_username = bot_username_value()
         from app.services.referral_service import public_apps_url
         link = public_apps_url(settings, user.referral_code, trial=True)
         full_lang, full_text = await service.build_trial_progress_text(user)
@@ -2867,10 +2867,6 @@ async def v3_course_lesson_unlock(request: Request):
         lesson_repo = CourseLessonRepository(session)
         lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
 
-        access = CourseMiniAppAccessService(session)
-        # Vaqtinchalik bonus (otziv 30 daqiqasi va h.k.) ham limitsiz hisoblanadi.
-        is_paid = access.has_unlimited_course_access(user)
-        access_policy = await CourseAccessPolicyService(session).get_policy()
         limit_status = await LessonAccessService(session).status(
             user, level=resolved_level, lesson_order=lesson_order,
         )
@@ -2934,7 +2930,6 @@ async def v3_course_lesson_complete(request: Request):
         payload = await request.json()
         lesson_order = int(payload.get("lesson_id") or payload.get("lesson_order") or 0)
         lesson_session_id = _checkout_text(payload.get("session_id"), 80) or None
-        access_ref = str(payload.get("access_ref") or "").strip()
         lesson_mistakes = payload.get("mistakes") if isinstance(payload.get("mistakes"), list) else []
         lesson_mistakes = [item for item in lesson_mistakes[:50] if isinstance(item, dict)]
     except (TypeError, ValueError):
@@ -2961,9 +2956,9 @@ async def v3_course_lesson_complete(request: Request):
         lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
 
         access = CourseMiniAppAccessService(session)
-        # Vaqtinchalik bonus (otziv 30 daqiqasi va h.k.) ham limitsiz hisoblanadi.
+        # Analitika uchun kengroq course accessni saqlaymiz; darsga ruxsatni
+        # esa yuqoridagi LessonAccessService yagona manbadan hal qiladi.
         is_paid = access.has_unlimited_course_access(user)
-        access_policy = await CourseAccessPolicyService(session).get_policy()
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
         if not progress:
@@ -3355,6 +3350,17 @@ async def admin_miniapp_sub_entry_stats(request: Request):
             for r in rows
         ],
     })
+
+
+@app.post("/api/admin-miniapp/public-site-traffic")
+async def admin_miniapp_public_site_traffic(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    async with async_session_maker() as session:
+        rows = await PublicSiteAnalyticsService(session).source_stats()
+    return JSONResponse(content={"ok": True, "rows": rows})
 
 
 @app.post("/api/admin-miniapp/desktop-stats")

@@ -7,7 +7,6 @@ from aiogram.types import BufferedInputFile
 from app.config import settings
 from app.bot.keyboards.admin_review import admin_payment_review_keyboard
 from app.bot.keyboards.feedback import admin_bot_feedback_keyboard
-from app.bot.utils.i18n import t
 
 
 class AdminNotifyService:

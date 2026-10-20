@@ -10,7 +10,6 @@ from app.bot.keyboards.onboarding import (
     daily_practice_check_keyboard,
     daily_practice_finish_keyboard,
     language_keyboard,
-    level_keyboard,
     trial_lesson_selection_keyboard,
 )
 from app.bot.utils.i18n import t

@@ -21,7 +21,6 @@ from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.message import Message
 from app.db.models.payment import Payment
 from app.db.models.portfolio import PortfolioTransaction
-from app.db.models.referral import Referral
 from app.db.models.required_channel import RequiredChannel
 from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User

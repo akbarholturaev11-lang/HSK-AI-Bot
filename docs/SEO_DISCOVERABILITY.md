@@ -110,12 +110,14 @@ Every page has unique OG title/description/url, `og:type=website`, OG image, ima
 ## H. Telegram CTA tracking
 
 - `GET` HTML requests emit `landing_view` (HEAD requests do not).
+- A `GET /` carrying `utm_source` (or `source`) also increments an anonymous UTC-day counter for the normalized source bucket: Instagram, TikTok, YouTube, or other. The admin statistics panel shows the last 7 days, last 30 days, and all-time totals. The counter starts after migration `0109_public_site_traffic_daily` is deployed; previous log lines are not backfilled.
 - `/go/telegram?page=<allowlisted-page>&...` emits `telegram_bot_cta_clicked`, then HTTP 302 to the fixed requested bot. No open redirect; no bot message is sent.
 - `source`, `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content` are allowlisted, cleaned and capped to 80 characters each.
 - Internal page/language/guide links and CTA carry those tags. Browser-back URLs retain them. No cookies, localStorage, cross-session identifier or Telegram identity correlation.
 - Arbitrary query values, initData, user ID and referrer are not copied into analytics events. No campaign values enter JSON-LD/canonical/sitemap. Do not put secrets or personal information in campaign labels; standard proxy/Uvicorn access logs can retain requested URLs.
-- Event sink is `uvicorn.error.public_analytics` at INFO, which inherits the configured Uvicorn error logger, visible in Railway logs as `public_site_event {JSON}`. No DB migration, synthetic Telegram ID, learner activity mutation or public write API.
-- These are request/click counts, including refreshes, crawlers and possible automated requests. They are NOT unique people, verified bot starts or conversions. Do not divide raw log totals and claim student conversion. For durable reporting configure a log drain/retention and bot filtering. Authenticated end-to-end attribution is a separate future task.
+- Aggregate source counts store only date, source bucket and visit count: no cookie, IP, visitor ID, or account ID. Repeated home-page opens count again; these are visits, not unique people, verified bot starts, or conversions.
+- Event sink remains `uvicorn.error.public_analytics` at INFO, visible in Railway logs as `public_site_event {JSON}`. The aggregate counter is separate from learner activity and has no public write API.
+- Log totals may include refreshes, crawlers and automated requests. Do not interpret them as students or conversion counts. Authenticated end-to-end attribution remains a separate feature.
 
 ## I. Validation
 

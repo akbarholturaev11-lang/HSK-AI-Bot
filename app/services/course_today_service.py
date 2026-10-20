@@ -18,16 +18,10 @@ from __future__ import annotations
 import json
 import logging
 
-from app.services.course_access_policy_service import (
-    COURSE_ACCESS_AD,
-    COURSE_ACCESS_OPEN,
-)
 from app.services.course_miniapp_access_service import (
     CourseMiniAppAccessService,
-    free_course_parts_for_level,
 )
 from app.services.daily_plan_service import (
-    ACCESS_AD,
     ACCESS_LOCKED,
     ACCESS_OPEN,
     DailyPlanService,

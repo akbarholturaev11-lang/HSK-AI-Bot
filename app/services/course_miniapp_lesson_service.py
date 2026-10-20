@@ -1013,8 +1013,6 @@ class CourseMiniAppLessonService:
         except Exception:
             interactive_questions = []
 
-        grammar_target = min(len(grammar_questions), 1 if block_no or target_count < 5 else 2)
-        word_target = max(0, target_count - grammar_target)
         pool = self._unique_questions([*interactive_questions, *word_questions, *grammar_questions])
         result: list[dict] = []
 

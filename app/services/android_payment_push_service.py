@@ -11,7 +11,6 @@ import logging
 
 from sqlalchemy import select
 
-from app.config import settings
 from app.db.models.android_push import AndroidPushToken
 from app.db.models.desktop import DesktopDevice
 from app.services.android_push_service import AndroidPushService

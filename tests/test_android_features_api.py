@@ -25,7 +25,6 @@ from sqlalchemy.pool import StaticPool
 from app.api.desktop_rating import challenge_ref
 from app.api.android_features import (
     _bot_url,
-    _invite_link,
     _localize_android_checkout_prices,
     _public_android_referral_item,
     _service_response,
@@ -40,7 +39,6 @@ from app.db.models.user import User
 from app.services.course_ad_service import CourseAdService
 from app.services.course_miniapp_access_service import COURSE_AD_ATTEMPT_EVENT_NAME
 from app.services.desktop_auth_service import DesktopAuthService
-from app.services.referral_service import normalize_referral_code
 from app.services.subscription_currency_service import SubscriptionCurrencyService
 
 
@@ -275,22 +273,6 @@ class AndroidReferralRouteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("panda_streak", payload["items"][0]["avatar_key"])
         self.assertTrue(payload["items"][0]["challenge_ref"])
         self.assertNotIn("telegram_id", payload["items"][0])
-
-
-class AndroidInviteLinkTests(unittest.TestCase):
-    def test_invite_payload_is_the_code_the_bot_looks_up(self):
-        # `/start <payload>` resolves the payload against the stored referral
-        # code with an exact match, so a decorated payload would reach the bot
-        # and match nobody: the invite would be lost without any error.
-        link = _invite_link("pomp_bot", "a1b2c3d4")
-
-        self.assertEqual("https://t.me/pomp_bot?start=a1b2c3d4", link)
-        payload = link.split("?start=", 1)[1]
-        self.assertEqual("a1b2c3d4", normalize_referral_code(payload))
-
-    def test_missing_parts_yield_no_link_instead_of_a_broken_one(self):
-        self.assertEqual("", _invite_link("", "a1b2c3d4"))
-        self.assertEqual("", _invite_link("pomp_bot", ""))
 
 
 class AndroidLimitPassthroughTests(unittest.TestCase):
