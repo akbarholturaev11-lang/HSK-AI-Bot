@@ -5,8 +5,13 @@
   "files": {
     "desktop/ui/js/i18n.js": {
       "baseline_sha1": "30e85aad8aa00689c6bba01980a56eadc928638e",
-      "reviewed_sha1": "13fc3a5602815968bcacbb516cc8feaa2961252f",
-      "reason": "Desktop eleven common keys plus 39 exact UZ/RU/TJ course-copy keys now prefer generated local JS bundles; all original messages remain exact fallbacks. No per-string requests. Shared Tauri macOS/Windows source. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks. P2 Desktop auth copy: 24 existing UZ/RU/TJ sign-in labels now prefer the generated local common catalog, preserving exact legacy fallback values and all authentication behavior."
+      "reviewed_sha1": "4c122c182541cacbf6763a86952a837577f202c8",
+      "reason": "Desktop eleven common keys plus 39 exact UZ/RU/TJ course-copy keys now prefer generated local JS bundles; all original messages remain exact fallbacks. No per-string requests. Shared Tauri macOS/Windows source. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks. P2 Desktop auth copy: 24 existing UZ/RU/TJ sign-in labels now prefer the generated local common catalog, preserving exact legacy fallback values and all authentication behavior. P2 Desktop accessibility catalog: 11 UZ/RU/TJ screen-reader labels use the generated common bundle, with original Desktop dictionary fallbacks retained."
+    },
+    "desktop/ui/js/app.js": {
+      "baseline_sha1": "f2a52e42b3188e4bd42bb40a1c64d0b0b16a43fa",
+      "reviewed_sha1": "f91a38f0c5dbf8a22393f3db0d8d394f9bf131b3",
+      "reason": "P2 Desktop accessibility copy: selected-locale local t() lookups now label navigation, sidebar resize/collapse, notifications, AI input and lesson progress; course, auth and notification operations are unchanged."
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",

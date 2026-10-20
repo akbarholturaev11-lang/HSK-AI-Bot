@@ -11,6 +11,17 @@
     <string name="hsk_common_action_start" formatted="false">Оғоз</string>
     <string name="hsk_common_auth_expires" formatted="false">Барои тасдиқи вуруд {time} монд</string>
     <string name="hsk_common_common_refresh" formatted="false">Навсозӣ</string>
+    <string name="hsk_common_desktopA11y_askAi" formatted="false">Савол оид ба забони чинӣ</string>
+    <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Панелро ҷамъ кардан</string>
+    <string name="hsk_common_desktopA11y_courseNavigation" formatted="false">Дарсҳо</string>
+    <string name="hsk_common_desktopA11y_lesson" formatted="false">Дарс</string>
+    <string name="hsk_common_desktopA11y_lessonProgress" formatted="false">Пешрафти дарс</string>
+    <string name="hsk_common_desktopA11y_notifications" formatted="false">Огоҳиномаҳо</string>
+    <string name="hsk_common_desktopA11y_openCourseMenu" formatted="false">Кушодани менюи курс</string>
+    <string name="hsk_common_desktopA11y_primaryNavigation" formatted="false">Навигатсияи асосӣ</string>
+    <string name="hsk_common_desktopA11y_profileNavigation" formatted="false">Профил</string>
+    <string name="hsk_common_desktopA11y_sectionsNavigation" formatted="false">Бахшҳои асосӣ</string>
+    <string name="hsk_common_desktopA11y_sidebarWidth" formatted="false">Паҳнои панел</string>
     <string name="hsk_common_desktopAuth_appleContinue" formatted="false">Бо Apple идома додан</string>
     <string name="hsk_common_desktopAuth_cancelled" formatted="false">Вуруд бекор шуд. Боз кӯшиш карда метавонед.</string>
     <string name="hsk_common_desktopAuth_codeLabel" formatted="false">Рамзи тасдиқ</string>

@@ -2634,6 +2634,18 @@ const SHARED_COMMON_KEY = Object.freeze({
   authLinked: "desktopAuth.linked",
   copyCode: "desktopAuth.copyCode",
   copied: "desktopAuth.copied",
+  mainNavigation: "desktopA11y.primaryNavigation",
+  mainSections: "desktopA11y.sectionsNavigation",
+  profileNavigation: "desktopA11y.profileNavigation",
+  courseNavigation: "desktopA11y.courseNavigation",
+  collapseSidebar: "desktopA11y.collapseSidebar",
+  sidebarWidth: "desktopA11y.sidebarWidth",
+  openCourseMenu: "desktopA11y.openCourseMenu",
+  notificationsTitle: "desktopA11y.notifications",
+  aiInputLabel: "desktopA11y.askAi",
+  lessonShellLabel: "desktopA11y.lesson",
+  lessonProgressLabel: "desktopA11y.lessonProgress",
+  closeNotifications: "action.close",
 });
 
 const SHARED_COURSE_KEY = Object.freeze({

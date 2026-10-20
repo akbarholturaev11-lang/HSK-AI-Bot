@@ -5,7 +5,8 @@
   "notes": [
     "Git blob IDs record source bytes before any localization source separation. Never use this file as a runtime package.",
     "Inspect changes against these original source bytes and snapshots. Language UI migration may intentionally change paths; hash drift is a review request, not automatically a functional defect.",
-    "Do not move paid content or exam keys to anonymous static bundles."
+    "Do not move paid content or exam keys to anonymous static bundles.",
+    "2026-10-20: Added the original Desktop app.js blob from this baseline main commit to ui_catalog_origins so reviewed P2 accessibility-only changes can be source-pinned; the existing 811 records are unchanged."
   ],
   "track_counts": {
     "hsk1": 63,
@@ -16,7 +17,7 @@
     "nhsk2": 73,
     "nhsk3": 145
   },
-  "source_count": 811,
+  "source_count": 812,
   "sources": {
     "lessons": [
       {
@@ -4062,6 +4063,11 @@
         "path": "desktop/ui/js/i18n.js",
         "git_blob_sha1": "30e85aad8aa00689c6bba01980a56eadc928638e",
         "bytes": 161999
+      },
+      {
+        "path": "desktop/ui/js/app.js",
+        "git_blob_sha1": "f2a52e42b3188e4bd42bb40a1c64d0b0b16a43fa",
+        "bytes": 200821
       }
     ],
     "generators": [

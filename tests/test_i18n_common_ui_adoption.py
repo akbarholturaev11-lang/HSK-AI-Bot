@@ -20,7 +20,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         baseline = json.loads((ROOT / "localization/baselines/source_git_blobs.json")
                               .read_text(encoding="utf-8"))
         self.assertEqual(set(approved["files"]), {
-            "desktop/ui/js/i18n.js", "app/static/course-v3.html",
+            "desktop/ui/js/i18n.js", "desktop/ui/js/app.js", "app/static/course-v3.html",
             "app/static/course_v3_onboarding.html",
             "app/static/course_v3_test.html",
             "app/static/course_v3_recognition.html",
@@ -42,7 +42,9 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         }
         for name, note in approved["files"].items():
             with self.subTest(path=name):
-                self.assertEqual(note["baseline_sha1"], old_by_path[name])
+                expected_baseline = old_by_path.get(name)
+                self.assertIsNotNone(expected_baseline)
+                self.assertEqual(note["baseline_sha1"], expected_baseline)
                 self.assertEqual(note["reviewed_sha1"],
                                  git_blob_sha1((ROOT / name).read_bytes()))
                 self.assertNotEqual(note["reviewed_sha1"],
@@ -82,9 +84,101 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                     "authStarting",
                     "authLinked",
                     "copyCode",
-                    "copied"]:
+                    "mainNavigation", "mainSections", "profileNavigation",
+                    "courseNavigation", "collapseSidebar", "sidebarWidth",
+                    "openCourseMenu", "notificationsTitle", "aiInputLabel",
+                    "lessonShellLabel", "lessonProgressLabel", "closeNotifications"]:
             self.assertIn(key + ":", source)
         self.assertNotIn("/api/i18n/", source)
+
+
+    def test_desktop_chrome_accessible_names_use_local_common_catalog(self):
+        catalogs = {
+            locale: json.loads((ROOT / f"localization/ui/{locale}/common.json").read_text(encoding="utf-8"))["messages"]
+            for locale in ("uz", "ru", "tj")
+        }
+        expected = {
+            "uz": {
+                "desktopA11y.primaryNavigation": "Asosiy navigatsiya",
+                "desktopA11y.sectionsNavigation": "Asosiy bo‘limlar",
+                "desktopA11y.profileNavigation": "Profil",
+                "desktopA11y.courseNavigation": "Darslar",
+                "desktopA11y.collapseSidebar": "Panelni yig‘ish",
+                "desktopA11y.sidebarWidth": "Panel kengligi",
+                "desktopA11y.openCourseMenu": "Kurs menyusini ochish",
+                "desktopA11y.notifications": "Bildirishnomalar",
+                "desktopA11y.askAi": "AI uchun savol",
+                "desktopA11y.lesson": "Dars",
+                "desktopA11y.lessonProgress": "Dars progressi",
+            },
+            "ru": {
+                "desktopA11y.primaryNavigation": "Основная навигация",
+                "desktopA11y.sectionsNavigation": "Основные разделы",
+                "desktopA11y.profileNavigation": "Профиль",
+                "desktopA11y.courseNavigation": "Уроки",
+                "desktopA11y.collapseSidebar": "Свернуть панель",
+                "desktopA11y.sidebarWidth": "Ширина панели",
+                "desktopA11y.openCourseMenu": "Открыть меню курса",
+                "desktopA11y.notifications": "Уведомления",
+                "desktopA11y.askAi": "Вопрос о китайском языке",
+                "desktopA11y.lesson": "Урок",
+                "desktopA11y.lessonProgress": "Прогресс урока",
+            },
+            "tj": {
+                "desktopA11y.primaryNavigation": "Навигатсияи асосӣ",
+                "desktopA11y.sectionsNavigation": "Бахшҳои асосӣ",
+                "desktopA11y.profileNavigation": "Профил",
+                "desktopA11y.courseNavigation": "Дарсҳо",
+                "desktopA11y.collapseSidebar": "Панелро ҷамъ кардан",
+                "desktopA11y.sidebarWidth": "Паҳнои панел",
+                "desktopA11y.openCourseMenu": "Кушодани менюи курс",
+                "desktopA11y.notifications": "Огоҳиномаҳо",
+                "desktopA11y.askAi": "Савол оид ба забони чинӣ",
+                "desktopA11y.lesson": "Дарс",
+                "desktopA11y.lessonProgress": "Пешрафти дарс",
+            },
+        }
+        for locale, messages in expected.items():
+            with self.subTest(locale=locale):
+                for key, value in messages.items():
+                    self.assertEqual(catalogs[locale][key], value)
+        html = (ROOT / "desktop/ui/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "desktop/ui/js/app.js").read_text(encoding="utf-8")
+        adapter = (ROOT / "desktop/ui/js/i18n.js").read_text(encoding="utf-8")
+        for fallback in (
+            'aria-label="Asosiy navigatsiya"',
+            'aria-label="Asosiy bo‘limlar"',
+            'aria-label="Profil"',
+            'aria-label="Panel kengligi"',
+            'aria-label="Kurs menyusini ochish"',
+            'aria-label="Bildirishnomalar"',
+            'aria-label="Dars"',
+            'aria-label="Dars progressi"',
+        ):
+            self.assertIn(fallback, html)
+        for lookup in (
+            'dom.rail.setAttribute("aria-label", t("mainNavigation"))',
+            'dom.primaryNavigation.setAttribute("aria-label", t("mainSections"))',
+            'dom.navigation.setAttribute("aria-label", t("courseNavigation"))',
+            'dom.profileNavigation.setAttribute("aria-label", t("profileNavigation"))',
+            'dom.railCollapse.setAttribute("aria-label", t("collapseSidebar"))',
+            'dom.railResizer.setAttribute("aria-label", t("sidebarWidth"))',
+            'dom.railToggle.setAttribute("aria-label", t("openCourseMenu"))',
+            'dom.notificationsTitle.textContent = t("notificationsTitle")',
+            'dom.notificationsButton.setAttribute("aria-label", t("notificationsTitle"))',
+            'dom.closeNotifications.setAttribute("aria-label", t("closeNotifications"))',
+            'dom.aiInputLabel.textContent = t("aiInputLabel")',
+            'dom.lessonShell.setAttribute("aria-label", t("lessonShellLabel"))',
+            'dom.lessonProgress.setAttribute("aria-label", t("lessonProgressLabel"))',
+        ):
+            self.assertIn(lookup, app)
+        for key in (
+            "mainNavigation", "mainSections", "profileNavigation", "courseNavigation",
+            "collapseSidebar", "sidebarWidth", "openCourseMenu", "notificationsTitle",
+            "aiInputLabel", "lessonShellLabel", "lessonProgressLabel", "closeNotifications",
+        ):
+            self.assertIn(key + ":", adapter)
+        self.assertIn('t("closeNotifications")', app)
 
     def test_miniapp_loads_only_static_local_ui_bundle(self):
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")

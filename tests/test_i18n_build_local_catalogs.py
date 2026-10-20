@@ -17,7 +17,7 @@ class CommonLocalCatalogTests(unittest.TestCase):
     def test_all_existing_reviewed_desktop_copy_is_ported(self):
         catalogs = read_sources(ROOT)
         self.assertEqual(set(catalogs), set(LANGUAGES))
-        self.assertEqual(len(catalogs["uz"]), 44)
+        self.assertEqual(len(catalogs["uz"]), 55)
         self.assertEqual(set(catalogs["ru"]), set(catalogs["tj"]))
         self.assertEqual(catalogs["tj"]["navigation.profile"], "Профил")
         self.assertEqual(catalogs["ru"]["lesson.continue"], "Продолжить урок")
@@ -63,6 +63,8 @@ class CommonLocalCatalogTests(unittest.TestCase):
             "authLinked": "desktopAuth.linked",
             "copyCode": "desktopAuth.copyCode",
             "copied": "desktopAuth.copied",
+            "collapseSidebar": "desktopA11y.collapseSidebar",
+            "notificationsTitle": "desktopA11y.notifications",
         }
         catalogs = read_sources(ROOT)
         for source_key, common_key in mapping.items():

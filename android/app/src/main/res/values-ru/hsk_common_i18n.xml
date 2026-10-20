@@ -11,6 +11,17 @@
     <string name="hsk_common_action_start" formatted="false">Начать</string>
     <string name="hsk_common_auth_expires" formatted="false">На подтверждение входа осталось {time}</string>
     <string name="hsk_common_common_refresh" formatted="false">Обновить</string>
+    <string name="hsk_common_desktopA11y_askAi" formatted="false">Вопрос о китайском языке</string>
+    <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Свернуть панель</string>
+    <string name="hsk_common_desktopA11y_courseNavigation" formatted="false">Уроки</string>
+    <string name="hsk_common_desktopA11y_lesson" formatted="false">Урок</string>
+    <string name="hsk_common_desktopA11y_lessonProgress" formatted="false">Прогресс урока</string>
+    <string name="hsk_common_desktopA11y_notifications" formatted="false">Уведомления</string>
+    <string name="hsk_common_desktopA11y_openCourseMenu" formatted="false">Открыть меню курса</string>
+    <string name="hsk_common_desktopA11y_primaryNavigation" formatted="false">Основная навигация</string>
+    <string name="hsk_common_desktopA11y_profileNavigation" formatted="false">Профиль</string>
+    <string name="hsk_common_desktopA11y_sectionsNavigation" formatted="false">Основные разделы</string>
+    <string name="hsk_common_desktopA11y_sidebarWidth" formatted="false">Ширина панели</string>
     <string name="hsk_common_desktopAuth_appleContinue" formatted="false">Продолжить с Apple</string>
     <string name="hsk_common_desktopAuth_cancelled" formatted="false">Вход отменён. Можно попробовать снова.</string>
     <string name="hsk_common_desktopAuth_codeLabel" formatted="false">Код подтверждения</string>
