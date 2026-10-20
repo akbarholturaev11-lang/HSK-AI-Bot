@@ -27,14 +27,14 @@ class RecognitionUIAdoptionTests(unittest.TestCase):
                 catalog = json.loads(
                     (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
                 )["messages"]
-                self.assertEqual(len(catalog), 835)
+                self.assertEqual(len(catalog), 866)
                 for key in KEYS:
                     self.assertEqual(catalog["recognition." + key], literal[key])
 
     def test_preloaded_local_asset_and_unchanged_practice_gate(self):
         html = (ROOT / "app/static/course_v3_recognition.html").read_text(encoding="utf-8")
         self.assertLess(
-            html.index("hsk-course-i18n.js?v=20261020-b147eef277fe"),
+            html.index("hsk-course-i18n.js?v=20261020-b5bc4adb441e"),
             html.index("var L={"),
         )
         self.assertIn('RECOGNITION_UI["recognition."+k]', html)

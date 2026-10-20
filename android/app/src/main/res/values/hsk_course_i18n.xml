@@ -229,6 +229,7 @@
     <string name="hsk_course_download_page_windows_title" formatted="false">Windows uchun HSK AI</string>
     <string name="hsk_course_finish_prev" formatted="false">Avvalgi darsni tugating</string>
     <string name="hsk_course_foundation_internet_retry" formatted="false">Internetni tekshiring va qayta yuklang.</string>
+    <string name="hsk_course_foundation_recheck_title" formatted="false">Qayta tekshiruv</string>
     <string name="hsk_course_foundation_retry" formatted="false">Qayta urinish</string>
     <string name="hsk_course_foundation_retry_save" formatted="false">Qayta saqlash</string>
     <string name="hsk_course_foundation_save_failed" formatted="false">Natija saqlanmadi. Qayta urinib ko\'ring.</string>
@@ -256,7 +257,14 @@
     <string name="hsk_course_learner" formatted="false">o\'quvchi</string>
     <string name="hsk_course_lesson_done" formatted="false">Dars tugadi!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Ajoyib! Keyingi bosqich kutyapti.</string>
+    <string name="hsk_course_lesson_flow_choose_hanzi_question" formatted="false">Ieroglifni tanlang</string>
+    <string name="hsk_course_lesson_flow_exit_ticket_title" formatted="false">Natija tekshiruvi</string>
+    <string name="hsk_course_lesson_flow_lesson_prefix" formatted="false">{n}-dars</string>
+    <string name="hsk_course_lesson_flow_meaning_question" formatted="false">Ma\'nosi nima?</string>
     <string name="hsk_course_lesson_flow_not_ready" formatted="false">Dars hali tayyor emas</string>
+    <string name="hsk_course_lesson_flow_part_prefix" formatted="false">{n}-qism</string>
+    <string name="hsk_course_lesson_flow_repair_answer_heading" formatted="false">Javobni tushunamiz</string>
+    <string name="hsk_course_lesson_flow_repair_hint_heading" formatted="false">Ishorani eslab qoling</string>
     <string name="hsk_course_lesson_flow_retry" formatted="false">Qayta urinish</string>
     <string name="hsk_course_lesson_settings_exit" formatted="false">Chiqish</string>
     <string name="hsk_course_lesson_settings_title" formatted="false">Dars sozlamalari</string>
@@ -479,14 +487,34 @@
     <string name="hsk_course_pronunciation_review" formatted="false">takror</string>
     <string name="hsk_course_pronunciation_skip" formatted="false">O\'tkazib yuborish</string>
     <string name="hsk_course_rank" formatted="false">o\'rin</string>
+    <string name="hsk_course_rating_challenge_cooldown" formatted="false">Bellashuvni 15 daqiqada bir marta yuborish mumkin. {minutes} daqiqadan keyin urinib ko\'ring.</string>
     <string name="hsk_course_rating_challenge_not_allowed" formatted="false">Bu foydalanuvchiga chaqiruv yuborib bo\'lmaydi</string>
     <string name="hsk_course_rating_challenge_send_failed" formatted="false">Chaqiruv yuborilmadi</string>
     <string name="hsk_course_rating_copied_toast" formatted="false">Nusxalandi</string>
+    <string name="hsk_course_rating_countdown_days_hours" formatted="false">{days}k {hours}s</string>
+    <string name="hsk_course_rating_countdown_hours_minutes" formatted="false">{hours}s {minutes}m</string>
+    <string name="hsk_course_rating_countdown_minutes" formatted="false">{minutes}m</string>
     <string name="hsk_course_rating_duel_rejected" formatted="false">Belashuv rad qilindi.</string>
+    <string name="hsk_course_rating_invite_fallback_share" formatted="false">Salom! Men HSK AI bilan xitoy tilini o\'rganyapman. Kirib ko\'r:</string>
+    <string name="hsk_course_rating_invite_hint" formatted="false">Tayyor matn Telegramda ochiladi. Do\'stni tanlab yuboring.</string>
+    <string name="hsk_course_rating_invite_load_error" formatted="false">Link yuklanmadi</string>
+    <string name="hsk_course_rating_invite_loading" formatted="false">Link tayyorlanyapti…</string>
+    <string name="hsk_course_rating_invite_send" formatted="false">Xabar yuborish</string>
+    <string name="hsk_course_rating_invite_title" formatted="false">Do\'st chaqirish</string>
+    <string name="hsk_course_rating_level_label" formatted="false">daraja</string>
+    <string name="hsk_course_rating_rank_summary" formatted="false">O\'rin #{before} → #{after}</string>
+    <string name="hsk_course_rating_referral_active" formatted="false">faol</string>
+    <string name="hsk_course_rating_referral_joined" formatted="false">kirgan</string>
     <string name="hsk_course_rating_retry_loading" formatted="false">Qayta yuklash</string>
     <string name="hsk_course_rating_telegram_username_missing" formatted="false">Foydalanuvchida Telegram username yo\'q</string>
     <string name="hsk_course_rating_weekly_heading" formatted="false">Haftalik reyting</string>
     <string name="hsk_course_rating_weekly_top_five" formatted="false">Haftalik reyting · Top 5</string>
+    <string name="hsk_course_rating_write_copy" formatted="false">Nusxa</string>
+    <string name="hsk_course_rating_write_telegram" formatted="false">Telegram</string>
+    <string name="hsk_course_rating_write_template0" formatted="false">Salom! HSK AI bilan xitoycha o\'rganmoqdaman — {xp} XP, ligada #{rank}-o\'rindaman. Sen ham sinab ko\'r 🐼 {botLink}</string>
+    <string name="hsk_course_rating_write_template1" formatted="false">Ligada #{rank}-o\'rindaman. Meni utib o\'tishga urinib ko\'r! 🔥 {botLink}</string>
+    <string name="hsk_course_rating_write_template2" formatted="false">HSK AI da belashuv chaqiraman! Kim bir haftada ko\'proq XP to\'playdi? 🀄 {botLink}</string>
+    <string name="hsk_course_rating_write_title" formatted="false">Yozish</string>
     <string name="hsk_course_ready_phrases" formatted="false">Tayyor gaplar</string>
     <string name="hsk_course_ready_phrases_all" formatted="false">Barchasi</string>
     <string name="hsk_course_ready_phrases_copied" formatted="false">Nusxalandi</string>
@@ -718,6 +746,7 @@
     <string name="hsk_course_subscription_page_uploaded" formatted="false">Screenshot tanlandi: {name}</string>
     <string name="hsk_course_subscription_page_user_blocked" formatted="false">Hisobingiz bloklangan. Support bilan bog\'laning.</string>
     <string name="hsk_course_test_center" formatted="false">Test markazi</string>
+    <string name="hsk_course_test_center_checking_limit" formatted="false">Limit tekshirilmoqda…</string>
     <string name="hsk_course_test_exam_again" formatted="false">Qayta topshirish</string>
     <string name="hsk_course_test_exam_fail_sub" formatted="false">Tayyorgarlikni davom ettiring: HSK </string>
     <string name="hsk_course_test_exam_failed" formatted="false">Hozircha o\'tilmadi</string>
@@ -814,6 +843,8 @@
     <string name="hsk_course_voice_page_opt_rate" formatted="false">Nutq tezligi</string>
     <string name="hsk_course_voice_page_opt_sub" formatted="false">Pinyin va tarjima</string>
     <string name="hsk_course_voice_page_premium_btn" formatted="false">HSK AI Pro ⭐️ olish</string>
+    <string name="hsk_course_voice_page_quota_remaining" formatted="false">Bugun {n} ta suhbat qoldi</string>
+    <string name="hsk_course_voice_page_quota_unlimited" formatted="false">AI Voice cheksiz</string>
     <string name="hsk_course_voice_page_rate_normal" formatted="false">oddiy</string>
     <string name="hsk_course_voice_page_rate_slow" formatted="false">sekin</string>
     <string name="hsk_course_voice_page_release_mic" formatted="false">Yuborish uchun qo\'yib yuboring</string>

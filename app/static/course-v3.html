@@ -1488,7 +1488,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-android-common-v2"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261020-b147eef277fe"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-android-common-v2"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261020-b5bc4adb441e"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -2546,7 +2546,7 @@ var App={
     var RU={ru:{t:"Вы поднялись в рейтинге!",s:"{n} остался позади. Сегодняшний урок решил это."},
       uz:{t:"Reytingda ko'tarildingiz!",s:"{n} ortda qoldi. Buni bugungi darsingiz hal qildi."},
       tj:{t:"Дар рейтинг боло рафтед!",s:"{n} қафо монд. Инро дарси имрӯзаатон ҳал кард."}}[LANG]||{t:"",s:"{n}"};
-    var rankSummary=(LANG==="ru"?"Место ":LANG==="tj"?"Ҷойи ":"O'rin ")+"#"+ranks.before+" → #"+ranks.after;
+    var rankSummary=courseMessage("rating.rankSummary",LANG==="ru"?"Место #{before} → #{after}":LANG==="tj"?"Ҷойи #{before} → #{after}":"O'rin #{before} → #{after}").replace("{before}",String(ranks.before)).replace("{after}",String(ranks.after));
     var r={title:RU.t,sub:passedU?RU.s.replace("{n}",esc(passedU.n||"")):rankSummary,cont:T().cont};
     var rows=[];
 	    if(aboveU)rows.push({rk:aboveU.rank,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
@@ -3474,14 +3474,14 @@ function renderCourse(){
 function secNames(){var m={ru:["Новые слова","Закрепление","Аудирование","В речи","Диалог","Повторение"],uz:["Yangi so'zlar","Mustahkamlash","Tinglash","Gapda ishlatish","Qisqa dialog","Review"],tj:["Калимаҳои нав","Мустаҳкамкунӣ","Шунидан","Дар ҷумла","Гуфтугӯ","Такрор"]};return m[LANG]||m.ru}
 /* Tugun ostidagi kichik yorliq: qism raqami yoki checkpoint belgisi. */
 function nodeSub(l){
-  if(l.checkpoint)return LANG==="ru"?"Повторение":LANG==="tj"?"Такрор":"Takrorlash";
-  if(l.part&&l.src)return LANG==="ru"?("Часть "+l.part):LANG==="tj"?("Қисми "+l.part):(l.part+"-qism");
+  if(l.checkpoint)return courseMessage("partSections.r",LANG==="ru"?"Повторение":LANG==="tj"?"Такрор":"Takrorlash");
+  if(l.part&&l.src)return courseMessage("lessonFlow.partPrefix",LANG==="ru"?"Часть {n}":LANG==="tj"?"Қисми {n}":"{n}-qism").replace("{n}",String(l.part));
   return (l.n||"")+"-"+courseMessage("lessons",T().lessons);
 }
 /* Dars varag'i sarlavhasi ostidagi "X-dars · Y-qism" belgisi. */
 function partChip(l){
   if(!l.src)return"";
-  var lesson=LANG==="ru"?("Урок "+l.src):LANG==="tj"?("Дарси "+l.src):(l.src+"-dars");
+  var lesson=courseMessage("lessonFlow.lessonPrefix",LANG==="ru"?"Урок {n}":LANG==="tj"?"Дарси {n}":"{n}-dars").replace("{n}",String(l.src));
   return lesson+" · "+nodeSub(l);
 }
 /* Qismning real bosqichlari (mini-dars 2-3 bo'limdan iborat). */
@@ -4176,7 +4176,7 @@ function buildQueue(d){
   /* Versionlangan exit-ticket `sections` tashqarisida: eski material_ref va
      resume indekslari surilmaydi. U faqat checkpoint oxirida enqueue qilinadi. */
   if(d.exit_ticket&&Array.isArray(d.exit_ticket.cards)){
-    var et=d.exit_ticket,etTitle=LANG==="ru"?"Итоговая проверка":LANG==="tj"?"Санҷиши натиҷа":"Natija tekshiruvi";
+    var et=d.exit_ticket,etTitle=courseMessage("lessonFlow.exitTicketTitle",LANG==="ru"?"Итоговая проверка":LANG==="tj"?"Санҷиши натиҷа":"Natija tekshiruvi");
     et.cards.forEach(function(raw){
       if(!raw||typeof raw!=="object")return;
       var c={};for(var k in raw)c[k]=raw[k];
@@ -4789,7 +4789,7 @@ function repairAnswerText(c){
 }
 function cardRepairSpacer(c){
   var src=c._sourceCard||{},ex=src.example||{},msg=tr(src.explanation)||tr(src.text)||"";
-  var h=c._repairStep===1?(LANG==="ru"?"Разберём ответ":LANG==="tj"?"Ҷавобро мефаҳмем":"Javobni tushunamiz"):(LANG==="ru"?"Запомните подсказку":LANG==="tj"?"Ишораро дар хотир гиред":"Ishorani eslab qoling");
+  var h=c._repairStep===1?courseMessage("lessonFlow.repairAnswerHeading",LANG==="ru"?"Разберём ответ":LANG==="tj"?"Ҷавобро мефаҳмем":"Javobni tushunamiz"):courseMessage("lessonFlow.repairHintHeading",LANG==="ru"?"Запомните подсказку":LANG==="tj"?"Ишораро дар хотир гиред":"Ishorani eslab qoling");
   $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-refresh"></i> '+esc(h)+'</div>'
     +'<div class="foundation-note"><b>'+esc(repairAnswerText(src))+'</b>'+(ex.pinyin?'<div style="color:var(--cin2);margin-top:4px">'+esc(ex.pinyin)+'</div>':'')+(msg?'<div style="margin-top:8px">'+esc(msg)+'</div>':'')+'</div>';
   $("#f-cta").style.display="flex";
@@ -4853,13 +4853,13 @@ function cardWordMeaning(c){
   var w=c.word||{};var right=tr(w.meaning);var opts=[right].concat(_wrongWordOptions(c.words,"meaning",right)).slice(0,4);
   opts=opts.map(function(v,i){return {v:v,sort:Math.random()+i/100}}).sort(function(a,b){return a.sort-b.sort}).map(function(x){return x.v});
   var head='<div class="qcard"><div class="qh han">'+esc(w.zh||"")+'</div><div class="qpy">'+esc(w.pinyin||"")+'</div></div>';
-  _choiceFromWord(c,opts,opts.indexOf(right),LANG==="ru"?"Что означает?":LANG==="tj"?"Маъно чист?":"Ma'nosi nima?",{},head);
+  _choiceFromWord(c,opts,opts.indexOf(right),courseMessage("lessonFlow.meaningQuestion",LANG==="ru"?"Что означает?":LANG==="tj"?"Маъно чист?":"Ma'nosi nima?"),{},head);
 }
 function cardWordHanzi(c){
   var w=c.word||{};var opts=[w.zh].concat(_wrongWordOptions(c.words,"hanzi",w.zh)).slice(0,4);
   opts=opts.map(function(v,i){return {v:v,sort:Math.random()+i/100}}).sort(function(a,b){return a.sort-b.sort}).map(function(x){return x.v});
   var head='<div class="qcard"><div class="qpy" style="font-size:26px">'+esc(w.pinyin||"")+'</div><div class="tr" style="margin-top:8px;color:var(--ink2)">'+esc(tr(w.meaning))+'</div></div>';
-  _choiceFromWord(c,opts,opts.indexOf(w.zh),LANG==="ru"?"Выберите иероглиф":LANG==="tj"?"Иероглифро интихоб кунед":"Ieroglifni tanlang",{},head);
+  _choiceFromWord(c,opts,opts.indexOf(w.zh),courseMessage("lessonFlow.chooseHanziQuestion",LANG==="ru"?"Выберите иероглиф":LANG==="tj"?"Иероглифро интихоб кунед":"Ieroglifni tanlang"),{},head);
 }
 function cardWord(c){
   /* Duolingo uslubi: avval "YANGI SO'Z" bayram-kartasi (sparkle + katta hanzi),
@@ -4946,7 +4946,7 @@ function foundationExampleHtml(ex,big){
 }
 function foundationTitle(c){return tr(c.title)||tr(c.prompt)||""}
 function foundationStepLabel(c){
-  if(c._repair)return LANG==="ru"?"Повторная проверка":LANG==="tj"?"Санҷиши такрорӣ":"Qayta tekshiruv";
+  if(c._repair)return courseMessage("foundation.recheckTitle",LANG==="ru"?"Повторная проверка":LANG==="tj"?"Санҷиши такрорӣ":"Qayta tekshiruv");
   return courseMessage("foundation.zeroTitle",LANG==="ru"?"Основы с нуля":LANG==="tj"?"Асосҳо аз сифр":"0 dan asoslar");
 }
 function foundationGuidedCard(c){
@@ -5554,11 +5554,11 @@ function renderVoice(){
       var quota=document.getElementById("voice-quota");
       if(!quota||SCREEN!=="voice"||!status)return;
       var unlimited=!!status.is_paid||status.remaining==null;
-      var copy=LANG==="ru"
+      var copy=courseMessage(unlimited?"voicePage.quotaUnlimited":"voicePage.quotaRemaining",LANG==="ru"
         ?(unlimited?"AI Voice без ограничения":"Сегодня осталось разговоров: {n}")
         :LANG==="tj"
           ?(unlimited?"AI Voice бе маҳдудият":"Имрӯз {n} суҳбат боқӣ монд")
-          :(unlimited?"AI Voice cheksiz":"Bugun {n} ta suhbat qoldi");
+          :(unlimited?"AI Voice cheksiz":"Bugun {n} ta suhbat qoldi"));
       quota.textContent=unlimited?copy:copy.replace("{n}",String(Math.max(0,Number(status.remaining)||0)));
       quota.hidden=false;
     }).catch(function(){});
@@ -5878,9 +5878,9 @@ function ratingCountdownText(){
   if(!ratingMeta.resetAtMs)return "—";
   var sec=Math.max(0,Math.floor((ratingMeta.resetAtMs-Date.now())/1000));
   var d=Math.floor(sec/86400),h=Math.floor((sec%86400)/3600),m=Math.floor((sec%3600)/60);
-  if(d>0)return d+(LANG==="ru"?"д":"k")+" "+h+(LANG==="ru"?"ч":"s");
-  if(h>0)return h+(LANG==="ru"?"ч":"s")+" "+m+"m";
-  return m+"m";
+  if(d>0)return courseMessage("rating.countdownDaysHours",LANG==="ru"?"{days}д {hours}ч":"{days}k {hours}s").replace("{days}",String(d)).replace("{hours}",String(h));
+  if(h>0)return courseMessage("rating.countdownHoursMinutes",LANG==="ru"?"{hours}ч {minutes}m":"{hours}s {minutes}m").replace("{hours}",String(h)).replace("{minutes}",String(m));
+  return courseMessage("rating.countdownMinutes","{minutes}m").replace("{minutes}",String(m));
 }
 	function courseLevelLabel(lv){
 	  // Canonical learner-facing band label for both curriculum versions.
@@ -6045,7 +6045,7 @@ function _renderRatingContent(){
 	      h+='<div class="rt-invite"><span class="han">友</span><p>'+esc(r.refLoadErr)+'</p><button type="button" class="scta" onclick="retryReferrals()">'+esc(ratingRetryText())+'</button></div>';
 	      $("#s-rating").innerHTML=h;return;
 	    }
-	    h+='<div class="ref-stat"><div><b>'+Number(referralMeta.joined||0)+'</b><small>'+(LANG==="ru"?"перешли":LANG==="tj"?"даромаданд":"kirgan")+'</small></div><div><b>'+Number(referralMeta.active||0)+' / '+Number(referralMeta.required||0)+'</b><small>'+(LANG==="ru"?"актив":LANG==="tj"?"фаъол":"faol")+'</small></div></div>';
+	    h+='<div class="ref-stat"><div><b>'+Number(referralMeta.joined||0)+'</b><small>'+courseMessage("rating.referralJoined",LANG==="ru"?"перешли":LANG==="tj"?"даромаданд":"kirgan")+'</small></div><div><b>'+Number(referralMeta.active||0)+' / '+Number(referralMeta.required||0)+'</b><small>'+courseMessage("rating.referralActive",LANG==="ru"?"актив":LANG==="tj"?"фаъол":"faol")+'</small></div></div>';
 	    if(!referralUsers.length){
 	      h+='<div class="rt-invite"><span class="han">人</span><p>'+esc(r.refEmpty)+'</p></div>';
 	      $("#s-rating").innerHTML=h;return;
@@ -6116,9 +6116,9 @@ function toast(msg,dur){
 	var challengeSending=false;
 	function challengeCooldownText(seconds){
 	  var minutes=Math.max(1,Math.ceil(Number(seconds||0)/60));
-	  if(LANG==="ru")return "Дуэль можно отправлять раз в 15 минут. Попробуйте через "+minutes+" мин.";
-	  if(LANG==="tj")return "Рақобатро дар 15 дақиқа як бор фиристодан мумкин. Пас аз "+minutes+" дақиқа кӯшиш кунед.";
-	  return "Bellashuvni 15 daqiqada bir marta yuborish mumkin. "+minutes+" daqiqadan keyin urinib ko'ring.";
+	  if(LANG==="ru")return courseMessage("rating.challengeCooldown","Дуэль можно отправлять раз в 15 минут. Попробуйте через {minutes} мин.").replace("{minutes}",String(minutes));
+	  if(LANG==="tj")return courseMessage("rating.challengeCooldown","Рақобатро дар 15 дақиқа як бор фиристодан мумкин. Пас аз {minutes} дақиқа кӯшиш кунед.").replace("{minutes}",String(minutes));
+	  return courseMessage("rating.challengeCooldown","Bellashuvni 15 daqiqada bir marta yuborish mumkin. {minutes} daqiqadan keyin urinib ko'ring.").replace("{minutes}",String(minutes));
 	}
 	function friendChallenge(i,src){
 	  var r=rl();
@@ -6279,20 +6279,20 @@ function finishChallengeRound(){
 	  var rank=uIdx+1;
 	  var myRank=currentRatingRank()||rank||1;
   var t={
-    ru:["Привет! Учу китайский с HSK AI — уже "+myXp.toLocaleString("ru")+" XP и иду #"+myRank+" в лиге. Попробуй тоже 🐼 "+botLink,
-        "Иду в лиге на #"+myRank+" месте. Обгони меня, если сможешь 🔥 "+botLink,
-        "Вызываю тебя на соревнование в HSK AI! Кто наберёт больше XP за неделю? 🀄 "+botLink],
-    uz:["Salom! HSK AI bilan xitoycha o'rganmoqdaman — "+myXp.toLocaleString("ru")+" XP, ligada #"+myRank+"-o'rindaman. Sen ham sinab ko'r 🐼 "+botLink,
-        "Ligada #"+myRank+"-o'rindaman. Meni utib o'tishga urinib ko'r! 🔥 "+botLink,
-        "HSK AI da belashuv chaqiraman! Kim bir haftada ko'proq XP to'playdi? 🀄 "+botLink],
-    tj:["Салом! Бо HSK AI чинӣ меомӯзам — "+myXp.toLocaleString("ru")+" XP, дар лига #"+myRank+"-ум. Ту ҳам санҷ 🐼 "+botLink,
-        "Дар лига ҷои #"+myRank+"-ум. Аз ман пеш гузаштан кӯш! 🔥 "+botLink,
-        "Дар HSK AI мубориза даъват мекунам! Кӣ дар як ҳафта бештар XP ҷамъ мекунад? 🀄 "+botLink]
+    ru:["Привет! Учу китайский с HSK AI — уже {xp} XP и иду #{rank} в лиге. Попробуй тоже 🐼 {botLink}",
+        "Иду в лиге на #{rank} месте. Обгони меня, если сможешь 🔥 {botLink}",
+        "Вызываю тебя на соревнование в HSK AI! Кто наберёт больше XP за неделю? 🀄 {botLink}"],
+    uz:["Salom! HSK AI bilan xitoycha o'rganmoqdaman — {xp} XP, ligada #{rank}-o'rindaman. Sen ham sinab ko'r 🐼 {botLink}",
+        "Ligada #{rank}-o'rindaman. Meni utib o'tishga urinib ko'r! 🔥 {botLink}",
+        "HSK AI da belashuv chaqiraman! Kim bir haftada ko'proq XP to'playdi? 🀄 {botLink}"],
+    tj:["Салом! Бо HSK AI чинӣ меомӯзам — {xp} XP, дар лига #{rank}-ум. Ту ҳам санҷ 🐼 {botLink}",
+        "Дар лига ҷои #{rank}-ум. Аз ман пеш гузаштан кӯш! 🔥 {botLink}",
+        "Дар HSK AI мубориза даъват мекунам! Кӣ дар як ҳафта бештар XP ҷамъ мекунад? 🀄 {botLink}"]
   };
-  _writeTmpls=(t[LANG]||t.ru);
-  var cpLbl=LANG==="ru"?"Копировать":LANG==="tj"?"Нусха":"Nusxa";
-  var sdLbl=LANG==="ru"?"Telegram":LANG==="tj"?"Telegram":"Telegram";
-  var ttl=LANG==="ru"?"Написать":LANG==="tj"?"Навиштан":"Yozish";
+  _writeTmpls=(t[LANG]||t.ru).map(function(txt,k){var copy=courseMessage("rating.writeTemplate"+k,txt);return copy.replace("{xp}",myXp.toLocaleString("ru")).replace("{rank}",String(myRank)).replace("{botLink}",botLink)});
+  var cpLbl=courseMessage("rating.writeCopy",LANG==="ru"?"Копировать":LANG==="tj"?"Нусха":"Nusxa");
+  var sdLbl=courseMessage("rating.writeTelegram","Telegram");
+  var ttl=courseMessage("rating.writeTitle",LANG==="ru"?"Написать":LANG==="tj"?"Навиштан":"Yozish");
   var html='<div class="shead"><div class="tr" style="font-size:15px;color:var(--ink)">'+ttl+'</div></div>'
     +_writeTmpls.map(function(txt,k){return '<div class="tmpl">'+esc(txt)+'<div class="tact"><span onclick="copyText(_writeTmpls['+k+'])">📋 '+cpLbl+'</span><span onclick="tgShare(_writeTmpls['+k+'])">✈️ '+sdLbl+'</span></div></div>'}).join("");
   App.openSheet(html);
@@ -6302,27 +6302,27 @@ function finishChallengeRound(){
 var _invitePayload=null;
 function renderInviteSheet(d){
   _invitePayload=d;
-  var sendLbl=LANG==="ru"?"Отправить сообщение":LANG==="tj"?"Паём фиристодан":"Xabar yuborish";
-  var title=LANG==="ru"?"Пригласить друга":LANG==="tj"?"Дӯстро даъват кардан":"Do'st chaqirish";
-  var hint=LANG==="ru"?"Готовый текст откроется в Telegram. Выберите друга и отправьте.":LANG==="tj"?"Матни тайёр дар Telegram кушода мешавад. Дӯстро интихоб кунед ва фиристед.":"Tayyor matn Telegramda ochiladi. Do'stni tanlab yuboring.";
-  var stat=(typeof d.active_count!=="undefined")?'<div class="sst"><div><b>'+Number(d.joined_count||0)+'</b><small>'+(LANG==="ru"?"перешли":LANG==="tj"?"даромаданд":"kirgan")+'</small></div><div><b>'+Number(d.active_count||0)+' / '+Number(d.required||10)+'</b><small>'+(LANG==="ru"?"актив":LANG==="tj"?"фаъол":"faol")+'</small></div></div>':'';
+  var sendLbl=courseMessage("rating.inviteSend",LANG==="ru"?"Отправить сообщение":LANG==="tj"?"Паём фиристодан":"Xabar yuborish");
+  var title=courseMessage("rating.inviteTitle",LANG==="ru"?"Пригласить друга":LANG==="tj"?"Дӯстро даъват кардан":"Do'st chaqirish");
+  var hint=courseMessage("rating.inviteHint",LANG==="ru"?"Готовый текст откроется в Telegram. Выберите друга и отправьте.":LANG==="tj"?"Матни тайёр дар Telegram кушода мешавад. Дӯстро интихоб кунед ва фиристед.":"Tayyor matn Telegramda ochiladi. Do'stni tanlab yuboring.");
+  var stat=(typeof d.active_count!=="undefined")?'<div class="sst"><div><b>'+Number(d.joined_count||0)+'</b><small>'+courseMessage("rating.referralJoined",LANG==="ru"?"перешли":LANG==="tj"?"даромаданд":"kirgan")+'</small></div><div><b>'+Number(d.active_count||0)+' / '+Number(d.required||10)+'</b><small>'+courseMessage("rating.referralActive",LANG==="ru"?"актив":LANG==="tj"?"фаъол":"faol")+'</small></div></div>':'';
   App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">友</div><div class="tr" style="font-size:16px;color:var(--ink);margin-top:8px">'+title+'</div><div class="tr">'+hint+'</div></div>'
     +stat
     +'<div class="tmpl">'+esc((d.share_text||"")+" "+(d.link||""))+'</div>'
     +'<button class="scta" onclick="tgShareLink(_invitePayload.link,_invitePayload.share_text)"><i class="ti ti-brand-telegram"></i> '+sendLbl+'</button>');
 }
 function openInviteSheet(){
-  var loading=LANG==="ru"?"Готовим ссылку…":LANG==="tj"?"Силка омода мешавад…":"Link tayyorlanyapti…";
+  var loading=courseMessage("rating.inviteLoading",LANG==="ru"?"Готовим ссылку…":LANG==="tj"?"Силка омода мешавад…":"Link tayyorlanyapti…");
 	  App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">友</div><div class="tr">'+loading+'</div></div>');
 	  if(INIT_DATA){
 	    _apiGet(invitePayloadUrl()).then(function(r){return r.json()}).then(function(d){
 	      if(d&&d.ok){renderInviteSheet(d);return}
 	      throw new Error("invite_failed");
-	    }).catch(function(){toast(LANG==="ru"?"Ссылка не загрузилась":LANG==="tj"?"Силка бор нашуд":"Link yuklanmadi",2200);App.closeSheet()});
+	    }).catch(function(){toast(courseMessage("rating.inviteLoadError",LANG==="ru"?"Ссылка не загрузилась":LANG==="tj"?"Силка бор нашуд":"Link yuklanmadi"),2200);App.closeSheet()});
     return;
   }
   var link=botLinkUrl();
-  var text={ru:"Привет! Учу китайский в HSK AI. Заходи:",uz:"Salom! Men HSK AI bilan xitoy tilini o'rganyapman. Kirib ko'r:",tj:"Салом! Ман бо HSK AI чинӣ меомӯзам. Дароед:"}[LANG];
+  var text=courseMessage("rating.inviteFallbackShare",{ru:"Привет! Учу китайский в HSK AI. Заходи:",uz:"Salom! Men HSK AI bilan xitoy tilini o'rganyapman. Kirib ko'r:",tj:"Салом! Ман бо HSK AI чинӣ меомӯзам. Дароед:"}[LANG]);
   renderInviteSheet({ok:true,link:link,share_text:text});
 }
 
@@ -6333,7 +6333,7 @@ function openInviteSheet(){
 	  if(!u)return;
 	  var myXp=currentUserWeeklyXp();
 	  var userXp=ratingScore(u);
-	  var lvlLbl=LANG==="ru"?"уровень":LANG==="tj"?"сатҳ":"daraja";
+	  var lvlLbl=courseMessage("rating.levelLabel",LANG==="ru"?"уровень":LANG==="tj"?"сатҳ":"daraja");
 	  var isHan=/[一-鿿]/.test(u.a);
 	  var uLevel=ratingLevelLabel(u.level||((MAP&&MAP.level)||"hsk1"));
 
@@ -7704,7 +7704,7 @@ var TEST=(function(){
     el("tc-empty").classList.add("on");
   }
   function showGateLoading(){
-    var txt=LANG==="ru"?"Проверяем лимит…":LANG==="tj"?"Маҳдудият санҷида мешавад…":"Limit tekshirilmoqda…";
+    var txt=courseMessage("testCenter.checkingLimit",LANG==="ru"?"Проверяем лимит…":LANG==="tj"?"Маҳдудият санҷида мешавад…":"Limit tekshirilmoqda…");
     el("tc-hub").style.display="none";el("tc-placement").classList.remove("on");el("tc-exam").classList.remove("on");
     el("tc-empty").innerHTML='<div class="ic"><i class="ti ti-loader-2"></i></div><h3>'+esc(txt)+'</h3>';
     el("tc-empty").classList.add("on");

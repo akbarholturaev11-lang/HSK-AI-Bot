@@ -94,7 +94,7 @@ the regex engine does not allow quantifying a zero-width word boundary.
 Terminate the Russian placeholder with an explicit `(?:$|\W)` boundary and
 keep the P0 import/behavior tests in the supported CI Python version.
 
-## Offline grammar display-only locale generation (P3)
+## Offline grammar display-only locale generation (P3 editor tooling)
 
 `scripts/i18n_editor_grammar_local_catalog.py` generates UZ/RU/TJ
 source-SHA-pinned, private local-first grammar display overlays, including
@@ -110,11 +110,17 @@ Default requires full 136-context/272-original-map coverage. Expected full
 batch: 48 lessons × 3 languages = **144 private locale JSON files**,
 covering (272 original maps + 136 mirrored copies) × 3 = **1,224 display
 locale values**. Every generated overlay excludes Chinese, pinyin, answers,
-option banks, grading, Pro and account fields. The output must remain private
-until the agent wires it into source-version-pinned local clients with correct
-entitlement boundaries and E2E QA; it is not a public pack nor a release.
-The limited regression guard detects known errors but does not replace
-source-context semantic checking. Agent carries this responsibility, NOT user.
+option banks, grading, Pro and account fields. This CLI remains private editor
+tooling; it is not the production/runtime data source.
+
+**Current integration-branch runtime:** the canonical
+`localization/lessons/nhsk2_grammar_uz_ru_tj.tsv` is read by
+`app/services/course_p3_grammar_localization.py`. The authenticated Mini App
+reservation response and the shared Android/Desktop lesson service return
+display-only overlays after their existing access checks. Do not copy the
+private CLI output into public static assets. The source-context language QA
+and runtime gates are tracked in this policy and the active handoff; agent
+carries the linguistic QA responsibility, not the user.
 
 Verified on [P0 run 39241612582](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39241612582): **313 tests SUCCESS**.
 
@@ -129,8 +135,9 @@ unauthenticated static JSON or change answer/score/Pro logic to make
 localization easier. Lesson `_grammar` cards can appear at different
 indexes. Tests/clients MUST select cards using `type == "_grammar"`, not
 `sections[0].cards[0]`; the mistaken index caused P0 test failure.
-Android and Desktop share this service; Mini App still needs its
-entitlement-safe localized read path and app QA.
+Android and Desktop share this service. The Mini App localized read path is
+implemented through the authenticated reservation flow below; real-device
+and staging QA remain separate gates.
 
 ## Mini App P3 reservation-only integration (protected runtime gate)
 

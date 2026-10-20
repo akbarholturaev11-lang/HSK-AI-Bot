@@ -2,8 +2,8 @@
   "schema_version": 1,
   "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "753f8f8709b65e31f2738e4824c060c21b3d0cda",
-  "counting_note": "62 unique physical source lines cover all 131 current LANG ==/=== literal-locale predicates in course-v3.html after main/P3 integration. Multiple predicates per line remain one classification; these are reviewed source decisions, not runtime UI verification.",
+  "source_revision": "ab01cb633f5d9587a1ca21f158c766a0a4cdb065",
+  "counting_note": "61 unique physical source lines cover all 128 current LANG ==/=== literal-locale predicates in course-v3.html after main/P3 integration. Multiple predicates per line remain one classification; these are reviewed source decisions, not runtime UI verification.",
   "coverage_note": "Current merged course-v3.html source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified, including two new main navigation/accessibility sites. All other localized source expressions, dynamic content, other files and rendered UI remain separately audited.",
   "classifications": [
     {
@@ -292,13 +292,13 @@
       "category": "time_formatting_copy",
       "reason": "Countdown abbreviations require locale-aware formatter",
       "review": "source_classified_only",
-      "predicate_occurrences": 2
+      "predicate_occurrences": 1
     },
     {
       "line": 5882,
       "anchor": "LANG===\"ru\"",
       "category": "time_formatting_copy",
-      "reason": "Countdown unit abbreviation when time remaining exceeds one hour",
+      "reason": "Hours/minutes countdown format keeps its locale-specific hour abbreviation",
       "review": "source_classified_only",
       "predicate_occurrences": 1
     },
@@ -395,14 +395,6 @@
       "anchor": "LANG===\"ru\"",
       "category": "navigation_copy",
       "reason": "Copy preset invitation text action",
-      "review": "source_classified_only",
-      "predicate_occurrences": 2
-    },
-    {
-      "line": 6294,
-      "anchor": "LANG===\"ru\"",
-      "category": "invariant_brand_label",
-      "reason": "Telegram brand label identical across three locale branches",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },

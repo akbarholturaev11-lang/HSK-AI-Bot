@@ -10,12 +10,12 @@ from scripts.i18n_course_ui_catalog_guard import (
 
 
 class CourseUICatalogGuardTests(unittest.TestCase):
-    def test_existing_three_locale_810_key_contract(self):
+    def test_existing_three_locale_866_key_contract(self):
         result = review_sources(ROOT)
         self.assertEqual(result["status"], "SOURCE_CONTRACT_VALID_RUNTIME_NOT_TESTED")
-        self.assertEqual(result["message_keys"], 835)
+        self.assertEqual(result["message_keys"], 866)
         self.assertEqual(result["locales"], list(LOCALES))
-        self.assertEqual(result["placeholder_keys"], 20)
+        self.assertEqual(result["placeholder_keys"], 31)
         self.assertEqual(len(result["sources"]), 3)
         for locale in LOCALES:
             source = json.loads(
@@ -34,6 +34,12 @@ class CourseUICatalogGuardTests(unittest.TestCase):
                 "subscriptionPage.screenshotReady", "subscriptionPage.screenshotHeavy",
                 "subscriptionPage.screenshotTooBig", "subscriptionPage.screenshotFormat",
                 "courseVoiceInline.turnOf",
+                "rating.rankSummary", "lessonFlow.partPrefix",
+                "lessonFlow.lessonPrefix", "voicePage.quotaRemaining",
+                "rating.challengeCooldown", "rating.writeTemplate0",
+                "rating.writeTemplate1", "rating.writeTemplate2",
+                "rating.countdownDaysHours", "rating.countdownHoursMinutes",
+                "rating.countdownMinutes",
             })
         self.assertNotIn("HSK AI Pro открыт", str(result))
 

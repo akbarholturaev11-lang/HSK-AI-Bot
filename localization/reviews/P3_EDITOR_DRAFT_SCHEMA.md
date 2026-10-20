@@ -9,6 +9,17 @@ all protected-source/client checks. Follow
 `localization/AI_CONTENT_QA_POLICY.md`. A structurally valid draft is NOT
 an agent-checked or releasable lesson; unverified strings stay unpublished.
 
+**Current integration-branch status:** this file records the earlier editor-
+draft validation design; its later “P3 runtime NOT STARTED” and mandatory
+human-review statements are historical. The current branch carries the
+source-SHA-bound 136-context grammar catalog through
+`app/services/course_p3_grammar_localization.py`, the authenticated Mini App
+reservation flow, and native/Desktop lesson paths. It exposes display-only
+overlays after the existing access check; lesson JSON, answers, grading and
+entitlement decisions remain unchanged. Current QA and remaining gates are
+recorded in `localization/AI_CONTENT_QA_POLICY.md` and
+`localization/RESUME_NEXT_CHAT.md`.
+
 # P3 editor translation drafts — private structural validator
 
 This is an **editor-only, local verification contract**, not a translation

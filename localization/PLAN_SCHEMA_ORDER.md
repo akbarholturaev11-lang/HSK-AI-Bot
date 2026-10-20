@@ -1,8 +1,8 @@
-## Current integration handoff — 2026-10-20 (P2 ongoing, NOT production)
+## Current integration handoff — 2026-10-20 (P2/P3 ongoing, NOT production)
 
 **Use `localization/RESUME_NEXT_CHAT.md` then `localization/P3_ACTIVE_HANDOFF.md` as the current state.** This document preserves historical milestones; references below to the original `codex/i18n-local-first-foundation-20261017` branch are superseded for current work by **`codex/p3-main-integration-20261020`**. Owner explicitly prohibits edits to `main` and production deployment until separately authorized. The historical `main` SHA is `055de820db10b32fadffa942938a16e2070f0d52`.
 
-Last verified integration code/document HEAD **`33e14d811b96cbcb11288628bc2aa368622bf69e`**, [P0 run 39373684091](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39373684091) **SUCCESS (349 tests)**, no frozen-source blockers or stale locale generator resources. UZ/RU/TJ course catalogs contain **823 keys per locale**; 12 HTML consumers use content-pinned bundle cache version `20261020-1fee76a7803b`. P3 protected lesson translation paths have 136 source-bound contexts and require remaining full semantics, authenticated backend, multi-provider and real-device QA; **do not claim release readiness**. The next agent must verify the HEAD and tests again before committing.
+At the start of this batch, committed integration HEAD was **`8c708a5e4149973a89650b8bb2a8e58a788c1550`**, with P0 run `39403997281` SUCCESS. `origin/main` (`055de820db10b32fadffa942938a16e2070f0d52`) is already an ancestor of the integration branch. The uncommitted batch raises UZ/RU/TJ course catalogs from 835 to **866 keys** and pins 12 HTML consumers to `20261020-b5bc4adb441e`; local P0 and selected backend suites pass, but exact-head GitHub CI must still run. P3 has 136 source-bound contexts / 408 locale strings, agent source-context QA, and an authenticated display-only runtime overlay; staging/security/device release gates remain open. Do not claim release readiness from local tests alone.
 
 ## Controlling P3 language QA decision — 2026-10-19
 
@@ -13,9 +13,11 @@ semantic review, fixes, duplicate/mirror sync, protected-source diff, local-firs
 content migration and regression tests. Historical references below to "human
 review required" are legacy wording superseded ONLY for the linguistic
 reviewer identity. They do NOT waive source SHA, safety, QA, CI or release
-gates. The current 136-context private candidate bundle is NOT automatically
-approved merely for being complete. Work on the feature branch while guards
-and cross-platform QA remain pending.
+gates. The current 136-context catalog has been checked against its Chinese
+source and grammar context, and its 408 UZ/RU/TJ values are integrated into the
+existing access-gated display overlay. This is documented agent QA, not
+native-speaker certification. Work on the feature branch while CI, security,
+staging and cross-platform QA remain pending.
 
 # HSK AI i18n — Plan / Schema / Execution Order
 
@@ -25,7 +27,7 @@ and cross-platform QA remain pending.
 > `docs/I18N_MULTILANGUAGE_MIGRATION.md`, and
 > `localization/surface_registry.json`.
 >
-> Status: **P0 source guards and P1 local catalogs implemented; P2 UI adoption remains in progress; P3 agent-owned QA and the 136-context canonical catalog are in Git with source-bound validation, while runtime delivery remains gated on lesson/map access classification. Branch only.** This file documents architecture and execution order; it does not mean client locales or course content have been fully migrated.
+> Status: **P0 source guards and P1 local catalogs implemented; P2 UI adoption remains in progress; P3 agent-owned QA and the 136-context canonical catalog are in Git with source-bound validation and access-gated display-only runtime delivery. Security, staging and platform QA remain open. Branch only.** The dated entries below preserve historical states; their earlier “NOT STARTED” statements do not override this checkpoint.
 
 ## 0. Where to resume
 
@@ -189,10 +191,10 @@ Do not mark implementation complete based on the plan being written.
 | Isolated branch from main | DONE | branch exists |
 | Local-first architecture decision | DONE | plan + `PROJECT_MEMORY.md` |
 | Surface source registry | INITIAL | `localization/surface_registry.json` |
-| Full reviewed inventory/baselines (P0) | IN PROGRESS | supplemental source audit + git-blob baseline created; manual review, runtime screenshots and full scope still pending |
-| Generated canonical catalogs + validators (P1) | IN PROGRESS (small local common namespace) | 11 existing messages; generated Android/Mini App/Desktop/Bot artifacts + deterministic checker; full coverage and runtime adoption pending |
-| Platform runtime migrations (P2) | IN PROGRESS (one small reviewed UI slice; branch-only) | Desktop 11 common keys, Mini App rating heading; old visible copy retained as fallback, Android generated XML only, Bot generated constant only |
-| Versioned lesson locale overlays (P3) | NOT STARTED | pending |
+| Full reviewed inventory/baselines (P0) | IN PROGRESS | 811 frozen sources / 746 lessons / 0 baseline blockers; route security, staging and real-client QA remain open |
+| Generated canonical catalogs + validators (P1) | IMPLEMENTED | deterministic UZ/RU/TJ resources for Android/Mini App/Desktop/Bot; 866 course UI keys and 6 current generated artifacts |
+| Platform runtime migrations (P2) | IN PROGRESS | Mini App uses local course catalog; remaining inline UI and Android/native, Desktop and Bot adoption are still under review |
+| Versioned lesson locale overlays (P3) | IN PROGRESS | 136 contexts / 408 agent-reviewed locale strings; authenticated display-only runtime implemented; release QA pending |
 | Any new language enabled (P4) | NOT STARTED | prohibited until gates |
 
 ### P0 progress (evidence at the time of this update)
