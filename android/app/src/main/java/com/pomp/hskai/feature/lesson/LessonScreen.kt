@@ -1090,7 +1090,7 @@ private fun FailedBlock(
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(20.dp))
-        PrimaryAction(stringResource(R.string.action_retry), onClick = onRetry)
+        PrimaryAction(stringResource(R.string.hsk_course_lesson_flow_retry), onClick = onRetry)
         Spacer(Modifier.height(8.dp))
         SecondaryAction(stringResource(R.string.hsk_common_action_close), onExit)
     }

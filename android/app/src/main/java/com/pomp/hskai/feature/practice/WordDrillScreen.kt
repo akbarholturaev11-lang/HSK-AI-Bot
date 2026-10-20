@@ -498,7 +498,7 @@ private fun DrillEmpty(onRetry: () -> Unit, onClose: () -> Unit) {
         )
         Spacer(Modifier.height(16.dp))
         HskPrimaryButton(
-            text = stringResource(R.string.action_retry),
+            text = stringResource(R.string.hsk_course_lesson_flow_retry),
             onClick = onRetry,
         )
         Spacer(Modifier.height(10.dp))

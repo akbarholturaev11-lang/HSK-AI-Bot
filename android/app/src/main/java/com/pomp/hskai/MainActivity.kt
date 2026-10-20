@@ -1707,7 +1707,7 @@ private fun AppRoot(
                     text = { Text(stringResource(error.messageRes)) },
                     confirmButton = {
                         TextButton(onClick = courseViewModel::retryTrackSwitch) {
-                            Text(stringResource(R.string.action_retry))
+                            Text(stringResource(R.string.hsk_course_lesson_flow_retry))
                         }
                     },
                     dismissButton = {
@@ -2200,7 +2200,7 @@ private fun BootstrapErrorScreen(errorRes: Int, onRetry: () -> Unit) {
             )
             androidx.compose.foundation.layout.Spacer(Modifier.padding(8.dp))
             OutlinedButton(onClick = onRetry) {
-                Text(stringResource(R.string.action_retry))
+                Text(stringResource(R.string.hsk_course_lesson_flow_retry))
             }
         }
     }

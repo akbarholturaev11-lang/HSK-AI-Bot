@@ -613,7 +613,7 @@ private fun RivalryCard(opponentName: String, currentXp: Int, opponentXp: Int) {
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Text(
-                text = stringResource(R.string.rating_weekly_result),
+                text = stringResource(R.string.hsk_course_rating_weekly_heading),
                 style = MaterialTheme.typography.titleSmall,
                 color = PompColors.Paper,
             )
@@ -731,7 +731,7 @@ private fun WeeklyTopFiveTitle() {
         )
         Spacer(Modifier.width(6.dp))
         Text(
-            text = stringResource(R.string.rating_weekly_top_five),
+            text = stringResource(R.string.hsk_course_rating_weekly_top_five),
             style = MaterialTheme.typography.bodyMedium,
             color = PompColors.GoldInk,
         )
@@ -939,7 +939,7 @@ private fun FriendStats(invited: Int, activated: Int, required: Int) {
     ) {
         FriendStat(
             value = invited.toString(),
-            label = stringResource(R.string.rating_friends_joined),
+            label = stringResource(R.string.hsk_course_rating_referral_joined),
         )
         FriendStat(
             value = "$activated / $required",
@@ -1168,7 +1168,7 @@ private fun ErrorBlock(text: String, onRetry: () -> Unit) {
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = stringResource(R.string.action_retry),
+                text = stringResource(R.string.hsk_course_lesson_flow_retry),
                 style = MaterialTheme.typography.labelLarge,
                 color = PompColors.Flame,
             )

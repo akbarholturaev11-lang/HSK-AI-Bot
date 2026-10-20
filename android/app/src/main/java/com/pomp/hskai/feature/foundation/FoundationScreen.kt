@@ -596,6 +596,6 @@ private fun FoundationFailure(onRetry: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        FoundationAction(enabled = true, onClick = onRetry, text = stringResource(R.string.action_retry), secondary = true, leadingRefresh = true)
+        FoundationAction(enabled = true, onClick = onRetry, text = stringResource(R.string.hsk_course_lesson_flow_retry), secondary = true, leadingRefresh = true)
     }
 }

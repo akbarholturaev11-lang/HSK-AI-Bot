@@ -1661,7 +1661,7 @@ private fun CourseErrorBlock(messageRes: Int, onRetry: () -> Unit) {
         )
         Spacer(Modifier.height(16.dp))
         HskGlassButton(
-            text = stringResource(R.string.action_retry),
+            text = stringResource(R.string.hsk_course_lesson_flow_retry),
             onClick = onRetry,
         )
     }
