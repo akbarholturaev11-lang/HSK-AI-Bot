@@ -23,6 +23,14 @@
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">На сайте HSK AI начат запрос на удаление аккаунта. Подтвердите его, только если вы сами начали этот процесс. После подтверждения можно будет отправить запрос на удаление аккаунта в браузере.</string>
     <string name="hsk_common_bot_buttonInvalid" formatted="false">Кнопка устарела или некорректна.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Режим курса сейчас в разработке.</string>
+    <string name="hsk_common_bot_promoButton_contact" formatted="false">👤 Связаться с админом</string>
+    <string name="hsk_common_bot_promoButton_course" formatted="false">📚 Режим курса</string>
+    <string name="hsk_common_bot_promoButton_help" formatted="false">❓ Помощь</string>
+    <string name="hsk_common_bot_promoButton_partner" formatted="false">🤝 Партнёрство</string>
+    <string name="hsk_common_bot_promoButton_profile" formatted="false">👤 Профиль</string>
+    <string name="hsk_common_bot_promoButton_reminder" formatted="false">⏰ Напоминание</string>
+    <string name="hsk_common_bot_promoButton_subscription" formatted="false">💎 Подписка</string>
+    <string name="hsk_common_bot_promoButton_url" formatted="false">🔗 Открыть</string>
     <string name="hsk_common_bot_releaseFeedback_alreadyRatedAlert" formatted="false">Вы уже поставили оценку.</string>
     <string name="hsk_common_bot_releaseFeedback_chooseRatingAlert" formatted="false">Сначала выберите оценку от 1 до 5.</string>
     <string name="hsk_common_bot_releaseFeedback_commentButton" formatted="false">✍️ Оставить комментарий</string>

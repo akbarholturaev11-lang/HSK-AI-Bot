@@ -23,6 +23,14 @@
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">Дар сомонаи HSK AI дархости нест кардани ҳисоб оғоз шуд. Танҳо дар сурате тасдиқ кунед, ки онро худатон оғоз карда бошед. Пас аз тасдиқ метавонед дар браузер дархости нест кардани ҳисобро фиристед.</string>
     <string name="hsk_common_bot_buttonInvalid" formatted="false">Тугма дигар эътибор надорад ё нодуруст аст.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Реҷаи курс ҳоло дар таҳия аст.</string>
+    <string name="hsk_common_bot_promoButton_contact" formatted="false">👤 Тамос бо админ</string>
+    <string name="hsk_common_bot_promoButton_course" formatted="false">📚 Реҷаи курс</string>
+    <string name="hsk_common_bot_promoButton_help" formatted="false">❓ Ёрдам</string>
+    <string name="hsk_common_bot_promoButton_partner" formatted="false">🤝 Ҳамкорӣ</string>
+    <string name="hsk_common_bot_promoButton_profile" formatted="false">👤 Профил</string>
+    <string name="hsk_common_bot_promoButton_reminder" formatted="false">⏰ Вақти ёдраскунак</string>
+    <string name="hsk_common_bot_promoButton_subscription" formatted="false">💎 Обуна</string>
+    <string name="hsk_common_bot_promoButton_url" formatted="false">🔗 Кушодан</string>
     <string name="hsk_common_bot_releaseFeedback_alreadyRatedAlert" formatted="false">Шумо аллакай баҳо додаед.</string>
     <string name="hsk_common_bot_releaseFeedback_chooseRatingAlert" formatted="false">Аввал баҳои аз 1 то 5-ро интихоб кунед.</string>
     <string name="hsk_common_bot_releaseFeedback_commentButton" formatted="false">✍️ Шарҳ навиштан</string>

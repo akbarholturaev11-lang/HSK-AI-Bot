@@ -23,6 +23,14 @@
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">HSK AI veb-sahifasida hisobni o‘chirish so‘rovi boshlandi. Faqat uni o‘zingiz boshlagan bo‘lsangiz tasdiqlang. Tasdiqdan keyin brauzerda hisobni o‘chirish so‘rovini yuborishingiz mumkin.</string>
     <string name="hsk_common_bot_buttonInvalid" formatted="false">Tugma eskirgan yoki noto‘g‘ri.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Kurs rejimi hozircha ishlab chiqilmoqda.</string>
+    <string name="hsk_common_bot_promoButton_contact" formatted="false">👤 Admin bilan aloqa</string>
+    <string name="hsk_common_bot_promoButton_course" formatted="false">📚 Kurs rejimi</string>
+    <string name="hsk_common_bot_promoButton_help" formatted="false">❓ Yordam</string>
+    <string name="hsk_common_bot_promoButton_partner" formatted="false">🤝 Partnyor</string>
+    <string name="hsk_common_bot_promoButton_profile" formatted="false">👤 Profil</string>
+    <string name="hsk_common_bot_promoButton_reminder" formatted="false">⏰ Eslatma vaqti</string>
+    <string name="hsk_common_bot_promoButton_subscription" formatted="false">💎 Obuna</string>
+    <string name="hsk_common_bot_promoButton_url" formatted="false">🔗 Ochish</string>
     <string name="hsk_common_bot_releaseFeedback_alreadyRatedAlert" formatted="false">Siz allaqachon baho bergansiz.</string>
     <string name="hsk_common_bot_releaseFeedback_chooseRatingAlert" formatted="false">Avval 1 dan 5 gacha baho tanlang.</string>
     <string name="hsk_common_bot_releaseFeedback_commentButton" formatted="false">✍️ Izoh yozish</string>

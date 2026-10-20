@@ -54,8 +54,8 @@ BUTTONS = {
 
 class ReleaseFeedbackLocalizationTests(unittest.TestCase):
     def test_service_messages_use_local_catalog_for_all_existing_languages(self):
-        for lang, messages in MESSAGES.items():
-            for key, render in messages.items():
+        for lang in ("uz", "ru", "tj"):
+            for key, render in MESSAGES.items():
                 with self.subTest(locale=lang, key=key):
                     self.assertEqual(
                         render(lang),

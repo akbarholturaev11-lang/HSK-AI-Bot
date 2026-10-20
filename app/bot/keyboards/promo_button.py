@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from app.bot.keyboards.subscription import subscription_miniapp_button
+from app.bot.utils.i18n import t
 from app.services.support_contact_service import get_admin_contact_url
 
 
@@ -29,23 +30,10 @@ PROMO_BUTTON_ADMIN_LABELS = {
     "url": "Tashqi link",
 }
 
-_DEFAULT_TEXTS = {
-    "subscription": {"uz": "💎 Obuna", "ru": "💎 Подписка", "tj": "💎 Обуна"},
-    "partner": {"uz": "🤝 Partnyor", "ru": "🤝 Партнёрство", "tj": "🤝 Ҳамкорӣ"},
-    "course": {"uz": "📚 Kurs rejimi", "ru": "📚 Режим курса", "tj": "📚 Реҷаи курс"},
-    "reminder": {"uz": "⏰ Eslatma vaqti", "ru": "⏰ Напоминание", "tj": "⏰ Вақти ёдраскунак"},
-    "help": {"uz": "❓ Yordam", "ru": "❓ Помощь", "tj": "❓ Ёрдам"},
-    "contact": {"uz": "👤 Admin bilan aloqa", "ru": "👤 Связаться с админом", "tj": "👤 Тамос бо админ"},
-    "profile": {"uz": "👤 Profil", "ru": "👤 Профиль", "tj": "👤 Профил"},
-    "url": {"uz": "🔗 Ochish", "ru": "🔗 Открыть", "tj": "🔗 Кушодан"},
-}
-
-
 def default_promo_button_text(action: str, lang: str | None) -> str:
-    texts = _DEFAULT_TEXTS.get(action) or _DEFAULT_TEXTS["url"]
-    if lang not in {"uz", "ru", "tj"}:
-        lang = "ru"
-    return texts.get(lang, texts["ru"])
+    if action not in PROMO_BUTTON_ACTIONS:
+        action = "url"
+    return t(f"common.bot.promoButton.{action}", lang or "ru")
 
 
 def promo_button_choice_keyboard(prefix: str) -> InlineKeyboardMarkup:
