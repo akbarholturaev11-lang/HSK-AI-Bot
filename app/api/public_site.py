@@ -1,4 +1,4 @@
-"""Unauthenticated marketing routes. No DB, bot startup or learner mutations."""
+"""Unauthenticated marketing routes with anonymous aggregate traffic counts only."""
 import json
 import logging
 import re
@@ -17,6 +17,10 @@ from app.public_site.render import (
     public_origin,
     render_google_signin_privacy,
     render_page,
+)
+from app.services.public_site_analytics_service import (
+    PublicSiteAnalyticsService,
+    normalize_public_site_source,
 )
 
 logger = logging.getLogger("uvicorn.error.public_analytics")
@@ -89,7 +93,19 @@ def record_event(name, path, tags):
         {"event": name, "page": path, "attribution": tags}, ensure_ascii=False, separators=(",", ":")))
 
 
-def create_public_site_router(*, settings_obj):
+async def record_attributed_source_visit(request, session_factory):
+    tags = attribution(request.query_params)
+    source = normalize_public_site_source(tags.get("utm_source") or tags.get("source"))
+    if not source or session_factory is None:
+        return
+    try:
+        async with session_factory() as session:
+            await PublicSiteAnalyticsService(session).record_source_visit(source)
+    except Exception as error:
+        logger.warning("public site source count could not be saved: %s", type(error).__name__)
+
+
+def create_public_site_router(*, settings_obj, session_factory=None):
     router = APIRouter(include_in_schema=False)
     origin = public_origin(settings_obj)
     key = indexnow_key(settings_obj)
@@ -105,6 +121,8 @@ def create_public_site_router(*, settings_obj):
         tags = attribution(request.query_params)
         if request.method == "GET":
             record_event("landing_view", path, tags)
+            if path == "/":
+                await record_attributed_source_visit(request, session_factory)
         return HTMLResponse(render_page(path, settings_obj, tags), headers={
             "Cache-Control": "no-cache", "Content-Language": PAGES[path]["lang"],
             "Referrer-Policy": "strict-origin-when-cross-origin", "X-Content-Type-Options": "nosniff",
@@ -123,6 +141,7 @@ def create_public_site_router(*, settings_obj):
 <p>HSK AI processes only the information needed to provide learning, account, security and subscription features.</p>
 <h2>Information we process</h2>
 <p>Account identifiers from the Telegram, Google or Apple method you choose; your in-app display name and avatar choice; course progress, XP, streaks, mistakes, learning settings, subscription state, invitations and service diagnostics. Google or Apple can create an account without Telegram.</p>
+<p>For the public website, we store daily aggregate counts of visits to the home or download page carrying campaign source labels such as Instagram, TikTok or YouTube. The counts do not include a cookie, visitor ID or account ID, and repeat visits are counted again.</p>
 <h2>Google and Apple sign-in</h2>
 <p>Provider subject identifiers are stored as keyed hashes. A provider may also supply an email address for display and account-security purposes. Email is not used to merge unrelated accounts.</p>
 <p>Additional sign-in methods are connected only from an authenticated HSK AI account. Progress and purchases belong to that HSK AI account. Using an unrelated sign-in method does not transfer another account's progress or purchases.</p>

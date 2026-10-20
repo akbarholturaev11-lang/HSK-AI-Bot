@@ -2751,6 +2751,7 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     page.route("**/api/admin-miniapp/overview", lambda route: json_response(route, admin_payload()))
     page.route("**/api/admin-miniapp/finance-stats", lambda route: json_response(route, admin_finance_payload()))
     page.route("**/api/admin-miniapp/sub-entry-stats", lambda route: json_response(route, {"ok": True, "rows": []}))
+    page.route("**/api/admin-miniapp/public-site-traffic", lambda route: json_response(route, {"ok": True, "rows": []}))
     page.route(
         "**/api/admin-miniapp/management",
         lambda route: json_response(route, management),

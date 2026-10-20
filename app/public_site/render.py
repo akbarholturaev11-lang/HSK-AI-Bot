@@ -150,9 +150,9 @@ def render_page(path, settings_obj, tags=None):
         "uz": "Keyingi qadamni tanlang",
     }[lang]
     privacy = {
-        "tg": "Мо кушодани саҳифа ва гузариш ба ботро бо нишонаҳои маърака дар сабти сервер ҳисоб мекунем. Ин саҳифа кукиҳои таҳлилӣ намегузорад ва ба ҳисоби Telegram пайваст намекунад.",
-        "ru": "Мы записываем открытие страницы и переход к боту с метками кампании в серверный журнал. Страница не устанавливает аналитические cookie и не связывает посещение с аккаунтом Telegram.",
-        "uz": "Sahifa ochilishi va botga o‘tish kampaniya belgilari bilan server jurnaliga yoziladi. Sahifa analytics cookie o‘rnatmaydi va tashrifni Telegram hisobiga bog‘lamaydi.",
+        "tg": "Мо кушодани саҳифа ва гузариш ба ботро бо нишонаҳои маърака дар сабти сервер ва омори ҷамъбастии ҳаррӯза ҳисоб мекунем. Ин саҳифа кукиҳои таҳлилӣ намегузорад ва ташрифро ба ҳисоби Telegram пайваст намекунад.",
+        "ru": "Мы учитываем открытие страницы и переход к боту с метками кампании в серверном журнале и анонимной дневной статистике. Страница не устанавливает аналитические cookie и не связывает посещение с аккаунтом Telegram.",
+        "uz": "Sahifa ochilishi va botga o‘tishni kampaniya belgilari bilan server jurnalida va anonim kunlik jamlanma statistikada hisoblaymiz. Sahifa analytics cookie o‘rnatmaydi va tashrifni Telegram hisobiga bog‘lamaydi.",
     }[lang]
     schema = json.dumps(structured_data(path, origin), ensure_ascii=False).replace("<", "\\u003c")
     handle_rel = ' rel="nofollow"'
@@ -170,10 +170,10 @@ def render_page(path, settings_obj, tags=None):
 <link rel="canonical" href="{esc(canonical)}">{hreflang}{verification}
 <meta property="og:title" content="{esc(page['title'])}"><meta property="og:description" content="{esc(page['description'])}">
 <meta property="og:type" content="website"><meta property="og:url" content="{esc(canonical)}">
-<meta property="og:site_name" content="HSK AI"><meta property="og:image" content="{esc(origin)}/public-assets/social-cover.webp">
+<meta property="og:site_name" content="HSK AI"><meta property="og:image" content="{esc(origin)}/public-assets/social-cover.webp?v=2">
 <meta property="og:image:alt" content="HSK AI"><meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{esc(page['title'])}"><meta name="twitter:description" content="{esc(page['description'])}">
-<meta name="twitter:image" content="{esc(origin)}/public-assets/social-cover.webp">
+<meta name="twitter:image" content="{esc(origin)}/public-assets/social-cover.webp?v=2">
 <link rel="icon" href="/public-assets/logo.png" type="image/png">
 <link rel="stylesheet" href="/public-assets/site.css?v=3">
 <script type="application/ld+json">{schema}</script></head>

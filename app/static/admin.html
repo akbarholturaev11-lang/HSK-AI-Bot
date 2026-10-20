@@ -665,6 +665,12 @@
           <div class="explain" id="sourceAttributionExplain">Ҳар бир тўлов обуна саҳифасига киришнинг энг яқин манбасига боғланади.</div>
         </div>
 
+        <div class="block">
+          <div class="block-head"><span class="bi">🌐</span><div><h3>Ижтимоий тармоқдан сайтга киришлар</h3><p>Сўнгги 7 кун, 30 кун ва бутун давр</p></div></div>
+          <div id="publicSiteTraffic"><p class="empty">Юкланмоқда…</p></div>
+          <div class="explain">Instagram, TikTok ва YouTube UTM ҳаволалари орқали бош саҳифа очилишлари. Ҳар бир очилиш саналиб, такрорий киришлар ҳам алоҳида ҳисобланади.</div>
+        </div>
+
         <!-- General overview report -->
         <div class="block">
           <div class="block-head"><span class="bi">📋</span><div><h3>Умумий кўрсаткичлар</h3><p>Фойдаланувчилар, тўловлар ва курс фаоллиги</p></div></div>
@@ -956,7 +962,7 @@
       renderUserFilters(); renderUsers();
       renderPayments();
       renderModules();
-      loadSubEntry(); loadNotifications(); loadCourseAds();
+      loadSubEntry(); loadPublicSiteTraffic(); loadNotifications(); loadCourseAds();
       loadManagement(true).then(renderAiModel).catch(()=>{});
     }
 
@@ -1429,6 +1435,18 @@
         $("subEntryStats").innerHTML = `<table class="tbl"><thead><tr><th>Манба</th><th class="r">Ҳафта<br><small>кириш/одам</small></th><th class="r">Жами<br><small>кириш/одам</small></th></tr></thead>
           <tbody>${d.rows.map(r=>`<tr><td><b>${esc(metricLabel(r.label))}</b></td><td class="r"><b>${r.total_week}</b>/${r.unique_week}</td><td class="r">${r.total_all}/${r.unique_all}</td></tr>`).join("")}</tbody></table>`;
       }catch(e){ $("subEntryStats").innerHTML="<p class='empty'>Хатолик</p>"; }
+    }
+
+    async function loadPublicSiteTraffic(){
+      const box=$("publicSiteTraffic");
+      if(!box) return;
+      try{
+        const d=await apiPost("/api/admin-miniapp/public-site-traffic",{});
+        const rows=d.rows||[];
+        box.innerHTML=rows.length?`<table class="tbl"><thead><tr><th>Манба</th><th class="r">7 кун</th><th class="r">30 кун</th><th class="r">Жами</th></tr></thead>
+          <tbody>${rows.map(r=>`<tr><td><b>${esc(r.label)}</b></td><td class="r">${Number(r.visits_7_days||0)}</td><td class="r">${Number(r.visits_30_days||0)}</td><td class="r"><b>${Number(r.visits_all_time||0)}</b></td></tr>`).join("")}</tbody></table>`
+          : "<p class='empty'>Маълумот йўқ</p>";
+      }catch(e){ box.innerHTML="<p class='empty'>Сайт манбалари статистикаси юкланмади.</p>"; }
     }
 
     function botReachabilitySourceLabel(source){
