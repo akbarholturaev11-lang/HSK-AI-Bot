@@ -10,6 +10,17 @@
     <string name="hsk_common_action_logout" formatted="false">Баромадан</string>
     <string name="hsk_common_action_start" formatted="false">Оғоз</string>
     <string name="hsk_common_auth_expires" formatted="false">Барои тасдиқи вуруд {time} монд</string>
+    <string name="hsk_common_bot_accountDeletion_accountVerified" formatted="false">Ҳисоб тасдиқ шуд.</string>
+    <string name="hsk_common_bot_accountDeletion_expired" formatted="false">Муҳлати дархост гузаштааст ё он ёфт нашуд. Дар сомона аз нав оғоз кунед.</string>
+    <string name="hsk_common_bot_accountDeletion_privateChatOnly" formatted="false">Дархостро аз чати хусусӣ фиристед.</string>
+    <string name="hsk_common_bot_accountDeletion_prompt" formatted="false">Оё мехоҳед нест кардани ҳисоби HSK AI ва маълумоти ба он алоқамандро дархост кунед? Ин ба ҳисоби шумо дар Android, Telegram Mini App ва Desktop низ таъсир мерасонад. Пас аз тасдиқ дархост сабт шуда, дар давоми 30 рӯз баррасӣ мешавад; маълумот фавран нест карда намешавад. Пардохтҳои тасдиқшуда ва сабтҳои ҳисобдорие, ки бояд тибқи қонун нигоҳ дошта шаванд, метавонанд ҳифз шаванд.</string>
+    <string name="hsk_common_bot_accountDeletion_requestAccepted" formatted="false">Дархост қабул шуд.</string>
+    <string name="hsk_common_bot_accountDeletion_requestSaved" formatted="false">Дархости нест кардани ҳисоб сабт шуд. Рақам: {requestId}. Дархост дар давоми 30 рӯз баррасӣ мешавад. Пардохтҳои тасдиқшуда ва сабтҳои ҳисобдорӣ тибқи қоидаҳои ҷории нигоҳдорӣ метавонанд боқӣ монанд.</string>
+    <string name="hsk_common_bot_accountDeletion_returnToWeb" formatted="false">Ҳисоб тасдиқ шуд. Ба саҳифаи HSK AI дар браузер баргардед ва дархости ниҳоиро тасдиқ кунед.</string>
+    <string name="hsk_common_bot_accountDeletion_submitButton" formatted="false">Нест кардани ҳисобро дархост кунед</string>
+    <string name="hsk_common_bot_accountDeletion_submitFailed" formatted="false">Дархост фиристода нашуд. Баъдтар аз нав кӯшиш кунед.</string>
+    <string name="hsk_common_bot_accountDeletion_webConfirmButton" formatted="false">Ин ҳисоби ман аст</string>
+    <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">Дар сомонаи HSK AI дархости нест кардани ҳисоб оғоз шуд. Танҳо дар сурате тасдиқ кунед, ки онро худатон оғоз карда бошед. Пас аз тасдиқ метавонед дар браузер дархости нест кардани ҳисобро фиристед.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Реҷаи курс ҳоло дар таҳия аст.</string>
     <string name="hsk_common_common_refresh" formatted="false">Навсозӣ</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">Савол оид ба забони чинӣ</string>

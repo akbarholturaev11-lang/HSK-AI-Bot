@@ -58,6 +58,17 @@
     "action.logout": "Chiqish",
     "action.start": "Boshlash",
     "bot.courseModeUnavailable": "🚧 Kurs rejimi hozircha ishlab chiqilmoqda.",
+    "bot.accountDeletion.webStarted": "HSK AI veb-sahifasida hisobni o‘chirish so‘rovi boshlandi. Faqat uni o‘zingiz boshlagan bo‘lsangiz tasdiqlang. Tasdiqdan keyin brauzerda hisobni o‘chirish so‘rovini yuborishingiz mumkin.",
+    "bot.accountDeletion.webConfirmButton": "Bu mening hisobim",
+    "bot.accountDeletion.privateChatOnly": "So‘rovni shaxsiy chatdan yuboring.",
+    "bot.accountDeletion.expired": "So‘rov muddati tugagan yoki topilmadi. Veb-sahifada qaytadan boshlang.",
+    "bot.accountDeletion.accountVerified": "Hisob tasdiqlandi.",
+    "bot.accountDeletion.returnToWeb": "Hisob tasdiqlandi. Brauzerdagi HSK AI sahifasiga qaytib, yakuniy so‘rovni tasdiqlang.",
+    "bot.accountDeletion.prompt": "HSK AI hisobingizni va unga bog‘liq ma’lumotlarni o‘chirishni so‘ramoqchimisiz? Bu Android, Telegram Mini App va desktop hisobingizga ham ta’sir qiladi. Tasdiqlasangiz, so‘rovingiz saqlanib 30 kun ichida ko‘rib chiqiladi; ma’lumotlar hozir o‘chirilmaydi. Tasdiqlangan to‘lovlar va qonuniy hisob-kitob yozuvlari saqlanishi mumkin.",
+    "bot.accountDeletion.submitButton": "O‘chirishni so‘rash",
+    "bot.accountDeletion.submitFailed": "So‘rov yuborilmadi. Keyinroq qayta urinib ko‘ring.",
+    "bot.accountDeletion.requestAccepted": "So‘rov qabul qilindi.",
+    "bot.accountDeletion.requestSaved": "Hisobni o‘chirish so‘rovingiz saqlandi. Raqam: {requestId}. So‘rov 30 kun ichida ko‘rib chiqiladi. Tasdiqlangan to‘lovlar va qonuniy hisob-kitob yozuvlari amaldagi saqlash qoidalariga muvofiq saqlanib qolishi mumkin.",
     "state.loading": "Yuklanmoqda…"
   }
 }

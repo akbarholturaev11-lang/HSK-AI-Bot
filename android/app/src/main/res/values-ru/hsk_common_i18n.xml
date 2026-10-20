@@ -10,6 +10,17 @@
     <string name="hsk_common_action_logout" formatted="false">Выйти</string>
     <string name="hsk_common_action_start" formatted="false">Начать</string>
     <string name="hsk_common_auth_expires" formatted="false">На подтверждение входа осталось {time}</string>
+    <string name="hsk_common_bot_accountDeletion_accountVerified" formatted="false">Аккаунт подтверждён.</string>
+    <string name="hsk_common_bot_accountDeletion_expired" formatted="false">Срок действия запроса истёк или запрос не найден. Начните заново на веб-странице.</string>
+    <string name="hsk_common_bot_accountDeletion_privateChatOnly" formatted="false">Отправьте запрос в личном чате.</string>
+    <string name="hsk_common_bot_accountDeletion_prompt" formatted="false">Хотите отправить запрос на удаление аккаунта HSK AI и связанных с ним данных? Это также затронет ваши аккаунты Android, Telegram Mini App и Desktop. После подтверждения запрос будет сохранён и рассмотрен в течение 30 дней; данные не удаляются сразу. Подтверждённые платежи и записи, которые необходимо хранить по закону, могут быть сохранены.</string>
+    <string name="hsk_common_bot_accountDeletion_requestAccepted" formatted="false">Запрос принят.</string>
+    <string name="hsk_common_bot_accountDeletion_requestSaved" formatted="false">Запрос на удаление аккаунта сохранён. Номер: {requestId}. Запрос будет рассмотрен в течение 30 дней. Подтверждённые платежи и записи бухгалтерского учёта могут храниться согласно действующим правилам хранения.</string>
+    <string name="hsk_common_bot_accountDeletion_returnToWeb" formatted="false">Аккаунт подтверждён. Вернитесь на страницу HSK AI в браузере и подтвердите окончательный запрос.</string>
+    <string name="hsk_common_bot_accountDeletion_submitButton" formatted="false">Запросить удаление</string>
+    <string name="hsk_common_bot_accountDeletion_submitFailed" formatted="false">Не удалось отправить запрос. Попробуйте позже.</string>
+    <string name="hsk_common_bot_accountDeletion_webConfirmButton" formatted="false">Это мой аккаунт</string>
+    <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">На сайте HSK AI начат запрос на удаление аккаунта. Подтвердите его, только если вы сами начали этот процесс. После подтверждения можно будет отправить запрос на удаление аккаунта в браузере.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Режим курса сейчас в разработке.</string>
     <string name="hsk_common_common_refresh" formatted="false">Обновить</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">Вопрос о китайском языке</string>

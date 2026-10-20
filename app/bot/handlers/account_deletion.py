@@ -9,13 +9,29 @@ from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMar
 
 from app.config import settings
 from app.api.account_deletion import notify_deletion_request
+from app.repositories.user_repo import UserRepository
 from app.services.account_deletion_service import AccountDeletionService
 from app.services.desktop_auth_service import DesktopAuthError
+from app.bot.utils.i18n import t
 
 router = Router()
 logger = logging.getLogger(__name__)
 CONFIRM = "account_deletion:confirm"
 VERIFY = "account_deletion:verify:"
+
+
+def _normalize_language(value):
+    if not isinstance(value, str):
+        return "ru"
+    language = value.lower().split("-", 1)[0]
+    if language == "tg":
+        language = "tj"
+    return language if language in {"uz", "ru", "tj"} else "ru"
+
+
+async def _account_deletion_language(session, telegram_id, fallback=None):
+    user = await UserRepository(session).get_by_telegram_id(telegram_id)
+    return _normalize_language(getattr(user, "language", None) or fallback)
 
 
 def is_account_deletion_event(event):
@@ -32,16 +48,19 @@ def is_account_deletion_event(event):
 
 
 @router.message(F.text.regexp(r"^/start(?:@\w+)?\s+delete_[0-9a-f]{32}\s*$"))
-async def begin_web_verification(message: Message):
+async def begin_web_verification(message: Message, session):
     if not message.from_user or message.chat.type != "private" or message.chat.id != message.from_user.id:
         return
     request_id = str(uuid.UUID(message.text.strip().rsplit("delete_", 1)[1]))
+    lang = await _account_deletion_language(
+        session, message.from_user.id, getattr(message.from_user, "language_code", None))
     await message.answer(
-        "HSK AI web sahifasida hisobni o‘chirish so‘rovi boshlandi. "
-        "Faqat o‘zingiz boshlagan bo‘lsangiz tasdiqlang. Tasdiqdan keyin brauzerda "
-        "shu hisobni o‘chirish so‘rovini yuborish mumkin bo‘ladi.",
+        t("common.bot.accountDeletion.webStarted", lang),
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[[
-            InlineKeyboardButton(text="Bu mening hisobim", callback_data=VERIFY + request_id),
+            InlineKeyboardButton(
+                text=t("common.bot.accountDeletion.webConfirmButton", lang),
+                callback_data=VERIFY + request_id,
+            ),
         ]]),
     )
 
@@ -49,30 +68,33 @@ async def begin_web_verification(message: Message):
 @router.callback_query(F.data.startswith(VERIFY))
 async def verify_web_account(callback: CallbackQuery, session):
     if not is_account_deletion_event(callback):
-        await callback.answer("So‘rovni shaxsiy chatdan yuboring.", show_alert=True)
+        lang = _normalize_language(getattr(callback.from_user, "language_code", None))
+        await callback.answer(t("common.bot.accountDeletion.privateChatOnly", lang), show_alert=True)
         return
+    lang = await _account_deletion_language(
+        session, callback.from_user.id, getattr(callback.from_user, "language_code", None))
     try:
         await AccountDeletionService(session, settings).verify_telegram(
             request_id=callback.data[len(VERIFY):], telegram_id=callback.from_user.id)
     except DesktopAuthError:
-        await callback.answer("So‘rov eskirgan yoki topilmadi. Web sahifada qayta boshlang.", show_alert=True)
+        await callback.answer(t("common.bot.accountDeletion.expired", lang), show_alert=True)
         return
     await callback.message.edit_reply_markup(reply_markup=None)
-    await callback.answer("Hisob tasdiqlandi.")
-    await callback.message.answer("Hisob tasdiqlandi. Brauzerdagi HSK AI sahifasiga qaytib yakuniy so‘rovni tasdiqlang.")
+    await callback.answer(t("common.bot.accountDeletion.accountVerified", lang))
+    await callback.message.answer(t("common.bot.accountDeletion.returnToWeb", lang))
 
 
 @router.message(F.text.regexp(r"^/start(?:@\w+)?\s+account_deletion\s*$"))
-async def begin_account_deletion(message: Message):
+async def begin_account_deletion(message: Message, session):
     if not message.from_user or message.chat.type != "private":
         return
+    lang = await _account_deletion_language(
+        session, message.from_user.id, getattr(message.from_user, "language_code", None))
     await message.answer(
-        "HSK AI hisobingizni va unga bog‘liq ma’lumotlarni o‘chirishni so‘ramoqchimisiz? "
-        "Bu Android, Telegram Mini App va desktop hisobingizga ham ta’sir qiladi. "
-        "Tasdiqlasangiz, so‘rovingiz saqlanib 30 kun ichida ko‘rib chiqiladi; ma’lumotlar hozir o‘chirilmaydi. "
-        "Tasdiqlangan to‘lovlar va qonuniy hisob-kitob yozuvlari saqlanishi mumkin.",
+        t("common.bot.accountDeletion.prompt", lang),
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[[
-            InlineKeyboardButton(text="O‘chirishni so‘rash", callback_data=CONFIRM),
+            InlineKeyboardButton(
+                text=t("common.bot.accountDeletion.submitButton", lang), callback_data=CONFIRM),
         ]]),
     )
 
@@ -82,20 +104,23 @@ async def confirm_account_deletion(callback: CallbackQuery, session):
     user = callback.from_user
     if not user or not callback.message or callback.message.chat.type != "private" \
             or callback.message.chat.id != user.id:
-        await callback.answer("So‘rovni shaxsiy chatdan yuboring.", show_alert=True)
+        lang = _normalize_language(getattr(user, "language_code", None))
+        await callback.answer(t("common.bot.accountDeletion.privateChatOnly", lang), show_alert=True)
         return
+
+    lang = await _account_deletion_language(
+        session, user.id, getattr(user, "language_code", None))
 
     try:
         result = await AccountDeletionService(session, settings).submit_telegram(user.id)
     except Exception:
         logger.error("Failed to persist account deletion request")
-        await callback.answer("So‘rov yuborilmadi. Keyinroq qayta urinib ko‘ring.", show_alert=True)
+        await callback.answer(t("common.bot.accountDeletion.submitFailed", lang), show_alert=True)
         return
     await notify_deletion_request(callback.bot, settings, result)
     await callback.message.edit_reply_markup(reply_markup=None)
-    await callback.answer("So‘rov qabul qilindi.")
-    await callback.message.answer(
-        f"Hisobni o‘chirish so‘rovingiz saqlandi. Raqam: {result['request_id']}. "
-        "So‘rov 30 kun ichida ko‘rib chiqiladi. Tasdiqlangan to‘lovlar va qonuniy "
-        "hisob-kitob yozuvlari mavjud saqlash qoidalariga muvofiq qolishi mumkin."
-    )
+    await callback.answer(t("common.bot.accountDeletion.requestAccepted", lang))
+    await callback.message.answer(t(
+        "common.bot.accountDeletion.requestSaved", lang,
+        requestId=result["request_id"],
+    ))

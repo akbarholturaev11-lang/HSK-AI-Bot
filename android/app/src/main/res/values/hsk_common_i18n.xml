@@ -10,6 +10,17 @@
     <string name="hsk_common_action_logout" formatted="false">Chiqish</string>
     <string name="hsk_common_action_start" formatted="false">Boshlash</string>
     <string name="hsk_common_auth_expires" formatted="false">Kirishni tasdiqlash uchun {time} qoldi</string>
+    <string name="hsk_common_bot_accountDeletion_accountVerified" formatted="false">Hisob tasdiqlandi.</string>
+    <string name="hsk_common_bot_accountDeletion_expired" formatted="false">So‘rov muddati tugagan yoki topilmadi. Veb-sahifada qaytadan boshlang.</string>
+    <string name="hsk_common_bot_accountDeletion_privateChatOnly" formatted="false">So‘rovni shaxsiy chatdan yuboring.</string>
+    <string name="hsk_common_bot_accountDeletion_prompt" formatted="false">HSK AI hisobingizni va unga bog‘liq ma’lumotlarni o‘chirishni so‘ramoqchimisiz? Bu Android, Telegram Mini App va desktop hisobingizga ham ta’sir qiladi. Tasdiqlasangiz, so‘rovingiz saqlanib 30 kun ichida ko‘rib chiqiladi; ma’lumotlar hozir o‘chirilmaydi. Tasdiqlangan to‘lovlar va qonuniy hisob-kitob yozuvlari saqlanishi mumkin.</string>
+    <string name="hsk_common_bot_accountDeletion_requestAccepted" formatted="false">So‘rov qabul qilindi.</string>
+    <string name="hsk_common_bot_accountDeletion_requestSaved" formatted="false">Hisobni o‘chirish so‘rovingiz saqlandi. Raqam: {requestId}. So‘rov 30 kun ichida ko‘rib chiqiladi. Tasdiqlangan to‘lovlar va qonuniy hisob-kitob yozuvlari amaldagi saqlash qoidalariga muvofiq saqlanib qolishi mumkin.</string>
+    <string name="hsk_common_bot_accountDeletion_returnToWeb" formatted="false">Hisob tasdiqlandi. Brauzerdagi HSK AI sahifasiga qaytib, yakuniy so‘rovni tasdiqlang.</string>
+    <string name="hsk_common_bot_accountDeletion_submitButton" formatted="false">O‘chirishni so‘rash</string>
+    <string name="hsk_common_bot_accountDeletion_submitFailed" formatted="false">So‘rov yuborilmadi. Keyinroq qayta urinib ko‘ring.</string>
+    <string name="hsk_common_bot_accountDeletion_webConfirmButton" formatted="false">Bu mening hisobim</string>
+    <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">HSK AI veb-sahifasida hisobni o‘chirish so‘rovi boshlandi. Faqat uni o‘zingiz boshlagan bo‘lsangiz tasdiqlang. Tasdiqdan keyin brauzerda hisobni o‘chirish so‘rovini yuborishingiz mumkin.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Kurs rejimi hozircha ishlab chiqilmoqda.</string>
     <string name="hsk_common_common_refresh" formatted="false">Yangilash</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">AI uchun savol</string>
