@@ -34,12 +34,11 @@ staging and cross-platform QA remain pending.
 ## 0. Where to resume
 
 - Repository: `akbarholturaev11-lang/HSK-AI-Bot`.
-- Active integration branch: `codex/p3-main-integration-20261020`; the original `codex/i18n-local-first-foundation-20261017` work is already integrated. Branch was originally cut from `main` at `160a51d69f3324e3162375213ec61b5587b19533`.
-- Local HEAD `569e321e3c28238880c57793ba5f5bf3ee6dc5f` includes current fetched `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5`; remote feature remains at `4b6d52122f55f7886e47ff5e2bbe6f3331628370`. Recheck both refs and Actions before continuing or pushing.
-- Branch-only work; do not push/merge `main`, deploy, force-push or run live DB migrations. Keep `uz`, `ru`, `tj` canonical (`tg` for Android resource qualifier).
-- Current catalog: 874 course keys per locale; six generated offline artifacts current; 12 HTML consumers pinned to `20261020-ed284a21dc2c`. The exact P0 suite has 64 modules / 358 tests after registering the missing lesson-settings adoption regression; run and confirm exact-head CI before treating it as green.
-- The exact `origin/main` `app/static/admin.html` change is pinned in `reviewed_main_source_changes.json`; `scripts/i18n_baseline_guard.py` now verifies main SHA `66ac3d4`. This is source provenance, not product QA.
-- **Next concrete work:** continue P2 platform adoption, review public lesson GET and identity-scoped cache boundaries without breaking legacy/Free/Pro behavior, and complete approved staging/auth/account-switch/installed-client QA. Preserve lesson content and grading.
+- Active integration branch: `codex/p3-main-integration-20261020`; the old `codex/i18n-local-first-foundation-20261017` work is already integrated.
+- Latest code commit with exact P0 evidence: `0a3e21a08dc17289aec1525ec4fd04513f0afb84`. `origin/main` is `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5` and is an ancestor. This handoff update can advance the branch with docs-only changes; re-read remote HEAD and CI before coding. Branch-only work; do not push/merge `main`, deploy, force-push or run live DB migrations.
+- Exact-head P0 run `39423433173` passed 363 tests. Read-only source checks report 811 frozen files / 746 lessons / 13 verified main revisions / 0 baseline blockers; 892 UI keys per locale and 6 generated artifacts current.
+- P2 account-cache fix scopes lesson hot-cache and pending reads by `localUserScope`; an in-flight response is rejected if identity scope changes. This does not authorize server reads. The public lesson JSON route and distinct preview, prefetch, skip-test and foundation access policies remain open.
+- **Next task:** implement authenticated, non-consuming access for lesson data and purpose-specific preview/skip-test reads without changing lesson sequence, quota, answers, payment or Pro behavior. Add authenticated regressions; verify exact-head P0/backend CI; then continue remaining P2 platform adoption and applicable staging/client QA.
 
 ## 1. Architecture / schema
 
@@ -192,7 +191,7 @@ Do not mark implementation complete based on the plan being written.
 | Local-first architecture decision | DONE | plan + `PROJECT_MEMORY.md` |
 | Surface source registry | INITIAL | `localization/surface_registry.json` |
 | Full reviewed inventory/baselines (P0) | IN PROGRESS | 811 frozen sources / 746 lessons / 0 baseline blockers; route security, staging and real-client QA remain open |
-| Generated canonical catalogs + validators (P1) | IMPLEMENTED | deterministic UZ/RU/TJ resources for Android/Mini App/Desktop/Bot; 874 course UI keys and 6 current generated artifacts |
+| Generated canonical catalogs + validators (P1) | IMPLEMENTED | deterministic UZ/RU/TJ resources for Android/Mini App/Desktop/Bot; 892 course UI keys and 6 current generated artifacts |
 | Platform runtime migrations (P2) | IN PROGRESS | Mini App uses local course catalog; remaining inline UI and Android/native, Desktop and Bot adoption are still under review |
 | Versioned lesson locale overlays (P3) | IN PROGRESS | 136 contexts / 408 agent-reviewed locale strings; authenticated display-only runtime implemented; release QA pending |
 | Any new language enabled (P4) | NOT STARTED | prohibited until gates |
