@@ -42,6 +42,17 @@ class SubscriptionUIAdoptionTests(unittest.TestCase):
                 for key, value in scalar.items():
                     self.assertEqual(catalog["subscriptionPage." + key], value)
 
+    def test_close_backdrop_accessibility_labels_use_localized_catalog_copy(self):
+        source = subscription_source()
+        for selector in ("#inviteBackdrop", "#supportBackdrop", "#renewalBackdrop"):
+            self.assertIn(f'$("{selector}").setAttribute("aria-label",text.close)', source)
+        self.assertEqual(source.count('setAttribute("aria-label",text.close)'), 3)
+        for locale in LOCALES:
+            catalog = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
+            )["messages"]
+            self.assertTrue(catalog["subscriptionPage.close"])
+
     def test_preload_and_entitlement_logic_boundaries(self):
         source = subscription_source()
         self.assertLess(source.index("hsk-course-i18n.js?v=20261020-779fc95f8460"),

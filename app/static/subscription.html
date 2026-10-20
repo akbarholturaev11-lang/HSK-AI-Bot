@@ -1370,6 +1370,9 @@ function render(){
      sahifalarida «HSK AI» ustida qoladi. */
   $("#kicker").style.display=(state.mode==="subscription"||state.mode==="hsk30_unlock")?"none":"";
   $("#helpBtn").setAttribute("aria-label",text.supportTitle);
+  $("#inviteBackdrop").setAttribute("aria-label",text.close);
+  $("#supportBackdrop").setAttribute("aria-label",text.close);
+  $("#renewalBackdrop").setAttribute("aria-label",text.close);
   const statusText=state.preview?text.preview:(state.loadError?text.loadError:(state.offerExpired?text.offerExpired:""));
   $("#status").textContent=statusText;
   $("#status").classList.toggle("show",Boolean(statusText));

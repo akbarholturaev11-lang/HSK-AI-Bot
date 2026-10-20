@@ -70,8 +70,8 @@
     },
     "app/static/subscription.html": {
       "baseline_sha1": "6841d29b680d21f018133fc7a60079abebd45bf0",
-      "reviewed_sha1": "08a50ef542ea0a76fdd6610b5cc898f94e084fb7",
-      "reason": "The static course UI bundle hash was refreshed to the current generated local catalog blob; script order and page behavior are unchanged. P2 cache-coherency: reviewed this HTML consumer at the generated course catalog hash 20261020-ed284a21dc2c. P2 cache-coherency: this HTML consumer now references the 875-key generated course catalog at 20261020-7eba899ffe2f; script order and page behavior remain unchanged. P2 cache-coherency: refreshed this consumer to the 883-key generated course UI bundle at 20261020-96b42704ca5a; page behavior unchanged.  P2 cache-coherency: updated course catalog reference to 20261020-779fc95f8460 for the 9 dictionary plural messages; page behavior unchanged."
+      "reviewed_sha1": "8ba90c6e9520a74fedef8e3183e67034f97c4ffa",
+      "reason": "The static course UI bundle hash was refreshed to the current generated local catalog blob; script order and page behavior are unchanged. P2 cache-coherency: reviewed this HTML consumer at the generated course catalog hash 20261020-ed284a21dc2c. P2 cache-coherency: this HTML consumer now references the 875-key generated course catalog at 20261020-7eba899ffe2f; script order and page behavior remain unchanged. P2 cache-coherency: refreshed this consumer to the 883-key generated course UI bundle at 20261020-96b42704ca5a; page behavior unchanged.  P2 cache-coherency: updated course catalog reference to 20261020-779fc95f8460 for the 9 dictionary plural messages; page behavior unchanged. P2 accessibility: invite, support and renewal backdrop close labels now use the existing localized subscriptionPage.close value; checkout and payment behavior unchanged."
     }
   }
 }
