@@ -33,17 +33,14 @@
       var dest = PAGES[key] && PAGES[key][lang];
       if (key === "download") dest = "/download?lang=" + (lang === "tg" ? "tj" : lang);
       if (!dest) return;
-      if (key === "download") {
-        var old = new URL(link.href, window.location.href);
-        ["ref","mode","utm_source","utm_medium","utm_campaign","utm_term","utm_content","source"].forEach(function (name) {
-          if (old.searchParams.has(name)) {
-            var url = new URL(dest, window.location.origin);
-            url.searchParams.set(name, old.searchParams.get(name));
-            dest = url.pathname + url.search;
-          }
-        });
-      }
-      link.href = dest;
+      var old = new URL(link.href, window.location.href);
+      var next = new URL(dest, window.location.origin);
+      // Keep only existing, explicitly allowlisted campaign tags. Do not copy
+      // sign-in tokens, account identifiers, or arbitrary query parameters.
+      ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","source"].forEach(function (name) {
+        if (old.searchParams.has(name)) next.searchParams.set(name, old.searchParams.get(name));
+      });
+      link.href = next.pathname + next.search;
     });
   }
   var site = {get: read, set: function(lang) { save(lang); updateLinks(lang); }, syncLinks: updateLinks, normalize: normalize};
