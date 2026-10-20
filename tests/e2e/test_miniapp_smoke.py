@@ -2226,9 +2226,9 @@ def test_practice_icon_accessibility_names_follow_selected_locale(page):
 
 def test_course_resource_and_writer_labels_follow_selected_locale(page):
     expected = {
-        "uz": {"dict": "Ieroglif lug'ati", "phrases": "Tayyor gaplar", "write": "书写 Yozish", "new": "YANGI"},
-        "ru": {"dict": "Словарь иероглифов", "phrases": "Готовые фразы", "write": "书写 Письмо", "new": "НОВОЕ"},
-        "tj": {"dict": "Луғати иероглиф", "phrases": "Ибораҳои омода", "write": "书写 Навиштан", "new": "НАВ"},
+        "uz": {"dict": "Ieroglif lug'ati", "phrases": "Tayyor gaplar", "write": "书写 Yozish", "settings": "Dars sozlamalari", "new": "YANGI"},
+        "ru": {"dict": "Словарь иероглифов", "phrases": "Готовые фразы", "write": "书写 Письмо", "settings": "Настройки урока", "new": "НОВОЕ"},
+        "tj": {"dict": "Луғати иероглиф", "phrases": "Ибораҳои омода", "write": "书写 Навиштан", "settings": "Танзимоти дарс", "new": "НАВ"},
     }
     runtime_errors = []
     page.on("pageerror", lambda error: runtime_errors.append(str(error)))
@@ -2252,6 +2252,8 @@ def test_course_resource_and_writer_labels_follow_selected_locale(page):
         page.locator('nav button[data-s="mashq"]').click()
         page.evaluate("NEW_SECTION_RELEASES['ready-phrases']=Date.now();renderMashq()")
         expect(page.locator("#m-ready-phrases .new-section-badge")).to_have_text(labels["new"])
+        page.evaluate("setLessonFlowControls()")
+        expect(page.locator("#flow .fgear")).to_have_attribute("aria-label", labels["settings"])
 
         page.locator("#m-dict").click()
         expect(page.locator("#resource-dict")).to_have_attribute("aria-label", labels["dict"])

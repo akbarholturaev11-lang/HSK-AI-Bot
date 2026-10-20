@@ -115,6 +115,7 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
         self.assertIn('courseMessage("newSectionBadge","NEW")', html)
         self.assertNotIn('aria-label="HSK dictionary"', html)
         self.assertNotIn('aria-label="HSK phrasebook"', html)
+        self.assertNotIn('aria-label="Settings"', html)
         self.assertNotIn('aria-label="Yangi bo‘lim"', html)
         expected = {"uz": "YANGI", "ru": "НОВОЕ", "tj": "НАВ"}
         for locale, value in expected.items():
