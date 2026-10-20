@@ -3,7 +3,15 @@
 **Fast start for the next chat:** [`localization/RESUME_NEXT_CHAT.md`](RESUME_NEXT_CHAT.md). Follow that branch/CI checkpoint first; older entries are historical.
 Updated: 2026-10-20. **The latest integration checkpoint below supersedes the earlier 815-key snapshot. Historical feature-branch entries do not describe the latest branch.**
 
-## 2026-10-20 — CURRENT P2 rating/social copy + P3 semantics checkpoint (CI SUCCESS)
+## 2026-10-20 — CURRENT P2 foundation/error recovery and P3 RU semantic corrections (CI SUCCESS)
+
+- **Work branch only:** `codex/p3-main-integration-20261020`. Verified code HEAD `c864b311977c84c4330f38694e9a3f73221f63d1`. [Exact-code-head P0 39386882825](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39386882825) **SUCCESS: 352 tests, 0 failures**, six deterministic artifacts with 0 stale outputs. These are source/CI results, not live provider, authenticated API or device acceptance. Docs-only HEAD may differ: recheck latest SHA after this handoff is committed.
+- **P2 code `5df10c73`:** 6 course UI copy keys for the actual Mini App foundation-unavailable, zero-start heading, internet retry instructions, foundation retry CTA, flow-complete retry CTA and lesson-not-ready toast. Exact UZ/RU/TJ inline fallbacks preserved via `courseMessage`; existing HTML escaping, action callbacks, entitlement decisions and physical source line positions unchanged. Canonical catalogs now **829 keys per locale**; six Android/Mini App/Desktop/Bot resources generated. All 12 bundle HTML consumers use content-addressed `?v=20261020-1f256761e2c5`; source review SHA, hotspot triage and tests updated.
+- **CI regression + repair:** First code commit `5df10c73` / P0 run `39385983079` **FAILED** with 56 failures/8 errors due to old `823` count and old cache version embedded in 14 unrelated UI tests. Commit `708bf36f` updated those test expectations; [P0 39386418096](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39386418096) **SUCCESS (350 tests)**. Do not propagate those hardcoded test versions without synchronizing them with a future catalog change.
+- **P3 code `c864b311`:** Original nHSK2 Chinese context and grammar inspected for `G066` `李文等了她一个小时。`, `G069` `李文等她等了一个小时。` (both Russian strings improperly claimed the awaited woman **arrived**) and `G130` `李文见了杨同乐两次。` (Russian string improperly implied mutual meeting). Corrected **three RU-only cells** of source SHA-bound 136-row TSV; added two exact-source regression cases and root-cause/prevention notes to `localization/AI_CONTENT_QA_POLICY.md`. UZ/TJ strings, Chinese lesson sources, any grading tokens and the 48-lesson original/mirror patch mapping are unchanged.
+- **Pending:** complete remaining P2 migration and all-136 source grammar/408-value independent semantics revisit; real authenticated Google/Apple/Telegram + old user, Free/Trial/Pro, payment/referral E2E, offline Android/Mini App/Windows/macOS visuals, isolated production-schema migration rehearsal and public-route security. Do not touch `main`, force/rebase, or deploy production.
+
+## 2026-10-20 — HISTORICAL P2 rating/social copy + P3 semantics checkpoint (superseded)
 
 - **Working branch ONLY:** `codex/p3-main-integration-20261020`. Do not modify `main`, deploy, migrate real DB, or merge original PR #179 based on this checkpoint.
 - **Latest verified integration HEAD:** `33e14d811b96cbcb11288628bc2aa368622bf69e`; [P0 GitHub Actions run 39373684091](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39373684091) **SUCCESS**: **349 tests**, 0 failures; 811 frozen files including 746 lessons, 13 strictly pinned unchanged current-main blobs, **0 baseline blockers**, 6 Mini App lesson fetch callsites with 0 regressions and 6 generated locale artifacts with 0 stale outputs.
@@ -14,7 +22,7 @@ Updated: 2026-10-20. **The latest integration checkpoint below supersedes the ea
 
 
 
-## 2026-10-20 — CURRENT main/P3 integration checkpoint: P0 CI GREEN, P2 ongoing
+## 2026-10-20 — HISTORICAL main/P3 integration checkpoint: P0 CI GREEN, P2 ongoing
 
 - **Authoritative integration branch:** `codex/p3-main-integration-20261020`; the original `codex/i18n-local-first-foundation-20261017` was merged into it with conflict-safe integration. Do **not** continue the old PR #179 branch by accident. The owner's explicit instruction: **do not update `main`, deploy production or force/rebase** during this stage.
 - **Last CI-verified application HEAD:** `3d24cbb5475c20a70de021bbbebab8a5f74fb900`. [P0 GitHub Actions run 39371112480](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39371112480) **SUCCESS**, 346 tests, zero failures, 811 frozen files / 746 lessons, 13 exactly pinned current-main source revisions and **zero review blockers**. Six Mini App data fetch callsites remain classified with zero regressions; generated three-locale course UI files report zero stale artifacts.
