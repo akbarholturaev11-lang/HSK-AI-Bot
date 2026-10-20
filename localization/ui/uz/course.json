@@ -813,6 +813,10 @@
     "subscriptionPage.proReturn": "Ilovaga qaytish",
     "subscriptionPage.proReviewAccess": "To‘lov tekshiruvga yuborildi. Tekshiruv davomida Pro imkoniyatlaridan foydalanishni boshlashingiz mumkin.",
     "subscriptionPage.proReviewTitle": "Chek tekshiruvga yuborildi",
-    "subscriptionPage.proReviewWait": "To‘lov tekshiruvga yuborildi. Avvalgi vaqtinchalik ruxsat ishlatilgan, shu sababli Pro admin tasdig‘idan keyin ochiladi. Jarayon tezroq bo‘lishini xohlasangiz, adminga yozishingiz mumkin."
+    "subscriptionPage.proReviewWait": "To‘lov tekshiruvga yuborildi. Avvalgi vaqtinchalik ruxsat ishlatilgan, shu sababli Pro admin tasdig‘idan keyin ochiladi. Jarayon tezroq bo‘lishini xohlasangiz, adminga yozishingiz mumkin.",
+    "lessonSettings.title": "Dars sozlamalari",
+    "lessonSettings.exit": "Chiqish",
+    "sheet.dialogLabel": "HSK AI oynasi",
+    "sheet.closeLabel": "Yopish"
   }
 }

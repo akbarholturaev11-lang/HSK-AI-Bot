@@ -40,7 +40,7 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
             catalog = json.loads(
                 (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
             )["messages"]
-            self.assertEqual(len(catalog), 811)
+            self.assertEqual(len(catalog), 815)
             self.assertEqual(set(original[locale]), set(original["ru"]))
             self.assertEqual(set(live_text[locale]), set(live_text["ru"]))
             for key, value in {**original[locale], **live_text[locale]}.items():

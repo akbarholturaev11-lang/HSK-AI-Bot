@@ -249,6 +249,8 @@
     <string name="hsk_course_learner" formatted="false">ученик</string>
     <string name="hsk_course_lesson_done" formatted="false">Урок завершён!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Отличная работа. Следующий этап ждёт.</string>
+    <string name="hsk_course_lesson_settings_exit" formatted="false">Выйти</string>
+    <string name="hsk_course_lesson_settings_title" formatted="false">Настройки урока</string>
     <string name="hsk_course_lessons" formatted="false">урок</string>
     <string name="hsk_course_level_picker_hsk1" formatted="false">С нуля</string>
     <string name="hsk_course_level_picker_hsk2" formatted="false">Базовое общение</string>
@@ -498,6 +500,8 @@
     <string name="hsk_course_repeat" formatted="false">Повторить</string>
     <string name="hsk_course_right_ans" formatted="false">Правильный ответ:</string>
     <string name="hsk_course_say" formatted="false">Произнесите</string>
+    <string name="hsk_course_sheet_close_label" formatted="false">Закрыть</string>
+    <string name="hsk_course_sheet_dialog_label" formatted="false">Диалог HSK AI</string>
     <string name="hsk_course_stage" formatted="false">этап</string>
     <string name="hsk_course_streak" formatted="false">дней</string>
     <string name="hsk_course_streak_display_cont" formatted="false">Продолжить</string>

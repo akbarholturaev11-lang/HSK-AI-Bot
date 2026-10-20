@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "cc3be891e2aee875f93ee2c6dc7ece19a4296c85",
+  "source_revision": "caa7e6ee60d030fee3eae87805b26b1a8d3bc4c3",
   "counting_note": "62 unique physical source lines cover all 131 current LANG ==/=== literal-locale predicates in course-v3.html after main/P3 integration. Multiple predicates per line remain one classification; these are reviewed source decisions, not runtime UI verification.",
   "coverage_note": "Current merged course-v3.html source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified, including two new main navigation/accessibility sites. All other localized source expressions, dynamic content, other files and rendered UI remain separately audited.",
   "classifications": [
@@ -18,7 +18,7 @@
       "line": 2342,
       "anchor": "aria-label",
       "category": "accessibility_copy",
-      "reason": "Dialog and close accessibility labels; main also hardens focus/inert handling, preserve the entire dialog behavior",
+      "reason": "Dialog and close accessibility labels; main also hardens focus/inert handling, preserve the entire dialog behavior Central local-first overlay added for exact UZ/RU/TJ accessibility/lesson settings strings; original per-locale inline copy retained as offline fallback. Conditional predicate count is intentionally unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 4
     },
@@ -74,7 +74,7 @@
       "line": 2828,
       "anchor": "Настройки урока",
       "category": "navigation_copy",
-      "reason": "New localized lesson settings and exit action sheet; keep exit confirmation/access guards unchanged",
+      "reason": "New localized lesson settings and exit action sheet; keep exit confirmation/access guards unchanged Central local-first overlay added for exact UZ/RU/TJ accessibility/lesson settings strings; original per-locale inline copy retained as offline fallback. Conditional predicate count is intentionally unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 4
     },
@@ -178,7 +178,7 @@
       "line": 4038,
       "anchor": "setAttribute(\"aria-label\"",
       "category": "accessibility_copy",
-      "reason": "Lesson-settings gear label used by assistive technology; preserve button semantics",
+      "reason": "Lesson-settings gear label used by assistive technology; preserve button semantics Central local-first overlay added for exact UZ/RU/TJ accessibility/lesson settings strings; original per-locale inline copy retained as offline fallback. Conditional predicate count is intentionally unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },

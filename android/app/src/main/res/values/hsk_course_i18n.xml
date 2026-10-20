@@ -249,6 +249,8 @@
     <string name="hsk_course_learner" formatted="false">o\'quvchi</string>
     <string name="hsk_course_lesson_done" formatted="false">Dars tugadi!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Ajoyib! Keyingi bosqich kutyapti.</string>
+    <string name="hsk_course_lesson_settings_exit" formatted="false">Chiqish</string>
+    <string name="hsk_course_lesson_settings_title" formatted="false">Dars sozlamalari</string>
     <string name="hsk_course_lessons" formatted="false">dars</string>
     <string name="hsk_course_level_picker_hsk1" formatted="false">Noldan</string>
     <string name="hsk_course_level_picker_hsk2" formatted="false">Asosiy suhbat</string>
@@ -498,6 +500,8 @@
     <string name="hsk_course_repeat" formatted="false">Takrorlash</string>
     <string name="hsk_course_right_ans" formatted="false">To\'g\'ri javob:</string>
     <string name="hsk_course_say" formatted="false">Talaffuz qiling</string>
+    <string name="hsk_course_sheet_close_label" formatted="false">Yopish</string>
+    <string name="hsk_course_sheet_dialog_label" formatted="false">HSK AI oynasi</string>
     <string name="hsk_course_stage" formatted="false">bosqich</string>
     <string name="hsk_course_streak" formatted="false">kun</string>
     <string name="hsk_course_streak_display_cont" formatted="false">Davom etish</string>
