@@ -13,6 +13,16 @@
 
 ---
 
+## Existing course localization ownership
+
+The project owner delegates UZ/RU/TJ Chinese lesson semantic review,
+self-correction, local-first integration and regression prevention to the
+coding agent. **No mandatory human linguistic approval gate or user-side
+translation checking.** Apply the specific fail-closed QA procedure in
+`localization/AI_CONTENT_QA_POLICY.md`; never confuse structure validation
+with verified semantics. Preserve Chinese source and graded/Pro/auth
+fields, and do not claim a release without applicable CI and functional QA.
+
 ## Scope- and risk-based testing
 
 Select checks by feature and regression risk rather than running every Mini App

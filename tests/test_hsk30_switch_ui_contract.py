@@ -154,7 +154,8 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
         profile = (ANDROID / "feature" / "profile" / "ProfileScreen.kt").read_text(
             encoding="utf-8"
         )
-        self.assertIn("stringResource(R.string.profile_course_version)", profile)
+        self.assertIn("stringResource(R.string.hsk_course_course_picker_version)", profile)
+        self.assertNotIn("stringResource(R.string.profile_course_version)", profile)
         self.assertIn('if (courseTrack == "hsk30") "HSK 3.0" else "HSK 2.0"', profile)
         self.assertIn("onOpenCourseVersion,", profile)
         self.assertNotIn("profileHskLevelLabel(currentLevel)", profile)

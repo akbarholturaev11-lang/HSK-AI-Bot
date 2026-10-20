@@ -59,7 +59,7 @@ fun rememberExitGuard(
             text = { Text(stringResource(body)) },
             confirmButton = {
                 TextButton(onClick = { asking = false }) {
-                    Text(stringResource(R.string.exit_confirm_stay))
+                    Text(stringResource(R.string.hsk_common_action_continue))
                 }
             },
             dismissButton = {
@@ -69,7 +69,7 @@ fun rememberExitGuard(
                         exit()
                     },
                 ) {
-                    Text(stringResource(R.string.exit_confirm_leave))
+                    Text(stringResource(R.string.hsk_common_action_exit))
                 }
             },
         )

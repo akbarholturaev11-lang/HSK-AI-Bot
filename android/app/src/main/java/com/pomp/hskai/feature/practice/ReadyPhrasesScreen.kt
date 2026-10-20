@@ -173,7 +173,7 @@ fun ReadyPhrasesScreen(
         ) {
             Icon(
                 Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.ready_phrases_back),
+                contentDescription = stringResource(R.string.hsk_common_action_back),
             )
         }
         OutlinedTextField(
@@ -182,7 +182,7 @@ fun ReadyPhrasesScreen(
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-            placeholder = { Text(stringResource(R.string.ready_phrases_search_hint)) },
+            placeholder = { Text(stringResource(R.string.hsk_course_ready_phrases_search)) },
             shape = RoundedCornerShape(15.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = PompColors.Cinnabar,
@@ -204,8 +204,8 @@ fun ReadyPhrasesScreen(
         ) {
             items(filters, key = ReadyPhraseFilter::id) { filter ->
                 val label = when (filter.id) {
-                    "all" -> stringResource(R.string.ready_phrases_all)
-                    "saved" -> stringResource(R.string.ready_phrases_saved)
+                    "all" -> stringResource(R.string.hsk_course_ready_phrases_all)
+                    "saved" -> stringResource(R.string.hsk_course_ready_phrases_saved)
                     else -> filter.label
                 }
                 FilterChip(
@@ -241,7 +241,7 @@ fun ReadyPhrasesScreen(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(stringResource(R.string.ready_phrases_load_failed), color = PompColors.InkSecondary)
-                TextButton(onClick = ::load) { Text(stringResource(R.string.ready_phrases_retry)) }
+                TextButton(onClick = ::load) { Text(stringResource(R.string.hsk_course_ready_phrases_retry)) }
             }
             visible.isEmpty() -> Column(
                 modifier = Modifier.fillMaxSize(),
@@ -250,7 +250,7 @@ fun ReadyPhrasesScreen(
             ) {
                 Text(
                     if (selectedFilter == "saved" && query.isBlank()) {
-                        stringResource(R.string.ready_phrases_no_saved)
+                        stringResource(R.string.hsk_course_ready_phrases_no_saved)
                     } else {
                         stringResource(R.string.ready_phrases_no_results)
                     },
@@ -302,7 +302,7 @@ private fun ReadyPhraseCard(
                 IconButton(onClick = onSave, modifier = Modifier.size(38.dp)) {
                     Icon(
                         if (isSaved) Icons.Filled.Star else Icons.Outlined.StarOutline,
-                        contentDescription = stringResource(if (isSaved) R.string.ready_phrases_saved else R.string.ready_phrases_save),
+                        contentDescription = stringResource(if (isSaved) R.string.hsk_course_ready_phrases_saved else R.string.hsk_course_ready_phrases_save),
                         tint = if (isSaved) PompColors.Gold else PompColors.InkSecondary,
                     )
                 }

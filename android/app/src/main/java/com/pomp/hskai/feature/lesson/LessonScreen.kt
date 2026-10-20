@@ -177,7 +177,7 @@ fun LessonScreen(
                         textAlign = TextAlign.Center,
                     )
                     Spacer(Modifier.height(16.dp))
-                    SecondaryAction(stringResource(R.string.action_close), onExit)
+                    SecondaryAction(stringResource(R.string.hsk_common_action_close), onExit)
                 }
                 outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
                 outcome is LessonOutcome.Completed ->
@@ -226,7 +226,7 @@ fun LessonScreen(
         val spent = state.error as? ApiError.LimitReached
         if (spent != null && limit != null) {
             SectionLimitOverlay(
-                sectionTitle = stringResource(R.string.nav_course),
+                sectionTitle = stringResource(R.string.hsk_common_navigation_course),
                 sourceKey = "course_lesson_limit",
                 limit = limit,
                 reason = spent.limitText ?: stringResource(R.string.limit_lesson_reason),
@@ -279,7 +279,7 @@ private fun Centered(content: @Composable () -> Unit) {
 private fun lessonHeading(card: LessonCard, section: String): String? {
     val listenTitle = stringResource(R.string.lesson_listen_and_choose)
     val repeatTitle = stringResource(R.string.lesson_repeat_after_teacher)
-    val pairsTitle = stringResource(R.string.lesson_match_pairs)
+    val pairsTitle = stringResource(R.string.hsk_course_match_pairs)
     return when (card) {
         is ChoiceCard -> card.title.ifBlank { if (card.kind == ChoiceKind.LISTENING) listenTitle else section }
         is PronunciationCard -> repeatTitle
@@ -664,7 +664,7 @@ private fun LessonTopBar(
     ) {
         HskGlassIconButton(
             icon = Icons.Filled.Close,
-            contentDescription = stringResource(R.string.action_close),
+            contentDescription = stringResource(R.string.hsk_common_action_close),
             onClick = onExit,
             size = 40.dp,
             iconSize = 24.dp,
@@ -675,7 +675,7 @@ private fun LessonTopBar(
 
         HskGlassIconButton(
             icon = Icons.Filled.Settings,
-            contentDescription = stringResource(R.string.lesson_pinyin_title),
+            contentDescription = stringResource(R.string.hsk_course_pinyin_settings_h),
             onClick = onOpenPinyinSettings,
             size = 40.dp,
             iconSize = 22.dp,
@@ -933,7 +933,7 @@ private fun FooterBar(
     when {
         card is ChoiceCard -> Box(modifier = footer) {
             HskDepthButton(
-                text = stringResource(R.string.lesson_check),
+                text = stringResource(R.string.hsk_course_check),
                 color = PompColors.Cinnabar,
                 onClick = onCheckChoice,
                 enabled = selectedChoice != null,
@@ -941,7 +941,7 @@ private fun FooterBar(
         }
         (card is NewWordCard || card is GrammarCard) && acknowledgeReady -> Box(modifier = footer) {
             HskDepthButton(
-                text = stringResource(R.string.lesson_next),
+                text = stringResource(R.string.hsk_common_action_continue),
                 color = PompColors.Cinnabar,
                 onClick = onAcknowledge,
             )
@@ -988,7 +988,7 @@ private fun FeedbackPanel(
                     modifier = Modifier.size(30.dp),
                 )
                 Text(
-                    text = stringResource(if (answer.isCorrect) R.string.lesson_correct else R.string.lesson_wrong),
+                    text = stringResource(if (answer.isCorrect) R.string.hsk_course_test_exam_tf_true else R.string.hsk_course_test_exam_tf_false),
                     fontSize = 22.sp,
                     lineHeight = 28.sp,
                     fontWeight = FontWeight.Bold,
@@ -1022,7 +1022,7 @@ private fun FeedbackPanel(
             }
             Spacer(Modifier.height(14.dp))
             HskDepthButton(
-                text = stringResource(R.string.lesson_next),
+                text = stringResource(R.string.hsk_common_action_continue),
                 color = accent,
                 onClick = onAdvance,
                 enabled = !submitting,
@@ -1050,7 +1050,7 @@ private fun PreviewEndBlock(onExit: () -> Unit) {
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(24.dp))
-        SecondaryAction(stringResource(R.string.action_close), onExit)
+        SecondaryAction(stringResource(R.string.hsk_common_action_close), onExit)
     }
 }
 
@@ -1092,6 +1092,6 @@ private fun FailedBlock(
         Spacer(Modifier.height(20.dp))
         PrimaryAction(stringResource(R.string.action_retry), onClick = onRetry)
         Spacer(Modifier.height(8.dp))
-        SecondaryAction(stringResource(R.string.action_close), onExit)
+        SecondaryAction(stringResource(R.string.hsk_common_action_close), onExit)
     }
 }

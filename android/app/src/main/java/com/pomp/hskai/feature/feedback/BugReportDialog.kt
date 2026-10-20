@@ -182,7 +182,7 @@ fun BugReportDialog(
                             modifier = Modifier.weight(1f),
                         )
                         TextButton(onClick = onDismiss, enabled = !busy) {
-                            Text(stringResource(R.string.action_close))
+                            Text(stringResource(R.string.hsk_common_action_close))
                         }
                     }
                     Column(

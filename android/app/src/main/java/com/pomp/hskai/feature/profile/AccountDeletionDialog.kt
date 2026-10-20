@@ -72,7 +72,7 @@ internal fun AccountDeletionDialog(
         },
         confirmButton = {
             when {
-                receipt != null -> TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_close)) }
+                receipt != null -> TextButton(onClick = onDismiss) { Text(stringResource(R.string.hsk_common_action_close)) }
                 state.accountLabel == null && state.error != null -> TextButton(onClick = onRetry) {
                     Text(stringResource(R.string.action_retry))
                 }

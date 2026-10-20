@@ -6,6 +6,7 @@
 <title>Тест-центр</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-test-center-v13"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <style>
@@ -110,6 +111,20 @@ var L={ru:{title:"Тест-центр",sub:"Короткие тесты по р�
 var EM={ru:{tfTrue:"Верно",tfFalse:"Неверно",listen:"Прослушать",q:"Вопрос",of:"из",result:"Результат",passed:"Тест пройден!",failed:"Пока не пройден",passSub:"Вы готовы к уровню HSK ",failSub:"Продолжайте подготовку к HSK ",again:"Пройти заново",toList:"К списку тестов",saving:"Проверяем на сервере…",saveErr:"Результат не сохранился. Повторите отправку.",retry:"Отправить ещё раз",mistakes:"Повторите эти ответы",xp:"XP получено",sec:{listening:"Аудирование",reading:"Чтение",writing:"Письмо"}},
   uz:{tfTrue:"To'g'ri",tfFalse:"Noto'g'ri",listen:"Tinglash",q:"Savol",of:"/",result:"Natija",passed:"Test topshirildi!",failed:"Hozircha o'tilmadi",passSub:"Siz HSK darajasiga tayyorsiz: HSK ",failSub:"Tayyorgarlikni davom ettiring: HSK ",again:"Qayta topshirish",toList:"Testlar ro'yxatiga",saving:"Server tekshiryapti…",saveErr:"Natija saqlanmadi. Yana yuboring.",retry:"Qayta yuborish",mistakes:"Shu javoblarni takrorlang",xp:"XP olindi",sec:{listening:"Tinglash",reading:"O'qish",writing:"Yozish"}},
   tj:{tfTrue:"Дуруст",tfFalse:"Нодуруст",listen:"Шунидан",q:"Савол",of:"аз",result:"Натиҷа",passed:"Тест супорида шуд!",failed:"Ҳоло гузаронида нашуд",passSub:"Шумо ба сатҳи HSK тайёред: HSK ",failSub:"Омодагиро давом диҳед: HSK ",again:"Аз нав супоридан",toList:"Ба рӯйхати тестҳо",saving:"Сервер месанҷад…",saveErr:"Натиҷа сабт нашуд. Боз фиристед.",retry:"Боз фиристодан",mistakes:"Ин ҷавобҳоро такрор кунед",xp:"XP гирифта шуд",sec:{listening:"Шунидан",reading:"Хондан",writing:"Навиштан"}}}[LANG];
+/* Local-first static, byte-identical UI copy only; keep inline dictionaries as fallback. */
+var TEST_UI_CATALOG=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};
+function testUiLabel(key,fallback){
+  var value=TEST_UI_CATALOG[key];
+  return typeof value==="string"&&value?value:fallback;
+}
+function adoptTestUI(prefix,legacy){
+  Object.keys(legacy).forEach(function(key){
+    if(typeof legacy[key]==="string")legacy[key]=testUiLabel(prefix+"."+key,legacy[key]);
+  });
+}
+adoptTestUI("testHub",L);
+adoptTestUI("testExam",EM);
+adoptTestUI("testExamSection",EM.sec);
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 document.documentElement.lang=LANG;document.title=L.title;
 var _ttsAudio=null;
@@ -160,8 +175,8 @@ function initData(){return (tg&&tg.initData)?tg.initData:""}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_test_limit&mode=subscription&return_to=course&return_page=course_v3_test.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 /* Foydalanuvchi darajasi: server (users.level) asosiy manba — user darajasidagi
    imtihon ro'yxatda birinchi va belgilangan holda chiqadi. */
-var MINE_T={ru:"Ваш уровень",uz:"Sizning darajangiz",tj:"Дараҷаи шумо"}[LANG]||"Sizning darajangiz";
-var HSK30_SOON={ru:{title:"HSK 3.0 · тесты",sub:"Новый формат экзамена HSK 3.0 ещё готовится.",back:"Назад"},uz:{title:"HSK 3.0 · testlar",sub:"Yangi HSK 3.0 imtihon formati hali tayyorlanmoqda.",back:"Orqaga"},tj:{title:"HSK 3.0 · тестҳо",sub:"Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад.",back:"Бозгашт"}}[LANG];
+var MINE_T={ru:"Ваш уровень",uz:"Sizning darajangiz",tj:"Дараҷаи шумо"}[LANG]||"Sizning darajangiz";MINE_T=testUiLabel("testHub.mineLevel",MINE_T);
+var HSK30_SOON={ru:{title:"HSK 3.0 · тесты",sub:"Новый формат экзамена HSK 3.0 ещё готовится.",back:"Назад"},uz:{title:"HSK 3.0 · testlar",sub:"Yangi HSK 3.0 imtihon formati hali tayyorlanmoqda.",back:"Orqaga"},tj:{title:"HSK 3.0 · тестҳо",sub:"Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад.",back:"Бозгашт"}}[LANG];adoptTestUI("testHsk30Soon",HSK30_SOON);
 function normLv(v){v=String(v||"").toLowerCase();if(/^nhsk[1-3]$/.test(v))return v;if(v.indexOf("hsk4")===0)return "hsk4";return ["hsk1","hsk2","hsk3"].indexOf(v)>=0?v:""}
 var LV=normLv(params.get("level"));
 var LV_READY=(function(){var idt=initData();if(!idt)return Promise.resolve();
@@ -319,7 +334,7 @@ function renderExamResult(d){
 /* ---- Placement test (sample questions; real adaptive bank from a defined source later) ---- */
 var PT={ru:{lead:"Выберите значение",rec:"Рекомендуем",recSub:"По результату вам подходит уровень HSK ",back:"Вернуться к курсу",retake:"Пройти заново",lvl:"HSK"},
   uz:{lead:"Ma'noni tanlang",rec:"Tavsiya",recSub:"Natijangiz bo'yicha sizga mos daraja — HSK ",back:"Kursga qaytish",retake:"Qayta test",lvl:"HSK"},
-  tj:{lead:"Маъноро интихоб кунед",rec:"Тавсия",recSub:"Аз рӯи натиҷа сатҳи мувофиқ барои шумо — HSK ",back:"Ба курс баргаштан",retake:"Аз нав",lvl:"HSK"}}[LANG];
+  tj:{lead:"Маъноро интихоб кунед",rec:"Тавсия",recSub:"Аз рӯи натиҷа сатҳи мувофиқ барои шумо — HSK ",back:"Ба курс баргаштан",retake:"Аз нав",lvl:"HSK"}}[LANG];adoptTestUI("testPlacement",PT);
 var QP=[
   {lvl:1,h:"谢谢",py:"xièxie",o:[{ru:"спасибо",uz:"rahmat",tj:"ташаккур",ok:1},{ru:"привет",uz:"salom",tj:"салом"},{ru:"пока",uz:"xayr",tj:"хайр"}]},
   {lvl:1,h:"再见",py:"zàijiàn",o:[{ru:"до свидания",uz:"xayr",tj:"хайр",ok:1},{ru:"спасибо",uz:"rahmat",tj:"ташаккур"},{ru:"да",uz:"ha",tj:"ҳа"}]},

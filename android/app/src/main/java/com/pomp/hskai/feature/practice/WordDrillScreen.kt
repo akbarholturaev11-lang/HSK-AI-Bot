@@ -119,7 +119,7 @@ fun WordDrillScreen(
                 state.limitReached -> SectionLimitOverlay(
                     sectionTitle = stringResource(
                         if (state.mode == DrillMode.RECOGNITION) {
-                            R.string.practice_characters_title
+                            R.string.hsk_course_mistakes_page_sources_recognition
                         } else {
                             R.string.practice_pronunciation_row_title
                         }
@@ -260,7 +260,7 @@ private fun DrillQuestionBody(
                     isCorrect = state.wasCorrect,
                     verdictSuffix = state.spokenScore?.let { " $it%" }.orEmpty(),
                     lines = if (state.wasCorrect) emptyList() else listOf("${question.hanzi} · ${question.pinyin}"),
-                    continueText = stringResource(R.string.lesson_next),
+                    continueText = stringResource(R.string.hsk_common_action_continue),
                     loading = false,
                     onContinue = onAdvance,
                     bottomInset = bottomInset,
@@ -395,7 +395,7 @@ private fun PronunciationStage(
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Filled.Mic,
-                        contentDescription = stringResource(R.string.voice_a11y_mic),
+                        contentDescription = stringResource(R.string.hsk_course_course_voice_inline_a11y_mic),
                         tint = PompColors.Paper,
                         modifier = Modifier.size(36.dp),
                     )
@@ -468,7 +468,7 @@ private fun DrillSummary(mode: DrillMode, correct: Int, total: Int, onDone: () -
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    text = stringResource(R.string.action_close),
+                    text = stringResource(R.string.hsk_common_action_close),
                     style = MaterialTheme.typography.titleMedium,
                     color = PompColors.Paper,
                     textAlign = TextAlign.Center,
@@ -503,7 +503,7 @@ private fun DrillEmpty(onRetry: () -> Unit, onClose: () -> Unit) {
         )
         Spacer(Modifier.height(10.dp))
         Text(
-            text = stringResource(R.string.action_close),
+            text = stringResource(R.string.hsk_common_action_close),
             style = MaterialTheme.typography.labelLarge,
             color = PompColors.InkDisabled,
             modifier = Modifier

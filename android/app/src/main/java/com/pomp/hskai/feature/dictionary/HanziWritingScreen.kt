@@ -92,7 +92,7 @@ internal fun HanziWritingScreen(
         ) {
             HskGlassIconButton(
                 icon = Icons.Filled.Close,
-                contentDescription = stringResource(R.string.action_close),
+                contentDescription = stringResource(R.string.hsk_common_action_close),
                 onClick = onClose,
                 tint = PompColors.Ink,
             )
@@ -224,7 +224,7 @@ private fun Actions(
                     modifier = Modifier.weight(1f),
                 )
                 HskDepthButton(
-                    text = stringResource(R.string.writing_start),
+                    text = stringResource(R.string.hsk_common_action_start),
                     color = PompColors.Cinnabar,
                     onClick = onBegin,
                     modifier = Modifier.weight(1f),
@@ -239,7 +239,7 @@ private fun Actions(
                 )
                 HskDepthButton(
                     text = stringResource(
-                        if (hasNextCharacter) R.string.writing_next_character else R.string.writing_finish,
+                        if (hasNextCharacter) R.string.writing_next_character else R.string.hsk_common_action_done,
                     ),
                     color = PompColors.Cinnabar,
                     onClick = if (hasNextCharacter) onNextCharacter else onClose,

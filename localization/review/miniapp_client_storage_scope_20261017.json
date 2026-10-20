@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "status": "SOURCE_CLASSIFIED_NO_ACCOUNT_SWITCH_RUNTIME_CHANGE",
+  "sources": {
+    "course": "app/static/course-v3.html",
+    "memorize": "app/static/course_v3_memorize.html"
+  },
+  "capture_scope": "Static localStorage/sessionStorage getItem/setItem/removeItem calls whose first argument is a quoted literal. Dynamic-key constructors inventoried separately. No browser/WebView QA.",
+  "literal_key_classes": [
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_level",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "non_sensitive_level_preference",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_tour",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "ui_tour_acknowledgement",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_pinyin",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "ui_display_preference",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_setup_asked",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "setup_prompt_throttle",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_narrate",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "ui_audio_preference",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_plan_choice",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "planning_hint_flag",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_onb",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "onboarding_client_hint_server_primary",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "sessionStorage",
+      "key": "hsk_mistake_review_ref",
+      "expected_operations": [
+        "removeItem"
+      ],
+      "category": "session_access_ref_cleared",
+      "account_data_review": true
+    },
+    {
+      "source": "course",
+      "storage": "sessionStorage",
+      "key": "hsk_v3_resource_return",
+      "expected_operations": [
+        "getItem",
+        "removeItem",
+        "removeItem"
+      ],
+      "category": "navigation_return_flag",
+      "account_data_review": false
+    },
+    {
+      "source": "memorize",
+      "storage": "localStorage",
+      "key": "hsk_memo",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "unscoped_personal_character_mastery",
+      "account_data_review": true
+    },
+    {
+      "source": "memorize",
+      "storage": "localStorage",
+      "key": "hsk_memo_pref",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "unscoped_practice_style_preference",
+      "account_data_review": false
+    }
+  ],
+  "dynamic_key_contracts": [
+    {
+      "source": "course",
+      "function": "lessonDataKey",
+      "expected_identity_scope": false,
+      "purpose": "in_memory_lesson_json_cache_key",
+      "privacy_review": "full cached lesson body may be reused by same WebView; source currently keyed by track/lesson only"
+    },
+    {
+      "source": "course",
+      "function": "lessonResumeKey",
+      "expected_identity_scope": false,
+      "purpose": "persistent_lesson_position",
+      "privacy_review": "seven-day resume cursor localStorage shared across account identities"
+    },
+    {
+      "source": "course",
+      "function": "lessonMasteryKey",
+      "expected_identity_scope": true,
+      "purpose": "persistent_mastery_and_repair_state",
+      "privacy_review": "localUserScope uses tg.initDataUnsafe user id; live cross-user QA required"
+    },
+    {
+      "source": "course",
+      "function": "foundationCacheKey",
+      "expected_identity_scope": true,
+      "purpose": "persistent_foundation_completion_hint",
+      "privacy_review": "server foundation status remains primary"
+    },
+    {
+      "source": "course",
+      "function": "studySetupTimeKey",
+      "expected_identity_scope": false,
+      "purpose": "setup_time_completion_per_user_suffix",
+      "privacy_review": "uses explicit Telegram userId suffix instead of localUserScope; do not infer identity-free behavior from absence of helper"
+    }
+  ],
+  "risks": [
+    {
+      "id": "unscoped_memorization_mastery",
+      "severity": "manual_account_switch_qa_required",
+      "key": "hsk_memo",
+      "scope": "same WebView shared origin"
+    },
+    {
+      "id": "unscoped_lesson_resume",
+      "severity": "manual_account_switch_qa_required",
+      "key": "lessonResumeKey",
+      "scope": "same WebView shared origin"
+    },
+    {
+      "id": "in_memory_lesson_data_no_identity",
+      "severity": "manual_authorized_cache_migration_required",
+      "key": "lessonDataKey",
+      "scope": "page memory including in-flight promises"
+    },
+    {
+      "id": "unverified_user_scope_source",
+      "severity": "review_only",
+      "key": "localUserScope",
+      "scope": "tg.initDataUnsafe is unverified client data; server entitlement cannot rely on it"
+    }
+  ],
+  "limitations": "Source key inventory only. Does not prove data leak, browser origin shared between Telegram sessions, user authorization, expiry behavior, race conditions, or existing device artifacts; no sensitive contents or user identifiers emitted."
+}

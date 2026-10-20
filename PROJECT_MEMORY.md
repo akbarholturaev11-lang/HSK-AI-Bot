@@ -17,6 +17,7 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 
 - `users.id` is the canonical learner account key; unique `telegram_id` is optional and always a real Telegram identity. Subscription state includes `status`, `payment_status`, `start_date`, and `end_date`; there is no `subscription_until` column.
 - `payments.user_id` owns manual Pro purchases by canonical account; optional `user_telegram_id` is transport metadata (migration `0106_canonical_payment_ownership`, including canonical subscription-entry backfill). Legacy integer callers still mean real Telegram IDs. The financial owner column has no cascading FK: purge clears the canonical association and retains approved facts under the existing anonymous negative financial grouping; nonapproved rows are deleted. Prices, review policy and 10/30/90-day paid terms remain unchanged.
+- P3 local-first lesson translations remain a separately reviewed UZ/RU/TJ display-only catalog; keep all source Chinese, scoring, graded homework, Pro checks and canonical account ownership intact.
 - Paid access requires approved payment state and an unexpired `end_date`. `app/services/subscription_service.py` owns paid-term activation and renewal; `app/services/user_access_state_service.py` distinguishes paid access from temporary trials and free/expired states.
 - Checkout submit/reopen reports `provisional_access` for the particular pending Pro receipt as well as HSK 3.0 unlock. This reports the existing server-owned grant; it never consumes/replenishes a ticket. Pro review results return granted users to their original app section, while a spent-ticket review offers the configured admin contact.
 - Temporary trial and referral benefits are not paid billing records. Keep their access predicates distinct from paid subscription checks.
@@ -52,12 +53,28 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 
 - Mini App stroke order uses the public `/api/v3/stroke?char=…` endpoint backed by the versioned Android stroke assets. These assets must remain in server builds. Public requests validate one hanzi and serve bundled data only; unknown characters do not trigger anonymous CDN fetching. Native authenticated stroke lookup keeps its cached fallback.
 - Lesson translation tiles grade only the translated meaning; pronunciation/spelling notes belong in pinyin or the grammar explanation. Seed grammar examples feed generated tasks, so keep their translation fields clean. Fix existing task fields in place to preserve section/card material references shared with server mistake validation.
+- Localization expansion is **local-first**: author shared translations centrally in GitHub, then generate bundled Android/Mini App/Desktop resources and local Bot/backend catalogs at build/deploy time; never require a per-UI-string runtime API. Keep existing `uz/ru/tj`, native source IDs, entitlements, and client backward compatibility while migrating incrementally. **Continue from `localization/PLAN_SCHEMA_ORDER.md` first** (plan, schema, phase order and verified status), then `docs/I18N_LOCAL_FIRST_WORKPLAN.md` and `localization/surface_registry.json`. Preparation stage only.
 - Keep the HSK course and canonical lesson order/content at the center of the product. Supporting features should not replace the learning path.
 - Mini App `朱雀` is a brand league; Android XP tiers remain the server-defined progression. These are separate representations, not interchangeable ranks.
 - Each Android release must use a `versionCode` greater than the latest published release; it need not increase by exactly one. Verify the artifact against the release manifest because the current workflow does not reject every equal-code/different-artifact case.
 - Course/onboarding use a pinned official same-origin Telegram SDK. Preserve the Telegram launch fragment when updating course URLs and navigating between these documents: iOS WebViews may not restore SDK sessionStorage. Never copy launch credentials into query parameters or localStorage; backend signature/expiry validation stays authoritative.
 - Source files and repository defaults do not prove live deployment, production environment values, provider credentials, or release status. Verify those in the owning environment before reporting them as live facts.
 - Railway SSH can omit the running container process's `LD_LIBRARY_PATH`. A native-module import failure from an SSH shell alone is not evidence of a broken application image: repeat the read-only probe with the actual application process's library path before changing build packages.
+
+## Agent-owned Chinese-course translation QA (owner direction, 2026-10-19)
+
+**Current resume state:** `localization/P3_ACTIVE_HANDOFF.md` (read first; historical progress in `localization/NEXT_CHAT_HANDOFF.md`).
+
+For existing UZ/RU/TJ course texts, coding agents own semantic and grammar QA,
+actual corrections, source-safe centralization, all three client checks, and
+regression knowledge. Do not ask the owner to validate Chinese/UZ/RU/TJ or
+treat independent human linguistic approval as the required release gate.
+`localization/AI_CONTENT_QA_POLICY.md` supersedes historical manual-review
+phrases in the P3 backlog. AI self-review is not evidence of native-speaker
+certification; fail closed on unresolved wrong meaning and preserve P0 source,
+mirror, quiz/grade, Pro and auth guards. Draft PR #179 is isolated until
+applicable CI and client QA pass. A 136-context candidate ZIP or private
+integration preview is not proof of a completed runtime migration.
 
 ## Key files
 

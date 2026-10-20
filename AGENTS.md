@@ -103,6 +103,20 @@ Har taskdan keyin kunlik log yaratish shart emas.
 
 ---
 
+## HSK AI P3 localization — agent-owned QA
+
+Current P3 cross-session execution entry point: `localization/P3_ACTIVE_HANDOFF.md`. Read it before touching P3; the large `localization/NEXT_CHAT_HANDOFF.md` is historical detail.
+
+For existing UZ/RU/TJ course translation work, follow
+`localization/AI_CONTENT_QA_POLICY.md`. The agent checks and fixes the
+Chinese-context meaning, grammar and natural UZ/RU/TJ, migrates verified
+content into the local-first course architecture, tests every affected
+consumer, and writes prevention/regression notes for each bug.
+**Do not send the user translation review homework or require human
+linguistic signoff.** Structural tests are not semantic approval. Keep
+original answer/grade/Pro/auth data and source SHA guards intact;
+do not merge or release with unresolved content/safety failures.
+
 ## Git intizomi
 
 Agar git ishlatilsa:

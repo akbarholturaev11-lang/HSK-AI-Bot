@@ -23,6 +23,7 @@ from fastapi.responses import JSONResponse
 from app.repositories.user_repo import UserRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.entitlements.lesson_access import LessonAccessService
+from app.services.course_p3_grammar_localization import miniapp_reserved_grammar_patch
 from app.services.course_v3_parts import total_parts
 from app.services.course_levels import content_level
 from app.services.course_access_policy_service import CourseAccessPolicyService
@@ -197,6 +198,8 @@ def create_miniapp_entitlements_router(
             return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
         try:
             payload = await request.json()
+            if not isinstance(payload, dict):
+                raise ValueError("lesson payload must be an object")
             order = int(payload.get("lesson_id") or 0)
         except (TypeError, ValueError):
             return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
@@ -207,13 +210,52 @@ def create_miniapp_entitlements_router(
             level = content_level(user.level)
             progress = await CourseProgressRepository(session).get_by_user_id(user.id, for_update=True)
             completed = int(progress.completed_lessons_count or 0) if progress and progress.level == level else 0
+            # Completed lessons may be revisited without re-consuming a
+            # limited free lesson. This read-only localization path requires
+            # the same signed identity and server-stored completed progress.
+            if payload.get("review_only") is True:
+                if level != "nhsk2" or order < 1 or order > completed or order > total_parts(level):
+                    return JSONResponse(
+                        status_code=403,
+                        content={"ok": False, "error": "course_lesson_not_unlocked"},
+                        headers={"Cache-Control": "no-store"},
+                    )
+                # A signed completed-lesson read is quota-free, but must
+                # still pass the SAME blocked-user and HSK 3.0 track gates
+                # as native/Desktop. Progress alone is not an entitlement.
+                review_status = await LessonAccessService(session).status(
+                    user, level=level, lesson_order=order,
+                    completed=completed, consume=False,
+                )
+                if not review_status["allowed"]:
+                    return JSONResponse(
+                        status_code=403, content=review_status,
+                        headers={"Cache-Control": "no-store"},
+                    )
+                localized = miniapp_reserved_grammar_patch(level=level, lesson_order=order)
+                response = {"ok": True, "allowed": True}
+                if localized is not None:
+                    response["p3_grammar"] = localized
+                return JSONResponse(content=response, headers={"Cache-Control": "no-store"})
             if order < 1 or order > total_parts(level) or order > completed + 1:
                 return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
             result = await LessonAccessService(session).status(
                 user, level=level, lesson_order=order, completed=completed, consume=True,
             )
             await session.commit()
-            return JSONResponse(status_code=200 if result["allowed"] else 403, content=result)
+            # Display-only grammar translations are returned ONLY after the
+            # existing authenticated, unlocked, successful consume=True gate.
+            # Denials, direct static GETs and speculative prefetch get none.
+            if result["allowed"] and level == "nhsk2":
+                localized = miniapp_reserved_grammar_patch(
+                    level=level, lesson_order=order,
+                )
+                if localized is not None:
+                    result = {**result, "p3_grammar": localized}
+            return JSONResponse(
+                status_code=200 if result["allowed"] else 403,
+                content=result, headers={"Cache-Control": "no-store"},
+            )
 
 
     @router.post("/api/v3/limits/status")

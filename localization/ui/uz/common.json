@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "namespace": "common",
+  "locale": "uz",
+  "messages": {
+    "navigation.course": "Kurs",
+    "navigation.practice": "Mashq",
+    "navigation.profile": "Profil",
+    "navigation.rating": "Reyting",
+    "navigation.subscription": "Obuna",
+    "lesson.start": "Darsni boshlash",
+    "lesson.continue": "Darsni davom ettirish",
+    "lesson.locked": "Oldingi darsni yakunlang",
+    "lesson.notFound": "Bu daraja uchun darslar hali topilmadi.",
+    "common.refresh": "Yangilash",
+    "auth.expires": "Kod {time} amal qiladi",
+    "action.back": "Orqaga",
+    "action.close": "Yopish",
+    "action.continue": "Davom etish",
+    "action.done": "Tayyor",
+    "action.exit": "Chiqish",
+    "action.finish": "Yakunlash",
+    "action.logout": "Chiqish",
+    "action.start": "Boshlash",
+    "state.loading": "Yuklanmoqda…"
+  }
+}
