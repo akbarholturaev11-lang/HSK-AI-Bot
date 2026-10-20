@@ -46,6 +46,42 @@ class CanonicalGrammarCatalogTests(unittest.TestCase):
             )
             self.assertEqual(set(reviewed[context["review_id"]]["translations"]), set(LANGS))
 
+    def test_g001_g003_experience_negation_parity(self):
+        """Chinese 过 is experience; 没去过 must never become a positive visit."""
+        contexts = {ctx["review_id"]: ctx for ctx in self.queue["contexts"]}
+        self.assertEqual(contexts["G001"]["chinese_example"], "她去过中国。")
+        self.assertEqual(contexts["G003"]["chinese_example"], "她没去过中国。")
+        vals = read_canonical_catalog(self.catalog_path)
+        positive = vals["G001"]["translations"]
+        negative = vals["G003"]["translations"]
+        self.assertIn("bo‘lgan", positive["uz"])
+        self.assertNotIn("hech qachon", positive["uz"])
+        self.assertIn("hech qachon", negative["uz"])
+        self.assertIn("никогда", negative["ru"])
+        self.assertIn("ҳеҷ гоҳ", negative["tj"])
+
+    def test_g013_g017_motion_direction_parity(self):
+        """A Chinese 去/来 distinction must survive each localized lesson overlay."""
+        contexts = {ctx["review_id"]: ctx for ctx in self.queue["contexts"]}
+        self.assertEqual(contexts["G013"]["chinese_example"], "我不上去了，就在下面等你。")
+        self.assertEqual(contexts["G015"]["chinese_example"], "我在外边呢，你出来吧。")
+        self.assertEqual(contexts["G017"]["chinese_example"], "你别过来拿了，我给你送去。")
+        vals = read_canonical_catalog(self.catalog_path)
+        up = vals["G013"]["translations"]
+        outside = vals["G015"]["translations"]
+        away = vals["G017"]["translations"]
+        self.assertIn("chiqmayman", up["uz"])
+        self.assertIn("подниматься", up["ru"])
+        self.assertIn("намебароям", up["tj"])
+        self.assertIn("chiqaver", outside["uz"])
+        self.assertIn("выходи", outside["ru"])
+        self.assertIn("берун баро", outside["tj"])
+        self.assertIn("kelma", away["uz"])
+        self.assertIn("olib borib", away["uz"])
+        self.assertIn("Не приходи", away["ru"])
+        self.assertIn("набиё", away["tj"])
+        self.assertIn("бурда", away["tj"])
+
     def test_g030_family_not_house_in_russian(self):
         context = next(c for c in self.queue["contexts"] if c["review_id"] == "G030")
         self.assertEqual(
