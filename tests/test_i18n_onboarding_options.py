@@ -51,7 +51,7 @@ class OnboardingOptionsTests(unittest.TestCase):
         self.assertEqual(len(fields), 9)
         for locale in LANGUAGES:
             catalog = source_catalog(locale)
-            self.assertEqual(len(catalog), 823)
+            self.assertEqual(len(catalog), 829)
             for key, values in fields.items():
                 with self.subTest(locale=locale, key=key):
                     self.assertEqual(catalog[key], values[locale])
@@ -81,7 +81,7 @@ class OnboardingOptionsTests(unittest.TestCase):
         self.assertIn('item.s[LANG]=onboardingOptionMessage("onboardingGoal."+onboardingGoalCatalogId(item.k)+".subtitle"', html)
         self.assertIn('item.s[LANG]=onboardingOptionMessage("onboardingLevel."+item.k+".subtitle"', html)
         self.assertIn('onboardingOptionMessage("onboardingLevel.beginner.title"', html)
-        self.assertIn('hsk-course-i18n.js?v=20261020-1fee76a7803b', html)
+        self.assertIn('hsk-course-i18n.js?v=20261020-1f256761e2c5', html)
         self.assertNotIn('fetch("/api/i18n/', html)
 
     def test_android_notification_strings_match_exact_native_fallbacks(self):

@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("uz", "ru", "tj")
 EXPECTED = {"dictionaryPage": 20, "dictionaryFastWriter": 7,
             "dictionaryWriterStatus": 2}
-VERSION = "hsk-course-i18n.js?v=20261020-1fee76a7803b"
+VERSION = "hsk-course-i18n.js?v=20261020-1f256761e2c5"
 
 
 def source():
@@ -55,7 +55,7 @@ class DictionaryUIAdoptionTests(unittest.TestCase):
                 (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
             )["messages"]
             with self.subTest(locale=locale):
-                self.assertEqual(len(catalog), 823)
+                self.assertEqual(len(catalog), 829)
                 for namespace, required in EXPECTED.items():
                     data = original[locale][namespace]
                     self.assertEqual(len(data), required)
