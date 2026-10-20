@@ -119,7 +119,7 @@
     "notifTimes.item0": "кто-то обгоняет вас в рейтинге",
     "notifTimes.item1": "день заканчивается, а урок ещё не пройден",
     "notifTimes.item2": "ваша серия дней под угрозой",
-    "avatarEdit.note": "Аватар берётся из вашего профиля Telegram",
+    "avatarEdit.note": "Аватар можно изменить в разделе «Аккаунт».",
     "courseLoadError.title": "Курс не загрузился",
     "courseLoadError.body": "Проверьте подключение и попробуйте ещё раз.",
     "courseLoadError.btn": "Попробовать снова",
