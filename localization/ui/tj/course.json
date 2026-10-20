@@ -825,6 +825,12 @@
     "rating.challengeNotAllowed": "Ба ин корбар даъват фиристодан мумкин нест",
     "rating.challengeSendFailed": "Даъват фиристода нашуд",
     "rating.duelRejected": "Рақобат рад шуд.",
-    "rating.weeklyHeading": "Рейтинги ҳафтаина"
+    "rating.weeklyHeading": "Рейтинги ҳафтаина",
+    "foundation.unavailable": "Асосҳо ҳоло дастрас нестанд",
+    "foundation.zeroTitle": "Асосҳо аз сифр",
+    "foundation.internetRetry": "Интернетро санҷед ва аз нав бор кунед.",
+    "foundation.retry": "Аз нав",
+    "lessonFlow.retry": "Такрор кардан",
+    "lessonFlow.notReady": "Дарс ҳанӯз тайёр нест"
   }
 }

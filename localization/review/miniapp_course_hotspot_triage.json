@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "7fa9fb7656ebeb3b204c139b3c3ceb90b66abeb9",
+  "source_revision": "eaa33bedb7a93496775ddabe23f862ec9b1b42ab",
   "counting_note": "62 unique physical source lines cover all 131 current LANG ==/=== literal-locale predicates in course-v3.html after main/P3 integration. Multiple predicates per line remain one classification; these are reviewed source decisions, not runtime UI verification.",
   "coverage_note": "Current merged course-v3.html source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified, including two new main navigation/accessibility sites. All other localized source expressions, dynamic content, other files and rendered UI remain separately audited.",
   "classifications": [
@@ -130,7 +130,7 @@
       "line": 3762,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
-      "reason": "Foundation content missing/unavailable state",
+      "reason": "Foundation content missing/unavailable state Local-first UI lookup now provides the exact original UZ/RU/TJ literal as fallback; line anchor, retry behavior and escaping unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -138,7 +138,7 @@
       "line": 3768,
       "anchor": "foundation-step",
       "category": "error_recovery_copy",
-      "reason": "Foundation load/retry UI, HTML escaping required",
+      "reason": "Foundation load/retry UI, HTML escaping required Local-first UI lookup now provides the exact original UZ/RU/TJ literal as fallback; line anchor, retry behavior and escaping unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 4
     },
@@ -146,7 +146,7 @@
       "line": 3769,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
-      "reason": "Foundation retry action after loading failure",
+      "reason": "Foundation retry action after loading failure Local-first UI lookup now provides the exact original UZ/RU/TJ literal as fallback; line anchor, retry behavior and escaping unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -186,7 +186,7 @@
       "line": 4073,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
-      "reason": "Flow-completion retry action",
+      "reason": "Flow-completion retry action Local-first UI lookup now provides the exact original UZ/RU/TJ literal as fallback; line anchor, retry behavior and escaping unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -194,7 +194,7 @@
       "line": 4127,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
-      "reason": "Lesson unready/denied fallback toast; preserve access checks",
+      "reason": "Lesson unready/denied fallback toast; preserve access checks Local-first UI lookup now provides the exact original UZ/RU/TJ literal as fallback; line anchor, retry behavior and escaping unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },

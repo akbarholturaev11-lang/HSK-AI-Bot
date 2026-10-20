@@ -228,6 +228,10 @@
     <string name="hsk_course_download_page_windows_security_title" formatted="false">Ҳангоми кушодани аввал огоҳӣ пайдо шуда метавонад</string>
     <string name="hsk_course_download_page_windows_title" formatted="false">HSK AI барои Windows</string>
     <string name="hsk_course_finish_prev" formatted="false">Дарси пешинаро анҷом диҳед</string>
+    <string name="hsk_course_foundation_internet_retry" formatted="false">Интернетро санҷед ва аз нав бор кунед.</string>
+    <string name="hsk_course_foundation_retry" formatted="false">Аз нав</string>
+    <string name="hsk_course_foundation_unavailable" formatted="false">Асосҳо ҳоло дастрас нестанд</string>
+    <string name="hsk_course_foundation_zero_title" formatted="false">Асосҳо аз сифр</string>
     <string name="hsk_course_friends" formatted="false">Дӯстон</string>
     <string name="hsk_course_goal" formatted="false">Ҳадафи рӯзона</string>
     <string name="hsk_course_grammar" formatted="false">Грамматика</string>
@@ -249,6 +253,8 @@
     <string name="hsk_course_learner" formatted="false">донишҷӯ</string>
     <string name="hsk_course_lesson_done" formatted="false">Дарс анҷом ёфт!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Офарин! Зинаи навбатӣ интизор аст.</string>
+    <string name="hsk_course_lesson_flow_not_ready" formatted="false">Дарс ҳанӯз тайёр нест</string>
+    <string name="hsk_course_lesson_flow_retry" formatted="false">Такрор кардан</string>
     <string name="hsk_course_lesson_settings_exit" formatted="false">Баромадан</string>
     <string name="hsk_course_lesson_settings_title" formatted="false">Танзимоти дарс</string>
     <string name="hsk_course_lessons" formatted="false">дарс</string>

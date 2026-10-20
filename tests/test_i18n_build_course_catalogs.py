@@ -16,10 +16,10 @@ from scripts.i18n_build_course_catalogs import (
 
 
 class CourseLocalCatalogTests(unittest.TestCase):
-    def test_reviewed_810_keys_and_six_generated_targets(self):
+    def test_reviewed_829_keys_and_six_generated_targets(self):
         catalogs = read_sources(ROOT)
         self.assertEqual(set(catalogs), set(LOCALES))
-        self.assertTrue(all(len(catalogs[loc]) == 823 for loc in LOCALES))
+        self.assertTrue(all(len(catalogs[loc]) == 829 for loc in LOCALES))
         self.assertEqual(len(output_files(catalogs)), 6)
         self.assertEqual(generate(ROOT, check=True), [])
 
@@ -75,6 +75,28 @@ class CourseLocalCatalogTests(unittest.TestCase):
             self.assertEqual(generate(root, check=False), ["desktop/ui/js/generated/hsk-course-i18n.js"])
             self.assertEqual(generate(root, check=True), [])
 
+
+    def test_foundation_retry_and_lesson_recovery_use_local_fallbacks(self):
+        """P2 recovery copy: bundled local texts, unchanged legacy fallbacks and anchors."""
+        catalogs = read_sources(ROOT)
+        source = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        lines = source.splitlines()
+        anchors = {
+            3762: ("foundation.unavailable",),
+            3768: ("foundation.zeroTitle", "foundation.internetRetry"),
+            3769: ("foundation.retry",),
+            4073: ("lessonFlow.retry",),
+            4127: ("lessonFlow.notReady",),
+        }
+        for line, keys in anchors.items():
+            for key in keys:
+                with self.subTest(line=line, key=key):
+                    self.assertIn('courseMessage("' + key + '",LANG==="ru"?', lines[line - 1])
+                    for locale in LOCALES:
+                        self.assertIn(catalogs[locale][key], lines[line - 1])
+        self.assertIn('esc(courseMessage("foundation.internetRetry"', lines[3768 - 1])
+        self.assertIn('esc(courseMessage("foundation.retry"', lines[3769 - 1])
+        self.assertIn("setLessonFlowControls();flowDone()", lines[4074 - 1])
 
     def test_course_bundle_cache_version_is_content_addressed_on_every_page(self):
         """Every static consumer must invalidate its cache on generated content changes."""

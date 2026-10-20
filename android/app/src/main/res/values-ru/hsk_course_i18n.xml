@@ -228,6 +228,10 @@
     <string name="hsk_course_download_page_windows_security_title" formatted="false">При первом запуске может появиться предупреждение</string>
     <string name="hsk_course_download_page_windows_title" formatted="false">HSK AI для Windows</string>
     <string name="hsk_course_finish_prev" formatted="false">Завершите предыдущий урок</string>
+    <string name="hsk_course_foundation_internet_retry" formatted="false">Проверьте интернет и повторите загрузку.</string>
+    <string name="hsk_course_foundation_retry" formatted="false">Повторить</string>
+    <string name="hsk_course_foundation_unavailable" formatted="false">Основы пока недоступны</string>
+    <string name="hsk_course_foundation_zero_title" formatted="false">Основы с нуля</string>
     <string name="hsk_course_friends" formatted="false">Друзья</string>
     <string name="hsk_course_goal" formatted="false">Дневная цель</string>
     <string name="hsk_course_grammar" formatted="false">Грамматика</string>
@@ -249,6 +253,8 @@
     <string name="hsk_course_learner" formatted="false">ученик</string>
     <string name="hsk_course_lesson_done" formatted="false">Урок завершён!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Отличная работа. Следующий этап ждёт.</string>
+    <string name="hsk_course_lesson_flow_not_ready" formatted="false">Дарс пока не готов</string>
+    <string name="hsk_course_lesson_flow_retry" formatted="false">Повторить</string>
     <string name="hsk_course_lesson_settings_exit" formatted="false">Выйти</string>
     <string name="hsk_course_lesson_settings_title" formatted="false">Настройки урока</string>
     <string name="hsk_course_lessons" formatted="false">урок</string>

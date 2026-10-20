@@ -825,6 +825,12 @@
     "rating.challengeNotAllowed": "Этому пользователю нельзя бросить вызов",
     "rating.challengeSendFailed": "Не удалось отправить вызов",
     "rating.duelRejected": "Дуэль отклонена.",
-    "rating.weeklyHeading": "Недельный рейтинг"
+    "rating.weeklyHeading": "Недельный рейтинг",
+    "foundation.unavailable": "Основы пока недоступны",
+    "foundation.zeroTitle": "Основы с нуля",
+    "foundation.internetRetry": "Проверьте интернет и повторите загрузку.",
+    "foundation.retry": "Повторить",
+    "lessonFlow.retry": "Повторить",
+    "lessonFlow.notReady": "Дарс пока не готов"
   }
 }

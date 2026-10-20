@@ -825,6 +825,12 @@
     "rating.challengeNotAllowed": "Bu foydalanuvchiga chaqiruv yuborib bo'lmaydi",
     "rating.challengeSendFailed": "Chaqiruv yuborilmadi",
     "rating.duelRejected": "Belashuv rad qilindi.",
-    "rating.weeklyHeading": "Haftalik reyting"
+    "rating.weeklyHeading": "Haftalik reyting",
+    "foundation.unavailable": "Asoslar hozircha ochilmadi",
+    "foundation.zeroTitle": "0 dan asoslar",
+    "foundation.internetRetry": "Internetni tekshiring va qayta yuklang.",
+    "foundation.retry": "Qayta urinish",
+    "lessonFlow.retry": "Qayta urinish",
+    "lessonFlow.notReady": "Dars hali tayyor emas"
   }
 }
