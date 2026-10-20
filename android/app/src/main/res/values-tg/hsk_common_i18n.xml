@@ -35,6 +35,9 @@
     <string name="hsk_common_bot_menu_subscription" formatted="false">💳 Обуна</string>
     <string name="hsk_common_bot_onboarding_courseModeEntry" formatted="false">🚀 Оғози курс</string>
     <string name="hsk_common_bot_onboarding_freeChatEntry" formatted="false">🤖 Реҷаи оддӣ (савол-ҷавоб дар чат)</string>
+    <string name="hsk_common_bot_practiceCheck_viewAnswers" formatted="false">✅ Дидани ҷавобҳо</string>
+    <string name="hsk_common_bot_practiceFinish_course" formatted="false">📚 Оғози курс</string>
+    <string name="hsk_common_bot_practiceFinish_freeChat" formatted="false">💬 Ба савол-ҷавоби ройгон гузаштан</string>
     <string name="hsk_common_bot_promoButton_contact" formatted="false">👤 Тамос бо админ</string>
     <string name="hsk_common_bot_promoButton_course" formatted="false">📚 Реҷаи курс</string>
     <string name="hsk_common_bot_promoButton_help" formatted="false">❓ Ёрдам</string>
@@ -60,6 +63,8 @@
     <string name="hsk_common_bot_releaseFeedback_tryAlready" formatted="false">Шумо аллакай барои санҷидани ин функсия дастрасӣ доред.</string>
     <string name="hsk_common_bot_releaseFeedback_tryButton" formatted="false">🚀 Санҷидан</string>
     <string name="hsk_common_bot_releaseFeedback_tryGranted" formatted="false">Дастрасии тестӣ кушода шуд: дар 30 дақиқа қисми навшударо бе лимит санҷед.</string>
+    <string name="hsk_common_bot_trialLessons_next" formatted="false">Баъд ➡️</string>
+    <string name="hsk_common_bot_trialLessons_previous" formatted="false">⬅️ Қабл</string>
     <string name="hsk_common_common_refresh" formatted="false">Навсозӣ</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">Савол оид ба забони чинӣ</string>
     <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Панелро ҷамъ кардан</string>

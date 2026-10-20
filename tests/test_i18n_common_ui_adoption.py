@@ -245,6 +245,11 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             "language_picker_uz_onboarding": "bot.languagePicker.uzbekOnboarding",
             "course_mode_entry_course": "bot.onboarding.courseModeEntry",
             "course_mode_entry_chat": "bot.onboarding.freeChatEntry",
+            "daily_practice_finish_course": "bot.practiceFinish.course",
+            "daily_practice_finish_chat": "bot.practiceFinish.freeChat",
+            "daily_practice_check_view_answers": "bot.practiceCheck.viewAnswers",
+            "trial_lesson_previous": "bot.trialLessons.previous",
+            "trial_lesson_next": "bot.trialLessons.next",
             "course_reminder_set_button": "bot.promoButton.reminder",
             "hint_section_course_title": "navigation.course",
             "hint_section_practice_title": "navigation.practice",
@@ -277,6 +282,11 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertNotIn('"🇺🇿 O\'zbek"', onboarding)
         self.assertIn('t("course_mode_entry_course", lang)', onboarding)
         self.assertIn('t("course_mode_entry_chat", lang)', onboarding)
+        self.assertIn('t("daily_practice_finish_course", lang)', onboarding)
+        self.assertIn('t("daily_practice_finish_chat", lang)', onboarding)
+        self.assertIn('t("daily_practice_check_view_answers", lang)', onboarding)
+        self.assertIn('t("trial_lesson_previous", lang)', onboarding)
+        self.assertIn('t("trial_lesson_next", lang)', onboarding)
         for bot_key, catalog_key, catalog in (
             *((key, value, COMMON_MESSAGES) for key, value in expected_common.items()),
             *((key, value, COURSE_MESSAGES) for key, value in expected_course.items()),

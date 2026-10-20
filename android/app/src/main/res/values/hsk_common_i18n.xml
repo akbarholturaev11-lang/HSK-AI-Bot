@@ -35,6 +35,9 @@
     <string name="hsk_common_bot_menu_subscription" formatted="false">💳 Obuna</string>
     <string name="hsk_common_bot_onboarding_courseModeEntry" formatted="false">🚀 Kursni boshlash</string>
     <string name="hsk_common_bot_onboarding_freeChatEntry" formatted="false">🤖 Oddiy rejim (chatda savol-javob)</string>
+    <string name="hsk_common_bot_practiceCheck_viewAnswers" formatted="false">✅ Javoblarni ko\'rish</string>
+    <string name="hsk_common_bot_practiceFinish_course" formatted="false">📚 Kursni boshlash</string>
+    <string name="hsk_common_bot_practiceFinish_freeChat" formatted="false">💬 Bepul savol-javobga o\'tish</string>
     <string name="hsk_common_bot_promoButton_contact" formatted="false">👤 Admin bilan aloqa</string>
     <string name="hsk_common_bot_promoButton_course" formatted="false">📚 Kurs rejimi</string>
     <string name="hsk_common_bot_promoButton_help" formatted="false">❓ Yordam</string>
@@ -60,6 +63,8 @@ Yangilikni sinab ko\'ring va 1-5 ball bering. Fikr qoldirsangiz, obunangiz bo\'l
     <string name="hsk_common_bot_releaseFeedback_tryAlready" formatted="false">Sizda bu funksiyani sinab ko\'rish uchun access bor.</string>
     <string name="hsk_common_bot_releaseFeedback_tryButton" formatted="false">🚀 Sinab ko\'rish</string>
     <string name="hsk_common_bot_releaseFeedback_tryGranted" formatted="false">Test access ochildi: 30 minut ichida yangilangan joyni limitsiz sinab ko\'ring.</string>
+    <string name="hsk_common_bot_trialLessons_next" formatted="false">Keyingi ➡️</string>
+    <string name="hsk_common_bot_trialLessons_previous" formatted="false">⬅️ Oldingi</string>
     <string name="hsk_common_common_refresh" formatted="false">Yangilash</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">AI uchun savol</string>
     <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Panelni yig‘ish</string>

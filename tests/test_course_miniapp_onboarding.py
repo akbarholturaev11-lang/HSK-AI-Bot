@@ -9,7 +9,13 @@ from app.bot.handlers.course import (
     _show_required_channel_for_pending_action,
 )
 from app.bot.handlers.required_channel import force_sub_check
-from app.bot.keyboards.onboarding import course_mode_entry_keyboard, language_keyboard
+from app.bot.keyboards.onboarding import (
+    course_mode_entry_keyboard,
+    daily_practice_check_keyboard,
+    daily_practice_finish_keyboard,
+    language_keyboard,
+    trial_lesson_selection_keyboard,
+)
 from app.bot.middlewares.required_channel import (
     FORCE_SUB_ACTION_OPEN_COURSE,
     FORCE_SUB_ACTION_OPEN_FREE_QA,
@@ -49,6 +55,78 @@ class CourseModeEntryKeyboardTests(unittest.TestCase):
             [button.callback_data for button in buttons],
             ["lang:tj", "lang:ru", "lang:uz"],
         )
+
+    def test_daily_practice_buttons_keep_copy_and_callbacks(self):
+        expected = {
+            "uz": (
+                ("📚 Kursni boshlash", "daily_practice:course"),
+                ("💬 Bepul savol-javobga o'tish", "mode:free_qa"),
+                ("✅ Javoblarni ko'rish", "daily_practice:complete"),
+            ),
+            "ru": (
+                ("📚 Начать курс", "daily_practice:course"),
+                ("💬 Перейти в бесплатный вопрос-ответ", "mode:free_qa"),
+                ("✅ Посмотреть ответы", "daily_practice:complete"),
+            ),
+            "tj": (
+                ("📚 Оғози курс", "daily_practice:course"),
+                ("💬 Ба савол-ҷавоби ройгон гузаштан", "mode:free_qa"),
+                ("✅ Дидани ҷавобҳо", "daily_practice:complete"),
+            ),
+        }
+        for language, buttons in expected.items():
+            with self.subTest(language=language):
+                finish = daily_practice_finish_keyboard(language)
+                check = daily_practice_check_keyboard(language)
+                actual = (
+                    (finish.inline_keyboard[0][0].text,
+                     finish.inline_keyboard[0][0].callback_data),
+                    (finish.inline_keyboard[1][0].text,
+                     finish.inline_keyboard[1][0].callback_data),
+                    (check.inline_keyboard[0][0].text,
+                     check.inline_keyboard[0][0].callback_data),
+                )
+                self.assertEqual(actual, buttons)
+
+    def test_trial_lesson_pagination_keeps_localized_labels_and_callbacks(self):
+        lessons = [
+            SimpleNamespace(id=index, lesson_order=index + 1, title="{}")
+            for index in range(8)
+        ]
+        expected = {
+            "uz": ("Keyingi ➡️", "⬅️ Oldingi"),
+            "ru": ("Далее ➡️", "⬅️ Назад"),
+            "tj": ("Баъд ➡️", "⬅️ Қабл"),
+        }
+        for language, (next_label, previous_label) in expected.items():
+            with self.subTest(language=language):
+                next_keyboard = trial_lesson_selection_keyboard(
+                    lessons, page=0, lang=language
+                )
+                previous_keyboard = trial_lesson_selection_keyboard(
+                    lessons, page=1, lang=language
+                )
+                next_button = next_keyboard.inline_keyboard[-1][0]
+                previous_button = previous_keyboard.inline_keyboard[-1][0]
+                self.assertEqual((next_button.text, next_button.callback_data),
+                                 (next_label, "trial_lesson:page:1"))
+                self.assertEqual((previous_button.text, previous_button.callback_data),
+                                 (previous_label, "trial_lesson:page:0"))
+
+    def test_trial_lesson_pagination_keeps_unknown_locale_arrow_fallback(self):
+        lessons = [
+            SimpleNamespace(id=index, lesson_order=index + 1, title="{}")
+            for index in range(8)
+        ]
+        next_keyboard = trial_lesson_selection_keyboard(
+            lessons, page=0, lang="unknown"
+        )
+        previous_keyboard = trial_lesson_selection_keyboard(
+            lessons, page=1, lang="unknown"
+        )
+
+        self.assertEqual(next_keyboard.inline_keyboard[-1][0].text, "➡️")
+        self.assertEqual(previous_keyboard.inline_keyboard[-1][0].text, "⬅️")
 
 
 class _CourseEntryMessage:
