@@ -49,6 +49,26 @@ def main():
         page.wait_for_load_state("networkidle")
         assert redirects == ["https://t.me/darsi_chini_bot"]
         assert not errors, errors
+
+        # Cross-page language persistence, including the real installer
+        # JavaScript, against preview-only empty release data (no downloads).
+        page.goto("http://127.0.0.1:8765/uz/")
+        page.locator('[data-site-nav="download"]').first.click()
+        page.wait_for_load_state("networkidle")
+        assert "/download?lang=uz" in page.url
+        assert page.locator("[data-site-selected-lang]").inner_text() == "O‘zbekcha"
+        page.locator(".site-header details.language-switch summary").click()
+        page.locator('[data-language="ru"]').click()
+        assert "lang=ru" in page.url
+        assert page.locator("[data-site-selected-lang]").inner_text() == "Русский"
+        page.locator('[data-site-nav="guide"]').first.click()
+        page.wait_for_load_state("networkidle")
+        assert page.url.endswith("/ru/guide/"), page.url
+        page.locator('[data-site-nav="download"]').first.click()
+        page.wait_for_load_state("networkidle")
+        assert "/download?lang=ru" in page.url
+        assert page.locator("[data-site-selected-lang]").inner_text() == "Русский"
+        assert not errors, errors
         no_js = browser.new_context(java_script_enabled=False, viewport={"width": 390, "height": 844})
         source_page = no_js.new_page()
         source_page.goto("http://127.0.0.1:8765/tj/learn-chinese/")
@@ -57,7 +77,7 @@ def main():
         assert source_page.locator("a.cta").first.get_attribute("href").startswith("/go/telegram?")
         no_js.close()
         browser.close()
-        print(f"PASS: {len(PAGES)} pages × 3 widths; no overflow/console errors; UTM navigation; CTA redirect; JavaScript disabled")
+        print(f"PASS: {len(PAGES)} pages × 3 widths; no overflow/console errors; locale persisted across download; UTM navigation; CTA redirect; JavaScript disabled")
 
 
 if __name__ == "__main__":
