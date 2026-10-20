@@ -24,7 +24,9 @@ def migration(number):
 class NativeAccountMigrationTests(unittest.TestCase):
     def test_revision_chain_has_one_complete_head(self):
         scripts = ScriptDirectory.from_config(Config('alembic.ini'))
-        self.assertEqual(scripts.get_heads(), ['0108_native_audit_ownership'])
+        # The public-site traffic migration extends the native 0108 chain;
+        # the repository head moved to 0109 without changing native ownership.
+        self.assertEqual(scripts.get_heads(), ['0109_public_site_traffic_daily'])
         self.assertLessEqual(len(scripts.get_heads()[0]), 32)
         self.assertEqual([r.revision for r in scripts.iterate_revisions(
             '0108_native_audit_ownership', '0101_account_deletion_requests')], [
