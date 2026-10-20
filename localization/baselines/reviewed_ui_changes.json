@@ -5,58 +5,58 @@
   "files": {
     "desktop/ui/js/i18n.js": {
       "baseline_sha1": "30e85aad8aa00689c6bba01980a56eadc928638e",
-      "reviewed_sha1": "e101c5342464215b7b14139863004aa8f9ce7f1e",
-      "reason": "Desktop eleven common keys plus 39 exact UZ/RU/TJ course-copy keys now prefer generated local JS bundles; all original messages remain exact fallbacks. No per-string requests. Shared Tauri macOS/Windows source."
+      "reviewed_sha1": "2e89e483446d29132c27d2aee42def6f54e72a1d",
+      "reason": "Desktop eleven common keys plus 39 exact UZ/RU/TJ course-copy keys now prefer generated local JS bundles; all original messages remain exact fallbacks. No per-string requests. Shared Tauri macOS/Windows source. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "4d40834086f9cda19dcafbc53df590d4974f4eff",
-      "reason": "Reviewed single 30-key batch centralizing part-section captions, lesson finish text, award stats, streak phrasing, writer loading and next-lesson CTA across UZ/RU/TJ, preserving byte-identical old inline locale fallback and 8712 physical line segments. No grading/access/payment changes; static JS cache version v10. Additional exact-source 63 voice inline + Live display labels from the 3 locale LD/LIVE_TEXT dictionaries; bundled values overlay each LD locale only after original merge with original fallback and no voice/gating/Pro/state/API logic changes. 8712 physical source lines preserved. The common UI bundle cache version is also bumped for nine exact-copy Android common labels added to the generated local catalogs. P3 authenticated lesson reservation now returns display-only grammar locale patch; Mini App applies atomically to cloned lesson after reservation. Separate local JS, no added HTML physical lines (8712), no public translation bundle, no access/assessment change. Completed nHSK2 lessons now request the same authenticated start endpoint in review_only mode after server-verified completed progress; no second consume=True quota use, legacy fallback on failures. HTML stays 8712 physical lines and the versioned P3 helper remains separate. Current active lesson reservation now demands explicit HTTP success, body ok=true and allowed=true; malformed or missing allowed no longer opens content. This is a same-line fail-closed fix with 8712 lines unchanged; signed service remains the authority and P3 remains display-only."
+      "reviewed_sha1": "cc3be891e2aee875f93ee2c6dc7ece19a4296c85",
+      "reason": "Reviewed single 30-key batch centralizing part-section captions, lesson finish text, award stats, streak phrasing, writer loading and next-lesson CTA across UZ/RU/TJ, preserving byte-identical old inline locale fallback and 8712 physical line segments. No grading/access/payment changes; static JS cache version v10. Additional exact-source 63 voice inline + Live display labels from the 3 locale LD/LIVE_TEXT dictionaries; bundled values overlay each LD locale only after original merge with original fallback and no voice/gating/Pro/state/API logic changes. 8712 physical source lines preserved. The common UI bundle cache version is also bumped for nine exact-copy Android common labels added to the generated local catalogs. P3 authenticated lesson reservation now returns display-only grammar locale patch; Mini App applies atomically to cloned lesson after reservation. Separate local JS, no added HTML physical lines (8712), no public translation bundle, no access/assessment change. Completed nHSK2 lessons now request the same authenticated start endpoint in review_only mode after server-verified completed progress; no second consume=True quota use, legacy fallback on failures. HTML stays 8712 physical lines and the versioned P3 helper remains separate. Current active lesson reservation now demands explicit HTTP success, body ok=true and allowed=true; malformed or missing allowed no longer opens content. This is a same-line fail-closed fix with 8712 lines unchanged; signed service remains the authority and P3 remains display-only. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",
-      "reviewed_sha1": "03e67fbf499217a0426d31dd6976ae592e21c4f1",
-      "reason": "Expose generated canonical common UI keys through a namespaced Bot t() branch and route four exact UZ/RU/TJ navigation-title aliases through the common bundle plus the exact AI Voice alias through the course bundle, retaining Bot dictionaries as fallback. Other legacy key dispatch, Gemini variants, and fallback behavior stay unchanged."
+      "reviewed_sha1": "6e43fab479bacd8f8775d58ffa770e9f0b1d76f2",
+      "reason": "Expose generated canonical common UI keys through a namespaced Bot t() branch and route four exact UZ/RU/TJ navigation-title aliases through the common bundle plus the exact AI Voice alias through the course bundle, retaining Bot dictionaries as fallback. Other legacy key dispatch, Gemini variants, and fallback behavior stay unchanged. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/static/course_v3_onboarding.html": {
       "baseline_sha1": "321c28c34cf4ed0550bb5187d8f6b680654ea51e",
-      "reviewed_sha1": "846112e11bd8fb699a815314b53e9a28a141799e",
-      "reason": "31 original onboard labels plus 19 exact UZ/RU/TJ HSK level and study goal option labels now read static local catalog with all inline fallbacks preserved. The only source edit is presentation-only lookup and versioned JS cache reference; HSK selection IDs, access, saving, analytics and paywall unchanged."
+      "reviewed_sha1": "0060bf284d7c81fdac2ec020603b77f9a8bb8e0e",
+      "reason": "31 original onboard labels plus 19 exact UZ/RU/TJ HSK level and study goal option labels now read static local catalog with all inline fallbacks preserved. The only source edit is presentation-only lookup and versioned JS cache reference; HSK selection IDs, access, saving, analytics and paywall unchanged. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/static/course_v3_test.html": {
       "baseline_sha1": "2962e807b81cc5059dd2bf8ae2b344479d3cd19b",
-      "reviewed_sha1": "a1b5bef4056768d11cdabdae522d276f4ed55a7a",
-      "reason": "Reviewed 49 original UZ/RU/TJ Test Center display-only labels from L, EM, nested EM.sec, HSK30_SOON, PT and MINE_T, using a single local static JS bundle with original inline exact fallback. No question bank, graded answer, exam server, free gate, payment, XP scoring, placement algorithm or navigation semantics changed."
+      "reviewed_sha1": "f3b1879790ac3848b5711c9206ba30de4f368968",
+      "reason": "Reviewed 49 original UZ/RU/TJ Test Center display-only labels from L, EM, nested EM.sec, HSK30_SOON, PT and MINE_T, using a single local static JS bundle with original inline exact fallback. No question bank, graded answer, exam server, free gate, payment, XP scoring, placement algorithm or navigation semantics changed. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/static/course_v3_recognition.html": {
       "baseline_sha1": "22c2e10c99a243b9eb9992f99de0de0709c7f819",
-      "reviewed_sha1": "8cef3be7fb76c6bee286449a3ffb6c7930b6867e",
-      "reason": "Exact 10 UZ/RU/TJ Recognition display labels hydrate synchronously from bundled local static JS, retaining literal inline fallback; practice scoring, word gate, subscription, ads, daily-gate and APIs unchanged."
+      "reviewed_sha1": "f238911a33e5b6c13927bc1937407023ad2575c9",
+      "reason": "Exact 10 UZ/RU/TJ Recognition display labels hydrate synchronously from bundled local static JS, retaining literal inline fallback; practice scoring, word gate, subscription, ads, daily-gate and APIs unchanged. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/static/course_v3_mistakes.html": {
       "baseline_sha1": "b273a6dbf85884b99ab3c194546a6b9d4b0eecbf",
-      "reviewed_sha1": "8646e5ce78ebea0b2c314195975e02a63cbbb697",
-      "reason": "Exactly 53 Mistakes UI display literals per UZ/RU/TJ including nested cats/sources labels moved to offline catalog with original fallback; review session access, answers, grading, audio, XP, Pro and server APIs unchanged. Corrected UI namespace to mistakesPage.* to avoid existing Android resource-name collision at mistakesSub."
+      "reviewed_sha1": "eb117b7993c83f63f18da337dbecf2b925851d5e",
+      "reason": "Exactly 53 Mistakes UI display literals per UZ/RU/TJ including nested cats/sources labels moved to offline catalog with original fallback; review session access, answers, grading, audio, XP, Pro and server APIs unchanged. Corrected UI namespace to mistakesPage.* to avoid existing Android resource-name collision at mistakesSub. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/static/course_v3_pronunciation.html": {
       "baseline_sha1": "d05f5dd02da2befc4db9bc07db343a19bd1c0e32",
-      "reviewed_sha1": "146ea3b1e32bf0f790c41754d46d4665d9632283",
-      "reason": "Exactly 22 Pronunciation display UI labels per UZ/RU/TJ via static offline bundle with original literals as fallback; mic/STT/audio, word selection, grading, Pro, ads and server access unchanged."
+      "reviewed_sha1": "99ae5a5818463f08c684c423c0dff7d28ea9f83b",
+      "reason": "Exactly 22 Pronunciation display UI labels per UZ/RU/TJ via static offline bundle with original literals as fallback; mic/STT/audio, word selection, grading, Pro, ads and server access unchanged. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/static/course_v3_voice.html": {
       "baseline_sha1": "ddbca0976c0c1d25c86383653ab274129f33dcd7",
-      "reviewed_sha1": "3e00c32bcf45135d6c3bf648af91b1117eff2f10",
-      "reason": "47 exact AI Voice UI presentation labels use bundled local UZ/RU/TJ catalogue with original inline fallback. No microphone, transcription, session, audio, response scoring, Pro, settings persistence or server API changes."
+      "reviewed_sha1": "099f69a72ec0c89a3604e4709abbdcff3cecde8d",
+      "reason": "47 exact AI Voice UI presentation labels use bundled local UZ/RU/TJ catalogue with original inline fallback. No microphone, transcription, session, audio, response scoring, Pro, settings persistence or server API changes. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/static/course_v3_memorize.html": {
       "baseline_sha1": "c0ec27bbeb8e8dd3aaf25f345548b0135fefc96e",
-      "reviewed_sha1": "03adea2aae9ab2eaa248509ab224f3d0cfa257fa",
-      "reason": "Four original UZ/RU/TJ Memorize daily-limit sheet display strings use local catalogue with inline language-map fallback, without changing gating, audio, practice, payment or progress. Inline hydration keeps original physical line numbers unchanged to preserve the nine reviewed dynamic memorization locale-call locations."
+      "reviewed_sha1": "a7de4ce756154d1864400226b6ac42cb5accf8a7",
+      "reason": "Four original UZ/RU/TJ Memorize daily-limit sheet display strings use local catalogue with inline language-map fallback, without changing gating, audio, practice, payment or progress. Inline hydration keeps original physical line numbers unchanged to preserve the nine reviewed dynamic memorization locale-call locations. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/static/hsk-lugat.html": {
       "baseline_sha1": "b0bebb8df10bfe6ec91f928a48676d76adab91df",
-      "reviewed_sha1": "0f10829fc3095ce38c1c629d737b7275d8677c80",
-      "reason": "14 UZ/RU/TJ Dictionary practice and character-memory header labels centralised through bundled local UI and preserved inline fallback for all locales on dynamic switch. Search, levels, word data, character details and audio untouched. Additional 29 exact UZ/RU/TJ display-only Dictionary main/stroke-writer UI labels centralised with bundled static UI and inline fallback. The three existing runtime counter/stroke functions, search/level filter/locale controls, learning content, stored data and audio remain untouched; physical HTML lines unchanged."
+      "reviewed_sha1": "bda0718531adae30652dfaa9ce5f0bc4333c5df1",
+      "reason": "14 UZ/RU/TJ Dictionary practice and character-memory header labels centralised through bundled local UI and preserved inline fallback for all locales on dynamic switch. Search, levels, word data, character details and audio untouched. Additional 29 exact UZ/RU/TJ display-only Dictionary main/stroke-writer UI labels centralised with bundled static UI and inline fallback. The three existing runtime counter/stroke functions, search/level filter/locale controls, learning content, stored data and audio remain untouched; physical HTML lines unchanged. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/static/hsk-gaplar.html": {
       "baseline_sha1": "93bd82cb79245ef34834466587ff20e72b729426",
@@ -65,13 +65,13 @@
     },
     "app/static/desktop-download.html": {
       "baseline_sha1": "1d0f69a7e9de869af485dbf7bf5a78180ab98b92",
-      "reviewed_sha1": "bf20a203e4dc503ef2910b112c267df29c60802b",
-      "reason": "Preload one local generated UZ/RU/TJ catalog asset with defer before the existing download-page script, whose 79 flat labels per locale now hydrate locally with inline fallbacks. Referral validation, release status, installer URLs, security and platform detection unchanged."
+      "reviewed_sha1": "b68a7d7155f73324458efc0100cf6ca5ad32b1a5",
+      "reason": "Preload one local generated UZ/RU/TJ catalog asset with defer before the existing download-page script, whose 79 flat labels per locale now hydrate locally with inline fallbacks. Referral validation, release status, installer URLs, security and platform detection unchanged. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     },
     "app/static/subscription.html": {
       "baseline_sha1": "6841d29b680d21f018133fc7a60079abebd45bf0",
-      "reviewed_sha1": "299f7a3bd68d898ef9c8323a7d57990610027ecd",
-      "reason": "Exact-copy 102 UZ/RU/TJ subscription UI-only flat display labels to bundled local static catalog with unmodified inline literal fallback. No invoice, entitlement, payment, region, discount, receipt, approval, renewal, currency conversion, API, referral, pricing or checkout logic changes. Nested arrays/objects and original HTML physical line count untouched. Second pass: 79 UZ/RU/TJ nested display strings (mode titles, benefits, plan labels, focus descriptions, visible payment/country labels) adopted from static bundle with original nested arrays/keys and locale fallback; payment method IDs, values, logic unchanged."
+      "reviewed_sha1": "70cf81776a0b14ee0792596a73650fa0e1a47c57",
+      "reason": "Exact-copy 102 UZ/RU/TJ subscription UI-only flat display labels to bundled local static catalog with unmodified inline literal fallback. No invoice, entitlement, payment, region, discount, receipt, approval, renewal, currency conversion, API, referral, pricing or checkout logic changes. Nested arrays/objects and original HTML physical line count untouched. Second pass: 79 UZ/RU/TJ nested display strings (mode titles, benefits, plan labels, focus descriptions, visible payment/country labels) adopted from static bundle with original nested arrays/keys and locale fallback; payment method IDs, values, logic unchanged. Integrated source checkpoint 2026-10-20: exact current main/P3 reconciled Git blob pinned; legacy source-language, access and visual/runtime QA remain separate required checks."
     }
   }
 }

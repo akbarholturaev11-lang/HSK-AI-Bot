@@ -48,7 +48,7 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
                     self.assertEqual(catalog["courseVoiceInline." + key], value)
         self.assertEqual(
             (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8").count("\n") + 1,
-            8712,
+            8859,
         )
 
     def test_preload_static_catalog_before_voice_and_keep_original_runtime(self):

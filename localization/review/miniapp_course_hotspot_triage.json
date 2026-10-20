@@ -4,7 +4,7 @@
   "source": "app/static/course-v3.html",
   "source_revision": "cc3be891e2aee875f93ee2c6dc7ece19a4296c85",
   "counting_note": "62 unique physical source lines cover all 131 current LANG ==/=== literal-locale predicates in course-v3.html after main/P3 integration. Multiple predicates per line remain one classification; these are reviewed source decisions, not runtime UI verification.",
-  "coverage_note": "Current merged course-v3.html source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified, including two new main navigation/accessibility sites. Other localized expressions, dynamic content, other files and rendered UI remain separately audited.",
+  "coverage_note": "Current merged course-v3.html source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified, including two new main navigation/accessibility sites. All other localized source expressions, dynamic content, other files and rendered UI remain separately audited.",
   "classifications": [
     {
       "line": 1500,
