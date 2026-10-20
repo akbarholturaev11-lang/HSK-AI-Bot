@@ -16,7 +16,7 @@ class CourseLocalCatalogTests(unittest.TestCase):
     def test_reviewed_810_keys_and_six_generated_targets(self):
         catalogs = read_sources(ROOT)
         self.assertEqual(set(catalogs), set(LOCALES))
-        self.assertTrue(all(len(catalogs[loc]) == 810 for loc in LOCALES))
+        self.assertTrue(all(len(catalogs[loc]) == 811 for loc in LOCALES))
         self.assertEqual(len(output_files(catalogs)), 6)
         self.assertEqual(generate(ROOT, check=True), [])
 

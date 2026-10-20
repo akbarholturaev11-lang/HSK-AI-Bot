@@ -301,7 +301,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertEqual(len(source.split("\n")), 8859)
         selections = {
             "buildSent": 1, "dialog": 1, "listen": 2, "matchPairs": 1,
-            "say": 5, "check": 2, "next": 2, "rightAns": 1,
+            "say": 4, "check": 2, "next": 2, "rightAns": 1,
             "you": 4,
         }
         for key, count in selections.items():
@@ -775,7 +775,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         for locale in ("uz", "ru", "tj"):
             msgs = json.loads((ROOT / f"localization/ui/{locale}/course.json")
                               .read_text(encoding="utf-8"))["messages"]
-            self.assertEqual(len(msgs), 797)
+            self.assertEqual(len(msgs), 811)
             for prefix, fields, var, scope, start, end in groups:
                 region = html.split(scope, 1)[1].split(start, 1)[1].split(end, 1)[0]
                 original = next((line for line in region.splitlines()

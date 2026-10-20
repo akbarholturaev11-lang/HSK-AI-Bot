@@ -546,7 +546,7 @@ private fun AvatarNoteSheet(onDismiss: () -> Unit) {
     val sheetState = rememberModalBottomSheetState()
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.PaperRaised) {
         Text(
-            text = stringResource(R.string.hsk_course_avatar_edit_note),
+            text = stringResource(R.string.hsk_course_android_profile_avatar_edit_note),
             style = MaterialTheme.typography.bodyLarge,
             color = PompColors.InkSecondary,
             textAlign = TextAlign.Center,
@@ -819,7 +819,7 @@ private fun ProfileSettingsScreen(
                                 ProfileSettingsPage.APP -> R.string.profile_settings_section_app
                                 ProfileSettingsPage.ACCOUNT -> R.string.profile_settings_section_account
                                 ProfileSettingsPage.APPEARANCE -> R.string.profile_appearance
-                                ProfileSettingsPage.NOTIFICATIONS -> R.string.profile_notifications
+                                ProfileSettingsPage.NOTIFICATIONS -> R.string.hsk_course_notif
                                 ProfileSettingsPage.PRIVACY -> R.string.profile_privacy_security
                             }),
                             color = PompColors.Ink,

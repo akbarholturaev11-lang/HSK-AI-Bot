@@ -39,7 +39,7 @@ class ReadyPhrasesAndDownloadUIAdoptionTests(unittest.TestCase):
                     catalog = json.loads(
                         (ROOT / f"localization/ui/{lang}/course.json").read_text(encoding="utf-8")
                     )["messages"]
-                    self.assertEqual(len(catalog), 810)
+                    self.assertEqual(len(catalog), 811)
                     for key, value in items.items():
                         self.assertEqual(catalog[family + "." + key], value)
 
