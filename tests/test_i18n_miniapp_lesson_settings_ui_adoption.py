@@ -65,7 +65,7 @@ class MiniAppLessonSettingsLocalUIAdoptionTests(unittest.TestCase):
                     self.assertEqual(original, expected)
                     for locale in LOCALES:
                         self.assertEqual(self.catalogs[locale][key], expected[locale])
-                        self.assertEqual(len(self.catalogs[locale]), 883)
+                        self.assertEqual(len(self.catalogs[locale]), 892)
 
     def test_existing_sheet_accessibility_and_exit_flow_remain(self):
         source = self.html

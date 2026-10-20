@@ -88,6 +88,18 @@ class MiniappCatalogAuditTests(unittest.TestCase):
         self.assertEqual(report["source_hotspots"]["course_v3_memorize.html"]["inline_locale_call"]["candidate_count"], 0)
         self.assertEqual(report["source_hotspots"]["course_v3_pronunciation.html"]["inline_locale_call"]["candidate_count"], 0)
         self.assertEqual(report["source_hotspots"]["course_v3_recognition.html"]["inline_locale_call"]["candidate_count"], 0)
+        dictionary = next(row for row in report["catalogs"]
+                          if row["file"] == "app/static/hsk-lugat.html"
+                          and row["catalog"] == "UI")
+        self.assertEqual(dictionary["parse_review"], [])
+        self.assertEqual(dictionary["reviewed_dynamic_functions"], [
+            {"path": "countAll", "message_key": "dictionaryPage.countAll",
+             "locale_function_count": 3},
+            {"path": "countResults", "message_key": "dictionaryPage.countResults",
+             "locale_function_count": 3},
+            {"path": "strokes", "message_key": "dictionaryPage.strokeCount",
+             "locale_function_count": 3},
+        ])
         for row in report["catalogs"]:
             self.assertEqual(set(row["leaf_counts"]), {"uz","ru","tj"})
             self.assertGreater(min(row["leaf_counts"].values()), 0)

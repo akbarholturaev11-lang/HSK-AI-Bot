@@ -118,6 +118,12 @@
     <string name="hsk_course_dictionary_page_clear_history" formatted="false">Очистить</string>
     <string name="hsk_course_dictionary_page_clear_search" formatted="false">Очистить поиск</string>
     <string name="hsk_course_dictionary_page_close" formatted="false">Закрыть</string>
+    <string name="hsk_course_dictionary_page_count_all_few" formatted="false">{level} · {count} слова</string>
+    <string name="hsk_course_dictionary_page_count_all_many" formatted="false">{level} · {count} слов</string>
+    <string name="hsk_course_dictionary_page_count_all_one" formatted="false">{level} · {count} слово</string>
+    <string name="hsk_course_dictionary_page_count_results_few" formatted="false">{count} результата</string>
+    <string name="hsk_course_dictionary_page_count_results_many" formatted="false">{count} результатов</string>
+    <string name="hsk_course_dictionary_page_count_results_one" formatted="false">{count} результат</string>
     <string name="hsk_course_dictionary_page_empty_sub" formatted="false">Попробуйте другое слово.</string>
     <string name="hsk_course_dictionary_page_empty_title" formatted="false">Ничего не найдено.</string>
     <string name="hsk_course_dictionary_page_filter" formatted="false">Фильтр</string>
@@ -130,6 +136,9 @@
     <string name="hsk_course_dictionary_page_order" formatted="false">Порядок черт</string>
     <string name="hsk_course_dictionary_page_placeholder" formatted="false">Поиск по значению, пиньиню или иероглифу…</string>
     <string name="hsk_course_dictionary_page_show_filters" formatted="false">Показать фильтры</string>
+    <string name="hsk_course_dictionary_page_stroke_count_few" formatted="false">{count} черты</string>
+    <string name="hsk_course_dictionary_page_stroke_count_many" formatted="false">{count} черт</string>
+    <string name="hsk_course_dictionary_page_stroke_count_one" formatted="false">{count} черта</string>
     <string name="hsk_course_dictionary_page_title" formatted="false">Словарь иероглифов</string>
     <string name="hsk_course_dictionary_page_version_filter" formatted="false">Версия словаря</string>
     <string name="hsk_course_dictionary_practice_head" formatted="false">Упражнения</string>

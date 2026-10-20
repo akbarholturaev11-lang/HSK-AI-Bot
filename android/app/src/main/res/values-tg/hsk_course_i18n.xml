@@ -118,6 +118,12 @@
     <string name="hsk_course_dictionary_page_clear_history" formatted="false">Тоза кардан</string>
     <string name="hsk_course_dictionary_page_clear_search" formatted="false">Пок кардани ҷустуҷӯ</string>
     <string name="hsk_course_dictionary_page_close" formatted="false">Пӯшидан</string>
+    <string name="hsk_course_dictionary_page_count_all_few" formatted="false">{level} · {count} калима</string>
+    <string name="hsk_course_dictionary_page_count_all_many" formatted="false">{level} · {count} калима</string>
+    <string name="hsk_course_dictionary_page_count_all_one" formatted="false">{level} · {count} калима</string>
+    <string name="hsk_course_dictionary_page_count_results_few" formatted="false">{count} натиҷа</string>
+    <string name="hsk_course_dictionary_page_count_results_many" formatted="false">{count} натиҷа</string>
+    <string name="hsk_course_dictionary_page_count_results_one" formatted="false">{count} натиҷа</string>
     <string name="hsk_course_dictionary_page_empty_sub" formatted="false">Калимаи дигар санҷед.</string>
     <string name="hsk_course_dictionary_page_empty_title" formatted="false">Чизе ёфт нашуд.</string>
     <string name="hsk_course_dictionary_page_filter" formatted="false">Филтр</string>
@@ -130,6 +136,9 @@
     <string name="hsk_course_dictionary_page_order" formatted="false">Тартиби навиш</string>
     <string name="hsk_course_dictionary_page_placeholder" formatted="false">Ҷустуҷӯ аз рӯи маъно, пиньин ё иероглиф…</string>
     <string name="hsk_course_dictionary_page_show_filters" formatted="false">Намоиши филтрҳо</string>
+    <string name="hsk_course_dictionary_page_stroke_count_few" formatted="false">{count} хат</string>
+    <string name="hsk_course_dictionary_page_stroke_count_many" formatted="false">{count} хат</string>
+    <string name="hsk_course_dictionary_page_stroke_count_one" formatted="false">{count} хат</string>
     <string name="hsk_course_dictionary_page_title" formatted="false">Луғати иероглифҳо</string>
     <string name="hsk_course_dictionary_page_version_filter" formatted="false">Нашри луғат</string>
     <string name="hsk_course_dictionary_practice_head" formatted="false">Машқҳо</string>

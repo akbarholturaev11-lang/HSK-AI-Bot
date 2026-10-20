@@ -14,7 +14,7 @@
 })();
 </script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261020-96b42704ca5a"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261020-779fc95f8460"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
@@ -424,7 +424,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   var params = new URLSearchParams(location.search || '');
   document.documentElement.classList.toggle('hsk-embedded', params.get('embedded') === '1');
   if(window.HSK_FAST_WRITER){ initFastWriter(params); return; }
-  var UI = {
+  function dictionaryPluralMessage(key,n,lang,params,fallback){var amount=Math.abs(Math.floor(Number(n)||0)),mod10=amount%10,mod100=amount%100,category=lang==="ru"?(mod10===1&&mod100!==11?"one":mod10>=2&&mod10<=4&&(mod100<12||mod100>14)?"few":"many"):"many",bundle=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[lang])||{},template=bundle[key+"."+category];if(typeof template!=="string"||!template)return fallback;return template.replace(/\{([A-Za-z][A-Za-z0-9_]*)\}/g,function(match,name){return Object.prototype.hasOwnProperty.call(params,name)?String(params[name]):match})}  var UI = {
     uz: {
       title: "Ierogliflar lug‘ati",
       language: "Til",
@@ -436,9 +436,9 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       showFilters: "Filtrlarni ko‘rsatish",
       hideFilters: "Filtrlarni yashirish",
       placeholder: "Ma'no, pinyin yoki ieroglif bo'yicha qidiring…",
-      countAll: function(n, level){ return level + ' · ' + n + " so'z"; },
-      countResults: function(n){ return n + " natija"; },
-      strokes: function(n){ return n + " chiziq"; },
+      countAll: function(n, level){ return dictionaryPluralMessage("dictionaryPage.countAll",n,currentLang,{count:n,level:level},level + ' · ' + n + " so'z"); },
+      countResults: function(n){ return dictionaryPluralMessage("dictionaryPage.countResults",n,currentLang,{count:n},n + " natija"); },
+      strokes: function(n){ return dictionaryPluralMessage("dictionaryPage.strokeCount",n,currentLang,{count:n},n + " chiziq"); },
       order: "Tartib",
       close: "Yopish",
       emptyTitle: "Hech narsa topilmadi.",
@@ -461,9 +461,9 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       showFilters: "Показать фильтры",
       hideFilters: "Скрыть фильтры",
       placeholder: "Поиск по значению, пиньиню или иероглифу…",
-      countAll: function(n, level){ return level + ' · ' + n + " слов"; },
-      countResults: function(n){ return n + " результатов"; },
-      strokes: function(n){ return n + " черт"; },
+      countAll: function(n, level){ return dictionaryPluralMessage("dictionaryPage.countAll",n,currentLang,{count:n,level:level},level + ' · ' + n + " слов"); },
+      countResults: function(n){ return dictionaryPluralMessage("dictionaryPage.countResults",n,currentLang,{count:n},n + " результатов"); },
+      strokes: function(n){ return dictionaryPluralMessage("dictionaryPage.strokeCount",n,currentLang,{count:n},n + " черт"); },
       order: "Порядок черт",
       close: "Закрыть",
       emptyTitle: "Ничего не найдено.",
@@ -486,9 +486,9 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       showFilters: "Намоиши филтрҳо",
       hideFilters: "Пинҳон кардани филтрҳо",
       placeholder: "Ҷустуҷӯ аз рӯи маъно, пиньин ё иероглиф…",
-      countAll: function(n, level){ return level + ' · ' + n + " калима"; },
-      countResults: function(n){ return n + " натиҷа"; },
-      strokes: function(n){ return n + " хат"; },
+      countAll: function(n, level){ return dictionaryPluralMessage("dictionaryPage.countAll",n,currentLang,{count:n,level:level},level + ' · ' + n + " калима"); },
+      countResults: function(n){ return dictionaryPluralMessage("dictionaryPage.countResults",n,currentLang,{count:n},n + " натиҷа"); },
+      strokes: function(n){ return dictionaryPluralMessage("dictionaryPage.strokeCount",n,currentLang,{count:n},n + " хат"); },
       order: "Тартиби навиш",
       close: "Пӯшидан",
       emptyTitle: "Чизе ёфт нашуд.",
@@ -600,9 +600,9 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var isFastLight = fastParams.get('theme') !== 'dark';
     document.documentElement.classList.toggle('theme-light', isFastLight);
     var labels = {
-      uz:{close:'Yopish',play:'Yozilishini ko‘rsatish',pause:'Pauza',previous:'Oldingi chiziq',next:'Keyingi chiziq',strokes:function(n){return n + ' ta chiziq';},loading:'Yozilish tartibi yuklanmoqda…',fallback:'Yozilish tartibi yuklanmadi'},
-      ru:{close:'Закрыть',play:'Показать написание',pause:'Пауза',previous:'Предыдущая черта',next:'Следующая черта',strokes:function(n){return n + ' черт';},loading:'Загружается порядок черт…',fallback:'Порядок черт не загрузился'},
-      tj:{close:'Пӯшидан',play:'Тартиби навиштро нишон додан',pause:'Таваққуф',previous:'Хати пешина',next:'Хати навбатӣ',strokes:function(n){return n + ' хат';},loading:'Тартиби навиш бор шуда истодааст…',fallback:'Тартиби навиш бор нашуд'}
+      uz:{close:'Yopish',play:'Yozilishini ko‘rsatish',pause:'Pauza',previous:'Oldingi chiziq',next:'Keyingi chiziq',strokes:function(n){return dictionaryPluralMessage('dictionaryPage.strokeCount',n,lang,{count:n},n + ' ta chiziq');},loading:'Yozilish tartibi yuklanmoqda…',fallback:'Yozilish tartibi yuklanmadi'},
+      ru:{close:'Закрыть',play:'Показать написание',pause:'Пауза',previous:'Предыдущая черта',next:'Следующая черта',strokes:function(n){return dictionaryPluralMessage('dictionaryPage.strokeCount',n,lang,{count:n},n + ' черт');},loading:'Загружается порядок черт…',fallback:'Порядок черт не загрузился'},
+      tj:{close:'Пӯшидан',play:'Тартиби навиштро нишон додан',pause:'Таваққуф',previous:'Хати пешина',next:'Хати навбатӣ',strokes:function(n){return dictionaryPluralMessage('dictionaryPage.strokeCount',n,lang,{count:n},n + ' хат');},loading:'Тартиби навиш бор шуда истодааст…',fallback:'Тартиби навиш бор нашуд'}
     }[lang] || {};var DICTIONARY_FAST_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[lang])||{};Object.keys(labels).forEach(function(key){if(typeof labels[key]!=="string")return;var value=DICTIONARY_FAST_UI["dictionaryFastWriter."+key];if(typeof value==="string"&&value)labels[key]=value});
     var raw = fastParams.get('char') || '字';
     var chars = Array.from(raw).filter(function(c){return c.trim();});

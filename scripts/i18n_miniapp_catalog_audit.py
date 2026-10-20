@@ -35,6 +35,13 @@ TARGETS = (
     ("app/static/hsk-lugat.html", "messages"),
     ("app/static/hsk-gaplar.html", "UI"),
 )
+DYNAMIC_CATALOG_COPY = {
+    ("app/static/hsk-lugat.html", "UI"): {
+        "countAll": "dictionaryPage.countAll",
+        "countResults": "dictionaryPage.countResults",
+        "strokes": "dictionaryPage.strokeCount",
+    },
+}
 NAME = re.compile(r"^\s*([A-Za-z_$][\w$]*)\s*:\s*", re.S)
 VARIABLE = re.compile(r"(?<![$\{])\{([A-Za-z_]\w*)\}(?!\})")
 TAG = re.compile(r"</?([A-Za-z][A-Za-z0-9-]*)\b")
@@ -247,6 +254,53 @@ def extract_literal(text: str, name: str) -> tuple[str, int]:
     raise ValueError("JS catalog object not closed")
 
 
+def review_catalog_backed_functions(source: str, file: str, catalog: str,
+                                    report: dict) -> dict:
+    """Close only known legacy function warnings after verifying local lookup."""
+    expected = DYNAMIC_CATALOG_COPY.get((file, catalog), {})
+    if not expected:
+        return report
+    helper_start = source.find("function dictionaryPluralMessage(")
+    helper_end = source.find("var UI = {", helper_start)
+    helper = source[helper_start:helper_end] if helper_start >= 0 and helper_end > helper_start else ""
+    if (not helper or 'template=bundle[key+"."+category]' not in helper
+            or 'window.HSKAI_COURSE_I18N[lang]' not in helper
+            or 'return fallback' not in helper
+            or 'template.replace(' not in helper):
+        return report
+
+    ui_start = source.find("var UI = {")
+    ui_end = source.find("var DICTIONARY_MAIN_UI=", ui_start)
+    function_source = source[ui_start:ui_end] if ui_start >= 0 and ui_end > ui_start else ""
+    if not function_source:
+        return report
+    reviewed = []
+    for property_name, message_key in expected.items():
+        pattern = re.compile(
+            r"\b" + re.escape(property_name)
+            + r"\s*:\s*function\s*\([^)]*\)\s*\{([^\n]*)"
+        )
+        bodies = pattern.findall(function_source)
+        if (len(bodies) != len(LOCALES)
+                or not all(re.search(
+                    r"dictionaryPluralMessage\(\s*['\"]"
+                    + re.escape(message_key) + r"['\"]",
+                    body,
+                ) for body in bodies)):
+            continue
+        reviewed.append({"path": property_name, "message_key": message_key,
+                         "locale_function_count": len(bodies)})
+
+    reviewed_paths = {row["path"] for row in reviewed}
+    report["parse_review"] = [
+        issue for issue in report["parse_review"]
+        if not (issue.get("issue") == "legacy_function_copy"
+                and issue.get("path") in reviewed_paths)
+    ]
+    report["reviewed_dynamic_functions"] = reviewed
+    return report
+
+
 HOTSPOT_PAGES = (
     "course-v3.html", "subscription.html", "course_v3_test.html",
     "course_v3_memorize.html", "course_v3_mistakes.html",
@@ -288,8 +342,10 @@ def inventory(root: Path = ROOT) -> dict:
     for rel, name in TARGETS:
         source = (root / rel).read_text(encoding="utf-8")
         literal, line = extract_literal(source, name)
+        compared = compare_literal(literal)
+        review_catalog_backed_functions(source, rel, name, compared)
         reports.append({"file": rel, "catalog": name, "source_line": line,
-                        **compare_literal(literal)})
+                        **compared})
     return {"schema_version": 1, "status": "manual_review_required",
             "scope": "Selected current Mini App static locale catalogs; not exhaustive UI",
             "catalogs": reports,
