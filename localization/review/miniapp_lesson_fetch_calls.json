@@ -2,12 +2,12 @@
   "schema_version": 1,
   "status": "SIX_DIRECT_READ_CALLS_SOURCE_REVIEWED_NO_RUNTIME_MIGRATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "90c60558279041fefde8922af5faf92c80754bca",
-  "scope": "All six direct loadLessonData(...) expressions, not the function declaration, on this Mini App page. Indirect callers to warmLessonPreviewAudio, prefetchNearbyLessons and primeSalesValueContent are separately described in the notes.",
+  "source_revision": "cc3be891e2aee875f93ee2c6dc7ece19a4296c85",
+  "scope": "All six direct loadLessonData(...) expressions, not the function declaration, on this Mini App page. Indirect callers to warmLessonPreviewAudio, prefetchNearbyLessons and primeSalesValueContent are separately described in the notes. Updated review after main/P3 integration: all six exact direct GET callsite anchors and four indirect callers are re-identified; no access policy migration.",
   "read_calls": [
     {
       "ordinal": 1,
-      "line": 1978,
+      "line": 2053,
       "anchor": "loadLessonData(\"hsk1\",3)",
       "owner": "primeSalesValueContent",
       "intent": "paywall_preview_prime",
@@ -17,7 +17,7 @@
     },
     {
       "ordinal": 2,
-      "line": 2128,
+      "line": 2203,
       "anchor": "loadLessonData(lv,n)",
       "owner": "warmLessonPreviewAudio",
       "intent": "audio_preload_before_continue",
@@ -27,7 +27,7 @@
     },
     {
       "ordinal": 3,
-      "line": 2913,
+      "line": 3008,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "prefetchNearbyLessons",
       "intent": "background_nearby_prefetch",
@@ -37,7 +37,7 @@
     },
     {
       "ordinal": 4,
-      "line": 3533,
+      "line": 3629,
       "anchor": "loadLessonData(MAP.level||\"hsk1\",l.n)",
       "owner": "startSkipTest",
       "intent": "skip_test_question_generation",
@@ -47,7 +47,7 @@
     },
     {
       "ordinal": 5,
-      "line": 3665,
+      "line": 3761,
       "anchor": "loadLessonData(\"hsk1\",1)",
       "owner": "startFoundationFromMap",
       "intent": "starter_foundation_content",
@@ -57,7 +57,7 @@
     },
     {
       "ordinal": 6,
-      "line": 3995,
+      "line": 4091,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "startLesson",
       "intent": "interactive_lesson_after_reservation",
@@ -68,22 +68,22 @@
   ],
   "additional_indirect_entrypoints": [
     {
-      "line": 3484,
+      "line": 3580,
       "name": "warmLessonPreviewAudio",
       "intent": "preview_on_sheet_open"
     },
     {
-      "line": 5307,
+      "line": 5416,
       "name": "prefetchNearbyLessons",
       "intent": "track_switch_background"
     },
     {
-      "line": 8435,
+      "line": 8582,
       "name": "prefetchNearbyLessons",
       "intent": "initial_course_boot_background"
     },
     {
-      "line": 2287,
+      "line": 2366,
       "name": "primeSalesValueContent",
       "intent": "subscription_paywall_lazy_prime"
     }

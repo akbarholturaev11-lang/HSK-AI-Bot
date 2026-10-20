@@ -2,12 +2,12 @@
   "schema_version": 1,
   "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "555068673652cebb621323986c2be4c36d00b14e",
-  "counting_note": "60 unique physical source lines cover all 125 currently detected LANG === or LANG == literal-locale predicates in course-v3.html. Multiple predicates may occur on one line; classification is at source-line level, not proof of 125 separately reviewed UI strings.",
-  "coverage_note": "Complete only for regex LANG ==/=== 'uz'|'ru'|'tj' on this file revision. All other localized source expressions, inline maps, dynamic content, other pages, rendered UI and runtime behaviors remain P0 review items.",
+  "source_revision": "cc3be891e2aee875f93ee2c6dc7ece19a4296c85",
+  "counting_note": "62 unique physical source lines cover all 131 current LANG ==/=== literal-locale predicates in course-v3.html after main/P3 integration. Multiple predicates per line remain one classification; these are reviewed source decisions, not runtime UI verification.",
+  "coverage_note": "Current merged course-v3.html source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified, including two new main navigation/accessibility sites. Other localized expressions, dynamic content, other files and rendered UI remain separately audited.",
   "classifications": [
     {
-      "line": 1484,
+      "line": 1500,
       "anchor": "syncDocumentLanguage()",
       "category": "locale_adapter",
       "reason": "Preserve tj -> tg document tag; not translatable copy",
@@ -15,15 +15,15 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 2263,
+      "line": 2342,
       "anchor": "aria-label",
       "category": "accessibility_copy",
-      "reason": "Dialog and close labels require localized accessibility keys",
+      "reason": "Dialog and close accessibility labels; main also hardens focus/inert handling, preserve the entire dialog behavior",
       "review": "source_classified_only",
       "predicate_occurrences": 4
     },
     {
-      "line": 2336,
+      "line": 2423,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Writer iframe loading status",
@@ -31,7 +31,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 2397,
+      "line": 2484,
       "anchor": "nextLabel",
       "category": "navigation_copy",
       "reason": "Lesson transition CTA",
@@ -39,7 +39,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 2412,
+      "line": 2499,
       "anchor": "n%10===1",
       "category": "locale_grammar",
       "reason": "Russian plural selection is logic, not a text literal",
@@ -47,7 +47,7 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 2423,
+      "line": 2510,
       "anchor": "LANG===\"ru\"",
       "category": "navigation_copy",
       "reason": "Repeated next-lesson CTA in follow-up checkpoint state",
@@ -55,7 +55,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 2462,
+      "line": 2549,
       "anchor": "rankSummary",
       "category": "formatted_copy",
       "reason": "Rank numbers and arrow must be placeholders, not concatenated fragments",
@@ -63,7 +63,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 2726,
+      "line": 2820,
       "anchor": "avatarEdit:function()",
       "category": "profile_copy",
       "reason": "Telegram avatar explanation",
@@ -71,7 +71,15 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 3101,
+      "line": 2828,
+      "anchor": "Настройки урока",
+      "category": "navigation_copy",
+      "reason": "New localized lesson settings and exit action sheet; keep exit confirmation/access guards unchanged",
+      "review": "source_classified_only",
+      "predicate_occurrences": 4
+    },
+    {
+      "line": 3196,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Exercise loading fallback; keep Panda loading behavior",
@@ -79,7 +87,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 3107,
+      "line": 3202,
       "anchor": "LANG===\"ru\"",
       "category": "access_copy",
       "reason": "Practice gate loading text; leave access checks unchanged",
@@ -87,7 +95,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 3381,
+      "line": 3477,
       "anchor": "LANG===\"ru\"",
       "category": "lesson_navigation_copy",
       "reason": "Checkpoint/lesson part name with numeric parts",
@@ -95,7 +103,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 3382,
+      "line": 3478,
       "anchor": "LANG===\"ru\"",
       "category": "lesson_navigation_copy",
       "reason": "Localized part numbering: Russian and Tajik prefixes vs Uzbek suffix",
@@ -103,7 +111,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 3388,
+      "line": 3484,
       "anchor": "LANG===\"ru\"",
       "category": "lesson_navigation_copy",
       "reason": "Lesson number label assembled with differing locale word order",
@@ -111,7 +119,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 3481,
+      "line": 3577,
       "anchor": "你好 · nǐ hǎo",
       "category": "lesson_example_translation",
       "reason": "Chinese and pinyin are immutable; only gloss is localized",
@@ -119,7 +127,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 3666,
+      "line": 3762,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
       "reason": "Foundation content missing/unavailable state",
@@ -127,7 +135,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 3672,
+      "line": 3768,
       "anchor": "foundation-step",
       "category": "error_recovery_copy",
       "reason": "Foundation load/retry UI, HTML escaping required",
@@ -135,7 +143,7 @@
       "predicate_occurrences": 4
     },
     {
-      "line": 3673,
+      "line": 3769,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
       "reason": "Foundation retry action after loading failure",
@@ -143,7 +151,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 3740,
+      "line": 3836,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Foundation save-in-progress label",
@@ -151,7 +159,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 3748,
+      "line": 3844,
       "anchor": "LANG===\"ru\"",
       "category": "result_error_copy",
       "reason": "Retry persisted result after failed save",
@@ -159,7 +167,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 3750,
+      "line": 3846,
       "anchor": "Не удалось сохранить результат",
       "category": "result_error_copy",
       "reason": "Quiz progress persistence error",
@@ -167,7 +175,15 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 3977,
+      "line": 4038,
+      "anchor": "setAttribute(\"aria-label\"",
+      "category": "accessibility_copy",
+      "reason": "Lesson-settings gear label used by assistive technology; preserve button semantics",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 4073,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
       "reason": "Flow-completion retry action",
@@ -175,7 +191,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 4027,
+      "line": 4127,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
       "reason": "Lesson unready/denied fallback toast; preserve access checks",
@@ -183,7 +199,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 4079,
+      "line": 4179,
       "anchor": "exit_ticket",
       "category": "assessment_ui_copy",
       "reason": "Assessment card title only; preserve grading IDs",
@@ -191,7 +207,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 4690,
+      "line": 4792,
       "anchor": "LANG===\"ru\"",
       "category": "assessment_ui_copy",
       "reason": "Two repair-step teaching prompts selected by grading state",
@@ -199,7 +215,7 @@
       "predicate_occurrences": 4
     },
     {
-      "line": 4754,
+      "line": 4856,
       "anchor": "Что означает?",
       "category": "assessment_ui_copy",
       "reason": "Quiz prompt; preserve correct option calculation",
@@ -207,7 +223,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 4760,
+      "line": 4862,
       "anchor": "LANG===\"ru\"",
       "category": "assessment_ui_copy",
       "reason": "Hanzi multiple-choice prompt only; preserve computed correct option",
@@ -215,7 +231,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 4847,
+      "line": 4949,
       "anchor": "LANG===\"ru\"",
       "category": "assessment_ui_copy",
       "reason": "Repeated verification step label",
@@ -223,7 +239,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 4848,
+      "line": 4950,
       "anchor": "LANG===\"ru\"",
       "category": "assessment_ui_copy",
       "reason": "Foundation baseline step label",
@@ -231,7 +247,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 4940,
+      "line": 5041,
       "anchor": "LANG===\"ru\"",
       "category": "lesson_example_translation",
       "reason": "Written/natural pronunciation captions; leave Chinese/pinyin unchanged",
@@ -239,7 +255,7 @@
       "predicate_occurrences": 4
     },
     {
-      "line": 5207,
+      "line": 5313,
       "anchor": "var pref=LANG",
       "category": "tts_language_adapter",
       "reason": "Voice-language selection logic, not static translated message",
@@ -247,7 +263,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 5446,
+      "line": 5557,
       "anchor": "LANG===\"ru\"",
       "category": "quota_ui_copy",
       "reason": "AI Voice remaining quota display; billing unchanged",
@@ -255,7 +271,7 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 5448,
+      "line": 5559,
       "anchor": "LANG===\"tj\"",
       "category": "quota_ui_copy",
       "reason": "Continuation of AI Voice unlimited versus remaining quota ternary",
@@ -263,7 +279,7 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 5765,
+      "line": 5876,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
       "reason": "Rating retry-loading CTA",
@@ -271,7 +287,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 5770,
+      "line": 5881,
       "anchor": "LANG===\"ru\"",
       "category": "time_formatting_copy",
       "reason": "Countdown abbreviations require locale-aware formatter",
@@ -279,7 +295,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 5771,
+      "line": 5882,
       "anchor": "LANG===\"ru\"",
       "category": "time_formatting_copy",
       "reason": "Countdown unit abbreviation when time remaining exceeds one hour",
@@ -287,7 +303,7 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 5924,
+      "line": 6035,
       "anchor": "LANG===\"ru\"",
       "category": "rating_copy",
       "reason": "Rating page heading if friends tab not selected",
@@ -295,7 +311,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 5937,
+      "line": 6048,
       "anchor": "LANG===\"ru\"",
       "category": "referral_copy",
       "reason": "Joined and active user counts; preserve referral count calculation",
@@ -303,7 +319,7 @@
       "predicate_occurrences": 4
     },
     {
-      "line": 5959,
+      "line": 6070,
       "anchor": "LANG===\"ru\"",
       "category": "rating_copy",
       "reason": "Weekly podium top-five heading",
@@ -311,7 +327,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 5974,
+      "line": 6085,
       "anchor": "LANG===\"ru\"",
       "category": "feedback_copy",
       "reason": "Copy-success toast",
@@ -319,7 +335,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 5996,
+      "line": 6107,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Telegram username missing warning",
@@ -327,7 +343,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6008,
+      "line": 6119,
       "anchor": "LANG===\"ru\"",
       "category": "cooldown_copy",
       "reason": "Challenge-rate-limit message uses minutes variable",
@@ -335,7 +351,7 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 6009,
+      "line": 6120,
       "anchor": "LANG===\"tj\"",
       "category": "cooldown_copy",
       "reason": "Tajik branch of duel cooldown with interpolated minutes",
@@ -343,7 +359,7 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 6016,
+      "line": 6127,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Duel recipient not eligible warning",
@@ -351,7 +367,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6027,
+      "line": 6138,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Duel invitation submission failure",
@@ -359,7 +375,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6028,
+      "line": 6139,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Duel request network failure fallback",
@@ -367,7 +383,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6076,
+      "line": 6187,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Duel rejection state label",
@@ -375,7 +391,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6182,
+      "line": 6293,
       "anchor": "LANG===\"ru\"",
       "category": "navigation_copy",
       "reason": "Copy preset invitation text action",
@@ -383,7 +399,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6183,
+      "line": 6294,
       "anchor": "LANG===\"ru\"",
       "category": "invariant_brand_label",
       "reason": "Telegram brand label identical across three locale branches",
@@ -391,7 +407,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6184,
+      "line": 6295,
       "anchor": "LANG===\"ru\"",
       "category": "navigation_copy",
       "reason": "Write a message action",
@@ -399,7 +415,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6194,
+      "line": 6305,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Send invitation message action",
@@ -407,7 +423,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6195,
+      "line": 6306,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Invite friend modal title",
@@ -415,7 +431,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6196,
+      "line": 6307,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Share via Telegram instruction body",
@@ -423,7 +439,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6197,
+      "line": 6308,
       "anchor": "LANG===\"ru\"",
       "category": "referral_copy",
       "reason": "Active/joined invite counters; preserve numeric business rules",
@@ -431,7 +447,7 @@
       "predicate_occurrences": 4
     },
     {
-      "line": 6204,
+      "line": 6315,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Referral URL loading state",
@@ -439,7 +455,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6210,
+      "line": 6321,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
       "reason": "Failed invite-link retrieval fallback",
@@ -447,7 +463,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6225,
+      "line": 6336,
       "anchor": "LANG===\"ru\"",
       "category": "rating_copy",
       "reason": "Learner level label on friend profile",
@@ -455,7 +471,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6239,
+      "line": 6350,
       "anchor": "LANG===\"ru\"",
       "category": "rating_copy",
       "reason": "Weekly leaderboard rival comparison heading",
@@ -463,7 +479,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6569,
+      "line": 6714,
       "anchor": "profile-title",
       "category": "profile_copy",
       "reason": "Profile heading",
@@ -471,7 +487,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6824,
+      "line": 6970,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Resource iframe loading placeholder",
@@ -479,7 +495,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7561,
+      "line": 7707,
       "anchor": "LANG===\"ru\"",
       "category": "access_copy",
       "reason": "Test entitlement/limit progress label",

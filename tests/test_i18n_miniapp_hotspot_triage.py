@@ -28,7 +28,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
         self.assertEqual(triage["status"],
                          "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION")
         self.assertEqual(triage["source"], "app/static/course-v3.html")
-        self.assertEqual(len(triage["classifications"]), 60)
+        self.assertEqual(len(triage["classifications"]), 62)
         counts = Counter()
         for line, text in enumerate(src, start=1):
             counts[line] = len(re.findall(r"""\bLANG\s*===?\s*['"](?:ru|tj|uz)['"]""", text))
@@ -55,15 +55,15 @@ class CourseHotspotTriageTests(unittest.TestCase):
         self.assertIn("assessment_ui_copy", categories)
         self.assertEqual(lines, actual_lines,
                          "All explicit LANG equality conditions require reviewed classifications")
-        self.assertEqual(sum(counts.values()), 125)
+        self.assertEqual(sum(counts.values()), 131)
         self.assertEqual(sum(item["predicate_occurrences"]
-                             for item in triage["classifications"]), 125)
+                             for item in triage["classifications"]), 131)
 
     def test_do_not_treat_all_locale_conditions_as_translation_literals(self):
         triage = json.loads(TRIAGE.read_text(encoding="utf-8"))
         by_category = {item["category"] for item in triage["classifications"]}
         self.assertTrue(NONCOPY_CATEGORIES <= by_category)
-        self.assertIn("60 unique physical source lines", triage["counting_note"])
+        self.assertIn("62 unique physical source lines", triage["counting_note"])
         self.assertIn("All other localized source expressions", triage["coverage_note"])
 
 

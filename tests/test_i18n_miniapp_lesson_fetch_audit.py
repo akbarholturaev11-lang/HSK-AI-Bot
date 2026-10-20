@@ -31,7 +31,7 @@ class MiniAppLessonFetchIntentTests(unittest.TestCase):
         self.assertTrue(all(row["cost_sensitive"] for row in report["calls"]))
         self.assertEqual(
             [row["line"] for row in report["calls"]],
-            [1978, 2128, 2913, 3533, 3665, 3995],
+            [2053, 2203, 3008, 3629, 3761, 4091],
         )
 
     def test_speculative_reads_are_not_the_reservation_flow(self):
