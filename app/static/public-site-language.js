@@ -45,6 +45,18 @@
   }
   var site = {get: read, set: function(lang) { save(lang); updateLinks(lang); }, syncLinks: updateLinks, normalize: normalize};
   window.HSKSiteLanguage = site;
+  // The root is the default Tajik entry for crawlers and first visits. Only
+  // visitors with an explicit stored preference are sent to their own home.
+  var remembered = read();
+  if (window.location.pathname === "/" && remembered && remembered !== "tg") {
+    var preferred = new URL(HOME[remembered], window.location.origin);
+    var incoming = new URL(window.location.href);
+    ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","source"].forEach(function (key) {
+      if (incoming.searchParams.has(key)) preferred.searchParams.set(key, incoming.searchParams.get(key));
+    });
+    window.location.replace(preferred.pathname + preferred.search);
+    return;
+  }
   var current = fromPath();
   if (current) site.set(current);
   document.querySelectorAll("[data-site-lang]").forEach(function (link) {
