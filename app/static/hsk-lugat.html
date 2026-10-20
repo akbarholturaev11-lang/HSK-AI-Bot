@@ -424,7 +424,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   var params = new URLSearchParams(location.search || '');
   document.documentElement.classList.toggle('hsk-embedded', params.get('embedded') === '1');
   if(window.HSK_FAST_WRITER){ initFastWriter(params); return; }
-  function dictionaryPluralMessage(key,n,lang,params,fallback){var amount=Math.abs(Math.floor(Number(n)||0)),mod10=amount%10,mod100=amount%100,category=lang==="ru"?(mod10===1&&mod100!==11?"one":mod10>=2&&mod10<=4&&(mod100<12||mod100>14)?"few":"many"):"many",bundle=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[lang])||{},template=bundle[key+"."+category];if(typeof template!=="string"||!template)return fallback;return template.replace(/\{([A-Za-z][A-Za-z0-9_]*)\}/g,function(match,name){return Object.prototype.hasOwnProperty.call(params,name)?String(params[name]):match})}  var UI = {
+  function dictionaryPluralMessage(key,n,lang,params,fallback){var amount=Math.abs(Math.floor(Number(n)||0)),mod10=amount%10,mod100=amount%100,category=lang==="ru"?(mod10===1&&mod100!==11?"one":mod10>=2&&mod10<=4&&(mod100<12||mod100>14)?"few":"many"):"many",bundle=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[lang])||{},template=bundle[key+"."+category];if(typeof template!=="string"||!template)return fallback;return template.replace(/\{([A-Za-z][A-Za-z0-9_]*)\}/g,function(match,name){return Object.prototype.hasOwnProperty.call(params,name)?String(params[name]):match})}function dictionaryMessage(key,fallback){var messages=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[currentLang])||{},value=messages[key];return typeof value==="string"&&value?value:fallback}  var UI = {
     uz: {
       title: "Ierogliflar lug‘ati",
       language: "Til",
@@ -1163,7 +1163,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var t = UI[currentLang] || UI.uz;
     document.documentElement.lang = currentLang === 'tj' ? 'tg' : currentLang;
     document.title = t.title;
-    heroTitle.textContent = t.title;
+    heroTitle.textContent = t.title; backBtn.setAttribute('aria-label',dictionaryMessage('onboarding.back','Orqaga')); listBackBtn.setAttribute('aria-label',dictionaryMessage('onboarding.back','Orqaga')); [audioBtn,exampleAudioBtn,grammarAudioBtn].forEach(function(button){button.setAttribute('aria-label',dictionaryMessage('listen','Tinglash'))}); ctrlRestart.setAttribute('aria-label',dictionaryMessage('dictionaryFastWriter.previous','Bir chiziq orqaga')); ctrlSkip.setAttribute('aria-label',dictionaryMessage('dictionaryFastWriter.next','Bir chiziq oldinga')); setPlayIcon();
     searchEl.placeholder = t.placeholder;
     searchClear.setAttribute('aria-label', t.clearSearch);
     var activeFilterCount = (currentVersionFilter === 'all' ? 0 : 1) + (currentFilterLevel === 'all' ? 0 : 1);
@@ -1261,7 +1261,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   /* ---------- stroke-order writer (focused, one char at a time) ---------- */
 
   function setPlayIcon(){
-    ctrlPlayPause.textContent = isPlaying ? '⏸' : '▶';
+    ctrlPlayPause.textContent = isPlaying ? '⏸' : '▶'; ctrlPlayPause.setAttribute('aria-label',dictionaryMessage(isPlaying?'dictionaryFastWriter.pause':'dictionaryFastWriter.play','Pauza / Davom'));
   }
 
   function gridSvg(){

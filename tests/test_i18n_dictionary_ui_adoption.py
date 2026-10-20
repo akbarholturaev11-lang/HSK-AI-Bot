@@ -97,6 +97,35 @@ class DictionaryUIAdoptionTests(unittest.TestCase):
         ):
             self.assertIn(marker, html)
 
+    def test_dictionary_accessible_names_use_local_course_messages(self):
+        html = source()
+        for marker in (
+            'function dictionaryMessage(key,fallback)',
+            "backBtn.setAttribute('aria-label',dictionaryMessage('onboarding.back','Orqaga'))",
+            "listBackBtn.setAttribute('aria-label',dictionaryMessage('onboarding.back','Orqaga'))",
+            "dictionaryMessage('listen','Tinglash')",
+            "dictionaryMessage('dictionaryFastWriter.previous','Bir chiziq orqaga')",
+            "dictionaryMessage('dictionaryFastWriter.next','Bir chiziq oldinga')",
+            "dictionaryMessage(isPlaying?'dictionaryFastWriter.pause':'dictionaryFastWriter.play','Pauza / Davom')",
+        ):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, html)
+
+        expected_keys = {
+            "back": "onboarding.back",
+            "listen": "listen",
+            "previous": "dictionaryFastWriter.previous",
+            "next": "dictionaryFastWriter.next",
+            "play": "dictionaryFastWriter.play",
+            "pause": "dictionaryFastWriter.pause",
+        }
+        for locale in LOCALES:
+            catalog = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
+            )["messages"]
+            with self.subTest(locale=locale):
+                self.assertTrue(all(catalog[key] for key in expected_keys.values()))
+
     @unittest.skipUnless(shutil.which("node"), "Node.js unavailable")
     def test_js_overrides_and_offline_fallback_all_three_languages(self):
         html = source()
@@ -114,12 +143,18 @@ class DictionaryUIAdoptionTests(unittest.TestCase):
                 "\n    var language = messages[currentLang] || messages.uz;", 1
             )[0],
         }
+        catalog_messages = {
+            locale: json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
+            )["messages"]
+            for locale in LOCALES
+        }
         node = r"""
 const fs=require("fs");
 const v=JSON.parse(fs.readFileSync(0,"utf8"));
 function execute(lang,patch) {
   const window = {HSKAI_COURSE_I18N:patch};
-  const main = new Function("window","lang","var currentLang=lang;"+v.helper+"\nvar UI = "+v.main+"\nreturn UI;")(window,lang);
+  const main = new Function("window","lang","var currentLang=lang;"+v.helper+"\nvar UI = "+v.main+"\nreturn Object.assign({message:dictionaryMessage},UI);")(window,lang);
   const fast = new Function("lang","window","var currentLang=lang;"+v.helper+"\nvar labels = "+v.fast+"\nreturn labels;")(lang,window);
   const status = new Function("window","var messages = "+v.status+"\nreturn messages;")(window);
   return {
@@ -132,11 +167,20 @@ function execute(lang,patch) {
     fastDynamic:typeof fast.strokes==="function",
     fastCounts:[fast.strokes(1),fast.strokes(2),fast.strokes(5)],
     status:status[lang],
+    a11y:{back:main.message("onboarding.back","Orqaga"),listen:main.message("listen","Tinglash"),
+      previous:main.message("dictionaryFastWriter.previous","Bir chiziq orqaga"),
+      next:main.message("dictionaryFastWriter.next","Bir chiziq oldinga"),
+      play:main.message("dictionaryFastWriter.play","Pauza / Davom"),
+      pause:main.message("dictionaryFastWriter.pause","Pauza / Davom")},
   };
 }
 const result={};
 for(const lang of ["uz","ru","tj"]){
   const local={
+    ["onboarding.back"]:"QA BACK "+lang,
+    ["listen"]:"QA LISTEN "+lang,
+    ["dictionaryFastWriter.previous"]:"QA PREVIOUS "+lang,
+    ["dictionaryFastWriter.next"]:"QA NEXT "+lang,
     ["dictionaryPage.title"]:"QA TITLE "+lang,
     ["dictionaryPage.language"]:"",
     ["dictionaryFastWriter.play"]:"QA PLAY "+lang,
@@ -152,6 +196,7 @@ for(const lang of ["uz","ru","tj"]){
   }
   result[lang]={
     offline:execute(lang,undefined),
+    actual:execute(lang,{[lang]:v.catalogs[lang]}),
     patched:execute(lang,{[lang]:local})
   };
 }
@@ -160,12 +205,13 @@ process.stdout.write(JSON.stringify(result));
         original = labels(html)
         result = json.loads(subprocess.run(
             ["node", "-e", node],
-            input=json.dumps(snippets, ensure_ascii=False),
+            input=json.dumps({**snippets, "catalogs": catalog_messages}, ensure_ascii=False),
             text=True, capture_output=True, check=True, timeout=20
         ).stdout)
         for lang in LOCALES:
             with self.subTest(locale=lang):
                 offline = result[lang]["offline"]
+                actual = result[lang]["actual"]
                 patched = result[lang]["patched"]
                 self.assertTrue(offline["dynamicFunctions"])
                 self.assertTrue(offline["fastDynamic"])
@@ -200,9 +246,35 @@ process.stdout.write(JSON.stringify(result));
                 self.assertEqual(offline["main"], original[lang]["dictionaryPage"])
                 self.assertEqual(offline["fast"], original[lang]["dictionaryFastWriter"])
                 self.assertEqual(offline["status"], original[lang]["dictionaryWriterStatus"])
+                expected_a11y = {
+                    "back": catalog_messages[lang]["onboarding.back"],
+                    "listen": catalog_messages[lang]["listen"],
+                    "previous": catalog_messages[lang]["dictionaryFastWriter.previous"],
+                    "next": catalog_messages[lang]["dictionaryFastWriter.next"],
+                    "play": catalog_messages[lang]["dictionaryFastWriter.play"],
+                    "pause": catalog_messages[lang]["dictionaryFastWriter.pause"],
+                }
+                self.assertEqual(actual["a11y"], expected_a11y)
+                self.assertEqual(patched["a11y"], {
+                    "back": "QA BACK " + lang,
+                    "listen": "QA LISTEN " + lang,
+                    "previous": "QA PREVIOUS " + lang,
+                    "next": "QA NEXT " + lang,
+                    "play": "QA PLAY " + lang,
+                    "pause": "Pauza / Davom",
+                })
+                self.assertEqual(offline["a11y"], {
+                    "back": "Orqaga",
+                    "listen": "Tinglash",
+                    "previous": "Bir chiziq orqaga",
+                    "next": "Bir chiziq oldinga",
+                    "play": "Pauza / Davom",
+                    "pause": "Pauza / Davom",
+                })
                 self.assertEqual(patched["main"], dict(original[lang]["dictionaryPage"],
                     title="QA TITLE " + lang))
                 self.assertEqual(patched["fast"], dict(original[lang]["dictionaryFastWriter"],
+                    previous="QA PREVIOUS " + lang, next="QA NEXT " + lang,
                     play="QA PLAY " + lang))
                 self.assertEqual(patched["status"], dict(original[lang]["dictionaryWriterStatus"],
                     failed="QA FAILED " + lang))
