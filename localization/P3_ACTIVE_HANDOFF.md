@@ -3,7 +3,14 @@
 **Fast start for the next chat:** [`localization/RESUME_NEXT_CHAT.md`](RESUME_NEXT_CHAT.md). Follow that branch/CI checkpoint first; older entries are historical.
 Updated: 2026-10-20. **This checkpoint supersedes the earlier 815-key snapshot. Historical entries below retain past states only.**
 
-## 2026-10-20 — CURRENT authenticated Mini App content checkpoint
+## 2026-10-20 — CURRENT Desktop auth catalog checkpoint
+
+- **Working branch only:** `codex/p3-main-integration-20261020`. Latest code commit: `baa0baaa7e92732fd22cf6ada6c00d7a32eabf69`; at that code head, `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5` was an ancestor (506 ahead, 0 behind). No main push/merge or production deploy.
+- **Desktop P2:** 24 existing sign-in/referral/provider/status/copy labels now prefer `desktopAuth.*` values in the bundled common catalog. UZ/RU/TJ values are extracted from and tested against the existing Desktop locale dictionaries; old dictionary fallback remains. The shared Tauri UI behavior, auth API calls, session and account state were not changed. Common catalog is 44 keys per locale; six generated artifacts are current. Course catalog remains 894 keys per locale with its own six generated artifacts.
+- Local P0 workflow-equivalent passed **368 tests**; read-only audit reports 811 frozen sources / 746 lessons / 0 baseline blockers, 44 common keys, 894 course keys, and 0 stale artifacts. Exact-head GitHub P0 [39430791418](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39430791418) **SUCCESS** on `baa0baaa`. No Backend CI ran for this UI-only commit. Staging probe made 0 requests.
+- Remaining release checks: further P2 adoption, authenticated account/access testing, staging route checks, old-client refresh, offline and installed-client Android/WebView/macOS/Windows QA. Keep main and production untouched.
+
+## Previous authenticated Mini App content checkpoint — carried forward
 
 - **Only work branch:** `codex/p3-main-integration-20261020`. Latest pushed code is `10cff3b60ad0a84b430449b9cd19c61d879af50f`; `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5` is an ancestor (504 ahead, 0 behind). No `main` push/merge, force/rebase or production deploy.
 - Course UI catalog: **894 keys per UZ/RU/TJ locale**, six generated artifacts, 12 HTML consumers pinned to `20261020-eaff685fb700` after the local P2 batch. P2 UI adoption remains local-first and preserves exact legacy fallbacks.

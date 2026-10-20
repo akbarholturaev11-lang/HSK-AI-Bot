@@ -6,13 +6,13 @@ Updated: 2026-10-20. **This is the short authoritative checkpoint, not evidence 
 
 - Repository: `akbarholturaev11-lang/HSK-AI-Bot`.
 - **ONLY active work branch:** `codex/p3-main-integration-20261020`.
-- Latest pushed code is `10cff3b60ad0a84b430449b9cd19c61d879af50f`; `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5` is an ancestor, so this branch is 504 commits ahead and 0 behind. Continue only on this branch; do not push/merge `main`, force-push, rebase or deploy production.
+- Latest pushed code is `baa0baaa7e92732fd22cf6ada6c00d7a32eabf69`; `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5` is an ancestor, so this code head is 506 commits ahead and 0 behind. Continue only on this branch; do not push/merge `main`, force-push, rebase or deploy production.
 - Old source branch `codex/i18n-local-first-foundation-20261017` is integrated. Do not redo the merge. Draft PR #179 is not release authorization.
-- Exact-head GitHub P0 [`39429482563`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39429482563) **SUCCESS** on `10cff3b6` (368 tests). Backend targeted [`39427932361`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39427932361) **SUCCESS** on preceding security commit `b887fe08`; this UI-only commit did not trigger Backend CI. The P2 batch adds two HSK1 pronunciation UI labels. Read-only audits found 811 frozen sources, 746 lessons, 0 baseline blockers, 894 UI keys per locale and 6 generated artifacts with 0 stale. Mobile Chrome smoke rendered UZ/RU/TJ labels at 390×844 with no console or HTTP errors.
+- Exact-head GitHub P0 [`39430791418`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39430791418) **SUCCESS** on `baa0baaa`; the same workflow-equivalent local run passed 368 tests. Backend targeted [`39427932361`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39427932361) **SUCCESS** on preceding security commit `b887fe08`; this desktop-copy-only commit did not trigger Backend CI. The P2 batch moves 24 existing desktop sign-in labels to the common local catalog in UZ/RU/TJ, preserving exact fallbacks and auth behavior. Read-only audits found 811 frozen sources, 746 lessons, 0 baseline blockers, 894 course UI keys and 44 common UI keys per locale; all six common artifacts and six course artifacts are current. Staging probe was deliberately dry-run (0 HTTP requests).
 
 ## Implemented local-first i18n
 
-- **P0/P1:** source baselines and deterministic UZ/RU/TJ catalogs/generators; no per-string AI/server calls. Current course UI catalog has **894 keys per locale**, with six generated local artifacts for Android, Mini App, Desktop and Bot. All 12 HTML bundle consumers use `?v=20261020-eaff685fb700`.
+- **P0/P1:** source baselines and deterministic UZ/RU/TJ catalogs/generators; no per-string AI/server calls. Current course UI catalog has **894 keys per locale**, and the common UI catalog has **44 keys per locale**; each generator writes six local artifacts for Android, Mini App, Desktop and Bot. All 12 course HTML bundle consumers use `?v=20261020-eaff685fb700`.
 - **Latest P2 commits:** `df004ba6` adds nine localized plural messages for dictionary word/result/stroke counts; `c9edc41c` localizes three subscription close accessible names; `2f9a818e` localizes the ready-phrases list name. The `0a3e21a0` follow-up scopes Mini App lesson cache and in-flight fetches by `localUserScope`; an identity change rejects a pending fetch before it can return or cache. Local Chromium smoke for the dictionary, subscription and ready phrases passed previously; this cache change has a Node runtime regression but not device account-switch QA.
 - **P3 display-only:** `localization/lessons/nhsk2_grammar_uz_ru_tj.tsv` holds 136 unique Chinese grammar contexts × 3 locales = 408 agent-checked translations, projected into 272 original + 136 mirror maps across 48 `nhsk2` lessons. Original Chinese, pinyin, answers, score, XP and lesson JSON remain unchanged. Mini App patch is returned only after signed `POST /api/v3/lesson/start` approval; native Android/Desktop use existing entitlement-gated service.
 
@@ -30,6 +30,8 @@ Updated: 2026-10-20. **This is the short authoritative checkpoint, not evidence 
 
 ## Verified batches since the previous handoff
 
+- `baa0baaa7e92732fd22cf6ada6c00d7a32eabf69`: Desktop P2 local-first migration for 24 exact existing UZ/RU/TJ sign-in labels. Desktop `t()` now resolves them from the generated common bundle and retains its original locale dictionaries as fallback; no auth state/API changes. Common catalog grows 20 → 44 keys per locale; six artifacts regenerated. Exact-source parity tests and reviewed Desktop source SHA updated. Local P0 equivalent: **368 tests passed**; all read-only audits passed with 0 baseline blockers and 0 stale artifacts. Exact-head GitHub P0 [39430791418](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39430791418) **SUCCESS**.
+
 - `5df10c73ba7bcb40efdbad323e6db1d007978571`: P2 six foundation/retry/error UI keys, 829 per locale, six deterministic generated client artifacts, 12 cache-pinned HTML pages, reviewed Mini App source SHA and triage anchor. Initial CI `39385983079` **FAILED** because 14 existing test modules still pinned the former key count and asset cache.
 - `708bf36f06eaa1e7bf542a4360359d5b858a85d9`: updated those 14 existing test modules to the exact reviewed 829-key catalog and content-hash asset. P0 [39386418096](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39386418096) **SUCCESS, 350 tests**. Failure above is superseded, NOT silently ignored.
 - `c864b311977c84c4330f38694e9a3f73221f63d1`: P3 independent Chinese-source check of `G066`/`G069`/`G130`, Russian translation semantics fix in the 136-row canonical TSV, two source-specific regressions, and AI-content QA policy root-cause notes. P0 [39386882825](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39386882825) **SUCCESS, 352 tests**, with six generated resource targets current. No Chinese source, pinyin, answer, lesson access or live deployment change.
@@ -38,12 +40,10 @@ Updated: 2026-10-20. **This is the short authoritative checkpoint, not evidence 
 
 ## Next precise tasks (in this order)
 
-1. Finish and push the tested main-sync/P0-hardening batch to the feature branch only; check exact-head Actions.
-2. Continue P2 after the 8-key slice: audit remaining Mini App expressions, then inspect Android/native, Desktop and Bot consumers for untranslated UI. Use exact source context plus local catalog lookups and exact inline fallbacks.
-3. On each catalog batch regenerate six artifacts, update all 12 cache URLs and exact-count/hash tests, then rerun P0 on the exact SHA.
-4. Resolve or formally classify public lesson-data access and account-scoped cache findings without weakening Pro/free checks or breaking legacy clients; complete applicable staging and installed-client QA.
-5. Continue source-context QA for all 136 P3 contexts and 408 values, and keep source SHA, mirror, entitlement and protected-answer guards.
-6. Update this file and `P3_ACTIVE_HANDOFF.md` with each actual commit and Actions result. Never reuse earlier CI for a newer SHA.
+1. Continue the classified P2 UI migrations across Mini App, Android, Desktop and Bot; keep exact locale fallback text and regenerate/test all six artifacts for each catalog family.
+2. Reconcile remaining P3 source-context QA records and the subsequent G066/G069/G130 fixes against all 136 source-pinned contexts; preserve mirror, source SHA, entitlement and protected-answer guards.
+3. Complete applicable staging, authenticated account/access, old-client, offline and installed Android/WebView/Windows/macOS QA when the test environment and accounts are available.
+4. Update this file and `P3_ACTIVE_HANDOFF.md` after each tested commit; recheck exact-head Actions and never reuse earlier CI for a newer SHA.
 
 ## Read before coding
 
