@@ -154,7 +154,7 @@ def render_page(path, settings_obj, tags=None):
         "ru": {"guide": "РУКОВОДСТВО HSK AI", "default": "HSK 1–4 · ANDROID · DESKTOP · MINI APP"},
         "uz": {"guide": "HSK AI QO‘LLANMASI", "default": "HSK 1–4 · ANDROID · DESKTOP · MINI APP"},
     }[lang]["guide" if str(page.get("translation_group", "")).startswith("guide") else "default"]
-     nav_aria = {"tg": "Паймоиши асосӣ", "ru": "Основная навигация", "uz": "Asosiy navigatsiya"}[lang]
+    nav_aria = {"tg": "Паймоиши асосӣ", "ru": "Основная навигация", "uz": "Asosiy navigatsiya"}[lang]
     section_heading = {
         "tg": "Аз куҷо идома диҳед",
         "ru": "Выберите следующий шаг",
@@ -166,7 +166,7 @@ def render_page(path, settings_obj, tags=None):
         "uz": "Sahifa ochilishi va botga o‘tishni kampaniya belgilari bilan server jurnalida va anonim kunlik jamlanma statistikada hisoblaymiz. Sahifa analytics cookie o‘rnatmaydi va tashrifni Telegram hisobiga bog‘lamaydi.",
     }[lang]
     schema = json.dumps(structured_data(path, origin), ensure_ascii=False).replace("<", "\\u003c")
-     body_kind = "guide-page" if str(page.get("translation_group", "")).startswith("guide") else "marketing-page"
+    body_kind = "guide-page" if str(page.get("translation_group", "")).startswith("guide") else "marketing-page"
     related_section = (
         f'<aside class="related"><h2>{esc(section_heading)}</h2><div class="topic-grid">{cards}</div></aside>'
         if cards else ""
