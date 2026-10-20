@@ -194,3 +194,14 @@ Existing failure:
 - This is an existing memorize data/fixture-loading issue, not a regression introduced by the SEO router. It was not changed because course logic is outside this task. Follow-up: diagnose memorize standalone fixture/data loading separately.
 
 The committed-to-workspace Python public-page smoke script also passed independently after Playwright installation. Existing homework/result service tests are covered in the full unit/integration suite; no real learner homework or production payment was submitted.
+
+## K. 2026-10-20 information-hub and navigation work (website branch only)
+
+Branch: `codex/website-unified-header-i18n-content-20261020`; not merged into `main`, no production deployment.
+
+- Public product pages (`app/public_site/render.py`) and the existing static installer (`app/static/desktop-download.html`) now use the same four destinations: courses, features, guide and download, plus a globe language dropdown. Shared CSS is `/public-assets/navigation.css`.
+- The public site remains server-rendered and crawlable without JavaScript. Hero sections lead with HSK courses and verified product/platform categories instead of a bot launch. Telegram Mini App is a supported access method, not the product's definition.
+- `/public-assets/language.js` saves an explicit preference under `hskai.public.language` (no analytics cookie). Public language routes stay at `/tj/`, `/ru/`, `/uz/` and topic equivalents. Download links carry `?lang=tj|ru|uz`; the existing installer script reads the URL first and then the saved preference, retaining its existing platform/referral/release behaviors.
+- Nav links retain allowlisted campaign labels. Login tokens, device tokens and other arbitrary query parameters are not propagated.
+- `guide/faq` pages expose factual FAQPage JSON-LD alongside existing WebPage/SoftwareApplication metadata. No assertions of search indexing, AI recommendation, test pass, or production deployment are made.
+- Smoke and unit test expectations have been extended to cover locale links, product-first hero, the installer header and static language-preference contract. Run the checks in section I and manually test `/download?lang=ru` -> `/ru/guide/` -> `/download?lang=ru`, the other locales, direct entry, first visit, Safari localStorage denial and all four installer platforms before merging.

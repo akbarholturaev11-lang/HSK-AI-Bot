@@ -31,8 +31,11 @@ def main():
                 Path("/tmp/hsk-seo").mkdir(exist_ok=True)
                 page.screenshot(path="/tmp/hsk-seo/mobile.png", full_page=True)
         page.goto("http://127.0.0.1:8765/tj/?utm_source=bing&utm_campaign=hsk")
-        page.locator('nav a[lang="ru"]').click()
+        page.locator(".site-header details.language-switch summary").click()
+        page.locator('.site-header a[lang="ru"]').click()
         assert "utm_source=bing" in page.url
+        assert page.locator(".site-header details.language-switch summary").inner_text().strip() == "Русский"
+        assert page.locator('[data-site-nav="download"]').first.get_attribute("href").startswith("/download?lang=ru")
         assert "utm_campaign=hsk" in page.locator("a.cta").first.get_attribute("href")
         # Inspect the real local 302, then stop navigation before Telegram.
         redirects = []
@@ -46,6 +49,29 @@ def main():
         page.wait_for_load_state("networkidle")
         assert redirects == ["https://t.me/darsi_chini_bot"]
         assert not errors, errors
+
+        # Cross-page language persistence, including the real installer
+        # JavaScript, against preview-only empty release data (no downloads).
+        page.goto("http://127.0.0.1:8765/uz/")
+        page.locator('[data-site-nav="download"]').first.click()
+        page.wait_for_load_state("networkidle")
+        assert "/download?lang=uz" in page.url
+        assert page.locator("[data-site-selected-lang]").inner_text() == "O‘zbekcha"
+        page.locator(".site-header details.language-switch summary").click()
+        page.locator('[data-language="ru"]').click()
+        assert "lang=ru" in page.url
+        assert page.locator("[data-site-selected-lang]").inner_text() == "Русский"
+        page.locator('[data-site-nav="guide"]').first.click()
+        page.wait_for_load_state("networkidle")
+        assert page.url.endswith("/ru/guide/"), page.url
+        page.locator('[data-site-nav="download"]').first.click()
+        page.wait_for_load_state("networkidle")
+        assert "/download?lang=ru" in page.url
+        assert page.locator("[data-site-selected-lang]").inner_text() == "Русский"
+        page.goto("http://127.0.0.1:8765/")
+        page.wait_for_load_state("networkidle")
+        assert page.url.endswith("/ru/"), page.url
+        assert not errors, errors
         no_js = browser.new_context(java_script_enabled=False, viewport={"width": 390, "height": 844})
         source_page = no_js.new_page()
         source_page.goto("http://127.0.0.1:8765/tj/learn-chinese/")
@@ -54,7 +80,7 @@ def main():
         assert source_page.locator("a.cta").first.get_attribute("href").startswith("/go/telegram?")
         no_js.close()
         browser.close()
-        print(f"PASS: {len(PAGES)} pages × 3 widths; no overflow/console errors; UTM navigation; CTA redirect; JavaScript disabled")
+        print(f"PASS: {len(PAGES)} pages × 3 widths; no overflow/console errors; locale persisted across download; UTM navigation; CTA redirect; JavaScript disabled")
 
 
 if __name__ == "__main__":
