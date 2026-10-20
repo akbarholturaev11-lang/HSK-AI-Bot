@@ -2547,7 +2547,7 @@ var App={
       uz:{t:"Reytingda ko'tarildingiz!",s:"{n} ortda qoldi. Buni bugungi darsingiz hal qildi."},
       tj:{t:"Дар рейтинг боло рафтед!",s:"{n} қафо монд. Инро дарси имрӯзаатон ҳал кард."}}[LANG]||{t:"",s:"{n}"};
     var rankSummary=courseMessage("rating.rankSummary",LANG==="ru"?"Место #{before} → #{after}":LANG==="tj"?"Ҷойи #{before} → #{after}":"O'rin #{before} → #{after}").replace("{before}",String(ranks.before)).replace("{after}",String(ranks.after));
-    var r={title:RU.t,sub:passedU?RU.s.replace("{n}",esc(passedU.n||"")):rankSummary,cont:T().cont};
+    var r={title:RU.t,sub:passedU?RU.s.replace("{n}",esc(passedU.n||"")):rankSummary,cont:courseMessage("cont",T().cont)};
     var rows=[];
 	    if(aboveU)rows.push({rk:aboveU.rank,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
 	    if(meU)rows.push({rk:ranks.after,a:meU.a||PROF.avatar||"阿",n:courseMessage("you",T().you),xp:ratingScore(meU).toLocaleString("ru"),me:1,from:aboveU?1:0});
@@ -4749,7 +4749,7 @@ function renderFlowCard(){
   saveLessonResume();
   prefetchUpcomingAudio();
   applyPinyinMode();
-  var c=Flow.queue[Flow.i],b=$("#f-body"),cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(Flow.i<Flow.queue.length-1?T().cont:courseMessage("check",T().check));
+  var c=Flow.queue[Flow.i],b=$("#f-body"),cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(Flow.i<Flow.queue.length-1?courseMessage("cont",T().cont):courseMessage("check",T().check));
   var t=c.type;
   renderLessonCoach(c,"idle");
   trackFlowCard(c);
@@ -4827,7 +4827,7 @@ function renderCheer(){
     if(window.HSKCharacterMotion)HSKCharacterMotion.play(ch,HP===1?"oneHeart":"proud");
     else pandaFx(ch,"pop");
   },30);
-  var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+T().cont;
+  var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+courseMessage("cont",T().cont);
   haptic("light");
 }
 function _wrongWordOptions(words,field,correct){
@@ -5018,7 +5018,7 @@ Foundation.render=function(){
   var c=Foundation.queue[Foundation.i];if(!c)return Foundation.finish();
   $("#f-prog").style.width=Math.round(Foundation.i/Math.max(Foundation.queue.length,1)*100)+"%";
   var st=$("#f-stage");if(st)st.innerHTML='<span>'+(Foundation.i+1)+' / '+Foundation.queue.length+'</span><b>'+esc(foundationStepLabel(c))+'</b>';
-  var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(c.type==="result"?courseMessage("check",T().check):T().cont);
+  var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(c.type==="result"?courseMessage("check",T().check):courseMessage("cont",T().cont));
   if(c._repairSpacer)return foundationRepairSpacer(c);
   if(c._guided)return foundationGuidedCard(c);
   if(c.type==="choice"||c.type==="listen_choice")return foundationChoiceCard(c);
@@ -5059,7 +5059,7 @@ function cardGrammar(g){
     steps.push('<div class="exrow"><div class="z2 han">'+esc(e.zh)+'</div><div><div class="p2">'+esc(e.pinyin)+'</div><div class="t2">'+esc(tr(e.translation))+'</div></div><button class="au" onclick="speak(\''+esc(e.zh)+'\')"><i class="ti ti-volume"></i></button></div>');
   });
   var lead=R.lead||tr(g.title);
-  $("#f-body").innerHTML='<span class="kicker k-gram"><i class="ti ti-bulb"></i> '+T().grammar+'</span>'
+  $("#f-body").innerHTML='<span class="kicker k-gram"><i class="ti ti-bulb"></i> '+courseMessage("grammar",T().grammar)+'</span>'
     +'<div class="gtitle"><span class="han zh">'+esc(g.title_zh||"")+'</span> '+esc(tr(g.title))+'</div>'
     +'<div class="teach"><div class="teach-pd">'+lessonCharacterHtml("crane","talk")+'</div><div class="teach-bub"><b>'+esc(lessonCharacterLabel("crane"))+'</b><div class="teach-say">'+esc(lead)+'</div></div></div>'
     +'<div class="gsteps" id="gsteps"></div>'
@@ -5223,7 +5223,7 @@ function lessonPronHtml(phrase,pinyin,translation,buttonId,hintId,record,skip){
   var title={uz:"Li ustozdan keyin takrorlang",ru:"Повторите за учителем Ли",tj:"Аз паси устод Ли такрор кунед"}[LANG];
   var skipText={uz:"O‘tkazib yuborish",ru:"Пропустить",tj:"Гузарондан"}[LANG];
   $("#f-body").classList.add("has-lesson-pron");
-  return '<div class="lesson-pron"><div class="qq">'+esc(title)+'</div><div class="lesson-pron-stage"><div class="lesson-pron-phrase say-bub"><button class="au" onclick="speak(\''+esc(phrase)+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(phrase)+'</div><div class="p4">'+esc(pinyin||"")+'</div><div class="t4">'+esc(translation||"")+'</div></div><div class="lesson-pron-character">'+lessonCharacterHtml("panda","talk")+'</div></div><div class="pr-ctrl lesson-pron-controls"><div class="pr-micwrap"><button class="pr-mic" id="'+buttonId+'" aria-label="'+esc(T().say)+'" onclick="'+record+'"><i class="ti ti-microphone"></i></button></div><div class="pr-hint" role="status" id="'+hintId+'"></div><button class="pr-skip pron-skip" onclick="'+skip+'">'+esc(skipText)+' <i class="ti ti-player-skip-forward"></i></button></div></div>';
+  return '<div class="lesson-pron"><div class="qq">'+esc(title)+'</div><div class="lesson-pron-stage"><div class="lesson-pron-phrase say-bub"><button class="au" onclick="speak(\''+esc(phrase)+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(phrase)+'</div><div class="p4">'+esc(pinyin||"")+'</div><div class="t4">'+esc(translation||"")+'</div></div><div class="lesson-pron-character">'+lessonCharacterHtml("panda","talk")+'</div></div><div class="pr-ctrl lesson-pron-controls"><div class="pr-micwrap"><button class="pr-mic" id="'+buttonId+'" aria-label="'+esc(courseMessage("say",T().say))+'" onclick="'+record+'"><i class="ti ti-microphone"></i></button></div><div class="pr-hint" role="status" id="'+hintId+'"></div><button class="pr-skip pron-skip" onclick="'+skip+'">'+esc(skipText)+' <i class="ti ti-player-skip-forward"></i></button></div></div>';
 }
 function cardPron(c){
   $("#f-cta").style.display="none";

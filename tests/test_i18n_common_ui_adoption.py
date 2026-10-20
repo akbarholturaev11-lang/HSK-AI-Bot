@@ -199,7 +199,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         expected_sites = {
         "dict": 1,
         "dictSub": 1,
-        "grammar": 2,
+            "grammar": 3,
         "help": 1,
         "helpBtn": 1,
         "helpNoContact": 1,
@@ -254,7 +254,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertEqual(len(html.split("\n")), 8859)
         expected_counts = {
-            "unit": 1, "lessons": 1, "cont": 2, "repeat": 1,
+            "unit": 1, "lessons": 1, "cont": 6, "repeat": 1,
             "stage": 1, "completeOf": 1,
         }
         for key, count in expected_counts.items():
@@ -301,7 +301,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertEqual(len(source.split("\n")), 8859)
         selections = {
             "buildSent": 1, "dialog": 1, "listen": 2, "matchPairs": 1,
-            "say": 4, "check": 2, "next": 2, "rightAns": 1,
+            "say": 5, "check": 2, "next": 2, "rightAns": 1,
             "you": 4,
         }
         for key, count in selections.items():

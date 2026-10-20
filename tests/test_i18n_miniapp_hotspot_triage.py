@@ -172,5 +172,36 @@ class CourseHotspotTriageTests(unittest.TestCase):
                     self.assertEqual(len(catalogs[locale]), 874)
         self.assertEqual(len(html.split("\n")), 8859)
 
+    def test_remaining_shared_lesson_labels_use_local_first_catalog(self):
+        """Keep exact inline translations as fallback for the remaining shared labels."""
+        lines = SOURCE.read_text(encoding="utf-8").splitlines()
+        catalogs = {
+            lang: json.loads((ROOT / "localization/ui" / lang / "course.json")
+                             .read_text(encoding="utf-8"))["messages"]
+            for lang in ("uz", "ru", "tj")
+        }
+        expected = {
+            "cont": ("Davom etish", "Продолжить", "Идома"),
+            "grammar": ("Grammatika", "Грамматика", "Грамматика"),
+            "say": ("Talaffuz qiling", "Произнесите", "Талаффуз кунед"),
+        }
+        anchors = {
+            2550: 'cont:courseMessage("cont",T().cont)',
+            4752: 'courseMessage("cont",T().cont):courseMessage("check",T().check)',
+            4830: 'courseMessage("cont",T().cont)',
+            5021: 'courseMessage("cont",T().cont)',
+            5062: 'courseMessage("grammar",T().grammar)',
+            5226: 'esc(courseMessage("say",T().say))',
+        }
+        for line_no, anchor in anchors.items():
+            with self.subTest(line=line_no):
+                self.assertIn(anchor, lines[line_no - 1])
+        for key, values in expected.items():
+            for lang, value in zip(("uz", "ru", "tj"), values):
+                with self.subTest(key=key, locale=lang):
+                    self.assertEqual(catalogs[lang][key], value)
+                    self.assertEqual(len(catalogs[lang]), 874)
+        self.assertEqual(len(lines), 8858)
+
 if __name__ == "__main__":
     unittest.main()
