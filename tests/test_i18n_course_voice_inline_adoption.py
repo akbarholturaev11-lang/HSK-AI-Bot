@@ -40,7 +40,7 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
             catalog = json.loads(
                 (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
             )["messages"]
-            self.assertEqual(len(catalog), 894)
+            self.assertEqual(len(catalog), 895)
             self.assertEqual(set(original[locale]), set(original["ru"]))
             self.assertEqual(set(live_text[locale]), set(live_text["ru"]))
             for key, value in {**original[locale], **live_text[locale]}.items():
@@ -54,7 +54,7 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
     def test_preload_static_catalog_before_voice_and_keep_original_runtime(self):
         html, main, live = source_parts()
         self.assertLess(
-            html.index("hsk-course-i18n.js?v=20261020-eaff685fb700"),
+            html.index("hsk-course-i18n.js?v=20261020-57ce728d755d"),
             html.index("var VOICE=(function(){"),
         )
         self.assertIn('messages["courseVoiceInline."+key]', html)
@@ -102,6 +102,30 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
             ):
                 with self.subTest(locale=locale, key=key):
                     self.assertTrue(catalog[key])
+
+    def test_remaining_course_labels_use_selected_locale_catalog(self):
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertIn('function resourceLabel(k){return k==="dict"?courseMessage("dict",T().dict):courseMessage("readyPhrases",T().readyPhrases)}', html)
+        self.assertIn('activePane.setAttribute("aria-label",resourceLabel(k))', html)
+        self.assertIn('frame.title=resourceLabel(k)', html)
+        self.assertIn('function writerA11yLabel(){var fallback={uz:"书写 Yozish",ru:"书写 Письмо",tj:"书写 Навиштан"}[LANG]', html)
+        self.assertIn('return courseMessage("testHub.write",fallback)', html)
+        self.assertIn('b.setAttribute("aria-label",writerA11yLabel())', html)
+        self.assertIn('fr.title=writerA11yLabel()', html)
+        self.assertIn('courseMessage("newSectionBadge","NEW")', html)
+        self.assertNotIn('aria-label="HSK dictionary"', html)
+        self.assertNotIn('aria-label="HSK phrasebook"', html)
+        self.assertNotIn('aria-label="Yangi bo‘lim"', html)
+        expected = {"uz": "YANGI", "ru": "НОВОЕ", "tj": "НАВ"}
+        for locale, value in expected.items():
+            catalog = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
+            )["messages"]
+            self.assertEqual(catalog["newSectionBadge"], value)
+            self.assertTrue(catalog["dict"])
+            self.assertTrue(catalog["readyPhrases"])
+            self.assertTrue(catalog["testHub.write"])
+        self.assertEqual(html.count("\n") + 1, 8859)
 
     @unittest.skipUnless(shutil.which("node"), "Node.js unavailable")
     def test_embedded_dictionary_hydration_keeps_fallback_and_routes_nested_keys(self):

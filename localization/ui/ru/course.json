@@ -896,6 +896,7 @@
     "memorize.complete.sentence": "предложение",
     "memorize.finish": "Завершить",
     "memorize.returnToExercises": "К упражнениям",
-    "practice.dataNotLoaded": "Не удалось загрузить данные"
+    "practice.dataNotLoaded": "Не удалось загрузить данные",
+    "newSectionBadge": "НОВОЕ"
   }
 }

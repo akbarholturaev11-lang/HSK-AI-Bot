@@ -2224,6 +2224,49 @@ def test_practice_icon_accessibility_names_follow_selected_locale(page):
         assert page.evaluate("window.MISTAKES_A11Y.listen") == labels["listen"]
 
 
+def test_course_resource_and_writer_labels_follow_selected_locale(page):
+    expected = {
+        "uz": {"dict": "Ieroglif lug'ati", "phrases": "Tayyor gaplar", "write": "书写 Yozish", "new": "YANGI"},
+        "ru": {"dict": "Словарь иероглифов", "phrases": "Готовые фразы", "write": "书写 Письмо", "new": "НОВОЕ"},
+        "tj": {"dict": "Луғати иероглиф", "phrases": "Ибораҳои омода", "write": "书写 Навиштан", "new": "НАВ"},
+    }
+    runtime_errors = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+    page.on(
+        "console",
+        lambda message: runtime_errors.append(message.text + " @ " + message.location.get("url", "")) if message.type == "error" else None,
+    )
+    page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
+
+    for locale, labels in expected.items():
+        mock_price_preview(page)
+        mock_telegram_ready(page)
+        mock_course_map(page, language=locale)
+        page.add_init_script(
+            "localStorage.setItem('hsk_v3_onb','1');localStorage.setItem('hsk_v3_level','hsk1');"
+        )
+        page.goto(
+            app_url(f"/course-v3.html?lang={locale}&level=hsk1&onboarded=1"),
+            wait_until="networkidle",
+        )
+        page.locator('nav button[data-s="mashq"]').click()
+        page.evaluate("NEW_SECTION_RELEASES['ready-phrases']=Date.now();renderMashq()")
+        expect(page.locator("#m-ready-phrases .new-section-badge")).to_have_text(labels["new"])
+
+        page.locator("#m-dict").click()
+        expect(page.locator("#resource-dict")).to_have_attribute("aria-label", labels["dict"])
+        expect(page.locator("#resource-dict iframe")).to_have_attribute("title", labels["dict"])
+        page.evaluate("RESOURCE.close();RESOURCE.open('phrases')")
+        expect(page.locator("#resource-phrases")).to_have_attribute("aria-label", labels["phrases"])
+        expect(page.locator("#resource-phrases iframe")).to_have_attribute("title", labels["phrases"])
+
+        page.evaluate("setWriteBtn('字');App.openWriter('字')")
+        expect(page.locator("#writebtn")).to_have_attribute("aria-label", labels["write"])
+        expect(page.locator("#writeframe")).to_have_attribute("title", labels["write"])
+
+    assert runtime_errors == []
+
+
 def test_challenge_question_is_blind_until_server_submit(page):
     runtime_errors = []
     page.on("pageerror", lambda error: runtime_errors.append(str(error)))

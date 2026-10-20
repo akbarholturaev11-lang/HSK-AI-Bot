@@ -389,6 +389,7 @@
     <string name="hsk_course_nav_profile" formatted="false">Profil</string>
     <string name="hsk_course_nav_rating" formatted="false">Reyting</string>
     <string name="hsk_course_nav_voice" formatted="false">AI Voice</string>
+    <string name="hsk_course_new_section_badge" formatted="false">YANGI</string>
     <string name="hsk_course_new_word" formatted="false">Yangi so\'z</string>
     <string name="hsk_course_next" formatted="false">Davom etish</string>
     <string name="hsk_course_next_lesson_open" formatted="false">Keyingi darsni ochish</string>

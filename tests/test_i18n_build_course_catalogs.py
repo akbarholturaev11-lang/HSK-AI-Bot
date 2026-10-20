@@ -16,10 +16,10 @@ from scripts.i18n_build_course_catalogs import (
 
 
 class CourseLocalCatalogTests(unittest.TestCase):
-    def test_reviewed_894_keys_and_six_generated_targets(self):
+    def test_reviewed_895_keys_and_six_generated_targets(self):
         catalogs = read_sources(ROOT)
         self.assertEqual(set(catalogs), set(LOCALES))
-        self.assertTrue(all(len(catalogs[loc]) == 894 for loc in LOCALES))
+        self.assertTrue(all(len(catalogs[loc]) == 895 for loc in LOCALES))
         self.assertEqual(len(output_files(catalogs)), 6)
         self.assertEqual(generate(ROOT, check=True), [])
 

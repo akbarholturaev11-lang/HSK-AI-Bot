@@ -896,6 +896,7 @@
     "memorize.complete.sentence": "gap",
     "memorize.finish": "Tugatish",
     "memorize.returnToExercises": "Mashqlarga qaytish",
-    "practice.dataNotLoaded": "Ma'lumot yuklanmadi"
+    "practice.dataNotLoaded": "Ma'lumot yuklanmadi",
+    "newSectionBadge": "YANGI"
   }
 }

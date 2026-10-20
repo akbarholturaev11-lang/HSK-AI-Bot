@@ -389,6 +389,7 @@
     <string name="hsk_course_nav_profile" formatted="false">Профил</string>
     <string name="hsk_course_nav_rating" formatted="false">Рейтинг</string>
     <string name="hsk_course_nav_voice" formatted="false">AI Voice</string>
+    <string name="hsk_course_new_section_badge" formatted="false">НАВ</string>
     <string name="hsk_course_new_word" formatted="false">Калимаи нав</string>
     <string name="hsk_course_next" formatted="false">Идома</string>
     <string name="hsk_course_next_lesson_open" formatted="false">Кушодани дарси оянда</string>

@@ -82,7 +82,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                     catalog = json.loads((ROOT / "localization/ui" / locale /
                                          "course.json").read_text(encoding="utf-8"))["messages"]
                     self.assertEqual(catalog[key], value)
-                    self.assertEqual(len(catalog), 894)
+                    self.assertEqual(len(catalog), 895)
         self.assertIn('setSheetBackgroundInert(true)', html)
         self.assertIn('focusSheetStart(sheet)', html)
         self.assertIn('App.requestExitFlow()', html)
@@ -114,7 +114,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                 self.assertEqual(html.count('courseMessage("' + key + '",' + fallback + ')'), calls)
                 for locale, value in (("uz", uz), ("ru", ru), ("tj", tj)):
                     self.assertEqual(catalogs[locale][key], value)
-                    self.assertEqual(len(catalogs[locale]), 894)
+                    self.assertEqual(len(catalogs[locale]), 895)
         self.assertEqual(len(html.split("\n")), 8859)
         self.assertIn("challengeSending=false", html)
         self.assertIn("ratingRetryText()", html)
@@ -169,7 +169,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                     self.assertIn('courseMessage("' + key + '",', html)
                 for locale, value in zip(("uz", "ru", "tj"), values):
                     self.assertEqual(catalogs[locale][key], value)
-                    self.assertEqual(len(catalogs[locale]), 894)
+                    self.assertEqual(len(catalogs[locale]), 895)
         self.assertEqual(len(html.split("\n")), 8859)
 
     def test_remaining_shared_lesson_labels_use_local_first_catalog(self):
@@ -202,7 +202,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
             for lang, value in zip(("uz", "ru", "tj"), values):
                 with self.subTest(key=key, locale=lang):
                     self.assertEqual(catalogs[lang][key], value)
-                    self.assertEqual(len(catalogs[lang]), 894)
+                    self.assertEqual(len(catalogs[lang]), 895)
         self.assertEqual(len(lines), 8858)
 
     def test_foundation_pronunciation_labels_use_local_first_catalog(self):
@@ -224,7 +224,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                         .read_text(encoding="utf-8")
                     )["messages"]
                     self.assertEqual(catalog[key], value)
-                    self.assertEqual(len(catalog), 894)
+                    self.assertEqual(len(catalog), 895)
         self.assertIn('ex.pinyin||"nǐ hǎo"', source_line)
         self.assertIn('c.natural_pinyin||"ní hǎo"', source_line)
         self.assertEqual(len(lines), 8858)
