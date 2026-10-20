@@ -28,16 +28,38 @@ jobs:
           git config user.email "hsk-integration@users.noreply.github.com"
           git fetch origin codex/i18n-local-first-foundation-20261017
           printf 'MAIN_SNAPSHOT=%s\nP3_HEAD=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse FETCH_HEAD)"
+          set +e
           git merge --no-commit --no-ff FETCH_HEAD
           merge_status=$?
+          set -e
           echo "MERGE_EXIT_STATUS=$merge_status"
           echo "---- UNMERGED PATHS ----"
           git diff --name-only --diff-filter=U | tee /tmp/hsk-merge-conflicts.txt
           echo "---- UNMERGED STAGES ----"
-          git ls-files -u | head -n 100
+          git ls-files -u | sed -n '1,60p'
           echo "---- FILE STATUS COUNTS ----"
           git status --short | awk '{print substr($0,1,2)}' | sort | uniq -c | sort -rn
           printf 'unmerged_total=%s\n' "$(git diff --name-only --diff-filter=U | wc -l)"
+          echo "---- CONFLICT DETAILS (excluding generated graph files) ----"
+          python - <<'PY'
+          from pathlib import Path
+          paths=Path('/tmp/hsk-merge-conflicts.txt').read_text().splitlines()
+          for path in paths:
+              if path.startswith('graphify-out/'):
+                  print('GENERATED_GRAPH_CONFLICT:', path)
+                  continue
+              lines=Path(path).read_text(errors='replace').splitlines()
+              print('\\n==== CONFLICT FILE:',path,'====')
+              count=0
+              for i,line in enumerate(lines):
+                  if not line.startswith('<<<<<<< '): continue
+                  j=next((j for j in range(i+1,len(lines)) if lines[j].startswith('>>>>>>> ')),i)
+                  block=lines[max(0,i-5):min(len(lines),j+6)]
+                  excerpt='\\n'.join(f'{max(0,i-5)+idx+1}: {value}' for idx,value in enumerate(block))
+                  print('CHUNK',count+1,'AT',i+1,'TO',j+1,'\\n',excerpt[:5000])
+                  count+=1
+              print('TOTAL CHUNKS',count)
+          PY
           mkdir -p /tmp/hsk-merge
           cp /tmp/hsk-merge-conflicts.txt /tmp/hsk-merge/conflicts.txt
           git status --short > /tmp/hsk-merge/status.txt
