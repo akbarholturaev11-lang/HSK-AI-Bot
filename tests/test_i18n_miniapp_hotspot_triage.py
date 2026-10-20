@@ -89,5 +89,36 @@ class CourseHotspotTriageTests(unittest.TestCase):
         self.assertIn('App.requestExitFlow()', html)
         self.assertIn('gear.setAttribute("aria-label",courseMessage("lessonSettings.title",', html)
 
+    def test_reviewed_rating_and_social_toasts_stay_local_first_with_exact_fallbacks(self):
+        """The nine social/rating display callsites are local only, not new APIs."""
+        html = SOURCE.read_text(encoding="utf-8")
+        labels = {
+            "rating.retryLoading": (1, "Qayta yuklash", "Повторить загрузку", "Аз нав бор кардан"),
+            "rating.weeklyTopFive": (1, "Haftalik reyting · Top 5", "Недельный рейтинг · Топ 5", "Рейтинги ҳафта · Топ 5"),
+            "rating.copiedToast": (1, "Nusxalandi", "Скопировано", "Нусха гирифта шуд"),
+            "rating.telegramUsernameMissing": (1, "Foydalanuvchida Telegram username yo'q", "У пользователя нет Telegram username", "Корбар username-и Telegram надорад"),
+            "rating.challengeNotAllowed": (1, "Bu foydalanuvchiga chaqiruv yuborib bo'lmaydi", "Этому пользователю нельзя бросить вызов", "Ба ин корбар даъват фиристодан мумкин нест"),
+            "rating.challengeSendFailed": (2, "Chaqiruv yuborilmadi", "Не удалось отправить вызов", "Даъват фиристода нашуд"),
+            "rating.duelRejected": (1, "Belashuv rad qilindi.", "Дуэль отклонена.", "Рақобат рад шуд."),
+            "rating.weeklyHeading": (1, "Haftalik reyting", "Недельный рейтинг", "Рейтинги ҳафтаина"),
+        }
+        catalogs = {
+            lang: json.loads((ROOT / "localization/ui" / lang / "course.json")
+                             .read_text(encoding="utf-8"))["messages"]
+            for lang in ("uz", "ru", "tj")
+        }
+        for key, (calls, uz, ru, tj) in labels.items():
+            fallback = ('LANG==="ru"?' + json.dumps(ru, ensure_ascii=False)
+                        + ':LANG==="tj"?' + json.dumps(tj, ensure_ascii=False)
+                        + ':' + json.dumps(uz, ensure_ascii=False))
+            with self.subTest(key=key):
+                self.assertEqual(html.count('courseMessage("' + key + '",' + fallback + ')'), calls)
+                for locale, value in (("uz", uz), ("ru", ru), ("tj", tj)):
+                    self.assertEqual(catalogs[locale][key], value)
+                    self.assertEqual(len(catalogs[locale]), 823)
+        self.assertEqual(len(html.split("\n")), 8859)
+        self.assertIn("challengeSending=false", html)
+        self.assertIn("ratingRetryText()", html)
+
 if __name__ == "__main__":
     unittest.main()

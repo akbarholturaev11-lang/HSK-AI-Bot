@@ -817,6 +817,14 @@
     "lessonSettings.title": "Dars sozlamalari",
     "lessonSettings.exit": "Chiqish",
     "sheet.dialogLabel": "HSK AI oynasi",
-    "sheet.closeLabel": "Yopish"
+    "sheet.closeLabel": "Yopish",
+    "rating.retryLoading": "Qayta yuklash",
+    "rating.weeklyTopFive": "Haftalik reyting · Top 5",
+    "rating.copiedToast": "Nusxalandi",
+    "rating.telegramUsernameMissing": "Foydalanuvchida Telegram username yo'q",
+    "rating.challengeNotAllowed": "Bu foydalanuvchiga chaqiruv yuborib bo'lmaydi",
+    "rating.challengeSendFailed": "Chaqiruv yuborilmadi",
+    "rating.duelRejected": "Belashuv rad qilindi.",
+    "rating.weeklyHeading": "Haftalik reyting"
   }
 }

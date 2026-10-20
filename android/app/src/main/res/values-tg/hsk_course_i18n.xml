@@ -468,6 +468,14 @@
     <string name="hsk_course_pronunciation_review" formatted="false">такрор</string>
     <string name="hsk_course_pronunciation_skip" formatted="false">Гузарондан</string>
     <string name="hsk_course_rank" formatted="false">ҷой</string>
+    <string name="hsk_course_rating_challenge_not_allowed" formatted="false">Ба ин корбар даъват фиристодан мумкин нест</string>
+    <string name="hsk_course_rating_challenge_send_failed" formatted="false">Даъват фиристода нашуд</string>
+    <string name="hsk_course_rating_copied_toast" formatted="false">Нусха гирифта шуд</string>
+    <string name="hsk_course_rating_duel_rejected" formatted="false">Рақобат рад шуд.</string>
+    <string name="hsk_course_rating_retry_loading" formatted="false">Аз нав бор кардан</string>
+    <string name="hsk_course_rating_telegram_username_missing" formatted="false">Корбар username-и Telegram надорад</string>
+    <string name="hsk_course_rating_weekly_heading" formatted="false">Рейтинги ҳафтаина</string>
+    <string name="hsk_course_rating_weekly_top_five" formatted="false">Рейтинги ҳафта · Топ 5</string>
     <string name="hsk_course_ready_phrases" formatted="false">Ибораҳои омода</string>
     <string name="hsk_course_ready_phrases_all" formatted="false">Ҳама</string>
     <string name="hsk_course_ready_phrases_copied" formatted="false">Нусха бардошта шуд</string>

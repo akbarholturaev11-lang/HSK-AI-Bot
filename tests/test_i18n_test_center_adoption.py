@@ -40,7 +40,7 @@ class TestCenterI18nAdoptionTests(unittest.TestCase):
         for locale in LOCALES:
             catalog = json.loads((ROOT / f"localization/ui/{locale}/course.json")
                                  .read_text(encoding="utf-8"))["messages"]
-            self.assertEqual(len(catalog), 815)
+            self.assertEqual(len(catalog), 823)
             for source_name, (prefix, names) in FAMILIES.items():
                 fragment = local_dict(html, source_name, locale)
                 original = fields(fragment)
@@ -62,7 +62,7 @@ class TestCenterI18nAdoptionTests(unittest.TestCase):
 
     def test_bundle_precedes_test_exercise_and_all_inline_fallbacks_remain(self):
         html = (ROOT / "app/static/course_v3_test.html").read_text(encoding="utf-8")
-        self.assertLess(html.index("hsk-course-i18n.js?v=20261020-37c75ec39f2a"),
+        self.assertLess(html.index("hsk-course-i18n.js?v=20261020-1fee76a7803b"),
                         html.index("var L={"))
         for name in ("L","EM","PT","HSK30_SOON"):
             self.assertEqual(html.count("var " + name + "={"), 1)

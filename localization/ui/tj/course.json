@@ -817,6 +817,14 @@
     "lessonSettings.title": "Танзимоти дарс",
     "lessonSettings.exit": "Баромадан",
     "sheet.dialogLabel": "Муколамаи HSK AI",
-    "sheet.closeLabel": "Пӯшидан"
+    "sheet.closeLabel": "Пӯшидан",
+    "rating.retryLoading": "Аз нав бор кардан",
+    "rating.weeklyTopFive": "Рейтинги ҳафта · Топ 5",
+    "rating.copiedToast": "Нусха гирифта шуд",
+    "rating.telegramUsernameMissing": "Корбар username-и Telegram надорад",
+    "rating.challengeNotAllowed": "Ба ин корбар даъват фиристодан мумкин нест",
+    "rating.challengeSendFailed": "Даъват фиристода нашуд",
+    "rating.duelRejected": "Рақобат рад шуд.",
+    "rating.weeklyHeading": "Рейтинги ҳафтаина"
   }
 }

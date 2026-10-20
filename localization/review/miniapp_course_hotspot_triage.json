@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "8c04d7b2fa765eb2cea2286ee14f63e0030c3db2",
+  "source_revision": "7fa9fb7656ebeb3b204c139b3c3ceb90b66abeb9",
   "counting_note": "62 unique physical source lines cover all 131 current LANG ==/=== literal-locale predicates in course-v3.html after main/P3 integration. Multiple predicates per line remain one classification; these are reviewed source decisions, not runtime UI verification.",
   "coverage_note": "Current merged course-v3.html source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified, including two new main navigation/accessibility sites. All other localized source expressions, dynamic content, other files and rendered UI remain separately audited.",
   "classifications": [
@@ -282,7 +282,7 @@
       "line": 5876,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
-      "reason": "Rating retry-loading CTA",
+      "reason": "Rating retry-loading CTA Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -322,7 +322,7 @@
       "line": 6070,
       "anchor": "LANG===\"ru\"",
       "category": "rating_copy",
-      "reason": "Weekly podium top-five heading",
+      "reason": "Weekly podium top-five heading Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -330,7 +330,7 @@
       "line": 6085,
       "anchor": "LANG===\"ru\"",
       "category": "feedback_copy",
-      "reason": "Copy-success toast",
+      "reason": "Copy-success toast Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -338,7 +338,7 @@
       "line": 6107,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
-      "reason": "Telegram username missing warning",
+      "reason": "Telegram username missing warning Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -362,7 +362,7 @@
       "line": 6127,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
-      "reason": "Duel recipient not eligible warning",
+      "reason": "Duel recipient not eligible warning Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -370,7 +370,7 @@
       "line": 6138,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
-      "reason": "Duel invitation submission failure",
+      "reason": "Duel invitation submission failure Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -378,7 +378,7 @@
       "line": 6139,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
-      "reason": "Duel request network failure fallback",
+      "reason": "Duel request network failure fallback Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -386,7 +386,7 @@
       "line": 6187,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
-      "reason": "Duel rejection state label",
+      "reason": "Duel rejection state label Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -474,7 +474,7 @@
       "line": 6350,
       "anchor": "LANG===\"ru\"",
       "category": "rating_copy",
-      "reason": "Weekly leaderboard rival comparison heading",
+      "reason": "Weekly leaderboard rival comparison heading Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },

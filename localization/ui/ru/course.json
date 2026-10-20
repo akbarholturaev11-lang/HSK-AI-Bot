@@ -817,6 +817,14 @@
     "lessonSettings.title": "Настройки урока",
     "lessonSettings.exit": "Выйти",
     "sheet.dialogLabel": "Диалог HSK AI",
-    "sheet.closeLabel": "Закрыть"
+    "sheet.closeLabel": "Закрыть",
+    "rating.retryLoading": "Повторить загрузку",
+    "rating.weeklyTopFive": "Недельный рейтинг · Топ 5",
+    "rating.copiedToast": "Скопировано",
+    "rating.telegramUsernameMissing": "У пользователя нет Telegram username",
+    "rating.challengeNotAllowed": "Этому пользователю нельзя бросить вызов",
+    "rating.challengeSendFailed": "Не удалось отправить вызов",
+    "rating.duelRejected": "Дуэль отклонена.",
+    "rating.weeklyHeading": "Недельный рейтинг"
   }
 }

@@ -468,6 +468,14 @@
     <string name="hsk_course_pronunciation_review" formatted="false">takror</string>
     <string name="hsk_course_pronunciation_skip" formatted="false">O\'tkazib yuborish</string>
     <string name="hsk_course_rank" formatted="false">o\'rin</string>
+    <string name="hsk_course_rating_challenge_not_allowed" formatted="false">Bu foydalanuvchiga chaqiruv yuborib bo\'lmaydi</string>
+    <string name="hsk_course_rating_challenge_send_failed" formatted="false">Chaqiruv yuborilmadi</string>
+    <string name="hsk_course_rating_copied_toast" formatted="false">Nusxalandi</string>
+    <string name="hsk_course_rating_duel_rejected" formatted="false">Belashuv rad qilindi.</string>
+    <string name="hsk_course_rating_retry_loading" formatted="false">Qayta yuklash</string>
+    <string name="hsk_course_rating_telegram_username_missing" formatted="false">Foydalanuvchida Telegram username yo\'q</string>
+    <string name="hsk_course_rating_weekly_heading" formatted="false">Haftalik reyting</string>
+    <string name="hsk_course_rating_weekly_top_five" formatted="false">Haftalik reyting · Top 5</string>
     <string name="hsk_course_ready_phrases" formatted="false">Tayyor gaplar</string>
     <string name="hsk_course_ready_phrases_all" formatted="false">Barchasi</string>
     <string name="hsk_course_ready_phrases_copied" formatted="false">Nusxalandi</string>
