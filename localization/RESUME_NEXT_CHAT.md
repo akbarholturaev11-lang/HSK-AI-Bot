@@ -6,7 +6,7 @@ Updated: 2026-10-21. **This is the short authoritative checkpoint, not evidence 
 
 - Repository: `akbarholturaev11-lang/HSK-AI-Bot`.
 - **ONLY active work branch:** `codex/p3-main-integration-20261020`; latest pushed code SHA: `7fc9dc8249816565750d1ac3f629003e2a90ef03`.
-- `origin/main` is `ed527c55eaf8d63acd04902b570c6a66aef8fe3c`, an ancestor at latest code SHA (525 commits ahead, 0 behind). No main merge/push, force-push or production deployment. Draft PR #179 still targets the old `codex/i18n-local-first-foundation-20261017` head and is conflicting; it is not this integration branch or release authorization.
+- `origin/main` is `ed527c55eaf8d63acd04902b570c6a66aef8fe3c`, an ancestor at latest code SHA. No main merge/push, force-push or production deployment. Draft PR #179 still targets the old `codex/i18n-local-first-foundation-20261017` head and is conflicting; it is not this integration branch or release authorization.
 - Exact-head GitHub Actions at `7fc9dc8249816565750d1ac3f629003e2a90ef03`: P0 [39455687320](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39455687320), Android [39455710809](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39455710809), Backend targeted [39458523003](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39458523003), and Desktop UI [39458522328](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39458522328) all **SUCCESS**.
 - Local P0 workflow-equivalent: **383 tests passed**; **25 read-only audits passed**. Inventory: 2,717 files, 71,125 locale maps, 0 parse/read errors; 812 frozen sources, 746 lessons, 0 baseline blockers; 48 source gaps all covered by 2,094 valid locale overlays. No staging, authenticated-user or installed-device QA is inferred from these checks.
 - Unrelated local `graphify-out/GRAPH_REPORT.md` and `graphify-out/graph.json` changes are user-owned; keep them out of commits.
@@ -49,10 +49,10 @@ Updated: 2026-10-21. **This is the short authoritative checkpoint, not evidence 
 
 ## Next precise tasks (in this order)
 
-1. Continue the classified P2 UI migrations across Mini App, Android, Desktop and Bot; keep exact locale fallback text and regenerate/test all six artifacts for each catalog family.
-2. Reconcile remaining P3 source-context QA records and the subsequent G066/G069/G130 fixes against all 136 source-pinned contexts; preserve mirror, source SHA, entitlement and protected-answer guards.
-3. Complete applicable staging, authenticated account/access, old-client, offline and installed Android/WebView/Windows/macOS QA when the test environment and accounts are available.
-4. Update this file and `P3_ACTIVE_HANDOFF.md` after each tested commit; recheck exact-head Actions and never reuse earlier CI for a newer SHA.
+1. Run the user’s real Telegram bot test and fix any reproducible issue it reveals; rerun the affected tests and P0. The latest registered Mini App source-to-catalog sweep found no additional exact-copy migration in the 18 reviewed page dictionaries.
+2. After code work, run the independent linguistic audit the user plans for all 136 source-pinned grammar contexts; fix any findings, keep mirror/source guards intact, and rerun P0.
+3. Complete authenticated staging/account/access, old-client, offline and installed Android/WebView/Windows/macOS QA when the test environment and identities are available. These remain outside the verified GitHub CI.
+4. Before any main release, recheck current main ancestry and exact-head Actions. Keep main and production untouched until the user separately authorizes the release.
 
 ## Read before coding
 
