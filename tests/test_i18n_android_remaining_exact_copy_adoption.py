@@ -41,6 +41,8 @@ LEGACY_TO_GENERATED = {
     "state_loading": "hsk_common_state_loading",
     "voice_what_to_say": "hsk_course_voice_page_what_to_say",
     "action_retry": "hsk_course_lesson_flow_retry",
+    "auth_referral_invalid": "hsk_common_desktopAuth_referralInvalid",
+    "error_oauth_failed": "hsk_common_desktopAuth_providerFailed",
     "rating_weekly_top_five": "hsk_course_rating_weekly_top_five",
     "rating_friends_joined": "hsk_course_rating_referral_joined",
     "rating_weekly_result": "hsk_course_rating_weekly_heading",
@@ -74,6 +76,8 @@ EXPECTED_GENERATED_CALLS = {
     "hsk_common_state_loading": 1,
     "hsk_course_voice_page_what_to_say": 1,
     "hsk_course_lesson_flow_retry": 11,
+    "hsk_common_desktopAuth_referralInvalid": 1,
+    "hsk_common_desktopAuth_providerFailed": 1,
     "hsk_course_rating_weekly_top_five": 1,
     "hsk_course_rating_referral_joined": 1,
     "hsk_course_rating_weekly_heading": 1,
@@ -89,7 +93,7 @@ def _strings(path: Path) -> dict[str, str]:
 
 class AndroidRemainingExactCopyAdoptionTests(unittest.TestCase):
     def test_legacy_android_values_match_generated_resources_in_all_locales(self):
-        self.assertEqual(len(LEGACY_TO_GENERATED), 35)
+        self.assertEqual(len(LEGACY_TO_GENERATED), 37)
         for qualifier, locale in LOCALES:
             with self.subTest(locale=locale):
                 legacy = _strings(ANDROID_RES / f"values{qualifier}/strings.xml")

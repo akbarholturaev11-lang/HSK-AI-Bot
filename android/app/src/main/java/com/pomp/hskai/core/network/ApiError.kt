@@ -78,7 +78,7 @@ sealed interface ApiError {
                 "desktop_link_already_approved",
                 -> R.string.error_link_invalid
 
-                "signup_referral_invalid" -> R.string.auth_referral_invalid
+                "signup_referral_invalid" -> R.string.hsk_common_desktopAuth_referralInvalid
 
                 "desktop_link_rate_limited" -> R.string.error_link_rate_limited
                 "desktop_device_bound_to_other_user" -> R.string.error_device_bound
@@ -121,7 +121,7 @@ sealed interface ApiError {
                 "oidc_jwks_invalid",
                 "oidc_key_unsupported",
                 "oidc_provider_unconfigured",
-                -> R.string.error_oauth_failed
+                -> R.string.hsk_common_desktopAuth_providerFailed
 
                 "oauth_link_rate_limited" -> R.string.error_link_rate_limited
 
