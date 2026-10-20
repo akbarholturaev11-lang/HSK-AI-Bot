@@ -43,6 +43,12 @@ class AndroidNewBadgeAdoptionTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
         self.assertNotIn("newBadge", source)
         self.assertNotIn('"NEW"', source)
+        android_test = (
+            ROOT / "android/app/src/androidTest/java/com/pomp/hskai/feature/onboarding/"
+            "CourseVersionOnboardingTest.kt"
+        ).read_text(encoding="utf-8")
+        self.assertIn("R.string.hsk_course_new_section_badge", android_test)
+        self.assertNotIn("copy.newBadge", android_test)
 
 
 if __name__ == "__main__":
