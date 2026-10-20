@@ -8,6 +8,8 @@ from app.services.subscription_service import (
     SubscriptionService,
     normalize_manual_subscription_days,
 )
+from app.bot.handlers.subscription import _card_plan_label, _plan_label
+from app.bot.utils.discount_formatter import plan_label
 
 
 class _Session:
@@ -53,6 +55,24 @@ class ManualSubscriptionDurationTests(unittest.TestCase):
         ):
             with self.subTest(value=value):
                 self.assertIsNone(normalize_manual_subscription_days(value))
+
+
+class SubscriptionPlanLabelTests(unittest.TestCase):
+    def test_existing_plan_labels_match_local_catalog_and_unknown_plan_fallback(self):
+        expected = {
+            "uz": ("10 kunlik", "1 oylik", "3 oylik"),
+            "ru": ("10 дней", "1 месяц", "3 месяца"),
+            "tj": ("10 рӯз", "1 моҳ", "3 моҳ"),
+        }
+        for language, (ten_day, one_month, three_months) in expected.items():
+            with self.subTest(language=language):
+                self.assertEqual(_card_plan_label("10_days", language), ten_day)
+                self.assertEqual(_card_plan_label("1_month", language), one_month)
+                self.assertEqual(_card_plan_label("3_months", language), "3_months")
+                self.assertEqual(_plan_label("10_days", language), ten_day)
+                self.assertEqual(_plan_label("1_month", language), one_month)
+                self.assertEqual(_plan_label("unknown", language), "unknown")
+                self.assertEqual(plan_label("3_months", language), three_months)
 
 
 class SubscriptionServiceManualGrantTests(unittest.IsolatedAsyncioTestCase):

@@ -173,12 +173,9 @@ def _card_texts(lang: str) -> dict[str, str]:
 
 
 def _card_plan_label(plan_type: str, lang: str) -> str:
-    labels = {
-        "tj": {"10_days": "10 рӯз", "1_month": "1 моҳ"},
-        "ru": {"10_days": "10 дней", "1_month": "1 месяц"},
-        "uz": {"10_days": "10 kunlik", "1_month": "1 oylik"},
-    }
-    return labels.get(lang, labels["ru"]).get(plan_type, plan_type)
+    keys = {"10_days": "subscription_button_10_days", "1_month": "subscription_button_1_month"}
+    key = keys.get(plan_type)
+    return t(key, lang) if key else plan_type
 
 
 def _card_main_price(amount: int) -> str:
@@ -218,12 +215,9 @@ def _card_main_text(
 
 
 def _plan_label(plan_type: str, lang: str) -> str:
-    labels = {
-        "tj": {"10_days": "10 рӯз", "1_month": "1 моҳ"},
-        "ru": {"10_days": "10 дней", "1_month": "1 месяц"},
-        "uz": {"10_days": "10 kunlik", "1_month": "1 oylik"},
-    }
-    return labels.get(lang, labels["ru"]).get(plan_type, plan_type)
+    keys = {"10_days": "subscription_button_10_days", "1_month": "subscription_button_1_month"}
+    key = keys.get(plan_type)
+    return t(key, lang) if key else plan_type
 
 
 

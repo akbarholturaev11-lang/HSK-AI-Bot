@@ -76,6 +76,12 @@
     <string name="hsk_common_bot_releaseFeedback_tryAlready" formatted="false">Шумо аллакай барои санҷидани ин функсия дастрасӣ доред.</string>
     <string name="hsk_common_bot_releaseFeedback_tryButton" formatted="false">🚀 Санҷидан</string>
     <string name="hsk_common_bot_releaseFeedback_tryGranted" formatted="false">Дастрасии тестӣ кушода шуд: дар 30 дақиқа қисми навшударо бе лимит санҷед.</string>
+    <string name="hsk_common_bot_subscription_freeMode" formatted="false">💬 Ба реҷаи ройгон гузаштан</string>
+    <string name="hsk_common_bot_subscription_openMiniApp" formatted="false">💎 Обунаро кушодан</string>
+    <string name="hsk_common_bot_subscription_plan10Days" formatted="false">10 рӯз</string>
+    <string name="hsk_common_bot_subscription_plan1Month" formatted="false">1 моҳ</string>
+    <string name="hsk_common_bot_subscription_plan3Months" formatted="false">3 моҳ</string>
+    <string name="hsk_common_bot_subscription_visaButton" formatted="false">💳 Корти бонкӣ / VISA</string>
     <string name="hsk_common_common_refresh" formatted="false">Навсозӣ</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">Савол оид ба забони чинӣ</string>
     <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Панелро ҷамъ кардан</string>

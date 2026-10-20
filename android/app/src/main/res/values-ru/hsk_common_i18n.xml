@@ -76,6 +76,12 @@
     <string name="hsk_common_bot_releaseFeedback_tryAlready" formatted="false">У вас уже есть доступ, чтобы попробовать эту функцию.</string>
     <string name="hsk_common_bot_releaseFeedback_tryButton" formatted="false">🚀 Попробовать</string>
     <string name="hsk_common_bot_releaseFeedback_tryGranted" formatted="false">Тестовый доступ открыт: в течение 30 минут пробуйте обновлённый раздел без лимита.</string>
+    <string name="hsk_common_bot_subscription_freeMode" formatted="false">💬 Перейти в бесплатный режим</string>
+    <string name="hsk_common_bot_subscription_openMiniApp" formatted="false">💎 Открыть подписку</string>
+    <string name="hsk_common_bot_subscription_plan10Days" formatted="false">10 дней</string>
+    <string name="hsk_common_bot_subscription_plan1Month" formatted="false">1 месяц</string>
+    <string name="hsk_common_bot_subscription_plan3Months" formatted="false">3 месяца</string>
+    <string name="hsk_common_bot_subscription_visaButton" formatted="false">💳 Банковская карта / VISA</string>
     <string name="hsk_common_common_refresh" formatted="false">Обновить</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">Вопрос о китайском языке</string>
     <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Свернуть панель</string>

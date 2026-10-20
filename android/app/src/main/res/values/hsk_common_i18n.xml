@@ -76,6 +76,12 @@ Yangilikni sinab ko\'ring va 1-5 ball bering. Fikr qoldirsangiz, obunangiz bo\'l
     <string name="hsk_common_bot_releaseFeedback_tryAlready" formatted="false">Sizda bu funksiyani sinab ko\'rish uchun access bor.</string>
     <string name="hsk_common_bot_releaseFeedback_tryButton" formatted="false">🚀 Sinab ko\'rish</string>
     <string name="hsk_common_bot_releaseFeedback_tryGranted" formatted="false">Test access ochildi: 30 minut ichida yangilangan joyni limitsiz sinab ko\'ring.</string>
+    <string name="hsk_common_bot_subscription_freeMode" formatted="false">💬 Bepul rejimga o‘tish</string>
+    <string name="hsk_common_bot_subscription_openMiniApp" formatted="false">💎 Obunani ochish</string>
+    <string name="hsk_common_bot_subscription_plan10Days" formatted="false">10 kunlik</string>
+    <string name="hsk_common_bot_subscription_plan1Month" formatted="false">1 oylik</string>
+    <string name="hsk_common_bot_subscription_plan3Months" formatted="false">3 oylik</string>
+    <string name="hsk_common_bot_subscription_visaButton" formatted="false">💳 Bank kartasi / VISA</string>
     <string name="hsk_common_common_refresh" formatted="false">Yangilash</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">AI uchun savol</string>
     <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Panelni yig‘ish</string>

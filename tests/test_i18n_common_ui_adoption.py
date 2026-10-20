@@ -261,6 +261,12 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             "course_reminder_cancel": "bot.courseKeyboard.reminderCancel",
             "course_v3_open": "bot.courseKeyboard.v3Open",
             "course_study_open": "bot.courseKeyboard.studyOpen",
+            "subscription_miniapp_open_button": "bot.subscription.openMiniApp",
+            "subscription_free_mode_button": "bot.subscription.freeMode",
+            "payment_method_visa_button": "bot.subscription.visaButton",
+            "subscription_button_10_days": "bot.subscription.plan10Days",
+            "subscription_button_1_month": "bot.subscription.plan1Month",
+            "subscription_button_3_months": "bot.subscription.plan3Months",
             "course_reminder_set_button": "bot.promoButton.reminder",
             "hint_section_course_title": "navigation.course",
             "hint_section_practice_title": "navigation.practice",
@@ -308,6 +314,10 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             self.assertIn(f't("{key}", lang)', course_keyboard)
         for key in ("course_v3_open", "course_study_open", "course_miniapp_open", "course_continue"):
             self.assertIn(f't("{key}", lang)', course_miniapp)
+        subscription_handler = (ROOT / "app/bot/handlers/subscription.py").read_text(encoding="utf-8")
+        for key in ("subscription_button_10_days", "subscription_button_1_month"):
+            self.assertIn(key, subscription_handler)
+        self.assertIn("return t(key, lang) if key else plan_type", subscription_handler)
         for bot_key, catalog_key, catalog in (
             *((key, value, COMMON_MESSAGES) for key, value in expected_common.items()),
             *((key, value, COURSE_MESSAGES) for key, value in expected_course.items()),
