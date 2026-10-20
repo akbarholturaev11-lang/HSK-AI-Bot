@@ -1,12 +1,12 @@
-## Current integration handoff — 2026-10-20 (feature branch; external release QA open)
+## Current integration handoff — 2026-10-21 (feature branch; external release QA open)
 
 **Use `localization/RESUME_NEXT_CHAT.md` then `localization/P3_ACTIVE_HANDOFF.md` for the current branch/CI state.** Work only on `codex/p3-main-integration-20261020`; do not push/merge `main`, force-push, rebase or deploy production.
 
-- **Active branch only:** `codex/p3-main-integration-20261020`; latest code SHA `79b1516fdd63aa9e4df91b6d425b96c1488cb64e` is pushed to origin. At that code commit, `origin/main` is `ed527c55eaf8d63acd04902b570c6a66aef8fe3c` and is an ancestor (520 commits ahead, 0 behind). No main push/merge or deployment.
-- **Latest P2 UI changes (`a2fe7617`, `79b1516f`):** added the UZ/RU/TJ `newSectionBadge` catalog key; dictionary/phrase resource pane and iframe names, character-writer button/iframe title, and lesson-settings accessible name now follow the selected locale. The old “NEW” remains the missing-bundle fallback. All six course artifacts were regenerated and the 12 HTML consumers pin `20261020-57ce728d755d`. Learning, lesson, assessment, access and payment behavior are unchanged.
-- **Verification:** local P0 workflow-equivalent passed **373 tests** and all **25 read-only P0 audits** (812 frozen sources, 746 lessons, 0 baseline blockers, 895 course UI keys/locale, 55 common UI keys/locale, 0 stale generated artifacts). Affected Mini App Playwright smoke passed **3 tests**, covering all three locales. GitHub P0 [`39446740186`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39446740186) succeeded on `a2fe7617`; the latest code SHA's exact-head P0 [`39447233283`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39447233283) succeeded.
-- **Remaining release gates:** staging HTTP, authenticated Telegram/account-switch and Free/Trial/Pro/payment/referral scenarios, old-client refresh, offline, and installed Android/WebView/macOS/Windows QA. These are not established by source CI or mocked browser smoke.
-- **Next code-side work:** continue the registered source-to-catalog sweep on the feature branch and run affected tests/P0 for each batch. Keep `main` and production untouched.
+- **Active branch only:** `codex/p3-main-integration-20261020`; latest implementation SHA `7fc9dc8249816565750d1ac3f629003e2a90ef03` is pushed to origin. `origin/main` `ed527c55eaf8d63acd04902b570c6a66aef8fe3c` is an ancestor. No main push/merge or deployment. Draft PR #179 remains attached to the old source branch and is conflicting.
+- **Latest UI batch (`7dedd1d8`, `7fc9dc82`):** Bot menu course fallback and stale-button alert now use local UZ/RU/TJ catalogs; Android badges use the existing `newSectionBadge` resource. Only display-copy wiring and regression coverage changed.
+- **Verification:** local P0 workflow-equivalent passed **383 tests** and all **25 read-only audits** (812 frozen sources, 746 lessons, 0 baseline blockers, 895 course UI keys/locale, 68 common UI keys/locale, 0 stale generated artifacts). All 18 registered Mini App locale dictionaries have matching locale keys and no parser/placeholder drift. Exact-head GitHub P0 39455687320, Android 39455710809, Backend targeted 39458523003, and Desktop UI 39458522328 succeeded.
+- **Remaining release gates:** user-run real Bot test, staging/authenticated account and Free/Trial/Pro/payment/referral checks, old-client refresh, offline and installed Android/WebView/macOS/Windows QA. These require the applicable test environment and accounts; source CI does not establish them.
+- Keep `main` and production untouched.
 
 ## Controlling P3 language QA decision — 2026-10-19
 
@@ -31,12 +31,12 @@ staging and cross-platform QA remain pending.
 > `docs/I18N_MULTILANGUAGE_MIGRATION.md`, and
 > `localization/surface_registry.json`.
 >
-> Status: **P0 source guards and P1 local catalogs implemented; P2 exact-copy adoption continues only where source and context match; P3 agent-owned review and the 136-context canonical catalog are source-bound and delivered display-only behind access checks. Latest code SHA `79b1516fdd63aa9e4df91b6d425b96c1488cb64e` passed local P0 (373 tests) and all 25 read-only audits; exact-head GitHub P0 run 39447233283 succeeded. Course catalog is 895 keys/locale, common catalog 55 keys/locale; all 12 generated UI artifacts (six course and six common) are current. Staging/platform acceptance remains open. Feature branch only.** Earlier dated entries preserve historical states and do not override this checkpoint.
+> Status: **P0 source guards and P1 local catalogs implemented; P2 exact-copy adoption continues only where source and context match; P3 agent-owned review and the 136-context canonical catalog are source-bound and delivered display-only behind access checks. Latest implementation SHA `7fc9dc8249816565750d1ac3f629003e2a90ef03` passed local P0 (383 tests) and all 25 read-only audits; exact-head GitHub P0, Android, Backend and Desktop runs succeeded. Course catalog is 895 keys/locale, common catalog 68 keys/locale; all 12 generated UI artifacts (six course and six common) are current. Staging/platform acceptance remains open. Feature branch only.** Earlier dated entries preserve historical states and do not override this checkpoint.
 
 ## 0. Where to resume
 
-- Repository: `akbarholturaev11-lang/HSK-AI-Bot`; active branch `codex/p3-main-integration-20261020`; latest pushed code SHA `79b1516fdd63aa9e4df91b6d425b96c1488cb64e`. `origin/main` `ed527c55eaf8d63acd04902b570c6a66aef8fe3c` is an ancestor (520 commits ahead, 0 behind).
-- Exact-head GitHub P0 run 39447233283 succeeded; local P0 workflow-equivalent passed 373 tests and 25 read-only audits. The course catalog has 895 keys per locale and 0 stale artifacts.
+- Repository: `akbarholturaev11-lang/HSK-AI-Bot`; active branch `codex/p3-main-integration-20261020`; latest implementation SHA `7fc9dc8249816565750d1ac3f629003e2a90ef03`. `origin/main` `ed527c55eaf8d63acd04902b570c6a66aef8fe3c` is an ancestor.
+- Exact-head GitHub P0 39455687320, Android 39455710809, Backend targeted 39458523003 and Desktop UI 39458522328 succeeded; local P0 passed 383 tests and 25 read-only audits. Course catalog 895 keys/locale, common catalog 68 keys/locale, all generated artifacts current.
 - Latest P2 slice localizes dictionary/phrase iframe names, writer controls, lesson-settings accessibility and the new-section badge; all 12 course HTML bundle consumers pin `20261020-57ce728d755d`. The affected three-locale Mini App smoke passed 3 tests.
 - Keep main and production untouched. Staging HTTP, authenticated account/access, old-client, offline and installed-client QA remain open.
 

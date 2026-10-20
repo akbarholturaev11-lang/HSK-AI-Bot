@@ -1,15 +1,15 @@
 # HSK AI P3 — ACTIVE handoff for a new ChatGPT agent
 
 **Fast start for the next chat:** [`localization/RESUME_NEXT_CHAT.md`](RESUME_NEXT_CHAT.md). Follow that branch/CI checkpoint first; older entries are historical.
-Updated: 2026-10-20. **This checkpoint supersedes all older branch, CI and catalog counts below.**
+Updated: 2026-10-21. **This checkpoint supersedes all older branch, CI and catalog counts below.**
 
-## 2026-10-20 — CURRENT main integration checkpoint (latest code `79b1516f`)
+## 2026-10-21 — CURRENT main integration checkpoint (latest code `7fc9dc82`)
 
-- **Active branch only:** `codex/p3-main-integration-20261020`; latest code SHA `79b1516fdd63aa9e4df91b6d425b96c1488cb64e` is pushed to origin. At that code commit, `origin/main` is `ed527c55eaf8d63acd04902b570c6a66aef8fe3c` and is an ancestor (520 commits ahead, 0 behind). No main push/merge or deployment.
-- **Latest P2 UI changes (`a2fe7617`, `79b1516f`):** added the UZ/RU/TJ `newSectionBadge` catalog key; dictionary/phrase resource pane and iframe names, character-writer button/iframe title, and lesson-settings accessible name now follow the selected locale. The old “NEW” remains the missing-bundle fallback. All six course artifacts were regenerated and the 12 HTML consumers pin `20261020-57ce728d755d`. Learning, lesson, assessment, access and payment behavior are unchanged.
-- **Verification:** local P0 workflow-equivalent passed **373 tests** and all **25 read-only P0 audits** (812 frozen sources, 746 lessons, 0 baseline blockers, 895 course UI keys/locale, 55 common UI keys/locale, 0 stale generated artifacts). Affected Mini App Playwright smoke passed **3 tests**, covering all three locales. GitHub P0 [`39446740186`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39446740186) succeeded on `a2fe7617`; the latest code SHA's exact-head P0 [`39447233283`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39447233283) succeeded.
-- **Remaining release gates:** staging HTTP, authenticated Telegram/account-switch and Free/Trial/Pro/payment/referral scenarios, old-client refresh, offline, and installed Android/WebView/macOS/Windows QA. These are not established by source CI or mocked browser smoke.
-- **Next code-side work:** continue the registered source-to-catalog sweep on the feature branch and run affected tests/P0 for each batch. Keep `main` and production untouched.
+- **Active branch only:** `codex/p3-main-integration-20261020`; latest code SHA `7fc9dc8249816565750d1ac3f629003e2a90ef03` is pushed to origin. `origin/main` `ed527c55eaf8d63acd04902b570c6a66aef8fe3c` is an ancestor (525 commits ahead, 0 behind). No main push/merge or deployment. Draft PR #179 still points at the old source branch and remains conflicting.
+- **Latest UI batch (`7dedd1d8`, `7fc9dc82`):** Bot promo callbacks use local catalog course-mode and stale-button copy; Android HSK 3.0 and Practice badges use the existing locale-specific course resource. The unused onboarding English field and its stale test reference are removed. Course, access, account, payment and progress behavior are unchanged.
+- **Verification:** local P0 workflow-equivalent passed **383 tests**; all **25 read-only P0 audits** passed (812 frozen sources, 746 lessons, 0 baseline blockers, 895 course UI keys/locale, 68 common UI keys/locale, 0 stale generated artifacts). All 18 registered Mini App locale dictionaries have matching UZ/RU/TJ keys with 0 parser or placeholder drift. Exact-head GitHub P0 [39455687320](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39455687320), Android [39455710809](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39455710809), Backend targeted [39458523003](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39458523003), and Desktop UI [39458522328](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39458522328) all succeeded.
+- **Remaining release gates:** user-run real Telegram bot scenario, staging/authenticated account and entitlement checks, old-client refresh, offline, and installed Android/WebView/macOS/Windows QA. Source CI does not establish those results. An independent linguistic audit is planned after code work.
+- **Next:** apply findings from the user’s bot test, then complete the independent linguistic and platform acceptance checks. Keep `main` and production untouched.
 
 ## Previous Desktop auth catalog checkpoint (historical; superseded below)
 
