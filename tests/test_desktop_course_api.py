@@ -16,6 +16,7 @@ from app.api.desktop_course import (
     create_desktop_course_router,
 )
 from app.db.base import Base
+from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_mistake import CourseMistake
 from app.db.models.course_progress import CourseProgress
@@ -75,6 +76,17 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
         async with self.engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        # These analytics writers intentionally open a separate session instead
+        # of using the router's injected request session. Keep those writes in
+        # this fixture too; otherwise denied lesson requests reach the configured
+        # application database and swallow the connection error as analytics.
+        for target in (
+            "app.services.conversion_funnel_service.async_session_maker",
+            "app.services.entitlements.shadow.async_session_maker",
+        ):
+            analytics_sessions = patch(target, self.sessions)
+            analytics_sessions.start()
+            self.addCleanup(analytics_sessions.stop)
         self.settings = _settings()
         async with self.sessions() as session:
             session.add(_user())
@@ -134,6 +146,31 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
                 "mistakes": [],
             },
         )
+
+    async def test_denied_lesson_records_limit_hit_in_fixture_database(self):
+        await self._free_lesson_limit(1)
+        completed = await self._complete(1, "desktop-limit-hit-fixture-0001")
+        self.assertEqual(completed.status_code, 200, completed.text)
+
+        response = await self.client.get(
+            "/api/v3/desktop/course/lesson/2",
+            headers=self.auth_headers,
+        )
+
+        self.assertEqual(response.status_code, 403, response.text)
+        self.assertEqual(response.json()["error"], "free_feature_limit_reached")
+        async with self.sessions() as session:
+            events = (
+                await session.execute(
+                    select(ConversionFunnelEvent).where(
+                        ConversionFunnelEvent.event_name == "limit_hit"
+                    )
+                )
+            ).scalars().all()
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].user_id, 1)
+        self.assertEqual(events[0].telegram_id, 1001)
+        self.assertEqual(json.loads(events[0].payload_json)["action"], A.LESSON_START)
 
     async def test_map_uses_server_level_and_auth_has_no_bootstrap_side_effect(self):
         async with self.sessions() as session:

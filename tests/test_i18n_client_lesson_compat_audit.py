@@ -47,19 +47,61 @@ class ClientLessonTransportTests(unittest.TestCase):
                             and row["check"] == "old_lesson_json_route_returns_404"
                             for row in report["failures"]))
 
-        broken = dict(sources)
+    def test_skip_test_locked_question_contract_mutations_fail_closed(self):
+        from scripts.i18n_client_lesson_compat_audit import ROOT
+        sources = {
+            key: (ROOT / path).read_text(encoding="utf-8")
+            for key, path in FILES.items()
+        }
         backend = sources["backend_miniapp_content"]
         skip_start = backend.index("async def v3_course_lesson_skip_test(")
-        broken["backend_miniapp_content"] = (
-            backend[:skip_start]
-            + backend[skip_start:].replace(
-                "lesson_order > completed + 1", "lesson_order > completed + 999", 1,
-            )
+        prefix, handler = backend[:skip_start], backend[skip_start:]
+        gate = "            access = await LessonAccessService(session).status("
+        cases = (
+            ("await _authenticated(request)", "await _unverified(request)",
+             "skip_test_uses_signed_canonical_account"),
+            ("get_by_telegram_id(telegram_id)", "get_by_id(telegram_id)",
+             "skip_test_uses_signed_canonical_account"),
+            ("if level != user_level:", "if False:",
+             "skip_test_checks_selected_level_and_bounds"),
+            ("lesson_order > total:", "lesson_order > total + 999:",
+             "skip_test_checks_selected_level_and_bounds"),
+            ("_foundation_is_blocked(session, user, level)", "_no_foundation_check(session, user, level)",
+             "skip_test_checks_foundation_and_shared_access_before_read"),
+            ("completed=completed, consume=False", "completed=completed, consume=True",
+             "skip_test_checks_foundation_and_shared_access_before_read"),
+            ('if not access.get("allowed"):', "if False:",
+             "skip_test_checks_foundation_and_shared_access_before_read"),
+            (gate, "            if lesson_order > completed + 1:\n"
+             "                return _private_content_response({}, status_code=403)\n" + gate,
+             "skip_test_allows_locked_projection_without_progress_changes"),
+            ('"questions": questions', '"questions": lesson',
+             "skip_test_returns_question_projection_only"),
+            ("            lesson = _read_course_lesson(level, lesson_order)",
+             "            await session.commit()\n            lesson = _read_course_lesson(level, lesson_order)",
+             "skip_test_allows_locked_projection_without_progress_changes"),
         )
-        report = contract(broken)
-        self.assertTrue(any(row["platform"] == "miniapp_server"
-                            and row["check"] == "skip_test_sequence_is_checked"
-                            for row in report["failures"]))
+        for before, after, check in cases:
+            with self.subTest(check=check, mutation=after):
+                self.assertIn(before, handler)
+                broken = dict(sources)
+                broken["backend_miniapp_content"] = prefix + handler.replace(before, after, 1)
+                report = contract(broken)
+                self.assertIn({"platform": "miniapp_server", "check": check,
+                               "issue": "source_contract_missing"}, report["failures"])
+
+        for before, after, check in (
+            ("min(6, len(candidates))", "len(candidates)", "skip_test_is_bounded"),
+            ('"Cache-Control": "no-store"', '"Cache-Control": "public"',
+             "all_private_content_responses_are_no_store"),
+        ):
+            with self.subTest(check=check):
+                self.assertIn(before, backend)
+                broken = dict(sources)
+                broken["backend_miniapp_content"] = backend.replace(before, after, 1)
+                report = contract(broken)
+                self.assertIn({"platform": "miniapp_server", "check": check,
+                               "issue": "source_contract_missing"}, report["failures"])
 
     def test_missing_credential_or_cache_rule_requires_manual_review(self):
         from pathlib import Path

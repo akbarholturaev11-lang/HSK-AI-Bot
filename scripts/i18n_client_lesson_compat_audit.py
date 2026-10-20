@@ -8,6 +8,7 @@ touch application data. Staging and installed-client acceptance remain open.
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 from pathlib import Path
 import re
@@ -39,6 +40,16 @@ def _has(src: str, pattern: str) -> bool:
     return bool(re.search(pattern, src, re.S))
 
 
+def _function_source(source: str, name: str) -> str:
+    nodes = [
+        node for node in ast.walk(ast.parse(source))
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == name
+    ]
+    if len(nodes) != 1:
+        raise ValueError(f"Mini App function identity changed: {name}")
+    return ast.unparse(nodes[0])
+
+
 def contract(sources: dict[str, str]) -> dict:
     if set(sources) != set(FILES):
         raise ValueError("Client source list changed; review lesson call sites")
@@ -57,6 +68,8 @@ def contract(sources: dict[str, str]) -> dict:
     android_service = sources["backend_android_service"]
     backend_miniapp = sources["backend_miniapp_content"]
     backend_main = sources["backend_main"]
+    skip_test = _function_source(backend_miniapp, "v3_course_lesson_skip_test")
+    skip_questions = _function_source(backend_miniapp, "_skip_test_questions")
 
     checks = {
         "miniapp": {
@@ -94,15 +107,49 @@ def contract(sources: dict[str, str]) -> dict:
                 backend_miniapp,
                 r'v3_course_lesson_content\([\s\S]{0,2000}lesson_order > completed \+ 1',
             ),
-            "skip_test_sequence_is_checked": _has(
-                backend_miniapp,
-                r'v3_course_lesson_skip_test\([\s\S]{0,3500}lesson_order > completed \+ 1',
+            "skip_test_uses_signed_canonical_account": _has(
+                skip_test,
+                r'await _authenticated\(request\).*?if not telegram_id:.*?status_code=401'
+                r'.*?get_by_telegram_id\(telegram_id\).*?if not user:.*?status_code=403',
+            ),
+            "skip_test_checks_selected_level_and_bounds": (
+                "level not in COURSE_LEVELS or lesson_order < 1" in skip_test
+                and "user_level = content_level(getattr(user, 'level', None))" in skip_test
+                and "level != user_level" in skip_test
+                and "course_level_not_allowed" in skip_test
+                and "total = total_parts(level)" in skip_test
+                and _has(skip_test, r'if not total or lesson_order > total:\n')
+            ),
+            "skip_test_checks_foundation_and_shared_access_before_read": _has(
+                skip_test,
+                r'await _foundation_is_blocked\(session, user, level\).*?android_foundation_required'
+                r'.*?LessonAccessService\(session\)\.status\(user, level=level, '
+                r'lesson_order=lesson_order, completed=completed, consume=False\)'
+                r".*?if not access\.get\('allowed'\):"
+                r'\s*return _private_content_response\(access, status_code=403\)'
+                r'\s*lesson = _read_course_lesson\(level, lesson_order\)',
+            ),
+            "skip_test_allows_locked_projection_without_progress_changes": (
+                not _has(skip_test, r'if [^\n]*lesson_order[^\n]*completed')
+                and not _has(skip_test, r'\.(?:commit|unlock_lesson|set_current_lesson_and_step)\(')
+                and not _has(skip_test, r'progress\.[a-z_]+\s*=')
+            ),
+            "skip_test_returns_question_projection_only": _has(
+                skip_test,
+                r'questions = _skip_test_questions\(lesson\) if lesson else \[\]'
+                r".*?return _private_content_response\(\{'ok': True, 'level': level, "
+                r"'lesson_order': lesson_order, 'questions': questions\}\)",
             ),
             "skip_test_is_bounded": _has(
-                backend_miniapp,
+                skip_questions,
                 r'secrets\.SystemRandom\(\)\.sample\(candidates, min\(6, len\(candidates\)\)\)',
             ),
-            "all_private_content_responses_are_no_store": '"Cache-Control": "no-store"' in backend_miniapp,
+            "all_private_content_responses_are_no_store": (
+                _has(backend_miniapp, r'PRIVATE_CONTENT_HEADERS\s*=\s*\{[^}]*"Cache-Control":\s*"no-store"')
+                and "headers=PRIVATE_CONTENT_HEADERS" in _function_source(
+                    backend_miniapp, "_private_content_response",
+                )
+            ),
         },
         "legacy_public_route": {
             "old_lesson_json_route_returns_404": _has(
@@ -213,6 +260,7 @@ def contract(sources: dict[str, str]) -> dict:
         "migration_priority": "miniapp_authenticated_lesson_api_runtime_verification",
         "limitations": [
             "Mini App source now uses signed per-request lesson APIs; source contracts do not prove deployed authorization or cache behavior.",
+            "Locked-lesson skip-test reads are bounded question projections; lesson content and starts still enforce sequence.",
             "Android and Desktop secure API source contracts do not prove live deployment or account-state behavior.",
             "Native Android offline cache reuses already-fetched lessons only on Offline/Timeout errors, per source.",
             "Account session cache clearing is evidenced by source call chains; an actual device/session switch still needs E2E QA.",
@@ -239,7 +287,7 @@ def main() -> int:
         report = audit(args.root)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    except (OSError, UnicodeError, ValueError) as exc:
+    except (OSError, SyntaxError, UnicodeError, ValueError) as exc:
         print("P0 cross-client lesson compatibility audit:", exc, file=sys.stderr)
         return 1
     print("P0 cross-client lesson audit:", report["status"],

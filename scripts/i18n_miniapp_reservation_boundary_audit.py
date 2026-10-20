@@ -46,6 +46,15 @@ def _guarded_unauthorized(node: ast.AST) -> bool:
     return False
 
 
+def _shared_entitlement(node: ast.AST, *, consume: bool) -> bool:
+    return any(
+        "LessonAccessService(" in ast.unparse(call.func)
+        and any(kw.arg == "consume" and isinstance(kw.value, ast.Constant)
+                and kw.value.value is consume for kw in call.keywords)
+        for call in _calls(node, "status")
+    )
+
+
 def _server_checks(source: str) -> dict[str, bool]:
     tree = ast.parse(source)
     start_nodes = [
@@ -72,20 +81,38 @@ def _server_checks(source: str) -> dict[str, bool]:
     pretty = ast.unparse(fn)
     content_pretty = ast.unparse(content_fn)
     skip_pretty = ast.unparse(skip_fn)
-    calls = _calls(fn, "status")
-    content_calls = _calls(content_fn, "status")
-    consumed = any(
-        "LessonAccessService(" in ast.unparse(call.func)
-        and any(kw.arg == "consume" and isinstance(kw.value, ast.Constant)
-                and kw.value.value is True for kw in call.keywords)
-        for call in calls
+    question_nodes = [
+        n for n in ast.walk(tree)
+        if isinstance(n, ast.FunctionDef) and n.name == "_skip_test_questions"
+    ]
+    if len(question_nodes) != 1:
+        raise ValueError("Mini App skip-test projection identity changed")
+    question_pretty = ast.unparse(question_nodes[0])
+    skip_reads = _calls(skip_fn, "_read_course_lesson")
+    skip_gates = _calls(skip_fn, "status")
+    skip_denials = [
+        n for n in ast.walk(skip_fn) if isinstance(n, ast.If)
+        and ast.unparse(n.test) == "not access.get('allowed')"
+        and any("status_code=403" in ast.unparse(stmt) for stmt in n.body)
+    ]
+    skip_success_projection = any(
+        isinstance(call.args[0], ast.Dict)
+        and {key.value for key in call.args[0].keys if isinstance(key, ast.Constant)}
+            == {"ok", "level", "lesson_order", "questions"}
+        and any(isinstance(key, ast.Constant) and key.value == "questions"
+                and isinstance(value, ast.Name) and value.id == "questions"
+                for key, value in zip(call.args[0].keys, call.args[0].values))
+        for call in _calls(skip_fn, "_private_content_response") if call.args
     )
-    content_non_consuming = any(
-        "LessonAccessService(" in ast.unparse(call.func)
-        and any(kw.arg == "consume" and isinstance(kw.value, ast.Constant)
-                and kw.value.value is False for kw in call.keywords)
-        for call in content_calls
-    )
+    private_responses = [
+        n for n in ast.walk(tree)
+        if isinstance(n, ast.FunctionDef) and n.name == "_private_content_response"
+    ]
+    private_headers = [
+        n.value for n in ast.walk(tree) if isinstance(n, ast.Assign)
+        and any(isinstance(target, ast.Name) and target.id == "PRIVATE_CONTENT_HEADERS"
+                for target in n.targets)
+    ]
     return {
         "verifies_telegram_init_data": bool(_calls(fn, "extract_verified_webapp_user_id")),
         "rejects_missing_identity_401": _guarded_unauthorized(fn),
@@ -98,7 +125,7 @@ def _server_checks(source: str) -> dict[str, bool]:
             "order < 1" in pretty
             and "order > total_parts(level)" in pretty
         ),
-        "uses_lesson_access_consume_true": consumed,
+        "uses_lesson_access_consume_true": _shared_entitlement(fn, consume=True),
         "commits_entitlement_result": bool(_calls(fn, "commit")),
         "content_uses_authenticated_identity_helper": bool(_calls(content_fn, "_authenticated")),
         "content_rejects_missing_identity_401": _guarded_unauthorized(content_fn),
@@ -111,11 +138,61 @@ def _server_checks(source: str) -> dict[str, bool]:
             "lesson_order < 1" in content_pretty
             and "lesson_order > total" in content_pretty
         ),
-        "content_checks_non_consuming_entitlement": content_non_consuming,
+        "content_checks_non_consuming_entitlement": _shared_entitlement(content_fn, consume=False),
         "content_uses_no_store_response": bool(_calls(content_fn, "_private_content_response")),
-        "skip_test_rejects_out_of_sequence_lesson": (
-            "lesson_order > completed + 1" in skip_pretty
-            and "course_lesson_not_unlocked" in skip_pretty
+        "skip_test_uses_authenticated_identity_helper": bool(_calls(skip_fn, "_authenticated")),
+        "skip_test_rejects_missing_identity_401": _guarded_unauthorized(skip_fn),
+        "skip_test_uses_verified_account_lookup": bool(_calls(skip_fn, "get_by_telegram_id")),
+        "skip_test_checks_selected_level": (
+            "level != user_level" in skip_pretty
+            and "user_level = content_level(getattr(user, 'level', None))" in skip_pretty
+            and "course_level_not_allowed" in skip_pretty
+        ),
+        "skip_test_enforces_numbered_lesson_bounds": (
+            any(isinstance(node, ast.If)
+                and ast.unparse(node.test) == "level not in COURSE_LEVELS or lesson_order < 1"
+                for node in ast.walk(skip_fn))
+            and "total = total_parts(level)" in skip_pretty
+            and any(isinstance(node, ast.If)
+                    and ast.unparse(node.test) == "not total or lesson_order > total"
+                    for node in ast.walk(skip_fn))
+        ),
+        "skip_test_checks_required_foundation": (
+            bool(_calls(skip_fn, "_foundation_is_blocked"))
+            and "android_foundation_required" in skip_pretty
+        ),
+        "skip_test_allows_locked_lesson_projection": not any(
+            {"lesson_order", "completed"} <= {
+                x.id for x in ast.walk(n.test) if isinstance(x, ast.Name)
+            }
+            for n in ast.walk(skip_fn) if isinstance(n, ast.If)
+        ),
+        "skip_test_checks_non_consuming_entitlement": _shared_entitlement(skip_fn, consume=False),
+        "skip_test_access_denial_precedes_source_read": (
+            len(skip_reads) == 1 and len(skip_gates) == 1 and len(skip_denials) == 1
+            and skip_gates[0].lineno < skip_denials[0].lineno < skip_reads[0].lineno
+        ),
+        "skip_test_returns_bounded_projection_only": (
+            bool(_calls(skip_fn, "_skip_test_questions")) and skip_success_projection
+            and "secrets.SystemRandom().sample(candidates, min(6, len(candidates)))" in question_pretty
+            and not any(isinstance(call.args[0], ast.Name) and call.args[0].id == "lesson"
+                        for call in _calls(skip_fn, "_private_content_response") if call.args)
+        ),
+        "skip_test_uses_no_store_response": (
+            len(private_responses) == 1 and len(private_headers) == 1
+            and "'Cache-Control': 'no-store'" in ast.unparse(private_headers[0])
+            and "headers=PRIVATE_CONTENT_HEADERS" in ast.unparse(private_responses[0])
+            and all(isinstance(node.value, ast.Call)
+                    and isinstance(node.value.func, ast.Name)
+                    and node.value.func.id == "_private_content_response"
+                    for node in ast.walk(skip_fn) if isinstance(node, ast.Return))
+        ),
+        "skip_test_does_not_commit_or_unlock_progress": not any(
+            _calls(skip_fn, name) for name in ("commit", "unlock_lesson", "set_current_lesson_and_step")
+        ) and not any(
+            isinstance(target, ast.Attribute) for node in ast.walk(skip_fn)
+            if isinstance(node, (ast.Assign, ast.AugAssign, ast.AnnAssign))
+            for target in (node.targets if isinstance(node, ast.Assign) else [node.target])
         ),
     }
 
@@ -162,6 +239,7 @@ def audit_source(api: str, client: str) -> dict:
         "limits": [
             "This checks source AST and Mini App call expressions only; no requests or deployed account tests.",
             "The lesson content API revalidates signed identity, sequence, foundation and entitlement without consuming quota.",
+            "Locked-lesson skip tests return at most six questions after signed identity, selected-level, foundation and non-consuming entitlement checks; they do not unlock lessons.",
             "Do not replace speculative preview/background calls with a consume=True API.",
             "Does not certify paid billing, grade exposure or production deployment behavior.",
         ],

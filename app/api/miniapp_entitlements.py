@@ -349,10 +349,11 @@ def create_miniapp_entitlements_router(
                 if progress and getattr(progress, "level", None) == level
                 else 0
             )
-            if lesson_order > completed + 1:
-                return _private_content_response(
-                    {"ok": False, "error": "course_lesson_not_unlocked"}, status_code=403,
-                )
+            # A skip test is offered for a LOCKED lesson, unlike a full lesson
+            # read/start. Keep the existing unlock flow available while the
+            # shared gate still rejects blocked accounts, exhausted allowances
+            # and unavailable HSK 3.0 tracks. This projection never unlocks a
+            # lesson, consumes quota or returns the full source payload.
             access = await LessonAccessService(session).status(
                 user, level=level, lesson_order=lesson_order,
                 completed=completed, consume=False,

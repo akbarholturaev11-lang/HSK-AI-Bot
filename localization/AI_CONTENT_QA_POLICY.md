@@ -385,3 +385,34 @@ this narrow fix does not make publicly served lesson JSON private.
   invented outcomes. Structural/source/mirror CI and authenticated
   cross-platform rendering still need separate verification; these three
   corrections do not certify all 408 localized values.
+
+## Independent meaning review (2026-10-21)
+
+- **Cause:** A full read of all 136 source grammar contexts and 408 locale
+  cells found five meaning errors that the structural/source guards cannot
+  detect:
+  `G022` dropped the purchase in `买回` in all three locales; `G127` Russian
+  located the notebook inside a backpack but omitted taking it out; `G065`
+  Russian lost the explicit first-person participant; `G070` Tajik replaced
+  an entire afternoon with noon. `G027` Russian turned adding a cake after
+  choosing drawing supplies into buying another cake (`ещё один`), although
+  the shared original birthday dialogue had not mentioned a previous cake.
+- **Fix:** Preserve purchase plus return in `G022` UZ/RU/TJ, finding plus
+  extraction in `G127` RU, the gender-neutral first-person `У меня` in
+  `G065` RU, `тамоми нимаи дуюми рӯз` in `G070` TJ, and additive
+  `Я ещё куплю ей большой торт на день рождения.` in `G027` RU. Recheck
+  related direction, participant, duration and quantity examples against their grammar
+  rules and available dialogue context; avoid changing valid contextual
+  pronouns merely to prefer another style.
+- **Risk:** Only seven display translation cells change. All 136 source-context
+  hashes, original Chinese/pinyin, lesson JSON, grading, access and mirror
+  pointers stay unchanged. This source reading does not establish native
+  speaker certification or installed-client acceptance.
+- **Prevention:** Translate the lexical verb as well as its directional
+  complement, distinguish location from extraction, preserve explicit actors
+  in impersonal target-language constructions, and distinguish clock time
+  from a duration within a part of the day. Distinguish an additional action
+  from an additional object by reading the preceding dialogue. Five
+  source-bound regressions in
+  `tests/test_i18n_canonical_grammar_catalog.py` cover the corrected meanings;
+  the full canonical audit still verifies all original and mirror targets.

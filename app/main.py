@@ -2243,6 +2243,9 @@ async def course_v3_data_file(filename: str):
         "lesson_gate_hsk30.js": "application/javascript",
         "hsk30-words.js": "application/javascript",
         "hsk30-dictionary-examples.js": "application/javascript",
+        "hsk-common-i18n.js": "application/javascript",
+        "hsk-course-i18n.js": "application/javascript",
+        "p3-grammar-reservation.js": "application/javascript",
         "ready-phrases-v1.json": "application/json",
     }
     if filename in public_assets:

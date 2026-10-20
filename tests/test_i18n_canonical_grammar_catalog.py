@@ -1,5 +1,6 @@
 import csv
 import copy
+import json
 import subprocess
 import sys
 import tempfile
@@ -174,6 +175,72 @@ class CanonicalGrammarCatalogTests(unittest.TestCase):
         self.assertNotIn("встречались", translations["ru"])
         self.assertIn("ikki marta", translations["uz"])
         self.assertIn("ду бор", translations["tj"])
+
+    def test_g022_buy_and_bring_back_survives_in_all_locales(self):
+        """买回 combines a purchase with return; bringing alone loses the verb."""
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G022")
+        self.assertEqual(context["chinese_example"], "爸爸今天买回了很多水果。")
+        translations = read_canonical_catalog(self.catalog_path)["G022"]["translations"]
+        for locale, markers in {
+            "uz": ("sotib", "olib keldi"),
+            "ru": ("купил", "принёс домой"),
+            "tj": ("харида", "ба хона овард"),
+        }.items():
+            with self.subTest(locale=locale):
+                for marker in markers:
+                    self.assertIn(marker, translations[locale])
+
+    def test_g027_russian_adds_cake_to_other_gift_not_another_cake(self):
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G027")
+        self.assertEqual(context["chinese_example"], "我再给她买个大大的生日蛋糕。")
+        self.assertEqual(context["grammar"]["title_zh"], "形容词重叠")
+        # The full repeated dialogue chooses drawing supplies before adding cake.
+        occurrence = next(
+            item for item in context["occurrences"]
+            if item["source_file"].endswith("/lesson_31.json")
+        )
+        lesson = json.loads((ROOT / occurrence["source_file"]).read_text(encoding="utf-8"))
+        dialogue = next(
+            item["dialogue"] for item in lesson["dialogues"]
+            if any(context["chinese_example"] in line["zh"] for line in item["dialogue"])
+        )
+        chinese_lines = [line["zh"] for line in dialogue]
+        cake_index = next(
+            index for index, line in enumerate(chinese_lines)
+            if context["chinese_example"] in line
+        )
+        self.assertIn("就送画笔吧！", chinese_lines[:cake_index])
+        self.assertFalse(any("蛋糕" in line for line in chinese_lines[:cake_index]))
+        russian = read_canonical_catalog(self.catalog_path)["G027"]["translations"]["ru"]
+        self.assertEqual(russian, "Я ещё куплю ей большой торт на день рождения.")
+        self.assertNotIn("ещё один", russian)
+
+    def test_g065_russian_keeps_first_person_without_inventing_gender(self):
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G065")
+        self.assertEqual(context["chinese_example"], "我看了一个晚上电视。")
+        russian = read_canonical_catalog(self.catalog_path)["G065"]["translations"]["ru"]
+        self.assertIn("У меня", russian)
+        self.assertIn("весь вечер", russian)
+        self.assertIn("просмотр телевизора", russian)
+
+    def test_g070_tajik_keeps_entire_afternoon_not_noon(self):
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G070")
+        self.assertEqual(context["chinese_example"], "安妮游泳游了一个下午。")
+        tajik = read_canonical_catalog(self.catalog_path)["G070"]["translations"]["tj"]
+        self.assertIn("тамоми нимаи дуюми рӯз", tajik)
+        self.assertIn("шино кард", tajik)
+        self.assertNotIn("тамоми нисфирӯзӣ", tajik)
+
+    def test_g127_russian_keeps_extraction_from_the_backpack(self):
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G127")
+        self.assertEqual(
+            context["chinese_example"], "白家月从书包里找出来一个漂亮的本子。"
+        )
+        self.assertEqual(context["grammar"]["title_zh"], "复合趋向补语")
+        russian = read_canonical_catalog(self.catalog_path)["G127"]["translations"]["ru"]
+        self.assertIn("нашла", russian)
+        self.assertIn("достала из рюкзака", russian)
+        self.assertNotIn("нашла в рюкзаке", russian)
 
     def test_context_hash_changes_with_source_rule_or_occurrence(self):
         original = context_source_sha256(self.first_context)
