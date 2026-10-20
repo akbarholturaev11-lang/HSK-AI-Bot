@@ -101,23 +101,25 @@ def render_page(path, settings_obj, tags=None):
     labels = NAV_LABELS[lang]
     nav_paths = (
         ("courses", PAGE_PATHS["hsk"].get(lang, "/tj/hsk/")),
+        ("features", PAGE_PATHS["guide-features"].get(lang, "/tj/guide/features/")),
         ("guide", PAGE_PATHS["guide"].get(lang, "/tj/guide/")),
-        ("download", DOWNLOAD_PATH),
+        ("download", with_attribution(DOWNLOAD_PATH, {"lang": "tj" if lang == "tg" else lang})),
     )
     active_nav = (
         "courses" if page.get("translation_group") == "hsk"
+        else "features" if page.get("translation_group") == "guide-features"
         else "guide" if str(page.get("translation_group", "")).startswith("guide")
         else None
     )
     aria_current = ' aria-current="page"'
     nav_items = "".join(
-        f'<a href="{esc(with_attribution(dest, tags))}"'
+        f'<a data-site-nav="{key}" href="{esc(with_attribution(dest, tags) if key != "download" else with_attribution(DOWNLOAD_PATH, {"lang": "tj" if lang == "tg" else lang, **tags}))}"'
         f'{aria_current if key == active_nav else ""}>'
         f'{esc(labels[key])}</a>'
         for key, dest in nav_paths
     )
     nav = "".join(
-        f'<a lang="{code}" href="{esc(with_attribution(translated_path(path, code), tags))}"'
+        f'<a data-site-lang="{code}" lang="{code}" href="{esc(with_attribution(translated_path(path, code), tags))}"'
         f'{aria_current if code == lang else ""}>{label}</a>'
         for code, label in LANGUAGE_NAMES.items()
     )
@@ -132,18 +134,27 @@ def render_page(path, settings_obj, tags=None):
         for target, title, description in related
     )
     cta_url = "/go/telegram?" + urlencode({"page": path, **tags})
-    cta = f'<a class="cta" href="{esc(cta_url)}" rel="nofollow">{CTA[lang]} <span aria-hidden="true">↗</span></a>'
-    download_url = with_attribution(DOWNLOAD_PATH, tags)
-    secondary = f'<a class="secondary-cta" href="{esc(download_url)}">{esc(DOWNLOAD_CTA[lang])}</a>'
-    greetings = {"tg": "Салом", "ru": "Привет", "uz": "Salom"}
+    cta = f'<a class="cta" href="{esc(cta_url)}" rel="nofollow">{esc(CTA[lang])} <span aria-hidden="true">↗</span></a>'
+    course_url = with_attribution(PAGE_PATHS["hsk"][lang], tags)
+    primary_label = {"tg": "Курсҳои HSK 1–4", "ru": "Изучить курсы HSK", "uz": "HSK kurslarini ko‘rish"}[lang]
+    primary = f'<a class="course-cta" href="{esc(course_url)}">{esc(primary_label)} <span aria-hidden="true">↗</span></a>'
+    download_url = with_attribution(DOWNLOAD_PATH, {"lang": "tj" if lang == "tg" else lang, **tags})
+    secondary = f'<a data-site-nav="download" class="secondary-cta" href="{esc(download_url)}">{esc(DOWNLOAD_CTA[lang])}</a>'
+    language_menu_label = {"tg": "Интихоби забон", "ru": "Выбрать язык", "uz": "Tilni tanlash"}[lang]
+    product_titles = {"tg": "HSK AI дар як нигоҳ", "ru": "Что входит в HSK AI", "uz": "HSK AI nimalarni o‘z ichiga oladi"}[lang]
+    product_rows = {
+        "tg": [("HSK 1–4", "Дарсҳо, луғат ва машқҳо"), ("AI", "Шарҳи калима ва саволу ҷавоб"), ("Android · macOS · Windows", "Барномаҳо ва саҳифаи боргирӣ"), ("Telegram Mini App", "Яке аз роҳҳои истифода")],
+        "ru": [("HSK 1–4", "Уроки, словарь и практика"), ("AI", "Разбор слов и ответы на вопросы"), ("Android · macOS · Windows", "Приложения и загрузки"), ("Telegram Mini App", "Дополнительный способ доступа")],
+        "uz": [("HSK 1–4", "Darslar, lug‘at va mashqlar"), ("AI", "So‘z izohi va savol-javob"), ("Android · macOS · Windows", "Ilovalar va yuklab olish"), ("Telegram Mini App", "Foydalanish usullaridan biri")],
+    }[lang]
+    product_rows_html = "".join(f'<div><dt>{esc(term)}</dt><dd>{esc(detail)}</dd></div>' for term, detail in product_rows)
+    product_summary = f'<aside class="product-summary" aria-label="{esc(product_titles)}"><p class="eyebrow">HSK AI · PLATFORM</p><h2>{esc(product_titles)}</h2><dl>{product_rows_html}</dl></aside>'
     hero_kicker = {
         "tg": {"guide": "РОҲНАМОИ HSK AI", "default": "HSK 1–4 · ANDROID · DESKTOP · MINI APP"},
         "ru": {"guide": "РУКОВОДСТВО HSK AI", "default": "HSK 1–4 · ANDROID · DESKTOP · MINI APP"},
         "uz": {"guide": "HSK AI QO‘LLANMASI", "default": "HSK 1–4 · ANDROID · DESKTOP · MINI APP"},
     }[lang]["guide" if str(page.get("translation_group", "")).startswith("guide") else "default"]
-    example_label = {"tg": "Намуна", "ru": "Пример", "uz": "Namuna"}[lang]
-    translation = {"tg": "салом", "ru": "здравствуйте", "uz": "salom"}[lang]
-    nav_aria = {"tg": "Паймоиши асосӣ", "ru": "Основная навигация", "uz": "Asosiy navigatsiya"}[lang]
+     nav_aria = {"tg": "Паймоиши асосӣ", "ru": "Основная навигация", "uz": "Asosiy navigatsiya"}[lang]
     section_heading = {
         "tg": "Аз куҷо идома диҳед",
         "ru": "Выберите следующий шаг",
@@ -155,9 +166,7 @@ def render_page(path, settings_obj, tags=None):
         "uz": "Sahifa ochilishi va botga o‘tishni kampaniya belgilari bilan server jurnalida va anonim kunlik jamlanma statistikada hisoblaymiz. Sahifa analytics cookie o‘rnatmaydi va tashrifni Telegram hisobiga bog‘lamaydi.",
     }[lang]
     schema = json.dumps(structured_data(path, origin), ensure_ascii=False).replace("<", "\\u003c")
-    handle_rel = ' rel="nofollow"'
-    handle_text = "@darsi_chini_bot"
-    body_kind = "guide-page" if str(page.get("translation_group", "")).startswith("guide") else "marketing-page"
+     body_kind = "guide-page" if str(page.get("translation_group", "")).startswith("guide") else "marketing-page"
     related_section = (
         f'<aside class="related"><h2>{esc(section_heading)}</h2><div class="topic-grid">{cards}</div></aside>'
         if cards else ""
@@ -175,14 +184,16 @@ def render_page(path, settings_obj, tags=None):
 <meta name="twitter:title" content="{esc(page['title'])}"><meta name="twitter:description" content="{esc(page['description'])}">
 <meta name="twitter:image" content="{esc(origin)}/public-assets/social-cover.webp?v=2">
 <link rel="icon" href="/public-assets/logo.png" type="image/png">
-<link rel="stylesheet" href="/public-assets/site.css?v=3">
+<link rel="stylesheet" href="/public-assets/site.css?v=4">
+<link rel="stylesheet" href="/public-assets/navigation.css?v=1">
+<script src="/public-assets/language.js?v=1" defer></script>
 <script type="application/ld+json">{schema}</script></head>
-<body class="public-page {body_kind}"><header class="site-header"><a class="brand" href="{esc(with_attribution(HOME_PATHS[lang], tags))}"><img src="/public-assets/logo.png" width="42" height="42" alt="">HSK AI</a>
-<nav class="main-nav" aria-label="{nav_aria}">{nav_items}</nav><nav class="language-switch" aria-label="{esc(labels['language'])}">{nav}</nav></header>
-<main><section class="hero"><div class="hero-copy"><p class="eyebrow">{esc(hero_kicker)}</p><h1>{esc(page['h1'])}</h1><p class="intro">{esc(page['intro'])}</p><div class="actions">{cta}{secondary}</div><p class="handle"><a href="{esc(cta_url)}"{handle_rel}>{esc(handle_text)}</a></p></div>
-<aside class="example" aria-label="{example_label}"><span class="example-label">{example_label} · 中文</span><span lang="zh" class="hanzi">你好</span><span class="pinyin">nǐ hǎo</span><span class="translation">{translation}</span><span class="example-caption">{greetings[lang]}</span></aside></section>
+<body class="public-page {body_kind}"><header class="site-header"><a data-site-nav="home" class="brand" href="{esc(with_attribution(HOME_PATHS[lang], tags))}"><img src="/public-assets/logo.png" width="42" height="42" alt="">HSK AI</a>
+<nav class="main-nav" aria-label="{nav_aria}">{nav_items}</nav><details class="language-switch"><summary aria-label="{esc(language_menu_label)}" title="{esc(language_menu_label)}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18"/></svg><span>{esc(LANGUAGE_NAMES[lang])}</span></summary><div class="language-menu">{nav}</div></details></header>
+<main><section class="hero"><div class="hero-copy"><p class="eyebrow">{esc(hero_kicker)}</p><h1>{esc(page['h1'])}</h1><p class="intro">{esc(page['intro'])}</p><div class="actions">{primary}{secondary}</div></div>
+{product_summary}</section>
 <article class="content-grid">{sections}</article>{related_section}
-<div class="closing">{cta}</div></main><footer class="site-footer"><span>HSK AI · Тоҷикӣ / Русский / O‘zbekcha</span><details><summary>{esc(labels['language'])}: {esc(LANGUAGE_NAMES[lang])}</summary><p>{privacy}</p></details></footer></body></html>'''
+<div class="closing"><p>{esc({"tg": "Дар Telegram Mini App низ дастрас аст.", "ru": "Также доступно в Telegram Mini App.", "uz": "Telegram Mini App orqali ham foydalanish mumkin."}[lang])}</p>{cta}</div></main><footer class="site-footer"><span>HSK AI · Тоҷикӣ / Русский / O‘zbekcha</span><details><summary>{esc(labels['language'])}: {esc(LANGUAGE_NAMES[lang])}</summary><p>{privacy}</p></details></footer></body></html>'''
 
 
 def render_google_signin_privacy(path, settings_obj):
