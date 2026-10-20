@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "source_audit": "scripts/i18n_legacy_lesson_content_risk_audit.py",
+  "source_revision": "88daad0b2cbc4d23c094981c33b22eb529c871b6",
+  "ci_run_id": 39025089879,
+  "ci_artifact_id": 12098177455,
+  "status": "SOURCE_ONLY_P0_MANUAL_REVIEW_REQUIRED",
+  "scanned_lesson_files": 746,
+  "files_with_grading_fields": 746,
+  "per_track_file_count": {
+    "hsk1": 63,
+    "hsk2": 72,
+    "hsk3": 109,
+    "hsk4": 181,
+    "nhsk1": 103,
+    "nhsk2": 73,
+    "nhsk3": 145
+  },
+  "answer_like_field_counts": {
+    "correct_index": 6449,
+    "answer_tokens": 704
+  },
+  "sampled_first_last": [
+    {
+      "track": "hsk1",
+      "lesson_number": 1,
+      "sensitive_field_counts": {
+        "answer_tokens": 3,
+        "correct_index": 10
+      }
+    },
+    {
+      "track": "hsk1",
+      "lesson_number": 63,
+      "sensitive_field_counts": {
+        "answer_tokens": 1,
+        "correct_index": 9
+      }
+    },
+    {
+      "track": "hsk2",
+      "lesson_number": 1,
+      "sensitive_field_counts": {
+        "answer_tokens": 1,
+        "correct_index": 8
+      }
+    },
+    {
+      "track": "hsk2",
+      "lesson_number": 72,
+      "sensitive_field_counts": {
+        "answer_tokens": 1,
+        "correct_index": 9
+      }
+    },
+    {
+      "track": "hsk3",
+      "lesson_number": 1,
+      "sensitive_field_counts": {
+        "answer_tokens": 2,
+        "correct_index": 9
+      }
+    },
+    {
+      "track": "hsk3",
+      "lesson_number": 109,
+      "sensitive_field_counts": {
+        "answer_tokens": 1,
+        "correct_index": 9
+      }
+    },
+    {
+      "track": "hsk4",
+      "lesson_number": 1,
+      "sensitive_field_counts": {
+        "answer_tokens": 1,
+        "correct_index": 8
+      }
+    },
+    {
+      "track": "hsk4",
+      "lesson_number": 181,
+      "sensitive_field_counts": {
+        "answer_tokens": 1,
+        "correct_index": 9
+      }
+    },
+    {
+      "track": "nhsk1",
+      "lesson_number": 1,
+      "sensitive_field_counts": {
+        "answer_tokens": 2,
+        "correct_index": 8
+      }
+    },
+    {
+      "track": "nhsk1",
+      "lesson_number": 103,
+      "sensitive_field_counts": {
+        "answer_tokens": 1,
+        "correct_index": 13
+      }
+    },
+    {
+      "track": "nhsk2",
+      "lesson_number": 1,
+      "sensitive_field_counts": {
+        "answer_tokens": 1,
+        "correct_index": 8
+      }
+    },
+    {
+      "track": "nhsk2",
+      "lesson_number": 73,
+      "sensitive_field_counts": {
+        "answer_tokens": 1,
+        "correct_index": 9
+      }
+    },
+    {
+      "track": "nhsk3",
+      "lesson_number": 1,
+      "sensitive_field_counts": {
+        "answer_tokens": 2,
+        "correct_index": 8
+      }
+    },
+    {
+      "track": "nhsk3",
+      "lesson_number": 145,
+      "sensitive_field_counts": {
+        "answer_tokens": 1,
+        "correct_index": 9
+      }
+    }
+  ],
+  "related_staging_status_only_probes": {
+    "workflow_run_id": 39018359239,
+    "anonymous_first_lesson_206": 7,
+    "anonymous_last_lesson_206": 7
+  },
+  "limits": [
+    "Counts and filenames from source JSON; no answer values, Chinese text, options, translations, personal data or API credentials.",
+    "Staging delivered a partial byte to 14 sampled URLs. Full-body accessibility of each of 746 URLs was not remotely tested.",
+    "The presence of grading fields does not prove private final-exam exposure or a paid-subscription bypass.",
+    "Authorized Free/Trial/Pro usage, account isolation, caching and production deployments remain untested."
+  ]
+}

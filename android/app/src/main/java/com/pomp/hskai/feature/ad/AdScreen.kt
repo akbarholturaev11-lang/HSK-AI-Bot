@@ -136,7 +136,7 @@ private fun AdContent(
             )
             Text(
                 text = if (state.canContinue) {
-                    stringResource(R.string.ad_ready)
+                    stringResource(R.string.hsk_common_action_done)
                 } else {
                     stringResource(R.string.ad_wait_seconds, state.remainingSeconds)
                 },
@@ -198,7 +198,7 @@ private fun AdContent(
 
         Spacer(Modifier.height(14.dp))
         HskPrimaryButton(
-            text = stringResource(R.string.ad_continue),
+            text = stringResource(R.string.hsk_common_action_continue),
             onClick = onContinue,
             enabled = state.canContinue && !state.isFinishing,
             loading = state.isFinishing,

@@ -323,7 +323,7 @@ private fun FoundationCardBody(
             FoundationAction(
                 enabled = state.builderTokens.size == card.answerTokens.size,
                 onClick = onSubmitBuilder,
-                text = stringResource(R.string.lesson_check),
+                text = stringResource(R.string.hsk_course_check),
                 secondary = true,
             )
         }
@@ -537,7 +537,7 @@ private fun FoundationFooter(state: FoundationUiState, card: FoundationCard, onA
                     val actionLabel = when {
                         card.type == "intro" && state.cardIndex == 0 -> R.string.foundation_begin
                         card.type == "result" -> R.string.foundation_start_first_lesson
-                        else -> R.string.action_continue
+                        else -> R.string.hsk_common_action_continue
                     }
                     FoundationAction(
                         enabled = !interactiveBlocked && !state.saving && (card.type != "result" || state.canFinish),

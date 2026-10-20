@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "origin": "frozen_user_visible_JSON_source_selections_not_runtime_rendering",
+  "branch_start_commit": "160a51d69f3324e3162375213ec61b5587b19533",
+  "lessons": [
+    {
+      "level": "hsk1",
+      "lesson_id": 1,
+      "source_lesson": 1,
+      "part_no": 1,
+      "part_count": 3,
+      "title_zh": "你好",
+      "first_word_zh": "你",
+      "first_word_pinyin": "nǐ",
+      "section_count": 4,
+      "first_section_card_count": 9,
+      "first_card_type": "active_word",
+      "locales": {
+        "uz": {
+          "subtitle": "Xitoycha salomlashish va uzr so'rashni o'rganing",
+          "first_word_meaning": "sen (birlik)"
+        },
+        "ru": {
+          "subtitle": "Научитесь здороваться и извиняться по-китайски",
+          "first_word_meaning": "ты (единственное число)"
+        },
+        "tj": {
+          "subtitle": "Омӯзед, ки чӣ тавр ба забони чинӣ салом гӯед ва узр пурсед",
+          "first_word_meaning": "ту (якка)"
+        }
+      }
+    },
+    {
+      "level": "hsk2",
+      "lesson_id": 1,
+      "source_lesson": 1,
+      "part_no": 1,
+      "part_count": 5,
+      "title_zh": "九月去北京旅游最好",
+      "first_word_zh": "旅游",
+      "first_word_pinyin": "lǚyóu",
+      "section_count": 4,
+      "first_section_card_count": 11,
+      "first_card_type": "active_word",
+      "locales": {
+        "uz": {
+          "subtitle": "Sayohat, sport va kundalik hayot mavzularida suhbat qurish; 要, 最 va taxminiy sonlarni ishlatishni o'rganish.",
+          "first_word_meaning": "sayohat qilmoq"
+        },
+        "ru": {
+          "subtitle": "Научиться вести беседу о путешествиях, спорте и повседневной жизни; освоить вспомогательный глагол 要, наречие степени 最 и приблизительные числа.",
+          "first_word_meaning": "путешествовать"
+        },
+        "tj": {
+          "subtitle": "Гуфтугӯ дар мавзӯи сафар, варзиш ва ҳаёти рӯзмарра; омӯхтани феъли ёрдамии 要, зарфи дараҷаи 最 ва рақамҳои тахминӣ.",
+          "first_word_meaning": "сафар кардан"
+        }
+      }
+    },
+    {
+      "level": "hsk3",
+      "lesson_id": 1,
+      "source_lesson": 1,
+      "part_no": 1,
+      "part_count": 6,
+      "title_zh": "周末你有什么打算",
+      "first_word_zh": "周末",
+      "first_word_pinyin": "zhōumò",
+      "section_count": 3,
+      "first_section_card_count": 11,
+      "first_card_type": "active_word",
+      "locales": {
+        "uz": {
+          "subtitle": "Dam olish kunlari rejalari haqida gaplashish; 结果补语'好', '一……也/都+不/没……' va 那 bog'lovchisini o'zlashtirish.",
+          "first_word_meaning": "hafta oxiri, dam olish kuni"
+        },
+        "ru": {
+          "subtitle": "Говорить о планах на выходные; освоить результативное дополнение '好', конструкцию '一……也/都+不/没……' и союз 那.",
+          "first_word_meaning": "выходные, конец недели"
+        },
+        "tj": {
+          "subtitle": "Сӯҳбат дар бораи нақшаҳои охири ҳафта; азхудкунии иловаи натиҷавии '好', сохти '一……也/都+不/没……' ва пайвандаки 那.",
+          "first_word_meaning": "охири ҳафта, рӯзи истироҳат"
+        }
+      }
+    },
+    {
+      "level": "hsk4",
+      "lesson_id": 1,
+      "source_lesson": 1,
+      "part_no": 1,
+      "part_count": 9,
+      "title_zh": "简单的爱情",
+      "first_word_zh": "法律",
+      "first_word_pinyin": "fǎlǜ",
+      "section_count": 4,
+      "first_section_card_count": 11,
+      "first_card_type": "active_word",
+      "locales": {
+        "uz": {
+          "subtitle": "sevgi va munosabatlar haqida gapirish; 不仅, 从来, 刚, 即使 va (在)...上 grammatikalarini ishlatish",
+          "first_word_meaning": "qonun, huquq"
+        },
+        "ru": {
+          "subtitle": "говорить о любви и отношениях; использовать 不仅, 从来, 刚, 即使 и (在)...上",
+          "first_word_meaning": "закон, право"
+        },
+        "tj": {
+          "subtitle": "дар бораи муҳаббат ва муносибатҳо гуфтугӯ кардан; истифодаи 不仅, 从来, 刚, 即使 ва (在)...上",
+          "first_word_meaning": "қонун, ҳуқуқ"
+        }
+      }
+    },
+    {
+      "level": "nhsk1",
+      "lesson_id": 1,
+      "source_lesson": 1,
+      "part_no": 1,
+      "part_count": 4,
+      "title_zh": "AI小语，你好！",
+      "first_word_zh": "你好",
+      "first_word_pinyin": "nǐ hǎo",
+      "section_count": 3,
+      "first_section_card_count": 11,
+      "first_card_type": "active_word",
+      "locales": {
+        "uz": {
+          "subtitle": "Salomlashish, minnatdorchilik va xayrlashish uchun odobli iboralarni tushunish va ishlatish; xitoycha muloqot odobi hamda hurmat shakli 您 ni tushunish va qo'llash.",
+          "first_word_meaning": "salom"
+        },
+        "ru": {
+          "subtitle": "Понимать и использовать вежливые выражения для приветствия, благодарности и прощания; понимать нормы китайского общения и употреблять уважительную форму 您.",
+          "first_word_meaning": "привет; здравствуйте"
+        },
+        "tj": {
+          "subtitle": "Ибораҳои хушмуомиларо барои салом, изҳори сипос ва хайрбод фаҳмидан ва истифода бурдан; одоби муоширати чинӣ ва шакли эҳтиромии 您-ро фаҳмидан ва ба кор бурдан.",
+          "first_word_meaning": "салом"
+        }
+      }
+    },
+    {
+      "level": "nhsk2",
+      "lesson_id": 1,
+      "source_lesson": 1,
+      "part_no": 1,
+      "part_count": 5,
+      "title_zh": "她请我们吃了北京烤鸭",
+      "first_word_zh": "就",
+      "first_word_pinyin": "jiù",
+      "section_count": 4,
+      "first_section_card_count": 11,
+      "first_card_type": "active_word",
+      "locales": {
+        "uz": {
+          "subtitle": "Taxminni “吧” bilan ifodalash; “是……的” orqali voqeaning vaqt, joy, usul yoki maqsadini ta’kidlash; “请/让/叫” bilan pivotal gaplardan foydalanish; aeroportda kutib olish va safar haqida gaplashish.",
+          "first_word_meaning": "aynan; xuddi"
+        },
+        "ru": {
+          "subtitle": "Выражать предположение с “吧”; подчёркивать время, место, способ или цель события с “是……的”; использовать pivotal-предложения с “请/让/叫”; общаться при встрече в аэропорту и о поездке.",
+          "first_word_meaning": "именно; как раз"
+        },
+        "tj": {
+          "subtitle": "Бо “吧” тахминро ифода кардан; бо “是……的” вақт, ҷой, тарз ё мақсади воқеаро таъкид кардан; ҷумлаҳои pivotal бо “请/让/叫”-ро истифода бурдан; дар бораи пешвозгирӣ дар фурудгоҳ ва сафар суҳбат кардан.",
+          "first_word_meaning": "маҳз; айнан"
+        }
+      }
+    },
+    {
+      "level": "nhsk3",
+      "lesson_id": 1,
+      "source_lesson": 1,
+      "part_no": 1,
+      "part_count": 8,
+      "title_zh": "我们去机场接你们",
+      "first_word_zh": "以为",
+      "first_word_pinyin": "yǐwéi",
+      "section_count": 4,
+      "first_section_card_count": 11,
+      "first_card_type": "active_word",
+      "locales": {
+        "uz": {
+          "subtitle": "Odam yoki narsani bir nechta aniqlovchi bilan aniq tasvirlash, yo‘qolgan buyum haqida yordam so‘rash va noaniq shaxs, narsa yoki joyni so‘roq olmoshlari orqali ifodalash.",
+          "first_word_meaning": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)"
+        },
+        "ru": {
+          "subtitle": "Описывать человека или предмет несколькими определениями, решать ситуацию с потерянной вещью и выражать неопределённого человека, предмет или место с помощью вопросительных местоимений.",
+          "first_word_meaning": "полагать, считать (часто ошибочно)"
+        },
+        "tj": {
+          "subtitle": "Шахс ё ашёро бо чанд муайянкунанда дақиқ тавсиф кардан, масъалаи гум шудани чизро ҳал кардан ва шахс, ашё ё ҷойи номуайянро бо ҷонишинҳои саволӣ ифода кардан.",
+          "first_word_meaning": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+        }
+      }
+    }
+  ]
+}

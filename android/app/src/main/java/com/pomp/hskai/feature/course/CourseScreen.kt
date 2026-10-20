@@ -275,7 +275,7 @@ fun CourseScreen(
 
         if (limitedLesson != null) {
             SectionLimitOverlay(
-                sectionTitle = stringResource(R.string.nav_course),
+                sectionTitle = stringResource(R.string.hsk_common_navigation_course),
                 sourceKey = "course_limit",
                 limit = limit,
                 reason = map?.lessonLimit?.limitText
@@ -394,7 +394,7 @@ fun CourseScreen(
                                     contentColor = PompColors.OnCinnabar,
                                 ),
                             ) {
-                                Text(stringResource(R.string.action_continue))
+                                Text(stringResource(R.string.hsk_common_action_continue))
                             }
                         },
                         dismissButton = {
@@ -679,13 +679,13 @@ private fun CourseChoiceSheet(
                 .padding(start = 18.dp, end = 18.dp, bottom = 16.dp),
         ) {
             Text(
-                stringResource(R.string.course_choice_title),
+                stringResource(R.string.hsk_course_course_picker_title),
                 fontSize = 23.sp,
                 fontWeight = FontWeight.Bold,
                 color = PompColors.Ink,
             )
             Spacer(Modifier.height(18.dp))
-            Text(stringResource(R.string.course_choice_version), color = PompColors.InkSecondary, fontSize = 14.sp)
+            Text(stringResource(R.string.hsk_course_course_picker_version), color = PompColors.InkSecondary, fontSize = 14.sp)
             Spacer(Modifier.height(9.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
                 listOf("hsk20", "hsk30").forEach { track ->
@@ -705,7 +705,7 @@ private fun CourseChoiceSheet(
                 }
             }
             Spacer(Modifier.height(22.dp))
-            Text(stringResource(R.string.course_choice_level), color = PompColors.InkSecondary, fontSize = 14.sp)
+            Text(stringResource(R.string.hsk_course_course_picker_level), color = PompColors.InkSecondary, fontSize = 14.sp)
             Spacer(Modifier.height(9.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 available.forEach { level ->
@@ -750,7 +750,7 @@ private fun CourseChoiceSheet(
                 shape = RoundedCornerShape(15.dp),
             ) {
                 Text(
-                    stringResource(R.string.course_choice_confirm),
+                    stringResource(R.string.hsk_course_course_picker_confirm),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -861,7 +861,7 @@ private fun CourseHeader(
             Icons.Filled.Diamond,
             PompColors.GoldInk,
             map.progress.xp.toString(),
-            stringResource(R.string.today_xp),
+            stringResource(R.string.hsk_course_xp),
         )
         Spacer(Modifier.width(8.dp))
         GoalRing(map.progress.dailyXp, dailyGoal, onOpenGoal)
@@ -1156,7 +1156,7 @@ private fun PathRow(
                     )
                     Text(
                         text = if (lesson.isCheckpoint) {
-                            stringResource(R.string.course_checkpoint)
+                            stringResource(R.string.hsk_course_part_sections_r)
                         } else {
                             stringResource(R.string.course_part_label, lesson.part)
                         },
@@ -1636,7 +1636,7 @@ private fun RewardChestOverlay(rewardXp: Int, onContinue: () -> Unit) {
                     )
                     Spacer(Modifier.height(18.dp))
                     HskPrimaryButton(
-                        text = stringResource(R.string.action_continue),
+                        text = stringResource(R.string.hsk_common_action_continue),
                         onClick = onContinue,
                         modifier = Modifier.fillMaxWidth(),
                     )

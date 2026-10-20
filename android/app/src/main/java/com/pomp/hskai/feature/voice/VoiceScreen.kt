@@ -292,7 +292,7 @@ private fun VoiceBox(
     val boxInk = if (PompColors.IsDark) PompColors.Ink else PompColors.Paper
     val boxMuted = if (PompColors.IsDark) PompColors.InkSecondary else Color.White.copy(alpha = 0.72f)
     val quotaText = when {
-        state.isLoading -> stringResource(R.string.state_loading)
+        state.isLoading -> stringResource(R.string.hsk_common_state_loading)
         state.status == null -> stringResource(R.string.error_voice_unavailable)
         state.status?.isPaid == true -> stringResource(R.string.voice_limit_premium)
         else -> stringResource(
@@ -313,7 +313,7 @@ private fun VoiceBox(
             CoursePandaMascot(mood = PandaMood.Talk, modifier = Modifier.size(90.dp))
             Spacer(Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.voice_box_title),
+                text = stringResource(R.string.hsk_course_voice_title),
                 style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
                 fontWeight = FontWeight.Medium,
                 color = boxInk,
@@ -335,7 +335,7 @@ private fun VoiceBox(
             )
             Spacer(Modifier.height(16.dp))
             HskPrimaryButton(
-                text = stringResource(R.string.voice_start),
+                text = stringResource(R.string.hsk_course_voice_start),
                 onClick = onStart,
                 enabled = canStartVoice(state),
                 loading = state.isStarting,
@@ -400,7 +400,7 @@ internal fun PartnerPicker(
     ) {
         Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
             Text(
-                text = stringResource(R.string.voice_partner),
+                text = stringResource(R.string.hsk_course_voice_page_opt_persona),
                 style = MaterialTheme.typography.titleMedium,
                 color = PompColors.Ink,
             )
@@ -484,7 +484,7 @@ internal fun VoiceBubble(line: VoiceLine, subtitlesOn: Boolean = true) {
 private fun VoiceBubbleBody(line: VoiceLine, isUser: Boolean, subtitlesOn: Boolean) {
     Column(Modifier.padding(16.dp)) {
         Text(
-            text = if (isUser) stringResource(R.string.voice_you) else stringResource(R.string.voice_ai),
+            text = if (isUser) stringResource(R.string.hsk_course_you) else stringResource(R.string.voice_ai),
             style = MaterialTheme.typography.labelLarge,
             color = if (isUser) PompColors.CinnabarDark else PompColors.Jade,
         )

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "namespace": "common",
+  "locale": "tj",
+  "messages": {
+    "navigation.course": "Курс",
+    "navigation.practice": "Машқ",
+    "navigation.profile": "Профил",
+    "navigation.rating": "Рейтинг",
+    "navigation.subscription": "Обуна",
+    "lesson.start": "Оғози дарс",
+    "lesson.continue": "Идомаи дарс",
+    "lesson.locked": "Аввал дарси пешинаро анҷом диҳед",
+    "lesson.notFound": "Барои ин сатҳ ҳоло дарс ёфт нашуд.",
+    "common.refresh": "Навсозӣ",
+    "auth.expires": "Рамз боз {time} амал мекунад",
+    "action.back": "Бозгашт",
+    "action.close": "Пӯшидан",
+    "action.continue": "Идома додан",
+    "action.done": "Тайёр",
+    "action.exit": "Баромадан",
+    "action.finish": "Анҷом",
+    "action.logout": "Баромадан",
+    "action.start": "Оғоз",
+    "state.loading": "Боргирӣ…"
+  }
+}

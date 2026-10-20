@@ -94,7 +94,7 @@ class MiniAppProfileHierarchyTests(unittest.TestCase):
         body = PROFILE.split("function renderProfile(){", 1)[1].split(
             "/* ---------- sales_value_v1", 1
         )[0]
-        self.assertIn("var nickname=esc(PROF.name||t.you)", body)
+        self.assertIn('var nickname=esc(PROF.name||courseMessage("you",t.you))', body)
         self.assertIn("var showProLink=!paid&&!trialActive", body)
         self.assertIn("profile_after_streak", body)
         self.assertIn("profileAccuracyHtml()", body)

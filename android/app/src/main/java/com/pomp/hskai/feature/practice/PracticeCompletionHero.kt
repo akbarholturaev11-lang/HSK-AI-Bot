@@ -123,7 +123,7 @@ internal fun PracticeStreakStep(
                     }
                     HskFadeIn(durationMillis = 400) {
                         HskPrimaryButton(
-                            text = stringResource(R.string.lesson_next),
+                            text = stringResource(R.string.hsk_common_action_continue),
                             onClick = onDone,
                             modifier = Modifier.fillMaxWidth(),
                         )
@@ -202,7 +202,7 @@ internal fun PracticeCompletionHero(
 @Composable
 private fun completionTitle(outcome: PracticeCompletionOutcome): String = when {
     outcome.kind == PracticeCompletionKind.HSK_EXAM && outcome.passed == true ->
-        stringResource(R.string.exam_result_passed)
+        stringResource(R.string.hsk_course_test_exam_passed)
     outcome.kind == PracticeCompletionKind.HSK_EXAM && outcome.passed == false ->
         stringResource(R.string.exam_result_failed)
     else -> stringResource(R.string.practice_result_title)

@@ -106,6 +106,74 @@ class Hsk30LessonLimitTests(unittest.IsolatedAsyncioTestCase):
 
             return result, engine, user
 
+    async def test_completed_hsk30_review_checks_track_without_spending_quota(self):
+        """Already completed does not bypass revoked HSK3 access or disabled levels."""
+        for track_allowed, level_live, expect_allowed in (
+            (True, True, True),
+            (False, True, False),
+            (True, False, False),
+        ):
+            with self.subTest(track_allowed=track_allowed, level_live=level_live):
+                session = SimpleNamespace(execute=AsyncMock())
+                service = LessonAccessService(session)
+                service._reserved = AsyncMock(return_value=False)
+                user = _user()
+                access = SimpleNamespace(
+                    allowed=track_allowed,
+                    reason="hsk30_unlock_required",
+                    payload=lambda: {
+                        **_hsk30_access_payload(),
+                        "allowed": track_allowed,
+                    },
+                )
+                track = SimpleNamespace(
+                    hsk30_access=AsyncMock(return_value=access),
+                    hsk30_feature=SimpleNamespace(
+                        is_level_live=AsyncMock(return_value=level_live)
+                    ),
+                )
+                with (
+                    patch(
+                        "app.services.entitlements.lesson_access.CourseTrackService",
+                        return_value=track,
+                    ),
+                    patch(
+                        "app.services.entitlements.lesson_access.CourseAccessPolicyService"
+                    ) as policy_cls,
+                    patch(
+                        "app.services.entitlements.lesson_access.EntitlementEngine"
+                    ) as engine_cls,
+                ):
+                    policy_cls.return_value.get_policy = AsyncMock(
+                        return_value=SimpleNamespace(free_active=False)
+                    )
+                    engine = engine_cls.return_value
+                    engine.check = AsyncMock(return_value=_decision({
+                        "ok": False, "allowed": False,
+                        "error": "free_feature_limit_reached",
+                        "remaining": 0,
+                    }))
+                    engine.consume = AsyncMock()
+                    result = await service.status(
+                        user, level="nhsk2", lesson_order=16,
+                        completed=16, consume=False,
+                    )
+                    self.assertIs(result["allowed"], expect_allowed)
+                    engine.check.assert_awaited_once_with(user, A.LESSON_START)
+                    engine.consume.assert_not_awaited()
+                    session.execute.assert_not_awaited()
+                    service._reserved.assert_not_awaited()
+                    if expect_allowed:
+                        self.assertTrue(result["idempotent"])
+                        self.assertTrue(result["hsk30_access"]["level_live"])
+                    else:
+                        self.assertNotIn("idempotent", result)
+                        self.assertEqual(
+                            result["error"],
+                            "hsk30_unlock_required"
+                            if not track_allowed else "hsk30_level_not_live",
+                        )
+
     async def test_one_time_hsk30_unlock_keeps_the_free_lesson_limit(self):
         result, engine, user = await self._patched_status(
             consume=False,

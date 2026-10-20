@@ -82,7 +82,7 @@ fun ChallengeRunScreen(
             ) {
                 HskGlassIconButton(
                     icon = Icons.Filled.Close,
-                    contentDescription = stringResource(R.string.action_close),
+                    contentDescription = stringResource(R.string.hsk_common_action_close),
                     onClick = requestClose,
                     size = 30.dp,
                     iconSize = 17.dp,
@@ -221,9 +221,9 @@ private fun ChallengeQuestion(
         HskPrimaryButton(
             text = stringResource(
                 if (state.index + 1 >= state.total) {
-                    R.string.challenge_finish
+                    R.string.hsk_common_action_finish
                 } else {
-                    R.string.lesson_next
+                    R.string.hsk_common_action_continue
                 }
             ),
             onClick = onAdvance,
@@ -263,7 +263,7 @@ private fun ChallengeSubmitted(opponentName: String, onDone: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
-                text = stringResource(R.string.action_close),
+                text = stringResource(R.string.hsk_common_action_close),
                 style = MaterialTheme.typography.titleMedium,
                 color = PompColors.Paper,
                 textAlign = TextAlign.Center,
@@ -311,7 +311,7 @@ private fun ChallengeFailed(onRetry: () -> Unit, onClose: () -> Unit) {
             border = BorderStroke(1.dp, PompColors.Divider),
         ) {
             Text(
-                text = stringResource(R.string.action_close),
+                text = stringResource(R.string.hsk_common_action_close),
                 style = MaterialTheme.typography.labelLarge,
                 color = PompColors.InkSecondary,
                 modifier = Modifier.padding(horizontal = 18.dp, vertical = 10.dp),

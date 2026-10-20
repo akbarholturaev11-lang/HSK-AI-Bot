@@ -1,3 +1,6 @@
+from app.bot.generated.common_i18n import COMMON_MESSAGES
+from app.bot.generated.course_i18n import COURSE_MESSAGES
+
 TEXTS = {
     "tj": {
         "welcome": "Хуш омадед, {name}!",
@@ -448,8 +451,31 @@ def _gemini_texts_active() -> bool:
         return False
 
 
+BOT_SHARED_COMMON_KEYS = {
+    "hint_section_course_title": "navigation.course",
+    "hint_section_practice_title": "navigation.practice",
+    "hint_section_profile_title": "navigation.profile",
+    "hint_section_rating_title": "navigation.rating",
+}
+BOT_SHARED_COURSE_KEYS = {
+    "hint_section_voice_title": "nav.voice",
+}
+
+
 def _lookup_text(key: str, lang: str):
-    text = TEXTS.get(lang, {}).get(key)
+    # These five Bot labels exactly match shared UZ/RU/TJ catalogs. Keep the
+    # old Bot dictionaries as fallback for safe rollout and source drift.
+    shared_common_key = BOT_SHARED_COMMON_KEYS.get(key)
+    text = (COMMON_MESSAGES.get(lang, {}).get(shared_common_key)
+            if shared_common_key else None)
+
+    if text is None:
+        shared_course_key = BOT_SHARED_COURSE_KEYS.get(key)
+        text = (COURSE_MESSAGES.get(lang, {}).get(shared_course_key)
+                if shared_course_key else None)
+
+    if text is None:
+        text = TEXTS.get(lang, {}).get(key)
 
     if text is None:
         text = COURSE_I18N.get(lang, {}).get(key)
@@ -464,6 +490,18 @@ def _lookup_text(key: str, lang: str):
 
 
 def t(key: str, lang: str = "ru", **kwargs) -> str:
+    # Generated UI namespace is local Python data; legacy keys retain their
+    # existing Gemini-aware lookup, wording and Russian fallback behavior.
+    if key.startswith("common."):
+        code = "tj" if lang in ("tg", "tg-TJ") else lang
+        code = code if code in COMMON_MESSAGES else "ru"
+        template = COMMON_MESSAGES[code].get(key[len("common."):])
+        if template is None:
+            return key
+        try:
+            return template.format(**kwargs) if kwargs else template
+        except (KeyError, ValueError):
+            return template
     lang = lang if lang in TEXTS else "ru"
 
     # Gemini yoqilganda limitlar boshqacha (matn cheksiz, rasm/ovoz 5/kun), shuning
