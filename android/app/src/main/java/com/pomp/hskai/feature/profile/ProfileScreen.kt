@@ -1304,11 +1304,11 @@ private fun PrivacySecuritySheet(
             ) {
                 Column {
                     MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_terms_of_use), true, onTerms) { SettingsChevron() }
-                    SettingsDivider()
+                    ProfileSettingsDivider()
                     MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_privacy_policy), true, onPrivacyPolicy) { SettingsChevron() }
-                    SettingsDivider()
+                    ProfileSettingsDivider()
                     MiniSettingsRow(Icons.Filled.PersonOutline, stringResource(R.string.profile_delete_account), true, onDeleteAccount) { SettingsChevron() }
-                    SettingsDivider()
+                    ProfileSettingsDivider()
                     MiniSettingsRow(Icons.Filled.Settings, stringResource(R.string.profile_app_permissions), true, onPermissions) { SettingsChevron() }
                 }
             }
