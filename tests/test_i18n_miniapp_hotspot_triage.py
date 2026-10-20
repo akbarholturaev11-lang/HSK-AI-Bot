@@ -83,7 +83,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                     catalog = json.loads((ROOT / "localization/ui" / locale /
                                          "course.json").read_text(encoding="utf-8"))["messages"]
                     self.assertEqual(catalog[key], value)
-                    self.assertEqual(len(catalog), 815)
+                    self.assertEqual(len(catalog), 823)
         self.assertIn('setSheetBackgroundInert(true)', html)
         self.assertIn('focusSheetStart(sheet)', html)
         self.assertIn('App.requestExitFlow()', html)
