@@ -67,5 +67,27 @@ class CourseHotspotTriageTests(unittest.TestCase):
         self.assertIn("All other localized source expressions", triage["coverage_note"])
 
 
+    def test_sheet_and_lesson_settings_copy_use_local_first_catalogs(self):
+        """The newly reviewed settings and accessible labels prefer local bundles."""
+        html = SOURCE.read_text(encoding="utf-8")
+        expected = {
+            "lessonSettings.title": (2, ("Dars sozlamalari", "Настройки урока", "Танзимоти дарс")),
+            "lessonSettings.exit": (1, ("Chiqish", "Выйти", "Баромадан")),
+            "sheet.dialogLabel": (1, ("HSK AI oynasi", "Диалог HSK AI", "Муколамаи HSK AI")),
+            "sheet.closeLabel": (1, ("Yopish", "Закрыть", "Пӯшидан")),
+        }
+        for key, (sites, values) in expected.items():
+            with self.subTest(key=key):
+                self.assertEqual(html.count('courseMessage("' + key + '",LANG'), sites)
+                for locale, value in zip(("uz", "ru", "tj"), values):
+                    catalog = json.loads((ROOT / "localization/ui" / locale /
+                                         "course.json").read_text(encoding="utf-8"))["messages"]
+                    self.assertEqual(catalog[key], value)
+                    self.assertEqual(len(catalog), 815)
+        self.assertIn('setSheetBackgroundInert(true)', html)
+        self.assertIn('focusSheetStart(sheet)', html)
+        self.assertIn('App.requestExitFlow()', html)
+        self.assertIn('gear.setAttribute("aria-label",courseMessage("lessonSettings.title",', html)
+
 if __name__ == "__main__":
     unittest.main()

@@ -86,7 +86,7 @@ COURSE_I18N={"uz":{},"ru":{},"tj":{}}
     def test_real_three_locale_sources_have_parity_without_runtime_import(self):
         result = audit(ROOT)
         self.assertEqual(result["desktop"]["comparison"]["key_counts"],
-                         {"uz": 828, "ru": 828, "tj": 828})
+                         {"uz": 824, "ru": 824, "tj": 824})
         for report in result["bot"]["tables"] + result["bot"]["effective"] + [
                 result["desktop"]["comparison"]]:
             self.assertEqual(report["missing_keys"], [], report["table"])
