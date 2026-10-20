@@ -78,6 +78,15 @@ def structured_data(path, origin):
                           "description": page["sections"][level - 1][1],
                           "inLanguage": ["tg", "ru", "uz"],
                           "provider": {"@id": origin + "/#organization"}})
+    if page.get("translation_group") == "guide-faq":
+        graph.append({
+            "@type": "FAQPage", "@id": origin + path + "#faq",
+            "mainEntity": [
+                {"@type": "Question", "name": title,
+                 "acceptedAnswer": {"@type": "Answer", "text": body}}
+                for title, body in page["sections"]
+            ],
+        })
     return {"@context": "https://schema.org", "@graph": graph}
 
 
