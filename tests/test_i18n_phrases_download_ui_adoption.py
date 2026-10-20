@@ -43,6 +43,15 @@ class ReadyPhrasesAndDownloadUIAdoptionTests(unittest.TestCase):
                     for key, value in items.items():
                         self.assertEqual(catalog[family + "." + key], value)
 
+    def test_phrase_list_accessibility_name_follows_selected_locale(self):
+        phrases = (ROOT / "app/static/hsk-gaplar.html").read_text(encoding="utf-8")
+        self.assertIn('elements.list.setAttribute("aria-label", text.title);', phrases)
+        for locale in LOCALES:
+            catalog = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
+            )["messages"]
+            self.assertTrue(catalog[f"readyPhrases.title"])
+
     def test_script_order_and_unchanged_app_paths(self):
         phrases = (ROOT / "app/static/hsk-gaplar.html").read_text(encoding="utf-8")
         download_page = (ROOT / "app/static/desktop-download.html").read_text(encoding="utf-8")

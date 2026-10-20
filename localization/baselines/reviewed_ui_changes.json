@@ -60,8 +60,8 @@
     },
     "app/static/hsk-gaplar.html": {
       "baseline_sha1": "93bd82cb79245ef34834466587ff20e72b729426",
-      "reviewed_sha1": "fb943bc7fbb6302dfdbd2d5f3795ea65698d4ffc",
-      "reason": "The static course UI bundle hash was refreshed to the current generated local catalog blob; script order and page behavior are unchanged. P2 cache-coherency: reviewed this HTML consumer at the generated course catalog hash 20261020-ed284a21dc2c. P2 cache-coherency: this HTML consumer now references the 875-key generated course catalog at 20261020-7eba899ffe2f; script order and page behavior remain unchanged. P2 cache-coherency: refreshed this consumer to the 883-key generated course UI bundle at 20261020-96b42704ca5a; page behavior unchanged.  P2 cache-coherency: updated course catalog reference to 20261020-779fc95f8460 for the 9 dictionary plural messages; page behavior unchanged."
+      "reviewed_sha1": "aabbe5352ca69f103d3d65c542e047c7489b79d9",
+      "reason": "The static course UI bundle hash was refreshed to the current generated local catalog blob; script order and page behavior are unchanged. P2 cache-coherency: reviewed this HTML consumer at the generated course catalog hash 20261020-ed284a21dc2c. P2 cache-coherency: this HTML consumer now references the 875-key generated course catalog at 20261020-7eba899ffe2f; script order and page behavior remain unchanged. P2 cache-coherency: refreshed this consumer to the 883-key generated course UI bundle at 20261020-96b42704ca5a; page behavior unchanged.  P2 cache-coherency: updated course catalog reference to 20261020-779fc95f8460 for the 9 dictionary plural messages; page behavior unchanged. P2 accessibility: ready-phrases result region now uses the existing localized readyPhrases.title as its accessible name; search, save and phrase behavior unchanged."
     },
     "app/static/desktop-download.html": {
       "baseline_sha1": "1d0f69a7e9de869af485dbf7bf5a78180ab98b92",
