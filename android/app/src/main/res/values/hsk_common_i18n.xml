@@ -33,6 +33,8 @@
     <string name="hsk_common_bot_menu_partner" formatted="false">🤝 Hamkorlik</string>
     <string name="hsk_common_bot_menu_profile" formatted="false">👤 Profil</string>
     <string name="hsk_common_bot_menu_subscription" formatted="false">💳 Obuna</string>
+    <string name="hsk_common_bot_onboarding_courseModeEntry" formatted="false">🚀 Kursni boshlash</string>
+    <string name="hsk_common_bot_onboarding_freeChatEntry" formatted="false">🤖 Oddiy rejim (chatda savol-javob)</string>
     <string name="hsk_common_bot_promoButton_contact" formatted="false">👤 Admin bilan aloqa</string>
     <string name="hsk_common_bot_promoButton_course" formatted="false">📚 Kurs rejimi</string>
     <string name="hsk_common_bot_promoButton_help" formatted="false">❓ Yordam</string>

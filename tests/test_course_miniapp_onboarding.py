@@ -21,14 +21,22 @@ from app.services.course_miniapp_profile_service import CourseMiniAppProfileServ
 
 
 class CourseModeEntryKeyboardTests(unittest.TestCase):
-    def test_course_button_uses_callback_so_force_sub_can_run_first(self):
-        keyboard = course_mode_entry_keyboard("ru")
-        course_button = keyboard.inline_keyboard[0][0]
-        qa_button = keyboard.inline_keyboard[1][0]
+    def test_course_mode_buttons_keep_copy_and_force_sub_callbacks(self):
+        expected = {
+            "uz": ("🚀 Kursni boshlash", "🤖 Oddiy rejim (chatda savol-javob)"),
+            "ru": ("🚀 Начать курс", "🤖 Обычный режим (вопрос-ответ в чате)"),
+            "tj": ("🚀 Оғози курс", "🤖 Реҷаи оддӣ (савол-ҷавоб дар чат)"),
+        }
+        for language, labels in expected.items():
+            with self.subTest(language=language):
+                keyboard = course_mode_entry_keyboard(language)
+                course_button = keyboard.inline_keyboard[0][0]
+                qa_button = keyboard.inline_keyboard[1][0]
 
-        self.assertEqual(course_button.callback_data, "mode:course")
-        self.assertIsNone(course_button.web_app)
-        self.assertEqual(qa_button.callback_data, "mode:free_qa")
+                self.assertEqual((course_button.text, qa_button.text), labels)
+                self.assertEqual(course_button.callback_data, "mode:course")
+                self.assertIsNone(course_button.web_app)
+                self.assertEqual(qa_button.callback_data, "mode:free_qa")
 
     def test_language_keyboard_uses_shared_labels_and_keeps_callbacks(self):
         buttons = language_keyboard().inline_keyboard[0]

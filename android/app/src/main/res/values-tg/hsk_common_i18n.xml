@@ -33,6 +33,8 @@
     <string name="hsk_common_bot_menu_partner" formatted="false">🤝 Ҳамкорӣ</string>
     <string name="hsk_common_bot_menu_profile" formatted="false">👤 Профил</string>
     <string name="hsk_common_bot_menu_subscription" formatted="false">💳 Обуна</string>
+    <string name="hsk_common_bot_onboarding_courseModeEntry" formatted="false">🚀 Оғози курс</string>
+    <string name="hsk_common_bot_onboarding_freeChatEntry" formatted="false">🤖 Реҷаи оддӣ (савол-ҷавоб дар чат)</string>
     <string name="hsk_common_bot_promoButton_contact" formatted="false">👤 Тамос бо админ</string>
     <string name="hsk_common_bot_promoButton_course" formatted="false">📚 Реҷаи курс</string>
     <string name="hsk_common_bot_promoButton_help" formatted="false">❓ Ёрдам</string>

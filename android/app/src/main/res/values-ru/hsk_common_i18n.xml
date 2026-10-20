@@ -33,6 +33,8 @@
     <string name="hsk_common_bot_menu_partner" formatted="false">🤝 Партнёрство</string>
     <string name="hsk_common_bot_menu_profile" formatted="false">👤 Профиль</string>
     <string name="hsk_common_bot_menu_subscription" formatted="false">💳 Подписка</string>
+    <string name="hsk_common_bot_onboarding_courseModeEntry" formatted="false">🚀 Начать курс</string>
+    <string name="hsk_common_bot_onboarding_freeChatEntry" formatted="false">🤖 Обычный режим (вопрос-ответ в чате)</string>
     <string name="hsk_common_bot_promoButton_contact" formatted="false">👤 Связаться с админом</string>
     <string name="hsk_common_bot_promoButton_course" formatted="false">📚 Режим курса</string>
     <string name="hsk_common_bot_promoButton_help" formatted="false">❓ Помощь</string>

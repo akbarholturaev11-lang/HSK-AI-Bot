@@ -243,6 +243,8 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             "language_picker_ru": "bot.languagePicker.russian",
             "language_picker_uz": "bot.languagePicker.uzbek",
             "language_picker_uz_onboarding": "bot.languagePicker.uzbekOnboarding",
+            "course_mode_entry_course": "bot.onboarding.courseModeEntry",
+            "course_mode_entry_chat": "bot.onboarding.freeChatEntry",
             "course_reminder_set_button": "bot.promoButton.reminder",
             "hint_section_course_title": "navigation.course",
             "hint_section_practice_title": "navigation.practice",
@@ -273,6 +275,8 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertNotIn('"🇹🇯 Тоҷикӣ"', onboarding)
         self.assertNotIn('"🇷🇺 Русский"', onboarding)
         self.assertNotIn('"🇺🇿 O\'zbek"', onboarding)
+        self.assertIn('t("course_mode_entry_course", lang)', onboarding)
+        self.assertIn('t("course_mode_entry_chat", lang)', onboarding)
         for bot_key, catalog_key, catalog in (
             *((key, value, COMMON_MESSAGES) for key, value in expected_common.items()),
             *((key, value, COURSE_MESSAGES) for key, value in expected_course.items()),
