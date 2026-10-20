@@ -182,20 +182,26 @@
     <string name="hsk_course_download_page_quick_guide_close" formatted="false">Понятно</string>
     <string name="hsk_course_download_page_quick_guide_close_aria" formatted="false">Закрыть инструкцию</string>
     <string name="hsk_course_download_page_quick_guide_eyebrow" formatted="false">Загрузка началась</string>
-    <string name="hsk_course_download_page_quick_guide_footer" formatted="false">Когда приложение откроется, подтвердите показанный код через Telegram.</string>
+    <string name="hsk_course_download_page_quick_guide_footer" formatted="false">Войдите через Google, Apple или Telegram. Другой способ входа добавляйте из профиля существующего аккаунта.</string>
     <string name="hsk_course_download_page_quick_guide_lead" formatted="false">Дождитесь завершения загрузки у значка в правом верхнем углу браузера. Пока не закрывайте это окно.</string>
     <string name="hsk_course_download_page_quick_guide_progress" formatted="false">Файл загружается</string>
     <string name="hsk_course_download_page_quick_guide_title" formatted="false">После загрузки откройте так</string>
     <string name="hsk_course_download_page_ready" formatted="false">Файл загружается с официального сервера HSK AI.</string>
     <string name="hsk_course_download_page_ready_label" formatted="false">Установщик готов</string>
-    <string name="hsk_course_download_page_referral_android_body" formatted="false">Нажмите кнопку Telegram и затем Start в боте. Бот отправит сам APK файл в чат. Установите приложение и подключите тот же аккаунт Telegram. После этого приглашение засчитается.</string>
+    <string name="hsk_course_download_page_referral_android_body" formatted="false">Установите APK. Перед созданием аккаунта введите код приглашения, затем войдите через Google, Apple или Telegram. Приглашение засчитается после входа и проверки устройства в приложении.</string>
     <string name="hsk_course_download_page_referral_android_button" formatted="false">Продолжить в Telegram</string>
     <string name="hsk_course_download_page_referral_android_status" formatted="false">Нажмите Start в боте — APK файл придёт в чат.</string>
-    <string name="hsk_course_download_page_referral_android_title" formatted="false">Сначала закрепите приглашение в Telegram</string>
-    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Откройте Telegram-бота и ответьте на 2 вопроса. После этого приглашение засчитается.</string>
+    <string name="hsk_course_download_page_referral_android_title" formatted="false">Создайте аккаунт по приглашению</string>
+    <string name="hsk_course_download_page_referral_code_label" formatted="false">Код приглашения</string>
+    <string name="hsk_course_download_page_referral_copy" formatted="false">Скопировать код</string>
+    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Откройте Telegram-бота и получите ответы на 2 вопроса к AI. После этого приглашение засчитается.</string>
     <string name="hsk_course_download_page_referral_ios_title" formatted="false">Как засчитывается приглашение</string>
-    <string name="hsk_course_download_page_referral_other_body" formatted="false">Условия приглашения появятся при открытии на Android или iPhone.</string>
-    <string name="hsk_course_download_page_referral_other_title" formatted="false">Откройте ссылку на телефоне</string>
+    <string name="hsk_course_download_page_referral_manual" formatted="false">Выделите и скопируйте код вручную.</string>
+    <string name="hsk_course_download_page_referral_open" formatted="false">Открыть установленное приложение</string>
+    <string name="hsk_course_download_page_referral_other_body" formatted="false">Условия этого приглашения на скидку выполняются в Android-приложении или в Telegram-боте на iPhone. Откройте ссылку на соответствующем устройстве.</string>
+    <string name="hsk_course_download_page_referral_other_title" formatted="false">Откройте приглашение на телефоне</string>
+    <string name="hsk_course_download_page_referral_trial_body" formatted="false">Перед созданием аккаунта введите указанный ниже код в поле приглашения. Войдите через Google, Apple или Telegram и получите ответы на 2 вопроса к AI. Вход в существующий аккаунт не считается новым приглашением.</string>
+    <string name="hsk_course_download_page_referral_trial_title" formatted="false">Начните по приглашению друга</string>
     <string name="hsk_course_download_page_security_title" formatted="false">При первом запуске может появиться предупреждение</string>
     <string name="hsk_course_download_page_select_body" formatted="false">Выберите устройство — покажем подходящий файл или ссылку.</string>
     <string name="hsk_course_download_page_select_download" formatted="false">Сначала выберите устройство</string>
@@ -633,13 +639,20 @@
     <string name="hsk_course_subscription_page_payment_rejected_text" formatted="false">Платёж не принят. Проверьте данные и отправьте его заново.</string>
     <string name="hsk_course_subscription_page_payment_rejected_title" formatted="false">Платёж за HSK 3.0 не принят</string>
     <string name="hsk_course_subscription_page_payment_still_pending" formatted="false">Платёж ещё проверяет администратор.</string>
-    <string name="hsk_course_subscription_page_pending_text" formatted="false">Платёж уже находится на проверке. Пожалуйста, дождитесь подтверждения.</string>
+    <string name="hsk_course_subscription_page_pending_text" formatted="false">Платёж уже находится на проверке. Пожалуйста, дождитесь подтверждения. Чтобы ускорить проверку, вы можете написать администратору.</string>
     <string name="hsk_course_subscription_page_pending_title" formatted="false">Ваша заявка на проверке</string>
     <string name="hsk_course_subscription_page_plans_title" formatted="false">Тариф</string>
     <string name="hsk_course_subscription_page_preview" formatted="false">Preview mode: Telegram init data нет. Реальная отправка работает только внутри бота.</string>
     <string name="hsk_course_subscription_page_preview_submit" formatted="false">Внутри реального бота заявка уйдёт админу на проверку.</string>
     <string name="hsk_course_subscription_page_prices_loading" formatted="false">Загружаем цены тарифов...</string>
     <string name="hsk_course_subscription_page_prices_unavailable" formatted="false">Цены тарифов сейчас не отображаются.</string>
+    <string name="hsk_course_subscription_page_pro_approved_text" formatted="false">Pro подтверждён. Можно продолжить занятия.</string>
+    <string name="hsk_course_subscription_page_pro_approved_title" formatted="false">Платёж подтверждён</string>
+    <string name="hsk_course_subscription_page_pro_rejected_title" formatted="false">Платёж не принят</string>
+    <string name="hsk_course_subscription_page_pro_return" formatted="false">Вернуться в приложение</string>
+    <string name="hsk_course_subscription_page_pro_review_access" formatted="false">Платёж отправлен на проверку. Пока идёт проверка, вы уже можете пользоваться Pro.</string>
+    <string name="hsk_course_subscription_page_pro_review_title" formatted="false">Чек отправлен на проверку</string>
+    <string name="hsk_course_subscription_page_pro_review_wait" formatted="false">Платёж отправлен на проверку. Временный доступ уже использован, поэтому Pro откроется после подтверждения администратором. Чтобы ускорить проверку, вы можете написать администратору.</string>
     <string name="hsk_course_subscription_page_provisional_text" formatted="false">Первая заявка проверяется. Если платёж не подтвердят, доступ к HSK 3.0 закроется.</string>
     <string name="hsk_course_subscription_page_provisional_title" formatted="false">HSK 3.0 временно открыт</string>
     <string name="hsk_course_subscription_page_qr_missing" formatted="false">QR-код пока не готов.</string>

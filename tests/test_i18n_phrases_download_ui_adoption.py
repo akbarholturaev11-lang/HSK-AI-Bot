@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("uz", "ru", "tj")
-FAMILIES = {"readyPhrases": ("UI", 15), "downloadPage": ("COPY", 79)}
+FAMILIES = {"readyPhrases": ("UI", 15), "downloadPage": ("COPY", 83)}
 
 
 def inline_dictionary(source, name):
@@ -39,7 +39,7 @@ class ReadyPhrasesAndDownloadUIAdoptionTests(unittest.TestCase):
                     catalog = json.loads(
                         (ROOT / f"localization/ui/{lang}/course.json").read_text(encoding="utf-8")
                     )["messages"]
-                    self.assertEqual(len(catalog), 797)
+                    self.assertEqual(len(catalog), 810)
                     for key, value in items.items():
                         self.assertEqual(catalog[family + "." + key], value)
 

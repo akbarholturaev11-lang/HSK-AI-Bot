@@ -34,11 +34,11 @@ class SubscriptionUIAdoptionTests(unittest.TestCase):
                 inline = original[locale]
                 scalar = {key: value for key, value in inline.items()
                           if isinstance(value, str)}
-                self.assertEqual(len(scalar), 102)
+                self.assertEqual(len(scalar), 109)
                 catalog = json.loads(
                     (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
                 )["messages"]
-                self.assertEqual(len(catalog), 797)
+                self.assertEqual(len(catalog), 810)
                 for key, value in scalar.items():
                     self.assertEqual(catalog["subscriptionPage." + key], value)
 

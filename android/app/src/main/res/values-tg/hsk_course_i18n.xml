@@ -182,20 +182,26 @@
     <string name="hsk_course_download_page_quick_guide_close" formatted="false">Фаҳмо</string>
     <string name="hsk_course_download_page_quick_guide_close_aria" formatted="false">Пӯшидани дастур</string>
     <string name="hsk_course_download_page_quick_guide_eyebrow" formatted="false">Боргирӣ оғоз шуд</string>
-    <string name="hsk_course_download_page_quick_guide_footer" formatted="false">Пас аз кушодани барнома, рамзи онро тавассути Telegram тасдиқ кунед.</string>
+    <string name="hsk_course_download_page_quick_guide_footer" formatted="false">Бо Google, Apple ё Telegram ворид шавед. Роҳи дигари воридшавиро аз профили ҳисоби мавҷуда пайваст кунед.</string>
     <string name="hsk_course_download_page_quick_guide_lead" formatted="false">То анҷоми боргирӣ дар нишонаи болои рости браузер интизор шавед. Ҳоло ин равзанаро напӯшед.</string>
     <string name="hsk_course_download_page_quick_guide_progress" formatted="false">Файл бор шуда истодааст</string>
     <string name="hsk_course_download_page_quick_guide_title" formatted="false">Пас аз боргирӣ ҳамин тавр кушоед</string>
     <string name="hsk_course_download_page_ready" formatted="false">Файл аз сервери расмии HSK AI бор мешавад.</string>
     <string name="hsk_course_download_page_ready_label" formatted="false">Насбкунанда омода</string>
-    <string name="hsk_course_download_page_referral_android_body" formatted="false">Тугмаи Telegram-ро пахш кунед ва дар бот Start-ро интихоб кунед. Бот худи файли APK-ро ба чат мефиристад. Барномаро насб карда, ҳамин ҳисоби Telegram-ро пайваст кунед. Баъд даъват ҳисоб мешавад.</string>
+    <string name="hsk_course_download_page_referral_android_body" formatted="false">APK-ро насб кунед. Пеш аз сохтани ҳисоб рамзи даъватро ворид карда, бо Google, Apple ё Telegram ворид шавед. Даъват пас аз воридшавӣ ва санҷиши дастгоҳ дар барнома ҳисоб мешавад.</string>
     <string name="hsk_course_download_page_referral_android_button" formatted="false">Идома дар Telegram</string>
     <string name="hsk_course_download_page_referral_android_status" formatted="false">Дар бот Start-ро пахш кунед — файли APK ба чат меояд.</string>
-    <string name="hsk_course_download_page_referral_android_title" formatted="false">Аввал даъватро дар Telegram қайд кунед</string>
-    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Боти Telegram-ро кушоед ва ба 2 савол ҷавоб диҳед. Пас даъват ҳисоб мешавад.</string>
-    <string name="hsk_course_download_page_referral_ios_title" formatted="false">Шарти даъват барои тахфифи 20%</string>
-    <string name="hsk_course_download_page_referral_other_body" formatted="false">Шартҳои даъват дар Android ё iPhone нишон дода мешаванд.</string>
-    <string name="hsk_course_download_page_referral_other_title" formatted="false">Пайвандро дар телефон кушоед</string>
+    <string name="hsk_course_download_page_referral_android_title" formatted="false">Ҳисобро бо даъват созед</string>
+    <string name="hsk_course_download_page_referral_code_label" formatted="false">Рамзи даъват</string>
+    <string name="hsk_course_download_page_referral_copy" formatted="false">Нусхаи рамз</string>
+    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Боти Telegram-ро кушоед ва ба 2 савол аз AI ҷавоб гиред. Баъд даъват ҳисоб мешавад.</string>
+    <string name="hsk_course_download_page_referral_ios_title" formatted="false">Даъват чӣ гуна ҳисоб мешавад?</string>
+    <string name="hsk_course_download_page_referral_manual" formatted="false">Рамзро интихоб карда дастӣ нусха гиред.</string>
+    <string name="hsk_course_download_page_referral_open" formatted="false">Дар барномаи насбшуда кушодан</string>
+    <string name="hsk_course_download_page_referral_other_body" formatted="false">Шартҳои ин даъвати тахфиф дар барномаи Android ё боти Telegram дар iPhone иҷро мешаванд. Пайвандро дар ҳамон дастгоҳ кушоед.</string>
+    <string name="hsk_course_download_page_referral_other_title" formatted="false">Даъватро дар телефон кушоед</string>
+    <string name="hsk_course_download_page_referral_trial_body" formatted="false">Пеш аз сохтани ҳисоб рамзи поёнро ба майдони даъват ворид кунед. Бо Google, Apple ё Telegram ворид шуда, ба 2 савол аз AI ҷавоб гиред. Воридшавӣ ба ҳисоби мавҷуда даъвати нав ҳисоб намешавад.</string>
+    <string name="hsk_course_download_page_referral_trial_title" formatted="false">Бо даъвати дӯст оғоз кунед</string>
     <string name="hsk_course_download_page_security_title" formatted="false">Ҳангоми кушодани аввал огоҳӣ баромада метавонад</string>
     <string name="hsk_course_download_page_select_body" formatted="false">Дастгоҳи худро интихоб кунед — файл ё пайванди мувофиқ нишон дода мешавад.</string>
     <string name="hsk_course_download_page_select_download" formatted="false">Аввал дастгоҳро интихоб кунед</string>
@@ -633,13 +639,20 @@
     <string name="hsk_course_subscription_page_payment_rejected_text" formatted="false">Пардохти шумо қабул нашуд. Маълумотро санҷида, пардохтро аз нав фиристед.</string>
     <string name="hsk_course_subscription_page_payment_rejected_title" formatted="false">Пардохти HSK 3.0 қабул нашуд</string>
     <string name="hsk_course_subscription_page_payment_still_pending" formatted="false">Пардохт ҳанӯз аз ҷониби администратор санҷида мешавад.</string>
-    <string name="hsk_course_subscription_page_pending_text" formatted="false">Дархости пардохти шумо дар санҷиш аст. Лутфан то тасдиқ интизор шавед.</string>
+    <string name="hsk_course_subscription_page_pending_text" formatted="false">Дархости пардохти шумо дар санҷиш аст. Лутфан то тасдиқ интизор шавед. Барои тезонидани санҷиш метавонед ба маъмур нависед.</string>
     <string name="hsk_course_subscription_page_pending_title" formatted="false">Дархости шумо дар санҷиш аст</string>
     <string name="hsk_course_subscription_page_plans_title" formatted="false">Тариф</string>
     <string name="hsk_course_subscription_page_preview" formatted="false">Preview mode: Telegram init data нест. Submit-и real танҳо дар bot кор мекунад.</string>
     <string name="hsk_course_subscription_page_preview_submit" formatted="false">Дар bot-и real дархост ба admin барои санҷиш меравад.</string>
     <string name="hsk_course_subscription_page_prices_loading" formatted="false">Нархҳои тариф бор шуда истодаанд...</string>
     <string name="hsk_course_subscription_page_prices_unavailable" formatted="false">Нархҳои тариф ҳоло нишон дода намешаванд.</string>
+    <string name="hsk_course_subscription_page_pro_approved_text" formatted="false">Pro тасдиқ шуд. Метавонед машғулиятро идома диҳед.</string>
+    <string name="hsk_course_subscription_page_pro_approved_title" formatted="false">Пардохт тасдиқ шуд</string>
+    <string name="hsk_course_subscription_page_pro_rejected_title" formatted="false">Пардохт қабул нашуд</string>
+    <string name="hsk_course_subscription_page_pro_return" formatted="false">Ба барнома баргаштан</string>
+    <string name="hsk_course_subscription_page_pro_review_access" formatted="false">Пардохт барои санҷиш фиристода шуд. Ҳангоми санҷиш шумо метавонед аз Pro истифода баред.</string>
+    <string name="hsk_course_subscription_page_pro_review_title" formatted="false">Расид барои санҷиш фиристода шуд</string>
+    <string name="hsk_course_subscription_page_pro_review_wait" formatted="false">Пардохт барои санҷиш фиристода шуд. Дастрасии муваққатӣ аллакай истифода шудааст, бинобар ин Pro пас аз тасдиқи маъмур кушода мешавад. Барои тезонидани санҷиш метавонед ба маъмур нависед.</string>
     <string name="hsk_course_subscription_page_provisional_text" formatted="false">Дархости аввал санҷида мешавад. Агар пардохт тасдиқ нашавад, дастрасӣ ба HSK 3.0 баста мешавад.</string>
     <string name="hsk_course_subscription_page_provisional_title" formatted="false">HSK 3.0 муваққатан кушода шуд</string>
     <string name="hsk_course_subscription_page_qr_missing" formatted="false">QR код ҳоло тайёр нест.</string>

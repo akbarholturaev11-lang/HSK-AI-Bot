@@ -182,20 +182,26 @@
     <string name="hsk_course_download_page_quick_guide_close" formatted="false">Tushundim</string>
     <string name="hsk_course_download_page_quick_guide_close_aria" formatted="false">Qo‘llanmani yopish</string>
     <string name="hsk_course_download_page_quick_guide_eyebrow" formatted="false">Yuklash boshlandi</string>
-    <string name="hsk_course_download_page_quick_guide_footer" formatted="false">Ilova ochilgach, undagi kodni Telegram orqali tasdiqlang.</string>
+    <string name="hsk_course_download_page_quick_guide_footer" formatted="false">Google, Apple yoki Telegram bilan kiring. Boshqa kirish usulini mavjud hisobingiz profilidan ulang.</string>
     <string name="hsk_course_download_page_quick_guide_lead" formatted="false">Brauzerning yuqori o‘ngidagi yuklash belgisi tugashini kuting. Bu oynani hozircha yopmang.</string>
     <string name="hsk_course_download_page_quick_guide_progress" formatted="false">Fayl yuklanmoqda</string>
     <string name="hsk_course_download_page_quick_guide_title" formatted="false">Yuklab bo‘lgach, shunday oching</string>
     <string name="hsk_course_download_page_ready" formatted="false">Fayl HSK AI rasmiy download serveridan yuklanadi.</string>
     <string name="hsk_course_download_page_ready_label" formatted="false">Tayyor installer</string>
-    <string name="hsk_course_download_page_referral_android_body" formatted="false">Telegram tugmasini bosib, botda Start ni bosing. Bot APK faylining o‘zini chatga yuboradi. Ilovani o‘rnatib, shu Telegram hisobini ulang. Shundan keyin taklif hisoblanadi.</string>
+    <string name="hsk_course_download_page_referral_android_body" formatted="false">APK’ni o‘rnating. Yangi hisob ochishdan oldin taklif kodini kiriting, so‘ng Google, Apple yoki Telegram bilan kiring. Taklif ilovadagi kirish va qurilma tekshiruvidan keyin hisoblanadi.</string>
     <string name="hsk_course_download_page_referral_android_button" formatted="false">Telegram orqali davom etish</string>
     <string name="hsk_course_download_page_referral_android_status" formatted="false">Botda Start ni bosing — APK fayli chatga yuboriladi.</string>
-    <string name="hsk_course_download_page_referral_android_title" formatted="false">Avval taklifni Telegramda qayd eting</string>
-    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Telegram botini oching va unda 2 ta savol ishlating. Shunda taklif hisoblanadi.</string>
-    <string name="hsk_course_download_page_referral_ios_title" formatted="false">Do‘stingiz uchun 20% chegirma</string>
-    <string name="hsk_course_download_page_referral_other_body" formatted="false">Taklif Android yoki iPhone qurilmasida ochilganda mos shartlar ko‘rsatiladi.</string>
-    <string name="hsk_course_download_page_referral_other_title" formatted="false">Havolani telefonda oching</string>
+    <string name="hsk_course_download_page_referral_android_title" formatted="false">Taklif bilan hisob ochish</string>
+    <string name="hsk_course_download_page_referral_code_label" formatted="false">Taklif kodi</string>
+    <string name="hsk_course_download_page_referral_copy" formatted="false">Kodni nusxalash</string>
+    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Telegram botini oching va unda 2 ta AI savoliga javob oling. Shunda taklif hisoblanadi.</string>
+    <string name="hsk_course_download_page_referral_ios_title" formatted="false">Taklif qanday hisoblanadi?</string>
+    <string name="hsk_course_download_page_referral_manual" formatted="false">Kodni belgilang va qo‘lda nusxalang.</string>
+    <string name="hsk_course_download_page_referral_open" formatted="false">O‘rnatilgan ilovada ochish</string>
+    <string name="hsk_course_download_page_referral_other_body" formatted="false">Bu chegirma taklifining shartlari Android ilovasida yoki iPhone’dagi Telegram botida bajariladi. Taklif havolasini o‘sha qurilmada oching.</string>
+    <string name="hsk_course_download_page_referral_other_title" formatted="false">Chegirma taklifini telefonda oching</string>
+    <string name="hsk_course_download_page_referral_trial_body" formatted="false">Yangi hisob ochishdan oldin ilovadagi taklif kodi maydoniga quyidagi kodni kiriting. Google, Apple yoki Telegram orqali kiring va 2 ta AI savoliga javob oling. Mavjud hisobga kirish yangi taklif sifatida hisoblanmaydi.</string>
+    <string name="hsk_course_download_page_referral_trial_title" formatted="false">Do‘st taklifi bilan boshlang</string>
     <string name="hsk_course_download_page_security_title" formatted="false">Birinchi ochishda ogohlantirish chiqishi mumkin</string>
     <string name="hsk_course_download_page_select_body" formatted="false">Qurilmangizni tanlang — mos fayl yoki havola ko‘rsatiladi.</string>
     <string name="hsk_course_download_page_select_download" formatted="false">Avval qurilmangizni tanlang</string>
@@ -633,13 +639,20 @@
     <string name="hsk_course_subscription_page_payment_rejected_text" formatted="false">To\'lovingiz qabul qilinmadi. Ma\'lumotlarni tekshirib, to\'lovni boshidan yuboring.</string>
     <string name="hsk_course_subscription_page_payment_rejected_title" formatted="false">HSK 3.0 to\'lovi qabul qilinmadi</string>
     <string name="hsk_course_subscription_page_payment_still_pending" formatted="false">To\'lov hali admin tekshiruvida.</string>
-    <string name="hsk_course_subscription_page_pending_text" formatted="false">To\'lov so\'rovingiz tekshiruvda. Iltimos, tasdiq kelguncha kuting.</string>
+    <string name="hsk_course_subscription_page_pending_text" formatted="false">To\'lov so\'rovingiz tekshiruvda. Iltimos, tasdiq kelguncha kuting. Jarayon tezroq bo‘lishini xohlasangiz, adminga yozishingiz mumkin.</string>
     <string name="hsk_course_subscription_page_pending_title" formatted="false">So\'rovingiz tekshiruvda</string>
     <string name="hsk_course_subscription_page_plans_title" formatted="false">Tarif</string>
     <string name="hsk_course_subscription_page_preview" formatted="false">Preview mode: Telegram init data yo\'q. Real submit faqat bot ichida ishlaydi.</string>
     <string name="hsk_course_subscription_page_preview_submit" formatted="false">Real bot ichida ochilganda admin tekshiruvga yuboriladi.</string>
     <string name="hsk_course_subscription_page_prices_loading" formatted="false">Tarif narxlari yuklanmoqda...</string>
     <string name="hsk_course_subscription_page_prices_unavailable" formatted="false">Tarif narxlari hozir ko\'rinmayapti.</string>
+    <string name="hsk_course_subscription_page_pro_approved_text" formatted="false">Pro tasdiqlandi. Mashg‘ulotni davom ettirishingiz mumkin.</string>
+    <string name="hsk_course_subscription_page_pro_approved_title" formatted="false">To‘lov tasdiqlandi</string>
+    <string name="hsk_course_subscription_page_pro_rejected_title" formatted="false">To‘lov qabul qilinmadi</string>
+    <string name="hsk_course_subscription_page_pro_return" formatted="false">Ilovaga qaytish</string>
+    <string name="hsk_course_subscription_page_pro_review_access" formatted="false">To‘lov tekshiruvga yuborildi. Tekshiruv davomida Pro imkoniyatlaridan foydalanishni boshlashingiz mumkin.</string>
+    <string name="hsk_course_subscription_page_pro_review_title" formatted="false">Chek tekshiruvga yuborildi</string>
+    <string name="hsk_course_subscription_page_pro_review_wait" formatted="false">To‘lov tekshiruvga yuborildi. Avvalgi vaqtinchalik ruxsat ishlatilgan, shu sababli Pro admin tasdig‘idan keyin ochiladi. Jarayon tezroq bo‘lishini xohlasangiz, adminga yozishingiz mumkin.</string>
     <string name="hsk_course_subscription_page_provisional_text" formatted="false">Birinchi to\'lov so\'rovi tekshiruvda. Tasdiqlanmasa, HSK 3.0 ga kirish yopiladi.</string>
     <string name="hsk_course_subscription_page_provisional_title" formatted="false">HSK 3.0 vaqtincha ochildi</string>
     <string name="hsk_course_subscription_page_qr_missing" formatted="false">QR kod hozircha tayyor emas.</string>
