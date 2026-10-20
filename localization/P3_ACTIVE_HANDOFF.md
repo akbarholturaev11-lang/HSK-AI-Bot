@@ -1,9 +1,19 @@
 # HSK AI P3 — ACTIVE handoff for a new ChatGPT agent
 
 **Fast start for the next chat:** [`localization/RESUME_NEXT_CHAT.md`](RESUME_NEXT_CHAT.md). Follow that branch/CI checkpoint first; older entries are historical.
-Updated: 2026-10-20. **This checkpoint supersedes the earlier 815-key snapshot. Historical entries below retain past states only.**
+Updated: 2026-10-20. **This checkpoint supersedes all older branch, CI and catalog counts below.**
 
-## 2026-10-20 — CURRENT Desktop auth catalog checkpoint
+## 2026-10-20 — CURRENT Android P2 exact-copy checkpoint
+
+- **Working branch only:** `codex/p3-main-integration-20261020`. Latest pushed commit: `f62344838cf18884c1809e262469ee0f273bcacc`. GitHub refs confirm `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5` is an ancestor (514 ahead, 0 behind). `main` and production were not changed. Draft PR #179 still refers to the old `codex/i18n-local-first-foundation-20261017` branch; it is not this integration branch or release authorization.
+- **Exact-head CI:** GitHub P0 [39438909149](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39438909149) **SUCCESS** on `f6234483`; workflow-equivalent local P0 passed **370 tests**. Android `:app:compilePlayDebugKotlin :app:compileDirectDebugKotlin` also succeeded. Current read-only reports: 812 frozen sources, 746 lessons, 0 baseline blockers, 894 course UI keys, 55 common UI keys, 0 stale generated artifacts, 136 grammar mirrors checked with 0 source divergence.
+- **P2 code change:** Android profile lesson count, Telegram identity label and Voice call accessibility label now use existing generated local resources. Legacy UZ/RU/TJ XML values are retained, and a 40-entry exact-parity plus call-site regression covers the adoption. No account, access, lesson, assessment, payment or subscription behavior changed.
+- **Cross-surface exact-copy scan:** this pass found no additional unaliased exact UZ/RU/TJ catalog copies in Desktop or Bot; reviewed `course-v3.html` display branches already use synchronous local catalog lookup apart from locale logic and the fixed Chinese example gloss. This is a targeted duplicate scan, not proof that every rendered page or feature-local dictionary has been manually inspected.
+- **P3 language QA:** `localization/AI_CONTENT_QA_POLICY.md` records the independent review of all 136 source contexts and 408 locale cells, including source-bound corrections. It is agent QA, not native-speaker certification. The access-gated display overlay preserves original lesson sources and grading fields.
+- **Still open before a real release decision:** staging HTTP checks, authenticated Telegram/account-switch and Free/Trial/Pro/payment/referral scenarios, old-client refresh, offline and installed Android/WebView/macOS/Windows QA. Do not claim these from P0 or local compile. Keep pushing only to the feature branch; no `main` push or deployment.
+- **Next code-side task:** reconcile remaining registered Mini App page-local UI dictionaries and static attributes against the shared catalogs. Add an alias only when the key has the same context and exact UZ/RU/TJ fallback; run affected browser checks plus P0 and exact-head Actions for each batch.
+
+## Previous Desktop auth catalog checkpoint (historical; superseded below)
 
 - **Working branch only:** `codex/p3-main-integration-20261020`. Latest code commit: `baa0baaa7e92732fd22cf6ada6c00d7a32eabf69`; at that code head, `origin/main` `66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5` was an ancestor (506 ahead, 0 behind). No main push/merge or production deploy.
 - **Desktop P2:** 24 existing sign-in/referral/provider/status/copy labels now prefer `desktopAuth.*` values in the bundled common catalog. UZ/RU/TJ values are extracted from and tested against the existing Desktop locale dictionaries; old dictionary fallback remains. The shared Tauri UI behavior, auth API calls, session and account state were not changed. Common catalog is 44 keys per locale; six generated artifacts are current. Course catalog remains 894 keys per locale with its own six generated artifacts.
