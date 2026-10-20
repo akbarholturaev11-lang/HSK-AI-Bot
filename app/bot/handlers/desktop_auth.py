@@ -14,6 +14,7 @@ from app.bot.fsm.android_auth import AndroidLinkStates
 from app.bot.fsm.desktop_auth import DesktopLinkStates
 from app.config import settings
 from app.repositories.user_repo import UserRepository
+from app.bot.utils.i18n import t
 from app.services.onboarding_service import (
     ONBOARDING_MODE_CHOICE_MODE,
     OnboardingService,
@@ -316,13 +317,22 @@ async def confirm_telegram_identity_link(callback: CallbackQuery, session) -> No
     await callback.answer()
 
 
-def _android_language_keyboard() -> InlineKeyboardMarkup:
+def _android_language_keyboard(language: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="🇹🇯 Тоҷикӣ", callback_data="android_link:lang:tj"),
-                InlineKeyboardButton(text="🇷🇺 Русский", callback_data="android_link:lang:ru"),
-                InlineKeyboardButton(text="🇺🇿 O‘zbek", callback_data="android_link:lang:uz"),
+                InlineKeyboardButton(
+                    text=t("language_picker_tj", language),
+                    callback_data="android_link:lang:tj",
+                ),
+                InlineKeyboardButton(
+                    text=t("language_picker_ru", language),
+                    callback_data="android_link:lang:ru",
+                ),
+                InlineKeyboardButton(
+                    text=t("language_picker_uz", language),
+                    callback_data="android_link:lang:uz",
+                ),
             ]
         ]
     )
@@ -575,7 +585,7 @@ async def begin_android_link(
         fallback_language = _android_language(user)
         await message.answer(
             _ANDROID_COPY[fallback_language]["choose_language"],
-            reply_markup=_android_language_keyboard(),
+            reply_markup=_android_language_keyboard(fallback_language),
             parse_mode="HTML",
         )
         return

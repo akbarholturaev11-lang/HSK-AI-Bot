@@ -239,6 +239,9 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             "menu_course_mode": "bot.menu.courseMode",
             "menu_partner": "bot.menu.partner",
             "menu_help": "bot.menu.help",
+            "language_picker_tj": "bot.languagePicker.tajik",
+            "language_picker_ru": "bot.languagePicker.russian",
+            "language_picker_uz": "bot.languagePicker.uzbek",
             "course_reminder_set_button": "bot.promoButton.reminder",
             "hint_section_course_title": "navigation.course",
             "hint_section_practice_title": "navigation.practice",
@@ -251,6 +254,14 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         }
         self.assertEqual(BOT_SHARED_COMMON_KEYS, expected_common)
         self.assertEqual(BOT_SHARED_COURSE_KEYS, expected_course)
+        commands = (ROOT / "app/bot/handlers/commands.py").read_text(encoding="utf-8")
+        desktop_auth = (ROOT / "app/bot/handlers/desktop_auth.py").read_text(encoding="utf-8")
+        for source in (commands, desktop_auth):
+            for key in ("language_picker_tj", "language_picker_ru", "language_picker_uz"):
+                self.assertIn(f't("{key}", language)', source)
+            self.assertNotIn('"🇹🇯 Тоҷикӣ"', source)
+            self.assertNotIn('"🇷🇺 Русский"', source)
+            self.assertNotIn('"🇺🇿 O‘zbek"', source)
         for bot_key, catalog_key, catalog in (
             *((key, value, COMMON_MESSAGES) for key, value in expected_common.items()),
             *((key, value, COURSE_MESSAGES) for key, value in expected_course.items()),

@@ -509,13 +509,19 @@ async def subscription_command_handler(message: Message, state: FSMContext, sess
 
 
 
-def command_language_keyboard() -> InlineKeyboardMarkup:
+def command_language_keyboard(language: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="🇹🇯 Тоҷикӣ", callback_data="cmdlang:tj"),
-                InlineKeyboardButton(text="🇷🇺 Русский", callback_data="cmdlang:ru"),
-                InlineKeyboardButton(text="🇺🇿 O‘zbek", callback_data="cmdlang:uz"),
+                InlineKeyboardButton(
+                    text=t("language_picker_tj", language), callback_data="cmdlang:tj"
+                ),
+                InlineKeyboardButton(
+                    text=t("language_picker_ru", language), callback_data="cmdlang:ru"
+                ),
+                InlineKeyboardButton(
+                    text=t("language_picker_uz", language), callback_data="cmdlang:uz"
+                ),
             ]
         ]
     )
@@ -529,7 +535,7 @@ async def language_command_handler(message: Message, state: FSMContext, session)
 
     await message.answer(
         t("choose_language", lang),
-        reply_markup=command_language_keyboard(),
+        reply_markup=command_language_keyboard(lang),
     )
 
 
@@ -1009,7 +1015,7 @@ async def profile_menu_language(callback: CallbackQuery, state: FSMContext, sess
     await callback.answer()
     await callback.message.answer(
         t("choose_language", lang),
-        reply_markup=command_language_keyboard(),
+        reply_markup=command_language_keyboard(lang),
     )
 
 @router.callback_query(F.data == APPS_MENU_CALLBACK)

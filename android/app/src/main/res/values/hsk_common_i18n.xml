@@ -23,6 +23,9 @@
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">HSK AI veb-sahifasida hisobni o‘chirish so‘rovi boshlandi. Faqat uni o‘zingiz boshlagan bo‘lsangiz tasdiqlang. Tasdiqdan keyin brauzerda hisobni o‘chirish so‘rovini yuborishingiz mumkin.</string>
     <string name="hsk_common_bot_buttonInvalid" formatted="false">Tugma eskirgan yoki noto‘g‘ri.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Kurs rejimi hozircha ishlab chiqilmoqda.</string>
+    <string name="hsk_common_bot_languagePicker_russian" formatted="false">🇷🇺 Русский</string>
+    <string name="hsk_common_bot_languagePicker_tajik" formatted="false">🇹🇯 Тоҷикӣ</string>
+    <string name="hsk_common_bot_languagePicker_uzbek" formatted="false">🇺🇿 O‘zbek</string>
     <string name="hsk_common_bot_menu_barHint" formatted="false">⌨️ Pastdagi menyudan profil, obuna va kurs rejimini ochasiz.</string>
     <string name="hsk_common_bot_menu_courseMode" formatted="false">📚 Kurs rejimi</string>
     <string name="hsk_common_bot_menu_help" formatted="false">❓ Yordam</string>

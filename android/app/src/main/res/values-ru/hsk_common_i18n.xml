@@ -23,6 +23,9 @@
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">На сайте HSK AI начат запрос на удаление аккаунта. Подтвердите его, только если вы сами начали этот процесс. После подтверждения можно будет отправить запрос на удаление аккаунта в браузере.</string>
     <string name="hsk_common_bot_buttonInvalid" formatted="false">Кнопка устарела или некорректна.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Режим курса сейчас в разработке.</string>
+    <string name="hsk_common_bot_languagePicker_russian" formatted="false">🇷🇺 Русский</string>
+    <string name="hsk_common_bot_languagePicker_tajik" formatted="false">🇹🇯 Тоҷикӣ</string>
+    <string name="hsk_common_bot_languagePicker_uzbek" formatted="false">🇺🇿 O‘zbek</string>
     <string name="hsk_common_bot_menu_barHint" formatted="false">⌨️ Через меню снизу открываются профиль, подписка и режим курса.</string>
     <string name="hsk_common_bot_menu_courseMode" formatted="false">📚 Режим курса</string>
     <string name="hsk_common_bot_menu_help" formatted="false">❓ Помощь</string>

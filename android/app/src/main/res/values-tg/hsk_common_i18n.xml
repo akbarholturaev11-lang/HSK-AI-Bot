@@ -23,6 +23,9 @@
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">Дар сомонаи HSK AI дархости нест кардани ҳисоб оғоз шуд. Танҳо дар сурате тасдиқ кунед, ки онро худатон оғоз карда бошед. Пас аз тасдиқ метавонед дар браузер дархости нест кардани ҳисобро фиристед.</string>
     <string name="hsk_common_bot_buttonInvalid" formatted="false">Тугма дигар эътибор надорад ё нодуруст аст.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Реҷаи курс ҳоло дар таҳия аст.</string>
+    <string name="hsk_common_bot_languagePicker_russian" formatted="false">🇷🇺 Русский</string>
+    <string name="hsk_common_bot_languagePicker_tajik" formatted="false">🇹🇯 Тоҷикӣ</string>
+    <string name="hsk_common_bot_languagePicker_uzbek" formatted="false">🇺🇿 O‘zbek</string>
     <string name="hsk_common_bot_menu_barHint" formatted="false">⌨️ Аз менюи поён профил, обуна ва реҷаи курсро мекушоед.</string>
     <string name="hsk_common_bot_menu_courseMode" formatted="false">📚 Режими курс</string>
     <string name="hsk_common_bot_menu_help" formatted="false">❓ Ёрдам</string>
