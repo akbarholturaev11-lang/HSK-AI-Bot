@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("uz", "ru", "tj")
 EXPECTED = {"dictionaryPage": 20, "dictionaryFastWriter": 7,
             "dictionaryWriterStatus": 2}
-VERSION = "hsk-course-i18n.js?v=20261019-dictionary-display-v20"
+VERSION = "hsk-course-i18n.js?v=20261020-37c75ec39f2a"
 
 
 def source():

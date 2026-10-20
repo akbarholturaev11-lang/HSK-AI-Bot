@@ -1,10 +1,13 @@
 """Deterministic P1 generation of course UI strings, without runtime adoption."""
 import ast
+import re
 from pathlib import Path
 import shutil
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
+
+from scripts.i18n_baseline_guard import git_blob_sha1
 
 from scripts.i18n_build_course_catalogs import (
     ANDROID_TAGS, LOCALES, ROOT, android_resource_names, generate,
@@ -72,6 +75,31 @@ class CourseLocalCatalogTests(unittest.TestCase):
             self.assertEqual(generate(root, check=False), ["desktop/ui/js/generated/hsk-course-i18n.js"])
             self.assertEqual(generate(root, check=True), [])
 
+
+    def test_course_bundle_cache_version_is_content_addressed_on_every_page(self):
+        """Every static consumer must invalidate its cache on generated content changes."""
+        expected_hash = git_blob_sha1(
+            (ROOT / "app/static/course_v3_data/hsk-course-i18n.js").read_bytes()
+        )[:12]
+        pages = (
+            "course-v3.html", "course_v3_memorize.html",
+            "course_v3_mistakes.html", "course_v3_onboarding.html",
+            "course_v3_pronunciation.html", "course_v3_recognition.html",
+            "course_v3_test.html", "course_v3_voice.html",
+            "desktop-download.html", "hsk-gaplar.html",
+            "hsk-lugat.html", "subscription.html",
+        )
+        versions = set()
+        for page in pages:
+            source = (ROOT / "app/static" / page).read_text(encoding="utf-8")
+            matches = re.findall(
+                r"hsk-course-i18n\.js\?v=(\d{8})-([0-9a-f]{12})", source,
+            )
+            with self.subTest(page=page):
+                self.assertEqual(len(matches), 1)
+                self.assertEqual(matches[0][1], expected_hash)
+                versions.add(matches[0])
+        self.assertEqual(len(versions), 1)
 
 if __name__ == "__main__":
     unittest.main()

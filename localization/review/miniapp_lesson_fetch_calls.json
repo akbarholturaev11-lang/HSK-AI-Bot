@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "SIX_DIRECT_READ_CALLS_SOURCE_REVIEWED_NO_RUNTIME_MIGRATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "cc3be891e2aee875f93ee2c6dc7ece19a4296c85",
+  "source_revision": "8c04d7b2fa765eb2cea2286ee14f63e0030c3db2",
   "scope": "All six direct loadLessonData(...) expressions, not the function declaration, on this Mini App page. Indirect callers to warmLessonPreviewAudio, prefetchNearbyLessons and primeSalesValueContent are separately described in the notes. Updated review after main/P3 integration: all six exact direct GET callsite anchors and four indirect callers are re-identified; no access policy migration.",
   "read_calls": [
     {
