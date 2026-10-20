@@ -6,8 +6,9 @@ import unittest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.dialects import postgresql
+from starlette.requests import Request
 
-from app.api.public_site import create_public_site_router
+from app.api.public_site import create_public_site_router, record_attributed_source_visit
 from app.services.public_site_analytics_service import (
     PublicSiteAnalyticsService,
     normalize_public_site_source,
@@ -49,10 +50,10 @@ class PublicSiteAnalyticsTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(normalize_public_site_source("newsletter"), "other")
         self.assertIsNone(normalize_public_site_source("  "))
 
-    async def test_record_home_visit_upserts_daily_source_count(self):
+    async def test_record_source_visit_upserts_daily_source_count(self):
         session = RecordingSession()
 
-        await PublicSiteAnalyticsService(session).record_home_visit(
+        await PublicSiteAnalyticsService(session).record_source_visit(
             "instagram", today=date(2026, 10, 20)
         )
 
@@ -62,6 +63,15 @@ class PublicSiteAnalyticsTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(session.statement.compile().params["source"], "instagram")
         self.assertEqual(session.statement.compile().params["visits"], 1)
         self.assertTrue(session.committed)
+
+    async def test_attributed_download_visit_is_counted(self):
+        factory = SessionFactory()
+        request = Request({"type": "http", "query_string": b"utm_source=instagram"})
+
+        await record_attributed_source_visit(request, factory)
+
+        self.assertEqual(factory.session.statement.compile().params["source"], "instagram")
+        self.assertTrue(factory.session.committed)
 
     async def test_source_stats_returns_all_buckets_and_window_totals(self):
         session = RecordingSession()

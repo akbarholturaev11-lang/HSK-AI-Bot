@@ -36,7 +36,7 @@ class PublicSiteAnalyticsService:
     def __init__(self, session):
         self.session = session
 
-    async def record_home_visit(self, source: str, *, today: date | None = None) -> None:
+    async def record_source_visit(self, source: str, *, today: date | None = None) -> None:
         visit_day = today or datetime.now(timezone.utc).date()
         statement = insert(PublicSiteTrafficDaily).values(
             visit_day=visit_day,
