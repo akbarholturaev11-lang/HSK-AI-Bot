@@ -831,6 +831,12 @@
     "foundation.internetRetry": "Интернетро санҷед ва аз нав бор кунед.",
     "foundation.retry": "Аз нав",
     "lessonFlow.retry": "Такрор кардан",
-    "lessonFlow.notReady": "Дарс ҳанӯз тайёр нест"
+    "lessonFlow.notReady": "Дарс ҳанӯз тайёр нест",
+    "practice.preparing": "Машқ омода мешавад",
+    "practice.checkingAccess": "Дастрасӣ санҷида мешавад…",
+    "foundation.saving": "Сабт мешавад…",
+    "foundation.retrySave": "Аз нав сабт кардан",
+    "foundation.saveFailed": "Натиҷа сабт нашуд. Боз кӯшиш кунед.",
+    "resourceFrame.loading": "Боргирӣ…"
   }
 }

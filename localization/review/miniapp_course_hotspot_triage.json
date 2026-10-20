@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "eaa33bedb7a93496775ddabe23f862ec9b1b42ab",
+  "source_revision": "753f8f8709b65e31f2738e4824c060c21b3d0cda",
   "counting_note": "62 unique physical source lines cover all 131 current LANG ==/=== literal-locale predicates in course-v3.html after main/P3 integration. Multiple predicates per line remain one classification; these are reviewed source decisions, not runtime UI verification.",
   "coverage_note": "Current merged course-v3.html source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified, including two new main navigation/accessibility sites. All other localized source expressions, dynamic content, other files and rendered UI remain separately audited.",
   "classifications": [
@@ -82,7 +82,7 @@
       "line": 3196,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
-      "reason": "Exercise loading fallback; keep Panda loading behavior",
+      "reason": "Exercise loading fallback; keep Panda loading behavior Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -90,7 +90,7 @@
       "line": 3202,
       "anchor": "LANG===\"ru\"",
       "category": "access_copy",
-      "reason": "Practice gate loading text; leave access checks unchanged",
+      "reason": "Practice gate loading text; leave access checks unchanged Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -154,7 +154,7 @@
       "line": 3836,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
-      "reason": "Foundation save-in-progress label",
+      "reason": "Foundation save-in-progress label Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -162,7 +162,7 @@
       "line": 3844,
       "anchor": "LANG===\"ru\"",
       "category": "result_error_copy",
-      "reason": "Retry persisted result after failed save",
+      "reason": "Retry persisted result after failed save Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -170,7 +170,7 @@
       "line": 3846,
       "anchor": "Не удалось сохранить результат",
       "category": "result_error_copy",
-      "reason": "Quiz progress persistence error",
+      "reason": "Quiz progress persistence error Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -242,7 +242,7 @@
       "line": 4950,
       "anchor": "LANG===\"ru\"",
       "category": "assessment_ui_copy",
-      "reason": "Foundation baseline step label",
+      "reason": "Foundation baseline step label Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },
@@ -490,7 +490,7 @@
       "line": 6970,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
-      "reason": "Resource iframe loading placeholder",
+      "reason": "Resource iframe loading placeholder Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
       "review": "source_classified_only",
       "predicate_occurrences": 2
     },

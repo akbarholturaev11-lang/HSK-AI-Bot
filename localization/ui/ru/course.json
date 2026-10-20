@@ -831,6 +831,12 @@
     "foundation.internetRetry": "Проверьте интернет и повторите загрузку.",
     "foundation.retry": "Повторить",
     "lessonFlow.retry": "Повторить",
-    "lessonFlow.notReady": "Дарс пока не готов"
+    "lessonFlow.notReady": "Дарс пока не готов",
+    "practice.preparing": "Готовим упражнение",
+    "practice.checkingAccess": "Проверяем доступ…",
+    "foundation.saving": "Сохраняем…",
+    "foundation.retrySave": "Повторить сохранение",
+    "foundation.saveFailed": "Не удалось сохранить результат. Попробуйте ещё раз.",
+    "resourceFrame.loading": "Загрузка…"
   }
 }

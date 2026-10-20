@@ -230,6 +230,9 @@
     <string name="hsk_course_finish_prev" formatted="false">Avvalgi darsni tugating</string>
     <string name="hsk_course_foundation_internet_retry" formatted="false">Internetni tekshiring va qayta yuklang.</string>
     <string name="hsk_course_foundation_retry" formatted="false">Qayta urinish</string>
+    <string name="hsk_course_foundation_retry_save" formatted="false">Qayta saqlash</string>
+    <string name="hsk_course_foundation_save_failed" formatted="false">Natija saqlanmadi. Qayta urinib ko\'ring.</string>
+    <string name="hsk_course_foundation_saving" formatted="false">Saqlanmoqda…</string>
     <string name="hsk_course_foundation_unavailable" formatted="false">Asoslar hozircha ochilmadi</string>
     <string name="hsk_course_foundation_zero_title" formatted="false">0 dan asoslar</string>
     <string name="hsk_course_friends" formatted="false">Do\'stlar</string>
@@ -437,6 +440,8 @@
     <string name="hsk_course_plan_free" formatted="false">Bepul boshlash</string>
     <string name="hsk_course_plan_pay" formatted="false">HSK AI Pro olish</string>
     <string name="hsk_course_plan_title" formatted="false">Shaxsiy rejangiz tayyor</string>
+    <string name="hsk_course_practice_checking_access" formatted="false">Ruxsat tekshirilmoqda…</string>
+    <string name="hsk_course_practice_preparing" formatted="false">Mashq tayyorlanmoqda</string>
     <string name="hsk_course_practice_auth_required_body" formatted="false">Mashq uchun Telegram orqali qayta kiring. Ruxsat tekshirilmaguncha mashq ochilmaydi.</string>
     <string name="hsk_course_practice_auth_required_retry" formatted="false">Qayta ochish</string>
     <string name="hsk_course_practice_gate_error_body" formatted="false">Ruxsatni tekshirib bo\'lmadi. Internetni tekshirib, qayta urining.</string>
@@ -512,6 +517,7 @@
     <string name="hsk_course_recognition_premium_btn" formatted="false">HSK AI Pro ⭐️ olish</string>
     <string name="hsk_course_recognition_review" formatted="false">takror</string>
     <string name="hsk_course_repeat" formatted="false">Takrorlash</string>
+    <string name="hsk_course_resource_frame_loading" formatted="false">Yuklanmoqda…</string>
     <string name="hsk_course_right_ans" formatted="false">To\'g\'ri javob:</string>
     <string name="hsk_course_say" formatted="false">Talaffuz qiling</string>
     <string name="hsk_course_sheet_close_label" formatted="false">Yopish</string>

@@ -16,10 +16,10 @@ from scripts.i18n_build_course_catalogs import (
 
 
 class CourseLocalCatalogTests(unittest.TestCase):
-    def test_reviewed_829_keys_and_six_generated_targets(self):
+    def test_reviewed_835_keys_and_six_generated_targets(self):
         catalogs = read_sources(ROOT)
         self.assertEqual(set(catalogs), set(LOCALES))
-        self.assertTrue(all(len(catalogs[loc]) == 829 for loc in LOCALES))
+        self.assertTrue(all(len(catalogs[loc]) == 835 for loc in LOCALES))
         self.assertEqual(len(output_files(catalogs)), 6)
         self.assertEqual(generate(ROOT, check=True), [])
 
@@ -97,6 +97,30 @@ class CourseLocalCatalogTests(unittest.TestCase):
         self.assertIn('esc(courseMessage("foundation.internetRetry"', lines[3768 - 1])
         self.assertIn('esc(courseMessage("foundation.retry"', lines[3769 - 1])
         self.assertIn("setLessonFlowControls();flowDone()", lines[4074 - 1])
+
+    def test_practice_preparing_foundation_save_and_resource_loading_copy(self):
+        """Offline catalog keeps exact legacy UI fallback and stable result flow."""
+        catalogs = read_sources(ROOT)
+        lines = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8").splitlines()
+        anchors = {
+            3196: "practice.preparing",
+            3202: "practice.checkingAccess",
+            3836: "foundation.saving",
+            3844: "foundation.retrySave",
+            3846: "foundation.saveFailed",
+            4950: "foundation.zeroTitle",
+            6970: "resourceFrame.loading",
+        }
+        for line, key in anchors.items():
+            with self.subTest(line=line, key=key):
+                self.assertIn('courseMessage("' + key + '",LANG==="ru"?', lines[line - 1])
+                for locale in LOCALES:
+                    self.assertIn(catalogs[locale][key], lines[line - 1])
+        # The server-owned Foundation result decision and retry/timeout are unchanged.
+        self.assertIn('result.ok!==true', lines[3842 - 1])
+        self.assertIn('Foundation.finishing=false', lines[3843 - 1])
+        self.assertIn('2800);return;', lines[3846 - 1])
+        self.assertIn('esc(copy)', lines[3203 - 1])
 
     def test_course_bundle_cache_version_is_content_addressed_on_every_page(self):
         """Every static consumer must invalidate its cache on generated content changes."""

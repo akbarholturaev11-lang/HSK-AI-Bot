@@ -230,6 +230,9 @@
     <string name="hsk_course_finish_prev" formatted="false">Завершите предыдущий урок</string>
     <string name="hsk_course_foundation_internet_retry" formatted="false">Проверьте интернет и повторите загрузку.</string>
     <string name="hsk_course_foundation_retry" formatted="false">Повторить</string>
+    <string name="hsk_course_foundation_retry_save" formatted="false">Повторить сохранение</string>
+    <string name="hsk_course_foundation_save_failed" formatted="false">Не удалось сохранить результат. Попробуйте ещё раз.</string>
+    <string name="hsk_course_foundation_saving" formatted="false">Сохраняем…</string>
     <string name="hsk_course_foundation_unavailable" formatted="false">Основы пока недоступны</string>
     <string name="hsk_course_foundation_zero_title" formatted="false">Основы с нуля</string>
     <string name="hsk_course_friends" formatted="false">Друзья</string>
@@ -437,6 +440,8 @@
     <string name="hsk_course_plan_free" formatted="false">Начать бесплатно</string>
     <string name="hsk_course_plan_pay" formatted="false">Оформить HSK AI Pro</string>
     <string name="hsk_course_plan_title" formatted="false">Ваш личный план готов</string>
+    <string name="hsk_course_practice_checking_access" formatted="false">Проверяем доступ…</string>
+    <string name="hsk_course_practice_preparing" formatted="false">Готовим упражнение</string>
     <string name="hsk_course_practice_auth_required_body" formatted="false">Откройте мини-приложение заново через Telegram. Без проверки доступа упражнение недоступно.</string>
     <string name="hsk_course_practice_auth_required_retry" formatted="false">Открыть заново</string>
     <string name="hsk_course_practice_gate_error_body" formatted="false">Не удалось проверить доступ. Проверьте интернет и повторите.</string>
@@ -512,6 +517,7 @@
     <string name="hsk_course_recognition_premium_btn" formatted="false">Получить HSK AI Pro ⭐️</string>
     <string name="hsk_course_recognition_review" formatted="false">повтор</string>
     <string name="hsk_course_repeat" formatted="false">Повторить</string>
+    <string name="hsk_course_resource_frame_loading" formatted="false">Загрузка…</string>
     <string name="hsk_course_right_ans" formatted="false">Правильный ответ:</string>
     <string name="hsk_course_say" formatted="false">Произнесите</string>
     <string name="hsk_course_sheet_close_label" formatted="false">Закрыть</string>

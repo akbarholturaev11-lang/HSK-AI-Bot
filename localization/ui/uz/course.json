@@ -831,6 +831,12 @@
     "foundation.internetRetry": "Internetni tekshiring va qayta yuklang.",
     "foundation.retry": "Qayta urinish",
     "lessonFlow.retry": "Qayta urinish",
-    "lessonFlow.notReady": "Dars hali tayyor emas"
+    "lessonFlow.notReady": "Dars hali tayyor emas",
+    "practice.preparing": "Mashq tayyorlanmoqda",
+    "practice.checkingAccess": "Ruxsat tekshirilmoqda…",
+    "foundation.saving": "Saqlanmoqda…",
+    "foundation.retrySave": "Qayta saqlash",
+    "foundation.saveFailed": "Natija saqlanmadi. Qayta urinib ko'ring.",
+    "resourceFrame.loading": "Yuklanmoqda…"
   }
 }

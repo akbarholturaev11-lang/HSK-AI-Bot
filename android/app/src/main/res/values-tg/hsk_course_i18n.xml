@@ -230,6 +230,9 @@
     <string name="hsk_course_finish_prev" formatted="false">Дарси пешинаро анҷом диҳед</string>
     <string name="hsk_course_foundation_internet_retry" formatted="false">Интернетро санҷед ва аз нав бор кунед.</string>
     <string name="hsk_course_foundation_retry" formatted="false">Аз нав</string>
+    <string name="hsk_course_foundation_retry_save" formatted="false">Аз нав сабт кардан</string>
+    <string name="hsk_course_foundation_save_failed" formatted="false">Натиҷа сабт нашуд. Боз кӯшиш кунед.</string>
+    <string name="hsk_course_foundation_saving" formatted="false">Сабт мешавад…</string>
     <string name="hsk_course_foundation_unavailable" formatted="false">Асосҳо ҳоло дастрас нестанд</string>
     <string name="hsk_course_foundation_zero_title" formatted="false">Асосҳо аз сифр</string>
     <string name="hsk_course_friends" formatted="false">Дӯстон</string>
@@ -437,6 +440,8 @@
     <string name="hsk_course_plan_free" formatted="false">Ройгон оғоз кардан</string>
     <string name="hsk_course_plan_pay" formatted="false">HSK AI Pro гирифтан</string>
     <string name="hsk_course_plan_title" formatted="false">Нақшаи шахсии шумо тайёр</string>
+    <string name="hsk_course_practice_checking_access" formatted="false">Дастрасӣ санҷида мешавад…</string>
+    <string name="hsk_course_practice_preparing" formatted="false">Машқ омода мешавад</string>
     <string name="hsk_course_practice_auth_required_body" formatted="false">Мини-барномаро аз Telegram дубора кушоед. Бе санҷиши дастрасӣ машқ оғоз намешавад.</string>
     <string name="hsk_course_practice_auth_required_retry" formatted="false">Аз нав кушодан</string>
     <string name="hsk_course_practice_gate_error_body" formatted="false">Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.</string>
@@ -512,6 +517,7 @@
     <string name="hsk_course_recognition_premium_btn" formatted="false">HSK AI Pro ⭐️ гирифтан</string>
     <string name="hsk_course_recognition_review" formatted="false">такрор</string>
     <string name="hsk_course_repeat" formatted="false">Такрор</string>
+    <string name="hsk_course_resource_frame_loading" formatted="false">Боргирӣ…</string>
     <string name="hsk_course_right_ans" formatted="false">Ҷавоби дуруст:</string>
     <string name="hsk_course_say" formatted="false">Талаффуз кунед</string>
     <string name="hsk_course_sheet_close_label" formatted="false">Пӯшидан</string>
