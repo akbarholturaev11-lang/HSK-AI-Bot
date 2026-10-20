@@ -57,6 +57,7 @@
     "action.finish": "Анҷом",
     "action.logout": "Баромадан",
     "action.start": "Оғоз",
+    "bot.courseModeUnavailable": "🚧 Реҷаи курс ҳоло дар таҳия аст.",
     "state.loading": "Боргирӣ…"
   }
 }

@@ -10,6 +10,7 @@
     <string name="hsk_common_action_logout" formatted="false">Выйти</string>
     <string name="hsk_common_action_start" formatted="false">Начать</string>
     <string name="hsk_common_auth_expires" formatted="false">На подтверждение входа осталось {time}</string>
+    <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Режим курса сейчас в разработке.</string>
     <string name="hsk_common_common_refresh" formatted="false">Обновить</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">Вопрос о китайском языке</string>
     <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Свернуть панель</string>

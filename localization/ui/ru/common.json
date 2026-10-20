@@ -57,6 +57,7 @@
     "action.finish": "Завершить",
     "action.logout": "Выйти",
     "action.start": "Начать",
+    "bot.courseModeUnavailable": "🚧 Режим курса сейчас в разработке.",
     "state.loading": "Загрузка…"
   }
 }

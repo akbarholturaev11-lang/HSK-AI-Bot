@@ -74,6 +74,7 @@ jobs:
             tests.test_i18n_legacy_lesson_content_risk_audit \
             tests.test_i18n_miniapp_storage_scope_audit \
             tests.test_i18n_build_local_catalogs \
+            tests.test_i18n_bot_course_mode_adoption \
             tests.test_i18n_common_ui_adoption \
             tests.test_i18n_course_ui_catalog_guard \
             tests.test_i18n_build_course_catalogs \

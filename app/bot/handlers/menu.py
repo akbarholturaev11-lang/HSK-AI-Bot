@@ -274,12 +274,7 @@ async def handle_course_mode_button(message: Message, state: FSMContext, session
     await _clear_voice_mode(user, session, state)
 
     if not COURSE_MODE_ENABLED:
-        msg_map = {
-            "uz": "🚧 Kurs rejimi hozircha ishlab chiqilmoqda.",
-            "ru": "🚧 Режим курса сейчас в разработке.",
-            "tj": "🚧 Реҷаи курс ҳоло дар навсози аст.",
-        }
-        await message.answer(msg_map.get(lang, msg_map["ru"]))
+        await message.answer(t("common.bot.courseModeUnavailable", lang))
         return
 
     await send_course_miniapp_entry(

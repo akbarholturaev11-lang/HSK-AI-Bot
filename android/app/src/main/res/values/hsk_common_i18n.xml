@@ -10,6 +10,7 @@
     <string name="hsk_common_action_logout" formatted="false">Chiqish</string>
     <string name="hsk_common_action_start" formatted="false">Boshlash</string>
     <string name="hsk_common_auth_expires" formatted="false">Kirishni tasdiqlash uchun {time} qoldi</string>
+    <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Kurs rejimi hozircha ishlab chiqilmoqda.</string>
     <string name="hsk_common_common_refresh" formatted="false">Yangilash</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">AI uchun savol</string>
     <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Panelni yig‘ish</string>

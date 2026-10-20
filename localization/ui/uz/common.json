@@ -57,6 +57,7 @@
     "action.finish": "Yakunlash",
     "action.logout": "Chiqish",
     "action.start": "Boshlash",
+    "bot.courseModeUnavailable": "🚧 Kurs rejimi hozircha ishlab chiqilmoqda.",
     "state.loading": "Yuklanmoqda…"
   }
 }
