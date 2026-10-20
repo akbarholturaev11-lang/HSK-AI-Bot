@@ -4,7 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from scripts.i18n_baseline_guard import check_baseline, git_blob_sha1
+from scripts.i18n_baseline_guard import check_baseline, git_blob_sha1, VERIFIED_UPSTREAM_MAIN_COMMIT
 
 
 def fixture(path: Path, payload: str, *, track: str = "hsk1") -> dict:
@@ -145,6 +145,54 @@ class BaselineGuardTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "duplicate"):
                 check_baseline(root, baseline)
 
+
+    def test_pinned_upstream_main_source_and_unapproved_content_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            relative = "app/static/course_v3_data/hsk1/lesson_01.json"
+            path = root / relative
+            before = '{"level":"hsk1","lesson_id":1,"score":1}'
+            baseline = fixture(path, before)
+            current = b'{"level":"hsk1","lesson_id":1,"score":2}'
+            path.write_bytes(current)
+            record = {
+                "baseline_sha1": baseline["sources"]["lessons"][0]["git_blob_sha1"],
+                "upstream_main_sha1": git_blob_sha1(current),
+                "group": "lessons",
+                "reason": "Verified exact main source, not approval for new edits",
+            }
+            manifest = {
+                "schema_version": 1,
+                "baseline_main_commit": baseline["baseline_main_commit"],
+                "upstream_main_commit": VERIFIED_UPSTREAM_MAIN_COMMIT,
+                "status": "VERIFIED_MAIN_BLOB_PROVENANCE_ONLY_NOT_ASSESSMENT_CERTIFICATION",
+                "purpose": "Testing pinned main source",
+                "files": {relative: record},
+            }
+            self.assertEqual(check_baseline(root, baseline)["review_blockers"], 1)
+            report = check_baseline(root, baseline, upstream_main=manifest)
+            self.assertEqual(report["review_blockers"], 0)
+            self.assertEqual(report["verified_upstream_main_changes"], 1)
+            self.assertEqual(report["status"], "verified_main_snapshot_with_reviewed_ui")
+            path.write_bytes(current.replace(b'"score":2', b'"score":3'))
+            self.assertEqual(check_baseline(root, baseline, upstream_main=manifest)["review_blockers"], 1)
+            path.write_bytes(current)
+            altered = json.loads(json.dumps(manifest))
+            altered["upstream_main_commit"] = "0" * 40
+            with self.assertRaisesRegex(ValueError, "invalid verified upstream"):
+                check_baseline(root, baseline, upstream_main=altered)
+            altered = json.loads(json.dumps(manifest))
+            altered["files"][relative]["baseline_sha1"] = "0" * 40
+            with self.assertRaisesRegex(ValueError, "wrong frozen original"):
+                check_baseline(root, baseline, upstream_main=altered)
+            altered = json.loads(json.dumps(manifest))
+            altered["files"][relative]["group"] = "ui_catalog_origins"
+            with self.assertRaisesRegex(ValueError, "wrong baseline source group"):
+                check_baseline(root, baseline, upstream_main=altered)
+            altered = json.loads(json.dumps(manifest))
+            altered["files"]["untracked/new.json"] = altered["files"].pop(relative)
+            with self.assertRaisesRegex(ValueError, "unknown frozen source"):
+                check_baseline(root, baseline, upstream_main=altered)
 
 if __name__ == "__main__":
     unittest.main()
