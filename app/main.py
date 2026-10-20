@@ -19,7 +19,11 @@ from sqlalchemy import and_, func, or_, select
 from sqlalchemy.orm import defer
 from starlette.middleware.gzip import GZipMiddleware
 
-from app.api.public_site import create_public_site_router
+from app.api.public_site import (
+    create_public_site_router,
+    record_attributed_source_visit,
+    record_event,
+)
 from app.config import settings
 from app.api.android_auth import create_android_auth_router
 from app.api.course_tracks import create_course_tracks_router
@@ -65,7 +69,7 @@ from app.public_site.app_downloads_render import (
     downloads_section,
     structured_data as app_downloads_structured_data,
 )
-from app.public_site.render import public_origin
+from app.public_site.render import attribution, public_origin
 from app.services.app_downloads_service import app_download_status
 from app.api.desktop_voice import create_desktop_voice_router
 from app.bot.create_bot import create_bot
@@ -2062,7 +2066,10 @@ async def _rendered_downloads_page() -> Response:
 @app.get("/apps")
 @app.get("/desktop-download.html")
 @app.get("/desktop-download")
-async def desktop_download_page():
+async def desktop_download_page(request: Request):
+    tags = attribution(request.query_params)
+    record_event("landing_view", request.url.path, tags)
+    await record_attributed_source_visit(request, async_session_maker)
     return await _rendered_downloads_page()
 
 
