@@ -1133,6 +1133,58 @@ test("every user-facing key exists in all three languages", async () => {
   }
 });
 
+test("Desktop Telegram account-link label uses the shared local common catalog", async () => {
+  const i18n = await source("desktop/ui/js/i18n.js");
+  const expected = {
+    authOpen: "desktopAuth.openTelegram",
+    telegramIdentityOpen: "desktopAuth.openTelegram",
+  };
+  const mapStart = i18n.indexOf("const SHARED_COMMON_KEY = Object.freeze({");
+  assert.ok(mapStart >= 0, "common catalog map is missing");
+  const mapEnd = i18n.indexOf("\n});", mapStart);
+  const actual = Object.fromEntries(
+    [...i18n.slice(mapStart, mapEnd).matchAll(/^  ([A-Za-z_][A-Za-z0-9_]*): "([^"]+)",?$/gm)]
+      .map((match) => [match[1], match[2]]),
+  );
+  for (const [desktopKey, commonKey] of Object.entries(expected)) {
+    assert.equal(actual[desktopKey], commonKey, `${desktopKey} must use ${commonKey}`);
+  }
+  assert.match(i18n, /import "\.\/generated\/hsk-common-i18n\.js";/);
+
+  const catalogs = {};
+  for (const locale of ["uz", "ru", "tj"]) {
+    catalogs[locale] = JSON.parse(
+      await source(`localization/ui/${locale}/common.json`),
+    ).messages;
+  }
+  const oldWindow = globalThis.window;
+  const oldDocument = globalThis.document;
+  try {
+    globalThis.window = {};
+    globalThis.document = { documentElement: {} };
+    const generatedUrl = `${pathToFileURL(path.join(uiRoot, "js/generated/hsk-common-i18n.js")).href}?desktop-common-contract`;
+    await import(generatedUrl);
+    const moduleUrl = `${pathToFileURL(path.join(uiRoot, "js/i18n.js")).href}?desktop-common-contract`;
+    const { setLanguage, t } = await import(moduleUrl);
+    for (const locale of ["uz", "ru", "tj"]) {
+      setLanguage(locale);
+      for (const desktopKey of Object.keys(expected)) {
+        assert.equal(t(desktopKey), catalogs[locale]["desktopAuth.openTelegram"], `${locale}.${desktopKey}`);
+      }
+    }
+    const bundle = globalThis.window.HSKAI_COMMON_I18N;
+    globalThis.window.HSKAI_COMMON_I18N = undefined;
+    setLanguage("ru");
+    assert.equal(t("telegramIdentityOpen"), "Открыть Telegram");
+    globalThis.window.HSKAI_COMMON_I18N = bundle;
+  } finally {
+    if (oldWindow === undefined) delete globalThis.window;
+    else globalThis.window = oldWindow;
+    if (oldDocument === undefined) delete globalThis.document;
+    else globalThis.document = oldDocument;
+  }
+});
+
 test("every user-facing key uses exact local course catalog copy when mapped", async () => {
   const i18n = await source("desktop/ui/js/i18n.js");
   const expected = {
@@ -1148,6 +1200,7 @@ test("every user-facing key uses exact local course catalog copy when mapped", a
     hsk30TestSoonBody: "testHsk30Soon.sub",
     hsk30TrackSwitch: "coursePicker.version",
     inviteCopiedButton: "downloadPage.copied",
+    inviteDestinationTelegram: "rating.writeTelegram",
     method_alipay: "subscriptionNested.methods.alipay.title",
     method_wechat: "subscriptionNested.methods.wechat.title",
     minutesShort: "testHub.min",
