@@ -228,8 +228,10 @@
     <string name="hsk_course_download_page_windows_security_title" formatted="false">При первом запуске может появиться предупреждение</string>
     <string name="hsk_course_download_page_windows_title" formatted="false">HSK AI для Windows</string>
     <string name="hsk_course_finish_prev" formatted="false">Завершите предыдущий урок</string>
+    <string name="hsk_course_foundation_guided_repair_body" formatted="false">Посмотрите на правильный ответ и подтвердите его.</string>
     <string name="hsk_course_foundation_internet_retry" formatted="false">Проверьте интернет и повторите загрузку.</string>
     <string name="hsk_course_foundation_recheck_title" formatted="false">Повторная проверка</string>
+    <string name="hsk_course_foundation_repair_reminder" formatted="false">Посмотрите на ответ ещё раз — скоро вы найдёте его сами.</string>
     <string name="hsk_course_foundation_retry" formatted="false">Повторить</string>
     <string name="hsk_course_foundation_retry_save" formatted="false">Повторить сохранение</string>
     <string name="hsk_course_foundation_save_failed" formatted="false">Не удалось сохранить результат. Попробуйте ещё раз.</string>
@@ -258,7 +260,13 @@
     <string name="hsk_course_lesson_done" formatted="false">Урок завершён!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Отличная работа. Следующий этап ждёт.</string>
     <string name="hsk_course_lesson_flow_choose_hanzi_question" formatted="false">Выберите иероглиф</string>
+    <string name="hsk_course_lesson_flow_encouragement1" formatted="false">Ошибка — значит, вы действительно думаете. Именно так и запоминается.</string>
+    <string name="hsk_course_lesson_flow_encouragement2" formatted="false">Это слово сейчас далось трудно. При второй встрече будет легче — так и учатся.</string>
+    <string name="hsk_course_lesson_flow_encouragement3" formatted="false">Не останавливайтесь: одна ошибка не портит весь урок.</string>
     <string name="hsk_course_lesson_flow_exit_ticket_title" formatted="false">Итоговая проверка</string>
+    <string name="hsk_course_lesson_flow_guided_repair_action" formatted="false">Выбрать этот ответ</string>
+    <string name="hsk_course_lesson_flow_guided_repair_body" formatted="false">Посмотрите на правильный ответ и подтвердите его сами.</string>
+    <string name="hsk_course_lesson_flow_guided_repair_title" formatted="false">Исправим вместе</string>
     <string name="hsk_course_lesson_flow_lesson_prefix" formatted="false">Урок {n}</string>
     <string name="hsk_course_lesson_flow_meaning_question" formatted="false">Что означает?</string>
     <string name="hsk_course_lesson_flow_not_ready" formatted="false">Дарс пока не готов</string>

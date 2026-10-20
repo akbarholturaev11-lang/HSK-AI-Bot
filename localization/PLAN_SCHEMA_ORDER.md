@@ -2,7 +2,7 @@
 
 **Use `localization/RESUME_NEXT_CHAT.md` then `localization/P3_ACTIVE_HANDOFF.md` as the current state.** This document preserves historical milestones; references below to the original `codex/i18n-local-first-foundation-20261017` branch are superseded for current work by **`codex/p3-main-integration-20261020`**. Owner explicitly prohibits edits to `main` and production deployment until separately authorized. The historical `main` SHA is `055de820db10b32fadffa942938a16e2070f0d52`.
 
-At the start of this batch, committed integration HEAD was **`8c708a5e4149973a89650b8bb2a8e58a788c1550`**, with P0 run `39403997281` SUCCESS. `origin/main` (`055de820db10b32fadffa942938a16e2070f0d52`) is already an ancestor of the integration branch. The uncommitted batch raises UZ/RU/TJ course catalogs from 835 to **866 keys** and pins 12 HTML consumers to `20261020-b5bc4adb441e`; local P0 and selected backend suites pass, but exact-head GitHub CI must still run. P3 has 136 source-bound contexts / 408 locale strings, agent source-context QA, and an authenticated display-only runtime overlay; staging/security/device release gates remain open. Do not claim release readiness from local tests alone.
+Current integration code base is **`ce427ab2e21b4dbcd2c4ea15b7cc66caf46e77e2`** on `codex/p3-main-integration-20261020`. Latest `origin/main` is **`16cc47cddbed62f75850db41b89b8be2ec6709d7`**, one commit ahead with public-site traffic analytics/migration `0109`; a dry merge reports no content conflict, but synchronization and exact-head CI are pending. The current local P2 batch raises UZ/RU/TJ course catalogs from 866 to **874 keys** and pins all 12 HTML consumers to `20261020-ed284a21dc2c`. Local P0 passes 356 tests and the Android direct/play unit-test tasks pass; exact-head GitHub CI for the new batch is pending. P3 has 136 source-bound contexts / 408 agent-reviewed strings and an authenticated display-only runtime overlay; public lesson-route, account-switch, staging and installed-client release gates remain open. Do not claim release readiness from local tests alone.
 
 ## Controlling P3 language QA decision — 2026-10-19
 
@@ -192,7 +192,7 @@ Do not mark implementation complete based on the plan being written.
 | Local-first architecture decision | DONE | plan + `PROJECT_MEMORY.md` |
 | Surface source registry | INITIAL | `localization/surface_registry.json` |
 | Full reviewed inventory/baselines (P0) | IN PROGRESS | 811 frozen sources / 746 lessons / 0 baseline blockers; route security, staging and real-client QA remain open |
-| Generated canonical catalogs + validators (P1) | IMPLEMENTED | deterministic UZ/RU/TJ resources for Android/Mini App/Desktop/Bot; 866 course UI keys and 6 current generated artifacts |
+| Generated canonical catalogs + validators (P1) | IMPLEMENTED | deterministic UZ/RU/TJ resources for Android/Mini App/Desktop/Bot; 874 course UI keys and 6 current generated artifacts |
 | Platform runtime migrations (P2) | IN PROGRESS | Mini App uses local course catalog; remaining inline UI and Android/native, Desktop and Bot adoption are still under review |
 | Versioned lesson locale overlays (P3) | IN PROGRESS | 136 contexts / 408 agent-reviewed locale strings; authenticated display-only runtime implemented; release QA pending |
 | Any new language enabled (P4) | NOT STARTED | prohibited until gates |

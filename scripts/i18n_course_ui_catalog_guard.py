@@ -16,7 +16,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("uz", "ru", "tj")
 SOURCE = "localization/ui"
-EXPECTED_COUNT = 866
+EXPECTED_COUNT = 874
 KEY_NAME = re.compile(r"[a-z][a-zA-Z0-9]*(?:\.[a-z][a-zA-Z0-9]*)*")
 PLACEHOLDER = re.compile(r"\{([A-Za-z][A-Za-z0-9_]*)\}")
 GRADING_KEYS = {
@@ -90,7 +90,7 @@ def review_sources(root: Path = ROOT) -> dict:
         "sources": [f"{SOURCE}/{locale}/course.json" for locale in LOCALES],
         "limitations": [
             "No live Mini App rendering, Android/desktop language switch or RTL/layout screenshots.",
-            "The source keys reflect current UI copy; semantic translation quality needs human review.",
+            "This structural check does not prove semantic translation quality; agent QA is tracked separately.",
             "This validates no entitlement, quiz, exam, offline cache or Pro payment behavior.",
             "Never use these static UI catalogs to publish raw lesson JSON or grading answers.",
         ],
