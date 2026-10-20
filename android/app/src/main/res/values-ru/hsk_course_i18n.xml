@@ -805,6 +805,7 @@
     <string name="hsk_course_test_placement_rec_sub" formatted="false">По результату вам подходит уровень HSK </string>
     <string name="hsk_course_test_placement_retake" formatted="false">Пройти заново</string>
     <string name="hsk_course_test_sub" formatted="false">Экзамены HSK и определение уровня</string>
+    <string name="hsk_course_today_go" formatted="false">Продолжить по плану</string>
     <string name="hsk_course_trial_active" formatted="false">HSK AI Pro активен</string>
     <string name="hsk_course_trial_body" formatted="false">Попробуете все основные возможности. Деньги автоматически не спишутся.</string>
     <string name="hsk_course_trial_cta" formatted="false">Попробовать 7 дней бесплатно</string>

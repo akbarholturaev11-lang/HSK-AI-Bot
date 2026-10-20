@@ -876,6 +876,7 @@
     "testCenter.checkingLimit": "Проверяем лимит…",
     "rating.countdownDaysHours": "{days}д {hours}ч",
     "rating.countdownHoursMinutes": "{hours}ч {minutes}m",
-    "rating.countdownMinutes": "{minutes}m"
+    "rating.countdownMinutes": "{minutes}m",
+    "today.go": "Продолжить по плану"
   }
 }

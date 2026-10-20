@@ -10,10 +10,10 @@ from scripts.i18n_course_ui_catalog_guard import (
 
 
 class CourseUICatalogGuardTests(unittest.TestCase):
-    def test_existing_three_locale_874_key_contract(self):
+    def test_existing_three_locale_875_key_contract(self):
         result = review_sources(ROOT)
         self.assertEqual(result["status"], "SOURCE_CONTRACT_VALID_RUNTIME_NOT_TESTED")
-        self.assertEqual(result["message_keys"], 874)
+        self.assertEqual(result["message_keys"], 875)
         self.assertEqual(result["locales"], list(LOCALES))
         self.assertEqual(result["placeholder_keys"], 31)
         self.assertEqual(len(result["sources"]), 3)

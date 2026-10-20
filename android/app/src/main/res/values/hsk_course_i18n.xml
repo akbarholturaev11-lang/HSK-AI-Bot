@@ -805,6 +805,7 @@
     <string name="hsk_course_test_placement_rec_sub" formatted="false">Natijangiz bo\'yicha sizga mos daraja — HSK </string>
     <string name="hsk_course_test_placement_retake" formatted="false">Qayta test</string>
     <string name="hsk_course_test_sub" formatted="false">HSK imtihonlari va daraja aniqlash</string>
+    <string name="hsk_course_today_go" formatted="false">Reja bo\'yicha davom etish</string>
     <string name="hsk_course_trial_active" formatted="false">HSK AI Pro faol</string>
     <string name="hsk_course_trial_body" formatted="false">Barcha asosiy imkoniyatlarni sinab ko\'rasiz. Avtomatik pul yechilmaydi.</string>
     <string name="hsk_course_trial_cta" formatted="false">7 kun bepul sinash</string>

@@ -1488,7 +1488,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-android-common-v2"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261020-ed284a21dc2c"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-android-common-v2"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261020-7eba899ffe2f"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -4649,7 +4649,7 @@ function todayGoBtnHtml(plan,extraCls){
   /* Ikonka `arrow-right` — darsdagi "Davom etish" bilan bir xil. `player-play`
      bu ilovada REKLAMA belgisi, shuning uchun bu yerda ishlatilmaydi. */
   return '<button class="tgo'+(extraCls?" "+extraCls:"")+'" onclick="'+todayTaskAction(plan.tasks[nx])+'">'
-    +esc(todayT().go)+' <i class="ti ti-arrow-right"></i></button>';
+    +esc(courseMessage("today.go",todayT().go))+' <i class="ti ti-arrow-right"></i></button>';
 }
 function todayPlanHtml(){
   var plan=MAP&&MAP.today;

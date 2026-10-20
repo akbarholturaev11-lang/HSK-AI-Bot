@@ -805,6 +805,7 @@
     <string name="hsk_course_test_placement_rec_sub" formatted="false">Аз рӯи натиҷа сатҳи мувофиқ барои шумо — HSK </string>
     <string name="hsk_course_test_placement_retake" formatted="false">Аз нав</string>
     <string name="hsk_course_test_sub" formatted="false">Имтиҳонҳои HSK ва муайянкунии сатҳ</string>
+    <string name="hsk_course_today_go" formatted="false">Идома аз рӯи нақша</string>
     <string name="hsk_course_trial_active" formatted="false">HSK AI Pro фаъол</string>
     <string name="hsk_course_trial_body" formatted="false">Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.</string>
     <string name="hsk_course_trial_cta" formatted="false">7 рӯз ройгон санҷидан</string>

@@ -876,6 +876,7 @@
     "testCenter.checkingLimit": "Limit tekshirilmoqda…",
     "rating.countdownDaysHours": "{days}k {hours}s",
     "rating.countdownHoursMinutes": "{hours}s {minutes}m",
-    "rating.countdownMinutes": "{minutes}m"
+    "rating.countdownMinutes": "{minutes}m",
+    "today.go": "Reja bo'yicha davom etish"
   }
 }
