@@ -589,7 +589,7 @@ private fun StatsGrid(state: ProfileUiState) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             StatMetric(stringResource(R.string.hsk_course_xp), (stats?.xp ?: 0).toString(), Modifier.weight(1f))
-            StatMetric(stringResource(R.string.profile_lessons), (stats?.completedLessons ?: 0).toString(), Modifier.weight(1f))
+            StatMetric(stringResource(R.string.hsk_common_desktopA11y_courseNavigation), (stats?.completedLessons ?: 0).toString(), Modifier.weight(1f))
             StatMetric(stringResource(R.string.profile_mistakes), (stats?.mistakes ?: 0).toString(), Modifier.weight(1f))
         }
     }

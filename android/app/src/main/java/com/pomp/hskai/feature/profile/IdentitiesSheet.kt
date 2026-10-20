@@ -300,7 +300,7 @@ private fun TelegramAccountRow(state: IdentitiesUiState, onConnect: (AuthProvide
         modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text(stringResource(R.string.profile_identity_telegram), color = PompColors.Ink, fontSize = 14.sp, modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.hsk_course_rating_write_telegram), color = PompColors.Ink, fontSize = 14.sp, modifier = Modifier.weight(1f))
             if (!state.telegramLinked) {
                 OutlinedButton(
                     onClick = { onConnect(AuthProvider.TELEGRAM, context.authActivity()) },

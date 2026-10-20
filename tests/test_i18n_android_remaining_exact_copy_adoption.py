@@ -48,6 +48,9 @@ LEGACY_TO_GENERATED = {
     "rating_weekly_result": "hsk_course_rating_weekly_heading",
     "writing_finish": "hsk_common_action_done",
     "writing_start": "hsk_common_action_start",
+    "profile_lessons": "hsk_common_desktopA11y_courseNavigation",
+    "profile_identity_telegram": "hsk_course_rating_write_telegram",
+    "voice_end": "hsk_course_memorize_finish",
 }
 
 # Includes six existing call sites that already used the destination resource.
@@ -81,6 +84,9 @@ EXPECTED_GENERATED_CALLS = {
     "hsk_course_rating_weekly_top_five": 1,
     "hsk_course_rating_referral_joined": 1,
     "hsk_course_rating_weekly_heading": 1,
+    "hsk_common_desktopA11y_courseNavigation": 1,
+    "hsk_course_memorize_finish": 1,
+    "hsk_course_rating_write_telegram": 1,
 }
 
 LOCALES = (("", "uz"), ("-ru", "ru"), ("-tg", "tj"))
@@ -93,7 +99,7 @@ def _strings(path: Path) -> dict[str, str]:
 
 class AndroidRemainingExactCopyAdoptionTests(unittest.TestCase):
     def test_legacy_android_values_match_generated_resources_in_all_locales(self):
-        self.assertEqual(len(LEGACY_TO_GENERATED), 37)
+        self.assertEqual(len(LEGACY_TO_GENERATED), 40)
         for qualifier, locale in LOCALES:
             with self.subTest(locale=locale):
                 legacy = _strings(ANDROID_RES / f"values{qualifier}/strings.xml")

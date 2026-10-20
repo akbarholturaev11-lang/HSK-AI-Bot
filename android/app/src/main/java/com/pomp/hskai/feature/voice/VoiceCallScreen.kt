@@ -329,7 +329,7 @@ private fun CallTopBar(
     ) {
         RoundIconButton(
             icon = Icons.Filled.Close,
-            contentDescription = stringResource(R.string.voice_end),
+            contentDescription = stringResource(R.string.hsk_course_memorize_finish),
             onClick = onClose,
         )
         Column(
