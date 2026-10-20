@@ -13,7 +13,7 @@
     "lesson.locked": "Oldingi darsni yakunlang",
     "lesson.notFound": "Bu daraja uchun darslar hali topilmadi.",
     "common.refresh": "Yangilash",
-    "auth.expires": "Kod {time} amal qiladi",
+    "auth.expires": "Kirishni tasdiqlash uchun {time} qoldi",
     "action.back": "Orqaga",
     "action.close": "Yopish",
     "action.continue": "Davom etish",

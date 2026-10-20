@@ -9,7 +9,7 @@
     <string name="hsk_common_action_finish" formatted="false">Завершить</string>
     <string name="hsk_common_action_logout" formatted="false">Выйти</string>
     <string name="hsk_common_action_start" formatted="false">Начать</string>
-    <string name="hsk_common_auth_expires" formatted="false">Код действует ещё {time}</string>
+    <string name="hsk_common_auth_expires" formatted="false">На подтверждение входа осталось {time}</string>
     <string name="hsk_common_common_refresh" formatted="false">Обновить</string>
     <string name="hsk_common_lesson_continue" formatted="false">Продолжить урок</string>
     <string name="hsk_common_lesson_locked" formatted="false">Сначала завершите предыдущий урок</string>

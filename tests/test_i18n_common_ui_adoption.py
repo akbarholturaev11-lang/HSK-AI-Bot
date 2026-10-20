@@ -102,7 +102,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertEqual(t("common.navigation.profile", lang="tj"), "Профил")
         self.assertEqual(t("common.navigation.profile", lang="tg"), "Профил")
         self.assertEqual(t("common.auth.expires", lang="ru", time="5 min"),
-                         "Код действует ещё 5 min")
+                         "На подтверждение входа осталось 5 min")
         self.assertEqual(t("common.not_approved", lang="uz"),
                          "common.not_approved")
         self.assertEqual(t("welcome", lang="uz", name="QA"), "Xush kelibsiz, QA!")

@@ -9,7 +9,7 @@
     <string name="hsk_common_action_finish" formatted="false">Yakunlash</string>
     <string name="hsk_common_action_logout" formatted="false">Chiqish</string>
     <string name="hsk_common_action_start" formatted="false">Boshlash</string>
-    <string name="hsk_common_auth_expires" formatted="false">Kod {time} amal qiladi</string>
+    <string name="hsk_common_auth_expires" formatted="false">Kirishni tasdiqlash uchun {time} qoldi</string>
     <string name="hsk_common_common_refresh" formatted="false">Yangilash</string>
     <string name="hsk_common_lesson_continue" formatted="false">Darsni davom ettirish</string>
     <string name="hsk_common_lesson_locked" formatted="false">Oldingi darsni yakunlang</string>

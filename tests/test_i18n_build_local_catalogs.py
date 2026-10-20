@@ -21,7 +21,7 @@ class CommonLocalCatalogTests(unittest.TestCase):
         self.assertEqual(set(catalogs["ru"]), set(catalogs["tj"]))
         self.assertEqual(catalogs["tj"]["navigation.profile"], "Профил")
         self.assertEqual(catalogs["ru"]["lesson.continue"], "Продолжить урок")
-        self.assertEqual(catalogs["uz"]["auth.expires"], "Kod {time} amal qiladi")
+        self.assertEqual(catalogs["uz"]["auth.expires"], "Kirishni tasdiqlash uchun {time} qoldi")
 
     def test_source_strings_match_existing_desktop_three_language_baseline(self):
         source = (ROOT / "desktop/ui/js/i18n.js").read_text(encoding="utf-8")

@@ -9,7 +9,7 @@
     <string name="hsk_common_action_finish" formatted="false">Анҷом</string>
     <string name="hsk_common_action_logout" formatted="false">Баромадан</string>
     <string name="hsk_common_action_start" formatted="false">Оғоз</string>
-    <string name="hsk_common_auth_expires" formatted="false">Рамз боз {time} амал мекунад</string>
+    <string name="hsk_common_auth_expires" formatted="false">Барои тасдиқи вуруд {time} монд</string>
     <string name="hsk_common_common_refresh" formatted="false">Навсозӣ</string>
     <string name="hsk_common_lesson_continue" formatted="false">Идомаи дарс</string>
     <string name="hsk_common_lesson_locked" formatted="false">Аввал дарси пешинаро анҷом диҳед</string>
