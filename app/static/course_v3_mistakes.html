@@ -163,7 +163,7 @@ Object.keys(L).forEach(function(key){
     L[key][subkey]=mistakesUILookup(key+"."+subkey,L[key][subkey]);
   });
 });
-var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}var MISTAKES_A11Y={back:MISTAKES_UI["onboarding.back"]||"Orqaga",close:MISTAKES_UI["sheet.closeLabel"]||"Yopish",listen:MISTAKES_UI.listen||"Tinglash"};document.querySelector(".top .ix").setAttribute("aria-label",MISTAKES_A11Y.back);document.querySelector(".rv-top .ix").setAttribute("aria-label",MISTAKES_A11Y.close);
 var INIT_DATA=(tg&&tg.initData)||"";
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function $(id){return document.getElementById(id)}
@@ -271,7 +271,7 @@ function renderQuestion(){
   RV.builder=[];RV.locked=false;
   $("rv-fill").style.width=Math.round((RV.idx/n)*100)+"%";
   var qcat=q.category?catLabel(q.category):L.q;
-  var audio=q.audio_text?'<button class="rv-audio'+(isListenFormat(q.format)?' big':'')+'" onclick="speakMistake(\''+jsq(q.audio_text)+'\')" aria-label="audio"><i class="ti ti-volume"></i></button>':'';
+  var audio=q.audio_text?'<button class="rv-audio'+(isListenFormat(q.format)?' big':'')+'" onclick="speakMistake(\''+jsq(q.audio_text)+'\')" aria-label="'+esc(MISTAKES_A11Y.listen)+'"><i class="ti ti-volume"></i></button>':'';
   var sentence=q.sentence?'<div class="han">'+esc(q.sentence)+'</div>':'';
   var pinyin=q.pinyin?'<div class="py">'+esc(q.pinyin)+'</div>':'';
   var material=(audio||sentence||pinyin)?'<div class="rv-material">'+audio+sentence+pinyin+'</div>':'';

@@ -75,7 +75,7 @@ var L={ru:{review:"повтор",listen:"Послушать",lead:"Найдит�
 /* Prefer synchronous bundled locale display copy, preserving every inline fallback. */
 var RECOGNITION_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};
 Object.keys(L).forEach(function(k){var v=RECOGNITION_UI["recognition."+k];if(typeof v==="string"&&v)L[k]=v});
-var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}document.querySelector(".top .ix").setAttribute("aria-label",L.back);
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function initData(){return (tg&&tg.initData)?tg.initData:""}
 /* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)

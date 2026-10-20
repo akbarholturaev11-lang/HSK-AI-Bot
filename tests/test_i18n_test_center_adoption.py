@@ -73,6 +73,7 @@ class TestCenterI18nAdoptionTests(unittest.TestCase):
         self.assertIn("adoptTestUI(\"testHsk30Soon\",HSK30_SOON);", html)
         self.assertIn('MINE_T=testUiLabel("testHub.mineLevel",MINE_T);', html)
         self.assertIn('return typeof value==="string"&&value?value:fallback;', html)
+        self.assertIn('document.querySelector(".top .ix").setAttribute("aria-label",L.limBack);', html)
         self.assertNotIn("fetch('/api/i18n/", html)
         for invariant in ('function validatePracticeGate(o){',
                           'function runGate(feature,ref){',

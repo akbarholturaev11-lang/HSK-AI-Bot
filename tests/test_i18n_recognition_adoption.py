@@ -39,6 +39,7 @@ class RecognitionUIAdoptionTests(unittest.TestCase):
         )
         self.assertIn('RECOGNITION_UI["recognition."+k]', html)
         self.assertIn('if(typeof v==="string"&&v)L[k]=v', html)
+        self.assertIn('document.querySelector(".top .ix").setAttribute("aria-label",L.back);', html)
         for marker in (
             "function validatePracticeGate(o){",
             "function runGate(ref){",

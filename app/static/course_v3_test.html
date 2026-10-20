@@ -126,7 +126,7 @@ adoptTestUI("testHub",L);
 adoptTestUI("testExam",EM);
 adoptTestUI("testExamSection",EM.sec);
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
-document.documentElement.lang=LANG;document.title=L.title;
+document.documentElement.lang=LANG;document.title=L.title;document.querySelector(".top .ix").setAttribute("aria-label",L.limBack);
 var _ttsAudio=null;
 function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tg&&tg.platform)||"",tgver:(tg&&tg.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}
 function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}

@@ -103,7 +103,7 @@ Object.keys(L).forEach(function(key){
   var v=PRONUNCIATION_UI["pronunciation."+key];
   if(typeof v==="string"&&v)L[key]=v;
 });
-var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}document.querySelector(".top .ix").setAttribute("aria-label",L.back);document.querySelector(".mic").setAttribute("aria-label",PRONUNCIATION_UI.say||"Gapirish");
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription&return_to=course&return_page=course_v3_pronunciation.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 /* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)

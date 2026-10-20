@@ -70,6 +70,76 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
         ):
             self.assertIn(marker, html)
 
+    def test_embedded_practice_dictionaries_and_accessibility_use_shared_catalog(self):
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        for marker in (
+            'adoptCourseLocaleDictionary(LD,"recognition")',
+            'adoptCourseLocaleDictionary(LD,"pronunciation")',
+            'adoptCourseLocaleDictionary(LD,"mistakesPage")',
+            'adoptCourseLocaleDictionary(LD,"testHub")',
+            'adoptCourseLocaleDictionary(EMD,"testExam")',
+            'adoptCourseLocaleDictionary(PTD,"testPlacement")',
+            'prefix==="testExam"&&key==="sec"?"testExamSection"',
+            'courseMessage("recognition.back",L().back)',
+            'courseMessage("pronunciation.back",L().back)',
+            'courseMessage("say",T().say)',
+            'courseMessage("sheet.closeLabel",tr({ru:',
+            'courseMessage("testHub.limBack",tr({ru:',
+        ):
+            self.assertIn(marker, html)
+        self.assertEqual(
+            (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8").count("\n") + 1,
+            8859,
+        )
+        for locale in LANGUAGES:
+            catalog = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
+            )["messages"]
+            for key in (
+                "recognition.back", "pronunciation.back", "say", "onboarding.back",
+                "sheet.closeLabel", "testHub.limBack", "testExam.tfTrue",
+                "testExamSection.listening", "testPlacement.back", "mistakesPage.cats.word",
+            ):
+                with self.subTest(locale=locale, key=key):
+                    self.assertTrue(catalog[key])
+
+    @unittest.skipUnless(shutil.which("node"), "Node.js unavailable")
+    def test_embedded_dictionary_hydration_keeps_fallback_and_routes_nested_keys(self):
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        helper_line = next(line for line in html.splitlines()
+                           if "function adoptCourseLocaleDictionary(" in line)
+        helper = helper_line[helper_line.index("function adoptCourseLocaleDictionary("):]
+        node = r"""
+const fs=require("fs");
+const input=JSON.parse(fs.readFileSync(0,"utf8"));
+const fn=new Function("window","dictionaries","prefix",
+  input.helper+";adoptCourseLocaleDictionary(dictionaries,prefix);return dictionaries;");
+const dict={uz:{title:"old",cats:{word:"old nested",empty:"keep"},sec:{listening:"old sec"}},
+  ru:{title:"old ru",cats:{word:"old ru nested"},sec:{listening:"old ru sec"}},
+  tj:{title:"old tj",cats:{word:"old tj nested"},sec:{listening:"old tj sec"}}};
+const catalog={uz:{"mistakesPage.title":"qa", "mistakesPage.cats.word":"qa nested",
+    "mistakesPage.cats.empty":"", "mistakesPage.sec.listening":"wrong namespace",
+    "testExamSection.listening":"qa sec"},
+  ru:{"mistakesPage.title":"qa ru", "mistakesPage.cats.word":"qa ru nested",
+    "testExamSection.listening":"qa ru sec"},
+  tj:{"mistakesPage.title":"qa tj", "mistakesPage.cats.word":"qa tj nested",
+    "testExamSection.listening":"qa tj sec"}};
+fn({HSKAI_COURSE_I18N:catalog},dict,"mistakesPage");
+fn({HSKAI_COURSE_I18N:catalog},dict,"testExam");
+process.stdout.write(JSON.stringify(dict));
+"""
+        result = subprocess.run(
+            ["node", "-e", node],
+            input=json.dumps({"helper": helper}),
+            capture_output=True, text=True, timeout=15, check=True,
+        )
+        actual = json.loads(result.stdout)
+        self.assertEqual(actual["uz"]["title"], "qa")
+        self.assertEqual(actual["uz"]["cats"], {"word": "qa nested", "empty": "keep"})
+        self.assertEqual(actual["uz"]["sec"]["listening"], "qa sec")
+        self.assertEqual(actual["ru"]["title"], "qa ru")
+        self.assertEqual(actual["tj"]["cats"]["word"], "qa tj nested")
+
     @unittest.skipUnless(shutil.which("node"), "Node.js unavailable")
     def test_node_executable_three_language_override_and_missing_asset_fallback(self):
         html, main, live = source_parts()

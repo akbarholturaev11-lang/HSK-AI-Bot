@@ -2098,7 +2098,7 @@ function activationVariant(){
   }catch(e){return"standard"}
 }
 function T(){return I18N[LANG]}
-function tr(v){return !v?"":(typeof v==="string"?v:(v[LANG]||v.ru||v.uz||""))}function commonMessage(key,fallback){var catalog=window.HSKAI_COMMON_I18N;return catalog&&catalog[LANG]&&Object.prototype.hasOwnProperty.call(catalog[LANG],key)?catalog[LANG][key]:fallback}function courseMessage(key,fallback){var catalog=window.HSKAI_COURSE_I18N;return catalog&&catalog[LANG]&&Object.prototype.hasOwnProperty.call(catalog[LANG],key)?catalog[LANG][key]:fallback}
+function tr(v){return !v?"":(typeof v==="string"?v:(v[LANG]||v.ru||v.uz||""))}function commonMessage(key,fallback){var catalog=window.HSKAI_COMMON_I18N;return catalog&&catalog[LANG]&&Object.prototype.hasOwnProperty.call(catalog[LANG],key)?catalog[LANG][key]:fallback}function courseMessage(key,fallback){var catalog=window.HSKAI_COURSE_I18N;return catalog&&catalog[LANG]&&Object.prototype.hasOwnProperty.call(catalog[LANG],key)?catalog[LANG][key]:fallback}function adoptCourseLocaleDictionary(dictionaries,prefix){var catalog=window.HSKAI_COURSE_I18N||{};Object.keys(dictionaries).forEach(function(locale){var messages=catalog[locale]||{},dict=dictionaries[locale]||{};Object.keys(dict).forEach(function(key){var value=dict[key];if(value&&typeof value==="object"&&!Array.isArray(value)){var nestedPrefix=prefix==="testExam"&&key==="sec"?"testExamSection":prefix+"."+key;Object.keys(value).forEach(function(subkey){var nested=messages[nestedPrefix+"."+subkey];if(typeof nested==="string"&&nested)value[subkey]=nested})}else{var text=messages[prefix+"."+key];if(typeof text==="string"&&text)dict[key]=text}})})}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function $(s){return document.querySelector(s)}
 var _ttsAudio=null;
@@ -6453,7 +6453,7 @@ function hintHtml(h){
     +'<i class="ti ti-info-circle hi"></i>'
     +'<div class="hb"><div class="ht">'+esc(h.title||"")+'</div>'
     +'<div class="hd">'+esc(h.body||"")+'</div></div>'
-    +'<button class="hx" aria-label="close" onclick="App.closeHint(\''+esc(h.key)+'\')">'
+    +'<button class="hx" aria-label="'+esc(courseMessage("sheet.closeLabel",tr({ru:"Закрыть",uz:"Yopish",tj:"Пӯшидан"})))+'" onclick="App.closeHint(\''+esc(h.key)+'\')">'
     +'<i class="ti ti-x"></i></button></div>';
 }
 function hintsHtml(section){return hintsFor(section).map(hintHtml).join("")}
@@ -7030,7 +7030,7 @@ var RECOG=(function(){
     ru:{listen:"Послушать",lead:"Найдите нужный среди похожих",done:"правильно",doneSub:"Вы хорошо различаете похожие иероглифы!",again:"Ещё раз",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме этот раздел доступен 1 раз в день. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.",premiumBtn:"Получить HSK AI Pro ⭐️",back:"Назад",noData:"Данные не загрузились"},
     uz:{listen:"Tinglash",lead:"O'xshashlardan to'g'risini toping",done:"to'g'ri",doneSub:"O'xshash ieroglyflarni yaxshi farqlaysiz!",again:"Yana mashq",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bepul rejimda bu bo'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun HSK AI Pro oling yoki ertaga qaytib keling.",premiumBtn:"HSK AI Pro ⭐️ olish",back:"Orqaga",noData:"Ma'lumot yuklanmadi"},
     tj:{listen:"Гӯш кардан",lead:"Аз байни монандҳо дурустро ёбед",done:"дуруст",doneSub:"Шумо иероглифҳои монандро хуб фарқ мекунед!",again:"Боз",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён HSK AI Pro гиред ё фардо баргардед.",premiumBtn:"HSK AI Pro ⭐️ гирифтан",back:"Бозгашт",noData:"Маълумот бор нашуд"}
-  };
+  };adoptCourseLocaleDictionary(LD,"recognition");
   function L(){return LD[LANG]||LD.ru}
   function el(id){return document.getElementById(id)}
   var TOTAL=10,pool=[],quiz=[],qi=0,score=0,answered=false;
@@ -7053,7 +7053,7 @@ var RECOG=(function(){
   }
 
   function shell(){
-    return '<div class="rc-top"><button class="rc-ix hsk-native-back-duplicate" onclick="RECOG.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="rc-pbar"><i id="rc-prog"></i></div><span class="rc-pill" id="rc-score">0 ✓</span></div>'
+    return '<div class="rc-top"><button class="rc-ix hsk-native-back-duplicate" onclick="RECOG.close()" aria-label="'+esc(courseMessage("recognition.back",L().back))+'"><i class="ti ti-arrow-left"></i></button><div class="rc-pbar"><i id="rc-prog"></i></div><span class="rc-pill" id="rc-score">0 ✓</span></div>'
       +'<div class="rc-body" id="rc-body">'+renderPracticeGateChecking()+'</div>';
   }
 
@@ -7186,7 +7186,7 @@ var PRON=(function(){
     ru:{hint:"Нажмите на микрофон и произнесите слово",listen:"Прослушать",ok:"Точно произнесено!",bad:"Неточно, попробуйте снова",heard:"Я услышал:",retry:"Нажмите ещё раз",done:"правильно",doneSub:"Ваше произношение становится лучше!",again:"Ещё раз",listening:"Слушаю…",analyzing:"Проверяю…",micDeny:"Разрешите доступ к микрофону",noSupport:"Микрофон не поддерживается",netErr:"Ошибка сети, попробуйте снова",needTg:"Откройте в Telegram",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме этот раздел доступен 1 раз в день. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.",premiumBtn:"Получить HSK AI Pro ⭐️",back:"Назад",skip:"Пропустить",noData:"Данные не загрузились"},
     uz:{hint:"Mikrofonni bosib, so'zni ayting",listen:"Tinglash",ok:"Aniq talaffuz!",bad:"Aniq emas, yana urinib ko'ring",heard:"Men shunday eshitdim:",retry:"Qayta bosing",done:"to'g'ri",doneSub:"Talaffuzing yaxshilanyapti!",again:"Yana mashq",listening:"Eshityapman…",analyzing:"Tekshiryapman…",micDeny:"Mikrofonga ruxsat bering",noSupport:"Mikrofon qo'llab-quvvatlanmaydi",netErr:"Tarmoq xatosi, qayta urining",needTg:"Telegram'da oching",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bepul rejimda bu bo'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun HSK AI Pro oling yoki ertaga qayting.",premiumBtn:"HSK AI Pro ⭐️ olish",back:"Orqaga",skip:"O'tkazib yuborish",noData:"Ma'lumot yuklanmadi"},
     tj:{hint:"Микрофонро пахш карда, калимаро гӯед",listen:"Гӯш кардан",ok:"Талаффузи дақиқ!",bad:"Дақиқ нест, боз кӯшиш кунед",heard:"Ман чунин шунидам:",retry:"Боз пахш кунед",done:"дуруст",doneSub:"Талаффузи шумо беҳтар мешавад!",again:"Боз",listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака, бозкӯшӣ кунед",needTg:"Дар Telegram кушоед",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён HSK AI Pro гиред ё фардо баргардед.",premiumBtn:"HSK AI Pro ⭐️ гирифтан",back:"Бозгашт",skip:"Гузарондан",noData:"Маълумот бор нашуд"}
-  };
+  };adoptCourseLocaleDictionary(LD,"pronunciation");
   function L(){return LD[LANG]||LD.ru}
   function el(id){return document.getElementById(id)}
   var TOTAL=10,list=[],idx=0,okCount=0,busy=false,DATA=null;
@@ -7206,11 +7206,11 @@ var PRON=(function(){
   function shell(){
     var t=L();
     return '<div class="pr-wrap">'
-      +'<div class="pr-top"><button class="pr-ix hsk-native-back-duplicate" onclick="PRON.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pr-pbar"><i id="pr-prog"></i></div><span class="pr-pill" id="pr-cnt">1 / 10</span></div>'
+      +'<div class="pr-top"><button class="pr-ix hsk-native-back-duplicate" onclick="PRON.close()" aria-label="'+esc(courseMessage("pronunciation.back",L().back))+'"><i class="ti ti-arrow-left"></i></button><div class="pr-pbar"><i id="pr-prog"></i></div><span class="pr-pill" id="pr-cnt">1 / 10</span></div>'
       +'<div class="pr-toast" id="pr-toast">+10 XP</div>'
       +'<div class="pr-stage" id="pr-stage">'+renderPracticeGateChecking()+'</div>'
       +'<div class="pr-ctrl" id="pr-ctrl" style="display:none">'
-      +'<div class="pr-micwrap" id="pr-micwrap"><button class="pr-mic" id="pr-mic" onclick="PRON.rec()" aria-label="Gapirish"><i class="ti ti-microphone"></i></button></div>'
+      +'<div class="pr-micwrap" id="pr-micwrap"><button class="pr-mic" id="pr-mic" onclick="PRON.rec()" aria-label="'+esc(courseMessage("say",T().say))+'"><i class="ti ti-microphone"></i></button></div>'
       +'<div class="pr-hint" id="pr-hint"></div>'
       +'<button class="pr-skip" id="pr-skip" onclick="PRON.skip()"><span id="pr-skiptxt">'+esc(t.skip)+'</span> <i class="ti ti-player-skip-forward"></i></button>'
       +'</div>'
@@ -7420,7 +7420,7 @@ var MIST=(function(){
     resTitle:"Кори аъло!",resScore:"дуруст",resRemaining:"Хатоҳои боқимонда",resAll:"Шумо ҳамаи хатоҳоятонро ислоҳ кардед!",done:"Тайёр",
     limitTitle:"Кӯшиши ройгон истифода шуд",limitText:"Барои кори бемаҳдуд бар хатоҳо HSK AI Pro гиред.",limitBtn:"HSK AI Pro ⭐️ гирифтан",later:"Дертар",
     limitWhy:"Кӯшиши якдафъаинаи ройгон истифода шуд. Барои бепоён HSK AI Pro гиред ё фардо баргардед.",
-    loading:"Боргирӣ…",more:"Боз нишон додан",err:"Хатогӣ рух дод. Боз кӯшиш кунед."}};
+    loading:"Боргирӣ…",more:"Боз нишон додан",err:"Хатогӣ рух дод. Боз кӯшиш кунед."}};adoptCourseLocaleDictionary(LD,"mistakesPage");
   function L(){return LD[LANG]||LD.ru}
   function el(id){return document.getElementById(id)}
   var ITEMS=[],SUM={total:0,categories:{}},PAGE={offset:0,limit:30,returned:0,has_more:false};
@@ -7436,11 +7436,11 @@ var MIST=(function(){
   function shell(){
     var t=L();
     return '<div id="mk-root">'
-      +'<div class="top"><button class="ix hsk-native-back-duplicate" onclick="MIST.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><h1>'+esc(t.title)+'</h1></div>'
+      +'<div class="top"><button class="ix hsk-native-back-duplicate" onclick="MIST.close()" aria-label="'+esc(courseMessage("onboarding.back",tr({ru:"Назад",uz:"Orqaga",tj:"Бозгашт"})))+'"><i class="ti ti-arrow-left"></i></button><h1>'+esc(t.title)+'</h1></div>'
       +'<div class="sub">'+esc(t.sub)+'</div>'
       +'<div id="mk-content"></div>'
       +'<div id="mk-review" class="rv" hidden>'
-      +'<div class="rv-top"><button class="ix" onclick="MIST.closeReview()" aria-label="close"><i class="ti ti-x"></i></button><div class="rv-bar"><span id="mk-rv-fill"></span></div></div>'
+      +'<div class="rv-top"><button class="ix" onclick="MIST.closeReview()" aria-label="'+esc(courseMessage("sheet.closeLabel",tr({ru:"Закрыть",uz:"Yopish",tj:"Пӯшидан"})))+'"><i class="ti ti-x"></i></button><div class="rv-bar"><span id="mk-rv-fill"></span></div></div>'
       +'<div class="rv-body" id="mk-rv-body"></div><div class="rv-foot" id="mk-rv-foot"></div></div>'
       +'<div id="mk-limit" class="lim" hidden><div class="bd" onclick="MIST.closeLimit()"></div><div class="sh">'
       +'<div class="ic"><i class="ti ti-lock"></i></div><h3>'+esc(t.limitTitle)+'</h3><p id="mk-lim-text">'+esc(t.limitText)+'</p>'
@@ -7628,7 +7628,7 @@ var TEST=(function(){
   uz:{tfTrue:"To'g'ri",tfFalse:"Noto'g'ri",listen:"Tinglash",q:"Savol",of:"/",result:"Natija",passed:"Test topshirildi!",failed:"Hozircha o'tilmadi",passSub:"Siz HSK darajasiga tayyorsiz: HSK ",failSub:"Tayyorgarlikni davom ettiring: HSK ",again:"Qayta topshirish",toList:"Testlar ro'yxatiga",saving:"Server tekshiryapti…",saveErr:"Natija saqlanmadi. Yana yuboring.",retry:"Qayta yuborish",mistakes:"Shu javoblarni takrorlang",xp:"XP olindi",sec:{listening:"Tinglash",reading:"O'qish",writing:"Yozish"}},
   tj:{tfTrue:"Дуруст",tfFalse:"Нодуруст",listen:"Шунидан",q:"Савол",of:"аз",result:"Натиҷа",passed:"Тест супорида шуд!",failed:"Ҳоло гузаронида нашуд",passSub:"Шумо ба сатҳи HSK тайёред: HSK ",failSub:"Омодагиро давом диҳед: HSK ",again:"Аз нав супоридан",toList:"Ба рӯйхати тестҳо",saving:"Сервер месанҷад…",saveErr:"Натиҷа сабт нашуд. Боз фиристед.",retry:"Боз фиристодан",mistakes:"Ин ҷавобҳоро такрор кунед",xp:"XP гирифта шуд",sec:{listening:"Шунидан",reading:"Хондан",writing:"Навиштан"}}}, PTD={ru:{lead:"Выберите значение",rec:"Рекомендуем",recSub:"По результату вам подходит уровень HSK ",back:"Вернуться к курсу",retake:"Пройти заново",lvl:"HSK"},
   uz:{lead:"Ma'noni tanlang",rec:"Tavsiya",recSub:"Natijangiz bo'yicha sizga mos daraja — HSK ",back:"Kursga qaytish",retake:"Qayta test",lvl:"HSK"},
-  tj:{lead:"Маъноро интихоб кунед",rec:"Тавсия",recSub:"Аз рӯи натиҷа сатҳи мувофиқ барои шумо — HSK ",back:"Ба курс баргаштан",retake:"Аз нав",lvl:"HSK"}};
+  tj:{lead:"Маъноро интихоб кунед",rec:"Тавсия",recSub:"Аз рӯи натиҷа сатҳи мувофиқ барои шумо — HSK ",back:"Ба курс баргаштан",retake:"Аз нав",lvl:"HSK"}};adoptCourseLocaleDictionary(LD,"testHub");adoptCourseLocaleDictionary(EMD,"testExam");adoptCourseLocaleDictionary(PTD,"testPlacement");
   var QP=[
   {lvl:1,h:"谢谢",py:"xièxie",o:[{ru:"спасибо",uz:"rahmat",tj:"ташаккур",ok:1},{ru:"привет",uz:"salom",tj:"салом"},{ru:"пока",uz:"xayr",tj:"хайр"}]},
   {lvl:1,h:"再见",py:"zàijiàn",o:[{ru:"до свидания",uz:"xayr",tj:"хайр",ok:1},{ru:"спасибо",uz:"rahmat",tj:"ташаккур"},{ru:"да",uz:"ha",tj:"ҳа"}]},
@@ -7660,7 +7660,7 @@ var TEST=(function(){
 
   function shell(){
     return '<div id="tc-root">'
-      +'<div id="tc-hub"><div class="top"><button class="ix hsk-native-back-duplicate" onclick="TEST.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><h1 id="tc-title"></h1></div>'
+      +'<div id="tc-hub"><div class="top"><button class="ix hsk-native-back-duplicate" onclick="TEST.close()" aria-label="'+esc(courseMessage("testHub.limBack",tr({ru:"Назад",uz:"Orqaga",tj:"Бозгашт"})))+'"><i class="ti ti-arrow-left"></i></button><h1 id="tc-title"></h1></div>'
       +'<div class="sub" id="tc-sub"></div>'
       +'<div class="place"><span class="gw han">级</span><b><i class="ti ti-target"></i> <span id="tc-ptitle"></span></b><p id="tc-psub"></p><button onclick="TEST.open2(\'placement\')"><i class="ti ti-player-play"></i> <span id="tc-pbtn"></span></button></div>'
       +'<div class="sech" id="tc-exhead"></div><div id="tc-exlist"></div></div>'

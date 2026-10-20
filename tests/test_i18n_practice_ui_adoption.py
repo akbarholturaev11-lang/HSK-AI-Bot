@@ -72,8 +72,14 @@ class PracticeUIAdoptionTests(unittest.TestCase):
             self.assertIn(marker, pronunciation)
         self.assertIn('MISTAKES_UI["mistakesPage."+key]', mistakes)
         self.assertIn('mistakesUILookup(key+"."+subkey,L[key][subkey])', mistakes)
+        self.assertIn('MISTAKES_UI["onboarding.back"]||"Orqaga"', mistakes)
+        self.assertIn('MISTAKES_UI["sheet.closeLabel"]||"Yopish"', mistakes)
+        self.assertIn('MISTAKES_UI.listen||"Tinglash"', mistakes)
+        self.assertIn('esc(MISTAKES_A11Y.listen)', mistakes)
         self.assertIn('PRONUNCIATION_UI["pronunciation."+key]', pronunciation)
         self.assertIn('if(typeof v==="string"&&v)L[key]=v', pronunciation)
+        self.assertIn('document.querySelector(".top .ix").setAttribute("aria-label",L.back)', pronunciation)
+        self.assertIn('document.querySelector(".mic").setAttribute("aria-label",PRONUNCIATION_UI.say||"Gapirish")', pronunciation)
 
     @unittest.skipUnless(shutil.which("node"), "Node.js unavailable")
     def test_runtime_override_and_offline_fallback(self):

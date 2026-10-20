@@ -219,7 +219,7 @@ Object.keys(L).forEach(function(key){
   var value=VOICE_PAGE_UI["voicePage."+key];
   if(typeof value==="string"&&value)L[key]=value;
 });
-var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}function voicePageA11y(selector,key,fallback){var el=document.querySelector(selector),value=VOICE_PAGE_UI["courseVoiceInline."+key];if(el)el.setAttribute("aria-label",typeof value==="string"&&value?value:fallback)}voicePageA11y(".top .ic:first-child","a11yClose","yopish");voicePageA11y(".top .ic:last-child","a11ySettings","sozlamalar");voicePageA11y("#ctrlRow .sq","a11yKeyboard","klaviatura");voicePageA11y("#mic","a11yMic","gapirish");voicePageA11y(".kb .kbclose","a11yClose","yopish");voicePageA11y("#kbSend","a11ySend","yuborish");
 var $=function(id){return document.getElementById(id)};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})}
 function jr(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}})}

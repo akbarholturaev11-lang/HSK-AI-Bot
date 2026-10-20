@@ -415,14 +415,14 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
 
 
     def test_miniapp_reviewed_presentation_and_exercise_copy(self):
-        """11 static display keys, 23 sites, with exact UZ/RU/TJ fallback parity."""
+        """11 static display keys, 24 sites, with exact UZ/RU/TJ fallback parity."""
         import re
 
         source = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertEqual(len(source.split("\n")), 8859)
         selections = {
             "buildSent": 1, "dialog": 1, "listen": 2, "matchPairs": 1,
-            "say": 5, "check": 2, "next": 2, "rightAns": 1,
+            "say": 6, "check": 2, "next": 2, "rightAns": 1,
             "you": 4,
         }
         for key, count in selections.items():

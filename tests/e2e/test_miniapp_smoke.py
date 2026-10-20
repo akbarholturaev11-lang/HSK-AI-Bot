@@ -2147,46 +2147,39 @@ def test_mistake_filters_show_real_category_material(page):
         lambda message: runtime_errors.append(message.text) if message.type == "error" else None,
     )
     mock_telegram_ready(page)
-    page.route(
-        "**/api/miniapp/mistakes*",
-        lambda route: json_response(
+    targets = [
+        {
+            "id": 1, "category": "word", "kind": "question", "sources": ["test"],
+            "zh": "你好", "question": "你好 nimani anglatadi?", "wrong": "Xayr",
+            "answer": "Salom", "count": 2, "passed": 0, "required": 3,
+        },
+        {
+            "id": 2, "category": "word", "kind": "question", "sources": ["challenge"],
+            "zh": "谢谢", "question": "谢谢 nimani anglatadi?", "wrong": "Salom",
+            "answer": "Rahmat", "count": 1, "passed": 0, "required": 3,
+        },
+        {
+            "id": 3, "category": "grammar", "kind": "question", "sources": ["lesson"],
+            "zh": "我去昨天", "question": "Gapni to'g'ri tartiblang", "wrong": "我去昨天",
+            "answer": "我昨天去", "count": 1, "passed": 0, "required": 3,
+        },
+    ]
+
+    def send_mistakes(route):
+        category = parse_qs(urlparse(route.request.url).query).get("category", [None])[0]
+        filtered = [item for item in targets if not category or item["category"] == category]
+        json_response(
             route,
             {
                 "ok": True,
-                "summary": {"total": 3, "categories": {"word": 2, "grammar": 1}},
-                "items": [
-                    {
-                        "id": 1,
-                        "category": "word",
-                        "source": "test",
-                        "question": "你好 nimani anglatadi?",
-                        "user_answer": "Xayr",
-                        "correct_answer": "Salom",
-                        "count": 2,
-                    },
-                    {
-                        "id": 2,
-                        "category": "word",
-                        "source": "challenge",
-                        "question": "谢谢 nimani anglatadi?",
-                        "user_answer": "Salom",
-                        "correct_answer": "Rahmat",
-                        "count": 1,
-                    },
-                    {
-                        "id": 3,
-                        "category": "grammar",
-                        "source": "lesson",
-                        "lesson": 4,
-                        "question": "Gapni to'g'ri tartiblang",
-                        "user_answer": "我去昨天",
-                        "correct_answer": "我昨天去",
-                        "count": 1,
-                    },
-                ],
+                "summary": {"total": 3, "categories": {"word": 2, "grammar": 1}, "unit": "targets"},
+                "pagination": {"offset": 0, "limit": 30, "returned": len(filtered), "has_more": False},
+                "targets": filtered,
+                "items": [],
             },
-        ),
-    )
+        )
+
+    page.route("**/api/miniapp/mistakes*", send_mistakes)
 
     page.goto(app_url("/course_v3_mistakes.html?lang=uz&level=hsk1"), wait_until="networkidle")
     expect(page.locator("#content")).to_contain_text("HSK test")
@@ -2194,6 +2187,41 @@ def test_mistake_filters_show_real_category_material(page):
     expect(page.locator("#content")).to_contain_text("Gapni to'g'ri tartiblang")
     expect(page.locator("#content")).not_to_contain_text("你好 nimani anglatadi?")
     assert runtime_errors == []
+
+
+def test_practice_icon_accessibility_names_follow_selected_locale(page):
+    locales = {
+        "uz": {"back": "Orqaga", "say": "Talaffuz qiling", "close": "yopish", "sheet_close": "Yopish",
+               "settings": "sozlamalar", "keyboard": "klaviatura", "mic": "gapirish",
+               "send": "yuborish", "listen": "Tinglash"},
+        "ru": {"back": "Назад", "say": "Произнесите", "close": "закрыть", "sheet_close": "Закрыть",
+               "settings": "настройки", "keyboard": "клавиатура", "mic": "говорить",
+               "send": "отправить", "listen": "Послушать"},
+        "tj": {"back": "Бозгашт", "say": "Талаффуз кунед", "close": "пӯшидан", "sheet_close": "Пӯшидан",
+               "settings": "танзимот", "keyboard": "клавиатура", "mic": "гап задан",
+               "send": "фиристодан", "listen": "Гӯш кардан"},
+    }
+    pages = (
+        ("course_v3_memorize.html", ".top .ix", "back"),
+        ("course_v3_test.html", ".top .ix", "back"),
+        ("course_v3_mistakes.html", ".top .ix", "back"),
+        ("course_v3_recognition.html", ".top .ix", "back"),
+        ("course_v3_pronunciation.html", ".top .ix", "back"),
+        ("course_v3_pronunciation.html", ".mic", "say"),
+        ("course_v3_voice.html", ".top .ic:first-child", "close"),
+        ("course_v3_voice.html", ".top .ic:last-child", "settings"),
+        ("course_v3_voice.html", "#ctrlRow button.sq", "keyboard"),
+        ("course_v3_voice.html", "#mic", "mic"),
+        ("course_v3_voice.html", ".kb .kbclose", "close"),
+        ("course_v3_voice.html", "#kbSend", "send"),
+    )
+    for locale, labels in locales.items():
+        for path, selector, key in pages:
+            page.goto(app_url(f"/{path}?lang={locale}"), wait_until="domcontentloaded")
+            expect(page.locator(selector)).to_have_attribute("aria-label", labels[key])
+        page.goto(app_url(f"/course_v3_mistakes.html?lang={locale}"), wait_until="domcontentloaded")
+        expect(page.locator(".rv-top .ix")).to_have_attribute("aria-label", labels["sheet_close"])
+        assert page.evaluate("window.MISTAKES_A11Y.listen") == labels["listen"]
 
 
 def test_challenge_question_is_blind_until_server_submit(page):

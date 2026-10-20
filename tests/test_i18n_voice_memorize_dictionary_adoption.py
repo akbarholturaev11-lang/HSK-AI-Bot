@@ -88,8 +88,25 @@ class VoiceMemorizeDictionaryUIAdoptionTests(unittest.TestCase):
                 self.assertLess(source.index(version), source.index(before))
         self.assertIn('VOICE_PAGE_UI["voicePage."+key]', pages["voice"])
         self.assertIn('if(typeof value==="string"&&value)L[key]=value', pages["voice"])
+        self.assertIn('VOICE_PAGE_UI["courseVoiceInline."+key]', pages["voice"])
+        voice_a11y = {
+            "a11yClose": (".top .ic:first-child", ".kb .kbclose"),
+            "a11ySettings": (".top .ic:last-child",),
+            "a11yKeyboard": ("#ctrlRow .sq",),
+            "a11yMic": ("#mic",),
+            "a11ySend": ("#kbSend",),
+        }
+        for key, selectors in voice_a11y.items():
+            for selector in selectors:
+                self.assertIn(f'voicePageA11y("{selector}","{key}"', pages["voice"])
+            for locale in LOCALES:
+                catalog = json.loads(
+                    (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
+                )["messages"]
+                self.assertTrue(catalog["courseVoiceInline." + key])
         self.assertIn('MEMORIZE_LIMIT_UI["memorizeLimit."+key]', pages["memorize"])
         self.assertIn('if(typeof value==="string"&&value)LIM[key][LANG]=value', pages["memorize"])
+        self.assertIn('document.querySelector(".top .ix").setAttribute("aria-label",t(LIM.back))', pages["memorize"])
         self.assertIn('source["dictionaryPractice."+key]', pages["dictionary"])
         self.assertIn('source["dictionaryMemo."+key]', pages["dictionary"])
 

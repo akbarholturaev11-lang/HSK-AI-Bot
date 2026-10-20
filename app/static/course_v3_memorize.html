@@ -161,7 +161,7 @@ var LIM={
   back:{uz:"Orqaga",ru:"Назад",tj:"Бозгашт"}
 };
 var MEMORIZE_LIMIT_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};Object.keys(LIM).forEach(function(key){var value=MEMORIZE_LIMIT_UI["memorizeLimit."+key];if(typeof value==="string"&&value)LIM[key][LANG]=value});function memoMessage(key,fallback){var value=MEMORIZE_LIMIT_UI[key];return typeof value==="string"&&value?value:t(fallback)}function initData(){return (tg&&tg.initData)?tg.initData:""}
-function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_memorize_limit&mode=subscription&return_to=course&return_page=course_v3_memorize.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
+function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_memorize_limit&mode=subscription&return_to=course&return_page=course_v3_memorize.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}document.querySelector(".top .ix").setAttribute("aria-label",t(LIM.back))
 /* Foydalanuvchi darajasi: server (users.level) asosiy manba — kartalar userning
    haqiqiy HSK darajasidagi ierogliflardan tuziladi (lesson_gate xaritasi orqali).
    CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar belgilari chiqadi. */
