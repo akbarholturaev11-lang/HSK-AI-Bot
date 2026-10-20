@@ -23,6 +23,23 @@
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">На сайте HSK AI начат запрос на удаление аккаунта. Подтвердите его, только если вы сами начали этот процесс. После подтверждения можно будет отправить запрос на удаление аккаунта в браузере.</string>
     <string name="hsk_common_bot_buttonInvalid" formatted="false">Кнопка устарела или некорректна.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Режим курса сейчас в разработке.</string>
+    <string name="hsk_common_bot_releaseFeedback_alreadyRatedAlert" formatted="false">Вы уже поставили оценку.</string>
+    <string name="hsk_common_bot_releaseFeedback_chooseRatingAlert" formatted="false">Сначала выберите оценку от 1 до 5.</string>
+    <string name="hsk_common_bot_releaseFeedback_commentButton" formatted="false">✍️ Оставить комментарий</string>
+    <string name="hsk_common_bot_releaseFeedback_commentPrompt" formatted="false">Отправьте комментарий текстом или скриншотом.</string>
+    <string name="hsk_common_bot_releaseFeedback_discount" formatted="false">Спасибо. Как и обещали, для вас открыта скидка 20% на 24 часа.</string>
+    <string name="hsk_common_bot_releaseFeedback_discountButton" formatted="false">🎁 Получить скидку 20%</string>
+    <string name="hsk_common_bot_releaseFeedback_lowRatingComment" formatted="false">Что было неудобно? Отправьте короткий комментарий или скриншот. После этого скидка откроется.</string>
+    <string name="hsk_common_bot_releaseFeedback_notFoundAlert" formatted="false">Отзыв не найден.</string>
+    <string name="hsk_common_bot_releaseFeedback_optionalComment" formatted="false">Спасибо. Если хотите, оставьте короткий комментарий.</string>
+    <string name="hsk_common_bot_releaseFeedback_prompt" formatted="false">
+
+Попробуйте обновление и оцените от 1 до 5. Если оставите отзыв и у вас нет подписки, вам откроется скидка 20% на 24 часа.</string>
+    <string name="hsk_common_bot_releaseFeedback_skipButton" formatted="false">➡️ Пропустить</string>
+    <string name="hsk_common_bot_releaseFeedback_thanks" formatted="false">Спасибо, ваш отзыв принят.</string>
+    <string name="hsk_common_bot_releaseFeedback_tryAlready" formatted="false">У вас уже есть доступ, чтобы попробовать эту функцию.</string>
+    <string name="hsk_common_bot_releaseFeedback_tryButton" formatted="false">🚀 Попробовать</string>
+    <string name="hsk_common_bot_releaseFeedback_tryGranted" formatted="false">Тестовый доступ открыт: в течение 30 минут пробуйте обновлённый раздел без лимита.</string>
     <string name="hsk_common_common_refresh" formatted="false">Обновить</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">Вопрос о китайском языке</string>
     <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Свернуть панель</string>

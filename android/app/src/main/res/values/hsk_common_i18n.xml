@@ -23,6 +23,23 @@
     <string name="hsk_common_bot_accountDeletion_webStarted" formatted="false">HSK AI veb-sahifasida hisobni o‘chirish so‘rovi boshlandi. Faqat uni o‘zingiz boshlagan bo‘lsangiz tasdiqlang. Tasdiqdan keyin brauzerda hisobni o‘chirish so‘rovini yuborishingiz mumkin.</string>
     <string name="hsk_common_bot_buttonInvalid" formatted="false">Tugma eskirgan yoki noto‘g‘ri.</string>
     <string name="hsk_common_bot_courseModeUnavailable" formatted="false">🚧 Kurs rejimi hozircha ishlab chiqilmoqda.</string>
+    <string name="hsk_common_bot_releaseFeedback_alreadyRatedAlert" formatted="false">Siz allaqachon baho bergansiz.</string>
+    <string name="hsk_common_bot_releaseFeedback_chooseRatingAlert" formatted="false">Avval 1 dan 5 gacha baho tanlang.</string>
+    <string name="hsk_common_bot_releaseFeedback_commentButton" formatted="false">✍️ Izoh yozish</string>
+    <string name="hsk_common_bot_releaseFeedback_commentPrompt" formatted="false">Izohni matn yoki screenshot qilib yuboring.</string>
+    <string name="hsk_common_bot_releaseFeedback_discount" formatted="false">Rahmat. Aytganimizdek, sizga 24 soatlik 20% chegirma berildi.</string>
+    <string name="hsk_common_bot_releaseFeedback_discountButton" formatted="false">🎁 20% chegirmani olish</string>
+    <string name="hsk_common_bot_releaseFeedback_lowRatingComment" formatted="false">Nima noqulay bo\'ldi? Qisqa izoh yoki screenshot yuboring. Shundan keyin chegirma ochiladi.</string>
+    <string name="hsk_common_bot_releaseFeedback_notFoundAlert" formatted="false">Fikr-mulohaza topilmadi.</string>
+    <string name="hsk_common_bot_releaseFeedback_optionalComment" formatted="false">Rahmat. Xohlasangiz, qisqa izoh ham qoldiring.</string>
+    <string name="hsk_common_bot_releaseFeedback_prompt" formatted="false">
+
+Yangilikni sinab ko\'ring va 1-5 ball bering. Fikr qoldirsangiz, obunangiz bo\'lmasa sizga 24 soatlik 20% chegirma beriladi.</string>
+    <string name="hsk_common_bot_releaseFeedback_skipButton" formatted="false">➡️ O\'tkazib yuborish</string>
+    <string name="hsk_common_bot_releaseFeedback_thanks" formatted="false">Rahmat, fikringiz qabul qilindi.</string>
+    <string name="hsk_common_bot_releaseFeedback_tryAlready" formatted="false">Sizda bu funksiyani sinab ko\'rish uchun access bor.</string>
+    <string name="hsk_common_bot_releaseFeedback_tryButton" formatted="false">🚀 Sinab ko\'rish</string>
+    <string name="hsk_common_bot_releaseFeedback_tryGranted" formatted="false">Test access ochildi: 30 minut ichida yangilangan joyni limitsiz sinab ko\'ring.</string>
     <string name="hsk_common_common_refresh" formatted="false">Yangilash</string>
     <string name="hsk_common_desktopA11y_askAi" formatted="false">AI uchun savol</string>
     <string name="hsk_common_desktopA11y_collapseSidebar" formatted="false">Panelni yig‘ish</string>

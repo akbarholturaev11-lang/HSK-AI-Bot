@@ -23,6 +23,7 @@ from app.bot.keyboards.release_feedback import (
 from app.bot.keyboards.main_menu import main_menu_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.workflow_message import delete_message_safely
+from app.bot.utils.i18n import t
 from app.config import settings
 from app.repositories.release_feedback_repo import (
     ReleaseFeedbackRepository,
@@ -1098,7 +1099,7 @@ async def release_feedback_user_callback(callback: CallbackQuery, state: FSMCont
     user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
     lang = user.language if user and user.language else "ru"
     if not campaign or not user:
-        await callback.answer("Feedback topilmadi.", show_alert=True)
+        await callback.answer(t("common.bot.releaseFeedback.notFoundAlert", lang), show_alert=True)
         return
 
     existing = await repo.get_response(campaign_id=campaign.id, user_telegram_id=user.telegram_id)
@@ -1117,7 +1118,7 @@ async def release_feedback_user_callback(callback: CallbackQuery, state: FSMCont
 
     if action == "rate" and value:
         if existing:
-            await callback.answer("Siz allaqachon baho bergansiz.", show_alert=True)
+            await callback.answer(t("common.bot.releaseFeedback.alreadyRatedAlert", lang), show_alert=True)
             return
         try:
             rating = int(value)
@@ -1170,7 +1171,7 @@ async def release_feedback_user_callback(callback: CallbackQuery, state: FSMCont
 
     if action == "comment":
         if not existing:
-            await callback.answer("Avval 1-5 ball tanlang.", show_alert=True)
+            await callback.answer(t("common.bot.releaseFeedback.chooseRatingAlert", lang), show_alert=True)
             return
         await state.set_state(ReleaseFeedbackUserStates.waiting_optional_comment)
         await state.update_data(
@@ -1205,7 +1206,11 @@ async def release_feedback_required_comment(message: Message, state: FSMContext,
     lang = user.language if user and user.language else "ru"
     comment_text, attachment_file_id, attachment_type = _extract_comment(message)
     if not campaign or not user or rating not in {1, 2}:
-        await _edit_stored_user_message(message, message_id, "Feedback topilmadi.")
+        await _edit_stored_user_message(
+            message,
+            message_id,
+            t("common.bot.releaseFeedback.notFoundAlert", lang),
+        )
         await state.clear()
         return
     if not comment_text and not attachment_file_id:
@@ -1261,14 +1266,18 @@ async def release_feedback_optional_comment(message: Message, state: FSMContext,
     lang = user.language if user and user.language else "ru"
     comment_text, attachment_file_id, attachment_type = _extract_comment(message)
     if not response:
-        await _edit_stored_user_message(message, message_id, "Feedback topilmadi.")
+        await _edit_stored_user_message(
+            message,
+            message_id,
+            t("common.bot.releaseFeedback.notFoundAlert", lang),
+        )
         await state.clear()
         return
     if not comment_text and not attachment_file_id:
         await _edit_stored_user_message(
             message,
             message_id,
-            "Izohni matn yoki screenshot qilib yuboring.",
+            t("common.bot.releaseFeedback.commentPrompt", lang),
             delete_input=False,
         )
         return

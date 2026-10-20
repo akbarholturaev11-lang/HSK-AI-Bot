@@ -17,7 +17,7 @@ class CommonLocalCatalogTests(unittest.TestCase):
     def test_all_existing_reviewed_desktop_copy_is_ported(self):
         catalogs = read_sources(ROOT)
         self.assertEqual(set(catalogs), set(LANGUAGES))
-        self.assertEqual(len(catalogs["uz"]), 68)
+        self.assertEqual(len(catalogs["uz"]), 83)
         self.assertEqual(set(catalogs["ru"]), set(catalogs["tj"]))
         self.assertEqual(catalogs["tj"]["navigation.profile"], "Профил")
         self.assertEqual(catalogs["ru"]["lesson.continue"], "Продолжить урок")
@@ -95,7 +95,8 @@ class CommonLocalCatalogTests(unittest.TestCase):
                 }
                 for key, expected in catalogs[lang].items():
                     name = "hsk_common_" + key.replace(".", "_")
-                    self.assertEqual(strings[name], expected)
+                    android_value = strings[name].replace(r"\'", "'").replace(r'\"', '"')
+                    self.assertEqual(android_value, expected)
 
     def test_bot_artifact_is_standalone_local_constant(self):
         path = ROOT / "app/bot/generated/common_i18n.py"
