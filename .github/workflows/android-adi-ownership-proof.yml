@@ -1,0 +1,117 @@
+name: HSK AI package ownership proof (temporary)
+
+# This is ONLY for the Play Console / Android Developer Verification ownership
+# challenge. Runs on a dedicated branch; nothing is committed to main,
+# published to R2, sent to Telegram, or distributed to users.
+on:
+  push:
+    branches:
+      - codex/adi-package-ownership-20261021
+
+permissions:
+  contents: read
+
+jobs:
+  ownership-apk:
+    name: Build signed verification APK (NOT a public release)
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      PACKAGE_ID: com.pomp.hskai
+      EXPECTED_CERT_SHA256: bce68c9459d5a95c760785c7d4a52aade5d957ee26f828084e06e7ba441d8502
+      VERIFICATION_SNIPPET: C65KSLQ3VFWEGAAAAAAAAAAAAA
+    steps:
+      - name: Check out isolated verification branch
+        uses: actions/checkout@v4
+
+      - name: Check Gradle wrapper
+        run: |
+          set -euo pipefail
+          test -f android/gradlew
+          test -f android/gradle/wrapper/gradle-wrapper.jar
+          chmod +x android/gradlew
+      - uses: gradle/actions/wrapper-validation@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Add Google verification asset ONLY in the CI worktree
+        run: |
+          set -euo pipefail
+          test -n "$VERIFICATION_SNIPPET"
+          mkdir -p android/app/src/main/assets
+          printf '%s\n' "$VERIFICATION_SNIPPET" > android/app/src/main/assets/adi-registration.properties
+          test -s android/app/src/main/assets/adi-registration.properties
+
+      - name: Restore the existing release keystore privately
+        env:
+          KEYSTORE_BASE64: ${{ secrets.POMP_ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.POMP_ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.POMP_ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.POMP_ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          for v in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            test -n "${!v}" || { echo "::error::Missing signing secret: $v"; exit 1; }
+          done
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/ownership-release.jks"
+          chmod 600 "$RUNNER_TEMP/ownership-release.jks"
+          cert="$(keytool -list -v -keystore "$RUNNER_TEMP/ownership-release.jks" \
+            -storepass "$KEYSTORE_PASSWORD" -alias "$KEY_ALIAS" \
+            | awk '/^[[:space:]]*SHA256:/{print $2;exit}' \
+            | tr -d ':' | tr '[:upper:]' '[:lower:]')"
+          if [ "$cert" != "$EXPECTED_CERT_SHA256" ]; then
+            echo "::error::Release keystore DOES NOT MATCH currently installed HSK AI APKs"
+            exit 1
+          fi
+
+      - name: Build signed direct APK for Google verification only
+        working-directory: android
+        env:
+          POMP_ANDROID_KEYSTORE_FILE: ${{ runner.temp }}/ownership-release.jks
+          POMP_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.POMP_ANDROID_KEYSTORE_PASSWORD }}
+          POMP_ANDROID_KEY_ALIAS: ${{ secrets.POMP_ANDROID_KEY_ALIAS }}
+          POMP_ANDROID_KEY_PASSWORD: ${{ secrets.POMP_ANDROID_KEY_PASSWORD }}
+        run: ./gradlew --no-daemon assembleDirectRelease
+
+      - name: Verify APK package, embedded challenge, and exact signing certificate
+        id: verification
+        run: |
+          set -euo pipefail
+          apk="$(find android/app/build/outputs/apk/direct/release -maxdepth 1 -name '*.apk' -print -quit)"
+          test -n "$apk" || { echo "::error::Signed verification APK was not built"; exit 1; }
+          tools="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
+          certs="$("$tools/apksigner" verify --print-certs "$apk")"
+          actual="$(printf '%s\n' "$certs" | awk '/certificate SHA-256 digest/ {print $NF;exit}')"
+          if [ "$actual" != "$EXPECTED_CERT_SHA256" ]; then
+            echo "::error::Verification APK signed by a wrong key"; exit 1;
+          fi
+          "$tools/aapt2" dump badging "$apk" | grep -Fq "package: name='$PACKAGE_ID' " || {
+            echo "::error::Wrong applicationId in ownership APK"; exit 1;
+          }
+          embedded="$(unzip -p "$apk" assets/adi-registration.properties | tr -d '\r\n')"
+          if [ "$embedded" != "$VERIFICATION_SNIPPET" ]; then
+            echo "::error::Verification snippet is missing or incorrect in APK assets"; exit 1;
+          fi
+          echo "apk=$apk" >> "$GITHUB_OUTPUT"
+          echo "SHA-256 signing identity matches existing HSK AI direct APKs."
+          echo "The Google challenge asset is present, and package ID is $PACKAGE_ID."
+          echo "This artifact is NOT a normal distribution release. Upload ONLY to Google verification."
+
+      - name: Upload APK as short-lived private GitHub Actions artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HSK-AI-GOOGLE-OWNERSHIP-ONLY
+          path: ${{ steps.verification.outputs.apk }}
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 0
+
+      - name: Delete temporary keystore from the runner
+        if: always()
+        run: rm -f "$RUNNER_TEMP/ownership-release.jks"
