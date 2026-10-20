@@ -1,3 +1,19 @@
+## Current branch override — 2026-10-20 (integration, not production)
+
+**Owner-confirmed active work target:** `codex/p3-main-integration-20261020`.
+The original P3 feature branch named in historical sections below has been merged
+into this branch. **Do not edit `main`** until release QA and a separate owner
+decision. The authoritative detailed checkpoint is
+`localization/P3_ACTIVE_HANDOFF.md`. At commit
+`3d24cbb5475c20a70de021bbbebab8a5f74fb900`, the
+[P0 source/localization run 39371112480](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39371112480)
+passed **346 tests**, with 815 static UZ/RU/TJ course message keys, content-pinned
+cache invalidation for 12 HTML consumers, zero baseline review blockers and
+zero generated artifact drift. **P2 remains partial**; P3 source-pinned grammar
+display overlay tests pass but authenticated multi-provider/device and live
+release QA remain outstanding. Earlier status tables are chronological, not
+current release readiness.
+
 ## Controlling P3 language QA decision — 2026-10-19
 
 The owner delegates existing UZ/RU/TJ translation correctness and migration
