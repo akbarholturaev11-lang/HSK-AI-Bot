@@ -5579,3 +5579,59 @@ def test_practice_tab_is_usable_during_unfinished_background_load(page):
         except Exception:
             pass
 
+
+def test_desktop_course_modal_covers_full_viewport_and_mobile_keeps_bottom_sheet(page):
+    """Desktop modal scrim covers both course columns, without changing mobile."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    mock_learning_audio(page)
+    page.add_init_script("localStorage.setItem('hsk_v3_onb', '1');")
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    expect(page.locator("#s-course")).to_be_visible()
+
+    # Desktop course grid must stop rendering when another tab is selected.
+    page.set_viewport_size({"width": 1280, "height": 900})
+    page.evaluate("App.show('mashq')")
+    expect(page.locator("#s-mashq")).to_be_visible()
+    expect(page.locator("#s-course")).to_be_hidden()
+    page.evaluate("App.show('course')")
+    expect(page.locator("#s-course")).to_be_visible()
+
+    # A real lesson modal must cover both the 480px learning lane and side rail.
+    page.evaluate("openLessonSheet(0)")
+    sheet = page.locator("#sheet")
+    expect(sheet).to_have_class(re.compile(r"\bon\b"))
+    geometry = page.evaluate("""() => {
+      const backdrop = document.querySelector('#sheet');
+      const panel = backdrop.querySelector('.si');
+      const shade = backdrop.getBoundingClientRect();
+      const card = panel.getBoundingClientRect();
+      return {viewportWidth:innerWidth,viewportHeight:innerHeight,
+        shadeX:shade.x,shadeY:shade.y,shadeWidth:shade.width,shadeHeight:shade.height,
+        cardWidth:card.width,cardCenterX:(card.left+card.right)/2,
+        cardCenterY:(card.top+card.bottom)/2,cardBottom:card.bottom,
+        align:getComputedStyle(backdrop).alignItems};
+    }""")
+    assert abs(geometry["shadeX"]) <= 1
+    assert abs(geometry["shadeY"]) <= 1
+    assert abs(geometry["shadeWidth"] - geometry["viewportWidth"]) <= 1
+    assert abs(geometry["shadeHeight"] - geometry["viewportHeight"]) <= 1
+    assert geometry["cardWidth"] <= 480
+    assert abs(geometry["cardCenterX"] - 640) <= 2
+    assert abs(geometry["cardCenterY"] - 450) <= 4
+    assert geometry["cardBottom"] <= 900
+    assert geometry["align"] == "center"
+
+    # On mobile the established bottom sheet remains anchored to the bottom.
+    page.set_viewport_size({"width": 390, "height": 844})
+    mobile = page.evaluate("""() => {
+      const b=document.querySelector('#sheet').getBoundingClientRect();
+      const c=document.querySelector('#sheet .si').getBoundingClientRect();
+      return {width:b.width,height:b.height,cardBottom:c.bottom,align:getComputedStyle(document.querySelector('#sheet')).alignItems};
+    }""")
+    assert abs(mobile["width"] - 390) <= 1
+    assert mobile["align"] == "flex-end"
+    assert abs(mobile["cardBottom"] - 844) <= 2
+    page.evaluate("App.closeSheet()")
+    expect(sheet).not_to_have_class(re.compile(r"\bon\b"))
