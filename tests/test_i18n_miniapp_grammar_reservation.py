@@ -193,7 +193,7 @@ assert.equal(mappings,408);
     def test_miniapp_does_not_change_prefetch_or_cached_json_paths(self):
         html = HTML.read_text(encoding="utf-8")
         self.assertIn("p3-grammar-reservation.js?v=20261019-p3-2", html)
-        self.assertEqual(len(html.split("\n")), 8859)
+        self.assertEqual(len(html.split("\n")), 9096)
         self.assertIn("fetch(lessonDataUrl(lv,n),", html)
         self.assertIn("LESSON_DATA_CACHE[key]=d;", html)
         self.assertIn(

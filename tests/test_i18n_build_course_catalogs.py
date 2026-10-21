@@ -82,11 +82,11 @@ class CourseLocalCatalogTests(unittest.TestCase):
         source = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         lines = source.splitlines()
         anchors = {
-            3762: ("foundation.unavailable",),
-            3768: ("foundation.zeroTitle", "foundation.internetRetry"),
-            3769: ("foundation.retry",),
-            4073: ("lessonFlow.retry",),
-            4127: ("lessonFlow.notReady",),
+            3992: ("foundation.unavailable",),
+            3998: ("foundation.zeroTitle", "foundation.internetRetry"),
+            3999: ("foundation.retry",),
+            4303: ("lessonFlow.retry",),
+            4357: ("lessonFlow.notReady",),
         }
         for line, keys in anchors.items():
             for key in keys:
@@ -94,22 +94,22 @@ class CourseLocalCatalogTests(unittest.TestCase):
                     self.assertIn('courseMessage("' + key + '",LANG==="ru"?', lines[line - 1])
                     for locale in LOCALES:
                         self.assertIn(catalogs[locale][key], lines[line - 1])
-        self.assertIn('esc(courseMessage("foundation.internetRetry"', lines[3768 - 1])
-        self.assertIn('esc(courseMessage("foundation.retry"', lines[3769 - 1])
-        self.assertIn("setLessonFlowControls();flowDone()", lines[4074 - 1])
+        self.assertIn('esc(courseMessage("foundation.internetRetry"', lines[3998 - 1])
+        self.assertIn('esc(courseMessage("foundation.retry"', lines[3999 - 1])
+        self.assertIn("setLessonFlowControls();flowDone()", lines[4304 - 1])
 
     def test_practice_preparing_foundation_save_and_resource_loading_copy(self):
         """Offline catalog keeps exact legacy UI fallback and stable result flow."""
         catalogs = read_sources(ROOT)
         lines = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8").splitlines()
         anchors = {
-            3196: "practice.preparing",
-            3202: "practice.checkingAccess",
-            3836: "foundation.saving",
-            3844: "foundation.retrySave",
-            3846: "foundation.saveFailed",
-            4950: "foundation.zeroTitle",
-            6970: "resourceFrame.loading",
+            3426: "practice.preparing",
+            3432: "practice.checkingAccess",
+            4066: "foundation.saving",
+            4074: "foundation.retrySave",
+            4076: "foundation.saveFailed",
+            5180: "foundation.zeroTitle",
+            7200: "resourceFrame.loading",
         }
         for line, key in anchors.items():
             with self.subTest(line=line, key=key):
@@ -117,10 +117,10 @@ class CourseLocalCatalogTests(unittest.TestCase):
                 for locale in LOCALES:
                     self.assertIn(catalogs[locale][key], lines[line - 1])
         # The server-owned Foundation result decision and retry/timeout are unchanged.
-        self.assertIn('result.ok!==true', lines[3842 - 1])
-        self.assertIn('Foundation.finishing=false', lines[3843 - 1])
-        self.assertIn('2800);return;', lines[3846 - 1])
-        self.assertIn('esc(copy)', lines[3203 - 1])
+        self.assertIn('result.ok!==true', lines[4072 - 1])
+        self.assertIn('Foundation.finishing=false', lines[4073 - 1])
+        self.assertIn('2800);return;', lines[4076 - 1])
+        self.assertIn('esc(copy)', lines[3433 - 1])
 
     def test_course_bundle_cache_version_is_content_addressed_on_every_page(self):
         """Every static consumer must invalidate its cache on generated content changes."""

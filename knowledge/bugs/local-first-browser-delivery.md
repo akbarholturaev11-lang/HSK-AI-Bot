@@ -77,3 +77,13 @@ staging/account behavior or installed-device acceptance.
   Limit-sheet regressions retain signed server-owned reasons, the existing
   Pro-only CTA and close/back behavior without restoring obsolete trial/ad
   entry points.
+
+## Narrow desktop navigation after upstream UI integration
+
+- Cause: the desktop breakpoint starts at 900px but centers against a fixed
+  940px shell; the incoming glass navigation had x=-8px at 900px.
+- Fix: clamp its left edge to 12px while retaining the wider course-column
+  alignment. No routing, paid access or learning behavior changes.
+- Prevention: the existing real-browser glass navigation test now checks
+  900/916/940/1280px as well as the original mobile view. It failed at x=-8px
+  before the fix. Main's navigation/preload/modal/spacing tests remain in CI.

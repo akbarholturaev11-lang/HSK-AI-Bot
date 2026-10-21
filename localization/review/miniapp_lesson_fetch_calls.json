@@ -7,7 +7,7 @@
   "read_calls": [
     {
       "ordinal": 1,
-      "line": 2203,
+      "line": 2419,
       "anchor": "loadLessonData(lv,n)",
       "owner": "warmLessonPreviewAudio",
       "intent": "audio_preload_before_continue",
@@ -17,7 +17,7 @@
     },
     {
       "ordinal": 2,
-      "line": 3008,
+      "line": 3238,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "prefetchNearbyLessons",
       "intent": "background_nearby_prefetch",
@@ -27,7 +27,7 @@
     },
     {
       "ordinal": 3,
-      "line": 4091,
+      "line": 4321,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "startLesson",
       "intent": "interactive_lesson_after_reservation",
@@ -38,17 +38,17 @@
   ],
   "additional_indirect_entrypoints": [
     {
-      "line": 3580,
+      "line": 3810,
       "name": "warmLessonPreviewAudio",
       "intent": "preview_on_sheet_open"
     },
     {
-      "line": 5416,
+      "line": 5646,
       "name": "prefetchNearbyLessons",
       "intent": "track_switch_background"
     },
     {
-      "line": 8582,
+      "line": 8819,
       "name": "prefetchNearbyLessons",
       "intent": "initial_course_boot_background"
     }
@@ -84,5 +84,12 @@
       "owner": "startSkipTest",
       "policy": "signed_identity_entitlement_checked_max_six_questions"
     }
-  ]
+  ],
+  "integration_anchor_review": {
+    "feature_parent_sha": "8c101abfd436e12e313745ffc9b5974faa19e7b2",
+    "main_parent_sha": "dcd65418887502943067fe9320339eb5ba7a73bb",
+    "previous_source_lines": 8858,
+    "merged_source_lines": 9095,
+    "scope": "Exact unchanged localization anchor lines remapped after upstream CSS/nav and nonblocking Practice scheduling merge; no lesson, locale, auth or grading source changes approved by this line remap."
+  }
 }

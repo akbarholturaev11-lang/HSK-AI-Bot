@@ -5658,3 +5658,138 @@ def test_onboarding_restores_enabled_hsk30_saved_draft(page):
     expect(page.locator('.track-switch [data-track="hsk30"]')).to_have_attribute("aria-pressed", "true")
     page.locator("#cta").click()
     expect(page.locator('.lv[data-key="nhsk2"]')).to_have_attribute("aria-pressed", "true")
+
+def test_liquid_glass_bottom_nav_renders_without_extra_stylesheet_request(page):
+    """Mobile glass nav is visible, safe-area aware and retains tab navigation."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    extra_css_requests = []
+    page.on(
+        "request",
+        lambda request: extra_css_requests.append(request.url)
+        if "/liquid-glass-nav.css" in request.url else None,
+    )
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"),
+        wait_until="networkidle",
+    )
+    nav = page.locator("#nav")
+    expect(nav).to_be_visible()
+    assert nav.locator("button").count() == 5
+    assert extra_css_requests == []
+    skin = nav.evaluate("""element => {
+        const style = getComputedStyle(element);
+        return {
+            radius: style.borderTopLeftRadius,
+            filter: style.backdropFilter || style.webkitBackdropFilter,
+            bottom: style.bottom,
+            lightBorder: style.borderTopColor,
+        };
+    }""")
+    assert skin["radius"] == "28px"
+    assert "blur(26px)" in skin["filter"]
+    assert skin["bottom"] == "10px"
+    box = nav.bounding_box()
+    assert box is not None
+    assert box["x"] >= 8
+    assert box["x"] + box["width"] <= 382
+
+    page.locator('#nav button[data-s="profile"]').click()
+    expect(page.locator('#nav button[data-s="profile"]')).to_have_class(re.compile(r"\bon\b"))
+    page.evaluate("document.documentElement.setAttribute('data-hsk-theme', 'dark')")
+    dark_border = nav.evaluate("element => getComputedStyle(element).borderTopColor")
+    assert dark_border != skin["lightBorder"]
+    for width in (900, 916, 940, 1280):
+        page.set_viewport_size({"width": width, "height": 900})
+        desktop_box = nav.bounding_box()
+        assert desktop_box is not None
+        assert desktop_box["x"] >= 12, (width, desktop_box)
+        assert desktop_box["x"] + desktop_box["width"] <= width - 12
+
+def test_practice_tab_is_usable_during_unfinished_background_load(page):
+    """A slow script or embedded resource may preload, but cannot gate Mashq."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    pending = []
+    def hold_resource(route):
+        pending.append(route)
+    page.route(
+        re.compile(r".*/(?:hsk-words\.js|lesson_gate\.js|hsk-lugat\.html|hsk-gaplar\.html)(?:\?.*)?$"),
+        hold_resource,
+    )
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"),
+        wait_until="networkidle",
+    )
+    page.locator('#nav button[data-s="mashq"]').click()
+    expect(page.locator("#s-mashq")).to_be_visible()
+    expect(page.locator("#m-dict")).to_be_visible()
+    expect(page.locator("#m-ready-phrases")).to_be_visible()
+    expect(page.locator("#m-pron")).to_be_visible()
+    page.wait_for_timeout(3600)
+    assert pending, "Preload requests should still be initiated in the background"
+    expect(page.locator("#s-mashq")).to_be_visible()
+    page.locator('#nav button[data-s="course"]').click()
+    expect(page.locator("#s-course")).to_be_visible()
+    for route in pending:
+        try:
+            route.abort()
+        except Exception:
+            pass
+
+
+def test_desktop_course_modal_covers_full_viewport_and_mobile_keeps_bottom_sheet(page):
+    """Desktop modal scrim covers both course columns, without changing mobile."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    mock_learning_audio(page)
+    page.add_init_script("localStorage.setItem('hsk_v3_onb', '1');")
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    expect(page.locator("#s-course")).to_be_visible()
+
+    # Desktop course grid must stop rendering when another tab is selected.
+    page.set_viewport_size({"width": 1280, "height": 900})
+    page.evaluate("App.show('mashq')")
+    expect(page.locator("#s-mashq")).to_be_visible()
+    expect(page.locator("#s-course")).to_be_hidden()
+    page.evaluate("App.show('course')")
+    expect(page.locator("#s-course")).to_be_visible()
+
+    # A real lesson modal must cover both the 480px learning lane and side rail.
+    page.evaluate("openLessonSheet(0)")
+    sheet = page.locator("#sheet")
+    expect(sheet).to_have_class(re.compile(r"\bon\b"))
+    geometry = page.evaluate("""() => {
+      const backdrop = document.querySelector('#sheet');
+      const panel = backdrop.querySelector('.si');
+      const shade = backdrop.getBoundingClientRect();
+      const card = panel.getBoundingClientRect();
+      return {viewportWidth:innerWidth,viewportHeight:innerHeight,
+        shadeX:shade.x,shadeY:shade.y,shadeWidth:shade.width,shadeHeight:shade.height,
+        cardWidth:card.width,cardCenterX:(card.left+card.right)/2,
+        cardCenterY:(card.top+card.bottom)/2,cardBottom:card.bottom,
+        align:getComputedStyle(backdrop).alignItems};
+    }""")
+    assert abs(geometry["shadeX"]) <= 1
+    assert abs(geometry["shadeY"]) <= 1
+    assert abs(geometry["shadeWidth"] - geometry["viewportWidth"]) <= 1
+    assert abs(geometry["shadeHeight"] - geometry["viewportHeight"]) <= 1
+    assert geometry["cardWidth"] <= 480
+    assert abs(geometry["cardCenterX"] - 640) <= 2
+    assert abs(geometry["cardCenterY"] - 450) <= 4
+    assert geometry["cardBottom"] <= 900
+    assert geometry["align"] == "center"
+
+    # On mobile the established bottom sheet remains anchored to the bottom.
+    page.set_viewport_size({"width": 390, "height": 844})
+    mobile = page.evaluate("""() => {
+      const b=document.querySelector('#sheet').getBoundingClientRect();
+      const c=document.querySelector('#sheet .si').getBoundingClientRect();
+      return {width:b.width,height:b.height,cardBottom:c.bottom,align:getComputedStyle(document.querySelector('#sheet')).alignItems};
+    }""")
+    assert abs(mobile["width"] - 390) <= 1
+    assert mobile["align"] == "flex-end"
+    assert abs(mobile["cardBottom"] - 844) <= 2
+    page.evaluate("App.closeSheet()")
+    expect(sheet).not_to_have_class(re.compile(r"\bon\b"))

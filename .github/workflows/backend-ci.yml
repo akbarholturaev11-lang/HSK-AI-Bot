@@ -297,3 +297,23 @@ jobs:
           python -m unittest tests.test_admin_delete_safety tests.test_account_deletion_request
           tests.test_account_deletion_api tests.test_account_deletion_cleanup
           tests.test_account_deletion_migration tests.test_public_site
+
+  miniapp-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install browser test dependencies
+        run: |
+          python -m pip install pytest playwright
+          python -m playwright install --with-deps chromium
+      - name: Preserve current main navigation, preload and desktop dialog behavior
+        run: >-
+          python -m pytest -q tests/e2e/test_practice_bootstrap.py
+          tests/e2e/test_miniapp_smoke.py::test_liquid_glass_bottom_nav_renders_without_extra_stylesheet_request
+          tests/e2e/test_miniapp_smoke.py::test_practice_tab_is_usable_during_unfinished_background_load
+          tests/e2e/test_miniapp_smoke.py::test_desktop_course_modal_covers_full_viewport_and_mobile_keeps_bottom_sheet
+          tests/test_miniapp_top_spacing_contract.py

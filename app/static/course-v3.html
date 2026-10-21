@@ -1300,8 +1300,17 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
   /* Ikki ustun: chapda sarlavha va yo'lakcha, o'ngda yon ustun. Chap ustun
      BITTA element (`.cleft`) — shu tufayli undagi yopishqoq sarlavha butun
      sahifa bo'ylab tepada qoladi. */
-  #s-course{display:grid;grid-template-columns:minmax(0,var(--read)) minmax(0,1fr);
+  /* Only the active screen may display as a desktop grid; otherwise its
+     ID selector overrides .scr{display:none} and leaks the course behind tabs. */
+  #s-course:not(.on){display:none}
+  #s-course.on{display:grid;grid-template-columns:minmax(0,var(--read)) minmax(0,1fr);
     column-gap:26px;align-items:start}
+  /* The scrim belongs to the viewport, not the 480px mobile reading column.
+     Keep the lesson card readable and vertically centered on desktop. */
+  #sheet{max-width:none;margin:0;align-items:center;justify-content:center;
+    padding:24px;box-sizing:border-box}
+  #sheet>.si{width:100%;max-width:480px;max-height:calc(100dvh - 48px);
+    border-radius:24px;padding-bottom:22px}
   #s-course .cleft{min-width:0}
   #s-course .crail{position:sticky;top:calc(var(--safe-t) + 14px);
     padding:0 16px 0 0;display:flex;flex-direction:column;gap:12px}
@@ -1390,6 +1399,213 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 .lesson-pron-phrase .au{margin:0 auto 10px}
 .lesson-pron-controls{margin-top:auto;flex-shrink:0}
 .lesson-pron-controls .pron-skip{letter-spacing:normal;font-weight:500;margin:2px 0 0;display:inline-flex}
+
+/* Inline nav skin: no extra static-asset endpoint or CSS request. */
+/* Telegram Mini App bottom navigation: lightweight Liquid Glass surface.
+   Presentation-only: original buttons, routes and safe-area token stay intact. */
+.nav {
+  left: 12px;
+  right: 12px;
+  bottom: calc(10px + var(--safe-b));
+  width: auto;
+  max-width: calc(var(--read) - 24px);
+  height: 72px;
+  margin: 0 auto;
+  padding: 7px 7px 8px;
+  align-items: stretch;
+  border: 1px solid rgba(255, 255, 255, .82);
+  border-radius: 28px;
+  background: rgba(253, 249, 240, .96);
+  box-shadow:
+    0 12px 32px rgba(33, 29, 23, .18),
+    0 2px 8px rgba(33, 29, 23, .08),
+    inset 0 1px 1px rgba(255, 255, 255, .96),
+    inset 0 -1px 1px rgba(255, 255, 255, .36);
+  isolation: isolate;
+}
+@supports ((-webkit-backdrop-filter: blur(2px)) or (backdrop-filter: blur(2px))) {
+  .nav {
+    background: linear-gradient(118deg,
+      rgba(255, 255, 255, .73) 0%,
+      rgba(255, 252, 246, .39) 48%,
+      rgba(255, 255, 255, .67) 100%);
+    -webkit-backdrop-filter: blur(26px) saturate(185%);
+    backdrop-filter: blur(26px) saturate(185%);
+  }
+}
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 75% 55% at 18% 0%, rgba(255, 255, 255, .73), transparent 80%),
+    linear-gradient(180deg, rgba(255, 255, 255, .23), transparent 54%);
+}
+.nav button {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 54px;
+  padding: 3px 1px 4px;
+  justify-content: center;
+  gap: 3px;
+  border-radius: 20px;
+  color: var(--ink2);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.15;
+  transition: background .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.nav button i { font-size: 21px; line-height: 1.1; }
+.nav button.on:not(.center) {
+  color: var(--cin2);
+  background: linear-gradient(155deg, rgba(255, 255, 255, .84), rgba(255, 255, 255, .27));
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, .98),
+    inset 0 -1px 0 rgba(255, 255, 255, .31),
+    0 2px 8px rgba(67, 50, 39, .08);
+}
+.nav button:not(.center):active { transform: scale(.96); }
+.nav .center {
+  top: -17px;
+  min-height: 77px;
+  padding: 0;
+  gap: 0;
+  background: transparent;
+}
+.nav .center .fab {
+  position: relative;
+  flex: 0 0 auto;
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, .92);
+  border-radius: 50%;
+  background: linear-gradient(150deg, rgba(255, 255, 255, .3), transparent 55%), var(--cin);
+  color: var(--cin-ink);
+  box-shadow:
+    0 7px 15px rgba(62, 32, 26, .24),
+    inset 0 2px 2px rgba(255, 255, 255, .42),
+    inset 0 -3px 6px rgba(75, 28, 24, .15);
+}
+.nav .center .fab::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 14px;
+  width: 27px;
+  height: 11px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .34);
+  filter: blur(5px);
+  pointer-events: none;
+}
+.nav .center .lbl {
+  margin-top: 2px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--cin2);
+}
+.nav .center.on .fab {
+  box-shadow:
+    0 7px 18px rgba(62, 32, 26, .27),
+    0 0 0 2px rgba(224, 74, 64, .25),
+    inset 0 2px 2px rgba(255, 255, 255, .42),
+    inset 0 -3px 6px rgba(75, 28, 24, .15);
+}
+:root[data-hsk-theme="dark"] .nav {
+  border-color: rgba(180, 229, 248, .25);
+  background: rgba(7, 59, 85, .96);
+  box-shadow:
+    0 12px 32px rgba(0, 18, 31, .44),
+    inset 0 1px 1px rgba(215, 244, 255, .23),
+    inset 0 -1px 1px rgba(0, 18, 31, .3);
+}
+@supports ((-webkit-backdrop-filter: blur(2px)) or (backdrop-filter: blur(2px))) {
+  :root[data-hsk-theme="dark"] .nav {
+    background: linear-gradient(118deg,
+      rgba(50, 110, 137, .74),
+      rgba(7, 59, 85, .61) 50%,
+      rgba(31, 97, 129, .73));
+  }
+}
+:root[data-hsk-theme="dark"] .nav::before {
+  background: linear-gradient(180deg, rgba(201, 240, 255, .16), transparent 65%);
+}
+:root[data-hsk-theme="dark"] .nav button.on:not(.center) {
+  background: linear-gradient(145deg, rgba(191, 234, 253, .18), rgba(191, 234, 253, .07));
+  box-shadow: inset 0 1px 1px rgba(222, 246, 255, .18), 0 3px 8px rgba(0, 18, 31, .15);
+}
+:root[data-hsk-theme="dark"] .nav .center .fab {
+  border-color: rgba(213, 245, 255, .44);
+}
+@media (max-width: 350px) {
+  .nav { left: 8px; right: 8px; max-width: calc(var(--read) - 16px); padding-inline: 4px; }
+  .nav button { font-size: 10px; }
+  .nav .center .fab { width: 55px; height: 55px; }
+}
+@media (min-width: 900px) {
+  /* Align with the course column, not the center of the wider desktop shell. */
+  .nav {
+    left: max(12px, calc(50% - var(--shell) / 2 + 12px));
+    right: auto;
+    width: calc(var(--read) - 24px);
+    max-width: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .nav, :root[data-hsk-theme="dark"] .nav {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--card);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav button { transition: none; }
+}
+/* Optical glass depth: specular edge and touch-positioned highlight.
+   This is a WebKit-compatible approximation, not Apple's native renderer. */
+.nav {
+  --glass-light-x: 25%;
+  border-color: rgba(255,255,255,.91);
+  box-shadow: 0 12px 30px rgba(36,30,24,.17), 0 2px 7px rgba(36,30,24,.08),
+    inset 0 1px 0 rgba(255,255,255,.99), inset 0 -1px 0 rgba(255,255,255,.46);
+}
+.nav::before {
+  background: radial-gradient(ellipse 45% 130% at var(--glass-light-x) -55%,rgba(255,255,255,.93),transparent 77%),
+    linear-gradient(162deg,rgba(255,255,255,.7) 0%,transparent 30%,rgba(255,255,255,.22) 68%,rgba(255,255,255,.78) 100%);
+}
+.nav::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 26px;
+  pointer-events: none;
+  z-index: 0;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.35),
+    inset 0 11px 12px -13px rgba(255,255,255,.96),
+    inset 0 -13px 14px -15px rgba(104,89,70,.35);
+}
+.nav button.on:not(.center) {
+  background: linear-gradient(151deg,rgba(255,255,255,.96),rgba(255,255,255,.43) 60%,rgba(255,255,255,.77));
+  box-shadow: 0 5px 16px rgba(89,72,53,.11),
+    inset 0 1px 1px rgba(255,255,255,1), inset 0 -1px 1px rgba(150,128,102,.12);
+}
+:root[data-hsk-theme="dark"] .nav { border-color: rgba(209,243,255,.4); }
+:root[data-hsk-theme="dark"] .nav::after {
+  box-shadow: inset 0 0 0 1px rgba(227,249,255,.13),
+    inset 0 11px 12px -13px rgba(227,249,255,.46), inset 0 -13px 14px -15px rgba(0,12,23,.65);
+}
+:root[data-hsk-theme="dark"] .nav button.on:not(.center) {
+  background: linear-gradient(150deg,rgba(205,238,250,.24),rgba(176,216,239,.08));
+}
+@media (prefers-reduced-transparency: reduce) {
+  .nav::before,.nav::after { display:none; }
+}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
@@ -2322,7 +2538,12 @@ var App={
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
     if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
     if(s==="course"&&previous!=="course"){refreshCourseProgress();queueHsk30PromoCheck()}
-    if(s==="mashq")schedulePracticeBackgroundLoad();
+    if(s==="mashq"){
+      /* The bundled Practice cards do not depend on local preloads finishing.
+         HSK 3.0 server access still gates the tab above this block. */
+      if(!$("#s-mashq").firstElementChild)renderMashq();
+      schedulePracticeBackgroundLoad();
+    }
     if(s==="voice")renderVoice();
     if(s==="rating")renderRating();
     if(s!=="profile"&&window.HskProfileCarousel)window.HskProfileCarousel.pause();
@@ -2883,7 +3104,13 @@ var App={
     /* Tilni botga ham yozamiz — QA rejim va Kurs rejim bir xil tilda ochiladi. */
     if(INIT_DATA)_apiPost("/api/v3/language",{language:l}).catch(function(){})}
 };
-function navInit(){document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){App.show(b.dataset.s)}})}
+function navInit(){document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){App.show(b.dataset.s)}})
+  var nav=document.getElementById("nav");
+  if(nav)nav.addEventListener("pointerdown",function(e){
+    var rect=nav.getBoundingClientRect();
+    if(rect.width)nav.style.setProperty("--glass-light-x",Math.max(0,Math.min(100,100*(e.clientX-rect.left)/rect.width)).toFixed(1)+"%");
+  },{passive:true});
+}
 
 /* ---------- Course (hybrid path) ---------- */
 function allLessons(){var a=[];(MAP.units||[]).forEach(function(u){(u.lessons||[]).forEach(function(l){a.push(l)})});return a}
@@ -2939,22 +3166,25 @@ function prefetchPracticeAssets(){
        oldindan 440 KB yuklash Course/Mashq oqimiga foyda bermaydi. */
   });
 }
-/* Practice first: display and paint the selected tab before mounting cached
-   dictionary/phrasebook WebViews or starting practice asset fetches.
-   Two animation frames guarantee a paint opportunity; the network work starts
-   in a separate task and never blocks App.show() or the tab's first frame. */
+/* Practice must paint immediately. Keep ALL existing background script
+   downloads and both embedded resources; start them only after the tab has
+   painted and the browser has had an idle opportunity to respond to taps. */
 var PRACTICE_BACKGROUND_SCHEDULED=false;
 function schedulePracticeBackgroundLoad(){
   if(PRACTICE_BACKGROUND_SCHEDULED)return;
   PRACTICE_BACKGROUND_SCHEDULED=true;
   function afterPaint(){
     setTimeout(function(){
-      PRACTICE_BACKGROUND_SCHEDULED=false;
-      // Do not waste resources if the user immediately switched away.
-      if(SCREEN!=="mashq")return;
-      prefetchPracticeAssets();
-      if(window.RESOURCE)RESOURCE.warm();
-    },0);
+      var warmInIdle=function(){
+        PRACTICE_BACKGROUND_SCHEDULED=false;
+        if(SCREEN!=="mashq")return;
+        prefetchPracticeAssets();
+        if(window.RESOURCE)RESOURCE.warm();
+      };
+      if(typeof requestIdleCallback==="function")
+        requestIdleCallback(warmInIdle,{timeout:1800});
+      else setTimeout(warmInIdle,250);
+    },300);
   }
   if(typeof requestAnimationFrame==="function"){
     requestAnimationFrame(function(){requestAnimationFrame(afterPaint)});
@@ -7013,11 +7243,18 @@ var RESOURCE=(function(){
   }
   function warm(){
     if(WARMED)return;WARMED=true;
-    // Defer large dictionary assets until Practice is opened, not on initial course boot.
-    setTimeout(function(){if(!STATE.phrases.frame)ensure("phrases")},350);
-    var warmDict=function(){if(!STATE.dict.frame)ensure("dict")};
-    if(typeof requestIdleCallback==="function")requestIdleCallback(warmDict,{timeout:3500});
-    else setTimeout(warmDict,1700);
+    /* Keep both preloads. Create embedded pages in separate idle turns so
+       two large WebViews never parse together during a tab transition. */
+    var runIdle=function(fn,timeout){
+      if(typeof requestIdleCallback==="function")requestIdleCallback(fn,{timeout:timeout});
+      else setTimeout(fn,500);
+    };
+    runIdle(function(){
+      if(!STATE.phrases.frame)ensure("phrases");
+      setTimeout(function(){
+        runIdle(function(){if(!STATE.dict.frame)ensure("dict");},3500);
+      },1100);
+    },2500);
   }
   return {open:open,close:close,back:back,warm:warm,openPractice:openPractice,
     swipeTarget:swipeTarget,swipePreview:swipePreview};

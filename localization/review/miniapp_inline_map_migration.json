@@ -9,7 +9,7 @@
   "maps": [
     {
       "file": "app/static/course-v3.html",
-      "line": 1669,
+      "line": 1885,
       "id": "ui.course_v3.copy.copy1",
       "locale_value_sha256": {
         "uz": "4bf5ee8e787f955bcc0d474cb15ce8589098be416755ffe2ab9f85d2b928e982",
@@ -19,7 +19,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 2408,
+      "line": 2629,
       "id": "ui.course_v3.w.copy1",
       "locale_value_sha256": {
         "uz": "3582fe97359678ecf179093b5031b6d4dda710debb88fc4ca9d336b5f31f0bda",
@@ -29,7 +29,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 2431,
+      "line": 2652,
       "id": "ui.course_v3.lu.copy1",
       "locale_value_sha256": {
         "uz": "efbd5d30cbd32a58ec7ee1cf8c387bdb505a3e43b32da68447175af639e92e70",
@@ -39,7 +39,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 2451,
+      "line": 2672,
       "id": "ui.course_v3.focusSheetStart.copy1",
       "locale_value_sha256": {
         "uz": "e6e5c031743906eaa89808019fa510eb33a000a4aa2ce1ad9a50382d5599fce4",
@@ -49,7 +49,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 2455,
+      "line": 2676,
       "id": "ui.course_v3.focusSheetStart.copy2",
       "locale_value_sha256": {
         "uz": "3250d0caace4a2d1e86b35b8de00f0df584ad3c0e7aa451cc34ba2dd57905854",
@@ -59,7 +59,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 2461,
+      "line": 2682,
       "id": "ui.course_v3.statLbl.copy1",
       "locale_value_sha256": {
         "uz": "7e7643e2341bfdba7c164eb2e32945fc7b3dfc6add7366ffa730b6f737108966",
@@ -69,7 +69,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 2496,
+      "line": 2717,
       "id": "ui.course_v3.W.copy1",
       "locale_value_sha256": {
         "uz": "49c2f89ae82bc661845eaf70a0ea1756624954ef389c8488a119895eb5345a24",
@@ -79,7 +79,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 2546,
+      "line": 2767,
       "id": "ui.course_v3.RU.copy1",
       "locale_value_sha256": {
         "uz": "ac032cb742e787a604b30f08cf798485c77acbf14fe35ca98bfc4c2b9b0080aa",
@@ -89,7 +89,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 2676,
+      "line": 2897,
       "id": "ui.course_v3.t.copy1",
       "locale_value_sha256": {
         "uz": "d57e7f63d1a1140c281797b73adac746d75c482b5bb5538c2fa6cbc1e656487d",
@@ -99,7 +99,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 2878,
+      "line": 3099,
       "id": "ui.course_v3.names.copy1",
       "locale_value_sha256": {
         "uz": "efb8d7a97727ad8110d8c40c9a1dc6033ef634a4e9a63c506075ccca28416112",
@@ -109,7 +109,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 3105,
+      "line": 3335,
       "id": "ui.course_v3.studySetupT.copy1",
       "locale_value_sha256": {
         "uz": "2cd1fa537e460030b71cc523821561ff16cc51d09aac057815874de88a2c3406",
@@ -119,7 +119,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 3245,
+      "line": 3475,
       "id": "ui.course_v3.m.copy1",
       "locale_value_sha256": {
         "uz": "0c7b84d07e3a322f45236f3c00ea76dfc2ac05b012fc9cc652ab17b53c1327e7",
@@ -129,7 +129,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 3255,
+      "line": 3485,
       "id": "ui.course_v3.m.copy2",
       "locale_value_sha256": {
         "uz": "b9cfbea980351dc1e6a070f04f2dfef7face079da776ce7c646c89f14c008992",
@@ -139,7 +139,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 3423,
+      "line": 3653,
       "id": "ui.course_v3.mascP.copy1",
       "locale_value_sha256": {
         "uz": "36b186fe2119d814f7e76d4ac6978b4c867e78b3a0e930f353567a8564bae85d",
@@ -149,7 +149,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 3474,
+      "line": 3704,
       "id": "ui.course_v3.m.copy3",
       "locale_value_sha256": {
         "uz": "714909f448c98e2e4fc6d981c6cf6da745c2ec795710ee809a9601d1a9bf27bc",
@@ -159,7 +159,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 3489,
+      "line": 3719,
       "id": "ui.course_v3.m.copy4",
       "locale_value_sha256": {
         "uz": "4e1d08b119b3aea50b307e041b05a81a92040bcc0c113727a0cbcb388317b285",
@@ -169,7 +169,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 3586,
+      "line": 3816,
       "id": "ui.course_v3.M.copy1",
       "locale_value_sha256": {
         "uz": "d9942623c9126618e68bd4adcb52b32ca5e3f114a495168858236e08cd0963df",
@@ -179,7 +179,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4205,
+      "line": 4435,
       "id": "ui.course_v3.oneHeartText.copy1",
       "locale_value_sha256": {
         "uz": "b2190e366ae2de914a3e7e70ad05e28fbe437b899f587143fc49426703cdca85",
@@ -189,7 +189,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4245,
+      "line": 4475,
       "id": "ui.course_v3.lessonCharacterLabel.copy1",
       "locale_value_sha256": {
         "uz": "1aacbd8f6145c978f20cc188207684a2254a8b3b267f981f72ba7e9a2631eec9",
@@ -199,7 +199,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4246,
+      "line": 4476,
       "id": "ui.course_v3.lessonCharacterLabel.copy2",
       "locale_value_sha256": {
         "uz": "7a2045fcbc000d44d9e482c7b211a5ce89b8312270ac70806034095f7e448186",
@@ -209,7 +209,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4247,
+      "line": 4477,
       "id": "ui.course_v3.lessonCharacterLabel.copy3",
       "locale_value_sha256": {
         "uz": "a8e1b0cd444c11dc3d858edcefea65e4d238ff7fa8e421e96c281030df0f7f70",
@@ -219,7 +219,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4248,
+      "line": 4478,
       "id": "ui.course_v3.lessonCharacterLabel.copy4",
       "locale_value_sha256": {
         "uz": "ab3a683f94ae5ad7ae66e6e2f9416d1b83925a0c16f9d2f394fec66ee95eb0a6",
@@ -229,7 +229,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4249,
+      "line": 4479,
       "id": "ui.course_v3.lessonCharacterLabel.copy5",
       "locale_value_sha256": {
         "uz": "0ca3274c3c7cb4d22844046f93fa52a047112d8cb3aaa77770e47a485bc7d8fe",
@@ -239,7 +239,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4376,
+      "line": 4606,
       "id": "ui.course_v3.P.copy1",
       "locale_value_sha256": {
         "uz": "dbe3d67569597605d9489d4b1b1ac4e71becea074bcebf12b10bdf9711f25181",
@@ -249,7 +249,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4421,
+      "line": 4651,
       "id": "ui.course_v3.C.copy1",
       "locale_value_sha256": {
         "uz": "bae629ac448bc3590920f707ce3ad6750e33ae6f5ab21f59deb3198e789308ec",
@@ -259,7 +259,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4462,
+      "line": 4692,
       "id": "ui.course_v3.H.copy1",
       "locale_value_sha256": {
         "uz": "d285dfcc913f42ae2bdc0cc31f3561686cc1c4270027f43b184babf3c1c96367",
@@ -269,7 +269,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4482,
+      "line": 4712,
       "id": "ui.course_v3.C.copy2",
       "locale_value_sha256": {
         "uz": "170e9d03ed87e175ca4190da081ca3051540a360cd83a48939eb16797c8d7e32",
@@ -279,7 +279,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4564,
+      "line": 4794,
       "id": "ui.course_v3.W.copy2",
       "locale_value_sha256": {
         "uz": "af7fe97316c77f07b830daa6229b07f9d7871c5a1c5a578b60d644fdf357d116",
@@ -289,7 +289,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4569,
+      "line": 4799,
       "id": "ui.course_v3.chestT.copy1",
       "locale_value_sha256": {
         "uz": "daf68768273e8f24d56ff97fe141194a4b18a11024c1c1b015911369da75d5f9",
@@ -299,7 +299,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4586,
+      "line": 4816,
       "id": "ui.course_v3.todayT.copy1",
       "locale_value_sha256": {
         "uz": "7c99ad1dfce7fab41624c5168eb2740f9db755bf434d10f7fff9bad7ac548f7f",
@@ -309,7 +309,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4799,
+      "line": 5029,
       "id": "ui.course_v3.M.copy2",
       "locale_value_sha256": {
         "uz": "e59837f441be6c8c56979d46b0c22280bd854f49a767e63a1d98a357a978daad",
@@ -319,7 +319,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4812,
+      "line": 5042,
       "id": "ui.course_v3.M.copy3",
       "locale_value_sha256": {
         "uz": "93dd8a9c0262c852ef987ae753662bc55d4e62bf8427d791930713ea1eda0f32",
@@ -329,7 +329,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 4953,
+      "line": 5183,
       "id": "ui.course_v3.M.copy4",
       "locale_value_sha256": {
         "uz": "acef0ac5bfac54f1a3a6e9780f541971f73fa4e597e6fd6e4028d905611d6506",
@@ -339,7 +339,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 5115,
+      "line": 5345,
       "id": "ui.course_v3.MB.copy1",
       "locale_value_sha256": {
         "uz": "f6e932b4d338b56d5fe678eaaab2e200ea02e0c55e07928a821bb658dcbca653",
@@ -349,7 +349,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 5181,
+      "line": 5411,
       "id": "ui.course_v3.RT.copy1",
       "locale_value_sha256": {
         "uz": "61c3f70a6668af80b04cd6e6b797de5f4f8e108d84b1d2e2eb05921356d68f33",
@@ -359,7 +359,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 5214,
+      "line": 5444,
       "id": "ui.course_v3.PRON_L.copy1",
       "locale_value_sha256": {
         "uz": "8a86dbf8fdc6d92fc529b7eaf3c93d428665c1878d2cf0318dddd888eed787b8",
@@ -369,7 +369,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 5223,
+      "line": 5453,
       "id": "ui.course_v3.title.copy1",
       "locale_value_sha256": {
         "uz": "6072d959842c68b95a27e01981a4cb66f1993b468c1fd1666439314a9c03bb00",
@@ -379,7 +379,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 5224,
+      "line": 5454,
       "id": "ui.course_v3.skipText.copy1",
       "locale_value_sha256": {
         "uz": "1988ae514573be1e64166db365d8870007b72754a7455d30a881600a174fd311",
@@ -389,7 +389,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 5873,
+      "line": 6103,
       "id": "ui.course_v3.rl.copy1",
       "locale_value_sha256": {
         "uz": "62b2d1a5460cba65ef5edac95dc20c29059e65edfaf30cf6934b00055063c8db",
@@ -399,7 +399,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 6141,
+      "line": 6371,
       "id": "ui.course_v3.chL.copy1",
       "locale_value_sha256": {
         "uz": "780ada408c352d1f7a6288408a21a6d5349e3a665b008fd39a76271f1b59899d",
@@ -409,7 +409,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 6281,
+      "line": 6511,
       "id": "ui.course_v3.t.copy2",
       "locale_value_sha256": {
         "uz": "014b3f83ae4dfada0e9d63e1231b1479fe6376d58a025017a5cdaa2aea26e0b6",
@@ -419,7 +419,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 6382,
+      "line": 6612,
       "id": "ui.course_v3.pl.copy1",
       "locale_value_sha256": {
         "uz": "0d75291b1a163d954a8f6ae504ff5d4f2a84ddbab0d73878ec2da849524c45fe",
@@ -429,7 +429,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 6736,
+      "line": 6966,
       "id": "ui.course_v3.salesValueCopy.copy1",
       "locale_value_sha256": {
         "uz": "e0b6d92eed58e22c287b8457db6fcc055d23b3488bda3ef9f0090d9d9f3e7eaf",
@@ -439,7 +439,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 6773,
+      "line": 7003,
       "id": "ui.course_v3.s.copy1",
       "locale_value_sha256": {
         "uz": "a9a9c0c0ea398b1d3c146a081703cd483950fea04ed39caae6e364432f36ee8f",
@@ -449,7 +449,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 6783,
+      "line": 7013,
       "id": "ui.course_v3.m.copy5",
       "locale_value_sha256": {
         "uz": "60cd221b6093857cc3697226c4487cfd1073bbb32ccd400882d279acb3124e06",
@@ -459,7 +459,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 6798,
+      "line": 7028,
       "id": "ui.course_v3.m.copy6",
       "locale_value_sha256": {
         "uz": "b61982faa7c889d834df1dd49550a25dc2e136a73ec00cd485c1969880dcd4e6",
@@ -729,7 +729,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 1936,
+      "line": 2152,
       "id": "ui.course_v3.levelSoon.templates",
       "locale_value_sha256": {
         "uz": "4a2db935fca1b9796900719cfef9413edb19ad6526ae252e1f6ce579d7b019f0",
@@ -739,7 +739,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 2439,
+      "line": 2660,
       "id": "ui.course_v3.levelCompletion.templates",
       "locale_value_sha256": {
         "uz": "2fbb4e0d1ee2f42f7e85b9f485634bf346ed3f19bf0cb367ae856a46edfd6b8c",
@@ -749,7 +749,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 3394,
+      "line": 3624,
       "id": "ui.course_v3.foundationEntry.templates",
       "locale_value_sha256": {
         "uz": "630ed017f2b83baa380386f22f88f4480853c87be5009ac509662f3d77ee2e9d",
@@ -759,7 +759,7 @@
     },
     {
       "file": "app/static/course-v3.html",
-      "line": 6347,
+      "line": 6577,
       "id": "ui.course_v3.rivalry.templates",
       "locale_value_sha256": {
         "uz": "3867728e59a983ec4fa574849de9242c270e8f315ad31c4ec28994414a9be9bc",
@@ -1131,5 +1131,12 @@
       "source": "app/static/course_v3_voice.html",
       "sha256": "99fe7c1b772a82313208b826447ab4f20d94e092fab5b85e2df1f158da257677"
     }
-  ]
+  ],
+  "integration_anchor_review": {
+    "feature_parent_sha": "8c101abfd436e12e313745ffc9b5974faa19e7b2",
+    "main_parent_sha": "dcd65418887502943067fe9320339eb5ba7a73bb",
+    "previous_source_lines": 8858,
+    "merged_source_lines": 9095,
+    "scope": "Exact unchanged localization anchor lines remapped after upstream CSS/nav and nonblocking Practice scheduling merge; no lesson, locale, auth or grading source changes approved by this line remap."
+  }
 }

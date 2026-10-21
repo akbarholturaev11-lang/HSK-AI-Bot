@@ -115,7 +115,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                 for locale, value in (("uz", uz), ("ru", ru), ("tj", tj)):
                     self.assertEqual(catalogs[locale][key], value)
                     self.assertEqual(len(catalogs[locale]), 978)
-        self.assertEqual(len(html.split("\n")), 8859)
+        self.assertEqual(len(html.split("\n")), 9096)
         self.assertIn("challengeSending=false", html)
         self.assertIn("ratingRetryText()", html)
 
@@ -170,7 +170,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                 for locale, value in zip(("uz", "ru", "tj"), values):
                     self.assertEqual(catalogs[locale][key], value)
                     self.assertEqual(len(catalogs[locale]), 978)
-        self.assertEqual(len(html.split("\n")), 8859)
+        self.assertEqual(len(html.split("\n")), 9096)
 
     def test_remaining_shared_lesson_labels_use_local_first_catalog(self):
         """Keep exact inline translations as fallback for the remaining shared labels."""
@@ -187,13 +187,13 @@ class CourseHotspotTriageTests(unittest.TestCase):
             "today.go": ("Reja bo'yicha davom etish", "Продолжить по плану", "Идома аз рӯи нақша"),
         }
         anchors = {
-            2550: 'cont:courseMessage("cont",T().cont)',
-            4752: 'courseMessage("cont",T().cont):courseMessage("check",T().check)',
-            4830: 'courseMessage("cont",T().cont)',
-            5021: 'courseMessage("cont",T().cont)',
-            5062: 'courseMessage("grammar",T().grammar)',
-            5226: 'esc(courseMessage("say",T().say))',
-            4652: 'esc(courseMessage("today.go",todayT().go))',
+            2771: 'cont:courseMessage("cont",T().cont)',
+            4982: 'courseMessage("cont",T().cont):courseMessage("check",T().check)',
+            5060: 'courseMessage("cont",T().cont)',
+            5251: 'courseMessage("cont",T().cont)',
+            5292: 'courseMessage("grammar",T().grammar)',
+            5456: 'esc(courseMessage("say",T().say))',
+            4882: 'esc(courseMessage("today.go",todayT().go))',
         }
         for line_no, anchor in anchors.items():
             with self.subTest(line=line_no):
@@ -203,12 +203,12 @@ class CourseHotspotTriageTests(unittest.TestCase):
                 with self.subTest(key=key, locale=lang):
                     self.assertEqual(catalogs[lang][key], value)
                     self.assertEqual(len(catalogs[lang]), 978)
-        self.assertEqual(len(lines), 8858)
+        self.assertEqual(len(lines), 9095)
 
     def test_foundation_pronunciation_labels_use_local_first_catalog(self):
         """Centralize the two labels while keeping Chinese and pinyin content intact."""
         lines = SOURCE.read_text(encoding="utf-8").splitlines()
-        source_line = lines[5041 - 1]
+        source_line = lines[5271 - 1]
         expected = {
             "foundation.writtenForm": ("yozilishi", "на письме", "навишт"),
             "foundation.naturalPronunciation": (
@@ -227,7 +227,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                     self.assertEqual(len(catalog), 978)
         self.assertIn('ex.pinyin||"nǐ hǎo"', source_line)
         self.assertIn('c.natural_pinyin||"ní hǎo"', source_line)
-        self.assertEqual(len(lines), 8858)
+        self.assertEqual(len(lines), 9095)
 
 if __name__ == "__main__":
     unittest.main()
