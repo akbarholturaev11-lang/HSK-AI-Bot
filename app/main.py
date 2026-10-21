@@ -2229,6 +2229,7 @@ async def course_v3_data_file(filename: str):
     import re
     public_assets = {
         "design-tokens.css": "text/css",
+        "liquid-glass-nav.css": "text/css",
         "desktop-download.css": "text/css",
         "desktop-download.js": "application/javascript",
         "profile-carousel.css": "text/css",

@@ -20,3 +20,19 @@ def test_embedded_resources_do_not_duplicate_telegram_top_inset():
     assert "html.hsk-embedded .page { padding-top: 8px; }" in phrases
     assert "html.hsk-embedded .view{top:0}" in dictionary
     assert "html.hsk-embedded .hsk-native-back-duplicate" in dictionary
+
+def test_liquid_glass_bottom_navigation_stylesheet_is_public_and_safe_area_aware():
+    """A missing FastAPI asset allowlist entry silently shows the old navigation."""
+    api = (STATIC.parent / "main.py").read_text(encoding="utf-8")
+    course = (STATIC / "course-v3.html").read_text(encoding="utf-8")
+    glass = (STATIC / "course_v3_data" / "liquid-glass-nav.css").read_text(encoding="utf-8")
+
+    assert '"liquid-glass-nav.css": "text/css"' in api
+    assert 'href="/course_v3_data/liquid-glass-nav.css?v=20261021-1"' in course
+    assert "bottom: calc(10px + var(--safe-b))" in glass
+    assert "backdrop-filter: blur(26px)" in glass
+    assert ':root[data-hsk-theme="dark"] .nav' in glass
+    assert "prefers-reduced-transparency" in glass
+    assert '<nav class="nav" id="nav">' in course
+    assert 'data-s="voice"' in course
+
