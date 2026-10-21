@@ -1,5 +1,12 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## 2026-10-22 — New QA deployment and direct source audit
+
+- User authorized a NEW isolated Railway project for `@Gentss_3bot`, from `codex/p3-main-integration-20261020`; main/production remain out of scope. Bot identity was verified read-only; no webhook was configured. No token is stored in repository files.
+- Railway project creation failed through both connector and CLI: `Deploys have been paused temporarily`. Official `https://status.railway.com/` confirms a major outage and paused builds/deploys. No new project/database/service was created; no existing project was changed. Do not reuse old QA or production as a substitute.
+- Direct source review found the fresh-QA initializer both expected obsolete 0108 and pre-created the table that 0109 unconditionally creates. Fix retains formal 0102→0109 migrations, preflights the head before writes, defers that table, verifies empty learner/identity tables, and preserves the existing project/host allowlist. Root verified **21 safety tests / 42 subtests**; real fresh local PostgreSQL proof produced 61 tables/head0109 and zero learner rows, rejected a nonempty retry without changes, then stopped its own cluster.
+- Source audit continues on actual course map/progress transactions and account/access code; no conclusion of “no bugs” is inferred from Markdown. New project guard bindings and real deployment remain pending an actual Railway project ID/domain after recovery.
+
 > **FOR NEW CHATS / AGENTS — READ `localization/RESUME_NEXT_CHAT.md`, THEN `localization/P3_ACTIVE_HANDOFF.md` FIRST.** This ~historical handoff preserves chronological records; older 'latest' sections or failed CI runs do not override the current active snapshot. Keep all source/access/QA gates intact.
 
 ## Current critical-mechanics checkpoint — 2026-10-21

@@ -3,7 +3,7 @@
 NEVER run this against production or the old staging project. This does not
 import, clone, read or copy any learner data from anywhere. It first creates
 an empty schema from the current ORM models, stamps the historical baseline
-only on the NEW empty QA DB, then executes 0103..0108 and checks the head.
+only on the NEW empty QA DB, then executes 0103..0109 and checks the head.
 
 The historical Alembic base cannot create all course tables from scratch.
 This explicitly isolated QA path is not a replacement for a production
@@ -22,7 +22,10 @@ QA_ENVIRONMENT = "qa"
 QA_HOST = "postgres.railway.internal"
 QA_DATABASE = "railway"
 EXPECTED_BASELINE = "0102_payment_review_preview"
-EXPECTED_HEAD = "0108_native_audit_ownership"
+EXPECTED_HEAD = "0109_public_site_traffic_daily"
+# Unlike the earlier native migrations, 0109 creates its table unconditionally.
+# Let the reviewed migration create it after the empty ORM baseline is stamped.
+MIGRATION_CREATED_TABLES = frozenset({"public_site_traffic_daily"})
 
 
 def validate_target(env: dict[str, str]) -> None:
@@ -54,41 +57,74 @@ async def ensure_database_empty() -> None:
 async def verify_qa_tables() -> None:
     from sqlalchemy import inspect, text
     from app.db.session import engine
-    async with engine.connect() as con:
-        tables = set(await con.run_sync(
-            lambda conn: inspect(conn).get_table_names(schema="public")
-        ))
-        required = {"users", "payments", "referrals", "course_progress",
-                    "user_identities", "alembic_version"}
-        if not required.issubset(tables):
-            raise RuntimeError("standalone_qa_missing_schema_tables")
-        version = (await con.execute(text("SELECT version_num FROM alembic_version"))).scalar()
-        if version != EXPECTED_HEAD:
-            raise RuntimeError("standalone_qa_bad_schema_revision")
-        for table in ("users", "payments", "referrals", "course_progress"):
-            n = (await con.execute(text(f"SELECT count(*) FROM {table}"))).scalar()
-            if n != 0:
-                raise RuntimeError("standalone_qa_unexpected_user_rows")
+    try:
+        async with engine.connect() as con:
+            tables = set(await con.run_sync(
+                lambda conn: inspect(conn).get_table_names(schema="public")
+            ))
+            required = {"users", "payments", "referrals", "course_progress",
+                        "user_identities", "alembic_version", "public_site_traffic_daily"}
+            if not required.issubset(tables):
+                raise RuntimeError("standalone_qa_missing_schema_tables")
+            version = (await con.execute(text("SELECT version_num FROM alembic_version"))).scalar()
+            if version != EXPECTED_HEAD:
+                raise RuntimeError("standalone_qa_bad_schema_revision")
+            traffic_columns, traffic_primary_key = await con.run_sync(lambda conn: (
+                inspect(conn).get_columns("public_site_traffic_daily", schema="public"),
+                inspect(conn).get_pk_constraint("public_site_traffic_daily", schema="public"),
+            ))
+            if ({column["name"] for column in traffic_columns} != {"visit_day", "source", "visits"}
+                    or any(column["nullable"] for column in traffic_columns)
+                    or set(traffic_primary_key["constrained_columns"]) != {"visit_day", "source"}):
+                raise RuntimeError("standalone_qa_bad_public_traffic_schema")
+            for table in ("users", "payments", "referrals", "course_progress",
+                          "user_identities", "public_site_traffic_daily"):
+                n = (await con.execute(text(f"SELECT count(*) FROM {table}"))).scalar()
+                if n != 0:
+                    raise RuntimeError("standalone_qa_unexpected_user_rows")
+    finally:
+        await engine.dispose()
 
 
 async def _create_empty_orm_schema() -> None:
-    # The imported global AsyncEngine has a shared connection pool. Both
-    # operations MUST use the same event loop, then dispose the pool before
-    # Alembic opens a different one.
-    await ensure_database_empty()
-    from app.db.session import init_db, engine
-    await init_db()
-    await engine.dispose()
+    # The shared pool must be disposed before Alembic opens another event loop.
+    from app.db.session import engine, _ensure_bootstrap_columns, _ensure_bootstrap_indexes
+    try:
+        await ensure_database_empty()
+        from app.db import models  # noqa: F401 — register every ORM table in a fresh CLI process
+        from app.db.base import Base
+        async with engine.begin() as connection:
+            await connection.run_sync(lambda conn: Base.metadata.create_all(
+                conn, tables=_initial_schema_tables(Base.metadata),
+            ))
+            await _ensure_bootstrap_columns(connection)
+            await _ensure_bootstrap_indexes(connection)
+    finally:
+        await engine.dispose()
+
+
+def _initial_schema_tables(metadata):
+    return [table for table in metadata.sorted_tables
+            if table.name not in MIGRATION_CREATED_TABLES]
+
+
+def _reviewed_alembic_config():
+    from alembic.config import Config
+    from alembic.script import ScriptDirectory
+
+    config = Config("alembic.ini")
+    if ScriptDirectory.from_config(config).get_heads() != [EXPECTED_HEAD]:
+        raise RuntimeError("standalone_qa_unreviewed_schema_head")
+    return config
 
 
 def main() -> None:
     validate_target(dict(os.environ))
     from alembic import command
-    from alembic.config import Config
+    cfg = _reviewed_alembic_config()
     asyncio.run(_create_empty_orm_schema())
-    cfg = Config("alembic.ini")
     # QA ONLY. ORM-created tables model the latest empty schema; migration
-    # 0102..0108 is then exercised to apply/refuse any missing constraints.
+    # 0103..0109 is then exercised to apply/refuse any missing constraints.
     command.stamp(cfg, EXPECTED_BASELINE)
     command.upgrade(cfg, "head")
     asyncio.run(verify_qa_tables())
