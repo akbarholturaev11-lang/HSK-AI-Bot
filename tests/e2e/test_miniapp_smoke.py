@@ -5556,7 +5556,7 @@ def test_practice_tab_is_usable_during_unfinished_background_load(page):
     def hold_resource(route):
         pending.append(route)
     page.route(
-        re.compile(r".*/(?:hsk-words\\.js|lesson_gate\\.js|hsk-lugat\\.html|hsk-gaplar\\.html)(?:\\?.*)?$"),
+        re.compile(r".*/(?:hsk-words\.js|lesson_gate\.js|hsk-lugat\.html|hsk-gaplar\.html)(?:\?.*)?$"),
         hold_resource,
     )
     page.goto(
