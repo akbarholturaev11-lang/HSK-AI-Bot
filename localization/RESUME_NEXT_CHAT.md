@@ -1,6 +1,13 @@
 # HSK AI Local-First i18n — RESUME NEXT CHAT
 
-Updated: 2026-10-21. **This is the short authoritative checkpoint, not evidence of main/production release.**
+Updated: 2026-10-22. **This is the short authoritative checkpoint, not evidence of main/production release.**
+
+## Latest direct-code audit and deployment request — 2026-10-22
+
+- Current runtime source: `150906868d0cec2522f5844fd50e3d25abe80e8d`, work branch `codex/p3-main-integration-20261020`. Main/production are unchanged. Continue from the 2026-10-22 entry in `NEXT_CHAT_HANDOFF.md`; the older checkpoints below are historical.
+- Direct PostgreSQL reproductions found and fixed map/track-switch progress loss across Mini App/Android/macOS/Windows and stale Telegram row locks losing paid renewal or reactivating a blocked account. Seven new regressions failed before their corresponding fixes and now pass. QA bootstrap `e6090c68` also fixes actual fresh-database migration through 0109, retaining the existing explicit target allowlist.
+- GitHub **SUCCESS** at runtime source: P0 [39642194260](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39642194260), Backend [39642194559](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39642194559), including all three jobs, 64 PostgreSQL tests/0 skipped and critical browser flows. Local verification: 248 runtime tests/137 subtests, 64 PostgreSQL tests/64 subtests, 460 P0 tests on each Python 3.11/3.14 and all read-only checks. Newly created local test clusters were stopped; source lesson data and frontend code are unchanged.
+- User authorized a NEW Railway project and `@Gentss_3bot`. Token identity was verified read-only; never put its credential in project files. Creation failed via connector and CLI; Railway's official status confirms a major outage with builds/deploys paused. No new remote resources exist. After recovery create the new project/environment, then bind its actual project ID/database/origin to reviewed QA guards; do not point the new bot at old QA/production or use the fake-token `app.staging_qa` for real Mini App signatures.
 
 ## Current critical-mechanics checkpoint — 2026-10-21
 
