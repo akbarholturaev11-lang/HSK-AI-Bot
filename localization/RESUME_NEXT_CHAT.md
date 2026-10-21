@@ -5,7 +5,7 @@ Updated: 2026-10-22. **This is the short authoritative checkpoint, not evidence 
 ## Latest localization code audit — 2026-10-22
 
 - Follow the newest entry in `NEXT_CHAT_HANDOFF.md`: three confirmed language-preference write defects are fixed in Mini App and Bot, with no catalog, lesson, scoring, payment or entitlement changes. Work branch only; main/production are unchanged.
-- Local: 199 runtime tests / 144 subtests, 460 P0 tests on both Python versions, all read-only checks, 3 focused browser tests and 53 current artifacts / 0 stale. New signed HTTP, Bot filter/callback and real picker regressions are part of Backend CI. Record the new source SHA and remote CI after push; do not use previous CI as evidence for unpushed fixes.
+- Source **`7f34a48dbf53cc0e1e6ea944a8facd6691e04369`** is pushed to the work branch. GitHub **SUCCESS**: P0 [39646040850](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39646040850) and Backend [39646040931](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39646040931), including all three jobs, 23 critical browser flows, 19 incoming-main UI checks and 64 PostgreSQL tests / 0 skipped. Local: 199 runtime tests / 144 subtests, 460 P0 tests on each Python 3.11/3.14, all read-only checks, 3 focused browser tests plus the 23 critical flows, and 53 current artifacts / 0 stale. New signed HTTP, Bot filter/callback and real picker regressions are in Backend CI; no additional confirmed defect remains in the inspected paths.
 - The new isolated Railway test-bot deployment remains pending the platform outage described below. No new project or deployment is claimed.
 
 ## Latest direct-code audit and deployment request — 2026-10-22
