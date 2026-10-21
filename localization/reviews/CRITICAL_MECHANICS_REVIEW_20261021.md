@@ -65,7 +65,8 @@ No main promotion, deployment, real credentials or production database access.
 - Canonical identity, OIDC verification, linking, session rotation/revocation and
   AI/Voice owner isolation: **212 distinct tests passed, 26 PostgreSQL-only skipped**.
   No new confirmed defect in those reviewed paths. Mocked providers do not prove
-  real Google/Apple/Telegram acceptance or PostgreSQL concurrency.
+  real Google/Apple/Telegram acceptance. The earlier PostgreSQL skips were
+  subsequently covered by the dedicated run below.
 - **22 critical browser tests passed** using actual local HTML/assets and synthetic
   APIs: foundation, lesson completion/retry, checkpoint recovery, recognition,
   exam/challenge server results, UZ/RU/TJ paywalls, checkout, pending receipts,
@@ -84,10 +85,28 @@ No main promotion, deployment, real credentials or production database access.
   0 blockers. The source audit now explicitly enforces the verified User lock
   before reservation progress/quota reads, with three negative regressions.
 
+## Isolated PostgreSQL follow-up
+
+At exact source `90fa883a`, **57 tests + 64 subtests passed, 0 skipped** on a
+fresh PostgreSQL 15.17 cluster. It covered native account and OAuth races,
+Telegram attachment/link races, canonical payment locks, HSK3 grant races,
+receipt locking, referral rewards, migration 0108, statistics and purge ownership.
+The server identity and new data directory were verified; the application DB
+remained a loopback sentinel. The created cluster was stopped afterwards.
+CI has a matching ephemeral PostgreSQL job with a no-skips assertion; no real
+payment/provider credentials or existing database were used.
+
+The first expanded Linux browser run at `90fa883a` passed 21/22 flows; the D1
+recovery background `/api/v3/course-tracks` request had no fixture and a faster
+DNS failure exposed it. A deterministic Chromium DNS rule reproduced the exact
+failed URL. The specific local fixture fixes it; five repeated fast-DNS D1 cases
+and all 22 selected flows passed. Console checks remain enabled. This is a test
+harness correction; no runtime UI change.
+
 ## Acceptance limits
 
 No production or real-account certification. Real payment/provider flows,
-PostgreSQL concurrency/migrations, account switching with installed clients,
+production migration/restore rehearsal, account switching with installed clients,
 offline/refresh and user's real Telegram bot acceptance still require their
 intended isolated environment. Earlier localization completion does not mean
 the whole branch changed text only: earlier account/private-content integrations

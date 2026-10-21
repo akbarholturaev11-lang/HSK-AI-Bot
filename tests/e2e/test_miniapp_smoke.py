@@ -94,6 +94,21 @@ def route_static_files(page):
             },
         ),
     )
+    # Startup checks course-track promotion in the background even while a
+    # lesson is open. Keep that request local; DNS timing differs by platform.
+    # Dedicated track/promotion tests register their own response afterwards.
+    page.route(
+        "**/api/v3/course-tracks",
+        lambda route: json_response(route, {
+            "ok": True,
+            "active_track": "hsk20",
+            "active_level": "hsk1",
+            "tracks": {
+                "hsk20": {"track": "hsk20", "level": "hsk1", "completed_lessons_count": 0},
+            },
+            "hsk30_promo": {"eligible": False},
+        }),
+    )
     page.route(
         "**/api/v3/trial/status",
         lambda route: json_response(
@@ -1788,6 +1803,7 @@ def test_course_v3_d1_recovery_resumes_saved_lesson_card_once(page):
         "console",
         lambda message: runtime_errors.append(message.text) if message.type == "error" else None,
     )
+    page.on("requestfailed", lambda request: runtime_errors.append(f"{request.url}: {request.failure}"))
     mock_price_preview(page)
     mock_telegram_ready(page)
     mock_course_map(page)
