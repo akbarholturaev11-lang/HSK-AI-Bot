@@ -150,4 +150,5 @@ jobs:
           tests/e2e/test_miniapp_smoke.py::test_admin_control_renders_real_api_payload_without_demo_data
           tests/e2e/test_practice_bootstrap.py
           tests/e2e/test_miniapp_smoke.py::test_liquid_glass_bottom_nav_renders_without_extra_stylesheet_request
+          tests/e2e/test_miniapp_smoke.py::test_practice_tab_is_usable_during_unfinished_background_load
           tests/test_miniapp_top_spacing_contract.py
