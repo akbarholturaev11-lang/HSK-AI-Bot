@@ -15,67 +15,67 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "700c26e6fd553fc52593b045ecc84b73071319ce",
+      "reviewed_sha1": "d2bd272e097acc833121f12b3d36109a783e4316",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",
-      "reviewed_sha1": "99ab127c6529ea57c5a6849d64cfb170a18f42d7",
+      "reviewed_sha1": "9ef7bcc5b751748a22ac7118b972cc3ed3bcbdf4",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     },
     "app/static/course_v3_onboarding.html": {
       "baseline_sha1": "321c28c34cf4ed0550bb5187d8f6b680654ea51e",
-      "reviewed_sha1": "bfe9b2f50dfc7223e8fa27d2bde4e7bb18664736",
+      "reviewed_sha1": "6ef0dc9e1fa80c4b15b0aacd2fc136cd8583494e",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     },
     "app/static/course_v3_test.html": {
       "baseline_sha1": "2962e807b81cc5059dd2bf8ae2b344479d3cd19b",
-      "reviewed_sha1": "1c45b8008878145f2a55801e1a996a5cd2f52560",
+      "reviewed_sha1": "9ff3c27895ad720cda1e05d8e77b25538f65d6ec",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     },
     "app/static/course_v3_recognition.html": {
       "baseline_sha1": "22c2e10c99a243b9eb9992f99de0de0709c7f819",
-      "reviewed_sha1": "d30c68548bac821f3a73127d2c27695d5b716dcf",
+      "reviewed_sha1": "b9610480593343fe16caf843f7d15ca0e45eba53",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     },
     "app/static/course_v3_mistakes.html": {
       "baseline_sha1": "b273a6dbf85884b99ab3c194546a6b9d4b0eecbf",
-      "reviewed_sha1": "01984286c5690d8f27c45102f69ef6479acd3b3b",
+      "reviewed_sha1": "e64a4ecc5690f7bcd4536df2a5784d0d9487d2b4",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     },
     "app/static/course_v3_pronunciation.html": {
       "baseline_sha1": "d05f5dd02da2befc4db9bc07db343a19bd1c0e32",
-      "reviewed_sha1": "966cc6ed4020542dad97d2704c3042273a82b960",
+      "reviewed_sha1": "38273ea236ba573367adaeb7288eeaff42986f9a",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     },
     "app/static/course_v3_voice.html": {
       "baseline_sha1": "ddbca0976c0c1d25c86383653ab274129f33dcd7",
-      "reviewed_sha1": "e63010dcfecf6d1d9a26cedc35d5ae7817bdec2b",
+      "reviewed_sha1": "3d453f632c0cbfb85d340d7af2fddd0b8b35ce24",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     },
     "app/static/course_v3_memorize.html": {
       "baseline_sha1": "c0ec27bbeb8e8dd3aaf25f345548b0135fefc96e",
-      "reviewed_sha1": "854649539c50bc9f238ee933baf358cba9128878",
+      "reviewed_sha1": "4fb8f96c799c7ebfec93eb5d1c263f09a949f8f2",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     },
     "app/static/hsk-lugat.html": {
       "baseline_sha1": "b0bebb8df10bfe6ec91f928a48676d76adab91df",
-      "reviewed_sha1": "06022a82d10dcb1896c38e44c2c769431935d6ac",
+      "reviewed_sha1": "f554221c39c20146c17db41e3c20d98db3255b84",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     },
     "app/static/hsk-gaplar.html": {
       "baseline_sha1": "93bd82cb79245ef34834466587ff20e72b729426",
-      "reviewed_sha1": "8963c1d6a182e34180f14c92a724d8ce9cf6f609",
+      "reviewed_sha1": "e2a68a92f19feeb5707e183e209a2d175a4ce9f1",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     },
     "app/static/desktop-download.html": {
       "baseline_sha1": "1d0f69a7e9de869af485dbf7bf5a78180ab98b92",
-      "reviewed_sha1": "16126e6ec8906b9a6fbbb4301c00e009386e51ce",
+      "reviewed_sha1": "9121993e518a2fd54d15f286dc94a74315da15db",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     },
     "app/static/subscription.html": {
       "baseline_sha1": "6841d29b680d21f018133fc7a60079abebd45bf0",
-      "reviewed_sha1": "dd664a38a7a8394ff48dd02b616030f91c216966",
+      "reviewed_sha1": "40f22f69603c51c9d0d2adb27971cad1460b3e43",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
     }
   }

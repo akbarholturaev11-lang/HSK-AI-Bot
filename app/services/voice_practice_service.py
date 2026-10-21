@@ -1,3 +1,4 @@
+from app.bot.generated.bot_i18n import bot_locale_map
 import asyncio
 import difflib
 import json
@@ -274,7 +275,7 @@ OPENING_MESSAGES = {
 VOICE_SCENARIOS = {
     "cafe_order": {
         "id": "cafe_order",
-        "title": {"uz": "Kafeda buyurtma", "ru": "Заказ в кафе", "tj": "Фармоиш дар қаҳвахона"},
+        "title": bot_locale_map('inline.services.voice_practice_service.module.copy1'),
         "goal": {
             "uz": "Ichimlik yoki taom buyurtma qilish va narxini so'rash",
             "ru": "Заказать напиток или еду и спросить цену",
@@ -296,7 +297,7 @@ VOICE_SCENARIOS = {
     },
     "shop_purchase": {
         "id": "shop_purchase",
-        "title": {"uz": "Do'konda xarid", "ru": "Покупка в магазине", "tj": "Харид дар мағоза"},
+        "title": bot_locale_map('inline.services.voice_practice_service.module.copy2'),
         "goal": {
             "uz": "Mahsulotni so'rash, narxini bilish va tanlov aytish",
             "ru": "Спросить товар и цену, затем сделать выбор",
@@ -318,7 +319,7 @@ VOICE_SCENARIOS = {
     },
     "ask_directions": {
         "id": "ask_directions",
-        "title": {"uz": "Yo'l so'rash", "ru": "Как пройти", "tj": "Роҳро пурсидан"},
+        "title": bot_locale_map('inline.services.voice_practice_service.module.copy3'),
         "goal": {
             "uz": "Manzilni aytish, yo'lni so'rash va oddiy ko'rsatmani tushunish",
             "ru": "Назвать место, спросить дорогу и понять простой ответ",
@@ -340,7 +341,7 @@ VOICE_SCENARIOS = {
     },
     "introduce_self": {
         "id": "introduce_self",
-        "title": {"uz": "Tanishish", "ru": "Знакомство", "tj": "Шиносоӣ"},
+        "title": bot_locale_map('inline.services.voice_practice_service.module.copy4'),
         "goal": {
             "uz": "Ism va qayerdan ekanini aytib, suhbatdoshga savol berish",
             "ru": "Назвать своё имя и откуда вы, затем задать вопрос",

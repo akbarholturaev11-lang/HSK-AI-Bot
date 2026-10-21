@@ -1,4 +1,4 @@
-# Local-first browser assets and skip-test contracts
+# Local-first browser assets, catalog ownership and skip-test contracts
 
 ## Cause
 
@@ -13,6 +13,14 @@ The Desktop and Android API tests injected SQLite request sessions while
 conversion and entitlement-shadow analytics retained global application
 sessions. A denied consuming request could therefore escape the test fixture.
 
+Centralizing only the main dictionaries left handler/formatter/helper locale
+maps outside their canonical sources. Editing a shared catalog then did not
+necessarily change the displayed copy. Stale browser asset tokens could also
+retain an old helper after a correct source update. Tests pinned to former
+inline literals could mistake a valid catalog lookup for a missing feature;
+one asset test additionally appended `app/static` twice to an already static
+root.
+
 ## Fix
 
 - Allow only the three required public JavaScript assets by name; retain the
@@ -22,12 +30,27 @@ sessions. A denied consuming request could therefore escape the test fixture.
   entitlement checks. Full content/start keep their sequence guard. Reading
   test questions neither unlocks progress nor consumes an allowance.
 - Route independent analytics sessions into the existing SQLite API fixtures.
+- Keep Bot fixed copy in its canonical namespace: 658 own messages and 41
+  common/course references per locale, including 98 static Bot maps, 11 dynamic
+  templates, profile rendering and 64 backend fixed maps. Entitlement copy is
+  display-only; access predicates, limits and interpolation values stay intact.
+- Give Mini App inline/helper copy its own bundled namespace and retain exact
+  compatibility fallbacks. Required helper bundles use the explicit public
+  asset allowlist; source lessons and graded data stay private.
+- Validate all 53 generated artifacts together. Refresh content-hash cache
+  tokens only on already reviewed HTML; reject unrelated source drift before
+  updating the review hash.
 
 ## Risk
 
 The skip-test response retains its existing six-question projection and shared
 access decision. Do not extend this exception to full lesson content, progress,
 paid access, trial terms or arbitrary public lesson files.
+
+Dynamic course/graded material, campaign content, admin-only copy and provider
+metadata are not fixed learner UI catalogs. Preserve their producers and
+business constants. Source/catalog checks do not prove final CI, authenticated
+staging/account behavior or installed-device acceptance.
 
 ## Prevention
 
@@ -42,3 +65,15 @@ paid access, trial terms or arbitrary public lesson files.
   SQLite, including canonical account ownership. Local app-import checks use
   synthetic credentials and a loopback-only database URL; never inherit a real
   application database for a mocked test.
+- `scripts/i18n_build_all_catalogs.py --check` catches stale local artifacts
+  and reviewed browser cache tokens without writing source files.
+- `scripts/i18n_ui_adoption_audit.py` checks the 79 individually classified
+  Python maps in `localization/review/ui_map_exceptions.json`; new unclassified
+  maps and stale hash/count exceptions fail. Fixed learner UI belongs in a
+  canonical catalog rather than a broad exemption.
+- Source-text regressions inspect effective generated catalogs after copy
+  migration. Keep callback, entitlement, payment and ad-policy assertions;
+  execute the actual local JavaScript module when checking delivered behavior.
+  Limit-sheet regressions retain signed server-owned reasons, the existing
+  Pro-only CTA and close/back behavior without restoring obsolete trial/ad
+  entry points.

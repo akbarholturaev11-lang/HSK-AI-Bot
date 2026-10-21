@@ -81,6 +81,9 @@ jobs:
             tests.test_i18n_notification_catalog_adoption \
             tests.test_i18n_miniapp_remaining_dictionary_adoption \
             tests.test_i18n_all_catalogs \
+            tests.test_i18n_bot_inline_adoption \
+            tests.test_i18n_miniapp_inline_adoption \
+            tests.test_i18n_ui_adoption_audit \
             tests.test_i18n_bot_course_mode_adoption \
             tests.test_i18n_bot_invalid_button_adoption \
             tests.test_i18n_bot_release_feedback_adoption \
@@ -161,6 +164,7 @@ jobs:
           python scripts/i18n_build_public_site_catalog.py --check
           python scripts/i18n_build_notification_catalogs.py --check
           python scripts/i18n_build_all_catalogs.py --check
+          python scripts/i18n_ui_adoption_audit.py --output /tmp/i18n-p0/ui-adoption.json
           python scripts/i18n_course_ui_catalog_guard.py --output /tmp/i18n-p0/course-ui-catalog.json
           python scripts/i18n_build_course_catalogs.py --check
           # Deliberate dry run: NO staging or production HTTP in CI.

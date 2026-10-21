@@ -6,7 +6,7 @@
 <title>Тест-центр</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <style>
@@ -90,8 +90,8 @@ h1{font-size:23px}
   <div class="pl" id="placement"></div>
   <div class="pl" id="exam"></div>
 </div>
-<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script>
-<script defer src="/course_v3_data/desktop-download.js?v=20261013-profile-1"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script>
+<script defer src="/course_v3_data/desktop-download.js?v=20261021-c61abddcc057"></script>
 <script defer src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
 <script defer src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
 <script defer src="/assets/characters/hsk-practice-coach.js?v=20260921a"></script>
@@ -374,7 +374,7 @@ function pResult(){
   var per={1:[0,0],2:[0,0],3:[0,0],4:[0,0]};
   PQ.forEach(function(q,k){per[q.lvl][1]++;if(pans[k])per[q.lvl][0]++});
   var rec=1;for(var Lv=1;Lv<=4;Lv++){var p=per[Lv][1]?per[Lv][0]/per[Lv][1]:0;if(p>=0.5)rec=Lv;else break;}
-  var resultCopy={uz:{label:"To‘g‘ri javoblar",note:"Bu qisqa testdagi javoblar soni, darajani o‘zlashtirish foizi emas. Tavsiya oldingi darajalardagi natijalarni ham hisobga oladi."},ru:{label:"Правильные ответы",note:"Это ответы в коротком тесте, а не процент освоения уровня. Рекомендация учитывает результаты предыдущих уровней."},tj:{label:"Ҷавобҳои дуруст",note:"Ин шумораи ҷавобҳо дар санҷиши кӯтоҳ аст, на фоизи азхудкунии сатҳ. Тавсия натиҷаҳои сатҳҳои пешинаро низ ба назар мегирад."}}[LANG];
+  var resultCopy=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3_test.resultCopy.copy1",{uz:{label:"To‘g‘ri javoblar",note:"Bu qisqa testdagi javoblar soni, darajani o‘zlashtirish foizi emas. Tavsiya oldingi darajalardagi natijalarni ham hisobga oladi."},ru:{label:"Правильные ответы",note:"Это ответы в коротком тесте, а не процент освоения уровня. Рекомендация учитывает результаты предыдущих уровней."},tj:{label:"Ҷавобҳои дуруст",note:"Ин шумораи ҷавобҳо дар санҷиши кӯтоҳ аст, на фоизи азхудкунии сатҳ. Тавсия натиҷаҳои сатҳҳои пешинаро низ ба назар мегирад."}})[LANG];
   var meter="";[1,2,3,4].forEach(function(Lv){var p=per[Lv][1]?Math.round(per[Lv][0]/per[Lv][1]*100):0;meter+='<div class="mrow '+(Lv===rec?"rec":"")+'"><span class="ml">'+PT.lvl+" "+Lv+'</span><span class="mb"><i style="width:'+p+'%;'+(Lv>rec?'background:var(--ink3)':'')+'"></i></span><span class="mv">'+per[Lv][0]+' / '+per[Lv][1]+'</span></div>'});
   clearGateRef("placement:placement");
   $("placement").innerHTML='<div class="res"><div class="lvl"><small>'+PT.rec+'</small><b>'+PT.lvl+" "+rec+'</b></div><h3>'+PT.rec+": "+PT.lvl+" "+rec+'</h3><p>'+PT.recSub+rec+'.</p><p style="font-size:12px;margin:10px 0">'+esc(resultCopy.label)+'</p><div class="meter">'+meter+'</div><p style="font-size:12px;line-height:1.5;margin-bottom:20px">'+esc(resultCopy.note)+'</p><button class="cta" onclick="startLevel()"><i class="ti ti-arrow-left"></i> '+PT.back+'</button><button class="ghost" onclick="replayPlacement()"><i class="ti ti-refresh"></i> '+PT.retake+'</button></div>';

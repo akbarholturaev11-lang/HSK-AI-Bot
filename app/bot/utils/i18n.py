@@ -1,5 +1,5 @@
 """Bot lookup compatibility backed entirely by generated local catalogs."""
-from app.bot.generated.bot_i18n import COURSE_I18N, TEXTS, bot_message
+from app.bot.generated.bot_i18n import COURSE_I18N, TEXTS, bot_message, bot_locale_map
 from app.bot.generated.common_i18n import COMMON_MESSAGES
 from app.bot.generated.course_i18n import COURSE_MESSAGES
 

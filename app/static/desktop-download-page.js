@@ -510,11 +510,11 @@
   function applyLanguage() {
     var localized = copy();
     document.documentElement.lang = state.language === "tj" ? "tg" : state.language;
-    var navigationCopy = {
+    var navigationCopy = (window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.desktop_download_page.navigationCopy.copy1",{
       uz: { courses: "HSK kurslari", features: "Imkoniyatlar", guide: "Qo‘llanma", download: "Yuklab olish", language: "O‘zbekcha" },
       ru: { courses: "Курсы HSK", features: "Возможности", guide: "Руководство", download: "Скачать", language: "Русский" },
       tj: { courses: "Курсҳои HSK", features: "Имкониятҳо", guide: "Роҳнамо", download: "Боргирӣ", language: "Тоҷикӣ" }
-    }[state.language];
+    })[state.language];
     document.querySelectorAll("[data-nav-i18n]").forEach(function (node) {
       var value = navigationCopy[node.dataset.navI18n];
       if (value) node.textContent = value;

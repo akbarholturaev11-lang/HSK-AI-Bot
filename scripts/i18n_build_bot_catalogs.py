@@ -44,7 +44,7 @@ def read_sources(root: Path = ROOT):
     for locale in LOCALES:
         data = _read(root / f"localization/ui/{locale}/bot.json")
         if (set(data) != {"schema_version", "namespace", "locale", "messages",
-                          "references", "tables"}
+                          "references", "tables", "maps"}
                 or data["schema_version"] != 1 or data["namespace"] != "bot"
                 or data["locale"] != locale):
             raise ValueError(f"Bot catalog metadata mismatch: {locale}")
@@ -76,12 +76,39 @@ def read_sources(root: Path = ROOT):
             for old, key in entries.items():
                 if not KEY.fullmatch(old) or key not in messages.keys() | refs.keys():
                     raise ValueError(f"Unknown Bot compatibility message: {locale}/{name}/{old}")
+        def validate_layout(layout):
+            if not isinstance(layout, dict) or len(layout) != 1:
+                raise ValueError("Invalid Bot locale-map layout")
+            kind, value = next(iter(layout.items()))
+            if kind == "message":
+                if value not in messages.keys() | refs.keys():
+                    raise ValueError("Unknown Bot locale-map message")
+            elif kind == "object" and isinstance(value, dict):
+                for child in value.values():
+                    validate_layout(child)
+            elif kind in ("tuple", "list") and isinstance(value, list):
+                for child in value:
+                    validate_layout(child)
+            else:
+                raise ValueError("Invalid Bot locale-map kind")
+        if not isinstance(data["maps"], dict):
+            raise ValueError("Invalid Bot locale maps")
+        for key, layout in data["maps"].items():
+            if not KEY.fullmatch(key):
+                raise ValueError("Invalid Bot locale-map key")
+            if (not isinstance(layout, dict) or set(layout) != {"locale_order", "value"}
+                    or not isinstance(layout["locale_order"], list)
+                    or len(layout["locale_order"]) != 3
+                    or set(layout["locale_order"]) != set(LOCALES)):
+                raise ValueError("Invalid Bot locale-map order")
+            validate_layout(layout["value"])
         catalogs[locale] = data
     first = catalogs["uz"]
     for locale, data in catalogs.items():
         if (set(data["messages"]) != set(first["messages"])
                 or data["references"] != first["references"]
-                or data["tables"] != first["tables"]):
+                or data["tables"] != first["tables"]
+                or data["maps"] != first["maps"]):
             raise ValueError(f"Bot locale key/reference/table drift: {locale}")
         for key, text in data["messages"].items():
             if _signature(text) != _signature(first["messages"][key]):
@@ -103,8 +130,8 @@ def materialize_tables(catalogs, root: Path = ROOT):
     return result
 
 
-def _json(value):
-    return (json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2)
+def _json(value, *, sort_keys=True):
+    return (json.dumps(value, ensure_ascii=False, sort_keys=sort_keys, indent=2)
             .replace("\u2028", r"\u2028").replace("\u2029", r"\u2029"))
 
 
@@ -117,12 +144,26 @@ def output_files(catalogs):
         "BOT_MESSAGES = " + _json({c: d["messages"] for c, d in catalogs.items()}) + "\n\n"
         "BOT_REFERENCES = " + _json(first["references"]) + "\n\n"
         "BOT_TABLE_KEYS = " + _json(first["tables"]) + "\n\n"
+        "BOT_MAP_LAYOUTS = " + _json(first["maps"], sort_keys=False) + "\n\n"
         "def bot_message(key, locale):\n"
         "    reference = BOT_REFERENCES.get(key)\n"
         "    if reference is not None:\n"
         "        source = COMMON_MESSAGES if reference['namespace'] == 'common' else COURSE_MESSAGES\n"
         "        return source.get(locale, {}).get(reference['key'])\n"
         "    return BOT_MESSAGES.get(locale, {}).get(key)\n\n"
+        "def bot_locale_map(key, **variables):\n"
+        "    def render(layout, locale):\n"
+        "        kind, value = next(iter(layout.items()))\n"
+        "        if kind == 'message':\n"
+        "            template = bot_message(value, locale)\n"
+        "            return template.format(**variables) if variables else template\n"
+        "        if kind == 'object':\n"
+        "            return {name: render(child, locale) for name, child in value.items()}\n"
+        "        items = [render(child, locale) for child in value]\n"
+        "        return tuple(items) if kind == 'tuple' else items\n"
+        "    specification = BOT_MAP_LAYOUTS[key]\n"
+        "    return {locale: render(specification['value'], locale)\n"
+        "            for locale in specification['locale_order']}\n\n"
         "TEXTS = {locale: {old: bot_message(key, locale)\n"
         "                   for old, key in BOT_TABLE_KEYS['TEXTS'].items()}\n"
         "         for locale in BOT_MESSAGES}\n"

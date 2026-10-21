@@ -40,7 +40,7 @@
   var PROMO_PRIORITY_SOURCE = "lesson_end_promo";
   var APP_PROMO_PLATFORMS = ["macos", "windows", "android"];
 
-  var COPY = {
+  var COPY = (window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.desktop_download.COPY.copy1",{
     uz: {
       eyebrow: "HSK AI · ilovalar",
       cardTitle: "HSK AI ilovalari",
@@ -260,9 +260,9 @@
         "Пайвандро дар браузери компютер гузоред. Саҳифаи боргирӣ кушода мешавад.",
       successAction: "Фаҳмо"
     }
-  };
+  });
 
-  var ANDROID_PROMO_COPY = {
+  var ANDROID_PROMO_COPY = (window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.desktop_download.ANDROID_PROMO_COPY.copy1",{
     uz: {
       course: {
         eyebrow: "HSK AI · Android",
@@ -359,7 +359,7 @@
         benefits: [["message-circle", "AI хаторо таҳлил мекунад"], ["bulb", "Мисолҳои воқеӣ"], ["arrows-exchange", "Пешрафт нигоҳ дошта мешавад"]]
       }
     }
-  };
+  });
 
   var state = {
     availabilityLoaded: false,
@@ -992,11 +992,11 @@
       openProfileAppsSite();
       return;
     }
-    var copy = {
+    var copy = (window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.desktop_download.copy.copy1",{
       ru:{title:"Приложения HSK AI",apk:"Получить APK в Telegram",site:"Открыть сайт загрузки",close:"Отмена",missing:"Сейчас APK недоступен"},
       uz:{title:"HSK AI ilovalari",apk:"APK ni Telegram chatga olish",site:"Yuklash saytini ochish",close:"Bekor qilish",missing:"APK hozircha mavjud emas"},
       tj:{title:"Барномаҳои HSK AI",apk:"Гирифтани APK дар Telegram",site:"Кушодани сомонаи боргирӣ",close:"Бекор кардан",missing:"APK ҳоло дастрас нест"}
-    }[language()] || {};
+    })[language()] || {};
     if(!window.App || !App.openSheet){openProfileAppsSite();return}
     App.openSheet('<h2 class="hp-confirm-title">'+copy.title+'</h2>'
       +'<div class="hp-confirm-buttons"><button type="button" id="hp-app-apk">'+copy.apk+'</button>'

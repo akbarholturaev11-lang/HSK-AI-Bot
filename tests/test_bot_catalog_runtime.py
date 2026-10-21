@@ -1,9 +1,27 @@
 """Bot UI runtime consumers preserve their labels, callbacks and fallback."""
+from datetime import datetime
+import hashlib
+import json
+from pathlib import Path
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
 
 class BotCatalogRuntimeTests(unittest.TestCase):
+    def test_all_15_original_profile_render_snapshots_and_escaping(self):
+        from app.bot.handlers.commands import _profile_text
+        root = Path(__file__).resolve().parents[1]
+        proof = json.loads((root / "localization/review/bot_profile_render_parity.json").read_text())
+        self.assertEqual(len(proof["samples"]), 15)
+        for case in proof["samples"]:
+            with self.subTest(label=case["label"], language=case["language"]):
+                fields = {key: datetime.fromisoformat(value) if key in ("start_date", "end_date") else value
+                          for key, value in case["user"].items()}
+                text = _profile_text(SimpleNamespace(**fields), case["language"],
+                                     referral_total=7, reminder_text="QA reminder")
+                self.assertEqual(hashlib.sha256(text.encode()).hexdigest(), case["expected_sha256"])
+
     def test_response_states_use_local_catalog_and_keep_uzbek_fallback(self):
         from app.bot.generated.bot_i18n import BOT_MESSAGES
         from app.bot.utils.response_effect import _select_states

@@ -1,0 +1,1588 @@
+{
+  "schema_version": 1,
+  "source_commit": "930d4f702e0476fe481f37ca84fa9775c727d502",
+  "maps": [
+    {
+      "id": "inline.services.course_challenge_service.helper_invite_keyboard.copy1",
+      "source": "app/services/course_challenge_service.py",
+      "source_line": 601,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "e8150db3445c201f38e8228b941465fb77be556c",
+        "ru": "266282a1949035b971bf0ef52d3eb81644b42bba",
+        "tj": "7e33e26c149fc93645d09e7b3312bd659246f07f"
+      }
+    },
+    {
+      "id": "inline.services.course_challenge_service.helper_open_keyboard.copy1",
+      "source": "app/services/course_challenge_service.py",
+      "source_line": 624,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "b744bec807859b41bd629cde8d1608e2ff8d47b3",
+        "ru": "2e495521e9825def74447d7e016e242ffb26bac6",
+        "tj": "f98474625110615223ea29a45fd97794e9f376ad"
+      }
+    },
+    {
+      "id": "inline.services.course_challenge_service.invite_text.copy1",
+      "source": "app/services/course_challenge_service.py",
+      "source_line": 1,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "parameters": {
+        "name": "name"
+      },
+      "variants": [
+        "inline.services.course_challenge_service.invite_text.copy1.case1"
+      ],
+      "runtime_cases": [
+        {
+          "key": "inline.services.course_challenge_service.invite_text.copy1.case1",
+          "arguments": {
+            "name": "QA <b>name</b>"
+          },
+          "expected_sha1": "766e16fcbdc12fdad0f580a1a348134185fa2f1b"
+        },
+        {
+          "key": "inline.services.course_challenge_service.invite_text.copy1.case1",
+          "arguments": {
+            "name": "QA <b>name</b>"
+          },
+          "expected_sha1": "766e16fcbdc12fdad0f580a1a348134185fa2f1b"
+        },
+        {
+          "key": "inline.services.course_challenge_service.invite_text.copy1.case1",
+          "arguments": {
+            "name": "QA <b>name</b>"
+          },
+          "expected_sha1": "766e16fcbdc12fdad0f580a1a348134185fa2f1b"
+        },
+        {
+          "key": "inline.services.course_challenge_service.invite_text.copy1.case1",
+          "arguments": {
+            "name": "QA <b>name</b>"
+          },
+          "expected_sha1": "766e16fcbdc12fdad0f580a1a348134185fa2f1b"
+        }
+      ]
+    },
+    {
+      "id": "inline.services.course_challenge_service.invite_text.copy2",
+      "source": "app/services/course_challenge_service.py",
+      "source_line": 1,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "parameters": {
+        "CHALLENGE_WIN_XP": "CHALLENGE_WIN_XP",
+        "CHALLENGE_COMPLETE_XP": "CHALLENGE_COMPLETE_XP"
+      },
+      "variants": [
+        "inline.services.course_challenge_service.invite_text.copy2.case1"
+      ],
+      "runtime_cases": [
+        {
+          "key": "inline.services.course_challenge_service.invite_text.copy2.case1",
+          "arguments": {
+            "CHALLENGE_WIN_XP": 24,
+            "CHALLENGE_COMPLETE_XP": 6
+          },
+          "expected_sha1": "4f3a8b3ac4b59d9bcbff7ef3c16a8c19960e18ee"
+        },
+        {
+          "key": "inline.services.course_challenge_service.invite_text.copy2.case1",
+          "arguments": {
+            "CHALLENGE_WIN_XP": 24,
+            "CHALLENGE_COMPLETE_XP": 6
+          },
+          "expected_sha1": "4f3a8b3ac4b59d9bcbff7ef3c16a8c19960e18ee"
+        },
+        {
+          "key": "inline.services.course_challenge_service.invite_text.copy2.case1",
+          "arguments": {
+            "CHALLENGE_WIN_XP": 24,
+            "CHALLENGE_COMPLETE_XP": 6
+          },
+          "expected_sha1": "4f3a8b3ac4b59d9bcbff7ef3c16a8c19960e18ee"
+        },
+        {
+          "key": "inline.services.course_challenge_service.invite_text.copy2.case1",
+          "arguments": {
+            "CHALLENGE_WIN_XP": 24,
+            "CHALLENGE_COMPLETE_XP": 6
+          },
+          "expected_sha1": "4f3a8b3ac4b59d9bcbff7ef3c16a8c19960e18ee"
+        }
+      ]
+    },
+    {
+      "id": "inline.services.course_challenge_service.resolved_invite_text.copy1",
+      "source": "app/services/course_challenge_service.py",
+      "source_line": 688,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "28c85d8c9d7e085e6e9877a57a78a0e37a577788",
+        "ru": "956a11bb65a5e586cefbe651639404b268760ea7",
+        "tj": "351925c8a445e9dfe2569ab09aa817317f47b63d"
+      }
+    },
+    {
+      "id": "inline.services.course_challenge_service.resolved_invite_text.copy2",
+      "source": "app/services/course_challenge_service.py",
+      "source_line": 706,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "ab9e4455dea28760b26b0d866e37f41be74047d1",
+        "ru": "57e405feae9f1edeafc77bd4fb4c29f707643168",
+        "tj": "b72d2620e9b96e4968caa3d7817e495e3022d253"
+      }
+    },
+    {
+      "id": "inline.services.course_challenge_service.notify_response.copy1",
+      "source": "app/services/course_challenge_service.py",
+      "source_line": 1,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "parameters": {
+        "name": "name"
+      },
+      "variants": [
+        "inline.services.course_challenge_service.notify_response.copy1.case1"
+      ],
+      "runtime_cases": [
+        {
+          "key": "inline.services.course_challenge_service.notify_response.copy1.case1",
+          "arguments": {
+            "name": "QA <b>name</b>"
+          },
+          "expected_sha1": "2944b0953ca80f40be3c9299961389b12b7de816"
+        },
+        {
+          "key": "inline.services.course_challenge_service.notify_response.copy1.case1",
+          "arguments": {
+            "name": "QA <b>name</b>"
+          },
+          "expected_sha1": "2944b0953ca80f40be3c9299961389b12b7de816"
+        },
+        {
+          "key": "inline.services.course_challenge_service.notify_response.copy1.case1",
+          "arguments": {
+            "name": "QA <b>name</b>"
+          },
+          "expected_sha1": "2944b0953ca80f40be3c9299961389b12b7de816"
+        },
+        {
+          "key": "inline.services.course_challenge_service.notify_response.copy1.case1",
+          "arguments": {
+            "name": "QA <b>name</b>"
+          },
+          "expected_sha1": "2944b0953ca80f40be3c9299961389b12b7de816"
+        }
+      ]
+    },
+    {
+      "id": "inline.services.course_challenge_service.notify_response.copy2",
+      "source": "app/services/course_challenge_service.py",
+      "source_line": 1,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "parameters": {
+        "name": "name"
+      },
+      "variants": [
+        "inline.services.course_challenge_service.notify_response.copy2.case1"
+      ],
+      "runtime_cases": [
+        {
+          "key": "inline.services.course_challenge_service.notify_response.copy2.case1",
+          "arguments": {
+            "name": "QA <b>name</b>"
+          },
+          "expected_sha1": "cdb2b5f76e12a71adfae477bfb7f492534e13cd6"
+        },
+        {
+          "key": "inline.services.course_challenge_service.notify_response.copy2.case1",
+          "arguments": {
+            "name": "QA <b>name</b>"
+          },
+          "expected_sha1": "cdb2b5f76e12a71adfae477bfb7f492534e13cd6"
+        },
+        {
+          "key": "inline.services.course_challenge_service.notify_response.copy2.case1",
+          "arguments": {
+            "name": "QA <b>name</b>"
+          },
+          "expected_sha1": "cdb2b5f76e12a71adfae477bfb7f492534e13cd6"
+        },
+        {
+          "key": "inline.services.course_challenge_service.notify_response.copy2.case1",
+          "arguments": {
+            "name": "QA <b>name</b>"
+          },
+          "expected_sha1": "cdb2b5f76e12a71adfae477bfb7f492534e13cd6"
+        }
+      ]
+    },
+    {
+      "id": "inline.services.course_challenge_service.notify_submit.copy1",
+      "source": "app/services/course_challenge_service.py",
+      "source_line": 1,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "parameters": {
+        "name": "name",
+        "value2": "f' — {score_text}' if score_text else ''",
+        "challenger_score": "challenger_score",
+        "opponent_score": "opponent_score"
+      },
+      "variants": [
+        "inline.services.course_challenge_service.notify_submit.copy1.case1",
+        "inline.services.course_challenge_service.notify_submit.copy1.case2",
+        "inline.services.course_challenge_service.notify_submit.copy1.case3"
+      ],
+      "runtime_cases": [
+        {
+          "key": "inline.services.course_challenge_service.notify_submit.copy1.case1",
+          "arguments": {
+            "name": "QA <b>name</b>",
+            "value2": " — 7/10",
+            "challenger_score": 3,
+            "opponent_score": 5
+          },
+          "expected_sha1": "170a851d274765fabda190ca84c87d701726f488"
+        },
+        {
+          "key": "inline.services.course_challenge_service.notify_submit.copy1.case2",
+          "arguments": {
+            "name": "QA <b>name</b>",
+            "value2": " — 7/10",
+            "challenger_score": 3,
+            "opponent_score": 5
+          },
+          "expected_sha1": "65e2df718d693e7d21aef3ee537e3361659a1ac5"
+        },
+        {
+          "key": "inline.services.course_challenge_service.notify_submit.copy1.case3",
+          "arguments": {
+            "name": "QA <b>name</b>",
+            "value2": " — 7/10",
+            "challenger_score": 3,
+            "opponent_score": 5
+          },
+          "expected_sha1": "0da2dd71c97b4044930ccfd913370f4e0402eb49"
+        },
+        {
+          "key": "inline.services.course_challenge_service.notify_submit.copy1.case1",
+          "arguments": {
+            "name": "QA <b>name</b>",
+            "value2": "",
+            "challenger_score": 3,
+            "opponent_score": 5
+          },
+          "expected_sha1": "5450483f361eff7c40dcf3aa167adb6b300532f0"
+        }
+      ]
+    },
+    {
+      "id": "inline.services.course_challenge_service.notify_submit.copy2",
+      "source": "app/services/course_challenge_service.py",
+      "source_line": 1,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "parameters": {
+        "name": "name",
+        "value2": "f' — {score_text}' if score_text else ''"
+      },
+      "variants": [
+        "inline.services.course_challenge_service.notify_submit.copy2.case1"
+      ],
+      "runtime_cases": [
+        {
+          "key": "inline.services.course_challenge_service.notify_submit.copy2.case1",
+          "arguments": {
+            "name": "QA <b>name</b>",
+            "value2": " — 7/10"
+          },
+          "expected_sha1": "c9219a58dd363ae07b50287de65ba7264f7a7018"
+        },
+        {
+          "key": "inline.services.course_challenge_service.notify_submit.copy2.case1",
+          "arguments": {
+            "name": "QA <b>name</b>",
+            "value2": " — 7/10"
+          },
+          "expected_sha1": "c9219a58dd363ae07b50287de65ba7264f7a7018"
+        },
+        {
+          "key": "inline.services.course_challenge_service.notify_submit.copy2.case1",
+          "arguments": {
+            "name": "QA <b>name</b>",
+            "value2": " — 7/10"
+          },
+          "expected_sha1": "c9219a58dd363ae07b50287de65ba7264f7a7018"
+        },
+        {
+          "key": "inline.services.course_challenge_service.notify_submit.copy2.case1",
+          "arguments": {
+            "name": "QA <b>name</b>",
+            "value2": ""
+          },
+          "expected_sha1": "efe6f67b53b60423c78b98441c172ab7c303f165"
+        }
+      ]
+    },
+    {
+      "id": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1",
+      "source": "app/services/course_miniapp_lesson_flow_service.py",
+      "source_line": 85,
+      "locale_order": [
+        "ru",
+        "tj",
+        "uz"
+      ],
+      "locale_value_sha1": {
+        "uz": "a2a96d03a05d13653c63339d82f285a210271c09",
+        "ru": "8dc07d139f9863e67f31981a22746761d6c07a08",
+        "tj": "f6463bf235f3f1486d4b27fe3b3fd653cc4a7b3c"
+      }
+    },
+    {
+      "id": "inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1",
+      "source": "app/services/course_miniapp_lesson_flow_service.py",
+      "source_line": 1,
+      "locale_order": [
+        "ru",
+        "tj",
+        "uz"
+      ],
+      "parameters": {
+        "value1": "target['zh']"
+      },
+      "variants": [
+        "inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1.case1"
+      ],
+      "runtime_cases": [
+        {
+          "key": "inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1.case1",
+          "arguments": {
+            "value1": "你好"
+          },
+          "expected_sha1": "a7721e5f5fddb896171e74a1dda19060cedd589c"
+        },
+        {
+          "key": "inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1.case1",
+          "arguments": {
+            "value1": "你好"
+          },
+          "expected_sha1": "a7721e5f5fddb896171e74a1dda19060cedd589c"
+        },
+        {
+          "key": "inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1.case1",
+          "arguments": {
+            "value1": "你好"
+          },
+          "expected_sha1": "a7721e5f5fddb896171e74a1dda19060cedd589c"
+        },
+        {
+          "key": "inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1.case1",
+          "arguments": {
+            "value1": "你好"
+          },
+          "expected_sha1": "a7721e5f5fddb896171e74a1dda19060cedd589c"
+        }
+      ]
+    },
+    {
+      "id": "inline.services.course_miniapp_lesson_service.module.copy1",
+      "source": "app/services/course_miniapp_lesson_service.py",
+      "source_line": 10,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "ae287d5fdc0a9792647eceaf6ed4969d29e9dd9a",
+        "ru": "70bb1878945a2ec1df5f91c7b1fc5be07b952b8c",
+        "tj": "8185159f9129a2188dfde8388bc496f2494c674b"
+      }
+    },
+    {
+      "id": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1",
+      "source": "app/services/course_miniapp_lesson_service.py",
+      "source_line": 493,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "7efe8df0b81adffb4e86dfa060d08c9e26f7d12b",
+        "ru": "f0a5e5e1c3e10d93fb3eb7e14fe589bd9fa02f3d",
+        "tj": "089381c61ffb483a3ebebf07c9214a714c88fcd5"
+      }
+    },
+    {
+      "id": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy1",
+      "source": "app/services/course_miniapp_lesson_service.py",
+      "source_line": 596,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "f58c96f93bf0f327e39ed11e35b50940b7cd3fb5",
+        "ru": "6195beed4c032b586499a85b47bc3c2d984a9e72",
+        "tj": "7b47a8214f25c3c613c845611d7c6b39f7b40aa6"
+      }
+    },
+    {
+      "id": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy2",
+      "source": "app/services/course_miniapp_lesson_service.py",
+      "source_line": 615,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "966417b20764c20edfdca54aed0611d7bdf14e82",
+        "ru": "60042488fd9f6fd7d67f74a52c977c76dc516d0b",
+        "tj": "508a8def921728011f0398ea5f0ca6ab133daf2c"
+      }
+    },
+    {
+      "id": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy3",
+      "source": "app/services/course_miniapp_lesson_service.py",
+      "source_line": 653,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "d1d423d098c019e3e11e04b7a9617fa772591fc7",
+        "ru": "eed7525b4e1be13c64c66600a676d8e3967aa021",
+        "tj": "a8640620a58cdef6317fd8422773385ae1b19334"
+      }
+    },
+    {
+      "id": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4",
+      "source": "app/services/course_miniapp_lesson_service.py",
+      "source_line": 1,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "parameters": {
+        "translated_sentence": "translated_sentence"
+      },
+      "variants": [
+        "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4.case1"
+      ],
+      "runtime_cases": [
+        {
+          "key": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4.case1",
+          "arguments": {
+            "translated_sentence": "QA phrase"
+          },
+          "expected_sha1": "081819eac44ddd411b447bbd99011afc9d59c4d6"
+        },
+        {
+          "key": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4.case1",
+          "arguments": {
+            "translated_sentence": "QA phrase"
+          },
+          "expected_sha1": "081819eac44ddd411b447bbd99011afc9d59c4d6"
+        },
+        {
+          "key": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4.case1",
+          "arguments": {
+            "translated_sentence": "QA phrase"
+          },
+          "expected_sha1": "081819eac44ddd411b447bbd99011afc9d59c4d6"
+        },
+        {
+          "key": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4.case1",
+          "arguments": {
+            "translated_sentence": "QA phrase"
+          },
+          "expected_sha1": "081819eac44ddd411b447bbd99011afc9d59c4d6"
+        }
+      ]
+    },
+    {
+      "id": "inline.services.course_tutor_service.module.copy1",
+      "source": "app/services/course_tutor_service.py",
+      "source_line": 17,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "06eb39b9ad60737f657d83b44a9bd5f266378fd5",
+        "ru": "235f75dfbff39658fad8ceb6d973c21900f658b8",
+        "tj": "d5a96242586d0f890dd968652a515e2ed6f7ba27"
+      }
+    },
+    {
+      "id": "inline.services.daily_practice_service.helper_copy.copy1",
+      "source": "app/services/daily_practice_service.py",
+      "source_line": 49,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "4fbc0919bf91d9f443ccc0556a132fc6237bd345",
+        "ru": "54b2525fa4d27b7824c25cf433f80edf43e0fd12",
+        "tj": "df82ac1eb14a88608a73df6ab2069f9d4b465cfe"
+      }
+    },
+    {
+      "id": "inline.services.daily_practice_service.helper_challenge_copy.copy1",
+      "source": "app/services/daily_practice_service.py",
+      "source_line": 209,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "79ab7d1795247ba66ebea5f2cf971d20b90ac007",
+        "ru": "273a10ac4757257396543c0c60683df24ce412a5",
+        "tj": "7c41c1e78e25c7e9570dfbdd0c261450815bf5c9"
+      }
+    },
+    {
+      "id": "inline.services.daily_practice_service.completion_text.copy1",
+      "source": "app/services/daily_practice_service.py",
+      "source_line": 1,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "parameters": {
+        "streak": "streak"
+      },
+      "variants": [
+        "inline.services.daily_practice_service.completion_text.copy1.case1"
+      ],
+      "runtime_cases": [
+        {
+          "key": "inline.services.daily_practice_service.completion_text.copy1.case1",
+          "arguments": {
+            "streak": 6
+          },
+          "expected_sha1": "3faaf2fb26ae3bdaf06fb4f15fb5b17190aeec61"
+        },
+        {
+          "key": "inline.services.daily_practice_service.completion_text.copy1.case1",
+          "arguments": {
+            "streak": 6
+          },
+          "expected_sha1": "3faaf2fb26ae3bdaf06fb4f15fb5b17190aeec61"
+        },
+        {
+          "key": "inline.services.daily_practice_service.completion_text.copy1.case1",
+          "arguments": {
+            "streak": 6
+          },
+          "expected_sha1": "3faaf2fb26ae3bdaf06fb4f15fb5b17190aeec61"
+        },
+        {
+          "key": "inline.services.daily_practice_service.completion_text.copy1.case1",
+          "arguments": {
+            "streak": 6
+          },
+          "expected_sha1": "3faaf2fb26ae3bdaf06fb4f15fb5b17190aeec61"
+        }
+      ]
+    },
+    {
+      "id": "inline.services.gemini_switch_announcement_service.module.copy1",
+      "source": "app/services/gemini_switch_announcement_service.py",
+      "source_line": 29,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "5ef38bd00b708a9e5e79084fc78d7e07a551e547",
+        "ru": "5905cfeae4af84865d9174b8b1ca2c36c95a41c2",
+        "tj": "7ed5635e599cd3e0e484686b7e0f5a4dd2e3faf2"
+      }
+    },
+    {
+      "id": "inline.services.help_settings_service.module.copy1",
+      "source": "app/services/help_settings_service.py",
+      "source_line": 31,
+      "locale_order": [
+        "tj",
+        "ru",
+        "uz"
+      ],
+      "locale_value_sha1": {
+        "uz": "0035c1e1bddec314de6eb116f303b46c888e9eaa",
+        "ru": "c19146cd6de2416390c59be0489463f082e91c7c",
+        "tj": "60d36d979c31d85aa3c9e2466c8b19dd39750422"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy1",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 86,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "7bb701bddc82fba4083f5a96d81d6532d1fb85b6",
+        "ru": "8e0ed9ef75341df39de087587a83c437cc5a3949",
+        "tj": "eff1266bf86873800f4e9c7b3350eacddba7381c"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy2",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 91,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "10d837c5cbcba08ebba39371901b6c4f0ba36466",
+        "ru": "b15222fd25b4c27682c7af8225926fd225261794",
+        "tj": "1a421123d347ea814489c98058b99324b8bc5c24"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy3",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 96,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "886564c54e9241c7a5f8c648962bf726c9f18025",
+        "ru": "4a7ae539576f3b8b349ec8ebc9fe48c62ea682de",
+        "tj": "bb2d74bc902dbc041cf6295678e45dc78bf78353"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy4",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 101,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "25d9c094176034281f5ca800644eec11c335cf55",
+        "ru": "201bd8d25f060da475f32ae482d73a2ba3d6e424",
+        "tj": "43a83aecac3f9b9e52bf23936a3a4564afebe917"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy5",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 106,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "f1bf7ffc58a50692a90db19cfda16a07e34d22f7",
+        "ru": "7698aac92ff3b84d07ae37e1a7817ea4059d6294",
+        "tj": "0dd13e8ef8ed71f2e5563c97a64eb3ca28a7fef5"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy6",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 111,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "2e8138d86030f3114653689eaf6c05c7a6dea299",
+        "ru": "86c2d50252c673f9f39cc7b6948ce160c67e7b32",
+        "tj": "e042a33b9c04682a75d75c4886faeac5e43aa322"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy7",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 116,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "100d6d4420e7c788ffcb4b52a6e184cc9798b9e9",
+        "ru": "7abdf089da581ea88f547740aa9dda81d1abc8e9",
+        "tj": "eb32a5b922b25ab2c9abf2b81a1c8b72aece3c6b"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy8",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 121,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "fd3208b8be0ddfe72e727a8e7d8be3f244799824",
+        "ru": "b9f42a462d8e8a2afb3c1b98d3962ab773ed643c",
+        "tj": "74be092e0c47c70bd96c3a7aca90b5b6a9e72734"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy9",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 126,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "d860a87a38eeae29696f1487e5faba67a7b3a867",
+        "ru": "0bed26bac8494929c5e5b117e5754d0a8eb7891f",
+        "tj": "85c029f8bdbc2ec7518069ac1149cfcf6ff0cb8f"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy10",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 131,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "aa2668afa1ffdd74d4eaaadc54a1ce9532fd1196",
+        "ru": "f485c8215f77b01ea47c6a1f322e8ad225732382",
+        "tj": "4e72461e7f31d23f4e5e48254ad228edbfd0c6ac"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy11",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 136,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "5e1feb2ac3c3428ca035742607c7eca8f7c12e73",
+        "ru": "1e7a0e7c475c9ff4f5d4ed2781ed2f04e59097ba",
+        "tj": "07cba76ab31df7ddfb832ad708a8fca05bd50cda"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy12",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 141,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "a396c9038ac9facf3a2046f42d3d10df4cec150c",
+        "ru": "b96d393430795a5626149ad639d7e59d32ac6a4f",
+        "tj": "2855bd054a90193a722fc41437fdfed561316ee6"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy13",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 146,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "d41f84672f4b28cfdc4c3dc3ed8f7b3a432f2658",
+        "ru": "a0403ddde5d7198ee5393b76ab620e11562ac2a4",
+        "tj": "243f9a5d11cc9cc71a62f000061d2b8afc16aa5b"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy14",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 151,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "e9cbf4107fa663fe4e5d0d872a9dbce72152e2a8",
+        "ru": "86e6832cb99e804e03b7fc5857fce968e3c4cf26",
+        "tj": "60c46e59a109e06bd20926ae88dff85cc06127dd"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy15",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 159,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "6613b521644adc4ee5a1e22f4643c51912ba1c29",
+        "ru": "7413e0d86ae28c02d06f3fd71a06c04d7b9258b5",
+        "tj": "2183e339f505f32db5dbad6d0686997f08e3b2eb"
+      }
+    },
+    {
+      "id": "inline.services.mistake_drill_factory.module.copy16",
+      "source": "app/services/mistake_drill_factory.py",
+      "source_line": 164,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "f3b36d544508ca232222511dee7bdb17adc75647",
+        "ru": "0c6575bc762aec8506c76df90bc525be2d6a7b2d",
+        "tj": "7d6bf95c3659fcff334b1aa015dd4c323ab28fd9"
+      }
+    },
+    {
+      "id": "inline.services.payment_notify_service.module.copy1",
+      "source": "app/services/payment_notify_service.py",
+      "source_line": 12,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "ba43dd417834d1fc3d848cfb0a3d1a5a620a7d75",
+        "ru": "ded76916fa9925b140b493ee0310916c8fcd770f",
+        "tj": "1b93f9b213530b24deaa1c80a8a179738266bbed"
+      }
+    },
+    {
+      "id": "inline.services.payment_notify_service.module.copy2",
+      "source": "app/services/payment_notify_service.py",
+      "source_line": 18,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "45c027ff121748e5396a2a4ebfade1bebd6baeeb",
+        "ru": "b609baae3f2d66188a7c48a8ce4d77583d3d6dec",
+        "tj": "3b62130c8f54fe790ffa0398ec2fe6f71b7685aa"
+      }
+    },
+    {
+      "id": "inline.services.payment_notify_service.module.copy3",
+      "source": "app/services/payment_notify_service.py",
+      "source_line": 24,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "b9de4c3e00bc216bd3da3ac4c3ccee13e6ead588",
+        "ru": "95a9ceaebf6337c957ba60c3557b862e42e39f2e",
+        "tj": "bf616d4dbe31a9abcd2105a6df9871284d3b7dcc"
+      }
+    },
+    {
+      "id": "inline.services.payment_notify_service.module.copy4",
+      "source": "app/services/payment_notify_service.py",
+      "source_line": 30,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "3c0c3211954f24908d6db324ce61fbf7b00f775b",
+        "ru": "acb2fcc4a04e4ed4fef2034d616fd97aba8c8a0c",
+        "tj": "c499da1231a7bb243a041a162381666bc50ec5cd"
+      }
+    },
+    {
+      "id": "inline.services.payment_notify_service.module.copy5",
+      "source": "app/services/payment_notify_service.py",
+      "source_line": 36,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "84263b00f42008fe7a7267b42a8b56423d7d6cce",
+        "ru": "401f97345b6ae1c0559f166c63f4492c9c95845b",
+        "tj": "9cd6142c8f7165c80955db3d114d3ed12cd9c4a1"
+      }
+    },
+    {
+      "id": "inline.services.payment_notify_service.module.copy6",
+      "source": "app/services/payment_notify_service.py",
+      "source_line": 43,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "c7268a54911ed9c697e7d1f60a2b9269f8bc4ecb",
+        "ru": "a4138eed93dffe08372ccb7885d954e13a0e07a9",
+        "tj": "18ab6b1f0f890d6e36ab5081a0b1fcd734340b30"
+      }
+    },
+    {
+      "id": "inline.services.payment_notify_service.module.copy7",
+      "source": "app/services/payment_notify_service.py",
+      "source_line": 44,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "414c8338e9576f583333323f5a5b23e76127b22b",
+        "ru": "4ce11cb29d28788acebe1c4cdaa471977815a220",
+        "tj": "0c99115e3c27db61a2e47aa7c9446ed8012e6f29"
+      }
+    },
+    {
+      "id": "inline.services.payment_notify_service.module.copy8",
+      "source": "app/services/payment_notify_service.py",
+      "source_line": 45,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "8b8aa7767064c80f00a4446db3b9fadf9e43aaf7",
+        "ru": "19938b61c3ef37612f19f519f01a227f63bea47b",
+        "tj": "f0d3ed73f1e4b23ea6e078d8b132ec0a3453dde8"
+      }
+    },
+    {
+      "id": "inline.services.payment_notify_service.module.copy9",
+      "source": "app/services/payment_notify_service.py",
+      "source_line": 46,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "a6f234273b967c6fd939f2f3ca7c75da89eb42a0",
+        "ru": "4290583e010547061c14c44f48ac59d9ee9a28d1",
+        "tj": "dfa8264649465f9c12d9b65f32c3103017da0d4c"
+      }
+    },
+    {
+      "id": "inline.services.payment_notify_service.module.copy10",
+      "source": "app/services/payment_notify_service.py",
+      "source_line": 47,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "5ba36864e31d075e45c8280412e90c400a48aeee",
+        "ru": "d9a67583663bdfc088049c3531192944c2158c38",
+        "tj": "5ee4cadf61997f4f9a28c6f84f76457278970995"
+      }
+    },
+    {
+      "id": "inline.services.payment_notify_service.notify_hsk30_unlock_rejected.copy1",
+      "source": "app/services/payment_notify_service.py",
+      "source_line": 158,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "f345a6dd79bbcd8e546bdff3dee8774104764bea",
+        "ru": "459a395d0a1ab14a5f09d721816db5385bc89604",
+        "tj": "4783492817434036bc6fec8e44850215147e0199"
+      }
+    },
+    {
+      "id": "inline.services.payment_notify_service.notify_payment_rejected.copy1",
+      "source": "app/services/payment_notify_service.py",
+      "source_line": 189,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "f345a6dd79bbcd8e546bdff3dee8774104764bea",
+        "ru": "459a395d0a1ab14a5f09d721816db5385bc89604",
+        "tj": "4783492817434036bc6fec8e44850215147e0199"
+      }
+    },
+    {
+      "id": "inline.services.referral_notify_service.module.copy1",
+      "source": "app/services/referral_notify_service.py",
+      "source_line": 8,
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "locale_value_sha1": {
+        "uz": "b9de4c3e00bc216bd3da3ac4c3ccee13e6ead588",
+        "ru": "95a9ceaebf6337c957ba60c3557b862e42e39f2e",
+        "tj": "bf616d4dbe31a9abcd2105a6df9871284d3b7dcc"
+      }
+    },
+    {
+      "id": "inline.services.study_miniapp_service.send_quiz_ai_discussion.copy1",
+      "source": "app/services/study_miniapp_service.py",
+      "source_line": 310,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "8c5f3418f735937dc071457bc863c00431b491f4",
+        "ru": "18bcf3ace3bcba71b72516fd40132cf107e9c5b0",
+        "tj": "026437d8f8c0b77fc779e1a88724725553ef7245"
+      }
+    },
+    {
+      "id": "inline.services.voice_practice_service.module.copy1",
+      "source": "app/services/voice_practice_service.py",
+      "source_line": 277,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "170d880a20291f966a9a845abe93db814ed5c873",
+        "ru": "18bdc8033392f809e2d40d79f5eb74f1b899bf01",
+        "tj": "8a8a6065e6aa0b036c8f41ee9a4d9fd9aa43410f"
+      }
+    },
+    {
+      "id": "inline.services.voice_practice_service.module.copy2",
+      "source": "app/services/voice_practice_service.py",
+      "source_line": 299,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "9c8ca1a2d4de05e4e4f8bec302e9b10d7a395435",
+        "ru": "76c6b2dd2bf175abb62bdf6679d5f03e5b9defd8",
+        "tj": "a55abcd5dd608f110a01a40125a462b73c51d415"
+      }
+    },
+    {
+      "id": "inline.services.voice_practice_service.module.copy3",
+      "source": "app/services/voice_practice_service.py",
+      "source_line": 321,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "e7e18985db87e07427a8bd86f196a810a10b629b",
+        "ru": "ce44089b02814fd01f82819df3e100dbf736c827",
+        "tj": "3c35e515c85363589fc90f29f6e293c20b540f3e"
+      }
+    },
+    {
+      "id": "inline.services.voice_practice_service.module.copy4",
+      "source": "app/services/voice_practice_service.py",
+      "source_line": 343,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "e0b599489123acdf216ec41a7a067d4853d12a56",
+        "ru": "6d173f3539b8ee85f53c6d09e1582367effea5a5",
+        "tj": "2a7fcf20c6cb167fe92c2a752cfcadf6ef2fdbf2"
+      }
+    },
+    {
+      "id": "inline.services.entitlements.decision.limit_text.copy1",
+      "source": "app/services/entitlements/decision.py",
+      "source_line": 107,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "3b9705bcdc71830bce7f45d5d98ea23ee0c6611c",
+        "ru": "54e4798cdc0598241833099d0ee540075df52243",
+        "tj": "808661008c2a7aec194edf51dd71b40b57a1795f"
+      }
+    },
+    {
+      "id": "inline.services.entitlements.decision.limit_text.copy2",
+      "source": "app/services/entitlements/decision.py",
+      "source_line": 1,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "parameters": {},
+      "variants": [
+        "inline.services.entitlements.decision.limit_text.copy2.case1",
+        "inline.services.entitlements.decision.limit_text.copy2.case2"
+      ],
+      "runtime_cases": [
+        {
+          "key": "inline.services.entitlements.decision.limit_text.copy2.case1",
+          "arguments": {},
+          "expected_sha1": "1bf4520c5c869a834b80d48c06415c5d2321a137"
+        },
+        {
+          "key": "inline.services.entitlements.decision.limit_text.copy2.case1",
+          "arguments": {},
+          "expected_sha1": "1bf4520c5c869a834b80d48c06415c5d2321a137"
+        },
+        {
+          "key": "inline.services.entitlements.decision.limit_text.copy2.case1",
+          "arguments": {},
+          "expected_sha1": "1bf4520c5c869a834b80d48c06415c5d2321a137"
+        },
+        {
+          "key": "inline.services.entitlements.decision.limit_text.copy2.case1",
+          "arguments": {},
+          "expected_sha1": "1bf4520c5c869a834b80d48c06415c5d2321a137"
+        }
+      ]
+    },
+    {
+      "id": "inline.services.entitlements.decision.limit_text.copy3",
+      "source": "app/services/entitlements/decision.py",
+      "source_line": 1,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "parameters": {
+        "value1": "noun.capitalize()"
+      },
+      "variants": [
+        "inline.services.entitlements.decision.limit_text.copy3.case1"
+      ],
+      "runtime_cases": [
+        {
+          "key": "inline.services.entitlements.decision.limit_text.copy3.case1",
+          "arguments": {
+            "value1": "Qa noun"
+          },
+          "expected_sha1": "94d066fd77f82f8f58df3a38ba6558c091870bc3"
+        },
+        {
+          "key": "inline.services.entitlements.decision.limit_text.copy3.case1",
+          "arguments": {
+            "value1": "Qa noun"
+          },
+          "expected_sha1": "94d066fd77f82f8f58df3a38ba6558c091870bc3"
+        },
+        {
+          "key": "inline.services.entitlements.decision.limit_text.copy3.case1",
+          "arguments": {
+            "value1": "Qa noun"
+          },
+          "expected_sha1": "94d066fd77f82f8f58df3a38ba6558c091870bc3"
+        },
+        {
+          "key": "inline.services.entitlements.decision.limit_text.copy3.case1",
+          "arguments": {
+            "value1": "Qa noun"
+          },
+          "expected_sha1": "94d066fd77f82f8f58df3a38ba6558c091870bc3"
+        }
+      ]
+    },
+    {
+      "id": "inline.services.entitlements.decision.limit_text.copy4",
+      "source": "app/services/entitlements/decision.py",
+      "source_line": 119,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "5cbfe9160c28e0d01d870c95c2265bfd188267a1",
+        "ru": "45c581b978bc9cbabd7a6ca6ce066c7d9e7c6590",
+        "tj": "d9f5aa4a6958bc275e4f30eb124e4c5b7f077dc7"
+      }
+    },
+    {
+      "id": "inline.services.entitlements.decision.limit_text.copy5",
+      "source": "app/services/entitlements/decision.py",
+      "source_line": 120,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "locale_value_sha1": {
+        "uz": "5b7cbc6845dcb14e7dea3dbb05041db00392abe3",
+        "ru": "4b6a47a46f3b60aa4a1679357cca72d9e4b34312",
+        "tj": "a99de2330035499b61a38deec2d39d2028223f8d"
+      }
+    },
+    {
+      "id": "inline.services.entitlements.decision.limit_text.copy6",
+      "source": "app/services/entitlements/decision.py",
+      "source_line": 1,
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "parameters": {
+        "plan": "plan",
+        "period": "period",
+        "limit": "limit",
+        "noun": "noun",
+        "value5": "remaining or 0"
+      },
+      "variants": [
+        "inline.services.entitlements.decision.limit_text.copy6.case1"
+      ],
+      "runtime_cases": [
+        {
+          "key": "inline.services.entitlements.decision.limit_text.copy6.case1",
+          "arguments": {
+            "plan": "QA plan",
+            "period": "QA period",
+            "limit": 3,
+            "noun": "QA noun",
+            "value5": 1
+          },
+          "expected_sha1": "1932ca71c91fd3bdb5d0e246ca7ef05da2b8d4f7"
+        },
+        {
+          "key": "inline.services.entitlements.decision.limit_text.copy6.case1",
+          "arguments": {
+            "plan": "QA plan",
+            "period": "QA period",
+            "limit": 3,
+            "noun": "QA noun",
+            "value5": 1
+          },
+          "expected_sha1": "1932ca71c91fd3bdb5d0e246ca7ef05da2b8d4f7"
+        },
+        {
+          "key": "inline.services.entitlements.decision.limit_text.copy6.case1",
+          "arguments": {
+            "plan": "QA plan",
+            "period": "QA period",
+            "limit": 3,
+            "noun": "QA noun",
+            "value5": 1
+          },
+          "expected_sha1": "1932ca71c91fd3bdb5d0e246ca7ef05da2b8d4f7"
+        },
+        {
+          "key": "inline.services.entitlements.decision.limit_text.copy6.case1",
+          "arguments": {
+            "plan": "QA plan",
+            "period": "QA period",
+            "limit": 3,
+            "noun": "QA noun",
+            "value5": 1
+          },
+          "expected_sha1": "1932ca71c91fd3bdb5d0e246ca7ef05da2b8d4f7"
+        }
+      ]
+    }
+  ],
+  "excluded": [
+    [
+      "daily_practice_service",
+      108,
+      "learning_payload_or_AI_instruction"
+    ],
+    [
+      "daily_practice_service",
+      159,
+      "learning_payload_or_AI_instruction"
+    ],
+    [
+      "daily_practice_service",
+      169,
+      "learning_payload_or_AI_instruction"
+    ],
+    [
+      "daily_practice_service",
+      179,
+      "learning_payload_or_AI_instruction"
+    ],
+    [
+      "daily_practice_service",
+      189,
+      "learning_payload_or_AI_instruction"
+    ],
+    [
+      "daily_practice_service",
+      199,
+      "learning_payload_or_AI_instruction"
+    ],
+    [
+      "study_miniapp_service",
+      281,
+      "learning_payload_or_AI_instruction"
+    ],
+    [
+      "voice_practice_service",
+      115,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      147,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      152,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      156,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      168,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      173,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      177,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      189,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      194,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      198,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      212,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      217,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      221,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      233,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      238,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      242,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      254,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      259,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      263,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      278,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      290,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      292,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      293,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      300,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      312,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      314,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      315,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      322,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      334,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      336,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      337,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      344,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      356,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      358,
+      "scenario_content_or_provider_metadata"
+    ],
+    [
+      "voice_practice_service",
+      359,
+      "scenario_content_or_provider_metadata"
+    ]
+  ]
+}

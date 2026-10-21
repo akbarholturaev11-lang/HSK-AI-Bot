@@ -879,7 +879,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
             self.assertIn(
                 "/course_v3_data/desktop-download.js?v=", html, page
             )
-            self.assertIn("/course_v3_data/ads.js?v=20260923-2", html, page)
+            from scripts.i18n_baseline_guard import git_blob_sha1
+            digest = git_blob_sha1(Path('app/static/course_v3_data/ads.js').read_bytes())[:12]
+            self.assertRegex(html, r'/course_v3_data/ads\.js\?v=\d{8}-' + digest)
 
     def test_profile_carousel_replaces_full_height_app_card_and_keeps_deep_link(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
@@ -916,7 +918,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('min-height:170px', css)
         self.assertIn('"profile-carousel.js": "application/javascript"', main)
         self.assertIn('"profile-carousel.css": "text/css"', main)
-        self.assertIn('/course_v3_data/profile-carousel.js?v=20261013-1', course)
+        from scripts.i18n_baseline_guard import git_blob_sha1
+        digest = git_blob_sha1(Path('app/static/course_v3_data/profile-carousel.js').read_bytes())[:12]
+        self.assertRegex(course, r'/course_v3_data/profile-carousel\.js\?v=\d{8}-' + digest)
 
     def test_admin_has_app_promo_controls(self):
         html = Path("app/static/admin.html").read_text(encoding="utf-8")

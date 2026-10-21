@@ -1,3 +1,4 @@
+from app.bot.generated.bot_i18n import bot_locale_map
 import json
 import re
 from typing import Any
@@ -14,11 +15,7 @@ _CONVERSATIONAL_STEPS = {
     "dialogue_1", "dialogue_2", "dialogue_3", "dialogue_4", "dialogue_5",
 }
 
-_PRESS_BUTTON_HINT = {
-    "uz": "\n\n✅ <i>Tushundingiz bo'lsa, pastdagi tugmani bosing.</i>",
-    "ru": "\n\n✅ <i>Если поняли — нажмите кнопку ниже.</i>",
-    "tj": "\n\n✅ <i>Агар фаҳмидед, тугмаи поёниро пахш кунед.</i>",
-}
+_PRESS_BUTTON_HINT = bot_locale_map('inline.services.course_tutor_service.module.copy1')
 
 # MUHIM QOIDA — barcha tushuntirish bulimlari uchun (intro/vocab/dialogue/grammar)
 _EXPLANATION_RULE = """

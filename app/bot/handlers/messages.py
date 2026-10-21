@@ -95,7 +95,7 @@ from app.services.referral_service import (
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.support_contact_service import get_admin_contact_html
 from app.services.required_channel_service import RequiredChannelService
-from app.bot.utils.i18n import t
+from app.bot.utils.i18n import bot_locale_map, t
 from app.services.course_reminder_service import reminder_tz_label
 from app.bot.utils.trial_value_flow import send_trial_quiz_value_teaser
 from app.bot.utils.workflow_message import (
@@ -149,26 +149,7 @@ async def _migrate_legacy_course_mode_to_qa(user, session, state: FSMContext | N
     return True
 
 
-_AI_DRAFT_PREVIEWS = {
-    "tj": (
-        "AI ҷавобро тайёр мекунад...",
-        "Саволро таҳлил карда истодаам...",
-        "Мисол ва шарҳро ҷамъ мекунам...",
-        "Ҷавобро кӯтоҳ карда истодаам...",
-    ),
-    "uz": (
-        "AI javob tayyorlayapti...",
-        "Savolni tahlil qilyapman...",
-        "Misol va izohlarni yig'yapman...",
-        "Javobni ixchamlayapman...",
-    ),
-    "ru": (
-        "AI готовит ответ...",
-        "Разбираю вопрос...",
-        "Собираю пример и объяснение...",
-        "Сокращаю ответ...",
-    ),
-}
+_AI_DRAFT_PREVIEWS = bot_locale_map('inline.handlers.messages.module.copy1')
 
 
 def _ai_draft_preview(lang: str, index: int = 0) -> str:
@@ -328,16 +309,8 @@ def _format_static_exercise_result(result: dict, lang: str) -> str:
     expected = result.get("expected", [])
     passed = result.get("passed", False)
 
-    status = {
-        "uz": "✅ Test tekshirildi" if passed else "❌ Testda xatolar bor",
-        "ru": "✅ Тест проверен" if passed else "❌ В тесте есть ошибки",
-        "tj": "✅ Санҷиш тафтиш шуд" if passed else "❌ Дар санҷиш хато ҳаст",
-    }
-    answer_title = {
-        "uz": "To'g'ri javoblar:",
-        "ru": "Правильные ответы:",
-        "tj": "Ҷавобҳои дуруст:",
-    }
+    status = bot_locale_map('inline.handlers.messages.helper_format_static_exercise_result.dynamic1.true' if passed else 'inline.handlers.messages.helper_format_static_exercise_result.dynamic1.false')
+    answer_title = bot_locale_map('inline.handlers.messages.helper_format_static_exercise_result.copy1')
     lines = [
         status.get(lang, status["ru"]),
         f"{correct}/{total}",
@@ -696,16 +669,8 @@ def _voice_mode_cancel_keyboard(lang: str) -> ReplyKeyboardMarkup:
 
 def _voice_answer_loader_text(lang: str, *, translate: bool = False) -> str:
     if translate:
-        return {
-            "uz": "Tarjima qilyapman...",
-            "ru": "Перевожу...",
-            "tj": "Тарҷума мекунам...",
-        }.get(lang, "Перевожу...")
-    return {
-        "uz": "Javob tayyorlayapman...",
-        "ru": "Готовлю ответ...",
-        "tj": "Ҷавоб тайёр мекунам...",
-    }.get(lang, "Готовлю ответ...")
+        return bot_locale_map('inline.handlers.messages.helper_voice_answer_loader_text.copy1').get(lang, "Перевожу...")
+    return bot_locale_map('inline.handlers.messages.helper_voice_answer_loader_text.copy2').get(lang, "Готовлю ответ...")
 
 
 async def _transcribe_voice_message(message: Message, user, lang: str):
@@ -1509,7 +1474,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
         reminder_progress = await reminder_engine.progress_repo.get_by_user_id(user.id)
         if reminder_progress and reminder_progress.waiting_for == "reminder_setup":
             msg_text = (message.text or "").strip()
-            cancel_map = {"uz": "❌ Bekor qilish", "ru": "❌ Отмена", "tj": "❌ Бекор кардан"}
+            cancel_map = bot_locale_map('inline.handlers.messages.handle_text_message.copy1')
             if msg_text == cancel_map.get(user_lang, "❌ Отмена"):
                 await reminder_engine.progress_repo.set_waiting_for(reminder_progress, "none")
                 await session.commit()
@@ -1655,7 +1620,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             return
 
         if progress.waiting_for == "reminder_setup":
-            cancel_map = {"uz": "❌ Bekor qilish", "ru": "❌ Отмена", "tj": "❌ Бекор кардан"}
+            cancel_map = bot_locale_map('inline.handlers.messages.handle_text_message.copy2')
             if msg_text == cancel_map.get(user_lang, "❌ Отмена"):
                 await engine.progress_repo.set_waiting_for(progress, "none")
                 await session.commit()

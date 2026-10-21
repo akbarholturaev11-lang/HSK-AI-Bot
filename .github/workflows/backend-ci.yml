@@ -289,7 +289,7 @@ jobs:
       - name: Run promo button localization regressions
         run: python -m unittest tests.test_bot_promo_button_localization
       - name: Run advertisement placement, AI localization and default preset regressions
-        run: python -m unittest tests.test_ad_placement_service tests.test_course_ad_types tests.test_course_ad_translation_service tests.test_course_ads_module tests.test_profile_limit_ui_contract tests.test_profile_answer_accuracy
+        run: python -m unittest tests.test_ad_placement_service tests.test_course_ad_types tests.test_course_ad_translation_service tests.test_course_ads_module tests.test_miniapp_practice_presentation_restore tests.test_profile_limit_ui_contract tests.test_profile_answer_accuracy
       - name: Check account deletion ownership, retention, migration, and public instructions
         run: >-
           python -m unittest tests.test_admin_delete_safety tests.test_account_deletion_request

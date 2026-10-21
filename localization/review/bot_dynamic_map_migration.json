@@ -1,0 +1,430 @@
+{
+  "schema_version": 1,
+  "source_commit": "930d4f702e0476fe481f37ca84fa9775c727d502",
+  "maps": [
+    {
+      "source": "app/bot/handlers/course.py",
+      "line": 167,
+      "id": "inline.handlers.course.helper_course_part_label.dynamic1",
+      "parameters": {
+        "flat": "flat"
+      },
+      "runtime_cases": [
+        {
+          "key": "inline.handlers.course.helper_course_part_label.dynamic1",
+          "arguments": {
+            "flat": 7
+          },
+          "expected_sha1": "d912088c7af5b787f559e7ecbab8f215637a6d94"
+        },
+        {
+          "key": "inline.handlers.course.helper_course_part_label.dynamic1",
+          "arguments": {
+            "flat": 7
+          },
+          "expected_sha1": "d912088c7af5b787f559e7ecbab8f215637a6d94"
+        },
+        {
+          "key": "inline.handlers.course.helper_course_part_label.dynamic1",
+          "arguments": {
+            "flat": 7
+          },
+          "expected_sha1": "d912088c7af5b787f559e7ecbab8f215637a6d94"
+        },
+        {
+          "key": "inline.handlers.course.helper_course_part_label.dynamic1",
+          "arguments": {
+            "flat": 7
+          },
+          "expected_sha1": "d912088c7af5b787f559e7ecbab8f215637a6d94"
+        }
+      ],
+      "source_line": 187
+    },
+    {
+      "source": "app/bot/handlers/course.py",
+      "line": 174,
+      "id": "inline.handlers.course.helper_course_part_label.dynamic2",
+      "parameters": {
+        "src": "src"
+      },
+      "runtime_cases": [
+        {
+          "key": "inline.handlers.course.helper_course_part_label.dynamic2",
+          "arguments": {
+            "src": 4
+          },
+          "expected_sha1": "414f3760bf2f186875082e9cba4cc79b6b9d8499"
+        },
+        {
+          "key": "inline.handlers.course.helper_course_part_label.dynamic2",
+          "arguments": {
+            "src": 4
+          },
+          "expected_sha1": "414f3760bf2f186875082e9cba4cc79b6b9d8499"
+        },
+        {
+          "key": "inline.handlers.course.helper_course_part_label.dynamic2",
+          "arguments": {
+            "src": 4
+          },
+          "expected_sha1": "414f3760bf2f186875082e9cba4cc79b6b9d8499"
+        },
+        {
+          "key": "inline.handlers.course.helper_course_part_label.dynamic2",
+          "arguments": {
+            "src": 4
+          },
+          "expected_sha1": "414f3760bf2f186875082e9cba4cc79b6b9d8499"
+        }
+      ],
+      "source_line": 194
+    },
+    {
+      "source": "app/bot/handlers/course.py",
+      "line": 179,
+      "id": "inline.handlers.course.helper_course_part_label.dynamic3",
+      "parameters": {
+        "src": "src",
+        "part": "part"
+      },
+      "runtime_cases": [
+        {
+          "key": "inline.handlers.course.helper_course_part_label.dynamic3",
+          "arguments": {
+            "src": 4,
+            "part": 2
+          },
+          "expected_sha1": "898fb9a1b59bccb60d72cda7fa2d395c40de4cd8"
+        },
+        {
+          "key": "inline.handlers.course.helper_course_part_label.dynamic3",
+          "arguments": {
+            "src": 4,
+            "part": 2
+          },
+          "expected_sha1": "898fb9a1b59bccb60d72cda7fa2d395c40de4cd8"
+        },
+        {
+          "key": "inline.handlers.course.helper_course_part_label.dynamic3",
+          "arguments": {
+            "src": 4,
+            "part": 2
+          },
+          "expected_sha1": "898fb9a1b59bccb60d72cda7fa2d395c40de4cd8"
+        },
+        {
+          "key": "inline.handlers.course.helper_course_part_label.dynamic3",
+          "arguments": {
+            "src": 4,
+            "part": 2
+          },
+          "expected_sha1": "898fb9a1b59bccb60d72cda7fa2d395c40de4cd8"
+        }
+      ],
+      "source_line": 199
+    },
+    {
+      "source": "app/bot/handlers/course.py",
+      "line": 189,
+      "id": "inline.handlers.course.course_miniapp_reentry_text.dynamic1",
+      "parameters": {
+        "label": "label"
+      },
+      "runtime_cases": [
+        {
+          "key": "inline.handlers.course.course_miniapp_reentry_text.dynamic1",
+          "arguments": {
+            "label": "QA {literal}"
+          },
+          "expected_sha1": "fca7908c86831b0bdea721fe97159a166b21b83e"
+        },
+        {
+          "key": "inline.handlers.course.course_miniapp_reentry_text.dynamic1",
+          "arguments": {
+            "label": "QA {literal}"
+          },
+          "expected_sha1": "fca7908c86831b0bdea721fe97159a166b21b83e"
+        },
+        {
+          "key": "inline.handlers.course.course_miniapp_reentry_text.dynamic1",
+          "arguments": {
+            "label": "QA {literal}"
+          },
+          "expected_sha1": "fca7908c86831b0bdea721fe97159a166b21b83e"
+        },
+        {
+          "key": "inline.handlers.course.course_miniapp_reentry_text.dynamic1",
+          "arguments": {
+            "label": "QA {literal}"
+          },
+          "expected_sha1": "fca7908c86831b0bdea721fe97159a166b21b83e"
+        }
+      ],
+      "source_line": 209
+    },
+    {
+      "source": "app/bot/handlers/course.py",
+      "line": 204,
+      "id": "inline.handlers.course.helper_course_entry_button_label.dynamic1",
+      "parameters": {
+        "label": "label"
+      },
+      "runtime_cases": [
+        {
+          "key": "inline.handlers.course.helper_course_entry_button_label.dynamic1",
+          "arguments": {
+            "label": "QA {literal}"
+          },
+          "expected_sha1": "a88e0c42ac3e1a6711c5d934566436a7c682387b"
+        },
+        {
+          "key": "inline.handlers.course.helper_course_entry_button_label.dynamic1",
+          "arguments": {
+            "label": "QA {literal}"
+          },
+          "expected_sha1": "a88e0c42ac3e1a6711c5d934566436a7c682387b"
+        },
+        {
+          "key": "inline.handlers.course.helper_course_entry_button_label.dynamic1",
+          "arguments": {
+            "label": "QA {literal}"
+          },
+          "expected_sha1": "a88e0c42ac3e1a6711c5d934566436a7c682387b"
+        },
+        {
+          "key": "inline.handlers.course.helper_course_entry_button_label.dynamic1",
+          "arguments": {
+            "label": "QA {literal}"
+          },
+          "expected_sha1": "a88e0c42ac3e1a6711c5d934566436a7c682387b"
+        }
+      ],
+      "source_line": 232
+    },
+    {
+      "source": "app/bot/handlers/course.py",
+      "line": 2130,
+      "id": "inline.handlers.course.course_set_study_time_handler.dynamic1",
+      "parameters": {
+        "time_str": "time_str"
+      },
+      "runtime_cases": [
+        {
+          "key": "inline.handlers.course.course_set_study_time_handler.dynamic1",
+          "arguments": {
+            "time_str": "12:34"
+          },
+          "expected_sha1": "4f4c24d4408db10c38367d8fc0842aade91d039a"
+        },
+        {
+          "key": "inline.handlers.course.course_set_study_time_handler.dynamic1",
+          "arguments": {
+            "time_str": "12:34"
+          },
+          "expected_sha1": "4f4c24d4408db10c38367d8fc0842aade91d039a"
+        },
+        {
+          "key": "inline.handlers.course.course_set_study_time_handler.dynamic1",
+          "arguments": {
+            "time_str": "12:34"
+          },
+          "expected_sha1": "4f4c24d4408db10c38367d8fc0842aade91d039a"
+        },
+        {
+          "key": "inline.handlers.course.course_set_study_time_handler.dynamic1",
+          "arguments": {
+            "time_str": "12:34"
+          },
+          "expected_sha1": "4f4c24d4408db10c38367d8fc0842aade91d039a"
+        }
+      ],
+      "source_line": 2193
+    },
+    {
+      "source": "app/bot/handlers/messages.py",
+      "line": 312,
+      "id": "inline.handlers.messages.helper_format_static_exercise_result.dynamic1",
+      "parameters": {},
+      "runtime_cases": [
+        {
+          "key": "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.true",
+          "arguments": {},
+          "expected_sha1": "fc60b30870c38fd28a9d06d883f0a115c2546d59"
+        },
+        {
+          "key": "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.false",
+          "arguments": {},
+          "expected_sha1": "c71026ed422b200daea7ae7cf71392c025df0e1b"
+        },
+        {
+          "key": "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.true",
+          "arguments": {},
+          "expected_sha1": "fc60b30870c38fd28a9d06d883f0a115c2546d59"
+        },
+        {
+          "key": "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.true",
+          "arguments": {},
+          "expected_sha1": "fc60b30870c38fd28a9d06d883f0a115c2546d59"
+        }
+      ],
+      "source_line": 331
+    },
+    {
+      "source": "app/bot/handlers/start.py",
+      "line": 111,
+      "id": "inline.handlers.start.helper_lesson_choice_text.dynamic1",
+      "parameters": {
+        "label": "label"
+      },
+      "runtime_cases": [
+        {
+          "key": "inline.handlers.start.helper_lesson_choice_text.dynamic1",
+          "arguments": {
+            "label": "QA {literal}"
+          },
+          "expected_sha1": "b9000013c32137c2516d3a5aa072ede11f4085ed"
+        },
+        {
+          "key": "inline.handlers.start.helper_lesson_choice_text.dynamic1",
+          "arguments": {
+            "label": "QA {literal}"
+          },
+          "expected_sha1": "b9000013c32137c2516d3a5aa072ede11f4085ed"
+        },
+        {
+          "key": "inline.handlers.start.helper_lesson_choice_text.dynamic1",
+          "arguments": {
+            "label": "QA {literal}"
+          },
+          "expected_sha1": "b9000013c32137c2516d3a5aa072ede11f4085ed"
+        },
+        {
+          "key": "inline.handlers.start.helper_lesson_choice_text.dynamic1",
+          "arguments": {
+            "label": "QA {literal}"
+          },
+          "expected_sha1": "b9000013c32137c2516d3a5aa072ede11f4085ed"
+        }
+      ],
+      "source_line": 146
+    },
+    {
+      "source": "app/bot/utils/course_formatter.py",
+      "line": 323,
+      "id": "inline.utils.course_formatter.format_vocab.dynamic1",
+      "parameters": {
+        "value1": "len(vocab)"
+      },
+      "runtime_cases": [
+        {
+          "key": "inline.utils.course_formatter.format_vocab.dynamic1",
+          "arguments": {
+            "value1": 2
+          },
+          "expected_sha1": "ece4d8def01a2b051269cf8043e080167f8cea54"
+        },
+        {
+          "key": "inline.utils.course_formatter.format_vocab.dynamic1",
+          "arguments": {
+            "value1": 2
+          },
+          "expected_sha1": "ece4d8def01a2b051269cf8043e080167f8cea54"
+        },
+        {
+          "key": "inline.utils.course_formatter.format_vocab.dynamic1",
+          "arguments": {
+            "value1": 2
+          },
+          "expected_sha1": "ece4d8def01a2b051269cf8043e080167f8cea54"
+        },
+        {
+          "key": "inline.utils.course_formatter.format_vocab.dynamic1",
+          "arguments": {
+            "value1": 0
+          },
+          "expected_sha1": "7f19756ffda7127131b926e72f1b6f8b97043142"
+        }
+      ],
+      "source_line": 394
+    },
+    {
+      "source": "app/bot/utils/course_miniapp.py",
+      "line": 214,
+      "id": "inline.utils.course_miniapp.format_miniapp_quiz_intro.dynamic1",
+      "parameters": {
+        "block_no": "block_no"
+      },
+      "runtime_cases": [
+        {
+          "key": "inline.utils.course_miniapp.format_miniapp_quiz_intro.dynamic1",
+          "arguments": {
+            "block_no": 3
+          },
+          "expected_sha1": "b78e111c2f8d536cde91c7388b47b5e9b1a752d8"
+        },
+        {
+          "key": "inline.utils.course_miniapp.format_miniapp_quiz_intro.dynamic1",
+          "arguments": {
+            "block_no": 3
+          },
+          "expected_sha1": "b78e111c2f8d536cde91c7388b47b5e9b1a752d8"
+        },
+        {
+          "key": "inline.utils.course_miniapp.format_miniapp_quiz_intro.dynamic1",
+          "arguments": {
+            "block_no": 3
+          },
+          "expected_sha1": "b78e111c2f8d536cde91c7388b47b5e9b1a752d8"
+        },
+        {
+          "key": "inline.utils.course_miniapp.format_miniapp_quiz_intro.dynamic1",
+          "arguments": {
+            "block_no": 3
+          },
+          "expected_sha1": "b78e111c2f8d536cde91c7388b47b5e9b1a752d8"
+        }
+      ],
+      "source_line": 214
+    },
+    {
+      "source": "app/bot/utils/course_miniapp.py",
+      "line": 286,
+      "id": "inline.utils.course_miniapp.format_miniapp_quiz_result.dynamic1",
+      "parameters": {
+        "block_no": "block_no"
+      },
+      "runtime_cases": [
+        {
+          "key": "inline.utils.course_miniapp.format_miniapp_quiz_result.dynamic1",
+          "arguments": {
+            "block_no": 3
+          },
+          "expected_sha1": "11cad9ab388228836351c7c850ba008b57c2fd71"
+        },
+        {
+          "key": "inline.utils.course_miniapp.format_miniapp_quiz_result.dynamic1",
+          "arguments": {
+            "block_no": 3
+          },
+          "expected_sha1": "11cad9ab388228836351c7c850ba008b57c2fd71"
+        },
+        {
+          "key": "inline.utils.course_miniapp.format_miniapp_quiz_result.dynamic1",
+          "arguments": {
+            "block_no": 3
+          },
+          "expected_sha1": "11cad9ab388228836351c7c850ba008b57c2fd71"
+        },
+        {
+          "key": "inline.utils.course_miniapp.format_miniapp_quiz_result.dynamic1",
+          "arguments": {
+            "block_no": 3
+          },
+          "expected_sha1": "11cad9ab388228836351c7c850ba008b57c2fd71"
+        }
+      ],
+      "source_line": 286
+    }
+  ]
+}

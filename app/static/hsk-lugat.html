@@ -14,7 +14,7 @@
 })();
 </script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
@@ -960,7 +960,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   function showNextWordBtn(){
     var nw = getNextWord();
     if(!nw){ nextWordBtn.classList.add('hidden'); return; }
-    var lbl = {'uz':'Keyingi so\'z','ru':'Следующее слово','tj':'Калимаи навбатӣ'};
+    var lbl = (window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.hsk_lugat.lbl.copy1",{'uz':'Keyingi so\'z','ru':'Следующее слово','tj':'Калимаи навбатӣ'});
     nextWordBtn.innerHTML =
       '<div class="nw-char">'+escapeHtml(nw.h)+'</div>'+
       '<div class="nw-info"><div class="nw-pin">'+escapeHtml(nw.p)+'</div>'+
@@ -1503,11 +1503,11 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       seen[ch] = true;
       return window.MEMO_DATA && window.MEMO_DATA[ch];
     });
-    var disclosure = {
+    var disclosure = (window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.hsk_lugat.disclosure.copy1",{
       uz:'Quyidagi bog‘lanishlar so‘zni tashkil etgan belgilarni eslashga yordam beradi; ular so‘zning kelib chiqishi haqida da’vo emas.',
       ru:'Эти ассоциации помогают запомнить знаки в составе слова и не описывают происхождение самого слова.',
       tj:'Ин пайвандҳо барои дар хотир нигоҳ доштани аломатҳои калимаанд; онҳо пайдоиши худи калимаро шарҳ намедиҳанд.'
-    };
+    });
     if(cues.length){
       var rows = cues.map(function(ch){
         var D = window.MEMO_DATA[ch] || {};
@@ -1523,11 +1523,11 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
           '<div class="memo-words">'+rows+'</div></div>';
       }
     }
-    var recall = {
+    var recall = (window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.hsk_lugat.recall.copy1",{
       uz:'Pinyinni ovoz chiqarib ayting, so‘zni yopib ma’nosini eslang, keyin ma’nodan xitoycha so‘zni qayta toping.',
       ru:'Произнесите пиньинь, вспомните значение с закрытым словом, затем восстановите слово по значению.',
       tj:'Пинйинро бо овоз гӯед, калимаро пӯшонда маънояшро ба ёд оред, сипас аз рӯйи маъно калимаи чиниро ёбед.'
-    };
+    });
     return '<div class="memo-sec"><div class="ms-h">'+escapeHtml((memoLabels[currentLang] || memoLabels.uz).eslab)+'</div>'+
       '<div class="memo-signal">'+escapeHtml(recall[currentLang] || recall.uz)+'</div></div>';
   }

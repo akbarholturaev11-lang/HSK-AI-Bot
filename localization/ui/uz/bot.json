@@ -339,7 +339,326 @@
     "texts.user_payment_approved": "To'lov qabul qilindi ✅\n\nHSK AI Pro faollashdi.",
     "texts.user_payment_rejected": "To'lov tasdiqlanmadi ❌\n\nTo'lovni tekshirib, qayta urinib ko'ring.",
     "texts.voice_trial_daily_limit_reached": "🎙 <b>Bugungi bepul voice sinovi ishlatildi</b>\n\n<blockquote>Ertaga yana 1 marta sinab ko'rishingiz mumkin. Voice'dan limitsiz foydalanish uchun obuna oling.</blockquote>",
-    "texts.welcome": "Xush kelibsiz, {name}!"
+    "texts.welcome": "Xush kelibsiz, {name}!",
+    "inline.handlers.challenge.helper_text.copy1.bad_button": "Noto'g'ri belashuv tugmasi",
+    "inline.handlers.challenge.helper_text.copy1.not_found": "Belashuv topilmadi",
+    "inline.handlers.challenge.helper_text.copy1.bad_action": "Noto'g'ri amal",
+    "inline.handlers.challenge.helper_text.copy1.closed": "Belashuv allaqachon yopilgan yoki topilmadi",
+    "inline.handlers.challenge.helper_text.copy1.accepted": "Belashuv qabul qilindi. Musobaqani oching.",
+    "inline.handlers.challenge.helper_text.copy1.rejected": "Belashuv rad qilindi.",
+    "inline.handlers.commands.helper_status_label.copy1": "Bepul",
+    "inline.handlers.commands.helper_status_label.copy2": "Sinov rejimi",
+    "inline.handlers.commands.helper_status_label.copy3": "Faol",
+    "inline.handlers.commands.helper_status_label.copy4": "Muddati tugagan",
+    "inline.handlers.commands.helper_status_label.copy5": "Bloklangan",
+    "inline.handlers.commands.helper_status_label.copy6": "Bepul",
+    "inline.handlers.commands.helper_profile_status_label.copy1": "To'lov faol",
+    "inline.handlers.commands.helper_profile_status_label.copy2": "Bepul test ruxsati",
+    "inline.handlers.commands.helper_language_label.copy1.tj": "Tojik",
+    "inline.handlers.commands.helper_language_label.copy1.uz": "O'zbek",
+    "inline.handlers.commands.helper_language_label.copy1.ru": "Rus",
+    "inline.handlers.commands.helper_language_label.copy2": "Noma'lum",
+    "inline.handlers.commands.helper_level_label.copy1": "Boshlang'ich",
+    "inline.handlers.commands.helper_profile_reminder_line.copy1": "Eslatma",
+    "inline.handlers.commands.profile_menu_keyboard.copy1.subscription": "💎 Obuna",
+    "inline.handlers.commands.profile_menu_keyboard.copy1.language": "🌐 Til",
+    "inline.handlers.commands.profile_menu_keyboard.copy1.level": "📊 Daraja",
+    "inline.handlers.commands.command_level_callback_handler.copy1": "Bu darajani hozir tanlab bo'lmaydi. Kurs versiyasini Mini App ichidan almashtiring.",
+    "inline.handlers.course.course_miniapp_entry_text.copy1": "📚 <b>HSK AI kursi — Mini App</b>\n\n<blockquote>Darslar, so‘zlar, grammatika, quiz va AI Voice — hammasi bitta ilovada. Har dars sizni qadam-baqadam olib boradi.</blockquote>",
+    "inline.handlers.course.course_miniapp_entry_text.copy2": "\n\n{label}dan hoziroq boshlaymiz 👇",
+    "inline.handlers.course.course_miniapp_reentry_text.copy1": "📚 <b>Kursni ochamiz</b>\n\n1-darsni boshlash uchun bosing 👇",
+    "inline.handlers.course.helper_course_entry_button_label.copy1": "▶️ 1-darsni boshlash",
+    "inline.handlers.course.helper_block_if_course_disabled.copy1": "🚧 Kurs rejimi hozircha ishlab chiqilmoqda. Tez orada mavjud bo‘ladi.",
+    "inline.handlers.course.helper_course_locked_offer_text.copy1": "Obuna olmasangiz ham daily limit bilan savol-javobda davom etishingiz mumkin.",
+    "inline.handlers.course.helper_trial_course_completed_text.copy1": "🎉 <b>Bepul dars tugadi</b>\n\n<blockquote>Siz kurs rejimini sinab ko'rdingiz: dars, quiz, xato tahlili va mustahkamlash.</blockquote>\n\nKeyingi darslarni ochish uchun obuna oling.\nObuna olmasangiz ham daily limit bilan savol-javobda davom etishingiz mumkin.",
+    "inline.handlers.course.course_command_handler.copy1": "🚧 Kurs rejimi hozircha ishlab chiqilmoqda. Tez orada mavjud bo‘ladi.",
+    "inline.handlers.course.helper_static_course_missing_text.copy1": "Bu bo'lim uchun tayyor kurs materiali topilmadi. Dars seed faylini tekshirish kerak.",
+    "inline.handlers.course.module.copy1": "🔇 Audio hozircha mavjud emas",
+    "inline.handlers.desktop_auth.module.copy1.confirm_desktop": "🖥 <b>Kompyuter ilovasini ulash</b>\n\nQurilma: <b>{platform}</b>\nVersiya: <b>{version}</b>\nKod: <code>{code}</code>\n\nBu kodni HSK AI ilovasida o‘zingiz ochgan bo‘lsangizgina tasdiqlang. Aks holda bekor qiling.",
+    "inline.handlers.desktop_auth.module.copy1.confirm_mobile": "📱 <b>Android ilovasini ulash</b>\n\nQurilma: <b>{platform}</b>\nVersiya: <b>{version}</b>\nKod: <code>{code}</code>\n\nBu kodni HSK AI ilovasida o‘zingiz ochgan bo‘lsangizgina tasdiqlang. Aks holda bekor qiling.",
+    "inline.handlers.desktop_auth.module.copy1.approve": "✅ Tasdiqlash",
+    "inline.handlers.desktop_auth.module.copy1.cancel": "Bekor qilish",
+    "inline.handlers.desktop_auth.module.copy1.enter_code": "🔐 <b>Ulash kodini kiriting</b>\n\nHSK AI ilovasida ko‘rsatilgan 8 belgili kodni shu chatga <b>qo‘lda yuboring</b>.\n\nKodni boshqa odamga yubormang.",
+    "inline.handlers.desktop_auth.module.copy1.invalid_code": "Kod noto‘g‘ri, eskirgan yoki ishlatilgan. Ilovadagi 8 belgili kodni qayta kiriting. Qolgan urinish: {remaining}.",
+    "inline.handlers.desktop_auth.module.copy1.attempts_exhausted": "Juda ko‘p noto‘g‘ri urinish bo‘ldi. Ilovada yangi kod oling va Telegramni qayta oching.",
+    "inline.handlers.desktop_auth.module.copy1.ok_desktop": "✅ <b>Kompyuter ilovasi ulandi</b>\n\nHSK AI Desktop’ga qayting — hisobingiz avtomatik ochiladi.",
+    "inline.handlers.desktop_auth.module.copy1.ok_mobile": "✅ <b>Android ilovasi ulandi</b>\n\nHSK AI ilovasiga qayting — hisobingiz avtomatik ochiladi.",
+    "inline.handlers.desktop_auth.module.copy1.cancelled": "Ulash bekor qilindi. Bu kod endi ishlamaydi.",
+    "inline.handlers.desktop_auth.module.copy1.invalid": "Bu ulash kodi eskirgan yoki ishlatilgan. Ilovada yangi kod yarating.",
+    "inline.handlers.desktop_auth.module.copy2.choose_language": "📱 <b>HSK AI Android ilovasi</b>\n\nIlovadagi tilni tanlang:",
+    "inline.handlers.desktop_auth.module.copy2.confirm": "📱 <b>Android ilovasini ulash</b>\n\nQurilma: <b>{platform}</b>\nVersiya: <b>{version}</b>\n\nIlovani o‘zingiz ochgan bo‘lsangizgina tasdiqlang.",
+    "inline.handlers.desktop_auth.module.copy2.approve": "✅ Tasdiqlash",
+    "inline.handlers.desktop_auth.module.copy2.cancel": "Bekor qilish",
+    "inline.handlers.desktop_auth.module.copy2.ok": "✅ <b>Android ilovasi ulandi</b>\n\nHSK AI ilovasiga qayting — hisobingiz avtomatik ochiladi.",
+    "inline.handlers.desktop_auth.module.copy2.cancelled": "Ulash bekor qilindi. Bu havola endi ishlamaydi.",
+    "inline.handlers.desktop_auth.module.copy2.invalid": "Bu ulash havolasi eskirgan. Ilovadan qayta boshlang.",
+    "inline.handlers.desktop_auth.module.copy3.confirm": "<b>Telegram’ni akkauntga ulash</b>\n\nHSK AI akkaunt ID: <code>{user_id}</code>\nQurilma: <b>{platform}</b>\nVersiya: <b>{version}</b>\n\nIlovadagi aynan shu akkauntni o‘zingiz ochib, Telegram ulashni boshlagan bo‘lsangiz tasdiqlang. Tasdiqlagach, shu Telegram orqali ushbu akkauntga kirish mumkin bo‘ladi.",
+    "inline.handlers.desktop_auth.module.copy3.approve": "Telegram’ni shu akkauntga ulash",
+    "inline.handlers.desktop_auth.module.copy3.cancel": "Bekor qilish",
+    "inline.handlers.desktop_auth.module.copy3.ok": "Telegram akkauntingizga ulandi. HSK AI ilovasiga qayting.",
+    "inline.handlers.desktop_auth.module.copy3.denied": "Telegram ulash bekor qilindi.",
+    "inline.handlers.desktop_auth.module.copy3.invalid": "Bu ulash so‘rovi eskirgan yoki yaroqsiz. Ilovada qayta boshlang.",
+    "inline.handlers.desktop_auth.module.copy3.conflict": "Bu Telegram boshqa HSK AI akkauntiga tegishli. Akkauntlar birlashtirilmaydi.",
+    "inline.handlers.messages.module.copy1.item1": "AI javob tayyorlayapti...",
+    "inline.handlers.messages.module.copy1.item2": "Savolni tahlil qilyapman...",
+    "inline.handlers.messages.module.copy1.item3": "Misol va izohlarni yig'yapman...",
+    "inline.handlers.messages.module.copy1.item4": "Javobni ixchamlayapman...",
+    "inline.handlers.messages.helper_format_static_exercise_result.copy1": "To'g'ri javoblar:",
+    "inline.handlers.messages.helper_voice_answer_loader_text.copy1": "Tarjima qilyapman...",
+    "inline.handlers.messages.helper_voice_answer_loader_text.copy2": "Javob tayyorlayapman...",
+    "inline.handlers.messages.handle_text_message.copy1": "❌ Bekor qilish",
+    "inline.handlers.messages.handle_text_message.copy2": "❌ Bekor qilish",
+    "inline.handlers.payments.helper_waiting_message.copy1": "📸 Skrinshot qabul qilindi.\n\nAdmin ish vaqti: 08:00–23:00. To'lovingiz ertalab tasdiqlanadi.",
+    "inline.handlers.payments.helper_waiting_message.copy2": "📸 Skrinshot qabul qilindi.\n\nO'rtacha tekshiruv vaqti: 5–15 daqiqa.",
+    "inline.handlers.release_feedback.module.copy1": "UZ",
+    "inline.handlers.release_feedback.module.copy2": "⚡ Course mode yangilandi!\n\nQuiz endi yengil interaktiv formatda: 5 ta tez savol, speaker, chiplar, progress va darhol feedback.\n\nUyga vazifa o'rniga Mustahkamlash qo'shildi: so'z tartiblash, mos juftlik, eshitib tanlash va iyeroglifni ko'rish.\n\nKursga kiring va keyingi darsda sinab ko'ring.",
+    "inline.handlers.release_feedback.helper_route_try_feature.copy1": "Sinash uchun HSK AI Android ilovasini oching → Profil → Obuna. Tarifda valyutani yuqoridagi tugma orqali almashtiring.",
+    "inline.handlers.release_feedback.helper_route_try_feature.copy2": "Oddiy AI savol rejimi ochildi. Endi yangilangan joyni sinash uchun savolingizni yozing.",
+    "inline.handlers.release_feedback.helper_route_try_feature.copy3": "Foto tahlilni sinash uchun rasm yuboring.",
+    "inline.handlers.release_feedback.helper_route_try_feature.copy4": "Yangilangan joyni sinash uchun menyudan kerakli bo'limni tanlang.",
+    "inline.handlers.start.helper_send_android_referral_apk.copy1": "Taklif hisobingizga biriktirildi. APK fayli shu chatga yuboriladi. Uni o‘rnating va ilovada shu Telegram hisobini ulang. Shundan keyin taklif hisoblanadi.",
+    "inline.handlers.start.helper_mode_choice_text.copy1": "🎉 <b>Tabriklaymiz! Kurs rejimi ochildi</b>\n\n<blockquote>Siz uchun tartibli HSK darslari yo‘li ochildi — so‘zlar, grammatika, quiz va AI Voice bitta ilovada, qadam-baqadam.</blockquote>\n\nHoziroq boshlaymizmi?",
+    "inline.handlers.subscription.helper_card_texts.copy1.main_title": "💎 <b>Obuna tariflari</b>",
+    "inline.handlers.subscription.helper_card_texts.copy1.benefits": "Obuna oling va botdan limitsiz foydalaning.",
+    "inline.handlers.subscription.helper_card_texts.copy1.card_note_short": "💳 Istalgan bank kartasi orqali to'lov qilishingiz mumkin.",
+    "inline.handlers.subscription.helper_card_texts.copy1.card_note_full": "Agar kartangiz Tojikiston kartasi bo'lmasa, o'z bankingiz kursi bo'yicha TJS valyutasida hisoblab shu kartaga yuboring.",
+    "inline.handlers.subscription.helper_card_texts.copy1.referral_hint": "🎁 3 ta yangi do'st taklif qiling va 20% chegirma oling.",
+    "inline.handlers.subscription.helper_card_texts.copy1.choose": "👇 <b>Tarifni tanlang:</b>",
+    "inline.handlers.subscription.helper_card_texts.copy1.checkout_title": "💳 Siz obunani tanladingiz",
+    "inline.handlers.subscription.helper_card_texts.copy1.plan_label": "Tarif",
+    "inline.handlers.subscription.helper_card_texts.copy1.price_label": "Narx",
+    "inline.handlers.subscription.helper_card_texts.copy1.bank_label": "Bank",
+    "inline.handlers.subscription.helper_card_texts.copy1.bank_name": "DC city",
+    "inline.handlers.subscription.helper_card_texts.copy1.payment_details_label": "To'lov rekviziti",
+    "inline.handlers.subscription.helper_card_texts.copy1.send_screenshot": "To'lovdan keyin skrinshot yuboring.",
+    "inline.utils.course_formatter.helper_lesson_word.copy1": "Dars",
+    "inline.utils.course_formatter.helper_block_label.copy1": "Qism",
+    "inline.utils.course_formatter.module.copy1": "Ma'nosi",
+    "inline.utils.course_formatter.module.copy2": "Qachon ishlatiladi",
+    "inline.utils.course_formatter.module.copy3": "Qolip",
+    "inline.utils.course_formatter.module.copy4": "Dialogdan misol",
+    "inline.utils.course_formatter.module.copy5": "Tahlil",
+    "inline.utils.course_formatter.module.copy6": "E'tibor",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy1": "Gapda kutilganidan kuchliroq holat ta'kidlanadi; odatda 都/也 natijani kuchaytiradi.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy2": "Birinchi qism shart yoki vaziyatni beradi, ikkinchi qism esa shu shartdagi natijani ko'rsatadi.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy3": "Oldingi fikrdan keyin qarama-qarshi yoki kutilmagan natija keladi; tarjimada 'ammo/lekin' ohangi kuchli.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy4": "Bu qolip gapdagi fikrlarni tartiblaydi: qo'shimcha ma'lumot, davomiy qadam yoki parallel holat qo'shadi.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy5": "Qolip mavzu, soha yoki baholash nuqtasini oldinga chiqaradi; undan keyin asosiy fikr aytiladi.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy6": "Bu yerda ma'no faqat fe'lda emas, fe'ldan keyingi qo'shimcha qismda ham turibdi; natija/yo'nalish/holatni tekshiring.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy7": "Avval gapdagi mantiqiy munosabatni toping, keyin xitoycha qolipni shu joyga qo'ying.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy1": "Ikkinchi qismda odatda 也/还/而且 keladi; ikki tomonni ham ijobiy kuchaytiradi.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy2": "Inkor ma'nosida ko'pincha 没/不 bilan ishlaydi: 从来没... = hech qachon ...magan.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy3": "刚 fe'ldan oldin keladi va 'hozirgina/yangi' ma'nosini beradi; uzoq o'tmish uchun ishlatmang.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy4": "Natija qismida ko'pincha 也/都/还 keladi; shu so'z natija o'zgarmasligini ko'rsatadi.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy5": "Avval maslahat/shart keladi, keyin 否则 bilan yomon yoki kutilmagan natija aytiladi.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy6": "Bular oddiy 'va' emas; oldingi fikrga burilish yoki qarama-qarshi natija qo'shadi.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy7": "Ikkinchi fikr birinchisini davom ettiradi yoki qo'shimcha qiladi; qarama-qarshilik ma'nosi yo'q.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy8": "Bu qolipdan keyin mavzu keladi; asosiy hukm yoki baho keyingi qismda aytiladi.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy9": "是否 yozma va rasmiyroq uslub; og'zaki nutqda ko'pincha 是不是 ishlatiladi.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy10": "把 dan keyingi obyektga nima bo'lganini fe'l va natija qismi bilan aniq ko'rsating.",
+    "inline.utils.course_formatter.helper_append_basic_grammar_item.copy1": "💬 Misollar:",
+    "inline.utils.course_formatter.format_vocab.copy1": "Yangi so'zlar 🇨🇳",
+    "inline.utils.course_formatter.format_dialogue.copy1": "Jonli dialog 🎭",
+    "inline.utils.course_formatter.format_dialogue.copy2": "💡 Bilasizmi?",
+    "inline.utils.course_formatter.format_exercise.copy1": "Test vaqti! 🧠",
+    "inline.utils.course_formatter.format_exercise.copy2": "Siz tayyor deb o'ylaymiz... Isbotlang! 😄",
+    "inline.utils.course_formatter.format_exercise.copy3": "Javobingizni yozing ⬇️",
+    "inline.utils.course_formatter.format_vocab_1.copy1": "📖 Yangi so'zlar 🇨🇳",
+    "inline.utils.course_formatter.format_vocab_1.copy2": "✨ Bugun <b>{}</b> ta yangi so'z — darsni tugatgach amalda ishlata olasiz!",
+    "inline.utils.course_formatter.format_vocab_2.copy1": "📖 Yangi so'zlar — davomi 🇨🇳",
+    "inline.utils.course_formatter.format_block_vocab.copy1": "📖 Shu dialogdagi yangi so'zlar",
+    "inline.utils.course_formatter.format_block_vocab.copy2": "Avval <b>{}</b> ta so'zni yengil olamiz, keyin dialogga o'tamiz.",
+    "inline.utils.course_formatter.format_block_quiz.copy1": "📝 Kichik test",
+    "inline.utils.course_formatter.format_block_quiz.copy2": "Quizdan o'ting: qani, shu qismdagi yangi so'zlar va grammatikadan nimani eslab qoldingiz?",
+    "inline.utils.course_formatter.format_block_quiz.copy3": "Mini App ochilmasa, javoblarni shu yerga yozishingiz mumkin.",
+    "inline.utils.course_formatter.format_block_grammar.copy1": "📐 Shu dialog grammatikasi",
+    "inline.utils.course_formatter.format_dialogue_n.copy1": "🎭 Dialog",
+    "inline.utils.course_formatter.format_dialogue_n.copy2": "📘 Matn",
+    "inline.utils.course_formatter.format_dialogue_n.copy3": "📐 Grammatika eslatmasi",
+    "inline.utils.course_formatter.format_grammar_v2.copy1": "📐 Grammatika",
+    "inline.utils.course_formatter.format_satisfaction_check.copy1": "Dars yakuni",
+    "inline.utils.course_formatter.format_satisfaction_check.copy2": "Darsdagi so'zlar, dialoglar va test tushunarli bo'ldimi?",
+    "inline.utils.course_formatter.format_review.copy1": "🔁 Qisqa takrorlash",
+    "inline.utils.course_formatter.format_review.copy2": "Asosiy so'zlar:",
+    "inline.utils.course_formatter.format_review.copy3": "Dialoglar:",
+    "inline.utils.course_formatter.format_review.copy4": "Grammatika:",
+    "inline.utils.course_formatter.format_intro.copy1": "Darsga xush kelibsiz! 🎉",
+    "inline.utils.course_miniapp.format_miniapp_quiz_result.copy1": "Keyingi qismga o'tamiz.",
+    "inline.handlers.course.helper_course_part_label.dynamic1": "{flat}-dars",
+    "inline.handlers.course.helper_course_part_label.dynamic2": "{src}-dars · yakuniy qism",
+    "inline.handlers.course.helper_course_part_label.dynamic3": "{src}-dars · {part}-qism",
+    "inline.handlers.course.course_miniapp_reentry_text.dynamic1": "📚 <b>Davom etamiz</b>\n\n{label}ni ochish uchun bosing 👇",
+    "inline.handlers.course.helper_course_entry_button_label.dynamic1": "▶️ Davom · {label}",
+    "inline.handlers.course.course_set_study_time_handler.dynamic1": "✅ Keyingi dars vaqti saqlandi: <b>{time_str}</b>",
+    "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.true": "✅ Test tekshirildi",
+    "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.false": "❌ Testda xatolar bor",
+    "inline.handlers.start.helper_lesson_choice_text.dynamic1": "<b>{label} kursi</b>\n\nQaysi darsdan boshlaymiz?",
+    "inline.utils.course_formatter.format_vocab.dynamic1": "✨ Bugun {value1} ta so'z — darsni tugatgach ishlatishni bilasiz!",
+    "inline.utils.course_miniapp.format_miniapp_quiz_intro.dynamic1": "\n\nQism {block_no}: savollar shu qismdagi yangi so'zlar va grammatikadan.",
+    "inline.utils.course_miniapp.format_miniapp_quiz_result.dynamic1": "📍 Qism: {block_no}",
+    "profile.referralCount": "👥 <b>Chaqirganlar:</b> {total} ta",
+    "profile.plan10Days": "10 kun",
+    "profile.plan1Month": "1 oy",
+    "profile.activePlan": "Faol obuna",
+    "profile.name": "🙍 <b>Ism:</b> {full_name}",
+    "profile.language": "🈯 <b>Til:</b> {language}",
+    "profile.level": "📖 <b>Daraja:</b> {level}",
+    "profile.status": "⭐ <b>Holat:</b> {status}",
+    "profile.subscription": "💳 <b>Obuna:</b> {plan}",
+    "profile.end": "⌛ <b>Tugash:</b> {ends_str}",
+    "profile.trial": "⏳ <b>Test access:</b> faol",
+    "profile.header": "<b>👤 Profilingiz</b>\n\n",
+    "profile.levelUpdated": "✅ Daraja yangilandi: {level_label}",
+    "inline.services.course_challenge_service.helper_invite_keyboard.copy1.item1": "Belashuvni qabul qilish",
+    "inline.services.course_challenge_service.helper_invite_keyboard.copy1.item2": "Rad qilish",
+    "inline.services.course_challenge_service.helper_invite_keyboard.copy1.item3": "Musobaqani ochish",
+    "inline.services.course_challenge_service.helper_open_keyboard.copy1": "Musobaqaga kirish",
+    "inline.services.course_challenge_service.invite_text.copy1.case1": "⚔️ {name} sizni HSK jangiga chaqirdi!",
+    "inline.services.course_challenge_service.invite_text.copy2.case1": "🔥 10 ta savol — so'z, pinyin, tarjima va grammatika aralash.\n🎯 Har biringiz O'Z darajangizdagi savollarga javob berasiz — adolatli jang!\n🏆 G'olib eng baland foiz bilan aniqlanadi. Foiz teng bo'lsa — durrang.\n\n⚡ G'olibga +{CHALLENGE_WIN_XP} XP, har bir jangchiga +{CHALLENGE_COMPLETE_XP} XP.\nQani, kuchingni ko'rsat! 💪",
+    "inline.services.course_challenge_service.resolved_invite_text.copy1": "✅ Jang qabul qilindi! ⚔️\n\n🎯 Maydon tayyor: 10 ta savol, har biringiz o'z darajangizda.\n🔥 Kir va g'alabani qo'lga ol!",
+    "inline.services.course_challenge_service.resolved_invite_text.copy2": "😌 Bu safar jang bo'lmadi.\n\nQayg'urma — boshqa raqibni chaqir va g'alabani ol! 💪",
+    "inline.services.course_challenge_service.notify_response.copy1.case1": "🔥 {name} chaqiringizni qabul qildi! ⚔️\nMaydon tayyor — kir va birinchi bo'lib zarba ber! 💪",
+    "inline.services.course_challenge_service.notify_response.copy2.case1": "😌 {name} bu safar jangga chiqmadi.\nQayg'urma — kuchli raqib doim topiladi! Yana birovni chaqir. 💪",
+    "inline.services.course_challenge_service.notify_submit.copy1.case1": "🏁 Raund tugadi! {name} natijani yubordi{value2}.\n\n📊 Hisob: {challenger_score} vs {opponent_score}.\n🏆 G'OLIB SIZSIZ! Bonus XP profilingizga tushdi. Ajoyibsan! 🔥",
+    "inline.services.course_challenge_service.notify_submit.copy1.case2": "🏁 Raund tugadi! {name} natijani yubordi{value2}.\n\n📊 Hisob: {challenger_score} vs {opponent_score}.\n💪 Bu safar mag'lub bo'lding, ammo jang tugagani yo'q — revansh ol!",
+    "inline.services.course_challenge_service.notify_submit.copy1.case3": "🏁 Raund tugadi! {name} natijani yubordi{value2}.\n\n📊 Hisob: {challenger_score} vs {opponent_score}.\n🤝 Durrang! Ikkalangizga ham bonus XP. Keyingisida hal qil!",
+    "inline.services.course_challenge_service.notify_submit.copy2.case1": "⚡ {name} o'z raundini yakunladi{value2}! Endi navbat senda — kir va zarbangni ber! 🔥",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.active_word": "Yangi faol so'z",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.meaning_guess": "To'g'ri ma'noni tanlang",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.listening_choice": "Tinglang va javobni tanlang",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.pinyin_choice": "To'g'ri pinyin tanlang",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.hanzi_choice": "To'g'ri iyeroglifni tanlang",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.gap_fill": "Bo'sh joyni to'ldiring",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.character_recognition": "Iyeroglifni taning",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.match_pairs": "Juftliklarni moslang",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.sentence_builder": "Gapni tuzing",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.word_order": "So'zlarni tartibga qo'ying",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.translation_choice": "To'g'ri tarjimani tanlang",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.quick_quiz": "Tezkor tekshiruv",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.short_dialog": "Qisqa dialog",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_words": "So'zlar",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_sound": "Tovush",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_character": "Iyeroglif",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_dialog": "Dialog",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_build": "Yig'ish",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_speaking": "Talaffuz",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_review": "Tekshiruv",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.other_meaning": "Boshqa ma'no",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_intro": "Yangi so'zlar",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_reinforcement": "Mustahkamlash",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_listening": "Tinglash",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_usage": "Gapda ishlatish",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_dialog": "Qisqa dialog",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_review": "Takrorlash",
+    "inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1.case1": "Dialogda «{value1}» nimani anglatadi?",
+    "inline.services.course_miniapp_lesson_service.module.copy1.cat": "Lug'at",
+    "inline.services.course_miniapp_lesson_service.module.copy1.hint": "Dars {lesson} yangi so'zi",
+    "inline.services.course_miniapp_lesson_service.module.copy1.hanzi_to_meaning": "“{zh}” nimani anglatadi?",
+    "inline.services.course_miniapp_lesson_service.module.copy1.meaning_to_hanzi": "“{meaning}” qaysi so'z?",
+    "inline.services.course_miniapp_lesson_service.module.copy1.pinyin_to_hanzi": "“{pinyin}” qaysi so'z?",
+    "inline.services.course_miniapp_lesson_service.module.copy1.hanzi_to_pinyin": "“{zh}” pinyin qaysi?",
+    "inline.services.course_miniapp_lesson_service.module.copy1.listening_choice": "Eshiting va to'g'ri javobni tanlang",
+    "inline.services.course_miniapp_lesson_service.module.copy1.fill_blank": "Bo'sh joyni to'ldiring",
+    "inline.services.course_miniapp_lesson_service.module.copy1.fill_blank_choice": "Gapdagi bo'sh joyga mos so'zni tanlang",
+    "inline.services.course_miniapp_lesson_service.module.copy1.choose_meaning_in_context": "Gapdagi so'z ma'nosini tanlang",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_in_context": "Gapdagi grammatikani tanlang",
+    "inline.services.course_miniapp_lesson_service.module.copy1.listen_and_fill": "Eshiting va bo'sh joyni to'ldiring",
+    "inline.services.course_miniapp_lesson_service.module.copy1.build_sentence_chips": "Xitoycha gapni tuzing",
+    "inline.services.course_miniapp_lesson_service.module.copy1.meaning_hint": "ma'nosi: {meaning}",
+    "inline.services.course_miniapp_lesson_service.module.copy1.correct": "To'g'ri javob: {zh} — {meaning}.",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_cat": "Grammatika",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_hint": "Dars {lesson} grammatikasi",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_example_to_pattern": "Quyidagi gapda qaysi grammatika ishlatilgan?\n{example}",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_pattern_to_example": "“{title}” grammatikasiga qaysi gap mos?",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_correct": "To'g'ri javob: {title}. {rule}",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_example_correct": "To'g'ri javob: {example}\nBu gapda {title} ishlatilgan.",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.start": "Boshlash",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.learn": "O'rganish",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.practice": "Mashq",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.explain": "AI izoh",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.win": "Natija",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.next": "Keyingi",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.today": "Bugun qisqa dars: {title}",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.promise": "3-5 minutda bitta aniq natija olasiz.",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.win_text": "Bugun asosiy so'z/qoida va bitta amaliy mashqni tugatdingiz.",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.next_text": "Keyingi darsda shu bilimni yangi vaziyatda ishlatasiz.",
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy1": "Tarjimani so'zlardan tuzing",
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy2": "Mos juftliklarni toping",
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy3": "Iyeroglif shaklini ko'ring",
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4.case1": "Xitoycha gapni tuzing: {translated_sentence}",
+    "inline.services.course_tutor_service.module.copy1": "\n\n✅ <i>Tushundingiz bo'lsa, pastdagi tugmani bosing.</i>",
+    "inline.services.daily_practice_service.helper_copy.copy1.entry_title": "⏱ <b>Bugungi 3 daqiqalik mashq</b>",
+    "inline.services.daily_practice_service.helper_copy.copy1.entry_body": "<blockquote>3 ta yangi so'z, 2 ta tez quiz va 1 ta oddiy gap. Tugagach savol-javob rejimida kunlik limit bilan davom etasiz.</blockquote>",
+    "inline.services.daily_practice_service.helper_copy.copy1.words": "1) Yangi so'zlar",
+    "inline.services.daily_practice_service.helper_copy.copy1.quiz": "2) Tez quiz",
+    "inline.services.daily_practice_service.helper_copy.copy1.sentence": "3) Oddiy gap",
+    "inline.services.daily_practice_service.helper_copy.copy1.ready": "Tayyor bo'lsangiz, javoblarni ko'ring.",
+    "inline.services.daily_practice_service.helper_copy.copy1.done": "✅ <b>Bugungi mashq tugadi</b>",
+    "inline.services.daily_practice_service.helper_copy.copy1.result": "<blockquote>Siz 3 ta so'z ko'rdingiz, 2 ta quizni tekshirdingiz va bitta sodda gapni mustahkamladingiz.</blockquote>",
+    "inline.services.daily_practice_service.helper_copy.copy1.answers": "Javoblar:",
+    "inline.services.daily_practice_service.helper_copy.copy1.next": "Endi savolingizni yozing yoki kursni o'zingiz boshlang.",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.title_meaning": "💬 <b>Keling, birinchi savoldan boshlaymiz</b>",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.title_pinyin": "🔊 <b>Talaffuzdan boshlaymiz</b>",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.title_sentence": "🎮 <b>Kichik mashq</b>",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.q_meaning": "Bu so'z nima degani?",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.q_pinyin": "Bu so'z qanday o'qiladi?",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.q_sentence": "Shu so'zlardan bitta gap tuzing.",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.hint": "Javobingizni yozing — tekshirib beraman. Yoki o'z savolingizni bering.",
+    "inline.services.daily_practice_service.completion_text.copy1.case1": "🔥 Streak: {streak} kun",
+    "inline.services.gemini_switch_announcement_service.module.copy1": "<b>🎉 Yaxshi yangilik!</b>\n\n<blockquote>Endi chatda <b>matn</b> orqali AI bilan xitoy tilini <b>cheksiz va bepul</b> o'rganishingiz mumkin — kunlik limit yo'q!\n\n📸 Foto va 🎙 ovozli xabarlar uchun kuniga 5 tadan bepul.\n\nHoziroq sinab ko'ring — savolingizni yozing!</blockquote>",
+    "inline.services.help_settings_service.module.copy1.title": "<b>🤖 Yordam bo‘limi</b>",
+    "inline.services.help_settings_service.module.copy1.click": "bu yerga bosing",
+    "inline.services.help_settings_service.module.copy1.admin": "ADMIN",
+    "inline.services.help_settings_service.module.copy1.admin_line": "⚠️ Muammo bo‘lsa, {admin}ga yozing.",
+    "inline.services.help_settings_service.module.copy1.course_hsk": "HSK kursi qanday ishlashini ko‘rish uchun",
+    "inline.services.help_settings_service.module.copy1.qa_mode": "Oddiy rejimni tushunish uchun",
+    "inline.services.help_settings_service.module.copy1.voice_translator": "Voice va tarjimonni ko‘rish uchun",
+    "inline.services.help_settings_service.module.copy1.subscription": "Obuna imkoniyatlarini tushunish uchun",
+    "inline.services.mistake_drill_factory.module.copy1": "Ma'nosini tanlang",
+    "inline.services.mistake_drill_factory.module.copy2": "«{meaning}» — qaysi ieroglif?",
+    "inline.services.mistake_drill_factory.module.copy3": "Qaysi ieroglif shunday o'qiladi?",
+    "inline.services.mistake_drill_factory.module.copy4": "Qanday o'qiladi?",
+    "inline.services.mistake_drill_factory.module.copy5": "Tinglang va eshitganingizni tanlang",
+    "inline.services.mistake_drill_factory.module.copy6": "Tinglang: qanday o'qildi?",
+    "inline.services.mistake_drill_factory.module.copy7": "Tinglang va eshitgan gapingizni tanlang",
+    "inline.services.mistake_drill_factory.module.copy8": "Bu gap nimani anglatadi?",
+    "inline.services.mistake_drill_factory.module.copy9": "Gapni to'g'ri tartibda tuzing",
+    "inline.services.mistake_drill_factory.module.copy10": "Gapni tuzing: «{translation}»",
+    "inline.services.mistake_drill_factory.module.copy11": "Tinglang va eshitgan gapni tuzing",
+    "inline.services.mistake_drill_factory.module.copy12": "Bo'sh joyga mosini tanlang",
+    "inline.services.mistake_drill_factory.module.copy13": "Bo'sh joyga mosini tanlang: «{translation}»",
+    "inline.services.mistake_drill_factory.module.copy14": "Dialogni to'ldiring",
+    "inline.services.mistake_drill_factory.module.copy15": "Aytgan gapingizning to'g'ri shaklini tanlang",
+    "inline.services.mistake_drill_factory.module.copy16": "Aytmoqchi bo'lgan gapingiz: «{translation}». To'g'ri shaklini tanlang",
+    "inline.services.payment_notify_service.module.copy1": "To'lov qabul qilindi ✅\n\nHSK 3.0 ga to'liq kirish siz uchun ochildi. Quyidagi tugmadan boshlang 👇🏽",
+    "inline.services.payment_notify_service.module.copy2": "▶️ HSK 3.0 ni boshlash",
+    "inline.services.payment_notify_service.module.copy3": "▶️ Darsni boshlash",
+    "inline.services.payment_notify_service.module.copy4": "❌ HSK 3.0 ni ochish to'lovi tasdiqlanmadi.",
+    "inline.services.payment_notify_service.module.copy5": "🔄 Qayta urinib ko'rish",
+    "inline.services.payment_notify_service.module.copy6": "Summa noto'g'ri",
+    "inline.services.payment_notify_service.module.copy7": "Screenshot noaniq",
+    "inline.services.payment_notify_service.module.copy8": "Shubhali to'lov",
+    "inline.services.payment_notify_service.module.copy9": "Eski to'lov",
+    "inline.services.payment_notify_service.module.copy10": "Boshqa sabab",
+    "inline.services.payment_notify_service.notify_hsk30_unlock_rejected.copy1": "Sabab",
+    "inline.services.payment_notify_service.notify_payment_rejected.copy1": "Sabab",
+    "inline.services.referral_notify_service.module.copy1": "▶️ Darsni boshlash",
+    "inline.services.study_miniapp_service.send_quiz_ai_discussion.copy1": "🧠 Quiz xatolaringiz QA rejimida tahlil qilinyapti...",
+    "inline.services.voice_practice_service.module.copy1": "Kafeda buyurtma",
+    "inline.services.voice_practice_service.module.copy2": "Do'konda xarid",
+    "inline.services.voice_practice_service.module.copy3": "Yo'l so'rash",
+    "inline.services.voice_practice_service.module.copy4": "Tanishish",
+    "inline.services.entitlements.decision.limit_text.copy1.lesson": "dars",
+    "inline.services.entitlements.decision.limit_text.copy1.ai": "AI so‘rov",
+    "inline.services.entitlements.decision.limit_text.copy1.speaking": "suhbat",
+    "inline.services.entitlements.decision.limit_text.copy1.practice": "mashq",
+    "inline.services.entitlements.decision.limit_text.copy1.study": "foydalanish",
+    "inline.services.entitlements.decision.limit_text.copy2.case1": "Trial rejimida",
+    "inline.services.entitlements.decision.limit_text.copy2.case2": "Bepul rejimda",
+    "inline.services.entitlements.decision.limit_text.copy3.case1": "{value1}: cheksiz.",
+    "inline.services.entitlements.decision.limit_text.copy4": "kuniga",
+    "inline.services.entitlements.decision.limit_text.copy5": "jami",
+    "inline.services.entitlements.decision.limit_text.copy6.case1": "{plan} {period} {limit} ta {noun}. Qoldi: {value5}."
   },
   "namespace": "bot",
   "references": {
@@ -881,6 +1200,2229 @@
       "user_payment_rejected": "texts.user_payment_rejected",
       "voice_trial_daily_limit_reached": "texts.voice_trial_daily_limit_reached",
       "welcome": "texts.welcome"
+    }
+  },
+  "maps": {
+    "inline.handlers.challenge.helper_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "bad_button": {
+            "message": "inline.handlers.challenge.helper_text.copy1.bad_button"
+          },
+          "not_found": {
+            "message": "inline.handlers.challenge.helper_text.copy1.not_found"
+          },
+          "bad_action": {
+            "message": "inline.handlers.challenge.helper_text.copy1.bad_action"
+          },
+          "closed": {
+            "message": "inline.handlers.challenge.helper_text.copy1.closed"
+          },
+          "accepted": {
+            "message": "inline.handlers.challenge.helper_text.copy1.accepted"
+          },
+          "rejected": {
+            "message": "inline.handlers.challenge.helper_text.copy1.rejected"
+          }
+        }
+      }
+    },
+    "inline.handlers.commands.helper_status_label.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_status_label.copy1"
+      }
+    },
+    "inline.handlers.commands.helper_status_label.copy2": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_status_label.copy2"
+      }
+    },
+    "inline.handlers.commands.helper_status_label.copy3": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_status_label.copy3"
+      }
+    },
+    "inline.handlers.commands.helper_status_label.copy4": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_status_label.copy4"
+      }
+    },
+    "inline.handlers.commands.helper_status_label.copy5": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_status_label.copy5"
+      }
+    },
+    "inline.handlers.commands.helper_status_label.copy6": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_status_label.copy6"
+      }
+    },
+    "inline.handlers.commands.helper_profile_status_label.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_profile_status_label.copy1"
+      }
+    },
+    "inline.handlers.commands.helper_profile_status_label.copy2": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_profile_status_label.copy2"
+      }
+    },
+    "inline.handlers.commands.helper_language_label.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "object": {
+          "tj": {
+            "message": "inline.handlers.commands.helper_language_label.copy1.tj"
+          },
+          "uz": {
+            "message": "inline.handlers.commands.helper_language_label.copy1.uz"
+          },
+          "ru": {
+            "message": "inline.handlers.commands.helper_language_label.copy1.ru"
+          }
+        }
+      }
+    },
+    "inline.handlers.commands.helper_language_label.copy2": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_language_label.copy2"
+      }
+    },
+    "inline.handlers.commands.helper_level_label.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_level_label.copy1"
+      }
+    },
+    "inline.handlers.commands.helper_profile_reminder_line.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_profile_reminder_line.copy1"
+      }
+    },
+    "inline.handlers.commands.profile_menu_keyboard.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "object": {
+          "subscription": {
+            "message": "inline.handlers.commands.profile_menu_keyboard.copy1.subscription"
+          },
+          "language": {
+            "message": "inline.handlers.commands.profile_menu_keyboard.copy1.language"
+          },
+          "level": {
+            "message": "inline.handlers.commands.profile_menu_keyboard.copy1.level"
+          }
+        }
+      }
+    },
+    "inline.handlers.commands.command_level_callback_handler.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.command_level_callback_handler.copy1"
+      }
+    },
+    "inline.handlers.course.course_miniapp_entry_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.course_miniapp_entry_text.copy1"
+      }
+    },
+    "inline.handlers.course.course_miniapp_entry_text.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.course_miniapp_entry_text.copy2"
+      }
+    },
+    "inline.handlers.course.course_miniapp_reentry_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.course_miniapp_reentry_text.copy1"
+      }
+    },
+    "inline.handlers.course.helper_course_entry_button_label.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_course_entry_button_label.copy1"
+      }
+    },
+    "inline.handlers.course.helper_block_if_course_disabled.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_block_if_course_disabled.copy1"
+      }
+    },
+    "inline.handlers.course.helper_course_locked_offer_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_course_locked_offer_text.copy1"
+      }
+    },
+    "inline.handlers.course.helper_trial_course_completed_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_trial_course_completed_text.copy1"
+      }
+    },
+    "inline.handlers.course.course_command_handler.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.course_command_handler.copy1"
+      }
+    },
+    "inline.handlers.course.helper_static_course_missing_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_static_course_missing_text.copy1"
+      }
+    },
+    "inline.handlers.course.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.module.copy1"
+      }
+    },
+    "inline.handlers.desktop_auth.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "confirm_desktop": {
+            "message": "inline.handlers.desktop_auth.module.copy1.confirm_desktop"
+          },
+          "confirm_mobile": {
+            "message": "inline.handlers.desktop_auth.module.copy1.confirm_mobile"
+          },
+          "approve": {
+            "message": "inline.handlers.desktop_auth.module.copy1.approve"
+          },
+          "cancel": {
+            "message": "inline.handlers.desktop_auth.module.copy1.cancel"
+          },
+          "enter_code": {
+            "message": "inline.handlers.desktop_auth.module.copy1.enter_code"
+          },
+          "invalid_code": {
+            "message": "inline.handlers.desktop_auth.module.copy1.invalid_code"
+          },
+          "attempts_exhausted": {
+            "message": "inline.handlers.desktop_auth.module.copy1.attempts_exhausted"
+          },
+          "ok_desktop": {
+            "message": "inline.handlers.desktop_auth.module.copy1.ok_desktop"
+          },
+          "ok_mobile": {
+            "message": "inline.handlers.desktop_auth.module.copy1.ok_mobile"
+          },
+          "cancelled": {
+            "message": "inline.handlers.desktop_auth.module.copy1.cancelled"
+          },
+          "invalid": {
+            "message": "inline.handlers.desktop_auth.module.copy1.invalid"
+          }
+        }
+      }
+    },
+    "inline.handlers.desktop_auth.module.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "choose_language": {
+            "message": "inline.handlers.desktop_auth.module.copy2.choose_language"
+          },
+          "confirm": {
+            "message": "inline.handlers.desktop_auth.module.copy2.confirm"
+          },
+          "approve": {
+            "message": "inline.handlers.desktop_auth.module.copy2.approve"
+          },
+          "cancel": {
+            "message": "inline.handlers.desktop_auth.module.copy2.cancel"
+          },
+          "ok": {
+            "message": "inline.handlers.desktop_auth.module.copy2.ok"
+          },
+          "cancelled": {
+            "message": "inline.handlers.desktop_auth.module.copy2.cancelled"
+          },
+          "invalid": {
+            "message": "inline.handlers.desktop_auth.module.copy2.invalid"
+          }
+        }
+      }
+    },
+    "inline.handlers.desktop_auth.module.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "confirm": {
+            "message": "inline.handlers.desktop_auth.module.copy3.confirm"
+          },
+          "approve": {
+            "message": "inline.handlers.desktop_auth.module.copy3.approve"
+          },
+          "cancel": {
+            "message": "inline.handlers.desktop_auth.module.copy3.cancel"
+          },
+          "ok": {
+            "message": "inline.handlers.desktop_auth.module.copy3.ok"
+          },
+          "denied": {
+            "message": "inline.handlers.desktop_auth.module.copy3.denied"
+          },
+          "invalid": {
+            "message": "inline.handlers.desktop_auth.module.copy3.invalid"
+          },
+          "conflict": {
+            "message": "inline.handlers.desktop_auth.module.copy3.conflict"
+          }
+        }
+      }
+    },
+    "inline.handlers.messages.module.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "tuple": [
+          {
+            "message": "inline.handlers.messages.module.copy1.item1"
+          },
+          {
+            "message": "inline.handlers.messages.module.copy1.item2"
+          },
+          {
+            "message": "inline.handlers.messages.module.copy1.item3"
+          },
+          {
+            "message": "inline.handlers.messages.module.copy1.item4"
+          }
+        ]
+      }
+    },
+    "inline.handlers.messages.helper_format_static_exercise_result.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.helper_format_static_exercise_result.copy1"
+      }
+    },
+    "inline.handlers.messages.helper_voice_answer_loader_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.helper_voice_answer_loader_text.copy1"
+      }
+    },
+    "inline.handlers.messages.helper_voice_answer_loader_text.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.helper_voice_answer_loader_text.copy2"
+      }
+    },
+    "inline.handlers.messages.handle_text_message.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.handle_text_message.copy1"
+      }
+    },
+    "inline.handlers.messages.handle_text_message.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.handle_text_message.copy2"
+      }
+    },
+    "inline.handlers.payments.helper_waiting_message.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.payments.helper_waiting_message.copy1"
+      }
+    },
+    "inline.handlers.payments.helper_waiting_message.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.payments.helper_waiting_message.copy2"
+      }
+    },
+    "inline.handlers.release_feedback.module.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.release_feedback.module.copy1"
+      }
+    },
+    "inline.handlers.release_feedback.module.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.release_feedback.module.copy2"
+      }
+    },
+    "inline.handlers.release_feedback.helper_route_try_feature.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.release_feedback.helper_route_try_feature.copy1"
+      }
+    },
+    "inline.handlers.release_feedback.helper_route_try_feature.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.release_feedback.helper_route_try_feature.copy2"
+      }
+    },
+    "inline.handlers.release_feedback.helper_route_try_feature.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.release_feedback.helper_route_try_feature.copy3"
+      }
+    },
+    "inline.handlers.release_feedback.helper_route_try_feature.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.release_feedback.helper_route_try_feature.copy4"
+      }
+    },
+    "inline.handlers.start.helper_send_android_referral_apk.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.start.helper_send_android_referral_apk.copy1"
+      }
+    },
+    "inline.handlers.start.helper_mode_choice_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.start.helper_mode_choice_text.copy1"
+      }
+    },
+    "inline.handlers.subscription.helper_card_texts.copy1": {
+      "locale_order": [
+        "tj",
+        "ru",
+        "uz"
+      ],
+      "value": {
+        "object": {
+          "main_title": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.main_title"
+          },
+          "benefits": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.benefits"
+          },
+          "card_note_short": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.card_note_short"
+          },
+          "card_note_full": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.card_note_full"
+          },
+          "referral_hint": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.referral_hint"
+          },
+          "choose": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.choose"
+          },
+          "checkout_title": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.checkout_title"
+          },
+          "plan_label": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.plan_label"
+          },
+          "price_label": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.price_label"
+          },
+          "bank_label": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.bank_label"
+          },
+          "bank_name": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.bank_name"
+          },
+          "payment_details_label": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.payment_details_label"
+          },
+          "send_screenshot": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.send_screenshot"
+          }
+        }
+      }
+    },
+    "inline.utils.course_formatter.helper_lesson_word.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_lesson_word.copy1"
+      }
+    },
+    "inline.utils.course_formatter.helper_block_label.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_block_label.copy1"
+      }
+    },
+    "inline.utils.course_formatter.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.module.copy1"
+      }
+    },
+    "inline.utils.course_formatter.module.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.module.copy2"
+      }
+    },
+    "inline.utils.course_formatter.module.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.module.copy3"
+      }
+    },
+    "inline.utils.course_formatter.module.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.module.copy4"
+      }
+    },
+    "inline.utils.course_formatter.module.copy5": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.module.copy5"
+      }
+    },
+    "inline.utils.course_formatter.module.copy6": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.module.copy6"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy1"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy2"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy3"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy4"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy5": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy5"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy6": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy6"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy7": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy7"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy1"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy2"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy3"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy4"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy5": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy5"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy6": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy6"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy7": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy7"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy8": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy8"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy9": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy9"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy10": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy10"
+      }
+    },
+    "inline.utils.course_formatter.helper_append_basic_grammar_item.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_append_basic_grammar_item.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_vocab.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_vocab.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_dialogue.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_dialogue.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_dialogue.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_dialogue.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_exercise.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_exercise.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_exercise.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_exercise.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_exercise.copy3": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_exercise.copy3"
+      }
+    },
+    "inline.utils.course_formatter.format_vocab_1.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_vocab_1.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_vocab_1.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_vocab_1.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_vocab_2.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_vocab_2.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_block_vocab.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_block_vocab.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_block_vocab.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_block_vocab.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_block_quiz.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_block_quiz.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_block_quiz.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_block_quiz.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_block_quiz.copy3": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_block_quiz.copy3"
+      }
+    },
+    "inline.utils.course_formatter.format_block_grammar.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_block_grammar.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_dialogue_n.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_dialogue_n.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_dialogue_n.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_dialogue_n.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_dialogue_n.copy3": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_dialogue_n.copy3"
+      }
+    },
+    "inline.utils.course_formatter.format_grammar_v2.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_grammar_v2.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_satisfaction_check.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_satisfaction_check.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_satisfaction_check.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_satisfaction_check.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_review.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_review.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_review.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_review.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_review.copy3": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_review.copy3"
+      }
+    },
+    "inline.utils.course_formatter.format_review.copy4": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_review.copy4"
+      }
+    },
+    "inline.utils.course_formatter.format_intro.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_intro.copy1"
+      }
+    },
+    "inline.utils.course_miniapp.format_miniapp_quiz_result.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_miniapp.format_miniapp_quiz_result.copy1"
+      }
+    },
+    "inline.handlers.course.helper_course_part_label.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_course_part_label.dynamic1"
+      }
+    },
+    "inline.handlers.course.helper_course_part_label.dynamic2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_course_part_label.dynamic2"
+      }
+    },
+    "inline.handlers.course.helper_course_part_label.dynamic3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_course_part_label.dynamic3"
+      }
+    },
+    "inline.handlers.course.course_miniapp_reentry_text.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.course_miniapp_reentry_text.dynamic1"
+      }
+    },
+    "inline.handlers.course.helper_course_entry_button_label.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_course_entry_button_label.dynamic1"
+      }
+    },
+    "inline.handlers.course.course_set_study_time_handler.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.course_set_study_time_handler.dynamic1"
+      }
+    },
+    "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.true": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.true"
+      }
+    },
+    "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.false": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.false"
+      }
+    },
+    "inline.handlers.start.helper_lesson_choice_text.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.start.helper_lesson_choice_text.dynamic1"
+      }
+    },
+    "inline.utils.course_formatter.format_vocab.dynamic1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_vocab.dynamic1"
+      }
+    },
+    "inline.utils.course_miniapp.format_miniapp_quiz_intro.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_miniapp.format_miniapp_quiz_intro.dynamic1"
+      }
+    },
+    "inline.utils.course_miniapp.format_miniapp_quiz_result.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_miniapp.format_miniapp_quiz_result.dynamic1"
+      }
+    },
+    "inline.services.course_challenge_service.helper_invite_keyboard.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "tuple": [
+          {
+            "message": "inline.services.course_challenge_service.helper_invite_keyboard.copy1.item1"
+          },
+          {
+            "message": "inline.services.course_challenge_service.helper_invite_keyboard.copy1.item2"
+          },
+          {
+            "message": "inline.services.course_challenge_service.helper_invite_keyboard.copy1.item3"
+          }
+        ]
+      }
+    },
+    "inline.services.course_challenge_service.helper_open_keyboard.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.helper_open_keyboard.copy1"
+      }
+    },
+    "inline.services.course_challenge_service.invite_text.copy1.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.invite_text.copy1.case1"
+      }
+    },
+    "inline.services.course_challenge_service.invite_text.copy2.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.invite_text.copy2.case1"
+      }
+    },
+    "inline.services.course_challenge_service.resolved_invite_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.resolved_invite_text.copy1"
+      }
+    },
+    "inline.services.course_challenge_service.resolved_invite_text.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.resolved_invite_text.copy2"
+      }
+    },
+    "inline.services.course_challenge_service.notify_response.copy1.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.notify_response.copy1.case1"
+      }
+    },
+    "inline.services.course_challenge_service.notify_response.copy2.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.notify_response.copy2.case1"
+      }
+    },
+    "inline.services.course_challenge_service.notify_submit.copy1.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.notify_submit.copy1.case1"
+      }
+    },
+    "inline.services.course_challenge_service.notify_submit.copy1.case2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.notify_submit.copy1.case2"
+      }
+    },
+    "inline.services.course_challenge_service.notify_submit.copy1.case3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.notify_submit.copy1.case3"
+      }
+    },
+    "inline.services.course_challenge_service.notify_submit.copy2.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.notify_submit.copy2.case1"
+      }
+    },
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1": {
+      "locale_order": [
+        "ru",
+        "tj",
+        "uz"
+      ],
+      "value": {
+        "object": {
+          "active_word": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.active_word"
+          },
+          "meaning_guess": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.meaning_guess"
+          },
+          "listening_choice": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.listening_choice"
+          },
+          "pinyin_choice": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.pinyin_choice"
+          },
+          "hanzi_choice": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.hanzi_choice"
+          },
+          "gap_fill": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.gap_fill"
+          },
+          "character_recognition": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.character_recognition"
+          },
+          "match_pairs": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.match_pairs"
+          },
+          "sentence_builder": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.sentence_builder"
+          },
+          "word_order": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.word_order"
+          },
+          "translation_choice": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.translation_choice"
+          },
+          "quick_quiz": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.quick_quiz"
+          },
+          "short_dialog": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.short_dialog"
+          },
+          "unit_words": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_words"
+          },
+          "unit_sound": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_sound"
+          },
+          "unit_character": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_character"
+          },
+          "unit_dialog": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_dialog"
+          },
+          "unit_build": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_build"
+          },
+          "unit_speaking": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_speaking"
+          },
+          "unit_review": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_review"
+          },
+          "other_meaning": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.other_meaning"
+          },
+          "purpose_intro": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_intro"
+          },
+          "purpose_reinforcement": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_reinforcement"
+          },
+          "purpose_listening": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_listening"
+          },
+          "purpose_usage": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_usage"
+          },
+          "purpose_dialog": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_dialog"
+          },
+          "purpose_review": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_review"
+          }
+        }
+      }
+    },
+    "inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1.case1": {
+      "locale_order": [
+        "ru",
+        "tj",
+        "uz"
+      ],
+      "value": {
+        "message": "inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1.case1"
+      }
+    },
+    "inline.services.course_miniapp_lesson_service.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "cat": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.cat"
+          },
+          "hint": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.hint"
+          },
+          "hanzi_to_meaning": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.hanzi_to_meaning"
+          },
+          "meaning_to_hanzi": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.meaning_to_hanzi"
+          },
+          "pinyin_to_hanzi": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.pinyin_to_hanzi"
+          },
+          "hanzi_to_pinyin": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.hanzi_to_pinyin"
+          },
+          "listening_choice": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.listening_choice"
+          },
+          "fill_blank": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.fill_blank"
+          },
+          "fill_blank_choice": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.fill_blank_choice"
+          },
+          "choose_meaning_in_context": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.choose_meaning_in_context"
+          },
+          "grammar_in_context": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_in_context"
+          },
+          "listen_and_fill": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.listen_and_fill"
+          },
+          "build_sentence_chips": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.build_sentence_chips"
+          },
+          "meaning_hint": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.meaning_hint"
+          },
+          "correct": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.correct"
+          },
+          "grammar_cat": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_cat"
+          },
+          "grammar_hint": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_hint"
+          },
+          "grammar_example_to_pattern": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_example_to_pattern"
+          },
+          "grammar_pattern_to_example": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_pattern_to_example"
+          },
+          "grammar_correct": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_correct"
+          },
+          "grammar_example_correct": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_example_correct"
+          }
+        }
+      }
+    },
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "start": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.start"
+          },
+          "learn": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.learn"
+          },
+          "practice": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.practice"
+          },
+          "explain": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.explain"
+          },
+          "win": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.win"
+          },
+          "next": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.next"
+          },
+          "today": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.today"
+          },
+          "promise": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.promise"
+          },
+          "win_text": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.win_text"
+          },
+          "next_text": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.next_text"
+          }
+        }
+      }
+    },
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy1"
+      }
+    },
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy2"
+      }
+    },
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy3"
+      }
+    },
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4.case1"
+      }
+    },
+    "inline.services.course_tutor_service.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_tutor_service.module.copy1"
+      }
+    },
+    "inline.services.daily_practice_service.helper_copy.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "entry_title": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.entry_title"
+          },
+          "entry_body": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.entry_body"
+          },
+          "words": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.words"
+          },
+          "quiz": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.quiz"
+          },
+          "sentence": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.sentence"
+          },
+          "ready": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.ready"
+          },
+          "done": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.done"
+          },
+          "result": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.result"
+          },
+          "answers": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.answers"
+          },
+          "next": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.next"
+          }
+        }
+      }
+    },
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "title_meaning": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.title_meaning"
+          },
+          "title_pinyin": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.title_pinyin"
+          },
+          "title_sentence": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.title_sentence"
+          },
+          "q_meaning": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.q_meaning"
+          },
+          "q_pinyin": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.q_pinyin"
+          },
+          "q_sentence": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.q_sentence"
+          },
+          "hint": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.hint"
+          }
+        }
+      }
+    },
+    "inline.services.daily_practice_service.completion_text.copy1.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.daily_practice_service.completion_text.copy1.case1"
+      }
+    },
+    "inline.services.gemini_switch_announcement_service.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.gemini_switch_announcement_service.module.copy1"
+      }
+    },
+    "inline.services.help_settings_service.module.copy1": {
+      "locale_order": [
+        "tj",
+        "ru",
+        "uz"
+      ],
+      "value": {
+        "object": {
+          "title": {
+            "message": "inline.services.help_settings_service.module.copy1.title"
+          },
+          "click": {
+            "message": "inline.services.help_settings_service.module.copy1.click"
+          },
+          "admin": {
+            "message": "inline.services.help_settings_service.module.copy1.admin"
+          },
+          "admin_line": {
+            "message": "inline.services.help_settings_service.module.copy1.admin_line"
+          },
+          "course_hsk": {
+            "message": "inline.services.help_settings_service.module.copy1.course_hsk"
+          },
+          "qa_mode": {
+            "message": "inline.services.help_settings_service.module.copy1.qa_mode"
+          },
+          "voice_translator": {
+            "message": "inline.services.help_settings_service.module.copy1.voice_translator"
+          },
+          "subscription": {
+            "message": "inline.services.help_settings_service.module.copy1.subscription"
+          }
+        }
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy1"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy2"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy3"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy4"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy5": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy5"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy6": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy6"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy7": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy7"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy8": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy8"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy9": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy9"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy10": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy10"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy11": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy11"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy12": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy12"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy13": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy13"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy14": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy14"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy15": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy15"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy16": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy16"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy1"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy2"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy3": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy3"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy4": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy4"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy5": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy5"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy6": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy6"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy7": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy7"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy8": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy8"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy9": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy9"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy10": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy10"
+      }
+    },
+    "inline.services.payment_notify_service.notify_hsk30_unlock_rejected.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.notify_hsk30_unlock_rejected.copy1"
+      }
+    },
+    "inline.services.payment_notify_service.notify_payment_rejected.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.notify_payment_rejected.copy1"
+      }
+    },
+    "inline.services.referral_notify_service.module.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.referral_notify_service.module.copy1"
+      }
+    },
+    "inline.services.study_miniapp_service.send_quiz_ai_discussion.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.study_miniapp_service.send_quiz_ai_discussion.copy1"
+      }
+    },
+    "inline.services.voice_practice_service.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.voice_practice_service.module.copy1"
+      }
+    },
+    "inline.services.voice_practice_service.module.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.voice_practice_service.module.copy2"
+      }
+    },
+    "inline.services.voice_practice_service.module.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.voice_practice_service.module.copy3"
+      }
+    },
+    "inline.services.voice_practice_service.module.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.voice_practice_service.module.copy4"
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "lesson": {
+            "message": "inline.services.entitlements.decision.limit_text.copy1.lesson"
+          },
+          "ai": {
+            "message": "inline.services.entitlements.decision.limit_text.copy1.ai"
+          },
+          "speaking": {
+            "message": "inline.services.entitlements.decision.limit_text.copy1.speaking"
+          },
+          "practice": {
+            "message": "inline.services.entitlements.decision.limit_text.copy1.practice"
+          },
+          "study": {
+            "message": "inline.services.entitlements.decision.limit_text.copy1.study"
+          }
+        }
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy2.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.entitlements.decision.limit_text.copy2.case1"
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy2.case2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.entitlements.decision.limit_text.copy2.case2"
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy3.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.entitlements.decision.limit_text.copy3.case1"
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.entitlements.decision.limit_text.copy4"
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy5": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.entitlements.decision.limit_text.copy5"
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy6.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.entitlements.decision.limit_text.copy6.case1"
+      }
     }
   }
 }

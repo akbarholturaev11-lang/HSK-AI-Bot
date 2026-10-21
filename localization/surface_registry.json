@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "implementation_in_progress",
+  "status": "existing_locale_source_complete_pending_platform_acceptance",
   "baseline_main_commit": "160a51d69f3324e3162375213ec61b5587b19533",
   "source_of_truth_target": "localization",
   "existing_languages": [
@@ -9,7 +9,7 @@
     "tj"
   ],
   "runtime_changes_authorized": true,
-  "purpose": "Registry of local-first implementation surfaces for the authorized feature-branch migration. Not a generated translation catalog; main/production promotion has separate gates.",
+  "purpose": "Registry of existing UZ/RU/TJ local-first source ownership on the authorized feature branch. Main/production promotion and real platform acceptance remain separate gates.",
   "surfaces": [
     {
       "id": "miniapp_ui",
@@ -26,7 +26,9 @@
         "app/static/course_v3_pronunciation.html",
         "app/static/course_v3_recognition.html",
         "app/static/course_v3_memorize.html",
-        "app/static/hsk-gaplar.html"
+        "app/static/hsk-gaplar.html",
+        "localization/ui/uz/miniapp.json",
+        "app/static/course_v3_data/hsk-miniapp-i18n.js"
       ],
       "inventory_patterns": [
         "app/static/**/*.html",
@@ -88,7 +90,7 @@
         "app/bot/**/*.py"
       ],
       "review": [
-        "all learner-facing callback, reply, keyboard and fallback copy",
+        "658 own canonical messages + 41 common/course references, preserving compatibility tables, handler/profile templates and backend fixed copy",
         "admin-only messages separately classified; existing account language preserved"
       ]
     },

@@ -37,7 +37,9 @@ from app.services.course_access_policy_service import (
 
 ADMIN = Path("app/static/admin.html").read_text(encoding="utf-8")
 MODULES = Path("app/services/admin_miniapp_service.py").read_text(encoding="utf-8")
-I18N = Path("app/bot/utils/i18n.py").read_text(encoding="utf-8")
+from app.bot.utils.i18n import TEXTS as BOT_TEXTS
+
+I18N = "\n".join(text for messages in BOT_TEXTS.values() for text in messages.values())
 
 
 class TheAdsModeIsGoneTests(unittest.TestCase):

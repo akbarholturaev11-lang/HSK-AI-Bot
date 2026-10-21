@@ -182,8 +182,9 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
 
     def test_miniapp_loads_only_static_local_ui_bundle(self):
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        digest = git_blob_sha1((ROOT / "app/static/course_v3_data/hsk-common-i18n.js").read_bytes())[:12]
         self.assertIn(
-            '<script src="/course_v3_data/hsk-common-i18n.js?v=20261019-android-common-v2"></script>',
+            f'<script src="/course_v3_data/hsk-common-i18n.js?v=20261019-{digest}"></script>',
             html,
         )
         self.assertLess(html.index("hsk-common-i18n.js"),

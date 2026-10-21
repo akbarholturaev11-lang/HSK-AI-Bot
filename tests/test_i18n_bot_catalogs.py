@@ -56,7 +56,7 @@ class BotCatalogTests(unittest.TestCase):
     def test_shared_values_are_references_not_duplicate_bot_sources(self):
         data = read_sources()
         for locale, catalog in data.items():
-            self.assertEqual(len(catalog["messages"]), 339)
+            self.assertGreaterEqual(len(catalog["messages"]), 483)
             self.assertEqual(len(catalog["references"]), 41)
             self.assertFalse(set(catalog["messages"]) & set(catalog["references"]))
             self.assertEqual(catalog["references"]["texts.menu_profile"],

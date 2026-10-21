@@ -1,0 +1,1135 @@
+{
+  "schema_version": 1,
+  "source_commit": "930d4f702e0476fe481f37ca84fa9775c727d502",
+  "excluded_learning_fallbacks": {
+    "source": "app/static/course_v3_memorize.html",
+    "function": "mean",
+    "maps": 4
+  },
+  "maps": [
+    {
+      "file": "app/static/course-v3.html",
+      "line": 1669,
+      "id": "ui.course_v3.copy.copy1",
+      "locale_value_sha256": {
+        "uz": "4bf5ee8e787f955bcc0d474cb15ce8589098be416755ffe2ab9f85d2b928e982",
+        "ru": "c3efc426ebd6d72bf0b381e894ed1cddb9cc1956c22de57021c33ba574095a83",
+        "tj": "380947cff5dfc51a65e70f6927a759f299bafb863067799c40e9668ede8e377a"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 2408,
+      "id": "ui.course_v3.w.copy1",
+      "locale_value_sha256": {
+        "uz": "3582fe97359678ecf179093b5031b6d4dda710debb88fc4ca9d336b5f31f0bda",
+        "ru": "5012acf5aa890af62f901a21bbd1a1e1eac8958602318622311ac3b9a57a4afd",
+        "tj": "b9fd223efe23b5bcb9f68d8b90d1bcc016f0d8ea55fc81eb6b8c1b4ad5abe9c7"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 2431,
+      "id": "ui.course_v3.lu.copy1",
+      "locale_value_sha256": {
+        "uz": "efbd5d30cbd32a58ec7ee1cf8c387bdb505a3e43b32da68447175af639e92e70",
+        "ru": "81ade04e7f068447294e77debdc0926ea61e616b00b7e6afcc44b6e77d23844b",
+        "tj": "29f800d717a277a15b0c0c1ab1563e36782813e70f0965dc3389e0443cc34ebc"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 2451,
+      "id": "ui.course_v3.focusSheetStart.copy1",
+      "locale_value_sha256": {
+        "uz": "e6e5c031743906eaa89808019fa510eb33a000a4aa2ce1ad9a50382d5599fce4",
+        "ru": "fe9868fb757545b778aae735652ad5df7df76b2ef9fbaa3123d8ceb3b8446b79",
+        "tj": "18506d3a9e3ab35186162a5c579c61838075b3e1ee9d2bc9ae4b42b0829eb981"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 2455,
+      "id": "ui.course_v3.focusSheetStart.copy2",
+      "locale_value_sha256": {
+        "uz": "3250d0caace4a2d1e86b35b8de00f0df584ad3c0e7aa451cc34ba2dd57905854",
+        "ru": "4518d72eb637b8fb8bff11e52d70e13c0313397a3aa1d8ad4f92d7b7b5475ffc",
+        "tj": "44ce01a59bde4b9685d1fa31d32db42c42c78f7d157a74d6036f3c18c3cb38fa"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 2461,
+      "id": "ui.course_v3.statLbl.copy1",
+      "locale_value_sha256": {
+        "uz": "7e7643e2341bfdba7c164eb2e32945fc7b3dfc6add7366ffa730b6f737108966",
+        "ru": "bd354bfb39944b15d1ce99918f1e6a7f308b87e7969952c83a73c18b6e930ea1",
+        "tj": "2dd1da644e0a0287f1125e940182867a0085ad8192df4d4d08bd9e548873d6ca"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 2496,
+      "id": "ui.course_v3.W.copy1",
+      "locale_value_sha256": {
+        "uz": "49c2f89ae82bc661845eaf70a0ea1756624954ef389c8488a119895eb5345a24",
+        "ru": "ef59c6e0c769e3399038f915b2bf2d9b11511adbc636ab91ed9de3537d20dd88",
+        "tj": "5204f44e61e76f9c601c22bfd6da3d0cbf2c0b823864ea1c1ee735c7a640466e"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 2546,
+      "id": "ui.course_v3.RU.copy1",
+      "locale_value_sha256": {
+        "uz": "ac032cb742e787a604b30f08cf798485c77acbf14fe35ca98bfc4c2b9b0080aa",
+        "ru": "99b548429875bc2f1b80614d8fd1ff841862332b45a0f419f1610acbe5372c56",
+        "tj": "51ea9e038b0ac336fee935382af577117dffd64b4a78b678f9ecf8bab59bda48"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 2676,
+      "id": "ui.course_v3.t.copy1",
+      "locale_value_sha256": {
+        "uz": "d57e7f63d1a1140c281797b73adac746d75c482b5bb5538c2fa6cbc1e656487d",
+        "ru": "66d5500ae17447748d5b44ee07ee36d3299cb7553d56ef5b6e524bca6346406d",
+        "tj": "052edc2c4b443efd7e435810c05727362f6661d82fe0040f9481fd21d948ab5e"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 2878,
+      "id": "ui.course_v3.names.copy1",
+      "locale_value_sha256": {
+        "uz": "efb8d7a97727ad8110d8c40c9a1dc6033ef634a4e9a63c506075ccca28416112",
+        "ru": "6d5ee05ec656b8bf8a94af00d48cd39ea588dfdf97852042c5d8ebcc5414f0d3",
+        "tj": "c04902d5c0943a36b7470e0d8d371e4777bae0e0cd17419c59685f856f2b4a03"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 3105,
+      "id": "ui.course_v3.studySetupT.copy1",
+      "locale_value_sha256": {
+        "uz": "2cd1fa537e460030b71cc523821561ff16cc51d09aac057815874de88a2c3406",
+        "ru": "bc35db216d0eec5758e63512f49c01bd6cd3207dfeeeb8118e30cc4e1d2c3109",
+        "tj": "0efc4648cacfc34ecc3f4dd7e468a52baf1382d96a6b2ac9b448a1d50d566a46"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 3245,
+      "id": "ui.course_v3.m.copy1",
+      "locale_value_sha256": {
+        "uz": "0c7b84d07e3a322f45236f3c00ea76dfc2ac05b012fc9cc652ab17b53c1327e7",
+        "ru": "11af86ed81b7205e2bfb4b679856fc78428c11065b0837190c90948b2399b929",
+        "tj": "13289d93a902fc1fe728fb2c976d5820e4a5f6abd249f6942a64dbdd9f9a391a"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 3255,
+      "id": "ui.course_v3.m.copy2",
+      "locale_value_sha256": {
+        "uz": "b9cfbea980351dc1e6a070f04f2dfef7face079da776ce7c646c89f14c008992",
+        "ru": "beeaecd655450c96796450815dcd88fa1c02ef9052538df74bb6ae37c2235c4c",
+        "tj": "69d0b46a135011a9b262c6febd1d727a370e3a2e689e099dbf1c2d0ee5397a74"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 3423,
+      "id": "ui.course_v3.mascP.copy1",
+      "locale_value_sha256": {
+        "uz": "36b186fe2119d814f7e76d4ac6978b4c867e78b3a0e930f353567a8564bae85d",
+        "ru": "11752c822aad940ee9646adf882ed46436c5fa73b9f83943eafd8603af115bf8",
+        "tj": "751c99581e64e2fd4858563abcefae0638931e0bd98270251a6e68e3c70ce373"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 3474,
+      "id": "ui.course_v3.m.copy3",
+      "locale_value_sha256": {
+        "uz": "714909f448c98e2e4fc6d981c6cf6da745c2ec795710ee809a9601d1a9bf27bc",
+        "ru": "6a1f75645fa04155762efc680f636bd5864980f3743eac795f7c0d1cf3c880de",
+        "tj": "55b9dd6ad8bbc5ec8bd92293195c5f0ec1251bddd68bebebc8b6335aaf3c9d2f"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 3489,
+      "id": "ui.course_v3.m.copy4",
+      "locale_value_sha256": {
+        "uz": "4e1d08b119b3aea50b307e041b05a81a92040bcc0c113727a0cbcb388317b285",
+        "ru": "232f9265b2c1e6215895feaf5484a681c76649dc3d1f3dfef98b956a6794e7cb",
+        "tj": "43da6765fa5a9116e2d7bd846cf65b88c1a5f38d8375a6f6033ea6ab1136fa41"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 3586,
+      "id": "ui.course_v3.M.copy1",
+      "locale_value_sha256": {
+        "uz": "d9942623c9126618e68bd4adcb52b32ca5e3f114a495168858236e08cd0963df",
+        "ru": "d79b4dde39a5a31ce175cd2262f2cecf4764660f136573044953966812c0d716",
+        "tj": "bc6087a8cfe4593d96f2a5c4af4d527b94784dda92ea9d0042fcca7bb6965c46"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4205,
+      "id": "ui.course_v3.oneHeartText.copy1",
+      "locale_value_sha256": {
+        "uz": "b2190e366ae2de914a3e7e70ad05e28fbe437b899f587143fc49426703cdca85",
+        "ru": "fa3661f4881da2515d03a1d07a6d6428d3df072bb7ea1aaa8c218fccefc1af43",
+        "tj": "747b2eec262d7dc0f369e1c1fb12e598688d860db288bc10273e33c1f42ae89a"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4245,
+      "id": "ui.course_v3.lessonCharacterLabel.copy1",
+      "locale_value_sha256": {
+        "uz": "1aacbd8f6145c978f20cc188207684a2254a8b3b267f981f72ba7e9a2631eec9",
+        "ru": "45c3ad40924114d53efbdd60f80ef0ebe0deade76b860baa9b61d44d4ac67f72",
+        "tj": "45c3ad40924114d53efbdd60f80ef0ebe0deade76b860baa9b61d44d4ac67f72"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4246,
+      "id": "ui.course_v3.lessonCharacterLabel.copy2",
+      "locale_value_sha256": {
+        "uz": "7a2045fcbc000d44d9e482c7b211a5ce89b8312270ac70806034095f7e448186",
+        "ru": "c963fa4cbda2002d4df2f308611c24b8d7ccfb074734fcaaf348460e25bdaea7",
+        "tj": "957541f91db34602942dc167c0f6fa7087268ebfb5efb425113aa3b5a86622a8"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4247,
+      "id": "ui.course_v3.lessonCharacterLabel.copy3",
+      "locale_value_sha256": {
+        "uz": "a8e1b0cd444c11dc3d858edcefea65e4d238ff7fa8e421e96c281030df0f7f70",
+        "ru": "29cf6040ab74312fbf43a26fdb440e3229f79517afbebccbd6eaa241b7945f6c",
+        "tj": "29cf6040ab74312fbf43a26fdb440e3229f79517afbebccbd6eaa241b7945f6c"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4248,
+      "id": "ui.course_v3.lessonCharacterLabel.copy4",
+      "locale_value_sha256": {
+        "uz": "ab3a683f94ae5ad7ae66e6e2f9416d1b83925a0c16f9d2f394fec66ee95eb0a6",
+        "ru": "6d3c318b07fe5a781964cc10c104dc1b08edcc308d73e9c5f7506ea4dadfa07e",
+        "tj": "ba2ae3113d8d54dab73308380f39ec476c899f890ed81a17379dbc2e3f5e2b91"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4249,
+      "id": "ui.course_v3.lessonCharacterLabel.copy5",
+      "locale_value_sha256": {
+        "uz": "0ca3274c3c7cb4d22844046f93fa52a047112d8cb3aaa77770e47a485bc7d8fe",
+        "ru": "1137542893a3725bc3c17a2ef8dc72e731e547750854beb50ef0bf9bf6ce0453",
+        "tj": "fbbfcb7aa0771e0c8a6dd68631842e7ee5722f78985df59e79ff281df90ba106"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4376,
+      "id": "ui.course_v3.P.copy1",
+      "locale_value_sha256": {
+        "uz": "dbe3d67569597605d9489d4b1b1ac4e71becea074bcebf12b10bdf9711f25181",
+        "ru": "0b713943f029a57c434ae7fe0d93bf16939717d5afa0ea4ea7e4213ccbf65b1b",
+        "tj": "92ee694eac3006bdba3ee75483a811ccc2bdfabe2fe4bd636d628a02bf8f0373"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4421,
+      "id": "ui.course_v3.C.copy1",
+      "locale_value_sha256": {
+        "uz": "bae629ac448bc3590920f707ce3ad6750e33ae6f5ab21f59deb3198e789308ec",
+        "ru": "56a374d4c923cb654abe6088640a54c76178d78fdfbd2b24a65a85518017568e",
+        "tj": "17798522b8860884d73ba4118e5d3c4dd699f166376f108a9e43e7e827ebab09"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4462,
+      "id": "ui.course_v3.H.copy1",
+      "locale_value_sha256": {
+        "uz": "d285dfcc913f42ae2bdc0cc31f3561686cc1c4270027f43b184babf3c1c96367",
+        "ru": "ebd592b023ca7497a161d23464fd7e6f2ac0b71b04fa348040ee12f46437fb7b",
+        "tj": "ea623d3af3a5d47cf2c04c1e4f4708c0a57c0f228690170b2c31e0c1287fd261"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4482,
+      "id": "ui.course_v3.C.copy2",
+      "locale_value_sha256": {
+        "uz": "170e9d03ed87e175ca4190da081ca3051540a360cd83a48939eb16797c8d7e32",
+        "ru": "4a2a08dc9ef191c0144802fe4d0e7be6a7a5b742ed7e6dd07cf0e5764d09f94e",
+        "tj": "2fa045d62ede2290b0887a8ac77dd7929c2a4fcd922e2222df2f9314f6437710"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4564,
+      "id": "ui.course_v3.W.copy2",
+      "locale_value_sha256": {
+        "uz": "af7fe97316c77f07b830daa6229b07f9d7871c5a1c5a578b60d644fdf357d116",
+        "ru": "3bcd7de45527d2fc12f6c512007b87c80b7d0c88d9070683a54e2509347ef56c",
+        "tj": "be16c83fde7452bf775b931a460de20eaa91f128f76dd3f6ddd938f7dfda5324"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4569,
+      "id": "ui.course_v3.chestT.copy1",
+      "locale_value_sha256": {
+        "uz": "daf68768273e8f24d56ff97fe141194a4b18a11024c1c1b015911369da75d5f9",
+        "ru": "1bfdf114cc2d5082ff408318d6b04392c17801fbf5a0bd8613cc6a9966a72a36",
+        "tj": "550a8371017d1fc733468a786fe65822e4c92b5870a92e1f8e9f301c618bd560"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4586,
+      "id": "ui.course_v3.todayT.copy1",
+      "locale_value_sha256": {
+        "uz": "7c99ad1dfce7fab41624c5168eb2740f9db755bf434d10f7fff9bad7ac548f7f",
+        "ru": "88ef3d29463c8575ad28d9be7bf186d456b01a6d914a2a2d6d74c0ae80750ec6",
+        "tj": "d8a0a727426c75060ba8c5a120a820551b9cc7c2b911d837e29177f53f1552b0"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4799,
+      "id": "ui.course_v3.M.copy2",
+      "locale_value_sha256": {
+        "uz": "e59837f441be6c8c56979d46b0c22280bd854f49a767e63a1d98a357a978daad",
+        "ru": "cd3f11c1a1863c2b2817298430639605603032c6f00209a8e098452004c74dbb",
+        "tj": "d76b4133735795bed879cd99f85cffd2f073b6249e0ccded1ed4ff88a586dfc1"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4812,
+      "id": "ui.course_v3.M.copy3",
+      "locale_value_sha256": {
+        "uz": "93dd8a9c0262c852ef987ae753662bc55d4e62bf8427d791930713ea1eda0f32",
+        "ru": "c311c56816fd1820ef93435c420b0ec8f7e31557f9174c967db4e4b5d70b44ac",
+        "tj": "25e2a632c988bf51125cad2b04e2ebaf7baf702556c7a6f7d7374d4378f8a97b"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 4953,
+      "id": "ui.course_v3.M.copy4",
+      "locale_value_sha256": {
+        "uz": "acef0ac5bfac54f1a3a6e9780f541971f73fa4e597e6fd6e4028d905611d6506",
+        "ru": "ed3d03ec969c5905386b6d91f83ee4abef7791071c1539d8bec60bf91da05137",
+        "tj": "13f9a97334d44fb68896853d81b09251b1e5f0d95dcb1e7f9e9f0584f780ebfc"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 5115,
+      "id": "ui.course_v3.MB.copy1",
+      "locale_value_sha256": {
+        "uz": "f6e932b4d338b56d5fe678eaaab2e200ea02e0c55e07928a821bb658dcbca653",
+        "ru": "ad15f44ea1a93e276fb49a32982973321347e486d4cf3847d386c878271b75aa",
+        "tj": "10e82a5d565375e996c5ce8b067e6564c39c0f0d0a09aaade94515e787dd5171"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 5181,
+      "id": "ui.course_v3.RT.copy1",
+      "locale_value_sha256": {
+        "uz": "61c3f70a6668af80b04cd6e6b797de5f4f8e108d84b1d2e2eb05921356d68f33",
+        "ru": "8e139931e972d4a0f82fb99130af8f285fa96919eb25caec953b5b3736f98cd8",
+        "tj": "a73e4874ef71e2dfd76b880d26558b61cf6f0ababd0c865b10ee497f1fb9a885"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 5214,
+      "id": "ui.course_v3.PRON_L.copy1",
+      "locale_value_sha256": {
+        "uz": "8a86dbf8fdc6d92fc529b7eaf3c93d428665c1878d2cf0318dddd888eed787b8",
+        "ru": "a005075bb956c5310b80b41660db51239f300d8e6f2af324a791ef89fc3f23a0",
+        "tj": "62eb5a7302847d48ac0962864a891c10f10e7de291f62031e94ae6a7f04f7f2e"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 5223,
+      "id": "ui.course_v3.title.copy1",
+      "locale_value_sha256": {
+        "uz": "6072d959842c68b95a27e01981a4cb66f1993b468c1fd1666439314a9c03bb00",
+        "ru": "a36b20c391092d430525ab8290669fead43397fa470a9012fed7966f9560212d",
+        "tj": "5cab0598011cb567fbd6375a7135efedfa75031e7de0c40cf6393950a21172f9"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 5224,
+      "id": "ui.course_v3.skipText.copy1",
+      "locale_value_sha256": {
+        "uz": "1988ae514573be1e64166db365d8870007b72754a7455d30a881600a174fd311",
+        "ru": "675b0be0d37d699046d61a64f6b29f5ab52001858bdd5f1002633f4bae17fee8",
+        "tj": "806b8882fd146b6f06619b91287f40a2f7573d445999622e327d154809127aea"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 5873,
+      "id": "ui.course_v3.rl.copy1",
+      "locale_value_sha256": {
+        "uz": "62b2d1a5460cba65ef5edac95dc20c29059e65edfaf30cf6934b00055063c8db",
+        "ru": "7a5dc34fdac345932f68645d3a2cd350726e4c3c711cdcb22828be35ce22e90a",
+        "tj": "0158cdea8685f8068c67bac5359e20d643f77a32361cf63c233952f6af4dd5f1"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 6141,
+      "id": "ui.course_v3.chL.copy1",
+      "locale_value_sha256": {
+        "uz": "780ada408c352d1f7a6288408a21a6d5349e3a665b008fd39a76271f1b59899d",
+        "ru": "b175b4de07b4e77ada3c9bc89be118199648be6c0636f5efae94a25e1796d644",
+        "tj": "93a7449e44faf1b48091d16cc0b722d2eac36a48a86f2bf5fc80fa48142445d8"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 6281,
+      "id": "ui.course_v3.t.copy2",
+      "locale_value_sha256": {
+        "uz": "014b3f83ae4dfada0e9d63e1231b1479fe6376d58a025017a5cdaa2aea26e0b6",
+        "ru": "543520f19ee8cef0a9b821555646fc49464dee5ce15457758425c15f6ffaa7b7",
+        "tj": "ea0233b2cee7328784eb81c4769100c11eb42b35bd4bfb23834a8cacf4d7186a"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 6382,
+      "id": "ui.course_v3.pl.copy1",
+      "locale_value_sha256": {
+        "uz": "0d75291b1a163d954a8f6ae504ff5d4f2a84ddbab0d73878ec2da849524c45fe",
+        "ru": "8725e6f7201b9f57a1158bfd0a33f7c7d0d43fff414b0c3f399d2b3063844129",
+        "tj": "6e0f57e33c861bcfb79457a46b1b75b24a8ff074b3900eb6a8315cc384100061"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 6736,
+      "id": "ui.course_v3.salesValueCopy.copy1",
+      "locale_value_sha256": {
+        "uz": "e0b6d92eed58e22c287b8457db6fcc055d23b3488bda3ef9f0090d9d9f3e7eaf",
+        "ru": "22c0180eb1275f1a19ceed3efec7719aa3d3db3e83b04e351d636b05148205ac",
+        "tj": "b2e15661508ccb1279506834a1e68ed5d4281005923e43ca839598c1f063c0b9"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 6773,
+      "id": "ui.course_v3.s.copy1",
+      "locale_value_sha256": {
+        "uz": "a9a9c0c0ea398b1d3c146a081703cd483950fea04ed39caae6e364432f36ee8f",
+        "ru": "384d9d7dc87fdc08c8d6f53659761872a08d0a9a46e575b039563d7a7ab47e1d",
+        "tj": "8cb9fd31c384de2e9582b73c7b52eb73826041c202368d62f166d62155bded54"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 6783,
+      "id": "ui.course_v3.m.copy5",
+      "locale_value_sha256": {
+        "uz": "60cd221b6093857cc3697226c4487cfd1073bbb32ccd400882d279acb3124e06",
+        "ru": "873896d7c28eda8a0f000c1faf0adca78c59d4bfaf9d3ec09ff714366a1c6139",
+        "tj": "9bcbefe441ead18b05df24494b8acb0e52e94cda4a4ed3faeaa06c2990f3b257"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 6798,
+      "id": "ui.course_v3.m.copy6",
+      "locale_value_sha256": {
+        "uz": "b61982faa7c889d834df1dd49550a25dc2e136a73ec00cd485c1969880dcd4e6",
+        "ru": "0820beaa4feab854949649240831ca9ac400751fc633801a44ee923f682c13df",
+        "tj": "656164eae1d5aafbe62670ef6e71427bf98a66cde373069659620d0f18aa1bff"
+      }
+    },
+    {
+      "file": "app/static/course_v3_memorize.html",
+      "line": 318,
+      "id": "ui.course_v3_memorize.sMeaning.copy1",
+      "locale_value_sha256": {
+        "uz": "72f9d2817763eb9d4adf6cd824f8c4ae9d8bdca1b29124aba9a1a8d81a89866a",
+        "ru": "2c4c633f29dd1d569a5a0427fe0c1cc32e26702e8b955eed61d0909189e241ef",
+        "tj": "39adc68fcdd29bec5d37a06775672d5f651e2a0694b29385ff284bfca0827e15"
+      }
+    },
+    {
+      "file": "app/static/course_v3_memorize.html",
+      "line": 340,
+      "id": "ui.course_v3_memorize.sHook.copy1",
+      "locale_value_sha256": {
+        "uz": "6ebfc2222604617f51a79207acd1e7d7c82cfce853e19ac26392a83f40356962",
+        "ru": "86a46630bf31964d8d6baa1a47d100eec096e26098893a192ba8b098cd8f9555",
+        "tj": "941007a921f5b3702a1aacdf873e0c273a73a00e7d72dc0f827d761551534d44"
+      }
+    },
+    {
+      "file": "app/static/course_v3_memorize.html",
+      "line": 347,
+      "id": "ui.course_v3_memorize.sConfusion.copy1",
+      "locale_value_sha256": {
+        "uz": "044ceb2d2e8de974caf1ffffa8013711660eba87fed0b665ae30237ab481cbc5",
+        "ru": "8543ee2f24131cc81c28c5303e0d96db46e9c42e0b306437f2a57ef29482f47a",
+        "tj": "dd43eb8192f23e6fa819a97d88a51e55e4f99dc596820b4eba13a1bddcbd39e5"
+      }
+    },
+    {
+      "file": "app/static/course_v3_memorize.html",
+      "line": 431,
+      "id": "ui.course_v3_memorize.finishChar.copy1",
+      "locale_value_sha256": {
+        "uz": "2a3b4fb3b3866274c98b9ec266f251d24fd73f84436476885cf6a075b61d0b3a",
+        "ru": "c3d77fc0b616ca27bff2c292ed63090a8b8f3317483965fc43420543cb8f8ef8",
+        "tj": "ed7d7a8f88fb1ba5cb520ff5290b9ccf248107e81b0d144d9a46a818f6e1d3bc"
+      }
+    },
+    {
+      "file": "app/static/course_v3_memorize.html",
+      "line": 431,
+      "id": "ui.course_v3_memorize.finishChar.copy2",
+      "locale_value_sha256": {
+        "uz": "272bd9ae3a76c3220e08b9b614843e2ce78c415d22d6b6e1b2bc68a1c800c437",
+        "ru": "df117f4e1adf35dd74d2624142725df17130eba26e72aafbf30452a782e8b8bb",
+        "tj": "2214f45238a9a1de49d8572c2ea77fb5fe4d63242a7b7d4edbb6896406c2c43e"
+      }
+    },
+    {
+      "file": "app/static/course_v3_memorize.html",
+      "line": 431,
+      "id": "ui.course_v3_memorize.finishChar.copy3",
+      "locale_value_sha256": {
+        "uz": "245ee90755289f739954f8c6e4fd672343966f208240e5a1a59262fd06aea4c8",
+        "ru": "5e2e46192a038d893ecc556476a6e8210fcdb34d04eb854efd2852c0bc641aae",
+        "tj": "eff99b2d698b2b28b95e0faf31590f18361fa9132a83c20d3f70dbc5490fe298"
+      }
+    },
+    {
+      "file": "app/static/course_v3_memorize.html",
+      "line": 432,
+      "id": "ui.course_v3_memorize.finishChar.copy4",
+      "locale_value_sha256": {
+        "uz": "0451990ae930f31658be43bcd2bc57b296ac1108f8737ce8464a2a4ce834b653",
+        "ru": "b3f739bb9dad930e8c226a4d7abcb469553e62264f5f14e474f334a61938cf8f",
+        "tj": "6e75f279e3266c758fb1bbca85c7a093d429ef888e71d6f3a4c721ea90620895"
+      }
+    },
+    {
+      "file": "app/static/course_v3_memorize.html",
+      "line": 433,
+      "id": "ui.course_v3_memorize.finishChar.copy5",
+      "locale_value_sha256": {
+        "uz": "a073d21322ce2b74d137a41a31f65b53f9783106f05b5efd3e21f936984e3f4d",
+        "ru": "a0f493607ca0928b5994836226ddcecf8e82ca8bbf37068458f858ebc4198fbc",
+        "tj": "70e3f3daa885edf11cc017831fe5c205fec66ac4dc4e4d2a8c9ced3277aaaa74"
+      }
+    },
+    {
+      "file": "app/static/course_v3_memorize.html",
+      "line": 441,
+      "id": "ui.course_v3_memorize.boot.copy1",
+      "locale_value_sha256": {
+        "uz": "b6de8677ac0094556e94acfd3a7fbe68f5b41b3aa1a1ea878ccf2bf116a2f031",
+        "ru": "bb0608f52e5a6dbe1d892c67e0ab30bb0360a14a2c78b2e845ee0f5ec9fbce61",
+        "tj": "389f7d62545e3783e7a99d6839ed3671373e73d8fff8fb0dd2dad18c6c58d5b7"
+      }
+    },
+    {
+      "file": "app/static/course_v3_pronunciation.html",
+      "line": 424,
+      "id": "ui.course_v3_pronunciation.start.copy1",
+      "locale_value_sha256": {
+        "uz": "b6de8677ac0094556e94acfd3a7fbe68f5b41b3aa1a1ea878ccf2bf116a2f031",
+        "ru": "bb0608f52e5a6dbe1d892c67e0ab30bb0360a14a2c78b2e845ee0f5ec9fbce61",
+        "tj": "389f7d62545e3783e7a99d6839ed3671373e73d8fff8fb0dd2dad18c6c58d5b7"
+      }
+    },
+    {
+      "file": "app/static/course_v3_recognition.html",
+      "line": 354,
+      "id": "ui.course_v3_recognition.start.copy1",
+      "locale_value_sha256": {
+        "uz": "b6de8677ac0094556e94acfd3a7fbe68f5b41b3aa1a1ea878ccf2bf116a2f031",
+        "ru": "bb0608f52e5a6dbe1d892c67e0ab30bb0360a14a2c78b2e845ee0f5ec9fbce61",
+        "tj": "389f7d62545e3783e7a99d6839ed3671373e73d8fff8fb0dd2dad18c6c58d5b7"
+      }
+    },
+    {
+      "file": "app/static/course_v3_test.html",
+      "line": 377,
+      "id": "ui.course_v3_test.resultCopy.copy1",
+      "locale_value_sha256": {
+        "uz": "44d5cbcbc48ee0c9ff27fd706818ee281eede6735e83e0df2712630c0002a840",
+        "ru": "0ee0fb2253bc6a9ab4f72cf17700b57158ef1158e3946141b2e6ff11e2d949e8",
+        "tj": "b39af32df04a9e71ef6d3889d9658a783573c9e1482e320ca7d63f37b21f9f84"
+      }
+    },
+    {
+      "file": "app/static/hsk-lugat.html",
+      "line": 963,
+      "id": "ui.hsk_lugat.lbl.copy1",
+      "locale_value_sha256": {
+        "uz": "c84310e4f8bf3af82b16492592a081baba049289979b19e9b60c5c074a939a11",
+        "ru": "fe78057aa6f4388b39cd817a89fa518d471b553649753a818ce8964ee6efdf64",
+        "tj": "b9ee1b465eb367034da480f4665fd0a0c42b7a619c98d2d39ed425e41ef1c9c6"
+      }
+    },
+    {
+      "file": "app/static/hsk-lugat.html",
+      "line": 1506,
+      "id": "ui.hsk_lugat.disclosure.copy1",
+      "locale_value_sha256": {
+        "uz": "a75dfe7a2e1c79821c44576813df5e4c62d5d4b1b5126a2bbd3862a4675d0a22",
+        "ru": "6c0e73362585ce7d0d1c47f4464c8db65b182505f13825f848cc57dc88c85ae2",
+        "tj": "17cbc9b48b2a8174d48b44cd804e9d88bc5688adc1f31f046f6ae446f3c2a560"
+      }
+    },
+    {
+      "file": "app/static/hsk-lugat.html",
+      "line": 1526,
+      "id": "ui.hsk_lugat.recall.copy1",
+      "locale_value_sha256": {
+        "uz": "5f0c2d82e57cf330a41c3de24a87bd42b382aa65e9e7e7f831c8c4a01d4e78cf",
+        "ru": "757cb7eef498d470267500ead39cc9ccf92bab7ccef9f08bc60f3d6eab086ca4",
+        "tj": "838f2cd9fedbacea3e3ea397703d99c1496c250b24759f81b1e1d861d613ce27"
+      }
+    },
+    {
+      "file": "app/static/course_v3_data/ads.js",
+      "line": 35,
+      "id": "ui.ads.I18N.copy1",
+      "locale_value_sha256": {
+        "uz": "13b81e28835de961a13edb4d601c776b15f5ef5f6fcac068ebd6418082ff3250",
+        "ru": "cb615150b9552c50a7399e130d836fe3f5b9d6c3999414d51a9dc76196ea7317",
+        "tj": "20a4dbf197bae95b52933877d70f9f24c4a3c39ea9f39dbfff95d7e843b61e95"
+      }
+    },
+    {
+      "file": "app/static/course_v3_data/ads.js",
+      "line": 53,
+      "id": "ui.ads.limitWhyText.copy1",
+      "locale_value_sha256": {
+        "uz": "d07c8f8d586876f420532fe62276fc2f84b5b53c6af58c013c99e3dfbe7af8aa",
+        "ru": "45aa20be1ef07527d55222e6a60d9f2a64cd24ba193ba08799f7e3d5057bf946",
+        "tj": "bc0717c6038e7aad1d50e4e20c715feaa58dc2fdefdd0069881516a6ba010035"
+      }
+    },
+    {
+      "file": "app/static/course_v3_data/ads.js",
+      "line": 56,
+      "id": "ui.ads.PROMO.copy1",
+      "locale_value_sha256": {
+        "uz": "58f59dbcb8ec00fba468c91b63db5a493a83d9901bb2b1a56918fc0546098b83",
+        "ru": "aca248e65bf8b0afded5487b5fc47368845e69b3b819bf398a36693687091c2e",
+        "tj": "f9c91429548a5a7a95ad741f0dcb303f6662e8813b47cc061d7189fd999e930c"
+      }
+    },
+    {
+      "file": "app/static/course_v3_data/ads.js",
+      "line": 487,
+      "id": "ui.ads.LIMIT_HEADINGS.copy1",
+      "locale_value_sha256": {
+        "uz": "2c16bd512873d6b8ed6071c12d61d7a18c2c0334b0e5074524c4bda84f872a43",
+        "ru": "4a77f600e23578768717a96b4cb5ab878a62e125aaad542911054587b1052171",
+        "tj": "a382d89346506a0672f2659231c4f492fc56835b99b705c673de12a6f2c85b32"
+      }
+    },
+    {
+      "file": "app/static/course_v3_data/ads.js",
+      "line": 490,
+      "id": "ui.ads.LIMIT_REASONS.copy1",
+      "locale_value_sha256": {
+        "uz": "29ad11dda52ebf4eb655b6c8894d5918e64bd29c6a1c0ec8d8a885569d934081",
+        "ru": "f402242b282c75aefe5b493c1956680d7c31f570d952e91f736baa5246a4f7f4",
+        "tj": "dc2f2f348e49ef24cafe36b50125c37d54cfd345eeb77694953f91c379d4e943"
+      }
+    },
+    {
+      "file": "app/static/course_v3_data/ads.js",
+      "line": 531,
+      "id": "ui.ads.showLimitPromo.copy1",
+      "locale_value_sha256": {
+        "uz": "01f6ae2b7382de189cb7c1723cc89c9b435fa05b74849bb1131bed8554c46896",
+        "ru": "17b34b2654fa52df3e8d798c23447b8cdfb94c77c7c0e18ccf06ab64da72afc7",
+        "tj": "958f7b231e8233238876d66c7e9c4a565a32a1fe76f4fcf7899d10af960fc7b7"
+      }
+    },
+    {
+      "file": "app/static/course_v3_data/profile-carousel.js",
+      "line": 7,
+      "id": "ui.profile_carousel.LABELS.copy1",
+      "locale_value_sha256": {
+        "uz": "b7c6577d287b37743166ca3fdf2470fac09d5257bf57547f132f1d0a97700d90",
+        "ru": "4b0921fb589c3933c7c0372fb6658f16c5cd4a85a717b27e16c6df5304fa73a4",
+        "tj": "ba5c517e2602fb000e5b5e27166e738d4d61e5ae2b68be8ca14a4554c03b0480"
+      }
+    },
+    {
+      "file": "app/static/course_v3_data/desktop-download.js",
+      "line": 43,
+      "id": "ui.desktop_download.COPY.copy1",
+      "locale_value_sha256": {
+        "uz": "18f57dccd60c2e37ca93145b8f168cd7553a0c0c7b3c3de5f813ee88533ee13b",
+        "ru": "3ffa5e7cfcc1bf0991509b6718af59808ceb88af2f926c2e56716133f32f0376",
+        "tj": "da42f28a5b08bebfb1a93084ef0165a1f49f545870536c819a36812d2f8b9c15"
+      }
+    },
+    {
+      "file": "app/static/course_v3_data/desktop-download.js",
+      "line": 265,
+      "id": "ui.desktop_download.ANDROID_PROMO_COPY.copy1",
+      "locale_value_sha256": {
+        "uz": "d7b91c822668bb7ab02aafb2b0e1e977c3e58d6622974866a675d6bf060327bb",
+        "ru": "7e47ffaf3a6cad9ce3e7a1e37023fe1e2c8bc6ab9efe4032d5ac3d4767d17b89",
+        "tj": "ca8fb785798f3cae17b151d03eb84934bbf8ae68879b71810f3420f668b5f281"
+      }
+    },
+    {
+      "file": "app/static/course_v3_data/desktop-download.js",
+      "line": 995,
+      "id": "ui.desktop_download.copy.copy1",
+      "locale_value_sha256": {
+        "uz": "6cec7de87b3fc01437a04f2eba26a88a4bf4fe2d022dbb905e14357b3d1f69cf",
+        "ru": "80fe07c42f638ca7af77f45b0baaa3973c8baea841a2aafcb972271ce939019b",
+        "tj": "3d30bb918069eedfb5a183bcad4467d44d27b5da50197cb553105d761559e2ab"
+      }
+    },
+    {
+      "file": "app/static/desktop-download-page.js",
+      "line": 513,
+      "id": "ui.desktop_download_page.navigationCopy.copy1",
+      "locale_value_sha256": {
+        "uz": "ffd14ab0aa282c012416a9e7894e6bc4d538a1f777d61bb969df69a3ee289290",
+        "ru": "a4ba0d0bb4dde88734cf96055bd38519eb4c47112216294c80717ae459bf525d",
+        "tj": "49f8f7125dc45c379d167c0dbaed2608fcd16de146c949ba162f3be63b712b1f"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 1936,
+      "id": "ui.course_v3.levelSoon.templates",
+      "locale_value_sha256": {
+        "uz": "4a2db935fca1b9796900719cfef9413edb19ad6526ae252e1f6ce579d7b019f0",
+        "ru": "0438721e9001bc08be378778844755dd91dc396823277f3347b78070177ea2d9",
+        "tj": "46a3fe062a286ad3806f8bec58d31c29a9c1e5ee22ecdb7682405ac4001cb0fd"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 2439,
+      "id": "ui.course_v3.levelCompletion.templates",
+      "locale_value_sha256": {
+        "uz": "2fbb4e0d1ee2f42f7e85b9f485634bf346ed3f19bf0cb367ae856a46edfd6b8c",
+        "ru": "bf272fc659c94eb732b75a24232f7d43aa4f7fb034a927c56d615d43448fbe07",
+        "tj": "bbad0936c9c93761a28d4e2b556132ed435f62788df2432af5f22f2dae93074c"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 3394,
+      "id": "ui.course_v3.foundationEntry.templates",
+      "locale_value_sha256": {
+        "uz": "630ed017f2b83baa380386f22f88f4480853c87be5009ac509662f3d77ee2e9d",
+        "ru": "239930e22fa93fc8d8279bee63edbf3884b6f335fedd9868a76543d91d5a3784",
+        "tj": "338c72e04c4467c5e7b569056701a6ff91ba7ca33b734f87929ca0fdd421a790"
+      }
+    },
+    {
+      "file": "app/static/course-v3.html",
+      "line": 6347,
+      "id": "ui.course_v3.rivalry.templates",
+      "locale_value_sha256": {
+        "uz": "3867728e59a983ec4fa574849de9242c270e8f315ad31c4ec28994414a9be9bc",
+        "ru": "6ddc7a49fe92b180cd96d4236115d4b24fae30e4b13d92f1c6c435ea7063a6fe",
+        "tj": "a54e361a3573fcb5fa5666720a8ea909e99e4f0004d0c2f46c1235b688d81987"
+      }
+    }
+  ],
+  "excluded_existing_or_graded_maps": [
+    {
+      "id": "ui.course_v3.legacy.copy1",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.legacy.copy2",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.legacy.copy3",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.legacy.copy4",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.legacySub.copy1",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.legacy.copy5",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.practiceGateErrorCopy.copy1",
+      "reason": "already_generated_practice_gate"
+    },
+    {
+      "id": "ui.course_v3.legacy.copy6",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.legacy.copy7",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.legacy.copy8",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.fallback.copy1",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.cardWord.copy1",
+      "reason": "already_generated_individual_label"
+    },
+    {
+      "id": "ui.course_v3.GRT.copy1",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.BST.copy1",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.foundationRepairSpacer.copy1",
+      "reason": "already_generated_individual_label"
+    },
+    {
+      "id": "ui.course_v3.openInviteSheet.copy1",
+      "reason": "already_generated_individual_label"
+    },
+    {
+      "id": "ui.course_v3.hintHtml.copy1",
+      "reason": "already_generated_individual_label"
+    },
+    {
+      "id": "ui.course_v3.profileCopy.copy1",
+      "reason": "already_generated_dictionary"
+    },
+    {
+      "id": "ui.course_v3.shell.copy1",
+      "reason": "already_generated_individual_label"
+    },
+    {
+      "id": "ui.course_v3.shell.copy2",
+      "reason": "already_generated_individual_label"
+    },
+    {
+      "id": "ui.course_v3.open.copy1",
+      "reason": "already_generated_exam_dictionary"
+    },
+    {
+      "id": "ui.course_v3.open.copy2",
+      "reason": "already_generated_exam_dictionary"
+    },
+    {
+      "id": "ui.course_v3.open.copy3",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.open.copy4",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.open.copy5",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.open.copy6",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.open.copy7",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.open.copy8",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.open.copy9",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.open.copy10",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.open.copy11",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.open.copy12",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.open.copy13",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.open.copy14",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.shell.copy3",
+      "reason": "already_generated_individual_label"
+    },
+    {
+      "id": "ui.course_v3_memorize.practiceGateErrorCopy.copy1",
+      "reason": "already_generated_practice_gate"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy1",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy2",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy3",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy4",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy5",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy6",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy7",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy8",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy9",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy10",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy11",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy12",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy13",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy14",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy15",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy16",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy17",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy18",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_onboarding.panda.copy19",
+      "reason": "already_generated_onboarding_options"
+    },
+    {
+      "id": "ui.course_v3_pronunciation.practiceGateErrorCopy.copy1",
+      "reason": "already_generated_practice_gate"
+    },
+    {
+      "id": "ui.course_v3_recognition.practiceGateErrorCopy.copy1",
+      "reason": "already_generated_practice_gate"
+    },
+    {
+      "id": "ui.course_v3_test.renderExamResult.copy1",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3_test.renderExamResult.copy2",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3_test.renderExamResult.copy3",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3_test.renderExamResult.copy4",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3_test.renderExamResult.copy5",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3_test.renderExamResult.copy6",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3_test.renderExamResult.copy7",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3_test.renderExamResult.copy8",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3_test.renderExamResult.copy9",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3_test.renderExamResult.copy10",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3_test.renderExamResult.copy11",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3_test.renderExamResult.copy12",
+      "reason": "graded_placement_options"
+    },
+    {
+      "id": "ui.course_v3.MINE_T.copy1",
+      "reason": "already_generated_mine_heading"
+    },
+    {
+      "id": "ui.course_v3_test.MINE_T.copy1",
+      "reason": "already_generated_mine_heading"
+    }
+  ],
+  "protected_placement_blocks": [
+    {
+      "source": "app/static/course-v3.html",
+      "sha256": "80d4d601c9541af1ff514ee53b592f9b3f47d05acf0fd1181eecaf8f9cfafb6e"
+    },
+    {
+      "source": "app/static/course_v3_test.html",
+      "sha256": "80d4d601c9541af1ff514ee53b592f9b3f47d05acf0fd1181eecaf8f9cfafb6e"
+    }
+  ],
+  "removed_maps": [
+    {
+      "id": "ui.subscription.renewalDates.copy1",
+      "reason": "intl_locale_identifier_metadata_not_ui"
+    },
+    {
+      "id": "ui.course_v3.initData.copy1",
+      "reason": "learning_source_phrase_meaning_not_ui"
+    },
+    {
+      "id": "ui.course_v3.initData.copy2",
+      "reason": "learning_source_phrase_meaning_not_ui"
+    },
+    {
+      "id": "ui.course_v3.initData.copy3",
+      "reason": "learning_source_phrase_meaning_not_ui"
+    },
+    {
+      "id": "ui.course_v3.initData.copy4",
+      "reason": "learning_source_phrase_meaning_not_ui"
+    },
+    {
+      "id": "ui.course_v3_voice.initData.copy1",
+      "reason": "learning_source_phrase_meaning_not_ui"
+    },
+    {
+      "id": "ui.course_v3_voice.initData.copy2",
+      "reason": "learning_source_phrase_meaning_not_ui"
+    },
+    {
+      "id": "ui.course_v3_voice.initData.copy3",
+      "reason": "learning_source_phrase_meaning_not_ui"
+    },
+    {
+      "id": "ui.course_v3_voice.initData.copy4",
+      "reason": "learning_source_phrase_meaning_not_ui"
+    }
+  ],
+  "identifier_slots": {
+    "source": "app/static/course_v3_data/desktop-download.js",
+    "map": "ui.desktop_download.ANDROID_PROMO_COPY.copy1",
+    "path": "*.benefits[*][0]",
+    "kind": "literal_icon_identifier",
+    "count": 15
+  },
+  "dynamic_template_adoption": {
+    "maps": [
+      "ui.course_v3.levelSoon.templates",
+      "ui.course_v3.levelCompletion.templates",
+      "ui.course_v3.foundationEntry.templates",
+      "ui.course_v3.rivalry.templates"
+    ],
+    "reused_course_keys": [
+      "testHub.mineLevel",
+      "rightAns"
+    ],
+    "preserved": "Existing level/next/pending/done/ahead conditions and original correct option identity; only fixed UI templates move to the local catalog."
+  },
+  "protected_phrase_blocks": [
+    {
+      "source": "app/static/course-v3.html",
+      "sha256": "99fe7c1b772a82313208b826447ab4f20d94e092fab5b85e2df1f158da257677"
+    },
+    {
+      "source": "app/static/course_v3_voice.html",
+      "sha256": "99fe7c1b772a82313208b826447ab4f20d94e092fab5b85e2df1f158da257677"
+    }
+  ]
+}

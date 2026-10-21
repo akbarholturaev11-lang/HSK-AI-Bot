@@ -1,3 +1,4 @@
+from app.bot.generated.bot_i18n import bot_locale_map
 import json
 from uuid import uuid4
 from datetime import datetime, timezone
@@ -82,95 +83,7 @@ class CourseMiniAppLessonFlowService:
 
     @staticmethod
     def _copy(lang: str, key: str) -> str:
-        copy = {
-            "ru": {
-                "active_word": "Новое активное слово",
-                "meaning_guess": "Выберите правильное значение",
-                "listening_choice": "Послушайте и выберите ответ",
-                "pinyin_choice": "Выберите правильный pinyin",
-                "hanzi_choice": "Выберите иероглиф",
-                "gap_fill": "Заполните пропуск",
-                "character_recognition": "Узнайте иероглиф",
-                "match_pairs": "Соедините пары",
-                "sentence_builder": "Соберите предложение",
-                "word_order": "Расставьте слова по порядку",
-                "translation_choice": "Выберите правильный перевод",
-                "quick_quiz": "Быстрая проверка",
-                "short_dialog": "Короткий диалог",
-                "unit_words": "Слова",
-                "unit_sound": "Звук",
-                "unit_character": "Иероглиф",
-                "unit_dialog": "Диалог",
-                "unit_build": "Сборка",
-                "unit_speaking": "Произношение",
-                "unit_review": "Проверка",
-                "other_meaning": "Другое значение",
-                "purpose_intro": "Новые слова",
-                "purpose_reinforcement": "Закрепление",
-                "purpose_listening": "Аудирование",
-                "purpose_usage": "В речи",
-                "purpose_dialog": "Короткий диалог",
-                "purpose_review": "Повторение",
-            },
-            "tj": {
-                "active_word": "Калимаи нави фаъол",
-                "meaning_guess": "Маънои дурустро интихоб кунед",
-                "listening_choice": "Гӯш кунед ва ҷавобро интихоб кунед",
-                "pinyin_choice": "Pinyin-и дурустро интихоб кунед",
-                "hanzi_choice": "Иероглифи дурустро интихоб кунед",
-                "gap_fill": "Ҷои холиро пур кунед",
-                "character_recognition": "Иероглифро шиносед",
-                "match_pairs": "Ҷуфтҳоро мувофиқ кунед",
-                "sentence_builder": "Ҷумларо созед",
-                "word_order": "Калимаҳоро бо тартиб гузоред",
-                "translation_choice": "Тарҷумаи дурустро интихоб кунед",
-                "quick_quiz": "Санҷиши зуд",
-                "short_dialog": "Муколамаи кӯтоҳ",
-                "unit_words": "Калимаҳо",
-                "unit_sound": "Овоз",
-                "unit_character": "Иероглиф",
-                "unit_dialog": "Муколама",
-                "unit_build": "Сохтан",
-                "unit_speaking": "Талаффуз",
-                "unit_review": "Санҷиш",
-                "other_meaning": "Маънои дигар",
-                "purpose_intro": "Калимаҳои нав",
-                "purpose_reinforcement": "Мустаҳкамкунӣ",
-                "purpose_listening": "Шунидан",
-                "purpose_usage": "Дар ҷумла",
-                "purpose_dialog": "Муколамаи кӯтоҳ",
-                "purpose_review": "Такрор",
-            },
-            "uz": {
-                "active_word": "Yangi faol so'z",
-                "meaning_guess": "To'g'ri ma'noni tanlang",
-                "listening_choice": "Tinglang va javobni tanlang",
-                "pinyin_choice": "To'g'ri pinyin tanlang",
-                "hanzi_choice": "To'g'ri iyeroglifni tanlang",
-                "gap_fill": "Bo'sh joyni to'ldiring",
-                "character_recognition": "Iyeroglifni taning",
-                "match_pairs": "Juftliklarni moslang",
-                "sentence_builder": "Gapni tuzing",
-                "word_order": "So'zlarni tartibga qo'ying",
-                "translation_choice": "To'g'ri tarjimani tanlang",
-                "quick_quiz": "Tezkor tekshiruv",
-                "short_dialog": "Qisqa dialog",
-                "unit_words": "So'zlar",
-                "unit_sound": "Tovush",
-                "unit_character": "Iyeroglif",
-                "unit_dialog": "Dialog",
-                "unit_build": "Yig'ish",
-                "unit_speaking": "Talaffuz",
-                "unit_review": "Tekshiruv",
-                "other_meaning": "Boshqa ma'no",
-                "purpose_intro": "Yangi so'zlar",
-                "purpose_reinforcement": "Mustahkamlash",
-                "purpose_listening": "Tinglash",
-                "purpose_usage": "Gapda ishlatish",
-                "purpose_dialog": "Qisqa dialog",
-                "purpose_review": "Takrorlash",
-            },
-        }
+        copy = bot_locale_map('inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1')
         return copy.get(lang, copy["ru"]).get(key, key)
 
     @staticmethod
@@ -801,11 +714,7 @@ class CourseMiniAppLessonFlowService:
         if len(options) < 2:
             return None
         correct = options.index(str(target.get("meaning") or ""))
-        prompt = {
-            "ru": f"Что означает «{target['zh']}» в диалоге?",
-            "tj": f"«{target['zh']}» дар муколама чӣ маъно дорад?",
-            "uz": f"Dialogda «{target['zh']}» nimani anglatadi?",
-        }.get(lang, f"Что означает «{target['zh']}» в диалоге?")
+        prompt = bot_locale_map('inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1.case1', value1=target['zh']).get(lang, f"Что означает «{target['zh']}» в диалоге?")
         return {
             "id": "activity:dialog",
             "type": "dialog_context",

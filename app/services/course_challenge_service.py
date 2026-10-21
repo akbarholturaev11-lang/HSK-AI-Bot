@@ -1,3 +1,4 @@
+from app.bot.generated.bot_i18n import bot_locale_map
 import json
 import uuid
 from datetime import datetime, timezone
@@ -598,11 +599,7 @@ class CourseChallengeService:
 
     @staticmethod
     def _invite_keyboard(challenge_id: int, lang: str, level: str | None = None) -> InlineKeyboardMarkup:
-        labels = {
-            "uz": ("Belashuvni qabul qilish", "Rad qilish", "Musobaqani ochish"),
-            "ru": ("Принять дуэль", "Отклонить", "Открыть дуэль"),
-            "tj": ("Қабули рақобат", "Рад кардан", "Кушодани рақобат"),
-        }
+        labels = bot_locale_map('inline.services.course_challenge_service.helper_invite_keyboard.copy1')
         accept, reject, open_app = labels.get(lang, labels["uz"])
         return InlineKeyboardMarkup(
             inline_keyboard=[
@@ -621,11 +618,7 @@ class CourseChallengeService:
 
     @staticmethod
     def _open_keyboard(lang: str, challenge_id: int | None = None, level: str | None = None) -> InlineKeyboardMarkup:
-        labels = {
-            "uz": "Musobaqaga kirish",
-            "ru": "Перейти к дуэли",
-            "tj": "Ба рақобат гузаштан",
-        }
+        labels = bot_locale_map('inline.services.course_challenge_service.helper_open_keyboard.copy1')
         url = (
             CourseChallengeService._challenge_url(challenge_id, lang, level)
             if challenge_id
@@ -649,34 +642,8 @@ class CourseChallengeService:
     @staticmethod
     def invite_text(challenge: CourseChallenge, challenger: User, lang: str) -> str:
         name = challenger.full_name or challenger.username or "HSK Student"
-        title = {
-            "uz": f"⚔️ {name} sizni HSK jangiga chaqirdi!",
-            "ru": f"⚔️ {name} бросает вам вызов на HSK-дуэль!",
-            "tj": f"⚔️ {name} шуморо ба дуэли HSK даъват мекунад!",
-        }.get(lang)
-        body = {
-            "uz": (
-                "🔥 10 ta savol — so'z, pinyin, tarjima va grammatika aralash.\n"
-                "🎯 Har biringiz O'Z darajangizdagi savollarga javob berasiz — adolatli jang!\n"
-                "🏆 G'olib eng baland foiz bilan aniqlanadi. Foiz teng bo'lsa — durrang.\n\n"
-                f"⚡ G'olibga +{CHALLENGE_WIN_XP} XP, har bir jangchiga +{CHALLENGE_COMPLETE_XP} XP.\n"
-                "Qani, kuchingni ko'rsat! 💪"
-            ),
-            "ru": (
-                "🔥 10 вопросов — слова, пиньинь, перевод и грамматика вперемешку.\n"
-                "🎯 Каждый отвечает на вопросы СВОЕГО уровня — честный бой!\n"
-                "🏆 Победитель — у кого выше процент. При равном проценте — ничья.\n\n"
-                f"⚡ Победителю +{CHALLENGE_WIN_XP} XP, каждому бойцу +{CHALLENGE_COMPLETE_XP} XP.\n"
-                "Покажи, на что способен! 💪"
-            ),
-            "tj": (
-                "🔥 10 савол — калима, пинйин, тарҷума ва грамматика омехта.\n"
-                "🎯 Ҳар яки шумо ба саволҳои дараҷаи ХУДатон ҷавоб медиҳед — ҷанги одилона!\n"
-                "🏆 Ғолиб бо фоизи баландтар муайян мешавад. Агар фоиз баробар бошад — мусовӣ.\n\n"
-                f"⚡ Ба ғолиб +{CHALLENGE_WIN_XP} XP, ба ҳар ҷанговар +{CHALLENGE_COMPLETE_XP} XP.\n"
-                "Қувваи худро нишон деҳ! 💪"
-            ),
-        }.get(lang)
+        title = bot_locale_map('inline.services.course_challenge_service.invite_text.copy1.case1', name=name).get(lang)
+        body = bot_locale_map('inline.services.course_challenge_service.invite_text.copy2.case1', CHALLENGE_WIN_XP=CHALLENGE_WIN_XP, CHALLENGE_COMPLETE_XP=CHALLENGE_COMPLETE_XP).get(lang)
         return f"{title}\n\n{body}\n\nLevel: {CourseChallengeService._level_label(challenge.level)}"
 
     @staticmethod
@@ -685,29 +652,9 @@ class CourseChallengeService:
             challenge.get("level") if isinstance(challenge, dict) else challenge.level
         )
         if accepted:
-            text = {
-                "uz": (
-                    "✅ Jang qabul qilindi! ⚔️\n\n"
-                    "🎯 Maydon tayyor: 10 ta savol, har biringiz o'z darajangizda.\n"
-                    "🔥 Kir va g'alabani qo'lga ol!"
-                ),
-                "ru": (
-                    "✅ Вызов принят! ⚔️\n\n"
-                    "🎯 Арена готова: 10 вопросов, каждый на своём уровне.\n"
-                    "🔥 Заходи и забирай победу!"
-                ),
-                "tj": (
-                    "✅ Дуэл қабул шуд! ⚔️\n\n"
-                    "🎯 Майдон тайёр: 10 савол, ҳар яке дар дараҷаи худаш.\n"
-                    "🔥 Даро ва ғалабаро ба даст ор!"
-                ),
-            }.get(lang)
+            text = bot_locale_map('inline.services.course_challenge_service.resolved_invite_text.copy1').get(lang)
         else:
-            text = {
-                "uz": "😌 Bu safar jang bo'lmadi.\n\nQayg'urma — boshqa raqibni chaqir va g'alabani ol! 💪",
-                "ru": "😌 В этот раз дуэли не будет.\n\nНе беда — вызови другого соперника и побеждай! 💪",
-                "tj": "😌 Ин дафъа дуэл нашуд.\n\nҒам махӯр — рақиби дигарро даъват кун ва ғалаба кун! 💪",
-            }.get(lang)
+            text = bot_locale_map('inline.services.course_challenge_service.resolved_invite_text.copy2').get(lang)
         return f"{text}\n\nLevel: {level}"
 
     async def notify_invite(
@@ -742,17 +689,9 @@ class CourseChallengeService:
         lang = normalize_miniapp_lang(challenger.language)
         name = opponent.full_name or opponent.username or "User"
         if accepted:
-            text = {
-                "uz": f"🔥 {name} chaqiringizni qabul qildi! ⚔️\nMaydon tayyor — kir va birinchi bo'lib zarba ber! 💪",
-                "ru": f"🔥 {name} принял твой вызов! ⚔️\nАрена готова — заходи и бей первым! 💪",
-                "tj": f"🔥 {name} даъвати шуморо қабул кард! ⚔️\nМайдон тайёр — даро ва аввал зарба зан! 💪",
-            }.get(lang)
+            text = bot_locale_map('inline.services.course_challenge_service.notify_response.copy1.case1', name=name).get(lang)
         else:
-            text = {
-                "uz": f"😌 {name} bu safar jangga chiqmadi.\nQayg'urma — kuchli raqib doim topiladi! Yana birovni chaqir. 💪",
-                "ru": f"😌 {name} в этот раз не вышел на бой.\nНе беда — сильный соперник всегда найдётся! Вызови другого. 💪",
-                "tj": f"😌 {name} ин дафъа ба ҷанг набаромад.\nҒам махӯр — рақиби қавӣ ҳамеша ёфт мешавад! Дигареро даъват кун. 💪",
-            }.get(lang)
+            text = bot_locale_map('inline.services.course_challenge_service.notify_response.copy2.case1', name=name).get(lang)
         try:
             await bot.send_message(
                 chat_id=telegram_id,
@@ -781,29 +720,9 @@ class CourseChallengeService:
             opponent_score = f"{challenge.opponent_score}/{challenge.opponent_total}" if challenge.opponent_total else "-"
             other_won = challenge.winner_user_id and int(challenge.winner_user_id) == int(other.id)
             no_winner = challenge.winner_user_id is None
-            text = {
-                "uz": (
-                    f"🏁 Raund tugadi! {name} natijani yubordi{f' — {score_text}' if score_text else ''}.\n\n"
-                    f"📊 Hisob: {challenger_score} vs {opponent_score}.\n"
-                    + ("🏆 G'OLIB SIZSIZ! Bonus XP profilingizga tushdi. Ajoyibsan! 🔥" if other_won else "💪 Bu safar mag'lub bo'lding, ammo jang tugagani yo'q — revansh ol!" if not no_winner else "🤝 Durrang! Ikkalangizga ham bonus XP. Keyingisida hal qil!")
-                ),
-                "ru": (
-                    f"🏁 Раунд завершён! {name} отправил результат{f' — {score_text}' if score_text else ''}.\n\n"
-                    f"📊 Счёт: {challenger_score} vs {opponent_score}.\n"
-                    + ("🏆 ПОБЕДА ЗА ТОБОЙ! Бонус XP уже в профиле. Красава! 🔥" if other_won else "💪 В этот раз поражение, но бой не окончен — бери реванш!" if not no_winner else "🤝 Ничья! Бонус XP обоим. В следующий раз реши исход!")
-                ),
-                "tj": (
-                    f"🏁 Раунд анҷом ёфт! {name} натиҷаро фиристод{f' — {score_text}' if score_text else ''}.\n\n"
-                    f"📊 Ҳисоб: {challenger_score} vs {opponent_score}.\n"
-                    + ("🏆 ҒАЛАБА АЗ ОНи ШУМОСТ! Бонус XP дар профил аст. Офарин! 🔥" if other_won else "💪 Ин дафъа мағлуб шудӣ, аммо ҷанг тамом нашуд — реваншро гир!" if not no_winner else "🤝 Мусовӣ! Ба ҳар ду бонус XP. Дафъаи оянда ҳал кун!")
-                ),
-            }.get(lang)
+            text = bot_locale_map(('inline.services.course_challenge_service.notify_submit.copy1.case1' if other_won else ('inline.services.course_challenge_service.notify_submit.copy1.case2' if not no_winner else 'inline.services.course_challenge_service.notify_submit.copy1.case3')), name=name, value2=f' — {score_text}' if score_text else '', challenger_score=challenger_score, opponent_score=opponent_score).get(lang)
         else:
-            text = {
-                "uz": f"⚡ {name} o'z raundini yakunladi{f' — {score_text}' if score_text else ''}! Endi navbat senda — kir va zarbangni ber! 🔥",
-                "ru": f"⚡ {name} прошёл свой раунд{f' — {score_text}' if score_text else ''}! Теперь твой ход — заходи и бей! 🔥",
-                "tj": f"⚡ {name} раунди худро анҷом дод{f' — {score_text}' if score_text else ''}! Акнун навбати туст — даро ва зарба зан! 🔥",
-            }.get(lang)
+            text = bot_locale_map('inline.services.course_challenge_service.notify_submit.copy2.case1', name=name, value2=f' — {score_text}' if score_text else '').get(lang)
         try:
             await bot.send_message(
                 chat_id=telegram_id,
