@@ -21,18 +21,22 @@ def test_embedded_resources_do_not_duplicate_telegram_top_inset():
     assert "html.hsk-embedded .view{top:0}" in dictionary
     assert "html.hsk-embedded .hsk-native-back-duplicate" in dictionary
 
-def test_liquid_glass_bottom_navigation_stylesheet_is_public_and_safe_area_aware():
-    """A missing FastAPI asset allowlist entry silently shows the old navigation."""
-    api = (STATIC.parent / "main.py").read_text(encoding="utf-8")
+def test_liquid_glass_navigation_is_inline_and_keeps_existing_routes():
+    """The Mini App glass effect must not depend on a new CSS HTTP route."""
     course = (STATIC / "course-v3.html").read_text(encoding="utf-8")
-    glass = (STATIC / "course_v3_data" / "liquid-glass-nav.css").read_text(encoding="utf-8")
+    api = (STATIC.parent / "main.py").read_text(encoding="utf-8")
 
-    assert '"liquid-glass-nav.css": "text/css"' in api
-    assert 'href="/course_v3_data/liquid-glass-nav.css?v=20261021-1"' in course
-    assert "bottom: calc(10px + var(--safe-b))" in glass
-    assert "backdrop-filter: blur(26px)" in glass
-    assert ':root[data-hsk-theme="dark"] .nav' in glass
-    assert "prefers-reduced-transparency" in glass
+    assert "liquid-glass-nav.css" not in course
+    assert 'liquid-glass-nav.css": "text/css"' not in api
+    assert "/* Inline nav skin: no extra static-asset endpoint or CSS request. */" in course
+    assert "bottom: calc(10px + var(--safe-b))" in course
+    assert "-webkit-backdrop-filter: blur(26px)" in course
+    assert "backdrop-filter: blur(26px)" in course
+    assert ':root[data-hsk-theme="dark"] .nav' in course
+    assert "@media (prefers-reduced-transparency: reduce)" in course
+    assert "@media (prefers-reduced-motion: reduce)" in course
     assert '<nav class="nav" id="nav">' in course
-    assert 'data-s="voice"' in course
-
+    assert course.count('data-s="') >= 5
+    for tab in ("course", "mashq", "voice", "rating", "profile"):
+        assert f'data-s="{tab}"' in course
+    assert 'function navInit(){document.querySelectorAll("#nav button")' in course

@@ -5506,3 +5506,45 @@ def test_onboarding_restores_enabled_hsk30_saved_draft(page):
     expect(page.locator('.track-switch [data-track="hsk30"]')).to_have_attribute("aria-pressed", "true")
     page.locator("#cta").click()
     expect(page.locator('.lv[data-key="nhsk2"]')).to_have_attribute("aria-pressed", "true")
+
+def test_liquid_glass_bottom_nav_renders_without_extra_stylesheet_request(page):
+    """Mobile glass nav is visible, safe-area aware and retains tab navigation."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    extra_css_requests = []
+    page.on(
+        "request",
+        lambda request: extra_css_requests.append(request.url)
+        if "/liquid-glass-nav.css" in request.url else None,
+    )
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"),
+        wait_until="networkidle",
+    )
+    nav = page.locator("#nav")
+    expect(nav).to_be_visible()
+    assert nav.locator("button").count() == 5
+    assert extra_css_requests == []
+    skin = nav.evaluate("""element => {
+        const style = getComputedStyle(element);
+        return {
+            radius: style.borderTopLeftRadius,
+            filter: style.backdropFilter || style.webkitBackdropFilter,
+            bottom: style.bottom,
+            lightBorder: style.borderTopColor,
+        };
+    }""")
+    assert skin["radius"] == "28px"
+    assert "blur(26px)" in skin["filter"]
+    assert skin["bottom"] == "10px"
+    box = nav.bounding_box()
+    assert box is not None
+    assert box["x"] >= 8
+    assert box["x"] + box["width"] <= 382
+
+    page.locator('#nav button[data-s="profile"]').click()
+    expect(page.locator('#nav button[data-s="profile"]')).to_have_class(re.compile(r"\bon\b"))
+    page.evaluate("document.documentElement.setAttribute('data-hsk-theme', 'dark')")
+    dark_border = nav.evaluate("element => getComputedStyle(element).borderTopColor")
+    assert dark_border != skin["lightBorder"]
+
