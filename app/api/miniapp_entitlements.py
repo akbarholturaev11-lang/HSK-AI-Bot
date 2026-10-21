@@ -36,10 +36,7 @@ from app.services.entitlements.gate_shadow import shadow_compare_gate
 from app.services.entitlements.state import EntitlementState, resolve_state
 from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
-from app.services.telegram_webapp_auth import (
-    extract_verified_webapp_user_id,
-    classify_verified_webapp_init_data_age,
-)
+from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.services.trial_risk_service import TrialRiskService
 
 
@@ -194,20 +191,6 @@ def create_miniapp_entitlements_router(
 ) -> APIRouter:
     router = APIRouter()
 
-    def _observe_verified_init_data(init_data: str, telegram_id: int | None) -> None:
-        # Passive sampled observation only; never change the auth decision.
-        if (telegram_id is not None
-                and getattr(settings_obj, "MINIAPP_AUTH_AGE_AUDIT_ENABLED", False)
-                and secrets.randbelow(128) == 0):
-            status = classify_verified_webapp_init_data_age(
-                init_data, settings_obj.BOT_TOKEN,
-                max_age_seconds=getattr(
-                    settings_obj, "MINIAPP_AUTH_AGE_AUDIT_MAX_AGE_SECONDS", 86400
-                ),
-            )
-            # No credential, timestamp or account identifiers in the log.
-            logger.info("miniapp_auth_age_category=%s", status)
-
     async def _authenticated(request: Request):
         payload = await _body(request)
         init_data = _init_data(request, payload)
@@ -216,7 +199,6 @@ def create_miniapp_entitlements_router(
             if init_data
             else None
         )
-        _observe_verified_init_data(init_data, telegram_id)
         return telegram_id, payload
 
     async def _foundation_is_blocked(session, user, level: str) -> bool:
@@ -494,7 +476,6 @@ def create_miniapp_entitlements_router(
     async def v3_course_lesson_start(request: Request):
         init_data = request.headers.get("X-Telegram-Init-Data", "")
         telegram_id = extract_verified_webapp_user_id(init_data, settings_obj.BOT_TOKEN) if init_data else None
-        _observe_verified_init_data(init_data, telegram_id)
         if not telegram_id:
             return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
         try:

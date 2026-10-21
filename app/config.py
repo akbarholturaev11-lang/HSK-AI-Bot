@@ -107,11 +107,6 @@ class Settings(BaseSettings):
     # then removed by the background retention job.
     DESKTOP_AUTH_RECORD_RETENTION_DAYS: int = 30
     ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS: int = 86400
-    # First-stage, sampled, non-blocking Telegram Mini App initData age review.
-    # 1 in 128 valid requests; logs an age category only, never credentials.
-    # Do NOT enforce max age without a tested long-lived WebView renewal path.
-    MINIAPP_AUTH_AGE_AUDIT_ENABLED: bool = True
-    MINIAPP_AUTH_AGE_AUDIT_MAX_AGE_SECONDS: int = 86400
     # Optional Android FCM delivery. With a blank project ID, Telegram and the
     # Android WorkManager status fallback continue without Firebase.
     ANDROID_FCM_PROJECT_ID: str = ""

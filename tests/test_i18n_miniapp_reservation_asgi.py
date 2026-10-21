@@ -117,40 +117,6 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.entered_session, 0)
         self.lesson_service.status.assert_not_awaited()
 
-    async def test_stale_signed_data_keeps_legacy_session_and_only_reports_age(self):
-        """Observation must never turn a valid long-lived Mini App into 401."""
-        from unittest.mock import patch
-        from urllib.parse import parse_qsl, urlencode
-        issued = synthetic_init_data()
-        items = dict(parse_qsl(issued, keep_blank_values=True))
-        items["auth_date"] = str(int(items["auth_date"]) - 172800)
-        items.pop("hash")
-        check = "\n".join(f"{k}={v}" for k, v in sorted(items.items()))
-        secret = hmac.new(b"WebAppData", TEST_TOKEN.encode(), hashlib.sha256).digest()
-        items["hash"] = hmac.new(secret, check.encode(), hashlib.sha256).hexdigest()
-        aged = urlencode(items)
-
-        # The fixture intentionally omits the feature flag by default.
-        # Opt in at the router-level settings for this single request.
-        await self.client.aclose()
-        settings_obj = SimpleNamespace(
-            BOT_TOKEN=TEST_TOKEN, MINIAPP_AUTH_AGE_AUDIT_ENABLED=True,
-            MINIAPP_AUTH_AGE_AUDIT_MAX_AGE_SECONDS=86400,
-        )
-        app = FastAPI()
-        app.include_router(create_miniapp_entitlements_router(
-            session_factory=self.session_factory, settings_obj=settings_obj,
-        ))
-        self.client = AsyncClient(
-            transport=ASGITransport(app=app), base_url="https://synthetic.test"
-        )
-        with patch("app.api.miniapp_entitlements.secrets.randbelow", return_value=0), \
-             patch("app.api.miniapp_entitlements.logger.info") as report:
-            response = await self._start(1, {"X-Telegram-Init-Data": aged})
-        self.assertEqual(response.status_code, 200)
-        report.assert_called_once_with("miniapp_auth_age_category=%s", "stale")
-        self.session.commit.assert_awaited_once()
-
     async def test_valid_test_initdata_calls_consume_once(self):
         response = await self._start(1, {
             "X-Telegram-Init-Data": synthetic_init_data()

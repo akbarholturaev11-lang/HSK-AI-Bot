@@ -27,33 +27,6 @@ def extract_verified_webapp_user_id(init_data: str, bot_token: str) -> int | Non
         return None
 
 
-def classify_verified_webapp_init_data_age(
-    init_data: str,
-    bot_token: str,
-    *,
-    max_age_seconds: int = 86400,
-    now_timestamp: int | None = None,
-    future_skew_seconds: int = 60,
-) -> str:
-    """Read-only age category. Never log initData, user IDs, or the HMAC.
-
-    A status of 'stale' is NOT an authorization denial. Enforcement needs a
-    separate client session-renewal strategy before changing live behavior.
-    """
-    if extract_verified_webapp_user_id(init_data, bot_token) is None:
-        return "invalid_signature"
-    try:
-        params = dict(parse_qsl(init_data, keep_blank_values=True))
-        auth_date = int(params["auth_date"])
-        now = int(now_timestamp if now_timestamp is not None else time.time())
-    except (KeyError, TypeError, ValueError):
-        return "invalid_auth_date"
-    if auth_date > now + max(0, int(future_skew_seconds)):
-        return "future_auth_date"
-    if auth_date < now - max(60, int(max_age_seconds)):
-        return "stale"
-    return "fresh"
-
 def extract_fresh_verified_webapp_user_id(
     init_data: str,
     bot_token: str,
