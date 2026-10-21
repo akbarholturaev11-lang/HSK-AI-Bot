@@ -1558,6 +1558,45 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 @media (prefers-reduced-motion: reduce) {
   .nav button { transition: none; }
 }
+/* Optical glass depth: specular edge and touch-positioned highlight.
+   This is a WebKit-compatible approximation, not Apple's native renderer. */
+.nav {
+  --glass-light-x: 25%;
+  border-color: rgba(255,255,255,.91);
+  box-shadow: 0 12px 30px rgba(36,30,24,.17), 0 2px 7px rgba(36,30,24,.08),
+    inset 0 1px 0 rgba(255,255,255,.99), inset 0 -1px 0 rgba(255,255,255,.46);
+}
+.nav::before {
+  background: radial-gradient(ellipse 45% 130% at var(--glass-light-x) -55%,rgba(255,255,255,.93),transparent 77%),
+    linear-gradient(162deg,rgba(255,255,255,.7) 0%,transparent 30%,rgba(255,255,255,.22) 68%,rgba(255,255,255,.78) 100%);
+}
+.nav::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 26px;
+  pointer-events: none;
+  z-index: 0;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.35),
+    inset 0 11px 12px -13px rgba(255,255,255,.96),
+    inset 0 -13px 14px -15px rgba(104,89,70,.35);
+}
+.nav button.on:not(.center) {
+  background: linear-gradient(151deg,rgba(255,255,255,.96),rgba(255,255,255,.43) 60%,rgba(255,255,255,.77));
+  box-shadow: 0 5px 16px rgba(89,72,53,.11),
+    inset 0 1px 1px rgba(255,255,255,1), inset 0 -1px 1px rgba(150,128,102,.12);
+}
+:root[data-hsk-theme="dark"] .nav { border-color: rgba(209,243,255,.4); }
+:root[data-hsk-theme="dark"] .nav::after {
+  box-shadow: inset 0 0 0 1px rgba(227,249,255,.13),
+    inset 0 11px 12px -13px rgba(227,249,255,.46), inset 0 -13px 14px -15px rgba(0,12,23,.65);
+}
+:root[data-hsk-theme="dark"] .nav button.on:not(.center) {
+  background: linear-gradient(150deg,rgba(205,238,250,.24),rgba(176,216,239,.08));
+}
+@media (prefers-reduced-transparency: reduce) {
+  .nav::before,.nav::after { display:none; }
+}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
@@ -2490,7 +2529,12 @@ var App={
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
     if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
     if(s==="course"&&previous!=="course"){refreshCourseProgress();queueHsk30PromoCheck()}
-    if(s==="mashq")schedulePracticeBackgroundLoad();
+    if(s==="mashq"){
+      /* The bundled Practice cards do not depend on local preloads finishing.
+         HSK 3.0 server access still gates the tab above this block. */
+      if(!$("#s-mashq").firstElementChild)renderMashq();
+      schedulePracticeBackgroundLoad();
+    }
     if(s==="voice")renderVoice();
     if(s==="rating")renderRating();
     if(s!=="profile"&&window.HskProfileCarousel)window.HskProfileCarousel.pause();
@@ -3051,7 +3095,13 @@ var App={
     /* Tilni botga ham yozamiz — QA rejim va Kurs rejim bir xil tilda ochiladi. */
     if(INIT_DATA)_apiPost("/api/v3/language",{language:l}).catch(function(){})}
 };
-function navInit(){document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){App.show(b.dataset.s)}})}
+function navInit(){document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){App.show(b.dataset.s)}})
+  var nav=document.getElementById("nav");
+  if(nav)nav.addEventListener("pointerdown",function(e){
+    var rect=nav.getBoundingClientRect();
+    if(rect.width)nav.style.setProperty("--glass-light-x",Math.max(0,Math.min(100,100*(e.clientX-rect.left)/rect.width)).toFixed(1)+"%");
+  },{passive:true});
+}
 
 /* ---------- Course (hybrid path) ---------- */
 function allLessons(){var a=[];(MAP.units||[]).forEach(function(u){(u.lessons||[]).forEach(function(l){a.push(l)})});return a}
@@ -3107,22 +3157,25 @@ function prefetchPracticeAssets(){
        oldindan 440 KB yuklash Course/Mashq oqimiga foyda bermaydi. */
   });
 }
-/* Practice first: display and paint the selected tab before mounting cached
-   dictionary/phrasebook WebViews or starting practice asset fetches.
-   Two animation frames guarantee a paint opportunity; the network work starts
-   in a separate task and never blocks App.show() or the tab's first frame. */
+/* Practice must paint immediately. Keep ALL existing background script
+   downloads and both embedded resources; start them only after the tab has
+   painted and the browser has had an idle opportunity to respond to taps. */
 var PRACTICE_BACKGROUND_SCHEDULED=false;
 function schedulePracticeBackgroundLoad(){
   if(PRACTICE_BACKGROUND_SCHEDULED)return;
   PRACTICE_BACKGROUND_SCHEDULED=true;
   function afterPaint(){
     setTimeout(function(){
-      PRACTICE_BACKGROUND_SCHEDULED=false;
-      // Do not waste resources if the user immediately switched away.
-      if(SCREEN!=="mashq")return;
-      prefetchPracticeAssets();
-      if(window.RESOURCE)RESOURCE.warm();
-    },0);
+      var warmInIdle=function(){
+        PRACTICE_BACKGROUND_SCHEDULED=false;
+        if(SCREEN!=="mashq")return;
+        prefetchPracticeAssets();
+        if(window.RESOURCE)RESOURCE.warm();
+      };
+      if(typeof requestIdleCallback==="function")
+        requestIdleCallback(warmInIdle,{timeout:1800});
+      else setTimeout(warmInIdle,250);
+    },300);
   }
   if(typeof requestAnimationFrame==="function"){
     requestAnimationFrame(function(){requestAnimationFrame(afterPaint)});
@@ -7181,11 +7234,18 @@ var RESOURCE=(function(){
   }
   function warm(){
     if(WARMED)return;WARMED=true;
-    // Defer large dictionary assets until Practice is opened, not on initial course boot.
-    setTimeout(function(){if(!STATE.phrases.frame)ensure("phrases")},350);
-    var warmDict=function(){if(!STATE.dict.frame)ensure("dict")};
-    if(typeof requestIdleCallback==="function")requestIdleCallback(warmDict,{timeout:3500});
-    else setTimeout(warmDict,1700);
+    /* Keep both preloads. Create embedded pages in separate idle turns so
+       two large WebViews never parse together during a tab transition. */
+    var runIdle=function(fn,timeout){
+      if(typeof requestIdleCallback==="function")requestIdleCallback(fn,{timeout:timeout});
+      else setTimeout(fn,500);
+    };
+    runIdle(function(){
+      if(!STATE.phrases.frame)ensure("phrases");
+      setTimeout(function(){
+        runIdle(function(){if(!STATE.dict.frame)ensure("dict");},3500);
+      },1100);
+    },2500);
   }
   return {open:open,close:close,back:back,warm:warm,openPractice:openPractice,
     swipeTarget:swipeTarget,swipePreview:swipePreview};
