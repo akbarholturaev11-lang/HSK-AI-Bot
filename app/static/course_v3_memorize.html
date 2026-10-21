@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Tez eslab qolish</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
-<script src="https://telegram.org/js/telegram-web-app.js"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261020-57ce728d755d"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <style>
@@ -74,7 +74,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <link rel="stylesheet" href="/assets/characters/hsk-character-pack.css?v=20260921c">
 <script defer src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
 <script defer src="/assets/characters/hsk-study-preparing.js?v=20261009-compact-1"></script>
-<script defer src="course_v3_data/memo.js?v=20260628"></script>
+<script defer src="course_v3_data/memo.js?v=20261021-a9ca63df9005"></script>
 <script defer src="course_v3_data/lesson_gate.js?v=20260719"></script>
 <script defer src="course_v3_data/lesson_gate_hsk30.js?v=20260930"></script>
 <script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script>
@@ -182,11 +182,11 @@ function validatePracticeGate(o){
   return o;
 }
 function gateEscape(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
-function practiceGateErrorCopy(){return ({
+function practiceGateErrorCopy(){var copy=({
   uz:{body:"Ruxsatni tekshirib bo'lmadi. Internetni tekshirib, qayta urining.",retry:"Qayta urinish",back:"Orqaga"},
   ru:{body:"Не удалось проверить доступ. Проверьте интернет и повторите.",retry:"Повторить",back:"Назад"},
   tj:{body:"Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.",retry:"Боз кӯшиш кардан",back:"Бозгашт"}
-})[LANG]}
+})[LANG];var dict=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};Object.keys(copy).forEach(function(key){var value=dict["practiceGate."+key];if(typeof value==="string"&&value)copy[key]=value});return copy}
 function runGate(ref){
   return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"memorize",ref:ref})})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})}).then(validatePracticeGate);

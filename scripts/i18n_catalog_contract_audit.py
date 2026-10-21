@@ -84,10 +84,24 @@ def _entry_duplicates(dictionary: ast.Dict) -> list[str]:
     return sorted(k for k, n in Counter(keys).items() if n > 1)
 
 
-def python_tables(source: str) -> tuple[dict, list[dict]]:
+def python_tables(source: str, root: Path = ROOT) -> tuple[dict, list[dict]]:
     """Extract static locale dictionaries and detect duplicate source keys."""
     tree = ast.parse(source)
     tables, duplicate_keys = {}, []
+    generated_import = any(
+        isinstance(node, ast.ImportFrom)
+        and node.module == "app.bot.generated.bot_i18n"
+        and {alias.name for alias in node.names if alias.asname is None}
+        >= {"TEXTS", "COURSE_I18N"}
+        for node in tree.body
+    )
+    if generated_import:
+        # Read validated canonical JSON, never import application/config/DB code.
+        if __package__:
+            from .i18n_build_bot_catalogs import materialize_tables, read_sources
+        else:
+            from i18n_build_bot_catalogs import materialize_tables, read_sources
+        tables.update(materialize_tables(read_sources(root), root))
     for node in tree.body:
         name = _assigned_name(node)
         if not name or (name not in ("TEXTS", "COURSE_I18N") and not name.endswith("_I18N")):
@@ -129,8 +143,8 @@ def _update_destination(node: ast.For) -> str | None:
     return None
 
 
-def bot_catalogs(source: str) -> dict:
-    tables, duplicate_keys = python_tables(source)
+def bot_catalogs(source: str, root: Path = ROOT) -> dict:
+    tables, duplicate_keys = python_tables(source, root)
     audits = [comparison(data, source=BOT_SOURCE, table=name)
               for name, data in sorted(tables.items())]
     effective = {
@@ -238,7 +252,7 @@ def fallback_review(sources: dict[str, str], manifest: dict) -> dict:
 
 
 def audit(root: Path = ROOT) -> dict:
-    bot = bot_catalogs((root / BOT_SOURCE).read_text(encoding="utf-8"))
+    bot = bot_catalogs((root / BOT_SOURCE).read_text(encoding="utf-8"), root)
     desktop = desktop_catalogs((root / DESKTOP_SOURCE).read_text(encoding="utf-8"))
     manifest = json.loads((root / "localization/manifest.json").read_text(encoding="utf-8"))
     fallbacks = fallback_review({

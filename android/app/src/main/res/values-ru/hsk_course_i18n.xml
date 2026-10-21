@@ -264,6 +264,11 @@
     <string name="hsk_course_help_text" formatted="false">Возникла ошибка или проблема в приложении? Коротко напишите админу и приложите screenshot — мы поможем.</string>
     <string name="hsk_course_help_title" formatted="false">Помощь</string>
     <string name="hsk_course_here" formatted="false">Вы здесь</string>
+    <string name="hsk_course_hsk30_book_body" formatted="false">Начните курс по новым учебникам.</string>
+    <string name="hsk_course_hsk30_book_one_time" formatted="false">Разовый платёж</string>
+    <string name="hsk_course_hsk30_book_open" formatted="false">Открыть HSK 3.0</string>
+    <string name="hsk_course_hsk30_book_permanent" formatted="false">Доступ навсегда</string>
+    <string name="hsk_course_hsk30_book_title" formatted="false">Откройте HSK 3.0</string>
     <string name="hsk_course_lang" formatted="false">Язык</string>
     <string name="hsk_course_later" formatted="false">Позже</string>
     <string name="hsk_course_league" formatted="false">Лига 朱雀</string>
@@ -285,6 +290,7 @@
     <string name="hsk_course_lesson_flow_repair_answer_heading" formatted="false">Разберём ответ</string>
     <string name="hsk_course_lesson_flow_repair_hint_heading" formatted="false">Запомните подсказку</string>
     <string name="hsk_course_lesson_flow_retry" formatted="false">Повторить</string>
+    <string name="hsk_course_lesson_preview_hello_gloss" formatted="false">привет</string>
     <string name="hsk_course_lesson_settings_exit" formatted="false">Выйти</string>
     <string name="hsk_course_lesson_settings_title" formatted="false">Настройки урока</string>
     <string name="hsk_course_lessons" formatted="false">урок</string>
@@ -329,6 +335,46 @@
     <string name="hsk_course_memorize_limit_pay" formatted="false">Получить HSK AI Pro ⭐️</string>
     <string name="hsk_course_memorize_limit_sub" formatted="false">В бесплатном режиме этот раздел доступен 1 раз в день. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.</string>
     <string name="hsk_course_memorize_limit_title" formatted="false">Бесплатная практика на сегодня исчерпана</string>
+    <string name="hsk_course_memorize_ui_bd_opts_item1" formatted="false">верх / левая часть</string>
+    <string name="hsk_course_memorize_ui_bd_opts_item2" formatted="false">низ / правая часть</string>
+    <string name="hsk_course_memorize_ui_bd_opts_item3" formatted="false">обе</string>
+    <string name="hsk_course_memorize_ui_bd_opts_item4" formatted="false">ни одна</string>
+    <string name="hsk_course_memorize_ui_breakdown_prompt" formatted="false">Какая часть больше помогла запомнить?</string>
+    <string name="hsk_course_memorize_ui_build_prompt" formatted="false">Составьте предложение из частей:</string>
+    <string name="hsk_course_memorize_ui_build_reset" formatted="false">Сбросить</string>
+    <string name="hsk_course_memorize_ui_cloze_prompt" formatted="false">Заполните пропуск:</string>
+    <string name="hsk_course_memorize_ui_complete_sub" formatted="false">Значение, ключ и слово — всё выполнено.</string>
+    <string name="hsk_course_memorize_ui_complete_title" formatted="false">Вы выучили!</string>
+    <string name="hsk_course_memorize_ui_cont" formatted="false">Продолжить</string>
+    <string name="hsk_course_memorize_ui_disclaimer" formatted="false">Это не историческое объяснение — лишь подсказка для запоминания.</string>
+    <string name="hsk_course_memorize_ui_fb_err_confusion" formatted="false">Спутали с похожим — разберём разницу.</string>
+    <string name="hsk_course_memorize_ui_fb_err_meaning" formatted="false">Близко, но повторим значение.</string>
+    <string name="hsk_course_memorize_ui_fb_err_pinyin" formatted="false">Значение поняли, но пиньинь не тот.</string>
+    <string name="hsk_course_memorize_ui_fb_err_radical" formatted="false">Ключ значения был другой — повторим.</string>
+    <string name="hsk_course_memorize_ui_fb_err_usage" formatted="false">Повторим в предложении.</string>
+    <string name="hsk_course_memorize_ui_fb_idk" formatted="false">Не проблема, сейчас разберём по частям.</string>
+    <string name="hsk_course_memorize_ui_fb_near" formatted="false">Направление верное.</string>
+    <string name="hsk_course_memorize_ui_fb_off" formatted="false">Хорошо, теперь посмотрим ключ значения.</string>
+    <string name="hsk_course_memorize_ui_fb_ok" formatted="false">Отлично!</string>
+    <string name="hsk_course_memorize_ui_guess_prompt" formatted="false">Как вы думаете, с чем связан этот иероглиф?</string>
+    <string name="hsk_course_memorize_ui_hook_prompt" formatted="false">Какой способ вам легче?</string>
+    <string name="hsk_course_memorize_ui_hook_types_radical" formatted="false">через ключ</string>
+    <string name="hsk_course_memorize_ui_hook_types_story" formatted="false">через историю</string>
+    <string name="hsk_course_memorize_ui_hook_types_visual" formatted="false">через форму</string>
+    <string name="hsk_course_memorize_ui_idk" formatted="false">Не знаю</string>
+    <string name="hsk_course_memorize_ui_near" formatted="false">близко</string>
+    <string name="hsk_course_memorize_ui_need_more" formatted="false">Потренируемся ещё немного.</string>
+    <string name="hsk_course_memorize_ui_next" formatted="false">Следующий иероглиф</string>
+    <string name="hsk_course_memorize_ui_retry" formatted="false">Ещё раз</string>
+    <string name="hsk_course_memorize_ui_review_conf" formatted="false">Теперь различим за 20 секунд.</string>
+    <string name="hsk_course_memorize_ui_review_pron" formatted="false">Теперь 2 быстрых упражнения по пиньиню.</string>
+    <string name="hsk_course_memorize_ui_test_confusion_q" formatted="false">Выберите верный:</string>
+    <string name="hsk_course_memorize_ui_test_meaning_q" formatted="false">что значит?</string>
+    <string name="hsk_course_memorize_ui_test_pinyin_q" formatted="false">какой пиньинь?</string>
+    <string name="hsk_course_memorize_ui_test_radical_q" formatted="false">какой ключ значения внутри?</string>
+    <string name="hsk_course_memorize_ui_test_reverse_q" formatted="false">какой иероглиф?</string>
+    <string name="hsk_course_memorize_ui_why_prompt" formatted="false">Почему здесь есть этот ключ, как думаете?</string>
+    <string name="hsk_course_memorize_ui_word_prompt" formatted="false">Какое слово вам нужнее в жизни?</string>
     <string name="hsk_course_mistakes" formatted="false">Мои ошибки</string>
     <string name="hsk_course_mistakes_page_all" formatted="false">Все</string>
     <string name="hsk_course_mistakes_page_build_hint" formatted="false">Соберите правильное предложение</string>
@@ -480,6 +526,9 @@
     <string name="hsk_course_practice_preparing" formatted="false">Готовим упражнение</string>
     <string name="hsk_course_practice_auth_required_body" formatted="false">Откройте мини-приложение заново через Telegram. Без проверки доступа упражнение недоступно.</string>
     <string name="hsk_course_practice_auth_required_retry" formatted="false">Открыть заново</string>
+    <string name="hsk_course_practice_gate_back" formatted="false">Назад</string>
+    <string name="hsk_course_practice_gate_body" formatted="false">Не удалось проверить доступ. Проверьте интернет и повторите.</string>
+    <string name="hsk_course_practice_gate_retry" formatted="false">Повторить</string>
     <string name="hsk_course_practice_gate_error_body" formatted="false">Не удалось проверить доступ. Проверьте интернет и повторите.</string>
     <string name="hsk_course_practice_gate_error_retry" formatted="false">Повторить</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
@@ -529,7 +578,9 @@
     <string name="hsk_course_rating_invite_loading" formatted="false">Готовим ссылку…</string>
     <string name="hsk_course_rating_invite_send" formatted="false">Отправить сообщение</string>
     <string name="hsk_course_rating_invite_title" formatted="false">Пригласить друга</string>
+    <string name="hsk_course_rating_league_name" formatted="false">Лига {league}</string>
     <string name="hsk_course_rating_level_label" formatted="false">уровень</string>
+    <string name="hsk_course_rating_members_total" formatted="false">участников всего</string>
     <string name="hsk_course_rating_rank_summary" formatted="false">Место #{before} → #{after}</string>
     <string name="hsk_course_rating_referral_active" formatted="false">актив</string>
     <string name="hsk_course_rating_referral_joined" formatted="false">перешли</string>
@@ -826,6 +877,38 @@
     <string name="hsk_course_test_placement_retake" formatted="false">Пройти заново</string>
     <string name="hsk_course_test_sub" formatted="false">Экзамены HSK и определение уровня</string>
     <string name="hsk_course_today_go" formatted="false">Продолжить по плану</string>
+    <string name="hsk_course_track_back_to20" formatted="false">Вернуться на HSK 2.0</string>
+    <string name="hsk_course_track_cancel" formatted="false">Отмена</string>
+    <string name="hsk_course_track_close" formatted="false">Закрыть</string>
+    <string name="hsk_course_track_course_version" formatted="false">Версия курса</string>
+    <string name="hsk_course_track_current" formatted="false">Текущий курс</string>
+    <string name="hsk_course_track_disabled" formatted="false">HSK 3.0 пока отключён.</string>
+    <string name="hsk_course_track_hsk20" formatted="false">HSK 2.0</string>
+    <string name="hsk_course_track_hsk30" formatted="false">HSK 3.0</string>
+    <string name="hsk_course_track_hsk30_body" formatted="false">В HSK 3.0 доступны новые учебники HSK 1–3.</string>
+    <string name="hsk_course_track_hsk30_title" formatted="false">Открыть HSK 3.0</string>
+    <string name="hsk_course_track_payment_rejected_body" formatted="false">Платёж не принят. Проверьте данные и отправьте его заново.</string>
+    <string name="hsk_course_track_payment_rejected_title" formatted="false">Платёж за HSK 3.0 не принят</string>
+    <string name="hsk_course_track_permanent" formatted="false">{price} · открыть навсегда</string>
+    <string name="hsk_course_track_promo_body" formatted="false">В версии HSK 3.0 доступны новые учебники HSK 1–3.</string>
+    <string name="hsk_course_track_promo_body_unlocked" formatted="false">HSK 3.0 доступен вашему аккаунту. Начните заниматься по новым учебникам.</string>
+    <string name="hsk_course_track_promo_books_alt" formatted="false">Новые учебники HSK 1, 2 и 3</string>
+    <string name="hsk_course_track_promo_later" formatted="false">Позже</string>
+    <string name="hsk_course_track_promo_open" formatted="false">Перейти на HSK 3.0</string>
+    <string name="hsk_course_track_promo_recommended" formatted="false">Рекомендуем</string>
+    <string name="hsk_course_track_promo_stay" formatted="false">Остаться на HSK 2.0</string>
+    <string name="hsk_course_track_promo_switch" formatted="false">Перейти на HSK 3.0</string>
+    <string name="hsk_course_track_promo_title" formatted="false">Открыть HSK 3.0</string>
+    <string name="hsk_course_track_promo_unlock" formatted="false">{price} · открыть навсегда</string>
+    <string name="hsk_course_track_stay" formatted="false">Остаться на HSK 2.0</string>
+    <string name="hsk_course_track_switch_confirm_action" formatted="false">Переключить</string>
+    <string name="hsk_course_track_switch_confirm_body" formatted="false">Прогресс текущего курса сохранится. Вы сможете вернуться к другой версии в любое время.</string>
+    <string name="hsk_course_track_switch_confirm_title" formatted="false">Сменить версию курса?</string>
+    <string name="hsk_course_track_switching" formatted="false">Переключаем курс…</string>
+    <string name="hsk_course_track_test_soon" formatted="false">Тесты HSK 3.0 · Скоро</string>
+    <string name="hsk_course_track_test_soon_body" formatted="false">Новый формат экзаменов HSK 3.0 ещё готовится.</string>
+    <string name="hsk_course_track_test_soon_title" formatted="false">Тесты HSK 3.0</string>
+    <string name="hsk_course_track_try_again" formatted="false">Попробовать снова</string>
     <string name="hsk_course_trial_active" formatted="false">HSK AI Pro активен</string>
     <string name="hsk_course_trial_body" formatted="false">Попробуете все основные возможности. Деньги автоматически не спишутся.</string>
     <string name="hsk_course_trial_cta" formatted="false">Попробовать 7 дней бесплатно</string>

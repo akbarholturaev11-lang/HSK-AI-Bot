@@ -31,8 +31,12 @@ def locale_contract(manifest: dict, registry: dict) -> dict:
     """Check P0 locale declarations; never rewrite persisted 'tj' values."""
     if manifest.get("schema_version") != 1 or registry.get("schema_version") != 1:
         raise ValueError("unsupported localization schema")
-    if manifest.get("status") != "preparation_only_no_runtime_switch":
-        raise ValueError("P0 must not enable a new locale before its release gates pass")
+    if manifest.get("status") not in {
+        "preparation_only_no_runtime_switch",
+        "local_first_runtime_adoption_in_progress",
+        "local_first_existing_locale_source_complete",
+    }:
+        raise ValueError("Unknown localization phase; new locale release gates still apply")
     if registry.get("runtime_changes_authorized") is not True:
         raise ValueError("feature-branch runtime implementation is not authorized")
     languages = manifest.get("locales")

@@ -264,6 +264,11 @@
     <string name="hsk_course_help_text" formatted="false">Дар mini app хатогӣ ё мушкилӣ пайдо шуд? Ба админ кӯтоҳ нависед ва screenshot фиристед — кӯмак мекунем.</string>
     <string name="hsk_course_help_title" formatted="false">Кӯмак</string>
     <string name="hsk_course_here" formatted="false">Ин ҷо</string>
+    <string name="hsk_course_hsk30_book_body" formatted="false">Курсро аз рӯи китобҳои нав оғоз кунед.</string>
+    <string name="hsk_course_hsk30_book_one_time" formatted="false">Пардохти якдафъаина</string>
+    <string name="hsk_course_hsk30_book_open" formatted="false">Кушодани HSK 3.0</string>
+    <string name="hsk_course_hsk30_book_permanent" formatted="false">Дастрасии доимӣ</string>
+    <string name="hsk_course_hsk30_book_title" formatted="false">HSK 3.0-ро кушоед</string>
     <string name="hsk_course_lang" formatted="false">Забон</string>
     <string name="hsk_course_later" formatted="false">Дертар</string>
     <string name="hsk_course_league" formatted="false">Лигаи 朱雀</string>
@@ -285,6 +290,7 @@
     <string name="hsk_course_lesson_flow_repair_answer_heading" formatted="false">Ҷавобро мефаҳмем</string>
     <string name="hsk_course_lesson_flow_repair_hint_heading" formatted="false">Ишораро дар хотир гиред</string>
     <string name="hsk_course_lesson_flow_retry" formatted="false">Такрор кардан</string>
+    <string name="hsk_course_lesson_preview_hello_gloss" formatted="false">салом</string>
     <string name="hsk_course_lesson_settings_exit" formatted="false">Баромадан</string>
     <string name="hsk_course_lesson_settings_title" formatted="false">Танзимоти дарс</string>
     <string name="hsk_course_lessons" formatted="false">дарс</string>
@@ -329,6 +335,46 @@
     <string name="hsk_course_memorize_limit_pay" formatted="false">HSK AI Pro ⭐️ гирифтан</string>
     <string name="hsk_course_memorize_limit_sub" formatted="false">Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён HSK AI Pro гиред ё фардо баргардед.</string>
     <string name="hsk_course_memorize_limit_title" formatted="false">Машқи ройгони имрӯза тамом шуд</string>
+    <string name="hsk_course_memorize_ui_bd_opts_item1" formatted="false">боло / қисми чап</string>
+    <string name="hsk_course_memorize_ui_bd_opts_item2" formatted="false">поён / қисми рост</string>
+    <string name="hsk_course_memorize_ui_bd_opts_item3" formatted="false">ҳар ду</string>
+    <string name="hsk_course_memorize_ui_bd_opts_item4" formatted="false">ҳеҷ кадом</string>
+    <string name="hsk_course_memorize_ui_breakdown_prompt" formatted="false">Кадом қисм барои дар хотир мондан бештар кӯмак кард?</string>
+    <string name="hsk_course_memorize_ui_build_prompt" formatted="false">Аз қисмҳо ҷумла созед:</string>
+    <string name="hsk_course_memorize_ui_build_reset" formatted="false">Тоза кардан</string>
+    <string name="hsk_course_memorize_ui_cloze_prompt" formatted="false">Ҷойи холиро пур кунед:</string>
+    <string name="hsk_course_memorize_ui_complete_sub" formatted="false">Маъно, калид ва калима — ҳар се иҷро шуд.</string>
+    <string name="hsk_course_memorize_ui_complete_title" formatted="false">Шумо ёд гирифтед!</string>
+    <string name="hsk_course_memorize_ui_cont" formatted="false">Идома</string>
+    <string name="hsk_course_memorize_ui_disclaimer" formatted="false">Ин шарҳи таърихӣ нест — танҳо ёрирасон барои дар хотир мондан.</string>
+    <string name="hsk_course_memorize_ui_fb_err_confusion" formatted="false">Бо монандаш хато кардед — фарқро мебинем.</string>
+    <string name="hsk_course_memorize_ui_fb_err_meaning" formatted="false">Наздик, аммо маъноро такрор мекунем.</string>
+    <string name="hsk_course_memorize_ui_fb_err_pinyin" formatted="false">Маъноро донистед, аммо пиньин хато шуд.</string>
+    <string name="hsk_course_memorize_ui_fb_err_radical" formatted="false">Калиди маъно дигар буд — такрор мекунем.</string>
+    <string name="hsk_course_memorize_ui_fb_err_usage" formatted="false">Дар ҷумла такрор мебинем.</string>
+    <string name="hsk_course_memorize_ui_fb_idk" formatted="false">Мушкиле нест, ҳозир ба қисмҳо ҷудо мекунем.</string>
+    <string name="hsk_course_memorize_ui_fb_near" formatted="false">Самт дуруст аст.</string>
+    <string name="hsk_course_memorize_ui_fb_off" formatted="false">Хуб, акнун калиди маъноро мебинем.</string>
+    <string name="hsk_course_memorize_ui_fb_ok" formatted="false">Офарин!</string>
+    <string name="hsk_course_memorize_ui_guess_prompt" formatted="false">Ба фикри шумо, ин иероглиф бо чӣ алоқаманд аст?</string>
+    <string name="hsk_course_memorize_ui_hook_prompt" formatted="false">Кадом усул барои шумо осонтар аст?</string>
+    <string name="hsk_course_memorize_ui_hook_types_radical" formatted="false">бо ёрии калид</string>
+    <string name="hsk_course_memorize_ui_hook_types_story" formatted="false">бо ёрии ҳикоя</string>
+    <string name="hsk_course_memorize_ui_hook_types_visual" formatted="false">бо ёрии шакл</string>
+    <string name="hsk_course_memorize_ui_idk" formatted="false">Намедонам</string>
+    <string name="hsk_course_memorize_ui_near" formatted="false">наздик</string>
+    <string name="hsk_course_memorize_ui_need_more" formatted="false">Каме боз машқ мекунем.</string>
+    <string name="hsk_course_memorize_ui_next" formatted="false">Иероглифи навбатӣ</string>
+    <string name="hsk_course_memorize_ui_retry" formatted="false">Боз</string>
+    <string name="hsk_course_memorize_ui_review_conf" formatted="false">Акнун фарқро дар 20 сония ҷудо мекунем.</string>
+    <string name="hsk_course_memorize_ui_review_pron" formatted="false">Акнун 2 машқи зуд оид ба пиньин.</string>
+    <string name="hsk_course_memorize_ui_test_confusion_q" formatted="false">Дурустро интихоб кунед:</string>
+    <string name="hsk_course_memorize_ui_test_meaning_q" formatted="false">чӣ маъно дорад?</string>
+    <string name="hsk_course_memorize_ui_test_pinyin_q" formatted="false">пиньини кадом аст?</string>
+    <string name="hsk_course_memorize_ui_test_radical_q" formatted="false">калиди маъно кадом аст?</string>
+    <string name="hsk_course_memorize_ui_test_reverse_q" formatted="false">кадом иероглиф аст?</string>
+    <string name="hsk_course_memorize_ui_why_prompt" formatted="false">Чаро дар ин ҷо ин калид ҳаст, ба фикратон?</string>
+    <string name="hsk_course_memorize_ui_word_prompt" formatted="false">Кадом калима дар ҳаёт бештар лозим мешавад?</string>
     <string name="hsk_course_mistakes" formatted="false">Хатоҳои ман</string>
     <string name="hsk_course_mistakes_page_all" formatted="false">Ҳама</string>
     <string name="hsk_course_mistakes_page_build_hint" formatted="false">Ҷумлаи дурустро созед</string>
@@ -480,6 +526,9 @@
     <string name="hsk_course_practice_preparing" formatted="false">Машқ омода мешавад</string>
     <string name="hsk_course_practice_auth_required_body" formatted="false">Мини-барномаро аз Telegram дубора кушоед. Бе санҷиши дастрасӣ машқ оғоз намешавад.</string>
     <string name="hsk_course_practice_auth_required_retry" formatted="false">Аз нав кушодан</string>
+    <string name="hsk_course_practice_gate_back" formatted="false">Бозгашт</string>
+    <string name="hsk_course_practice_gate_body" formatted="false">Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.</string>
+    <string name="hsk_course_practice_gate_retry" formatted="false">Боз кӯшиш кардан</string>
     <string name="hsk_course_practice_gate_error_body" formatted="false">Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.</string>
     <string name="hsk_course_practice_gate_error_retry" formatted="false">Боз кӯшиш кардан</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
@@ -529,7 +578,9 @@
     <string name="hsk_course_rating_invite_loading" formatted="false">Силка омода мешавад…</string>
     <string name="hsk_course_rating_invite_send" formatted="false">Паём фиристодан</string>
     <string name="hsk_course_rating_invite_title" formatted="false">Дӯстро даъват кардан</string>
+    <string name="hsk_course_rating_league_name" formatted="false">Лигаи {league}</string>
     <string name="hsk_course_rating_level_label" formatted="false">сатҳ</string>
+    <string name="hsk_course_rating_members_total" formatted="false">иштирокчӣ дар маҷмӯъ</string>
     <string name="hsk_course_rating_rank_summary" formatted="false">Ҷойи #{before} → #{after}</string>
     <string name="hsk_course_rating_referral_active" formatted="false">фаъол</string>
     <string name="hsk_course_rating_referral_joined" formatted="false">даромаданд</string>
@@ -826,6 +877,38 @@
     <string name="hsk_course_test_placement_retake" formatted="false">Аз нав</string>
     <string name="hsk_course_test_sub" formatted="false">Имтиҳонҳои HSK ва муайянкунии сатҳ</string>
     <string name="hsk_course_today_go" formatted="false">Идома аз рӯи нақша</string>
+    <string name="hsk_course_track_back_to20" formatted="false">Ба HSK 2.0 баргаштан</string>
+    <string name="hsk_course_track_cancel" formatted="false">Бекор кардан</string>
+    <string name="hsk_course_track_close" formatted="false">Пӯшидан</string>
+    <string name="hsk_course_track_course_version" formatted="false">Версияи курс</string>
+    <string name="hsk_course_track_current" formatted="false">Курси ҳозира</string>
+    <string name="hsk_course_track_disabled" formatted="false">HSK 3.0 ҳоло хомӯш аст.</string>
+    <string name="hsk_course_track_hsk20" formatted="false">HSK 2.0</string>
+    <string name="hsk_course_track_hsk30" formatted="false">HSK 3.0</string>
+    <string name="hsk_course_track_hsk30_body" formatted="false">Дар версияи HSK 3.0 китобҳои нави HSK 1–3 дастрасанд.</string>
+    <string name="hsk_course_track_hsk30_title" formatted="false">Кушодани HSK 3.0</string>
+    <string name="hsk_course_track_payment_rejected_body" formatted="false">Пардохти шумо қабул нашуд. Маълумотро санҷида, пардохтро аз нав фиристед.</string>
+    <string name="hsk_course_track_payment_rejected_title" formatted="false">Пардохти HSK 3.0 қабул нашуд</string>
+    <string name="hsk_course_track_permanent" formatted="false">{price} · ҳамешагӣ кушодан</string>
+    <string name="hsk_course_track_promo_body" formatted="false">Дар версияи HSK 3.0 китобҳои нави HSK 1–3 дастрасанд.</string>
+    <string name="hsk_course_track_promo_body_unlocked" formatted="false">HSK 3.0 барои ҳисоби шумо дастрас аст. Омӯзишро бо китобҳои нав оғоз кунед.</string>
+    <string name="hsk_course_track_promo_books_alt" formatted="false">Китобҳои нави HSK 1, 2 ва 3</string>
+    <string name="hsk_course_track_promo_later" formatted="false">Баъдтар</string>
+    <string name="hsk_course_track_promo_open" formatted="false">Гузаштан ба HSK 3.0</string>
+    <string name="hsk_course_track_promo_recommended" formatted="false">Тавсия</string>
+    <string name="hsk_course_track_promo_stay" formatted="false">Дар HSK 2.0 мондан</string>
+    <string name="hsk_course_track_promo_switch" formatted="false">Гузаштан ба HSK 3.0</string>
+    <string name="hsk_course_track_promo_title" formatted="false">HSK 3.0-ро кушоед</string>
+    <string name="hsk_course_track_promo_unlock" formatted="false">{price} · ҳамеша кушодан</string>
+    <string name="hsk_course_track_stay" formatted="false">Дар HSK 2.0 мондан</string>
+    <string name="hsk_course_track_switch_confirm_action" formatted="false">Иваз кардан</string>
+    <string name="hsk_course_track_switch_confirm_body" formatted="false">Пешрафти курси ҷорӣ нигоҳ дошта мешавад. Ҳар вақт метавонед ба версияи дигар баргардед.</string>
+    <string name="hsk_course_track_switch_confirm_title" formatted="false">Версияи курсро иваз мекунед?</string>
+    <string name="hsk_course_track_switching" formatted="false">Курс иваз мешавад…</string>
+    <string name="hsk_course_track_test_soon" formatted="false">Тестҳои HSK 3.0 · Ба наздикӣ</string>
+    <string name="hsk_course_track_test_soon_body" formatted="false">Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад.</string>
+    <string name="hsk_course_track_test_soon_title" formatted="false">Тестҳои HSK 3.0</string>
+    <string name="hsk_course_track_try_again" formatted="false">Боз кӯшиш кардан</string>
     <string name="hsk_course_trial_active" formatted="false">HSK AI Pro фаъол</string>
     <string name="hsk_course_trial_body" formatted="false">Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.</string>
     <string name="hsk_course_trial_cta" formatted="false">7 рӯз ройгон санҷидан</string>

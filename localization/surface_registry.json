@@ -72,7 +72,7 @@
         "desktop/ui/**/*.json"
       ],
       "review": [
-        "797 currently matched keys per existing language; confirm current baseline at migration time",
+        "824 existing keys per language; 745 Desktop-specific canonical keys plus 79 common/course mappings; legacy dictionary is fallback only",
         "macOS and Windows parity, no language fetch at runtime"
       ]
     },

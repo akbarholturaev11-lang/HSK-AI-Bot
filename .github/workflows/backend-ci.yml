@@ -155,6 +155,16 @@ jobs:
           DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
           REDIS_URL: "redis://127.0.0.1:1/0"
         run: python -m unittest tests.test_telegram_sdk_asset
+      - name: Verify local notification copy and custom override precedence
+        env:
+          BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+          DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          REDIS_URL: "redis://127.0.0.1:1/0"
+        run: |
+          python scripts/i18n_build_bot_catalogs.py --check
+          python scripts/i18n_build_notification_catalogs.py --check
+          python scripts/i18n_build_public_site_catalog.py --check
+          python -m unittest tests.test_bot_catalog_runtime tests.test_notification_catalog_runtime tests.test_course_notification_language tests.test_motivation_reminder_service tests.test_public_site
       - name: Test canonical Google Apple Telegram native sign-in and identity linking
         run: |
           python -m unittest \

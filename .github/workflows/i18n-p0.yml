@@ -74,6 +74,13 @@ jobs:
             tests.test_i18n_legacy_lesson_content_risk_audit \
             tests.test_i18n_miniapp_storage_scope_audit \
             tests.test_i18n_build_local_catalogs \
+            tests.test_i18n_android_catalog_adoption \
+            tests.test_i18n_desktop_catalog_adoption \
+            tests.test_i18n_bot_catalogs \
+            tests.test_i18n_public_site_catalog \
+            tests.test_i18n_notification_catalog_adoption \
+            tests.test_i18n_miniapp_remaining_dictionary_adoption \
+            tests.test_i18n_all_catalogs \
             tests.test_i18n_bot_course_mode_adoption \
             tests.test_i18n_bot_invalid_button_adoption \
             tests.test_i18n_bot_release_feedback_adoption \
@@ -148,6 +155,12 @@ jobs:
           python scripts/i18n_miniapp_storage_scope_audit.py --output /tmp/i18n-p0/miniapp-storage-scope.json
           # Local generation is deterministic and uses no server or network.
           python scripts/i18n_build_local_catalogs.py --check
+          python scripts/i18n_build_android_catalogs.py --check
+          python scripts/i18n_build_desktop_catalogs.py --check
+          python scripts/i18n_build_bot_catalogs.py --check
+          python scripts/i18n_build_public_site_catalog.py --check
+          python scripts/i18n_build_notification_catalogs.py --check
+          python scripts/i18n_build_all_catalogs.py --check
           python scripts/i18n_course_ui_catalog_guard.py --output /tmp/i18n-p0/course-ui-catalog.json
           python scripts/i18n_build_course_catalogs.py --check
           # Deliberate dry run: NO staging or production HTTP in CI.

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="course_chest_ready">Sovg‘a tayyor</string>
+    <string name="course_chest_progress">Sovg‘agacha %1$d XP</string>
+    <string name="course_chest_reward">+%1$d XP olindi</string>
+    <string name="course_chest_opening">Ochilmoqda…</string>
+    <string name="course_chest_cd">Sovg‘a sandig‘i</string>
+    <string-array name="course_panda_prompts">
+        <item>Davom etamiz!</item>
+        <item>Zo‘r ketyapsan!</item>
+        <item>Yana bir dars!</item>
+        <item>Sen uddalaysan!</item>
+    </string-array>
+    <string name="today_plan_label">Bugun</string>
+    <string name="today_plan_xp">%1$d/%2$d XP</string>
+    <string name="today_plan_go">Reja bo‘yicha davom etish</string>
+    <string name="today_plan_done">Reja bajarildi</string>
+    <string name="today_task_part">Qism</string>
+    <string name="today_task_part_n">Qism %1$s</string>
+    <string name="today_task_mistakes">Xatolar</string>
+    <string name="today_task_test">Test</string>
+    <string name="today_task_talk">Suhbat</string>
+    <string name="today_task_chars">Ieroglif</string>
+    <string name="today_task_pron">Talaffuz</string>
+    <string name="lesson_entry_title">Dars tayyorlanmoqda</string>
+    <string name="lesson_entry_subtitle">Panda siz bilan boshlaydi</string>
+    <string name="course_track_switch_title">Kurs versiyasi tayyorlanmoqda</string>
+    <string name="course_track_switch_subtitle">Panda yangi darslaringizni ochyapti</string>
+
+    <string name="hsk30_access_required_title">HSK 3.0 ni oching</string>
+    <string name="hsk30_access_required_body">Yangi darsliklar asosidagi kursni boshlang.</string>
+    <string name="hsk30_access_unlock_button">HSK 3.0 ni ochish</string>
+    <string name="hsk30_access_permanent">Doimiy kirish</string>
+    <string name="hsk30_access_one_time">Bir martalik to‘lov</string>
+    <string name="hsk30_access_back_hsk20">HSK 2.0 ga qaytish</string>
+    <string name="hsk30_level_picker_title">HSK 3.0 ni qaysi darajadan davom ettirasiz?</string>
+    <string name="hsk30_level_picker_body">O‘zingizga mos darajani tanlang.</string>
+</resources>

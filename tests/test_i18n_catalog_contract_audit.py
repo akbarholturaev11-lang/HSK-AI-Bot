@@ -1,4 +1,9 @@
 """Regression checks for Bot/Desktop local-first P0 source inventory."""
+import json
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
 import unittest
 
 from scripts.i18n_catalog_contract_audit import (
@@ -99,6 +104,17 @@ COURSE_I18N={"uz":{},"ru":{},"tj":{}}
     def test_rejects_changed_desktop_language_structure(self):
         with self.assertRaisesRegex(ValueError, "sections changed"):
             desktop_catalogs("const messages = {uz:{a:'a'}};")
+
+    def test_direct_cli_resolves_canonical_bot_catalogs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "catalog-audit.json"
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "scripts/i18n_catalog_contract_audit.py"),
+                 "--output", str(output)], cwd=directory,
+                capture_output=True, text=True, timeout=20,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(json.loads(output.read_text())["bot"]["unrecognized_merges"], [])
 
 
 if __name__ == "__main__":

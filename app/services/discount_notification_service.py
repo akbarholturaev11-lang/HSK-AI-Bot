@@ -17,6 +17,7 @@ from app.services.notification_delivery_service import (
     TelegramNotice,
 )
 from app.services.user_access_state_service import UserAccessStateService
+from app.services.notification_i18n import notification_message
 
 
 @dataclass
@@ -152,11 +153,11 @@ class DiscountNotificationService:
         title = (
             getattr(campaign, f"title_{lang}", None)
             or campaign.title
-            or {
+            or notification_message("discount.campaignFallbackTitle", lang, {
                 "tj": "Тахфифи махсус",
                 "ru": "Специальная скидка",
                 "uz": "Maxsus chegirma",
-            }.get(lang, "Maxsus chegirma")
+            }.get(lang, "Maxsus chegirma"), fallback_locale="uz")
         )
         reason = (
             getattr(campaign, f"reason_{lang}", None)
@@ -180,14 +181,25 @@ class DiscountNotificationService:
                 "open": "Tarif va to'lov Mini App ichida ochiladi.",
             },
         }.get(lang, {})
+        discount_label = notification_message(
+            "discount.discount", lang, labels.get("discount", "Chegirma"), fallback_locale="uz"
+        )
         lines = [
             f"<b>{title}</b>",
-            f"{labels.get('discount', 'Chegirma')}: <b>{campaign.percent}%</b>",
+            f"{discount_label}: <b>{campaign.percent}%</b>",
         ]
         if reason:
             lines.extend(["", reason])
         if for_phone:
             return "\n".join(lines)
-        lines = [labels.get("title", "🎁 <b>Maxsus chegirma tayyor</b>"), "", *lines]
-        lines.extend(["", labels.get("open", "Tarif va to'lov Mini App ichida ochiladi.")])
+        heading = notification_message(
+            "discount.title", lang, labels.get("title", "🎁 <b>Maxsus chegirma tayyor</b>"),
+            fallback_locale="uz",
+        )
+        open_label = notification_message(
+            "discount.open", lang, labels.get("open", "Tarif va to'lov Mini App ichida ochiladi."),
+            fallback_locale="uz",
+        )
+        lines = [heading, "", *lines]
+        lines.extend(["", open_label])
         return "\n".join(lines)

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "namespace": "notifications",
+  "locale": "uz",
+  "messages": {
+    "course.title.d1_lesson_recovery": "Darsga qaytish",
+    "course.title.daily_goal": "Bugungi maqsad",
+    "course.title.lesson_time": "Dars vaqti keldi",
+    "course.title.lesson_unfinished": "Dars tugallanmagan",
+    "course.title.limit_daily_spent": "Kunlik limit tugadi",
+    "course.title.limit_lesson_spent": "Bepul darslar tugadi",
+    "course.title.limit_lesson_warning": "Bepul darslar tugayapti",
+    "course.title.rating_overtaken": "Reytingda o'zib ketishdi",
+    "course.title.streak_risk": "Seriya xavf ostida",
+    "course.title.subscription_expiring": "Obuna tugayapti",
+    "course.title.subscription_offer": "Obunani davom ettiring",
+    "discount.campaignFallbackTitle": "Maxsus chegirma",
+    "discount.discount": "Chegirma",
+    "discount.open": "Tarif va to'lov Mini App ichida ochiladi.",
+    "discount.title": "🎁 <b>Maxsus chegirma tayyor</b>",
+    "reminder.continueLesson": "▶️ Darsni davom ettirish",
+    "reminder.continueLessonNumber": "▶️ Davom etish · {lesson}-dars",
+    "reminder.courseContinue": "📖 Darsni davom ettirish",
+    "reminder.default.d1_lesson_recovery": "📚 <b>{lesson}ni davom ettiramizmi?</b>\nOldingi safar shu darsda to'xtagandingiz. Qaytib, o'rganganlaringizni mustahkamlang.",
+    "reminder.default.daily_goal": "⏳ <b>Bugungi maqsad hali bajarilmadi</b>\nKun tugashiga oz qoldi, siz bugun hali dars yakunlamadingiz.\nAtigi <b>{minutes} daqiqa</b> — kunlik maqsadingizni yoping 🎯",
+    "reminder.default.lesson_unfinished": "📚 <b>{lesson} hali yakunlanmadi</b>\nKun tugashiga oz qoldi. Boshlagan darsingizni tugatib qo'ying.\nAtigi <b>{minutes} daqiqa</b> — dars yopiladi va XP olinadi 🎯",
+    "reminder.default.rating_overtaken": "🥇 <b>{name} sizni ortda qoldirdi!</b>\nSiz <b>{league} ligasida {rank}-o'ringa</b> tushdingiz.\nFarq atigi <b>{xp_gap} XP</b>. Bitta dars bilan o'rningizni qaytaring 💪",
+    "reminder.default.streak_risk": "🔥 <b>{streak} kunlik seriyangiz xavf ostida!</b>\nBugun kirmasangiz, ketma-ketlik uziladi va kalendarda kun muzlab qoladi.\nBitta kichik dars — seriya saqlanadi 🔥",
+    "reminder.lessonLabel": "{level} {lesson}-dars",
+    "reminder.returnLesson": "▶️ Darsga qaytish",
+    "reminder.startedLesson": "Boshlangan dars"
+  }
+}

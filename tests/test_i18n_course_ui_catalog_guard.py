@@ -10,12 +10,12 @@ from scripts.i18n_course_ui_catalog_guard import (
 
 
 class CourseUICatalogGuardTests(unittest.TestCase):
-    def test_existing_three_locale_895_key_contract(self):
+    def test_existing_three_locale_978_key_contract(self):
         result = review_sources(ROOT)
         self.assertEqual(result["status"], "SOURCE_CONTRACT_VALID_RUNTIME_NOT_TESTED")
-        self.assertEqual(result["message_keys"], 895)
+        self.assertEqual(result["message_keys"], 978)
         self.assertEqual(result["locales"], list(LOCALES))
-        self.assertEqual(result["placeholder_keys"], 41)
+        self.assertEqual(result["placeholder_keys"], 44)
         self.assertEqual(len(result["sources"]), 3)
         for locale in LOCALES:
             source = json.loads(
@@ -46,6 +46,7 @@ class CourseUICatalogGuardTests(unittest.TestCase):
                 "dictionaryPage.countResults.few", "dictionaryPage.countResults.many",
                 "dictionaryPage.strokeCount.one", "dictionaryPage.strokeCount.few",
                 "dictionaryPage.strokeCount.many",
+                "track.permanent", "track.promoUnlock", "rating.leagueName",
             })
         self.assertNotIn("HSK AI Pro открыт", str(result))
 

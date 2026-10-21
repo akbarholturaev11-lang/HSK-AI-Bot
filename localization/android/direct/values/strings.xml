@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Default locale: Uzbek (Latin). -->
+<!--
+    Wording only the `direct` channel (APK, website, Telegram) may show.
+    It is a source set rather than a runtime flag on purpose: the Google
+    Play build must not CONTAIN an external checkout, not merely hide it.
+-->
+<resources>
+    <string name="limit_unlock_headline">O‘qishni davom ettiring</string>
+    <string name="limit_unlock_button">Pro tariflarini ko‘rish</string>
+    <string name="limit_unlock_hint">Obuna admin tasdiqlagach faollashadi.</string>
+    <string name="sub_title">HSK AI Pro</string>
+    <string name="sub_intro">O‘zingizga qulay muddat va to‘lov usulini tanlang.</string>
+    <string name="sub_plan_10">10 kun</string>
+    <string name="sub_plan_1">1 oy</string>
+    <string name="sub_plan_3">3 oy</string>
+    <string name="sub_method">To‘lov usuli</string>
+    <string name="sub_card">Bank kartasi</string>
+    <string name="sub_alipay">Alipay</string>
+    <string name="sub_wechat">WeChat Pay</string>
+    <string name="sub_country">Karta davlati</string>
+    <string name="sub_country_tj">Tojikiston kartasi</string>
+    <string name="sub_country_uz">O‘zbekiston kartasi</string>
+    <string name="sub_country_ru">Rossiya kartasi</string>
+    <string name="sub_country_other">Boshqa davlat kartasi</string>
+    <string name="sub_continue">To‘lov ma’lumotlarini ko‘rish</string>
+    <string name="sub_payment_details">To‘lov rekvizitlari</string>
+    <string name="sub_amount">To‘lanadigan summa: %1$s %2$s</string>
+    <string name="sub_receipt">To‘lov chekini tanlash</string>
+    <string name="sub_selected">Chek tanlandi</string>
+    <string name="sub_submit">Chekni adminga yuborish</string>
+    <string name="sub_pending">Chek adminga yuborildi. Obuna tekshiruvdan keyin ochiladi.</string>
+    <string name="sub_already_pending">Chekingiz tekshiruvda. Iltimos, admin javobini kuting.</string>
+    <string name="sub_paid">HSK AI Pro faol.</string>
+    <string name="sub_renewal_period_note">To‘lov tasdiqlansa, tanlangan muddat amaldagi obuna tugashiga qo‘shiladi.</string>
+    <string name="sub_unavailable">To‘lov ma’lumotlarini olib bo‘lmadi. Keyinroq urinib ko‘ring.</string>
+    <string name="sub_receipt_invalid">JPG, PNG yoki WebP formatidagi, 8 MB dan kichik chekni tanlang.</string>
+    <string name="sub_approval_note">Chek va to‘lov tafsilotlari adminga yuboriladi. Obuna admin tasdiqlagach ochiladi.</string>
+    <string name="sub_qr_missing">Bu tarif uchun QR hozir mavjud emas. Boshqa usulni tanlang.</string>
+    <string name="sub_retry">Qayta urinish</string>
+    <string name="sub_heading">HSK AI Pro</string>
+    <string name="sub_hsk30_heading">HSK 3.0 ni ochish</string>
+    <string name="sub_plan_hsk30">HSK 3.0 · doimiy</string>
+    <string name="sub_benefit_heading">Obuna nima beradi</string>
+    <string name="sub_benefits">📚 HSK darslari bosqichma-bosqich   🤖 AI savol-javob kengayadi   🖼 Rasm va ieroglif tahlili   🎙 Voice savollar bilan practice   🧩 Quiz, test va xato tahlili</string>
+    <string name="sub_focus_course">Barcha darslar ochiladi</string>
+    <string name="sub_focus_practice">Cheksiz mashq va test</string>
+    <string name="sub_focus_voice">Voice suhbat va talaffuz</string>
+    <string name="sub_focus_body">Obuna bilan ushbu bo‘limni cheklovsiz davom ettirasiz.</string>
+    <string name="sub_plans_heading">Tarif</string>
+    <string name="sub_active_expiry_current">Amaldagi obuna: %1$s gacha</string>
+    <string name="sub_active_expiry_after">Tanlangan tarifdan so‘ng: %1$s gacha</string>
+    <string name="sub_renewal_confirm_title">Obunani uzaytirasizmi?</string>
+    <string name="sub_renewal_confirm_body">Hozirgi muddat %1$s da tugaydi. %2$s tarifini qo‘shsangiz, yangi muddat %3$s gacha bo‘ladi.</string>
+    <string name="sub_renewal_edit">Tarifni o‘zgartirish</string>
+    <string name="sub_change_payment">To‘lov turini o‘zgartirish</string>
+    <string name="sub_trial_title">7 kun Pro bepul</string>
+    <string name="sub_trial_body">Barcha asosiy imkoniyatlarni sinab ko‘rasiz. Avtomatik pul yechilmaydi.</string>
+    <string name="sub_trial_button">7 kun bepul sinash</string>
+    <string name="sub_trial_failed">Hozir ochib bo‘lmadi.</string>
+    <string name="sub_plan_fast">Sinab ko‘rish</string>
+    <string name="sub_plan_best">Eng yaxshi tanlov</string>
+    <string name="sub_plan_value">Foydali</string>
+    <string name="sub_discount_ready" formatted="false">20% chegirma qo‘llanadi</string>
+    <string name="sub_discount_active">Bu obunaga avtomatik qo‘llanadi.</string>
+    <string name="sub_discount_locked" formatted="false">20% chegirmani oching</string>
+    <string name="sub_discount_invite" formatted="false">3 do‘st taklif qiling: Androidda ilovani o‘rnatib Telegram hisobini ulaydi, iPhone’da botda 2 savol ishlatadi.</string>
+    <string name="sub_discount_progress">20%% chegirma: %1$d/%2$d referral</string>
+    <string name="sub_discount_button">Chegirmani ochish</string>
+    <string name="sub_offer_expired">Bu taklif tugagan yoki sizga mos emas.</string>
+    <string name="sub_currency_label">Narx valyutasi</string>
+    <string name="sub_currency_loading">Yuklanmoqda…</string>
+    <string name="sub_currency_title">Valyutani tanlang</string>
+    <string name="sub_currency_body">Tarif narxlari shu valyutada ko‘rsatiladi. Yakuniy to‘lov summasi keyingi ekranda aniq chiqadi.</string>
+    <string name="sub_currency_tjs_name">Tojikiston somonisi</string>
+    <string name="sub_currency_uzs_name">O‘zbekiston so‘mi</string>
+    <string name="sub_currency_rub_name">Rossiya rubli</string>
+    <string name="sub_currency_cny_name">Xitoy yuani</string>
+    <string name="sub_currency_usd_name">AQSh dollari</string>
+    <string name="sub_currency_save_failed">Valyuta tanlovini saqlab bo‘lmadi. Internetni tekshirib, yana tanlang.</string>
+    <string name="sub_currency_refresh_failed">Valyuta saqlandi, lekin narxlarni yangilab bo‘lmadi. Yana bir bor tanlab ko‘ring.</string>
+    <string name="sub_payment_route_label">To‘lov yo‘li</string>
+    <string name="sub_route_title">To‘lov yo‘lini tanlang</string>
+    <string name="sub_route_body">Bu tanlov qaysi karta yoki to‘lov ilovasidan foydalanishingizni belgilaydi. Narx valyutasini alohida o‘zgartirasiz.</string>
+    <string name="sub_change">O‘zgartirish</string>
+    <string name="sub_country_title">Qaysi davlatdan to‘laysiz?</string>
+    <string name="sub_country_body">Kartangiz davlatini tanlang — narxlar shu davlat valyutasida ko‘rsatiladi.</string>
+    <string name="sub_country_tj_body">VISA; keyingi qadamda DC City yoki Alif tanlanadi</string>
+    <string name="sub_country_uz_body">VISA karta; to‘lov tafsiloti keyingi ekranda chiqadi</string>
+    <string name="sub_country_ru_body">VISA karta; to‘lov tafsiloti keyingi ekranda chiqadi</string>
+    <string name="sub_country_other_body">Boshqa davlat VISA kartasi</string>
+    <string name="sub_country_cn">Xitoy</string>
+    <string name="sub_country_cn_body">Alipay yoki WeChat Pay orqali yuan to‘lovi</string>
+    <string name="sub_bank_dc_body">DC City kartasiga to‘lov</string>
+    <string name="sub_bank_alif_body">Alif kartasiga to‘lov</string>
+    <string name="sub_qr_yuan">QR orqali yuan to‘lovi</string>
+    <string name="sub_pay_locked_body">To‘lov tasdiqlangach, yopilgan darsingiz shu kursda darhol ochiladi.</string>
+    <string name="sub_amount_label">To‘lanadigan summa</string>
+    <string name="sub_row_plan">Tarif</string>
+    <string name="sub_row_bank">TJK bank nomi</string>
+    <string name="sub_row_rate">Kurs</string>
+    <string name="sub_details_tj_hint">Dushanbe City ilovasini oching, «DC (по номеру карты)» tugmasini bosing, pastdagi karta raqamini kiriting va to‘lov qiling.</string>
+    <string name="sub_details_alif_hint">Alif ilovasini oching, «На карту» tugmasini bosing, pastdagi karta raqamini kiriting va to‘lov qiling.</string>
+    <string name="sub_details_foreign_hint">Karta Tojikiston VISA kartasi. Bankingizda Tojikiston kartasiga pul jo‘natish bo‘lsa, undan foydalaning. Bo‘lmasa «Mejdunarodniy VISA» orqali to‘lang.</string>
+    <string name="sub_show_more">Ko‘proq</string>
+    <string name="sub_show_less">Yopish</string>
+    <string name="sub_copy">Copy</string>
+    <string name="sub_no_details">Karta rekviziti hali kiritilmagan. Keyinroq qayta urinib ko‘ring.</string>
+    <string name="sub_qr_title">QR kod</string>
+    <string name="sub_qr_hint">QR ustiga bosing — kattalashtirish tugmasi chiqadi.</string>
+    <string name="sub_qr_enlarge">QR kodni kattalashtirish</string>
+    <string name="sub_upload_title">To‘lov screenshotini yuklash</string>
+    <string name="sub_upload_body">Bu yerni bosing va skrin tanlang.</string>
+    <string name="sub_upload_selected">Screenshot tanlandi: %1$s</string>
+    <string name="sub_upload_size">Hajmi %1$s — yuborishga tayyor.</string>
+    <string name="sub_upload_heavy">Hajmi %1$s. Sekin internetda uzoq davom etishi mumkin.</string>
+    <string name="sub_continue_alipay">Alipay bilan to‘lash</string>
+    <string name="sub_continue_wechat">WeChat Pay bilan to‘lash</string>
+    <string name="sub_continue_country">To‘lovga davom etish</string>
+    <string name="sub_done_title">So‘rov yuborildi ✅</string>
+    <string name="sub_done_body">To‘lov tekshiruvga yuborildi. Tekshiruv taxminan 5–15 daqiqa davom etadi. Tasdiqlangach sizga xabar keladi.</string>
+    <string name="sub_pending_title">So‘rovingiz tekshiruvda</string>
+    <string name="sub_pending_body">To‘lov so‘rovingiz tekshiruvda. Iltimos, tasdiq kelguncha kuting.</string>
+    <string name="sub_return_app">Ilovaga qaytish</string>
+    <string name="sub_help_title">Yordam</string>
+    <string name="sub_help_body">To‘lov yoki ilovada muammo bo‘lsa, adminga qisqa yozing va screenshot yuboring.</string>
+    <string name="sub_help_button">Adminga yozish</string>
+    <string name="sub_invite_title">Referral link tayyor</string>
+    <string name="sub_invite_body">Xabarni ulashing yoki faqat linkni copy qiling.</string>
+    <string name="sub_invite_share">Xabar bilan yuborish</string>
+    <string name="sub_invite_copy">Faqat linkni copy qilish</string>
+    <string name="sub_invite_share_text" formatted="false">HSK AI — xitoy tilini AI bilan o‘rgan. Qo‘shilsang menga 20% chegirma ochiladi 👇</string>
+    <string name="limit_unlock_unavailable">Telegram botni ochib bo‘lmadi. Botga o‘zingiz kiring yoki keyinroq urinib ko‘ring.</string>
+
+    <!--
+        In-app updating. Only this channel may do it: Google Play
+        forbids an app it distributes from updating itself by any
+        other route, so the Play build has none of this.
+    -->
+    <string name="update_card_title">Yangi versiya %1$s</string>
+    <string name="update_card_subtitle">%1$s · yangilash uchun bosing</string>
+    <string name="update_card_downloading">Yuklanmoqda · %1$d%%</string>
+    <string name="update_card_downloaded">Yuklandi · 100% — o‘rnatish uchun bosing</string>
+    <string name="update_card_failed">Yuklab bo‘lmadi — qayta urinib ko‘ring</string>
+    <string name="update_card_permission">O‘rnatishga ruxsat bering</string>
+    <string name="update_card_permission_hint">Android sozlamalari ochiladi</string>
+
+    <!--
+        Two releases behind: the banner above the tab bar, and the one
+        notification a release is allowed to send.
+    -->
+    <string name="update_banner_text">Yangi versiya %1$s — yangilash uchun bosing</string>
+    <string name="update_banner_downloading">Yuklanmoqda · %1$d%%</string>
+    <string name="update_banner_downloaded">Yuklandi · 100% — o‘rnatish uchun bosing</string>
+    <string name="update_banner_failed">Yuklab bo‘lmadi — qayta urinib ko‘ring</string>
+    <string name="update_banner_permission">O‘rnatishga ruxsat bering — yangilash uchun bosing</string>
+    <string name="update_channel_name">Ilova yangilanishlari</string>
+    <string name="notify_update_title">Yangi versiya chiqdi</string>
+    <string name="notify_update_body">HSK AI %1$s tayyor. Yangilash uchun ilovani oching.</string>
+    <string name="update_gate_title">Yangi versiyani o‘rnating</string>
+    <string name="update_gate_version">HSK AI %1$s</string>
+    <string name="update_gate_body">Davom etish uchun ilovaning yangi versiyasi kerak.</string>
+    <string name="update_gate_button">Ilovani yangilang</string>
+    <string name="update_gate_downloading">Yuklanmoqda · %1$d%%</string>
+    <string name="update_gate_downloaded">Yuklandi. O‘rnatishni boshlash uchun tugmani bosing.</string>
+    <string name="update_gate_failed">Yuklab bo‘lmadi. Qayta urinib ko‘ring.</string>
+    <string name="update_gate_permission">Yangilashdan oldin ilovani o‘rnatishga ruxsat bering.</string>
+    <string name="sub_hsk30_pending_title">So‘rovingiz tekshiruvda</string>
+    <string name="sub_hsk30_pending_body">To‘lov so‘rovingiz tekshiruvda. Iltimos, tasdiq kelguncha kuting. Jarayon tezroq bo‘lishini xohlasangiz, adminga yozishingiz mumkin.</string>
+    <string name="sub_hsk30_provisional_title">HSK 3.0 vaqtincha ochildi</string>
+    <string name="sub_hsk30_provisional_body">Birinchi to‘lov so‘rovi tekshiruvda. Tasdiqlanmasa, HSK 3.0 ga kirish yopiladi.</string>
+    <string name="sub_hsk30_rejected_title">HSK 3.0 to‘lovi qabul qilinmadi</string>
+    <string name="sub_hsk30_rejected_body">To‘lovingiz qabul qilinmadi. Ma’lumotlarni tekshirib, to‘lovni boshidan yuboring.</string>
+    <string name="sub_hsk30_approved_title">HSK 3.0 ochildi</string>
+    <string name="sub_hsk30_approved_body">To‘lov tasdiqlandi. Yangi darsliklardan boshlashingiz mumkin.</string>
+    <string name="sub_hsk30_retry">To‘lovni qayta yuborish</string>
+    <string name="sub_hsk30_open_course">HSK 3.0 ni ochish</string>
+    <string name="sub_payment_refresh">To‘lov holatini yangilash</string>
+    <string name="sub_payment_checking">Holat tekshirilmoqda…</string>
+    <string name="sub_payment_still_pending">To‘lov hali admin tekshiruvida.</string>
+    <string name="sub_status_check_failed">Holatni tekshirib bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
+    <string name="sub_pro_review_title">Chek tekshiruvga yuborildi</string>
+    <string name="sub_pro_review_access">To‘lov tekshiruvga yuborildi. Tekshiruv davomida Pro imkoniyatlaridan foydalanishni boshlashingiz mumkin.</string>
+    <string name="sub_pro_review_wait">To‘lov tekshiruvga yuborildi. Avvalgi vaqtinchalik ruxsat ishlatilgan, shu sababli Pro admin tasdig‘idan keyin ochiladi. Jarayon tezroq bo‘lishini xohlasangiz, adminga yozishingiz mumkin.</string>
+    <string name="sub_pro_approved_title">To‘lov tasdiqlandi</string>
+    <string name="sub_pro_approved_body">Pro tasdiqlandi. Mashg‘ulotni davom ettirishingiz mumkin.</string>
+    <string name="sub_pro_rejected_title">To‘lov qabul qilinmadi</string>
+</resources>

@@ -23,6 +23,7 @@ from app.services.course_notification_service import (
     notification_copy,
 )
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.notification_i18n import notification_message
 from app.services.notification_template_service import (
     CAPTION_MAX,
     KEY_DAILY_GOAL,
@@ -230,18 +231,21 @@ def _button(
     # Tugma to'g'ridan-to'g'ri foydalanuvchining joriy darsiga olib boradi
     # (xarita emas). Dars aniqlanmasa, kurs xaritasi ochiladi.
     if source == D1_RECOVERY_EXPERIMENT:
+        message_key = "reminder.returnLesson"
         labels = {
             "uz": "▶️ Darsga qaytish",
             "ru": "▶️ Вернуться к уроку",
             "tj": "▶️ Ба дарс баргаштан",
         }
     elif lesson and lesson > 1:
+        message_key = "reminder.continueLessonNumber"
         labels = {
             "uz": f"▶️ Davom etish · {lesson}-dars",
             "ru": f"▶️ Продолжить · урок {lesson}",
             "tj": f"▶️ Идома · дарси {lesson}",
         }
     else:
+        message_key = "reminder.continueLesson"
         labels = {
             "uz": "▶️ Darsni davom ettirish",
             "ru": "▶️ Продолжить урок",
@@ -251,7 +255,9 @@ def _button(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text=labels.get(lang, labels["ru"]),
+                    text=notification_message(
+                        message_key, lang, labels.get(lang, labels["ru"]), lesson=lesson
+                    ),
                     web_app=WebAppInfo(
                         url=course_study_miniapp_url(
                             lang=lang,
@@ -315,16 +321,22 @@ class MotivationReminderService:
             lesson_no = None
         if level and lesson_no:
             if lang == "uz":
-                return f"{level} {lesson_no}-dars"
-            if lang == "tj":
-                return f"{level} дарси {lesson_no}"
-            return f"{level} урок {lesson_no}"
+                fallback = f"{level} {lesson_no}-dars"
+            elif lang == "tj":
+                fallback = f"{level} дарси {lesson_no}"
+            else:
+                fallback = f"{level} урок {lesson_no}"
+            return notification_message(
+                "reminder.lessonLabel", lang, fallback, level=level, lesson=lesson_no
+            )
         fallbacks = {
             "uz": "Boshlangan dars",
             "ru": "Начатый урок",
             "tj": "Дарси оғозшуда",
         }
-        return fallbacks.get(lang, fallbacks["ru"])
+        return notification_message(
+            "reminder.startedLesson", lang, fallbacks.get(lang, fallbacks["ru"])
+        )
 
     async def _load_d1_recovery_states(
         self,

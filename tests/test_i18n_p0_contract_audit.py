@@ -33,6 +33,18 @@ class P0ContractAuditTests(unittest.TestCase):
         self.assertEqual(result["display_tags"]["tj"], "tg")
         self.assertEqual(result["backend_codes"], ["ru", "tj", "uz"])
 
+    def test_existing_locale_adoption_status_does_not_authorize_new_languages(self):
+        for status in ("local_first_runtime_adoption_in_progress",
+                       "local_first_existing_locale_source_complete"):
+            manifest = {**sample_manifest(), "status": status}
+            self.assertEqual(locale_contract(manifest, sample_registry())["backend_codes"],
+                             ["ru", "tj", "uz"])
+            manifest["locales"].append({"id": "en", "tag": "en"})
+            with self.assertRaisesRegex(ValueError, "locale mapping"):
+                locale_contract(manifest, sample_registry())
+        with self.assertRaisesRegex(ValueError, "Unknown localization phase"):
+            locale_contract({**sample_manifest(), "status": "release_all_languages"}, sample_registry())
+
     def test_rejects_new_locale_activation_tajik_rename_or_unauthorized_runtime(self):
         m = sample_manifest()
         m["locales"].append({"id": "en", "tag": "en"})

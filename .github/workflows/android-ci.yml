@@ -6,6 +6,10 @@ on:
     branches: [main, "feat/android-**", "codex/local-ai", "codex/cloud-ai"]
     paths:
       - "android/**"
+      - "localization/android/**"
+      - "localization/ui/**"
+      - "scripts/i18n_build_*catalogs.py"
+      - "tests/test_i18n_android_catalog_adoption.py"
       - "app/api/android_*.py"
       - "app/api/desktop_auth.py"
       - "app/api/desktop_course.py"
@@ -30,6 +34,10 @@ on:
   pull_request:
     paths:
       - "android/**"
+      - "localization/android/**"
+      - "localization/ui/**"
+      - "scripts/i18n_build_*catalogs.py"
+      - "tests/test_i18n_android_catalog_adoption.py"
       - "app/api/android_*.py"
       - "app/api/desktop_auth.py"
       - "app/api/desktop_course.py"
@@ -71,6 +79,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check canonical bundled UI resources
+        working-directory: .
+        run: |
+          python3 scripts/i18n_build_android_catalogs.py --check
+          python3 scripts/i18n_build_local_catalogs.py --check
+          python3 scripts/i18n_build_course_catalogs.py --check
+          python3 -m unittest tests.test_i18n_android_catalog_adoption
 
       # The build must depend on the committed wrapper, never on whatever
       # Gradle happens to be installed on the runner. Fail loudly and early

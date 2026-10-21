@@ -1,8 +1,11 @@
 import "./generated/hsk-common-i18n.js";
 import "./generated/hsk-course-i18n.js";
+import "./generated/hsk-desktop-i18n.js";
 
 const SUPPORTED_LANGUAGES = new Set(["uz", "ru", "tj"]);
 
+// Compatibility fallback only. Author copy in localization/ui/{uz,ru,tj}/
+// desktop.json, or the existing common/course catalogs for shared keys.
 const messages = {
   uz: {
     identityProviderConnect: "{provider} ulash",
@@ -2700,13 +2703,18 @@ export function t(key, variables = {}) {
   const courseCatalog = typeof window === "undefined"
     ? null
     : window.HSKAI_COURSE_I18N;
+  const desktopCatalog = typeof window === "undefined"
+    ? null
+    : window.HSKAI_DESKTOP_I18N;
   const generated = generatedKey
     ? catalog?.[activeLanguage]?.[generatedKey]
     : undefined;
   const generatedCourse = generatedCourseKey
     ? courseCatalog?.[activeLanguage]?.[generatedCourseKey]
     : undefined;
+  const generatedDesktop = desktopCatalog?.[activeLanguage]?.[key];
   const template = generated ?? generatedCourse ??
+    generatedDesktop ??
     messages[activeLanguage]?.[key] ?? messages.uz[key] ?? String(key || "");
   return String(template).replace(/\{([a-zA-Z0-9_]+)\}/g, (match, name) =>
     Object.prototype.hasOwnProperty.call(variables, name)

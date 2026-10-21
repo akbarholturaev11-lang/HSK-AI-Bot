@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "preparation_only_no_runtime_switch",
+  "status": "local_first_runtime_adoption_in_progress",
   "source_of_truth": "localization",
   "default_locale": "uz",
   "locales": [

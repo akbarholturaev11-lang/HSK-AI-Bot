@@ -264,6 +264,11 @@
     <string name="hsk_course_help_text" formatted="false">Mini appda biror xatolik yoki muammo bo\'lsa, adminga qisqa yozing va screenshot yuboring — yordam beramiz.</string>
     <string name="hsk_course_help_title" formatted="false">Yordam</string>
     <string name="hsk_course_here" formatted="false">Shu yerda</string>
+    <string name="hsk_course_hsk30_book_body" formatted="false">Yangi darsliklar asosidagi kursni boshlang.</string>
+    <string name="hsk_course_hsk30_book_one_time" formatted="false">Bir martalik to‘lov</string>
+    <string name="hsk_course_hsk30_book_open" formatted="false">HSK 3.0 ni ochish</string>
+    <string name="hsk_course_hsk30_book_permanent" formatted="false">Doimiy kirish</string>
+    <string name="hsk_course_hsk30_book_title" formatted="false">HSK 3.0 ni oching</string>
     <string name="hsk_course_lang" formatted="false">Til</string>
     <string name="hsk_course_later" formatted="false">Keyinroq</string>
     <string name="hsk_course_league" formatted="false">朱雀 ligasi</string>
@@ -285,6 +290,7 @@
     <string name="hsk_course_lesson_flow_repair_answer_heading" formatted="false">Javobni tushunamiz</string>
     <string name="hsk_course_lesson_flow_repair_hint_heading" formatted="false">Ishorani eslab qoling</string>
     <string name="hsk_course_lesson_flow_retry" formatted="false">Qayta urinish</string>
+    <string name="hsk_course_lesson_preview_hello_gloss" formatted="false">salom</string>
     <string name="hsk_course_lesson_settings_exit" formatted="false">Chiqish</string>
     <string name="hsk_course_lesson_settings_title" formatted="false">Dars sozlamalari</string>
     <string name="hsk_course_lessons" formatted="false">dars</string>
@@ -329,6 +335,46 @@
     <string name="hsk_course_memorize_limit_pay" formatted="false">HSK AI Pro ⭐️ olish</string>
     <string name="hsk_course_memorize_limit_sub" formatted="false">Bepul rejimda bu bo\'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun HSK AI Pro oling yoki ertaga qaytib keling.</string>
     <string name="hsk_course_memorize_limit_title" formatted="false">Bugungi bepul mashq tugadi</string>
+    <string name="hsk_course_memorize_ui_bd_opts_item1" formatted="false">yuqori / chap qism</string>
+    <string name="hsk_course_memorize_ui_bd_opts_item2" formatted="false">pastki / o\'ng qism</string>
+    <string name="hsk_course_memorize_ui_bd_opts_item3" formatted="false">ikkalasi</string>
+    <string name="hsk_course_memorize_ui_bd_opts_item4" formatted="false">hech biri</string>
+    <string name="hsk_course_memorize_ui_breakdown_prompt" formatted="false">Qaysi qism eslab qolishga ko\'proq yordam berdi?</string>
+    <string name="hsk_course_memorize_ui_build_prompt" formatted="false">So\'z bo\'laklaridan gap tuzing:</string>
+    <string name="hsk_course_memorize_ui_build_reset" formatted="false">Tozalash</string>
+    <string name="hsk_course_memorize_ui_cloze_prompt" formatted="false">Bo\'sh joyni to\'ldiring:</string>
+    <string name="hsk_course_memorize_ui_complete_sub" formatted="false">Ma\'no, kalit va so\'z — uchalasi ham bajarildi.</string>
+    <string name="hsk_course_memorize_ui_complete_title" formatted="false">O\'rgandingiz!</string>
+    <string name="hsk_course_memorize_ui_cont" formatted="false">Davom</string>
+    <string name="hsk_course_memorize_ui_disclaimer" formatted="false">Bu qismlar tarixiy izoh emas — eslab qolish uchun yordamchi hook.</string>
+    <string name="hsk_course_memorize_ui_fb_err_confusion" formatted="false">O\'xshashi bilan adashdingiz — farqini ko\'ramiz.</string>
+    <string name="hsk_course_memorize_ui_fb_err_meaning" formatted="false">Yaqin, lekin ma\'noni qayta ko\'ramiz.</string>
+    <string name="hsk_course_memorize_ui_fb_err_pinyin" formatted="false">Ma\'noni bildingiz, lekin pinyin adashdi.</string>
+    <string name="hsk_course_memorize_ui_fb_err_radical" formatted="false">Ma\'no kaliti boshqa edi — qaytaramiz.</string>
+    <string name="hsk_course_memorize_ui_fb_err_usage" formatted="false">Gapda qayta ko\'ramiz.</string>
+    <string name="hsk_course_memorize_ui_fb_idk" formatted="false">Muammo yo\'q, hozir qismlarga ajratamiz.</string>
+    <string name="hsk_course_memorize_ui_fb_near" formatted="false">Yo\'nalish to\'g\'ri.</string>
+    <string name="hsk_course_memorize_ui_fb_off" formatted="false">Yaxshi, endi ma\'no kalitini ko\'ramiz.</string>
+    <string name="hsk_course_memorize_ui_fb_ok" formatted="false">Zo\'r!</string>
+    <string name="hsk_course_memorize_ui_guess_prompt" formatted="false">Bu iyeroglifga qarab, u nima bilan bog\'liq deb o\'ylaysiz?</string>
+    <string name="hsk_course_memorize_ui_hook_prompt" formatted="false">Qaysi usul sizga oson?</string>
+    <string name="hsk_course_memorize_ui_hook_types_radical" formatted="false">radikal orqali</string>
+    <string name="hsk_course_memorize_ui_hook_types_story" formatted="false">hikoya orqali</string>
+    <string name="hsk_course_memorize_ui_hook_types_visual" formatted="false">shakl orqali</string>
+    <string name="hsk_course_memorize_ui_idk" formatted="false">Bilmayman</string>
+    <string name="hsk_course_memorize_ui_near" formatted="false">yaqin</string>
+    <string name="hsk_course_memorize_ui_need_more" formatted="false">Yana bir oz mashq qilamiz.</string>
+    <string name="hsk_course_memorize_ui_next" formatted="false">Keyingi iyeroglif</string>
+    <string name="hsk_course_memorize_ui_retry" formatted="false">Qayta</string>
+    <string name="hsk_course_memorize_ui_review_conf" formatted="false">Endi farqni 20 soniyada ajratamiz.</string>
+    <string name="hsk_course_memorize_ui_review_pron" formatted="false">Endi pinyin bo\'yicha 2 ta tez mashq.</string>
+    <string name="hsk_course_memorize_ui_test_confusion_q" formatted="false">To\'g\'risini tanlang:</string>
+    <string name="hsk_course_memorize_ui_test_meaning_q" formatted="false">nima degani?</string>
+    <string name="hsk_course_memorize_ui_test_pinyin_q" formatted="false">pinyini qaysi?</string>
+    <string name="hsk_course_memorize_ui_test_radical_q" formatted="false">ichidagi ma\'no kaliti qaysi?</string>
+    <string name="hsk_course_memorize_ui_test_reverse_q" formatted="false">qaysi iyeroglif?</string>
+    <string name="hsk_course_memorize_ui_why_prompt" formatted="false">Nega bu yerda shu radikal bor deb o\'ylaysiz?</string>
+    <string name="hsk_course_memorize_ui_word_prompt" formatted="false">Qaysi so\'z hayotda ko\'proq kerak bo\'ladi?</string>
     <string name="hsk_course_mistakes" formatted="false">Xatolarim</string>
     <string name="hsk_course_mistakes_page_all" formatted="false">Barchasi</string>
     <string name="hsk_course_mistakes_page_build_hint" formatted="false">To\'g\'ri gapni tuzing</string>
@@ -480,6 +526,9 @@
     <string name="hsk_course_practice_preparing" formatted="false">Mashq tayyorlanmoqda</string>
     <string name="hsk_course_practice_auth_required_body" formatted="false">Mashq uchun Telegram orqali qayta kiring. Ruxsat tekshirilmaguncha mashq ochilmaydi.</string>
     <string name="hsk_course_practice_auth_required_retry" formatted="false">Qayta ochish</string>
+    <string name="hsk_course_practice_gate_back" formatted="false">Orqaga</string>
+    <string name="hsk_course_practice_gate_body" formatted="false">Ruxsatni tekshirib bo\'lmadi. Internetni tekshirib, qayta urining.</string>
+    <string name="hsk_course_practice_gate_retry" formatted="false">Qayta urinish</string>
     <string name="hsk_course_practice_gate_error_body" formatted="false">Ruxsatni tekshirib bo\'lmadi. Internetni tekshirib, qayta urining.</string>
     <string name="hsk_course_practice_gate_error_retry" formatted="false">Qayta urinish</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
@@ -529,7 +578,9 @@
     <string name="hsk_course_rating_invite_loading" formatted="false">Link tayyorlanyapti…</string>
     <string name="hsk_course_rating_invite_send" formatted="false">Xabar yuborish</string>
     <string name="hsk_course_rating_invite_title" formatted="false">Do\'st chaqirish</string>
+    <string name="hsk_course_rating_league_name" formatted="false">{league} ligasi</string>
     <string name="hsk_course_rating_level_label" formatted="false">daraja</string>
+    <string name="hsk_course_rating_members_total" formatted="false">jami ishtirokchi</string>
     <string name="hsk_course_rating_rank_summary" formatted="false">O\'rin #{before} → #{after}</string>
     <string name="hsk_course_rating_referral_active" formatted="false">faol</string>
     <string name="hsk_course_rating_referral_joined" formatted="false">kirgan</string>
@@ -826,6 +877,38 @@
     <string name="hsk_course_test_placement_retake" formatted="false">Qayta test</string>
     <string name="hsk_course_test_sub" formatted="false">HSK imtihonlari va daraja aniqlash</string>
     <string name="hsk_course_today_go" formatted="false">Reja bo\'yicha davom etish</string>
+    <string name="hsk_course_track_back_to20" formatted="false">HSK 2.0 ga qaytish</string>
+    <string name="hsk_course_track_cancel" formatted="false">Bekor qilish</string>
+    <string name="hsk_course_track_close" formatted="false">Yopish</string>
+    <string name="hsk_course_track_course_version" formatted="false">Kurs versiyasi</string>
+    <string name="hsk_course_track_current" formatted="false">Hozirgi kurs</string>
+    <string name="hsk_course_track_disabled" formatted="false">HSK 3.0 hozircha yopiq.</string>
+    <string name="hsk_course_track_hsk20" formatted="false">HSK 2.0</string>
+    <string name="hsk_course_track_hsk30" formatted="false">HSK 3.0</string>
+    <string name="hsk_course_track_hsk30_body" formatted="false">HSK 3.0 versiyasida HSK 1–3 yangi darsliklari bor.</string>
+    <string name="hsk_course_track_hsk30_title" formatted="false">HSK 3.0 ni ochish</string>
+    <string name="hsk_course_track_payment_rejected_body" formatted="false">To‘lovingiz qabul qilinmadi. Ma’lumotlarni tekshirib, to‘lovni boshidan yuboring.</string>
+    <string name="hsk_course_track_payment_rejected_title" formatted="false">HSK 3.0 to‘lovi qabul qilinmadi</string>
+    <string name="hsk_course_track_permanent" formatted="false">{price} · doimiy ochish</string>
+    <string name="hsk_course_track_promo_body" formatted="false">HSK 3.0 versiyasida HSK 1–3 yangi darsliklari bor.</string>
+    <string name="hsk_course_track_promo_body_unlocked" formatted="false">HSK 3.0 siz uchun ochiq. Yangi darsliklardan boshlang.</string>
+    <string name="hsk_course_track_promo_books_alt" formatted="false">HSK 1, 2 va 3 yangi darsliklari</string>
+    <string name="hsk_course_track_promo_later" formatted="false">Keyinroq</string>
+    <string name="hsk_course_track_promo_open" formatted="false">HSK 3.0 ga o\'tish</string>
+    <string name="hsk_course_track_promo_recommended" formatted="false">Tavsiya</string>
+    <string name="hsk_course_track_promo_stay" formatted="false">HSK 2.0 da qolish</string>
+    <string name="hsk_course_track_promo_switch" formatted="false">HSK 3.0 ga o\'tish</string>
+    <string name="hsk_course_track_promo_title" formatted="false">HSK 3.0 ni ochish</string>
+    <string name="hsk_course_track_promo_unlock" formatted="false">{price} · doimiy ochish</string>
+    <string name="hsk_course_track_stay" formatted="false">HSK 2.0 da qolish</string>
+    <string name="hsk_course_track_switch_confirm_action" formatted="false">Almashtirish</string>
+    <string name="hsk_course_track_switch_confirm_body" formatted="false">Joriy kursdagi progressingiz saqlanadi. Istalgan payt boshqa versiyaga qaytishingiz mumkin.</string>
+    <string name="hsk_course_track_switch_confirm_title" formatted="false">Kurs versiyasini almashtirasizmi?</string>
+    <string name="hsk_course_track_switching" formatted="false">Kurs almashtirilmoqda…</string>
+    <string name="hsk_course_track_test_soon" formatted="false">HSK 3.0 testlari · Tez orada</string>
+    <string name="hsk_course_track_test_soon_body" formatted="false">Yangi HSK 3.0 imtihon formati tayyorlanmoqda.</string>
+    <string name="hsk_course_track_test_soon_title" formatted="false">HSK 3.0 testlari</string>
+    <string name="hsk_course_track_try_again" formatted="false">Qayta urinib ko\'rish</string>
     <string name="hsk_course_trial_active" formatted="false">HSK AI Pro faol</string>
     <string name="hsk_course_trial_body" formatted="false">Barcha asosiy imkoniyatlarni sinab ko\'rasiz. Avtomatik pul yechilmaydi.</string>
     <string name="hsk_course_trial_cta" formatted="false">7 kun bepul sinash</string>
