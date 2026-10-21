@@ -58,7 +58,8 @@ No main promotion, deployment, real credentials or production database access.
   No new course override, passing score threshold or subscription policy.
 - Prevention: signed SQLite ASGI state snapshots, Desktop replay-after-switch,
   JS invoke contract and macOS/Windows browser fixtures. Local Rust format and
-  offline check pass; Windows native compilation requires current GitHub CI.
+  offline check pass; GitHub paired native tests/clippy subsequently passed on
+  macOS and Windows (see final evidence below).
 
 ## Other reviewed areas and test maintenance
 
@@ -102,6 +103,21 @@ DNS failure exposed it. A deterministic Chromium DNS rule reproduced the exact
 failed URL. The specific local fixture fixes it; five repeated fast-DNS D1 cases
 and all 22 selected flows passed. Console checks remain enabled. This is a test
 harness correction; no runtime UI change.
+
+## Final GitHub verification
+
+Source `0a7d4607` contains the completed fixture fix and PostgreSQL CI job:
+
+| Check | Run | Result |
+| --- | --- | --- |
+| P0 Python 3.11/3.14 | [39614374914](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39614374914) | SUCCESS; 460 tests each and read-only checks |
+| Backend, browsers and PostgreSQL | [39614374478](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39614374478) | SUCCESS; all three jobs, 22 critical flows, PostgreSQL 57 passed / 0 skipped |
+| Desktop macOS/Windows native and UI | [39611201161](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39611201161) | SUCCESS at runtime source `90fa883a` |
+
+The complete `app/`, `android/` and `desktop/` trees are identical between
+`90fa883a` and `0a7d4607`; the latter changes CI, tests and review evidence only.
+The first failed Linux D1 run is superseded by the successful final browser job.
+No main or production promotion was performed.
 
 ## Acceptance limits
 
