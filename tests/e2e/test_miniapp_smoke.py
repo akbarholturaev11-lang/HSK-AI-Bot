@@ -5548,3 +5548,34 @@ def test_liquid_glass_bottom_nav_renders_without_extra_stylesheet_request(page):
     dark_border = nav.evaluate("element => getComputedStyle(element).borderTopColor")
     assert dark_border != skin["lightBorder"]
 
+def test_practice_tab_is_usable_during_unfinished_background_load(page):
+    """A slow script or embedded resource may preload, but cannot gate Mashq."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    pending = []
+    def hold_resource(route):
+        pending.append(route)
+    page.route(
+        re.compile(r".*/(?:hsk-words\\.js|lesson_gate\\.js|hsk-lugat\\.html|hsk-gaplar\\.html)(?:\\?.*)?$"),
+        hold_resource,
+    )
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"),
+        wait_until="networkidle",
+    )
+    page.locator('#nav button[data-s="mashq"]').click()
+    expect(page.locator("#s-mashq")).to_be_visible()
+    expect(page.locator("#m-dict")).to_be_visible()
+    expect(page.locator("#m-ready-phrases")).to_be_visible()
+    expect(page.locator("#m-pron")).to_be_visible()
+    page.wait_for_timeout(3600)
+    assert pending, "Preload requests should still be initiated in the background"
+    expect(page.locator("#s-mashq")).to_be_visible()
+    page.locator('#nav button[data-s="course"]').click()
+    expect(page.locator("#s-course")).to_be_visible()
+    for route in pending:
+        try:
+            route.abort()
+        except Exception:
+            pass
+
