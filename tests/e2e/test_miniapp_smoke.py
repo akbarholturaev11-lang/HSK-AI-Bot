@@ -5543,7 +5543,7 @@ def test_liquid_glass_bottom_nav_renders_without_extra_stylesheet_request(page):
     assert box["x"] + box["width"] <= 382
 
     page.locator('#nav button[data-s="profile"]').click()
-    expect(page.locator('#nav button[data-s="profile"]')).to_have_class(re.compile(r"\\bon\\b"))
+    expect(page.locator('#nav button[data-s="profile"]')).to_have_class(re.compile(r"\bon\b"))
     page.evaluate("document.documentElement.setAttribute('data-hsk-theme', 'dark')")
     dark_border = nav.evaluate("element => getComputedStyle(element).borderTopColor")
     assert dark_border != skin["lightBorder"]
