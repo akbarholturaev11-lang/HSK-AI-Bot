@@ -2,7 +2,16 @@
 
 Updated: 2026-10-21. **This is the short authoritative checkpoint, not evidence of main/production release.**
 
-## Git and protected scope
+## Current centralization checkpoint — 2026-10-21 (code `930d4f70`)
+
+- Active branch only: `codex/p3-main-integration-20261020`; code `930d4f702e0476fe481f37ca84fa9775c727d502`. Main remains `ed527c55eaf8d63acd04902b570c6a66aef8fe3c`; no main merge/push or deployment.
+- Full Desktop lookup: 745 own canonical keys + 79 common/course mappings = 824 existing keys/locale. Full Bot tables: 339 own messages + 41 shared references/locale; original 276 TEXTS and 92 COURSE_I18N entries retain exact wording/precedence. Android's 36 native XML files (3,139 entries across all locale/source-set copies) and public-site copy generate byte-identically from `localization/`. Fixed notifications: 26 keys/locale, preserving DB/campaign overrides.
+- Mini App: 83 more keys (978 course keys/locale), all 18 registered dictionaries have canonical static leaves, MEMO_UI and practice-gate error copy now use the local bundle. Chinese MEMO data/graded answers are unchanged. Corrected the Uzbek mixed-script course-switch fallback.
+- One command: `python3 scripts/i18n_build_all_catalogs.py --check` validates 52 local artifacts; 0 stale. Local checks passed: **436 P0 tests**, all workflow read-only checks (812 frozen sources / 746 lessons / 0 blockers), **50 Bot/notification/public/actual-HTTP runtime tests**, **38 Desktop Node contracts**, and real local HTML/assets + synthetic API mobile lesson smoke for UZ/RU/TJ (390×844, 0 JS/console errors).
+- GitHub CI for this new batch must be read after push; the older four green runs below prove only the earlier review-fix code. Source authoring/consumer ownership: `localization/README.md`.
+- Remaining code work: migrate the active Bot handler/formatter inline locale maps and remaining Mini App main/helper maps (ads, profile carousel, embedded downloads). Do not repeat the completed dictionary/resource migrations. External account/staging/offline/installed-client acceptance remains open and is not inferred from local checks.
+
+## Previous review checkpoint (historical)
 
 - Repository: `akbarholturaev11-lang/HSK-AI-Bot`.
 - **ONLY active work branch:** `codex/p3-main-integration-20261020`; latest code commit: `46e38fbbe8d5540ea4e7bd1e88b677a07a9f4a70`. A later handoff-only commit may advance HEAD without changing the tested application code.

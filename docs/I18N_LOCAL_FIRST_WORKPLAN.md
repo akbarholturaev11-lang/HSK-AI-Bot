@@ -1,7 +1,7 @@
 # HSK AI — local-first localization work branch
 
 **Status:** local-first UZ/RU/TJ implementation is in progress on the integration feature branch; no main merge or production release.
-**Active branch:** `codex/p3-main-integration-20261020` (code `46e38fbb`; local P0 394 tests, API/HTTP 113 tests and all 25 audits passed; P0/Backend/Android/Desktop GitHub CI all SUCCESS, linked in `localization/RESUME_NEXT_CHAT.md`).
+**Active branch:** `codex/p3-main-integration-20261020` (centralization code `930d4f70`; 436 local P0 tests, all read-only workflow checks and 52 deterministic artifacts passed; new GitHub CI pending push. Current remaining code work/evidence: `localization/RESUME_NEXT_CHAT.md`).
 **Main starting point:** `160a51d69f3324e3162375213ec61b5587b19533`.
 **Source-of-truth decision:** edit translations once in GitHub; build **separate local artifacts**
 for Android, Mini App, Desktop and Python bot/backend. No per-string translation API.
