@@ -87,3 +87,14 @@ staging/account behavior or installed-device acceptance.
 - Prevention: the existing real-browser glass navigation test now checks
   900/916/940/1280px as well as the original mobile view. It failed at x=-8px
   before the fix. Main's navigation/preload/modal/spacing tests remain in CI.
+
+## Python-independent ownership fingerprints
+
+- Cause: Python 3.13+ omits empty AST call fields in the default `ast.dump`,
+  so a Python 3.14 local classification differed from CI's Python 3.11 even
+  with identical source. The first full P0 run caught the discount-campaign
+  fallback map mismatch; application behavior was unaffected.
+- Fix: retain the explicit empty-field AST representation on newer Python
+  and use the existing 3.11 representation as the classification format.
+- Prevention: a fixed empty-call fingerprint regression, complete 79-map
+  comparisons on 3.11/3.14, and both versions in the P0 workflow matrix.

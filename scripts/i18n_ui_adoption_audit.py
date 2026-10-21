@@ -21,6 +21,15 @@ CATEGORIES = {"legacy_fallback", "learning_material", "provider_metadata",
               "dynamic_campaign", "locale_adapter", "admin_only", "qa_only"}
 
 
+def map_fingerprint(node: ast.Dict) -> str:
+    # Python 3.13+ can omit empty Call.keywords/args from ast.dump. Preserve
+    # the 3.11 representation so local tooling and CI classify the same source.
+    options = {"include_attributes": False}
+    if sys.version_info >= (3, 13):
+        options["show_empty"] = True
+    return hashlib.sha256(ast.dump(node, **options).encode()).hexdigest()
+
+
 def locale_maps(root: Path = ROOT):
     for directory in ("app/bot", "app/services", "app/api"):
         for path in sorted((root / directory).rglob("*.py")):
@@ -36,7 +45,7 @@ def locale_maps(root: Path = ROOT):
                     continue
                 scope = max((f for f in functions if f.lineno <= node.lineno <= f.end_lineno),
                             key=lambda f: f.lineno, default=None)
-                digest = hashlib.sha256(ast.dump(node, include_attributes=False).encode()).hexdigest()
+                digest = map_fingerprint(node)
                 yield {"source": path.relative_to(root).as_posix(), "line": node.lineno,
                        "function": scope.name if scope else "module", "sha256": digest}
 

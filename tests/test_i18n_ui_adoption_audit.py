@@ -1,13 +1,19 @@
 """New fixed locale maps cannot bypass central authoring unnoticed."""
+import ast
 import json
 from pathlib import Path
 import tempfile
 import unittest
 
-from scripts.i18n_ui_adoption_audit import ROOT, audit, locale_maps
+from scripts.i18n_ui_adoption_audit import ROOT, audit, locale_maps, map_fingerprint
 
 
 class UIAdoptionCoverageTests(unittest.TestCase):
+    def test_empty_call_fields_keep_python_311_fingerprint(self):
+        node = ast.parse('{"uz": f(), "ru": g(), "tj": h()}').body[0].value
+        self.assertEqual(map_fingerprint(node),
+                         "349eb466c653dd0ebf9918852a42271e8a039074e4ad5ddc5bb4f2ec9e240b44")
+
     def test_current_python_maps_are_explicitly_classified(self):
         report = audit()
         self.assertEqual(report["unclassified"], [])

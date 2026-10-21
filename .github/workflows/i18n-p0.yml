@@ -44,11 +44,14 @@ jobs:
   source-contract:
     runs-on: ubuntu-latest
     timeout-minutes: 8
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.14"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: ${{ matrix.python-version }}
       - name: Unit tests for P0 source inventories and regression contracts
         run: |
           python -m unittest \
@@ -173,7 +176,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: hsk-i18n-p0-source-contracts
+          name: hsk-i18n-p0-source-contracts-${{ matrix.python-version }}
           path: /tmp/i18n-p0/*.json
           if-no-files-found: warn
           retention-days: 14

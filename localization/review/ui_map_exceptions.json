@@ -190,7 +190,7 @@
     },
     {
       "source": "app/services/discount_translation_service.py",
-      "sha256": "942c635d5b03540d229d9820d54eb1fc3090c3b6a24fd2ed1019ca0ee2f5a615",
+      "sha256": "2b9e99ffd66b38f6b3bff1f6c7e1ddff8d2994e81551120bb29922081fa9847d",
       "category": "dynamic_campaign",
       "count": 1
     },
