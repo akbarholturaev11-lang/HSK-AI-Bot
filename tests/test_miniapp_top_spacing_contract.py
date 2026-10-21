@@ -64,3 +64,15 @@ def test_glass_optical_layers_do_not_start_continuous_animations():
     assert 'pointerdown' in course
     assert '@media (prefers-reduced-transparency: reduce)' in course
     assert '@media (prefers-reduced-motion: reduce)' in course
+
+def test_desktop_course_tab_and_lesson_overlay_layout_contract():
+    course = (STATIC / "course-v3.html").read_text(encoding="utf-8")
+    assert "#s-course:not(.on){display:none}" in course
+    assert "#s-course.on{display:grid" in course
+    assert "#sheet{max-width:none;margin:0;align-items:center;justify-content:center;" in course
+    assert "#sheet>.si{width:100%;max-width:480px;" in course
+    assert "max-height:calc(100dvh - 48px)" in course
+    # Mobile still uses the existing full-width, bottom-aligned modal.
+    assert ".sheet{position:fixed;inset:0;" in course
+    assert "align-items:flex-end;z-index:50;max-width:var(--read)" in course
+    assert ".sheet.on{display:flex}" in course

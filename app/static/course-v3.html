@@ -1300,8 +1300,17 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
   /* Ikki ustun: chapda sarlavha va yo'lakcha, o'ngda yon ustun. Chap ustun
      BITTA element (`.cleft`) — shu tufayli undagi yopishqoq sarlavha butun
      sahifa bo'ylab tepada qoladi. */
-  #s-course{display:grid;grid-template-columns:minmax(0,var(--read)) minmax(0,1fr);
+  /* Only the active screen may display as a desktop grid; otherwise its
+     ID selector overrides .scr{display:none} and leaks the course behind tabs. */
+  #s-course:not(.on){display:none}
+  #s-course.on{display:grid;grid-template-columns:minmax(0,var(--read)) minmax(0,1fr);
     column-gap:26px;align-items:start}
+  /* The scrim belongs to the viewport, not the 480px mobile reading column.
+     Keep the lesson card readable and vertically centered on desktop. */
+  #sheet{max-width:none;margin:0;align-items:center;justify-content:center;
+    padding:24px;box-sizing:border-box}
+  #sheet>.si{width:100%;max-width:480px;max-height:calc(100dvh - 48px);
+    border-radius:24px;padding-bottom:22px}
   #s-course .cleft{min-width:0}
   #s-course .crail{position:sticky;top:calc(var(--safe-t) + 14px);
     padding:0 16px 0 0;display:flex;flex-direction:column;gap:12px}
