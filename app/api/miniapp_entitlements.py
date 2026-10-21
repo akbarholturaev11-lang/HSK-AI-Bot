@@ -194,12 +194,8 @@ def create_miniapp_entitlements_router(
 ) -> APIRouter:
     router = APIRouter()
 
-    def _verified_user_id(init_data: str):
-        # Passive sampled observation only. The existing signature check
-        # remains the sole auth decision, so long-lived open WebViews work.
-        telegram_id = extract_verified_webapp_user_id(
-            init_data, settings_obj.BOT_TOKEN
-        ) if init_data else None
+    def _observe_verified_init_data(init_data: str, telegram_id: int | None) -> None:
+        # Passive sampled observation only; never change the auth decision.
         if (telegram_id is not None
                 and getattr(settings_obj, "MINIAPP_AUTH_AGE_AUDIT_ENABLED", False)
                 and secrets.randbelow(128) == 0):
@@ -209,14 +205,18 @@ def create_miniapp_entitlements_router(
                     settings_obj, "MINIAPP_AUTH_AGE_AUDIT_MAX_AGE_SECONDS", 86400
                 ),
             )
-            # Intentionally exclude telegram_id, request body and credentials.
+            # No credential, timestamp or account identifiers in the log.
             logger.info("miniapp_auth_age_category=%s", status)
-        return telegram_id
 
     async def _authenticated(request: Request):
         payload = await _body(request)
         init_data = _init_data(request, payload)
-        telegram_id = _verified_user_id(init_data)
+        telegram_id = (
+            extract_verified_webapp_user_id(init_data, settings_obj.BOT_TOKEN)
+            if init_data
+            else None
+        )
+        _observe_verified_init_data(init_data, telegram_id)
         return telegram_id, payload
 
     async def _foundation_is_blocked(session, user, level: str) -> bool:
@@ -493,7 +493,8 @@ def create_miniapp_entitlements_router(
     @router.post("/api/v3/lesson/start")
     async def v3_course_lesson_start(request: Request):
         init_data = request.headers.get("X-Telegram-Init-Data", "")
-        telegram_id = _verified_user_id(init_data)
+        telegram_id = extract_verified_webapp_user_id(init_data, settings_obj.BOT_TOKEN) if init_data else None
+        _observe_verified_init_data(init_data, telegram_id)
         if not telegram_id:
             return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
         try:
