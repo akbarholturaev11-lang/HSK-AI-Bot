@@ -287,8 +287,11 @@ async def cmd_start(
     await state.set_state(OnboardingStates.choosing_language)
 
 
-@router.callback_query(OnboardingStates.choosing_language)
+@router.callback_query(OnboardingStates.choosing_language, F.data.in_({"lang:uz", "lang:ru", "lang:tj"}))
 async def process_language(callback: CallbackQuery, state: FSMContext, session):
+    if callback.data not in {"lang:uz", "lang:ru", "lang:tj"}:
+        await callback.answer()
+        return
     lang = callback.data.split(":")[1]
 
     service = OnboardingService(session)

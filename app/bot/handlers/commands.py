@@ -491,6 +491,9 @@ async def language_command_handler(message: Message, state: FSMContext, session)
 
 @router.callback_query(F.data.startswith("cmdlang:"))
 async def command_language_callback_handler(callback: CallbackQuery, session):
+    if callback.data not in {"cmdlang:uz", "cmdlang:ru", "cmdlang:tj"}:
+        await callback.answer()
+        return
     lang = callback.data.split(":")[1]
 
     user_repo = UserRepository(session)

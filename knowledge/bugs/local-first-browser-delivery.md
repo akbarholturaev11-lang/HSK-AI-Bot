@@ -98,3 +98,40 @@ staging/account behavior or installed-device acceptance.
   and use the existing 3.11 representation as the classification format.
 - Prevention: a fixed empty-call fingerprint regression, complete 79-map
   comparisons on 3.11/3.14, and both versions in the P0 workflow matrix.
+
+
+## Language preference write boundaries
+
+### Cause
+
+The Mini App preference POST reused the display/URL locale normalizer, whose
+unknown-value fallback is Uzbek. Missing, unsupported and non-string values
+therefore silently replaced a saved language; non-object JSON raised an
+attribute error. Bot onboarding accepted every callback in its language state,
+so an older level button could become a stored language. The command language
+handler also parsed and saved unvalidated callback suffixes.
+
+### Fix
+
+Validate the JSON object and supported string before opening a database session.
+Return 400 for malformed/non-object JSON and 422 for invalid language, retaining
+valid UZ/RU/TJ and the existing Mini App tg/tg-cyrl aliases. Restrict onboarding
+routing to its three exact language buttons and reject malformed callback data
+inside both Bot handlers before lookup, commit or FSM transition.
+
+### Risk
+
+Only invalid preference writes change behavior. Display/URL fallback policy,
+valid language selection, onboarding mode transition, canonical resource owners,
+lesson data, scoring, progress, prices, subscriptions and access remain intact.
+Do not copy permissive display normalization into account-setting writes.
+
+### Prevention
+
+Actual signed ASGI/SQLite regressions cover persisted preferences, all supported
+codes/aliases, malformed requests, auth and absence of learning writes. Actual
+Aiogram handler filters and Bot callbacks cover stale/unrelated buttons and
+valid mode transitions. A mobile browser regression switches RU/TJ/UZ using the
+real picker and local bundles, checks signed preference POSTs and localized
+navigation, and rejects extra translation requests or console errors. Backend
+CI runs these contracts and triggers on both Bot handlers and their tests.

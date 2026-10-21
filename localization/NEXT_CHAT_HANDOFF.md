@@ -1,5 +1,13 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## 2026-10-22 — Localization runtime audit and language write fixes
+
+- Continue only on `codex/p3-main-integration-20261020`; main/production remain unchanged. This audit inspected canonical generators, Bot lookup/formatting and callbacks, Mini App dictionary adoption/picker, notification override precedence, native locale mappings and shared Desktop lookup rather than relying on the historical completion notes.
+- Confirmed three preference-write defects: Mini App malformed/non-object JSON crashed or used Uzbek fallback as a saved preference; Bot onboarding interpreted unrelated/stale callbacks as language codes; `/language` saved unsupported callback suffixes. Fix validates before DB/FSM changes, restricts onboarding routing to the three exact buttons and retains valid UZ/RU/TJ and existing Mini App Tajik aliases. Display fallback and lesson/payment/access policy are unchanged.
+- Ten added regression methods cover real signed ASGI/SQLite persistence, malformed/auth boundaries, actual Aiogram filters, valid Bot state transitions and the mobile picker. Before corresponding fixes, **18 HTTP + 19 callback/filter cases failed**. After fixing: **199 affected runtime tests / 144 subtests passed**, **460 P0 tests on each Python 3.11/3.14**, all read-only checks and **3 focused browser tests passed**, including RU/TJ/UZ switching with no extra translation fetch or JS/console error. All **53 artifacts are current / 0 stale**; original lesson sources and generated catalog bytes are unchanged.
+- New regression coverage is included in Backend CI. New commit/remote CI evidence will be recorded after push; previous green runs prove their own source revisions only. Additional undiscovered defects are not ruled out by this audit. Real Telegram/installed-client acceptance and the new isolated Railway deployment remain pending; preserve user-owned Graphify changes.
+
+
 ## 2026-10-22 — New QA deployment and direct source audit
 
 - User authorized a NEW isolated Railway project for `@Gentss_3bot`, from `codex/p3-main-integration-20261020`; main/production remain out of scope. Bot identity was verified read-only; no webhook was configured. No token is stored in repository files.

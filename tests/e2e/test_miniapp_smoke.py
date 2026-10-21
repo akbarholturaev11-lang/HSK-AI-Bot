@@ -2251,6 +2251,44 @@ def test_practice_icon_accessibility_names_follow_selected_locale(page):
         assert page.evaluate("window.MISTAKES_A11Y.listen") == labels["listen"]
 
 
+def test_course_language_switch_uses_local_catalogs_and_saves_selected_code(page):
+    errors, saved, translation_requests = [], [], []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    page.on("console", lambda message: errors.append(message.text) if message.type == "error" else None)
+    page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    mock_learning_audio(page)
+
+    def save_language(route):
+        assert route.request.headers.get("x-telegram-init-data") == "query_id=smoke"
+        saved.append(route.request.post_data_json)
+        json_response(route, {"ok": True, **saved[-1]})
+
+    page.route("**/api/v3/language", save_language)
+    page.add_init_script("localStorage.setItem('hsk_v3_onb','1');localStorage.setItem('hsk_v3_level','hsk1');")
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator("#hsk-launch-splash").wait_for(state="hidden")
+    page.on("request", lambda request: translation_requests.append(request.url)
+            if "-i18n.js" in request.url else None)
+    for index, (language, label) in enumerate((("ru", "Русский"), ("tj", "Тоҷикӣ"), ("uz", "O'zbekcha")), 1):
+        page.evaluate("App.langPicker()")
+        page.locator("#sheet-body").get_by_role("button", name=label, exact=True).click()
+        page.wait_for_function("(code) => LANG === code", arg=language)
+        page.wait_for_function("document.querySelector('#sheet').classList.contains('on') === false")
+        expect(page.locator("html")).to_have_attribute("lang", "tg" if language == "tj" else language)
+        messages = json.loads((APP_ROOT / f"localization/ui/{language}/course.json").read_text())["messages"]
+        expect(page.locator('#nav [data-i="course"]')).to_have_text(messages["nav.course"])
+        expect(page.locator('#nav [data-i="profile"]')).to_have_text(messages["nav.profile"])
+        expect(page.locator("#sheet")).not_to_have_class(re.compile(r"\bon\b"))
+        # Wait for the signed preference POST to finish before the next choice.
+        page.wait_for_load_state("networkidle")
+        assert saved == [{"language": code} for code in ("ru", "tj", "uz")[:index]]
+    assert translation_requests == []
+    assert errors == []
+
+
 def test_course_resource_and_writer_labels_follow_selected_locale(page):
     expected = {
         "uz": {"dict": "Ieroglif lug'ati", "phrases": "Tayyor gaplar", "write": "书写 Yozish", "settings": "Dars sozlamalari", "new": "YANGI"},

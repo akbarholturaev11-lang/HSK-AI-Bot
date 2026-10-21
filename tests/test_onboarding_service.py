@@ -3,7 +3,8 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 from app.bot.fsm.onboarding import OnboardingStates
-from app.bot.handlers.start import _send_android_referral_apk, cmd_start
+from app.bot.handlers.start import _send_android_referral_apk, cmd_start, process_language, router as start_router
+from app.bot.handlers.commands import command_language_callback_handler
 from app.services.onboarding_service import (
     ONBOARDING_LANGUAGE_MODE,
     ONBOARDING_MODE_CHOICE_MODE,
@@ -415,6 +416,77 @@ class StartHandlerOnboardingTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("Забонро интихоб кунед", message.answer.await_args.args[0])
         state.update_data.assert_awaited_once_with(onboarding_message_id=77)
         state.set_state.assert_awaited_once_with(OnboardingStates.choosing_language)
+
+
+class LanguageSelectionCallbackTests(unittest.IsolatedAsyncioTestCase):
+    def callback(self, data):
+        return SimpleNamespace(
+            data=data, from_user=SimpleNamespace(id=123, full_name="Synthetic QA", username="qa"),
+            answer=AsyncMock(), bot=SimpleNamespace(edit_message_text=AsyncMock()),
+            message=SimpleNamespace(chat=SimpleNamespace(id=123), delete=AsyncMock(), answer=AsyncMock()),
+        )
+
+    async def test_onboarding_rejects_other_buttons_and_unknown_language_without_writes(self):
+        for data in (None, "", "lang", "lang:en", "lang:", "lang:uz:extra", "level:hsk2", "cmdlang:ru"):
+            with self.subTest(data=data):
+                callback = self.callback(data)
+                session = SimpleNamespace(commit=AsyncMock())
+                state = SimpleNamespace(get_data=AsyncMock(return_value={}), clear=AsyncMock())
+                with patch("app.bot.handlers.start.OnboardingService") as service:
+                    await process_language(callback, state, session)
+                    service.assert_not_called()
+                callback.answer.assert_awaited_once()
+                session.commit.assert_not_awaited()
+                state.clear.assert_not_awaited()
+
+    async def test_onboarding_router_only_matches_its_three_language_buttons(self):
+        handler = next(row for row in start_router.callback_query.handlers if row.callback is process_language)
+        for data in ("lang:uz", "lang:ru", "lang:tj", "level:hsk2", "cmdlang:ru", "lang:en", None):
+            with self.subTest(data=data):
+                matches, _ = await handler.check(self.callback(data), raw_state=OnboardingStates.choosing_language.state)
+                self.assertEqual(matches, data in {"lang:uz", "lang:ru", "lang:tj"})
+
+    async def test_onboarding_valid_languages_retain_mode_transition_and_local_copy(self):
+        for language in ("uz", "ru", "tj"):
+            with self.subTest(language=language):
+                callback = self.callback("lang:" + language)
+                session = SimpleNamespace(commit=AsyncMock())
+                state = SimpleNamespace(get_data=AsyncMock(return_value={"onboarding_message_id": 77}),
+                                        clear=AsyncMock())
+                user = SimpleNamespace(language="ru", learning_mode=ONBOARDING_LANGUAGE_MODE)
+                with patch("app.bot.handlers.start.OnboardingService") as service:
+                    service.return_value.get_or_create_user = AsyncMock(return_value=(user, False))
+                    await process_language(callback, state, session)
+                self.assertEqual(user.language, language)
+                self.assertEqual(user.learning_mode, ONBOARDING_MODE_CHOICE_MODE)
+                session.commit.assert_awaited_once()
+                state.clear.assert_awaited_once()
+                callback.bot.edit_message_text.assert_awaited_once()
+
+    async def test_command_language_rejects_unknown_or_malformed_buttons_before_lookup(self):
+        for data in (None, "", "cmdlang", "cmdlang:", "cmdlang:en", "cmdlang:ru:extra", "lang:tj"):
+            with self.subTest(data=data):
+                callback = self.callback(data)
+                session = SimpleNamespace(commit=AsyncMock())
+                with patch("app.bot.handlers.commands.UserRepository") as repository:
+                    await command_language_callback_handler(callback, session)
+                    repository.assert_not_called()
+                callback.answer.assert_awaited_once()
+                session.commit.assert_not_awaited()
+                callback.message.delete.assert_not_awaited()
+
+    async def test_command_language_persists_each_supported_code(self):
+        for language in ("uz", "ru", "tj"):
+            with self.subTest(language=language):
+                callback = self.callback("cmdlang:" + language)
+                session = SimpleNamespace(commit=AsyncMock())
+                user = SimpleNamespace(language="ru")
+                with patch("app.bot.handlers.commands.UserRepository") as repository:
+                    repository.return_value.get_by_telegram_id = AsyncMock(return_value=user)
+                    await command_language_callback_handler(callback, session)
+                self.assertEqual(user.language, language)
+                session.commit.assert_awaited_once()
+                callback.message.answer.assert_awaited_once()
 
 
 if __name__ == "__main__":

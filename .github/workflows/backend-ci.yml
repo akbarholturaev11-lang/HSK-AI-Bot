@@ -9,6 +9,9 @@ on:
       - codex/p3-main-integration-20261020
     paths:
       - "app/main.py"
+      - "app/bot/handlers/start.py"
+      - "app/bot/handlers/commands.py"
+      - "tests/test_onboarding_service.py"
       - "app/static/*.html"
       - "app/static/course_v3_data/*.js"
       - "app/static/course_v3_data/*.css"
@@ -173,6 +176,12 @@ jobs:
           DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
           REDIS_URL: "redis://127.0.0.1:1/0"
         run: python -m unittest tests.test_miniapp_course_context tests.test_course_v3_static_data tests.test_desktop_course_api
+      - name: Verify language callback validation and onboarding state preservation
+        env:
+          BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+          DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          REDIS_URL: "redis://127.0.0.1:1/0"
+        run: python -m unittest tests.test_onboarding_service
       - name: Verify actual HTTP delivery of browser scripts and private source boundaries
         env:
           BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
@@ -434,4 +443,4 @@ jobs:
           MINIAPP_E2E_BASE_URL: "http://hsk-ai.local"
         run: >-
           python -m pytest -q tests/e2e/test_miniapp_smoke.py
-          -k 'daily_plan_lesson_completion or onboarding_autostart_opens_first_lesson or starter_repair_mic_denied_and_completion or starter_mic_skip_stops_recording or checkpoint_exit_ticket_mastery_and_paywall_boundary or checkpoint_repair_resume_restores_exact_semantic_card or required_foundation_defers_challenge or required_foundation_load_error or d1_recovery_resumes_saved_lesson or recognition_drill_reports_every_answer or hsk_exam_uses_public_questions_and_server_result or challenge_question_is_blind or paywall_replaces_the_lesson_sheet or subscription_page_smoke or hsk30_pending_payment_stays or regular_subscription_shows_the_users_admin_discount or expired_discount_link_opens_regular_prices or subscription_checkout_tracks_one_attempt or subscription_foreign_region_skips_payment or profile_settings_icon_and_paid_renewal'
+          -k 'course_language_switch_uses_local_catalogs or daily_plan_lesson_completion or onboarding_autostart_opens_first_lesson or starter_repair_mic_denied_and_completion or starter_mic_skip_stops_recording or checkpoint_exit_ticket_mastery_and_paywall_boundary or checkpoint_repair_resume_restores_exact_semantic_card or required_foundation_defers_challenge or required_foundation_load_error or d1_recovery_resumes_saved_lesson or recognition_drill_reports_every_answer or hsk_exam_uses_public_questions_and_server_result or challenge_question_is_blind or paywall_replaces_the_lesson_sheet or subscription_page_smoke or hsk30_pending_payment_stays or regular_subscription_shows_the_users_admin_discount or expired_discount_link_opens_regular_prices or subscription_checkout_tracks_one_attempt or subscription_foreign_region_skips_payment or profile_settings_icon_and_paid_renewal'

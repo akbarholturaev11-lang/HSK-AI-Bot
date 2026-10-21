@@ -2779,9 +2779,16 @@ async def v3_set_language(request: Request):
         return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
     try:
         payload = await request.json()
-    except Exception:
-        payload = {}
-    resolved_lang = normalize_miniapp_lang(str(payload.get("language") or ""))
+    except (ValueError, UnicodeError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_language_payload"})
+    if not isinstance(payload, dict):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_language_payload"})
+    language = payload.get("language")
+    # Display/URL fallbacks must never silently replace a saved preference.
+    # Retain the Tajik aliases already accepted by the Mini App normalizer.
+    if not isinstance(language, str) or language.strip().lower() not in {"uz", "ru", "tj", "tg", "tg-cyrl"}:
+        return JSONResponse(status_code=422, content={"ok": False, "error": "invalid_language"})
+    resolved_lang = normalize_miniapp_lang(language)
 
     async with async_session_maker() as session:
         user = await UserRepository(session).get_by_telegram_id(telegram_id)

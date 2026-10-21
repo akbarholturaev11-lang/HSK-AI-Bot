@@ -47,6 +47,7 @@ class MiniAppCourseContextTests(unittest.IsolatedAsyncioTestCase):
         app = FastAPI()
         app.add_api_route("/api/v3/lesson/complete", main.v3_course_lesson_complete, methods=["POST"])
         app.add_api_route("/api/v3/lesson/unlock", main.v3_course_lesson_unlock, methods=["POST"])
+        app.add_api_route("/api/v3/language", main.v3_set_language, methods=["POST"])
         self.client = AsyncClient(transport=ASGITransport(app=app), base_url="https://synthetic.test")
         self.headers = {"X-Telegram-Init-Data": synthetic_init_data()}
 
@@ -168,3 +169,54 @@ class MiniAppCourseContextTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(response.status_code, 400, response.text)
                     self.assertEqual(response.json()["error"], "invalid_lesson_payload")
                     self.assertEqual(await self._snapshot(), before)
+
+    async def test_language_change_persists_all_locales_without_learning_writes(self):
+        before = await self._snapshot()
+        for value, expected in (("ru", "ru"), ("tj", "tj"), ("uz", "uz"),
+                                (" TG ", "tj"), ("tg-Cyrl", "tj"), (" RU ", "ru")):
+            with self.subTest(value=value):
+                response = await self.client.post("/api/v3/language", headers=self.headers,
+                                                  json={"language": value})
+                self.assertEqual(response.status_code, 200, response.text)
+                self.assertEqual(response.json(), {"ok": True, "language": expected})
+                async with self.sessions() as session:
+                    self.assertEqual((await session.get(User, 1)).language, expected)
+                self.assertEqual(await self._snapshot(), before)
+
+    async def test_malformed_language_json_is_rejected_before_opening_database(self):
+        for body in ("[]", '[{"language":"ru"}]', '"ru"', "1", "null", "true", "{", ""):
+            with self.subTest(body=body):
+                with patch.object(main, "async_session_maker", wraps=self.sessions) as sessions:
+                    response = await self.client.post(
+                        "/api/v3/language", headers=self.headers, content=body,
+                    )
+                    self.assertEqual(response.status_code, 400, response.text)
+                    self.assertEqual(response.json()["error"], "invalid_language_payload")
+                    sessions.assert_not_called()
+
+    async def test_invalid_language_cannot_silently_replace_account_preference(self):
+        before = await self._snapshot()
+        async with self.sessions() as session:
+            (await session.get(User, 1)).language = "tj"
+            await session.commit()
+        for value in (None, "", "  ", "en", "unsupported", 1, True, ["ru"], {"code": "ru"}):
+            payloads = ({}, {"language": value}) if value is None else ({"language": value},)
+            for payload in payloads:
+                with self.subTest(payload=payload):
+                    with patch.object(main, "async_session_maker", wraps=self.sessions) as sessions:
+                        response = await self.client.post("/api/v3/language", headers=self.headers,
+                                                          json=payload)
+                        self.assertEqual(response.status_code, 422, response.text)
+                        self.assertEqual(response.json()["error"], "invalid_language")
+                        sessions.assert_not_called()
+                    async with self.sessions() as session:
+                        self.assertEqual((await session.get(User, 1)).language, "tj")
+                    self.assertEqual(await self._snapshot(), before)
+
+    async def test_language_change_requires_verified_telegram_before_reading_body(self):
+        for headers in ({}, {"X-Telegram-Init-Data": "forged"}):
+            with self.subTest(headers=headers), patch.object(main, "async_session_maker") as sessions:
+                response = await self.client.post("/api/v3/language", headers=headers, content="{")
+                self.assertEqual(response.status_code, 401)
+                self.assertEqual(response.json()["error"], "invalid_telegram_init_data")
+                sessions.assert_not_called()

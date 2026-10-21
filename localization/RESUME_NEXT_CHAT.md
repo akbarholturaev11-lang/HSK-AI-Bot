@@ -2,6 +2,12 @@
 
 Updated: 2026-10-22. **This is the short authoritative checkpoint, not evidence of main/production release.**
 
+## Latest localization code audit — 2026-10-22
+
+- Follow the newest entry in `NEXT_CHAT_HANDOFF.md`: three confirmed language-preference write defects are fixed in Mini App and Bot, with no catalog, lesson, scoring, payment or entitlement changes. Work branch only; main/production are unchanged.
+- Local: 199 runtime tests / 144 subtests, 460 P0 tests on both Python versions, all read-only checks, 3 focused browser tests and 53 current artifacts / 0 stale. New signed HTTP, Bot filter/callback and real picker regressions are part of Backend CI. Record the new source SHA and remote CI after push; do not use previous CI as evidence for unpushed fixes.
+- The new isolated Railway test-bot deployment remains pending the platform outage described below. No new project or deployment is claimed.
+
 ## Latest direct-code audit and deployment request — 2026-10-22
 
 - Current runtime source: `150906868d0cec2522f5844fd50e3d25abe80e8d`, work branch `codex/p3-main-integration-20261020`. Main/production are unchanged. Continue from the 2026-10-22 entry in `NEXT_CHAT_HANDOFF.md`; the older checkpoints below are historical.
