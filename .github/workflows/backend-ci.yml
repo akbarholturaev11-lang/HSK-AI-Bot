@@ -112,6 +112,7 @@ on:
       - "tests/test_i18n_native_account_ownership.py"
       - "tests/test_i18n_miniapp_reservation_asgi.py"
       - "tests/test_miniapp_course_context.py"
+      - "tests/test_miniapp_course_map_concurrency.py"
       - "tests/test_course_v3_static_data.py"
       - "tests/e2e/test_miniapp_smoke.py"
       - "tests/test_hsk30_lesson_limits.py"
@@ -371,6 +372,7 @@ jobs:
           PY
           python -m pytest -q -rs --tb=short \
             tests/test_native_account_concurrency.py \
+            tests/test_miniapp_course_map_concurrency.py \
             tests/test_native_oauth_lifecycle.py::NativeOAuthConcurrencyTests \
             tests/test_telegram_identity_link.py::TelegramIdentityConcurrencyTests \
             tests/test_i18n_native_payment_repository.py::NativePaymentConcurrencyTests \
@@ -393,7 +395,7 @@ jobs:
               raise SystemExit("PostgreSQL regression report is missing")
           cases = list(ET.parse(report).getroot().iter("testcase"))
           skipped = [case for case in cases if case.find("skipped") is not None]
-          if len(cases) < 57 or skipped:
+          if len(cases) < 64 or skipped:
               raise SystemExit(f"PostgreSQL coverage incomplete: {len(cases)} tests, {len(skipped)} skipped")
           if any(case.find("failure") is not None or case.find("error") is not None for case in cases):
               raise SystemExit("PostgreSQL regressions failed")

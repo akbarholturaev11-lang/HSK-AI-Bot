@@ -2455,7 +2455,9 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
     telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
 
     async with async_session_maker() as session:
-        user = await UserRepository(session).get_by_telegram_id(telegram_id) if telegram_id else None
+        # The map can reset progress to the selected band. Serialize that write
+        # with level/track changes before reading either the user or progress.
+        user = await UserRepository(session).get_by_telegram_id_for_update(telegram_id) if telegram_id else None
 
         if not user:
             # Botka real ulanmaganda (initData yo'q / token mos kelmadi / user topilmadi)

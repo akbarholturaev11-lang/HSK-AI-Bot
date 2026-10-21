@@ -270,7 +270,7 @@ class DesktopCourseService:
         timezone_offset_minutes: int | None = None,
     ) -> dict[str, Any]:
         context = await self._context(access_token)
-        user = context.user
+        user = await self._locked_context_user(context)
         level = self._level(user)
         language = self._language(user)
         progress = await self._progress(user, for_update=True)

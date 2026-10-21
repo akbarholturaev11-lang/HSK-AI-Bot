@@ -7,6 +7,12 @@
 - Direct source review found the fresh-QA initializer both expected obsolete 0108 and pre-created the table that 0109 unconditionally creates. Fix retains formal 0102→0109 migrations, preflights the head before writes, defers that table, verifies empty learner/identity tables, and preserves the existing project/host allowlist. Root verified **21 safety tests / 42 subtests**; real fresh local PostgreSQL proof produced 61 tables/head0109 and zero learner rows, rejected a nonempty retry without changes, then stopped its own cluster.
 - Source audit continues on actual course map/progress transactions and account/access code; no conclusion of “no bugs” is inferred from Markdown. New project guard bindings and real deployment remain pending an actual Railway project ID/domain after recovery.
 
+### Direct source audit fixes — 2026-10-22
+
+- Confirmed with real handlers/services and independent PostgreSQL transactions: Mini App and shared native map could read an old user band, wait for progress, then overwrite restored track progress with zero. Mini App map and Android/Desktop shared map now lock/refresh User before resolving the band and locking progress. Five ASGI regressions cover both track directions plus real bearer macOS/Windows/Android calls; all failed as appropriate before the fix and pass afterwards.
+- Confirmed separately: the Telegram `FOR UPDATE` lookup retained stale ORM state. Actual legacy subscription calls lost one 30-day extension or reactivated an account blocked by another transaction. `populate_existing=True` now refreshes the locked row. Both new PostgreSQL regressions failed before the fix and pass afterwards; billing durations/prices and canonical ownership are unchanged.
+- Verification before push: **248 runtime tests + 137 subtests**, **64 PostgreSQL tests + 64 subtests / 0 skipped**, and **460 P0 tests on each Python 3.11/3.14**. CI includes all seven new regressions and rejects fewer than 64 PostgreSQL test cases or any skips. Final GitHub run evidence must be read after push. Original lesson JSON, graded data, UI catalogs, native frontend code, main and production are untouched.
+
 > **FOR NEW CHATS / AGENTS — READ `localization/RESUME_NEXT_CHAT.md`, THEN `localization/P3_ACTIVE_HANDOFF.md` FIRST.** This ~historical handoff preserves chronological records; older 'latest' sections or failed CI runs do not override the current active snapshot. Keep all source/access/QA gates intact.
 
 ## Current critical-mechanics checkpoint — 2026-10-21
