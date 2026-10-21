@@ -1941,6 +1941,14 @@ def _course_v3_user_level(user) -> str:
     return _course_v3_level(getattr(user, "level", None))
 
 
+async def _course_v3_foundation_is_blocked(session, user, level: str) -> bool:
+    if (level != "hsk1"
+            or str(getattr(user, "level", "") or "").strip().lower() != "beginner"):
+        return False
+    foundation = await CourseMiniAppProfileService(session).foundation_status(user)
+    return bool(foundation.get("required") and not foundation.get("completed"))
+
+
 def _course_v3_user_lang(user) -> str:
     return normalize_miniapp_lang(getattr(user, "language", None))
 
@@ -2858,6 +2866,8 @@ async def v3_course_lesson_unlock(request: Request):
 
     try:
         payload = await request.json()
+        if not isinstance(payload, dict):
+            raise ValueError("lesson payload must be an object")
         lesson_order = int(payload.get("lesson_id") or payload.get("lesson_order") or 0)
         score = int(payload.get("score") or 0)
     except (TypeError, ValueError):
@@ -2866,11 +2876,19 @@ async def v3_course_lesson_unlock(request: Request):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
 
     async with async_session_maker() as session:
-        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        user = await UserRepository(session).get_by_telegram_id_for_update(telegram_id)
         if not user:
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
 
         resolved_level = _course_v3_user_level(user)
+        # The client identifies the course it opened; it cannot choose a new
+        # course. Reject late requests after a level/track switch before writes.
+        if payload.get("level") is not None and str(payload["level"]).strip().lower() != resolved_level:
+            return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
+                                headers={"Cache-Control": "no-store"})
+        if await _course_v3_foundation_is_blocked(session, user, resolved_level):
+            return JSONResponse(status_code=403, content={"ok": False, "error": "android_foundation_required"},
+                                headers={"Cache-Control": "no-store"})
         if resolved_level.startswith("nhsk"):
             hsk30_access = await CourseTrackService(session).hsk30_access(user)
             if not hsk30_access.allowed:
@@ -2898,6 +2916,9 @@ async def v3_course_lesson_unlock(request: Request):
 
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
+        if progress and _course_v3_level(progress.level) != resolved_level:
+            return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
+                                headers={"Cache-Control": "no-store"})
         if not progress:
             progress = await progress_repo.create(
                 user_id=user.id,
@@ -2951,6 +2972,8 @@ async def v3_course_lesson_complete(request: Request):
 
     try:
         payload = await request.json()
+        if not isinstance(payload, dict):
+            raise ValueError("lesson payload must be an object")
         lesson_order = int(payload.get("lesson_id") or payload.get("lesson_order") or 0)
         lesson_session_id = _checkout_text(payload.get("session_id"), 80) or None
         lesson_mistakes = payload.get("mistakes") if isinstance(payload.get("mistakes"), list) else []
@@ -2962,13 +2985,19 @@ async def v3_course_lesson_complete(request: Request):
 
     async with async_session_maker() as session:
         user_repo = UserRepository(session)
-        user = await user_repo.get_by_telegram_id(telegram_id)
+        user = await user_repo.get_by_telegram_id_for_update(telegram_id)
         if not user:
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
 
         # Band yagona manbadan — user.level. Klient yuborgan level emas, server
         # foydalanuvchining haqiqiy bandiga ishonadi (QA rejim bilan bir xil).
         resolved_level = _course_v3_user_level(user)
+        if payload.get("level") is not None and str(payload["level"]).strip().lower() != resolved_level:
+            return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
+                                headers={"Cache-Control": "no-store"})
+        if await _course_v3_foundation_is_blocked(session, user, resolved_level):
+            return JSONResponse(status_code=403, content={"ok": False, "error": "android_foundation_required"},
+                                headers={"Cache-Control": "no-store"})
 
         total_parts = _course_v3_total_parts(resolved_level)
         if total_parts and lesson_order > total_parts:
@@ -2984,6 +3013,9 @@ async def v3_course_lesson_complete(request: Request):
         is_paid = access.has_unlimited_course_access(user)
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
+        if progress and _course_v3_level(progress.level) != resolved_level:
+            return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
+                                headers={"Cache-Control": "no-store"})
         if not progress:
             progress = await progress_repo.create(
                 user_id=user.id,

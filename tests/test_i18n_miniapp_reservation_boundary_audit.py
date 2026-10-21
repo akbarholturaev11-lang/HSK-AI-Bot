@@ -43,6 +43,32 @@ class MiniAppReservationBoundaryTests(unittest.TestCase):
             {row["check"] for row in result["regressions"]},
         )
 
+    def test_unlocked_account_lookup_cannot_replace_serialized_start(self):
+        exact = "get_by_telegram_id_for_update(telegram_id)"
+        self.assertIn(exact, self.api)
+        changed = self.api.replace(exact, "get_by_telegram_id(telegram_id)", 1)
+        regressions = {row["check"] for row in audit_source(changed, self.client)["regressions"]}
+        self.assertIn("server.uses_verified_account_lookup", regressions)
+        self.assertIn("server.locks_account_before_progress_and_quota", regressions)
+
+    def test_locking_a_different_identity_cannot_authorize_start(self):
+        exact = "get_by_telegram_id_for_update(telegram_id)"
+        self.assertIn(exact, self.api)
+        changed = self.api.replace(exact, "get_by_telegram_id_for_update(user_id)", 1)
+        regressions = {row["check"] for row in audit_source(changed, self.client)["regressions"]}
+        self.assertIn("server.uses_verified_account_lookup", regressions)
+
+    def test_progress_lookup_before_account_lock_is_detected(self):
+        exact = "            user = await UserRepository(session).get_by_telegram_id_for_update(telegram_id)"
+        self.assertIn(exact, self.api)
+        changed = self.api.replace(
+            exact,
+            "            await CourseProgressRepository(session).get_by_user_id(700, for_update=True)\n" + exact,
+            1,
+        )
+        regressions = {row["check"] for row in audit_source(changed, self.client)["regressions"]}
+        self.assertIn("server.locks_account_before_progress_and_quota", regressions)
+
     def test_unlock_sequence_guard_change_is_detected(self):
         self.assertIn("order > completed + 1", self.api)
         changed = self.api.replace("order > completed + 1",

@@ -49,6 +49,8 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Check provider and Telegram attachment on both desktop layouts
         run: python -m pytest -q tests/e2e/test_desktop_provider_identity.py tests/e2e/test_desktop_telegram_identity.py
+      - name: Keep the opened course on lesson completion for macOS and Windows
+        run: python -m pytest -q tests/e2e/test_desktop_ui_preview.py -k lesson_completion_keeps_the_loaded_course_snapshot
 
   native-auth:
     name: Native auth (${{ matrix.os }})

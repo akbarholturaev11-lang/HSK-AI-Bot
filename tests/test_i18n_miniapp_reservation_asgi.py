@@ -1,7 +1,8 @@
 """Offline ASGI tests: authenticated Mini App lesson reservation, no real DB/bot.
 
 Uses a synthetic HMAC-signed Telegram initData fixture and mocks every
-entitlement/database dependency. This does NOT inspect real user data, make
+entitlement/database dependency; the final class uses isolated in-memory SQLite
+with the real shared lesson service. This does NOT inspect real user data, make
 external HTTP requests, or certify deployed Pro/Free policy.
 """
 from contextlib import asynccontextmanager
@@ -16,8 +17,19 @@ from urllib.parse import urlencode
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.pool import StaticPool
 
 from app.api.miniapp_entitlements import create_miniapp_entitlements_router
+from app.db.base import Base
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_progress import CourseProgress
+from app.db.models.user import User
+from app.services.course_levels import content_level
+from app.services.course_miniapp_access_service import COURSE_DAILY_EVENT_NAME
+from app.services.entitlements import actions as A
+from app.services.entitlements.limits_config import LimitConfigService
 
 
 TEST_TOKEN = "9123456:synthetic-test-only-unusable-secret"
@@ -54,6 +66,7 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         )
         self.user_repo = MagicMock()
         self.user_repo.get_by_telegram_id = AsyncMock(return_value=self.user)
+        self.user_repo.get_by_telegram_id_for_update = AsyncMock(return_value=self.user)
         self.progress_repo = MagicMock()
         self.progress_repo.get_by_user_id = AsyncMock(return_value=self.progress)
         self.lesson_service = MagicMock()
@@ -94,7 +107,7 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
 
     async def _start(self, order, headers=None, *, review_only=False):
-        data = {"lesson_id": order, "level": "hsk1", "lang": "uz"}
+        data = {"lesson_id": order, "level": content_level(self.user.level), "lang": "uz"}
         if review_only:
             data["review_only"] = True
         return await self.client.post(
@@ -123,7 +136,7 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         })
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["remaining"], 1)
-        self.user_repo.get_by_telegram_id.assert_awaited_once_with(TEST_ID)
+        self.user_repo.get_by_telegram_id_for_update.assert_awaited_once_with(TEST_ID)
         self.lesson_service.status.assert_awaited_once()
         kwargs = self.lesson_service.status.await_args.kwargs
         self.assertEqual(kwargs["level"], "hsk1")
@@ -658,6 +671,192 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.json()["error"], "free_feature_limit_reached")
         self.lesson_service.status.assert_awaited_once()
         self.session.commit.assert_awaited_once()
+
+
+class MiniAppLessonRealReservationASGITests(unittest.IsolatedAsyncioTestCase):
+    """Private content reads must agree with the real reservation decision."""
+
+    async def asyncSetUp(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:", poolclass=StaticPool,
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        for target in (
+            "app.services.conversion_funnel_service.async_session_maker",
+            "app.services.entitlements.shadow.async_session_maker",
+        ):
+            analytics = patch(target, self.sessions)
+            analytics.start()
+            self.addCleanup(analytics.stop)
+        async with self.sessions() as session:
+            session.add(User(
+                id=700, telegram_id=TEST_ID, full_name="Synthetic QA",
+                language="uz", level="hsk1", learning_mode="course",
+                voice_mode="none", status="free", payment_status="none",
+            ))
+            session.add(CourseProgress(
+                user_id=700, level="hsk1", completed_lessons_count=0,
+            ))
+            await session.commit()
+        app = FastAPI()
+        app.include_router(create_miniapp_entitlements_router(
+            session_factory=self.sessions,
+            settings_obj=SimpleNamespace(BOT_TOKEN=TEST_TOKEN),
+        ))
+        self.client = AsyncClient(
+            transport=ASGITransport(app=app), base_url="https://synthetic.test",
+            headers={"X-Telegram-Init-Data": synthetic_init_data()},
+        )
+
+    async def asyncTearDown(self):
+        await self.client.aclose()
+        await self.engine.dispose()
+
+    async def _configure(self, *, trial=False, limit=2, level="hsk1"):
+        async with self.sessions() as session:
+            user = await session.get(User, 700)
+            user.level = level
+            if trial:
+                user.pro_trial_ends_at = datetime.now(timezone.utc) + timedelta(days=1)
+            config = LimitConfigService(session)
+            payload = (await config.get_config()).public_payload()
+            payload["plans"]["TRIAL_ACTIVE" if trial else "FREE"][A.LESSON_START] = {
+                "limit": limit, "window": "none" if limit is None else "daily",
+            }
+            await config.save_config(payload)
+            await session.commit()
+
+    async def _reservation_count(self):
+        async with self.sessions() as session:
+            return await session.scalar(select(func.count(CourseMiniAppEvent.id)).where(
+                CourseMiniAppEvent.user_id == 700,
+                CourseMiniAppEvent.event_name == COURSE_DAILY_EVENT_NAME,
+                CourseMiniAppEvent.session_id == "lesson",
+            ))
+
+    async def _start(self):
+        return await self.client.post(
+            "/api/v3/lesson/start", json={"lesson_id": 1, "level": "hsk1"},
+        )
+
+    async def _assert_unlimited_reads(self, *, trial):
+        await self._configure(trial=trial, limit=None)
+        started = await self._start()
+        self.assertEqual(started.status_code, 200, started.text)
+        self.assertTrue(started.json()["unlimited"])
+        for _ in range(3):
+            response = await self.client.get("/api/v3/lesson/content/hsk1/1")
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertIn("sections", response.json())
+            self.assertEqual(response.headers["cache-control"], "no-store")
+        self.assertEqual((await self._start()).status_code, 200)
+        # Unlimited starts intentionally do not create a reservation.
+        self.assertEqual(await self._reservation_count(), 0)
+
+    async def test_admin_unlimited_free_start_can_read_content_without_reservation(self):
+        await self._assert_unlimited_reads(trial=False)
+
+    async def test_admin_unlimited_trial_start_can_read_content_without_reservation(self):
+        await self._assert_unlimited_reads(trial=True)
+
+    async def _assert_one_limited_reservation(self, *, trial):
+        await self._configure(trial=trial, limit=10 if trial else 2)
+        before = await self.client.get("/api/v3/lesson/content/hsk1/1")
+        self.assertEqual(before.status_code, 403, before.text)
+        self.assertEqual(before.json()["error"], "lesson_start_required")
+        started = await self._start()
+        self.assertEqual(started.status_code, 200, started.text)
+        for _ in range(3):
+            response = await self.client.get("/api/v3/lesson/content/hsk1/1")
+            self.assertEqual(response.status_code, 200, response.text)
+        repeated = await self._start()
+        self.assertEqual(repeated.status_code, 200, repeated.text)
+        self.assertTrue(repeated.json()["idempotent"])
+        self.assertEqual(await self._reservation_count(), 1)
+
+    async def test_limited_free_reads_and_retry_spend_only_one_slot(self):
+        await self._assert_one_limited_reservation(trial=False)
+
+    async def test_limited_trial_reads_and_retry_spend_only_one_slot(self):
+        await self._assert_one_limited_reservation(trial=True)
+
+    async def test_required_foundation_denial_does_not_consume_lesson(self):
+        await self._configure(level="beginner")
+        for _ in range(2):
+            start = await self._start()
+            self.assertEqual(start.status_code, 403, start.text)
+            self.assertEqual(start.json()["error"], "android_foundation_required")
+            self.assertEqual(start.headers["cache-control"], "no-store")
+        content = await self.client.get("/api/v3/lesson/content/hsk1/1")
+        self.assertEqual(content.status_code, 403, content.text)
+        self.assertEqual(content.json()["error"], "android_foundation_required")
+        self.assertEqual(await self._reservation_count(), 0)
+        async with self.sessions() as session:
+            progress = await session.scalar(select(CourseProgress).where(
+                CourseProgress.user_id == 700,
+            ))
+            self.assertEqual(progress.completed_lessons_count, 0)
+            session.add(CourseMiniAppEvent(
+                user_id=700, telegram_id=TEST_ID, event_name="foundation_completed",
+                payload_json=json.dumps({"foundation_version": "starter-0-v1"}),
+            ))
+            await session.commit()
+        started = await self._start()
+        self.assertEqual(started.status_code, 200, started.text)
+        self.assertEqual((await self.client.get("/api/v3/lesson/content/hsk1/1")).status_code, 200)
+        self.assertEqual(await self._reservation_count(), 1)
+
+    async def test_stale_course_start_does_not_consume_or_retag_progress(self):
+        await self._configure(level="hsk2")
+        response = await self._start()
+        self.assertEqual(response.status_code, 409, response.text)
+        self.assertEqual(response.json()["error"], "course_context_changed")
+        self.assertEqual(response.headers["cache-control"], "no-store")
+        self.assertEqual(await self._reservation_count(), 0)
+        async with self.sessions() as session:
+            progress = await session.scalar(select(CourseProgress).where(
+                CourseProgress.user_id == 700,
+            ))
+            self.assertEqual(progress.level, "hsk1")
+            self.assertEqual(progress.completed_lessons_count, 0)
+        current = await self.client.post(
+            "/api/v3/lesson/start", json={"lesson_id": 1, "level": "HSK2"},
+        )
+        self.assertEqual(current.status_code, 200, current.text)
+        self.assertEqual(await self._reservation_count(), 1)
+
+    async def test_legacy_start_without_level_keeps_server_course_authority(self):
+        await self._configure(level="hsk2")
+        response = await self.client.post(
+            "/api/v3/lesson/start", json={"lesson_id": 1},
+        )
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(await self._reservation_count(), 1)
+        async with self.sessions() as session:
+            event = await session.scalar(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.session_id == "lesson",
+            ))
+            self.assertTrue(event.dedupe_key.endswith(":ref:lesson:hsk2:1"))
+
+    async def test_zero_limit_and_blocked_account_cannot_read_unreserved_content(self):
+        await self._configure(limit=0)
+        response = await self.client.get("/api/v3/lesson/content/hsk1/1")
+        self.assertEqual(response.status_code, 403, response.text)
+        self.assertFalse(response.json()["allowed"])
+        await self._configure(limit=None)
+        async with self.sessions() as session:
+            user = await session.get(User, 700)
+            user.status = "blocked"
+            await session.commit()
+        for response in (
+            await self._start(),
+            await self.client.get("/api/v3/lesson/content/hsk1/1"),
+        ):
+            self.assertEqual(response.status_code, 403, response.text)
+            self.assertFalse(response.json()["allowed"])
+        self.assertEqual(await self._reservation_count(), 0)
 
 
 if __name__ == "__main__":

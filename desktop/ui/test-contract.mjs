@@ -157,6 +157,39 @@ test("native signin bridge forwards language and rejects unsupported providers",
   }
 });
 
+test("lesson completion forwards its loaded course as a precondition", async () => {
+  const calls = [];
+  globalThis.__TAURI__ = { core: { invoke: async (command, args) => {
+    calls.push({ command, args });
+    return { ok: true };
+  } } };
+  try {
+    const { desktopBridge } = await import("./js/bridge.js");
+    const eventId = "desktop-course-context-0001";
+    await desktopBridge.lessonComplete(1, eventId, [], "hsk1");
+    await desktopBridge.lessonComplete(1, eventId, []);
+    assert.deepEqual(calls, [
+      { command: "desktop_lesson_complete", args: {
+        lessonOrder: 1, eventId, mistakes: [], expectedLevel: "hsk1",
+      } },
+      { command: "desktop_lesson_complete", args: {
+        lessonOrder: 1, eventId, mistakes: [], expectedLevel: null,
+      } },
+    ]);
+    assert.throws(() => desktopBridge.lessonComplete(1, eventId, [], "nhsk4"));
+    assert.equal(calls.length, 2);
+    const lesson = await source("desktop/ui/js/lesson.js");
+    assert.match(lesson, /this\.bridge\.lessonComplete\(\s*this\.lessonOrder,\s*this\.eventId,\s*this\.mistakes,\s*this\.level,/);
+    const rust = await source("desktop/src-tauri/src/lib.rs");
+    const complete = rust.slice(rust.indexOf("async fn desktop_lesson_complete("), rust.indexOf("async fn desktop_set_language("));
+    assert.match(complete, /expected_level: Option<String>/);
+    assert.match(complete, /validate_course_level\(expected_level\.as_deref\(\)\)/);
+    assert.match(complete, /"expected_level": expected_level/);
+  } finally {
+    delete globalThis.__TAURI__;
+  }
+});
+
 test("signup invitations remain bounded metadata on both native starts", async () => {
   const calls = [];
   globalThis.__TAURI__ = { core: { invoke: async (command, args) => {

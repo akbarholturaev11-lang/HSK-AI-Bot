@@ -14,6 +14,7 @@ on:
       - "app/static/course_v3_data/*.css"
       - "tests/test_telegram_sdk_asset.py"
       - "app/api/miniapp_entitlements.py"
+      - "app/api/desktop_course.py"
       - "app/services/course_p3_grammar_localization.py"
       - "app/services/entitlements/lesson_access.py"
       - "app/services/entitlements/engine.py"
@@ -100,6 +101,9 @@ on:
       - "alembic/versions/0104_native_account_foundation.py"
       - "tests/test_i18n_native_account_ownership.py"
       - "tests/test_i18n_miniapp_reservation_asgi.py"
+      - "tests/test_miniapp_course_context.py"
+      - "tests/test_course_v3_static_data.py"
+      - "tests/e2e/test_miniapp_smoke.py"
       - "tests/test_hsk30_lesson_limits.py"
       - "tests/test_desktop_course_api.py"
       - "tests/test_android_course_api.py"
@@ -151,6 +155,12 @@ jobs:
         run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract
       - name: Verify synthetic Mini App lesson reservation auth and quota boundary
         run: python -m unittest tests.test_i18n_miniapp_reservation_asgi
+      - name: Verify course context, progress idempotence and current browser delivery contracts
+        env:
+          BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+          DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          REDIS_URL: "redis://127.0.0.1:1/0"
+        run: python -m unittest tests.test_miniapp_course_context tests.test_course_v3_static_data tests.test_desktop_course_api
       - name: Verify actual HTTP delivery of browser scripts and private source boundaries
         env:
           BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
@@ -317,3 +327,9 @@ jobs:
           tests/e2e/test_miniapp_smoke.py::test_practice_tab_is_usable_during_unfinished_background_load
           tests/e2e/test_miniapp_smoke.py::test_desktop_course_modal_covers_full_viewport_and_mobile_keeps_bottom_sheet
           tests/test_miniapp_top_spacing_contract.py
+      - name: Verify critical learning and checkout flows with synthetic APIs
+        env:
+          MINIAPP_E2E_BASE_URL: "http://hsk-ai.local"
+        run: >-
+          python -m pytest -q tests/e2e/test_miniapp_smoke.py
+          -k 'daily_plan_lesson_completion or onboarding_autostart_opens_first_lesson or starter_repair_mic_denied_and_completion or starter_mic_skip_stops_recording or checkpoint_exit_ticket_mastery_and_paywall_boundary or checkpoint_repair_resume_restores_exact_semantic_card or required_foundation_defers_challenge or required_foundation_load_error or d1_recovery_resumes_saved_lesson or recognition_drill_reports_every_answer or hsk_exam_uses_public_questions_and_server_result or challenge_question_is_blind or paywall_replaces_the_lesson_sheet or subscription_page_smoke or hsk30_pending_payment_stays or regular_subscription_shows_the_users_admin_discount or expired_discount_link_opens_regular_prices or subscription_checkout_tracks_one_attempt or subscription_foreign_region_skips_payment or profile_settings_icon_and_paid_renewal'

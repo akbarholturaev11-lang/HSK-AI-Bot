@@ -104,6 +104,7 @@ def route_static_files(page):
         "**/api/v3/ad?*",
         lambda route: json_response(route, {"ok": True, "ad": None}),
     )
+    mock_private_lesson_routes(page)
     page.route(
         "**/api/admin-miniapp/desktop-stats",
         lambda route: json_response(
@@ -257,6 +258,15 @@ def mock_course_map(page, *, level="hsk1", language="uz", sales_offer=None):
     if sales_offer is not None:
         data["sales_offer"] = sales_offer
     page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+    mock_private_lesson_routes(page, level=level)
+
+
+def mock_private_lesson_routes(page, *, level="hsk1"):
+    """Private transport fixtures shared by ordinary and custom-map flows.
+
+    These mock only browser transport; API auth/access is tested with ASGI.
+    Register again after a test catch-all so specific lesson routes take priority.
+    """
     page.route(
         "**/api/v3/lesson/start",
         lambda route: json_response(route, {"ok": True, "allowed": True}),
@@ -1569,19 +1579,20 @@ def test_paywall_replaces_the_lesson_sheet_and_checkout_remains_clickable(page, 
     mock_course_map(page, language=language)
     page.goto(app_url(f"/course-v3.html?lang={language}&level=hsk1&lesson=1&onboarded=1"), wait_until="networkidle")
     sheet = page.locator("#sheet")
-    paywall = page.locator("#paywall")
+    paywall = page.locator(".caa-ov")
     expect(sheet).to_have_class(re.compile(r"\bon\b"))
     page.evaluate("App.openPaywall({lessonIdx:0,lesson:allLessons()[0]})")
     expect(paywall).to_have_class(re.compile(r"\bon\b"))
     expect(sheet).not_to_have_class(re.compile(r"\bon\b"))
-    assert page.evaluate("document.getElementById('paywall').inert") is False
-    paywall.locator(".sx").click()
+    expect(paywall).to_have_attribute("aria-modal", "true")
+    expect(paywall.locator(".caa-ls-pay")).to_be_focused()
+    paywall.locator(".caa-ls-close").click()
     expect(paywall).not_to_have_class(re.compile(r"\bon\b"))
     assert page.evaluate("document.getElementById('s-course').inert") is False
     page.locator('#s-course .node[data-lesson-order="1"]').click()
     expect(sheet).to_have_class(re.compile(r"\bon\b"))
     page.evaluate("App.openPaywall({lessonIdx:0,lesson:allLessons()[0]})")
-    paywall.locator(".scta").first.click()
+    paywall.locator(".caa-ls-pay").click()
     expect(page).to_have_url(re.compile(r"/subscription\.html\?.*source=v3_locked_lesson"))
     assert parse_qs(urlparse(page.url).query)["lang"] == [language]
     assert not errors
@@ -2276,6 +2287,13 @@ def test_challenge_question_is_blind_until_server_submit(page):
         "console",
         lambda message: runtime_errors.append(message.text) if message.type == "error" else None,
     )
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    mock_learning_audio(page)
+    page.on("requestfailed", lambda request: runtime_errors.append(f"{request.url}: {request.failure}"))
+    page.route(
+        "**/api/miniapp/gamification*",
+        lambda route: json_response(route, {"ok": True, "week_activity_dates": []}),
+    )
     mock_price_preview(page)
     mock_telegram_ready(page)
     mock_course_map(page)
@@ -2320,6 +2338,17 @@ def test_challenge_question_is_blind_until_server_submit(page):
             },
         ),
     )
+    submitted = []
+
+    def submit_round(route):
+        submitted.append(route.request.post_data_json)
+        json_response(route, {
+            "ok": True, "challenge": {**challenge, "viewer_done": True},
+            "score": 0, "total": 1,
+            "wrong_items": [{"question": "Salom so'zini tanlang", "correct_answer": "你好", "pinyin": "nǐ hǎo"}],
+        })
+
+    page.route("**/api/miniapp/challenges/7/submit", submit_round)
     page.add_init_script(
         "localStorage.setItem('hsk_v3_onb','1'); localStorage.setItem('hsk_v3_level','hsk1');"
     )
@@ -2330,13 +2359,21 @@ def test_challenge_question_is_blind_until_server_submit(page):
     )
     page.get_by_role("button", name="Raundni boshlash").click()
     expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
-    page.locator("#f-body .opt").nth(0).click()
+    assert page.evaluate("Flow.queue[0].correct_index") is None
+    page.locator("#f-body .opt").nth(1).click()
 
     expect(page.locator("#f-msg")).to_contain_text("Javob qabul qilindi")
     assert page.locator("#f-hp").inner_text() == "5"
     assert page.evaluate("Flow.challenge.answers") == [
-        {"question_id": "challenge:q1", "selected_index": 0}
+        {"question_id": "challenge:q1", "selected_index": 1}
     ]
+    assert submitted == []
+    page.locator("#f-barbtn").click()
+    expect(page.locator("#sheet-body")).to_contain_text("0 / 1")
+    expect(page.locator("#sheet-body .ch-review")).to_contain_text("你好")
+    expect(page.locator("#sheet-body .ch-review")).to_contain_text("nǐ hǎo")
+    assert submitted == [{"answers": [{"question_id": "challenge:q1", "selected_index": 1}]}]
+    assert page.evaluate("Flow.challenge") is None
     assert runtime_errors == []
 
 
@@ -3602,9 +3639,14 @@ def test_hsk30_pending_payment_stays_on_admin_status_screen(page):
 
     expect(page.locator("#doneTitle")).to_have_text("So'rovingiz tekshiruvda")
     expect(page.locator("#botReturnBtn")).to_have_text("To'lov holatini yangilash")
-    page.locator("#botReturnBtn").click()
+    with page.expect_response("**/api/subscription-miniapp/payment-status") as refreshed:
+        page.locator("#botReturnBtn").click()
+    assert refreshed.value.json()["status"] == "pending"
 
-    expect(page.locator("#doneText")).to_have_text("To'lov hali admin tekshiruvida.")
+    pending_copy = json.loads(
+        (APP_ROOT / "localization/ui/uz/course.json").read_text(encoding="utf-8")
+    )["messages"]["subscriptionPage.pendingText"]
+    expect(page.locator("#doneText")).to_have_text(pending_copy)
     expect(page.locator("#botReturnBtn")).to_have_text("To'lov holatini yangilash")
     assert status_requests == [{"payment_id": 42}]
     assert page.url.endswith("/subscription.html?lang=uz&mode=hsk30_unlock")
@@ -4190,7 +4232,11 @@ def test_android_chip_sends_the_apk_to_the_chat_and_closes(page):
 
 def test_profile_settings_icon_and_paid_renewal_are_available_from_profile(page):
     mock_telegram_desktop_download(page, platform="android")
-    _open_course_profile_with_desktop_release(page)
+    mock_price_preview(page)
+    mock_course_map(page)
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator('#nav button[data-s="profile"]').click()
 
     expect(page.locator("#s-profile .profile-title")).to_have_text("Profil")
     settings = page.locator("#s-profile .profile-settings")
@@ -4211,7 +4257,8 @@ def test_profile_settings_icon_and_paid_renewal_are_available_from_profile(page)
           renderProfile();
         }"""
     )
-    renewal = page.locator("#s-profile .profile-renew")
+    page.locator('#hsk-profile-promo-root [data-promo-dot="2"]').click()
+    renewal = page.locator('#hsk-profile-promo-root article[data-promo-kind="pro"] .hp-promo-action')
     expect(renewal).to_be_visible()
     expect(renewal).to_contain_text("Obunani uzaytirish")
     renewal.click()

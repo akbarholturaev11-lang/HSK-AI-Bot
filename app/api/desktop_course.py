@@ -76,6 +76,10 @@ class DesktopCourseCompleteRequest(BaseModel):
 
     lesson_order: int = Field(ge=1, le=500)
     event_id: DesktopCourseEventId
+    expected_level: str | None = Field(
+        default=None,
+        pattern=r"^(?:hsk1|hsk2|hsk3|hsk4|nhsk1|nhsk2|nhsk3)$",
+    )
     mistakes: list[DesktopCourseMistakeRequest] = Field(
         default_factory=list,
         max_length=50,
@@ -368,6 +372,10 @@ def create_desktop_course_router(
                         mistake.model_dump(exclude_none=True)
                         for mistake in payload.mistakes
                     ],
+                    **(
+                        {"expected_level": payload.expected_level}
+                        if payload.expected_level is not None else {}
+                    ),
                 )
             return JSONResponse(
                 content=result,

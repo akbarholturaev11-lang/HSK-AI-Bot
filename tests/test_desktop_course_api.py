@@ -668,6 +668,82 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             )
         )
 
+    async def _completion_mutation_state(self):
+        response = await self.client.get(
+            "/api/v3/desktop/course/map", headers=self.auth_headers,
+        )
+        self.assertEqual(response.status_code, 200, response.text)
+        body = response.json()
+        async with self.sessions() as session:
+            events = {}
+            for model in (CourseMiniAppEvent, CourseXpEvent, CourseMistake):
+                events[model.__name__] = list(
+                    (await session.execute(select(model.id).order_by(model.id))).scalars()
+                )
+        return {
+            "level": body["level"],
+            "progress": body["progress"],
+            "allowance": {
+                key: body["lesson_limit"].get(key)
+                for key in ("allowed", "used", "remaining")
+            },
+            "events": events,
+        }
+
+    async def test_late_old_course_completion_cannot_advance_the_new_course(self):
+        lesson = await self.client.get(
+            "/api/v3/desktop/course/lesson/1", headers=self.auth_headers,
+        )
+        self.assertEqual(lesson.status_code, 200, lesson.text)
+        old_level = lesson.json()["level"]
+        switched = await self.client.post(
+            "/api/v3/desktop/course/tracks/switch", headers=self.auth_headers,
+            json={"target_track": "hsk20", "level": "hsk2"},
+        )
+        self.assertEqual(switched.status_code, 200, switched.text)
+        before = await self._completion_mutation_state()
+        self.assertEqual(before["level"], "hsk2")
+        rejected = await self.client.post(
+            "/api/v3/desktop/course/complete", headers=self.auth_headers,
+            json={
+                "lesson_order": 1, "event_id": "desktop-stale-complete-0001",
+                "expected_level": old_level, "mistakes": [],
+            },
+        )
+        self.assertEqual(rejected.status_code, 409, rejected.text)
+        self.assertEqual(rejected.json()["error"], "course_context_changed")
+        self.assertEqual(rejected.headers.get("Cache-Control"), "no-store")
+        self.assertEqual(before, await self._completion_mutation_state())
+
+    async def test_same_course_completion_precondition_preserves_idempotence(self):
+        body = {
+            "lesson_order": 1, "event_id": "desktop-stale-complete-0002",
+            "expected_level": "hsk1", "mistakes": [],
+        }
+        first = await self.client.post(
+            "/api/v3/desktop/course/complete", headers=self.auth_headers, json=body,
+        )
+        self.assertEqual(first.status_code, 200, first.text)
+        before = await self._completion_mutation_state()
+        replay = await self.client.post(
+            "/api/v3/desktop/course/complete", headers=self.auth_headers, json=body,
+        )
+        self.assertEqual(replay.status_code, 200, replay.text)
+        self.assertTrue(replay.json()["duplicate"])
+        self.assertEqual(before, await self._completion_mutation_state())
+        switched = await self.client.post(
+            "/api/v3/desktop/course/tracks/switch", headers=self.auth_headers,
+            json={"target_track": "hsk20", "level": "hsk2"},
+        )
+        self.assertEqual(switched.status_code, 200, switched.text)
+        before = await self._completion_mutation_state()
+        late_replay = await self.client.post(
+            "/api/v3/desktop/course/complete", headers=self.auth_headers, json=body,
+        )
+        self.assertEqual(late_replay.status_code, 409, late_replay.text)
+        self.assertEqual(late_replay.json()["error"], "course_context_changed")
+        self.assertEqual(before, await self._completion_mutation_state())
+
     async def test_completion_is_idempotent_and_event_cannot_cross_lessons(self):
         first = await self._complete(1, "desktop-course-event-1001")
         replay = await self._complete(1, "desktop-course-event-1001")

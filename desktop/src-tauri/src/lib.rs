@@ -2926,8 +2926,10 @@ async fn desktop_lesson_complete(
     lesson_order: i64,
     event_id: String,
     mistakes: Option<Value>,
+    expected_level: Option<String>,
 ) -> Result<Value, String> {
     let lesson_order = validate_lesson_order(lesson_order)?;
+    let expected_level = validate_course_level(expected_level.as_deref())?;
     let event_id = validate_event_id(&event_id)?;
     let mistakes = mistakes.unwrap_or_else(|| json!([]));
     validate_mistakes(&mistakes)?;
@@ -2938,6 +2940,7 @@ async fn desktop_lesson_complete(
             "lesson_order": lesson_order,
             "event_id": event_id,
             "mistakes": mistakes,
+            "expected_level": expected_level,
         }),
     )
     .await

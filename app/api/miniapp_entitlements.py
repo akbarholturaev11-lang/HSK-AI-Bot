@@ -292,7 +292,7 @@ def create_miniapp_entitlements_router(
             )
             if not access.get("allowed"):
                 return _private_content_response(access, status_code=403)
-            unlimited_access = resolve_state(user) in {
+            unlimited_access = access.get("unlimited") or resolve_state(user) in {
                 EntitlementState.PRO_ACTIVE, EntitlementState.TEMP_ACCESS,
             }
             if (lesson_order > completed and not access.get("idempotent")
@@ -486,10 +486,17 @@ def create_miniapp_entitlements_router(
         except (TypeError, ValueError):
             return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
         async with session_factory() as session:
-            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            # Match course-track changes: lock the account before progress or
+            # quota, then reject a request prepared for a different course.
+            user = await UserRepository(session).get_by_telegram_id_for_update(telegram_id)
             if not user:
                 return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
             level = content_level(user.level)
+            if (payload.get("level") is not None
+                    and str(payload["level"]).strip().lower() != level):
+                return _private_content_response(
+                    {"ok": False, "error": "course_context_changed"}, status_code=409,
+                )
             progress = await CourseProgressRepository(session).get_by_user_id(user.id, for_update=True)
             completed = int(progress.completed_lessons_count or 0) if progress and progress.level == level else 0
             # Completed lessons may be revisited without re-consuming a
@@ -521,6 +528,10 @@ def create_miniapp_entitlements_router(
                 return JSONResponse(content=response, headers={"Cache-Control": "no-store"})
             if order < 1 or order > total_parts(level) or order > completed + 1:
                 return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
+            if await _foundation_is_blocked(session, user, level):
+                return _private_content_response(
+                    {"ok": False, "error": "android_foundation_required"}, status_code=403,
+                )
             result = await LessonAccessService(session).status(
                 user, level=level, lesson_order=order, completed=completed, consume=True,
             )

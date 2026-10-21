@@ -113,10 +113,21 @@ def _server_checks(source: str) -> dict[str, bool]:
         and any(isinstance(target, ast.Name) and target.id == "PRIVATE_CONTENT_HEADERS"
                 for target in n.targets)
     ]
+    locked_accounts = [
+        call for call in _calls(fn, "get_by_telegram_id_for_update")
+        if ast.unparse(call.func) == "UserRepository(session).get_by_telegram_id_for_update"
+        and len(call.args) == 1
+        and isinstance(call.args[0], ast.Name) and call.args[0].id == "telegram_id"
+    ]
+    progress_and_quota = _calls(fn, "get_by_user_id") + _calls(fn, "status")
     return {
         "verifies_telegram_init_data": bool(_calls(fn, "extract_verified_webapp_user_id")),
         "rejects_missing_identity_401": _guarded_unauthorized(fn),
-        "uses_verified_account_lookup": bool(_calls(fn, "get_by_telegram_id")),
+        "uses_verified_account_lookup": bool(locked_accounts),
+        "locks_account_before_progress_and_quota": (
+            len(locked_accounts) == 1 and bool(progress_and_quota)
+            and all(locked_accounts[0].lineno < call.lineno for call in progress_and_quota)
+        ),
         "rejects_out_of_sequence_lesson": (
             "order > completed + 1" in pretty
             and "course_lesson_not_unlocked" in pretty

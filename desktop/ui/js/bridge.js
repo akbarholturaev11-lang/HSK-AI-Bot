@@ -844,13 +844,14 @@ export const desktopBridge = Object.freeze({
     });
   },
 
-  lessonComplete(lessonOrder, eventId, mistakes) {
+  lessonComplete(lessonOrder, eventId, mistakes, expectedLevel = null) {
     const normalizedLessonOrder = assertLessonOrder(lessonOrder);
     assertCompletion(eventId, mistakes);
     return invokeCommand(COMMANDS.lessonComplete, {
       lessonOrder: normalizedLessonOrder,
       eventId: String(eventId),
       mistakes,
+      expectedLevel: assertCourseLevel(expectedLevel),
     });
   },
 

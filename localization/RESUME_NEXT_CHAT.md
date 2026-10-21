@@ -2,7 +2,20 @@
 
 Updated: 2026-10-21. **This is the short authoritative checkpoint, not evidence of main/production release.**
 
-## Current source completion checkpoint — 2026-10-21
+## Current critical-mechanics checkpoint — 2026-10-21
+
+This supersedes the earlier source-completion checkpoint for the ongoing review.
+
+- **Branch only:** `codex/p3-main-integration-20261020`; no main push/merge or production deployment. Earlier centralization is complete and was not repeated. The whole branch also contains substantive earlier identity/access integrations, which were reviewed here.
+- Fixed immutable-receipt preview duplication (`abf63dff`), including fail-closed historical duplicate AI caps while retaining independent paid/trial priority. **134 billing tests passed, 10 PostgreSQL-only skipped**. GitHub P0 [39607574270](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39607574270) and Backend [39607574265](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39607574265) succeeded at that commit.
+- Fixed private content denying configured unlimited Free/Trial users, required foundation consuming a start slot, and direct completion/unlock bypassing foundation. Free/Trial 2/10/zero/null limits, paid access, retry idempotence, original lesson sources and client-decided weak-score skip policy are retained.
+- Updated Desktop completion carries the loaded course snapshot through shared macOS/Windows JS/Rust/API. Mini App start/complete/unlock reject stale courses under User lock before progress/quota/XP writes. Mismatched saved progress cannot be retagged; optional fields preserve legacy calls. Malformed non-object completion/unlock bodies return 400 without writes.
+- **Final local verification:** 212 affected course/payment/runtime tests + 89 subtests; 460 P0 tests on each Python 3.11/3.14 plus 32 read-only checks per version; 53 artifacts / 0 stale, 812 frozen sources / 746 lessons / 0 blockers. Desktop Node 39, paired macOS/Windows browser 2, local Rust format/offline check passed. **22 critical Mini App browser flows passed**, including foundation, server results, checkpoint recovery, three-locale paywalls, checkout/pending/discounts and paid renewal. Eleven obsolete static assertions and nine browser fixture/assertion failures were repaired to test the current architecture; production UI was not redesigned.
+- Earlier-session identity/session/owner-isolation review: **212 distinct tests passed, 26 PostgreSQL-only skipped**; no additional confirmed defect in those reviewed paths. Test groups overlap; counts must not be summed as a unique total.
+- Source-batch GitHub Backend/P0 and paired Desktop native CI must be checked after push; the billing CI above proves only `abf63dff`. Detailed cause/fix/risk/prevention and acceptance limits: [`localization/reviews/CRITICAL_MECHANICS_REVIEW_20261021.md`](reviews/CRITICAL_MECHANICS_REVIEW_20261021.md).
+- Remaining acceptance: real Telegram/accounts/payment/providers, isolated PostgreSQL concurrency/migration, installed clients and offline/refresh. Synthetic tests are not production certification; no user translation-review homework.
+
+## Previous source completion checkpoint — 2026-10-21
 
 - Work branch only: `codex/p3-main-integration-20261020`. Verified source head `6f80655d8ec02c23cde47c6cbd15d49ea80dc6a0` (runtime integration `5580e9bc`, localization implementation `1d705263`) integrates user feature commits through `7f63bdc3` and current user main `dcd65418887502943067fe9320339eb5ba7a73bb`. Main was merged **into this feature branch**; no push/merge into main or production deployment. Incoming glass navigation, nonblocking Practice preloads and desktop modal behavior are preserved. A confirmed 900px navigation clipping defect was fixed with browser regression at 900/916/940/1280px.
 - Existing UZ/RU/TJ fixed-copy source ownership is complete for this migration: Bot has **658 own messages + 41 shared references per locale**, including 98 static Bot maps, 11 dynamic maps, profile templates and 64 backend fixed maps. Access/quota decisions and profile escaping are unchanged. **79** remaining Python locale maps have individually hashed non-UI/admin/learning/legacy-fallback classifications; new or stale exceptions fail the source guard.
