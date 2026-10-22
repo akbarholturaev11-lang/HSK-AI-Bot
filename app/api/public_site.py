@@ -148,11 +148,11 @@ def create_public_site_router(*, settings_obj, session_factory=None):
 <h2>Payments and invitations</h2>
 <p>When you submit a manual payment, we process its amount, status and receipt for review. Invitations record the referring account and qualification needed for the existing reward rules. Some approved accounting records are retained after account deletion as described on the deletion page.</p>
 <h2>Microphone and voice features</h2>
-<p>Microphone permission is requested only when you use pronunciation or AI Voice. Audio you submit may be sent to HSK AI servers and service providers solely to transcribe, score or answer that voice interaction.</p>
+<p>Microphone permission is requested only when you use pronunciation or AI Voice. Audio you submit may be sent to HSK AI servers and service providers solely to transcribe, score or answer that voice interaction. Text prompts and photos you choose to submit to the AI assistant may likewise be processed to answer your learning question.</p>
 <h2>Notifications and device permissions</h2>
-<p>The Android app asks for notification permission only for study reminders. You can turn reminders off in HSK AI settings or revoke permissions in Android settings.</p>
+<p>The Android app may request notification permission for optional study reminders and account or payment status notifications. You can turn reminders off in HSK AI settings and revoke notification permission in Android settings. The service may process a device notification token to deliver enabled notifications.</p>
 <h2>Sharing and sale</h2>
-<p>We do not sell personal data. Data may be processed by infrastructure, authentication, analytics or AI service providers only as needed to operate HSK AI, protect the service, or comply with law.</p>
+<p>We do not sell personal data. Data may be processed by infrastructure, authentication, analytics or AI service providers only as needed to operate HSK AI, protect the service, or comply with law. If you submit a bug report or report an AI response, its description and any screenshot you explicitly choose to attach are sent for support and moderation review; please remove private details before sending.</p>
 <h2>Your choices</h2>
 <p>You can disconnect a sign-in method while another remains available, change your app profile, sign out, revoke device permissions, and <a href="/account-deletion">request deletion of your account and associated data</a> using any linked sign-in method.</p>
 <h2>Security</h2>
