@@ -119,6 +119,21 @@ class PaymentDecisionMonitorTest {
         assertEquals(4, f.statusCalls)
     }
 
+    @Test fun rejectedPaymentStopsStalePollingOnPlayWithoutAVisiblePush() = runBlocking {
+        val f = Fixture()
+        f.response(13, "rejected", "hsk30_unlock")
+        prefs.edit().putInt("pending_payment_id", 13).commit()
+        val monitor = f.monitor()
+        val received = decisions(monitor) {
+            assertEquals(!BuildConfig.EXTERNAL_CHECKOUT_ENABLED, monitor.receive("test-device", 13, "rejected"))
+        }
+        assertEquals(listOf(InAppPaymentDecision("test-device", 13, "rejected", "hsk30_unlock")), received)
+        // Direct keeps the original behavior when OS notifications are denied;
+        // Play cannot retry a manual payment, so it acknowledges silently.
+        assertEquals(if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) 13 else 0,
+            prefs.getInt("pending_payment_id", 0))
+    }
+
     @Test fun duplicateDeliveryAndMonitorRecreationDoNotReplayTheAccessChange() = runBlocking {
         val f = Fixture()
         f.response(7, "approved")
