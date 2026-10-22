@@ -20,6 +20,7 @@ from app.db.models.course_feature_usage import CourseFeatureUsage
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
+from app.services.course_lesson_completion_proof import issue_lesson_completion_proof
 from tests.test_i18n_miniapp_reservation_asgi import TEST_ID, TEST_TOKEN, synthetic_init_data
 
 
@@ -47,6 +48,8 @@ class MiniAppCourseContextTests(unittest.IsolatedAsyncioTestCase):
         app = FastAPI()
         app.add_api_route("/api/v3/lesson/complete", main.v3_course_lesson_complete, methods=["POST"])
         app.add_api_route("/api/v3/lesson/unlock", main.v3_course_lesson_unlock, methods=["POST"])
+        app.add_api_route("/api/v3/exams/complete", main.v3_hsk_exam_complete, methods=["POST"])
+        app.add_api_route("/api/v3/exams/start", main.v3_hsk_exam_start, methods=["POST"])
         app.add_api_route("/api/v3/language", main.v3_set_language, methods=["POST"])
         self.client = AsyncClient(transport=ASGITransport(app=app), base_url="https://synthetic.test")
         self.headers = {"X-Telegram-Init-Data": synthetic_init_data()}
@@ -66,7 +69,64 @@ class MiniAppCourseContextTests(unittest.IsolatedAsyncioTestCase):
                     await session.scalar(select(func.count()).select_from(CourseFeatureUsage)))
 
     async def _post(self, action, payload):
+        if action == "complete" and "completion_proof" not in payload:
+            # Simulate the proof supplied by the authorized /lesson/start
+            # response, without paying for another quota in these context tests.
+            async with self.sessions() as session:
+                user = await session.get(User, 1)
+                level = main._course_v3_user_level(user)
+            payload = {
+                **payload,
+                "completion_proof": issue_lesson_completion_proof(
+                    user_id=1, level=level,
+                    lesson_order=int(payload.get("lesson_id") or payload.get("lesson_order") or 0),
+                    secret=TEST_TOKEN,
+                ),
+            }
         return await self.client.post("/api/v3/lesson/" + action, headers=self.headers, json=payload)
+
+    async def test_completion_requires_user_level_and_lesson_bound_server_proof(self):
+        before = await self._snapshot()
+        valid = issue_lesson_completion_proof(
+            user_id=1, level="hsk2", lesson_order=1, secret=TEST_TOKEN,
+        )
+        wrong_account = issue_lesson_completion_proof(
+            user_id=2, level="hsk2", lesson_order=1, secret=TEST_TOKEN,
+        )
+        wrong_level = issue_lesson_completion_proof(
+            user_id=1, level="hsk1", lesson_order=1, secret=TEST_TOKEN,
+        )
+        wrong_lesson = issue_lesson_completion_proof(
+            user_id=1, level="hsk2", lesson_order=2, secret=TEST_TOKEN,
+        )
+        for payload in (
+            {"lesson_id": 1, "level": "hsk2"},
+            {"lesson_id": 1, "level": "hsk2", "completion_proof": ""},
+            {"lesson_id": 1, "level": "hsk2", "completion_proof": "forged"},
+            {"lesson_id": 1, "level": "hsk2", "completion_proof": valid + "x"},
+            {"lesson_id": 1, "level": "hsk2", "completion_proof": wrong_account},
+            {"lesson_id": 1, "level": "hsk2", "completion_proof": wrong_level},
+            {"lesson_id": 1, "level": "hsk2", "completion_proof": wrong_lesson},
+        ):
+            with self.subTest(payload=payload):
+                response = await self.client.post(
+                    "/api/v3/lesson/complete", headers=self.headers, json=payload,
+                )
+                self.assertEqual(response.status_code, 403, response.text)
+                self.assertEqual(response.json()["error"], "lesson_completion_proof_required")
+                self.assertEqual(await self._snapshot(), before)
+
+    async def test_hsk_exam_endpoints_reject_non_object_json_before_database(self):
+        for route in ("/api/v3/exams/start", "/api/v3/exams/complete"):
+            for body in ("[]", '[{"session_id":"a"}]', '"abc"', "1", "null", "true", "{", ""):
+                with self.subTest(route=route, body=body):
+                    with patch.object(main, "async_session_maker", wraps=self.sessions) as sessions:
+                        response = await self.client.post(
+                            route, headers=self.headers, content=body,
+                        )
+                        self.assertEqual(response.status_code, 400, response.text)
+                        self.assertEqual(response.json()["error"], "invalid_hsk_exam_payload")
+                        sessions.assert_not_called()
 
     async def test_stale_completion_cannot_complete_the_new_course_or_award_xp(self):
         before = await self._snapshot()
