@@ -5,6 +5,8 @@ real Telegram credentials, or external database/analytics connections.
 """
 import json
 import unittest
+from datetime import datetime, timedelta, timezone
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from fastapi import FastAPI
@@ -14,6 +16,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
 import app.main as main
+from app.api.miniapp_entitlements import create_miniapp_entitlements_router
 from app.db.base import Base
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_feature_usage import CourseFeatureUsage
@@ -21,6 +24,7 @@ from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
 from app.services.course_lesson_completion_proof import issue_lesson_completion_proof
+from app.services.course_lesson_start_grant import AUTHORIZED_START_EVENT
 from tests.test_i18n_miniapp_reservation_asgi import TEST_ID, TEST_TOKEN, synthetic_init_data
 
 
@@ -46,6 +50,9 @@ class MiniAppCourseContextTests(unittest.IsolatedAsyncioTestCase):
         token.start()
         self.addCleanup(token.stop)
         app = FastAPI()
+        app.include_router(create_miniapp_entitlements_router(
+            session_factory=self.sessions, settings_obj=SimpleNamespace(BOT_TOKEN=TEST_TOKEN),
+        ))
         app.add_api_route("/api/v3/lesson/complete", main.v3_course_lesson_complete, methods=["POST"])
         app.add_api_route("/api/v3/lesson/unlock", main.v3_course_lesson_unlock, methods=["POST"])
         app.add_api_route("/api/v3/exams/complete", main.v3_hsk_exam_complete, methods=["POST"])
@@ -115,6 +122,80 @@ class MiniAppCourseContextTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(response.status_code, 403, response.text)
                 self.assertEqual(response.json()["error"], "lesson_completion_proof_required")
                 self.assertEqual(await self._snapshot(), before)
+
+    async def _start_legacy_lesson(self):
+        return await self.client.post(
+            "/api/v3/lesson/start", headers=self.headers,
+            json={"lesson_id": 1, "level": "hsk2"},
+        )
+
+    async def test_cached_legacy_client_can_finish_after_authorized_start(self):
+        # Old HTML starts the lesson but never echoes the response proof.
+        started = await self._start_legacy_lesson()
+        self.assertEqual(started.status_code, 200, started.text)
+        self.assertTrue(started.json()["completion_proof"])
+        async with self.sessions() as session:
+            records = (await session.execute(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == AUTHORIZED_START_EVENT,
+            ))).scalars().all()
+            self.assertEqual(len(records), 1)
+            self.assertEqual((records[0].user_id, records[0].level, records[0].lesson_order),
+                             (1, "hsk2", 1))
+        complete = await self.client.post(
+            "/api/v3/lesson/complete", headers=self.headers,
+            json={"lesson_id": 1, "level": "hsk2"},
+        )
+        self.assertEqual(complete.status_code, 200, complete.text)
+        self.assertEqual(complete.json()["completed_lessons_count"], 1)
+        snapshot = await self._snapshot()
+        self.assertEqual(snapshot[5], 1)  # Exactly one XP event.
+        again = await self.client.post(
+            "/api/v3/lesson/complete", headers=self.headers,
+            json={"lesson_id": 1},
+        )
+        self.assertEqual(again.status_code, 200, again.text)
+        self.assertTrue(again.json()["duplicate"])
+        self.assertEqual(await self._snapshot(), snapshot)
+
+    async def test_bad_supplied_proof_cannot_downgrade_to_legacy_after_start(self):
+        started = await self._start_legacy_lesson()
+        self.assertEqual(started.status_code, 200, started.text)
+        before = await self._snapshot()
+        for proof in ("", "forged", None, started.json()["completion_proof"] + "x"):
+            with self.subTest(proof=proof):
+                response = await self.client.post(
+                    "/api/v3/lesson/complete", headers=self.headers,
+                    json={"lesson_id": 1, "level": "hsk2", "completion_proof": proof},
+                )
+                self.assertEqual(response.status_code, 403, response.text)
+                self.assertEqual(response.json()["error"], "lesson_completion_proof_required")
+                self.assertEqual(await self._snapshot(), before)
+
+    async def test_expired_or_other_user_server_start_never_grants_xp(self):
+        started = await self._start_legacy_lesson()
+        self.assertEqual(started.status_code, 200, started.text)
+        async with self.sessions() as session:
+            grant = await session.scalar(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == AUTHORIZED_START_EVENT,
+            ))
+            grant.created_at = datetime.now(timezone.utc) - timedelta(hours=25)
+            await session.commit()
+        before = await self._snapshot()
+        response = await self.client.post(
+            "/api/v3/lesson/complete", headers=self.headers,
+            json={"lesson_id": 1, "level": "hsk2"},
+        )
+        self.assertEqual(response.status_code, 403, response.text)
+        self.assertEqual(await self._snapshot(), before)
+
+        # A subsequent authorized re-open renews the 24h legacy window.
+        started = await self._start_legacy_lesson()
+        self.assertEqual(started.status_code, 200, started.text)
+        async with self.sessions() as session:
+            grants = (await session.execute(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == AUTHORIZED_START_EVENT,
+            ))).scalars().all()
+            self.assertEqual(len(grants), 1)
 
     async def test_hsk_exam_endpoints_reject_non_object_json_before_database(self):
         for route in ("/api/v3/exams/start", "/api/v3/exams/complete"):
