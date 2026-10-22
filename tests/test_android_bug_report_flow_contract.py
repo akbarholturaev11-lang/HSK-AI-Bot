@@ -15,6 +15,7 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
         cls.intro = (ANDROID / "feature/feedback/BugReportIntroSheet.kt").read_text(encoding="utf-8")
         cls.capture = (ANDROID / "feature/feedback/ReportScreenCapture.kt").read_text(encoding="utf-8")
         cls.profile = (ANDROID / "feature/profile/ProfileScreen.kt").read_text(encoding="utf-8")
+        cls.assistant = (ANDROID / "feature/assistant/AssistantHost.kt").read_text(encoding="utf-8")
 
     def test_shake_confirmation_precedes_report_form(self):
         self.assertIn("bugReportIntroVisible = true", self.main)
