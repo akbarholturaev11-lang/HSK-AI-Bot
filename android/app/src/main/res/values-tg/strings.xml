@@ -606,10 +606,4 @@
     <string name="bug_report_thanks_title">Ташаккур барои фикру мулоҳизаатон!</string>
     <string name="profile_telegram_link_hint">Бо тасдиқ дар боти Telegram пайваст кунед.</string>
     <string name="profile_telegram_link_waiting">Дархостро дар бот санҷед ва пайваст кардани Telegram-ро ба ҳамин ҳисоб тасдиқ кунед. Ҳисобҳои дигар якҷо намешаванд.</string>
-    <!-- Play status-only access and user-initiated AI safety reporting. -->
-    <string name="hsk30_play_access_status">Дар ин версия HSK 3.0 танҳо бо дастрасии қаблан ба ҳисоби шумо додашуда кушода мешавад. Агар дастрасӣ доред, ҳолати ҳисобро дар профил нав кунед.</string>
-    <string name="assistant_report_answer">Шикоят аз ҷавоби AI</string>
-    <string name="assistant_report_prefill">Шикоят аз ҷавоби AI (паём: %1$s)
-Ҷавоб: %2$s
-Сабаб: </string>
 </resources>
