@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- New policy UI copy, owned by localization/android; older P3 strings remain frozen. -->
+    <string name="hsk30_play_access_status">HSK 3.0 hozir bu ilovada faqat akkauntingizga oldindan berilgan ruxsat bilan ochiladi. Ruxsatingiz bo‘lsa, Profil bo‘limida akkaunt holatini yangilang.</string>
+    <string name="assistant_report_answer">AI javobidan shikoyat qilish</string>
+    <string name="assistant_report_prefill">AI javobiga shikoyat (xabar: %1$s)
+Javob: %2$s
+Sabab: </string>
+</resources>
