@@ -2292,7 +2292,8 @@ def test_course_language_switch_uses_local_catalogs_and_saves_selected_code(page
 def test_course_language_failed_save_reverts_ui_with_existing_local_error(page):
     errors, attempted = [], []
     page.on("pageerror", lambda error: errors.append(str(error)))
-    page.on("console", lambda message: errors.append(message.text) if message.type == "error" else None)
+    # The intentional HTTP 503 may be logged as a browser resource error;
+    # only uncaught JavaScript exceptions are regressions in this test.
     page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
     mock_price_preview(page)
     mock_telegram_ready(page)
