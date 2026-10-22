@@ -2223,8 +2223,7 @@ try{
 }catch(e){}
 /* Har bir Course sahifa ochilishi alohida analytics session. sessionStorage'da
    saqlash qayta ochilgan Mini Appni eski sessionga qo'shib yuborardi. */
-var COURSE_SESSION_ID="v3-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);
-var LESSON_COMPLETION_PROOF="";
+var COURSE_SESSION_ID="v3-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);var LESSON_COMPLETION_PROOF="";
 function trackCourseEvent(event,payload,opts){
   if(!INIT_DATA)return Promise.resolve({ok:false,skipped:true});
   payload=payload||{};
@@ -4279,9 +4278,7 @@ function reserveLessonStart(l){P3_RESERVED_GRAMMAR=null;LESSON_COMPLETION_PROOF=
         var err=new Error(d.error||"lesson_start_denied");
         err.data=d;err.status=r.status;throw err;
       }
-      P3_RESERVED_GRAMMAR=d.p3_grammar||null;
-      LESSON_COMPLETION_PROOF=typeof d.completion_proof==="string"?d.completion_proof:"";
-      return d;
+      P3_RESERVED_GRAMMAR=d.p3_grammar||null;LESSON_COMPLETION_PROOF=typeof d.completion_proof==="string"?d.completion_proof:"";return d;
     })});
 }
 function handleLessonStartDenied(err,idx){
