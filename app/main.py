@@ -147,6 +147,7 @@ from app.services.course_lesson_mistake_material_service import (
     CourseLessonMistakeMaterialService,
 )
 from app.services.course_hsk_exam_service import CourseHskExamService
+from app.services.course_lesson_completion_proof import verify_lesson_completion_proof
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_miniapp_access_service import (
@@ -2813,7 +2814,9 @@ async def v3_hsk_exam_start(request: Request):
     try:
         payload = await request.json()
     except ValueError:
-        payload = {}
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_hsk_exam_payload"})
+    if not isinstance(payload, dict):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_hsk_exam_payload"})
     if not init_data:
         init_data = str(payload.get("initData") or "")
     telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
@@ -2855,6 +2858,8 @@ async def v3_hsk_exam_complete(request: Request):
     try:
         payload = await request.json()
     except ValueError:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_hsk_exam_payload"})
+    if not isinstance(payload, dict):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_hsk_exam_payload"})
     async with async_session_maker() as session:
         result = await CourseHskExamService(session).complete(
@@ -3060,6 +3065,21 @@ async def v3_course_lesson_complete(request: Request):
             )
         if lesson_order != completed + 1:
             return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
+
+        # A client-side 'done' flag alone must never grant XP/progress.
+        # The proof is signed by /api/v3/lesson/start after the access gate
+        # and bound to this user, course and numbered lesson. Completed
+        # lessons remain idempotent even if their original proof expired.
+        if not verify_lesson_completion_proof(
+            payload.get("completion_proof"),
+            user_id=user.id, level=resolved_level, lesson_order=lesson_order,
+            secret=settings.BOT_TOKEN,
+        ):
+            return JSONResponse(
+                status_code=403,
+                content={"ok": False, "error": "lesson_completion_proof_required"},
+                headers={"Cache-Control": "no-store"},
+            )
 
         limit_status = await LessonAccessService(session).status(
             user, level=resolved_level, lesson_order=lesson_order, completed=completed, consume=True,
