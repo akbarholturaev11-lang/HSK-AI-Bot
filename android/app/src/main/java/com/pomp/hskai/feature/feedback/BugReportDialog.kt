@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -303,7 +304,7 @@ fun BugReportDialog(
                         },
                         modifier = Modifier.fillMaxWidth().padding(
                             start = 18.dp, end = 18.dp, top = 12.dp, bottom = 14.dp,
-                        ),
+                        ).heightIn(min = 52.dp),
                         enabled = !sent && description.trim().length >= 5 && !busy,
                     ) {
                         if (busy) {
