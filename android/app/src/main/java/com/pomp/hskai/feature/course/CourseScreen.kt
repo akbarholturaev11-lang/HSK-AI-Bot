@@ -584,7 +584,16 @@ private fun Hsk30LockedEntryDialog(
                 onClick = onUnlock,
             )
         }
-        Hsk30BookSecondary(stringResource(R.string.hsk30_access_back_hsk20), onBackToHsk20)
+        // On Play this is the only available escape from the mandatory gate:
+        // make the return action a visible primary CTA, not muted helper text.
+        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+            Hsk30BookSecondary(stringResource(R.string.hsk30_access_back_hsk20), onBackToHsk20)
+        } else {
+            Hsk30BookPrimary(
+                label = stringResource(R.string.hsk30_access_back_hsk20),
+                onClick = onBackToHsk20,
+            )
+        }
     }
 }
 
@@ -627,7 +636,13 @@ private fun Hsk30PromoDialog(
     val hasAccess = hsk30.access.allowed
     Hsk30BookDialog(isNew = false, onDismiss = onDismiss) {
         Hsk30BookTitle(
-            title = stringResource(if (hasAccess) R.string.hsk30_promo_switch else R.string.hsk30_promo_title),
+            title = stringResource(
+                when {
+                    hasAccess -> R.string.hsk30_promo_switch
+                    !BuildConfig.EXTERNAL_CHECKOUT_ENABLED -> R.string.hsk30_access_required_title
+                    else -> R.string.hsk30_promo_title
+                },
+            ),
             body = stringResource(
                 if (hasAccess) R.string.hsk30_promo_body_unlocked else R.string.hsk30_access_required_body,
             ),
