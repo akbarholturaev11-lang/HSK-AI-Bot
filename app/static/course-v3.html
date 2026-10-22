@@ -2223,7 +2223,7 @@ try{
 }catch(e){}
 /* Har bir Course sahifa ochilishi alohida analytics session. sessionStorage'da
    saqlash qayta ochilgan Mini Appni eski sessionga qo'shib yuborardi. */
-var COURSE_SESSION_ID="v3-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);
+var COURSE_SESSION_ID="v3-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);var LESSON_COMPLETION_PROOF="";
 function trackCourseEvent(event,payload,opts){
   if(!INIT_DATA)return Promise.resolve({ok:false,skipped:true});
   payload=payload||{};
@@ -4269,7 +4269,7 @@ function setLessonFlowControls(){
   var cta=$("#f-cta"),bar=$("#f-barbtn");if(cta)cta.onclick=Flow.next;if(bar)bar.onclick=Flow.next;
   var close=document.querySelector("#flow .fx");if(close)close.style.visibility="visible";
 }
-function reserveLessonStart(l){P3_RESERVED_GRAMMAR=null;if(INIT_DATA&&l&&l.status==="done"&&normalizeLevel((MAP&&MAP.level)||getSelectedLevel())==="nhsk2")return reserveCompletedP3Grammar(l);
+function reserveLessonStart(l){P3_RESERVED_GRAMMAR=null;LESSON_COMPLETION_PROOF="";if(INIT_DATA&&l&&l.status==="done"&&normalizeLevel((MAP&&MAP.level)||getSelectedLevel())==="nhsk2")return reserveCompletedP3Grammar(l);
   if(!INIT_DATA||!l||l.status!=="current")return Promise.resolve({ok:true,allowed:true});
   return _apiPost("/api/v3/lesson/start",{lesson_id:l.n,level:(MAP&&MAP.level)||"hsk1",lang:LANG})
     .then(function(r){return r.json().catch(function(){return{}}).then(function(d){
@@ -4278,7 +4278,7 @@ function reserveLessonStart(l){P3_RESERVED_GRAMMAR=null;if(INIT_DATA&&l&&l.statu
         var err=new Error(d.error||"lesson_start_denied");
         err.data=d;err.status=r.status;throw err;
       }
-      P3_RESERVED_GRAMMAR=d.p3_grammar||null;return d;
+      P3_RESERVED_GRAMMAR=d.p3_grammar||null;LESSON_COMPLETION_PROOF=typeof d.completion_proof==="string"?d.completion_proof:"";return d;
     })});
 }
 function handleLessonStartDenied(err,idx){
@@ -5714,7 +5714,7 @@ function flowDone(){
   if(!cur){App.showLevelUp("lesson");return}
   if(!INIT_DATA){applyLessonDone(cur,null);return}
   var doneIdx=Flow.lessonIdx;
-  _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID,mistakes:(Flow.mistakes||[]).slice(0,50)})
+  _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID,completion_proof:LESSON_COMPLETION_PROOF,mistakes:(Flow.mistakes||[]).slice(0,50)})
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
     .then(function(d){
       if(!d.ok){

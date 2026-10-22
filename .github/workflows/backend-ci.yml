@@ -115,6 +115,7 @@ on:
       - "tests/test_i18n_native_account_ownership.py"
       - "tests/test_i18n_miniapp_reservation_asgi.py"
       - "tests/test_miniapp_course_context.py"
+      - "tests/test_course_lesson_completion_proof.py"
       - "tests/test_miniapp_course_map_concurrency.py"
       - "tests/test_course_v3_static_data.py"
       - "tests/e2e/test_miniapp_smoke.py"
@@ -175,7 +176,7 @@ jobs:
           BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
           DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
           REDIS_URL: "redis://127.0.0.1:1/0"
-        run: python -m unittest tests.test_miniapp_course_context tests.test_course_v3_static_data tests.test_desktop_course_api
+        run: python -m unittest tests.test_course_lesson_completion_proof tests.test_miniapp_course_context tests.test_course_v3_static_data tests.test_desktop_course_api
       - name: Verify language callback validation and onboarding state preservation
         env:
           BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"

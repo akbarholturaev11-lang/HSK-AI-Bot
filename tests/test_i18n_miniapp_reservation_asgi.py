@@ -27,6 +27,7 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_progress import CourseProgress
 from app.db.models.user import User
 from app.services.course_levels import content_level
+from app.services.course_lesson_completion_proof import verify_lesson_completion_proof
 from app.services.course_miniapp_access_service import COURSE_DAILY_EVENT_NAME
 from app.services.entitlements import actions as A
 from app.services.entitlements.limits_config import LimitConfigService
@@ -77,7 +78,10 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         self.profile_service.foundation_status = AsyncMock(return_value={
             "required": False, "completed": False,
         })
+        self.record_start = AsyncMock()
         self.patches = [
+            patch("app.api.miniapp_entitlements.remember_authorized_lesson_start",
+                  self.record_start),
             patch("app.api.miniapp_entitlements.UserRepository",
                   return_value=self.user_repo),
             patch("app.api.miniapp_entitlements.CourseProgressRepository",
@@ -136,6 +140,11 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         })
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["remaining"], 1)
+        self.assertTrue(verify_lesson_completion_proof(
+            response.json()["completion_proof"],
+            user_id=self.user.id, level="hsk1", lesson_order=1,
+            secret=TEST_TOKEN,
+        ))
         self.user_repo.get_by_telegram_id_for_update.assert_awaited_once_with(TEST_ID)
         self.lesson_service.status.assert_awaited_once()
         kwargs = self.lesson_service.status.await_args.kwargs
@@ -143,6 +152,9 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(kwargs["lesson_order"], 1)
         self.assertEqual(kwargs["completed"], 0)
         self.assertIs(kwargs["consume"], True)
+        self.record_start.assert_awaited_once_with(
+            self.session, user=self.user, level="hsk1", lesson_order=1,
+        )
         self.session.commit.assert_awaited_once()
 
     async def test_p3_patch_returned_only_after_authenticated_unlocked_reservation(self):
@@ -670,6 +682,7 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.json()["error"], "free_feature_limit_reached")
         self.lesson_service.status.assert_awaited_once()
+        self.record_start.assert_not_awaited()
         self.session.commit.assert_awaited_once()
 
 
