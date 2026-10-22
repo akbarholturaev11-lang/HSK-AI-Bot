@@ -141,14 +141,17 @@ class Hsk30EntryFlowTest {
 
         listOf("nhsk1", "nhsk2", "nhsk3").forEachIndexed { index, level ->
             compose.runOnIdle { state.value = courseState(level) }
-            compose.onNodeWithText(strings.getString(R.string.hsk30_access_required_title))
-                .performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText(strings.getString(
+                if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) R.string.hsk30_access_required_title
+                else R.string.hsk30_play_access_title
+            )).performScrollTo().assertIsDisplayed()
             if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
                 compose.onNodeWithText("$1.08").performScrollTo().assertIsDisplayed()
                 compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button))
                     .performScrollTo().assertIsEnabled().performClick()
             } else {
                 compose.onNodeWithText("$1.08").assertDoesNotExist()
+                compose.onNodeWithText(strings.getString(R.string.hsk30_access_required_title)).assertDoesNotExist()
                 compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button)).assertDoesNotExist()
                 compose.onNodeWithText(strings.getString(R.string.hsk30_play_access_status))
                     .performScrollTo().assertIsDisplayed()
