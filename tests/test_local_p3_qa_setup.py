@@ -13,10 +13,12 @@ def _valid_env():
     return {
         "HSK_P3_LOCAL_QA": "1",
         "DATABASE_URL": (
-            "postgresql+asyncpg://hsk_p3_local_qa:example-hex-only"
+            "postgresql+asyncpg://hsk_p3_local_qa:" + "a" * 48
             "@postgres:5432/hsk_p3_local_qa"
         ),
         "REDIS_URL": "redis://redis:6379/0",
+        "PUBLIC_SITE_URL": "http://localhost:18080",
+        "MINI_APP_BASE_URL": "http://localhost:18080/course-v3.html",
         "FEEDBACK_NOTIFY_CHAT_IDS": "",
         "OAUTH_NATIVE_RETURN_SCHEME": "",
         "OPENAI_API_KEY": "",
@@ -38,6 +40,8 @@ def test_valid_qa_settings_are_allowed_without_network():
 @pytest.mark.parametrize("field,value", [
     ("DATABASE_URL", "postgresql+asyncpg://user:pass@production.db:5432/main"),
     ("REDIS_URL", "redis://production:6379/0"),
+    ("PUBLIC_SITE_URL", "https://telegram-chinese-bot-production.up.railway.app"),
+    ("PUBLIC_SITE_URL", "https://my.example.com/other/path"),
     ("RAILWAY_PROJECT_ID", "production-project"),
     ("FEEDBACK_NOTIFY_CHAT_IDS", "-1000000000000"),
     ("GEMINI_API_KEY", "inherited-prod"),
