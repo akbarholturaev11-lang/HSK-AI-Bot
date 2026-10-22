@@ -177,7 +177,10 @@ fun BugReportDialog(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            stringResource(R.string.bug_report_title),
+                            stringResource(
+                                if (screen == "ai_assistant") R.string.assistant_report_answer
+                                else R.string.bug_report_title,
+                            ),
                             style = MaterialTheme.typography.titleLarge,
                             color = PompColors.Ink,
                             fontWeight = FontWeight.Bold,
