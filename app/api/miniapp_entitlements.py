@@ -27,6 +27,7 @@ from app.repositories.user_repo import UserRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.course_lesson_completion_proof import issue_lesson_completion_proof
+from app.services.course_lesson_start_grant import remember_authorized_lesson_start
 from app.services.course_p3_grammar_localization import miniapp_reserved_grammar_patch
 from app.services.course_v3_parts import total_parts
 from app.services.course_levels import content_level
@@ -537,6 +538,12 @@ def create_miniapp_entitlements_router(
                 user, level=level, lesson_order=order, completed=completed, consume=True,
             )
             if result["allowed"]:
+                if order == completed + 1:
+                    # Cached Mini Apps do not echo completion_proof. This trusted
+                    # DB grant lets them finish ONLY after an authorized start.
+                    await remember_authorized_lesson_start(
+                        session, user=user, level=level, lesson_order=order,
+                    )
                 result = {
                     **result,
                     "completion_proof": issue_lesson_completion_proof(
