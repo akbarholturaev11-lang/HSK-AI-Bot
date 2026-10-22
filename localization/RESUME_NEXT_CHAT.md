@@ -2,6 +2,13 @@
 
 Updated: 2026-10-22. **This is the short authoritative checkpoint, not evidence of main/production release.**
 
+## Active local Mac QA — 2026-10-23
+
+- Owner requested local testing without waiting for Railway. Runtime is work-branch source `b5f4351dfc282f556e333bcc67689dbb39eb0a03` (includes PRs #194/#195). A separate Mac PostgreSQL cluster uses port 55483 and an empty-initialized QA database at reviewed schema 0109; 70 DB lesson seeds, no imported learners. The existing PostgreSQL service/production is untouched.
+- API runs on loopback port 18794 with normal app routes and lifespan off; one verified `@Gentss_3bot` poller runs separately, with schedulers off. A Cloudflare quick tunnel provides HTTPS; the Bot menu URL was set and read back. HTTP/HTTPS health, HTML/catalog delivery, private-file 404 and signed-route 401 checks passed. Real HTTPS mobile UZ/RU/TJ pages loaded their local catalogs with zero JS exceptions.
+- Private launcher, credential settings, running PIDs, logs and operator README are outside Git under `/Users/kaijimima1234/.codex/local-qa/gentss-b5f4351d-20261023/`. Read the operator README before restarting; never print/commit its private settings or start a second poller. Preserve the new test DB. Mac/internet and the current tunnel must remain running.
+- AI provider and Google/Apple credentials, real payment details, Airtable and FCM are not bound. No full provider/payment acceptance is claimed. No Railway project/deployment was created. Current main/production promotion restrictions remain.
+
 ## Permanent localization instructions
 
 `AGENTS.md` and `AI_RULES.md` require `localization/README.md` for UI authoring,

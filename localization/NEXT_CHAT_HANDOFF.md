@@ -1,5 +1,16 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## 2026-10-23 — Local Mac test bot running
+
+Owner authorized a local alternative to Railway. See the active local QA entry
+in `RESUME_NEXT_CHAT.md` and the private operator README it references. Latest
+runtime `b5f4351d`, isolated new PostgreSQL/schema 0109, API 18794, one verified
+`@Gentss_3bot` worker, HTTPS tunnel and read-back-verified Bot menu are running.
+Real HTTPS three-locale browser smoke passed; anonymous private files/routes
+remain denied. AI/OAuth credentials and real payment details are not connected.
+Do not duplicate polling, import production learner data, commit private config
+or re-bootstrap the now nonempty test DB. Main/production remain unchanged.
+
 ## 2026-10-22 — Permanent authoring and main-handover rules
 
 - Documentation only: `AGENTS.md` now requires the permanent localization workflow for every fixed UI copy or new-language change; `AI_RULES.md` links to that rule and `localization/README.md`. `PROJECT_MEMORY.md` records the durable ownership/reference, not a task log.
