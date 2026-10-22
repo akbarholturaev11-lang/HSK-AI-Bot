@@ -13,7 +13,10 @@
   background:linear-gradient(180deg,rgba(255,255,255,.36),transparent 30%,rgba(255,255,255,.07) 65%,rgba(255,255,255,.16));
 }
 .nav.hsk-lg-active::after{z-index:1;pointer-events:none}
-.nav.hsk-lg-active>.hsk-lg-surface{
+/* Position the canvas BEFORE WebGL initialization so it never becomes a sixth flex item.
+   Keep the original nav visible until a real shader frame is ready. */
+.nav>.hsk-lg-surface{
+  opacity:0;
   position:absolute;
   inset:0;
   width:100%;
@@ -27,6 +30,7 @@
   z-index:0;
   background:rgba(255,255,255,.02);
 }
+.nav.hsk-lg-active>.hsk-lg-surface{opacity:1;}
 .nav.hsk-lg-active>.hsk-lg-surface canvas{
   width:100% !important;
   height:100% !important;
