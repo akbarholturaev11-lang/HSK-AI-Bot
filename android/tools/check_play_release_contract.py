@@ -45,6 +45,18 @@ play_limit = read(
 play_update = read(
     APP / "play" / "java/com/pomp/hskai/feature/update/AppUpdateCard.kt"
 )
+course_screen = read(
+    APP / "main" / "java/com/pomp/hskai/feature/course/CourseScreen.kt"
+)
+promo = read(
+    APP / "main" / "java/com/pomp/hskai/feature/profile/ProfilePromoCarousel.kt"
+)
+assistant = read(
+    APP / "main" / "java/com/pomp/hskai/feature/assistant/AssistantHost.kt"
+)
+feedback_dialog = read(
+    APP / "main" / "java/com/pomp/hskai/feature/feedback/BugReportDialog.kt"
+)
 profile = read(
     APP / "main" / "java/com/pomp/hskai/feature/profile/ProfileScreen.kt"
 )
@@ -65,8 +77,8 @@ require(
     "A positive Android versionCode is required.",
 )
 require(
-    bool(re.search(r'targetSdk\s*=\s*(3[5-9]|[4-9][0-9])\b', gradle)),
-    "Review targetSdk: this Play candidate must target API 35 or newer.",
+    bool(re.search(r'targetSdk\s*=\s*(3[6-9]|[4-9][0-9])\b', gradle)),
+    "Review targetSdk: this 2026 Play candidate must target API 36 or newer.",
 )
 require(
     '"EXTERNAL_CHECKOUT_ENABLED", "false"' in gradle
@@ -110,6 +122,36 @@ require(
     and '@router.get("/account-deletion")' in public_site,
     "Privacy and deletion links must be discoverable and routed.",
 )
+# Play consumption-only policy: avoid a price or purchase CTA anywhere the
+# shared HSK 3.0 entry dialogs are rendered. Real entitlements still come from
+# the common backend; future Play Billing must be implemented separately.
+for label, source in (("course HSK 3.0 dialog", course_screen), ("profile HSK 3.0 promo", promo)):
+    require(
+        "BuildConfig.EXTERNAL_CHECKOUT_ENABLED" in source
+        and "hsk30_play_access_status" in source,
+        f"{label} must gate direct checkout wording and show status-only Play UI.",
+    )
+require(
+    "reportTurn?.let" in assistant
+    and "BugReportDialog(" in assistant
+    and "assistant_report_answer" in assistant
+    and 'screen = "ai_assistant"' in assistant,
+    "AI answers need a visible in-app report action, linked to the feedback flow.",
+)
+require(
+    "initialDescription: String" in feedback_dialog,
+    "The AI content report must allow an explicit text-only submission.",
+)
+# Play source sets must not include direct APK updater mechanisms.
+for path in (APP / "play").rglob("*.kt"):
+    source = path.read_text(encoding="utf-8")
+    require(
+        "ACTION_INSTALL_PACKAGE" not in source
+        and "REQUEST_INSTALL_PACKAGES" not in source
+        and "SubscriptionCheckoutViewModel" not in source,
+        f"Play source must not install sideload APKs or use the direct checkout: {path.relative_to(ROOT)}",
+    )
+
 match = re.search(r"(?m)^\s*RELEASE_CERT_SHA256:\s*([0-9a-f]{64})\s*$", release_workflow)
 require(
     match is not None,
