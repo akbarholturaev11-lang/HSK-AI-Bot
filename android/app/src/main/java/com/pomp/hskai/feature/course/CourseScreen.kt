@@ -556,11 +556,11 @@ private fun Hsk30LockedEntryDialog(
     Hsk30BookDialog(isNew = false, onDismiss = {}, dismissible = false) {
         Hsk30BookTitle(
             title = stringResource(
-                if (hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_title
+                if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_title
                 else R.string.hsk30_access_required_title,
             ),
             body = stringResource(
-                if (hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_body
+                if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_body
                 else R.string.hsk30_access_required_body,
             ),
         )
