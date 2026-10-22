@@ -9098,7 +9098,6 @@ window.addEventListener("pageshow",function(ev){
     var prefix='/assets/liquid-glass/';
     var css=document.createElement('link');
     css.rel='stylesheet';css.href=prefix+'nav-glass.css?v=20261022-pilot1';
-    document.head.appendChild(css);
     var files=['html2canvas.min.js','container.js','nav-glass.js'];
     function loadAt(i){
       if(i>=files.length)return;
@@ -9109,8 +9108,10 @@ window.addEventListener("pageshow",function(ev){
       document.body.appendChild(tag);
     }
     function start(){loadAt(0)}
-    if(document.readyState==='complete')start();
-    else window.addEventListener('load',start,{once:true});
+    /* CSS must be ready before Container measures and snapshots the nav. */
+    css.onload=start;
+    css.onerror=function(){console.warn('Liquid Glass CSS unavailable; original nav retained')};
+    document.head.appendChild(css);
   }catch(e){/* Testing feature must not block the Mini App. */}
 })();
 </script>
