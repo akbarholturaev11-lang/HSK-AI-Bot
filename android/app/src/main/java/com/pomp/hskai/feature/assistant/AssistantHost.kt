@@ -636,12 +636,22 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                                         when {
                                             turn.text.isNotBlank() -> Column {
                                                 AssistantAnswerBubble(turn, onAction)
-                                                TextButton(onClick = { reportTurn = turn }) {
-                                                    Text(
-                                                        stringResource(R.string.assistant_report_answer),
-                                                        style = MaterialTheme.typography.labelSmall,
-                                                        color = PompColors.InkSecondary,
-                                                    )
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.End,
+                                                ) {
+                                                    TextButton(
+                                                        onClick = { reportTurn = turn },
+                                                        modifier = Modifier.heightIn(min = 48.dp),
+                                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                                                    ) {
+                                                        Text(
+                                                            stringResource(R.string.assistant_report_answer),
+                                                            style = MaterialTheme.typography.labelSmall,
+                                                            color = PompColors.InkSecondary,
+                                                            maxLines = 2,
+                                                        )
+                                                    }
                                                 }
                                             }
                                             turn.status == "processing" -> AssistantAnswerFrame {
