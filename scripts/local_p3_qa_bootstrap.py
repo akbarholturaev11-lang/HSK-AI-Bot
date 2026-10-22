@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import asyncio
 import os
+import re
 
 from sqlalchemy import inspect, text
 from sqlalchemy.engine import make_url
@@ -44,7 +45,7 @@ def _validate() -> None:
         or db.port != 5432
         or db.database != QA_DB
         or db.username != QA_USER
-        or not db.password
+        or not db.password or not re.fullmatch(r"[0-9a-f]{40,128}", db.password)
     ):
         raise RuntimeError("local_p3_qa_database_must_match_dedicated_docker_service")
 
