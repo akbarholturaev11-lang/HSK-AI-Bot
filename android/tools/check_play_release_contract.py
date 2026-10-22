@@ -57,6 +57,7 @@ assistant = read(
 feedback_dialog = read(
     APP / "main" / "java/com/pomp/hskai/feature/feedback/BugReportDialog.kt"
 )
+activity = read(APP / "main" / "java/com/pomp/hskai/MainActivity.kt")
 profile = read(
     APP / "main" / "java/com/pomp/hskai/feature/profile/ProfileScreen.kt"
 )
@@ -141,6 +142,11 @@ require(
 require(
     "initialDescription: String" in feedback_dialog,
     "The AI content report must allow an explicit text-only submission.",
+)
+require(
+    'if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30PaymentRejectionVisible)' in activity
+    and 'BuildConfig.EXTERNAL_CHECKOUT_ENABLED &&\n                        decision.planType == "hsk30_unlock"' in activity,
+    "Play must never show the manual-payment rejection and retry dialog.",
 )
 # Play source sets must not include direct APK updater mechanisms.
 for path in (APP / "play").rglob("*.kt"):
