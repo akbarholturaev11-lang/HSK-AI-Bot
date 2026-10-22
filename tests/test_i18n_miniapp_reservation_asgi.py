@@ -27,6 +27,7 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_progress import CourseProgress
 from app.db.models.user import User
 from app.services.course_levels import content_level
+from app.services.course_lesson_completion_proof import verify_lesson_completion_proof
 from app.services.course_miniapp_access_service import COURSE_DAILY_EVENT_NAME
 from app.services.entitlements import actions as A
 from app.services.entitlements.limits_config import LimitConfigService
@@ -136,6 +137,11 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         })
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["remaining"], 1)
+        self.assertTrue(verify_lesson_completion_proof(
+            response.json()["completion_proof"],
+            user_id=self.user.id, level="hsk1", lesson_order=1,
+            secret=TEST_TOKEN,
+        ))
         self.user_repo.get_by_telegram_id_for_update.assert_awaited_once_with(TEST_ID)
         self.lesson_service.status.assert_awaited_once()
         kwargs = self.lesson_service.status.await_args.kwargs
