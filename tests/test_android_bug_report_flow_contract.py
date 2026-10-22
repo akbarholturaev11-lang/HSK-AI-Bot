@@ -49,6 +49,13 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
         self.assertIn("screenshotDataUrl = encoded.orEmpty()", self.form)
         self.assertIn('picker.launch("image/*")', self.form)
 
+    def test_ai_report_secondary_action_is_reachable_and_dialog_title_is_contextual(self):
+        self.assertIn("onClick = { reportTurn = turn }", self.assistant)
+        self.assertIn("modifier = Modifier.heightIn(min = 48.dp)", self.assistant)
+        self.assertIn("horizontalArrangement = Arrangement.End", self.assistant)
+        self.assertIn('if (screen == "ai_assistant") R.string.assistant_report_answer', self.form)
+        self.assertIn('screen = "ai_assistant"', self.assistant)
+
     def test_success_requires_explicit_ok_and_closes_entire_report(self):
         self.assertIn("sent = response is ApiResult.Success && response.value.ok", self.form)
         self.assertIn("if (sent) {", self.form)
