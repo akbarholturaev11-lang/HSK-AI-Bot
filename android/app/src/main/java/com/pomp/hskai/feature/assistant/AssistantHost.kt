@@ -647,7 +647,7 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                                                     ) {
                                                         Text(
                                                             stringResource(R.string.assistant_report_answer),
-                                                            style = MaterialTheme.typography.labelSmall,
+                                                            style = MaterialTheme.typography.bodySmall,
                                                             color = PompColors.InkSecondary,
                                                             maxLines = 2,
                                                         )
