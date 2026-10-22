@@ -73,6 +73,7 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
         submit = self.form.index("enabled = !sent && description.trim().length >= 5 && !busy")
         self.assertLess(scroll, divider)
         self.assertLess(divider, submit)
+        self.assertIn(").heightIn(min = 52.dp)", self.form)
         self.assertIn(".imePadding()", self.form)
         self.assertIn("SOFT_INPUT_ADJUST_RESIZE", self.form)
 
