@@ -40,8 +40,8 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
         self.assertIn("FLAG_SECURE", self.capture)
         self.assertIn("val screenshot = captureReportScreen(visibleDialogView)", self.profile)
 
-    def test_screenshot_from_existing_bug_report_defaults_on_but_ai_text_reports_do_not_require_it(self):
-        self.assertIn("var attachScreenshot by remember(screenshot) { mutableStateOf(screenshot != null) }", self.form)
+    def test_existing_bug_report_defaults_screenshot_on_and_ai_report_defaults_off(self):
+        self.assertIn('var attachScreenshot by remember(screen) { mutableStateOf(screen != "ai_assistant") }', self.form)
         self.assertIn("initialDescription: String = \"\"", self.form)
         self.assertIn("checked = attachScreenshot", self.form)
         self.assertIn("onCheckedChange", self.form)
