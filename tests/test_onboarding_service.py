@@ -3,7 +3,7 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 from app.bot.fsm.onboarding import OnboardingStates
-from app.bot.handlers.start import _send_android_referral_apk, cmd_start, process_language, router as start_router
+from app.bot.handlers.start import _send_android_referral_apk, cmd_start, process_language, process_level, router as start_router
 from app.bot.handlers.commands import command_language_callback_handler
 from app.services.onboarding_service import (
     ONBOARDING_LANGUAGE_MODE,
@@ -462,6 +462,67 @@ class LanguageSelectionCallbackTests(unittest.IsolatedAsyncioTestCase):
                 session.commit.assert_awaited_once()
                 state.clear.assert_awaited_once()
                 callback.bot.edit_message_text.assert_awaited_once()
+
+    async def test_level_router_matches_only_known_course_levels(self):
+        handler = next(row for row in start_router.callback_query.handlers if row.callback is process_level)
+        valid = {"level:beginner", "level:hsk1", "level:hsk2", "level:hsk3",
+                 "level:hsk4", "level:nhsk1", "level:nhsk2", "level:nhsk3"}
+        for data in (*sorted(valid), None, "", "lang:tj", "cmdlang:ru",
+                     "mode:course", "level:", "level:en", "level:hsk9",
+                     "level:hsk2:extra", "level: hsk2", "trial_lesson:first"):
+            with self.subTest(data=data):
+                matches, _ = await handler.check(
+                    self.callback(data), raw_state=OnboardingStates.choosing_level.state,
+                )
+                self.assertEqual(matches, data in valid)
+
+    async def test_level_rejects_stale_or_malformed_callback_without_user_or_state_writes(self):
+        for data in (None, "", "lang:uz", "lang:tj", "mode:free_qa",
+                     "cmdlang:ru", "level", "level:", "level:invalid",
+                     "level:hsk5", "level:nhsk4", "level:hsk1:extra"):
+            with self.subTest(data=data):
+                callback = self.callback(data)
+                session = SimpleNamespace(commit=AsyncMock())
+                state = SimpleNamespace(get_data=AsyncMock(), clear=AsyncMock())
+                with patch("app.bot.handlers.start.OnboardingService") as service:
+                    await process_level(callback, state, session)
+                    service.assert_not_called()
+                session.commit.assert_not_awaited()
+                state.get_data.assert_not_awaited()
+                state.clear.assert_not_awaited()
+                callback.answer.assert_awaited_once()
+                callback.message.delete.assert_not_awaited()
+
+    async def test_valid_level_keeps_existing_qa_transition(self):
+        for level in ("beginner", "hsk2", "nhsk3"):
+            with self.subTest(level=level):
+                callback = self.callback(f"level:{level}")
+                callback.message.edit_text = AsyncMock()
+                session = SimpleNamespace(commit=AsyncMock())
+                state = SimpleNamespace(
+                    get_data=AsyncMock(return_value={"qa_mode_level_choice": True}),
+                    clear=AsyncMock(),
+                )
+                user = SimpleNamespace(
+                    level="hsk1", language="uz", learning_mode="course",
+                    voice_mode="voice", expiry_reminder_sent_at=123,
+                )
+                with patch("app.bot.handlers.start.OnboardingService") as service, patch(
+                    "app.bot.handlers.start.send_qa_entry", new_callable=AsyncMock
+                ) as entry, patch(
+                    "app.bot.handlers.start.QA_MODE_LEVEL_CHOICE_KEY",
+                    "qa_mode_level_choice",
+                ):
+                    service.return_value.get_or_create_user = AsyncMock(return_value=(user, False))
+                    await process_level(callback, state, session)
+                self.assertEqual(user.level, level)
+                self.assertEqual(user.learning_mode, "qa")
+                self.assertEqual(user.voice_mode, "none")
+                self.assertIsNone(user.expiry_reminder_sent_at)
+                session.commit.assert_awaited_once()
+                callback.answer.assert_awaited_once()
+                state.clear.assert_awaited_once()
+                entry.assert_awaited_once()
 
     async def test_command_language_rejects_unknown_or_malformed_buttons_before_lookup(self):
         for data in (None, "", "cmdlang", "cmdlang:", "cmdlang:en", "cmdlang:ru:extra", "lang:tj"):
