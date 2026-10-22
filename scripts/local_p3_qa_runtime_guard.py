@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import os
 import re
+from urllib.parse import urlsplit
 from urllib.request import urlopen
 
 from sqlalchemy.engine import make_url
@@ -30,7 +31,7 @@ def validate_without_network(env: dict[str, str]) -> None:
     if (db.drivername != "postgresql+asyncpg"
             or db.host != EXPECTED_HOST or db.port != 5432
             or db.database != EXPECTED_DB or db.username != EXPECTED_USER
-            or not db.password):
+            or not db.password or not re.fullmatch(r"[0-9a-f]{40,128}", db.password)):
         raise RuntimeError("local_p3_qa_database_is_not_isolated")
     if env.get("REDIS_URL") != "redis://redis:6379/0":
         raise RuntimeError("local_p3_qa_redis_is_not_isolated")
@@ -45,6 +46,24 @@ def validate_without_network(env: dict[str, str]) -> None:
         raise RuntimeError("local_p3_qa_refuses_inherited_provider_secrets")
     if env.get("GOOGLE_OAUTH_ENABLED") != "false" or env.get("APPLE_OAUTH_ENABLED") != "false":
         raise RuntimeError("local_p3_qa_external_login_disabled")
+    origin = env.get("PUBLIC_SITE_URL", "").rstrip("/")
+    mini_app_url = env.get("MINI_APP_BASE_URL", "")
+    try:
+        parsed = urlsplit(origin)
+    except ValueError:
+        raise RuntimeError("local_p3_qa_origin_invalid") from None
+    allowed_local = (parsed.scheme == "http"
+                     and parsed.hostname in {"localhost", "127.0.0.1"}
+                     and parsed.port == 18080)
+    allowed_https = parsed.scheme == "https" and parsed.hostname is not None
+    if not (allowed_local or allowed_https):
+        raise RuntimeError("local_p3_qa_origin_must_be_https_or_localhost")
+    if ("railway.app" in (parsed.hostname or "")
+            or "production" in (parsed.hostname or "")
+            or parsed.path not in ("", "/")
+            or parsed.query or parsed.fragment
+            or mini_app_url != origin + "/course-v3.html"):
+        raise RuntimeError("local_p3_qa_origin_is_not_an_isolated_test_host")
     token = env.get("BOT_TOKEN", "")
     if not re.fullmatch(r"[0-9]{6,15}:[A-Za-z0-9_-]{25,}", token):
         raise RuntimeError("local_p3_qa_requires_separate_test_bot_token")
