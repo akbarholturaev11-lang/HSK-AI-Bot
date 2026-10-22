@@ -58,6 +58,7 @@ feedback_dialog = read(
     APP / "main" / "java/com/pomp/hskai/feature/feedback/BugReportDialog.kt"
 )
 activity = read(APP / "main" / "java/com/pomp/hskai/MainActivity.kt")
+payment_notifications = read(APP / "main" / "java/com/pomp/hskai/core/notify/PaymentNotifications.kt")
 profile = read(
     APP / "main" / "java/com/pomp/hskai/feature/profile/ProfileScreen.kt"
 )
@@ -147,6 +148,10 @@ require(
     'if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30PaymentRejectionVisible)' in activity
     and 'BuildConfig.EXTERNAL_CHECKOUT_ENABLED &&\n                        decision.planType == "hsk30_unlock"' in activity,
     "Play must never show the manual-payment rejection and retry dialog.",
+)
+require(
+    'if (!BuildConfig.EXTERNAL_CHECKOUT_ENABLED && status == "rejected") return false' in payment_notifications,
+    "Play must not issue manual-payment rejection notifications encouraging retry.",
 )
 # Play source sets must not include direct APK updater mechanisms.
 for path in (APP / "play").rglob("*.kt"):
