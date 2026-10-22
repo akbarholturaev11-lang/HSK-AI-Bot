@@ -10,7 +10,7 @@ ASSETS = ROOT / "app/static/assets/liquid-glass"
 def test_glass_is_explicitly_opt_in():
     html = HTML.read_text(encoding="utf-8")
     assert "get('liquid_glass')!=='1'" in html
-    assert "window.addEventListener('load',start,{once:true})" in html
+    assert "css.onload=start" in html
     assert html.count('navInit();') == 1
     for section in ("course", "mashq", "voice", "rating", "profile"):
         assert f'data-s="{section}"' in html
@@ -39,3 +39,7 @@ def test_original_navigation_has_safe_fallback():
     assert "html2canvas(document.body" in src
     assert "allowTaint:false" in src
     assert "status.enabled=false" in src
+    style = (ASSETS / "nav-glass.css").read_text(encoding="utf-8")
+    assert ".nav>.hsk-lg-surface" in style
+    assert "opacity:0" in style
+    assert ".nav.hsk-lg-active>.hsk-lg-surface{opacity:1;}" in style
