@@ -1,0 +1,100 @@
+name: hsk-p3-local-qa
+
+# Use only with: docker compose --env-file .env.p3-local-qa -f ops/p3-local-qa/compose.yml
+# All SQL/Redis traffic stays on the private Compose network. No production data copied.
+x-app-build: &app-build
+  context: ../..
+  dockerfile: ops/p3-local-qa/Dockerfile
+
+x-database-url: &db-url postgresql+asyncpg://hsk_p3_local_qa:${P3_QA_DB_PASSWORD:?Create a fresh hex-only P3_QA_DB_PASSWORD in .env.p3-local-qa}@postgres:5432/hsk_p3_local_qa
+
+services:
+  postgres:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hsk_p3_local_qa
+      POSTGRES_USER: hsk_p3_local_qa
+      POSTGRES_PASSWORD: ${P3_QA_DB_PASSWORD:?P3_QA_DB_PASSWORD required}
+    volumes:
+      - p3_qa_postgres:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hsk_p3_local_qa -d hsk_p3_local_qa"]
+      interval: 5s
+      timeout: 3s
+      retries: 25
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  bootstrap:
+    build: *app-build
+    image: hsk-p3-local-qa:dev
+    restart: "no"
+    environment:
+      DATABASE_URL: *db-url
+      HSK_P3_LOCAL_QA_BOOTSTRAP: I_APPROVE_EMPTY_LOCAL_P3_QA
+    command: ["python", "scripts/local_p3_qa_bootstrap.py"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    build: *app-build
+    image: hsk-p3-local-qa:dev
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:18080:8000"
+    environment:
+      PORT: "8000"
+      DATABASE_URL: *db-url
+      REDIS_URL: redis://redis:6379/0
+      HSK_P3_LOCAL_QA: "1"
+      HSK_P3_QA_EXPECTED_BOT_USERNAME: "Gentss_3bot"
+      BOT_TOKEN: ${P3_QA_BOT_TOKEN:?Use the dedicated Gentss_3bot TEST token only}
+      BOT_USERNAME: "Gentss_3bot"
+      MINI_APP_BASE_URL: "${P3_QA_PUBLIC_ORIGIN:-http://localhost:18080}/course-v3.html"
+      PUBLIC_SITE_URL: "${P3_QA_PUBLIC_ORIGIN:-http://localhost:18080}"
+      ADMIN_IDS: ""
+      FEEDBACK_NOTIFY_CHAT_IDS: ""
+      OPENAI_API_KEY: ""
+      GEMINI_API_KEY: ""
+      GOOGLE_OAUTH_ENABLED: "false"
+      APPLE_OAUTH_ENABLED: "false"
+      GOOGLE_DESKTOP_CLIENT_SECRET: ""
+      APPLE_PRIVATE_KEY: ""
+      OAUTH_NATIVE_RETURN_SCHEME: ""
+      ANDROID_FCM_SERVICE_ACCOUNT_JSON: ""
+      ANDROID_PUSH_UPDATES_ENABLED: "false"
+      ANDROID_PUSH_STUDY_ENABLED: "false"
+      ANDROID_PUSH_NOTICES_ENABLED: "false"
+      DESKTOP_DOWNLOADS_ENABLED: "false"
+      DESKTOP_UPDATES_ENABLED: "false"
+      MEDIA_ROOT: /app/.qa-media
+    volumes:
+      - p3_qa_media:/app/.qa-media
+    command: ["bash", "-ec", "python scripts/local_p3_qa_runtime_guard.py && bash scripts/start.sh"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      bootstrap:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5).read()"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 30s
+
+volumes:
+  p3_qa_postgres:
+  p3_qa_media:
