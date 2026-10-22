@@ -457,6 +457,7 @@ internal fun Hsk30BookDialog(
 internal fun Hsk30BookTitle(title: String, body: String) {
     Text(
         title,
+        modifier = Modifier.testTag("hsk30-book-title"),
         color = PompColors.Ink,
         fontSize = 25.sp,
         lineHeight = 30.sp,
