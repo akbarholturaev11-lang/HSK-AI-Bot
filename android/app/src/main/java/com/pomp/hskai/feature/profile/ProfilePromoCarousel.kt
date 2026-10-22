@@ -349,17 +349,23 @@ internal fun ProfileHsk30BookEntryDialog(
                 Hsk30BookTitle(
                     title = stringResource(
                         if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) R.string.hsk30_promo_title
-                        else R.string.hsk_course_course_picker_version,
+                        else R.string.hsk30_play_access_title,
                     ),
-                    body = stringResource(R.string.hsk30_unlock_unavailable),
+                    body = stringResource(
+                        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) R.string.hsk30_unlock_unavailable
+                        else R.string.hsk30_play_unavailable,
+                    ),
                 )
                 Spacer(Modifier.height(20.dp))
             }
             !accessGranted -> {
                 Hsk30BookTitle(
                     title = stringResource(
-                        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_title
-                        else R.string.hsk30_access_required_title,
+                        when {
+                            !BuildConfig.EXTERNAL_CHECKOUT_ENABLED -> R.string.hsk30_play_access_title
+                            hsk30.access.paymentRejected -> R.string.hsk30_payment_rejected_title
+                            else -> R.string.hsk30_access_required_title
+                        },
                     ),
                     body = stringResource(
                         if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_body
