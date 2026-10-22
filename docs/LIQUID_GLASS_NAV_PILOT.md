@@ -11,7 +11,7 @@
 - All JS/CSS comes from `/assets/liquid-glass/{filename}` (same-origin allowlist in `app/main.py`).
 - No runtime CDN or GitHub requests from the Liquid Glass code.
 - `container.js`: fork of upstream MIT `container.js`; changes marked at file header. `LICENSE` included.
-- `html2canvas.min.js`: stock html2canvas 1.4.1 minified bundle, SHA-256 provenance reported by Apache magpie-site: `e87e550794322e574a1fda0c1549a3c70dae5a93d9113417a429016838eab8cb`. `html2canvas.LICENSE` included.
+- `html2canvas.min.js`: html2canvas 1.4.1 minified bundle mirrored from the Apache magpie-site GitHub repository; upstream project is `niklasvh/html2canvas`. `html2canvas.LICENSE` included.
 - The upstream `button.js` is intentionally **not** imported. The production nav buttons keep their own accessibility, routing and event handlers; the glass renderer is visual-only.
 
 ## Rendering and fallback
