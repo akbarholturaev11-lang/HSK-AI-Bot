@@ -26,6 +26,7 @@ from fastapi.responses import JSONResponse
 from app.repositories.user_repo import UserRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.entitlements.lesson_access import LessonAccessService
+from app.services.course_lesson_completion_proof import issue_lesson_completion_proof
 from app.services.course_p3_grammar_localization import miniapp_reserved_grammar_patch
 from app.services.course_v3_parts import total_parts
 from app.services.course_levels import content_level
@@ -535,6 +536,14 @@ def create_miniapp_entitlements_router(
             result = await LessonAccessService(session).status(
                 user, level=level, lesson_order=order, completed=completed, consume=True,
             )
+            if result["allowed"]:
+                result = {
+                    **result,
+                    "completion_proof": issue_lesson_completion_proof(
+                        user_id=user.id, level=level, lesson_order=order,
+                        secret=settings_obj.BOT_TOKEN,
+                    ),
+                }
             await session.commit()
             # Display-only grammar translations are returned ONLY after the
             # existing authenticated, unlocked, successful consume=True gate.
