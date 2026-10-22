@@ -7,7 +7,7 @@ python3 scripts/i18n_build_android_catalogs.py --write
 python3 scripts/i18n_build_android_catalogs.py --check
 ```
 
-These 36 canonical files generate the corresponding committed Android
+These 39 canonical files generate the corresponding committed Android
 `app/src/{main,direct,play}/res/values*/*.xml` files byte for byte. Existing
 resource IDs and all consumers remain unchanged. `values` is Uzbek,
 `values-ru` Russian and `values-tg` Tajik (`tj` in backend APIs).
