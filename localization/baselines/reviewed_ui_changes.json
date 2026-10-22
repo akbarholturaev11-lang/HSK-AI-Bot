@@ -15,8 +15,8 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "412ca35a65dd7a3d0677de9e1bc507f59d7dc548",
-      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; merged user main dcd65418 glass navigation, nonblocking Practice preloads and desktop modal fix; clamped desktop navigation at narrow desktop widths with browser regression; unchanged source/grade/access semantics; 2026-10-22 reviewed client-only signed lesson completion proof transport, preserving lesson data loading, skip-test policy, localized copy and bundled cache references"
+      "reviewed_sha1": "bc60ab8e4ae55c5bb5996a936fc3d97a8a60a76b",
+      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; merged user main dcd65418 glass navigation, nonblocking Practice preloads and desktop modal fix; clamped desktop navigation at narrow desktop widths with browser regression; unchanged source/grade/access semantics; 2026-10-22 reviewed client-only signed lesson completion proof transport, preserving lesson data loading, skip-test policy, localized copy and bundled cache references; 2026-10-22 reviewed Mini App language preference save acknowledgement, in-flight ordering and rollback using the existing canonical course error string; original lesson, access, XP and grading unchanged"
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",
