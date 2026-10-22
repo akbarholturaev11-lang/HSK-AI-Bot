@@ -331,9 +331,20 @@ async def process_language(callback: CallbackQuery, state: FSMContext, session):
 
 
 
-@router.callback_query(OnboardingStates.choosing_level)
+# All and only values emitted by the course/QA onboarding level keyboards.
+# Never interpret a stale language/mode button as a course level.
+ONBOARDING_LEVEL_CALLBACKS = frozenset({
+    "level:beginner", "level:hsk1", "level:hsk2", "level:hsk3", "level:hsk4",
+    "level:nhsk1", "level:nhsk2", "level:nhsk3",
+})
+
+
+@router.callback_query(OnboardingStates.choosing_level, F.data.in_(ONBOARDING_LEVEL_CALLBACKS))
 async def process_level(callback: CallbackQuery, state: FSMContext, session):
-    level = callback.data.split(":")[1]
+    if callback.data not in ONBOARDING_LEVEL_CALLBACKS:
+        await callback.answer()
+        return
+    level = callback.data.split(":", 1)[1]
     data = await state.get_data()
     is_qa_mode_level_choice = bool(data.get(QA_MODE_LEVEL_CHOICE_KEY))
 
