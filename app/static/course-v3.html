@@ -3099,10 +3099,10 @@ var App={
   langPicker:function(){var t=T();var names=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.names.copy1",{uz:"O'zbekcha",ru:"Русский",tj:"Тоҷикӣ"});
     App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+courseMessage("lang",t.lang)+'</div></div>'
       +["uz","ru","tj"].map(function(l){return '<button class="sec'+(l===LANG?' cur':'')+'" style="width:100%;margin-bottom:8px" onclick="App.pickLang(\''+l+'\')"><span class="si2">'+(l===LANG?'<i class="ti ti-check"></i>':'')+'</span><b>'+names[l]+'</b></button>'}).join(""));},
-  pickLang:function(l){var back=SETTINGS_SHEET;App.closeSheet();App.setLang(l);
+  pickLang:function(l){if(!I18N[l])return;var back=SETTINGS_SHEET,oldLang=LANG;App.closeSheet();App.setLang(l);
     if(back)App.openSettings();
-    /* Tilni botga ham yozamiz — QA rejim va Kurs rejim bir xil tilda ochiladi. */
-    if(INIT_DATA)_apiPost("/api/v3/language",{language:l}).catch(function(){})}
+    /* Keep optimistic local UI, but save through a serialized queue to prevent out-of-order language writes. */
+    if(!INIT_DATA)return;if(!App._languagePendingCount)App._languageServerLang=oldLang;App._languagePendingCount=(App._languagePendingCount||0)+1;var tail=App._languageSaveTail||Promise.resolve();App._languageSaveTail=tail.catch(function(){}).then(function(){return _apiPost("/api/v3/language",{language:l}).then(function(r){if(!r.ok)throw Error("language_save_http");return r.json()}).then(function(d){if(!d||d.ok!==true||d.language!==l)throw Error("language_save_rejected");App._languageServerLang=l}).catch(function(){if(LANG===l){App.setLang(App._languageServerLang||oldLang);if(back)App.openSettings()}toast(courseMessage("onboarding.saveError",serverSaveErrorText()),2200)}).then(function(){App._languagePendingCount--})});return App._languageSaveTail}
 };
 function navInit(){document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){App.show(b.dataset.s)}})
   var nav=document.getElementById("nav");
@@ -5597,8 +5597,8 @@ function tourRender(noSpeak){var st=TOUR.steps[TOUR.i];App.show(st.s);
 var _NEXT_LEVEL={hsk1:"hsk2",hsk2:"hsk3",hsk3:"hsk4",nhsk1:"nhsk2",nhsk2:"nhsk3"};
 function adoptServerLang(d){
   /* Til yagona manbadan (botdagi user.language) keladi — server tilini qabul qilamiz. */
-  if(d&&d.user&&d.user.language&&I18N[d.user.language])LANG=d.user.language;
-  syncDocumentLanguage();
+  if(App._languagePendingCount)return; // An older map response must not override an in-flight preference choice.
+  if(d&&d.user&&d.user.language&&I18N[d.user.language])LANG=d.user.language;syncDocumentLanguage();
 }
 /* Map yuklash — cold-start / tranzient server xatolarida ("birinchi ochkanda
    API yiqildi") darrov "ulanmagan" gate ko'rsatilmaydi, bir necha marta qayta
