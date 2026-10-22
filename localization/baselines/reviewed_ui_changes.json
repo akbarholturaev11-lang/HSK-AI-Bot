@@ -15,7 +15,7 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "90d8a83ad62adc772a5977d00d13ad6d331eabb2",
+      "reviewed_sha1": "412ca35a65dd7a3d0677de9e1bc507f59d7dc548",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; merged user main dcd65418 glass navigation, nonblocking Practice preloads and desktop modal fix; clamped desktop navigation at narrow desktop widths with browser regression; unchanged source/grade/access semantics"
     },
     "app/bot/utils/i18n.py": {
