@@ -39,8 +39,9 @@ class ProfileHsk30BookFlowTests(unittest.TestCase):
             "Hsk30BookPrimary(\n                label = stringResource(R.string.hsk30_access_back_hsk20)",
             COURSE,
         )
-        self.assertIn("!BuildConfig.EXTERNAL_CHECKOUT_ENABLED -> R.string.hsk30_access_required_title", COURSE)
-        self.assertIn("else R.string.hsk_course_course_picker_version", PROMO)
+        self.assertIn("!BuildConfig.EXTERNAL_CHECKOUT_ENABLED -> R.string.hsk30_play_access_title", COURSE)
+        self.assertIn("else R.string.hsk30_play_access_title", PROMO)
+        self.assertIn("else R.string.hsk30_play_unavailable", PROMO)
 
     def test_course_path_keeps_its_own_compact_picker(self):
         self.assertIn("CourseChoiceSheet(", COURSE)
