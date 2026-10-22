@@ -2,6 +2,14 @@
 
 Updated: 2026-10-22. **This is the short authoritative checkpoint, not evidence of main/production release.**
 
+## Permanent localization instructions
+
+`AGENTS.md` and `AI_RULES.md` require `localization/README.md` for UI authoring,
+consumer wiring, generation/testing, locale codes, adding another language and
+carrying the architecture/rules safely into main. This is a durable workflow;
+current branch/release authorization and the verified runtime state below remain
+separate. The latest update changes documentation only.
+
 ## Latest localization code audit — 2026-10-22
 
 - Follow the newest entry in `NEXT_CHAT_HANDOFF.md`: three confirmed language-preference write defects are fixed in Mini App and Bot, with no catalog, lesson, scoring, payment or entitlement changes. Work branch only; main/production are unchanged.

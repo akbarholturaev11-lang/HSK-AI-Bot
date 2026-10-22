@@ -103,6 +103,28 @@ Har taskdan keyin kunlik log yaratish shart emas.
 
 ---
 
+## Doimiy lokalizatsiya qoidasi
+
+UI matni qo‘shish, tarjimani tahrirlash yoki yangi til kiritishdan oldin
+[`localization/README.md`](localization/README.md)ni o‘qi. Bu qoida ushbu ish
+keyinchalik `main`ga o‘tgandan keyin ham barcha platformalar uchun amal qiladi.
+
+- Foydalanuvchiga ko‘rinadigan yangi doimiy matnni mavjud canonical namespace’da
+  UZ/RU/TJ uchun birga yoz; avval mavjud kalitni qayta ishlatish imkonini tekshir.
+- Generated fayllarni qo‘lda tahrirlama va yangi inline tarjima lug‘ati yaratma.
+  Matnni canonical manbadan generatsiya qilib, haqiqiy consumer’ga ulagin.
+- Placeholder, plural, escaping, callback, resource ID va mavjud fallback
+  kontraktlarini saqla. UI tarjimasiga dars javobi, baholash yoki access qarorini
+  ko‘chirma; dars kontenti uchun quyidagi alohida QA siyosati amal qiladi.
+- `python3 scripts/i18n_build_all_catalogs.py --write` va `--check`ni bajar;
+  canonical manba, kerakli consumer/mapping va generated natijani birga commit qil.
+  Ta’sirlangan tillar/platformalar uchun yo‘riqnomadagi tekshiruvlarni bajar.
+- Yangi til faqat yangi papka yaratish bilan yoqilmaydi: API validation,
+  generator, barcha client adapterlari/tanlagichlari va testlari birga yangilanadi.
+  Tilni saqlashda noto‘g‘ri qiymatni display fallback orqali hisobga yozma.
+- Source SHA, grading, private lesson, auth, obuna/to‘lov guard’larini chetlab
+  o‘tma. Main/release ruxsati va Git qoidalari alohida saqlanadi.
+
 ## HSK AI P3 localization — agent-owned QA
 
 Current P3 cross-session execution entry point: `localization/P3_ACTIVE_HANDOFF.md`. Read it before touching P3; the large `localization/NEXT_CHAT_HANDOFF.md` is historical detail.

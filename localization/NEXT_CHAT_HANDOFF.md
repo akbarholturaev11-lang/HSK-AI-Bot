@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## 2026-10-22 — Permanent authoring and main-handover rules
+
+- Documentation only: `AGENTS.md` now requires the permanent localization workflow for every fixed UI copy or new-language change; `AI_RULES.md` links to that rule and `localization/README.md`. `PROJECT_MEMORY.md` records the durable ownership/reference, not a task log.
+- The existing README is extended with canonical-source selection, all-three-locale keys/placeholders, actual consumer/mapping wiring, generation/read-only commands, narrowly reviewed key-count/snapshot changes, locale/preference boundaries, fourth-language integration and keeping rules/sources/guards/tests together when later promoting to main.
+- Runtime/catalog/lesson files are unchanged. This documentation is not main-push or production-deploy authorization; retain the current work branch and real-client acceptance requirements below.
+
 ## 2026-10-22 — Localization runtime audit and language write fixes
 
 - Continue only on `codex/p3-main-integration-20261020`; main/production remain unchanged. This audit inspected canonical generators, Bot lookup/formatting and callbacks, Mini App dictionary adoption/picker, notification override precedence, native locale mappings and shared Desktop lookup rather than relying on the historical completion notes.
