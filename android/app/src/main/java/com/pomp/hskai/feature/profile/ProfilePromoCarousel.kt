@@ -347,7 +347,10 @@ internal fun ProfileHsk30BookEntryDialog(
             }
             !enabled -> {
                 Hsk30BookTitle(
-                    title = stringResource(R.string.hsk30_promo_title),
+                    title = stringResource(
+                        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) R.string.hsk30_promo_title
+                        else R.string.hsk_course_course_picker_version,
+                    ),
                     body = stringResource(R.string.hsk30_unlock_unavailable),
                 )
                 Spacer(Modifier.height(20.dp))
