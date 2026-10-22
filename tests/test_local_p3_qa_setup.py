@@ -14,7 +14,7 @@ def _valid_env():
         "HSK_P3_LOCAL_QA": "1",
         "DATABASE_URL": (
             "postgresql+asyncpg://hsk_p3_local_qa:" + "a" * 48
-            "@postgres:5432/hsk_p3_local_qa"
+            + "@postgres:5432/hsk_p3_local_qa"
         ),
         "REDIS_URL": "redis://redis:6379/0",
         "PUBLIC_SITE_URL": "http://localhost:18080",
