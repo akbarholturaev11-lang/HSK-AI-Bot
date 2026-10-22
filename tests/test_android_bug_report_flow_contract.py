@@ -40,8 +40,9 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
         self.assertIn("FLAG_SECURE", self.capture)
         self.assertIn("val screenshot = captureReportScreen(visibleDialogView)", self.profile)
 
-    def test_attach_is_on_by_default_but_can_be_disabled(self):
-        self.assertIn("var attachScreenshot by remember { mutableStateOf(true) }", self.form)
+    def test_screenshot_from_existing_bug_report_defaults_on_but_ai_text_reports_do_not_require_it(self):
+        self.assertIn("var attachScreenshot by remember(screenshot) { mutableStateOf(screenshot != null) }", self.form)
+        self.assertIn("initialDescription: String = \"\"", self.form)
         self.assertIn("checked = attachScreenshot", self.form)
         self.assertIn("onCheckedChange", self.form)
         self.assertIn("screenshotDataUrl = encoded.orEmpty()", self.form)
@@ -61,7 +62,7 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
     def test_fixed_send_action_is_not_inside_scroll_column(self):
         scroll = self.form.index(".verticalScroll(rememberScrollState())")
         divider = self.form.index("HorizontalDivider(color = PompColors.Divider)")
-        submit = self.form.index("enabled = sent || (description.trim().length >= 5 && !busy)")
+        submit = self.form.index("enabled = !sent && description.trim().length >= 5 && !busy")
         self.assertLess(scroll, divider)
         self.assertLess(divider, submit)
         self.assertIn(".imePadding()", self.form)
