@@ -118,9 +118,9 @@ fun BugReportDialog(
     initialDescription: String = "",
 ) {
     var description by remember(initialDescription) { mutableStateOf(initialDescription.take(2000)) }
-    // Existing screenshot reports default ON; text-only AI content reports do
-    // not demand an unrelated screenshot or image/media permission.
-    var attachScreenshot by remember(screenshot) { mutableStateOf(screenshot != null) }
+    // Preserve the existing bug-report default (screenshot ON, with a picker
+    // fallback if capture failed). Only explicit AI-content reports are text-first.
+    var attachScreenshot by remember(screen) { mutableStateOf(screen != "ai_assistant") }
     var preview by remember(screenshot) { mutableStateOf(screenshot) }
     var busy by remember { mutableStateOf(false) }
     var failed by remember { mutableStateOf(false) }
