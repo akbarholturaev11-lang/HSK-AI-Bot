@@ -115,10 +115,12 @@ fun BugReportDialog(
     screenshot: Bitmap?,
     screen: String,
     onDismiss: () -> Unit,
+    initialDescription: String = "",
 ) {
-    var description by remember { mutableStateOf("") }
-    // Default ON. The learner can always turn this OFF before sending.
-    var attachScreenshot by remember { mutableStateOf(true) }
+    var description by remember(initialDescription) { mutableStateOf(initialDescription.take(2000)) }
+    // Existing screenshot reports default ON; text-only AI content reports do
+    // not demand an unrelated screenshot or image/media permission.
+    var attachScreenshot by remember(screenshot) { mutableStateOf(screenshot != null) }
     var preview by remember(screenshot) { mutableStateOf(screenshot) }
     var busy by remember { mutableStateOf(false) }
     var failed by remember { mutableStateOf(false) }
