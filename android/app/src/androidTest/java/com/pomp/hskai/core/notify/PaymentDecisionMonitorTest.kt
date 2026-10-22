@@ -3,6 +3,7 @@ package com.pomp.hskai.core.notify
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
@@ -108,7 +109,8 @@ class PaymentDecisionMonitorTest {
                 listOf("approved", "rejected").forEach { status ->
                     val id = expected.size + 1
                     f.response(id, status, plan)
-                    assertFalse(monitor.receive("test-device", id, status))
+                    val consumedSilentlyOnPlay = !BuildConfig.EXTERNAL_CHECKOUT_ENABLED && status == "rejected"
+                    assertEquals(consumedSilentlyOnPlay, monitor.receive("test-device", id, status))
                     expected += InAppPaymentDecision("test-device", id, status, plan)
                 }
             }
