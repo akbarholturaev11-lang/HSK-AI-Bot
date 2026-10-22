@@ -65,6 +65,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pomp.hskai.HskAiApplication
+import com.pomp.hskai.feature.feedback.BugReportDialog
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.AuthState
 import com.pomp.hskai.core.design.PompColors
@@ -379,6 +380,7 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
     val state by app.assistant.state.collectAsStateWithLifecycle()
     var includeContext by rememberSaveable { mutableStateOf(true) }
     var inspect by remember { mutableStateOf(false) }
+    var reportTurn by remember { mutableStateOf<AssistantTurn?>(null) }
     val conversationsDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val historyOpen = conversationsDrawerState.isOpen
     val drawerWidth = minOf(LocalConfiguration.current.screenWidthDp.dp * .72f, 360.dp)
@@ -632,7 +634,16 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                                         }
                                         AssistantUserBubble(turn)
                                         when {
-                                            turn.text.isNotBlank() -> AssistantAnswerBubble(turn, onAction)
+                                            turn.text.isNotBlank() -> Column {
+                                                AssistantAnswerBubble(turn, onAction)
+                                                TextButton(onClick = { reportTurn = turn }) {
+                                                    Text(
+                                                        stringResource(R.string.assistant_report_answer),
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        color = PompColors.InkSecondary,
+                                                    )
+                                                }
+                                            }
                                             turn.status == "processing" -> AssistantAnswerFrame {
                                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                                                     AssistantTypingDots()
@@ -839,6 +850,20 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                 }
             }
         }
+    }
+    reportTurn?.let { turn ->
+        // Explicit user action: no automatic upload of model output or screen data.
+        BugReportDialog(
+            repository = app.featureRepository,
+            screenshot = null,
+            screen = "ai_assistant",
+            initialDescription = context.getString(
+                R.string.assistant_report_prefill,
+                turn.clientMessageId.take(80),
+                turn.text.take(350),
+            ),
+            onDismiss = { reportTurn = null },
+        )
     }
 }
 
