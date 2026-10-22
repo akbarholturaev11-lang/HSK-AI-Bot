@@ -1,6 +1,7 @@
 package com.pomp.hskai.feature.assistant
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
@@ -46,6 +47,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -53,6 +55,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -636,23 +639,10 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                                         when {
                                             turn.text.isNotBlank() -> Column {
                                                 AssistantAnswerBubble(turn, onAction)
-                                                Row(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    horizontalArrangement = Arrangement.End,
-                                                ) {
-                                                    TextButton(
-                                                        onClick = { reportTurn = turn },
-                                                        modifier = Modifier.heightIn(min = 48.dp),
-                                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                                                    ) {
-                                                        Text(
-                                                            stringResource(R.string.assistant_report_answer),
-                                                            style = MaterialTheme.typography.bodySmall,
-                                                            color = PompColors.InkSecondary,
-                                                            maxLines = 2,
-                                                        )
-                                                    }
-                                                }
+                                                AssistantAnswerActions(
+                                                    turn = turn,
+                                                    onReport = { reportTurn = turn },
+                                                )
                                             }
                                             turn.status == "processing" -> AssistantAnswerFrame {
                                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -1000,6 +990,81 @@ private fun AssistantAnswerFrame(content: @Composable ColumnScope.() -> Unit) {
             shadowElevation = 4.dp,
         ) {
             Column(Modifier.padding(horizontal = 14.dp, vertical = 11.dp), verticalArrangement = Arrangement.spacedBy(10.dp), content = content)
+        }
+    }
+}
+
+/**
+ * Chat-style actions for a specific completed assistant reply.
+ * Only working actions are exposed: feedback votes are deliberately omitted
+ * until a server-owned voting endpoint exists.
+ */
+@Composable
+private fun AssistantAnswerActions(turn: AssistantTurn, onReport: () -> Unit) {
+    val clipboard = LocalClipboardManager.current
+    val context = LocalContext.current
+    var menuExpanded by remember(turn.clientMessageId) { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(start = 36.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
+    ) {
+        IconButton(
+            onClick = { clipboard.setText(AnnotatedString(turn.text)) },
+            modifier = Modifier.size(48.dp),
+        ) {
+            Icon(
+                Icons.Default.ContentCopy,
+                contentDescription = stringResource(R.string.ready_phrases_copy),
+                modifier = Modifier.size(19.dp),
+                tint = PompColors.InkSecondary,
+            )
+        }
+        IconButton(
+            onClick = {
+                val send = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, turn.text)
+                }
+                context.startActivity(
+                    Intent.createChooser(send, context.getString(R.string.profile_referral_share))
+                )
+            },
+            modifier = Modifier.size(48.dp),
+        ) {
+            Icon(
+                Icons.Default.Share,
+                contentDescription = stringResource(R.string.profile_referral_share),
+                modifier = Modifier.size(19.dp),
+                tint = PompColors.InkSecondary,
+            )
+        }
+        Box {
+            IconButton(
+                onClick = { menuExpanded = true },
+                modifier = Modifier.size(48.dp),
+            ) {
+                Icon(
+                    Icons.Default.MoreHoriz,
+                    contentDescription = stringResource(R.string.assistant_more_actions),
+                    modifier = Modifier.size(22.dp),
+                    tint = PompColors.InkSecondary,
+                )
+            }
+            DropdownMenu(
+                expanded = menuExpanded,
+                onDismissRequest = { menuExpanded = false },
+            ) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.assistant_report_answer)) },
+                    leadingIcon = { Icon(Icons.Default.Flag, contentDescription = null) },
+                    onClick = {
+                        menuExpanded = false
+                        onReport()
+                    },
+                )
+            }
         }
     }
 }
