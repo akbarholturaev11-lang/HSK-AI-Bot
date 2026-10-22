@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hsk30_play_access_status">Дар ин версия HSK 3.0 танҳо бо дастрасии қаблан ба ҳисоби шумо додашуда кушода мешавад. Агар дастрасӣ доред, ҳолати ҳисобро дар профил нав кунед.</string>
+    <string name="assistant_report_answer">Шикоят аз ҷавоби AI</string>
+    <string name="assistant_report_prefill">Шикоят аз ҷавоби AI (паём: %1$s)
+Ҷавоб: %2$s
+Сабаб: </string>
+</resources>
