@@ -92,6 +92,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.pomp.hskai.R
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.components.HskSectionTitle
@@ -549,7 +550,8 @@ private fun Hsk30LockedEntryDialog(
     onUnlock: () -> Unit,
     onBackToHsk20: () -> Unit,
 ) {
-    val paymentAvailable = hsk30.paymentEnabled && hsk30.priceTjs > 0 &&
+    val paymentAvailable = BuildConfig.EXTERNAL_CHECKOUT_ENABLED &&
+        hsk30.paymentEnabled && hsk30.priceTjs > 0 &&
         hsk30.priceDisplay.isNotBlank()
     Hsk30BookDialog(isNew = false, onDismiss = {}, dismissible = false) {
         Hsk30BookTitle(
@@ -562,24 +564,26 @@ private fun Hsk30LockedEntryDialog(
                 else R.string.hsk30_access_required_body,
             ),
         )
-        if (hsk30.priceDisplay.isNotBlank()) {
+        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30.priceDisplay.isNotBlank()) {
             Hsk30BookPrice(hsk30.priceDisplay)
         } else {
             Spacer(Modifier.height(20.dp))
         }
         if (!paymentAvailable) {
             Text(
-                stringResource(R.string.hsk30_unlock_unavailable),
+                stringResource(if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) R.string.hsk30_unlock_unavailable else R.string.hsk30_play_access_status),
                 color = PompColors.InkSecondary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(bottom = 12.dp),
             )
         }
-        Hsk30BookPrimary(
-            label = stringResource(R.string.hsk30_access_unlock_button),
-            enabled = paymentAvailable,
-            onClick = onUnlock,
-        )
+        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+            Hsk30BookPrimary(
+                label = stringResource(R.string.hsk30_access_unlock_button),
+                enabled = paymentAvailable,
+                onClick = onUnlock,
+            )
+        }
         Hsk30BookSecondary(stringResource(R.string.hsk30_access_back_hsk20), onBackToHsk20)
     }
 }
@@ -628,12 +632,16 @@ private fun Hsk30PromoDialog(
                 if (hasAccess) R.string.hsk30_promo_body_unlocked else R.string.hsk30_access_required_body,
             ),
         )
-        if (!hasAccess && hsk30.priceDisplay.isNotBlank()) {
+        if (!hasAccess && BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30.priceDisplay.isNotBlank()) {
             Hsk30BookPrice(hsk30.priceDisplay)
         } else {
             Spacer(Modifier.height(20.dp))
         }
-        Hsk30BookPrimary(stringResource(R.string.hsk30_promo_switch), onClick = onContinue)
+        if (hasAccess || BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+            Hsk30BookPrimary(stringResource(R.string.hsk30_promo_switch), onClick = onContinue)
+        } else {
+            Text(stringResource(R.string.hsk30_play_access_status), color = PompColors.InkSecondary)
+        }
         Hsk30BookSecondary(stringResource(R.string.hsk30_promo_stay), onDismiss)
     }
 }
