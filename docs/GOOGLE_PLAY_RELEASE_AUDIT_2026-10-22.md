@@ -56,6 +56,19 @@
 - [ ] Fulfil personal developer account production-access testing requirements shown by your Play Console (potentially 12 opted-in closed testers for 14 continuous days); verify rather than assume this account's status.
 - [ ] Confirm 2026 target SDK, 16 KB page-size/native library compatibility if bundled, Play AAB bundle validation and device catalog in Play Console. Check OAuth registered Play app-signing SHA fingerprints and live Google/Apple authentication.
 
+## UI/UX follow-up using the repository skills
+
+Reviewed `.agents/skills/hsk-ai-ui/SKILL.md`, `.agents/skills/webapp-testing/SKILL.md`, `docs/ui-ux-plan-2026-10-05.md` and the actual changed Kotlin Compose surfaces. This is an **Android native UI code review**, not a Playwright browser pass. `webapp-testing` applies to web surfaces and must not be used to claim native Android screenshots or runtime verification. `frontend-design` is referenced in `AGENTS.md` but is not stored under the repository's `.agents/skills` directory.
+
+| Surface | Found UX risk | Bounded correction | Risk/verification |
+| --- | --- | --- | --- |
+| Mandatory HSK 3.0 course gate | Play's only way back to HSK 2.0 was a muted secondary text button, violating one-clear-primary-action guidance. | Make the existing HSK 2.0 return callback the primary 52dp action **only in Play**; direct continues to show its purchase primary and secondary return. | Low. Recheck Play locked N1-N3, direct purchase, narrow-width and large text. |
+| HSK 3.0 promo/profile | Play no-purchase screens retained some purchase-suggestive headings. | Substitute neutral/existing access or course-version titles in Play, preserve direct wording and entitlements. | Low. Verify localized UZ/RU/TJ copy on-device. |
+| AI answer report | Repeated safety affordance competed visually with tutoring answer and had no explicit 48dp touch target. | Right-aligned secondary text action under each answer with 48dp minimum and up to two lines for RU/TJ. | Low/medium. Validate TalkBack labels, touch target, scroll/keyboard and screenshot. |
+| AI report form | Reused generic bug-report heading and an unspecified primary submit height. | Reuse the canonical localized AI complaint title in AI context; keep bug heading for normal reports; 52dp minimum send CTA. | Low. Existing screenshot opt-in behavior and feedback API unchanged. |
+
+Automated source contracts under `tests/test_android_hsk30_profile_books_contract.py` and `tests/test_android_bug_report_flow_contract.py` guard the specific UI properties. Device visual acceptance **pending**: small-screen portrait (320dp), 1.5x/2x font scale, dark/light mode, UZ/RU/TJ wrapping, TalkBack focus, report Dialog over Assistant sheet, return CTA accessibility, offline/error state, and screenshot comparison. The Android emulator/Compose CI is authoritative for actual native interaction; the signed Play preflight remains a separate gate.
+
 ## Safe handoff / limitations
 
 This branch intentionally does **not** modify the live backend, payment ledgers, direct APK updater, direct payment/checkout, account migrations, keystore, Play Console or production build numbers. The signed preflight must be run with private secrets outside the repository. A passing static review or a green CI alone is **not** proof of production privacy compliance, signed update compatibility or Play approval.
