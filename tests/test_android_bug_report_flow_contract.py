@@ -49,12 +49,35 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
         self.assertIn("screenshotDataUrl = encoded.orEmpty()", self.form)
         self.assertIn('picker.launch("image/*")', self.form)
 
-    def test_ai_report_secondary_action_is_reachable_and_dialog_title_is_contextual(self):
-        self.assertIn("onClick = { reportTurn = turn }", self.assistant)
-        self.assertIn("modifier = Modifier.heightIn(min = 48.dp)", self.assistant)
-        self.assertIn("horizontalArrangement = Arrangement.End", self.assistant)
+    def test_ai_report_is_in_per_answer_more_menu_with_working_copy_share(self):
+        self.assertIn('AssistantAnswerActions(\n                                                    turn = turn,', self.assistant)
+        self.assertIn("onReport = { reportTurn = turn }", self.assistant)
+        self.assertNotIn("onClick = { reportTurn = turn }", self.assistant)
+        self.assertNotIn("TextButton(onClick = { reportTurn", self.assistant)
+        actions = self.assistant.split("private fun AssistantAnswerActions(", 1)[1].split(
+            "private fun AssistantAnswerBubble(", 1
+        )[0]
+        self.assertIn("clipboard.setText(AnnotatedString(turn.text))", actions)
+        self.assertIn("Intent(Intent.ACTION_SEND)", actions)
+        self.assertIn("putExtra(Intent.EXTRA_TEXT, turn.text)", actions)
+        self.assertIn("Intent.createChooser(send,", actions)
+        self.assertIn("Icons.Default.ContentCopy", actions)
+        self.assertIn("Icons.Default.Share", actions)
+        self.assertIn("Icons.Default.MoreHoriz", actions)
+        self.assertIn("DropdownMenu(", actions)
+        self.assertIn("R.string.assistant_report_answer", actions)
+        self.assertIn("menuExpanded = false\n                        onReport()", actions)
+        self.assertGreaterEqual(actions.count("Modifier.size(48.dp)"), 3)
+        self.assertIn("remember(turn.clientMessageId)", actions)
         self.assertIn('if (screen == "ai_assistant") R.string.assistant_report_answer', self.form)
         self.assertIn('screen = "ai_assistant"', self.assistant)
+        self.assertIn("turn.clientMessageId.take(80)", self.assistant)
+        self.assertIn("turn.text.take(350)", self.assistant)
+        for locale in ("values", "values-ru", "values-tg"):
+            original = (ROOT / "localization/android/main" / locale / "play_policy.xml").read_text(encoding="utf-8")
+            bundled = (ROOT / "android/app/src/main/res" / locale / "play_policy.xml").read_text(encoding="utf-8")
+            self.assertEqual(original, bundled)
+            self.assertIn('name="assistant_more_actions"', original)
 
     def test_success_requires_explicit_ok_and_closes_entire_report(self):
         self.assertIn("sent = response is ApiResult.Success && response.value.ok", self.form)
