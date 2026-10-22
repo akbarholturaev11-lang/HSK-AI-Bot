@@ -78,7 +78,10 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         self.profile_service.foundation_status = AsyncMock(return_value={
             "required": False, "completed": False,
         })
+        self.record_start = AsyncMock()
         self.patches = [
+            patch("app.api.miniapp_entitlements.remember_authorized_lesson_start",
+                  self.record_start),
             patch("app.api.miniapp_entitlements.UserRepository",
                   return_value=self.user_repo),
             patch("app.api.miniapp_entitlements.CourseProgressRepository",
@@ -149,6 +152,9 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(kwargs["lesson_order"], 1)
         self.assertEqual(kwargs["completed"], 0)
         self.assertIs(kwargs["consume"], True)
+        self.record_start.assert_awaited_once_with(
+            self.session, user=self.user, level="hsk1", lesson_order=1,
+        )
         self.session.commit.assert_awaited_once()
 
     async def test_p3_patch_returned_only_after_authenticated_unlocked_reservation(self):
@@ -676,6 +682,7 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.json()["error"], "free_feature_limit_reached")
         self.lesson_service.status.assert_awaited_once()
+        self.record_start.assert_not_awaited()
         self.session.commit.assert_awaited_once()
 
 
