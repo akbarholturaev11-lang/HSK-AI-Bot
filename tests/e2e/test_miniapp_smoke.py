@@ -2289,6 +2289,81 @@ def test_course_language_switch_uses_local_catalogs_and_saves_selected_code(page
     assert errors == []
 
 
+def test_course_language_failed_save_reverts_ui_with_existing_local_error(page):
+    errors, attempted = [], []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    page.on("console", lambda message: errors.append(message.text) if message.type == "error" else None)
+    page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    mock_learning_audio(page)
+
+    def reject_language(route):
+        attempted.append(route.request.post_data_json)
+        if len(attempted) == 1:
+            json_response(route, {"ok": False, "language": "ru"})
+        else:
+            route.fulfill(status=503, content_type="application/json",
+                          body='{"ok":false,"error":"unavailable"}')
+
+    page.route("**/api/v3/language", reject_language)
+    page.add_init_script("localStorage.setItem('hsk_v3_onb','1');localStorage.setItem('hsk_v3_level','hsk1');")
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator("#hsk-launch-splash").wait_for(state="hidden")
+    error_copy = json.loads((APP_ROOT / "localization/ui/uz/course.json").read_text())["messages"]["onboarding.saveError"]
+
+    for language, label in (("ru", "Русский"), ("tj", "Тоҷикӣ")):
+        page.evaluate("App.langPicker()")
+        page.locator("#sheet-body").get_by_role("button", name=label, exact=True).click()
+        page.wait_for_function("() => App._languagePendingCount === 0")
+        assert page.evaluate("LANG") == "uz"
+        expect(page.locator("html")).to_have_attribute("lang", "uz")
+        expect(page.locator("#toast")).to_contain_text(error_copy)
+    assert attempted == [{"language": "ru"}, {"language": "tj"}]
+    assert errors == []
+
+
+def test_course_language_rapid_changes_are_serial_and_failed_last_save_rolls_back(page):
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    mock_learning_audio(page)
+    page.add_init_script("localStorage.setItem('hsk_v3_onb','1');localStorage.setItem('hsk_v3_level','hsk1');")
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator("#hsk-launch-splash").wait_for(state="hidden")
+    page.evaluate("""() => {
+      window.languageDeferred = [];
+      const oldFetch = window.fetch.bind(window);
+      window.fetch = function(url, init) {
+        if (url === "/api/v3/language") {
+          return new Promise(function(resolve) {
+            languageDeferred.push({body: JSON.parse(init.body), resolve: resolve});
+          });
+        }
+        return oldFetch(url, init);
+      };
+    }""")
+    page.evaluate("() => { App.pickLang('ru'); App.pickLang('tj'); }")
+    page.wait_for_function("() => languageDeferred.length === 1")
+    assert page.evaluate("languageDeferred[0].body.language") == "ru"
+    assert page.evaluate("LANG") == "tj"
+    page.evaluate("""() => languageDeferred[0].resolve(new Response(
+      JSON.stringify({ok:true,language:"ru"}),{status:200,headers:{"Content-Type":"application/json"}}
+    ))""")
+    page.wait_for_function("() => languageDeferred.length === 2")
+    assert page.evaluate("languageDeferred[1].body.language") == "tj"
+    page.evaluate("""() => languageDeferred[1].resolve(new Response(
+      JSON.stringify({ok:false}),{status:200,headers:{"Content-Type":"application/json"}}
+    ))""")
+    page.wait_for_function("() => App._languagePendingCount === 0 && LANG === 'ru'")
+    expect(page.locator("html")).to_have_attribute("lang", "ru")
+    assert errors == []
+
+
 def test_course_resource_and_writer_labels_follow_selected_locale(page):
     expected = {
         "uz": {"dict": "Ieroglif lug'ati", "phrases": "Tayyor gaplar", "write": "书写 Yozish", "settings": "Dars sozlamalari", "new": "YANGI"},
