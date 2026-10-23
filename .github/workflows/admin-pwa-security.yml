@@ -92,7 +92,25 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt "pytest==8.4.2"
-      - name: Upgrade disposable PostgreSQL through Admin PWA revision 0115
+      - name: Prepare minimal 0109 test baseline (no legacy data)
+        run: |
+          # Scope is 0110-0115 ONLY: the legacy cold-start path currently
+          # fails at 0011 before course_progress exists. Do not mask that
+          # unrelated issue or claim fresh-db full-history migration coverage.
+          python - <<'PY'
+          import asyncio
+          import os
+          from sqlalchemy import text
+          from sqlalchemy.ext.asyncio import create_async_engine
+          async def main():
+              engine = create_async_engine(os.environ["DATABASE_URL"])
+              async with engine.begin() as conn:
+                  await conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY)"))
+              await engine.dispose()
+          asyncio.run(main())
+          PY
+          python -m alembic stamp 0109_public_site_traffic_daily
+      - name: Upgrade only the Admin PWA migrations 0110-0115
         run: |
           python -m alembic upgrade head
           python -m alembic current
