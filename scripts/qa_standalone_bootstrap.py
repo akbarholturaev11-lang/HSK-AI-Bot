@@ -28,6 +28,16 @@ EXPECTED_HEAD = "0109_public_site_traffic_daily"
 MIGRATION_CREATED_TABLES = frozenset({"public_site_traffic_daily"})
 
 
+def _registered_model_metadata():
+    from app.db import models  # noqa: F401
+    from app.db.base import Base
+    # Normal startup registers this through app.main. The isolated initializer
+    # must also register it without importing the HTTP app or creating a bot.
+    from app.db.models.notification_template import NotificationTemplate  # noqa: F401
+
+    return Base.metadata
+
+
 def validate_target(env: dict[str, str]) -> None:
     if env.get("RAILWAY_PROJECT_ID") != QA_PROJECT_ID:
         raise RuntimeError("standalone_qa_wrong_project")
@@ -62,8 +72,7 @@ async def verify_qa_tables() -> None:
             tables = set(await con.run_sync(
                 lambda conn: inspect(conn).get_table_names(schema="public")
             ))
-            required = {"users", "payments", "referrals", "course_progress",
-                        "user_identities", "alembic_version", "public_site_traffic_daily"}
+            required = set(_registered_model_metadata().tables) | {"alembic_version"}
             if not required.issubset(tables):
                 raise RuntimeError("standalone_qa_missing_schema_tables")
             version = (await con.execute(text("SELECT version_num FROM alembic_version"))).scalar()
@@ -91,11 +100,10 @@ async def _create_empty_orm_schema() -> None:
     from app.db.session import engine, _ensure_bootstrap_columns, _ensure_bootstrap_indexes
     try:
         await ensure_database_empty()
-        from app.db import models  # noqa: F401 — register every ORM table in a fresh CLI process
-        from app.db.base import Base
+        metadata = _registered_model_metadata()
         async with engine.begin() as connection:
-            await connection.run_sync(lambda conn: Base.metadata.create_all(
-                conn, tables=_initial_schema_tables(Base.metadata),
+            await connection.run_sync(lambda conn: metadata.create_all(
+                conn, tables=_initial_schema_tables(metadata),
             ))
             await _ensure_bootstrap_columns(connection)
             await _ensure_bootstrap_indexes(connection)

@@ -1,5 +1,13 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## 2026-10-23 — Local QA recovery and complete schema registration
+
+- The API and single Bot worker stayed alive. The tunnel lost/re-established its edge connection; subsequent IPv4 HTTPS requests and Telegram getMe/menu checks succeeded. This Mac's IPv6 TLS connection to the tunnel still fails (including ordinary browser navigation); do not describe the current browser check as passed or change the Mac's network settings silently.
+- Actual admin notification requests returned 500 because the empty initializer omitted `notification_templates`: normal `app.main` imports had hidden the incomplete standalone model registry. The QA initializer now explicitly registers that model without importing the app/Bot and verifies all 61 ORM tables, not only seven critical tables. Production schema/startup and target allowlists are unchanged.
+- Added only the missing table to the owned local QA cluster, without re-bootstrap/reset/stamp. Fingerprints of existing user, payment, referral, identity and course-progress/track rows stayed identical; signed local admin notification read now returns 200 with five items.
+- Prevention: a fresh-process regression imports every model module and checks the initializer already registered all of them; missing notification table fails verification. Local QA guards: **22 tests passed**; localization P0: **460 passed**. Remote CI for this fix must be checked after push.
+- Owner additionally requested review/merge of `codex/liquid-glass-nav-pilot-20261022` into the integration branch, followed by updating this local test Bot. Continue that work; no main/production promotion is authorized by this request.
+
 ## 2026-10-23 — Local Mac test bot running
 
 Owner authorized a local alternative to Railway. See the active local QA entry

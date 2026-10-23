@@ -3,6 +3,7 @@ import importlib.util
 from contextlib import asynccontextmanager
 import os
 from pathlib import Path
+import subprocess
 import sys
 from types import SimpleNamespace
 import unittest
@@ -72,13 +73,36 @@ class StandaloneQAInitializerTests(unittest.TestCase):
                 upgrade.assert_not_called()
 
     def test_0109_table_is_deferred_to_its_real_migration_only(self):
-        from app.db import models  # noqa: F401
-        from app.db.base import Base
-
-        initial = {table.name for table in mod._initial_schema_tables(Base.metadata)}
-        self.assertEqual(set(Base.metadata.tables) - initial, {"public_site_traffic_daily"})
+        metadata = mod._registered_model_metadata()
+        initial = {table.name for table in mod._initial_schema_tables(metadata)}
+        self.assertEqual(set(metadata.tables) - initial, {"public_site_traffic_daily"})
         self.assertIn("user_identities", initial)
         self.assertIn("users", initial)
+        self.assertIn("notification_templates", initial)
+
+    def test_fresh_cli_process_registers_every_orm_model_without_importing_app(self):
+        # Shared test-process imports can hide a missing registration: the HTTP
+        # app imports NotificationTemplate, but the empty bootstrap must not.
+        code = """
+import importlib
+import pkgutil
+import sys
+from scripts.qa_standalone_bootstrap import _registered_model_metadata
+from app.db import models
+metadata = _registered_model_metadata()
+registered = set(metadata.tables)
+for module in pkgutil.iter_modules(models.__path__):
+    importlib.import_module(models.__name__ + '.' + module.name)
+assert set(metadata.tables) == registered, sorted(set(metadata.tables) - registered)
+assert 'notification_templates' in registered
+assert 'app.main' not in sys.modules
+"""
+        result = subprocess.run(
+            [sys.executable, "-c", code], cwd=SCRIPT.parent.parent,
+            capture_output=True, text=True, timeout=30,
+            env={"PATH": os.defpath, "DATABASE_URL": SAFE["DATABASE_URL"]},
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_local_or_unapproved_targets_are_never_enabled_for_rehearsal(self):
         for database in ("postgresql+asyncpg://test:dummy@127.0.0.1:5432/hsk_critical_test",
@@ -104,13 +128,15 @@ class StandaloneQASchemaSafetyTests(unittest.IsolatedAsyncioTestCase):
         engine.dispose.assert_awaited_once()
 
     async def test_traffic_schema_and_empty_identity_rows_are_verified(self):
-        required = {"users", "payments", "referrals", "course_progress",
-                    "user_identities", "alembic_version", "public_site_traffic_daily"}
+        required = set(mod._registered_model_metadata().tables) | {"alembic_version"}
         columns = [{"name": name, "nullable": False} for name in ("visit_day", "source", "visits")]
         primary = {"constrained_columns": ["visit_day", "source"]}
-        for case in ("valid", "missing_table", "bad_columns", "bad_primary_key", "identity_rows"):
+        for case in ("valid", "missing_table", "missing_notification_table",
+                     "bad_columns", "bad_primary_key", "identity_rows"):
             with self.subTest(case=case):
-                tables = required - {"public_site_traffic_daily"} if case == "missing_table" else required
+                missing = ("public_site_traffic_daily" if case == "missing_table" else
+                           "notification_templates" if case == "missing_notification_table" else None)
+                tables = required - {missing}
                 shape = columns[:-1] if case == "bad_columns" else columns
                 key = {"constrained_columns": ["source"]} if case == "bad_primary_key" else primary
                 def execute(statement):
@@ -127,7 +153,7 @@ class StandaloneQASchemaSafetyTests(unittest.IsolatedAsyncioTestCase):
                     if case == "valid":
                         await mod.verify_qa_tables()
                     else:
-                        expected = ("missing_schema_tables" if case == "missing_table" else
+                        expected = ("missing_schema_tables" if missing else
                                     "unexpected_user_rows" if case == "identity_rows" else
                                     "bad_public_traffic_schema")
                         with self.assertRaisesRegex(RuntimeError, expected):
