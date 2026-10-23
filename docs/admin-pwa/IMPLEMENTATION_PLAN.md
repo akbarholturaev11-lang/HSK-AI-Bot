@@ -1,19 +1,20 @@
 # HSK AI — Admin PWA implementation plan
 
-Status: **Phase 0 — repository audit / architecture baseline recorded; application implementation not started**.
+Status: **Phase 0 — plan updated for Google + Telegram one-time identity link and passkey-first returning login; application implementation not started**.
+Target public URL: `https://hskai.app/admin` (owner-designated; live DNS/TLS/routing still needs verification).
 Branch: `codex/admin-pwa` (branched from `main` at `e935e4315df42037d6aab4ab38b2c4e5d9bbb681`).
 Scope: deliver a separate secure browser-installable Admin PWA without disrupting the existing Telegram Admin Mini App, admin Bot, Android, Desktop, production or main.
 
 ## Fixed decisions
 
-1. **One backend, two authenticated entry points.** Keep the current `/admin.html` and `X-Telegram-Init-Data` flow unchanged. Add an isolated `/admin-pwa/` UI route and new browser-session auth. Reuse existing services and business logic, **not** copy and fork their business rules.
+1. **One backend, two authenticated entry points.** Keep current Telegram `/admin.html` and `X-Telegram-Init-Data` behavior unchanged. Use public browser URL `https://hskai.app/admin` with isolated PWA assets `/admin-pwa/assets/` and auth `/api/admin-pwa/auth/*`. Check all route collisions, reverse-proxy mapping and HTTPS before exposing. Reuse services and business logic; don't fork entitlement/payment rules.
 2. **UI source of layout:** locally reviewed HTML demo V10 (`hsk-ai-admin-ux-demo-v10.html`) is a DESIGN REFERENCE, not production code. Remove all synthetic users, sample metrics, browser-only financial changes, sample notifications, placeholder actions, and unsafe `file://` assumptions. Do not import demo fixture arrays into deployed code. Preserve clear UX sections and a single top-row period selector, platform filter, and notification bell.
 3. **Server authority.** Stats, permissions, subscriptions, user account identity, payment decisions, HSK 3.0 unlock and price changes remain server-authoritative. Both admin surfaces must resolve to the same canonical admin actor.
 4. **Telemetry semantics.** Overall = deduplicated canonical accounts where possible. Platform views must be defined explicitly as platform usage and can overlap; **do not sum** platform-user counts as total users. Label registration, activity, install, exposure, attribution and payment metrics separately. Show unsupported/untracked future platform metrics as "not available", never zero.
 5. **Risk / privacy.** Browser admin pages, API responses, personalized feedback and files use `Cache-Control: no-store`. PWA service worker may cache only public, versioned application-shell assets; NEVER cache authenticated JSON, token responses, PII, payment screenshots, feedback attachments or application credentials. Offline admin data returns a clear unavailable state.
 6. **Local-first localization.** Author any new permanent UI copy in canonical UZ/RU/TJ catalogs following `localization/README.md`, then generate and check bundles; demo-only prose is not a localization source.
-7. **Security:** no token in localStorage, sessionStorage, URL, deep-link query or GitHub; use HttpOnly Secure cookie, HTTPS, narrow SameSite, origin/CSRF protection for mutation, CSP, no framing, short/rotated sessions, idle timeout, login rate limits and server-side revocation. Sensitive operations require confirmation, audit log and **WebAuthn passkey user-verification step-up** (Face ID / Touch ID / Windows Hello / device PIN as supported), plus server-side operation authorization.
-8. **Do not touch main or deploy** for this initiative until independent phase acceptance and explicitly planned release. No new Cloud / MCP integration may have admin write privileges by default.
+7. **Security:** no session token in localStorage, sessionStorage, URL, deep-link query or GitHub; use HttpOnly Secure cookies, HTTPS, strict origin/CSRF checks, CSP, no framing, idle/absolute timeout, revocation and rate limits. **Onboarding only:** verified Google OAuth OIDC identity + one-time approval by a Telegram account currently in `ADMIN_IDS` + verified binding to canonical admin + create discoverable WebAuthn passkey. **Returning sign-in priority:** WebAuthn passkey FIRST (without requiring Google again), verifying server challenge, RP ID, origin, credential ownership, user verification and current admin privileges; a still-valid browser session needs no new sign-in. Linked Google is a fallback, as is explicitly approved Telegram recovery. **High-risk mutations:** additional fresh WebAuthn transaction-bound re-verification, confirmation and audit logs. Passkey may invoke Face ID, Touch ID, Windows Hello, fingerprint or device PIN/passcode; web code cannot demand Face-ID-only.
+8. **Do not touch main or deploy** until acceptance and planned release. The PWA must remain functional without caching private data. No Cloud / MCP integration may have admin write privileges by default.
 
 ## Verified repository sources (Phase 0)
 
@@ -31,57 +32,80 @@ Scope: deliver a separate secure browser-installable Admin PWA without disruptin
 | Admin notices | `app/services/admin_notify_service.py` | Telegram sending does not equal durable PWA inbox storage |
 | Public-site stats | `app/services/public_site_analytics_service.py` | Page visits are not unique people; preserve source definition |
 | Localization / skills | `localization/README.md`, `AGENTS.md` including hsk-ai-ui / frontend-design constraints | Mobile-first, safe area, no duplicate copy, no independent inline translation dictionaries |
+| Existing Google OAuth / identity linking | `app/services/google_auth.py`, `app/services/native_oauth_service.py`, `app/services/identity_link_service.py` | Reuse verified subject / OIDC primitives, but implement distinct admin browser OAuth callback + session; no email-based admin allowlist. |
+| WebAuthn authenticator | No current Admin PWA WebAuthn server verification/credential table or routes confirmed | Implement FIDO2/WebAuthn registration and passwordless assertion backend; never read biometric data. |
+| Domain | `hskai.app` is owner-designated | Check actual live HTTPS/TLS, public route mappings, service-worker scope, OAuth redirect registration and WebAuthn origin / RP ID. |
 
-## Architecture
+## Architecture: existing Telegram + passkey-first browser PWA
 
 ```text
-Telegram Bot Admin --> Existing Telegram Admin Mini App (/admin.html)
-                                      | verified Telegram initData
-Browser / installable PWA --> /admin-pwa/ --> Browser admin login & secure cookie
-                                      | shared admin actor + permission guard
-                                      v
-                           Admin query / command services
-                                      |
-                       Existing analytics, billing, users, feedback
-                                      |
-                                  PostgreSQL
-                                      |
-                         read-only analytics / feedback API
-                                      |
-                          export JSON/CSV --> AI use by file
-                                      |
-                       later: scoped external MCP gateway
+https://hskai.app/                  Public HSK AI site (unchanged)
+https://hskai.app/admin             Protected Admin PWA (new)
+    ├─ First use: Google OIDC + one-time Telegram admin approval + enroll passkey
+    ├─ Returning: existing valid session OR Face ID / Touch ID / Windows Hello passkey
+    ├─ Recovery: linked Google or audited Telegram-approved recovery
+    └─ Sensitive mutation: transaction-bound passkey confirmation
+                         │
+                         ▼
+            Verified browser admin session
+                         │
+                         ▼
+                 Shared Admin API
+                         ▲
+                         │ Telegram initData guard (unchanged)
+https://.../admin.html  Existing Telegram Admin Mini App
+                         │
+                  Shared services / DB
+                         │
+                 Read-only export API
+                         │
+                ChatGPT / local / later MCP
 ```
 
-Browser admin login MVP: one-time Telegram Bot approval challenge. Server generates strong random, short-lived login challenge bound to the browser session and stores **hashed** challenge, expiry, attempt budget and used state. User opens a Telegram deep link and confirms on the authorized Bot account; server verifies the authenticated Telegram update, matching allowlisted `ADMIN_IDS`, and atomically marks the challenge approved. Same browser polls status then exchanges **once** for a short-lived cookie session. Do not mint tokens in Telegram messages or callback URLs. Explicitly test account confusion, replay, cross-browser challenge theft, timeout, race, and denied admin. Consider Google/Apple **later** only with verified provider identity explicitly linked to an admin identity; an email match is never sufficient.
+**Passkey sign-in is a FULL login**, not merely a second factor. Registration creates a **discoverable/resident credential**, requiring the user's verification. Returning login must accept a server-generated random one-use challenge with optional username-less credential discovery; resolve the verified credential to an actual linked admin account **on the server**, recheck privileges and disabled/revoked credentials, then mint the scoped HttpOnly browser session. A Google login must not be demanded every time. If session cookie remains valid, normal reopening does not trigger authentication.
+
+**Domain binding:** production HTTPS origin = `https://hskai.app`; configured WebAuthn relying-party ID = `hskai.app`; `/admin` is a page path, NOT the RP ID. Verify DNS/TLS/reverse proxy, canonical redirect, PWA scope, and registered Google redirect URIs **before** real enrollment. Staging origins use separate explicit RP/origin policy. Never assume credentials registered on a temporary Railway host can be used on this domain.
+
+**WebAuthn UI wording:** on a Face ID-capable iPhone the device ordinarily offers Face ID; WebAuthn can also use device passcode/PIN or another passkey/security key. Do not promise Face ID exclusively or try to access any biometric template. Use platform feature detection and manual iOS installed-PWA smoke testing.
+
+**Google/TG binding:** verify OAuth authorization code + PKCE/state/nonce, issuer, audience, expiry and stable subject. Initial browser linking requires a Telegram Bot confirmation sent/approved by an actual allowlisted admin; match canonical admin identity and prevent provider collisions. Email/username is not admin authority. Deny auto-provisioning an admin from a new Google account. Revoke sessions/passkeys/provider binding when removing privileges.
+
+**Recovery:** losing one passkey must not lock out the last admin. Enroll an additional passkey/security key where possible and implement a carefully audited emergency recovery using linked Google and fresh Telegram approval when needed. Recovery is not a bypass for sensitive actions.
 
 API layering: dedicated routes `/api/admin-pwa/auth/*` for browser sign-in/out/status; admin data endpoints use a common service and guard that accepts **verified** Telegram transport OR verified PWA session, with explicit route-specific CSRF checks on cookie-authenticated mutations. Prefer new `/api/admin/v1/*` projection routes over broad mechanical edits of every `/api/admin-miniapp/*` handler. Existing Telegram endpoints must stay backward-compatible. Never accept an arbitrary user ID from a client to establish admin privileges.
 
 ## Implementation phases
 
 ### Phase 0 — Audit and contract (current)
+- [x] Document public address target `https://hskai.app/admin`, first-run Google + Telegram link and passkey-first returning login.
+- [ ] Verify actual `hskai.app` HTTPS certificate, DNS, proxy/route, OAuth redirects, PWA scope and RP ID behavior before writing hostname-bound live auth.
+- [ ] Make the read/write/danger API inventory a signed-off gate; existing endpoint list is documented in `PHASE_0_API_INVENTORY.md`.
+
 - [x] Identify current branch, Telegram admin authorization path, admin APIs, statistics sources and feedback persistence gaps.
 - [x] Record design reference and non-negotiable Telegram/backward-compatibility/security constraints.
 - [ ] Map all existing admin endpoints into read-only vs mutation vs dangerous operations, with response schema, source, and authorization contract.
 - [ ] Capture current HTML demo V10 as a **read-only design reference** and define individual components; do not copy all inline demo logic.
 **Acceptance:** reviewed API inventory, auth threat model, data dictionary and initial regression list. No production change.
 
-### Phase 1 — Secure browser admin sign-in (highest priority)
-- Implement `/admin-pwa/` entry in a separate UI path with unauthenticated sign-in screen.
-- Implement Telegram Bot confirmation challenge, server-stored browser session, logout/revocation, idle/absolute expiration, CSRF, origin and no-store response headers.
-- Author a reusable verified-admin context across both transports; keep `_admin_miniapp_user_id` and Telegram access unaffected.
-- First secure read endpoint: `GET /api/admin/v1/me`; then a light `GET /api/admin/v1/summary`.
-**Acceptance:** valid admin only; forged/stale initData, non-admin, missing/expired/replayed cookie and cross-origin mutation are rejected. Telegram Mini App regression passes.
+### Phase 1A — Browser identity foundation + one-time Google/Telegram link
+- Reserve `https://hskai.app/admin` after confirming host TLS/route mapping, with isolated browser auth endpoints and disabled-by-default rollout flag.
+- Implement short-lived, server-stored Bot approval challenge bound to the initiating browser and approved by a Telegram identity present in `ADMIN_IDS`.
+- Integrate existing verified Google OIDC subject primitives for browser redirects with PKCE/state/nonce. New Google identity only enters an admin binding after the one-time Telegram approval. Do NOT create admin authority from an email match or Google sign-in alone.
+- Implement server sessions using Secure/HttpOnly scoped cookies, revocation, expiry, CSRF/origin protection, rate limits, audit trail and a read-only `/api/admin/v1/me` probe; preserve legacy Telegram Mini App route and auth exactly.
+**Acceptance:** denial for anonymous/non-admin/collision/replay/stale/bad-origin cases, Google linking succeeds only with real Bot approval, old admin Telegram workflow passes.
 
-### Phase 1B — WebAuthn passkeys for high-risk action confirmation
-- Enrollment: only after verified admin identity and first successful Telegram Bot-approved linkage (a linked Google account may be used for later browser sign-ins). Store credential ID, public key, signature counter/backup flags, owning canonical admin identity, registered timestamp and revocation status. Do not store face/fingerprint or platform biometric data.
-- High-risk operations (payment approval/rejection, granting paid access, account delete/block, bulk messaging, changing prices, payout or sensitive settings) require a fresh WebAuthn assertion with `userVerification="required"`, as supported by the authenticator. This invokes **Face ID on compatible iPhones**, Touch ID where available, Windows Hello on Windows, and may fall back to device PIN/passcode. Do **not** label WebAuthn as Face-ID-only or try to read biometrics from JavaScript.
-- Server generates a one-use short-lived challenge tied to the active session **and canonical operation parameters** (actor, action, target, amount/plan/decision, request payload digest). Verify challenge, RP ID, origin, signature, user-verification flag, credential ownership, expiry and replay protection **inside the same guarded command authorization path**; do not treat a prior generic step-up as approval to perform a different transfer, deletion or payment decision.
-- Show a human-readable transaction summary immediately before verification and require explicit final confirmation. All sensitive commands keep existing server validation, permission guard, idempotency and immutable audit logs.
-- Do not prompt for biometric verification for every statistics page or safe read-only navigation. Standard signed-in session remains usable for normal browsing.
-- Recovery: permit revocation/re-enrollment only through a separate, robust, audited recovery process; support a second passkey/security key registered in advance. Loss of Face ID / device / passkey must not create a bypass via mere email ownership or unverified Telegram request.
-- PWA requirements: HTTPS with consistent configured RP ID (production/admin domain), real browser WebAuthn support detection, fallback messaging for unsupported platforms. Never cache authenticator assertions, cookies, secrets or sensitive data in a service worker.
-**Acceptance:** two different admins' credentials cannot be substituted; replay, wrong origin/RP ID, absent user verification, changed transaction payload, expired or missing challenge and revoked credential fail closed. iPhone Safari/Add-to-Home-Screen, macOS Touch ID, Windows Hello and Android credential flows are manually tested as applicable, with no guarantee of Face-ID-only availability.
+### Phase 1B — Register passkey + passwordless returning login (core requirement)
+- Post-onboarding passkey setup: server challenge and registration; store credential ID, public key, canonical admin owner, backup/sync flags, sign count and lifecycle metadata. Request `residentKey:"required"` and `userVerification:"required"` where supported.
+- Sign in by passkey alone on later browser visits without Google or Telegram: verify assertion challenge/expiry, RP ID `hskai.app`, exact allowed origin(s), signature, account ownership, user-verification flag, revocation and up-to-date admin permission. Issue a new HttpOnly browser session only after proof.
+- Open PWA without prompts when existing session is valid; otherwise present **“Passkey / Face ID билан кириш”** first and linked Google/Telegram as recovery options. Do not call it guaranteed Face-ID-only.
+- Verify manual Safari vs standalone Home Screen PWA, Mac Touch ID, Windows Hello, Android supported-device cases and browser failure/recovery states.
+**Acceptance:** user can log out, return and log in solely with registered passkey; cross-account, replay, wrong domain/origin, revoked credential and missing verification fail closed.
+
+### Phase 1C — Fresh transaction-bound passkey confirmation for dangerous commands
+- For payment approvals/rejections, delete/block/grant access, bulk messaging, pricing/bank/payout edits: explicit human-readable transaction summary → one-time WebAuthn user-verified challenge **bound to action + target + payload hash + active session** → server-side atomic authorization and execution with audit.
+- Never accept a previously verified generic login as authorization for a different sensitive transaction. Keep legacy Telegram commands and safeguards unchanged.
+- Support multiple enrolled passkeys/security keys and secure recovery/revocation; biometrics never leave device, and PIN/passcode may be offered by the OS.
+**Acceptance:** cross-action replay and amount/target tampering fail; only verified admin can execute with fresh per-action step-up. Implement before exposing dangerous PWA commands.
 
 ### Phase 2 — PWA shell and V10 UX
 - Convert demo into maintained assets/components; keep responsive mobile/desktop navigation, top-level title, header notification bell and collapsed top-row selectors.
@@ -102,7 +126,7 @@ API layering: dedicated routes `/api/admin-pwa/auth/*` for browser sign-in/out/s
 - Users list with server-side pagination/search/filters and canonical user ID, profile with payment, device, language, level, activity, referral and feedback detail.
 - Payments, pricing by method and duration, HSK 3.0 unlock/payment enabled flags, course access, Free/Trial limits.
 - Marketing, broadcast/test-send, ads, partners, channels, help, AI models — migrate one at a time using existing service commands and audit trail.
-- Dangerous commands require explicit confirmation, **transaction-bound WebAuthn passkey step-up** under Phase 1B, idempotency keys where relevant and elevated authorization; demo buttons must never silently succeed.
+- Dangerous commands require explicit confirmation, **transaction-bound WebAuthn passkey step-up** under Phase 1C, idempotency keys where relevant and elevated authorization; demo buttons must never silently succeed.
 **Acceptance:** same backend outcomes for Telegram and PWA, regression tests for approvals/rejections and access grants, no double writes.
 
 ### Phase 5 — Unified durable feedback and notifications
@@ -135,17 +159,24 @@ Use separately issued, revocable short-lived machine credentials with **read sco
 - Deploy under explicit feature flag / isolated route; verify logs, page-cache headers, rate limits, origin/CSP, and rollback path.
 - Promote only after manual admin acceptance and rollback verification.
 
-## Ordered first tasks
+## Updated execution sequence (dependency order)
 
-1. Finish Phase 0 endpoint inventory and `read/write/danger` matrix.
-2. Implement and test Phase 1 browser Bot challenge + cookie guard behind an explicit disabled-by-default feature flag.
-3. Implement the no-data PWA login shell and first secure `me/summary` endpoint.
-4. Attach V10 UI to real server projections section by section, starting with read-only overview.
-5. Complete feedback persistence and AI data export *before* promising a complete unified inbox or ChatGPT live telemetry.
+1. **Phase 0:** domain and production-route verification, API threat model/inventory, existing Telegram regression baseline and demo UX-component mapping; no live deploy.
+2. **Phase 1A:** safe admin cookie session, protected `/api/admin/v1/me`, verified browser Google OAuth and **one-time Telegram Bot admin approval binding**. Separate from current Telegram Mini App.
+3. **Phase 1B:** **passkey enrollment AND passkey-only sign-in**, with valid session reuse and linked Google/Telegram recovery; this is the principal day-to-day admin login.
+4. **Phase 2:** standalone installable PWA shell and V10 UI conversion; remove demo fixtures; connect first real read-only `me/overview` data.
+5. **Phase 3:** full statistics and platform/period definitions, tests and exports without PII by default.
+6. **Phase 5 (read-only/inbox first):** persist native bug reports, unify existing bot/release reviews and alerts in a durable inbox so critical messages and feedback actually exist in DB.
+7. **Phase 1C:** production-quality per-transaction WebAuthn step-up and backend command authorization; prerequisite for sensitive control endpoints.
+8. **Phase 4:** migrate PWA user/account/billing/course/marketing/admin actions one at a time; dangerous controls remain disabled until step 7 passes.
+9. **Phase 6:** audited JSON/CSV read-only export first, optional dedicated read-only MCP after scope/privacy testing (AI/Cloud does not get admin mutation privileges).
+10. **Phase 7:** staging test (auth/Telegram regressions, PWA Safari standalone, Chrome/Windows Hello, security, accessibility), manual acceptance, documented rollback then controlled production release.
+
+**Parallelizable tasks:** PWA shell/design mapping and metric data dictionary can proceed after protected read session contract is stable. Inbox storage design can begin alongside statistics. Never ship privileged admin writes before Phase 1C.
 
 ## Explicit open questions to resolve from code before implementing Phase 1
 
-- Which deployment host/origin and bot username are canonical in staging, and what callback/deep-link contract does the existing bot router already support?
+- Owner designates production `https://hskai.app/admin`; verify live DNS, TLS, redirects, configured provider OAuth callback, server reverse-proxy route and whether RP ID is usable from this host. Which staging host/origin and bot username are canonical, and what callback/deep-link contract does the existing bot router already support?
 - How should a browser-authenticated admin actor map to canonical user ID while existing audit `created_by_telegram_id` fields remain backwards compatible?
 - How are Android bug-report attachments stored and retained, and which current app variants generate them?
 - Which platform events are authoritative for Mac vs Windows, and which prospective iPhone PWA events have no instrumentation yet?
