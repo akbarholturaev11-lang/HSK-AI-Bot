@@ -40,6 +40,13 @@ jobs:
           python3 tools/check_flavor_parity.py
           python3 tools/check_strings_translated.py
 
+      # Runs actual Compose navigation, HSK 3.0 access and direct-only
+      # checkout regressions on both distribution variants. This preflight
+      # never publishes either artifact.
+      - name: Emulator regression suite for Play and direct
+        uses: ./.github/actions/android-flow-regressions
+        timeout-minutes: 25
+
       - name: Restore the EXISTING release signing key
         env:
           KEYSTORE_BASE64: ${{ secrets.POMP_ANDROID_KEYSTORE_BASE64 }}
@@ -84,7 +91,8 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$POMP_ANDROID_KEY_PASSWORD" || { echo "::error::Missing signing key password"; exit 1; }
-          ./gradlew --no-daemon testPlayDebugUnitTest lintPlayDebug \
+          ./gradlew --no-daemon testPlayDebugUnitTest testDirectDebugUnitTest \
+            lintPlayDebug lintDirectDebug \
             assembleDirectRelease assemblePlayRelease bundlePlayRelease
 
       - name: Validate signatures, package identity, and Play permissions

@@ -2179,7 +2179,11 @@ def create_android_features_router(
             recipient_ids = AdminNotifyService()._feedback_recipient_ids()
             if not recipient_ids:
                 raise AndroidFeatureError("android_bug_report_unavailable", status_code=503)
-            heading = "🐞 HSK AI Android — muammo xabari"
+            heading = (
+                "🚩 HSK AI Android — AI kontent shikoyati"
+                if report.screen == "ai_assistant"
+                else "🐞 HSK AI Android — muammo xabari"
+            )
             message = (
                 f"{heading}\n"
                 f"👤 {escape(str(user.full_name or '-'))}\n"

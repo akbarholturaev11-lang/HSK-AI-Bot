@@ -3,11 +3,13 @@ package com.pomp.hskai.feature.profile
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.captureToImage
@@ -143,11 +145,15 @@ class ProfileSettingsUxTest {
         compose.onNodeWithTag("profile-settings-scroll").assertDoesNotExist()
     }
 
+    @Suppress("DEPRECATION")
     @Test fun profileSettingsAndAccountRenderInAllLocalesAndBothThemes() {
         val locale = mutableStateOf("uz")
         val appSettings = AppSettings(context)
         val folder = File(context.getExternalFilesDir(null), "profile-settings-qa").apply { mkdirs() }
+        var hostContext: android.content.Context? = null
         compose.setContent {
+            val viewContext = LocalView.current.context
+            SideEffect { hostContext = viewContext }
             val configuration = Configuration(context.resources.configuration).apply {
                 setLocale(Locale.forLanguageTag(locale.value))
             }
@@ -156,17 +162,25 @@ class ProfileSettingsUxTest {
                 key(locale.value) { PompHskAiTheme { Profile() } }
             }
         }
+        compose.waitForIdle()
+        val host = requireNotNull(hostContext)
+        val originalConfiguration = Configuration(host.resources.configuration)
         try {
             for (dark in listOf(false, true)) {
                 runBlocking { appSettings.setThemeMode(if (dark) AppThemeMode.DARK else AppThemeMode.LIGHT) }
                 compose.waitUntil(5_000) { PompColors.IsDark == dark }
                 for (language in listOf("uz", "ru", "tg")) {
+                    val config = Configuration(originalConfiguration).apply { setLocale(Locale.forLanguageTag(language)) }
                     // Recreate the screen even when the first locale repeats.
-                    compose.runOnIdle { locale.value = "en" }
+                    compose.runOnIdle {
+                        // Compose Dialog takes its Android window context from
+                        // the host View, outside the localized CompositionLocal.
+                        host.resources.updateConfiguration(config, host.resources.displayMetrics)
+                        locale.value = "en"
+                    }
                     compose.waitForIdle()
                     compose.runOnIdle { locale.value = language }
                     compose.waitForIdle()
-                    val config = Configuration(context.resources.configuration).apply { setLocale(Locale.forLanguageTag(language)) }
                     val strings = context.createConfigurationContext(config)
                     fun shot(tag: String, name: String) {
                         val bitmap = compose.onNodeWithTag(tag).captureToImage().asAndroidBitmap()
@@ -190,6 +204,9 @@ class ProfileSettingsUxTest {
             }
         } finally {
             runBlocking { appSettings.setThemeMode(AppThemeMode.LIGHT) }
+            compose.runOnIdle {
+                host.resources.updateConfiguration(originalConfiguration, host.resources.displayMetrics)
+            }
         }
     }
 }

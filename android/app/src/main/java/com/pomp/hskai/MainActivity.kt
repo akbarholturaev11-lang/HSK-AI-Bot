@@ -842,7 +842,8 @@ private fun AppRoot(
                     onboardingViewModel.loadStatus(showSplash = false)
                     voiceViewModel.refreshStatusIfLoaded()
                     practiceViewModel.onAccessChanged()
-                    if (decision.planType == "hsk30_unlock" && decision.status == "rejected") {
+                    if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED &&
+                        decision.planType == "hsk30_unlock" && decision.status == "rejected") {
                         hsk30PaymentRejectionVisible = true
                     }
                 }
@@ -1730,7 +1731,7 @@ private fun AppRoot(
                 )
             }
 
-            if (hsk30PaymentRejectionVisible) {
+            if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30PaymentRejectionVisible) {
                 AlertDialog(
                     onDismissRequest = {},
                     properties = DialogProperties(

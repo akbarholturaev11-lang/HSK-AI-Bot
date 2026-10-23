@@ -1,5 +1,5 @@
-name: Android course, checkout and Voice regressions
-description: Verify real course entry, checkout, Voice exit and payment decisions before CI builds and signed releases.
+name: Android course, account and payment regressions
+description: Verify course entry, account/settings navigation, refresh, checkout, Voice exit and payment decisions before CI builds and signed releases.
 
 runs:
   using: composite
@@ -12,7 +12,7 @@ runs:
         sudo udevadm control --reload-rules
         sudo udevadm trigger --name-match=kvm
 
-    - name: Test course, Voice and payments in both distributions
+    - name: Test course, account, Voice and payments in both distributions
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 35
@@ -22,8 +22,11 @@ runs:
         disable-animations: true
         working-directory: android
         script: |
-          ./gradlew --no-daemon connectedDirectDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.pomp.hskai.feature.course.Hsk30EntryFlowTest,com.pomp.hskai.feature.course.SkipTestOfferTest,com.pomp.hskai.feature.subscription.SubscriptionCheckoutHostTest,com.pomp.hskai.feature.voice.VoiceScreenBackTest,com.pomp.hskai.core.notify.PaymentDecisionMonitorTest
-          ./gradlew --no-daemon connectedPlayDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.pomp.hskai.feature.course.Hsk30EntryFlowTest,com.pomp.hskai.feature.course.SkipTestOfferTest,com.pomp.hskai.feature.voice.VoiceScreenBackTest,com.pomp.hskai.core.notify.PaymentDecisionMonitorTest
+          mkdir -p app/build/reports/profile-settings-qa
+          ./gradlew --no-daemon connectedDirectDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.pomp.hskai.feature.course.Hsk30EntryFlowTest,com.pomp.hskai.feature.course.SkipTestOfferTest,com.pomp.hskai.feature.subscription.SubscriptionCheckoutHostTest,com.pomp.hskai.feature.voice.VoiceScreenBackTest,com.pomp.hskai.core.notify.PaymentDecisionMonitorTest,com.pomp.hskai.feature.profile.ProfileSettingsUxTest,com.pomp.hskai.feature.profile.ProviderOnlyAccountTest,com.pomp.hskai.feature.profile.ProfileWidgetCompatTest,com.pomp.hskai.feature.profile.AccountDeletionDialogTest,com.pomp.hskai.feature.rating.RatingNavigationTest
+          adb pull /sdcard/Android/data/com.pomp.hskai.debug/files/profile-settings-qa app/build/reports/profile-settings-qa/direct
+          ./gradlew --no-daemon connectedPlayDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.pomp.hskai.feature.course.Hsk30EntryFlowTest,com.pomp.hskai.feature.course.SkipTestOfferTest,com.pomp.hskai.feature.voice.VoiceScreenBackTest,com.pomp.hskai.core.notify.PaymentDecisionMonitorTest,com.pomp.hskai.feature.profile.ProfileSettingsUxTest,com.pomp.hskai.feature.profile.ProviderOnlyAccountTest,com.pomp.hskai.feature.profile.ProfileWidgetCompatTest,com.pomp.hskai.feature.profile.AccountDeletionDialogTest,com.pomp.hskai.feature.rating.RatingNavigationTest
+          adb pull /sdcard/Android/data/com.pomp.hskai.debug/files/profile-settings-qa app/build/reports/profile-settings-qa/play
 
     - name: Save emulator reports
       if: always()
@@ -32,6 +35,7 @@ runs:
         name: android-flow-regressions
         path: |
           android/app/build/reports/androidTests/**
+          android/app/build/reports/profile-settings-qa/**
           android/app/build/outputs/androidTest-results/**
         if-no-files-found: ignore
         retention-days: 7
