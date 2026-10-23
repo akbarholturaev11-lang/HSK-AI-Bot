@@ -12,6 +12,7 @@ import hashlib
 import hmac
 import re
 from datetime import datetime, timezone
+from dataclasses import dataclass
 from typing import Any
 from uuid import uuid4
 
@@ -22,6 +23,9 @@ from app.admin_api.pwa_approval import (
     ApprovedPwaEnrollment, _PROOF, _SHA256, _allowed, _utc,
 )
 from app.db.models.admin_pwa_approval import AdminPwaApproval
+from app.admin_api.pwa_enrollment_grants import (
+    IssuedPwaEnrollmentGrant, _issue_enrollment_grant_in_transaction,
+)
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
 from app.services import google_auth
@@ -32,6 +36,12 @@ _REQUEST_ID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9
 
 class _ApprovalRace(RuntimeError):
     """The identity link must roll back along with failed proof consumption."""
+
+
+@dataclass(frozen=True)
+class GrantedPwaEnrollment:
+    linked: ApprovedPwaEnrollment
+    grant: IssuedPwaEnrollmentGrant
 
 
 async def _link_oidc_verified_google_hash(
@@ -82,14 +92,16 @@ async def finalize_google_admin_enrollment(
     browser_proof: str,
     settings_obj: Any,
     now: datetime | None = None,
-) -> ApprovedPwaEnrollment | None:
+    issue_passkey_grant: bool = False,
+) -> ApprovedPwaEnrollment | GrantedPwaEnrollment | None:
     """Consume the already-verified identity proof and approved Bot challenge.
 
     Accepts NO client-supplied provider claims, email, Google subject, user_id,
     or Telegram ID. All identity and role fields are read and locked from the
     server-created approval and canonical User rows.
 
-    Returns a linked user record, never an authenticated browser session.
+    Returns a linked user record, optionally with a one-time enrollment grant.
+    Even an issued grant never authenticates a browser for admin API access.
     """
     if not bool(getattr(settings_obj, "ADMIN_PWA_ENABLED", False)):
         return None
@@ -148,12 +160,23 @@ async def finalize_google_admin_enrollment(
             if result.rowcount != 1:
                 raise _ApprovalRace()
 
-            return ApprovedPwaEnrollment(
+            linked = ApprovedPwaEnrollment(
                 user_id=int(user.id),
                 telegram_id=int(user.telegram_id),
                 google_subject_hash=record.google_subject_hash,
                 google_audience=record.google_audience,
             )
+            if not issue_passkey_grant:
+                # Maintains the existing service contract for callers that do
+                # not yet support WebAuthn enrollment.
+                return linked
+            # This INSERT belongs to the SAME transaction as the linked
+            # identity and consumed approval, preventing partial onboarding.
+            grant = await _issue_enrollment_grant_in_transaction(
+                db, approval_id=record.id, user_id=int(user.id),
+                browser_proof_hash=digest, now=timestamp,
+            )
+            return GrantedPwaEnrollment(linked=linked, grant=grant)
     except (IdentityLinkError, IntegrityError, _ApprovalRace):
         # Transaction context rolls back the identity insert/update on failure.
         return None
