@@ -55,7 +55,10 @@ class AdminPwaPostgresConcurrencyTests(unittest.IsolatedAsyncioTestCase):
         )
         async with self.engine.begin() as conn:
             await conn.run_sync(lambda sync_conn: Base.metadata.create_all(
-                sync_conn, tables=[
+                sync_conn, checkfirst=False, tables=[
+                    # Public migration baseline already contains minimal
+                    # users(id); DO NOT reuse it. Force complete ORM tables
+                    # into our isolated test schema via search_path.
                     User.__table__, AdminPwaSession.__table__,
                     AdminPwaCredential.__table__,
                     AdminPwaAuthenticationChallenge.__table__,
