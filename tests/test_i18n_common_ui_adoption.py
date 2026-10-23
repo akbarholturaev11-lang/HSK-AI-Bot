@@ -395,7 +395,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         expected_sites = {
         "dict": 2,
         "dictSub": 1,
@@ -452,7 +452,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         expected_counts = {
             "unit": 1, "lessons": 1, "cont": 6, "repeat": 1,
             "stage": 1, "completeOf": 1,
@@ -498,7 +498,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         source = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(source.split("\n")), 9096)
+        self.assertEqual(len(source.split("\n")), 9122)
         selections = {
             "buildSent": 1, "dialog": 1, "listen": 2, "matchPairs": 1,
             "say": 6, "check": 2, "next": 2, "rightAns": 1,
@@ -544,7 +544,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         expected = {
             "planTitle": 1, "planBody": 1, "planPay": 1, "planFree": 1,
             "trialOn": 1, "trialFail": 2, "trialCta": 2,
@@ -577,7 +577,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         from_global = {"correct": 9, "wrong": 6}
         from_local = {
             "trialLeft": 1, "trialLeftHours": 1, "trialLeftSoon": 2,
@@ -629,7 +629,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         body = html.split("function profileCopy(){", 1)[1].split(
             "function loadProfileDetail(){", 1
         )[0]
@@ -664,7 +664,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         picker = html.split("function coursePickerCopy(){", 1)[1].split(
             "function coursePickerSavedLevel(", 1
         )[0]
@@ -709,7 +709,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         for function, prefix in (("authGateCopy", "authGate"),
                                  ("blockedGateCopy", "blockedGate")):
             view = html.split("function " + function + "(){", 1)[1].split(
@@ -752,7 +752,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         groups = (
             ("confirmNotifOff:function(){", "\n  avatarEdit:function()",
              "notificationsOff", ("title", "body", "keep", "off"), "w"),
@@ -795,7 +795,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         schedule = html.split("function notifTimesHtml(){", 1)[1].split(
             "\nvar SHEET_RETURN_FOCUS=", 1)[0]
         self.assertIn("var legacy=", schedule)
@@ -836,7 +836,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         cases = (
             ("showCourseLoadError(){", "\nfunction showCourseMapFailure(",
              "courseLoadError", ("title", "body", "btn"), "c"),
@@ -882,7 +882,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         view = html.split("  levelPicker:function(){", 1)[1].split(
             "\n  courseTrackPicker:function()", 1
         )[0]
@@ -921,7 +921,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         groups = (("GRT", "grammarTutor",
                    ("teacher", "structure", "negation", "next", "done", "intro")),
                   ("BST", "beginnerIntro",
@@ -965,7 +965,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9096)
+        self.assertEqual(len(html.split("\n")), 9122)
         groups = (
             ("partSections", ("w","p","s","r","d","x"), "m", "function partSecs(l){", "var m=", ";m={"),
             ("levelUp", ("cont","lessonH","lessonP","cpH","cpP","acc","combo","levelH","levelP","opened","xpH","xpP","lvl","bonusXp","chest"), "lu", "showLevelUp:function(type,data,extra){", "var lu=", ";lu={"),

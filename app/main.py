@@ -2195,6 +2195,25 @@ COURSE_CHARACTER_ASSETS = {
 }
 
 
+# Liquid Glass nav experiment: explicit same-origin allowlist, no generic file serving.
+_LIQUID_GLASS_PILOT_ASSETS = {
+    "html2canvas.min.js": "application/javascript",
+    "container.js": "application/javascript",
+    "nav-glass.js": "application/javascript",
+    "nav-glass.css": "text/css",
+}
+
+@app.get("/assets/liquid-glass/{filename}")
+async def liquid_glass_nav_pilot_asset(filename: str):
+    media_type = _LIQUID_GLASS_PILOT_ASSETS.get(filename)
+    if not media_type:
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return static_asset_response(
+        f"app/static/assets/liquid-glass/{filename}",
+        media_type,
+    )
+
+
 @app.get("/assets/characters/{filename}")
 async def course_character_asset(filename: str):
     media_type = COURSE_CHARACTER_ASSETS.get(filename)

@@ -1,5 +1,13 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## 2026-10-23 — Liquid Glass pilot integration
+
+- Owner requested review/merge of `codex/liquid-glass-nav-pilot-20261022` (`277c22c53e76bffc162ec14f2c8855c499c79134`) into the integration branch and loading it into the local test Bot. Real merge preserves its history; the single HTML conflict retains current localized Desktop-download/profile-carousel cache tokens and adds only the opt-in loader. Main/production are unchanged.
+- Actual source review: four same-origin allowlisted assets, no renderer-side API/storage calls, original five navigation buttons/routing and all lesson/auth/payment/access/progress code retained. Vendored html2canvas bytes exactly match the official npm 1.4.1 distribution. Pilot remains disabled without `liquid_glass=1`.
+- Added real HTTP asset/traversal checks and browser regressions for normal-page isolation, CSS delay/failure, reduced transparency, unavailable/lost WebGL, actual shaders/captures, all five tabs and UZ/RU/TJ at 320/390px. Explicit Backend CI step now executes the pilot's three previously unwired pytest tests. Reviewed HTML hash and six exact line-count fixtures updated only for the reviewed 26-line loader addition.
+- Local: **460 P0**, **19 existing navigation/UI**, **12 pilot/static**, **25 critical learning/checkout** and **5 actual HTTP asset tests passed**; all P0 read-only checks passed, 53 artifacts/0 stale. The 22 QA guard tests also pass in their normal separate process. The preceding QA-schema fix `f9b700a6` has GitHub P0 [39881354027](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39881354027) and Backend [39881354091](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39881354091) SUCCESS.
+- An IPv4-only localhost.run HTTPS alternative passed real Chromium health/page/catalog checks, avoiding this Mac's failing Cloudflare IPv6 TLS path. Private activation is prepared under the existing owned QA directory; after this merge commit update the API/worker and verified test-Bot menu to `?liquid_glass=1`, then record live checks and the merge's actual CI result. Preserve the current test DB and do not start duplicate polling.
+
 ## 2026-10-23 — Local QA recovery and complete schema registration
 
 - The API and single Bot worker stayed alive. The tunnel lost/re-established its edge connection; subsequent IPv4 HTTPS requests and Telegram getMe/menu checks succeeded. This Mac's IPv6 TLS connection to the tunnel still fails (including ordinary browser navigation); do not describe the current browser check as passed or change the Mac's network settings silently.

@@ -16,6 +16,8 @@ on:
       - "app/static/course_v3_data/*.js"
       - "app/static/course_v3_data/*.css"
       - "tests/test_telegram_sdk_asset.py"
+      - "tests/test_liquid_glass_nav_pilot.py"
+      - "app/static/assets/liquid-glass/**"
       - "app/api/miniapp_entitlements.py"
       - "app/api/desktop_course.py"
       - "app/services/course_p3_grammar_localization.py"
@@ -439,6 +441,10 @@ jobs:
           tests/e2e/test_miniapp_smoke.py::test_practice_tab_is_usable_during_unfinished_background_load
           tests/e2e/test_miniapp_smoke.py::test_desktop_course_modal_covers_full_viewport_and_mobile_keeps_bottom_sheet
           tests/test_miniapp_top_spacing_contract.py
+      - name: Verify opt-in Liquid Glass assets, rendering and navigation fallback
+        run: >-
+          python -m pytest -q tests/test_liquid_glass_nav_pilot.py
+          tests/e2e/test_miniapp_smoke.py -k 'liquid_glass_pilot or glass_is_explicitly_opt_in or liquid_glass_assets_are_same_origin_and_allowlisted or original_navigation_has_safe_fallback'
       - name: Verify critical learning and checkout flows with synthetic APIs
         env:
           MINIAPP_E2E_BASE_URL: "http://hsk-ai.local"

@@ -9089,6 +9089,32 @@ window.addEventListener("pageshow",function(ev){
   NavBack.sync(); /* Restore the Telegram BackButton on bfcache return. */
 });
 </script>
+<!-- Opt-in WebGL Liquid Glass nav pilot; defaults to the existing production navigation.
+     Assets load only when explicitly testing ?liquid_glass=1. -->
+<script>
+(function(){
+  try{
+    if(new URLSearchParams(window.location.search).get('liquid_glass')!=='1')return;
+    var prefix='/assets/liquid-glass/';
+    var css=document.createElement('link');
+    css.rel='stylesheet';css.href=prefix+'nav-glass.css?v=20261022-pilot1';
+    var files=['html2canvas.min.js','container.js','nav-glass.js'];
+    function loadAt(i){
+      if(i>=files.length)return;
+      var tag=document.createElement('script');
+      tag.src=prefix+files[i]+'?v=20261022-pilot1';
+      tag.onload=function(){loadAt(i+1)};
+      tag.onerror=function(){console.warn('Liquid Glass pilot asset unavailable; original nav retained')};
+      document.body.appendChild(tag);
+    }
+    function start(){loadAt(0)}
+    /* CSS must be ready before Container measures and snapshots the nav. */
+    css.onload=start;
+    css.onerror=function(){console.warn('Liquid Glass CSS unavailable; original nav retained')};
+    document.head.appendChild(css);
+  }catch(e){/* Testing feature must not block the Mini App. */}
+})();
+</script>
 <script src="/course_v3_data/desktop-download.js?v=20261021-c61abddcc057"></script>
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
 </body>

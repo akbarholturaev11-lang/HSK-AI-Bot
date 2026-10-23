@@ -93,7 +93,7 @@ result.absent=vm.runInNewContext('(window.HSKAILocaleMap||function(_,fallback){r
             self.assertEqual(source.count("hsk-miniapp-i18n.js?v="), 1)
         source = (ROOT / "app/main.py").read_text()
         self.assertIn('"hsk-miniapp-i18n.js": "application/javascript"', source)
-        self.assertEqual(len((ROOT / "app/static/course-v3.html").read_text().splitlines()), 9095)
+        self.assertEqual(len((ROOT / "app/static/course-v3.html").read_text().splitlines()), 9121)
 
     def test_graded_placement_blocks_remain_byte_identical(self):
         proof = json.loads((ROOT / "localization/review/miniapp_inline_map_migration.json").read_text())
