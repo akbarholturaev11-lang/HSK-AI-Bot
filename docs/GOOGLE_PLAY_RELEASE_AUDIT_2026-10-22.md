@@ -91,3 +91,27 @@ Executed on the combined candidate:
 - Changed Python modules compile and both edited workflow YAML files parse.
 
 Signed Play preflight, actual Play-delivered update compatibility, live AI reporting/moderation and the external release gates above remain separate from this code integration. No APK distribution, Play submission or R2 publishing was performed by these checks. PR #193 carries the final main promotion and CI evidence.
+
+## Consumption-only release candidate — 2026-10-24
+
+This follow-up is based on main `e935e431`, including the current account/settings and pull-to-refresh changes. The candidate is `1.7.22` / `versionCode=53`; the public Direct update endpoint reported `1.7.21` / `52` during the audit. The latest Play Console version must still be checked before submission.
+
+Additional code gaps closed:
+
+- Play onboarding no longer displays the HSK 3.0 purchase price. Existing Pro/HSK 3.0 access remains server-authoritative.
+- Play consumes subscription, trial, discount and unknown account offers silently. The legacy `shown=true` acknowledgement means handled here: it prevents both Telegram promotion fallback and disabling otherwise useful course notifications. Only the known neutral `daily_limit_renewed` / `course` notice is allowed.
+- Same-package Direct-to-Play updates cannot restore an invisible checkout over the app. Play cancels old Direct update checks/downloads and clears old update/marketing notifications, preserving neutral course and payment status notices.
+- Both normal and Live Voice answers now have an in-app report action. Reports snapshot the selected session and answer, open the existing authenticated feedback form and leave screenshots off until selected by the user. Backend labels these as AI complaints. Normal/Live Voice share explicit safety and untrusted-input instructions; Assistant guidance covers account/access status without offering purchases, external checkout or alternate app downloads. Direct's existing checkout UI and financial rules are unchanged.
+- `android/tools/check_play_artifacts.py` validates built Play APK/AAB identity/version/SDK parity, release flags, no installer/Billing permissions, bundletool structure, AAB 16 KB configuration and every packaged native ELF/ZIP alignment. Official bundletool 1.18.3 is SHA-256 pinned before execution. Signed preflight uploads its JSON report with the AAB. Guard failures are covered by binary fixtures in ordinary Android CI.
+
+Verification on the combined main candidate:
+
+- Nine Android static guards pass; 59 generated UI artifacts are current; changed workflow YAML parses.
+- Backend/report/Voice/notification/account-deletion tests: 180 passed. After main integration, 33 source/artifact/UI contract tests also passed; these sets overlap and are not additive.
+- JVM tests: Play 537 passed, Direct 586 passed, zero failures/errors/skips.
+- Both lint tasks completed with zero Error/Fatal; existing warnings remain. Signed Direct/Play release APKs, the signed Play AAB and both debug/instrumentation APKs built successfully.
+- API 36 disposable emulator: Play 60 passed; Direct 66 passed and one Play-only notification test intentionally assumption-skipped. Zero failures. This includes the current main profile/settings/refresh/account-deletion/rating regressions, UZ/RU/TJ onboarding price absence, per-answer normal/Live Voice reporting and persisted Direct updater work cancellation.
+- Native screenshots reviewed: Play onboarding at UZ 393dp, RU 360dp and TJ 320dp, and both Voice report dialogs. Price is absent, controls fit and screenshot switches start off.
+- Actual R8 Play release installed and launched on API 36 without a crash. APK/AAB signatures match the pinned existing release certificate; bundletool validation and all eight native libraries pass 16 KB checks. This is an emulator/local-signing check, not a Play-delivered update test.
+
+The external release gates earlier in this document remain applicable: Play Console version and App Signing enrollment, actual Play-delivered update compatibility, installed-client/provider acceptance, live report/moderation delivery, deletion operations, content rights, Data Safety and listing/account review. No Play submission, R2 publication or claim of policy approval is made by these code checks. Safety prompts and mocked admin delivery do not establish validated output moderation.
