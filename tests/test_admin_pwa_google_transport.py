@@ -229,8 +229,6 @@ class AdminPwaGoogleTransportTests(unittest.TestCase):
     def test_status_wrong_browser_proof_is_not_available(self):
         self.start()
         self.callback()
-        async def no_status(**kwargs):
-            return None
         async def no_status_db(db, **kwargs):
             return None
         with patch("app.admin_api.pwa_google_transport.read_browser_pwa_approval",
