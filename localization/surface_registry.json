@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "status": "existing_locale_source_complete_pending_platform_acceptance",
+  "baseline_main_commit": "160a51d69f3324e3162375213ec61b5587b19533",
+  "source_of_truth_target": "localization",
+  "existing_languages": [
+    "uz",
+    "ru",
+    "tj"
+  ],
+  "runtime_changes_authorized": true,
+  "purpose": "Registry of existing UZ/RU/TJ local-first source ownership on the authorized feature branch. Main/production promotion and real platform acceptance remain separate gates.",
+  "surfaces": [
+    {
+      "id": "miniapp_ui",
+      "delivery": "versioned_static_client_bundle",
+      "anchors": [
+        "app/static/course-v3.html",
+        "app/static/subscription.html",
+        "app/static/course_v3_test.html",
+        "app/static/course_v3_mistakes.html",
+        "app/static/hsk-lugat.html",
+        "app/static/course_v3_data/memo.js",
+        "app/static/course_v3_onboarding.html",
+        "app/static/course_v3_voice.html",
+        "app/static/course_v3_pronunciation.html",
+        "app/static/course_v3_recognition.html",
+        "app/static/course_v3_memorize.html",
+        "app/static/hsk-gaplar.html",
+        "localization/ui/uz/miniapp.json",
+        "app/static/course_v3_data/hsk-miniapp-i18n.js"
+      ],
+      "inventory_patterns": [
+        "app/static/**/*.html",
+        "app/static/**/*.js"
+      ],
+      "review": [
+        "inline HTML labels, alerts, error branches, nested per-page I18N, placeholder and accessibility text",
+        "asset versioning, bfcache and no extra per-string API calls"
+      ]
+    },
+    {
+      "id": "android_ui",
+      "delivery": "generated_apk_resources",
+      "anchors": [
+        "android/app/src/main/java/com/pomp/hskai/core/i18n/LanguageCodes.kt",
+        "android/app/src/main/java/com/pomp/hskai/feature/onboarding/OnboardingScreen.kt",
+        "android/app/src/main/java/com/pomp/hskai/feature/course/StudySetupSheet.kt",
+        "android/app/src/main/res/values/strings.xml",
+        "android/app/src/direct/res/values/strings.xml",
+        "android/app/src/play/res/values/strings.xml"
+      ],
+      "inventory_patterns": [
+        "android/app/src/**/*.kt",
+        "android/app/src/**/res/values*/*.xml"
+      ],
+      "review": [
+        "Compose literals, resource keys, plurals, placeholder parity, TalkBack/accessibility",
+        "direct/play billing policy separation, offline APK bundling"
+      ]
+    },
+    {
+      "id": "desktop_ui",
+      "delivery": "generated_tauri_bundle",
+      "anchors": [
+        "desktop/ui/js/i18n.js",
+        "desktop/ui/js/app.js",
+        "desktop/ui/js/lesson.js",
+        "desktop/ui/js/subscription.js"
+      ],
+      "inventory_patterns": [
+        "desktop/ui/**/*.html",
+        "desktop/ui/**/*.js",
+        "desktop/ui/**/*.json"
+      ],
+      "review": [
+        "824 existing keys per language; 745 Desktop-specific canonical keys plus 79 common/course mappings; legacy dictionary is fallback only",
+        "macOS and Windows parity, no language fetch at runtime"
+      ]
+    },
+    {
+      "id": "bot_ui",
+      "delivery": "local_python_catalog",
+      "anchors": [
+        "app/bot/utils/i18n.py",
+        "app/bot/handlers/account_deletion.py",
+        "app/bot/handlers/menu.py"
+      ],
+      "inventory_patterns": [
+        "app/bot/**/*.py"
+      ],
+      "review": [
+        "658 own canonical messages + 41 common/course references, preserving compatibility tables, handler/profile templates and backend fixed copy",
+        "admin-only messages separately classified; existing account language preserved"
+      ]
+    },
+    {
+      "id": "backend_notifications",
+      "delivery": "local_python_catalog",
+      "anchors": [
+        "app/services/course_notification_service.py",
+        "app/services/notification_delivery_service.py",
+        "app/services/broadcast_translation_service.py",
+        "app/services/course_ad_translation_service.py",
+        "app/services/discount_translation_service.py"
+      ],
+      "inventory_patterns": [
+        "app/services/*.py",
+        "app/api/*.py"
+      ],
+      "review": [
+        "push, Telegram fallback, scheduled notices, ads/broadcasts and AI-generated text",
+        "separate fixed system copy from campaign/user/LLM text"
+      ]
+    },
+    {
+      "id": "lesson_runtime",
+      "delivery": "source_plus_versioned_language_overlays",
+      "anchors": [
+        "app/static/course_v3_data/hsk1/lesson_01.json",
+        "app/static/course_v3_data/nhsk1/lesson_01.json",
+        "app/services/desktop_course_service.py",
+        "app/services/course_miniapp_lesson_flow_service.py",
+        "android/app/src/main/java/com/pomp/hskai/data/lesson/LessonParser.kt"
+      ],
+      "inventory_patterns": [
+        "app/static/course_v3_data/hsk*/lesson_*.json",
+        "app/static/course_v3_data/nhsk*/lesson_*.json",
+        "app/static/course_content/**/*.json"
+      ],
+      "review": [
+        "stable source lesson/card/answer identity, localized prompts, tile order, pronunciation",
+        "server-owned access and progress; no new public Pro pack; old client-compatible envelopes"
+      ]
+    },
+    {
+      "id": "lesson_generators",
+      "delivery": "build_time_generation_only",
+      "anchors": [
+        "scripts/gen_course_v3_from_seed.py",
+        "scripts/hsk30/build_dictionary_assets.py"
+      ],
+      "inventory_patterns": [
+        "scripts/**/*.py",
+        "scripts/hsk30/**/*.json",
+        "scripts/build_ready_phrases.py",
+        "scripts/hsk4_upper_i18n.py"
+      ],
+      "review": [
+        "remove hardcoded uz/ru/tj iteration only after compatibility layer and generated-asset parity",
+        "language-specific reverse_builder tokens and validation of each new locale"
+      ]
+    },
+    {
+      "id": "dictionary_and_phrase_data",
+      "delivery": "existing_bundled_assets_and_versioned_static",
+      "anchors": [
+        "app/static/course_v3_data/ready-phrases-v1.json",
+        "app/static/course_v3_data/hsk30-dictionary-examples.js",
+        "android/app/src/main/assets/ready-phrases-v1.json",
+        "android/app/src/main/java/com/pomp/hskai/data/repository/DictionaryRepository.kt",
+        "scripts/ready_phrases/phrases.json",
+        "scripts/build_ready_phrases.py"
+      ],
+      "inventory_patterns": [
+        "android/app/src/main/assets/*.json",
+        "app/static/course_data/*.json",
+        "app/static/hsk-*.js",
+        "android/app/src/**/assets/**/*.json",
+        "scripts/ready_phrases/**/*.json"
+      ],
+      "review": [
+        "asset producers, deduplication, lang-keyed dictionary cache and source attribution",
+        "no extra startup requests or repeated text downloads"
+      ]
+    },
+    {
+      "id": "public_site",
+      "delivery": "generated_localized_site_content",
+      "anchors": [
+        "app/public_site/content.py",
+        "app/main.py"
+      ],
+      "inventory_patterns": [
+        "app/public_site/*.py",
+        "app/static/desktop-download-page.js"
+      ],
+      "review": [
+        "page SEO, language tags and downloads",
+        "do not change existing public URL/SEO behavior while migrating"
+      ]
+    },
+    {
+      "id": "language_and_cache_contract",
+      "delivery": "adapter_and_persistence",
+      "anchors": [
+        "app/bot/utils/course_miniapp.py",
+        "app/services/desktop_course_service.py",
+        "android/app/src/main/java/com/pomp/hskai/data/local/CourseCache.kt",
+        "android/app/src/main/java/com/pomp/hskai/data/local/LessonCache.kt",
+        "android/app/src/main/java/com/pomp/hskai/data/repository/CourseRepository.kt"
+      ],
+      "inventory_patterns": [
+        "app/bot/utils/*.py",
+        "android/app/src/main/java/com/pomp/hskai/data/**/*.kt"
+      ],
+      "review": [
+        "tj (legacy backend) and tg (BCP-47) adapter; explicit consistent fallback",
+        "account language change invalidates or re-localizes all visible cached course-map data"
+      ]
+    }
+  ]
+}

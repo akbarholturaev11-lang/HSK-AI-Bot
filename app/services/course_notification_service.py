@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.user import User
 from app.services.account_identity import owner_clause
+from app.services.notification_i18n import notification_message
 from app.services.notification_template_service import (
     KEY_DAILY_GOAL,
     KEY_D1_RECOVERY,
@@ -115,7 +116,8 @@ ALLOWED_ACTIONS = {"course", "rating", "subscription", "profile"}
 
 def notification_title(key: str, lang: str) -> str:
     texts = TITLE_BY_KEY.get(key, {})
-    return texts.get(lang) or texts.get("ru") or key.replace("_", " ").title()
+    fallback = texts.get(lang) or texts.get("ru") or key.replace("_", " ").title()
+    return notification_message("course.title." + key, lang, fallback)
 
 
 def clean_notification_text(value: str, limit: int = 420) -> str:

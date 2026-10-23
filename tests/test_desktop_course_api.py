@@ -16,6 +16,7 @@ from app.api.desktop_course import (
     create_desktop_course_router,
 )
 from app.db.base import Base
+from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_mistake import CourseMistake
 from app.db.models.course_progress import CourseProgress
@@ -75,6 +76,17 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
         async with self.engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        # These analytics writers intentionally open a separate session instead
+        # of using the router's injected request session. Keep those writes in
+        # this fixture too; otherwise denied lesson requests reach the configured
+        # application database and swallow the connection error as analytics.
+        for target in (
+            "app.services.conversion_funnel_service.async_session_maker",
+            "app.services.entitlements.shadow.async_session_maker",
+        ):
+            analytics_sessions = patch(target, self.sessions)
+            analytics_sessions.start()
+            self.addCleanup(analytics_sessions.stop)
         self.settings = _settings()
         async with self.sessions() as session:
             session.add(_user())
@@ -134,6 +146,31 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
                 "mistakes": [],
             },
         )
+
+    async def test_denied_lesson_records_limit_hit_in_fixture_database(self):
+        await self._free_lesson_limit(1)
+        completed = await self._complete(1, "desktop-limit-hit-fixture-0001")
+        self.assertEqual(completed.status_code, 200, completed.text)
+
+        response = await self.client.get(
+            "/api/v3/desktop/course/lesson/2",
+            headers=self.auth_headers,
+        )
+
+        self.assertEqual(response.status_code, 403, response.text)
+        self.assertEqual(response.json()["error"], "free_feature_limit_reached")
+        async with self.sessions() as session:
+            events = (
+                await session.execute(
+                    select(ConversionFunnelEvent).where(
+                        ConversionFunnelEvent.event_name == "limit_hit"
+                    )
+                )
+            ).scalars().all()
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].user_id, 1)
+        self.assertEqual(events[0].telegram_id, 1001)
+        self.assertEqual(json.loads(events[0].payload_json)["action"], A.LESSON_START)
 
     async def test_map_uses_server_level_and_auth_has_no_bootstrap_side_effect(self):
         async with self.sessions() as session:
@@ -251,6 +288,63 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(promo.status_code, 200, promo.text)
         self.assertTrue(promo.json()["ok"])
+
+    async def test_authenticated_hsk30_p3_lesson_keeps_grammar_mirror_and_access(self):
+        """Real SQLite + bearer auth, not a mocked native course service."""
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            user.level = "nhsk2"
+            user.status = "active"
+            user.payment_status = "approved"
+            user.end_date = datetime.now(timezone.utc) + timedelta(days=7)
+            progress = (
+                await session.execute(
+                    select(CourseProgress).where(CourseProgress.user_id == user.id)
+                )
+            ).scalar_one_or_none()
+            if progress is None:
+                session.add(CourseProgress(
+                    user_id=user.id, level="nhsk2",
+                    completed_lessons_count=15,
+                    current_step="intro", waiting_for="none",
+                ))
+            else:
+                progress.level = "nhsk2"
+                progress.completed_lessons_count = 15
+            await BotSettingRepository(session).set_bool(
+                HSK30_ENABLED_SETTINGS_KEY, True
+            )
+            await session.commit()
+
+        route = "/api/v3/desktop/course/lesson/16"
+        anonymous = await self.client.get(route)
+        self.assertEqual(anonymous.status_code, 401)
+        ahead = await self.client.get(
+            "/api/v3/desktop/course/lesson/17", headers=self.auth_headers,
+        )
+        self.assertEqual(ahead.status_code, 403)
+        allowed = await self.client.get(route, headers=self.auth_headers)
+        self.assertEqual(allowed.status_code, 200, allowed.text[:500])
+        self.assertEqual(allowed.headers.get("cache-control"), "no-store")
+        payload = allowed.json()
+        self.assertEqual(payload["level"], "nhsk2")
+        self.assertEqual(payload["lesson_order"], 16)
+        lesson = payload["lesson"]
+        self.assertEqual(lesson["lesson_id"], 16)
+        originals = lesson["grammar"][0]["examples"]
+        mirror_cards = [
+            card for section in lesson["sections"]
+            for card in section.get("cards", [])
+            if card.get("type") == "_grammar"
+        ]
+        self.assertEqual(len(originals), 6)
+        self.assertTrue(mirror_cards)
+        mirrors = mirror_cards[0]["g"]["examples"]
+        self.assertEqual(len(mirrors), len(originals))
+        for source, mirror in zip(originals, mirrors):
+            self.assertEqual(source["translation"], mirror["translation"])
+            for locale in ("uz", "ru", "tj"):
+                self.assertTrue(source["translation"][locale])
 
     async def test_hsk30_map_preserves_native_level_when_permanently_unlocked(self):
         async with self.sessions() as session:
@@ -573,6 +667,82 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
                 for material in materials
             )
         )
+
+    async def _completion_mutation_state(self):
+        response = await self.client.get(
+            "/api/v3/desktop/course/map", headers=self.auth_headers,
+        )
+        self.assertEqual(response.status_code, 200, response.text)
+        body = response.json()
+        async with self.sessions() as session:
+            events = {}
+            for model in (CourseMiniAppEvent, CourseXpEvent, CourseMistake):
+                events[model.__name__] = list(
+                    (await session.execute(select(model.id).order_by(model.id))).scalars()
+                )
+        return {
+            "level": body["level"],
+            "progress": body["progress"],
+            "allowance": {
+                key: body["lesson_limit"].get(key)
+                for key in ("allowed", "used", "remaining")
+            },
+            "events": events,
+        }
+
+    async def test_late_old_course_completion_cannot_advance_the_new_course(self):
+        lesson = await self.client.get(
+            "/api/v3/desktop/course/lesson/1", headers=self.auth_headers,
+        )
+        self.assertEqual(lesson.status_code, 200, lesson.text)
+        old_level = lesson.json()["level"]
+        switched = await self.client.post(
+            "/api/v3/desktop/course/tracks/switch", headers=self.auth_headers,
+            json={"target_track": "hsk20", "level": "hsk2"},
+        )
+        self.assertEqual(switched.status_code, 200, switched.text)
+        before = await self._completion_mutation_state()
+        self.assertEqual(before["level"], "hsk2")
+        rejected = await self.client.post(
+            "/api/v3/desktop/course/complete", headers=self.auth_headers,
+            json={
+                "lesson_order": 1, "event_id": "desktop-stale-complete-0001",
+                "expected_level": old_level, "mistakes": [],
+            },
+        )
+        self.assertEqual(rejected.status_code, 409, rejected.text)
+        self.assertEqual(rejected.json()["error"], "course_context_changed")
+        self.assertEqual(rejected.headers.get("Cache-Control"), "no-store")
+        self.assertEqual(before, await self._completion_mutation_state())
+
+    async def test_same_course_completion_precondition_preserves_idempotence(self):
+        body = {
+            "lesson_order": 1, "event_id": "desktop-stale-complete-0002",
+            "expected_level": "hsk1", "mistakes": [],
+        }
+        first = await self.client.post(
+            "/api/v3/desktop/course/complete", headers=self.auth_headers, json=body,
+        )
+        self.assertEqual(first.status_code, 200, first.text)
+        before = await self._completion_mutation_state()
+        replay = await self.client.post(
+            "/api/v3/desktop/course/complete", headers=self.auth_headers, json=body,
+        )
+        self.assertEqual(replay.status_code, 200, replay.text)
+        self.assertTrue(replay.json()["duplicate"])
+        self.assertEqual(before, await self._completion_mutation_state())
+        switched = await self.client.post(
+            "/api/v3/desktop/course/tracks/switch", headers=self.auth_headers,
+            json={"target_track": "hsk20", "level": "hsk2"},
+        )
+        self.assertEqual(switched.status_code, 200, switched.text)
+        before = await self._completion_mutation_state()
+        late_replay = await self.client.post(
+            "/api/v3/desktop/course/complete", headers=self.auth_headers, json=body,
+        )
+        self.assertEqual(late_replay.status_code, 409, late_replay.text)
+        self.assertEqual(late_replay.json()["error"], "course_context_changed")
+        self.assertEqual(before, await self._completion_mutation_state())
 
     async def test_completion_is_idempotent_and_event_cannot_cross_lessons(self):
         first = await self._complete(1, "desktop-course-event-1001")

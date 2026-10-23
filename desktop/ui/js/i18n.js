@@ -1,5 +1,11 @@
+import "./generated/hsk-common-i18n.js";
+import "./generated/hsk-course-i18n.js";
+import "./generated/hsk-desktop-i18n.js";
+
 const SUPPORTED_LANGUAGES = new Set(["uz", "ru", "tj"]);
 
+// Compatibility fallback only. Author copy in localization/ui/{uz,ru,tj}/
+// desktop.json, or the existing common/course catalogs for shared keys.
 const messages = {
   uz: {
     identityProviderConnect: "{provider} ulash",
@@ -2594,8 +2600,121 @@ export function getLanguage() {
   return activeLanguage;
 }
 
+const SHARED_COMMON_KEY = Object.freeze({
+  course: "navigation.course",
+  practice: "navigation.practice",
+  profile: "navigation.profile",
+  rating: "navigation.rating",
+  subscription: "navigation.subscription",
+  startLesson: "lesson.start",
+  continueLesson: "lesson.continue",
+  lockedLesson: "lesson.locked",
+  courseEmpty: "lesson.notFound",
+  profileTitle: "navigation.profile",
+  refresh: "common.refresh",
+  authExpires: "auth.expires",
+  authReferralCode: "desktopAuth.referralCode",
+  authReferralHint: "desktopAuth.referralHint",
+  authReferralInvalid: "desktopAuth.referralInvalid",
+  authTitle: "desktopAuth.title",
+  authDescription: "desktopAuth.description",
+  authCodeLabel: "desktopAuth.codeLabel",
+  authStart: "desktopAuth.telegramContinue",
+  authGoogle: "desktopAuth.googleContinue",
+  authApple: "desktopAuth.appleContinue",
+  authProviderWaiting: "desktopAuth.providerWaiting",
+  authProviderFailed: "desktopAuth.providerFailed",
+  authOpen: "desktopAuth.openTelegram",
+  telegramIdentityOpen: "desktopAuth.openTelegram",
+  authRetry: "desktopAuth.retry",
+  authStep1: "desktopAuth.step1",
+  authStep2: "desktopAuth.step2",
+  authStep3: "desktopAuth.step3",
+  authExpired: "desktopAuth.expired",
+  authCancelled: "desktopAuth.cancelled",
+  authWaiting: "desktopAuth.waiting",
+  authTelegramOpened: "desktopAuth.telegramOpened",
+  authStarting: "desktopAuth.starting",
+  authLinked: "desktopAuth.linked",
+  copyCode: "desktopAuth.copyCode",
+  copied: "desktopAuth.copied",
+  mainNavigation: "desktopA11y.primaryNavigation",
+  mainSections: "desktopA11y.sectionsNavigation",
+  profileNavigation: "desktopA11y.profileNavigation",
+  courseNavigation: "desktopA11y.courseNavigation",
+  collapseSidebar: "desktopA11y.collapseSidebar",
+  sidebarWidth: "desktopA11y.sidebarWidth",
+  openCourseMenu: "desktopA11y.openCourseMenu",
+  notificationsTitle: "desktopA11y.notifications",
+  aiInputLabel: "desktopA11y.askAi",
+  lessonShellLabel: "desktopA11y.lesson",
+  lessonProgressLabel: "desktopA11y.lessonProgress",
+  closeNotifications: "action.close",
+});
+
+const SHARED_COURSE_KEY = Object.freeze({
+  aiYou: "you",
+  authProviderDivider: "downloadPage.visualOr",
+  back: "testHsk30Soon.back",
+  check: "mistakesPage.check",
+  close: "dictionaryFastWriter.close",
+  continue: "onboarding.cont",
+  courseLegendReview: "partSections.r",
+  drill_pronunciation: "mistakesPage.cats.pronunciation",
+  drill_writing: "testExamSection.writing",
+  hsk30TestSoonBody: "testHsk30Soon.sub",
+  hsk30TrackSwitch: "coursePicker.version",
+  inviteCopiedButton: "downloadPage.copied",
+  inviteDestinationTelegram: "rating.writeTelegram",
+  method_alipay: "subscriptionNested.methods.alipay.title",
+  method_wechat: "subscriptionNested.methods.wechat.title",
+  minutesShort: "testHub.min",
+  onboardingBack: "testHsk30Soon.back",
+  onboardingLater: "onboardingNotification.later",
+  onboardingNext: "onboarding.cont",
+  onboardingStart: "onboarding.start",
+  planFree: "profile.free",
+  planPaid: "subscriptionNested.modeTitles.subscription",
+  plan_10_days: "subscriptionNested.planLabels.ten",
+  plan_1_month: "subscriptionNested.planLabels.month",
+  plan_3_months: "subscriptionNested.planLabels.quarter",
+  practiceQuit: "voicePage.exit",
+  practiceStartDrill: "onboarding.start",
+  practiceStartShort: "onboarding.start",
+  settings: "courseVoiceInline.settings",
+  today: "profile.today",
+  todayReviewEyebrow: "partSections.r",
+  updateRetry: "practiceGateError.retry",
+  vocabularyFilterReview: "partSections.r",
+  voice: "nav.voice",
+  voicePlanPremium: "subscriptionNested.modeTitles.subscription",
+  voiceRole_social: "voicePage.optPersona",
+  voiceRole_teacher_li: "grammarTutor.teacher",
+  voiceStart: "voiceStart",
+  voiceYou: "you",
+});
+
 export function t(key, variables = {}) {
-  const template =
+  const generatedKey = SHARED_COMMON_KEY[key];
+  const generatedCourseKey = SHARED_COURSE_KEY[key];
+  const catalog = typeof window === "undefined"
+    ? null
+    : window.HSKAI_COMMON_I18N;
+  const courseCatalog = typeof window === "undefined"
+    ? null
+    : window.HSKAI_COURSE_I18N;
+  const desktopCatalog = typeof window === "undefined"
+    ? null
+    : window.HSKAI_DESKTOP_I18N;
+  const generated = generatedKey
+    ? catalog?.[activeLanguage]?.[generatedKey]
+    : undefined;
+  const generatedCourse = generatedCourseKey
+    ? courseCatalog?.[activeLanguage]?.[generatedCourseKey]
+    : undefined;
+  const generatedDesktop = desktopCatalog?.[activeLanguage]?.[key];
+  const template = generated ?? generatedCourse ??
+    generatedDesktop ??
     messages[activeLanguage]?.[key] ?? messages.uz[key] ?? String(key || "");
   return String(template).replace(/\{([a-zA-Z0-9_]+)\}/g, (match, name) =>
     Object.prototype.hasOwnProperty.call(variables, name)

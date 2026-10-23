@@ -12,7 +12,7 @@ from app.bot.keyboards.onboarding import (
     language_keyboard,
     trial_lesson_selection_keyboard,
 )
-from app.bot.utils.i18n import t
+from app.bot.utils.i18n import bot_locale_map, t
 from app.bot.utils.menu_bar import send_menu_bar
 from app.bot.utils.qa_entry import send_qa_entry
 from app.repositories.referral_repo import ReferralRepository
@@ -66,23 +66,7 @@ async def _send_android_referral_apk(
         lang = str(getattr(user, "language", "") or "")
         if lang not in {"uz", "ru", "tj"}:
             lang = "uz"
-    copy = {
-        "uz": (
-            "Taklif hisobingizga biriktirildi. APK fayli shu chatga yuboriladi. "
-            "Uni o‘rnating va ilovada shu Telegram hisobini ulang. Shundan keyin taklif "
-            "hisoblanadi."
-        ),
-        "ru": (
-            "Приглашение привязано к вашему аккаунту. Файл APK будет отправлен "
-            "в этот чат. Установите его и подключите тот же аккаунт Telegram. "
-            "Приглашение засчитается после подключения."
-        ),
-        "tj": (
-            "Даъват ба ҳисоби шумо пайваст шуд. Файли APK ба ҳамин чат "
-            "фиристода мешавад. Онро насб кунед ва ҳамин ҳисоби Telegram-ро "
-            "пайваст кунед. Пас аз пайвастшавӣ даъват ҳисоб мешавад."
-        ),
-    }
+    copy = bot_locale_map('inline.handlers.start.helper_send_android_referral_apk.copy1')
     await message.answer(copy[lang])
     sent = await send_android_app(
         message.bot,
@@ -95,26 +79,7 @@ async def _send_android_referral_apk(
     return sent
 
 def _mode_choice_text(lang: str) -> str:
-    texts = {
-        "uz": (
-            "🎉 <b>Tabriklaymiz! Kurs rejimi ochildi</b>\n\n"
-            "<blockquote>Siz uchun tartibli HSK darslari yo‘li ochildi — so‘zlar, "
-            "grammatika, quiz va AI Voice bitta ilovada, qadam-baqadam.</blockquote>\n\n"
-            "Hoziroq boshlaymizmi?"
-        ),
-        "ru": (
-            "🎉 <b>Поздравляем! Режим курса открыт</b>\n\n"
-            "<blockquote>Для вас открыт путь последовательных уроков HSK — слова, "
-            "грамматика, квиз и AI Voice в одном приложении, шаг за шагом.</blockquote>\n\n"
-            "Начнём прямо сейчас?"
-        ),
-        "tj": (
-            "🎉 <b>Табрик! Реҷаи курс кушода шуд</b>\n\n"
-            "<blockquote>Барои шумо роҳи дарсҳои пайдарпайи HSK кушода шуд — калимаҳо, "
-            "грамматика, quiz ва AI Voice дар як барнома, қадам ба қадам.</blockquote>\n\n"
-            "Ҳозир оғоз мекунем?"
-        ),
-    }
+    texts = bot_locale_map('inline.handlers.start.helper_mode_choice_text.copy1')
     return texts.get(lang, texts["ru"])
 
 
@@ -143,11 +108,7 @@ def _lesson_choice_text(lang: str, level: str | None) -> str:
     label = (level or "HSK").upper()
     if label == "BEGINNER":
         label = "HSK1"
-    texts = {
-        "uz": f"<b>{label} kursi</b>\n\nQaysi darsdan boshlaymiz?",
-        "ru": f"<b>Курс {label}</b>\n\nС какого урока начнём?",
-        "tj": f"<b>Курси {label}</b>\n\nАз кадом дарс оғоз мекунем?",
-    }
+    texts = bot_locale_map('inline.handlers.start.helper_lesson_choice_text.dynamic1', label=label)
     return texts.get(lang, texts["ru"])
 
 
@@ -326,8 +287,11 @@ async def cmd_start(
     await state.set_state(OnboardingStates.choosing_language)
 
 
-@router.callback_query(OnboardingStates.choosing_language)
+@router.callback_query(OnboardingStates.choosing_language, F.data.in_({"lang:uz", "lang:ru", "lang:tj"}))
 async def process_language(callback: CallbackQuery, state: FSMContext, session):
+    if callback.data not in {"lang:uz", "lang:ru", "lang:tj"}:
+        await callback.answer()
+        return
     lang = callback.data.split(":")[1]
 
     service = OnboardingService(session)
@@ -367,9 +331,20 @@ async def process_language(callback: CallbackQuery, state: FSMContext, session):
 
 
 
-@router.callback_query(OnboardingStates.choosing_level)
+# All and only values emitted by the course/QA onboarding level keyboards.
+# Never interpret a stale language/mode button as a course level.
+ONBOARDING_LEVEL_CALLBACKS = frozenset({
+    "level:beginner", "level:hsk1", "level:hsk2", "level:hsk3", "level:hsk4",
+    "level:nhsk1", "level:nhsk2", "level:nhsk3",
+})
+
+
+@router.callback_query(OnboardingStates.choosing_level, F.data.in_(ONBOARDING_LEVEL_CALLBACKS))
 async def process_level(callback: CallbackQuery, state: FSMContext, session):
-    level = callback.data.split(":")[1]
+    if callback.data not in ONBOARDING_LEVEL_CALLBACKS:
+        await callback.answer()
+        return
+    level = callback.data.split(":", 1)[1]
     data = await state.get_data()
     is_qa_mode_level_choice = bool(data.get(QA_MODE_LEVEL_CHOICE_KEY))
 

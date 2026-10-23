@@ -13,6 +13,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.MainActivity
 import com.pomp.hskai.R
 import com.pomp.hskai.core.i18n.AppLocale
@@ -49,6 +50,10 @@ object PaymentNotifications {
 
     fun post(context: Context, status: String, planType: String = ""): Boolean {
         if (status !in setOf("approved", "rejected")) return false
+        // A rejected external/manual payment must never promote retrying
+        // outside Play from the consumption-only distribution. The shared
+        // entitlement refresh remains active; only this notification is omitted.
+        if (!BuildConfig.EXTERNAL_CHECKOUT_ENABLED && status == "rejected") return false
         val isHsk30Unlock = planType == "hsk30_unlock"
         val localized = AppLocale.wrap(context)
         ensureChannel(localized)
@@ -56,7 +61,7 @@ object PaymentNotifications {
 
         val title = localized.getString(
             when {
-                isHsk30Unlock && status == "approved" -> R.string.notify_hsk30_payment_approved_title
+                isHsk30Unlock && status == "approved" -> R.string.hsk_course_subscription_page_payment_approved_title
                 isHsk30Unlock -> R.string.notify_hsk30_payment_rejected_title
                 status == "approved" -> R.string.notify_payment_approved_title
                 else -> R.string.notify_payment_rejected_title

@@ -1,0 +1,1476 @@
+{
+  "schema_version": 1,
+  "source_commit": "930d4f702e0476fe481f37ca84fa9775c727d502",
+  "maps": [
+    {
+      "id": "inline.handlers.challenge.helper_text.copy1",
+      "source": "app/bot/handlers/challenge.py",
+      "source_line": 22,
+      "locale_value_sha1": {
+        "uz": "60a781df69a7cf8f2b3cb45e28be73ccf23c2858",
+        "ru": "6e661b8cb6f269c7cea80600ec4a41d5134c79b5",
+        "tj": "a79c8199d324babd789f68ace3c0944283b05479"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.helper_status_label.copy1",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 68,
+      "locale_value_sha1": {
+        "uz": "9a7c6356be69ea4a3cb58cb41bb20549d94f8bb3",
+        "ru": "a6e9308a084169bd838fae574fe99a8d512d679d",
+        "tj": "fd5a0c02a30cb6059efc6b2ff74c1df153b3ec2a"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.helper_status_label.copy2",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 73,
+      "locale_value_sha1": {
+        "uz": "da0f862f75eb7067178ed6a0423ca896ea068c96",
+        "ru": "35a237cb5efe6e6cbfe2ef24f153f59773779989",
+        "tj": "3fbbc64a5ecaa2c505d74cdef4cb395a8dc99848"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.helper_status_label.copy3",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 78,
+      "locale_value_sha1": {
+        "uz": "8bb700120695c7da5b5eb78c55e4733d4e322970",
+        "ru": "35e382740bc1b9d46e13337edb9a95ebdae83530",
+        "tj": "76477e8967aa0d33d8cac18be3e2b4ac33c805b6"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.helper_status_label.copy4",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 83,
+      "locale_value_sha1": {
+        "uz": "4c45500fd5c1a1a586f219622e6c76c9b8549db0",
+        "ru": "a2e1fbfb3eec4c2527d912329b1220542a1f65bf",
+        "tj": "92da628ed7dcfbe6f553029773b763086a14e874"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.helper_status_label.copy5",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 88,
+      "locale_value_sha1": {
+        "uz": "4ec21c4699025893259d8db6d62c3c0f1203d2d6",
+        "ru": "96298786c0ea85507b57501a384b1bc3308bb978",
+        "tj": "b161a56a8f83d284f95406ecc4cd2091c3d97713"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.helper_status_label.copy6",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 93,
+      "locale_value_sha1": {
+        "uz": "9a7c6356be69ea4a3cb58cb41bb20549d94f8bb3",
+        "ru": "a6e9308a084169bd838fae574fe99a8d512d679d",
+        "tj": "fd5a0c02a30cb6059efc6b2ff74c1df153b3ec2a"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.helper_profile_status_label.copy1",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 101,
+      "locale_value_sha1": {
+        "uz": "a7a45c229c10b62cce5ef0d80ded23b116eadadc",
+        "ru": "129e3c8dc063934d1d0a664a4f9671818b7097f8",
+        "tj": "adb167ab3d58ae450d5c3d5ce6a6819855ed03d3"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.helper_profile_status_label.copy2",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 108,
+      "locale_value_sha1": {
+        "uz": "9d1e77ad182cf148577316a0aaaf7341ed20875c",
+        "ru": "81b4e531ccca4819fee2e0b7bb52b2a47734d890",
+        "tj": "d27f2cdedc9d497ef7187e73570cdd41dcb1a3af"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.helper_language_label.copy1",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 118,
+      "locale_value_sha1": {
+        "uz": "506ccf132ae75a6514e7d7bccc476a8a6ab501fc",
+        "ru": "17be9df341a1ee3fe13f50a0b6dca03b6aafadf1",
+        "tj": "b456564c3f2d531c0585597259fe2aeaac4eba55"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.helper_language_label.copy2",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 123,
+      "locale_value_sha1": {
+        "uz": "15805160b03153ddf0d062853f1fc8596439463b",
+        "ru": "2c375301212579342658482314afd1a13df029fd",
+        "tj": "5403af1e0a80494161f65e2cd6cdee1ed41a4e24"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.helper_level_label.copy1",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 132,
+      "locale_value_sha1": {
+        "uz": "bf9b710b81aae96ed6f9c1ec78558c286f0cf4ec",
+        "ru": "a3976754df0d67f9777d9957b0a61ba44229917d",
+        "tj": "f505cdbf6cb2de6efba150e08042132f6bff5100"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.helper_profile_reminder_line.copy1",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 186,
+      "locale_value_sha1": {
+        "uz": "c47ce01d43dda4cf9a4e0f82735cb0e8369f7381",
+        "ru": "8a5cb15105d83d8d14e9b4d9772da5c36d2d5928",
+        "tj": "e172111fbd99f817edbd73253a3add756c0735ec"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.profile_menu_keyboard.copy1",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 384,
+      "locale_value_sha1": {
+        "uz": "82f47c81bafc3615c660228b688c3d3a37b6a692",
+        "ru": "acde01c8a4232916749cd2a5046f1185da9d3b87",
+        "tj": "a5c62d13983e4ec4b73dd8c4fc9e4328fd58892d"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.commands.command_level_callback_handler.copy1",
+      "source": "app/bot/handlers/commands.py",
+      "source_line": 607,
+      "locale_value_sha1": {
+        "uz": "e1b1112a63e001f1c32d0810c135083d9fe9935f",
+        "ru": "4cbc4140a61af16ac45689baa83093604146ba76",
+        "tj": "2fcc14db171393f2862c4048c36c1e0b73f70598"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.course.course_miniapp_entry_text.copy1",
+      "source": "app/bot/handlers/course.py",
+      "source_line": 149,
+      "locale_value_sha1": {
+        "uz": "dad71c1dd86e1f3f45342dad61886395100053ad",
+        "ru": "2690ee393c7aefd788f83324c343ebadfc4453ea",
+        "tj": "32a916d52f64cb4323a9737c7304bca6b781849c"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.course.course_miniapp_entry_text.copy2",
+      "source": "app/bot/handlers/course.py",
+      "source_line": 166,
+      "locale_value_sha1": {
+        "uz": "09121773b617e51307b94d74d2890b7200942cad",
+        "ru": "800e93ef2276f3914aa3bcb67002895a524d2da8",
+        "tj": "0b1bfaf987273433af02beee28170d2271d2b775"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.course.course_miniapp_reentry_text.copy1",
+      "source": "app/bot/handlers/course.py",
+      "source_line": 215,
+      "locale_value_sha1": {
+        "uz": "125accba0bc04f582b4027ca9be45677aea308f9",
+        "ru": "a25de91b00207f409d7c7fcd22a02798810f67b3",
+        "tj": "b38e190e5a840703a85c878f1a60c463c170c428"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.course.helper_course_entry_button_label.copy1",
+      "source": "app/bot/handlers/course.py",
+      "source_line": 225,
+      "locale_value_sha1": {
+        "uz": "868f5209c68274cadc3a0720d1341e620f41552c",
+        "ru": "09f535bd80d134453a3e43982cf7a4b759d98b72",
+        "tj": "be914592bbdb5578d33e401060af9825ff06bc92"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.course.helper_block_if_course_disabled.copy1",
+      "source": "app/bot/handlers/course.py",
+      "source_line": 373,
+      "locale_value_sha1": {
+        "uz": "c24db7ea261eedb651aa40c60df899d868abdd5b",
+        "ru": "47551f06520faa0294099680de691273ebc5e30f",
+        "tj": "e0f7b4c6742a345e314ff4c1dc851b40801ac123"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.course.helper_course_locked_offer_text.copy1",
+      "source": "app/bot/handlers/course.py",
+      "source_line": 410,
+      "locale_value_sha1": {
+        "uz": "a201283afcf0bb9143f04d5bd1825df0df49ccdc",
+        "ru": "b67fbaec83174f43a59a535323b72d000858d681",
+        "tj": "dd7af258a5848e47ab5635b527155f94251d1c15"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.course.helper_trial_course_completed_text.copy1",
+      "source": "app/bot/handlers/course.py",
+      "source_line": 463,
+      "locale_value_sha1": {
+        "uz": "2dc0a1aa00102509917c774547b603ce7a471e8a",
+        "ru": "fb761dd7b8d8f4b301dfe8b69a8c4ee2156389ed",
+        "tj": "c5b84ecf1a6c56d2b9e20d58808133f6c8aea36f"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.course.course_command_handler.copy1",
+      "source": "app/bot/handlers/course.py",
+      "source_line": 1093,
+      "locale_value_sha1": {
+        "uz": "c24db7ea261eedb651aa40c60df899d868abdd5b",
+        "ru": "47551f06520faa0294099680de691273ebc5e30f",
+        "tj": "cb929cc4bddf14b00fc1b70475a116d79831911f"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.course.helper_static_course_missing_text.copy1",
+      "source": "app/bot/handlers/course.py",
+      "source_line": 1892,
+      "locale_value_sha1": {
+        "uz": "0c28ebfbed4ba02e960c7869b001b83be3cdbc8f",
+        "ru": "1614fc7ae9d4bb7d3712b423ffbe1b573379bcdf",
+        "tj": "514041f3aee67230836aebf53b56e15da65f9550"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.course.module.copy1",
+      "source": "app/bot/handlers/course.py",
+      "source_line": 2223,
+      "locale_value_sha1": {
+        "uz": "f1855ab455f101e8cb7fbcc639a5b9118887c481",
+        "ru": "432ef5420a019022744a323a6e0a27d7e0e1283f",
+        "tj": "ebae0a369f229b95bc6dc82f53ec4b5ff5d2fcce"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.desktop_auth.module.copy1",
+      "source": "app/bot/handlers/desktop_auth.py",
+      "source_line": 38,
+      "locale_value_sha1": {
+        "uz": "0f4de802249bc11352da2d4cdae1f65215a5a226",
+        "ru": "d1390162a1d3b3a7001260700253bddff3c90d23",
+        "tj": "508688e3f8fb47ed68411d8e0c9862bd57895bb7"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.desktop_auth.module.copy2",
+      "source": "app/bot/handlers/desktop_auth.py",
+      "source_line": 182,
+      "locale_value_sha1": {
+        "uz": "af613a8b9abbc0c9e6d04a0786a71260c4000e00",
+        "ru": "b1f818b15171b67e57ae205e156f5376dc41f2f0",
+        "tj": "60666bbae6fa31f89cff1e02ae970884f3662e48"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.desktop_auth.module.copy3",
+      "source": "app/bot/handlers/desktop_auth.py",
+      "source_line": 237,
+      "locale_value_sha1": {
+        "uz": "8ee7dac13198c0bc2a36a146338ef3c568f70a6c",
+        "ru": "2d11741cf75c2e3e10411720d4f8460bb02863ee",
+        "tj": "a3cc8a581e57b5a41b5729f2ceabe19cf13048ec"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.messages.module.copy1",
+      "source": "app/bot/handlers/messages.py",
+      "source_line": 152,
+      "locale_value_sha1": {
+        "uz": "dd2b6a5f6df3b14297cc76cf6ca1b06eab030c54",
+        "ru": "5ab4e7562688bf7eac0fca9263dbbb74b478dcfe",
+        "tj": "c13626279ef90bc62624d9e9a1fa2665927e5f31"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.messages.helper_format_static_exercise_result.copy1",
+      "source": "app/bot/handlers/messages.py",
+      "source_line": 336,
+      "locale_value_sha1": {
+        "uz": "4a2283dbd44c9822b84be9de773b5591313edae8",
+        "ru": "bbdfde41177a97ce875ce8b47771bc4163e5176c",
+        "tj": "0fac1fcfa182c1c9aabc1493124f6597dc175b41"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.messages.helper_voice_answer_loader_text.copy1",
+      "source": "app/bot/handlers/messages.py",
+      "source_line": 699,
+      "locale_value_sha1": {
+        "uz": "6d944f2344292801eeb5102cf9e81777ad9009ef",
+        "ru": "ea3940688bd4bf24e6a93d29841f32597fdeda25",
+        "tj": "1c35e4e92fde2cbb564d6ac6847652c0ea5e9f69"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.messages.helper_voice_answer_loader_text.copy2",
+      "source": "app/bot/handlers/messages.py",
+      "source_line": 704,
+      "locale_value_sha1": {
+        "uz": "ec45675f7502d4d8aa91c585b10fd5f3e0381bef",
+        "ru": "a94947354756fdc4a2523cc4f29169f53b541d3f",
+        "tj": "e852407b60707d1d1a03b1567effd52b2702d209"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.messages.handle_text_message.copy1",
+      "source": "app/bot/handlers/messages.py",
+      "source_line": 1512,
+      "locale_value_sha1": {
+        "uz": "e65c18a8d271c246dc4371764d7a8b96039cda8b",
+        "ru": "51cdf4a36c114527615ea44eab3546ea873743f5",
+        "tj": "9a3df310fb5eacaf41e0d71bc1fb81a17b7fb4d5"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.messages.handle_text_message.copy2",
+      "source": "app/bot/handlers/messages.py",
+      "source_line": 1658,
+      "locale_value_sha1": {
+        "uz": "e65c18a8d271c246dc4371764d7a8b96039cda8b",
+        "ru": "51cdf4a36c114527615ea44eab3546ea873743f5",
+        "tj": "9a3df310fb5eacaf41e0d71bc1fb81a17b7fb4d5"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.payments.helper_waiting_message.copy1",
+      "source": "app/bot/handlers/payments.py",
+      "source_line": 25,
+      "locale_value_sha1": {
+        "uz": "e8061661a806ef1220ea0ea988d8fd73a80fa0b5",
+        "ru": "e14b96cd89b9f6062c6f17cc9bfef5601473053d",
+        "tj": "18c4ebbc1f3573c77c3a831a2b327ca522f53b64"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.payments.helper_waiting_message.copy2",
+      "source": "app/bot/handlers/payments.py",
+      "source_line": 30,
+      "locale_value_sha1": {
+        "uz": "439a6f82a84850318613b1662fd5c74b105c503c",
+        "ru": "ff5cbeb901d23f8c20cb65ce14ba65edac45ca98",
+        "tj": "c94cabd544bce35044d257bde400be8cd6f7a047"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.release_feedback.module.copy1",
+      "source": "app/bot/handlers/release_feedback.py",
+      "source_line": 57,
+      "locale_value_sha1": {
+        "uz": "85dd07dd8035476207f8b3840a238e0c16153f12",
+        "ru": "40813f744cc8c9331860b198dbd8dae72dae2787",
+        "tj": "2c668b8c232df4a328b24d0cc5e35ef9ce303afa"
+      },
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.handlers.release_feedback.module.copy2",
+      "source": "app/bot/handlers/release_feedback.py",
+      "source_line": 70,
+      "locale_value_sha1": {
+        "uz": "cafd785b9acc982a17bf36eed279c6da9429d597",
+        "ru": "129b6a4816b64bdecae2f9b069bd13bc9f5ef6df",
+        "tj": "753604de18fe8fe7d2afb70c7bd53c9a99da969b"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.release_feedback.helper_route_try_feature.copy1",
+      "source": "app/bot/handlers/release_feedback.py",
+      "source_line": 552,
+      "locale_value_sha1": {
+        "uz": "53a5abc4bc6ef3b6dbb4acad5ab59025b93f3177",
+        "ru": "8fb33324e92b8897a92cf66d3ea9c98c1a8b2113",
+        "tj": "35c2a7c352592949fcfd71ad97a2ba85cfe48d9b"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.release_feedback.helper_route_try_feature.copy2",
+      "source": "app/bot/handlers/release_feedback.py",
+      "source_line": 575,
+      "locale_value_sha1": {
+        "uz": "0a08ef41d90ddcbab65ea74c5d3000ddf1b96bc3",
+        "ru": "c306af8ac8a939139450ef40be2cec07dcf64f97",
+        "tj": "2b9e2f62a877d20504437e82fbb2e7515b9f4c8e"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.release_feedback.helper_route_try_feature.copy3",
+      "source": "app/bot/handlers/release_feedback.py",
+      "source_line": 586,
+      "locale_value_sha1": {
+        "uz": "95a63717927a7dec5513ab0e19b92b84fa04f6bc",
+        "ru": "0add516e83886a90451a2c15ef24788d75124248",
+        "tj": "df86603e6e524413bcdb30c35bc2dbeef258830a"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.release_feedback.helper_route_try_feature.copy4",
+      "source": "app/bot/handlers/release_feedback.py",
+      "source_line": 596,
+      "locale_value_sha1": {
+        "uz": "9dce34d2c07297d05299629944e2cec08e19b115",
+        "ru": "0685d07316a16585f55d4140cd4d46e9dfb34fe8",
+        "tj": "198e7d20301a71f3f0cb2b9ffbd261eddb25a67d"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.start.helper_send_android_referral_apk.copy1",
+      "source": "app/bot/handlers/start.py",
+      "source_line": 69,
+      "locale_value_sha1": {
+        "uz": "97ce5456c5eaa7a90f02c1bb0b03d832729a9ff9",
+        "ru": "5e7393adab5c2336424a2a04cfea882c8512323e",
+        "tj": "749d4080cd313dc1da961b75b57d48abb7ddf2de"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.start.helper_mode_choice_text.copy1",
+      "source": "app/bot/handlers/start.py",
+      "source_line": 98,
+      "locale_value_sha1": {
+        "uz": "40a97b65589457752ea5805a752f9556ccc12cec",
+        "ru": "3802266c91e640ad8cc6f19829138ed365282193",
+        "tj": "e04dc9424ea40ea33048172ac37847e5c4e03c04"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.handlers.subscription.helper_card_texts.copy1",
+      "source": "app/bot/handlers/subscription.py",
+      "source_line": 116,
+      "locale_value_sha1": {
+        "uz": "80a1bd1f8c5078ed7f59ef53fb59bbebb90b1952",
+        "ru": "470e8d71ee0b5d3c12a05a58f7cb1a906414f0c4",
+        "tj": "f7010550a5cea57f9d2a06b1885d5ccba43cd9b5"
+      },
+      "locale_order": [
+        "tj",
+        "ru",
+        "uz"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_lesson_word.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 36,
+      "locale_value_sha1": {
+        "uz": "acc957a402bb8390413c75320a57c98cf90af689",
+        "ru": "ac8b6817bd4a3c91514d8fce3bf92d771ecd09b1",
+        "tj": "6e1364f360e271716f81d6ee26c02bcba0d370a3"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_block_label.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 92,
+      "locale_value_sha1": {
+        "uz": "6d230524f21f8f8b0133079d2657c4e2598ff160",
+        "ru": "887b151c07ddfcec7b7046ea923e12d0b3eac4e6",
+        "tj": "9c390c5fd1727e3fff18f9ef14e22069302aa1f7"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.module.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 137,
+      "locale_value_sha1": {
+        "uz": "e2ccc39cefb2f94788a310a0a1f16cfaaf57de95",
+        "ru": "dd83fa6a256bf226e1a365d6be2f3cd5b13f7141",
+        "tj": "79fc79301b87fd67e763a93e31f7fa2409e245d1"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.module.copy2",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 138,
+      "locale_value_sha1": {
+        "uz": "5638abdae567071030235fd027cd3e085c5d43b4",
+        "ru": "6f241dacc790ad6d9faf700d72383d83fd2c962a",
+        "tj": "4a4f76a27bc057f5527bcdc502ec4218b09b2c27"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.module.copy3",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 139,
+      "locale_value_sha1": {
+        "uz": "6eace3cc03de94cbed6b4f713ab279c3263d4ae3",
+        "ru": "ee5b9990bc153d7e7a41ed0f8f9e65241dc149c3",
+        "tj": "74a4b6b7d8ddfa0315325469f041a7642c7b8a56"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.module.copy4",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 140,
+      "locale_value_sha1": {
+        "uz": "7062c77ab3acb2dcd457b4547dd27ab8b699cef3",
+        "ru": "bf0dabb80df21eab774cd64807f60047bd6f15d6",
+        "tj": "f6972d8917cc3e094d2963d72ca20a228ee80c89"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.module.copy5",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 141,
+      "locale_value_sha1": {
+        "uz": "bd82a78707078fe74da92c99db6b49af44ac5380",
+        "ru": "e6515722b031be47ac75157d88a4c8ff0719862e",
+        "tj": "76d637d217b94e245f1ccd1dfacbe89e2d2bca87"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.module.copy6",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 142,
+      "locale_value_sha1": {
+        "uz": "9cdad7aa5a990da1f8a55d1e0a72ae44f514e43b",
+        "ru": "913ad5c250bf0fbc410e5c3fbf342f95cf9c570b",
+        "tj": "032c233dcf43738126f8e81151395a4b672b61e1"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 197,
+      "locale_value_sha1": {
+        "uz": "c15b4b061612f8fd8545850fe511fc75416288b1",
+        "ru": "44f19c414c7328bcfba7ec453487e83b8d298009",
+        "tj": "cdad98deccc5655da2cc32210be2b80fc21d9c2f"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy2",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 202,
+      "locale_value_sha1": {
+        "uz": "69bd640ac89529429080a42099038616980ad712",
+        "ru": "1101ac0dc05ab94559a1a8664d4459832b1a70b5",
+        "tj": "bd94d9b8530975cad9254884739ed43d2d5ae964"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy3",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 207,
+      "locale_value_sha1": {
+        "uz": "f24b7f0515413678a82a71a51147d22e120d0c75",
+        "ru": "ecc8beacefae6314d80d3d420e5b61b7f7e1d2c7",
+        "tj": "f831f59a68d8fd3e6f56cce86a4aad8e4bd58a8a"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy4",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 212,
+      "locale_value_sha1": {
+        "uz": "b967a5da89c35a4de1bcfb6afc8d8ce5a33b945b",
+        "ru": "661461e87d83b53c4c68a45f26cbc73df9e25e43",
+        "tj": "e648317e31792ff15853ef80dfb4359fef1ed084"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy5",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 217,
+      "locale_value_sha1": {
+        "uz": "4be793df02988675e215e291b0f256fbac907f1f",
+        "ru": "5bd5e42006c40a0dfc8cc2bb5e6c1fc758eb7191",
+        "tj": "443ac256e7f3f4f643b170dfb2277951e47c6e70"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy6",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 222,
+      "locale_value_sha1": {
+        "uz": "41f345f7e3226e4a343407fd37f000f42a854ed7",
+        "ru": "78ec3182bbe435444c6a1580c794d04f41953644",
+        "tj": "62a067a6ced159f39ac3e21fcd60c030489a66df"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy7",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 227,
+      "locale_value_sha1": {
+        "uz": "0ae63561d1663b87f87efb1c04f8eb10c60ffd78",
+        "ru": "20093c625ea6cd37964b716148a5ce04fb84d7e8",
+        "tj": "9c9d6c93c2c2dddf4488f7b385e7db88bd48b05f"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 255,
+      "locale_value_sha1": {
+        "uz": "5d644f7810341adaa2bf7783ea4e6d8c2248bea2",
+        "ru": "4e58377a0935e0c4d4e0099c452b28eb0c4061b0",
+        "tj": "42d42f121b7024941c2f196c1b5b5241650c491c"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy2",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 260,
+      "locale_value_sha1": {
+        "uz": "f0846f3ff5a611ab0270c79f42e04f95b430391a",
+        "ru": "877c87966798f393b16591b31ef9b8190d42511c",
+        "tj": "d8619b183882b333c3659284679f2c6946194016"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy3",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 265,
+      "locale_value_sha1": {
+        "uz": "a84e51c7128084f8074a910378c5fbe8f31d098f",
+        "ru": "77eae257203574156072d5328647ab5a5964a5d8",
+        "tj": "a0c990a8f688eef4dcc5b46f0d69af328e8ac9ba"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy4",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 270,
+      "locale_value_sha1": {
+        "uz": "4baa7fd06e6d86269d91a2d482607f7ecd5625be",
+        "ru": "c2c523940c9a39f7e83f07b51185f8a2a2a87a49",
+        "tj": "17c769409d1cfa55fd67e906e198918d56024aff"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy5",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 275,
+      "locale_value_sha1": {
+        "uz": "32b5a7bd4668058e7ac9d78ce4f5b50195703d58",
+        "ru": "4b914ead296554d8ce8f3e8fb827e4288cd769cb",
+        "tj": "c818e0e6b39eb7a0e112bafbc51d43c2c6e6aa3f"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy6",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 280,
+      "locale_value_sha1": {
+        "uz": "6aaa45a3a2be3c5859ba4881b23f0aa321577175",
+        "ru": "0c07adf3e3a282d1f12cb8b1e3f1413d3eb35a75",
+        "tj": "bdbca94076456665e15acabeb2fdff5a590fd4f5"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy7",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 285,
+      "locale_value_sha1": {
+        "uz": "2c19c532e50069519d4a789f6bcec3a39f56aa2b",
+        "ru": "62febab404ca91b6de3859986da7d6cb128e01d9",
+        "tj": "fce710527a1508658b1b5055f64a758725d0d8e9"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy8",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 290,
+      "locale_value_sha1": {
+        "uz": "7f4177fe6a935ef1f91f445593f86d9a358a1c37",
+        "ru": "ac87f5b88641a80b75f961f29ca2793da2c2d8af",
+        "tj": "b331ea25a16d3d088d4eb07cd1560d0834d3faac"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy9",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 295,
+      "locale_value_sha1": {
+        "uz": "0d36618fc6df61241249e8534adf9fb45d9425e9",
+        "ru": "a5c5023bb62218652d31367a883f611e94fb4130",
+        "tj": "decb9fcccec7a06df2a6532de64d010860dd0af3"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy10",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 300,
+      "locale_value_sha1": {
+        "uz": "db98fd3127f8621214e50d03572e69865ae07403",
+        "ru": "5280eef1094afb90886f4ca99cdfa1df3eaf427d",
+        "tj": "c4872bc3ebe843250f6f2fe705ae672313dc6be8"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.helper_append_basic_grammar_item.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 325,
+      "locale_value_sha1": {
+        "uz": "c66cee9601d6ef778dadef9e1b875373274e945c",
+        "ru": "4d9d4ff52419b2e60c524b256742384e7fd78633",
+        "tj": "3bf61f8a1a46b39d9011cde63bbd4a4a28c97043"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_vocab.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 391,
+      "locale_value_sha1": {
+        "uz": "a61c49e015ee30eb4ef5403866e9874d4077f779",
+        "ru": "a7ad109de45a16fc59c51ddfd3381e6710e04f5b",
+        "tj": "4b40cd3ceab6aad63e1653c46cc106f5d17eeb08"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_dialogue.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 439,
+      "locale_value_sha1": {
+        "uz": "7ba699292e6f36e47076cb0349985d4d067822e2",
+        "ru": "4cbb9f34ab28b65f45190ec1c67d09d3fbf4f844",
+        "tj": "53f62e1dec5c7232d0274ad6f3e88ad096d4460c"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_dialogue.copy2",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 491,
+      "locale_value_sha1": {
+        "uz": "fc57e170f8746b001063379afe2193884768d76b",
+        "ru": "a770e826f8a7c437c7919c7493f4538b79d3715f",
+        "tj": "226d7f1032a81de4522d7de976dfcc113078155b"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_exercise.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 509,
+      "locale_value_sha1": {
+        "uz": "cac69a57fbeff1f4a38e13783bc8eb7a83b42fd3",
+        "ru": "fc8c2d0d6e16592fd1a45a5748bf2c741ed4ca14",
+        "tj": "ec7ab23e1207573f436398d4338d5f1506bff865"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_exercise.copy2",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 512,
+      "locale_value_sha1": {
+        "uz": "ca32430cba2607478b6440e7a0376b2b3977ae8a",
+        "ru": "dd3bf03b6bd593bdb58b53d8e5f0f3ff5044710d",
+        "tj": "c2724935d36a16a89688d20b37c75ce8e7d3a807"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_exercise.copy3",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 520,
+      "locale_value_sha1": {
+        "uz": "6246769a11d42ee2a8e2babb79abd08383b40d6a",
+        "ru": "23d13936c5b1afe8a7b9ed5d6e6af4a0ec33d7f6",
+        "tj": "3947c56a5222e934cfe5e5cd3c596df7a8d2dfe9"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_vocab_1.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 596,
+      "locale_value_sha1": {
+        "uz": "5fe075ac8023f6f01254316bd2a6cd433568eb66",
+        "ru": "8295ff8ef9316907345d749204407becdbed7818",
+        "tj": "587c255e54648cd8c61824ab2f28adf59ac95b90"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_vocab_1.copy2",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 601,
+      "locale_value_sha1": {
+        "uz": "8d4c379de73ac1510e2c21e0a23c68b2a2347a91",
+        "ru": "04103df4f43817bfa113836056f69749a209e681",
+        "tj": "64152f96d3e3f7d5b8ba6875b235f84ea4dfc3d3"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_vocab_2.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 629,
+      "locale_value_sha1": {
+        "uz": "38a2d391261af3f7a1ef4fc5875be49eee6ee7bb",
+        "ru": "aa695d1fbbeaa750fbf576775d716de935b0687b",
+        "tj": "53aa2fdcb37bb681fff8e62707d4329553073be0"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_block_vocab.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 660,
+      "locale_value_sha1": {
+        "uz": "f9d355b1bd915ece4bf3206d6e00dc9d9242d366",
+        "ru": "bf301476f7b11ce6da5fb96099fe92aff2ed5a2d",
+        "tj": "3b925283b83a38bea9293d9fe1d2a60bf11fbce2"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_block_vocab.copy2",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 665,
+      "locale_value_sha1": {
+        "uz": "be8f29a16673126f7784abb6a77768bf22d0bcca",
+        "ru": "e20805a1dafcadcf4c35dfa02382c1505ffca58b",
+        "tj": "489a64e6a45cf8ce5b75d95c7ae566d832633600"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_block_quiz.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 693,
+      "locale_value_sha1": {
+        "uz": "317169cb7fb71aa79f60367a8755d634d88f3952",
+        "ru": "9531d60ba4f190ebb1b3f549cfac34e84a468d51",
+        "tj": "7ec34f3c31b0571a879f6615c6a896f7e983e77e"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_block_quiz.copy2",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 698,
+      "locale_value_sha1": {
+        "uz": "def93c8f5d6b816c7b06847d5c92e0777bbd6b1e",
+        "ru": "49ebf5fe8bc50812003b9d625a89c45911acbd49",
+        "tj": "ae7cca2e6df6fead06dc9e2fc5772e85cd33bf6d"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_block_quiz.copy3",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 703,
+      "locale_value_sha1": {
+        "uz": "0cbda8f7be484e223768e3892e2954140661a7e7",
+        "ru": "e8068cbb388643505fb4cb217c28eb0c55d50aa8",
+        "tj": "666f0638c0caa6ba6a736827da08bcbac9d7956c"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_block_grammar.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 754,
+      "locale_value_sha1": {
+        "uz": "6482b08646158aea8c958087ddf1a91700c73c55",
+        "ru": "e79b27aab17e5b0772435c3731549f0817d804e4",
+        "tj": "7dfe34ca61f74c54f76f286fc88666f722b50453"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_dialogue_n.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 827,
+      "locale_value_sha1": {
+        "uz": "d976ba55f76cc8d83427e4f67912cdbd9c6d32f8",
+        "ru": "20dd0db8dd09560779b0da30434f659d8814703f",
+        "tj": "ff0328520343c8b7a06fdb1d9978df4c35bc4d89"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_dialogue_n.copy2",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 832,
+      "locale_value_sha1": {
+        "uz": "5fa4a5b13d9a7e82e58bca410534cc5963060969",
+        "ru": "116e477c0c7fce760f970167ffbeea8c02c2428c",
+        "tj": "7a7367022f3b3204b1ac8fde310fd8342a9b5c40"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_dialogue_n.copy3",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 883,
+      "locale_value_sha1": {
+        "uz": "180c8ed3bf6ce618e820677575a6db060723637a",
+        "ru": "8d1b9b660b8494e4b52ee852222c7fdf9caeb664",
+        "tj": "b6bb9f34decca872837b291edd349508bbc81d4e"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_grammar_v2.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 929,
+      "locale_value_sha1": {
+        "uz": "07892fe70a2e0ffdc93480539351dfef77a026df",
+        "ru": "e4dae46b8fd6b67d02288057fc56970608d57673",
+        "tj": "e4dae46b8fd6b67d02288057fc56970608d57673"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_satisfaction_check.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 955,
+      "locale_value_sha1": {
+        "uz": "cc7c9763f1bb3470fe13ca478f6f77f6826ffc8a",
+        "ru": "a72a420419c38d9c6a7371eea1a8b57a472e2185",
+        "tj": "6fdac483937de29c93f054b26c4f8b082ed1d647"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_satisfaction_check.copy2",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 960,
+      "locale_value_sha1": {
+        "uz": "5af431ba6de26f43db74e2e6553affdf5169eaca",
+        "ru": "1fc9361a9938f1a6bdc048da2df2ef3309455825",
+        "tj": "7d7e1ad8e55a3b07baacf9242c671987c987ae85"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_review.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 1002,
+      "locale_value_sha1": {
+        "uz": "a8325b73bb97c1e83bf8410086e035adab6c58ea",
+        "ru": "1ed2fc9959f7606b21cb97460c1a663a229130f1",
+        "tj": "6bab01ce7ee6f60f8a4b572f2976db1755fd58c2"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_review.copy2",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 1007,
+      "locale_value_sha1": {
+        "uz": "ecf95f96becb44ffbe7b4fe89549b1955d85a614",
+        "ru": "1292b303ccc0b610c4a1cd75ffbc4e84174e0310",
+        "tj": "78deb8c5eb0ea57c8bf9a47caf583a68d654f7d3"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_review.copy3",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 1008,
+      "locale_value_sha1": {
+        "uz": "9935a65a081ddfed655ce48a207b396a7e90ae62",
+        "ru": "133ff6b3f377b9f34ae728b8eb814994df52a4c6",
+        "tj": "782f56f9ca0421b54e9e68433473993ffbfbd2df"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_review.copy4",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 1009,
+      "locale_value_sha1": {
+        "uz": "6239388ee5c3628d7e3e6d26cd4e489d6244b22f",
+        "ru": "66336796fdae456b26f47ebb5a6b33b5d357545e",
+        "tj": "66336796fdae456b26f47ebb5a6b33b5d357545e"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_formatter.format_intro.copy1",
+      "source": "app/bot/utils/course_formatter.py",
+      "source_line": 1106,
+      "locale_value_sha1": {
+        "uz": "a4d0f59a729eb714b37af91eec3d9c070af25831",
+        "ru": "6e65409847c0ddd5573dc7acf853414d2b9daa36",
+        "tj": "f6903797a559cc2137a3b8ea37eaf069a25febb8"
+      },
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ]
+    },
+    {
+      "id": "inline.utils.course_miniapp.format_miniapp_quiz_result.copy1",
+      "source": "app/bot/utils/course_miniapp.py",
+      "source_line": 294,
+      "locale_value_sha1": {
+        "uz": "66da2ffb7d77048880f47134f7574b421888f284",
+        "ru": "a5f442729aeb25936be16d639d01c619d8b6678a",
+        "tj": "509fba5c4a5b1bd51a419ed836658bc5c317d0a3"
+      },
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ]
+    }
+  ]
+}

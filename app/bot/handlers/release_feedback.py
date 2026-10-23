@@ -23,6 +23,7 @@ from app.bot.keyboards.release_feedback import (
 from app.bot.keyboards.main_menu import main_menu_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.workflow_message import delete_message_safely
+from app.bot.utils.i18n import bot_locale_map, t
 from app.config import settings
 from app.repositories.release_feedback_repo import (
     ReleaseFeedbackRepository,
@@ -53,7 +54,7 @@ router = Router()
 ADMIN_TZ = ZoneInfo("Asia/Shanghai")
 _PANEL_CHAT_ID = "rf_panel_chat_id"
 _PANEL_MSG_ID = "rf_panel_msg_id"
-_LANG_LABELS = {"tj": "TJ", "uz": "UZ", "ru": "RU"}
+_LANG_LABELS = bot_locale_map('inline.handlers.release_feedback.module.copy1')
 _MEDIA_LABELS = {"text": "Matn", "photo": "Foto", "video": "Video"}
 _FEATURE_LABELS = {
     "general": "Umumiy",
@@ -66,26 +67,7 @@ _FEATURE_LABELS = {
 }
 _MAX_COMMENT_TEXT = 1000
 _COURSE_MINIAPP_V2_RELEASE_TITLE = "Course Mini App v2: quiz va mustahkamlash"
-_COURSE_MINIAPP_V2_RELEASE_TEXTS = {
-    "uz": (
-        "⚡ Course mode yangilandi!\n\n"
-        "Quiz endi yengil interaktiv formatda: 5 ta tez savol, speaker, chiplar, progress va darhol feedback.\n\n"
-        "Uyga vazifa o'rniga Mustahkamlash qo'shildi: so'z tartiblash, mos juftlik, eshitib tanlash va iyeroglifni ko'rish.\n\n"
-        "Kursga kiring va keyingi darsda sinab ko'ring."
-    ),
-    "ru": (
-        "⚡ Course mode обновился!\n\n"
-        "Quiz теперь в лёгком интерактивном формате: 5 быстрых вопросов, speaker, chips, progress и мгновенный feedback.\n\n"
-        "Вместо домашнего задания добавлено Закрепление: порядок слов, пары, выбор на слух и просмотр иероглифа.\n\n"
-        "Зайдите в курс и попробуйте на следующем уроке."
-    ),
-    "tj": (
-        "⚡ Course mode нав шуд!\n\n"
-        "Quiz ҳоло дар формати сабуки интерактивӣ аст: 5 саволи тез, speaker, chip-ҳо, progress ва feedback-и фаврӣ.\n\n"
-        "Ба ҷои вазифаи хонагӣ Мустаҳкамкунӣ илова шуд: тартиби калимаҳо, ҷуфтҳо, интихоб аз рӯи шунидан ва дидани иероглиф.\n\n"
-        "Ба курс дароед ва дар дарси навбатӣ санҷед."
-    ),
-}
+_COURSE_MINIAPP_V2_RELEASE_TEXTS = bot_locale_map('inline.handlers.release_feedback.module.copy2')
 
 
 def _is_admin(user_id: int) -> bool:
@@ -548,20 +530,7 @@ async def _route_try_feature(callback: CallbackQuery, state: FSMContext, session
 
     if feature_key == "android_subscription":
         await callback.message.answer(
-            {
-                "uz": (
-                    "Sinash uchun HSK AI Android ilovasini oching → Profil → Obuna. "
-                    "Tarifda valyutani yuqoridagi tugma orqali almashtiring."
-                ),
-                "ru": (
-                    "Чтобы проверить обновление, откройте приложение HSK AI для Android → "
-                    "Профиль → Подписка. Валюту тарифа можно изменить кнопкой над тарифами."
-                ),
-                "tj": (
-                    "Барои санҷидан барномаи HSK AI-и Android-ро кушоед → Профил → Обуна. "
-                    "Асъори тарифро бо тугмаи болои тарифҳо иваз кунед."
-                ),
-            }.get(lang, "Откройте приложение HSK AI для Android → Профиль → Подписка."),
+            bot_locale_map('inline.handlers.release_feedback.helper_route_try_feature.copy1').get(lang, "Откройте приложение HSK AI для Android → Профиль → Подписка."),
         )
         return
 
@@ -571,32 +540,20 @@ async def _route_try_feature(callback: CallbackQuery, state: FSMContext, session
         await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
         await session.flush()
         await callback.message.answer(
-            {
-                "uz": "Oddiy AI savol rejimi ochildi. Endi yangilangan joyni sinash uchun savolingizni yozing.",
-                "ru": "Открыт обычный режим AI-вопросов. Напишите вопрос, чтобы попробовать обновление.",
-                "tj": "Реҷаи одии саволи AI кушода шуд. Барои санҷидани навигарӣ саволи худро нависед.",
-            }.get(lang, "Напишите вопрос, чтобы попробовать обновление."),
+            bot_locale_map('inline.handlers.release_feedback.helper_route_try_feature.copy2').get(lang, "Напишите вопрос, чтобы попробовать обновление."),
             reply_markup=main_menu_keyboard(lang),
         )
         return
 
     if feature_key == "image":
         await callback.message.answer(
-            {
-                "uz": "Foto tahlilni sinash uchun rasm yuboring.",
-                "ru": "Чтобы попробовать анализ фото, отправьте изображение.",
-                "tj": "Барои санҷидани таҳлили фото, расм фиристед.",
-            }.get(lang, "Отправьте изображение, чтобы попробовать обновление."),
+            bot_locale_map('inline.handlers.release_feedback.helper_route_try_feature.copy3').get(lang, "Отправьте изображение, чтобы попробовать обновление."),
             reply_markup=main_menu_keyboard(lang),
         )
         return
 
     await callback.message.answer(
-        {
-            "uz": "Yangilangan joyni sinash uchun menyudan kerakli bo'limni tanlang.",
-            "ru": "Чтобы попробовать обновление, выберите нужный раздел в меню.",
-            "tj": "Барои санҷидани навигарӣ, аз меню қисми лозимиро интихоб кунед.",
-        }.get(lang, "Выберите нужный раздел в меню."),
+        bot_locale_map('inline.handlers.release_feedback.helper_route_try_feature.copy4').get(lang, "Выберите нужный раздел в меню."),
         reply_markup=main_menu_keyboard(lang),
     )
 
@@ -1098,7 +1055,7 @@ async def release_feedback_user_callback(callback: CallbackQuery, state: FSMCont
     user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
     lang = user.language if user and user.language else "ru"
     if not campaign or not user:
-        await callback.answer("Feedback topilmadi.", show_alert=True)
+        await callback.answer(t("common.bot.releaseFeedback.notFoundAlert", lang), show_alert=True)
         return
 
     existing = await repo.get_response(campaign_id=campaign.id, user_telegram_id=user.telegram_id)
@@ -1117,7 +1074,7 @@ async def release_feedback_user_callback(callback: CallbackQuery, state: FSMCont
 
     if action == "rate" and value:
         if existing:
-            await callback.answer("Siz allaqachon baho bergansiz.", show_alert=True)
+            await callback.answer(t("common.bot.releaseFeedback.alreadyRatedAlert", lang), show_alert=True)
             return
         try:
             rating = int(value)
@@ -1170,7 +1127,7 @@ async def release_feedback_user_callback(callback: CallbackQuery, state: FSMCont
 
     if action == "comment":
         if not existing:
-            await callback.answer("Avval 1-5 ball tanlang.", show_alert=True)
+            await callback.answer(t("common.bot.releaseFeedback.chooseRatingAlert", lang), show_alert=True)
             return
         await state.set_state(ReleaseFeedbackUserStates.waiting_optional_comment)
         await state.update_data(
@@ -1205,7 +1162,11 @@ async def release_feedback_required_comment(message: Message, state: FSMContext,
     lang = user.language if user and user.language else "ru"
     comment_text, attachment_file_id, attachment_type = _extract_comment(message)
     if not campaign or not user or rating not in {1, 2}:
-        await _edit_stored_user_message(message, message_id, "Feedback topilmadi.")
+        await _edit_stored_user_message(
+            message,
+            message_id,
+            t("common.bot.releaseFeedback.notFoundAlert", lang),
+        )
         await state.clear()
         return
     if not comment_text and not attachment_file_id:
@@ -1261,14 +1222,18 @@ async def release_feedback_optional_comment(message: Message, state: FSMContext,
     lang = user.language if user and user.language else "ru"
     comment_text, attachment_file_id, attachment_type = _extract_comment(message)
     if not response:
-        await _edit_stored_user_message(message, message_id, "Feedback topilmadi.")
+        await _edit_stored_user_message(
+            message,
+            message_id,
+            t("common.bot.releaseFeedback.notFoundAlert", lang),
+        )
         await state.clear()
         return
     if not comment_text and not attachment_file_id:
         await _edit_stored_user_message(
             message,
             message_id,
-            "Izohni matn yoki screenshot qilib yuboring.",
+            t("common.bot.releaseFeedback.commentPrompt", lang),
             delete_input=False,
         )
         return

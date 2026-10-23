@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,7 +52,10 @@ fun NotificationPrimerScreen(
     onSkip: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val copy = OnboardingCopy.forLanguage(language)
+    val context = LocalContext.current
+    val copy = remember(language, context) {
+        OnboardingCopy.forLanguage(language).withBundledCatalog(context, language)
+    }
     val motionEnabled = remember {
         Build.VERSION.SDK_INT < Build.VERSION_CODES.O || ValueAnimator.areAnimatorsEnabled()
     }

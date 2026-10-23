@@ -93,6 +93,8 @@ import com.pomp.hskai.feature.onboarding.OnboardingScreen
 import com.pomp.hskai.feature.onboarding.OnboardingViewModel
 import com.pomp.hskai.feature.profile.IdentitiesViewModel
 import com.pomp.hskai.feature.profile.IdentitiesViewModelFactory
+import com.pomp.hskai.feature.profile.LanguagePicker
+import com.pomp.hskai.feature.profile.DailyGoalPicker
 import com.pomp.hskai.feature.profile.ProfileScreen
 import com.pomp.hskai.feature.profile.ProfileSettingsViewModel
 import com.pomp.hskai.feature.profile.AccountDeletionViewModel
@@ -628,6 +630,11 @@ private fun AppRoot(
 
             var checkoutVisible by rememberSaveable { mutableStateOf(false) }
             var checkoutOrigin by rememberSaveable { mutableStateOf("course_limit") }
+            // Same-package Direct -> Play updates can restore a saved checkout.
+            // Play must render the app immediately and clear that obsolete state.
+            LaunchedEffect(Unit) {
+                if (!BuildConfig.EXTERNAL_CHECKOUT_ENABLED) checkoutVisible = false
+            }
             val limitGate = rememberLimitGate(
                 repository = app.featureRepository,
                 viewModelStoreOwner = sessionOwner,
@@ -840,7 +847,8 @@ private fun AppRoot(
                     onboardingViewModel.loadStatus(showSplash = false)
                     voiceViewModel.refreshStatusIfLoaded()
                     practiceViewModel.onAccessChanged()
-                    if (decision.planType == "hsk30_unlock" && decision.status == "rejected") {
+                    if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED &&
+                        decision.planType == "hsk30_unlock" && decision.status == "rejected") {
                         hsk30PaymentRejectionVisible = true
                     }
                 }
@@ -1119,7 +1127,7 @@ private fun AppRoot(
             }
 
             val launch = openLesson
-            if (checkoutVisible) {
+            if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && checkoutVisible) {
                 SubscriptionCheckoutHost(
                     repository = app.featureRepository,
                     viewModelStoreOwner = sessionOwner,
@@ -1557,7 +1565,16 @@ private fun AppRoot(
                                 onOpenSupport = { url -> openExternal(context, url) },
                                 onReportProblem = openBugReport,
                                 reportVisible = bugReportOpen || bugReportIntroVisible,
-                                onRefresh = profileViewModel::load,
+                                onRefresh = {
+                                    profileViewModel.load()
+                                    courseViewModel.load()
+                                    if (identitiesState.busyProvider == null) identitiesViewModel.refresh()
+                                },
+                                onSelectLanguage = settingsViewModel::setLanguage,
+                                onSelectGoal = { value ->
+                                    scope.launch { app.appSettings.setDailyGoal(value) }
+                                    studySetupViewModel.chooseDailyGoalXp(value)
+                                },
                                 onLogout = { signOut(false) },
                                 onUnlinkDevice = { signOut(true) },
                                 courseTrack = courseState.map?.hsk30?.activeTrack
@@ -1703,23 +1720,23 @@ private fun AppRoot(
             courseState.trackError?.let { error ->
                 AlertDialog(
                     onDismissRequest = courseViewModel::consumeTrackError,
-                    title = { Text(stringResource(R.string.profile_course_version)) },
+                    title = { Text(stringResource(R.string.hsk_course_course_picker_version)) },
                     text = { Text(stringResource(error.messageRes)) },
                     confirmButton = {
                         TextButton(onClick = courseViewModel::retryTrackSwitch) {
-                            Text(stringResource(R.string.action_retry))
+                            Text(stringResource(R.string.hsk_course_lesson_flow_retry))
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = courseViewModel::consumeTrackError) {
-                            Text(stringResource(R.string.action_close))
+                            Text(stringResource(R.string.hsk_common_action_close))
                         }
                     },
                     containerColor = PompColors.Paper,
                 )
             }
 
-            if (hsk30PaymentRejectionVisible) {
+            if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30PaymentRejectionVisible) {
                 AlertDialog(
                     onDismissRequest = {},
                     properties = DialogProperties(
@@ -1919,7 +1936,7 @@ private fun PinyinPicker(
     ) {
         Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
             Text(
-                text = stringResource(R.string.lesson_pinyin_title),
+                text = stringResource(R.string.hsk_course_pinyin_settings_h),
                 style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                 color = PompColors.Ink,
             )
@@ -1929,7 +1946,7 @@ private fun PinyinPicker(
                 val labelRes = when (option) {
                     PinyinVisibility.ALL -> R.string.lesson_pinyin_all
                     PinyinVisibility.NEW_WORDS_ONLY -> R.string.lesson_pinyin_new
-                    PinyinVisibility.OFF -> R.string.lesson_pinyin_off
+                    PinyinVisibility.OFF -> R.string.hsk_course_pinyin_settings_off
                 }
                 Surface(
                     color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
@@ -1953,93 +1970,6 @@ private fun PinyinPicker(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LanguagePicker(
-    current: AppLanguage,
-    onPick: (AppLanguage) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState()
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = PompColors.PaperRaised,
-    ) {
-        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
-            Text(
-                text = stringResource(R.string.profile_language_picker_title),
-                style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
-                color = PompColors.Ink,
-            )
-            androidx.compose.foundation.layout.Spacer(Modifier.padding(6.dp))
-            AppLanguage.entries.forEach { language ->
-                val selected = language == current
-                Surface(
-                    color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 52.dp)
-                        .padding(vertical = 4.dp)
-                        .clickable { onPick(language) },
-                ) {
-                    Text(
-                        text = stringResource(language.labelRes()),
-                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-                        color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    )
-                }
-            }
-            androidx.compose.foundation.layout.Spacer(Modifier.padding(12.dp))
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun DailyGoalPicker(
-    current: Int,
-    onPick: (Int) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState()
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = PompColors.PaperRaised,
-    ) {
-        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
-            Text(
-                text = stringResource(R.string.profile_goal_picker_title),
-                style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
-                color = PompColors.Ink,
-            )
-            androidx.compose.foundation.layout.Spacer(Modifier.padding(6.dp))
-            DailyGoal.CHOICES.forEach { value ->
-                val selected = value == current
-                Surface(
-                    color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 52.dp)
-                        .padding(vertical = 4.dp)
-                        .clickable { onPick(value) },
-                ) {
-                    Text(
-                        text = stringResource(R.string.profile_goal_option, value),
-                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-                        color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    )
-                }
-            }
-            androidx.compose.foundation.layout.Spacer(Modifier.padding(12.dp))
-        }
-    }
-}
 
 private fun openExternal(context: android.content.Context, url: String): Boolean {
     if (url.isBlank()) return false
@@ -2200,7 +2130,7 @@ private fun BootstrapErrorScreen(errorRes: Int, onRetry: () -> Unit) {
             )
             androidx.compose.foundation.layout.Spacer(Modifier.padding(8.dp))
             OutlinedButton(onClick = onRetry) {
-                Text(stringResource(R.string.action_retry))
+                Text(stringResource(R.string.hsk_course_lesson_flow_retry))
             }
         }
     }

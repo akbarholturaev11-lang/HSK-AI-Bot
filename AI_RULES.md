@@ -13,6 +13,26 @@
 
 ---
 
+## Permanent UI localization ownership
+
+Before adding/editing user-facing fixed copy or introducing a language, follow
+the permanent localization rule in `AGENTS.md` and the authoring/consumer,
+locale-extension and release instructions in
+[`localization/README.md`](localization/README.md). These apply after integration
+into `main` as well. Canonical sources own the text; generated resources and
+legacy inline fallbacks are not authoring sources. Do not bypass validation,
+source/grade/access guards or create per-string runtime translation requests.
+
+## Existing course localization ownership
+
+The project owner delegates UZ/RU/TJ Chinese lesson semantic review,
+self-correction, local-first integration and regression prevention to the
+coding agent. **No mandatory human linguistic approval gate or user-side
+translation checking.** Apply the specific fail-closed QA procedure in
+`localization/AI_CONTENT_QA_POLICY.md`; never confuse structure validation
+with verified semantics. Preserve Chinese source and graded/Pro/auth
+fields, and do not claim a release without applicable CI and functional QA.
+
 ## Scope- and risk-based testing
 
 Select checks by feature and regression risk rather than running every Mini App

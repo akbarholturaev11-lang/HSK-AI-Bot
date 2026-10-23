@@ -1113,6 +1113,7 @@ export class LessonController {
         this.lessonOrder,
         this.eventId,
         this.mistakes,
+        this.level,
       );
       if (!result || result.ok !== true) {
         throw new Error("desktop_course_save_failed");

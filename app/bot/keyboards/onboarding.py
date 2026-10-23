@@ -8,21 +8,24 @@ def language_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="🇹🇯 Тоҷикӣ", callback_data="lang:tj"),
-                InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang:ru"),
-                InlineKeyboardButton(text="🇺🇿 O'zbek", callback_data="lang:uz"),
+                InlineKeyboardButton(
+                    text=t("language_picker_tj", "ru"), callback_data="lang:tj"
+                ),
+                InlineKeyboardButton(
+                    text=t("language_picker_ru", "ru"), callback_data="lang:ru"
+                ),
+                InlineKeyboardButton(
+                    text=t("language_picker_uz_onboarding", "ru"),
+                    callback_data="lang:uz",
+                ),
             ]
         ]
     )
 
 
 def course_mode_entry_keyboard(lang: str) -> InlineKeyboardMarkup:
-    labels = {
-        "uz": ("🚀 Kursni boshlash", "🤖 Oddiy rejim (chatda savol-javob)"),
-        "ru": ("🚀 Начать курс", "🤖 Обычный режим (вопрос-ответ в чате)"),
-        "tj": ("🚀 Оғози курс", "🤖 Реҷаи оддӣ (савол-ҷавоб дар чат)"),
-    }
-    course_label, qa_label = labels.get(lang, labels["ru"])
+    course_label = t("course_mode_entry_course", lang)
+    qa_label = t("course_mode_entry_chat", lang)
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -65,29 +68,27 @@ def level_keyboard(
 
 
 def daily_practice_finish_keyboard(lang: str) -> InlineKeyboardMarkup:
-    labels = {
-        "uz": ("📚 Kursni boshlash", "💬 Bepul savol-javobga o'tish"),
-        "ru": ("📚 Начать курс", "💬 Перейти в бесплатный вопрос-ответ"),
-        "tj": ("📚 Оғози курс", "💬 Ба савол-ҷавоби ройгон гузаштан"),
-    }
-    course_label, qa_label = labels.get(lang, labels["ru"])
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text=course_label, callback_data="daily_practice:course")],
-            [InlineKeyboardButton(text=qa_label, callback_data="mode:free_qa")],
+            [InlineKeyboardButton(
+                text=t("daily_practice_finish_course", lang),
+                callback_data="daily_practice:course",
+            )],
+            [InlineKeyboardButton(
+                text=t("daily_practice_finish_chat", lang),
+                callback_data="mode:free_qa",
+            )],
         ]
     )
 
 
 def daily_practice_check_keyboard(lang: str) -> InlineKeyboardMarkup:
-    labels = {
-        "uz": "✅ Javoblarni ko'rish",
-        "ru": "✅ Посмотреть ответы",
-        "tj": "✅ Дидани ҷавобҳо",
-    }
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="daily_practice:complete")],
+            [InlineKeyboardButton(
+                text=t("daily_practice_check_view_answers", lang),
+                callback_data="daily_practice:complete",
+            )],
         ]
     )
 
@@ -123,16 +124,16 @@ def trial_lesson_selection_keyboard(
         ])
 
     nav = []
-    prev_labels = {"tj": "⬅️ Қабл", "uz": "⬅️ Oldingi", "ru": "⬅️ Назад"}
-    next_labels = {"tj": "Баъд ➡️", "uz": "Keyingi ➡️", "ru": "Далее ➡️"}
     if page > 0:
         nav.append(InlineKeyboardButton(
-            text=prev_labels.get(lang, "⬅️"),
+            text=(t("trial_lesson_previous", lang)
+                  if lang in ("uz", "ru", "tj") else "⬅️"),
             callback_data=f"trial_lesson:page:{page - 1}",
         ))
     if end < len(lessons):
         nav.append(InlineKeyboardButton(
-            text=next_labels.get(lang, "➡️"),
+            text=(t("trial_lesson_next", lang)
+                  if lang in ("uz", "ru", "tj") else "➡️"),
             callback_data=f"trial_lesson:page:{page + 1}",
         ))
     if nav:

@@ -2,6 +2,7 @@
 import asyncio
 import os
 import unittest
+from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 from sqlalchemy import func, select, text
@@ -13,6 +14,8 @@ from app.db.models.user_identity import UserIdentity
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.entitlements.state import EntitlementState, has_full_access, resolve_state
 from app.services.identity_link_service import IdentityLinkError, IdentityLinkService
+from app.repositories.user_repo import UserRepository
+from app.services.subscription_service import SubscriptionService
 from tests.test_native_oauth_api import _settings, _verified
 from tests.native_postgres_deadlines import postgres_timeout
 
@@ -36,6 +39,45 @@ class NativeAccountConcurrencyTests(unittest.IsolatedAsyncioTestCase):
         async with self.admin.begin() as connection:
             await connection.execute(text(f'DROP SCHEMA {self.schema} CASCADE'))
         await self.admin.dispose()
+
+    async def _paid_telegram_user(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            user = User(telegram_id=734881223, full_name="Synthetic paid learner",
+                        language="uz", level="hsk1", status="active", payment_status="approved",
+                        start_date=now - timedelta(days=1), end_date=now + timedelta(days=7))
+            session.add(user)
+            await session.commit()
+            return user.id, user.end_date
+
+    async def test_telegram_renewals_refresh_an_already_loaded_account(self):
+        user_id, initial_end = await self._paid_telegram_user()
+        async with self.sessions() as stale:
+            loaded = await UserRepository(stale).get_by_telegram_id(734881223)
+            async with self.sessions() as concurrent:
+                self.assertTrue(await SubscriptionService(concurrent).activate_plan(734881223, "1_month"))
+                await concurrent.commit()
+            self.assertEqual(loaded.end_date, initial_end)
+            self.assertTrue(await SubscriptionService(stale).activate_plan(734881223, "1_month"))
+            await stale.commit()
+        async with self.sessions() as session:
+            self.assertEqual((await session.get(User, user_id)).end_date,
+                             initial_end + timedelta(days=60))
+
+    async def test_telegram_renewal_cannot_reactivate_a_concurrently_blocked_account(self):
+        user_id, initial_end = await self._paid_telegram_user()
+        async with self.sessions() as stale:
+            loaded = await UserRepository(stale).get_by_telegram_id(734881223)
+            async with self.sessions() as concurrent:
+                user = await concurrent.get(User, user_id)
+                user.status = "blocked"
+                await concurrent.commit()
+            self.assertEqual(loaded.status, "active")
+            self.assertFalse(await SubscriptionService(stale).activate_plan(734881223, "1_month"))
+            await stale.commit()
+        async with self.sessions() as session:
+            user = await session.get(User, user_id)
+            self.assertEqual((user.status, user.end_date), ("blocked", initial_end))
 
     async def test_parallel_first_provider_signups_create_one_account_per_provider(self):
         subjects = {'google': 'concurrent-google-signup', 'apple': 'concurrent-apple-signup'}

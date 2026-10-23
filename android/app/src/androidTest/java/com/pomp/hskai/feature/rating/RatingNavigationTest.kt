@@ -10,6 +10,9 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pomp.hskai.core.design.PompHskAiTheme
@@ -54,6 +57,22 @@ class RatingNavigationTest {
             )
         ),
     )
+
+    @Test fun pullingTheLeaderboardReloadsWithoutSendingAChallenge() {
+        var reads = 0
+        var challenges = 0
+        compose.setContent {
+            PompHskAiTheme {
+                RatingScreen(state = state, onSelectTab = {}, onOpenChallenges = {}, onOpenUser = {},
+                    onInviteFriends = {}, onChallenge = { challenges++ }, onRetry = { reads++ })
+            }
+        }
+        compose.onNodeWithTag("rating-refresh").performTouchInput {
+            swipeDown(startY = height * .05f, endY = height * .85f, durationMillis = 600)
+        }
+        compose.waitUntil(5_000) { reads == 1 }
+        compose.runOnIdle { assertEquals(0, challenges) }
+    }
 
     @Test
     fun bell_opens_the_challenge_inbox() {

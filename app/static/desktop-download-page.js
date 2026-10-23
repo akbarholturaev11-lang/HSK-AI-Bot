@@ -427,6 +427,17 @@
     }
   };
 
+  /* Synchronously hydrated from a local static asset. Original copy is fallback. */
+  var DOWNLOAD_UI=window.HSKAI_COURSE_I18N||{};
+  supportedLanguages.forEach(function(language){
+    var localized=DOWNLOAD_UI[language]||{};
+    Object.keys(COPY[language]).forEach(function(key){
+      if(typeof COPY[language][key]!=="string")return;
+      var value=localized["downloadPage."+key];
+      if(typeof value==="string"&&value)COPY[language][key]=value;
+    });
+  });
+
   var state = {
     language: initialLanguage(),
     platform: initialPlatform(),
@@ -436,6 +447,9 @@
   function initialLanguage() {
     var requested = String(params.get("lang") || "").toLowerCase();
     if (supportedLanguages.indexOf(requested) >= 0) return requested;
+    var remembered = window.HSKSiteLanguage && window.HSKSiteLanguage.get();
+    if (remembered === "tg") remembered = "tj";
+    if (supportedLanguages.indexOf(remembered) >= 0) return remembered;
     var browserLanguage = String(navigator.language || "").toLowerCase();
     if (browserLanguage.indexOf("tj") === 0) return "tj";
     if (browserLanguage.indexOf("uz") === 0) return "uz";
@@ -495,7 +509,18 @@
 
   function applyLanguage() {
     var localized = copy();
-    document.documentElement.lang = state.language;
+    document.documentElement.lang = state.language === "tj" ? "tg" : state.language;
+    var navigationCopy = (window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.desktop_download_page.navigationCopy.copy1",{
+      uz: { courses: "HSK kurslari", features: "Imkoniyatlar", guide: "Qo‘llanma", download: "Yuklab olish", language: "O‘zbekcha" },
+      ru: { courses: "Курсы HSK", features: "Возможности", guide: "Руководство", download: "Скачать", language: "Русский" },
+      tj: { courses: "Курсҳои HSK", features: "Имкониятҳо", guide: "Роҳнамо", download: "Боргирӣ", language: "Тоҷикӣ" }
+    })[state.language];
+    document.querySelectorAll("[data-nav-i18n]").forEach(function (node) {
+      var value = navigationCopy[node.dataset.navI18n];
+      if (value) node.textContent = value;
+    });
+    setText("[data-site-selected-lang]", navigationCopy.language);
+    if (window.HSKSiteLanguage) window.HSKSiteLanguage.set(state.language);
     document.querySelectorAll("[data-i18n]").forEach(function (node) {
       var value = localized[node.dataset.i18n];
       if (typeof value === "string") node.textContent = value;
@@ -506,6 +531,8 @@
         button.dataset.language === state.language ? "true" : "false"
       );
     });
+    var languageMenu = document.querySelector(".site-header .language-switch");
+    if (languageMenu) languageMenu.open = false;
     renderPlatform();
   }
 

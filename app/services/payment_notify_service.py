@@ -1,3 +1,4 @@
+from app.bot.generated.bot_i18n import bot_locale_map
 from aiogram import Bot
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 
@@ -9,42 +10,22 @@ from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.android_payment_push_service import AndroidPaymentPushService
 from app.services.account_identity import actual_telegram_id
 
-HSK30_UNLOCK_APPROVED_TEXT = {
-    "uz": "To'lov qabul qilindi ✅\n\nHSK 3.0 ga to'liq kirish siz uchun ochildi. Quyidagi tugmadan boshlang 👇🏽",
-    "tj": "Пардохт қабул шуд ✅\n\nДастрасии пурра ба HSK 3.0 барои шумо кушода шуд. Аз тугмаи поён оғоз кунед 👇🏽",
-    "ru": "Платёж принят ✅\n\nПолный доступ к HSK 3.0 открыт для вас. Начните с кнопки ниже 👇🏽",
-}
+HSK30_UNLOCK_APPROVED_TEXT = bot_locale_map('inline.services.payment_notify_service.module.copy1')
 
-HSK30_UNLOCK_COURSE_BUTTON = {
-    "uz": "▶️ HSK 3.0 ni boshlash",
-    "tj": "▶️ HSK 3.0-ро оғоз кардан",
-    "ru": "▶️ Начать HSK 3.0",
-}
+HSK30_UNLOCK_COURSE_BUTTON = bot_locale_map('inline.services.payment_notify_service.module.copy2')
 
-COURSE_START_BUTTON = {
-    "uz": "▶️ Darsni boshlash",
-    "tj": "▶️ Оғози дарс",
-    "ru": "▶️ Начать урок",
-}
+COURSE_START_BUTTON = bot_locale_map('inline.services.payment_notify_service.module.copy3')
 
-HSK30_UNLOCK_REJECTED_TEXT = {
-    "uz": "❌ HSK 3.0 ni ochish to'lovi tasdiqlanmadi.",
-    "tj": "❌ Пардохти кушодани HSK 3.0 тасдиқ нашуд.",
-    "ru": "❌ Платёж за открытие HSK 3.0 не подтверждён.",
-}
+HSK30_UNLOCK_REJECTED_TEXT = bot_locale_map('inline.services.payment_notify_service.module.copy4')
 
-HSK30_RETRY_BUTTON = {
-    "uz": "🔄 Qayta urinib ko'rish",
-    "tj": "🔄 Дубора кӯшиш кардан",
-    "ru": "🔄 Попробовать снова",
-}
+HSK30_RETRY_BUTTON = bot_locale_map('inline.services.payment_notify_service.module.copy5')
 
 REASON_TRANSLATIONS = {
-    "wrong_amount":       {"uz": "Summa noto'g'ri",    "tj": "Маблағ нодуруст",     "ru": "Неверная сумма"},
-    "unclear_screenshot": {"uz": "Screenshot noaniq",  "tj": "Скриншот норавшан",   "ru": "Скриншот нечёткий"},
-    "fake_suspected":     {"uz": "Shubhali to'lov",    "tj": "Пардохти шубҳанок",   "ru": "Подозрительный платёж"},
-    "old_payment":        {"uz": "Eski to'lov",        "tj": "Пардохти кӯҳна",      "ru": "Старый платёж"},
-    "other":              {"uz": "Boshqa sabab",        "tj": "Сабаби дигар",        "ru": "Другая причина"},
+    "wrong_amount":       bot_locale_map('inline.services.payment_notify_service.module.copy6'),
+    "unclear_screenshot": bot_locale_map('inline.services.payment_notify_service.module.copy7'),
+    "fake_suspected":     bot_locale_map('inline.services.payment_notify_service.module.copy8'),
+    "old_payment":        bot_locale_map('inline.services.payment_notify_service.module.copy9'),
+    "other":              bot_locale_map('inline.services.payment_notify_service.module.copy10'),
 }
 
 
@@ -155,7 +136,7 @@ class PaymentNotifyService:
             message = HSK30_UNLOCK_REJECTED_TEXT[lang]
             if reason:
                 translated = _translate_reason(reason, lang)
-                prefix = {"uz": "Sabab", "tj": "Сабаб", "ru": "Причина"}.get(lang, "Sabab")
+                prefix = bot_locale_map('inline.services.payment_notify_service.notify_hsk30_unlock_rejected.copy1').get(lang, "Sabab")
                 message += f"\n\n{prefix}: {translated}"
             if self.session is not None and BotBlockStatusService.is_bot_blocked(user):
                 return
@@ -186,7 +167,7 @@ class PaymentNotifyService:
             text = t("user_payment_rejected", lang)
             if reason:
                 translated = _translate_reason(reason, lang)
-                prefix = {"uz": "Sabab", "tj": "Сабаб", "ru": "Причина"}.get(lang, "Sabab")
+                prefix = bot_locale_map('inline.services.payment_notify_service.notify_payment_rejected.copy1').get(lang, "Sabab")
                 text += f"\n\n{prefix}: {translated}"
             mode = "subscription"
             campaign_id = None

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="course_foundation_title">Основы с нуля</string>
+    <string name="course_foundation_subtitle">Услышьте, поймите и соберите 你好</string>
+    <string name="course_foundation_start">Начать</string>
+    <string name="course_foundation_repeat">Повторить</string>
+    <string name="foundation_speak_check">Проверить произношение</string>
+    <string name="foundation_speak_listening">Слушаю…</string>
+    <string name="foundation_speak_checking">Проверяю…</string>
+    <string name="foundation_speak_heard">Я услышал:</string>
+    <string name="foundation_speak_skip">Я СЕЙЧАС НЕ МОГУ ГОВОРИТЬ</string>
+    <string name="foundation_begin">Начать занятие</string>
+    <string name="foundation_start_first_lesson">Перейти к уроку 1</string>
+    <string name="foundation_save_error">Результат не сохранён. Проверьте подключение и повторите попытку.</string>
+    <string name="foundation_save_retry">Повторить сохранение</string>
+    <string name="foundation_required_intro">Пройдите это короткое занятие перед первым уроком HSK 1.</string>
+    <string name="foundation_optional_intro">Короткое вводное занятие для HSK 1.</string>
+    <string name="writer_pause">Пауза</string>
+    <string name="writer_resume">Продолжить</string>
+    <string name="writer_previous_stroke">Предыдущая черта</string>
+    <string name="writer_next_stroke">Следующая черта</string>
+</resources>

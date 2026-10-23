@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "baseline_main_commit": "160a51d69f3324e3162375213ec61b5587b19533",
+  "upstream_main_commit": "66ac3d4e94ead8a3c34d45910ffe60f988bf1cf5",
+  "status": "VERIFIED_MAIN_BLOB_PROVENANCE_ONLY_NOT_ASSESSMENT_CERTIFICATION",
+  "purpose": "Retain historical P0 frozen baseline and authorize only 13 exact byte-for-byte newer main revisions after merge. Never change a source or accepted grading field by translation shortcut.",
+  "files": {
+    "app/static/course_v3_data/hsk1/lesson_01.json": {
+      "baseline_sha1": "a1e071359beda9a9311983055e94c38cb90188c4",
+      "upstream_main_sha1": "887ad0b3cfea37c867d91a7181d6876ee93b8102",
+      "group": "lessons",
+      "reason": "Verified current main authored HSK1 content update. Lesson 01 includes source-language translation and reverse-builder grading tokens; preserve exact main blob, require separate semantic and score regression QA."
+    },
+    "app/static/course_v3_data/hsk1/lesson_02.json": {
+      "baseline_sha1": "32d0093074de71a1822434cfc787dbec39ff553e",
+      "upstream_main_sha1": "68778a08b11f4f5767b2a4e9c09c442b7b8fcf24",
+      "group": "lessons",
+      "reason": "Verified current main authored HSK1 content update. Lesson 01 includes source-language translation and reverse-builder grading tokens; preserve exact main blob, require separate semantic and score regression QA."
+    },
+    "app/static/course_v3_data/hsk1/lesson_03.json": {
+      "baseline_sha1": "2409c0b4a574e8a9b86819018e1219b69d1fc418",
+      "upstream_main_sha1": "7d225f7b702080811a463c604f7347db18dd9bce",
+      "group": "lessons",
+      "reason": "Verified current main authored HSK1 content update. Lesson 01 includes source-language translation and reverse-builder grading tokens; preserve exact main blob, require separate semantic and score regression QA."
+    },
+    "android/app/src/direct/res/values-ru/strings.xml": {
+      "baseline_sha1": "87e763123aec4cc439284970478b3fdd818e5d85",
+      "upstream_main_sha1": "16e17c8e508b7b3a9f76fd780cbd70eb7f1d0f69",
+      "group": "ui_catalog_origins",
+      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
+    },
+    "android/app/src/direct/res/values-tg/strings.xml": {
+      "baseline_sha1": "2ed1b4b9af21ec018009084dd8e737494f681749",
+      "upstream_main_sha1": "211a7b5d15796ab34e9bf0b1f61ab63a82b1bee3",
+      "group": "ui_catalog_origins",
+      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
+    },
+    "android/app/src/direct/res/values/strings.xml": {
+      "baseline_sha1": "b4a634072fd3702a20adca502360b9ea10d1397e",
+      "upstream_main_sha1": "b40d900c0a8944907e70510008cee62fa5f6a398",
+      "group": "ui_catalog_origins",
+      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
+    },
+    "android/app/src/main/res/values-ru/profile_miniapp_parity.xml": {
+      "baseline_sha1": "a693c73e79ee32805e816a18c5de81aed91840cd",
+      "upstream_main_sha1": "e6369002de7a0ccffad3d787c18e49fd039dbb19",
+      "group": "ui_catalog_origins",
+      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
+    },
+    "android/app/src/main/res/values-ru/strings.xml": {
+      "baseline_sha1": "3ea6bde59e80c8dbbee04d0d1b8a34da08e550a2",
+      "upstream_main_sha1": "871e2a7af512b6c86f8139dd50b7c8bfef70edc4",
+      "group": "ui_catalog_origins",
+      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
+    },
+    "android/app/src/main/res/values-tg/profile_miniapp_parity.xml": {
+      "baseline_sha1": "e680b1ae62d7e98e59637baa599d1bbc0061ca07",
+      "upstream_main_sha1": "e2be26df953845cc2c9065205d99618596aea636",
+      "group": "ui_catalog_origins",
+      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
+    },
+    "android/app/src/main/res/values-tg/strings.xml": {
+      "baseline_sha1": "a4d435d7b1b45a26c1f34abdab6cecd1e13fc785",
+      "upstream_main_sha1": "dd299501383e15b8376048ea894cd34eced5ac58",
+      "group": "ui_catalog_origins",
+      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
+    },
+    "android/app/src/main/res/values/profile_miniapp_parity.xml": {
+      "baseline_sha1": "a2b6359737c76ae297c8ee4a94de05d5ef1f0c66",
+      "upstream_main_sha1": "f92d3057951d13800721cabb379fbfa78e6aace1",
+      "group": "ui_catalog_origins",
+      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
+    },
+    "android/app/src/main/res/values/strings.xml": {
+      "baseline_sha1": "efa24ce8e1f0d5c2860abf9df89c130a2d439dc7",
+      "upstream_main_sha1": "1776f6f4203143ade8aa20cce1213f24b8a9feae",
+      "group": "ui_catalog_origins",
+      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
+    },
+    "app/static/admin.html": {
+      "baseline_sha1": "67ca1e578f701ad523344d8599556d790e36a6cb",
+      "upstream_main_sha1": "4cde89f1992c5d495fd6e47df01084149b2e6e24",
+      "group": "ui_catalog_origins",
+      "reason": "Verified exact app/static/admin.html blob at current origin/main 66ac3d4e; includes main's 16cc47cd public-site traffic panel and canonical account-ID display. Main provenance only, not UI/runtime QA certification."
+    }
+  }
+}

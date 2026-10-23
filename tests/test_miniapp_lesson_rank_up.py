@@ -15,7 +15,8 @@ class MiniAppLessonRankUpTests(unittest.TestCase):
             "def _voice_practice_user_id", 1
         )[0]
         self.assertIn("rank_before = int((await gamification.leaderboard(user))", handler)
-        self.assertIn("rank_after = int((await gamification.leaderboard(user))", handler)
+        self.assertIn("updated_rating = await gamification.leaderboard(user)", handler)
+        self.assertIn('rank_after = int(updated_rating.get("rank") or 0)', handler)
         self.assertIn('"rank_before": rank_before', handler)
         self.assertIn('"rank_after": rank_after', handler)
 

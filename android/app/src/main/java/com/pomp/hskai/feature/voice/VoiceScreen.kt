@@ -26,9 +26,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedButton
@@ -54,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
+import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.components.HskGlassSurface
@@ -70,6 +76,7 @@ import com.pomp.hskai.feature.limit.SectionLimitOverlay
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.voiceAssistantContext
+import com.pomp.hskai.feature.feedback.BugReportDialog
 import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
 
 @Composable
@@ -103,6 +110,9 @@ fun VoiceScreen(
     // cancellation before their late response can open a call in the background.
     BackHandler(enabled = state.isStarting && !callActive, onBack = onEndSession)
     val context = LocalContext.current
+    // Snapshot the selected answer and its session; later live turns must not
+    // replace the content the learner chose to report.
+    var reportedAnswer by remember { mutableStateOf<Pair<String, VoiceLine>?>(null) }
     var pendingLiveStart by remember { mutableStateOf<Pair<String, String>?>(null) }
     val endSessionOnExit by rememberUpdatedState(onEndSession)
     val sessionActiveOnExit by rememberUpdatedState(state.hasSession || state.isStarting)
@@ -155,6 +165,7 @@ fun VoiceScreen(
                 onSendText = onSendText,
                 onEndSession = onEndSession,
                 onSwapPartner = onSwapPartner,
+                onReport = { line -> reportedAnswer = state.sessionId.orEmpty() to line },
             )
             else -> VoiceHome(
                 state = state,
@@ -196,6 +207,20 @@ fun VoiceScreen(
             )
         }
       }
+    }
+    reportedAnswer?.let { (sessionId, line) ->
+        BugReportDialog(
+            repository = (context.applicationContext as HskAiApplication).featureRepository,
+            screenshot = null,
+            screen = "ai_voice",
+            initialDescription = context.getString(
+                R.string.assistant_report_prefill,
+                sessionId.take(80),
+                listOf(line.hanzi, line.pinyin, line.text, line.translation, line.correction.orEmpty())
+                    .filter { it.isNotBlank() }.distinct().joinToString("\n").take(350),
+            ),
+            onDismiss = { reportedAnswer = null },
+        )
     }
 }
 
@@ -292,7 +317,7 @@ private fun VoiceBox(
     val boxInk = if (PompColors.IsDark) PompColors.Ink else PompColors.Paper
     val boxMuted = if (PompColors.IsDark) PompColors.InkSecondary else Color.White.copy(alpha = 0.72f)
     val quotaText = when {
-        state.isLoading -> stringResource(R.string.state_loading)
+        state.isLoading -> stringResource(R.string.hsk_common_state_loading)
         state.status == null -> stringResource(R.string.error_voice_unavailable)
         state.status?.isPaid == true -> stringResource(R.string.voice_limit_premium)
         else -> stringResource(
@@ -313,7 +338,7 @@ private fun VoiceBox(
             CoursePandaMascot(mood = PandaMood.Talk, modifier = Modifier.size(90.dp))
             Spacer(Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.voice_box_title),
+                text = stringResource(R.string.hsk_course_voice_title),
                 style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
                 fontWeight = FontWeight.Medium,
                 color = boxInk,
@@ -335,7 +360,7 @@ private fun VoiceBox(
             )
             Spacer(Modifier.height(16.dp))
             HskPrimaryButton(
-                text = stringResource(R.string.voice_start),
+                text = stringResource(R.string.hsk_course_voice_start),
                 onClick = onStart,
                 enabled = canStartVoice(state),
                 loading = state.isStarting,
@@ -400,7 +425,7 @@ internal fun PartnerPicker(
     ) {
         Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
             Text(
-                text = stringResource(R.string.voice_partner),
+                text = stringResource(R.string.hsk_course_voice_page_opt_persona),
                 style = MaterialTheme.typography.titleMedium,
                 color = PompColors.Ink,
             )
@@ -458,7 +483,7 @@ internal fun partnerTitleRes(role: String): Int =
     VOICE_PARTNERS.firstOrNull { it.id == role }?.titleRes ?: R.string.voice_session_title
 
 @Composable
-internal fun VoiceBubble(line: VoiceLine, subtitlesOn: Boolean = true) {
+internal fun VoiceBubble(line: VoiceLine, subtitlesOn: Boolean = true, onReport: (() -> Unit)? = null) {
     val isUser = line.speaker == VoiceSpeaker.USER
     if (isUser) {
         Surface(
@@ -475,19 +500,23 @@ internal fun VoiceBubble(line: VoiceLine, subtitlesOn: Boolean = true) {
             shape = RoundedCornerShape(18.dp),
             shadowElevation = 5.dp,
         ) {
-            VoiceBubbleBody(line = line, isUser = false, subtitlesOn = subtitlesOn)
+            VoiceBubbleBody(line = line, isUser = false, subtitlesOn = subtitlesOn, onReport = onReport)
         }
     }
 }
 
 @Composable
-private fun VoiceBubbleBody(line: VoiceLine, isUser: Boolean, subtitlesOn: Boolean) {
+private fun VoiceBubbleBody(line: VoiceLine, isUser: Boolean, subtitlesOn: Boolean, onReport: (() -> Unit)? = null) {
     Column(Modifier.padding(16.dp)) {
-        Text(
-            text = if (isUser) stringResource(R.string.voice_you) else stringResource(R.string.voice_ai),
-            style = MaterialTheme.typography.labelLarge,
-            color = if (isUser) PompColors.CinnabarDark else PompColors.Jade,
-        )
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = if (isUser) stringResource(R.string.hsk_course_you) else stringResource(R.string.voice_ai),
+                style = MaterialTheme.typography.labelLarge,
+                color = if (isUser) PompColors.CinnabarDark else PompColors.Jade,
+                modifier = Modifier.weight(1f),
+            )
+            if (!isUser && onReport != null) VoiceAnswerReportAction(line, onReport)
+        }
         if (line.hanzi.isNotBlank()) {
             Text(
                 text = line.hanzi,
@@ -518,6 +547,27 @@ private fun VoiceBubbleBody(line: VoiceLine, isUser: Boolean, subtitlesOn: Boole
                 style = MaterialTheme.typography.bodyMedium,
                 color = PompColors.Flame,
                 fontWeight = FontWeight.SemiBold,
+            )
+        }
+    }
+}
+
+@Composable
+private fun VoiceAnswerReportAction(line: VoiceLine, onReport: () -> Unit) {
+    var expanded by remember(line) { mutableStateOf(false) }
+    Box {
+        IconButton(onClick = { expanded = true }, modifier = Modifier.size(48.dp)) {
+            Icon(
+                Icons.Default.MoreHoriz,
+                contentDescription = stringResource(R.string.assistant_more_actions),
+                tint = PompColors.InkSecondary,
+            )
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.assistant_report_answer)) },
+                leadingIcon = { Icon(Icons.Default.Flag, contentDescription = null) },
+                onClick = { expanded = false; onReport() },
             )
         }
     }

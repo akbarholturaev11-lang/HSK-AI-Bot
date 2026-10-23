@@ -4,48 +4,28 @@ from typing import Optional
 
 from aiogram.types import Message
 
+from app.bot.utils.i18n import t
 
 _DEFAULT_STEP_DELAY_SECONDS = 2.7
 _WAVE_INTERVAL_SECONDS = 0.9
 _LAST_STATE_DELAY_MULTIPLIER = 2.5
 _WAVE_FRAMES = ("", "~", "~~", "~~~", "~~", "~")
 
-_STATE_POOLS: dict[str, dict[str, tuple[str, ...]]] = {
-    "qa": {
-        "uz": ("Analiz qilyapman...", "Javob tayyorlayapman...", "Tekshiryapman...", "O'ylayapman..."),
-        "ru": ("Анализирую...", "Готовлю ответ...", "Проверяю...", "Думаю..."),
-        "tj": ("Таҳлил карда истодаам...", "Ҷавоб тайёр мекунам...", "Месанҷам...", "Фикр карда истодаам..."),
-    },
-    "course": {
-        "uz": ("Darsni tahlil qilyapman...", "Javob tayyorlayapman...", "Tekshiryapman...", "O'ylayapman..."),
-        "ru": ("Анализирую урок...", "Готовлю ответ...", "Проверяю...", "Думаю..."),
-        "tj": ("Дарсро таҳлил карда истодаам...", "Ҷавоб тайёр мекунам...", "Месанҷам...", "Фикр карда истодаам..."),
-    },
-    "image": {
-        "uz": ("Rasmni tahlil qilyapman...", "Matnni tekshiryapman...", "Javob tayyorlayapman...", "O'ylayapman..."),
-        "ru": ("Анализирую фото...", "Проверяю текст...", "Готовлю ответ...", "Думаю..."),
-        "tj": ("Суратро таҳлил карда истодаам...", "Матнро месанҷам...", "Ҷавоб тайёр мекунам...", "Фикр карда истодаам..."),
-    },
-    "voice": {
-        "uz": ("Ovozni eshityapman...", "Matnga aylantiryapman...", "Ma'nosini tekshiryapman...", "Javob tayyorlayapman..."),
-        "ru": ("Слушаю голос...", "Перевожу в текст...", "Проверяю смысл...", "Готовлю ответ..."),
-        "tj": ("Овозро мешунавам...", "Ба матн мегузаронам...", "Маъниро месанҷам...", "Ҷавоб тайёр мекунам..."),
-    },
-    "translate": {
-        "uz": ("Ovozni eshityapman...", "Matnga aylantiryapman...", "Tarjima qilyapman...", "Tekshiryapman..."),
-        "ru": ("Слушаю голос...", "Перевожу в текст...", "Перевожу...", "Проверяю..."),
-        "tj": ("Овозро мешунавам...", "Ба матн мегузаронам...", "Тарҷума мекунам...", "Месанҷам..."),
-    },
+_STATE_KEYS = {
+    "qa": ("analyze", "prepare", "check", "think"),
+    "course": ("analyzeLesson", "prepare", "check", "think"),
+    "image": ("analyzeImage", "checkText", "prepare", "think"),
+    "voice": ("listen", "transcribe", "checkMeaning", "prepare"),
+    "translate": ("listen", "transcribe", "translate", "check"),
 }
 
 
 def _select_states(mode: str, seed: int | None, lang: str = "uz") -> tuple[str, ...]:
     del seed
-    mode_states = _STATE_POOLS.get(mode) or _STATE_POOLS["qa"]
-    states = mode_states.get(lang) or mode_states.get("uz") or _STATE_POOLS["qa"]["uz"]
-    if not states:
-        return _STATE_POOLS["qa"]["uz"]
-    return states
+    keys = _STATE_KEYS.get(mode) or _STATE_KEYS["qa"]
+    # Preserve this animation's existing Uzbek fallback for unknown locales.
+    locale = lang if lang in ("uz", "ru", "tj") else "uz"
+    return tuple(t("bot.responseEffect." + key, locale) for key in keys)
 
 
 def _render_state(text: str, wave_index: int) -> str:

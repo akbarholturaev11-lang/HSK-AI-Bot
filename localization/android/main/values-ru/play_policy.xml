@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- New policy UI copy, owned by localization/android; older P3 strings remain frozen. -->
+    <string name="hsk30_play_access_title">HSK 3.0</string>
+    <string name="hsk30_play_unavailable">HSK 3.0 пока недоступен. Продолжайте обучение в HSK 2.0.</string>
+    <string name="hsk30_play_access_status">В этой версии HSK 3.0 доступен только с уже предоставленным доступом к вашему аккаунту. Если доступ у вас есть, обновите статус аккаунта в профиле.</string>
+    <string name="assistant_more_actions">Другие действия</string>
+    <string name="assistant_report_answer">Пожаловаться на ответ ИИ</string>
+    <string name="assistant_report_prefill">Жалоба на ответ ИИ (сообщение: %1$s)
+Ответ: %2$s
+Причина: </string>
+</resources>

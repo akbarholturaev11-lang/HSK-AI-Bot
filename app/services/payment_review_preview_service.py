@@ -6,10 +6,11 @@ additional access. A pending receipt is NOT revenue or an approved payment.
 """
 from sqlalchemy import select
 
+from app.db.models.ai_usage import AIUsageBudget
 from app.db.models.user import User
 from app.repositories.payment_repo import PaymentRepository
 from app.services.account_identity import account_user_id
-from app.services.ai_usage_budget_service import AIUsageBudgetService
+from app.services.ai_usage_budget_service import AIUsageBudgetService, PAYMENT_PREVIEW_PLAN_TYPE
 from app.services.subscription_service import PLAN_DURATIONS
 
 
@@ -53,6 +54,19 @@ class PaymentReviewPreviewService:
         )
         locked = result.scalar_one_or_none()
         if not self._eligible(locked, payment) or not getattr(locked, "payment_preview_available", True):
+            return False
+        # A different approved subscription can replenish the opportunity while
+        # this old receipt is still pending. Resubmitting that immutable receipt
+        # must neither spend the new ticket nor mint another capped budget.
+        if getattr(locked, "payment_preview_payment_id", None) == payment.id:
+            return False
+        previous = await self.session.execute(
+            select(AIUsageBudget.id).where(
+                AIUsageBudget.payment_id == int(payment.id),
+                AIUsageBudget.plan_type == PAYMENT_PREVIEW_PLAN_TYPE,
+            ).limit(1)
+        )
+        if previous.scalar_one_or_none() is not None:
             return False
         locked.payment_preview_available = False
         locked.payment_preview_payment_id = int(payment.id)

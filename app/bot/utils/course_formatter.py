@@ -1,3 +1,4 @@
+from app.bot.utils.i18n import bot_locale_map
 import json
 from typing import Any
 
@@ -33,7 +34,7 @@ def _uz_fallback(lang: str, value: Any) -> Any:
 
 
 def _lesson_word(lang: str) -> str:
-    return {"uz": "Dars", "ru": "Урок", "tj": "Дарс"}.get(lang, "Урок")
+    return bot_locale_map('inline.utils.course_formatter.helper_lesson_word.copy1').get(lang, "Урок")
 
 
 def _lesson_blocks(lesson) -> list[dict]:
@@ -89,11 +90,7 @@ def _block_grammar_items(lesson, block: dict) -> list[dict]:
 
 
 def _block_label(lang: str, n: int, total: int) -> str:
-    labels = {
-        "uz": "Qism",
-        "ru": "Часть",
-        "tj": "Қисм",
-    }
+    labels = bot_locale_map('inline.utils.course_formatter.helper_block_label.copy1')
     return f"{labels.get(lang, labels['ru'])} {n}/{max(total, n)}"
 
 
@@ -134,12 +131,12 @@ _NUMS = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️
 
 
 _GRAMMAR_DETAIL_LABELS = {
-    "meaning": {"uz": "Ma'nosi", "ru": "Значение", "tj": "Маъно"},
-    "use": {"uz": "Qachon ishlatiladi", "ru": "Когда использовать", "tj": "Кай истифода мешавад"},
-    "pattern": {"uz": "Qolip", "ru": "Шаблон", "tj": "Қолаб"},
-    "example": {"uz": "Dialogdan misol", "ru": "Пример из диалога", "tj": "Мисол аз муколама"},
-    "analysis": {"uz": "Tahlil", "ru": "Разбор", "tj": "Таҳлил"},
-    "attention": {"uz": "E'tibor", "ru": "Важно", "tj": "Муҳим"},
+    "meaning": bot_locale_map('inline.utils.course_formatter.module.copy1'),
+    "use": bot_locale_map('inline.utils.course_formatter.module.copy2'),
+    "pattern": bot_locale_map('inline.utils.course_formatter.module.copy3'),
+    "example": bot_locale_map('inline.utils.course_formatter.module.copy4'),
+    "analysis": bot_locale_map('inline.utils.course_formatter.module.copy5'),
+    "attention": bot_locale_map('inline.utils.course_formatter.module.copy6'),
 }
 
 
@@ -194,41 +191,13 @@ def _grammar_examples(item: dict) -> list[dict]:
 def _hsk4_grammar_analysis(title_zh: str, lang: str) -> str:
     title = (title_zh or "").replace(" ", "")
     texts = {
-        "emphasis": {
-            "uz": "Gapda kutilganidan kuchliroq holat ta'kidlanadi; odatda 都/也 natijani kuchaytiradi.",
-            "ru": "В предложении подчеркивается более сильный или неожиданный случай; 都/也 обычно усиливает результат.",
-            "tj": "Дар ҷумла ҳолати қавитар ё ғайричашмдошт таъкид мешавад; 都/也 натиҷаро қавитар мекунад.",
-        },
-        "condition": {
-            "uz": "Birinchi qism shart yoki vaziyatni beradi, ikkinchi qism esa shu shartdagi natijani ko'rsatadi.",
-            "ru": "Первая часть задает условие или ситуацию, вторая показывает результат при этом условии.",
-            "tj": "Қисми аввал шарт ё вазъиятро медиҳад, қисми дуюм натиҷаи онро нишон медиҳад.",
-        },
-        "contrast": {
-            "uz": "Oldingi fikrdan keyin qarama-qarshi yoki kutilmagan natija keladi; tarjimada 'ammo/lekin' ohangi kuchli.",
-            "ru": "После первой мысли идет противоположный или неожиданный результат; смысл близок к 'однако/но'.",
-            "tj": "Баъди фикри аввал натиҷаи муқобил ё ғайричашмдошт меояд; маънояш ба 'аммо/вале' наздик аст.",
-        },
-        "sequence": {
-            "uz": "Bu qolip gapdagi fikrlarni tartiblaydi: qo'shimcha ma'lumot, davomiy qadam yoki parallel holat qo'shadi.",
-            "ru": "Этот шаблон упорядочивает мысль: добавляет информацию, следующий шаг или параллельное действие.",
-            "tj": "Ин қолаб фикрро тартиб медиҳад: маълумоти иловагӣ, қадами баъдӣ ё ҳолати ҳамзамон меорад.",
-        },
-        "topic": {
-            "uz": "Qolip mavzu, soha yoki baholash nuqtasini oldinga chiqaradi; undan keyin asosiy fikr aytiladi.",
-            "ru": "Шаблон выносит тему, сферу или точку оценки вперед; затем идет основная мысль.",
-            "tj": "Қолаб мавзу, соҳа ё нуқтаи баҳоро пеш меорад; баъд фикри асосӣ гуфта мешавад.",
-        },
-        "complement": {
-            "uz": "Bu yerda ma'no faqat fe'lda emas, fe'ldan keyingi qo'shimcha qismda ham turibdi; natija/yo'nalish/holatni tekshiring.",
-            "ru": "Смысл не только в глаголе, но и в части после него; проверьте результат, направление или состояние.",
-            "tj": "Маъно танҳо дар феъл нест, балки дар қисми баъди феъл ҳам ҳаст; натиҷа, самт ё ҳолатро санҷед.",
-        },
-        "generic": {
-            "uz": "Avval gapdagi mantiqiy munosabatni toping, keyin xitoycha qolipni shu joyga qo'ying.",
-            "ru": "Сначала найдите логическую связь в предложении, затем поставьте китайский шаблон в это место.",
-            "tj": "Аввал робитаи мантиқии ҷумларо ёбед, баъд қолаби чиниро ба ҳамон ҷо гузоред.",
-        },
+        "emphasis": bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy1'),
+        "condition": bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy2'),
+        "contrast": bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy3'),
+        "sequence": bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy4'),
+        "topic": bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy5'),
+        "complement": bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy6'),
+        "generic": bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy7'),
     }
 
     if any(marker in title for marker in ("连", "甚至", "都/也")):
@@ -252,56 +221,16 @@ def _hsk4_grammar_analysis(title_zh: str, lang: str) -> str:
 def _hsk4_grammar_tip(title_zh: str, lang: str) -> str:
     title = (title_zh or "").replace(" ", "")
     tips = [
-        (("不仅", "不但"), {
-            "uz": "Ikkinchi qismda odatda 也/还/而且 keladi; ikki tomonni ham ijobiy kuchaytiradi.",
-            "ru": "Во второй части обычно стоит 也/还/而且; конструкция усиливает оба положительных признака.",
-            "tj": "Дар қисми дуюм одатан 也/还/而且 меояд; ду хусусияти мусбатро қавитар мекунад.",
-        }),
-        (("从来",), {
-            "uz": "Inkor ma'nosida ko'pincha 没/不 bilan ishlaydi: 从来没... = hech qachon ...magan.",
-            "ru": "В отрицании обычно идет с 没/不: 从来没... = никогда не....",
-            "tj": "Дар маънои инкор одатан бо 没/不 меояд: 从来没... = ҳеч вақт ... накардааст.",
-        }),
-        (("刚",), {
-            "uz": "刚 fe'ldan oldin keladi va 'hozirgina/yangi' ma'nosini beradi; uzoq o'tmish uchun ishlatmang.",
-            "ru": "刚 ставится перед глаголом и значит 'только что/недавно'; не используйте для далекого прошлого.",
-            "tj": "刚 пеш аз феъл меояд ва маънои 'нав/ҳозир' медиҳад; барои гузаштаи дур истифода накунед.",
-        }),
-        (("即使", "尽管", "无论", "不管", "再"), {
-            "uz": "Natija qismida ko'pincha 也/都/还 keladi; shu so'z natija o'zgarmasligini ko'rsatadi.",
-            "ru": "В части результата часто стоит 也/都/还; оно показывает, что результат не меняется.",
-            "tj": "Дар қисми натиҷа одатан 也/都/还 меояд; он тағйир наёфтани натиҷаро нишон медиҳад.",
-        }),
-        (("否则",), {
-            "uz": "Avval maslahat/shart keladi, keyin 否则 bilan yomon yoki kutilmagan natija aytiladi.",
-            "ru": "Сначала идет совет или условие, затем через 否则 называется нежелательный результат.",
-            "tj": "Аввал маслиҳат ё шарт меояд, баъд бо 否则 натиҷаи номатлуб гуфта мешавад.",
-        }),
-        (("然而", "却", "相反", "不过"), {
-            "uz": "Bular oddiy 'va' emas; oldingi fikrga burilish yoki qarama-qarshi natija qo'shadi.",
-            "ru": "Это не простое 'и'; слова дают поворот мысли или противоположный результат.",
-            "tj": "Инҳо 'ва'-и одӣ нестанд; гардиши фикр ё натиҷаи муқобил меоранд.",
-        }),
-        (("并且", "同时", "另外", "除此以外"), {
-            "uz": "Ikkinchi fikr birinchisini davom ettiradi yoki qo'shimcha qiladi; qarama-qarshilik ma'nosi yo'q.",
-            "ru": "Вторая мысль продолжает или дополняет первую; противопоставления здесь нет.",
-            "tj": "Фикри дуюм аввалиро идома ё пурра мекунад; маънои муқобил нест.",
-        }),
-        (("对于", "在于", "说起"), {
-            "uz": "Bu qolipdan keyin mavzu keladi; asosiy hukm yoki baho keyingi qismda aytiladi.",
-            "ru": "После шаблона идет тема; главное суждение или оценка дается дальше.",
-            "tj": "Баъди қолаб мавзу меояд; ҳукм ё баҳои асосӣ дар қисми баъдӣ гуфта мешавад.",
-        }),
-        (("是否",), {
-            "uz": "是否 yozma va rasmiyroq uslub; og'zaki nutqda ko'pincha 是不是 ishlatiladi.",
-            "ru": "是否 более письменное и официальное; в разговоре чаще используют 是不是.",
-            "tj": "是否 бештар хаттӣ ва расмӣ аст; дар гуфтор бештар 是不是 истифода мешавад.",
-        }),
-        (("把",), {
-            "uz": "把 dan keyingi obyektga nima bo'lganini fe'l va natija qismi bilan aniq ko'rsating.",
-            "ru": "После 把 нужно ясно показать, что произошло с объектом, через глагол и результат.",
-            "tj": "Баъди 把 бояд бо феъл ва натиҷа нишон диҳед, ки бо объект чӣ шуд.",
-        }),
+        (("不仅", "不但"), bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_tip.copy1')),
+        (("从来",), bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_tip.copy2')),
+        (("刚",), bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_tip.copy3')),
+        (("即使", "尽管", "无论", "不管", "再"), bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_tip.copy4')),
+        (("否则",), bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_tip.copy5')),
+        (("然而", "却", "相反", "不过"), bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_tip.copy6')),
+        (("并且", "同时", "另外", "除此以外"), bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_tip.copy7')),
+        (("对于", "在于", "说起"), bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_tip.copy8')),
+        (("是否",), bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_tip.copy9')),
+        (("把",), bot_locale_map('inline.utils.course_formatter.helper_hsk4_grammar_tip.copy10')),
     ]
     for markers, localized in tips:
         if any(marker in title for marker in markers):
@@ -322,7 +251,7 @@ def _append_basic_grammar_item(lines: list[str], item: dict, lang: str, index: i
 
     examples = _grammar_examples(item)
     if examples:
-        eg_label = {"uz": "💬 Misollar:", "tj": "💬 Мисолҳо:", "ru": "💬 Примеры:"}
+        eg_label = bot_locale_map('inline.utils.course_formatter.helper_append_basic_grammar_item.copy1')
         lines.append("")
         lines.append(f"   {eg_label.get(lang, eg_label['ru'])}")
         for ex in examples[:3]:
@@ -388,14 +317,10 @@ def format_vocab(lesson, lang: str, lesson_total_steps: int = 6) -> str:
     vocab = _parse(lesson.vocabulary_json, [])
     title = _parse_title(lesson.title or "")
 
-    label = {"uz": "Yangi so'zlar 🇨🇳", "tj": "Калимаҳои нав 🇨🇳", "ru": "Новые слова 🇨🇳"}
+    label = bot_locale_map('inline.utils.course_formatter.format_vocab.copy1')
     lines = [f"【1/{lesson_total_steps}】 {title} · {label.get(lang, label['ru'])}", ""]
 
-    hint = {
-        "uz": f"✨ Bugun {len(vocab)} ta so'z — darsni tugatgach ishlatishni bilasiz!",
-        "tj": f"✨ Имрӯз {len(vocab)} калима — пас аз дарс истифода карда метавонед!",
-        "ru": f"✨ Сегодня {len(vocab)} слов — после урока сможете их использовать!",
-    }
+    hint = bot_locale_map('inline.utils.course_formatter.format_vocab.dynamic1', value1=len(vocab))
     lines.append(hint.get(lang, hint["ru"]))
     lines.append("")
 
@@ -436,7 +361,7 @@ def format_dialogue(lesson, lang: str, lesson_total_steps: int = 6) -> str:
     dialogues = _parse(lesson.dialogue_json, [])
     title = _parse_title(lesson.title or "")
 
-    step_label = {"uz": "Jonli dialog 🎭", "tj": "Муколамаи зинда 🎭", "ru": "Живой диалог 🎭"}
+    step_label = bot_locale_map('inline.utils.course_formatter.format_dialogue.copy1')
     lines = [f"【2/{lesson_total_steps}】 {title} · {step_label.get(lang, step_label['ru'])}", ""]
 
     for block in dialogues:
@@ -488,7 +413,7 @@ def format_dialogue(lesson, lang: str, lesson_total_steps: int = 6) -> str:
         notes = block.get("notes", [])
         if notes:
             lines.append("")
-            tip = {"uz": "💡 Bilasizmi?", "tj": "💡 Медонед?", "ru": "💡 Знаете ли вы?"}
+            tip = bot_locale_map('inline.utils.course_formatter.format_dialogue.copy2')
             lines.append(tip.get(lang, tip["ru"]))
             for note in notes:
                 note_text = note.get(lang) or _uz_fallback(lang, note.get("uz")) or ""
@@ -506,22 +431,14 @@ def format_exercise(lesson, lang: str, lesson_total_steps: int = 6) -> str:
     exercises = _parse(lesson.exercise_json, [])
     title = _parse_title(lesson.title or "")
 
-    step_label = {"uz": "Test vaqti! 🧠", "tj": "Вақти санҷиш! 🧠", "ru": "Время теста! 🧠"}
+    step_label = bot_locale_map('inline.utils.course_formatter.format_exercise.copy1')
     lines = [f"【5/{lesson_total_steps}】 {title} · {step_label.get(lang, step_label['ru'])}", ""]
 
-    hint = {
-        "uz": "Siz tayyor deb o'ylaymiz... Isbotlang! 😄",
-        "tj": "Мо фикр мекунем шумо омодаед... Исбот кунед! 😄",
-        "ru": "Думаем, вы готовы... Докажите! 😄",
-    }
+    hint = bot_locale_map('inline.utils.course_formatter.format_exercise.copy2')
     lines.append(hint.get(lang, hint["ru"]))
     lines.append("")
 
-    answer_hint = {
-        "uz": "Javobingizni yozing ⬇️",
-        "tj": "Посухатонро нависед ⬇️",
-        "ru": "Напишите ответ ⬇️",
-    }
+    answer_hint = bot_locale_map('inline.utils.course_formatter.format_exercise.copy3')
 
     for ex in exercises:
         if not isinstance(ex, dict):
@@ -593,16 +510,8 @@ def format_vocab_1(lesson, lang: str) -> str:
     page  = vocab[:8]
     title = _parse_title(lesson.title or "")
 
-    hdr = {
-        "uz": "📖 Yangi so'zlar 🇨🇳",
-        "tj": "📖 Калимаҳои нав 🇨🇳",
-        "ru": "📖 Новые слова 🇨🇳",
-    }
-    hint_tpl = {
-        "uz": "✨ Bugun <b>{}</b> ta yangi so'z — darsni tugatgach amalda ishlata olasiz!",
-        "tj": "✨ Имрӯз <b>{}</b> калимаи нав — пас аз дарс онҳоро истифода карда метавонед!",
-        "ru": "✨ Сегодня <b>{}</b> новых слов — после урока сможете их использовать!",
-    }
+    hdr = bot_locale_map('inline.utils.course_formatter.format_vocab_1.copy1')
+    hint_tpl = bot_locale_map('inline.utils.course_formatter.format_vocab_1.copy2')
 
     lines = [
         f"<b>【{_lesson_word(lang)} {lesson.lesson_order}】 {title}</b>",
@@ -626,11 +535,7 @@ def format_vocab_2(lesson, lang: str) -> str:
         return ""
     title = _parse_title(lesson.title or "")
 
-    hdr = {
-        "uz": "📖 Yangi so'zlar — davomi 🇨🇳",
-        "tj": "📖 Калимаҳои нав — давом 🇨🇳",
-        "ru": "📖 Новые слова — продолжение 🇨🇳",
-    }
+    hdr = bot_locale_map('inline.utils.course_formatter.format_vocab_2.copy1')
 
     lines = [
         f"<b>【{_lesson_word(lang)} {lesson.lesson_order}】 {title}</b>",
@@ -657,16 +562,8 @@ def format_block_vocab(lesson, lang: str, n: int) -> str:
     scene = block.get(f"scene_{lang}") or block.get("scene_label_zh") or ""
     header = " · ".join(filter(None, [section, scene]))
 
-    hdr = {
-        "uz": "📖 Shu dialogdagi yangi so'zlar",
-        "tj": "📖 Калимаҳои нави ҳамин муколама",
-        "ru": "📖 Новые слова этого диалога",
-    }
-    hint_tpl = {
-        "uz": "Avval <b>{}</b> ta so'zni yengil olamiz, keyin dialogga o'tamiz.",
-        "tj": "Аввал <b>{}</b> калимаро сабук мегирем, баъд ба муколама мегузарем.",
-        "ru": "Сначала спокойно берём <b>{}</b> слова, затем переходим к диалогу.",
-    }
+    hdr = bot_locale_map('inline.utils.course_formatter.format_block_vocab.copy1')
+    hint_tpl = bot_locale_map('inline.utils.course_formatter.format_block_vocab.copy2')
 
     lines = [
         f"<b>【{_lesson_word(lang)} {lesson.lesson_order} · {_block_label(lang, n, total)}】 {title}</b>",
@@ -690,21 +587,9 @@ def format_block_quiz(lesson, lang: str, n: int) -> str:
     total = len(_lesson_blocks(lesson))
     questions = block.get("mini_quiz") or []
 
-    hdr = {
-        "uz": "📝 Kichik test",
-        "tj": "📝 Тести хурд",
-        "ru": "📝 Мини-тест",
-    }
-    intro = {
-        "uz": "Quizdan o'ting: qani, shu qismdagi yangi so'zlar va grammatikadan nimani eslab qoldingiz?",
-        "tj": "Quiz-ро гузаред: бинем, аз калимаҳои нав ва грамматикаи ҳамин қисм чӣ дар хотир монд?",
-        "ru": "Пройдите quiz: посмотрим, что осталось в памяти по новым словам и грамматике этой части.",
-    }
-    answer_hint = {
-        "uz": "Mini App ochilmasa, javoblarni shu yerga yozishingiz mumkin.",
-        "tj": "Агар Mini App кушода нашавад, ҷавобҳоро ҳамин ҷо нависед.",
-        "ru": "Если Mini App не откроется, можно написать ответы здесь.",
-    }
+    hdr = bot_locale_map('inline.utils.course_formatter.format_block_quiz.copy1')
+    intro = bot_locale_map('inline.utils.course_formatter.format_block_quiz.copy2')
+    answer_hint = bot_locale_map('inline.utils.course_formatter.format_block_quiz.copy3')
 
     lines = [
         f"<b>【{_lesson_word(lang)} {lesson.lesson_order} · {_block_label(lang, n, total)}】 {title}</b>",
@@ -751,11 +636,7 @@ def format_block_grammar(lesson, lang: str, n: int) -> str:
     if not grammar_notes and not grammar_items:
         return ""
 
-    hdr = {
-        "uz": "📐 Shu dialog grammatikasi",
-        "tj": "📐 Грамматикаи ҳамин муколама",
-        "ru": "📐 Грамматика этого диалога",
-    }
+    hdr = bot_locale_map('inline.utils.course_formatter.format_block_grammar.copy1')
 
     lines = [
         f"<b>【{_lesson_word(lang)} {lesson.lesson_order} · {_block_label(lang, n, total)}】 {title}</b>",
@@ -824,16 +705,8 @@ def format_dialogue_n(lesson, lang: str, n: int) -> str:
     )
     header  = " · ".join(filter(None, [section, scene]))
 
-    dlg_hdr = {
-        "uz": "🎭 Dialog",
-        "tj": "🎭 Муколама",
-        "ru": "🎭 Диалог",
-    }
-    text_hdr = {
-        "uz": "📘 Matn",
-        "tj": "📘 Матн",
-        "ru": "📘 Текст",
-    }
+    dlg_hdr = bot_locale_map('inline.utils.course_formatter.format_dialogue_n.copy1')
+    text_hdr = bot_locale_map('inline.utils.course_formatter.format_dialogue_n.copy2')
     is_text_block = _is_narration_block(block)
 
     total = len(_lesson_blocks(lesson))
@@ -880,11 +753,7 @@ def format_dialogue_n(lesson, lang: str, n: int) -> str:
     )
     grammar_notes = block.get("grammar_notes", []) if show_inline_grammar else []
     if grammar_notes:
-        gram_hdr = {
-            "uz": "📐 Grammatika eslatmasi",
-            "tj": "📐 Эзоҳи грамматикӣ",
-            "ru": "📐 Грамматическая заметка",
-        }
+        gram_hdr = bot_locale_map('inline.utils.course_formatter.format_dialogue_n.copy3')
         lines.append("")
         lines.append(f"<b>{gram_hdr.get(lang, gram_hdr['ru'])}</b>")
         lines.append("")
@@ -926,11 +795,7 @@ def format_grammar_v2(lesson, lang: str) -> str:
         return ""
 
     title = _parse_title(lesson.title or "")
-    hdr = {
-        "uz": "📐 Grammatika",
-        "tj": "📐 Грамматика",
-        "ru": "📐 Грамматика",
-    }
+    hdr = bot_locale_map('inline.utils.course_formatter.format_grammar_v2.copy1')
 
     lines = [
         f"<b>【{title}】</b>",
@@ -952,16 +817,8 @@ def format_grammar_v2(lesson, lang: str) -> str:
 
 def format_satisfaction_check(lesson, lang: str) -> str:
     title = _parse_title(lesson.title or "")
-    labels = {
-        "uz": "Dars yakuni",
-        "tj": "Анҷоми дарс",
-        "ru": "Итог урока",
-    }
-    questions = {
-        "uz": "Darsdagi so'zlar, dialoglar va test tushunarli bo'ldimi?",
-        "tj": "Калимаҳо, муколамаҳо ва санҷиши дарс фаҳмо буданд?",
-        "ru": "Слова, диалоги и тест урока были понятны?",
-    }
+    labels = bot_locale_map('inline.utils.course_formatter.format_satisfaction_check.copy1')
+    questions = bot_locale_map('inline.utils.course_formatter.format_satisfaction_check.copy2')
     return "\n".join(
         [
             f"<b>【{title}】</b>",
@@ -999,14 +856,10 @@ def format_review(lesson, lang: str) -> str:
         ]
         review_title = title
 
-    hdr = {
-        "uz": "🔁 Qisqa takrorlash",
-        "tj": "🔁 Такрори кӯтоҳ",
-        "ru": "🔁 Краткое повторение",
-    }
-    vocab_hdr = {"uz": "Asosiy so'zlar:", "tj": "Калимаҳои асосӣ:", "ru": "Ключевые слова:"}
-    dialog_hdr = {"uz": "Dialoglar:", "tj": "Муколамаҳо:", "ru": "Диалоги:"}
-    grammar_hdr = {"uz": "Grammatika:", "tj": "Грамматика:", "ru": "Грамматика:"}
+    hdr = bot_locale_map('inline.utils.course_formatter.format_review.copy1')
+    vocab_hdr = bot_locale_map('inline.utils.course_formatter.format_review.copy2')
+    dialog_hdr = bot_locale_map('inline.utils.course_formatter.format_review.copy3')
+    grammar_hdr = bot_locale_map('inline.utils.course_formatter.format_review.copy4')
 
     lines = [f"<b>{review_title}</b>", hdr.get(lang, hdr["ru"]), ""]
 
@@ -1103,7 +956,7 @@ def format_intro(lesson, lang: str, lesson_total_steps: int = 6) -> str:
     except Exception:
         intro = intro_raw
 
-    step_label = {"uz": "Darsga xush kelibsiz! 🎉", "tj": "Хуш омадед ба дарс! 🎉", "ru": "Добро пожаловать на урок! 🎉"}
+    step_label = bot_locale_map('inline.utils.course_formatter.format_intro.copy1')
     lines = [
         f"【{_lesson_word(lang)} {lesson.lesson_order}】 {title}",
         "",

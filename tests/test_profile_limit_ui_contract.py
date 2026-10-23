@@ -76,7 +76,9 @@ class MiniAppCourseVersionNavigationTests(unittest.TestCase):
         self.assertIn("switchCourseTrack('hsk20',null)", body)
         self.assertIn("openProfileCourseVersionBook();", carousel)
         self.assertNotIn("HskProfileCarousel.confirmHsk30()", carousel)
-        self.assertIn("profile-carousel.js?v=20261017-link-cards-1", PROFILE)
+        from scripts.i18n_baseline_guard import git_blob_sha1
+        digest = git_blob_sha1(Path("app/static/course_v3_data/profile-carousel.js").read_bytes())[:12]
+        self.assertIn("profile-carousel.js?v=20261021-" + digest, PROFILE)
 
     def test_course_path_header_still_uses_compact_version_and_level_picker(self):
         course = PROFILE.split("function renderCourse(){", 1)[1].split(
@@ -94,7 +96,7 @@ class MiniAppProfileHierarchyTests(unittest.TestCase):
         body = PROFILE.split("function renderProfile(){", 1)[1].split(
             "/* ---------- sales_value_v1", 1
         )[0]
-        self.assertIn("var nickname=esc(PROF.name||t.you)", body)
+        self.assertIn('var nickname=esc(PROF.name||courseMessage("you",t.you))', body)
         self.assertIn("var showProLink=!paid&&!trialActive", body)
         self.assertIn("profile_after_streak", body)
         self.assertIn("profileAccuracyHtml()", body)

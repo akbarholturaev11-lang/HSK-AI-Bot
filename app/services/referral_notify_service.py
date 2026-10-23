@@ -1,3 +1,4 @@
+from app.bot.generated.bot_i18n import bot_locale_map
 from aiogram import Bot
 
 from app.bot.keyboards.course_miniapp import course_study_miniapp_keyboard
@@ -5,11 +6,7 @@ from app.bot.utils.i18n import t
 from app.services.bot_block_status_service import BotBlockStatusService
 
 
-COURSE_START_BUTTON = {
-    "uz": "▶️ Darsni boshlash",
-    "tj": "▶️ Оғози дарс",
-    "ru": "▶️ Начать урок",
-}
+COURSE_START_BUTTON = bot_locale_map('inline.services.referral_notify_service.module.copy1')
 
 
 class ReferralNotifyService:

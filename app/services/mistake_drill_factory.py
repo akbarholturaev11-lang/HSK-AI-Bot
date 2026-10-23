@@ -11,6 +11,7 @@ eski klientlar ham variantli turlarni ko'rsata oladi.
 """
 
 from __future__ import annotations
+from app.bot.generated.bot_i18n import bot_locale_map
 
 import hashlib
 import re
@@ -83,89 +84,25 @@ MAX_BUILDER_TOKENS = 7
 MAX_OPTIONS = 4
 
 INSTRUCTIONS = {
-    "meaning_choice": {
-        "uz": "Ma'nosini tanlang",
-        "ru": "Выберите значение",
-        "tj": "Маъноашро интихоб кунед",
-    },
-    "hanzi_choice": {
-        "uz": "«{meaning}» — qaysi ieroglif?",
-        "ru": "«{meaning}» — какой иероглиф?",
-        "tj": "«{meaning}» — кадом иероглиф?",
-    },
-    "hanzi_from_pinyin": {
-        "uz": "Qaysi ieroglif shunday o'qiladi?",
-        "ru": "Какой иероглиф так читается?",
-        "tj": "Кадом иероглиф ҳамин тавр хонда мешавад?",
-    },
-    "pinyin_choice": {
-        "uz": "Qanday o'qiladi?",
-        "ru": "Как читается?",
-        "tj": "Чӣ тавр хонда мешавад?",
-    },
-    "listening_choice": {
-        "uz": "Tinglang va eshitganingizni tanlang",
-        "ru": "Послушайте и выберите, что услышали",
-        "tj": "Гӯш кунед ва шунидаатонро интихоб кунед",
-    },
-    "listening_pinyin": {
-        "uz": "Tinglang: qanday o'qildi?",
-        "ru": "Послушайте: как это прочитано?",
-        "tj": "Гӯш кунед: чӣ тавр хонда шуд?",
-    },
-    "sentence_listening": {
-        "uz": "Tinglang va eshitgan gapingizni tanlang",
-        "ru": "Послушайте и выберите услышанную фразу",
-        "tj": "Гӯш кунед ва ҷумлаи шунидаатонро интихоб кунед",
-    },
-    "sentence_meaning": {
-        "uz": "Bu gap nimani anglatadi?",
-        "ru": "Что означает эта фраза?",
-        "tj": "Ин ҷумла чӣ маъно дорад?",
-    },
-    "sentence_builder": {
-        "uz": "Gapni to'g'ri tartibda tuzing",
-        "ru": "Составьте фразу в правильном порядке",
-        "tj": "Ҷумларо бо тартиби дуруст созед",
-    },
-    "sentence_builder_hint": {
-        "uz": "Gapni tuzing: «{translation}»",
-        "ru": "Составьте фразу: «{translation}»",
-        "tj": "Ҷумларо созед: «{translation}»",
-    },
-    "listen_builder": {
-        "uz": "Tinglang va eshitgan gapni tuzing",
-        "ru": "Послушайте и составьте услышанную фразу",
-        "tj": "Гӯш кунед ва ҷумлаи шунидаро созед",
-    },
-    "gap_fill": {
-        "uz": "Bo'sh joyga mosini tanlang",
-        "ru": "Выберите, что подходит в пропуск",
-        "tj": "Барои ҷойи холӣ мувофиқашро интихоб кунед",
-    },
-    "gap_fill_hint": {
-        "uz": "Bo'sh joyga mosini tanlang: «{translation}»",
-        "ru": "Выберите, что подходит в пропуск: «{translation}»",
-        "tj": "Барои ҷойи холӣ мувофиқашро интихоб кунед: «{translation}»",
-    },
-    "dialog_choice": {
-        "uz": "Dialogni to'ldiring",
-        "ru": "Дополните диалог",
-        "tj": "Гуфтугӯро пурра кунед",
-    },
+    "meaning_choice": bot_locale_map('inline.services.mistake_drill_factory.module.copy1'),
+    "hanzi_choice": bot_locale_map('inline.services.mistake_drill_factory.module.copy2'),
+    "hanzi_from_pinyin": bot_locale_map('inline.services.mistake_drill_factory.module.copy3'),
+    "pinyin_choice": bot_locale_map('inline.services.mistake_drill_factory.module.copy4'),
+    "listening_choice": bot_locale_map('inline.services.mistake_drill_factory.module.copy5'),
+    "listening_pinyin": bot_locale_map('inline.services.mistake_drill_factory.module.copy6'),
+    "sentence_listening": bot_locale_map('inline.services.mistake_drill_factory.module.copy7'),
+    "sentence_meaning": bot_locale_map('inline.services.mistake_drill_factory.module.copy8'),
+    "sentence_builder": bot_locale_map('inline.services.mistake_drill_factory.module.copy9'),
+    "sentence_builder_hint": bot_locale_map('inline.services.mistake_drill_factory.module.copy10'),
+    "listen_builder": bot_locale_map('inline.services.mistake_drill_factory.module.copy11'),
+    "gap_fill": bot_locale_map('inline.services.mistake_drill_factory.module.copy12'),
+    "gap_fill_hint": bot_locale_map('inline.services.mistake_drill_factory.module.copy13'),
+    "dialog_choice": bot_locale_map('inline.services.mistake_drill_factory.module.copy14'),
     # Xato variant o'quvchining O'Z gapi, u ba'zan boshqa ma'noda to'g'ri
     # xitoycha ham bo'lishi mumkin (我是学生吗 — "talabamanmi?"). Shuning
     # uchun savol "qaysi gap to'g'ri" emas, "aytgan gapingizning to'g'ri shakli".
-    "correct_choice": {
-        "uz": "Aytgan gapingizning to'g'ri shaklini tanlang",
-        "ru": "Выберите правильный вариант фразы, которую вы сказали",
-        "tj": "Шакли дурусти ҷумлаи гуфтаатонро интихоб кунед",
-    },
-    "correct_choice_hint": {
-        "uz": "Aytmoqchi bo'lgan gapingiz: «{translation}». To'g'ri shaklini tanlang",
-        "ru": "Вы хотели сказать: «{translation}». Выберите правильный вариант",
-        "tj": "Шумо гуфтан мехостед: «{translation}». Шакли дурустро интихоб кунед",
-    },
+    "correct_choice": bot_locale_map('inline.services.mistake_drill_factory.module.copy15'),
+    "correct_choice_hint": bot_locale_map('inline.services.mistake_drill_factory.module.copy16'),
 }
 
 

@@ -143,7 +143,7 @@ private fun HintCard(hint: AndroidHintDto, onClose: () -> Unit) {
             ) {
                 Icon(
                     imageVector = Icons.Filled.Close,
-                    contentDescription = stringResource(R.string.hint_close),
+                    contentDescription = stringResource(R.string.hsk_common_action_close),
                     tint = PompColors.InkSecondary,
                     modifier = Modifier.size(15.dp),
                 )

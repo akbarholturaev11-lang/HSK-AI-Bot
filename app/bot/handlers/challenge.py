@@ -1,3 +1,4 @@
+from app.bot.utils.i18n import bot_locale_map
 from aiogram import F, Router
 from aiogram.types import CallbackQuery
 
@@ -19,32 +20,7 @@ def _lang(callback: CallbackQuery, result: dict | None = None) -> str:
 
 
 def _text(lang: str, key: str) -> str:
-    messages = {
-        "uz": {
-            "bad_button": "Noto'g'ri belashuv tugmasi",
-            "not_found": "Belashuv topilmadi",
-            "bad_action": "Noto'g'ri amal",
-            "closed": "Belashuv allaqachon yopilgan yoki topilmadi",
-            "accepted": "Belashuv qabul qilindi. Musobaqani oching.",
-            "rejected": "Belashuv rad qilindi.",
-        },
-        "ru": {
-            "bad_button": "Неверная кнопка поединка",
-            "not_found": "Поединок не найден",
-            "bad_action": "Неверное действие",
-            "closed": "Поединок уже закрыт или не найден",
-            "accepted": "Дуэль принята. Откройте раунд.",
-            "rejected": "Дуэль отклонена.",
-        },
-        "tj": {
-            "bad_button": "Тугмаи рақобат нодуруст аст",
-            "not_found": "Рақобат ёфт нашуд",
-            "bad_action": "Амал нодуруст аст",
-            "closed": "Рақобат аллакай баста шуд ё ёфт нашуд",
-            "accepted": "Рақобат қабул шуд. Раундро кушоед.",
-            "rejected": "Рақобат рад шуд.",
-        },
-    }
+    messages = bot_locale_map('inline.handlers.challenge.helper_text.copy1')
     return messages.get(lang, messages["uz"]).get(key, key)
 
 

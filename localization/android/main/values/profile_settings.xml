@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- New account/settings labels; existing frozen native resources stay unchanged. -->
+    <string name="profile_account_avatar_option">Avatar %1$d</string>
+    <string name="profile_support">Yordam markazi</string>
+</resources>

@@ -1,0 +1,468 @@
+{
+  "schema_version": 1,
+  "scope": "Python locale maps outside generated data; reviewed non-UI data and explicit migration fallback only; hashes contain no learner content",
+  "exceptions": [
+    {
+      "source": "app/bot/handlers/admin.py",
+      "sha256": "6e10d96ad955f81b87e9c057c354ad43e3d2b407aef11e6eefbe4a529ff5e580",
+      "category": "admin_only",
+      "count": 1
+    },
+    {
+      "source": "app/bot/handlers/admin.py",
+      "sha256": "863c970cbedbd21efb0ea43260b04d3754ae119bfcb88da56317165375394727",
+      "category": "admin_only",
+      "count": 1
+    },
+    {
+      "source": "app/bot/handlers/admin_ads.py",
+      "sha256": "cfe1f48e2afe70a6ae0c2d3dd86a64c940df4d1520fdc026b8dd34e7daa66265",
+      "category": "admin_only",
+      "count": 1
+    },
+    {
+      "source": "app/bot/handlers/admin_broadcast.py",
+      "sha256": "26340d90d869436e5f7e7a7775bb18bdb32632a6db331a6641d2094022db1897",
+      "category": "admin_only",
+      "count": 1
+    },
+    {
+      "source": "app/bot/handlers/admin_discount.py",
+      "sha256": "cfe1f48e2afe70a6ae0c2d3dd86a64c940df4d1520fdc026b8dd34e7daa66265",
+      "category": "admin_only",
+      "count": 1
+    },
+    {
+      "source": "app/services/admin_miniapp_service.py",
+      "sha256": "9d8cfbc82a1d2417248455f46159f2bf54e6fd7af9139ac7ddd11c53d997f60c",
+      "category": "admin_only",
+      "count": 1
+    },
+    {
+      "source": "app/services/ai_service.py",
+      "sha256": "442615f8ad2e2fd5b9effc4d036b0023ec71bb3ad8d14461432e9f6c04f4fec4",
+      "category": "provider_metadata",
+      "count": 2
+    },
+    {
+      "source": "app/services/ai_service.py",
+      "sha256": "604ec3dada3374fc1bc2597239c16e7154ad5894bccdd3a14168ee489cf5a565",
+      "category": "provider_metadata",
+      "count": 1
+    },
+    {
+      "source": "app/services/assistant_service.py",
+      "sha256": "43fcdce8eedc8422c265c20a2ae4816c5abdbf88e63a46aa8c230fbebf3591df",
+      "category": "locale_adapter",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_notification_service.py",
+      "sha256": "0cd9f41911e49e0472a2653b78c06ed24a184f9cb02006ef389f9a5c971a58e9",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_notification_service.py",
+      "sha256": "12a32148a942f86bb5bf48f5b80b5a8a75934efcdd8b729011fd121259de356c",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_notification_service.py",
+      "sha256": "4fa1e685f649bf29e67a3b426a7b7b1fa7b6995b1928635e65bebf269e5b0005",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_notification_service.py",
+      "sha256": "560d1e7a361ccec57d56c34ecf20dc56eb0c0effe9ba8d9bc8cf75fd4874f796",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_notification_service.py",
+      "sha256": "5826a6e0d1e704d9eb7f6c0a526d769af3f50aae072e97612e170ad1f11cfe3d",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_notification_service.py",
+      "sha256": "9f6378bc0240bd7e8c1ba6ccc27dfc3cf21378a663679078457ec0b6fa99bb83",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_notification_service.py",
+      "sha256": "a6e2b62edcb98c0d48462ea8d63d0c39d74c8d6c4db49eb4e9b70d1c998fe9c0",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_notification_service.py",
+      "sha256": "cec2b292810196f61bbf2825d1ad5dc49d7cf33933f61ed951c4da0798981810",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_notification_service.py",
+      "sha256": "e49b9f1189b2591b7ff2a83a928715adf69ddedebeeb0ba99388b0a3000afcdf",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_notification_service.py",
+      "sha256": "e6178d90239cb60939d3613da39c736b028cabb3b02aa0ece449071c023fea56",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_notification_service.py",
+      "sha256": "e99af5806395ee36b4a5f7b7c3d686a43c1efff8e573160830d1af77fa996f71",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_question_material.py",
+      "sha256": "526a63b1b52b2d85232177730c1a404bda7218780a5274012ab69cb76907dd41",
+      "category": "locale_adapter",
+      "count": 1
+    },
+    {
+      "source": "app/services/course_reminder_service.py",
+      "sha256": "ec3ed72ac764a3d1621f7084f37c47abba1f0033555dfaae161038f7a26108d6",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/daily_practice_service.py",
+      "sha256": "163585b7ed2c4a50cd590accbcee1d20dff6e35c7cb0ebab3be9ccfe47a08649",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/daily_practice_service.py",
+      "sha256": "3961c99e55502414f2b51da20cf451974f256f6b1fc6d9dd158145bcd9006f61",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/daily_practice_service.py",
+      "sha256": "4070a79db1d7b2235e64de47862c6b128a110b333b2dc83bf3b6ca22190829a4",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/daily_practice_service.py",
+      "sha256": "7f2815c5e0d7169bc2ffcdba83591853933c783bc13feb7a38d10c50579e02e0",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/daily_practice_service.py",
+      "sha256": "bbf17f09a2bf83ed37073b72694dfc633ed9d2216cf82afe7816c936ac2edd68",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/daily_practice_service.py",
+      "sha256": "ca7dac9d98404c4b84ca2bd0aef33069870a0adecbd8b6fd42f42dc6756de469",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/discount_notification_service.py",
+      "sha256": "78eb00200db271107e780ff9856d2377f72893f53412c3ea780ebf89223d8f38",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/discount_notification_service.py",
+      "sha256": "7ccd55fb197a0367878f7057882b374543357fb6bf434f5420000613fd6be733",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/discount_translation_service.py",
+      "sha256": "48f94540332c5e5374b6a35db3325d2d5b734305e08c5a79e92a4ee9b6798c82",
+      "category": "dynamic_campaign",
+      "count": 1
+    },
+    {
+      "source": "app/services/discount_translation_service.py",
+      "sha256": "2b9e99ffd66b38f6b3bff1f6c7e1ddff8d2994e81551120bb29922081fa9847d",
+      "category": "dynamic_campaign",
+      "count": 1
+    },
+    {
+      "source": "app/services/motivation_reminder_service.py",
+      "sha256": "8a7e5995ce7115610cc0b232f9b6cb2d0309f6b1927228c23ed7c71379e9876f",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/motivation_reminder_service.py",
+      "sha256": "b0b76ffd54a0c8522fc14c67f0b27abd3622298748f5b9ea19bdca9e88e0f540",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/motivation_reminder_service.py",
+      "sha256": "bd6073aacb232473a100b309cca276de7a730e3e3e9af56a0915eae1c35c76e5",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/motivation_reminder_service.py",
+      "sha256": "ca7585633f14136b68b853c270a5345081df46ef70789d04c6cc31fc0e1ff115",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/notification_template_service.py",
+      "sha256": "05de0ae31fa7d7d5336dce0826411ea2238f3d8cbe007ff3713c50b332230c4a",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/notification_template_service.py",
+      "sha256": "2adb10796f25e64ee079398c65bc9dbaa3f5192f4334620d86eefd8587e8e113",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/notification_template_service.py",
+      "sha256": "2e0f65e99a358938fc7364e93c1f9498355b0228f3989ee4fdcc05dd4a4d1485",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/notification_template_service.py",
+      "sha256": "5fa53966b20b43b6987b5e07884e1148b1c1fa96d4c1a73cb8a21166990cd5a1",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/notification_template_service.py",
+      "sha256": "b7be9ac1598175a0f24997aeb7640a7ae9ecbc6a79fbe9831aa47b0f147abaa7",
+      "category": "legacy_fallback",
+      "count": 1
+    },
+    {
+      "source": "app/services/partner_service.py",
+      "sha256": "6e10d96ad955f81b87e9c057c354ad43e3d2b407aef11e6eefbe4a529ff5e580",
+      "category": "admin_only",
+      "count": 1
+    },
+    {
+      "source": "app/services/study_miniapp_service.py",
+      "sha256": "1d6936ec987ceea26f8cf98d12f0db569b9777ca2d57ad3d1cbc5c62e28f9fa3",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "00be8bff4f3c22b21121af36156ac1b40f90c8ce9afdba70a831b9dbf8024672",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "010574dd6b83f0f289d532edf2f51788926b77a7a8fca97e31d390ede244de33",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "06166a89f72f6ae30fab518140eacb3ced13d8f45945110be0fd273ded10e209",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "0a22c2bb5272f78d51f0f2fa645a995c1cbad659c83803faac08bb92471bebf9",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "0b0e3c1bd8d75c0d2703567b365bcdeed3e539243119ea0ed92477654a5a2f5e",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "0ddf560db153e62cfd1e8395aad819936ee7f18cbf58319ddc2e76297ac9e1de",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "1379f386e26fab2f56fff39054bc1410e9440f92fde80176223879e35d9638b2",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "186f5ec94ee1c6ec2160e4c075d5c1de4a25e2399dae3b3e955b9e7d16f08cf5",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "1e5721548b3a8b0eee5047d823d8c8295ba4722ccc21512b1a65a92b294cd758",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "2576d1e2a05fa44f7e3ea1cf105607afaba2db5e4d4891222d3927511e6ce58d",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "320974a69ac2d7bc4f6ddbd7986f2680f8270a57468cd8b589ae5e1e0e2ef15f",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "39d225edbfd0705e6d19eb30b59dd091857fd838170f899fd50debd85b1c9843",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "3a12d59d5b084a3b58de7a18aa7c7a39f2d9f8f753a2aadbe97354e0da475660",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "3e56322bf55af09cf746ec822955378f09a1cc23629bf342336d546ab86dde48",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "3f1ea771637fd4624bb8e516cefa996885f315e79752ea9ea7a9be7fc5a2bca0",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "4a026a2dd662e1f0cfdeee0803b8dc3349e5e7ae406e409a3832030a4e024c40",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "4ecc4120711e4fb73582021fd0071467da39ff8730b23c3f01e3fdfa0f1e295f",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "5a9765360c9a844fc0cda335745035094a7f8270c310467e3cc7f503e6eaca5f",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "5b3baab6607a689f9653eadbcf78fe6070893d6b2d47c11974b48430d8c40127",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "5b68323eb014faab734f259b6368ebbd5a714448609acc18892c4ca119039f3f",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "64f1349b4f68d2ef8c113219a6f15af7bd5d3fdbe221a46c1ddb9329ba5f1fd7",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "6a94bd726f155b8ec725b64ce114a378a7db0e6dc596e170e7af393001af5d22",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "71a535dfece296cc575a0db664bb05c002c28678126e2f440426d957ecbb9f28",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "8f8810f578d334456c5a4bcbe926af872c7a4d1d6847e420878da51f7f313820",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "a7d372a698b5d14c3fbcfa4511d6e2c778d6a92e70428712de9efd6d476f857a",
+      "category": "learning_material",
+      "count": 2
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "aca001f769130e254ebee6d4630a91006bd59db5c1a94d0170166a62009eb9fe",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "c1bf29df9c81e1269b6af1e6e35a8c9b451ad3fd1feea4d31a7d4dbcde270fe1",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "c4d060c5dd4460bfea48c22f11ca3435bf531e3e71e49967265cb6296b2f24d2",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "cb0f34b1766fe62436c2a3e75aa86884a2eb16c501839fe2825f3bfdbbdb571e",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "d810ed2dffee07f5cc838ece34ce1e0b64a6d0b00c526661310ad126b3e24e5b",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "da9f4a18fd158de791c3c7ccb8441408fe4208ce99f58c85d34257349713eb09",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "e1057e2f8a2511dc177b1fcf5defc0fcc5bedd284745e2da01669794c15ab61c",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "f0906264264bf1cc9343a82ca0e9cf4dece16f1101bc7c2f751d76e168462d30",
+      "category": "learning_material",
+      "count": 1
+    },
+    {
+      "source": "app/services/voice_practice_service.py",
+      "sha256": "fd6b7f3966d280c058fa02b87317c96b1f50b17d1a7ec5c2677788766a167c0d",
+      "category": "learning_material",
+      "count": 1
+    }
+  ]
+}

@@ -147,6 +147,8 @@ from app.services.course_lesson_mistake_material_service import (
     CourseLessonMistakeMaterialService,
 )
 from app.services.course_hsk_exam_service import CourseHskExamService
+from app.services.course_lesson_completion_proof import verify_lesson_completion_proof
+from app.services.course_lesson_start_grant import has_recent_authorized_lesson_start
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_miniapp_access_service import (
@@ -1941,6 +1943,14 @@ def _course_v3_user_level(user) -> str:
     return _course_v3_level(getattr(user, "level", None))
 
 
+async def _course_v3_foundation_is_blocked(session, user, level: str) -> bool:
+    if (level != "hsk1"
+            or str(getattr(user, "level", "") or "").strip().lower() != "beginner"):
+        return False
+    foundation = await CourseMiniAppProfileService(session).foundation_status(user)
+    return bool(foundation.get("required") and not foundation.get("completed"))
+
+
 def _course_v3_user_lang(user) -> str:
     return normalize_miniapp_lang(getattr(user, "language", None))
 
@@ -2224,9 +2234,14 @@ async def course_v3_ads_script():
     return static_asset_response("app/static/course_v3_data/ads.js", "application/javascript")
 
 
+COURSE_V3_PUBLIC_MAP_FILES = frozenset({
+    "hsk1.json", "hsk2.json", "hsk3.json", "hsk4.json",
+    "nhsk1.json", "nhsk2.json", "nhsk3.json",
+})
+
+
 @app.get("/course_v3_data/{filename}")
 async def course_v3_data_file(filename: str):
-    import re
     public_assets = {
         "design-tokens.css": "text/css",
         "desktop-download.css": "text/css",
@@ -2238,6 +2253,10 @@ async def course_v3_data_file(filename: str):
         "lesson_gate_hsk30.js": "application/javascript",
         "hsk30-words.js": "application/javascript",
         "hsk30-dictionary-examples.js": "application/javascript",
+        "hsk-common-i18n.js": "application/javascript",
+        "hsk-miniapp-i18n.js": "application/javascript",
+        "hsk-course-i18n.js": "application/javascript",
+        "p3-grammar-reservation.js": "application/javascript",
         "ready-phrases-v1.json": "application/json",
     }
     if filename in public_assets:
@@ -2245,7 +2264,7 @@ async def course_v3_data_file(filename: str):
             f"app/static/course_v3_data/{filename}",
             public_assets[filename],
         )
-    if not re.fullmatch(r"[a-z0-9_\-]+\.json", filename):
+    if filename not in COURSE_V3_PUBLIC_MAP_FILES:
         return JSONResponse(status_code=404, content={"error": "not_found"})
     return static_json_response(f"app/static/course_v3_data/{filename}")
 
@@ -2259,12 +2278,19 @@ async def course_v3_exam_file(filename: str):
 
 @app.get("/course_v3_data/{level}/{filename}")
 async def course_v3_lesson_file(level: str, filename: str):
+    # Old lesson-file URLs are retired. Mini App uses the signed, entitlement-
+    # checked /api/v3/lesson/content endpoint; never serve answer-bearing JSON
+    # from this public static route.
     import re
     if not re.fullmatch(r"(?:hsk[1-4]|nhsk[1-3])", level):
         return JSONResponse(status_code=404, content={"error": "not_found"})
     if not re.fullmatch(r"lesson_\d+\.json", filename):
         return JSONResponse(status_code=404, content={"error": "not_found"})
-    return static_json_response(f"app/static/course_v3_data/{level}/{filename}")
+    return JSONResponse(
+        status_code=404,
+        content={"ok": False, "error": "lesson_content_not_found"},
+        headers={"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"},
+    )
 
 
 @app.get("/audio/tour/{lang}/{filename}")
@@ -2431,7 +2457,9 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
     telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
 
     async with async_session_maker() as session:
-        user = await UserRepository(session).get_by_telegram_id(telegram_id) if telegram_id else None
+        # The map can reset progress to the selected band. Serialize that write
+        # with level/track changes before reading either the user or progress.
+        user = await UserRepository(session).get_by_telegram_id_for_update(telegram_id) if telegram_id else None
 
         if not user:
             # Botka real ulanmaganda (initData yo'q / token mos kelmadi / user topilmadi)
@@ -2753,9 +2781,16 @@ async def v3_set_language(request: Request):
         return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
     try:
         payload = await request.json()
-    except Exception:
-        payload = {}
-    resolved_lang = normalize_miniapp_lang(str(payload.get("language") or ""))
+    except (ValueError, UnicodeError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_language_payload"})
+    if not isinstance(payload, dict):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_language_payload"})
+    language = payload.get("language")
+    # Display/URL fallbacks must never silently replace a saved preference.
+    # Retain the Tajik aliases already accepted by the Mini App normalizer.
+    if not isinstance(language, str) or language.strip().lower() not in {"uz", "ru", "tj", "tg", "tg-cyrl"}:
+        return JSONResponse(status_code=422, content={"ok": False, "error": "invalid_language"})
+    resolved_lang = normalize_miniapp_lang(language)
 
     async with async_session_maker() as session:
         user = await UserRepository(session).get_by_telegram_id(telegram_id)
@@ -2780,7 +2815,9 @@ async def v3_hsk_exam_start(request: Request):
     try:
         payload = await request.json()
     except ValueError:
-        payload = {}
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_hsk_exam_payload"})
+    if not isinstance(payload, dict):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_hsk_exam_payload"})
     if not init_data:
         init_data = str(payload.get("initData") or "")
     telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
@@ -2823,6 +2860,8 @@ async def v3_hsk_exam_complete(request: Request):
         payload = await request.json()
     except ValueError:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_hsk_exam_payload"})
+    if not isinstance(payload, dict):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_hsk_exam_payload"})
     async with async_session_maker() as session:
         result = await CourseHskExamService(session).complete(
             telegram_id,
@@ -2842,6 +2881,8 @@ async def v3_course_lesson_unlock(request: Request):
 
     try:
         payload = await request.json()
+        if not isinstance(payload, dict):
+            raise ValueError("lesson payload must be an object")
         lesson_order = int(payload.get("lesson_id") or payload.get("lesson_order") or 0)
         score = int(payload.get("score") or 0)
     except (TypeError, ValueError):
@@ -2850,11 +2891,19 @@ async def v3_course_lesson_unlock(request: Request):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
 
     async with async_session_maker() as session:
-        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        user = await UserRepository(session).get_by_telegram_id_for_update(telegram_id)
         if not user:
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
 
         resolved_level = _course_v3_user_level(user)
+        # The client identifies the course it opened; it cannot choose a new
+        # course. Reject late requests after a level/track switch before writes.
+        if payload.get("level") is not None and str(payload["level"]).strip().lower() != resolved_level:
+            return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
+                                headers={"Cache-Control": "no-store"})
+        if await _course_v3_foundation_is_blocked(session, user, resolved_level):
+            return JSONResponse(status_code=403, content={"ok": False, "error": "android_foundation_required"},
+                                headers={"Cache-Control": "no-store"})
         if resolved_level.startswith("nhsk"):
             hsk30_access = await CourseTrackService(session).hsk30_access(user)
             if not hsk30_access.allowed:
@@ -2882,6 +2931,9 @@ async def v3_course_lesson_unlock(request: Request):
 
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
+        if progress and _course_v3_level(progress.level) != resolved_level:
+            return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
+                                headers={"Cache-Control": "no-store"})
         if not progress:
             progress = await progress_repo.create(
                 user_id=user.id,
@@ -2935,6 +2987,8 @@ async def v3_course_lesson_complete(request: Request):
 
     try:
         payload = await request.json()
+        if not isinstance(payload, dict):
+            raise ValueError("lesson payload must be an object")
         lesson_order = int(payload.get("lesson_id") or payload.get("lesson_order") or 0)
         lesson_session_id = _checkout_text(payload.get("session_id"), 80) or None
         lesson_mistakes = payload.get("mistakes") if isinstance(payload.get("mistakes"), list) else []
@@ -2946,13 +3000,19 @@ async def v3_course_lesson_complete(request: Request):
 
     async with async_session_maker() as session:
         user_repo = UserRepository(session)
-        user = await user_repo.get_by_telegram_id(telegram_id)
+        user = await user_repo.get_by_telegram_id_for_update(telegram_id)
         if not user:
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
 
         # Band yagona manbadan — user.level. Klient yuborgan level emas, server
         # foydalanuvchining haqiqiy bandiga ishonadi (QA rejim bilan bir xil).
         resolved_level = _course_v3_user_level(user)
+        if payload.get("level") is not None and str(payload["level"]).strip().lower() != resolved_level:
+            return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
+                                headers={"Cache-Control": "no-store"})
+        if await _course_v3_foundation_is_blocked(session, user, resolved_level):
+            return JSONResponse(status_code=403, content={"ok": False, "error": "android_foundation_required"},
+                                headers={"Cache-Control": "no-store"})
 
         total_parts = _course_v3_total_parts(resolved_level)
         if total_parts and lesson_order > total_parts:
@@ -2968,6 +3028,9 @@ async def v3_course_lesson_complete(request: Request):
         is_paid = access.has_unlimited_course_access(user)
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
+        if progress and _course_v3_level(progress.level) != resolved_level:
+            return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
+                                headers={"Cache-Control": "no-store"})
         if not progress:
             progress = await progress_repo.create(
                 user_id=user.id,
@@ -3003,6 +3066,28 @@ async def v3_course_lesson_complete(request: Request):
             )
         if lesson_order != completed + 1:
             return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
+
+        # Signed proof is preferred for updated clients. Older cached Mini
+        # Apps omit the proof entirely, so consult ONLY the server-issued,
+        # recent authorized-start record (never client telemetry or a free
+        # allowance alone). A supplied bad proof must NOT use this fallback.
+        # Completed lessons remain idempotent even if proof/record expired.
+        valid_proof = verify_lesson_completion_proof(
+            payload.get("completion_proof"),
+            user_id=user.id, level=resolved_level, lesson_order=lesson_order,
+            secret=settings.BOT_TOKEN,
+        )
+        if not valid_proof and (
+            "completion_proof" in payload or not await has_recent_authorized_lesson_start(
+                session, user_id=user.id, level=resolved_level,
+                lesson_order=lesson_order,
+            )
+        ):
+            return JSONResponse(
+                status_code=403,
+                content={"ok": False, "error": "lesson_completion_proof_required"},
+                headers={"Cache-Control": "no-store"},
+            )
 
         limit_status = await LessonAccessService(session).status(
             user, level=resolved_level, lesson_order=lesson_order, completed=completed, consume=True,

@@ -23,6 +23,7 @@ from sqlalchemy.pool import StaticPool
 from app.api import android_course
 from app.api.android_course import create_android_course_router
 from app.db.base import Base
+from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.services.course_v3_dictionary import (
     dictionary_for_language,
     dictionary_version,
@@ -93,6 +94,17 @@ def _user(user_id: int, telegram_id: int, name: str, *, level: str = "hsk1") -> 
     )
 
 
+def _isolate_analytics_sessions(test_case, sessions):
+    # These writers open their own sessions outside the injected request session.
+    for target in (
+        "app.services.conversion_funnel_service.async_session_maker",
+        "app.services.entitlements.shadow.async_session_maker",
+    ):
+        analytics_sessions = patch(target, sessions)
+        analytics_sessions.start()
+        test_case.addCleanup(analytics_sessions.stop)
+
+
 class AndroidCourseNamespaceTests(unittest.TestCase):
     def test_android_reuses_the_desktop_rules_with_its_own_namespace(self):
         # Subclassing, not copying: every course rule stays in one place.
@@ -129,6 +141,7 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
         async with self.engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        _isolate_analytics_sessions(self, self.sessions)
         async with self.sessions() as session:
             session.add(_user(1, 1001, "Account A"))
             await session.commit()
@@ -460,6 +473,17 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             # Rad etilgan urinish progressni SURMAYDI.
             self.assertEqual(2, await self._completed_count(session))
 
+        async with self.sessions() as session:
+            events = (await session.execute(
+                select(ConversionFunnelEvent).where(
+                    ConversionFunnelEvent.event_name == "limit_hit"
+                )
+            )).scalars().all()
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].user_id, 1)
+        self.assertEqual(events[0].telegram_id, 1001)
+        self.assertEqual(json.loads(events[0].payload_json)["action"], A.LESSON_START)
+
     async def test_skip_questions_are_read_only_and_keep_the_actual_lesson_locked(self):
         async with self.sessions() as session:
             token = await self._token(session)
@@ -696,6 +720,7 @@ class AndroidLessonAdGateTests(unittest.IsolatedAsyncioTestCase):
         async with self.engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        _isolate_analytics_sessions(self, self.sessions)
         async with self.sessions() as session:
             session.add(_user(1, 1001, "Ads mode"))
             await session.commit()
@@ -813,6 +838,7 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         async with self.engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        _isolate_analytics_sessions(self, self.sessions)
         async with self.sessions() as session:
             session.add(_user(1, 1001, "Account A"))
             await session.commit()

@@ -1825,6 +1825,19 @@ class AndroidBugReportApiTests(unittest.IsolatedAsyncioTestCase):
         self.bot.send_message.assert_awaited_once()
         self.bot.send_photo.assert_not_awaited()
 
+    async def test_ai_content_report_is_labeled_for_admins(self):
+        response = await self.client.post(
+            "/api/v3/android/bug-report",
+            headers=self.headers,
+            json={"description": "AI answer contains unsafe advice", "screen": "ai_assistant"},
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(response.json()["ok"])
+        message = self.bot.send_message.await_args.kwargs["text"]
+        self.assertIn("AI kontent shikoyati", message)
+        self.assertIn("Ekran: ai_assistant", message)
+        self.bot.send_photo.assert_not_awaited()
+
     async def test_screenshot_is_opt_in_and_jpeg_only(self):
         import base64
         screenshot = base64.b64encode(b"\xff\xd8\xffimage").decode()
@@ -1839,6 +1852,23 @@ class AndroidBugReportApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(200, response.status_code)
         self.bot.send_photo.assert_awaited_once()
         self.bot.send_message.assert_awaited_once()
+
+    async def test_voice_content_report_keeps_session_and_answer_for_admins(self):
+        response = await self.client.post(
+            "/api/v3/android/bug-report",
+            headers=self.headers,
+            json={
+                "description": "Voice session test-session: unsafe generated answer",
+                "screen": "ai_voice",
+            },
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(response.json()["ok"])
+        message = self.bot.send_message.await_args.kwargs["text"]
+        self.assertIn("AI kontent shikoyati", message)
+        self.assertIn("Ekran: ai_voice", message)
+        self.assertIn("test-session: unsafe generated answer", message)
+        self.bot.send_photo.assert_not_awaited()
 
     async def test_rejects_invalid_image_and_empty_description(self):
         response = await self.client.post(

@@ -52,7 +52,7 @@ val PracticeToolSpec.adFeature: String
 internal val EXAM_TOOL = PracticeToolSpec(
     mode = "mock",
     skill = "",
-    titleRes = R.string.practice_group_tests,
+    titleRes = R.string.hsk_course_test_center,
     bodyRes = R.string.practice_test_center_body,
     glyph = "HSK",
 )
@@ -60,7 +60,7 @@ internal val EXAM_TOOL = PracticeToolSpec(
 private val MISTAKE_REVIEW_TOOL = PracticeToolSpec(
     mode = "mistake_review",
     skill = "",
-    titleRes = R.string.practice_mistakes_title,
+    titleRes = R.string.hsk_course_mistakes_page_title,
     bodyRes = R.string.practice_mistakes_body,
     glyph = "!",
 )

@@ -1,3 +1,4 @@
+from app.bot.generated.bot_i18n import bot_locale_map
 from datetime import date, datetime, timedelta, timezone
 
 from app.services.course_v3_vocab import words_for_level
@@ -46,62 +47,7 @@ class DailyPracticeService:
         await self.session.flush()
 
     def _copy(self, lang: str) -> dict[str, str]:
-        copies = {
-            "uz": {
-                "entry_title": "⏱ <b>Bugungi 3 daqiqalik mashq</b>",
-                "entry_body": (
-                    "<blockquote>3 ta yangi so'z, 2 ta tez quiz va 1 ta oddiy gap. "
-                    "Tugagach savol-javob rejimida kunlik limit bilan davom etasiz.</blockquote>"
-                ),
-                "words": "1) Yangi so'zlar",
-                "quiz": "2) Tez quiz",
-                "sentence": "3) Oddiy gap",
-                "ready": "Tayyor bo'lsangiz, javoblarni ko'ring.",
-                "done": "✅ <b>Bugungi mashq tugadi</b>",
-                "result": (
-                    "<blockquote>Siz 3 ta so'z ko'rdingiz, 2 ta quizni tekshirdingiz "
-                    "va bitta sodda gapni mustahkamladingiz.</blockquote>"
-                ),
-                "answers": "Javoblar:",
-                "next": "Endi savolingizni yozing yoki kursni o'zingiz boshlang.",
-            },
-            "ru": {
-                "entry_title": "⏱ <b>Сегодняшняя 3-минутная практика</b>",
-                "entry_body": (
-                    "<blockquote>3 новых слова, 2 быстрых quiz и 1 простая фраза. "
-                    "После этого можно продолжить в вопрос-ответ с дневным лимитом.</blockquote>"
-                ),
-                "words": "1) Новые слова",
-                "quiz": "2) Быстрый quiz",
-                "sentence": "3) Простая фраза",
-                "ready": "Когда будете готовы, посмотрите ответы.",
-                "done": "✅ <b>Сегодняшняя практика завершена</b>",
-                "result": (
-                    "<blockquote>Вы увидели 3 слова, проверили 2 quiz-вопроса "
-                    "и закрепили одну простую фразу.</blockquote>"
-                ),
-                "answers": "Ответы:",
-                "next": "Теперь напишите вопрос или откройте курс самостоятельно.",
-            },
-            "tj": {
-                "entry_title": "⏱ <b>Машқи 3-дақиқаи имрӯз</b>",
-                "entry_body": (
-                    "<blockquote>3 калимаи нав, 2 quiz-и зуд ва 1 ҷумлаи одӣ. "
-                    "Баъд метавонед дар савол-ҷавоб бо лимити рӯзона давом диҳед.</blockquote>"
-                ),
-                "words": "1) Калимаҳои нав",
-                "quiz": "2) Quiz-и зуд",
-                "sentence": "3) Ҷумлаи одӣ",
-                "ready": "Вақте тайёр шудед, ҷавобҳоро бинед.",
-                "done": "✅ <b>Машқи имрӯз анҷом шуд</b>",
-                "result": (
-                    "<blockquote>Шумо 3 калимаро дидед, 2 саволи quiz-ро санҷидед "
-                    "ва як ҷумлаи соддаро мустаҳкам кардед.</blockquote>"
-                ),
-                "answers": "Ҷавобҳо:",
-                "next": "Акнун савол нависед ё курсро худатон оғоз кунед.",
-            },
-        }
+        copies = bot_locale_map('inline.services.daily_practice_service.helper_copy.copy1')
         return copies.get(lang, copies["ru"])
 
     def _payload(self, user, lang: str) -> dict:
@@ -206,35 +152,7 @@ class DailyPracticeService:
         return level_payloads.get(self._level_key(user), level_payloads["beginner"])
 
     def _challenge_copy(self, lang: str) -> dict[str, str]:
-        copies = {
-            "uz": {
-                "title_meaning": "💬 <b>Keling, birinchi savoldan boshlaymiz</b>",
-                "title_pinyin": "🔊 <b>Talaffuzdan boshlaymiz</b>",
-                "title_sentence": "🎮 <b>Kichik mashq</b>",
-                "q_meaning": "Bu so'z nima degani?",
-                "q_pinyin": "Bu so'z qanday o'qiladi?",
-                "q_sentence": "Shu so'zlardan bitta gap tuzing.",
-                "hint": "Javobingizni yozing — tekshirib beraman. Yoki o'z savolingizni bering.",
-            },
-            "ru": {
-                "title_meaning": "💬 <b>Давайте начнём с первого вопроса</b>",
-                "title_pinyin": "🔊 <b>Начнём с произношения</b>",
-                "title_sentence": "🎮 <b>Небольшое упражнение</b>",
-                "q_meaning": "Что означает это слово?",
-                "q_pinyin": "Как читается это слово?",
-                "q_sentence": "Составьте одно предложение из этих слов.",
-                "hint": "Напишите ответ — я проверю. Или задайте свой вопрос.",
-            },
-            "tj": {
-                "title_meaning": "💬 <b>Биёед аз саволи аввал сар мекунем</b>",
-                "title_pinyin": "🔊 <b>Аз талаффуз сар мекунем</b>",
-                "title_sentence": "🎮 <b>Машқи хурд</b>",
-                "q_meaning": "Ин калима чӣ маъно дорад?",
-                "q_pinyin": "Ин калима чӣ тавр хонда мешавад?",
-                "q_sentence": "Аз ин калимаҳо як ҷумла созед.",
-                "hint": "Ҷавобатонро нависед — месанҷам. Ё саволи худро диҳед.",
-            },
-        }
+        copies = bot_locale_map('inline.services.daily_practice_service.helper_challenge_copy.copy1')
         return copies.get(lang, copies["ru"])
 
     _CHALLENGE_KINDS = ("meaning", "sentence", "pinyin")
@@ -353,11 +271,7 @@ class DailyPracticeService:
             for idx, (_, answer) in enumerate(payload["quiz"], 1)
         ]
         streak = int(getattr(user, "daily_practice_streak", 0) or 0)
-        streak_line = {
-            "uz": f"🔥 Streak: {streak} kun",
-            "ru": f"🔥 Серия: {streak} дн.",
-            "tj": f"🔥 Пайдарпай: {streak} рӯз",
-        }.get(lang, f"🔥 Серия: {streak} дн.")
+        streak_line = bot_locale_map('inline.services.daily_practice_service.completion_text.copy1.case1', streak=streak).get(lang, f"🔥 Серия: {streak} дн.")
         return "\n".join([
             copy["done"],
             "",

@@ -221,7 +221,7 @@ fun PracticeScreen(
         if (spent != null) {
             val section = state.pendingTool
             SectionLimitOverlay(
-                sectionTitle = if (section != null) stringResource(section.titleRes) else stringResource(R.string.practice_title),
+                sectionTitle = if (section != null) stringResource(section.titleRes) else stringResource(R.string.hsk_common_navigation_practice),
                 sourceKey = when (section?.mode) {
                     "placement" -> "practice_placement"
                     "mock" -> "practice_mock"
@@ -295,7 +295,7 @@ private fun NewSectionBadge(releasedAtMillis: Long, modifier: Modifier = Modifie
     if (visible) {
         Surface(color = PompColors.JadeSoft, shape = CircleShape, modifier = modifier) {
             Text(
-                text = "NEW",
+                text = stringResource(R.string.hsk_course_new_section_badge),
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp),
                 color = PompColors.JadeInk,
                 fontSize = 9.sp,
@@ -392,9 +392,9 @@ private fun PracticeHome(
                         ToolGroup {
                             ToolRow("字", null, TintAmber, stringResource(R.string.practice_dictionary_title), stringResource(R.string.practice_dictionary_body), true, onClick = onOpenDictionary)
                             ToolDivider()
-                            ToolRow("句", null, TintJade, stringResource(R.string.practice_ready_phrases_title), stringResource(R.string.practice_ready_phrases_body), true, newSectionId = READY_PHRASES_SECTION_ID, onClick = onOpenReadyPhrases)
+                            ToolRow("句", null, TintJade, stringResource(R.string.hsk_course_ready_phrases_title), stringResource(R.string.practice_ready_phrases_body), true, newSectionId = READY_PHRASES_SECTION_ID, onClick = onOpenReadyPhrases)
                             ToolDivider()
-                            ToolRow(null, Icons.Filled.Visibility, TintBlue, stringResource(R.string.practice_characters_title), stringResource(R.string.practice_recognition_group_body), toolsEnabled) { onOpenDrill(DrillMode.RECOGNITION) }
+                            ToolRow(null, Icons.Filled.Visibility, TintBlue, stringResource(R.string.hsk_course_mistakes_page_sources_recognition), stringResource(R.string.practice_recognition_group_body), toolsEnabled) { onOpenDrill(DrillMode.RECOGNITION) }
                             ToolDivider()
                             ToolRow(null, Icons.Filled.Mic, TintJade, stringResource(R.string.practice_pronunciation_row_title), stringResource(R.string.practice_pronunciation_row_body), toolsEnabled) { onOpenDrill(DrillMode.PRONUNCIATION) }
                         }
@@ -405,9 +405,9 @@ private fun PracticeHome(
                     Column {
                         GroupLabel(stringResource(R.string.practice_group_test_short))
                         ToolGroup {
-                            ToolRow(null, Icons.Filled.WorkspacePremium, TintCinnabar, stringResource(R.string.practice_group_tests), stringResource(R.string.practice_test_center_body), toolsEnabled) { openGroup = PracticeGroup.TEST }
+                            ToolRow(null, Icons.Filled.WorkspacePremium, TintCinnabar, stringResource(R.string.hsk_course_test_center), stringResource(R.string.practice_test_center_body), toolsEnabled) { openGroup = PracticeGroup.TEST }
                             ToolDivider()
-                            ToolRow(null, Icons.Filled.WarningAmber, TintCinnabar, stringResource(R.string.practice_mistakes_title), stringResource(R.string.practice_mistakes_body, total), toolsEnabled, state.isLoadingMistakes && !offline, onClick = onOpenMistakes)
+                            ToolRow(null, Icons.Filled.WarningAmber, TintCinnabar, stringResource(R.string.hsk_course_mistakes_page_title), stringResource(R.string.practice_mistakes_body, total), toolsEnabled, state.isLoadingMistakes && !offline, onClick = onOpenMistakes)
                         }
                     }
                 }
@@ -419,10 +419,10 @@ private fun PracticeHome(
 
 private data class ExamEntry(val level: Int, val questions: Int, val minutes: Int, val sections: List<Int>)
 private val EXAM_ENTRIES = listOf(
-    ExamEntry(1, 14, 25, listOf(R.string.test_center_section_listening, R.string.test_center_section_reading)),
-    ExamEntry(2, 12, 30, listOf(R.string.test_center_section_listening, R.string.test_center_section_reading)),
-    ExamEntry(3, 12, 35, listOf(R.string.test_center_section_listening, R.string.test_center_section_reading, R.string.test_center_section_writing)),
-    ExamEntry(4, 12, 40, listOf(R.string.test_center_section_listening, R.string.test_center_section_reading, R.string.test_center_section_writing)),
+    ExamEntry(1, 14, 25, listOf(R.string.hsk_course_test_hub_listen, R.string.test_center_section_reading)),
+    ExamEntry(2, 12, 30, listOf(R.string.hsk_course_test_hub_listen, R.string.test_center_section_reading)),
+    ExamEntry(3, 12, 35, listOf(R.string.hsk_course_test_hub_listen, R.string.test_center_section_reading, R.string.hsk_course_test_hub_write)),
+    ExamEntry(4, 12, 40, listOf(R.string.hsk_course_test_hub_listen, R.string.test_center_section_reading, R.string.hsk_course_test_hub_write)),
 )
 private fun levelNumber(level: String): Int = Regex("hsk([1-4])").find(level.lowercase())?.groupValues?.get(1)?.toIntOrNull() ?: 0
 
@@ -432,7 +432,7 @@ private fun LazyListScope.testCentre(level: String, enabled: Boolean, onPlacemen
         return
     }
     item { PlacementCard(enabled, onPlacement) }
-    item { GroupLabel(stringResource(R.string.test_center_exams_head)) }
+    item { GroupLabel(stringResource(R.string.hsk_course_test_hub_ex_head)) }
     val mine = levelNumber(level)
     items(EXAM_ENTRIES.sortedByDescending { it.level == mine }, key = { it.level }) { entry ->
         ExamRow(entry, entry.level == mine, enabled) { onExam("hsk${entry.level}") }
@@ -473,7 +473,7 @@ private fun Hsk30TestSoonCard() {
             )
             Spacer(Modifier.height(6.dp))
             Text(
-                stringResource(R.string.hsk30_test_soon_body),
+                stringResource(R.string.hsk_course_test_hsk30_soon_sub),
                 style = MaterialTheme.typography.bodyMedium,
                 color = PompColors.InkSecondary,
                 textAlign = TextAlign.Center,
@@ -505,7 +505,7 @@ private fun PlacementCard(enabled: Boolean, onClick: () -> Unit) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Filled.TrackChanges, contentDescription = null, tint = PompColors.Gold, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.size(8.dp))
-                    Text(stringResource(R.string.test_center_placement_title), style = MaterialTheme.typography.titleMedium, color = heroInk)
+                    Text(stringResource(R.string.hsk_course_test_hub_p_title), style = MaterialTheme.typography.titleMedium, color = heroInk)
                 }
                 Spacer(Modifier.height(6.dp))
                 Text(stringResource(R.string.test_center_placement_body), style = MaterialTheme.typography.bodyMedium, color = heroMuted)
@@ -518,7 +518,7 @@ private fun PlacementCard(enabled: Boolean, onClick: () -> Unit) {
                 ) {
                     Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.size(7.dp))
-                    Text(stringResource(R.string.test_center_placement_button))
+                    Text(stringResource(R.string.hsk_course_test_hub_p_btn))
                 }
             }
         }
@@ -547,14 +547,14 @@ private fun ExamRow(entry: ExamEntry, isMine: Boolean, enabled: Boolean, onClick
                 Text("HSK ${entry.level}", style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
                 Text(stringResource(R.string.test_center_exam_meta, entry.questions, entry.minutes), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 7.dp)) {
-                    if (isMine) ExamTag(stringResource(R.string.test_center_your_level), PompColors.CinnabarSoft, PompColors.CinnabarSoft, if (PompColors.IsDark) PompColors.Cinnabar else PompColors.CinnabarDark)
+                    if (isMine) ExamTag(stringResource(R.string.hsk_course_test_hub_mine_level), PompColors.CinnabarSoft, PompColors.CinnabarSoft, if (PompColors.IsDark) PompColors.Cinnabar else PompColors.CinnabarDark)
                     entry.sections.forEach { section ->
                         ExamTag(stringResource(section), if (PompColors.IsDark) PompColors.OptionDepth else PompColors.Paper, PompColors.Divider, PompColors.InkSecondary)
                     }
                 }
             }
             Surface(color = PompColors.CinnabarSoft, shape = RoundedCornerShape(11.dp)) {
-                Text(stringResource(R.string.test_center_start), style = MaterialTheme.typography.labelLarge, color = if (PompColors.IsDark) PompColors.Cinnabar else PompColors.CinnabarDark, modifier = Modifier.padding(horizontal = 13.dp, vertical = 9.dp))
+                Text(stringResource(R.string.hsk_course_test_hub_start), style = MaterialTheme.typography.labelLarge, color = if (PompColors.IsDark) PompColors.Cinnabar else PompColors.CinnabarDark, modifier = Modifier.padding(horizontal = 13.dp, vertical = 9.dp))
             }
         }
     }
@@ -569,7 +569,7 @@ private fun ExamTag(text: String, background: Color, border: Color, content: Col
 
 @Composable
 private fun PracticeHeader(group: PracticeGroup?, onBack: () -> Unit, hints: List<AndroidHintDto>, onDismissHint: (String) -> Unit) {
-    val titleRes = if (group == null) R.string.practice_title else R.string.practice_group_tests
+    val titleRes = if (group == null) R.string.hsk_common_navigation_practice else R.string.hsk_course_test_center
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (group != null) {
             HskGlassIconButton(
@@ -588,7 +588,7 @@ private fun PracticeHeader(group: PracticeGroup?, onBack: () -> Unit, hints: Lis
     }
     if (group == null) {
         Spacer(Modifier.height(8.dp))
-        Text(stringResource(R.string.practice_subtitle_short), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
+        Text(stringResource(R.string.hsk_course_mashq_sub), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
     }
 }
 
@@ -778,9 +778,9 @@ private fun PracticeRun(state: PracticeUiState, language: String, onSelect: (Int
                     isCorrect = isCorrect,
                     lines = listOf(question.explanation),
                     continueText = if (state.questionIndex == session.questions.lastIndex) {
-                        stringResource(R.string.practice_finish)
+                        stringResource(R.string.hsk_course_mistakes_page_finish)
                     } else {
-                        stringResource(R.string.lesson_next)
+                        stringResource(R.string.hsk_common_action_continue)
                     },
                     loading = state.isCompleting,
                     onContinue = { onAdvance(language) },
@@ -884,7 +884,7 @@ private fun ExamRun(state: PracticeUiState, language: String, onSelect: (Int) ->
             PracticeErrorPill(stringResource(state.error.messageRes))
         }
         PrimaryAction(
-            text = if (state.examIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next),
+            text = if (state.examIndex == session.questions.lastIndex) stringResource(R.string.hsk_course_mistakes_page_finish) else stringResource(R.string.hsk_common_action_continue),
             enabled = state.examSelectedIndex != null,
             loading = state.isCompleting,
         ) { onAdvance(language) }
@@ -922,8 +922,8 @@ private fun ExamSummary(state: PracticeUiState, onDone: () -> Unit) {
 }
 
 private fun examSectionLabel(section: String): Int = when (section) {
-    "listening" -> R.string.test_center_section_listening
-    "writing" -> R.string.test_center_section_writing
+    "listening" -> R.string.hsk_course_test_hub_listen
+    "writing" -> R.string.hsk_course_test_hub_write
     else -> R.string.test_center_section_reading
 }
 
@@ -948,7 +948,7 @@ private fun QuestionShell(title: String, onCancel: () -> Unit, content: @Composa
                 Text(title, style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
             }
             HskGlassButton(
-                text = stringResource(R.string.action_close),
+                text = stringResource(R.string.hsk_common_action_close),
                 onClick = onCancel,
             )
         }
@@ -1102,7 +1102,7 @@ private fun CompletionSummaryShell(
                 Column { extra() }
                 PrimaryAction(
                     text = if (outcome.hasStreakEvent) {
-                        stringResource(R.string.lesson_next)
+                        stringResource(R.string.hsk_common_action_continue)
                     } else {
                         stringResource(R.string.practice_back_to_tools)
                     },

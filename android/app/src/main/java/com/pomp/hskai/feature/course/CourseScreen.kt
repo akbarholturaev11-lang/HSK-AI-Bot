@@ -48,6 +48,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
@@ -92,6 +93,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.pomp.hskai.R
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.components.HskSectionTitle
@@ -127,6 +129,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /** Native rendering of the Mini App course shell. Mini App is source of truth. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CourseScreen(
     state: CourseUiState,
@@ -167,106 +170,112 @@ fun CourseScreen(
     }
     Box(modifier = modifier.fillMaxSize()) {
         HskSceneSurface(modifier = Modifier.fillMaxSize()) {
-            when {
-                state.isLoading && map == null -> Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) { HskBrandLoader() }
+            PullToRefreshBox(
+                isRefreshing = state.isRefreshing,
+                onRefresh = { if (!state.isRefreshing && !state.isSwitchingTrack && !state.isOpeningChest) onRetry() },
+                modifier = Modifier.fillMaxSize().testTag("course-refresh"),
+            ) {
+                when {
+                    state.isLoading && map == null -> Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) { HskBrandLoader() }
 
-                map == null -> CourseErrorBlock(
-                    messageRes = state.error?.messageRes ?: R.string.error_unknown,
-                    onRetry = onRetry,
-                )
+                    map == null -> CourseErrorBlock(
+                        messageRes = state.error?.messageRes ?: R.string.error_unknown,
+                        onRetry = onRetry,
+                    )
 
-                else -> {
-                    val rows = remember(map) { map.toRows() }
-                    val listState = rememberLazyListState()
-                    val viewportHeight = listState.layoutInfo.viewportSize.height
-                    val foundationVisible = map.level.equals("hsk1", ignoreCase = true) && map.foundation != null
-                    val foundationMustComeFirst = foundationVisible && map.foundation?.mustComeFirst == true
+                    else -> {
+                        val rows = remember(map) { map.toRows() }
+                        val listState = rememberLazyListState()
+                        val viewportHeight = listState.layoutInfo.viewportSize.height
+                        val foundationVisible = map.level.equals("hsk1", ignoreCase = true) && map.foundation != null
+                        val foundationMustComeFirst = foundationVisible && map.foundation?.mustComeFirst == true
 
-                    LaunchedEffect(
-                        map.currentLesson?.order,
-                        viewportHeight,
-                        foundationVisible,
-                        foundationMustComeFirst,
-                    ) {
-                        if (foundationMustComeFirst) {
-                            listState.scrollToItem(0)
-                            return@LaunchedEffect
-                        }
-                        val rowIndex = rows.indexOfFirst {
-                            it is CourseRow.Path &&
-                                (it.item as? PathItem.Lesson)?.lesson?.isCurrent == true
-                        }
-                        if (rowIndex >= 0 && viewportHeight > 0) {
-                            listState.scrollToItem(
-                                index = rowIndex + if (foundationVisible) 1 else 0,
-                                scrollOffset = -(viewportHeight * 0.42f).roundToInt(),
-                            )
-                        }
-                    }
-
-                    Column(Modifier.fillMaxSize()) {
-                        CourseHeader(
-                            map = map,
-                            dailyGoal = dailyGoal,
-                            onOpenGoal = onOpenGoal,
-                            hints = hints,
-                            onDismissHint = onDismissHint,
-                            isSwitchingTrack = state.isSwitchingTrack,
-                            onSwitchTrack = { targetTrack, targetLevel ->
-                                pendingTrackSwitch = targetTrack to targetLevel
-                            },
-                            onOpenCourseChoice = { showCourseChoice = true },
-                        )
-                        if (!foundationMustComeFirst) {
-                            map.today?.takeIf { it.tasks.isNotEmpty() }?.let { today ->
-                                TodayPlanCard(today = today, onTask = onTodayTask)
-                            }
-                        }
-                        if (state.isStale) StaleBanner()
-
-                        LazyColumn(
-                            state = listState,
-                            modifier = Modifier.fillMaxWidth().weight(1f),
-                            contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                                top = 8.dp,
-                                // The tab bar floats over the list now, so the
-                                // last lesson needs this to clear it.
-                                bottom = 8.dp + LocalMainBottomInset.current,
-                            ),
+                        LaunchedEffect(
+                            map.currentLesson?.order,
+                            viewportHeight,
+                            foundationVisible,
+                            foundationMustComeFirst,
                         ) {
-                            if (foundationVisible) {
-                                item {
-                                    map.foundation?.let { FoundationEntry(it) }
+                            if (foundationMustComeFirst) {
+                                listState.scrollToItem(0)
+                                return@LaunchedEffect
+                            }
+                            val rowIndex = rows.indexOfFirst {
+                                it is CourseRow.Path &&
+                                    (it.item as? PathItem.Lesson)?.lesson?.isCurrent == true
+                            }
+                            if (rowIndex >= 0 && viewportHeight > 0) {
+                                listState.scrollToItem(
+                                    index = rowIndex + if (foundationVisible) 1 else 0,
+                                    scrollOffset = -(viewportHeight * 0.42f).roundToInt(),
+                                )
+                            }
+                        }
+
+                        Column(Modifier.fillMaxSize()) {
+                            CourseHeader(
+                                map = map,
+                                dailyGoal = dailyGoal,
+                                onOpenGoal = onOpenGoal,
+                                hints = hints,
+                                onDismissHint = onDismissHint,
+                                isSwitchingTrack = state.isSwitchingTrack,
+                                onSwitchTrack = { targetTrack, targetLevel ->
+                                    pendingTrackSwitch = targetTrack to targetLevel
+                                },
+                                onOpenCourseChoice = { showCourseChoice = true },
+                            )
+                            if (!foundationMustComeFirst) {
+                                map.today?.takeIf { it.tasks.isNotEmpty() }?.let { today ->
+                                    TodayPlanCard(today = today, onTask = onTodayTask)
                                 }
                             }
-                            items(rows) { row ->
-                                when (row) {
-                                    is CourseRow.Unit -> UnitHeader(row.unit)
-                                    is CourseRow.Path -> PathRow(
-                                        row = row,
-                                        chestReady = map.progress.rewardChest?.ready == true,
-                                        isOpeningChest = state.isOpeningChest,
-                                        isStale = state.isStale,
-                                        unlockedLessonOrder = state.unlockedLessonOrder,
-                                        onUnlockAnimationConsumed = onUnlockAnimationConsumed,
-                                        onLesson = onLesson,
-                                        onLimitedLesson = {
-                                            val hsk30 = map.hsk30
-                                            if (hsk30?.activeTrack == "hsk30" && !hsk30.access.allowed) {
-                                                onUnlockHsk30()
-                                            } else {
-                                                limitedLesson = it
-                                            }
-                                        },
-                                        onLockedLesson = onLockedLesson,
-                                        onOpenChest = onOpenChest,
-                                    )
+                            if (state.isStale) StaleBanner()
+
+                            LazyColumn(
+                                state = listState,
+                                modifier = Modifier.fillMaxWidth().weight(1f),
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                    top = 8.dp,
+                                    // The tab bar floats over the list now, so the
+                                    // last lesson needs this to clear it.
+                                    bottom = 8.dp + LocalMainBottomInset.current,
+                                ),
+                            ) {
+                                if (foundationVisible) {
+                                    item {
+                                        map.foundation?.let { FoundationEntry(it) }
+                                    }
                                 }
+                                items(rows) { row ->
+                                    when (row) {
+                                        is CourseRow.Unit -> UnitHeader(row.unit)
+                                        is CourseRow.Path -> PathRow(
+                                            row = row,
+                                            chestReady = map.progress.rewardChest?.ready == true,
+                                            isOpeningChest = state.isOpeningChest,
+                                            isStale = state.isStale,
+                                            unlockedLessonOrder = state.unlockedLessonOrder,
+                                            onUnlockAnimationConsumed = onUnlockAnimationConsumed,
+                                            onLesson = onLesson,
+                                            onLimitedLesson = {
+                                                val hsk30 = map.hsk30
+                                                if (hsk30?.activeTrack == "hsk30" && !hsk30.access.allowed) {
+                                                    onUnlockHsk30()
+                                                } else {
+                                                    limitedLesson = it
+                                                }
+                                            },
+                                            onLockedLesson = onLockedLesson,
+                                            onOpenChest = onOpenChest,
+                                        )
+                                    }
+                                }
+                                item { Spacer(Modifier.height(14.dp)) }
                             }
-                            item { Spacer(Modifier.height(14.dp)) }
                         }
                     }
                 }
@@ -275,7 +284,7 @@ fun CourseScreen(
 
         if (limitedLesson != null) {
             SectionLimitOverlay(
-                sectionTitle = stringResource(R.string.nav_course),
+                sectionTitle = stringResource(R.string.hsk_common_navigation_course),
                 sourceKey = "course_limit",
                 limit = limit,
                 reason = map?.lessonLimit?.limitText
@@ -394,7 +403,7 @@ fun CourseScreen(
                                     contentColor = PompColors.OnCinnabar,
                                 ),
                             ) {
-                                Text(stringResource(R.string.action_continue))
+                                Text(stringResource(R.string.hsk_common_action_continue))
                             }
                         },
                         dismissButton = {
@@ -456,6 +465,7 @@ internal fun Hsk30BookDialog(
 internal fun Hsk30BookTitle(title: String, body: String) {
     Text(
         title,
+        modifier = Modifier.testTag("hsk30-book-title"),
         color = PompColors.Ink,
         fontSize = 25.sp,
         lineHeight = 30.sp,
@@ -549,38 +559,53 @@ private fun Hsk30LockedEntryDialog(
     onUnlock: () -> Unit,
     onBackToHsk20: () -> Unit,
 ) {
-    val paymentAvailable = hsk30.paymentEnabled && hsk30.priceTjs > 0 &&
+    val paymentAvailable = BuildConfig.EXTERNAL_CHECKOUT_ENABLED &&
+        hsk30.paymentEnabled && hsk30.priceTjs > 0 &&
         hsk30.priceDisplay.isNotBlank()
     Hsk30BookDialog(isNew = false, onDismiss = {}, dismissible = false) {
         Hsk30BookTitle(
             title = stringResource(
-                if (hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_title
-                else R.string.hsk30_access_required_title,
+                when {
+                    !BuildConfig.EXTERNAL_CHECKOUT_ENABLED -> R.string.hsk30_play_access_title
+                    hsk30.access.paymentRejected -> R.string.hsk30_payment_rejected_title
+                    else -> R.string.hsk30_access_required_title
+                },
             ),
             body = stringResource(
-                if (hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_body
+                if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_body
                 else R.string.hsk30_access_required_body,
             ),
         )
-        if (hsk30.priceDisplay.isNotBlank()) {
+        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30.priceDisplay.isNotBlank()) {
             Hsk30BookPrice(hsk30.priceDisplay)
         } else {
             Spacer(Modifier.height(20.dp))
         }
         if (!paymentAvailable) {
             Text(
-                stringResource(R.string.hsk30_unlock_unavailable),
+                stringResource(if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) R.string.hsk30_unlock_unavailable else R.string.hsk30_play_access_status),
                 color = PompColors.InkSecondary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(bottom = 12.dp),
             )
         }
-        Hsk30BookPrimary(
-            label = stringResource(R.string.hsk30_access_unlock_button),
-            enabled = paymentAvailable,
-            onClick = onUnlock,
-        )
-        Hsk30BookSecondary(stringResource(R.string.hsk30_access_back_hsk20), onBackToHsk20)
+        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+            Hsk30BookPrimary(
+                label = stringResource(R.string.hsk30_access_unlock_button),
+                enabled = paymentAvailable,
+                onClick = onUnlock,
+            )
+        }
+        // On Play this is the only available escape from the mandatory gate:
+        // make the return action a visible primary CTA, not muted helper text.
+        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+            Hsk30BookSecondary(stringResource(R.string.hsk30_access_back_hsk20), onBackToHsk20)
+        } else {
+            Hsk30BookPrimary(
+                label = stringResource(R.string.hsk30_access_back_hsk20),
+                onClick = onBackToHsk20,
+            )
+        }
     }
 }
 
@@ -623,17 +648,27 @@ private fun Hsk30PromoDialog(
     val hasAccess = hsk30.access.allowed
     Hsk30BookDialog(isNew = false, onDismiss = onDismiss) {
         Hsk30BookTitle(
-            title = stringResource(if (hasAccess) R.string.hsk30_promo_switch else R.string.hsk30_promo_title),
+            title = stringResource(
+                when {
+                    hasAccess -> R.string.hsk30_promo_switch
+                    !BuildConfig.EXTERNAL_CHECKOUT_ENABLED -> R.string.hsk30_play_access_title
+                    else -> R.string.hsk30_promo_title
+                },
+            ),
             body = stringResource(
                 if (hasAccess) R.string.hsk30_promo_body_unlocked else R.string.hsk30_access_required_body,
             ),
         )
-        if (!hasAccess && hsk30.priceDisplay.isNotBlank()) {
+        if (!hasAccess && BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30.priceDisplay.isNotBlank()) {
             Hsk30BookPrice(hsk30.priceDisplay)
         } else {
             Spacer(Modifier.height(20.dp))
         }
-        Hsk30BookPrimary(stringResource(R.string.hsk30_promo_switch), onClick = onContinue)
+        if (hasAccess || BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+            Hsk30BookPrimary(stringResource(R.string.hsk30_promo_switch), onClick = onContinue)
+        } else {
+            Text(stringResource(R.string.hsk30_play_access_status), color = PompColors.InkSecondary)
+        }
         Hsk30BookSecondary(stringResource(R.string.hsk30_promo_stay), onDismiss)
     }
 }
@@ -679,13 +714,13 @@ private fun CourseChoiceSheet(
                 .padding(start = 18.dp, end = 18.dp, bottom = 16.dp),
         ) {
             Text(
-                stringResource(R.string.course_choice_title),
+                stringResource(R.string.hsk_course_course_picker_title),
                 fontSize = 23.sp,
                 fontWeight = FontWeight.Bold,
                 color = PompColors.Ink,
             )
             Spacer(Modifier.height(18.dp))
-            Text(stringResource(R.string.course_choice_version), color = PompColors.InkSecondary, fontSize = 14.sp)
+            Text(stringResource(R.string.hsk_course_course_picker_version), color = PompColors.InkSecondary, fontSize = 14.sp)
             Spacer(Modifier.height(9.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
                 listOf("hsk20", "hsk30").forEach { track ->
@@ -705,7 +740,7 @@ private fun CourseChoiceSheet(
                 }
             }
             Spacer(Modifier.height(22.dp))
-            Text(stringResource(R.string.course_choice_level), color = PompColors.InkSecondary, fontSize = 14.sp)
+            Text(stringResource(R.string.hsk_course_course_picker_level), color = PompColors.InkSecondary, fontSize = 14.sp)
             Spacer(Modifier.height(9.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 available.forEach { level ->
@@ -750,7 +785,7 @@ private fun CourseChoiceSheet(
                 shape = RoundedCornerShape(15.dp),
             ) {
                 Text(
-                    stringResource(R.string.course_choice_confirm),
+                    stringResource(R.string.hsk_course_course_picker_confirm),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -861,7 +896,7 @@ private fun CourseHeader(
             Icons.Filled.Diamond,
             PompColors.GoldInk,
             map.progress.xp.toString(),
-            stringResource(R.string.today_xp),
+            stringResource(R.string.hsk_course_xp),
         )
         Spacer(Modifier.width(8.dp))
         GoalRing(map.progress.dailyXp, dailyGoal, onOpenGoal)
@@ -1156,7 +1191,7 @@ private fun PathRow(
                     )
                     Text(
                         text = if (lesson.isCheckpoint) {
-                            stringResource(R.string.course_checkpoint)
+                            stringResource(R.string.hsk_course_part_sections_r)
                         } else {
                             stringResource(R.string.course_part_label, lesson.part)
                         },
@@ -1636,7 +1671,7 @@ private fun RewardChestOverlay(rewardXp: Int, onContinue: () -> Unit) {
                     )
                     Spacer(Modifier.height(18.dp))
                     HskPrimaryButton(
-                        text = stringResource(R.string.action_continue),
+                        text = stringResource(R.string.hsk_common_action_continue),
                         onClick = onContinue,
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -1661,7 +1696,7 @@ private fun CourseErrorBlock(messageRes: Int, onRetry: () -> Unit) {
         )
         Spacer(Modifier.height(16.dp))
         HskGlassButton(
-            text = stringResource(R.string.action_retry),
+            text = stringResource(R.string.hsk_course_lesson_flow_retry),
             onClick = onRetry,
         )
     }

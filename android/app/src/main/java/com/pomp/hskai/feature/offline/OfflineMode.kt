@@ -184,7 +184,7 @@ fun OfflineBanner(
                 )
             } else {
                 Text(
-                    text = stringResource(R.string.action_retry),
+                    text = stringResource(R.string.hsk_course_lesson_flow_retry),
                     style = MaterialTheme.typography.bodyMedium,
                     color = PompColors.InkSecondary,
                 )

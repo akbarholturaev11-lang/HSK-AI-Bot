@@ -1,0 +1,79 @@
+name: Merge P3 into main-snapshot integration branch
+
+on:
+  push:
+    branches:
+      - codex/p3-main-integration-20261020
+    paths:
+      - ".github/workflows/p3-integration-merge.yml"
+      - "scripts/p3_merge_resolve.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-time-p3-main-merge
+  cancel-in-progress: false
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Merge verified P3 ref, resolve bounded conflicts, and push integration branch only
+        shell: bash
+        env:
+          EXPECTED_P3_SHA: 7d113214c7e9b3260d03fb8de0892e6809deed7e
+          ORIGINAL_MAIN_SHA: 055de820db10b32fadffa942938a16e2070f0d52
+        run: |
+          set -euo pipefail
+          git config user.name "HSK AI integration workflow"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ "$(git branch --show-current)" = "codex/p3-main-integration-20261020" ]
+          git merge-base --is-ancestor "$ORIGINAL_MAIN_SHA" HEAD
+          git fetch --no-tags origin codex/i18n-local-first-foundation-20261017
+          actual="$(git rev-parse FETCH_HEAD)"
+          if [ "$actual" != "$EXPECTED_P3_SHA" ]; then
+            echo "::error::P3 HEAD moved from approved merge snapshot ($EXPECTED_P3_SHA to $actual)"
+            exit 1
+          fi
+          set +e
+          git merge --no-commit --no-ff "$EXPECTED_P3_SHA"
+          merge_status=$?
+          set -e
+          if [ "$merge_status" -eq 0 ]; then
+            echo "::error::Unexpected clean merge; conflict manifest should be updated"
+            exit 1
+          fi
+          python scripts/p3_merge_resolve.py
+          # Check conflict-resolved executable code, not old P3 markdown\n          # formatting already tracked in unrelated historical documents.\n          git diff --cached --check -- app/static/course-v3.html app/static/course_v3_memorize.html android/app/src/main/java/com/pomp/hskai/feature/foundation/FoundationScreen.kt android/app/src/main/java/com/pomp/hskai/feature/profile/ProfileScreen.kt .github/workflows/backend-ci.yml AI_RULES.md PROJECT_MEMORY.md tests/test_subscription_service.py
+          python -m compileall -q scripts app tests
+          node --check app/static/course_v3_data/p3-grammar-reservation.js
+          # Exact generated local-first UZ/RU/TJ artifacts remain consistent.
+          python scripts/i18n_build_local_catalogs.py --check
+          # Export the exact post-conflict backend CI blob for the authorized connector merge.
+          echo "MERGED_BACKEND_CI_BASE64_BEGIN"
+          base64 -w0 .github/workflows/backend-ci.yml
+          echo
+          echo "MERGED_BACKEND_CI_BASE64_END"
+          echo "---- INTEGRATION MERGE PRE-COMMIT SUMMARY ----"
+          git status --short | tail -n 32
+          git diff --cached --stat | tail -n 8
+          # GitHub Actions lacks workflow-write permission, and a two-parent
+          # Git push would include P3 workflow-changing commits in its history.
+          # Publish a single-parent non-workflow snapshot as a temporary data
+          # transport. The GitHub connector will create the real merge.
+          git restore --source=HEAD --staged --worktree -- .github/workflows
+          git merge --quit
+          if git diff --cached --name-only | grep -q '^.github/workflows/'; then
+            echo "::error::Unexpected workflow delta in payload"
+            exit 1
+          fi
+          git commit -m "stage: conflict-resolved P3 non-workflow merge payload"
+          echo "PAYLOAD_HEAD=$(git rev-parse HEAD)"
+          echo "PAYLOAD_PARENTS=$(git rev-list --parents -n 1 HEAD)"
+          git push origin "HEAD:refs/heads/codex/p3-merge-payload-with-ci-20261020"
+          echo "PAYLOAD_PUSH_SUCCESS"

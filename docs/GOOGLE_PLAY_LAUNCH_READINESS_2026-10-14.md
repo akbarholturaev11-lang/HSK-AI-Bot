@@ -182,3 +182,7 @@ After this workflow lands on `main`:
 
 Reminder: A successful CI check proves only these technical conditions,
 not compliance with every Play policy or a Google review approval.
+
+## 2026-10-22 follow-up audit
+
+The newer source-backed review is [GOOGLE_PLAY_RELEASE_AUDIT_2026-10-22.md](GOOGLE_PLAY_RELEASE_AUDIT_2026-10-22.md). This 2026-10-14 document is retained for history, **not** as the final readiness verdict. Its old version-number examples must not be reused for a Play upload. Android target API is 36 as of 2026-08-31 for newly submitted handheld apps and updates. The Play consumption-only HSK 3.0 payment/price affordances and AI answer reporting UI are handled in the new branch, subject to Android CI and real-device verification.

@@ -8,7 +8,7 @@ from app.services.payment_service import PaymentService
 from app.services.admin_notify_service import AdminNotifyService
 from app.services.payment_screenshot_ai_service import PaymentScreenshotAIService
 from app.services.conversion_funnel_service import ConversionFunnelService
-from app.bot.utils.i18n import t
+from app.bot.utils.i18n import bot_locale_map, t
 
 router = Router()
 
@@ -22,16 +22,8 @@ def _is_night() -> bool:
 
 def _waiting_message(lang: str, is_night: bool) -> str:
     if is_night:
-        return {
-            "uz": "📸 Skrinshot qabul qilindi.\n\nAdmin ish vaqti: 08:00–23:00. To'lovingiz ertalab tasdiqlanadi.",
-            "tj": "📸 Скриншот қабул шуд.\n\nВақти корӣ: 08:00–23:00. Пардохт субҳ тасдиқ карда мешавад.",
-            "ru": "📸 Скриншот получен.\n\nЧасы работы: 08:00–23:00. Платёж будет проверен утром.",
-        }.get(lang, "📸 Screenshot received.")
-    return {
-        "uz": "📸 Skrinshot qabul qilindi.\n\nO'rtacha tekshiruv vaqti: 5–15 daqiqa.",
-        "tj": "📸 Скриншот қабул шуд.\n\nВақти тафтиш: 5–15 дақиқа.",
-        "ru": "📸 Скриншот получен.\n\nСреднее время проверки: 5–15 минут.",
-    }.get(lang, "📸 Screenshot received.")
+        return bot_locale_map('inline.handlers.payments.helper_waiting_message.copy1').get(lang, "📸 Screenshot received.")
+    return bot_locale_map('inline.handlers.payments.helper_waiting_message.copy2').get(lang, "📸 Screenshot received.")
 
 
 @router.message(F.photo)

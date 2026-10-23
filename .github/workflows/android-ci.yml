@@ -6,6 +6,10 @@ on:
     branches: [main, "feat/android-**", "codex/local-ai", "codex/cloud-ai"]
     paths:
       - "android/**"
+      - "localization/android/**"
+      - "localization/ui/**"
+      - "scripts/i18n_build_*catalogs.py"
+      - "tests/test_i18n_android_catalog_adoption.py"
       - "app/api/android_*.py"
       - "app/api/desktop_auth.py"
       - "app/api/desktop_course.py"
@@ -30,6 +34,10 @@ on:
   pull_request:
     paths:
       - "android/**"
+      - "localization/android/**"
+      - "localization/ui/**"
+      - "scripts/i18n_build_*catalogs.py"
+      - "tests/test_i18n_android_catalog_adoption.py"
       - "app/api/android_*.py"
       - "app/api/desktop_auth.py"
       - "app/api/desktop_course.py"
@@ -71,6 +79,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check canonical bundled UI resources
+        working-directory: .
+        run: |
+          python3 scripts/i18n_build_android_catalogs.py --check
+          python3 scripts/i18n_build_local_catalogs.py --check
+          python3 scripts/i18n_build_course_catalogs.py --check
+          python3 -m unittest tests.test_i18n_android_catalog_adoption
 
       # The build must depend on the committed wrapper, never on whatever
       # Gradle happens to be installed on the runner. Fail loudly and early
@@ -127,7 +143,9 @@ jobs:
         run: python3 tools/check_flavor_parity.py
 
       - name: Check Google Play channel and key safeguards
-        run: python3 tools/check_play_release_contract.py
+        run: |
+          python3 tools/check_play_release_contract.py
+          python3 -m unittest discover -s ../tests -p test_android_play_artifact_guard.py
 
       - name: Check every string exists in uz, ru and tg
         run: python3 tools/check_strings_translated.py
@@ -169,6 +187,21 @@ jobs:
 
       - name: Assemble debug
         run: ./gradlew --no-daemon assemblePlayDebug assembleDirectDebug
+
+      # Installable, independently signed debug builds for the owner's PR QA.
+      # Only the requested same-repository Play readiness branch gets download
+      # artifacts; no release keys, store uploads or R2 publication are used.
+      # These .debug packages install beside production, not over existing users.
+      - name: Upload isolated Direct and Play test APKs
+        if: ${{ github.event_name == 'pull_request' && github.head_ref == 'codex/android-play-readiness-20261022' && github.event.pull_request.head.repo.full_name == github.repository }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: hsk-ai-play-readiness-test-apks
+          path: |
+            android/app/build/outputs/apk/direct/debug/*.apk
+            android/app/build/outputs/apk/play/debug/*.apk
+          if-no-files-found: error
+          retention-days: 7
 
       # Release stays fail-closed: without signing secrets the bundle is built
       # unsigned for validation only and is never published from CI.
@@ -215,6 +248,11 @@ jobs:
             tests/test_android_foundation_api.py \
             tests/test_android_course_rank_completion.py \
             tests/test_android_features_api.py \
+            tests/test_android_assistant_service.py \
+            tests/test_android_live_voice_gate.py \
+            tests/test_voice_practice_course_context.py \
+            tests/test_android_bug_report_flow_contract.py \
+            tests/test_android_hsk30_profile_books_contract.py \
             tests/test_android_push.py \
             tests/test_android_account_notices.py \
             tests/test_course_card_contract.py \

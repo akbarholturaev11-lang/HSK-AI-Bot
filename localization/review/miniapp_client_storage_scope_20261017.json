@@ -1,0 +1,174 @@
+{
+  "schema_version": 1,
+  "status": "SOURCE_CLASSIFIED_ACCOUNT_SCOPED_RUNTIME_QA_REQUIRED",
+  "sources": {
+    "course": "app/static/course-v3.html",
+    "memorize": "app/static/course_v3_memorize.html"
+  },
+  "capture_scope": "Static localStorage/sessionStorage getItem/setItem/removeItem calls whose first argument is a quoted literal. Dynamic-key constructors inventoried separately. No browser/WebView QA.",
+  "literal_key_classes": [
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_level",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "non_sensitive_level_preference",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_tour",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "ui_tour_acknowledgement",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_pinyin",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "ui_display_preference",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_setup_asked",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "setup_prompt_throttle",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_narrate",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "ui_audio_preference",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_plan_choice",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "planning_hint_flag",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "localStorage",
+      "key": "hsk_v3_onb",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "onboarding_client_hint_server_primary",
+      "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "sessionStorage",
+      "key": "hsk_mistake_review_ref",
+      "expected_operations": [
+        "removeItem"
+      ],
+      "category": "session_access_ref_cleared",
+      "account_data_review": true
+    },
+    {
+      "source": "course",
+      "storage": "sessionStorage",
+      "key": "hsk_v3_resource_return",
+      "expected_operations": [
+        "getItem",
+        "removeItem",
+        "removeItem"
+      ],
+      "category": "navigation_return_flag",
+      "account_data_review": false
+    },
+    {
+      "source": "memorize",
+      "storage": "localStorage",
+      "key": "hsk_memo_pref",
+      "expected_operations": [
+        "getItem",
+        "setItem"
+      ],
+      "category": "unscoped_practice_style_preference",
+      "account_data_review": false
+    }
+  ],
+  "dynamic_key_contracts": [
+    {
+      "source": "course",
+      "function": "lessonDataKey",
+      "expected_identity_scope": true,
+      "purpose": "in_memory_lesson_json_cache_key",
+      "privacy_review": "Cache is namespaced by localUserScope to avoid cross-account reuse; in-flight reads reject if scope changes. Client identity is not server authorization; runtime switching QA remains required."
+    },
+    {
+      "source": "course",
+      "function": "lessonResumeKey",
+      "expected_identity_scope": true,
+      "purpose": "persistent_lesson_position",
+      "privacy_review": "Seven-day resume cursor is namespaced by localUserScope for signed Telegram users; unauthenticated preview keeps the legacy non-account key. Old shared account cursor is not migrated."
+    },
+    {
+      "source": "course",
+      "function": "lessonMasteryKey",
+      "expected_identity_scope": true,
+      "purpose": "persistent_mastery_and_repair_state",
+      "privacy_review": "localUserScope uses tg.initDataUnsafe user id; live cross-user QA required"
+    },
+    {
+      "source": "course",
+      "function": "foundationCacheKey",
+      "expected_identity_scope": true,
+      "purpose": "persistent_foundation_completion_hint",
+      "privacy_review": "server foundation status remains primary"
+    },
+    {
+      "source": "course",
+      "function": "studySetupTimeKey",
+      "expected_identity_scope": false,
+      "purpose": "setup_time_completion_per_user_suffix",
+      "privacy_review": "uses explicit Telegram userId suffix instead of localUserScope; do not infer identity-free behavior from absence of helper"
+    },
+    {
+      "source": "memorize",
+      "function": "memorizationStateKey",
+      "expected_identity_scope": true,
+      "purpose": "persistent_personal_character_mastery",
+      "privacy_review": "Signed Telegram user id scopes mastery; unauthenticated preview retains the existing hsk_memo key. Old shared account state is not migrated."
+    }
+  ],
+  "risks": [
+    {
+      "id": "unverified_user_scope_source",
+      "severity": "review_only",
+      "key": "localUserScope",
+      "scope": "tg.initDataUnsafe is unverified client data; server entitlement cannot rely on it"
+    }
+  ],
+  "limitations": "Source key inventory only. Does not prove data leak, browser origin shared between Telegram sessions, user authorization, expiry behavior, race conditions, or existing device artifacts; no sensitive contents or user identifiers emitted."
+}

@@ -1,0 +1,2667 @@
+{
+  "schema_version": 1,
+  "namespace": "miniapp",
+  "locale": "uz",
+  "messages": {
+    "ui.course_v3.copy.copy1.title": "Kurs ochilmoqda…",
+    "ui.course_v3.copy.copy1.subtitle": "Panda kursni tayyorlayapti",
+    "ui.course_v3.w.copy1.title": "Darsdan chiqasizmi?",
+    "ui.course_v3.w.copy1.body": "Keyin shu joydan davom etishingiz mumkin.",
+    "ui.course_v3.w.copy1.keep": "Darsni davom ettirish",
+    "ui.course_v3.focusSheetStart.copy1": "Natija: 你好 ni tushunasiz, dialogni eshitib taniysiz va 对不起 → 没关系 javobini tuza olasiz.",
+    "ui.course_v3.focusSheetStart.copy2": " Talaffuz bonusini ham bajardingiz.",
+    "ui.course_v3.RU.copy1.t": "Reytingda ko'tarildingiz!",
+    "ui.course_v3.RU.copy1.s": "{n} ortda qoldi. Buni bugungi darsingiz hal qildi.",
+    "ui.course_v3.t.copy1.c": "Mana kursingiz! Har bir doira — bitta dars. Tugmachani bosing va o'qishni boshlang.",
+    "ui.course_v3.t.copy1.cNode": "Bu hozirgi darsingiz — bosing va boshlang! Dars ichida ✏️ tugmasi paydo bo'ladi — ieroglif yozilishini ko'rish uchun bosing.",
+    "ui.course_v3.t.copy1.m": "Mashq bo'limi — bilimlarni mustahkamlash uchun hamma narsa.",
+    "ui.course_v3.t.copy1.mDict": "Ieroglif lug'ati 字 — HSK 1–4 barcha belgilar: yozilishi, pinyin va ma'nosi. Ieroglif yoki ma'no bo'yicha qidirish mumkin.",
+    "ui.course_v3.t.copy1.mRecog": "Ieroglifni tanish — so'zni eshitib, ko'rib, to'g'ri ieroglifni tanlaysiz. Belgilarni o'qishni mashq qiladi.",
+    "ui.course_v3.t.copy1.mPron": "Talaffuz mashqi — namunani eshiting, ovoz chiqarib takrorlang, AI talaffuz va ohangni tekshiradi.",
+    "ui.course_v3.t.copy1.mTest": "Test markazi — HSK 1–4 rasmiy imtihon savollari va noldan daraja aniqlash testi.",
+    "ui.course_v3.t.copy1.mMist": "Xatolarim — xato qilgan so'zlar shu yerda yig'iladi. Zaif joylarni takrorlang!",
+    "ui.course_v3.t.copy1.v": "AI Voice — panda 阿宝 bilan jonli xitoycha suhbat. Gapiring — darhol tuzatish oling!",
+    "ui.course_v3.t.copy1.r": "朱雀 ligasi — o'quvchilar orasidagi o'rningiz. Har kuni XP to'plang va yuqoriga chiqing!",
+    "ui.course_v3.t.copy1.p": "Profil: ketma-ket kunlar, kunlik maqsad va yutuqlar. Til, bildirishnoma va XP maqsadini sozlang.",
+    "ui.course_v3.t.copy1.voice": "Ovoz",
+    "ui.course_v3.t.copy1.done": "Boshlaylik!",
+    "ui.course_v3.t.copy1.next": "Keyingi",
+    "ui.course_v3.names.copy1": "O'zbekcha",
+    "ui.course_v3.studySetupT.copy1.goalSub": "Kunlik rejangiz shunga qarab tuziladi.",
+    "ui.course_v3.studySetupT.copy1.goals.work_china": "Ish uchun xitoy tili",
+    "ui.course_v3.studySetupT.copy1.timeQ": "Kuniga necha daqiqa vaqtingiz bor?",
+    "ui.course_v3.studySetupT.copy1.timeSub": "Kunlik reja uzunligi shunga bog'liq.",
+    "ui.course_v3.studySetupT.copy1.focusQ": "Nimaga ko'proq urg'u beraylik?",
+    "ui.course_v3.studySetupT.copy1.focusSub": "Bu — reja uchun ishora. Xatolarni tizim o'zi topadi.",
+    "ui.course_v3.studySetupT.copy1.focus.speaking": "Gapirish",
+    "ui.course_v3.studySetupT.copy1.focus.vocabulary": "So'z va ieroglif",
+    "ui.course_v3.studySetupT.copy1.focus.none": "Farqi yo'q",
+    "ui.course_v3.m.copy1.free_feature_limit_reached": "Bugungi bepul chegara tugadi.",
+    "ui.course_v3.m.copy1.course_lesson_not_unlocked": "Avvalgi darsni tugating.",
+    "ui.course_v3.m.copy1.default": "Progress saqlanmadi. Qayta urinib ko'ring.",
+    "ui.course_v3.m.copy2.item1.t": "Birinchi kundan gapirasan",
+    "ui.course_v3.m.copy2.item1.s": "Panda 阿宝 sabr bilan tinglaydi va xatoingni yumshoq tuzatadi",
+    "ui.course_v3.m.copy2.item2.t": "Adashmaysan — yo'l tayyor",
+    "ui.course_v3.m.copy2.item2.s": "HSK 1–4: har kuni aniq keyingi qadam ko'rsatiladi",
+    "ui.course_v3.m.copy2.item3.t": "Imtihonga ishonch bilan borasan",
+    "ui.course_v3.m.copy2.item3.s": "Cheksiz test va aniq daraja — qayerda turganingni bilasan",
+    "ui.course_v3.m.copy2.item4.t": "Xatoing yo'qolmaydi",
+    "ui.course_v3.m.copy2.item4.s": "Har xato ustida ishlab, uni butunlay o'zlashtirasan",
+    "ui.course_v3.m.copy2.item5.t": "Har ieroglif qo'l ostingda",
+    "ui.course_v3.m.copy2.item5.s": "Yozilishi, pinyin va ma'no — bir tegishda topasan",
+    "ui.course_v3.m.copy2.item6.t": "Diqqating faqat o'rganishda",
+    "ui.course_v3.m.copy2.item6.s": "Reklama va limitlarsiz — hech narsa chalg'itmaydi",
+    "ui.course_v3.mascP.copy1.item1": "Davom etamiz!",
+    "ui.course_v3.mascP.copy1.item2": "Zo'r ketyapsan!",
+    "ui.course_v3.mascP.copy1.item3": "Yana bir dars!",
+    "ui.course_v3.mascP.copy1.item4": "Sen uddalaysan!",
+    "ui.course_v3.m.copy3.item2": "Mustahkamlash",
+    "ui.course_v3.m.copy3.item4": "Gapda ishlatish",
+    "ui.course_v3.m.copy3.item5": "Qisqa dialog",
+    "ui.course_v3.m.copy3.item6": "Review",
+    "ui.course_v3.M.copy1.offerTag": "O'tish testi",
+    "ui.course_v3.M.copy1.offerP": "Bu dars hali qulflangan. Uni ochish uchun qisqa test topshiring.",
+    "ui.course_v3.M.copy1.offerBtn": "Testni boshlash",
+    "ui.course_v3.M.copy1.passH": "Ajoyib natija!",
+    "ui.course_v3.M.copy1.passP": "{pct}% — zo'r! Bu dars sizga oson keladi. Dars ochildi 🎉",
+    "ui.course_v3.M.copy1.failH": "Dars ochildi",
+    "ui.course_v3.M.copy1.failP": "{pct}% — bu dars sizga biroz qiyinlik qilishi mumkin. Lekin xafa bo'lmang — dars ochildi, bosqichma-bosqich o'rganib olasiz 💪",
+    "ui.course_v3.M.copy1.confirmH": "Bu darsga hali tayyor emassiz",
+    "ui.course_v3.M.copy1.confirmP": "{pct}% — natija past. Bu dars sizga qiyinlik qilishi mumkin. Baribir ochishni xohlaysizmi?",
+    "ui.course_v3.M.copy1.confirmYes": "Baribir ochish",
+    "ui.course_v3.M.copy1.notReady": "Dars hali tayyor emas",
+    "ui.course_v3.M.copy1.saveErr": "Dars ochilishi saqlanmadi. Qayta urinib ko'ring.",
+    "ui.course_v3.oneHeartText.copy1": "Oxirgi yurak",
+    "ui.course_v3.lessonCharacterLabel.copy1": "Panda",
+    "ui.course_v3.lessonCharacterLabel.copy2": "Longlong · marra",
+    "ui.course_v3.lessonCharacterLabel.copy3": "Hehe · grammatika",
+    "ui.course_v3.lessonCharacterLabel.copy4": "Wuwu · mashq",
+    "ui.course_v3.lessonCharacterLabel.copy5": "Yueyue · eslab qolish",
+    "ui.course_v3.P.copy1.item1": "Davom et!",
+    "ui.course_v3.P.copy1.item2": "Zo'r!",
+    "ui.course_v3.P.copy1.item3": "Olov kabi!",
+    "ui.course_v3.P.copy1.item4": "Ajoyib!",
+    "ui.course_v3.P.copy1.item5": "To'xtama!",
+    "ui.course_v3.C.copy1.reset": "Muhimi — qaytding. Bugundan yangi hisob boshlandi.",
+    "ui.course_v3.C.copy1.d1": "Birinchi uchqun sizniki. Ertaga yana kelsangiz — alanga o'chmaydi.",
+    "ui.course_v3.C.copy1.d2": "Ikki kun. Endi bu tasodif emas — bu odat boshlanishi.",
+    "ui.course_v3.C.copy1.d3": "Uch kun ketma-ket. Ko'pchilik shu yerda to'xtaydi, siz esa yo'q.",
+    "ui.course_v3.C.copy1.d7": "Bir hafta to'liq. Xitoy tili endi kunlik hayotingizning bir qismi.",
+    "ui.course_v3.C.copy1.d14": "Ikki hafta. Bu darajaga har o'ninchi o'quvchi yetadi.",
+    "ui.course_v3.C.copy1.d30": "Bir oy uzluksiz. Siz o'zingizga so'zingizni bajarib chiqdingiz.",
+    "ui.course_v3.C.copy1.d100": "Yuz kun. Bu shunchaki seriya emas — bu xarakter.",
+    "ui.course_v3.H.copy1.perfect.item1": "Siz odam emassiz, shekilli? 🤖",
+    "ui.course_v3.H.copy1.perfect.item2": "0 xato. Bu allaqachon ustozlik.",
+    "ui.course_v3.H.copy1.perfect.item3": "Mukammal. Boshqa gap yo'q.",
+    "ui.course_v3.H.copy1.high.item1": "Zo'r ketyapsiz!",
+    "ui.course_v3.H.copy1.high.item2": "Deyarli mukammal 👏",
+    "ui.course_v3.H.copy1.high.item3": "Kam qoldi — sal sayqal.",
+    "ui.course_v3.H.copy1.mid.item1": "Xatolar — eng yaxshi ustoz.",
+    "ui.course_v3.H.copy1.mid.item2": "Yo'l ochildi. Davom etamiz.",
+    "ui.course_v3.H.copy1.mid.item3": "Barakalla, oldinga siljidingiz.",
+    "ui.course_v3.H.copy1.low.item1": "Qiyin dars edi. Sekin — ammo oldinga.",
+    "ui.course_v3.H.copy1.low.item2": "Boshlash — eng qiyini. Uddaladingiz.",
+    "ui.course_v3.H.copy1.low.item3": "Hech qisi yo'q. Yana bir bor ko'ramiz.",
+    "ui.course_v3.C.copy2.m1": "Birinchi darsingiz ortda. Eng og'iri — boshlash edi, uni qildingiz.",
+    "ui.course_v3.C.copy2.m5": "Beshinchi dars. Endi bu qiziqish emas — bu jarayon.",
+    "ui.course_v3.C.copy2.m10": "O'ninchi dars. Endi xitoycha gaplarni tanib turibsiz.",
+    "ui.course_v3.C.copy2.m25": "25 dars ortda. Bu yo'lni ko'pchilik boshlaydi — siz yuryapsiz.",
+    "ui.course_v3.C.copy2.m50": "50 dars. Bu shunchaki mashq emas, bu allaqachon tajriba.",
+    "ui.course_v3.C.copy2.m100": "100 dars. Bir yil oldin bu ro'yxatdagi orzu edi.",
+    "ui.course_v3.C.copy2.perfect": "Bitta ham xato yo'q. Bu darsni haqiqatan o'zlashtirdingiz.",
+    "ui.course_v3.C.copy2.high": "Deyarli hammasi to'g'ri. Bu so'zlar endi sizniki.",
+    "ui.course_v3.C.copy2.mid": "Xatolar bo'ldi, lekin oxirigacha yetdingiz — o'rganish aynan shunday ko'rinadi.",
+    "ui.course_v3.C.copy2.low": "Qiyin dars edi, siz esa tashlab ketmadingiz. Ertaga osonroq bo'ladi.",
+    "ui.course_v3.W.copy2.title": "Sizning haftangiz",
+    "ui.course_v3.W.copy2.left": "Yana {n} kun — hafta to'liq yopiladi",
+    "ui.course_v3.W.copy2.done": "To'liq hafta. Bironta ham kun tashlanmadi!",
+    "ui.course_v3.chestT.copy1.soon": "Sandiq hali yopiq",
+    "ui.course_v3.chestT.copy1.left": "Yana {n} XP kerak",
+    "ui.course_v3.chestT.copy1.got": "Sandiqdan sovg'a!",
+    "ui.course_v3.chestT.copy1.note": "Darslarda XP yig'ing — sandiq ochiladi!",
+    "ui.course_v3.todayT.copy1.part": "Qism",
+    "ui.course_v3.todayT.copy1.mistakes": "Xatolar",
+    "ui.course_v3.todayT.copy1.test": "Test",
+    "ui.course_v3.todayT.copy1.talk": "Suhbat",
+    "ui.course_v3.todayT.copy1.chars": "Ieroglif",
+    "ui.course_v3.todayT.copy1.done": "Reja bajarildi",
+    "ui.course_v3.MB.copy1.previous": "Oldingi darsdan",
+    "ui.course_v3.MB.copy1.current": "Shu darsdan",
+    "ui.course_v3.RT.copy1": "Gapni tarjima qiling",
+    "ui.course_v3.PRON_L.copy1.netErr": "Tarmoq xatosi",
+    "ui.course_v3.PRON_L.copy1.retry": "Bosing va yana ayting",
+    "ui.course_v3.title.copy1": "Li ustozdan keyin takrorlang",
+    "ui.course_v3.skipText.copy1": "O‘tkazib yuborish",
+    "ui.course_v3.rl.copy1.promote": "Top 5 yuqoriga ko'tariladi",
+    "ui.course_v3.rl.copy1.demote": "Tushish zonasi",
+    "ui.course_v3.rl.copy1.liga": "Liga",
+    "ui.course_v3.rl.copy1.refs": "Referallarim",
+    "ui.course_v3.rl.copy1.members": "o'quvchi",
+    "ui.course_v3.rl.copy1.left": "qoldi",
+    "ui.course_v3.rl.copy1.ch": "Belashuv",
+    "ui.course_v3.rl.copy1.chDone": "Chaqiruv yuborildi",
+    "ui.course_v3.rl.copy1.invite": "Do'st taklif qilish",
+    "ui.course_v3.rl.copy1.inviteSub": "Do'stingni chaqir va ligada yoki testda kuch sina — kim zo'rligini ko'rsat! 🔥",
+    "ui.course_v3.rl.copy1.refSub": "Sizning havolangizdan kirgan o'quvchilar shu yerda. Profilini oching, yozing yoki belashuv yuboring.",
+    "ui.course_v3.rl.copy1.loadErr": "Reyting yuklanmadi",
+    "ui.course_v3.rl.copy1.refLoadErr": "Do'stlar ro'yxati yuklanmadi",
+    "ui.course_v3.rl.copy1.empty": "Ligada hali real ishtirokchi yo'q",
+    "ui.course_v3.rl.copy1.refEmpty": "Havolangizdan hali hech kim kirmagan",
+    "ui.course_v3.rl.copy1.pending": "aktivlik kutilmoqda",
+    "ui.course_v3.rl.copy1.active": "aktiv",
+    "ui.course_v3.rl.copy1.totalXp": "jami XP",
+    "ui.course_v3.chL.copy1.title": "HSK bellashuv",
+    "ui.course_v3.chL.copy1.load": "Bellashuv yuklanyapti…",
+    "ui.course_v3.chL.copy1.same": "Har kimga o'z darajasidan 10 ta savol",
+    "ui.course_v3.chL.copy1.mix": "Faqat o'rganilgan so'z, pinyin va grammatika",
+    "ui.course_v3.chL.copy1.accept": "Qabul qilish",
+    "ui.course_v3.chL.copy1.reject": "Rad qilish",
+    "ui.course_v3.chL.copy1.start": "Raundni boshlash",
+    "ui.course_v3.chL.copy1.wait": "Raqibni kutyapmiz",
+    "ui.course_v3.chL.copy1.waitSub": "Natijangiz saqlandi. Raqib yakunlasa, bot yakuniy hisobni yuboradi.",
+    "ui.course_v3.chL.copy1.pending": "Raqib hali bellashuvni qabul qilmadi.",
+    "ui.course_v3.chL.copy1.done": "Raund tugadi",
+    "ui.course_v3.chL.copy1.youWon": "Siz yutdingiz",
+    "ui.course_v3.chL.copy1.youLost": "Raqib yutdi",
+    "ui.course_v3.chL.copy1.tie": "Durrang",
+    "ui.course_v3.chL.copy1.score": "Hisob",
+    "ui.course_v3.chL.copy1.rating": "Reytingni ochish",
+    "ui.course_v3.chL.copy1.needTg": "Telegram ichida oching",
+    "ui.course_v3.chL.copy1.err": "Bellashuv yuklanmadi",
+    "ui.course_v3.chL.copy1.sent": "Natija saqlandi",
+    "ui.course_v3.chL.copy1.answerSaved": "Javob qabul qilindi",
+    "ui.course_v3.chL.copy1.answerSavedSub": "Natija raund oxirida serverda tekshiriladi",
+    "ui.course_v3.chL.copy1.review": "Xatolarni takrorlang",
+    "ui.course_v3.chL.copy1.correct": "To'g'ri javob",
+    "ui.course_v3.pl.copy1.metricsLabel": "O‘qish statistikasi",
+    "ui.course_v3.pl.copy1.metricsXp": "Jami XP",
+    "ui.course_v3.pl.copy1.metricsLessons": "Tugatilgan darslar",
+    "ui.course_v3.pl.copy1.calTitle": "Ketma-ket kunlar",
+    "ui.course_v3.pl.copy1.calLong": "Rekord: 23 kun",
+    "ui.course_v3.pl.copy1.calDays.item1": "D",
+    "ui.course_v3.pl.copy1.calDays.item2": "S",
+    "ui.course_v3.pl.copy1.calDays.item3": "C",
+    "ui.course_v3.pl.copy1.calDays.item4": "P",
+    "ui.course_v3.pl.copy1.calDays.item5": "J",
+    "ui.course_v3.pl.copy1.calDays.item6": "S",
+    "ui.course_v3.pl.copy1.calDays.item7": "Y",
+    "ui.course_v3.pl.copy1.t1": "Liga g'olibi",
+    "ui.course_v3.pl.copy1.t2": "30 kun",
+    "ui.course_v3.pl.copy1.t3": "100 so'z",
+    "ui.course_v3.pl.copy1.tNext": "Keyingi",
+    "ui.course_v3.pl.copy1.ach": "Yutuqlar",
+    "ui.course_v3.pl.copy1.a1": "Birinchi qadam",
+    "ui.course_v3.pl.copy1.a1d": "Bajarildi",
+    "ui.course_v3.pl.copy1.a2": "100 dars",
+    "ui.course_v3.pl.copy1.a3": "30 kun ketma-ket",
+    "ui.course_v3.pl.copy1.goalLeft": "qoldi",
+    "ui.course_v3.pl.copy1.todayGoal": "Bugungi maqsad",
+    "ui.course_v3.pl.copy1.statusTemp": "Vaqtinchalik kirish",
+    "ui.course_v3.pl.copy1.statusTrial": "Sinov muddati",
+    "ui.course_v3.pl.copy1.statusUntil": "{d} gacha",
+    "ui.course_v3.pl.copy1.renew": "Obunani uzaytirish",
+    "ui.course_v3.pl.copy1.goalTitle": "Maqsad",
+    "ui.course_v3.pl.copy1.settingsSub": "Til, bildirishnoma, maqsad, kirish usullari",
+    "ui.course_v3.pl.copy1.signin": "Kirish usullari",
+    "ui.course_v3.pl.copy1.signinSub": "Bitta akkaunt, bir nechta kirish usuli",
+    "ui.course_v3.pl.copy1.connect": "Ulash",
+    "ui.course_v3.pl.copy1.connected": "Ulangan",
+    "ui.course_v3.pl.copy1.disconnect": "Uzish",
+    "ui.course_v3.pl.copy1.unlinkWarn": "Uzsangiz, boshqa qurilmalarda hisobdan chiqasiz.",
+    "ui.course_v3.pl.copy1.linkFail": "Ulab bo'lmadi. Qayta urinib ko'ring.",
+    "ui.course_v3.pl.copy1.linkDone": "Ulandi",
+    "ui.course_v3.pl.copy1.social": "HSK AI ijtimoiy tarmoqlarda",
+    "ui.course_v3.salesValueCopy.copy1.kicker": "HSK 1 · 1-dars natijasi",
+    "ui.course_v3.salesValueCopy.copy1.bridgeSub": "Siz bu iboralarni tanidingiz va mini-dialogni to'g'ri tuzdingiz.",
+    "ui.course_v3.salesValueCopy.copy1.proof": "Siz allaqachon uddaladingiz",
+    "ui.course_v3.salesValueCopy.copy1.next": "Keyingi HSK natijasi",
+    "ui.course_v3.salesValueCopy.copy1.unlock": "HSK yo'lini to'liq ochish",
+    "ui.course_v3.salesValueCopy.copy1.preview": "Keyingi darsdan bepul namuna",
+    "ui.course_v3.salesValueCopy.copy1.payTitle": "HSK maqsadingizgacha aniq yo'l",
+    "ui.course_v3.salesValueCopy.copy1.payIntro": "Birinchi natijani oldingiz. Endi HSK yo'lini uzmasdan davom ettiring.",
+    "ui.course_v3.salesValueCopy.copy1.sampleEnded": "Bepul namuna yakunlandi. HSK yo'lingizni davom ettirish uchun to'liq kursni oching.",
+    "ui.course_v3.salesValueCopy.copy1.benefits.item1": "Bosqichma-bosqich HSK kursi",
+    "ui.course_v3.salesValueCopy.copy1.benefits.item2": "Gapirishda aniq tuzatish",
+    "ui.course_v3.salesValueCopy.copy1.benefits.item3": "Xatolarni o'zlashtirguncha qayta mashq",
+    "ui.course_v3.salesValueCopy.copy1.checkoutHint": "«HSK yo'lini to'liq ochish» to'lov sahifasini ochadi. To'lov tasdiqlangach, barcha darslar shu yerda ochiladi.",
+    "ui.course_v3.s.copy1": "Yuqoridagi tugma to'lov sahifasini ochadi. To'lov tasdiqlangach, barcha darslar shu yerda ochiladi.",
+    "ui.course_v3.m.copy5.item1": "Ushbu darsni oching",
+    "ui.course_v3.m.copy5.item2": "Bu dars yangilangan",
+    "ui.course_v3.m.copy5.item3": "Keyingi bosqich bu yerda",
+    "ui.course_v3.m.copy5.item4": "Dars uchun tayyormi?",
+    "ui.course_v3.m.copy5.item5": "Yangi mavzu o'qish",
+    "ui.course_v3.m.copy6.lesson": "Bugungi bepul darslaring tugadi.",
+    "ui.course_v3.m.copy6.offer": "Obuna bilan HSK 1–4 ning barcha darslari shu zahoti ochiladi va to'xtamay davom etasan.",
+    "ui.course_v3.m.copy6.pron": "Bugungi bepul talaffuz tekshiruvlaring tugadi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheksiz gapirib mashq qilasan.",
+    "ui.course_v3_test.resultCopy.copy1.label": "To‘g‘ri javoblar",
+    "ui.course_v3_test.resultCopy.copy1.note": "Bu qisqa testdagi javoblar soni, darajani o‘zlashtirish foizi emas. Tavsiya oldingi darajalardagi natijalarni ham hisobga oladi.",
+    "ui.hsk_lugat.lbl.copy1": "Keyingi so'z",
+    "ui.hsk_lugat.disclosure.copy1": "Quyidagi bog‘lanishlar so‘zni tashkil etgan belgilarni eslashga yordam beradi; ular so‘zning kelib chiqishi haqida da’vo emas.",
+    "ui.hsk_lugat.recall.copy1": "Pinyinni ovoz chiqarib ayting, so‘zni yopib ma’nosini eslang, keyin ma’nodan xitoycha so‘zni qayta toping.",
+    "ui.ads.I18N.copy1.adStart": "Bo'limdan oldingi reklama",
+    "ui.ads.I18N.copy1.adMiddle": "Qisqa reklama pauzasi",
+    "ui.ads.I18N.copy1.adEnd": "Yakuniy reklama",
+    "ui.ads.I18N.copy1.adNote": "Rolikni oxirigacha ko'ring. HSK AI Pro reklamasisiz o'qiydi.",
+    "ui.ads.I18N.copy1.adSubTitle": "Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",
+    "ui.ads.I18N.copy1.adVisit": "Havolaga o'tish",
+    "ui.ads.I18N.copy1.adOpenLink": "Reklama havolasini ochasizmi?",
+    "ui.ads.I18N.copy1.loading": "Reklama yuklanmoqda...",
+    "ui.ads.I18N.copy1.failed": "Reklama videosi yuklanmadi",
+    "ui.ads.I18N.copy1.failedNote": "Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak.",
+    "ui.ads.I18N.copy1.limitTrial": "Yoki 7 kun bepul sinash",
+    "ui.ads.I18N.copy1.limitWhy": "Bugungi bepul mashqing tugadi: «{s}» bepul rejimda kuniga 1 marta ochiladi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",
+    "ui.ads.I18N.copy1.limitWhyPlain": "Bugungi bepul limiting tugadi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",
+    "ui.ads.I18N.copy1.psWrite": "Hamkorlik uchun yozing",
+    "ui.ads.I18N.copy1.psTry": "Sinab ko'rish",
+    "ui.ads.I18N.copy1.psCopy": "Nusxalash",
+    "ui.ads.I18N.copy1.psCopied": "Nusxalandi ✓",
+    "ui.ads.I18N.copy1.psShare": "Do'stga yuborish",
+    "ui.ads.I18N.copy1.leLabel": "Dars yakuni · reklama",
+    "ui.ads.I18N.copy1.leNote": "Qisqa rolik. Obuna bo'lsangiz reklama umuman chiqmaydi.",
+    "ui.ads.I18N.copy1.leSubTitle": "Darsni tugatdingiz — endi to'liq yo'lni oching",
+    "ui.ads.I18N.copy1.leExternal": "Reklama havolasini ochish",
+    "ui.ads.I18N.copy1.appCta": "Yuklab olish",
+    "ui.ads.I18N.copy1.appCloseIn": "Yopish {s}s",
+    "ui.ads.I18N.copy1.f_memorize": "Yodlash",
+    "ui.ads.I18N.copy1.f_placement": "Daraja aniqlash testi",
+    "ui.ads.limitWhyText.copy1": "Bu bo‘lim uchun limit tugadi.",
+    "ui.ads.PROMO.copy1.item1.t": "Birinchi kundan gapirasan",
+    "ui.ads.PROMO.copy1.item1.s": "Panda 阿宝 sabr bilan tinglaydi va xatoingni yumshoq tuzatadi",
+    "ui.ads.PROMO.copy1.item2.t": "Adashmaysan — yo'l tayyor",
+    "ui.ads.PROMO.copy1.item2.s": "HSK 1–4: har kuni aniq keyingi qadam ko'rsatiladi",
+    "ui.ads.PROMO.copy1.item3.t": "Imtihonga ishonch bilan borasan",
+    "ui.ads.PROMO.copy1.item3.s": "Cheksiz test va aniq daraja — qayerda turganingni bilasan",
+    "ui.ads.PROMO.copy1.item4.t": "Xatoing yo'qolmaydi",
+    "ui.ads.PROMO.copy1.item4.s": "Har xato ustida ishlab, uni butunlay o'zlashtirasan",
+    "ui.ads.PROMO.copy1.item5.t": "Diqqating faqat o'rganishda",
+    "ui.ads.PROMO.copy1.item5.s": "Reklama va limitlarsiz — hech narsa chalg'itmaydi",
+    "ui.ads.LIMIT_HEADINGS.copy1": "Davom etishga tayyormisiz?",
+    "ui.ads.LIMIT_REASONS.copy1.recognition": "Ieroglif tanish uchun bepul limit tugadi.",
+    "ui.ads.LIMIT_REASONS.copy1.pronunciation": "Talaffuz mashqi uchun bepul limit tugadi.",
+    "ui.ads.LIMIT_REASONS.copy1.memorize": "So‘z yodlash uchun bepul limit tugadi.",
+    "ui.ads.LIMIT_REASONS.copy1.training_test": "Bugungi bepul test urinishingiz tugadi.",
+    "ui.ads.LIMIT_REASONS.copy1.placement": "Daraja aniqlash testining bepul limiti tugadi.",
+    "ui.ads.LIMIT_REASONS.copy1.mistake_review": "Xatolar ustida ishlash uchun bepul limit tugadi.",
+    "ui.ads.LIMIT_REASONS.copy1.voice": "AI Voice uchun bepul limit tugadi.",
+    "ui.ads.LIMIT_REASONS.copy1.lesson": "Bepul darslar limitingiz tugadi.",
+    "ui.profile_carousel.LABELS.copy1.apps": "HSK AI ilovalari",
+    "ui.profile_carousel.LABELS.copy1.appsBody": "Android, MacBook va Windows — o'zingizga qulay qurilmada o'qing",
+    "ui.profile_carousel.LABELS.copy1.appsCta": "Ilovalarni ko'rish",
+    "ui.profile_carousel.LABELS.copy1.newBody": "HSK 1–3 yangi darsliklari. Progressingiz saqlanadi.",
+    "ui.profile_carousel.LABELS.copy1.versionCta": "Versiyani tanlash",
+    "ui.profile_carousel.LABELS.copy1.proActive": "Obuna faol",
+    "ui.profile_carousel.LABELS.copy1.proAction": "HSK AI Pro tariflari",
+    "ui.profile_carousel.LABELS.copy1.carousel": "Akkaunt imkoniyatlari",
+    "ui.profile_carousel.LABELS.copy1.slide": "Karta",
+    "ui.profile_carousel.LABELS.copy1.linkTitle": "{provider}’ni ulash",
+    "ui.profile_carousel.LABELS.copy1.linkBody": "Shu akkauntga {provider} orqali ham kiring. Progress va obunangiz saqlanadi.",
+    "ui.profile_carousel.LABELS.copy1.linkCta": "Ulash",
+    "ui.profile_carousel.LABELS.copy1.linkWait": "Tasdiqlash kutilmoqda…",
+    "ui.desktop_download.COPY.copy1.eyebrow": "HSK AI · ilovalar",
+    "ui.desktop_download.COPY.copy1.cardTitle": "HSK AI ilovalari",
+    "ui.desktop_download.COPY.copy1.appsPage": "Ilovalarni yuklab olish",
+    "ui.desktop_download.COPY.copy1.previewTranslation": "o‘rganmoq",
+    "ui.desktop_download.COPY.copy1.preparing": "Yuklash fayllari tayyorlanmoqda. Tez orada tugmalar faollashadi.",
+    "ui.desktop_download.COPY.copy1.availabilityError": "Yuklash holatini tekshirib bo‘lmadi. Internetni tekshirib, qayta urining.",
+    "ui.desktop_download.COPY.copy1.retryStatus": "Qayta tekshirish",
+    "ui.desktop_download.COPY.copy1.checkingStatus": "Tekshirilmoqda…",
+    "ui.desktop_download.COPY.copy1.promoTitle": "HSK AI ilovasini o‘rnating",
+    "ui.desktop_download.COPY.copy1.promoBody": "Android, MacBook yoki Windows — qurilmangizni tanlang. Progress hamma joyda bir xil.",
+    "ui.desktop_download.COPY.copy1.bigScreen": "Katta ekran",
+    "ui.desktop_download.COPY.copy1.autoUpdate": "Auto update",
+    "ui.desktop_download.COPY.copy1.sharedProgress": "Progress saqlanadi",
+    "ui.desktop_download.COPY.copy1.mac": "MacBook",
+    "ui.desktop_download.COPY.copy1.windows": "Windows",
+    "ui.desktop_download.COPY.copy1.android": "Android",
+    "ui.desktop_download.COPY.copy1.ios": "Apple",
+    "ui.desktop_download.COPY.copy1.macUnavailable": "MacBook — tez orada",
+    "ui.desktop_download.COPY.copy1.windowsUnavailable": "Windows — tez orada",
+    "ui.desktop_download.COPY.copy1.androidUnavailable": "Android — tez orada",
+    "ui.desktop_download.COPY.copy1.iosUnavailable": "Apple — tez orada",
+    "ui.desktop_download.COPY.copy1.recommended": "Mos",
+    "ui.desktop_download.COPY.copy1.close": "Oynani yopish",
+    "ui.desktop_download.COPY.copy1.adEntry": "HSK AI ilovasini olish",
+    "ui.desktop_download.COPY.copy1.adEntrySub": "Android · Mac · Windows",
+    "ui.desktop_download.COPY.copy1.sendingShort": "Tayyorlanmoqda…",
+    "ui.desktop_download.COPY.copy1.sending": "Yuklash sayti tayyorlanmoqda…",
+    "ui.desktop_download.COPY.copy1.sendingToChat": "Fayl chatga yuborilmoqda…",
+    "ui.desktop_download.COPY.copy1.chatSendFailed": "Faylni chatga yuborib bo‘lmadi. Qayta urinib ko‘ring.",
+    "ui.desktop_download.COPY.copy1.telegramRequired": "Mini Appni bot ichidan qayta oching.",
+    "ui.desktop_download.COPY.copy1.releaseUnavailable": "Bu platforma uchun yuklash hozircha mavjud emas.",
+    "ui.desktop_download.COPY.copy1.rateLimited": "Ko‘p urinish bo‘ldi. Birozdan keyin qayta urinib ko‘ring.",
+    "ui.desktop_download.COPY.copy1.messageFailed": "Faylni ochib bo‘lmadi. Qayta urinib ko‘ring.",
+    "ui.desktop_download.COPY.copy1.requestTimeout": "Server vaqtida javob bermadi. Qayta urinib ko‘ring.",
+    "ui.desktop_download.COPY.copy1.networkError": "Server bilan aloqa bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.",
+    "ui.desktop_download.COPY.copy1.invalidDownload": "Server xavfsiz yuklash manzilini qaytarmadi.",
+    "ui.desktop_download.COPY.copy1.destinationTitle": "{platform} faylini qayerda ochamiz?",
+    "ui.desktop_download.COPY.copy1.destinationBody": "Installer linkini shu qurilmada oching yoki kompyuteringizga xavfsiz yuboring.",
+    "ui.desktop_download.COPY.copy1.destinationMobileIntro": "Kompyuterda ochish uchun eng qulay usulni tanlang.",
+    "ui.desktop_download.COPY.copy1.destinationMobileBody": "DMG/EXE’ni telefonda yuklasangiz, u Downloads yoki Fayllar ichiga tushadi. Kompyuterda ochish uchun ulashish yoki linkni tanlang.",
+    "ui.desktop_download.COPY.copy1.directTitle": "Shu qurilmada ochish",
+    "ui.desktop_download.COPY.copy1.directBody": "Yuklash sayti hozir ochiladi",
+    "ui.desktop_download.COPY.copy1.directMobileTitle": "Telefonda yuklash sahifasini ochish",
+    "ui.desktop_download.COPY.copy1.directMobileBody": "Saytda yuklasangiz, fayl telefonning Downloads yoki Fayllar papkasiga saqlanadi",
+    "ui.desktop_download.COPY.copy1.shareBody": "Telefonning ulashish oynasini ochadi",
+    "ui.desktop_download.COPY.copy1.shareRecommended": "Eng qulay",
+    "ui.desktop_download.COPY.copy1.copyBody": "Kompyuter brauzeriga qo‘yib oching",
+    "ui.desktop_download.COPY.copy1.shareCancelled": "Ulashish bekor qilindi. Boshqa usulni tanlashingiz mumkin.",
+    "ui.desktop_download.COPY.copy1.copyFailed": "Avtomatik nusxalanmadi. Quyidagi linkni belgilang va nusxalang.",
+    "ui.desktop_download.COPY.copy1.successTitle": "Yuklash sayti ochildi",
+    "ui.desktop_download.COPY.copy1.successBody": "Sayt operatsion tizimingizga mos DMG yoki EXE faylni va o‘rnatish qadamlarini ko‘rsatadi.",
+    "ui.desktop_download.COPY.copy1.shareSuccessTitle": "Link ulashildi",
+    "ui.desktop_download.COPY.copy1.shareSuccessBody": "Kompyuteringizda linkni oching va mos DMG yoki EXE faylni yuklang.",
+    "ui.desktop_download.COPY.copy1.copySuccessTitle": "Link nusxalandi",
+    "ui.desktop_download.COPY.copy1.copySuccessBody": "Linkni kompyuter brauzeriga qo‘ying. Yuklash sahifasi darhol ochiladi.",
+    "ui.desktop_download.COPY.copy1.successAction": "Tushunarli",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.course.eyebrow": "HSK AI · Android",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.course.title": "HSK AI’ni bir bosishda oching",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.course.body": "Har safar Telegram → bot → Mini App orqali kirish shart emas. Android ilovasini to‘g‘ridan-to‘g‘ri oching. Ayrim funksiyalar internetsiz ham ishlaydi.",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.course.benefits.item1.item2": "Alohida ilova",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.course.benefits.item2.item2": "Ayrim funksiyalar offline",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.course.benefits.item3.item2": "Progress saqlanadi",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.mashq.eyebrow": "HSK AI · Android",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.mashq.title": "Mashq ichida AI yordamchi",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.mashq.body": "Android ilovada mashqdan chiqmasdan AI’dan savol so‘rang va aynan shu mashq bo‘yicha tushuntirish oling.",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.mashq.benefits.item1.item2": "AI mashq ichida",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.mashq.benefits.item2.item2": "Darhol savol bering",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.mashq.benefits.item3.item2": "Progress saqlanadi",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.voice.eyebrow": "HSK AI · Android",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.voice.title": "AI Voice’ni to‘g‘ridan-to‘g‘ri oching",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.voice.body": "Telegram va Mini App’ni alohida ochib yurmasdan Android ilovadan AI Voice mashqiga kiring.",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.voice.benefits.item2.item2": "Alohida ilova",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.voice.benefits.item3.item2": "Progress saqlanadi",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.dictionary.eyebrow": "HSK AI · Android",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.dictionary.title": "Lug‘at Android’da qulayroq",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.dictionary.body": "Ieroglifni barmoq bilan yozib mashq qiling va lug‘atdan internet bo‘lmasa ham foydalaning.",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.dictionary.benefits.item1.item2": "Qo‘lda yozish",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.dictionary.benefits.item2.item2": "To‘liq offline lug‘at",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.dictionary.benefits.item3.item2": "Misollar va yozish tartibi",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.lesson_end.eyebrow": "HSK AI · Android",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.lesson_end.title": "Xatoni shu zahoti tushuning",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.lesson_end.body": "Android ilovada xato qilgan zahoti AI’dan «Xatoyim nimada?» deb so‘rang — u xatoni real misollar bilan tushuntiradi.",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.lesson_end.benefits.item1.item2": "AI xatoni tahlil qiladi",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.lesson_end.benefits.item2.item2": "Real misollar",
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1.lesson_end.benefits.item3.item2": "Progress saqlanadi",
+    "ui.desktop_download.copy.copy1.title": "HSK AI ilovalari",
+    "ui.desktop_download.copy.copy1.apk": "APK ni Telegram chatga olish",
+    "ui.desktop_download.copy.copy1.site": "Yuklash saytini ochish",
+    "ui.desktop_download.copy.copy1.missing": "APK hozircha mavjud emas",
+    "ui.desktop_download_page.navigationCopy.copy1.courses": "HSK kurslari",
+    "ui.desktop_download_page.navigationCopy.copy1.features": "Imkoniyatlar",
+    "ui.desktop_download_page.navigationCopy.copy1.guide": "Qo‘llanma",
+    "ui.desktop_download_page.navigationCopy.copy1.download": "Yuklab olish",
+    "ui.desktop_download_page.navigationCopy.copy1.language": "O‘zbekcha",
+    "ui.course_v3.levelSoon.templates.title": "{level} · Tez orada",
+    "ui.course_v3.levelSoon.templates.body": "Bu HSK 3.0 darajasi hali ochilmagan. Hozir mavjud darajani tugatgan progress saqlanadi.",
+    "ui.course_v3.levelCompletion.templates.h": "{level} tugadi!",
+    "ui.course_v3.levelCompletion.templates.pending": "{level} · tez orada.",
+    "ui.course_v3.levelCompletion.templates.next": "Tabriklaymiz! {level} ochildi.",
+    "ui.course_v3.levelCompletion.templates.done": "Tabriklaymiz! Bu daraja tugadi.",
+    "ui.course_v3.levelCompletion.templates.soon": "tez orada",
+    "ui.course_v3.foundationEntry.templates.p": "你好 ni eshiting, tushuning va o'zingiz tuzing",
+    "ui.course_v3.foundationEntry.templates.review": "Qaytarish",
+    "ui.course_v3.rivalry.templates.ahead": "Siz {xp} XP oldinda",
+    "ui.course_v3.rivalry.templates.behind": "{xp} XP orqadasiz"
+  },
+  "maps": {
+    "ui.course_v3.copy.copy1": {
+      "object": {
+        "title": {
+          "message": "ui.course_v3.copy.copy1.title"
+        },
+        "subtitle": {
+          "message": "ui.course_v3.copy.copy1.subtitle"
+        }
+      }
+    },
+    "ui.course_v3.w.copy1": {
+      "object": {
+        "title": {
+          "message": "ui.course_v3.w.copy1.title"
+        },
+        "body": {
+          "message": "ui.course_v3.w.copy1.body"
+        },
+        "keep": {
+          "message": "ui.course_v3.w.copy1.keep"
+        },
+        "exit": {
+          "reference": {
+            "namespace": "common",
+            "key": "action.exit"
+          }
+        }
+      }
+    },
+    "ui.course_v3.lu.copy1": {
+      "object": {
+        "cont": {
+          "reference": {
+            "namespace": "course",
+            "key": "cont"
+          }
+        },
+        "lessonH": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.lessonH"
+          }
+        },
+        "lessonP": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.lessonP"
+          }
+        },
+        "cpH": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.cpH"
+          }
+        },
+        "cpP": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.cpP"
+          }
+        },
+        "acc": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.acc"
+          }
+        },
+        "combo": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.combo"
+          }
+        },
+        "levelH": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.levelH"
+          }
+        },
+        "levelP": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.levelP"
+          }
+        },
+        "opened": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.opened"
+          }
+        },
+        "xpH": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.xpH"
+          }
+        },
+        "xpP": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.xpP"
+          }
+        },
+        "lvl": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.lvl"
+          }
+        },
+        "bonusXp": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.bonusXp"
+          }
+        },
+        "chest": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelUp.chest"
+          }
+        }
+      }
+    },
+    "ui.course_v3.focusSheetStart.copy1": {
+      "message": "ui.course_v3.focusSheetStart.copy1"
+    },
+    "ui.course_v3.focusSheetStart.copy2": {
+      "message": "ui.course_v3.focusSheetStart.copy2"
+    },
+    "ui.course_v3.statLbl.copy1": {
+      "object": {
+        "xp": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelStats.xp"
+          }
+        },
+        "acc": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelStats.acc"
+          }
+        },
+        "time": {
+          "reference": {
+            "namespace": "course",
+            "key": "levelStats.time"
+          }
+        }
+      }
+    },
+    "ui.course_v3.W.copy1": {
+      "object": {
+        "one": {
+          "reference": {
+            "namespace": "course",
+            "key": "streakDisplay.one"
+          }
+        },
+        "few": {
+          "reference": {
+            "namespace": "course",
+            "key": "streakDisplay.few"
+          }
+        },
+        "many": {
+          "reference": {
+            "namespace": "course",
+            "key": "streakDisplay.many"
+          }
+        },
+        "cont": {
+          "reference": {
+            "namespace": "course",
+            "key": "cont"
+          }
+        }
+      }
+    },
+    "ui.course_v3.RU.copy1": {
+      "object": {
+        "t": {
+          "message": "ui.course_v3.RU.copy1.t"
+        },
+        "s": {
+          "message": "ui.course_v3.RU.copy1.s"
+        }
+      }
+    },
+    "ui.course_v3.t.copy1": {
+      "object": {
+        "c": {
+          "message": "ui.course_v3.t.copy1.c"
+        },
+        "cNode": {
+          "message": "ui.course_v3.t.copy1.cNode"
+        },
+        "m": {
+          "message": "ui.course_v3.t.copy1.m"
+        },
+        "mDict": {
+          "message": "ui.course_v3.t.copy1.mDict"
+        },
+        "mRecog": {
+          "message": "ui.course_v3.t.copy1.mRecog"
+        },
+        "mPron": {
+          "message": "ui.course_v3.t.copy1.mPron"
+        },
+        "mTest": {
+          "message": "ui.course_v3.t.copy1.mTest"
+        },
+        "mMist": {
+          "message": "ui.course_v3.t.copy1.mMist"
+        },
+        "v": {
+          "message": "ui.course_v3.t.copy1.v"
+        },
+        "r": {
+          "message": "ui.course_v3.t.copy1.r"
+        },
+        "p": {
+          "message": "ui.course_v3.t.copy1.p"
+        },
+        "skip": {
+          "reference": {
+            "namespace": "course",
+            "key": "pronunciation.skip"
+          }
+        },
+        "voice": {
+          "message": "ui.course_v3.t.copy1.voice"
+        },
+        "done": {
+          "message": "ui.course_v3.t.copy1.done"
+        },
+        "next": {
+          "message": "ui.course_v3.t.copy1.next"
+        }
+      }
+    },
+    "ui.course_v3.names.copy1": {
+      "message": "ui.course_v3.names.copy1"
+    },
+    "ui.course_v3.studySetupT.copy1": {
+      "object": {
+        "goalQ": {
+          "reference": {
+            "namespace": "course",
+            "key": "onboarding.askGoal"
+          }
+        },
+        "goalSub": {
+          "message": "ui.course_v3.studySetupT.copy1.goalSub"
+        },
+        "goals": {
+          "object": {
+            "hsk_exam": {
+              "reference": {
+                "namespace": "course",
+                "key": "onboardingGoal.hskExam.title"
+              }
+            },
+            "daily_communication": {
+              "reference": {
+                "namespace": "course",
+                "key": "onboardingGoal.dailyCommunication.title"
+              }
+            },
+            "travel": {
+              "reference": {
+                "namespace": "course",
+                "key": "onboardingGoal.travel.title"
+              }
+            },
+            "work_china": {
+              "message": "ui.course_v3.studySetupT.copy1.goals.work_china"
+            },
+            "study_china": {
+              "reference": {
+                "namespace": "course",
+                "key": "onboardingGoal.studyChina.title"
+              }
+            }
+          }
+        },
+        "timeQ": {
+          "message": "ui.course_v3.studySetupT.copy1.timeQ"
+        },
+        "timeSub": {
+          "message": "ui.course_v3.studySetupT.copy1.timeSub"
+        },
+        "focusQ": {
+          "message": "ui.course_v3.studySetupT.copy1.focusQ"
+        },
+        "focusSub": {
+          "message": "ui.course_v3.studySetupT.copy1.focusSub"
+        },
+        "min": {
+          "reference": {
+            "namespace": "course",
+            "key": "testHub.min"
+          }
+        },
+        "skip": {
+          "reference": {
+            "namespace": "course",
+            "key": "pronunciation.skip"
+          }
+        },
+        "focus": {
+          "object": {
+            "speaking": {
+              "message": "ui.course_v3.studySetupT.copy1.focus.speaking"
+            },
+            "listening": {
+              "reference": {
+                "namespace": "course",
+                "key": "testExamSection.listening"
+              }
+            },
+            "vocabulary": {
+              "message": "ui.course_v3.studySetupT.copy1.focus.vocabulary"
+            },
+            "grammar": {
+              "reference": {
+                "namespace": "course",
+                "key": "grammar"
+              }
+            },
+            "none": {
+              "message": "ui.course_v3.studySetupT.copy1.focus.none"
+            }
+          }
+        }
+      }
+    },
+    "ui.course_v3.m.copy1": {
+      "object": {
+        "free_feature_limit_reached": {
+          "message": "ui.course_v3.m.copy1.free_feature_limit_reached"
+        },
+        "course_lesson_not_unlocked": {
+          "message": "ui.course_v3.m.copy1.course_lesson_not_unlocked"
+        },
+        "default": {
+          "message": "ui.course_v3.m.copy1.default"
+        }
+      }
+    },
+    "ui.course_v3.m.copy2": {
+      "list": [
+        {
+          "object": {
+            "i": {
+              "literal": "microphone-2"
+            },
+            "t": {
+              "message": "ui.course_v3.m.copy2.item1.t"
+            },
+            "s": {
+              "message": "ui.course_v3.m.copy2.item1.s"
+            }
+          }
+        },
+        {
+          "object": {
+            "i": {
+              "literal": "books"
+            },
+            "t": {
+              "message": "ui.course_v3.m.copy2.item2.t"
+            },
+            "s": {
+              "message": "ui.course_v3.m.copy2.item2.s"
+            }
+          }
+        },
+        {
+          "object": {
+            "i": {
+              "literal": "clipboard-check"
+            },
+            "t": {
+              "message": "ui.course_v3.m.copy2.item3.t"
+            },
+            "s": {
+              "message": "ui.course_v3.m.copy2.item3.s"
+            }
+          }
+        },
+        {
+          "object": {
+            "i": {
+              "literal": "target-arrow"
+            },
+            "t": {
+              "message": "ui.course_v3.m.copy2.item4.t"
+            },
+            "s": {
+              "message": "ui.course_v3.m.copy2.item4.s"
+            }
+          }
+        },
+        {
+          "object": {
+            "i": {
+              "literal": "language-hiragana"
+            },
+            "t": {
+              "message": "ui.course_v3.m.copy2.item5.t"
+            },
+            "s": {
+              "message": "ui.course_v3.m.copy2.item5.s"
+            }
+          }
+        },
+        {
+          "object": {
+            "i": {
+              "literal": "infinity"
+            },
+            "t": {
+              "message": "ui.course_v3.m.copy2.item6.t"
+            },
+            "s": {
+              "message": "ui.course_v3.m.copy2.item6.s"
+            }
+          }
+        }
+      ]
+    },
+    "ui.course_v3.mascP.copy1": {
+      "list": [
+        {
+          "message": "ui.course_v3.mascP.copy1.item1"
+        },
+        {
+          "message": "ui.course_v3.mascP.copy1.item2"
+        },
+        {
+          "message": "ui.course_v3.mascP.copy1.item3"
+        },
+        {
+          "message": "ui.course_v3.mascP.copy1.item4"
+        }
+      ]
+    },
+    "ui.course_v3.m.copy3": {
+      "list": [
+        {
+          "reference": {
+            "namespace": "course",
+            "key": "partSections.w"
+          }
+        },
+        {
+          "message": "ui.course_v3.m.copy3.item2"
+        },
+        {
+          "reference": {
+            "namespace": "course",
+            "key": "testExamSection.listening"
+          }
+        },
+        {
+          "message": "ui.course_v3.m.copy3.item4"
+        },
+        {
+          "message": "ui.course_v3.m.copy3.item5"
+        },
+        {
+          "message": "ui.course_v3.m.copy3.item6"
+        }
+      ]
+    },
+    "ui.course_v3.m.copy4": {
+      "object": {
+        "w": {
+          "reference": {
+            "namespace": "course",
+            "key": "partSections.w"
+          }
+        },
+        "p": {
+          "reference": {
+            "namespace": "course",
+            "key": "partSections.p"
+          }
+        },
+        "s": {
+          "reference": {
+            "namespace": "course",
+            "key": "partSections.s"
+          }
+        },
+        "r": {
+          "reference": {
+            "namespace": "course",
+            "key": "partSections.r"
+          }
+        },
+        "d": {
+          "reference": {
+            "namespace": "course",
+            "key": "partSections.d"
+          }
+        },
+        "x": {
+          "reference": {
+            "namespace": "course",
+            "key": "partSections.x"
+          }
+        }
+      }
+    },
+    "ui.course_v3.M.copy1": {
+      "object": {
+        "offerTag": {
+          "message": "ui.course_v3.M.copy1.offerTag"
+        },
+        "offerP": {
+          "message": "ui.course_v3.M.copy1.offerP"
+        },
+        "offerBtn": {
+          "message": "ui.course_v3.M.copy1.offerBtn"
+        },
+        "passH": {
+          "message": "ui.course_v3.M.copy1.passH"
+        },
+        "passP": {
+          "message": "ui.course_v3.M.copy1.passP"
+        },
+        "failH": {
+          "message": "ui.course_v3.M.copy1.failH"
+        },
+        "failP": {
+          "message": "ui.course_v3.M.copy1.failP"
+        },
+        "confirmH": {
+          "message": "ui.course_v3.M.copy1.confirmH"
+        },
+        "confirmP": {
+          "message": "ui.course_v3.M.copy1.confirmP"
+        },
+        "confirmYes": {
+          "message": "ui.course_v3.M.copy1.confirmYes"
+        },
+        "confirmNo": {
+          "reference": {
+            "namespace": "common",
+            "key": "action.back"
+          }
+        },
+        "startNow": {
+          "reference": {
+            "namespace": "common",
+            "key": "lesson.start"
+          }
+        },
+        "notReady": {
+          "message": "ui.course_v3.M.copy1.notReady"
+        },
+        "saveErr": {
+          "message": "ui.course_v3.M.copy1.saveErr"
+        }
+      }
+    },
+    "ui.course_v3.oneHeartText.copy1": {
+      "message": "ui.course_v3.oneHeartText.copy1"
+    },
+    "ui.course_v3.lessonCharacterLabel.copy1": {
+      "message": "ui.course_v3.lessonCharacterLabel.copy1"
+    },
+    "ui.course_v3.lessonCharacterLabel.copy2": {
+      "message": "ui.course_v3.lessonCharacterLabel.copy2"
+    },
+    "ui.course_v3.lessonCharacterLabel.copy3": {
+      "message": "ui.course_v3.lessonCharacterLabel.copy3"
+    },
+    "ui.course_v3.lessonCharacterLabel.copy4": {
+      "message": "ui.course_v3.lessonCharacterLabel.copy4"
+    },
+    "ui.course_v3.lessonCharacterLabel.copy5": {
+      "message": "ui.course_v3.lessonCharacterLabel.copy5"
+    },
+    "ui.course_v3.P.copy1": {
+      "list": [
+        {
+          "message": "ui.course_v3.P.copy1.item1"
+        },
+        {
+          "message": "ui.course_v3.P.copy1.item2"
+        },
+        {
+          "message": "ui.course_v3.P.copy1.item3"
+        },
+        {
+          "message": "ui.course_v3.P.copy1.item4"
+        },
+        {
+          "message": "ui.course_v3.P.copy1.item5"
+        }
+      ]
+    },
+    "ui.course_v3.C.copy1": {
+      "object": {
+        "reset": {
+          "message": "ui.course_v3.C.copy1.reset"
+        },
+        "d1": {
+          "message": "ui.course_v3.C.copy1.d1"
+        },
+        "d2": {
+          "message": "ui.course_v3.C.copy1.d2"
+        },
+        "d3": {
+          "message": "ui.course_v3.C.copy1.d3"
+        },
+        "d7": {
+          "message": "ui.course_v3.C.copy1.d7"
+        },
+        "d14": {
+          "message": "ui.course_v3.C.copy1.d14"
+        },
+        "d30": {
+          "message": "ui.course_v3.C.copy1.d30"
+        },
+        "d100": {
+          "message": "ui.course_v3.C.copy1.d100"
+        }
+      }
+    },
+    "ui.course_v3.H.copy1": {
+      "object": {
+        "perfect": {
+          "list": [
+            {
+              "message": "ui.course_v3.H.copy1.perfect.item1"
+            },
+            {
+              "message": "ui.course_v3.H.copy1.perfect.item2"
+            },
+            {
+              "message": "ui.course_v3.H.copy1.perfect.item3"
+            }
+          ]
+        },
+        "high": {
+          "list": [
+            {
+              "message": "ui.course_v3.H.copy1.high.item1"
+            },
+            {
+              "message": "ui.course_v3.H.copy1.high.item2"
+            },
+            {
+              "message": "ui.course_v3.H.copy1.high.item3"
+            }
+          ]
+        },
+        "mid": {
+          "list": [
+            {
+              "message": "ui.course_v3.H.copy1.mid.item1"
+            },
+            {
+              "message": "ui.course_v3.H.copy1.mid.item2"
+            },
+            {
+              "message": "ui.course_v3.H.copy1.mid.item3"
+            }
+          ]
+        },
+        "low": {
+          "list": [
+            {
+              "message": "ui.course_v3.H.copy1.low.item1"
+            },
+            {
+              "message": "ui.course_v3.H.copy1.low.item2"
+            },
+            {
+              "message": "ui.course_v3.H.copy1.low.item3"
+            }
+          ]
+        }
+      }
+    },
+    "ui.course_v3.C.copy2": {
+      "object": {
+        "m1": {
+          "message": "ui.course_v3.C.copy2.m1"
+        },
+        "m5": {
+          "message": "ui.course_v3.C.copy2.m5"
+        },
+        "m10": {
+          "message": "ui.course_v3.C.copy2.m10"
+        },
+        "m25": {
+          "message": "ui.course_v3.C.copy2.m25"
+        },
+        "m50": {
+          "message": "ui.course_v3.C.copy2.m50"
+        },
+        "m100": {
+          "message": "ui.course_v3.C.copy2.m100"
+        },
+        "perfect": {
+          "message": "ui.course_v3.C.copy2.perfect"
+        },
+        "high": {
+          "message": "ui.course_v3.C.copy2.high"
+        },
+        "mid": {
+          "message": "ui.course_v3.C.copy2.mid"
+        },
+        "low": {
+          "message": "ui.course_v3.C.copy2.low"
+        }
+      }
+    },
+    "ui.course_v3.W.copy2": {
+      "object": {
+        "title": {
+          "message": "ui.course_v3.W.copy2.title"
+        },
+        "left": {
+          "message": "ui.course_v3.W.copy2.left"
+        },
+        "done": {
+          "message": "ui.course_v3.W.copy2.done"
+        }
+      }
+    },
+    "ui.course_v3.chestT.copy1": {
+      "object": {
+        "soon": {
+          "message": "ui.course_v3.chestT.copy1.soon"
+        },
+        "left": {
+          "message": "ui.course_v3.chestT.copy1.left"
+        },
+        "got": {
+          "message": "ui.course_v3.chestT.copy1.got"
+        },
+        "cont": {
+          "reference": {
+            "namespace": "course",
+            "key": "cont"
+          }
+        },
+        "note": {
+          "message": "ui.course_v3.chestT.copy1.note"
+        }
+      }
+    },
+    "ui.course_v3.todayT.copy1": {
+      "object": {
+        "today": {
+          "reference": {
+            "namespace": "course",
+            "key": "profile.today"
+          }
+        },
+        "part": {
+          "message": "ui.course_v3.todayT.copy1.part"
+        },
+        "mistakes": {
+          "message": "ui.course_v3.todayT.copy1.mistakes"
+        },
+        "test": {
+          "message": "ui.course_v3.todayT.copy1.test"
+        },
+        "talk": {
+          "message": "ui.course_v3.todayT.copy1.talk"
+        },
+        "chars": {
+          "message": "ui.course_v3.todayT.copy1.chars"
+        },
+        "pron": {
+          "reference": {
+            "namespace": "course",
+            "key": "partSections.s"
+          }
+        },
+        "done": {
+          "message": "ui.course_v3.todayT.copy1.done"
+        },
+        "go": {
+          "reference": {
+            "namespace": "course",
+            "key": "today.go"
+          }
+        }
+      }
+    },
+    "ui.course_v3.M.copy2": {
+      "object": {
+        "h": {
+          "reference": {
+            "namespace": "course",
+            "key": "lessonFlow.guidedRepairTitle"
+          }
+        },
+        "p": {
+          "reference": {
+            "namespace": "course",
+            "key": "lessonFlow.guidedRepairBody"
+          }
+        },
+        "go": {
+          "reference": {
+            "namespace": "course",
+            "key": "lessonFlow.guidedRepairAction"
+          }
+        }
+      }
+    },
+    "ui.course_v3.M.copy3": {
+      "list": [
+        {
+          "reference": {
+            "namespace": "course",
+            "key": "lessonFlow.encouragement1"
+          }
+        },
+        {
+          "reference": {
+            "namespace": "course",
+            "key": "lessonFlow.encouragement2"
+          }
+        },
+        {
+          "reference": {
+            "namespace": "course",
+            "key": "lessonFlow.encouragement3"
+          }
+        }
+      ]
+    },
+    "ui.course_v3.M.copy4": {
+      "object": {
+        "h": {
+          "reference": {
+            "namespace": "course",
+            "key": "lessonFlow.guidedRepairTitle"
+          }
+        },
+        "p": {
+          "reference": {
+            "namespace": "course",
+            "key": "foundation.guidedRepairBody"
+          }
+        },
+        "go": {
+          "reference": {
+            "namespace": "course",
+            "key": "lessonFlow.guidedRepairAction"
+          }
+        }
+      }
+    },
+    "ui.course_v3.MB.copy1": {
+      "object": {
+        "previous": {
+          "message": "ui.course_v3.MB.copy1.previous"
+        },
+        "current": {
+          "message": "ui.course_v3.MB.copy1.current"
+        }
+      }
+    },
+    "ui.course_v3.RT.copy1": {
+      "message": "ui.course_v3.RT.copy1"
+    },
+    "ui.course_v3.PRON_L.copy1": {
+      "object": {
+        "listening": {
+          "reference": {
+            "namespace": "course",
+            "key": "pronunciation.listening"
+          }
+        },
+        "analyzing": {
+          "reference": {
+            "namespace": "course",
+            "key": "pronunciation.analyzing"
+          }
+        },
+        "micDeny": {
+          "reference": {
+            "namespace": "course",
+            "key": "pronunciation.micDeny"
+          }
+        },
+        "noSupport": {
+          "reference": {
+            "namespace": "course",
+            "key": "pronunciation.noSupport"
+          }
+        },
+        "netErr": {
+          "message": "ui.course_v3.PRON_L.copy1.netErr"
+        },
+        "needTg": {
+          "reference": {
+            "namespace": "course",
+            "key": "pronunciation.needTg"
+          }
+        },
+        "retry": {
+          "message": "ui.course_v3.PRON_L.copy1.retry"
+        },
+        "heard": {
+          "reference": {
+            "namespace": "course",
+            "key": "pronunciation.heard"
+          }
+        }
+      }
+    },
+    "ui.course_v3.title.copy1": {
+      "message": "ui.course_v3.title.copy1"
+    },
+    "ui.course_v3.skipText.copy1": {
+      "message": "ui.course_v3.skipText.copy1"
+    },
+    "ui.course_v3.rl.copy1": {
+      "object": {
+        "promote": {
+          "message": "ui.course_v3.rl.copy1.promote"
+        },
+        "demote": {
+          "message": "ui.course_v3.rl.copy1.demote"
+        },
+        "liga": {
+          "message": "ui.course_v3.rl.copy1.liga"
+        },
+        "friends": {
+          "reference": {
+            "namespace": "course",
+            "key": "friends"
+          }
+        },
+        "refs": {
+          "message": "ui.course_v3.rl.copy1.refs"
+        },
+        "members": {
+          "message": "ui.course_v3.rl.copy1.members"
+        },
+        "left": {
+          "message": "ui.course_v3.rl.copy1.left"
+        },
+        "ch": {
+          "message": "ui.course_v3.rl.copy1.ch"
+        },
+        "chDone": {
+          "message": "ui.course_v3.rl.copy1.chDone"
+        },
+        "invite": {
+          "message": "ui.course_v3.rl.copy1.invite"
+        },
+        "inviteSub": {
+          "message": "ui.course_v3.rl.copy1.inviteSub"
+        },
+        "refSub": {
+          "message": "ui.course_v3.rl.copy1.refSub"
+        },
+        "msg": {
+          "reference": {
+            "namespace": "course",
+            "key": "rating.writeTitle"
+          }
+        },
+        "weekRank": {
+          "reference": {
+            "namespace": "course",
+            "key": "rank"
+          }
+        },
+        "loadErr": {
+          "message": "ui.course_v3.rl.copy1.loadErr"
+        },
+        "refLoadErr": {
+          "message": "ui.course_v3.rl.copy1.refLoadErr"
+        },
+        "empty": {
+          "message": "ui.course_v3.rl.copy1.empty"
+        },
+        "refEmpty": {
+          "message": "ui.course_v3.rl.copy1.refEmpty"
+        },
+        "pending": {
+          "message": "ui.course_v3.rl.copy1.pending"
+        },
+        "active": {
+          "message": "ui.course_v3.rl.copy1.active"
+        },
+        "totalXp": {
+          "message": "ui.course_v3.rl.copy1.totalXp"
+        }
+      }
+    },
+    "ui.course_v3.chL.copy1": {
+      "object": {
+        "title": {
+          "message": "ui.course_v3.chL.copy1.title"
+        },
+        "load": {
+          "message": "ui.course_v3.chL.copy1.load"
+        },
+        "same": {
+          "message": "ui.course_v3.chL.copy1.same"
+        },
+        "mix": {
+          "message": "ui.course_v3.chL.copy1.mix"
+        },
+        "accept": {
+          "message": "ui.course_v3.chL.copy1.accept"
+        },
+        "reject": {
+          "message": "ui.course_v3.chL.copy1.reject"
+        },
+        "start": {
+          "message": "ui.course_v3.chL.copy1.start"
+        },
+        "wait": {
+          "message": "ui.course_v3.chL.copy1.wait"
+        },
+        "waitSub": {
+          "message": "ui.course_v3.chL.copy1.waitSub"
+        },
+        "pending": {
+          "message": "ui.course_v3.chL.copy1.pending"
+        },
+        "done": {
+          "message": "ui.course_v3.chL.copy1.done"
+        },
+        "youWon": {
+          "message": "ui.course_v3.chL.copy1.youWon"
+        },
+        "youLost": {
+          "message": "ui.course_v3.chL.copy1.youLost"
+        },
+        "tie": {
+          "message": "ui.course_v3.chL.copy1.tie"
+        },
+        "score": {
+          "message": "ui.course_v3.chL.copy1.score"
+        },
+        "xp": {
+          "reference": {
+            "namespace": "course",
+            "key": "testExam.xp"
+          }
+        },
+        "rating": {
+          "message": "ui.course_v3.chL.copy1.rating"
+        },
+        "needTg": {
+          "message": "ui.course_v3.chL.copy1.needTg"
+        },
+        "err": {
+          "message": "ui.course_v3.chL.copy1.err"
+        },
+        "sent": {
+          "message": "ui.course_v3.chL.copy1.sent"
+        },
+        "answerSaved": {
+          "message": "ui.course_v3.chL.copy1.answerSaved"
+        },
+        "answerSavedSub": {
+          "message": "ui.course_v3.chL.copy1.answerSavedSub"
+        },
+        "review": {
+          "message": "ui.course_v3.chL.copy1.review"
+        },
+        "correct": {
+          "message": "ui.course_v3.chL.copy1.correct"
+        }
+      }
+    },
+    "ui.course_v3.t.copy2": {
+      "list": [
+        {
+          "reference": {
+            "namespace": "course",
+            "key": "rating.writeTemplate0"
+          }
+        },
+        {
+          "reference": {
+            "namespace": "course",
+            "key": "rating.writeTemplate1"
+          }
+        },
+        {
+          "reference": {
+            "namespace": "course",
+            "key": "rating.writeTemplate2"
+          }
+        }
+      ]
+    },
+    "ui.course_v3.pl.copy1": {
+      "object": {
+        "metricsLabel": {
+          "message": "ui.course_v3.pl.copy1.metricsLabel"
+        },
+        "metricsXp": {
+          "message": "ui.course_v3.pl.copy1.metricsXp"
+        },
+        "metricsLessons": {
+          "message": "ui.course_v3.pl.copy1.metricsLessons"
+        },
+        "calTitle": {
+          "message": "ui.course_v3.pl.copy1.calTitle"
+        },
+        "calLong": {
+          "message": "ui.course_v3.pl.copy1.calLong"
+        },
+        "calDays": {
+          "list": [
+            {
+              "message": "ui.course_v3.pl.copy1.calDays.item1"
+            },
+            {
+              "message": "ui.course_v3.pl.copy1.calDays.item2"
+            },
+            {
+              "message": "ui.course_v3.pl.copy1.calDays.item3"
+            },
+            {
+              "message": "ui.course_v3.pl.copy1.calDays.item4"
+            },
+            {
+              "message": "ui.course_v3.pl.copy1.calDays.item5"
+            },
+            {
+              "message": "ui.course_v3.pl.copy1.calDays.item6"
+            },
+            {
+              "message": "ui.course_v3.pl.copy1.calDays.item7"
+            }
+          ]
+        },
+        "t1": {
+          "message": "ui.course_v3.pl.copy1.t1"
+        },
+        "t2": {
+          "message": "ui.course_v3.pl.copy1.t2"
+        },
+        "t3": {
+          "message": "ui.course_v3.pl.copy1.t3"
+        },
+        "tNext": {
+          "message": "ui.course_v3.pl.copy1.tNext"
+        },
+        "ach": {
+          "message": "ui.course_v3.pl.copy1.ach"
+        },
+        "a1": {
+          "message": "ui.course_v3.pl.copy1.a1"
+        },
+        "a1d": {
+          "message": "ui.course_v3.pl.copy1.a1d"
+        },
+        "a2": {
+          "message": "ui.course_v3.pl.copy1.a2"
+        },
+        "a3": {
+          "message": "ui.course_v3.pl.copy1.a3"
+        },
+        "goalSet": {
+          "reference": {
+            "namespace": "course",
+            "key": "goal"
+          }
+        },
+        "goalLeft": {
+          "message": "ui.course_v3.pl.copy1.goalLeft"
+        },
+        "todayGoal": {
+          "message": "ui.course_v3.pl.copy1.todayGoal"
+        },
+        "statusPro": {
+          "reference": {
+            "namespace": "course",
+            "key": "trialActive"
+          }
+        },
+        "statusTemp": {
+          "message": "ui.course_v3.pl.copy1.statusTemp"
+        },
+        "statusTrial": {
+          "message": "ui.course_v3.pl.copy1.statusTrial"
+        },
+        "statusUntil": {
+          "message": "ui.course_v3.pl.copy1.statusUntil"
+        },
+        "renew": {
+          "message": "ui.course_v3.pl.copy1.renew"
+        },
+        "goalTitle": {
+          "message": "ui.course_v3.pl.copy1.goalTitle"
+        },
+        "settings": {
+          "reference": {
+            "namespace": "course",
+            "key": "voicePage.settings"
+          }
+        },
+        "settingsSub": {
+          "message": "ui.course_v3.pl.copy1.settingsSub"
+        },
+        "signin": {
+          "message": "ui.course_v3.pl.copy1.signin"
+        },
+        "signinSub": {
+          "message": "ui.course_v3.pl.copy1.signinSub"
+        },
+        "connect": {
+          "message": "ui.course_v3.pl.copy1.connect"
+        },
+        "connected": {
+          "message": "ui.course_v3.pl.copy1.connected"
+        },
+        "disconnect": {
+          "message": "ui.course_v3.pl.copy1.disconnect"
+        },
+        "unlinkWarn": {
+          "message": "ui.course_v3.pl.copy1.unlinkWarn"
+        },
+        "linkWait": {
+          "reference": {
+            "namespace": "common",
+            "key": "desktopAuth.providerWaiting"
+          }
+        },
+        "linkFail": {
+          "message": "ui.course_v3.pl.copy1.linkFail"
+        },
+        "linkDone": {
+          "message": "ui.course_v3.pl.copy1.linkDone"
+        },
+        "social": {
+          "message": "ui.course_v3.pl.copy1.social"
+        }
+      }
+    },
+    "ui.course_v3.salesValueCopy.copy1": {
+      "object": {
+        "kicker": {
+          "message": "ui.course_v3.salesValueCopy.copy1.kicker"
+        },
+        "bridgeSub": {
+          "message": "ui.course_v3.salesValueCopy.copy1.bridgeSub"
+        },
+        "proof": {
+          "message": "ui.course_v3.salesValueCopy.copy1.proof"
+        },
+        "next": {
+          "message": "ui.course_v3.salesValueCopy.copy1.next"
+        },
+        "unlock": {
+          "message": "ui.course_v3.salesValueCopy.copy1.unlock"
+        },
+        "preview": {
+          "message": "ui.course_v3.salesValueCopy.copy1.preview"
+        },
+        "payTitle": {
+          "message": "ui.course_v3.salesValueCopy.copy1.payTitle"
+        },
+        "payIntro": {
+          "message": "ui.course_v3.salesValueCopy.copy1.payIntro"
+        },
+        "sampleEnded": {
+          "message": "ui.course_v3.salesValueCopy.copy1.sampleEnded"
+        },
+        "benefits": {
+          "list": [
+            {
+              "message": "ui.course_v3.salesValueCopy.copy1.benefits.item1"
+            },
+            {
+              "message": "ui.course_v3.salesValueCopy.copy1.benefits.item2"
+            },
+            {
+              "message": "ui.course_v3.salesValueCopy.copy1.benefits.item3"
+            }
+          ]
+        },
+        "checkoutHint": {
+          "message": "ui.course_v3.salesValueCopy.copy1.checkoutHint"
+        }
+      }
+    },
+    "ui.course_v3.s.copy1": {
+      "message": "ui.course_v3.s.copy1"
+    },
+    "ui.course_v3.m.copy5": {
+      "list": [
+        {
+          "message": "ui.course_v3.m.copy5.item1"
+        },
+        {
+          "message": "ui.course_v3.m.copy5.item2"
+        },
+        {
+          "message": "ui.course_v3.m.copy5.item3"
+        },
+        {
+          "message": "ui.course_v3.m.copy5.item4"
+        },
+        {
+          "message": "ui.course_v3.m.copy5.item5"
+        }
+      ]
+    },
+    "ui.course_v3.m.copy6": {
+      "object": {
+        "lesson": {
+          "message": "ui.course_v3.m.copy6.lesson"
+        },
+        "offer": {
+          "message": "ui.course_v3.m.copy6.offer"
+        },
+        "pron": {
+          "message": "ui.course_v3.m.copy6.pron"
+        }
+      }
+    },
+    "ui.course_v3_memorize.sMeaning.copy1": {
+      "reference": {
+        "namespace": "course",
+        "key": "listen"
+      }
+    },
+    "ui.course_v3_memorize.sHook.copy1": {
+      "reference": {
+        "namespace": "course",
+        "key": "memorize.prompt.remember"
+      }
+    },
+    "ui.course_v3_memorize.sConfusion.copy1": {
+      "reference": {
+        "namespace": "course",
+        "key": "memorize.prompt.confusion"
+      }
+    },
+    "ui.course_v3_memorize.finishChar.copy1": {
+      "reference": {
+        "namespace": "course",
+        "key": "memorize.complete.meaning"
+      }
+    },
+    "ui.course_v3_memorize.finishChar.copy2": {
+      "reference": {
+        "namespace": "course",
+        "key": "courseVoiceInline.errWord"
+      }
+    },
+    "ui.course_v3_memorize.finishChar.copy3": {
+      "reference": {
+        "namespace": "course",
+        "key": "memorize.complete.sentence"
+      }
+    },
+    "ui.course_v3_memorize.finishChar.copy4": {
+      "reference": {
+        "namespace": "course",
+        "key": "memorize.finish"
+      }
+    },
+    "ui.course_v3_memorize.finishChar.copy5": {
+      "reference": {
+        "namespace": "course",
+        "key": "memorize.returnToExercises"
+      }
+    },
+    "ui.course_v3_memorize.boot.copy1": {
+      "reference": {
+        "namespace": "course",
+        "key": "practice.dataNotLoaded"
+      }
+    },
+    "ui.course_v3_pronunciation.start.copy1": {
+      "reference": {
+        "namespace": "course",
+        "key": "practice.dataNotLoaded"
+      }
+    },
+    "ui.course_v3_recognition.start.copy1": {
+      "reference": {
+        "namespace": "course",
+        "key": "practice.dataNotLoaded"
+      }
+    },
+    "ui.course_v3_test.resultCopy.copy1": {
+      "object": {
+        "label": {
+          "message": "ui.course_v3_test.resultCopy.copy1.label"
+        },
+        "note": {
+          "message": "ui.course_v3_test.resultCopy.copy1.note"
+        }
+      }
+    },
+    "ui.hsk_lugat.lbl.copy1": {
+      "message": "ui.hsk_lugat.lbl.copy1"
+    },
+    "ui.hsk_lugat.disclosure.copy1": {
+      "message": "ui.hsk_lugat.disclosure.copy1"
+    },
+    "ui.hsk_lugat.recall.copy1": {
+      "message": "ui.hsk_lugat.recall.copy1"
+    },
+    "ui.ads.I18N.copy1": {
+      "object": {
+        "adStart": {
+          "message": "ui.ads.I18N.copy1.adStart"
+        },
+        "adMiddle": {
+          "message": "ui.ads.I18N.copy1.adMiddle"
+        },
+        "adEnd": {
+          "message": "ui.ads.I18N.copy1.adEnd"
+        },
+        "adReady": {
+          "reference": {
+            "namespace": "course",
+            "key": "cont"
+          }
+        },
+        "adNote": {
+          "message": "ui.ads.I18N.copy1.adNote"
+        },
+        "adSubTitle": {
+          "message": "ui.ads.I18N.copy1.adSubTitle"
+        },
+        "adSubPay": {
+          "reference": {
+            "namespace": "course",
+            "key": "subscribe"
+          }
+        },
+        "adVisit": {
+          "message": "ui.ads.I18N.copy1.adVisit"
+        },
+        "adOpenLink": {
+          "message": "ui.ads.I18N.copy1.adOpenLink"
+        },
+        "b1": {
+          "reference": {
+            "namespace": "course",
+            "key": "b1"
+          }
+        },
+        "b2": {
+          "reference": {
+            "namespace": "course",
+            "key": "b2"
+          }
+        },
+        "b3": {
+          "reference": {
+            "namespace": "course",
+            "key": "b3"
+          }
+        },
+        "loading": {
+          "message": "ui.ads.I18N.copy1.loading"
+        },
+        "failed": {
+          "message": "ui.ads.I18N.copy1.failed"
+        },
+        "failedNote": {
+          "message": "ui.ads.I18N.copy1.failedNote"
+        },
+        "limitSubscribe": {
+          "reference": {
+            "namespace": "course",
+            "key": "subscribe"
+          }
+        },
+        "limitTrial": {
+          "message": "ui.ads.I18N.copy1.limitTrial"
+        },
+        "limitWhy": {
+          "message": "ui.ads.I18N.copy1.limitWhy"
+        },
+        "limitWhyPlain": {
+          "message": "ui.ads.I18N.copy1.limitWhyPlain"
+        },
+        "psWrite": {
+          "message": "ui.ads.I18N.copy1.psWrite"
+        },
+        "psTry": {
+          "message": "ui.ads.I18N.copy1.psTry"
+        },
+        "psCopy": {
+          "message": "ui.ads.I18N.copy1.psCopy"
+        },
+        "psCopied": {
+          "message": "ui.ads.I18N.copy1.psCopied"
+        },
+        "psShare": {
+          "message": "ui.ads.I18N.copy1.psShare"
+        },
+        "leLabel": {
+          "message": "ui.ads.I18N.copy1.leLabel"
+        },
+        "leNote": {
+          "message": "ui.ads.I18N.copy1.leNote"
+        },
+        "leSubTitle": {
+          "message": "ui.ads.I18N.copy1.leSubTitle"
+        },
+        "leExternal": {
+          "message": "ui.ads.I18N.copy1.leExternal"
+        },
+        "appCta": {
+          "message": "ui.ads.I18N.copy1.appCta"
+        },
+        "appCloseIn": {
+          "message": "ui.ads.I18N.copy1.appCloseIn"
+        },
+        "f_recognition": {
+          "reference": {
+            "namespace": "course",
+            "key": "recog"
+          }
+        },
+        "f_pronunciation": {
+          "reference": {
+            "namespace": "course",
+            "key": "pron"
+          }
+        },
+        "f_memorize": {
+          "message": "ui.ads.I18N.copy1.f_memorize"
+        },
+        "f_training_test": {
+          "reference": {
+            "namespace": "course",
+            "key": "testCenter"
+          }
+        },
+        "f_placement": {
+          "message": "ui.ads.I18N.copy1.f_placement"
+        },
+        "f_mistake_review": {
+          "reference": {
+            "namespace": "course",
+            "key": "mistakesPage.review"
+          }
+        }
+      }
+    },
+    "ui.ads.limitWhyText.copy1": {
+      "message": "ui.ads.limitWhyText.copy1"
+    },
+    "ui.ads.PROMO.copy1": {
+      "list": [
+        {
+          "object": {
+            "i": {
+              "literal": "microphone-2"
+            },
+            "t": {
+              "message": "ui.ads.PROMO.copy1.item1.t"
+            },
+            "s": {
+              "message": "ui.ads.PROMO.copy1.item1.s"
+            }
+          }
+        },
+        {
+          "object": {
+            "i": {
+              "literal": "books"
+            },
+            "t": {
+              "message": "ui.ads.PROMO.copy1.item2.t"
+            },
+            "s": {
+              "message": "ui.ads.PROMO.copy1.item2.s"
+            }
+          }
+        },
+        {
+          "object": {
+            "i": {
+              "literal": "clipboard-check"
+            },
+            "t": {
+              "message": "ui.ads.PROMO.copy1.item3.t"
+            },
+            "s": {
+              "message": "ui.ads.PROMO.copy1.item3.s"
+            }
+          }
+        },
+        {
+          "object": {
+            "i": {
+              "literal": "target-arrow"
+            },
+            "t": {
+              "message": "ui.ads.PROMO.copy1.item4.t"
+            },
+            "s": {
+              "message": "ui.ads.PROMO.copy1.item4.s"
+            }
+          }
+        },
+        {
+          "object": {
+            "i": {
+              "literal": "infinity"
+            },
+            "t": {
+              "message": "ui.ads.PROMO.copy1.item5.t"
+            },
+            "s": {
+              "message": "ui.ads.PROMO.copy1.item5.s"
+            }
+          }
+        }
+      ]
+    },
+    "ui.ads.LIMIT_HEADINGS.copy1": {
+      "message": "ui.ads.LIMIT_HEADINGS.copy1"
+    },
+    "ui.ads.LIMIT_REASONS.copy1": {
+      "object": {
+        "recognition": {
+          "message": "ui.ads.LIMIT_REASONS.copy1.recognition"
+        },
+        "pronunciation": {
+          "message": "ui.ads.LIMIT_REASONS.copy1.pronunciation"
+        },
+        "memorize": {
+          "message": "ui.ads.LIMIT_REASONS.copy1.memorize"
+        },
+        "training_test": {
+          "message": "ui.ads.LIMIT_REASONS.copy1.training_test"
+        },
+        "placement": {
+          "message": "ui.ads.LIMIT_REASONS.copy1.placement"
+        },
+        "mistake_review": {
+          "message": "ui.ads.LIMIT_REASONS.copy1.mistake_review"
+        },
+        "voice": {
+          "message": "ui.ads.LIMIT_REASONS.copy1.voice"
+        },
+        "lesson": {
+          "message": "ui.ads.LIMIT_REASONS.copy1.lesson"
+        }
+      }
+    },
+    "ui.ads.showLimitPromo.copy1": {
+      "reference": {
+        "namespace": "common",
+        "key": "action.close"
+      }
+    },
+    "ui.profile_carousel.LABELS.copy1": {
+      "object": {
+        "apps": {
+          "message": "ui.profile_carousel.LABELS.copy1.apps"
+        },
+        "appsBody": {
+          "message": "ui.profile_carousel.LABELS.copy1.appsBody"
+        },
+        "appsCta": {
+          "message": "ui.profile_carousel.LABELS.copy1.appsCta"
+        },
+        "newBody": {
+          "message": "ui.profile_carousel.LABELS.copy1.newBody"
+        },
+        "versionCta": {
+          "message": "ui.profile_carousel.LABELS.copy1.versionCta"
+        },
+        "proActive": {
+          "message": "ui.profile_carousel.LABELS.copy1.proActive"
+        },
+        "proAction": {
+          "message": "ui.profile_carousel.LABELS.copy1.proAction"
+        },
+        "carousel": {
+          "message": "ui.profile_carousel.LABELS.copy1.carousel"
+        },
+        "slide": {
+          "message": "ui.profile_carousel.LABELS.copy1.slide"
+        },
+        "linkTitle": {
+          "message": "ui.profile_carousel.LABELS.copy1.linkTitle"
+        },
+        "linkBody": {
+          "message": "ui.profile_carousel.LABELS.copy1.linkBody"
+        },
+        "linkCta": {
+          "message": "ui.profile_carousel.LABELS.copy1.linkCta"
+        },
+        "linkWait": {
+          "message": "ui.profile_carousel.LABELS.copy1.linkWait"
+        }
+      }
+    },
+    "ui.desktop_download.COPY.copy1": {
+      "object": {
+        "eyebrow": {
+          "message": "ui.desktop_download.COPY.copy1.eyebrow"
+        },
+        "cardTitle": {
+          "message": "ui.desktop_download.COPY.copy1.cardTitle"
+        },
+        "appsPage": {
+          "message": "ui.desktop_download.COPY.copy1.appsPage"
+        },
+        "previewTranslation": {
+          "message": "ui.desktop_download.COPY.copy1.previewTranslation"
+        },
+        "preparing": {
+          "message": "ui.desktop_download.COPY.copy1.preparing"
+        },
+        "availabilityError": {
+          "message": "ui.desktop_download.COPY.copy1.availabilityError"
+        },
+        "retryStatus": {
+          "message": "ui.desktop_download.COPY.copy1.retryStatus"
+        },
+        "checkingStatus": {
+          "message": "ui.desktop_download.COPY.copy1.checkingStatus"
+        },
+        "promoTitle": {
+          "message": "ui.desktop_download.COPY.copy1.promoTitle"
+        },
+        "promoBody": {
+          "message": "ui.desktop_download.COPY.copy1.promoBody"
+        },
+        "bigScreen": {
+          "message": "ui.desktop_download.COPY.copy1.bigScreen"
+        },
+        "autoUpdate": {
+          "message": "ui.desktop_download.COPY.copy1.autoUpdate"
+        },
+        "sharedProgress": {
+          "message": "ui.desktop_download.COPY.copy1.sharedProgress"
+        },
+        "mac": {
+          "message": "ui.desktop_download.COPY.copy1.mac"
+        },
+        "windows": {
+          "message": "ui.desktop_download.COPY.copy1.windows"
+        },
+        "android": {
+          "message": "ui.desktop_download.COPY.copy1.android"
+        },
+        "ios": {
+          "message": "ui.desktop_download.COPY.copy1.ios"
+        },
+        "macUnavailable": {
+          "message": "ui.desktop_download.COPY.copy1.macUnavailable"
+        },
+        "windowsUnavailable": {
+          "message": "ui.desktop_download.COPY.copy1.windowsUnavailable"
+        },
+        "androidUnavailable": {
+          "message": "ui.desktop_download.COPY.copy1.androidUnavailable"
+        },
+        "iosUnavailable": {
+          "message": "ui.desktop_download.COPY.copy1.iosUnavailable"
+        },
+        "recommended": {
+          "message": "ui.desktop_download.COPY.copy1.recommended"
+        },
+        "dismiss": {
+          "reference": {
+            "namespace": "course",
+            "key": "onboardingNotification.later"
+          }
+        },
+        "close": {
+          "message": "ui.desktop_download.COPY.copy1.close"
+        },
+        "adEntry": {
+          "message": "ui.desktop_download.COPY.copy1.adEntry"
+        },
+        "adEntrySub": {
+          "message": "ui.desktop_download.COPY.copy1.adEntrySub"
+        },
+        "sendingShort": {
+          "message": "ui.desktop_download.COPY.copy1.sendingShort"
+        },
+        "sending": {
+          "message": "ui.desktop_download.COPY.copy1.sending"
+        },
+        "sendingToChat": {
+          "message": "ui.desktop_download.COPY.copy1.sendingToChat"
+        },
+        "chatSendFailed": {
+          "message": "ui.desktop_download.COPY.copy1.chatSendFailed"
+        },
+        "telegramRequired": {
+          "message": "ui.desktop_download.COPY.copy1.telegramRequired"
+        },
+        "releaseUnavailable": {
+          "message": "ui.desktop_download.COPY.copy1.releaseUnavailable"
+        },
+        "rateLimited": {
+          "message": "ui.desktop_download.COPY.copy1.rateLimited"
+        },
+        "messageFailed": {
+          "message": "ui.desktop_download.COPY.copy1.messageFailed"
+        },
+        "requestTimeout": {
+          "message": "ui.desktop_download.COPY.copy1.requestTimeout"
+        },
+        "networkError": {
+          "message": "ui.desktop_download.COPY.copy1.networkError"
+        },
+        "invalidDownload": {
+          "message": "ui.desktop_download.COPY.copy1.invalidDownload"
+        },
+        "destinationTitle": {
+          "message": "ui.desktop_download.COPY.copy1.destinationTitle"
+        },
+        "destinationBody": {
+          "message": "ui.desktop_download.COPY.copy1.destinationBody"
+        },
+        "destinationMobileIntro": {
+          "message": "ui.desktop_download.COPY.copy1.destinationMobileIntro"
+        },
+        "destinationMobileBody": {
+          "message": "ui.desktop_download.COPY.copy1.destinationMobileBody"
+        },
+        "directTitle": {
+          "message": "ui.desktop_download.COPY.copy1.directTitle"
+        },
+        "directBody": {
+          "message": "ui.desktop_download.COPY.copy1.directBody"
+        },
+        "directMobileTitle": {
+          "message": "ui.desktop_download.COPY.copy1.directMobileTitle"
+        },
+        "directMobileBody": {
+          "message": "ui.desktop_download.COPY.copy1.directMobileBody"
+        },
+        "shareTitle": {
+          "reference": {
+            "namespace": "course",
+            "key": "downloadPage.shareLink"
+          }
+        },
+        "shareBody": {
+          "message": "ui.desktop_download.COPY.copy1.shareBody"
+        },
+        "shareRecommended": {
+          "message": "ui.desktop_download.COPY.copy1.shareRecommended"
+        },
+        "copyTitle": {
+          "reference": {
+            "namespace": "course",
+            "key": "downloadPage.copyLink"
+          }
+        },
+        "copyBody": {
+          "message": "ui.desktop_download.COPY.copy1.copyBody"
+        },
+        "cancel": {
+          "reference": {
+            "namespace": "course",
+            "key": "track.cancel"
+          }
+        },
+        "shareCancelled": {
+          "message": "ui.desktop_download.COPY.copy1.shareCancelled"
+        },
+        "copyFailed": {
+          "message": "ui.desktop_download.COPY.copy1.copyFailed"
+        },
+        "manualLinkLabel": {
+          "reference": {
+            "namespace": "course",
+            "key": "downloadPage.manualLinkLabel"
+          }
+        },
+        "successTitle": {
+          "message": "ui.desktop_download.COPY.copy1.successTitle"
+        },
+        "successBody": {
+          "message": "ui.desktop_download.COPY.copy1.successBody"
+        },
+        "shareSuccessTitle": {
+          "message": "ui.desktop_download.COPY.copy1.shareSuccessTitle"
+        },
+        "shareSuccessBody": {
+          "message": "ui.desktop_download.COPY.copy1.shareSuccessBody"
+        },
+        "copySuccessTitle": {
+          "message": "ui.desktop_download.COPY.copy1.copySuccessTitle"
+        },
+        "copySuccessBody": {
+          "message": "ui.desktop_download.COPY.copy1.copySuccessBody"
+        },
+        "successAction": {
+          "message": "ui.desktop_download.COPY.copy1.successAction"
+        }
+      }
+    },
+    "ui.desktop_download.ANDROID_PROMO_COPY.copy1": {
+      "object": {
+        "course": {
+          "object": {
+            "eyebrow": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.course.eyebrow"
+            },
+            "title": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.course.title"
+            },
+            "body": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.course.body"
+            },
+            "benefits": {
+              "list": [
+                {
+                  "list": [
+                    {
+                      "literal": "device-mobile"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.course.benefits.item1.item2"
+                    }
+                  ]
+                },
+                {
+                  "list": [
+                    {
+                      "literal": "wifi-off"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.course.benefits.item2.item2"
+                    }
+                  ]
+                },
+                {
+                  "list": [
+                    {
+                      "literal": "arrows-exchange"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.course.benefits.item3.item2"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "mashq": {
+          "object": {
+            "eyebrow": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.mashq.eyebrow"
+            },
+            "title": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.mashq.title"
+            },
+            "body": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.mashq.body"
+            },
+            "benefits": {
+              "list": [
+                {
+                  "list": [
+                    {
+                      "literal": "sparkles"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.mashq.benefits.item1.item2"
+                    }
+                  ]
+                },
+                {
+                  "list": [
+                    {
+                      "literal": "message-circle"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.mashq.benefits.item2.item2"
+                    }
+                  ]
+                },
+                {
+                  "list": [
+                    {
+                      "literal": "arrows-exchange"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.mashq.benefits.item3.item2"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "voice": {
+          "object": {
+            "eyebrow": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.voice.eyebrow"
+            },
+            "title": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.voice.title"
+            },
+            "body": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.voice.body"
+            },
+            "benefits": {
+              "list": [
+                {
+                  "list": [
+                    {
+                      "literal": "microphone-2"
+                    },
+                    {
+                      "reference": {
+                        "namespace": "course",
+                        "key": "nav.voice"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "list": [
+                    {
+                      "literal": "device-mobile"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.voice.benefits.item2.item2"
+                    }
+                  ]
+                },
+                {
+                  "list": [
+                    {
+                      "literal": "arrows-exchange"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.voice.benefits.item3.item2"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "dictionary": {
+          "object": {
+            "eyebrow": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.dictionary.eyebrow"
+            },
+            "title": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.dictionary.title"
+            },
+            "body": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.dictionary.body"
+            },
+            "benefits": {
+              "list": [
+                {
+                  "list": [
+                    {
+                      "literal": "pencil"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.dictionary.benefits.item1.item2"
+                    }
+                  ]
+                },
+                {
+                  "list": [
+                    {
+                      "literal": "wifi-off"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.dictionary.benefits.item2.item2"
+                    }
+                  ]
+                },
+                {
+                  "list": [
+                    {
+                      "literal": "book-2"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.dictionary.benefits.item3.item2"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "lesson_end": {
+          "object": {
+            "eyebrow": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.lesson_end.eyebrow"
+            },
+            "title": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.lesson_end.title"
+            },
+            "body": {
+              "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.lesson_end.body"
+            },
+            "benefits": {
+              "list": [
+                {
+                  "list": [
+                    {
+                      "literal": "message-circle"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.lesson_end.benefits.item1.item2"
+                    }
+                  ]
+                },
+                {
+                  "list": [
+                    {
+                      "literal": "bulb"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.lesson_end.benefits.item2.item2"
+                    }
+                  ]
+                },
+                {
+                  "list": [
+                    {
+                      "literal": "arrows-exchange"
+                    },
+                    {
+                      "message": "ui.desktop_download.ANDROID_PROMO_COPY.copy1.lesson_end.benefits.item3.item2"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "ui.desktop_download.copy.copy1": {
+      "object": {
+        "title": {
+          "message": "ui.desktop_download.copy.copy1.title"
+        },
+        "apk": {
+          "message": "ui.desktop_download.copy.copy1.apk"
+        },
+        "site": {
+          "message": "ui.desktop_download.copy.copy1.site"
+        },
+        "close": {
+          "reference": {
+            "namespace": "course",
+            "key": "track.cancel"
+          }
+        },
+        "missing": {
+          "message": "ui.desktop_download.copy.copy1.missing"
+        }
+      }
+    },
+    "ui.desktop_download_page.navigationCopy.copy1": {
+      "object": {
+        "courses": {
+          "message": "ui.desktop_download_page.navigationCopy.copy1.courses"
+        },
+        "features": {
+          "message": "ui.desktop_download_page.navigationCopy.copy1.features"
+        },
+        "guide": {
+          "message": "ui.desktop_download_page.navigationCopy.copy1.guide"
+        },
+        "download": {
+          "message": "ui.desktop_download_page.navigationCopy.copy1.download"
+        },
+        "language": {
+          "message": "ui.desktop_download_page.navigationCopy.copy1.language"
+        }
+      }
+    },
+    "ui.course_v3.levelSoon.templates": {
+      "object": {
+        "title": {
+          "message": "ui.course_v3.levelSoon.templates.title"
+        },
+        "body": {
+          "message": "ui.course_v3.levelSoon.templates.body"
+        }
+      }
+    },
+    "ui.course_v3.levelCompletion.templates": {
+      "object": {
+        "h": {
+          "message": "ui.course_v3.levelCompletion.templates.h"
+        },
+        "pending": {
+          "message": "ui.course_v3.levelCompletion.templates.pending"
+        },
+        "next": {
+          "message": "ui.course_v3.levelCompletion.templates.next"
+        },
+        "done": {
+          "message": "ui.course_v3.levelCompletion.templates.done"
+        },
+        "soon": {
+          "message": "ui.course_v3.levelCompletion.templates.soon"
+        }
+      }
+    },
+    "ui.course_v3.foundationEntry.templates": {
+      "object": {
+        "h": {
+          "reference": {
+            "namespace": "course",
+            "key": "foundation.zeroTitle"
+          }
+        },
+        "p": {
+          "message": "ui.course_v3.foundationEntry.templates.p"
+        },
+        "review": {
+          "message": "ui.course_v3.foundationEntry.templates.review"
+        },
+        "start": {
+          "reference": {
+            "namespace": "course",
+            "key": "onboarding.start"
+          }
+        }
+      }
+    },
+    "ui.course_v3.rivalry.templates": {
+      "object": {
+        "ahead": {
+          "message": "ui.course_v3.rivalry.templates.ahead"
+        },
+        "behind": {
+          "message": "ui.course_v3.rivalry.templates.behind"
+        }
+      }
+    }
+  }
+}

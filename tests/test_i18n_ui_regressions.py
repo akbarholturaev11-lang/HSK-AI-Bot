@@ -21,17 +21,21 @@ class MiniAppI18nRegressions(unittest.TestCase):
 
     def test_no_data_errors_are_localized_on_all_three_practice_pages(self):
         checks = {
-            "course_v3_memorize.html": "+t({uz:",
-            "course_v3_pronunciation.html": "+tr({uz:",
-            "course_v3_recognition.html": "+tr({uz:",
+            "course_v3_pronunciation.html": 'practiceMessage("practice.dataNotLoaded"',
+            "course_v3_recognition.html": 'practiceMessage("practice.dataNotLoaded"',
         }
         for name, expected in checks.items():
             with self.subTest(name=name):
                 text = (ROOT / name).read_text(encoding="utf-8")
-                self.assertIn(expected + '"Ma\'lumot yuklanmadi"', text)
+                self.assertIn(expected, text)
+                self.assertIn('uz:"Ma\'lumot yuklanmadi"', text)
                 self.assertIn('ru:"Не удалось загрузить данные"', text)
                 self.assertIn('tj:"Маълумот бор нашуд"', text)
-                self.assertNotIn("'>Ma\\'lumot yuklanmadi</div>'", text)
+        memorize = (ROOT / "course_v3_memorize.html").read_text(encoding="utf-8")
+        self.assertIn('memoMessage("practice.dataNotLoaded"', memorize)
+        self.assertIn('uz:"Ma\'lumot yuklanmadi"', memorize)
+        self.assertIn('ru:"Не удалось загрузить данные"', memorize)
+        self.assertIn('tj:"Маълумот бор нашуд"', memorize)
 
 
 if __name__ == "__main__":

@@ -85,7 +85,7 @@ internal fun SkipTestScreen(
                 state.error != null -> SkipTestMessage(
                     title = stringResource(R.string.skip_test_not_ready),
                     body = stringResource(R.string.skip_test_save_error),
-                    primaryLabel = stringResource(R.string.action_close),
+                    primaryLabel = stringResource(R.string.hsk_common_action_close),
                     onPrimary = onClose,
                 )
 
@@ -102,7 +102,7 @@ internal fun SkipTestScreen(
                         else R.string.skip_test_fail_body,
                         finished ?: state.score,
                     ),
-                    primaryLabel = stringResource(R.string.skip_test_start_lesson),
+                    primaryLabel = stringResource(R.string.hsk_common_lesson_start),
                     onPrimary = onOpenLesson,
                 )
 
@@ -124,7 +124,7 @@ internal fun SkipTestScreen(
                     ),
                     primaryLabel = stringResource(R.string.skip_test_confirm_yes),
                     onPrimary = onUnlock,
-                    secondaryLabel = stringResource(R.string.skip_test_confirm_no),
+                    secondaryLabel = stringResource(R.string.hsk_common_action_back),
                     onSecondary = onClose,
                 )
 
@@ -172,7 +172,7 @@ private fun SkipTestOffer(onStart: () -> Unit, onClose: () -> Unit) {
         )
         Spacer(Modifier.height(10.dp))
         HskGlassButton(
-            text = stringResource(R.string.action_close),
+            text = stringResource(R.string.hsk_common_action_close),
             onClick = onClose,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -229,9 +229,9 @@ private fun SkipTestQuestion(
         }
         HskPrimaryButton(
             text = if (state.isLastQuestion) {
-                stringResource(R.string.practice_finish)
+                stringResource(R.string.hsk_course_mistakes_page_finish)
             } else {
-                stringResource(R.string.lesson_next)
+                stringResource(R.string.hsk_common_action_continue)
             },
             onClick = onAdvance,
             enabled = state.isAnswered,
