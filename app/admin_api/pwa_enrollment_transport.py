@@ -95,6 +95,11 @@ def create_admin_pwa_completion_router(
             "expires_at": completed.grant.expires_at.isoformat(),
         }, headers=_PRIVATE_HEADERS)
         _set_secret_cookie(response, _ENROLL_COOKIE, completed.grant.token, 180)
+        # Refresh the *same* browser-bound approval proof for the enrollment
+        # window. Otherwise a Bot approval at T+4:59 leaves the fresh grant
+        # unable to satisfy its mandatory second-cookie proof at T+5:00.
+        # No additional proof is generated or made JS-readable.
+        _set_secret_cookie(response, _APPROVAL_COOKIE, proof, 180)
         return response
 
     return router
