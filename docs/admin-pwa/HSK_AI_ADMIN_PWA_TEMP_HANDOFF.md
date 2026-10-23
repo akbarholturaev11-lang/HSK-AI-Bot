@@ -26,7 +26,7 @@
 - [x] Created temporary scoped project documentation (this set).
 - [ ] Verified live `https://hskai.app` TLS, reverse proxy, Google OAuth redirect, PWA scope and RP ID on real target.
 - [ ] Detailed API read/write/danger inventory signed off with current code as opposed to stale branch snapshot.
-- [ ] Obtained/verified the actual V10 HTML demo source for conversion into production frontend components.
+- [x] Verified actual V10 HTML demo bytes in conversation workspace (184,575 bytes; SHA-256 `8cd9375dd2ef7c27e9f17904000629060139ffb21c667a83c60b282ec321a9b9`); mapped components in `ADMIN_PWA_V10_UI_REFERENCE.md`. Source is **not** in GitHub and must be explicitly made accessible to future implementation environments.
 - [ ] Any code for browser identity, cookie sessions, Google link, Telegram approval challenge or WebAuthn.
 - [ ] Any real PWA frontend/API, real-data stats/inbox, MCP/export service or staging deployment.
 - [ ] Any automated E2E, security test, manually tested iPhone biometric, or production release.
@@ -63,3 +63,8 @@ Do not write “done”, “tested”, “linked”, “deployed” unless verif
 - **No production authentication:** Google/Telegram one-time linking, passkey registration/sign-in, backend session tables, cookie+CSRF management and protected data endpoints **remain unimplemented**. This is route safety groundwork only, not a usable login.
 - **Next action:** define verified AdminActor and one-time Google OIDC + Telegram Bot approval state transitions and persistence schema with replay/cross-browser tests; only after implementation change the 503 guard under an explicit staging gate. Obtain and visually audit the V10 demo bytes (available in conversation workspace) before PWA frontend conversion.
 - **Main/production:** unchanged by this branch-only commit.
+
+## UI source reference — 2026-10-23
+
+- Local V10 demo identified and hashed, HTML/view functions mapped. See `docs/admin-pwa/ADMIN_PWA_V10_UI_REFERENCE.md`.
+- A later Codex agent must **not infer** that the V10 HTML is committed. The file lives in this conversation's mounted files, so it needs the actual bytes for porting.
