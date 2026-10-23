@@ -104,6 +104,9 @@ class AdminPwaPostgresConcurrencyTests(unittest.IsolatedAsyncioTestCase):
         handle = b"H" * 32
         async with self.sessions() as db:
             db.add(User(id=1, telegram_id=9001, status="active"))
+            # Ensure FK target exists before persisting a credential. The
+            # models have FKs but no ORM relationship to infer flush order.
+            await db.flush()
             db.add(AdminPwaCredential(
                 id=str(uuid4()), user_id=1,
                 credential_id=cred_id, public_key=b"test-public-key",
