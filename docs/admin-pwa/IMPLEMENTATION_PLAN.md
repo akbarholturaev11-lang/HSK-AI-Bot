@@ -185,3 +185,8 @@ Use separately issued, revocable short-lived machine credentials with **read sco
 ## Test and release notes
 
 This document records source-code observations; it is not evidence of an active PWA, deployment, user-session security testing, database migration, or production end-to-end QA. No production endpoint is enabled by this planning change.
+
+
+### WebAuthn registration CI (2026-10-24)
+
+Dedicated read-only feature-branch GitHub Actions workflow passed **110 full-checkout Admin PWA tests**, compiled the new Python code and found a unique Alembic head at `0114_admin_pwa_webauthn_registration`; see https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40026176016. Mock-verifier tests are not proof of genuine FIDO2 attestation, and no database migration was actually applied to PostgreSQL. Passkey-only sign-in, real session issuance and step-up remain not implemented. Keep feature flag disabled.
