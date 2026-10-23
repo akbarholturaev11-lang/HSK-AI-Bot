@@ -23,6 +23,17 @@ from app.admin_api.pwa_webauthn_login import (
     PasskeyLoginRateLimited, begin_passkey_login, complete_passkey_login,
 )
 from app.db.base import Base
+from tests.test_admin_pwa_payment_review import PaymentFixtures, COOKIE
+from app.admin_api.pwa_payment_review import execute_payment_review
+from app.admin_api.pwa_payment_outbox import dispatch_payment_review
+from app.db.models.admin_pwa_payment_review import AdminPwaPaymentReview, AdminPwaPaymentOutbox
+from app.db.models.payment import Payment
+from app.db.models.ai_usage import AIUsageBudget
+from app.db.models.portfolio import PortfolioTransaction
+from app.db.models.partner import PartnerCredit
+from app.services.admin_payment_review_service import PaymentReviewError
+from app.services.ai_usage_budget_service import AIUsageBudgetService
+from unittest.mock import AsyncMock
 from app.db.models.user import User
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_webauthn import AdminPwaCredential
@@ -38,7 +49,7 @@ def _b64(value: bytes) -> str:
     os.environ.get("ADMIN_PWA_TEST_DATABASE_URL"),
     "requires isolated ADMIN_PWA_TEST_DATABASE_URL (never production)",
 )
-class AdminPwaPostgresConcurrencyTests(unittest.IsolatedAsyncioTestCase):
+class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.schema = "adminpwa_test_" + uuid4().hex
         url = os.environ["ADMIN_PWA_TEST_DATABASE_URL"]
@@ -58,15 +69,9 @@ class AdminPwaPostgresConcurrencyTests(unittest.IsolatedAsyncioTestCase):
         )
         async with self.engine.begin() as conn:
             await conn.run_sync(lambda sync_conn: Base.metadata.create_all(
-                sync_conn, checkfirst=False, tables=[
-                    # Public migration baseline already contains minimal
-                    # users(id); DO NOT reuse it. Force complete ORM tables
-                    # into our isolated test schema via search_path.
-                    User.__table__, AdminPwaSession.__table__,
-                    AdminPwaCredential.__table__,
-                    AdminPwaAuthenticationChallenge.__table__,
-                    AdminPwaStepUp.__table__,
-                ],
+                # Complete financial models in this disposable schema; public
+                # contains only the migration baseline and is never reused.
+                sync_conn, checkfirst=False,
             ))
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
         self.settings = SimpleNamespace(
@@ -217,6 +222,176 @@ class AdminPwaPostgresConcurrencyTests(unittest.IsolatedAsyncioTestCase):
             row = (await db.execute(select(AdminPwaStepUp))).scalar_one()
             self.assertEqual(row.status, "consumed")
             self.assertIsNotNone(row.consumed_at)
+
+
+    async def test_same_payment_two_distinct_step_ups_only_one_financial_commit(self):
+        await self.seed_payment(partner=True)
+        command = await self.command()
+        receipt_a, receipt_b = await self.receipt(command), await self.receipt(command)
+        async def finish(receipt):
+            try:
+                return await self.execute(command, receipt)
+            except PaymentReviewError as exc:
+                return str(exc)
+        with patch.object(AIUsageBudgetService, "_live_or_manual_usd_rates",
+                          new=AsyncMock(return_value={"tjs": 10, "cny": 7})):
+            results = await asyncio.wait_for(asyncio.gather(finish(receipt_a), finish(receipt_b)), timeout=30)
+        self.assertEqual(sum(isinstance(r, dict) for r in results), 1)
+        self.assertIn("payment_already_reviewed", results)
+        async with self.sessions() as db:
+            self.assertCountEqual(list((await db.scalars(select(AdminPwaStepUp.status))).all()), ["consumed", "verified"])
+            for model in (AdminPwaPaymentReview, AdminPwaPaymentOutbox, AIUsageBudget, PortfolioTransaction):
+                self.assertEqual(await db.scalar(select(func.count()).select_from(model)), 1)
+            self.assertEqual(await db.scalar(select(func.count()).select_from(PartnerCredit)), 2)
+            user = await db.get(User, 1)
+            self.assertEqual(user.end_date-user.start_date, timedelta(days=30))
+
+    async def test_same_receipt_parallel_approval_and_outbox_attempt_are_one_use(self):
+        await self.seed_payment()
+        command = await self.command()
+        receipt = await self.receipt(command)
+        async def finish():
+            try:
+                return await self.execute(command, receipt)
+            except PaymentReviewError:
+                return None
+        with patch.object(AIUsageBudgetService, "_live_or_manual_usd_rates",
+                          new=AsyncMock(return_value={"tjs": 10, "cny": 7})):
+            results = await asyncio.wait_for(asyncio.gather(finish(), finish()), timeout=30)
+        self.assertEqual(sum(r is not None for r in results), 1)
+        result = next(r for r in results if r is not None)
+        emitter = AsyncMock()
+        async def dispatch():
+            return await dispatch_payment_review(review_id=result["review_id"], session_factory=self.sessions,
+                                                  settings_obj=self.settings, emit=emitter)
+        attempts = await asyncio.wait_for(asyncio.gather(dispatch(), dispatch()), timeout=30)
+        self.assertCountEqual(attempts, [True, False])
+        emitter.assert_awaited_once()
+
+    async def test_financial_failure_rolls_back_then_waiting_approval_can_succeed(self):
+        await self.seed_payment()
+        command = await self.command()
+        receipt_a, receipt_b = await self.receipt(command), await self.receipt(command)
+        from app.services.admin_payment_review_service import review_locked_payment
+        first = True
+        async def fail_first(*args, **kwargs):
+            nonlocal first
+            result = await review_locked_payment(*args, **kwargs)
+            if first:
+                first = False
+                raise RuntimeError("injected failure after entitlement writes")
+            return result
+        async def finish(receipt):
+            try:
+                return await self.execute(command, receipt)
+            except RuntimeError:
+                return None
+        with patch("app.admin_api.pwa_payment_review.review_locked_payment", side_effect=fail_first), \
+             patch.object(AIUsageBudgetService, "_live_or_manual_usd_rates",
+                          new=AsyncMock(return_value={"tjs": 10, "cny": 7})):
+            results = await asyncio.wait_for(asyncio.gather(finish(receipt_a), finish(receipt_b)), timeout=30)
+        self.assertEqual(sum(r is not None for r in results), 1)
+        async with self.sessions() as db:
+            self.assertCountEqual(list((await db.scalars(select(AdminPwaStepUp.status))).all()), ["consumed", "verified"])
+            for model in (AdminPwaPaymentReview, AdminPwaPaymentOutbox, AIUsageBudget, PortfolioTransaction):
+                self.assertEqual(await db.scalar(select(func.count()).select_from(model)), 1)
+
+    async def test_receipt_expiring_during_lock_wait_is_denied_at_write_boundary(self):
+        await self.seed_payment()
+        command = await self.command()
+        receipt = await self.receipt(command, expires_at=datetime.now(timezone.utc)+timedelta(milliseconds=500))
+        async with self.sessions() as blocker:
+            async with blocker.begin():
+                await blocker.execute(select(AdminPwaStepUp).where(AdminPwaStepUp.id == receipt).with_for_update())
+                task = asyncio.create_task(self.execute(command, receipt))
+                await asyncio.sleep(0.7)
+        with self.assertRaisesRegex(PaymentReviewError, "step_up_denied"):
+            await asyncio.wait_for(task, timeout=30)
+        async with self.sessions() as db:
+            self.assertEqual((await db.get(Payment, self.payment_id)).payment_status, "pending")
+            self.assertEqual((await db.get(AdminPwaStepUp, receipt)).status, "verified")
+
+    async def test_actual_0117_migration_preserves_nonempty_financial_audit(self):
+        import importlib.util
+        from pathlib import Path
+        from alembic.migration import MigrationContext
+        from alembic.operations import Operations
+        path = Path(__file__).resolve().parents[1] / "alembic/versions/0117_admin_pwa_payment_reviews.py"
+        spec = importlib.util.spec_from_file_location("pwa_payment_migration", path)
+        migration = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(migration)
+        schema = self.schema + "_migration"
+        async with self.engine.begin() as conn:
+            await conn.execute(text(f"CREATE SCHEMA {schema}"))
+            await conn.execute(text(f"SET LOCAL search_path TO {schema}"))
+            def upgrade(sync):
+                with Operations.context(MigrationContext.configure(sync)):
+                    migration.upgrade()
+            def downgrade(sync):
+                with Operations.context(MigrationContext.configure(sync)):
+                    migration.downgrade()
+            await conn.run_sync(upgrade)
+            await conn.execute(text("""INSERT INTO admin_pwa_payment_reviews
+                (id, step_up_id, payment_id, actor_user_id, target_user_id, action,
+                 decision, payload_hash, payload_json, status, created_at)
+                VALUES ('synthetic-review', 'synthetic-step', 1, 101, 1, 'payments.review',
+                        'approve', :digest, '{}', 'applied', CURRENT_TIMESTAMP)"""), {"digest": "a"*64})
+            with self.assertRaisesRegex(RuntimeError, "audit_requires_retention"):
+                await conn.run_sync(downgrade)
+            self.assertEqual((await conn.execute(text("SELECT count(*) FROM admin_pwa_payment_reviews"))).scalar_one(), 1)
+            # Only synthetic records in this random, disposable test schema.
+            await conn.execute(text("DELETE FROM admin_pwa_payment_reviews WHERE id='synthetic-review'"))
+            await conn.run_sync(downgrade)
+            await conn.run_sync(upgrade)
+            await conn.execute(text(f"DROP SCHEMA {schema} CASCADE"))
+
+    async def test_pending_signature_cannot_refresh_an_expired_lock_wait(self):
+        from app.admin_api.pwa_step_up import verify_step_up
+        from tests.test_admin_pwa_webauthn_crypto_vectors import make_assertion
+        await self.seed_payment()
+        command = await self.command()
+        receipt = await self.receipt(command, status="pending", verified_at=None,
+            expires_at=datetime.now(timezone.utc)+timedelta(milliseconds=500))
+        async def verify():
+            async with self.sessions() as db:
+                return await verify_step_up(db, session_cookie=COOKIE, step_up_id=receipt,
+                    credential=make_assertion(self.key), settings_obj=self.settings)
+        async with self.sessions() as blocker:
+            async with blocker.begin():
+                await blocker.execute(select(AdminPwaStepUp).where(AdminPwaStepUp.id == receipt).with_for_update())
+                task = asyncio.create_task(verify())
+                await asyncio.sleep(0.7)
+        self.assertFalse(await asyncio.wait_for(task, timeout=30))
+        async with self.sessions() as db:
+            self.assertEqual((await db.get(AdminPwaStepUp, receipt)).status, "pending")
+
+    async def test_telegram_adapter_and_pwa_race_do_not_extend_subscription_twice(self):
+        from tests.test_main_imports import MainModuleImportTests
+        main = MainModuleImportTests._import_main()
+        await self.seed_payment()
+        command = await self.command()
+        receipt = await self.receipt(command)
+        async def telegram():
+            async with self.sessions() as db:
+                _, status = await main._review_admin_payment(db, payment_id=self.payment_id,
+                                                            action="approve", reason=None)
+                return status
+        async def pwa():
+            try:
+                await self.execute(command, receipt)
+                return 200
+            except PaymentReviewError as exc:
+                return exc.status
+        with patch.object(main, "_emit_admin_payment_review_effects", new=AsyncMock()), \
+             patch.object(AIUsageBudgetService, "_live_or_manual_usd_rates",
+                          new=AsyncMock(return_value={"tjs": 10, "cny": 7})):
+            statuses = await asyncio.wait_for(asyncio.gather(telegram(), pwa()), timeout=30)
+        self.assertCountEqual(statuses, [200, 409])
+        async with self.sessions() as db:
+            user = await db.get(User, 1)
+            self.assertEqual(user.end_date-user.start_date, timedelta(days=30))
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AIUsageBudget)), 1)
+            self.assertEqual(await db.scalar(select(func.count()).select_from(PortfolioTransaction)), 1)
 
 
 if __name__ == "__main__":

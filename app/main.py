@@ -25,12 +25,17 @@ from app.api.public_site import (
     record_event,
 )
 from app.config import settings
+from app.services.admin_payment_review_service import (
+    PaymentReviewError, lock_pending_payment, review_locked_payment,
+)
 from app.admin_api.pwa_bootstrap import create_admin_pwa_bootstrap_router
 from app.admin_api.pwa_google_transport import create_admin_pwa_google_router
 from app.admin_api.pwa_enrollment_transport import create_admin_pwa_completion_router
 from app.admin_api.pwa_webauthn_transport import create_admin_pwa_webauthn_router
 from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_login_router
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
+from app.admin_api.pwa_payment_review_transport import create_admin_pwa_payment_review_router
+from app.admin_api.pwa_payment_outbox import dispatch_payment_review
 from app.api.android_auth import create_android_auth_router
 from app.api.course_tracks import create_course_tracks_router
 from app.api.android_course import create_android_course_router
@@ -683,6 +688,19 @@ app.include_router(create_admin_pwa_completion_router(settings_obj=settings, ses
 app.include_router(create_admin_pwa_webauthn_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_passkey_login_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_step_up_router(settings_obj=settings, session_factory=async_session_maker))
+
+
+async def _dispatch_admin_pwa_payment_review(review_id):
+    return await dispatch_payment_review(
+        review_id=review_id, session_factory=async_session_maker, settings_obj=settings,
+        emit=lambda db, result: _emit_admin_payment_review_effects(db, result, source_prefix="admin_pwa"),
+    )
+
+
+app.include_router(create_admin_pwa_payment_review_router(
+    settings_obj=settings, session_factory=async_session_maker,
+    dispatch=_dispatch_admin_pwa_payment_review,
+))
 app.include_router(create_public_site_router(
     settings_obj=settings,
     session_factory=async_session_maker,
@@ -1719,37 +1737,39 @@ async def _review_admin_payment(
     action: str,
     reason: str | None,
 ) -> tuple[dict, int]:
-    payment_repo = PaymentRepository(session)
-    user_repo = UserRepository(session)
-    payment = await payment_repo.get_by_id(payment_id)
-    if not payment:
-        return {"ok": False, "error": "payment_not_found"}, 404
-    if payment.payment_status != "pending":
-        return {"ok": False, "error": "payment_already_reviewed"}, 409
+    # Telegram authorization stays in its existing route. The shared decision
+    # never commits; this adapter retains the legacy commit + delivery boundary.
+    try:
+        if not session.in_transaction():
+            await session.begin()
+        payment, user = await lock_pending_payment(session, payment_id)
+        result = await review_locked_payment(
+            session, payment=payment, user=user, decision=action,
+            comment=("approved by admin mini app" if action == "approve"
+                     else (reason or "rejected by admin mini app").strip()[:300]),
+        )
+        await session.commit()
+    except PaymentReviewError as exc:
+        if str(exc) in {"subscription_activation_failed", "hsk30_unlock_failed"}:
+            await session.rollback()
+        return {"ok": False, "error": str(exc)}, exc.status
+    await _emit_admin_payment_review_effects(session, result)
+    return result.response, 200
 
-    # Checkout locks User before Payment. Reviews use the same order, and a
-    # canonical owner never falls back to another learner's Telegram metadata.
-    user = await payment_repo.get_owner(payment, lock=True)
+
+async def _emit_admin_payment_review_effects(session, result, *, source_prefix="admin_miniapp"):
+    """Post-commit only; delivery is best effort, not financial execution."""
+    payment, user, action = result.payment, result.user, result.decision
+    partner, commission_usd, unlocked_bonus = result.partner, result.commission_usd, result.unlocked_bonus
+    for event in result.deferred_events:
+        await ConversionFunnelService().record(**event)
     if action == "approve":
-        if not user:
-            return {"ok": False, "error": "user_not_found"}, 404
-        if not await payment_repo.approve(payment, admin_comment="approved by admin mini app"):
-            return {"ok": False, "error": "payment_already_reviewed"}, 409
-
         if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE:
-            granted = await Hsk30UnlockService(session).grant(
-                user=user,
-                payment=payment,
-            )
-            if not granted:
-                await session.rollback()
-                return {"ok": False, "error": "hsk30_unlock_failed"}, 400
-            await session.commit()
             await ConversionFunnelService().record(
                 event_name="hsk30_unlock_approved",
                 user=user,
                 telegram_id=payment.user_telegram_id,
-                source="admin_miniapp_payment_approve",
+                source=f"{source_prefix}_payment_approve",
                 payment_id=payment.id,
                 payload={
                     "plan_type": payment.plan_type,
@@ -1763,7 +1783,7 @@ async def _review_admin_payment(
                     event_name="hsk30_unlock_approved",
                     telegram_id=payment.user_telegram_id,
                     user_id=getattr(user, "id", None),
-                    source="admin_miniapp_payment_approve",
+                    source=f"{source_prefix}_payment_approve",
                     dedupe_key=f"hsk30-unlock-payment:{payment.id}",
                     payload={
                         "plan_type": payment.plan_type,
@@ -1780,24 +1800,11 @@ async def _review_admin_payment(
                 )
             return {"ok": True, "status": "approved", "product": HSK30_UNLOCK_PLAN_TYPE}, 200
 
-        activated = await SubscriptionService(session).activate_plan(
-            telegram_id=user,
-            plan_type=payment.plan_type,
-            discount_source=payment.discount_source,
-            payment=payment,
-        )
-        if not activated:
-            await session.rollback()
-            return {"ok": False, "error": "subscription_activation_failed"}, 400
-        partner, commission_usd, unlocked_bonus = await PartnerService(
-            session
-        ).record_approved_payment(payment)
-        await session.commit()
         await ConversionFunnelService().record(
             event_name="payment_approved",
             user=user,
             telegram_id=payment.user_telegram_id,
-            source="admin_miniapp_payment_approve",
+            source=f"{source_prefix}_payment_approve",
             payment_id=payment.id,
             payload={
                 "plan_type": payment.plan_type,
@@ -1811,7 +1818,7 @@ async def _review_admin_payment(
                 event_name="subscription_approved",
                 telegram_id=payment.user_telegram_id,
                 user_id=getattr(user, "id", None),
-                source="admin_miniapp_payment_approve",
+                source=f"{source_prefix}_payment_approve",
                 dedupe_key=f"payment:{payment.id}",
                 payload={
                     "plan_type": payment.plan_type,
@@ -1838,13 +1845,6 @@ async def _review_admin_payment(
         return {"ok": True, "status": "approved"}, 200
 
     if action == "reject":
-        comment = (reason or "rejected by admin mini app").strip()[:300]
-        if not await payment_repo.reject(payment, admin_comment=comment):
-            return {"ok": False, "error": "payment_already_reviewed"}, 409
-        if user and payment.plan_type != HSK30_UNLOCK_PLAN_TYPE:
-            await user_repo.set_selected_plan_type(user, None)
-            await PaymentReviewPreviewService(session).review(user, payment, approved=False)
-        await session.commit()
         await ConversionFunnelService().record(
             event_name=(
                 "hsk30_unlock_rejected"
@@ -1853,9 +1853,9 @@ async def _review_admin_payment(
             ),
             user=user,
             telegram_id=payment.user_telegram_id,
-            source="admin_miniapp_payment_reject",
+            source=f"{source_prefix}_payment_reject",
             payment_id=payment.id,
-            payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method, "reason": comment},
+            payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method, "reason": payment.admin_comment},
         )
         with contextlib.suppress(Exception):
             notifier = PaymentNotifyService(session)
@@ -1874,8 +1874,6 @@ async def _review_admin_payment(
                     payment=payment,
                 )
         return {"ok": True, "status": "rejected"}, 200
-
-    return {"ok": False, "error": "invalid_action"}, 400
 
 
 @app.get("/health")

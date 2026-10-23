@@ -199,6 +199,9 @@ async def verify_step_up(
             session, user = pair
             if step.session_id != session.id or int(step.user_id) != int(user.id):
                 return False
+            stamp = _utc(now or datetime.now(timezone.utc))
+            if _utc(step.expires_at) <= stamp or _utc(session.expires_at) <= stamp:
+                return False
             response = credential.get("response")
             if not isinstance(response, dict):
                 return False
@@ -292,6 +295,11 @@ async def consume_step_up_in_mutation(
         return False
     session, user = pair
     if step.session_id != session.id or int(step.user_id) != int(user.id):
+        return False
+    # Row-lock waits can outlive the receipt/session. Authorize at the actual
+    # write boundary, not at the time before waiting for another transaction.
+    stamp = _utc(now or datetime.now(timezone.utc))
+    if _utc(step.expires_at) <= stamp or _utc(session.expires_at) <= stamp:
         return False
     updated = await db.execute(update(AdminPwaStepUp).where(
         AdminPwaStepUp.id == step.id,

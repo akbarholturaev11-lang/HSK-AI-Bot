@@ -60,6 +60,8 @@ class SubscriptionService:
         plan_type: str,
         discount_source: Optional[str] = None,
         payment=None,
+        *,
+        deferred_events: list[dict] | None = None,
     ) -> bool:
         # Admin approval may process two different payments for the same
         # learner at nearly the same time. Lock the account so both renewals
@@ -133,12 +135,15 @@ class SubscriptionService:
         await self.session.flush()
 
         if came_from_trial:
-            await ConversionFunnelService().record(
-                event_name="trial_converted",
-                user=user,
-                source="subscription_activated",
-                payload={"plan_type": plan_type},
+            event = dict(
+                event_name="trial_converted", user_id=user.id,
+                telegram_id=actual_telegram_id(user),
+                source="subscription_activated", payload={"plan_type": plan_type},
             )
+            if deferred_events is not None:
+                deferred_events.append(event)
+            else:
+                await ConversionFunnelService().record(**event)
         return True
 
     async def grant_manual_paid_access(
