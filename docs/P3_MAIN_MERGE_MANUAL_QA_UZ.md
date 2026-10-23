@@ -225,3 +225,49 @@ avval sabab va tor fix topiladi.
 
 Xitoycha tarjimani qayta ekspertizadan o‘tkazish agentning vazifasi bo‘lib qoladi.
 Foydalanuvchining vazifasi — ko‘rinish va odatiy foydalanish natijasini aytish.
+
+## 9. Merge uchun tayyorlangan PR
+
+[Draft PR #198](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/198)
+aynan `codex/p3-main-integration-20261020` → `main` uchun ochildi.
+Oldingi #179 boshqa source branch’dan, #196 esa qaytarilgan WebGL pilotidan.
+
+Tayyorlashda main yana `dcd65418` ekanligi tekshirildi. `git merge-tree
+--write-tree` sinovi konfliktsiz; natija ish branch’i tree’siga teng. Ilova,
+Android, Desktop, scripts/tests/workflow fayllari green Backend/P0 tekshirilgan
+`a14e97ce` bilan aynan bir xil. `4c440bc5` documentation HEAD P0’si ham SUCCESS.
+Keyingi tayyorgarlik qaydi ham faqat hujjat; PR checks alohida kuzatiladi.
+
+Old main/source ref’lari va main tarixiga tayanuvchi incremental Git bundle
+alohida lokal joyda saqlandi; `git bundle verify` o‘tdi. Foydalanuvchining
+Graphify o‘zgarishlari commit’ga qo‘shilmadi. Bu Git recovery nusxasi database
+backup’i emas; yangi DB migratsiyasi ushbu farqqa kirmaydi.
+
+Merge bajariladigan paytdagi tartib:
+
+1. PR HEAD va remote main qayta olinadi. Main yuqoridagi SHA’dan yoki PR HEAD
+   tekshirilgan SHA’dan siljigan bo‘lsa, yangilangan merge natijasi va CI ko‘riladi.
+2. PR checks xatosiz yakunlanishi tekshiriladi; Draft va auto-merge holati
+   tayyorgarlikni bajarilgan release deb ko‘rsatish uchun o‘zgartirilmaydi.
+   Main hozir protected emas, shuning uchun GitHub merge tugmasi ochiqligining
+   o‘zi testlar o‘tganini bildirmaydi.
+3. Railway live source/auto-deploy binding o‘qiladi. Hozir connector ham, CLI
+   ham qayta autentifikatsiya talab qilyapti; bu sozlama `railway.toml`da yo‘q.
+   Main push mavjud avtomatik production deploy’ni boshlashi mumkin. Repo’dagi
+   Android release manual; Desktop release tag/manual orqali ishlaydi.
+4. Chiqarish amali berilganda history saqlanadigan merge commit ishlatiladi,
+   aniq HEAD mosligi tekshiriladi; force/reset, branch delete yoki DB downgrade
+   qo‘llanmaydi. Aloqasiz lokal o‘zgarishlar sabab main lokal dirty checkout’dan
+   chiqarilmaydi.
+5. Main ref o‘qilib haqiqiy merge SHA va birinchi parent’i yoziladi. Hozirgi P0
+   va Backend push trigger’lari main’ni qamramaydi; merge’dan keyin zarur bo‘lsa
+   ularning `workflow_dispatch` rejimi `--ref main` bilan ishga tushiriladi.
+   Eski one-time `p3-integration-merge.yml` workflow’i promotion usuli emas.
+6. Deploy’dan keyin 8-bo‘limdagi tekshiruvlar bajariladi. Qolgan real-device va
+   provider ssenariylari bajarilmaguncha ular PASS deb belgilanmaydi.
+
+Recovery kerak bo‘lsa haqiqiy main merge SHA uchun alohida tekshiriladigan
+`git revert -m 1 <merge_SHA>` commiti tayyorlanadi. Learner/payment yozuvlari
+orqaga qaytarilmaydi. To‘liq revert eski public lesson route’larini qaytarishi
+mumkinligi ham tekshiriladi. Tayyorgarlik so‘rovi main’ga merge/deploy qilish
+amali sifatida bajarilmagan.

@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## 2026-10-23 — Safe main promotion prepared as Draft PR #198
+
+- Owner asked to prepare, not execute promotion. [Draft PR #198](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/198) is the actual integration branch → main; old #179 and withdrawn pilot #196 are not the promotion source. Main remains `dcd65418`. Native `merge-tree` produced exactly source HEAD's tree without conflicts; code/tests/workflows are unchanged from green `a14e97ce`. Documentation HEAD `4c440bc5` P0 [39893538524](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39893538524) is SUCCESS.
+- A verified incremental Git recovery bundle and base/source refs were stored privately; user Graphify file hashes were recorded and their changes excluded. [Guide section 9](../docs/P3_MAIN_MERGE_MANUAL_QA_UZ.md#9-merge-uchun-tayyorlangan-pr) records exact-head/base checks, merge/revert procedure and CI dispatch needs. No main push, branch deletion, environment mutation or deploy command was performed.
+- Railway connector and CLI read-only attempts both require reauthentication, so live auto-deploy/source binding remains unverified; a future main push may trigger deployment. Existing real-provider/installed-client acceptance remains honestly uncompleted, not an additional translation signoff requirement. Track the new PR checks separately; use PR body for final run evidence without another code change.
+
 ## 2026-10-23 — Main comparison and practical acceptance guide
 
 - At fetched refs, main `dcd65418` is an ancestor of work code `a14e97ce` (0 behind / 610 ahead; 408 net changed files). Compared actual source: no lesson JSON, database model/migration, config or provider-auth service changes relative to main. UI resource centralization is accompanied by real private-delivery, completion/course-context, immutable-receipt and row-refresh fixes; do not describe the entire branch as text-only or existing main login/navigation as new features.
