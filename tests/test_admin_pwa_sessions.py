@@ -75,7 +75,8 @@ class SessionTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(await authenticate_admin_pwa_session(_Db(invalid, user()), TOKEN, settings(), now=NOW))
 
     async def test_non_admin_and_blocked_denied(self):
-        for actor in (user(telegram_id=777), user(telegram_id=None), user(status="blocked"), None):
+        for actor in (user(telegram_id=777), user(telegram_id=None), user(status="blocked"), user(status="BLOCKED"),
+                      user(status=" Blocked "), None):
             self.assertIsNone(await authenticate_admin_pwa_session(_Db(row(), actor), TOKEN, settings(), now=NOW))
 
     async def test_missing_row_denied(self):
