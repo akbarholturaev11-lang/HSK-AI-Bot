@@ -1,5 +1,10 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## 2026-10-23 — Main comparison and practical acceptance guide
+
+- At fetched refs, main `dcd65418` is an ancestor of work code `a14e97ce` (0 behind / 610 ahead; 408 net changed files). Compared actual source: no lesson JSON, database model/migration, config or provider-auth service changes relative to main. UI resource centralization is accompanied by real private-delivery, completion/course-context, immutable-receipt and row-refresh fixes; do not describe the entire branch as text-only or existing main login/navigation as new features.
+- Owner requested the comparison and instructions before merge. [Practical Uzbek acceptance guide](../docs/P3_MAIN_MERGE_MANUAL_QA_UZ.md) covers each changed product surface, local-source proof, protected grammar, course/access/payment corrections, old clients and post-deploy checks. It records exact-code P0 [39891619141](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39891619141) and Backend [39891619275](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39891619275) SUCCESS without labelling unperformed device/provider scenarios passed. This batch edits documentation only; merge/deploy was not requested.
+
 ## 2026-10-23 — Owner withdrew the Liquid Glass pilot
 
 - Owner requested removal of the pilot after the local iPhone test. Reversed merge `0244f685` against its first parent without rewriting history. The application, scripts, tests and CI configuration return to verified pre-pilot `f9b700a6`; the standalone QA schema-registration repair and all previous centralization remain. Existing CSS navigation and its five routes are retained. Renderer/loader/vendor assets, their route and pilot-only checks are removed.
