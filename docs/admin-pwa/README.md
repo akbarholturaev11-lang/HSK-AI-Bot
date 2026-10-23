@@ -35,3 +35,7 @@ Added `app/admin_api/pwa_oidc.py`, `app/db/models/admin_pwa_oauth.py`, migration
 ## OAuth HTTP transport checkpoint (2026-10-24)
 
 `app/admin_api/pwa_google_transport.py` is mounted in `app/main.py` with strict origin/CSRF/HTTPS gating, Secure HttpOnly browser-bound cookies, pending Google verification and transfer to **pending Telegram approval only**; a PostgreSQL-serialized global admission cap was added in `pwa_oidc.py`. **No admin cookie/session issued. `ADMIN_PWA_ENABLED=false` remains default**, so the routes remain unreachable in production by default. See current authoritative [handoff](HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md) for all commits, tests and limitations. Telegram Bot approval, passkeys, dashboard and real data still remain. UI gap rule remains mandatory.
+
+## Bot approval proof and status checkpoint (2026-10-24)
+
+`app/admin_api/pwa_bot_approval.py` now validates trusted private Bot dispatcher events and handles one-time approval/denial; `GET /api/admin/v1/auth/telegram/status` exposes **only** the cookie-bound pending/approved/denied state and a comparison code. `tests/test_admin_pwa_bot_approval.py` and HTTP status regression tests were added. See the current handoff for SHAs and limitations: isolated tests only (**42 passed, 26 subtests**), not full CI/real PostgreSQL/Bot. **No Bot router, UI, passkey, admin session issuer, staging or deploy is done.** Required next work: localized UZ/RU/TJ Bot confirmation and explicit callback, then canonical identity link and secure session. Existing `/admin.html` and `main` are unchanged.
