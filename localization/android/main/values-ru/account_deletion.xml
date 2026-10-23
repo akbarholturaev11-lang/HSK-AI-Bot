@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account_deletion_account">Аккаунт: %1$s</string>
+    <string name="account_deletion_scope">Запрос относится ко всему этому аккаунту HSK AI и связанным входам через Telegram, Google или Apple. Вы запрашиваете удаление профиля, прогресса уроков и данных практики. Запрос будет рассмотрен в течение 30 дней.</string>
+    <string name="account_deletion_retention">Необходимые платёжные записи, данные для борьбы с мошенничеством и безопасности могут сохраняться по требованиям закона, финансового учёта и безопасности.</string>
+    <string name="account_deletion_confirm">Подтвердить запрос на удаление</string>
+    <string name="account_deletion_verifying">Проверяем принадлежность аккаунта…</string>
+    <string name="account_deletion_submitting">Отправляем запрос…</string>
+    <string name="account_deletion_open_web">Открыть общедоступную веб-страницу</string>
+    <string name="account_deletion_received">Запрос принят</string>
+    <string name="account_deletion_submitted">Статус: отправлен. Аккаунт ещё не удалён; запрос будет рассмотрен.</string>
+    <string name="account_deletion_request_id">Номер запроса: %1$s</string>
+    <string name="account_deletion_due">Срок рассмотрения: %1$s</string>
+    <string name="account_deletion_verify_again">Подтверждение истекло или недействительно. Повторите попытку, чтобы снова подтвердить принадлежность аккаунта.</string>
+</resources>

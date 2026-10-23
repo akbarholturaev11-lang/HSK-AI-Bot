@@ -1,4 +1,5 @@
 from __future__ import annotations
+from app.bot.generated.bot_i18n import bot_locale_map
 
 from dataclasses import dataclass
 from html import escape
@@ -28,38 +29,7 @@ HELP_VIDEO_FIELDS = (
 )
 HELP_VIDEO_FIELD_BY_KEY = {field.key: field for field in HELP_VIDEO_FIELDS}
 
-HELP_TEXT = {
-    "tj": {
-        "title": "<b>🤖 Бахши ёрӣ</b>",
-        "click": "инҷоро пахш кунед",
-        "admin": "ADMIN",
-        "admin_line": "⚠️ Агар муаммо бошад, ба {admin} нависед.",
-        "course_hsk": "Барои дидани тарзи кори Курси HSK",
-        "qa_mode": "Барои фаҳмидани Реҷаи одӣ",
-        "voice_translator": "Барои дидани Voice ва тарҷумон",
-        "subscription": "Барои фаҳмидани имкониятҳои обуна",
-    },
-    "ru": {
-        "title": "<b>🤖 Раздел помощи</b>",
-        "click": "нажмите здесь",
-        "admin": "ADMIN",
-        "admin_line": "⚠️ Если возникла проблема, напишите {admin}.",
-        "course_hsk": "Чтобы посмотреть, как работает Курс HSK",
-        "qa_mode": "Чтобы понять Обычный режим",
-        "voice_translator": "Чтобы посмотреть Voice и переводчик",
-        "subscription": "Чтобы узнать возможности подписки",
-    },
-    "uz": {
-        "title": "<b>🤖 Yordam bo‘limi</b>",
-        "click": "bu yerga bosing",
-        "admin": "ADMIN",
-        "admin_line": "⚠️ Muammo bo‘lsa, {admin}ga yozing.",
-        "course_hsk": "HSK kursi qanday ishlashini ko‘rish uchun",
-        "qa_mode": "Oddiy rejimni tushunish uchun",
-        "voice_translator": "Voice va tarjimonni ko‘rish uchun",
-        "subscription": "Obuna imkoniyatlarini tushunish uchun",
-    },
-}
+HELP_TEXT = bot_locale_map('inline.services.help_settings_service.module.copy1')
 
 
 def normalize_help_lang(lang: str | None) -> str:

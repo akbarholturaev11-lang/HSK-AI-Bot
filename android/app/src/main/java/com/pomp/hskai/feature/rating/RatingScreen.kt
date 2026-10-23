@@ -116,7 +116,7 @@ fun RatingScreen(
                     HskSectionTitle(
                         stringResource(
                             if (state.tab == RatingTab.FRIENDS) R.string.rating_tab_friends
-                            else R.string.nav_rating
+                            else R.string.hsk_common_navigation_rating
                         )
                     )
                     SectionHint(hints = hints, section = "rating", onDismiss = onDismissHint)
@@ -287,7 +287,12 @@ fun RatingChallengesScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    AssistantScreen(ratingChallengesAssistantContext(state), bottomBar = false, priority = 10)
+    val challengesTitle = stringResource(R.string.hsk_common_navigation_challenges)
+    AssistantScreen(
+        ratingChallengesAssistantContext(state, challengesTitle),
+        bottomBar = false,
+        priority = 10,
+    )
     BackHandler(onBack = onBack)
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         LazyColumn(
@@ -300,7 +305,7 @@ fun RatingChallengesScreen(
         ) {
             item {
                 RatingScreenHeader(
-                    title = stringResource(R.string.rating_challenges_title),
+                    title = challengesTitle,
                     onBack = onBack,
                 )
             }
@@ -413,7 +418,7 @@ fun RatingUserScreen(
                     Row(modifier = Modifier.padding(vertical = 16.dp)) {
                         ProfileMetric(
                             value = user.xp.toString(),
-                            label = stringResource(R.string.profile_xp),
+                            label = stringResource(R.string.hsk_course_xp),
                             color = PompColors.CinnabarDark,
                         )
                         ProfileMetric(
@@ -423,7 +428,7 @@ fun RatingUserScreen(
                         )
                         ProfileMetric(
                             value = level,
-                            label = stringResource(R.string.rating_level),
+                            label = stringResource(R.string.hsk_course_level_up_lvl),
                             color = PompColors.Jade,
                         )
                     }
@@ -520,7 +525,7 @@ private fun RatingScreenHeader(title: String, onBack: () -> Unit) {
     ) {
         HskGlassIconButton(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = stringResource(R.string.action_back),
+            contentDescription = stringResource(R.string.hsk_common_action_back),
             onClick = onBack,
             iconSize = 24.dp,
             tint = PompColors.Ink,
@@ -613,14 +618,14 @@ private fun RivalryCard(opponentName: String, currentXp: Int, opponentXp: Int) {
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Text(
-                text = stringResource(R.string.rating_weekly_result),
+                text = stringResource(R.string.hsk_course_rating_weekly_heading),
                 style = MaterialTheme.typography.titleSmall,
                 color = PompColors.Paper,
             )
             Spacer(Modifier.height(12.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = stringResource(R.string.rating_you),
+                    text = stringResource(R.string.hsk_course_you),
                     style = MaterialTheme.typography.labelMedium,
                     color = PompColors.Paper,
                     modifier = Modifier.weight(1f),
@@ -731,7 +736,7 @@ private fun WeeklyTopFiveTitle() {
         )
         Spacer(Modifier.width(6.dp))
         Text(
-            text = stringResource(R.string.rating_weekly_top_five),
+            text = stringResource(R.string.hsk_course_rating_weekly_top_five),
             style = MaterialTheme.typography.bodyMedium,
             color = PompColors.GoldInk,
         )
@@ -849,7 +854,7 @@ private fun ActiveChallengeRow(duel: ChallengeDto, onStart: (ChallengeDto) -> Un
             color = PompColors.Cinnabar,
         ) {
             Text(
-                text = stringResource(R.string.challenge_start),
+                text = stringResource(R.string.hsk_common_action_start),
                 style = MaterialTheme.typography.labelLarge,
                 color = PompColors.Paper,
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
@@ -939,7 +944,7 @@ private fun FriendStats(invited: Int, activated: Int, required: Int) {
     ) {
         FriendStat(
             value = invited.toString(),
-            label = stringResource(R.string.rating_friends_joined),
+            label = stringResource(R.string.hsk_course_rating_referral_joined),
         )
         FriendStat(
             value = "$activated / $required",
@@ -1168,7 +1173,7 @@ private fun ErrorBlock(text: String, onRetry: () -> Unit) {
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = stringResource(R.string.action_retry),
+                text = stringResource(R.string.hsk_course_lesson_flow_retry),
                 style = MaterialTheme.typography.labelLarge,
                 color = PompColors.Flame,
             )

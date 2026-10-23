@@ -8,6 +8,7 @@ from aiogram.types import InlineKeyboardMarkup
 from app.bot.keyboards.release_feedback import (
     release_feedback_rating_keyboard,
 )
+from app.bot.utils.i18n import t
 from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackResponse
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.release_feedback_repo import ReleaseFeedbackRepository, decode_languages
@@ -19,57 +20,6 @@ from app.services.bot_block_status_service import BotBlockStatusService
 from app.config import settings
 
 
-_PROMPT_TEXTS = {
-    "uz": (
-        "\n\nYangilikni sinab ko'ring va 1-5 ball bering. "
-        "Fikr qoldirsangiz, obunangiz bo'lmasa sizga 24 soatlik 20% chegirma beriladi."
-    ),
-    "ru": (
-        "\n\nПопробуйте обновление и оцените от 1 до 5. "
-        "Если оставите отзыв и у вас нет подписки, вам откроется скидка 20% на 24 часа."
-    ),
-    "tj": (
-        "\n\nНавигариро санҷед ва аз 1 то 5 баҳо диҳед. "
-        "Агар фикр гузоред ва обуна надошта бошед, барои шумо тахфифи 20% ба 24 соат кушода мешавад."
-    ),
-}
-
-_LOW_RATING_COMMENT_TEXTS = {
-    "uz": "Nima noqulay bo'ldi? Qisqa izoh yoki screenshot yuboring. Shundan keyin chegirma ochiladi.",
-    "ru": "Что было неудобно? Отправьте короткий комментарий или скриншот. После этого скидка откроется.",
-    "tj": "Чӣ ноқулай буд? Шарҳи кӯтоҳ ё скриншот фиристед. Баъд аз ин тахфиф кушода мешавад.",
-}
-
-_OPTIONAL_COMMENT_TEXTS = {
-    "uz": "Rahmat. Xohlasangiz, qisqa izoh ham qoldiring.",
-    "ru": "Спасибо. Если хотите, оставьте короткий комментарий.",
-    "tj": "Ташаккур. Агар хоҳед, шарҳи кӯтоҳ ҳам гузоред.",
-}
-
-_THANKS_TEXTS = {
-    "uz": "Rahmat, fikringiz qabul qilindi.",
-    "ru": "Спасибо, ваш отзыв принят.",
-    "tj": "Ташаккур, фикри шумо қабул шуд.",
-}
-
-_DISCOUNT_TEXTS = {
-    "uz": "Rahmat. Aytganimizdek, sizga 24 soatlik 20% chegirma berildi.",
-    "ru": "Спасибо. Как и обещали, для вас открыта скидка 20% на 24 часа.",
-    "tj": "Ташаккур. Тавре гуфта будем, барои шумо тахфифи 20% ба 24 соат дода шуд.",
-}
-
-_TRY_GRANTED_TEXTS = {
-    "uz": "Test access ochildi: 30 minut ichida yangilangan joyni limitsiz sinab ko'ring.",
-    "ru": "Тестовый доступ открыт: в течение 30 минут пробуйте обновлённый раздел без лимита.",
-    "tj": "Дастрасии тестӣ кушода шуд: дар 30 дақиқа қисми навшударо бе лимит санҷед.",
-}
-
-_TRY_ALREADY_TEXTS = {
-    "uz": "Sizda bu funksiyani sinab ko'rish uchun access bor.",
-    "ru": "У вас уже есть доступ, чтобы попробовать эту функцию.",
-    "tj": "Шумо аллакай барои санҷидани ин функсия дастрасӣ доред.",
-}
-
 @dataclass(frozen=True)
 class ReleaseFeedbackSendResult:
     campaign_id: int
@@ -78,35 +28,41 @@ class ReleaseFeedbackSendResult:
     failed: int
 
 
+def _release_feedback_text(key: str, lang: str | None) -> str:
+    return t(f"common.bot.releaseFeedback.{key}", lang or "ru")
+
+
 def release_feedback_prompt(lang: str | None) -> str:
-    return _PROMPT_TEXTS.get(lang or "ru", _PROMPT_TEXTS["ru"])
+    return _release_feedback_text("prompt", lang)
 
 
 def release_feedback_low_rating_comment_text(lang: str | None) -> str:
-    return _LOW_RATING_COMMENT_TEXTS.get(lang or "ru", _LOW_RATING_COMMENT_TEXTS["ru"])
+    return _release_feedback_text("lowRatingComment", lang)
 
 
 def release_feedback_optional_comment_text(lang: str | None) -> str:
-    return _OPTIONAL_COMMENT_TEXTS.get(lang or "ru", _OPTIONAL_COMMENT_TEXTS["ru"])
+    return _release_feedback_text("optionalComment", lang)
 
 
 def release_feedback_thanks_text(lang: str | None) -> str:
-    return _THANKS_TEXTS.get(lang or "ru", _THANKS_TEXTS["ru"])
+    return _release_feedback_text("thanks", lang)
 
 
 def release_feedback_discount_text(lang: str | None) -> str:
-    return _DISCOUNT_TEXTS.get(lang or "ru", _DISCOUNT_TEXTS["ru"])
+    return _release_feedback_text("discount", lang)
 
 
 def release_feedback_try_granted_text(lang: str | None) -> str:
-    return _TRY_GRANTED_TEXTS.get(lang or "ru", _TRY_GRANTED_TEXTS["ru"])
+    return _release_feedback_text("tryGranted", lang)
 
 
 def release_feedback_try_already_text(lang: str | None) -> str:
-    return _TRY_ALREADY_TEXTS.get(lang or "ru", _TRY_ALREADY_TEXTS["ru"])
+    return _release_feedback_text("tryAlready", lang)
 
 
 def _lang(value: str | None) -> str:
+    if value in {"tg", "tg-TJ"}:
+        return "tj"
     return value if value in {"uz", "ru", "tj"} else "ru"
 
 
@@ -226,7 +182,7 @@ class ReleaseFeedbackService:
                     content_type=campaign.content_type,
                     media_file_id=campaign.media_file_id,
                     language=user.language,
-                    rating_markup=release_feedback_rating_keyboard(campaign.id),
+                    rating_markup=release_feedback_rating_keyboard(campaign.id, user.language or "ru"),
                 )
                 await blocks.handle_send_success(user, reason="release_feedback")
                 sent_count += 1

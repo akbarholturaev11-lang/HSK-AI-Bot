@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "source_commit": "930d4f702e0476fe481f37ca84fa9775c727d502",
+  "samples": [
+    {
+      "label": "free",
+      "language": "uz",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "free",
+        "payment_status": "none",
+        "selected_plan_type": null,
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "7d91403db4f246aba8fb2e29c5daeb202200a85277e38fba653ccc06fc8e525f"
+    },
+    {
+      "label": "free",
+      "language": "ru",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "free",
+        "payment_status": "none",
+        "selected_plan_type": null,
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "c9bc5e9383b7056979e6e46809cd1277e34e6eb948aaa1de1f0bbf2af664f274"
+    },
+    {
+      "label": "free",
+      "language": "tj",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "free",
+        "payment_status": "none",
+        "selected_plan_type": null,
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "b15d9d82f6b20f51a7e78312d3f1710a725fe5e4678a7ec5a449efcae5b067cf"
+    },
+    {
+      "label": "free",
+      "language": "tg",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "free",
+        "payment_status": "none",
+        "selected_plan_type": null,
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "22d5d352a8da28a1c209d844c0358f0e08704af0f806a6c36ec731f63751e1bf"
+    },
+    {
+      "label": "free",
+      "language": "unsupported",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "free",
+        "payment_status": "none",
+        "selected_plan_type": null,
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "22d5d352a8da28a1c209d844c0358f0e08704af0f806a6c36ec731f63751e1bf"
+    },
+    {
+      "label": "paid",
+      "language": "uz",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "active",
+        "payment_status": "approved",
+        "selected_plan_type": "10_days",
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "66a2b2a3dea7162a2abd87f5446628e3db4f75abd61e682a687269f794a84da0"
+    },
+    {
+      "label": "paid",
+      "language": "ru",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "active",
+        "payment_status": "approved",
+        "selected_plan_type": "10_days",
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "a0f54d0057e5b3e35d66962813f2c0670a14d3fce3f324a8dd7d5591a0b3f7eb"
+    },
+    {
+      "label": "paid",
+      "language": "tj",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "active",
+        "payment_status": "approved",
+        "selected_plan_type": "10_days",
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "30af9488d3ea47fe53c779d706b8263e0502f1c89faee9fa95ea71d745395d8d"
+    },
+    {
+      "label": "paid",
+      "language": "tg",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "active",
+        "payment_status": "approved",
+        "selected_plan_type": "10_days",
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "fce071dce79b0b4e02941f0d3818c072891fdc9779c452b1cef888415cbc06b3"
+    },
+    {
+      "label": "paid",
+      "language": "unsupported",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "active",
+        "payment_status": "approved",
+        "selected_plan_type": "10_days",
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "fce071dce79b0b4e02941f0d3818c072891fdc9779c452b1cef888415cbc06b3"
+    },
+    {
+      "label": "temporary",
+      "language": "uz",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "active",
+        "payment_status": "none",
+        "selected_plan_type": null,
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "7206485497b4ef5711ab61e006128164861087f1ec24a1a65127c151ffe2ee3e"
+    },
+    {
+      "label": "temporary",
+      "language": "ru",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "active",
+        "payment_status": "none",
+        "selected_plan_type": null,
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "b9e36402bbe18e55af7bdf05d30f8a62ca8c87420ffbfbc8fb744426c4ab8349"
+    },
+    {
+      "label": "temporary",
+      "language": "tj",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "active",
+        "payment_status": "none",
+        "selected_plan_type": null,
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "452184c486ba6ebf3ac558c6f4d83220932be1ad8a143f1d290becc1603c5bd1"
+    },
+    {
+      "label": "temporary",
+      "language": "tg",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "active",
+        "payment_status": "none",
+        "selected_plan_type": null,
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "3b5ee838640518e12e2b05f81c5b2efc43927815f9085eb55889b02bec72a690"
+    },
+    {
+      "label": "temporary",
+      "language": "unsupported",
+      "user": {
+        "full_name": "QA <tag> {literal}",
+        "language": "tj",
+        "level": "hsk2",
+        "status": "active",
+        "payment_status": "none",
+        "selected_plan_type": null,
+        "start_date": "2025-01-01T00:00:00+00:00",
+        "end_date": "2025-01-11T00:00:00+00:00"
+      },
+      "expected_sha256": "3b5ee838640518e12e2b05f81c5b2efc43927815f9085eb55889b02bec72a690"
+    }
+  ]
+}

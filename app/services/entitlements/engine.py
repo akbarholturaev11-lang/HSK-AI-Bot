@@ -34,6 +34,7 @@ from datetime import datetime
 from app.services.account_identity import owner_clause
 
 from sqlalchemy import func, select
+from app.services.account_identity import owner_clause
 from app.db.models.message import Message
 from app.db.models.assistant import AssistantRequest
 from app.db.models.course_feature_usage import CourseFeatureUsage

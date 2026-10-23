@@ -8,6 +8,8 @@ from app.services.subscription_service import (
     SubscriptionService,
     normalize_manual_subscription_days,
 )
+from app.bot.handlers.subscription import _card_plan_label, _plan_label
+from app.bot.utils.discount_formatter import plan_label
 
 
 class _Session:
@@ -53,6 +55,24 @@ class ManualSubscriptionDurationTests(unittest.TestCase):
         ):
             with self.subTest(value=value):
                 self.assertIsNone(normalize_manual_subscription_days(value))
+
+
+class SubscriptionPlanLabelTests(unittest.TestCase):
+    def test_existing_plan_labels_match_local_catalog_and_unknown_plan_fallback(self):
+        expected = {
+            "uz": ("10 kunlik", "1 oylik", "3 oylik"),
+            "ru": ("10 дней", "1 месяц", "3 месяца"),
+            "tj": ("10 рӯз", "1 моҳ", "3 моҳ"),
+        }
+        for language, (ten_day, one_month, three_months) in expected.items():
+            with self.subTest(language=language):
+                self.assertEqual(_card_plan_label("10_days", language), ten_day)
+                self.assertEqual(_card_plan_label("1_month", language), one_month)
+                self.assertEqual(_card_plan_label("3_months", language), "3_months")
+                self.assertEqual(_plan_label("10_days", language), ten_day)
+                self.assertEqual(_plan_label("1_month", language), one_month)
+                self.assertEqual(_plan_label("unknown", language), "unknown")
+                self.assertEqual(plan_label("3_months", language), three_months)
 
 
 class SubscriptionServiceManualGrantTests(unittest.IsolatedAsyncioTestCase):
@@ -205,6 +225,22 @@ class SubscriptionServiceManualGrantTests(unittest.IsolatedAsyncioTestCase):
             preserve_existing=True,
         )
         self.assertEqual(user.end_date, original_end + timedelta(days=30))
+
+
+    async def test_paid_activation_rejects_receipt_without_a_proven_owner(self):
+        user = self._user(status="free", payment_status="none")
+        service, session, _ = self._service(user)
+        for payment in (
+            SimpleNamespace(id=78),
+            SimpleNamespace(id=79, user_telegram_id=987),
+            SimpleNamespace(id=80, user_id=987, user_telegram_id=123),
+        ):
+            with self.subTest(payment_id=payment.id):
+                self.assertFalse(await service.activate_plan(123, "1_month", payment=payment))
+                self.assertEqual(user.status, "free")
+                self.assertEqual(user.payment_status, "none")
+                self.assertIsNone(user.end_date)
+        self.assertEqual(session.flush_count, 0)
 
 
 if __name__ == "__main__":

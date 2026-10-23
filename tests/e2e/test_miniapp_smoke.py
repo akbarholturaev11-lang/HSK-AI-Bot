@@ -23,11 +23,12 @@ def app_url(path):
     return f"{BASE_URL}/{path.lstrip('/')}"
 
 
-def json_response(route, payload, *, status=200):
+def json_response(route, payload, *, status=200, headers=None):
     route.fulfill(
         status=status,
         content_type="application/json",
         body=json.dumps(payload),
+        headers=headers,
     )
 
 
@@ -93,6 +94,21 @@ def route_static_files(page):
             },
         ),
     )
+    # Startup checks course-track promotion in the background even while a
+    # lesson is open. Keep that request local; DNS timing differs by platform.
+    # Dedicated track/promotion tests register their own response afterwards.
+    page.route(
+        "**/api/v3/course-tracks",
+        lambda route: json_response(route, {
+            "ok": True,
+            "active_track": "hsk20",
+            "active_level": "hsk1",
+            "tracks": {
+                "hsk20": {"track": "hsk20", "level": "hsk1", "completed_lessons_count": 0},
+            },
+            "hsk30_promo": {"eligible": False},
+        }),
+    )
     page.route(
         "**/api/v3/trial/status",
         lambda route: json_response(
@@ -103,6 +119,7 @@ def route_static_files(page):
         "**/api/v3/ad?*",
         lambda route: json_response(route, {"ok": True, "ad": None}),
     )
+    mock_private_lesson_routes(page)
     page.route(
         "**/api/admin-miniapp/desktop-stats",
         lambda route: json_response(
@@ -256,10 +273,89 @@ def mock_course_map(page, *, level="hsk1", language="uz", sales_offer=None):
     if sales_offer is not None:
         data["sales_offer"] = sales_offer
     page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+    mock_private_lesson_routes(page, level=level)
+
+
+def mock_private_lesson_routes(page, *, level="hsk1"):
+    """Private transport fixtures shared by ordinary and custom-map flows.
+
+    These mock only browser transport; API auth/access is tested with ASGI.
+    Register again after a test catch-all so specific lesson routes take priority.
+    """
     page.route(
         "**/api/v3/lesson/start",
         lambda route: json_response(route, {"ok": True, "allowed": True}),
     )
+
+    def lesson_file(level, order):
+        return json.loads(
+            (STATIC_ROOT / f"course_v3_data/{level}/lesson_{order:02d}.json")
+            .read_text(encoding="utf-8")
+        )
+
+    def private_headers(route):
+        if not route.request.headers.get("x-telegram-init-data"):
+            json_response(route, {"ok": False, "error": "invalid_telegram_init_data"},
+                          status=401, headers={"Cache-Control": "no-store"})
+            return False
+        return True
+
+    def lesson_content(route):
+        if not private_headers(route):
+            return
+        parts = urlparse(route.request.url).path.rstrip("/").split("/")
+        if len(parts) < 2:
+            json_response(route, {"ok": False}, status=404)
+            return
+        try:
+            payload = lesson_file(parts[-2], int(parts[-1]))
+        except (OSError, ValueError, json.JSONDecodeError):
+            json_response(route, {"ok": False}, status=404)
+            return
+        json_response(route, payload, headers={"Cache-Control": "no-store"})
+
+    page.route(re.compile(r".*/api/v3/lesson/content/[^/]+/\d+(?:\?.*)?$"), lesson_content)
+
+    def foundation_content(route):
+        if not private_headers(route):
+            return
+        foundation = lesson_file("hsk1", 1).get("foundation")
+        json_response(route, {"ok": True, "foundation": foundation},
+                      headers={"Cache-Control": "no-store"})
+
+    page.route("**/api/v3/lesson/foundation", foundation_content)
+
+    def sales_preview(route):
+        lesson = lesson_file("hsk1", 3)
+        json_response(route, {
+            "ok": True,
+            "outcome": lesson["outcome"],
+            "next_outcome_preview": lesson["next_outcome_preview"],
+        })
+
+    page.route("**/api/v3/lesson/sales-preview", sales_preview)
+
+    def skip_test(route):
+        if not private_headers(route):
+            return
+        payload = route.request.post_data_json or {}
+        requested_level = str(payload.get("level") or level)
+        lesson_order = int(payload.get("lesson_id") or 0)
+        lesson = lesson_file(requested_level, lesson_order)
+        cards = [card for section in lesson.get("sections", [])
+                 for card in section.get("cards", [])
+                 if card.get("type") in {
+                     "meaning_guess", "pinyin_choice", "translation_choice",
+                     "hanzi_choice", "gap_fill", "listening_choice", "quick_quiz",
+                     "sentence_builder", "match_pairs",
+                 }][:6]
+        json_response(route, {
+            "ok": bool(cards), "level": requested_level,
+            "lesson_order": lesson_order, "questions": cards,
+        }, status=200 if cards else 409,
+            headers={"Cache-Control": "no-store"})
+
+    page.route("**/api/v3/lesson/skip-test", skip_test)
 
 
 def mock_learning_audio(page):
@@ -1290,16 +1386,19 @@ def test_course_v3_checkpoint_exit_ticket_mastery_and_paywall_boundary(page):
     expect(page.locator("#lu-cta")).to_contain_text("Keyingi darsni ochish")
     assert page.evaluate("exitTicketMastered()") is True
 
-    # The result stays first. Only this explicit CTA opens part 4 through its
-    # existing preview/subscription policy.
+    # The result stays first. The existing map marks part 4 as protected, so
+    # the explicit CTA routes through the shared course limit-promo surface.
     page.evaluate("window._pendingLessonEndAd = 0")
     page.locator("#lu-cta").click()
-    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
-    expect(page.locator("#sheet")).to_contain_text("2-dars · 1-qism")
+    limit_promo = page.locator(".caa-ov.limit")
+    expect(limit_promo).to_have_class(re.compile(r"\bon\b"))
+    expect(limit_promo).to_contain_text("Bugungi bepul darslaring tugadi")
+    page.locator(".caa-ls-close").click()
 
-    # Server map contract: checkpoint free, part 4 is first protected part.
+    # The client sequence map advances part 4 as current; the separate signed
+    # start decision can mark it protected when the free allowance is denied.
     assert page.evaluate("allLessons()[2].status") == "done"
-    assert page.evaluate("allLessons()[3].status") == "locked"
+    assert page.evaluate("allLessons()[3].status") == "current"
     page.evaluate(
         """() => {
           App.closeSheet();
@@ -1309,9 +1408,9 @@ def test_course_v3_checkpoint_exit_ticket_mastery_and_paywall_boundary(page):
           openLessonSheet(3);
         }"""
     )
-    expect(page.locator("#paywall")).to_have_class(re.compile(r"\bon\b"))
-    expect(page.locator("#paywall")).to_contain_text("Bepul darslaring tugadi")
-    expect(page.locator("#paywall")).to_contain_text("Obuna bo'lish")
+    expect(page.locator(".caa-ov.limit")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator(".caa-ov.limit")).to_contain_text("Bugungi bepul darslaring tugadi")
+    expect(page.locator(".caa-ls-pay")).to_contain_text("HSK AI Pro")
 
 
 def test_course_v3_sales_treatment_bridge_preview_and_cutoff_paywall(page):
@@ -1495,19 +1594,20 @@ def test_paywall_replaces_the_lesson_sheet_and_checkout_remains_clickable(page, 
     mock_course_map(page, language=language)
     page.goto(app_url(f"/course-v3.html?lang={language}&level=hsk1&lesson=1&onboarded=1"), wait_until="networkidle")
     sheet = page.locator("#sheet")
-    paywall = page.locator("#paywall")
+    paywall = page.locator(".caa-ov")
     expect(sheet).to_have_class(re.compile(r"\bon\b"))
     page.evaluate("App.openPaywall({lessonIdx:0,lesson:allLessons()[0]})")
     expect(paywall).to_have_class(re.compile(r"\bon\b"))
     expect(sheet).not_to_have_class(re.compile(r"\bon\b"))
-    assert page.evaluate("document.getElementById('paywall').inert") is False
-    paywall.locator(".sx").click()
+    expect(paywall).to_have_attribute("aria-modal", "true")
+    expect(paywall.locator(".caa-ls-pay")).to_be_focused()
+    paywall.locator(".caa-ls-close").click()
     expect(paywall).not_to_have_class(re.compile(r"\bon\b"))
     assert page.evaluate("document.getElementById('s-course').inert") is False
     page.locator('#s-course .node[data-lesson-order="1"]').click()
     expect(sheet).to_have_class(re.compile(r"\bon\b"))
     page.evaluate("App.openPaywall({lessonIdx:0,lesson:allLessons()[0]})")
-    paywall.locator(".scta").first.click()
+    paywall.locator(".caa-ls-pay").click()
     expect(page).to_have_url(re.compile(r"/subscription\.html\?.*source=v3_locked_lesson"))
     assert parse_qs(urlparse(page.url).query)["lang"] == [language]
     assert not errors
@@ -1658,11 +1758,16 @@ def test_course_v3_required_foundation_load_error_blocks_and_retries(page):
 
     def foundation_file(route):
         if allow_lesson["value"]:
-            route.fallback()
+            foundation = json.loads(
+                (STATIC_ROOT / "course_v3_data/hsk1/lesson_01.json")
+                .read_text(encoding="utf-8")
+            )["foundation"]
+            json_response(route, {"ok": True, "foundation": foundation},
+                          headers={"Cache-Control": "no-store"})
         else:
             route.fulfill(status=503, content_type="application/json", body="{}")
 
-    page.route(re.compile(r".*/course_v3_data/hsk1/lesson_01\.json(?:\?.*)?$"), foundation_file)
+    page.route("**/api/v3/lesson/foundation", foundation_file)
     challenge_requests = []
     page.on(
         "request",
@@ -1698,6 +1803,7 @@ def test_course_v3_d1_recovery_resumes_saved_lesson_card_once(page):
         "console",
         lambda message: runtime_errors.append(message.text) if message.type == "error" else None,
     )
+    page.on("requestfailed", lambda request: runtime_errors.append(f"{request.url}: {request.failure}"))
     mock_price_preview(page)
     mock_telegram_ready(page)
     mock_course_map(page)
@@ -2068,46 +2174,39 @@ def test_mistake_filters_show_real_category_material(page):
         lambda message: runtime_errors.append(message.text) if message.type == "error" else None,
     )
     mock_telegram_ready(page)
-    page.route(
-        "**/api/miniapp/mistakes*",
-        lambda route: json_response(
+    targets = [
+        {
+            "id": 1, "category": "word", "kind": "question", "sources": ["test"],
+            "zh": "你好", "question": "你好 nimani anglatadi?", "wrong": "Xayr",
+            "answer": "Salom", "count": 2, "passed": 0, "required": 3,
+        },
+        {
+            "id": 2, "category": "word", "kind": "question", "sources": ["challenge"],
+            "zh": "谢谢", "question": "谢谢 nimani anglatadi?", "wrong": "Salom",
+            "answer": "Rahmat", "count": 1, "passed": 0, "required": 3,
+        },
+        {
+            "id": 3, "category": "grammar", "kind": "question", "sources": ["lesson"],
+            "zh": "我去昨天", "question": "Gapni to'g'ri tartiblang", "wrong": "我去昨天",
+            "answer": "我昨天去", "count": 1, "passed": 0, "required": 3,
+        },
+    ]
+
+    def send_mistakes(route):
+        category = parse_qs(urlparse(route.request.url).query).get("category", [None])[0]
+        filtered = [item for item in targets if not category or item["category"] == category]
+        json_response(
             route,
             {
                 "ok": True,
-                "summary": {"total": 3, "categories": {"word": 2, "grammar": 1}},
-                "items": [
-                    {
-                        "id": 1,
-                        "category": "word",
-                        "source": "test",
-                        "question": "你好 nimani anglatadi?",
-                        "user_answer": "Xayr",
-                        "correct_answer": "Salom",
-                        "count": 2,
-                    },
-                    {
-                        "id": 2,
-                        "category": "word",
-                        "source": "challenge",
-                        "question": "谢谢 nimani anglatadi?",
-                        "user_answer": "Salom",
-                        "correct_answer": "Rahmat",
-                        "count": 1,
-                    },
-                    {
-                        "id": 3,
-                        "category": "grammar",
-                        "source": "lesson",
-                        "lesson": 4,
-                        "question": "Gapni to'g'ri tartiblang",
-                        "user_answer": "我去昨天",
-                        "correct_answer": "我昨天去",
-                        "count": 1,
-                    },
-                ],
+                "summary": {"total": 3, "categories": {"word": 2, "grammar": 1}, "unit": "targets"},
+                "pagination": {"offset": 0, "limit": 30, "returned": len(filtered), "has_more": False},
+                "targets": filtered,
+                "items": [],
             },
-        ),
-    )
+        )
+
+    page.route("**/api/miniapp/mistakes*", send_mistakes)
 
     page.goto(app_url("/course_v3_mistakes.html?lang=uz&level=hsk1"), wait_until="networkidle")
     expect(page.locator("#content")).to_contain_text("HSK test")
@@ -2117,12 +2216,213 @@ def test_mistake_filters_show_real_category_material(page):
     assert runtime_errors == []
 
 
+def test_practice_icon_accessibility_names_follow_selected_locale(page):
+    locales = {
+        "uz": {"back": "Orqaga", "say": "Talaffuz qiling", "close": "yopish", "sheet_close": "Yopish",
+               "settings": "sozlamalar", "keyboard": "klaviatura", "mic": "gapirish",
+               "send": "yuborish", "listen": "Tinglash"},
+        "ru": {"back": "Назад", "say": "Произнесите", "close": "закрыть", "sheet_close": "Закрыть",
+               "settings": "настройки", "keyboard": "клавиатура", "mic": "говорить",
+               "send": "отправить", "listen": "Послушать"},
+        "tj": {"back": "Бозгашт", "say": "Талаффуз кунед", "close": "пӯшидан", "sheet_close": "Пӯшидан",
+               "settings": "танзимот", "keyboard": "клавиатура", "mic": "гап задан",
+               "send": "фиристодан", "listen": "Гӯш кардан"},
+    }
+    pages = (
+        ("course_v3_memorize.html", ".top .ix", "back"),
+        ("course_v3_test.html", ".top .ix", "back"),
+        ("course_v3_mistakes.html", ".top .ix", "back"),
+        ("course_v3_recognition.html", ".top .ix", "back"),
+        ("course_v3_pronunciation.html", ".top .ix", "back"),
+        ("course_v3_pronunciation.html", ".mic", "say"),
+        ("course_v3_voice.html", ".top .ic:first-child", "close"),
+        ("course_v3_voice.html", ".top .ic:last-child", "settings"),
+        ("course_v3_voice.html", "#ctrlRow button.sq", "keyboard"),
+        ("course_v3_voice.html", "#mic", "mic"),
+        ("course_v3_voice.html", ".kb .kbclose", "close"),
+        ("course_v3_voice.html", "#kbSend", "send"),
+    )
+    for locale, labels in locales.items():
+        for path, selector, key in pages:
+            page.goto(app_url(f"/{path}?lang={locale}"), wait_until="domcontentloaded")
+            expect(page.locator(selector)).to_have_attribute("aria-label", labels[key])
+        page.goto(app_url(f"/course_v3_mistakes.html?lang={locale}"), wait_until="domcontentloaded")
+        expect(page.locator(".rv-top .ix")).to_have_attribute("aria-label", labels["sheet_close"])
+        assert page.evaluate("window.MISTAKES_A11Y.listen") == labels["listen"]
+
+
+def test_course_language_switch_uses_local_catalogs_and_saves_selected_code(page):
+    errors, saved, translation_requests = [], [], []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    page.on("console", lambda message: errors.append(message.text) if message.type == "error" else None)
+    page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    mock_learning_audio(page)
+
+    def save_language(route):
+        assert route.request.headers.get("x-telegram-init-data") == "query_id=smoke"
+        saved.append(route.request.post_data_json)
+        json_response(route, {"ok": True, **saved[-1]})
+
+    page.route("**/api/v3/language", save_language)
+    page.add_init_script("localStorage.setItem('hsk_v3_onb','1');localStorage.setItem('hsk_v3_level','hsk1');")
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator("#hsk-launch-splash").wait_for(state="hidden")
+    page.on("request", lambda request: translation_requests.append(request.url)
+            if "-i18n.js" in request.url else None)
+    for index, (language, label) in enumerate((("ru", "Русский"), ("tj", "Тоҷикӣ"), ("uz", "O'zbekcha")), 1):
+        page.evaluate("App.langPicker()")
+        page.locator("#sheet-body").get_by_role("button", name=label, exact=True).click()
+        page.wait_for_function("(code) => LANG === code", arg=language)
+        page.wait_for_function("document.querySelector('#sheet').classList.contains('on') === false")
+        expect(page.locator("html")).to_have_attribute("lang", "tg" if language == "tj" else language)
+        messages = json.loads((APP_ROOT / f"localization/ui/{language}/course.json").read_text())["messages"]
+        expect(page.locator('#nav [data-i="course"]')).to_have_text(messages["nav.course"])
+        expect(page.locator('#nav [data-i="profile"]')).to_have_text(messages["nav.profile"])
+        expect(page.locator("#sheet")).not_to_have_class(re.compile(r"\bon\b"))
+        # Wait for the signed preference POST to finish before the next choice.
+        page.wait_for_load_state("networkidle")
+        assert saved == [{"language": code} for code in ("ru", "tj", "uz")[:index]]
+    assert translation_requests == []
+    assert errors == []
+
+
+def test_course_language_failed_save_reverts_ui_with_existing_local_error(page):
+    errors, attempted = [], []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    # The intentional HTTP 503 may be logged as a browser resource error;
+    # only uncaught JavaScript exceptions are regressions in this test.
+    page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    mock_learning_audio(page)
+
+    def reject_language(route):
+        attempted.append(route.request.post_data_json)
+        if len(attempted) == 1:
+            json_response(route, {"ok": False, "language": "ru"})
+        else:
+            route.fulfill(status=503, content_type="application/json",
+                          body='{"ok":false,"error":"unavailable"}')
+
+    page.route("**/api/v3/language", reject_language)
+    page.add_init_script("localStorage.setItem('hsk_v3_onb','1');localStorage.setItem('hsk_v3_level','hsk1');")
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator("#hsk-launch-splash").wait_for(state="hidden")
+    error_copy = json.loads((APP_ROOT / "localization/ui/uz/course.json").read_text())["messages"]["onboarding.saveError"]
+
+    for language, label in (("ru", "Русский"), ("tj", "Тоҷикӣ")):
+        page.evaluate("App.langPicker()")
+        page.locator("#sheet-body").get_by_role("button", name=label, exact=True).click()
+        page.wait_for_function("() => App._languagePendingCount === 0")
+        assert page.evaluate("LANG") == "uz"
+        expect(page.locator("html")).to_have_attribute("lang", "uz")
+        expect(page.locator("#toast")).to_contain_text(error_copy)
+    assert attempted == [{"language": "ru"}, {"language": "tj"}]
+    assert errors == []
+
+
+def test_course_language_rapid_changes_are_serial_and_failed_last_save_rolls_back(page):
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    mock_learning_audio(page)
+    page.add_init_script("localStorage.setItem('hsk_v3_onb','1');localStorage.setItem('hsk_v3_level','hsk1');")
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator("#hsk-launch-splash").wait_for(state="hidden")
+    page.evaluate("""() => {
+      window.languageDeferred = [];
+      const oldFetch = window.fetch.bind(window);
+      window.fetch = function(url, init) {
+        if (url === "/api/v3/language") {
+          return new Promise(function(resolve) {
+            languageDeferred.push({body: JSON.parse(init.body), resolve: resolve});
+          });
+        }
+        return oldFetch(url, init);
+      };
+    }""")
+    page.evaluate("() => { App.pickLang('ru'); App.pickLang('tj'); }")
+    page.wait_for_function("() => languageDeferred.length === 1")
+    assert page.evaluate("languageDeferred[0].body.language") == "ru"
+    assert page.evaluate("LANG") == "tj"
+    page.evaluate("""() => languageDeferred[0].resolve(new Response(
+      JSON.stringify({ok:true,language:"ru"}),{status:200,headers:{"Content-Type":"application/json"}}
+    ))""")
+    page.wait_for_function("() => languageDeferred.length === 2")
+    assert page.evaluate("languageDeferred[1].body.language") == "tj"
+    page.evaluate("""() => languageDeferred[1].resolve(new Response(
+      JSON.stringify({ok:false}),{status:200,headers:{"Content-Type":"application/json"}}
+    ))""")
+    page.wait_for_function("() => App._languagePendingCount === 0 && LANG === 'ru'")
+    expect(page.locator("html")).to_have_attribute("lang", "ru")
+    assert errors == []
+
+
+def test_course_resource_and_writer_labels_follow_selected_locale(page):
+    expected = {
+        "uz": {"dict": "Ieroglif lug'ati", "phrases": "Tayyor gaplar", "write": "书写 Yozish", "settings": "Dars sozlamalari", "new": "YANGI"},
+        "ru": {"dict": "Словарь иероглифов", "phrases": "Готовые фразы", "write": "书写 Письмо", "settings": "Настройки урока", "new": "НОВОЕ"},
+        "tj": {"dict": "Луғати иероглиф", "phrases": "Ибораҳои омода", "write": "书写 Навиштан", "settings": "Танзимоти дарс", "new": "НАВ"},
+    }
+    runtime_errors = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+    page.on(
+        "console",
+        lambda message: runtime_errors.append(message.text + " @ " + message.location.get("url", "")) if message.type == "error" else None,
+    )
+    page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
+
+    for locale, labels in expected.items():
+        mock_price_preview(page)
+        mock_telegram_ready(page)
+        mock_course_map(page, language=locale)
+        page.add_init_script(
+            "localStorage.setItem('hsk_v3_onb','1');localStorage.setItem('hsk_v3_level','hsk1');"
+        )
+        page.goto(
+            app_url(f"/course-v3.html?lang={locale}&level=hsk1&onboarded=1"),
+            wait_until="networkidle",
+        )
+        page.locator('nav button[data-s="mashq"]').click()
+        page.evaluate("NEW_SECTION_RELEASES['ready-phrases']=Date.now();renderMashq()")
+        expect(page.locator("#m-ready-phrases .new-section-badge")).to_have_text(labels["new"])
+        page.evaluate("setLessonFlowControls()")
+        expect(page.locator("#flow .fgear")).to_have_attribute("aria-label", labels["settings"])
+
+        page.locator("#m-dict").click()
+        expect(page.locator("#resource-dict")).to_have_attribute("aria-label", labels["dict"])
+        expect(page.locator("#resource-dict iframe")).to_have_attribute("title", labels["dict"])
+        page.evaluate("RESOURCE.close();RESOURCE.open('phrases')")
+        expect(page.locator("#resource-phrases")).to_have_attribute("aria-label", labels["phrases"])
+        expect(page.locator("#resource-phrases iframe")).to_have_attribute("title", labels["phrases"])
+
+        page.evaluate("setWriteBtn('字');App.openWriter('字')")
+        expect(page.locator("#writebtn")).to_have_attribute("aria-label", labels["write"])
+        expect(page.locator("#writeframe")).to_have_attribute("title", labels["write"])
+
+    assert runtime_errors == []
+
+
 def test_challenge_question_is_blind_until_server_submit(page):
     runtime_errors = []
     page.on("pageerror", lambda error: runtime_errors.append(str(error)))
     page.on(
         "console",
         lambda message: runtime_errors.append(message.text) if message.type == "error" else None,
+    )
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    mock_learning_audio(page)
+    page.on("requestfailed", lambda request: runtime_errors.append(f"{request.url}: {request.failure}"))
+    page.route(
+        "**/api/miniapp/gamification*",
+        lambda route: json_response(route, {"ok": True, "week_activity_dates": []}),
     )
     mock_price_preview(page)
     mock_telegram_ready(page)
@@ -2168,6 +2468,17 @@ def test_challenge_question_is_blind_until_server_submit(page):
             },
         ),
     )
+    submitted = []
+
+    def submit_round(route):
+        submitted.append(route.request.post_data_json)
+        json_response(route, {
+            "ok": True, "challenge": {**challenge, "viewer_done": True},
+            "score": 0, "total": 1,
+            "wrong_items": [{"question": "Salom so'zini tanlang", "correct_answer": "你好", "pinyin": "nǐ hǎo"}],
+        })
+
+    page.route("**/api/miniapp/challenges/7/submit", submit_round)
     page.add_init_script(
         "localStorage.setItem('hsk_v3_onb','1'); localStorage.setItem('hsk_v3_level','hsk1');"
     )
@@ -2178,13 +2489,21 @@ def test_challenge_question_is_blind_until_server_submit(page):
     )
     page.get_by_role("button", name="Raundni boshlash").click()
     expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
-    page.locator("#f-body .opt").nth(0).click()
+    assert page.evaluate("Flow.queue[0].correct_index") is None
+    page.locator("#f-body .opt").nth(1).click()
 
     expect(page.locator("#f-msg")).to_contain_text("Javob qabul qilindi")
     assert page.locator("#f-hp").inner_text() == "5"
     assert page.evaluate("Flow.challenge.answers") == [
-        {"question_id": "challenge:q1", "selected_index": 0}
+        {"question_id": "challenge:q1", "selected_index": 1}
     ]
+    assert submitted == []
+    page.locator("#f-barbtn").click()
+    expect(page.locator("#sheet-body")).to_contain_text("0 / 1")
+    expect(page.locator("#sheet-body .ch-review")).to_contain_text("你好")
+    expect(page.locator("#sheet-body .ch-review")).to_contain_text("nǐ hǎo")
+    assert submitted == [{"answers": [{"question_id": "challenge:q1", "selected_index": 1}]}]
+    assert page.evaluate("Flow.challenge") is None
     assert runtime_errors == []
 
 
@@ -3450,9 +3769,14 @@ def test_hsk30_pending_payment_stays_on_admin_status_screen(page):
 
     expect(page.locator("#doneTitle")).to_have_text("So'rovingiz tekshiruvda")
     expect(page.locator("#botReturnBtn")).to_have_text("To'lov holatini yangilash")
-    page.locator("#botReturnBtn").click()
+    with page.expect_response("**/api/subscription-miniapp/payment-status") as refreshed:
+        page.locator("#botReturnBtn").click()
+    assert refreshed.value.json()["status"] == "pending"
 
-    expect(page.locator("#doneText")).to_have_text("To'lov hali admin tekshiruvida.")
+    pending_copy = json.loads(
+        (APP_ROOT / "localization/ui/uz/course.json").read_text(encoding="utf-8")
+    )["messages"]["subscriptionPage.pendingText"]
+    expect(page.locator("#doneText")).to_have_text(pending_copy)
     expect(page.locator("#botReturnBtn")).to_have_text("To'lov holatini yangilash")
     assert status_requests == [{"payment_id": 42}]
     assert page.url.endswith("/subscription.html?lang=uz&mode=hsk30_unlock")
@@ -4038,7 +4362,11 @@ def test_android_chip_sends_the_apk_to_the_chat_and_closes(page):
 
 def test_profile_settings_icon_and_paid_renewal_are_available_from_profile(page):
     mock_telegram_desktop_download(page, platform="android")
-    _open_course_profile_with_desktop_release(page)
+    mock_price_preview(page)
+    mock_course_map(page)
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator('#nav button[data-s="profile"]').click()
 
     expect(page.locator("#s-profile .profile-title")).to_have_text("Profil")
     settings = page.locator("#s-profile .profile-settings")
@@ -4059,7 +4387,8 @@ def test_profile_settings_icon_and_paid_renewal_are_available_from_profile(page)
           renderProfile();
         }"""
     )
-    renewal = page.locator("#s-profile .profile-renew")
+    page.locator('#hsk-profile-promo-root [data-promo-dot="2"]').click()
+    renewal = page.locator('#hsk-profile-promo-root article[data-promo-kind="pro"] .hp-promo-action')
     expect(renewal).to_be_visible()
     expect(renewal).to_contain_text("Obunani uzaytirish")
     renewal.click()
@@ -5547,6 +5876,12 @@ def test_liquid_glass_bottom_nav_renders_without_extra_stylesheet_request(page):
     page.evaluate("document.documentElement.setAttribute('data-hsk-theme', 'dark')")
     dark_border = nav.evaluate("element => getComputedStyle(element).borderTopColor")
     assert dark_border != skin["lightBorder"]
+    for width in (900, 916, 940, 1280):
+        page.set_viewport_size({"width": width, "height": 900})
+        desktop_box = nav.bounding_box()
+        assert desktop_box is not None
+        assert desktop_box["x"] >= 12, (width, desktop_box)
+        assert desktop_box["x"] + desktop_box["width"] <= width - 12
 
 def test_practice_tab_is_usable_during_unfinished_background_load(page):
     """A slow script or embedded resource may preload, but cannot gate Mashq."""

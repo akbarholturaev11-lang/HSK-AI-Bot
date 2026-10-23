@@ -57,6 +57,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -438,7 +439,7 @@ private fun ProfileToolbar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = stringResource(R.string.nav_profile),
+            text = stringResource(R.string.hsk_common_navigation_profile),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = PompColors.Ink,
@@ -546,7 +547,7 @@ private fun AvatarNoteSheet(onDismiss: () -> Unit) {
     val sheetState = rememberModalBottomSheetState()
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.PaperRaised) {
         Text(
-            text = stringResource(R.string.profile_avatar_note),
+            text = stringResource(R.string.hsk_course_android_profile_avatar_edit_note),
             style = MaterialTheme.typography.bodyLarge,
             color = PompColors.InkSecondary,
             textAlign = TextAlign.Center,
@@ -587,8 +588,8 @@ private fun StatsGrid(state: ProfileUiState) {
             modifier = Modifier.fillMaxWidth().padding(horizontal = PompSpacing.Small, vertical = PompSpacing.Large),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            StatMetric(stringResource(R.string.profile_xp), (stats?.xp ?: 0).toString(), Modifier.weight(1f))
-            StatMetric(stringResource(R.string.profile_lessons), (stats?.completedLessons ?: 0).toString(), Modifier.weight(1f))
+            StatMetric(stringResource(R.string.hsk_course_xp), (stats?.xp ?: 0).toString(), Modifier.weight(1f))
+            StatMetric(stringResource(R.string.hsk_common_desktopA11y_courseNavigation), (stats?.completedLessons ?: 0).toString(), Modifier.weight(1f))
             StatMetric(stringResource(R.string.profile_mistakes), (stats?.mistakes ?: 0).toString(), Modifier.weight(1f))
         }
     }
@@ -805,7 +806,7 @@ private fun ProfileSettingsScreen(
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.action_back),
+                                contentDescription = stringResource(R.string.hsk_common_action_back),
                                 tint = PompColors.Ink,
                                 modifier = Modifier.size(22.dp),
                             )
@@ -819,7 +820,7 @@ private fun ProfileSettingsScreen(
                                 ProfileSettingsPage.APP -> R.string.profile_settings_section_app
                                 ProfileSettingsPage.ACCOUNT -> R.string.profile_settings_section_account
                                 ProfileSettingsPage.APPEARANCE -> R.string.profile_appearance
-                                ProfileSettingsPage.NOTIFICATIONS -> R.string.profile_notifications
+                                ProfileSettingsPage.NOTIFICATIONS -> R.string.hsk_course_notif
                                 ProfileSettingsPage.PRIVACY -> R.string.profile_privacy_security
                             }),
                             color = PompColors.Ink,
@@ -873,7 +874,7 @@ private fun ProfileSettingsScreen(
                         SettingsRows {
                             ProfileSettingsItem(
                                 Icons.Filled.Language,
-                                stringResource(R.string.profile_language),
+                                stringResource(R.string.hsk_course_lang),
                                 account.language.backendCode.uppercase(),
                                 !settings.isBusy,
                                 onOpenLanguage,
@@ -882,7 +883,7 @@ private fun ProfileSettingsScreen(
                                 ProfileSettingsDivider()
                                 ProfileSettingsItem(
                                     Icons.Filled.TrackChanges,
-                                    stringResource(R.string.profile_course_version),
+                                    stringResource(R.string.hsk_course_course_picker_version),
                                     if (courseTrack == "hsk30") "HSK 3.0" else "HSK 2.0",
                                     true,
                                     onOpenCourseVersion,
@@ -911,7 +912,7 @@ private fun ProfileSettingsScreen(
                             ProfileSettingsDivider()
                             ProfileSettingsItem(
                                 Icons.Filled.Notifications,
-                                stringResource(R.string.profile_notifications),
+                                stringResource(R.string.hsk_course_notif),
                                 stringResource(
                                     if (notificationsEnabled) R.string.profile_notifications_status_on
                                     else R.string.profile_notifications_status_off,
@@ -952,10 +953,10 @@ private fun ProfileSettingsScreen(
                             ProfileSettingsDivider()
                             ProfileSettingsItem(
                                 Icons.AutoMirrored.Filled.HelpOutline,
-                                stringResource(R.string.profile_help),
+                                stringResource(R.string.hsk_course_help),
                                 stringResource(
                                     if (supportUrl.isBlank()) R.string.profile_help_unavailable
-                                    else R.string.profile_help_action,
+                                    else R.string.hsk_course_help_btn,
                                 ),
                                 supportUrl.isNotBlank(),
                             ) { if (supportUrl.isNotBlank()) onOpenSupport(supportUrl) }
@@ -1014,7 +1015,7 @@ private fun ProfileSettingsScreen(
                                 modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
                                 shape = RoundedCornerShape(15.dp),
                             ) {
-                                Text(stringResource(R.string.profile_logout), color = PompColors.Ink)
+                                Text(stringResource(R.string.hsk_common_action_logout), color = PompColors.Ink)
                             }
                             OutlinedButton(
                                 onClick = { confirmUnlink = true },
@@ -1180,6 +1181,152 @@ private fun ProfileSettingsDivider() {
             .height(1.dp)
             .background(PompColors.Divider),
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun NotificationsCategoriesSheet(
+    enabled: Boolean,
+    onOpenStudy: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.Paper) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp).padding(bottom = 28.dp)) {
+            Text(stringResource(R.string.hsk_course_notif), color = PompColors.Ink, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+            Spacer(Modifier.height(14.dp))
+            Surface(
+                color = PompColors.CardSurface,
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.dp, PompColors.Divider),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                MiniSettingsRow(Icons.Filled.Notifications, stringResource(R.string.profile_notifications_category_study), true, onOpenStudy) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            stringResource(if (enabled) R.string.profile_notifications_status_on else R.string.profile_notifications_status_off),
+                            color = PompColors.InkDisabled,
+                            fontSize = 12.sp,
+                        )
+                        Spacer(Modifier.width(4.dp)); SettingsChevron()
+                    }
+                }
+            }
+            Text(
+                stringResource(R.string.profile_notifications_category_study_desc),
+                color = PompColors.InkSecondary,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun StudyReminderSettingsSheet(
+    enabled: Boolean,
+    onToggle: (Boolean) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.Paper) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp).padding(bottom = 28.dp)) {
+            Text(
+                stringResource(R.string.profile_notifications_category_study),
+                color = PompColors.Ink,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.profile_notifications_detail_intro),
+                color = PompColors.InkSecondary,
+                fontSize = 13.sp,
+                modifier = Modifier.padding(top = 5.dp, bottom = 14.dp),
+            )
+            Surface(
+                color = PompColors.CardSurface,
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.dp, PompColors.Divider),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(R.string.profile_notifications_category_study),
+                        color = PompColors.Ink,
+                        fontSize = 14.sp,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Switch(
+                        checked = enabled,
+                        onCheckedChange = onToggle,
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color.White,
+                            checkedTrackColor = PompColors.Jade,
+                            uncheckedThumbColor = Color.White,
+                            uncheckedTrackColor = PompColors.InkDisabled,
+                            uncheckedBorderColor = Color.Transparent,
+                        ),
+                    )
+                }
+            }
+            if (enabled) {
+                Column(Modifier.padding(horizontal = 8.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    NotificationBullet(stringResource(R.string.profile_notifications_goal))
+                    NotificationBullet(stringResource(R.string.profile_notifications_streak))
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PrivacySecuritySheet(
+    onTerms: () -> Unit,
+    onPrivacyPolicy: () -> Unit,
+    onDeleteAccount: () -> Unit,
+    onPermissions: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.Paper) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp).padding(bottom = 28.dp)) {
+            Text(stringResource(R.string.profile_privacy_security), color = PompColors.Ink, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+            Spacer(Modifier.height(14.dp))
+            Surface(
+                color = PompColors.CardSurface,
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.dp, PompColors.Divider),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column {
+                    MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_terms_of_use), true, onTerms) { SettingsChevron() }
+                    ProfileSettingsDivider()
+                    MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_privacy_policy), true, onPrivacyPolicy) { SettingsChevron() }
+                    ProfileSettingsDivider()
+                    MiniSettingsRow(Icons.Filled.PersonOutline, stringResource(R.string.profile_delete_account), true, onDeleteAccount) { SettingsChevron() }
+                    ProfileSettingsDivider()
+                    MiniSettingsRow(Icons.Filled.Settings, stringResource(R.string.profile_app_permissions), true, onPermissions) { SettingsChevron() }
+                }
+            }
+            Text(
+                stringResource(R.string.profile_app_permissions_desc),
+                color = PompColors.InkSecondary,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
+            )
+            Text(
+                stringResource(R.string.profile_security_note),
+                color = PompColors.InkSecondary,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            )
+        }
+    }
 }
 
 /** HSK AI rasmiy sahifalari, Mini App profilidagi qator bilan bir xil. */

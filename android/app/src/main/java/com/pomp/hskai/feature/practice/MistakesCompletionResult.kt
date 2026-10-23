@@ -128,7 +128,7 @@ internal fun MistakesReviewResult(
                     // One more screen follows when the streak moved, so the button
                     // says so rather than promising to close.
                     text = if (outcome.hasStreakEvent) {
-                        stringResource(R.string.lesson_next)
+                        stringResource(R.string.hsk_common_action_continue)
                     } else {
                         stringResource(R.string.mistakes_done)
                     },

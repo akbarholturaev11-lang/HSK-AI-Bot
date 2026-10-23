@@ -255,16 +255,21 @@ class AIUsageBudgetService:
     async def can_use_payment_preview_ai(
         self, telegram_id: int, payment_id: int, *, user_id=None
     ) -> BudgetAccessResult:
-        """Fail closed if a preview cap is exhausted or its budget was revoked."""
+        """Fail closed for a missing, revoked, exhausted or ambiguous cap."""
         result = await self.session.execute(
             select(AIUsageBudget).where(
                 owner_clause(AIUsageBudget, telegram_id, user_id=user_id),
                 AIUsageBudget.payment_id == int(payment_id),
                 AIUsageBudget.plan_type == PAYMENT_PREVIEW_PLAN_TYPE,
-            )
+            ).limit(2)
         )
-        preview = result.scalar_one_or_none()
-        if not preview or preview.status != "active" or self.is_total_budget_depleted(preview):
+        previews = list(result.scalars().all())
+        # Older duplicate receipt claims could leave multiple budget rows.
+        # Never choose a fresh cap or crash while reading that historical state.
+        if len(previews) != 1:
+            return BudgetAccessResult(allowed=False, message_key="ai_budget_depleted", budget_depleted=True)
+        preview = previews[0]
+        if preview.status != "active" or self.is_total_budget_depleted(preview):
             return BudgetAccessResult(allowed=False, message_key="ai_budget_depleted", budget_depleted=True)
         # A receipt preview may be scheduled behind an existing paid/trial
         # budget. If the original budget disappeared, do not treat the gap

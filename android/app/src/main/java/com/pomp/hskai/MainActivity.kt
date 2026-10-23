@@ -1703,16 +1703,16 @@ private fun AppRoot(
             courseState.trackError?.let { error ->
                 AlertDialog(
                     onDismissRequest = courseViewModel::consumeTrackError,
-                    title = { Text(stringResource(R.string.profile_course_version)) },
+                    title = { Text(stringResource(R.string.hsk_course_course_picker_version)) },
                     text = { Text(stringResource(error.messageRes)) },
                     confirmButton = {
                         TextButton(onClick = courseViewModel::retryTrackSwitch) {
-                            Text(stringResource(R.string.action_retry))
+                            Text(stringResource(R.string.hsk_course_lesson_flow_retry))
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = courseViewModel::consumeTrackError) {
-                            Text(stringResource(R.string.action_close))
+                            Text(stringResource(R.string.hsk_common_action_close))
                         }
                     },
                     containerColor = PompColors.Paper,
@@ -1919,7 +1919,7 @@ private fun PinyinPicker(
     ) {
         Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
             Text(
-                text = stringResource(R.string.lesson_pinyin_title),
+                text = stringResource(R.string.hsk_course_pinyin_settings_h),
                 style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                 color = PompColors.Ink,
             )
@@ -1929,7 +1929,7 @@ private fun PinyinPicker(
                 val labelRes = when (option) {
                     PinyinVisibility.ALL -> R.string.lesson_pinyin_all
                     PinyinVisibility.NEW_WORDS_ONLY -> R.string.lesson_pinyin_new
-                    PinyinVisibility.OFF -> R.string.lesson_pinyin_off
+                    PinyinVisibility.OFF -> R.string.hsk_course_pinyin_settings_off
                 }
                 Surface(
                     color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
@@ -2200,7 +2200,7 @@ private fun BootstrapErrorScreen(errorRes: Int, onRetry: () -> Unit) {
             )
             androidx.compose.foundation.layout.Spacer(Modifier.padding(8.dp))
             OutlinedButton(onClick = onRetry) {
-                Text(stringResource(R.string.action_retry))
+                Text(stringResource(R.string.hsk_course_lesson_flow_retry))
             }
         }
     }

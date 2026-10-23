@@ -135,14 +135,22 @@ button:disabled{cursor:default}
     <button class="cta" id="cta" type="button" onclick="nextBtn()">Boshlash</button>
   </footer>
 </div>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={
+var ONBOARDING_LEGACY={
   ru:{hello:"Привет! Я учитель Ли.",boot:"Китайский — шаг за шагом. Начните с того, что уже знаете.",ask:"Сколько китайского вы уже знаете?",levelHint:"HSK — это уровни знания китайского языка.",askVersion:"С какой версии HSK вы хотите начать?",onlyHsk20:"Сейчас доступен HSK 2.0. Продолжим с него.",versionHint:"Выбранная версия определит учебники курса.",books20:"Учебники старого HSK 2.0",books30:"Новые учебники HSK 3.0",start:"Начать",cont:"Продолжить",first:"Начать первый урок",retry:"Попробовать снова",askGoal:"Зачем вам китайский?",goalHint:"Подберём акцент в вашем плане на день.",welcomeNote:"Всего 3 вопроса — и к первому уроку.",levelNote:"Выберите свой уровень — я помогу начать.",goalNote:"Всё готово. Перейдём к вашему первому уроку.",back:"Назад",progress:"Настройка курса",saving:"Сохраняем…",saveError:"Не удалось подтвердить сохранение. Попробуйте снова.",authError:"Сессия Telegram истекла. Закройте и заново откройте мини-приложение через бота.",levelError:"Текущий уровень нельзя изменить здесь. Вернитесь к выбору уровня.",beginner:"Начинаю с нуля",beginnerSub:"Сначала ханцзы, пиньинь и тоны",selected:"Ваш уровень",courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Disabled:"HSK 3.0 пока закрыт."},
   uz:{hello:"Salom! Men Li ustozman.",boot:"Xitoy tilini qadamma-qadam o'rganing. O'zingizga mos darajadan boshlang.",ask:"Xitoy tilini qanchalik bilasiz?",levelHint:"HSK — xitoy tilini bilish darajalari.",askVersion:"Qaysi HSK versiyasi orqali boshlamoqchisiz?",onlyHsk20:"Hozir HSK 2.0 versiyasi mavjud. Shu versiyadan davom etamiz.",versionHint:"Tanlangan versiyaga mos darsliklardan boshlang.",books20:"HSK 2.0 eski darsliklari",books30:"HSK 3.0 yangi darsliklari",start:"Boshlash",cont:"Davom etish",first:"Birinchi darsni boshlash",retry:"Qayta urinib ko'rish",askGoal:"Xitoy tili sizga nima uchun kerak?",goalHint:"Kunlik rejangiz shu maqsadga mos bo'ladi.",welcomeNote:"3 ta qisqa savol. Keyin — birinchi dars.",levelNote:"O'zingizga mos darajani tanlang.",goalNote:"Tayyor. Endi birinchi darsingizga o'tamiz.",back:"Orqaga",progress:"Kursni sozlash",saving:"Saqlanmoqda…",saveError:"Tanlov saqlanganini tasdiqlab bo‘lmadi. Qayta urinib ko‘ring.",authError:"Telegram sessiyasi eskirgan. Mini App’ni yopib, bot orqali qayta oching.",levelError:"Bu yerdan darajani o‘zgartirib bo‘lmaydi. Daraja tanlashga qayting.",beginner:"Noldan boshlayman",beginnerSub:"Avval hanzi, pinyin va tonlar",selected:"Darajangiz",courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Disabled:"HSK 3.0 hozircha yopiq."},
   tj:{hello:"Салом! Ман устод Ли ҳастам.",boot:"Забони чинӣ — қадам ба қадам. Аз сатҳи мувофиқ оғоз кунед.",ask:"Забони чиниро то чӣ андоза медонед?",levelHint:"HSK — сатҳҳои дониши забони чинӣ аст.",askVersion:"Бо кадом версияи HSK оғоз мекунед?",onlyHsk20:"Ҳоло версияи HSK 2.0 дастрас аст. Аз ҳамин версия идома медиҳем.",versionHint:"Китобҳо мувофиқи версияи интихобшуда иваз мешаванд.",books20:"Китобҳои кӯҳнаи HSK 2.0",books30:"Китобҳои нави HSK 3.0",start:"Оғоз",cont:"Идома",first:"Оғози дарси аввал",retry:"Боз кӯшиш кунед",askGoal:"Забони чинӣ ба шумо барои чӣ лозим аст?",goalHint:"Нақшаи рӯзонаи шумо ба ин мақсад мувофиқ мешавад.",welcomeNote:"Ҳамагӣ 3 савол — ва ба дарси аввал.",levelNote:"Сатҳи мувофиқи худро интихоб кунед.",goalNote:"Тайёр. Ба дарси аввалини шумо мегузарем.",back:"Бозгашт",progress:"Танзими курс",saving:"Сабт мешавад…",saveError:"Сабти интихоб тасдиқ нашуд. Боз кӯшиш кунед.",authError:"Муҳлати сессияи Telegram гузашт. Мини-барномаро аз бот боз кушоед.",levelError:"Ин сатҳро аз ин ҷо иваз кардан мумкин нест. Ба интихоби сатҳ баргардед.",beginner:"Аз сифр оғоз мекунам",beginnerSub:"Аввал ханзӣ, пинйин ва оҳангҳо",selected:"Сатҳи шумо",courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Disabled:"HSK 3.0 ҳоло баста аст."}
 }[LANG];
+/* Bundle at build time; retained inline translations are the offline fallback. */
+var ONBOARDING_CATALOG=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};
+var L={};
+Object.keys(ONBOARDING_LEGACY).forEach(function(key){
+  var value=ONBOARDING_CATALOG["onboarding."+key];
+  L[key]=typeof value==="string"&&value?value:ONBOARDING_LEGACY[key];
+});
 document.documentElement.lang=LANG==="tj"?"tg":LANG;
 var tg=window.Telegram&&window.Telegram.WebApp;
 function syncViewport(){
@@ -229,6 +237,32 @@ var GOALS=[
   {k:"study_china",g:"学",hd:{ru:"Учёба в Китае",uz:"Xitoyda o'qish",tj:"Таҳсил дар Чин"},
     s:{ru:"Упор на курс и словарный запас",uz:"Kursga va so'z boyligiga urg'u",tj:"Таъкид ба курс ва луғат"}}
 ];
+/* Presentation-only option copy, preserving all legacy locale values as fallback. */
+function onboardingOptionMessage(key,fallback){
+  var value=ONBOARDING_CATALOG[key];
+  return typeof value==="string"&&value?value:fallback;
+}
+function onboardingGoalCatalogId(id){
+  return id.replace(/_([a-z])/g,function(_,letter){return letter.toUpperCase()});
+}
+function adoptOnboardingOptionCopy(){
+  LV20.forEach(function(item){
+    if(item.k==="beginner"&&item.hd&&typeof item.hd==="object"){
+      item.hd[LANG]=onboardingOptionMessage("onboardingLevel.beginner.title",item.hd[LANG]);
+    }
+    if(item.s&&typeof item.s==="object"){
+      item.s[LANG]=onboardingOptionMessage("onboardingLevel."+item.k+".subtitle",item.s[LANG]);
+    }
+  });
+  LV30.forEach(function(item){
+    item.s[LANG]=onboardingOptionMessage("onboardingLevel."+item.k+".subtitle",item.s[LANG]);
+  });
+  GOALS.forEach(function(item){
+    item.hd[LANG]=onboardingOptionMessage("onboardingGoal."+onboardingGoalCatalogId(item.k)+".title",item.hd[LANG]);
+    item.s[LANG]=onboardingOptionMessage("onboardingGoal."+onboardingGoalCatalogId(item.k)+".subtitle",item.s[LANG]);
+  });
+}
+adoptOnboardingOptionCopy();
 var step=0,track="hsk30",sel="nhsk1",goalSel="hsk_exam",submitting=false,hasSavedTrack=false,userSelectedTrack=false;
 var HSK30_STATUS=null;
 var INIT_DATA=(tg&&tg.initData)||"";

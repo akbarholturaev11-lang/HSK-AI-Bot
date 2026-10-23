@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="course_chest_ready">Подарок готов</string>
+    <string name="course_chest_progress">До подарка %1$d XP</string>
+    <string name="course_chest_reward">Получено +%1$d XP</string>
+    <string name="course_chest_opening">Открываем…</string>
+    <string name="course_chest_cd">Сундук с наградой</string>
+    <string-array name="course_panda_prompts">
+        <item>Продолжаем!</item>
+        <item>Так держать!</item>
+        <item>Ещё урок!</item>
+        <item>У тебя получится!</item>
+    </string-array>
+    <string name="today_plan_label">Сегодня</string>
+    <string name="today_plan_xp">%1$d/%2$d XP</string>
+    <string name="today_plan_go">Продолжить по плану</string>
+    <string name="today_plan_done">План выполнен</string>
+    <string name="today_task_part">Часть</string>
+    <string name="today_task_part_n">Часть %1$s</string>
+    <string name="today_task_mistakes">Ошибки</string>
+    <string name="today_task_test">Тест</string>
+    <string name="today_task_talk">Диалог</string>
+    <string name="today_task_chars">Иероглифы</string>
+    <string name="today_task_pron">Произношение</string>
+    <string name="lesson_entry_title">Готовим урок</string>
+    <string name="lesson_entry_subtitle">Панда уже ждёт вас</string>
+    <string name="course_track_switch_title">Готовим версию курса</string>
+    <string name="course_track_switch_subtitle">Панда открывает ваши новые уроки</string>
+
+    <string name="hsk30_access_required_title">Откройте HSK 3.0</string>
+    <string name="hsk30_access_required_body">Начните курс по новым учебникам.</string>
+    <string name="hsk30_access_unlock_button">Открыть HSK 3.0</string>
+    <string name="hsk30_access_permanent">Доступ навсегда</string>
+    <string name="hsk30_access_one_time">Разовый платёж</string>
+    <string name="hsk30_access_back_hsk20">Вернуться к HSK 2.0</string>
+    <string name="hsk30_level_picker_title">С какого уровня продолжить HSK 3.0?</string>
+    <string name="hsk30_level_picker_body">Выберите подходящий вам уровень.</string>
+</resources>

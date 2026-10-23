@@ -1,6 +1,8 @@
 package com.pomp.hskai.feature.onboarding
 
 import android.animation.ValueAnimator
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.view.HapticFeedbackConstants
 import androidx.activity.compose.BackHandler
@@ -63,6 +65,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -77,6 +80,7 @@ import androidx.compose.ui.zIndex
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.PompColors
+import java.util.Locale
 
 /**
  * Native port of `app/static/course_v3_onboarding.html`.
@@ -112,7 +116,6 @@ data class OnboardingCopy(
     val versionHint: String,
     val hsk20BooksDescription: String,
     val hsk30BooksDescription: String,
-    val newBadge: String,
     val start: String,
     val continueLabel: String,
     val firstLesson: String,
@@ -150,7 +153,6 @@ data class OnboardingCopy(
                 versionHint = "Tanlangan versiyaga mos darsliklardan boshlang.",
                 hsk20BooksDescription = "HSK 2.0 eski darsliklari",
                 hsk30BooksDescription = "HSK 3.0 yangi darsliklari",
-                newBadge = "NEW",
                 start = "Boshlash",
                 continueLabel = "Davom etish",
                 firstLesson = "Birinchi darsni boshlash",
@@ -186,7 +188,6 @@ data class OnboardingCopy(
                 versionHint = "Китобҳо мувофиқи версияи интихобшуда иваз мешаванд.",
                 hsk20BooksDescription = "Китобҳои кӯҳнаи HSK 2.0",
                 hsk30BooksDescription = "Китобҳои нави HSK 3.0",
-                newBadge = "NEW",
                 start = "Оғоз",
                 continueLabel = "Идома",
                 firstLesson = "Оғози дарси аввал",
@@ -222,7 +223,6 @@ data class OnboardingCopy(
                 versionHint = "Учебники меняются вместе с выбранной версией.",
                 hsk20BooksDescription = "Учебники старого HSK 2.0",
                 hsk30BooksDescription = "Новые учебники HSK 3.0",
-                newBadge = "NEW",
                 start = "Начать",
                 continueLabel = "Продолжить",
                 firstLesson = "Начать первый урок",
@@ -302,6 +302,52 @@ private val goals = listOf(
     ),
 )
 
+/**
+ * Bundle only labels with exact UZ/RU/TJ source parity.
+ * Android-specific wording stays in OnboardingCopy.forLanguage as fallback.
+ */
+internal fun OnboardingCopy.withBundledCatalog(context: Context, language: String): OnboardingCopy {
+    return runCatching {
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(Locale.forLanguageTag(canonicalLanguage(language)))
+        val localized = context.createConfigurationContext(config)
+        copy(
+            hello = localized.getString(R.string.hsk_course_onboarding_hello),
+            boot = localized.getString(R.string.hsk_course_onboarding_boot),
+            askLevel = localized.getString(R.string.hsk_course_onboarding_ask),
+            levelHint = localized.getString(R.string.hsk_course_onboarding_level_hint),
+            askVersion = localized.getString(R.string.hsk_course_onboarding_ask_version),
+            hsk20BooksDescription = localized.getString(R.string.hsk_course_onboarding_books20),
+            hsk30BooksDescription = localized.getString(R.string.hsk_course_onboarding_books30),
+            start = localized.getString(R.string.hsk_course_onboarding_start),
+            continueLabel = localized.getString(R.string.hsk_course_onboarding_cont),
+            firstLesson = localized.getString(R.string.hsk_course_onboarding_first),
+            retry = localized.getString(R.string.hsk_course_onboarding_retry),
+            askGoal = localized.getString(R.string.hsk_course_onboarding_ask_goal),
+            goalHint = localized.getString(R.string.hsk_course_onboarding_goal_hint),
+            welcomeNote = localized.getString(R.string.hsk_course_onboarding_welcome_note),
+            levelNote = localized.getString(R.string.hsk_course_onboarding_level_note),
+            goalNote = localized.getString(R.string.hsk_course_onboarding_goal_note),
+            back = localized.getString(R.string.hsk_course_onboarding_back),
+            saving = localized.getString(R.string.hsk_course_onboarding_saving),
+            selected = localized.getString(R.string.hsk_course_onboarding_selected),
+            courseVersion = localized.getString(R.string.hsk_course_onboarding_course_version),
+            hsk20 = localized.getString(R.string.hsk_course_onboarding_hsk20),
+            hsk30 = localized.getString(R.string.hsk_course_onboarding_hsk30),
+            hsk30Disabled = localized.getString(R.string.hsk_course_onboarding_hsk30_disabled),
+            beginner = localized.getString(R.string.hsk_course_android_onboarding_beginner),
+            beginnerSub = localized.getString(R.string.hsk_course_android_onboarding_beginner_sub),
+            saveError = localized.getString(R.string.hsk_course_android_onboarding_save_error),
+            notifyTitle = localized.getString(R.string.hsk_course_onboarding_notification_title),
+            notifyLessons = localized.getString(R.string.hsk_course_onboarding_notification_lessons),
+            notifyUpdates = localized.getString(R.string.hsk_course_onboarding_notification_updates),
+            notifyPayments = localized.getString(R.string.hsk_course_onboarding_notification_payments),
+            notifyAllow = localized.getString(R.string.hsk_course_onboarding_notification_allow),
+            notifyLater = localized.getString(R.string.hsk_course_onboarding_notification_later),
+        )
+    }.getOrDefault(this)
+}
+
 @Composable
 fun OnboardingScreen(
     language: String,
@@ -314,7 +360,10 @@ fun OnboardingScreen(
     modifier: Modifier = Modifier,
 ) {
     BackHandler(enabled = state.step > 0 && !state.submitting, onBack = onBack)
-    val copy = OnboardingCopy.forLanguage(language)
+    val context = LocalContext.current
+    val copy = remember(language, context) {
+        OnboardingCopy.forLanguage(language).withBundledCatalog(context, language)
+    }
     val view = LocalView.current
     val configuration = LocalConfiguration.current
     val layoutSpec = remember(configuration.screenWidthDp, configuration.screenHeightDp) {
@@ -839,6 +888,44 @@ private fun CourseVersionSwitch(
     }
 }
 
+/* Replace exact-safe display labels only; HSK and goal option IDs are immutable. */
+private val onboardingLevelSubtitleIds = mapOf(
+    "hsk1" to R.string.hsk_course_onboarding_level_hsk1_subtitle,
+    "hsk2" to R.string.hsk_course_onboarding_level_hsk2_subtitle,
+    "hsk3" to R.string.hsk_course_onboarding_level_hsk3_subtitle,
+    "hsk4" to R.string.hsk_course_onboarding_level_hsk4_subtitle,
+    "nhsk1" to R.string.hsk_course_onboarding_level_nhsk1_subtitle,
+    "nhsk2" to R.string.hsk_course_onboarding_level_nhsk2_subtitle,
+    "nhsk3" to R.string.hsk_course_onboarding_level_nhsk3_subtitle,
+)
+private val onboardingGoalTextIds = mapOf(
+    "hsk_exam" to Pair(
+        R.string.hsk_course_onboarding_goal_hsk_exam_title,
+        R.string.hsk_course_onboarding_goal_hsk_exam_subtitle,
+    ),
+    "daily_communication" to Pair(
+        R.string.hsk_course_onboarding_goal_daily_communication_title,
+        R.string.hsk_course_onboarding_goal_daily_communication_subtitle,
+    ),
+    "travel" to Pair(
+        R.string.hsk_course_onboarding_goal_travel_title,
+        R.string.hsk_course_onboarding_goal_travel_subtitle,
+    ),
+    "work_china" to Pair(
+        R.string.hsk_course_onboarding_goal_work_china_title,
+        R.string.hsk_course_onboarding_goal_work_china_subtitle,
+    ),
+    "study_china" to Pair(
+        R.string.hsk_course_onboarding_goal_study_china_title,
+        R.string.hsk_course_onboarding_goal_study_china_subtitle,
+    ),
+)
+private fun Context.bundledOnboardingOptions(language: String): Context? = runCatching {
+    val config = Configuration(resources.configuration)
+    config.setLocale(Locale.forLanguageTag(canonicalLanguage(language)))
+    createConfigurationContext(config)
+}.getOrNull()
+
 @Composable
 private fun LevelChoices(
     language: String,
@@ -852,6 +939,8 @@ private fun LevelChoices(
     onSelected: (String) -> Unit,
 ) {
     val lang = canonicalLanguage(language)
+    val context = LocalContext.current
+    val optionContext = remember(context, language) { context.bundledOnboardingOptions(language) }
     val descriptions = when (lang) {
         "uz" -> listOf("Biroz xitoycha bilaman", "Asosiy suhbat", "Kundalik muloqot", "Erkin muloqot")
         "tg" -> listOf("Каме забони чинӣ медонам", "Муоширати асосӣ", "Муоширати ҳаррӯза", "Муоширати озод")
@@ -885,7 +974,9 @@ private fun LevelChoices(
                 motionEnabled = motionEnabled,
                 layoutSpec = layoutSpec,
                 title = option.title,
-                subtitle = option.subtitle,
+                subtitle = onboardingLevelSubtitleIds[option.key]?.let { resourceId ->
+                    runCatching { optionContext?.getString(resourceId) }.getOrNull()
+                } ?: option.subtitle,
                 leading = { LevelBars(active = index) },
                 onClick = { onSelected(option.key) },
                 badge = null,
@@ -924,6 +1015,8 @@ private fun GoalChoices(
     onSelected: (String) -> Unit,
 ) {
     val lang = canonicalLanguage(language)
+    val context = LocalContext.current
+    val optionContext = remember(context, language) { context.bundledOnboardingOptions(language) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         goals.forEach { goal ->
             ChoiceCard(
@@ -931,8 +1024,12 @@ private fun GoalChoices(
                 enabled = enabled,
                 motionEnabled = motionEnabled,
                 layoutSpec = layoutSpec,
-                title = goal.titles[lang] ?: goal.titles.getValue("ru"),
-                subtitle = goal.subtitles[lang] ?: goal.subtitles.getValue("ru"),
+                title = onboardingGoalTextIds[goal.key]?.first?.let { resourceId ->
+                    runCatching { optionContext?.getString(resourceId) }.getOrNull()
+                } ?: (goal.titles[lang] ?: goal.titles.getValue("ru")),
+                subtitle = onboardingGoalTextIds[goal.key]?.second?.let { resourceId ->
+                    runCatching { optionContext?.getString(resourceId) }.getOrNull()
+                } ?: (goal.subtitles[lang] ?: goal.subtitles.getValue("ru")),
                 leading = {
                     Box(Modifier.size(36.dp), contentAlignment = Alignment.Center) {
                         MiniAppOnboardingIcon(

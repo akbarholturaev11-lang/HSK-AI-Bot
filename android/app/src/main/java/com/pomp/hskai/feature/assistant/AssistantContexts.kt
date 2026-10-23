@@ -261,9 +261,12 @@ fun ratingUserAssistantContext(user: RatingEntryDto, league: String, currentWeek
     answerState = "viewing",
 )
 
-fun ratingChallengesAssistantContext(state: RatingUiState): ScreenContext = ScreenContext(
+fun ratingChallengesAssistantContext(
+    state: RatingUiState,
+    localizedTitle: String,
+): ScreenContext = ScreenContext(
     screen = "rating_challenges",
-    title = "Bellashuvlar",
+    title = localizedTitle,
     details = "Pending challenges visible: ${state.pendingChallenges.size}. Active challenges visible: ${state.activeChallenges.size}. The user can accept or open a challenge from this list.",
     answerState = "viewing",
 )

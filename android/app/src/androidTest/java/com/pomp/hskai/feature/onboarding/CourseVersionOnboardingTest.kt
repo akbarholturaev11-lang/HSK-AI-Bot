@@ -20,6 +20,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompHskAiTheme
 import java.io.File
 import org.junit.Assert.assertEquals
@@ -130,7 +131,9 @@ class CourseVersionOnboardingTest {
         }
         compose.onNodeWithText(copy.hsk20).assertIsDisplayed()
         compose.onNodeWithText(copy.hsk30).assertDoesNotExist()
-        compose.onNodeWithText(copy.newBadge).assertDoesNotExist()
+        val newBadge = InstrumentationRegistry.getInstrumentation().targetContext
+            .getString(R.string.hsk_course_new_section_badge)
+        compose.onNodeWithText(newBadge).assertDoesNotExist()
         compose.onNodeWithText("$1.08").assertDoesNotExist()
         compose.onNodeWithContentDescription(copy.hsk20BooksDescription).assertIsDisplayed()
         compose.onNodeWithContentDescription(copy.hsk30BooksDescription).assertDoesNotExist()

@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.notification_template import NotificationTemplate
+from app.services.notification_i18n import notification_message
 
 
 # Reminder keys handled by MotivationReminderService.
@@ -148,7 +149,8 @@ TEXT_MAX = 4096
 
 def default_text(key: str, lang: str) -> str:
     texts = DEFAULT_TEXTS.get(key, {})
-    return texts.get(lang) or texts.get("ru") or ""
+    fallback = texts.get(lang) or texts.get("ru") or ""
+    return notification_message("reminder.default." + key, lang, fallback)
 
 
 class NotificationTemplateService:

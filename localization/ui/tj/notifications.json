@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "namespace": "notifications",
+  "locale": "tj",
+  "messages": {
+    "course.title.d1_lesson_recovery": "Ба дарс баргаштан",
+    "course.title.daily_goal": "Ҳадафи имрӯз",
+    "course.title.lesson_time": "Вақти дарс расид",
+    "course.title.lesson_unfinished": "Дарс анҷом нашудааст",
+    "course.title.limit_daily_spent": "Лимити рӯзона тамом шуд",
+    "course.title.limit_lesson_spent": "Дарсҳои ройгон тамом шуданд",
+    "course.title.limit_lesson_warning": "Дарсҳои ройгон ба охир мерасанд",
+    "course.title.rating_overtaken": "Дар рейтинг аз шумо гузаштанд",
+    "course.title.streak_risk": "Силсила дар хатар аст",
+    "course.title.subscription_expiring": "Обуна ба охир мерасад",
+    "course.title.subscription_offer": "Обунаатонро идома диҳед",
+    "discount.campaignFallbackTitle": "Тахфифи махсус",
+    "discount.discount": "Тахфиф",
+    "discount.open": "Тариф ва пардохт дар Mini App кушода мешавад.",
+    "discount.title": "🎁 <b>Тахфифи махсус омода аст</b>",
+    "reminder.continueLesson": "▶️ Идомаи дарс",
+    "reminder.continueLessonNumber": "▶️ Идома · дарси {lesson}",
+    "reminder.courseContinue": "📖 Идома додани дарс",
+    "reminder.default.d1_lesson_recovery": "📚 <b>{lesson} — идома медиҳем?</b>\nДафъаи гузашта дар ҳамин дарс таваққуф кардед. Баргардед, то дониши худро мустаҳкам кунед.",
+    "reminder.default.daily_goal": "⏳ <b>Ҳадафи имрӯза ҳанӯз иҷро нашуд</b>\nРӯз ба охир мерасад, дарси имрӯза ҳанӯз анҷом нашуд.\nҲамагӣ <b>{minutes} дақиқа</b> — ҳадафи рӯзонаатонро пӯшонед 🎯",
+    "reminder.default.lesson_unfinished": "📚 <b>{lesson} ҳанӯз анҷом нашуд</b>\nРӯз ба охир мерасад. Дарси оғозкардаатонро анҷом диҳед.\nҲамагӣ <b>{minutes} дақиқа</b> — дарс пӯшида мешавад ва XP мегиред 🎯",
+    "reminder.default.rating_overtaken": "🥇 <b>{name} аз шумо пеш гузашт!</b>\nШумо ба <b>ҷои {rank} дар лигаи {league}</b> фаромадед.\nФарқ ҳамагӣ <b>{xp_gap} XP</b>. Бо як дарс ҷои худро баргардонед 💪",
+    "reminder.default.streak_risk": "🔥 <b>Силсилаи {streak}-рӯза дар хатар аст!</b>\nАгар имрӯз надароед, силсила канда мешавад ва рӯз дар тақвим гум мешавад.\nЯк дарси хурд — силсила нигоҳ дошта мешавад 🔥",
+    "reminder.lessonLabel": "{level} дарси {lesson}",
+    "reminder.returnLesson": "▶️ Ба дарс баргаштан",
+    "reminder.startedLesson": "Дарси оғозшуда"
+  }
+}

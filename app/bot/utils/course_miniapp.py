@@ -2,7 +2,7 @@ import json
 from html import escape
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
-from app.bot.utils.i18n import t
+from app.bot.utils.i18n import bot_locale_map, t
 from app.config import settings
 
 
@@ -211,11 +211,7 @@ def format_miniapp_quiz_intro(lang: str, lesson, block_no: int | None = None) ->
     text = t("course_miniapp_quiz_intro", lang, lesson_id=course_miniapp_lesson_id(lesson))
     if not block_no:
         return text
-    labels = {
-        "uz": f"\n\nQism {block_no}: savollar shu qismdagi yangi so'zlar va grammatikadan.",
-        "ru": f"\n\nЧасть {block_no}: вопросы будут по новым словам и грамматике этой части.",
-        "tj": f"\n\nҚисм {block_no}: саволҳо аз калимаҳои нав ва грамматикаи ҳамин қисм мешаванд.",
-    }
+    labels = bot_locale_map('inline.utils.course_miniapp.format_miniapp_quiz_intro.dynamic1', block_no=block_no)
     return text + labels.get(lang, labels["ru"])
 
 
@@ -283,19 +279,11 @@ def format_miniapp_quiz_result(lang: str, result: dict) -> str:
         t("course_miniapp_score_line", lang, score=score, total=total, percent=percent),
     ]
     if block_no:
-        labels = {
-            "uz": f"📍 Qism: {block_no}",
-            "ru": f"📍 Часть: {block_no}",
-            "tj": f"📍 Қисм: {block_no}",
-        }
+        labels = bot_locale_map('inline.utils.course_miniapp.format_miniapp_quiz_result.dynamic1', block_no=block_no)
         lines.insert(3, labels.get(lang, labels["ru"]))
     _append_items(lines, t("course_miniapp_wrong_items", lang), wrong_items)
     if block_no:
-        next_text = {
-            "uz": "Keyingi qismga o'tamiz.",
-            "ru": "Переходим к следующей части.",
-            "tj": "Ба қисми навбатӣ мегузарем.",
-        }
+        next_text = bot_locale_map('inline.utils.course_miniapp.format_miniapp_quiz_result.copy1')
         lines.extend(["", next_text.get(lang, next_text["ru"])])
     else:
         lines.extend(["", t("course_miniapp_understood_question", lang)])

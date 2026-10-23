@@ -16,7 +16,7 @@ from app.services.subscription_price_service import (
     DEFAULT_SUBSCRIPTION_PRICES,
     SubscriptionPriceService,
 )
-from app.bot.utils.i18n import t
+from app.bot.utils.i18n import bot_locale_map, t
 from app.bot.keyboards.subscription import (
     subscription_miniapp_keyboard,
 )
@@ -113,72 +113,14 @@ def _is_card_currency(currency: str) -> bool:
 
 
 def _card_texts(lang: str) -> dict[str, str]:
-    texts = {
-        "tj": {
-            "main_title": "💎 <b>Тарифҳои обуна</b>",
-            "benefits": "Обуна гиред ва аз бот бе лимит истифода баред.",
-            "card_note_short": "💳 Бо ҳар гуна корти бонкӣ метавонед пардохт кунед.",
-            "card_note_full": (
-                "Агар корти шумо корти Тоҷикистон набошад, маблағро бо қурби бонки худ "
-                "дар TJS ҳисоб карда ба ҳамин корт фиристед."
-            ),
-            "referral_hint": "🎁 3 дӯсти нав даъват кунед ва 20% тахфиф гиред.",
-            "choose": "👇 <b>Тарифро интихоб кунед:</b>",
-            "checkout_title": "💳 Шумо обунаро интихоб кардед",
-            "plan_label": "Тариф",
-            "price_label": "Нарх",
-            "bank_label": "Бонк",
-            "bank_name": "DC city",
-            "payment_details_label": "Реквизити пардохт",
-            "send_screenshot": "Пас аз пардохт скриншотро фиристед.",
-        },
-        "ru": {
-            "main_title": "💎 <b>Тарифы подписки</b>",
-            "benefits": "Оформите подписку и пользуйтесь ботом без ограничений.",
-            "card_note_short": "💳 Можно оплатить любой банковской картой.",
-            "card_note_full": (
-                "Если ваша карта не таджикская, рассчитайте сумму в TJS по курсу вашего банка "
-                "и отправьте на эту карту."
-            ),
-            "referral_hint": "🎁 Пригласите 3 новых друзей и получите скидку 20%.",
-            "choose": "👇 <b>Выберите тариф:</b>",
-            "checkout_title": "💳 Вы выбрали подписку",
-            "plan_label": "Тариф",
-            "price_label": "Цена",
-            "bank_label": "Банк",
-            "bank_name": "DC city",
-            "payment_details_label": "Реквизиты для оплаты",
-            "send_screenshot": "После оплаты отправьте скриншот.",
-        },
-        "uz": {
-            "main_title": "💎 <b>Obuna tariflari</b>",
-            "benefits": "Obuna oling va botdan limitsiz foydalaning.",
-            "card_note_short": "💳 Istalgan bank kartasi orqali to'lov qilishingiz mumkin.",
-            "card_note_full": (
-                "Agar kartangiz Tojikiston kartasi bo'lmasa, o'z bankingiz kursi bo'yicha "
-                "TJS valyutasida hisoblab shu kartaga yuboring."
-            ),
-            "referral_hint": "🎁 3 ta yangi do'st taklif qiling va 20% chegirma oling.",
-            "choose": "👇 <b>Tarifni tanlang:</b>",
-            "checkout_title": "💳 Siz obunani tanladingiz",
-            "plan_label": "Tarif",
-            "price_label": "Narx",
-            "bank_label": "Bank",
-            "bank_name": "DC city",
-            "payment_details_label": "To'lov rekviziti",
-            "send_screenshot": "To'lovdan keyin skrinshot yuboring.",
-        },
-    }
+    texts = bot_locale_map('inline.handlers.subscription.helper_card_texts.copy1')
     return texts.get(lang, texts["ru"])
 
 
 def _card_plan_label(plan_type: str, lang: str) -> str:
-    labels = {
-        "tj": {"10_days": "10 рӯз", "1_month": "1 моҳ"},
-        "ru": {"10_days": "10 дней", "1_month": "1 месяц"},
-        "uz": {"10_days": "10 kunlik", "1_month": "1 oylik"},
-    }
-    return labels.get(lang, labels["ru"]).get(plan_type, plan_type)
+    keys = {"10_days": "subscription_button_10_days", "1_month": "subscription_button_1_month"}
+    key = keys.get(plan_type)
+    return t(key, lang) if key else plan_type
 
 
 def _card_main_price(amount: int) -> str:
@@ -218,12 +160,9 @@ def _card_main_text(
 
 
 def _plan_label(plan_type: str, lang: str) -> str:
-    labels = {
-        "tj": {"10_days": "10 рӯз", "1_month": "1 моҳ"},
-        "ru": {"10_days": "10 дней", "1_month": "1 месяц"},
-        "uz": {"10_days": "10 kunlik", "1_month": "1 oylik"},
-    }
-    return labels.get(lang, labels["ru"]).get(plan_type, plan_type)
+    keys = {"10_days": "subscription_button_10_days", "1_month": "subscription_button_1_month"}
+    key = keys.get(plan_type)
+    return t(key, lang) if key else plan_type
 
 
 

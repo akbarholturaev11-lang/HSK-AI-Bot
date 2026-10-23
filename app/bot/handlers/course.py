@@ -28,7 +28,7 @@ from app.services.onboarding_tip_service import (
     TIP_KEY_COURSE_VOCAB,
 )
 from app.services.required_channel_service import RequiredChannelService
-from app.bot.utils.i18n import t
+from app.bot.utils.i18n import bot_locale_map, t
 from app.bot.utils.qa_entry import send_qa_entry
 from app.bot.keyboards.course import (
     lesson_selection_keyboard,
@@ -146,28 +146,8 @@ async def show_free_qa_level_choice(
 
 
 def course_miniapp_entry_text(lang: str, *, lesson: int | None = None, level: str | None = None) -> str:
-    texts = {
-        "uz": (
-            "📚 <b>HSK AI kursi — Mini App</b>\n\n"
-            "<blockquote>Darslar, so‘zlar, grammatika, quiz va AI Voice — hammasi bitta "
-            "ilovada. Har dars sizni qadam-baqadam olib boradi.</blockquote>"
-        ),
-        "ru": (
-            "📚 <b>Курс HSK AI — Mini App</b>\n\n"
-            "<blockquote>Уроки, слова, грамматика, квиз и AI Voice — всё в одном "
-            "приложении. Каждый урок ведёт вас шаг за шагом.</blockquote>"
-        ),
-        "tj": (
-            "📚 <b>Курси HSK AI — Mini App</b>\n\n"
-            "<blockquote>Дарсҳо, калимаҳо, грамматика, quiz ва AI Voice — ҳама дар як "
-            "барнома. Ҳар дарс шуморо қадам ба қадам мебарад.</blockquote>"
-        ),
-    }
-    lead = {
-        "uz": "\n\n{label}dan hoziroq boshlaymiz 👇",
-        "ru": "\n\nНачнём с «{label}» прямо сейчас 👇",
-        "tj": "\n\nАз «{label}» ҳозир оғоз мекунем 👇",
-    }
+    texts = bot_locale_map('inline.handlers.course.course_miniapp_entry_text.copy1')
+    lead = bot_locale_map('inline.handlers.course.course_miniapp_entry_text.copy2')
     base = texts.get(lang, texts["ru"])
     if lesson:
         label = _course_part_label(lang, level, lesson)
@@ -184,56 +164,28 @@ def _course_part_label(lang: str, level: str | None, flat: int | None) -> str:
     Manifest topilmasa flat raqamga qaytadi."""
     meta = course_v3_part_meta(level or "", int(flat or 0)) if flat else {}
     if not meta:
-        return {
-            "uz": f"{flat}-dars",
-            "ru": f"урок {flat}",
-            "tj": f"дарси {flat}",
-        }.get(lang, f"урок {flat}")
+        return bot_locale_map('inline.handlers.course.helper_course_part_label.dynamic1', flat=flat).get(lang, f"урок {flat}")
     src, part = meta.get("src"), meta.get("part")
     if meta.get("checkpoint"):
-        return {
-            "uz": f"{src}-dars · yakuniy qism",
-            "ru": f"урок {src} · итоговая часть",
-            "tj": f"дарси {src} · қисми ниҳоӣ",
-        }.get(lang, f"урок {src} · итоговая часть")
-    return {
-        "uz": f"{src}-dars · {part}-qism",
-        "ru": f"урок {src} · часть {part}",
-        "tj": f"дарси {src} · қисми {part}",
-    }.get(lang, f"урок {src} · часть {part}")
+        return bot_locale_map('inline.handlers.course.helper_course_part_label.dynamic2', src=src).get(lang, f"урок {src} · итоговая часть")
+    return bot_locale_map('inline.handlers.course.helper_course_part_label.dynamic3', src=src, part=part).get(lang, f"урок {src} · часть {part}")
 
 
 def course_miniapp_reentry_text(lang: str, lesson: int | None = None, level: str | None = None) -> str:
     if lesson and lesson > 1:
         label = _course_part_label(lang, level, lesson)
-        texts = {
-            "uz": f"📚 <b>Davom etamiz</b>\n\n{label}ni ochish uchun bosing 👇",
-            "ru": f"📚 <b>Продолжаем</b>\n\nНажмите, чтобы открыть {label} 👇",
-            "tj": f"📚 <b>Идома медиҳем</b>\n\nБарои кушодани {label} зер кунед 👇",
-        }
+        texts = bot_locale_map('inline.handlers.course.course_miniapp_reentry_text.dynamic1', label=label)
     else:
-        texts = {
-            "uz": "📚 <b>Kursni ochamiz</b>\n\n1-darsni boshlash uchun bosing 👇",
-            "ru": "📚 <b>Открываем курс</b>\n\nНажмите, чтобы начать урок 1 👇",
-            "tj": "📚 <b>Курсро мекушоем</b>\n\nБарои оғози дарси 1 зер кунед 👇",
-        }
+        texts = bot_locale_map('inline.handlers.course.course_miniapp_reentry_text.copy1')
     return texts.get(lang, texts["ru"])
 
 
 def _course_entry_button_label(lang: str, lesson: int | None, level: str | None = None) -> str:
     if not lesson or lesson <= 1:
-        labels = {
-            "uz": "▶️ 1-darsni boshlash",
-            "ru": "▶️ Начать 1-й урок",
-            "tj": "▶️ Оғози дарси 1",
-        }
+        labels = bot_locale_map('inline.handlers.course.helper_course_entry_button_label.copy1')
     else:
         label = _course_part_label(lang, level, lesson)
-        labels = {
-            "uz": f"▶️ Davom · {label}",
-            "ru": f"▶️ Продолжить · {label}",
-            "tj": f"▶️ Идома · {label}",
-        }
+        labels = bot_locale_map('inline.handlers.course.helper_course_entry_button_label.dynamic1', label=label)
     return labels.get(lang, labels["ru"])
 
 
@@ -370,11 +322,7 @@ async def _block_if_course_disabled(callback, session):
         except:
             pass
 
-        msg_map = {
-            "uz": "🚧 Kurs rejimi hozircha ishlab chiqilmoqda. Tez orada mavjud bo‘ladi.",
-            "ru": "🚧 Режим курса сейчас в разработке. Скоро будет доступен.",
-            "tj": "🚧 Реҷаи курс ҳоло дар навсози аст. Ба зудӣ дастрас мешавад.",
-        }
+        msg_map = bot_locale_map('inline.handlers.course.helper_block_if_course_disabled.copy1')
 
         await callback.answer()
         await callback.message.answer(msg_map.get(lang, msg_map["ru"]))
@@ -407,11 +355,7 @@ router = Router()
 
 
 def _course_locked_offer_text(lang: str) -> str:
-    free_fallback = {
-        "uz": "Obuna olmasangiz ham daily limit bilan savol-javobda davom etishingiz mumkin.",
-        "ru": "Даже без подписки можно продолжить в вопрос-ответ с дневным лимитом.",
-        "tj": "Бе обуна ҳам метавонед дар савол-ҷавоб бо лимити рӯзона давом диҳед.",
-    }.get(lang, "Даже без подписки можно продолжить в вопрос-ответ с дневным лимитом.")
+    free_fallback = bot_locale_map('inline.handlers.course.helper_course_locked_offer_text.copy1').get(lang, "Даже без подписки можно продолжить в вопрос-ответ с дневным лимитом.")
     return (
         f"<b>{t('course_locked_title', lang)}</b>\n\n"
         f"<blockquote>{t('course_locked_text', lang)}</blockquote>\n\n"
@@ -460,26 +404,7 @@ async def _send_trial_locked_offer(*, respond, lang: str) -> None:
 
 
 def _trial_course_completed_text(lang: str) -> str:
-    texts = {
-        "uz": (
-            "🎉 <b>Bepul dars tugadi</b>\n\n"
-            "<blockquote>Siz kurs rejimini sinab ko'rdingiz: dars, quiz, xato tahlili va mustahkamlash.</blockquote>\n\n"
-            "Keyingi darslarni ochish uchun obuna oling.\n"
-            "Obuna olmasangiz ham daily limit bilan savol-javobda davom etishingiz mumkin."
-        ),
-        "ru": (
-            "🎉 <b>Бесплатный урок завершён</b>\n\n"
-            "<blockquote>Вы попробовали режим курса: урок, quiz, разбор ошибок и закрепление.</blockquote>\n\n"
-            "Чтобы открыть следующие уроки, оформите подписку.\n"
-            "Даже без подписки можно продолжить в вопрос-ответ с дневным лимитом."
-        ),
-        "tj": (
-            "🎉 <b>Дарси ройгон анҷом шуд</b>\n\n"
-            "<blockquote>Шумо реҷаи курсро санҷидед: дарс, quiz, таҳлили хатоҳо ва мустаҳкамкунӣ.</blockquote>\n\n"
-            "Барои кушодани дарсҳои навбатӣ обуна гиред.\n"
-            "Бе обуна ҳам метавонед дар савол-ҷавоб бо лимити рӯзона давом диҳед."
-        ),
-    }
+    texts = bot_locale_map('inline.handlers.course.helper_trial_course_completed_text.copy1')
     return texts.get(lang, texts["ru"])
 
 
@@ -1090,11 +1015,7 @@ async def course_command_handler(message: Message, state: FSMContext, session):
         except:
             pass
 
-        msg_map = {
-            "uz": "🚧 Kurs rejimi hozircha ishlab chiqilmoqda. Tez orada mavjud bo‘ladi.",
-            "ru": "🚧 Режим курса сейчас в разработке. Скоро будет доступен.",
-            "tj": "🚧 Реҷаи курс ҳоло дар таҳия аст. Ба зудӣ дастрас мешавад.",
-        }
+        msg_map = bot_locale_map('inline.handlers.course.course_command_handler.copy1')
 
         await message.answer(msg_map.get(lang, msg_map["ru"]))
         return
@@ -1889,11 +1810,7 @@ async def _queue_course_onboarding_tip(session, user, lesson, step: str, lang: s
 
 
 def _static_course_missing_text(lang: str) -> str:
-    messages = {
-        "uz": "Bu bo'lim uchun tayyor kurs materiali topilmadi. Dars seed faylini tekshirish kerak.",
-        "ru": "Для этого раздела не найден готовый материал курса. Нужно проверить seed-файл урока.",
-        "tj": "Барои ин қисм маводи тайёри курс ёфт нашуд. Seed-файли дарсро санҷидан лозим.",
-    }
+    messages = bot_locale_map('inline.handlers.course.helper_static_course_missing_text.copy1')
     return messages.get(lang, messages["ru"])
 
 
@@ -2190,11 +2107,7 @@ async def course_set_study_time_handler(callback: CallbackQuery, session):
     engine = CourseEngineService(session)
     await engine.set_next_study_at(callback.from_user.id, next_study_at)
 
-    saved_labels = {
-        "uz": f"✅ Keyingi dars vaqti saqlandi: <b>{time_str}</b>",
-        "ru": f"✅ Время следующего урока сохранено: <b>{time_str}</b>",
-        "tj": f"✅ Вақти дарси навбатӣ сабт шуд: <b>{time_str}</b>",
-    }
+    saved_labels = bot_locale_map('inline.handlers.course.course_set_study_time_handler.dynamic1', time_str=time_str)
     await callback.answer(f"✅ {time_str}")
     await _finish_study_time_flow(callback, session, saved_labels.get(lang, saved_labels["ru"]))
 
@@ -2220,11 +2133,7 @@ async def course_skip_next_study_time_handler(callback: CallbackQuery, session):
     await _finish_study_time_flow(callback, session, t("course_next_study_time_skipped", lang))
 
 
-_AUDIO_UNAVAILABLE = {
-    "uz": "🔇 Audio hozircha mavjud emas",
-    "ru": "🔇 Аудио пока недоступно",
-    "tj": "🔇 Аудио ҳоло дастрас нест",
-}
+_AUDIO_UNAVAILABLE = bot_locale_map('inline.handlers.course.module.copy1')
 
 # ─── Audio fayl joylash qoidasi ───────────────────────────────────────────────
 # Birinchi navbatda dars-spesifik path qidiriladi, keyin level-wide:

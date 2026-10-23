@@ -1,5 +1,5 @@
-import hashlib
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -67,9 +67,11 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("getSelectedLevel()", html)
         self.assertIn("localStorage.getItem(\"hsk_v3_level\")", html)
         self.assertIn('"/api/v3/map?lang="+LANG+"&level="+lv', html)
-        self.assertIn("if(!INIT_DATA){showAuthGate();return;}", html)
+        self.assertIn("if(!INIT_DATA){showAuthGate();finishHskLaunchSplash();return;}", html)
         self.assertIn("function lessonDataUrl(lv,n)", html)
-        self.assertIn('"/course_v3_data/"+normalizeLevel(lv)+"/lesson_"+String(Number(n)||0).padStart(2,"0")+".json"', html)
+        self.assertIn('"/api/v3/lesson/content/"+level+"/"+String(Number(n)||0)', html)
+        self.assertIn('fetch(lessonDataUrl(lv,n),{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"})', html)
+        self.assertNotIn('"/course_v3_data/"+normalizeLevel(lv)+"/lesson_"', html)
         self.assertIn("levelPicker:function", html)
         self.assertIn("/api/v3/invite?lang=", html)
         self.assertNotIn("start=ref_", html)
@@ -131,11 +133,18 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("clearLessonResume((MAP&&MAP.level)||\"hsk1\",cur&&cur.n)", html)
         self.assertIn('lang:LANG,session_id:COURSE_SESSION_ID', html)
 
-    def test_beginner_onboarding_is_default_server_backed_and_cache_safe(self):
+    def test_onboarding_default_track_is_server_backed_and_beginner_fallback_is_cache_safe(self):
         onboarding = Path("app/static/course_v3_onboarding.html").read_text(encoding="utf-8")
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
 
-        self.assertIn('var step=0,track="hsk20",sel="beginner"', onboarding)
+        # HSK 3.0 is selected only after server feature discovery. An unavailable
+        # track keeps the existing HSK 2.0 beginner/foundation fallback.
+        self.assertIn('var step=0,track="hsk30",sel="nhsk1"', onboarding)
+        self.assertIn('if(pendingHsk30Draft){track="hsk20";sel="beginner"}', onboarding)
+        self.assertIn('fetch("/api/v3/course-tracks"', onboarding)
+        self.assertIn('track=h30Enabled?"hsk30":"hsk20"', onboarding)
+        self.assertIn('sel=h30Enabled?"nhsk1":"beginner"', onboarding)
+        self.assertIn('if(track==="hsk30"){track="hsk20";sel="beginner";saveDraft()}', onboarding)
         self.assertLess(onboarding.index('{k:"beginner"'), onboarding.index('{k:"hsk1"'))
         self.assertIn('localStorage.removeItem("hsk_v3_start_mode")', onboarding)
         self.assertNotIn('startMode=localStorage.getItem("hsk_v3_start_mode")', onboarding)
@@ -650,7 +659,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # Tashqi CTA modalning o'z tugmasi orqali chiqadi.
         self.assertIn("e.cta.onclick=function(){ openAppLink(ad.link_url); };", ads)
         # Dars yakunida obuna taklifi ham bo'ladi — joyning butun ma'nosi shu.
-        self.assertIn("if(isLessonEnd()){", ads)
+        self.assertIn('var lessonEnd=placement==="lesson_end"', ads)
+        self.assertIn("if(lessonEnd){", ads)
+        self.assertIn("e.sub.hidden=!!CFG.paid", ads)
         self.assertIn("CFG.onSubscribe()", ads)
         self.assertIn('class="caa-cta ghost caa-ext"', ads)
         self.assertIn("ad.button_text", ads)
@@ -663,8 +674,10 @@ class CourseV3StaticMapTests(unittest.TestCase):
 
         self.assertIn(".caa-ov.limit .caa-sub-t{display:none!important}", ads)
         self.assertIn(".caa-ov.limit .caa-sub-desc{display:none!important}", ads)
-        self.assertIn('els.subTitle.textContent=""', ads)
-        self.assertIn('els.subDesc.textContent=""', ads)
+        limit_body = ads[ads.index("function showLimitPromo(opts)"):
+                         ads.index("App reklamasi", ads.index("function showLimitPromo(opts)"))]
+        self.assertIn("els.limitWhy.textContent=opts.reason||LIMIT_REASONS[lang][feature]", limit_body)
+        self.assertIn('els.ov.classList.add("on","limit")', limit_body)
         self.assertNotIn("els.subTitle.textContent=t.limitHead", ads)
         self.assertNotIn("els.subDesc.textContent=t.limitSub", ads)
 
@@ -674,9 +687,12 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertNotIn("function lessonAdWhyText(l)", html)
         self.assertNotIn("function startLessonAdGate(", html)
         self.assertNotIn("v3_lesson_ad_offer", html)
-        # Taklif endi HAQIQIY paywallda — o'sha odam ko'radigan joyda.
-        self.assertIn("function paywallHtml(ctx)", html)
-        self.assertIn(r"App.startTrial(\'paywall_lesson\')", html)
+        # Current limit sheets show the server-owned reason and checkout CTA;
+        # trial remains an onboarding/profile action.
+        self.assertIn("CourseAds.showLimitPromo({feature:feature,reason:payWhyText(ctx)", html)
+        self.assertIn("var cb=opts.onSubscribe||CFG.onSubscribe", limit_body)
+        self.assertNotIn("trialStart(", limit_body)
+        self.assertNotIn("opts.onTrial", limit_body)
 
     def test_practice_limit_status_is_loaded_on_demand_without_spending_the_gate(self):
         html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
@@ -695,9 +711,13 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertNotIn('"/api/v3/practice/daily-gate"', status_body)
         self.assertIn("PRACTICE_LIMIT_STATUS_VERSIONS", html)
         self.assertIn("window.CourseLimitStatus={get:practiceLimitStatus", html)
-        self.assertIn("statusPromise=window.CourseLimitStatus.get(statusFeature)", ads)
-        self.assertIn("(statusPromise||fetchLimitStatus())", ads)
-        self.assertIn("if(!why){", ads)
+        limit_body = ads[ads.index("function showLimitPromo(opts)"):
+                         ads.index("App reklamasi", ads.index("function showLimitPromo(opts)"))]
+        self.assertIn("if(!opts.reason&&CFG.initData){", limit_body)
+        self.assertIn('fetch("/api/v3/limits/status",{', limit_body)
+        self.assertIn('body:JSON.stringify({feature:currentFeature})', limit_body)
+        self.assertIn('els.limitWhy.textContent=d.limit_text', limit_body)
+        self.assertNotIn('"/api/v3/practice/daily-gate"', limit_body)
 
     def test_lesson_flow_reserves_limit_at_start_and_keeps_retry_path(self):
         html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
@@ -718,7 +738,14 @@ class CourseV3StaticMapTests(unittest.TestCase):
             html.index("function applyLessonDone(") : html.index("function flowDone()")
         ]
         self.assertNotIn('next.status="current"', apply_body)
-        self.assertIn('next.status="locked"', apply_body)
+        self.assertIn("applyLocalProgress(d.completed_lessons_count)", apply_body)
+        # Progress selects the current marker; the existing shared gate still
+        # decides whether that lesson can actually start.
+        local_progress = html[html.index("function applyLocalProgress("):
+                              html.index("function unlockSkipLesson(")]
+        self.assertIn('else if(l.n===completed+1){l.status="current"', local_progress)
+        self.assertIn('else{l.status="locked"', local_progress)
+        self.assertIn('if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}', start_body)
 
         # Complete/save xatosida oxirgi karta recoverable bo'ladi — aks holda
         # CTA yashirin qolib, userga "qotib qoldi" bo'lib ko'rinadi.
@@ -737,14 +764,14 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # ikkalasi bir panelda yonma-yon turardi. Tur reklamaning
         # ko'rinishini belgilaydi (obuna tugmasi bilanmi), joyni esa
         # alohida maydon belgilaydi.
-        self.assertIn('value="dars_yakuni">👑 Obuna taklifi bilan', html)
+        self.assertIn('value="dars_yakuni">👑 Обуна таклифи билан', html)
         # Qaysi turga qaysi maydon kerakligi endi bitta jadvalda turadi va
         # ro'yxatda yo'q maydon formadan butunlay yo'qoladi. Ilgari u
         # o'chirilgan holda ko'rinib turardi — admin uni ko'rar, lekin nega
         # to'ldira olmasligini tushunmasdi.
         self.assertIn("const CA_TYPE_SPEC={", html)
-        self.assertIn('buttonLabel:"Tashqi link knopkasi"', html)
-        self.assertIn('linkLabel:"Tashqi havola (ixtiyoriy)"', html)
+        self.assertIn('buttonLabel:"Ташқи ҳавола тугмаси"', html)
+        self.assertIn('linkLabel:"Ташқи ҳавола (ихтиёрий)"', html)
         self.assertIn("el.hidden=on.indexOf(el.dataset.caField)<0", html)
         # Yashiringan maydon yuborilmaydi ham: ko'rinmaydigan katak jimgina
         # saqlanib ketmasin.
@@ -845,7 +872,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('<link rel="canonical" href="/download">', landing)
         self.assertIn('<meta name="robots" content="index,follow">', landing)
         self.assertIn('HSK AI Apps / Download — macOS, Windows va Android', landing)
-        self.assertIn('seal.src = "/assets/hsk-ai-logo-256.png"', download)
+        self.assertIn('image.src = "/assets/hsk-ai-logo-256.png"', download)
+        self.assertIn('var source = "/assets/hsk-ai-devices.jpg"', download)
+        self.assertIn('image.addEventListener("error", function ()', download)
         self.assertIn('logo.src = "/assets/hsk-ai-avatar.webp"', download)
         # Profil kartasi qurilmalar rasmini ko'rsatadi; mahsulot ko'rinishi
         # faqat promo oynasida qoldi.
@@ -879,7 +908,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
             self.assertIn(
                 "/course_v3_data/desktop-download.js?v=", html, page
             )
-            self.assertIn("/course_v3_data/ads.js?v=20260923-2", html, page)
+            from scripts.i18n_baseline_guard import git_blob_sha1
+            digest = git_blob_sha1(Path('app/static/course_v3_data/ads.js').read_bytes())[:12]
+            self.assertRegex(html, r'/course_v3_data/ads\.js\?v=\d{8}-' + digest)
 
     def test_profile_carousel_replaces_full_height_app_card_and_keeps_deep_link(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
@@ -909,14 +940,21 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('TRIAL_LOADED&&trialEligible()', carousel)
         self.assertIn('App.startTrial("profile")', carousel)
         self.assertIn('App.goPay(', carousel)
-        self.assertIn('openHsk30PromoLevelPicker()', carousel)
+        self.assertIn('openProfileCourseVersionBook()', carousel)
+        book = course[course.index("function openProfileCourseVersionBook()"):
+                      course.index("function maybeShowHsk30Promo()")]
+        self.assertIn('courseTrackStatus(true)', book)
+        self.assertIn('openHsk30PromoLevelPicker()', book)
         self.assertIn('if(currentCourseTrack()==="hsk30")', carousel)
-        self.assertIn('courseTrackStatus(true)', carousel)
-        self.assertIn('root.setAttribute("role","button")', carousel)
+        self.assertIn('root.setAttribute("role","region")', carousel)
+        self.assertIn('root.setAttribute("aria-roledescription","carousel")', carousel)
+        self.assertIn('role="group" aria-roledescription=', carousel)
         self.assertIn('min-height:170px', css)
         self.assertIn('"profile-carousel.js": "application/javascript"', main)
         self.assertIn('"profile-carousel.css": "text/css"', main)
-        self.assertIn('/course_v3_data/profile-carousel.js?v=20261013-1', course)
+        from scripts.i18n_baseline_guard import git_blob_sha1
+        digest = git_blob_sha1(Path('app/static/course_v3_data/profile-carousel.js').read_bytes())[:12]
+        self.assertRegex(course, r'/course_v3_data/profile-carousel\.js\?v=\d{8}-' + digest)
 
     def test_admin_has_app_promo_controls(self):
         html = Path("app/static/admin.html").read_text(encoding="utf-8")
@@ -1011,29 +1049,29 @@ class ImmutableScriptsCarryTheirVersionTests(unittest.TestCase):
     Android va promo tuzatishlari aynan shu sababdan hech kimga
     ko'rinmadi: fayllar o'zgardi, `?v=` esa avgustdagicha qoldi.
 
-    Shuning uchun fayl mazmuni shu yerga bog'lab qo'yilgan. Bu test
-    yiqilsa — skript o'zgargan: HTML'lardagi `?v=` ni ko'taring va
-    quyidagi hash'ni yangilang.
+    Every HTML consumer must use the content hash of the actual script. An
+    obsolete cache token fails even when another consumer has been refreshed.
     """
 
-    EXPECTED = {
-        "desktop-download.js": "b441d71a9cfa1187",
-        "ads.js": "6238d6aa34689f86",
-    }
-
     def test_a_changed_script_forces_a_new_version(self):
-        for name, digest in self.EXPECTED.items():
+        from scripts.i18n_baseline_guard import git_blob_sha1
+
+        required = {
+            "course-v3.html", "course_v3_memorize.html", "course_v3_mistakes.html",
+            "course_v3_pronunciation.html", "course_v3_recognition.html", "course_v3_test.html",
+        }
+        for name in ("desktop-download.js", "ads.js"):
             with self.subTest(script=name):
-                actual = hashlib.sha256(
-                    (BASE / name).read_bytes()
-                ).hexdigest()[:16]
-                self.assertEqual(
-                    actual,
-                    digest,
-                    f"{name} o'zgargan: app/static/*.html dagi `?v=` ni "
-                    "ko'taring va shu hash'ni yangilang, aks holda "
-                    "o'zgarish keshdagi eski nusxa ostida qoladi.",
-                )
+                digest = git_blob_sha1((BASE / name).read_bytes())[:12]
+                referenced = set()
+                pattern = r'/course_v3_data/' + re.escape(name) + r'([^"\'<>\s]*)'
+                for page in Path("app/static").glob("*.html"):
+                    for suffix in re.findall(pattern, page.read_text(encoding="utf-8")):
+                        referenced.add(page.name)
+                        self.assertRegex(suffix, r'^\?v=\d{8}-' + digest + r'$',
+                                         f"{page.name}: {name} cache token is stale")
+                self.assertTrue(required.issubset(referenced),
+                                f"{name}: missing consumers {sorted(required - referenced)}")
 
 
 if __name__ == "__main__":

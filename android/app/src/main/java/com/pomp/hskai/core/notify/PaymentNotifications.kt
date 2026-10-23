@@ -56,7 +56,7 @@ object PaymentNotifications {
 
         val title = localized.getString(
             when {
-                isHsk30Unlock && status == "approved" -> R.string.notify_hsk30_payment_approved_title
+                isHsk30Unlock && status == "approved" -> R.string.hsk_course_subscription_page_payment_approved_title
                 isHsk30Unlock -> R.string.notify_hsk30_payment_rejected_title
                 status == "approved" -> R.string.notify_payment_approved_title
                 else -> R.string.notify_payment_rejected_title

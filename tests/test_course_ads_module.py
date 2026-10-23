@@ -356,7 +356,9 @@ class AdFullscreenPlacementContractTests(unittest.TestCase):
         self.assertNotIn("Color(0xFFD2766B)", android)
 
     def test_cached_ad_module_is_refreshed(self):
-        self.assertIn('/course_v3_data/ads.js?v=20261013-limit-sheet-v4', self.COURSE)
+        from scripts.i18n_baseline_guard import git_blob_sha1
+        digest = git_blob_sha1(Path('app/static/course_v3_data/ads.js').read_bytes())[:12]
+        self.assertRegex(self.COURSE, r'/course_v3_data/ads\.js\?v=\d{8}-' + digest)
 
     def test_android_uses_fullscreen_for_lesson_end_only(self):
         self.assertIn('val placement: String = "screen_center"', self.ANDROID_VM)

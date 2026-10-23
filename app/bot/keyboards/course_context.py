@@ -12,23 +12,11 @@ _STEP_NEXT_CALLBACK = {
     "grammar":  "course:go_exercise",
 }
 
-_UNDERSTOOD_LABELS = {
-    "uz": "✅ Tushundim, davom etamiz",
-    "ru": "✅ Понял(а), продолжаем",
-    "tj": "✅ Фаҳмидам, давом медиҳем",
-}
-_MINIAPP_LABELS = {
-    "uz": "📚 Mini Appda ochish",
-    "ru": "📚 Открыть в Mini App",
-    "tj": "📚 Дар Mini App кушодан",
-}
-
-
 def _with_miniapp(rows: list[list[InlineKeyboardButton]], lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             *rows,
-            [course_study_miniapp_button(lang, text=_MINIAPP_LABELS.get(lang, _MINIAPP_LABELS["ru"]))],
+            [course_study_miniapp_button(lang, text=t("course_miniapp_open", lang))],
         ]
     )
 
@@ -37,7 +25,8 @@ def course_understood_keyboard(lang: str, step: str) -> InlineKeyboardMarkup | N
     callback = _STEP_NEXT_CALLBACK.get(step)
     if not callback:
         return None
-    label = _UNDERSTOOD_LABELS.get(lang, _UNDERSTOOD_LABELS["ru"])
+    locale = lang if lang in ("uz", "ru", "tj") else "ru"
+    label = t("bot.courseKeyboard.understood", locale)
     return _with_miniapp(
         [[InlineKeyboardButton(text=label, callback_data=callback)]],
         lang,

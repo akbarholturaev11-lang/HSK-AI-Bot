@@ -140,7 +140,7 @@ fun SectionLimitOverlay(
                         ) {
                             Icon(
                                 Icons.Filled.Close,
-                                contentDescription = stringResource(R.string.action_close),
+                                contentDescription = stringResource(R.string.hsk_common_action_close),
                                 tint = Color(0xFF77716C),
                             )
                         }

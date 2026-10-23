@@ -224,7 +224,7 @@ private fun DictionaryList(
                 Row {
                     if (state.query.isNotEmpty()) {
                         IconButton(onClick = { onQueryChange("") }) {
-                            Icon(Icons.Filled.Close, stringResource(R.string.action_clear), tint = PompColors.InkSecondary)
+                            Icon(Icons.Filled.Close, stringResource(R.string.hsk_course_dictionary_page_clear_history), tint = PompColors.InkSecondary)
                         }
                     }
                     IconButton(onClick = { focusManager.clearFocus(); filtersOpen = true }) {
@@ -278,7 +278,7 @@ private fun DictionaryList(
                             }
                         }
                     }
-                    item(key = "all-title") { ListSectionTitle(stringResource(R.string.dictionary_all_words)) }
+                    item(key = "all-title") { ListSectionTitle(stringResource(R.string.hsk_course_dictionary_page_all_words)) }
                 }
                 itemsIndexed(state.words, key = { _, word -> word.hanzi }) { index, word ->
                     Column {
@@ -333,7 +333,7 @@ private fun DictionaryFilters(
                     text = when (key) {
                         "hsk20" -> "HSK 2.0"
                         "hsk30" -> "HSK 3.0"
-                        else -> stringResource(R.string.dictionary_filter_all_versions)
+                        else -> stringResource(R.string.hsk_course_dictionary_page_all_versions)
                     },
                     selected = version == key,
                     onClick = { onVersion(key) },
@@ -346,7 +346,7 @@ private fun DictionaryFilters(
         ) {
             items(levels, key = { "level-$it" }) { key ->
                 val label = when {
-                    key == "all" -> stringResource(R.string.dictionary_filter_all_levels)
+                    key == "all" -> stringResource(R.string.hsk_course_dictionary_page_all_levels)
                     key.startsWith("nhsk") -> "N" + key.takeLast(1)
                     else -> "HSK " + key.takeLast(1)
                 }
@@ -541,7 +541,7 @@ private fun StrokeOrderPlayer(
                         )
                     }
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Filled.Close, stringResource(R.string.action_close), tint = PompColors.InkSecondary)
+                        Icon(Icons.Filled.Close, stringResource(R.string.hsk_common_action_close), tint = PompColors.InkSecondary)
                     }
                 }
             }
@@ -594,7 +594,7 @@ private fun StrokeOrderPlayer(
             ) {
                 StrokeControl(
                     icon = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    description = stringResource(R.string.dictionary_stroke_previous),
+                    description = stringResource(R.string.hsk_course_dictionary_fast_writer_previous),
                     enabled = state.completedStrokeCount > 0,
                     onClick = onPreviousStroke,
                 )
@@ -608,7 +608,7 @@ private fun StrokeOrderPlayer(
                 )
                 StrokeControl(
                     icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    description = stringResource(R.string.dictionary_stroke_next),
+                    description = stringResource(R.string.hsk_course_dictionary_fast_writer_next),
                     enabled = state.completedStrokeCount < state.strokes.size,
                     onClick = onNextStroke,
                 )
@@ -996,7 +996,7 @@ private fun DictionaryHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.action_back), tint = PompColors.Ink)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.hsk_common_action_back), tint = PompColors.Ink)
         }
         HskSectionTitle(title, modifier = Modifier.weight(1f))
         if (trailing != null) Text(trailing, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
@@ -1065,7 +1065,7 @@ private fun DictionaryMessage(text: String, onRetry: (() -> Unit)?) {
         if (onRetry != null) {
             Spacer(Modifier.height(16.dp))
             HskGlassButton(
-                text = stringResource(R.string.action_retry),
+                text = stringResource(R.string.hsk_course_lesson_flow_retry),
                 onClick = onRetry,
             )
         }

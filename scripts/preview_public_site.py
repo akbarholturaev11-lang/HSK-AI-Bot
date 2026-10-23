@@ -34,6 +34,14 @@ async def preview_download_styles():
     return FileResponse(STATIC / "desktop-download-page.css", media_type="text/css")
 
 
+@app.get("/course_v3_data/hsk-course-i18n.js")
+async def preview_course_catalog():
+    return FileResponse(
+        STATIC / "course_v3_data" / "hsk-course-i18n.js",
+        media_type="application/javascript",
+    )
+
+
 @app.get("/api/v3/apps/public-status")
 async def preview_release_status():
     return {"ok": True, "platforms": {}}

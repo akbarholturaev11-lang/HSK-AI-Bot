@@ -20,10 +20,12 @@ Shu yerda ushlanadigan uchta aniq holat:
    reklamalari olib tashlangandan keyin shunchaki noto'g'ri.
 """
 
+import json
 import re
 import unittest
 from pathlib import Path
 
+from app.bot.generated.bot_i18n import TEXTS
 from app.services.entitlements import actions as A
 from app.services.entitlements.limits_config import default_config
 from app.services.entitlements.state import EntitlementState
@@ -37,7 +39,6 @@ from app.services.course_access_policy_service import (
 
 ADMIN = Path("app/static/admin.html").read_text(encoding="utf-8")
 MODULES = Path("app/services/admin_miniapp_service.py").read_text(encoding="utf-8")
-I18N = Path("app/bot/utils/i18n.py").read_text(encoding="utf-8")
 
 
 class TheAdsModeIsGoneTests(unittest.TestCase):
@@ -432,7 +433,24 @@ class UserAccessDetailsAreExplicitTests(unittest.TestCase):
 
 class ReferralCopyMatchesCurrentBehaviorTests(unittest.TestCase):
     def test_goal_copy_says_six_without_changing_the_reward_constant(self):
-        self.assertIn("REFERRAL_TRIAL_REQUIRED_ACTIVE = 5", Path("app/services/referral_service.py").read_text(encoding="utf-8"))
-        self.assertIn("+6 ta faol do‘st", I18N)
-        self.assertIn("Пригласите +6 активных друзей", I18N)
-        self.assertIn("+6 дӯсти фаъол", I18N)
+        # The visible +6 copy and server-side threshold of 5 are deliberately
+        # separate contracts. The former moved from i18n.py into Bot catalogs.
+        self.assertIn(
+            "REFERRAL_TRIAL_REQUIRED_ACTIVE = 5",
+            Path("app/services/referral_service.py").read_text(encoding="utf-8"),
+        )
+        for locale, expected_copy in (
+            ("uz", "+6 ta faol do‘st"),
+            ("ru", "Пригласите +6 активных друзей"),
+            ("tj", "+6 дӯсти фаъол"),
+        ):
+            with self.subTest(locale=locale):
+                catalog = json.loads(
+                    (Path("localization/ui") / locale / "bot.json").read_text(
+                        encoding="utf-8"
+                    )
+                )
+                template = catalog["messages"]["texts.referral_invite_text"]
+                self.assertIn(expected_copy, template)
+                # Protect the generated catalog actually consumed by Bot.
+                self.assertEqual(template, TEXTS[locale]["referral_invite_text"])

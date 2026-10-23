@@ -1,0 +1,505 @@
+{
+  "schema_version": 1,
+  "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
+  "source": "app/static/course-v3.html",
+  "source_revision": "b887fe08e7b62fb49ab193c069cf49ade5bcee21",
+  "counting_note": "61 unique physical source lines cover all 128 current LANG ==/=== literal-locale predicates in course-v3.html after main/P3 integration. Multiple predicates per line remain one classification; these are reviewed source decisions, not runtime UI verification.",
+  "coverage_note": "Current merged course-v3.html source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified, including two new main navigation/accessibility sites. All other localized source expressions, dynamic content, other files and rendered UI remain separately audited.",
+  "classifications": [
+    {
+      "line": 1716,
+      "anchor": "syncDocumentLanguage()",
+      "category": "locale_adapter",
+      "reason": "Preserve tj -> tg document tag; not translatable copy",
+      "review": "source_classified_only",
+      "predicate_occurrences": 1
+    },
+    {
+      "line": 2563,
+      "anchor": "aria-label",
+      "category": "accessibility_copy",
+      "reason": "Dialog and close accessibility labels; main also hardens focus/inert handling, preserve the entire dialog behavior Central local-first overlay added for exact UZ/RU/TJ accessibility/lesson settings strings; original per-locale inline copy retained as offline fallback. Conditional predicate count is intentionally unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 4
+    },
+    {
+      "line": 2644,
+      "anchor": "LANG===\"ru\"",
+      "category": "loading_copy",
+      "reason": "Writer iframe loading status",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 2705,
+      "anchor": "nextLabel",
+      "category": "navigation_copy",
+      "reason": "Lesson transition CTA",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 2720,
+      "anchor": "n%10===1",
+      "category": "locale_grammar",
+      "reason": "Russian plural selection is logic, not a text literal",
+      "review": "source_classified_only",
+      "predicate_occurrences": 1
+    },
+    {
+      "line": 2731,
+      "anchor": "LANG===\"ru\"",
+      "category": "navigation_copy",
+      "reason": "Repeated next-lesson CTA in follow-up checkpoint state",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 2770,
+      "anchor": "rankSummary",
+      "category": "formatted_copy",
+      "reason": "Rank numbers and arrow must be placeholders, not concatenated fragments",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 3041,
+      "anchor": "avatarEdit:function()",
+      "category": "profile_copy",
+      "reason": "Telegram avatar explanation",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 3049,
+      "anchor": "Настройки урока",
+      "category": "navigation_copy",
+      "reason": "New localized lesson settings and exit action sheet; keep exit confirmation/access guards unchanged Central local-first overlay added for exact UZ/RU/TJ accessibility/lesson settings strings; original per-locale inline copy retained as offline fallback. Conditional predicate count is intentionally unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 4
+    },
+    {
+      "line": 3426,
+      "anchor": "LANG===\"ru\"",
+      "category": "loading_copy",
+      "reason": "Exercise loading fallback; keep Panda loading behavior Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 3432,
+      "anchor": "LANG===\"ru\"",
+      "category": "access_copy",
+      "reason": "Practice gate loading text; leave access checks unchanged Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 3707,
+      "anchor": "LANG===\"ru\"",
+      "category": "lesson_navigation_copy",
+      "reason": "Checkpoint/lesson part name with numeric parts",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 3708,
+      "anchor": "LANG===\"ru\"",
+      "category": "lesson_navigation_copy",
+      "reason": "Localized part numbering: Russian and Tajik prefixes vs Uzbek suffix",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 3714,
+      "anchor": "LANG===\"ru\"",
+      "category": "lesson_navigation_copy",
+      "reason": "Lesson number label assembled with differing locale word order",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 3807,
+      "anchor": "你好 · nǐ hǎo",
+      "category": "lesson_example_translation",
+      "reason": "Chinese and pinyin are immutable; only gloss is localized",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 3992,
+      "anchor": "LANG===\"ru\"",
+      "category": "error_recovery_copy",
+      "reason": "Foundation content missing/unavailable state Local-first UI lookup now provides the exact original UZ/RU/TJ literal as fallback; line anchor, retry behavior and escaping unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 3998,
+      "anchor": "foundation-step",
+      "category": "error_recovery_copy",
+      "reason": "Foundation load/retry UI, HTML escaping required Local-first UI lookup now provides the exact original UZ/RU/TJ literal as fallback; line anchor, retry behavior and escaping unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 4
+    },
+    {
+      "line": 3999,
+      "anchor": "LANG===\"ru\"",
+      "category": "error_recovery_copy",
+      "reason": "Foundation retry action after loading failure Local-first UI lookup now provides the exact original UZ/RU/TJ literal as fallback; line anchor, retry behavior and escaping unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 4066,
+      "anchor": "LANG===\"ru\"",
+      "category": "loading_copy",
+      "reason": "Foundation save-in-progress label Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 4074,
+      "anchor": "LANG===\"ru\"",
+      "category": "result_error_copy",
+      "reason": "Retry persisted result after failed save Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 4076,
+      "anchor": "Не удалось сохранить результат",
+      "category": "result_error_copy",
+      "reason": "Quiz progress persistence error Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 4268,
+      "anchor": "setAttribute(\"aria-label\"",
+      "category": "accessibility_copy",
+      "reason": "Lesson-settings gear label used by assistive technology; preserve button semantics Central local-first overlay added for exact UZ/RU/TJ accessibility/lesson settings strings; original per-locale inline copy retained as offline fallback. Conditional predicate count is intentionally unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 4303,
+      "anchor": "LANG===\"ru\"",
+      "category": "error_recovery_copy",
+      "reason": "Flow-completion retry action Local-first UI lookup now provides the exact original UZ/RU/TJ literal as fallback; line anchor, retry behavior and escaping unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 4357,
+      "anchor": "LANG===\"ru\"",
+      "category": "error_recovery_copy",
+      "reason": "Lesson unready/denied fallback toast; preserve access checks Local-first UI lookup now provides the exact original UZ/RU/TJ literal as fallback; line anchor, retry behavior and escaping unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 4409,
+      "anchor": "exit_ticket",
+      "category": "assessment_ui_copy",
+      "reason": "Assessment card title only; preserve grading IDs",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 5022,
+      "anchor": "LANG===\"ru\"",
+      "category": "assessment_ui_copy",
+      "reason": "Two repair-step teaching prompts selected by grading state",
+      "review": "source_classified_only",
+      "predicate_occurrences": 4
+    },
+    {
+      "line": 5086,
+      "anchor": "Что означает?",
+      "category": "assessment_ui_copy",
+      "reason": "Quiz prompt; preserve correct option calculation",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 5092,
+      "anchor": "LANG===\"ru\"",
+      "category": "assessment_ui_copy",
+      "reason": "Hanzi multiple-choice prompt only; preserve computed correct option",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 5179,
+      "anchor": "LANG===\"ru\"",
+      "category": "assessment_ui_copy",
+      "reason": "Repeated verification step label",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 5180,
+      "anchor": "LANG===\"ru\"",
+      "category": "assessment_ui_copy",
+      "reason": "Foundation baseline step label Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 5271,
+      "anchor": "LANG===\"ru\"",
+      "category": "lesson_example_translation",
+      "reason": "Written/natural pronunciation captions use local-first foundation keys with exact original UZ/RU/TJ fallback; Chinese and pinyin remain unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 4
+    },
+    {
+      "line": 5543,
+      "anchor": "var pref=LANG",
+      "category": "tts_language_adapter",
+      "reason": "Voice-language selection logic, not static translated message",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 5787,
+      "anchor": "LANG===\"ru\"",
+      "category": "quota_ui_copy",
+      "reason": "AI Voice remaining quota display; billing unchanged",
+      "review": "source_classified_only",
+      "predicate_occurrences": 1
+    },
+    {
+      "line": 5789,
+      "anchor": "LANG===\"tj\"",
+      "category": "quota_ui_copy",
+      "reason": "Continuation of AI Voice unlimited versus remaining quota ternary",
+      "review": "source_classified_only",
+      "predicate_occurrences": 1
+    },
+    {
+      "line": 6106,
+      "anchor": "LANG===\"ru\"",
+      "category": "error_recovery_copy",
+      "reason": "Rating retry-loading CTA Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6111,
+      "anchor": "LANG===\"ru\"",
+      "category": "time_formatting_copy",
+      "reason": "Countdown abbreviations require locale-aware formatter",
+      "review": "source_classified_only",
+      "predicate_occurrences": 1
+    },
+    {
+      "line": 6112,
+      "anchor": "LANG===\"ru\"",
+      "category": "time_formatting_copy",
+      "reason": "Hours/minutes countdown format keeps its locale-specific hour abbreviation",
+      "review": "source_classified_only",
+      "predicate_occurrences": 1
+    },
+    {
+      "line": 6265,
+      "anchor": "LANG===\"ru\"",
+      "category": "rating_copy",
+      "reason": "Rating page heading if friends tab not selected",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6278,
+      "anchor": "LANG===\"ru\"",
+      "category": "referral_copy",
+      "reason": "Joined and active user counts; preserve referral count calculation",
+      "review": "source_classified_only",
+      "predicate_occurrences": 4
+    },
+    {
+      "line": 6300,
+      "anchor": "LANG===\"ru\"",
+      "category": "rating_copy",
+      "reason": "Weekly podium top-five heading Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6315,
+      "anchor": "LANG===\"ru\"",
+      "category": "feedback_copy",
+      "reason": "Copy-success toast Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6337,
+      "anchor": "LANG===\"ru\"",
+      "category": "social_copy",
+      "reason": "Telegram username missing warning Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6349,
+      "anchor": "LANG===\"ru\"",
+      "category": "cooldown_copy",
+      "reason": "Challenge-rate-limit message uses minutes variable",
+      "review": "source_classified_only",
+      "predicate_occurrences": 1
+    },
+    {
+      "line": 6350,
+      "anchor": "LANG===\"tj\"",
+      "category": "cooldown_copy",
+      "reason": "Tajik branch of duel cooldown with interpolated minutes",
+      "review": "source_classified_only",
+      "predicate_occurrences": 1
+    },
+    {
+      "line": 6357,
+      "anchor": "LANG===\"ru\"",
+      "category": "social_copy",
+      "reason": "Duel recipient not eligible warning Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6368,
+      "anchor": "LANG===\"ru\"",
+      "category": "social_copy",
+      "reason": "Duel invitation submission failure Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6369,
+      "anchor": "LANG===\"ru\"",
+      "category": "social_copy",
+      "reason": "Duel request network failure fallback Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6417,
+      "anchor": "LANG===\"ru\"",
+      "category": "social_copy",
+      "reason": "Duel rejection state label Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6523,
+      "anchor": "LANG===\"ru\"",
+      "category": "navigation_copy",
+      "reason": "Copy preset invitation text action",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6525,
+      "anchor": "LANG===\"ru\"",
+      "category": "navigation_copy",
+      "reason": "Write a message action",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6535,
+      "anchor": "LANG===\"ru\"",
+      "category": "social_copy",
+      "reason": "Send invitation message action",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6536,
+      "anchor": "LANG===\"ru\"",
+      "category": "social_copy",
+      "reason": "Invite friend modal title",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6537,
+      "anchor": "LANG===\"ru\"",
+      "category": "social_copy",
+      "reason": "Share via Telegram instruction body",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6538,
+      "anchor": "LANG===\"ru\"",
+      "category": "referral_copy",
+      "reason": "Active/joined invite counters; preserve numeric business rules",
+      "review": "source_classified_only",
+      "predicate_occurrences": 4
+    },
+    {
+      "line": 6545,
+      "anchor": "LANG===\"ru\"",
+      "category": "loading_copy",
+      "reason": "Referral URL loading state",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6551,
+      "anchor": "LANG===\"ru\"",
+      "category": "error_recovery_copy",
+      "reason": "Failed invite-link retrieval fallback",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6566,
+      "anchor": "LANG===\"ru\"",
+      "category": "rating_copy",
+      "reason": "Learner level label on friend profile",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6580,
+      "anchor": "LANG===\"ru\"",
+      "category": "rating_copy",
+      "reason": "Weekly leaderboard rival comparison heading Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 6944,
+      "anchor": "profile-title",
+      "category": "profile_copy",
+      "reason": "Profile heading",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 7200,
+      "anchor": "LANG===\"ru\"",
+      "category": "loading_copy",
+      "reason": "Resource iframe loading placeholder Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    },
+    {
+      "line": 7944,
+      "anchor": "LANG===\"ru\"",
+      "category": "access_copy",
+      "reason": "Test entitlement/limit progress label",
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
+    }
+  ],
+  "integration_anchor_review": {
+    "feature_parent_sha": "8c101abfd436e12e313745ffc9b5974faa19e7b2",
+    "main_parent_sha": "dcd65418887502943067fe9320339eb5ba7a73bb",
+    "previous_source_lines": 8858,
+    "merged_source_lines": 9095,
+    "scope": "Exact unchanged localization anchor lines remapped after upstream CSS/nav and nonblocking Practice scheduling merge; no lesson, locale, auth or grading source changes approved by this line remap."
+  }
+}

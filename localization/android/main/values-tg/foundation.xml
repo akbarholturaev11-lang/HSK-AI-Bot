@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="course_foundation_title">Асосҳо аз сифр</string>
+    <string name="course_foundation_subtitle">你好-ро шунавед, фаҳмед ва худатон созед</string>
+    <string name="course_foundation_start">Оғоз</string>
+    <string name="course_foundation_repeat">Такрор</string>
+    <string name="foundation_speak_check">Санҷидани талаффуз</string>
+    <string name="foundation_speak_listening">Гӯш мекунам…</string>
+    <string name="foundation_speak_checking">Месанҷам…</string>
+    <string name="foundation_speak_heard">Ман чунин шунидам:</string>
+    <string name="foundation_speak_skip">ҲОЗИР ГАП ЗАДА НАМЕТАВОНАМ</string>
+    <string name="foundation_begin">Оғози машқ</string>
+    <string name="foundation_start_first_lesson">Ба дарси 1 гузаштан</string>
+    <string name="foundation_save_error">Натиҷа сабт нашуд. Пайвастшавиро санҷида, дубора кӯшиш кунед.</string>
+    <string name="foundation_save_retry">Натиҷаро аз нав фиристодан</string>
+    <string name="foundation_required_intro">Пеш аз дарси якуми HSK 1 ин машқи кӯтоҳро анҷом диҳед.</string>
+    <string name="foundation_optional_intro">Машқи кӯтоҳи оғозӣ барои HSK 1.</string>
+    <string name="writer_pause">Таваққуф</string>
+    <string name="writer_resume">Идома додан</string>
+    <string name="writer_previous_stroke">Хати пешина</string>
+    <string name="writer_next_stroke">Хати навбатӣ</string>
+</resources>

@@ -32,7 +32,7 @@
   function isLessonEnd(){return CFG.slot==="lesson_end"}
 
   /* Darsdagi T() ad-* kalitlaridan olingan matnlar (3 til). */
-  var I18N = {
+  var I18N = (window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.ads.I18N.copy1",{
     uz:{adStart:"Bo'limdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adReady:"Davom etish",adNote:"Rolikni oxirigacha ko'ring. HSK AI Pro reklamasisiz o'qiydi.",adSubTitle:"Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",adSubPay:"HSK AI Pro ⭐️ olish",adVisit:"Havolaga o'tish",adOpenLink:"Reklama havolasini ochasizmi?",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",loading:"Reklama yuklanmoqda...",failed:"Reklama videosi yuklanmadi",failedNote:"Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak.",limitSubscribe:"HSK AI Pro ⭐️ olish",limitTrial:"Yoki 7 kun bepul sinash",limitWhy:"Bugungi bepul mashqing tugadi: «{s}» bepul rejimda kuniga 1 marta ochiladi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",limitWhyPlain:"Bugungi bepul limiting tugadi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",psWrite:"Hamkorlik uchun yozing",psTry:"Sinab ko'rish",psCopy:"Nusxalash",psCopied:"Nusxalandi ✓",psShare:"Do'stga yuborish",
         leLabel:"Dars yakuni · reklama",leNote:"Qisqa rolik. Obuna bo'lsangiz reklama umuman chiqmaydi.",leSubTitle:"Darsni tugatdingiz — endi to'liq yo'lni oching",leExternal:"Reklama havolasini ochish",
         appCta:"Yuklab olish",appCloseIn:"Yopish {s}s",
@@ -45,15 +45,15 @@
         leLabel:"Анҷоми дарс · реклама",leNote:"Ролики кӯтоҳ. Бо обуна реклама тамоман намешавад.",leSubTitle:"Дарсро тамом кардед — тамоми роҳро кушоед",leExternal:"Кушодани ҳаволаи реклама",
         appCta:"Боргирӣ",appCloseIn:"Пӯшидан пас аз {s}с",
         f_recognition:"Шинохти иероглиф",f_pronunciation:"Машқи талаффуз",f_memorize:"Азёдкунӣ",f_training_test:"Маркази тест",f_placement:"Тести муайянкунии сатҳ",f_mistake_review:"Кор бар хатоҳо"}
-  };
+  });
   function T(){ return I18N[CFG.lang] || I18N.uz; }
   /* "Nega bu oyna chiqdi?" — limit ekranida sababni ochiq aytamiz: qaysi bo'lim,
      qanday limit, qachon yana ochiladi. Bo'lim nomi topilmasa umumiy matn. */
   function limitWhyText(feature){
-    return {uz:"Bu bo‘lim uchun limit tugadi.",ru:"Лимит этого раздела исчерпан.",tj:"Лимити ин бахш тамом шуд."}[CFG.lang]||"";
+    return (window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.ads.limitWhyText.copy1",{uz:"Bu bo‘lim uchun limit tugadi.",ru:"Лимит этого раздела исчерпан.",tj:"Лимити ин бахш тамом шуд."})[CFG.lang]||"";
   }
 
-  var PROMO = {
+  var PROMO = (window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.ads.PROMO.copy1",{
     uz:[{i:"microphone-2",t:"Birinchi kundan gapirasan",s:"Panda 阿宝 sabr bilan tinglaydi va xatoingni yumshoq tuzatadi"},
         {i:"books",t:"Adashmaysan — yo'l tayyor",s:"HSK 1–4: har kuni aniq keyingi qadam ko'rsatiladi"},
         {i:"clipboard-check",t:"Imtihonga ishonch bilan borasan",s:"Cheksiz test va aniq daraja — qayerda turganingni bilasan"},
@@ -69,7 +69,7 @@
         {i:"clipboard-check",t:"Ба имтиҳон боварӣ меравӣ",s:"Тести бепоён ва сатҳи аниқ — медонӣ дар куҷоӣ"},
         {i:"target-arrow",t:"Хатоҳо гум намешаванд",s:"Ҳар хаторо кор карда, пурра аз худ мекунӣ"},
         {i:"infinity",t:"Диққат танҳо ба омӯзиш",s:"Бе реклама ва маҳдудият — ҳеҷ чиз халал намерасонад"}]
-  };
+  });
   function promoSlides(){ return PROMO[CFG.lang] || PROMO.uz; }
 
   var CSS = ''
@@ -484,14 +484,14 @@
 
   /* Every gated Mini App section uses the same bottom sheet. Trial remains
      available from onboarding/profile, but never from a limit overlay. */
-  var LIMIT_HEADINGS={
+  var LIMIT_HEADINGS=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.ads.LIMIT_HEADINGS.copy1",{
     uz:"Davom etishga tayyormisiz?",ru:"Готовы продолжить?",tj:"Барои идома омодаед?"
-  };
-  var LIMIT_REASONS={
+  });
+  var LIMIT_REASONS=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.ads.LIMIT_REASONS.copy1",{
     uz:{recognition:"Ieroglif tanish uchun bepul limit tugadi.",pronunciation:"Talaffuz mashqi uchun bepul limit tugadi.",memorize:"So‘z yodlash uchun bepul limit tugadi.",training_test:"Bugungi bepul test urinishingiz tugadi.",placement:"Daraja aniqlash testining bepul limiti tugadi.",mistake_review:"Xatolar ustida ishlash uchun bepul limit tugadi.",voice:"AI Voice uchun bepul limit tugadi.",lesson:"Bepul darslar limitingiz tugadi."},
     ru:{recognition:"Лимит распознавания иероглифов исчерпан.",pronunciation:"Лимит упражнений на произношение исчерпан.",memorize:"Лимит запоминания слов исчерпан.",training_test:"Бесплатная попытка теста использована.",placement:"Лимит теста на уровень исчерпан.",mistake_review:"Лимит работы над ошибками исчерпан.",voice:"Лимит AI Voice исчерпан.",lesson:"Лимит бесплатных уроков исчерпан."},
     tj:{recognition:"Лимити шинохти иероглифҳо тамом шуд.",pronunciation:"Лимити машқи талаффуз тамом шуд.",memorize:"Лимити азёдкунии калимаҳо тамом шуд.",training_test:"Кӯшиши ройгони тест тамом шуд.",placement:"Лимити тести муайянкунии сатҳ тамом шуд.",mistake_review:"Лимити кор бо хатоҳо тамом шуд.",voice:"Лимити AI Voice тамом шуд.",lesson:"Лимити дарсҳои ройгон тамом шуд."}
-  };
+  });
   function limitFeature(opts){
     var f=String(opts.feature||CFG.feature||"lesson");
     if(f==="mock"||f==="practice_mock")return "training_test";
@@ -528,7 +528,7 @@
       _closeLimit();
       if(typeof cb==="function")cb();
     };
-    els.limitClose.setAttribute("aria-label",({uz:"Yopish",ru:"Закрыть",tj:"Пӯшидан"})[lang]);
+    els.limitClose.setAttribute("aria-label",((window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.ads.showLimitPromo.copy1",{uz:"Yopish",ru:"Закрыть",tj:"Пӯшидан"}))[lang]);
     els.limitClose.onclick=function(){
       var cb=opts.onBack;_closeLimit();if(typeof cb==="function")cb();
     };

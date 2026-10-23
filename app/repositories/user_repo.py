@@ -27,6 +27,7 @@ class UserRepository:
             select(User)
             .where(User.telegram_id == telegram_id)
             .with_for_update()
+            .execution_options(populate_existing=True)
         )
         return result.scalar_one_or_none()
 

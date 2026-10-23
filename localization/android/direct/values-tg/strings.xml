@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tajik. Android qualifier is "tg"; the backend language code stays "tj". -->
+<!--
+    Wording only the `direct` channel (APK, website, Telegram) may show.
+    It is a source set rather than a runtime flag on purpose: the Google
+    Play build must not CONTAIN an external checkout, not merely hide it.
+-->
+<resources>
+    <string name="limit_unlock_headline">Омӯзишро идома диҳед</string>
+    <string name="limit_unlock_button">Дидани тарифҳои Pro</string>
+    <string name="limit_unlock_hint">Обуна баъди тасдиқи админ фаъол мешавад.</string>
+    <string name="sub_title">HSK AI Pro</string>
+    <string name="sub_intro">Мӯҳлати обуна ва усули пардохтро интихоб кунед.</string>
+    <string name="sub_plan_10">10 рӯз</string>
+    <string name="sub_plan_1">1 моҳ</string>
+    <string name="sub_plan_3">3 моҳ</string>
+    <string name="sub_method">Усули пардохт</string>
+    <string name="sub_card">Корти бонкӣ</string>
+    <string name="sub_alipay">Alipay</string>
+    <string name="sub_wechat">WeChat Pay</string>
+    <string name="sub_country">Кишвари корт</string>
+    <string name="sub_country_tj">Корти Тоҷикистон</string>
+    <string name="sub_country_uz">Корти Ӯзбекистон</string>
+    <string name="sub_country_ru">Корти Русия</string>
+    <string name="sub_country_other">Корти дигар давлат</string>
+    <string name="sub_continue">Нишон додани маълумоти пардохт</string>
+    <string name="sub_payment_details">Маълумоти пардохт</string>
+    <string name="sub_amount">Маблағи пардохт: %1$s %2$s</string>
+    <string name="sub_receipt">Интихоби расиди пардохт</string>
+    <string name="sub_selected">Расид интихоб шуд</string>
+    <string name="sub_submit">Фиристодани расид ба админ</string>
+    <string name="sub_pending">Расид фиристода шуд. Обуна баъди санҷиши админ фаъол мешавад.</string>
+    <string name="sub_already_pending">Расиди шумо санҷида мешавад. Лутфан ҷавобро интизор шавед.</string>
+    <string name="sub_paid">HSK AI Pro фаъол аст.</string>
+    <string name="sub_renewal_period_note">Пас аз тасдиқи пардохт муҳлати интихобшуда ба обунаи амалкунанда илова мешавад.</string>
+    <string name="sub_unavailable">Маълумоти пардохт дастрас нест. Баъдтар кӯшиш кунед.</string>
+    <string name="sub_receipt_invalid">Расиди JPG, PNG ё WebP бо андозаи то 8 МБ интихоб кунед.</string>
+    <string name="sub_approval_note">Расид ва маълумоти пардохт ба админ фиристода мешавад. Обуна баъди тасдиқ фаъол мегардад.</string>
+    <string name="sub_qr_missing">QR барои ин нақша дастрас нест. Усули дигарро интихоб кунед.</string>
+    <string name="sub_retry">Аз нав санҷидан</string>
+    <string name="sub_heading">HSK AI Pro</string>
+    <string name="sub_hsk30_heading">Кушодани HSK 3.0</string>
+    <string name="sub_plan_hsk30">HSK 3.0 · ҳамешагӣ</string>
+    <string name="sub_benefit_heading">Обуна чӣ медиҳад</string>
+    <string name="sub_benefits">📚 Дарсҳои HSK қадам ба қадам   🤖 Ҷавобҳои бештари AI   🖼 Таҳлили акс ва иероглиф   🎙 Машқи овоз   🧩 Тест ва таҳлили хато</string>
+    <string name="sub_focus_course">Ҳамаи дарсҳо кушода мешаванд</string>
+    <string name="sub_focus_practice">Машқ ва тест бе маҳдудият</string>
+    <string name="sub_focus_voice">Сӯҳбати овозӣ ва талаффуз</string>
+    <string name="sub_focus_body">Бо обуна ин бахшро бе маҳдудият идома медиҳед.</string>
+    <string name="sub_plans_heading">Тариф</string>
+    <string name="sub_active_expiry_current">Обунаи ҷорӣ то %1$s фаъол аст</string>
+    <string name="sub_active_expiry_after">Пас аз тарифи интихобшуда: то %1$s</string>
+    <string name="sub_renewal_confirm_title">Обунаро дароз мекунед?</string>
+    <string name="sub_renewal_confirm_body">Муҳлати ҷорӣ %1$s анҷом меёбад. Агар тарифи «%2$s»-ро илова кунед, муҳлати нав то %3$s мешавад.</string>
+    <string name="sub_renewal_edit">Тағйир додани тариф</string>
+    <string name="sub_change_payment">Тағйир додани усули пардохт</string>
+    <string name="sub_trial_title">7 рӯз Pro ройгон</string>
+    <string name="sub_trial_body">Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.</string>
+    <string name="sub_trial_button">7 рӯз ройгон санҷидан</string>
+    <string name="sub_trial_failed">Ҳозир нашуд.</string>
+    <string name="sub_plan_fast">Санҷидан</string>
+    <string name="sub_plan_best">Интихоби беҳтарин</string>
+    <string name="sub_plan_value">Судманд</string>
+    <string name="sub_discount_ready" formatted="false">Тахфифи 20% татбиқ мешавад</string>
+    <string name="sub_discount_active">Ба ин обуна худкор татбиқ мешавад.</string>
+    <string name="sub_discount_locked" formatted="false">Тахфифи 20% кушоед</string>
+    <string name="sub_discount_invite" formatted="false">3 дӯст даъват кунед: дар Android барномаро насб карда Telegram-ро пайваст кунанд, дар iPhone ба 2 саволи бот ҷавоб диҳанд.</string>
+    <string name="sub_discount_progress">Тахфифи 20%%: %1$d/%2$d дӯст</string>
+    <string name="sub_discount_button">Кушодани тахфиф</string>
+    <string name="sub_offer_expired">Ин пешниҳод анҷом ёфтааст ё ба шумо мувофиқ нест.</string>
+    <string name="sub_currency_label">Асъори нарх</string>
+    <string name="sub_currency_loading">Бор шуда истодааст…</string>
+    <string name="sub_currency_title">Асъорро интихоб кунед</string>
+    <string name="sub_currency_body">Нархҳои тариф бо ин асъор нишон дода мешаванд. Маблағи дақиқи пардохт дар экрани навбатӣ пайдо мешавад.</string>
+    <string name="sub_currency_tjs_name">Сомонии Тоҷикистон</string>
+    <string name="sub_currency_uzs_name">Сӯми Ӯзбекистон</string>
+    <string name="sub_currency_rub_name">Рубли Русия</string>
+    <string name="sub_currency_cny_name">Юани Чин</string>
+    <string name="sub_currency_usd_name">Доллари ИМА</string>
+    <string name="sub_currency_save_failed">Асъор сабт нашуд. Интернетро санҷида, боз интихоб кунед.</string>
+    <string name="sub_currency_refresh_failed">Асъор сабт шуд, аммо нархҳо нав нашуданд. Боз интихоб кунед.</string>
+    <string name="sub_payment_route_label">Усули пардохт</string>
+    <string name="sub_route_title">Усули пардохтро интихоб кунед</string>
+    <string name="sub_route_body">Ин ҷо корт ё барномаи пардохтро интихоб мекунед. Асъори нархро алоҳида иваз кардан мумкин аст.</string>
+    <string name="sub_change">Иваз кардан</string>
+    <string name="sub_country_title">Аз кадом давлат пардохт мекунед?</string>
+    <string name="sub_country_body">Давлати корти худро интихоб кунед — нархҳо бо асъори ҳамон давлат нишон дода мешаванд.</string>
+    <string name="sub_country_tj_body">VISA; дар қадами навбатӣ DC City ё Alif-ро интихоб кунед</string>
+    <string name="sub_country_uz_body">Корти VISA; маълумоти пардохт дар экрани навбатӣ</string>
+    <string name="sub_country_ru_body">Корти VISA; маълумоти пардохт дар экрани навбатӣ</string>
+    <string name="sub_country_other_body">Корти VISA-и дигар давлат</string>
+    <string name="sub_country_cn">Чин</string>
+    <string name="sub_country_cn_body">Пардохт бо юан тавассути Alipay ё WeChat Pay</string>
+    <string name="sub_bank_dc_body">Пардохт ба корти DC City</string>
+    <string name="sub_bank_alif_body">Пардохт ба корти Алиф</string>
+    <string name="sub_qr_yuan">Пардохти юан бо QR</string>
+    <string name="sub_pay_locked_body">Пас аз тасдиқи пардохт дарси баста дар курс фавран кушода мешавад.</string>
+    <string name="sub_amount_label">Маблағи пардохт</string>
+    <string name="sub_row_plan">Тариф</string>
+    <string name="sub_row_bank">Бонки Тоҷикистон</string>
+    <string name="sub_row_rate">Қурб</string>
+    <string name="sub_details_tj_hint">Барномаи Душанбе Ситиро кушоед, тугмаи «DC (по номеру карты)»-ро пахш кунед ва рақамҳои дар поён бударо монда пардохт кунед.</string>
+    <string name="sub_details_alif_hint">Барномаи Алифро кушоед, тугмаи «На карту»-ро пахш кунед ва рақамҳои дар поён бударо монда пардохт кунед.</string>
+    <string name="sub_details_foreign_hint">Ин корти VISA-и Тоҷикистон аст. Агар бонкатон ба корти Тоҷикистон пул гузаронад, аз он истифода баред. Вагарна тавассути VISA-и байналмилалӣ пардохт кунед.</string>
+    <string name="sub_show_more">Бештар</string>
+    <string name="sub_show_less">Пӯшидан</string>
+    <string name="sub_copy">Нусхабардорӣ</string>
+    <string name="sub_no_details">Маълумоти корт ҳоло нест. Баъдтар кӯшиш кунед.</string>
+    <string name="sub_qr_title">Рамзи QR</string>
+    <string name="sub_qr_hint">QR-ро пахш кунед, то тугмаи калонкунӣ намоён шавад.</string>
+    <string name="sub_qr_enlarge">QR-ро калон кардан</string>
+    <string name="sub_upload_title">Скриншоти пардохтро бор кунед</string>
+    <string name="sub_upload_body">Ин ҷоро пахш карда, скриншотро интихоб кунед.</string>
+    <string name="sub_upload_selected">Скриншот интихоб шуд: %1$s</string>
+    <string name="sub_upload_size">Андоза %1$s — барои фиристодан омода.</string>
+    <string name="sub_upload_heavy">Андоза %1$s. Бо интернети суст фиристодан тӯл мекашад.</string>
+    <string name="sub_continue_alipay">Бо Alipay пардохт кардан</string>
+    <string name="sub_continue_wechat">Бо WeChat Pay пардохт кардан</string>
+    <string name="sub_continue_country">Ба пардохт гузаштан</string>
+    <string name="sub_done_title">Дархост фиристода шуд ✅</string>
+    <string name="sub_done_body">Пардохт барои санҷиш фиристода шуд. Одатан 5–15 дақиқа мегирад. Пас аз тасдиқ огоҳӣ мегиред.</string>
+    <string name="sub_pending_title">Дархостатон санҷида мешавад</string>
+    <string name="sub_pending_body">Пардохтатон санҷида мешавад. Лутфан тасдиқро интизор шавед.</string>
+    <string name="sub_return_app">Ба барнома баргаштан</string>
+    <string name="sub_help_title">Кӯмак</string>
+    <string name="sub_help_body">Агар дар пардохт ё барнома мушкил бошад, ба админ нависед ва скриншот фиристед.</string>
+    <string name="sub_help_button">Ба админ навиштан</string>
+    <string name="sub_invite_title">Пайванди даъват омода аст</string>
+    <string name="sub_invite_body">Паёмро фиристед ё танҳо пайвандро нусхабардорӣ кунед.</string>
+    <string name="sub_invite_share">Бо паём фиристодан</string>
+    <string name="sub_invite_copy">Танҳо пайвандро нусхабардорӣ кардан</string>
+    <string name="sub_invite_share_text" formatted="false">HSK AI — забони чиниро бо AI омӯз. Ҳамроҳ шав, ба ман тахфифи 20% кушода мешавад 👇</string>
+    <string name="limit_unlock_unavailable">Telegram-ботро кушода натавонистем. Худатон ба бот ворид шавед ё баъдтар кӯшиш кунед.</string>
+
+    <!--
+        In-app updating. Only this channel may do it: Google Play
+        forbids an app it distributes from updating itself by any
+        other route, so the Play build has none of this.
+    -->
+    <string name="update_card_title">Версияи нав %1$s</string>
+    <string name="update_card_subtitle">%1$s · барои навсозӣ пахш кунед</string>
+    <string name="update_card_downloading">Боргирӣ · %1$d%%</string>
+    <string name="update_card_downloaded">Боргирӣ шуд · 100% — барои насб пахш кунед</string>
+    <string name="update_card_failed">Боргирӣ нашуд — боз кӯшиш кунед</string>
+    <string name="update_card_permission">Ба насб иҷозат диҳед</string>
+    <string name="update_card_permission_hint">Танзимоти Android кушода мешавад</string>
+
+    <!--
+        Two releases behind: the banner above the tab bar, and the one
+        notification a release is allowed to send.
+    -->
+    <string name="update_banner_text">Версияи нав %1$s — барои навсозӣ пахш кунед</string>
+    <string name="update_banner_downloading">Боргирӣ · %1$d%%</string>
+    <string name="update_banner_downloaded">Боргирӣ шуд · 100% — барои насб пахш кунед</string>
+    <string name="update_banner_failed">Боргирӣ нашуд — боз кӯшиш кунед</string>
+    <string name="update_banner_permission">Ба насб иҷозат диҳед — барои навсозӣ пахш кунед</string>
+    <string name="update_channel_name">Навсозиҳои барнома</string>
+    <string name="notify_update_title">Версияи нав баромад</string>
+    <string name="notify_update_body">HSK AI %1$s омода аст. Барои навсозӣ барномаро кушоед.</string>
+    <string name="update_gate_title">Версияи навро насб кунед</string>
+    <string name="update_gate_version">HSK AI %1$s</string>
+    <string name="update_gate_body">Барои идома версияи нави барнома лозим аст.</string>
+    <string name="update_gate_button">Барномаро нав кунед</string>
+    <string name="update_gate_downloading">Боргирӣ · %1$d%%</string>
+    <string name="update_gate_downloaded">Боргирӣ шуд. Барои оғоз кардани насб тугмаро пахш кунед.</string>
+    <string name="update_gate_failed">Боргирӣ нашуд. Боз кӯшиш кунед.</string>
+    <string name="update_gate_permission">Пеш аз навсозӣ иҷозати насби барномаро диҳед.</string>
+    <string name="sub_hsk30_pending_title">Дархости шумо дар санҷиш аст</string>
+    <string name="sub_hsk30_pending_body">Дархости пардохти шумо дар санҷиш аст. Лутфан то тасдиқ интизор шавед. Барои тезонидани санҷиш метавонед ба маъмур нависед.</string>
+    <string name="sub_hsk30_provisional_title">HSK 3.0 муваққатан кушода шуд</string>
+    <string name="sub_hsk30_provisional_body">Дархости аввал санҷида мешавад. Агар пардохт тасдиқ нашавад, дастрасӣ ба HSK 3.0 баста мешавад.</string>
+    <string name="sub_hsk30_rejected_title">Пардохти HSK 3.0 қабул нашуд</string>
+    <string name="sub_hsk30_rejected_body">Пардохти шумо қабул нашуд. Маълумотро санҷида, пардохтро аз нав фиристед.</string>
+    <string name="sub_hsk30_approved_title">HSK 3.0 кушода шуд</string>
+    <string name="sub_hsk30_approved_body">Пардохт тасдиқ шуд. Метавонед аз китобҳои нав оғоз кунед.</string>
+    <string name="sub_hsk30_retry">Пардохтро аз нав фиристед</string>
+    <string name="sub_hsk30_open_course">HSK 3.0-ро кушоед</string>
+    <string name="sub_payment_refresh">Ҳолати пардохтро нав кардан</string>
+    <string name="sub_payment_checking">Ҳолат санҷида мешавад…</string>
+    <string name="sub_payment_still_pending">Пардохт ҳанӯз аз ҷониби администратор санҷида мешавад.</string>
+    <string name="sub_status_check_failed">Ҳолатро санҷида нашуд. Интернетро тафтиш карда, боз кӯшиш кунед.</string>
+    <string name="sub_pro_review_title">Расид барои санҷиш фиристода шуд</string>
+    <string name="sub_pro_review_access">Пардохт барои санҷиш фиристода шуд. Ҳангоми санҷиш шумо метавонед аз Pro истифода баред.</string>
+    <string name="sub_pro_review_wait">Пардохт барои санҷиш фиристода шуд. Дастрасии муваққатӣ аллакай истифода шудааст, бинобар ин Pro пас аз тасдиқи маъмур кушода мешавад. Барои тезонидани санҷиш метавонед ба маъмур нависед.</string>
+    <string name="sub_pro_approved_title">Пардохт тасдиқ шуд</string>
+    <string name="sub_pro_approved_body">Pro тасдиқ шуд. Метавонед машғулиятро идома диҳед.</string>
+    <string name="sub_pro_rejected_title">Пардохт қабул нашуд</string>
+</resources>

@@ -1,14 +1,15 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from app.bot.keyboards.subscription import subscription_miniapp_button
+from app.bot.utils.i18n import t
 
 
-def release_feedback_rating_keyboard(campaign_id: int) -> InlineKeyboardMarkup:
+def release_feedback_rating_keyboard(campaign_id: int, lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="🚀 Sinab ko'rish",
+                    text=t("common.bot.releaseFeedback.tryButton", lang),
                     callback_data=f"relfb:{campaign_id}:try",
                 )
             ],
@@ -43,11 +44,7 @@ def release_feedback_discount_keyboard(campaign_id: int, lang: str) -> InlineKey
                     source="release_feedback_discount",
                     mode="admin_discount",
                     campaign_id=campaign_id,
-                    text={
-                        "uz": "🎁 20% chegirmani olish",
-                        "ru": "🎁 Получить скидку 20%",
-                        "tj": "🎁 20% тахфифро гирифтан",
-                    }.get(lang, "🎁 Получить скидку 20%"),
+                    text=t("common.bot.releaseFeedback.discountButton", lang),
                 )
             ]
         ]
@@ -68,16 +65,12 @@ def release_feedback_after_rating_keyboard(
                 source="release_feedback_discount",
                 mode="admin_discount",
                 campaign_id=discount_campaign_id,
-                text={
-                    "uz": "🎁 20% chegirmani olish",
-                    "ru": "🎁 Получить скидку 20%",
-                    "tj": "🎁 20% тахфифро гирифтан",
-                }.get(lang, "🎁 Получить скидку 20%"),
+                text=t("common.bot.releaseFeedback.discountButton", lang),
             )
         ])
     rows.extend([
-        [InlineKeyboardButton(text="✍️ Izoh yozish", callback_data=f"relfb:{release_campaign_id}:comment")],
-        [InlineKeyboardButton(text="➡️ O'tkazib yuborish", callback_data=f"relfb:{release_campaign_id}:skip")],
+        [InlineKeyboardButton(text=t("common.bot.releaseFeedback.commentButton", lang), callback_data=f"relfb:{release_campaign_id}:comment")],
+        [InlineKeyboardButton(text=t("common.bot.releaseFeedback.skipButton", lang), callback_data=f"relfb:{release_campaign_id}:skip")],
     ])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_appearance">Намуди зоҳирӣ</string>
+    <string name="profile_theme_picker_title">Намуди зоҳирии барнома</string>
+    <string name="profile_theme_light">Равшан</string>
+    <string name="profile_theme_light_subtitle">Мавзӯи равшани ҳозира</string>
+    <string name="profile_theme_dark">Торик</string>
+    <string name="profile_theme_dark_subtitle">Cosmos Blue #002F49</string>
+    <string name="profile_theme_system">Мувофиқи система</string>
+    <string name="profile_theme_system_subtitle">Мувофиқи танзимоти телефон</string>
+</resources>
