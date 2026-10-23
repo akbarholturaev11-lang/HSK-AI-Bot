@@ -55,7 +55,7 @@ class AdminEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         self.engine = create_engine("sqlite+pysqlite:///:memory:")
         for table in (User.__table__, UserIdentity.__table__, AdminPwaSession.__table__, AdminPwaApproval.__table__):
             table.create(self.engine)
-        self.session = Session(self.engine, expire_on_commit=False)
+        self.session = Session(self.engine)
         self.db = AsyncAdapter(self.session)
         self.settings = SimpleNamespace(
             admin_id_list=[9001], DESKTOP_AUTH_SIGNING_SECRET="T" * 64,
