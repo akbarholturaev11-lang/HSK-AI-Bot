@@ -63,4 +63,6 @@
     <string name="profile_promo_trial_soon">1 soatdan kam qoldi</string>
     <string name="profile_promo_link_body">Profilingizga %1$s orqali ham kiring. Pro va o‘qish progressingiz shu akkauntda qoladi.</string>
     <string name="profile_promo_page">%1$d / %2$d karta</string>
+    <string name="profile_account_avatar_option">Avatar %1$d</string>
+    <string name="profile_support">Yordam markazi</string>
 </resources>
