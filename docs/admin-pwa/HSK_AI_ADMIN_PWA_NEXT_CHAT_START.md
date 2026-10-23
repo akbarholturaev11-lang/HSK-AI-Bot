@@ -1,37 +1,22 @@
-# HSK AI ADMIN PWA — START NEXT CHAT
+# HSK AI Admin PWA — start Codex from the current checkpoint
 
-Copy/paste this task into a fresh ChatGPT/Codex chat:
+**Authoritative single entry point: [CODEX_RESUME.md](CODEX_RESUME.md)**. Do not rely on historical/status snapshots pasted into old chats. Detailed implementation/test history remains in `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md` (latest sections at bottom). Rules are in `HSK_AI_ADMIN_PWA_TEMP_RULES.md`.
 
----
+## Copy this into Codex
 
-HSK AI **Admin PWA ишини давом эттир**. Умумий режани бошидан ёзма ва тайёр кодни қайта яратма. GitHub'даги реал кодни текшириб, навбатдаги кичик хавфсиз босқични амалга ошир.
+> Continue HSK AI Admin PWA **from the current real GitHub code**. Repo: `akbarholturaev11-lang/HSK-AI-Bot`, ONLY branch `codex/admin-pwa`.
+>
+> FIRST read `docs/admin-pwa/CODEX_RESUME.md` in full and follow its prerequisite documents and branch/safety rules. Check CURRENT branch HEAD and diff with `main`. Do NOT redesign/redo the completed Google+Telegram, passkey login and action-specific WebAuthn foundation. Do NOT merge/rebase into `main`, deploy, enable `ADMIN_PWA_ENABLED`, or change legacy Telegram `/admin.html`.
+>
+> Next: inspect real `app/main.py::_review_admin_payment` and its payment/entitlement/notification dependencies. **It commits internally; blindly calling it after a step-up receipt consume BREAKS atomicity.** Prepare and implement a safe backward-compatible payment review unit of work: exact server-validated operation bound to one-use passkey step-up, reviewed payment/entitlement and audit/outbox in ONE transaction. No new dangerous PWA write route until atomicity and legacy behavior are verified by tests. Refactor only what is safely justified by code/tests. Continue further increments in order from CODEX_RESUME.md, update handoff and commit only to the feature branch.
+>
+> Run exact Admin PWA tests and both GitHub Actions jobs including real PostgreSQL migrations/concurrency; report exact commits and any failures. Last verified CI is https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40029175593 (152 passed / 3 PG-only skipped; 3 real PG passed). That is the LAST checkpoint, not proof for newer changes. Legacy fresh DB Alembic revision 0011 is independently broken; do not claim fixed. UI requires actual V10 HTML and in-repo UI skills.
+>
+> Work on code, not another plan. If unsafe to integrate payment commit path, do not expose write API; isolate the blockers, add safe tests or reversible refactoring and document next safe action.
 
-**Repo:** `akbarholturaev11-lang/HSK-AI-Bot`  
-**Working branch:** `codex/admin-pwa` ONLY  
-**Do not touch:** `main`, production, current Telegram Admin Mini App `/admin.html` and its Telegram initData authentication.
+## Guardrails
 
-**FIRST READ (this order):**
-1. `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md`
-2. `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_RULES.md`
-3. `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_CONTEXT.md`
-4. `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_FINAL_RESULT.md`
-5. `docs/admin-pwa/IMPLEMENTATION_PLAN.md`
-6. `docs/admin-pwa/PHASE_0_API_INVENTORY.md`
-7. `docs/admin-pwa/ADMIN_PWA_V10_UI_REFERENCE.md`
-8. Root `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, applicable skill files and real implementation/test code.
-
-**Historical checkpoint (superseded by latest handoff):** At GitHub commits `7e7e2bb9c6792958d2e5d0e39a4a173ea4a4ab56` (approval model), `8bc5763f859bc6bb9a122ea23fc91e18466cc315` (atomic identity finalizer), `7c3b1f76a495a3d57c23b9276ddfd9162049d421` (unwired Google OIDC service), `bdc6b17a29cdf575d3dd6ad3005727c12d95ef4f` (OAuth DB migration) and `ee9912043bd5e7510e9f2556e9b0a1debec79196` (tests), the auth foundation progressed. Read the authoritative HANDOFF tail before coding. `ADMIN_PWA_ENABLED=false` by default; **no** verified browser OAuth callback, Bot approval callback or login session issuer exists, and `/admin` is not usable. Most recent staged SQLite/FastAPI tests: **42 passed, 26 subtests passed** with reduced models and mock Google; **not full repository CI**, real Bot callback, PostgreSQL, live server or device verification.
-
-**Next actual implementation:** WebAuthn **per-operation step-up foundation** has been committed and **verified** on `codex/admin-pwa` behind `ADMIN_PWA_ENABLED=false`. Files `app/admin_api/pwa_step_up.py`, `pwa_step_up_transport.py`, model `admin_pwa_step_up.py` and Alembic `0116_admin_pwa_step_ups` implement 2-minute signature challenges bound to canonical admin browser session and SHA-256 of exact action + target + payload, 60-second receipts and INTERNAL transaction-bound single-use consumption. **NOTHING has been connected to real payment approvals, deletes or broadcast mutations**, and no V10 PWA frontend exists. GitHub CI run https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40029175593: 152 passed/3 skipped in regular Python 3.12 checkout, 3 passed in REAL disposable PostgreSQL 16 with 0110-0116 migration/downgrade/upgrade. Existing legacy `0011` clean-db issue remains. **NEXT:** carefully select one dedicated Admin PWA mutation, validate exact business request via real shared service, require human-visible matching summary and a consumed step-up inside same transaction, and persist audit, without changing Telegram legacy `/admin.html`. Apply in-repo hsk-ai-ui / webapp-testing skills and canonical translations for any new UI; do not enable flag or touch main/production.
-
-**UI/UX gap rule:** If V10 HTML lacks a requested UI/UX element, first read and use relevant actual repository design skills (at least `.agents/skills/hsk-ai-ui/SKILL.md`, plus any available `frontend-design`), then test with `.agents/skills/webapp-testing/SKILL.md`/Playwright. Document skill use and rationale; do not invent mock data. See `HSK_AI_ADMIN_PWA_TEMP_RULES.md`.
-
-**Final required product:** `https://hskai.app/admin` as installable real-data Admin PWA built with V10 UI/UX (demo fixtures removed); first login Google + one-time Telegram admin approval → enroll passkey; returning login Face ID/Touch ID/Windows Hello passkey alone (or existing session); separate per-action passkey verification for dangerous admin commands. Full accurate stats/users/feedback, auditable read-only JSON/CSV AI analytics then optional scoped MCP. Telegram Admin Mini App must remain unchanged.
-
-**Original V10 demo HTML:** `hsk-ai-admin-ux-demo-v10.html`, SHA-256 `8cd9375dd2ef7c27e9f17904000629060139ffb21c667a83c60b282ec321a9b9`. The file is **not in the GitHub repo**; I will upload it to the new chat if needed. Check `ADMIN_PWA_V10_UI_REFERENCE.md` and never use its mock `v6Demo` values as real data.
-
-**On finish:** commit only to `codex/admin-pwa`, run and report actual scoped tests, update `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md` with exact SHA/tests/status and what comes next. Do not merely generate another plan; implement the next safe increment.
-
----
-
-**Historical Bot router checkpoint (superseded):** `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md` tail (2026-10-24). Local staged backend 42 passed/26 subtests, real aiogram handler tests not yet run. See exact full SHAs there.
+- `ADMIN_PWA_ENABLED=false` until separately approved.
+- Latest code wins over historical handoff prose.
+- Keep V10 real-data, UZ/RU/TJ, and full test/commit/report requirements.
+- Never invent passkey physical-device testing, staging deployment or production verification.
