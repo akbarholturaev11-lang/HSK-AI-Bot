@@ -22,11 +22,8 @@ runs:
         disable-animations: true
         working-directory: android
         script: |
-          mkdir -p app/build/reports/profile-settings-qa
           ./gradlew --no-daemon connectedDirectDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.pomp.hskai.feature.course.Hsk30EntryFlowTest,com.pomp.hskai.feature.course.SkipTestOfferTest,com.pomp.hskai.feature.subscription.SubscriptionCheckoutHostTest,com.pomp.hskai.feature.voice.VoiceScreenBackTest,com.pomp.hskai.core.notify.PaymentDecisionMonitorTest,com.pomp.hskai.feature.profile.ProfileSettingsUxTest,com.pomp.hskai.feature.profile.ProviderOnlyAccountTest,com.pomp.hskai.feature.profile.ProfileWidgetCompatTest,com.pomp.hskai.feature.profile.AccountDeletionDialogTest,com.pomp.hskai.feature.rating.RatingNavigationTest
-          adb pull /sdcard/Android/data/com.pomp.hskai.debug/files/profile-settings-qa app/build/reports/profile-settings-qa/direct
           ./gradlew --no-daemon connectedPlayDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.pomp.hskai.feature.course.Hsk30EntryFlowTest,com.pomp.hskai.feature.course.SkipTestOfferTest,com.pomp.hskai.feature.voice.VoiceScreenBackTest,com.pomp.hskai.core.notify.PaymentDecisionMonitorTest,com.pomp.hskai.feature.profile.ProfileSettingsUxTest,com.pomp.hskai.feature.profile.ProviderOnlyAccountTest,com.pomp.hskai.feature.profile.ProfileWidgetCompatTest,com.pomp.hskai.feature.profile.AccountDeletionDialogTest,com.pomp.hskai.feature.rating.RatingNavigationTest
-          adb pull /sdcard/Android/data/com.pomp.hskai.debug/files/profile-settings-qa app/build/reports/profile-settings-qa/play
 
     - name: Save emulator reports
       if: always()
@@ -35,7 +32,6 @@ runs:
         name: android-flow-regressions
         path: |
           android/app/build/reports/androidTests/**
-          android/app/build/reports/profile-settings-qa/**
           android/app/build/outputs/androidTest-results/**
         if-no-files-found: ignore
         retention-days: 7

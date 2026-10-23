@@ -58,7 +58,7 @@ LEGACY_TO_GENERATED = {
 EXPECTED_GENERATED_CALLS = {
     "hsk_common_action_back": 5,
     "hsk_course_dictionary_page_clear_history": 1,
-    "hsk_common_action_close": 20,
+    "hsk_common_action_close": 21,  # Includes the compact account editor close button.
     "hsk_common_action_continue": 16,
     "hsk_common_action_done": 2,
     "hsk_course_lang": 2,

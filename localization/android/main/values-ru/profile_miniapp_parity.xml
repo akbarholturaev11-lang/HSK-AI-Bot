@@ -63,6 +63,4 @@
     <string name="profile_promo_trial_soon">Осталось меньше часа</string>
     <string name="profile_promo_link_body">Входите в этот профиль и через %1$s. Pro и учебный прогресс сохранятся в этом аккаунте.</string>
     <string name="profile_promo_page">Карточка %1$d из %2$d</string>
-    <string name="profile_account_avatar_option">Аватар %1$d</string>
-    <string name="profile_support">Поддержка</string>
 </resources>
