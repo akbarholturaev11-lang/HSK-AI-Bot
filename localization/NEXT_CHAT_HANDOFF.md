@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## 2026-10-23 — PR browser CI installation budget repaired
+
+- At candidate `210a7488`, P0 (460 tests on each Python 3.11/3.14; 53 artifacts / 0 stale), Android, Desktop and both TTS workflows passed. Backend API and isolated PostgreSQL jobs passed (64 PostgreSQL tests / 64 subtests / 0 skipped), but Mini App browser CI was cancelled twice while slow Ubuntu/browser dependency downloads consumed the old 8-minute job limit. The retry passed all 19 existing UI checks before cancellation interrupted the critical-flow step; it is not a full browser PASS.
+- Only the Mini App CI job budget is raised to 15 minutes. Test commands, assertions, application code, lesson data, access/payment decisions and production config are unchanged. Recheck PR #198 CI at the new HEAD; record final evidence in its body. The branch still targets preparation only: no main merge/push or production deployment.
+- Local verification passed: 460 P0 tests; the full workflow text differs only in the Mini App job timeout and its explanatory comment, with all test commands unchanged. The three intended-file diffs pass whitespace checks; unrelated dirty Graphify files remain excluded.
+
 ## 2026-10-23 — Safe main promotion prepared as Draft PR #198
 
 - Owner asked to prepare, not execute promotion. [Draft PR #198](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/198) is the actual integration branch → main; old #179 and withdrawn pilot #196 are not the promotion source. Main remains `dcd65418`. Native `merge-tree` produced exactly source HEAD's tree without conflicts; code/tests/workflows are unchanged from green `a14e97ce`. Documentation HEAD `4c440bc5` P0 [39893538524](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39893538524) is SUCCESS.

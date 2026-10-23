@@ -422,7 +422,9 @@ jobs:
 
   miniapp-ui:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    # Browser/Ubuntu dependency downloads can consume the former 8-minute budget.
+    # Leave time for both unchanged browser regression steps on a cold runner.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

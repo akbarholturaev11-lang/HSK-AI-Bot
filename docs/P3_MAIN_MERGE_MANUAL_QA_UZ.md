@@ -234,9 +234,11 @@ Oldingi #179 boshqa source branch’dan, #196 esa qaytarilgan WebGL pilotidan.
 
 Tayyorlashda main yana `dcd65418` ekanligi tekshirildi. `git merge-tree
 --write-tree` sinovi konfliktsiz; natija ish branch’i tree’siga teng. Ilova,
-Android, Desktop, scripts/tests/workflow fayllari green Backend/P0 tekshirilgan
+Android, Desktop va scripts/tests fayllari green Backend/P0 tekshirilgan
 `a14e97ce` bilan aynan bir xil. `4c440bc5` documentation HEAD P0’si ham SUCCESS.
-Keyingi tayyorgarlik qaydi ham faqat hujjat; PR checks alohida kuzatiladi.
+Keyingi yagona CI o‘zgarishi: Ubuntu/browser dependency yuklanishi eski limitni
+tugatgani uchun Mini App job vaqti 8 dan 15 daqiqaga oshirildi; test buyruqlari
+va tekshiruvlar saqlangan. Yakuniy PR checks alohida kuzatiladi.
 
 Old main/source ref’lari va main tarixiga tayanuvchi incremental Git bundle
 alohida lokal joyda saqlandi; `git bundle verify` o‘tdi. Foydalanuvchining
