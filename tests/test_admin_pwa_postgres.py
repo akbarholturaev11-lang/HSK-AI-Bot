@@ -180,6 +180,13 @@ class AdminPwaPostgresConcurrencyTests(unittest.IsolatedAsyncioTestCase):
                 expires_at=now + timedelta(hours=1),
             ))
             await db.flush()
+            db.add(AdminPwaCredential(
+                id=str(uuid4()), user_id=11, credential_id=b"stepup-pg-key",
+                public_key=b"synthetic-public-key", user_handle=b"H" * 32,
+                sign_count=1, device_type="multi_device", backed_up=True,
+                created_at=now,
+            ))
+            await db.flush()
             db.add(AdminPwaStepUp(
                 id=receipt_id, session_id=session_id, user_id=11,
                 action=action, target=target,
@@ -187,6 +194,7 @@ class AdminPwaPostgresConcurrencyTests(unittest.IsolatedAsyncioTestCase):
                     action=action, target=target, payload=payload,
                 ),
                 challenge=b"C" * 32, status="verified",
+                credential_id=b"stepup-pg-key",
                 created_at=now, verified_at=now,
                 expires_at=now + timedelta(seconds=50),
             ))
