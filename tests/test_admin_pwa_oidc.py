@@ -38,6 +38,9 @@ class AsyncAdapter:
     async def rollback(self):
         self.session.rollback()
 
+    def get_bind(self):
+        return self.session.get_bind()
+
 
 class AdminPwaOidcTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
@@ -107,6 +110,16 @@ class AdminPwaOidcTests(unittest.IsolatedAsyncioTestCase):
             code=overrides.get("code", "valid-code"),
             browser_proof=overrides.get("browser_proof", started.browser_proof),
             now=overrides.get("now", NOW),
+        )
+
+    async def test_global_start_rate_limit_fails_closed(self):
+        for _ in range(60):
+            await self.start()
+        with self.assertRaisesRegex(AdminPwaOidcError, "rate_limited"):
+            await self.start()
+        self.assertEqual(
+            len(self.session.execute(select(AdminPwaOAuthAttempt)).scalars().all()),
+            60,
         )
 
     async def test_verified_google_creates_single_pending_approval_no_session(self):
