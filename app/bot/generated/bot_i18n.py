@@ -4,6 +4,14 @@ from app.bot.generated.course_i18n import COURSE_MESSAGES
 
 BOT_MESSAGES = {
   "ru": {
+    "adminPwa.approve": "✅ Подтвердить",
+    "adminPwa.approved": "✅ Запрос входа в Admin PWA подтверждён. Продолжите в браузере.",
+    "adminPwa.confirm": "🔐 <b>HSK AI Admin PWA</b>\n\nКод для сверки: <code>{code}</code>\n\nСравните его с кодом на hskai.app/admin, только если вы сами начали вход. Если коды не совпадают или запрос не ваш — отклоните его.\n\nЗапрос действует не более 5 минут. Сам код не даёт доступа.",
+    "adminPwa.denied": "❌ Запрос входа в Admin PWA отклонён.",
+    "adminPwa.deny": "❌ Отклонить",
+    "adminPwa.invalid": "Запрос не найден, истёк или уже обработан. Начните вход заново в браузере.",
+    "adminPwa.privateOnly": "Подтверждение возможно только в личном Telegram-чате администратора.",
+    "adminPwa.unavailable": "Сервис подтверждения Admin PWA временно недоступен.",
     "course.course_all_levels_completed": "🏆 Вы завершили все доступные курсы HSK.",
     "course.course_back_to_qa_button": "↩️ Обычный режим",
     "course.course_choose_lesson": "С какого урока хотите начать?",
@@ -664,6 +672,14 @@ BOT_MESSAGES = {
     "texts.welcome": "Добро пожаловать, {name}!"
   },
   "tj": {
+    "adminPwa.approve": "✅ Тасдиқ кардан",
+    "adminPwa.approved": "✅ Дархости воридшавӣ ба Admin PWA тасдиқ шуд. Дар браузер идома диҳед.",
+    "adminPwa.confirm": "🔐 <b>HSK AI Admin PWA</b>\n\nРамз барои муқоиса: <code>{code}</code>\n\nРамзро бо рамзи hskai.app/admin танҳо вақте муқоиса кунед, ки воридшавиро худатон оғоз карда бошед. Агар рамзҳо мувофиқ набошанд ё дархост аз шумо набошад, онро рад кунед.\n\nДархост на бештар аз 5 дақиқа эътибор дорад. Худи рамз иҷозати воридшавӣ намедиҳад.",
+    "adminPwa.denied": "❌ Дархости воридшавӣ ба Admin PWA рад карда шуд.",
+    "adminPwa.deny": "❌ Рад кардан",
+    "adminPwa.invalid": "Дархост ёфт нашуд, муҳлаташ гузашт ё аллакай баррасӣ шудааст. Дар браузер аз нав оғоз кунед.",
+    "adminPwa.privateOnly": "Тасдиқ танҳо дар чати шахсии Telegram-и администратор кор мекунад.",
+    "adminPwa.unavailable": "Хидмати тасдиқи Admin PWA муваққатан дастнорас аст.",
     "course.course_all_levels_completed": "🏆 Шумо ҳамаи курсҳои дастраси HSK-ро анҷом додед.",
     "course.course_back_to_qa_button": "↩️ Реҷаи одӣ",
     "course.course_choose_lesson": "Аз кадом дарс мехоҳед оғоз кунед?",
@@ -1324,6 +1340,14 @@ BOT_MESSAGES = {
     "texts.welcome": "Хуш омадед, {name}!"
   },
   "uz": {
+    "adminPwa.approve": "✅ Tasdiqlash",
+    "adminPwa.approved": "✅ Admin PWA kirish so‘rovi tasdiqlandi. Brauzerdagi jarayonni davom ettiring.",
+    "adminPwa.confirm": "🔐 <b>HSK AI Admin PWA</b>\n\nTaqqoslash kodi: <code>{code}</code>\n\nBu kodni faqat kirishni o‘zingiz boshlagan bo‘lsangiz hskai.app/admin sahifasidagi kod bilan solishtiring. Kodlar mos kelmasa yoki so‘rov sizniki bo‘lmasa, rad eting.\n\nSo‘rov ko‘pi bilan 5 daqiqa amal qiladi. Kodning o‘zi kirish huquqini bermaydi.",
+    "adminPwa.denied": "❌ Admin PWA kirish so‘rovi rad etildi.",
+    "adminPwa.deny": "❌ Rad etish",
+    "adminPwa.invalid": "So‘rov mavjud emas, muddati tugagan yoki allaqachon ko‘rib chiqilgan. Brauzerda yangidan boshlang.",
+    "adminPwa.privateOnly": "Bu tasdiq faqat adminning shaxsiy Telegram chatida ishlaydi.",
+    "adminPwa.unavailable": "Admin PWA tasdiqlash xizmati vaqtincha ishlamayapti.",
     "course.course_all_levels_completed": "🏆 Barcha mavjud HSK kurslarini tugatdingiz.",
     "course.course_back_to_qa_button": "↩️ Oddiy rejim",
     "course.course_choose_lesson": "Qaysi darsdan boshlamoqchisiz?",
