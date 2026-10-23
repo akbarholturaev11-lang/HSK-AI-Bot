@@ -1,6 +1,8 @@
 # HSK AI ADMIN PWA — ONLY THIS TASK (temporary project files)
 
-**Start here:** [HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md](HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md) — latest verified progress and next executable task.
+**Continue implementation:** [HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md](HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md) — authoritative current code checkpoint and next task.
+
+**Copy into a new chat:** [HSK_AI_ADMIN_PWA_NEXT_CHAT_START.md](HSK_AI_ADMIN_PWA_NEXT_CHAT_START.md) — concise, ready-to-paste instruction.
 
 Read in order:
 1. [HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md](HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md) — current checkpoint, what is / is not implemented
@@ -14,10 +16,10 @@ Read in order:
 
 **Project branch:** `codex/admin-pwa`. **Public target (not yet verified live):** `https://hskai.app/admin`.
 
-**Current state:** phase-one **fail-closed backend route bootstrap** committed (`app/admin_api/pwa_bootstrap.py`), feature flag still off by default, and isolated route tests passed. **No functional browser sign-in, Google/TG pairing, Passkey, real-data frontend, staging deployment or production release yet.**
+**Current state (checked 2026-10-23):** first-phase **fail-closed route bootstrap AND DB-backed revocable hashed-cookie session verification**, admin session model and migration committed (`app/admin_api/pwa_bootstrap.py`, `app/admin_api/pwa_sessions.py`, `app/db/models/admin_pwa.py`, `alembic/versions/0110_admin_pwa_sessions.py`). **Feature flag OFF by default; no trusted cookie issuer, Google+Telegram pairing, passkey login, usable PWA frontend, real-data dashboard, staging deployment or production release yet.** Isolated staged tests rerun: 4 bootstrap + 9 session tests passed (17 + 5 subtests); full-repo E2E not run. The handoff file is the source of truth; do not trust an older README snapshot.
 
 Global `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md` and `localization/README.md` remain authoritative alongside the user's requirement to work solely on the selected project branch until explicitly authorized to promote.
 
 These are **temporary task-scoped documents**. Keep them synchronized during work; archive only after final acceptance, without deleting useful evidence or overwriting unrelated rules.
 
-**Verified V10 reference:** [ADMIN_PWA_V10_UI_REFERENCE.md](ADMIN_PWA_V10_UI_REFERENCE.md). Original demo HTML is a conversation-mounted file, not a GitHub copy.
+**Verified V10 reference:** [ADMIN_PWA_V10_UI_REFERENCE.md](ADMIN_PWA_V10_UI_REFERENCE.md). Original demo HTML is a conversation-mounted file, **not a GitHub copy**; upload it to a new chat before porting. Existing Telegram Admin Mini App and `main` remain unchanged.
