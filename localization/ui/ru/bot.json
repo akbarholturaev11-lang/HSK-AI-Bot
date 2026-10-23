@@ -1,6 +1,14 @@
 {
   "locale": "ru",
   "messages": {
+    "adminPwa.approve": "✅ Подтвердить",
+    "adminPwa.approved": "✅ Запрос входа в Admin PWA подтверждён. Продолжите в браузере.",
+    "adminPwa.confirm": "🔐 <b>HSK AI Admin PWA</b>\n\nКод для сверки: <code>{code}</code>\n\nСравните его с кодом на hskai.app/admin, только если вы сами начали вход. Если коды не совпадают или запрос не ваш — отклоните его.\n\nЗапрос действует не более 5 минут. Сам код не даёт доступа.",
+    "adminPwa.denied": "❌ Запрос входа в Admin PWA отклонён.",
+    "adminPwa.deny": "❌ Отклонить",
+    "adminPwa.invalid": "Запрос не найден, истёк или уже обработан. Начните вход заново в браузере.",
+    "adminPwa.privateOnly": "Подтверждение возможно только в личном Telegram-чате администратора.",
+    "adminPwa.unavailable": "Сервис подтверждения Admin PWA временно недоступен.",
     "course.course_all_levels_completed": "🏆 Вы завершили все доступные курсы HSK.",
     "course.course_back_to_qa_button": "↩️ Обычный режим",
     "course.course_choose_lesson": "С какого урока хотите начать?",
