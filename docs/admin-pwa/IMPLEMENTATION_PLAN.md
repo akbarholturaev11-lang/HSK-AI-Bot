@@ -195,3 +195,8 @@ Dedicated read-only feature-branch GitHub Actions workflow passed **110 full-che
 ### PostgreSQL + sign-in evidence (2026-10-24)
 
 `codex/admin-pwa` now includes passkey login and revocable sessions. Verified [CI run 40028060236](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40028060236): 134 passed/2 skipped main suite, plus 2 passed on disposable real PostgreSQL 16, scoped Admin PWA Alembic 0110–0115 upgrades and 0115 downgrade/re-upgrade. Full legacy cold-start Alembic remains blocked at 0011 (`course_progress` absent), and no physical biometric test / Admin PWA UI / step-up exists. Feature flag OFF, no main/production changes.
+
+
+### Step-up authorization foundation verified (2026-10-24)
+
+Committed per-action, per-target, payload-digest-bound WebAuthn confirmation and one-time consumption helper on `codex/admin-pwa`. [Full-checkout CI](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40029175593): 152 passed/3 PG-only skipped; [same run] real PostgreSQL: 3 passed, migration 0110–0116 and rollback/reapply. These functions do NOT yet execute sensitive mutations. Next separately review one dedicated operation adapter and audit/confirmation UX, no blanket reuse of Telegram initData; flag remains OFF.
