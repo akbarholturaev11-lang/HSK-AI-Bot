@@ -24,6 +24,15 @@ logger = logging.getLogger(__name__)
 _ENROLL_COOKIE = "__Host-hskai_admin_enroll"
 
 
+def _no_duplicate_json_keys(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate_json_key")
+        result[key] = value
+    return result
+
+
 def create_admin_pwa_completion_router(
     *,
     settings_obj: Any,
@@ -59,7 +68,7 @@ def create_admin_pwa_completion_router(
                 return _reply(413, "admin_pwa_invalid_payload")
             body.extend(part)
         try:
-            payload = json.loads(body)
+            payload = json.loads(body, object_pairs_hook=_no_duplicate_json_keys)
         except (UnicodeDecodeError, ValueError, TypeError):
             return _reply(400, "admin_pwa_invalid_payload")
         if (not isinstance(payload, dict) or set(payload) != {"request_id"}
