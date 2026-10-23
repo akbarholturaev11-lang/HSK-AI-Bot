@@ -1,7 +1,12 @@
 package com.pomp.hskai.feature.limit
 
 import android.graphics.Bitmap
+import android.content.res.Configuration
+import java.util.Locale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.key
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
@@ -155,4 +160,53 @@ class SectionLimitOverlayTest {
                 image.compress(Bitmap.CompressFormat.PNG, 100, it)
             }
     }
+    @Test fun playLimitCopyIsLocalizedAndOnlyOffersAnAccessRecheck() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val locale = mutableStateOf("uz")
+        val daily = mutableStateOf(true)
+        var checks = 0
+        compose.setContent {
+            val localized = context.createConfigurationContext(
+                Configuration(context.resources.configuration).apply { setLocale(Locale.forLanguageTag(locale.value)) },
+            )
+            CompositionLocalProvider(
+                LocalContext provides localized,
+                LocalConfiguration provides localized.resources.configuration,
+            ) {
+                key(locale.value) { PompHskAiTheme {
+                    SectionLimitOverlay(
+                        sectionTitle = "AI Voice", sourceKey = "voice_limit",
+                        limit = LimitGate(actions = LimitGateActions(onRecheck = { checks++ })),
+                        resetAt = if (daily.value) "2099-01-01T00:00:00Z" else null,
+                        onClose = {},
+                    )
+                } }
+            }
+        }
+        for (language in listOf("uz", "ru", "tg")) {
+            compose.runOnIdle { locale.value = language }
+            val localized = context.createConfigurationContext(
+                Configuration(context.resources.configuration).apply { setLocale(Locale.forLanguageTag(language)) },
+            )
+            compose.onNodeWithText(localized.getString(R.string.play_limit_daily_heading)).assertIsDisplayed()
+            compose.onNodeWithText(localized.getString(R.string.play_limit_required)).performScrollTo().assertIsDisplayed()
+            val action = compose.onNodeWithText(localized.getString(R.string.play_limit_check_access))
+            action.performScrollTo().assertIsDisplayed()
+            action.performClick()
+            compose.onNodeWithText(localized.getString(R.string.limit_sheet_get_pro)).assertDoesNotExist()
+            compose.onNodeWithText(localized.getString(R.string.limit_sheet_voice_desc)).assertDoesNotExist()
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+            val image = requireNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot())
+            File(context.getExternalFilesDir(null), "play-limit-$language.png").outputStream().use {
+                image.compress(Bitmap.CompressFormat.PNG, 100, it)
+            }
+        }
+        compose.runOnIdle { assertEquals(3, checks); daily.value = false }
+        val localized = context.createConfigurationContext(
+            Configuration(context.resources.configuration).apply { setLocale(Locale.forLanguageTag("tg")) },
+        )
+        compose.onNodeWithText(localized.getString(R.string.play_limit_heading)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(localized.getString(R.string.play_limit_renewal), substring = true).assertDoesNotExist()
+    }
+
 }

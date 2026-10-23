@@ -35,18 +35,24 @@ fun SectionLimitBlock(
 ) {
     val reopensAt = ResetTime.localClock(resetAt)
     val error = limit.state.error
-    val checkLabel = stringResource(R.string.limit_check_account)
+    val checkLabel = stringResource(R.string.play_limit_check_access)
     LimitBlock(
         sectionTitle = sectionTitle,
         headline = if (reopensAt != null) {
-            stringResource(R.string.limit_daily_headline, reopensAt)
+            stringResource(R.string.play_limit_daily_heading)
         } else {
-            stringResource(R.string.limit_locked_headline)
+            stringResource(R.string.play_limit_heading)
         },
         primaryLabel = checkLabel,
         onPrimary = limit.actions.onRecheck,
         modifier = modifier,
-        reason = reason,
+        reason = stringResource(R.string.play_limit_required),
+        hint = listOfNotNull(
+            if (reopensAt != null) stringResource(R.string.play_limit_renewal) else null,
+            stringResource(R.string.play_limit_description),
+        ).joinToString("\n\n"),
+        secondaryLabel = stringResource(R.string.action_close),
+        onSecondary = onClose,
         isBusy = limit.state.isBusy,
         errorText = when {
             error != null -> stringResource(error.messageRes)

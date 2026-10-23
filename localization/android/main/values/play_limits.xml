@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="play_limit_heading">Bepul limitingiz tugadi</string>
+    <string name="play_limit_daily_heading">Bugungi bepul limitingiz tugadi</string>
+    <string name="play_limit_renewal">Bepul limit ertaga yangilanadi.</string>
+    <string name="play_limit_required">Hozir davom etish uchun faol HSK AI Pro obunasi kerak.</string>
+    <string name="play_limit_description">Ushbu ilovada obuna sotib olish mavjud emas. Obunangiz faol bo‘lsa, kirishni qayta tekshiring.</string>
+    <string name="play_limit_check_access">Kirishni tekshirish</string>
+</resources>

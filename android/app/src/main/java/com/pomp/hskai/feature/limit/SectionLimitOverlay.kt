@@ -52,6 +52,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import com.pomp.hskai.R
+import com.pomp.hskai.core.text.ResetTime
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.feature.assistant.AssistantHidden
 
@@ -77,15 +78,20 @@ fun SectionLimitOverlay(
     }
 
     val copy = limitOfferCopy(sourceKey)
-    val title = stringResource(copy.first)
-    val description = stringResource(copy.second)
-    val heading = stringResource(R.string.limit_sheet_heading)
     val canSubscribe = limit.state.canSubscribe
+    val hasDailyReset = ResetTime.localClock(resetAt) != null
+    val title = stringResource(if (canSubscribe) copy.first else R.string.play_limit_required)
+    val description = stringResource(if (canSubscribe) copy.second else R.string.play_limit_description)
+    val heading = stringResource(
+        if (canSubscribe) R.string.limit_sheet_heading
+        else if (hasDailyReset) R.string.play_limit_daily_heading
+        else R.string.play_limit_heading,
+    )
     val actionLabel = if (canSubscribe) {
         stringResource(R.string.limit_sheet_get_pro)
     } else {
         // The Play build must not link users to an external checkout.
-        stringResource(R.string.limit_sheet_check_access)
+        stringResource(R.string.play_limit_check_access)
     }
 
     Dialog(
@@ -187,8 +193,12 @@ fun SectionLimitOverlay(
                                     tint = Color(0xFFBC803B), modifier = Modifier.size(20.dp),
                                 )
                                 Text(
-                                    text = reason?.takeIf { it.isNotBlank() }
-                                        ?: stringResource(R.string.limit_sheet_reason_fallback, sectionTitle),
+                                    text = if (canSubscribe) {
+                                        reason?.takeIf { it.isNotBlank() }
+                                            ?: stringResource(R.string.limit_sheet_reason_fallback, sectionTitle)
+                                    } else {
+                                        stringResource(if (hasDailyReset) R.string.play_limit_renewal else R.string.play_limit_required)
+                                    },
                                     color = Color(0xFF605D59),
                                     fontSize = 14.sp,
                                     lineHeight = 21.sp,
@@ -237,7 +247,7 @@ fun SectionLimitOverlay(
                                     description, color = Color(0xFF6B625F), fontSize = 14.sp,
                                     lineHeight = 21.sp, textAlign = TextAlign.Center,
                                 )
-                                Row(
+                                if (canSubscribe) Row(
                                     modifier = Modifier.padding(top = 7.dp),
                                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                                     verticalAlignment = Alignment.CenterVertically,
