@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -115,10 +116,12 @@ fun BugReportDialog(
     screenshot: Bitmap?,
     screen: String,
     onDismiss: () -> Unit,
+    initialDescription: String = "",
 ) {
-    var description by remember { mutableStateOf("") }
-    // Default ON. The learner can always turn this OFF before sending.
-    var attachScreenshot by remember { mutableStateOf(true) }
+    var description by remember(initialDescription) { mutableStateOf(initialDescription.take(2000)) }
+    // Preserve the existing bug-report default (screenshot ON, with a picker
+    // fallback if capture failed). Only explicit AI-content reports are text-first.
+    var attachScreenshot by remember(screen) { mutableStateOf(screen != "ai_assistant") }
     var preview by remember(screenshot) { mutableStateOf(screenshot) }
     var busy by remember { mutableStateOf(false) }
     var failed by remember { mutableStateOf(false) }
@@ -175,7 +178,10 @@ fun BugReportDialog(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            stringResource(R.string.bug_report_title),
+                            stringResource(
+                                if (screen == "ai_assistant") R.string.assistant_report_answer
+                                else R.string.bug_report_title,
+                            ),
                             style = MaterialTheme.typography.titleLarge,
                             color = PompColors.Ink,
                             fontWeight = FontWeight.Bold,
@@ -298,7 +304,7 @@ fun BugReportDialog(
                         },
                         modifier = Modifier.fillMaxWidth().padding(
                             start = 18.dp, end = 18.dp, top = 12.dp, bottom = 14.dp,
-                        ),
+                        ).heightIn(min = 52.dp),
                         enabled = !sent && description.trim().length >= 5 && !busy,
                     ) {
                         if (busy) {
