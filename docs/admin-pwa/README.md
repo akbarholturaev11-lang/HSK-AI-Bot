@@ -23,3 +23,7 @@ Global `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md` and `localization/README.
 These are **temporary task-scoped documents**. Keep them synchronized during work; archive only after final acceptance, without deleting useful evidence or overwriting unrelated rules.
 
 **Verified V10 reference:** [ADMIN_PWA_V10_UI_REFERENCE.md](ADMIN_PWA_V10_UI_REFERENCE.md). Original demo HTML is a conversation-mounted file, **not a GitHub copy**; upload it to a new chat before porting. Existing Telegram Admin Mini App and `main` remain unchanged.
+
+## Latest scoped checkpoint (2026-10-23)
+
+New `app/admin_api/pwa_enrollment.py` atomically consumes the already-approved browser challenge and links a verified Google subject to the canonical admin using the existing identity service. `tests/test_admin_pwa_enrollment.py` is committed. See the bottom of `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md` for commit IDs, a **7 passed + 4 subtests** isolated SQLite stub-harness result and unexecuted full-checkout/Postgres validation. This is not a browser OAuth flow, a Bot transport, a session issuer or a working PWA UI. **Flag remains OFF**, existing `/admin.html` and `main` unchanged. Next: verified browser OAuth and Telegram approval transport, full-repository/DB tests.
