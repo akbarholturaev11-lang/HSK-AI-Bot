@@ -275,6 +275,18 @@ async def consume_step_up_in_mutation(
             or step.action != action or step.target != target
             or not hmac.compare_digest(step.payload_hash, digest)):
         return False
+    # Recheck credential ownership/revocation at the EXACT write boundary.
+    # Acquire credential before User, consistent with passkey login/verify
+    # lock order to avoid reciprocal credential-vs-user PostgreSQL deadlocks.
+    if not step.credential_id:
+        return False
+    credential = (await db.execute(select(AdminPwaCredential).where(
+        AdminPwaCredential.credential_id == bytes(step.credential_id),
+        AdminPwaCredential.user_id == step.user_id,
+        AdminPwaCredential.revoked_at.is_(None),
+    ).with_for_update().execution_options(populate_existing=True))).scalar_one_or_none()
+    if credential is None:
+        return False
     pair = await _locked_session(db, session_cookie, settings_obj, stamp)
     if pair is None:
         return False
