@@ -115,7 +115,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                 for locale, value in (("uz", uz), ("ru", ru), ("tj", tj)):
                     self.assertEqual(catalogs[locale][key], value)
                     self.assertEqual(len(catalogs[locale]), 978)
-        self.assertEqual(len(html.split("\n")), 9122)
+        self.assertEqual(len(html.split("\n")), 9096)
         self.assertIn("challengeSending=false", html)
         self.assertIn("ratingRetryText()", html)
 
@@ -170,7 +170,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                 for locale, value in zip(("uz", "ru", "tj"), values):
                     self.assertEqual(catalogs[locale][key], value)
                     self.assertEqual(len(catalogs[locale]), 978)
-        self.assertEqual(len(html.split("\n")), 9122)
+        self.assertEqual(len(html.split("\n")), 9096)
 
     def test_remaining_shared_lesson_labels_use_local_first_catalog(self):
         """Keep exact inline translations as fallback for the remaining shared labels."""
@@ -203,7 +203,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                 with self.subTest(key=key, locale=lang):
                     self.assertEqual(catalogs[lang][key], value)
                     self.assertEqual(len(catalogs[lang]), 978)
-        self.assertEqual(len(lines), 9121)
+        self.assertEqual(len(lines), 9095)
 
     def test_foundation_pronunciation_labels_use_local_first_catalog(self):
         """Centralize the two labels while keeping Chinese and pinyin content intact."""
@@ -227,7 +227,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                     self.assertEqual(len(catalog), 978)
         self.assertIn('ex.pinyin||"nǐ hǎo"', source_line)
         self.assertIn('c.natural_pinyin||"ní hǎo"', source_line)
-        self.assertEqual(len(lines), 9121)
+        self.assertEqual(len(lines), 9095)
 
 if __name__ == "__main__":
     unittest.main()

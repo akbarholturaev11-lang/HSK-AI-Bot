@@ -30,27 +30,6 @@ class _CourseAssetReferences(HTMLParser):
 
 
 class TelegramSdkAssetTests(unittest.IsolatedAsyncioTestCase):
-    async def test_liquid_glass_assets_return_exact_same_origin_bytes(self):
-        from app.main import app
-
-        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
-            for filename in ("html2canvas.min.js", "container.js", "nav-glass.js", "nav-glass.css"):
-                with self.subTest(asset=filename):
-                    response = await client.get("/assets/liquid-glass/" + filename + "?v=20261022-pilot1")
-                    self.assertEqual(response.status_code, 200)
-                    media_type = "text/css" if filename.endswith(".css") else "application/javascript"
-                    self.assertIn(media_type, response.headers["content-type"])
-                    self.assertEqual(response.content, (ROOT / "app/static/assets/liquid-glass" / filename).read_bytes())
-
-    async def test_liquid_glass_allowlist_does_not_expose_other_files(self):
-        from app.main import app
-
-        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
-            for path in ("unknown.js", "LICENSE", "..%2F..%2Fmain.py", "%2e%2e%2fnotification_templates"):
-                with self.subTest(path=path):
-                    response = await client.get("/assets/liquid-glass/" + path)
-                    self.assertEqual(response.status_code, 404)
-
     async def test_sdk_is_public_and_returns_the_pinned_official_bytes(self):
         from app.main import app
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url='http://test') as client:

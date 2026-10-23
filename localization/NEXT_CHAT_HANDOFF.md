@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## 2026-10-23 — Owner withdrew the Liquid Glass pilot
+
+- Owner requested removal of the pilot after the local iPhone test. Reversed merge `0244f685` against its first parent without rewriting history. The application, scripts, tests and CI configuration return to verified pre-pilot `f9b700a6`; the standalone QA schema-registration repair and all previous centralization remain. Existing CSS navigation and its five routes are retained. Renderer/loader/vendor assets, their route and pilot-only checks are removed.
+- Private local QA must use the ordinary course URL/menu without `liquid_glass=1` and without the forced-entry redirect. Its restart/source guard must compare with `f9b700a6`, preserving owned PostgreSQL, the single poller, IPv4 Telegram transport and persistent supervisor sleep assertion. Historical pilot instructions below are superseded; do not re-enable it on reconnect.
+- Local validation passed: **460 P0 tests**, **13 original UI/navigation/preload/dialog checks**, **3 real HTTP asset tests / 22 subtests**, **53 catalogs / 0 stale**. Live external HTTPS signed existing-QA-user map returned 200; five tabs passed with zero pilot asset requests, JS exceptions or API 5xx (SDK transport stubbed, APIs/DB real). The ordinary Bot menu was set/read back; no forced redirect remains. Verify actual GitHub CI after pushing this removal. Main/production restrictions remain.
+
 ## 2026-10-23 — Local tunnel reconnect and menu recovery verified
 
 - Follow-up outage: macOS `pmset` records **Idle Sleep 09:57:17**, followed by Wake **10:16:07** (Mac local time). The previous sleep assertion followed an API PID and did not cover the whole test-service lifecycle. The private supervisor now owns a separate persistent `caffeinate -i -w <supervisor PID>` assertion; macOS reports `PreventUserIdleSystemSleep = 1`. This prevents idle sleep while the supervisor runs; lid closure, explicit sleep, reboot or lost internet can still interrupt local testing.

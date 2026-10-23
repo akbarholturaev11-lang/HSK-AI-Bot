@@ -48,7 +48,7 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
                     self.assertEqual(catalog["courseVoiceInline." + key], value)
         self.assertEqual(
             (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8").count("\n") + 1,
-            9122,
+            9096,
         )
 
     def test_preload_static_catalog_before_voice_and_keep_original_runtime(self):
@@ -89,7 +89,7 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
             self.assertIn(marker, html)
         self.assertEqual(
             (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8").count("\n") + 1,
-            9122,
+            9096,
         )
         for locale in LANGUAGES:
             catalog = json.loads(
@@ -126,7 +126,7 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
             self.assertTrue(catalog["dict"])
             self.assertTrue(catalog["readyPhrases"])
             self.assertTrue(catalog["testHub.write"])
-        self.assertEqual(html.count("\n") + 1, 9122)
+        self.assertEqual(html.count("\n") + 1, 9096)
 
     @unittest.skipUnless(shutil.which("node"), "Node.js unavailable")
     def test_embedded_dictionary_hydration_keeps_fallback_and_routes_nested_keys(self):
