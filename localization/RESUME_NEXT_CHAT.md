@@ -1,5 +1,14 @@
 # HSK AI Local-First i18n — RESUME NEXT CHAT
 
+## 2026-10-23 — Owner-authorized main promotion completed
+
+This release checkpoint supersedes older branch-only / no-main-merge instructions below.
+
+- Owner explicitly requested main promotion. PR [#198](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/198) merged as `650628d11152850b1d80af693132696981662dc7`, first parent `dcd65418`, reviewed integration head `a8a3cb65`. The merge tree equals the tested candidate tree exactly. All 8 candidate PR/push CI runs / 17 checks were SUCCESS: P0, Backend, Android, Desktop and both TTS workflows. Syntax and isolated ASGI import also passed without startup or external DB/Telegram operations.
+- Follow freshly fetched `origin/main`; subsequent release-record documentation does not change application bytes. PR #198's release section records final main SHA, post-promotion CI and Railway deployment evidence. Production follows main; do not infer a successful deploy solely from a successful Git push. Owner acceptance remains honest: real account/provider/installed-client scenarios are not marked passed by synthetic CI.
+- Original lesson JSON, DB schema/migrations and existing subscription/provider-auth services are unchanged relative to the old main. Bot/Mini App backend deploy does not automatically replace installed APK/DMG/EXE clients. Practical user checks: [25-scenario guide](../docs/P3_MAIN_MERGE_MANUAL_QA_UZ.md); permanent authoring rules: [localization README](README.md).
+- `codex/local-ai` and `codex/cloud-ai` have 7 and 15 unique pre-promotion commits respectively. Their exact remote heads and full recovery bundle were preserved privately; no force/reset/delete was authorized or performed. Use a clean checkout based on current main for further work until these divergent branches are reconciled; never fold their unreviewed commits into main as part of this release.
+
 Updated: 2026-10-23. **This is the short authoritative checkpoint, not evidence of main/production release.**
 
 ## Active local Mac QA — 2026-10-23
