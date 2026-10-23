@@ -1,6 +1,6 @@
 # HSK AI — Admin PWA implementation plan
 
-Status: **Phase 0 source audit completed in part; fail-closed Phase 1A route bootstrap has started on the feature branch. Google/Telegram verification, passkey, sessions, UI/data integration and release are not implemented.**
+Status: **Phase 0 audit partial; Phase 1A Google OAuth transport, private Telegram Bot approval, and server-side verified-hash identity finalizer are committed behind `ADMIN_PWA_ENABLED=false`. No browser completion route, passkey, authenticated admin sessions, live UI, real data integration or release. Local isolated tests only; NOT full checkout CI, PostgreSQL or E2E.**
 Target public URL: `https://hskai.app/admin` (owner-designated; live DNS/TLS/routing still needs verification).
 Branch: `codex/admin-pwa` (branched from `main` at `e935e4315df42037d6aab4ab38b2c4e5d9bbb681`).
 Scope: deliver a separate secure browser-installable Admin PWA without disrupting the existing Telegram Admin Mini App, admin Bot, Android, Desktop, production or main.
