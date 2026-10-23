@@ -1,6 +1,129 @@
 name: Backend targeted tests
 
 on:
+  # This GitHub-App feature branch needs the same backend/API authentication
+  # smoke checks on pushes; PR-only events do not cover every ref update.
+  push:
+    branches:
+      - codex/i18n-local-first-foundation-20261017
+      - codex/p3-main-integration-20261020
+    paths:
+      - "app/main.py"
+      - "app/bot/handlers/start.py"
+      - "app/bot/handlers/commands.py"
+      - "tests/test_onboarding_service.py"
+      - "app/static/*.html"
+      - "app/static/course_v3_data/*.js"
+      - "app/static/course_v3_data/*.css"
+      - "tests/test_telegram_sdk_asset.py"
+      - "app/api/miniapp_entitlements.py"
+      - "app/api/desktop_course.py"
+      - "app/services/course_p3_grammar_localization.py"
+      - "app/services/entitlements/lesson_access.py"
+      - "app/services/entitlements/engine.py"
+      - "app/services/desktop_course_service.py"
+      - "app/services/account_identity.py"
+      - "app/services/ai_usage_budget_service.py"
+      - "app/services/voice_practice_service.py"
+      - "app/services/android_live_voice_service.py"
+      - "app/repositories/user_repo.py"
+      - "app/db/models/ai_usage.py"
+      - "app/db/models/voice_practice_session.py"
+      - "alembic/versions/0105_native_ai_voice_ownership.py"
+      - "app/db/models/payment.py"
+      - "app/db/models/subscription_entry_event.py"
+      - "app/repositories/payment_repo.py"
+      - "app/services/payment_service.py"
+      - "app/services/payment_review_preview_service.py"
+      - "alembic/versions/0106_canonical_payment_ownership.py"
+      - "alembic/versions/0107_canonical_referral_ownership.py"
+      - "alembic/versions/0108_native_audit_ownership.py"
+      - "app/db/models/course_pilot_event.py"
+      - "app/db/models/entitlement_shadow_event.py"
+      - "app/db/models/discount_campaign.py"
+      - "app/repositories/discount_campaign_repo.py"
+      - "app/services/discount_service.py"
+      - "app/services/entitlements/shadow.py"
+      - "tests/test_i18n_native_audit_migration.py"
+      - "tests/test_i18n_native_discount_ownership.py"
+      - "app/services/desktop_auth_service.py"
+      - "app/services/native_oauth_service.py"
+      - "app/config.py"
+      - "app/services/google_auth.py"
+      - "app/services/subscription_miniapp_service.py"
+      - "app/services/subscription_service.py"
+      - "app/services/desktop_subscription_service.py"
+      - "app/api/desktop_practice.py"
+      - "app/services/course_miniapp_access_service.py"
+      - "app/services/course_notification_service.py"
+      - "app/services/release_feedback_service.py"
+      - "app/bot/keyboards/release_feedback.py"
+      - "app/bot/handlers/release_feedback.py"
+      - "tests/test_bot_release_feedback_localization.py"
+      - "tests/test_admin_panel_has_no_dead_controls.py"
+      - "localization/ui/*/bot.json"
+      - "app/api/android_features.py"
+      - "app/api/desktop_voice.py"
+      - "app/api/desktop_rating.py"
+      - "app/api/desktop_referral.py"
+      - "app/services/miniapp_hint_service.py"
+      - "app/services/conversion_funnel_service.py"
+      - "app/services/subscription_entry_analytics_service.py"
+      - "app/services/desktop_practice_service.py"
+      - "app/services/identity_link_service.py"
+      - "app/api/native_oauth.py"
+      - "app/api/desktop_auth.py"
+      - "app/api/android_auth.py"
+      - "app/bot/handlers/desktop_auth.py"
+      - "tests/test_native_oauth_api.py"
+      - "tests/test_native_account_signup.py"
+      - "tests/test_desktop_provider_accounts.py"
+      - "tests/test_native_oauth_lifecycle.py"
+      - "tests/test_identity_link_service.py"
+      - "app/db/models/referral.py"
+      - "app/repositories/referral_repo.py"
+      - "app/services/referral_service.py"
+      - "tests/test_i18n_native_referral_migration.py"
+      - "tests/test_i18n_native_referral_ownership.py"
+      - "tests/test_i18n_native_referral_concurrency.py"
+      - "tests/native_postgres_deadlines.py"
+      - "tests/test_native_account_concurrency.py"
+      - "tests/test_telegram_identity_link.py"
+      - "tests/test_native_hsk30_payments.py"
+      - "tests/test_payment_service_receipt_lock.py"
+      - "tests/test_native_account_statistics.py"
+      - "tests/test_native_purge_ownership.py"
+      - "scripts/qa_standalone_bootstrap.py"
+      - "tests/test_qa_standalone_bootstrap.py"
+      - "alembic/versions/0109_public_site_traffic_daily.py"
+      - "tests/test_i18n_native_payment_migration.py"
+      - "tests/test_i18n_native_payment_repository.py"
+      - "tests/test_subscription_service.py"
+      - "tests/test_i18n_native_ai_voice_ownership.py"
+      - "app/services/course_miniapp_analytics_service.py"
+      - "app/db/models/user.py"
+      - "app/db/models/user_identity.py"
+      - "app/db/models/course_miniapp_event.py"
+      - "app/db/models/desktop.py"
+      - "app/db/models/account_notice_delivery.py"
+      - "app/db/models/conversion_funnel_event.py"
+      - "app/db/models/course_ad.py"
+      - "app/db/models/course_user_notification.py"
+      - "app/db/models/trial_risk_event.py"
+      - "alembic/versions/0103_native_identity_accounts.py"
+      - "alembic/versions/0104_native_account_foundation.py"
+      - "tests/test_i18n_native_account_ownership.py"
+      - "tests/test_i18n_miniapp_reservation_asgi.py"
+      - "tests/test_miniapp_course_context.py"
+      - "tests/test_course_lesson_completion_proof.py"
+      - "tests/test_miniapp_course_map_concurrency.py"
+      - "tests/test_course_v3_static_data.py"
+      - "tests/e2e/test_miniapp_smoke.py"
+      - "tests/test_hsk30_lesson_limits.py"
+      - "tests/test_desktop_course_api.py"
+      - "tests/test_android_course_api.py"
+      - "requirements.txt"
+      - ".github/workflows/backend-ci.yml"
   pull_request:
     paths:
       - "app/**"
@@ -10,22 +133,14 @@ on:
       - ".github/workflows/backend-ci.yml"
   workflow_dispatch:
 
+concurrency:
+  group: backend-targeted-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   targeted-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    services:
-      native-postgres:
-        image: postgres:18
-        env:
-          POSTGRES_DB: native_accounts_test
-          POSTGRES_USER: postgres
-          POSTGRES_HOST_AUTH_METHOD: trust
-        ports:
-          - "127.0.0.1:5432:5432"
-        options: >-
-          --health-cmd "pg_isready -U postgres -d native_accounts_test"
-          --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -36,12 +151,88 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt aiosqlite
+      - name: Smoke import staging ASGI entrypoint without database or Telegram startup
+        env:
+          HSK_STAGING_QA_MODE: "1"
+          RAILWAY_ENVIRONMENT_NAME: staging
+          HSK_STAGING_DB_HOST: localhost
+          DATABASE_URL: postgresql://qa:qa@localhost:5432/qa
+        run: |
+          python - <<'PY'
+          from app.staging_qa import app, staging_qa_lifespan
+          assert app.router.lifespan_context is staging_qa_lifespan
+          print("staging ASGI route graph imported; no startup, DB or Telegram operations")
+          PY
       - name: Check real Android assistant photo decoding
         run: python -m unittest tests.test_android_assistant_service.AssistantImageTransportTests
       - name: Verify onboarding save confirmation and recovery
         run: python -m unittest tests.test_miniapp_onboarding_save_confirmation tests.test_course_miniapp_onboarding
       - name: Run HSK 3.0 lesson limit regression
         run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract
+      - name: Verify synthetic Mini App lesson reservation auth and quota boundary
+        run: python -m unittest tests.test_i18n_miniapp_reservation_asgi
+      - name: Verify course context, progress idempotence and current browser delivery contracts
+        env:
+          BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+          DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          REDIS_URL: "redis://127.0.0.1:1/0"
+        run: python -m unittest tests.test_course_lesson_completion_proof tests.test_miniapp_course_context tests.test_course_v3_static_data tests.test_desktop_course_api
+      - name: Verify language callback validation and onboarding state preservation
+        env:
+          BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+          DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          REDIS_URL: "redis://127.0.0.1:1/0"
+        run: python -m unittest tests.test_onboarding_service
+      - name: Verify actual HTTP delivery of browser scripts and private source boundaries
+        env:
+          BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+          DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          REDIS_URL: "redis://127.0.0.1:1/0"
+        run: python -m unittest tests.test_telegram_sdk_asset
+      - name: Verify local notification copy and custom override precedence
+        env:
+          BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+          DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          REDIS_URL: "redis://127.0.0.1:1/0"
+        run: |
+          python scripts/i18n_build_bot_catalogs.py --check
+          python scripts/i18n_build_notification_catalogs.py --check
+          python scripts/i18n_build_public_site_catalog.py --check
+          python -m unittest tests.test_bot_catalog_runtime tests.test_notification_catalog_runtime tests.test_course_notification_language tests.test_motivation_reminder_service tests.test_public_site
+      - name: Test canonical Google Apple Telegram native sign-in and identity linking
+        run: |
+          python -m unittest \
+            tests.test_native_oauth_api \
+            tests.test_native_account_signup \
+            tests.test_desktop_provider_accounts \
+            tests.test_native_oauth_lifecycle \
+            tests.test_identity_link_service
+      - name: Test 0108 native audit facts and personal discount account isolation
+        run: |
+          python -m unittest \
+            tests.test_i18n_native_audit_migration \
+            tests.test_i18n_native_discount_ownership
+      - name: Test 0107 referrals, native owner isolation and signup attribution migration
+        run: |
+          python -m unittest \
+            tests.test_i18n_native_referral_migration \
+            tests.test_i18n_native_referral_ownership \
+            tests.test_i18n_native_referral_concurrency
+      - name: Test 0106 canonical financial migration and ownership isolation
+        run: |
+          python -m unittest tests.test_i18n_native_payment_migration tests.test_i18n_native_payment_repository tests.test_payment_review_preview
+      - name: Test provider-only AI budgets, Voice sessions and 0105 migration
+        run: python -m unittest tests.test_i18n_native_ai_voice_ownership
+      - name: Test canonical native account ownership and migration foundation
+        run: python -m unittest tests.test_i18n_native_account_ownership
+      - name: Test bearer-authenticated P3 native lesson and completed entitlement contracts
+        run: |
+          python -m unittest \
+            tests.test_desktop_course_api.DesktopCourseApiTests.test_authenticated_hsk30_p3_lesson_keeps_grammar_mirror_and_access \
+            tests.test_desktop_course_api.DesktopCourseApiTests.test_a_completed_lesson_stays_reviewable_after_expiry \
+            tests.test_desktop_course_api.DesktopCourseApiTests.test_denied_lesson_records_limit_hit_in_fixture_database \
+            tests.test_android_course_api.AndroidCourseServiceTests.test_a_spent_allowance_cannot_complete_the_next_lesson \
+            tests.test_android_course_api.AndroidCourseServiceTests.test_free_user_can_select_hsk30_n3_but_content_stays_locked
       - name: Run HSK 3.0 currency checkout regressions
         run: python -m unittest tests.test_hsk30_unlock_checkout tests.test_subscription_miniapp_card_banks
       - name: Run learning plan and canonical mistake regressions
@@ -51,6 +242,39 @@ jobs:
         run: |
           python -m unittest tests.test_i18n_inventory tests.test_i18n_ui_regressions
           python scripts/i18n_inventory.py --output /tmp/hsk-i18n-audit.json
+          python -m unittest tests.test_i18n_source_audit
+          python scripts/i18n_source_audit.py --output /tmp/hsk-i18n-source-audit.json
+          python -m unittest tests.test_i18n_baseline_guard
+          python scripts/i18n_baseline_guard.py --output /tmp/hsk-i18n-baseline-guard.json
+          python -m unittest tests.test_i18n_lesson_samples
+          python scripts/i18n_lesson_samples.py --output /tmp/hsk-i18n-lesson-samples.json
+          python -m unittest tests.test_i18n_review_queue
+          python scripts/i18n_review_queue.py --source /tmp/hsk-i18n-source-audit.json --output /tmp/hsk-i18n-review-queue.json
+          python -m unittest tests.test_i18n_p0_contract_audit
+          python scripts/i18n_p0_contract_audit.py --output /tmp/hsk-i18n-p0-contract.json
+          python -m unittest tests.test_i18n_android_resource_audit
+          python scripts/i18n_android_resource_audit.py --output /tmp/hsk-i18n-android-xml-audit.json
+          python -m unittest tests.test_i18n_catalog_contract_audit
+          python scripts/i18n_catalog_contract_audit.py --output /tmp/hsk-i18n-catalog-contract-audit.json
+          python -m unittest tests.test_i18n_miniapp_catalog_audit
+          python scripts/i18n_miniapp_catalog_audit.py --output /tmp/hsk-i18n-miniapp-catalog-audit.json
+      - name: Save P0 localization audit reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hsk-i18n-p0-audit
+          path: |
+            /tmp/hsk-i18n-audit.json
+            /tmp/hsk-i18n-source-audit.json
+            /tmp/hsk-i18n-baseline-guard.json
+            /tmp/hsk-i18n-lesson-samples.json
+            /tmp/hsk-i18n-review-queue.json
+            /tmp/hsk-i18n-p0-contract.json
+            /tmp/hsk-i18n-android-xml-audit.json
+            /tmp/hsk-i18n-catalog-contract-audit.json
+            /tmp/hsk-i18n-miniapp-catalog-audit.json
+          if-no-files-found: warn
+          retention-days: 14
       - name: Guard QA schema-only bootstrap (offline, no DB credentials)
         run: python -m unittest tests.test_qa_schema_only_bootstrap
       - name: Guard new isolated QA project initializer
@@ -92,49 +316,115 @@ jobs:
       - name: Run device intelligence and app promo regressions
         run: |
           python -m unittest tests.test_user_device_inventory_service tests.test_desktop_download_api tests.test_android_contextual_app_promo tests.test_android_analytics_service tests.test_android_push tests.test_android_account_notices tests.test_android_apk_download tests.test_admin_panel_has_no_dead_controls
+      - name: Run Bot menu localization regressions
+        run: python -m unittest tests.test_bot_menu_localization
+      - name: Run release feedback localization regressions
+        run: python -m unittest tests.test_bot_release_feedback_localization
+      - name: Run promo button localization regressions
+        run: python -m unittest tests.test_bot_promo_button_localization
       - name: Run advertisement placement, AI localization and default preset regressions
-        run: python -m unittest tests.test_ad_placement_service tests.test_course_ad_types tests.test_course_ad_translation_service tests.test_course_ads_module tests.test_profile_limit_ui_contract tests.test_profile_answer_accuracy
-      - name: Check provider proofs, browser handoff and identity isolation
-        env:
-          NATIVE_ACCOUNT_TEST_DATABASE_URL: postgresql+asyncpg://postgres@127.0.0.1:5432/native_accounts_test
-        run: >-
-          python -m unittest tests.test_native_oauth_api tests.test_native_oauth_lifecycle tests.test_oidc_verifier
-          tests.test_identity_link_service tests.test_desktop_auth_service
+        run: python -m unittest tests.test_ad_placement_service tests.test_course_ad_types tests.test_course_ad_translation_service tests.test_course_ads_module tests.test_miniapp_practice_presentation_restore tests.test_profile_limit_ui_contract tests.test_profile_answer_accuracy
       - name: Check account deletion ownership, retention, migration, and public instructions
         run: >-
           python -m unittest tests.test_admin_delete_safety tests.test_account_deletion_request
           tests.test_account_deletion_api tests.test_account_deletion_cleanup
           tests.test_account_deletion_migration tests.test_public_site
-      - name: Check native signup, canonical ownership, and concurrent identity changes
-        env:
-          NATIVE_ACCOUNT_TEST_DATABASE_URL: postgresql+asyncpg://postgres@127.0.0.1:5432/native_accounts_test
-        run: >-
-          python -m unittest tests.test_native_account_signup tests.test_native_account_migration
-          tests.test_native_account_concurrency tests.test_native_account_learning
-          tests.test_native_account_ai_voice tests.test_native_account_lifecycle
-          tests.test_native_account_admin tests.test_desktop_provider_accounts
-          tests.test_native_account_acceptance tests.test_native_account_rehearsal
-          tests.test_native_account_payments tests.test_native_payment_repository
-          tests.test_native_payment_migration tests.test_native_payment_discounts_finance
-          tests.test_payment_service_receipt_lock
-          tests.test_native_hsk30_payments tests.test_universal_referrals
-          tests.test_universal_referral_migration tests.test_universal_referral_concurrency
-          tests.test_telegram_identity_link tests.test_telegram_link_acceptance
-      - name: Audit canonical billing, rewards, admin metrics and purge isolation
-        env:
-          NATIVE_ACCOUNT_TEST_DATABASE_URL: postgresql+asyncpg://postgres@127.0.0.1:5432/native_accounts_test
-        run: >-
-          python -m unittest tests.test_native_account_statistics
-          tests.test_admin_canonical_management tests.test_universal_personal_discounts
-          tests.test_partner_payment_ownership tests.test_entitlement_shadow_service
-          tests.test_native_purge_ownership tests.test_native_audit_migration
-          tests.test_native_transport_guards tests.test_limit_notification_service
-          tests.test_native_scheduler_transport tests.test_bot_block_cause_ownership
-          tests.test_course_sales_experiment_service
 
-  admin-ownership-ui:
+  native-postgres:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: hsk_critical_test
+          POSTGRES_USER: hsk_critical_qa
+          POSTGRES_PASSWORD: hsk-critical-ci-only
+        ports:
+          - 5432/tcp
+        options: >-
+          --health-cmd "pg_isready -U hsk_critical_qa -d hsk_critical_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      # Application globals must never point at the disposable fixture database.
+      DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+      BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+      REDIS_URL: "redis://127.0.0.1:1/0"
+      GEMINI_API_KEY: ""
+      OPENAI_API_KEY: ""
+      GOOGLE_API_KEY: ""
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - name: Install PostgreSQL regression dependencies
+        run: python -m pip install -r requirements.txt pytest aiosqlite
+      - name: Verify isolated PostgreSQL ownership, migrations and concurrent writes
+        env:
+          NATIVE_ACCOUNT_TEST_DATABASE_URL: "postgresql+asyncpg://hsk_critical_qa:hsk-critical-ci-only@127.0.0.1:${{ job.services.postgres.ports[5432] }}/hsk_critical_test"
+        run: |
+          python - <<'PY'
+          import os
+          from urllib.parse import urlsplit
+
+          database = urlsplit(os.environ["NATIVE_ACCOUNT_TEST_DATABASE_URL"])
+          assert database.scheme == "postgresql+asyncpg"
+          assert database.hostname == "127.0.0.1"
+          assert database.path == "/hsk_critical_test"
+          assert database.port and database.port > 1
+          assert os.environ["DATABASE_URL"] == "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          PY
+          python -m pytest -q -rs --tb=short \
+            tests/test_native_account_concurrency.py \
+            tests/test_miniapp_course_map_concurrency.py \
+            tests/test_native_oauth_lifecycle.py::NativeOAuthConcurrencyTests \
+            tests/test_telegram_identity_link.py::TelegramIdentityConcurrencyTests \
+            tests/test_i18n_native_payment_repository.py::NativePaymentConcurrencyTests \
+            tests/test_native_hsk30_payments.py::NativeHsk30ConcurrencyTests \
+            tests/test_payment_service_receipt_lock.py::PaymentServiceReceiptConcurrencyTests \
+            tests/test_i18n_native_referral_concurrency.py \
+            tests/test_i18n_native_audit_migration.py::NativeAuditMigrationPostgreSQLTests \
+            tests/test_native_account_statistics.py \
+            tests/test_native_purge_ownership.py \
+            --junitxml=/tmp/hsk-native-postgres.xml
+      - name: Reject skipped or missing PostgreSQL coverage
+        if: always()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          report = Path("/tmp/hsk-native-postgres.xml")
+          if not report.is_file():
+              raise SystemExit("PostgreSQL regression report is missing")
+          cases = list(ET.parse(report).getroot().iter("testcase"))
+          skipped = [case for case in cases if case.find("skipped") is not None]
+          if len(cases) < 64 or skipped:
+              raise SystemExit(f"PostgreSQL coverage incomplete: {len(cases)} tests, {len(skipped)} skipped")
+          if any(case.find("failure") is not None or case.find("error") is not None for case in cases):
+              raise SystemExit("PostgreSQL regressions failed")
+          print(f"PostgreSQL coverage: {len(cases)} tests, 0 skipped")
+          PY
+      - name: Save PostgreSQL regression report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hsk-native-postgres-regressions
+          path: /tmp/hsk-native-postgres.xml
+          if-no-files-found: warn
+          retention-days: 14
+
+  miniapp-ui:
+    runs-on: ubuntu-latest
+    # Browser/Ubuntu dependency downloads can consume the former 8-minute budget.
+    # Leave time for both unchanged browser regression steps on a cold runner.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -144,8 +434,16 @@ jobs:
         run: |
           python -m pip install pytest playwright
           python -m playwright install --with-deps chromium
-      - name: Check canonical admin actions and deferred practice initialization
+      - name: Preserve current main navigation, preload and desktop dialog behavior
         run: >-
-          python -m pytest -q tests/e2e/test_admin_canonical_management.py
-          tests/e2e/test_miniapp_smoke.py::test_admin_control_renders_real_api_payload_without_demo_data
-          tests/e2e/test_practice_bootstrap.py
+          python -m pytest -q tests/e2e/test_practice_bootstrap.py
+          tests/e2e/test_miniapp_smoke.py::test_liquid_glass_bottom_nav_renders_without_extra_stylesheet_request
+          tests/e2e/test_miniapp_smoke.py::test_practice_tab_is_usable_during_unfinished_background_load
+          tests/e2e/test_miniapp_smoke.py::test_desktop_course_modal_covers_full_viewport_and_mobile_keeps_bottom_sheet
+          tests/test_miniapp_top_spacing_contract.py
+      - name: Verify critical learning and checkout flows with synthetic APIs
+        env:
+          MINIAPP_E2E_BASE_URL: "http://hsk-ai.local"
+        run: >-
+          python -m pytest -q tests/e2e/test_miniapp_smoke.py
+          -k 'course_language_switch_uses_local_catalogs or course_language_failed_save_reverts_ui or course_language_rapid_changes_are_serial or daily_plan_lesson_completion or onboarding_autostart_opens_first_lesson or starter_repair_mic_denied_and_completion or starter_mic_skip_stops_recording or checkpoint_exit_ticket_mastery_and_paywall_boundary or checkpoint_repair_resume_restores_exact_semantic_card or required_foundation_defers_challenge or required_foundation_load_error or d1_recovery_resumes_saved_lesson or recognition_drill_reports_every_answer or hsk_exam_uses_public_questions_and_server_result or challenge_question_is_blind or paywall_replaces_the_lesson_sheet or subscription_page_smoke or hsk30_pending_payment_stays or regular_subscription_shows_the_users_admin_discount or expired_discount_link_opens_regular_prices or subscription_checkout_tracks_one_attempt or subscription_foreign_region_skips_payment or profile_settings_icon_and_paid_renewal'

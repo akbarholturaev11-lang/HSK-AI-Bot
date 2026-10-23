@@ -113,6 +113,7 @@ internal fun VoiceCallScreen(
     onSendText: (String) -> Unit,
     onEndSession: () -> Unit,
     onSwapPartner: (String) -> Unit,
+    onReport: (VoiceLine) -> Unit,
 ) {
     val context = LocalContext.current
     var settingsOpen by remember { mutableStateOf(false) }
@@ -154,14 +155,16 @@ internal fun VoiceCallScreen(
         )
 
         val status = when {
-            state.isStarting -> stringResource(R.string.voice_status_connecting)
-            state.isLiveConnecting -> stringResource(R.string.voice_status_connecting)
-            state.isLive && state.isAiSpeaking -> stringResource(R.string.voice_status_speaking)
+            state.isStarting -> stringResource(R.string.hsk_course_voice_page_connecting)
+            state.isLiveConnecting -> stringResource(R.string.hsk_course_voice_page_connecting)
+            state.isLive && state.isAiSpeaking -> stringResource(
+                R.string.hsk_course_voice_page_speaking,
+            )
             state.isLive && state.isLiveMuted -> stringResource(R.string.voice_status_muted)
             state.isLive && !state.isLiveConnected -> stringResource(R.string.voice_status_live_disconnected)
-            state.isRecording -> stringResource(R.string.voice_status_listening)
-            state.isSending -> stringResource(R.string.voice_status_analyzing)
-            else -> stringResource(R.string.voice_status_speaking)
+            state.isRecording -> stringResource(R.string.hsk_course_voice_page_listening)
+            state.isSending -> stringResource(R.string.hsk_course_voice_page_analyzing)
+            else -> stringResource(R.string.hsk_course_voice_page_speaking)
         }
         if (transcriptVisible) {
             Box(
@@ -193,6 +196,7 @@ internal fun VoiceCallScreen(
             CallChat(
                 state = state,
                 subtitlesOn = subtitlesOn,
+                onReport = onReport,
                 modifier = Modifier.fillMaxWidth().weight(1f),
             )
         } else {
@@ -327,7 +331,7 @@ private fun CallTopBar(
     ) {
         RoundIconButton(
             icon = Icons.Filled.Close,
-            contentDescription = stringResource(R.string.voice_end),
+            contentDescription = stringResource(R.string.hsk_course_memorize_finish),
             onClick = onClose,
         )
         Column(
@@ -357,7 +361,9 @@ private fun CallTopBar(
         )
         RoundIconButton(
             icon = Icons.Filled.Settings,
-            contentDescription = stringResource(R.string.voice_partner),
+            contentDescription = stringResource(
+                R.string.hsk_course_voice_page_opt_persona,
+            ),
             onClick = onOpenSettings,
             enabled = settingsEnabled,
         )
@@ -395,6 +401,7 @@ private fun RoundIconButton(
 private fun CallChat(
     state: VoiceUiState,
     subtitlesOn: Boolean,
+    onReport: (VoiceLine) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
@@ -430,7 +437,9 @@ private fun CallChat(
             contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 14.dp, bottom = 6.dp),
             verticalArrangement = Arrangement.spacedBy(9.dp),
         ) {
-            items(state.lines) { line -> VoiceBubble(line, subtitlesOn) }
+            items(state.lines) { line ->
+                VoiceBubble(line, subtitlesOn, onReport = { onReport(line) })
+            }
             state.error?.let { error ->
                 item { ErrorPill(stringResource(error.messageRes)) }
             }
@@ -490,7 +499,7 @@ private fun CallDock(
                         )
                         Spacer(Modifier.width(6.dp))
                         Text(
-                            text = stringResource(R.string.voice_what_to_say),
+                            text = stringResource(R.string.hsk_course_voice_page_what_to_say),
                             style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
                             color = PompColors.CinnabarDark,
                         )
@@ -507,7 +516,7 @@ private fun CallDock(
                 ) {
                     SquareIconButton(
                         icon = Icons.Filled.Mic,
-                        contentDescription = stringResource(R.string.voice_a11y_mic),
+                        contentDescription = stringResource(R.string.hsk_course_course_voice_inline_a11y_mic),
                         onClick = {
                             keyboardController?.hide()
                             onCloseKeyboard()
@@ -516,7 +525,9 @@ private fun CallDock(
                     OutlinedTextField(
                         value = draft,
                         onValueChange = { if (it.length <= MAX_TYPED_CHARS) onDraftChange(it) },
-                        placeholder = { Text(stringResource(R.string.voice_keyboard_hint)) },
+                        placeholder = {
+                            Text(stringResource(R.string.hsk_course_voice_page_kb_placeholder))
+                        },
                         maxLines = 3,
                         shape = RoundedCornerShape(16.dp),
                         colors = OutlinedTextFieldDefaults.colors(
@@ -531,7 +542,9 @@ private fun CallDock(
                     )
                     SquareIconButton(
                         icon = Icons.AutoMirrored.Filled.Send,
-                        contentDescription = stringResource(R.string.voice_a11y_send),
+                        contentDescription = stringResource(
+                            R.string.hsk_course_course_voice_inline_a11y_send,
+                        ),
                         onClick = onSend,
                         enabled = draft.isNotBlank() && state.canAnswer,
                         filled = true,
@@ -544,7 +557,9 @@ private fun CallDock(
                 ) {
                     SquareIconButton(
                         icon = Icons.Filled.Keyboard,
-                        contentDescription = stringResource(R.string.voice_a11y_keyboard),
+                        contentDescription = stringResource(
+                            R.string.hsk_course_course_voice_inline_a11y_keyboard,
+                        ),
                         onClick = onOpenKeyboard,
                         enabled = state.canAnswer,
                     )
@@ -615,7 +630,9 @@ private fun MicButton(isRecording: Boolean, enabled: Boolean, onClick: () -> Uni
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.Filled.Mic,
-                    contentDescription = stringResource(R.string.voice_a11y_mic),
+                    contentDescription = stringResource(
+                        R.string.hsk_course_course_voice_inline_a11y_mic,
+                    ),
                     tint = PompColors.Paper,
                     modifier = Modifier.size(31.dp),
                 )
@@ -672,7 +689,9 @@ private fun HintSheet(
         ) {
             item {
                 Text(
-                    text = stringResource(R.string.voice_hints_title),
+                    text = stringResource(
+                        R.string.hsk_course_voice_page_hint_title,
+                    ),
                     style = MaterialTheme.typography.titleMedium,
                     color = PompColors.Ink,
                 )
@@ -690,7 +709,9 @@ private fun HintSheet(
                 }
             }
             if (suggestions.isNotEmpty()) {
-                item { HintGroupLabel(stringResource(R.string.voice_hints_phrases)) }
+                item {
+                    HintGroupLabel(stringResource(R.string.hsk_course_voice_page_hint_phrases))
+                }
                 items(suggestions) { phrase ->
                     HintRow(
                         hanzi = phrase.hanzi,
@@ -781,27 +802,31 @@ private fun CallSettingsSheet(
     ) {
         Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
             Text(
-                text = stringResource(R.string.voice_settings_title),
+                text = stringResource(R.string.hsk_course_voice_page_settings),
                 style = MaterialTheme.typography.titleMedium,
                 color = PompColors.Ink,
             )
             Spacer(Modifier.height(10.dp))
             CallSettingRow(
-                label = stringResource(R.string.voice_setting_partner),
+                label = stringResource(R.string.hsk_course_voice_page_opt_persona),
                 value = partnerLabel,
                 onClick = onOpenPartner,
             )
             CallSettingRow(
-                label = stringResource(R.string.voice_setting_subtitles),
+                label = stringResource(R.string.hsk_course_voice_page_opt_sub),
                 value = stringResource(
-                    if (subtitlesOn) R.string.voice_setting_on else R.string.voice_setting_off
+                    if (subtitlesOn) R.string.hsk_course_voice_page_on else R.string.voice_setting_off
                 ),
                 onClick = onToggleSubtitles,
             )
             CallSettingRow(
-                label = stringResource(R.string.voice_setting_rate),
+                label = stringResource(R.string.hsk_course_voice_page_opt_rate),
                 value = stringResource(
-                    if (slowSpeech) R.string.voice_rate_slow else R.string.voice_rate_normal
+                    if (slowSpeech) {
+                        R.string.hsk_course_voice_page_rate_slow
+                    } else {
+                        R.string.hsk_course_voice_page_rate_normal
+                    }
                 ),
                 onClick = onToggleSlowSpeech,
             )

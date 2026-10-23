@@ -1,3 +1,4 @@
+from app.bot.generated.bot_i18n import bot_locale_map
 import json
 
 from sqlalchemy import select
@@ -7,77 +8,7 @@ from app.db.models.course_lessons import CourseLesson
 from app.repositories.course_pilot_event_repo import is_course_pilot_lesson
 
 
-_QUIZ_TEXT = {
-    "uz": {
-        "cat": "Lug'at",
-        "hint": "Dars {lesson} yangi so'zi",
-        "hanzi_to_meaning": "“{zh}” nimani anglatadi?",
-        "meaning_to_hanzi": "“{meaning}” qaysi so'z?",
-        "pinyin_to_hanzi": "“{pinyin}” qaysi so'z?",
-        "hanzi_to_pinyin": "“{zh}” pinyin qaysi?",
-        "listening_choice": "Eshiting va to'g'ri javobni tanlang",
-        "fill_blank": "Bo'sh joyni to'ldiring",
-        "fill_blank_choice": "Gapdagi bo'sh joyga mos so'zni tanlang",
-        "choose_meaning_in_context": "Gapdagi so'z ma'nosini tanlang",
-        "grammar_in_context": "Gapdagi grammatikani tanlang",
-        "listen_and_fill": "Eshiting va bo'sh joyni to'ldiring",
-        "build_sentence_chips": "Xitoycha gapni tuzing",
-        "meaning_hint": "ma'nosi: {meaning}",
-        "correct": "To'g'ri javob: {zh} — {meaning}.",
-        "grammar_cat": "Grammatika",
-        "grammar_hint": "Dars {lesson} grammatikasi",
-        "grammar_example_to_pattern": "Quyidagi gapda qaysi grammatika ishlatilgan?\n{example}",
-        "grammar_pattern_to_example": "“{title}” grammatikasiga qaysi gap mos?",
-        "grammar_correct": "To'g'ri javob: {title}. {rule}",
-        "grammar_example_correct": "To'g'ri javob: {example}\nBu gapda {title} ishlatilgan.",
-    },
-    "ru": {
-        "cat": "Слова",
-        "hint": "Новые слова урока {lesson}",
-        "hanzi_to_meaning": "Что означает “{zh}”?",
-        "meaning_to_hanzi": "Какое слово означает “{meaning}”?",
-        "pinyin_to_hanzi": "Какое слово читается “{pinyin}”?",
-        "hanzi_to_pinyin": "Какой pinyin у “{zh}”?",
-        "listening_choice": "Послушайте и выберите правильный ответ",
-        "fill_blank": "Заполните пропуск",
-        "fill_blank_choice": "Выберите слово для пропуска в предложении",
-        "choose_meaning_in_context": "Выберите значение слова в предложении",
-        "grammar_in_context": "Выберите грамматику в предложении",
-        "listen_and_fill": "Послушайте и заполните пропуск",
-        "build_sentence_chips": "Соберите китайское предложение",
-        "meaning_hint": "значение: {meaning}",
-        "correct": "Правильный ответ: {zh} — {meaning}.",
-        "grammar_cat": "Грамматика",
-        "grammar_hint": "Грамматика урока {lesson}",
-        "grammar_example_to_pattern": "Какая грамматика используется в этом предложении?\n{example}",
-        "grammar_pattern_to_example": "Какое предложение подходит к грамматике “{title}”?",
-        "grammar_correct": "Правильный ответ: {title}. {rule}",
-        "grammar_example_correct": "Правильный ответ: {example}\nВ этом предложении используется {title}.",
-    },
-    "tj": {
-        "cat": "Калимаҳо",
-        "hint": "Калимаҳои нави дарси {lesson}",
-        "hanzi_to_meaning": "“{zh}” чӣ маъно дорад?",
-        "meaning_to_hanzi": "Кадом калима маънои “{meaning}”-ро дорад?",
-        "pinyin_to_hanzi": "Кадом калима “{pinyin}” хонда мешавад?",
-        "hanzi_to_pinyin": "Pinyin-и “{zh}” кадом аст?",
-        "listening_choice": "Гӯш кунед ва ҷавоби дурустро интихоб кунед",
-        "fill_blank": "Ҷои холиро пур кунед",
-        "fill_blank_choice": "Калимаи мувофиқро барои ҷои холии ҷумла интихоб кунед",
-        "choose_meaning_in_context": "Маънои калимаро дар ҷумла интихоб кунед",
-        "grammar_in_context": "Грамматикаро дар ҷумла интихоб кунед",
-        "listen_and_fill": "Гӯш кунед ва ҷои холиро пур кунед",
-        "build_sentence_chips": "Ҷумлаи чиниро созед",
-        "meaning_hint": "маъно: {meaning}",
-        "correct": "Ҷавоби дуруст: {zh} — {meaning}.",
-        "grammar_cat": "Грамматика",
-        "grammar_hint": "Грамматикаи дарси {lesson}",
-        "grammar_example_to_pattern": "Дар ин ҷумла кадом грамматика истифода шудааст?\n{example}",
-        "grammar_pattern_to_example": "Кадом ҷумла ба грамматикаи “{title}” мувофиқ аст?",
-        "grammar_correct": "Ҷавоби дуруст: {title}. {rule}",
-        "grammar_example_correct": "Ҷавоби дуруст: {example}\nДар ин ҷумла {title} истифода шудааст.",
-    },
-}
+_QUIZ_TEXT = bot_locale_map('inline.services.course_miniapp_lesson_service.module.copy1')
 
 
 class CourseMiniAppLessonService:
@@ -490,44 +421,7 @@ class CourseMiniAppLessonService:
             2: "roleplay",
             3: "sentence_builder",
         }.get(lesson_order, "word_game")
-        copy = {
-            "uz": {
-                "start": "Boshlash",
-                "learn": "O'rganish",
-                "practice": "Mashq",
-                "explain": "AI izoh",
-                "win": "Natija",
-                "next": "Keyingi",
-                "today": "Bugun qisqa dars: {title}",
-                "promise": "3-5 minutda bitta aniq natija olasiz.",
-                "win_text": "Bugun asosiy so'z/qoida va bitta amaliy mashqni tugatdingiz.",
-                "next_text": "Keyingi darsda shu bilimni yangi vaziyatda ishlatasiz.",
-            },
-            "ru": {
-                "start": "Старт",
-                "learn": "Изучение",
-                "practice": "Практика",
-                "explain": "AI-разбор",
-                "win": "Результат",
-                "next": "Дальше",
-                "today": "Сегодня короткий урок: {title}",
-                "promise": "За 3-5 минут получите один понятный результат.",
-                "win_text": "Сегодня вы закрепили ключевое слово/правило и одну практику.",
-                "next_text": "В следующем уроке вы примените это в новой ситуации.",
-            },
-            "tj": {
-                "start": "Оғоз",
-                "learn": "Омӯзиш",
-                "practice": "Машқ",
-                "explain": "Шарҳи AI",
-                "win": "Натиҷа",
-                "next": "Навбатӣ",
-                "today": "Имрӯз дарси кӯтоҳ: {title}",
-                "promise": "Дар 3-5 дақиқа як натиҷаи равшан мегиред.",
-                "win_text": "Имрӯз калима/қоидаи асосӣ ва як машқи амалӣ анҷом шуд.",
-                "next_text": "Дар дарси навбатӣ инро дар вазъияти нав истифода мебаред.",
-            },
-        }.get(lang, {})
+        copy = bot_locale_map('inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1').get(lang, {})
         return {
             "pilot": True,
             "variant": variant,
@@ -593,11 +487,7 @@ class CourseMiniAppLessonService:
                 {
                     "id": f"{lesson_order}:{scope}:reinforce:1",
                     "type": "word_order",
-                    "prompt": {
-                        "uz": "Tarjimani so'zlardan tuzing",
-                        "ru": "Соберите перевод из слов",
-                        "tj": "Тарҷумаро аз калимаҳо созед",
-                    }.get(lang, "Tarjimani so'zlardan tuzing"),
+                    "prompt": bot_locale_map('inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy1').get(lang, "Tarjimani so'zlardan tuzing"),
                     "source": zh_sentence,
                     "tokens": self._shuffled_tokens(answer_tokens, f"wo:{lesson_order}:{scope}:{lang}"),
                     "answer": answer_tokens,
@@ -612,11 +502,7 @@ class CourseMiniAppLessonService:
                 {
                     "id": f"{lesson_order}:{scope}:reinforce:2",
                     "type": "match_pairs",
-                    "prompt": {
-                        "uz": "Mos juftliklarni toping",
-                        "ru": "Найдите пары",
-                        "tj": "Ҷуфтҳои мувофиқро ёбед",
-                    }.get(lang, "Mos juftliklarni toping"),
+                    "prompt": bot_locale_map('inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy2').get(lang, "Mos juftliklarni toping"),
                     "pairs": pairs,
                     "explanation": " · ".join(f"{left} = {right}" for left, right in pairs),
                 }
@@ -650,11 +536,7 @@ class CourseMiniAppLessonService:
                 {
                     "id": f"{lesson_order}:{scope}:reinforce:4",
                     "type": "stroke_preview",
-                    "prompt": {
-                        "uz": "Iyeroglif shaklini ko'ring",
-                        "ru": "Посмотрите форму иероглифа",
-                        "tj": "Шакли иероглифро бинед",
-                    }.get(lang, "Iyeroglif shaklini ko'ring"),
+                    "prompt": bot_locale_map('inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy3').get(lang, "Iyeroglif shaklini ko'ring"),
                     "chars": [char for char in stroke_word["zh"] if "\u4e00" <= char <= "\u9fff"],
                     "word": stroke_word["zh"],
                     "pinyin": stroke_word.get("pinyin") or "",
@@ -672,11 +554,7 @@ class CourseMiniAppLessonService:
                     {
                         "id": f"{lesson_order}:{scope}:reinforce:0",
                         "type": "build_chinese_sentence",
-                        "prompt": {
-                            "uz": f"Xitoycha gapni tuzing: {translated_sentence}",
-                            "ru": f"Соберите китайское предложение: {translated_sentence}",
-                            "tj": f"Ҷумлаи чиниро созед: {translated_sentence}",
-                        }.get(lang, f"Xitoycha gapni tuzing: {translated_sentence}"),
+                        "prompt": bot_locale_map('inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4.case1', translated_sentence=translated_sentence).get(lang, f"Xitoycha gapni tuzing: {translated_sentence}"),
                         "tokens": self._shuffled_tokens(chinese_tokens, f"zh:{lesson_order}:{scope}:{lang}"),
                         "answer": chinese_tokens,
                         "explanation": zh_sentence,

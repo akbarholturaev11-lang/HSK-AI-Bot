@@ -2,6 +2,7 @@ import json
 import re
 import unittest
 from html.parser import HTMLParser
+from pathlib import Path
 from types import SimpleNamespace
 from xml.etree import ElementTree
 
@@ -138,6 +139,33 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(titles), len(PAGES))
         self.assertEqual(len(descriptions), len(PAGES))
 
+    async def test_product_first_header_language_and_download_contract(self):
+        # Content remains crawlable without JavaScript, with one URL per locale.
+        for language, url_code in (("tg", "tj"), ("ru", "ru"), ("uz", "uz")):
+            response = await self.client.get(HOME_PATHS[language] + "?utm_source=instagram")
+            html = response.text
+            self.assertIn('class="course-cta"', html)
+            self.assertIn('class="product-summary"', html)
+            self.assertIn('<details class="language-switch">', html)
+            self.assertIn('data-site-nav="features"', html)
+            self.assertIn('data-site-nav="download"', html)
+            self.assertIn("lang=" + url_code, html)
+            self.assertIn("/download?lang=" + url_code, html)
+            self.assertIn("utm_source=instagram", html)
+            self.assertNotIn('class="example"', html)
+            self.assertIn('/public-assets/language.js', html)
+        # Shared header is present on the existing installer page as well.
+        download = Path("app/static/desktop-download.html").read_text(encoding="utf-8")
+        self.assertIn('data-site-nav="courses"', download)
+        self.assertIn('data-site-nav="features"', download)
+        self.assertIn('data-site-selected-lang', download)
+        self.assertIn('/public-assets/navigation.css', download)
+        self.assertIn('/public-assets/language.js', download)
+        script = Path("app/static/desktop-download-page.js").read_text(encoding="utf-8")
+        self.assertIn("HSKSiteLanguage.get()", script)
+        self.assertIn("HSKSiteLanguage.set(state.language)", script)
+        self.assertIn('nextUrl.searchParams.set("lang", language)', script)
+
     async def test_sitemap_and_robots_private_boundaries(self):
         response = await self.client.get("/sitemap.xml")
         self.assertEqual(response.status_code, 200)
@@ -194,7 +222,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.client.get("/go/telegram?page=/api/private")).status_code, 400)
 
     async def test_assets_and_unknown_paths(self):
-        for path in ("site.css", "avatar.webp", "logo.png", "social-cover.webp"):
+        for path in ("site.css", "navigation.css", "language.js", "avatar.webp", "logo.png", "social-cover.webp"):
             r = await self.client.get("/public-assets/" + path)
             self.assertEqual(r.status_code, 200)
             self.assertTrue(r.content)

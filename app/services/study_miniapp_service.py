@@ -1,3 +1,4 @@
+from app.bot.generated.bot_i18n import bot_locale_map
 import json
 from datetime import datetime, timezone
 
@@ -307,11 +308,7 @@ class StudyMiniAppService:
         user.voice_mode = "none"
         await self.session.commit()
 
-        started_text = {
-            "uz": "🧠 Quiz xatolaringiz QA rejimida tahlil qilinyapti...",
-            "ru": "🧠 Ошибки квиза анализируются в режиме QA...",
-            "tj": "🧠 Хатоҳои квиз дар реҷаи QA таҳлил шуда истодаанд...",
-        }
+        started_text = bot_locale_map('inline.services.study_miniapp_service.send_quiz_ai_discussion.copy1')
         await bot.send_message(
             chat_id=telegram_id,
             text=started_text.get(lang, started_text["ru"]),

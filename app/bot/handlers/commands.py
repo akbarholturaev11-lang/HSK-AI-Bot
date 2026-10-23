@@ -28,7 +28,7 @@ from app.bot.keyboards.subscription import (
 from app.bot.handlers.android_app import reply_chat_id
 from app.bot.utils.course_miniapp import course_v3_miniapp_url
 from app.bot.keyboards.help import help_contact_keyboard
-from app.bot.utils.i18n import t
+from app.bot.utils.i18n import bot_locale_map, t
 from app.bot.utils.qa_entry import send_qa_entry
 from app.services.course_reminder_service import reminder_tz_label
 from app.services.help_settings_service import build_help_text
@@ -65,32 +65,12 @@ def _pct(part: int, total: int) -> float:
 
 def _status_label(status: str, lang: str) -> str:
     return {
-        "free": {
-            "tj": "Ройгон",
-            "uz": "Bepul",
-            "ru": "Бесплатно",
-        }.get(lang, "Bepul"),
-        "trial": {
-            "tj": "Санҷишӣ",
-            "uz": "Sinov rejimi",
-            "ru": "Пробный режим",
-        }.get(lang, "Sinov rejimi"),
-        "active": {
-            "tj": "Фаъол",
-            "uz": "Faol",
-            "ru": "Активный",
-        }.get(lang, "Faol"),
-        "expired": {
-            "tj": "Муддат гузаштааст",
-            "uz": "Muddati tugagan",
-            "ru": "Срок истек",
-        }.get(lang, "Muddati tugagan"),
-        "blocked": {
-            "tj": "Баста",
-            "uz": "Bloklangan",
-            "ru": "Заблокирован",
-        }.get(lang, "Заблокирован"),
-    }.get(status, {"tj": "Ройгон", "uz": "Bepul", "ru": "Бесплатно"}.get(lang, "Bepul"))
+        "free": bot_locale_map('inline.handlers.commands.helper_status_label.copy1').get(lang, "Bepul"),
+        "trial": bot_locale_map('inline.handlers.commands.helper_status_label.copy2').get(lang, "Sinov rejimi"),
+        "active": bot_locale_map('inline.handlers.commands.helper_status_label.copy3').get(lang, "Faol"),
+        "expired": bot_locale_map('inline.handlers.commands.helper_status_label.copy4').get(lang, "Muddati tugagan"),
+        "blocked": bot_locale_map('inline.handlers.commands.helper_status_label.copy5').get(lang, "Заблокирован"),
+    }.get(status, bot_locale_map('inline.handlers.commands.helper_status_label.copy6').get(lang, "Bepul"))
 
 
 def _profile_status_label(user, lang: str) -> str:
@@ -98,29 +78,17 @@ def _profile_status_label(user, lang: str) -> str:
     is_paid = getattr(user, "payment_status", "") == "approved"
 
     if status == "active" and is_paid:
-        return {
-            "tj": "Пардохт фаъол",
-            "uz": "To'lov faol",
-            "ru": "Оплата активна",
-        }.get(lang, "To'lov faol")
+        return bot_locale_map('inline.handlers.commands.helper_profile_status_label.copy1').get(lang, "To'lov faol")
 
     if status == "active":
-        return {
-            "tj": "Дастрасии тестӣ",
-            "uz": "Bepul test ruxsati",
-            "ru": "Тестовый доступ",
-        }.get(lang, "Bepul test ruxsati")
+        return bot_locale_map('inline.handlers.commands.helper_profile_status_label.copy2').get(lang, "Bepul test ruxsati")
 
     return _status_label(status, lang)
 
 
 def _language_label(value: str, lang: str) -> str:
-    labels = {
-        "tj": {"tj": "Тоҷикӣ", "uz": "O'zbek", "ru": "Русский"},
-        "uz": {"tj": "Tojik", "uz": "O'zbek", "ru": "Rus"},
-        "ru": {"tj": "Таджикский", "uz": "Узбекский", "ru": "Русский"},
-    }
-    unknown = {"tj": "Номаълум", "uz": "Noma'lum", "ru": "Неизвестно"}
+    labels = bot_locale_map('inline.handlers.commands.helper_language_label.copy1')
+    unknown = bot_locale_map('inline.handlers.commands.helper_language_label.copy2')
     return labels.get(lang, labels["ru"]).get(value, unknown.get(lang, unknown["ru"]))
 
 
@@ -129,11 +97,7 @@ def _level_label(value: str, lang: str) -> str:
         return "—"
     if value.startswith("hsk"):
         return value.upper()
-    beginner = {
-        "tj": "Оғозӣ",
-        "uz": "Boshlang'ich",
-        "ru": "Начальный",
-    }
+    beginner = bot_locale_map('inline.handlers.commands.helper_level_label.copy1')
     return beginner.get(lang, beginner["ru"]) if value == "beginner" else value
 
 
@@ -157,12 +121,18 @@ def _remaining_days(value) -> int | None:
         return None
 
 
+def _profile_copy(key: str, lang: str, **values) -> str:
+    # Existing Bot profile paths use Russian for unsupported language codes.
+    locale = lang if lang in ("uz", "ru", "tj") else "ru"
+    return t("bot.profile." + key, locale, **values)
+
+
 def _referral_count_label(total: int, lang: str) -> str:
     if lang == "tj":
-        return f"👥 <b>Даъватҳо:</b> {total} нафар"
+        return _profile_copy('referralCount', 'tj', total=total)
     if lang == "ru":
-        return f"👥 <b>Приглашения:</b> {total}"
-    return f"👥 <b>Chaqirganlar:</b> {total} ta"
+        return _profile_copy('referralCount', 'ru', total=total)
+    return _profile_copy('referralCount', 'uz', total=total)
 
 
 def _profile_reminder_line(progress, lang: str) -> str | None:
@@ -183,11 +153,7 @@ def _profile_reminder_line(progress, lang: str) -> str | None:
 
     tz_text = reminder_tz_label(progress)
 
-    label = {
-        "tj": "Ёдраскунак",
-        "uz": "Eslatma",
-        "ru": "Напоминание",
-    }.get(lang, "Напоминание")
+    label = bot_locale_map('inline.handlers.commands.helper_profile_reminder_line.copy1').get(lang, "Напоминание")
     return f"⏰ <b>{label}:</b> {escape(time_text)} ({escape(tz_text)})"
 
 
@@ -235,30 +201,30 @@ def _profile_text(
         plan_key = str(plan_raw)
         if lang == "tj":
             plan_map = {
-                "10_days": "10 рӯз",
-                "1_month": "1 моҳ",
-                "monthly": "1 моҳ",
+                "10_days": _profile_copy('plan10Days', lang),
+                "1_month": _profile_copy('plan1Month', lang),
+                "monthly": _profile_copy('plan1Month', lang),
             }
         elif lang == "uz":
             plan_map = {
-                "10_days": "10 kun",
-                "1_month": "1 oy",
-                "monthly": "1 oy",
+                "10_days": _profile_copy('plan10Days', lang),
+                "1_month": _profile_copy('plan1Month', lang),
+                "monthly": _profile_copy('plan1Month', lang),
             }
         else:
             plan_map = {
-                "10_days": "10 дней",
-                "1_month": "1 месяц",
-                "monthly": "1 месяц",
+                "10_days": _profile_copy('plan10Days', lang),
+                "1_month": _profile_copy('plan1Month', lang),
+                "monthly": _profile_copy('plan1Month', lang),
             }
         plan_label = plan_map.get(plan_key, "")
     elif is_paid:
         if duration_days is not None and 9 <= duration_days <= 11:
-            plan_label = "10 рӯз" if lang == "tj" else ("10 kun" if lang == "uz" else "10 дней")
+            plan_label = _profile_copy('plan10Days', lang) if lang == "tj" else (_profile_copy('plan10Days', lang) if lang == "uz" else _profile_copy('plan10Days', lang))
         elif duration_days is not None and 28 <= duration_days <= 31:
-            plan_label = "1 моҳ" if lang == "tj" else ("1 oy" if lang == "uz" else "1 месяц")
+            plan_label = _profile_copy('plan1Month', lang) if lang == "tj" else (_profile_copy('plan1Month', lang) if lang == "uz" else _profile_copy('plan1Month', lang))
         else:
-            plan_label = "Обунаи фаъол" if lang == "tj" else ("Faol obuna" if lang == "uz" else "Активная подписка")
+            plan_label = _profile_copy('activePlan', lang) if lang == "tj" else (_profile_copy('activePlan', lang) if lang == "uz" else _profile_copy('activePlan', lang))
 
     status = escape(_profile_status_label(user, lang))
     plan = escape(str(plan_label or ""))
@@ -277,65 +243,65 @@ def _profile_text(
 
     if lang == "tj":
         details = [
-            f"🙍 <b>Ном:</b> {full_name}",
-            f"🈯 <b>Забон:</b> {language}",
-            f"📖 <b>Дараҷа:</b> {level}",
-            f"⭐ <b>Ҳолат:</b> {status}",
+            _profile_copy('name', lang, full_name=full_name),
+            _profile_copy('language', lang, language=language),
+            _profile_copy('level', lang, level=level),
+            _profile_copy('status', lang, status=status),
             referral_count,
         ]
         if reminder_text:
             details.append(reminder_text)
         if is_paid and plan:
-            details.append(f"💳 <b>Обуна:</b> {plan}")
-            details.append(f"⌛ <b>Анҷом:</b> {ends_str}")
+            details.append(_profile_copy('subscription', lang, plan=plan))
+            details.append(_profile_copy('end', lang, ends_str=ends_str))
         elif is_temporary_active and temporary_days is not None:
-            details.append("⏳ <b>Дастрасии тестӣ:</b> фаъол")
-            details.append(f"⌛ <b>Анҷом:</b> {ends_str}")
+            details.append(_profile_copy('trial', lang))
+            details.append(_profile_copy('end', lang, ends_str=ends_str))
         text = (
-            f"<b>👤 Профили шумо</b>\n\n"
+            _profile_copy('header', lang) +
             f"<blockquote>{chr(10).join(details)}</blockquote>"
         )
         return text
 
     if lang == "uz":
         details = [
-            f"🙍 <b>Ism:</b> {full_name}",
-            f"🈯 <b>Til:</b> {language}",
-            f"📖 <b>Daraja:</b> {level}",
-            f"⭐ <b>Holat:</b> {status}",
+            _profile_copy('name', lang, full_name=full_name),
+            _profile_copy('language', lang, language=language),
+            _profile_copy('level', lang, level=level),
+            _profile_copy('status', lang, status=status),
             referral_count,
         ]
         if reminder_text:
             details.append(reminder_text)
         if is_paid and plan:
-            details.append(f"💳 <b>Obuna:</b> {plan}")
-            details.append(f"⌛ <b>Tugash:</b> {ends_str}")
+            details.append(_profile_copy('subscription', lang, plan=plan))
+            details.append(_profile_copy('end', lang, ends_str=ends_str))
         elif is_temporary_active and temporary_days is not None:
-            details.append("⏳ <b>Test access:</b> faol")
-            details.append(f"⌛ <b>Tugash:</b> {ends_str}")
+            details.append(_profile_copy('trial', lang))
+            details.append(_profile_copy('end', lang, ends_str=ends_str))
         text = (
-            f"<b>👤 Profilingiz</b>\n\n"
+            _profile_copy('header', lang) +
             f"<blockquote>{chr(10).join(details)}</blockquote>"
         )
         return text
 
     details = [
-        f"🙍 <b>Имя:</b> {full_name}",
-        f"🈯 <b>Язык:</b> {language}",
-        f"📖 <b>Уровень:</b> {level}",
-        f"⭐ <b>Статус:</b> {status}",
+        _profile_copy('name', lang, full_name=full_name),
+        _profile_copy('language', lang, language=language),
+        _profile_copy('level', lang, level=level),
+        _profile_copy('status', lang, status=status),
         referral_count,
     ]
     if reminder_text:
         details.append(reminder_text)
     if is_paid and plan:
-        details.append(f"💳 <b>Подписка:</b> {plan}")
-        details.append(f"⌛ <b>Окончание:</b> {ends_str}")
+        details.append(_profile_copy('subscription', lang, plan=plan))
+        details.append(_profile_copy('end', lang, ends_str=ends_str))
     elif is_temporary_active and temporary_days is not None:
-        details.append("⏳ <b>Тестовый доступ:</b> активен")
-        details.append(f"⌛ <b>Окончание:</b> {ends_str}")
+        details.append(_profile_copy('trial', lang))
+        details.append(_profile_copy('end', lang, ends_str=ends_str))
     text = (
-        f"<b>👤 Ваш профиль</b>\n\n"
+        _profile_copy('header', lang) +
         f"<blockquote>{chr(10).join(details)}</blockquote>"
     )
     return text
@@ -381,23 +347,7 @@ def apps_menu_keyboard(lang: str) -> InlineKeyboardMarkup:
 
 
 def profile_menu_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
-    labels = {
-        "tj": {
-            "subscription": "💎 Обуна",
-            "language": "🌐 Забон",
-            "level": "📊 Дараҷа",
-        },
-        "uz": {
-            "subscription": "💎 Obuna",
-            "language": "🌐 Til",
-            "level": "📊 Daraja",
-        },
-        "ru": {
-            "subscription": "💎 Подписка",
-            "language": "🌐 Язык",
-            "level": "📊 Уровень",
-        },
-    }
+    labels = bot_locale_map('inline.handlers.commands.profile_menu_keyboard.copy1')
     l = labels.get(lang, labels["ru"])
     rows = [
         [
@@ -509,13 +459,19 @@ async def subscription_command_handler(message: Message, state: FSMContext, sess
 
 
 
-def command_language_keyboard() -> InlineKeyboardMarkup:
+def command_language_keyboard(language: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="🇹🇯 Тоҷикӣ", callback_data="cmdlang:tj"),
-                InlineKeyboardButton(text="🇷🇺 Русский", callback_data="cmdlang:ru"),
-                InlineKeyboardButton(text="🇺🇿 O‘zbek", callback_data="cmdlang:uz"),
+                InlineKeyboardButton(
+                    text=t("language_picker_tj", language), callback_data="cmdlang:tj"
+                ),
+                InlineKeyboardButton(
+                    text=t("language_picker_ru", language), callback_data="cmdlang:ru"
+                ),
+                InlineKeyboardButton(
+                    text=t("language_picker_uz", language), callback_data="cmdlang:uz"
+                ),
             ]
         ]
     )
@@ -529,12 +485,15 @@ async def language_command_handler(message: Message, state: FSMContext, session)
 
     await message.answer(
         t("choose_language", lang),
-        reply_markup=command_language_keyboard(),
+        reply_markup=command_language_keyboard(lang),
     )
 
 
 @router.callback_query(F.data.startswith("cmdlang:"))
 async def command_language_callback_handler(callback: CallbackQuery, session):
+    if callback.data not in {"cmdlang:uz", "cmdlang:ru", "cmdlang:tj"}:
+        await callback.answer()
+        return
     lang = callback.data.split(":")[1]
 
     user_repo = UserRepository(session)
@@ -598,11 +557,7 @@ async def command_level_callback_handler(callback: CallbackQuery, session):
         await session.commit()
     except CourseTrackError:
         await session.rollback()
-        messages = {
-            "uz": "Bu darajani hozir tanlab bo'lmaydi. Kurs versiyasini Mini App ichidan almashtiring.",
-            "tj": "Ин сатҳро ҳоло интихоб кардан намешавад. Версияи курсро дар Mini App иваз кунед.",
-            "ru": "Этот уровень сейчас нельзя выбрать. Смените версию курса в Mini App.",
-        }
+        messages = bot_locale_map('inline.handlers.commands.command_level_callback_handler.copy1')
         await callback.answer(messages.get(lang, messages["ru"]), show_alert=True)
         return
 
@@ -620,11 +575,11 @@ async def command_level_callback_handler(callback: CallbackQuery, session):
     )
 
     if lang == "tj":
-        msg = f"✅ Дараҷа нав шуд: {level_label}"
+        msg = _profile_copy('levelUpdated', lang, level_label=level_label)
     elif lang == "uz":
-        msg = f"✅ Daraja yangilandi: {level_label}"
+        msg = _profile_copy('levelUpdated', lang, level_label=level_label)
     else:
-        msg = f"✅ Уровень обновлён: {level_label}"
+        msg = _profile_copy('levelUpdated', lang, level_label=level_label)
 
     await callback.message.answer(msg)
 
@@ -1009,7 +964,7 @@ async def profile_menu_language(callback: CallbackQuery, state: FSMContext, sess
     await callback.answer()
     await callback.message.answer(
         t("choose_language", lang),
-        reply_markup=command_language_keyboard(),
+        reply_markup=command_language_keyboard(lang),
     )
 
 @router.callback_query(F.data == APPS_MENU_CALLBACK)

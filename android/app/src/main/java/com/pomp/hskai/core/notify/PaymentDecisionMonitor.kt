@@ -226,7 +226,11 @@ class PaymentDecisionMonitor internal constructor(
             }
             val seenKey = "seen:$deviceId:$paymentId:$status"
             if (prefs.getBoolean(seenKey, false)) return false
-            if (!postNotification(status, planType)) return false
+            // Consumption-only Play never shows a manual payment retry push.
+            // Treat that policy skip as handled so pending-payment polling and
+            // the dedupe key do not run indefinitely on an old direct receipt.
+            val suppressedForPlay = !BuildConfig.EXTERNAL_CHECKOUT_ENABLED && status == "rejected"
+            if (!suppressedForPlay && !postNotification(status, planType)) return false
             prefs.edit().putBoolean(seenKey, true).apply()
             if (prefs.getInt(PENDING_PAYMENT_ID, 0) == paymentId) {
                 prefs.edit().remove(PENDING_PAYMENT_ID).apply()

@@ -475,6 +475,34 @@ def test_desktop_course_lesson_profile_and_ai_flow(
     assert errors == []
 
 
+@pytest.mark.parametrize("platform", ["macos", "windows"])
+def test_lesson_completion_keeps_the_loaded_course_snapshot(
+    desktop_ui_url, browser_page, platform,
+):
+    page, errors = browser_page
+    lesson = _lesson_payload(1, [{
+        "type": "active_word",
+        "word": {"zh": "学", "pinyin": "xué", "meaning": {"uz": "o‘rganmoq"}},
+    }])
+    lesson["level"] = lesson["lesson"]["level"] = "hsk2"
+    _install_native_fixture(page, {1: lesson}, platform=platform)
+    page.goto(desktop_ui_url, wait_until="networkidle")
+    page.locator(".resume-card .primary-button").click()
+    page.locator(".hanzi-hero").wait_for()
+    # Another device changes course after this lesson was loaded. The request
+    # carries its original course so the shared backend can reject the late save.
+    page.evaluate("window.__DESKTOP_FIXTURE__.map.level = 'hsk1'")
+    page.locator("#lesson-next").click()
+    page.get_by_role("heading", name="Dars saqlandi").wait_for()
+    completions = page.evaluate("window.__COMPLETIONS")
+    assert len(completions) == 1
+    assert completions[0]["expectedLevel"] == "hsk2"
+    assert completions[0]["lessonOrder"] == 1
+    assert completions[0]["mistakes"] == []
+    assert len(completions[0]["eventId"]) >= 16
+    assert errors == []
+
+
 def test_local_ai_ready_chat_uses_native_command_without_network(
     desktop_ui_url,
     browser_page,

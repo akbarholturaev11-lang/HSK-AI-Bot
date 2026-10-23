@@ -165,6 +165,13 @@ class AndroidAssistantServiceTests(unittest.IsolatedAsyncioTestCase):
                     factory.return_value._language_name.return_value = "Uzbek"
                     factory.return_value.complete_messages_with_usage = AsyncMock(return_value=SimpleNamespace(content='{"text":"你好 ni hao — Salom", "actions":[]}'))
                     await service.answer(row.id, data, None)
+                    system_prompt = factory.return_value.complete_messages_with_usage.call_args.kwargs["messages"][0]["content"]
+                    self.assertIn("Refuse requests to produce or facilitate restricted or harmful content", system_prompt)
+                    self.assertIn("offer a safe, concise learning-focused alternative", system_prompt)
+                    self.assertIn("For account and access status use the profile action", system_prompt)
+                    self.assertIn("Do not offer purchases, provide payment instructions or external checkout links", system_prompt)
+                    self.assertIn("or suggest alternate app downloads", system_prompt)
+                    self.assertNotIn("For prices/payment use the profile action", system_prompt)
                     # Completed retries are inert and cannot award twice.
                     await service.answer(row.id, data, None)
                 referral = await session.scalar(select(Referral).where(Referral.invited_user_id == learner.id))

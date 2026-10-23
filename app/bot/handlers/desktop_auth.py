@@ -14,6 +14,7 @@ from app.bot.fsm.android_auth import AndroidLinkStates
 from app.bot.fsm.desktop_auth import DesktopLinkStates
 from app.config import settings
 from app.repositories.user_repo import UserRepository
+from app.bot.utils.i18n import bot_locale_map, t
 from app.services.onboarding_service import (
     ONBOARDING_MODE_CHOICE_MODE,
     OnboardingService,
@@ -34,231 +35,12 @@ DISPLAY_CODE_ALPHABET = frozenset("23456789ABCDEFGHJKLMNPQRSTUVWXYZ")
 MAX_INVALID_CODE_ATTEMPTS = 5
 
 
-_COPY = {
-    "uz": {
-        "confirm_desktop": (
-            "🖥 <b>Kompyuter ilovasini ulash</b>\n\n"
-            "Qurilma: <b>{platform}</b>\n"
-            "Versiya: <b>{version}</b>\n"
-            "Kod: <code>{code}</code>\n\n"
-            "Bu kodni HSK AI ilovasida o‘zingiz ochgan bo‘lsangizgina "
-            "tasdiqlang. Aks holda bekor qiling."
-        ),
-        "confirm_mobile": (
-            "📱 <b>Android ilovasini ulash</b>\n\n"
-            "Qurilma: <b>{platform}</b>\n"
-            "Versiya: <b>{version}</b>\n"
-            "Kod: <code>{code}</code>\n\n"
-            "Bu kodni HSK AI ilovasida o‘zingiz ochgan bo‘lsangizgina "
-            "tasdiqlang. Aks holda bekor qiling."
-        ),
-        "approve": "✅ Tasdiqlash",
-        "cancel": "Bekor qilish",
-        "enter_code": (
-            "🔐 <b>Ulash kodini kiriting</b>\n\n"
-            "HSK AI ilovasida ko‘rsatilgan 8 belgili kodni "
-            "shu chatga <b>qo‘lda yuboring</b>.\n\n"
-            "Kodni boshqa odamga yubormang."
-        ),
-        "invalid_code": (
-            "Kod noto‘g‘ri, eskirgan yoki ishlatilgan. "
-            "Ilovadagi 8 belgili kodni qayta kiriting. Qolgan urinish: {remaining}."
-        ),
-        "attempts_exhausted": (
-            "Juda ko‘p noto‘g‘ri urinish bo‘ldi. "
-            "Ilovada yangi kod oling va Telegramni qayta oching."
-        ),
-        "ok_desktop": (
-            "✅ <b>Kompyuter ilovasi ulandi</b>\n\n"
-            "HSK AI Desktop’ga qayting — hisobingiz avtomatik ochiladi."
-        ),
-        "ok_mobile": (
-            "✅ <b>Android ilovasi ulandi</b>\n\n"
-            "HSK AI ilovasiga qayting — hisobingiz avtomatik ochiladi."
-        ),
-        "cancelled": "Ulash bekor qilindi. Bu kod endi ishlamaydi.",
-        "invalid": (
-            "Bu ulash kodi eskirgan yoki ishlatilgan. "
-            "Ilovada yangi kod yarating."
-        ),
-    },
-    "ru": {
-        "confirm_desktop": (
-            "🖥 <b>Подключение приложения на компьютере</b>\n\n"
-            "Устройство: <b>{platform}</b>\n"
-            "Версия: <b>{version}</b>\n"
-            "Код: <code>{code}</code>\n\n"
-            "Подтверждайте, только если вы сами открыли этот код в HSK AI. "
-            "Иначе отмените подключение."
-        ),
-        "confirm_mobile": (
-            "📱 <b>Подключение приложения на Android</b>\n\n"
-            "Устройство: <b>{platform}</b>\n"
-            "Версия: <b>{version}</b>\n"
-            "Код: <code>{code}</code>\n\n"
-            "Подтверждайте, только если вы сами открыли этот код в HSK AI. "
-            "Иначе отмените подключение."
-        ),
-        "approve": "✅ Подтвердить",
-        "cancel": "Отменить",
-        "enter_code": (
-            "🔐 <b>Введите код подключения</b>\n\n"
-            "Вручную отправьте в этот чат 8-символьный код, показанный в "
-            "приложении HSK AI.\n\n"
-            "Никому не передавайте код."
-        ),
-        "invalid_code": (
-            "Код неверный, истёк или уже использован. "
-            "Снова введите 8-значный код из приложения. Осталось попыток: {remaining}."
-        ),
-        "attempts_exhausted": (
-            "Слишком много неверных попыток. Получите новый код в приложении "
-            "и снова откройте Telegram."
-        ),
-        "ok_desktop": (
-            "✅ <b>Приложение на компьютере подключено</b>\n\n"
-            "Вернитесь в HSK AI Desktop — аккаунт откроется автоматически."
-        ),
-        "ok_mobile": (
-            "✅ <b>Приложение на Android подключено</b>\n\n"
-            "Вернитесь в приложение HSK AI — аккаунт откроется автоматически."
-        ),
-        "cancelled": "Подключение отменено. Этот код больше не работает.",
-        "invalid": (
-            "Код подключения истёк или уже использован. "
-            "Создайте новый код в приложении."
-        ),
-    },
-    "tj": {
-        "confirm_desktop": (
-            "🖥 <b>Пайваст кардани барномаи компютерӣ</b>\n\n"
-            "Дастгоҳ: <b>{platform}</b>\n"
-            "Версия: <b>{version}</b>\n"
-            "Рамз: <code>{code}</code>\n\n"
-            "Танҳо агар ин рамзро худатон дар HSK AI кушода бошед, "
-            "тасдиқ кунед. Дар акси ҳол бекор кунед."
-        ),
-        "confirm_mobile": (
-            "📱 <b>Пайваст кардани барномаи Android</b>\n\n"
-            "Дастгоҳ: <b>{platform}</b>\n"
-            "Версия: <b>{version}</b>\n"
-            "Рамз: <code>{code}</code>\n\n"
-            "Танҳо агар ин рамзро худатон дар HSK AI кушода бошед, "
-            "тасдиқ кунед. Дар акси ҳол бекор кунед."
-        ),
-        "approve": "✅ Тасдиқ",
-        "cancel": "Бекор кардан",
-        "enter_code": (
-            "🔐 <b>Рамзи пайвастшавиро ворид кунед</b>\n\n"
-            "Рамзи 8-аломатии дар барномаи HSK AI "
-            "нишондодашударо ба ин чат <b>дастӣ фиристед</b>.\n\n"
-            "Рамзро ба каси дигар нафиристед."
-        ),
-        "invalid_code": (
-            "Рамз нодуруст, муҳлаташ гузашта ё истифода шудааст. "
-            "Рамзи 8-аломатиро аз барнома боз ворид кунед. Кӯшиши боқимонда: {remaining}."
-        ),
-        "attempts_exhausted": (
-            "Кӯшишҳои нодуруст зиёд шуданд. Дар барнома рамзи нав "
-            "гиред ва Telegram-ро аз нав кушоед."
-        ),
-        "ok_desktop": (
-            "✅ <b>Барномаи компютерӣ пайваст шуд</b>\n\n"
-            "Ба HSK AI Desktop баргардед — ҳисоб худкор кушода мешавад."
-        ),
-        "ok_mobile": (
-            "✅ <b>Барномаи Android пайваст шуд</b>\n\n"
-            "Ба барномаи HSK AI баргардед — ҳисоб худкор кушода мешавад."
-        ),
-        "cancelled": "Пайвастшавӣ бекор шуд. Ин рамз дигар кор намекунад.",
-        "invalid": (
-            "Муҳлати рамзи пайвастшавӣ гузашт ё он истифода шудааст. "
-            "Дар барнома рамзи нав созед."
-        ),
-    },
-}
+_COPY = bot_locale_map('inline.handlers.desktop_auth.module.copy1')
 
-_ANDROID_COPY = {
-    "uz": {
-        "choose_language": "📱 <b>HSK AI Android ilovasi</b>\n\nIlovadagi tilni tanlang:",
-        "confirm": (
-            "📱 <b>Android ilovasini ulash</b>\n\n"
-            "Qurilma: <b>{platform}</b>\n"
-            "Versiya: <b>{version}</b>\n\n"
-            "Ilovani o‘zingiz ochgan bo‘lsangizgina tasdiqlang."
-        ),
-        "approve": "✅ Tasdiqlash",
-        "cancel": "Bekor qilish",
-        "ok": (
-            "✅ <b>Android ilovasi ulandi</b>\n\n"
-            "HSK AI ilovasiga qayting — hisobingiz avtomatik ochiladi."
-        ),
-        "cancelled": "Ulash bekor qilindi. Bu havola endi ishlamaydi.",
-        "invalid": "Bu ulash havolasi eskirgan. Ilovadan qayta boshlang.",
-    },
-    "ru": {
-        "choose_language": "📱 <b>Приложение HSK AI для Android</b>\n\nВыберите язык приложения:",
-        "confirm": (
-            "📱 <b>Подключение приложения на Android</b>\n\n"
-            "Устройство: <b>{platform}</b>\n"
-            "Версия: <b>{version}</b>\n\n"
-            "Подтверждайте, только если вы сами открыли приложение."
-        ),
-        "approve": "✅ Подтвердить",
-        "cancel": "Отменить",
-        "ok": (
-            "✅ <b>Приложение на Android подключено</b>\n\n"
-            "Вернитесь в HSK AI — аккаунт откроется автоматически."
-        ),
-        "cancelled": "Подключение отменено. Эта ссылка больше не работает.",
-        "invalid": "Ссылка подключения истекла. Начните заново в приложении.",
-    },
-    "tj": {
-        "choose_language": "📱 <b>Барномаи HSK AI барои Android</b>\n\nЗабони барномаро интихоб кунед:",
-        "confirm": (
-            "📱 <b>Пайваст кардани барномаи Android</b>\n\n"
-            "Дастгоҳ: <b>{platform}</b>\n"
-            "Версия: <b>{version}</b>\n\n"
-            "Танҳо агар барномаро худатон кушода бошед, тасдиқ кунед."
-        ),
-        "approve": "✅ Тасдиқ кардан",
-        "cancel": "Бекор кардан",
-        "ok": (
-            "✅ <b>Барномаи Android пайваст шуд</b>\n\n"
-            "Ба барномаи HSK AI баргардед — ҳисоб худкор кушода мешавад."
-        ),
-        "cancelled": "Пайвастшавӣ бекор шуд. Ин истинод дигар кор намекунад.",
-        "invalid": "Истиноди пайвастшавӣ гузаштааст. Аз барнома аз нав оғоз кунед.",
-    },
-}
+_ANDROID_COPY = bot_locale_map('inline.handlers.desktop_auth.module.copy2')
 
 
-_TELEGRAM_IDENTITY_COPY = {
-    "uz": {
-        "confirm": "<b>Telegram’ni akkauntga ulash</b>\n\nHSK AI akkaunt ID: <code>{user_id}</code>\nQurilma: <b>{platform}</b>\nVersiya: <b>{version}</b>\n\nIlovadagi aynan shu akkauntni o‘zingiz ochib, Telegram ulashni boshlagan bo‘lsangiz tasdiqlang. Tasdiqlagach, shu Telegram orqali ushbu akkauntga kirish mumkin bo‘ladi.",
-        "approve": "Telegram’ni shu akkauntga ulash", "cancel": "Bekor qilish",
-        "ok": "Telegram akkauntingizga ulandi. HSK AI ilovasiga qayting.",
-        "denied": "Telegram ulash bekor qilindi.",
-        "invalid": "Bu ulash so‘rovi eskirgan yoki yaroqsiz. Ilovada qayta boshlang.",
-        "conflict": "Bu Telegram boshqa HSK AI akkauntiga tegishli. Akkauntlar birlashtirilmaydi.",
-    },
-    "ru": {
-        "confirm": "<b>Подключить Telegram к аккаунту</b>\n\nID аккаунта HSK AI: <code>{user_id}</code>\nУстройство: <b>{platform}</b>\nВерсия: <b>{version}</b>\n\nПодтверждайте, только если вы сами открыли именно этот аккаунт в приложении и начали подключение Telegram. После подтверждения этот Telegram позволит войти в указанный аккаунт.",
-        "approve": "Подключить Telegram к этому аккаунту", "cancel": "Отменить",
-        "ok": "Telegram подключён к вашему аккаунту. Вернитесь в HSK AI.",
-        "denied": "Подключение Telegram отменено.",
-        "invalid": "Запрос истёк или недействителен. Начните заново в приложении.",
-        "conflict": "Этот Telegram принадлежит другому аккаунту HSK AI. Аккаунты не объединяются.",
-    },
-    "tj": {
-        "confirm": "<b>Пайваст кардани Telegram ба ҳисоб</b>\n\nID ҳисоби HSK AI: <code>{user_id}</code>\nДастгоҳ: <b>{platform}</b>\nВерсия: <b>{version}</b>\n\nТанҳо агар худатон ҳамин ҳисобро дар барнома кушода, пайвасткунии Telegram-ро оғоз карда бошед, тасдиқ кунед. Баъд аз тасдиқ тавассути ҳамин Telegram ба ҳисоби нишоншуда ворид шудан мумкин аст.",
-        "approve": "Пайваст кардани Telegram ба ҳамин ҳисоб", "cancel": "Бекор кардан",
-        "ok": "Telegram ба ҳисоби шумо пайваст шуд. Ба HSK AI баргардед.",
-        "denied": "Пайвасткунии Telegram бекор шуд.",
-        "invalid": "Муҳлати дархост гузашт ё он беэътибор аст. Дар барнома аз нав оғоз кунед.",
-        "conflict": "Ин Telegram ба ҳисоби дигари HSK AI тааллуқ дорад. Ҳисобҳо якҷоя намешаванд.",
-    },
-}
+_TELEGRAM_IDENTITY_COPY = bot_locale_map('inline.handlers.desktop_auth.module.copy3')
 
 
 def _private_identity_event(event) -> bool:
@@ -316,13 +98,22 @@ async def confirm_telegram_identity_link(callback: CallbackQuery, session) -> No
     await callback.answer()
 
 
-def _android_language_keyboard() -> InlineKeyboardMarkup:
+def _android_language_keyboard(language: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="🇹🇯 Тоҷикӣ", callback_data="android_link:lang:tj"),
-                InlineKeyboardButton(text="🇷🇺 Русский", callback_data="android_link:lang:ru"),
-                InlineKeyboardButton(text="🇺🇿 O‘zbek", callback_data="android_link:lang:uz"),
+                InlineKeyboardButton(
+                    text=t("language_picker_tj", language),
+                    callback_data="android_link:lang:tj",
+                ),
+                InlineKeyboardButton(
+                    text=t("language_picker_ru", language),
+                    callback_data="android_link:lang:ru",
+                ),
+                InlineKeyboardButton(
+                    text=t("language_picker_uz", language),
+                    callback_data="android_link:lang:uz",
+                ),
             ]
         ]
     )
@@ -575,7 +366,7 @@ async def begin_android_link(
         fallback_language = _android_language(user)
         await message.answer(
             _ANDROID_COPY[fallback_language]["choose_language"],
-            reply_markup=_android_language_keyboard(),
+            reply_markup=_android_language_keyboard(fallback_language),
             parse_mode="HTML",
         )
         return

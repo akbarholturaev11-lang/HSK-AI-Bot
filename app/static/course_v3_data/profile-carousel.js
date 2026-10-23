@@ -4,11 +4,11 @@
   var current=1,timer=null,root=null,track=null,resizeObserver=null,settleTimer=null;
   var suppressClickUntil=0,interacting=false,hovered=false;
   var ORDER=["apps","hsk30","pro"],order=ORDER.slice();
-  var LABELS={
+  var LABELS=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.profile_carousel.LABELS.copy1",{
     ru:{apps:"Приложения HSK AI",appsBody:"Android, MacBook и Windows — учитесь на своём устройстве",appsCta:"Смотреть приложения",newBody:"Новые учебники HSK 1–3. Ваш прогресс сохранится.",versionCta:"Выбрать версию",proActive:"Подписка активна",proAction:"Тарифы HSK AI Pro",carousel:"Возможности аккаунта",slide:"Карточка",linkTitle:"Подключить {provider}",linkBody:"Входите в этот аккаунт через {provider}. Прогресс и подписка сохранятся.",linkCta:"Подключить",linkWait:"Ожидаем подтверждения…"},
     uz:{apps:"HSK AI ilovalari",appsBody:"Android, MacBook va Windows — o'zingizga qulay qurilmada o'qing",appsCta:"Ilovalarni ko'rish",newBody:"HSK 1–3 yangi darsliklari. Progressingiz saqlanadi.",versionCta:"Versiyani tanlash",proActive:"Obuna faol",proAction:"HSK AI Pro tariflari",carousel:"Akkaunt imkoniyatlari",slide:"Karta",linkTitle:"{provider}’ni ulash",linkBody:"Shu akkauntga {provider} orqali ham kiring. Progress va obunangiz saqlanadi.",linkCta:"Ulash",linkWait:"Tasdiqlash kutilmoqda…"},
     tj:{apps:"Барномаҳои HSK AI",appsBody:"Android, MacBook ва Windows — дар дастгоҳи худ омӯзед",appsCta:"Дидани барномаҳо",newBody:"Китобҳои нави HSK 1–3. Пешрафти шумо нигоҳ дошта мешавад.",versionCta:"Интихоби версия",proActive:"Обуна фаъол аст",proAction:"Тарифҳои HSK AI Pro",carousel:"Имкониятҳои ҳисоб",slide:"Корт",linkTitle:"Пайваст кардани {provider}",linkBody:"Ба ҳамин ҳисоб тавассути {provider} ворид шавед. Пешрафт ва обуна нигоҳ дошта мешаванд.",linkCta:"Пайваст кардан",linkWait:"Интизори тасдиқ…"}
-  };
+  });
   function strings(){return LABELS[LANG]||LABELS.ru}
   function reduced(){return window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches}
   function stop(){if(timer!==null){clearTimeout(timer);timer=null}}

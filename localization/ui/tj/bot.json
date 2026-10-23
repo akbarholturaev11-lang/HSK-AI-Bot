@@ -1,0 +1,3428 @@
+{
+  "locale": "tj",
+  "messages": {
+    "course.course_all_levels_completed": "🏆 Шумо ҳамаи курсҳои дастраси HSK-ро анҷом додед.",
+    "course.course_back_to_qa_button": "↩️ Реҷаи одӣ",
+    "course.course_choose_lesson": "Аз кадом дарс мехоҳед оғоз кунед?",
+    "course.course_complete_homework_first": "Аввал мустаҳкамкуниро анҷом диҳед.",
+    "course.course_completed_title": "🎉 Дарс анҷом ёфт",
+    "course.course_continue": "📖 Давом додани дарс",
+    "course.course_homework_auto_next": "✅ Мустаҳкамкунӣ қабул шуд. Ба дарси навбатӣ мегузарем.",
+    "course.course_homework_choose_next_action": "Интихоб кунед: дарсро аз нав мехонед ё ба дарси навбатӣ мегузаред.",
+    "course.course_homework_empty": "Лутфан, мустаҳкамкуниро анҷом диҳед.",
+    "course.course_homework_received": "✅ Мустаҳкамкунӣ қабул шуд.",
+    "course.course_homework_retry_recommendation": "<blockquote>Тавсия: хол аз 60 паст шуд. Беҳтараш дарсро як бор аз нав хонед. Агар хоҳед, метавонед ба дарси навбатӣ ҳам гузаред.</blockquote>",
+    "course.course_homework_title": "📌 Мустаҳкамкунӣ",
+    "course.course_invalid_time_format": "Формати вақт нодуруст аст. Масалан: 19:00",
+    "course.course_lesson_homework_intro": "Аъло. Акнун мустаҳкамкунӣ:",
+    "course.course_lesson_not_unlocked": "Ин дарс ҳоло кушода нест.",
+    "course.course_lesson_reexplaining": "Хуб, ман ҳамин қисмро соддатар ва бо мисолҳои бештар мефаҳмонам.",
+    "course.course_lesson_satisfaction_question": "Мо ин дарсро пурра анҷом додем. Аз дарс қонеъ шудед?",
+    "course.course_lesson_satisfied_no": "❌ Не",
+    "course.course_lesson_satisfied_yes": "✅ Ҳа",
+    "course.course_lesson_what_unclear": "Кадом қисми дарс барои шумо нофаҳмо монд?",
+    "course.course_level_completed_text": "🎉 <b>{level} анҷом ёфт!</b>\n\n<blockquote>Табрик, шумо сатҳи {level}-ро анҷом додед.\n\n📚 Дарсҳо: <b>{lessons}</b>\n📝 Калимаҳои нав: <b>{vocab}</b>\n💬 Диалогҳо: <b>{dialogues}</b>\n⏱ Давомнокии омӯзиш: <b>{days} рӯз</b></blockquote>",
+    "course.course_level_upgrade_declined": "Хуб. Рӯйхати дарсҳои <b>{level}</b>:",
+    "course.course_level_upgraded": "✅ Сатҳи шумо ба <b>{level}</b> боло шуд. Дарси 1-ро оғоз мекунем.",
+    "course.course_locked_text": "Режими курс танҳо барои корбарони фаъол кушода аст. Бо обуна ба дарсҳои пайдарпай, тест ва вазифаи хонагӣ дастрасӣ мегиред.",
+    "course.course_locked_title": "📚 Курси HSK танҳо барои обуначиён",
+    "course.course_miniapp_feedback_items": "Ислоҳҳо:",
+    "course.course_miniapp_homework_button": "📌 Оғози мустаҳкамкунӣ",
+    "course.course_miniapp_homework_done": "✅ Дарс мустаҳкам шуд",
+    "course.course_miniapp_homework_intro": "📌 Мустаҳкамкунӣ\n\nАкнун аз рӯи дарси {lesson_id} мустаҳкамкунии кӯтоҳро анҷом диҳед.\nСупоришҳо дар дохили Mini App иҷро мешаванд.",
+    "course.course_miniapp_homework_processing": "🧠 Натиҷаи мустаҳкамкунӣ санҷида мешавад...\n\n<blockquote>Натиҷа тайёр шавад, ҳамин хабар нав мешавад.</blockquote>",
+    "course.course_miniapp_homework_score_line": "Натиҷа: {score}/100",
+    "course.course_miniapp_lesson_line": "📘 Дарс: {lesson_id}",
+    "course.course_miniapp_lesson_mismatch": "Натиҷаи Mini App ба дарси ҷорӣ мувофиқ нест. Аз курс дубора кушоед.",
+    "course.course_miniapp_next_lesson_button": "➡️ Ба дарси навбатӣ гузаштан",
+    "course.course_miniapp_no_button": "❓ Не",
+    "course.course_miniapp_quiz_button": "📝 Оғози quiz",
+    "course.course_miniapp_quiz_done": "✅ Quiz анҷом шуд",
+    "course.course_miniapp_quiz_intro": "📝 Вақти quiz\n\nАз рӯи дарси {lesson_id} quiz-ро гузаред: бинем, аз калимаҳои нав ва грамматика чӣ дар хотир монд.\nНатиҷа ба бот бармегардад.",
+    "course.course_miniapp_repeat_lesson_button": "🔁 Ин дарсро такрор кардан",
+    "course.course_miniapp_score_line": "Натиҷа: {score}/{total} — {percent}%",
+    "course.course_miniapp_understood_question": "Дарсро фаҳмидед?",
+    "course.course_miniapp_unsupported_lesson": "Барои ин дарс Mini App quiz ҳоло пайваст нест.",
+    "course.course_miniapp_wait_homework": "Мустаҳкамкуниро дар дохили Mini App анҷом диҳед.",
+    "course.course_miniapp_wait_quiz": "Quiz-ро дар дохили Mini App гузаред.",
+    "course.course_miniapp_wrong_items": "Ҷойҳои хато:",
+    "course.course_miniapp_yes_button": "✅ Ҳа",
+    "course.course_next_lesson_unlocked": "🔓 Дарси навбатӣ кушода шуд.",
+    "course.course_next_level_no": "❌ Не",
+    "course.course_next_level_offer": "<b>Ба сатҳи навбатӣ мегузарем?</b>\n\n<blockquote>Аз дарси 1-и {next_level} оғоз мекунем.</blockquote>",
+    "course.course_next_level_yes": "✅ Ҳа",
+    "course.course_next_step": "➡️ Қисми баъдӣ",
+    "course.course_next_study_time_skipped": "Хуб, бе интихоби вақт идома медиҳем.",
+    "course.course_no_lesson_found": "Дарс пайдо нашуд.",
+    "course.course_no_lessons_available": "Дарсҳо барои ин сатҳ ҳоло дастрас нестанд.",
+    "course.course_no_next_level_available": "Сатҳи навбатӣ ҳоло дастрас нест.",
+    "course.course_only_active_users": "📚 <b>Режими курс</b>\n\n<blockquote>Вақти active-и шумо барои курс ба анҷом расид.\n\nБарои идома додани курс обуна гиред ё ба реҷаи одӣ баргардед.</blockquote>",
+    "course.course_progress": "📊 Пешрафт",
+    "course.course_progress_full_text": "📊 <b>Пешрафти шумо</b>\n\n📚 Дарсҳои анҷомёфта: <b>{lessons}</b>\n📝 Калимаҳои омӯхташуда: <b>{vocab}</b>\n💬 Диалогҳои омӯхташуда: <b>{dialogues}</b>\n⏱ Рӯзҳои омӯзиш: <b>{days}</b>\n📖 Дарси ҷорӣ: <b>{current}</b>",
+    "course.course_reminder_cancelled": "❌ Ёдраскунак бекор карда шуд.",
+    "course.course_reminder_setup_msg": "⏰ <b>Танзими ёдраскунак</b>\n\nВақти ёдраскунаки рӯзонаро интихоб кунед ё дар формати СС:ДД ворид кунед:\n\n<i>Масалан: 19:30</i>",
+    "course.course_reminder_text": "⏰ <b>Вақти дарс расид!</b>\n\n<blockquote>Дар дарси гузашта шумо <b>{vocab}</b> калима ва <b>{dialogues}</b> диалог омӯхтед.\n📚 Имрӯз ҳам давом диҳед — ҳар рӯз 15 дақиқа натиҷа медиҳад.</blockquote>",
+    "course.course_reminder_tz_saved": "✅ Ёдраскунак танзим шуд!\n\nҲар рӯз соати <b>{time}</b> ({tz}) огоҳӣ мегиред.",
+    "course.course_reread_button": "🔄 Аз нав хондани дарс",
+    "course.course_reread_start_msg": "🔄 Дарсро аз аввал мехонем:",
+    "course.course_review": "🔁 Бозбинӣ",
+    "course.course_review_choice": "Дарси гузаштаро қисқача такрор мекунем?",
+    "course.course_review_last": "🔁 Боздиди дарси охирин",
+    "course.course_review_then_homework": "Хуб, аввал дарсро қисқача такрор мекунем, баъд мустаҳкамкуниро мекунед.",
+    "course.course_settings_button": "⚙️ Танзимот",
+    "course.course_settings_choose_lesson": "📋 Дарсе интихоб кунед:",
+    "course.course_skip_review_next_lesson": "Хуб, такрорро мегузарем ва ба дарси нав мегузарем.",
+    "course.course_start_homework": "📌 Дидани мустаҳкамкунӣ",
+    "course.course_start_next_lesson": "🚀 Оғози дарси навбатӣ",
+    "course.course_wait_for_answer": "Лутфан аввал ба савол ҷавоб диҳед.",
+    "course.course_weekly_progress_text": "🔥 <b>Пешрафти ҳафтаина</b>\n\n<blockquote>Ин ҳафта: <b>{lessons}</b> дарс, <b>{vocab}</b> калима, <b>{dialogues}</b> диалог.\nҲамагӣ анҷомшуда: <b>{total_lessons}</b> дарс.\n\nҲамин суръатро нигоҳ доред — пешрафт ҷамъ мешавад.</blockquote>",
+    "course.no": "Не",
+    "course.voice_mode_cancel_button": "❌ Бекор кардан",
+    "course.voice_mode_cancelled": "✅ Voice режими бекор шуд.",
+    "course.voice_mode_choose": "Ин voice-ро чӣ гуна истифода мекунем?",
+    "course.voice_mode_no_pending": "Voice матни пешина ёфт нашуд. Лутфан voice-ро дубора фиристед.",
+    "course.voice_mode_qa_button": "💬 Истифодаи оддӣ",
+    "course.voice_mode_text_exit": "✅ Voice режими хомӯш шуд. Матни шуморо ҳамчун саволи оддӣ коркард мекунам.",
+    "course.voice_mode_translator_button": "🌐 Реҷаи тарҷумон",
+    "course.voice_subscription_required": "🎙 <b>Voice танҳо барои обуначиён аст</b>\n\n<blockquote>Обуна гиред ва ботро бе лимит истифода баред: курс, AI ҷавобҳо, сурат ва voice.</blockquote>\n\n💳 Усули пардохтро интихоб кунед:",
+    "course.voice_too_long": "🎙 Voice хеле дароз аст. Лутфан то {seconds} сония кӯтоҳтар фиристед.",
+    "course.voice_transcript_empty": "🎙 Voice холӣ ё нофаҳмо баромад. Лутфан дубора равшантар фиристед.",
+    "course.voice_transcript_preview": "🎧 Ман чунин шунидам:\n<blockquote>{text}</blockquote>",
+    "course.voice_transcription_failed": "🎙 Voice-ро аниқ шунида натавонистам. Лутфан дубора фиристед ё матн нависед.",
+    "course.voice_translation_failed": "🌐 Тарҷумаро тайёр карда натавонистам. Лутфан дубора фиристед.",
+    "course.voice_translator_result": "🌐 Тарҷума:\n<blockquote>{text}</blockquote>",
+    "course.yes": "Ҳа",
+    "courseKeyboard.understood": "✅ Фаҳмидам, давом медиҳем",
+    "responseEffect.analyze": "Таҳлил карда истодаам...",
+    "responseEffect.analyzeImage": "Суратро таҳлил карда истодаам...",
+    "responseEffect.analyzeLesson": "Дарсро таҳлил карда истодаам...",
+    "responseEffect.check": "Месанҷам...",
+    "responseEffect.checkMeaning": "Маъниро месанҷам...",
+    "responseEffect.checkText": "Матнро месанҷам...",
+    "responseEffect.listen": "Овозро мешунавам...",
+    "responseEffect.prepare": "Ҷавоб тайёр мекунам...",
+    "responseEffect.think": "Фикр карда истодаам...",
+    "responseEffect.transcribe": "Ба матн мегузаронам...",
+    "responseEffect.translate": "Тарҷума мекунам...",
+    "texts.access_blocked": "<b>🚫 Профили шумо баста шудааст</b>\n\n<blockquote>Ба профили шумо дастрасӣ маҳдуд аст. Барои кӯмак ба техподдержка нависед:\n{support_contact}</blockquote>",
+    "texts.access_daily_image_limit_reached": "📸 <b>Лимити сурат барои имрӯз тамом шуд</b>\n\nПагоҳ боз кушода мешавад.",
+    "texts.access_daily_image_limit_reached_gemini": "📸 <b>Лимити сурат барои имрӯз тамом шуд</b>\n\nПагоҳ боз кушода мешавад. Матн ҳоло ҳам бе лимит аст.",
+    "texts.access_daily_limit_reached": "📊 <b>Лимити имрӯза тамом шуд</b>\n\nРойгон пагоҳ боз кушода мешавад. Бо Pro ҳозир идома медиҳед.",
+    "texts.access_daily_voice_limit_reached": "🎙 <b>Лимити овоз барои имрӯз тамом шуд</b>\n\nПагоҳ боз кушода мешавад. Матн ҳоло ҳам бе лимит аст.",
+    "texts.access_payment_pending_review": "⏳ <b>Пардохт дар санҷиш аст</b>\n\nПас аз тасдиқ хабар медиҳем.",
+    "texts.access_start_first": "Лутфан, аввал /start ро пахш кунед.",
+    "texts.admin_access_granted_notice": "✅ <b>Pro фаъол шуд</b>\n\nТо: {end_date}",
+    "texts.admin_unblocked_notice": "Ҳисоб кушода шуд ✅",
+    "texts.ai_budget_cooldown": "⏳ <b>Танаффус барои 6 соат</b>\n\nДастрасӣ баъд аз 6 соат худкор бармегардад.",
+    "texts.ai_budget_cooldown_notice": "⏳ <b>Танаффус барои 6 соат</b>\n\nДастрасӣ баъд аз 6 соат худкор бармегардад.",
+    "texts.ai_budget_depleted": "⏳ <b>Дастрасии ройгон тамом шуд</b>\n\nБарои идома HSK AI Pro лозим аст.",
+    "texts.ai_budget_depleted_notice": "⏳ <b>Дастрасии ройгон тамом шуд</b>\n\nБарои идома HSK AI Pro лозим аст.",
+    "texts.ai_empty_response": "⚠️ AI ҷавоби холӣ баргардонд. Лутфан саволро каме равшантар фиристед.",
+    "texts.ai_response_failed": "⚠️ AI ҷавобро тайёр карда натавонист. Лутфан дубора фиристед.",
+    "texts.android_app_button": "📱 Барномаи Android",
+    "texts.android_app_caption": "⬇️ <b>Тарзи насб</b>\n\n<blockquote>1. Файлро пахш кунед → «Насб кардан».\n2. Агар огоҳӣ дар бораи «манбаъҳои номаълум» пайдо шавад — иҷозат диҳед ва идома диҳед.\n3. Барномаро кушоед ва рамзи онро ба ҳамин бот фиристед.</blockquote>\n\nДар Play Market ҳанӯз нест — ҳоло танҳо аз ин ҷо дода мешавад.",
+    "texts.android_app_failed": "⚠️ Файл фиристода нашуд. Каме баъдтар боз кӯшиш кунед.",
+    "texts.android_app_intro": "📱 <b>HSK AI — барномаи Android</b>\n\n<blockquote>Бо ҳамон обуна ва ҳамон пешрафте кор мекунад, ки дар Telegram доред — аз нав сабти ном лозим нест.\n\nВерсия {version} · {size}</blockquote>\n\nФайл дар поён.",
+    "texts.android_app_unavailable": "📱 <b>Барномаи Android</b>\n\n<blockquote>Барнома ҳанӯз барои паҳн кардан тайёр нест. Вақте тайёр шуд, дар ҳамин ҷо эълон мекунем.</blockquote>",
+    "texts.apps_menu_button": "📱 Барномаҳои HSK AI",
+    "texts.apps_menu_text": "📱 <b>Барномаҳои HSK AI</b>\n\nAndroid, MacBook ва Windows — ҳама дар як тиреза.",
+    "texts.checkout_change_plan_button": "🔄 Тарифро иваз кардан",
+    "texts.choose_language": "Забонро интихоб кунед:",
+    "texts.choose_level": "Сатҳи худро интихоб кунед:",
+    "texts.course_miniapp_discuss_mistakes_button": "🧠 Хатоҳоямро бо AI муҳокима кардан",
+    "texts.course_miniapp_mistakes_ai_continue_hint": "Агар фаҳмо шуд, барои гузаштан ба қисми навбатӣ тугмаи поёнро пахш кунед.",
+    "texts.course_miniapp_mistakes_ai_processing": "🧠 AI хатогиҳои шуморо таҳлил карда, барои такрор накардан шарҳ тайёр мекунад...",
+    "texts.course_miniapp_mistakes_ai_prompt": "Ман дар quiz чунин хатогиҳо кардам. Ба ман содда фаҳмон, чаро ин хато аст ва чӣ тавр ёд гирам, ки дигар такрор нашавад.",
+    "texts.course_trial_ai_explanation_prompt": "Баъди натиҷаи quiz як шарҳи ройгони AI деҳ. Хатогиҳои хонандаро содда фаҳмон, 1-2 калима ё қоидаи муҳимро ҷудо кун, ҷавобро кӯтоҳ ва фоиданок анҷом деҳ.",
+    "texts.course_trial_ai_explanation_title": "🧠 <b>Шарҳи ройгони AI</b>",
+    "texts.course_trial_soft_paywall_teaser": "🎉 <b>Арзиши дарси 1-ро дидед</b>\n\n<blockquote>Дарси 2 ва таҳлили пурраи хатоҳо бо обуна кушода мешавад.</blockquote>",
+    "texts.daily_limit_renewed": "✅ Лимити рӯзонаи шумо навшуд. Метавонед аз нав истифода баред.",
+    "texts.feedback_admin_reply_user_message": "<b>Мо одзиви шуморо гирифтем 🙏</b>\n\n<blockquote>{text}</blockquote>",
+    "texts.feedback_already_completed": "Шумо аллакай одзив фиристодед ✅",
+    "texts.feedback_cancel_button": "❌ Бекор кардан",
+    "texts.feedback_dislike_detail_prompt": "<b>Аниқтараш кадом ҷояш?</b>\n\n<blockquote>Лутфан матн нависед ё скриншот фиристед. Ин қисми ҷавоб ҳатмист.</blockquote>",
+    "texts.feedback_dislike_detail_required": "Матн ё скриншот фиристед. Ин ҳатмист.",
+    "texts.feedback_dislike_detail_screenshot_note": "Скриншот фиристода шуд.",
+    "texts.feedback_dislike_limits": "📊 Лимитҳо каманд",
+    "texts.feedback_dislike_other": "✍️ Дигар",
+    "texts.feedback_dislike_pace": "📚 Тартиб ё суръати курс ноқулай аст",
+    "texts.feedback_dislike_price": "💳 Нархи обуна баланд аст",
+    "texts.feedback_dislike_question": "<b>Акнун росташро гӯед:</b>\n\n<blockquote>Кадом ҷиҳати бот ба шумо ноқулай ё камтар писанд шуд?</blockquote>",
+    "texts.feedback_dislike_unclear": "🧠 Ҷавобҳо якхела ё нофаҳмоанд",
+    "texts.feedback_like_answers": "💬 Ҷавобҳо зуд ва фаҳмоанд",
+    "texts.feedback_like_course": "📚 Режими курс қулай аст",
+    "texts.feedback_like_other": "✍️ Дигар",
+    "texts.feedback_like_photo": "📸 Кор бо сурат/иероглиф қулай аст",
+    "texts.feedback_like_practice": "🎯 Ҳар рӯз машқ кардан осон мешавад",
+    "texts.feedback_like_question": "<b>1 дақиқа фикри шумо лозим 🙏</b>\n\n<blockquote>Ба шумо дар бот кадом ҷиҳат бештар писанд омад?\nҶавоб диҳед — ба шумо 30 дақиқа дастрасии бе лимит медиҳем.</blockquote>",
+    "texts.feedback_like_sub_question": "<b>Аниқтар гӯед 👇</b>\n\n<blockquote>Маҳз кадом қисм бештар кӯмак кард?</blockquote>",
+    "texts.feedback_limits_offer_text": "<b>Мо одзиви шуморо дидем 🙏</b>\n\n<blockquote>Мо фаҳмидем, ки лимитҳои бот ба шумо фишор овардаанд. Барои ҳамин қарор кардем, ки барои истифодаи бот бе ягон лимит ба шумо обунаро бо <b>20% тахфиф</b> пешниҳод кунем.</blockquote>",
+    "texts.feedback_not_found": "Одзив ёфт нашуд. Баъдтар аз нав кӯшиш кунед.",
+    "texts.feedback_other_dislike_prompt": "Кадом камбудиро дидед? Лутфан бо як паём нависед.",
+    "texts.feedback_other_empty": "Матн холӣ аст. Лутфан фикратонро нависед.",
+    "texts.feedback_other_like_prompt": "Чӣ чиз ба шумо писанд омад? Лутфан бо як паём нависед.",
+    "texts.feedback_other_text_only": "Лутфан ҷавобро матнӣ фиристед.",
+    "texts.feedback_paid_question": "<b>Дар бораи обунаатон рост гӯед 🙏</b>\n\n<blockquote>Ҳоло ба он ки обуна гирифтед, чӣ гуна нигоҳ мекунед?</blockquote>",
+    "texts.feedback_paid_regret": "😕 Он тавре ки интизор будам, набаромад",
+    "texts.feedback_paid_sub_negative_question": "<b>Фаҳмидем.</b>\n\n<blockquote>Чӣ намерасид? Ростӣ қайд кунед — маҳз ҳаминро ислоҳ мекунем.</blockquote>",
+    "texts.feedback_paid_sub_positive_question": "<b>Ташаккур 💚</b>\n\n<blockquote>Аз кадом қисм бештар фоида дидед?</blockquote>",
+    "texts.feedback_paid_thanks": "<b>Ташаккур, фикри шумо сабт шуд ✅</b>\n\n<blockquote>Обунаи шумо дар ҷояш аст — ҳеҷ чиз тағйир намеёбад.\nГуфтаи шуморо ба рӯйхати аввалиндараҷа медарорем.</blockquote>",
+    "texts.feedback_paid_unsure": "🤔 Ҳанӯз баҳо дода наметавонам",
+    "texts.feedback_paid_useful": "🙂 Фоида дорад, истифода мебарам",
+    "texts.feedback_paid_worth": "💎 Арзид — ба дӯстам ҳам тавсия медиҳам",
+    "texts.feedback_price_offer_button": "🎁 Истифодаи 20% тахфиф",
+    "texts.feedback_price_offer_expired": "Ин пешниҳоди махсус дигар дастрас нест.",
+    "texts.feedback_price_offer_text": "<b>Мо одзиви шуморо дидем 🙏</b>\n\n<blockquote>Шумо гуфтед, ки нархи обуна баланд аст. Барои ҳамин ба шумо пешниҳоди махсус додем: обунаро бо <b>20% тахфиф</b> гирифта метавонед.</blockquote>",
+    "texts.feedback_sub_clarity": "🧠 Фаҳмо будани шарҳ",
+    "texts.feedback_sub_content": "📚 Мавод кам буд",
+    "texts.feedback_sub_daily": "🔥 Машқи ҳаррӯза",
+    "texts.feedback_sub_examples": "📝 Мисолу ҷумлаҳо",
+    "texts.feedback_sub_exercises": "🎯 Машқҳо",
+    "texts.feedback_sub_hanzi": "🈶 Шинохти иероглиф",
+    "texts.feedback_sub_homework": "✅ Санҷиши вазифаи хонагӣ",
+    "texts.feedback_sub_lessons": "📖 Дарсҳо",
+    "texts.feedback_sub_memorize": "🧩 Азёд кардани калимаҳо",
+    "texts.feedback_sub_other": "✍️ Дигар",
+    "texts.feedback_sub_other_prompt": "Кӯтоҳ нависед — маҳз кадом қисм?",
+    "texts.feedback_sub_quiz": "📊 Тестҳо",
+    "texts.feedback_sub_slow": "🐢 Натиҷа суст меояд",
+    "texts.feedback_sub_speed": "⚡️ Суръати ҷавобҳо",
+    "texts.feedback_sub_tech": "⚙️ Мушкилоти техникӣ буд",
+    "texts.feedback_sub_time": "⏳ Вақт наёфтам",
+    "texts.feedback_sub_translate": "🌐 Тарҷума",
+    "texts.feedback_sub_voice": "🎙 AI Voice",
+    "texts.feedback_thanks": "<b>Раҳмат барои одзив ✅</b>\n\n<blockquote>Мо албатта камбудиҳоро ислоҳ мекунем.\nБа шумо 30 дақиқа дастрасии бе лимит фаъол шуд.</blockquote>",
+    "texts.force_sub_check_button": "✅ Санҷидан",
+    "texts.force_sub_main_channel_text": "📣 <b>Ба канали асосӣ обуна шавед</b>\n\nБаъд тугмаи «Санҷидан»-ро пахш кунед.",
+    "texts.force_sub_required_alert": "Аввал ба канал обуна шавед.",
+    "texts.force_sub_required_text": "📣 <b>Ба канал обуна шавед</b>\n\nБаъд тугмаи «Санҷидан»-ро пахш кунед.",
+    "texts.force_sub_still_missing": "Ҳоло обуна тасдиқ нашуд. Лутфан каналҳоро санҷед.",
+    "texts.force_sub_unlocked_alert": "✅ Обуна тасдиқ шуд",
+    "texts.force_sub_unlocked_text": "✅ Обуна тасдиқ шуд. Акнун бот кор мекунад.",
+    "texts.free_mode_info": "💬 <b>Реҷаи ройгон фаъол шуд</b>\n\nСавол нависед ё сурат фиристед — лимитҳои рӯзона амал мекунанд.",
+    "texts.free_mode_info_gemini": "💬 <b>Реҷаи ройгон фаъол шуд</b>\n\nМатн — бе лимит. Сурат ва паёми овозӣ — рӯзе 5-тогӣ.",
+    "texts.help_contact_button": "🆘 Ба admin навиштан",
+    "texts.hint_change_ads_body": "Дар дохили машқҳо дигар реклама нест. Танҳо баъди дарс ва баъзан дар маркази экран.",
+    "texts.hint_change_ads_title": "Реклама камтар шуд",
+    "texts.hint_change_paywall_body": "Лимит тамом шавад, акнун реклама пешниҳод намешавад. Ройгон фардо дубора кушода мешавад.",
+    "texts.hint_change_paywall_title": "Реклама бо давом додан бекор шуд",
+    "texts.hint_change_trial_body": "Ҳоло як маротиба ройгон санҷида метавонед. Худкор пул гирифта намешавад.",
+    "texts.hint_change_trial_title": "7 рӯз Pro ройгон",
+    "texts.hint_section_course_body": "Дарсҳо пай дар пай. Ҳар дарс ба қисмҳои хурд тақсим шудааст.",
+    "texts.hint_section_practice_body": "Калимаҳои омӯхтаатонро мустаҳкам мекунад: шинохт, навиштан, талаффуз.",
+    "texts.hint_section_profile_body": "Пешрафт, стрик ва дастовардҳо. Обуна ҳам аз ҳамин ҷо.",
+    "texts.hint_section_rating_body": "Ҳафтаина бо дигар хонандагон муқоиса. Барои XP боло меравед.",
+    "texts.hint_section_voice_body": "Бо чинӣ гап мезанед, AI ҷавоб медиҳад ва талаффузатонро месанҷад.",
+    "texts.image_invalid_format": "Ин формат дастгирӣ намешавад. Лутфан суратро ҳамчун фото ё файли image фиристед.",
+    "texts.language_selected": "Забон интихоб шуд ✅",
+    "texts.level_beginner": "Аз 0",
+    "texts.limit_daily_spent_notice": "🔒 <b>Лимити имрӯза тамом шуд</b>\n\nСоати {reset_time} боз кушода мешавад.",
+    "texts.limit_daily_spent_notice_no_time": "🔒 <b>Лимити ройгон тамом шуд</b>\n\nБо Pro идома дода метавонед.",
+    "texts.limit_lesson_spent_notice": "🔒 <b>Дарсҳои ройгон тамом шуданд</b>\n\nБо Pro идома дода метавонед.",
+    "texts.limit_lesson_warning_notice": "📘 <b>Қисмҳои ройгон мондаанд: {remaining}</b>\n\nИдома бо Pro кушода мешавад.",
+    "texts.limit_reached_generic": "🔒 <b>Лимити имрӯза тамом шуд</b>\n\n<blockquote>Фардо дубора кушода мешавад.</blockquote>",
+    "texts.menu_invite": "👥 Дӯст даъват кардан",
+    "texts.menu_start_lesson": "📘 Оғози дарс",
+    "texts.onboarding_special_welcome": "🌟 Шумо <b>{user_num}</b>-умин корбари мо шудед!\n\n🎁 Як дарси курс ройгон кушода шуд.",
+    "texts.onboarding_special_welcome_gemini": "🌟 Шумо <b>{user_num}</b>-умин корбари мо шудед!\n\n🎁 Як дарси курс ройгон кушода шуд.",
+    "texts.onboarding_tip_course_dialogue": "💬 <b>Маслиҳат барои қисми диалог</b>\n\n<blockquote>Агар ягон калима ё ҷумла нофаҳмо бошад, ҳамин ҷо нависед. AI онро содда мефаҳмонад.\n\nБарои шунидани аудиои диалог тугмаи 🔉-ро аз боло пахш кунед.</blockquote>",
+    "texts.onboarding_tip_course_grammar": "📚 <b>Маслиҳат барои грамматика</b>\n\n<blockquote>Агар қоида нофаҳмо бошад ё хоҳед бо мисолҳои бештар фаҳмонда шавад, танҳо ба чат нависед. AI аз рӯи ҳамин дарс мефаҳмонад.</blockquote>",
+    "texts.onboarding_tip_course_vocab": "🧠 <b>Мехоҳед калимаҳои навро тезтар аз худ кунед?</b>\n\n<blockquote>Иероглифро дар дафтар 3 қатор нависед. Ҳангоми навиштан онро бо овози баланд хонед.\n\nБаъд бо ҳар калимаи нав камаш 3 ҷумла созед. Агар шавад, ҷумлаҳоро ба ҳаёти худ пайваст кунед.\n\nҲар рӯз пеш аз оғози дарс як бор такрор кунед.</blockquote>\n\nБарои дидани тартиби навишти иероглиф тугмаи 🀄-ро аз боло пахш кунед. Барои такрор аз тугмаи HSK ⭐ назди клавиатура истифода баред.",
+    "texts.onboarding_tip_normal_photo": "📸 <b>Сурати китоб, иероглиф ё диалогро фиристода бинед</b>\n\n<blockquote>Бот суратро хонда мефаҳмонад: ба чинӣ чӣ мешавад, pinyin, тарҷума ва мисолҳо медиҳад.\n\nҲозир метавонед саҳифаи китоб, дафтар ё иероглифро фиристода санҷед.</blockquote>",
+    "texts.onboarding_tip_normal_voice": "🎙 <b>Voice-режим ҳам ҳаст</b>\n\n<blockquote>Метавонед бо бот бо voice гап занед ё онро ҳамчун тарҷумон истифода баред.\n\nДар trial voice барои як бор санҷидан кушода аст. Ҳозир voice фиристода бинед.</blockquote>",
+    "texts.partner_active_text": "<b>🤝 Кабинети шарик</b>\n\n🔗 Силкаи шумо:\n<code>{link}</code>\n\n💰 Баланс: <b>{balance}</b>\n⏳ Дар раванд: <b>{in_progress}</b>\n📤 Гирифташуда: <b>{withdrawn}</b>\n\n👥 Овардаед: <b>{referrals}</b>\n💳 Пардохт кардаанд: <b>{paid_referrals}</b>",
+    "texts.partner_admin_message": "<b>✉️ Паём аз админ</b>\n\n<blockquote>{text}</blockquote>",
+    "texts.partner_application_audience_prompt": "<b>🤝 Дархости шарикӣ</b>\n\n2. Шумораи тахминии аудитория?",
+    "texts.partner_application_channel_prompt": "<b>🤝 Дархости шарикӣ</b>\n\n1. Дар куҷо реклама мекунед?",
+    "texts.partner_application_contact_prompt": "<b>🤝 Дархости шарикӣ</b>\n\n3. Username барои тамос?",
+    "texts.partner_application_invalid": "Ҷавобро равшантар нависед.",
+    "texts.partner_apply_button": "✅ Ҳамкор шудан",
+    "texts.partner_approved_notification": "<b>✅ Дархости шарикии шумо тасдиқ шуд</b>\n\nСилкаи шарикии шумо кушода шуд.",
+    "texts.partner_back_button": "⬅️ Бозгашт",
+    "texts.partner_blocked_notification": "<b>⛔ Дастрасии шарикии шумо баста шуд.</b>",
+    "texts.partner_blocked_text": "<b>🤝 Ҳамкорӣ</b>\n\n⛔ Дастрасии шарикии шумо баста шудааст.",
+    "texts.partner_bonus_unlocked_line": "🎁 Бонуси locked {bonus} кушода шуд.",
+    "texts.partner_commission_notification": "<b>💰 Комиссия илова шуд</b>\n\nКомиссия: <b>{commission}</b>\n{bonus_line}",
+    "texts.partner_get_link_button": "📋 Гирифтани силка",
+    "texts.partner_link_text": "<b>📋 Силкаи шарикии шумо</b>\n\n<code>{link}</code>",
+    "texts.partner_not_partner_text": "<b>🤝 Барномаи ҳамкорӣ</b>\n\nHSK AI-ро ба аудитория, дӯстон ё шиносҳои худ тавсия диҳед ва аз ҳар обунаи referral-и худ {commission_offer} даромад гиред. 💸\n\n🎁 Пас аз ҳамкор шудан, ба шумо {bonus} бонус дода мешавад.\n\nБонус танҳо баъд аз аввалин пардохти ҳақиқии referral фаъол мегардад.\n\n💰 Минимал маблағи гирифтани пул: {minimum}",
+    "texts.partner_payout_account_prompt": "<b>💸 Гирифтани пул</b>\n\nРақами корт ё реквизитро нависед.",
+    "texts.partner_payout_alipay_button": "Alipay",
+    "texts.partner_payout_already_open_text": "<b>💸 Гирифтани пул</b>\n\nДархости пешинаи шумо ҳоло баррасӣ мешавад.",
+    "texts.partner_payout_bank_button": "Бонк корт",
+    "texts.partner_payout_bank_name_prompt": "<b>💸 Гирифтани пул</b>\n\nНоми бонкро нависед.",
+    "texts.partner_payout_button": "💸 Гирифтани пул",
+    "texts.partner_payout_choose_method": "<b>💸 Гирифтани пул</b>\n\nБаланс: <b>{balance}</b>\n\nУсули пардохтро интихоб кунед:",
+    "texts.partner_payout_created_text": "<b>✅ Дархости гирифтани пул фиристода шуд</b>\n\nМаблағ: <b>{amount}</b>\n\nИн маблағ то баррасӣ захира шуд.",
+    "texts.partner_payout_deadline_notification": "⏰ Пардохти шарикии шумо дар давоми {days} рӯз мерасад.",
+    "texts.partner_payout_holder_prompt": "<b>💸 Гирифтани пул</b>\n\nНому насаби қабулкунандаро нависед.",
+    "texts.partner_payout_invalid": "Маълумотро дурусттар нависед.",
+    "texts.partner_payout_note_prompt": "<b>💸 Гирифтани пул</b>\n\nШарҳи иловагӣ нависед. Агар набошад, «-» фиристед.",
+    "texts.partner_payout_other_button": "Дигар",
+    "texts.partner_payout_paid_notification": "<b>✅ Пардохти шарикӣ иҷро шуд</b>\n\nМаблағ: <b>{amount}</b>",
+    "texts.partner_payout_qr_photo_only": "QR кодро ҳамчун сурат фиристед.",
+    "texts.partner_payout_qr_prompt": "<b>💸 Гирифтани пул</b>\n\nQR коди Alipay ё WeChat-ро ҳамчун сурат фиристед.",
+    "texts.partner_payout_rejected_notification": "❌ Дархости гирифтани {amount} рад карда шуд. Маблағ ба баланс баргашт.",
+    "texts.partner_payout_unavailable_text": "<b>💸 Гирифтани пул</b>\n\nБаланси шумо: <b>{balance}</b>\nҲадди ақали гирифтани пул: <b>{minimum}</b>\n\nҲоло гирифтани пул имкон надорад.",
+    "texts.partner_payout_wechat_button": "WeChat",
+    "texts.partner_pending_text": "<b>🤝 Ҳамкорӣ</b>\n\n⏳ Дархости шумо баррасӣ мешавад.\n\nПас аз тасдиқ силкаи шарикӣ барои шумо кушода мешавад.",
+    "texts.partner_unblocked_notification": "<b>✅ Дастрасии шарикии шумо дубора кушода шуд.</b>",
+    "texts.payment_already_reviewed": "Ин пардохт аллакай баррасӣ шудааст. Ҳолати обунаро санҷед.",
+    "texts.payment_back": "⬅️ Бозгашт",
+    "texts.payment_details_label": "Реквизити пардохт",
+    "texts.payment_invalid_plan": "Тарифи интихобшуда нодуруст аст.",
+    "texts.payment_send_screenshot_only": "Лутфан танҳо скриншоти пардохтро фиристед.",
+    "texts.paywall_ai_body": "<blockquote>Саволҳои ройгон фардо дубора кушода мешаванд. Бо Pro интизор шудан лозим нест.</blockquote>",
+    "texts.paywall_ai_cta": "👑 Бо Pro идома додан",
+    "texts.paywall_ai_title": "🤖 <b>Лимити имрӯзаи AI тамом шуд</b>",
+    "texts.paywall_lesson_body": "<blockquote>Дарсҳои ройгони навбатӣ фардо кушода мешаванд. Бо HSK AI Pro ҳозир идома дода метавонед.</blockquote>",
+    "texts.paywall_lesson_cta": "👑 Бо Pro идома додан",
+    "texts.paywall_lesson_title": "📚 <b>Имрӯзи дарсҳои ройгонатон тамом шуд</b>",
+    "texts.paywall_practice_body": "<blockquote>Фардо дубора ройгон кушода мешавад. Бо Pro имрӯз ҳам бе маҳдудият идома медиҳед.</blockquote>",
+    "texts.paywall_practice_cta": "👑 Бо Pro идома додан",
+    "texts.paywall_practice_title": "🧠 <b>Машқи ройгони имрӯза тамом шуд</b>",
+    "texts.paywall_speaking_body": "<blockquote>Машқи навбатӣ фардо кушода мешавад. Бо Pro ҳозир идома медиҳед.</blockquote>",
+    "texts.paywall_speaking_cta": "👑 Бо Pro идома додан",
+    "texts.paywall_speaking_title": "🗣 <b>Машқи Speaking-и имрӯзаро истифода бурдед</b>",
+    "texts.paywall_study_body": "<blockquote>Фардо дубора кушода мешавад. Бо Pro интизор шудан лозим нест.</blockquote>",
+    "texts.paywall_study_cta": "👑 Бо Pro идома додан",
+    "texts.paywall_study_title": "📖 <b>Лимити имрӯзаи ин бахш тамом шуд</b>",
+    "texts.paywall_voice_body": "<blockquote>Овоз фардо дубора кушода мешавад. Бо Pro маҳдудият нест.</blockquote>",
+    "texts.paywall_voice_cta": "👑 Бо Pro идома додан",
+    "texts.paywall_voice_title": "🎙 <b>Лимити имрӯзаи AI Voice тамом шуд</b>",
+    "texts.profile_to_course_button": "📚 Реҷаи курс",
+    "texts.qa_limit_course_offer": "<b>📊 Лимити free QA-и имрӯз ба охир расид</b>\n\n<blockquote>Дарси 1-ро ройгон оғоз кунед: quiz ва як шарҳи AI арзиши курсро нишон медиҳад.</blockquote>",
+    "texts.qa_limit_course_start_button": "📚 Дарси 1-ро ройгон оғоз кардан",
+    "texts.qa_limit_subscribe_button": "💳 Обуна гирифтан",
+    "texts.referral_bonus_question_button": "🎁 Саволи бонусӣ гирифтан",
+    "texts.referral_bonus_received": "Даъват қабул шуд ✅\n+5 саволи бонусӣ дода шуд.\n\nДаъватҳои фаъол: {count}",
+    "texts.referral_daily_limit_offer": "📊 <b>Лимити имрӯза тамом шуд</b>\n\n🎁 Дӯст даъват кунед: +5 савол. Ё бо Pro идома диҳед.",
+    "texts.referral_image_limit_offer": "📸 <b>Лимити сурат барои имрӯз тамом шуд</b>\n\n🎁 Дӯст даъват кунед: +5 савол. Ё бо Pro идома диҳед.",
+    "texts.referral_image_limit_offer_gemini": "📸 <b>Лимити сурат барои имрӯз тамом шуд</b>\n\n🎁 Дӯст даъват кунед: +5 савол. Ё бо Pro идома диҳед.",
+    "texts.referral_invite_text": "<b>Силкаи даъвати шумо:</b>\n<code>{link}</code>\n\n🎁 1 дӯсти фаъол: +5 савол\n🔥 +6 дӯсти фаъол: {days} рӯз дастрасӣ\n\n👥 Ворид шуданд: {joined_count} · Фаъол: {count}/{required}",
+    "texts.referral_trial_access_unlocked": "<b>✅ {days} рӯз дастрасии ройгон кушода шуд</b>\n\n<blockquote>Ин обунаи пулакӣ нест. Матн, курс ва фото бо лимити ройгони $2 кор мекунанд. Voice-ро рӯзона 1 маротиба ройгон санҷида метавонед.</blockquote>",
+    "texts.referral_trial_access_unlocked_gemini": "🎁 <b>{days} рӯз дастрасии ройгон кушода шуд</b>\n\nМетавонед омӯзишро идома диҳед.",
+    "texts.send_first_message": "Акнун калима, ҷумла ё саволи хитоии худро фиристед — дарсро аз ҳамон ҷо оғоз мекунем.",
+    "texts.subscription_admin_discount_button": "🔥 Аз тахфиф истифода бурдан",
+    "texts.subscription_admin_discount_expired": "Ин тахфиф ба анҷом расид ё дигар дастрас нест.",
+    "texts.subscription_churn_discount_ready_text": "<b>Фаҳмидем — бигзор нарх монеа нашавад 🙏</b>\n\n<blockquote>Барои шумо <b>20% тахфиф</b> кушодем. Progress дар ҷояш аст: давом диҳед — аз ҳамон дарс мераваед.</blockquote>",
+    "texts.subscription_churn_feedback_button": "✍️ 1 фикр гузоштан",
+    "texts.subscription_churn_feedback_thanks": "<b>Раҳмат — ин барои мо муҳим аст 🙏</b>\n\n<blockquote>Ҷавоби шуморо ба даста мерасонем ва ин самтро беҳтар мекунем.\n\nProgress-и шумо бошад дар ҷояш мемонад: ҳар вақт хоҳед, баргашта аз ҳамон дарс давом медиҳед. Мунтазири шумо мешавем 💪</blockquote>",
+    "texts.subscription_churn_followup_text": "<b>Дарсҳоятон шуморо интизоранд 📚</b>\n\n<blockquote>Progress дар ҷояш аст — баргардед ва аз ҳамон дарс давом медиҳед. Ҳатто як ҳафта танаффус меҳнати кардаатонро бекор намекунад.\n\nАгар чизе мувофиқ наомада бошад — гӯед, ислоҳ мекунем.</blockquote>",
+    "texts.subscription_churn_reason_ai_quality": "Сифати ҷавобҳои AI писанд наомад",
+    "texts.subscription_churn_reason_budget": "Ҳоло бюджет надорам",
+    "texts.subscription_churn_reason_course_fit": "Курс ба ман мувофиқ нашуд",
+    "texts.subscription_churn_reason_other": "Сабаби дигар",
+    "texts.subscription_churn_reason_price": "Нарх бароям баланд аст",
+    "texts.subscription_churn_reason_prompt": "<b>Як савол — 5 сония ⏳</b>\n\n<blockquote>Шумо ҳоло обунаро давом надодед. Агар сабабро донем, ботро ба шумо мувофиқтар мекунем — гап дар бораи нарх бошад, курс бошад ё ҷавобҳои AI, фарқ надорад.\n\nКадомаш ба ҳолати шумо наздиктар аст?</blockquote>",
+    "texts.subscription_churn_reason_trial_more": "Ҳоло боз санҷидан мехоҳам",
+    "texts.subscription_churn_trial_more_text": "<b>Дар реҷаи ройгон ҳам наистед 👌</b>\n\n<blockquote>Preview-и курс, саволҳои матнӣ ва як қисми машқҳо бо лимити ройгон кор мекунанд — ҳатто 10 дақиқа дар як рӯз натиҷа медиҳад.\n\nВақте тайёр шудед, обунаро ҳар лаҳза мекушоед.</blockquote>",
+    "texts.subscription_expired_continue_button": "💎 Давом додани обуна",
+    "texts.subscription_expired_soft_text": "<b>Обуна ба анҷом расид — вале натиҷаи шумо боқӣ мондааст 💪</b>\n\n<blockquote>Тамоми progress, дарсҳои гузашта ва омори шумо ҳеҷ куҷо намеравад. Баргардед — аз ҳамон дарс давом медиҳед.\n\nДушвортаринаш — оғоз кардан буд, ва шумо инро аллакай кардед. Забони чинӣ на ба онҳое ки меистанд, балки ба онҳое ки давом медиҳанд, кушода мешавад.</blockquote>",
+    "texts.subscription_expires_tomorrow": "Обунаи шумо фардо тамом мешавад.",
+    "texts.subscription_main_choose": "👇 <b>Тарифро интихоб кунед:</b>",
+    "texts.subscription_main_title": "💎 <b>Тарифҳои обуна</b>",
+    "texts.subscription_main_visa_benefits": "<b>Обуна гиред ва аз бот бе лимит истифода баред.</b>",
+    "texts.subscription_miniapp_entry_text": "💎 Обуна ва пардохт дар Mini App кушода мешавад.",
+    "texts.subscription_referral_discount_button": "🎁 Тахфиф гирифтан",
+    "texts.subscription_referral_hint": "🎁 3 дӯсти нав даъват кунед ва 20% тахфиф гиред.",
+    "texts.trial_24h_info": "🎁 <b>Дастрасии ройгон кушода шуд</b>\n\nЯк дарси интихобшударо пурра гузашта метавонед.",
+    "texts.trial_24h_info_gemini": "🎁 <b>Дастрасии ройгон кушода шуд</b>\n\nЯк дарси интихобшударо пурра гузашта метавонед.",
+    "texts.trial_expired_notice": "👑 <b>Санҷиши Pro имрӯз тамом мешавад</b>\n\nБарои идома тарифро интихоб кунед.",
+    "texts.trial_expiring_soon": "👑 <b>То анҷоми Pro — {days} рӯз</b>\n\nБарои идома тарифро интихоб кунед.",
+    "texts.trial_offer_body": "<blockquote>7 рӯз Pro-ро пурра санҷед. Пул худкор гирифта намешавад.</blockquote>",
+    "texts.trial_offer_cta": "👑 7 рӯз ройгон санҷидан",
+    "texts.trial_offer_title": "👑 <b>HSK AI Pro — 7 рӯз ройгон</b>",
+    "texts.trial_started_info": "🎁 Ба шумо дастрасии ройгон кушода шуд.",
+    "texts.trial_started_notice": "👑 <b>Pro барои 7 рӯз фаъол шуд</b>\n\nПул худкор гирифта намешавад.",
+    "texts.user_not_found": "Лутфан, аввал /start ро пахш кунед.",
+    "texts.user_payment_approved": "Пардохт қабул шуд ✅\n\nHSK AI Pro фаъол шуд.",
+    "texts.user_payment_rejected": "Пардохт тасдиқ нашуд ❌\n\nПардохтро санҷед ва дубора кӯшиш кунед.",
+    "texts.voice_trial_daily_limit_reached": "🎙 <b>Voice-и ройгони имрӯз истифода шуд</b>\n\n<blockquote>Пагоҳ боз 1 маротиба санҷида метавонед. Барои voice бе лимит обуна гиред.</blockquote>",
+    "texts.welcome": "Хуш омадед, {name}!",
+    "inline.handlers.challenge.helper_text.copy1.bad_button": "Тугмаи рақобат нодуруст аст",
+    "inline.handlers.challenge.helper_text.copy1.not_found": "Рақобат ёфт нашуд",
+    "inline.handlers.challenge.helper_text.copy1.bad_action": "Амал нодуруст аст",
+    "inline.handlers.challenge.helper_text.copy1.closed": "Рақобат аллакай баста шуд ё ёфт нашуд",
+    "inline.handlers.challenge.helper_text.copy1.accepted": "Рақобат қабул шуд. Раундро кушоед.",
+    "inline.handlers.challenge.helper_text.copy1.rejected": "Рақобат рад шуд.",
+    "inline.handlers.commands.helper_status_label.copy1": "Ройгон",
+    "inline.handlers.commands.helper_status_label.copy2": "Санҷишӣ",
+    "inline.handlers.commands.helper_status_label.copy3": "Фаъол",
+    "inline.handlers.commands.helper_status_label.copy4": "Муддат гузаштааст",
+    "inline.handlers.commands.helper_status_label.copy5": "Баста",
+    "inline.handlers.commands.helper_status_label.copy6": "Ройгон",
+    "inline.handlers.commands.helper_profile_status_label.copy1": "Пардохт фаъол",
+    "inline.handlers.commands.helper_profile_status_label.copy2": "Дастрасии тестӣ",
+    "inline.handlers.commands.helper_language_label.copy1.tj": "Тоҷикӣ",
+    "inline.handlers.commands.helper_language_label.copy1.uz": "O'zbek",
+    "inline.handlers.commands.helper_language_label.copy1.ru": "Русский",
+    "inline.handlers.commands.helper_language_label.copy2": "Номаълум",
+    "inline.handlers.commands.helper_level_label.copy1": "Оғозӣ",
+    "inline.handlers.commands.helper_profile_reminder_line.copy1": "Ёдраскунак",
+    "inline.handlers.commands.profile_menu_keyboard.copy1.subscription": "💎 Обуна",
+    "inline.handlers.commands.profile_menu_keyboard.copy1.language": "🌐 Забон",
+    "inline.handlers.commands.profile_menu_keyboard.copy1.level": "📊 Дараҷа",
+    "inline.handlers.commands.command_level_callback_handler.copy1": "Ин сатҳро ҳоло интихоб кардан намешавад. Версияи курсро дар Mini App иваз кунед.",
+    "inline.handlers.course.course_miniapp_entry_text.copy1": "📚 <b>Курси HSK AI — Mini App</b>\n\n<blockquote>Дарсҳо, калимаҳо, грамматика, quiz ва AI Voice — ҳама дар як барнома. Ҳар дарс шуморо қадам ба қадам мебарад.</blockquote>",
+    "inline.handlers.course.course_miniapp_entry_text.copy2": "\n\nАз «{label}» ҳозир оғоз мекунем 👇",
+    "inline.handlers.course.course_miniapp_reentry_text.copy1": "📚 <b>Курсро мекушоем</b>\n\nБарои оғози дарси 1 зер кунед 👇",
+    "inline.handlers.course.helper_course_entry_button_label.copy1": "▶️ Оғози дарси 1",
+    "inline.handlers.course.helper_block_if_course_disabled.copy1": "🚧 Реҷаи курс ҳоло дар навсози аст. Ба зудӣ дастрас мешавад.",
+    "inline.handlers.course.helper_course_locked_offer_text.copy1": "Бе обуна ҳам метавонед дар савол-ҷавоб бо лимити рӯзона давом диҳед.",
+    "inline.handlers.course.helper_trial_course_completed_text.copy1": "🎉 <b>Дарси ройгон анҷом шуд</b>\n\n<blockquote>Шумо реҷаи курсро санҷидед: дарс, quiz, таҳлили хатоҳо ва мустаҳкамкунӣ.</blockquote>\n\nБарои кушодани дарсҳои навбатӣ обуна гиред.\nБе обуна ҳам метавонед дар савол-ҷавоб бо лимити рӯзона давом диҳед.",
+    "inline.handlers.course.course_command_handler.copy1": "🚧 Реҷаи курс ҳоло дар таҳия аст. Ба зудӣ дастрас мешавад.",
+    "inline.handlers.course.helper_static_course_missing_text.copy1": "Барои ин қисм маводи тайёри курс ёфт нашуд. Seed-файли дарсро санҷидан лозим.",
+    "inline.handlers.course.module.copy1": "🔇 Аудио ҳоло дастрас нест",
+    "inline.handlers.desktop_auth.module.copy1.confirm_desktop": "🖥 <b>Пайваст кардани барномаи компютерӣ</b>\n\nДастгоҳ: <b>{platform}</b>\nВерсия: <b>{version}</b>\nРамз: <code>{code}</code>\n\nТанҳо агар ин рамзро худатон дар HSK AI кушода бошед, тасдиқ кунед. Дар акси ҳол бекор кунед.",
+    "inline.handlers.desktop_auth.module.copy1.confirm_mobile": "📱 <b>Пайваст кардани барномаи Android</b>\n\nДастгоҳ: <b>{platform}</b>\nВерсия: <b>{version}</b>\nРамз: <code>{code}</code>\n\nТанҳо агар ин рамзро худатон дар HSK AI кушода бошед, тасдиқ кунед. Дар акси ҳол бекор кунед.",
+    "inline.handlers.desktop_auth.module.copy1.approve": "✅ Тасдиқ",
+    "inline.handlers.desktop_auth.module.copy1.cancel": "Бекор кардан",
+    "inline.handlers.desktop_auth.module.copy1.enter_code": "🔐 <b>Рамзи пайвастшавиро ворид кунед</b>\n\nРамзи 8-аломатии дар барномаи HSK AI нишондодашударо ба ин чат <b>дастӣ фиристед</b>.\n\nРамзро ба каси дигар нафиристед.",
+    "inline.handlers.desktop_auth.module.copy1.invalid_code": "Рамз нодуруст, муҳлаташ гузашта ё истифода шудааст. Рамзи 8-аломатиро аз барнома боз ворид кунед. Кӯшиши боқимонда: {remaining}.",
+    "inline.handlers.desktop_auth.module.copy1.attempts_exhausted": "Кӯшишҳои нодуруст зиёд шуданд. Дар барнома рамзи нав гиред ва Telegram-ро аз нав кушоед.",
+    "inline.handlers.desktop_auth.module.copy1.ok_desktop": "✅ <b>Барномаи компютерӣ пайваст шуд</b>\n\nБа HSK AI Desktop баргардед — ҳисоб худкор кушода мешавад.",
+    "inline.handlers.desktop_auth.module.copy1.ok_mobile": "✅ <b>Барномаи Android пайваст шуд</b>\n\nБа барномаи HSK AI баргардед — ҳисоб худкор кушода мешавад.",
+    "inline.handlers.desktop_auth.module.copy1.cancelled": "Пайвастшавӣ бекор шуд. Ин рамз дигар кор намекунад.",
+    "inline.handlers.desktop_auth.module.copy1.invalid": "Муҳлати рамзи пайвастшавӣ гузашт ё он истифода шудааст. Дар барнома рамзи нав созед.",
+    "inline.handlers.desktop_auth.module.copy2.choose_language": "📱 <b>Барномаи HSK AI барои Android</b>\n\nЗабони барномаро интихоб кунед:",
+    "inline.handlers.desktop_auth.module.copy2.confirm": "📱 <b>Пайваст кардани барномаи Android</b>\n\nДастгоҳ: <b>{platform}</b>\nВерсия: <b>{version}</b>\n\nТанҳо агар барномаро худатон кушода бошед, тасдиқ кунед.",
+    "inline.handlers.desktop_auth.module.copy2.approve": "✅ Тасдиқ кардан",
+    "inline.handlers.desktop_auth.module.copy2.cancel": "Бекор кардан",
+    "inline.handlers.desktop_auth.module.copy2.ok": "✅ <b>Барномаи Android пайваст шуд</b>\n\nБа барномаи HSK AI баргардед — ҳисоб худкор кушода мешавад.",
+    "inline.handlers.desktop_auth.module.copy2.cancelled": "Пайвастшавӣ бекор шуд. Ин истинод дигар кор намекунад.",
+    "inline.handlers.desktop_auth.module.copy2.invalid": "Истиноди пайвастшавӣ гузаштааст. Аз барнома аз нав оғоз кунед.",
+    "inline.handlers.desktop_auth.module.copy3.confirm": "<b>Пайваст кардани Telegram ба ҳисоб</b>\n\nID ҳисоби HSK AI: <code>{user_id}</code>\nДастгоҳ: <b>{platform}</b>\nВерсия: <b>{version}</b>\n\nТанҳо агар худатон ҳамин ҳисобро дар барнома кушода, пайвасткунии Telegram-ро оғоз карда бошед, тасдиқ кунед. Баъд аз тасдиқ тавассути ҳамин Telegram ба ҳисоби нишоншуда ворид шудан мумкин аст.",
+    "inline.handlers.desktop_auth.module.copy3.approve": "Пайваст кардани Telegram ба ҳамин ҳисоб",
+    "inline.handlers.desktop_auth.module.copy3.cancel": "Бекор кардан",
+    "inline.handlers.desktop_auth.module.copy3.ok": "Telegram ба ҳисоби шумо пайваст шуд. Ба HSK AI баргардед.",
+    "inline.handlers.desktop_auth.module.copy3.denied": "Пайвасткунии Telegram бекор шуд.",
+    "inline.handlers.desktop_auth.module.copy3.invalid": "Муҳлати дархост гузашт ё он беэътибор аст. Дар барнома аз нав оғоз кунед.",
+    "inline.handlers.desktop_auth.module.copy3.conflict": "Ин Telegram ба ҳисоби дигари HSK AI тааллуқ дорад. Ҳисобҳо якҷоя намешаванд.",
+    "inline.handlers.messages.module.copy1.item1": "AI ҷавобро тайёр мекунад...",
+    "inline.handlers.messages.module.copy1.item2": "Саволро таҳлил карда истодаам...",
+    "inline.handlers.messages.module.copy1.item3": "Мисол ва шарҳро ҷамъ мекунам...",
+    "inline.handlers.messages.module.copy1.item4": "Ҷавобро кӯтоҳ карда истодаам...",
+    "inline.handlers.messages.helper_format_static_exercise_result.copy1": "Ҷавобҳои дуруст:",
+    "inline.handlers.messages.helper_voice_answer_loader_text.copy1": "Тарҷума мекунам...",
+    "inline.handlers.messages.helper_voice_answer_loader_text.copy2": "Ҷавоб тайёр мекунам...",
+    "inline.handlers.messages.handle_text_message.copy1": "❌ Бекор кардан",
+    "inline.handlers.messages.handle_text_message.copy2": "❌ Бекор кардан",
+    "inline.handlers.payments.helper_waiting_message.copy1": "📸 Скриншот қабул шуд.\n\nВақти корӣ: 08:00–23:00. Пардохт субҳ тасдиқ карда мешавад.",
+    "inline.handlers.payments.helper_waiting_message.copy2": "📸 Скриншот қабул шуд.\n\nВақти тафтиш: 5–15 дақиқа.",
+    "inline.handlers.release_feedback.module.copy1": "TJ",
+    "inline.handlers.release_feedback.module.copy2": "⚡ Course mode нав шуд!\n\nQuiz ҳоло дар формати сабуки интерактивӣ аст: 5 саволи тез, speaker, chip-ҳо, progress ва feedback-и фаврӣ.\n\nБа ҷои вазифаи хонагӣ Мустаҳкамкунӣ илова шуд: тартиби калимаҳо, ҷуфтҳо, интихоб аз рӯи шунидан ва дидани иероглиф.\n\nБа курс дароед ва дар дарси навбатӣ санҷед.",
+    "inline.handlers.release_feedback.helper_route_try_feature.copy1": "Барои санҷидан барномаи HSK AI-и Android-ро кушоед → Профил → Обуна. Асъори тарифро бо тугмаи болои тарифҳо иваз кунед.",
+    "inline.handlers.release_feedback.helper_route_try_feature.copy2": "Реҷаи одии саволи AI кушода шуд. Барои санҷидани навигарӣ саволи худро нависед.",
+    "inline.handlers.release_feedback.helper_route_try_feature.copy3": "Барои санҷидани таҳлили фото, расм фиристед.",
+    "inline.handlers.release_feedback.helper_route_try_feature.copy4": "Барои санҷидани навигарӣ, аз меню қисми лозимиро интихоб кунед.",
+    "inline.handlers.start.helper_send_android_referral_apk.copy1": "Даъват ба ҳисоби шумо пайваст шуд. Файли APK ба ҳамин чат фиристода мешавад. Онро насб кунед ва ҳамин ҳисоби Telegram-ро пайваст кунед. Пас аз пайвастшавӣ даъват ҳисоб мешавад.",
+    "inline.handlers.start.helper_mode_choice_text.copy1": "🎉 <b>Табрик! Реҷаи курс кушода шуд</b>\n\n<blockquote>Барои шумо роҳи дарсҳои пайдарпайи HSK кушода шуд — калимаҳо, грамматика, quiz ва AI Voice дар як барнома, қадам ба қадам.</blockquote>\n\nҲозир оғоз мекунем?",
+    "inline.handlers.subscription.helper_card_texts.copy1.main_title": "💎 <b>Тарифҳои обуна</b>",
+    "inline.handlers.subscription.helper_card_texts.copy1.benefits": "Обуна гиред ва аз бот бе лимит истифода баред.",
+    "inline.handlers.subscription.helper_card_texts.copy1.card_note_short": "💳 Бо ҳар гуна корти бонкӣ метавонед пардохт кунед.",
+    "inline.handlers.subscription.helper_card_texts.copy1.card_note_full": "Агар корти шумо корти Тоҷикистон набошад, маблағро бо қурби бонки худ дар TJS ҳисоб карда ба ҳамин корт фиристед.",
+    "inline.handlers.subscription.helper_card_texts.copy1.referral_hint": "🎁 3 дӯсти нав даъват кунед ва 20% тахфиф гиред.",
+    "inline.handlers.subscription.helper_card_texts.copy1.choose": "👇 <b>Тарифро интихоб кунед:</b>",
+    "inline.handlers.subscription.helper_card_texts.copy1.checkout_title": "💳 Шумо обунаро интихоб кардед",
+    "inline.handlers.subscription.helper_card_texts.copy1.plan_label": "Тариф",
+    "inline.handlers.subscription.helper_card_texts.copy1.price_label": "Нарх",
+    "inline.handlers.subscription.helper_card_texts.copy1.bank_label": "Бонк",
+    "inline.handlers.subscription.helper_card_texts.copy1.bank_name": "DC city",
+    "inline.handlers.subscription.helper_card_texts.copy1.payment_details_label": "Реквизити пардохт",
+    "inline.handlers.subscription.helper_card_texts.copy1.send_screenshot": "Пас аз пардохт скриншотро фиристед.",
+    "inline.utils.course_formatter.helper_lesson_word.copy1": "Дарс",
+    "inline.utils.course_formatter.helper_block_label.copy1": "Қисм",
+    "inline.utils.course_formatter.module.copy1": "Маъно",
+    "inline.utils.course_formatter.module.copy2": "Кай истифода мешавад",
+    "inline.utils.course_formatter.module.copy3": "Қолаб",
+    "inline.utils.course_formatter.module.copy4": "Мисол аз муколама",
+    "inline.utils.course_formatter.module.copy5": "Таҳлил",
+    "inline.utils.course_formatter.module.copy6": "Муҳим",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy1": "Дар ҷумла ҳолати қавитар ё ғайричашмдошт таъкид мешавад; 都/也 натиҷаро қавитар мекунад.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy2": "Қисми аввал шарт ё вазъиятро медиҳад, қисми дуюм натиҷаи онро нишон медиҳад.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy3": "Баъди фикри аввал натиҷаи муқобил ё ғайричашмдошт меояд; маънояш ба 'аммо/вале' наздик аст.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy4": "Ин қолаб фикрро тартиб медиҳад: маълумоти иловагӣ, қадами баъдӣ ё ҳолати ҳамзамон меорад.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy5": "Қолаб мавзу, соҳа ё нуқтаи баҳоро пеш меорад; баъд фикри асосӣ гуфта мешавад.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy6": "Маъно танҳо дар феъл нест, балки дар қисми баъди феъл ҳам ҳаст; натиҷа, самт ё ҳолатро санҷед.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy7": "Аввал робитаи мантиқии ҷумларо ёбед, баъд қолаби чиниро ба ҳамон ҷо гузоред.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy1": "Дар қисми дуюм одатан 也/还/而且 меояд; ду хусусияти мусбатро қавитар мекунад.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy2": "Дар маънои инкор одатан бо 没/不 меояд: 从来没... = ҳеч вақт ... накардааст.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy3": "刚 пеш аз феъл меояд ва маънои 'нав/ҳозир' медиҳад; барои гузаштаи дур истифода накунед.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy4": "Дар қисми натиҷа одатан 也/都/还 меояд; он тағйир наёфтани натиҷаро нишон медиҳад.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy5": "Аввал маслиҳат ё шарт меояд, баъд бо 否则 натиҷаи номатлуб гуфта мешавад.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy6": "Инҳо 'ва'-и одӣ нестанд; гардиши фикр ё натиҷаи муқобил меоранд.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy7": "Фикри дуюм аввалиро идома ё пурра мекунад; маънои муқобил нест.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy8": "Баъди қолаб мавзу меояд; ҳукм ё баҳои асосӣ дар қисми баъдӣ гуфта мешавад.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy9": "是否 бештар хаттӣ ва расмӣ аст; дар гуфтор бештар 是不是 истифода мешавад.",
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy10": "Баъди 把 бояд бо феъл ва натиҷа нишон диҳед, ки бо объект чӣ шуд.",
+    "inline.utils.course_formatter.helper_append_basic_grammar_item.copy1": "💬 Мисолҳо:",
+    "inline.utils.course_formatter.format_vocab.copy1": "Калимаҳои нав 🇨🇳",
+    "inline.utils.course_formatter.format_dialogue.copy1": "Муколамаи зинда 🎭",
+    "inline.utils.course_formatter.format_dialogue.copy2": "💡 Медонед?",
+    "inline.utils.course_formatter.format_exercise.copy1": "Вақти санҷиш! 🧠",
+    "inline.utils.course_formatter.format_exercise.copy2": "Мо фикр мекунем шумо омодаед... Исбот кунед! 😄",
+    "inline.utils.course_formatter.format_exercise.copy3": "Посухатонро нависед ⬇️",
+    "inline.utils.course_formatter.format_vocab_1.copy1": "📖 Калимаҳои нав 🇨🇳",
+    "inline.utils.course_formatter.format_vocab_1.copy2": "✨ Имрӯз <b>{}</b> калимаи нав — пас аз дарс онҳоро истифода карда метавонед!",
+    "inline.utils.course_formatter.format_vocab_2.copy1": "📖 Калимаҳои нав — давом 🇨🇳",
+    "inline.utils.course_formatter.format_block_vocab.copy1": "📖 Калимаҳои нави ҳамин муколама",
+    "inline.utils.course_formatter.format_block_vocab.copy2": "Аввал <b>{}</b> калимаро сабук мегирем, баъд ба муколама мегузарем.",
+    "inline.utils.course_formatter.format_block_quiz.copy1": "📝 Тести хурд",
+    "inline.utils.course_formatter.format_block_quiz.copy2": "Quiz-ро гузаред: бинем, аз калимаҳои нав ва грамматикаи ҳамин қисм чӣ дар хотир монд?",
+    "inline.utils.course_formatter.format_block_quiz.copy3": "Агар Mini App кушода нашавад, ҷавобҳоро ҳамин ҷо нависед.",
+    "inline.utils.course_formatter.format_block_grammar.copy1": "📐 Грамматикаи ҳамин муколама",
+    "inline.utils.course_formatter.format_dialogue_n.copy1": "🎭 Муколама",
+    "inline.utils.course_formatter.format_dialogue_n.copy2": "📘 Матн",
+    "inline.utils.course_formatter.format_dialogue_n.copy3": "📐 Эзоҳи грамматикӣ",
+    "inline.utils.course_formatter.format_grammar_v2.copy1": "📐 Грамматика",
+    "inline.utils.course_formatter.format_satisfaction_check.copy1": "Анҷоми дарс",
+    "inline.utils.course_formatter.format_satisfaction_check.copy2": "Калимаҳо, муколамаҳо ва санҷиши дарс фаҳмо буданд?",
+    "inline.utils.course_formatter.format_review.copy1": "🔁 Такрори кӯтоҳ",
+    "inline.utils.course_formatter.format_review.copy2": "Калимаҳои асосӣ:",
+    "inline.utils.course_formatter.format_review.copy3": "Муколамаҳо:",
+    "inline.utils.course_formatter.format_review.copy4": "Грамматика:",
+    "inline.utils.course_formatter.format_intro.copy1": "Хуш омадед ба дарс! 🎉",
+    "inline.utils.course_miniapp.format_miniapp_quiz_result.copy1": "Ба қисми навбатӣ мегузарем.",
+    "inline.handlers.course.helper_course_part_label.dynamic1": "дарси {flat}",
+    "inline.handlers.course.helper_course_part_label.dynamic2": "дарси {src} · қисми ниҳоӣ",
+    "inline.handlers.course.helper_course_part_label.dynamic3": "дарси {src} · қисми {part}",
+    "inline.handlers.course.course_miniapp_reentry_text.dynamic1": "📚 <b>Идома медиҳем</b>\n\nБарои кушодани {label} зер кунед 👇",
+    "inline.handlers.course.helper_course_entry_button_label.dynamic1": "▶️ Идома · {label}",
+    "inline.handlers.course.course_set_study_time_handler.dynamic1": "✅ Вақти дарси навбатӣ сабт шуд: <b>{time_str}</b>",
+    "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.true": "✅ Санҷиш тафтиш шуд",
+    "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.false": "❌ Дар санҷиш хато ҳаст",
+    "inline.handlers.start.helper_lesson_choice_text.dynamic1": "<b>Курси {label}</b>\n\nАз кадом дарс оғоз мекунем?",
+    "inline.utils.course_formatter.format_vocab.dynamic1": "✨ Имрӯз {value1} калима — пас аз дарс истифода карда метавонед!",
+    "inline.utils.course_miniapp.format_miniapp_quiz_intro.dynamic1": "\n\nҚисм {block_no}: саволҳо аз калимаҳои нав ва грамматикаи ҳамин қисм мешаванд.",
+    "inline.utils.course_miniapp.format_miniapp_quiz_result.dynamic1": "📍 Қисм: {block_no}",
+    "profile.referralCount": "👥 <b>Даъватҳо:</b> {total} нафар",
+    "profile.plan10Days": "10 рӯз",
+    "profile.plan1Month": "1 моҳ",
+    "profile.activePlan": "Обунаи фаъол",
+    "profile.name": "🙍 <b>Ном:</b> {full_name}",
+    "profile.language": "🈯 <b>Забон:</b> {language}",
+    "profile.level": "📖 <b>Дараҷа:</b> {level}",
+    "profile.status": "⭐ <b>Ҳолат:</b> {status}",
+    "profile.subscription": "💳 <b>Обуна:</b> {plan}",
+    "profile.end": "⌛ <b>Анҷом:</b> {ends_str}",
+    "profile.trial": "⏳ <b>Дастрасии тестӣ:</b> фаъол",
+    "profile.header": "<b>👤 Профили шумо</b>\n\n",
+    "profile.levelUpdated": "✅ Дараҷа нав шуд: {level_label}",
+    "inline.services.course_challenge_service.helper_invite_keyboard.copy1.item1": "Қабули рақобат",
+    "inline.services.course_challenge_service.helper_invite_keyboard.copy1.item2": "Рад кардан",
+    "inline.services.course_challenge_service.helper_invite_keyboard.copy1.item3": "Кушодани рақобат",
+    "inline.services.course_challenge_service.helper_open_keyboard.copy1": "Ба рақобат гузаштан",
+    "inline.services.course_challenge_service.invite_text.copy1.case1": "⚔️ {name} шуморо ба дуэли HSK даъват мекунад!",
+    "inline.services.course_challenge_service.invite_text.copy2.case1": "🔥 10 савол — калима, пинйин, тарҷума ва грамматика омехта.\n🎯 Ҳар яки шумо ба саволҳои дараҷаи ХУДатон ҷавоб медиҳед — ҷанги одилона!\n🏆 Ғолиб бо фоизи баландтар муайян мешавад. Агар фоиз баробар бошад — мусовӣ.\n\n⚡ Ба ғолиб +{CHALLENGE_WIN_XP} XP, ба ҳар ҷанговар +{CHALLENGE_COMPLETE_XP} XP.\nҚувваи худро нишон деҳ! 💪",
+    "inline.services.course_challenge_service.resolved_invite_text.copy1": "✅ Дуэл қабул шуд! ⚔️\n\n🎯 Майдон тайёр: 10 савол, ҳар яке дар дараҷаи худаш.\n🔥 Даро ва ғалабаро ба даст ор!",
+    "inline.services.course_challenge_service.resolved_invite_text.copy2": "😌 Ин дафъа дуэл нашуд.\n\nҒам махӯр — рақиби дигарро даъват кун ва ғалаба кун! 💪",
+    "inline.services.course_challenge_service.notify_response.copy1.case1": "🔥 {name} даъвати шуморо қабул кард! ⚔️\nМайдон тайёр — даро ва аввал зарба зан! 💪",
+    "inline.services.course_challenge_service.notify_response.copy2.case1": "😌 {name} ин дафъа ба ҷанг набаромад.\nҒам махӯр — рақиби қавӣ ҳамеша ёфт мешавад! Дигареро даъват кун. 💪",
+    "inline.services.course_challenge_service.notify_submit.copy1.case1": "🏁 Раунд анҷом ёфт! {name} натиҷаро фиристод{value2}.\n\n📊 Ҳисоб: {challenger_score} vs {opponent_score}.\n🏆 ҒАЛАБА АЗ ОНи ШУМОСТ! Бонус XP дар профил аст. Офарин! 🔥",
+    "inline.services.course_challenge_service.notify_submit.copy1.case2": "🏁 Раунд анҷом ёфт! {name} натиҷаро фиристод{value2}.\n\n📊 Ҳисоб: {challenger_score} vs {opponent_score}.\n💪 Ин дафъа мағлуб шудӣ, аммо ҷанг тамом нашуд — реваншро гир!",
+    "inline.services.course_challenge_service.notify_submit.copy1.case3": "🏁 Раунд анҷом ёфт! {name} натиҷаро фиристод{value2}.\n\n📊 Ҳисоб: {challenger_score} vs {opponent_score}.\n🤝 Мусовӣ! Ба ҳар ду бонус XP. Дафъаи оянда ҳал кун!",
+    "inline.services.course_challenge_service.notify_submit.copy2.case1": "⚡ {name} раунди худро анҷом дод{value2}! Акнун навбати туст — даро ва зарба зан! 🔥",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.active_word": "Калимаи нави фаъол",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.meaning_guess": "Маънои дурустро интихоб кунед",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.listening_choice": "Гӯш кунед ва ҷавобро интихоб кунед",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.pinyin_choice": "Pinyin-и дурустро интихоб кунед",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.hanzi_choice": "Иероглифи дурустро интихоб кунед",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.gap_fill": "Ҷои холиро пур кунед",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.character_recognition": "Иероглифро шиносед",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.match_pairs": "Ҷуфтҳоро мувофиқ кунед",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.sentence_builder": "Ҷумларо созед",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.word_order": "Калимаҳоро бо тартиб гузоред",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.translation_choice": "Тарҷумаи дурустро интихоб кунед",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.quick_quiz": "Санҷиши зуд",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.short_dialog": "Муколамаи кӯтоҳ",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_words": "Калимаҳо",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_sound": "Овоз",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_character": "Иероглиф",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_dialog": "Муколама",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_build": "Сохтан",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_speaking": "Талаффуз",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_review": "Санҷиш",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.other_meaning": "Маънои дигар",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_intro": "Калимаҳои нав",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_reinforcement": "Мустаҳкамкунӣ",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_listening": "Шунидан",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_usage": "Дар ҷумла",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_dialog": "Муколамаи кӯтоҳ",
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_review": "Такрор",
+    "inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1.case1": "«{value1}» дар муколама чӣ маъно дорад?",
+    "inline.services.course_miniapp_lesson_service.module.copy1.cat": "Калимаҳо",
+    "inline.services.course_miniapp_lesson_service.module.copy1.hint": "Калимаҳои нави дарси {lesson}",
+    "inline.services.course_miniapp_lesson_service.module.copy1.hanzi_to_meaning": "“{zh}” чӣ маъно дорад?",
+    "inline.services.course_miniapp_lesson_service.module.copy1.meaning_to_hanzi": "Кадом калима маънои “{meaning}”-ро дорад?",
+    "inline.services.course_miniapp_lesson_service.module.copy1.pinyin_to_hanzi": "Кадом калима “{pinyin}” хонда мешавад?",
+    "inline.services.course_miniapp_lesson_service.module.copy1.hanzi_to_pinyin": "Pinyin-и “{zh}” кадом аст?",
+    "inline.services.course_miniapp_lesson_service.module.copy1.listening_choice": "Гӯш кунед ва ҷавоби дурустро интихоб кунед",
+    "inline.services.course_miniapp_lesson_service.module.copy1.fill_blank": "Ҷои холиро пур кунед",
+    "inline.services.course_miniapp_lesson_service.module.copy1.fill_blank_choice": "Калимаи мувофиқро барои ҷои холии ҷумла интихоб кунед",
+    "inline.services.course_miniapp_lesson_service.module.copy1.choose_meaning_in_context": "Маънои калимаро дар ҷумла интихоб кунед",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_in_context": "Грамматикаро дар ҷумла интихоб кунед",
+    "inline.services.course_miniapp_lesson_service.module.copy1.listen_and_fill": "Гӯш кунед ва ҷои холиро пур кунед",
+    "inline.services.course_miniapp_lesson_service.module.copy1.build_sentence_chips": "Ҷумлаи чиниро созед",
+    "inline.services.course_miniapp_lesson_service.module.copy1.meaning_hint": "маъно: {meaning}",
+    "inline.services.course_miniapp_lesson_service.module.copy1.correct": "Ҷавоби дуруст: {zh} — {meaning}.",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_cat": "Грамматика",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_hint": "Грамматикаи дарси {lesson}",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_example_to_pattern": "Дар ин ҷумла кадом грамматика истифода шудааст?\n{example}",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_pattern_to_example": "Кадом ҷумла ба грамматикаи “{title}” мувофиқ аст?",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_correct": "Ҷавоби дуруст: {title}. {rule}",
+    "inline.services.course_miniapp_lesson_service.module.copy1.grammar_example_correct": "Ҷавоби дуруст: {example}\nДар ин ҷумла {title} истифода шудааст.",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.start": "Оғоз",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.learn": "Омӯзиш",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.practice": "Машқ",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.explain": "Шарҳи AI",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.win": "Натиҷа",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.next": "Навбатӣ",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.today": "Имрӯз дарси кӯтоҳ: {title}",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.promise": "Дар 3-5 дақиқа як натиҷаи равшан мегиред.",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.win_text": "Имрӯз калима/қоидаи асосӣ ва як машқи амалӣ анҷом шуд.",
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.next_text": "Дар дарси навбатӣ инро дар вазъияти нав истифода мебаред.",
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy1": "Тарҷумаро аз калимаҳо созед",
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy2": "Ҷуфтҳои мувофиқро ёбед",
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy3": "Шакли иероглифро бинед",
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4.case1": "Ҷумлаи чиниро созед: {translated_sentence}",
+    "inline.services.course_tutor_service.module.copy1": "\n\n✅ <i>Агар фаҳмидед, тугмаи поёниро пахш кунед.</i>",
+    "inline.services.daily_practice_service.helper_copy.copy1.entry_title": "⏱ <b>Машқи 3-дақиқаи имрӯз</b>",
+    "inline.services.daily_practice_service.helper_copy.copy1.entry_body": "<blockquote>3 калимаи нав, 2 quiz-и зуд ва 1 ҷумлаи одӣ. Баъд метавонед дар савол-ҷавоб бо лимити рӯзона давом диҳед.</blockquote>",
+    "inline.services.daily_practice_service.helper_copy.copy1.words": "1) Калимаҳои нав",
+    "inline.services.daily_practice_service.helper_copy.copy1.quiz": "2) Quiz-и зуд",
+    "inline.services.daily_practice_service.helper_copy.copy1.sentence": "3) Ҷумлаи одӣ",
+    "inline.services.daily_practice_service.helper_copy.copy1.ready": "Вақте тайёр шудед, ҷавобҳоро бинед.",
+    "inline.services.daily_practice_service.helper_copy.copy1.done": "✅ <b>Машқи имрӯз анҷом шуд</b>",
+    "inline.services.daily_practice_service.helper_copy.copy1.result": "<blockquote>Шумо 3 калимаро дидед, 2 саволи quiz-ро санҷидед ва як ҷумлаи соддаро мустаҳкам кардед.</blockquote>",
+    "inline.services.daily_practice_service.helper_copy.copy1.answers": "Ҷавобҳо:",
+    "inline.services.daily_practice_service.helper_copy.copy1.next": "Акнун савол нависед ё курсро худатон оғоз кунед.",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.title_meaning": "💬 <b>Биёед аз саволи аввал сар мекунем</b>",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.title_pinyin": "🔊 <b>Аз талаффуз сар мекунем</b>",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.title_sentence": "🎮 <b>Машқи хурд</b>",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.q_meaning": "Ин калима чӣ маъно дорад?",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.q_pinyin": "Ин калима чӣ тавр хонда мешавад?",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.q_sentence": "Аз ин калимаҳо як ҷумла созед.",
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1.hint": "Ҷавобатонро нависед — месанҷам. Ё саволи худро диҳед.",
+    "inline.services.daily_practice_service.completion_text.copy1.case1": "🔥 Пайдарпай: {streak} рӯз",
+    "inline.services.gemini_switch_announcement_service.module.copy1": "<b>🎉 Хабари хуш!</b>\n\n<blockquote>Акнун шумо метавонед забони хитоиро бо AI дар чат <b>бо матн — бе лимит ва ройгон</b> омӯзед!\n\n📸 Акс ва 🎙 паёмҳои овозӣ — дар як рӯз 5-тоӣ ройгон.\n\nҲозир санҷед — саволатонро нависед!</blockquote>",
+    "inline.services.help_settings_service.module.copy1.title": "<b>🤖 Бахши ёрӣ</b>",
+    "inline.services.help_settings_service.module.copy1.click": "инҷоро пахш кунед",
+    "inline.services.help_settings_service.module.copy1.admin": "ADMIN",
+    "inline.services.help_settings_service.module.copy1.admin_line": "⚠️ Агар муаммо бошад, ба {admin} нависед.",
+    "inline.services.help_settings_service.module.copy1.course_hsk": "Барои дидани тарзи кори Курси HSK",
+    "inline.services.help_settings_service.module.copy1.qa_mode": "Барои фаҳмидани Реҷаи одӣ",
+    "inline.services.help_settings_service.module.copy1.voice_translator": "Барои дидани Voice ва тарҷумон",
+    "inline.services.help_settings_service.module.copy1.subscription": "Барои фаҳмидани имкониятҳои обуна",
+    "inline.services.mistake_drill_factory.module.copy1": "Маъноашро интихоб кунед",
+    "inline.services.mistake_drill_factory.module.copy2": "«{meaning}» — кадом иероглиф?",
+    "inline.services.mistake_drill_factory.module.copy3": "Кадом иероглиф ҳамин тавр хонда мешавад?",
+    "inline.services.mistake_drill_factory.module.copy4": "Чӣ тавр хонда мешавад?",
+    "inline.services.mistake_drill_factory.module.copy5": "Гӯш кунед ва шунидаатонро интихоб кунед",
+    "inline.services.mistake_drill_factory.module.copy6": "Гӯш кунед: чӣ тавр хонда шуд?",
+    "inline.services.mistake_drill_factory.module.copy7": "Гӯш кунед ва ҷумлаи шунидаатонро интихоб кунед",
+    "inline.services.mistake_drill_factory.module.copy8": "Ин ҷумла чӣ маъно дорад?",
+    "inline.services.mistake_drill_factory.module.copy9": "Ҷумларо бо тартиби дуруст созед",
+    "inline.services.mistake_drill_factory.module.copy10": "Ҷумларо созед: «{translation}»",
+    "inline.services.mistake_drill_factory.module.copy11": "Гӯш кунед ва ҷумлаи шунидаро созед",
+    "inline.services.mistake_drill_factory.module.copy12": "Барои ҷойи холӣ мувофиқашро интихоб кунед",
+    "inline.services.mistake_drill_factory.module.copy13": "Барои ҷойи холӣ мувофиқашро интихоб кунед: «{translation}»",
+    "inline.services.mistake_drill_factory.module.copy14": "Гуфтугӯро пурра кунед",
+    "inline.services.mistake_drill_factory.module.copy15": "Шакли дурусти ҷумлаи гуфтаатонро интихоб кунед",
+    "inline.services.mistake_drill_factory.module.copy16": "Шумо гуфтан мехостед: «{translation}». Шакли дурустро интихоб кунед",
+    "inline.services.payment_notify_service.module.copy1": "Пардохт қабул шуд ✅\n\nДастрасии пурра ба HSK 3.0 барои шумо кушода шуд. Аз тугмаи поён оғоз кунед 👇🏽",
+    "inline.services.payment_notify_service.module.copy2": "▶️ HSK 3.0-ро оғоз кардан",
+    "inline.services.payment_notify_service.module.copy3": "▶️ Оғози дарс",
+    "inline.services.payment_notify_service.module.copy4": "❌ Пардохти кушодани HSK 3.0 тасдиқ нашуд.",
+    "inline.services.payment_notify_service.module.copy5": "🔄 Дубора кӯшиш кардан",
+    "inline.services.payment_notify_service.module.copy6": "Маблағ нодуруст",
+    "inline.services.payment_notify_service.module.copy7": "Скриншот норавшан",
+    "inline.services.payment_notify_service.module.copy8": "Пардохти шубҳанок",
+    "inline.services.payment_notify_service.module.copy9": "Пардохти кӯҳна",
+    "inline.services.payment_notify_service.module.copy10": "Сабаби дигар",
+    "inline.services.payment_notify_service.notify_hsk30_unlock_rejected.copy1": "Сабаб",
+    "inline.services.payment_notify_service.notify_payment_rejected.copy1": "Сабаб",
+    "inline.services.referral_notify_service.module.copy1": "▶️ Оғози дарс",
+    "inline.services.study_miniapp_service.send_quiz_ai_discussion.copy1": "🧠 Хатоҳои квиз дар реҷаи QA таҳлил шуда истодаанд...",
+    "inline.services.voice_practice_service.module.copy1": "Фармоиш дар қаҳвахона",
+    "inline.services.voice_practice_service.module.copy2": "Харид дар мағоза",
+    "inline.services.voice_practice_service.module.copy3": "Роҳро пурсидан",
+    "inline.services.voice_practice_service.module.copy4": "Шиносоӣ",
+    "inline.services.entitlements.decision.limit_text.copy1.lesson": "дарс",
+    "inline.services.entitlements.decision.limit_text.copy1.ai": "дархости AI",
+    "inline.services.entitlements.decision.limit_text.copy1.speaking": "суҳбат",
+    "inline.services.entitlements.decision.limit_text.copy1.practice": "машқ",
+    "inline.services.entitlements.decision.limit_text.copy1.study": "истифода",
+    "inline.services.entitlements.decision.limit_text.copy2.case1": "Дар реҷаи санҷишӣ",
+    "inline.services.entitlements.decision.limit_text.copy2.case2": "Дар реҷаи ройгон",
+    "inline.services.entitlements.decision.limit_text.copy3.case1": "{value1}: бемаҳдуд.",
+    "inline.services.entitlements.decision.limit_text.copy4": "дар як рӯз",
+    "inline.services.entitlements.decision.limit_text.copy5": "ҳамагӣ",
+    "inline.services.entitlements.decision.limit_text.copy6.case1": "{plan} {period}: {limit} {noun}. Боқӣ монд: {value5}."
+  },
+  "namespace": "bot",
+  "references": {
+    "course.course_reminder_set_button": {
+      "key": "bot.promoButton.reminder",
+      "namespace": "common"
+    },
+    "texts.course_continue": {
+      "key": "bot.courseKeyboard.continue",
+      "namespace": "common"
+    },
+    "texts.course_dialogue_grammar": {
+      "key": "bot.courseKeyboard.dialogueGrammar",
+      "namespace": "common"
+    },
+    "texts.course_grammar_exercises": {
+      "key": "bot.courseKeyboard.grammarExercises",
+      "namespace": "common"
+    },
+    "texts.course_homework_next_lesson": {
+      "key": "bot.courseKeyboard.homeworkNextLesson",
+      "namespace": "common"
+    },
+    "texts.course_intro_vocab": {
+      "key": "bot.courseKeyboard.introVocab",
+      "namespace": "common"
+    },
+    "texts.course_miniapp_open": {
+      "key": "bot.courseKeyboard.miniAppOpen",
+      "namespace": "common"
+    },
+    "texts.course_mode_entry_chat": {
+      "key": "bot.onboarding.freeChatEntry",
+      "namespace": "common"
+    },
+    "texts.course_mode_entry_course": {
+      "key": "bot.onboarding.courseModeEntry",
+      "namespace": "common"
+    },
+    "texts.course_reminder_cancel": {
+      "key": "bot.courseKeyboard.reminderCancel",
+      "namespace": "common"
+    },
+    "texts.course_review_no": {
+      "key": "bot.courseKeyboard.reviewNo",
+      "namespace": "common"
+    },
+    "texts.course_review_yes": {
+      "key": "bot.courseKeyboard.reviewYes",
+      "namespace": "common"
+    },
+    "texts.course_study_open": {
+      "key": "bot.courseKeyboard.studyOpen",
+      "namespace": "common"
+    },
+    "texts.course_v3_open": {
+      "key": "bot.courseKeyboard.v3Open",
+      "namespace": "common"
+    },
+    "texts.daily_practice_check_view_answers": {
+      "key": "bot.practiceCheck.viewAnswers",
+      "namespace": "common"
+    },
+    "texts.daily_practice_finish_chat": {
+      "key": "bot.practiceFinish.freeChat",
+      "namespace": "common"
+    },
+    "texts.daily_practice_finish_course": {
+      "key": "bot.practiceFinish.course",
+      "namespace": "common"
+    },
+    "texts.hint_section_course_title": {
+      "key": "navigation.course",
+      "namespace": "common"
+    },
+    "texts.hint_section_practice_title": {
+      "key": "navigation.practice",
+      "namespace": "common"
+    },
+    "texts.hint_section_profile_title": {
+      "key": "navigation.profile",
+      "namespace": "common"
+    },
+    "texts.hint_section_rating_title": {
+      "key": "navigation.rating",
+      "namespace": "common"
+    },
+    "texts.hint_section_voice_title": {
+      "key": "nav.voice",
+      "namespace": "course"
+    },
+    "texts.language_picker_ru": {
+      "key": "bot.languagePicker.russian",
+      "namespace": "common"
+    },
+    "texts.language_picker_tj": {
+      "key": "bot.languagePicker.tajik",
+      "namespace": "common"
+    },
+    "texts.language_picker_uz": {
+      "key": "bot.languagePicker.uzbek",
+      "namespace": "common"
+    },
+    "texts.language_picker_uz_onboarding": {
+      "key": "bot.languagePicker.uzbekOnboarding",
+      "namespace": "common"
+    },
+    "texts.menu_bar_hint": {
+      "key": "bot.menu.barHint",
+      "namespace": "common"
+    },
+    "texts.menu_course_mode": {
+      "key": "bot.menu.courseMode",
+      "namespace": "common"
+    },
+    "texts.menu_help": {
+      "key": "bot.menu.help",
+      "namespace": "common"
+    },
+    "texts.menu_partner": {
+      "key": "bot.menu.partner",
+      "namespace": "common"
+    },
+    "texts.menu_profile": {
+      "key": "bot.menu.profile",
+      "namespace": "common"
+    },
+    "texts.menu_subscription": {
+      "key": "bot.menu.subscription",
+      "namespace": "common"
+    },
+    "texts.payment_method_visa_button": {
+      "key": "bot.subscription.visaButton",
+      "namespace": "common"
+    },
+    "texts.subscription_button_10_days": {
+      "key": "bot.subscription.plan10Days",
+      "namespace": "common"
+    },
+    "texts.subscription_button_1_month": {
+      "key": "bot.subscription.plan1Month",
+      "namespace": "common"
+    },
+    "texts.subscription_button_3_months": {
+      "key": "bot.subscription.plan3Months",
+      "namespace": "common"
+    },
+    "texts.subscription_expired_later_button": {
+      "key": "onboardingNotification.later",
+      "namespace": "course"
+    },
+    "texts.subscription_free_mode_button": {
+      "key": "bot.subscription.freeMode",
+      "namespace": "common"
+    },
+    "texts.subscription_miniapp_open_button": {
+      "key": "bot.subscription.openMiniApp",
+      "namespace": "common"
+    },
+    "texts.trial_lesson_next": {
+      "key": "bot.lessonNavigation.next",
+      "namespace": "common"
+    },
+    "texts.trial_lesson_previous": {
+      "key": "bot.lessonNavigation.previous",
+      "namespace": "common"
+    }
+  },
+  "schema_version": 1,
+  "tables": {
+    "COURSE_I18N": {
+      "course_all_levels_completed": "course.course_all_levels_completed",
+      "course_back_to_qa_button": "course.course_back_to_qa_button",
+      "course_choose_lesson": "course.course_choose_lesson",
+      "course_complete_homework_first": "course.course_complete_homework_first",
+      "course_completed_title": "course.course_completed_title",
+      "course_continue": "course.course_continue",
+      "course_homework_auto_next": "course.course_homework_auto_next",
+      "course_homework_choose_next_action": "course.course_homework_choose_next_action",
+      "course_homework_empty": "course.course_homework_empty",
+      "course_homework_received": "course.course_homework_received",
+      "course_homework_retry_recommendation": "course.course_homework_retry_recommendation",
+      "course_homework_title": "course.course_homework_title",
+      "course_invalid_time_format": "course.course_invalid_time_format",
+      "course_lesson_homework_intro": "course.course_lesson_homework_intro",
+      "course_lesson_not_unlocked": "course.course_lesson_not_unlocked",
+      "course_lesson_reexplaining": "course.course_lesson_reexplaining",
+      "course_lesson_satisfaction_question": "course.course_lesson_satisfaction_question",
+      "course_lesson_satisfied_no": "course.course_lesson_satisfied_no",
+      "course_lesson_satisfied_yes": "course.course_lesson_satisfied_yes",
+      "course_lesson_what_unclear": "course.course_lesson_what_unclear",
+      "course_level_completed_text": "course.course_level_completed_text",
+      "course_level_upgrade_declined": "course.course_level_upgrade_declined",
+      "course_level_upgraded": "course.course_level_upgraded",
+      "course_locked_text": "course.course_locked_text",
+      "course_locked_title": "course.course_locked_title",
+      "course_miniapp_feedback_items": "course.course_miniapp_feedback_items",
+      "course_miniapp_homework_button": "course.course_miniapp_homework_button",
+      "course_miniapp_homework_done": "course.course_miniapp_homework_done",
+      "course_miniapp_homework_intro": "course.course_miniapp_homework_intro",
+      "course_miniapp_homework_processing": "course.course_miniapp_homework_processing",
+      "course_miniapp_homework_score_line": "course.course_miniapp_homework_score_line",
+      "course_miniapp_lesson_line": "course.course_miniapp_lesson_line",
+      "course_miniapp_lesson_mismatch": "course.course_miniapp_lesson_mismatch",
+      "course_miniapp_next_lesson_button": "course.course_miniapp_next_lesson_button",
+      "course_miniapp_no_button": "course.course_miniapp_no_button",
+      "course_miniapp_quiz_button": "course.course_miniapp_quiz_button",
+      "course_miniapp_quiz_done": "course.course_miniapp_quiz_done",
+      "course_miniapp_quiz_intro": "course.course_miniapp_quiz_intro",
+      "course_miniapp_repeat_lesson_button": "course.course_miniapp_repeat_lesson_button",
+      "course_miniapp_score_line": "course.course_miniapp_score_line",
+      "course_miniapp_understood_question": "course.course_miniapp_understood_question",
+      "course_miniapp_unsupported_lesson": "course.course_miniapp_unsupported_lesson",
+      "course_miniapp_wait_homework": "course.course_miniapp_wait_homework",
+      "course_miniapp_wait_quiz": "course.course_miniapp_wait_quiz",
+      "course_miniapp_wrong_items": "course.course_miniapp_wrong_items",
+      "course_miniapp_yes_button": "course.course_miniapp_yes_button",
+      "course_next_lesson_unlocked": "course.course_next_lesson_unlocked",
+      "course_next_level_no": "course.course_next_level_no",
+      "course_next_level_offer": "course.course_next_level_offer",
+      "course_next_level_yes": "course.course_next_level_yes",
+      "course_next_step": "course.course_next_step",
+      "course_next_study_time_skipped": "course.course_next_study_time_skipped",
+      "course_no_lesson_found": "course.course_no_lesson_found",
+      "course_no_lessons_available": "course.course_no_lessons_available",
+      "course_no_next_level_available": "course.course_no_next_level_available",
+      "course_only_active_users": "course.course_only_active_users",
+      "course_progress": "course.course_progress",
+      "course_progress_full_text": "course.course_progress_full_text",
+      "course_reminder_cancelled": "course.course_reminder_cancelled",
+      "course_reminder_set_button": "course.course_reminder_set_button",
+      "course_reminder_setup_msg": "course.course_reminder_setup_msg",
+      "course_reminder_text": "course.course_reminder_text",
+      "course_reminder_tz_saved": "course.course_reminder_tz_saved",
+      "course_reread_button": "course.course_reread_button",
+      "course_reread_start_msg": "course.course_reread_start_msg",
+      "course_review": "course.course_review",
+      "course_review_choice": "course.course_review_choice",
+      "course_review_last": "course.course_review_last",
+      "course_review_then_homework": "course.course_review_then_homework",
+      "course_settings_button": "course.course_settings_button",
+      "course_settings_choose_lesson": "course.course_settings_choose_lesson",
+      "course_skip_review_next_lesson": "course.course_skip_review_next_lesson",
+      "course_start_homework": "course.course_start_homework",
+      "course_start_next_lesson": "course.course_start_next_lesson",
+      "course_wait_for_answer": "course.course_wait_for_answer",
+      "course_weekly_progress_text": "course.course_weekly_progress_text",
+      "no": "course.no",
+      "voice_mode_cancel_button": "course.voice_mode_cancel_button",
+      "voice_mode_cancelled": "course.voice_mode_cancelled",
+      "voice_mode_choose": "course.voice_mode_choose",
+      "voice_mode_no_pending": "course.voice_mode_no_pending",
+      "voice_mode_qa_button": "course.voice_mode_qa_button",
+      "voice_mode_text_exit": "course.voice_mode_text_exit",
+      "voice_mode_translator_button": "course.voice_mode_translator_button",
+      "voice_subscription_required": "course.voice_subscription_required",
+      "voice_too_long": "course.voice_too_long",
+      "voice_transcript_empty": "course.voice_transcript_empty",
+      "voice_transcript_preview": "course.voice_transcript_preview",
+      "voice_transcription_failed": "course.voice_transcription_failed",
+      "voice_translation_failed": "course.voice_translation_failed",
+      "voice_translator_result": "course.voice_translator_result",
+      "yes": "course.yes"
+    },
+    "TEXTS": {
+      "access_blocked": "texts.access_blocked",
+      "access_daily_image_limit_reached": "texts.access_daily_image_limit_reached",
+      "access_daily_image_limit_reached_gemini": "texts.access_daily_image_limit_reached_gemini",
+      "access_daily_limit_reached": "texts.access_daily_limit_reached",
+      "access_daily_voice_limit_reached": "texts.access_daily_voice_limit_reached",
+      "access_payment_pending_review": "texts.access_payment_pending_review",
+      "access_start_first": "texts.access_start_first",
+      "admin_access_granted_notice": "texts.admin_access_granted_notice",
+      "admin_unblocked_notice": "texts.admin_unblocked_notice",
+      "ai_budget_cooldown": "texts.ai_budget_cooldown",
+      "ai_budget_cooldown_notice": "texts.ai_budget_cooldown_notice",
+      "ai_budget_depleted": "texts.ai_budget_depleted",
+      "ai_budget_depleted_notice": "texts.ai_budget_depleted_notice",
+      "ai_empty_response": "texts.ai_empty_response",
+      "ai_response_failed": "texts.ai_response_failed",
+      "android_app_button": "texts.android_app_button",
+      "android_app_caption": "texts.android_app_caption",
+      "android_app_failed": "texts.android_app_failed",
+      "android_app_intro": "texts.android_app_intro",
+      "android_app_unavailable": "texts.android_app_unavailable",
+      "apps_menu_button": "texts.apps_menu_button",
+      "apps_menu_text": "texts.apps_menu_text",
+      "checkout_change_plan_button": "texts.checkout_change_plan_button",
+      "choose_language": "texts.choose_language",
+      "choose_level": "texts.choose_level",
+      "course_continue": "texts.course_continue",
+      "course_dialogue_grammar": "texts.course_dialogue_grammar",
+      "course_grammar_exercises": "texts.course_grammar_exercises",
+      "course_homework_next_lesson": "texts.course_homework_next_lesson",
+      "course_intro_vocab": "texts.course_intro_vocab",
+      "course_miniapp_discuss_mistakes_button": "texts.course_miniapp_discuss_mistakes_button",
+      "course_miniapp_mistakes_ai_continue_hint": "texts.course_miniapp_mistakes_ai_continue_hint",
+      "course_miniapp_mistakes_ai_processing": "texts.course_miniapp_mistakes_ai_processing",
+      "course_miniapp_mistakes_ai_prompt": "texts.course_miniapp_mistakes_ai_prompt",
+      "course_miniapp_open": "texts.course_miniapp_open",
+      "course_mode_entry_chat": "texts.course_mode_entry_chat",
+      "course_mode_entry_course": "texts.course_mode_entry_course",
+      "course_reminder_cancel": "texts.course_reminder_cancel",
+      "course_review_no": "texts.course_review_no",
+      "course_review_yes": "texts.course_review_yes",
+      "course_study_open": "texts.course_study_open",
+      "course_trial_ai_explanation_prompt": "texts.course_trial_ai_explanation_prompt",
+      "course_trial_ai_explanation_title": "texts.course_trial_ai_explanation_title",
+      "course_trial_soft_paywall_teaser": "texts.course_trial_soft_paywall_teaser",
+      "course_v3_open": "texts.course_v3_open",
+      "daily_limit_renewed": "texts.daily_limit_renewed",
+      "daily_practice_check_view_answers": "texts.daily_practice_check_view_answers",
+      "daily_practice_finish_chat": "texts.daily_practice_finish_chat",
+      "daily_practice_finish_course": "texts.daily_practice_finish_course",
+      "feedback_admin_reply_user_message": "texts.feedback_admin_reply_user_message",
+      "feedback_already_completed": "texts.feedback_already_completed",
+      "feedback_cancel_button": "texts.feedback_cancel_button",
+      "feedback_dislike_detail_prompt": "texts.feedback_dislike_detail_prompt",
+      "feedback_dislike_detail_required": "texts.feedback_dislike_detail_required",
+      "feedback_dislike_detail_screenshot_note": "texts.feedback_dislike_detail_screenshot_note",
+      "feedback_dislike_limits": "texts.feedback_dislike_limits",
+      "feedback_dislike_other": "texts.feedback_dislike_other",
+      "feedback_dislike_pace": "texts.feedback_dislike_pace",
+      "feedback_dislike_price": "texts.feedback_dislike_price",
+      "feedback_dislike_question": "texts.feedback_dislike_question",
+      "feedback_dislike_unclear": "texts.feedback_dislike_unclear",
+      "feedback_like_answers": "texts.feedback_like_answers",
+      "feedback_like_course": "texts.feedback_like_course",
+      "feedback_like_other": "texts.feedback_like_other",
+      "feedback_like_photo": "texts.feedback_like_photo",
+      "feedback_like_practice": "texts.feedback_like_practice",
+      "feedback_like_question": "texts.feedback_like_question",
+      "feedback_like_sub_question": "texts.feedback_like_sub_question",
+      "feedback_limits_offer_text": "texts.feedback_limits_offer_text",
+      "feedback_not_found": "texts.feedback_not_found",
+      "feedback_other_dislike_prompt": "texts.feedback_other_dislike_prompt",
+      "feedback_other_empty": "texts.feedback_other_empty",
+      "feedback_other_like_prompt": "texts.feedback_other_like_prompt",
+      "feedback_other_text_only": "texts.feedback_other_text_only",
+      "feedback_paid_question": "texts.feedback_paid_question",
+      "feedback_paid_regret": "texts.feedback_paid_regret",
+      "feedback_paid_sub_negative_question": "texts.feedback_paid_sub_negative_question",
+      "feedback_paid_sub_positive_question": "texts.feedback_paid_sub_positive_question",
+      "feedback_paid_thanks": "texts.feedback_paid_thanks",
+      "feedback_paid_unsure": "texts.feedback_paid_unsure",
+      "feedback_paid_useful": "texts.feedback_paid_useful",
+      "feedback_paid_worth": "texts.feedback_paid_worth",
+      "feedback_price_offer_button": "texts.feedback_price_offer_button",
+      "feedback_price_offer_expired": "texts.feedback_price_offer_expired",
+      "feedback_price_offer_text": "texts.feedback_price_offer_text",
+      "feedback_sub_clarity": "texts.feedback_sub_clarity",
+      "feedback_sub_content": "texts.feedback_sub_content",
+      "feedback_sub_daily": "texts.feedback_sub_daily",
+      "feedback_sub_examples": "texts.feedback_sub_examples",
+      "feedback_sub_exercises": "texts.feedback_sub_exercises",
+      "feedback_sub_hanzi": "texts.feedback_sub_hanzi",
+      "feedback_sub_homework": "texts.feedback_sub_homework",
+      "feedback_sub_lessons": "texts.feedback_sub_lessons",
+      "feedback_sub_memorize": "texts.feedback_sub_memorize",
+      "feedback_sub_other": "texts.feedback_sub_other",
+      "feedback_sub_other_prompt": "texts.feedback_sub_other_prompt",
+      "feedback_sub_quiz": "texts.feedback_sub_quiz",
+      "feedback_sub_slow": "texts.feedback_sub_slow",
+      "feedback_sub_speed": "texts.feedback_sub_speed",
+      "feedback_sub_tech": "texts.feedback_sub_tech",
+      "feedback_sub_time": "texts.feedback_sub_time",
+      "feedback_sub_translate": "texts.feedback_sub_translate",
+      "feedback_sub_voice": "texts.feedback_sub_voice",
+      "feedback_thanks": "texts.feedback_thanks",
+      "force_sub_check_button": "texts.force_sub_check_button",
+      "force_sub_main_channel_text": "texts.force_sub_main_channel_text",
+      "force_sub_required_alert": "texts.force_sub_required_alert",
+      "force_sub_required_text": "texts.force_sub_required_text",
+      "force_sub_still_missing": "texts.force_sub_still_missing",
+      "force_sub_unlocked_alert": "texts.force_sub_unlocked_alert",
+      "force_sub_unlocked_text": "texts.force_sub_unlocked_text",
+      "free_mode_info": "texts.free_mode_info",
+      "free_mode_info_gemini": "texts.free_mode_info_gemini",
+      "help_contact_button": "texts.help_contact_button",
+      "hint_change_ads_body": "texts.hint_change_ads_body",
+      "hint_change_ads_title": "texts.hint_change_ads_title",
+      "hint_change_paywall_body": "texts.hint_change_paywall_body",
+      "hint_change_paywall_title": "texts.hint_change_paywall_title",
+      "hint_change_trial_body": "texts.hint_change_trial_body",
+      "hint_change_trial_title": "texts.hint_change_trial_title",
+      "hint_section_course_body": "texts.hint_section_course_body",
+      "hint_section_course_title": "texts.hint_section_course_title",
+      "hint_section_practice_body": "texts.hint_section_practice_body",
+      "hint_section_practice_title": "texts.hint_section_practice_title",
+      "hint_section_profile_body": "texts.hint_section_profile_body",
+      "hint_section_profile_title": "texts.hint_section_profile_title",
+      "hint_section_rating_body": "texts.hint_section_rating_body",
+      "hint_section_rating_title": "texts.hint_section_rating_title",
+      "hint_section_voice_body": "texts.hint_section_voice_body",
+      "hint_section_voice_title": "texts.hint_section_voice_title",
+      "image_invalid_format": "texts.image_invalid_format",
+      "language_picker_ru": "texts.language_picker_ru",
+      "language_picker_tj": "texts.language_picker_tj",
+      "language_picker_uz": "texts.language_picker_uz",
+      "language_picker_uz_onboarding": "texts.language_picker_uz_onboarding",
+      "language_selected": "texts.language_selected",
+      "level_beginner": "texts.level_beginner",
+      "limit_daily_spent_notice": "texts.limit_daily_spent_notice",
+      "limit_daily_spent_notice_no_time": "texts.limit_daily_spent_notice_no_time",
+      "limit_lesson_spent_notice": "texts.limit_lesson_spent_notice",
+      "limit_lesson_warning_notice": "texts.limit_lesson_warning_notice",
+      "limit_reached_generic": "texts.limit_reached_generic",
+      "menu_bar_hint": "texts.menu_bar_hint",
+      "menu_course_mode": "texts.menu_course_mode",
+      "menu_help": "texts.menu_help",
+      "menu_invite": "texts.menu_invite",
+      "menu_partner": "texts.menu_partner",
+      "menu_profile": "texts.menu_profile",
+      "menu_start_lesson": "texts.menu_start_lesson",
+      "menu_subscription": "texts.menu_subscription",
+      "onboarding_special_welcome": "texts.onboarding_special_welcome",
+      "onboarding_special_welcome_gemini": "texts.onboarding_special_welcome_gemini",
+      "onboarding_tip_course_dialogue": "texts.onboarding_tip_course_dialogue",
+      "onboarding_tip_course_grammar": "texts.onboarding_tip_course_grammar",
+      "onboarding_tip_course_vocab": "texts.onboarding_tip_course_vocab",
+      "onboarding_tip_normal_photo": "texts.onboarding_tip_normal_photo",
+      "onboarding_tip_normal_voice": "texts.onboarding_tip_normal_voice",
+      "partner_active_text": "texts.partner_active_text",
+      "partner_admin_message": "texts.partner_admin_message",
+      "partner_application_audience_prompt": "texts.partner_application_audience_prompt",
+      "partner_application_channel_prompt": "texts.partner_application_channel_prompt",
+      "partner_application_contact_prompt": "texts.partner_application_contact_prompt",
+      "partner_application_invalid": "texts.partner_application_invalid",
+      "partner_apply_button": "texts.partner_apply_button",
+      "partner_approved_notification": "texts.partner_approved_notification",
+      "partner_back_button": "texts.partner_back_button",
+      "partner_blocked_notification": "texts.partner_blocked_notification",
+      "partner_blocked_text": "texts.partner_blocked_text",
+      "partner_bonus_unlocked_line": "texts.partner_bonus_unlocked_line",
+      "partner_commission_notification": "texts.partner_commission_notification",
+      "partner_get_link_button": "texts.partner_get_link_button",
+      "partner_link_text": "texts.partner_link_text",
+      "partner_not_partner_text": "texts.partner_not_partner_text",
+      "partner_payout_account_prompt": "texts.partner_payout_account_prompt",
+      "partner_payout_alipay_button": "texts.partner_payout_alipay_button",
+      "partner_payout_already_open_text": "texts.partner_payout_already_open_text",
+      "partner_payout_bank_button": "texts.partner_payout_bank_button",
+      "partner_payout_bank_name_prompt": "texts.partner_payout_bank_name_prompt",
+      "partner_payout_button": "texts.partner_payout_button",
+      "partner_payout_choose_method": "texts.partner_payout_choose_method",
+      "partner_payout_created_text": "texts.partner_payout_created_text",
+      "partner_payout_deadline_notification": "texts.partner_payout_deadline_notification",
+      "partner_payout_holder_prompt": "texts.partner_payout_holder_prompt",
+      "partner_payout_invalid": "texts.partner_payout_invalid",
+      "partner_payout_note_prompt": "texts.partner_payout_note_prompt",
+      "partner_payout_other_button": "texts.partner_payout_other_button",
+      "partner_payout_paid_notification": "texts.partner_payout_paid_notification",
+      "partner_payout_qr_photo_only": "texts.partner_payout_qr_photo_only",
+      "partner_payout_qr_prompt": "texts.partner_payout_qr_prompt",
+      "partner_payout_rejected_notification": "texts.partner_payout_rejected_notification",
+      "partner_payout_unavailable_text": "texts.partner_payout_unavailable_text",
+      "partner_payout_wechat_button": "texts.partner_payout_wechat_button",
+      "partner_pending_text": "texts.partner_pending_text",
+      "partner_unblocked_notification": "texts.partner_unblocked_notification",
+      "payment_already_reviewed": "texts.payment_already_reviewed",
+      "payment_back": "texts.payment_back",
+      "payment_details_label": "texts.payment_details_label",
+      "payment_invalid_plan": "texts.payment_invalid_plan",
+      "payment_method_visa_button": "texts.payment_method_visa_button",
+      "payment_send_screenshot_only": "texts.payment_send_screenshot_only",
+      "paywall_ai_body": "texts.paywall_ai_body",
+      "paywall_ai_cta": "texts.paywall_ai_cta",
+      "paywall_ai_title": "texts.paywall_ai_title",
+      "paywall_lesson_body": "texts.paywall_lesson_body",
+      "paywall_lesson_cta": "texts.paywall_lesson_cta",
+      "paywall_lesson_title": "texts.paywall_lesson_title",
+      "paywall_practice_body": "texts.paywall_practice_body",
+      "paywall_practice_cta": "texts.paywall_practice_cta",
+      "paywall_practice_title": "texts.paywall_practice_title",
+      "paywall_speaking_body": "texts.paywall_speaking_body",
+      "paywall_speaking_cta": "texts.paywall_speaking_cta",
+      "paywall_speaking_title": "texts.paywall_speaking_title",
+      "paywall_study_body": "texts.paywall_study_body",
+      "paywall_study_cta": "texts.paywall_study_cta",
+      "paywall_study_title": "texts.paywall_study_title",
+      "paywall_voice_body": "texts.paywall_voice_body",
+      "paywall_voice_cta": "texts.paywall_voice_cta",
+      "paywall_voice_title": "texts.paywall_voice_title",
+      "profile_to_course_button": "texts.profile_to_course_button",
+      "qa_limit_course_offer": "texts.qa_limit_course_offer",
+      "qa_limit_course_start_button": "texts.qa_limit_course_start_button",
+      "qa_limit_subscribe_button": "texts.qa_limit_subscribe_button",
+      "referral_bonus_question_button": "texts.referral_bonus_question_button",
+      "referral_bonus_received": "texts.referral_bonus_received",
+      "referral_daily_limit_offer": "texts.referral_daily_limit_offer",
+      "referral_image_limit_offer": "texts.referral_image_limit_offer",
+      "referral_image_limit_offer_gemini": "texts.referral_image_limit_offer_gemini",
+      "referral_invite_text": "texts.referral_invite_text",
+      "referral_trial_access_unlocked": "texts.referral_trial_access_unlocked",
+      "referral_trial_access_unlocked_gemini": "texts.referral_trial_access_unlocked_gemini",
+      "send_first_message": "texts.send_first_message",
+      "subscription_admin_discount_button": "texts.subscription_admin_discount_button",
+      "subscription_admin_discount_expired": "texts.subscription_admin_discount_expired",
+      "subscription_button_10_days": "texts.subscription_button_10_days",
+      "subscription_button_1_month": "texts.subscription_button_1_month",
+      "subscription_button_3_months": "texts.subscription_button_3_months",
+      "subscription_churn_discount_ready_text": "texts.subscription_churn_discount_ready_text",
+      "subscription_churn_feedback_button": "texts.subscription_churn_feedback_button",
+      "subscription_churn_feedback_thanks": "texts.subscription_churn_feedback_thanks",
+      "subscription_churn_followup_text": "texts.subscription_churn_followup_text",
+      "subscription_churn_reason_ai_quality": "texts.subscription_churn_reason_ai_quality",
+      "subscription_churn_reason_budget": "texts.subscription_churn_reason_budget",
+      "subscription_churn_reason_course_fit": "texts.subscription_churn_reason_course_fit",
+      "subscription_churn_reason_other": "texts.subscription_churn_reason_other",
+      "subscription_churn_reason_price": "texts.subscription_churn_reason_price",
+      "subscription_churn_reason_prompt": "texts.subscription_churn_reason_prompt",
+      "subscription_churn_reason_trial_more": "texts.subscription_churn_reason_trial_more",
+      "subscription_churn_trial_more_text": "texts.subscription_churn_trial_more_text",
+      "subscription_expired_continue_button": "texts.subscription_expired_continue_button",
+      "subscription_expired_later_button": "texts.subscription_expired_later_button",
+      "subscription_expired_soft_text": "texts.subscription_expired_soft_text",
+      "subscription_expires_tomorrow": "texts.subscription_expires_tomorrow",
+      "subscription_free_mode_button": "texts.subscription_free_mode_button",
+      "subscription_main_choose": "texts.subscription_main_choose",
+      "subscription_main_title": "texts.subscription_main_title",
+      "subscription_main_visa_benefits": "texts.subscription_main_visa_benefits",
+      "subscription_miniapp_entry_text": "texts.subscription_miniapp_entry_text",
+      "subscription_miniapp_open_button": "texts.subscription_miniapp_open_button",
+      "subscription_referral_discount_button": "texts.subscription_referral_discount_button",
+      "subscription_referral_hint": "texts.subscription_referral_hint",
+      "trial_24h_info": "texts.trial_24h_info",
+      "trial_24h_info_gemini": "texts.trial_24h_info_gemini",
+      "trial_expired_notice": "texts.trial_expired_notice",
+      "trial_expiring_soon": "texts.trial_expiring_soon",
+      "trial_lesson_next": "texts.trial_lesson_next",
+      "trial_lesson_previous": "texts.trial_lesson_previous",
+      "trial_offer_body": "texts.trial_offer_body",
+      "trial_offer_cta": "texts.trial_offer_cta",
+      "trial_offer_title": "texts.trial_offer_title",
+      "trial_started_info": "texts.trial_started_info",
+      "trial_started_notice": "texts.trial_started_notice",
+      "user_not_found": "texts.user_not_found",
+      "user_payment_approved": "texts.user_payment_approved",
+      "user_payment_rejected": "texts.user_payment_rejected",
+      "voice_trial_daily_limit_reached": "texts.voice_trial_daily_limit_reached",
+      "welcome": "texts.welcome"
+    }
+  },
+  "maps": {
+    "inline.handlers.challenge.helper_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "bad_button": {
+            "message": "inline.handlers.challenge.helper_text.copy1.bad_button"
+          },
+          "not_found": {
+            "message": "inline.handlers.challenge.helper_text.copy1.not_found"
+          },
+          "bad_action": {
+            "message": "inline.handlers.challenge.helper_text.copy1.bad_action"
+          },
+          "closed": {
+            "message": "inline.handlers.challenge.helper_text.copy1.closed"
+          },
+          "accepted": {
+            "message": "inline.handlers.challenge.helper_text.copy1.accepted"
+          },
+          "rejected": {
+            "message": "inline.handlers.challenge.helper_text.copy1.rejected"
+          }
+        }
+      }
+    },
+    "inline.handlers.commands.helper_status_label.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_status_label.copy1"
+      }
+    },
+    "inline.handlers.commands.helper_status_label.copy2": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_status_label.copy2"
+      }
+    },
+    "inline.handlers.commands.helper_status_label.copy3": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_status_label.copy3"
+      }
+    },
+    "inline.handlers.commands.helper_status_label.copy4": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_status_label.copy4"
+      }
+    },
+    "inline.handlers.commands.helper_status_label.copy5": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_status_label.copy5"
+      }
+    },
+    "inline.handlers.commands.helper_status_label.copy6": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_status_label.copy6"
+      }
+    },
+    "inline.handlers.commands.helper_profile_status_label.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_profile_status_label.copy1"
+      }
+    },
+    "inline.handlers.commands.helper_profile_status_label.copy2": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_profile_status_label.copy2"
+      }
+    },
+    "inline.handlers.commands.helper_language_label.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "object": {
+          "tj": {
+            "message": "inline.handlers.commands.helper_language_label.copy1.tj"
+          },
+          "uz": {
+            "message": "inline.handlers.commands.helper_language_label.copy1.uz"
+          },
+          "ru": {
+            "message": "inline.handlers.commands.helper_language_label.copy1.ru"
+          }
+        }
+      }
+    },
+    "inline.handlers.commands.helper_language_label.copy2": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_language_label.copy2"
+      }
+    },
+    "inline.handlers.commands.helper_level_label.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_level_label.copy1"
+      }
+    },
+    "inline.handlers.commands.helper_profile_reminder_line.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.helper_profile_reminder_line.copy1"
+      }
+    },
+    "inline.handlers.commands.profile_menu_keyboard.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "object": {
+          "subscription": {
+            "message": "inline.handlers.commands.profile_menu_keyboard.copy1.subscription"
+          },
+          "language": {
+            "message": "inline.handlers.commands.profile_menu_keyboard.copy1.language"
+          },
+          "level": {
+            "message": "inline.handlers.commands.profile_menu_keyboard.copy1.level"
+          }
+        }
+      }
+    },
+    "inline.handlers.commands.command_level_callback_handler.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.commands.command_level_callback_handler.copy1"
+      }
+    },
+    "inline.handlers.course.course_miniapp_entry_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.course_miniapp_entry_text.copy1"
+      }
+    },
+    "inline.handlers.course.course_miniapp_entry_text.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.course_miniapp_entry_text.copy2"
+      }
+    },
+    "inline.handlers.course.course_miniapp_reentry_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.course_miniapp_reentry_text.copy1"
+      }
+    },
+    "inline.handlers.course.helper_course_entry_button_label.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_course_entry_button_label.copy1"
+      }
+    },
+    "inline.handlers.course.helper_block_if_course_disabled.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_block_if_course_disabled.copy1"
+      }
+    },
+    "inline.handlers.course.helper_course_locked_offer_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_course_locked_offer_text.copy1"
+      }
+    },
+    "inline.handlers.course.helper_trial_course_completed_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_trial_course_completed_text.copy1"
+      }
+    },
+    "inline.handlers.course.course_command_handler.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.course_command_handler.copy1"
+      }
+    },
+    "inline.handlers.course.helper_static_course_missing_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_static_course_missing_text.copy1"
+      }
+    },
+    "inline.handlers.course.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.module.copy1"
+      }
+    },
+    "inline.handlers.desktop_auth.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "confirm_desktop": {
+            "message": "inline.handlers.desktop_auth.module.copy1.confirm_desktop"
+          },
+          "confirm_mobile": {
+            "message": "inline.handlers.desktop_auth.module.copy1.confirm_mobile"
+          },
+          "approve": {
+            "message": "inline.handlers.desktop_auth.module.copy1.approve"
+          },
+          "cancel": {
+            "message": "inline.handlers.desktop_auth.module.copy1.cancel"
+          },
+          "enter_code": {
+            "message": "inline.handlers.desktop_auth.module.copy1.enter_code"
+          },
+          "invalid_code": {
+            "message": "inline.handlers.desktop_auth.module.copy1.invalid_code"
+          },
+          "attempts_exhausted": {
+            "message": "inline.handlers.desktop_auth.module.copy1.attempts_exhausted"
+          },
+          "ok_desktop": {
+            "message": "inline.handlers.desktop_auth.module.copy1.ok_desktop"
+          },
+          "ok_mobile": {
+            "message": "inline.handlers.desktop_auth.module.copy1.ok_mobile"
+          },
+          "cancelled": {
+            "message": "inline.handlers.desktop_auth.module.copy1.cancelled"
+          },
+          "invalid": {
+            "message": "inline.handlers.desktop_auth.module.copy1.invalid"
+          }
+        }
+      }
+    },
+    "inline.handlers.desktop_auth.module.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "choose_language": {
+            "message": "inline.handlers.desktop_auth.module.copy2.choose_language"
+          },
+          "confirm": {
+            "message": "inline.handlers.desktop_auth.module.copy2.confirm"
+          },
+          "approve": {
+            "message": "inline.handlers.desktop_auth.module.copy2.approve"
+          },
+          "cancel": {
+            "message": "inline.handlers.desktop_auth.module.copy2.cancel"
+          },
+          "ok": {
+            "message": "inline.handlers.desktop_auth.module.copy2.ok"
+          },
+          "cancelled": {
+            "message": "inline.handlers.desktop_auth.module.copy2.cancelled"
+          },
+          "invalid": {
+            "message": "inline.handlers.desktop_auth.module.copy2.invalid"
+          }
+        }
+      }
+    },
+    "inline.handlers.desktop_auth.module.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "confirm": {
+            "message": "inline.handlers.desktop_auth.module.copy3.confirm"
+          },
+          "approve": {
+            "message": "inline.handlers.desktop_auth.module.copy3.approve"
+          },
+          "cancel": {
+            "message": "inline.handlers.desktop_auth.module.copy3.cancel"
+          },
+          "ok": {
+            "message": "inline.handlers.desktop_auth.module.copy3.ok"
+          },
+          "denied": {
+            "message": "inline.handlers.desktop_auth.module.copy3.denied"
+          },
+          "invalid": {
+            "message": "inline.handlers.desktop_auth.module.copy3.invalid"
+          },
+          "conflict": {
+            "message": "inline.handlers.desktop_auth.module.copy3.conflict"
+          }
+        }
+      }
+    },
+    "inline.handlers.messages.module.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "tuple": [
+          {
+            "message": "inline.handlers.messages.module.copy1.item1"
+          },
+          {
+            "message": "inline.handlers.messages.module.copy1.item2"
+          },
+          {
+            "message": "inline.handlers.messages.module.copy1.item3"
+          },
+          {
+            "message": "inline.handlers.messages.module.copy1.item4"
+          }
+        ]
+      }
+    },
+    "inline.handlers.messages.helper_format_static_exercise_result.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.helper_format_static_exercise_result.copy1"
+      }
+    },
+    "inline.handlers.messages.helper_voice_answer_loader_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.helper_voice_answer_loader_text.copy1"
+      }
+    },
+    "inline.handlers.messages.helper_voice_answer_loader_text.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.helper_voice_answer_loader_text.copy2"
+      }
+    },
+    "inline.handlers.messages.handle_text_message.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.handle_text_message.copy1"
+      }
+    },
+    "inline.handlers.messages.handle_text_message.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.handle_text_message.copy2"
+      }
+    },
+    "inline.handlers.payments.helper_waiting_message.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.payments.helper_waiting_message.copy1"
+      }
+    },
+    "inline.handlers.payments.helper_waiting_message.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.payments.helper_waiting_message.copy2"
+      }
+    },
+    "inline.handlers.release_feedback.module.copy1": {
+      "locale_order": [
+        "tj",
+        "uz",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.handlers.release_feedback.module.copy1"
+      }
+    },
+    "inline.handlers.release_feedback.module.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.release_feedback.module.copy2"
+      }
+    },
+    "inline.handlers.release_feedback.helper_route_try_feature.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.release_feedback.helper_route_try_feature.copy1"
+      }
+    },
+    "inline.handlers.release_feedback.helper_route_try_feature.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.release_feedback.helper_route_try_feature.copy2"
+      }
+    },
+    "inline.handlers.release_feedback.helper_route_try_feature.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.release_feedback.helper_route_try_feature.copy3"
+      }
+    },
+    "inline.handlers.release_feedback.helper_route_try_feature.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.release_feedback.helper_route_try_feature.copy4"
+      }
+    },
+    "inline.handlers.start.helper_send_android_referral_apk.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.start.helper_send_android_referral_apk.copy1"
+      }
+    },
+    "inline.handlers.start.helper_mode_choice_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.start.helper_mode_choice_text.copy1"
+      }
+    },
+    "inline.handlers.subscription.helper_card_texts.copy1": {
+      "locale_order": [
+        "tj",
+        "ru",
+        "uz"
+      ],
+      "value": {
+        "object": {
+          "main_title": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.main_title"
+          },
+          "benefits": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.benefits"
+          },
+          "card_note_short": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.card_note_short"
+          },
+          "card_note_full": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.card_note_full"
+          },
+          "referral_hint": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.referral_hint"
+          },
+          "choose": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.choose"
+          },
+          "checkout_title": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.checkout_title"
+          },
+          "plan_label": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.plan_label"
+          },
+          "price_label": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.price_label"
+          },
+          "bank_label": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.bank_label"
+          },
+          "bank_name": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.bank_name"
+          },
+          "payment_details_label": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.payment_details_label"
+          },
+          "send_screenshot": {
+            "message": "inline.handlers.subscription.helper_card_texts.copy1.send_screenshot"
+          }
+        }
+      }
+    },
+    "inline.utils.course_formatter.helper_lesson_word.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_lesson_word.copy1"
+      }
+    },
+    "inline.utils.course_formatter.helper_block_label.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_block_label.copy1"
+      }
+    },
+    "inline.utils.course_formatter.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.module.copy1"
+      }
+    },
+    "inline.utils.course_formatter.module.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.module.copy2"
+      }
+    },
+    "inline.utils.course_formatter.module.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.module.copy3"
+      }
+    },
+    "inline.utils.course_formatter.module.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.module.copy4"
+      }
+    },
+    "inline.utils.course_formatter.module.copy5": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.module.copy5"
+      }
+    },
+    "inline.utils.course_formatter.module.copy6": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.module.copy6"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy1"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy2"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy3"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy4"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy5": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy5"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy6": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy6"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy7": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_analysis.copy7"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy1"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy2"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy3"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy4"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy5": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy5"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy6": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy6"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy7": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy7"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy8": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy8"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy9": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy9"
+      }
+    },
+    "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy10": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_hsk4_grammar_tip.copy10"
+      }
+    },
+    "inline.utils.course_formatter.helper_append_basic_grammar_item.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.helper_append_basic_grammar_item.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_vocab.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_vocab.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_dialogue.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_dialogue.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_dialogue.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_dialogue.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_exercise.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_exercise.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_exercise.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_exercise.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_exercise.copy3": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_exercise.copy3"
+      }
+    },
+    "inline.utils.course_formatter.format_vocab_1.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_vocab_1.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_vocab_1.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_vocab_1.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_vocab_2.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_vocab_2.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_block_vocab.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_block_vocab.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_block_vocab.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_block_vocab.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_block_quiz.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_block_quiz.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_block_quiz.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_block_quiz.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_block_quiz.copy3": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_block_quiz.copy3"
+      }
+    },
+    "inline.utils.course_formatter.format_block_grammar.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_block_grammar.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_dialogue_n.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_dialogue_n.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_dialogue_n.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_dialogue_n.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_dialogue_n.copy3": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_dialogue_n.copy3"
+      }
+    },
+    "inline.utils.course_formatter.format_grammar_v2.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_grammar_v2.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_satisfaction_check.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_satisfaction_check.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_satisfaction_check.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_satisfaction_check.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_review.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_review.copy1"
+      }
+    },
+    "inline.utils.course_formatter.format_review.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_review.copy2"
+      }
+    },
+    "inline.utils.course_formatter.format_review.copy3": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_review.copy3"
+      }
+    },
+    "inline.utils.course_formatter.format_review.copy4": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_review.copy4"
+      }
+    },
+    "inline.utils.course_formatter.format_intro.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_intro.copy1"
+      }
+    },
+    "inline.utils.course_miniapp.format_miniapp_quiz_result.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_miniapp.format_miniapp_quiz_result.copy1"
+      }
+    },
+    "inline.handlers.course.helper_course_part_label.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_course_part_label.dynamic1"
+      }
+    },
+    "inline.handlers.course.helper_course_part_label.dynamic2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_course_part_label.dynamic2"
+      }
+    },
+    "inline.handlers.course.helper_course_part_label.dynamic3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_course_part_label.dynamic3"
+      }
+    },
+    "inline.handlers.course.course_miniapp_reentry_text.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.course_miniapp_reentry_text.dynamic1"
+      }
+    },
+    "inline.handlers.course.helper_course_entry_button_label.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.helper_course_entry_button_label.dynamic1"
+      }
+    },
+    "inline.handlers.course.course_set_study_time_handler.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.course.course_set_study_time_handler.dynamic1"
+      }
+    },
+    "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.true": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.true"
+      }
+    },
+    "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.false": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.messages.helper_format_static_exercise_result.dynamic1.false"
+      }
+    },
+    "inline.handlers.start.helper_lesson_choice_text.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.handlers.start.helper_lesson_choice_text.dynamic1"
+      }
+    },
+    "inline.utils.course_formatter.format_vocab.dynamic1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.utils.course_formatter.format_vocab.dynamic1"
+      }
+    },
+    "inline.utils.course_miniapp.format_miniapp_quiz_intro.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_miniapp.format_miniapp_quiz_intro.dynamic1"
+      }
+    },
+    "inline.utils.course_miniapp.format_miniapp_quiz_result.dynamic1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.utils.course_miniapp.format_miniapp_quiz_result.dynamic1"
+      }
+    },
+    "inline.services.course_challenge_service.helper_invite_keyboard.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "tuple": [
+          {
+            "message": "inline.services.course_challenge_service.helper_invite_keyboard.copy1.item1"
+          },
+          {
+            "message": "inline.services.course_challenge_service.helper_invite_keyboard.copy1.item2"
+          },
+          {
+            "message": "inline.services.course_challenge_service.helper_invite_keyboard.copy1.item3"
+          }
+        ]
+      }
+    },
+    "inline.services.course_challenge_service.helper_open_keyboard.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.helper_open_keyboard.copy1"
+      }
+    },
+    "inline.services.course_challenge_service.invite_text.copy1.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.invite_text.copy1.case1"
+      }
+    },
+    "inline.services.course_challenge_service.invite_text.copy2.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.invite_text.copy2.case1"
+      }
+    },
+    "inline.services.course_challenge_service.resolved_invite_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.resolved_invite_text.copy1"
+      }
+    },
+    "inline.services.course_challenge_service.resolved_invite_text.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.resolved_invite_text.copy2"
+      }
+    },
+    "inline.services.course_challenge_service.notify_response.copy1.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.notify_response.copy1.case1"
+      }
+    },
+    "inline.services.course_challenge_service.notify_response.copy2.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.notify_response.copy2.case1"
+      }
+    },
+    "inline.services.course_challenge_service.notify_submit.copy1.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.notify_submit.copy1.case1"
+      }
+    },
+    "inline.services.course_challenge_service.notify_submit.copy1.case2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.notify_submit.copy1.case2"
+      }
+    },
+    "inline.services.course_challenge_service.notify_submit.copy1.case3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.notify_submit.copy1.case3"
+      }
+    },
+    "inline.services.course_challenge_service.notify_submit.copy2.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_challenge_service.notify_submit.copy2.case1"
+      }
+    },
+    "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1": {
+      "locale_order": [
+        "ru",
+        "tj",
+        "uz"
+      ],
+      "value": {
+        "object": {
+          "active_word": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.active_word"
+          },
+          "meaning_guess": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.meaning_guess"
+          },
+          "listening_choice": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.listening_choice"
+          },
+          "pinyin_choice": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.pinyin_choice"
+          },
+          "hanzi_choice": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.hanzi_choice"
+          },
+          "gap_fill": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.gap_fill"
+          },
+          "character_recognition": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.character_recognition"
+          },
+          "match_pairs": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.match_pairs"
+          },
+          "sentence_builder": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.sentence_builder"
+          },
+          "word_order": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.word_order"
+          },
+          "translation_choice": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.translation_choice"
+          },
+          "quick_quiz": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.quick_quiz"
+          },
+          "short_dialog": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.short_dialog"
+          },
+          "unit_words": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_words"
+          },
+          "unit_sound": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_sound"
+          },
+          "unit_character": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_character"
+          },
+          "unit_dialog": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_dialog"
+          },
+          "unit_build": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_build"
+          },
+          "unit_speaking": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_speaking"
+          },
+          "unit_review": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.unit_review"
+          },
+          "other_meaning": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.other_meaning"
+          },
+          "purpose_intro": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_intro"
+          },
+          "purpose_reinforcement": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_reinforcement"
+          },
+          "purpose_listening": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_listening"
+          },
+          "purpose_usage": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_usage"
+          },
+          "purpose_dialog": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_dialog"
+          },
+          "purpose_review": {
+            "message": "inline.services.course_miniapp_lesson_flow_service.helper_copy.copy1.purpose_review"
+          }
+        }
+      }
+    },
+    "inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1.case1": {
+      "locale_order": [
+        "ru",
+        "tj",
+        "uz"
+      ],
+      "value": {
+        "message": "inline.services.course_miniapp_lesson_flow_service.helper_short_dialog_card.copy1.case1"
+      }
+    },
+    "inline.services.course_miniapp_lesson_service.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "cat": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.cat"
+          },
+          "hint": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.hint"
+          },
+          "hanzi_to_meaning": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.hanzi_to_meaning"
+          },
+          "meaning_to_hanzi": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.meaning_to_hanzi"
+          },
+          "pinyin_to_hanzi": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.pinyin_to_hanzi"
+          },
+          "hanzi_to_pinyin": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.hanzi_to_pinyin"
+          },
+          "listening_choice": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.listening_choice"
+          },
+          "fill_blank": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.fill_blank"
+          },
+          "fill_blank_choice": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.fill_blank_choice"
+          },
+          "choose_meaning_in_context": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.choose_meaning_in_context"
+          },
+          "grammar_in_context": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_in_context"
+          },
+          "listen_and_fill": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.listen_and_fill"
+          },
+          "build_sentence_chips": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.build_sentence_chips"
+          },
+          "meaning_hint": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.meaning_hint"
+          },
+          "correct": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.correct"
+          },
+          "grammar_cat": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_cat"
+          },
+          "grammar_hint": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_hint"
+          },
+          "grammar_example_to_pattern": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_example_to_pattern"
+          },
+          "grammar_pattern_to_example": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_pattern_to_example"
+          },
+          "grammar_correct": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_correct"
+          },
+          "grammar_example_correct": {
+            "message": "inline.services.course_miniapp_lesson_service.module.copy1.grammar_example_correct"
+          }
+        }
+      }
+    },
+    "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "start": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.start"
+          },
+          "learn": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.learn"
+          },
+          "practice": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.practice"
+          },
+          "explain": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.explain"
+          },
+          "win": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.win"
+          },
+          "next": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.next"
+          },
+          "today": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.today"
+          },
+          "promise": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.promise"
+          },
+          "win_text": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.win_text"
+          },
+          "next_text": {
+            "message": "inline.services.course_miniapp_lesson_service.helper_pilot_experience.copy1.next_text"
+          }
+        }
+      }
+    },
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy1"
+      }
+    },
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy2"
+      }
+    },
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy3"
+      }
+    },
+    "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_miniapp_lesson_service.helper_reinforcement_tasks.copy4.case1"
+      }
+    },
+    "inline.services.course_tutor_service.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.course_tutor_service.module.copy1"
+      }
+    },
+    "inline.services.daily_practice_service.helper_copy.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "entry_title": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.entry_title"
+          },
+          "entry_body": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.entry_body"
+          },
+          "words": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.words"
+          },
+          "quiz": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.quiz"
+          },
+          "sentence": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.sentence"
+          },
+          "ready": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.ready"
+          },
+          "done": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.done"
+          },
+          "result": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.result"
+          },
+          "answers": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.answers"
+          },
+          "next": {
+            "message": "inline.services.daily_practice_service.helper_copy.copy1.next"
+          }
+        }
+      }
+    },
+    "inline.services.daily_practice_service.helper_challenge_copy.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "title_meaning": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.title_meaning"
+          },
+          "title_pinyin": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.title_pinyin"
+          },
+          "title_sentence": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.title_sentence"
+          },
+          "q_meaning": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.q_meaning"
+          },
+          "q_pinyin": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.q_pinyin"
+          },
+          "q_sentence": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.q_sentence"
+          },
+          "hint": {
+            "message": "inline.services.daily_practice_service.helper_challenge_copy.copy1.hint"
+          }
+        }
+      }
+    },
+    "inline.services.daily_practice_service.completion_text.copy1.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.daily_practice_service.completion_text.copy1.case1"
+      }
+    },
+    "inline.services.gemini_switch_announcement_service.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.gemini_switch_announcement_service.module.copy1"
+      }
+    },
+    "inline.services.help_settings_service.module.copy1": {
+      "locale_order": [
+        "tj",
+        "ru",
+        "uz"
+      ],
+      "value": {
+        "object": {
+          "title": {
+            "message": "inline.services.help_settings_service.module.copy1.title"
+          },
+          "click": {
+            "message": "inline.services.help_settings_service.module.copy1.click"
+          },
+          "admin": {
+            "message": "inline.services.help_settings_service.module.copy1.admin"
+          },
+          "admin_line": {
+            "message": "inline.services.help_settings_service.module.copy1.admin_line"
+          },
+          "course_hsk": {
+            "message": "inline.services.help_settings_service.module.copy1.course_hsk"
+          },
+          "qa_mode": {
+            "message": "inline.services.help_settings_service.module.copy1.qa_mode"
+          },
+          "voice_translator": {
+            "message": "inline.services.help_settings_service.module.copy1.voice_translator"
+          },
+          "subscription": {
+            "message": "inline.services.help_settings_service.module.copy1.subscription"
+          }
+        }
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy1"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy2"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy3"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy4"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy5": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy5"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy6": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy6"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy7": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy7"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy8": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy8"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy9": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy9"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy10": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy10"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy11": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy11"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy12": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy12"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy13": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy13"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy14": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy14"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy15": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy15"
+      }
+    },
+    "inline.services.mistake_drill_factory.module.copy16": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.mistake_drill_factory.module.copy16"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy1"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy2": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy2"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy3": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy3"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy4": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy4"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy5": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy5"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy6": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy6"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy7": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy7"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy8": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy8"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy9": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy9"
+      }
+    },
+    "inline.services.payment_notify_service.module.copy10": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.module.copy10"
+      }
+    },
+    "inline.services.payment_notify_service.notify_hsk30_unlock_rejected.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.notify_hsk30_unlock_rejected.copy1"
+      }
+    },
+    "inline.services.payment_notify_service.notify_payment_rejected.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.payment_notify_service.notify_payment_rejected.copy1"
+      }
+    },
+    "inline.services.referral_notify_service.module.copy1": {
+      "locale_order": [
+        "uz",
+        "tj",
+        "ru"
+      ],
+      "value": {
+        "message": "inline.services.referral_notify_service.module.copy1"
+      }
+    },
+    "inline.services.study_miniapp_service.send_quiz_ai_discussion.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.study_miniapp_service.send_quiz_ai_discussion.copy1"
+      }
+    },
+    "inline.services.voice_practice_service.module.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.voice_practice_service.module.copy1"
+      }
+    },
+    "inline.services.voice_practice_service.module.copy2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.voice_practice_service.module.copy2"
+      }
+    },
+    "inline.services.voice_practice_service.module.copy3": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.voice_practice_service.module.copy3"
+      }
+    },
+    "inline.services.voice_practice_service.module.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.voice_practice_service.module.copy4"
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "object": {
+          "lesson": {
+            "message": "inline.services.entitlements.decision.limit_text.copy1.lesson"
+          },
+          "ai": {
+            "message": "inline.services.entitlements.decision.limit_text.copy1.ai"
+          },
+          "speaking": {
+            "message": "inline.services.entitlements.decision.limit_text.copy1.speaking"
+          },
+          "practice": {
+            "message": "inline.services.entitlements.decision.limit_text.copy1.practice"
+          },
+          "study": {
+            "message": "inline.services.entitlements.decision.limit_text.copy1.study"
+          }
+        }
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy2.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.entitlements.decision.limit_text.copy2.case1"
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy2.case2": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.entitlements.decision.limit_text.copy2.case2"
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy3.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.entitlements.decision.limit_text.copy3.case1"
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy4": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.entitlements.decision.limit_text.copy4"
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy5": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.entitlements.decision.limit_text.copy5"
+      }
+    },
+    "inline.services.entitlements.decision.limit_text.copy6.case1": {
+      "locale_order": [
+        "uz",
+        "ru",
+        "tj"
+      ],
+      "value": {
+        "message": "inline.services.entitlements.decision.limit_text.copy6.case1"
+      }
+    }
+  }
+}

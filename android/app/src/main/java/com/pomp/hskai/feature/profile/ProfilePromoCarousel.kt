@@ -50,6 +50,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.feature.course.Hsk30BookSecondary
 import com.pomp.hskai.feature.course.Hsk30BookPrimary
 import com.pomp.hskai.feature.course.Hsk30BookPrice
@@ -197,7 +198,7 @@ private fun ProfilePromoCard(
                 isPaid -> stringResource(R.string.profile_subscription_status_paid)
                 trialActive -> stringResource(R.string.profile_subscription_status_trial)
                 isTemporary -> stringResource(R.string.profile_subscription_status_temporary)
-                else -> stringResource(R.string.profile_subscription_title)
+                else -> stringResource(R.string.hsk_common_navigation_subscription)
             }
             summary = when {
                 isPaid || isTemporary ->
@@ -328,14 +329,14 @@ internal fun ProfileHsk30BookEntryDialog(
     val on30 = currentTrack == "hsk30"
     val enabled = hsk30.access.featureEnabled
     val accessGranted = enabled && hsk30.access.allowed
-    val paymentAvailable = enabled && hsk30.paymentEnabled &&
+    val paymentAvailable = BuildConfig.EXTERNAL_CHECKOUT_ENABLED && enabled && hsk30.paymentEnabled &&
         hsk30.priceTjs > 0 && hsk30.priceDisplay.isNotBlank()
 
     Hsk30BookDialog(isNew = false, onDismiss = onDismiss) {
         when {
             on30 -> {
                 Hsk30BookTitle(
-                    title = stringResource(R.string.profile_course_version),
+                    title = stringResource(R.string.hsk_course_course_picker_version),
                     body = stringResource(R.string.profile_course_version_confirm_body),
                 )
                 Spacer(Modifier.height(20.dp))
@@ -346,39 +347,56 @@ internal fun ProfileHsk30BookEntryDialog(
             }
             !enabled -> {
                 Hsk30BookTitle(
-                    title = stringResource(R.string.hsk30_promo_title),
-                    body = stringResource(R.string.hsk30_unlock_unavailable),
+                    title = stringResource(
+                        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) R.string.hsk30_promo_title
+                        else R.string.hsk30_play_access_title,
+                    ),
+                    body = stringResource(
+                        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) R.string.hsk30_unlock_unavailable
+                        else R.string.hsk30_play_unavailable,
+                    ),
                 )
                 Spacer(Modifier.height(20.dp))
             }
             !accessGranted -> {
                 Hsk30BookTitle(
                     title = stringResource(
-                        if (hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_title
-                        else R.string.hsk30_access_required_title,
+                        when {
+                            !BuildConfig.EXTERNAL_CHECKOUT_ENABLED -> R.string.hsk30_play_access_title
+                            hsk30.access.paymentRejected -> R.string.hsk30_payment_rejected_title
+                            else -> R.string.hsk30_access_required_title
+                        },
                     ),
                     body = stringResource(
-                        if (hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_body
+                        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_body
                         else R.string.hsk30_access_required_body,
                     ),
                 )
-                if (hsk30.priceDisplay.isNotBlank()) {
+                if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && hsk30.priceDisplay.isNotBlank()) {
                     Hsk30BookPrice(hsk30.priceDisplay)
                 } else {
                     Spacer(Modifier.height(20.dp))
                 }
-                if (!paymentAvailable) {
+                if (!BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
                     Text(
-                        stringResource(R.string.hsk30_unlock_unavailable),
+                        stringResource(R.string.hsk30_play_access_status),
                         color = PompColors.InkSecondary,
                         modifier = Modifier.padding(bottom = 12.dp),
                     )
+                } else {
+                    if (!paymentAvailable) {
+                        Text(
+                            stringResource(R.string.hsk30_unlock_unavailable),
+                            color = PompColors.InkSecondary,
+                            modifier = Modifier.padding(bottom = 12.dp),
+                        )
+                    }
+                    Hsk30BookPrimary(
+                        label = stringResource(R.string.hsk30_access_unlock_button),
+                        enabled = paymentAvailable,
+                        onClick = onUnlock,
+                    )
                 }
-                Hsk30BookPrimary(
-                    label = stringResource(R.string.hsk30_access_unlock_button),
-                    enabled = paymentAvailable,
-                    onClick = onUnlock,
-                )
             }
             else -> {
                 Hsk30BookTitle(

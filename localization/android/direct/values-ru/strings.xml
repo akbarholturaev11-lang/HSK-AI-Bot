@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Wording only the `direct` channel (APK, website, Telegram) may show.
+    It is a source set rather than a runtime flag on purpose: the Google
+    Play build must not CONTAIN an external checkout, not merely hide it.
+-->
+<resources>
+    <string name="limit_unlock_headline">Продолжайте учиться</string>
+    <string name="limit_unlock_button">Посмотреть тарифы Pro</string>
+    <string name="limit_unlock_hint">Подписка откроется после подтверждения администратором.</string>
+    <string name="sub_title">HSK AI Pro</string>
+    <string name="sub_intro">Выберите срок подписки и способ оплаты.</string>
+    <string name="sub_plan_10">10 дней</string>
+    <string name="sub_plan_1">1 месяц</string>
+    <string name="sub_plan_3">3 месяца</string>
+    <string name="sub_method">Способ оплаты</string>
+    <string name="sub_card">Банковская карта</string>
+    <string name="sub_alipay">Alipay</string>
+    <string name="sub_wechat">WeChat Pay</string>
+    <string name="sub_country">Страна карты</string>
+    <string name="sub_country_tj">Карта Таджикистана</string>
+    <string name="sub_country_uz">Карта Узбекистана</string>
+    <string name="sub_country_ru">Карта России</string>
+    <string name="sub_country_other">Карта другой страны</string>
+    <string name="sub_continue">Показать реквизиты</string>
+    <string name="sub_payment_details">Реквизиты для оплаты</string>
+    <string name="sub_amount">К оплате: %1$s %2$s</string>
+    <string name="sub_receipt">Выбрать чек</string>
+    <string name="sub_selected">Чек выбран</string>
+    <string name="sub_submit">Отправить чек администратору</string>
+    <string name="sub_pending">Чек отправлен. Подписка откроется после проверки администратором.</string>
+    <string name="sub_already_pending">Ваш чек проверяется. Пожалуйста, дождитесь ответа.</string>
+    <string name="sub_paid">HSK AI Pro активен.</string>
+    <string name="sub_renewal_period_note">После подтверждения оплаты выбранный срок добавится к текущей подписке.</string>
+    <string name="sub_unavailable">Не удалось загрузить оплату. Попробуйте позже.</string>
+    <string name="sub_receipt_invalid">Выберите чек JPG, PNG или WebP размером до 8 МБ.</string>
+    <string name="sub_approval_note">Чек и сведения об оплате отправляются администратору. Подписка откроется после подтверждения.</string>
+    <string name="sub_qr_missing">QR для этого тарифа сейчас недоступен. Выберите другой способ.</string>
+    <string name="sub_retry">Проверить ещё раз</string>
+    <string name="sub_heading">HSK AI Pro</string>
+    <string name="sub_hsk30_heading">Открыть HSK 3.0</string>
+    <string name="sub_plan_hsk30">HSK 3.0 · навсегда</string>
+    <string name="sub_benefit_heading">Что дает подписка</string>
+    <string name="sub_benefits">📚 Уроки HSK шаг за шагом   🤖 Больше ответов AI   🖼 Анализ фото и иероглифов   🎙 Практика голоса   🧩 Тесты и разбор ошибок</string>
+    <string name="sub_focus_course">Откроются все уроки</string>
+    <string name="sub_focus_practice">Практика и тесты без лимита</string>
+    <string name="sub_focus_voice">Голосовые диалоги и произношение</string>
+    <string name="sub_focus_body">С подпиской вы сможете продолжать без ограничений.</string>
+    <string name="sub_plans_heading">Тариф</string>
+    <string name="sub_active_expiry_current">Текущая подписка действует до %1$s</string>
+    <string name="sub_active_expiry_after">После выбранного тарифа: до %1$s</string>
+    <string name="sub_renewal_confirm_title">Продлить подписку?</string>
+    <string name="sub_renewal_confirm_body">Текущий срок закончится %1$s. Если добавить тариф «%2$s», новый срок будет до %3$s.</string>
+    <string name="sub_renewal_edit">Изменить тариф</string>
+    <string name="sub_change_payment">Изменить способ оплаты</string>
+    <string name="sub_trial_title">7 дней Pro бесплатно</string>
+    <string name="sub_trial_body">Попробуете все основные возможности. Деньги автоматически не спишутся.</string>
+    <string name="sub_trial_button">Попробовать 7 дней бесплатно</string>
+    <string name="sub_trial_failed">Сейчас не получилось.</string>
+    <string name="sub_plan_fast">Попробовать</string>
+    <string name="sub_plan_best">Лучший выбор</string>
+    <string name="sub_plan_value">Выгодно</string>
+    <string name="sub_discount_ready" formatted="false">Скидка 20% применяется</string>
+    <string name="sub_discount_active">Она автоматически применится к подписке.</string>
+    <string name="sub_discount_locked" formatted="false">Откройте скидку 20%</string>
+    <string name="sub_discount_invite" formatted="false">Пригласите 3 друзей: на Android нужно установить приложение и привязать Telegram, на iPhone — ответить на 2 вопроса в боте.</string>
+    <string name="sub_discount_progress">Скидка 20%%: %1$d/%2$d друзей</string>
+    <string name="sub_discount_button">Открыть скидку</string>
+    <string name="sub_offer_expired">Это предложение закончилось или вам не подходит.</string>
+    <string name="sub_currency_label">Валюта цены</string>
+    <string name="sub_currency_loading">Загрузка…</string>
+    <string name="sub_currency_title">Выберите валюту</string>
+    <string name="sub_currency_body">Цены тарифа будут показаны в этой валюте. Точная сумма платежа появится на следующем экране.</string>
+    <string name="sub_currency_tjs_name">Таджикский сомони</string>
+    <string name="sub_currency_uzs_name">Узбекский сум</string>
+    <string name="sub_currency_rub_name">Российский рубль</string>
+    <string name="sub_currency_cny_name">Китайский юань</string>
+    <string name="sub_currency_usd_name">Доллар США</string>
+    <string name="sub_currency_save_failed">Не удалось сохранить валюту. Проверьте интернет и выберите ещё раз.</string>
+    <string name="sub_currency_refresh_failed">Валюта сохранена, но цены не обновились. Выберите её ещё раз.</string>
+    <string name="sub_payment_route_label">Способ оплаты</string>
+    <string name="sub_route_title">Выберите способ оплаты</string>
+    <string name="sub_route_body">Здесь выбирается карта или платёжное приложение. Валюту цен можно изменить отдельно.</string>
+    <string name="sub_change">Изменить</string>
+    <string name="sub_country_title">Из какой страны оплачиваете?</string>
+    <string name="sub_country_body">Выберите страну вашей карты — цены будут показаны в её валюте.</string>
+    <string name="sub_country_tj_body">VISA; на следующем шаге выберите DC City или Alif</string>
+    <string name="sub_country_uz_body">Карта VISA; реквизиты будут на следующем экране</string>
+    <string name="sub_country_ru_body">Карта VISA; реквизиты будут на следующем экране</string>
+    <string name="sub_country_other_body">Карта VISA другой страны</string>
+    <string name="sub_country_cn">Китай</string>
+    <string name="sub_country_cn_body">Оплата юанями через Alipay или WeChat Pay</string>
+    <string name="sub_bank_dc_body">Оплата на карту DC City</string>
+    <string name="sub_bank_alif_body">Оплата на карту Алиф</string>
+    <string name="sub_qr_yuan">Оплата в юанях через QR</string>
+    <string name="sub_pay_locked_body">После подтверждения платежа закрытый урок сразу откроется в курсе.</string>
+    <string name="sub_amount_label">Сумма к оплате</string>
+    <string name="sub_row_plan">Тариф</string>
+    <string name="sub_row_bank">Банк Таджикистана</string>
+    <string name="sub_row_rate">Курс</string>
+    <string name="sub_details_tj_hint">Откройте приложение Душанбе Сити, нажмите кнопку «DC (по номеру карты)», введите номер карты ниже и оплатите.</string>
+    <string name="sub_details_alif_hint">Откройте приложение Алиф, нажмите кнопку «На карту», введите номер карты ниже и оплатите.</string>
+    <string name="sub_details_foreign_hint">Это карта VISA Таджикистана. Переведите на карту Таджикистана через банк или используйте международный перевод VISA.</string>
+    <string name="sub_show_more">Подробнее</string>
+    <string name="sub_show_less">Скрыть</string>
+    <string name="sub_copy">Копировать</string>
+    <string name="sub_no_details">Реквизиты карты пока недоступны. Попробуйте позже.</string>
+    <string name="sub_qr_title">QR-код</string>
+    <string name="sub_qr_hint">Нажмите QR, чтобы открыть кнопку увеличения.</string>
+    <string name="sub_qr_enlarge">Увеличить QR-код</string>
+    <string name="sub_upload_title">Загрузить скриншот платежа</string>
+    <string name="sub_upload_body">Нажмите и выберите скриншот.</string>
+    <string name="sub_upload_selected">Скриншот выбран: %1$s</string>
+    <string name="sub_upload_size">Размер %1$s — готов к отправке.</string>
+    <string name="sub_upload_heavy">Размер %1$s. На медленном интернете отправка может занять время.</string>
+    <string name="sub_continue_alipay">Оплатить через Alipay</string>
+    <string name="sub_continue_wechat">Оплатить через WeChat Pay</string>
+    <string name="sub_continue_country">Продолжить к оплате</string>
+    <string name="sub_done_title">Заявка отправлена ✅</string>
+    <string name="sub_done_body">Платеж отправлен на проверку. Проверка обычно занимает 5–15 минут. После подтверждения вы получите уведомление.</string>
+    <string name="sub_pending_title">Ваша заявка проверяется</string>
+    <string name="sub_pending_body">Платеж проверяется. Пожалуйста, дождитесь подтверждения.</string>
+    <string name="sub_return_app">Вернуться в приложение</string>
+    <string name="sub_help_title">Помощь</string>
+    <string name="sub_help_body">Если возникла проблема с оплатой или приложением, напишите админу и отправьте скриншот.</string>
+    <string name="sub_help_button">Написать админу</string>
+    <string name="sub_invite_title">Ссылка приглашения готова</string>
+    <string name="sub_invite_body">Отправьте сообщение или скопируйте только ссылку.</string>
+    <string name="sub_invite_share">Отправить с сообщением</string>
+    <string name="sub_invite_copy">Скопировать ссылку</string>
+    <string name="sub_invite_share_text" formatted="false">HSK AI — изучай китайский с AI. Присоединяйся: мне откроется скидка 20% 👇</string>
+    <string name="limit_unlock_unavailable">Не удалось открыть Telegram-бот. Зайдите в бот вручную или попробуйте позже.</string>
+
+    <!--
+        In-app updating. Only this channel may do it: Google Play
+        forbids an app it distributes from updating itself by any
+        other route, so the Play build has none of this.
+    -->
+    <string name="update_card_title">Новая версия %1$s</string>
+    <string name="update_card_subtitle">%1$s · нажмите, чтобы обновить</string>
+    <string name="update_card_downloading">Загрузка · %1$d%%</string>
+    <string name="update_card_downloaded">Загружено · 100% — нажмите, чтобы установить</string>
+    <string name="update_card_failed">Не удалось загрузить — попробуйте ещё раз</string>
+    <string name="update_card_permission">Разрешите установку</string>
+    <string name="update_card_permission_hint">Откроются настройки Android</string>
+
+    <!--
+        Two releases behind: the banner above the tab bar, and the one
+        notification a release is allowed to send.
+    -->
+    <string name="update_banner_text">Новая версия %1$s — нажмите, чтобы обновить</string>
+    <string name="update_banner_downloading">Загрузка · %1$d%%</string>
+    <string name="update_banner_downloaded">Загружено · 100% — нажмите, чтобы установить</string>
+    <string name="update_banner_failed">Не удалось загрузить — попробуйте ещё раз</string>
+    <string name="update_banner_permission">Разрешите установку — нажмите, чтобы обновить</string>
+    <string name="update_channel_name">Обновления приложения</string>
+    <string name="notify_update_title">Вышла новая версия</string>
+    <string name="notify_update_body">HSK AI %1$s готов. Откройте приложение, чтобы обновить.</string>
+    <string name="update_gate_title">Установите новую версию</string>
+    <string name="update_gate_version">HSK AI %1$s</string>
+    <string name="update_gate_body">Чтобы продолжить, установите новую версию приложения.</string>
+    <string name="update_gate_button">Обновить приложение</string>
+    <string name="update_gate_downloading">Загрузка · %1$d%%</string>
+    <string name="update_gate_downloaded">Загружено. Нажмите кнопку, чтобы начать установку.</string>
+    <string name="update_gate_failed">Не удалось загрузить. Попробуйте ещё раз.</string>
+    <string name="update_gate_permission">Разрешите установку приложения перед обновлением.</string>
+    <string name="sub_hsk30_pending_title">Ваша заявка на проверке</string>
+    <string name="sub_hsk30_pending_body">Платёж уже находится на проверке. Пожалуйста, дождитесь подтверждения. Чтобы ускорить проверку, вы можете написать администратору.</string>
+    <string name="sub_hsk30_provisional_title">HSK 3.0 временно открыт</string>
+    <string name="sub_hsk30_provisional_body">Первая заявка проверяется. Если платёж не подтвердят, доступ к HSK 3.0 закроется.</string>
+    <string name="sub_hsk30_rejected_title">Платёж за HSK 3.0 не принят</string>
+    <string name="sub_hsk30_rejected_body">Платёж не принят. Проверьте данные и отправьте его заново.</string>
+    <string name="sub_hsk30_approved_title">HSK 3.0 открыт</string>
+    <string name="sub_hsk30_approved_body">Платёж подтверждён. Можно начать заниматься по новым учебникам.</string>
+    <string name="sub_hsk30_retry">Отправить платёж снова</string>
+    <string name="sub_hsk30_open_course">Открыть HSK 3.0</string>
+    <string name="sub_payment_refresh">Обновить статус платежа</string>
+    <string name="sub_payment_checking">Проверяем статус…</string>
+    <string name="sub_payment_still_pending">Платёж ещё проверяет администратор.</string>
+    <string name="sub_status_check_failed">Не удалось проверить статус. Проверьте интернет и попробуйте снова.</string>
+    <string name="sub_pro_review_title">Чек отправлен на проверку</string>
+    <string name="sub_pro_review_access">Платёж отправлен на проверку. Пока идёт проверка, вы уже можете пользоваться Pro.</string>
+    <string name="sub_pro_review_wait">Платёж отправлен на проверку. Временный доступ уже использован, поэтому Pro откроется после подтверждения администратором. Чтобы ускорить проверку, вы можете написать администратору.</string>
+    <string name="sub_pro_approved_title">Платёж подтверждён</string>
+    <string name="sub_pro_approved_body">Pro подтверждён. Можно продолжить занятия.</string>
+    <string name="sub_pro_rejected_title">Платёж не принят</string>
+</resources>

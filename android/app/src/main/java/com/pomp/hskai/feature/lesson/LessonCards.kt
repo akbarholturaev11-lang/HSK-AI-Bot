@@ -258,7 +258,7 @@ private fun NewWordInfo(
                     )
                 }
                 Text(
-                    text = stringResource(R.string.lesson_listen),
+                    text = stringResource(R.string.hsk_course_listen),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color = PompColors.CinnabarDark,
@@ -271,7 +271,7 @@ private fun NewWordInfo(
 @Composable
 fun GrammarCardView(card: GrammarCard, pinyin: PinyinVisibility) {
     Column {
-        CardTitle(card.titleZh.ifBlank { stringResource(R.string.lesson_grammar) })
+        CardTitle(card.titleZh.ifBlank { stringResource(R.string.hsk_course_grammar) })
         Text(text = card.title, style = MaterialTheme.typography.titleLarge, color = PompColors.Ink)
         Spacer(Modifier.height(12.dp))
         Text(text = card.rule, style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary)
@@ -414,7 +414,7 @@ fun PronunciationCardView(
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Filled.Mic,
-                        contentDescription = stringResource(R.string.voice_a11y_mic),
+                        contentDescription = stringResource(R.string.hsk_course_course_voice_inline_a11y_mic),
                         tint = PompColors.Paper,
                         modifier = Modifier.size(36.dp),
                     )
@@ -775,7 +775,7 @@ private fun GapBuilder(
 
         Spacer(Modifier.height(20.dp))
         PrimaryAction(
-            text = stringResource(R.string.lesson_check),
+            text = stringResource(R.string.hsk_course_check),
             enabled = !isAnswered && filled.size == plan.blanks.size,
             onClick = {
                 val built = card.answerTokens.toMutableList()
@@ -866,7 +866,7 @@ private fun TokenBuilder(
         }
         Spacer(Modifier.height(20.dp))
         PrimaryAction(
-            text = stringResource(R.string.lesson_check),
+            text = stringResource(R.string.hsk_course_check),
             enabled = !isAnswered && chosen.isNotEmpty(),
             onClick = { onSubmit(chosen.map { tokens[it] }) },
         )
@@ -1076,6 +1076,6 @@ fun UnsupportedCardView(card: UnsupportedCard, onSkip: () -> Unit) {
         Spacer(Modifier.height(8.dp))
         Text(text = stringResource(R.string.lesson_card_unsupported_hint), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
         Spacer(Modifier.height(20.dp))
-        SecondaryAction(text = stringResource(R.string.lesson_skip_card), onClick = onSkip)
+        SecondaryAction(text = stringResource(R.string.hsk_course_pronunciation_skip), onClick = onSkip)
     }
 }

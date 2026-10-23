@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "source_commit": "930d4f702e0476fe481f37ca84fa9775c727d502",
+  "scope": "display formatter only; not an access decision or quota test",
+  "samples": [
+    {
+      "arguments": {
+        "action": "lesson.new",
+        "state": "TRIAL_ACTIVE",
+        "limit": 2,
+        "remaining": 1,
+        "window": "daily",
+        "language": "uz"
+      },
+      "expected_sha256": "7db1917063e82c3b43c4a07c4c55dbbfe593ee8b92817262e02a4ce6b26efdfd"
+    },
+    {
+      "arguments": {
+        "action": "lesson.new",
+        "state": "TRIAL_ACTIVE",
+        "limit": 2,
+        "remaining": 1,
+        "window": "daily",
+        "language": "ru"
+      },
+      "expected_sha256": "fd0cb06de14f5a0e3ad6870bdb6c305fc4dd0ffa1ddbe063e60b8a5e11554909"
+    },
+    {
+      "arguments": {
+        "action": "lesson.new",
+        "state": "TRIAL_ACTIVE",
+        "limit": 2,
+        "remaining": 1,
+        "window": "daily",
+        "language": "tj"
+      },
+      "expected_sha256": "e1edb7b28724c845bc5a09f0b84155e7461837a9677906224649d92d6cbc773a"
+    },
+    {
+      "arguments": {
+        "action": "lesson.new",
+        "state": "TRIAL_ACTIVE",
+        "limit": 2,
+        "remaining": 1,
+        "window": "daily",
+        "language": "tg"
+      },
+      "expected_sha256": "fd0cb06de14f5a0e3ad6870bdb6c305fc4dd0ffa1ddbe063e60b8a5e11554909"
+    },
+    {
+      "arguments": {
+        "action": "lesson.new",
+        "state": "TRIAL_ACTIVE",
+        "limit": 2,
+        "remaining": 1,
+        "window": "daily",
+        "language": "unsupported"
+      },
+      "expected_sha256": "fd0cb06de14f5a0e3ad6870bdb6c305fc4dd0ffa1ddbe063e60b8a5e11554909"
+    },
+    {
+      "arguments": {
+        "action": "lesson.new",
+        "state": "FREE",
+        "limit": 2,
+        "remaining": 0,
+        "window": "daily",
+        "language": "uz"
+      },
+      "expected_sha256": "17f8b3638c26d8be15249048444aa482f70571eee45c6c01ef1c5ba53a646c38"
+    },
+    {
+      "arguments": {
+        "action": "lesson.new",
+        "state": "FREE",
+        "limit": 2,
+        "remaining": 0,
+        "window": "daily",
+        "language": "ru"
+      },
+      "expected_sha256": "cb439e3bc95f3704d40e70b8ddfacb09c562fb61f766d43501ebcb52c8db3c3d"
+    },
+    {
+      "arguments": {
+        "action": "lesson.new",
+        "state": "FREE",
+        "limit": 2,
+        "remaining": 0,
+        "window": "daily",
+        "language": "tj"
+      },
+      "expected_sha256": "c622ace41863896a26a4026cc90107289c07a79b31eb67307c0ad4f5f9c3240a"
+    },
+    {
+      "arguments": {
+        "action": "lesson.new",
+        "state": "FREE",
+        "limit": 2,
+        "remaining": 0,
+        "window": "daily",
+        "language": "tg"
+      },
+      "expected_sha256": "cb439e3bc95f3704d40e70b8ddfacb09c562fb61f766d43501ebcb52c8db3c3d"
+    },
+    {
+      "arguments": {
+        "action": "lesson.new",
+        "state": "FREE",
+        "limit": 2,
+        "remaining": 0,
+        "window": "daily",
+        "language": "unsupported"
+      },
+      "expected_sha256": "cb439e3bc95f3704d40e70b8ddfacb09c562fb61f766d43501ebcb52c8db3c3d"
+    },
+    {
+      "arguments": {
+        "action": "ai.chat",
+        "state": "FREE",
+        "limit": null,
+        "remaining": null,
+        "window": "lifetime",
+        "language": "uz"
+      },
+      "expected_sha256": "7ed9f1e6df60cd8df7db2de11de8e7310e090454efe3646887582fa3ade66ea1"
+    },
+    {
+      "arguments": {
+        "action": "ai.chat",
+        "state": "FREE",
+        "limit": null,
+        "remaining": null,
+        "window": "lifetime",
+        "language": "ru"
+      },
+      "expected_sha256": "7fdbecbb15a18c8a119286ff1a74e8c4cfeeea4ea6dff7e47886e2f89a9707c3"
+    },
+    {
+      "arguments": {
+        "action": "ai.chat",
+        "state": "FREE",
+        "limit": null,
+        "remaining": null,
+        "window": "lifetime",
+        "language": "tj"
+      },
+      "expected_sha256": "dfdba6a9475bed85fc935c05820d323465d88fc588219805d26d1a90b4c47584"
+    },
+    {
+      "arguments": {
+        "action": "ai.chat",
+        "state": "FREE",
+        "limit": null,
+        "remaining": null,
+        "window": "lifetime",
+        "language": "tg"
+      },
+      "expected_sha256": "7fdbecbb15a18c8a119286ff1a74e8c4cfeeea4ea6dff7e47886e2f89a9707c3"
+    },
+    {
+      "arguments": {
+        "action": "ai.chat",
+        "state": "FREE",
+        "limit": null,
+        "remaining": null,
+        "window": "lifetime",
+        "language": "unsupported"
+      },
+      "expected_sha256": "7fdbecbb15a18c8a119286ff1a74e8c4cfeeea4ea6dff7e47886e2f89a9707c3"
+    },
+    {
+      "arguments": {
+        "action": "speaking.turn",
+        "state": "TRIAL_ACTIVE",
+        "limit": 3,
+        "remaining": null,
+        "window": "total",
+        "language": "uz"
+      },
+      "expected_sha256": "86e94b8f6f96bc9ca26fffdca705eae813c7eee25b963cd8791fcf051079d169"
+    },
+    {
+      "arguments": {
+        "action": "speaking.turn",
+        "state": "TRIAL_ACTIVE",
+        "limit": 3,
+        "remaining": null,
+        "window": "total",
+        "language": "ru"
+      },
+      "expected_sha256": "e1d2d8391e81499dfdb34747e252a5bdb0b590c6a266d15ec6628e2ec08f7155"
+    },
+    {
+      "arguments": {
+        "action": "speaking.turn",
+        "state": "TRIAL_ACTIVE",
+        "limit": 3,
+        "remaining": null,
+        "window": "total",
+        "language": "tj"
+      },
+      "expected_sha256": "106ef9dc34223ecb59e6320f92a9fbf7a2b71861a268b1f9b5938744ebc2d5f2"
+    },
+    {
+      "arguments": {
+        "action": "speaking.turn",
+        "state": "TRIAL_ACTIVE",
+        "limit": 3,
+        "remaining": null,
+        "window": "total",
+        "language": "tg"
+      },
+      "expected_sha256": "e1d2d8391e81499dfdb34747e252a5bdb0b590c6a266d15ec6628e2ec08f7155"
+    },
+    {
+      "arguments": {
+        "action": "speaking.turn",
+        "state": "TRIAL_ACTIVE",
+        "limit": 3,
+        "remaining": null,
+        "window": "total",
+        "language": "unsupported"
+      },
+      "expected_sha256": "e1d2d8391e81499dfdb34747e252a5bdb0b590c6a266d15ec6628e2ec08f7155"
+    },
+    {
+      "arguments": {
+        "action": "practice.mock",
+        "state": "FREE",
+        "limit": 1,
+        "remaining": 0,
+        "window": "daily",
+        "language": "uz"
+      },
+      "expected_sha256": "896480dc965051219c0cc13afe2e768895b2b03791c8cd48f2071b84738ed836"
+    },
+    {
+      "arguments": {
+        "action": "practice.mock",
+        "state": "FREE",
+        "limit": 1,
+        "remaining": 0,
+        "window": "daily",
+        "language": "ru"
+      },
+      "expected_sha256": "6290dd2e0df9176bf127ba256e53e9ecce29522734226edd60701a2d75a5719f"
+    },
+    {
+      "arguments": {
+        "action": "practice.mock",
+        "state": "FREE",
+        "limit": 1,
+        "remaining": 0,
+        "window": "daily",
+        "language": "tj"
+      },
+      "expected_sha256": "ce12ddcaea2365cc5c9769741eb99e62a46de11f953604a4fb91bb096e6a05f9"
+    },
+    {
+      "arguments": {
+        "action": "practice.mock",
+        "state": "FREE",
+        "limit": 1,
+        "remaining": 0,
+        "window": "daily",
+        "language": "tg"
+      },
+      "expected_sha256": "6290dd2e0df9176bf127ba256e53e9ecce29522734226edd60701a2d75a5719f"
+    },
+    {
+      "arguments": {
+        "action": "practice.mock",
+        "state": "FREE",
+        "limit": 1,
+        "remaining": 0,
+        "window": "daily",
+        "language": "unsupported"
+      },
+      "expected_sha256": "6290dd2e0df9176bf127ba256e53e9ecce29522734226edd60701a2d75a5719f"
+    },
+    {
+      "arguments": {
+        "action": "unknown.feature",
+        "state": "FREE",
+        "limit": 0,
+        "remaining": 0,
+        "window": "daily",
+        "language": "uz"
+      },
+      "expected_sha256": "fe677f1d071ca8fef917ddb6f7c3890d263e67435ac89449147cfd25a7d43134"
+    },
+    {
+      "arguments": {
+        "action": "unknown.feature",
+        "state": "FREE",
+        "limit": 0,
+        "remaining": 0,
+        "window": "daily",
+        "language": "ru"
+      },
+      "expected_sha256": "6ead36aa928e752ea2d7f2849d46b2707aba1b05a55e1b49ad86f56d2cda6c67"
+    },
+    {
+      "arguments": {
+        "action": "unknown.feature",
+        "state": "FREE",
+        "limit": 0,
+        "remaining": 0,
+        "window": "daily",
+        "language": "tj"
+      },
+      "expected_sha256": "61878d67cacabd8d486aeda1a4ea35aa09a6fd484cfc8afaef15193e33ad14bf"
+    },
+    {
+      "arguments": {
+        "action": "unknown.feature",
+        "state": "FREE",
+        "limit": 0,
+        "remaining": 0,
+        "window": "daily",
+        "language": "tg"
+      },
+      "expected_sha256": "6ead36aa928e752ea2d7f2849d46b2707aba1b05a55e1b49ad86f56d2cda6c67"
+    },
+    {
+      "arguments": {
+        "action": "unknown.feature",
+        "state": "FREE",
+        "limit": 0,
+        "remaining": 0,
+        "window": "daily",
+        "language": "unsupported"
+      },
+      "expected_sha256": "6ead36aa928e752ea2d7f2849d46b2707aba1b05a55e1b49ad86f56d2cda6c67"
+    }
+  ]
+}

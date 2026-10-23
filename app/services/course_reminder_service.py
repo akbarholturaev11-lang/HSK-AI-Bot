@@ -12,6 +12,7 @@ from app.bot.utils.i18n import t
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_notification_service import CourseNotificationService
 from app.services.course_progress_summary_service import CourseProgressSummaryService
+from app.services.notification_i18n import notification_message
 
 D1_RECOVERY_EXPERIMENT = "d1_recovery_v1"
 D1_RECOVERY_ASSIGNED_EVENT = "d1_recovery_assigned"
@@ -45,7 +46,10 @@ def _reminder_keyboard(lang: str):
         "tj": "📖 Идома додани дарс",
     }
     builder = InlineKeyboardBuilder()
-    builder.button(text=labels.get(lang, labels["ru"]), callback_data="course:continue")
+    builder.button(
+        text=notification_message("reminder.courseContinue", lang, labels.get(lang, labels["ru"])),
+        callback_data="course:continue",
+    )
     return builder.as_markup()
 
 

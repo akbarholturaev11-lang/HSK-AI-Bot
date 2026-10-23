@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
   <meta name="theme-color" content="#FDF9F0">
   <title>Tayyor gaplar · HSK AI</title>
   <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005-section-title">
@@ -93,6 +94,12 @@
         ru: {title:"Готовые фразы", search:"Поиск по китайскому, пиньиню или переводу", all:"Все фразы", saved:"Сохранённые", count:"{shown} из {total} фраз", save:"Сохранить", savedOne:"Сохранено", removed:"Удалено из сохранённых", copy:"Копировать", copied:"Скопировано", empty:"По этому запросу ничего не найдено. Попробуйте другие слова.", noSaved:"Сохранённые фразы появятся здесь.", loadError:"Не удалось загрузить фразы. Подключитесь к интернету и попробуйте ещё раз.", retry:"Повторить", storageError:"Не удалось сохранить. Проверьте настройки телефона." },
         tj: {title:"Ибораҳои омода", search:"Ҷустуҷӯ бо чинӣ, пинйин ё тарҷума", all:"Ҳама", saved:"Нигоҳдоштаҳо", count:"{shown} аз {total} ҷумла", save:"Нигоҳ доштан", savedOne:"Нигоҳ дошта шуд", removed:"Аз нигоҳдоштаҳо бардошта шуд", copy:"Нусха бардоштан", copied:"Нусха бардошта шуд", empty:"Барои ин ҷустуҷӯ ҷумла ёфт нашуд. Калимаи дигарро ҷӯед.", noSaved:"Ибораҳои нигоҳдоштаатон дар ин ҷо намоиш мешаванд.", loadError:"Ибораҳо бор нашуданд. Ба интернет пайваст шуда, боз кӯшиш кунед.", retry:"Аз нав кӯшиш кардан", storageError:"Захира карда нашуд. Танзимоти телефонро санҷед." }
       };
+      /* UI-only local bundle; original UI[lang] values remain complete fallbacks. */
+      var PHRASE_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANGUAGE])||{};
+      Object.keys(UI[LANGUAGE]).forEach(function(key){
+        var value=PHRASE_UI["readyPhrases."+key];
+        if(typeof value==="string"&&value)UI[LANGUAGE][key]=value;
+      });
       var text = UI[LANGUAGE];
       var theme = new URLSearchParams(location.search).get("theme");
       if (theme === "dark") {
@@ -121,6 +128,7 @@
       elements.query.placeholder = text.search;
       elements.query.setAttribute("aria-label", text.search);
       elements.filters.setAttribute("aria-label", text.all);
+      elements.list.setAttribute("aria-label", text.title);
 
       function readSavedIds() {
         try {

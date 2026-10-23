@@ -12,12 +12,14 @@ from app.db.models.ai_usage import AIUsageBudget
 from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.db.session import _BOOTSTRAP_COLUMNS
+from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
 from app.services.access_service import AccessService
 from app.services.ai_usage_budget_service import (
     AIUsageBudgetService,
     PAYMENT_PREVIEW_AI_CAP_USD,
     PAYMENT_PREVIEW_PLAN_TYPE,
+    PRO_TRIAL_PLAN_TYPE,
 )
 from app.services.entitlements.state import (
     EntitlementState, has_full_access, is_billing_paid, resolve_state,
@@ -375,6 +377,126 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(await preview.claim(user, third))
             self.assertFalse(user.payment_preview_available)
             self.assertEqual(user.payment_preview_payment_id, third.id)
+
+    async def test_other_paid_approval_does_not_reissue_preview_for_same_pending_receipt(self):
+        async with self.sessions() as session:
+            user = await self._user(session)
+            first = await self._new_payment(session)
+            preview = PaymentReviewPreviewService(session)
+            self.assertTrue(await preview.claim(user, first))
+            second = await self._new_payment(session)
+            self.assertTrue(await PaymentRepository(session).approve(second))
+            with (
+                patch.object(AIUsageBudgetService, "_live_or_manual_usd_rates",
+                             new=AsyncMock(return_value={"tjs": 10, "cny": 7})),
+                patch("app.services.portfolio_service.PortfolioService.record_subscription_profit",
+                      new_callable=AsyncMock),
+            ):
+                self.assertTrue(await SubscriptionService(session).activate_plan(
+                    user, second.plan_type, payment=second))
+            self.assertTrue(user.payment_preview_available)
+            self.assertEqual(user.payment_preview_payment_id, first.id)
+            self.assertEqual(first.payment_status, "pending")
+            self.assertFalse(await preview.claim(user, first))
+            self.assertTrue(user.payment_preview_available)
+            first_budgets = list((await session.scalars(select(AIUsageBudget).where(
+                AIUsageBudget.payment_id == first.id,
+                AIUsageBudget.plan_type == PAYMENT_PREVIEW_PLAN_TYPE))).all())
+            self.assertEqual(len(first_budgets), 1)
+            self.assertEqual(first_budgets[0].status, "expired")
+            # Historical duplicate rows previously raised MultipleResultsFound
+            # here. A spent/expired preview remains denied without a new cap.
+            self.assertFalse((await AIUsageBudgetService(session).can_use_payment_preview_ai(
+                user, first.id)).allowed)
+            self.assertTrue(UserAccessStateService.is_paid(user))
+            paid_budget = await session.scalar(select(AIUsageBudget).where(
+                AIUsageBudget.payment_id == second.id, AIUsageBudget.plan_type == second.plan_type))
+            self.assertEqual(paid_budget.status, "active")
+
+    async def test_historical_receipt_budget_prevents_reclaim_after_pointer_changes(self):
+        async with self.sessions() as session:
+            user = await self._user(session)
+            preview = PaymentReviewPreviewService(session)
+            first = await self._new_payment(session)
+            self.assertTrue(await preview.claim(user, first))
+            second = await self._new_payment(session)
+            self.assertTrue(await PaymentRepository(session).approve(second))
+            await preview.review(user, second, approved=True)
+            third = await self._new_payment(session)
+            self.assertTrue(await preview.claim(user, third))
+            fourth = await self._new_payment(session)
+            self.assertTrue(await PaymentRepository(session).approve(fourth))
+            await preview.review(user, fourth, approved=True)
+            self.assertTrue(user.payment_preview_available)
+            self.assertEqual(user.payment_preview_payment_id, third.id)
+            self.assertFalse(await preview.claim(user, first))
+            self.assertTrue(user.payment_preview_available)
+            self.assertEqual(user.payment_preview_payment_id, third.id)
+            first_budgets = list((await session.scalars(select(AIUsageBudget).where(
+                AIUsageBudget.payment_id == first.id,
+                AIUsageBudget.plan_type == PAYMENT_PREVIEW_PLAN_TYPE))).all())
+            self.assertEqual(len(first_budgets), 1)
+            # Access checking remains defined for this old receipt as well.
+            self.assertIsInstance((await AIUsageBudgetService(session).can_use_payment_preview_ai(
+                user, first.id)).allowed, bool)
+
+    async def test_historical_duplicate_receipt_budgets_deny_without_deleting_or_recharging(self):
+        async with self.sessions() as session:
+            user = await self._user(session)
+            payment = await self._new_payment(session)
+            self.assertTrue(await PaymentReviewPreviewService(session).claim(user, payment))
+            budgets = AIUsageBudgetService(session)
+            # Reconstruct rows written before immutable-receipt claims were
+            # idempotent. Keep both rows for review; do not favor a fresh cap.
+            await budgets.create_payment_preview_budget(user, payment)
+            rows = list((await session.scalars(select(AIUsageBudget).where(
+                AIUsageBudget.payment_id == payment.id))).all())
+            self.assertEqual(len(rows), 2)
+            before = [(row.id, row.status, row.total_budget_usd,
+                       row.segment_1_spent_usd, row.segment_2_spent_usd) for row in rows]
+            verdict = await budgets.can_use_payment_preview_ai(user, payment.id)
+            self.assertFalse(verdict.allowed)
+            self.assertTrue(verdict.budget_depleted)
+            self.assertEqual(verdict.message_key, "ai_budget_depleted")
+            self.assertFalse((await AccessService(session).can_use_text_ai(user))[0])
+            self.assertFalse((await AccessService(session).can_use_image_ai(user))[0])
+            with self.assertRaises(VoicePracticeError) as denied:
+                await VoicePracticeService(session)._ensure_pending_receipt_ai_budget(user)
+            self.assertEqual(denied.exception.code, "ai_budget_depleted")
+            self.assertEqual([(row.id, row.status, row.total_budget_usd,
+                               row.segment_1_spent_usd, row.segment_2_spent_usd) for row in rows], before)
+            self.assertFalse(user.payment_preview_available)
+            self.assertEqual(user.payment_preview_payment_id, payment.id)
+
+    async def test_duplicate_preview_preserves_independent_paid_and_trial_budget_priority(self):
+        for state in ("paid", "trial"):
+            with self.subTest(state=state):
+                async with self.sessions() as session:
+                    user = await self._user(session)
+                    now = datetime.now(timezone.utc)
+                    if state == "paid":
+                        user.status, user.payment_status = "active", "approved"
+                        user.start_date, user.end_date = now, now + timedelta(days=8)
+                        plan_type = "1_month"
+                    else:
+                        user.trial_used = True
+                        user.pro_trial_started_at = now
+                        user.pro_trial_ends_at = now + timedelta(days=4)
+                        plan_type = PRO_TRIAL_PLAN_TYPE
+                    budgets = AIUsageBudgetService(session)
+                    original = await budgets.create_fixed_budget(
+                        telegram_id=user.telegram_id, user_id=user.id, plan_type=plan_type,
+                        amount=100, currency="TJS", total_budget_usd=2,
+                        starts_at=now - timedelta(minutes=1), ends_at=now + timedelta(days=3))
+                    payment = await self._new_payment(session)
+                    self.assertTrue(await PaymentReviewPreviewService(session).claim(user, payment))
+                    await budgets.create_payment_preview_budget(user, payment)
+                    self.assertFalse((await budgets.can_use_payment_preview_ai(user, payment.id)).allowed)
+                    self.assertEqual((await budgets.get_active_budget(user)).id, original.id)
+                    self.assertTrue((await AccessService(session).can_use_text_ai(user))[0])
+                    self.assertTrue((await AccessService(session).can_use_image_ai(user))[0])
+                    await VoicePracticeService(session)._ensure_budget_available(user)
+                    self.assertEqual((original.status, original.total_budget_usd), ("active", 2))
 
     async def test_approval_activates_real_plan_and_replenishes_once(self):
         async with self.sessions() as session:

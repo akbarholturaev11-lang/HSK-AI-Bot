@@ -3,6 +3,7 @@ package com.pomp.hskai.core.notify
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
@@ -108,13 +109,29 @@ class PaymentDecisionMonitorTest {
                 listOf("approved", "rejected").forEach { status ->
                     val id = expected.size + 1
                     f.response(id, status, plan)
-                    assertFalse(monitor.receive("test-device", id, status))
+                    val consumedSilentlyOnPlay = !BuildConfig.EXTERNAL_CHECKOUT_ENABLED && status == "rejected"
+                    assertEquals(consumedSilentlyOnPlay, monitor.receive("test-device", id, status))
                     expected += InAppPaymentDecision("test-device", id, status, plan)
                 }
             }
         }
         assertEquals(expected, received)
         assertEquals(4, f.statusCalls)
+    }
+
+    @Test fun rejectedPaymentStopsStalePollingOnPlayWithoutAVisiblePush() = runBlocking {
+        val f = Fixture()
+        f.response(13, "rejected", "hsk30_unlock")
+        prefs.edit().putInt("pending_payment_id", 13).commit()
+        val monitor = f.monitor()
+        val received = decisions(monitor) {
+            assertEquals(!BuildConfig.EXTERNAL_CHECKOUT_ENABLED, monitor.receive("test-device", 13, "rejected"))
+        }
+        assertEquals(listOf(InAppPaymentDecision("test-device", 13, "rejected", "hsk30_unlock")), received)
+        // Direct keeps the original behavior when OS notifications are denied;
+        // Play cannot retry a manual payment, so it acknowledges silently.
+        assertEquals(if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) 13 else 0,
+            prefs.getInt("pending_payment_id", 0))
     }
 
     @Test fun duplicateDeliveryAndMonitorRecreationDoNotReplayTheAccessChange() = runBlocking {

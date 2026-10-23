@@ -35,6 +35,8 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -43,6 +45,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -81,6 +84,7 @@ import com.pomp.hskai.feature.assistant.ratingUserAssistantContext
  * The four ladder steps are the server's four leagues rather than a fixed
  * decoration, so the highlighted step is the learner's real standing.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RatingScreen(
     state: RatingUiState,
@@ -97,142 +101,148 @@ fun RatingScreen(
     AssistantScreen(ratingAssistantContext(state), bottomBar = true)
     val rating = state.rating
     HskSceneSurface(modifier = modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = 20.dp,
-                end = 20.dp,
-                top = 6.dp,
-                // The tab bar floats over the list; the last row clears it here.
-                bottom = 20.dp + LocalMainBottomInset.current,
-            ),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+        PullToRefreshBox(
+            isRefreshing = state.isLoading,
+            onRefresh = { if (!state.isLoading && !state.isChallengeBusy) onRetry() },
+            modifier = Modifier.fillMaxSize().testTag("rating-refresh"),
         ) {
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 30.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    HskSectionTitle(
-                        stringResource(
-                            if (state.tab == RatingTab.FRIENDS) R.string.rating_tab_friends
-                            else R.string.nav_rating
-                        )
-                    )
-                    SectionHint(hints = hints, section = "rating", onDismiss = onDismissHint)
-                    Spacer(Modifier.weight(1f))
-                    ChallengeBell(
-                        pendingCount = state.pendingChallenges.size,
-                        onClick = onOpenChallenges,
-                    )
-                }
-            }
-
-            if (state.challengeDelivery != null || state.challengeError != null) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    start = 20.dp,
+                    end = 20.dp,
+                    top = 6.dp,
+                    // The tab bar floats over the list; the last row clears it here.
+                    bottom = 20.dp + LocalMainBottomInset.current,
+                ),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
                 item {
-                    ChallengeFeedbackBanner(
-                        delivery = state.challengeDelivery,
-                        error = state.challengeError,
-                    )
-                }
-            }
-
-            if (state.tab == RatingTab.LEAGUE && rating != null) {
-                item {
-                    RatingPodium(
-                        league = rating.league,
-                        memberCount = rating.leagueSize,
-                        resetSeconds = rating.weeklyResetSeconds,
-                    )
-                }
-            }
-
-            if (state.isLoading) {
-                item {
-                    HskContentSkeleton(
-                        rows = 4,
-                        compact = true,
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                    )
-                }
-            }
-
-            when (state.tab) {
-                RatingTab.LEAGUE -> {
-                    state.error?.let { error ->
-                        item {
-                            ErrorBlock(
-                                text = stringResource(error.messageRes),
-                                onRetry = onRetry,
+                    Row(
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 30.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        HskSectionTitle(
+                            stringResource(
+                                if (state.tab == RatingTab.FRIENDS) R.string.rating_tab_friends
+                                else R.string.hsk_common_navigation_rating
                             )
+                        )
+                        SectionHint(hints = hints, section = "rating", onDismiss = onDismissHint)
+                        Spacer(Modifier.weight(1f))
+                        ChallengeBell(
+                            pendingCount = state.pendingChallenges.size,
+                            onClick = onOpenChallenges,
+                        )
+                    }
+                }
+
+                if (state.challengeDelivery != null || state.challengeError != null) {
+                    item {
+                        ChallengeFeedbackBanner(
+                            delivery = state.challengeDelivery,
+                            error = state.challengeError,
+                        )
+                    }
+                }
+
+                if (state.tab == RatingTab.LEAGUE && rating != null) {
+                    item {
+                        RatingPodium(
+                            league = rating.league,
+                            memberCount = rating.leagueSize,
+                            resetSeconds = rating.weeklyResetSeconds,
+                        )
+                    }
+                }
+
+                if (state.isLoading) {
+                    item {
+                        HskContentSkeleton(
+                            rows = 4,
+                            compact = true,
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        )
+                    }
+                }
+
+                when (state.tab) {
+                    RatingTab.LEAGUE -> {
+                        state.error?.let { error ->
+                            item {
+                                ErrorBlock(
+                                    text = stringResource(error.messageRes),
+                                    onRetry = onRetry,
+                                )
+                            }
                         }
-                    }
-                    val rows = rating?.leaderboard.orEmpty()
-                    if (rows.size >= PROMOTION_ZONE) {
-                        item { WeeklyTopFiveTitle() }
-                    }
-                    if (rows.isNotEmpty()) {
-                        item {
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                rows.forEachIndexed { index, row ->
-                                    LeagueRow(
-                                        row = row,
-                                        onOpen = { onOpenUser(row) },
-                                    )
-                                    if (index != rows.lastIndex) {
-                                        HorizontalDivider(color = PompColors.Divider)
+                        val rows = rating?.leaderboard.orEmpty()
+                        if (rows.size >= PROMOTION_ZONE) {
+                            item { WeeklyTopFiveTitle() }
+                        }
+                        if (rows.isNotEmpty()) {
+                            item {
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    rows.forEachIndexed { index, row ->
+                                        LeagueRow(
+                                            row = row,
+                                            onOpen = { onOpenUser(row) },
+                                        )
+                                        if (index != rows.lastIndex) {
+                                            HorizontalDivider(color = PompColors.Divider)
+                                        }
                                     }
                                 }
                             }
                         }
+                        if (rows.isEmpty() && !state.isLoading && state.error == null) {
+                            item { EmptyBlock(stringResource(R.string.rating_empty)) }
+                        }
                     }
-                    if (rows.isEmpty() && !state.isLoading && state.error == null) {
-                        item { EmptyBlock(stringResource(R.string.rating_empty)) }
-                    }
-                }
 
-                RatingTab.FRIENDS -> {
-                    val referral = state.referral
-                    if (referral != null) {
-                        item {
-                            FriendInviteCard(
-                                link = referral.link,
-                                onInvite = onInviteFriends,
-                            )
+                    RatingTab.FRIENDS -> {
+                        val referral = state.referral
+                        if (referral != null) {
+                            item {
+                                FriendInviteCard(
+                                    link = referral.link,
+                                    onInvite = onInviteFriends,
+                                )
+                            }
+                            item {
+                                FriendStats(
+                                    invited = referral.invited,
+                                    activated = referral.activated,
+                                    required = referral.trialRequired,
+                                )
+                            }
                         }
-                        item {
-                            FriendStats(
-                                invited = referral.invited,
-                                activated = referral.activated,
-                                required = referral.trialRequired,
-                            )
+                        val friends = state.referral?.items.orEmpty()
+                        state.referralError?.let { error ->
+                            item {
+                                ErrorBlock(
+                                    text = stringResource(error.messageRes),
+                                    onRetry = onRetry,
+                                )
+                            }
                         }
-                    }
-                    val friends = state.referral?.items.orEmpty()
-                    state.referralError?.let { error ->
-                        item {
-                            ErrorBlock(
-                                text = stringResource(error.messageRes),
-                                onRetry = onRetry,
-                            )
-                        }
-                    }
-                    if (friends.isNotEmpty()) {
-                        item {
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                friends.forEachIndexed { index, friend ->
-                                    FriendRow(
-                                        friend = friend,
-                                        rank = friend.rank.takeIf { it > 0 } ?: index + 1,
-                                        onOpen = { onOpenUser(friend.asRatingEntry(index + 1)) },
-                                        showDivider = index != friends.lastIndex,
-                                    )
+                        if (friends.isNotEmpty()) {
+                            item {
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    friends.forEachIndexed { index, friend ->
+                                        FriendRow(
+                                            friend = friend,
+                                            rank = friend.rank.takeIf { it > 0 } ?: index + 1,
+                                            onOpen = { onOpenUser(friend.asRatingEntry(index + 1)) },
+                                            showDivider = index != friends.lastIndex,
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (friends.isEmpty() && !state.isLoading && state.referralError == null) {
-                        item { EmptyBlock(stringResource(R.string.rating_friends_empty)) }
+                        if (friends.isEmpty() && !state.isLoading && state.referralError == null) {
+                            item { EmptyBlock(stringResource(R.string.rating_friends_empty)) }
+                        }
                     }
                 }
             }
@@ -287,7 +297,12 @@ fun RatingChallengesScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    AssistantScreen(ratingChallengesAssistantContext(state), bottomBar = false, priority = 10)
+    val challengesTitle = stringResource(R.string.hsk_common_navigation_challenges)
+    AssistantScreen(
+        ratingChallengesAssistantContext(state, challengesTitle),
+        bottomBar = false,
+        priority = 10,
+    )
     BackHandler(onBack = onBack)
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         LazyColumn(
@@ -300,7 +315,7 @@ fun RatingChallengesScreen(
         ) {
             item {
                 RatingScreenHeader(
-                    title = stringResource(R.string.rating_challenges_title),
+                    title = challengesTitle,
                     onBack = onBack,
                 )
             }
@@ -413,7 +428,7 @@ fun RatingUserScreen(
                     Row(modifier = Modifier.padding(vertical = 16.dp)) {
                         ProfileMetric(
                             value = user.xp.toString(),
-                            label = stringResource(R.string.profile_xp),
+                            label = stringResource(R.string.hsk_course_xp),
                             color = PompColors.CinnabarDark,
                         )
                         ProfileMetric(
@@ -423,7 +438,7 @@ fun RatingUserScreen(
                         )
                         ProfileMetric(
                             value = level,
-                            label = stringResource(R.string.rating_level),
+                            label = stringResource(R.string.hsk_course_level_up_lvl),
                             color = PompColors.Jade,
                         )
                     }
@@ -520,7 +535,7 @@ private fun RatingScreenHeader(title: String, onBack: () -> Unit) {
     ) {
         HskGlassIconButton(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = stringResource(R.string.action_back),
+            contentDescription = stringResource(R.string.hsk_common_action_back),
             onClick = onBack,
             iconSize = 24.dp,
             tint = PompColors.Ink,
@@ -613,14 +628,14 @@ private fun RivalryCard(opponentName: String, currentXp: Int, opponentXp: Int) {
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Text(
-                text = stringResource(R.string.rating_weekly_result),
+                text = stringResource(R.string.hsk_course_rating_weekly_heading),
                 style = MaterialTheme.typography.titleSmall,
                 color = PompColors.Paper,
             )
             Spacer(Modifier.height(12.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = stringResource(R.string.rating_you),
+                    text = stringResource(R.string.hsk_course_you),
                     style = MaterialTheme.typography.labelMedium,
                     color = PompColors.Paper,
                     modifier = Modifier.weight(1f),
@@ -731,7 +746,7 @@ private fun WeeklyTopFiveTitle() {
         )
         Spacer(Modifier.width(6.dp))
         Text(
-            text = stringResource(R.string.rating_weekly_top_five),
+            text = stringResource(R.string.hsk_course_rating_weekly_top_five),
             style = MaterialTheme.typography.bodyMedium,
             color = PompColors.GoldInk,
         )
@@ -849,7 +864,7 @@ private fun ActiveChallengeRow(duel: ChallengeDto, onStart: (ChallengeDto) -> Un
             color = PompColors.Cinnabar,
         ) {
             Text(
-                text = stringResource(R.string.challenge_start),
+                text = stringResource(R.string.hsk_common_action_start),
                 style = MaterialTheme.typography.labelLarge,
                 color = PompColors.Paper,
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
@@ -939,7 +954,7 @@ private fun FriendStats(invited: Int, activated: Int, required: Int) {
     ) {
         FriendStat(
             value = invited.toString(),
-            label = stringResource(R.string.rating_friends_joined),
+            label = stringResource(R.string.hsk_course_rating_referral_joined),
         )
         FriendStat(
             value = "$activated / $required",
@@ -1168,7 +1183,7 @@ private fun ErrorBlock(text: String, onRetry: () -> Unit) {
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = stringResource(R.string.action_retry),
+                text = stringResource(R.string.hsk_course_lesson_flow_retry),
                 style = MaterialTheme.typography.labelLarge,
                 color = PompColors.Flame,
             )

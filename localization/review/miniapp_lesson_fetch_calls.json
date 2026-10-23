@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "status": "PURPOSE_SPECIFIC_APIS_SOURCE_REVIEWED",
+  "source": "app/static/course-v3.html",
+  "source_revision": "c70e4befd802133a8e6e18fe5501c59289715ce7",
+  "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route.",
+  "read_calls": [
+    {
+      "ordinal": 1,
+      "line": 2419,
+      "anchor": "loadLessonData(lv,n)",
+      "owner": "warmLessonPreviewAudio",
+      "intent": "audio_preload_before_continue",
+      "expected_future_policy": "authenticated_non_consuming_authorized_lesson_only",
+      "cost_sensitive": true,
+      "reason": "Audio warming is optional; the signed lesson read must never consume quota and may return only a completed, reserved, or otherwise unlimited-access lesson."
+    },
+    {
+      "ordinal": 2,
+      "line": 3238,
+      "anchor": "loadLessonData(lv,l.n)",
+      "owner": "prefetchNearbyLessons",
+      "intent": "background_nearby_prefetch",
+      "expected_future_policy": "authenticated_non_consuming_authorized_lesson_only",
+      "cost_sensitive": true,
+      "reason": "Idle prefetch may target the next locked lesson; server sequence, track, foundation, and entitlement checks must deny it without quota consumption."
+    },
+    {
+      "ordinal": 3,
+      "line": 4321,
+      "anchor": "loadLessonData(lv,l.n)",
+      "owner": "startLesson",
+      "intent": "interactive_lesson_after_reservation",
+      "expected_future_policy": "authenticated_entitled_lesson_after_start",
+      "cost_sensitive": true,
+      "reason": "Only this call follows reserveLessonStart(l); preserve one start/consume decision and progress/quiz identities."
+    }
+  ],
+  "additional_indirect_entrypoints": [
+    {
+      "line": 3810,
+      "name": "warmLessonPreviewAudio",
+      "intent": "preview_on_sheet_open"
+    },
+    {
+      "line": 5646,
+      "name": "prefetchNearbyLessons",
+      "intent": "track_switch_background"
+    },
+    {
+      "line": 8819,
+      "name": "prefetchNearbyLessons",
+      "intent": "initial_course_boot_background"
+    }
+  ],
+  "cache_scope_review": [
+    {
+      "key": "LESSON_DATA_CACHE",
+      "observation": "Page lesson cache and pending reads include localUserScope; the server still revalidates signed identity and access on each cache miss. Runtime identity-switch QA remains."
+    },
+    {
+      "key": "lessonResumeKey",
+      "observation": "Authenticated Telegram users receive a resume key scoped by localUserScope; unauthenticated preview keeps the legacy key. Local synthetic identity switching is covered; device account-switch QA remains."
+    },
+    {
+      "key": "lessonMasteryKey",
+      "observation": "Mastery key includes localUserScope(); keep identity-aware versioning."
+    }
+  ],
+  "limits": "Source call-site classification and isolated API regression tests only. Does not inspect real credentials, deployed HTTP responses, installed-client cache invalidation or QA screenshots.",
+  "purpose_specific_endpoints": [
+    {
+      "path": "/api/v3/lesson/sales-preview",
+      "owner": "primeSalesValueContent",
+      "policy": "public_fixed_allowlist_projection"
+    },
+    {
+      "path": "/api/v3/lesson/foundation",
+      "owner": "startFoundationFromMap",
+      "policy": "signed_identity_foundation_only"
+    },
+    {
+      "path": "/api/v3/lesson/skip-test",
+      "owner": "startSkipTest",
+      "policy": "signed_identity_entitlement_checked_max_six_questions"
+    }
+  ],
+  "integration_anchor_review": {
+    "feature_parent_sha": "8c101abfd436e12e313745ffc9b5974faa19e7b2",
+    "main_parent_sha": "dcd65418887502943067fe9320339eb5ba7a73bb",
+    "previous_source_lines": 8858,
+    "merged_source_lines": 9095,
+    "scope": "Exact unchanged localization anchor lines remapped after upstream CSS/nav and nonblocking Practice scheduling merge; no lesson, locale, auth or grading source changes approved by this line remap."
+  }
+}

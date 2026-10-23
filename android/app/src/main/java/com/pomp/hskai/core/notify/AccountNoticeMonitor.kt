@@ -27,19 +27,17 @@ class AccountNoticeMonitor(
         val access = app.authRepository.accessToken() as? ApiResult.Success ?: return false
         val bearer = "Bearer ${access.value}"
 
-        if (!AccountNotifications.canPost(app)) {
-            // Said at once, so Telegram does not wait the full ten minutes.
-            apiCall { api.acknowledgeNotice(bearer, noticeId, AccountNoticeAckRequest(shown = false)) }
-            return false
-        }
         // Unreachable server: no answer is sent, so Telegram takes over in ten minutes.
         val response = (apiCall { api.notice(bearer, noticeId) } as? ApiResult.Success)?.value
             ?: return false
         val notice = response.notice ?: return false
         if (!response.ok || !notice.show || notice.id != noticeId) return false
 
-        val shown = AccountNotifications.post(app, notice)
-        apiCall { api.acknowledgeNotice(bearer, noticeId, AccountNoticeAckRequest(shown = shown)) }
-        return shown
+        // Policy is evaluated before OS permission. A suppressed Play offer
+        // must not fall back to a promotional Telegram message even when this
+        // phone cannot post notifications. Neutral notices retain that fallback.
+        val handled = AccountNotifications.post(app, notice)
+        apiCall { api.acknowledgeNotice(bearer, noticeId, AccountNoticeAckRequest(shown = handled)) }
+        return handled
     }
 }

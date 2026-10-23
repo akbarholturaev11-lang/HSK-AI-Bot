@@ -45,6 +45,9 @@ window.MEMO_UI = {
   near: t("yaqin","близко","наздик")
 };
 
+// Fixed UI only; original literals are the missing-bundle fallback.
+function adoptMemoUi(node,prefix){Object.keys(node).forEach(function(key){var value=node[key],path=prefix+"."+(Array.isArray(node)?"item"+(Number(key)+1):key);if(!value||typeof value!=="object")return;if(typeof value.uz==="string"&&typeof value.ru==="string"&&typeof value.tj==="string"){["uz","ru","tj"].forEach(function(locale){var dict=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[locale])||{},text=dict[path];if(typeof text==="string"&&text)value[locale]=text})}else adoptMemoUi(value,path)})}adoptMemoUi(window.MEMO_UI,"memorizeUi");
+
 // Pinyin + qisqa ma'no (engine shu yerdan oladi; distraktorlar ham shu puldan).
 window.MEMO_BASE = {
   "你":{p:"nǐ",m:t("sen","ты","ту")},

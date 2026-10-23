@@ -54,14 +54,13 @@ class ProviderOnlyAccountTest {
         }
         compose.onAllNodesWithText("Apple learner")[0].assertIsDisplayed()
         compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).performClick()
-        compose.onNodeWithText(text(R.string.profile_settings_section_account)).performClick()
         compose.onNodeWithTag("profile-settings-scroll")
             .performScrollToNode(hasText(text(R.string.profile_account_title)))
         compose.onNodeWithText(text(R.string.profile_account_title)).performClick()
         compose.onNodeWithText(text(R.string.profile_account_telegram)).assertDoesNotExist()
         compose.onNodeWithText(text(R.string.profile_account_apple)).performScrollTo().assertIsDisplayed()
         compose.onNodeWithText(text(R.string.profile_account_disconnect)).performScrollTo().assertIsNotEnabled()
-        compose.onNodeWithText(text(R.string.profile_account_save)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(text(R.string.profile_account_save)).assertIsDisplayed()
     }
 
     @Test fun soleProviderCannotBeRemovedAndTelegramIsShownOnlyWhenActuallyLinked() {
@@ -85,14 +84,15 @@ class ProviderOnlyAccountTest {
             }
         }
         compose.onNodeWithText(text(R.string.profile_account_telegram)).assertDoesNotExist()
+        compose.onNodeWithText("@linked_learner").assertDoesNotExist()
         compose.onNodeWithText(text(R.string.error_oauth_last_identity)).performScrollTo().assertIsDisplayed()
         compose.onNodeWithText(text(R.string.profile_account_disconnect)).performScrollTo().assertIsNotEnabled()
-        compose.onNodeWithText(text(R.string.profile_account_save)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(text(R.string.profile_account_save)).assertIsDisplayed()
         assertEquals(emptyList<String>(), disconnected)
 
         compose.runOnIdle { state.value = state.value.copy(telegramLinked = true) }
-        compose.onNodeWithText(text(R.string.profile_account_telegram)).performScrollTo().assertIsDisplayed()
-        compose.onNodeWithText("@linked_learner").assertIsDisplayed()
+        compose.onNodeWithText(text(R.string.profile_account_telegram)).assertDoesNotExist()
+        compose.onNodeWithText("@linked_learner").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText(text(R.string.profile_account_disconnect)).performScrollTo().assertIsEnabled().performClick()
         assertEquals(listOf("google"), disconnected)
 

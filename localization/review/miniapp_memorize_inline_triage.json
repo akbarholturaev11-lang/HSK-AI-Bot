@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "status": "REVIEWED_INLINE_LABELS_LOCAL_FIRST_RUNTIME_NOT_VALIDATED",
+  "source": "app/static/course_v3_memorize.html",
+  "review": "source_only",
+  "counting_note": "The original nine reviewed UZ/RU/TJ inline expressions were migrated to the local-first catalog; source no longer has direct inline locale calls. This review is source-level, not runtime UI validation.",
+  "remaining": [],
+  "entries": [
+    {
+      "ordinal": 1,
+      "line": 318,
+      "anchor": "uz:\"Tinglash\"",
+      "category": "audio_action_copy",
+      "recommendation": "Static UI key; preserve audio playback action"
+    },
+    {
+      "ordinal": 2,
+      "line": 340,
+      "anchor": "uz:\"Eslab qolish uchun\"",
+      "category": "memorization_prompt",
+      "recommendation": "Static UI key; preserve hook selection behavior"
+    },
+    {
+      "ordinal": 3,
+      "line": 347,
+      "anchor": "uz:\"Qaysini \"+H+",
+      "category": "interpolated_hanzi_prompt",
+      "recommendation": "Keep canonical Chinese hanzi H separate; a future localized message must accept named {hanzi} placeholder, preserving distractor/answer logic"
+    },
+    {
+      "ordinal": 4,
+      "line": 431,
+      "anchor": "uz:\"ma'no\"",
+      "category": "completed_step_label",
+      "recommendation": "Static completion checklist label"
+    },
+    {
+      "ordinal": 5,
+      "line": 431,
+      "anchor": "uz:\"so'z\"",
+      "category": "completed_step_label",
+      "recommendation": "Static completion checklist label"
+    },
+    {
+      "ordinal": 6,
+      "line": 431,
+      "anchor": "uz:\"gap\"",
+      "category": "completed_step_label",
+      "recommendation": "Static completion checklist label"
+    },
+    {
+      "ordinal": 7,
+      "line": 432,
+      "anchor": "uz:\"Tugatish\"",
+      "category": "finish_action_copy",
+      "recommendation": "Static finish button label; preserve branch checking deck progression"
+    },
+    {
+      "ordinal": 8,
+      "line": 433,
+      "anchor": "uz:\"Mashqlarga qaytish\"",
+      "category": "return_action_copy",
+      "recommendation": "Static button label; preserve goBack action"
+    },
+    {
+      "ordinal": 9,
+      "line": 441,
+      "anchor": "uz:\"Ma'lumot yuklanmadi\"",
+      "category": "load_failure_copy",
+      "recommendation": "Static no-data error; preserve loadData fallback"
+    }
+  ],
+  "source_revision": "d9bc0611dcfc670e7d9305a9b94156447e1baa05",
+  "migrated_keys": [
+    "listen",
+    "memorize.prompt.remember",
+    "memorize.prompt.confusion",
+    "memorize.complete.meaning",
+    "memorize.complete.word",
+    "memorize.complete.sentence",
+    "memorize.finish",
+    "memorize.returnToExercises",
+    "practice.dataNotLoaded"
+  ]
+}

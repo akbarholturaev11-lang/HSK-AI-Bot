@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>AI Voice</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <style>
 :root{--ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;--cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--jade:#2FA06A;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -202,7 +203,7 @@ button{font-family:inherit;border:none;background:none;color:inherit}
     <button class="b2" onclick="goBack()" id="pwb2"></button>
   </div></div>
 </div>
-<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script>
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
@@ -212,7 +213,13 @@ var L={ru:{speaking:"Говорит…",listening:"Слушаю вас…",analy
     holdMic:"Gapirish uchun mikrofonni bosib turing",releaseMic:"Yuborish uchun qo'yib yuboring",holdLonger:"Sal uzoqroq bosib turing",whatToSay:"Nima deyish?",hintTitle:"Nima deyish mumkin",hintWords:"Shu darsning so'zlari",hintPhrases:"Foydali iboralar",kbPlaceholder:"Yozing…",settings:"Sozlamalar",optPersona:"Suhbatdosh",optSub:"Pinyin va tarjima",optRate:"Nutq tezligi",on:"yoqilgan",off:"o'chirilgan",rateSlow:"sekin",rateNormal:"oddiy",emptyChat:"Suhbatingiz shu yerda ko'rinadi",replay:"Yana eshitish"},
   tj:{speaking:"Сухан мегӯяд…",listening:"Шуморо гӯш мекунам…",analyzing:"Таҳлил мекунам…",connecting:"Пайвастшавӣ…",heard:"Шумо:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",replWord:"ҷавоб",corrTitle:"Чиро ислоҳ кунем",again:"Боз сӯҳбат",exit:"Баромадан",micDeny:"Аз танзимоти Telegram ба микрофон иҷозат диҳед.",sendErr:"Хатогӣ. Бори дигар кӯшиш кунед.",tooShort:"Хеле кӯтоҳ. Бори дигар гап занед.",noSupport:"Дар ин дастгоҳ сабти овоз дастрас нест.",startBot:"Аввал ботро кушоед ва /start пахш кунед.",limitTitle:"Сӯҳбати озмоишӣ анҷом ёфт",limitSub:"Бо HSK AI Pro ҳар рӯз бо 阿宝 гап мезанед — бе лимит.",limitWhy:"Дар ҳолати ройгон AI Voice 1 маротиба санҷида мешавад — сӯҳбати озмоишиатро истифода кардӣ. Бо обуна ҳар рӯз бо 阿宝 гап мезанӣ: сухани зинда — роҳи кӯтоҳтарини ба забон омадан бо чинӣ.",premiumBtn:"HSK AI Pro ⭐️ гирифтан",learnBadge:"Оҳ, ман чинӣ гап зада истодаам!",showDialog:"Дидани гуфтугӯи пурра",hideDialog:"Пинҳон кардани гуфтугӯ",statGood:"ҷавоби хуб",statMistake:"ислоҳ",savedToMistakes:"Хатоҳо ба бахши «Хатоҳои ман» илова шуданд",noMistakes:"Бе хато — офарин!",fixLabel:"Дуруст:",
     holdMic:"Барои гап задан микрофонро пахш карда нигоҳ доред",releaseMic:"Барои фиристодан сар диҳед",holdLonger:"Каме дарозтар нигоҳ доред",whatToSay:"Чӣ гӯям?",hintTitle:"Чӣ гуфтан мумкин",hintWords:"Калимаҳои ин дарс",hintPhrases:"Ибораҳои муфид",kbPlaceholder:"Нависед…",settings:"Танзимот",optPersona:"Ҳамсӯҳбат",optSub:"Пинйин ва тарҷума",optRate:"Суръати нутқ",on:"фаъол",off:"хомӯш",rateSlow:"оҳиста",rateNormal:"муқаррарӣ",emptyChat:"Гуфтугӯи шумо дар ин ҷо пайдо мешавад",replay:"Боз шунидан"}}[LANG];
-var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+/* Exact locale UI from a preloaded static bundle; original literals are fallback. */
+var VOICE_PAGE_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};
+Object.keys(L).forEach(function(key){
+  var value=VOICE_PAGE_UI["voicePage."+key];
+  if(typeof value==="string"&&value)L[key]=value;
+});
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}function voicePageA11y(selector,key,fallback){var el=document.querySelector(selector),value=VOICE_PAGE_UI["courseVoiceInline."+key];if(el)el.setAttribute("aria-label",typeof value==="string"&&value?value:fallback)}voicePageA11y(".top .ic:first-child","a11yClose","yopish");voicePageA11y(".top .ic:last-child","a11ySettings","sozlamalar");voicePageA11y("#ctrlRow .sq","a11yKeyboard","klaviatura");voicePageA11y("#mic","a11yMic","gapirish");voicePageA11y(".kb .kbclose","a11yClose","yopish");voicePageA11y("#kbSend","a11ySend","yuborish");
 var $=function(id){return document.getElementById(id)};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})}
 function jr(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}})}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account_deletion_account">Ҳисоб: %1$s</string>
+    <string name="account_deletion_scope">Ин дархост тамоми ҳамин ҳисоби HSK AI ва вурудҳои пайвастшудаи Telegram, Google ё Apple-ро дар бар мегирад. Шумо нест кардани профил, пешрафти дарсҳо ва маълумоти машқро дархост мекунед. Дархост дар давоми 30 рӯз баррасӣ мешавад.</string>
+    <string name="account_deletion_retention">Сабтҳои зарурии пардохт, пешгирии қаллобӣ ва амният метавонанд мувофиқи талаботи қонун, ҳисоби молиявӣ ва амният нигоҳ дошта шаванд.</string>
+    <string name="account_deletion_confirm">Тасдиқи дархости несткунӣ</string>
+    <string name="account_deletion_verifying">Моликияти ҳисоб санҷида мешавад…</string>
+    <string name="account_deletion_submitting">Дархост фиристода мешавад…</string>
+    <string name="account_deletion_open_web">Кушодани саҳифаи умумии веб</string>
+    <string name="account_deletion_received">Дархост қабул шуд</string>
+    <string name="account_deletion_submitted">Ҳолат: фиристода шуд. Ҳисоб ҳанӯз нест нашудааст; дархост баррасӣ мешавад.</string>
+    <string name="account_deletion_request_id">Рақами дархост: %1$s</string>
+    <string name="account_deletion_due">Муҳлати баррасӣ: %1$s</string>
+    <string name="account_deletion_verify_again">Муҳлати тасдиқ гузаштааст ё он беэътибор аст. Барои аз нав тасдиқ кардани моликияти ҳисоб такрор кунед.</string>
+</resources>

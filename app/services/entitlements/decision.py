@@ -103,24 +103,17 @@ def paywall_for(action: str, *, checkout_allowed: bool = True) -> PaywallHint:
 
 
 def limit_text(action, *, state, limit, remaining, window, language="ru"):
+    from app.bot.generated.bot_i18n import bot_locale_map
     lang = language if language in {"uz", "ru", "tj"} else "ru"
-    labels = {
-        "uz": {"lesson": "dars", "ai": "AI so‘rov", "speaking": "suhbat", "practice": "mashq", "study": "foydalanish"},
-        "ru": {"lesson": "уроков", "ai": "AI-запросов", "speaking": "разговоров", "practice": "упражнений", "study": "использований"},
-        "tj": {"lesson": "дарс", "ai": "дархости AI", "speaking": "суҳбат", "practice": "машқ", "study": "истифода"},
-    }
+    labels = bot_locale_map('inline.services.entitlements.decision.limit_text.copy1')
     noun = labels[lang].get(str(action).split(".")[0], labels[lang]["study"])
     trial = state == "TRIAL_ACTIVE"
-    plan = {"uz": "Trial rejimida" if trial else "Bepul rejimda",
-            "ru": "В пробном режиме" if trial else "В бесплатном режиме",
-            "tj": "Дар реҷаи санҷишӣ" if trial else "Дар реҷаи ройгон"}[lang]
+    plan = bot_locale_map(('inline.services.entitlements.decision.limit_text.copy2.case1' if trial else 'inline.services.entitlements.decision.limit_text.copy2.case2'))[lang]
     if limit is None:
-        return {"uz": f"{noun.capitalize()}: cheksiz.", "ru": f"{noun.capitalize()}: без ограничений.", "tj": f"{noun.capitalize()}: бемаҳдуд."}[lang]
-    period = ({"uz": "kuniga", "ru": "в день", "tj": "дар як рӯз"} if window == "daily"
-              else {"uz": "jami", "ru": "всего", "tj": "ҳамагӣ"})[lang]
-    return {"uz": f"{plan} {period} {limit} ta {noun}. Qoldi: {remaining or 0}.",
-            "ru": f"{plan} {period}: {limit} {noun}. Осталось: {remaining or 0}.",
-            "tj": f"{plan} {period}: {limit} {noun}. Боқӣ монд: {remaining or 0}."}[lang]
+        return bot_locale_map('inline.services.entitlements.decision.limit_text.copy3.case1', value1=noun.capitalize())[lang]
+    period = (bot_locale_map('inline.services.entitlements.decision.limit_text.copy4') if window == "daily"
+              else bot_locale_map('inline.services.entitlements.decision.limit_text.copy5'))[lang]
+    return bot_locale_map('inline.services.entitlements.decision.limit_text.copy6.case1', plan=plan, period=period, limit=limit, noun=noun, value5=remaining or 0)[lang]
 
 
 @dataclass(frozen=True)

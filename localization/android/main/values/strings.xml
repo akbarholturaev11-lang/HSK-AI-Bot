@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Default locale: Uzbek (Latin).
+    Russian lives in values-ru, Tajik in values-tg.
+    NOTE: the backend language code for Tajik is "tj", while the Android
+    resource qualifier is "tg" (ISO 639-1). LanguageCodes owns that mapping;
+    never rename the folder and never send "tg" to the API.
+-->
+<resources>
+    <!-- Opt-in native issue reporting -->
+    <string name="bug_report_title">Muammo haqida xabar berish</string>
+    <string name="bug_report_question">Nima sodir bo‘ldi?</string>
+    <string name="bug_report_hint">Muammoni batafsil yozing...</string>
+    <string name="bug_report_screenshot">Skrinshot qo‘shish</string>
+    <string name="bug_report_no_screenshot">Ekran suratini avtomatik olish imkoni bo‘lmadi. Galereyadan tanlang yoki skrinshotni o‘chiring.</string>
+    <string name="bug_report_privacy">Skrinshot yuborish oldindan yoqilgan. Undagi shaxsiy ma’lumotlarni tekshiring; istasangiz o‘chirishingiz mumkin.</string>
+    <string name="bug_report_send">Xabar yuborish</string>
+    <string name="bug_report_failed">Xabar yuborilmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
+    <string name="bug_report_success">Xabaringiz qabul qilindi. Rahmat!</string>
+    <string name="bug_report_shake">Xabar berish uchun telefonni silkiting</string>
+    <string name="bug_report_shake_summary">Faqat ilova ochiq turganda ishlaydi</string>
+    <!-- Brand name and language endonyms are shown identically in every
+         locale, so they are deliberately not translated. Without this, lint's
+         MissingTranslation check fails the build. -->
+    <string name="app_name" translatable="false">HSK AI</string>
+
+    <!-- Onboarding: language -->
+    <string name="onboarding_language_title">Tilni tanlang</string>
+    <string name="onboarding_language_subtitle">Kurs, tarjimalar va eslatmalar shu tilda bo\'ladi.</string>
+    <string name="language_uz" translatable="false">O\'zbekcha</string>
+    <string name="language_ru" translatable="false">Русский</string>
+    <string name="language_tj" translatable="false">Тоҷикӣ</string>
+    <string name="action_continue">Davom etish</string>
+
+    <!-- Login screen: welcome and the three ways in -->
+    <string name="auth_welcome_greeting">Xush kelibsiz</string>
+    <string name="auth_choose_method">Kirish yoki yangi hisob ochish usulini tanlang</string>
+    <string name="auth_tagline">Yaxshiroq kelajak \u2014 bilim bilan</string>
+    <string name="auth_continue_telegram" translatable="false">Telegram</string>
+    <string name="auth_continue_google_short" translatable="false">Google</string>
+    <string name="auth_continue_apple_short" translatable="false">Apple</string>
+    <string name="auth_waiting_telegram">Telegramdagi tasdiqni kutyapmiz\u2026</string>
+    <string name="auth_open_telegram_again">Telegramni qayta ochish</string>
+    <string name="cd_language_switch">Til</string>
+    <string name="language_code_uz" translatable="false">UZ</string>
+    <string name="language_code_ru" translatable="false">RU</string>
+    <string name="language_code_tj" translatable="false">TJ</string>
+    <string name="auth_link_expired">Ulanish muddati tugadi. Qaytadan urinib ko\u2018ring.</string>
+
+    <!-- Synced account summary -->
+    <string name="synced_title">Hisobingiz ulandi</string>
+    <string name="synced_access_paid">Obuna faol</string>
+    <string name="synced_access_free">Bepul rejim</string>
+
+    <!-- Main navigation -->
+    <string name="nav_course">Kurs</string>
+    <string name="nav_practice">Mashq</string>
+    <string name="nav_ai">AI</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Profile / session -->
+    <string name="profile_logout">Chiqish</string>
+    <string name="profile_unlink_device">Bu qurilmani uzish</string>
+    <string name="profile_unlink_explain">Qurilma uziladi. Keyingi safar hisobingizga ulangan kirish usuli bilan qayta kirasiz.</string>
+    <string name="profile_refresh">Yangilash</string>
+    <string name="profile_xp">XP</string>
+    <string name="profile_streak">Streak</string>
+    <string name="profile_lessons">Darslar</string>
+    <string name="profile_mistakes">Xatolar</string>
+    <string name="profile_subscription_title">Obuna</string>
+    <string name="profile_subscription_active">Premium faol. Android ham shu hisobdagi ruxsatni ishlatyapti.</string>
+    <string name="profile_subscription_status_paid">Obuna faol</string>
+    <string name="profile_subscription_status_trial">Sinov davri</string>
+    <string name="profile_subscription_status_temporary">Vaqtinchalik kirish</string>
+    <string name="profile_subscription_status_expired">Muddati tugagan</string>
+    <string name="profile_subscription_status_free">Bepul tarif</string>
+    <string name="profile_subscription_status_unavailable">Holatni yangilash uchun bosing</string>
+    <string name="profile_subscription_until">%1$s gacha faol</string>
+    <string name="profile_subscription_temporary_body">Vaqtinchalik kirish muddati tugagach bepul rejimga qaytasiz.</string>
+    <string name="profile_subscription_free_body">Tariflar va to‘lov usullarini ko‘rish uchun obuna bo‘limini oching.</string>
+    <string name="profile_subscription_buy">Obuna olish</string>
+    <string name="profile_subscription_restore">Obunani tiklash</string>
+    <string name="profile_subscription_renew">Obunani uzaytirish</string>
+    <string name="profile_subscription_play_blocked">Google Play Billing sozlamalari repo tashqarisida. Hozir obuna holati ko‘rsatiladi, xarid keyin ulanadi.</string>
+    <string name="auth_referral_code">Taklif kodi (ixtiyoriy)</string>
+    <string name="auth_referral_hint">Do‘stingiz bergan kod. Faqat yangi akkaunt uchun.</string>
+    <string name="auth_referral_invalid">Taklif kodini tekshiring yoki maydonni bo‘sh qoldiring.</string>
+    <string name="profile_referral_title">Do‘st taklif qilish</string>
+    <string name="profile_referral_progress">%1$d / %2$d aktiv do‘st</string>
+
+    <!-- Shared states -->
+    <string name="state_loading">Yuklanmoqda…</string>
+    <string name="action_retry">Qayta urinish</string>
+    <string name="action_cancel">Bekor qilish</string>
+    <string name="action_close">Yopish</string>
+
+    <!-- Error copy mapped from stable server error codes -->
+    <string name="error_offline">Internet aloqasi yo\'q. Ulanishni tekshiring.</string>
+    <string name="offline_banner">Internet yo‘q</string>
+    <string name="offline_section_title">Bu bo‘lim uchun internet kerak</string>
+    <string name="offline_section_body">Internetsiz lug‘at va kurs xaritasi ishlaydi. Aloqa tiklansa, ilova o‘zi ulanadi.</string>
+    <string name="offline_lesson">Dars uchun internet kerak</string>
+    <string name="offline_practice">Internetsiz lug‘at va tayyor gaplar ishlaydi</string>
+    <string name="error_timeout">Server javob bermadi. Qayta urinib ko\'ring.</string>
+    <string name="error_server">Serverda vaqtinchalik nosozlik. Birozdan so\'ng urinib ko\'ring.</string>
+    <string name="error_unknown">Kutilmagan xatolik yuz berdi.</string>
+    <string name="error_session_expired">Sessiya muddati tugadi. Hisobingizga qayta kiring.</string>
+    <string name="error_telegram_account_required">Bu imkoniyat hozir mavjud emas. Keyinroq qayta urinib ko‘ring.</string>
+    <string name="error_link_invalid">Kod noto\'g\'ri, eskirgan yoki allaqachon ishlatilgan.</string>
+    <string name="error_link_rate_limited">Juda ko\'p urinish bo\'ldi. Bir necha daqiqadan so\'ng urinib ko\'ring.</string>
+    <string name="error_device_bound">Bu qurilma boshqa HSK AI hisobiga ulangan. Avval uni uzish kerak.</string>
+    <string name="error_auth_unavailable">Ulash xizmati vaqtincha ishlamayapti.</string>
+    <string name="error_feature_limit">Bepul limit tugadi. Premium bilan davom eting.</string>
+    <string name="error_no_mistakes">Hozircha takrorlanadigan xato yo‘q.</string>
+    <string name="error_voice_unavailable">AI Voice hozircha ishlamayapti. Keyinroq urinib ko‘ring.</string>
+    <string name="error_challenge_cooldown">Yaqinda chaqiruv yuborgansiz. 15 daqiqadan so‘ng qayta urinib ko‘ring.</string>
+    <string name="error_challenge_opponent">Bu raqibga chaqiruv yuborib bo‘lmadi. Reytingni yangilab qayta urinib ko‘ring.</string>
+    <string name="error_challenge_questions">Bellashuv savollari hozir tayyor emas. Keyinroq urinib ko‘ring.</string>
+    <string name="error_challenge_unavailable">Chaqiruv xizmati vaqtincha ishlamayapti. Keyinroq urinib ko‘ring.</string>
+    <string name="error_referral_unavailable">Do‘stlar ro‘yxati yuklanmadi. Qayta urinib ko‘ring.</string>
+
+    <!-- Accessibility -->
+    <string name="cd_app_logo">Pomp HSK AI logotipi</string>
+
+    <!-- Bugun -->
+    <string name="today_continue">Davom etish</string>
+    <string name="today_streak">Ketma-ket kunlar</string>
+    <string name="today_xp">XP</string>
+    <string name="today_stale">Oflayn ma\'lumot — internet tiklanganda yangilanadi</string>
+    <string name="today_reason_preview">Bu darsning yarmini bepul ko\'rishingiz mumkin</string>
+    <string name="today_reason_premium">Bu dars obuna bilan ochiladi</string>
+    <string name="today_reason_not_reached">Avval oldingi qismlarni tugating</string>
+
+    <!-- Kurs -->
+    <string name="course_checkpoint">Takrorlash</string>
+    <string name="course_part_label">%1$d-qism</string>
+
+    <!-- Dars oqimi -->
+    <string name="lesson_new_word">Yangi so‘z</string>
+    <string name="lesson_listen">Tinglash</string>
+    <string name="lesson_grammar">Grammatika</string>
+    <string name="lesson_repeat_after_teacher">Ustozdan keyin takrorlang</string>
+    <string name="lesson_cannot_speak_now">Hozir gapira olmayman</string>
+    <!-- Leaving a running lesson or exercise asks first (✕ and the system back). -->
+    <string name="lesson_exit_title">Darsdan chiqasizmi?</string>
+    <string name="lesson_exit_body">Qayerda to\'xtaganingiz saqlanadi — keyin shu joydan davom etasiz.</string>
+    <string name="practice_exit_title">Mashqdan chiqasizmi?</string>
+    <string name="practice_exit_body">Bu urinish natijasi saqlanmaydi.</string>
+    <string name="exit_confirm_leave">Chiqish</string>
+    <string name="exit_confirm_stay">Davom etish</string>
+    <string name="lesson_microphone_permission_required">Talaffuzni tekshirish uchun mikrofonga ruxsat bering</string>
+    <string name="lesson_play_audio">Ovozni eshitish</string>
+    <string name="lesson_audio_loading">Ovoz yuklanmoqda</string>
+    <string name="lesson_listen_and_choose">Eshitganingizni tanlang</string>
+    <string name="lesson_build_sentence">Gapni tuzing</string>
+    <string name="lesson_fill_gaps">Gapni to‘ldiring</string>
+    <string name="lesson_build_translation">Tarjimani tuzing</string>
+    <string name="lesson_match_pairs">Juftlarni moslang</string>
+    <string name="lesson_check">Tekshirish</string>
+    <string name="lesson_next">Davom etish</string>
+    <string name="lesson_correct">To\'g\'ri</string>
+    <string name="lesson_wrong">Noto\'g\'ri</string>
+    <string name="lesson_done_title">Dars tugadi</string>
+    <string name="lesson_done_accuracy">%1$d / %2$d to\'g\'ri</string>
+    <string name="lesson_done_perfect_1">Siz odam emassiz, shekilli? 🤖</string>
+    <string name="lesson_done_perfect_2">0 xato. Bu allaqachon ustozlik.</string>
+    <string name="lesson_done_perfect_3">Mukammal. Boshqa gap yo\'q.</string>
+    <string name="lesson_done_perfect_sub">Xatosiz yakunladingiz.</string>
+    <string name="lesson_done_high_1">Zo\'r ketyapsiz!</string>
+    <string name="lesson_done_high_2">Deyarli mukammal 👏</string>
+    <string name="lesson_done_high_3" formatted="false">Kam qoldi — sal sayqal.</string>
+    <string name="lesson_done_high_sub" formatted="false">Yana biroz mashq va 100% sizniki.</string>
+    <string name="lesson_done_mid_1">Xatolar — eng yaxshi ustoz.</string>
+    <string name="lesson_done_mid_2">Yo\'l ochildi. Davom etamiz.</string>
+    <string name="lesson_done_mid_3">Barakalla, oldinga siljidingiz.</string>
+    <string name="lesson_done_mid_sub">Xatolaringizni mashqda takrorlaymiz.</string>
+    <string name="lesson_done_low_1">Qiyin dars edi. Sekin — ammo oldinga.</string>
+    <string name="lesson_done_low_2">Boshlash — eng qiyini. Uddaladingiz.</string>
+    <string name="lesson_done_low_3">Hech qisi yo\'q. Yana bir bor ko\'ramiz.</string>
+    <string name="lesson_done_low_sub">Bu darsni takrorlash foydali bo\'ladi.</string>
+    <!-- Dars yakuni: alanga ekrani. Matnlar Mini App dagi streakCopy dan
+         so'zma-so'z ko'chirilgan — ikkala klient bir xil gapirishi uchun. -->
+    <!-- O'tish testi: yopiq darsni qisqa test bilan ochish. Matnlar Mini App
+         dagi skipI18n() dan so'zma-so'z ko'chirilgan. -->
+    <string name="skip_test_tag">O\'tish testi</string>
+    <string name="skip_test_offer">Bu dars hali qulflangan. Uni ochish uchun qisqa test topshiring.</string>
+    <string name="skip_test_start">Testni boshlash</string>
+    <string name="skip_test_pass_title">Ajoyib natija!</string>
+    <string name="skip_test_pass_body">%1$d%% — zo\'r! Bu dars sizga oson keladi. Dars ochildi 🎉</string>
+    <string name="skip_test_fail_title">Dars ochildi</string>
+    <string name="skip_test_fail_body">%1$d%% — bu dars sizga biroz qiyinlik qilishi mumkin. Lekin xafa bo\'lmang — dars ochildi, bosqichma-bosqich o\'rganib olasiz 💪</string>
+    <string name="skip_test_confirm_title">Bu darsga hali tayyor emassiz</string>
+    <string name="skip_test_confirm_body">%1$d%% — natija past. Bu dars sizga qiyinlik qilishi mumkin. Baribir ochishni xohlaysizmi?</string>
+    <string name="skip_test_confirm_yes">Baribir ochish</string>
+    <string name="skip_test_confirm_no">Orqaga</string>
+    <string name="skip_test_start_lesson">Darsni boshlash</string>
+    <string name="skip_test_not_ready">Dars hali tayyor emas</string>
+    <string name="skip_test_save_error">Dars ochilishi saqlanmadi. Qayta urinib ko\'ring.</string>
+    <string name="skip_test_progress">%1$d / %2$d</string>
+    <string name="lesson_streak_days">kun ketma-ket!</string>
+    <string name="lesson_done_streak">Ketma-ket kunlar: %1$d</string>
+    <string name="lesson_streak_reset">Muhimi — qaytding. Bugundan yangi hisob boshlandi.</string>
+    <string name="lesson_streak_d1">Birinchi uchqun sizniki. Ertaga yana kelsangiz — alanga o\'chmaydi.</string>
+    <string name="lesson_streak_d2">Ikki kun. Endi bu tasodif emas — bu odat boshlanishi.</string>
+    <string name="lesson_streak_d3">Uch kun ketma-ket. Ko\'pchilik shu yerda to\'xtaydi, siz esa yo\'q.</string>
+    <string name="lesson_streak_d7">Bir hafta to\'liq. Xitoy tili endi kunlik hayotingizning bir qismi.</string>
+    <string name="lesson_streak_d14">Ikki hafta. Bu darajaga har o\'ninchi o\'quvchi yetadi.</string>
+    <string name="lesson_streak_d30">Bir oy uzluksiz. Siz o\'zingizga so\'zingizni bajarib chiqdingiz.</string>
+    <string name="lesson_streak_d100">Yuz kun. Bu shunchaki seriya emas — bu xarakter.</string>
+    <string name="lesson_week_title">Sizning haftangiz</string>
+    <string name="lesson_week_count">%1$d / 7</string>
+    <string name="lesson_week_left">Yana %1$d kun — hafta to\'liq yopiladi</string>
+    <string name="lesson_week_done">To\'liq hafta. Bironta ham kun tashlanmadi!</string>
+    <string name="lesson_rank_title">Reytingda ko\'tarildingiz!</string>
+    <string name="lesson_rank_sub">%1$s ortda qoldi. Buni bugungi darsingiz hal qildi.</string>
+    <string name="lesson_stat_xp">TAJRIBA</string>
+    <string name="lesson_stat_accuracy">ANIQLIK</string>
+    <string name="lesson_stat_time">VAQT</string>
+    <string name="lesson_back_to_course">Kursga qaytish</string>
+    <string name="lesson_save_failed">Natijani saqlab bo\'lmadi</string>
+    <string name="lesson_preview_over_title">Bepul qism tugadi</string>
+    <string name="lesson_preview_over_body">Bu darsning qolgan qismi obuna bilan ochiladi.</string>
+    <string name="lesson_card_unsupported">Bu karta turi hali qo\'llab-quvvatlanmaydi</string>
+    <string name="lesson_card_unsupported_hint">Ilovani yangilang. Bu karta baholanmaydi.</string>
+    <string name="lesson_skip_card">O\'tkazib yuborish</string>
+    <string name="cd_answer_correct">%1$s — to\'g\'ri javob</string>
+    <string name="cd_answer_wrong">%1$s — noto\'g\'ri javob</string>
+    <string name="lesson_pair_selected">Tanlandi</string>
+    <string name="lesson_pair_matched">Juft moslandi</string>
+    <string name="lesson_pair_mismatch">Mos kelmadi</string>
+
+    <!-- Mashq -->
+    <string name="practice_title">Mashq</string>
+    <string name="practice_mistakes_title">Xatolarim</string>
+    <string name="practice_mistakes_body">%1$d ta zaif joy takrorlashga tayyor</string>
+    <string name="practice_characters_title">Ieroglif tanish</string>
+    <string name="practice_characters_body">O‘xshash belgilar orasidan to‘g‘risini toping.</string>
+    <string name="practice_listening_title">Tinglash</string>
+    <string name="practice_listening_body">Xitoycha eshitib, to‘g‘ri javobni tanlang.</string>
+    <string name="practice_pinyin_title">Pinyin</string>
+    <string name="practice_pinyin_body">Ton va yozilishni tez tekshiring.</string>
+    <string name="practice_writing_title">Gap tuzish</string>
+    <string name="practice_writing_body">So‘z tartibi va grammatika ustida ishlang.</string>
+    <string name="practice_pronunciation_title">Talaffuz</string>
+    <string name="practice_pronunciation_body">Eshitish va pinyin orqali talaffuzni mustahkamlang.</string>
+    <string name="practice_test_title">HSK test</string>
+    <string name="practice_test_body">Joriy daraja bo‘yicha qisqa sinov.</string>
+    <string name="practice_placement_title">Daraja aniqlash</string>
+    <string name="practice_placement_body">HSK1–4 oralig‘ida hozirgi kuchingizni tekshiring.</string>
+    <string name="practice_progress">%1$d / %2$d savol</string>
+    <string name="practice_finish">Yakunlash</string>
+    <string name="practice_result_title">Mashq natijasi</string>
+    <string name="practice_result_body">%1$d / %2$d javob to‘g‘ri</string>
+    <string name="practice_review_result_title">Xatolar takrori tugadi</string>
+    <string name="practice_review_result_body">%1$d ta xato hali qolgan</string>
+    <string name="practice_back_to_tools">Mashqlarga qaytish</string>
+
+    <!-- AI Voice -->
+    <string name="voice_title">AI Voice</string>
+    <string name="voice_subtitle">%1$s darajasida jonli xitoycha suhbat</string>
+    <string name="voice_role_friend">Do‘st</string>
+    <string name="voice_role_friend_body">Yengil kundalik suhbat.</string>
+    <string name="voice_role_teacher">Ustoz Li</string>
+    <string name="voice_role_teacher_body">Aniqroq tuzatish va qisqa savollar.</string>
+    <string name="voice_role_seller">Do‘kondor</string>
+    <string name="voice_role_seller_body">Narx, son va xarid dialoglari.</string>
+    <string name="voice_role_classmate">Kursdosh</string>
+    <string name="voice_role_classmate_body">O‘qish, reja va uy vazifasi haqida.</string>
+    <string name="voice_role_manager">Menejer Wang</string>
+    <string name="voice_role_manager_body">Ish va biznes vaziyatlari.</string>
+    <string name="voice_start">Suhbatni boshlash</string>
+    <string name="voice_status_loading">AI Voice holati tekshirilmoqda</string>
+    <string name="voice_retry_status">Qayta urinish</string>
+    <string name="voice_limit_premium">Premium: AI Voice limiti ochiq</string>
+    <string name="voice_limit_free">Bepul qolgan suhbat: %1$d</string>
+    <string name="voice_session_title">Suhbat</string>
+    <string name="voice_turn_progress">%1$d dialog</string>
+    <string name="voice_time_remaining">Qolgan vaqt %1$02d:%2$02d</string>
+    <string name="voice_end">Tugatish</string>
+    <string name="voice_hide_chat">Suhbat matnini yashirish</string>
+    <string name="voice_show_chat">Suhbat matnini ko‘rsatish</string>
+    <string name="voice_sending">Yuborilmoqda…</string>
+    <string name="voice_stop_recording">To‘xtatish va yuborish</string>
+    <string name="voice_hold_to_speak">Gapirishni boshlash</string>
+    <string name="voice_you">Siz</string>
+    <string name="voice_ai">AI</string>
+    <string name="voice_correction">Tuzatish: %1$s</string>
+    <string name="voice_result_title">Suhbat yakuni</string>
+    <string name="voice_result_body">%1$d replika · %2$d yaxshi · %3$d tuzatish</string>
+    <string name="voice_result_mistakes_title">Tuzatishlar</string>
+    <string name="voice_result_user_said">Siz aytdingiz: %1$s</string>
+    <string name="voice_result_correction">Tavsiya etilgan tuzatish: %1$s</string>
+    <string name="voice_result_no_mistakes">Bu suhbatda AI tuzatishi qayd etilmadi.</string>
+    <string name="voice_scenario_practiced">Mashq qilindi: %1$s</string>
+    <string name="voice_again">Yangi suhbat</string>
+    <string name="nav_rating">Reyting</string>
+    <string name="rating_tab_league">Liga</string>
+    <string name="rating_tab_friends">Do‘stlar</string>
+    <string name="rating_league_name">%1$s ligasi</string>
+    <string name="rating_members">%1$d o‘quvchi</string>
+    <string name="rating_time_left">qoldi</string>
+    <string name="rating_weekly_top_five">Haftalik reyting · Top 5</string>
+    <string name="rating_promote">Top %1$d yuqoriga chiqadi</string>
+    <string name="rating_empty">Reyting hali shakllanmagan.</string>
+    <string name="rating_friends_empty">Hozircha taklif qilingan do‘st yo‘q.</string>
+    <string name="rating_friends_invite_body">Sizning havolangizdan kirgan o‘quvchilar shu yerda. Profilini oching, yozing yoki bellashuv yuboring.</string>
+    <string name="rating_friends_invite">Do‘st taklif qilish</string>
+    <string name="rating_friends_joined">kirgan</string>
+    <string name="rating_friends_active_count">faol</string>
+    <string name="rating_friend_details">%1$s · jami XP: %2$d</string>
+    <string name="rating_message_user">Telegramda yozish</string>
+    <string name="rating_friend_active">Faol</string>
+    <string name="rating_friend_pending">Kutilmoqda</string>
+    <string name="rating_unnamed">O‘quvchi</string>
+    <string name="rating_premium">Premium</string>
+    <string name="rating_challenges_bell">Bellashuvlar va chaqiruvlar</string>
+    <string name="rating_challenges_title">Bellashuvlar</string>
+    <string name="rating_challenges_empty">Hozircha yangi bellashuv yo‘q.</string>
+    <string name="rating_rank">O‘rin</string>
+    <string name="rating_level">Daraja</string>
+    <string name="rating_weekly_result">Haftalik reyting</string>
+    <string name="rating_you">Siz</string>
+    <string name="rating_xp_ahead">Siz %1$d XP oldindasiz</string>
+    <string name="rating_xp_behind">%1$d XP ortdasiz</string>
+    <string name="rating_xp_tied">Natija teng</string>
+    <string name="course_goal_progress">Kunlik maqsad: %1$d / %2$d XP</string>
+    <string name="course_switch_version">Kurs versiyasini almashtirish</string>
+    <string name="course_lesson_label">%1$d-dars</string>
+    <string name="practice_subtitle_short">Mustahkamlash va sinash</string>
+    <string name="practice_group_skills">Grammatika · Talaffuz</string>
+    <string name="practice_group_tests">Test markazi</string>
+    <string name="test_center_subtitle">HSK bo‘limlari bo‘yicha qisqa sinov: tinglash, o‘qish va yozish</string>
+    <string name="test_center_placement_title">Darajangizni bilmaysizmi?</string>
+    <string name="test_center_placement_body">Qisqa testdan o‘ting — sizga mos HSK darajasini aytamiz.</string>
+    <string name="test_center_placement_button">Daraja aniqlash testi · ~5 daq</string>
+    <string name="test_center_exams_head">HSK testlari</string>
+    <string name="test_center_exam_meta">%1$d savol · %2$d daq</string>
+    <string name="test_center_your_level">Sizning darajangiz</string>
+    <string name="test_center_section_listening">听力 Tinglash</string>
+    <string name="test_center_section_reading">阅读 O‘qish</string>
+    <string name="test_center_section_writing">书写 Yozish</string>
+    <string name="test_center_start">Boshlash</string>
+    <string name="exam_result_passed">Test topshirildi!</string>
+    <string name="exam_result_failed">Hozircha o‘tilmadi</string>
+    <string name="exam_result_passed_body">Siz HSK %1$s darajasiga tayyorsiz.</string>
+    <string name="exam_result_failed_body">Tayyorgarlikni davom ettiring: HSK %1$s.</string>
+    <string name="exam_result_score">%1$d / %2$d</string>
+    <string name="practice_pronunciation_row_title">Talaffuz mashqi</string>
+    <string name="practice_pronunciation_row_body">Eshit, takrorla, ton tekshiruvi</string>
+    <string name="practice_recognition_group_body">O‘xshashlardan to‘g‘risini toping</string>
+    <string name="practice_test_center_body">HSK imtihonlari va daraja aniqlash</string>
+    <string name="practice_group_test_short">Test</string>
+    <string name="profile_goal_title">Bugungi maqsad</string>
+    <string name="profile_goal_body">%1$d / %2$d XP · %3$d qoldi</string>
+    <string name="profile_goal_percent">%1$d%% bajarildi</string>
+    <string name="profile_goal_picker_title">Kunlik maqsadni tanlang</string>
+    <string name="profile_goal_option">%1$d XP</string>
+    <string name="limit_unlock_unavailable">Amalni bajarib bo‘lmadi. Keyinroq urinib ko‘ring.</string>
+    <string name="limit_voice_reason">Bugungi bepul AI Voice suhbatlaringiz tugadi.</string>
+    <string name="profile_language">Til</string>
+    <string name="profile_course_version">Kurs versiyasi</string>
+    <string name="profile_course_version_confirm_title">%1$s ga o‘tish?</string>
+    <string name="profile_course_version_confirm_body">Joriy kursdagi progressingiz saqlanadi. Istalgan payt boshqa versiyaga qaytishingiz mumkin.</string>
+    <string name="profile_language_picker_title">Tilni tanlang</string>
+    <string name="profile_notifications">Bildirishnomalar</string>
+    <string name="profile_help">Yordam</string>
+    <string name="profile_help_action">Adminga yozish</string>
+    <string name="profile_help_unavailable">Hozircha mavjud emas</string>
+    <string name="notify_channel_name">Mashq eslatmalari</string>
+    <string name="notify_channel_body">Ketma-ket kunlar uzilmasligi va kunlik maqsad uchun eslatma</string>
+    <string name="notify_streak_title">Seriyangiz uzilish arafasida</string>
+    <string name="notify_streak_body">Bugun hali bitta ham dars qilmadingiz. Bir qism yetadi — seriya saqlanadi.</string>
+    <string name="notify_goal_title">Kunlik maqsad hali tugamadi</string>
+    <string name="notify_goal_body">Bugungi maqsadingizgacha ozgina qoldi. Bir qismni tugating.</string>
+    <string name="notify_streak_body_2">Panda kutib o\'tiribdi. Bitta qisqa dars — seriya joyida qoladi.</string>
+    <string name="notify_streak_body_3">Kun tugayapti, seriyangiz esa hali saqlanishi mumkin. Bir qism yetadi.</string>
+    <string name="notify_goal_body_2">Maqsadga oz qoldi — panda oxirigacha birga boradi.</string>
+    <string name="notify_goal_body_3">Bir qism qoldi, xolos. Bugungi maqsadni yopamizmi?</string>
+    <string name="practice_dictionary_title">Ieroglif lug‘ati</string>
+    <string name="practice_dictionary_body">HSK 2.0 + 3.0 · yozilishi, pinyin, ma’no</string>
+    <string name="dictionary_search_hint">Ieroglif, pinyin yoki ma’no</string>
+    <string name="dictionary_recent_title">Oxirgi qidiruvlar</string>
+    <string name="dictionary_all_words">Barcha so‘zlar</string>
+    <string name="dictionary_filter_all_versions">Barcha versiyalar</string>
+    <string name="dictionary_filters">Filtrlar</string>
+    <string name="dictionary_filter_results">%1$d ta so‘zni ko‘rish</string>
+    <string name="dictionary_filter_all_levels">Barcha darajalar</string>
+    <string name="dictionary_no_match">«%1$s» bo‘yicha hech nima topilmadi</string>
+    <string name="dictionary_unavailable">Lug‘atni yuklab bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
+    <string name="dictionary_detail_title">Ieroglif yozilishi</string>
+    <string name="dictionary_character_position">%1$d/%2$d</string>
+    <string name="dictionary_stroke_count">%1$d ta chiziq</string>
+    <string name="dictionary_stroke_previous">Oldingi chiziq</string>
+    <string name="dictionary_stroke_play">Davom ettirish</string>
+    <string name="dictionary_stroke_pause">To‘xtatish</string>
+    <string name="dictionary_stroke_next">Keyingi chiziq</string>
+    <string name="dictionary_listen">Talaffuzni eshitish</string>
+    <string name="dictionary_previous_word">Oldingi so‘z</string>
+    <string name="dictionary_next_word">Keyingi so‘z</string>
+    <string name="dictionary_action_listen">Eshitish</string>
+    <string name="dictionary_action_order">Tartibi</string>
+    <string name="dictionary_action_write">Yozish</string>
+    <string name="dictionary_parts_title">Qismlari</string>
+    <string name="dictionary_examples_title">Misollar</string>
+    <string name="dictionary_memory_hint_title">Yodlash ishorasi</string>
+    <string name="dictionary_memory_hint_body">%1$s belgilarini yozib ko‘ring va shaklini so‘z ma’nosi bilan bog‘lab eslab qoling.</string>
+    <string name="writing_stage_demo">Yozish tartibini kuzating</string>
+    <string name="writing_stage_trace">Iz bo‘ylab yozing</string>
+    <string name="writing_stage_hint">Ishora bilan yozing</string>
+    <string name="writing_stage_memory">Xotiradan yozing</string>
+    <string name="writing_demo_again">Yana ko‘rsat</string>
+    <string name="writing_start">Boshlash</string>
+    <string name="writing_hint">Ko‘rsat</string>
+    <string name="writing_restart">Qaytadan</string>
+    <string name="writing_stroke_progress">%1$d-chiziq · jami %2$d</string>
+    <string name="writing_miss_wrong">Bu boshqa chiziq — yana urinib ko‘ring</string>
+    <string name="writing_miss_backwards">Chiziqni boshqa uchidan boshlang</string>
+    <string name="writing_done_title">Barakalla!</string>
+    <string name="writing_done_clean">Birorta ham xatosiz yozdingiz</string>
+    <string name="writing_done_mistakes">Xatolar: %1$d</string>
+    <string name="writing_again">Yana yozish</string>
+    <string name="writing_next_character">Keyingi belgi</string>
+    <string name="writing_finish">Tayyor</string>
+    <string name="action_back">Orqaga</string>
+    <string name="action_clear">Tozalash</string>
+    <string name="ad_title">Reklama</string>
+    <string name="ad_continue">Davom etish</string>
+    <string name="ad_wait_seconds">%1$d s</string>
+    <string name="ad_ready">Tayyor</string>
+    <string name="ad_learn_more">Batafsil</string>
+    <string name="ad_unavailable">Hozircha reklama yo‘q. Keyinroq urinib ko‘ring.</string>
+    <!-- Reklama bilan davom etish OLIB TASHLANDI: reklama endi hech narsani
+         ochmaydi. O'sha joyda bepul haftalik sinov turadi. -->
+    <string name="limit_try_trial">7 kun Pro\u2019ni bepul sinash</string>
+    <string name="limit_screen_badge">HSK AI PRO ⭐</string>
+    <string name="limit_benefit_lessons">HSK 2.0 va mavjud HSK 3.0 darslari</string>
+    <string name="limit_benefit_practice">Cheksiz mashq va takrorlash</string>
+    <string name="limit_benefit_voice">AI Voice bilan erkin suhbat</string>
+    <string name="limit_later">Keyinroq</string>
+    <string name="limit_trial_failed">Bepul sinovni boshlab bo\u2018lmadi. Bu hisob uni allaqachon olgan bo\u2018lishi mumkin.</string>
+    <string name="lesson_pinyin_title">Pinyin (talaffuz yozuvi)</string>
+    <string name="lesson_pinyin_all">Hammasida ko‘rsatish</string>
+    <string name="lesson_pinyin_new">Faqat yangi so‘zlarda</string>
+    <string name="lesson_pinyin_off">Yashirish</string>
+    <string name="profile_accuracy_overall">Umumiy</string>
+    <string name="profile_accuracy_today">Bugun</string>
+    <string name="profile_accuracy_count">%1$d baholangan javob</string>
+    <string name="profile_accuracy_note">Faqat tekshirilgan javoblar · eski tarix to‘liq bo‘lmasligi mumkin</string>
+    <string name="profile_buy_pro">Pro olish</string>
+    <string name="profile_access_trial">✦ Pro · Sinov</string>
+    <string name="profile_calendar_title">Ketma-ket kunlar</string>
+    <string name="profile_achievements">Yutuqlar</string>
+    <string name="profile_ach_first">Birinchi qadam</string>
+    <string name="profile_ach_first_done">Bajarildi</string>
+    <string name="profile_ach_lessons">100 dars</string>
+    <string name="profile_ach_streak">30 kun ketma-ket</string>
+    <string-array name="profile_week_days">
+        <item>D</item>
+        <item>S</item>
+        <item>C</item>
+        <item>P</item>
+        <item>J</item>
+        <item>S</item>
+        <item>Y</item>
+    </string-array>
+    <string name="voice_box_title">AI bilan gaplashing</string>
+    <string name="voice_box_body">Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.</string>
+    <string name="voice_partner">Suhbatdosh</string>
+    <string name="voice_status_connecting">Ulanyapti…</string>
+    <string name="voice_status_listening">Sizni tinglayapman…</string>
+    <string name="voice_status_analyzing">Tahlil qilyapman…</string>
+    <string name="voice_status_speaking">Gapiryapti…</string>
+    <string name="voice_status_muted">Mikrofon o‘chiq</string>
+    <string name="voice_status_live_disconnected">Aloqa uzildi. Qayta ulanish uchun mikrofonni bosing.</string>
+    <string name="voice_status_fallback">Live ulanish ishlamadi. Oddiy ovozli suhbatga o‘tildi.</string>
+    <string name="voice_what_to_say">Nima deyish?</string>
+    <string name="voice_hints_title">Nima deyish mumkin</string>
+    <string name="voice_hints_words">Shu darsning so‘zlari</string>
+    <string name="voice_hints_phrases">Foydali iboralar</string>
+    <string name="voice_keyboard_hint">Yozing…</string>
+    <string name="voice_empty_chat">Suhbatingiz shu yerda ko‘rinadi</string>
+    <string name="voice_a11y_keyboard">klaviatura</string>
+    <string name="voice_a11y_mic">gapirish</string>
+    <string name="voice_a11y_send">yuborish</string>
+    <string name="voice_tap_to_speak">Gapirish uchun mikrofonni bosing</string>
+    <string name="voice_tap_to_stop">Yuborish uchun yana bosing</string>
+    <string name="voice_live_tap_mute">Mikrofonni o‘chirish</string>
+    <string name="voice_live_tap_unmute">Mikrofonni yoqish</string>
+    <string name="voice_live_tap_reconnect">Qayta ulanish</string>
+    <string name="drill_recognition_prompt">To‘g‘ri ieroglifni toping</string>
+    <string name="drill_pronunciation_prompt">Eshiting va takrorlang</string>
+    <string name="limit_practice_reason">Bu bo‘limdan bepul foydalanishingiz tugadi.</string>
+    <string name="limit_lesson_reason">Bugungi bepul dars limiti tugadi.</string>
+    <string name="voice_settings_title">Sozlamalar</string>
+    <string name="voice_setting_partner">Suhbatdosh</string>
+    <string name="voice_setting_subtitles">Pinyin va tarjima</string>
+    <string name="voice_setting_rate">Nutq tezligi</string>
+    <string name="voice_setting_on">yoqilgan</string>
+    <string name="voice_setting_off">o‘chirilgan</string>
+    <string name="voice_rate_slow">sekin</string>
+    <string name="voice_rate_normal">oddiy</string>
+    <string name="lesson_writer_replay">Yana ko‘rsatish</string>
+    <string name="lesson_writer_previous">Oldingi ieroglif</string>
+    <string name="lesson_writer_next">Keyingi ieroglif</string>
+    <string name="lesson_writer_position">%1$d / %2$d</string>
+    <string name="challenge_title">Chaqiriq</string>
+    <string name="challenge_invite">Chaqirish</string>
+    <string name="challenge_invite_send">Chaqiruv yuborish</string>
+    <string name="challenge_sending">Yuborilmoqda…</string>
+    <string name="challenge_invite_sent_title">Chaqiruv yuborildi</string>
+    <string name="challenge_invite_sent_body">Raqib Telegram orqali xabar oldi.</string>
+    <string name="challenge_invite_app_only_title">Chaqiruv yaratildi</string>
+    <string name="challenge_invite_app_only_body">Telegram xabarini yuborib bo‘lmadi. Raqib chaqiruvni ilovadagi qo‘ng‘iroqda ko‘radi.</string>
+    <string name="challenge_invite_failed">Chaqiruv yuborilmadi</string>
+    <string name="challenge_versus">%1$s bilan bellashuv</string>
+    <string name="challenge_finish">Yakunlash</string>
+    <string name="challenge_sent">Javoblaringiz yuborildi. %1$s javob bergach natija chiqadi.</string>
+    <string name="challenge_pending_title">Sizni chaqirishdi</string>
+    <string name="challenge_active_title">Sizning bellashuvlaringiz</string>
+    <string name="challenge_accept">Qabul qilish</string>
+    <string name="challenge_decline">Rad etish</string>
+    <string name="challenge_start">Boshlash</string>
+    <string name="challenge_waiting">Javobini kutyapmiz</string>
+    <string name="profile_avatar_note">Avatarni Hisob bo‘limida o‘zgartirishingiz mumkin.</string>
+    <string name="profile_friends">Do‘stlar</string>
+    <string name="profile_referral_copy">Havolani nusxalash</string>
+    <string name="profile_referral_share">Ulashish</string>
+    <string name="profile_referral_copied">Havola nusxalandi</string>
+    <string name="limit_recheck_none">Akkaunt tekshirildi — obuna topilmadi. To‘lov qilgan bo‘lsangiz, biroz kutib qayta tekshiring.</string>
+    <string name="profile_trial_title">7 kun Pro bepul</string>
+    <string name="profile_trial_body">Barcha asosiy imkoniyatlarni sinab ko‘rasiz. Avtomatik pul yechilmaydi.</string>
+    <string name="profile_trial_cta">7 kun bepul sinash</string>
+    <string name="profile_trial_active_title">Pro faol</string>
+    <string name="profile_trial_active_body">Sinov davri davom etmoqda. Tugagach bepul rejimga qaytasiz — progressingiz joyida qoladi.</string>
+    <string name="profile_trial_failed">Hozir ochib bo‘lmadi. Keyinroq urinib ko‘ring.</string>
+    <string name="hint_close">Yopish</string>
+    <string name="plan_choice_title">HSK AI Pro</string>
+    <string name="plan_choice_body">Barcha darslar, cheksiz mashq va AI Voice. Xohlasang avval 7 kun bepul sinab ko\u2018r.</string>
+    <string name="plan_choice_trial">7 kun bepul sinash</string>
+    <string name="plan_choice_pay">Pro olish</string>
+    <string name="plan_choice_later">Hozircha bepul davom etaman</string>
+    <string name="hint_open">Tushuntirish</string>
+    <string name="auth_provider_waiting">Tasdiqlash kutilmoqda…</string>
+    <string name="error_provider_cancelled">Kirish bekor qilindi.</string>
+    <string name="error_provider_unavailable">Bu kirish usuli hozir mavjud emas. Qayta urinib ko‘ring yoki hisobingizga ulangan boshqa usulni tanlang.</string>
+    <string name="error_oauth_needs_telegram">Bu kirish usuli hisobingizga ulanmagan. Ulangan usul orqali kiring, so‘ng uni profilda ulang.</string>
+    <string name="error_oauth_other_account">Bu akkaunt boshqa foydalanuvchiga ulangan.</string>
+    <string name="error_oauth_already_linked">Bu usul allaqachon ulangan. Avval uzing.</string>
+    <string name="error_oauth_last_identity">Bu yagona kirish usuli — uni uzib bo‘lmaydi.</string>
+    <string name="error_oauth_not_found">Bunday ulanish topilmadi.</string>
+    <string name="error_oauth_failed">Kirishni tasdiqlab bo‘lmadi. Qayta urinib ko‘ring.</string>
+    <string name="profile_identities_title">Kirish usullari</string>
+    <string name="profile_identities_explain">Bitta akkaunt, bir nechta kirish usuli. Obuna va progress o‘zgarmaydi.</string>
+    <string name="profile_identity_telegram">Telegram</string>
+    <string name="profile_identity_google">Google</string>
+    <string name="profile_identity_apple">Apple</string>
+    <string name="profile_identity_connect">Ulash</string>
+    <string name="profile_identity_disconnect">Uzish</string>
+    <string name="profile_identity_connected">Ulangan</string>
+    <string name="profile_identity_unlink_warning">Uzsangiz, boshqa qurilmalarda hisobdan chiqasiz.</string>
+    <string name="profile_identity_unlinked">Uzildi. Boshqa qurilmalarda hisobdan chiqdingiz.</string>
+    <string name="profile_identity_connect_provider">%1$s ni ulash</string>
+    <string name="error_account_blocked">Bu hisob administrator tomonidan cheklangan. Qo‘llab-quvvatlashga yozing.</string>
+    <string name="profile_social_title">HSK AI ijtimoiy tarmoqlarda</string>
+    <string name="notify_payment_channel">Obuna qarorlari</string>
+    <string name="notify_payment_channel_body">To‘lov tasdiqlangani yoki rad etilgani haqida xabar</string>
+    <string name="notify_account_channel">Obuna va limitlar</string>
+    <string name="notify_account_channel_body">Obuna muddati, chegirmalar va kunlik limit haqida xabarlar</string>
+    <string name="notify_payment_approved_title">To‘lovingiz tasdiqlandi</string>
+    <string name="notify_payment_approved_body">Obunangiz faollashdi. Ilovani ochib davom eting.</string>
+    <string name="notify_payment_rejected_title">To‘lovingiz rad etildi</string>
+    <string name="notify_payment_rejected_body">Obuna bo‘limini ochib, to‘lovni tekshiring va qayta yuboring.</string>
+    <string name="notify_payment_private_title">HSK AI obuna xabari</string>
+    <string name="notify_payment_private_body">Tafsilotlarni ko‘rish uchun ilovani oching.</string>
+    <string name="notify_hsk30_payment_approved_title">HSK 3.0 ochildi</string>
+    <string name="notify_hsk30_payment_approved_body">To‘lovingiz tasdiqlandi. HSK 3.0 kursini boshlang.</string>
+    <string name="notify_hsk30_payment_rejected_title">HSK 3.0 to‘lovi qabul qilinmadi</string>
+    <string name="notify_hsk30_payment_rejected_body">HSK 3.0 yopildi. To‘lovni tekshirib, qaytadan yuboring.</string>
+    <string name="hsk30_promo_title">HSK 3.0 ni oching</string>
+    <string name="hsk30_promo_body">HSK 3.0 versiyasida HSK 1–3 yangi darsliklari mavjud.</string>
+    <string name="hsk30_unlock_unavailable">HSK 3.0 ni hozircha to‘lov bilan ochib bo‘lmaydi.</string>
+    <string name="hsk30_promo_body_unlocked">HSK 3.0 siz uchun ochiq. Yangi darsliklardan boshlang.</string>
+    <string name="hsk30_promo_price">%1$s · doimiy ochish</string>
+    <string name="hsk30_promo_stay">HSK 2.0 da qolish</string>
+    <string name="hsk30_promo_books_desc">HSK 1, 2 va 3 yangi darsliklari</string>
+    <string name="hsk30_promo_switch">HSK 3.0 ga o‘tish</string>
+    <string name="hsk30_test_soon_title">HSK 3.0 testlari</string>
+    <string name="hsk30_test_soon_body">Yangi HSK 3.0 imtihon formati hali tayyorlanmoqda.</string>
+    <string name="hsk30_payment_rejected_title">HSK 3.0 to‘lovi rad etildi</string>
+    <string name="hsk30_payment_rejected_body">To‘lovingiz qabul qilinmadi. Ma’lumotlarni tekshirib, to‘lovni boshidan yuboring.</string>
+    <string name="hsk30_payment_retry">Qayta urinib ko‘rish</string>
+    <string name="practice_ready_phrases_title">Tayyor gaplar</string>
+    <string name="practice_ready_phrases_body">300 ta xitoycha gap · 12 mavzu</string>
+    <string name="practice_hsk30_locked">HSK 3.0 mashqlarini ochish uchun kursga kirish kerak.</string>
+    <string name="practice_hsk30_unlock">Kursga kirishni ochish</string>
+    <string name="ready_phrases_title">Tayyor gaplar</string>
+    <string name="ready_phrases_intro">Qidiring, saqlang, nusxalang.</string>
+    <string name="ready_phrases_search_hint">Xitoycha, pinyin yoki tarjima bo‘yicha qidiring</string>
+    <string name="ready_phrases_all">Barchasi</string>
+    <string name="ready_phrases_saved">Saqlanganlar</string>
+    <string name="ready_phrases_count">%1$d / %2$d ta gap</string>
+    <string name="ready_phrases_save">Saqlash</string>
+    <string name="ready_phrases_copy">Nusxalash</string>
+    <string name="ready_phrases_copied">Xitoycha gap nusxalandi</string>
+    <string name="ready_phrases_no_results">Bu qidiruvga mos gap topilmadi.</string>
+    <string name="ready_phrases_no_saved">Saqlangan gaplaringiz shu yerda ko‘rinadi.</string>
+    <string name="ready_phrases_load_failed">Gaplar katalogini o‘qib bo‘lmadi.</string>
+    <string name="ready_phrases_retry">Qayta urinish</string>
+    <string name="ready_phrases_back">Orqaga</string>
+    <string name="course_track_preparing_title">Kurs ochilmoqda…</string>
+    <string name="course_track_preparing_subtitle">Panda kursni tayyorlayapti</string>
+    <string name="course_choice_title">Kursni tanlash</string>
+    <string name="course_choice_version">Kurs versiyasi</string>
+    <string name="course_choice_level">Daraja</string>
+    <string name="course_choice_note">Versiyalar o‘rtasida o‘qigan joyingiz saqlanadi. Boshqa darajani tanlash shu versiya progressini qaytadan boshlaydi.</string>
+    <string name="course_choice_confirm">Tasdiqlash</string>
+
+    <!-- Shared limit sheet: Android / Telegram Mini App visual parity -->
+    <string name="limit_sheet_heading">Davom etishga tayyormisiz?</string>
+    <string name="limit_sheet_get_pro">HSK AI Pro ⭐ olish</string>
+    <string name="limit_sheet_check_access">Kirish huquqini tekshirish</string>
+    <string name="limit_sheet_reason_fallback">%1$s bo‘limida bepul limit tugadi. Pro bilan davom eting.</string>
+    <string name="limit_sheet_lesson_title">Darslarni tanaffussiz davom ettiring</string>
+    <string name="limit_sheet_lesson_desc">HSK kursidagi keyingi darslar va mashqlarga Pro orqali o‘ting.</string>
+    <string name="limit_sheet_practice_title">Mashqlar bilan bilimingizni mustahkamlang</string>
+    <string name="limit_sheet_practice_desc">Pro bilan mashqlar va takrorlashda kunlik limit to‘xtatmaydi.</string>
+    <string name="limit_sheet_test_title">Imtihonga ishonch bilan boring</string>
+    <string name="limit_sheet_test_desc">Ko‘proq test ishlang va qaysi mavzularni mustahkamlashni biling.</string>
+    <string name="limit_sheet_mistakes_title">Xatolaringiz ustida qayta ishlang</string>
+    <string name="limit_sheet_mistakes_desc">Har bir xatoni tahlil qilib, o‘xshash savollar bilan mashq qiling.</string>
+    <string name="limit_sheet_voice_title">Xitoycha erkinroq gapiring</string>
+    <string name="limit_sheet_voice_desc">AI Voice bilan suhbat mashqlarini limitsiz davom ettiring.</string>
+    <string name="limit_sheet_pron_title">Talaffuzingizni yaxshilang</string>
+    <string name="limit_sheet_pron_desc">So‘zlarni qayta aytib, talaffuzni mashq qiling.</string>
+    <string name="limit_sheet_recognition_title">Ierogliflarni tezroq taning</string>
+    <string name="limit_sheet_recognition_desc">Ieroglif tanish mashqlarini davom ettirib, yodda saqlang.</string>
+    <string name="limit_sheet_memorize_title">Yangi so‘zlarni puxta yodlang</string>
+    <string name="limit_sheet_memorize_desc">Takrorlash mashqlari bilan o‘rgangan so‘zlarni mustahkamlang.</string>
+    <string name="bug_report_intro_title">Xatolik haqida xabar berasizmi?</string>
+    <string name="bug_report_intro_body">Agar ilova noto‘g‘ri ishlayotgan bo‘lsa, bu haqda bizga xabar bering.</string>
+    <string name="bug_report_intro_action">Xatolik haqida xabar berish</string>
+    <string name="bug_report_pick_screenshot">Galereyadan skrinshot tanlash</string>
+    <string name="bug_report_screenshot_required">Skrinshotni tanlang yoki uni yuborishni o‘chiring.</string>
+    <string name="bug_report_thanks_title">Fikringiz uchun rahmat!</string>
+    <string name="profile_telegram_link_hint">Telegram botida tasdiqlab ulang.</string>
+    <string name="profile_telegram_link_waiting">Botdagi so‘rovni tekshiring va Telegramni shu akkauntga ulashni tasdiqlang. Boshqa akkauntlar birlashtirilmaydi.</string>
+</resources>

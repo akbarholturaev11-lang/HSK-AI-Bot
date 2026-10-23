@@ -54,6 +54,8 @@ const dom = {
   workspace: $("#workspace"),
   offlinePill: $("#offline-pill"),
   rail: $("#course-rail"),
+  primaryNavigation: $("#course-rail .global-navigation:not(.rail-bottom)"),
+  profileNavigation: $("#course-rail .global-navigation.rail-bottom"),
   railScrim: $("#rail-scrim"),
   railToggle: $("#rail-toggle"),
   railAvatar: $("#rail-avatar"),
@@ -106,6 +108,7 @@ const dom = {
   aiAttach: $("#ai-attach"),
   aiAttachments: $("#ai-attachments"),
   aiInput: $("#ai-input"),
+  aiInputLabel: $("label.sr-only[for='ai-input']"),
   aiEmoji: $("#ai-emoji"),
   aiRecord: $("#ai-record"),
   aiSend: $("#ai-send"),
@@ -115,12 +118,15 @@ const dom = {
   railCollapse: $("#rail-collapse"),
   railResizer: $("#rail-resizer"),
   notificationsButton: $("#notifications-button"),
+  notificationsTitle: $("#notifications-title"),
   notificationsDot: $("#notifications-dot"),
   notificationsPanel: $("#notifications-panel"),
   notificationsBody: $("#notifications-body"),
   closeNotifications: $("#close-notifications"),
   toast: $("#toast"),
   closeLesson: $("#close-lesson"),
+  lessonShell: $(".lesson-shell"),
+  lessonProgress: $(".lesson-progress"),
   onboardingLayer: $("#onboarding-layer"),
   onboardingTitle: $("#onboarding-title"),
   onboardingSubtitle: $("#onboarding-subtitle"),
@@ -332,6 +338,19 @@ function saveLanguage(language) {
 }
 
 function applyStaticText() {
+  dom.rail.setAttribute("aria-label", t("mainNavigation"));
+  dom.primaryNavigation.setAttribute("aria-label", t("mainSections"));
+  dom.navigation.setAttribute("aria-label", t("courseNavigation"));
+  dom.profileNavigation.setAttribute("aria-label", t("profileNavigation"));
+  dom.railCollapse.setAttribute("aria-label", t("collapseSidebar"));
+  dom.railResizer.setAttribute("aria-label", t("sidebarWidth"));
+  dom.railToggle.setAttribute("aria-label", t("openCourseMenu"));
+  dom.notificationsTitle.textContent = t("notificationsTitle");
+  dom.notificationsButton.setAttribute("aria-label", t("notificationsTitle"));
+  dom.closeNotifications.setAttribute("aria-label", t("closeNotifications"));
+  dom.aiInputLabel.textContent = t("aiInputLabel");
+  dom.lessonShell.setAttribute("aria-label", t("lessonShellLabel"));
+  dom.lessonProgress.setAttribute("aria-label", t("lessonProgressLabel"));
   dom.bootMessage.textContent = t("appPreparing");
   dom.authTitle.textContent = t("authTitle");
   dom.authDescription.textContent = t("authDescription");

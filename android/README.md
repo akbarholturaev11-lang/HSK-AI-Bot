@@ -88,6 +88,18 @@ screens simply are not compiled into the build that must not have them. The
 Both flavours keep the same `applicationId`, so a learner who installed the
 APK can be updated from Play later without reinstalling.
 
+Play also suppresses subscription, trial and discount offer notifications,
+including offers already posted by a previous Direct installation. Neutral
+course reminders and server-granted access remain available. A Direct-to-Play
+update clears restored checkout state and cancels old sideload-update work.
+
+The manual **Android Play preflight** workflow validates the signed APK/AAB
+certificate and runs `tools/check_play_artifacts.py` against the built files.
+This verifies matching package/version/SDK, safe release flags, no installer
+or Billing permission, official bundletool validation and native ELF/ZIP
+16 KB compatibility. It uploads an AAB plus a JSON validation report for
+manual submission. It does not publish to Google Play or distribute an APK.
+
 ## Configuration
 
 `gradle.properties` holds `POMP_API_ORIGIN`, the compile-time API origin. It

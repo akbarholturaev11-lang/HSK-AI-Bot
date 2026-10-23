@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_foundation_required">Сначала завершите «Основы с нуля». После этого урок 1 откроется автоматически.</string>
+</resources>

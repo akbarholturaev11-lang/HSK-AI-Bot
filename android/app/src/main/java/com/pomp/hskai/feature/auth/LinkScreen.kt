@@ -300,7 +300,7 @@ private fun LanguageSwitch(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Language,
-                    contentDescription = stringResource(R.string.cd_language_switch),
+                    contentDescription = stringResource(R.string.hsk_course_lang),
                     tint = PompColors.InkSecondary,
                     modifier = Modifier.size(17.dp),
                 )

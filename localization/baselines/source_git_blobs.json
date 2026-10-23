@@ -1,0 +1,4091 @@
+{
+  "schema_version": 1,
+  "status": "read_only_historical_reference_not_build_source",
+  "baseline_main_commit": "160a51d69f3324e3162375213ec61b5587b19533",
+  "notes": [
+    "Git blob IDs record source bytes before any localization source separation. Never use this file as a runtime package.",
+    "Inspect changes against these original source bytes and snapshots. Language UI migration may intentionally change paths; hash drift is a review request, not automatically a functional defect.",
+    "Do not move paid content or exam keys to anonymous static bundles.",
+    "2026-10-20: Added the original Desktop app.js blob from this baseline main commit to ui_catalog_origins so reviewed P2 accessibility-only changes can be source-pinned; the existing 811 records are unchanged."
+  ],
+  "track_counts": {
+    "hsk1": 63,
+    "hsk2": 72,
+    "hsk3": 109,
+    "hsk4": 181,
+    "nhsk1": 103,
+    "nhsk2": 73,
+    "nhsk3": 145
+  },
+  "source_count": 812,
+  "sources": {
+    "lessons": [
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_01.json",
+        "git_blob_sha1": "a1e071359beda9a9311983055e94c38cb90188c4",
+        "bytes": 34278
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_02.json",
+        "git_blob_sha1": "32d0093074de71a1822434cfc787dbec39ff553e",
+        "bytes": 20515
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_03.json",
+        "git_blob_sha1": "2409c0b4a574e8a9b86819018e1219b69d1fc418",
+        "bytes": 23787
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_04.json",
+        "git_blob_sha1": "a4b53fd57c6b5b7abfdcbabb936b8bdc7f15eb60",
+        "bytes": 26652
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_05.json",
+        "git_blob_sha1": "7278e858c51d8bd97f09a6ed70acce8c57aa32d1",
+        "bytes": 19869
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_06.json",
+        "git_blob_sha1": "7c22f880ac742637cc54401ff19d9975c4003164",
+        "bytes": 22810
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_07.json",
+        "git_blob_sha1": "89bc7ac86b45549151a50af6b73a6eb5aa363e29",
+        "bytes": 23803
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_08.json",
+        "git_blob_sha1": "8f3d2f4b576af8f7d1422e31e75a4602bce16cf8",
+        "bytes": 23320
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_09.json",
+        "git_blob_sha1": "9ca5ece15fe05f6f182d45aac46c5ab07bd221d3",
+        "bytes": 25510
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_10.json",
+        "git_blob_sha1": "2df21c0eee89755851037e76b38487f864e741a2",
+        "bytes": 25408
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_11.json",
+        "git_blob_sha1": "f8dcf7b0e8a50eadce4ef867c3e199d8733c8ca6",
+        "bytes": 25665
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_12.json",
+        "git_blob_sha1": "b6eb36ce5884e06ab6b240dc255c653f5233a296",
+        "bytes": 23900
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_13.json",
+        "git_blob_sha1": "aba088bbad96af7d75a48e933e0957ae865d2f02",
+        "bytes": 26705
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_14.json",
+        "git_blob_sha1": "ba2d8b5929d6ed6c7a4d8c3068050c21cd9a2a9d",
+        "bytes": 24807
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_15.json",
+        "git_blob_sha1": "40cbba79becb2a83d0a5a7edf0b4e58367b82685",
+        "bytes": 30578
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_16.json",
+        "git_blob_sha1": "3477d92ea115d31241212ffc0c871e623f5ede01",
+        "bytes": 26392
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_17.json",
+        "git_blob_sha1": "8499905c82712b254f34f1d5f9c096de0148e6d9",
+        "bytes": 29250
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_18.json",
+        "git_blob_sha1": "c3a9b50968241cfbd9dc08e3e51469a15839fca7",
+        "bytes": 28529
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_19.json",
+        "git_blob_sha1": "d21a15393fc69e740a7e87b7c24ae16d10209c4a",
+        "bytes": 28391
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_20.json",
+        "git_blob_sha1": "52417b44f9af2b7f15efe9faa435918926543025",
+        "bytes": 27634
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_21.json",
+        "git_blob_sha1": "b22c89da872470726632e751db1541ff2d579ed6",
+        "bytes": 31983
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_22.json",
+        "git_blob_sha1": "ae337ff0ad3eb56034e76ac2ca428d374d7c5b37",
+        "bytes": 27768
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_23.json",
+        "git_blob_sha1": "ee90ba30d290a4ad295eabb67abc58f1a70ac4d5",
+        "bytes": 26788
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_24.json",
+        "git_blob_sha1": "be8866bf1b3f67fbe89b507127c43ef8e7ab95ad",
+        "bytes": 27008
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_25.json",
+        "git_blob_sha1": "c8dd2810e3e408062c82d0319131381cbfef429f",
+        "bytes": 31546
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_26.json",
+        "git_blob_sha1": "7936f1b5ffead0ea52a1df0929580ce81d2755c5",
+        "bytes": 26019
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_27.json",
+        "git_blob_sha1": "415c808ca7d84a29f0917853d4647dd99c14f1e3",
+        "bytes": 26552
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_28.json",
+        "git_blob_sha1": "6f3a3dd293f0113478cec003a2b3e9f402912cea",
+        "bytes": 28530
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_29.json",
+        "git_blob_sha1": "048d57588ac6846affc61cb848b24a300e200352",
+        "bytes": 26029
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_30.json",
+        "git_blob_sha1": "0514a4c71acaa09204647c0a68bf837e4df1306a",
+        "bytes": 33818
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_31.json",
+        "git_blob_sha1": "d61835ebb698328a11937f5fa64d76e3c1a41857",
+        "bytes": 25098
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_32.json",
+        "git_blob_sha1": "3de95d621d3bb104b2c5065cdf1ad5513ec2b447",
+        "bytes": 26500
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_33.json",
+        "git_blob_sha1": "7f7ecd197d77d2608de6c43802f2da20edaba0de",
+        "bytes": 25108
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_34.json",
+        "git_blob_sha1": "509d4a6e114130bade708456e37c37bad4d3b6bd",
+        "bytes": 19835
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_35.json",
+        "git_blob_sha1": "be7509fdfc3fbb45db1f54dbbfe7317e006f93e8",
+        "bytes": 28559
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_36.json",
+        "git_blob_sha1": "fb6746c93b664e6aa636ed9731635680f21163ad",
+        "bytes": 25372
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_37.json",
+        "git_blob_sha1": "ad529a01828fe0c975cc104e364f0d727f13e990",
+        "bytes": 22638
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_38.json",
+        "git_blob_sha1": "fadf1302222e31f2218c5d998b12d5b541c36acd",
+        "bytes": 27533
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_39.json",
+        "git_blob_sha1": "220473747b3ee817fc791074b8ffacb53a6f73b0",
+        "bytes": 26700
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_40.json",
+        "git_blob_sha1": "e37596ecd338e956cd5dce7b8f921d633819a69e",
+        "bytes": 29981
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_41.json",
+        "git_blob_sha1": "e6125e7df5903f0c7fea7f681eda5cdd93f06a41",
+        "bytes": 26861
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_42.json",
+        "git_blob_sha1": "bd5d1ca3ea2009002e27a05c8d8c90c121003cb7",
+        "bytes": 28320
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_43.json",
+        "git_blob_sha1": "82e41494965313acd308bcc33dfefdfcda397ad9",
+        "bytes": 27093
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_44.json",
+        "git_blob_sha1": "494e03a662d9d99bef375b80b4d8d95eead296d8",
+        "bytes": 30444
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_45.json",
+        "git_blob_sha1": "a2892ea3939138f5a301780e81d5cf60df2ccd4f",
+        "bytes": 25244
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_46.json",
+        "git_blob_sha1": "e9381ecd7d3bdd8cfb9fef0f6c6bef78006f4e7f",
+        "bytes": 26640
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_47.json",
+        "git_blob_sha1": "bb61d686299be6fe5e923a567d63cc3872e1d750",
+        "bytes": 26653
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_48.json",
+        "git_blob_sha1": "b6e179db103d9a2d2ce24322c5572e28478281b3",
+        "bytes": 21625
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_49.json",
+        "git_blob_sha1": "e2d774e9cff326fe7e98c1f1a5cf42bff186139f",
+        "bytes": 29692
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_50.json",
+        "git_blob_sha1": "c646269cea57a815b91f35a443c73d41764c82fa",
+        "bytes": 29275
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_51.json",
+        "git_blob_sha1": "cd0c172bc3d90d871907546db2339920e187937a",
+        "bytes": 27996
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_52.json",
+        "git_blob_sha1": "4ab8c078ad930c1ff42e9c31d56bffff8b48288e",
+        "bytes": 28375
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_53.json",
+        "git_blob_sha1": "f504b108ac1e5c5252c983e6a8457c95b049a194",
+        "bytes": 32336
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_54.json",
+        "git_blob_sha1": "50e133978b12a9c49e21c3a40f39a2f4b474684d",
+        "bytes": 28829
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_55.json",
+        "git_blob_sha1": "4a7a0737732b4be723de698e23fb79a4b74789ad",
+        "bytes": 23038
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_56.json",
+        "git_blob_sha1": "03d10b6ba893ad42c480acc64a19bb22c3ea5b94",
+        "bytes": 27492
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_57.json",
+        "git_blob_sha1": "f3a241dc08ad854dfa81fe37120db2e3d99d29eb",
+        "bytes": 20449
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_58.json",
+        "git_blob_sha1": "19906d816d537b8491402611b8aa4fa0ca3498ea",
+        "bytes": 28433
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_59.json",
+        "git_blob_sha1": "b452083134b6aa8c4c7bba562fbb3a1f93164be0",
+        "bytes": 32894
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_60.json",
+        "git_blob_sha1": "8be8141fd17a90079f1a2496faeb547d63095567",
+        "bytes": 32195
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_61.json",
+        "git_blob_sha1": "b5c78f9ad51bb31596f609ba2d57881967df8824",
+        "bytes": 28251
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_62.json",
+        "git_blob_sha1": "bb0ffc81226e8e85e2e519b7d6412a4fc9372bb9",
+        "bytes": 20665
+      },
+      {
+        "path": "app/static/course_v3_data/hsk1/lesson_63.json",
+        "git_blob_sha1": "9b933b79e745559884dc64cff02246e03da833c4",
+        "bytes": 30720
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_01.json",
+        "git_blob_sha1": "c5145dd730e0d454047015d12f1a2dfa70f27e03",
+        "bytes": 29472
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_02.json",
+        "git_blob_sha1": "8e11eb86961317da2babdfc9673bd783be7f64a2",
+        "bytes": 29947
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_03.json",
+        "git_blob_sha1": "a621ede7cb9fb352cf55c7c82ecb60217a798dd6",
+        "bytes": 30187
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_04.json",
+        "git_blob_sha1": "fe25d3361fd6d6d8418f3ce6a86d30365be3d3d8",
+        "bytes": 24398
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_05.json",
+        "git_blob_sha1": "613895e2aad063d3c176cd9bcea92e33edfdbf71",
+        "bytes": 33583
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_06.json",
+        "git_blob_sha1": "3d3375b8e297fd2e42fb05c7e1d213eb411d759e",
+        "bytes": 29902
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_07.json",
+        "git_blob_sha1": "7005a9cc1880591eecdf525cacc1c657e8f9984b",
+        "bytes": 29517
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_08.json",
+        "git_blob_sha1": "8e04411a1e71d0af6b80dfb1ebfa410214ffdfdc",
+        "bytes": 27706
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_09.json",
+        "git_blob_sha1": "18aef6d0e6291538a33a531ee6bc48356e3d344b",
+        "bytes": 21364
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_10.json",
+        "git_blob_sha1": "2c674186a388a5565596a0f3b532a6fe9cca18e9",
+        "bytes": 32314
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_11.json",
+        "git_blob_sha1": "12989009182410eaef36021ae57452bea4ad1b1e",
+        "bytes": 25432
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_12.json",
+        "git_blob_sha1": "cabafd904e2dbfbaef14901f532bac337b804ca5",
+        "bytes": 28107
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_13.json",
+        "git_blob_sha1": "b89eb370d0a23b9acfbb5b7d874a967291e5b67a",
+        "bytes": 29010
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_14.json",
+        "git_blob_sha1": "d394c3a345977faa8151f9cbf7dac7d3e95358e3",
+        "bytes": 29282
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_15.json",
+        "git_blob_sha1": "0390a56f5d380c54ce0339253e0911e24907a0ac",
+        "bytes": 31614
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_16.json",
+        "git_blob_sha1": "8733584d1cd243a334699b5f662dbc67c9226627",
+        "bytes": 30840
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_17.json",
+        "git_blob_sha1": "61c1a1d0726b82c6ffdebb49a569c43e5d96ae66",
+        "bytes": 28256
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_18.json",
+        "git_blob_sha1": "a53acfb707cb4ea0c423b6044daf8bcccb4c8275",
+        "bytes": 28881
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_19.json",
+        "git_blob_sha1": "618af5e3ccbd43dad95e281b953e5d9e913640a1",
+        "bytes": 25325
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_20.json",
+        "git_blob_sha1": "b7dd195664de56e4a33e04c15c42a3773fe8d008",
+        "bytes": 34205
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_21.json",
+        "git_blob_sha1": "c5b969bea3bf44109c85f27bf3d80e12974e72e4",
+        "bytes": 27951
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_22.json",
+        "git_blob_sha1": "7a0a6c49c8a69b1f828815b038b8c4ba37abb70e",
+        "bytes": 30735
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_23.json",
+        "git_blob_sha1": "7fcd11c52252d3e287bb8552ee23a94d75e40a60",
+        "bytes": 31273
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_24.json",
+        "git_blob_sha1": "3e043d6c0ad0230a9baae7f201628f9c0a7c166a",
+        "bytes": 28812
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_25.json",
+        "git_blob_sha1": "43ee9d5ac48f64edac8d850eb39c5a96fa6053f5",
+        "bytes": 34052
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_26.json",
+        "git_blob_sha1": "621a58519ddd523438d420d28ff44b84307ea6a6",
+        "bytes": 31241
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_27.json",
+        "git_blob_sha1": "6ed955138790ce065bc3b25778c22068a91687a7",
+        "bytes": 28893
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_28.json",
+        "git_blob_sha1": "8e7e61a9ab1ae835108effdf08b645a3ad7a84b4",
+        "bytes": 28576
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_29.json",
+        "git_blob_sha1": "8886b7f6c0b538550a22b2666429954b584b21a1",
+        "bytes": 24813
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_30.json",
+        "git_blob_sha1": "b7ae9f12c625207e31d5ea42400ddbd352b1f0ba",
+        "bytes": 34367
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_31.json",
+        "git_blob_sha1": "2cc7c425fd3abd93a53add4ac487e17bd911f687",
+        "bytes": 30422
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_32.json",
+        "git_blob_sha1": "7f022e41ea0615f86dd53140c625e474452e2a49",
+        "bytes": 30190
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_33.json",
+        "git_blob_sha1": "53498fe8b93789173b32fa2426dd161d86d1ddf5",
+        "bytes": 28185
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_34.json",
+        "git_blob_sha1": "826c6b0ebe34afadf4c0270274e5f7c460bb8c2a",
+        "bytes": 31125
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_35.json",
+        "git_blob_sha1": "25fbbc7dbe40b1e15839983db371f81c2cd53984",
+        "bytes": 37015
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_36.json",
+        "git_blob_sha1": "714b45c49475e81bd4978e690db24f5dd0c78359",
+        "bytes": 30197
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_37.json",
+        "git_blob_sha1": "cd575a0b503e01b0ed553931b1c6e57099369d59",
+        "bytes": 27276
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_38.json",
+        "git_blob_sha1": "fa9b9c7dc38c9b72b1c7fc00630281eccf5703bd",
+        "bytes": 27716
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_39.json",
+        "git_blob_sha1": "361e1d3f40daf623d1fdd65ce2b5115581736399",
+        "bytes": 29376
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_40.json",
+        "git_blob_sha1": "fa8c15f8c63dab7d164eba6ffa1ae047cf5e8988",
+        "bytes": 36285
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_41.json",
+        "git_blob_sha1": "dcdcfa68509453e33350a8fa3be7dd02aea5e8db",
+        "bytes": 28934
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_42.json",
+        "git_blob_sha1": "5c45341040c9d1eb8c58589ea58c16dc558ae467",
+        "bytes": 29184
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_43.json",
+        "git_blob_sha1": "1bc446826cb68e64db4a236589ac0bff0d380b73",
+        "bytes": 28429
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_44.json",
+        "git_blob_sha1": "a11133cfb9c9320910ded12abd3791fcfb3fed15",
+        "bytes": 33051
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_45.json",
+        "git_blob_sha1": "55879a5058d7cc357faa8d16dd785b2fb257046a",
+        "bytes": 31072
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_46.json",
+        "git_blob_sha1": "f7aa8049a02dd638b07e1110424a6ef7313a7b82",
+        "bytes": 30250
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_47.json",
+        "git_blob_sha1": "e8ccac17fdd3bb01004d3f0e43c85ae57b51a70e",
+        "bytes": 30741
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_48.json",
+        "git_blob_sha1": "b09023105d74b767dffe3540473d633cea7bc3a6",
+        "bytes": 24468
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_49.json",
+        "git_blob_sha1": "1c8a1163f932e6c90271fd5d43eb976a1ab963ff",
+        "bytes": 36224
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_50.json",
+        "git_blob_sha1": "2e05c36e80ab8848b7375f33488ee1503178040b",
+        "bytes": 30325
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_51.json",
+        "git_blob_sha1": "c2d1a9fd3f7aad1a98fa502ff99e740da7dc5fe1",
+        "bytes": 28893
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_52.json",
+        "git_blob_sha1": "1a931b39df0cd58f0602286db11782b87ebdf3c0",
+        "bytes": 28672
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_53.json",
+        "git_blob_sha1": "3e1bc1784cbc48bdaaba781c430b7880cb6851f7",
+        "bytes": 33536
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_54.json",
+        "git_blob_sha1": "5dc44e83c893a61817bf05d8b0fa43155c8e5f84",
+        "bytes": 23309
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_55.json",
+        "git_blob_sha1": "c4c4eeacc1e0c5a9af46067e889ad1519a36b4a8",
+        "bytes": 29967
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_56.json",
+        "git_blob_sha1": "ce1c1072da2c2a5ae3f8ed9555204e2140749ad8",
+        "bytes": 29808
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_57.json",
+        "git_blob_sha1": "c954f81b972fb33407faecb384c27ffd63993652",
+        "bytes": 29955
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_58.json",
+        "git_blob_sha1": "e036435916333ef2a321ed7bcf8cb69df09a16bc",
+        "bytes": 34624
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_59.json",
+        "git_blob_sha1": "cd5585cc6d506246ea0d7ce07f8c68528abe9cde",
+        "bytes": 31440
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_60.json",
+        "git_blob_sha1": "8be635b70bbd67e467fdf509663b93b9bae4de40",
+        "bytes": 29086
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_61.json",
+        "git_blob_sha1": "ef72f0ea5cce6b087c458d48f8588bc194d4f638",
+        "bytes": 29385
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_62.json",
+        "git_blob_sha1": "20b1d041432656e95ca6803cbfd058b483e7fb80",
+        "bytes": 32138
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_63.json",
+        "git_blob_sha1": "4e2aba93a3de37b816af7cafa929ecd1d7c1a0a7",
+        "bytes": 31521
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_64.json",
+        "git_blob_sha1": "cfa429e202480b2a542e412981b3dd439eb1a884",
+        "bytes": 31971
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_65.json",
+        "git_blob_sha1": "82a36d1764e97c66da2bde3949fdc7e08fdbe6f8",
+        "bytes": 31579
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_66.json",
+        "git_blob_sha1": "a7213d9a27fe59e5391af38739a8f1e8b94fdce1",
+        "bytes": 27233
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_67.json",
+        "git_blob_sha1": "4e2d57f973feb8c6fe3bccc153d2ff2cfdb3471a",
+        "bytes": 34185
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_68.json",
+        "git_blob_sha1": "2ad4f6e47a967cc019ed7a937868c6d83447f722",
+        "bytes": 30237
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_69.json",
+        "git_blob_sha1": "b9510b9b624890435559ba990fa571b871c07d39",
+        "bytes": 29454
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_70.json",
+        "git_blob_sha1": "9c6f85e47b2f77bfde6b9f9b0972e81a3c9925e5",
+        "bytes": 29923
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_71.json",
+        "git_blob_sha1": "0aa0085be6669564b7bbc334a2060b2a8a22dc34",
+        "bytes": 24405
+      },
+      {
+        "path": "app/static/course_v3_data/hsk2/lesson_72.json",
+        "git_blob_sha1": "2880518d1ec55c631c4ea2bfd2ef0fbbeee223a3",
+        "bytes": 35466
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_01.json",
+        "git_blob_sha1": "a48791cb1d3db0fd69f648521a73e0c54fcbb37f",
+        "bytes": 30190
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_02.json",
+        "git_blob_sha1": "f405bb68401e50e4df1be9bd0fc6fba82cb4b11a",
+        "bytes": 34527
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_03.json",
+        "git_blob_sha1": "46d9fd4198989d18b1a3fa4fba0f0497283f36e4",
+        "bytes": 34469
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_04.json",
+        "git_blob_sha1": "db7033c5a6497cac932a7dce92079b2a01ce9b61",
+        "bytes": 33853
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_05.json",
+        "git_blob_sha1": "052dbb452092404415433a14cba3d00d9989e97f",
+        "bytes": 24355
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_06.json",
+        "git_blob_sha1": "1a2ba86dcfbcc486c6b322e1d8765a909a1e1bdf",
+        "bytes": 37875
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_07.json",
+        "git_blob_sha1": "12813f026315ca8bbec4f4d4fd6f1537c1d3ef2f",
+        "bytes": 32883
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_08.json",
+        "git_blob_sha1": "9cbf9620a00dc16adc1fa699e0bfbb59167354c1",
+        "bytes": 31570
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_09.json",
+        "git_blob_sha1": "63fa124513adcd0f23a22d4e5840bded39bbba4b",
+        "bytes": 28934
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_10.json",
+        "git_blob_sha1": "a8157508f2b40201973e4274004e2189b76e698b",
+        "bytes": 33896
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_100.json",
+        "git_blob_sha1": "b599fe3a596e2cbde22dcb5901cf6a3255503b50",
+        "bytes": 33413
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_101.json",
+        "git_blob_sha1": "223487d02b8199f990a65842644b542f4db3d023",
+        "bytes": 36901
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_102.json",
+        "git_blob_sha1": "104b07f8e7f1c702c91afeffe0fb29930e06ffe2",
+        "bytes": 26369
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_103.json",
+        "git_blob_sha1": "c8caa7db9afed1db98c8e416c7c26c13f10f7ff9",
+        "bytes": 35461
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_104.json",
+        "git_blob_sha1": "0e78b8d505bc0641f745679609277acf437fda66",
+        "bytes": 41042
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_105.json",
+        "git_blob_sha1": "ec7cfcd10dbac6bc8ce24ac09be558068f4d8950",
+        "bytes": 36590
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_106.json",
+        "git_blob_sha1": "43102ece4c0666e1452e43abe22441a40f093695",
+        "bytes": 37023
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_107.json",
+        "git_blob_sha1": "e953957832cdc0a33c5c76fbf11aab54b4183755",
+        "bytes": 31654
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_108.json",
+        "git_blob_sha1": "21d37fbaa695b9e4d9fb05563ef16cfe25f1b08f",
+        "bytes": 27910
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_109.json",
+        "git_blob_sha1": "2da72a1b51403855ba5ab10e5c2b1d3fb1887a3e",
+        "bytes": 41537
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_11.json",
+        "git_blob_sha1": "1fb1cc047b3cdda6051e3eebd865480143a66b4e",
+        "bytes": 28441
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_12.json",
+        "git_blob_sha1": "570c4c8576bb984853ea4cae7dfabf472b9caddc",
+        "bytes": 39911
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_13.json",
+        "git_blob_sha1": "237ffa46d75020a6e38459cd5f9b70b35d43a04e",
+        "bytes": 33351
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_14.json",
+        "git_blob_sha1": "4573a7f6bdd2d503c3a0e3219d37b7c2bab1d0df",
+        "bytes": 34620
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_15.json",
+        "git_blob_sha1": "2eced9328bd8e8e25c0ea029dea0e09b84f623cb",
+        "bytes": 27614
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_16.json",
+        "git_blob_sha1": "fc0643c9e426b0baff1b456f0f67fe9169cba2a1",
+        "bytes": 35721
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_17.json",
+        "git_blob_sha1": "2cb0d4de6333e31d296356eb2c0742a951ed524f",
+        "bytes": 26558
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_18.json",
+        "git_blob_sha1": "497a0e375a368f2e33a894f076f67336eb4e9efa",
+        "bytes": 40704
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_19.json",
+        "git_blob_sha1": "cfa5edcc884fb080083ab0aee2ead80eb40a10ca",
+        "bytes": 30608
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_20.json",
+        "git_blob_sha1": "598e30cf2f543235e7e56b4bbfb3aa7fdb0a400d",
+        "bytes": 32735
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_21.json",
+        "git_blob_sha1": "7937e046584e7406f85ec986995df897df3dea38",
+        "bytes": 34528
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_22.json",
+        "git_blob_sha1": "a50dd4b6902ea1e83ce4c3e0ced74b2daf8e408e",
+        "bytes": 35672
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_23.json",
+        "git_blob_sha1": "84b9aeff8c0837455be175dc793dd26bb102517d",
+        "bytes": 36369
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_24.json",
+        "git_blob_sha1": "163d49d3c2cbf7ee800cb9416e9c7f32f4f3f463",
+        "bytes": 43146
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_25.json",
+        "git_blob_sha1": "fc8011981315653acf5b53fec818a8968ad7024a",
+        "bytes": 30680
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_26.json",
+        "git_blob_sha1": "af9328848fba6e9ea2e78ce7976d9d1bcdbcd3a2",
+        "bytes": 34445
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_27.json",
+        "git_blob_sha1": "41cdb36db3d55ae8224773970242891dbd109c00",
+        "bytes": 33781
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_28.json",
+        "git_blob_sha1": "7464c51a8bc7ac5ef273283572093739e45b2b75",
+        "bytes": 38157
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_29.json",
+        "git_blob_sha1": "8414b3c29d25c1813a9aa604edeaf60acb79bcd5",
+        "bytes": 41731
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_30.json",
+        "git_blob_sha1": "4ae47c4336ae3a955b192aa6282496b7c14cec1a",
+        "bytes": 36655
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_31.json",
+        "git_blob_sha1": "6139af784e3ddfbf45281e4f4be9ff078a004827",
+        "bytes": 33881
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_32.json",
+        "git_blob_sha1": "0325bd168d408c135d25dafe1e0c397606feb320",
+        "bytes": 36351
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_33.json",
+        "git_blob_sha1": "093e05c2d9d8d35801cc70c7aa8bb0acf9e652c1",
+        "bytes": 26133
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_34.json",
+        "git_blob_sha1": "fde3e38bb504a9979f2fafb4c29903abf1622f9d",
+        "bytes": 41868
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_35.json",
+        "git_blob_sha1": "36b25bcaeffeb3cb944a84c44b41b519bc3c2006",
+        "bytes": 32114
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_36.json",
+        "git_blob_sha1": "a7ca8c1c0f60d2dac70dca9ecfc41a467913821f",
+        "bytes": 31594
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_37.json",
+        "git_blob_sha1": "94ed38afc95b8b37596eddb7c1de54f2dbf438e9",
+        "bytes": 29706
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_38.json",
+        "git_blob_sha1": "b701baebe26d05749dc65152d316600fbb575553",
+        "bytes": 35482
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_39.json",
+        "git_blob_sha1": "c5da53e814dd7295b2781f03126f6048f920a0d3",
+        "bytes": 32966
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_40.json",
+        "git_blob_sha1": "c2e0a655f761e43957ea988e229bf7ee3cfa726c",
+        "bytes": 33308
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_41.json",
+        "git_blob_sha1": "c517fe9d5d53d637fc1a3c553e91463f925f27a2",
+        "bytes": 34983
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_42.json",
+        "git_blob_sha1": "5479e71efb65b53f8862fddbb0eada6d0ebab0f2",
+        "bytes": 27876
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_43.json",
+        "git_blob_sha1": "38e029afef938dee365638163cfb8dc4fea45a3d",
+        "bytes": 27841
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_44.json",
+        "git_blob_sha1": "a0d0121d7b3d4258f09abb5beb87088a004c6581",
+        "bytes": 38770
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_45.json",
+        "git_blob_sha1": "d8c93a62463f29f6a7cefc2a4589d615aebde7a5",
+        "bytes": 33704
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_46.json",
+        "git_blob_sha1": "2536fbce2d2ff538d51a9df9565e8b4f9effe0f4",
+        "bytes": 33176
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_47.json",
+        "git_blob_sha1": "83f51a7cf2530ab5b40e38681e275af6987228ae",
+        "bytes": 31726
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_48.json",
+        "git_blob_sha1": "f9b4eb84efe06dfa87373aabe913fe6f15cd5d77",
+        "bytes": 30082
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_49.json",
+        "git_blob_sha1": "16571eb521a41197c75054c15387c6bf0c2cfdc9",
+        "bytes": 38548
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_50.json",
+        "git_blob_sha1": "ea2f45d37ff271340982d9e0de0d0a8859631d4f",
+        "bytes": 34015
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_51.json",
+        "git_blob_sha1": "e1bfe7519baf49a8fce04f292db76b5c19028b3b",
+        "bytes": 32353
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_52.json",
+        "git_blob_sha1": "2254bf6c1df46f2cec58fa66def47b546c3b8149",
+        "bytes": 31633
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_53.json",
+        "git_blob_sha1": "d4627f8adc58c1d3d23d727c5f7b0e81235e4719",
+        "bytes": 28866
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_54.json",
+        "git_blob_sha1": "38ce16ef73983da02f4fae3a79b3a4c75c0a8cbb",
+        "bytes": 37798
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_55.json",
+        "git_blob_sha1": "a2b425729f41da4670ef11abafddc0c7787a1779",
+        "bytes": 31881
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_56.json",
+        "git_blob_sha1": "981e64bb607936aa49c29f56b649b4c97b45204a",
+        "bytes": 31531
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_57.json",
+        "git_blob_sha1": "f2c0af39c8111772a6bf68cf7a47465ddf3b4004",
+        "bytes": 33076
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_58.json",
+        "git_blob_sha1": "494a57bfc0f37af6333c99e9b020a4f5254a0433",
+        "bytes": 27122
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_59.json",
+        "git_blob_sha1": "c0818176b6f8366e853ee797838d4bd70c56f1f7",
+        "bytes": 25635
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_60.json",
+        "git_blob_sha1": "50a1c7112fa9b7044b2b2bac1c5e4977af9531ff",
+        "bytes": 37771
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_61.json",
+        "git_blob_sha1": "20e13451b469df37c81846841ffada1f4b7b6207",
+        "bytes": 31864
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_62.json",
+        "git_blob_sha1": "b95001a4f7e0c7cf4d951529f36361790155d57d",
+        "bytes": 31939
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_63.json",
+        "git_blob_sha1": "1993229d436ab87fa30d33ffe003800cde5c5813",
+        "bytes": 30264
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_64.json",
+        "git_blob_sha1": "ac34b2d5b01bbbe6cc58078256d2609f8371d8a3",
+        "bytes": 25820
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_65.json",
+        "git_blob_sha1": "88eb8102428d814ee9ba10f7c694a4232db6e48a",
+        "bytes": 37619
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_66.json",
+        "git_blob_sha1": "c25e48cfdafef7d76901a3c0e018396b85646b0a",
+        "bytes": 34753
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_67.json",
+        "git_blob_sha1": "c493183924d98b459da6fdab447a45def8b5da81",
+        "bytes": 35383
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_68.json",
+        "git_blob_sha1": "44abeaa7a04b87e15f1a1845d42d9c4129505c5a",
+        "bytes": 36174
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_69.json",
+        "git_blob_sha1": "1b8a79bbda6b12506ed50e3581586e4ea980b301",
+        "bytes": 27427
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_70.json",
+        "git_blob_sha1": "6b8d1ef66f4489888ff33783cdd9c7587817ee1f",
+        "bytes": 39738
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_71.json",
+        "git_blob_sha1": "fdf8c8754d61d992e1d93dd5ac77bc0448e6fa37",
+        "bytes": 33955
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_72.json",
+        "git_blob_sha1": "8622c2750b8fa4e84acd7124ca5a26b6dc1067dc",
+        "bytes": 34420
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_73.json",
+        "git_blob_sha1": "d30fdaa20dfbecf77127d52c7bd072b143a0e3f3",
+        "bytes": 27118
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_74.json",
+        "git_blob_sha1": "89a0c09fcd3cf9607b0fad8f275b4005ac40c88a",
+        "bytes": 31429
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_75.json",
+        "git_blob_sha1": "7f68d94dd37e6a9cf6907be7fbd42e1f03842df4",
+        "bytes": 26190
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_76.json",
+        "git_blob_sha1": "8e04290598ded15396938a9f952d919ecb120174",
+        "bytes": 40724
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_77.json",
+        "git_blob_sha1": "d4fda063b9ebb4258d58ff770424b22f3a96942c",
+        "bytes": 36107
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_78.json",
+        "git_blob_sha1": "f4400b7d37238bd1168117e40806ab47003c3b34",
+        "bytes": 36631
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_79.json",
+        "git_blob_sha1": "438e955a96f2e7956cb4ba25cb9e55d957a6a1b1",
+        "bytes": 33118
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_80.json",
+        "git_blob_sha1": "6cede19276f90f690ccc5447e85c134fcb53e904",
+        "bytes": 29389
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_81.json",
+        "git_blob_sha1": "6e69ecdba21e3522ac52f9cdc01c3c1b485cfc1b",
+        "bytes": 32426
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_82.json",
+        "git_blob_sha1": "621386f7335988afd85449d7a38eab523480d2b9",
+        "bytes": 30641
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_83.json",
+        "git_blob_sha1": "777853efb7e356c59d7b21b4087ec273d2a46c9e",
+        "bytes": 45130
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_84.json",
+        "git_blob_sha1": "413cf52bce75414056ae2da6a171ae683a677416",
+        "bytes": 34625
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_85.json",
+        "git_blob_sha1": "95dddc65e82fef91fb46433580842850d320ee0d",
+        "bytes": 34166
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_86.json",
+        "git_blob_sha1": "80ed8686a6461c4ad972bbe02e990bc5e67ac75c",
+        "bytes": 34270
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_87.json",
+        "git_blob_sha1": "99d4a1fcc12098df31b544cce13581a24200b349",
+        "bytes": 28030
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_88.json",
+        "git_blob_sha1": "026cb352b72b6ce027237e8ddc50290269ac7e1f",
+        "bytes": 41797
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_89.json",
+        "git_blob_sha1": "419430b2557e721cd6bc11f6434bbaa86024d305",
+        "bytes": 36456
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_90.json",
+        "git_blob_sha1": "712f7e33149bde85bc2345961d1a54df17f8c281",
+        "bytes": 35985
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_91.json",
+        "git_blob_sha1": "5894c962a48e06cbecc0b959d5e6980e01365c4a",
+        "bytes": 34517
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_92.json",
+        "git_blob_sha1": "43cdb4da5713fb17ab34067202bf511315db26ae",
+        "bytes": 29414
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_93.json",
+        "git_blob_sha1": "90796c9c55c2cfd868e26ddea630760620773795",
+        "bytes": 41256
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_94.json",
+        "git_blob_sha1": "1ba756eec88709eb6b0be5e4acaea4bd05f737a9",
+        "bytes": 35960
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_95.json",
+        "git_blob_sha1": "a68c0a30461a4e154cd72bf7ee7dfb7f5e9894c1",
+        "bytes": 34212
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_96.json",
+        "git_blob_sha1": "b77a4bc1669d801b3e1618cc93ee750cf9d18922",
+        "bytes": 27717
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_97.json",
+        "git_blob_sha1": "aecc95d286c997e63856f74540adba695ccc1b81",
+        "bytes": 32122
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_98.json",
+        "git_blob_sha1": "b02a9b1b341ece1693e4b2c5c3e3297e989a72f4",
+        "bytes": 27079
+      },
+      {
+        "path": "app/static/course_v3_data/hsk3/lesson_99.json",
+        "git_blob_sha1": "b7764c88ce17fe765a2a87751f462237819a6ba5",
+        "bytes": 40935
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_01.json",
+        "git_blob_sha1": "466e8b02cb71caedb3e0da925db47ea95feb0e3e",
+        "bytes": 43045
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_02.json",
+        "git_blob_sha1": "371fb539d3f4f106be9751b58ebff6015add1645",
+        "bytes": 40840
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_03.json",
+        "git_blob_sha1": "56cd727a14c9df097726e5f62054d170afd97c9a",
+        "bytes": 38308
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_04.json",
+        "git_blob_sha1": "75213971e5cf9e9b910a37b217786ee441da3294",
+        "bytes": 41589
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_05.json",
+        "git_blob_sha1": "909697e620411b34e53115b7c0525c9c542d4a48",
+        "bytes": 40833
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_06.json",
+        "git_blob_sha1": "8fd7e3ec7bed310fd878b4f5bbd0cc574f0fe6d1",
+        "bytes": 40693
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_07.json",
+        "git_blob_sha1": "6639a99da1a151510ec77e5d3c86a42c7cce0e14",
+        "bytes": 37673
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_08.json",
+        "git_blob_sha1": "9ae92db6bdd850eab2833ef14d438cdcb1699b80",
+        "bytes": 41663
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_09.json",
+        "git_blob_sha1": "08abf719a0f22dc79d6383463d6a8c708f0ac97e",
+        "bytes": 55158
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_10.json",
+        "git_blob_sha1": "1ef550680f0d258d3caa5023aabbe808cdce8805",
+        "bytes": 43240
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_100.json",
+        "git_blob_sha1": "9fefaaec999a43caf624a603055f763ec066ab57",
+        "bytes": 62570
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_101.json",
+        "git_blob_sha1": "45103bda50b4b6cda61763caff845390db23c0ba",
+        "bytes": 45061
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_102.json",
+        "git_blob_sha1": "bd57895c5fa5c05e6a56da610a8b538aa2ef0d18",
+        "bytes": 50033
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_103.json",
+        "git_blob_sha1": "57bef5c6fd75ba42dc188a1cee13ef4b3c9096b1",
+        "bytes": 47748
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_104.json",
+        "git_blob_sha1": "5525e0743f9bece54fccb86264519672da9f91a4",
+        "bytes": 48995
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_105.json",
+        "git_blob_sha1": "a5b37ae74e71200160bc68faf2b22f87ed96e0b3",
+        "bytes": 47930
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_106.json",
+        "git_blob_sha1": "924250933a63990849367bd6315777b78d022b75",
+        "bytes": 45340
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_107.json",
+        "git_blob_sha1": "ee36083468791dd7821dc396e248978845f3f585",
+        "bytes": 49801
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_108.json",
+        "git_blob_sha1": "4e7b591c28b3c66cb75a36a9996c6d9eaf1c9c95",
+        "bytes": 45632
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_109.json",
+        "git_blob_sha1": "251ff890c61b4a06b628dd683c93184824c4eeaa",
+        "bytes": 62661
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_11.json",
+        "git_blob_sha1": "2f054cf44c7ec0f83ce280e2d8454af99a0c30f4",
+        "bytes": 45323
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_110.json",
+        "git_blob_sha1": "ea779397ceb9f3c3020b237ed1168bc621596c56",
+        "bytes": 46326
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_111.json",
+        "git_blob_sha1": "e2885447fb2ab45e5c1d60e5ba962259748e251a",
+        "bytes": 47569
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_112.json",
+        "git_blob_sha1": "c3561e8dee6cfad2d9bc0939c6d9db1b9c70d9a4",
+        "bytes": 45812
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_113.json",
+        "git_blob_sha1": "2519cc91930b7e2220c3b8e070637ec20ed2ac08",
+        "bytes": 44035
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_114.json",
+        "git_blob_sha1": "9485805dbfcda6bfade472d690686ed313d17288",
+        "bytes": 47338
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_115.json",
+        "git_blob_sha1": "2de195255c85ccd036383c3f036b8d057969dc73",
+        "bytes": 44285
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_116.json",
+        "git_blob_sha1": "f007d0033a9534d8e08ad4253fe52232b0a7605d",
+        "bytes": 47836
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_117.json",
+        "git_blob_sha1": "ac0d7a1b26d2545cb23ce5b53fbebed6c5ade0bd",
+        "bytes": 45941
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_118.json",
+        "git_blob_sha1": "9fcb10ac5443ffbea47a3cdb10416341b05bed57",
+        "bytes": 42542
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_119.json",
+        "git_blob_sha1": "7035055141c8f3ce730d40d52f3d4ffa9fd0b83c",
+        "bytes": 62418
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_12.json",
+        "git_blob_sha1": "f8d5037d12c8573d5387769122dc668e48cc5f8a",
+        "bytes": 43677
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_120.json",
+        "git_blob_sha1": "5135a17d71a9870b36138367a5869e966f50d839",
+        "bytes": 44006
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_121.json",
+        "git_blob_sha1": "e7cc18db0a6e9deb06740e0102d918b92ab6e872",
+        "bytes": 42375
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_122.json",
+        "git_blob_sha1": "1dbb13b60d275e89b7b85e6ac62e17d123a73a71",
+        "bytes": 42390
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_123.json",
+        "git_blob_sha1": "42fad1173d338c8feacd86e95c3a8317d97fba24",
+        "bytes": 47359
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_124.json",
+        "git_blob_sha1": "d1133b9b489d648d2dc82800e75c7bc0742cf9ec",
+        "bytes": 46094
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_125.json",
+        "git_blob_sha1": "aca6589738dc391363c20a80ef1ffa402c0dca35",
+        "bytes": 46639
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_126.json",
+        "git_blob_sha1": "b11d79e11c2d7a651c39f60f9da1a487bde40710",
+        "bytes": 46213
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_127.json",
+        "git_blob_sha1": "6a5d5b0b3188ad6d771981bc3f95751c7e15a639",
+        "bytes": 42583
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_128.json",
+        "git_blob_sha1": "a47506229610241be26d60d6450eb8ffcdfd8a0a",
+        "bytes": 59329
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_129.json",
+        "git_blob_sha1": "9af7c7834358160c1114e00f393e134c4d9accc2",
+        "bytes": 49665
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_13.json",
+        "git_blob_sha1": "a980e87f1ccfd1bd3b8f34a11a04558b0a854c2a",
+        "bytes": 44185
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_130.json",
+        "git_blob_sha1": "a4d93506ffd752d57b0a30744a4f986fe27cbc0f",
+        "bytes": 48876
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_131.json",
+        "git_blob_sha1": "577d77ea877de221d863a1dd1f45e3ab8805bddb",
+        "bytes": 45774
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_132.json",
+        "git_blob_sha1": "7557972f1b9e1800b97590c984c94430af474317",
+        "bytes": 48929
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_133.json",
+        "git_blob_sha1": "edde85d7cefe94bc066658c86ccadffebda044ca",
+        "bytes": 51549
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_134.json",
+        "git_blob_sha1": "c88bd9521835485e4ae17cddb8c554393812f546",
+        "bytes": 45706
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_135.json",
+        "git_blob_sha1": "015ad9bbaad06685ee3e459b0932633c2f9f790a",
+        "bytes": 48584
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_136.json",
+        "git_blob_sha1": "90232be8a4192a8f8183262345ae42bf7e502085",
+        "bytes": 44185
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_137.json",
+        "git_blob_sha1": "fd65ffbc2a76788ac62e7de46f7a5aa2441d7ca5",
+        "bytes": 62073
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_138.json",
+        "git_blob_sha1": "bbdfb314daca977be04078def374c3db6faca5df",
+        "bytes": 48715
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_139.json",
+        "git_blob_sha1": "30565ca9badfbd030efaf791487a83fa5b0b17b9",
+        "bytes": 47402
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_14.json",
+        "git_blob_sha1": "b0dfa7a26b695bb132d66e97b5131c6b57ed3029",
+        "bytes": 42682
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_140.json",
+        "git_blob_sha1": "121981ada6d2189baf4762e920d4fe858641f929",
+        "bytes": 50699
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_141.json",
+        "git_blob_sha1": "fb1f67d2d50f542a1c104cd3b62c55f67b483c9f",
+        "bytes": 51911
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_142.json",
+        "git_blob_sha1": "924d35c8c3dd62707acd747f56c20cd1cc89c263",
+        "bytes": 50032
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_143.json",
+        "git_blob_sha1": "82c6f9dbc37f334318b84251cf2ae22a0f35f775",
+        "bytes": 47443
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_144.json",
+        "git_blob_sha1": "0a1478e7a241a13c1cf853b74777eb2f1ed846c8",
+        "bytes": 49530
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_145.json",
+        "git_blob_sha1": "9209ab17c339cb36e85918056f87fb13d3fdece6",
+        "bytes": 48430
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_146.json",
+        "git_blob_sha1": "074607315b1a55b0d14406fbef00022c0b91a3bc",
+        "bytes": 63617
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_147.json",
+        "git_blob_sha1": "a59acb142500f7f1657cb175462eec4ea40e16f6",
+        "bytes": 48850
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_148.json",
+        "git_blob_sha1": "6c3eee2bb9fab9a6e536a589d0de289a1844d72a",
+        "bytes": 48798
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_149.json",
+        "git_blob_sha1": "4f8ff404d456a04a5b1b62289b97c69cd162402e",
+        "bytes": 48079
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_15.json",
+        "git_blob_sha1": "8b45f7fbe9cab9f9bb5586c861a461d3ea0587cf",
+        "bytes": 40381
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_150.json",
+        "git_blob_sha1": "45669a191cfc3ea172f778e18e0ca92b433304e5",
+        "bytes": 46046
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_151.json",
+        "git_blob_sha1": "a6d36a4d1a9625ee2618471476836a3686610203",
+        "bytes": 51327
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_152.json",
+        "git_blob_sha1": "8e1f24855beed3457b156225efeb932e15c7a173",
+        "bytes": 48439
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_153.json",
+        "git_blob_sha1": "a85a7cb26ff256e5a57ca01f93b601f1bc08b520",
+        "bytes": 45696
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_154.json",
+        "git_blob_sha1": "9cf81afb0c4afb34fd72f0d3b81a472f5d4cc996",
+        "bytes": 64244
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_155.json",
+        "git_blob_sha1": "9446d67848390937298416e87068c0605063eacb",
+        "bytes": 51208
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_156.json",
+        "git_blob_sha1": "0f3bec9a121267098e25a20141c33f7ab560db0a",
+        "bytes": 52048
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_157.json",
+        "git_blob_sha1": "9b19936d1b9f5cb5436744963499b460e14327c6",
+        "bytes": 49054
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_158.json",
+        "git_blob_sha1": "4ee0a1eb401adff3ebb05293dc2457ff5acca68c",
+        "bytes": 52387
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_159.json",
+        "git_blob_sha1": "e3d80adedd74dab5ed1e7c3cdd345c949c8e96e2",
+        "bytes": 51894
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_16.json",
+        "git_blob_sha1": "520db46e49e634a9658a1b4851d57deaded35fa5",
+        "bytes": 37814
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_160.json",
+        "git_blob_sha1": "16e7a1e29ca2efcf528ba49e3d5bbf1071a39a06",
+        "bytes": 49912
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_161.json",
+        "git_blob_sha1": "fde56985db65f8668b0c8ee27abd83c93e7b5df0",
+        "bytes": 50541
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_162.json",
+        "git_blob_sha1": "08024e3aa0298dbcf5060278e22cc4df166acf81",
+        "bytes": 48457
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_163.json",
+        "git_blob_sha1": "73dbd09e121ca87fd17916689e491e5571acf1ce",
+        "bytes": 68626
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_164.json",
+        "git_blob_sha1": "28d8e2f64c1161ba4613cd2e0e99efb3435baf56",
+        "bytes": 46401
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_165.json",
+        "git_blob_sha1": "0b949879d71f02aa7acf6d8e00e348240604fc44",
+        "bytes": 47712
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_166.json",
+        "git_blob_sha1": "9d9fc3e1a1b31384f4db975d6fcca2696156263b",
+        "bytes": 45037
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_167.json",
+        "git_blob_sha1": "0ffa6aafec3c58a532363bbb212df9f0832dea25",
+        "bytes": 46700
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_168.json",
+        "git_blob_sha1": "3b13f5e2f1dcec6bf7352b45b4f374d3528271bd",
+        "bytes": 46357
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_169.json",
+        "git_blob_sha1": "99377443543ca45ab31f315f697679091692ecd1",
+        "bytes": 44080
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_17.json",
+        "git_blob_sha1": "0d067ed3cc1965740b6cef5dbb3de0d185b2ce9c",
+        "bytes": 41423
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_170.json",
+        "git_blob_sha1": "8ec9a8737ae6570dd9cec0504bc860634ee6c696",
+        "bytes": 47063
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_171.json",
+        "git_blob_sha1": "505b595584ace8bbb2d8007f4b0f17356e00ac8d",
+        "bytes": 44143
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_172.json",
+        "git_blob_sha1": "0a38e8a6ad9b45fd448b4b2fbbeb28db429d47a8",
+        "bytes": 60874
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_173.json",
+        "git_blob_sha1": "8cce5ccef0a0c267f8fc00e73fd83d33966b7c1b",
+        "bytes": 52492
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_174.json",
+        "git_blob_sha1": "3a03c925e64a6cfa03b0b237a52feb09fe2fcaf9",
+        "bytes": 53610
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_175.json",
+        "git_blob_sha1": "f93edd52832b675a48bd1fa327e2f203197bd993",
+        "bytes": 48552
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_176.json",
+        "git_blob_sha1": "147be895814a74d59dde0d4dd04e87dc45f765a3",
+        "bytes": 54422
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_177.json",
+        "git_blob_sha1": "1d17d5daf4c1dd70bbf0e45a4601dcdcbed52907",
+        "bytes": 51757
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_178.json",
+        "git_blob_sha1": "56b559f033a5dcb2bd0ab46f4fa66f3163740544",
+        "bytes": 49577
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_179.json",
+        "git_blob_sha1": "5071b1adb3c591c22f26166149fc93ded1a3602f",
+        "bytes": 50307
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_18.json",
+        "git_blob_sha1": "7e75d8a9c1bf21e4dc7004c60ea2cd213d3c9f75",
+        "bytes": 56760
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_180.json",
+        "git_blob_sha1": "7aeac8c34162380223fc9a3ecead2b5c2c949282",
+        "bytes": 46291
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_181.json",
+        "git_blob_sha1": "fc10f99f52b7e0c7ca87082d3d20472b69b34425",
+        "bytes": 66188
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_19.json",
+        "git_blob_sha1": "1e7c4fa37ea5b622b1ddd8e381f67bf9a9fe1810",
+        "bytes": 41381
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_20.json",
+        "git_blob_sha1": "781a1c639b545add5faedef00cb7354d8d8abdee",
+        "bytes": 44402
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_21.json",
+        "git_blob_sha1": "d7c1f9ef8df26247a898f6a2efae0cd9cbbaf1fd",
+        "bytes": 40319
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_22.json",
+        "git_blob_sha1": "7b15f6bf8a4d6f6820f4171edd924cd9690a56f3",
+        "bytes": 43172
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_23.json",
+        "git_blob_sha1": "b6f932985a9110efed3e2e2f648560e57c8b16bd",
+        "bytes": 43965
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_24.json",
+        "git_blob_sha1": "d711f3fc74956a00d3ec1ac906a837a41f4d4996",
+        "bytes": 39745
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_25.json",
+        "git_blob_sha1": "4f6fe66cf5a94fd771b4dfbc44cc981b055d8beb",
+        "bytes": 39324
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_26.json",
+        "git_blob_sha1": "d17c9384af9edc6ced6f2e18024cd3c74d9eb5d8",
+        "bytes": 40489
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_27.json",
+        "git_blob_sha1": "c19ce16dcf3f94119a22a59ce2f32da940ff7c7a",
+        "bytes": 53846
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_28.json",
+        "git_blob_sha1": "72a0c067aea2f7ebf9350760bf93c0592f143a99",
+        "bytes": 44612
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_29.json",
+        "git_blob_sha1": "dcd2078af660ba883bc94379c2b26435fdceec6b",
+        "bytes": 44043
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_30.json",
+        "git_blob_sha1": "3df4fb4352c88e4a8beaf9d2209db421b0904d4a",
+        "bytes": 40644
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_31.json",
+        "git_blob_sha1": "ee421ad5402259536151ae5fdc24513703b50a4b",
+        "bytes": 42854
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_32.json",
+        "git_blob_sha1": "f2426c7d37d83876bab589e8bef23bfe4868a6ff",
+        "bytes": 43134
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_33.json",
+        "git_blob_sha1": "47a889b9dfab2e290348bbf0f5fbfb528cb38959",
+        "bytes": 39472
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_34.json",
+        "git_blob_sha1": "f9ea8286177d0a81d9829981b60cc09142cd5168",
+        "bytes": 42456
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_35.json",
+        "git_blob_sha1": "3b8282f8370d98862aabab88611632ff909e5855",
+        "bytes": 37080
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_36.json",
+        "git_blob_sha1": "a8df40117897f161dcdde6c2bc705da0d499db7c",
+        "bytes": 56858
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_37.json",
+        "git_blob_sha1": "dd569313dd5eb3dacb71da35a7fd2755d9514dab",
+        "bytes": 38626
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_38.json",
+        "git_blob_sha1": "d7819f0d78bfa40ed5353e70fe549bca6e460eef",
+        "bytes": 41897
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_39.json",
+        "git_blob_sha1": "1bc1fe136afe615f1507194733291fa694bad31a",
+        "bytes": 41202
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_40.json",
+        "git_blob_sha1": "b820d18f6ef04cde2f1c60cfd360d3a865094a86",
+        "bytes": 42023
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_41.json",
+        "git_blob_sha1": "f4133421b91d828f4ff83037a271619c3483bb48",
+        "bytes": 37901
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_42.json",
+        "git_blob_sha1": "4398bb799b551c2addd57511dadc6b6b0ab869a1",
+        "bytes": 41836
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_43.json",
+        "git_blob_sha1": "aa1cbf1f3870c1ebddb1f89050e96f7e6f36534a",
+        "bytes": 41598
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_44.json",
+        "git_blob_sha1": "0e9882a81648e0fc86f7588c84ac606ab2398b50",
+        "bytes": 36052
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_45.json",
+        "git_blob_sha1": "c0a15a9fd11175f4a2146afd2f7c36e7061270fa",
+        "bytes": 54070
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_46.json",
+        "git_blob_sha1": "346b21beca5b032768676744b01c26e719f3ed81",
+        "bytes": 41198
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_47.json",
+        "git_blob_sha1": "76c386efbfb4fd856b1024e4a6ddc43060a5209f",
+        "bytes": 42772
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_48.json",
+        "git_blob_sha1": "b86018d1ad9cc5c644822cc1a6f19d7cdcb96fe0",
+        "bytes": 41245
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_49.json",
+        "git_blob_sha1": "fe0223df867b1f0b1e69b964a17a5187a06f5d35",
+        "bytes": 42199
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_50.json",
+        "git_blob_sha1": "f8f5c64eb78c9e83b1f460d1b92ee6372cb46d71",
+        "bytes": 42127
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_51.json",
+        "git_blob_sha1": "1323d221e4fe319e6d02729094b4744b4868fc9b",
+        "bytes": 39459
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_52.json",
+        "git_blob_sha1": "9385857242977603bf6b263e259cf65afa891d5b",
+        "bytes": 42331
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_53.json",
+        "git_blob_sha1": "6c7319f358db2f5c364c2ca59ee4a7b63c3930d9",
+        "bytes": 37002
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_54.json",
+        "git_blob_sha1": "853c0d1cecbf6adc8429450897e922a4937d29ea",
+        "bytes": 55389
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_55.json",
+        "git_blob_sha1": "b292ad24391490e180c7cf74c695315b0fb3ff43",
+        "bytes": 42544
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_56.json",
+        "git_blob_sha1": "6729f7fea2f2e235a355751098a1ca899e181cf2",
+        "bytes": 41828
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_57.json",
+        "git_blob_sha1": "400c784e7534e9376e259dfde84e41a6a498b271",
+        "bytes": 41391
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_58.json",
+        "git_blob_sha1": "164403c6e1da4c45170a086aad3356ff7b1f3d7e",
+        "bytes": 43309
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_59.json",
+        "git_blob_sha1": "c5301575a8a6c478bf3d89aad3c4708dd96bd14b",
+        "bytes": 43151
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_60.json",
+        "git_blob_sha1": "af42d518aed45c9e7b96444044269d18ce89cb7d",
+        "bytes": 40509
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_61.json",
+        "git_blob_sha1": "9c4fb1000bdc34cd70e2f1d880d832fc82771edd",
+        "bytes": 39383
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_62.json",
+        "git_blob_sha1": "efca9a3c02d4045cf3c6aa4e5487850fda31a68d",
+        "bytes": 39945
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_63.json",
+        "git_blob_sha1": "028e638a7b37a7bb7dfa7b4b260b4149794e8c3b",
+        "bytes": 37808
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_64.json",
+        "git_blob_sha1": "6b26ae6c5a2a964597a7fd8a487936059e1161c2",
+        "bytes": 56915
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_65.json",
+        "git_blob_sha1": "bdbb8c9250534fd16bbb8b7606a4e2de64c88cf4",
+        "bytes": 41658
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_66.json",
+        "git_blob_sha1": "0d808617de19b2c64c3dced5d8cfce87f8d86aae",
+        "bytes": 41070
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_67.json",
+        "git_blob_sha1": "bf61925b37c38333018ea562d11da28e3156943d",
+        "bytes": 37223
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_68.json",
+        "git_blob_sha1": "dc1809252b717fb25d395918afcbe12f008c0015",
+        "bytes": 43455
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_69.json",
+        "git_blob_sha1": "bbf73b531c3de204fec37c0c5667e1bb06d1f6f8",
+        "bytes": 40921
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_70.json",
+        "git_blob_sha1": "ff33a5947539947509fbd9d4a6d84b162f92a7b8",
+        "bytes": 35570
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_71.json",
+        "git_blob_sha1": "15a965d71e5dfecdb0b1533e24bd197471fce77f",
+        "bytes": 38926
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_72.json",
+        "git_blob_sha1": "09128012cec62ea1eeacdbf803d5d8329ff99e31",
+        "bytes": 35666
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_73.json",
+        "git_blob_sha1": "9bbb2bd03d13dcf3dc6e8373081e5026b699c211",
+        "bytes": 54501
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_74.json",
+        "git_blob_sha1": "aff891adf2e478751e5094f9aaccf9030e203090",
+        "bytes": 41350
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_75.json",
+        "git_blob_sha1": "f7826bb8eaa071e9fb50df8cce86158540ee5f3f",
+        "bytes": 41377
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_76.json",
+        "git_blob_sha1": "2e1555cb6602e10272112e7239b0eca0c0fb790e",
+        "bytes": 39497
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_77.json",
+        "git_blob_sha1": "ee5b6b351b24745266bb9ce6b5f4f392c6ed9c60",
+        "bytes": 43224
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_78.json",
+        "git_blob_sha1": "d27cb4f3614d7dfb1bf12cb2eca52554cecdf8a0",
+        "bytes": 38915
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_79.json",
+        "git_blob_sha1": "bea458d61667bc276dbb79e7d57acad2b49a8ee9",
+        "bytes": 42703
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_80.json",
+        "git_blob_sha1": "8b6fa4a9f1178bb36e0944c6c9c450d332396e4f",
+        "bytes": 42354
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_81.json",
+        "git_blob_sha1": "ee8387945af9b6d057a7712d96b3558ea5effb41",
+        "bytes": 37171
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_82.json",
+        "git_blob_sha1": "20d3448071d8d254666454772c561b45022849b1",
+        "bytes": 53000
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_83.json",
+        "git_blob_sha1": "f0961b2e7a135c50542c71a50e92b56507c54254",
+        "bytes": 44664
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_84.json",
+        "git_blob_sha1": "2a73ad87484e8f7d3eba3bccc023ceaa5babf015",
+        "bytes": 42664
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_85.json",
+        "git_blob_sha1": "b2eeb6e9f0f763bfe5b7cb07365ec8377d227079",
+        "bytes": 45859
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_86.json",
+        "git_blob_sha1": "7ffba9998611155f4c08710b9449467d18f3e7f6",
+        "bytes": 44571
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_87.json",
+        "git_blob_sha1": "cb55af4d22bebaa8fdf01bbdc876504391287e95",
+        "bytes": 44587
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_88.json",
+        "git_blob_sha1": "1bc9b97c54982b56d42065cf607ba31c15712316",
+        "bytes": 41971
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_89.json",
+        "git_blob_sha1": "9425f4b9ef848c541b30922be0d4cf439ecb12d6",
+        "bytes": 42964
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_90.json",
+        "git_blob_sha1": "25ccdf7502eecfeec81f1d50df7dca7279b256c5",
+        "bytes": 39568
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_91.json",
+        "git_blob_sha1": "409704ee0caefe5dd92ef519bf8890a4aaa4b445",
+        "bytes": 57354
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_92.json",
+        "git_blob_sha1": "634c5dc7bb3e056e8645180b929e1983d05697d9",
+        "bytes": 44288
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_93.json",
+        "git_blob_sha1": "f06cf642c85b31441191aa5137e342d371aa6934",
+        "bytes": 46795
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_94.json",
+        "git_blob_sha1": "566bddb412589a17da0ce09d2db45af03fa432cb",
+        "bytes": 49538
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_95.json",
+        "git_blob_sha1": "c0ccdb593c5abde5bdb819c58d5097cc7df64a70",
+        "bytes": 48615
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_96.json",
+        "git_blob_sha1": "64ff1feca0ba066bfe72a1ef2675efef77d917fd",
+        "bytes": 44548
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_97.json",
+        "git_blob_sha1": "7a1b8da8d378a142e747d4077f5b796032616c0c",
+        "bytes": 47549
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_98.json",
+        "git_blob_sha1": "1523f999637a16e462daab081174022b4e3728b4",
+        "bytes": 43648
+      },
+      {
+        "path": "app/static/course_v3_data/hsk4/lesson_99.json",
+        "git_blob_sha1": "0bc51601761a50fceaaf55485474fce41a818e2d",
+        "bytes": 41916
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_01.json",
+        "git_blob_sha1": "036bbc08f43ab52e5ea891d025d4341643ce0747",
+        "bytes": 19535
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_02.json",
+        "git_blob_sha1": "eee02eb46ae413a10b5abe7298020c10d2b4a1c8",
+        "bytes": 21624
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_03.json",
+        "git_blob_sha1": "9cf42c56c3df8a00ec37a6ba35748472eebe5708",
+        "bytes": 23007
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_04.json",
+        "git_blob_sha1": "a745936a5a904fa47369ead9993414dfe3054496",
+        "bytes": 32205
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_05.json",
+        "git_blob_sha1": "2f4007f3cfeabaaa2643cb1b56ccf0f68268cac1",
+        "bytes": 15005
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_06.json",
+        "git_blob_sha1": "15a358f16939574375dac9d7337a99cc4dbbdc14",
+        "bytes": 20164
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_07.json",
+        "git_blob_sha1": "46faae33598174eb04b34038fe51bf4ddc7e897a",
+        "bytes": 18594
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_08.json",
+        "git_blob_sha1": "5f6977db24afaec91fae63029174cef545449c4d",
+        "bytes": 19766
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_09.json",
+        "git_blob_sha1": "0ee259da795b6e499a75e84ee3737ceb1acdee89",
+        "bytes": 32206
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_10.json",
+        "git_blob_sha1": "d3c1303d1bb768d7976fd9f347b924126458975b",
+        "bytes": 21346
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_100.json",
+        "git_blob_sha1": "42d24e0c5df5df62d6a6e29b7b3f91c313bbf2fa",
+        "bytes": 21639
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_101.json",
+        "git_blob_sha1": "77b2e2a846d8bc37e6b565ac44d7eb45e31ae95b",
+        "bytes": 16665
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_102.json",
+        "git_blob_sha1": "359b768aed0393d507f22f45a59588fd906bc447",
+        "bytes": 17885
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_103.json",
+        "git_blob_sha1": "16c6bff6bf98699f49dba9b90310d77a5bc3eb19",
+        "bytes": 41767
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_11.json",
+        "git_blob_sha1": "9f35a0980178227784795571c4b483d37f281a50",
+        "bytes": 19720
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_12.json",
+        "git_blob_sha1": "3ca442d427e3c5a611946f9ecd422ffc3cb47149",
+        "bytes": 17054
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_13.json",
+        "git_blob_sha1": "259a1ab82884e3e56bf7c58098d345b288c9d103",
+        "bytes": 21032
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_14.json",
+        "git_blob_sha1": "3a2b3330dca06e593b01ab3c35cbb5dd4749bec0",
+        "bytes": 19999
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_15.json",
+        "git_blob_sha1": "6eb2b9a84dc8c48b624c9602147d98086101dce0",
+        "bytes": 36858
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_16.json",
+        "git_blob_sha1": "e63c6a15fe56b2b30356797dad07e7b371db10b6",
+        "bytes": 18907
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_17.json",
+        "git_blob_sha1": "aac9149ddf9ae96eb8ae241260084a05d99cff5e",
+        "bytes": 20249
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_18.json",
+        "git_blob_sha1": "a8a47ae7e87d867d4715f377a18237937d527eee",
+        "bytes": 20367
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_19.json",
+        "git_blob_sha1": "624b255e8440bc8860549575a4940c97f757893e",
+        "bytes": 19426
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_20.json",
+        "git_blob_sha1": "765b27d0d16fb982143000a9b3c68aecddb3930a",
+        "bytes": 20767
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_21.json",
+        "git_blob_sha1": "ab0b02c5857de382ddfb3922405d3db423cd47fd",
+        "bytes": 25167
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_22.json",
+        "git_blob_sha1": "5987b79785659f89d82061663429a0b1026dc8da",
+        "bytes": 24358
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_23.json",
+        "git_blob_sha1": "8e1c1e21bd6ee7063147980055111d4fb4a83156",
+        "bytes": 24682
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_24.json",
+        "git_blob_sha1": "1c55ba0d77f512daab5ea0c29a4ef04ffb519b0b",
+        "bytes": 24187
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_25.json",
+        "git_blob_sha1": "95f78b1cc0fbc3e12148a94c6ce5c9c451f3cf68",
+        "bytes": 42027
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_26.json",
+        "git_blob_sha1": "f5934d5d7ee75b5eba5b93cdeb29df3ce67bb7ae",
+        "bytes": 19074
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_27.json",
+        "git_blob_sha1": "6636fa5dc5e97bb973689a322d7c890d58480fc1",
+        "bytes": 20939
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_28.json",
+        "git_blob_sha1": "69e5c459dbc10f5456f35d565862ebb8b92d07e8",
+        "bytes": 22663
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_29.json",
+        "git_blob_sha1": "25df97a98ad92d7124ea2c85be95482fccda2a15",
+        "bytes": 21657
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_30.json",
+        "git_blob_sha1": "5de73f577e8db85bc12fac36cfb6d54d8463dd17",
+        "bytes": 21375
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_31.json",
+        "git_blob_sha1": "35cd3fc7e3f269ee14384e9b46af5b55885dfe6c",
+        "bytes": 22406
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_32.json",
+        "git_blob_sha1": "7097d3095c83e6b769581da6463fda493940918a",
+        "bytes": 37602
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_33.json",
+        "git_blob_sha1": "473f42a1de5d083c93ae3a518f4907d603a870e9",
+        "bytes": 20854
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_34.json",
+        "git_blob_sha1": "773b06dc46b9fcb0da1bc0bd1af12d236bdd8345",
+        "bytes": 20774
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_35.json",
+        "git_blob_sha1": "92cf776ef26f5e0f1f80d51deb06012a00823a2b",
+        "bytes": 23843
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_36.json",
+        "git_blob_sha1": "a1680a6509fbdc25d5c94939c78204de3ad1b2cf",
+        "bytes": 23922
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_37.json",
+        "git_blob_sha1": "0f2dbde1f3058ece2ccb63af17bbf678cf9fbff5",
+        "bytes": 21114
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_38.json",
+        "git_blob_sha1": "8930849c6bf4a382561431f015dfebb3f61dfaa0",
+        "bytes": 27557
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_39.json",
+        "git_blob_sha1": "e94ba11a1612dc44ed282bd5bd0c30fd099efa90",
+        "bytes": 39634
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_40.json",
+        "git_blob_sha1": "379bd3fdaca0529528665d30884f18aa20a7e06a",
+        "bytes": 22942
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_41.json",
+        "git_blob_sha1": "4030793690ca26ca2c8f0442b3f2a2e3a312510e",
+        "bytes": 22831
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_42.json",
+        "git_blob_sha1": "4fd4d97e3da277fa31378915b3359f78f772e2a2",
+        "bytes": 25892
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_43.json",
+        "git_blob_sha1": "5a0ac5e7057902da4043d778258d458770343a18",
+        "bytes": 24199
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_44.json",
+        "git_blob_sha1": "0a32dcb2a11c44a25474d9647e980b3be2a68558",
+        "bytes": 21318
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_45.json",
+        "git_blob_sha1": "5f3dce4aeda0516937170cba1b0b918d41652b40",
+        "bytes": 24307
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_46.json",
+        "git_blob_sha1": "d1b4508cfaffb9ebb53599c3b9d273911c9a1c84",
+        "bytes": 22759
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_47.json",
+        "git_blob_sha1": "c026c0edc18fe22d5bf41dcff701954a0eb79ff8",
+        "bytes": 43175
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_48.json",
+        "git_blob_sha1": "dbd87900306815aa74a0a82c47fc8ed05f27d660",
+        "bytes": 23098
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_49.json",
+        "git_blob_sha1": "4a27a7611cf71dad9087e44b4911012f82e8f152",
+        "bytes": 23725
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_50.json",
+        "git_blob_sha1": "ff46bfa574ae479a474e72bf08a0ecf0aaee80dd",
+        "bytes": 22483
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_51.json",
+        "git_blob_sha1": "d8f7509e2b40919ceee9a39b3456ed05803f1412",
+        "bytes": 25857
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_52.json",
+        "git_blob_sha1": "7ebe9d08186c6f0c1424fe8e1ebf172d0de0e802",
+        "bytes": 23359
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_53.json",
+        "git_blob_sha1": "c3528fc0a4e4996e3a32ab6509a86ecd8eada42f",
+        "bytes": 22883
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_54.json",
+        "git_blob_sha1": "67458000bac7566500bc1c7d0e7f575140e40142",
+        "bytes": 42191
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_55.json",
+        "git_blob_sha1": "0694917f14431dbe8c891d410f7b63e8f646bfd4",
+        "bytes": 28538
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_56.json",
+        "git_blob_sha1": "58be0d459be39f2e67a13cce11ac6cde20895f8a",
+        "bytes": 29057
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_57.json",
+        "git_blob_sha1": "65fedd70257dac7ffaa66f56086d249aaa5cbc04",
+        "bytes": 27174
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_58.json",
+        "git_blob_sha1": "b7d332871aa82f504e7a203d20967a0a93ecd469",
+        "bytes": 23627
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_59.json",
+        "git_blob_sha1": "7391c6012aa09e02c31e4bdf3af867ae7346ed11",
+        "bytes": 22617
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_60.json",
+        "git_blob_sha1": "0f03f27607e7123507da11deb7c823071a2f6b14",
+        "bytes": 23939
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_61.json",
+        "git_blob_sha1": "f907811c254fc00e7e358ad8661b08528a7d2a1b",
+        "bytes": 46041
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_62.json",
+        "git_blob_sha1": "520c40478934a3a49ca056a0df43085db3281942",
+        "bytes": 23652
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_63.json",
+        "git_blob_sha1": "b7d557c0723d4f6bcb594e31e78a6486b616aa58",
+        "bytes": 22736
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_64.json",
+        "git_blob_sha1": "4e53519f733c348ac9fdd4edd09bd39a1906cb38",
+        "bytes": 22175
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_65.json",
+        "git_blob_sha1": "eb6f21c8246cd6117208b25c5fe06f35634dcb56",
+        "bytes": 22947
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_66.json",
+        "git_blob_sha1": "6e5610277c50d9720a9a6d9a0e1451462aeb0b5f",
+        "bytes": 26366
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_67.json",
+        "git_blob_sha1": "93e5c81e762bc0555ff0fadeaddfebefb1544eee",
+        "bytes": 19949
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_68.json",
+        "git_blob_sha1": "94d231bf4e466a79bf1196d1e1f008e2b710a108",
+        "bytes": 40096
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_69.json",
+        "git_blob_sha1": "0295408992f7c45c29079189042ab3e1e54eb9ab",
+        "bytes": 22228
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_70.json",
+        "git_blob_sha1": "b78c0e7dad6102d49739012f94b99c8af8a8b1d3",
+        "bytes": 25976
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_71.json",
+        "git_blob_sha1": "adadd9304c7da86108514614dfb7db8b0ff4832a",
+        "bytes": 23790
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_72.json",
+        "git_blob_sha1": "b031006b155db87b388bfad0d14acec44a8d5690",
+        "bytes": 24252
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_73.json",
+        "git_blob_sha1": "2be1d88c550f96e3d3c029bf43c7636f86090e30",
+        "bytes": 19129
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_74.json",
+        "git_blob_sha1": "1f9d4f279f9cebcadc9ecc9024ec4ce7aa05a11a",
+        "bytes": 23014
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_75.json",
+        "git_blob_sha1": "24211355a6549cad1bb3dc0e9ac300f4182902f4",
+        "bytes": 27917
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_76.json",
+        "git_blob_sha1": "2a912c62fcae6053c0bd20c9c04cd858b87736d1",
+        "bytes": 43320
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_77.json",
+        "git_blob_sha1": "81f3f851b0bd069672223038ec42e8c2b50e78aa",
+        "bytes": 20313
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_78.json",
+        "git_blob_sha1": "5b1017e03be4dc53afabc61e6ebc1ca9639e4835",
+        "bytes": 24666
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_79.json",
+        "git_blob_sha1": "b69e483b61fc95ef621e16a447367da59e7296c6",
+        "bytes": 23963
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_80.json",
+        "git_blob_sha1": "f0568d62cc0b149c235d967d01dccc04f8d8e063",
+        "bytes": 24481
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_81.json",
+        "git_blob_sha1": "bbf6f32966c7177f12a81eb9958e02718c014bd3",
+        "bytes": 23710
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_82.json",
+        "git_blob_sha1": "e4232073d86df2f2ba8af837a28a5a1ebf32ea2a",
+        "bytes": 24573
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_83.json",
+        "git_blob_sha1": "25137cbab1b6a0f2037909a0709fd4e784747904",
+        "bytes": 41145
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_84.json",
+        "git_blob_sha1": "c7bb75463ae484c8b3c5e2526bad2daaf095bc1f",
+        "bytes": 25065
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_85.json",
+        "git_blob_sha1": "d1b3b9f2f6d1dde166c016fe77e4c6c1753bb573",
+        "bytes": 26924
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_86.json",
+        "git_blob_sha1": "4af535cface0cdee248b340f3af5b864bc6cf952",
+        "bytes": 27579
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_87.json",
+        "git_blob_sha1": "458185e428de1a5cf0662fb17295a2739dc46a67",
+        "bytes": 23195
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_88.json",
+        "git_blob_sha1": "115905193602a164205ef39b00033b7c2aa33cef",
+        "bytes": 24481
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_89.json",
+        "git_blob_sha1": "d9bc0a088c56f94fbab1aae292bd4be704ec0512",
+        "bytes": 42395
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_90.json",
+        "git_blob_sha1": "7c58cf48cc6799f94559277c7668a061909c80b0",
+        "bytes": 24038
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_91.json",
+        "git_blob_sha1": "11260c2f42e5d3adbe090454a87bee3f72b45cd4",
+        "bytes": 20607
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_92.json",
+        "git_blob_sha1": "b595700354f8167c2b6cdd5513098c8bdd0becb6",
+        "bytes": 24860
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_93.json",
+        "git_blob_sha1": "621cdb3ec8024e04a15910be8444af47ffd2d27f",
+        "bytes": 26465
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_94.json",
+        "git_blob_sha1": "f6291fcf4b8fee0044d84c0c528fab6ebe71d12a",
+        "bytes": 25758
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_95.json",
+        "git_blob_sha1": "e4b7938c13e9fcbe391624a7cc8b88af6f5fc169",
+        "bytes": 23756
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_96.json",
+        "git_blob_sha1": "e8956edba292648b8fa04489729c2a63de5fb62d",
+        "bytes": 22766
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_97.json",
+        "git_blob_sha1": "39d3bb9881ce666c3026360308f3dc551214c690",
+        "bytes": 46921
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_98.json",
+        "git_blob_sha1": "49c94675bd3cebe984c3060d185612bbfde20793",
+        "bytes": 25455
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk1/lesson_99.json",
+        "git_blob_sha1": "62eee161781dc15e45363083c3fe9035eba02c49",
+        "bytes": 18502
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_01.json",
+        "git_blob_sha1": "f49ff85996f8cd1584ff285b8c65e8d4cfe5a953",
+        "bytes": 25607
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_02.json",
+        "git_blob_sha1": "732b0d1e3d3aa83b97c7f4433dd8f43925bf9739",
+        "bytes": 27010
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_03.json",
+        "git_blob_sha1": "8eac0cf8b0c43518a357a4b71a316ff5de9e3eab",
+        "bytes": 26085
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_04.json",
+        "git_blob_sha1": "e7b5858e620f028cbc00dcfa466de254f2cb28e4",
+        "bytes": 18222
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_05.json",
+        "git_blob_sha1": "611ef80af5d5fba9b74e5942910e965b71d5cc39",
+        "bytes": 37416
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_06.json",
+        "git_blob_sha1": "fa36ef7a924baca5edc4d35aa0e48852f57e2cca",
+        "bytes": 25728
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_07.json",
+        "git_blob_sha1": "aa89b297b5f9d3e672733f1d354de6b2d432ac0d",
+        "bytes": 30768
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_08.json",
+        "git_blob_sha1": "89d86afe53e778594759b5d6d11311cd34e48e5e",
+        "bytes": 29860
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_09.json",
+        "git_blob_sha1": "91d2bcf5df66c29a8aa707e75e41093a69c788e9",
+        "bytes": 25381
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_10.json",
+        "git_blob_sha1": "3b71d61f0887ab129a3bcb919b5a1a7dd20c2d96",
+        "bytes": 40642
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_11.json",
+        "git_blob_sha1": "0d29cb3d932e0c61540cbe4e7bcdf59d50ebc719",
+        "bytes": 28255
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_12.json",
+        "git_blob_sha1": "bdd08fa9071b057617dd9b6ffacd6a5265f62886",
+        "bytes": 28953
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_13.json",
+        "git_blob_sha1": "4d99e913021271423c4bd4b35fb0ff7491d21346",
+        "bytes": 29875
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_14.json",
+        "git_blob_sha1": "810694765760a1ab54746f473cbf1f8dc537724e",
+        "bytes": 22321
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_15.json",
+        "git_blob_sha1": "1827492bc4b1519c61c8be9de26100d8ed435334",
+        "bytes": 38033
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_16.json",
+        "git_blob_sha1": "3569731005f9430627f81038580409712da6f229",
+        "bytes": 25409
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_17.json",
+        "git_blob_sha1": "68018c3f59a41edb60dc1a02dfd7647008e7ee01",
+        "bytes": 24738
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_18.json",
+        "git_blob_sha1": "3b4a86c2227ccc4006b920a1cd593829a6905df3",
+        "bytes": 28965
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_19.json",
+        "git_blob_sha1": "12f93ffe5e515dcbf4acc5456b67c10298c0906d",
+        "bytes": 30152
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_20.json",
+        "git_blob_sha1": "e7771e13ad6d5e3e62122006deb7cd1f699b827f",
+        "bytes": 38456
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_21.json",
+        "git_blob_sha1": "db9a622729ae82dc1cc1208d6e4b7a1db5235560",
+        "bytes": 24088
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_22.json",
+        "git_blob_sha1": "a356d8c4bba36ee74b7458b945e2d0dec6eaec71",
+        "bytes": 26918
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_23.json",
+        "git_blob_sha1": "a6f427c45792353a14b9fdb023f38e0b1dfe8927",
+        "bytes": 23009
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_24.json",
+        "git_blob_sha1": "807590ffdbfd1efce38e8561cc70e6b04510787b",
+        "bytes": 20945
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_25.json",
+        "git_blob_sha1": "0f8940fa9ca0463a33724fb8a0c61b342e7f8bb0",
+        "bytes": 18877
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_26.json",
+        "git_blob_sha1": "d5ceece2abb76e1610aad8685dc7e31956baf5d5",
+        "bytes": 41034
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_27.json",
+        "git_blob_sha1": "8ff813a585aba76523e421891021b651ccdfa77b",
+        "bytes": 28052
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_28.json",
+        "git_blob_sha1": "c2c9f4d8faba685d7d4107df6756b54e543d2eb4",
+        "bytes": 30056
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_29.json",
+        "git_blob_sha1": "ac8b32020c4099fc1b5c0d542336a4de851338d2",
+        "bytes": 25347
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_30.json",
+        "git_blob_sha1": "a94bdd0219ff4e17283233d1857d90dd4e4b53f9",
+        "bytes": 30369
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_31.json",
+        "git_blob_sha1": "3a182c6279c3d67985573282cdd5c86d5b160733",
+        "bytes": 38117
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_32.json",
+        "git_blob_sha1": "d83110da0c60989c6506f5dfa44d45138a06c9d5",
+        "bytes": 21772
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_33.json",
+        "git_blob_sha1": "365ae1aa5b37a00719ca61ab8da92a2a56d6df78",
+        "bytes": 20801
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_34.json",
+        "git_blob_sha1": "984859f95f8ced08bfad92acb24f58e0c9e03a22",
+        "bytes": 29947
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_35.json",
+        "git_blob_sha1": "9272c721f128d1d7c00186c575a92e22dcbdca4c",
+        "bytes": 29515
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_36.json",
+        "git_blob_sha1": "f6f0e39b87970ee612423588ba436b9274212fb6",
+        "bytes": 36803
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_37.json",
+        "git_blob_sha1": "18880ff610316e518ca4b715be9422c4d95b775f",
+        "bytes": 26814
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_38.json",
+        "git_blob_sha1": "a9b2f2416500fdba4edc4f86d6ece8b682b77883",
+        "bytes": 28550
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_39.json",
+        "git_blob_sha1": "bb9f61b91b29edb67444ade25e68f25a1235d889",
+        "bytes": 29290
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_40.json",
+        "git_blob_sha1": "a280745f538c14299516bcc677af3cd6a15bad2e",
+        "bytes": 27517
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_41.json",
+        "git_blob_sha1": "b1d8be0a0f65eb78ed4dfe8b73de5c6aaf09c12b",
+        "bytes": 37011
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_42.json",
+        "git_blob_sha1": "1fc8f165d32f2f7a80fa33a6fb404ed32fe76d37",
+        "bytes": 29682
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_43.json",
+        "git_blob_sha1": "c206e3fec48a95b5af06a5f87898f3fd0df19163",
+        "bytes": 31881
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_44.json",
+        "git_blob_sha1": "2db8317477f6c572e86f8a39ade0767125cefac4",
+        "bytes": 29884
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_45.json",
+        "git_blob_sha1": "a888a112db2ff87848ed99fe791305a0bad294d9",
+        "bytes": 24642
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_46.json",
+        "git_blob_sha1": "b4dde57d4abe69469226216c18fe93135e7dacfa",
+        "bytes": 39822
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_47.json",
+        "git_blob_sha1": "788ede61365b28e1a960652f690de21aec2e04f5",
+        "bytes": 28889
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_48.json",
+        "git_blob_sha1": "81512d01a396f652896102dc09c263577370ade0",
+        "bytes": 29137
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_49.json",
+        "git_blob_sha1": "37c3ecc39b2b82f9d42a93f655c53784955208f3",
+        "bytes": 33164
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_50.json",
+        "git_blob_sha1": "86f5b2368c763f51105ed9fcc389f25ba229094f",
+        "bytes": 32301
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_51.json",
+        "git_blob_sha1": "7bcd6c30ad2b5cdfff33cb70178207c0740dc408",
+        "bytes": 38919
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_52.json",
+        "git_blob_sha1": "35707167a2dc259918ede0a4452db6bd7a2113d1",
+        "bytes": 24260
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_53.json",
+        "git_blob_sha1": "befc4e7135ccac8d941a5d44e95747a441bd6067",
+        "bytes": 28129
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_54.json",
+        "git_blob_sha1": "f855dd8e91ce53911b5f3ba55ee4f7e799603925",
+        "bytes": 29510
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_55.json",
+        "git_blob_sha1": "f983afa45758df081e745631377cfe0abbbc2891",
+        "bytes": 27726
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_56.json",
+        "git_blob_sha1": "cf6327c3d7e548bb15dcab7db190a2b855ab1d31",
+        "bytes": 39140
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_57.json",
+        "git_blob_sha1": "30a72c31244216383f46724d733c029a8095466e",
+        "bytes": 29220
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_58.json",
+        "git_blob_sha1": "8c6a17f4d97da27ea7b46bfe55629d478504fd3b",
+        "bytes": 28630
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_59.json",
+        "git_blob_sha1": "c29387e1bca35ba542195de7037a543a1123408d",
+        "bytes": 29910
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_60.json",
+        "git_blob_sha1": "855cc74358dfb0bd356cda7c961b20aedb05a215",
+        "bytes": 38997
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_61.json",
+        "git_blob_sha1": "dc9bd1b3ca48bc7b5cd9073ab86b89d0269b13ed",
+        "bytes": 29227
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_62.json",
+        "git_blob_sha1": "2d27dcdc55c4652cfaf9521c8a000b37d5a44789",
+        "bytes": 27204
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_63.json",
+        "git_blob_sha1": "6966199028ae8b2d8d4b0225bded3feada7213d4",
+        "bytes": 28958
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_64.json",
+        "git_blob_sha1": "76e2113837de72035db1cba0856e5e38693ab8c8",
+        "bytes": 27043
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_65.json",
+        "git_blob_sha1": "cda5118379eb2d02c550e028aad455a8b3ec73e6",
+        "bytes": 41336
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_66.json",
+        "git_blob_sha1": "19281ebff60c262ae936a56401ae894faa666f79",
+        "bytes": 27994
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_67.json",
+        "git_blob_sha1": "49e3e27c396a7d921ef2dcc8dd7ee06068373715",
+        "bytes": 27615
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_68.json",
+        "git_blob_sha1": "ad1695ccb31b3e39b32b9b2eafce5140c2bf5c00",
+        "bytes": 29925
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_69.json",
+        "git_blob_sha1": "447682d9bf7498daef4dcb821af5ac920634cd3f",
+        "bytes": 39829
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_70.json",
+        "git_blob_sha1": "27c444dddcbd5cfcf4d3635a9123ffb6bf505741",
+        "bytes": 28987
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_71.json",
+        "git_blob_sha1": "84450ade7bb2f3b32925142f1efcc7ad46ce1268",
+        "bytes": 27085
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_72.json",
+        "git_blob_sha1": "ca73e61c53692abdcb99c795a83f81b1cb2831ce",
+        "bytes": 24807
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk2/lesson_73.json",
+        "git_blob_sha1": "bac0f6873f6aae460391e720ccdce0098f1110c2",
+        "bytes": 41318
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_01.json",
+        "git_blob_sha1": "08cc0eb994ee161c62ad7131112c6e81f2dd9a59",
+        "bytes": 25660
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_02.json",
+        "git_blob_sha1": "b5226edb602b13bacd34f216e1499f5fb563c410",
+        "bytes": 22437
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_03.json",
+        "git_blob_sha1": "3ef88772580cb3945ec7bbc1e400f8d0adda0a7c",
+        "bytes": 24306
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_04.json",
+        "git_blob_sha1": "41a31d949ca662b4719baecd6e64cedb96d44d49",
+        "bytes": 20518
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_05.json",
+        "git_blob_sha1": "25ac296c885792c8a1f3d3bdaa3fcc915e43eaa5",
+        "bytes": 23537
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_06.json",
+        "git_blob_sha1": "ca9245d5acd1647ca0f3647376e3186e316fb34e",
+        "bytes": 22374
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_07.json",
+        "git_blob_sha1": "42792e3b8d5332c65e7fa0e7249c3d941650a788",
+        "bytes": 17955
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_08.json",
+        "git_blob_sha1": "247fde36ff770068711f4957cf30c130cf5fc23d",
+        "bytes": 45025
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_09.json",
+        "git_blob_sha1": "ff7c74afc7da3d02078115ea5bc99712b3a5c295",
+        "bytes": 26785
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_10.json",
+        "git_blob_sha1": "295b09147df46e26e9b55e132ee5b67fede6f77c",
+        "bytes": 27621
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_100.json",
+        "git_blob_sha1": "48e638f1d0942fd406d2652f27e24204d90d3e9c",
+        "bytes": 27332
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_101.json",
+        "git_blob_sha1": "8c84028dfd32cd499bd27b393d358ee0bc3fad1e",
+        "bytes": 28711
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_102.json",
+        "git_blob_sha1": "ed52a869a27cde9d2d991c543a8fb6c7f41c6084",
+        "bytes": 27552
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_103.json",
+        "git_blob_sha1": "42cb5316783f3633e63cbd3782e090459591c1ac",
+        "bytes": 24569
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_104.json",
+        "git_blob_sha1": "904185c31ad0092d280c7734ad2becb2e2078a2f",
+        "bytes": 47484
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_105.json",
+        "git_blob_sha1": "af762d4dd782e59d077773a2c284e37c7f72c4a3",
+        "bytes": 28584
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_106.json",
+        "git_blob_sha1": "a5d3d4e6d43f3c573d3bf3de1cb28aeae4d889c6",
+        "bytes": 31663
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_107.json",
+        "git_blob_sha1": "2ffee00baf8bfedaaa1e7605ac1141ffcfc10f3e",
+        "bytes": 36097
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_108.json",
+        "git_blob_sha1": "1853e6134707c9ef4d7148d05b93fa2e3cb6d2d8",
+        "bytes": 28147
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_109.json",
+        "git_blob_sha1": "56d02134c57cf741059cddbfdb95f8961e59dccf",
+        "bytes": 29267
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_11.json",
+        "git_blob_sha1": "d9da3d2f4eabbf5c3ebfc969aa7b90a9b2320d3b",
+        "bytes": 27455
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_110.json",
+        "git_blob_sha1": "d10f80791ac81ec6fc6e2fb5f413a9d5afed79bd",
+        "bytes": 27836
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_111.json",
+        "git_blob_sha1": "094b37dcb367e111bf619c64a8fe5891d869b42e",
+        "bytes": 24983
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_112.json",
+        "git_blob_sha1": "8ba49a569bd364f512cda89a227e43ec12fbe2dc",
+        "bytes": 47228
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_113.json",
+        "git_blob_sha1": "f32646ca19b0a3d5987afcf886a7ef7e9067b169",
+        "bytes": 27270
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_114.json",
+        "git_blob_sha1": "fa32c3ea6a7e95b921ce42ea179c1a6abdfab206",
+        "bytes": 31201
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_115.json",
+        "git_blob_sha1": "0a4813ee6feb74ee567b66872f9622e2732fcf22",
+        "bytes": 30890
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_116.json",
+        "git_blob_sha1": "d69b972b7a7b96ecd22e4d1722613f84d4e95f1f",
+        "bytes": 29980
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_117.json",
+        "git_blob_sha1": "af0b9fcacadaba953d2139c21ed38917a102bb73",
+        "bytes": 24803
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_118.json",
+        "git_blob_sha1": "db4702cf85e25ef7c80366c7158ce117fdd8b0a4",
+        "bytes": 21307
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_119.json",
+        "git_blob_sha1": "b694fc0569d29e5c5bd716fc313be40a76abcc42",
+        "bytes": 28170
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_12.json",
+        "git_blob_sha1": "2ec3b973a5ec3c42d3024d930d6938f4b9a29271",
+        "bytes": 23393
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_120.json",
+        "git_blob_sha1": "7352fae287997c3106bd9d2f44d97ab8f459b92a",
+        "bytes": 52980
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_121.json",
+        "git_blob_sha1": "454cde045b4fc0f3e6c2c1d5e71c282120e10937",
+        "bytes": 28044
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_122.json",
+        "git_blob_sha1": "05f053e4b94cf7787dc0d63e8106775f3ed6f061",
+        "bytes": 30863
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_123.json",
+        "git_blob_sha1": "421f414a3cda2400db09fa780dac5187709bcc8b",
+        "bytes": 30334
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_124.json",
+        "git_blob_sha1": "90432a573ee0a50aa9ebc80a2e3c2ffea32d8255",
+        "bytes": 26025
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_125.json",
+        "git_blob_sha1": "6bbf67560afff989633ef66da953a580f9f2ae26",
+        "bytes": 34071
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_126.json",
+        "git_blob_sha1": "730bd91ea2a3af7650030037ea286ef7e206cc04",
+        "bytes": 24004
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_127.json",
+        "git_blob_sha1": "c763971aea2550f99a402dd846f01311b6ae99cb",
+        "bytes": 22541
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_128.json",
+        "git_blob_sha1": "50a91130fbcf85ff6bff0ba2498b3559d60ac636",
+        "bytes": 51547
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_129.json",
+        "git_blob_sha1": "004f331f56332d9ea60a78e617edfc1dea5c974c",
+        "bytes": 27892
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_13.json",
+        "git_blob_sha1": "8a8c922742aeec51f5a78107711f6fb0129942b2",
+        "bytes": 25072
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_130.json",
+        "git_blob_sha1": "40f9c908a5d2cf5a25be58f4b04dd4b1882fff51",
+        "bytes": 29630
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_131.json",
+        "git_blob_sha1": "2a080dfaf03bb5dbb601849639ce3a61eaecf988",
+        "bytes": 29583
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_132.json",
+        "git_blob_sha1": "0e0736491cfc344e480abb9213aa26ee387bab2f",
+        "bytes": 31593
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_133.json",
+        "git_blob_sha1": "a3f3db4b7e2ee4db58a44d8849cc5b4017610fcd",
+        "bytes": 27663
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_134.json",
+        "git_blob_sha1": "baa31dffdd9bdec509d018dd73d69c1184a54169",
+        "bytes": 25689
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_135.json",
+        "git_blob_sha1": "0f05fb07052cb342dc0507a7d8fcc74364661e0f",
+        "bytes": 22805
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_136.json",
+        "git_blob_sha1": "c69fb01861cd46c33cc56e2d3571051abe223fca",
+        "bytes": 51731
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_137.json",
+        "git_blob_sha1": "5b4d28a72b6ea263ad4f38f513180615b6b15078",
+        "bytes": 25640
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_138.json",
+        "git_blob_sha1": "d6aba3466cee049c197e9a2e87416e30b4cc3d80",
+        "bytes": 30113
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_139.json",
+        "git_blob_sha1": "a068c62e36c33e6097ce6fbb147bd58418ea5cd7",
+        "bytes": 27334
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_14.json",
+        "git_blob_sha1": "85b405c0dcec1fd76a368d1490acd5d69ed78fe7",
+        "bytes": 27596
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_140.json",
+        "git_blob_sha1": "237b9a9517eecd2df16e6ee0024f9f0ae77074b5",
+        "bytes": 28538
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_141.json",
+        "git_blob_sha1": "048e04022d3bbec4bc109aa9490e1aa58c773889",
+        "bytes": 25662
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_142.json",
+        "git_blob_sha1": "8542b17952f09ac936296d675ac57382df925715",
+        "bytes": 21082
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_143.json",
+        "git_blob_sha1": "bc3b3c51e98d416dd97650f303d89f6b9bd52ac7",
+        "bytes": 22004
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_144.json",
+        "git_blob_sha1": "ca2d08bc6e898dce6333ad0f314f61027c7f0e95",
+        "bytes": 24219
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_145.json",
+        "git_blob_sha1": "afd50ab07688fd54cfba661f6dfef2dfd776786a",
+        "bytes": 51870
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_15.json",
+        "git_blob_sha1": "931bfd1b67f6064f2ad0658de17ca06abf06723a",
+        "bytes": 24224
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_16.json",
+        "git_blob_sha1": "e5da854fb9dc5f73923a68304319d9f198555888",
+        "bytes": 45512
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_17.json",
+        "git_blob_sha1": "b99b9c346e97822d182c42436a8672c7ed456897",
+        "bytes": 25010
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_18.json",
+        "git_blob_sha1": "9610ec8fc534da396eb809683b52786cb85db182",
+        "bytes": 26936
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_19.json",
+        "git_blob_sha1": "d917779934b579e40ec65739c061739410105380",
+        "bytes": 33023
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_20.json",
+        "git_blob_sha1": "7a5b39c278061050128793406cb42d4fbbee740a",
+        "bytes": 27342
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_21.json",
+        "git_blob_sha1": "0c469da21e3f102034f09e21d1be57b764cc3b39",
+        "bytes": 28773
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_22.json",
+        "git_blob_sha1": "a5f87afbb4848714e43b2782b74b20bd0e3661da",
+        "bytes": 24598
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_23.json",
+        "git_blob_sha1": "2a7736fa5ab9763c07054b55ae60df1636fd69f5",
+        "bytes": 25083
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_24.json",
+        "git_blob_sha1": "b3f547c5d7dd81373ffec9991a58cb6f00fe1bcb",
+        "bytes": 49779
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_25.json",
+        "git_blob_sha1": "733f70c5c96dc668416807ee6f8fe46ae840fe31",
+        "bytes": 30236
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_26.json",
+        "git_blob_sha1": "31f860359f2cb696669b8c59875953ffc7df4dd1",
+        "bytes": 22829
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_27.json",
+        "git_blob_sha1": "b269119b62b9ed6df5208fdf2bad36f461cf64d1",
+        "bytes": 26084
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_28.json",
+        "git_blob_sha1": "0ac7c57e897c46101177749f750cb0dacec755af",
+        "bytes": 32736
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_29.json",
+        "git_blob_sha1": "b496a4aab16e7cd50b3dbf1177e0395b26e4f5d7",
+        "bytes": 28312
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_30.json",
+        "git_blob_sha1": "593a532a925d8b4f5b585bf8ffdea6e806579b78",
+        "bytes": 36163
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_31.json",
+        "git_blob_sha1": "2310aab6649b7eeb5391d4f966dd72e51e9e3ff3",
+        "bytes": 25913
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_32.json",
+        "git_blob_sha1": "e1171bcb5fa1bdf9b39950509113934e3c09351d",
+        "bytes": 46472
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_33.json",
+        "git_blob_sha1": "6218f4fa842f2e1b672c6560e2cbcbb82c57d61b",
+        "bytes": 23576
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_34.json",
+        "git_blob_sha1": "d36515e4c9b877403493f9019a8a934ea6811302",
+        "bytes": 28125
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_35.json",
+        "git_blob_sha1": "214cc505a39972c5e3561293915dc1e3e1184e5c",
+        "bytes": 30112
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_36.json",
+        "git_blob_sha1": "0d838384153dad6c76c7dd6244324a5a7dea7dea",
+        "bytes": 33283
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_37.json",
+        "git_blob_sha1": "4ff3aee86a6b6fe80b8abcf5efd802b300e75120",
+        "bytes": 29920
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_38.json",
+        "git_blob_sha1": "c7cdb7565c66f535ccefe609482e06a2a6b5aff6",
+        "bytes": 26584
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_39.json",
+        "git_blob_sha1": "ae3ac3a7b73d4c4f24c2f5084c5e710f83e8861f",
+        "bytes": 24938
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_40.json",
+        "git_blob_sha1": "cb1251178a2fbc722decb542f79f4e9061167a9a",
+        "bytes": 47119
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_41.json",
+        "git_blob_sha1": "c1f3a30246483d3b08de7d4c0d0dcca20ea95a7e",
+        "bytes": 29161
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_42.json",
+        "git_blob_sha1": "8da037613da10cefb564bb27ce4e8d34cf73868b",
+        "bytes": 26316
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_43.json",
+        "git_blob_sha1": "c3bdec4e79d9482f2ebe320290f5e1a89eced516",
+        "bytes": 32123
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_44.json",
+        "git_blob_sha1": "84ecb3adbc7d1dd823df8246f7e83b06307af6bd",
+        "bytes": 32961
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_45.json",
+        "git_blob_sha1": "1aaac527d7388968dd0c8489bc9607db551a7d8c",
+        "bytes": 30659
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_46.json",
+        "git_blob_sha1": "e51f3cc7fe7381ac180f52fed89f68c457dd87c5",
+        "bytes": 27740
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_47.json",
+        "git_blob_sha1": "4345c3e794d271682f008b40ff19d8eba3c6949e",
+        "bytes": 24999
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_48.json",
+        "git_blob_sha1": "0bef408139616d6af621d3d7bbea3bdda8d165e6",
+        "bytes": 46657
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_49.json",
+        "git_blob_sha1": "758934f77c093a573685391cab53d2861cc2abfa",
+        "bytes": 27693
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_50.json",
+        "git_blob_sha1": "211471b19d7592b8abf6a1b41f08cc6a8ca478bf",
+        "bytes": 27587
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_51.json",
+        "git_blob_sha1": "0941a7c917bad6998795c6e864f230267671dfeb",
+        "bytes": 25338
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_52.json",
+        "git_blob_sha1": "649dcc293fe3c496419494c30c2bc5f6300d825a",
+        "bytes": 23887
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_53.json",
+        "git_blob_sha1": "81191652261d7e0110816373efc086a15481cd02",
+        "bytes": 31733
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_54.json",
+        "git_blob_sha1": "12050a441c3141b6e9173ae2e23c37c82e98fa19",
+        "bytes": 28162
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_55.json",
+        "git_blob_sha1": "5bf8c693d8977a8e8684eefe0012c9afdb3ccd18",
+        "bytes": 32903
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_56.json",
+        "git_blob_sha1": "64d3962f2d7841fd0ad9ed5cc99c09db3421e376",
+        "bytes": 45796
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_57.json",
+        "git_blob_sha1": "dc2bdf36ecf81903d71f9022d3bd84cfb26dd54f",
+        "bytes": 28886
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_58.json",
+        "git_blob_sha1": "d67cadad74ddeb336c3aebf11074ee0873c5b19c",
+        "bytes": 29044
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_59.json",
+        "git_blob_sha1": "2b6d0e0aaadc8dc24d3b50999e8e5bdc6e3b0468",
+        "bytes": 30124
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_60.json",
+        "git_blob_sha1": "27ab27e536bf2b31b2014aca3dbb4830752d55cb",
+        "bytes": 32365
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_61.json",
+        "git_blob_sha1": "7d9e60adf31b12e6da39c2f44eb31a3c860625e0",
+        "bytes": 26488
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_62.json",
+        "git_blob_sha1": "18e3f3d9a35b1b4aa2f2a210cb585e88c2b32939",
+        "bytes": 30005
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_63.json",
+        "git_blob_sha1": "df9561953c61da8b12ed4ddb47f5a3a8f7e5907f",
+        "bytes": 25379
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_64.json",
+        "git_blob_sha1": "385b0133aa723848d07d8351798e1984175568dc",
+        "bytes": 50970
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_65.json",
+        "git_blob_sha1": "f57b1849b5fc9bb0aaaaf9e387696a42d5957476",
+        "bytes": 30185
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_66.json",
+        "git_blob_sha1": "9e8b6fb6e867e3e4551fb724af6613ea4ed01609",
+        "bytes": 32986
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_67.json",
+        "git_blob_sha1": "cb7df776dd9ad4ea07b0ec6db3d6ecd21120816d",
+        "bytes": 33340
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_68.json",
+        "git_blob_sha1": "3c0bdc3d8c62166bbb7de33c5c15e4d685fb2fdc",
+        "bytes": 32071
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_69.json",
+        "git_blob_sha1": "b8a56811a5e8c559ca01acec7e9ed0ca88ea33c8",
+        "bytes": 30966
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_70.json",
+        "git_blob_sha1": "7a3aabe385aa5314a550bca98c53e0e455fdbb35",
+        "bytes": 28604
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_71.json",
+        "git_blob_sha1": "1f34b4484cd590b699a32cdc05f2cb62820264a3",
+        "bytes": 28454
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_72.json",
+        "git_blob_sha1": "e82d55955fcc94cd320d2bb7dca68cee72520d3c",
+        "bytes": 47942
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_73.json",
+        "git_blob_sha1": "d29dd17a13740699b4a2b3eec72910b1192b968b",
+        "bytes": 33531
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_74.json",
+        "git_blob_sha1": "cb33b29000bbe5f63c08251df278bd633f54ba58",
+        "bytes": 31405
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_75.json",
+        "git_blob_sha1": "05f505568b64095a90b090e3ac129c2dbe7d6b63",
+        "bytes": 30552
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_76.json",
+        "git_blob_sha1": "8a6144eb73a5518a74c3802a7db2c734a99fdd23",
+        "bytes": 26934
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_77.json",
+        "git_blob_sha1": "36b737acd37ad8e8a1f6357256a3fc2ae5809439",
+        "bytes": 29061
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_78.json",
+        "git_blob_sha1": "5be69c625707db45a38eb2b7cc92e056247307c8",
+        "bytes": 30253
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_79.json",
+        "git_blob_sha1": "bbe1663d128bea8a5c6b27cee92d7b6f987e95dc",
+        "bytes": 28673
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_80.json",
+        "git_blob_sha1": "1675724c429600f866c49d2067eb9779d45e7bdf",
+        "bytes": 49578
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_81.json",
+        "git_blob_sha1": "159e40627d406809bebb233e62642e1ced2d7d74",
+        "bytes": 30485
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_82.json",
+        "git_blob_sha1": "f8be00eec1b5a8c558ca0d9e4683fa26762f6876",
+        "bytes": 30784
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_83.json",
+        "git_blob_sha1": "75979425baf40c9a5c2689790d0e1832ae0aba6d",
+        "bytes": 33025
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_84.json",
+        "git_blob_sha1": "1d760ae913cc53a246f872e4a6ed92a109ffb947",
+        "bytes": 34550
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_85.json",
+        "git_blob_sha1": "c036f0f416b14054f62f5e94285976bc53104916",
+        "bytes": 29423
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_86.json",
+        "git_blob_sha1": "6bcf41f21026fe371a8fff13b870839e298a009f",
+        "bytes": 27478
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_87.json",
+        "git_blob_sha1": "533d87fb29d619f4da762143ef2cb7e94fc52bb9",
+        "bytes": 27289
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_88.json",
+        "git_blob_sha1": "f8331a878e6e9c7fc2986668957b67256847a9c0",
+        "bytes": 49510
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_89.json",
+        "git_blob_sha1": "4dffd507f311420f588bc41f501fffb4325b5503",
+        "bytes": 27988
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_90.json",
+        "git_blob_sha1": "7268f6afc47f857b3256b728e18fe4dbae61b7c9",
+        "bytes": 27347
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_91.json",
+        "git_blob_sha1": "f73d7b441cbf0428f076caf0f530061c90ac794c",
+        "bytes": 31412
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_92.json",
+        "git_blob_sha1": "ff965c1f55fc2f10f991ded800c5570d3781e08a",
+        "bytes": 32755
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_93.json",
+        "git_blob_sha1": "0b5c6c97b0efb96c84cc1200bff8ee29643bde9f",
+        "bytes": 28091
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_94.json",
+        "git_blob_sha1": "21be5f67f50ca5583f0cce4e714bbd062087319a",
+        "bytes": 24548
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_95.json",
+        "git_blob_sha1": "c927b85b648a65e6a2e829e88cee207c46ec8ac6",
+        "bytes": 22074
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_96.json",
+        "git_blob_sha1": "73094c491b3aad50f7a439e60c5f235998b43429",
+        "bytes": 48376
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_97.json",
+        "git_blob_sha1": "f20efaff59a22faf4c27cae96ff1f54e9dc26081",
+        "bytes": 30433
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_98.json",
+        "git_blob_sha1": "48ab4976662508f1630f332ddc90058f3b55944a",
+        "bytes": 31074
+      },
+      {
+        "path": "app/static/course_v3_data/nhsk3/lesson_99.json",
+        "git_blob_sha1": "dc932a171efa9b1f287bf5a712ae26f9c60481c7",
+        "bytes": 33104
+      }
+    ],
+    "legacy_content": [
+      {
+        "path": "app/static/course_content/hsk1/lesson_01.json",
+        "git_blob_sha1": "2b4fd1775c85649ff6166c2e46647e469e24a6c5",
+        "bytes": 45964
+      },
+      {
+        "path": "app/static/course_content/hsk1/lesson_02.json",
+        "git_blob_sha1": "76c47a0b2b21563140d9bd615c2b7768aa6ceaa1",
+        "bytes": 42978
+      },
+      {
+        "path": "app/static/course_content/hsk1/lesson_03.json",
+        "git_blob_sha1": "9583effe362b49940e1e0ba1287f229fd7ea884a",
+        "bytes": 59599
+      },
+      {
+        "path": "app/static/course_data/hsk1.json",
+        "git_blob_sha1": "63f216dea5c808f44c634d4863417dea1097344a",
+        "bytes": 163843
+      },
+      {
+        "path": "app/static/course_data/hsk2.json",
+        "git_blob_sha1": "7ae8c7e0776ff2bb7828dc9688cb833187882a50",
+        "bytes": 169307
+      },
+      {
+        "path": "app/static/course_data/hsk3.json",
+        "git_blob_sha1": "5f159b793cdf3d46c2962ed86bf6f2b2605dcf7f",
+        "bytes": 232400
+      },
+      {
+        "path": "app/static/course_data/hsk4a.json",
+        "git_blob_sha1": "4ea412f795666d3c73eb6cfa4070f79a296bbc63",
+        "bytes": 133682
+      },
+      {
+        "path": "app/static/course_data/hsk4b.json",
+        "git_blob_sha1": "8cf8129f8c9b0cbfd9a0b01edb505919b5ee06d1",
+        "bytes": 133077
+      }
+    ],
+    "ui_catalog_origins": [
+      {
+        "path": "android/app/src/direct/res/values-ru/strings.xml",
+        "git_blob_sha1": "87e763123aec4cc439284970478b3fdd818e5d85",
+        "bytes": 18013
+      },
+      {
+        "path": "android/app/src/direct/res/values-tg/strings.xml",
+        "git_blob_sha1": "2ed1b4b9af21ec018009084dd8e737494f681749",
+        "bytes": 18453
+      },
+      {
+        "path": "android/app/src/direct/res/values/strings.xml",
+        "git_blob_sha1": "b4a634072fd3702a20adca502360b9ea10d1397e",
+        "bytes": 14343
+      },
+      {
+        "path": "android/app/src/main/res/values-ru/account_deletion.xml",
+        "git_blob_sha1": "b2c271fa368a6e7bb95c0404f17afc5a66389562",
+        "bytes": 2043
+      },
+      {
+        "path": "android/app/src/main/res/values-ru/assistant.xml",
+        "git_blob_sha1": "54332d23a7b7881a911ec12587631e4524dbb52e",
+        "bytes": 5314
+      },
+      {
+        "path": "android/app/src/main/res/values-ru/course_parity.xml",
+        "git_blob_sha1": "119b943c25da3fd551ebe39b2de2b4ad6c97a32d",
+        "bytes": 2474
+      },
+      {
+        "path": "android/app/src/main/res/values-ru/foundation_errors.xml",
+        "git_blob_sha1": "362b0bc957fd0b9d5ddfdbae5434e19824a1e1fc",
+        "bytes": 262
+      },
+      {
+        "path": "android/app/src/main/res/values-ru/foundation.xml",
+        "git_blob_sha1": "a6a59d6b217ac8ea68f0d801ec02436fd754c3d2",
+        "bytes": 1768
+      },
+      {
+        "path": "android/app/src/main/res/values-ru/mistakes_miniapp_parity.xml",
+        "git_blob_sha1": "b9ad0ae97d77e063a7e5c32ba067d3e70e8a040d",
+        "bytes": 3322
+      },
+      {
+        "path": "android/app/src/main/res/values-ru/profile_miniapp_parity.xml",
+        "git_blob_sha1": "a693c73e79ee32805e816a18c5de81aed91840cd",
+        "bytes": 6051
+      },
+      {
+        "path": "android/app/src/main/res/values-ru/strings.xml",
+        "git_blob_sha1": "3ea6bde59e80c8dbbee04d0d1b8a34da08e550a2",
+        "bytes": 55752
+      },
+      {
+        "path": "android/app/src/main/res/values-ru/theme_mode.xml",
+        "git_blob_sha1": "60d54119ace54f35c89e3814b3c97a81560215df",
+        "bytes": 715
+      },
+      {
+        "path": "android/app/src/main/res/values-ru/widget_strings.xml",
+        "git_blob_sha1": "84d0e443850369216f111e948e06f309297507ec",
+        "bytes": 5948
+      },
+      {
+        "path": "android/app/src/main/res/values-tg/account_deletion.xml",
+        "git_blob_sha1": "45235543f295a53b3be5f2fa1d829f2bd9e36f1a",
+        "bytes": 2013
+      },
+      {
+        "path": "android/app/src/main/res/values-tg/assistant.xml",
+        "git_blob_sha1": "9507850daa78f95bd9e1fe7fc534aedcee626ac0",
+        "bytes": 5324
+      },
+      {
+        "path": "android/app/src/main/res/values-tg/course_parity.xml",
+        "git_blob_sha1": "17c66b5abace228203288106528a4611d0e8a368",
+        "bytes": 2520
+      },
+      {
+        "path": "android/app/src/main/res/values-tg/foundation_errors.xml",
+        "git_blob_sha1": "6010a39d657e96009c9bd7829f78095f3b895e68",
+        "bytes": 252
+      },
+      {
+        "path": "android/app/src/main/res/values-tg/foundation.xml",
+        "git_blob_sha1": "bf718dd11f25167508ad534e6a377c85d80f76e4",
+        "bytes": 1765
+      },
+      {
+        "path": "android/app/src/main/res/values-tg/mistakes_miniapp_parity.xml",
+        "git_blob_sha1": "256fda66f63ce22e6b8045562920f032f1eef295",
+        "bytes": 3219
+      },
+      {
+        "path": "android/app/src/main/res/values-tg/profile_miniapp_parity.xml",
+        "git_blob_sha1": "e680b1ae62d7e98e59637baa599d1bbc0061ca07",
+        "bytes": 6023
+      },
+      {
+        "path": "android/app/src/main/res/values-tg/strings.xml",
+        "git_blob_sha1": "a4d435d7b1b45a26c1f34abdab6cecd1e13fc785",
+        "bytes": 56072
+      },
+      {
+        "path": "android/app/src/main/res/values-tg/theme_mode.xml",
+        "git_blob_sha1": "111760e320ac836c5a0c20764dcef87e59873df8",
+        "bytes": 718
+      },
+      {
+        "path": "android/app/src/main/res/values-tg/widget_strings.xml",
+        "git_blob_sha1": "c0f36f3e8b2345d00976b06cff908d77f97b15cd",
+        "bytes": 6001
+      },
+      {
+        "path": "android/app/src/main/res/values/account_deletion.xml",
+        "git_blob_sha1": "3b00e07b9dc191b3bd927973f30d77817389912d",
+        "bytes": 1445
+      },
+      {
+        "path": "android/app/src/main/res/values/assistant.xml",
+        "git_blob_sha1": "f756174a9da28c3fda5b9a6faa886955ff40778a",
+        "bytes": 4172
+      },
+      {
+        "path": "android/app/src/main/res/values/colors.xml",
+        "git_blob_sha1": "9bc090e09c209af93d991c2634e7db0d283459ad",
+        "bytes": 669
+      },
+      {
+        "path": "android/app/src/main/res/values/course_parity.xml",
+        "git_blob_sha1": "8eab03f0d956c8cb0be0fb31a59fa9e6da800f8c",
+        "bytes": 2166
+      },
+      {
+        "path": "android/app/src/main/res/values/foundation_errors.xml",
+        "git_blob_sha1": "dd992a79cddb2f02246abe2afa8e7eae341322e5",
+        "bytes": 189
+      },
+      {
+        "path": "android/app/src/main/res/values/foundation.xml",
+        "git_blob_sha1": "8ddc5f877358312c40955904a399b8bf53e1e1e8",
+        "bytes": 1474
+      },
+      {
+        "path": "android/app/src/main/res/values/mistakes_miniapp_parity.xml",
+        "git_blob_sha1": "a7c58ceda8315e08af9d0c11b36b6f1051bcb402",
+        "bytes": 2842
+      },
+      {
+        "path": "android/app/src/main/res/values/profile_miniapp_parity.xml",
+        "git_blob_sha1": "a2b6359737c76ae297c8ee4a94de05d5ef1f0c66",
+        "bytes": 4873
+      },
+      {
+        "path": "android/app/src/main/res/values/strings.xml",
+        "git_blob_sha1": "efa24ce8e1f0d5c2860abf9df89c130a2d439dc7",
+        "bytes": 46923
+      },
+      {
+        "path": "android/app/src/main/res/values/theme_mode.xml",
+        "git_blob_sha1": "f9815c3953398f2e0721215704386083362df1de",
+        "bytes": 602
+      },
+      {
+        "path": "android/app/src/main/res/values/themes.xml",
+        "git_blob_sha1": "77681ee04f9e254dff8ce2c1e50020b7a49d25ad",
+        "bytes": 674
+      },
+      {
+        "path": "android/app/src/main/res/values/widget_strings.xml",
+        "git_blob_sha1": "a80c2bb62091634b69a7575ee1e2b198a3d38fd2",
+        "bytes": 4872
+      },
+      {
+        "path": "android/app/src/play/res/values-ru/strings.xml",
+        "git_blob_sha1": "566ae62c32a2bf63b88f0da71f2e037212668fd4",
+        "bytes": 603
+      },
+      {
+        "path": "android/app/src/play/res/values-tg/strings.xml",
+        "git_blob_sha1": "0614449a189345200ae3c89052e95672187decbf",
+        "bytes": 708
+      },
+      {
+        "path": "android/app/src/play/res/values/strings.xml",
+        "git_blob_sha1": "17067776c3480557eb49431780cc90794edc4ef1",
+        "bytes": 702
+      },
+      {
+        "path": "app/bot/utils/i18n.py",
+        "git_blob_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",
+        "bytes": 142566
+      },
+      {
+        "path": "app/static/admin.html",
+        "git_blob_sha1": "67ca1e578f701ad523344d8599556d790e36a6cb",
+        "bytes": 282721
+      },
+      {
+        "path": "app/static/character-lab.html",
+        "git_blob_sha1": "a6e493bc53772ca5b813f824e63c94b9c651e280",
+        "bytes": 3303
+      },
+      {
+        "path": "app/static/course_v3_memorize.html",
+        "git_blob_sha1": "c0ec27bbeb8e8dd3aaf25f345548b0135fefc96e",
+        "bytes": 32826
+      },
+      {
+        "path": "app/static/course_v3_mistakes.html",
+        "git_blob_sha1": "b273a6dbf85884b99ab3c194546a6b9d4b0eecbf",
+        "bytes": 40837
+      },
+      {
+        "path": "app/static/course_v3_onboarding.html",
+        "git_blob_sha1": "321c28c34cf4ed0550bb5187d8f6b680654ea51e",
+        "bytes": 47228
+      },
+      {
+        "path": "app/static/course_v3_pronunciation.html",
+        "git_blob_sha1": "d05f5dd02da2befc4db9bc07db343a19bd1c0e32",
+        "bytes": 32811
+      },
+      {
+        "path": "app/static/course_v3_recognition.html",
+        "git_blob_sha1": "22c2e10c99a243b9eb9992f99de0de0709c7f819",
+        "bytes": 25062
+      },
+      {
+        "path": "app/static/course_v3_test.html",
+        "git_blob_sha1": "2962e807b81cc5059dd2bf8ae2b344479d3cd19b",
+        "bytes": 36442
+      },
+      {
+        "path": "app/static/course_v3_voice.html",
+        "git_blob_sha1": "ddbca0976c0c1d25c86383653ab274129f33dcd7",
+        "bytes": 47653
+      },
+      {
+        "path": "app/static/course-v3.html",
+        "git_blob_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
+        "bytes": 687155
+      },
+      {
+        "path": "app/static/desktop-download.html",
+        "git_blob_sha1": "1d0f69a7e9de869af485dbf7bf5a78180ab98b92",
+        "bytes": 17436
+      },
+      {
+        "path": "app/static/hsk-gaplar.html",
+        "git_blob_sha1": "93bd82cb79245ef34834466587ff20e72b729426",
+        "bytes": 21674
+      },
+      {
+        "path": "app/static/hsk-lugat.html",
+        "git_blob_sha1": "b0bebb8df10bfe6ec91f928a48676d76adab91df",
+        "bytes": 136579
+      },
+      {
+        "path": "app/static/subscription.html",
+        "git_blob_sha1": "6841d29b680d21f018133fc7a60079abebd45bf0",
+        "bytes": 117604
+      },
+      {
+        "path": "desktop/ui/js/i18n.js",
+        "git_blob_sha1": "30e85aad8aa00689c6bba01980a56eadc928638e",
+        "bytes": 161999
+      },
+      {
+        "path": "desktop/ui/js/app.js",
+        "git_blob_sha1": "f2a52e42b3188e4bd42bb40a1c64d0b0b16a43fa",
+        "bytes": 200821
+      }
+    ],
+    "generators": [
+      {
+        "path": "scripts/gen_course_v3_from_seed.py",
+        "git_blob_sha1": "f95bf641f4c460ef0eacbc5dd6cff115fd742a8d",
+        "bytes": 90904
+      },
+      {
+        "path": "scripts/hsk30/build_dictionary_assets.py",
+        "git_blob_sha1": "396b4cd551b2f9fe3be4a3854c1d3ee383450453",
+        "bytes": 8507
+      },
+      {
+        "path": "scripts/i18n_inventory.py",
+        "git_blob_sha1": "c1ab7cc4dce6dea9cb45054beab588cfc8698d6b",
+        "bytes": 7371
+      }
+    ]
+  }
+}

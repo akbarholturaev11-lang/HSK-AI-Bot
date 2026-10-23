@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <title>HSK AI Pro</title>
 <style>
@@ -908,7 +908,7 @@ const I18N={
     screenshotInvalid:"Ин расм қабул нашуд. Screenshot-и дигар (JPG ё PNG) интихоб кунед.",
     userBlocked:"Ҳисоби шумо баста шудааст. Бо дастгирӣ дар тамос шавед."
   }
-};
+};var SUBSCRIPTION_UI=window.HSKAI_COURSE_I18N||{};["uz","ru","tj"].forEach(function(locale){var local=SUBSCRIPTION_UI[locale]||{};Object.keys(I18N[locale]).forEach(function(key){if(typeof I18N[locale][key]!=="string")return;var value=local["subscriptionPage."+key];if(typeof value==="string"&&value)I18N[locale][key]=value})});var SUBSCRIPTION_NESTED_UI=window.HSKAI_COURSE_I18N||{};function subscriptionNestedLabel(locale,key,fallback){var dict=SUBSCRIPTION_NESTED_UI[locale]||{};var value=dict["subscriptionNested."+key];return typeof value==="string"&&value?value:fallback}["uz","ru","tj"].forEach(function(locale){var m=I18N[locale],n=function(key){return key.replace(/_([a-z0-9])/g,function(_,c){return c.toUpperCase()})};["modeTitles","modeTv","modePlans","planLabels","rows","cardHints"].forEach(function(group){Object.keys(m[group]).forEach(function(key){m[group][key]=subscriptionNestedLabel(locale,group+"."+n(key),m[group][key])})});Object.keys(m.focus).forEach(function(key){["t","d"].forEach(function(field){m.focus[key][field]=subscriptionNestedLabel(locale,"focus."+key+"."+field,m.focus[key][field])})});m.benefits.forEach(function(pair,i){pair[0]=subscriptionNestedLabel(locale,"benefit"+i+".title",pair[0]);pair[1]=subscriptionNestedLabel(locale,"benefit"+i+".description",pair[1])});m.perks.forEach(function(value,i){m.perks[i]=subscriptionNestedLabel(locale,"perk"+i,value)});["methods","countries"].forEach(function(group){Object.keys(m[group]).forEach(function(key){var pair=m[group][key],id=n(key);pair[0]=subscriptionNestedLabel(locale,group+"."+id+".title",pair[0]);pair[1]=subscriptionNestedLabel(locale,group+"."+id+".description",pair[1])})})});
 
 const HSK30_UNLOCK_MODE=PARAMS.get("mode")==="hsk30_unlock"||PARAMS.get("plan")==="hsk30_unlock";
 const state={
@@ -1370,6 +1370,9 @@ function render(){
      sahifalarida «HSK AI» ustida qoladi. */
   $("#kicker").style.display=(state.mode==="subscription"||state.mode==="hsk30_unlock")?"none":"";
   $("#helpBtn").setAttribute("aria-label",text.supportTitle);
+  $("#inviteBackdrop").setAttribute("aria-label",text.close);
+  $("#supportBackdrop").setAttribute("aria-label",text.close);
+  $("#renewalBackdrop").setAttribute("aria-label",text.close);
   const statusText=state.preview?text.preview:(state.loadError?text.loadError:(state.offerExpired?text.offerExpired:""));
   $("#status").textContent=statusText;
   $("#status").classList.toggle("show",Boolean(statusText));

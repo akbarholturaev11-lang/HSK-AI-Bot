@@ -9,7 +9,27 @@ from app.bot.handlers.course import (
     _show_required_channel_for_pending_action,
 )
 from app.bot.handlers.required_channel import force_sub_check
-from app.bot.keyboards.onboarding import course_mode_entry_keyboard
+from app.bot.keyboards.course import (
+    course_dialogue_keyboard,
+    course_grammar_keyboard,
+    course_homework_keyboard,
+    course_intro_keyboard,
+    course_next_step_keyboard,
+    lesson_selection_keyboard,
+    reminder_time_keyboard,
+    review_choice_keyboard,
+)
+from app.bot.keyboards.course_miniapp import (
+    course_study_miniapp_keyboard,
+    course_v3_miniapp_keyboard,
+)
+from app.bot.keyboards.onboarding import (
+    course_mode_entry_keyboard,
+    daily_practice_check_keyboard,
+    daily_practice_finish_keyboard,
+    language_keyboard,
+    trial_lesson_selection_keyboard,
+)
 from app.bot.middlewares.required_channel import (
     FORCE_SUB_ACTION_OPEN_COURSE,
     FORCE_SUB_ACTION_OPEN_FREE_QA,
@@ -21,14 +41,196 @@ from app.services.course_miniapp_profile_service import CourseMiniAppProfileServ
 
 
 class CourseModeEntryKeyboardTests(unittest.TestCase):
-    def test_course_button_uses_callback_so_force_sub_can_run_first(self):
-        keyboard = course_mode_entry_keyboard("ru")
-        course_button = keyboard.inline_keyboard[0][0]
-        qa_button = keyboard.inline_keyboard[1][0]
+    def test_course_mode_buttons_keep_copy_and_force_sub_callbacks(self):
+        expected = {
+            "uz": ("🚀 Kursni boshlash", "🤖 Oddiy rejim (chatda savol-javob)"),
+            "ru": ("🚀 Начать курс", "🤖 Обычный режим (вопрос-ответ в чате)"),
+            "tj": ("🚀 Оғози курс", "🤖 Реҷаи оддӣ (савол-ҷавоб дар чат)"),
+        }
+        for language, labels in expected.items():
+            with self.subTest(language=language):
+                keyboard = course_mode_entry_keyboard(language)
+                course_button = keyboard.inline_keyboard[0][0]
+                qa_button = keyboard.inline_keyboard[1][0]
 
-        self.assertEqual(course_button.callback_data, "mode:course")
-        self.assertIsNone(course_button.web_app)
-        self.assertEqual(qa_button.callback_data, "mode:free_qa")
+                self.assertEqual((course_button.text, qa_button.text), labels)
+                self.assertEqual(course_button.callback_data, "mode:course")
+                self.assertIsNone(course_button.web_app)
+                self.assertEqual(qa_button.callback_data, "mode:free_qa")
+
+    def test_language_keyboard_uses_shared_labels_and_keeps_callbacks(self):
+        buttons = language_keyboard().inline_keyboard[0]
+
+        self.assertEqual(
+            [button.text for button in buttons],
+            ["🇹🇯 Тоҷикӣ", "🇷🇺 Русский", "🇺🇿 O'zbek"],
+        )
+        self.assertEqual(
+            [button.callback_data for button in buttons],
+            ["lang:tj", "lang:ru", "lang:uz"],
+        )
+
+    def test_daily_practice_buttons_keep_copy_and_callbacks(self):
+        expected = {
+            "uz": (
+                ("📚 Kursni boshlash", "daily_practice:course"),
+                ("💬 Bepul savol-javobga o'tish", "mode:free_qa"),
+                ("✅ Javoblarni ko'rish", "daily_practice:complete"),
+            ),
+            "ru": (
+                ("📚 Начать курс", "daily_practice:course"),
+                ("💬 Перейти в бесплатный вопрос-ответ", "mode:free_qa"),
+                ("✅ Посмотреть ответы", "daily_practice:complete"),
+            ),
+            "tj": (
+                ("📚 Оғози курс", "daily_practice:course"),
+                ("💬 Ба савол-ҷавоби ройгон гузаштан", "mode:free_qa"),
+                ("✅ Дидани ҷавобҳо", "daily_practice:complete"),
+            ),
+        }
+        for language, buttons in expected.items():
+            with self.subTest(language=language):
+                finish = daily_practice_finish_keyboard(language)
+                check = daily_practice_check_keyboard(language)
+                actual = (
+                    (finish.inline_keyboard[0][0].text,
+                     finish.inline_keyboard[0][0].callback_data),
+                    (finish.inline_keyboard[1][0].text,
+                     finish.inline_keyboard[1][0].callback_data),
+                    (check.inline_keyboard[0][0].text,
+                     check.inline_keyboard[0][0].callback_data),
+                )
+                self.assertEqual(actual, buttons)
+
+    def test_trial_lesson_pagination_keeps_localized_labels_and_callbacks(self):
+        lessons = [
+            SimpleNamespace(id=index, lesson_order=index + 1, title="{}")
+            for index in range(8)
+        ]
+        expected = {
+            "uz": ("Keyingi ➡️", "⬅️ Oldingi"),
+            "ru": ("Далее ➡️", "⬅️ Назад"),
+            "tj": ("Баъд ➡️", "⬅️ Қабл"),
+        }
+        for language, (next_label, previous_label) in expected.items():
+            with self.subTest(language=language):
+                next_keyboard = trial_lesson_selection_keyboard(
+                    lessons, page=0, lang=language
+                )
+                previous_keyboard = trial_lesson_selection_keyboard(
+                    lessons, page=1, lang=language
+                )
+                next_button = next_keyboard.inline_keyboard[-1][0]
+                previous_button = previous_keyboard.inline_keyboard[-1][0]
+                self.assertEqual((next_button.text, next_button.callback_data),
+                                 (next_label, "trial_lesson:page:1"))
+                self.assertEqual((previous_button.text, previous_button.callback_data),
+                                 (previous_label, "trial_lesson:page:0"))
+
+    def test_trial_lesson_pagination_keeps_unknown_locale_arrow_fallback(self):
+        lessons = [
+            SimpleNamespace(id=index, lesson_order=index + 1, title="{}")
+            for index in range(8)
+        ]
+        next_keyboard = trial_lesson_selection_keyboard(
+            lessons, page=0, lang="unknown"
+        )
+        previous_keyboard = trial_lesson_selection_keyboard(
+            lessons, page=1, lang="unknown"
+        )
+
+        self.assertEqual(next_keyboard.inline_keyboard[-1][0].text, "➡️")
+        self.assertEqual(previous_keyboard.inline_keyboard[-1][0].text, "⬅️")
+
+
+class CourseKeyboardLocalizationTests(unittest.TestCase):
+    def test_course_keyboard_labels_and_callbacks_match_all_locales(self):
+        expected = {
+            "uz": {
+                "miniapp": "📚 Mini Appda ochish",
+                "intro": ("📖 So'zlarni o'rganamiz", "course:go_vocab"),
+                "dialogue": ("📐 Grammatikaga o'tamiz", "course:go_grammar"),
+                "grammar": ("✏️ Mashqlarga o'tamiz", "course:go_exercise"),
+                "homework": ("✅ Dars tugadi — Keyingi darsga", "course:start_next_lesson"),
+                "continue": ("▶️ Davom etamiz", "course:go_next_step"),
+                "review": (("✅ Ha, takrorlaymiz", "course:review_yes"), ("➡️ Yo'q, keyingisiga", "course:review_no")),
+                "cancel": ("❌ Bekor qilish", "course:reminder_cancel"),
+                "v3": "📚 Kursni ochish",
+                "study": "📚 Kursni Mini Appda ochish",
+            },
+            "ru": {
+                "miniapp": "📚 Открыть в Mini App",
+                "intro": ("📖 Изучаем слова", "course:go_vocab"),
+                "dialogue": ("📐 Переходим к грамматике", "course:go_grammar"),
+                "grammar": ("✏️ Переходим к упражнениям", "course:go_exercise"),
+                "homework": ("✅ Урок завершён — К следующему уроку", "course:start_next_lesson"),
+                "continue": ("▶️ Продолжаем", "course:go_next_step"),
+                "review": (("✅ Да, повторим", "course:review_yes"), ("➡️ Нет, к следующему", "course:review_no")),
+                "cancel": ("❌ Отмена", "course:reminder_cancel"),
+                "v3": "📚 Открыть курс",
+                "study": "📚 Открыть курс в Mini App",
+            },
+            "tj": {
+                "miniapp": "📚 Дар Mini App кушодан",
+                "intro": ("📖 Калимаҳоро меомӯзем", "course:go_vocab"),
+                "dialogue": ("📐 Ба грамматика мегузарем", "course:go_grammar"),
+                "grammar": ("✏️ Ба машқҳо мегузарем", "course:go_exercise"),
+                "homework": ("✅ Дарс тамом шуд — Ба дарси навбатӣ", "course:start_next_lesson"),
+                "continue": ("▶️ Идома медиҳем", "course:go_next_step"),
+                "review": (("✅ Бале, такрор мекунем", "course:review_yes"), ("➡️ Не, ба навбатӣ", "course:review_no")),
+                "cancel": ("❌ Бекор кардан", "course:reminder_cancel"),
+                "v3": "📚 Курсро кушодан",
+                "study": "📚 Курсро дар Mini App кушодан",
+            },
+        }
+        lessons = [
+            SimpleNamespace(id=index, level="hsk1", lesson_order=index + 1, title="{}")
+            for index in range(8)
+        ]
+        for language, labels in expected.items():
+            with self.subTest(language=language):
+                miniapp = course_intro_keyboard(language).inline_keyboard[-1][0]
+                self.assertEqual(miniapp.text, labels["miniapp"])
+
+                intro = course_intro_keyboard(language).inline_keyboard[0][0]
+                dialogue = course_dialogue_keyboard(language).inline_keyboard[0][1]
+                grammar = course_grammar_keyboard(language).inline_keyboard[0][0]
+                homework = course_homework_keyboard(language).inline_keyboard[0][0]
+                next_step = course_next_step_keyboard(language).inline_keyboard[0][0]
+                review = review_choice_keyboard(language).inline_keyboard[0]
+                cancel = reminder_time_keyboard(language).inline_keyboard[1][0]
+                self.assertEqual((intro.text, intro.callback_data), labels["intro"])
+                self.assertEqual((dialogue.text, dialogue.callback_data), labels["dialogue"])
+                self.assertEqual((grammar.text, grammar.callback_data), labels["grammar"])
+                self.assertEqual((homework.text, homework.callback_data), labels["homework"])
+                self.assertEqual((next_step.text, next_step.callback_data), labels["continue"])
+                self.assertEqual(
+                    tuple((button.text, button.callback_data) for button in review),
+                    labels["review"],
+                )
+                self.assertEqual((cancel.text, cancel.callback_data), labels["cancel"])
+
+                v3 = course_v3_miniapp_keyboard(language).inline_keyboard[0][0]
+                study = course_study_miniapp_keyboard(language).inline_keyboard[0][0]
+                self.assertEqual(v3.text, labels["v3"])
+                self.assertEqual(study.text, labels["study"])
+
+                next_page = lesson_selection_keyboard(lessons, page=0, lang=language).inline_keyboard[-1][0]
+                previous_page = lesson_selection_keyboard(lessons, page=1, lang=language).inline_keyboard[-1][0]
+                self.assertEqual((next_page.text, next_page.callback_data),
+                                 ({"uz": "Keyingi ➡️", "ru": "Далее ➡️", "tj": "Баъд ➡️"}[language], "course:lessons_page:1"))
+                self.assertEqual((previous_page.text, previous_page.callback_data),
+                                 ({"uz": "⬅️ Oldingi", "ru": "⬅️ Назад", "tj": "⬅️ Қабл"}[language], "course:lessons_page:0"))
+
+    def test_course_pagination_preserves_unknown_locale_arrow_fallback(self):
+        lessons = [
+            SimpleNamespace(id=index, level="hsk1", lesson_order=index + 1, title="{}")
+            for index in range(8)
+        ]
+        next_page = lesson_selection_keyboard(lessons, page=0, lang="unknown").inline_keyboard[-1][0]
+        previous_page = lesson_selection_keyboard(lessons, page=1, lang="unknown").inline_keyboard[-1][0]
+        self.assertEqual(next_page.text, "➡️")
+        self.assertEqual(previous_page.text, "⬅️")
 
 
 class _CourseEntryMessage:
