@@ -258,3 +258,17 @@ Earlier `RESUME_NEXT_CHAT` messages and early status paragraphs stated no sessio
 - Added `tests/test_admin_pwa_read.py` with 8 real SQL/HTTP cases for actual counts/currency/date selection, overlapping native users, canonical paging/search, source/attachment/orphan boundaries, absent telemetry, current authorization/CSRF/flag/bounds and mounted routes. Local focused tests: **8 passed**. Final full-suite and GitHub results follow after push.
 - No production/main/flag or old Telegram UI/auth changes. UI not started: actual V10 source is absent from repository and local Downloads/Desktop; owner path/URL requested. No skill-use claim or synthetic UI replacement. Pending outbox recovery/reconciliation, full Telegram attribution, durable Android feedback intake, original V10 UI/exact action confirmation, device/staging QA, then separately audited delete/broadcast and read-only export/MCP remain.
 - Final local Python 3.12 read-increment checks: **184 passed / 11 PG-only skipped**, separate legacy suite **61 passed**; compileall and unique migration head `0117` passed. Disposable PostgreSQL 15: **11 passed**, including the new enforcement/isolation/pool-reset test. Prior stage's actual PostgreSQL 16 migration proof remains unchanged; this increment changes no DDL. New exact-SHA GitHub results will be recorded after push.
+
+
+### Verified read-projection increment CI — 2026-10-24
+
+- Exact tested SHA `f24aff4dc534a1e19648918294d094fd64c37e3d`, remote ref verified; https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40032878724. Both jobs completed SUCCESS; actual exact-SHA status and logs inspected.
+- Python 3.12: **184 passed, 11 PG-only skipped**, separate legacy regression **61 passed**. Disposable PostgreSQL 16: **11 passed** including READ ONLY/REPEATABLE READ, rejection of writes and reset for subsequent financial transactions. Compilation, single 0117 head, scoped 0110–0117 migration upgrade and 0117 rollback/re-upgrade/column checks passed.
+
+## Follow-up fix — 2026-10-24, truthful post-commit delivery status
+
+- Sabab: the HTTP payment adapter kept its initial `pending` response when a dispatcher returned false after a partially failed send, even though the durable outbox had become `uncertain`.
+- Fix: `pwa_payment_review_transport.py` now reads the actual durable outbox status after any dispatch attempt; if status cannot be read, returns `unconfirmed` while preserving the successfully committed financial result. No resend or financial retry is added.
+- Risk: delivery state remains an attempted/uncertain transport observation, not confirmed recipient delivery. Financial transaction, entitlement policy, audit and one-use proof semantics are unchanged.
+- Prevention: new real HTTP+SQL regression in `test_admin_pwa_payment_review_transport.py` injects a timeout after partial send and asserts approved finance + `uncertain`, with one emitter call. Local Python 3.12: **185 passed / 11 PG skipped**, legacy **61 passed**, disposable local PostgreSQL 15 **11 passed**. Exact-SHA GitHub CI follows after push.
+- Branch only, flag OFF, no production/main/Telegram auth/UI changes. The original V10 file path/URL is still needed for the next browser UI increment; no UI/physical-device success is claimed.

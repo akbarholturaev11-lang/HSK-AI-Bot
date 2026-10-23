@@ -6,8 +6,8 @@
 
 - Repo: `akbarholturaev11-lang/HSK-AI-Bot`
 - **ONLY working branch:** `codex/admin-pwa`
-- Historical feature-branch HEAD at preparation: `e5cf9273cec25db286d5f0d7a4715a020a98bcab`. The HEAD will advance when this documentation is committed; **always inspect current HEAD before any implementation**.
-- At that checkpoint: feature branch was **161 commits ahead and 3 behind `main`**; it is diverged. **Do not merge, rebase, reset, cherry-pick, or resolve drift automatically**. Review relevant `main` differences when required, propose a bounded integration separately.
+- Last verified code SHA: `f24aff4dc534a1e19648918294d094fd64c37e3d`. The head advances with later code/docs commits; always inspect current HEAD and the latest handoff before implementation.
+- At the latest remote comparison the feature branch remained **3 commits behind `main`** and diverged. **Do not merge, rebase, reset, cherry-pick, or resolve drift automatically**. Review relevant `main` differences separately.
 - Default: `ADMIN_PWA_ENABLED=false`. Keep it **OFF**. No production deployment, no merge to `main`, no changes to secrets or public site, no changes to the existing Telegram `/admin.html`, `X-Telegram-Init-Data`, native APK billing/update behavior, or normal user authentication.
 - Do not treat stale status summaries near the top of `IMPLEMENTATION_PLAN.md` or old sections of `NEXT_CHAT_START.md` as current; consult source and this verified checkpoint.
 
@@ -30,7 +30,7 @@
 
 **Payment review (new, branch-only):** shared commit-free unit in `app/services/admin_payment_review_service.py`; dedicated strict prepare/review HTTP adapter `pwa_payment_review_transport.py`; transactional step-up + canonical owner/amount/currency/receipt snapshot + existing entitlement/preview/partner writes + durable audit/outbox (`0117`). The Telegram wrapper retains its own commit and existing post-commit transports. See `PAYMENT_REVIEW_CONTRACT.md` for exact payload and at-most-once delivery limitations. No browser confirmation UI or production payment is claimed. Verified payment CI: `68f34cd7f6a6fca4e8d90c81abf2b8312b4a445c`, run 40031936102 (both jobs green).
 
-**Read projections (new):** `app/admin_api/pwa_read.py` provides protected real-data statistics, bounded canonical users search and durable bot/release feedback lists. PostgreSQL READ ONLY/REPEATABLE READ transactions; no attachment secrets or management actions. See `READ_PROJECTIONS.md` for period/grain/history limits. Telegram-only attribution and iPhone metrics remain unavailable; desktop platform counters explicitly remain rolling 30 days. New read-projection CI verification is pending.
+**Read projections (new):** `app/admin_api/pwa_read.py` provides protected real-data statistics, bounded canonical users search and durable bot/release feedback lists. PostgreSQL READ ONLY/REPEATABLE READ transactions; no attachment secrets or management actions. See `READ_PROJECTIONS.md` for period/grain/history limits. Telegram-only attribution and iPhone metrics remain unavailable; desktop platform counters explicitly remain rolling 30 days. Verified read CI: `f24aff4dc534a1e19648918294d094fd64c37e3d`, run 40032878724, both jobs green.
 
 **Not built:** real installable V10 Admin PWA frontend, physical biometric/device E2E, production Google/OAuth/Telegram E2E, audit/outbox adapters for delete/broadcast, pending-delivery recovery/reconciliation, action-specific confirmation UI, and any safe read-only AI/MCP integration.
 
@@ -38,13 +38,13 @@ The V10 HTML `hsk-ai-admin-ux-demo-v10.html` is **not committed to GitHub**; the
 
 ## 4. Last VERIFIED test checkpoint
 
-Payment implementation verified at **`68f34cd7f6a6fca4e8d90c81abf2b8312b4a445c`**, [GitHub run 40031936102](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40031936102), both jobs SUCCESS:
-- Python 3.12: **176 passed, 10 PostgreSQL-only skipped**, plus **61 passed** legacy payment/subscription/preview/affiliate/main-import regressions; compileall and unique Alembic head succeeded.
-- Disposable real PostgreSQL 16: **10 passed**; scoped migrations **0110–0117** upgraded, 0117→0116 downgrade/re-upgrade, columns matched ORM; nonempty financial audit refuses downgrade.
+Payment + read projections verified at **`f24aff4dc534a1e19648918294d094fd64c37e3d`**, [GitHub run 40032878724](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40032878724), both jobs SUCCESS:
+- Python 3.12: **184 passed, 11 PostgreSQL-only skipped**, plus **61 passed** legacy payment/subscription/preview/affiliate/main-import regressions; compileall and unique Alembic head succeeded.
+- Disposable real PostgreSQL 16: **11 passed**; scoped migrations **0110–0117** upgraded, 0117→0116 downgrade/re-upgrade, columns matched ORM; nonempty financial audit refuses downgrade.
 - Actual synthetic ES256 verifier integration covers approval, wrong key/RP/origin/UV/signature; not physical Touch ID/Face ID/Windows Hello or actual provider E2E.
 - **Known unrelated baseline blocker:** entirely empty full-history Alembic still fails at legacy `0011_add_course_workflow_fields` (missing `course_progress`). Scoped CI starts from a *synthetically stamped 0109 baseline*. No claim that old migrations are fixed.
 
-CI: `.github/workflows/admin-pwa-security.yml`. Always run all Admin PWA tests, the workflow's legacy payment regression command and real PG job, and inspect the run's exact SHA. The read-projection increment adds its own tests and a PostgreSQL READ ONLY enforcement test; verify its latest results before further work.
+CI: `.github/workflows/admin-pwa-security.yml`. Always run all Admin PWA tests, the workflow's legacy payment regression command and real PG job, and inspect the run's exact SHA. Includes PostgreSQL READ ONLY enforcement and transaction-setting reset. A follow-up HTTP delivery-status repair (return the actual outbox state after partial delivery, or unconfirmed if unavailable) passed local 185 + 61 + 11 PG tests and awaits its exact-SHA GitHub run; inspect the latest handoff before resuming.
 
 ## 5. NEXT work in safe increments (do not repeat already done work)
 
@@ -52,7 +52,7 @@ CI: `.github/workflows/admin-pwa-security.yml`. Always run all Admin PWA tests, 
 
 **Next implementation:** finish audited Telegram-only attribution and the remaining read projection gaps as needed, then the original V10 installable browser UI and explicit exact-payment confirmation, followed by staging/device QA. The original HTML was not found in the repo or local Downloads/Desktop; its path/URL has been requested from the owner. Do not replace it with invented demo data. Pending-delivery recovery must preserve at-most-once claims. Delete/broadcast remain disabled until separately audited adapters exist.
 
-**Subsequent priorities:** protected read-only real-data projections for overview/platform-filtered stats, users and feedback; V10 installable PWA browser UI (obtain original HTML and apply repo UI/test skills); real permission/CSRF/session and device QA; gradually other sensitive adapters (delete and broadcast) only after the payment flow pattern is audited. Keep read-only AI analytics/MCP separate and default to no write privileges.
+**Subsequent priorities:** remaining read-projection/attribution/history gaps; V10 installable PWA browser UI (obtain original HTML and apply repo UI/test skills); real permission/CSRF/session and device QA; gradually other sensitive adapters (delete and broadcast) only after the payment flow pattern is audited. Keep read-only AI analytics/MCP separate and default to no write privileges.
 
 ## 6. Codex execution & completion contract
 

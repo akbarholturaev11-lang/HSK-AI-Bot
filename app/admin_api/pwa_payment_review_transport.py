@@ -12,6 +12,7 @@ from app.admin_api.pwa_payment_review import (
     ExecutePaymentReview, PreparePaymentReview, execute_payment_review, prepare_payment_review,
 )
 from app.services.admin_payment_review_service import PaymentReviewError
+from app.db.models.admin_pwa_payment_review import AdminPwaPaymentOutbox
 
 logger = logging.getLogger(__name__)
 
@@ -45,10 +46,20 @@ def create_admin_pwa_payment_review_router(*, settings_obj, session_factory, dis
             # Financial commit already succeeded. Delivery failure must never
             # make the browser believe the decision rolled back and retry it.
             try:
-                if await dispatch(result["review_id"]):
-                    result["delivery_status"] = "attempted"
+                await dispatch(result["review_id"])
             except Exception:
                 logger.exception("Admin PWA payment outbox remains pending/uncertain")
+            # A false/failed dispatch can mean pending, partially attempted or
+            # uncertain. Return its actual durable state, never a fake queue
+            # status; inability to read it cannot undo the financial commit.
+            result["delivery_status"] = "unconfirmed"
+            try:
+                async with session_factory() as db:
+                    outbox = await db.get(AdminPwaPaymentOutbox, result["review_id"])
+                    if outbox is not None:
+                        result["delivery_status"] = outbox.status
+            except Exception:
+                logger.exception("Admin PWA payment delivery state unavailable")
         return JSONResponse(content={"ok": True, **result}, headers=_PRIVATE_HEADERS)
 
     @router.post("/api/admin/v1/payments/prepare-review")

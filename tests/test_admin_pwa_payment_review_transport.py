@@ -111,3 +111,19 @@ class AdminPwaPaymentHttpTests(PaymentFixtures, unittest.IsolatedAsyncioTestCase
                                cookies={ADMIN_PWA_COOKIE_NAME: COOKIE}) as client:
             response=await client.post("/api/admin-miniapp/payments/review", json={"payment_id":1,"action":"approve"})
         self.assertEqual(response.status_code, 401)
+
+    async def test_partial_delivery_reports_durable_uncertain_state(self):
+        from app.admin_api.pwa_payment_outbox import dispatch_payment_review
+        command = await self.command()
+        receipt = await self.receipt(command)
+        emitter = AsyncMock(side_effect=RuntimeError("timeout after partial send"))
+        async def dispatch(review_id):
+            return await dispatch_payment_review(review_id=review_id, session_factory=self.sessions,
+                                                  settings_obj=self.settings, emit=emitter)
+        async with await self.client(dispatch=dispatch) as client:
+            response = await client.post("/api/admin/v1/payments/review", json={
+                **command.model_dump(), "step_up_id": receipt})
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["status"], "approved")
+        self.assertEqual(response.json()["delivery_status"], "uncertain")
+        emitter.assert_awaited_once()
