@@ -39,7 +39,8 @@ def _authorized_admin(user: Any, settings_obj: Any) -> bool:
     try:
         tid = int(raw) if raw is not None else 0
         allowed = getattr(settings_obj, "admin_id_list", [])
-        return tid > 0 and tid in allowed and getattr(user, "status", "") != "blocked"
+        return (tid > 0 and tid in allowed
+                and str(getattr(user, "status", "")).strip().lower() != "blocked")
     except (ValueError, TypeError):
         return False
 
