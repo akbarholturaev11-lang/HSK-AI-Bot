@@ -94,7 +94,7 @@ jobs:
           python -m pip install -r requirements.txt "pytest==8.4.2"
       - name: Prepare minimal 0109 test baseline (no legacy data)
         run: |
-          # Scope is 0110-0115 ONLY: the legacy cold-start path currently
+          # Scope is 0110-0116 ONLY: the legacy cold-start path currently
           # fails at 0011 before course_progress exists. Do not mask that
           # unrelated issue or claim fresh-db full-history migration coverage.
           python - <<'PY'
@@ -110,7 +110,7 @@ jobs:
           asyncio.run(main())
           PY
           python -m alembic stamp 0109_public_site_traffic_daily
-      - name: Upgrade only the Admin PWA migrations 0110-0115
+      - name: Upgrade only the Admin PWA migrations 0110-0116
         run: |
           python -m alembic upgrade head
           python -m alembic current
@@ -130,13 +130,13 @@ jobs:
                   "admin_pwa_sessions", "admin_pwa_approvals",
                   "admin_pwa_oauth_attempts", "admin_pwa_enrollment_grants",
                   "admin_pwa_credentials", "admin_pwa_registration_challenges",
-                  "admin_pwa_authentication_challenges",
+                  "admin_pwa_authentication_challenges", "admin_pwa_step_ups",
               ):
                   assert name in names, f"Missing migrated table: {name}"
               print("Admin PWA schema exists on disposable PostgreSQL")
           asyncio.run(main())
           PY
-          python -m alembic downgrade 0114_admin_pwa_webauthn_registration
+          python -m alembic downgrade 0115_admin_pwa_authentication_challenges
           python -m alembic upgrade head
       - name: Run PostgreSQL advisory-lock, single-use and revoke regressions
         run: |
