@@ -52,3 +52,4 @@ from .admin_pwa_approval import AdminPwaApproval
 from .admin_pwa_oauth import AdminPwaOAuthAttempt
 from .admin_pwa_enrollment_grant import AdminPwaEnrollmentGrant
 from .admin_pwa_webauthn import AdminPwaRegistrationChallenge, AdminPwaCredential
+from .admin_pwa_authentication import AdminPwaAuthenticationChallenge
