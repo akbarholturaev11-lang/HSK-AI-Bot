@@ -1,80 +1,83 @@
-# Admin PWA — RESUME HERE (temporary cross-chat handoff)
+# HSK AI ADMIN PWA ONLY — authoritative continuation handoff
 
-> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `codex/admin-pwa`.
-> Not a repository-wide policy. Does not modify or supersede root `AGENTS.md` / `AI_RULES.md` / `PROJECT_MEMORY.md`.
-> All development and progress records for this task remain under `docs/admin-pwa/`.
+> **Task scope:** ONLY HSK AI Admin PWA on `codex/admin-pwa`. This is a temporary task-specific handoff, NOT a global repo policy.
+> **Last independently inspected branch head before this handoff update:** `86e8b5afee08be12fd330e3e67da433f5568794a` on 2026-10-23. **Always fetch branch HEAD again before coding.**
 
+## Read first in every new chat (in this order)
 
-**Read this first on every new chat.** Then read `HSK_AI_ADMIN_PWA_TEMP_RULES.md`, `HSK_AI_ADMIN_PWA_TEMP_CONTEXT.md`, `HSK_AI_ADMIN_PWA_TEMP_FINAL_RESULT.md`, `IMPLEMENTATION_PLAN.md` and `PHASE_0_API_INVENTORY.md`. Root `AGENTS.md`, `AI_RULES.md` and `PROJECT_MEMORY.md` still apply. All references are relative to `docs/admin-pwa/` except root files.
+1. `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md` (this file; current checkpoint).
+2. `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_RULES.md`.
+3. `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_CONTEXT.md`.
+4. `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_FINAL_RESULT.md`.
+5. `docs/admin-pwa/IMPLEMENTATION_PLAN.md`.
+6. `docs/admin-pwa/PHASE_0_API_INVENTORY.md`.
+7. `docs/admin-pwa/ADMIN_PWA_V10_UI_REFERENCE.md`.
+8. Root `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md` and relevant source/test files; for UI/i18n also `localization/README.md` and repo skills.
 
-## Verified checkpoint — 2026-10-23
+## Desired final result (user-approved)
+
+Build a separate **real-data**, responsive, installable HSK AI Admin PWA at **`https://hskai.app/admin`**, preserving the existing **Telegram Admin Mini App** at `/admin.html` and its verified Telegram initData login. Use V10 HTML only as UI/UX design reference; remove ALL fabricated data and mock actions. Reuse existing backend/services and canonical user identity; real stats, users, payments, HSK3.0, feedback and notifications must be correctly authorized.
+
+First-time browser onboarding: verified **Google account + one-time Telegram admin approval** to link to the canonical admin, followed by registering a discoverable WebAuthn passkey. Later: **passkey-only login** (Face ID/Touch ID/Windows Hello/device PIN depending on authenticator) or direct open if session is valid, **without repeating Google every visit**. Google/Telegram are audited recovery methods. Sensitive financial/user-management operations need fresh action-bound passkey confirmation.
+
+AI/ChatGPT/Cloud/local development analytics: build bounded, privacy-preserving **read-only** metrics+feedback export APIs (JSON/CSV), then optionally scoped MCP gateway, **never** AI write access to admin actions/production DB credentials.
+
+## Current verified repository status
 
 - Repo: `akbarholturaev11-lang/HSK-AI-Bot`.
-- Working branch: `codex/admin-pwa`; original `main` head at audit: `e935e4315df42037d6aab4ab38b2c4e5d9bbb681`. **Re-fetch both branch heads before editing; do not treat these historical SHAs as current.**
-- Previously committed architecture plan: `docs/admin-pwa/IMPLEMENTATION_PLAN.md` (latest then `d5f93b20c96f6961beb287171561a8d4d1d7014c`).
-- Previously committed API analysis: `docs/admin-pwa/PHASE_0_API_INVENTORY.md`.
-- This turn creates scoped rules/context/target/handoff files only. **No Admin PWA application code, WebAuthn auth logic, Google-admin onboarding, DB migration, frontend integration, real API wiring, production deployment, domain/TLS verification or real-device biometric testing has been completed.**
-- Initial API inventory contains 44 existing admin-miniapp POST routes, some mutation-heavy. The native Android bug-report path sends to Telegram and has no durable inbox insert in inspected handler.
-- The approved order is domain/contract audit → Google + once Telegram link → **passkey-only returning login** → protected PWA shell/V10 real-data dashboard → stats → durable inbox → transaction-bound passkey for dangerous actions → admin writes → read-only AI export/MCP → staging/release.
+- Work branch: `codex/admin-pwa`. Last inspected HEAD: `86e8b5afee08be12fd330e3e67da433f5568794a`. Inspect again when resuming.
+- `main` was `e935e4315df42037d6aab4ab38b2c4e5d9bbb681` and **unchanged** at the verification before this handoff update.
+- Branch was **23 commits ahead, 0 behind** `main` before this docs commit. Differences were task-scoped: 18 files, namely app bootstrap/session/models/migration/tests/env + `docs/admin-pwa`. Refresh this comparison next time.
+- **No production deployment, no `main` merge, no real OAuth/passkey, no real PWA dashboard or real-data API** has been performed.
 
-## Verified completed tasks
+### Actual code already committed — DO NOT IMPLEMENT AGAIN
 
-- [x] Found existing project repo and separated working branch from `main`.
-- [x] Reviewed main Telegram admin auth and service/feedback model inventory.
-- [x] Recorded long implementation plan including Google/TG link, passkey-first login, domain choice and staged sequencing.
-- [x] Recorded endpoint risk inventory and data-persistence gaps.
-- [x] Created temporary scoped project documentation (this set).
-- [ ] Verified live `https://hskai.app` TLS, reverse proxy, Google OAuth redirect, PWA scope and RP ID on real target.
-- [ ] Detailed API read/write/danger inventory signed off with current code as opposed to stale branch snapshot.
-- [x] Verified actual V10 HTML demo bytes in conversation workspace (184,575 bytes; SHA-256 `8cd9375dd2ef7c27e9f17904000629060139ffb21c667a83c60b282ec321a9b9`); mapped components in `ADMIN_PWA_V10_UI_REFERENCE.md`. Source is **not** in GitHub and must be explicitly made accessible to future implementation environments.
-- [ ] Any code for browser identity, cookie sessions, Google link, Telegram approval challenge or WebAuthn.
-- [ ] Any real PWA frontend/API, real-data stats/inbox, MCP/export service or staging deployment.
-- [ ] Any automated E2E, security test, manually tested iPhone biometric, or production release.
+1. `app/admin_api/pwa_bootstrap.py`: isolated `GET /admin` and `GET /api/admin/v1/me` behind `ADMIN_PWA_ENABLED`. Default OFF returns 404. With flag ON and valid configured HTTPS origin, `/admin` still returns 503 until genuine login/UI exist; `me` authenticates only a valid existing DB session and returns minimal actor identity; it NEVER issues cookies.
+2. `app/admin_api/pwa_sessions.py`: session verification checks SHA-256 hash of opaque cookie, DB row, revocation, expiry, valid auth method, current canonical `users.id` owner, blocked status and Telegram `ADMIN_IDS` allowlist. Cookie name `__Host-hskai_admin`. No session issuer and no browser login exists yet.
+3. `app/db/models/admin_pwa.py`: `AdminPwaSession` table (user ID, token hash, auth method, creation/expiry/revocation).
+4. `alembic/versions/0110_admin_pwa_sessions.py`: new migration, down revision `0109_public_site_traffic_daily`. **Real PostgreSQL migration not yet tested.** Check migration graph/current head before extending schema.
+5. `app/db/models/__init__.py`: table registration.
+6. `app/main.py`: includes new isolated router with existing DB session factory; does not edit legacy Telegram route handlers.
+7. `app/config.py` and `.env.example`: `ADMIN_PWA_ENABLED=false`, `ADMIN_PWA_PUBLIC_ORIGIN=` (blank). **Do not enable in production.**
+8. `tests/test_admin_pwa_bootstrap.py` and `tests/test_admin_pwa_sessions.py`: isolated tests, not a complete full-repo QA pass.
+9. `docs/admin-pwa/ADMIN_PWA_V10_UI_REFERENCE.md`: reviewed demo structure, data traps, hash.
 
-## NEXT ACTION — Phase 0 closeout, then Phase 1A
+### Tests independently rerun 2026-10-23 in isolated local mirrors
 
-1. Check `codex/admin-pwa` HEAD vs `main` and diff; verify no unexpected changes.
-2. Inspect actual host mappings, bot login/challenge callbacks and existing Google ID linking; verify target hostname HTTPS/route or explicitly log an unavailable live verification.
-3. Extend the admin endpoint matrix as needed, define exact `AdminActor` contract, browser-session threat model and DB schema; review against `PHASE_0_API_INVENTORY.md`.
-4. Obtain V10 demo bytes before converting frontend; treat design only.
-5. Implement minimal isolated server-side admin session and one-time Google+Telegram link with disabled-by-default route/flag and unit/security tests. Preserve Telegram initData handler. **Do not create a passkey UI button until server assertion verification is real.**
-6. Update this file with exact commits, tested commands/results, unresolved risks and next smallest unit of work after *each* genuine implementation step.
+- `PYTHONPATH=/mnt/data/admin-pwa-phase1-code python -m pytest /mnt/data/admin-pwa-phase1-code/tests/test_admin_pwa_bootstrap.py -q` → **4 passed, 17 subtests passed**.
+- `PYTHONPATH=/mnt/data/admin_pwa_stage python -m pytest /mnt/data/admin_pwa_stage/tests/test_admin_pwa_sessions.py -q` → **9 passed, 5 subtests passed**.
+- `python -m py_compile` on staged bootstrap, sessions, model and migration → success.
+- These use **isolated, local staged code mirrors**; they do **not** prove that full GitHub checkout CI passed or that real Postgres/HTTPS/iPhone PWA works. Earlier staged SQLite ORM/migration smoke was reported, but has **not** been independently rerun in this handoff task.
 
-## How to record subsequent progress
+## Exact V10 UI reference
 
-Add under a dated heading:
-- **Branch/head:** actual SHA at time.
-- **Scope/files changed:** names, whether read-only or mutating.
-- **Outcome:** observed behavior and evidence; no estimates declared as fact.
-- **Tests actually run:** commands, pass/fail/skip, environment/staging target.
-- **Remaining risks/blockers:** distinguish not-tested from broken.
-- **Next action:** one narrow build/test task.
-- **Main/production:** explicitly state untouched or exact approved change.
+- Original local reference file: `hsk-ai-admin-ux-demo-v10.html` (184,575 bytes).
+- SHA-256: `8cd9375dd2ef7c27e9f17904000629060139ffb21c667a83c60b282ec321a9b9` (rechecked in the current container).
+- It is **NOT committed to GitHub**. The user should attach this file in a new chat if not mounted. Do not invent a GitHub path or port the mock `v6Demo` data into production. More in `ADMIN_PWA_V10_UI_REFERENCE.md`.
 
-Do not write “done”, “tested”, “linked”, “deployed” unless verified in the same task. Do not manufacture status from an earlier assistant reply.
+## Outstanding work, accurately scoped
 
-## Implementation checkpoint — 2026-10-23, first code increment
+- [ ] Confirm **real** DNS, TLS, proxy, routing and Google OAuth callback settings for `https://hskai.app/admin`; WebAuthn RP ID `hskai.app`. These were **not confirmed live**.
+- [ ] Reconcile existing auth architecture, canonical admin linking and threat model with the new session table and Alembic chain. Run real backend checkout/static checks before implementation.
+- [ ] Build **first-time verified Google OIDC + one-time Telegram Bot admin approval** (persistent challenge, browser binding, nonce/state/PKCE/replay/CSRF/expiry/rate-limit), then trusted session issuance, logout/revocation. Preserve current Telegram initData auth.
+- [ ] Build and test registered **WebAuthn passkey enrollment and passkey-only login**; physical-device PWA support cannot be claimed from mocks.
+- [ ] Implement real secure PWA shell and V10 UI without mock data; connect read-only `me/summary` first, then metrics/users.
+- [ ] Durable universal feedback inbox: BotFeedback and ReleaseFeedback already stored; Android bug report currently sent to Telegram, not stored in durable inbox; do not claim historical completeness.
+- [ ] Fresh transaction-bound passkey step-up before exposing dangerous admin mutation routes.
+- [ ] Scoped read-only JSON/CSV analytics and optional MCP; staging security/regression/real-device QA; owner-approved release only.
 
-- **Branch:** `codex/admin-pwa`; branch commit for this increment is the commit containing this handoff update (inspect GitHub HEAD).
-- **Code:** new `app/admin_api/pwa_bootstrap.py`; route reservation `GET /admin` and `GET /api/admin/v1/me`. Both return 404 while `ADMIN_PWA_ENABLED=false` (the default). When explicitly enabled but origin is not a bare HTTPS origin, both return 503 `admin_pwa_origin_unconfigured`; with valid origin but without a real login verifier, both return 503 `admin_pwa_auth_not_ready`. No user data or session token is minted.
-- **Wiring:** `app/main.py` includes only this new router. `app/config.py` + `.env.example` add the disabled-by-default `ADMIN_PWA_ENABLED` and blank `ADMIN_PWA_PUBLIC_ORIGIN` settings. Existing `/admin.html` and `/api/admin-miniapp/*` implementations were not edited.
-- **Tests actually run in a local isolated module copy:** `PYTHONPATH=/mnt/data/admin-pwa-phase1-code python -m pytest /mnt/data/admin-pwa-phase1-code/tests/test_admin_pwa_bootstrap.py -q`: **4 passed, 17 subtests passed**. `python -m py_compile` for new files passed. This does not establish a full repository or deployment E2E pass. Test source is committed as `tests/test_admin_pwa_bootstrap.py`.
-- **Domain:** `https://hskai.app` was not accessible in the external browser check in this turn, therefore DNS, TLS, proxy, RP ID and Google callback remain **unverified**. Never enable the flag on production based on this work alone.
-- **No production authentication:** Google/Telegram one-time linking, passkey registration/sign-in, backend session tables, cookie+CSRF management and protected data endpoints **remain unimplemented**. This is route safety groundwork only, not a usable login.
-- **Next action:** define verified AdminActor and one-time Google OIDC + Telegram Bot approval state transitions and persistence schema with replay/cross-browser tests; only after implementation change the 503 guard under an explicit staging gate. Obtain and visually audit the V10 demo bytes (available in conversation workspace) before PWA frontend conversion.
-- **Main/production:** unchanged by this branch-only commit.
+## Immediate next coding task (continue from here; DO NOT restart planning)
 
-## UI source reference — 2026-10-23
+1. **Check GitHub current HEAD/diff**, existing files and global/task rules (do not rely on old SHA).
+2. Inspect `app/api/native_oauth.py`, `app/services/google_auth.py`, `app/services/identity_link_service.py`, bot link callbacks and `app/admin_api/pwa_sessions.py`. Reuse verified Google subject primitives; NEVER use email as admin privilege.
+3. Design and implement *one small reviewed increment*: persistent one-time **browser-admin approval challenge** bound to browser state and canonical admin; no session minting until linked Google subject and real Telegram Bot approval are verified. Add replay/cross-browser/non-admin/expiry/CSRF tests.
+4. Keep `ADMIN_PWA_ENABLED=false` by default and `/admin` disabled until implementation/QA; do not change `/admin.html`.
+5. After each increment, **update this file** with exact commit, code changed, test commands/actual results, blockers, and next task. Do not merge or deploy without the user's authorization.
 
-- Local V10 demo identified and hashed, HTML/view functions mapped. See `docs/admin-pwa/ADMIN_PWA_V10_UI_REFERENCE.md`.
-- A later Codex agent must **not infer** that the V10 HTML is committed. The file lives in this conversation's mounted files, so it needs the actual bytes for porting.
+## Release and reporting invariant
 
+All scoped changes stay on `codex/admin-pwa` until explicit owner approval. Do not force push, rewrite history, remove unrelated files or silently alter other platforms. Only claim passing tests/deployment/device support with current evidence. Do not treat planning documents as proof of features.
 
-## Implementation checkpoint — 2026-10-23, browser-session guard
+### Historical note
 
-- **Branch:** `codex/admin-pwa`; inspect current branch HEAD for this commit.
-- **Backend files:** `app/db/models/admin_pwa.py` and `alembic/versions/0110_admin_pwa_sessions.py` add revocable hashed-cookie sessions. `app/admin_api/pwa_sessions.py` authenticates only an existing DB session and rechecks the user's *current* Telegram allowlisted admin identity and blocked status. `app/admin_api/pwa_bootstrap.py` now uses this guard for `GET /api/admin/v1/me`, with same-origin HTTPS checks. `app/main.py` passes the existing async session factory. Root `app/db/models/__init__.py` registers the table.
-- **Security state:** route flag still defaults **off**. `GET /admin` remains 503 under an enabled flag. No public endpoint can mint a PWA cookie or create a login; no Google/Telegram/Passkey registration, OAuth callback or production admin control has been exposed.
-- **Isolated tests actually run:** 9 unit/ASGI tests passed, 5 subtests passed using local isolated module copy. Python compile passed; SQLite ORM table and Alembic migration upgrade/downgrade smoke each passed in isolation. **Full repository CI, real Postgres migration, real-domain HTTPS and physical iPhone passkey testing NOT run.**
-- **Next action:** implement verified first-time Google OIDC and one-use Telegram approval challenge with persistent state, explicit browser binding, CSRF and replay tests, then a trusted cookie issuer/logout, still behind disabled-by-default flag; ensure Telegram app regression.
-- **Main/production:** unchanged.
+Earlier `RESUME_NEXT_CHAT` messages and early status paragraphs stated no session model existed. Those described **earlier snapshots** and have been superseded by the verified session migration at `86e8b5af...`. This file is the current canonical continuation checkpoint.
