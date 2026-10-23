@@ -15,7 +15,6 @@ from app.db.models.admin_pwa_approval import AdminPwaApproval
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
 from app.services.identity_link_service import IdentityLinkService
-from app.services.oidc_verifier import VerifiedIdentity
 
 NOW = datetime(2026, 10, 23, 15, tzinfo=timezone.utc)
 AUDIENCE = "google-browser.apps.googleusercontent.com"
@@ -59,6 +58,7 @@ class AdminEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         self.db = AsyncAdapter(self.session)
         self.settings = SimpleNamespace(
             admin_id_list=[9001], DESKTOP_AUTH_SIGNING_SECRET="T" * 64,
+            ADMIN_PWA_ENABLED=True, GOOGLE_DESKTOP_CLIENT_ID=AUDIENCE,
         )
         self.session.add_all([
             User(id=1001, telegram_id=9001, status="active"),
@@ -69,12 +69,6 @@ class AdminEnrollmentTests(unittest.IsolatedAsyncioTestCase):
     def tearDown(self):
         self.session.close()
         self.engine.dispose()
-
-    def verified(self, *, provider="google", subject="real-google-sub", audience=AUDIENCE):
-        return VerifiedIdentity(
-            provider=provider, subject=subject, audience=audience,
-            email="admin@example.com", email_verified=True, display_name="Admin",
-        )
 
     async def approval(self):
         subject_hash = IdentityLinkService(
@@ -98,7 +92,6 @@ class AdminEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         return await finalize_google_admin_enrollment(
             self.db, request_id=started.request_id,
             browser_proof=kwargs.get("browser_proof", started.browser_proof),
-            verified_identity=kwargs.get("verified_identity", self.verified()),
             settings_obj=self.settings,
             now=kwargs.get("now", NOW),
         )
@@ -113,18 +106,55 @@ class AdminEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.session.execute(select(AdminPwaSession)).scalars().all(), [])
         self.assertIsNone(await self.finish(started))  # replay must fail
 
-    async def test_wrong_browser_proof_subject_or_audience_leaves_approval_unused(self):
+    async def test_wrong_browser_proof_subject_hash_or_audience_fails_closed(self):
         started = await self.approval()
-        for overrides in (
-            {"browser_proof": "x" * 64},
-            {"verified_identity": self.verified(subject="other")},
-            {"verified_identity": self.verified(audience="other-client")},
-            {"verified_identity": self.verified(provider="apple")},
-        ):
-            with self.subTest(overrides=overrides):
-                self.assertIsNone(await self.finish(started, **overrides))
-                self.assertEqual(self.session.get(AdminPwaApproval, started.request_id).status, "approved")
+        row = self.session.get(AdminPwaApproval, started.request_id)
+        self.assertIsNone(await self.finish(started, browser_proof="x" * 64))
+        original_hash, original_audience = row.google_subject_hash, row.google_audience
+        row.google_subject_hash = "not-a-server-verified-hash"
+        self.session.commit()
+        self.assertIsNone(await self.finish(started))
+        row.google_subject_hash = original_hash
+        row.google_audience = "different-google-client"
+        self.session.commit()
+        self.assertIsNone(await self.finish(started))
+        row.google_audience = original_audience
+        self.session.commit()
         self.assertIsNotNone(await self.finish(started))
+
+    async def test_disabled_flag_and_missing_audience_never_link(self):
+        started = await self.approval()
+        self.settings.ADMIN_PWA_ENABLED = False
+        self.assertIsNone(await self.finish(started))
+        self.settings.ADMIN_PWA_ENABLED = True
+        self.settings.GOOGLE_DESKTOP_CLIENT_ID = ""
+        self.assertIsNone(await self.finish(started))
+        self.settings.GOOGLE_DESKTOP_CLIENT_ID = AUDIENCE
+        self.assertIsNotNone(await self.finish(started))
+
+    async def test_existing_same_google_hash_is_idempotent_only_for_same_owner(self):
+        started = await self.approval()
+        self.session.add(UserIdentity(
+            id=str(uuid4()), user_id=1001, provider="google",
+            subject_hash=IdentityLinkService(self.db, self.settings).subject_hash(
+                "google", "real-google-sub"),
+        ))
+        self.session.commit()
+        self.assertIsNotNone(await self.finish(started))
+        identities = self.session.execute(select(UserIdentity)).scalars().all()
+        self.assertEqual(len(identities), 1)
+        self.assertEqual(identities[0].user_id, 1001)
+
+    async def test_different_google_identity_already_linked_to_admin_is_denied(self):
+        started = await self.approval()
+        self.session.add(UserIdentity(
+            id=str(uuid4()), user_id=1001, provider="google",
+            subject_hash=IdentityLinkService(self.db, self.settings).subject_hash(
+                "google", "other-sub"),
+        ))
+        self.session.commit()
+        self.assertIsNone(await self.finish(started))
+        self.assertEqual(self.session.get(AdminPwaApproval, started.request_id).status, "approved")
 
     async def test_expiry_and_admin_privilege_revocation(self):
         started = await self.approval()
@@ -167,7 +197,7 @@ class AdminEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         started = await self.approval()
         result = await finalize_google_admin_enrollment(
             self.db, request_id="no", browser_proof=started.browser_proof,
-            verified_identity=self.verified(), settings_obj=self.settings, now=NOW,
+            settings_obj=self.settings, now=NOW,
         )
         self.assertIsNone(result)
         self.assertEqual(self.session.get(AdminPwaApproval, started.request_id).status, "approved")
