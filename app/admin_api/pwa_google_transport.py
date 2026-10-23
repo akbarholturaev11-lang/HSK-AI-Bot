@@ -16,6 +16,7 @@ from app.admin_api.pwa_oidc import (
     start_admin_pwa_google,
 )
 from app.admin_api.pwa_bootstrap import _valid_pwa_origin
+from app.admin_api.pwa_bot_approval import read_browser_pwa_approval
 from app.services.oidc_verifier import OidcVerificationError
 
 logger = logging.getLogger(__name__)
@@ -168,5 +169,38 @@ def create_admin_pwa_google_router(
         _drop_cookie(response, _OIDC_COOKIE)
         _set_secret_cookie(response, _APPROVAL_COOKIE, pending.browser_proof, 300)
         return response
+
+    @router.get("/api/admin/v1/auth/telegram/status")
+    async def telegram_approval_status(request: Request):
+        failure = _gate(request, settings_obj)
+        if failure is not None:
+            return failure
+        if request.headers.get("sec-fetch-site", "same-origin") != "same-origin":
+            return _reply(403, "admin_pwa_csrf")
+        identifiers = request.query_params.getlist("request_id")
+        if len(identifiers) != 1 or session_factory is None:
+            return _reply(400, "admin_pwa_approval_invalid")
+        browser_proof = request.cookies.get(_APPROVAL_COOKIE, "")
+        if not browser_proof:
+            return _reply(401, "admin_pwa_approval_invalid")
+        try:
+            async with session_factory() as db:
+                result = await read_browser_pwa_approval(
+                    db,
+                    request_id=identifiers[0],
+                    browser_proof=browser_proof,
+                    settings_obj=settings_obj,
+                )
+        except Exception:
+            logger.exception("Admin PWA Telegram approval status unavailable")
+            return _reply(503, "admin_pwa_auth_unavailable")
+        if result is None:
+            return _reply(404, "admin_pwa_approval_invalid")
+        return JSONResponse(content={
+            "ok": True,
+            "status": result.status,
+            "pairing_code": result.pairing_code,
+            "expires_at": result.expires_at.isoformat(),
+        }, headers=_PRIVATE_HEADERS)
 
     return router
