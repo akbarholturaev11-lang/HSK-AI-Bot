@@ -1,5 +1,13 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## 2026-10-23 — Merged pilot live in the local test Bot; CI verified
+
+- Merge **`0244f6859f7bcd3cd38a27c55f2ae28bd717ed80`** is on `origin/codex/p3-main-integration-20261020`, with pilot source `277c22c5` as its second parent. Remote main remains `dcd65418`; no main push or production deployment was performed.
+- Exact-code GitHub **SUCCESS**: P0 [39882481061](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39882481061), Backend [39882481067](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39882481067), all three Backend jobs. Local test counts and the narrow conflict resolution are recorded below; the new pilot checks are now included in Backend CI.
+- API and the single test Bot worker were restarted from this merge. The private launcher uses an exact newly verified localhost.run origin and IPv4 Telegram connector to avoid this Mac's observed IPv6 TLS failures. The old Cloudflare process was stopped. `@Gentss_3bot` identity and the new menu URL ending in `?liquid_glass=1` were read back. Private operator files/PIDs remain in the existing directory referenced by `RESUME_NEXT_CHAT.md`; credentials and ephemeral origin are not committed.
+- Real external HTTPS UZ/RU/TJ mobile pages load local catalogs and enable the actual WebGL shader with zero JS exceptions. An existing QA user's signed real HTTP map and all five tabs also passed (SDK transport stubbed, no API mocks, zero JS exceptions/API 5xx, no lesson or payment action). Light/dark screenshots were visually inspected. Existing database and normal app guards remain intact; real-device visual acceptance belongs to the owner's requested Bot test.
+- Resume from this completed integration. Do not repeat centralization, merge the pilot again, reset this test DB, start another poller, or mistake historical Cloudflare/browser failure notes below for the current recovered state. Main/production restrictions remain.
+
 ## 2026-10-23 — Liquid Glass pilot integration
 
 - Owner requested review/merge of `codex/liquid-glass-nav-pilot-20261022` (`277c22c53e76bffc162ec14f2c8855c499c79134`) into the integration branch and loading it into the local test Bot. Real merge preserves its history; the single HTML conflict retains current localized Desktop-download/profile-carousel cache tokens and adds only the opt-in loader. Main/production are unchanged.
