@@ -176,6 +176,7 @@ class AdminPwaOidcTests(unittest.IsolatedAsyncioTestCase):
         for origin in (
             "http://hskai.app", "https://hskai.app/admin",
             "https://hskai.app?x=1", "https://hskai.app:8443",
+            "https://[broken",
         ):
             with self.subTest(origin=origin):
                 self.settings.ADMIN_PWA_PUBLIC_ORIGIN = origin
