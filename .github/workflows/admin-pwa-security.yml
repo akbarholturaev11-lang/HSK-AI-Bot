@@ -1,0 +1,56 @@
+name: Admin PWA isolated security regressions
+
+on:
+  push:
+    branches:
+      - codex/admin-pwa
+    paths:
+      - ".github/workflows/admin-pwa-security.yml"
+      - "app/admin_api/pwa_*.py"
+      - "app/db/models/admin_pwa*.py"
+      - "app/main.py"
+      - "app/bot/handlers/admin_pwa.py"
+      - "alembic/versions/011[0-9]_admin_pwa*.py"
+      - "requirements.txt"
+      - "tests/test_admin_pwa_*.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: admin-pwa-security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  admin-pwa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      HSK_STAGING_QA_MODE: "1"
+      RAILWAY_ENVIRONMENT_NAME: staging
+      HSK_STAGING_DB_HOST: localhost
+      BOT_TOKEN: "9123456:synthetic-test-only-unusable-token"
+      DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+      REDIS_URL: "redis://127.0.0.1:1/0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install pinned app dependencies and test adapters
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt "pytest==8.4.2" "aiosqlite==0.21.0"
+      - name: Compile touched admin and database code
+        run: |
+          python -m compileall -q app/admin_api app/db/models app/bot/handlers/admin_pwa.py
+      - name: Ensure migration chain has one head
+        run: |
+          python -m alembic heads
+      - name: Run all Admin PWA regression tests without external services
+        run: |
+          python -m pytest -q tests/test_admin_pwa_*.py
