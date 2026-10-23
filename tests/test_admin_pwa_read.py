@@ -1,0 +1,178 @@
+"""Real-data bounded read projections and browser authorization (no demo rows)."""
+import json
+import unittest
+from datetime import datetime, timedelta, timezone
+
+from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy import event
+
+from app.admin_api.pwa_read import create_admin_pwa_read_router
+from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
+from app.db.models.admin_pwa import AdminPwaSession
+from app.db.models.bot_feedback import BotFeedback
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.desktop import DesktopDevice
+from app.db.models.payment import Payment
+from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackResponse
+from app.db.models.user import User
+from tests import test_admin_pwa_payment_review as fixtures
+
+
+class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCase):
+    asyncSetUp = fixtures.AdminPwaPaymentReviewTests.asyncSetUp
+    asyncTearDown = fixtures.AdminPwaPaymentReviewTests.asyncTearDown
+
+    async def post(self, path, body, *, cookie=fixtures.COOKIE, origin="https://hskai.app"):
+        app=FastAPI()
+        app.include_router(create_admin_pwa_read_router(settings_obj=self.settings, session_factory=self.sessions))
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="https://hskai.app",
+                               headers={"origin":origin},
+                               cookies={ADMIN_PWA_COOKIE_NAME:cookie} if cookie else {}) as client:
+            return await client.post("/api/admin/v1/"+path, json=body)
+
+    async def test_overall_canonical_population_dates_and_separate_currency_totals(self):
+        now=datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            db.add_all([
+                Payment(user_id=1, amount=5, currency="USD", plan_type="1_month", payment_status="approved",
+                        submitted_at=now-timedelta(days=40), reviewed_at=now),
+                Payment(user_id=2, user_telegram_id=2002, amount=50, currency="TJS", plan_type="1_month",
+                        payment_status="approved", reviewed_at=now),
+                Payment(user_id=1, amount=99, currency="USD", plan_type="1_month", payment_status="approved",
+                        submitted_at=now-timedelta(days=45), reviewed_at=now-timedelta(days=40)),
+            ])
+            await db.commit()
+        response=await self.post("statistics", {"platform":"overall", "period":"weekly"})
+        self.assertEqual(response.status_code, 200, response.text)
+        data=response.json()
+        self.assertEqual(data["metrics"]["users_total"], 3)
+        self.assertEqual(data["metrics"]["payments_by_status"], {"approved":2,"rejected":0,"pending":1})
+        self.assertEqual(data["metrics"]["approved_amounts_by_currency"],
+                         [{"currency":"TJS","amount":50},{"currency":"USD","amount":5}])
+        self.assertTrue(data["platform_counts_overlap"])
+        self.assertEqual(response.headers["cache-control"], "no-store")
+        self.assertNotIn("set-cookie", response.headers)
+        response=await self.post("statistics", {"period":"all_time"})
+        self.assertEqual(response.json()["metrics"]["approved_amounts_by_currency"][1]["amount"], 104)
+        self.assertIsNotNone(response.json()["scope"]["active_accounts_since"])
+
+    async def test_user_pagination_and_numeric_query_are_canonical_only(self):
+        ids=[]
+        cursor=None
+        while True:
+            response=await self.post("users/search", {"limit":1,"before_id":cursor})
+            self.assertEqual(response.status_code, 200, response.text)
+            data=response.json()
+            ids.extend(row["user_id"] for row in data["items"])
+            cursor=data["next_before_id"]
+            if cursor is None:
+                break
+        self.assertEqual(ids,[101,2,1])
+        self.assertEqual((await self.post("users/search", {"query":"2002"})).json()["items"],[])
+        data=(await self.post("users/search", {"query":"1"})).json()
+        self.assertEqual(data["numeric_query_namespace"],"users.id")
+        self.assertEqual(data["items"][0]["user_id"],1)
+        self.assertTrue(data["items"][0]["has_pending_payment"])
+        self.assertNotIn("telegram_id",data["items"][0])
+
+    async def test_name_search_escapes_wildcards_and_pending_owner_precedence(self):
+        async with self.sessions() as db:
+            (await db.get(User,1)).full_name="100% match"
+            (await db.get(User,2)).full_name="100X match"
+            (await db.get(Payment,self.payment_id)).user_telegram_id=2002
+            await db.commit()
+        data=(await self.post("users/search", {"query":"%"})).json()
+        self.assertEqual([row["user_id"] for row in data["items"]],[1])
+        data=(await self.post("users/search", {"query":"2"})).json()
+        self.assertFalse(data["items"][0]["has_pending_payment"])
+
+    async def test_feedback_sources_keep_identity_campaign_and_attachment_boundaries(self):
+        now=datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            db.add(ReleaseFeedbackCampaign(id=1,title="synthetic QA campaign",send_at=now))
+            await db.flush()
+            db.add(ReleaseFeedbackResponse(campaign_id=1,user_telegram_id=2002,rating=4,
+                comment_text="synthetic QA feedback",attachment_file_id="private-synthetic-file-reference"))
+            db.add(BotFeedback(user_id=999,telegram_id=2002,status="completed",disliked_text="retained orphan",
+                disliked_attachment_file_id="private-synthetic-file-reference"))
+            db.add(BotFeedback(user_id=1,telegram_id=1001,status="completed",disliked_code="price"))
+            await db.commit()
+        release=await self.post("feedback/list", {"source":"release","user_id":2})
+        self.assertEqual(release.status_code,200,release.text)
+        item=release.json()["items"][0]
+        self.assertEqual((item["campaign_id"],item["user_id"],item["rating"]),(1,2,4))
+        self.assertTrue(item["has_attachment"])
+        self.assertNotIn("private-synthetic-file-reference", release.text)
+        bot=(await self.post("feedback/list", {"source":"bot","user_id":2})).json()
+        self.assertEqual(bot["items"],[])
+        bot=(await self.post("feedback/list", {"source":"bot","limit":1})).json()
+        self.assertEqual(bot["items"][0]["user_id"],1)
+        second=(await self.post("feedback/list", {"source":"bot","before_id":bot["next_before_id"]})).json()
+        self.assertIsNone(second["items"][0]["user_id"])
+        self.assertIn("android_bug_reports",second["unavailable_sources"])
+
+    async def test_native_platforms_reuse_real_services_without_summing_overlapping_users(self):
+        now=datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            db.add(DesktopDevice(id="qa-android-device",user_id=1,platform="android",
+                installation_key_hash="f"*64,app_version="1.0.0",first_open_at=now))
+            for platform in ("macos","windows"):
+                db.add(CourseMiniAppEvent(user_id=1,event_name="desktop_app_opened",source="desktop",
+                    payload_json=json.dumps({"platform":platform,"device_id":platform}),created_at=now))
+            db.add(CourseMiniAppEvent(user_id=1,event_name="android_app_opened",source="android",
+                payload_json=json.dumps({"device_id":"qa-android-device"}),created_at=now))
+            await db.commit()
+        for platform in ("macos","windows"):
+            response=await self.post("statistics", {"platform":platform,"period":"weekly"})
+            self.assertEqual(response.status_code,200,response.text)
+            self.assertEqual(response.json()["metrics"]["active_users_30d"],1)
+            self.assertFalse(response.json()["scope"]["period_filter_applied"])
+        response=await self.post("statistics", {"platform":"android"})
+        self.assertEqual(response.status_code,200,response.text)
+        self.assertEqual(response.json()["metrics"]["registry"]["installed_users"],1)
+        self.assertEqual(response.json()["metrics"]["active"]["mau"],1)
+        self.assertEqual((await self.post("statistics",{})).json()["metrics"]["users_total"],3)
+
+    async def test_unmeasured_platforms_are_unavailable_instead_of_fake_zero(self):
+        for platform in ("telegram","iphone_pwa"):
+            response=await self.post("statistics",{"platform":platform})
+            self.assertFalse(response.json()["available"])
+            self.assertIsNone(response.json()["metrics"])
+
+    async def test_flag_csrf_cookie_revocation_and_strict_bounds(self):
+        paths=(("statistics",{}),("users/search",{}),("feedback/list",{"source":"bot"}))
+        for path,body in paths:
+            self.assertEqual((await self.post(path,body,cookie=None)).status_code,401)
+            self.assertEqual((await self.post(path,body,cookie="T"*64)).status_code,401)
+            self.assertEqual((await self.post(path,body,origin="https://evil.example")).status_code,403)
+            self.settings.ADMIN_PWA_ENABLED=False
+            self.assertEqual((await self.post(path,body)).status_code,404)
+            self.settings.ADMIN_PWA_ENABLED=True
+        for path,body in (("users/search",{"limit":101}),("users/search",{"limit":True}),
+                          ("users/search",{"query":"x"*81}),("users/search",{"before_id":"1"}),
+                          ("statistics",{"period":"daily"}),("statistics",{"platform":"other"}),
+                          ("feedback/list",{"source":"android"}),("feedback/list",{"source":"bot","sql":"select 1"})):
+            self.assertEqual((await self.post(path,body)).status_code,400)
+        await self.change(AdminPwaSession,revoked_at=datetime.now(timezone.utc))
+        for path,body in paths:
+            self.assertEqual((await self.post(path,body)).status_code,401)
+
+    async def test_projection_sql_never_writes_and_routes_are_mounted(self):
+        statements=[]
+        def observe(conn,cursor,statement,parameters,context,many):
+            statements.append(statement.lstrip().split()[0].upper())
+        event.listen(self.engine.sync_engine,"before_cursor_execute",observe)
+        try:
+            for path,body in (("statistics",{}),("users/search",{}),("feedback/list",{"source":"bot"})):
+                response=await self.post(path,body)
+                self.assertEqual(response.status_code,200,response.text)
+        finally:
+            event.remove(self.engine.sync_engine,"before_cursor_execute",observe)
+        self.assertTrue(statements)
+        self.assertTrue(all(value=="SELECT" for value in statements),statements)
+        from tests.test_main_imports import MainModuleImportTests
+        main=MainModuleImportTests._import_main()
+        paths=MainModuleImportTests._paths(main.app.routes)
+        for path in ("statistics","users/search","feedback/list"):
+            self.assertIn("/api/admin/v1/"+path,paths)

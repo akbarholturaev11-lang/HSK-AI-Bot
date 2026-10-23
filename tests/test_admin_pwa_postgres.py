@@ -393,6 +393,25 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
             self.assertEqual(await db.scalar(select(func.count()).select_from(AIUsageBudget)), 1)
             self.assertEqual(await db.scalar(select(func.count()).select_from(PortfolioTransaction)), 1)
 
+    async def test_projection_transaction_is_read_only_and_repeatable_on_postgres(self):
+        from app.admin_api.pwa_read import read_transaction, users, UsersRequest, statistics, StatisticsRequest
+        from sqlalchemy import update
+        from sqlalchemy.exc import DBAPIError
+        await self.seed_payment()
+        async with self.sessions() as db:
+            async with read_transaction(db):
+                self.assertEqual(await db.scalar(text("SHOW transaction_read_only")), "on")
+                self.assertEqual(await db.scalar(text("SHOW transaction_isolation")), "repeatable read")
+                self.assertEqual((await statistics(db, StatisticsRequest()))["metrics"]["users_total"], 3)
+                self.assertEqual(len((await users(db, UsersRequest(limit=2)))["items"]), 2)
+        with self.assertRaises(DBAPIError):
+            async with self.sessions() as db:
+                async with read_transaction(db):
+                    await db.execute(update(User).where(User.id == 1).values(status="blocked"))
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(text("SHOW transaction_read_only")), "off")
+            self.assertEqual((await db.get(User, 1)).status, "free")
+
 
 if __name__ == "__main__":
     unittest.main()

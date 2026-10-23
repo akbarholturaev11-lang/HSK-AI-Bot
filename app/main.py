@@ -36,6 +36,7 @@ from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_payment_review_transport import create_admin_pwa_payment_review_router
 from app.admin_api.pwa_payment_outbox import dispatch_payment_review
+from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.api.android_auth import create_android_auth_router
 from app.api.course_tracks import create_course_tracks_router
 from app.api.android_course import create_android_course_router
@@ -701,6 +702,7 @@ app.include_router(create_admin_pwa_payment_review_router(
     settings_obj=settings, session_factory=async_session_maker,
     dispatch=_dispatch_admin_pwa_payment_review,
 ))
+app.include_router(create_admin_pwa_read_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_public_site_router(
     settings_obj=settings,
     session_factory=async_session_maker,
