@@ -6,7 +6,7 @@
 
 - Repo: `akbarholturaev11-lang/HSK-AI-Bot`
 - **ONLY working branch:** `codex/admin-pwa`
-- Last verified code SHA: `f24aff4dc534a1e19648918294d094fd64c37e3d`. The head advances with later code/docs commits; always inspect current HEAD and the latest handoff before implementation.
+- Last verified code SHA: `8edd9ccfc0a244f0b4893d7251113818bfe3cc7a`. The head advances with later code/docs commits; always inspect current HEAD and the latest handoff before implementation.
 - At the latest remote comparison the feature branch remained **3 commits behind `main`** and diverged. **Do not merge, rebase, reset, cherry-pick, or resolve drift automatically**. Review relevant `main` differences separately.
 - Default: `ADMIN_PWA_ENABLED=false`. Keep it **OFF**. No production deployment, no merge to `main`, no changes to secrets or public site, no changes to the existing Telegram `/admin.html`, `X-Telegram-Init-Data`, native APK billing/update behavior, or normal user authentication.
 - Do not treat stale status summaries near the top of `IMPLEMENTATION_PLAN.md` or old sections of `NEXT_CHAT_START.md` as current; consult source and this verified checkpoint.
@@ -38,13 +38,13 @@ The V10 HTML `hsk-ai-admin-ux-demo-v10.html` is **not committed to GitHub**; the
 
 ## 4. Last VERIFIED test checkpoint
 
-Payment + read projections verified at **`f24aff4dc534a1e19648918294d094fd64c37e3d`**, [GitHub run 40032878724](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40032878724), both jobs SUCCESS:
-- Python 3.12: **184 passed, 11 PostgreSQL-only skipped**, plus **61 passed** legacy payment/subscription/preview/affiliate/main-import regressions; compileall and unique Alembic head succeeded.
+Payment + read projections + delivery-status repair verified at **`8edd9ccfc0a244f0b4893d7251113818bfe3cc7a`**, [GitHub run 40033338435](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40033338435), both jobs SUCCESS:
+- Python 3.12: **185 passed, 11 PostgreSQL-only skipped**, plus **61 passed** legacy payment/subscription/preview/affiliate/main-import regressions; compileall and unique Alembic head succeeded.
 - Disposable real PostgreSQL 16: **11 passed**; scoped migrations **0110–0117** upgraded, 0117→0116 downgrade/re-upgrade, columns matched ORM; nonempty financial audit refuses downgrade.
 - Actual synthetic ES256 verifier integration covers approval, wrong key/RP/origin/UV/signature; not physical Touch ID/Face ID/Windows Hello or actual provider E2E.
 - **Known unrelated baseline blocker:** entirely empty full-history Alembic still fails at legacy `0011_add_course_workflow_fields` (missing `course_progress`). Scoped CI starts from a *synthetically stamped 0109 baseline*. No claim that old migrations are fixed.
 
-CI: `.github/workflows/admin-pwa-security.yml`. Always run all Admin PWA tests, the workflow's legacy payment regression command and real PG job, and inspect the run's exact SHA. Includes PostgreSQL READ ONLY enforcement and transaction-setting reset. A follow-up HTTP delivery-status repair (return the actual outbox state after partial delivery, or unconfirmed if unavailable) passed local 185 + 61 + 11 PG tests and awaits its exact-SHA GitHub run; inspect the latest handoff before resuming.
+CI: `.github/workflows/admin-pwa-security.yml`. Always run all Admin PWA tests, the workflow's legacy payment regression command and real PG job, and inspect the run's exact SHA. Includes PostgreSQL READ ONLY enforcement and transaction-setting reset. The HTTP delivery-status repair returns the actual durable outbox state after partial delivery, or unconfirmed if unavailable; it is covered in the verified 185 + 61 + 11 result above. Inspect the latest handoff before resuming.
 
 ## 5. NEXT work in safe increments (do not repeat already done work)
 

@@ -76,7 +76,9 @@ A crash before claim leaves `pending`. Pending recovery/operator reconciliation
 and monitoring remain a follow-up; no public resend API is exposed. This is
 at-most-once attempted delivery, **not** an exactly-once delivery guarantee.
 A post-commit delivery failure never reports the already-applied payment as a
-financial failure or re-applies its subscription.
+financial failure or re-applies its subscription. HTTP reports the durable outbox
+status after dispatch, or `unconfirmed` if that status cannot be read; it never
+labels a known uncertain attempt as still pending.
 
 ## Evidence boundaries
 
