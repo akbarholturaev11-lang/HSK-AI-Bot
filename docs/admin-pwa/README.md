@@ -55,3 +55,7 @@ Atomic canonical Google link + Telegram approval consumption + a **3-minute dual
 ## Server-side WebAuthn registration checkpoint (2026-10-24)
 
 New challenge and credential DB models, Alembic `0114_admin_pwa_webauthn_registration`, pinned `webauthn==3.0.1`, `app/admin_api/pwa_webauthn_registration.py` and `app/admin_api/pwa_webauthn_transport.py` implement origin/RP/challenge/user-verification-enforced passkey **registration** under short-lived dual-cookie grants. New routes: `POST /api/admin/v1/auth/passkey/register/options` and `/verify`. These never mint a normal admin login cookie. New test modules have been committed but NOT EXECUTED in a full repository environment; see handoff for exact facts. Passkey sign-in, session issuer, WebAuthn step-up, real-data UI and staging/E2E remain. Feature flag OFF, no production or `main` impact.
+
+### CI evidence for WebAuthn registration — 2026-10-24
+
+The dedicated `admin-pwa-security.yml` workflow succeeded on the feature branch: [run 40026176016](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40026176016), **110 tests passed in 6.46s**, Python 3.12 dependency installation and compileall succeeded, with one Alembic head at `0114_admin_pwa_webauthn_registration`. This tests mocked FIDO attestation, not real hardware signatures or PostgreSQL migration upgrades. Not a production release sign-off; passkey sign-in and session issuer remain unfinished. `ADMIN_PWA_ENABLED=false`.
