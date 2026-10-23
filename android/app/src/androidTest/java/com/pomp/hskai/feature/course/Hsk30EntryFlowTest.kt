@@ -18,6 +18,7 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.pomp.hskai.R
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.core.design.PompHskAiTheme
 import com.pomp.hskai.data.api.CourseHsk30AccessDto
@@ -140,17 +141,29 @@ class Hsk30EntryFlowTest {
 
         listOf("nhsk1", "nhsk2", "nhsk3").forEachIndexed { index, level ->
             compose.runOnIdle { state.value = courseState(level) }
-            compose.onNodeWithText(strings.getString(R.string.hsk30_access_required_title))
-                .performScrollTo().assertIsDisplayed()
-            compose.onNodeWithText("$1.08").performScrollTo().assertIsDisplayed()
-            compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button))
-                .performScrollTo().assertIsEnabled().performClick()
-            compose.runOnIdle { assertEquals(index + 1, payments) }
+            compose.onNodeWithTag("hsk30-book-title")
+                .performScrollTo()
+                .assertTextEquals(strings.getString(
+                    if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) R.string.hsk30_access_required_title
+                    else R.string.hsk30_play_access_title
+                ))
+            if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+                compose.onNodeWithText("$1.08").performScrollTo().assertIsDisplayed()
+                compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button))
+                    .performScrollTo().assertIsEnabled().performClick()
+            } else {
+                compose.onNodeWithText("$1.08").assertDoesNotExist()
+                compose.onNodeWithText(strings.getString(R.string.hsk30_access_required_title)).assertDoesNotExist()
+                compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button)).assertDoesNotExist()
+                compose.onNodeWithText(strings.getString(R.string.hsk30_play_access_status))
+                    .performScrollTo().assertIsDisplayed()
+            }
+            compose.runOnIdle { assertEquals(if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) index + 1 else 0, payments) }
             compose.onNodeWithText(strings.getString(R.string.hsk30_access_back_hsk20))
                 .performScrollTo().performClick()
             compose.runOnIdle {
                 assertEquals(List(index + 1) { "hsk20" to null }, switches)
-                assertEquals(index + 1, payments)
+                assertEquals(if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) index + 1 else 0, payments)
             }
         }
     }
@@ -261,10 +274,16 @@ class Hsk30EntryFlowTest {
 
         cases.forEachIndexed { index, unavailable ->
             compose.runOnIdle { state.value = unavailable }
-            compose.onNodeWithText(strings.getString(R.string.hsk30_unlock_unavailable))
-                .performScrollTo().assertIsDisplayed()
-            compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button))
-                .performScrollTo().assertIsNotEnabled()
+            compose.onNodeWithText(
+                strings.getString(if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) R.string.hsk30_unlock_unavailable else R.string.hsk30_play_access_status)
+            ).performScrollTo().assertIsDisplayed()
+            if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+                compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button))
+                    .performScrollTo().assertIsNotEnabled()
+            } else {
+                compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button)).assertDoesNotExist()
+                compose.onNodeWithText("$1.08").assertDoesNotExist()
+            }
             compose.onNodeWithText(strings.getString(R.string.hsk30_access_back_hsk20))
                 .performScrollTo().performClick()
             compose.runOnIdle {

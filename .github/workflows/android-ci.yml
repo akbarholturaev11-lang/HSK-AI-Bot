@@ -186,6 +186,21 @@ jobs:
       - name: Assemble debug
         run: ./gradlew --no-daemon assemblePlayDebug assembleDirectDebug
 
+      # Installable, independently signed debug builds for the owner's PR QA.
+      # Only the requested same-repository Play readiness branch gets download
+      # artifacts; no release keys, store uploads or R2 publication are used.
+      # These .debug packages install beside production, not over existing users.
+      - name: Upload isolated Direct and Play test APKs
+        if: ${{ github.event_name == 'pull_request' && github.head_ref == 'codex/android-play-readiness-20261022' && github.event.pull_request.head.repo.full_name == github.repository }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: hsk-ai-play-readiness-test-apks
+          path: |
+            android/app/build/outputs/apk/direct/debug/*.apk
+            android/app/build/outputs/apk/play/debug/*.apk
+          if-no-files-found: error
+          retention-days: 7
+
       # Release stays fail-closed: without signing secrets the bundle is built
       # unsigned for validation only and is never published from CI.
       - name: Validate release bundles (unsigned)
@@ -231,6 +246,9 @@ jobs:
             tests/test_android_foundation_api.py \
             tests/test_android_course_rank_completion.py \
             tests/test_android_features_api.py \
+            tests/test_android_assistant_service.py \
+            tests/test_android_bug_report_flow_contract.py \
+            tests/test_android_hsk30_profile_books_contract.py \
             tests/test_android_push.py \
             tests/test_android_account_notices.py \
             tests/test_course_card_contract.py \

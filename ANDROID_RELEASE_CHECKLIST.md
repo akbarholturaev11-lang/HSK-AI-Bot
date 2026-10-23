@@ -183,3 +183,5 @@ kodning o'zi yo'q, yashirilgan emas.
 **Yangilanish jim emas.** Android sideload qilingan ilovada har doim o'z
 o'rnatish dialogini ko'rsatadi. Bir bosish + dialog. Foydalanuvchiga «avtomatik
 yangilanadi» deb aytmang. Jim yangilanishni faqat Play Market beradi.
+
+> **2026-10-22 Play code audit (newer):** [Play release code audit and Data Safety checklist](docs/GOOGLE_PLAY_RELEASE_AUDIT_2026-10-22.md). Follow the new audit's test and signing gates before any Play submission; this older checklist is not proof of live release status.

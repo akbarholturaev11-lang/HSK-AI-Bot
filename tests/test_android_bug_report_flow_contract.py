@@ -15,6 +15,7 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
         cls.intro = (ANDROID / "feature/feedback/BugReportIntroSheet.kt").read_text(encoding="utf-8")
         cls.capture = (ANDROID / "feature/feedback/ReportScreenCapture.kt").read_text(encoding="utf-8")
         cls.profile = (ANDROID / "feature/profile/ProfileScreen.kt").read_text(encoding="utf-8")
+        cls.assistant = (ANDROID / "feature/assistant/AssistantHost.kt").read_text(encoding="utf-8")
 
     def test_shake_confirmation_precedes_report_form(self):
         self.assertIn("bugReportIntroVisible = true", self.main)
@@ -40,12 +41,43 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
         self.assertIn("FLAG_SECURE", self.capture)
         self.assertIn("val screenshot = captureReportScreen(visibleDialogView)", self.profile)
 
-    def test_attach_is_on_by_default_but_can_be_disabled(self):
-        self.assertIn("var attachScreenshot by remember { mutableStateOf(true) }", self.form)
+    def test_existing_bug_report_defaults_screenshot_on_and_ai_report_defaults_off(self):
+        self.assertIn('var attachScreenshot by remember(screen) { mutableStateOf(screen != "ai_assistant") }', self.form)
+        self.assertIn("initialDescription: String = \"\"", self.form)
         self.assertIn("checked = attachScreenshot", self.form)
         self.assertIn("onCheckedChange", self.form)
         self.assertIn("screenshotDataUrl = encoded.orEmpty()", self.form)
         self.assertIn('picker.launch("image/*")', self.form)
+
+    def test_ai_report_is_in_per_answer_more_menu_with_working_copy_share(self):
+        self.assertIn('AssistantAnswerActions(\n                                                    turn = turn,', self.assistant)
+        self.assertIn("onReport = { reportTurn = turn }", self.assistant)
+        self.assertNotIn("onClick = { reportTurn = turn }", self.assistant)
+        self.assertNotIn("TextButton(onClick = { reportTurn", self.assistant)
+        actions = self.assistant.split("private fun AssistantAnswerActions(", 1)[1].split(
+            "private fun AssistantAnswerBubble(", 1
+        )[0]
+        self.assertIn("clipboard.setText(AnnotatedString(turn.text))", actions)
+        self.assertIn("Intent(Intent.ACTION_SEND)", actions)
+        self.assertIn("putExtra(Intent.EXTRA_TEXT, turn.text)", actions)
+        self.assertIn("Intent.createChooser(send,", actions)
+        self.assertIn("Icons.Default.ContentCopy", actions)
+        self.assertIn("Icons.Default.Share", actions)
+        self.assertIn("Icons.Default.MoreHoriz", actions)
+        self.assertIn("DropdownMenu(", actions)
+        self.assertIn("R.string.assistant_report_answer", actions)
+        self.assertIn("menuExpanded = false\n                        onReport()", actions)
+        self.assertGreaterEqual(actions.count("Modifier.size(48.dp)"), 3)
+        self.assertIn("remember(turn.clientMessageId)", actions)
+        self.assertIn('if (screen == "ai_assistant") R.string.assistant_report_answer', self.form)
+        self.assertIn('screen = "ai_assistant"', self.assistant)
+        self.assertIn("turn.clientMessageId.take(80)", self.assistant)
+        self.assertIn("turn.text.take(350)", self.assistant)
+        for locale in ("values", "values-ru", "values-tg"):
+            original = (ROOT / "localization/android/main" / locale / "play_policy.xml").read_text(encoding="utf-8")
+            bundled = (ROOT / "android/app/src/main/res" / locale / "play_policy.xml").read_text(encoding="utf-8")
+            self.assertEqual(original, bundled)
+            self.assertIn('name="assistant_more_actions"', original)
 
     def test_success_requires_explicit_ok_and_closes_entire_report(self):
         self.assertIn("sent = response is ApiResult.Success && response.value.ok", self.form)
@@ -61,9 +93,10 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
     def test_fixed_send_action_is_not_inside_scroll_column(self):
         scroll = self.form.index(".verticalScroll(rememberScrollState())")
         divider = self.form.index("HorizontalDivider(color = PompColors.Divider)")
-        submit = self.form.index("enabled = sent || (description.trim().length >= 5 && !busy)")
+        submit = self.form.index("enabled = !sent && description.trim().length >= 5 && !busy")
         self.assertLess(scroll, divider)
         self.assertLess(divider, submit)
+        self.assertIn(").heightIn(min = 52.dp)", self.form)
         self.assertIn(".imePadding()", self.form)
         self.assertIn("SOFT_INPUT_ADJUST_RESIZE", self.form)
 
