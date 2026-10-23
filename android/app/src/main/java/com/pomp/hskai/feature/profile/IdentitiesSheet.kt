@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -20,8 +21,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -42,6 +52,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +64,7 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.AuthProvider
 import com.pomp.hskai.core.auth.authActivity
 import com.pomp.hskai.core.auth.isTelegramIdentityLinkUrl
+import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.data.api.AndroidProfileResponse
 
@@ -73,6 +87,7 @@ fun IdentitiesSheet(
     onDismiss: () -> Unit,
     onCancelConnection: () -> Unit = {},
     onReopenTelegram: () -> Unit = {},
+    profileError: ApiError? = null,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val context = LocalContext.current
@@ -98,209 +113,113 @@ fun IdentitiesSheet(
         sheetState = sheetState,
         containerColor = PompColors.Paper,
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp).padding(bottom = 28.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                stringResource(R.string.profile_account_title),
-                color = PompColors.Ink,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Text(
-                stringResource(R.string.profile_account_subtitle),
-                color = PompColors.InkSecondary,
-                fontSize = 13.sp,
-                modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-            )
-            Spacer(Modifier.height(18.dp))
-
-            Surface(
-                color = PompColors.PaperRaised,
-                shape = RoundedCornerShape(20.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
-                modifier = Modifier.fillMaxWidth(),
+        Column(Modifier.fillMaxWidth().imePadding().padding(horizontal = 20.dp, vertical = 8.dp).testTag("profile-account")) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.profile_account_title), color = PompColors.Ink,
+                    style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f))
+                IconButton(onClick = onDismiss) {
+                    Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.hsk_common_action_close), tint = PompColors.InkSecondary)
+                }
+            }
+            Column(
+                modifier = Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())
+                    .testTag("profile-account-scroll"),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 18.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Surface(color = PompColors.GoldSoft, shape = CircleShape, modifier = Modifier.size(88.dp)) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Image(
-                                painter = painterResource(profileAvatarDrawable(avatarKey)),
-                                contentDescription = null,
-                                modifier = Modifier.size(78.dp),
-                            )
-                        }
-                    }
-                    Text(
-                        stringResource(R.string.profile_account_avatar),
-                        color = PompColors.Ink,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(top = 10.dp, bottom = 12.dp),
-                    )
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        PROFILE_AVATARS.forEach { key ->
-                            val selected = avatarKey == key
-                            Surface(
-                                color = if (selected) PompColors.CinnabarSoft else PompColors.Paper,
-                                shape = CircleShape,
-                                border = BorderStroke(
-                                    if (selected) 2.dp else 1.dp,
-                                    if (selected) PompColors.Cinnabar else PompColors.Divider,
-                                ),
-                                modifier = Modifier.size(58.dp).clickable { avatarKey = key },
-                            ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Image(
-                                        painter = painterResource(profileAvatarDrawable(key)),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(50.dp),
-                                    )
-                                }
+                Text(stringResource(R.string.profile_account_avatar), color = PompColors.InkSecondary,
+                    style = MaterialTheme.typography.labelLarge)
+                Row(Modifier.fillMaxWidth().selectableGroup(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    PROFILE_AVATARS.forEachIndexed { index, key ->
+                        val selected = avatarKey == key || (avatarKey.isBlank() && index == 0)
+                        val label = stringResource(R.string.profile_account_avatar_option, index + 1)
+                        Surface(
+                            color = if (selected) PompColors.CinnabarSoft else PompColors.CardSurface,
+                            shape = CircleShape,
+                            border = BorderStroke(if (selected) 2.dp else 1.dp,
+                                if (selected) PompColors.Cinnabar else PompColors.Divider),
+                            modifier = Modifier.size(64.dp).selectable(selected = selected, role = Role.RadioButton,
+                                enabled = !savingProfile, onClick = { avatarKey = key })
+                                .semantics { contentDescription = label },
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Image(painter = painterResource(profileAvatarDrawable(key)), contentDescription = null,
+                                    modifier = Modifier.size(54.dp))
                             }
                         }
                     }
-                    Text(
-                        stringResource(R.string.profile_account_avatar_hint),
-                        color = PompColors.InkSecondary,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(top = 12.dp),
-                    )
                 }
-            }
-
-            Spacer(Modifier.height(16.dp))
-            OutlinedTextField(
-                value = displayName,
-                onValueChange = { if (it.length <= 80) displayName = it },
-                label = { Text(stringResource(R.string.profile_account_name)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            if (state.telegramLinked) {
-                Spacer(Modifier.height(10.dp))
-                ReadOnlyField(
-                    label = stringResource(R.string.profile_account_telegram),
-                    value = user?.telegramUsername?.takeIf { it.isNotBlank() }?.let { "@$it" } ?: "—",
+                OutlinedTextField(
+                    value = displayName,
+                    onValueChange = { if (it.length <= 80) displayName = it },
+                    label = { Text(stringResource(R.string.profile_account_name)) },
+                    enabled = !savingProfile,
+                    singleLine = true,
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                 )
-            }
-            user?.phone?.takeIf { it.isNotBlank() }?.let { phone ->
-                Spacer(Modifier.height(10.dp))
-                ReadOnlyField(
-                    label = stringResource(R.string.profile_account_phone),
-                    value = phone,
-                )
-            }
-
-            Spacer(Modifier.height(20.dp))
-            Text(
-                stringResource(R.string.profile_account_sign_in_methods),
-                color = PompColors.Ink,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-            )
-            Surface(
-                color = PompColors.PaperRaised,
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column {
-                    TelegramAccountRow(state, onConnect)
-                    ProviderAccountRow(
-                        provider = AuthProvider.GOOGLE,
-                        state = state,
-                        onConnect = onConnect,
-                        onDisconnect = onDisconnect,
-                    )
-                    ProviderAccountRow(
-                        provider = AuthProvider.APPLE,
-                        state = state,
-                        onConnect = onConnect,
-                        onDisconnect = onDisconnect,
-                    )
-                    Text(
-                        stringResource(R.string.profile_security_note),
-                        color = PompColors.InkSecondary,
-                        fontSize = 12.sp,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
-                    )
-                }
-            }
-            if (!state.isLoading && state.identities.size == 1 && !state.telegramLinked) {
-                Spacer(Modifier.height(8.dp))
-                IdentityNotice(stringResource(R.string.error_oauth_last_identity))
-            }
-
-            if (state.telegramApprovalUrl != null && state.busyProvider == AuthProvider.TELEGRAM) {
-                Spacer(Modifier.height(10.dp))
-                IdentityNotice(stringResource(R.string.profile_telegram_link_waiting))
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    TextButton(onClick = onReopenTelegram, modifier = Modifier.weight(1f).testTag("telegram-link-reopen")) {
-                        Text(stringResource(R.string.auth_open_telegram_again))
-                    }
-                    TextButton(onClick = onCancelConnection, modifier = Modifier.testTag("telegram-link-cancel")) {
-                        Text(stringResource(R.string.action_cancel))
+                profileError?.let { IdentityNotice(stringResource(it.messageRes)) }
+                Text(stringResource(R.string.profile_account_sign_in_methods), color = PompColors.InkSecondary,
+                    style = MaterialTheme.typography.labelLarge)
+                Surface(color = PompColors.CardSurface, shape = RoundedCornerShape(20.dp),
+                    border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth()) {
+                    Column {
+                        TelegramAccountRow(state, user?.telegramUsername, onConnect)
+                        listOf(AuthProvider.GOOGLE, AuthProvider.APPLE).forEach { provider ->
+                            if (provider in state.available || state.identities.any { it.provider == provider }) {
+                                HorizontalDivider(color = PompColors.Divider, modifier = Modifier.padding(horizontal = 16.dp))
+                                ProviderAccountRow(provider, state, onConnect, onDisconnect)
+                            }
+                        }
                     }
                 }
+                if (state.isLoading) {
+                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(Modifier.size(24.dp), color = PompColors.Cinnabar, strokeWidth = 2.dp)
+                    }
+                }
+                // This notice explains a disabled safety action, rather than
+                // repeating general account/provider implementation details.
+                if (!state.isLoading && state.identities.size == 1 && !state.telegramLinked) {
+                    IdentityNotice(stringResource(R.string.error_oauth_last_identity))
+                }
+                if (state.telegramApprovalUrl != null && state.busyProvider == AuthProvider.TELEGRAM) {
+                    IdentityNotice(stringResource(R.string.profile_telegram_link_waiting))
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(onClick = onReopenTelegram, modifier = Modifier.weight(1f).testTag("telegram-link-reopen")) {
+                            Text(stringResource(R.string.auth_open_telegram_again))
+                        }
+                        TextButton(onClick = onCancelConnection, modifier = Modifier.testTag("telegram-link-cancel")) {
+                            Text(stringResource(R.string.action_cancel))
+                        }
+                    }
+                }
+                state.sessionsRevoked?.let { IdentityNotice(stringResource(R.string.profile_identity_unlinked)) }
+                state.error?.let { IdentityNotice(stringResource(it.messageRes)) }
             }
-
-            Spacer(Modifier.height(16.dp))
+            val hasChanges = displayName.trim() != user?.name.orEmpty().trim() || avatarKey != user?.avatarKey.orEmpty()
             Button(
                 onClick = { onSaveProfile(displayName.trim(), avatarKey) },
-                enabled = !savingProfile && displayName.trim().isNotEmpty(),
-                modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                    containerColor = PompColors.Cinnabar,
-                    contentColor = PompColors.Paper,
-                ),
+                enabled = !savingProfile && user != null && hasChanges && displayName.trim().isNotEmpty(),
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 12.dp).heightIn(min = 52.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar, contentColor = PompColors.Paper),
             ) {
-                Text(if (savingProfile) "…" else stringResource(R.string.profile_account_save))
-            }
-
-            state.sessionsRevoked?.let {
-                Spacer(Modifier.height(10.dp))
-                IdentityNotice(stringResource(R.string.profile_identity_unlinked))
-            }
-            state.error?.let { error ->
-                Spacer(Modifier.height(10.dp))
-                IdentityNotice(stringResource(error.messageRes))
+                if (savingProfile) CircularProgressIndicator(Modifier.size(20.dp), color = PompColors.Paper, strokeWidth = 2.dp)
+                else Text(stringResource(R.string.profile_account_save))
             }
         }
     }
 }
 
 @Composable
-private fun ReadOnlyField(label: String, value: String) {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
-            Text(label, color = PompColors.InkSecondary, fontSize = 11.sp)
-            Text(value, color = PompColors.Ink, fontSize = 15.sp)
-        }
-    }
-}
-
-@Composable
-private fun TelegramAccountRow(state: IdentitiesUiState, onConnect: (AuthProvider, Activity?) -> Unit) {
+private fun TelegramAccountRow(state: IdentitiesUiState, username: String?, onConnect: (AuthProvider, Activity?) -> Unit) {
     val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text(stringResource(R.string.hsk_course_rating_write_telegram), color = PompColors.Ink, fontSize = 14.sp, modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.hsk_course_rating_write_telegram), color = PompColors.Ink, fontSize = 16.sp, modifier = Modifier.weight(1f))
             if (!state.telegramLinked) {
                 OutlinedButton(
                     onClick = { onConnect(AuthProvider.TELEGRAM, context.authActivity()) },
@@ -311,13 +230,12 @@ private fun TelegramAccountRow(state: IdentitiesUiState, onConnect: (AuthProvide
                 }
             }
         }
-        Text(
-            stringResource(if (state.telegramLinked) R.string.profile_identity_connected
-                else R.string.profile_telegram_link_hint),
-            color = PompColors.InkSecondary,
-            fontSize = 12.sp,
-            modifier = Modifier.fillMaxWidth().padding(top = 3.dp),
-        )
+        if (state.telegramLinked) {
+            Text(username?.takeIf { it.isNotBlank() }?.let { "@${it.removePrefix("@")}" }
+                ?: stringResource(R.string.profile_identity_connected),
+                color = PompColors.InkSecondary, style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(top = 3.dp))
+        }
     }
 }
 
@@ -341,7 +259,7 @@ private fun ProviderAccountRow(
                     else R.string.profile_account_apple
                 ),
                 color = PompColors.Ink,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 modifier = Modifier.weight(1f),
             )
             if (identity != null) {
@@ -361,13 +279,10 @@ private fun ProviderAccountRow(
                 }
             }
         }
-        Text(
-            identity?.emailMasked ?: identity?.displayName
-                ?: stringResource(R.string.profile_account_connect),
-            color = PompColors.InkSecondary,
-            fontSize = 12.sp,
-            modifier = Modifier.fillMaxWidth().padding(top = 3.dp),
-        )
+        (identity?.emailMasked ?: identity?.displayName)?.takeIf { it.isNotBlank() }?.let {
+            Text(it, color = PompColors.InkSecondary, style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.fillMaxWidth().padding(top = 3.dp))
+        }
     }
 }
 

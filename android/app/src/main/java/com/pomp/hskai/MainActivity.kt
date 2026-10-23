@@ -93,6 +93,8 @@ import com.pomp.hskai.feature.onboarding.OnboardingScreen
 import com.pomp.hskai.feature.onboarding.OnboardingViewModel
 import com.pomp.hskai.feature.profile.IdentitiesViewModel
 import com.pomp.hskai.feature.profile.IdentitiesViewModelFactory
+import com.pomp.hskai.feature.profile.LanguagePicker
+import com.pomp.hskai.feature.profile.DailyGoalPicker
 import com.pomp.hskai.feature.profile.ProfileScreen
 import com.pomp.hskai.feature.profile.ProfileSettingsViewModel
 import com.pomp.hskai.feature.profile.AccountDeletionViewModel
@@ -1558,7 +1560,16 @@ private fun AppRoot(
                                 onOpenSupport = { url -> openExternal(context, url) },
                                 onReportProblem = openBugReport,
                                 reportVisible = bugReportOpen || bugReportIntroVisible,
-                                onRefresh = profileViewModel::load,
+                                onRefresh = {
+                                    profileViewModel.load()
+                                    courseViewModel.load()
+                                    if (identitiesState.busyProvider == null) identitiesViewModel.refresh()
+                                },
+                                onSelectLanguage = settingsViewModel::setLanguage,
+                                onSelectGoal = { value ->
+                                    scope.launch { app.appSettings.setDailyGoal(value) }
+                                    studySetupViewModel.chooseDailyGoalXp(value)
+                                },
                                 onLogout = { signOut(false) },
                                 onUnlinkDevice = { signOut(true) },
                                 courseTrack = courseState.map?.hsk30?.activeTrack
@@ -1954,93 +1965,6 @@ private fun PinyinPicker(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LanguagePicker(
-    current: AppLanguage,
-    onPick: (AppLanguage) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState()
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = PompColors.PaperRaised,
-    ) {
-        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
-            Text(
-                text = stringResource(R.string.profile_language_picker_title),
-                style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
-                color = PompColors.Ink,
-            )
-            androidx.compose.foundation.layout.Spacer(Modifier.padding(6.dp))
-            AppLanguage.entries.forEach { language ->
-                val selected = language == current
-                Surface(
-                    color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 52.dp)
-                        .padding(vertical = 4.dp)
-                        .clickable { onPick(language) },
-                ) {
-                    Text(
-                        text = stringResource(language.labelRes()),
-                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-                        color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    )
-                }
-            }
-            androidx.compose.foundation.layout.Spacer(Modifier.padding(12.dp))
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun DailyGoalPicker(
-    current: Int,
-    onPick: (Int) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState()
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = PompColors.PaperRaised,
-    ) {
-        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
-            Text(
-                text = stringResource(R.string.profile_goal_picker_title),
-                style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
-                color = PompColors.Ink,
-            )
-            androidx.compose.foundation.layout.Spacer(Modifier.padding(6.dp))
-            DailyGoal.CHOICES.forEach { value ->
-                val selected = value == current
-                Surface(
-                    color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 52.dp)
-                        .padding(vertical = 4.dp)
-                        .clickable { onPick(value) },
-                ) {
-                    Text(
-                        text = stringResource(R.string.profile_goal_option, value),
-                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-                        color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    )
-                }
-            }
-            androidx.compose.foundation.layout.Spacer(Modifier.padding(12.dp))
-        }
-    }
-}
 
 private fun openExternal(context: android.content.Context, url: String): Boolean {
     if (url.isBlank()) return false

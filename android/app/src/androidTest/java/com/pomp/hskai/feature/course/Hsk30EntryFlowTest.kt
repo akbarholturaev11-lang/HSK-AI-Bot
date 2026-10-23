@@ -13,6 +13,9 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.hasScrollAction
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -100,6 +103,7 @@ class Hsk30EntryFlowTest {
         state: MutableState<CourseUiState>,
         onUnlock: () -> Unit = {},
         onSwitch: (String, String?) -> Unit = { _, _ -> },
+        onRetry: () -> Unit = {},
     ) {
         val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as HskAiApplication
         val binding = AssistantBinding(assistantRegistry, app.assistant, {}, { _, _ -> })
@@ -117,13 +121,25 @@ class Hsk30EntryFlowTest {
                         onChestRewardConsumed = {},
                         onSwitchTrack = onSwitch,
                         onUnlockHsk30 = onUnlock,
-                        onRetry = {},
+                        onRetry = onRetry,
                     )
                 }
             }
         }
     }
 
+
+    @Test fun pullingTheCourseReloadsWithoutSwitchingTheTrack() {
+        var reads = 0
+        var switches = 0
+        showCourse(mutableStateOf(courseState(access = lockedAccess.copy(allowed = true))),
+            onSwitch = { _, _ -> switches++ }, onRetry = { reads++ })
+        compose.onNode(hasScrollAction()).performTouchInput {
+            swipeDown(startY = height * .05f, endY = height * .85f, durationMillis = 600)
+        }
+        compose.waitUntil(5_000) { reads == 1 }
+        compose.runOnIdle { assertEquals(0, switches) }
+    }
 
     @Test fun bundledHsk30BookImageDecodesOnAndroid() {
         val bitmap = requireNotNull(

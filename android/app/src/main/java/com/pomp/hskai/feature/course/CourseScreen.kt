@@ -48,6 +48,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
@@ -128,6 +129,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /** Native rendering of the Mini App course shell. Mini App is source of truth. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CourseScreen(
     state: CourseUiState,
@@ -168,106 +170,112 @@ fun CourseScreen(
     }
     Box(modifier = modifier.fillMaxSize()) {
         HskSceneSurface(modifier = Modifier.fillMaxSize()) {
-            when {
-                state.isLoading && map == null -> Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) { HskBrandLoader() }
+            PullToRefreshBox(
+                isRefreshing = state.isRefreshing,
+                onRefresh = { if (!state.isRefreshing && !state.isSwitchingTrack && !state.isOpeningChest) onRetry() },
+                modifier = Modifier.fillMaxSize().testTag("course-refresh"),
+            ) {
+                when {
+                    state.isLoading && map == null -> Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) { HskBrandLoader() }
 
-                map == null -> CourseErrorBlock(
-                    messageRes = state.error?.messageRes ?: R.string.error_unknown,
-                    onRetry = onRetry,
-                )
+                    map == null -> CourseErrorBlock(
+                        messageRes = state.error?.messageRes ?: R.string.error_unknown,
+                        onRetry = onRetry,
+                    )
 
-                else -> {
-                    val rows = remember(map) { map.toRows() }
-                    val listState = rememberLazyListState()
-                    val viewportHeight = listState.layoutInfo.viewportSize.height
-                    val foundationVisible = map.level.equals("hsk1", ignoreCase = true) && map.foundation != null
-                    val foundationMustComeFirst = foundationVisible && map.foundation?.mustComeFirst == true
+                    else -> {
+                        val rows = remember(map) { map.toRows() }
+                        val listState = rememberLazyListState()
+                        val viewportHeight = listState.layoutInfo.viewportSize.height
+                        val foundationVisible = map.level.equals("hsk1", ignoreCase = true) && map.foundation != null
+                        val foundationMustComeFirst = foundationVisible && map.foundation?.mustComeFirst == true
 
-                    LaunchedEffect(
-                        map.currentLesson?.order,
-                        viewportHeight,
-                        foundationVisible,
-                        foundationMustComeFirst,
-                    ) {
-                        if (foundationMustComeFirst) {
-                            listState.scrollToItem(0)
-                            return@LaunchedEffect
-                        }
-                        val rowIndex = rows.indexOfFirst {
-                            it is CourseRow.Path &&
-                                (it.item as? PathItem.Lesson)?.lesson?.isCurrent == true
-                        }
-                        if (rowIndex >= 0 && viewportHeight > 0) {
-                            listState.scrollToItem(
-                                index = rowIndex + if (foundationVisible) 1 else 0,
-                                scrollOffset = -(viewportHeight * 0.42f).roundToInt(),
-                            )
-                        }
-                    }
-
-                    Column(Modifier.fillMaxSize()) {
-                        CourseHeader(
-                            map = map,
-                            dailyGoal = dailyGoal,
-                            onOpenGoal = onOpenGoal,
-                            hints = hints,
-                            onDismissHint = onDismissHint,
-                            isSwitchingTrack = state.isSwitchingTrack,
-                            onSwitchTrack = { targetTrack, targetLevel ->
-                                pendingTrackSwitch = targetTrack to targetLevel
-                            },
-                            onOpenCourseChoice = { showCourseChoice = true },
-                        )
-                        if (!foundationMustComeFirst) {
-                            map.today?.takeIf { it.tasks.isNotEmpty() }?.let { today ->
-                                TodayPlanCard(today = today, onTask = onTodayTask)
-                            }
-                        }
-                        if (state.isStale) StaleBanner()
-
-                        LazyColumn(
-                            state = listState,
-                            modifier = Modifier.fillMaxWidth().weight(1f),
-                            contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                                top = 8.dp,
-                                // The tab bar floats over the list now, so the
-                                // last lesson needs this to clear it.
-                                bottom = 8.dp + LocalMainBottomInset.current,
-                            ),
+                        LaunchedEffect(
+                            map.currentLesson?.order,
+                            viewportHeight,
+                            foundationVisible,
+                            foundationMustComeFirst,
                         ) {
-                            if (foundationVisible) {
-                                item {
-                                    map.foundation?.let { FoundationEntry(it) }
+                            if (foundationMustComeFirst) {
+                                listState.scrollToItem(0)
+                                return@LaunchedEffect
+                            }
+                            val rowIndex = rows.indexOfFirst {
+                                it is CourseRow.Path &&
+                                    (it.item as? PathItem.Lesson)?.lesson?.isCurrent == true
+                            }
+                            if (rowIndex >= 0 && viewportHeight > 0) {
+                                listState.scrollToItem(
+                                    index = rowIndex + if (foundationVisible) 1 else 0,
+                                    scrollOffset = -(viewportHeight * 0.42f).roundToInt(),
+                                )
+                            }
+                        }
+
+                        Column(Modifier.fillMaxSize()) {
+                            CourseHeader(
+                                map = map,
+                                dailyGoal = dailyGoal,
+                                onOpenGoal = onOpenGoal,
+                                hints = hints,
+                                onDismissHint = onDismissHint,
+                                isSwitchingTrack = state.isSwitchingTrack,
+                                onSwitchTrack = { targetTrack, targetLevel ->
+                                    pendingTrackSwitch = targetTrack to targetLevel
+                                },
+                                onOpenCourseChoice = { showCourseChoice = true },
+                            )
+                            if (!foundationMustComeFirst) {
+                                map.today?.takeIf { it.tasks.isNotEmpty() }?.let { today ->
+                                    TodayPlanCard(today = today, onTask = onTodayTask)
                                 }
                             }
-                            items(rows) { row ->
-                                when (row) {
-                                    is CourseRow.Unit -> UnitHeader(row.unit)
-                                    is CourseRow.Path -> PathRow(
-                                        row = row,
-                                        chestReady = map.progress.rewardChest?.ready == true,
-                                        isOpeningChest = state.isOpeningChest,
-                                        isStale = state.isStale,
-                                        unlockedLessonOrder = state.unlockedLessonOrder,
-                                        onUnlockAnimationConsumed = onUnlockAnimationConsumed,
-                                        onLesson = onLesson,
-                                        onLimitedLesson = {
-                                            val hsk30 = map.hsk30
-                                            if (hsk30?.activeTrack == "hsk30" && !hsk30.access.allowed) {
-                                                onUnlockHsk30()
-                                            } else {
-                                                limitedLesson = it
-                                            }
-                                        },
-                                        onLockedLesson = onLockedLesson,
-                                        onOpenChest = onOpenChest,
-                                    )
+                            if (state.isStale) StaleBanner()
+
+                            LazyColumn(
+                                state = listState,
+                                modifier = Modifier.fillMaxWidth().weight(1f),
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                    top = 8.dp,
+                                    // The tab bar floats over the list now, so the
+                                    // last lesson needs this to clear it.
+                                    bottom = 8.dp + LocalMainBottomInset.current,
+                                ),
+                            ) {
+                                if (foundationVisible) {
+                                    item {
+                                        map.foundation?.let { FoundationEntry(it) }
+                                    }
                                 }
+                                items(rows) { row ->
+                                    when (row) {
+                                        is CourseRow.Unit -> UnitHeader(row.unit)
+                                        is CourseRow.Path -> PathRow(
+                                            row = row,
+                                            chestReady = map.progress.rewardChest?.ready == true,
+                                            isOpeningChest = state.isOpeningChest,
+                                            isStale = state.isStale,
+                                            unlockedLessonOrder = state.unlockedLessonOrder,
+                                            onUnlockAnimationConsumed = onUnlockAnimationConsumed,
+                                            onLesson = onLesson,
+                                            onLimitedLesson = {
+                                                val hsk30 = map.hsk30
+                                                if (hsk30?.activeTrack == "hsk30" && !hsk30.access.allowed) {
+                                                    onUnlockHsk30()
+                                                } else {
+                                                    limitedLesson = it
+                                                }
+                                            },
+                                            onLockedLesson = onLockedLesson,
+                                            onOpenChest = onOpenChest,
+                                        )
+                                    }
+                                }
+                                item { Spacer(Modifier.height(14.dp)) }
                             }
-                            item { Spacer(Modifier.height(14.dp)) }
                         }
                     }
                 }

@@ -11,7 +11,7 @@ python3 scripts/i18n_build_all_catalogs.py --check
 
 The builder validates every namespace before writing any output, rejects
 duplicate output ownership and reports missing/stale bundles. P0 checks all
-53 generated artifacts. The unified builder also refreshes existing browser
+59 generated artifacts. The unified builder also refreshes existing browser
 asset cache tokens using the generated file's Git-blob content hash. It changes
 tokens only in already reviewed HTML and updates the corresponding reviewed
 hash; unrelated source changes require review first. `--check` reports stale
@@ -34,6 +34,13 @@ preserve resource formatting, tuple/route contracts and platform behavior.
 Generated application copies are delivery artifacts, not additional authoring
 sources. Legacy inline browser/Desktop fallback dictionaries remain during
 client rollover; editing one does not replace its canonical catalog value.
+
+Existing native XML files covered by the frozen baseline must stay byte-identical,
+including when adding a key. Put new Android labels in a separate canonical XML
+bundle for all three locales, register its paths in `android/manifest.json`, then
+regenerate the delivery files and update the corresponding artifact-count tests.
+Run `scripts/i18n_baseline_guard.py` to verify the actual frozen sources; never
+refresh the baseline or add an exception merely to accept a new UI label.
 
 ## Har bir matn o‘zgarishi uchun tartib
 

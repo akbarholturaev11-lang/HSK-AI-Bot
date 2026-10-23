@@ -102,7 +102,6 @@ class AccountDeletionDialogTest {
             }
         }
         compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).performClick()
-        compose.onNodeWithText(text(R.string.profile_settings_section_account)).performClick()
         compose.onNodeWithTag("profile-settings-scroll")
             .performScrollToNode(hasText(text(R.string.profile_privacy_security)))
         compose.onNodeWithText(text(R.string.profile_privacy_security)).performClick()

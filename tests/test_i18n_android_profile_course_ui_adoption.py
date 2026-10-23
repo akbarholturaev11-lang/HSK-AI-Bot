@@ -76,7 +76,9 @@ FILE_RESOURCES = {
     ),
     "android/app/src/main/java/com/pomp/hskai/feature/profile/ProfileScreen.kt": (
         "nav_profile", "profile_xp", "profile_language", "profile_course_version",
-        "profile_notifications", "profile_help_action",
+        # Support now uses the platform-owned canonical profile_support label;
+        # the former exact-copy "write to admin" action is no longer rendered.
+        "profile_notifications",
     ),
     "android/app/src/main/java/com/pomp/hskai/feature/rating/RatingScreen.kt": (
         "nav_rating", "profile_xp", "rating_level", "rating_you",
