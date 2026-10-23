@@ -14,8 +14,10 @@ Read in order:
 
 **Project branch:** `codex/admin-pwa`. **Public target (not yet verified live):** `https://hskai.app/admin`.
 
-**Current state:** planning, verified-code audit and handoff documents only; implementation, staging, Google/TG browser login, Face ID/passkey and production rollout have **not** been completed.
+**Current state:** phase-one **fail-closed backend route bootstrap** committed (`app/admin_api/pwa_bootstrap.py`), feature flag still off by default, and isolated route tests passed. **No functional browser sign-in, Google/TG pairing, Passkey, real-data frontend, staging deployment or production release yet.**
 
 Global `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md` and `localization/README.md` remain authoritative alongside the user's requirement to work solely on the selected project branch until explicitly authorized to promote.
 
 These are **temporary task-scoped documents**. Keep them synchronized during work; archive only after final acceptance, without deleting useful evidence or overwriting unrelated rules.
+
+**Verified V10 reference:** [ADMIN_PWA_V10_UI_REFERENCE.md](ADMIN_PWA_V10_UI_REFERENCE.md). Original demo HTML is a conversation-mounted file, not a GitHub copy.

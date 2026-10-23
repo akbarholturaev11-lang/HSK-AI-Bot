@@ -1,6 +1,6 @@
 # HSK AI — Admin PWA implementation plan
 
-Status: **Phase 0 — plan updated for Google + Telegram one-time identity link and passkey-first returning login; application implementation not started**.
+Status: **Phase 0 source audit completed in part; fail-closed Phase 1A route bootstrap has started on the feature branch. Google/Telegram verification, passkey, sessions, UI/data integration and release are not implemented.**
 Target public URL: `https://hskai.app/admin` (owner-designated; live DNS/TLS/routing still needs verification).
 Branch: `codex/admin-pwa` (branched from `main` at `e935e4315df42037d6aab4ab38b2c4e5d9bbb681`).
 Scope: deliver a separate secure browser-installable Admin PWA without disrupting the existing Telegram Admin Mini App, admin Bot, Android, Desktop, production or main.
@@ -84,7 +84,7 @@ API layering: dedicated routes `/api/admin-pwa/auth/*` for browser sign-in/out/s
 - [x] Identify current branch, Telegram admin authorization path, admin APIs, statistics sources and feedback persistence gaps.
 - [x] Record design reference and non-negotiable Telegram/backward-compatibility/security constraints.
 - [ ] Map all existing admin endpoints into read-only vs mutation vs dangerous operations, with response schema, source, and authorization contract.
-- [ ] Capture current HTML demo V10 as a **read-only design reference** and define individual components; do not copy all inline demo logic.
+- [x] Inspect/hash actual conversation-mounted V10 HTML and record view component map in `docs/admin-pwa/ADMIN_PWA_V10_UI_REFERENCE.md`. Original demo bytes are **not** stored in GitHub; re-obtain before UI porting.
 **Acceptance:** reviewed API inventory, auth threat model, data dictionary and initial regression list. No production change.
 
 ### Phase 1A — Browser identity foundation + one-time Google/Telegram link
