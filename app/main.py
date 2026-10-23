@@ -25,6 +25,7 @@ from app.api.public_site import (
     record_event,
 )
 from app.config import settings
+from app.admin_api.pwa_bootstrap import create_admin_pwa_bootstrap_router
 from app.api.android_auth import create_android_auth_router
 from app.api.course_tracks import create_course_tracks_router
 from app.api.android_course import create_android_course_router
@@ -670,6 +671,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+# Isolated, fail-closed browser admin route. Does not affect Telegram /admin.html.
+app.include_router(create_admin_pwa_bootstrap_router(settings_obj=settings))
 app.include_router(create_public_site_router(
     settings_obj=settings,
     session_factory=async_session_maker,

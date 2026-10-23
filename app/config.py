@@ -107,6 +107,9 @@ class Settings(BaseSettings):
     # then removed by the background retention job.
     DESKTOP_AUTH_RECORD_RETENTION_DAYS: int = 30
     ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS: int = 86400
+    # Separate browser Admin PWA stays disabled until Google/TG + passkey auth exists.
+    ADMIN_PWA_ENABLED: bool = False
+    ADMIN_PWA_PUBLIC_ORIGIN: str = ""
     # Optional Android FCM delivery. With a blank project ID, Telegram and the
     # Android WorkManager status fallback continue without Firebase.
     ANDROID_FCM_PROJECT_ID: str = ""

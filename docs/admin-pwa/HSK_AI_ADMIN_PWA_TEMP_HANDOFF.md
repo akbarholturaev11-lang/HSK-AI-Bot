@@ -52,3 +52,14 @@ Add under a dated heading:
 - **Main/production:** explicitly state untouched or exact approved change.
 
 Do not write “done”, “tested”, “linked”, “deployed” unless verified in the same task. Do not manufacture status from an earlier assistant reply.
+
+## Implementation checkpoint — 2026-10-23, first code increment
+
+- **Branch:** `codex/admin-pwa`; branch commit for this increment is the commit containing this handoff update (inspect GitHub HEAD).
+- **Code:** new `app/admin_api/pwa_bootstrap.py`; route reservation `GET /admin` and `GET /api/admin/v1/me`. Both return 404 while `ADMIN_PWA_ENABLED=false` (the default). When explicitly enabled but origin is not a bare HTTPS origin, both return 503 `admin_pwa_origin_unconfigured`; with valid origin but without a real login verifier, both return 503 `admin_pwa_auth_not_ready`. No user data or session token is minted.
+- **Wiring:** `app/main.py` includes only this new router. `app/config.py` + `.env.example` add the disabled-by-default `ADMIN_PWA_ENABLED` and blank `ADMIN_PWA_PUBLIC_ORIGIN` settings. Existing `/admin.html` and `/api/admin-miniapp/*` implementations were not edited.
+- **Tests actually run in a local isolated module copy:** `PYTHONPATH=/mnt/data/admin-pwa-phase1-code python -m pytest /mnt/data/admin-pwa-phase1-code/tests/test_admin_pwa_bootstrap.py -q`: **4 passed, 17 subtests passed**. `python -m py_compile` for new files passed. This does not establish a full repository or deployment E2E pass. Test source is committed as `tests/test_admin_pwa_bootstrap.py`.
+- **Domain:** `https://hskai.app` was not accessible in the external browser check in this turn, therefore DNS, TLS, proxy, RP ID and Google callback remain **unverified**. Never enable the flag on production based on this work alone.
+- **No production authentication:** Google/Telegram one-time linking, passkey registration/sign-in, backend session tables, cookie+CSRF management and protected data endpoints **remain unimplemented**. This is route safety groundwork only, not a usable login.
+- **Next action:** define verified AdminActor and one-time Google OIDC + Telegram Bot approval state transitions and persistence schema with replay/cross-browser tests; only after implementation change the 503 guard under an explicit staging gate. Obtain and visually audit the V10 demo bytes (available in conversation workspace) before PWA frontend conversion.
+- **Main/production:** unchanged by this branch-only commit.
