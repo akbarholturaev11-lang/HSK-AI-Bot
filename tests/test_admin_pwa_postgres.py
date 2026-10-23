@@ -8,7 +8,8 @@ import asyncio
 import base64
 import os
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+import hashlib
 from types import SimpleNamespace
 from unittest.mock import patch
 from uuid import uuid4
@@ -17,6 +18,7 @@ from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.admin_api.pwa_sessions import authenticate_admin_pwa_session, revoke_admin_pwa_session
+from app.admin_api.pwa_step_up import consume_step_up_in_mutation, operation_digest
 from app.admin_api.pwa_webauthn_login import (
     PasskeyLoginRateLimited, begin_passkey_login, complete_passkey_login,
 )
@@ -25,6 +27,7 @@ from app.db.models.user import User
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_webauthn import AdminPwaCredential
 from app.db.models.admin_pwa_authentication import AdminPwaAuthenticationChallenge
+from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 
 
 def _b64(value: bytes) -> str:
@@ -62,6 +65,7 @@ class AdminPwaPostgresConcurrencyTests(unittest.IsolatedAsyncioTestCase):
                     User.__table__, AdminPwaSession.__table__,
                     AdminPwaCredential.__table__,
                     AdminPwaAuthenticationChallenge.__table__,
+                    AdminPwaStepUp.__table__,
                 ],
             ))
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
@@ -156,6 +160,55 @@ class AdminPwaPostgresConcurrencyTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(await authenticate_admin_pwa_session(
                 db, token, self.settings,
             ))
+
+
+    async def test_action_receipt_consumed_once_with_real_pg_locks(self):
+        now = datetime.now(timezone.utc)
+        cookie = "S" * 64
+        receipt_id = str(uuid4())
+        session_id = str(uuid4())
+        payload = {"user_id": 77, "reason": "duplicate"}
+        action = "users.delete"
+        target = "77"
+        async with self.sessions() as db:
+            db.add(User(id=11, telegram_id=9001, status="active"))
+            await db.flush()
+            db.add(AdminPwaSession(
+                id=session_id, user_id=11,
+                token_hash=hashlib.sha256(cookie.encode()).hexdigest(),
+                auth_method="webauthn", created_at=now,
+                expires_at=now + timedelta(hours=1),
+            ))
+            await db.flush()
+            db.add(AdminPwaStepUp(
+                id=receipt_id, session_id=session_id, user_id=11,
+                action=action, target=target,
+                payload_hash=operation_digest(
+                    action=action, target=target, payload=payload,
+                ),
+                challenge=b"C" * 32, status="verified",
+                created_at=now, verified_at=now,
+                expires_at=now + timedelta(seconds=50),
+            ))
+            await db.commit()
+
+        async def consume(*, target_value=target):
+            async with self.sessions() as db:
+                async with db.begin():
+                    return await consume_step_up_in_mutation(
+                        db, session_cookie=cookie, step_up_id=receipt_id,
+                        action=action, target=target_value, payload=payload,
+                        settings_obj=self.settings,
+                    )
+        self.assertFalse(await consume(target_value="99"))
+        a, b = await asyncio.wait_for(
+            asyncio.gather(consume(), consume()), timeout=30,
+        )
+        self.assertCountEqual([a, b], [True, False])
+        async with self.sessions() as db:
+            row = (await db.execute(select(AdminPwaStepUp))).scalar_one()
+            self.assertEqual(row.status, "consumed")
+            self.assertIsNotNone(row.consumed_at)
 
 
 if __name__ == "__main__":
