@@ -1,6 +1,14 @@
 {
   "locale": "uz",
   "messages": {
+    "adminPwa.approve": "✅ Tasdiqlash",
+    "adminPwa.approved": "✅ Admin PWA kirish so‘rovi tasdiqlandi. Brauzerdagi jarayonni davom ettiring.",
+    "adminPwa.confirm": "🔐 <b>HSK AI Admin PWA</b>\n\nTaqqoslash kodi: <code>{code}</code>\n\nBu kodni faqat kirishni o‘zingiz boshlagan bo‘lsangiz hskai.app/admin sahifasidagi kod bilan solishtiring. Kodlar mos kelmasa yoki so‘rov sizniki bo‘lmasa, rad eting.\n\nSo‘rov ko‘pi bilan 5 daqiqa amal qiladi. Kodning o‘zi kirish huquqini bermaydi.",
+    "adminPwa.denied": "❌ Admin PWA kirish so‘rovi rad etildi.",
+    "adminPwa.deny": "❌ Rad etish",
+    "adminPwa.invalid": "So‘rov mavjud emas, muddati tugagan yoki allaqachon ko‘rib chiqilgan. Brauzerda yangidan boshlang.",
+    "adminPwa.privateOnly": "Bu tasdiq faqat adminning shaxsiy Telegram chatida ishlaydi.",
+    "adminPwa.unavailable": "Admin PWA tasdiqlash xizmati vaqtincha ishlamayapti.",
     "course.course_all_levels_completed": "🏆 Barcha mavjud HSK kurslarini tugatdingiz.",
     "course.course_back_to_qa_button": "↩️ Oddiy rejim",
     "course.course_choose_lesson": "Qaysi darsdan boshlamoqchisiz?",
