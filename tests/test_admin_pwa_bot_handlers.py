@@ -94,12 +94,22 @@ class AdminPwaBotHandlerTests(unittest.IsolatedAsyncioTestCase):
             message(kind="supergroup", chat_id=-100),
             message(chat_id=9002),
             message(is_bot=True),
+            message().model_copy(update={"forward_origin": object()}),
         )
         for event in events:
             with self.subTest(kind=event.chat.type, chat_id=event.chat.id):
                 await admin_pwa.begin_admin_pwa_approval(event, session=object())
         self.preview.assert_not_awaited()
         self.send.assert_not_awaited()
+
+    async def test_forwarded_callback_cannot_approve(self):
+        forwarded = message().model_copy(update={"forward_origin": object()})
+        await admin_pwa.decide_admin_pwa_approval(
+            callback(forwarded), session=object(),
+        )
+        self.decide.assert_not_awaited()
+        self.ack.assert_awaited_once()
+        self.assertTrue(self.ack.await_args.kwargs["show_alert"])
 
     async def test_disabled_flag_does_not_interfere_with_normal_bot(self):
         self.settings.ADMIN_PWA_ENABLED = False
