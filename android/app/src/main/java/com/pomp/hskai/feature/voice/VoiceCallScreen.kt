@@ -113,6 +113,7 @@ internal fun VoiceCallScreen(
     onSendText: (String) -> Unit,
     onEndSession: () -> Unit,
     onSwapPartner: (String) -> Unit,
+    onReport: (VoiceLine) -> Unit,
 ) {
     val context = LocalContext.current
     var settingsOpen by remember { mutableStateOf(false) }
@@ -195,6 +196,7 @@ internal fun VoiceCallScreen(
             CallChat(
                 state = state,
                 subtitlesOn = subtitlesOn,
+                onReport = onReport,
                 modifier = Modifier.fillMaxWidth().weight(1f),
             )
         } else {
@@ -399,6 +401,7 @@ private fun RoundIconButton(
 private fun CallChat(
     state: VoiceUiState,
     subtitlesOn: Boolean,
+    onReport: (VoiceLine) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
@@ -434,7 +437,9 @@ private fun CallChat(
             contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 14.dp, bottom = 6.dp),
             verticalArrangement = Arrangement.spacedBy(9.dp),
         ) {
-            items(state.lines) { line -> VoiceBubble(line, subtitlesOn) }
+            items(state.lines) { line ->
+                VoiceBubble(line, subtitlesOn, onReport = { onReport(line) })
+            }
             state.error?.let { error ->
                 item { ErrorPill(stringResource(error.messageRes)) }
             }

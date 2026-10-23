@@ -2181,7 +2181,7 @@ def create_android_features_router(
                 raise AndroidFeatureError("android_bug_report_unavailable", status_code=503)
             heading = (
                 "🚩 HSK AI Android — AI kontent shikoyati"
-                if report.screen == "ai_assistant"
+                if report.screen in {"ai_assistant", "ai_voice"}
                 else "🐞 HSK AI Android — muammo xabari"
             )
             message = (

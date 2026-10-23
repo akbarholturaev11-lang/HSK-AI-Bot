@@ -143,7 +143,9 @@ jobs:
         run: python3 tools/check_flavor_parity.py
 
       - name: Check Google Play channel and key safeguards
-        run: python3 tools/check_play_release_contract.py
+        run: |
+          python3 tools/check_play_release_contract.py
+          python3 -m unittest discover -s ../tests -p test_android_play_artifact_guard.py
 
       - name: Check every string exists in uz, ru and tg
         run: python3 tools/check_strings_translated.py
@@ -247,6 +249,8 @@ jobs:
             tests/test_android_course_rank_completion.py \
             tests/test_android_features_api.py \
             tests/test_android_assistant_service.py \
+            tests/test_android_live_voice_gate.py \
+            tests/test_voice_practice_course_context.py \
             tests/test_android_bug_report_flow_contract.py \
             tests/test_android_hsk30_profile_books_contract.py \
             tests/test_android_push.py \

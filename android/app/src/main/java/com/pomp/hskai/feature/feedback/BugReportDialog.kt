@@ -121,7 +121,8 @@ fun BugReportDialog(
     var description by remember(initialDescription) { mutableStateOf(initialDescription.take(2000)) }
     // Preserve the existing bug-report default (screenshot ON, with a picker
     // fallback if capture failed). Only explicit AI-content reports are text-first.
-    var attachScreenshot by remember(screen) { mutableStateOf(screen != "ai_assistant") }
+    val aiContentReport = screen == "ai_assistant" || screen == "ai_voice"
+    var attachScreenshot by remember(screen) { mutableStateOf(!aiContentReport) }
     var preview by remember(screenshot) { mutableStateOf(screenshot) }
     var busy by remember { mutableStateOf(false) }
     var failed by remember { mutableStateOf(false) }
@@ -179,7 +180,7 @@ fun BugReportDialog(
                     ) {
                         Text(
                             stringResource(
-                                if (screen == "ai_assistant") R.string.assistant_report_answer
+                                if (aiContentReport) R.string.assistant_report_answer
                                 else R.string.bug_report_title,
                             ),
                             style = MaterialTheme.typography.titleLarge,

@@ -23,9 +23,19 @@ object AccountNoticePolicy {
 
     fun notificationId(key: String): Int = BASE_ID + (SLOTS[key.trim()] ?: 0)
 
-    /** Server actions are a closed set; anything unknown opens the paywall. */
-    fun destination(action: String): AppDestination = when (action.trim()) {
+    /** Consumption-only Play accepts only the known, neutral course reminder. */
+    fun canShow(key: String, action: String, externalCheckoutEnabled: Boolean): Boolean =
+        externalCheckoutEnabled ||
+            (key.trim() == "daily_limit_renewed" && action.trim() == "course")
+
+    /** Remove old Direct offers from the shade without cancelling neutral notices. */
+    fun playSuppressedNotificationIds(): Set<Int> =
+        (SLOTS.keys.filterNot { canShow(it, "course", false) } + "")
+            .map(::notificationId).toSet()
+
+    /** Unknown actions cannot turn a Play notice into a purchase entry point. */
+    fun destination(action: String, externalCheckoutEnabled: Boolean): AppDestination = when (action.trim()) {
         "course" -> AppDestination.Course
-        else -> AppDestination.Subscription
+        else -> if (externalCheckoutEnabled) AppDestination.Subscription else AppDestination.Profile
     }
 }

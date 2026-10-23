@@ -78,6 +78,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.pomp.hskai.R
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.PompColors
 import java.util.Locale
@@ -867,6 +868,7 @@ private fun CourseVersionSwitch(
                             )
                         }
                         if (
+                            BuildConfig.EXTERNAL_CHECKOUT_ENABLED &&
                             track == "hsk30" &&
                             !state.hsk30Allowed &&
                             state.hsk30PaymentEnabled &&

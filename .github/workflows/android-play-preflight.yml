@@ -39,6 +39,7 @@ jobs:
           python3 tools/check_play_release_contract.py
           python3 tools/check_flavor_parity.py
           python3 tools/check_strings_translated.py
+          python3 -m unittest discover -s ../tests -p test_android_play_artifact_guard.py
 
       # Runs actual Compose navigation, HSK 3.0 access and direct-only
       # checkout regressions on both distribution variants. This preflight
@@ -134,11 +135,29 @@ jobs:
           echo "Play APK excludes sideload permission; AAB signature verified."
           echo "::notice::In Play Console choose the EXISTING direct app signing key; the upload certificate alone is not enough."
 
+      - name: Validate Play AAB, release manifest and 16 KB native compatibility
+        run: |
+          set -euo pipefail
+          # Official release, SHA-256 pinned by check_play_artifacts.py before Java executes it.
+          curl --fail --location --silent --show-error --retry 3 \
+            https://github.com/google/bundletool/releases/download/1.18.3/bundletool-all-1.18.3.jar \
+            --output "$RUNNER_TEMP/bundletool.jar"
+          play_apk="$(find android/app/build/outputs/apk/play/release -maxdepth 1 -name '*.apk' -print -quit)"
+          build_tools="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
+          python3 android/tools/check_play_artifacts.py \
+            --apk "$play_apk" \
+            --aab '${{ steps.signed.outputs.aab }}' \
+            --aapt2 "$build_tools/aapt2" \
+            --bundletool "$RUNNER_TEMP/bundletool.jar" \
+            --report "$RUNNER_TEMP/play-artifact-readiness.json"
+
       - name: Upload Play AAB for manual Play Console submission
         uses: actions/upload-artifact@v4
         with:
           name: hsk-ai-play-preflight-aab
-          path: ${{ steps.signed.outputs.aab }}
+          path: |
+            ${{ steps.signed.outputs.aab }}
+            ${{ runner.temp }}/play-artifact-readiness.json
           if-no-files-found: error
           retention-days: 7
 

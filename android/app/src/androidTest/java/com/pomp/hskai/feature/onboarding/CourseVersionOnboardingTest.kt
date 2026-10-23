@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.pomp.hskai.R
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.core.design.PompHskAiTheme
 import java.io.File
 import org.junit.Assert.assertEquals
@@ -71,6 +72,11 @@ class CourseVersionOnboardingTest {
         }
 
         compose.onNodeWithText(copy.versionHint).assertDoesNotExist()
+        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+            compose.onNodeWithText("$1.08").assertIsDisplayed()
+        } else {
+            compose.onNodeWithText("$1.08").assertDoesNotExist()
+        }
         val books = compose.onNodeWithContentDescription(copy.hsk30BooksDescription)
             .assertIsDisplayed().fetchSemanticsNode().boundsInRoot
         assertEquals(4f / 3f, books.width / books.height, 0.01f)

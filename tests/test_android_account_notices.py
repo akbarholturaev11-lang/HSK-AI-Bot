@@ -293,6 +293,11 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([], bot.messages)
         [row] = await self._rows()
         self.assertEqual("android_shown", row.status)
+        # Play also uses this legacy acknowledgement for intentionally
+        # suppressed marketing. Handling must keep neutral notifications on.
+        async with self.sessions() as session:
+            token = await session.get(AndroidPushToken, self.device_a)
+        self.assertTrue(token.notifications_allowed)
 
     async def test_silence_from_the_phone_sends_telegram_once_after_ten_minutes(self):
         await self._register(self.token_a, allowed=True)

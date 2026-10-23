@@ -6,6 +6,7 @@ SRC = Path("android/app/src/main/java/com/pomp/hskai")
 PROFILE = (SRC / "feature/profile/ProfileScreen.kt").read_text(encoding="utf-8")
 PROMO = (SRC / "feature/profile/ProfilePromoCarousel.kt").read_text(encoding="utf-8")
 COURSE = (SRC / "feature/course/CourseScreen.kt").read_text(encoding="utf-8")
+ACTIVITY = (SRC / "MainActivity.kt").read_text(encoding="utf-8")
 
 class ProfileHsk30BookFlowTests(unittest.TestCase):
     def test_both_profile_and_settings_open_book_cover(self):
@@ -48,3 +49,12 @@ class ProfileHsk30BookFlowTests(unittest.TestCase):
         self.assertIn("showCourseChoice && hsk30 != null", COURSE)
         self.assertIn("selectedTrack", COURSE)
         self.assertIn("selectedLevel", COURSE)
+
+    def test_play_cannot_render_a_restored_direct_checkout(self):
+        self.assertIn("rememberSaveable { mutableStateOf(false) }", ACTIVITY)
+        self.assertIn(
+            "if (!BuildConfig.EXTERNAL_CHECKOUT_ENABLED) checkoutVisible = false",
+            ACTIVITY,
+        )
+        self.assertIn("if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && checkoutVisible)", ACTIVITY)
+        self.assertNotIn("if (checkoutVisible) {", ACTIVITY)
