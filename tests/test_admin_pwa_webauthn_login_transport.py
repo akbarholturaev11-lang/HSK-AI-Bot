@@ -115,7 +115,7 @@ class PasskeyLoginTransportTests(unittest.TestCase):
         self.assertEqual(self.calls, [])
         self.settings.ADMIN_PWA_ENABLED = False
         self.assertEqual(self.post("passkey/login/options").status_code, 404)
-        self.assertEqual(self.post("auth/logout").status_code, 404)
+        self.assertEqual(self.post("logout").status_code, 404)
 
     def test_malformed_json_fails_closed(self):
         for raw in (
