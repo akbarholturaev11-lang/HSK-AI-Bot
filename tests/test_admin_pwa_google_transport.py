@@ -1,6 +1,7 @@
 """HTTP regression contract for Admin PWA Google OAuth (no real provider/DB)."""
 
 import unittest
+from unittest.mock import patch
 from contextlib import asynccontextmanager
 from types import SimpleNamespace
 
@@ -188,6 +189,56 @@ class AdminPwaGoogleTransportTests(unittest.TestCase):
         )
         self.assertIsNone(self.client.cookies.get(_OIDC_COOKIE))
         self.assertIsNone(self.client.cookies.get(_APPROVAL_COOKIE))
+
+    def test_status_requires_proof_cookie_and_blocks_cross_site(self):
+        request_id = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        path = "/api/admin/v1/auth/telegram/status?request_id=" + request_id
+        self.assertEqual(self.client.get(path).status_code, 401)
+        self.start()
+        self.callback()
+        self.assertEqual(self.client.get(path, headers={
+            "sec-fetch-site": "cross-site",
+        }).status_code, 403)
+        self.assertEqual(self.client.get(path + "&request_id=" + request_id).status_code, 400)
+
+    def test_status_returns_only_scoped_state_and_pairing_code(self):
+        request_id = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        self.start()
+        self.callback()
+        async def read_status(db, *, request_id, browser_proof, settings_obj):
+            self.assertEqual(browser_proof, APPROVAL_PROOF)
+            return SimpleNamespace(
+                status="pending", pairing_code="A1B2C3D4",
+                expires_at=__import__("datetime").datetime(
+                    2026, 10, 24, 0, 5, tzinfo=__import__("datetime").timezone.utc,
+                ),
+            )
+        with patch("app.admin_api.pwa_google_transport.read_browser_pwa_approval",
+                   new=read_status):
+            response = self.client.get(
+                "/api/admin/v1/auth/telegram/status?request_id=" + request_id,
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["status"], "pending")
+        self.assertEqual(response.json()["pairing_code"], "A1B2C3D4")
+        self.assertNotIn(APPROVAL_PROOF, response.text)
+        self.assertNotIn(PROOF, response.text)
+        self.assertNotIn("google_subject_hash", response.text)
+        self.assertEqual(response.headers["cache-control"], "no-store")
+
+    def test_status_wrong_browser_proof_is_not_available(self):
+        self.start()
+        self.callback()
+        async def no_status(**kwargs):
+            return None
+        async def no_status_db(db, **kwargs):
+            return None
+        with patch("app.admin_api.pwa_google_transport.read_browser_pwa_approval",
+                   new=no_status_db):
+            response = self.client.get(
+                "/api/admin/v1/auth/telegram/status?request_id=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+            )
+        self.assertEqual(response.status_code, 404)
 
     def test_service_rate_limit_returns_429_no_cookies(self):
         async def rate_limited(db, *, settings_obj):
