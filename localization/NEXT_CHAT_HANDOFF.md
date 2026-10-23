@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## 2026-10-23 — Local tunnel reconnect and menu recovery verified
+
+- Free localhost.run discarded its domain while its SSH process remained alive. The API and Bot were healthy. A private test-service supervisor now checks the tunnel, creates a replacement when needed, checks `app/` and `scripts/` against verified code `0244f685`, restarts only owned API/worker PIDs, preserves the QA database and sets/reads back the new `?liquid_glass=1` Bot menu. Telegram menu read-back tolerates short propagation delay. All operational helpers/credentials remain outside Git in the established private QA directory.
+- Controlled test actually terminated only the owned SSH process. Automatic recovery passed: replacement domain, verified Bot menu, public health 200 and exactly one poller. Use `running.json`, `active-tunnel-origin.txt`, `tunnel-supervisor.pid` and the private operator README for live state. Stop the supervisor before manually stopping this environment. Free URLs remain temporary and the Mac must stay online.
+- Application code is unchanged from the tested merge. Handoff-only `c1c47210` also has P0 [39883568780](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39883568780) SUCCESS; actual application P0/Backend evidence remains the exact-code runs below. Do not repeat the completed pilot integration or source localization work.
+
 ## 2026-10-23 — Merged pilot live in the local test Bot; CI verified
 
 - Merge **`0244f6859f7bcd3cd38a27c55f2ae28bd717ed80`** is on `origin/codex/p3-main-integration-20261020`, with pilot source `277c22c5` as its second parent. Remote main remains `dcd65418`; no main push or production deployment was performed.
