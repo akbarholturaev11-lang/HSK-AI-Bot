@@ -12,7 +12,7 @@ Scope: deliver a separate secure browser-installable Admin PWA without disruptin
 4. **Telemetry semantics.** Overall = deduplicated canonical accounts where possible. Platform views must be defined explicitly as platform usage and can overlap; **do not sum** platform-user counts as total users. Label registration, activity, install, exposure, attribution and payment metrics separately. Show unsupported/untracked future platform metrics as "not available", never zero.
 5. **Risk / privacy.** Browser admin pages, API responses, personalized feedback and files use `Cache-Control: no-store`. PWA service worker may cache only public, versioned application-shell assets; NEVER cache authenticated JSON, token responses, PII, payment screenshots, feedback attachments or application credentials. Offline admin data returns a clear unavailable state.
 6. **Local-first localization.** Author any new permanent UI copy in canonical UZ/RU/TJ catalogs following `localization/README.md`, then generate and check bundles; demo-only prose is not a localization source.
-7. **Security:** no token in localStorage, sessionStorage, URL, deep-link query or GitHub; use HttpOnly Secure cookie, HTTPS, narrow SameSite, origin/CSRF protection for mutation, CSP, no framing, short/rotated sessions, idle timeout, login rate limits and server-side revocation. Sensitive operations require confirmation, audit log and preferably step-up authentication.
+7. **Security:** no token in localStorage, sessionStorage, URL, deep-link query or GitHub; use HttpOnly Secure cookie, HTTPS, narrow SameSite, origin/CSRF protection for mutation, CSP, no framing, short/rotated sessions, idle timeout, login rate limits and server-side revocation. Sensitive operations require confirmation, audit log and **WebAuthn passkey user-verification step-up** (Face ID / Touch ID / Windows Hello / device PIN as supported), plus server-side operation authorization.
 8. **Do not touch main or deploy** for this initiative until independent phase acceptance and explicitly planned release. No new Cloud / MCP integration may have admin write privileges by default.
 
 ## Verified repository sources (Phase 0)
@@ -73,6 +73,16 @@ API layering: dedicated routes `/api/admin-pwa/auth/*` for browser sign-in/out/s
 - First secure read endpoint: `GET /api/admin/v1/me`; then a light `GET /api/admin/v1/summary`.
 **Acceptance:** valid admin only; forged/stale initData, non-admin, missing/expired/replayed cookie and cross-origin mutation are rejected. Telegram Mini App regression passes.
 
+### Phase 1B — WebAuthn passkeys for high-risk action confirmation
+- Enrollment: only after verified admin identity and first successful Telegram Bot-approved linkage (a linked Google account may be used for later browser sign-ins). Store credential ID, public key, signature counter/backup flags, owning canonical admin identity, registered timestamp and revocation status. Do not store face/fingerprint or platform biometric data.
+- High-risk operations (payment approval/rejection, granting paid access, account delete/block, bulk messaging, changing prices, payout or sensitive settings) require a fresh WebAuthn assertion with `userVerification="required"`, as supported by the authenticator. This invokes **Face ID on compatible iPhones**, Touch ID where available, Windows Hello on Windows, and may fall back to device PIN/passcode. Do **not** label WebAuthn as Face-ID-only or try to read biometrics from JavaScript.
+- Server generates a one-use short-lived challenge tied to the active session **and canonical operation parameters** (actor, action, target, amount/plan/decision, request payload digest). Verify challenge, RP ID, origin, signature, user-verification flag, credential ownership, expiry and replay protection **inside the same guarded command authorization path**; do not treat a prior generic step-up as approval to perform a different transfer, deletion or payment decision.
+- Show a human-readable transaction summary immediately before verification and require explicit final confirmation. All sensitive commands keep existing server validation, permission guard, idempotency and immutable audit logs.
+- Do not prompt for biometric verification for every statistics page or safe read-only navigation. Standard signed-in session remains usable for normal browsing.
+- Recovery: permit revocation/re-enrollment only through a separate, robust, audited recovery process; support a second passkey/security key registered in advance. Loss of Face ID / device / passkey must not create a bypass via mere email ownership or unverified Telegram request.
+- PWA requirements: HTTPS with consistent configured RP ID (production/admin domain), real browser WebAuthn support detection, fallback messaging for unsupported platforms. Never cache authenticator assertions, cookies, secrets or sensitive data in a service worker.
+**Acceptance:** two different admins' credentials cannot be substituted; replay, wrong origin/RP ID, absent user verification, changed transaction payload, expired or missing challenge and revoked credential fail closed. iPhone Safari/Add-to-Home-Screen, macOS Touch ID, Windows Hello and Android credential flows are manually tested as applicable, with no guarantee of Face-ID-only availability.
+
 ### Phase 2 — PWA shell and V10 UX
 - Convert demo into maintained assets/components; keep responsive mobile/desktop navigation, top-level title, header notification bell and collapsed top-row selectors.
 - Add manifest, real icons, installation UX; service worker **shell-only** cache and safe update UX.
@@ -92,7 +102,7 @@ API layering: dedicated routes `/api/admin-pwa/auth/*` for browser sign-in/out/s
 - Users list with server-side pagination/search/filters and canonical user ID, profile with payment, device, language, level, activity, referral and feedback detail.
 - Payments, pricing by method and duration, HSK 3.0 unlock/payment enabled flags, course access, Free/Trial limits.
 - Marketing, broadcast/test-send, ads, partners, channels, help, AI models — migrate one at a time using existing service commands and audit trail.
-- Dangerous commands require confirmation, idempotency keys where relevant and elevated authorization; demo buttons must never silently succeed.
+- Dangerous commands require explicit confirmation, **transaction-bound WebAuthn passkey step-up** under Phase 1B, idempotency keys where relevant and elevated authorization; demo buttons must never silently succeed.
 **Acceptance:** same backend outcomes for Telegram and PWA, regression tests for approvals/rejections and access grants, no double writes.
 
 ### Phase 5 — Unified durable feedback and notifications
