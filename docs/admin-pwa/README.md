@@ -31,3 +31,7 @@ New `app/admin_api/pwa_enrollment.py` atomically consumes the already-approved b
 ## Browser-bound Google OIDC checkpoint (2026-10-23)
 
 Added `app/admin_api/pwa_oidc.py`, `app/db/models/admin_pwa_oauth.py`, migration `0112_admin_pwa_oauth_attempts.py` and `tests/test_admin_pwa_oidc.py` (plus model registry). This is an **unwired, disabled-by-default service component**, not a browser login, session issuer or Google Console configuration. See the end of [HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md](HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md) for exact commits, scoped SQLite-stub tests and unverified production/CI gates. The new mandatory UI-skills rule in [HSK_AI_ADMIN_PWA_TEMP_RULES.md](HSK_AI_ADMIN_PWA_TEMP_RULES.md) applies whenever V10 HTML lacks a requested UI/UX element. Existing Telegram Mini App and `main` are untouched.
+
+## OAuth HTTP transport checkpoint (2026-10-24)
+
+`app/admin_api/pwa_google_transport.py` is mounted in `app/main.py` with strict origin/CSRF/HTTPS gating, Secure HttpOnly browser-bound cookies, pending Google verification and transfer to **pending Telegram approval only**; a PostgreSQL-serialized global admission cap was added in `pwa_oidc.py`. **No admin cookie/session issued. `ADMIN_PWA_ENABLED=false` remains default**, so the routes remain unreachable in production by default. See current authoritative [handoff](HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md) for all commits, tests and limitations. Telegram Bot approval, passkeys, dashboard and real data still remain. UI gap rule remains mandatory.
