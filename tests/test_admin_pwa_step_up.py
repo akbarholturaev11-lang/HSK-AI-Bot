@@ -231,6 +231,17 @@ class StepUpTests(unittest.IsolatedAsyncioTestCase):
         self.session.commit()
         self.assertFalse(await self.consume(started))
 
+    async def test_passkey_revocation_after_verification_invalidates_receipt(self):
+        started = await self.start()
+        self.assertTrue(await self.verify(started))
+        self.fresh()
+        stored = self.session.get(
+            AdminPwaCredential, "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        )
+        stored.revoked_at = NOW
+        self.session.commit()
+        self.assertFalse(await self.consume(started))
+
     async def test_wrong_public_credential_and_missing_uv_rejected(self):
         started = await self.start()
         self.assertFalse(await self.verify(started, response=credential(handle=b"X" * 32)))
