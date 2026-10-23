@@ -183,18 +183,21 @@ async def verify_step_up(
             if (step is None or step.status != "pending" or step.verified_at is not None
                     or step.consumed_at is not None or _utc(step.expires_at) <= stamp):
                 return False
+            # Acquire the credential lock BEFORE the User lock, as in the
+            # existing passkey sign-in flow. Reverse order would risk a PG
+            # deadlock on concurrent login and step-up for the same actor.
+            stored = (await db.execute(select(AdminPwaCredential).where(
+                AdminPwaCredential.credential_id == raw_id,
+                AdminPwaCredential.user_id == step.user_id,
+                AdminPwaCredential.revoked_at.is_(None),
+            ).with_for_update().execution_options(populate_existing=True))).scalar_one_or_none()
+            if stored is None:
+                return False
             pair = await _locked_session(db, session_cookie, settings_obj, stamp)
             if pair is None:
                 return False
             session, user = pair
             if step.session_id != session.id or int(step.user_id) != int(user.id):
-                return False
-            stored = (await db.execute(select(AdminPwaCredential).where(
-                AdminPwaCredential.credential_id == raw_id,
-                AdminPwaCredential.user_id == user.id,
-                AdminPwaCredential.revoked_at.is_(None),
-            ).with_for_update().execution_options(populate_existing=True))).scalar_one_or_none()
-            if stored is None:
                 return False
             response = credential.get("response")
             if not isinstance(response, dict):
