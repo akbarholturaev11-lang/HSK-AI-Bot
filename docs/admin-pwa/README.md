@@ -59,3 +59,7 @@ New challenge and credential DB models, Alembic `0114_admin_pwa_webauthn_registr
 ### CI evidence for WebAuthn registration — 2026-10-24
 
 The dedicated `admin-pwa-security.yml` workflow succeeded on the feature branch: [run 40026176016](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40026176016), **110 tests passed in 6.46s**, Python 3.12 dependency installation and compileall succeeded, with one Alembic head at `0114_admin_pwa_webauthn_registration`. This tests mocked FIDO attestation, not real hardware signatures or PostgreSQL migration upgrades. Not a production release sign-off; passkey sign-in and session issuer remain unfinished. `ADMIN_PWA_ENABLED=false`.
+
+### Passkey sign-in and real PostgreSQL verification (2026-10-24)
+
+WebAuthn passkey login now verifies a stored public key, challenge, origin/RP ID and UV, then atomically creates a revocable 8-hour Secure HttpOnly Admin PWA session; logout revokes it in the DB. The session guard denies blocked status in any letter case. The dedicated [GitHub Actions run 40028060236](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40028060236) passed **134 regular tests (2 PostgreSQL-only skipped)** and **2 real PostgreSQL lock/concurrency tests**, upgraded revisions 0110–0115 and verified rollback/reapply of 0115. The older global migration cold-start chain fails at 0011 because `course_progress` is missing; this was NOT silently repaired. No production enablement, physical Face ID test or per-operation passkey step-up yet; details in handoff.
