@@ -46,7 +46,10 @@ def _require_configuration(settings_obj: Any) -> str:
     if not bool(getattr(settings_obj, "ADMIN_PWA_ENABLED", False)):
         raise AdminPwaOidcError("disabled")
     origin = str(getattr(settings_obj, "ADMIN_PWA_PUBLIC_ORIGIN", "") or "")
-    parsed = urlsplit(origin)
+    try:
+        parsed = urlsplit(origin)
+    except ValueError as exc:
+        raise AdminPwaOidcError("invalid_origin") from exc
     if (parsed.scheme != "https" or not parsed.hostname or parsed.netloc != parsed.hostname
             or parsed.path or parsed.query or parsed.fragment):
         raise AdminPwaOidcError("invalid_origin")
