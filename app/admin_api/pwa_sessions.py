@@ -69,3 +69,25 @@ async def authenticate_admin_pwa_session(db: Any, cookie: str, settings_obj: Any
     return AdminPwaActor(
         user_id=int(user.id), telegram_id=int(user.telegram_id), auth_method=row.auth_method
     )
+
+
+async def revoke_admin_pwa_session(
+    db: Any, cookie: str, *, now: datetime | None = None,
+) -> bool:
+    """Idempotent cookie-only logout. Do not require admin access to log out.
+
+    Caller must separately require HTTPS canonical origin and CSRF on POST.
+    """
+    if not isinstance(cookie, str) or not _COOKIE_PATTERN.fullmatch(cookie):
+        return False
+    from sqlalchemy import update
+    current = _utc(now or datetime.now(timezone.utc))
+    digest = hashlib.sha256(cookie.encode("ascii")).hexdigest()
+    async with db.begin():
+        outcome = await db.execute(update(AdminPwaSession).where(
+            AdminPwaSession.token_hash == digest,
+            AdminPwaSession.revoked_at.is_(None),
+        ).values(revoked_at=current).execution_options(
+            synchronize_session=False,
+        ))
+        return outcome.rowcount == 1
