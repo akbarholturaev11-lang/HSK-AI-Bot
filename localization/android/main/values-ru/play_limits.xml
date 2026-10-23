@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="play_limit_heading">Бесплатный лимит исчерпан</string>
+    <string name="play_limit_daily_heading">Бесплатный лимит на сегодня исчерпан</string>
+    <string name="play_limit_renewal">Бесплатный лимит обновится завтра.</string>
+    <string name="play_limit_required">Чтобы продолжить сейчас, нужна активная подписка HSK AI Pro.</string>
+    <string name="play_limit_description">В этом приложении нельзя приобрести подписку. Если подписка активна, проверьте доступ ещё раз.</string>
+    <string name="play_limit_check_access">Проверить доступ</string>
+</resources>
