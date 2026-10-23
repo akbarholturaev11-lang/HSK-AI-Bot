@@ -251,10 +251,13 @@ Merge bajariladigan paytdagi tartib:
    tayyorgarlikni bajarilgan release deb ko‘rsatish uchun o‘zgartirilmaydi.
    Main hozir protected emas, shuning uchun GitHub merge tugmasi ochiqligining
    o‘zi testlar o‘tganini bildirmaydi.
-3. Railway live source/auto-deploy binding o‘qiladi. Hozir connector ham, CLI
-   ham qayta autentifikatsiya talab qilyapti; bu sozlama `railway.toml`da yo‘q.
-   Main push mavjud avtomatik production deploy’ni boshlashi mumkin. Repo’dagi
-   Android release manual; Desktop release tag/manual orqali ishlaydi.
+3. Railway live source binding tekshirildi: production’dagi **HSK AI** servisi
+   aynan shu GitHub repo’ning `main` branch’iga ulangan (`checkSuites: false`),
+   pending staged change yo‘q. Primary connector/CLI login’i eskirgan bo‘lsa-da,
+   boshqa mavjud Railway ulanishi orqali faqat o‘qish bilan tasdiqlandi.
+   Main merge/push avtomatik production deploy’ni ham boshlashi mumkin;
+   chiqarish amali shu chegarani hisobga olishi kerak. Hech qanday live sozlama
+   o‘zgartirilmadi. Repo’dagi Android release manual; Desktop release tag/manual.
 4. Chiqarish amali berilganda history saqlanadigan merge commit ishlatiladi,
    aniq HEAD mosligi tekshiriladi; force/reset, branch delete yoki DB downgrade
    qo‘llanmaydi. Aloqasiz lokal o‘zgarishlar sabab main lokal dirty checkout’dan
