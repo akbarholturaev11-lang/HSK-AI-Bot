@@ -1,3 +1,7 @@
+# Admin PWA — CURRENT CODEx HANDOFF
+
+**Codex should start from [`CODEX_RESUME.md`](CODEX_RESUME.md), not from dated checkpoints lower in this README.** Read scoped rules and the most recent `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md` section. GitHub feature branch only; default flag OFF. Latest verified CI: [run 40029175593](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40029175593) (152 passed + 3 real PostgreSQL tests). The per-action WebAuthn step-up exists, but payment/delete/broadcast adapters and frontend remain unwired. Audited `app/main.py::_review_admin_payment` internally commits — refactor safely before trying atomic PWA mutations.
+
 # HSK AI ADMIN PWA — ONLY THIS TASK (temporary project files)
 
 **Continue implementation:** [HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md](HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md) — authoritative current code checkpoint and next task.
