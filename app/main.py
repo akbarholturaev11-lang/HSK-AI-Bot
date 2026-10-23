@@ -30,6 +30,7 @@ from app.admin_api.pwa_google_transport import create_admin_pwa_google_router
 from app.admin_api.pwa_enrollment_transport import create_admin_pwa_completion_router
 from app.admin_api.pwa_webauthn_transport import create_admin_pwa_webauthn_router
 from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_login_router
+from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.api.android_auth import create_android_auth_router
 from app.api.course_tracks import create_course_tracks_router
 from app.api.android_course import create_android_course_router
@@ -681,6 +682,7 @@ app.include_router(create_admin_pwa_google_router(settings_obj=settings, session
 app.include_router(create_admin_pwa_completion_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_webauthn_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_passkey_login_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_step_up_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_public_site_router(
     settings_obj=settings,
     session_factory=async_session_maker,
