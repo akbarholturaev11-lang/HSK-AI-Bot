@@ -47,3 +47,4 @@ from .account_deletion import AccountDeletionRequest
 from .public_site_traffic import PublicSiteTrafficDaily
 
 from .user_client_presence import UserClientPresence, AppPromoState
+from .admin_pwa import AdminPwaSession

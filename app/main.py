@@ -672,7 +672,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 # Isolated, fail-closed browser admin route. Does not affect Telegram /admin.html.
-app.include_router(create_admin_pwa_bootstrap_router(settings_obj=settings))
+app.include_router(create_admin_pwa_bootstrap_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_public_site_router(
     settings_obj=settings,
     session_factory=async_session_maker,

@@ -68,3 +68,13 @@ Do not write “done”, “tested”, “linked”, “deployed” unless verif
 
 - Local V10 demo identified and hashed, HTML/view functions mapped. See `docs/admin-pwa/ADMIN_PWA_V10_UI_REFERENCE.md`.
 - A later Codex agent must **not infer** that the V10 HTML is committed. The file lives in this conversation's mounted files, so it needs the actual bytes for porting.
+
+
+## Implementation checkpoint — 2026-10-23, browser-session guard
+
+- **Branch:** `codex/admin-pwa`; inspect current branch HEAD for this commit.
+- **Backend files:** `app/db/models/admin_pwa.py` and `alembic/versions/0110_admin_pwa_sessions.py` add revocable hashed-cookie sessions. `app/admin_api/pwa_sessions.py` authenticates only an existing DB session and rechecks the user's *current* Telegram allowlisted admin identity and blocked status. `app/admin_api/pwa_bootstrap.py` now uses this guard for `GET /api/admin/v1/me`, with same-origin HTTPS checks. `app/main.py` passes the existing async session factory. Root `app/db/models/__init__.py` registers the table.
+- **Security state:** route flag still defaults **off**. `GET /admin` remains 503 under an enabled flag. No public endpoint can mint a PWA cookie or create a login; no Google/Telegram/Passkey registration, OAuth callback or production admin control has been exposed.
+- **Isolated tests actually run:** 9 unit/ASGI tests passed, 5 subtests passed using local isolated module copy. Python compile passed; SQLite ORM table and Alembic migration upgrade/downgrade smoke each passed in isolation. **Full repository CI, real Postgres migration, real-domain HTTPS and physical iPhone passkey testing NOT run.**
+- **Next action:** implement verified first-time Google OIDC and one-use Telegram approval challenge with persistent state, explicit browser binding, CSRF and replay tests, then a trusted cookie issuer/logout, still behind disabled-by-default flag; ensure Telegram app regression.
+- **Main/production:** unchanged.
