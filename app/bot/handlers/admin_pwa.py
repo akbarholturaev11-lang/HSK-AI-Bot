@@ -37,6 +37,10 @@ def _private_chat(event: Message | CallbackQuery) -> bool:
     actor = getattr(event, "from_user", None)
     message = event.message if isinstance(event, CallbackQuery) else event
     chat = getattr(message, "chat", None)
+    if (getattr(message, "forward_origin", None) is not None
+            or getattr(message, "forward_from", None) is not None
+            or getattr(message, "forward_sender_name", None) is not None):
+        return False
     return bool(actor and chat and not actor.is_bot
                 and chat.type == "private" and int(chat.id) == int(actor.id))
 
