@@ -21,6 +21,7 @@ from webauthn import (
     generate_registration_options, options_to_json,
     verify_registration_response,
 )
+from webauthn.helpers.exceptions import InvalidRegistrationResponse
 from webauthn.helpers.structs import (
     AttestationConveyancePreference, AuthenticatorSelectionCriteria,
     PublicKeyCredentialDescriptor, ResidentKeyRequirement,
@@ -184,7 +185,7 @@ async def complete_passkey_registration(
                     expected_origin=_ORIGIN,
                     require_user_verification=True,
                 )
-            except (ValueError, TypeError):
+            except (InvalidRegistrationResponse, ValueError, TypeError):
                 return False
             cred_id = bytes(verified.credential_id)
             public_key = bytes(verified.credential_public_key)
@@ -197,7 +198,8 @@ async def complete_passkey_registration(
             device_type = str(getattr(dev_type, "value", dev_type))
             if device_type not in ("single_device", "multi_device"):
                 return False
-            transports = credential.get("response", {}).get("transports")
+            details = credential.get("response", {})
+            transports = details.get("transports") if isinstance(details, dict) else None
             if not isinstance(transports, list):
                 transports = None
             else:
