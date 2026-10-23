@@ -18,7 +18,7 @@ from typing import Any
 from urllib.parse import urlsplit
 from uuid import uuid4
 
-from sqlalchemy import select, update
+from sqlalchemy import func, select, text, update
 
 from app.admin_api.pwa_approval import PendingPwaApproval, start_pwa_approval, _utc
 from app.db.models.admin_pwa_oauth import AdminPwaOAuthAttempt
@@ -27,6 +27,9 @@ from app.services.identity_link_service import IdentityLinkService
 from app.services import google_auth
 
 _TTL = timedelta(minutes=10)
+_MAX_STARTS_PER_WINDOW = 60
+# Separate from native login advisory locks; never hold during Google I/O.
+_PG_START_LOCK_KEY = 661792044
 _STATE_PATTERN = re.compile(r"^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.([0-9a-f]{43})$")
 _BROWSER_PATTERN = re.compile(r"^[A-Za-z0-9_-]{40,192}$")
 
@@ -86,6 +89,21 @@ async def start_admin_pwa_google(db: Any, *, settings_obj: Any,
     """Call exclusively from rate-limited same-origin POST; session owns commit."""
     origin = _require_configuration(settings_obj)
     timestamp = _utc(now or datetime.now(timezone.utc))
+    # Globally bounded, cross-replica admission. PostgreSQL serializes the
+    # count and insert in a single DB transaction. A future per-client limiter
+    # can complement this global ceiling.
+    if db.get_bind().dialect.name == "postgresql":
+        await db.execute(
+            text("SELECT pg_advisory_xact_lock(:key)"),
+            {"key": _PG_START_LOCK_KEY},
+        )
+    count = (await db.execute(
+        select(func.count()).select_from(AdminPwaOAuthAttempt).where(
+            AdminPwaOAuthAttempt.created_at >= timestamp - _TTL,
+        )
+    )).scalar_one()
+    if count >= _MAX_STARTS_PER_WINDOW:
+        raise AdminPwaOidcError("rate_limited")
     request_id = str(uuid4())
     proof = secrets.token_urlsafe(48)
     url = google_auth.authorize_url(
