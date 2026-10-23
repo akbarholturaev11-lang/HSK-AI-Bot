@@ -182,6 +182,25 @@ class AdminPwaOidcTests(unittest.IsolatedAsyncioTestCase):
                 with self.assertRaises(AdminPwaOidcError):
                     await self.start()
 
+    async def test_verified_oidc_provider_and_audience_must_match(self):
+        started = await self.start()
+        for provider, audience in (
+            ("apple", self.settings.GOOGLE_DESKTOP_CLIENT_ID),
+            ("google", "android-client-audience"),
+        ):
+            async def invalid_verify(id_token, *, settings_obj, nonce, **kwargs):
+                return VerifiedIdentity(
+                    provider=provider, subject="google-subject-1",
+                    email=None, email_verified=True, display_name=None,
+                    audience=audience,
+                )
+            with self.subTest(provider=provider, audience=audience):
+                with patch.object(
+                    google_auth, "verify_desktop_id_token", new=invalid_verify
+                ):
+                    self.assertIsNone(await self.finish(started))
+        self.assertIsNotNone(await self.finish(started))
+
     async def test_authorize_url_has_pkce_nonce_correct_callback_no_proof_leak(self):
         started = await self.start()
         params = parse_qs(urlsplit(started.authorize_url).query)
