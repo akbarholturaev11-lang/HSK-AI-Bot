@@ -329,18 +329,19 @@ async def browser_checks(output):
         await cdp.send('WebAuthn.setAutomaticPresenceSimulation',{'authenticatorId':auth_id,'enabled':True})
         await page.locator('[data-action=feedback]').click()
         await expect(page.locator('.inbox-shell')).to_be_visible()
-        for source in ('bot', 'release', 'android', 'all'):
+        for source in ('bot', 'release', 'android', 'payment', 'all'):
             await page.locator(f'[data-source={source}]').click()
             await expect(page.locator('.inbox-shell')).to_be_visible()
             assert 'primary' in (await page.locator(f'[data-source={source}]').get_attribute('class'))
         # Real count uses all eligible source records, not the visible 30-row page.
         await wait_js(page, "() => !!document.querySelector('[data-action=feedback] .top-icon-badge')")
-        assert (await page.locator('[data-action=feedback] .top-icon-badge').inner_text())=='2'
+        assert (await page.locator('[data-action=feedback] .top-icon-badge').inner_text())=='3'
         await page.locator('[data-inbox-priority=important]').click()
         await expect(page.locator('.inbox-shell')).to_be_visible()
-        assert await page.locator('.inbox-shell .feedback-item').count()==0
+        assert await page.locator('.inbox-shell .feedback-item').count()==1
+        await expect(page.locator('.inbox-shell')).to_contain_text('Тўлов чеклари')
         await page.locator('[data-inbox-priority=all]').click()
-        await expect(page.locator('.inbox-shell .feedback-item')).to_have_count(2)
+        await expect(page.locator('.inbox-shell .feedback-item')).to_have_count(3)
         # The 390px viewport mirrors the installed iPhone PWA layout.
         assert page.viewport_size['width']==390
         assert await page.locator('[data-inbox-op=mark_read]').first.evaluate(
@@ -356,7 +357,7 @@ async def browser_checks(output):
                     await asyncio.sleep(.04)
         await page.locator('[data-inbox-op=mark_read]').first.click()
         await wait_for_inbox_audit(1)
-        await wait_js(page, "() => !!document.querySelector('[data-action=feedback] .top-icon-badge') && document.querySelector('[data-action=feedback] .top-icon-badge').textContent === '1'")
+        await wait_js(page, "() => !!document.querySelector('[data-action=feedback] .top-icon-badge') && document.querySelector('[data-action=feedback] .top-icon-badge').textContent === '2'")
         await wait_js(page, "() => !!document.querySelector('.inbox-drawer button[data-inbox-op=assign_self]:not(:disabled)')")
         await page.locator('[data-inbox-op=assign_self]').first.click()
         await wait_for_inbox_audit(2)
