@@ -84,7 +84,7 @@ function render() {
   if(!state.actor) { $('root').innerHTML=auth();return; }
   const navigation=routes.map(([route,glyph])=>`<button data-route="${route}" class="${state.route===route?'active':''}" ${state.route===route?'aria-current="page"':''}>${icon(glyph)}${esc(t(route))}</button>`).join('');
   const disabled=['course','marketing','system'].map(route=>`<button disabled title="${esc(t('notReady'))}">${icon(route==='course'?'book':route==='marketing'?'mega':'settings')}${esc(t(route))}</button>`).join('');
-  $('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-logo"><img src="/admin/assets/icon.png" alt=""></div><div><div class="brand-title">HSK AI</div><div class="brand-sub">ADMIN</div></div></div><p class="nav-cap">${esc(t('sections'))}</p><nav class="nav">${navigation}${disabled}</nav><div class="side-foot"><p>${esc(t('account'))} · ${state.actor.user_id}</p>${languageSelect()}${state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''}${btn('logout','logout')}</div></aside><div class="workspace"><header class="topbar"><div class="topbar-context"><h1 class="page-title">${esc(t(state.route==='home'?'workspace':state.route))}</h1></div><div class="header-tools">${['home','stats'].includes(state.route)?filters():''}<button class="top-icon-btn" data-action="feedback" aria-label="${esc(t('feedback'))}">${icon('bell')}${inboxUnread?.unread_count?`<span class="top-icon-badge" aria-hidden="true">${inboxUnread.capped?'99+':inboxUnread.unread_count}</span>`:''}</button><button class="top-icon-btn mobile-only" data-action="more" aria-label="${esc(t('more'))}">${icon('more')}</button></div></header><main class="main" id="content">${content()}</main></div></div><nav class="mobile-tabs" aria-label="${esc(t('sections'))}">${navigation}</nav>`;
+  $('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-logo"><img src="/admin/assets/icon.png" alt=""></div><div><div class="brand-title">HSK AI</div><div class="brand-sub">ADMIN</div></div></div><p class="nav-cap">${esc(t('sections'))}</p><nav class="nav">${navigation}${disabled}</nav><div class="side-foot"><p>${esc(t('account'))} · ${state.actor.user_id}</p>${languageSelect()}${state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''}${state.actor.push_available?btn('pushTitle','pushSettings'):''}${btn('logout','logout')}</div></aside><div class="workspace"><header class="topbar"><div class="topbar-context"><h1 class="page-title">${esc(t(state.route==='home'?'workspace':state.route))}</h1></div><div class="header-tools">${['home','stats'].includes(state.route)?filters():''}<button class="top-icon-btn" data-action="feedback" aria-label="${esc(t('feedback'))}">${icon('bell')}${inboxUnread?.unread_count?`<span class="top-icon-badge" aria-hidden="true">${inboxUnread.capped?'99+':inboxUnread.unread_count}</span>`:''}</button><button class="top-icon-btn mobile-only" data-action="more" aria-label="${esc(t('more'))}">${icon('more')}</button></div></header><main class="main" id="content">${content()}</main></div></div><nav class="mobile-tabs" aria-label="${esc(t('sections'))}">${navigation}</nav>`;
   $('root').inert=!!$('overlay');
 }
 function filters() {
@@ -343,6 +343,81 @@ async function mutateInbox(button){
   }finally{inboxUpdating=false;}
 }
 
+// Apple-first Web Push enrollment; registration only (dispatch is not enabled).
+function applePushPlatform() {
+  const ua=navigator.userAgent||'';
+  if(/iPhone/i.test(ua))return 'iphone';
+  if(/Macintosh|Mac OS X/i.test(ua))return 'mac';
+  return null;
+}
+function pushInstallReady(platform) {
+  if(platform!=='iphone')return true;
+  return navigator.standalone===true||window.matchMedia?.('(display-mode: standalone)').matches===true;
+}
+async function pushSettings(){
+  if(!state.actor?.push_available)return;
+  closeDrawer();const current=drawerId;
+  drawer('pushTitle',statePanel('loading'));
+  try{
+    const data=await api('push/list',{});
+    if(current!==drawerId||!state.actor)return;
+    const platform=applePushPlatform();
+    const eligible=platform&&pushInstallReady(platform)&&'Notification' in window&&'serviceWorker' in navigator&&'PushManager' in window;
+    const rows=data.subscriptions||[];
+    const devices=rows.map(row=>`<article class="feedback-item"><strong>${esc(row.platform==='iphone'?'iPhone':'Mac')}</strong><small>${esc(date(row.created_at))}</small><div class="inbox-entry-actions"><button class="btn small danger" data-push-revoke="${esc(row.id)}">${esc(t('pushRevoke'))}</button></div></article>`).join('')||statePanel('empty');
+    const note=!platform?t('pushAppleOnly'):!pushInstallReady(platform)?t('pushInstallFirst'):t('pushConsentHint');
+    drawer('pushTitle',`<div class="push-settings"><p class="source-note">${esc(note)}</p><p class="source-note">${esc(t('pushNotSending'))}</p>${devices}</div>`,
+      eligible?btn('pushEnable','pushEnable','primary')+btn('close','close'):btn('close','close'));
+  }catch(error){
+    if(current!==drawerId||!state.actor)return;
+    drawer('pushTitle',statePanel(error.status===404?'notReady':'error'),btn('close','close')+btn('retry','pushSettings'));
+  }
+}
+async function enablePush(){
+  if(!state.actor?.push_available||!['iphone','mac'].includes(applePushPlatform())||!pushInstallReady(applePushPlatform())||
+     !('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window))return;
+  // Request permission synchronously from the user's button gesture, BEFORE
+  // any await/fetch. Safari on iPhone disallows deferred prompts.
+  let permissionPromise;
+  try{permissionPromise=Notification.permission==='granted'?Promise.resolve('granted'):Notification.requestPermission();}
+  catch(_){showNotice('pushPermissionDenied');return;}
+  const current=drawerId,at=epoch;
+  try{
+    const permission=await permissionPromise;
+    if(permission!=='granted'){showNotice('pushPermissionDenied');return;}
+    const data=await api('push/list',{});
+    if(at!==epoch||current!==drawerId||!state.actor||data.sending_enabled!==false)return;
+    const registration=await navigator.serviceWorker.ready;
+    let subscription=await registration.pushManager.getSubscription();
+    let created=false;
+    if(!subscription){subscription=await registration.pushManager.subscribe({
+      userVisibleOnly:true,applicationServerKey:decode(data.vapid_public_key)
+    });created=true;}
+    const payload=subscription.toJSON();
+    const keys=payload.keys||{};
+    if(!payload.endpoint||!keys.p256dh||!keys.auth)throw Error('invalid_push_subscription');
+    try{
+      await api('push/subscribe',{platform:applePushPlatform(),endpoint:payload.endpoint,keys:{p256dh:keys.p256dh,auth:keys.auth}});
+    }catch(error){if(created)await subscription.unsubscribe().catch(()=>{});throw error;}
+    if(at!==epoch||current!==drawerId||!state.actor)return;
+    showNotice('pushSaved');await pushSettings();
+  }catch(error){if(at===epoch&&state.actor)showNotice('pushSaveError');}
+}
+async function revokePush(id){
+  if(!state.actor?.push_available||!/^[0-9a-f-]{36}$/.test(id))return;
+  const current=drawerId,at=epoch;
+  document.querySelectorAll('.push-settings button').forEach(el=>el.disabled=true);
+  try{
+    await api('push/revoke',{subscription_id:id});
+    if(at!==epoch||current!==drawerId||!state.actor)return;
+    showNotice('pushRevoked');await pushSettings();
+  }catch(error){
+    if(at!==epoch||current!==drawerId||!state.actor)return;
+    // A lost response may follow a committed revocation: re-read authoritative list.
+    showNotice('pushReviewStatus');await pushSettings();
+  }
+}
+
 function mcpStateKey(row) {
   if(row.status==='revoked')return 'mcpRevoked';
   if(row.status==='denied')return 'mcpDenied';
@@ -398,11 +473,13 @@ async function action(name) {
   if(name==='boot'){await boot();return;}
   if(name==='reload'){await load();return;}
   if(name==='mcpConnections'){await mcpConnections();return;}
+  if(name==='pushSettings'){await pushSettings();return;}
+  if(name==='pushEnable'){await enablePush();return;}
   if(name==='mcpRevokeConfirm'){await revokeMcp();return;}
   if(name==='feedback'){await inbox();return;}
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='execute'){if(!signing)await execute();return;}
-  if(name==='more'){drawer('more',languageSelect('drawerLocale')+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''),btn('install','install')+btn('logout','logout'));return;}
+  if(name==='more'){drawer('more',languageSelect('drawerLocale')+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):''),btn('install','install')+btn('logout','logout'));return;}
   if(name==='install'){if(installPrompt){await installPrompt.prompt();installPrompt=null;}else showNotice('installHint');return;}
   if(name==='update'){publicRegistration?.waiting?.postMessage('ACTIVATE_PUBLIC_SHELL');return;}
   if(name==='next'&&state.next){state.previous.push(state.cursor);state.cursor=state.next;await load();}
@@ -424,6 +501,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.inboxPriority){state.inboxPriority=button.dataset.inboxPriority;await inbox(null,feedbackUserId);}
     else if(button.dataset.inboxOp){await mutateInbox(button);}
     else if(button.dataset.feedbackNext&&inboxNextCursor){await inbox(inboxNextCursor,feedbackUserId);}
+    else if(button.dataset.pushRevoke){await revokePush(button.dataset.pushRevoke);}
     else if(button.dataset.mcpRevoke){confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
     else if(button.dataset.action){await action(button.dataset.action);}
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
