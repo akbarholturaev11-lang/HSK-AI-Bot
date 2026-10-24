@@ -238,3 +238,46 @@ class FeedbackAnalyticsTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         self.assertFalse(any("disliked_text" in x or "telegram_id" in x
                              or "attachment_bytes" in x or "comment_text" in x
                              or "description" in x for x in feedback_selects),feedback_selects)
+
+    async def test_revocation_during_slow_aggregate_denies_json_and_csv(self):
+        # Cache/database wait must not return feedback from a revoked session.
+        for endpoint, payload in (
+            ("", {"source": "bot", "period": "weekly"}),
+            ("/export", {"source": "bot", "period": "weekly", "format": "csv"}),
+        ):
+            gate = asyncio.Event()
+            reached = asyncio.Event()
+
+            class SlowReader:
+                async def __call__(self, query):
+                    reached.set()
+                    await gate.wait()
+                    return {"schema": "hskai_feedback_categories_v1",
+                            "period": "weekly", "source": "bot",
+                            "private_marker": "MUST_NOT_LEAK"}
+
+            async with self.sessions() as db:
+                record = await db.get(AdminPwaSession, self.session_id)
+                record.revoked_at = None
+                record.auth_method = "webauthn"
+                await db.commit()
+
+            app = FastAPI()
+            app.include_router(create_admin_pwa_feedback_analytics_router(
+                settings_obj=self.settings, session_factory=self.sessions,
+                reader=SlowReader()))
+            async with AsyncClient(transport=ASGITransport(app=app),
+                    base_url="https://hskai.app", headers={"origin": "https://hskai.app"},
+                    cookies={ADMIN_PWA_COOKIE_NAME: fixtures.COOKIE}) as client:
+                pending = asyncio.create_task(client.post(
+                    "/api/admin/v1/feedback/categories" + endpoint, json=payload))
+                await asyncio.wait_for(reached.wait(), 5)
+                async with self.sessions() as db:
+                    record = await db.get(AdminPwaSession, self.session_id)
+                    record.revoked_at = datetime.now(timezone.utc)
+                    await db.commit()
+                gate.set()
+                response = await asyncio.wait_for(pending, 5)
+                self.assertEqual(response.status_code, 401, response.text)
+                self.assertEqual(response.headers["cache-control"], "no-store")
+                self.assertNotIn("MUST_NOT_LEAK", response.text)

@@ -226,6 +226,14 @@ def create_admin_pwa_feedback_analytics_router(*, settings_obj, session_factory,
             # authentication transaction has closed; no SQL connection is
             # pinned across Redis/R2 waits. Current auth is never cached.
             result = await reader(FeedbackAnalyticsRequest(period=query.period, source=query.source))
+            # Redis/R2 refresh may take time. Reject a session revoked while
+            # waiting, including after a warm cache fetch; authority is live.
+            async with session_factory() as db:
+                async with read_transaction(db):
+                    current = await authenticate_admin_pwa_session(db, cookie, settings_obj)
+                    if (current is None or current.auth_method != "webauthn"
+                            or current.user_id != actor.user_id):
+                        return _reply(401, "admin_pwa_unauthorized")
             if export:
                 return render_feedback_analytics_export(result, query)
             return JSONResponse({"ok": True, **result}, headers=_PRIVATE_HEADERS)
