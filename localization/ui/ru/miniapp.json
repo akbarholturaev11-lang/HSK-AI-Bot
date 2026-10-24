@@ -567,7 +567,24 @@
     "ui.admin_pwa.conversion": "Конверсия",
     "ui.admin_pwa.registeredCohort": "Зарегистрировались за период",
     "ui.admin_pwa.convertedAccounts": "Оплатили Pro",
-    "ui.admin_pwa.conversionNote": "Доля аккаунтов, созданных за период и уже имеющих подтверждённый платёж Pro. Открытие HSK 3.0 исключено. Результат для новых аккаунтов ещё меняется."
+    "ui.admin_pwa.conversionNote": "Доля аккаунтов, созданных за период и уже имеющих подтверждённый платёж Pro. Открытие HSK 3.0 исключено. Результат для новых аккаунтов ещё меняется.",
+    "ui.admin_pwa.inboxStatusNew": "Новое",
+    "ui.admin_pwa.inboxStatusRead": "Прочитано",
+    "ui.admin_pwa.inboxStatusAssigned": "Назначено",
+    "ui.admin_pwa.inboxStatusResolved": "Решено",
+    "ui.admin_pwa.inboxMarkRead": "Отметить прочитанным",
+    "ui.admin_pwa.inboxAssignSelf": "Назначить себе",
+    "ui.admin_pwa.inboxResolve": "Пометить решённым",
+    "ui.admin_pwa.inboxReopen": "Открыть снова",
+    "ui.admin_pwa.inboxMarkImportant": "Отметить важным",
+    "ui.admin_pwa.inboxClearImportant": "Убрать важность",
+    "ui.admin_pwa.inboxImportant": "Важное",
+    "ui.admin_pwa.inboxMine": "Назначено мне",
+    "ui.admin_pwa.inboxSaved": "Изменение сохранено",
+    "ui.admin_pwa.inboxChanged": "Статус обращения изменился. Список обновлён.",
+    "ui.admin_pwa.inboxActionError": "Изменение не сохранено. Проверьте ещё раз.",
+    "ui.admin_pwa.inboxAndroid": "Ошибки Android",
+    "ui.admin_pwa.inboxHistoryNote": "Ранние сообщения об ошибках Android могут отсутствовать в этом списке."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
