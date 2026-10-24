@@ -506,7 +506,19 @@
     "ui.admin_pwa.update": "Открыть новую версию",
     "ui.admin_pwa.discount": "Скидка",
     "ui.admin_pwa.localAmount": "Местная сумма",
-    "ui.admin_pwa.cancel": "Отмена"
+    "ui.admin_pwa.cancel": "Отмена",
+    "ui.admin_pwa.mcpSecure": "Безопасное подключение",
+    "ui.admin_pwa.mcpTitle": "Разрешить доступ к статистике",
+    "ui.admin_pwa.mcpSubtitle": "Внешнее приложение запрашивает разрешение на чтение статистики администрирования HSK AI.",
+    "ui.admin_pwa.mcpClient": "Идентификатор приложения",
+    "ui.admin_pwa.mcpDestination": "Домен возврата",
+    "ui.admin_pwa.mcpPermission": "Только чтение статистики",
+    "ui.admin_pwa.mcpPermissionNote": "Можно просматривать отчёты и общие показатели. Изменять аккаунты, платежи и сообщения нельзя.",
+    "ui.admin_pwa.mcpSecurity": "Разрешение действует только для этого подключения. Без вашего подтверждения данные не передаются.",
+    "ui.admin_pwa.mcpAllow": "Разрешить чтение статистики",
+    "ui.admin_pwa.mcpDeny": "Отклонить",
+    "ui.admin_pwa.mcpExpires": "Запрос истечёт через 3 минуты.",
+    "ui.admin_pwa.mcpFooter": "HSK AI · Безопасность администратора"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
