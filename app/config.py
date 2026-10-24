@@ -111,6 +111,8 @@ class Settings(BaseSettings):
     ADMIN_PWA_ENABLED: bool = False
     # Independent kill switch; no public MCP resource/OAuth flow is mounted.
     ADMIN_PWA_MCP_ENABLED: bool = False
+    # Never enable before complete OAuth consent UI, client registration and security review.
+    ADMIN_PWA_MCP_TRANSPORT_ENABLED: bool = False
     ADMIN_PWA_MCP_RESOURCE: str = ""
     # Trusted pre-registered public OAuth client; blank means fail closed.
     ADMIN_PWA_MCP_CLIENT_ID: str = ""
