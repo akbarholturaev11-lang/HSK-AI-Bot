@@ -831,7 +831,15 @@ async def export_browser_checks(output):
                         await page.locator('[data-action=more]').click()
                         await page.locator('#drawerLocale').select_option(language)
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-                    assert await page.locator('[data-export-format=json]').evaluate('(el) => el.getBoundingClientRect().height>=44')
+                    # Locale change can asynchronously re-render the button:
+                    # a one-shot evaluate may catch a detached node (height 0).
+                    # Wait for a connected, visible 44px hit target instead of
+                    # weakening the accessibility requirement.
+                    await expect(page.locator('[data-export-format=json]')).to_be_visible()
+                    await page.wait_for_function("""() => {
+                        const el=document.querySelector('[data-export-format=json]');
+                        return !!el && el.isConnected && el.getBoundingClientRect().height >= 44;
+                    }""",timeout=7000)
                     await page.screenshot(path=str(output/f'statistics-export-{width}-{language}.png'),full_page=True)
                     async with page.expect_download() as pending:
                         await page.locator('[data-export-format=json]').click()
