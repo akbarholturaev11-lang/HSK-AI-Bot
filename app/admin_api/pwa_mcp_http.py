@@ -23,6 +23,7 @@ from app.admin_api.pwa_mcp_oauth import (
 from app.admin_api.pwa_mcp_resource import (
     _ready, _REQUIRED_RESOURCE, _ANALYTICS_SCOPE,
     verify_readonly_mcp_bearer, read_mcp_statistics_with_verified_token,
+    _TOKEN_SHAPE,
     McpBearerBadArguments, McpBearerDenied,
 )
 from app.admin_api.pwa_read import StatisticsRequest
@@ -230,6 +231,9 @@ def create_admin_pwa_mcp_http_router(
             return _invalid_request(503, "temporarily_unavailable")
         bearer_headers = request.headers.getlist("authorization")
         if len(bearer_headers) != 1:
+            return _unauthorized()
+        if (not bearer_headers[0].startswith("Bearer ")
+                or not _TOKEN_SHAPE.fullmatch(bearer_headers[0][7:])):
             return _unauthorized()
         # Do not allow browser session cookies, query access tokens, or
         # legacy Telegram initData as MCP authentication mechanisms.
