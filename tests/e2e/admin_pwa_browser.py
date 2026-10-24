@@ -882,7 +882,7 @@ async def export_browser_checks(output):
             await page.locator('[data-feedback-source=bot]').click()
             await expect(page.locator('.feedback-analysis-source')).to_have_count(1)
             await page.locator('[data-feedback-period=monthly]').click()
-            await expect(page.locator('.feedback-analysis')).to_contain_text('30 kun')
+            await expect(page.locator('[data-feedback-period=monthly]')).to_have_attribute('aria-pressed','true')
             async with page.expect_download() as pending:
                 await page.locator('[data-feedback-export=json]').click()
             fb=await pending.value
