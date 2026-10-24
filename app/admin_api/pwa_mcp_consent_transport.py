@@ -9,7 +9,6 @@ import html
 import logging
 from pathlib import Path
 import re
-import secrets
 from typing import Any, Callable
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
@@ -102,7 +101,6 @@ def create_admin_pwa_mcp_consent_router(
         cookie = request.cookies.get(ADMIN_PWA_COOKIE_NAME, "")
         if not cookie:
             return _invalid_request(401, "admin_login_required")
-        proof = secrets.token_urlsafe(48)
         try:
             async with session_factory() as db:
                 pending = await begin_service(
@@ -111,7 +109,7 @@ def create_admin_pwa_mcp_consent_router(
                     scope=args["scope"], state=args["state"],
                     code_challenge=args["code_challenge"],
                     code_challenge_method=args["code_challenge_method"],
-                    csrf_proof=proof, settings_obj=settings_obj,
+                    settings_obj=settings_obj,
                 )
         except Exception:
             logger.exception("MCP OAuth consent start unavailable")
