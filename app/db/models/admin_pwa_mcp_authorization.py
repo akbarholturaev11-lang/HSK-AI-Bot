@@ -28,6 +28,7 @@ class AdminPwaMcpAuthorization(Base):
     client_state: Mapped[str] = mapped_column(String(256), nullable=False)
     status: Mapped[str] = mapped_column(String(16), nullable=False)
     code_hash: Mapped[str | None] = mapped_column(String(64), nullable=True, unique=True)
+    consent_csrf_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False,
         default=lambda: datetime.now(timezone.utc))
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
