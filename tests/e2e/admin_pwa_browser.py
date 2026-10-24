@@ -330,7 +330,11 @@ async def browser_checks(output):
             await page.locator(f'[data-source={source}]').click()
             await expect(page.locator('.inbox-shell')).to_be_visible()
             assert 'primary' in (await page.locator(f'[data-source={source}]').get_attribute('class'))
-        # Native iPhone-sized controls use the same real ASGI transaction as Mac.
+        # The 390px viewport mirrors the installed iPhone PWA layout.
+        assert page.viewport_size['width']==390
+        assert await page.locator('[data-inbox-op=mark_read]').first.evaluate(
+            '(element) => element.getBoundingClientRect().height >= 44')
+        await page.screenshot(path=str(output/'mobile-inbox-triage.png'),full_page=True)
         await page.locator('[data-inbox-op=mark_read]').first.click()
         await expect(page.locator('.inbox-shell')).to_be_visible()
         await page.locator('[data-inbox-op=assign_self]').first.click()
