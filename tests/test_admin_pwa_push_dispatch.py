@@ -49,7 +49,7 @@ class AdminPwaAppleDeliveryTests(AdminPwaPushOutboxTests):
         captured = []
         def intercept_post(url, *args, **kwargs):
             captured.append((url, kwargs))
-            return SimpleNamespace(status_code=201)
+            return SimpleNamespace(status_code=201, text="", headers={})
 
         # pywebpush performs RFC 8291 encryption and VAPID signing, then
         # reaches this intercepted HTTP boundary; no provider request occurs.
