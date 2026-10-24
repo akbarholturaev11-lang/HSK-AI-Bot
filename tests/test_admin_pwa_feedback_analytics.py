@@ -165,5 +165,13 @@ class FeedbackAnalyticsTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         self.assertEqual(result.status_code,200,result.text)
         self.assertTrue(sql)
         self.assertFalse(any(x.lstrip().startswith(("insert ","update ","delete ")) for x in sql))
-        self.assertFalse(any("disliked_text" in x or "telegram_id" in x or "attachment_bytes" in x
-                             for x in sql),sql)
+        # Current allowlisted admin authentication legitimately selects the
+        # User row (including its Telegram ID); the *feedback projection*
+        # must never fetch that identity, raw comments or screenshot bytes.
+        feedback_selects=[x for x in sql if any(
+            f"from {name}" in x for name in (
+                "bot_feedbacks", "release_feedback_responses", "admin_pwa_native_reports"))]
+        self.assertTrue(feedback_selects)
+        self.assertFalse(any("disliked_text" in x or "telegram_id" in x
+                             or "attachment_bytes" in x or "comment_text" in x
+                             or "description" in x for x in feedback_selects),feedback_selects)
