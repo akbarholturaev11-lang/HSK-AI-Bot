@@ -2,6 +2,17 @@
 
 Updated 2026-10-24. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## VERIFIED FIRST UNIVERSAL INBOX INCREMENT — 2026-10-24
+
+- **Exact CI-tested head:** `42e6a7b7bf6edde0ac53d4fe9fc3542c591697bf`. [Admin PWA run 40088791629](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40088791629): BOTH jobs success; **322 Python tests passed / 17 PostgreSQL-only skipped**, affected legacy 61 passed, **17 real disposable PostgreSQL 16** tests passed, 63 localization artifacts / 0 stale, desktop/mobile virtual-WebAuthn and Service Worker/browser 11 passed. Other workflows at the exact head must be checked independently. Do not present these tests as live staging/production evidence.
+- `app/admin_api/pwa_inbox.py`: an explicitly bounded read-only unified service for BotFeedback, ReleaseFeedbackResponse and *retained* AdminPwaNativeReport, capped messages, no Telegram IDs or screenshot/attachment bytes. Per-source query limit+1 and stable cross-source UTC timestamp/source/id cursor, canonical-only account filter, expired Android exclusion. All sources and owner constraints checked by tests. Old single-source `feedback/list` preserved unchanged for compatibility.
+- `app/admin_api/pwa_read.py`: added cookie-only, strict same-origin+CSRF-guarded POST `/api/admin/v1/inbox/list`, reuses normal admin authorization and PostgreSQL READ ONLY transaction; no MCP tools or schema change.
+- `app/static/admin-pwa/app.js`: existing V10 Notifications bell now opens chronological `all` by default; Bot / Release / Android filter tabs, persisted canonical-user filter and cursor-backed next button. Reuses the already localized labels; no new static copy, generated catalog or layout redesign. `tests/e2e/admin_pwa_browser.py` exercises tabs in headless Chromium.
+- `tests/test_admin_pwa_read.py`: synthetic mixed-source same-timestamp page ordering, orphan identity, expired native removal, no byte/file/Telegram ID leakage, strict ISO timezone-aware cursor validation, tampering/other origin, no cookie, revocation, flag OFF, only SELECT statements and route mounting. Initial CI caught strict-string cursor parsing 400; fixed it and reran to green.
+- **Not finished:** durable triage read/assigned/resolved and audit; indexed filters/severity/search; secured screenshot/Telegram attachment proxy; admin/system alerts; visually localized historical gap notice; retained Android reports are not reconstructable from pre-intake Telegram-only notifications. No real deployment, main merge, flags, new secrets, schema or production operations.
+- Next focused step: design and implement server-authoritative Inbox event/triage model and authenticated status updates under current PWA security rules. Keep external MCP statistics-only, and keep legacy Telegram/Android behavior untouched. Review native report retention setup before staging.
+
+
 ## Repository and boundaries
 
 - Repository: `akbarholturaev11-lang/HSK-AI-Bot`; ONLY work branch `feat/admin-pwa-mcp-readonly-20261024`; [Draft PR #201](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/201), open and unmerged.
