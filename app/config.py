@@ -109,6 +109,9 @@ class Settings(BaseSettings):
     ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS: int = 86400
     # Separate browser Admin PWA stays disabled until Google/TG + passkey auth exists.
     ADMIN_PWA_ENABLED: bool = False
+    # Independent kill switch; no public MCP resource/OAuth flow is mounted.
+    ADMIN_PWA_MCP_ENABLED: bool = False
+    ADMIN_PWA_MCP_RESOURCE: str = ""
     ADMIN_PWA_PUBLIC_ORIGIN: str = ""
     # Optional Android FCM delivery. With a blank project ID, Telegram and the
     # Android WorkManager status fallback continue without Firebase.
