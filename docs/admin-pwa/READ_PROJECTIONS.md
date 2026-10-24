@@ -198,8 +198,7 @@ Triage statuses: new, read, assigned, resolved; independent priorities: normal
 or important. Operations mark_read, assign_self, resolve, reopen, mark_important,
 clear_important. The read endpoint returns status/priority/revision and relevant
 timestamps with no private bytes. V10 now offers the six first-party triage controls with canonical UZ/RU/TJ
-labels and mobile touch targets. It still does **not** deliver device Web Push,
-system/admin alert ingestion, advanced filters, unread counts or attachment viewing.
+labels and mobile touch targets. The separate `inbox/unread-count` POST reads at most 100 eligible IDs across sources, returns a 99-plus cap marker rather than an invented exact large total, and excludes read/assigned/resolved records and expired Android reports. Missing triage state counts as new. The `priority=important` filter applies in SQL before pagination, and V10 shows both on iPhone/Mac. It still does **not** deliver actual device Web Push, system/admin alert ingestion, full-text search or attachment viewing.
 
 Migration: `0123_admin_pwa_inbox_triage` after 0122. Two new tables; rollback
 refuses nonempty audit/state. Disposable PostgreSQL + browser/test CI green at
