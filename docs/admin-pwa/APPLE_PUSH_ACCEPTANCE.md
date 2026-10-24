@@ -5,6 +5,38 @@ Safari / Add to Dock web app**. Do not spend this increment implementing
 Android/Windows-specific Admin PWA push. Keep Telegram Admin Mini App and
 all learner apps unchanged.
 
+## Implemented, behind default-OFF flag (2026-10-24)
+
+- **Inbox badge and priority filter:** `/api/admin/v1/inbox/unread-count`
+  returns an authenticated, **bounded server-side** `99+` badge instead of
+  counting just the first page. `inbox/list` has a real `priority=important`
+  query on all three sources. Current message triage and the badge stay
+  independent of Push delivery.
+- **Push subscription foundation:** Alembic `0124_admin_pwa_push_subscriptions`,
+  canonical-admin per-install encrypted PushSubscription storage (Fernet;
+  endpoint SHA-256 uniqueness, active-device cap, no endpoint in API responses),
+  and `/api/admin/v1/push/list|subscribe|revoke` behind
+  `ADMIN_PWA_PUSH_ENABLED=false`. Server config additionally needs a valid
+  public VAPID key and private Fernet storage key. Existing authentication,
+  Origin, CSRF and active WebAuthn admin guards are reused. Apple
+  `*.push.apple.com` delivery endpoints are strictly validated.
+- **Apple UI:** iPhone standalone PWA / Mac Safari-capability detection,
+  explicit opt-in button, synchronous gesture-driven permission request and
+  per-device revoke UI; canonical UZ/RU/TJ translations.
+- **Service Worker:** basic privacy-safe visible `push` handler and fixed
+  same-origin `/admin/?inbox=1` click destination. Deep-link opening
+  requires current verified passkey admin session. No private content is
+  embedded in notification payload.
+- **NOT IMPLEMENTED:** real server sender, VAPID private signing key,
+  durable per-event outbox/retries, Apple provider response handling,
+  cross-device physical test, release secrets/config, production enablement.
+  `sending_enabled=false` remains deliberately explicit. Do not describe
+  successful subscription tests as real notifications being delivered.
+- Testing: isolated SQLite/real disposable PostgreSQL/virtual Chromium
+  regressions are run in GitHub CI for branch-only increments; check each
+  latest head before calling it verified. No live migration or permission
+  request was performed on the owner's hardware.
+
 ## Separate the two products
 
 - **Inbox:** already receives and displays stored BotFeedback, release feedback
