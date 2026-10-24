@@ -43,6 +43,7 @@ class InboxCursor(BaseModel):
 class InboxRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     source: Literal["all", "bot", "release", "android"] = "all"
+    priority: Literal["all", "important"] = "all"
     user_id: RowId | None = None
     limit: Annotated[int, Field(strict=True, ge=1, le=50)] = 30
     before: InboxCursor | None = None
@@ -110,6 +111,8 @@ async def unified_inbox(db, request: InboxRequest):
         ).outerjoin(AdminPwaInboxTriage, and_(
             AdminPwaInboxTriage.source == "bot",
             AdminPwaInboxTriage.source_id == BotFeedback.id)).outerjoin(User, User.id == BotFeedback.user_id)
+        if request.priority == "important":
+            query = query.where(AdminPwaInboxTriage.priority == "important")
         if request.user_id is not None:
             query = query.where(User.id == request.user_id)
         query = _before(query, stamp, BotFeedback.id, "bot", request.before)
@@ -141,6 +144,8 @@ async def unified_inbox(db, request: InboxRequest):
             AdminPwaInboxTriage.source == "release",
             AdminPwaInboxTriage.source_id == ReleaseFeedbackResponse.id)).outerjoin(User, and_(User.telegram_id > 0,
                                 User.telegram_id == ReleaseFeedbackResponse.user_telegram_id))
+        if request.priority == "important":
+            query = query.where(AdminPwaInboxTriage.priority == "important")
         if request.user_id is not None:
             query = query.where(User.id == request.user_id)
         query = _before(query, stamp, ReleaseFeedbackResponse.id, "release", request.before)
@@ -174,6 +179,8 @@ async def unified_inbox(db, request: InboxRequest):
         ).outerjoin(AdminPwaInboxTriage, and_(
             AdminPwaInboxTriage.source == "android",
             AdminPwaInboxTriage.source_id == AdminPwaNativeReport.id)).where(AdminPwaNativeReport.expires_at > now)
+        if request.priority == "important":
+            query = query.where(AdminPwaInboxTriage.priority == "important")
         if request.user_id is not None:
             query = query.where(AdminPwaNativeReport.user_id == request.user_id)
         query = _before(query, stamp, AdminPwaNativeReport.id, "android", request.before)
@@ -205,3 +212,37 @@ async def unified_inbox(db, request: InboxRequest):
         "historical_android_reports_complete": False,
         "history_note": "Android reports previously sent only to Telegram cannot be reconstructed",
     }
+
+
+class InboxUnreadRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+
+async def unread_inbox(db, request: InboxUnreadRequest):
+    """Bounded, source-authoritative unread count, *not* the first page size.
+
+    Stops at 100 matching rows. Untriaged source rows count as new; read,
+    assigned, resolved rows are not unread. The response is a capped count
+    (`99+` when at least 100), not a made-up exact total. No message fields,
+    screenshot bytes or user identifiers are selected.
+    """
+    now = datetime.now(timezone.utc)
+    maximum = 100
+    found = 0
+    for name, model in (("bot", BotFeedback), ("release", ReleaseFeedbackResponse),
+                        ("android", AdminPwaNativeReport)):
+        remaining = maximum - found
+        if remaining <= 0:
+            break
+        query = select(model.id).outerjoin(AdminPwaInboxTriage, and_(
+            AdminPwaInboxTriage.source == name,
+            AdminPwaInboxTriage.source_id == model.id,
+        )).where(or_(AdminPwaInboxTriage.status.is_(None),
+                    AdminPwaInboxTriage.status == "new"))
+        if name == "android":
+            query = query.where(AdminPwaNativeReport.expires_at > now)
+        ids = (await db.execute(query.order_by(model.id.desc()).limit(remaining))).all()
+        found += len(ids)
+    return {"unread_count": min(found, 99), "capped": found >= maximum,
+            "count_limit": 99, "derived_from": "unread_source_rows",
+            "generated_at": now.isoformat()}
