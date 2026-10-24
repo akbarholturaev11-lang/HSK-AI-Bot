@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - codex/admin-pwa
+      - feat/admin-pwa-mcp-readonly-20261024
       - main
     paths:
       - ".github/workflows/admin-pwa-security.yml"
@@ -12,6 +13,9 @@ on:
       - "app/main.py"
       - "app/services/admin_payment_review_service.py"
       - "app/services/subscription_service.py"
+      - "app/services/admin_pwa_*.py"
+      - "app/repositories/bot_setting_repo.py"
+      - "app/repositories/subscription_price_repo.py"
       - "tests/test_native_account_payments.py"
       - "tests/test_hsk30_admin_payment_flow.py"
       - "tests/test_subscription_service.py"
@@ -23,6 +27,7 @@ on:
       - "tests/test_admin_pwa_*.py"
       - "tests/e2e/admin_pwa_browser.py"
       - "tests/e2e/admin_pwa_mcp_consent_browser.py"
+      - "tests/e2e/admin_pwa_ui_cleanup_browser.py"
       - "tests/mcp_transport_fakes.py"
       - "app/static/admin-pwa/**"
       - "localization/ui/**/miniapp.json"
@@ -45,6 +50,9 @@ on:
       - "app/main.py"
       - "app/services/admin_payment_review_service.py"
       - "app/services/subscription_service.py"
+      - "app/services/admin_pwa_*.py"
+      - "app/repositories/bot_setting_repo.py"
+      - "app/repositories/subscription_price_repo.py"
       - "tests/test_native_account_payments.py"
       - "tests/test_hsk30_admin_payment_flow.py"
       - "tests/test_subscription_service.py"
@@ -56,6 +64,7 @@ on:
       - "tests/test_admin_pwa_*.py"
       - "tests/e2e/admin_pwa_browser.py"
       - "tests/e2e/admin_pwa_mcp_consent_browser.py"
+      - "tests/e2e/admin_pwa_ui_cleanup_browser.py"
       - "tests/mcp_transport_fakes.py"
       - "app/static/admin-pwa/**"
       - "localization/ui/**/miniapp.json"
@@ -134,6 +143,7 @@ jobs:
         run: |
           python -m tests.e2e.admin_pwa_browser --output /tmp/admin-pwa-browser
           python -m tests.e2e.admin_pwa_mcp_consent_browser --output /tmp/admin-pwa-browser
+          python -m tests.e2e.admin_pwa_ui_cleanup_browser --output /tmp/admin-pwa-browser
       - name: Verify native report API compatibility and durable intake
         run: python -m pytest -q tests/test_android_features_api.py -k AndroidBugReportApiTests
       - name: Keep synthetic browser screenshots
@@ -183,7 +193,7 @@ jobs:
           python -m pip install -r requirements.txt "pytest==8.4.2" "aiosqlite==0.21.0"
       - name: Prepare minimal 0109 test baseline (no legacy data)
         run: |
-          # Scope is 0110-0126 ONLY: the legacy cold-start path currently
+          # Scope is 0110-0127 ONLY: the legacy cold-start path currently
           # fails at 0011 before course_progress exists. Do not mask that
           # unrelated issue or claim fresh-db full-history migration coverage.
           python - <<'PY'
@@ -199,7 +209,7 @@ jobs:
           asyncio.run(main())
           PY
           python -m alembic stamp 0109_public_site_traffic_daily
-      - name: Upgrade only the Admin PWA migrations 0110-0126
+      - name: Upgrade only the Admin PWA migrations 0110-0127
         run: |
           python -m alembic upgrade head
           python -m alembic current
@@ -243,4 +253,4 @@ jobs:
           python -m alembic upgrade head
       - name: Run PostgreSQL advisory-lock, single-use and revoke regressions
         run: |
-          python -m pytest -q tests/test_admin_pwa_postgres.py
+          python -m pytest -q tests/test_admin_pwa_postgres.py tests/test_admin_pwa_settings_postgres.py

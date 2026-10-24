@@ -1,6 +1,6 @@
 # HSK AI — Admin PWA implementation plan
 
-Status (updated 2026-10-24): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, V10 UI, scoped OAuth/MCP controls, profiles, activity metrics, daily statistics cache, native intake, inbox read/triage/search and default-OFF Apple Push sender code exist. Android/Bot/Release raster previews and bounded first-party statistics JSON/CSV exports are implemented. Unsupported media, technical events, retention/audit follow-ups, remaining management/sanitized feedback exports and real staging/provider/device/ChatGPT acceptance remain open. The old 0011 cold-start migration failure remains separate.**
+Status (updated 2026-10-25): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, manual grants, course/HSK30 controls, scoped OAuth/MCP, profiles, daily statistics/feedback snapshots and bounded JSON/CSV, native/technical inbox and default-OFF Apple Push sender exist. Private Redis/R2 reuse is implemented. Inbox actions now use one primary button plus an accessible secondary menu and status/time filters. Remaining management, retention/operator flows and release acceptance are tracked explicitly below. The old 0011 cold-start migration failure remains separate.**
 
 Target public URL: `https://hskai.app/admin` (owner-designated; live routing/TLS not verified).
 Branch: `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201; PR #200 foundations are already merged. No main push/merge, deploy or flag activation.
@@ -16,23 +16,28 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
    billing history, course/referral/device/feedback summaries; then defined AI
    spend, engagement and conversion metrics. Preserve unavailable attribution.
 2. **Unified inbox continuation**: read/triage/search/badge and native intake
-   and Android/Bot/Release image preview are implemented. Technical sources,
-   unsupported media and retention/audit gaps still require separate review.
+   and Android/Bot/Release image preview are implemented. Sanitized technical
+   events, source/status/time filters and triage/push privacy fixes also exist.
+   Unsupported media and retention/operator flows remain separate work.
 3. **Implemented cached statistics exports**: first-party JSON/CSV and metric
    definitions from the existing 24-hour reader; original generation/expiry,
    source/range/scope and separate currencies retained. Explicit V10 downloads,
    128 KiB / 96-row / 32-currency bounds, WebAuthn cookie/current-admin recheck,
-   no force-refresh, new aggregate SQL on cache hits, disk job or R2. Sanitized
-   bounded feedback **category-only backend** JSON/CSV routes now exist; V10 UI
-   and browser export acceptance remain outstanding. Broader sanitized raw-
+   no force-refresh, new aggregate SQL on cache hits or disk job. Optional
+   server-private R2 mirrors the same bounded daily snapshot. Sanitized
+   bounded feedback category JSON/CSV routes, V10 UI and browser download
+   regressions exist. Broader sanitized raw-
    feedback or complaint-text exports still require separate privacy review. External MCP
    remains statistics-only; exports do not add an external tool or scope.
 4. **First-party management**: shared course/access/pricing/marketing/settings
    commands with exact WebAuthn payload binding, confirmation and audit; keep
    unsupported high-risk operations disabled until independently verified.
-   Manual Pro grants now use the shared subscription service and atomic 0126
-   command audit, with exact snapshot/target/day confirmation in V10. Remaining
-   course/HSK unlock/configuration/marketing operations still need their own adapters.
+   Manual Pro grants (1–365 days) use the shared subscription service and
+   atomic 0126 command audit. Global course policy and HSK30 rollout/live levels/
+   checkout price settings exist; subscription pricing now has a bounded signed
+   adapter with raw-state CAS and shared legacy-writer key locks. Individual
+   permanent HSK30 access still requires approved owned payment. Further
+   configuration/marketing adapters remain separately scoped work.
 5. **Staging acceptance**: isolated provider/device/TLS/proxy/migrations and
    actual ChatGPT E2E, then owner review. Needs real staging configuration and
    available hardware; never count synthetic tests as that evidence.
@@ -52,8 +57,9 @@ Primary purpose is to reduce unnecessary DB work. The owner selected daily
 updates after discussing R2. Reuse the existing Redis dependency/configuration
 for private 24-hour aggregate snapshots shared by Admin PWA and MCP; refresh
 only requested, expired variants on first authorized demand after 24 hours
-from `generated_at`, not at a fixed nightly time. R2 integration is not required to achieve
-this read-load reduction and is not implemented here. No periodic all-platform
+from `generated_at`, not at a fixed nightly time. Optional private R2 adapter
+code now persists the same bounded snapshot across restarts; it is default OFF
+and does not change the daily refresh contract. No periodic all-platform
 full scans are added. Keep current timestamps and live billing/access commands;
 cache no identities/permissions. Redis outage fallback is per worker and may
 recalculate after restart; auth/revoke/audit/quotas still use current DB facts. `READ_PROJECTIONS.md` records coordination,

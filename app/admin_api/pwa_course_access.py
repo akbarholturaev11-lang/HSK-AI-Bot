@@ -27,6 +27,7 @@ from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.bot_setting import BotSetting
 from app.db.models.user import User
+from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.course_access_policy_service import (
     COURSE_ACCESS_POLICY_KEY, CourseAccessPolicyService,
 )
@@ -82,6 +83,10 @@ def _hash(value):
 
 
 async def _current(db, *, lock=False):
+    if lock:
+        # FOR UPDATE alone cannot protect a setting that has no row yet.
+        # Shared service/Telegram writers take the same key lock via set().
+        await BotSettingRepository(db).lock_key(COURSE_ACCESS_POLICY_KEY)
     statement = select(BotSetting).where(
         BotSetting.key == COURSE_ACCESS_POLICY_KEY).execution_options(populate_existing=True)
     row = await db.scalar(statement.with_for_update() if lock else statement)
@@ -128,15 +133,14 @@ async def execute_course_policy(db, *, session_cookie, request, settings_obj):
         step = await db.get(AdminPwaStepUp, request.step_up_id)
         session = await db.get(AdminPwaSession, step.session_id)
         actor = await db.get(User, step.user_id)
-        now = datetime.now(timezone.utc)
-        # The settings row lock can wait. Re-check expiry after the wait,
-        # not only when the verified WebAuthn proof was first consumed.
-        observed_hash = await _current(db, lock=True)
+        current_hash = await _current(db, lock=True)
+        # The setting lock may have waited while this proof/session expired.
+        # Recheck at the actual write boundary after every target lock wait.
         now = datetime.now(timezone.utc)
         if (not _enabled(settings_obj) or not _authorized_admin(actor, settings_obj)
                 or min(_utc(step.expires_at), _utc(session.expires_at)) <= now):
             raise CommandError("admin_pwa_step_up_denied", 403)
-        if observed_hash != command.expected_hash:
+        if current_hash != command.expected_hash:
             raise CommandError("confirmation_changed", 409)
         try:
             deadline = _deadline(command.free_until, command.mode)

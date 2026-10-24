@@ -50,6 +50,7 @@ from app.admin_api.pwa_mcp_consent_transport import create_admin_pwa_mcp_consent
 from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_router
 from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
 from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_router
+from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
 from app.admin_api.pwa_payment_receipts import create_admin_pwa_receipt_router, download_receipt_image
 from app.api.android_auth import create_android_auth_router
 from app.api.course_tracks import create_course_tracks_router
@@ -756,6 +757,7 @@ admin_pwa_statistics_reader = AdminPwaStatisticsReader(settings_obj=settings, se
 app.include_router(create_admin_pwa_access_grant_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_course_access_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_hsk30_settings_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_subscription_prices_router(settings_obj=settings, session_factory=async_session_maker))
 admin_pwa_feedback_reader = AdminPwaFeedbackReader(settings_obj=settings, session_factory=async_session_maker)
 app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=settings, session_factory=async_session_maker,
     reader=admin_pwa_feedback_reader))
@@ -4401,6 +4403,17 @@ async def admin_miniapp_hsk30_settings(request: Request):
         )
 
     async with async_session_maker() as session:
+        # Match signed PWA writers' deterministic lock order, including keys
+        # not stored yet. Partial Telegram updates keep their original scope.
+        hsk30_setting_keys = {
+            "enabled": "hsk30_enabled",
+            "live_levels": "hsk30_live_levels",
+            "unlock_payment_enabled": "hsk30_unlock_payment_enabled",
+            "unlock_price_tjs": "hsk30_unlock_price_tjs",
+        }
+        setting_repo = BotSettingRepository(session)
+        for setting_key in sorted(hsk30_setting_keys[key] for key in payload if key in hsk30_setting_keys):
+            await setting_repo.lock_key(setting_key)
         feature = Hsk30FeatureService(session)
         unlock = Hsk30UnlockService(session)
         if "enabled" in payload:

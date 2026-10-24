@@ -31,6 +31,24 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   external MCP remains statistics-only. Further typed management adapters are
   being completed; disabled management sections are not completion evidence.
 
+## Current management increment — price revision and absent-key locks
+
+- Integrated additional remote commits `efe29a79` / `0c10c27e` (HSK30 signed
+  backend and localized editor), preserving the new compact Inbox/More layout.
+- Added first-party signed nine-target subscription pricing adapter, strict
+  integer amount/method/plan validation, raw-state CAS and existing shared
+  currency/default behavior. No payment/entitlement changes. See
+  [management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
+- Shared setting and price writers take deterministic PG transaction locks for
+  absent as well as existing rows. Course policy rechecks expiry after that
+  lock. Legacy HSK30 partial writes prelock their actual keys in sorted order.
+- Local checks: **26 passed** across course/HSK30/pricing/shared feature/import
+  and **four real PostgreSQL contention cases**; prior pricing-specific gate
+  **35 passed**, including legacy card-bank and discount behavior. New PG cases
+  cover legacy price first-row write vs signed PWA stale confirmation. CI now
+  explicitly runs this PG file and the dedicated mobile menu/filter browser
+  suite. No new DB migration is needed.
+
 ## Owner clarification — daily R2-backed aggregate snapshots, 2026-10-25
 
 - User requires both Statistics and Feedback Analytics to **avoid aggregate DB queries at each page open**. The 30/min per-worker limit was not caching and does not fulfill that requirement by itself.
