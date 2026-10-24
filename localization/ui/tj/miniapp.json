@@ -584,7 +584,8 @@
     "ui.admin_pwa.inboxChanged": "Ҳолати муроҷиат тағйир ёфт. Рӯйхат нав шуд.",
     "ui.admin_pwa.inboxActionError": "Тағйирот сабт нашуд. Боз санҷед.",
     "ui.admin_pwa.inboxAndroid": "Хатогиҳои Android",
-    "ui.admin_pwa.inboxHistoryNote": "Паёмҳои кӯҳнаи хатогиҳои Android метавонанд дар ин рӯйхат набошанд."
+    "ui.admin_pwa.inboxHistoryNote": "Паёмҳои кӯҳнаи хатогиҳои Android метавонанд дар ин рӯйхат набошанд.",
+    "ui.admin_pwa.inboxUnread": "Нахонда"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
