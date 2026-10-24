@@ -261,6 +261,33 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertIsNone(second["items"][0]["user_id"])
         self.assertIn("android_bug_reports",second["unavailable_sources"])
 
+    async def test_technical_error_events_are_separate_and_never_expose_diagnostics(self):
+        from app.db.models.message import Message
+        now = datetime.now(timezone.utc)
+        private = "https://example.invalid/private?token=secret; stack=PASSWORD"
+        async with self.sessions() as db:
+            db.add_all([
+                Message(user_id=1, role="assistant", content=private,
+                        content_type="app_error_context", created_at=now),
+                Message(user_id=1, role="user", content=private,
+                        content_type="text", created_at=now),
+                Message(user_id=2, role="assistant", content=private,
+                        content_type="app_error_context", created_at=now-timedelta(days=31)),
+            ])
+            await db.commit()
+        response=await self.post("inbox/list", {"source":"technical"})
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(len(response.json()["items"]), 1)
+        row=response.json()["items"][0]
+        self.assertEqual((row["source"],row["user_id"],row["message"]),
+                         ("technical",1,"Mini App technical error"))
+        self.assertEqual(row["triage_priority"],"important")
+        self.assertNotIn("PASSWORD",response.text)
+        self.assertNotIn("example.invalid",response.text)
+        count=await self.post("inbox/unread-count", {})
+        self.assertEqual(count.status_code,200,count.text)
+        self.assertGreaterEqual(count.json()["unread_count"],1)
+
     async def test_unified_inbox_canonical_identity_paging_privacy_and_history(self):
         now = datetime.now(timezone.utc).replace(microsecond=0)
         async with self.sessions() as db:

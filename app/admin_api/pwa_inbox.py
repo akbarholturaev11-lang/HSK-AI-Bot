@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import String, and_, func, or_, select
 
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
+from app.db.models.message import Message
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.payment import Payment
@@ -18,14 +19,14 @@ from app.db.models.user import User
 
 Source = Literal["bot", "release", "android", "payment"]
 RowId = Annotated[int, Field(strict=True, ge=1, le=2_147_483_647)]
-_RANK = {"payment": 4, "android": 3, "release": 2, "bot": 1}
+_RANK = {"technical": 5, "payment": 4, "android": 3, "release": 2, "bot": 1}
 _MAX_MESSAGE = 2000
 
 
 class InboxCursor(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     created_at: datetime
-    source: Source
+    source: Literal["bot", "release", "android", "payment", "technical"]
     source_id: RowId
 
     @field_validator("created_at", mode="before")
@@ -43,7 +44,7 @@ class InboxCursor(BaseModel):
 
 class InboxRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
-    source: Literal["all", "bot", "release", "android", "payment"] = "all"
+    source: Literal["all", "bot", "release", "android", "payment", "technical"] = "all"
     priority: Literal["all", "important"] = "all"
     user_id: RowId | None = None
     search: str | None = Field(default=None, min_length=3, max_length=80)
@@ -96,7 +97,7 @@ def _before(query, timestamp, row_id, source, cursor):
 def _triage(row):
     return {
         "triage_status": row.triage_status or "new",
-        "triage_priority": row.triage_priority or ("important" if row.source_type in ("payment", "android") else "normal"),
+        "triage_priority": row.triage_priority or ("important" if row.source_type in ("payment", "android", "technical") else "normal"),
         "triage_assigned_to": row.triage_assignee,
         "triage_read_at": _utc(row.triage_read_at).isoformat() if row.triage_read_at else None,
         "triage_resolved_at": _utc(row.triage_resolved_at).isoformat() if row.triage_resolved_at else None,
@@ -242,6 +243,46 @@ async def unified_inbox(db, request: InboxRequest):
             })
 
 
+    if "technical" in sources:
+        # Existing Mini App diagnostic records include raw stack/URL/user text:
+        # never SELECT content; the Admin PWA sees only a fixed safe label.
+        stamp = Message.created_at
+        query = select(
+            Message.id.label("source_id"), stamp.label("created_at"),
+            Message.user_id.label("user_id"),
+            AdminPwaInboxTriage.status.label("triage_status"),
+            AdminPwaInboxTriage.priority.label("triage_priority"),
+            AdminPwaInboxTriage.assigned_to_user_id.label("triage_assignee"),
+            AdminPwaInboxTriage.read_at.label("triage_read_at"),
+            AdminPwaInboxTriage.resolved_at.label("triage_resolved_at"),
+            AdminPwaInboxTriage.revision.label("triage_revision"),
+        ).outerjoin(AdminPwaInboxTriage, and_(
+            AdminPwaInboxTriage.source == "technical",
+            AdminPwaInboxTriage.source_id == Message.id,
+        )).where(
+            Message.role == "assistant",
+            Message.content_type == "app_error_context",
+            stamp >= now - timedelta(days=30),
+            stamp <= now,
+        )
+        if request.priority == "important":
+            query = query.where(func.coalesce(AdminPwaInboxTriage.priority, "important") == "important")
+        if request.user_id is not None:
+            query = query.where(Message.user_id == request.user_id)
+        if request.search is not None and request.search.casefold() not in "mini app technical error":
+            query = query.where(Message.id == -1)
+        query = _before(query, stamp, Message.id, "technical", request.before)
+        rows = (await db.execute(query.order_by(stamp.desc(), Message.id.desc()).limit(take))).all()
+        for row in rows:
+            gathered.append({
+                "source": "technical", "source_id": row.source_id,
+                "created_at": _utc(row.created_at), "user_id": row.user_id,
+                "message": "Mini App technical error", "has_attachment": False,
+                "image_preview_available": False,
+                "feedback_status": None, "rating": None, "notification_delivery": None,
+                "app_version": None, "screen": None, **_triage(row),
+            })
+
     if "payment" in sources:
         stamp = Payment.submitted_at
         # Include only a RECEIVED pending receipt; drafts/no-upload never alert.
@@ -322,7 +363,8 @@ async def unread_inbox(db, request: InboxUnreadRequest):
     maximum = 100
     found = 0
     for name, model in (("bot", BotFeedback), ("release", ReleaseFeedbackResponse),
-                        ("android", AdminPwaNativeReport), ("payment", Payment)):
+                        ("android", AdminPwaNativeReport), ("payment", Payment),
+                        ("technical", Message)):
         remaining = maximum - found
         if remaining <= 0:
             break
@@ -333,6 +375,10 @@ async def unread_inbox(db, request: InboxUnreadRequest):
                     AdminPwaInboxTriage.status == "new"))
         if name == "android":
             query = query.where(AdminPwaNativeReport.expires_at > now)
+        if name == "technical":
+            query = query.where(Message.role == "assistant",
+                Message.content_type == "app_error_context",
+                Message.created_at >= now - timedelta(days=30))
         if name == "payment":
             query = query.where(Payment.payment_status == "pending",
                                 Payment.screenshot_file_id.is_not(None))
