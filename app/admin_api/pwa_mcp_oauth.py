@@ -63,6 +63,12 @@ class ApprovedMcpCode:
 
 
 @dataclass(frozen=True)
+class DeniedMcpCode:
+    redirect_uri: str
+    state: str
+
+
+@dataclass(frozen=True)
 class McpAccessToken:
     token: str                 # Returned ONLY by future HTTPS OAuth token endpoint.
     token_type: str
@@ -155,7 +161,7 @@ async def decide_mcp_consent(
     db: Any, *, request_id: str, session_cookie: str, approved: bool,
     settings_obj: Any, now: datetime | None = None,
     csrf_proof: str | None = None,
-) -> ApprovedMcpCode | None:
+) -> ApprovedMcpCode | DeniedMcpCode | None:
     """Require an explicit yes/no click from SAME HTTPS/CSRF-checked browser.
 
     Caller MUST enforce origin, Fetch Metadata, content-type and a separate
@@ -188,8 +194,10 @@ async def decide_mcp_consent(
             return None
         if not approved:
             row.status = "denied"
+            redirect = row.redirect_uri
+            client_state = row.client_state
             await db.flush()
-            return None
+            return DeniedMcpCode(redirect, client_state)
         code = secrets.token_urlsafe(48)
         expires_at = min(_utc(session.expires_at), stamp + _CODE_TTL)
         if expires_at <= stamp:
