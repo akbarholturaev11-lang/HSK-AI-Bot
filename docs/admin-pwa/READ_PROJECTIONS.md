@@ -170,13 +170,38 @@ The V10 notification bell now uses `inbox/list`, default `all`, and has Bot,
 Release and Android source filters with next-page support. It reuses existing
 UZ/RU/TJ catalog labels; no generated localization files were hand-edited.
 Output contains capped 2,000-character excerpts, attachment presence ONLY,
-source-owned feedback status or native Telegram-delivery status (never a made-up
-read/assigned/resolved state), no file IDs, native screenshot bytes, raw Telegram
-IDs or MCP extension. It explicitly returns
-`historical_android_reports_complete=false`, `triage_available=false`, and
-`attachment_access=not_exposed`. These are API metadata, not a claim that the
+source-owned feedback status or native Telegram-delivery status (distinct from
+admin triage state), no file IDs, native screenshot bytes, raw Telegram IDs or MCP
+extension. It explicitly returns `historical_android_reports_complete=false`,
+`triage_available=true` and `attachment_access=not_exposed`. The later 0123
+schema adds separately persisted optional `triage_status`, `triage_priority`,
+`triage_assigned_to`, timestamps and `triage_revision` (0 before first mutation). These are API metadata, not a claim that the
 UI already displays a completed triage workflow or all historic reports.
 
-Next: define durable shared triage state, indexed filter/search model, authenticated
-read/assigned/resolved actions and secure attachment proxy. Admin/system alert
+Next: V10 triage-action controls/UX and canonical UZ/RU/TJ labels, indexed
+search/filters, administrative/system alert sources and secure attachment proxy. Admin/system alert
 source inventory precedes claiming universal notifications complete.
+
+## Inbox triage state — 0123, backend only (2026-10-24)
+
+`app/admin_api/pwa_inbox_triage.py` is a protected first-party-only endpoint.
+An active WebAuthn Admin PWA session is required for changes; a Google/Telegram
+onboarding cookie, missing/blocked admin, forged origin and expired Android source
+fail closed. The input has a strict source, integer source ID, one allowlisted
+operation, and an expected integer revision. Source-row locking and compare-and-
+set revision guard prevent stale writes; triage state and content-free append-only
+audit insert commit together. Assigning to another arbitrary user is not offered:
+`assign_self` binds the current canonical admin. Source feedback status and
+native Telegram-delivery status remain unmodified.
+
+Triage statuses: new, read, assigned, resolved; independent priorities: normal
+or important. Operations mark_read, assign_self, resolve, reopen, mark_important,
+clear_important. The read endpoint returns status/priority/revision and relevant
+timestamps with no private bytes. The V10 interface still does **not** offer
+triage controls or localized action labels: this is the next increment.
+
+Migration: `0123_admin_pwa_inbox_triage` after 0122. Two new tables; rollback
+refuses nonempty audit/state. Disposable PostgreSQL + browser/test CI green at
+`838026d9`; no live migration/flag toggles/deployment. Before release, design
+bounded orphan/retention cleanup for expired or erased original source records,
+and audit access monitoring without silently deleting audit evidence.
