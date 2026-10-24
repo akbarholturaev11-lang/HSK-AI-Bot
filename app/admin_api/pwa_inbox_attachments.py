@@ -40,7 +40,7 @@ def create_admin_pwa_inbox_attachment_router(*, settings_obj, session_factory):
     router = APIRouter(tags=["admin-pwa-inbox-attachments"])
 
     @router.get("/api/admin/v1/inbox/android/{report_id}/attachment")
-    async def native_attachment(request: Request, report_id: int):
+    async def native_attachment(request: Request, report_id: str):
         failure = _gate(request, settings_obj)
         if failure is not None:
             return failure
@@ -50,8 +50,14 @@ def create_admin_pwa_inbox_attachment_router(*, settings_obj, session_factory):
                 or (request.headers.get("origin")
                     and request.headers.get("origin") != settings_obj.ADMIN_PWA_PUBLIC_ORIGIN)):
             return _reply(403, "admin_pwa_csrf")
-        if (report_id <= 0 or report_id > 2_147_483_647
-                or request.query_params):
+        # Parse AFTER the rollout guard: typed path validation would leak
+        # HTTP 422 even when ADMIN_PWA_ENABLED is false. Every PWA entry must
+        # return 404 before touching authentication or the database.
+        if (len(report_id) > 10 or not report_id.isascii()
+                or not report_id.isdecimal() or request.query_params):
+            return _reply(400, "admin_pwa_invalid_payload")
+        report_key = int(report_id)
+        if not 0 < report_key <= 2_147_483_647:
             return _reply(400, "admin_pwa_invalid_payload")
         cookie = request.cookies.get(ADMIN_PWA_COOKIE_NAME, "")
         if not cookie:
@@ -65,7 +71,7 @@ def create_admin_pwa_inbox_attachment_router(*, settings_obj, session_factory):
                     if actor.auth_method != "webauthn":
                         return _reply(403, "admin_pwa_attachment_denied")
                     raw = await db.scalar(select(AdminPwaNativeReport.attachment_bytes).where(
-                        AdminPwaNativeReport.id == report_id,
+                        AdminPwaNativeReport.id == report_key,
                         AdminPwaNativeReport.expires_at > datetime.now(timezone.utc),
                     ))
                     if not _valid_jpeg(raw):
