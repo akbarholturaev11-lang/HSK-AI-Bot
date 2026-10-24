@@ -329,8 +329,46 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertEqual(len(native), 1)
         self.assertEqual(native[0]["message"], "Native application crashed")
 
+    async def test_unified_inbox_search_is_recent_literal_and_never_exposes_payment_content(self):
+        now = datetime.now(timezone.utc).replace(microsecond=0)
+        async with self.sessions() as db:
+            db.add_all([
+                BotFeedback(user_id=1, telegram_id=1001, status="completed",
+                            disliked_text="Practice 100%_failure observed", created_at=now, completed_at=now),
+                BotFeedback(user_id=1, telegram_id=1001, status="completed",
+                            disliked_text="Ancient 100%_failure", created_at=now-timedelta(days=45),
+                            completed_at=now-timedelta(days=45)),
+                AdminPwaNativeReport(user_id=2, deduplication_key="e"*64,
+                    description="Practice 100%_failure screenshot", app_version="4.3",
+                    screen="course", notification_state="sent", created_at=now,
+                    last_attempt_at=now, expires_at=now+timedelta(days=30)),
+            ])
+            await db.commit()
+        result = await self.post("inbox/list", {"search":"  100%_failure  ", "limit":1})
+        self.assertEqual(result.status_code, 200, result.text)
+        first = result.json()
+        self.assertEqual(first["search_window_days"], 30)
+        self.assertEqual(len(first["items"]), 1)
+        self.assertIsNotNone(first["next_before"])
+        second = (await self.post("inbox/list", {"search":"100%_failure",
+                    "limit":1,"before":first["next_before"]})).json()
+        self.assertEqual(len(second["items"]), 1)
+        self.assertIsNone(second["next_before"])
+        self.assertEqual({x["source"] for x in first["items"]+second["items"]},
+                         {"bot", "android"})
+        self.assertEqual((await self.post("inbox/list", {"search":"unrelated"})).json()["items"], [])
+        self.assertEqual((await self.post("inbox/list", {"search":"100XXfailure"})).json()["items"], [])
+        self.assertEqual((await self.post("inbox/list", {"source":"payment",
+                    "search":str(self.payment_id).zfill(3)})).json()["items"][0]["source"], "payment")
+        private = await self.post("inbox/list", {"search":"100%_failure"})
+        self.assertNotIn("screenshot_file_id", private.text)
+        self.assertNotIn("attachment_bytes", private.text)
+        self.assertIsNone((await self.post("inbox/list", {})).json()["search_window_days"])
+
     async def test_unified_inbox_fails_closed_and_rejects_cursor_substitution(self):
         for body in ({"source": "unsafe"}, {"limit": 0}, {"limit": 51}, {"limit": True},
+                     {"search": ""}, {"search":"  "}, {"search":"ab"}, {"search":"x"*81},
+                     {"search":"bad\nvalue"}, {"search": 123},
                      {"user_id": "1"}, {"before": {"source": "bot", "source_id": 1}},
                      {"before": {"created_at": "2026-10-24T00:00:00",
                                  "source": "bot", "source_id": 1}},

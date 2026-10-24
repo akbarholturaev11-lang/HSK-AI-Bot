@@ -3,7 +3,7 @@
 This projection does not invent triage state and deliberately keeps historical
 Android reports that were never stored outside its claimed coverage.
 """
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -46,8 +46,31 @@ class InboxRequest(BaseModel):
     source: Literal["all", "bot", "release", "android", "payment"] = "all"
     priority: Literal["all", "important"] = "all"
     user_id: RowId | None = None
+    search: str | None = Field(default=None, min_length=3, max_length=80)
     limit: Annotated[int, Field(strict=True, ge=1, le=50)] = 30
     before: InboxCursor | None = None
+
+    @field_validator("search")
+    @classmethod
+    def bound_search(cls, value):
+        if value is None:
+            return None
+        value = value.strip()
+        if not 3 <= len(value) <= 80 or any(ord(c) < 32 or ord(c) == 127 for c in value):
+            raise ValueError("Search must be 3–80 printable characters")
+        return value
+
+
+def _literal_contains(column, needle):
+    # Explicit ESCAPE ensures %, _ and backslash in user input are literal.
+    escaped = needle.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+    return column.ilike(f"%{escaped}%", escape="\\")
+
+
+def _search_payment_id(value):
+    # Numeric IDs only; never search payment notes, account/bank data or receipts.
+    digits = value.removeprefix("#")
+    return int(digits) if digits.isascii() and digits.isdecimal() and len(digits) <= 10 else None
 
 
 def _utc(value):
@@ -92,6 +115,7 @@ async def unified_inbox(db, request: InboxRequest):
     sources = tuple(_RANK) if request.source == "all" else (request.source,)
     gathered = []
     take = request.limit + 1
+    search_start = now - timedelta(days=30) if request.search is not None else None
 
     if "bot" in sources:
         stamp = func.coalesce(BotFeedback.completed_at, BotFeedback.created_at)
@@ -117,6 +141,10 @@ async def unified_inbox(db, request: InboxRequest):
             query = query.where(AdminPwaInboxTriage.priority == "important")
         if request.user_id is not None:
             query = query.where(User.id == request.user_id)
+        if request.search is not None:
+            visible_text = func.coalesce(BotFeedback.disliked_text, BotFeedback.liked_text,
+                                         BotFeedback.disliked_code, BotFeedback.liked_code)
+            query = query.where(stamp >= search_start, _literal_contains(visible_text, request.search))
         query = _before(query, stamp, BotFeedback.id, "bot", request.before)
         rows = (await db.execute(query.order_by(stamp.desc(), BotFeedback.id.desc()).limit(take))).all()
         for row in rows:
@@ -151,6 +179,9 @@ async def unified_inbox(db, request: InboxRequest):
             query = query.where(AdminPwaInboxTriage.priority == "important")
         if request.user_id is not None:
             query = query.where(User.id == request.user_id)
+        if request.search is not None:
+            query = query.where(stamp >= search_start,
+                                _literal_contains(ReleaseFeedbackResponse.comment_text, request.search))
         query = _before(query, stamp, ReleaseFeedbackResponse.id, "release", request.before)
         rows = (await db.execute(query.order_by(stamp.desc(),
                                                 ReleaseFeedbackResponse.id.desc()).limit(take))).all()
@@ -187,6 +218,9 @@ async def unified_inbox(db, request: InboxRequest):
             query = query.where(func.coalesce(AdminPwaInboxTriage.priority, "important") == "important")
         if request.user_id is not None:
             query = query.where(AdminPwaNativeReport.user_id == request.user_id)
+        if request.search is not None:
+            query = query.where(stamp >= search_start,
+                                _literal_contains(AdminPwaNativeReport.description, request.search))
         query = _before(query, stamp, AdminPwaNativeReport.id, "android", request.before)
         rows = (await db.execute(query.order_by(stamp.desc(),
                                                 AdminPwaNativeReport.id.desc()).limit(take))).all()
@@ -230,6 +264,9 @@ async def unified_inbox(db, request: InboxRequest):
             query = query.where(func.coalesce(AdminPwaInboxTriage.priority, "important") == "important")
         if request.user_id is not None:
             query = query.where(User.id == request.user_id)
+        if request.search is not None:
+            number = _search_payment_id(request.search)
+            query = query.where(stamp >= search_start, Payment.id == (number if number is not None else -1))
         query = _before(query, stamp, Payment.id, "payment", request.before)
         rows = (await db.execute(query.order_by(stamp.desc(), Payment.id.desc()).limit(take))).all()
         for row in rows:
@@ -253,6 +290,7 @@ async def unified_inbox(db, request: InboxRequest):
     return {
         "items": page,
         "next_before": next_before,
+        "search_window_days": 30 if request.search is not None else None,
         "attachment_access": "not_exposed",
         "triage_available": True,
         "historical_android_reports_complete": False,
