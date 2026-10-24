@@ -117,6 +117,11 @@ class Settings(BaseSettings):
     ADMIN_PWA_PUSH_ENABLED: bool = False
     ADMIN_PWA_PUSH_VAPID_PUBLIC_KEY: str = ""
     ADMIN_PWA_PUSH_STORAGE_KEY: str = ""
+    # Outbox dispatch is independent from device enrollment; disabled by default.
+    ADMIN_PWA_PUSH_SEND_ENABLED: bool = False
+    # URL-safe base64 raw 32-byte private EC scalar, matching the public VAPID key.
+    ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY: str = ""
+    ADMIN_PWA_PUSH_VAPID_SUBJECT: str = ""
     ADMIN_PWA_MCP_RESOURCE: str = ""
     # Trusted pre-registered public OAuth client; blank means fail closed.
     ADMIN_PWA_MCP_CLIENT_ID: str = ""
