@@ -372,3 +372,9 @@
 .inbox-priority-filter .btn{min-height:44px;min-width:86px}
 .top-icon-badge{pointer-events:none}
 @media(max-width:760px){.inbox-priority-filter .btn{flex:1;min-width:0}}
+
+/* Private Apple Web Push settings: readable cards and 44px touch actions. */
+.push-settings{display:grid;gap:12px;padding:8px 2px}
+.push-settings .feedback-item{margin:0;display:grid;gap:8px}
+.push-settings .feedback-item .btn{min-height:44px;white-space:normal}
+@media(max-width:760px){.push-settings .feedback-item .inbox-entry-actions .btn{width:100%}}
