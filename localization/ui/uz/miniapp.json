@@ -584,7 +584,8 @@
     "ui.admin_pwa.inboxChanged": "Xabar holati o‘zgargan. Ro‘yxat yangilandi.",
     "ui.admin_pwa.inboxActionError": "O‘zgarish saqlanmadi. Qayta tekshiring.",
     "ui.admin_pwa.inboxAndroid": "Android xatolari",
-    "ui.admin_pwa.inboxHistoryNote": "Eski Android xatolik xabarlari bu ro‘yxatda bo‘lmasligi mumkin."
+    "ui.admin_pwa.inboxHistoryNote": "Eski Android xatolik xabarlari bu ro‘yxatda bo‘lmasligi mumkin.",
+    "ui.admin_pwa.inboxUnread": "O‘qilmagan"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
