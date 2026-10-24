@@ -31,8 +31,9 @@ once; a crash after external send can leave the stored outcome pending.
 
 `admin_pwa_native_reports` stores only the canonical owner, content, delivery
 state and timestamps. Attachment is limited to 550 KiB by service and database
-constraint. Raw screenshot bytes have no URL or browser/MCP endpoint in this
-increment. Rendering requires a separate verified attachment projection.
+constraint. Raw screenshot bytes still have no browser/MCP/download endpoint. A newer
+cookie-admin `/api/admin/v1/inbox/list` endpoint exposes capped report text
+and attachment-presence only; rendering requires a separate verified proxy.
 Deleting the account cascades private reports, including screenshots.
 
 Expiry is 30 days after intake. Operator command (module form from repo root):
@@ -55,9 +56,9 @@ safe rollback route.
 
 ## Remaining inbox work
 
-Unified bot/release/native read projection and history boundary, severity/read/
-assigned/resolved audit, bounded filters/search, secure decoded attachments,
-existing admin/system source inventory and V10 UI are not implemented by this
-intake foundation. The existing feedback API deliberately still advertises its
+The newer unified bot/release/native read projection and V10 source tabs
+are present. Durable severity/read/assigned/resolved state and audit,
+advanced filters/search, decoded attachments and admin/system source inventory
+remain future work. The existing feedback API deliberately still advertises its
 Android projection gap. Historical Telegram-only Android reports are not
 recoverable from this table. Do not claim a complete universal inbox.
