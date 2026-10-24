@@ -585,7 +585,19 @@
     "ui.admin_pwa.inboxActionError": "O‘zgarish saqlanmadi. Qayta tekshiring.",
     "ui.admin_pwa.inboxAndroid": "Android xatolari",
     "ui.admin_pwa.inboxHistoryNote": "Eski Android xatolik xabarlari bu ro‘yxatda bo‘lmasligi mumkin.",
-    "ui.admin_pwa.inboxUnread": "O‘qilmagan"
+    "ui.admin_pwa.inboxUnread": "O‘qilmagan",
+    "ui.admin_pwa.pushTitle": "Apple билдиришномалари",
+    "ui.admin_pwa.pushEnable": "Бу қурилмада ёқиш",
+    "ui.admin_pwa.pushRevoke": "Обунани бекор қилиш",
+    "ui.admin_pwa.pushSaved": "Қурилма обунаси сақланди",
+    "ui.admin_pwa.pushRevoked": "Қурилма обунаси бекор қилинди",
+    "ui.admin_pwa.pushSaveError": "Обунани сақлаб бўлмади",
+    "ui.admin_pwa.pushReviewStatus": "Обуналар ҳолатини қайта текширинг",
+    "ui.admin_pwa.pushPermissionDenied": "Билдиришнома рухсати берилмаган",
+    "ui.admin_pwa.pushConsentHint": "iPhone ва Mac учун ҳар бир қурилмада алоҳида рухсат берилади.",
+    "ui.admin_pwa.pushInstallFirst": "iPhone’да аввал Safari орқали Бош экранга қўшиб, иловадан очинг.",
+    "ui.admin_pwa.pushAppleOnly": "Ҳозирча фақат iPhone ва Mac учун.",
+    "ui.admin_pwa.pushNotSending": "Обунани сақлаш тайёр. Хабар юбориш ҳали ишга туширилмаган."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
