@@ -1,5 +1,6 @@
 """Atomic, authorized inbox triage and append-only audit regression tests."""
 import unittest
+import re
 from datetime import datetime, timedelta, timezone
 
 from fastapi import FastAPI
@@ -274,10 +275,46 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         self.assertEqual(response.json()["status"], "read")
         self.assertNotIn("PRIVATE", response.text)
         self.assertTrue(statements)
-        self.assertFalse(any("messages.content" in statement for statement in statements), statements)
+        # Eligibility may filter by content_type; only the SELECT projection
+        # must exclude the private content column and ORM hydration.
+        self.assertFalse(any("messages.content" in statement.split("from messages", 1)[0]
+                             for statement in statements), statements)
         listed = (await self.post("inbox/list", {"source": "technical"})).json()
         self.assertEqual(listed["items"][0]["triage_status"], "read")
         self.assertNotIn("PRIVATE", str(listed))
         self.assertEqual((await self.post("inbox/triage", {
             "source": "technical", "source_id": bad_id,
             "operation": "mark_read", "expected_revision": 0})).status_code, 403)
+
+    async def test_source_locks_select_only_eligibility_metadata_without_text_or_blob(self):
+        ids = await self.seed()
+        ids["payment"] = self.payment_id
+        allowed = {
+            "bot_feedbacks": {"id"},
+            "release_feedback_responses": {"id"},
+            "admin_pwa_native_reports": {"id", "expires_at"},
+            "payments": {"id", "payment_status", "screenshot_file_id"},
+        }
+        statements = []
+
+        def collect(conn, cursor, statement, parameters, context, executemany):
+            lowered = statement.lower()
+            for table in allowed:
+                if "from " + table + " " in lowered.replace("\n", " "):
+                    statements.append((table, lowered))
+
+        event.listen(self.engine.sync_engine, "before_cursor_execute", collect)
+        try:
+            for source, source_id in ids.items():
+                response = await self.post("inbox/triage", {
+                    "source": source, "source_id": source_id,
+                    "operation": "mark_read", "expected_revision": 0})
+                self.assertEqual(response.status_code, 200, response.text)
+        finally:
+            event.remove(self.engine.sync_engine, "before_cursor_execute", collect)
+
+        self.assertEqual(len(statements), 4, statements)
+        for table, statement in statements:
+            projection = statement.split("from " + table, 1)[0]
+            selected = set(re.findall(re.escape(table) + r"\.([a-z_]+)", projection))
+            self.assertEqual(selected, allowed[table], statement)

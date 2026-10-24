@@ -228,6 +228,9 @@ def create_admin_pwa_feedback_analytics_router(*, settings_obj, session_factory,
             result = await reader(FeedbackAnalyticsRequest(period=query.period, source=query.source))
             # Redis/R2 refresh may take time. Reject a session revoked while
             # waiting, including after a warm cache fetch; authority is live.
+            failure = _guard_post(request, settings_obj)
+            if failure is not None:
+                return failure
             async with session_factory() as db:
                 async with read_transaction(db):
                     current = await authenticate_admin_pwa_session(db, cookie, settings_obj)

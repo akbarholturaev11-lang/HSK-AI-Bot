@@ -46,6 +46,8 @@ class InboxRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     source: Literal["all", "bot", "release", "android", "payment", "technical"] = "all"
     priority: Literal["all", "important"] = "all"
+    status: Literal["all", "new", "read", "assigned", "resolved"] = "all"
+    period: Literal["all_time", "weekly", "monthly"] = "all_time"
     user_id: RowId | None = None
     search: str | None = Field(default=None, min_length=3, max_length=80)
     limit: Annotated[int, Field(strict=True, ge=1, le=50)] = 30
@@ -92,6 +94,17 @@ def _before(query, timestamp, row_id, source, cursor):
     if rank < anchor_rank:
         return query.where(timestamp <= anchor)
     return query.where(or_(timestamp < anchor, and_(timestamp == anchor, row_id < cursor.source_id)))
+
+
+def _filters(query, request, timestamp, now):
+    # Missing triage rows are new. Filter before taking each source's bounded
+    # page so unrelated rows cannot hide matching records behind the limit.
+    if request.status != "all":
+        query = query.where(func.coalesce(AdminPwaInboxTriage.status, "new") == request.status)
+    if request.period != "all_time":
+        since = now - timedelta(days=7 if request.period == "weekly" else 30)
+        query = query.where(timestamp >= since, timestamp <= now)
+    return query
 
 
 def _triage(row):
@@ -149,6 +162,7 @@ async def unified_inbox(db, request: InboxRequest):
             visible_text = func.coalesce(BotFeedback.disliked_text, BotFeedback.liked_text,
                                          BotFeedback.disliked_code, BotFeedback.liked_code)
             query = query.where(stamp >= search_start, _literal_contains(visible_text, request.search))
+        query = _filters(query, request, stamp, now)
         query = _before(query, stamp, BotFeedback.id, "bot", request.before)
         rows = (await db.execute(query.order_by(stamp.desc(), BotFeedback.id.desc()).limit(take))).all()
         for row in rows:
@@ -190,6 +204,7 @@ async def unified_inbox(db, request: InboxRequest):
         if request.search is not None:
             query = query.where(stamp >= search_start,
                                 _literal_contains(ReleaseFeedbackResponse.comment_text, request.search))
+        query = _filters(query, request, stamp, now)
         query = _before(query, stamp, ReleaseFeedbackResponse.id, "release", request.before)
         rows = (await db.execute(query.order_by(stamp.desc(),
                                                 ReleaseFeedbackResponse.id.desc()).limit(take))).all()
@@ -230,6 +245,7 @@ async def unified_inbox(db, request: InboxRequest):
         if request.search is not None:
             query = query.where(stamp >= search_start,
                                 _literal_contains(AdminPwaNativeReport.description, request.search))
+        query = _filters(query, request, stamp, now)
         query = _before(query, stamp, AdminPwaNativeReport.id, "android", request.before)
         rows = (await db.execute(query.order_by(stamp.desc(),
                                                 AdminPwaNativeReport.id.desc()).limit(take))).all()
@@ -249,6 +265,7 @@ async def unified_inbox(db, request: InboxRequest):
         stamp = Message.created_at
         query = select(
             Message.id.label("source_id"), stamp.label("created_at"),
+            func.cast("technical", String).label("source_type"),
             Message.user_id.label("user_id"),
             AdminPwaInboxTriage.status.label("triage_status"),
             AdminPwaInboxTriage.priority.label("triage_priority"),
@@ -271,6 +288,7 @@ async def unified_inbox(db, request: InboxRequest):
             query = query.where(Message.user_id == request.user_id)
         if request.search is not None and request.search.casefold() not in "mini app technical error":
             query = query.where(Message.id == -1)
+        query = _filters(query, request, stamp, now)
         query = _before(query, stamp, Message.id, "technical", request.before)
         rows = (await db.execute(query.order_by(stamp.desc(), Message.id.desc()).limit(take))).all()
         for row in rows:
@@ -316,6 +334,7 @@ async def unified_inbox(db, request: InboxRequest):
         if request.search is not None:
             number = _search_payment_id(request.search)
             query = query.where(stamp >= search_start, Payment.id == (number if number is not None else -1))
+        query = _filters(query, request, stamp, now)
         query = _before(query, stamp, Payment.id, "payment", request.before)
         rows = (await db.execute(query.order_by(stamp.desc(), Payment.id.desc()).limit(take))).all()
         for row in rows:

@@ -239,7 +239,7 @@ async def browser_checks(output):
         await page.locator('#inboxSearchQuery').fill('')
         await page.locator('#inboxSearchForm button').click()
         await expect(page.locator('.inbox-feedback-item')).to_have_count(baseline_inbox_rows)
-        await page.locator('[data-source=release]').click()
+        await page.locator('#inboxSource').select_option('release')
         assert calls[-1][2]['user_id']==1
         await page.locator('.drawer-close').click()
         await page.set_viewport_size({'width':390,'height':844})
@@ -364,20 +364,21 @@ async def browser_checks(output):
         await page.locator('[data-action=feedback]').click()
         await expect(page.locator('.inbox-shell')).to_be_visible()
         for source in ('bot', 'release', 'android', 'payment', 'all'):
-            await page.locator(f'[data-source={source}]').click()
+            await page.locator('#inboxSource').select_option(source)
             await expect(page.locator('.inbox-shell')).to_be_visible()
-            assert 'primary' in (await page.locator(f'[data-source={source}]').get_attribute('class'))
+            await expect(page.locator('#inboxSource')).to_have_value(source)
         # Real count uses all eligible source records, not the visible 30-row page.
         await wait_js(page, "() => !!document.querySelector('[data-action=feedback] .top-icon-badge')")
         assert (await page.locator('[data-action=feedback] .top-icon-badge').inner_text())=='3'
-        await page.locator('[data-inbox-priority=important]').click()
+        await page.locator('#inboxPriority').select_option('important')
         await expect(page.locator('.inbox-shell')).to_be_visible()
         assert await page.locator('.inbox-shell .feedback-item').count()==1
         await expect(page.locator('.inbox-shell')).to_contain_text('Тўлов чеклари')
-        await page.locator('[data-inbox-priority=all]').click()
+        await page.locator('#inboxPriority').select_option('all')
         await expect(page.locator('.inbox-shell .feedback-item')).to_have_count(3)
         # The 390px viewport mirrors the installed iPhone PWA layout.
         assert page.viewport_size['width']==390
+        await page.locator('.inbox-shell [data-menu-toggle]').first.click()
         assert await page.locator('[data-inbox-op=mark_read]').first.evaluate(
             '(element) => element.getBoundingClientRect().height >= 44')
         await page.screenshot(path=str(output/'mobile-inbox-triage.png'),full_page=True)
@@ -393,6 +394,7 @@ async def browser_checks(output):
         await wait_for_inbox_audit(1)
         await wait_js(page, "() => !!document.querySelector('[data-action=feedback] .top-icon-badge') && document.querySelector('[data-action=feedback] .top-icon-badge').textContent === '2'")
         await wait_js(page, "() => !!document.querySelector('.inbox-drawer button[data-inbox-op=assign_self]:not(:disabled)')")
+        await page.locator('.inbox-shell [data-menu-toggle]').first.click()
         await page.locator('[data-inbox-op=assign_self]').first.click()
         await wait_for_inbox_audit(2)
         await wait_js(page, "() => !!document.querySelector('.inbox-drawer button[data-inbox-op=resolve]:not(:disabled)')")
@@ -835,6 +837,7 @@ async def export_browser_checks(output):
                     # a one-shot evaluate may catch a detached node (height 0).
                     # Wait for a connected, visible 44px hit target instead of
                     # weakening the accessibility requirement.
+                    await page.locator('[data-menu-toggle=statisticsExportMenu]').click()
                     await expect(page.locator('[data-export-format=json]')).to_be_visible()
                     await page.wait_for_function("""() => {
                         const el=document.querySelector('[data-export-format=json]');
@@ -853,6 +856,7 @@ async def export_browser_checks(output):
                     assert data['generated_at']==original_time
                     await wait_js(page,'() => qaURLs.length===qaRevoked.length')
             async with page.expect_download() as pending:
+                await page.locator('[data-menu-toggle=statisticsExportMenu]').click()
                 await page.locator('[data-export-format=csv]').click()
             download=await pending.value
             rows=list(csv.DictReader(io.StringIO(Path(await download.path()).read_text())))
@@ -863,6 +867,7 @@ async def export_browser_checks(output):
             assert all(headers['origin']==ORIGIN and headers['content-type']=='application/json' for _,headers in calls)
             baseline=len(downloads)
             for mode in ('failure','wrong_type','oversized'):
+                await page.locator('[data-menu-toggle=statisticsExportMenu]').click()
                 await page.locator('[data-export-format=json]').click()
                 await expect(page.locator('[data-export-format=json]')).to_be_enabled()
                 assert len(downloads)==baseline
@@ -871,6 +876,7 @@ async def export_browser_checks(output):
                 mode='normal'
                 await page.reload();await page.wait_for_load_state('networkidle')
                 await page.locator('[data-route=stats]').first.click()
+                await page.locator('[data-menu-toggle=statisticsExportMenu]').click()
                 await expect(page.locator('[data-export-format=json]')).to_be_visible()
                 mode='delayed';started.clear();release.clear();finished.clear()
                 await page.locator('[data-export-format=json]').click()
@@ -886,12 +892,13 @@ async def export_browser_checks(output):
             # of the longer cached statistics window.
             await page.reload();await page.wait_for_load_state('networkidle')
             await page.locator('[data-route=stats]').first.click()
-            await expect(page.locator('[data-feedback-export=json]')).to_be_visible()
-            await page.locator('[data-feedback-source=bot]').click()
+            await expect(page.locator('[data-menu-toggle=feedbackExportMenu]')).to_be_visible()
+            await page.locator('#feedbackSource').select_option('bot')
             await expect(page.locator('.feedback-analysis-source')).to_have_count(1)
-            await page.locator('[data-feedback-period=monthly]').click()
-            await expect(page.locator('[data-feedback-period=monthly]')).to_have_attribute('aria-pressed','true')
+            await page.locator('#feedbackPeriod').select_option('monthly')
+            await expect(page.locator('#feedbackPeriod')).to_have_value('monthly')
             async with page.expect_download() as pending:
+                await page.locator('[data-menu-toggle=feedbackExportMenu]').click()
                 await page.locator('[data-feedback-export=json]').click()
             fb=await pending.value
             assert fb.suggested_filename=='hskai-feedback-categories-bot-monthly.json'

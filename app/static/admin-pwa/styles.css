@@ -363,39 +363,69 @@
 .inbox-states{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:9px}
 .inbox-state{font-size:11px;font-weight:700;color:#466371;background:#eaf1f2;border-radius:8px;padding:5px 9px}
 .inbox-state-important{color:#824b26;background:#fff0dc}
-.inbox-entry-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
-.inbox-entry-actions .btn{min-height:44px;white-space:normal;text-align:center}
-@media(max-width:760px){.inbox-feedback-item{padding:15px 0}.inbox-entry-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.inbox-entry-actions .btn{width:100%;min-width:0;font-size:12px;padding:10px 7px;line-height:1.3}.inbox-entry-head{flex-direction:column;gap:3px}}
+.inbox-entry-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.inbox-triage-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;margin-left:auto;min-width:0}
+.inbox-primary-action{min-height:44px;white-space:normal;text-align:center;line-height:1.35;padding:10px 14px;font-size:12px}
+.inbox-media-action{border:0;background:transparent;color:var(--accent);font:inherit;font-size:12px;font-weight:700;line-height:1.4;text-align:left;min-height:44px;padding:8px 0;max-width:42%;cursor:pointer}
+.inbox-media-action:hover{text-decoration:underline}
+@media(max-width:760px){.inbox-feedback-item{padding:18px 0}.inbox-entry-head{flex-direction:column;gap:3px}.inbox-primary-action{max-width:165px;padding-inline:12px}}
 
 /* Server-backed, touch-accessible triage filter for iPhone and Mac. */
-.inbox-priority-filter{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
-.inbox-priority-filter .btn{min-height:44px;min-width:86px}
+.inbox-filter-controls{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px;margin:16px 0}
+.compact-filter{display:grid;gap:7px;min-width:0}
+.compact-filter>span{font-size:11px;font-weight:700;color:var(--muted);line-height:1.4}
+.compact-filter select{width:100%;min-width:0;min-height:44px;border:1px solid var(--line);border-radius:10px;padding:10px 8px;background:#fff;color:var(--ink);font:inherit;font-size:12px;text-overflow:ellipsis}
+.inbox-extra-filters{border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:18px}
+.inbox-extra-filters summary{display:flex;align-items:center;gap:8px;list-style:none;min-height:44px;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer}
+.inbox-extra-filters summary::-webkit-details-marker{display:none}
+.inbox-extra-filters summary svg{width:16px;height:16px;flex:none}
+.inbox-extra-filters summary small{margin-left:auto;font-weight:500;text-align:right;line-height:1.45}
+.inbox-extra-filters[open] summary{color:var(--ink)}
+.inbox-extra-filters .inbox-filter-controls{margin-top:8px}
 .top-icon-badge{pointer-events:none}
-@media(max-width:760px){.inbox-priority-filter .btn{flex:1;min-width:0}}
 
 /* Private Apple Web Push settings: readable cards and 44px touch actions. */
 .push-settings{display:grid;gap:12px;padding:8px 2px}
-.push-settings .feedback-item{margin:0;display:grid;gap:8px}
+.push-settings .feedback-item{margin:0}
 .push-settings .feedback-item .btn{min-height:44px;white-space:normal}
-@media(max-width:760px){.push-settings .feedback-item .inbox-entry-actions .btn{width:100%}}
+.settings-device-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.settings-device-row>div{min-width:0}
+.settings-device-row strong,.settings-device-row small{display:block;overflow-wrap:anywhere}
+.settings-device-row small{margin-top:7px}
+.quiet-action{border-color:transparent;background:transparent;box-shadow:none;padding:10px 0;white-space:normal;text-align:left;max-width:60%;font-size:12px;line-height:1.4}
+.quiet-action:hover{background:transparent;text-decoration:underline}
+.panel-action-list{display:grid;margin-top:20px;border-top:1px solid var(--line)}
+.panel-action-list .btn{justify-content:flex-start;min-height:52px;text-align:left;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;white-space:normal}
+.sidebar .side-foot .btn{display:flex;width:100%;justify-content:flex-start;white-space:normal;text-align:left;margin-top:6px;min-height:44px;background:transparent;border-color:transparent;color:inherit}
 
 /* Admin PWA Inbox: compact server-side search, scoped to 30 days for text. */
 .inbox-search-form{display:flex;align-items:center;gap:8px;margin:0 0 12px;min-width:0}
-.inbox-search-form .input{min-width:0;flex:1 1 auto;max-width:100%;height:42px}
-.inbox-search-form .btn{flex:0 0 auto;min-height:42px}
+.inbox-search-form .input{min-width:0;flex:1 1 auto;max-width:100%;height:44px}
+.inbox-search-form .btn{flex:0 0 auto;min-height:44px}
 @media(max-width:390px){.inbox-search-form{gap:6px}.inbox-search-form .btn{padding-inline:10px}}
 
 /* Retained private Android image, opened only on an explicit admin tap. */
 .inbox-attachment{margin-top:14px;padding:10px;background:var(--bg);border:1px solid var(--line);border-radius:12px}
 .inbox-attachment-image{display:block;max-width:100%;max-height:65vh;object-fit:contain;margin:auto;border-radius:8px}
 .inbox-attachment p{font-size:13px;color:var(--muted)}
-.statistics-export .btn{min-height:48px;padding-block:12px}
+.statistics-export{display:flex;justify-content:flex-end;margin:0 0 16px}
+.action-disclosure{position:relative;display:inline-flex;flex-shrink:0;max-width:100%}
+.action-menu-trigger{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;line-height:1.4;padding:10px 13px;font-size:12px}
+.action-menu-trigger.icon-only{width:44px;min-width:44px;padding:10px;border-color:var(--line);background:#fff;color:#617785}
+.action-menu-trigger[aria-expanded="true"]{border-color:#90b2ba;background:#edf5f7;color:var(--accent)}
+.action-menu-trigger svg{flex:none;width:18px;height:18px}
+.action-menu{position:absolute;z-index:30;right:0;top:calc(100% + 6px);width:max-content;min-width:205px;max-width:min(280px,calc(100vw - 48px));max-height:55dvh;overflow:auto;display:grid;gap:2px;padding:6px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 36px #223a4f24}
+.action-menu.opens-up{top:auto;bottom:calc(100% + 6px)}
+.action-menu button{display:block;width:100%;min-height:44px;padding:10px 12px;border:0;border-radius:7px;background:transparent;text-align:left;color:var(--ink);font:inherit;font-size:12px;line-height:1.4;font-weight:650;white-space:normal;cursor:pointer}
+.action-menu button:hover,.action-menu button:focus-visible{background:#edf5f7}
+.action-menu button:disabled{opacity:.5;cursor:default}
+.canvas-overlay .drawer-content{overscroll-behavior:contain}
+.action-menu-trigger:focus-visible,.action-menu button:focus-visible,.inbox-media-action:focus-visible,.compact-filter select:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 /* Feedback sample in Statistics: keep the three sources distinct from Inbox. */
 .feedback-analysis{margin-top:24px;min-width:0}
 .feedback-analysis h2{margin:0 0 14px}
-.feedback-analysis-controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:18px}
-.feedback-analysis-controls>span{font-size:12px;color:var(--muted);margin-right:5px}
+.feedback-analysis-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-bottom:18px;max-width:520px}
 .feedback-analysis-controls .btn,.feedback-analysis-download .btn{min-height:44px}
 .feedback-analysis-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .feedback-analysis-source{border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}

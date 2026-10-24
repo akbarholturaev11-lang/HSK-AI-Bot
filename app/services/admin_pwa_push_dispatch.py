@@ -14,9 +14,10 @@ from uuid import uuid4
 
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
-from sqlalchemy import func, or_, select
+from sqlalchemy import and_, func, or_, select
 
 from app.admin_api.pwa_push import _configuration, _decode, _validate_subscription, SubscribeRequest
+from app.admin_api.pwa_sessions import _authorized_admin
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.db.models.admin_pwa_push import AdminPwaPushSubscription
@@ -98,19 +99,40 @@ def _http_status(exception):
 async def _relevant(db, row, now):
     """Skip no-longer-actionable alerts without resurrecting or exposing content."""
     if row.source == "payment":
-        record = await db.get(Payment, row.source_id)
-        return (record is not None and record.payment_status == "pending"
-                and bool(record.screenshot_file_id))
+        return await db.scalar(select(Payment.id).where(
+            Payment.id == row.source_id, Payment.payment_status == "pending",
+            Payment.screenshot_file_id.is_not(None), Payment.screenshot_file_id != "",
+        )) is not None
     if row.source == "android":
-        record = await db.get(AdminPwaNativeReport, row.source_id)
-        return record is not None and _utc(record.expires_at) > now
-    if row.source == "technical":
-        record = await db.get(Message, row.source_id)
-        return (record is not None and record.role == "assistant"
-                and record.content_type == "app_error_context"
-                and _utc(record.created_at) >= now - timedelta(days=30))
-    triage = await db.get(AdminPwaInboxTriage, (row.source, row.source_id))
-    return triage is not None and triage.priority == "important" and triage.status != "resolved"
+        model = AdminPwaNativeReport
+        query = select(AdminPwaNativeReport.id).where(
+            AdminPwaNativeReport.id == row.source_id, AdminPwaNativeReport.expires_at > now,
+        )
+    elif row.source == "technical":
+        # The diagnostic Message contains private stack/URL/user text. The
+        # sender needs an eligibility marker, never a hydrated message row.
+        model = Message
+        query = select(Message.id).where(
+            Message.id == row.source_id, Message.role == "assistant",
+            Message.content_type == "app_error_context",
+            Message.created_at >= now - timedelta(days=30),
+        )
+    else:
+        triage = (await db.execute(select(AdminPwaInboxTriage.priority,
+            AdminPwaInboxTriage.status).where(
+                AdminPwaInboxTriage.source == row.source,
+                AdminPwaInboxTriage.source_id == row.source_id,
+            ))).one_or_none()
+        return triage is not None and triage.priority == "important" and triage.status != "resolved"
+    # Automatic important alerts can exist before triage, but resolution
+    # before dispatch makes them obsolete just like manually marked alerts.
+    # The source PK and triage composite PK keep this one metadata-only read.
+    query = query.outerjoin(AdminPwaInboxTriage, and_(
+        AdminPwaInboxTriage.source == row.source,
+        AdminPwaInboxTriage.source_id == model.id,
+    )).where(or_(AdminPwaInboxTriage.status.is_(None),
+                 AdminPwaInboxTriage.status != "resolved"))
+    return await db.scalar(query) is not None
 
 
 async def _claim_one(session_factory, settings_obj, now, worker_id):
@@ -124,6 +146,7 @@ async def _claim_one(session_factory, settings_obj, now, worker_id):
                      .where(
                          AdminPwaPushSubscription.revoked_at.is_(None),
                          User.telegram_id.in_(getattr(settings_obj, "admin_id_list", [])),
+                         func.lower(func.trim(func.coalesce(User.status, ""))) != "blocked",
                          AdminPwaPushOutbox.attempts < _MAX_ATTEMPTS,
                          or_(
                              (AdminPwaPushOutbox.state.in_(("pending", "retry"))
@@ -140,6 +163,14 @@ async def _claim_one(session_factory, settings_obj, now, worker_id):
                 subscription = await db.get(AdminPwaPushSubscription, row.subscription_id,
                                             with_for_update=True)
                 if subscription is None or subscription.revoked_at is not None:
+                    row.state = "cancelled"
+                    row.updated_at = now
+                    continue
+                # Subscription locking can wait. Recheck the current canonical
+                # admin using the same status/allowlist policy as browser auth.
+                owner = (await db.execute(select(User.telegram_id, User.status).where(
+                    User.id == subscription.user_id))).one_or_none()
+                if not _authorized_admin(owner, settings_obj):
                     row.state = "cancelled"
                     row.updated_at = now
                     continue

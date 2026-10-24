@@ -321,19 +321,20 @@ def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_re
                 # Release the auth transaction/connection before cache IO or
                 # waiting for another worker's refresh. Only a miss opens SQL.
                 result = await statistics_reader(StatisticsRequest(period=query.period, platform=query.platform))
-            if schema is StatisticsExportRequest:
-                from app.admin_api.pwa_statistics_export import render_statistics_export
-
-                # A cache miss can wait for another worker. Do not deliver an
-                # export after logout/revocation/allowlist or rollout changes.
+                # JSON and downloads both cross the same potentially slow
+                # Redis/R2 boundary. Authority and rollout must still be live.
                 failure = _guard_post(request, settings_obj)
                 if failure is not None:
                     return failure
                 async with session_factory() as db:
                     async with read_transaction(db):
-                        actor = await authenticate_admin_pwa_session(db, cookie, settings_obj)
-                        if actor is None or actor.auth_method != "webauthn":
+                        current = await authenticate_admin_pwa_session(db, cookie, settings_obj)
+                        if (current is None or current.user_id != actor.user_id
+                                or (schema is StatisticsExportRequest and current.auth_method != "webauthn")):
                             return _reply(401, "admin_pwa_unauthorized")
+            if schema is StatisticsExportRequest:
+                from app.admin_api.pwa_statistics_export import render_statistics_export
+
                 return render_statistics_export(result, query)
         except Exception:
             logger.exception("Admin PWA read projection unavailable")

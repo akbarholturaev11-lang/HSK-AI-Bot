@@ -632,7 +632,11 @@
     "ui.admin_pwa.feedbackCatLow": "Паст баҳо (1–2)",
     "ui.admin_pwa.feedbackCatNeutral": "Ўртача баҳо (3)",
     "ui.admin_pwa.feedbackCatPositive": "Юқори баҳо (4–5)",
-    "ui.admin_pwa.feedbackCatAndroid": "Android хатолик хабари"
+    "ui.admin_pwa.feedbackCatAndroid": "Android хатолик хабари",
+    "ui.admin_pwa.moreActions": "Boshqa amallar",
+    "ui.admin_pwa.download": "Yuklab olish",
+    "ui.admin_pwa.inboxPriority": "Muhimlik",
+    "ui.admin_pwa.filters": "Filtrlar"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

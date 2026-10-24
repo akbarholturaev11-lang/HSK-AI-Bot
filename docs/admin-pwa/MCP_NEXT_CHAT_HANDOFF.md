@@ -1,6 +1,35 @@
 # HSK AI Admin PWA — current MCP continuation checkpoint
 
-Updated 2026-10-24. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
+Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
+
+## Current continuation — inbox layout and live authority, 2026-10-25
+
+- Fetched and fast-forwarded 37 GitHub commits through `cb806ad1`; pricing caps,
+  daily private R2/Redis snapshots, feedback analytics UI, sanitized technical
+  inbox and course-policy commands already existed. Do not rebuild them.
+- Fixed technical inbox projection missing `source_type` (previously a 503 on
+  untriaged technical events). Triage locks only source eligibility metadata,
+  without reading Android attachment BLOBs or feedback bodies.
+- Inbox accepts strict `status=all|new|read|assigned|resolved` and
+  `period=all_time|weekly|monthly`; predicates apply before source limits and
+  stable cross-source pagination. Source labels do not invent OS attribution.
+- Push eligibility reads narrow metadata, cancels resolved Android/technical
+  alerts before delivery, and rechecks current blocked/allowlisted admin state.
+- Statistics JSON as well as files, and feedback JSON/files, recheck rollout
+  and live session authority after Redis/R2 IO. Cache contents never authorize
+  a request. No new aggregate refreshes or background scans were added.
+- UI cleanup uses repository `hsk-ai-ui` and `webapp-testing`: one main triage
+  action per entry, secondary action menu, lightweight media link, labeled
+  filters and collapsed status/time controls; downloads, Push, MCP and account
+  controls receive the same hierarchy. UZ/RU/TJ source catalogs stay canonical.
+- Local verification: affected backend suites passed, including real isolated
+  PostgreSQL setting contention; full existing Chromium ASGI/virtual-WebAuthn
+  suite passed (auth, financial commands, downloads, images, offline and SW).
+  Separate mobile/desktop menu/filter screenshots and keyboard checks cover
+  the screenshot regression. Exact new commit/CI evidence follows after push.
+- Scope remains this feature branch only. Three feature defaults stay OFF;
+  external MCP remains statistics-only. Further typed management adapters are
+  being completed; disabled management sections are not completion evidence.
 
 ## Owner clarification — daily R2-backed aggregate snapshots, 2026-10-25
 

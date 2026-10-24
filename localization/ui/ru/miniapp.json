@@ -632,7 +632,11 @@
     "ui.admin_pwa.feedbackCatLow": "Низкая оценка (1–2)",
     "ui.admin_pwa.feedbackCatNeutral": "Средняя оценка (3)",
     "ui.admin_pwa.feedbackCatPositive": "Высокая оценка (4–5)",
-    "ui.admin_pwa.feedbackCatAndroid": "Сообщение об ошибке Android"
+    "ui.admin_pwa.feedbackCatAndroid": "Сообщение об ошибке Android",
+    "ui.admin_pwa.moreActions": "Другие действия",
+    "ui.admin_pwa.download": "Скачать",
+    "ui.admin_pwa.inboxPriority": "Приоритет",
+    "ui.admin_pwa.filters": "Фильтры"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

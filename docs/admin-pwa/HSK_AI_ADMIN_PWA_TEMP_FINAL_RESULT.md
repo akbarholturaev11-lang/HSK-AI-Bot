@@ -37,8 +37,9 @@ Owner clarification (2026-10-24): reuse each aggregate snapshot for 24 hours
 from `generated_at`, then refresh on first authorized demand. No fixed-time
 cron or unused-variant scans. Keep original refresh time visible; current
 profiles/billing/receipts/access/commands and auth/revoke/audit/quotas stay live.
-Use private server-side Redis; bounded outage fallback is daily per worker,
-not a cluster-wide once-only guarantee. R2 is not integrated. This preserves
+Use private server-side Redis and the optional private R2 aggregate mirror;
+bounded outage fallback is daily per worker, not a cluster-wide once-only
+guarantee. R2 adapter code exists and remains default OFF. This preserves
 browser/SW no-store and real-data/metric-definition requirements. Details:
 [read projections](READ_PROJECTIONS.md).
 
@@ -65,8 +66,9 @@ browser/SW no-store and real-data/metric-definition requirements. Details:
 - [ ] Publish authorized **read-only** metrics dictionary and scoped statistics/feedback query with server-side filtering, pagination and PII-minimization.
 - [ ] JSON/CSV export with bounded ranges and source lineage. Useable by local tools or as ChatGPT-uploaded sanitized file.
   Statistics export code/browser QA now exists: see [file contract](READ_PROJECTIONS.md#bounded-first-party-statistics-files-2026-10-24).
-  Broader sanitized feedback exports and real-device/staging acceptance remain open;
-  this is not a full-product completion mark.
+  Bounded first-party feedback category JSON/CSV and localized V10 downloads
+  also exist; raw feedback text stays private. This is not a full-product
+  completion mark.
 - [ ] Revocable, audited, scoped MCP uses **only** the approved statistics tool; actual ChatGPT/OAuth/protocol/reconnect acceptance is evidenced. User profiles, raw feedback, payment lists and mutation tools remain excluded from external MCP. Broader sanitized feedback exports are a separate first-party requirement, not permission to expand MCP.
 - [ ] An AI agent can explain a platform conversion change and top complaint categories citing datasets/metric definitions, but cannot approve payments, delete accounts, broadcast or execute arbitrary SQL.
 

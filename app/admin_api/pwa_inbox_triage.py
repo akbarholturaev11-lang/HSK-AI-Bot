@@ -69,7 +69,17 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
                 return None
             source_row = None
         else:
-            source_row = await db.get(_SOURCES[command.source], command.source_id, with_for_update=True)
+            # Lock only authoritative eligibility metadata. Triage never needs
+            # feedback text, Telegram media IDs for Bot/Release, or the native
+            # screenshot BLOB; loading those on each action adds avoidable IO.
+            model = _SOURCES[command.source]
+            columns = [model.id]
+            if command.source == "android":
+                columns.append(model.expires_at)
+            elif command.source == "payment":
+                columns.extend((model.payment_status, model.screenshot_file_id))
+            source_row = (await db.execute(select(*columns).where(
+                model.id == command.source_id).with_for_update())).one_or_none()
             if source_row is None or (command.source == "android" and
                                       _utc(source_row.expires_at) <= stamp):
                 # Do not disclose whether an unseen source ID exists.

@@ -632,7 +632,11 @@
     "ui.admin_pwa.feedbackCatLow": "Баҳои паст (1–2)",
     "ui.admin_pwa.feedbackCatNeutral": "Баҳои миёна (3)",
     "ui.admin_pwa.feedbackCatPositive": "Баҳои баланд (4–5)",
-    "ui.admin_pwa.feedbackCatAndroid": "Хабари хатои Android"
+    "ui.admin_pwa.feedbackCatAndroid": "Хабари хатои Android",
+    "ui.admin_pwa.moreActions": "Амалҳои дигар",
+    "ui.admin_pwa.download": "Боргирӣ",
+    "ui.admin_pwa.inboxPriority": "Аҳамият",
+    "ui.admin_pwa.filters": "Полоишҳо"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

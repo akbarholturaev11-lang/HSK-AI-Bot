@@ -24,6 +24,7 @@ shield:'<path d="M12 2 3 6v6c0 6 4 9 9 10 5-1 9-4 9-10V6z"/><path d="m8 12 3 3 5
 globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 0 0 18M12 3a15 15 0 0 1 0 18"/>',
 menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
 more:'<path d="M12 5h.01M12 12h.01M12 19h.01"/>',
+download:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/>',
 gift:'<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-10 0-8-8-4-6 2 1 4 6 4 6Zm0 0c10 0 8-8 4-6-2 1-4 6-4 6Z"/>',
 device:'<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>',
 sliders:'<path d="M4 5h16M4 12h16M4 19h16"/><circle cx="9" cy="5" r="2" fill="white"/><circle cx="16" cy="12" r="2" fill="white"/><circle cx="11" cy="19" r="2" fill="white"/>',
@@ -37,7 +38,7 @@ try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj
 const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? '—';
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
 const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
-  query:'', status:'pending', source:'all', inboxPriority:'all', inboxSearch:'', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
+  query:'', status:'pending', source:'all', inboxPriority:'all', inboxStatus:'all', inboxPeriod:'all_time', inboxSearch:'', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
@@ -94,7 +95,37 @@ function render() {
   $('root').inert=!!$('overlay');
 }
 function filters() {
-  return `<div class="header-dropdown"><button class="header-control period-control" data-action="period" aria-haspopup="true" aria-expanded="false">${icon('clock')}<strong>${esc(t(state.period))}</strong></button><div class="header-menu" id="periodMenu" hidden>${['weekly','monthly','all_time'].map(id=>`<button data-period="${id}">${esc(t(id))}</button>`).join('')}</div></div><div class="header-dropdown"><button class="header-control icon-control" data-action="platform" aria-haspopup="true" aria-expanded="false" aria-label="${esc(t('platform'))}">${icon('filter')}</button><div class="header-menu platform-menu" id="platformMenu" hidden>${[['overall',t('all')],['android','Android'],['telegram','Telegram Mini App'],['macos','macOS'],['windows','Windows'],['iphone_pwa','iPhone PWA']].map(([id,name])=>`<button data-platform="${id}" class="${state.platform===id?'chosen':''}">${esc(name)}</button>`).join('')}</div></div>`;
+  return `<div class="header-dropdown"><button class="header-control period-control" data-action="period" data-menu-toggle="periodMenu" aria-controls="periodMenu" aria-haspopup="menu" aria-expanded="false">${icon('clock')}<strong>${esc(t(state.period))}</strong></button><div class="header-menu action-menu" id="periodMenu" role="menu" aria-label="${esc(t('period'))}" hidden>${['weekly','monthly','all_time'].map(id=>`<button role="menuitem" tabindex="-1" data-period="${id}">${esc(t(id))}</button>`).join('')}</div></div><div class="header-dropdown"><button class="header-control icon-control" data-action="platform" data-menu-toggle="platformMenu" aria-controls="platformMenu" aria-haspopup="menu" aria-expanded="false" aria-label="${esc(t('platform'))}">${icon('filter')}</button><div class="header-menu action-menu platform-menu" id="platformMenu" role="menu" aria-label="${esc(t('platform'))}" hidden>${[['overall',t('all')],['android','Android'],['telegram','Telegram Mini App'],['macos','macOS'],['windows','Windows'],['iphone_pwa','iPhone PWA']].map(([id,name])=>`<button role="menuitem" tabindex="-1" data-platform="${id}" class="${state.platform===id?'chosen':''}">${esc(name)}</button>`).join('')}</div></div>`;
+}
+function actionMenu(id,items,label='moreActions',download=false){
+  return `<div class="action-disclosure"><button type="button" class="btn action-menu-trigger ${download?'download-trigger':'icon-only'}" data-menu-toggle="${id}" aria-controls="${id}" aria-haspopup="menu" aria-expanded="false" aria-label="${esc(t(label))}" ${download&&statisticsDownload?'disabled aria-busy="true"':''}>${icon(download?'download':'more')}${download?`<span>${esc(t(label))}</span>`:''}</button><div class="action-menu" id="${id}" role="menu" aria-label="${esc(t(label))}" hidden>${items}</div></div>`;
+}
+function exportMenu(dataset){
+  const attribute=dataset==='feedback'?'data-feedback-export':'data-export-format';
+  const items=['json','csv'].map(format=>`<button type="button" role="menuitem" tabindex="-1" ${attribute}="${format}" ${statisticsDownload?'disabled':''}>${esc(t(format==='json'?'exportJson':'exportCsv'))}</button>`).join('');
+  return actionMenu(dataset==='feedback'?'feedbackExportMenu':'statisticsExportMenu',items,'download',true);
+}
+function closeActionMenus(restoreFocus=false){
+  let trigger;
+  document.querySelectorAll('.action-menu:not([hidden])').forEach(menu=>{
+    const button=menu.parentElement.querySelector('[data-menu-toggle]');
+    menu.hidden=true;button?.setAttribute('aria-expanded','false');trigger=button;
+  });
+  if(restoreFocus&&trigger?.isConnected)trigger.focus();
+  return !!trigger;
+}
+function toggleActionMenu(button,last=false){
+  const menu=$(button.dataset.menuToggle);if(!menu)return;
+  const opening=menu.hidden;closeActionMenus();if(!opening)return;
+  menu.classList.remove('opens-up');menu.hidden=false;button.setAttribute('aria-expanded','true');
+  const bounds=menu.getBoundingClientRect(),anchor=button.getBoundingClientRect();
+  const bottom=Math.min(innerHeight,button.closest('.drawer-content')?.getBoundingClientRect().bottom??innerHeight);
+  if(bounds.bottom>bottom-8&&anchor.top>bounds.height+8)menu.classList.add('opens-up');
+  const items=[...menu.querySelectorAll('button:not(:disabled)')];
+  (last?items.at(-1):items[0])?.focus();
+}
+function filterSelect(id,label,value,options){
+  return `<label class="compact-filter" for="${id}"><span>${esc(t(label))}</span><select id="${id}">${options.map(([key,text])=>`<option value="${key}" ${value===key?'selected':''}>${esc(t(text))}</option>`).join('')}</select></label>`;
 }
 function statePanel(key, hint='', retry=false) { return `<section class="state-panel"><h2>${esc(t(key))}</h2>${hint?`<p>${esc(t(hint))}</p>`:''}${retry?btn('retry','reload','primary'):''}</section>`; }
 function metric(label,value,glyph='chart') { return `<div class="metric"><div class="metric-top"><span>${esc(t(label))}</span><span class="metric-icon">${icon(glyph)}</span></div><div class="metric-value">${esc(value ?? '—')}</div></div>`; }
@@ -109,9 +140,9 @@ const feedbackCategoryLabels={
 function feedbackPanel(){
   if(state.route!=='stats')return '';
   const d=feedbackStats.data;
-  let result='<section class="stat-detail feedback-analysis"><h2>'+esc(t('feedbackAnalysis'))+'</h2><div class="feedback-analysis-controls"><span>'+esc(t('feedbackPeriod'))+'</span>';
-  for(const period of ['weekly','monthly'])result+='<button class="btn small '+(feedbackStats.period===period?'primary':'')+'" data-feedback-period="'+period+'" aria-pressed="'+(feedbackStats.period===period)+'">'+esc(t(period))+'</button>';
-  for(const [source,label] of [['all','all'],['bot','botFeedback'],['release','releaseFeedback'],['android','inboxAndroid']])result+='<button class="btn small '+(feedbackStats.source===source?'primary':'')+'" data-feedback-source="'+source+'" aria-pressed="'+(feedbackStats.source===source)+'">'+esc(t(label))+'</button>';
+  let result='<section class="stat-detail feedback-analysis"><h2>'+esc(t('feedbackAnalysis'))+'</h2><div class="feedback-analysis-controls">';
+  result+=filterSelect('feedbackPeriod','feedbackPeriod',feedbackStats.period,[['weekly','weekly'],['monthly','monthly']]);
+  result+=filterSelect('feedbackSource','source',feedbackStats.source,[['all','all'],['bot','botFeedback'],['release','releaseFeedback'],['android','inboxAndroid']]);
   result+='</div>';
   if(feedbackStats.loading)result+='<p role="status">'+esc(t('loading'))+'</p>';
   else if(feedbackStats.error)result+='<p role="alert">'+esc(t('error'))+'</p><button class="btn" data-feedback-retry="1">'+esc(t('retry'))+'</button>';
@@ -130,7 +161,7 @@ function feedbackPanel(){
       result+='</section>';
     }
     result+='</div><p class="source-note">'+esc(t('feedbackSampled'))+' · '+esc(t('updated'))+': '+esc(date(d.generated_at))+'</p>';
-    result+='<div class="feedback-analysis-download"><button class="btn" data-feedback-export="json" '+(statisticsDownload?'disabled':'')+'>'+esc(t('exportJson'))+'</button><button class="btn" data-feedback-export="csv" '+(statisticsDownload?'disabled':'')+'>'+esc(t('exportCsv'))+'</button></div>';
+    result+='<div class="feedback-analysis-download">'+exportMenu('feedback')+'</div>';
   }
   return result+'</section>';
 }
@@ -156,7 +187,7 @@ async function loadFeedbackStats(){
 
 function statsView() {
   const data=state.stats;if(!data) return statePanel('loading');
-  const exports=state.route==='stats'?`<div class="data-toolbar statistics-export"><button class="btn" data-export-format="json" ${statisticsDownload?'disabled aria-busy="true"':''}>${esc(t('exportJson'))}</button><button class="btn" data-export-format="csv" ${statisticsDownload?'disabled aria-busy="true"':''}>${esc(t('exportCsv'))}</button></div>`:'';
+  const exports=state.route==='stats'?`<div class="statistics-export">${exportMenu('statistics')}</div>`:'';
   if(!data.available) return exports+statePanel('unavailable')+feedbackPanel();
   let cards='', extra='';const m=data.metrics;
   if(data.platform==='overall') {
@@ -173,14 +204,17 @@ function cancelStatisticsDownload(){
   if(!download)return;
   download.control.abort();clearTimeout(download.timer);
   if(download.url)URL.revokeObjectURL(download.url);
-  document.querySelectorAll('[data-export-format]').forEach(button=>{button.disabled=false;button.removeAttribute('aria-busy');});
+  document.querySelectorAll('[data-export-format],[data-feedback-export],.download-trigger').forEach(button=>{button.disabled=false;button.removeAttribute('aria-busy');});
+  if(document.activeElement===document.body&&download.focusTarget?.isConnected)download.focusTarget.focus();
 }
 async function exportStatistics(format,dataset='statistics'){
   if(!state.actor||state.phase!=='ready'||state.route!=='stats'||!['json','csv'].includes(format)||statisticsDownload||(dataset==='feedback'&&!feedbackStats.data))return;
   const current=view,at=epoch,language=locale,control=new AbortController();
   const download={control,url:null,timer:null};statisticsDownload=download;
   const active=()=>statisticsDownload===download&&current===view&&at===epoch&&language===locale&&!!state.actor;
-  const buttons=[...document.querySelectorAll('[data-export-format]')];
+  closeActionMenus(true);
+  download.focusTarget=document.activeElement?.matches('.download-trigger')?document.activeElement:null;
+  const buttons=[...document.querySelectorAll('[data-export-format],[data-feedback-export],.download-trigger')];
   buttons.forEach(button=>{button.disabled=true;button.setAttribute('aria-busy','true');});
   const timer=setTimeout(()=>control.abort(),15000),platform=state.platform;
   const source=feedbackStats.source,period=dataset==='feedback'?feedbackStats.period:state.period,feedbackId=feedbackLoadId;
@@ -286,7 +320,7 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {closeInboxAttachment();feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {closeActionMenus();closeInboxAttachment();feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   if(!$('overlay'))returnFocus=document.activeElement;
   $('dialogs').innerHTML=`<div class="canvas-overlay show" id="overlay"><section class="drawer ${className}" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><div class="drawer-top"><h2 id="drawerTitle">${esc(t(title))}</h2><button class="drawer-close" data-action="close" aria-label="${esc(t('close'))}">×</button></div><div class="drawer-content" id="drawerContent">${body}</div><div class="drawer-foot" id="drawerFoot">${foot||btn('close','close')}</div></section></div>`;
@@ -561,28 +595,29 @@ async function viewInboxAttachment(button){
     if(active()){host.setAttribute('aria-busy','false');host.innerHTML=`<p role="status">${esc(t('unavailable'))}</p>`;}
   }finally{clearTimeout(timer);}
 }
-function inboxControl(row,operation,key){
+function inboxControl(row,operation,key,primary=false){
   if(!['bot','release','android','payment','technical'].includes(row.source)||!Number.isSafeInteger(row.source_id)||!Number.isSafeInteger(row.triage_revision))return '';
-  return `<button class="btn small" data-inbox-op="${operation}" data-inbox-source="${row.source}" data-inbox-id="${row.source_id}" data-inbox-revision="${row.triage_revision}">${esc(t(key))}</button>`;
+  return `<button type="button" ${primary?'class="btn primary inbox-primary-action"':'role="menuitem" tabindex="-1"'} data-inbox-op="${operation}" data-inbox-source="${row.source}" data-inbox-id="${row.source_id}" data-inbox-revision="${row.triage_revision}">${esc(t(key))}</button>`;
 }
 function inboxEntry(row){
   const status=inboxStatusLabels[row.triage_status]||'inboxStatusNew';
   const origin=row.source==='bot'?'botFeedback':row.source==='release'?'releaseFeedback':row.source==='payment'?'inboxPaymentReceipt':row.source==='technical'?'inboxTechnical':'inboxAndroid';
   const flags=`<span class="inbox-state">${esc(t(status))}</span>${row.triage_priority==='important'?`<span class="inbox-state inbox-state-important">${esc(t('inboxImportant'))}</span>`:''}${row.triage_assigned_to===state.actor?.user_id?`<span class="inbox-state">${esc(t('inboxMine'))}</span>`:''}`;
-  const actions=[];
+  const secondary=[];
   const canView=(row.source==='android'?row.has_attachment:['bot','release'].includes(row.source)&&row.image_preview_available===true)&&Number.isSafeInteger(row.source_id)&&row.source_id>0&&row.source_id<=2147483647;
   const attachmentId=`inboxAttachment-${row.source}-${row.source_id}`;
-  if(canView)actions.push(`<button class="btn small" data-inbox-attachment="${row.source_id}" data-attachment-source="${row.source}" aria-controls="${attachmentId}" aria-expanded="false">${esc(t('viewAttachment'))}</button>`);
-  if(row.triage_status==='new')actions.push(inboxControl(row,'mark_read','inboxMarkRead'));
+  const media=canView?`<button type="button" class="inbox-media-action" data-inbox-attachment="${row.source_id}" data-attachment-source="${row.source}" aria-controls="${attachmentId}" aria-expanded="false">${esc(t('viewAttachment'))}</button>`:'';
+  if(row.triage_status==='new')secondary.push(inboxControl(row,'mark_read','inboxMarkRead'));
+  let primary;
   if(row.source==='payment'){
     // Opening Payments is NOT the same as approving an unverified receipt.
-    actions.push(`<button class="btn small" data-route="payments">${esc(t('payments'))}</button>`);
+    primary=`<button class="btn primary inbox-primary-action" data-route="payments">${esc(t('payments'))}</button>`;
   }else{
-    if(row.triage_status!=='resolved'&&row.triage_assigned_to!==state.actor?.user_id)actions.push(inboxControl(row,'assign_self','inboxAssignSelf'));
-    actions.push(row.triage_status==='resolved'?inboxControl(row,'reopen','inboxReopen'):inboxControl(row,'resolve','inboxResolve'));
-    actions.push(row.triage_priority==='important'?inboxControl(row,'clear_important','inboxClearImportant'):inboxControl(row,'mark_important','inboxMarkImportant'));
+    if(row.triage_status!=='resolved'&&row.triage_assigned_to!==state.actor?.user_id)secondary.push(inboxControl(row,'assign_self','inboxAssignSelf'));
+    primary=row.triage_status==='resolved'?inboxControl(row,'reopen','inboxReopen',true):inboxControl(row,'resolve','inboxResolve',true);
+    secondary.push(row.triage_priority==='important'?inboxControl(row,'clear_important','inboxClearImportant'):inboxControl(row,'mark_important','inboxMarkImportant'));
   }
-  return `<article class="feedback-item inbox-feedback-item"><div class="inbox-entry-head"><strong>${esc(t(origin))} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+esc(row.rating)+'/5':''}</strong><small>${esc(date(row.created_at))}</small></div><div class="inbox-states">${flags}</div><p>${esc(row.message||'—')}</p>${row.has_attachment&&!canView?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}<div class="inbox-entry-actions">${actions.join('')}</div>${canView?`<div class="inbox-attachment" id="${attachmentId}" aria-live="polite" hidden></div>`:''}</article>`;
+  return `<article class="feedback-item inbox-feedback-item"><div class="inbox-entry-head"><strong>${esc(t(origin))} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+esc(row.rating)+'/5':''}</strong><small>${esc(date(row.created_at))}</small></div><div class="inbox-states">${flags}</div><p>${esc(row.message||'—')}</p>${row.has_attachment&&!canView?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}<div class="inbox-entry-actions">${media}<div class="inbox-triage-actions">${primary}${secondary.length?actionMenu(`inboxMenu-${row.source}-${row.source_id}`,secondary.join('')):''}</div></div>${canView?`<div class="inbox-attachment" id="${attachmentId}" aria-live="polite" hidden></div>`:''}</article>`;
 }
 async function refreshInboxUnread() {
   if(!state.actor)return;
@@ -612,15 +647,19 @@ async function refreshInboxUnread() {
   }catch(_){/* Never invent a zero badge on an unavailable private read. */}
 }
 async function inbox(before=null,userId=null) {
+  const filtersOpen=document.querySelector('.inbox-extra-filters')?.open===true;
   closeDrawer();feedbackUserId=userId;inboxNextCursor=null;const current=drawerId;
   drawer('feedback',statePanel('loading'),'','inbox-drawer');
   try {
-    const data=await api('inbox/list',{source:state.source,priority:state.inboxPriority,search:state.inboxSearch||null,user_id:userId,before,limit:30});
+    const data=await api('inbox/list',{source:state.source,priority:state.inboxPriority,status:state.inboxStatus,period:state.inboxPeriod,search:state.inboxSearch||null,user_id:userId,before,limit:30});
     if(current!==drawerId||!state.actor)return;
     inboxNextCursor=data.next_before;
     const options=[['all','all'],['payment','inboxPaymentReceipt'],['android','inboxAndroid'],['technical','inboxTechnical'],['bot','botFeedback'],['release','releaseFeedback']];
+    const statusOptions=[['all','all'],['new','inboxStatusNew'],['read','inboxStatusRead'],['assigned','inboxStatusAssigned'],['resolved','inboxStatusResolved']];
+    const selectedFilters=[state.inboxStatus!=='all'?t(inboxStatusLabels[state.inboxStatus]):'',state.inboxPeriod!=='all_time'?t(state.inboxPeriod):''].filter(Boolean).join(' · ');
+    const extraFilters=`<details class="inbox-extra-filters" ${filtersOpen?'open':''}><summary>${icon('filter')}<span>${esc(t('filters'))}</span>${selectedFilters?`<small>${esc(selectedFilters)}</small>`:''}</summary><div class="inbox-filter-controls">${filterSelect('inboxStatus','status',state.inboxStatus,statusOptions)}${filterSelect('inboxPeriod','period',state.inboxPeriod,[['all_time','all_time'],['weekly','weekly'],['monthly','monthly']])}</div></details>`;
     const searchUI=`<form id="inboxSearchForm" class="inbox-search-form" role="search"><input class="input" id="inboxSearchQuery" type="search" value="${esc(state.inboxSearch)}" minlength="3" maxlength="80" autocomplete="off" spellcheck="false" aria-label="${esc(t('find'))}" placeholder="${esc(t('find'))}"><button type="submit" class="btn primary">${esc(t('find'))}</button></form>${state.inboxSearch?`<p class="source-note">${esc(t('monthly'))}</p>`:''}`;
-    const body=`<div class="inbox-shell">${searchUI}${userId?`<p class="source-note">${esc(t('account'))}: #${esc(userId)}</p>`:''}<div class="data-toolbar">${options.map(([source,key])=>`<button class="btn ${state.source===source?'primary':''}" data-source="${source}" aria-pressed="${state.source===source}">${esc(t(key))}</button>`).join('')}</div><div class="inbox-priority-filter"><button class="btn small ${state.inboxPriority==='all'?'primary':''}" data-inbox-priority="all" aria-pressed="${state.inboxPriority==='all'}">${esc(t('all'))}</button><button class="btn small ${state.inboxPriority==='important'?'primary':''}" data-inbox-priority="important" aria-pressed="${state.inboxPriority==='important'}">${esc(t('inboxImportant'))}</button></div><p class="source-note">${esc(t('inboxHistoryNote'))}</p>${data.items.map(inboxEntry).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`;
+    const body=`<div class="inbox-shell">${searchUI}${userId?`<p class="source-note">${esc(t('account'))}: #${esc(userId)}</p>`:''}<div class="inbox-filter-controls">${filterSelect('inboxSource','source',state.source,options)}${filterSelect('inboxPriority','inboxPriority',state.inboxPriority,[['all','all'],['important','inboxImportant']])}</div>${extraFilters}<p class="source-note">${esc(t('inboxHistoryNote'))}</p>${data.items.map(inboxEntry).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`;
     drawer('feedback',body,'','inbox-drawer');
   }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'));}
 }
@@ -628,7 +667,8 @@ async function mutateInbox(button){
   if(inboxUpdating||!state.actor)return;
   const source=button.dataset.inboxSource,operation=button.dataset.inboxOp;
   const source_id=Number(button.dataset.inboxId),expected_revision=Number(button.dataset.inboxRevision);
-  if(!['bot','release','android','payment'].includes(source)||!Number.isSafeInteger(source_id)||source_id<1||!Number.isSafeInteger(expected_revision))return;
+  if(!['bot','release','android','payment','technical'].includes(source)||!Number.isSafeInteger(source_id)||source_id<1||!Number.isSafeInteger(expected_revision))return;
+  closeActionMenus(true);
   const prevDrawer=drawerId,prevEpoch=epoch,account=feedbackUserId;
   inboxUpdating=true;
   const controls=[...document.querySelectorAll('.inbox-drawer button')];
@@ -683,7 +723,7 @@ async function pushSettings(){
       pushReady={registration,key:decode(data.vapid_public_key),previous:!!previous,epoch:at};
     }
     const rows=data.subscriptions||[];
-    const devices=rows.map(row=>`<article class="feedback-item"><strong>${esc(row.platform==='iphone'?'iPhone':'Mac')}</strong><small>${esc(date(row.created_at))}</small><div class="inbox-entry-actions"><button class="btn small danger" data-push-revoke="${esc(row.id)}">${esc(t('pushRevoke'))}</button></div></article>`).join('')||statePanel('empty');
+    const devices=rows.map(row=>`<article class="feedback-item settings-device-row"><div><strong>${esc(row.platform==='iphone'?'iPhone':'Mac')}</strong><small>${esc(date(row.created_at))}</small></div><button class="btn quiet-action danger" data-push-revoke="${esc(row.id)}">${esc(t('pushRevoke'))}</button></article>`).join('')||statePanel('empty');
     const note=!platform?t('pushAppleOnly'):!pushInstallReady(platform)?t('pushInstallFirst'):t('pushConsentHint');
     const deliveryNote=data.sending_enabled===true?'':`<p class="source-note">${esc(t('pushNotSending'))}</p>`;
     drawer('pushTitle',`<div class="push-settings"><p class="source-note">${esc(note)}</p>${deliveryNote}${devices}</div>`,
@@ -761,7 +801,7 @@ async function mcpConnections() {
     const data=await api('mcp/authorizations',null,{method:'GET'});
     if(current!==drawerId||!state.actor)return;
     const rows=data.authorizations;
-    drawer('mcpConnections',`<p class="source-note">${esc(t('mcpLifecycle'))}</p><div class="mcp-history">${rows.map(row=>`<article class="feedback-item"><strong class="mcp-client-name">${esc(row.client_id)}</strong><p>${esc(t('mcpPermission'))}</p><p class="pill">${esc(t(mcpStateKey(row)))}</p><p><small>${esc(date(row.created_at))}${row.access_expires_at?' · '+esc(t('mcpAccessUntil'))+' '+esc(date(row.access_expires_at)):''}</small></p>${['pending','approved','redeemed'].includes(row.status)?`<button class="btn danger" data-mcp-revoke="${esc(row.id)}">${esc(t('mcpRevoke'))}</button>`:''}</article>`).join('')||statePanel('empty')}</div>`);
+    drawer('mcpConnections',`<p class="source-note">${esc(t('mcpLifecycle'))}</p><div class="mcp-history">${rows.map(row=>`<article class="feedback-item"><strong class="mcp-client-name">${esc(row.client_id)}</strong><p>${esc(t('mcpPermission'))}</p><p class="pill">${esc(t(mcpStateKey(row)))}</p><p><small>${esc(date(row.created_at))}${row.access_expires_at?' · '+esc(t('mcpAccessUntil'))+' '+esc(date(row.access_expires_at)):''}</small></p>${['pending','approved','redeemed'].includes(row.status)?`<button class="btn quiet-action danger" data-mcp-revoke="${esc(row.id)}">${esc(t('mcpRevoke'))}</button>`:''}</article>`).join('')||statePanel('empty')}</div>`);
   }catch(error){
     if(current!==drawerId||!state.actor)return;
     drawer('mcpConnections',statePanel(error.status===404?'notReady':error.status===403?'authFailed':navigator.onLine?'error':'offline'),btn('close','close')+btn('retry','mcpConnections','primary'));
@@ -813,7 +853,7 @@ async function action(name) {
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='execute'){if(!signing)await execute();return;}
   if(name==='executeAccess'){await executeAccess();return;}
-  if(name==='more'){drawer('more',languageSelect('drawerLocale')+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):'')+btn('courseAccess','courseSettings'),btn('install','install')+btn('logout','logout'));return;}
+  if(name==='more'){drawer('more',languageSelect('drawerLocale')+'<div class="panel-action-list">'+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):'')+btn('courseAccess','courseSettings')+'</div>',btn('install','install')+btn('logout','logout'));return;}
   if(name==='install'){if(installPrompt){await installPrompt.prompt();installPrompt=null;}else showNotice('installHint');return;}
   if(name==='update'){publicRegistration?.waiting?.postMessage('ACTIVATE_PUBLIC_SHELL');return;}
   if(name==='next'&&state.next){state.previous.push(state.cursor);state.cursor=state.next;await load();}
@@ -821,9 +861,11 @@ async function action(name) {
   if(name==='period'||name==='platform'){const menu=$(name+'Menu');menu.hidden=!menu.hidden;document.querySelector(`[data-action="${name}"]`).setAttribute('aria-expanded',String(!menu.hidden));}
 }
 document.addEventListener('click',event=>{
+  if(!event.target.closest('.action-disclosure,.header-dropdown'))closeActionMenus();
   const button=event.target.closest('button');if(!button||button.disabled)return;
   const run=async()=>{
-    if(button.dataset.route){cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();}
+    if(button.dataset.menuToggle){toggleActionMenu(button);}
+    else if(button.dataset.route){cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();}
     else if(button.dataset.period){state.period=button.dataset.period;await load();}
     else if(button.dataset.platform){state.platform=button.dataset.platform;await load();}
     else if(button.dataset.exportFormat){await exportStatistics(button.dataset.exportFormat);}
@@ -852,6 +894,25 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('change',event=>{
+  if(['inboxSource','inboxPriority'].includes(event.target.id)){
+    const source=event.target.id==='inboxSource',value=event.target.value;
+    if(!(source?['all','payment','android','technical','bot','release']:['all','important']).includes(value))return;
+    if(source)state.source=value;else state.inboxPriority=value;
+    inbox(null,feedbackUserId).catch(()=>showNotice('error'));
+  }
+  if(['inboxStatus','inboxPeriod'].includes(event.target.id)){
+    const status=event.target.id==='inboxStatus',value=event.target.value;
+    if(!(status?['all','new','read','assigned','resolved']:['all_time','weekly','monthly']).includes(value))return;
+    if(status)state.inboxStatus=value;else state.inboxPeriod=value;
+    inbox(null,feedbackUserId).catch(()=>showNotice('error'));
+  }
+  if(['feedbackPeriod','feedbackSource'].includes(event.target.id)){
+    const period=event.target.id==='feedbackPeriod',value=event.target.value;
+    if(!(period?['weekly','monthly']:['all','bot','release','android']).includes(value))return;
+    cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;
+    if(period)feedbackStats.period=value;else feedbackStats.source=value;
+    loadFeedbackStats().catch(()=>showNotice('error'));
+  }
   if(event.target.id==='courseMode'){
     const field=$('courseUntilField');
     if(field)field.hidden=event.target.value!=='free_until';
@@ -875,13 +936,31 @@ document.addEventListener('submit',event=>{
   }
 });
 document.addEventListener('keydown',event=>{
-  if(event.key==='Escape'){closeDrawer();for(const id of ['periodMenu','platformMenu'])if($(id))$(id).hidden=true;}
+  if(event.key==='Escape'){
+    if(closeActionMenus(true)){event.preventDefault();return;}
+    const filters=document.querySelector('.inbox-extra-filters[open]');
+    if(filters){event.preventDefault();filters.open=false;filters.querySelector('summary')?.focus();return;}
+    closeDrawer();for(const id of ['periodMenu','platformMenu'])if($(id)){$(id).hidden=true;document.querySelector(`[data-action="${id==='periodMenu'?'period':'platform'}"]`)?.setAttribute('aria-expanded','false');}
+  }
+  const trigger=event.target.closest('[data-menu-toggle]');
+  if(trigger&&['ArrowDown','ArrowUp'].includes(event.key)){event.preventDefault();toggleActionMenu(trigger,event.key==='ArrowUp');return;}
+  const menu=event.target.closest('.action-menu');
+  if(menu&&['ArrowDown','ArrowUp','Home','End'].includes(event.key)){
+    event.preventDefault();
+    const items=[...menu.querySelectorAll('button:not(:disabled)')],index=items.indexOf(document.activeElement);
+    const next=event.key==='Home'?0:event.key==='End'?items.length-1:(index+(event.key==='ArrowDown'?1:-1)+items.length)%items.length;
+    items[next]?.focus();return;
+  }
   if(event.key==='Tab'&&$('overlay')){
-    const controls=[...$('overlay').querySelectorAll('button:not(:disabled),input,select,textarea')];
+    const controls=[...$('overlay').querySelectorAll('button:not(:disabled),input,select,textarea')].filter(el=>el.getClientRects().length);
     if(!controls.length)return;const first=controls[0],last=controls.at(-1);
     if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
     else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
   }
+});
+document.addEventListener('focusin',event=>{
+  const open=document.querySelector('.action-menu:not([hidden])');
+  if(open&&!open.parentElement.contains(event.target))closeActionMenus();
 });
 window.addEventListener('offline',()=>clearPrivate('offline'));
 window.addEventListener('online',()=>boot());
