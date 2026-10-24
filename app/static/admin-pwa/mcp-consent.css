@@ -21,3 +21,10 @@ h1{font-size:24px;letter-spacing:-.035em;line-height:1.25;margin:18px 0 9px}h2{f
 .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media(max-width:480px){.consent-shell{justify-content:center;padding-left:14px;padding-right:14px}.consent-card{padding:22px 20px;border-radius:18px}h1{font-size:22px}.detail{align-items:flex-start;flex-direction:column;gap:3px}.detail strong{text-align:left}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* iPhone Safari must not zoom when the language selector receives focus.
+   This does not disable intentional user pinch zoom. */
+.language-label select { font-size: 16px; min-height: 44px; }
+@media (max-width: 900px) {
+  input:not([type="hidden"]), select, textarea { font-size: 16px !important; }
+}
