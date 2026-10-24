@@ -268,13 +268,15 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
             await db.flush()
             db.add_all([
                 BotFeedback(user_id=1, telegram_id=1001, status="completed",
-                            disliked_text="Bot issue", created_at=now, completed_at=now),
+                            disliked_text="Bot issue", created_at=now, completed_at=now,
+                            disliked_attachment_file_id="secret-file-id", disliked_attachment_type="photo"),
                 BotFeedback(user_id=999, telegram_id=1001, status="completed",
                             disliked_text="Orphan bot", created_at=now-timedelta(seconds=1),
-                            completed_at=now-timedelta(seconds=1)),
+                            completed_at=now-timedelta(seconds=1),
+                            disliked_attachment_file_id="secret-file-id", disliked_attachment_type="photo"),
                 ReleaseFeedbackResponse(campaign_id=701, user_telegram_id=2002,
                     rating=3, comment_text="Release issue", completed_at=now,
-                    attachment_file_id="secret-file-id"),
+                    attachment_file_id="secret-file-id", attachment_type="document"),
                 AdminPwaNativeReport(user_id=2, deduplication_key="c"*64,
                     description="Native application crashed", app_version="4.2",
                     screen="practice", attachment_bytes=b"secret-JPEG-byte-sequence",
@@ -322,6 +324,9 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertTrue(groups["payment"][0]["has_attachment"])
         self.assertIsNone(groups["payment"][0]["message"])
         self.assertTrue(groups["release"][0]["has_attachment"])
+        self.assertTrue(groups["release"][0]["image_preview_available"])
+        self.assertEqual({row["user_id"]: row["image_preview_available"] for row in groups["bot"]},
+                         {1: True, None: False})
         self.assertNotIn("read_at", groups["bot"][0])
         user = (await self.post("inbox/list", {"user_id": 2})).json()["items"]
         self.assertEqual(sorted(row["source"] for row in user), ["android","release"])

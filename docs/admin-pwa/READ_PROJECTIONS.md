@@ -60,7 +60,7 @@ read/assigned/resolved status or reply action. The earlier single-source `feedba
 reports. The newer `inbox/list` reads only retained reports written after
 Android intake was enabled. Historical Telegram-only Android reports cannot be
 reconstructed. Persisted triage and V10 controls are now implemented. The private
-retained Android JPEG proxy and V10 preview are implemented; other media remain separate work.
+retained Android JPEG and Bot/Release raster-image proxies reuse the V10 preview. Unsupported formats remain unavailable.
 
 Only aggregate statistics are shared with the current statistics-only MCP.
 Account, inbox, feedback and payment projections remain first-party browser
@@ -234,6 +234,32 @@ references or download URLs are returned by the lists. V10 now constructs only
 the fixed first-party Android route after an explicit tap, displays the bounded
 JPEG through an in-memory object URL, and aborts/revokes it on close, navigation,
 offline, pagehide or session invalidation. Reopening rechecks current auth and
-retention; late responses cannot repopulate another drawer. Bot/Release media
-routes remain outstanding. CI verified this private
+retention; late responses cannot repopulate another drawer. The later Bot/Release
+image extension below retains this native boundary. CI verified this private
 route and flag-OFF 404 behavior at `d93b75fe` (run 40101181445).
+
+## Bot/Release image extension and low-load boundary (2026-10-24)
+
+GET `/api/admin/v1/inbox/{source}/{item_id}/attachment` accepts only Bot/Release
+source keys after the rollout guard; the earlier Android-specific route remains
+separate. Current WebAuthn cookie/admin is required; bearer/Telegram initData
+cannot replace it. Query parameters, arbitrary URLs and client file IDs are
+rejected. Canonical Bot owner or positive Release Telegram-to-canonical mapping
+must exist. Only stored photo/document candidates are considered. Source/user
+rebinding, replacement, deletion or revocation during IO prevents old delivery.
+
+`inbox/list.image_preview_available` is a bounded boolean for eligible Bot/Release
+rows from the existing source SELECT, not a file reference, format guarantee or
+MCP capability. Real bytes still undergo JPEG/PNG/WebP / 8 MiB / 20 MP checks.
+Missing/unknown/unsupported historical formats remain unavailable. Existing
+Bot/Release source deletion rules apply; no new time retention is invented.
+
+Only source metadata is selected for download; no feedback bodies or image BLOB
+are copied into the read-list response. Database transactions end before the
+shared Bot client's bounded IO. At most two loads and 30 attempts/minute per
+worker use process memory without quota DB writes; no preload, polling, automatic
+retry, media cache, backfill, cron or R2 was added. These are worker-local bounds,
+not a cluster-wide rate guarantee. Browser object URLs are revoked on close or
+private-state invalidation. See [browser contract](BROWSER_UI_CONTRACT.md).
+Statistics still reuse their separate 24-hour cache; current auth/security facts
+and all first-party inbox/financial operations remain live.

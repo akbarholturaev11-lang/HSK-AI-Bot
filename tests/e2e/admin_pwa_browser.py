@@ -30,6 +30,7 @@ from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.course_progress import CourseProgress
 from app.db.models.payment import Payment
+from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackResponse
 from app.db.models.user import User
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
@@ -44,7 +45,7 @@ from app.admin_api.pwa_google_transport import create_admin_pwa_google_router
 from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_login_router
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_payment_review_transport import create_admin_pwa_payment_review_router
-from app.admin_api.pwa_payment_receipts import create_admin_pwa_receipt_router
+from app.admin_api.pwa_payment_receipts import create_admin_pwa_receipt_router, download_receipt_image
 from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_router
 from app.admin_api.pwa_mcp_oauth import begin_mcp_authorization, decide_mcp_consent, exchange_mcp_code, pkce_s256
 from app.admin_api.pwa_mcp_resource import verify_readonly_mcp_bearer
@@ -569,7 +570,7 @@ async def worker_checks(output):
 
 
 async def attachment_browser_checks(output):
-    """Actual private JPEG route + V10 lifecycle, without provider/network IO."""
+    """Actual image routes + Telegram image decoder + V10 lifecycle, offline QA."""
     fixture=Fixture()
     fixture.engine=create_async_engine('sqlite+aiosqlite:///:memory:',poolclass=StaticPool)
     async with fixture.engine.begin() as conn:
@@ -579,20 +580,39 @@ async def attachment_browser_checks(output):
     image=Image.new('RGB',(320,420),'#e9f1f3')
     ImageDraw.Draw(image).text((35,190),'SYNTHETIC QA IMAGE',fill='#1d2c36')
     raw=io.BytesIO();image.save(raw,format='JPEG')
+    remote_images={}
+    for reference,format,kind in (('private-file-never-returned','WEBP','image/webp'),
+                                  ('private-release-image','PNG','image/png')):
+        data=io.BytesIO();image.save(data,format=format)
+        remote_images[reference]=(data.getvalue(),kind)
+    async def get_file(reference):
+        assert reference in remote_images
+        return SimpleNamespace(file_path=reference,file_size=len(remote_images[reference][0]))
+    async def download_file(path,*,destination,timeout):
+        destination.write(remote_images[path][0])
+    telegram=SimpleNamespace(get_file=AsyncMock(side_effect=get_file),download_file=download_file)
     now=datetime.now(timezone.utc)
     async with fixture.sessions() as db:
+        (await db.get(User,1)).telegram_id=1001
+        db.add(ReleaseFeedbackCampaign(id=777,title='Synthetic screenshot campaign',send_at=now))
+        await db.flush()
         report=AdminPwaNativeReport(user_id=1,deduplication_key='c'*64,
             description='Synthetic Android screenshot report',app_version='qa',screen='course',
             attachment_bytes=raw.getvalue(),notification_state='sent',created_at=now,
             last_attempt_at=now,expires_at=now+timedelta(days=1))
         db.add(report)
-        db.add(BotFeedback(user_id=1,telegram_id=1001,status='completed',disliked_text='Synthetic Bot media',
-                           disliked_attachment_file_id='private-file-never-returned'))
+        bot_report=BotFeedback(user_id=1,telegram_id=1001,status='completed',disliked_text='Synthetic Bot media',
+            disliked_attachment_file_id='private-file-never-returned',disliked_attachment_type='photo')
+        release_report=ReleaseFeedbackResponse(campaign_id=777,user_telegram_id=1001,rating=4,
+            comment_text='Synthetic release image',attachment_file_id='private-release-image',attachment_type='document')
+        db.add_all([bot_report,release_report,BotFeedback(user_id=2,telegram_id=2002,status='completed',
+            disliked_text='Unsupported media',disliked_attachment_file_id='never-download-audio',disliked_attachment_type='voice')])
         await db.commit();report_id=report.id
     app=FastAPI()
-    for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router,
-                    create_admin_pwa_inbox_attachment_router):
+    for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router):
         app.include_router(factory(settings_obj=fixture.settings,session_factory=fixture.sessions))
+    app.include_router(create_admin_pwa_inbox_attachment_router(settings_obj=fixture.settings,
+        session_factory=fixture.sessions,loader=lambda reference:download_receipt_image(telegram,reference)))
     attachment_path=f'/api/admin/v1/inbox/android/{report_id}/attachment'
     calls=[];mode=None;started=asyncio.Event();release=asyncio.Event();finished=asyncio.Event()
     async def serve(route):
@@ -629,13 +649,16 @@ async def attachment_browser_checks(output):
                 URL.revokeObjectURL=url=>{qaRevoked.push(url);return revoke(url);};
                 window.cspFailures=[];document.addEventListener('securitypolicyviolation',e=>cspFailures.push(e.violatedDirective));""")
             page=await context.new_page();errors=[]
+            native_button=page.locator('[data-inbox-attachment][data-attachment-source=android]')
             page.on('pageerror',lambda error:errors.append(str(error)))
             await page.goto(ORIGIN+'/admin/');await page.wait_for_load_state('networkidle')
             await expect(page.locator('.metrics')).to_be_visible()
             assert not calls, 'Private images must not preload'
+            telegram.get_file.assert_not_awaited()
             async def open_inbox():
                 await page.locator('[data-action=feedback]').click()
-                await expect(page.locator('[data-inbox-attachment]')).to_have_count(1)
+                await expect(page.locator('[data-inbox-attachment]')).to_have_count(3)
+                assert await page.evaluate("() => {const ids=[...document.querySelectorAll('.inbox-attachment')].map(e=>e.id);return new Set(ids).size===3;}")
             async def loaded():
                 await wait_js(page,"() => {const i=document.querySelector('.inbox-attachment-image');return i?.complete&&i.naturalWidth===320;}")
             for locale in ('uz','ru','tj'):
@@ -643,27 +666,40 @@ async def attachment_browser_checks(output):
                 await page.locator('#locale').select_option(locale)
                 await open_inbox()
                 assert await page.locator('.inbox-attachment-image').count()==0
-                await page.locator('[data-inbox-attachment]').click();await loaded()
+                for source in ('bot','release','android'):
+                    await page.locator(f'[data-inbox-attachment][data-attachment-source={source}]').click()
+                    await loaded()
+                    await expect(page.locator('.inbox-attachment-image')).to_have_count(1)
+                    if locale=='uz' and source in ('bot','release'):
+                        await page.screenshot(path=str(output/f'desktop-feedback-{source}.png'),full_page=True)
+                        await page.set_viewport_size({'width':390,'height':844})
+                        await page.locator('.inbox-attachment-image').scroll_into_view_if_needed()
+                        assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                        await page.screenshot(path=str(output/f'mobile-feedback-{source}.png'),full_page=True)
+                        await page.set_viewport_size({'width':1440,'height':1000})
                 # ASGI route interception omits Chromium's network-generated
                 # Fetch Metadata. Explicit cross-site rejection is API-tested.
                 assert calls[-1].get('accept')=='image/jpeg'
                 await page.screenshot(path=str(output/f'desktop-inbox-image-{locale}.png'),full_page=True)
                 await page.set_viewport_size({'width':390,'height':844})
-                assert await page.locator('[data-inbox-attachment]').evaluate('(e)=>e.getBoundingClientRect().height>=44')
+                assert await native_button.evaluate('(e)=>e.getBoundingClientRect().height>=44')
                 assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 await page.locator('.inbox-attachment-image').scroll_into_view_if_needed()
                 await page.screenshot(path=str(output/f'mobile-inbox-image-{locale}.png'),full_page=True)
-                assert 'private-file-never-returned' not in await page.content()
-                await page.locator('[data-inbox-attachment]').click()
+                document=await page.content()
+                assert all(value not in document for value in ('private-file-never-returned','private-release-image','never-download-audio'))
+                await native_button.click()
                 await expect(page.locator('.inbox-attachment-image')).to_have_count(0)
                 assert await page.evaluate('qaURLs.length===qaRevoked.length')
                 await page.keyboard.press('Escape')
+            assert [call.args[0] for call in telegram.get_file.await_args_list]==[
+                'private-file-never-returned','private-release-image']*3
             # Server retention is rechecked after the list was loaded.
             await open_inbox()
             async with fixture.sessions() as db:
                 await db.execute(update(AdminPwaNativeReport).values(expires_at=now-timedelta(seconds=1)))
                 await db.commit()
-            await page.locator('[data-inbox-attachment]').click()
+            await native_button.click()
             await expect(page.locator('.inbox-attachment [role=status]')).to_have_text('Ин маълумот ҳоло дастрас нест')
             assert await page.locator('.inbox-attachment-image').count()==0
             async with fixture.sessions() as db:
@@ -671,14 +707,14 @@ async def attachment_browser_checks(output):
                 await db.commit()
             # Network/media failures never render private fallback content.
             for failure in ('unavailable','wrong_type'):
-                await page.locator('[data-inbox-attachment]').click();mode=failure
-                await page.locator('[data-inbox-attachment]').click()
+                await native_button.click();mode=failure
+                await native_button.click()
                 await expect(page.locator('.inbox-attachment [role=status]')).to_have_text('Ин маълумот ҳоло дастрас нест')
                 assert await page.locator('.inbox-attachment-image').count()==0
-            await page.locator('[data-inbox-attachment]').click();mode='delayed'
-            await page.locator('[data-inbox-attachment]').click();await asyncio.wait_for(started.wait(),10)
+            await native_button.click();mode='delayed'
+            await native_button.click();await asyncio.wait_for(started.wait(),10)
             await page.keyboard.press('Escape');mode=None
-            await open_inbox();await page.locator('[data-inbox-attachment]').click();await loaded()
+            await open_inbox();await page.locator('[data-inbox-attachment][data-attachment-source=bot]').click();await loaded()
             current_url=await page.locator('.inbox-attachment-image').get_attribute('src')
             release.set();await asyncio.wait_for(finished.wait(),10)
             assert await page.locator('.inbox-attachment-image').get_attribute('src')==current_url
@@ -689,12 +725,12 @@ async def attachment_browser_checks(output):
                 assert await page.evaluate('qaURLs.length===qaRevoked.length')
                 await page.reload();await expect(page.locator('.metrics')).to_be_visible()
                 await open_inbox()
-                await page.locator('[data-inbox-attachment]').click();await loaded()
+                await native_button.click();await loaded()
             await page.keyboard.press('Escape');await open_inbox()
             async with fixture.sessions() as db:
                 await db.execute(update(AdminPwaSession).values(revoked_at=now))
                 await db.commit()
-            await page.locator('[data-inbox-attachment]').click()
+            await native_button.click()
             await expect(page.locator('.auth-panel')).to_be_visible()
             assert await page.locator('.inbox-attachment-image').count()==0
             assert await page.evaluate('qaURLs.length===qaRevoked.length')
@@ -702,7 +738,7 @@ async def attachment_browser_checks(output):
             assert not errors,errors
             assert not await page.evaluate('cspFailures')
             await browser.close()
-        print('Private Android preview: real JPEG/retention/auth, UZ/RU/TJ 1440/390, failure/cancel/offline/pagehide/object-URL cleanup passed')
+        print('Private Inbox images: Android JPEG + Bot WebP + Release PNG through actual decoder, UZ/RU/TJ 1440/390, failure/cancel/offline/pagehide cleanup passed')
     finally:
         release.set()
         await fixture.engine.dispose()

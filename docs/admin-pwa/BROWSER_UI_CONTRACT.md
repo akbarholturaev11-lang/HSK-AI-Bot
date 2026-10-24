@@ -122,29 +122,46 @@ an aggregate SQL refresh. The response includes snapshot expiry and refresh
 interval. Current profile/billing/access operations remain live. This is not a
 browser or service-worker private cache; no-store/offline rules are unchanged.
 
-## Retained Android attachment preview (2026-10-24)
+## Private Inbox image previews (2026-10-24)
 
-The existing V10 Inbox row offers an inline image toggle only for a retained
-Android report with attachment presence and a bounded internal ID. Other media
-keep their existing unavailable note; payment receipt review is unchanged.
-No image preloads with inbox/search/statistics. An explicit tap fetches the
-fixed first-party Android proxy with same-origin credentials, no-store, redirect
-rejection and a 15-second abort bound. The server verifies current WebAuthn admin
-and source retention; the browser accepts only JPEG up to 550 KiB. A 401 clears
-private UI, while missing/expired/network/media errors show unavailable.
+V10 offers the existing inline image toggle for retained Android JPEGs and
+source-owned Bot/Release image candidates. Inbox returns only a preview
+eligibility boolean for Bot/Release; no provider reference/URL is returned.
+Source plus internal ID identifies the DOM region and fixed first-party route,
+so equal IDs from different source tables cannot address the wrong preview.
+Unknown media/source types, orphans and payment receipts do not use this path.
+Payment review retains its separately confirmed route and WebAuthn contract.
 
-Only one preview is held in memory. Close/toggle, drawer/source/account/page
+Images load only on an explicit tap, without preload, polling or automatic
+retry. Fetch uses same-origin cookies, no-store, redirect rejection and a
+15-second browser abort bound. Android remains JPEG / 550 KiB; Bot/Release
+accept verified JPEG/PNG/WebP / 8 MiB / 20 million pixels through the existing
+shared Bot client and bounded image loader. Source metadata SELECTs omit
+feedback text. DB sessions close before provider IO. Current WebAuthn admin,
+canonical source owner, file/type and source binding are checked before and
+after IO; replacement/rebinding/removal, revocation or disabling rollout denies
+old bytes. Original Bot canonical ownership never falls back to Telegram metadata;
+Release resolves a positive Telegram identity to its current canonical account.
+
+Provider IO has a 10-second deadline, two simultaneous loads and 30 attempts
+per minute **per worker**, held only in constant-sized process memory. There
+are no additional quota DB writes, distributed-limit claims, media cache,
+background copy/backfill or R2 upload. Edge/global operational limits still
+belong to separately approved staging.
+
+One preview is held in memory. Close/toggle, drawer/source/account/page
 navigation, locale change, offline/pagehide and session invalidation abort the
-request and revoke its object URL. Drawer/session generation checks reject late
-responses. Existing CSP already permits blob images; no new CSP/storage/SW or
-MCP permission was added. Original V10 cards, 44px actions, focus/escape and
-mobile layout remain. New labels/alt text are canonical UZ/RU/TJ plus generated
-catalog. Repository hsk-ai-ui and webapp-testing skills were read/applied; the
-inline private preview fills a gap absent from the original demo.
+request and revoke its object URL. Generation checks reject late responses,
+including a native response arriving after a different-source preview opened.
+A 401 clears private UI; failures show unavailable. CSP/private no-store/SW and
+external MCP permissions stay unchanged. Existing V10 cards, 44px buttons,
+focus/escape and canonical UZ/RU/TJ toggle/alt text are reused; no new UI text.
+Repository hsk-ai-ui and webapp-testing skills were read/applied.
 
-Browser regression uses actual SQLite/ASGI JPEG and session routes, tests
-retention/revocation, media/network errors, delayed cancellation/reopen, URL
-cleanup on offline/pagehide and 1440/390px UZ/RU/TJ. As with the existing ASGI
-browser bridge, intercepted requests omit network-generated Fetch Metadata;
-explicit cross-site rejection is covered by API tests. This is synthetic QA,
-not real HTTPS/proxy/physical-device acceptance.
+Browser regression uses real SQLite/ASGI routes and the actual Telegram image
+decoder with only Bot transport mocked: native JPEG, Bot WebP, Release PNG,
+1440/390px UZ/RU/TJ, equal source IDs, retention/revocation, media/network errors,
+late cancellation/reopen and URL cleanup. Intercepted requests omit Chromium's
+network-generated Fetch Metadata; API tests separately prove explicit cross-site
+rejection. This remains synthetic QA, not live Telegram/TLS/physical-device
+acceptance. Other image formats remain unavailable rather than guessed.

@@ -286,8 +286,12 @@ function closeInboxAttachment(){
 async function viewInboxAttachment(button){
   if(inboxAttachment?.button===button){closeInboxAttachment();return;}
   closeInboxAttachment();
-  const id=Number(button.dataset.inboxAttachment),host=$('inboxAttachment'+id);
+  const source=button.dataset.attachmentSource,id=Number(button.dataset.inboxAttachment);
+  if(!['android','bot','release'].includes(source))return;
+  const host=$(`inboxAttachment-${source}-${id}`);
   if(!state.actor||!Number.isSafeInteger(id)||id<1||id>2147483647||!host)return;
+  const mediaTypes=source==='android'?['image/jpeg']:['image/jpeg','image/png','image/webp'];
+  const maxBytes=source==='android'?550*1024:8*1024*1024;
   const current=drawerId,at=epoch,control=new AbortController();
   const preview={button,host,control,url:null};inboxAttachment=preview;
   const active=()=>inboxAttachment===preview&&current===drawerId&&at===epoch&&!!state.actor;
@@ -295,15 +299,15 @@ async function viewInboxAttachment(button){
   button.setAttribute('aria-expanded','true');button.textContent=t('hideAttachment');
   const timer=setTimeout(()=>control.abort(),15000);
   try{
-    // Fixed first-party path only. The server rechecks live passkey/admin and retention.
-    const response=await fetch(`/api/admin/v1/inbox/android/${id}/attachment`,{
-      credentials:'same-origin',cache:'no-store',redirect:'error',headers:{Accept:'image/jpeg'},signal:control.signal});
+    // Allowlisted first-party source only; never an attachment URL from a record.
+    const response=await fetch(`/api/admin/v1/inbox/${source}/${id}/attachment`,{
+      credentials:'same-origin',cache:'no-store',redirect:'error',headers:{Accept:mediaTypes.join(',')},signal:control.signal});
     if(!active())return;
     if(response.status===401){clearPrivate('signin');state.error='authExpired';render();return;}
-    if(!response.ok||response.headers.get('content-type')!=='image/jpeg')throw new Error('unavailable');
+    if(!response.ok||!mediaTypes.includes(response.headers.get('content-type')))throw new Error('unavailable');
     const blob=await response.blob();
     if(!active())return;
-    if(!blob.size||blob.size>550*1024)throw new Error('unavailable');
+    if(!blob.size||blob.size>maxBytes)throw new Error('unavailable');
     const image=new Image();image.className='inbox-attachment-image';image.alt=t('inboxAttachment');
     image.onload=()=>{if(active()){host.setAttribute('aria-busy','false');image.scrollIntoView({block:'nearest'});}};
     image.onerror=()=>{
@@ -325,8 +329,9 @@ function inboxEntry(row){
   const origin=row.source==='bot'?'botFeedback':row.source==='release'?'releaseFeedback':row.source==='payment'?'inboxPaymentReceipt':'inboxAndroid';
   const flags=`<span class="inbox-state">${esc(t(status))}</span>${row.triage_priority==='important'?`<span class="inbox-state inbox-state-important">${esc(t('inboxImportant'))}</span>`:''}${row.triage_assigned_to===state.actor?.user_id?`<span class="inbox-state">${esc(t('inboxMine'))}</span>`:''}`;
   const actions=[];
-  const canView=row.source==='android'&&row.has_attachment&&Number.isSafeInteger(row.source_id)&&row.source_id>0&&row.source_id<=2147483647;
-  if(canView)actions.push(`<button class="btn small" data-inbox-attachment="${row.source_id}" aria-controls="inboxAttachment${row.source_id}" aria-expanded="false">${esc(t('viewAttachment'))}</button>`);
+  const canView=(row.source==='android'?row.has_attachment:['bot','release'].includes(row.source)&&row.image_preview_available===true)&&Number.isSafeInteger(row.source_id)&&row.source_id>0&&row.source_id<=2147483647;
+  const attachmentId=`inboxAttachment-${row.source}-${row.source_id}`;
+  if(canView)actions.push(`<button class="btn small" data-inbox-attachment="${row.source_id}" data-attachment-source="${row.source}" aria-controls="${attachmentId}" aria-expanded="false">${esc(t('viewAttachment'))}</button>`);
   if(row.triage_status==='new')actions.push(inboxControl(row,'mark_read','inboxMarkRead'));
   if(row.source==='payment'){
     // Opening Payments is NOT the same as approving an unverified receipt.
@@ -336,7 +341,7 @@ function inboxEntry(row){
     actions.push(row.triage_status==='resolved'?inboxControl(row,'reopen','inboxReopen'):inboxControl(row,'resolve','inboxResolve'));
     actions.push(row.triage_priority==='important'?inboxControl(row,'clear_important','inboxClearImportant'):inboxControl(row,'mark_important','inboxMarkImportant'));
   }
-  return `<article class="feedback-item inbox-feedback-item"><div class="inbox-entry-head"><strong>${esc(t(origin))} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+esc(row.rating)+'/5':''}</strong><small>${esc(date(row.created_at))}</small></div><div class="inbox-states">${flags}</div><p>${esc(row.message||'—')}</p>${row.has_attachment&&!canView?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}<div class="inbox-entry-actions">${actions.join('')}</div>${canView?`<div class="inbox-attachment" id="inboxAttachment${row.source_id}" aria-live="polite" hidden></div>`:''}</article>`;
+  return `<article class="feedback-item inbox-feedback-item"><div class="inbox-entry-head"><strong>${esc(t(origin))} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+esc(row.rating)+'/5':''}</strong><small>${esc(date(row.created_at))}</small></div><div class="inbox-states">${flags}</div><p>${esc(row.message||'—')}</p>${row.has_attachment&&!canView?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}<div class="inbox-entry-actions">${actions.join('')}</div>${canView?`<div class="inbox-attachment" id="${attachmentId}" aria-live="polite" hidden></div>`:''}</article>`;
 }
 async function refreshInboxUnread() {
   if(!state.actor)return;

@@ -78,3 +78,11 @@ rollout verification. Redis outage fallback is per worker, with possible
 recalculation after restart; never promise zero DB traffic or globally one
 refresh during an outage. Keep all three feature defaults false. R2 has not
 been configured or activated.
+
+For private Inbox images, reuse the existing explicit V10 toggle and shared Bot
+client; select source metadata only and release DB connections before IO. Keep
+provider loads bounded (two concurrent / 30 attempts per minute per worker,
+10-second IO deadline) without new quota DB writes, automatic preload/retry,
+media backfill or R2 upload. Worker-local bounds do not replace staging edge
+limits. Recheck live auth and exact source ownership/reference after IO; never
+reuse the daily statistics cache for private media or current permissions.

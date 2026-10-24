@@ -750,7 +750,10 @@ admin_pwa_statistics_reader = AdminPwaStatisticsReader(settings_obj=settings, se
 app.include_router(create_admin_pwa_read_router(settings_obj=settings, session_factory=async_session_maker,
     statistics_reader=admin_pwa_statistics_reader))
 app.include_router(create_admin_pwa_inbox_triage_router(settings_obj=settings, session_factory=async_session_maker))
-app.include_router(create_admin_pwa_inbox_attachment_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_inbox_attachment_router(
+    settings_obj=settings, session_factory=async_session_maker,
+    loader=lambda reference: download_receipt_image(bot, reference),
+))
 app.include_router(create_admin_pwa_push_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_mcp_http_router(settings_obj=settings, session_factory=async_session_maker,
     statistics_reader=admin_pwa_statistics_reader))
