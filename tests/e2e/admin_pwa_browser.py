@@ -207,6 +207,8 @@ async def browser_checks(output):
         await page.locator('[data-user-feedback]').click()
         await expect(page.locator('#drawerContent')).to_contain_text('<script>private QA feedback</script>')
         await expect(page.locator('#drawerContent')).not_to_contain_text('other account QA feedback')
+        baseline_inbox_rows = await page.locator('.inbox-feedback-item').count()
+        assert baseline_inbox_rows >= 1
         await page.locator('#inboxSearchQuery').fill('private')
         await page.locator('#inboxSearchForm button').click()
         await expect(page.locator('.inbox-feedback-item')).to_have_count(1)
@@ -217,7 +219,7 @@ async def browser_checks(output):
         await expect(page.locator('.inbox-feedback-item')).to_have_count(0)
         await page.locator('#inboxSearchQuery').fill('')
         await page.locator('#inboxSearchForm button').click()
-        await expect(page.locator('.inbox-feedback-item')).to_have_count(1)
+        await expect(page.locator('.inbox-feedback-item')).to_have_count(baseline_inbox_rows)
         await page.locator('[data-source=release]').click()
         assert calls[-1][2]['user_id']==1
         await page.locator('.drawer-close').click()
