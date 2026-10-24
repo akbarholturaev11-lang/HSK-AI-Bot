@@ -613,7 +613,17 @@
     "ui.admin_pwa.feedbackSampled": "Сўнгги сақланган ёзувлар намунаси; бу барча мурожаатлар сони эмас.",
     "ui.admin_pwa.feedbackTruncated": "500 ёзув чегараси: натижа қисман.",
     "ui.admin_pwa.feedbackScanned": "Кўриб чиқилган",
-    "ui.admin_pwa.feedbackPeriod": "Шикоятлар даври"
+    "ui.admin_pwa.feedbackPeriod": "Шикоятлар даври",
+    "ui.admin_pwa.feedbackCatPrice": "Нарх",
+    "ui.admin_pwa.feedbackCatLimits": "Чекловлар",
+    "ui.admin_pwa.feedbackCatUnclear": "Тушунарсиз жавоб",
+    "ui.admin_pwa.feedbackCatPace": "Дарс суръати",
+    "ui.admin_pwa.feedbackCatOther": "Бошқа",
+    "ui.admin_pwa.feedbackCatUnclassified": "Тоифаси номаълум",
+    "ui.admin_pwa.feedbackCatLow": "Паст баҳо (1–2)",
+    "ui.admin_pwa.feedbackCatNeutral": "Ўртача баҳо (3)",
+    "ui.admin_pwa.feedbackCatPositive": "Юқори баҳо (4–5)",
+    "ui.admin_pwa.feedbackCatAndroid": "Android хатолик хабари"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
