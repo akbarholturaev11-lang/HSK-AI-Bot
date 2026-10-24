@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import func, select, update
 
-from app.admin_api.pwa_push import create_admin_pwa_push_router
+from app.admin_api.pwa_push import create_admin_pwa_push_router, _configuration
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_push import AdminPwaPushSubscription
@@ -72,6 +72,17 @@ class AdminPwaApplePushTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         self.assertEqual((await self.post("subscribe",request)).status_code,403)
         async with self.sessions() as db:
             self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPushSubscription)),0)
+
+    async def test_private_push_configuration_accepts_valid_staging_https_origin(self):
+        await self.configure()
+        self.assertIsNotNone(_configuration(self.settings))
+        self.settings.ADMIN_PWA_PUBLIC_ORIGIN = "https://staging.hskai.app"
+        self.assertIsNotNone(_configuration(self.settings))
+        for invalid in ("http://staging.hskai.app", "https://staging.hskai.app/path",
+                        "https://staging.hskai.app:443",
+                        "https://attacker@staging.hskai.app", ""):
+            self.settings.ADMIN_PWA_PUBLIC_ORIGIN = invalid
+            self.assertIsNone(_configuration(self.settings), invalid)
 
     async def test_encryption_two_apple_devices_revoke_idempotence_and_no_delivery(self):
         await self.configure()
