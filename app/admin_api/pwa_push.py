@@ -134,7 +134,7 @@ async def push_subscribe(db, *, cookie, settings_obj, command, fernet, stamp=Non
         ).with_for_update())).one_or_none()
         if existing is not None and existing.user_id != actor.id:
             return None
-        if existing is None:
+        if existing is None or existing.revoked_at is not None:
             active = (await db.scalar(select(func.count()).select_from(AdminPwaPushSubscription).where(
                 AdminPwaPushSubscription.user_id == actor.id,
                 AdminPwaPushSubscription.revoked_at.is_(None)))) or 0
