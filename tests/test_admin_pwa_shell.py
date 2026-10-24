@@ -52,6 +52,19 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("if(!prepared.previous)await subscription.unsubscribe()",opt_in)
         self.assertIn("pushChanging=true",opt_in)
 
+    async def test_apple_push_settings_respect_sender_readiness(self):
+        # Enrollment readiness does not mean delivery. The server controls
+        # sender readiness, so the old 'not sending' warning applies only
+        # when the API says the opt-in dispatcher is not configured.
+        script=(await self.get('/admin/assets/app.js')).text
+        settings_ui=script.split('async function pushSettings(){',1)[1].split('async function enablePush(){',1)[0]
+        self.assertIn("data.sending_enabled===true?'':", settings_ui)
+        self.assertIn("t('pushNotSending')", settings_ui)
+        self.assertIn('${deliveryNote}${devices}', settings_ui)
+        self.assertNotIn("</p><p class=\"source-note\">${esc(t('pushNotSending'))}</p>${devices}", settings_ui)
+        # The actual Web Push provider and physical Apple delivery are not
+        # exercised by this public-shell regression.
+
     async def test_worker_scope_version_and_public_cache_allowlist(self):
         manifest=(await self.get('/admin/manifest.webmanifest')).json()
         self.assertEqual(manifest['scope'],'/admin/')

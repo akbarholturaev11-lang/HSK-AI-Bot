@@ -361,7 +361,7 @@ async function mutateInbox(button){
   }finally{inboxUpdating=false;}
 }
 
-// Apple-first Web Push enrollment; registration only (dispatch is not enabled).
+// Apple-first Web Push opt-in; actual sending requires an independent server kill switch.
 function applePushPlatform() {
   const ua=navigator.userAgent||'';
   if(/iPhone/i.test(ua))return 'iphone';
@@ -394,7 +394,8 @@ async function pushSettings(){
     const rows=data.subscriptions||[];
     const devices=rows.map(row=>`<article class="feedback-item"><strong>${esc(row.platform==='iphone'?'iPhone':'Mac')}</strong><small>${esc(date(row.created_at))}</small><div class="inbox-entry-actions"><button class="btn small danger" data-push-revoke="${esc(row.id)}">${esc(t('pushRevoke'))}</button></div></article>`).join('')||statePanel('empty');
     const note=!platform?t('pushAppleOnly'):!pushInstallReady(platform)?t('pushInstallFirst'):t('pushConsentHint');
-    drawer('pushTitle',`<div class="push-settings"><p class="source-note">${esc(note)}</p><p class="source-note">${esc(t('pushNotSending'))}</p>${devices}</div>`,
+    const deliveryNote=data.sending_enabled===true?'':`<p class="source-note">${esc(t('pushNotSending'))}</p>`;
+    drawer('pushTitle',`<div class="push-settings"><p class="source-note">${esc(note)}</p>${deliveryNote}${devices}</div>`,
       pushReady?btn('pushEnable','pushEnable','primary')+btn('close','close'):btn('close','close'));
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;

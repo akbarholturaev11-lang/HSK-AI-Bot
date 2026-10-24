@@ -2,6 +2,13 @@
 
 Updated 2026-10-24. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## CURRENT sender/retention continuation — 2026-10-24
+
+- **Branch verified prior to this incremental UI/doc/test patch:** `171fc3efdc5d2109d6ef542c7441489f72509f14` on `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201 (not merged). [Admin PWA CI 40096641518](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40096641518) for that baseline: two jobs successful, **364 Python passed / 17 PG-only skipped**, **17 disposable PG passed**, 61 legacy, 63 localization artifacts/0 stale and browser virtual WebAuthn checks passed. This is not an Apple-provider or real-device test.
+- **Later source supersedes the stale "NO sender" statements below:** `app/services/admin_pwa_push_dispatch.py` and `scripts/admin_pwa_push_dispatch.py` implement a default-OFF VAPID-signed, encrypted, leased/retry Apple Push sender; `app/main.py` conditionally schedules it only when all flags, trusted origin and secrets validate (`d8125beb`). `171fc3ef` adds hourly bounded private native-report retention cleanup under the PWA flag. CI exercised mocked provider and disposable DB only.
+- **UI follow-up:** the Push drawer must use the actual `push/list.sending_enabled` response instead of always showing the canonical `pushNotSending` warning. Preserve explicit per-device opt-in, and do not claim device delivery from readiness. A public-shell regression assertion guards this; new UI copy was unnecessary, so canonical/generated UZ/RU/TJ catalogs remain untouched.
+- **Still missing:** first-party system/Mini App technical-error producers, authenticated attachment viewing and inbox search; non-payment management adapters; bounded sanitized JSON/CSV, broader authorized feedback analytics, approved ChatGPT/real MCP network integration, isolated staging and physical iPhone Home Screen/Mac Safari delivery. No flag enablement, production credentials, real Apple provider requests, production migration or main merge. Earlier dated checkpoints below are historical, not current code status.
+
 ## VERIFIED DEFAULT-IMPORTANT PAYMENT & ERROR ALERTS — 2026-10-24
 
 - Owner's default: **new pending payment receipt with uploaded screenshot** and **new durable Android bug report** are **important by default**. Ordinary Bot/Release feedback stays normal, unless manually marked important. Server/Mini App error producers remain **unintegrated**; do not promise alerts for them yet.

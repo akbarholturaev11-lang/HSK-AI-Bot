@@ -10,7 +10,7 @@ all learner apps unchanged.
 - **Inbox badge and priority filter:** `/api/admin/v1/inbox/unread-count`
   returns an authenticated, **bounded server-side** `99+` badge instead of
   counting just the first page. `inbox/list` has a real `priority=important`
-  query on all three sources. Current message triage and the badge stay
+  query on all four current sources (Bot, Release, Android and pending payments). Current message triage and the badge stay
   independent of Push delivery.
 - **Push subscription foundation:** Alembic `0124_admin_pwa_push_subscriptions`,
   canonical-admin per-install encrypted PushSubscription storage (Fernet;
@@ -27,11 +27,18 @@ all learner apps unchanged.
   same-origin `/admin/?inbox=1` click destination. Deep-link opening
   requires current verified passkey admin session. No private content is
   embedded in notification payload.
-- **NOT IMPLEMENTED:** real server sender, VAPID private signing key,
-  durable per-event outbox/retries, Apple provider response handling,
-  cross-device physical test, release secrets/config, production enablement.
-  `sending_enabled=false` remains deliberately explicit. Do not describe
-  successful subscription tests as real notifications being delivered.
+- **Implemented in later branch-only commits (through `171fc3ef`):** payment/Android
+  default-important events and per-device deduplicated outbox (`0125`), VAPID
+  private signing, RFC 8291 encrypted generic Web Push payload, leased worker,
+  bounded retries, 404/410 device revocation, and independent guarded server
+  scheduler plus worker CLI. `sending_enabled` now reflects validated sender
+  configuration; all rollout flags default OFF. `app.js` shows the previous
+  not-sending message only when the server says sender is not ready.
+- **NOT YET VERIFIED/RELEASED:** actual Apple Push service acceptance,
+  notification display on physical iPhone/Mac, production VAPID/secrets,
+  operator-approved isolated HTTPS staging, proxy/TLS and live migrations.
+  Provider tests use mocked responses. Sender readiness is **not** evidence
+  of a displayed or received notification.
 - Testing: isolated SQLite/real disposable PostgreSQL/virtual Chromium
   regressions are run in GitHub CI for branch-only increments; check each
   latest head before calling it verified. No live migration or permission
@@ -42,9 +49,10 @@ all learner apps unchanged.
 - **Inbox:** already receives and displays stored BotFeedback, release feedback
   and retained Android bug reports, with first-party triage actions. This is
   visible only after the admin opens the PWA.
-- **Web Push:** not implemented yet. A server-initiated *opt-in* alert wakes the
-  device notification UI when a qualified event arrives. Push must never be
-  mistaken for completed inbox delivery or replace durable inbox history.
+- **Web Push:** server-side sender is implemented behind default-OFF flags,
+  but live Apple delivery remains untested and disabled. Once separately
+  configured and verified, an opted-in alert may wake the device. Web Push
+  never replaces durable Inbox history.
 
 ## Supported Apple clients
 
@@ -65,7 +73,7 @@ all learner apps unchanged.
    assume Mac Touch ID/Face ID permission applies to notifications, or fake
    notifications in UI fixtures as live pushes.
 
-## Security-first backend contract — not implemented
+## Security-first backend contract — code implemented; staging/device acceptance pending
 
 - Dedicated first-party push registration and revocation API under
   `/api/admin/v1/push/*`. Requires current canonical Admin PWA session,
@@ -102,7 +110,7 @@ all learner apps unchanged.
   from the first inbox page. Empty/offline/error states must never erase an
   established badge based on a fabricated zero.
 
-## Implementation order
+## Implementation and acceptance order (code through E; physical F pending)
 
 A. Finish current Inbox triage controls + canonical UZ/RU/TJ, iPhone-sized
    touch controls and browser regressions. This work does NOT deliver Web Push.
