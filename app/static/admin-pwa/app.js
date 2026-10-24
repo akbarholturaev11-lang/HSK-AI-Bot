@@ -37,12 +37,12 @@ try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj
 const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? '—';
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
 const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
-  query:'', status:'pending', source:'all', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
+  query:'', status:'pending', source:'all', inboxPriority:'all', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
-let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false;
+let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null;
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
-  epoch++;view++;closeDrawer();state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
+  epoch++;view++;closeDrawer();inboxUnread=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   state.phase=phase;state.error=null;render();
 }
 async function api(path, body, {publicAuth=false, method='POST'}={}) {
@@ -84,7 +84,7 @@ function render() {
   if(!state.actor) { $('root').innerHTML=auth();return; }
   const navigation=routes.map(([route,glyph])=>`<button data-route="${route}" class="${state.route===route?'active':''}" ${state.route===route?'aria-current="page"':''}>${icon(glyph)}${esc(t(route))}</button>`).join('');
   const disabled=['course','marketing','system'].map(route=>`<button disabled title="${esc(t('notReady'))}">${icon(route==='course'?'book':route==='marketing'?'mega':'settings')}${esc(t(route))}</button>`).join('');
-  $('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-logo"><img src="/admin/assets/icon.png" alt=""></div><div><div class="brand-title">HSK AI</div><div class="brand-sub">ADMIN</div></div></div><p class="nav-cap">${esc(t('sections'))}</p><nav class="nav">${navigation}${disabled}</nav><div class="side-foot"><p>${esc(t('account'))} · ${state.actor.user_id}</p>${languageSelect()}${state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''}${btn('logout','logout')}</div></aside><div class="workspace"><header class="topbar"><div class="topbar-context"><h1 class="page-title">${esc(t(state.route==='home'?'workspace':state.route))}</h1></div><div class="header-tools">${['home','stats'].includes(state.route)?filters():''}<button class="top-icon-btn" data-action="feedback" aria-label="${esc(t('feedback'))}">${icon('bell')}</button><button class="top-icon-btn mobile-only" data-action="more" aria-label="${esc(t('more'))}">${icon('more')}</button></div></header><main class="main" id="content">${content()}</main></div></div><nav class="mobile-tabs" aria-label="${esc(t('sections'))}">${navigation}</nav>`;
+  $('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-logo"><img src="/admin/assets/icon.png" alt=""></div><div><div class="brand-title">HSK AI</div><div class="brand-sub">ADMIN</div></div></div><p class="nav-cap">${esc(t('sections'))}</p><nav class="nav">${navigation}${disabled}</nav><div class="side-foot"><p>${esc(t('account'))} · ${state.actor.user_id}</p>${languageSelect()}${state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''}${btn('logout','logout')}</div></aside><div class="workspace"><header class="topbar"><div class="topbar-context"><h1 class="page-title">${esc(t(state.route==='home'?'workspace':state.route))}</h1></div><div class="header-tools">${['home','stats'].includes(state.route)?filters():''}<button class="top-icon-btn" data-action="feedback" aria-label="${esc(t('feedback'))}">${icon('bell')}${inboxUnread?.unread_count?`<span class="top-icon-badge" aria-hidden="true">${inboxUnread.capped?'99+':inboxUnread.unread_count}</span>`:''}</button><button class="top-icon-btn mobile-only" data-action="more" aria-label="${esc(t('more'))}">${icon('more')}</button></div></header><main class="main" id="content">${content()}</main></div></div><nav class="mobile-tabs" aria-label="${esc(t('sections'))}">${navigation}</nav>`;
   $('root').inert=!!$('overlay');
 }
 function filters() {
@@ -129,7 +129,7 @@ async function load() {
 async function boot() {
   if(!navigator.onLine){clearPrivate('offline');return;}
   clearPrivate('loading');const current=epoch;
-  try {state.actor=await api('me',null,{method:'GET',publicAuth:true});if(current!==epoch)return;state.phase='ready';await load();}
+  try {state.actor=await api('me',null,{method:'GET',publicAuth:true});if(current!==epoch)return;state.phase='ready';await load();await refreshInboxUnread();}
   catch(error) {
     if(current!==epoch)return;
     if(error.status!==401){state.phase='error';render();return;}
@@ -285,15 +285,33 @@ function inboxEntry(row){
   actions.push(row.triage_priority==='important'?inboxControl(row,'clear_important','inboxClearImportant'):inboxControl(row,'mark_important','inboxMarkImportant'));
   return `<article class="feedback-item inbox-feedback-item"><div class="inbox-entry-head"><strong>${esc(t(origin))} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+esc(row.rating)+'/5':''}</strong><small>${esc(date(row.created_at))}</small></div><div class="inbox-states">${flags}</div><p>${esc(row.message||'—')}</p>${row.has_attachment?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}<div class="inbox-entry-actions">${actions.join('')}</div></article>`;
 }
+async function refreshInboxUnread() {
+  if(!state.actor)return;
+  const id=state.actor.user_id,current=epoch;
+  try{
+    const data=await api('inbox/unread-count',{});
+    if(current!==epoch||state.actor?.user_id!==id)return;
+    if(!Number.isSafeInteger(data.unread_count)||data.unread_count<0||typeof data.capped!=='boolean')return;
+    inboxUnread={unread_count:data.unread_count,capped:data.capped};
+    const bell=document.querySelector('button[data-action="feedback"]');
+    if(!bell)return;
+    bell.querySelector('.top-icon-badge')?.remove();
+    if(data.unread_count){
+      const badge=document.createElement('span');badge.className='top-icon-badge';badge.setAttribute('aria-hidden','true');
+      badge.textContent=data.capped?'99+':String(data.unread_count);bell.append(badge);
+    }
+    bell.setAttribute('aria-label',t('feedback')+' · '+t('inboxUnread')+': '+(data.capped?'99+':data.unread_count));
+  }catch(_){/* Never invent a zero badge on an unavailable private read. */}
+}
 async function inbox(before=null,userId=null) {
   closeDrawer();feedbackUserId=userId;inboxNextCursor=null;const current=drawerId;
   drawer('feedback',statePanel('loading'),'','inbox-drawer');
   try {
-    const data=await api('inbox/list',{source:state.source,user_id:userId,before,limit:30});
+    const data=await api('inbox/list',{source:state.source,priority:state.inboxPriority,user_id:userId,before,limit:30});
     if(current!==drawerId||!state.actor)return;
     inboxNextCursor=data.next_before;
     const options=[['all','all'],['bot','botFeedback'],['release','releaseFeedback'],['android','inboxAndroid']];
-    const body=`<div class="inbox-shell">${userId?`<p class="source-note">${esc(t('account'))}: #${esc(userId)}</p>`:''}<div class="data-toolbar">${options.map(([source,key])=>`<button class="btn ${state.source===source?'primary':''}" data-source="${source}" aria-pressed="${state.source===source}">${esc(t(key))}</button>`).join('')}</div><p class="source-note">${esc(t('inboxHistoryNote'))}</p>${data.items.map(inboxEntry).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`;
+    const body=`<div class="inbox-shell">${userId?`<p class="source-note">${esc(t('account'))}: #${esc(userId)}</p>`:''}<div class="data-toolbar">${options.map(([source,key])=>`<button class="btn ${state.source===source?'primary':''}" data-source="${source}" aria-pressed="${state.source===source}">${esc(t(key))}</button>`).join('')}</div><div class="inbox-priority-filter"><button class="btn small ${state.inboxPriority==='all'?'primary':''}" data-inbox-priority="all" aria-pressed="${state.inboxPriority==='all'}">${esc(t('all'))}</button><button class="btn small ${state.inboxPriority==='important'?'primary':''}" data-inbox-priority="important" aria-pressed="${state.inboxPriority==='important'}">${esc(t('inboxImportant'))}</button></div><p class="source-note">${esc(t('inboxHistoryNote'))}</p>${data.items.map(inboxEntry).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`;
     drawer('feedback',body,'','inbox-drawer');
   }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'));}
 }
@@ -311,11 +329,13 @@ async function mutateInbox(button){
     if(prevEpoch!==epoch||prevDrawer!==drawerId||!state.actor)return;
     showNotice('inboxSaved');
     await inbox(null,account);
+    await refreshInboxUnread();
   }catch(error){
     if(prevEpoch!==epoch||prevDrawer!==drawerId||!state.actor)return;
     if(error.status===409){
       showNotice('inboxChanged');
       await inbox(null,account);
+      await refreshInboxUnread();
     }else{
       showNotice('inboxActionError');
       controls.forEach(el=>{if(el.isConnected)el.disabled=false;});
@@ -401,6 +421,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.profilePayments){await moreUserPayments(Number(button.dataset.profilePayments),Number(button.dataset.before),button);}
     else if(button.dataset.userFeedback){await inbox(null,Number(button.dataset.userFeedback));}
     else if(button.dataset.source){state.source=button.dataset.source;await inbox(null,feedbackUserId);}
+    else if(button.dataset.inboxPriority){state.inboxPriority=button.dataset.inboxPriority;await inbox(null,feedbackUserId);}
     else if(button.dataset.inboxOp){await mutateInbox(button);}
     else if(button.dataset.feedbackNext&&inboxNextCursor){await inbox(inboxNextCursor,feedbackUserId);}
     else if(button.dataset.mcpRevoke){confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
