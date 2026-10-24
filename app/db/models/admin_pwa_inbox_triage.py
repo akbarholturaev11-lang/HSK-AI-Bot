@@ -8,7 +8,7 @@ from app.db.base import Base
 class AdminPwaInboxTriage(Base):
     __tablename__ = "admin_pwa_inbox_triage"
     __table_args__ = (
-        CheckConstraint("source IN ('bot', 'release', 'android')", name="ck_admin_pwa_inbox_triage_source"),
+        CheckConstraint("source IN ('bot', 'release', 'android', 'payment')", name="ck_admin_pwa_inbox_triage_source"),
         CheckConstraint("status IN ('new', 'read', 'assigned', 'resolved')", name="ck_admin_pwa_inbox_triage_status"),
         CheckConstraint("priority IN ('normal', 'important')", name="ck_admin_pwa_inbox_triage_priority"),
         CheckConstraint("revision >= 1", name="ck_admin_pwa_inbox_triage_revision"),
@@ -31,7 +31,7 @@ class AdminPwaInboxTriage(Base):
 class AdminPwaInboxTriageAudit(Base):
     __tablename__ = "admin_pwa_inbox_triage_audit"
     __table_args__ = (
-        CheckConstraint("source IN ('bot', 'release', 'android')", name="ck_admin_pwa_inbox_audit_source"),
+        CheckConstraint("source IN ('bot', 'release', 'android', 'payment')", name="ck_admin_pwa_inbox_audit_source"),
         CheckConstraint("operation IN ('mark_read','assign_self','resolve','reopen','mark_important','clear_important')",
                         name="ck_admin_pwa_inbox_audit_operation"),
         Index("ix_admin_pwa_inbox_audit_created", "created_at"),
