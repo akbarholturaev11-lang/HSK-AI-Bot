@@ -197,8 +197,9 @@ native Telegram-delivery status remain unmodified.
 Triage statuses: new, read, assigned, resolved; independent priorities: normal
 or important. Operations mark_read, assign_self, resolve, reopen, mark_important,
 clear_important. The read endpoint returns status/priority/revision and relevant
-timestamps with no private bytes. The V10 interface still does **not** offer
-triage controls or localized action labels: this is the next increment.
+timestamps with no private bytes. V10 now offers the six first-party triage controls with canonical UZ/RU/TJ
+labels and mobile touch targets. It still does **not** deliver device Web Push,
+system/admin alert ingestion, advanced filters, unread counts or attachment viewing.
 
 Migration: `0123_admin_pwa_inbox_triage` after 0122. Two new tables; rollback
 refuses nonempty audit/state. Disposable PostgreSQL + browser/test CI green at
