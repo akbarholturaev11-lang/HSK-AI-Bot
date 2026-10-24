@@ -506,7 +506,19 @@
     "ui.admin_pwa.update": "Кушодани версияи нав",
     "ui.admin_pwa.discount": "Тахфиф",
     "ui.admin_pwa.localAmount": "Маблағи маҳаллӣ",
-    "ui.admin_pwa.cancel": "Бекор кардан"
+    "ui.admin_pwa.cancel": "Бекор кардан",
+    "ui.admin_pwa.mcpSecure": "Пайвасти бехатар",
+    "ui.admin_pwa.mcpTitle": "Иҷозати дастрасӣ ба омор",
+    "ui.admin_pwa.mcpSubtitle": "Барномаи беруна барои хондани омори идоракунии HSK AI иҷозат мепурсад.",
+    "ui.admin_pwa.mcpClient": "Шиносаи барнома",
+    "ui.admin_pwa.mcpDestination": "Домени бозгашт",
+    "ui.admin_pwa.mcpPermission": "Танҳо хондани омор",
+    "ui.admin_pwa.mcpPermissionNote": "Метавонад ҳисобот ва нишондиҳандаҳои умумиро бинад. Ҳисобҳо, пардохтҳо ва паёмҳоро тағйир дода наметавонад.",
+    "ui.admin_pwa.mcpSecurity": "Иҷозат танҳо барои ҳамин пайваст аст. Бе тасдиқи шумо маълумот дода намешавад.",
+    "ui.admin_pwa.mcpAllow": "Иҷозат додан ба хондани омор",
+    "ui.admin_pwa.mcpDeny": "Рад кардан",
+    "ui.admin_pwa.mcpExpires": "Муҳлати ин дархост баъд аз 3 дақиқа ба анҷом мерасад.",
+    "ui.admin_pwa.mcpFooter": "HSK AI · Амнияти маъмур"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
