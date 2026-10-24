@@ -584,7 +584,8 @@
     "ui.admin_pwa.inboxChanged": "Статус обращения изменился. Список обновлён.",
     "ui.admin_pwa.inboxActionError": "Изменение не сохранено. Проверьте ещё раз.",
     "ui.admin_pwa.inboxAndroid": "Ошибки Android",
-    "ui.admin_pwa.inboxHistoryNote": "Ранние сообщения об ошибках Android могут отсутствовать в этом списке."
+    "ui.admin_pwa.inboxHistoryNote": "Ранние сообщения об ошибках Android могут отсутствовать в этом списке.",
+    "ui.admin_pwa.inboxUnread": "Непрочитанные"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
