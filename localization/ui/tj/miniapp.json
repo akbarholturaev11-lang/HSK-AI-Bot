@@ -608,7 +608,22 @@
     "ui.admin_pwa.pushInstallFirst": "Дар iPhone аввал аз Safari ба экрани асосӣ илова кунед ва аз барномаи насбшуда кушоед.",
     "ui.admin_pwa.pushAppleOnly": "Ҳоло танҳо барои iPhone ва Mac дастрас аст.",
     "ui.admin_pwa.pushNotSending": "Сабти обуна омода аст. Фиристодани огоҳиҳо ҳоло фаъол нест.",
-    "ui.admin_pwa.inboxPaymentReceipt": "Расидҳои пардохт"
+    "ui.admin_pwa.inboxPaymentReceipt": "Расидҳои пардохт",
+    "ui.admin_pwa.feedbackAnalysis": "Таҳлили муроҷиатҳо",
+    "ui.admin_pwa.feedbackSampled": "Намунаи муроҷиатҳои охирини сабтшуда, на шумораи умумӣ.",
+    "ui.admin_pwa.feedbackTruncated": "Маҳдудияти 500 сабт: натиҷа нопурра аст.",
+    "ui.admin_pwa.feedbackScanned": "Санҷида шуд",
+    "ui.admin_pwa.feedbackPeriod": "Давраи муроҷиатҳо",
+    "ui.admin_pwa.feedbackCatPrice": "Нарх",
+    "ui.admin_pwa.feedbackCatLimits": "Маҳдудиятҳо",
+    "ui.admin_pwa.feedbackCatUnclear": "Ҷавоби нофаҳмо",
+    "ui.admin_pwa.feedbackCatPace": "Суръати дарсҳо",
+    "ui.admin_pwa.feedbackCatOther": "Дигар",
+    "ui.admin_pwa.feedbackCatUnclassified": "Гурӯҳаш номаълум",
+    "ui.admin_pwa.feedbackCatLow": "Баҳои паст (1–2)",
+    "ui.admin_pwa.feedbackCatNeutral": "Баҳои миёна (3)",
+    "ui.admin_pwa.feedbackCatPositive": "Баҳои баланд (4–5)",
+    "ui.admin_pwa.feedbackCatAndroid": "Хабари хатои Android"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
