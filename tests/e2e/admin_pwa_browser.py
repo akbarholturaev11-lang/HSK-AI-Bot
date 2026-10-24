@@ -140,6 +140,11 @@ async def browser_checks(output):
         await page.locator('[data-action=platform]').click()
         await page.locator('[data-platform=overall]').click()
         await expect(page.locator('.metric')).to_have_count(4)
+        await page.locator('[data-action=period]').click()
+        await page.locator('[data-period=all_time]').click()
+        await expect(page.locator('.metric')).to_have_count(4)
+        label=await page.evaluate('window.HSKAI_ADMIN_I18N.uz.active30')
+        await expect(page.locator('.metric').nth(2)).to_contain_text(label)
         fail_reads=True
         await page.locator('[data-route=stats]').first.click()
         await expect(page.locator('[data-action=reload]')).to_be_visible()

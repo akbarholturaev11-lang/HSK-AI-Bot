@@ -294,3 +294,11 @@ Earlier `RESUME_NEXT_CHAT` messages and early status paragraphs stated no sessio
 - Local Python 3.12: **204 passed / 11 PostgreSQL-only skipped** (197 Admin PWA + 7 catalog), legacy **61 passed**, real disposable PostgreSQL 15 **11 passed**. Compileall/JS syntax/catalog checks passed. Real virtual WebAuthn registration/login/approval/rejection/cancellation, receipt failure/strict payload, lost-response no-retry, XSS, locales, desktop/mobile, offline/revocation/logout and CSP browser checks passed; actual loopback SW scope/public-cache/offline/explicit-update tests passed. Workflow now repeats browser/catalog QA and uploads synthetic screenshots in addition to existing PostgreSQL 16/migrations.
 - Browser regression exposed sending HTTP `ok` envelope with the signed operation; server correctly rejected it. Client now strips envelope before exact-operation submission, and real browser/server assertions prove payload equality. No server validation was relaxed. Remaining test-only selector ambiguities were fixed without changing runtime semantics.
 - Exact code commit and GitHub CI are recorded in the following verification entry after push. ADMIN_PWA_ENABLED remains false; only codex/admin-pwa, no main/deploy or legacy admin/auth change. Physical installed PWA/Face ID/Touch ID/Windows Hello, real provider/proxy QA, attribution/history gaps, outbox reconciliation and separately audited delete/broadcast remain.
+
+
+### Browser scope follow-up — all-time activity label
+
+- Sabab: overall all-time projection deliberately uses rolling 30 days for active accounts, but the browser used an unqualified active-account label.
+- Fix: all-time view now explicitly uses the canonical 30-day activity label; other selected periods keep their actual-window label. No counter/service/query change.
+- Risk: presentation-only scope correction; financial/auth/cache behavior unchanged.
+- Prevention: browser assertion selects all-time and checks the 30-day metric label. Full browser QA and exact-SHA workflow are rerun after this correction. Current earlier code commit is `f275a431b260df1f03d53e68e4c89e84470224e5`; final code SHA follows below.

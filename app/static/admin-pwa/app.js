@@ -97,7 +97,7 @@ function statsView() {
   if(!data.available) return statePanel('unavailable');
   let cards='', extra='';const m=data.metrics;
   if(data.platform==='overall') {
-    cards=metric('usersTotal',m.users_total,'users')+metric('newAccounts',m.new_accounts,'users')+metric('activeAccounts',m.active_accounts)+metric('pending',m.payments_by_status.pending,'wallet');
+    cards=metric('usersTotal',m.users_total,'users')+metric('newAccounts',m.new_accounts,'users')+metric(state.period==='all_time'?'active30':'activeAccounts',m.active_accounts)+metric('pending',m.payments_by_status.pending,'wallet');
     extra=`<h2 class="section-title">${esc(t('approvedAmounts'))}</h2><div class="currency-rows">${m.approved_amounts_by_currency.map(row=>`<div class="currency-row">${esc(row.currency)}<strong>${esc(row.amount)}</strong></div>`).join('')||`<p>${esc(t('empty'))}</p>`}</div><p class="source-note">${esc(t('currencyNote'))}</p>`;
   } else if(data.platform==='android') cards=metric('installedDevices',m.registry.installed_devices,'device')+metric('installedUsers',m.registry.installed_users,'users')+metric('active7',m.active.wau)+metric('active30',m.active.mau);
   else cards=metric('active30',m.active_users_30d)+metric('firstOpen',m.verified_first_open_30d,'device');
