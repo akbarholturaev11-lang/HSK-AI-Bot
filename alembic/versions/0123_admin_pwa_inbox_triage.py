@@ -21,7 +21,7 @@ def upgrade():
         sa.Column("updated_by_user_id", sa.Integer(), sa.ForeignKey("users.id", ondelete="SET NULL")),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("revision", sa.Integer(), nullable=False),
-        sa.CheckConstraint("source IN ('bot', 'release', 'android')", name="ck_admin_pwa_inbox_triage_source"),
+        sa.CheckConstraint("source IN ('bot', 'release', 'android', 'payment')", name="ck_admin_pwa_inbox_triage_source"),
         sa.CheckConstraint("status IN ('new', 'read', 'assigned', 'resolved')", name="ck_admin_pwa_inbox_triage_status"),
         sa.CheckConstraint("priority IN ('normal', 'important')", name="ck_admin_pwa_inbox_triage_priority"),
         sa.CheckConstraint("revision >= 1", name="ck_admin_pwa_inbox_triage_revision"),
@@ -35,7 +35,7 @@ def upgrade():
         sa.Column("operation", sa.String(24), nullable=False),
         sa.Column("actor_user_id", sa.Integer(), sa.ForeignKey("users.id", ondelete="SET NULL")),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
-        sa.CheckConstraint("source IN ('bot', 'release', 'android')", name="ck_admin_pwa_inbox_audit_source"),
+        sa.CheckConstraint("source IN ('bot', 'release', 'android', 'payment')", name="ck_admin_pwa_inbox_audit_source"),
         sa.CheckConstraint("operation IN ('mark_read','assign_self','resolve','reopen','mark_important','clear_important')",
                            name="ck_admin_pwa_inbox_audit_operation"),
     )
