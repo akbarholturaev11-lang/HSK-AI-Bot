@@ -29,7 +29,7 @@ def upgrade():
         sa.Column("last_http_status", sa.Integer()),
         sa.UniqueConstraint("subscription_id", "event_key",
                             name="uq_admin_pwa_push_outbox_event_device"),
-        sa.CheckConstraint("source IN ('bot', 'release', 'android')",
+        sa.CheckConstraint("source IN ('bot', 'release', 'android', 'payment')",
                            name="ck_admin_pwa_push_outbox_source"),
         sa.CheckConstraint("state IN ('pending', 'leased', 'retry', 'accepted', 'dead', 'cancelled')",
                            name="ck_admin_pwa_push_outbox_state"),
