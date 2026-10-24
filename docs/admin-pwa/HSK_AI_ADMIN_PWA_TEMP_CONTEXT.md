@@ -12,8 +12,8 @@ production verification. PR #200 foundations are already merged.
 
 Inbox read/triage/search, opt-in Apple Push sender code and private retained
 Android JPEG proxy are present at fetched runtime `d93b75fe`. They remain
-default-OFF and are not live-device/provider evidence. Preview UI and other
-remaining work are tracked in the current handoff.
+default-OFF and are not live-device/provider evidence. The later V10 Android preview is implemented with explicit loading and
+object-URL cleanup; other media and remaining work are tracked in the current handoff.
 
 ## Current statistics decision
 

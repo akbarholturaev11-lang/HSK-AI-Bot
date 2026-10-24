@@ -121,3 +121,30 @@ label displays original `generated_at`; locale/navigation changes do not force
 an aggregate SQL refresh. The response includes snapshot expiry and refresh
 interval. Current profile/billing/access operations remain live. This is not a
 browser or service-worker private cache; no-store/offline rules are unchanged.
+
+## Retained Android attachment preview (2026-10-24)
+
+The existing V10 Inbox row offers an inline image toggle only for a retained
+Android report with attachment presence and a bounded internal ID. Other media
+keep their existing unavailable note; payment receipt review is unchanged.
+No image preloads with inbox/search/statistics. An explicit tap fetches the
+fixed first-party Android proxy with same-origin credentials, no-store, redirect
+rejection and a 15-second abort bound. The server verifies current WebAuthn admin
+and source retention; the browser accepts only JPEG up to 550 KiB. A 401 clears
+private UI, while missing/expired/network/media errors show unavailable.
+
+Only one preview is held in memory. Close/toggle, drawer/source/account/page
+navigation, locale change, offline/pagehide and session invalidation abort the
+request and revoke its object URL. Drawer/session generation checks reject late
+responses. Existing CSP already permits blob images; no new CSP/storage/SW or
+MCP permission was added. Original V10 cards, 44px actions, focus/escape and
+mobile layout remain. New labels/alt text are canonical UZ/RU/TJ plus generated
+catalog. Repository hsk-ai-ui and webapp-testing skills were read/applied; the
+inline private preview fills a gap absent from the original demo.
+
+Browser regression uses actual SQLite/ASGI JPEG and session routes, tests
+retention/revocation, media/network errors, delayed cancellation/reopen, URL
+cleanup on offline/pagehide and 1440/390px UZ/RU/TJ. As with the existing ASGI
+browser bridge, intercepted requests omit network-generated Fetch Metadata;
+explicit cross-site rejection is covered by API tests. This is synthetic QA,
+not real HTTPS/proxy/physical-device acceptance.

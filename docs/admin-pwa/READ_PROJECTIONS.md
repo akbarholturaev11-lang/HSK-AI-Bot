@@ -60,7 +60,7 @@ read/assigned/resolved status or reply action. The earlier single-source `feedba
 reports. The newer `inbox/list` reads only retained reports written after
 Android intake was enabled. Historical Telegram-only Android reports cannot be
 reconstructed. Persisted triage and V10 controls are now implemented. The private
-retained Android JPEG proxy exists; other media and preview UI are separate work.
+retained Android JPEG proxy and V10 preview are implemented; other media remain separate work.
 
 Only aggregate statistics are shared with the current statistics-only MCP.
 Account, inbox, feedback and payment projections remain first-party browser
@@ -230,6 +230,10 @@ cross-site requests, rejects missing/expired/malformed records, caps original
 bytes at 550 KiB, and returns no-store/nosniff. Its path is not an Inbox list
 field and never appears in external MCP. The existing `attachment_access:
 not_exposed` on read-list projections remains accurate: no bytes, Telegram
-references or download URLs are returned by the lists. Frontend rendering and
-Bot/Release Telegram-media routes remain outstanding. CI verified this private
+references or download URLs are returned by the lists. V10 now constructs only
+the fixed first-party Android route after an explicit tap, displays the bounded
+JPEG through an in-memory object URL, and aborts/revokes it on close, navigation,
+offline, pagehide or session invalidation. Reopening rechecks current auth and
+retention; late responses cannot repopulate another drawer. Bot/Release media
+routes remain outstanding. CI verified this private
 route and flag-OFF 404 behavior at `d93b75fe` (run 40101181445).

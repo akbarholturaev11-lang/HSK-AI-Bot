@@ -2,12 +2,20 @@
 
 Updated 2026-10-24. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current increment — Android JPEG preview in V10, 2026-10-24
+
+- GitHub updates through `9a8f906b` were integrated without history rewrite. Guide synchronization commit `44a96a67` and concurrent-doc merge `19fd8c70` were pushed to the feature branch. Main remains `891d9d9b`.
+- `app/static/admin-pwa/app.js` / `styles.css`: explicit inline Android-only preview using the existing private JPEG endpoint. Fixed route, cookie/no-store fetch, no redirects, 15-second abort, bounded JPEG, current server auth/retention, 401 clears private UI. One preview at a time; close, source/page/locale navigation, offline/pagehide and session invalidation abort/revoke object URLs. Generation checks prevent late responses entering a new drawer. No private browser/SW cache or new MCP capability.
+- Canonical UZ/RU/TJ image toggle/alt labels and generated `catalog.js`; V10 layout and 44px actions preserved. Actual repo hsk-ai-ui / webapp-testing skills were read/applied for the new inline preview pattern. No runtime dependency, schema, config/flag, legacy admin or payment/access logic change.
+- Local targeted API/inbox/triage/shell regressions: **31 passed**; catalog regressions: **7 passed**. Builder `--write`: 63 artifacts / one updated; `--check`: 63 / 0 stale. Browser virtual-WebAuthn/payment regressions, new real-ASGI Android preview lifecycle and public-only SW suite passed. Screenshots: `/tmp/hsk-inbox-preview-browser-20261024`, desktop/mobile UZ/RU/TJ; mobile Uzbek and desktop Russian preview screenshots visually inspected. Initial new-fixture omissions (required Telegram ID and intercepted Fetch Metadata expectation) were corrected before passing, without weakening production guards. No new PostgreSQL DDL or real provider/device test was needed/performed for this frontend increment.
+- **Next:** reviewed Bot/Release media ownership/type/size proxy; privacy-safe technical event intake (never raw Mini App diagnostic stacks/URLs), triage retention/audit follow-ups, remaining first-party management and bounded exports. Staging/real ChatGPT and physical Apple delivery remain separate approval/configuration gates. All feature defaults remain OFF. Check the new exact commit's CI before any head-specific green claim.
+
 ## Current continuation and guide synchronization — 2026-10-24
 
 Fetched runtime `d93b75fe468c217dee66e2c4fe277ccfeabadb4f` by fast-forward,
 preserving local documentation edits. Inbox read/triage/search, Apple Push
 sender code and retained Android JPEG proxy already exist; do not rebuild them.
-Next: connect Android preview in V10, then separately review other media and
+Android preview is now connected in V10. Next separately review other media and
 privacy-safe technical producers, remaining management/exports and approved
 staging/device/real ChatGPT gates. All rollout defaults remain OFF.
 

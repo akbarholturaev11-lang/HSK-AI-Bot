@@ -44,7 +44,8 @@ the public shell. R2 is not integrated or configured.
 
 Inbox read/triage/search and default-OFF Apple Push code have since arrived from
 GitHub at `d93b75fe468c217dee66e2c4fe277ccfeabadb4f`. The retained Android
-JPEG proxy exists; connecting its first-party V10 preview is the next increment.
+JPEG proxy and its first-party V10 preview are implemented. Other media and
+privacy-safe technical event intake remain open.
 Remaining
 management, exports and separately approved staging/real ChatGPT acceptance are
 still open. Commit/push each completed, tested increment to the feature branch.

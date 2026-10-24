@@ -1,6 +1,6 @@
 # HSK AI — Admin PWA implementation plan
 
-Status (updated 2026-10-24): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, V10 UI, scoped OAuth/MCP controls, profiles, activity metrics, daily statistics cache, native intake, inbox read/triage/search and default-OFF Apple Push sender code exist. Fetched runtime `d93b75fe` adds a private retained Android JPEG proxy. Preview UI, technical events, remaining management/exports and real staging/provider/device/ChatGPT acceptance remain open. The old 0011 cold-start migration failure remains separate.**
+Status (updated 2026-10-24): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, V10 UI, scoped OAuth/MCP controls, profiles, activity metrics, daily statistics cache, native intake, inbox read/triage/search and default-OFF Apple Push sender code exist. Fetched runtime `d93b75fe` adds a private retained Android JPEG proxy. The Android proxy is connected to V10 preview; other media, technical events, remaining management/exports and real staging/provider/device/ChatGPT acceptance remain open. The old 0011 cold-start migration failure remains separate.**
 
 Target public URL: `https://hskai.app/admin` (owner-designated; live routing/TLS not verified).
 Branch: `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201; PR #200 foundations are already merged. No main push/merge, deploy or flag activation.
@@ -16,8 +16,8 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
    billing history, course/referral/device/feedback summaries; then defined AI
    spend, engagement and conversion metrics. Preserve unavailable attribution.
 2. **Unified inbox continuation**: read/triage/search/badge and native intake
-   are implemented. Connect the existing Android JPEG proxy to V10 preview;
-   then review other media, technical sources and retention/audit gaps.
+   and Android JPEG preview are implemented. Review Bot/Release media source
+   validation, technical sources and retention/audit gaps next.
 3. **First-party management**: shared course/access/pricing/marketing/settings
    commands with exact WebAuthn payload binding, confirmation and audit; keep
    every unsupported high-risk operation disabled until verified.

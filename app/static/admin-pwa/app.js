@@ -40,6 +40,7 @@ const state = {actor:null, phase:'loading', route:'home', period:'weekly', platf
   query:'', status:'pending', source:'all', inboxPriority:'all', inboxSearch:'', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
+let inboxAttachment=null;
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
   epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.inboxSearch='';state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
@@ -173,7 +174,7 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {closeInboxAttachment();feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   if(!$('overlay'))returnFocus=document.activeElement;
   $('dialogs').innerHTML=`<div class="canvas-overlay show" id="overlay"><section class="drawer ${className}" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><div class="drawer-top"><h2 id="drawerTitle">${esc(t(title))}</h2><button class="drawer-close" data-action="close" aria-label="${esc(t('close'))}">×</button></div><div class="drawer-content" id="drawerContent">${body}</div><div class="drawer-foot" id="drawerFoot">${foot||btn('close','close')}</div></section></div>`;
@@ -274,6 +275,47 @@ async function execute() {
 }
 
 const inboxStatusLabels={new:'inboxStatusNew',read:'inboxStatusRead',assigned:'inboxStatusAssigned',resolved:'inboxStatusResolved'};
+function closeInboxAttachment(){
+  const preview=inboxAttachment;inboxAttachment=null;
+  if(!preview)return;
+  preview.control.abort();
+  if(preview.url)URL.revokeObjectURL(preview.url);
+  preview.host.replaceChildren();preview.host.hidden=true;preview.host.removeAttribute('aria-busy');
+  preview.button.setAttribute('aria-expanded','false');preview.button.textContent=t('viewAttachment');
+}
+async function viewInboxAttachment(button){
+  if(inboxAttachment?.button===button){closeInboxAttachment();return;}
+  closeInboxAttachment();
+  const id=Number(button.dataset.inboxAttachment),host=$('inboxAttachment'+id);
+  if(!state.actor||!Number.isSafeInteger(id)||id<1||id>2147483647||!host)return;
+  const current=drawerId,at=epoch,control=new AbortController();
+  const preview={button,host,control,url:null};inboxAttachment=preview;
+  const active=()=>inboxAttachment===preview&&current===drawerId&&at===epoch&&!!state.actor;
+  host.hidden=false;host.setAttribute('aria-busy','true');host.innerHTML=`<p role="status">${esc(t('loading'))}</p>`;
+  button.setAttribute('aria-expanded','true');button.textContent=t('hideAttachment');
+  const timer=setTimeout(()=>control.abort(),15000);
+  try{
+    // Fixed first-party path only. The server rechecks live passkey/admin and retention.
+    const response=await fetch(`/api/admin/v1/inbox/android/${id}/attachment`,{
+      credentials:'same-origin',cache:'no-store',redirect:'error',headers:{Accept:'image/jpeg'},signal:control.signal});
+    if(!active())return;
+    if(response.status===401){clearPrivate('signin');state.error='authExpired';render();return;}
+    if(!response.ok||response.headers.get('content-type')!=='image/jpeg')throw new Error('unavailable');
+    const blob=await response.blob();
+    if(!active())return;
+    if(!blob.size||blob.size>550*1024)throw new Error('unavailable');
+    const image=new Image();image.className='inbox-attachment-image';image.alt=t('inboxAttachment');
+    image.onload=()=>{if(active()){host.setAttribute('aria-busy','false');image.scrollIntoView({block:'nearest'});}};
+    image.onerror=()=>{
+      if(!active())return;
+      URL.revokeObjectURL(preview.url);preview.url=null;
+      host.setAttribute('aria-busy','false');host.innerHTML=`<p role="status">${esc(t('unavailable'))}</p>`;
+    };
+    preview.url=URL.createObjectURL(blob);image.src=preview.url;host.replaceChildren(image);
+  }catch(error){
+    if(active()){host.setAttribute('aria-busy','false');host.innerHTML=`<p role="status">${esc(t('unavailable'))}</p>`;}
+  }finally{clearTimeout(timer);}
+}
 function inboxControl(row,operation,key){
   if(!['bot','release','android','payment'].includes(row.source)||!Number.isSafeInteger(row.source_id)||!Number.isSafeInteger(row.triage_revision))return '';
   return `<button class="btn small" data-inbox-op="${operation}" data-inbox-source="${row.source}" data-inbox-id="${row.source_id}" data-inbox-revision="${row.triage_revision}">${esc(t(key))}</button>`;
@@ -283,6 +325,8 @@ function inboxEntry(row){
   const origin=row.source==='bot'?'botFeedback':row.source==='release'?'releaseFeedback':row.source==='payment'?'inboxPaymentReceipt':'inboxAndroid';
   const flags=`<span class="inbox-state">${esc(t(status))}</span>${row.triage_priority==='important'?`<span class="inbox-state inbox-state-important">${esc(t('inboxImportant'))}</span>`:''}${row.triage_assigned_to===state.actor?.user_id?`<span class="inbox-state">${esc(t('inboxMine'))}</span>`:''}`;
   const actions=[];
+  const canView=row.source==='android'&&row.has_attachment&&Number.isSafeInteger(row.source_id)&&row.source_id>0&&row.source_id<=2147483647;
+  if(canView)actions.push(`<button class="btn small" data-inbox-attachment="${row.source_id}" aria-controls="inboxAttachment${row.source_id}" aria-expanded="false">${esc(t('viewAttachment'))}</button>`);
   if(row.triage_status==='new')actions.push(inboxControl(row,'mark_read','inboxMarkRead'));
   if(row.source==='payment'){
     // Opening Payments is NOT the same as approving an unverified receipt.
@@ -292,7 +336,7 @@ function inboxEntry(row){
     actions.push(row.triage_status==='resolved'?inboxControl(row,'reopen','inboxReopen'):inboxControl(row,'resolve','inboxResolve'));
     actions.push(row.triage_priority==='important'?inboxControl(row,'clear_important','inboxClearImportant'):inboxControl(row,'mark_important','inboxMarkImportant'));
   }
-  return `<article class="feedback-item inbox-feedback-item"><div class="inbox-entry-head"><strong>${esc(t(origin))} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+esc(row.rating)+'/5':''}</strong><small>${esc(date(row.created_at))}</small></div><div class="inbox-states">${flags}</div><p>${esc(row.message||'—')}</p>${row.has_attachment?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}<div class="inbox-entry-actions">${actions.join('')}</div></article>`;
+  return `<article class="feedback-item inbox-feedback-item"><div class="inbox-entry-head"><strong>${esc(t(origin))} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+esc(row.rating)+'/5':''}</strong><small>${esc(date(row.created_at))}</small></div><div class="inbox-states">${flags}</div><p>${esc(row.message||'—')}</p>${row.has_attachment&&!canView?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}<div class="inbox-entry-actions">${actions.join('')}</div>${canView?`<div class="inbox-attachment" id="inboxAttachment${row.source_id}" aria-live="polite" hidden></div>`:''}</article>`;
 }
 async function refreshInboxUnread() {
   if(!state.actor)return;
@@ -539,6 +583,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.userFeedback){state.inboxSearch='';await inbox(null,Number(button.dataset.userFeedback));}
     else if(button.dataset.source){state.source=button.dataset.source;await inbox(null,feedbackUserId);}
     else if(button.dataset.inboxPriority){state.inboxPriority=button.dataset.inboxPriority;await inbox(null,feedbackUserId);}
+    else if(button.dataset.inboxAttachment){await viewInboxAttachment(button);}
     else if(button.dataset.inboxOp){await mutateInbox(button);}
     else if(button.dataset.feedbackNext&&inboxNextCursor){await inbox(inboxNextCursor,feedbackUserId);}
     else if(button.dataset.pushRevoke){await revokePush(button.dataset.pushRevoke);}
