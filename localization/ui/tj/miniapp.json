@@ -597,7 +597,8 @@
     "ui.admin_pwa.pushConsentHint": "Барои iPhone ва Mac дар ҳар дастгоҳ иҷозати алоҳида лозим аст.",
     "ui.admin_pwa.pushInstallFirst": "Дар iPhone аввал аз Safari ба экрани асосӣ илова кунед ва аз барномаи насбшуда кушоед.",
     "ui.admin_pwa.pushAppleOnly": "Ҳоло танҳо барои iPhone ва Mac дастрас аст.",
-    "ui.admin_pwa.pushNotSending": "Сабти обуна омода аст. Фиристодани огоҳиҳо ҳоло фаъол нест."
+    "ui.admin_pwa.pushNotSending": "Сабти обуна омода аст. Фиристодани огоҳиҳо ҳоло фаъол нест.",
+    "ui.admin_pwa.inboxPaymentReceipt": "Расидҳои пардохт"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
