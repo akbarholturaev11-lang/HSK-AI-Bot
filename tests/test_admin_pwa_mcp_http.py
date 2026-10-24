@@ -205,16 +205,16 @@ class McpHttpTests(unittest.TestCase):
 
     def test_origin_cookie_and_accept_fail_closed(self):
         cases = [
-            {"origin": "https://evil.example"},
-            {"sec-fetch-site": "cross-site"},
-            {"accept": "application/json"},
-            {"cookie": "__Host-hskai_admin=" + "S" * 64},
-            {"x-telegram-init-data": "forged"},
-            {"mcp-protocol-version": "1900-01-01"},
+            ({"origin": "https://evil.example"}, 400),
+            ({"sec-fetch-site": "cross-site"}, 400),
+            ({"accept": "application/json"}, 406),
+            ({"cookie": "__Host-hskai_admin=" + "S" * 64}, 401),
+            ({"x-telegram-init-data": "forged"}, 401),
+            ({"mcp-protocol-version": "1900-01-01"}, 400),
         ]
-        for headers in cases:
+        for headers, expected in cases:
             with self.subTest(headers=headers):
-                self.assertNotEqual(self.rpc(headers=headers).status_code, 200)
+                self.assertEqual(self.rpc(headers=headers).status_code, expected)
         self.assertFalse(any(c[0] == "read" for c in self.calls))
 
     def test_unimplemented_sse_and_stateful_delete_refused(self):
