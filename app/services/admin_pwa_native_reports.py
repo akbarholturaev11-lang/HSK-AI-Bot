@@ -66,6 +66,20 @@ async def reserve_native_report(session_factory, *, user_id, description, app_ve
                     created_at=now, last_attempt_at=now, expires_at=now+timedelta(days=RETENTION_DAYS))
                 db.add(row)
                 await db.flush()
+                # Every newly accepted native bug report is important by
+                # default. Optional push delivery never blocks durable intake.
+                from app.config import settings
+                if settings.ADMIN_PWA_ENABLED and settings.ADMIN_PWA_PUSH_ENABLED:
+                    from app.admin_api.pwa_push_outbox import enqueue_automatic_alert
+                    import logging
+                    try:
+                        async with db.begin_nested():
+                            await enqueue_automatic_alert(
+                                db, settings_obj=settings, source="android",
+                                source_id=row.id, now=now)
+                    except Exception:
+                        logging.getLogger(__name__).warning(
+                            "Optional admin Android error push enqueue failed")
             result = NativeReportAdmission(row.id, sent)
         return result
 
