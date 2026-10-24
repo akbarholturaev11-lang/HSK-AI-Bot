@@ -608,7 +608,12 @@
     "ui.admin_pwa.pushInstallFirst": "iPhone’да аввал Safari орқали Бош экранга қўшиб, иловадан очинг.",
     "ui.admin_pwa.pushAppleOnly": "Ҳозирча фақат iPhone ва Mac учун.",
     "ui.admin_pwa.pushNotSending": "Обунани сақлаш тайёр. Хабар юбориш ҳали ишга туширилмаган.",
-    "ui.admin_pwa.inboxPaymentReceipt": "Тўлов чеклари"
+    "ui.admin_pwa.inboxPaymentReceipt": "Тўлов чеклари",
+    "ui.admin_pwa.feedbackAnalysis": "Шикоятлар таҳлили",
+    "ui.admin_pwa.feedbackSampled": "Сўнгги сақланган ёзувлар намунаси; бу барча мурожаатлар сони эмас.",
+    "ui.admin_pwa.feedbackTruncated": "500 ёзув чегараси: натижа қисман.",
+    "ui.admin_pwa.feedbackScanned": "Кўриб чиқилган",
+    "ui.admin_pwa.feedbackPeriod": "Шикоятлар даври"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
