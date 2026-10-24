@@ -1,3 +1,5 @@
+> **CURRENT MCP CONTINUATION (2026-10-24):** This document is a **historical PR #200 pre-merge resume**. PR #200 already merged into main. To continue the CURRENT work on Draft PR #201 / branch `feat/admin-pwa-mcp-readonly-20261024`, **start instead with [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md)**. Do not use the old `codex/admin-pwa` branch, code checkpoints, or "next payment refactor" instructions below. Remaining historical reference is retained intentionally.
+
 # HSK AI Admin PWA — Codex resume (current, authoritative)
 
 **Purpose:** One concise entry point for Codex to continue the existing implementation on the feature branch. This file is a current-state index, not a replacement for project rules, source-code audit, or tests. Historical append-only notes remain in `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md`.
