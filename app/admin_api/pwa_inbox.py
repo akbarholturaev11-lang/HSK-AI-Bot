@@ -382,7 +382,10 @@ async def unread_inbox(db, request: InboxUnreadRequest):
         if name == "payment":
             query = query.where(Payment.payment_status == "pending",
                                 Payment.screenshot_file_id.is_not(None))
-        ids = (await db.execute(query.order_by(model.id.desc()).limit(remaining))).all()
+        # The private technical feed uses its narrow, partial timestamp index.
+        ordering = ((Message.created_at.desc(), Message.id.desc()) if name == "technical"
+                    else (model.id.desc(),))
+        ids = (await db.execute(query.order_by(*ordering).limit(remaining))).all()
         found += len(ids)
     return {"unread_count": min(found, 99), "capped": found >= maximum,
             "count_limit": 99, "derived_from": "unread_source_rows",

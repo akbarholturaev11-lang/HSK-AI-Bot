@@ -12,6 +12,10 @@ CONSTRAINT = "ck_admin_pwa_push_outbox_source"
 
 
 def upgrade():
+    op.create_index("ix_messages_admin_pwa_technical_recent", "messages",
+        ["created_at", "id"],
+        postgresql_where=sa.text("role = 'assistant' AND content_type = 'app_error_context'"),
+        sqlite_where=sa.text("role = 'assistant' AND content_type = 'app_error_context'"))
     op.drop_constraint(CONSTRAINT, TABLE, type_="check")
     op.create_check_constraint(CONSTRAINT, TABLE,
         "source IN ('bot', 'release', 'android', 'payment', 'technical')")
@@ -25,3 +29,4 @@ def downgrade():
     op.drop_constraint(CONSTRAINT, TABLE, type_="check")
     op.create_check_constraint(CONSTRAINT, TABLE,
         "source IN ('bot', 'release', 'android', 'payment')")
+    op.drop_index("ix_messages_admin_pwa_technical_recent", table_name="messages")
