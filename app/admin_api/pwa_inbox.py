@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import and_, func, or_, select
 
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
+from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 from app.db.models.user import User
@@ -67,6 +68,17 @@ def _before(query, timestamp, row_id, source, cursor):
     return query.where(or_(timestamp < anchor, and_(timestamp == anchor, row_id < cursor.source_id)))
 
 
+def _triage(row):
+    return {
+        "triage_status": row.triage_status or "new",
+        "triage_priority": row.triage_priority or "normal",
+        "triage_assigned_to": row.triage_assignee,
+        "triage_read_at": _utc(row.triage_read_at).isoformat() if row.triage_read_at else None,
+        "triage_resolved_at": _utc(row.triage_resolved_at).isoformat() if row.triage_resolved_at else None,
+        "triage_revision": row.triage_revision or 0,
+    }
+
+
 async def unified_inbox(db, request: InboxRequest):
     """Read <= limit+1 per source, merge bounded rows with a stable cursor.
 
@@ -89,7 +101,15 @@ async def unified_inbox(db, request: InboxRequest):
                         _MAX_MESSAGE).label("message"),
             BotFeedback.disliked_attachment_file_id.is_not(None).label("has_attachment"),
             BotFeedback.status.label("feedback_status"),
-        ).outerjoin(User, User.id == BotFeedback.user_id)
+            AdminPwaInboxTriage.status.label("triage_status"),
+            AdminPwaInboxTriage.priority.label("triage_priority"),
+            AdminPwaInboxTriage.assigned_to_user_id.label("triage_assignee"),
+            AdminPwaInboxTriage.read_at.label("triage_read_at"),
+            AdminPwaInboxTriage.resolved_at.label("triage_resolved_at"),
+            AdminPwaInboxTriage.revision.label("triage_revision"),
+        ).outerjoin(AdminPwaInboxTriage, and_(
+            AdminPwaInboxTriage.source == "bot",
+            AdminPwaInboxTriage.source_id == BotFeedback.id)).outerjoin(User, User.id == BotFeedback.user_id)
         if request.user_id is not None:
             query = query.where(User.id == request.user_id)
         query = _before(query, stamp, BotFeedback.id, "bot", request.before)
@@ -99,6 +119,7 @@ async def unified_inbox(db, request: InboxRequest):
                 "source": "bot", "source_id": row.source_id, "created_at": _utc(row.created_at),
                 "user_id": row.user_id, "message": row.message, "has_attachment": row.has_attachment,
                 "feedback_status": row.feedback_status,
+                **_triage(row),
                 "rating": None, "notification_delivery": None, "app_version": None, "screen": None,
             })
 
@@ -110,7 +131,15 @@ async def unified_inbox(db, request: InboxRequest):
             func.substr(ReleaseFeedbackResponse.comment_text, 1, _MAX_MESSAGE).label("message"),
             ReleaseFeedbackResponse.attachment_file_id.is_not(None).label("has_attachment"),
             ReleaseFeedbackResponse.rating.label("rating"),
-        ).outerjoin(User, and_(User.telegram_id > 0,
+            AdminPwaInboxTriage.status.label("triage_status"),
+            AdminPwaInboxTriage.priority.label("triage_priority"),
+            AdminPwaInboxTriage.assigned_to_user_id.label("triage_assignee"),
+            AdminPwaInboxTriage.read_at.label("triage_read_at"),
+            AdminPwaInboxTriage.resolved_at.label("triage_resolved_at"),
+            AdminPwaInboxTriage.revision.label("triage_revision"),
+        ).outerjoin(AdminPwaInboxTriage, and_(
+            AdminPwaInboxTriage.source == "release",
+            AdminPwaInboxTriage.source_id == ReleaseFeedbackResponse.id)).outerjoin(User, and_(User.telegram_id > 0,
                                 User.telegram_id == ReleaseFeedbackResponse.user_telegram_id))
         if request.user_id is not None:
             query = query.where(User.id == request.user_id)
@@ -122,6 +151,7 @@ async def unified_inbox(db, request: InboxRequest):
                 "source": "release", "source_id": row.source_id, "created_at": _utc(row.created_at),
                 "user_id": row.user_id, "message": row.message, "has_attachment": row.has_attachment,
                 "feedback_status": None, "rating": row.rating, "notification_delivery": None,
+                **_triage(row),
                 "app_version": None, "screen": None,
             })
 
@@ -135,7 +165,15 @@ async def unified_inbox(db, request: InboxRequest):
             AdminPwaNativeReport.notification_state.label("notification_delivery"),
             AdminPwaNativeReport.app_version.label("app_version"),
             AdminPwaNativeReport.screen.label("screen"),
-        ).where(AdminPwaNativeReport.expires_at > now)
+            AdminPwaInboxTriage.status.label("triage_status"),
+            AdminPwaInboxTriage.priority.label("triage_priority"),
+            AdminPwaInboxTriage.assigned_to_user_id.label("triage_assignee"),
+            AdminPwaInboxTriage.read_at.label("triage_read_at"),
+            AdminPwaInboxTriage.resolved_at.label("triage_resolved_at"),
+            AdminPwaInboxTriage.revision.label("triage_revision"),
+        ).outerjoin(AdminPwaInboxTriage, and_(
+            AdminPwaInboxTriage.source == "android",
+            AdminPwaInboxTriage.source_id == AdminPwaNativeReport.id)).where(AdminPwaNativeReport.expires_at > now)
         if request.user_id is not None:
             query = query.where(AdminPwaNativeReport.user_id == request.user_id)
         query = _before(query, stamp, AdminPwaNativeReport.id, "android", request.before)
@@ -146,6 +184,7 @@ async def unified_inbox(db, request: InboxRequest):
                 "source": "android", "source_id": row.source_id, "created_at": _utc(row.created_at),
                 "user_id": row.user_id, "message": row.message, "has_attachment": row.has_attachment,
                 "feedback_status": None, "rating": None, "notification_delivery": row.notification_delivery,
+                **_triage(row),
                 "app_version": row.app_version, "screen": row.screen,
             })
 
@@ -162,7 +201,7 @@ async def unified_inbox(db, request: InboxRequest):
         "items": page,
         "next_before": next_before,
         "attachment_access": "not_exposed",
-        "triage_available": False,
+        "triage_available": True,
         "historical_android_reports_complete": False,
         "history_note": "Android reports previously sent only to Telegram cannot be reconstructed",
     }
