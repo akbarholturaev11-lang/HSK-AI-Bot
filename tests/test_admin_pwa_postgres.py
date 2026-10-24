@@ -456,5 +456,70 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
             self.assertEqual((await db.get(User, 1)).status, "free")
 
 
+    async def test_mcp_authorization_code_redeems_once_under_pg_row_lock(self):
+        """Two simultaneous PKCE exchanges must mint exactly ONE token."""
+        from app.admin_api.pwa_mcp_oauth import exchange_mcp_code, pkce_s256
+        from app.db.models.admin_pwa_mcp_authorization import AdminPwaMcpAuthorization
+        from app.db.models.admin_pwa_mcp import AdminPwaMcpAccessGrant
+
+        now = datetime.now(timezone.utc)
+        code, verifier = "C" * 64, "v" * 64
+        cookie = "S" * 64
+        request_id = str(uuid4())
+        session_id = str(uuid4())
+        client = "test-registered-oauth-client"
+        redirect = "https://client.example/callback"
+        resource = "https://hskai.app/mcp"
+        self.settings.ADMIN_PWA_MCP_ENABLED = True
+        self.settings.ADMIN_PWA_MCP_RESOURCE = resource
+        self.settings.ADMIN_PWA_MCP_CLIENT_ID = client
+        self.settings.ADMIN_PWA_MCP_REDIRECT_URI = redirect
+        async with self.sessions() as db:
+            db.add(User(id=303, telegram_id=9001, status="active"))
+            await db.flush()
+            db.add(AdminPwaSession(
+                id=session_id, user_id=303,
+                token_hash=hashlib.sha256(cookie.encode("ascii")).hexdigest(),
+                auth_method="webauthn", created_at=now,
+                expires_at=now + timedelta(hours=1),
+            ))
+            await db.flush()
+            db.add(AdminPwaMcpAuthorization(
+                id=request_id, user_id=303, session_id=session_id,
+                client_id=client, redirect_uri=redirect,
+                resource=resource, scope="admin:analytics:read",
+                pkce_challenge=pkce_s256(verifier),
+                client_state="state-" + "s" * 45,
+                status="approved",
+                code_hash=hashlib.sha256(code.encode("ascii")).hexdigest(),
+                created_at=now, approved_at=now,
+                expires_at=now + timedelta(seconds=50),
+            ))
+            await db.commit()
+
+        async def redeem():
+            async with self.sessions() as db:
+                return await exchange_mcp_code(
+                    db, code=code, code_verifier=verifier,
+                    client_id=client, redirect_uri=redirect,
+                    resource=resource, settings_obj=self.settings,
+                )
+
+        results = await asyncio.wait_for(
+            asyncio.gather(redeem(), redeem()), timeout=30,
+        )
+        self.assertEqual(sum(v is not None for v in results), 1)
+        winner = next(v for v in results if v is not None)
+        self.assertEqual(winner.expires_in, 300)
+        async with self.sessions() as db:
+            grants = (await db.execute(select(AdminPwaMcpAccessGrant))).scalars().all()
+            self.assertEqual(len(grants), 1)
+            self.assertEqual(grants[0].consent_event_id, request_id)
+            self.assertNotEqual(grants[0].token_hash, winner.token)
+            row = (await db.execute(select(AdminPwaMcpAuthorization))).scalar_one()
+            self.assertEqual(row.status, "redeemed")
+            self.assertIsNotNone(row.redeemed_at)
+
+
 if __name__ == "__main__":
     unittest.main()
