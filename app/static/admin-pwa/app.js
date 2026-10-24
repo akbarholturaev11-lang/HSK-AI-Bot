@@ -39,7 +39,7 @@ const btn = (label, action, variant='', disabled=false) => `<button class="btn $
 const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
   query:'', status:'pending', source:'all', inboxPriority:'all', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
-let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null;
+let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false;
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
   epoch++;view++;closeDrawer();inboxUnread=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
@@ -387,7 +387,7 @@ async function pushSettings(){
   }
 }
 async function enablePush(){
-  if(!state.actor?.push_available||!['iphone','mac'].includes(applePushPlatform())||!pushInstallReady(applePushPlatform())||
+  if(pushChanging||!state.actor?.push_available||!['iphone','mac'].includes(applePushPlatform())||!pushInstallReady(applePushPlatform())||
      !('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window))return;
   // Request permission synchronously from the user's button gesture, BEFORE
   // any await/fetch. Safari on iPhone disallows deferred prompts.
@@ -395,6 +395,8 @@ async function enablePush(){
   try{permissionPromise=Notification.permission==='granted'?Promise.resolve('granted'):Notification.requestPermission();}
   catch(_){showNotice('pushPermissionDenied');return;}
   const current=drawerId,at=epoch;
+  pushChanging=true;
+  document.querySelectorAll('#drawerFoot button').forEach(el=>el.disabled=true);
   try{
     const permission=await permissionPromise;
     if(permission!=='granted'){showNotice('pushPermissionDenied');return;}
@@ -415,10 +417,12 @@ async function enablePush(){
     if(at!==epoch||current!==drawerId||!state.actor)return;
     showNotice('pushSaved');await pushSettings();
   }catch(error){if(at===epoch&&state.actor)showNotice('pushSaveError');}
+  finally{pushChanging=false;document.querySelectorAll('#drawerFoot button').forEach(el=>el.disabled=false);}
 }
 async function revokePush(id){
-  if(!state.actor?.push_available||!/^[0-9a-f-]{36}$/.test(id))return;
+  if(pushChanging||!state.actor?.push_available||!/^[0-9a-f-]{36}$/.test(id))return;
   const current=drawerId,at=epoch;
+  pushChanging=true;
   document.querySelectorAll('.push-settings button').forEach(el=>el.disabled=true);
   try{
     await api('push/revoke',{subscription_id:id});
@@ -428,7 +432,7 @@ async function revokePush(id){
     if(at!==epoch||current!==drawerId||!state.actor)return;
     // A lost response may follow a committed revocation: re-read authoritative list.
     showNotice('pushReviewStatus');await pushSettings();
-  }
+  }finally{pushChanging=false;}
 }
 
 function mcpStateKey(row) {
