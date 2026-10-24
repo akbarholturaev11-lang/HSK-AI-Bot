@@ -184,8 +184,10 @@ async def decide_mcp_consent(
         row.status = "approved"
         row.approved_at = stamp
         row.expires_at = expires_at
+        redirect = row.redirect_uri
+        client_state = row.client_state
         await db.flush()
-    return ApprovedMcpCode(code, row.redirect_uri, row.client_state, expires_at)
+    return ApprovedMcpCode(code, redirect, client_state, expires_at)
 
 
 async def exchange_mcp_code(
