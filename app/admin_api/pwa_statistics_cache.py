@@ -14,6 +14,7 @@ from redis.backoff import NoBackoff
 from redis.exceptions import RedisError
 
 from app.admin_api.pwa_read import StatisticsRequest, read_transaction, statistics
+from app.admin_api.pwa_r2_aggregate_store import PrivateR2AggregateStore, R2Unavailable, R2ConfigurationError
 
 SNAPSHOT_SECONDS = 24 * 60 * 60
 logger = logging.getLogger(__name__)
@@ -55,7 +56,7 @@ class AdminPwaStatisticsReader:
     """
 
     def __init__(self, *, settings_obj, session_factory, loader=statistics, redis_client=None,
-                 namespace=None, clock=time.time):
+                 namespace=None, clock=time.time, r2_store=None):
         self.settings = settings_obj
         self.sessions = session_factory
         self.loader = loader
@@ -68,6 +69,8 @@ class AdminPwaStatisticsReader:
         identity = str(getattr(bind, "url", ""))
         digest = hashlib.sha256((getattr(settings_obj, "ADMIN_PWA_PUBLIC_ORIGIN", "")+"|"+identity).encode()).hexdigest()[:24]
         self.prefix = "hsk:admin:stats:v1:{"+(namespace or digest)+"}"
+        self._r2_namespace = digest
+        self._r2 = r2_store if r2_store is not None else PrivateR2AggregateStore(settings_obj=settings_obj)
         self._local = {}
         self._mutex = asyncio.Lock()
         self._redis_retry_at = 0.0
@@ -196,6 +199,23 @@ class AdminPwaStatisticsReader:
                         return self._remember(variant, cached)
                 except _SharedUnavailable:
                     shared = False
+                # R2 stores a private, checked snapshot for restart/cross-worker
+                # recovery. A Redis lease protects the expensive read path.
+                if self._r2.enabled:
+                    try:
+                        r2_raw = await self._r2.get(kind="statistics", namespace=self._r2_namespace,
+                                                   variant=query.platform+"_"+query.period)
+                        r2_cached = self._decode(r2_raw, query)
+                        if r2_cached is not None:
+                            if shared:
+                                try:
+                                    await self._redis("eval", _PUBLISH, 2, lease, key, token, r2_raw,
+                                                      max(1, int(r2_cached["expires_at"]-self.clock())))
+                                except _SharedUnavailable:
+                                    pass
+                            return self._remember(variant, r2_cached)
+                    except R2Unavailable:
+                        logger.warning("Admin PWA R2 mirror unavailable; falling back to daily Redis cache")
                 raw, envelope = await self._compute(query)
                 if shared:
                     try:
@@ -206,6 +226,12 @@ class AdminPwaStatisticsReader:
                             raise StatisticsUnavailable("Statistics refresh lease lost")
                     except _SharedUnavailable:
                         pass  # valid local snapshot still prevents per-request SQL
+                if self._r2.enabled:
+                    try:
+                        await self._r2.put(kind="statistics", namespace=self._r2_namespace,
+                                           variant=query.platform+"_"+query.period, raw=raw)
+                    except R2Unavailable:
+                        logger.warning("Admin PWA R2 mirror write unavailable; Redis snapshot remains valid")
                 return self._remember(variant, envelope)
         except TimeoutError:
             raise StatisticsUnavailable("Statistics refresh busy") from None

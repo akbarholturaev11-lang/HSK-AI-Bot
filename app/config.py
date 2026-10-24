@@ -109,6 +109,13 @@ class Settings(BaseSettings):
     ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS: int = 86400
     # Separate browser Admin PWA stays disabled until Google/TG + passkey auth exists.
     ADMIN_PWA_ENABLED: bool = False
+    # Optional private Cloudflare R2 mirror for 24-hour aggregate snapshots;
+    # no browser/client credentials, public URLs or raw feedback are stored.
+    ADMIN_PWA_R2_AGGREGATE_ENABLED: bool = False
+    ADMIN_PWA_R2_ACCOUNT_ID: str = ""
+    ADMIN_PWA_R2_BUCKET: str = ""
+    ADMIN_PWA_R2_ACCESS_KEY_ID: str = ""
+    ADMIN_PWA_R2_SECRET_ACCESS_KEY: str = ""
     # Independent kill switch; no public MCP resource/OAuth flow is mounted.
     ADMIN_PWA_MCP_ENABLED: bool = False
     # Never enable before complete OAuth consent UI, client registration and security review.
