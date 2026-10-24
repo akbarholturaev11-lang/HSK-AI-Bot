@@ -113,6 +113,10 @@ class Settings(BaseSettings):
     ADMIN_PWA_MCP_ENABLED: bool = False
     # Never enable before complete OAuth consent UI, client registration and security review.
     ADMIN_PWA_MCP_TRANSPORT_ENABLED: bool = False
+    # Apple Web Push subscriptions and sender are separately opt-in; disabled by default.
+    ADMIN_PWA_PUSH_ENABLED: bool = False
+    ADMIN_PWA_PUSH_VAPID_PUBLIC_KEY: str = ""
+    ADMIN_PWA_PUSH_STORAGE_KEY: str = ""
     ADMIN_PWA_MCP_RESOURCE: str = ""
     # Trusted pre-registered public OAuth client; blank means fail closed.
     ADMIN_PWA_MCP_CLIENT_ID: str = ""
