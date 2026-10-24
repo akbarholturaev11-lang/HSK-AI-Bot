@@ -597,7 +597,8 @@
     "ui.admin_pwa.pushConsentHint": "iPhone ва Mac учун ҳар бир қурилмада алоҳида рухсат берилади.",
     "ui.admin_pwa.pushInstallFirst": "iPhone’да аввал Safari орқали Бош экранга қўшиб, иловадан очинг.",
     "ui.admin_pwa.pushAppleOnly": "Ҳозирча фақат iPhone ва Mac учун.",
-    "ui.admin_pwa.pushNotSending": "Обунани сақлаш тайёр. Хабар юбориш ҳали ишга туширилмаган."
+    "ui.admin_pwa.pushNotSending": "Обунани сақлаш тайёр. Хабар юбориш ҳали ишга туширилмаган.",
+    "ui.admin_pwa.inboxPaymentReceipt": "Тўлов чеклари"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
