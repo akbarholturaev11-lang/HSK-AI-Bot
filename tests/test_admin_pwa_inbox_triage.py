@@ -91,6 +91,61 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
                                                 "resolve", "reopen", "clear_important") for a in audits))
             self.assertNotIn("private", repr([(a.operation, a.source_id) for a in audits]))
 
+    async def test_unread_badge_is_source_authoritative_and_important_filter_is_paged(self):
+        ids = await self.seed()
+        initial = await self.post("inbox/unread-count", {})
+        self.assertEqual(initial.status_code, 200, initial.text)
+        self.assertEqual(initial.json()["unread_count"], 3)
+        self.assertFalse(initial.json()["capped"])
+        self.assertNotIn("description", initial.text)
+        self.assertNotIn("private", initial.text)
+        self.assertEqual((await self.post("inbox/list", {"priority":"important"})).json()["items"], [])
+        marked = await self.post("inbox/triage", {
+            "source":"android","source_id":ids["android"],
+            "operation":"mark_important","expected_revision":0})
+        self.assertEqual(marked.status_code, 200, marked.text)
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 3)
+        important = (await self.post("inbox/list", {"priority":"important","limit":1})).json()
+        self.assertEqual([(x["source"],x["source_id"]) for x in important["items"]],
+                         [("android",ids["android"])])
+        self.assertIsNone(important["next_before"])
+        marked = await self.post("inbox/triage", {
+            "source":"bot","source_id":ids["bot"],"operation":"mark_read",
+            "expected_revision":0})
+        self.assertEqual(marked.status_code, 200)
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 2)
+        marked = await self.post("inbox/triage", {
+            "source":"release","source_id":ids["release"],
+            "operation":"resolve","expected_revision":0})
+        self.assertEqual(marked.status_code, 200)
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 1)
+        now=datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            native=await db.get(AdminPwaNativeReport,ids["android"])
+            native.expires_at=now-timedelta(seconds=1)
+            await db.commit()
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 0)
+        self.assertEqual((await self.post("inbox/list", {"priority":"important"})).json()["items"], [])
+        self.assertEqual((await self.post("inbox/list", {"priority":"unknown"})).status_code, 400)
+        for body in ({"source":"bot"},{"limit":1},{"user_id":1},{"arbitrary":"sql"}):
+            self.assertEqual((await self.post("inbox/unread-count", body)).status_code, 400)
+        for cookie,origin,code in ((None,"https://hskai.app",401),
+                                   ("T"*64,"https://hskai.app",401),
+                                   (fixtures.COOKIE,"https://evil.example",403)):
+            self.assertEqual((await self.post("inbox/unread-count", {},cookie=cookie,
+                                               origin=origin)).status_code, code)
+
+    async def test_unread_count_caps_at_99_plus_instead_of_claiming_exact_total(self):
+        async with self.sessions() as db:
+            db.add_all([BotFeedback(user_id=1,telegram_id=1001,
+                                     disliked_text="new",status="completed")
+                        for _ in range(105)])
+            await db.commit()
+        count=(await self.post("inbox/unread-count", {})).json()
+        self.assertEqual(count["unread_count"],99)
+        self.assertTrue(count["capped"])
+        self.assertEqual(count["count_limit"],99)
+
     async def test_stale_revision_noop_invalid_operation_and_missing_source(self):
         ids = await self.seed()
         target = {"source": "bot", "source_id": ids["bot"], "operation": "mark_read",
