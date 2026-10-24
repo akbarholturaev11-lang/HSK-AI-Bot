@@ -1,3 +1,5 @@
+import re
+
 from aiogram import F, Router
 from aiogram.filters import CommandStart, CommandObject
 from aiogram.types import Message, CallbackQuery
@@ -222,7 +224,19 @@ async def cmd_start(
     service = OnboardingService(session)
     first_name = message.from_user.first_name if message.from_user and message.from_user.first_name else "Friend"
 
-    referral_code = command.args.strip() if command and command.args else None
+    start_payload = command.args.strip() if command and command.args else None
+    website_apk = re.fullmatch(
+        r"apk_web(?:_(ra|rt)_([0-9a-f]{8}))?", start_payload or ""
+    )
+    # Preserve an existing invitation while delivering the APK from the
+    # website fallback. Only these explicit payloads trigger a file send.
+    if website_apk and website_apk.group(2):
+        referral_code = (
+            ("ra_" if website_apk.group(1) == "ra" else "")
+            + website_apk.group(2)
+        )
+    else:
+        referral_code = None if website_apk else start_payload
 
     user, created = await service.get_or_create_user(
         telegram_id=message.from_user.id,
@@ -233,6 +247,16 @@ async def cmd_start(
     )
 
     await state.clear()
+
+    if website_apk:
+        await send_android_app(
+            message.bot,
+            message.chat.id,
+            message.from_user.id,
+            session,
+            source="website_social_fallback",
+        )
+        return
 
     if await _send_android_referral_apk(message, session, user, referral_code):
         return
