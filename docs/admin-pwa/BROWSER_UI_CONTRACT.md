@@ -104,3 +104,12 @@ addition to core tests, 61 legacy regressions and real PostgreSQL 16 concurrency
 scoped migrations. Physical Face ID/Touch ID/Windows Hello, installed real-device
 PWA behavior and real Google/Telegram/provider/proxy E2E still require staging.
 Keep `ADMIN_PWA_ENABLED=false`; no production/main promotion is authorized.
+
+
+## MCP connection controls and reauthorization (2026-10-24)
+
+- Verified `/me` exposes `mcp_available` only when the WebAuthn actor, all three gates and exact registered configuration are ready. Desktop sidebar and mobile More open the existing V10 drawer; disabled rollout exposes no connection action.
+- History is a bounded server projection of the current admin's last 30 consents. Actual expiry/status, empty/error/offline/auth and uncertain-response states are explicit. Separate confirmation precedes revoke; cancel performs no mutation. Successful revoke reloads history; lost response requires reread rather than claiming success.
+- OAuth sign-in opens `/admin/` in another tab; retry reloads the original GET. An expired/replayed consent POST instructs a fresh external-client authorization instead of resubmitting old proof. No token/state is stored in browser storage or embedded in the error screen.
+- New patterns were absent from the V10 demo, so the actual repository `hsk-ai-ui` and `webapp-testing` skills were read/applied. Existing slate cards/drawers, focus handling, mobile safe areas and one main action were reused; canonical UZ/RU/TJ source and generator own copy.
+- Browser QA extended `tests/e2e/admin_pwa_browser.py` with actual session/DB history, cancellation, revoke and bearer rejection; 1440/390 UZ/RU/TJ screenshots. `admin_pwa_mcp_consent_browser.py` covers native form Origin/Referer, sign-in/retry and expired states. The latter bridge supplies synthetic Fetch Metadata omitted by interception, after checking actual browser Origin; it is not HTTPS proxy/physical-device evidence.
