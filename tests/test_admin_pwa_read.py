@@ -302,7 +302,7 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
             self.assertNotIn("telegram_id", text_body)
             page = response.json()
             self.assertEqual(page["attachment_access"], "not_exposed")
-            self.assertFalse(page["triage_available"])
+            self.assertTrue(page["triage_available"])
             self.assertFalse(page["historical_android_reports_complete"])
             items += page["items"]
             cursor = page["next_before"]
