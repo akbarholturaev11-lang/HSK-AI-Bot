@@ -31,6 +31,11 @@ from app.db.models.release_feedback import ReleaseFeedbackResponse
 logger = logging.getLogger(__name__)
 MAX_SOURCE_ROWS = 500
 MAX_EXPORT_BYTES = 128 * 1024
+FEEDBACK_DEFINITIONS = {
+    "bot": "Completed Bot feedback: stored disliked_code only; missing/unknown code is unclassified",
+    "release": "Recorded 1-2 low, 3 neutral, 4-5 positive rating; unknown is unclassified_rating",
+    "android": "Unexpired stored Android bug reports; no guessed issue categories; older Telegram-only reports unavailable",
+}
 _CODES = frozenset(DISLIKED_OPTIONS)
 _MAX_QUERIES_PER_MINUTE = 30
 _MAX_CONCURRENT_QUERIES = 2
@@ -112,11 +117,7 @@ async def feedback_analytics(db, query: FeedbackAnalyticsRequest, *, now=None, m
         "generated_at": now.isoformat(), "sample_limit_per_source": max_source_rows,
         "coverage": "most_recent_source_records_in_window",
         "historical_android_reports_complete": False,
-        "definitions": {
-            "bot": "Completed Bot feedback: stored disliked_code only; missing/unknown code is unclassified",
-            "release": "Recorded 1-2 low, 3 neutral, 4-5 positive rating; unknown is unclassified_rating",
-            "android": "Unexpired stored Android bug reports; no guessed issue categories; older Telegram-only reports unavailable",
-        },
+        "definitions": FEEDBACK_DEFINITIONS,
         "sources": sources,
     }
 

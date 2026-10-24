@@ -356,3 +356,35 @@ queries retain their separate behavior and contracts. The external MCP tool
 remains statistics-only. Regression tests cover authenticated and forged
 requests, a shared export/read quota, overflow 429, reset and concurrent
 admission; they do not claim multi-worker enforcement.
+
+## Rolling 24-hour Feedback/Statistics R2 mirror — 2026-10-25
+
+Owner clarified: **never recompute aggregate feedback on every Admin PWA open**.
+The feedback categories and JSON/CSV export endpoints now authenticate current
+WebAuthn admin sessions and reuse **the SAME rolling 24-hour aggregate snapshot**
+for each requested (source, weekly/monthly) variant. Warm reads hit process
+memory first, then existing Redis (single cross-worker refresh lease). Cold
+reads may hydrate a checked snapshot from a **private Cloudflare R2 bucket**;
+only an expired/absent snapshot runs bounded read-only SQL on demand. The existing
+Statistics reader also mirrors validated daily snapshots to the same R2 bucket
+behind a separate kind/version key. Nothing uses an anonymous R2 URL or lets
+browser/MCP read R2 directly. R2 values contain **only privacy-minimized
+aggregate projections**, not user IDs, text, media, payment or access records.
+
+The adapter `app/admin_api/pwa_r2_aggregate_store.py` uses private server-side
+S3-compatible R2 credentials. It is **disabled by default** until all private
+`ADMIN_PWA_R2_* ` variables are supplied in the runtime secrets manager and
+staging has verified bucket read/write policy. Never commit or expose credentials,
+bucket URLs or signed links to browser/MCP. Without R2 credentials, **Redis +
+process-local daily fallback still prevents per-open aggregate SQL**; do NOT
+claim R2 is live or configured. Redis outage degrades to per-worker daily cache;
+multiple workers can separately refresh during a shared outage. Cloudflare
+credentials/production bucket access and cross-worker load tests are not yet verified.
+
+The browser must still call an authenticated first-party API when opening
+Statistics (including cache hits); the **heavy source database aggregate queries**,
+not authentication/audit/current payment reads, are the once-per-24-hour part.
+Changing query period/source yields a separate on-demand daily snapshot. Snapshot
+revalidation checks exact query, timestamps, schema, safe category counts and
+payload size. Export does NOT trigger independent uncached SQL. No background
+polling, early forced refresh, account caches or production rollout are introduced.

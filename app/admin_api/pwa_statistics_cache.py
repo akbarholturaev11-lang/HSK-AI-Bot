@@ -174,7 +174,7 @@ class AdminPwaStatisticsReader:
         if cached is not None and self.clock() < cached["expires_at"]:
             return self._result(cached)
         try:
-            async with asyncio.timeout(9), self._mutex:
+            async with asyncio.timeout(16 if self._r2.enabled else 9), self._mutex:
                 cached = self._local.get(variant)
                 if cached is not None and self.clock() < cached["expires_at"]:
                     return self._result(cached)

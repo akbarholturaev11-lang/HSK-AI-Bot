@@ -14,7 +14,7 @@ from app.admin_api.pwa_statistics_cache import (
     AdminPwaStatisticsReader, StatisticsUnavailable, _SharedUnavailable,
     _PUBLISH, _RELEASE, SNAPSHOT_SECONDS, _LEASE_SECONDS, _MAX_BYTES, _RETRY_SECONDS,
 )
-from app.admin_api.pwa_feedback_analytics import FeedbackAnalyticsRequest, feedback_analytics
+from app.admin_api.pwa_feedback_analytics import FeedbackAnalyticsRequest, feedback_analytics, FEEDBACK_DEFINITIONS
 from app.admin_api.pwa_r2_aggregate_store import R2Unavailable
 
 logger = logging.getLogger(__name__)
@@ -48,7 +48,12 @@ class AdminPwaFeedbackReader(AdminPwaStatisticsReader):
             if (isinstance(expires, bool) or not isinstance(expires, (int, float))
                     or not self.clock() < expires <= self.clock() + SNAPSHOT_SECONDS):
                 return None
-            if (not isinstance(data, dict) or data.get("schema") != "hskai_feedback_categories_v1"
+            if (not isinstance(data, dict) or set(data) != {
+                    "schema", "period", "source", "since", "until", "generated_at",
+                    "sample_limit_per_source", "coverage", "historical_android_reports_complete",
+                    "definitions", "sources",
+                } or data.get("definitions") != FEEDBACK_DEFINITIONS
+                    or data.get("schema") != "hskai_feedback_categories_v1"
                     or data.get("source") != query.source or data.get("period") != query.period
                     or data.get("coverage") != "most_recent_source_records_in_window"
                     or data.get("sample_limit_per_source") != 500
@@ -58,12 +63,25 @@ class AdminPwaFeedbackReader(AdminPwaStatisticsReader):
             generated = datetime.fromisoformat(data["generated_at"])
             if generated.tzinfo is None or abs(generated.timestamp() + SNAPSHOT_SECONDS - expires) > 1:
                 return None
+            since = datetime.fromisoformat(data["since"])
+            until = datetime.fromisoformat(data["until"])
+            if (since.tzinfo is None or until.tzinfo is None
+                    or abs(until.timestamp() - generated.timestamp()) > 1
+                    or abs((until - since).total_seconds() - (604800 if query.period == "weekly" else 2592000)) > 1):
+                return None
             expected = ("bot", "release", "android") if query.source == "all" else (query.source,)
             sources = data["sources"]
             if not isinstance(sources, list) or len(sources) != len(expected):
                 return None
             for item, source in zip(sources, expected):
-                if not isinstance(item, dict) or item.get("source") != source:
+                if (not isinstance(item, dict)
+                        or set(item) != {"source", "date_basis", "records_scanned", "truncated", "categories"}
+                        or item.get("source") != source
+                        or item.get("date_basis") != {
+                            "bot": "bot_feedbacks.completed_at",
+                            "release": "release_feedback_responses.completed_at",
+                            "android": "admin_pwa_native_reports.created_at",
+                        }[source]):
                     return None
                 n = item.get("records_scanned")
                 cats = item.get("categories")
@@ -72,7 +90,8 @@ class AdminPwaFeedbackReader(AdminPwaStatisticsReader):
                         or not isinstance(cats, list) or len(cats) > 16):
                     return None
                 for row in cats:
-                    if (not isinstance(row, dict) or type(row.get("count")) is not int
+                    if (not isinstance(row, dict) or set(row) != {"category", "count"}
+                            or type(row.get("count")) is not int
                             or not 0 <= row["count"] <= n or
                             row.get("category") not in (
                                 "price", "limits", "unclear", "pace", "other", "unclassified",

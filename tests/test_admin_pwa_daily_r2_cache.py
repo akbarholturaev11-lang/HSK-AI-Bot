@@ -5,7 +5,7 @@ import io
 from types import SimpleNamespace
 import unittest
 
-from app.admin_api.pwa_feedback_analytics import FeedbackAnalyticsRequest
+from app.admin_api.pwa_feedback_analytics import FeedbackAnalyticsRequest, FEEDBACK_DEFINITIONS
 from app.admin_api.pwa_feedback_cache import AdminPwaFeedbackReader
 from app.admin_api.pwa_r2_aggregate_store import PrivateR2AggregateStore, R2ConfigurationError
 from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader, SNAPSHOT_SECONDS
@@ -61,8 +61,12 @@ class DailyAggregateFixtures:
                 "generated_at": datetime.fromtimestamp(self.clock, timezone.utc).isoformat(),
                 "since": datetime.fromtimestamp(self.clock-604800, timezone.utc).isoformat(),
                 "until": datetime.fromtimestamp(self.clock, timezone.utc).isoformat(),
-                "definitions": {"bot": "only fixed codes"},
-                "sources": [{"source": source, "date_basis": "synthetic",
+                "definitions": FEEDBACK_DEFINITIONS,
+                "sources": [{"source": source, "date_basis": {
+                                 "bot": "bot_feedbacks.completed_at",
+                                 "release": "release_feedback_responses.completed_at",
+                                 "android": "admin_pwa_native_reports.created_at",
+                             }[source],
                              "records_scanned": 1, "truncated": False,
                              "categories": [{"category": "reported_issue" if source=="android"
                                              else "unclassified" if source=="bot" else "low_rating",

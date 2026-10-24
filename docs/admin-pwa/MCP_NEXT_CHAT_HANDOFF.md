@@ -2,6 +2,12 @@
 
 Updated 2026-10-24. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Owner clarification — daily R2-backed aggregate snapshots, 2026-10-25
+
+- User requires both Statistics and Feedback Analytics to **avoid aggregate DB queries at each page open**. The 30/min per-worker limit was not caching and does not fulfill that requirement by itself.
+- Code now adds optional **private** Cloudflare R2 snapshot read/write (server-only S3V4, max 128 KiB) for both existing Statistics and new Feedback, keeping existing Redis lease/process cache as hot layer and one 24h rolling generation per requested variant. JSON/CSV feedback export reuses same feedback reader. Exact commits: `b4d0ec1a` R2 adapter/Stats; `6b9d8daf` Feedback reuse; `1d67d682` isolated fake-R2/no-network tests. R2 itself is **NOT active** until dedicated bucket/credentials and staging readiness exist. No production main/flags deployment.
+- Never expose private R2 objects or access credentials to clients; authorization stays live per request. Updating the same category snapshot after 24h is demand-driven, not guaranteed by cron when no admin opens it. Release acceptance still needs real R2 integration and production-safe multi-worker behavior. See `READ_PROJECTIONS.md`.
+
 ## Current increment — bounded first-party feedback categories, 2026-10-25
 
 - **Runtime commits:** `61d80109` (initial code), `47b98f17` (test-only authentication-vs-feedback SQL assertion), `0472f44f` (indexed native retention ordering), `a77b1168` (native SQL projection regression). Confirm full CI for the exact latest branch SHA before marking this verified; local/physical/staging were not executed here.
