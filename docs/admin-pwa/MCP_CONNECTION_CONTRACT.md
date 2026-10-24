@@ -1,11 +1,20 @@
 # HSK AI ↔ ChatGPT MCP — connection and security contract (NOT LIVE)
 
-**Status 2026-10-24:** Only an internal read-only Python adapter exists in
-`app/admin_api/pwa_mcp_readonly.py` with fail-closed unit tests.
-This is **not** a discoverable MCP server, not a ChatGPT plugin, and NOT an
-activation of Admin PWA. Current default `ADMIN_PWA_ENABLED=false`.
-No HTTPS `/mcp` endpoint has been registered. No OAuth server, token endpoint,
-ChatGPT client registration, consent screen, or production credential exists.
+**Status 2026-10-24:** An internal read-only Python adapter exists in
+`app/admin_api/pwa_mcp_readonly.py`, alongside an INERT OAuth resource
+grant model (`app/db/models/admin_pwa_mcp.py`, Alembic `0118`) and the
+server-side validator `app/admin_api/pwa_mcp_resource.py` for **statistics only**.
+It requires a SHA-256-backed random OAuth access token in the database, exact
+`https://hskai.app/mcp` audience, current canonical admin rights, correct
+consent reference, five-minute maximum lifetime, and BOTH feature flags.
+
+This is **NOT** a discoverable MCP server, not a ChatGPT plugin, and NOT an
+activation of Admin PWA. Defaults `ADMIN_PWA_ENABLED=false` and independent
+`ADMIN_PWA_MCP_ENABLED=false`, with `ADMIN_PWA_MCP_RESOURCE=""`.
+The proposed MCP URI is a validation constant only, **NOT a live endpoint**.
+No HTTPS `/mcp` route, token issuer, OAuth authorization/token/revocation
+endpoints, discovery, client registration, consent screen, audit logs, or
+production access credential exists. Do not enable either flag now.
 
 ## What the user will do AFTER implementation and approval
 
@@ -54,12 +63,12 @@ Google subject hashes, access tokens or Telegram initData.
   PKCE/authorization code, consent, short-lived scoped access tokens, refresh
   token rotation and revocation as applicable; validate audiences and avoid
   token forwarding to third parties.
-- Introduce an audited **MCP-specific authorization context**, not a browser
-  `__Host-hskai_admin` cookie in the ChatGPT request. The existing internal
-  adapter takes server-owned session proof; it deliberately has no public MCP
-  transport. Any remote adapter should accept a separately VERIFIED grant and
-  re-check current admin allowlist and source-specific scope; do not copy
-  cookies into ChatGPT or access-token strings into tool arguments.
+- The new **resource-side** validation function is present and requires a
+  revocable, audience-bound, client/consent-bound, stats-only five-minute opaque
+  access grant. It has no public route and cannot issue tokens. A real remote
+  MCP adapter must use this verifier and re-check current admin allowlist,
+  not the existing browser-cookie adapter. Do not copy `__Host-hskai_admin`
+  into ChatGPT or use a Google ID token as MCP authorization.
 - Add per-admin tool call audit (access without storing raw feedback), quota,
   short timeouts, pagination and data-minimization/redaction. Probe OAuth
   misbinding, SSRF, SQL injection and prompt-injection from feedback.
@@ -72,3 +81,11 @@ Google subject hashes, access tokens or Telegram initData.
 
 **Branch:** `feat/admin-pwa-mcp-readonly-20261024`, created at main merge
 commit `891d9d9b6ffda5fba114d9c5c169eeb2f8a7836f`.
+
+## Current branch checkpoint (2026-10-24)
+
+- Draft PR #201, branch `feat/admin-pwa-mcp-readonly-20261024`. No main merge.
+- Model `AdminPwaMcpAccessGrant`, migration `0118_admin_pwa_mcp_read_grants`, independent kill switch `ADMIN_PWA_MCP_ENABLED` and resource URI configuration were added; all default OFF.
+- `verify_readonly_mcp_bearer` checks an opaque token hash, current admin allowance, max five-minute lifetime, exact resource, consent-event ID, registered client ID shape and statistics-only scope. `read_mcp_statistics_with_verified_token` reuses existing PostgreSQL READ ONLY transaction. This module cannot mint tokens or accept cookies as MCP authorization.
+- Tests `tests/test_admin_pwa_mcp_readonly.py` and `tests/test_admin_pwa_mcp_resource.py` added; migration workflow expanded to 0118, including downgrade when no grants exist. **Do not claim passing CI until latest PR #201 SHA is green.**
+- Next: separate OAuth2.1 authorization-code + PKCE + explicit admin consent issuance and revocation with real audit, then authenticated MCP Streamable HTTP transport; stats only by default. User/feedback privacy needs additional review and separate explicit consent.
