@@ -116,6 +116,7 @@ class McpConsentTransportTests(unittest.TestCase):
         self.assertEqual(q["fixed"],["1"])
         self.assertEqual(q["code"],["Q"*64])
         self.assertEqual(q["state"],[STATE])
+        self.assertEqual(q["iss"],[ORIGIN])
         self.assertNotIn("access_token",str(q))
         self.assertEqual(r.headers["cache-control"],"no-store")
         self.assertEqual(self.calls[-1][1]["approved"],True)
@@ -126,6 +127,7 @@ class McpConsentTransportTests(unittest.TestCase):
         q=parse_qs(urlsplit(r.headers["location"]).query)
         self.assertEqual(q["error"],["access_denied"])
         self.assertEqual(q["state"],[STATE])
+        self.assertEqual(q["iss"],[ORIGIN])
         self.assertNotIn("code",q)
         self.assertFalse(r.headers.get_list("set-cookie"))
 
