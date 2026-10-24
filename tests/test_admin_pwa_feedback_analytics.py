@@ -125,6 +125,23 @@ class FeedbackAnalyticsTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
                 self.assertTrue(all(not value.startswith(("=","+","-","@")) for row in rows
                                     for value in row.values() if isinstance(value,str)))
 
+    async def test_android_uses_existing_retention_index_without_blob_fetch(self):
+        await self.seed()
+        sql=[]
+        def record(conn,cursor,statement,parameters,context,many):
+            sql.append(statement.lower())
+        event.listen(self.engine.sync_engine,"before_cursor_execute",record)
+        try:
+            response=await self.post("",{"period":"weekly","source":"android"})
+        finally:
+            event.remove(self.engine.sync_engine,"before_cursor_execute",record)
+        self.assertEqual(response.status_code,200,response.text)
+        native=[stmt for stmt in sql if "from admin_pwa_native_reports" in stmt]
+        self.assertEqual(len(native),1)
+        self.assertIn("order by admin_pwa_native_reports.expires_at desc",native[0])
+        self.assertNotIn("attachment_bytes",native[0])
+        self.assertNotIn("description",native[0])
+
     async def test_auth_csrf_payload_and_rollout_fail_closed(self):
         await self.seed()
         query={"period":"weekly","source":"bot"}
