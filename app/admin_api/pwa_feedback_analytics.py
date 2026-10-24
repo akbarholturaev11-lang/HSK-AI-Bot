@@ -78,9 +78,12 @@ async def feedback_analytics(db, query: FeedbackAnalyticsRequest, *, now=None, m
         else:
             model = AdminPwaNativeReport
             stamp = model.created_at
+            # Native intake always sets expires_at = created_at + 30 days.
+            # An existing expiry index avoids a wide created_at sort; keep
+            # the created_at window and current retention predicates too.
             statement = select(model.id).where(
                 stamp >= since, stamp < now, model.expires_at > now,
-            ).order_by(stamp.desc(), model.id.desc())
+            ).order_by(model.expires_at.desc(), model.id.desc())
         selected = (await db.execute(statement.limit(max_source_rows + 1))).scalars().all()
         sampled = selected[:max_source_rows]
         counts = {}
