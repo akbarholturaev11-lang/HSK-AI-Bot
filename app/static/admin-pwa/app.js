@@ -37,9 +37,9 @@ try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj
 const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? '—';
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
 const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
-  query:'', status:'pending', source:'bot', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
+  query:'', status:'pending', source:'all', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
-let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null;
+let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null;
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
   epoch++;view++;closeDrawer();state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
@@ -269,14 +269,17 @@ async function execute() {
   } finally {if(signing===control)signing=null;}
 }
 async function inbox(before=null,userId=null) {
-  closeDrawer();feedbackUserId=userId;const current=drawerId;
+  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;const current=drawerId;
   drawer('feedback',statePanel('loading'),'','inbox-drawer');
   try {
-    const data=await api('feedback/list',{source:state.source,user_id:userId,before_id:before,limit:30});
+    const data=await api('inbox/list',{source:state.source,user_id:userId,before,limit:30});
     if(current!==drawerId||!state.actor)return;
-    drawer('feedback',`<div class="inbox-shell">${userId?`<p class="source-note">${esc(t('account'))}: #${userId}</p>`:''}<div class="data-toolbar">${['bot','release'].map(source=>`<button class="btn ${source===state.source?'primary':''}" data-source="${source}">${esc(t(source==='bot'?'botFeedback':'releaseFeedback'))}</button>`).join('')}</div><p class="source-note">${esc(t('feedbackGap'))}</p>${data.items.map(row=>`<article class="feedback-item"><strong>${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+row.rating+'/5':''}</strong><p>${esc(row.comment||row.disliked_text||row.liked_text||row.disliked_code||'—')}</p><small>${esc(date(row.completed_at||row.created_at))}</small>${row.has_attachment?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}</article>`).join('')||statePanel('empty')}${data.next_before_id?`<button class="btn" data-feedback-next="${data.next_before_id}">${esc(t('next'))}</button>`:''}</div>`,'','inbox-drawer');
+    inboxNextCursor=data.next_before;
+    const options=[['all','all'],['bot','botFeedback'],['release','releaseFeedback'],['android',null]];
+    drawer('feedback',`<div class="inbox-shell">${userId?`<p class="source-note">${esc(t('account'))}: #${userId}</p>`:''}<div class="data-toolbar">${options.map(([source,key])=>`<button class="btn ${state.source===source?'primary':''}" data-source="${source}">${esc(key?t(key):'Android')}</button>`).join('')}</div>${data.items.map(row=>`<article class="feedback-item"><strong>${esc(row.source==='bot'?t('botFeedback'):row.source==='release'?t('releaseFeedback'):'Android')} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+row.rating+'/5':''}</strong><p>${esc(row.message||'—')}</p><small>${esc(date(row.created_at))}</small>${row.has_attachment?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}</article>`).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`,'','inbox-drawer');
   }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'));}
 }
+
 function mcpStateKey(row) {
   if(row.status==='revoked')return 'mcpRevoked';
   if(row.status==='denied')return 'mcpDenied';
@@ -355,7 +358,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.profilePayments){await moreUserPayments(Number(button.dataset.profilePayments),Number(button.dataset.before),button);}
     else if(button.dataset.userFeedback){await inbox(null,Number(button.dataset.userFeedback));}
     else if(button.dataset.source){state.source=button.dataset.source;await inbox(null,feedbackUserId);}
-    else if(button.dataset.feedbackNext){await inbox(Number(button.dataset.feedbackNext),feedbackUserId);}
+    else if(button.dataset.feedbackNext&&inboxNextCursor){await inbox(inboxNextCursor,feedbackUserId);}
     else if(button.dataset.mcpRevoke){confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
     else if(button.dataset.action){await action(button.dataset.action);}
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
