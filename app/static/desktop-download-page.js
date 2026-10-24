@@ -22,7 +22,7 @@
     return "intent://" + target.host + target.pathname + target.search +
       "#Intent;scheme=" + target.protocol.slice(0, -1) +
       ";action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;" +
-      "S.browser_fallback_url=" + encodeURIComponent(target.toString()) + ";end";
+      "S.browser_fallback_url=" + encodeURIComponent(websiteApkBotLink()) + ";end";
   }
   var referralCode = /^[0-9a-f]{8}$/.test(String(params.get("ref") || ""))
     ? String(params.get("ref")) : "";
