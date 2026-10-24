@@ -368,6 +368,90 @@ async function executeAccess(){
     if(submitted)await load();
   }finally{if(signing===control)signing=null;}
 }
+
+function localCourseDate(value){
+  const d=value?new Date(value):new Date(Date.now()+3*86400000);
+  if(!Number.isFinite(d.getTime()))return '';
+  return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);
+}
+async function courseSettings(){
+  closeDrawer();const current=drawerId,at=epoch;
+  drawer('courseAccess',statePanel('loading'));
+  try{
+    const data=await api('course-access/read',{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const policy=data.course_access,selected=policy.mode==='free_until'?'free_until':'subscription';
+    const body='<p class="source-note">'+esc(t('courseHint'))+'</p>'
+      +'<div class="form-field"><label for="courseMode">'+esc(t('courseMode'))+'</label>'
+      +'<select class="input" id="courseMode"><option value="subscription" '+(selected==='subscription'?'selected':'')+'>'+esc(t('courseSubscription'))+'</option>'
+      +'<option value="free_until" '+(selected==='free_until'?'selected':'')+'>'+esc(t('courseFreeUntil'))+'</option></select></div>'
+      +'<div class="form-field" id="courseUntilField" '+(selected!=='free_until'?'hidden':'')+'>'
+      +'<label for="courseUntil">'+esc(t('courseUntil'))+'</label>'
+      +'<input class="input" type="datetime-local" id="courseUntil" value="'+esc(localCourseDate(policy.free_until))+'"></div>'
+      +'<p class="source-note">'+esc(t('updated'))+': '+esc(date(policy.saved_at))+'</p>';
+    drawer('courseAccess',body,btn('cancel','close')+btn('next','coursePrepare','primary'));
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    drawer('courseAccess',statePanel(errorKey(error)),btn('close','close')+btn('retry','courseSettings','primary'));
+  }
+}
+async function prepareCoursePolicy(){
+  if(!state.actor||signing)return;
+  const mode=$('courseMode')?.value,input=$('courseUntil');
+  if(!['subscription','free_until'].includes(mode))return;
+  let freeUntil=null;
+  if(mode==='free_until'){
+    if(!input?.value)return;
+    const parsed=new Date(input.value),now=Date.now();
+    if(!Number.isFinite(parsed.getTime())||parsed.getTime()<=now||parsed.getTime()>now+365*86400000){showNotice('error');return;}
+    freeUntil=parsed.toISOString();
+  }
+  const current=drawerId,at=epoch;
+  $('drawerFoot')?.querySelectorAll('button').forEach(b=>b.disabled=true);
+  try{
+    const data=await api('course-access/prepare',{mode,free_until:freeUntil});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=Object.freeze(structuredClone(data.operation));
+    if(confirmation.action!=='course.access_policy'||confirmation.target!=='global')throw Error('invalid_policy');
+    const display=[['courseMode',t(mode==='free_until'?'courseFreeUntil':'courseSubscription')]];
+    if(freeUntil)display.push(['courseUntil',date(freeUntil)]);
+    drawer('courseConfirm','<p class="alert">'+esc(t('courseHint'))+'</p>'+profileFields(display),
+      btn('cancel','close')+btn('confirmPasskey','courseExecute','primary'),'confirmation');
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=null;
+    drawer('courseAccess',statePanel(error.status===409?'changed':errorKey(error)),
+      btn('close','close')+btn('retry','courseSettings','primary'));
+  }
+}
+async function executeCoursePolicy(){
+  if(confirmation?.action!=='course.access_policy'||!supportsPasskey()||signing)return;
+  const operation=structuredClone(confirmation),current=drawerId,at=epoch,control=new AbortController();
+  signing=control;let submitted=false;
+  $('drawerFoot')?.querySelectorAll('button').forEach(b=>b.disabled=true);
+  try{
+    const options=await api('auth/step-up/options',operation);
+    if(current!==drawerId||at!==epoch)return;
+    const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey),signal:control.signal});
+    if(current!==drawerId||at!==epoch)return;
+    await api('auth/step-up/verify',{step_up_id:options.step_up_id,credential:serialize(credential)});
+    if(current!==drawerId||at!==epoch)return;
+    submitted=true;
+    const result=await api('course-access/save',{...operation.payload,step_up_id:options.step_up_id});
+    if(current!==drawerId||at!==epoch)return;
+    confirmation=null;
+    const policy=result.course_access;
+    drawer('courseSaved',profileFields([['courseMode',t(policy.mode==='free_until'?'courseFreeUntil':'courseSubscription')],
+      ['courseUntil',date(policy.free_until)]]),btn('close','close'));
+  }catch(error){
+    if(current!==drawerId||at!==epoch)return;
+    confirmation=null;
+    const rejected=[400,403,404,409].includes(error.status);
+    drawer('courseAccess',statePanel(error.status===409?'changed':submitted&&!rejected?'uncertain':errorKey(error)),
+      btn('close','close')+btn('courseAccess','courseSettings','primary'));
+  }finally{if(signing===control)signing=null;}
+}
+
 function summary(operation) {
   const p=operation.payload,s=p.expected;
   const fields=[['payment','#'+p.payment_id],['account',s.user_id],['plan',t(s.plan_type)],['amount',s.amount+' '+s.currency],['method',s.payment_method],['source',s.source],['submitted',date(s.submitted_at)]];
@@ -720,13 +804,16 @@ async function action(name) {
   if(name==='reload'){await load();return;}
   if(name==='mcpConnections'){await mcpConnections();return;}
   if(name==='pushSettings'){await pushSettings();return;}
+  if(name==='courseSettings'){await courseSettings();return;}
+  if(name==='coursePrepare'){await prepareCoursePolicy();return;}
+  if(name==='courseExecute'){await executeCoursePolicy();return;}
   if(name==='pushEnable'){await enablePush();return;}
   if(name==='mcpRevokeConfirm'){await revokeMcp();return;}
   if(name==='feedback'){state.inboxSearch='';await inbox();return;}
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='execute'){if(!signing)await execute();return;}
   if(name==='executeAccess'){await executeAccess();return;}
-  if(name==='more'){drawer('more',languageSelect('drawerLocale')+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):''),btn('install','install')+btn('logout','logout'));return;}
+  if(name==='more'){drawer('more',languageSelect('drawerLocale')+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):'')+btn('courseAccess','courseSettings'),btn('install','install')+btn('logout','logout'));return;}
   if(name==='install'){if(installPrompt){await installPrompt.prompt();installPrompt=null;}else showNotice('installHint');return;}
   if(name==='update'){publicRegistration?.waiting?.postMessage('ACTIVATE_PUBLIC_SHELL');return;}
   if(name==='next'&&state.next){state.previous.push(state.cursor);state.cursor=state.next;await load();}
@@ -765,6 +852,10 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('change',event=>{
+  if(event.target.id==='courseMode'){
+    const field=$('courseUntilField');
+    if(field)field.hidden=event.target.value!=='free_until';
+  }
   if(['locale','drawerLocale'].includes(event.target.id)&&['uz','ru','tj'].includes(event.target.value)){
     cancelStatisticsDownload();feedbackLoadId++;
     feedbackStats.loading=false;feedbackStats.data=null;
