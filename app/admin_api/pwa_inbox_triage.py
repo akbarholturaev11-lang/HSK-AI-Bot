@@ -18,11 +18,12 @@ from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaIn
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.admin_api.pwa_push_outbox import enqueue_important_triage
 from app.db.models.bot_feedback import BotFeedback
+from app.db.models.payment import Payment
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 
 logger = logging.getLogger(__name__)
 _OPERATIONS = ("mark_read", "assign_self", "resolve", "reopen", "mark_important", "clear_important")
-_SOURCES = {"bot": BotFeedback, "release": ReleaseFeedbackResponse, "android": AdminPwaNativeReport}
+_SOURCES = {"bot": BotFeedback, "release": ReleaseFeedbackResponse, "android": AdminPwaNativeReport, "payment": Payment}
 
 
 class TriageRequest(BaseModel):
@@ -57,6 +58,12 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
                                   _utc(source_row.expires_at) <= stamp):
             # Do not disclose whether an unseen source ID exists.
             return None
+        if command.source == "payment":
+            # Inbox read-state cannot approve/reject a receipt; financial
+            # decisions stay in the separately signed payment review flow.
+            if (command.operation != "mark_read" or source_row.payment_status != "pending"
+                    or not source_row.screenshot_file_id):
+                raise TriageConflict()
         key = (command.source, command.source_id)
         row = await db.get(AdminPwaInboxTriage, key, with_for_update=True)
         revision = row.revision if row else 0
@@ -65,7 +72,7 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
         if row is None:
             row = AdminPwaInboxTriage(
                 source=command.source, source_id=command.source_id,
-                status="new", priority="normal", revision=0, updated_at=stamp,
+                status="new", priority=("important" if command.source in ("payment", "android") else "normal"), revision=0, updated_at=stamp,
             )
             db.add(row)
         previous = (row.status, row.priority, row.assigned_to_user_id, row.read_at, row.resolved_at)
