@@ -48,6 +48,7 @@ from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
 from app.admin_api.pwa_mcp_http import create_admin_pwa_mcp_http_router
 from app.admin_api.pwa_mcp_consent_transport import create_admin_pwa_mcp_consent_router
 from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_router
+from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
 from app.admin_api.pwa_payment_receipts import create_admin_pwa_receipt_router, download_receipt_image
 from app.api.android_auth import create_android_auth_router
 from app.api.course_tracks import create_course_tracks_router
@@ -752,6 +753,7 @@ app.include_router(create_admin_pwa_payment_review_router(
 ))
 admin_pwa_statistics_reader = AdminPwaStatisticsReader(settings_obj=settings, session_factory=async_session_maker)
 app.include_router(create_admin_pwa_access_grant_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_course_access_router(settings_obj=settings, session_factory=async_session_maker))
 admin_pwa_feedback_reader = AdminPwaFeedbackReader(settings_obj=settings, session_factory=async_session_maker)
 app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=settings, session_factory=async_session_maker,
     reader=admin_pwa_feedback_reader))
