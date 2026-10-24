@@ -57,17 +57,20 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         for source, source_id in ids.items():
             initial = (await self.post("inbox/list", {"source": source})).json()["items"][0]
             self.assertEqual(initial["triage_status"], "new")
-            self.assertEqual(initial["triage_priority"], "normal")
+            self.assertEqual(initial["triage_priority"], "important" if source=="android" else "normal")
             self.assertEqual(initial["triage_revision"], 0)
             expected = 0
-            for operation, status, priority in (
+            operations = [
                 ("mark_read", "read", "normal"),
                 ("assign_self", "assigned", "normal"),
                 ("mark_important", "assigned", "important"),
                 ("resolve", "resolved", "important"),
                 ("reopen", "assigned", "important"),
                 ("clear_important", "assigned", "normal"),
-            ):
+            ]
+            if source=="android":
+                operations=[("clear_important", "new", "normal"), *operations]
+            for operation, status, priority in operations:
                 reply = await self.post("inbox/triage", {
                     "source": source, "source_id": source_id,
                     "operation": operation, "expected_revision": expected})
@@ -80,12 +83,12 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
                 expected += 1
             final = (await self.post("inbox/list", {"source": source})).json()["items"][0]
             self.assertEqual(final["triage_status"], "assigned")
-            self.assertEqual(final["triage_revision"], 6)
+            self.assertEqual(final["triage_revision"], 7 if source=="android" else 6)
             self.assertEqual(final["triage_assigned_to"], 101)
         async with self.sessions() as db:
             self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaInboxTriage)), 3)
             audits = (await db.scalars(select(AdminPwaInboxTriageAudit))).all()
-            self.assertEqual(len(audits), 18)
+            self.assertEqual(len(audits), 19)
             self.assertTrue(all(a.actor_user_id == 101 for a in audits))
             self.assertTrue(all(a.operation in ("mark_read", "assign_self", "mark_important",
                                                 "resolve", "reopen", "clear_important") for a in audits))
@@ -95,37 +98,40 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         ids = await self.seed()
         initial = await self.post("inbox/unread-count", {})
         self.assertEqual(initial.status_code, 200, initial.text)
-        self.assertEqual(initial.json()["unread_count"], 3)
+        self.assertEqual(initial.json()["unread_count"], 4)
         self.assertFalse(initial.json()["capped"])
         self.assertNotIn("description", initial.text)
         self.assertNotIn("private", initial.text)
-        self.assertEqual((await self.post("inbox/list", {"priority":"important"})).json()["items"], [])
+        important=(await self.post("inbox/list", {"priority":"important"})).json()["items"]
+        self.assertEqual({row["source"] for row in important}, {"android","payment"})
+        self.assertTrue(all(row["triage_priority"]=="important" for row in important))
+        # No opt-in push flag here: read/triage changes cannot send.
         marked = await self.post("inbox/triage", {
             "source":"android","source_id":ids["android"],
-            "operation":"mark_important","expected_revision":0})
+            "operation":"clear_important","expected_revision":0})
         self.assertEqual(marked.status_code, 200, marked.text)
-        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 3)
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 4)
         important = (await self.post("inbox/list", {"priority":"important","limit":1})).json()
-        self.assertEqual([(x["source"],x["source_id"]) for x in important["items"]],
-                         [("android",ids["android"])])
+        self.assertEqual([x["source"] for x in important["items"]], ["payment"])
         self.assertIsNone(important["next_before"])
         marked = await self.post("inbox/triage", {
             "source":"bot","source_id":ids["bot"],"operation":"mark_read",
             "expected_revision":0})
         self.assertEqual(marked.status_code, 200)
-        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 2)
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 3)
         marked = await self.post("inbox/triage", {
             "source":"release","source_id":ids["release"],
             "operation":"resolve","expected_revision":0})
         self.assertEqual(marked.status_code, 200)
-        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 1)
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 2)
         now=datetime.now(timezone.utc)
         async with self.sessions() as db:
             native=await db.get(AdminPwaNativeReport,ids["android"])
             native.expires_at=now-timedelta(seconds=1)
             await db.commit()
-        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 0)
-        self.assertEqual((await self.post("inbox/list", {"priority":"important"})).json()["items"], [])
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 1)
+        self.assertEqual([r["source"] for r in (await self.post("inbox/list",
+                  {"priority":"important"})).json()["items"]], ["payment"])
         self.assertEqual((await self.post("inbox/list", {"priority":"unknown"})).status_code, 400)
         for body in ({"source":"bot"},{"limit":1},{"user_id":1},{"arbitrary":"sql"}):
             self.assertEqual((await self.post("inbox/unread-count", body)).status_code, 400)
