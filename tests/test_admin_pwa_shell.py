@@ -67,9 +67,9 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_inbox_search_form_is_private_and_bounded(self):
         script=(await self.get('/admin/assets/app.js')).text
-        self.assertIn("id=\\"inboxSearchForm\\"", script)
-        self.assertIn("id=\\"inboxSearchQuery\\"", script)
-        self.assertIn('minlength=\\"3\\" maxlength=\\"80\\"', script)
+        self.assertIn('id="inboxSearchForm"', script)
+        self.assertIn('id="inboxSearchQuery"', script)
+        self.assertIn('minlength="3" maxlength="80"', script)
         self.assertIn("search:state.inboxSearch||null", script)
         self.assertIn("state.inboxSearch='';state.actor=null", script)
         self.assertIn("state.inboxSearch=value", script)
