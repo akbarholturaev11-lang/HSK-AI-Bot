@@ -42,9 +42,12 @@ let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewI
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
 let statisticsDownload=null;
+let feedbackLoadId=0;
+const feedbackStats={source:'all',period:'weekly',data:null,loading:false,error:false};
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
-  cancelStatisticsDownload();
+  cancelStatisticsDownload();feedbackLoadId++;
+  feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
   epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.inboxSearch='';state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   state.phase=phase;state.error=null;render();
 }
@@ -95,10 +98,66 @@ function filters() {
 }
 function statePanel(key, hint='', retry=false) { return `<section class="state-panel"><h2>${esc(t(key))}</h2>${hint?`<p>${esc(t(hint))}</p>`:''}${retry?btn('retry','reload','primary'):''}</section>`; }
 function metric(label,value,glyph='chart') { return `<div class="metric"><div class="metric-top"><span>${esc(t(label))}</span><span class="metric-icon">${icon(glyph)}</span></div><div class="metric-value">${esc(value ?? '—')}</div></div>`; }
+
+const feedbackCategoryLabels={
+  price:'feedbackCatPrice',limits:'feedbackCatLimits',unclear:'feedbackCatUnclear',
+  pace:'feedbackCatPace',other:'feedbackCatOther',unclassified:'feedbackCatUnclassified',
+  low_rating:'feedbackCatLow',neutral_rating:'feedbackCatNeutral',
+  positive_rating:'feedbackCatPositive',unclassified_rating:'feedbackCatUnclassified',
+  reported_issue:'feedbackCatAndroid'
+};
+function feedbackPanel(){
+  if(state.route!=='stats')return '';
+  const d=feedbackStats.data;
+  let result='<section class="stat-detail feedback-analysis"><h2>'+esc(t('feedbackAnalysis'))+'</h2><div class="feedback-analysis-controls"><span>'+esc(t('feedbackPeriod'))+'</span>';
+  for(const period of ['weekly','monthly'])result+='<button class="btn small '+(feedbackStats.period===period?'primary':'')+'" data-feedback-period="'+period+'" aria-pressed="'+(feedbackStats.period===period)+'">'+esc(t(period))+'</button>';
+  for(const [source,label] of [['all','all'],['bot','botFeedback'],['release','releaseFeedback'],['android','inboxAndroid']])result+='<button class="btn small '+(feedbackStats.source===source?'primary':'')+'" data-feedback-source="'+source+'" aria-pressed="'+(feedbackStats.source===source)+'">'+esc(t(label))+'</button>';
+  result+='</div>';
+  if(feedbackStats.loading)result+='<p role="status">'+esc(t('loading'))+'</p>';
+  else if(feedbackStats.error)result+='<p role="alert">'+esc(t('error'))+'</p><button class="btn" data-feedback-retry="1">'+esc(t('retry'))+'</button>';
+  else if(d){
+    result+='<div class="feedback-analysis-grid">';
+    for(const source of d.sources){
+      const label=source.source==='bot'?'botFeedback':source.source==='release'?'releaseFeedback':'inboxAndroid';
+      result+='<section class="feedback-analysis-source"><h3>'+esc(t(label))+'</h3><p class="source-note">'+esc(t('feedbackScanned'))+': '+esc(source.records_scanned)+'</p>';
+      if(!source.categories.length)result+='<p class="source-note">'+esc(t('empty'))+'</p>';
+      else{
+        result+='<ul class="feedback-analysis-list">';
+        for(const row of source.categories)result+='<li><span>'+esc(t(feedbackCategoryLabels[row.category]||'feedbackCatUnclassified'))+'</span><strong>'+esc(row.count)+'</strong></li>';
+        result+='</ul>';
+      }
+      if(source.truncated)result+='<p class="source-note">'+esc(t('feedbackTruncated'))+'</p>';
+      result+='</section>';
+    }
+    result+='</div><p class="source-note">'+esc(t('feedbackSampled'))+' · '+esc(t('updated'))+': '+esc(date(d.generated_at))+'</p>';
+    result+='<div class="feedback-analysis-download"><button class="btn" data-feedback-export="json" '+(statisticsDownload?'disabled':'')+'>'+esc(t('exportJson'))+'</button><button class="btn" data-feedback-export="csv" '+(statisticsDownload?'disabled':'')+'>'+esc(t('exportCsv'))+'</button></div>';
+  }
+  return result+'</section>';
+}
+async function loadFeedbackStats(){
+  if(!state.actor||state.route!=='stats'||feedbackStats.loading)return;
+  const id=++feedbackLoadId,at=epoch,seen=view;
+  const source=feedbackStats.source,period=feedbackStats.period;
+  feedbackStats.loading=true;feedbackStats.error=false;render();
+  try{
+    const d=await api('feedback/categories',{source,period});
+    if(id!==feedbackLoadId||at!==epoch||seen!==view||state.route!=='stats'||!state.actor)return;
+    if(d.schema!=='hskai_feedback_categories_v1'||!Array.isArray(d.sources))throw Error('invalid_feedback');
+    feedbackStats.data=d;
+  }catch(error){
+    if(id!==feedbackLoadId||at!==epoch||seen!==view||state.route!=='stats'||!state.actor)return;
+    feedbackStats.data=null;feedbackStats.error=true;
+  }finally{
+    if(id===feedbackLoadId&&at===epoch&&seen===view&&state.route==='stats'&&state.actor){
+      feedbackStats.loading=false;render();
+    }
+  }
+}
+
 function statsView() {
   const data=state.stats;if(!data) return statePanel('loading');
   const exports=state.route==='stats'?`<div class="data-toolbar statistics-export"><button class="btn" data-export-format="json" ${statisticsDownload?'disabled aria-busy="true"':''}>${esc(t('exportJson'))}</button><button class="btn" data-export-format="csv" ${statisticsDownload?'disabled aria-busy="true"':''}>${esc(t('exportCsv'))}</button></div>`:'';
-  if(!data.available) return exports+statePanel('unavailable');
+  if(!data.available) return exports+statePanel('unavailable')+feedbackPanel();
   let cards='', extra='';const m=data.metrics;
   if(data.platform==='overall') {
     cards=metric('usersTotal',m.users_total,'users')+metric('newAccounts',m.new_accounts,'users')+metric(state.period==='all_time'?'active30':'activeAccounts',m.active_accounts)+metric('pending',m.payments_by_status.pending,'wallet');
@@ -107,7 +166,7 @@ function statsView() {
     extra+=`<div class="stats-details"><section class="stat-detail"><h2>${esc(t('aiSpend'))}</h2>${profileFields([['estimatedCost',ai.estimated_cost_usd+' USD'],['recordedRequests',ai.recorded_requests],['tokens',ai.tokens]])}<p class="source-note">${esc(t('aiCostNote'))}</p></section><section class="stat-detail"><h2>${esc(t('courseEngagement'))}</h2>${profileFields([['engagedAccounts',c.engaged_accounts],['startedAccounts',c.started_accounts],['completedAccounts',c.completed_accounts]])}<p class="source-note">${esc(t('courseMetricNote'))}${c.unmatched_events?' '+esc(t('unmatchedEvents'))+': '+c.unmatched_events:''}</p></section><section class="stat-detail"><h2>${esc(t('registrationConversion'))}</h2>${profileFields([['conversion',r.percent===null?'—':r.percent+'%'],['registeredCohort',r.registered_accounts],['convertedAccounts',r.converted_accounts]])}<p class="source-note">${esc(t('conversionNote'))}</p></section></div>`;
   } else if(data.platform==='android') cards=metric('installedDevices',m.registry.installed_devices,'device')+metric('installedUsers',m.registry.installed_users,'users')+metric('active7',m.active.wau)+metric('active30',m.active.mau);
   else cards=metric('active30',m.active_users_30d)+metric('firstOpen',m.verified_first_open_30d,'device');
-  return `${exports}<div class="grid metrics">${cards}</div>${extra}<p class="source-note">${esc(t('overlap'))}${data.scope?.period_filter_applied===false?' '+esc(t('rolling30')):''}</p><p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`;
+  return `${exports}<div class="grid metrics">${cards}</div>${extra}<p class="source-note">${esc(t('overlap'))}${data.scope?.period_filter_applied===false?' '+esc(t('rolling30')):''}</p><p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>${feedbackPanel()}`;
 }
 function cancelStatisticsDownload(){
   const download=statisticsDownload;statisticsDownload=null;
@@ -116,17 +175,20 @@ function cancelStatisticsDownload(){
   if(download.url)URL.revokeObjectURL(download.url);
   document.querySelectorAll('[data-export-format]').forEach(button=>{button.disabled=false;button.removeAttribute('aria-busy');});
 }
-async function exportStatistics(format){
-  if(!state.actor||state.phase!=='ready'||state.route!=='stats'||!['json','csv'].includes(format)||statisticsDownload)return;
+async function exportStatistics(format,dataset='statistics'){
+  if(!state.actor||state.phase!=='ready'||state.route!=='stats'||!['json','csv'].includes(format)||statisticsDownload||(dataset==='feedback'&&!feedbackStats.data))return;
   const current=view,at=epoch,language=locale,control=new AbortController();
   const download={control,url:null,timer:null};statisticsDownload=download;
   const active=()=>statisticsDownload===download&&current===view&&at===epoch&&language===locale&&!!state.actor;
   const buttons=[...document.querySelectorAll('[data-export-format]')];
   buttons.forEach(button=>{button.disabled=true;button.setAttribute('aria-busy','true');});
-  const timer=setTimeout(()=>control.abort(),15000),platform=state.platform,period=state.period;
+  const timer=setTimeout(()=>control.abort(),15000),platform=state.platform;
+  const source=feedbackStats.source,period=dataset==='feedback'?feedbackStats.period:state.period,feedbackId=feedbackLoadId;
   try{
-    const response=await fetch('/api/admin/v1/statistics/export',{method:'POST',credentials:'same-origin',cache:'no-store',redirect:'error',
-      headers:{'Content-Type':'application/json'},body:JSON.stringify({platform,period,format}),signal:control.signal});
+    const endpoint=dataset==='feedback'?'/api/admin/v1/feedback/categories/export':'/api/admin/v1/statistics/export';
+    const body=dataset==='feedback'?{source,period,format}:{platform,period,format};
+    const response=await fetch(endpoint,{method:'POST',credentials:'same-origin',cache:'no-store',redirect:'error',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:control.signal});
     if(!active())return;
     if(response.status===401){clearPrivate('signin');state.error='authExpired';render();return;}
     const mime=format==='json'?'application/json':'text/csv';
@@ -140,10 +202,11 @@ async function exportStatistics(format){
         chunks.push(value);
       }
     }finally{reader.releaseLock();}
-    if(!active())return;
+    if(!active()||(dataset==='feedback'&&feedbackId!==feedbackLoadId))return;
     if(!size)throw Error('empty_export');
     download.url=URL.createObjectURL(new Blob(chunks,{type:mime}));
-    const link=document.createElement('a');link.href=download.url;link.download=`hskai-statistics-${platform}-${period}.${format}`;
+    const link=document.createElement('a');link.href=download.url;
+    link.download=dataset==='feedback'?`hskai-feedback-categories-${source}-${period}.${format}`:`hskai-statistics-${platform}-${period}.${format}`;
     link.hidden=true;document.body.append(link);link.click();link.remove();
     // Give the browser time to consume the explicit download, then release it.
     download.timer=setTimeout(()=>{if(statisticsDownload===download)cancelStatisticsDownload();},1000);
@@ -173,6 +236,7 @@ async function load() {
     if(current!==view||authEpoch!==epoch) return;
     if(['home','stats'].includes(state.route)) state.stats=data; else {state.rows=data.items;state.next=data.next_before_id;}
     state.phase='ready';render();
+    if(state.route==='stats'&&!feedbackStats.data&&!feedbackStats.loading)loadFeedbackStats();
   } catch(error) {if(current!==view||authEpoch!==epoch||!state.actor) return;state.phase='ready';state.error='error';render();}
 }
 async function boot() {
@@ -672,10 +736,17 @@ async function action(name) {
 document.addEventListener('click',event=>{
   const button=event.target.closest('button');if(!button||button.disabled)return;
   const run=async()=>{
-    if(button.dataset.route){closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();}
+    if(button.dataset.route){cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();}
     else if(button.dataset.period){state.period=button.dataset.period;await load();}
     else if(button.dataset.platform){state.platform=button.dataset.platform;await load();}
     else if(button.dataset.exportFormat){await exportStatistics(button.dataset.exportFormat);}
+    else if(button.dataset.feedbackExport){await exportStatistics(button.dataset.feedbackExport,'feedback');}
+    else if(button.dataset.feedbackPeriod||button.dataset.feedbackSource||button.dataset.feedbackRetry){
+      cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;
+      if(button.dataset.feedbackPeriod)feedbackStats.period=button.dataset.feedbackPeriod;
+      if(button.dataset.feedbackSource)feedbackStats.source=button.dataset.feedbackSource;
+      await loadFeedbackStats();
+    }
     else if(button.dataset.status){state.status=button.dataset.status;state.cursor=null;state.previous=[];await load();}
     else if(button.dataset.review){await review(Number(button.dataset.review));}
     else if(button.dataset.userDetail){await userProfile(Number(button.dataset.userDetail));}
@@ -695,7 +766,7 @@ document.addEventListener('click',event=>{
 });
 document.addEventListener('change',event=>{
   if(['locale','drawerLocale'].includes(event.target.id)&&['uz','ru','tj'].includes(event.target.value)){
-    cancelStatisticsDownload();
+    cancelStatisticsDownload();feedbackLoadId++;
     locale=event.target.value;try{localStorage.setItem('hsk-admin-locale',locale);}catch(_){}
     closeDrawer();render();
   }
