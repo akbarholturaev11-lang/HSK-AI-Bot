@@ -77,3 +77,29 @@ profile response. Feedback opens the existing paginated inbox filtered to that
 account, retaining the filter across source and next-page controls. No profile
 read initializes progress, changes access, sends notifications or issues MCP
 permissions. Android history and secure attachments remain separate increments.
+
+## Overall activity increment (2026-10-24)
+
+`pwa_metrics.py` adds SQL aggregates only; no historical event arrays are loaded.
+Every new metric is bounded through `generated_at`, with optional 7/30-day lower
+bound. The response includes the metric dictionary alongside the values:
+
+- AI: stored usage-row count, total tokens and `cost_usd` snapshots, rounded to
+  eight USD decimals. Includes orphaned historical costs; no repricing, model
+  prompts, current FX conversion or invoice claim. Non-finite cost fails closed.
+- Course: distinct current canonical accounts engaged/starting/completing in
+  the period, canonical owner precedence and positive legacy Telegram fallback.
+  Completion event aliases and Android overlap deduplicate at account grain;
+  these are not completed lesson counts. Unmatched event count is explicit.
+- Registration → Pro: denominator = accounts created in the chosen period by
+  refresh time. Numerator = those same accounts with at least one approved
+  recognized Pro-plan payment dated from registration through refresh time.
+  Effective approval timestamp is reviewed_at, falling back to submitted_at.
+  Repeat payments deduplicate; HSK 3.0 unlock, unknown plans, orphan payments and
+  bonus/manual access do not convert. Empty cohort percentage is null. This is
+  an observed cohort-to-date, not a mature trial/fixed-duration attribution rate.
+
+The V10 dashboard labels the estimates, numerator/denominator and timing caveat
+in all three locales. The existing statistics-only MCP can read these aggregate
+fields and dictionary; no account/profile/payment/feedback tool was added.
+Telegram attribution stays unavailable until independently audited.

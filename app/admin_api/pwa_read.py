@@ -11,6 +11,7 @@ from sqlalchemy import and_, func, or_, select, text
 
 from app.admin_api.pwa_approval import _utc
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
+from app.admin_api.pwa_metrics import METRIC_DEFINITIONS, overall_activity_metrics
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME, authenticate_admin_pwa_session
 from app.admin_api.pwa_webauthn_transport import _body, _guard_post
 from app.db.models.bot_feedback import BotFeedback
@@ -129,13 +130,16 @@ async def statistics(db, request: StatisticsRequest):
     active_since = since or now-timedelta(days=30)
     statuses = await service._payment_status_counts(since)
     totals = await service._approved_currency_totals(since)
-    return {**result, "available": True, "source": "AdminMiniAppService",
+    activity = await overall_activity_metrics(db, since=since, now=now)
+    return {**result, "available": True, "source": "AdminMiniAppService + pwa_metrics.overall_activity_metrics",
             "scope": {"users_total": "all_canonical_accounts", "new_accounts": request.period,
                       "active_accounts_since": _iso(active_since),
                       "payments": "reviewed_at_or_submitted_at"},
-            "metrics": {"users_total": await service._count_users(),
-                        "new_accounts": await service._count_users(*([User.created_at >= since] if since else [])),
-                        "active_accounts": await service._count_users(User.last_active_at >= active_since),
+            "metric_definitions": METRIC_DEFINITIONS,
+            "metrics": {**activity, "users_total": await service._count_users(),
+                        "new_accounts": activity["registration_conversion"]["registered_accounts"],
+                        "active_accounts": await service._count_users(User.last_active_at >= active_since,
+                                                                       User.last_active_at <= now),
                         "payments_by_status": {key: statuses.get(key, {}).get("count", 0)
                                                for key in ("pending", "approved", "rejected")},
                         "approved_amounts_by_currency": [{"currency": row.currency, "amount": int(row.total_sum)}

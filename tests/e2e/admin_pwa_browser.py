@@ -23,6 +23,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.db.base import Base
+from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.course_progress import CourseProgress
 from app.db.models.payment import Payment
@@ -73,6 +74,7 @@ async def browser_checks(output):
     async with fixture.sessions() as db:
         (await db.get(User,1)).full_name='<img src=x onerror=alert(1)> QA account'
         db.add(CourseProgress(user_id=1,level='HSK1',completed_lessons_count=7))
+        db.add(AIUsageEvent(user_id=1,source='qa',model='fixture',cost_usd=.025,total_tokens=123))
         db.add(BotFeedback(user_id=1,telegram_id=1001,status='completed',disliked_text='<script>private QA feedback</script>'))
         db.add(BotFeedback(user_id=2,telegram_id=2002,status='completed',disliked_text='other account QA feedback'))
         for index in range(11):
@@ -152,6 +154,8 @@ async def browser_checks(output):
         assert any(row['name']=='__Host-hskai_admin' and row['httpOnly'] and row['secure'] for row in cookies)
         assert '__Host-hskai_admin=' not in await page.evaluate('document.cookie')
         await expect(page.locator('.metric')).to_have_count(4)
+        await expect(page.locator('.stat-detail')).to_have_count(3)
+        await expect(page.locator('.stat-detail').first).to_contain_text('0.025 USD')
         await page.screenshot(path=str(output/'desktop-statistics.png'),full_page=True)
         await page.locator('#locale').select_option('ru')
         await expect(page.locator('html')).to_have_attribute('lang','ru')
@@ -213,6 +217,9 @@ async def browser_checks(output):
             await page.locator('.drawer-close').click()
         await page.locator('[data-action=more]').click()
         await page.locator('#drawerLocale').select_option('uz')
+        await page.locator('[data-route=stats]').last.click()
+        await expect(page.locator('.stat-detail')).to_have_count(3)
+        await page.screenshot(path=str(output/'mobile-statistics-details.png'),full_page=True)
         assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         await page.locator('[data-route=payments]').last.click()
         await expect(page.locator('[data-review]')).to_have_count(1)

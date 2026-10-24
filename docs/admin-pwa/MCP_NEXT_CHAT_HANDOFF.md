@@ -35,6 +35,26 @@ physical-device evidence. Catalog generation: 63 artifacts, one bundle updated.
 Next: bounded AI-spend, course-engagement and clearly defined conversion
 statistics; then durable inbox and remaining management/export/staging gates.
 
+## Overall activity metrics increment, 2026-10-24
+
+User profiles were committed/pushed as `996ea0582994439d7ab3a483827990f2cb571143`;
+[Admin PWA CI 40084429379](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40084429379)
+passed. Main remained `891d9d9b6ffda5fba114d9c5c169eeb2f8a7836f`.
+
+Next increment: `pwa_metrics.py` fixed-grain AI ledger cost/token/request totals,
+canonical course engagement and registration-cohort Pro conversion, with inline
+metric definitions and V10 UZ/RU/TJ panels. See `READ_PROJECTIONS.md` for exact
+populations, dates, deduplication and exclusions. No schema/flag changes, new
+MCP permission or inferred Telegram attribution.
+
+Validation: **302 passed, 16 PostgreSQL-only skipped**; the affected read + real
+MCP SDK tests rerun after final query changes: **14 passed**. Disposable PG15
+projection/read-only snapshot: **1 passed** (15 unrelated PG tests deselected).
+Browser/WebAuthn/SW checks passed; metric panels and profile regression checked
+at desktop/mobile, screenshots `/tmp/hsk-metrics-browser-20261024`, desktop and
+mobile statistic screenshots visually inspected. These remain synthetic QA,
+not real ChatGPT or staging acceptance. Next work: universal durable inbox.
+
 ## Required reading
 
 Read root `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`; `HSK_AI_ADMIN_PWA_TEMP_RULES.md`, latest `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md`, `MCP_CONNECTION_CONTRACT.md`, `MCP_CHATGPT_COMPATIBILITY_AUDIT_20261024.md`, `BROWSER_UI_CONTRACT.md`, `ADMIN_PWA_V10_UI_REFERENCE.md`; then real source/tests. Historical `codex/admin-pwa` branch references are superseded by the user-selected feature branch above.

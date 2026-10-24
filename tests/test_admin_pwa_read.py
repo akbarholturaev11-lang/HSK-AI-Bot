@@ -10,6 +10,7 @@ from sqlalchemy import event
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.db.models.admin_pwa import AdminPwaSession
+from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_progress import CourseProgress
@@ -103,6 +104,61 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertEqual(data["items"][0]["user_id"],1)
         self.assertTrue(data["items"][0]["has_pending_payment"])
         self.assertNotIn("telegram_id",data["items"][0])
+
+    async def test_activity_metrics_are_bounded_deduplicated_and_conversion_is_a_real_cohort(self):
+        now = datetime.now(timezone.utc)
+        old = now-timedelta(days=40)
+        async with self.sessions() as db:
+            (await db.get(User, 1)).created_at = now-timedelta(days=2)
+            (await db.get(User, 1)).telegram_id = 1001
+            for uid in (2, 101):
+                (await db.get(User, uid)).created_at = old
+            db.add(User(id=3, created_at=now-timedelta(days=1)))
+            db.add(User(id=4, created_at=now+timedelta(days=1)))
+            await db.flush()
+            db.add_all([
+                Payment(user_id=1, user_telegram_id=2002, amount=5, currency="USD", plan_type="1_month",
+                        payment_status="approved", reviewed_at=now),
+                Payment(user_id=None, user_telegram_id=1001, amount=5, currency="USD", plan_type="10_days",
+                        payment_status="approved", submitted_at=now),
+                Payment(user_id=2, amount=5, currency="USD", plan_type="1_month",
+                        payment_status="approved", reviewed_at=now),
+                Payment(user_id=3, amount=5, currency="USD", plan_type="hsk30_unlock",
+                        payment_status="approved", reviewed_at=now),
+                AIUsageEvent(source="qa", model="fixture", total_tokens=100, cost_usd=.01234567, created_at=now),
+                AIUsageEvent(source="qa", model="fixture", total_tokens=20, cost_usd=0, created_at=now),
+                AIUsageEvent(source="qa", model="fixture", total_tokens=999, cost_usd=9, created_at=old),
+                AIUsageEvent(source="qa", model="fixture", cost_usd=999, created_at=now+timedelta(days=1)),
+                CourseMiniAppEvent(user_id=1, telegram_id=2002, event_name="lesson_started", created_at=now),
+                CourseMiniAppEvent(user_id=None, telegram_id=1001, event_name="book_lesson_completed", created_at=now),
+                CourseMiniAppEvent(user_id=1, event_name="lesson_completed", created_at=now),
+                CourseMiniAppEvent(user_id=1, event_name="android_lesson_completed", created_at=now),
+                CourseMiniAppEvent(user_id=None, telegram_id=999, event_name="lesson_started", created_at=now),
+                CourseMiniAppEvent(user_id=2, event_name="lesson_completed", created_at=old),
+                CourseMiniAppEvent(user_id=2, event_name="lesson_started", created_at=now+timedelta(days=1)),
+            ])
+            await db.commit()
+        data = (await self.post("statistics", {})).json()
+        m = data["metrics"]
+        self.assertEqual(m["new_accounts"], 2)
+        self.assertEqual(m["ai_usage"], {"recorded_requests": 2, "tokens": 120, "estimated_cost_usd": .01234567})
+        self.assertEqual(m["course_engagement"], {"engaged_accounts": 1, "started_accounts": 1,
+                                                 "completed_accounts": 1, "unmatched_events": 1})
+        self.assertEqual(m["registration_conversion"], {"registered_accounts": 2, "converted_accounts": 1, "percent": 50.0})
+        self.assertIn("denominator", data["metric_definitions"]["registration_conversion"])
+        self.assertNotIn("telegram_id", json.dumps(m))
+        all_time = (await self.post("statistics", {"period": "all_time"})).json()["metrics"]
+        self.assertAlmostEqual(all_time["ai_usage"]["estimated_cost_usd"], 9.01234567)
+        self.assertEqual(all_time["course_engagement"]["completed_accounts"], 2)
+        self.assertEqual(all_time["registration_conversion"]["registered_accounts"], 4)
+
+    async def test_conversion_empty_registration_cohort_is_unknown_not_zero_percent(self):
+        from sqlalchemy import update
+        async with self.sessions() as db:
+            await db.execute(update(User).values(created_at=datetime.now(timezone.utc)-timedelta(days=40)))
+            await db.commit()
+        result = (await self.post("statistics", {})).json()["metrics"]["registration_conversion"]
+        self.assertEqual(result, {"registered_accounts": 0, "converted_accounts": 0, "percent": None})
 
     async def test_name_search_escapes_wildcards_and_pending_owner_precedence(self):
         async with self.sessions() as db:

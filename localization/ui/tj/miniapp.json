@@ -551,7 +551,23 @@
     "ui.admin_pwa.lastContact": "Охирин тамос бо сервер",
     "ui.admin_pwa.miniappOpens": "Кушодани Telegram Mini App",
     "ui.admin_pwa.openFeedback": "Кушодани муроҷиатҳо",
-    "ui.admin_pwa.paymentHistory": "Таърихи пардохтҳо"
+    "ui.admin_pwa.paymentHistory": "Таърихи пардохтҳо",
+    "ui.admin_pwa.aiSpend": "Хароҷоти AI",
+    "ui.admin_pwa.estimatedCost": "Хароҷоти тахминӣ",
+    "ui.admin_pwa.recordedRequests": "Дархостҳои сабтшуда",
+    "ui.admin_pwa.tokens": "Токенҳо",
+    "ui.admin_pwa.aiCostNote": "Хароҷоти тахминии сабтшуда дар давра; ин ҳисобномаи провайдер нест.",
+    "ui.admin_pwa.courseEngagement": "Фаъолият дар курс",
+    "ui.admin_pwa.engagedAccounts": "Хонандагони фаъол",
+    "ui.admin_pwa.startedAccounts": "Дарсро оғоз карданд",
+    "ui.admin_pwa.completedAccounts": "Дарсро анҷом доданд",
+    "ui.admin_pwa.courseMetricNote": "Ҳисобҳои ягона дар давра, аз рӯи рӯйдодҳои дарс, санҷиш ва машқ.",
+    "ui.admin_pwa.unmatchedEvents": "Рӯйдодҳои бе ҳисоби пайвастшуда",
+    "ui.admin_pwa.registrationConversion": "Бақайдгирӣ → Pro",
+    "ui.admin_pwa.conversion": "Табдил",
+    "ui.admin_pwa.registeredCohort": "Дар давра ба қайд гирифта шуданд",
+    "ui.admin_pwa.convertedAccounts": "Барои Pro пардохт карданд",
+    "ui.admin_pwa.conversionNote": "Ҳиссаи ҳисобҳои дар давра сохташуда бо пардохти тасдиқшудаи Pro то ҳозир. Кушодани HSK 3.0 дохил нест. Натиҷаи ҳисобҳои нав ҳанӯз тағйир меёбад."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

@@ -551,7 +551,23 @@
     "ui.admin_pwa.lastContact": "Oxirgi server aloqasi",
     "ui.admin_pwa.miniappOpens": "Telegram Mini App ochilishlari",
     "ui.admin_pwa.openFeedback": "Murojaatlarni ko‘rish",
-    "ui.admin_pwa.paymentHistory": "To‘lovlar tarixi"
+    "ui.admin_pwa.paymentHistory": "To‘lovlar tarixi",
+    "ui.admin_pwa.aiSpend": "AI xarajati",
+    "ui.admin_pwa.estimatedCost": "Hisoblangan xarajat",
+    "ui.admin_pwa.recordedRequests": "Saqlangan so‘rovlar",
+    "ui.admin_pwa.tokens": "Tokenlar",
+    "ui.admin_pwa.aiCostNote": "Davrdagi saqlangan xarajat taxmini. Provayder hisob-fakturasi emas.",
+    "ui.admin_pwa.courseEngagement": "Kursdagi faollik",
+    "ui.admin_pwa.engagedAccounts": "Faol o‘quvchilar",
+    "ui.admin_pwa.startedAccounts": "Dars boshlaganlar",
+    "ui.admin_pwa.completedAccounts": "Dars tugatganlar",
+    "ui.admin_pwa.courseMetricNote": "Davr ichidagi takrorlanmagan hisoblar. Dars, test va mashq hodisalari asosida.",
+    "ui.admin_pwa.unmatchedEvents": "Hisobga bog‘lanmagan hodisalar",
+    "ui.admin_pwa.registrationConversion": "Ro‘yxatdan o‘tish → Pro",
+    "ui.admin_pwa.conversion": "Konversiya",
+    "ui.admin_pwa.registeredCohort": "Davrda ro‘yxatdan o‘tgan",
+    "ui.admin_pwa.convertedAccounts": "Pro uchun to‘laganlar",
+    "ui.admin_pwa.conversionNote": "Shu davrda yaratilgan hisoblarning hozirgacha tasdiqlangan Pro to‘lovi bor ulushi. HSK 3.0 ochish kirmaydi. Yangi hisoblarda natija hali o‘zgaradi."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

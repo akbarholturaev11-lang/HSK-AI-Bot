@@ -551,7 +551,23 @@
     "ui.admin_pwa.lastContact": "Последняя связь с сервером",
     "ui.admin_pwa.miniappOpens": "Открытия Telegram Mini App",
     "ui.admin_pwa.openFeedback": "Открыть обращения",
-    "ui.admin_pwa.paymentHistory": "История платежей"
+    "ui.admin_pwa.paymentHistory": "История платежей",
+    "ui.admin_pwa.aiSpend": "Расходы на ИИ",
+    "ui.admin_pwa.estimatedCost": "Оценка расходов",
+    "ui.admin_pwa.recordedRequests": "Учтённые запросы",
+    "ui.admin_pwa.tokens": "Токены",
+    "ui.admin_pwa.aiCostNote": "Сохранённая оценка расходов за период, не счёт провайдера.",
+    "ui.admin_pwa.courseEngagement": "Активность в курсе",
+    "ui.admin_pwa.engagedAccounts": "Активные учащиеся",
+    "ui.admin_pwa.startedAccounts": "Начали урок",
+    "ui.admin_pwa.completedAccounts": "Завершили урок",
+    "ui.admin_pwa.courseMetricNote": "Уникальные аккаунты за период по событиям уроков, тестов и практики.",
+    "ui.admin_pwa.unmatchedEvents": "События без привязанного аккаунта",
+    "ui.admin_pwa.registrationConversion": "Регистрация → Pro",
+    "ui.admin_pwa.conversion": "Конверсия",
+    "ui.admin_pwa.registeredCohort": "Зарегистрировались за период",
+    "ui.admin_pwa.convertedAccounts": "Оплатили Pro",
+    "ui.admin_pwa.conversionNote": "Доля аккаунтов, созданных за период и уже имеющих подтверждённый платёж Pro. Открытие HSK 3.0 исключено. Результат для новых аккаунтов ещё меняется."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

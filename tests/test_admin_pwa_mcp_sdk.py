@@ -94,6 +94,8 @@ class McpSdkCompatibilityTests(unittest.IsolatedAsyncioTestCase):
                         result = await sdk.call_tool('hskai_statistics', {'platform':'overall'})
                         self.assertFalse(result.isError)
                         self.assertEqual(result.structuredContent['metrics']['users_total'], 1)
+                        self.assertIn('registration_conversion', result.structuredContent['metric_definitions'])
+                        self.assertEqual(result.structuredContent['metrics']['ai_usage']['recorded_requests'], 0)
                 revoked = await client.post('/api/admin/v1/mcp/authorizations/revoke',
                     json={'authorization_id':identifier}, headers=browser_headers)
                 self.assertEqual(revoked.status_code, 200)
