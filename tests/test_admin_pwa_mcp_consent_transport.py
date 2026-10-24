@@ -141,8 +141,6 @@ class McpConsentTransportTests(unittest.TestCase):
             with self.subTest(form=form,headers=head,cookie=cookie):
                 self.assertIn(self.post(form=form,headers=head,cookie=cookie).status_code,
                               (400,401,403))
-        self.assertFalse(any(x[0]=="decide" and x[1]["csrf_proof"]=="bad" and
-                             x[1].get("approved") for x in self.calls[1:] if isinstance(x[1],dict) and False))
         # No client redirect in denied responses.
         self.assertFalse(self.post(headers={"origin":"https://evil.example"}).is_redirect)
 
