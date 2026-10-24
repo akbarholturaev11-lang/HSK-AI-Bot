@@ -104,3 +104,47 @@ addition to core tests, 61 legacy regressions and real PostgreSQL 16 concurrency
 scoped migrations. Physical Face ID/Touch ID/Windows Hello, installed real-device
 PWA behavior and real Google/Telegram/provider/proxy E2E still require staging.
 Keep `ADMIN_PWA_ENABLED=false`; no production/main promotion is authorized.
+
+
+## MCP connection controls and reauthorization (2026-10-24)
+
+- Verified `/me` exposes `mcp_available` only when the WebAuthn actor, all three gates and exact registered configuration are ready. Desktop sidebar and mobile More open the existing V10 drawer; disabled rollout exposes no connection action.
+- History is a bounded server projection of the current admin's last 30 consents. Actual expiry/status, empty/error/offline/auth and uncertain-response states are explicit. Separate confirmation precedes revoke; cancel performs no mutation. Successful revoke reloads history; lost response requires reread rather than claiming success.
+- OAuth sign-in opens `/admin/` in another tab; retry reloads the original GET. An expired/replayed consent POST instructs a fresh external-client authorization instead of resubmitting old proof. No token/state is stored in browser storage or embedded in the error screen.
+- New patterns were absent from the V10 demo, so the actual repository `hsk-ai-ui` and `webapp-testing` skills were read/applied. Existing slate cards/drawers, focus handling, mobile safe areas and one main action were reused; canonical UZ/RU/TJ source and generator own copy.
+- Browser QA extended `tests/e2e/admin_pwa_browser.py` with actual session/DB history, cancellation, revoke and bearer rejection; 1440/390 UZ/RU/TJ screenshots. `admin_pwa_mcp_consent_browser.py` covers native form Origin/Referer, sign-in/retry and expired states. The latter bridge supplies synthetic Fetch Metadata omitted by interception, after checking actual browser Origin; it is not HTTPS proxy/physical-device evidence.
+
+## Daily aggregate data age (owner direction, 2026-10-24)
+
+Statistics reuse private server-side 24-hour snapshots. The existing updated
+label displays original `generated_at`; locale/navigation changes do not force
+an aggregate SQL refresh. The response includes snapshot expiry and refresh
+interval. Current profile/billing/access operations remain live. This is not a
+browser or service-worker private cache; no-store/offline rules are unchanged.
+
+## Retained Android attachment preview (2026-10-24)
+
+The existing V10 Inbox row offers an inline image toggle only for a retained
+Android report with attachment presence and a bounded internal ID. Other media
+keep their existing unavailable note; payment receipt review is unchanged.
+No image preloads with inbox/search/statistics. An explicit tap fetches the
+fixed first-party Android proxy with same-origin credentials, no-store, redirect
+rejection and a 15-second abort bound. The server verifies current WebAuthn admin
+and source retention; the browser accepts only JPEG up to 550 KiB. A 401 clears
+private UI, while missing/expired/network/media errors show unavailable.
+
+Only one preview is held in memory. Close/toggle, drawer/source/account/page
+navigation, locale change, offline/pagehide and session invalidation abort the
+request and revoke its object URL. Drawer/session generation checks reject late
+responses. Existing CSP already permits blob images; no new CSP/storage/SW or
+MCP permission was added. Original V10 cards, 44px actions, focus/escape and
+mobile layout remain. New labels/alt text are canonical UZ/RU/TJ plus generated
+catalog. Repository hsk-ai-ui and webapp-testing skills were read/applied; the
+inline private preview fills a gap absent from the original demo.
+
+Browser regression uses actual SQLite/ASGI JPEG and session routes, tests
+retention/revocation, media/network errors, delayed cancellation/reopen, URL
+cleanup on offline/pagehide and 1440/390px UZ/RU/TJ. As with the existing ASGI
+browser bridge, intercepted requests omit network-generated Fetch Metadata;
+explicit cross-site rejection is covered by API tests. This is synthetic QA,
+not real HTTPS/proxy/physical-device acceptance.

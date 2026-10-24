@@ -54,7 +54,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
 
         config = mod._reviewed_alembic_config()
         self.assertEqual(ScriptDirectory.from_config(config).get_heads(),
-                         ["0117_admin_pwa_payment_reviews"])
+                         ["0125_admin_pwa_push_outbox"])
         self.assertEqual(mod.EXPECTED_BASELINE, "0102_payment_review_preview")
 
     def test_new_or_multiple_heads_stop_before_any_schema_creation_or_stamp(self):
@@ -81,6 +81,11 @@ class StandaloneQAInitializerTests(unittest.TestCase):
             "admin_pwa_credentials", "admin_pwa_registration_challenges",
             "admin_pwa_authentication_challenges", "admin_pwa_step_ups",
             "admin_pwa_payment_reviews", "admin_pwa_payment_outbox",
+            "admin_pwa_mcp_access_grants",
+            "admin_pwa_mcp_authorizations",
+            "admin_pwa_mcp_audit", "admin_pwa_mcp_quotas",
+            "admin_pwa_native_reports", "admin_pwa_inbox_triage", "admin_pwa_inbox_triage_audit",
+            "admin_pwa_push_subscriptions", "admin_pwa_push_outbox",
         }
         self.assertEqual(set(metadata.tables) - initial, expected)
         self.assertIn("user_identities", initial)

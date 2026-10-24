@@ -3,7 +3,7 @@
 NEVER run this against production or the old staging project. This does not
 import, clone, read or copy any learner data from anywhere. It first creates
 an empty schema from the current ORM models, stamps the historical baseline
-only on the NEW empty QA DB, then executes 0103..0117 and checks the head.
+only on the NEW empty QA DB, then executes 0103..0121 and checks the head.
 
 The historical Alembic base cannot create all course tables from scratch.
 This explicitly isolated QA path is not a replacement for a production
@@ -22,7 +22,7 @@ QA_ENVIRONMENT = "qa"
 QA_HOST = "postgres.railway.internal"
 QA_DATABASE = "railway"
 EXPECTED_BASELINE = "0102_payment_review_preview"
-EXPECTED_HEAD = "0117_admin_pwa_payment_reviews"
+EXPECTED_HEAD = "0125_admin_pwa_push_outbox"
 # These reviewed migrations create tables unconditionally. Defer their DDL
 # until after the empty ORM baseline is stamped; never precreate and then skip
 # their migrations. This list is reviewed alongside EXPECTED_HEAD.
@@ -32,6 +32,12 @@ MIGRATION_CREATED_TABLES = frozenset({
     "admin_pwa_credentials", "admin_pwa_registration_challenges",
     "admin_pwa_authentication_challenges", "admin_pwa_step_ups",
     "admin_pwa_payment_reviews", "admin_pwa_payment_outbox",
+    "admin_pwa_mcp_access_grants",
+    "admin_pwa_mcp_authorizations",
+    "admin_pwa_native_reports",
+    "admin_pwa_inbox_triage", "admin_pwa_inbox_triage_audit",
+    "admin_pwa_push_subscriptions", "admin_pwa_push_outbox",
+    "admin_pwa_mcp_audit", "admin_pwa_mcp_quotas",
 })
 
 
@@ -139,7 +145,7 @@ def main() -> None:
     cfg = _reviewed_alembic_config()
     asyncio.run(_create_empty_orm_schema())
     # QA ONLY. ORM-created tables model the latest empty schema; migration
-    # 0103..0117 is then exercised to apply/refuse any missing constraints.
+    # 0103..0121 is then exercised to apply/refuse any missing constraints.
     command.stamp(cfg, EXPECTED_BASELINE)
     command.upgrade(cfg, "head")
     asyncio.run(verify_qa_tables())

@@ -21,3 +21,32 @@ self.addEventListener('fetch', event => {
     return cached || fetch(event.request);
   }));
 });
+
+/* Display-only handler; push payload is never trusted or rendered. No server
+   sender is enabled yet. Safari revokes permission for invisible pushes. */
+self.addEventListener('push', event => {
+  event.waitUntil(self.registration.showNotification('HSK AI Admin', {
+    body: 'Yangi muhim xabar',
+    icon: '/admin/assets/icon.png',
+    badge: '/admin/assets/icon.png',
+    tag: 'hsk-admin-important',
+    data: {path: '/admin/?inbox=1'},
+  }));
+});
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil((async () => {
+    // Fixed first-party link only, irrespective of notification or push data.
+    const url = new URL('/admin/?inbox=1', self.location.origin).href;
+    const open = await self.clients.matchAll({type: 'window', includeUncontrolled: true});
+    for (const client of open) {
+      const current = new URL(client.url);
+      if (current.origin === self.location.origin && current.pathname === '/admin/' &&
+          typeof client.navigate === 'function' && typeof client.focus === 'function') {
+        await client.navigate(url);
+        return client.focus();
+      }
+    }
+    return self.clients.openWindow(url);
+  })());
+});

@@ -11,16 +11,26 @@ from sqlalchemy import and_, func, or_, select, text
 
 from app.admin_api.pwa_approval import _utc
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
+from app.admin_api.pwa_inbox import InboxRequest, InboxUnreadRequest, unified_inbox, unread_inbox
+from app.admin_api.pwa_metrics import METRIC_DEFINITIONS, overall_activity_metrics
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME, authenticate_admin_pwa_session
 from app.admin_api.pwa_webauthn_transport import _body, _guard_post
 from app.db.models.bot_feedback import BotFeedback
+from app.db.models.course_progress import CourseProgress
+from app.db.models.course_track_state import CourseTrackState
+from app.db.models.desktop import DesktopDevice
 from app.db.models.payment import Payment
+from app.db.models.referral import Referral
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 from app.db.models.user import User
+from app.db.models.user_client_presence import UserClientPresence
+from app.repositories.referral_repo import referral_owner_clause
+from app.services.account_identity import owner_clause
 from app.services.admin_miniapp_service import AdminMiniAppService, _payment_user_join
 from app.services.android_analytics_service import AndroidAnalyticsService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.entitlements import resolve_state
+from app.services.entitlements.state import access_expires_at
 
 logger = logging.getLogger(__name__)
 Id = Annotated[int, Field(strict=True, ge=1, le=2_147_483_647)]
@@ -42,6 +52,14 @@ class PageRequest(ReadRequest):
 
 class UsersRequest(PageRequest):
     query: Annotated[str, Field(max_length=80)] = ""
+
+
+class UserDetailRequest(ReadRequest):
+    user_id: Id
+
+
+class UserPaymentsRequest(PageRequest):
+    user_id: Id
 
 
 class FeedbackRequest(PageRequest):
@@ -113,13 +131,16 @@ async def statistics(db, request: StatisticsRequest):
     active_since = since or now-timedelta(days=30)
     statuses = await service._payment_status_counts(since)
     totals = await service._approved_currency_totals(since)
-    return {**result, "available": True, "source": "AdminMiniAppService",
+    activity = await overall_activity_metrics(db, since=since, now=now)
+    return {**result, "available": True, "source": "AdminMiniAppService + pwa_metrics.overall_activity_metrics",
             "scope": {"users_total": "all_canonical_accounts", "new_accounts": request.period,
                       "active_accounts_since": _iso(active_since),
                       "payments": "reviewed_at_or_submitted_at"},
-            "metrics": {"users_total": await service._count_users(),
-                        "new_accounts": await service._count_users(*([User.created_at >= since] if since else [])),
-                        "active_accounts": await service._count_users(User.last_active_at >= active_since),
+            "metric_definitions": METRIC_DEFINITIONS,
+            "metrics": {**activity, "users_total": await service._count_users(),
+                        "new_accounts": activity["registration_conversion"]["registered_accounts"],
+                        "active_accounts": await service._count_users(User.last_active_at >= active_since,
+                                                                       User.last_active_at <= now),
                         "payments_by_status": {key: statuses.get(key, {}).get("count", 0)
                                                for key in ("pending", "approved", "rejected")},
                         "approved_amounts_by_currency": [{"currency": row.currency, "amount": int(row.total_sum)}
@@ -156,6 +177,83 @@ async def users(db, request: UsersRequest):
             "numeric_query_namespace": "users.id"}
 
 
+async def user_payments(db, request: UserPaymentsRequest):
+    user = await db.get(User, request.user_id)
+    if user is None:
+        return None
+    query = select(Payment).where(owner_clause(Payment, user))
+    if request.before_id is not None:
+        query = query.where(Payment.id < request.before_id)
+    rows = list((await db.scalars(query.order_by(Payment.id.desc()).limit(request.limit+1))).all())
+    page = rows[:request.limit]
+    return {"items": [{"payment_id": p.id, "status": p.payment_status, "plan_type": p.plan_type,
+                       "amount": p.amount, "currency": p.currency, "source": p.source,
+                       "payment_method": p.payment_method, "submitted_at": _iso(p.submitted_at),
+                       "reviewed_at": _iso(p.reviewed_at), "has_receipt": bool(p.screenshot_file_id)}
+                      for p in page],
+            "next_before_id": page[-1].id if len(rows) > request.limit else None}
+
+
+async def user_detail(db, request: UserDetailRequest):
+    user = await db.get(User, request.user_id)
+    if user is None:
+        return None
+    now = datetime.now(timezone.utc)
+    access = resolve_state(user, now=now)
+    progress = await db.scalar(select(CourseProgress).where(CourseProgress.user_id == user.id))
+    tracks = (await db.scalars(select(CourseTrackState).where(
+        CourseTrackState.user_id == user.id, CourseTrackState.track.in_(("hsk20", "hsk30")),
+    ).order_by(CourseTrackState.track))).all()
+    referral_counts = (await db.execute(select(
+        func.count(Referral.id), func.count(Referral.id).filter(Referral.status == "active"),
+        func.count(Referral.id).filter(Referral.counts_for_discount.is_(True)),
+    ).where(referral_owner_clause("referrer", user)))).one()
+    platforms = ("android", "macos", "windows")
+    # Fixed-grain aggregates stay bounded even for accounts with many installs.
+    # Connection timestamps are not claimed as actual foreground app opens.
+    devices = (await db.execute(select(
+        DesktopDevice.platform, func.count(DesktopDevice.id).label("total"),
+        func.count(DesktopDevice.id).filter(DesktopDevice.revoked_at.is_(None)).label("linked"),
+        func.min(DesktopDevice.first_open_at).label("first_open"),
+        func.max(DesktopDevice.last_seen_at).label("last_contact"),
+    ).where(owner_clause(DesktopDevice, user, telegram_column="telegram_id"),
+            DesktopDevice.platform.in_(platforms)).group_by(DesktopDevice.platform)
+       .order_by(DesktopDevice.platform))).all()
+    presence = (await db.execute(select(
+        UserClientPresence.platform, func.max(UserClientPresence.last_foreground_at).label("last_open"),
+    ).where(UserClientPresence.user_id == user.id, UserClientPresence.surface == "telegram_miniapp",
+            UserClientPresence.platform.in_(("android", "ios", "macos", "windows", "web", "unknown")))
+       .group_by(UserClientPresence.platform).order_by(UserClientPresence.platform))).all()
+    counts = {"bot": int(await db.scalar(select(func.count()).select_from(BotFeedback)
+              .where(BotFeedback.user_id == user.id)) or 0), "release": 0}
+    if user.telegram_id and user.telegram_id > 0:
+        counts["release"] = int(await db.scalar(select(func.count()).select_from(ReleaseFeedbackResponse)
+            .where(ReleaseFeedbackResponse.user_telegram_id == user.telegram_id)) or 0)
+    return {"generated_at": _iso(now), "user": {
+        "user_id": user.id, "name": user.full_name, "username": user.username,
+        "language": user.language, "level": user.level, "status": user.status,
+        "created_at": _iso(user.created_at), "last_active_at": _iso(user.last_active_at),
+        "access_state": access, "access_expires_at": _iso(access_expires_at(user, access, now=now)),
+        "selected_plan_type": user.selected_plan_type,
+    }, "course": {"progress": {"level": progress.level,
+        "completed_lessons": progress.completed_lessons_count,
+        "last_opened_at": _iso(progress.last_opened_at),
+        "last_completed_at": _iso(progress.last_completed_at),
+        "homework_status": progress.homework_status} if progress else None,
+        "tracks": [{"track": row.track, "level": row.level,
+                    "completed_lessons": row.completed_lessons_count,
+                    "unlocked_at": _iso(row.unlocked_at)} for row in tracks]},
+        "referral": {"invited_total": referral_counts[0], "invited_active": referral_counts[1],
+                     "discount_qualified": referral_counts[2]},
+        "devices": [{"platform": row.platform, "total": row.total, "linked": row.linked,
+                     "first_open_at": _iso(row.first_open), "last_contact_at": _iso(row.last_contact)}
+                    for row in devices],
+        "miniapp_presence": [{"platform": row.platform, "last_opened_at": _iso(row.last_open)}
+                             for row in presence],
+        "feedback_counts": counts,
+        "payments": await user_payments(db, UserPaymentsRequest(user_id=user.id, limit=10))}
+
+
 async def feedback(db, request: FeedbackRequest):
     model = BotFeedback if request.source == "bot" else ReleaseFeedbackResponse
     # BotFeedback already owns a canonical ID. Release feedback only has a
@@ -187,7 +285,11 @@ async def feedback(db, request: FeedbackRequest):
             "unavailable_sources": ["android_bug_reports"], "attachment_access": "not_exposed"}
 
 
-def create_admin_pwa_read_router(*, settings_obj, session_factory):
+def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_reader=None):
+    from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
+
+    statistics_reader = statistics_reader or AdminPwaStatisticsReader(
+        settings_obj=settings_obj, session_factory=session_factory)
     router = APIRouter(tags=["admin-pwa-read"])
 
     async def handle(request: Request, schema, service):
@@ -207,7 +309,14 @@ def create_admin_pwa_read_router(*, settings_obj, session_factory):
                     actor = await authenticate_admin_pwa_session(db, cookie, settings_obj)
                     if actor is None:
                         return _reply(401, "admin_pwa_unauthorized")
-                    result = await service(db, query)
+                    if schema is not StatisticsRequest:
+                        result = await service(db, query)
+                        if result is None:
+                            return _reply(404, "admin_pwa_user_not_found")
+            if schema is StatisticsRequest:
+                # Release the auth transaction/connection before cache IO or
+                # waiting for another worker's refresh. Only a miss opens SQL.
+                result = await statistics_reader(query)
         except Exception:
             logger.exception("Admin PWA read projection unavailable")
             return _reply(503, "admin_pwa_read_unavailable")
@@ -221,9 +330,25 @@ def create_admin_pwa_read_router(*, settings_obj, session_factory):
     async def read_users(request: Request):
         return await handle(request, UsersRequest, users)
 
+    @router.post("/api/admin/v1/users/detail")
+    async def read_user_detail(request: Request):
+        return await handle(request, UserDetailRequest, user_detail)
+
+    @router.post("/api/admin/v1/users/payments")
+    async def read_user_payments(request: Request):
+        return await handle(request, UserPaymentsRequest, user_payments)
+
     @router.post("/api/admin/v1/feedback/list")
     async def read_feedback(request: Request):
         return await handle(request, FeedbackRequest, feedback)
+
+    @router.post("/api/admin/v1/inbox/list")
+    async def read_inbox(request: Request):
+        return await handle(request, InboxRequest, unified_inbox)
+
+    @router.post("/api/admin/v1/inbox/unread-count")
+    async def read_unread_count(request: Request):
+        return await handle(request, InboxUnreadRequest, unread_inbox)
 
     @router.post("/api/admin/v1/payments/list")
     async def read_payments(request: Request):

@@ -1,11 +1,17 @@
 # Admin PWA — final product and acceptance contract (temporary)
 
-> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `codex/admin-pwa`.
+> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201.
 > Not a repository-wide policy. Does not modify or supersede root `AGENTS.md` / `AI_RULES.md` / `PROJECT_MEMORY.md`.
 > All development and progress records for this task remain under `docs/admin-pwa/`.
 
 
 **Final product:** Secure, installable, fully functional, **real-data** HSK AI Admin PWA at `https://hskai.app/admin`, with unchanged Telegram Admin Mini App and shared business rules, plus a controlled read-only path for AI-driven analytics/feedback analysis.
+
+This checklist describes full product acceptance, not a list of wholly missing
+code. Read [current handoff](MCP_NEXT_CHAT_HANDOFF.md) for implemented increments
+and their evidence; uncompleted staging/device/provider acceptance remains open.
+The current branch's external MCP permission is statistics-only. Keep all three
+feature defaults false; no main promotion or deployment is authorized here.
 
 ## Required end-user result
 
@@ -26,6 +32,17 @@
 - [ ] New permanent UI strings sourced centrally for UZ/TJ/RU.
 
 ### C. Real statistics and users
+
+Owner clarification (2026-10-24): reuse each aggregate snapshot for 24 hours
+from `generated_at`, then refresh on first authorized demand. No fixed-time
+cron or unused-variant scans. Keep original refresh time visible; current
+profiles/billing/receipts/access/commands and auth/revoke/audit/quotas stay live.
+Use private server-side Redis; bounded outage fallback is daily per worker,
+not a cluster-wide once-only guarantee. R2 is not integrated. This preserves
+browser/SW no-store and real-data/metric-definition requirements. Details:
+[read projections](READ_PROJECTIONS.md).
+
+- [ ] Daily aggregate snapshots expose original generation/expiry time; healthy-worker refreshes are coordinated and outage/restart/failure behavior is verified without caching current permissions or billing decisions.
 - [ ] Real overall dashboard: defined account totals, activity, conversion, payments, revenue, AI spend, course engagement with date source and last-refresh metadata.
 - [ ] Period options: 7 days, 30 days and all-time. Platform options: overall, Telegram Mini App, Android, Mac, Windows; future iPhone PWA is marked unavailable until instrumented.
 - [ ] No platform-user double counting when computing overall, no misleading site visits / installs / unique account substitutions, no mixed-currency totals.
@@ -47,7 +64,7 @@
 ### F. Cloud/ChatGPT/Local analytics without exposing admin credentials
 - [ ] Publish authorized **read-only** metrics dictionary and scoped statistics/feedback query with server-side filtering, pagination and PII-minimization.
 - [ ] JSON/CSV export with bounded ranges and source lineage. Useable by local tools or as ChatGPT-uploaded sanitized file.
-- [ ] Optionally implement a revocable, audited, scoped remote/local MCP gateway after access/security acceptance, exposing **only** approved read tools.
+- [ ] Revocable, audited, scoped MCP uses **only** the approved statistics tool; actual ChatGPT/OAuth/protocol/reconnect acceptance is evidenced. User profiles, raw feedback, payment lists and mutation tools remain excluded from external MCP. Broader sanitized feedback exports are a separate first-party requirement, not permission to expand MCP.
 - [ ] An AI agent can explain a platform conversion change and top complaint categories citing datasets/metric definitions, but cannot approve payments, delete accounts, broadcast or execute arbitrary SQL.
 
 ### G. Staging, release and operability

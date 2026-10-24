@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime, timezone
 
 from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
@@ -22,6 +23,23 @@ class PaymentService:
         self.session = session
         self.payment_repo = PaymentRepository(session)
         self.user_repo = UserRepository(session)
+
+    async def _queue_receipt_alert(self, payment):
+        """Best-effort, transaction-bound Apple alert; NEVER block checkout."""
+        from app.config import settings
+        if not (settings.ADMIN_PWA_ENABLED and settings.ADMIN_PWA_PUSH_ENABLED):
+            return
+        import logging
+        try:
+            from app.admin_api.pwa_push_outbox import enqueue_automatic_alert
+            # Savepoints isolate optional push infra failures from a real
+            # payment receipt update/commit. No payload or amount is queued.
+            async with self.session.begin_nested():
+                await enqueue_automatic_alert(
+                    self.session, settings_obj=settings, source="payment",
+                    source_id=payment.id, now=datetime.now(timezone.utc))
+        except Exception:
+            logging.getLogger(__name__).warning("Optional admin payment push enqueue failed")
 
     async def get_plan_price_value(self, payment_method: str | None, plan_type: str):
         return await SubscriptionPriceService(self.session).get_price(payment_method, plan_type)
@@ -199,6 +217,7 @@ class PaymentService:
         )
         if screenshot_file_id:
             await PaymentReviewPreviewService(self.session).claim(user, payment)
+            await self._queue_receipt_alert(payment)
         await self.session.commit()
         return payment, ""
 
@@ -250,6 +269,7 @@ class PaymentService:
             if not updated:
                 return None, "payment_already_reviewed"
             await PaymentReviewPreviewService(self.session).claim(user, draft_payment)
+            await self._queue_receipt_alert(draft_payment)
             await self.session.commit()
             return draft_payment, "updated"
 
@@ -259,6 +279,7 @@ class PaymentService:
             if not updated:
                 return None, "payment_already_reviewed"
             await PaymentReviewPreviewService(self.session).claim(user, pending_payment)
+            await self._queue_receipt_alert(pending_payment)
             await self.session.commit()
             return pending_payment, "updated"
 

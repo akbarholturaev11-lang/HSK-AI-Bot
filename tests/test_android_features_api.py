@@ -1790,8 +1790,9 @@ class AndroidBugReportApiTests(unittest.IsolatedAsyncioTestCase):
 
         self.bot = SimpleNamespace(send_photo=AsyncMock(), send_message=AsyncMock())
         self.app = FastAPI()
+        self.settings = _settings()
         self.app.include_router(create_android_features_router(
-            session_factory=self.sessions, settings_obj=_settings(), bot=self.bot,
+            session_factory=self.sessions, settings_obj=self.settings, bot=self.bot,
         ))
         self.auth = patch.object(
             DesktopAuthService, "authenticate",
@@ -1900,3 +1901,58 @@ class AndroidBugReportApiTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(503, response.status_code)
         self.assertFalse(response.json()["ok"])
+
+    async def test_pwa_intake_commits_before_telegram_and_survives_delivery_failure(self):
+        from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
+        self.settings.ADMIN_PWA_ENABLED = True
+        async def failed_delivery(**kwargs):
+            async with self.sessions() as db:
+                row = await db.scalar(select(AdminPwaNativeReport))
+                self.assertEqual(row.description, "Private native issue before delivery")
+                self.assertEqual(row.user_id, 99)
+                self.assertEqual(row.notification_state, "pending")
+            raise RuntimeError("Telegram unavailable")
+        self.bot.send_message.side_effect = failed_delivery
+        response = await self.client.post("/api/v3/android/bug-report", headers=self.headers,
+            json={"description": "Private native issue before delivery"})
+        self.assertEqual(response.status_code, 503)
+        async with self.sessions() as db:
+            self.assertEqual((await db.scalar(select(AdminPwaNativeReport))).notification_state, "failed")
+        self.assertNotIn("Private native", response.text)
+
+    async def test_pwa_intake_is_shared_across_router_workers(self):
+        from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
+        self.settings.ADMIN_PWA_ENABLED = True
+        first = await self.client.post("/api/v3/android/bug-report", headers=self.headers,
+            json={"description": "First durable native report"})
+        self.assertEqual(first.status_code, 200)
+        other = FastAPI()
+        other.include_router(create_android_features_router(session_factory=self.sessions,
+            settings_obj=self.settings, bot=self.bot))
+        async with AsyncClient(transport=ASGITransport(app=other), base_url="http://android.test") as client:
+            second = await client.post("/api/v3/android/bug-report", headers=self.headers,
+                json={"description": "Another report on another worker"})
+        self.assertEqual(second.status_code, 429)
+        async with self.sessions() as db:
+            rows = (await db.scalars(select(AdminPwaNativeReport))).all()
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0].notification_state, "sent")
+
+    async def test_flag_off_does_not_touch_the_new_inbox_table(self):
+        from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
+        response = await self.client.post("/api/v3/android/bug-report", headers=self.headers,
+            json={"description": "Legacy flag-off native report"})
+        self.assertEqual(response.status_code, 200)
+        async with self.sessions() as db:
+            self.assertEqual((await db.scalars(select(AdminPwaNativeReport))).all(), [])
+
+    async def test_pwa_storage_failure_is_closed_and_logs_never_include_content(self):
+        self.settings.ADMIN_PWA_ENABLED = True
+        with patch("app.api.android_features.reserve_native_report",
+                   AsyncMock(side_effect=RuntimeError("private-report-body-and-token"))), \
+             self.assertLogs("app.api.android_features", level="ERROR") as logs:
+            response = await self.client.post("/api/v3/android/bug-report", headers=self.headers,
+                json={"description": "Private native report"})
+        self.assertEqual(response.status_code, 503)
+        self.bot.send_message.assert_not_awaited()
+        self.assertNotIn("private-report-body-and-token", " ".join(logs.output))

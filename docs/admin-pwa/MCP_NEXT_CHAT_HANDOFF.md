@@ -1,0 +1,288 @@
+# HSK AI Admin PWA — current MCP continuation checkpoint
+
+Updated 2026-10-24. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
+
+## Current increment — Android JPEG preview in V10, 2026-10-24
+
+- **Verified runtime:** `ff8c6df8746a41e6763299bd0f66a71c27174153`, [Admin PWA CI 40102251694](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40102251694), **both jobs SUCCESS**. Logs independently confirm **372 passed / 17 PG-only skipped**, **61 legacy passed**, **17 real disposable PostgreSQL 16 passed**, **11 native/API regressions passed**, 63 catalogs / 0 stale and browser virtual-WebAuthn + Android preview lifecycle + public-only SW checks. Desktop, Localization, Voice and TTS also passed for that SHA; Backend/Android were still running when checked. Later docs-only commits do not change this runtime evidence. No real provider/proxy/device/ChatGPT acceptance is implied.
+- GitHub updates through `9a8f906b` were integrated without history rewrite. Guide synchronization commit `44a96a67` and concurrent-doc merge `19fd8c70` were pushed to the feature branch. Main remains `891d9d9b`.
+- `app/static/admin-pwa/app.js` / `styles.css`: explicit inline Android-only preview using the existing private JPEG endpoint. Fixed route, cookie/no-store fetch, no redirects, 15-second abort, bounded JPEG, current server auth/retention, 401 clears private UI. One preview at a time; close, source/page/locale navigation, offline/pagehide and session invalidation abort/revoke object URLs. Generation checks prevent late responses entering a new drawer. No private browser/SW cache or new MCP capability.
+- Canonical UZ/RU/TJ image toggle/alt labels and generated `catalog.js`; V10 layout and 44px actions preserved. Actual repo hsk-ai-ui / webapp-testing skills were read/applied for the new inline preview pattern. No runtime dependency, schema, config/flag, legacy admin or payment/access logic change.
+- Local targeted API/inbox/triage/shell regressions: **31 passed**; catalog regressions: **7 passed**. Builder `--write`: 63 artifacts / one updated; `--check`: 63 / 0 stale. Browser virtual-WebAuthn/payment regressions, new real-ASGI Android preview lifecycle and public-only SW suite passed. Screenshots: `/tmp/hsk-inbox-preview-browser-20261024`, desktop/mobile UZ/RU/TJ; mobile Uzbek and desktop Russian preview screenshots visually inspected. Initial new-fixture omissions (required Telegram ID and intercepted Fetch Metadata expectation) were corrected before passing, without weakening production guards. No new PostgreSQL DDL or real provider/device test was needed/performed for this frontend increment.
+- **Next:** reviewed Bot/Release media ownership/type/size proxy; privacy-safe technical event intake (never raw Mini App diagnostic stacks/URLs), triage retention/audit follow-ups, remaining first-party management and bounded exports. Staging/real ChatGPT and physical Apple delivery remain separate approval/configuration gates. All feature defaults remain OFF. Check the new exact commit's CI before any head-specific green claim.
+
+## Current continuation and guide synchronization — 2026-10-24
+
+Fetched runtime `d93b75fe468c217dee66e2c4fe277ccfeabadb4f` by fast-forward,
+preserving local documentation edits. Inbox read/triage/search, Apple Push
+sender code and retained Android JPEG proxy already exist; do not rebuild them.
+Android preview is now connected in V10. Next separately review other media and
+privacy-safe technical producers, remaining management/exports and approved
+staging/device/real ChatGPT gates. All rollout defaults remain OFF.
+
+Guides now route through this handoff; PR #200 resume/merge preparation and
+original phase checkpoints are historical. [READ_PROJECTIONS.md](READ_PROJECTIONS.md)
+is the detailed daily-cache contract: rolling 24 hours on authorized demand,
+private existing Redis, per-worker outage fallback, live auth/audit/quotas and
+billing/access, HTTP/SW no-store, no R2. Docs-only changes were checked for
+Markdown links and whitespace; no runtime tests are attributed to that edit.
+
+## VERIFIED private Android attachment route — 2026-10-24
+
+- **Last code HEAD:** `d93b75fe468c217dee66e2c4fe277ccfeabadb4f`. [Admin PWA workflow 40101181445](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40101181445): **both jobs SUCCESS**; 372 Python passed / 17 PostgreSQL-specific skipped, 61 legacy passed, 17 disposable PostgreSQL passed, 63 generated UI artifacts / 0 stale; synthetic mobile/desktop virtual-WebAuthn browser and Android API regressions passed. No production DB, TLS/provider or physical device exercised.
+- `a4ae3660` added the first **server-only Android JPEG attachment proxy** with a current canonical WebAuthn admin session, secure same-origin GET and nonexpired private retained source check, bounded/verified JPEG, read-only SQL and no-store/no-sniff response. It does not expose DB bytes through the Inbox list or MCP, and there is no UI button yet. Bot/Release Telegram media access remains unimplemented.
+- The initial build uncovered an actual flag-OFF route privacy regression: FastAPI converted `{report_id}` to integer *before* the guard, causing 422 instead of 404 while disabled. `63fd4723` changed ID parsing to occur **after** the rollout gate; `d93b75fe` added malformed placeholder and enabled/disabled regression assertions. Fixed head CI green; no legacy Telegram/admin auth changes.
+- Next scoped work: safe approved UI attachment view with canonical UZ/RU/TJ + browser tests, then reviewed Bot/Release attachment source validation. Keep raw Mini App stack/URL diagnostics excluded until independent redacted producer and retention schema are designed. Production/main/flags are untouched.
+
+## PRIVATE NATIVE INBOX ATTACHMENT PROXY — 2026-10-24
+
+- **New branch-only scoped increment:** `app/admin_api/pwa_inbox_attachments.py` serves only valid, retained Android JPEG attachment bytes via `GET /api/admin/v1/inbox/android/{id}/attachment`. It requires canonical HTTPS admin origin, active allowlisted WebAuthn Admin PWA session, same-origin Fetch Metadata, exact bounded DB record ID, valid nonexpired row and a structurally verified JPEG up to the existing 550 KiB intake limit. No Telegram file ID, path, student text or attachment metadata is reflected. Responses are private no-store with nosniff; SQL is READ ONLY. Missing/expired/corrupt files fail closed.
+- Router is mounted in `app/main.py` behind the existing Admin PWA flag. Regression `tests/test_admin_pwa_inbox_attachments.py` covers valid bytes and privacy; no session/forged cookie, Google-only auth, blocked admin, cross-site/foreign origin, query tampering, missing/expired/corrupt records, disabled rollout. **No UI attachment action, Bot/Release Telegram media loader, real-device staging or MCP exposure is part of this increment.** This line describes authored scope; refer to CI at the new exact SHA before claiming verified.
+
+## VERIFIED BOUNDED UNIVERSAL INBOX SEARCH — 2026-10-24
+
+- **Latest CI-verified implementation HEAD:** `15eeea3fc91d1d0d419165eba8d73b25ad5bfe82`, [Admin PWA Actions run 40100198739](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40100198739), **both jobs SUCCESS**. 368 Python passed / 17 PG-only skipped, 61 legacy passed, 17 disposable PostgreSQL 16 passed; 63 localized artifacts / 0 stale and actual headless Chromium virtual WebAuthn/mobile/desktop/Service Worker tests passed. No real device/proxy/production test was run. Other GitHub workflows are independent.
+- `app/admin_api/pwa_inbox.py` now supports **optional 3–80-char sanitized search**, case-insensitive substring against the already-displayed Bot, Release and retained Android report text, with literal SQL percent/underscore escape and a **30-day** search horizon; pending screenshot payment searches use **only exact numeric payment ID**. Existing source, priority, canonical user, keyset limits and private no-store WebAuthn session guards remain. Without search, older Inbox browsing remains unchanged. Query never touches Mini App diagnostic stack or receipt/bank data.
+- `app/static/admin-pwa/app.js` and `styles.css`: compact search form in the existing V10 notifications drawer, preserved source/important/account filters and pagination, 390px layout, escaped value and actor-bound request. Clears on session invalidation, stores no search in localStorage or SW. Reused existing canonical UZ/RU/TJ `find` and `monthly` keys; **no new generated UI catalog edits**. Unit and Playwright regressions were extended.
+- Commits: backend `8024e46a`, responsive UI `3abe4aa7`, test quotation fix `790ac83e`, actual-row-count E2E correction `15eeea3f`. Earlier browser E2E failed on an incorrect assumption that clearing search should restore 1 row; fixture had 2 unfiltered canonical account rows. Fixed to capture/restore the true baseline and rerun to green. This was a test defect, not a PWA query failure.
+- `docs/admin-pwa/TECHNICAL_ERROR_SOURCE_AUDIT.md` records verified source/privacy boundaries. **Do not turn Mini App `Message(content_type='app_error_context')` stack/URL/freeform content into admin alerts**, Apple Push or MCP without a separately designed, rate-limited, redacted event schema and trusted producer integration. Current Android durable bug intake and payment important alerts remain the only source-backed automatic important events.
+- **Next tasks:** audited system/Mini App technical event intake with explicit safe fields and retention; attachment proxy requiring live authorized admin checks; remaining first-party course/access/marketing commands and bounded JSON/CSV exports; real isolated ChatGPT/MCP, Google/Bot, Apple iPhone/Mac staging QA. Keep all Admin PWA/MCP/Push rollout flags default OFF. No `main` merge, live migration, credentials or provider delivery test in this work increment.
+
+## VERIFIED Apple sender integration + PWA status fix — 2026-10-24
+
+- Latest **code** commit: `108a8a994aa39b8fd5eb88922f5835c6a51a2c9e`. [Admin PWA CI run 40098811486](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40098811486) **BOTH jobs SUCCESS**: 366 Python passed / 17 skipped in that job; 17 disposable PostgreSQL passed; 61 legacy passed; 63 generated UI catalogs / 0 stale; virtual WebAuthn, mobile/desktop browser and 11 native/report regressions passed. Wider Android/Backend workflows are separate checks.
+- `4d6cf0b8`: `app/static/admin-pwa/app.js` stops displaying the old canonical `pushNotSending` warning when the authenticated Push API reports `sending_enabled=true`; when sender config is OFF, the existing warning remains. No new UI copy or catalog edit. `tests/test_admin_pwa_shell.py` guards this rendering contract. The existing shell-content-derived SW hash automatically changes with `app.js`.
+- `94e9887a` + `108a8a99`: offline integration test exercises the **real pinned pywebpush encryption + VAPID signing code**, intercepting only the final `requests.post` boundary. First run failed because test fixture omitted fake Response `text`/`headers`; fixture fixed, latest CI green. This is **not** Apple push-service acceptance or a physical notification.
+- Existing outbox, sender, conditional in-app scheduler and native report retention remain default OFF via independent feature flags. No production/staging secrets, real provider network, live device, migration, deployment or main merge was performed in this work increment.
+- **Next implementation priority:** inventory source-backed technical error/system alert producers and integrate only verified, rate-limited, privacy-safe important events; then secure screenshot/feedback attachment access and Inbox search. Separately, expand first-party management and sanitized JSON/CSV export under their own security tests. Staging and physical iPhone/Mac remain owner-authorized acceptance gates. No AI write/MCP-feedback exposure has been added.
+
+## CURRENT sender/retention continuation — 2026-10-24
+
+- **Branch verified prior to this incremental UI/doc/test patch:** `171fc3efdc5d2109d6ef542c7441489f72509f14` on `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201 (not merged). [Admin PWA CI 40096641518](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40096641518) for that baseline: two jobs successful, **364 Python passed / 17 PG-only skipped**, **17 disposable PG passed**, 61 legacy, 63 localization artifacts/0 stale and browser virtual WebAuthn checks passed. This is not an Apple-provider or real-device test.
+- **Later source supersedes the stale "NO sender" statements below:** `app/services/admin_pwa_push_dispatch.py` and `scripts/admin_pwa_push_dispatch.py` implement a default-OFF VAPID-signed, encrypted, leased/retry Apple Push sender; `app/main.py` conditionally schedules it only when all flags, trusted origin and secrets validate (`d8125beb`). `171fc3ef` adds hourly bounded private native-report retention cleanup under the PWA flag. CI exercised mocked provider and disposable DB only.
+- **UI follow-up:** the Push drawer must use the actual `push/list.sending_enabled` response instead of always showing the canonical `pushNotSending` warning. Preserve explicit per-device opt-in, and do not claim device delivery from readiness. A public-shell regression assertion guards this; new UI copy was unnecessary, so canonical/generated UZ/RU/TJ catalogs remain untouched.
+- **Still missing:** first-party system/Mini App technical-error producers, authenticated attachment viewing and inbox search; non-payment management adapters; bounded sanitized JSON/CSV, broader authorized feedback analytics, approved ChatGPT/real MCP network integration, isolated staging and physical iPhone Home Screen/Mac Safari delivery. No flag enablement, production credentials, real Apple provider requests, production migration or main merge. Earlier dated checkpoints below are historical, not current code status.
+
+## VERIFIED DEFAULT-IMPORTANT PAYMENT & ERROR ALERTS — 2026-10-24
+
+- Owner's default: **new pending payment receipt with uploaded screenshot** and **new durable Android bug report** are **important by default**. Ordinary Bot/Release feedback stays normal, unless manually marked important. Server/Mini App error producers remain **unintegrated**; do not promise alerts for them yet.
+- **CI-verified implementation head:** `e4e5868a1c7409dcd9a9d55f23e09d5ada00f4e3`, [Admin PWA CI 40095348846](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40095348846), BOTH jobs SUCCESS: **341 Python passed / 17 PG-only skipped**, **17 disposable PostgreSQL passed**, **61 legacy passed**, **63 catalog artifacts / 0 stale** and synthetic iPhone-width + desktop WebAuthn Chromium tests passed.
+- `alembic/versions/0125_admin_pwa_push_outbox.py` + `app/db/models/admin_pwa_push_outbox.py`: content-free, per-device, immutable dedup-event outbox with retry/lease fields and guarded non-empty downgrade. Migration 0123 Inbox triage and 0125 outbox allow the `payment` source. Tested only in disposable PG; no live migration.
+- `app/admin_api/pwa_push_outbox.py`: new payment receipts and Android errors queue only for actively opted-in iPhone/Mac subscriptions of allowlisted canonical admins, one event per source ID / subscription, no private student/receipt/message/push endpoint/key in the outbox. Manual mark-important still enqueues voluntary flagged feedback separately. Duplicate receipt reattachments are idempotent.
+- `app/services/payment_service.py` hooks pending-with-screenshot creation/attachment; `app/services/admin_pwa_native_reports.py` hooks newly stored private Android bugs. Both optional push queue operations are isolated with savepoints and sanitized exception handling to avoid blocking checkout/intake. Both `ADMIN_PWA_ENABLED` and `ADMIN_PWA_PUSH_ENABLED` default OFF and must be enabled for enqueue.
+- V10 `inbox/list` now has four sources: Bot/Release/Android/**payment**. Payment rows must be pending with a real screenshot ID, default important, with generic/empty body (no amount, receipt or personal data); Android reports also default important. Filters and unread count include them. Payment Inbox offers mark-read and navigation to Payments, **not approve/reject**; prior WebAuthn payment review remains authoritative. Generated UZ/RU/TJ payment receipt label.
+- Tested: two separately enrolled Apple devices, revoked-device exclusion, dedup, optional-push DB failure not blocking payment, four-source Inbox, default-priority filtering, unread-count and browser. New regression tests included in the 341-pass suite.
+- **Still NO sender / live APNs delivery**; `sending_enabled=false`. Next tasks: VAPID-signed payload encryption, rate-limited and leased delivery worker, 404/410 stale auto-revoke, retries without duplicate storm, privacy-safe copy, real approved HTTPS staging and iPhone/Mac physical tests. Further technical error sources must be audited and connected. No actual flags, production, secrets, or main merge.
+
+## VERIFIED APPLE WEB PUSH GESTURE + SERVICE WORKER INCREMENT — 2026-10-24
+
+- **Exact latest CI-verified code SHA:** `bcbb04d63e98c1f4754a3580f8bd7583360e40b3`, [Admin PWA workflow 40093608662](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40093608662): **both jobs SUCCESS**, **332 Python passed, 17 PostgreSQL-only skipped**, **61 affected legacy tests passed**, **17 real disposable PostgreSQL tests passed**, 63 localized artifacts / 0 stale; Chromium synthetic login / Apple iPhone-width responsive inbox / cross-page tests green. This proves code/API QA only, **not physical Apple Web Push delivery**. Other workflows have independent results.
+- New `app/static/admin-pwa/sw.js` reacts to a push by **always** showing a generic visible notification. It ignores any push payload / user text / payment metadata. Notification click opens only a fixed first-party `/admin/?inbox=1` URL and never uses an externally supplied redirect. `app/static/admin-pwa/app.js` recognizes that exact query only after a valid admin cookie + current session, so private Inbox never opens without login.
+- Safari/iPhone reliability fix: `pushSettings()` prepares an active Service Worker and the server-published **public** VAPID application key before the user presses Enable; `enablePush()` then invokes `PushManager.subscribe({userVisibleOnly:true,...})` synchronously from that click, with no preceding `await`, `fetch`, or deferred permission prompt. Concurrent taps are serialized; failing new subscriptions are locally cleaned up only if no pre-existing device subscription existed. Existing owner WebAuthn/session/CSRF and default-off config still gate server registration. Tested by `tests/test_admin_pwa_shell.py` plus browser mock/real ASGI suite; **real Safari tests pending**.
+- `tests/e2e/admin_pwa_browser.py` verifies fixed notification deep link after WebAuthn session. `tests/test_admin_pwa_shell.py` scopes the no-untrusted-push-data assertion strictly to the `push` handler; existing safe `message` handler may use `event.data` for public shell version update. `tests/test_admin_pwa_sessions.py` now asserts the explicit `push_available=false` extension to the minimal identity response.
+- Still **NO push sender or live APNs delivery**; `sending_enabled=false`, `ADMIN_PWA_PUSH_ENABLED=false`, VAPID/storage secrets empty by default; no production deployment, no actual device subscriptions, no live schema migrations, no external ChatGPT MCP changes, no main merge.
+- Next development increment: guarded event-driven **new important inbox/system alert** producer, durable deduplicated delivery outbox, mock-tested encrypted Web Push payload + VAPID private signing, per-device throttling and 404/410 auto-revoke. Then operator-approved isolated HTTPS staging and physical iPhone Home Screen + Mac Safari/Dock verification. Avoid sending push from every read/triage update or polling historical source records.
+
+
+## APPLE PUSH SUBSCRIPTIONS + INBOX BADGE — 2026-10-24
+
+- **Verified unread + important filter code:** `5fae57d41673fcee7dc86a6f3ab8165ec4232a16`, [CI 40092001022](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40092001022): BOTH Admin PWA/PG jobs green, **327 Python passed, 17 PG-specific skipped, 61 legacy passed, 17 real PostgreSQL passed, 63 catalog artifacts/0 stale, synthetic WebAuthn browser with 390px iPhone UI passed**. `inbox/list.priority=important` is applied in the source SQL queries, `inbox/unread-count` counts at most 100 source IDs (capped 99+), not first-page rows; expired Android excluded. Bell count refresh on authenticated boot and after triage; NO periodic background DB scan.
+- **New Apple subscription foundation (test latest HEAD before declaring green):** `alembic/versions/0124_admin_pwa_push_subscriptions.py`, `app/db/models/admin_pwa_push.py`, `app/admin_api/pwa_push.py`, `tests/test_admin_pwa_push.py`. Per canonical allowlisted WebAuthn admin and per-install iPhone/Mac encrypted endpoint/keys (Fernet), endpoint hash uniqueness, max four active devices, strict Apple `*.push.apple.com` HTTPS host validation, same-origin/CSRF and revoke. Staging HTTPS origin validation fixed. Per-device registration/list/revoke API; plaintext endpoint/secret keys never returned. Separate flag `ADMIN_PWA_PUSH_ENABLED=false`, blank `ADMIN_PWA_PUSH_VAPID_PUBLIC_KEY` and `ADMIN_PWA_PUSH_STORAGE_KEY` by default.
+- Current owner scope: **iPhone Home Screen PWA and Mac Safari/Add to Dock** only for Admin PWA. First-party UI includes explicit gesture-driven Apple permission and subscription management (not enabled without flag); localized UZ/RU/TJ, supports independent iPhone/Mac subscriptions. Public Service Worker has a visible generic, private-data-free Web Push handler and fixed `/admin/?inbox=1` click navigation; new login guard is required before showing inbox.
+- **NO real delivery yet:** `sending_enabled=false` remains explicit. Push service sender/VAPID private signing, outbox/idempotent retry, Apple network access and physical Apple device testing, privacy/retention review and production rollout are still undone. The browser UI is NOT evidence that APNs accepts live sends. No staging deploy, live migration, secrets, flag activation, or main merge. External MCP remains stats-only.
+- Migration chain head advanced to `0124_admin_pwa_push_subscriptions`, with guarded standalone QA bootstrap, workflow and disposable PostgreSQL DDL test updates. `docs/admin-pwa/APPLE_PUSH_ACCEPTANCE.md` lists the exact remaining acceptance gates. Verify current remote branch and latest CI after docs commits; documentation-only changes can cancel old concurrent workflow runs.
+- Next: complete sender/outbox and server-triggered important-inbox dispatch with privacy-safe generic copy, provider status/expiry behavior, per-device enable/disable UX, then isolated HTTPS staging and **real iPhone+Mac** tests. Do NOT claim owner device notifications work before physical Apple provider E2E.
+
+## VERIFIED APPLE-PRIORITIZED INBOX TRIAGE UI — 2026-10-24
+
+- **Last CI-verified code SHA:** `a2ea94d6d9d95b0fa0159dcaee6f54574dab9ed8`; [Admin PWA run 40091110808](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40091110808): both jobs green, 325 Python passed (17 skipped PostgreSQL-only), 61 legacy passed, 17 disposable PostgreSQL 16 passed, 63 localization artifacts / 0 stale; browser virtual WebAuthn / V10 source & triage taps / 390px 44px touch target passed. Other workflow families may still be running.
+- `app/static/admin-pwa/app.js` now renders each item with server-derived read/assigned/resolved and important/normal state plus context-specific first-party triage buttons; compares `expected_revision`, reloads after success/409, disables controls during mutation, never fabricates success on an unknown response. New `styles.css` targets iPhone 390px touch controls and Mac desktop. `tests/e2e/admin_pwa_browser.py` clicks the real POST endpoint and awaits durable audit + re-render (first early test failed due to clicking twice before API completion; fixed without weakening backend checks). Synthetic screenshot `mobile-inbox-triage.png` is collected in CI.
+- New triage labels are canonical in `localization/ui/{uz,ru,tj}/miniapp.json`; regenerated `app/static/admin-pwa/catalog.js` matches the existing catalog builder. No learner bundle copy changed; `scripts/i18n_build_all_catalogs.py --check` green.
+- **Owner priority:** Apple **iPhone + Mac**, not Windows/Android Admin PWA. Important distinction: the current Inbox receives/manages stored feedback; **Web Push to the owner's iPhone/Mac is NOT implemented**. The staged security/device acceptance checklist is `docs/admin-pwa/APPLE_PUSH_ACCEPTANCE.md`. This new capability needs per-device VAPID subscriptions, server push/outbox, explicit installed-iPhone/ Mac consent and real physical device QA. No notification permission prompt, push subscription storage, production keys or live delivery was enabled.
+- Next scoped work: source-backed unread count + filters/severity search + system/admin event inventory, then secure attachment proxy and opt-in Apple Web Push. Keep all three rollout flags default OFF and external MCP statistics-only, no main merge/deploy.
+
+## VERIFIED INBOX TRIAGE BACKEND INCREMENT — 2026-10-24
+
+- **CI-tested implementation head:** `838026d9a5ea33695d29a2b3be613d153eec642b`. [Admin PWA CI 40089654035](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40089654035): BOTH jobs green; **325 Python passed / 17 PostgreSQL-only skipped**, **17 real PostgreSQL 16** tests green, 61 affected legacy regressions green, 63 catalogs / 0 stale, desktop/mobile virtual-WebAuthn/Service Worker browser regression green. This is synthetic CI, **not** a production or physical-device test.
+- `alembic/versions/0123_admin_pwa_inbox_triage.py` introduces `admin_pwa_inbox_triage` (composite per-source identity, status, priority, optional canonical assignee, read/resolved timestamps, CAS revision) and `admin_pwa_inbox_triage_audit` (append-only operation/actor/time, without message/file/Telegram identifiers). Downgrade rejects nonempty state/audit; separate live migrations were NOT run.
+- `app/admin_api/pwa_inbox_triage.py` mounts first-party **POST `/api/admin/v1/inbox/triage`**. Exact Origin/CSRF, strict JSON schema, current WebAuthn Admin PWA session, current ADMIN_IDS, source existence and Android expiry guards; source-row locks, expected revision, atomic state+audit commit. Allowed operations: mark_read, assign_self, resolve, reopen, mark_important, clear_important. Cannot assign arbitrary users or alter source feedback, payouts, access or broadcasts. Stale revisions -> 409, invalid source -> 403. No external MCP write tool.
+- `app/admin_api/pwa_inbox.py` joins the persisted triage state onto the existing bounded read projection. Missing triage defaults to new/normal/revision 0; return `triage_available=true`, revision, priority, timestamps and canonical assigned admin ID. The existing V10 inbox **still only renders source filtering/read-only rows**: triage action controls, unread badge, advanced filters and UZ/RU/TJ labels are NOT yet implemented.
+- `tests/test_admin_pwa_inbox_triage.py` proves all three source types, state transitions/audit, idempotent no-op, CAS/stale rejection, cookie/origin/flag expiry guards, no arbitrary assignee and denied non-passkey admin cookie. Updated guarded empty-QA bootstrap, model registry, isolated migration workflow and real disposable 0103–0123 DDL rehearsal.
+- Important release follow-ups: triage audit/metadata retention and cleanup for removed/expired sources; update V10 UI with canonical UZ/RU/TJ via real catalog builder; secure attachment proxy; system/admin notices and alert severity; private inbox search/filters. Before staging, monitor cache/DB impact and retention. Existing `ADMIN_PWA_ENABLED` and both MCP feature defaults remain false; no staging/production deployment or main push/merge.
+
+## VERIFIED FIRST UNIVERSAL INBOX INCREMENT — 2026-10-24
+
+- **Exact CI-tested head:** `42e6a7b7bf6edde0ac53d4fe9fc3542c591697bf`. [Admin PWA run 40088791629](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40088791629): BOTH jobs success; **322 Python tests passed / 17 PostgreSQL-only skipped**, affected legacy 61 passed, **17 real disposable PostgreSQL 16** tests passed, 63 localization artifacts / 0 stale, desktop/mobile virtual-WebAuthn and Service Worker/browser 11 passed. Other workflows at the exact head must be checked independently. Do not present these tests as live staging/production evidence.
+- `app/admin_api/pwa_inbox.py`: an explicitly bounded read-only unified service for BotFeedback, ReleaseFeedbackResponse and *retained* AdminPwaNativeReport, capped messages, no Telegram IDs or screenshot/attachment bytes. Per-source query limit+1 and stable cross-source UTC timestamp/source/id cursor, canonical-only account filter, expired Android exclusion. All sources and owner constraints checked by tests. Old single-source `feedback/list` preserved unchanged for compatibility.
+- `app/admin_api/pwa_read.py`: added cookie-only, strict same-origin+CSRF-guarded POST `/api/admin/v1/inbox/list`, reuses normal admin authorization and PostgreSQL READ ONLY transaction; no MCP tools or schema change.
+- `app/static/admin-pwa/app.js`: existing V10 Notifications bell now opens chronological `all` by default; Bot / Release / Android filter tabs, persisted canonical-user filter and cursor-backed next button. Reuses the already localized labels; no new static copy, generated catalog or layout redesign. `tests/e2e/admin_pwa_browser.py` exercises tabs in headless Chromium.
+- `tests/test_admin_pwa_read.py`: synthetic mixed-source same-timestamp page ordering, orphan identity, expired native removal, no byte/file/Telegram ID leakage, strict ISO timezone-aware cursor validation, tampering/other origin, no cookie, revocation, flag OFF, only SELECT statements and route mounting. Initial CI caught strict-string cursor parsing 400; fixed it and reran to green.
+- **Not finished:** durable triage read/assigned/resolved and audit; indexed filters/severity/search; secured screenshot/Telegram attachment proxy; admin/system alerts; visually localized historical gap notice; retained Android reports are not reconstructable from pre-intake Telegram-only notifications. No real deployment, main merge, flags, new secrets, schema or production operations.
+- Next focused step: design and implement server-authoritative Inbox event/triage model and authenticated status updates under current PWA security rules. Keep external MCP statistics-only, and keep legacy Telegram/Android behavior untouched. Review native report retention setup before staging.
+
+
+## Repository and boundaries
+
+- Repository: `akbarholturaev11-lang/HSK-AI-Bot`; ONLY work branch `feat/admin-pwa-mcp-readonly-20261024`; [Draft PR #201](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/201), open and unmerged.
+- MCP transport foundation changes: `e0270fb91d0c7e24c629d600964a09eb9816be9e`; integrated with concurrent documentation-only updates at `5ef02f1fc1716be8e9026f02aa41e6d312780e8c`. No history rewrite. Official SDK regression/QA dependency pin: `4009e903bb9ddbdbe7361280e229d4997903988b`. Later documentation commits advance HEAD without changing runtime code.
+- Remote `main` verified unchanged at `891d9d9b6ffda5fba114d9c5c169eeb2f8a7836f` after the feature push. PR #200 is already merged; do not repeat its foundation work.
+- Keep `ADMIN_PWA_ENABLED=false`, `ADMIN_PWA_MCP_ENABLED=false`, `ADMIN_PWA_MCP_TRANSPORT_ENABLED=false`. Resource/client/callback/public-origin defaults remain empty. Defaults do not prove production environment values.
+- No main merge/push, production/staging deployment, live migration, secret configuration, flag activation or real external ChatGPT linking is authorized by this checkpoint.
+- External MCP exposes ONLY `hskai_statistics` / `admin:analytics:read`. Users, feedback, payment, delete, broadcast, arbitrary SQL/URL and other write tools stay excluded.
+
+## Daily statistics policy — implemented at `4709c660`, 2026-10-24
+
+The owner clarified that minimizing unnecessary DB work is the purpose, then
+selected once-per-day updates. Implemented in `pwa_statistics_cache.py`: private
+24-hour on-demand aggregate snapshots, shared across browser/MCP through one
+reader in `app/main.py`. It reuses the already pinned Redis 6.4.0 dependency and
+`REDIS_URL`; no R2 integration, new dependency/flag/schema or live configuration.
+Only requested expired variants refresh. Auth transactions close before cache
+IO/waits, and cached hits still revalidate the current session/token/admin and
+MCP audit/quotas. Current user/billing/access/review commands remain uncached.
+
+`READ_PROJECTIONS.md` specifies the temporal contract, scope/version keys,
+bounded JSON, 45-second shared refresh lease, fencing, eight-second load limit,
+failure cooldown and explicitly weaker per-worker daily fallback during Redis
+outage. Existing V10 generated_at display shows actual data age. HTTP and SW
+no-store/privacy constraints are unchanged. Relevant rules, target, plan,
+browser/MCP contracts were reconciled with the owner's daily-update decision.
+
+Local verification: **380 passed, 17 PG-only skipped** in the broad Admin PWA/
+catalog/bootstrap plus affected legacy payment/access/import suite. After final
+warm-CSRF/timeout additions: **14 cache tests passed**, including five tests on
+an actual temporary Redis **7.4.0** server (URL/client path, cross-worker reuse,
+serialization across variants, failed refresh lease and old-owner fencing).
+SQLite HTTP/MCP tests demonstrate warm responses still deny revoked/expired
+OAuth and blocked admins, release the auth DB session before cache work, and
+keep current billing/access reads live. Twenty simultaneous same-key requests
+invoke one loader. No performance claim about production is implied.
+
+Existing virtual-WebAuthn/browser/PWA/SW suite passed with the new daily reader;
+screenshots `/tmp/hsk-daily-cache-browser-20261024`. No UI/copy/layout change or
+new physical-device/staging evidence. CI now provisions an isolated Redis 7
+service for the real shared-cache tests. Check the new commit's own CI result
+before claiming head-specific success.
+
+Previous native-intake head `5304cb7ae687f2db0f38891c1da8e73cb9fd015d`: all seven
+returned workflows, including [Admin PWA 40085415751](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40085415751),
+Backend and Android, were independently verified green before this increment.
+Next original work remains universal inbox read/triage/attachments, remaining
+management/exports and approved staging/real ChatGPT acceptance. All three
+feature defaults remain false; no main push, deployment or live migration.
+
+## Broader Admin PWA continuation — user profile increment, 2026-10-24
+
+The owner requested the remaining final-product work in tested parts, committing
+and pushing each part only to this feature branch. The active ordered worklist
+is in `IMPLEMENTATION_PLAN.md`; PR #200 and the MCP foundations below remain done.
+
+First increment: real read-only user profile and paginated all-status billing
+history (`pwa_read.py` users/detail and users/payments); existing V10 drawer,
+UZ/RU/TJ, course/track snapshots, canonical referral/device aggregates and
+account-filtered feedback. See `READ_PROJECTIONS.md` for field/grain boundaries.
+No MCP tool, flag default, schema migration or legacy mutation was changed.
+
+Validation in isolated local fixtures: **300 passed, 16 PostgreSQL-only skipped**
+for the Admin PWA/catalog/standalone suite; **16 passed on disposable PostgreSQL
+15**, including the extended read-only transaction test for profile/payment
+history. Real virtual-WebAuthn/browser and service-worker suites passed, with
+profile paging, canonical account filter, XSS, 1440px desktop and 390px UZ/RU/TJ
+screenshots in `/tmp/hsk-profile-browser-20261024`; mobile Uzbek and desktop
+profile screenshots visually inspected. Synthetic fixtures are not staging or
+physical-device evidence. Catalog generation: 63 artifacts, one bundle updated.
+
+Next: bounded AI-spend, course-engagement and clearly defined conversion
+statistics; then durable inbox and remaining management/export/staging gates.
+
+## Overall activity metrics increment, 2026-10-24
+
+User profiles were committed/pushed as `996ea0582994439d7ab3a483827990f2cb571143`;
+[Admin PWA CI 40084429379](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40084429379)
+passed. Main remained `891d9d9b6ffda5fba114d9c5c169eeb2f8a7836f`.
+
+Next increment: `pwa_metrics.py` fixed-grain AI ledger cost/token/request totals,
+canonical course engagement and registration-cohort Pro conversion, with inline
+metric definitions and V10 UZ/RU/TJ panels. See `READ_PROJECTIONS.md` for exact
+populations, dates, deduplication and exclusions. No schema/flag changes, new
+MCP permission or inferred Telegram attribution.
+
+Validation: **302 passed, 16 PostgreSQL-only skipped**; the affected read + real
+MCP SDK tests rerun after final query changes: **14 passed**. Disposable PG15
+projection/read-only snapshot: **1 passed** (15 unrelated PG tests deselected).
+Browser/WebAuthn/SW checks passed; metric panels and profile regression checked
+at desktop/mobile, screenshots `/tmp/hsk-metrics-browser-20261024`, desktop and
+mobile statistic screenshots visually inspected. These remain synthetic QA,
+not real ChatGPT or staging acceptance. Next work: universal durable inbox.
+
+## Durable native intake increment, 2026-10-24
+
+Statistics increment committed/pushed as `a7f0a5d13660c365ebd39dd108f715c644a39446`;
+[Admin PWA CI 40084708364](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40084708364)
+passed, as did Backend/Desktop/Localization/TTS for that head. Android was still
+running at the check; do not infer its outcome.
+
+`0122_admin_pwa_native_reports` adds private durable Android report intake,
+canonical ownership, DB-coordinated throttle/UTC-day deduplication, delivery
+state and bounded retention. The native API commits intake before Telegram only
+when the existing PWA flag is enabled; flag-off Telegram-only behavior and the
+existing success/503 contract remain. See `NATIVE_INBOX_INTAKE.md` for lifecycle,
+retention command and mandatory cleanup scheduling before activation. Reports
+and JPEG bytes are private; no inbox/attachment/MCP endpoint is added yet.
+Downgrade refuses nonempty report data. No live schema/flag/deploy change.
+
+Validation: combined Admin PWA/catalog/bootstrap + Android feature/report-flow +
+legacy financial/access/import suite: **443 passed, 17 PostgreSQL-only skipped**.
+Separate disposable PG15: **17 passed**, including concurrent intake, nonempty
+rollback refusal and actual 0103–0122 empty-QA migration DDL. Isolated Alembic
+0121→0122→0121→0122 succeeded. Retention CLI help/count-only exercised against
+that empty disposable DB, no rows removed. Full-history legacy cold start at
+0011 remains out of scope. No UI changes in this increment.
+
+Next: connect bot/release/native reports to the bounded inbox, then triage,
+secure attachments, admin/system sources, exports and remaining management and
+staging gates. Historical Android Telegram-only messages remain unrecoverable.
+
+## Required reading
+
+Read root `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`; `HSK_AI_ADMIN_PWA_TEMP_RULES.md`, latest `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md`, `MCP_CONNECTION_CONTRACT.md`, `MCP_CHATGPT_COMPATIBILITY_AUDIT_20261024.md`, `BROWSER_UI_CONTRACT.md`, `ADMIN_PWA_V10_UI_REFERENCE.md`; then real source/tests. Historical `codex/admin-pwa` branch references are superseded by the user-selected feature branch above.
+
+For UI, read actual `.agents/skills/hsk-ai-ui/SKILL.md` and `.agents/skills/webapp-testing/SKILL.md`; these were read and applied in this increment. Read `localization/README.md` before copy changes. Author UZ/RU/TJ `ui.admin_pwa.*` in canonical `localization/ui/*/miniapp.json`, generate/check with `scripts/i18n_build_all_catalogs.py`; never edit generated catalogs directly.
+
+## Implemented — do not rebuild
+
+- `pwa_mcp_oauth.py`: one exact predefined public client/callback, authorization code + S256 PKCE, session-bound three-minute explicit consent, hashed one-use CSRF, 60-second single-use code and 300-second hashed opaque access token. Client-ID shape now matches the resource verifier; configured callbacks cannot preseed/duplicate OAuth response fields. CSRF hash is cleared after allow/deny.
+- `pwa_mcp_consent_transport.py`: actual GET/POST `/oauth/authorize`, same-session allow/deny, exact Origin + Fetch Metadata + CSRF, RFC 9207 `iss` on successful/denied redirects, state preservation. New V10 localized sign-in/retry and expired/restart screens contain no reflected OAuth query or credentials.
+- **Browser bug fixed:** `no-referrer` caused native form POST to send `Origin: null`, failing CSRF. Consent HTML/header now use `strict-origin`; native browser tests assert real Origin and origin-only Referer, while CSRF checks remain strict. See the Fetch standard reference in the compatibility audit.
+- `pwa_mcp_management.py`: mounted owner-only cookie API for last 30 consent records and atomic revocation of outstanding codes plus ALL issued grants. Current canonical WebAuthn admin and same-user ownership required. History includes actual active-access expiry and expires pending records correctly. APIs now use the existing PWA `ok` envelope.
+- `pwa_bootstrap.py`, `app.js`, `styles.css`: server-gated MCP availability; V10 existing drawer for history and separate revoke confirmation, accessible focus/close/Escape, mobile More entry, UZ/RU/TJ labels and explicit loading/empty/error/uncertain/offline/auth states. No new MCP write tool. Lost revoke response requires a history reread.
+- `pwa_mcp_http.py`: protected-resource/AS metadata, token endpoint and stateless authenticated JSON-RPC. Supported versions remain `2025-06-18`, `2025-11-25`; initialize echoes a supported request or offers the newest supported version. Subsequent calls require a supported version header. Strict UTF-8/JSON, duplicate/nonfinite/deep input rejection, media/Accept quality checks, invalid Origin -> 403 on every MCP method, notifications -> 202, unknown methods/tools rejected, stats timeout 10s, tool OAuth metadata. Expired/revoked access -> 401 with resource metadata, scope and invalid_token challenge.
+- **New security module** `pwa_mcp_security.py`, models `admin_pwa_mcp_security.py`, migration `0121_admin_pwa_mcp_security`: DB-shared minute quotas, audit admission BEFORE protected work, safe completion outcome/actor, seven-day audit retention with bounded 100-row cleanup per admitted/over-limit attempt. Failed audit/admission returns 503 without exposing results. Audit remains separate from the analytics READ ONLY transaction.
+- Revocation blocks subsequent authorization checks. A statistics snapshot already authorized before revocation may finish within its existing 10s bound; revocation does not cancel an in-flight SQL statement.
+- Quotas: authorize GET 60/min, consent POST 60/min, token 60/min, MCP POST 300/min, history 60/min, revoke 30/min; additional statistics cap 30/min per verified canonical admin across all tokens/workers. Endpoint-wide anonymous buckets prevent token/IP-driven bucket growth. 429 includes Retry-After; repeated global denials are aggregated to one audit row per endpoint/window. Edge network/connection limits still required before staging.
+- Audit stores only UUID, allowlisted action, outcome, HTTP status, canonical admin ID if verified, timestamp. No IP, URL/query, header, cookie, code/token/hash, state, PKCE, arguments or statistics result. Exceptions use content-free logs. Downgrade refuses to erase nonempty audit evidence.
+- Security foundation models registered at 0121; later inbox/push work advances the QA/migration head to 0125. Existing `pwa_mcp_grants.py` is an earlier unmounted helper; the real mounted implementation is `pwa_mcp_management.py`.
+
+## Historical OAuth/SDK validation (`5ef02f1f` / `4009e903`)
+
+Local Python 3.12 at those foundation snapshots:
+
+- Full scoped Admin PWA + localization/QA suite with official SDK regression: **298 passed, 16 PostgreSQL-only skipped** (297 before the SDK-only test commit).
+- Disposable local PostgreSQL **15**: **16 passed**, including atomic first-use quota under eight connections, simultaneous code redemption/revocation, READ ONLY checks and migration audit-preservation guard. CI independently uses PostgreSQL 16.
+- Real disposable 0109 baseline -> 0110–0121 upgrade, 0121 -> 0120 downgrade and re-upgrade passed. Full historical cold-start migration remains independently broken at old 0011 (missing course_progress); do not claim it fixed.
+- Affected legacy payment/subscription/preview/affiliate/import regressions: **61 passed**.
+- Catalog check: **63 artifacts, 0 stale**; Python compile and git diff checks passed.
+- Actual headless Chromium: virtual WebAuthn/PWA/SW suites passed; real cookie/DB management, revoke cancellation/success and token rejection verified; desktop 1440 + iPhone viewport 390, UZ/RU/TJ history screenshots; consent/sign-in/expired screens passed with no script errors or horizontal overflow. Screenshots: `/tmp/hsk-mcp-browser-20261024` on the original host; CI uploads equivalent synthetic evidence.
+- Synthetic consent bridge explicitly supplies Fetch Metadata (Chromium route interception omits network-generated headers). It asserts the real browser Origin and Referer first. This does NOT prove actual HTTPS/proxy or physical iPhone behavior.
+- Verified runtime CI: [Admin PWA run 40081833261](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40081833261), exact `5ef02f1f`, **both jobs green**: 297 passed/16 PG-only skipped, 61 legacy, 16 real PostgreSQL 16, scoped migrations and browser/catalog checks passed. Desktop, TTS and Localization were green at this checkpoint; Backend/Android still required completion verification.
+- Verified SDK-test head `4009e903` CI: [Admin PWA run 40082233884](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40082233884) **both jobs green**: 298 passed/16 PG-only skipped, 61 legacy, 16 real PostgreSQL 16, catalogs, migrations and browser QA. TTS/Localization/Desktop also green; Backend/Android still running when recorded.
+- Official Python MCP SDK **1.27.0** controlled-client test `tests/test_admin_pwa_mcp_sdk.py` passed locally: real HTTP authorize/approve/PKCE token, replay rejection, SDK initialize/notification/list/call, actual SQLite statistics and owner revoke -> bearer 401, audit actor/outcomes. No OAuth/statistics service mocks. Only ASGI transport replaces external networking. SDK + compatible sse-starlette 3.0.3 are pinned in CI QA installation alongside all application requirements; no runtime dependency was added.
+
+## Next safe work / release gates
+
+1. Runtime/SDK Admin PWA CI is verified; check latest documentation-head and remaining Backend/Android statuses before any new all-CI-success claim. Do not repeat implemented history/revoke/audit/quota/UI or RFC 9207.
+2. Official SDK 1.27.0 controlled compatibility is now tested; do not repeat that foundation. Inspector/real ChatGPT and actual network/TLS remain staging checks. Modern `2026-07-28` discovery/routing features are not implemented or advertised; verify whether the chosen real client negotiates the supported protocol before expanding scope.
+3. Official OpenAI docs permit CIMD, DCR OR predefined OAuth clients. This implementation deliberately supports only exact predefined public-client `none` + S256. Obtain actual client ID/callback from the owner’s permitted isolated ChatGPT connection page; do not invent them, treat a CIMD URL as a static identity, fetch arbitrary metadata, or add DCR just because static config is blank.
+4. Deliberate lifecycle: no refresh token, access lasts at most 300s; reauthorization requires fresh client PKCE/state and explicit owner consent. Browser logout prevents code redemption but existing OAuth access lasts until its own expiry or explicit revoke. Test this separately approved OAuth-session policy and automatic ChatGPT reconnection on isolated staging. If refresh is necessary, design rotated one-use families with replay detection and consent-wide revocation first; never simply lengthen the access token.
+5. After separate owner approval and actual isolated environment/client details: stage under verified DNS/TLS/trusted proxy, configure exact resource/issuer/callback without weakening production constants, enforce edge limits and log redaction, test initial consent/denial, expiry/reconnect, owner revoke, quota and a real statistics-only ChatGPT call. Staging host/resource/RP currently need an explicit isolation design; no permissive wildcard was added.
+6. No main/production promotion or full-connector-complete claim until the above release gates have actual evidence. Preserve Telegram `/admin.html`, legacy auth, Android Direct/Play, payments/access and lesson data.

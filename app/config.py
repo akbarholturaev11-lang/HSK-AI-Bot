@@ -109,6 +109,23 @@ class Settings(BaseSettings):
     ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS: int = 86400
     # Separate browser Admin PWA stays disabled until Google/TG + passkey auth exists.
     ADMIN_PWA_ENABLED: bool = False
+    # Independent kill switch; no public MCP resource/OAuth flow is mounted.
+    ADMIN_PWA_MCP_ENABLED: bool = False
+    # Never enable before complete OAuth consent UI, client registration and security review.
+    ADMIN_PWA_MCP_TRANSPORT_ENABLED: bool = False
+    # Apple Web Push subscriptions and sender are separately opt-in; disabled by default.
+    ADMIN_PWA_PUSH_ENABLED: bool = False
+    ADMIN_PWA_PUSH_VAPID_PUBLIC_KEY: str = ""
+    ADMIN_PWA_PUSH_STORAGE_KEY: str = ""
+    # Outbox dispatch is independent from device enrollment; disabled by default.
+    ADMIN_PWA_PUSH_SEND_ENABLED: bool = False
+    # URL-safe base64 raw 32-byte private EC scalar, matching the public VAPID key.
+    ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY: str = ""
+    ADMIN_PWA_PUSH_VAPID_SUBJECT: str = ""
+    ADMIN_PWA_MCP_RESOURCE: str = ""
+    # Trusted pre-registered public OAuth client; blank means fail closed.
+    ADMIN_PWA_MCP_CLIENT_ID: str = ""
+    ADMIN_PWA_MCP_REDIRECT_URI: str = ""
     ADMIN_PWA_PUBLIC_ORIGIN: str = ""
     # Optional Android FCM delivery. With a blank project ID, Telegram and the
     # Android WorkManager status fallback continue without Firebase.

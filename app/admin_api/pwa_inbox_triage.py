@@ -1,0 +1,163 @@
+"""Authenticated, audited first-party inbox triage. NEVER part of external MCP."""
+import logging
+from datetime import datetime, timezone
+from uuid import uuid4
+
+from fastapi import APIRouter, Request
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from sqlalchemy import select
+
+from app.admin_api.pwa_approval import _utc
+from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
+from app.admin_api.pwa_inbox import RowId, Source
+from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
+from app.admin_api.pwa_step_up import _locked_session
+from app.admin_api.pwa_webauthn_transport import _body, _guard_post
+from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
+from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
+from app.admin_api.pwa_push_outbox import enqueue_important_triage
+from app.db.models.bot_feedback import BotFeedback
+from app.db.models.payment import Payment
+from app.db.models.release_feedback import ReleaseFeedbackResponse
+
+logger = logging.getLogger(__name__)
+_OPERATIONS = ("mark_read", "assign_self", "resolve", "reopen", "mark_important", "clear_important")
+_SOURCES = {"bot": BotFeedback, "release": ReleaseFeedbackResponse, "android": AdminPwaNativeReport, "payment": Payment}
+
+
+class TriageRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    source: Source
+    source_id: RowId
+    operation: str = Field(pattern=r"^(mark_read|assign_self|resolve|reopen|mark_important|clear_important)$")
+    expected_revision: int = Field(strict=True, ge=0, le=2_147_483_646)
+
+
+class TriageConflict(Exception):
+    pass
+
+
+async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
+    """One source-locked, session-locked transaction, triage+audit atomic.
+
+    No arbitrary assignee ID or underlying feedback edits are accepted. Only a
+    current canonical admin with a WebAuthn-authenticated browser session may
+    mutate, even if a legacy Google+Telegram onboarding cookie still exists.
+    """
+    if not getattr(settings_obj, "ADMIN_PWA_ENABLED", False):
+        return None
+    stamp = _utc(now or datetime.now(timezone.utc))
+    async with db.begin():
+        pair = await _locked_session(db, session_cookie, settings_obj, stamp)
+        if pair is None:
+            return None
+        _, actor = pair
+        source_row = await db.get(_SOURCES[command.source], command.source_id, with_for_update=True)
+        if source_row is None or (command.source == "android" and
+                                  _utc(source_row.expires_at) <= stamp):
+            # Do not disclose whether an unseen source ID exists.
+            return None
+        if command.source == "payment":
+            # Inbox read-state cannot approve/reject a receipt; financial
+            # decisions stay in the separately signed payment review flow.
+            if (command.operation != "mark_read" or source_row.payment_status != "pending"
+                    or not source_row.screenshot_file_id):
+                raise TriageConflict()
+        key = (command.source, command.source_id)
+        row = await db.get(AdminPwaInboxTriage, key, with_for_update=True)
+        revision = row.revision if row else 0
+        if revision != command.expected_revision:
+            raise TriageConflict()
+        if row is None:
+            row = AdminPwaInboxTriage(
+                source=command.source, source_id=command.source_id,
+                status="new", priority=("important" if command.source in ("payment", "android") else "normal"), revision=0, updated_at=stamp,
+            )
+            db.add(row)
+        previous = (row.status, row.priority, row.assigned_to_user_id, row.read_at, row.resolved_at)
+        if command.operation == "mark_read":
+            if row.read_at is None:
+                row.read_at = stamp
+            if row.status == "new":
+                row.status = "read"
+        elif command.operation == "assign_self":
+            if row.status == "resolved":
+                raise TriageConflict()
+            row.assigned_to_user_id = int(actor.id)
+            row.read_at = row.read_at or stamp
+            row.status = "assigned"
+        elif command.operation == "resolve":
+            row.read_at = row.read_at or stamp
+            row.status = "resolved"
+            row.resolved_at = row.resolved_at or stamp
+        elif command.operation == "reopen":
+            if row.status != "resolved":
+                raise TriageConflict()
+            row.resolved_at = None
+            row.status = "assigned" if row.assigned_to_user_id else "read"
+        elif command.operation == "mark_important":
+            row.priority = "important"
+        elif command.operation == "clear_important":
+            row.priority = "normal"
+        else:
+            raise TriageConflict()
+        current = (row.status, row.priority, row.assigned_to_user_id, row.read_at, row.resolved_at)
+        if previous != current:
+            row.updated_at = stamp
+            row.updated_by_user_id = int(actor.id)
+            row.revision = revision + 1
+            db.add(AdminPwaInboxTriageAudit(
+                id=str(uuid4()), source=command.source, source_id=command.source_id,
+                operation=command.operation, actor_user_id=int(actor.id), created_at=stamp,
+            ))
+            await db.flush()
+            if command.operation == "mark_important" and previous[1] != "important":
+                await enqueue_important_triage(
+                    db, settings_obj=settings_obj, actor_id=int(actor.id),
+                    source=command.source, source_id=command.source_id,
+                    revision=row.revision, now=stamp,
+                )
+        else:
+            # New no-op states should never persist a misleading triage row.
+            if not revision:
+                db.expunge(row)
+        return {
+            "source": command.source, "source_id": command.source_id, "status": row.status,
+            "priority": row.priority, "assigned_to_user_id": row.assigned_to_user_id,
+            "read_at": _utc(row.read_at).isoformat() if row.read_at else None,
+            "resolved_at": _utc(row.resolved_at).isoformat() if row.resolved_at else None,
+            "revision": row.revision,
+        }
+
+
+def create_admin_pwa_inbox_triage_router(*, settings_obj, session_factory):
+    router = APIRouter(tags=["admin-pwa-inbox-triage"])
+
+    @router.post("/api/admin/v1/inbox/triage")
+    async def triage(request: Request):
+        failure = _guard_post(request, settings_obj)
+        if failure is not None:
+            return failure
+        cookie = request.cookies.get(ADMIN_PWA_COOKIE_NAME, "")
+        if not cookie:
+            return _reply(401, "admin_pwa_unauthorized")
+        try:
+            command = TriageRequest.model_validate(await _body(request, 1024))
+        except ValidationError:
+            return _reply(400, "admin_pwa_invalid_payload")
+        try:
+            async with session_factory() as db:
+                result = await mutate_triage(
+                    db, session_cookie=cookie, command=command, settings_obj=settings_obj)
+        except TriageConflict:
+            return _reply(409, "admin_pwa_inbox_changed")
+        except Exception:
+            # Do not log user content or source identifiers.
+            logger.error("Admin PWA inbox triage unavailable")
+            return _reply(503, "admin_pwa_inbox_unavailable")
+        if result is None:
+            return _reply(403, "admin_pwa_inbox_denied")
+        return JSONResponse({"ok": True, **result}, headers=_PRIVATE_HEADERS)
+
+    return router

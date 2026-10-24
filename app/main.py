@@ -37,6 +37,14 @@ from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_payment_review_transport import create_admin_pwa_payment_review_router
 from app.admin_api.pwa_payment_outbox import dispatch_payment_review
 from app.admin_api.pwa_read import create_admin_pwa_read_router
+from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
+from app.admin_api.pwa_inbox_attachments import create_admin_pwa_inbox_attachment_router
+from app.admin_api.pwa_push import create_admin_pwa_push_router
+from app.services.admin_pwa_push_dispatch import dispatch_batch, sender_config
+from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
+from app.admin_api.pwa_mcp_http import create_admin_pwa_mcp_http_router
+from app.admin_api.pwa_mcp_consent_transport import create_admin_pwa_mcp_consent_router
+from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_router
 from app.admin_api.pwa_payment_receipts import create_admin_pwa_receipt_router, download_receipt_image
 from app.api.android_auth import create_android_auth_router
 from app.api.course_tracks import create_course_tracks_router
@@ -627,6 +635,23 @@ async def _background_scheduler(bot: Bot) -> None:
             print("Scheduler error:", e)
 
 
+async def _admin_pwa_apple_push_scheduler() -> None:
+    """Independent opt-in sender; never couples push failure to bot/payments."""
+    # Enabling only subscription enrollment NEVER initiates a send.
+    if sender_config(settings) is None:
+        return
+    while True:
+        try:
+            await dispatch_batch(async_session_maker, settings_obj=settings, limit=10)
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            # Provider exceptions may contain endpoints or keys. Do not include
+            # exception text, SQL parameters or private payloads in logs.
+            logger.error("Admin PWA Apple Push worker batch unavailable")
+        await asyncio.sleep(60)
+
+
 async def _desktop_auth_retention_scheduler() -> None:
     """Remove expired native-auth rows without blocking the bot scheduler."""
 
@@ -639,6 +664,16 @@ async def _desktop_auth_retention_scheduler() -> None:
                 ).cleanup_expired_records()
             async with async_session_maker() as session:
                 await AccountDeletionService(session, settings).cleanup()
+            if getattr(settings, "ADMIN_PWA_ENABLED", False):
+                # Required 30-day private screenshot deletion; bounded to at
+                # most 1000 expired reports per hour, independent of Push.
+                from app.services.admin_pwa_native_reports import purge_expired_native_reports
+                async with async_session_maker() as session:
+                    async with session.begin():
+                        removed = await purge_expired_native_reports(
+                            session, now=datetime.now(timezone.utc), limit=1000)
+                if removed:
+                    logger.info("Admin PWA expired native reports removed: %d", removed)
             if any(result.values()):
                 logger.info("Desktop auth retention cleanup: %s", result)
         except Exception:
@@ -657,6 +692,8 @@ async def lifespan(app: FastAPI):
     desktop_auth_cleanup_task = asyncio.create_task(
         _desktop_auth_retention_scheduler()
     )
+    apple_push_task = (asyncio.create_task(_admin_pwa_apple_push_scheduler())
+                       if sender_config(settings) is not None else None)
     try:
         yield                                                # /health darhol ishlaydi
     finally:
@@ -664,6 +701,8 @@ async def lifespan(app: FastAPI):
         polling_task.cancel()
         scheduler_task.cancel()
         desktop_auth_cleanup_task.cancel()
+        if apple_push_task is not None:
+            apple_push_task.cancel()
         study_ai_tasks = tuple(_study_ai_tasks)
         for task in study_ai_tasks:
             task.cancel()
@@ -675,9 +714,13 @@ async def lifespan(app: FastAPI):
             await scheduler_task
         with contextlib.suppress(asyncio.CancelledError):
             await desktop_auth_cleanup_task
+        if apple_push_task is not None:
+            with contextlib.suppress(asyncio.CancelledError):
+                await apple_push_task
         for task in study_ai_tasks:
             with contextlib.suppress(asyncio.CancelledError):
                 await task
+        await admin_pwa_statistics_reader.aclose()
         await bot.session.close()
         await engine.dispose()
 
@@ -703,7 +746,16 @@ app.include_router(create_admin_pwa_payment_review_router(
     settings_obj=settings, session_factory=async_session_maker,
     dispatch=_dispatch_admin_pwa_payment_review,
 ))
-app.include_router(create_admin_pwa_read_router(settings_obj=settings, session_factory=async_session_maker))
+admin_pwa_statistics_reader = AdminPwaStatisticsReader(settings_obj=settings, session_factory=async_session_maker)
+app.include_router(create_admin_pwa_read_router(settings_obj=settings, session_factory=async_session_maker,
+    statistics_reader=admin_pwa_statistics_reader))
+app.include_router(create_admin_pwa_inbox_triage_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_inbox_attachment_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_push_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_mcp_http_router(settings_obj=settings, session_factory=async_session_maker,
+    statistics_reader=admin_pwa_statistics_reader))
+app.include_router(create_admin_pwa_mcp_consent_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_mcp_management_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_receipt_router(
     settings_obj=settings, session_factory=async_session_maker,
     loader=lambda reference: download_receipt_image(bot, reference),

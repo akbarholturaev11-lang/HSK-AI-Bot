@@ -1,17 +1,37 @@
 # Admin PWA — project context (temporary)
 
-> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `codex/admin-pwa`.
+> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201.
 > Not a repository-wide policy. Does not modify or supersede root `AGENTS.md` / `AI_RULES.md` / `PROJECT_MEMORY.md`.
 > All development and progress records for this task remain under `docs/admin-pwa/`.
 
 
-Last context capture: 2026-10-23. This is a **design and repository-source snapshot**, NOT live production verification.
+Updated 2026-10-24. Current implementation/tests are indexed in
+[MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). The initial inventory below
+is historical source evidence, not a current missing-feature list or live
+production verification. PR #200 foundations are already merged.
+
+Inbox read/triage/search, opt-in Apple Push sender code and private retained
+Android JPEG proxy are present at fetched runtime `d93b75fe`. They remain
+default-OFF and are not live-device/provider evidence. The later V10 Android preview is implemented with explicit loading and
+object-URL cleanup; other media and remaining work are tracked in the current handoff.
+
+## Current statistics decision
+
+The owner chose daily aggregate statistics to reduce repeated DB calculations.
+Runtime `4709c660` shares private Redis-backed snapshots between PWA and the
+statistics-only MCP. A requested platform/period refreshes on first authorized
+demand after 24 hours from `generated_at`, not at a fixed nightly time. No cron,
+new Redis configuration or R2 integration was added. During Redis outage the
+bounded daily memory fallback is per worker; restarts can cause recalculation.
+Auth/revoke/audit/quotas still check current state. User/profile/billing/receipt/
+access/command paths remain uncached; private HTTP/SW responses stay no-store.
+See [read projections](READ_PROJECTIONS.md) for the complete temporal contract.
 
 ## Why this work exists
 
 Owner needs a real Admin PWA accessible on iPhone, Mac and Windows **in addition to, never replacing**, the existing Telegram admin panel. It must use the locally reviewed professional Admin V10 UI/UX demo as a design starting point; strip synthetic numbers/users/notifications/actions; and connect to **actual HSK AI services and database**.
 
-The owner also wants a reliable way for ChatGPT, Cloud agents and local tools to analyze **complete platform statistics and user feedback** to prioritize product improvement. Source code on GitHub is distinct from runtime DB. Start with restricted read-only JSON/CSV exports; evaluate an MCP gateway only after consent, scope and security are ready.
+The owner also wants a reliable way for ChatGPT, Cloud agents and local tools to analyze platform statistics and, through a separately reviewed export path, user feedback. Source code on GitHub is distinct from runtime DB. The current remote MCP is statistics-only; account/feedback tools and all mutations are excluded. Bounded sanitized JSON/CSV exports remain unfinished. Do not claim complete history where original sources were not persisted.
 
 ## Owner-approved user flows
 
@@ -44,7 +64,7 @@ The owner also wants a reliable way for ChatGPT, Cloud agents and local tools to
 - Header contains compact period selector (7 days / 30 days / entire period), compact collapsed platform funnel filter and bell on the same row.
 - User profile, revenue, subscriptions, one-time HSK 3.0 unlock, campaigns, settings and permissions should come from shared backend contracts.
 - Notifications: universal inbox for user feedback, release feedback, Android bugs and alerts; crucial items grouped/highlighted, all filters collapsed by default, search, read/assigned/resolved and detail.
-- Demo HTML V10 was produced as a downloadable file in conversation history, **not committed into GitHub in this branch**. Obtain/verify it before taking production UI bytes; do not invent a repository path.
+- The original V10 demo remains a reference, not a data source. The later owner-supplied reference was verified and used for the existing UI; see [browser UI contract](BROWSER_UI_CONTRACT.md) for its hash and implemented behavior. Do not restart the UI port or ship demo fixtures.
 
 ## Do not conflate
 
@@ -62,4 +82,5 @@ The owner also wants a reliable way for ChatGPT, Cloud agents and local tools to
 - `docs/admin-pwa/PHASE_0_API_INVENTORY.md`: specific read/write/danger endpoints and source gaps.
 - `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_RULES.md`: non-negotiable project constraints.
 - `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_FINAL_RESULT.md`: definition of done.
-- `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md`: actual work and verification checkpoint.
+- [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md): current work, exact validation and remaining gates.
+- [HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md](HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md): historical implementation evidence; old next-step instructions are superseded.
