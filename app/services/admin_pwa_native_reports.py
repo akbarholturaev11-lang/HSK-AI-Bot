@@ -70,9 +70,9 @@ async def reserve_native_report(session_factory, *, user_id, description, app_ve
                 # default. Optional push delivery never blocks durable intake.
                 from app.config import settings
                 if settings.ADMIN_PWA_ENABLED and settings.ADMIN_PWA_PUSH_ENABLED:
-                    from app.admin_api.pwa_push_outbox import enqueue_automatic_alert
                     import logging
                     try:
+                        from app.admin_api.pwa_push_outbox import enqueue_automatic_alert
                         async with db.begin_nested():
                             await enqueue_automatic_alert(
                                 db, settings_obj=settings, source="android",
