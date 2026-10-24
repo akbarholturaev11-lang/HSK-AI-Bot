@@ -7,7 +7,7 @@
   let locale='uz';
   try {const saved=localStorage.getItem('hsk-admin-locale');if(['uz','ru','tj'].includes(saved))locale=saved;}catch(_){}
   function render(){
-    document.documentElement.lang=locale;
+    document.documentElement.lang=locale==='tj'?'tg':locale;
     select.value=locale;
     document.querySelectorAll('[data-i18n]').forEach(el=>{
       const value=catalog[locale]?.[el.dataset.i18n];
