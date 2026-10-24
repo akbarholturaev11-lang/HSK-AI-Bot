@@ -22,6 +22,8 @@ on:
       - "requirements.txt"
       - "tests/test_admin_pwa_*.py"
       - "tests/e2e/admin_pwa_browser.py"
+      - "tests/e2e/admin_pwa_mcp_consent_browser.py"
+      - "tests/mcp_transport_fakes.py"
       - "app/static/admin-pwa/**"
       - "localization/ui/**/miniapp.json"
       - "scripts/i18n_build*.py"
@@ -53,6 +55,8 @@ on:
       - "requirements.txt"
       - "tests/test_admin_pwa_*.py"
       - "tests/e2e/admin_pwa_browser.py"
+      - "tests/e2e/admin_pwa_mcp_consent_browser.py"
+      - "tests/mcp_transport_fakes.py"
       - "app/static/admin-pwa/**"
       - "localization/ui/**/miniapp.json"
       - "scripts/i18n_build*.py"
@@ -94,7 +98,7 @@ jobs:
       - name: Install pinned app dependencies and test adapters
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt "pytest==8.4.2" "aiosqlite==0.21.0"
+          python -m pip install -r requirements.txt "pytest==8.4.2" "aiosqlite==0.21.0" "mcp==1.27.0" "sse-starlette==3.0.3"
       - name: Compile touched admin and database code
         run: |
           python -m compileall -q app/admin_api app/db/models app/bot/handlers/admin_pwa.py app/services/admin_payment_review_service.py app/services/subscription_service.py app/main.py
