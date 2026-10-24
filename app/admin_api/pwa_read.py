@@ -11,6 +11,7 @@ from sqlalchemy import and_, func, or_, select, text
 
 from app.admin_api.pwa_approval import _utc
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
+from app.admin_api.pwa_inbox import InboxRequest, unified_inbox
 from app.admin_api.pwa_metrics import METRIC_DEFINITIONS, overall_activity_metrics
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME, authenticate_admin_pwa_session
 from app.admin_api.pwa_webauthn_transport import _body, _guard_post
@@ -340,6 +341,10 @@ def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_re
     @router.post("/api/admin/v1/feedback/list")
     async def read_feedback(request: Request):
         return await handle(request, FeedbackRequest, feedback)
+
+    @router.post("/api/admin/v1/inbox/list")
+    async def read_inbox(request: Request):
+        return await handle(request, InboxRequest, unified_inbox)
 
     @router.post("/api/admin/v1/payments/list")
     async def read_payments(request: Request):
