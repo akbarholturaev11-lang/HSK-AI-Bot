@@ -36,7 +36,7 @@ from app.db.models.user import User
 
 _ORIGIN = "https://hskai.app"
 _RP_ID = "hskai.app"
-_ACTIONS = frozenset({"payments.review", "users.delete", "broadcast.send", "users.grant_access", "course.access_policy"})
+_ACTIONS = frozenset({"payments.review", "users.delete", "broadcast.send", "users.grant_access", "course.access_policy", "hsk30.settings"})
 _TARGET = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
 _UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
 _CHALLENGE_TTL = timedelta(minutes=2)
