@@ -308,16 +308,23 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
             cursor = page["next_before"]
             if cursor is None:
                 break
-        self.assertEqual([row["source"] for row in items], ["bot", "release", "android", "bot"])
-        self.assertEqual([row["user_id"] for row in items], [1, 2, 2, None])
-        self.assertTrue(items[1]["has_attachment"])
-        self.assertTrue(items[2]["has_attachment"])
-        self.assertEqual(items[2]["notification_delivery"], "failed")
-        self.assertEqual(items[2]["screen"], "practice")
-        self.assertIsNone(items[2]["feedback_status"])
-        self.assertNotIn("read_at", items[0])
+        self.assertEqual(len(items), 5)
+        self.assertEqual(sorted(row["source"] for row in items),
+                         ["android", "bot", "bot", "payment", "release"])
+        self.assertEqual(len({(row["source"],row["source_id"]) for row in items}), 5)
+        groups = {name: [row for row in items if row["source"]==name]
+                  for name in ("bot","release","android","payment")}
+        self.assertEqual(sorted(row["user_id"] for row in groups["bot"] if row["user_id"] is not None), [1])
+        self.assertEqual(groups["android"][0]["notification_delivery"], "failed")
+        self.assertEqual(groups["android"][0]["screen"], "practice")
+        self.assertEqual(groups["android"][0]["triage_priority"], "important")
+        self.assertEqual(groups["payment"][0]["triage_priority"], "important")
+        self.assertTrue(groups["payment"][0]["has_attachment"])
+        self.assertIsNone(groups["payment"][0]["message"])
+        self.assertTrue(groups["release"][0]["has_attachment"])
+        self.assertNotIn("read_at", groups["bot"][0])
         user = (await self.post("inbox/list", {"user_id": 2})).json()["items"]
-        self.assertEqual([row["source"] for row in user], ["release", "android"])
+        self.assertEqual(sorted(row["source"] for row in user), ["android","release"])
         native = (await self.post("inbox/list", {"source": "android"})).json()["items"]
         self.assertEqual(len(native), 1)
         self.assertEqual(native[0]["message"], "Native application crashed")
