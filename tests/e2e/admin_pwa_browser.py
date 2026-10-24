@@ -326,7 +326,7 @@ async def browser_checks(output):
         for source in ('bot', 'release', 'android', 'all'):
             await page.locator(f'[data-source={source}]').click()
             await expect(page.locator('.inbox-shell')).to_be_visible()
-            assert await page.locator('.inbox-shell .feedback-item').count() >= 0
+            assert 'primary' in (await page.locator(f'[data-source={source}]').get_attribute('class'))
         await page.keyboard.press('Escape')
         # Actual consent/code/token services seed one synthetic connection;
         # the V10 drawer calls real session-bound management and audit services.
