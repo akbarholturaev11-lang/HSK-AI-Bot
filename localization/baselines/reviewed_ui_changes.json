@@ -70,8 +70,8 @@
     },
     "app/static/desktop-download.html": {
       "baseline_sha1": "1d0f69a7e9de869af485dbf7bf5a78180ab98b92",
-      "reviewed_sha1": "9121993e518a2fd54d15f286dc94a74315da15db",
-      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
+      "reviewed_sha1": "9ae993211afd5869155fdc229d6e0966672bca90",
+      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added. Android in-app browser handoff to the existing Telegram APK channel reviewed; no new localization strings."
     },
     "app/static/subscription.html": {
       "baseline_sha1": "6841d29b680d21f018133fc7a60079abebd45bf0",
