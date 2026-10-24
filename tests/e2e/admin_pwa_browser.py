@@ -360,6 +360,12 @@ async def browser_checks(output):
         await wait_js(page, "() => !!document.querySelector('.inbox-drawer button[data-inbox-op=resolve]:not(:disabled)')")
         assert len([path for path,_,_ in calls if path.endswith('/inbox/triage')]) == 2
         await page.keyboard.press('Escape')
+        # Apple notificationclick always uses a fixed /admin/?inbox=1 link.
+        # A valid passkey session must be verified before showing private inbox.
+        await page.goto(ORIGIN+'/admin/?inbox=1')
+        await expect(page.locator('.inbox-shell')).to_be_visible()
+        assert page.url==ORIGIN+'/admin/'
+        await page.keyboard.press('Escape')
         # Actual consent/code/token services seed one synthetic connection;
         # the V10 drawer calls real session-bound management and audit services.
         cookie=next(row['value'] for row in await context.cookies() if row['name']=='__Host-hskai_admin')
