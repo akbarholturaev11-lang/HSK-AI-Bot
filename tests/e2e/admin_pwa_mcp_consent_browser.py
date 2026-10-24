@@ -57,7 +57,7 @@ async def main():
             "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",QUERY["client_id"],
             REDIRECT,QUERY["resource"],QUERY["scope"],QUERY["state"],
             __import__("datetime").datetime.now(__import__("datetime").timezone.utc),
-            kwargs["csrf_proof"],
+            "q"*64,
         )
     app=FastAPI()
     app.include_router(create_admin_pwa_bootstrap_router(
