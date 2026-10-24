@@ -228,7 +228,7 @@ function paymentsView() {
 }
 function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
 async function load() {
-  cancelStatisticsDownload();
+  cancelStatisticsDownload();feedbackLoadId++;feedbackStats.loading=false;feedbackStats.data=null;
   if(!state.actor) return;const current=++view, authEpoch=epoch;state.phase='loading';state.error=null;render();
   try {
     const data=await api(['home','stats'].includes(state.route)?'statistics':state.route==='users'?'users/search':'payments/list',
@@ -767,8 +767,10 @@ document.addEventListener('click',event=>{
 document.addEventListener('change',event=>{
   if(['locale','drawerLocale'].includes(event.target.id)&&['uz','ru','tj'].includes(event.target.value)){
     cancelStatisticsDownload();feedbackLoadId++;
+    feedbackStats.loading=false;feedbackStats.data=null;
     locale=event.target.value;try{localStorage.setItem('hsk-admin-locale',locale);}catch(_){}
     closeDrawer();render();
+    if(state.route==='stats'&&state.actor)loadFeedbackStats();
   }
 });
 document.addEventListener('submit',event=>{
