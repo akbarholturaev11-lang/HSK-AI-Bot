@@ -37,6 +37,7 @@ class McpOAuthCeremonyTests(unittest.IsolatedAsyncioTestCase):
             for model in (User, AdminPwaSession, AdminPwaMcpAuthorization, AdminPwaMcpAccessGrant):
                 await connection.run_sync(model.__table__.create)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        self.csrf_by_id = {}
         self.settings = SimpleNamespace(
             ADMIN_PWA_ENABLED=True, ADMIN_PWA_MCP_ENABLED=True,
             ADMIN_PWA_MCP_RESOURCE=RESOURCE, admin_id_list=[9001],
@@ -61,16 +62,20 @@ class McpOAuthCeremonyTests(unittest.IsolatedAsyncioTestCase):
                     state=STATE, verifier=VERIFIER, method="S256", now=NOW,
                     csrf_proof=None):
         async with self.sessions() as db:
-            return await begin_mcp_authorization(
+            pending = await begin_mcp_authorization(
                 db, session_cookie=session_cookie, client_id=client_id,
                 redirect_uri=redirect_uri, resource=resource, scope=scope,
                 state=state, code_challenge=pkce_s256(verifier) or "bad",
                 code_challenge_method=method, settings_obj=self.settings, now=now,
-                csrf_proof=csrf_proof,
             )
+            if pending is not None:
+                self.csrf_by_id[pending.request_id] = pending.csrf_proof
+            return pending
 
     async def decide(self, request_id, *, cookie=COOKIE, approved=True, now=NOW,
-                     csrf_proof=None):
+                     csrf_proof="__AUTO__"):
+        if csrf_proof == "__AUTO__":
+            csrf_proof = self.csrf_by_id.get(request_id)
         async with self.sessions() as db:
             return await decide_mcp_consent(
                 db, request_id=request_id, session_cookie=cookie,
@@ -133,9 +138,9 @@ class McpOAuthCeremonyTests(unittest.IsolatedAsyncioTestCase):
 
 
     async def test_browser_consent_csrf_is_bound_to_pending_record_and_session(self):
-        proof = "q" * 64
-        pending = await self.start(csrf_proof=proof)
-        self.assertEqual(pending.csrf_proof, proof)
+        pending = await self.start()
+        proof = pending.csrf_proof
+        self.assertGreaterEqual(len(proof), 40)
         async with self.sessions() as db:
             row = await db.get(AdminPwaMcpAuthorization, pending.request_id)
             self.assertEqual(row.consent_csrf_hash,
@@ -151,11 +156,11 @@ class McpOAuthCeremonyTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(await self.decide(pending.request_id, csrf_proof=proof))
 
     async def test_wrong_browser_csrf_cannot_deny_consent(self):
-        pending = await self.start(csrf_proof="q"*64)
+        pending = await self.start()
         self.assertIsNone(await self.decide(pending.request_id,
                                             approved=False, csrf_proof="x"*64))
         denied = await self.decide(pending.request_id,
-                                   approved=False, csrf_proof="q"*64)
+                                   approved=False, csrf_proof=pending.csrf_proof)
         self.assertEqual(denied.redirect_uri, REDIRECT)
         self.assertEqual(denied.state, STATE)
         async with self.sessions() as db:
