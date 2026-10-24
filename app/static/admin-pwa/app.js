@@ -263,12 +263,12 @@ async function moreUserPayments(userId,before,button) {
 function accessGrantForm(userId){
   closeDrawer();
   if(!state.actor||!Number.isSafeInteger(userId)||userId<1)return;
-  drawer('grantAccess',`<p>${esc(t('account'))}: #${userId}</p><p class="source-note">${esc(t('manualGrantHint'))}</p><div class="form-field"><label for="accessDays">${esc(t('durationDays'))}</label><input class="input" id="accessDays" type="number" min="1" max="36500" step="1" value="30" required></div>`,
+  drawer('grantAccess',`<p>${esc(t('account'))}: #${userId}</p><p class="source-note">${esc(t('manualGrantHint'))}</p><div class="form-field"><label for="accessDays">${esc(t('durationDays'))}</label><input class="input" id="accessDays" type="number" min="1" max="365" step="1" value="30" required></div>`,
     btn('cancel','close')+`<button class="btn primary" data-prepare-access="${userId}">${esc(t('next'))}</button>`);
 }
 async function prepareAccess(userId){
   const input=$('accessDays');if(!input?.reportValidity())return;
-  const days=Number(input.value);if(!Number.isInteger(days)||days<1||days>36500)return;
+  const days=Number(input.value);if(!Number.isInteger(days)||days<1||days>365)return;
   const current=drawerId,at=epoch;$('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
   try{
     const operation=await api('users/prepare-access',{user_id:userId,duration_days:days});

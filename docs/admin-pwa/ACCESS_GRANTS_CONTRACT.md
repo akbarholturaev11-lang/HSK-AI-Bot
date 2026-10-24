@@ -6,13 +6,16 @@ tool/scope, legacy Telegram guard or paid entitlement policy changes.
 ## Exact confirmation and transaction
 
 `POST /api/admin/v1/users/prepare-access` takes only canonical `user_id` and
-strict integer `duration_days` (1–36500, existing shared service limits).
+strict integer `duration_days` (1–365 for Admin PWA, owner decision).
+Both prepare and execute validate the bound independently of frontend controls.
+The existing shared/Telegram administrative duration helper is unchanged; this
+scoped PWA policy does not silently alter legacy admin behavior.
 The current allowlisted WebAuthn cookie is mandatory. A single unlocked User
 read prepares the snapshot; no aggregate query, background polling or cache.
 
 The returned `users.grant_access` operation binds the exact canonical target,
 days, current status/payment/start/end/preview fields and paid-active predicate.
-The V10 profile drawer displays the target, days and existing expiry before a
+The V10 profile drawer limits days to 365 and displays the target, days and existing expiry before a
 separate explicit passkey confirmation. Five canonical UZ/RU/TJ labels use the
 existing generator. Repo hsk-ai-ui and webapp-testing skills were read/applied;
 the new confirmation reuses existing V10 form/drawer/focus/cancel patterns.

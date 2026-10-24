@@ -20,7 +20,11 @@ from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.user import User
-from app.services.subscription_service import SubscriptionService, MANUAL_SUBSCRIPTION_MAX_DAYS
+from app.services.subscription_service import SubscriptionService
+
+# First-party Admin PWA policy only. The legacy Telegram admin service keeps
+# its separate existing contract; never silently change Telegram access rules.
+PWA_MANUAL_GRANT_MAX_DAYS = 365
 
 logger = logging.getLogger(__name__)
 StepId = Annotated[str, Field(pattern=r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")]
@@ -45,7 +49,7 @@ class AccessSnapshot(StrictModel):
 
 class PrepareAccessGrant(StrictModel):
     user_id: PositiveId
-    duration_days: Annotated[int, Field(strict=True, ge=1, le=MANUAL_SUBSCRIPTION_MAX_DAYS)]
+    duration_days: Annotated[int, Field(strict=True, ge=1, le=PWA_MANUAL_GRANT_MAX_DAYS)]
 
 
 class AccessGrantCommand(PrepareAccessGrant):

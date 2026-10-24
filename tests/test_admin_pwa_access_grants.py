@@ -67,6 +67,22 @@ class AccessGrantTests(AccessGrantFixtures, fixtures.PaymentFixtures, unittest.I
     asyncSetUp = fixtures.AdminPwaPaymentReviewTests.asyncSetUp
     asyncTearDown = fixtures.AdminPwaPaymentReviewTests.asyncTearDown
 
+    async def test_admin_pwa_policy_accepts_365_days_and_rejects_366_for_prepare_and_execute(self):
+        # Both request types enforce the server-side 365-day cap. A JS form
+        # restriction alone cannot prevent a forged direct execute request.
+        from app.admin_api.pwa_access_grants import PWA_MANUAL_GRANT_MAX_DAYS
+        self.assertEqual(PWA_MANUAL_GRANT_MAX_DAYS, 365)
+        command = await self.grant_command(days=365)
+        self.assertEqual(command.duration_days, 365)
+        proof = await self.grant_proof(command)
+        with self.assertRaises(ValidationError):
+            PrepareAccessGrant(user_id=1, duration_days=366)
+        with self.assertRaises(ValidationError):
+            ExecuteAccessGrant(**{**command.model_dump(), "duration_days": 366,
+                                 "step_up_id": proof})
+        result = await self.grant_execute(command, proof)
+        self.assertEqual(result["duration_days"], 365)
+
     async def test_real_signature_grants_canonical_native_user_once_without_financial_side_effects(self):
         command = await self.grant_command()
         proof = await self.grant_proof(command, signed=True)
@@ -174,7 +190,7 @@ class AccessGrantTests(AccessGrantFixtures, fixtures.PaymentFixtures, unittest.I
         async with AsyncClient(transport=ASGITransport(app=app), base_url="https://hskai.app",
                 headers={"origin": "https://hskai.app"}, cookies={ADMIN_PWA_COOKIE_NAME: fixtures.COOKIE}) as client:
             for body in ({"user_id": True, "duration_days": 30}, {"user_id": 1, "duration_days": "30"},
-                         {"user_id": 1, "duration_days": 0}, {"user_id": 1, "duration_days": 36501},
+                         {"user_id": 1, "duration_days": 0}, {"user_id": 1, "duration_days": 366}, {"user_id": 1, "duration_days": 36501},
                          {"user_id": 1, "duration_days": 1, "telegram_id": 1001}):
                 self.assertEqual((await client.post("/api/admin/v1/users/prepare-access", json=body)).status_code, 400)
             payload = {"user_id": 1, "duration_days": 30}
