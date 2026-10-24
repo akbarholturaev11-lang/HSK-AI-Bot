@@ -3,6 +3,8 @@
 Services are mocked; consent service itself has separate DB-backed tests.
 No real Google, ChatGPT, payment or production access is involved.
 """
+from tests.mcp_transport_fakes import admit, finish, statistics_admit
+
 import re
 import unittest
 from contextlib import asynccontextmanager
@@ -65,6 +67,7 @@ class McpConsentTransportTests(unittest.TestCase):
         app.include_router(create_admin_pwa_mcp_consent_router(
             settings_obj=self.settings,session_factory=db,
             begin_service=begin,decide_service=decide,
+            admission_service=admit, completion_service=finish,
         ))
         self.client=TestClient(app,base_url=ORIGIN)
         self.addCleanup(self.client.close)
@@ -184,9 +187,12 @@ class McpConsentTransportTests(unittest.TestCase):
         self.settings.ADMIN_PWA_MCP_CLIENT_ID='bad<script>alert(1)</script>'
         new_auth={**AUTH,"client_id":self.settings.ADMIN_PWA_MCP_CLIENT_ID}
         r=self.get(params=new_auth)
-        self.assertEqual(r.status_code,200)
-        self.assertIn("bad&lt;script&gt;",r.text)
-        self.assertNotIn("bad<script>",r.text)
+        self.assertEqual(r.status_code,400)
+        self.assertEqual(self.calls, [])
+        from app.admin_api.pwa_mcp_consent_transport import _page
+        page = _page(self.settings.ADMIN_PWA_MCP_CLIENT_ID, REDIRECT, REQUEST_ID, CSRF)
+        self.assertIn("bad&lt;script&gt;",page.body.decode())
+        self.assertNotIn("bad<script>",page.body.decode())
 
 
 if __name__=="__main__":

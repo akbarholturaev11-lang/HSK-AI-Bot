@@ -1,13 +1,13 @@
 /* HSK AI Admin V10-inspired, mobile-first OAuth consent screen. */
 :root{--bg:#f5f7f7;--paper:#fff;--ink:#1d2c36;--muted:#6b808a;--line:#e2e8e9;--accent:#345d6c;--side:#172731;--green:#159975}
-*{box-sizing:border-box}html{color-scheme:light}body{margin:0;min-height:100dvh;background:var(--bg);color:var(--ink);font:14px/1.55 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}button,select{font:inherit}
+*{box-sizing:border-box}html{color-scheme:light}body{margin:0;min-height:100dvh;background:var(--bg);color:var(--ink);font:14px/1.55 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}button,select{font:inherit}a.btn{display:block;text-align:center;text-decoration:none}
 button:focus-visible,select:focus-visible{outline:3px solid #80bac8;outline-offset:3px}
 .consent-shell{min-height:100dvh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:calc(28px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom))}
 .consent-card{width:min(464px,100%);background:var(--paper);border:1px solid var(--line);border-radius:22px;box-shadow:0 14px 50px rgba(29,43,81,.065);padding:28px}
 .consent-head{display:flex;align-items:center;gap:11px;padding-bottom:20px;border-bottom:1px solid var(--line)}
 .brand-mark{width:42px;height:42px;border-radius:13px;background:var(--side);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:780;letter-spacing:-1px}
 .brand-copy{display:flex;flex:1;flex-direction:column;gap:0}.brand-copy strong{font-size:16px;letter-spacing:-.02em}.brand-copy span{color:var(--muted);font-size:11px;font-weight:600}
-.language-label select{border-radius:10px;border:1px solid var(--line);background:white;padding:9px 11px;color:var(--ink)}
+.language-label select,#mcp-locale{border-radius:10px;border:1px solid var(--line);background:white;padding:9px 11px;color:var(--ink)}
 .consent-icon{width:56px;height:56px;display:grid;place-items:center;margin-top:25px;border-radius:17px;background:#e8f1f2;color:var(--accent);font-weight:750;font-size:28px}
 h1{font-size:24px;letter-spacing:-.035em;line-height:1.25;margin:18px 0 9px}h2{font-size:14px;margin:0;font-weight:750}
 .consent-lead{font-size:14px;line-height:1.7;color:var(--muted);margin:0 0 22px}
@@ -24,7 +24,7 @@ h1{font-size:24px;letter-spacing:-.035em;line-height:1.25;margin:18px 0 9px}h2{f
 
 /* iPhone Safari must not zoom when the language selector receives focus.
    This does not disable intentional user pinch zoom. */
-.language-label select { font-size: 16px; min-height: 44px; }
+.language-label select,#mcp-locale { font-size: 16px; min-height: 44px; }
 @media (max-width: 900px) {
   input:not([type="hidden"]), select, textarea { font-size: 16px !important; }
 }

@@ -347,3 +347,6 @@
     font-size: 16px !important;
   }
 }
+
+/* MCP history uses the existing V10 drawer and feedback card language. */
+.mcp-history{display:grid;gap:12px}.mcp-client-name{overflow-wrap:anywhere}.mcp-history .btn{min-height:44px}

@@ -1,4 +1,6 @@
 """HTTP contracts for the isolated first-party MCP revocation API."""
+from tests.mcp_transport_fakes import admit, finish, statistics_admit
+
 import json
 import unittest
 from contextlib import asynccontextmanager
@@ -46,6 +48,7 @@ class McpManagementTransportTests(unittest.TestCase):
         app.include_router(create_admin_pwa_mcp_management_router(
             settings_obj=self.settings, session_factory=session_factory,
             history_service=history, revoke_service=revoke,
+            admission_service=admit, completion_service=finish,
         ))
         self.client = TestClient(app, base_url=ORIGIN)
         self.addCleanup(self.client.close)
@@ -81,7 +84,7 @@ class McpManagementTransportTests(unittest.TestCase):
     def test_revoke_requires_exact_origin_json_and_session(self):
         response = self.revoke()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"revoked": True})
+        self.assertEqual(response.json(), {"ok": True, "revoked": True})
         self.assertEqual(response.headers["cache-control"], "no-store")
         count = len(self.calls)
         for headers in (

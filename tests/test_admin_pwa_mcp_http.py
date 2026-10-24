@@ -3,6 +3,8 @@
 The app stays feature-off in real settings, so these requests are never
 production or real ChatGPT traffic. Services injected as explicit mocks.
 """
+from tests.mcp_transport_fakes import admit, finish, statistics_admit
+
 import json
 import unittest
 from contextlib import asynccontextmanager
@@ -62,7 +64,8 @@ class McpHttpTests(unittest.TestCase):
         self.app.include_router(create_admin_pwa_mcp_http_router(
             settings_obj=self.settings, session_factory=session_factory,
             exchange_service=exchange, verify_service=verify,
-            read_service=read,
+            read_service=read, admission_service=admit, completion_service=finish,
+            statistics_admission=statistics_admit,
         ))
         self.client = TestClient(self.app, base_url=ISSUER)
         self.addCleanup(self.client.close)
@@ -87,6 +90,7 @@ class McpHttpTests(unittest.TestCase):
             "content-type": "application/json",
             "accept": "application/json, text/event-stream",
             "authorization": "Bearer " + token,
+            "mcp-protocol-version": "2025-11-25",
             **(headers or {}),
         }
         return self.client.post("/mcp",
@@ -174,7 +178,8 @@ class McpHttpTests(unittest.TestCase):
         self.assertEqual(self.calls[-1][0], "verify")
 
     def test_stateless_mcp_initialize_tools_and_one_stats_call(self):
-        r = self.rpc("initialize", params={"protocolVersion": "2025-11-25"})
+        r = self.rpc("initialize", params={"protocolVersion": "2025-11-25", "capabilities": {},
+                                           "clientInfo": {"name": "synthetic", "version": "1"}})
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r.json()["result"]["protocolVersion"], "2025-11-25")
         self.assertEqual(r.json()["result"]["serverInfo"]["name"], "hskai-admin-readonly")
@@ -206,8 +211,8 @@ class McpHttpTests(unittest.TestCase):
 
     def test_origin_cookie_and_accept_fail_closed(self):
         cases = [
-            ({"origin": "https://evil.example"}, 400),
-            ({"sec-fetch-site": "cross-site"}, 400),
+            ({"origin": "https://evil.example"}, 403),
+            ({"sec-fetch-site": "cross-site"}, 403),
             ({"accept": "application/json"}, 406),
             ({"cookie": "__Host-hskai_admin=" + "S" * 64}, 401),
             ({"x-telegram-init-data": "forged"}, 401),
@@ -221,6 +226,35 @@ class McpHttpTests(unittest.TestCase):
     def test_unimplemented_sse_and_stateful_delete_refused(self):
         self.assertEqual(self.client.get("/mcp").status_code, 405)
         self.assertEqual(self.client.delete("/mcp").status_code, 405)
+
+    def test_protocol_negotiation_and_strict_initialize(self):
+        for requested, expected in (("2025-06-18", "2025-06-18"), ("2030-01-01", "2025-11-25")):
+            response = self.rpc("initialize", params={
+                "protocolVersion": requested, "capabilities": {},
+                "clientInfo": {"name": "synthetic", "version": "1"}})
+            self.assertEqual(response.json()["result"]["protocolVersion"], expected)
+        self.assertEqual(self.rpc(headers={"mcp-protocol-version":""}).status_code, 400)
+        self.assertEqual(self.rpc("initialize", params={}).json()["error"]["code"], -32602)
+        self.assertEqual(self.rpc(data={"jsonrpc":"2.0", "method":"notifications/initialized"}).status_code, 202)
+        self.assertEqual(self.rpc(data={"jsonrpc":"2.0", "method":"tools/call", "params":{
+            "name":"hskai_statistics", "arguments":{}}}).status_code, 400)
+        self.assertFalse(any(c[0] == "read" for c in self.calls))
+
+    def test_accept_quality_origin_and_non_utf8_fail_shut(self):
+        for accept in ("application/json;q=0, text/event-stream", "application/json-bogus, text/event-stream", "application/json, text/event-stream;q=oops"):
+            self.assertEqual(self.rpc(headers={"accept":accept}).status_code, 406)
+        for method in (self.client.get, self.client.delete):
+            self.assertEqual(method("/mcp", headers={"origin":"https://evil.example"}).status_code, 403)
+        self.assertEqual(self.rpc(raw='{"jsonrpc":"2.0","id":1,"method":"ping"}'.encode('utf-16')).status_code, 400)
+        self.assertEqual(self.rpc(raw=b'{"jsonrpc":"2.0","id":1,"method":"ping","params":{"x":NaN}}').status_code, 400)
+        response = self.client.post('/mcp', content=b'{}', headers=[
+            ('authorization','Bearer '+TOKEN), ('origin', ISSUER), ('origin','https://evil.example')])
+        self.assertEqual(response.status_code, 403)
+
+    def test_public_client_does_not_accept_secret_or_cookie_credentials(self):
+        for headers in ({"authorization":"Basic synthetic"},{"cookie":"__Host-hskai_admin=synthetic"}):
+            self.assertEqual(self.token(headers=headers).json()["error"], "invalid_client")
+        self.assertEqual(self.calls, [])
 
     def test_wrong_request_host_denied(self):
         with TestClient(self.app, base_url="https://other.example") as client:

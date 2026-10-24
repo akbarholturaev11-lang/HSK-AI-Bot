@@ -18,7 +18,7 @@ on:
       - "tests/test_partner_payment_ownership.py"
       - "tests/test_payment_review_preview.py"
       - "app/bot/handlers/admin_pwa.py"
-      - "alembic/versions/011[0-9]_admin_pwa*.py"
+      - "alembic/versions/01[12][0-9]_admin_pwa*.py"
       - "requirements.txt"
       - "tests/test_admin_pwa_*.py"
       - "tests/e2e/admin_pwa_browser.py"
@@ -49,7 +49,7 @@ on:
       - "tests/test_partner_payment_ownership.py"
       - "tests/test_payment_review_preview.py"
       - "app/bot/handlers/admin_pwa.py"
-      - "alembic/versions/011[0-9]_admin_pwa*.py"
+      - "alembic/versions/01[12][0-9]_admin_pwa*.py"
       - "requirements.txt"
       - "tests/test_admin_pwa_*.py"
       - "tests/e2e/admin_pwa_browser.py"
@@ -166,7 +166,7 @@ jobs:
           python -m pip install -r requirements.txt "pytest==8.4.2" "aiosqlite==0.21.0"
       - name: Prepare minimal 0109 test baseline (no legacy data)
         run: |
-          # Scope is 0110-0120 ONLY: the legacy cold-start path currently
+          # Scope is 0110-0121 ONLY: the legacy cold-start path currently
           # fails at 0011 before course_progress exists. Do not mask that
           # unrelated issue or claim fresh-db full-history migration coverage.
           python - <<'PY'
@@ -182,7 +182,7 @@ jobs:
           asyncio.run(main())
           PY
           python -m alembic stamp 0109_public_site_traffic_daily
-      - name: Upgrade only the Admin PWA migrations 0110-0120
+      - name: Upgrade only the Admin PWA migrations 0110-0121
         run: |
           python -m alembic upgrade head
           python -m alembic current
@@ -209,12 +209,13 @@ jobs:
                   "admin_pwa_authentication_challenges", "admin_pwa_step_ups",
                   "admin_pwa_payment_reviews", "admin_pwa_payment_outbox",
                   "admin_pwa_mcp_access_grants", "admin_pwa_mcp_authorizations",
+                  "admin_pwa_mcp_audit", "admin_pwa_mcp_quotas",
               ):
                   assert name in names, f"Missing migrated table: {name}"
               print("Admin PWA schema exists on disposable PostgreSQL")
           asyncio.run(main())
           PY
-          python -m alembic downgrade 0119_admin_pwa_mcp_authorizations
+          python -m alembic downgrade 0120_admin_pwa_mcp_consent_csrf
           python -m alembic upgrade head
       - name: Run PostgreSQL advisory-lock, single-use and revoke regressions
         run: |

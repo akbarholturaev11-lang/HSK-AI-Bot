@@ -247,6 +247,31 @@ class McpOAuthCeremonyTests(unittest.IsolatedAsyncioTestCase):
         self.settings.ADMIN_PWA_MCP_REDIRECT_URI = "http://client.example/callback"
         self.assertIsNone(await self.start())
 
+    async def test_access_token_expiry_requires_fresh_consent(self):
+        pending = await self.start()
+        code = await self.decide(pending.request_id)
+        token = await self.redeem(code.code)
+        async with self.sessions() as db:
+            self.assertIsNotNone(await verify_readonly_mcp_bearer(
+                db, authorization="Bearer " + token.token, settings_obj=self.settings,
+                now=NOW + timedelta(seconds=299)))
+        async with self.sessions() as db:
+            self.assertIsNone(await verify_readonly_mcp_bearer(
+                db, authorization="Bearer " + token.token, settings_obj=self.settings,
+                now=NOW + timedelta(seconds=300)))
+        self.assertIsNone(await self.redeem(code.code, now=NOW + timedelta(seconds=300)))
+        fresh = await self.start(now=NOW + timedelta(seconds=300))
+        self.assertIsNotNone(fresh)
+        self.assertNotEqual(fresh.request_id, pending.request_id)
+
+    async def test_registered_callback_cannot_preseed_oauth_response_parameters(self):
+        for suffix in ('?code=x', '?iss=x', '?state=x', '?error=x', '?fixed=1&fixed=2'):
+            self.settings.ADMIN_PWA_MCP_REDIRECT_URI = REDIRECT + suffix
+            self.assertIsNone(await self.start(redirect_uri=REDIRECT + suffix))
+        self.settings.ADMIN_PWA_MCP_REDIRECT_URI = REDIRECT
+        self.settings.ADMIN_PWA_MCP_CLIENT_ID = 'https://unverified.example/client.json'
+        self.assertIsNone(await self.start(client_id=self.settings.ADMIN_PWA_MCP_CLIENT_ID))
+
     async def test_start_count_is_capped_within_one_session(self):
         for _ in range(10):
             self.assertIsNotNone(await self.start())

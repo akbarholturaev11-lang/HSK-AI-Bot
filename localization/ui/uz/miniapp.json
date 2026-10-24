@@ -518,7 +518,22 @@
     "ui.admin_pwa.mcpAllow": "Statistikani o‘qishga ruxsat berish",
     "ui.admin_pwa.mcpDeny": "Rad etish",
     "ui.admin_pwa.mcpExpires": "Ushbu tasdiq 3 daqiqa ichida tugaydi.",
-    "ui.admin_pwa.mcpFooter": "HSK AI · Admin xavfsizligi"
+    "ui.admin_pwa.mcpFooter": "HSK AI · Admin xavfsizligi",
+    "ui.admin_pwa.mcpConnections": "MCP ulanishlari",
+    "ui.admin_pwa.mcpLifecycle": "Oxirgi 30 ta ruxsat. Kirish 5 daqiqagacha amal qiladi; keyin tashqi ilovadan qayta ruxsat bering.",
+    "ui.admin_pwa.mcpRevoke": "Ruxsatni bekor qilish",
+    "ui.admin_pwa.mcpRevokeHint": "Ushbu ulanishning kodi va barcha kirish tokenlari darhol bekor qilinadi. Keyingi kirish uchun qayta rozilik kerak.",
+    "ui.admin_pwa.mcpRevoked": "Ruxsat bekor qilingan",
+    "ui.admin_pwa.mcpDenied": "Rad etilgan",
+    "ui.admin_pwa.mcpActive": "Kirish faol",
+    "ui.admin_pwa.mcpExpired": "Muddati tugagan",
+    "ui.admin_pwa.mcpPending": "Tasdiq kutilmoqda",
+    "ui.admin_pwa.mcpAccessUntil": "Kirish muddati",
+    "ui.admin_pwa.mcpSignIn": "Admin hisobingizga kiring",
+    "ui.admin_pwa.mcpSignInHint": "Admin panelini yangi oynada ochib, passkey bilan kiring. Keyin ushbu oynaga qaytib, qayta urinib ko‘ring.",
+    "ui.admin_pwa.mcpRestart": "Ruxsatni qayta so‘rang",
+    "ui.admin_pwa.mcpRestartHint": "Tasdiq muddati tugagan yoki endi yaroqsiz. Tashqi ilovaga qaytib, ulanishni qayta boshlang.",
+    "ui.admin_pwa.mcpOpenAdmin": "Admin panelini ochish"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

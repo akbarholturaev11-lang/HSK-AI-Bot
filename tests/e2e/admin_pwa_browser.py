@@ -37,6 +37,9 @@ from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_payment_review_transport import create_admin_pwa_payment_review_router
 from app.admin_api.pwa_payment_receipts import create_admin_pwa_receipt_router
+from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_router
+from app.admin_api.pwa_mcp_oauth import begin_mcp_authorization, decide_mcp_consent, exchange_mcp_code, pkce_s256
+from app.admin_api.pwa_mcp_resource import verify_readonly_mcp_bearer
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from tests.test_admin_pwa_payment_review import PaymentFixtures
 from tests.test_admin_pwa_webauthn_crypto_vectors import CRED_ID, HANDLE
@@ -70,6 +73,11 @@ async def browser_checks(output):
         await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)))
         await db.commit()
     settings=fixture.settings
+    settings.ADMIN_PWA_MCP_ENABLED=True
+    settings.ADMIN_PWA_MCP_TRANSPORT_ENABLED=True
+    settings.ADMIN_PWA_MCP_RESOURCE=ORIGIN+'/mcp'
+    settings.ADMIN_PWA_MCP_CLIENT_ID='synthetic-browser-client'
+    settings.ADMIN_PWA_MCP_REDIRECT_URI='https://registered-client.example/callback'
     settings.GOOGLE_DESKTOP_CLIENT_ID="synthetic-browser-client"
     settings.DESKTOP_AUTH_SIGNING_SECRET="H"*64
     app=FastAPI()
@@ -77,7 +85,8 @@ async def browser_checks(output):
     for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_google_router,
                     create_admin_pwa_passkey_login_router,create_admin_pwa_step_up_router,
                     create_admin_pwa_payment_review_router,create_admin_pwa_read_router,
-                    create_admin_pwa_completion_router,create_admin_pwa_webauthn_router):
+                    create_admin_pwa_completion_router,create_admin_pwa_webauthn_router,
+                    create_admin_pwa_mcp_management_router):
         app.include_router(factory(**common))
     app.include_router(create_admin_pwa_receipt_router(**common,loader=AsyncMock(return_value=(png(),'image/png'))))
     calls=[];drop_review=False;fail_reads=False;fail_prepare=False;receipt_failure=False
@@ -277,6 +286,61 @@ async def browser_checks(output):
         await page.locator('[data-source=release]').click()
         await expect(page.locator('.inbox-shell')).to_be_visible()
         await page.keyboard.press('Escape')
+        # Actual consent/code/token services seed one synthetic connection;
+        # the V10 drawer calls real session-bound management and audit services.
+        cookie=next(row['value'] for row in await context.cookies() if row['name']=='__Host-hskai_admin')
+        async with fixture.sessions() as db:
+            pending=await begin_mcp_authorization(db,session_cookie=cookie,
+                client_id=settings.ADMIN_PWA_MCP_CLIENT_ID,
+                redirect_uri=settings.ADMIN_PWA_MCP_REDIRECT_URI,
+                resource=ORIGIN+'/mcp',scope='admin:analytics:read',state='state-'+'s'*44,
+                code_challenge=pkce_s256('v'*64),code_challenge_method='S256',settings_obj=settings)
+        assert pending
+        async with fixture.sessions() as db:
+            code=await decide_mcp_consent(db,request_id=pending.request_id,session_cookie=cookie,
+                approved=True,csrf_proof=pending.csrf_proof,settings_obj=settings)
+        async with fixture.sessions() as db:
+            token=await exchange_mcp_code(db,code=code.code,code_verifier='v'*64,
+                client_id=settings.ADMIN_PWA_MCP_CLIENT_ID,redirect_uri=settings.ADMIN_PWA_MCP_REDIRECT_URI,
+                resource=ORIGIN+'/mcp',settings_obj=settings)
+        async def open_connections(width):
+            if width<760:
+                await page.locator('[data-action=more]').click()
+                await page.locator('#dialogs [data-action=mcpConnections]').click()
+            else:
+                await page.locator('.sidebar [data-action=mcpConnections]').click()
+            await expect(page.locator('[data-mcp-revoke]')).to_be_visible()
+        async def set_mcp_locale(locale,width):
+            if width<760:
+                await page.locator('[data-action=more]').click()
+                await page.locator('#drawerLocale').select_option(locale)
+            else:
+                await page.locator('#locale').select_option(locale)
+        for width in (1440,390):
+            await page.set_viewport_size({'width':width,'height':900})
+            for locale in ('uz','ru','tj'):
+                await set_mcp_locale(locale,width)
+                await open_connections(width)
+                assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                await expect(page.locator('.mcp-client-name')).to_contain_text('synthetic-browser-client')
+                await page.screenshot(path=str(output/f'mcp-history-{width}-{locale}.png'),full_page=True)
+                await page.keyboard.press('Escape')
+        await set_mcp_locale('uz',390)
+        await open_connections(390)
+        await page.locator('[data-mcp-revoke]').click()
+        await expect(page.locator('[data-action=mcpRevokeConfirm]')).to_be_visible()
+        await page.keyboard.press('Escape')
+        async with fixture.sessions() as db:
+            assert await verify_readonly_mcp_bearer(db,authorization='Bearer '+token.token,settings_obj=settings)
+        await open_connections(390)
+        await page.locator('[data-mcp-revoke]').click()
+        await page.locator('[data-action=mcpRevokeConfirm]').click()
+        await expect(page.locator('[data-mcp-revoke]')).to_have_count(0)
+        await expect(page.locator('.mcp-history')).to_contain_text('Ruxsat bekor qilingan')
+        async with fixture.sessions() as db:
+            assert await verify_readonly_mcp_bearer(db,authorization='Bearer '+token.token,settings_obj=settings) is None
+        await page.keyboard.press('Escape')
+        await page.set_viewport_size({'width':390,'height':844})
         # Offline clears private DOM and return requires current session.
         await context.set_offline(True)
         await expect(page.locator('.sidebar')).to_have_count(0)

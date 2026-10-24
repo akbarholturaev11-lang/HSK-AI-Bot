@@ -22,6 +22,8 @@ from app.admin_api.pwa_webauthn_transport import _guard_post, _body
 from app.db.models.admin_pwa_mcp import AdminPwaMcpAccessGrant
 from app.db.models.admin_pwa_mcp_authorization import AdminPwaMcpAuthorization
 
+from app.admin_api.pwa_mcp_security import mcp_route_class, admit_mcp_http, finish_mcp_http
+
 logger = logging.getLogger(__name__)
 _MAX_HISTORY = 30
 
@@ -39,6 +41,7 @@ async def list_mcp_consent_history(
         if pair is None:
             return None
         _, user = pair
+        db.info["mcp_admin_id"] = int(user.id)
         rows = (await db.execute(
             select(AdminPwaMcpAuthorization).where(
                 AdminPwaMcpAuthorization.user_id == int(user.id),
@@ -57,17 +60,19 @@ async def list_mcp_consent_history(
             AdminPwaMcpAccessGrant.user_id == int(user.id),
             AdminPwaMcpAccessGrant.consent_event_id.in_(identifiers),
             AdminPwaMcpAccessGrant.revoked_at.is_(None),
+            AdminPwaMcpAccessGrant.created_at <= stamp,
             AdminPwaMcpAccessGrant.expires_at > stamp,
         ))).all()
-        active = {consent_id for consent_id, _ in grants}
+        active = {consent_id: _utc(expiry).isoformat() for consent_id, expiry in grants}
         return [{
             "id": row.id,
             "client_id": row.client_id,
             "scope": row.scope,
             "created_at": _utc(row.created_at).isoformat(),
-            "status": row.status if row.status != "approved" or
-                      _utc(row.expires_at) > stamp else "expired",
+            "status": ("expired" if row.status in ("pending", "approved")
+                       and _utc(row.expires_at) <= stamp else row.status),
             "active_access": row.id in active,
+            "access_expires_at": active.get(row.id),
         } for row in rows]
 
 
@@ -94,6 +99,7 @@ async def revoke_mcp_consent(
         pair = await _locked_session(db, session_cookie, settings_obj, stamp)
         if pair is None or int(pair[1].id) != int(row.user_id):
             return False
+        db.info["mcp_admin_id"] = int(pair[1].id)
         if row.status not in ("pending", "approved", "redeemed", "revoked"):
             return False
         if row.status == "revoked":
@@ -114,9 +120,13 @@ def create_admin_pwa_mcp_management_router(
     *, settings_obj: Any, session_factory: Callable | None = None,
     history_service: Callable = list_mcp_consent_history,
     revoke_service: Callable = revoke_mcp_consent,
+    admission_service: Callable = admit_mcp_http,
+    completion_service: Callable = finish_mcp_http,
 ) -> APIRouter:
     """Owner-only, cookie+same-origin browser routes; NEVER mounted on /mcp."""
-    router = APIRouter(tags=["admin-pwa-mcp-management"])
+    router = APIRouter(tags=["admin-pwa-mcp-management"], route_class=mcp_route_class(
+        settings_obj=settings_obj, session_factory=session_factory, gate=_inactive_response,
+        admission=admission_service, completion=completion_service))
 
     @router.get("/api/admin/v1/mcp/authorizations", include_in_schema=False)
     async def history(request: Request):
@@ -134,14 +144,15 @@ def create_admin_pwa_mcp_management_router(
             async with session_factory() as db:
                 history_rows = await history_service(
                     db, session_cookie=cookie, settings_obj=settings_obj)
+                request.state.mcp_admin_id = getattr(db, "info", {}).get("mcp_admin_id")
         except Exception:
-            logger.exception("Admin MCP consent history unavailable")
+            logger.error("Admin MCP consent history unavailable")
             return JSONResponse({"error": "temporarily_unavailable"},
                                 status_code=503, headers=_HEADERS)
         if history_rows is None:
             return JSONResponse({"error": "admin_login_required"},
                                 status_code=401, headers=_HEADERS)
-        return JSONResponse({"authorizations": history_rows}, headers=_HEADERS)
+        return JSONResponse({"ok": True, "authorizations": history_rows}, headers=_HEADERS)
 
     @router.post("/api/admin/v1/mcp/authorizations/revoke", include_in_schema=False)
     async def revoke(request: Request):
@@ -169,14 +180,16 @@ def create_admin_pwa_mcp_management_router(
                 revoked = await revoke_service(
                     db, authorization_id=body["authorization_id"],
                     session_cookie=cookie, settings_obj=settings_obj)
+                request.state.mcp_admin_id = getattr(db, "info", {}).get("mcp_admin_id")
         except Exception:
-            logger.exception("Admin MCP consent revocation unavailable")
+            logger.error("Admin MCP consent revocation unavailable")
             return JSONResponse({"error": "temporarily_unavailable"},
                                 status_code=503, headers=_HEADERS)
         if not revoked:
             # Same response for nonexistent and foreign consent: no enumeration.
             return JSONResponse({"error": "access_denied"},
                                 status_code=403, headers=_HEADERS)
-        return JSONResponse({"revoked": True}, headers=_HEADERS)
+        request.state.mcp_action = "consent_revoked"
+        return JSONResponse({"ok": True, "revoked": True}, headers=_HEADERS)
 
     return router

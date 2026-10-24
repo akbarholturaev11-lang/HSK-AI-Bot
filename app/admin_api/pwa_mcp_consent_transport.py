@@ -25,6 +25,8 @@ from app.admin_api.pwa_mcp_oauth import (
 from app.admin_api.pwa_mcp_resource import _ANALYTICS_SCOPE, _REQUIRED_RESOURCE
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 
+from app.admin_api.pwa_mcp_security import mcp_route_class, admit_mcp_http, finish_mcp_http
+
 logger = logging.getLogger(__name__)
 _ASSETS = Path(__file__).resolve().parents[1] / "static" / "admin-pwa"
 _TEMPLATE = _ASSETS / "mcp-consent.html"
@@ -35,6 +37,9 @@ _CSP = (
 )
 _CONSENT_HEADERS = {
     **_HEADERS, "X-Frame-Options": "DENY",
+    # no-referrer makes a browser navigation POST send Origin: null.
+    # strict-origin preserves CSRF validation without sending path/query referrers.
+    "Referrer-Policy": "strict-origin",
     "Content-Security-Policy": _CSP,
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
 }
@@ -68,12 +73,25 @@ def _page(client_id: str, redirect_uri: str, request_id: str, csrf_proof: str) -
     return HTMLResponse(document, headers=_CONSENT_HEADERS)
 
 
+def _status_page(*, sign_in: bool, code: int) -> HTMLResponse:
+    # Static catalog keys only. Never reflect the original OAuth query/code.
+    document = (_ASSETS / "mcp-status.html").read_text(encoding="utf-8")
+    document = document.replace("__MCP_STATUS_TITLE__", "mcpSignIn" if sign_in else "mcpRestart")
+    document = document.replace("__MCP_STATUS_HINT__", "mcpSignInHint" if sign_in else "mcpRestartHint")
+    retry = '<button class="btn btn-muted" id="mcp-retry" data-i18n="retry">—</button>' if sign_in else ""
+    return HTMLResponse(document.replace("__MCP_STATUS_RETRY__", retry), status_code=code, headers=_CONSENT_HEADERS)
+
+
 def create_admin_pwa_mcp_consent_router(
     *, settings_obj: Any, session_factory: Callable | None = None,
     begin_service: Callable = begin_mcp_authorization,
     decide_service: Callable = decide_mcp_consent,
+    admission_service: Callable = admit_mcp_http,
+    completion_service: Callable = finish_mcp_http,
 ) -> APIRouter:
-    router = APIRouter(tags=["admin-pwa-mcp-consent"])
+    router = APIRouter(tags=["admin-pwa-mcp-consent"], route_class=mcp_route_class(
+        settings_obj=settings_obj, session_factory=session_factory, gate=_inactive_response,
+        admission=admission_service, completion=completion_service))
 
     @router.get("/oauth/authorize", include_in_schema=False)
     async def authorize(request: Request):
@@ -100,7 +118,7 @@ def create_admin_pwa_mcp_consent_router(
             return _invalid_request(400, "invalid_client")
         cookie = request.cookies.get(ADMIN_PWA_COOKIE_NAME, "")
         if not cookie:
-            return _invalid_request(401, "admin_login_required")
+            return _status_page(sign_in=True, code=401)
         try:
             async with session_factory() as db:
                 pending = await begin_service(
@@ -112,10 +130,11 @@ def create_admin_pwa_mcp_consent_router(
                     settings_obj=settings_obj,
                 )
         except Exception:
-            logger.exception("MCP OAuth consent start unavailable")
+            logger.error("MCP OAuth consent start unavailable")
             return _invalid_request(503, "temporarily_unavailable")
         if pending is None or not pending.csrf_proof:
-            return _invalid_request(403, "access_denied")
+            return _status_page(sign_in=True, code=403)
+        request.state.mcp_admin_id = getattr(pending, "admin_user_id", None)
         return _page(pending.client_id, pending.redirect_uri,
                      pending.request_id, pending.csrf_proof)
 
@@ -146,19 +165,22 @@ def create_admin_pwa_mcp_consent_router(
                     settings_obj=settings_obj,
                 )
         except Exception:
-            logger.exception("MCP OAuth consent decision unavailable")
+            logger.error("MCP OAuth consent decision unavailable")
             return _invalid_request(503, "temporarily_unavailable")
         if result is None:
-            return _invalid_request(403, "access_denied")
+            return _status_page(sign_in=False, code=403)
         if not _registered_client(
             settings_obj, getattr(settings_obj, "ADMIN_PWA_MCP_CLIENT_ID", ""),
             result.redirect_uri, _REQUIRED_RESOURCE, _ANALYTICS_SCOPE,
         ):
             return _invalid_request(403, "access_denied")
+        request.state.mcp_admin_id = getattr(result, "admin_user_id", None)
         if isinstance(result, ApprovedMcpCode) and form["decision"] == "allow":
+            request.state.mcp_action = "consent_approved"
             location = _redirect(result.redirect_uri,
                                  {"code": result.code, "state": result.state, "iss": _ISSUER})
         elif isinstance(result, DeniedMcpCode) and form["decision"] == "deny":
+            request.state.mcp_action = "consent_denied"
             location = _redirect(result.redirect_uri,
                                  {"error": "access_denied", "state": result.state, "iss": _ISSUER})
         else:

@@ -148,8 +148,17 @@ def create_admin_pwa_bootstrap_router(*, settings_obj: Any, session_factory: Cal
             return response(503, "admin_pwa_auth_unavailable")
         if actor is None:
             return response(401, "admin_pwa_unauthorized")
+        # Local import avoids the existing bootstrap -> Google transport -> read cycle.
+        from app.admin_api.pwa_mcp_oauth import _registered_client
+        from app.admin_api.pwa_mcp_resource import _REQUIRED_RESOURCE, _ANALYTICS_SCOPE
         return JSONResponse(
-            content={"ok": True, "user_id": actor.user_id, "auth_method": actor.auth_method},
+            content={"ok": True, "user_id": actor.user_id, "auth_method": actor.auth_method,
+                     "mcp_available": actor.auth_method == "webauthn" and bool(
+                         getattr(settings_obj, "ADMIN_PWA_MCP_TRANSPORT_ENABLED", False)
+                     ) and _registered_client(settings_obj,
+                         getattr(settings_obj, "ADMIN_PWA_MCP_CLIENT_ID", ""),
+                         getattr(settings_obj, "ADMIN_PWA_MCP_REDIRECT_URI", ""),
+                         _REQUIRED_RESOURCE, _ANALYTICS_SCOPE)},
             headers=_PRIVATE_HEADERS,
         )
 

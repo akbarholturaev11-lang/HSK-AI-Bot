@@ -39,7 +39,7 @@ const btn = (label, action, variant='', disabled=false) => `<button class="btn $
 const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
   query:'', status:'pending', source:'bot', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
-let publicRegistration=null, installPrompt=null, returnFocus=null;
+let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false;
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
   epoch++;view++;closeDrawer();state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
@@ -84,7 +84,7 @@ function render() {
   if(!state.actor) { $('root').innerHTML=auth();return; }
   const navigation=routes.map(([route,glyph])=>`<button data-route="${route}" class="${state.route===route?'active':''}" ${state.route===route?'aria-current="page"':''}>${icon(glyph)}${esc(t(route))}</button>`).join('');
   const disabled=['course','marketing','system'].map(route=>`<button disabled title="${esc(t('notReady'))}">${icon(route==='course'?'book':route==='marketing'?'mega':'settings')}${esc(t(route))}</button>`).join('');
-  $('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-logo"><img src="/admin/assets/icon.png" alt=""></div><div><div class="brand-title">HSK AI</div><div class="brand-sub">ADMIN</div></div></div><p class="nav-cap">${esc(t('sections'))}</p><nav class="nav">${navigation}${disabled}</nav><div class="side-foot"><p>${esc(t('account'))} · ${state.actor.user_id}</p>${languageSelect()}${btn('logout','logout')}</div></aside><div class="workspace"><header class="topbar"><div class="topbar-context"><h1 class="page-title">${esc(t(state.route==='home'?'workspace':state.route))}</h1></div><div class="header-tools">${['home','stats'].includes(state.route)?filters():''}<button class="top-icon-btn" data-action="feedback" aria-label="${esc(t('feedback'))}">${icon('bell')}</button><button class="top-icon-btn mobile-only" data-action="more" aria-label="${esc(t('more'))}">${icon('more')}</button></div></header><main class="main" id="content">${content()}</main></div></div><nav class="mobile-tabs" aria-label="${esc(t('sections'))}">${navigation}</nav>`;
+  $('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-logo"><img src="/admin/assets/icon.png" alt=""></div><div><div class="brand-title">HSK AI</div><div class="brand-sub">ADMIN</div></div></div><p class="nav-cap">${esc(t('sections'))}</p><nav class="nav">${navigation}${disabled}</nav><div class="side-foot"><p>${esc(t('account'))} · ${state.actor.user_id}</p>${languageSelect()}${state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''}${btn('logout','logout')}</div></aside><div class="workspace"><header class="topbar"><div class="topbar-context"><h1 class="page-title">${esc(t(state.route==='home'?'workspace':state.route))}</h1></div><div class="header-tools">${['home','stats'].includes(state.route)?filters():''}<button class="top-icon-btn" data-action="feedback" aria-label="${esc(t('feedback'))}">${icon('bell')}</button><button class="top-icon-btn mobile-only" data-action="more" aria-label="${esc(t('more'))}">${icon('more')}</button></div></header><main class="main" id="content">${content()}</main></div></div><nav class="mobile-tabs" aria-label="${esc(t('sections'))}">${navigation}</nav>`;
   $('root').inert=!!$('overlay');
 }
 function filters() {
@@ -167,7 +167,7 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   if(!$('overlay'))returnFocus=document.activeElement;
   $('dialogs').innerHTML=`<div class="canvas-overlay show" id="overlay"><section class="drawer ${className}" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><div class="drawer-top"><h2 id="drawerTitle">${esc(t(title))}</h2><button class="drawer-close" data-action="close" aria-label="${esc(t('close'))}">×</button></div><div class="drawer-content" id="drawerContent">${body}</div><div class="drawer-foot" id="drawerFoot">${foot||btn('close','close')}</div></section></div>`;
@@ -244,6 +244,44 @@ async function inbox(before=null) {
     drawer('feedback',`<div class="inbox-shell"><div class="data-toolbar">${['bot','release'].map(source=>`<button class="btn ${source===state.source?'primary':''}" data-source="${source}">${esc(t(source==='bot'?'botFeedback':'releaseFeedback'))}</button>`).join('')}</div><p class="source-note">${esc(t('feedbackGap'))}</p>${data.items.map(row=>`<article class="feedback-item"><strong>${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+row.rating+'/5':''}</strong><p>${esc(row.comment||row.disliked_text||row.liked_text||row.disliked_code||'—')}</p><small>${esc(date(row.completed_at||row.created_at))}</small>${row.has_attachment?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}</article>`).join('')||statePanel('empty')}${data.next_before_id?`<button class="btn" data-feedback-next="${data.next_before_id}">${esc(t('next'))}</button>`:''}</div>`,'','inbox-drawer');
   }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'));}
 }
+function mcpStateKey(row) {
+  if(row.status==='revoked')return 'mcpRevoked';
+  if(row.status==='denied')return 'mcpDenied';
+  if(row.active_access)return 'mcpActive';
+  return row.status==='pending'||row.status==='approved'?'mcpPending':'mcpExpired';
+}
+async function mcpConnections() {
+  closeDrawer();const current=drawerId;
+  drawer('mcpConnections',statePanel('loading'));
+  try {
+    const data=await api('mcp/authorizations',null,{method:'GET'});
+    if(current!==drawerId||!state.actor)return;
+    const rows=data.authorizations;
+    drawer('mcpConnections',`<p class="source-note">${esc(t('mcpLifecycle'))}</p><div class="mcp-history">${rows.map(row=>`<article class="feedback-item"><strong class="mcp-client-name">${esc(row.client_id)}</strong><p>${esc(t('mcpPermission'))}</p><p class="pill">${esc(t(mcpStateKey(row)))}</p><p><small>${esc(date(row.created_at))}${row.access_expires_at?' · '+esc(t('mcpAccessUntil'))+' '+esc(date(row.access_expires_at)):''}</small></p>${['pending','approved','redeemed'].includes(row.status)?`<button class="btn danger" data-mcp-revoke="${esc(row.id)}">${esc(t('mcpRevoke'))}</button>`:''}</article>`).join('')||statePanel('empty')}</div>`);
+  }catch(error){
+    if(current!==drawerId||!state.actor)return;
+    drawer('mcpConnections',statePanel(error.status===404?'notReady':error.status===403?'authFailed':navigator.onLine?'error':'offline'),btn('close','close')+btn('retry','mcpConnections','primary'));
+  }
+}
+function confirmMcpRevoke(id, label) {
+  if(!/^[0-9a-f-]{36}$/.test(id)||!state.actor?.mcp_available)return;
+  revokeTarget=id;
+  drawer('mcpRevoke',`<p class="alert">${esc(t('mcpRevokeHint'))}</p><p class="mcp-client-name">${esc(label)}</p>`,btn('cancel','mcpConnections')+btn('mcpRevoke','mcpRevokeConfirm','danger'));
+}
+async function revokeMcp() {
+  if(!revokeTarget||revoking)return;
+  const id=revokeTarget,current=drawerId;revoking=true;
+  $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
+  try {
+    await api('mcp/authorizations/revoke',{authorization_id:id});
+    if(current!==drawerId||!state.actor)return;
+    showNotice('mcpRevoked');await mcpConnections();
+  }catch(error){
+    if(current!==drawerId||!state.actor)return;
+    // The response may be lost after a committed revocation. Re-read history.
+    drawer('mcpConnections',statePanel('uncertain'),btn('close','close')+btn('retry','mcpConnections','primary'));
+  }finally{revoking=false;}
+}
 async function action(name) {
   if(busy&&name!=='close')return;
   if(['signin','google','approval','enroll','logout'].includes(name)){
@@ -260,10 +298,12 @@ async function action(name) {
   if(name==='close'){closeDrawer();return;}
   if(name==='boot'){await boot();return;}
   if(name==='reload'){await load();return;}
+  if(name==='mcpConnections'){await mcpConnections();return;}
+  if(name==='mcpRevokeConfirm'){await revokeMcp();return;}
   if(name==='feedback'){await inbox();return;}
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='execute'){if(!signing)await execute();return;}
-  if(name==='more'){drawer('more',languageSelect('drawerLocale'),btn('install','install')+btn('logout','logout'));return;}
+  if(name==='more'){drawer('more',languageSelect('drawerLocale')+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''),btn('install','install')+btn('logout','logout'));return;}
   if(name==='install'){if(installPrompt){await installPrompt.prompt();installPrompt=null;}else showNotice('installHint');return;}
   if(name==='update'){publicRegistration?.waiting?.postMessage('ACTIVATE_PUBLIC_SHELL');return;}
   if(name==='next'&&state.next){state.previous.push(state.cursor);state.cursor=state.next;await load();}
@@ -280,6 +320,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.review){await review(Number(button.dataset.review));}
     else if(button.dataset.source){state.source=button.dataset.source;await inbox();}
     else if(button.dataset.feedbackNext){await inbox(Number(button.dataset.feedbackNext));}
+    else if(button.dataset.mcpRevoke){confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
     else if(button.dataset.action){await action(button.dataset.action);}
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });

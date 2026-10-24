@@ -9,13 +9,14 @@ are complete.
 OAuth access is NEVER a browser cookie, Google ID token or Telegram initData.
 Only exact-audience, revocable, 5-minute OAuth grants authorize statistics.
 """
+import asyncio
 import json
 import logging
 from typing import Any, Callable
 from urllib.parse import parse_qsl
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
+from fastapi.responses import JSONResponse, Response
 
 from app.admin_api.pwa_mcp_oauth import (
     _registered_client, exchange_mcp_code,
@@ -25,6 +26,10 @@ from app.admin_api.pwa_mcp_resource import (
     verify_readonly_mcp_bearer, read_mcp_statistics_with_verified_token,
     _TOKEN_SHAPE,
     McpBearerBadArguments, McpBearerDenied,
+)
+from app.admin_api.pwa_mcp_security import (
+    mcp_route_class, admit_mcp_http, finish_mcp_http,
+    admit_mcp_statistics, limited_response,
 )
 from app.admin_api.pwa_read import StatisticsRequest
 
@@ -36,7 +41,8 @@ _HEADERS = {
     "Cache-Control": "no-store", "Pragma": "no-cache",
     "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer",
 }
-_WWW_AUTH = 'Bearer resource_metadata="https://hskai.app/.well-known/oauth-protected-resource"'
+_WWW_AUTH = ('Bearer resource_metadata="https://hskai.app/.well-known/oauth-protected-resource", '
+             'scope="admin:analytics:read"')
 _MAX_FORM = 4096
 _MAX_RPC = 12000
 
@@ -50,6 +56,11 @@ def _inactive_response(request: Request, settings_obj: Any) -> Response | None:
         return Response(status_code=404, headers=_HEADERS)
     if request.url.scheme != "https" or request.url.netloc != "hskai.app":
         return Response(status_code=403, headers=_HEADERS)
+    if request.url.path == "/mcp":
+        origins = request.headers.getlist("origin")
+        if (len(origins) > 1 or origins and origins != [_ISSUER]
+                or request.headers.get("sec-fetch-site") == "cross-site"):
+            return Response(status_code=403, headers=_HEADERS)
     return None
 
 
@@ -57,10 +68,12 @@ def _invalid_request(code: int = 400, error: str = "invalid_request") -> JSONRes
     return JSONResponse(status_code=code, content={"error": error}, headers=_HEADERS)
 
 
-def _unauthorized() -> Response:
+def _unauthorized(*, invalid_token: bool = False) -> Response:
     return Response(
         status_code=401,
-        headers={**_HEADERS, "WWW-Authenticate": _WWW_AUTH},
+        headers={**_HEADERS, "WWW-Authenticate": _WWW_AUTH + (
+            ', error="invalid_token", error_description="Authorization expired or revoked; reconnect to authorize again"'
+            if invalid_token else "") },
     )
 
 
@@ -101,6 +114,10 @@ def _no_duplicates(items: list[tuple[str, Any]]) -> dict:
     return result
 
 
+def _reject_json_constant(value: str):
+    raise ValueError("nonfinite JSON")
+
+
 async def _rpc_body(request: Request) -> dict | None:
     if request.headers.get("content-type", "").split(";", 1)[0].strip().lower() != "application/json":
         return None
@@ -116,10 +133,14 @@ async def _rpc_body(request: Request) -> dict | None:
     if data is None:
         return None
     try:
-        obj = json.loads(data, object_pairs_hook=_no_duplicates)
-    except (ValueError, UnicodeDecodeError):
+        obj = json.loads(data.decode("utf-8", "strict"), object_pairs_hook=_no_duplicates,
+                         parse_constant=_reject_json_constant)
+    except (ValueError, UnicodeDecodeError, RecursionError):
         return None
     if not isinstance(obj, dict) or obj.get("jsonrpc") != "2.0":
+        return None
+    if (set(obj) - {"jsonrpc", "method", "params", "id"}
+            or "params" in obj and not isinstance(obj["params"], dict)):
         return None
     if not isinstance(obj.get("method"), str):
         return None
@@ -147,9 +168,14 @@ def create_admin_pwa_mcp_http_router(
     exchange_service: Callable = exchange_mcp_code,
     verify_service: Callable = verify_readonly_mcp_bearer,
     read_service: Callable = read_mcp_statistics_with_verified_token,
+    admission_service: Callable = admit_mcp_http,
+    completion_service: Callable = finish_mcp_http,
+    statistics_admission: Callable = admit_mcp_statistics,
 ) -> APIRouter:
     """Mountable only behind three default-off settings; no write tools."""
-    router = APIRouter(tags=["admin-pwa-mcp"])
+    router = APIRouter(tags=["admin-pwa-mcp"], route_class=mcp_route_class(
+        settings_obj=settings_obj, session_factory=session_factory, gate=_inactive_response,
+        admission=admission_service, completion=completion_service))
 
     @router.get("/.well-known/oauth-protected-resource", include_in_schema=False)
     async def protected_resource(request: Request):
@@ -191,6 +217,9 @@ def create_admin_pwa_mcp_http_router(
             return failure
         if session_factory is None:
             return _invalid_request(503, "temporarily_unavailable")
+        if (request.headers.get("authorization") or request.headers.get("cookie")
+                or request.query_params or request.headers.get("origin") not in (None, _ISSUER)):
+            return _invalid_request(400, "invalid_client")
         values = await _form(request)
         if values is None or set(values) != {
             "grant_type", "code", "code_verifier", "client_id",
@@ -210,10 +239,12 @@ def create_admin_pwa_mcp_http_router(
                     resource=values["resource"], settings_obj=settings_obj,
                 )
         except Exception:
-            logger.exception("Admin MCP OAuth token exchange unavailable")
+            logger.error("Admin MCP OAuth token exchange unavailable")
             return _invalid_request(503, "temporarily_unavailable")
         if result is None:
             return _invalid_request(400, "invalid_grant")
+        request.state.mcp_admin_id = getattr(result, "admin_user_id", None)
+        request.state.mcp_action = "token_issued"
         return JSONResponse(content={
             "access_token": result.token, "token_type": result.token_type,
             "expires_in": result.expires_in, "scope": result.scope,
@@ -253,15 +284,30 @@ def create_admin_pwa_mcp_http_router(
             return _unauthorized()
         # Stateless MCP JSON response only; no SSE sessions/streaming and no
         # server-to-client notifications, resources or prompts.
-        accepts = request.headers.get("accept", "")
-        if "application/json" not in accepts or "text/event-stream" not in accepts:
+        accepts = set()
+        for item in ",".join(request.headers.getlist("accept")).split(","):
+            parts = item.strip().lower().split(";")
+            try:
+                quality = [float(p.strip()[2:]) for p in parts[1:] if p.strip().startswith("q=")]
+                if len(quality) > 1 or quality and not 0 < quality[0] <= 1:
+                    continue
+            except ValueError:
+                continue
+            accepts.add(parts[0].strip())
+        if not {"application/json", "text/event-stream"}.issubset(accepts):
             return _invalid_request(406)
+        if len(request.headers.getlist("mcp-protocol-version")) > 1:
+            return _invalid_request()
         version = request.headers.get("mcp-protocol-version")
-        if version and version not in _SUPPORTED:
+        if version is not None and version not in _SUPPORTED:
             return _invalid_request(400, "unsupported_protocol_version")
         rpc = await _rpc_body(request)
         if rpc is None:
             return _reply_error(None, -32700, "Invalid JSON-RPC request", http_status=400)
+        # This stateless server cannot recover a negotiated version from a
+        # session and does not implement the legacy 2025-03-26 fallback.
+        if rpc["method"] != "initialize" and version is None:
+            return _invalid_request(400, "unsupported_protocol_version")
         auth = bearer_headers[0]
         try:
             async with session_factory() as db:
@@ -269,22 +315,33 @@ def create_admin_pwa_mcp_http_router(
                     db, authorization=auth, settings_obj=settings_obj,
                 )
         except Exception:
-            logger.exception("Admin MCP authorization unavailable")
+            logger.error("Admin MCP authorization unavailable")
             return _invalid_request(503, "temporarily_unavailable")
         if actor is None:
-            return _unauthorized()
+            return _unauthorized(invalid_token=True)
+        request.state.mcp_admin_id = actor.admin_user_id
         method = rpc["method"]
+        request.state.mcp_action = method if method in {
+            "initialize", "ping", "tools/list", "tools/call", "notifications/initialized",
+        } else "unknown"
         ident = rpc.get("id")
         if method == "notifications/initialized" and ident is None:
             return Response(status_code=202, headers=_HEADERS)
         if ident is None:
-            return _reply_error(None, -32600, "Request ID required")
+            if method == "notifications/cancelled":
+                return Response(status_code=202, headers=_HEADERS)
+            return _reply_error(None, -32600, "Request ID required", http_status=400)
         if method == "initialize":
             params = rpc.get("params", {})
-            if not isinstance(params, dict):
+            if (not isinstance(params, dict)
+                    or not isinstance(params.get("protocolVersion"), str)
+                    or not isinstance(params.get("capabilities"), dict)
+                    or not isinstance(params.get("clientInfo"), dict)
+                    or not all(isinstance(params["clientInfo"].get(key), str)
+                               and params["clientInfo"][key] for key in ("name", "version"))):
                 return _reply_error(ident, -32602, "Invalid params")
             return _reply_result(ident, {
-                "protocolVersion": _PROTOCOL,
+                "protocolVersion": params["protocolVersion"] if params["protocolVersion"] in _SUPPORTED else _PROTOCOL,
                 "capabilities": {"tools": {"listChanged": False}},
                 "serverInfo": {"name": "hskai-admin-readonly", "version": "0.1"},
                 "instructions": "Read-only statistics; no access to payments, users or feedback.",
@@ -296,7 +353,8 @@ def create_admin_pwa_mcp_http_router(
                 "name": "hskai_statistics",
                 "description": "Read verified HSK AI administration statistics.",
                 "inputSchema": StatisticsRequest.model_json_schema(),
-                "annotations": {"readOnlyHint": True, "destructiveHint": False},
+                "annotations": {"readOnlyHint": True, "destructiveHint": False, "openWorldHint": False},
+                "securitySchemes": [{"type": "oauth2", "scopes": [_ANALYTICS_SCOPE]}],
             }]})
         if method != "tools/call":
             return _reply_error(ident, -32601, "Method not found")
@@ -307,16 +365,20 @@ def create_admin_pwa_mcp_http_router(
             return _reply_error(ident, -32602, "Invalid tool arguments")
         try:
             async with session_factory() as db:
+                allowed, retry = await statistics_admission(db, admin_user_id=actor.admin_user_id)
+            if not allowed:
+                return limited_response(retry)
+            async with asyncio.timeout(10), session_factory() as db:
                 data = await read_service(
                     db, authorization=auth,
                     args=params["arguments"], settings_obj=settings_obj,
                 )
         except McpBearerDenied:
-            return _unauthorized()
+            return _unauthorized(invalid_token=True)
         except McpBearerBadArguments:
             return _reply_error(ident, -32602, "Invalid tool arguments")
         except Exception:
-            logger.exception("Admin MCP statistics read unavailable")
+            logger.error("Admin MCP statistics read unavailable")
             return _reply_error(ident, -32603, "Tool temporarily unavailable")
         payload = data.get("data")
         return _reply_result(ident, {

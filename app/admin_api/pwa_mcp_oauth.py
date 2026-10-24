@@ -14,7 +14,7 @@ import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Any
-from urllib.parse import urlsplit
+from urllib.parse import parse_qsl, urlsplit
 from uuid import uuid4
 
 from sqlalchemy import func, select
@@ -23,7 +23,7 @@ from sqlalchemy.exc import IntegrityError
 from app.admin_api.pwa_approval import _utc
 from app.admin_api.pwa_sessions import _authorized_admin
 from app.admin_api.pwa_step_up import _locked_session
-from app.admin_api.pwa_mcp_resource import _ready, _REQUIRED_RESOURCE, _ANALYTICS_SCOPE
+from app.admin_api.pwa_mcp_resource import _ready, _REQUIRED_RESOURCE, _ANALYTICS_SCOPE, _CLIENT_SHAPE
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_mcp import AdminPwaMcpAccessGrant
 from app.db.models.admin_pwa_mcp_authorization import AdminPwaMcpAuthorization
@@ -52,6 +52,7 @@ class PendingMcpConsent:
     expires_at: datetime
     # One-time secret returned ONLY to a trusted first-party consent page.
     csrf_proof: str = ""
+    admin_user_id: int | None = None
 
 
 @dataclass(frozen=True)
@@ -60,12 +61,14 @@ class ApprovedMcpCode:
     redirect_uri: str
     state: str                 # OAuth client-owned; NOT an auth secret.
     expires_at: datetime
+    admin_user_id: int | None = None
 
 
 @dataclass(frozen=True)
 class DeniedMcpCode:
     redirect_uri: str
     state: str
+    admin_user_id: int | None = None
 
 
 @dataclass(frozen=True)
@@ -74,6 +77,7 @@ class McpAccessToken:
     token_type: str
     expires_in: int
     scope: str
+    admin_user_id: int | None = None
 
 
 def _digest(value: str) -> str:
@@ -96,7 +100,7 @@ def _registered_client(settings_obj: Any, client_id: Any, redirect_uri: Any,
     configured_id = getattr(settings_obj, "ADMIN_PWA_MCP_CLIENT_ID", "")
     configured_redirect = getattr(settings_obj, "ADMIN_PWA_MCP_REDIRECT_URI", "")
     if (not isinstance(client_id, str) or not isinstance(configured_id, str)
-            or not 3 <= len(configured_id) <= 128 or client_id != configured_id
+            or not _CLIENT_SHAPE.fullmatch(configured_id) or client_id != configured_id
             or not isinstance(redirect_uri, str)
             or not isinstance(configured_redirect, str)
             or len(configured_redirect) > 512 or redirect_uri != configured_redirect
@@ -104,11 +108,14 @@ def _registered_client(settings_obj: Any, client_id: Any, redirect_uri: Any,
         return False
     try:
         parsed = urlsplit(redirect_uri)
+        pairs = parse_qsl(parsed.query, keep_blank_values=True, strict_parsing=True, max_num_fields=12)
     except ValueError:
         return False
     if (parsed.scheme != "https" or not parsed.hostname
             or parsed.username is not None or parsed.password is not None
-            or parsed.fragment or not parsed.netloc or parsed.hostname.endswith(".")):
+            or parsed.fragment or not parsed.netloc or parsed.hostname.endswith(".")
+            or len(pairs) != len({key for key, _ in pairs})
+            or any(key in {"code", "state", "iss", "error", "error_description"} for key, _ in pairs)):
         return False
     return True
 
@@ -154,7 +161,7 @@ async def begin_mcp_authorization(
         ))
         await db.flush()
     return PendingMcpConsent(identifier, client_id, redirect_uri, resource,
-                             scope, state, expires_at, csrf_proof)
+                             scope, state, expires_at, csrf_proof, int(user.id))
 
 
 async def decide_mcp_consent(
@@ -197,11 +204,13 @@ async def decide_mcp_consent(
             redirect = row.redirect_uri
             client_state = row.client_state
             await db.flush()
-            return DeniedMcpCode(redirect, client_state)
+            row.consent_csrf_hash = None
+            return DeniedMcpCode(redirect, client_state, int(user.id))
         code = secrets.token_urlsafe(48)
         expires_at = min(_utc(session.expires_at), stamp + _CODE_TTL)
         if expires_at <= stamp:
             return None
+        row.consent_csrf_hash = None
         row.code_hash = _digest(code)
         row.status = "approved"
         row.approved_at = stamp
@@ -209,7 +218,7 @@ async def decide_mcp_consent(
         redirect = row.redirect_uri
         client_state = row.client_state
         await db.flush()
-    return ApprovedMcpCode(code, redirect, client_state, expires_at)
+    return ApprovedMcpCode(code, redirect, client_state, expires_at, int(user.id))
 
 
 async def exchange_mcp_code(
@@ -267,6 +276,6 @@ async def exchange_mcp_code(
             row.redeemed_at = stamp
             await db.flush()
         return McpAccessToken(token, "Bearer", int(_TOKEN_TTL.total_seconds()),
-                              _ANALYTICS_SCOPE)
+                              _ANALYTICS_SCOPE, int(user.id))
     except IntegrityError:
         return None

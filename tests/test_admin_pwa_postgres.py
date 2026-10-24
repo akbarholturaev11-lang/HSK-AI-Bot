@@ -311,7 +311,7 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
             self.assertEqual((await db.get(Payment, self.payment_id)).payment_status, "pending")
             self.assertEqual((await db.get(AdminPwaStepUp, receipt)).status, "verified")
 
-    async def test_empty_qa_table_selection_runs_real_0103_through_0120_ddl(self):
+    async def test_empty_qa_table_selection_runs_real_0103_through_0121_ddl(self):
         # Rehearse only in this disposable UUID schema, not through the guarded
         # Railway CLI. The production allowlist/approval guards are untouched.
         import importlib.util
@@ -326,8 +326,8 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
         schema = self.schema + "_bootstrap"
         versions = Path(__file__).resolve().parents[1] / "alembic/versions"
         paths = sorted(path for path in versions.glob("*.py")
-                       if path.name[:4].isdigit() and 103 <= int(path.name[:4]) <= 120)
-        self.assertEqual(len(paths), 18)
+                       if path.name[:4].isdigit() and 103 <= int(path.name[:4]) <= 121)
+        self.assertEqual(len(paths), 19)
         async with self.engine.begin() as conn:
             await conn.execute(text(f"CREATE SCHEMA {schema}"))
             await conn.execute(text(f"SET LOCAL search_path TO {schema}"))
@@ -455,6 +455,81 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
             self.assertEqual(await db.scalar(text("SHOW transaction_read_only")), "off")
             self.assertEqual((await db.get(User, 1)).status, "free")
 
+
+    async def test_mcp_revoke_races_code_exchange_without_live_access_surviving(self):
+        from app.admin_api.pwa_mcp_management import revoke_mcp_consent
+        from app.admin_api.pwa_mcp_oauth import (
+            begin_mcp_authorization, decide_mcp_consent, exchange_mcp_code, pkce_s256)
+        from app.admin_api.pwa_mcp_resource import verify_readonly_mcp_bearer
+        from app.db.models.admin_pwa_mcp_authorization import AdminPwaMcpAuthorization
+        now = datetime.now(timezone.utc)
+        self.settings.ADMIN_PWA_MCP_ENABLED = True
+        self.settings.ADMIN_PWA_MCP_RESOURCE = "https://hskai.app/mcp"
+        self.settings.ADMIN_PWA_MCP_CLIENT_ID = "registered-test-client"
+        self.settings.ADMIN_PWA_MCP_REDIRECT_URI = "https://client.example/callback"
+        async with self.sessions() as db:
+            db.add(User(id=303, telegram_id=9001, status="active"))
+            await db.flush()
+            db.add(AdminPwaSession(id=str(uuid4()), user_id=303,
+                token_hash=hashlib.sha256(COOKIE.encode()).hexdigest(), auth_method="webauthn",
+                created_at=now, expires_at=now+timedelta(hours=1)))
+            await db.commit()
+        args = dict(client_id=self.settings.ADMIN_PWA_MCP_CLIENT_ID,
+                    redirect_uri=self.settings.ADMIN_PWA_MCP_REDIRECT_URI,
+                    resource=self.settings.ADMIN_PWA_MCP_RESOURCE, settings_obj=self.settings)
+        async with self.sessions() as db:
+            pending = await begin_mcp_authorization(db, session_cookie=COOKIE,
+                scope="admin:analytics:read", state="state-"+"s"*44,
+                code_challenge=pkce_s256("v"*64), code_challenge_method="S256", **args)
+        async with self.sessions() as db:
+            code = await decide_mcp_consent(db, session_cookie=COOKIE,
+                request_id=pending.request_id, csrf_proof=pending.csrf_proof,
+                approved=True, settings_obj=self.settings)
+        async def redeem():
+            async with self.sessions() as db:
+                return await exchange_mcp_code(db, code=code.code, code_verifier="v"*64, **args)
+        async def revoke():
+            async with self.sessions() as db:
+                return await revoke_mcp_consent(db, session_cookie=COOKIE,
+                    authorization_id=pending.request_id, settings_obj=self.settings)
+        token, revoked = await asyncio.wait_for(asyncio.gather(redeem(), revoke()), 30)
+        self.assertTrue(revoked)
+        async with self.sessions() as db:
+            self.assertEqual((await db.get(AdminPwaMcpAuthorization, pending.request_id)).status, "revoked")
+            if token:
+                self.assertIsNone(await verify_readonly_mcp_bearer(db,
+                    authorization="Bearer "+token.token, settings_obj=self.settings))
+
+    async def test_mcp_security_downgrade_preserves_nonempty_audit(self):
+        import importlib.util
+        from pathlib import Path
+        from alembic.migration import MigrationContext
+        from alembic.operations import Operations
+        from app.db.models.admin_pwa_mcp_security import AdminPwaMcpAudit
+        async with self.sessions() as db:
+            db.add(AdminPwaMcpAudit(id=str(uuid4()), action="token", outcome="rejected",
+                status_code=400, created_at=datetime.now(timezone.utc)))
+            await db.commit()
+        path = Path(__file__).resolve().parents[1]/"alembic/versions/0121_admin_pwa_mcp_security.py"
+        spec = importlib.util.spec_from_file_location("mcp_security_migration", path)
+        migration = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(migration)
+        async with self.engine.begin() as conn:
+            def downgrade(sync):
+                with Operations.context(MigrationContext.configure(sync)):
+                    migration.downgrade()
+            with self.assertRaisesRegex(RuntimeError, "Archive MCP audit"):
+                await conn.run_sync(downgrade)
+            self.assertEqual((await conn.execute(text("SELECT count(*) FROM admin_pwa_mcp_audit"))).scalar_one(), 1)
+
+    async def test_mcp_quota_first_use_is_atomic_across_connections(self):
+        from app.admin_api.pwa_mcp_security import consume_mcp_quota
+        async def attempt():
+            async with self.sessions() as db, db.begin():
+                return await consume_mcp_quota(db, key="http:token", limit=1)
+        results = await asyncio.wait_for(asyncio.gather(*(attempt() for _ in range(8))), 30)
+        self.assertEqual(sum(allowed for allowed, _, _ in results), 1)
+        self.assertEqual(sum(first for _, first, _ in results), 1)
 
     async def test_mcp_authorization_code_redeems_once_under_pg_row_lock(self):
         """Two simultaneous PKCE exchanges must mint exactly ONE token."""

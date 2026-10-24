@@ -518,7 +518,22 @@
     "ui.admin_pwa.mcpAllow": "Разрешить чтение статистики",
     "ui.admin_pwa.mcpDeny": "Отклонить",
     "ui.admin_pwa.mcpExpires": "Запрос истечёт через 3 минуты.",
-    "ui.admin_pwa.mcpFooter": "HSK AI · Безопасность администратора"
+    "ui.admin_pwa.mcpFooter": "HSK AI · Безопасность администратора",
+    "ui.admin_pwa.mcpConnections": "Подключения MCP",
+    "ui.admin_pwa.mcpLifecycle": "Последние 30 разрешений. Доступ действует до 5 минут; затем повторно разрешите его во внешнем приложении.",
+    "ui.admin_pwa.mcpRevoke": "Отозвать разрешение",
+    "ui.admin_pwa.mcpRevokeHint": "Код и все токены этого подключения будут немедленно отозваны. Для нового доступа потребуется повторное согласие.",
+    "ui.admin_pwa.mcpRevoked": "Разрешение отозвано",
+    "ui.admin_pwa.mcpDenied": "Отклонено",
+    "ui.admin_pwa.mcpActive": "Доступ активен",
+    "ui.admin_pwa.mcpExpired": "Срок истёк",
+    "ui.admin_pwa.mcpPending": "Ожидает подтверждения",
+    "ui.admin_pwa.mcpAccessUntil": "Доступ до",
+    "ui.admin_pwa.mcpSignIn": "Войдите в аккаунт администратора",
+    "ui.admin_pwa.mcpSignInHint": "Откройте панель в новой вкладке и войдите с ключом доступа. Затем вернитесь сюда и повторите попытку.",
+    "ui.admin_pwa.mcpRestart": "Запросите разрешение заново",
+    "ui.admin_pwa.mcpRestartHint": "Подтверждение истекло или больше не действует. Вернитесь во внешнее приложение и начните подключение заново.",
+    "ui.admin_pwa.mcpOpenAdmin": "Открыть панель администратора"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

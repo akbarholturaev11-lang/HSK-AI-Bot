@@ -518,7 +518,22 @@
     "ui.admin_pwa.mcpAllow": "Иҷозат додан ба хондани омор",
     "ui.admin_pwa.mcpDeny": "Рад кардан",
     "ui.admin_pwa.mcpExpires": "Муҳлати ин дархост баъд аз 3 дақиқа ба анҷом мерасад.",
-    "ui.admin_pwa.mcpFooter": "HSK AI · Амнияти маъмур"
+    "ui.admin_pwa.mcpFooter": "HSK AI · Амнияти маъмур",
+    "ui.admin_pwa.mcpConnections": "Пайвастҳои MCP",
+    "ui.admin_pwa.mcpLifecycle": "30 иҷозати охирин. Дастрасӣ то 5 дақиқа амал мекунад; сипас дар барномаи беруна аз нав иҷозат диҳед.",
+    "ui.admin_pwa.mcpRevoke": "Бекор кардани иҷозат",
+    "ui.admin_pwa.mcpRevokeHint": "Рамз ва ҳамаи токенҳои ин пайваст фавран бекор мешаванд. Барои дастрасии нав розигии дубора лозим аст.",
+    "ui.admin_pwa.mcpRevoked": "Иҷозат бекор шудааст",
+    "ui.admin_pwa.mcpDenied": "Рад шудааст",
+    "ui.admin_pwa.mcpActive": "Дастрасӣ фаъол аст",
+    "ui.admin_pwa.mcpExpired": "Муҳлат гузаштааст",
+    "ui.admin_pwa.mcpPending": "Дар интизори тасдиқ",
+    "ui.admin_pwa.mcpAccessUntil": "Дастрасӣ то",
+    "ui.admin_pwa.mcpSignIn": "Ба ҳисоби мудир ворид шавед",
+    "ui.admin_pwa.mcpSignInHint": "Панелро дар равзанаи нав кушоед ва бо калиди дастрасӣ ворид шавед. Сипас ба ин равзана баргардед ва дубора кӯшиш кунед.",
+    "ui.admin_pwa.mcpRestart": "Аз нав иҷозат пурсед",
+    "ui.admin_pwa.mcpRestartHint": "Муҳлати тасдиқ гузаштааст ё он дигар эътибор надорад. Ба барномаи беруна баргардед ва пайвастшавиро аз нав оғоз кунед.",
+    "ui.admin_pwa.mcpOpenAdmin": "Кушодани панели мудир"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
