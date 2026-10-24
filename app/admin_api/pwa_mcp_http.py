@@ -9,17 +9,21 @@ are complete.
 OAuth access is NEVER a browser cookie, Google ID token or Telegram initData.
 Only exact-audience, revocable, 5-minute OAuth grants authorize statistics.
 """
+import html
 import json
 import logging
+from pathlib import Path
 from typing import Any, Callable
-from urllib.parse import parse_qsl
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from fastapi import APIRouter, Request
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 
 from app.admin_api.pwa_mcp_oauth import (
-    _registered_client, exchange_mcp_code,
+    _registered_client, begin_mcp_authorization, decide_mcp_consent,
+    ApprovedMcpCode, DeniedMcpCode, exchange_mcp_code,
 )
+from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.admin_api.pwa_mcp_resource import (
     _ready, _REQUIRED_RESOURCE, _ANALYTICS_SCOPE,
     verify_readonly_mcp_bearer, read_mcp_statistics_with_verified_token,
@@ -39,6 +43,20 @@ _HEADERS = {
 _WWW_AUTH = 'Bearer resource_metadata="https://hskai.app/.well-known/oauth-protected-resource"'
 _MAX_FORM = 4096
 _MAX_RPC = 12000
+_CONSENT_HTML = (Path(__file__).resolve().parents[1] / "static" / "admin-pwa"
+                 / "mcp-consent.html")
+_CONSENT_CSP = (
+    "default-src 'none'; script-src 'self'; style-src 'self'; "
+    "img-src 'self'; form-action 'self'; base-uri 'none'; "
+    "frame-ancestors 'none'; connect-src 'none'"
+)
+_CONSENT_HEADERS = {
+    **_HEADERS,
+    "Content-Security-Policy": _CONSENT_CSP,
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "no-referrer",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+}
 
 
 def _inactive_response(request: Request, settings_obj: Any) -> Response | None:
@@ -147,6 +165,8 @@ def create_admin_pwa_mcp_http_router(
     exchange_service: Callable = exchange_mcp_code,
     verify_service: Callable = verify_readonly_mcp_bearer,
     read_service: Callable = read_mcp_statistics_with_verified_token,
+    begin_service: Callable = begin_mcp_authorization,
+    consent_service: Callable = decide_mcp_consent,
 ) -> APIRouter:
     """Mountable only behind three default-off settings; no write tools."""
     router = APIRouter(tags=["admin-pwa-mcp"])
@@ -182,6 +202,114 @@ def create_admin_pwa_mcp_http_router(
             "scopes_supported": [_ANALYTICS_SCOPE],
             "client_id_metadata_document_supported": False,
         }, headers=_HEADERS)
+
+    @router.get("/oauth/authorize", include_in_schema=False)
+    async def authorize_page(request: Request):
+        failure = _inactive_response(request, settings_obj)
+        if failure is not None:
+            return failure
+        if session_factory is None:
+            return _invalid_request(503, "temporarily_unavailable")
+        # This endpoint is reached by an OAuth browser redirect. GET may be a
+        # top-level cross-site navigation; no OAuth code is issued on GET.
+        if (request.headers.get("sec-fetch-mode") not in (None, "navigate")
+                or request.headers.get("sec-fetch-dest") not in (None, "document")):
+            return _invalid_request(403)
+        query_items = list(request.query_params.multi_items())
+        if len(query_items) != 8 or len({key for key, _ in query_items}) != 8:
+            return _invalid_request()
+        query = dict(query_items)
+        if (set(query) != {
+                "response_type", "client_id", "redirect_uri", "resource",
+                "scope", "state", "code_challenge", "code_challenge_method",
+            } or query["response_type"] != "code"):
+            return _invalid_request()
+        if not _registered_client(
+                settings_obj, query["client_id"], query["redirect_uri"],
+                query["resource"], query["scope"]):
+            return _invalid_request(400, "invalid_client")
+        # Do not redirect invalid requests to unvalidated callbacks.
+        session_cookie = request.cookies.get(ADMIN_PWA_COOKIE_NAME, "")
+        if not session_cookie:
+            return _unauthorized()
+        try:
+            async with session_factory() as db:
+                pending = await begin_service(
+                    db, session_cookie=session_cookie,
+                    client_id=query["client_id"],
+                    redirect_uri=query["redirect_uri"],
+                    resource=query["resource"],
+                    scope=query["scope"],
+                    state=query["state"],
+                    code_challenge=query["code_challenge"],
+                    code_challenge_method=query["code_challenge_method"],
+                    settings_obj=settings_obj,
+                )
+        except Exception:
+            logger.exception("MCP browser OAuth consent start unavailable")
+            return _invalid_request(503, "temporarily_unavailable")
+        if pending is None:
+            return _invalid_request(403, "access_denied")
+        destination = urlsplit(pending.redirect_uri).hostname or ""
+        template = _CONSENT_HTML.read_text(encoding="utf-8")
+        replacements = {
+            "__MCP_CLIENT__": pending.client_id,
+            "__MCP_DESTINATION__": destination,
+            "__MCP_REQUEST_ID__": pending.request_id,
+            "__MCP_CSRF__": pending.csrf_proof,
+        }
+        for placeholder, value in replacements.items():
+            template = template.replace(placeholder, html.escape(value, quote=True))
+        return HTMLResponse(content=template, headers=_CONSENT_HEADERS)
+
+    @router.post("/oauth/authorize", include_in_schema=False)
+    async def authorize_decision(request: Request):
+        failure = _inactive_response(request, settings_obj)
+        if failure is not None:
+            return failure
+        if session_factory is None:
+            return _invalid_request(503, "temporarily_unavailable")
+        origins = request.headers.getlist("origin")
+        if (len(origins) != 1 or origins[0] != _ISSUER
+                or request.headers.get("sec-fetch-site") != "same-origin"):
+            return _invalid_request(403, "access_denied")
+        values = await _form(request)
+        if (values is None or set(values) != {
+                "request_id", "csrf", "decision",
+            } or values["decision"] not in ("allow", "deny")):
+            return _invalid_request()
+        session_cookie = request.cookies.get(ADMIN_PWA_COOKIE_NAME, "")
+        if not session_cookie:
+            return _unauthorized()
+        try:
+            async with session_factory() as db:
+                decision = await consent_service(
+                    db, request_id=values["request_id"],
+                    csrf_proof=values["csrf"], session_cookie=session_cookie,
+                    approved=values["decision"] == "allow",
+                    settings_obj=settings_obj,
+                )
+        except Exception:
+            logger.exception("MCP browser OAuth consent decision unavailable")
+            return _invalid_request(503, "temporarily_unavailable")
+        if decision is None:
+            return _invalid_request(403, "access_denied")
+        # Approved code and denied state are returned only to the exact
+        # registered callback stored with the original PKCE authorization.
+        parsed = urlsplit(decision.redirect_uri)
+        params = parse_qsl(parsed.query, keep_blank_values=True)
+        if isinstance(decision, ApprovedMcpCode):
+            params.extend((("code", decision.code), ("state", decision.state)))
+        elif isinstance(decision, DeniedMcpCode):
+            params.extend((("error", "access_denied"), ("state", decision.state)))
+        else:
+            return _invalid_request(403, "access_denied")
+        location = urlunsplit((
+            parsed.scheme, parsed.netloc, parsed.path, urlencode(params), "",
+        ))
+        return RedirectResponse(
+            url=location, status_code=303, headers=_CONSENT_HEADERS,
+        )
 
     @router.post("/oauth/token", include_in_schema=False)
     async def token(request: Request):
