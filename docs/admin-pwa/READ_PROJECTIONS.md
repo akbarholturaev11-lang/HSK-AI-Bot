@@ -18,6 +18,7 @@ fixtures also verify all projection statements are SELECTs.
 | `/api/admin/v1/users/detail` | required canonical `user_id` | Shared entitlement resolver; CourseProgress/track snapshots, referral owner aggregates, native device platform aggregates, Mini App presence, feedback counts and first ten payments |
 | `/api/admin/v1/users/payments` | required canonical `user_id`, optional `limit`, `before_id` | All statuses, canonical-first payment ownership, descending ID keyset; no receipt references |
 | `/api/admin/v1/feedback/list` | required `source`: bot/release; optional canonical `user_id`, `limit`, `before_id` | Existing durable source rows; no new inbox/triage state |
+| `/api/admin/v1/inbox/list` | `source`: all/bot/release/android; optional canonical `user_id`, `limit` 1–50, compound `before` cursor | Three bounded source projections, merged newest-first by timestamp/source/id; no attachment bytes, triage or MCP |
 
 All IDs and limits are strict integers, unknown fields are denied. Numeric user
 search names only `users.id`; it never also guesses a Telegram ID. Text search
@@ -53,10 +54,7 @@ back to its Telegram metadata. Release feedback has only a genuine positive
 Telegram ID, joined to its current canonical User. Source ID, campaign ID,
 original status/rating, timestamp and attachment presence retain their source
 meaning. Unknown/deleted ownership is null. There is no invented severity,
-read/assigned/resolved status or reply action. Android bug reports are not a
-durable table in this source snapshot; `unavailable_sources` explicitly records
-that historical gap. Secure attachment viewing and durable Android intake
-remain separate work.
+read/assigned/resolved status or reply action. The earlier single-source `feedback/list` response retains its historical\n`unavailable_sources` compatibility marker; it has not been extended to native\nreports. The newer `inbox/list` reads only retained reports written after\nAndroid intake was enabled. Historical Telegram-only Android reports cannot be\nreconstructed. Secure attachment viewing and triage remain separate work.
 
 These are browser-admin projections, **not** the future AI/MCP or sanitized
 CSV export contract. No service-account/write tool or live DB access is added.
@@ -152,3 +150,29 @@ R2 snapshots/archives remain optional future work; nothing is uploaded to R2.
 
 Redis cache-aside/lease reference:
 [official Redis cache-aside guide](https://redis.io/docs/latest/develop/use-cases/cache-aside/redis-py/).
+
+## Unified inbox read-only increment (2026-10-24)
+
+`app/admin_api/pwa_inbox.py` reads bot feedback, release responses and retained
+private Android reports through three bounded SELECT projections. It reads at
+most `limit + 1` rows per selected source, merges by descending UTC timestamp,
+source rank and stable source ID, and returns a strict timezone-aware compound
+cursor. The optional account filter uses canonical User IDs; release ownership
+requires positive stored Telegram ID mapped to a real canonical User. Orphaned
+bot/release feedback shows null canonical owner. Expired native reports are never
+returned, even if scheduled physical purge has not yet executed.
+
+The V10 notification bell now uses `inbox/list`, default `all`, and has Bot,
+Release and Android source filters with next-page support. It reuses existing
+UZ/RU/TJ catalog labels; no generated localization files were hand-edited.
+Output contains capped 2,000-character excerpts, attachment presence ONLY,
+source-owned feedback status or native Telegram-delivery status (never a made-up
+read/assigned/resolved state), no file IDs, native screenshot bytes, raw Telegram
+IDs or MCP extension. It explicitly returns
+`historical_android_reports_complete=false`, `triage_available=false`, and
+`attachment_access=not_exposed`. These are API metadata, not a claim that the
+UI already displays a completed triage workflow or all historic reports.
+
+Next: define durable shared triage state, indexed filter/search model, authenticated
+read/assigned/resolved actions and secure attachment proxy. Admin/system alert
+source inventory precedes claiming universal notifications complete.
