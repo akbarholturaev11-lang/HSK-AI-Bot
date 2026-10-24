@@ -567,7 +567,24 @@
     "ui.admin_pwa.conversion": "Konversiya",
     "ui.admin_pwa.registeredCohort": "Davrda ro‘yxatdan o‘tgan",
     "ui.admin_pwa.convertedAccounts": "Pro uchun to‘laganlar",
-    "ui.admin_pwa.conversionNote": "Shu davrda yaratilgan hisoblarning hozirgacha tasdiqlangan Pro to‘lovi bor ulushi. HSK 3.0 ochish kirmaydi. Yangi hisoblarda natija hali o‘zgaradi."
+    "ui.admin_pwa.conversionNote": "Shu davrda yaratilgan hisoblarning hozirgacha tasdiqlangan Pro to‘lovi bor ulushi. HSK 3.0 ochish kirmaydi. Yangi hisoblarda natija hali o‘zgaradi.",
+    "ui.admin_pwa.inboxStatusNew": "Yangi",
+    "ui.admin_pwa.inboxStatusRead": "O‘qilgan",
+    "ui.admin_pwa.inboxStatusAssigned": "Biriktirilgan",
+    "ui.admin_pwa.inboxStatusResolved": "Hal qilingan",
+    "ui.admin_pwa.inboxMarkRead": "O‘qildi deb belgilash",
+    "ui.admin_pwa.inboxAssignSelf": "O‘zimga biriktirish",
+    "ui.admin_pwa.inboxResolve": "Hal qilish",
+    "ui.admin_pwa.inboxReopen": "Qayta ochish",
+    "ui.admin_pwa.inboxMarkImportant": "Muhim deb belgilash",
+    "ui.admin_pwa.inboxClearImportant": "Muhimlikni olib tashlash",
+    "ui.admin_pwa.inboxImportant": "Muhim",
+    "ui.admin_pwa.inboxMine": "Menga biriktirilgan",
+    "ui.admin_pwa.inboxSaved": "O‘zgarish saqlandi",
+    "ui.admin_pwa.inboxChanged": "Xabar holati o‘zgargan. Ro‘yxat yangilandi.",
+    "ui.admin_pwa.inboxActionError": "O‘zgarish saqlanmadi. Qayta tekshiring.",
+    "ui.admin_pwa.inboxAndroid": "Android xatolari",
+    "ui.admin_pwa.inboxHistoryNote": "Eski Android xatolik xabarlari bu ro‘yxatda bo‘lmasligi mumkin."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
