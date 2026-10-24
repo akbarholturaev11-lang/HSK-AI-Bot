@@ -34,6 +34,24 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('v6Demo',shell.text)
         self.assertNotIn('user_id',shell.text)
 
+    async def test_apple_push_subscription_keeps_user_activation_on_direct_tap(self):
+        # The public script can offer push settings only after the server
+        # advertises the private feature. No permission prompt at boot/login.
+        script=(await self.get('/admin/assets/app.js')).text
+        self.assertIn("state.actor?.push_available",script)
+        self.assertIn("pushReady={registration,key:decode(data.vapid_public_key)",script)
+        opt_in=script.split("async function enablePush(){",1)[1].split("async function revokePush",1)[0]
+        self.assertIn("pushManager.subscribe({",opt_in)
+        self.assertNotIn("Notification.requestPermission()",opt_in)
+        # On iPhone an async fetch/getSubscription before subscribe would lose
+        # the direct user gesture and can silently prevent enrollment.
+        self.assertLess(opt_in.index("pushManager.subscribe({"),
+                        opt_in.index("await subscriptionPromise"))
+        self.assertNotIn("await api('push/list'",opt_in)
+        self.assertIn("Notification.permission==='denied'",opt_in)
+        self.assertIn("if(!prepared.previous)await subscription.unsubscribe()",opt_in)
+        self.assertIn("pushChanging=true",opt_in)
+
     async def test_worker_scope_version_and_public_cache_allowlist(self):
         manifest=(await self.get('/admin/manifest.webmanifest')).json()
         self.assertEqual(manifest['scope'],'/admin/')
