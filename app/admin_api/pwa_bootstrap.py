@@ -19,7 +19,8 @@ from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME, authenticate_admin
 logger = logging.getLogger(__name__)
 _ASSETS = Path(__file__).resolve().parents[1] / "static" / "admin-pwa"
 _PUBLIC_ASSETS = {"app.js": "text/javascript", "styles.css": "text/css",
-                  "catalog.js": "text/javascript", "icon.png": "image/png", "icon-large.png": "image/png"}
+                  "catalog.js": "text/javascript", "mcp-consent.js": "text/javascript",
+                  "mcp-consent.css": "text/css", "icon.png": "image/png", "icon-large.png": "image/png"}
 _PAGE_CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; "
              "img-src 'self' blob:; connect-src 'self'; manifest-src 'self'; "
              "worker-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'")
