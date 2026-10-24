@@ -55,3 +55,4 @@ from .admin_pwa_webauthn import AdminPwaRegistrationChallenge, AdminPwaCredentia
 from .admin_pwa_authentication import AdminPwaAuthenticationChallenge
 from .admin_pwa_step_up import AdminPwaStepUp
 from .admin_pwa_payment_review import AdminPwaPaymentReview, AdminPwaPaymentOutbox
+from .admin_pwa_mcp import AdminPwaMcpAccessGrant
