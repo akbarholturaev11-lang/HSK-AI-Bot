@@ -567,7 +567,24 @@
     "ui.admin_pwa.conversion": "Табдил",
     "ui.admin_pwa.registeredCohort": "Дар давра ба қайд гирифта шуданд",
     "ui.admin_pwa.convertedAccounts": "Барои Pro пардохт карданд",
-    "ui.admin_pwa.conversionNote": "Ҳиссаи ҳисобҳои дар давра сохташуда бо пардохти тасдиқшудаи Pro то ҳозир. Кушодани HSK 3.0 дохил нест. Натиҷаи ҳисобҳои нав ҳанӯз тағйир меёбад."
+    "ui.admin_pwa.conversionNote": "Ҳиссаи ҳисобҳои дар давра сохташуда бо пардохти тасдиқшудаи Pro то ҳозир. Кушодани HSK 3.0 дохил нест. Натиҷаи ҳисобҳои нав ҳанӯз тағйир меёбад.",
+    "ui.admin_pwa.inboxStatusNew": "Нав",
+    "ui.admin_pwa.inboxStatusRead": "Хонда шудааст",
+    "ui.admin_pwa.inboxStatusAssigned": "Вобаста шудааст",
+    "ui.admin_pwa.inboxStatusResolved": "Ҳал шудааст",
+    "ui.admin_pwa.inboxMarkRead": "Ҳамчун хондашуда қайд кардан",
+    "ui.admin_pwa.inboxAssignSelf": "Ба худ вобаста кардан",
+    "ui.admin_pwa.inboxResolve": "Ҳалшуда қайд кардан",
+    "ui.admin_pwa.inboxReopen": "Аз нав кушодан",
+    "ui.admin_pwa.inboxMarkImportant": "Муҳим қайд кардан",
+    "ui.admin_pwa.inboxClearImportant": "Нишони муҳимро бекор кардан",
+    "ui.admin_pwa.inboxImportant": "Муҳим",
+    "ui.admin_pwa.inboxMine": "Ба ман вобаста",
+    "ui.admin_pwa.inboxSaved": "Тағйирот сабт шуд",
+    "ui.admin_pwa.inboxChanged": "Ҳолати муроҷиат тағйир ёфт. Рӯйхат нав шуд.",
+    "ui.admin_pwa.inboxActionError": "Тағйирот сабт нашуд. Боз санҷед.",
+    "ui.admin_pwa.inboxAndroid": "Хатогиҳои Android",
+    "ui.admin_pwa.inboxHistoryNote": "Паёмҳои кӯҳнаи хатогиҳои Android метавонанд дар ин рӯйхат набошанд."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
