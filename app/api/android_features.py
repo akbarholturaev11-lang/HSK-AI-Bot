@@ -8,6 +8,7 @@ the shared native access token and delegates to those same services.
 
 from __future__ import annotations
 
+import asyncio
 import base64
 import binascii
 import logging
@@ -88,6 +89,8 @@ from app.services.ad_placement_service import (
     normalize_placement as normalize_ad_placement,
 )
 from app.services.entitlements.gate_shadow import shadow_compare_gate
+
+ANDROID_SHADOW_TIMEOUT_SECONDS = 0.25
 from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
 from app.services.trial_risk_service import TrialRiskService
 from app.services.referral_service import (
@@ -1992,10 +1995,17 @@ def create_android_features_router(
                 # Google-only learner (new user_id, no telegram_id) can block
                 # their own request until the Android client's 30s timeout.
                 await session.commit()
-                # Shadow is best effort; it must never hold the gate open.
-                await shadow_compare_gate(
-                    session, user=user, feature=feature, legacy=result, client="android"
-                )
+                # Shadow is best effort. Do not block real practice because
+                # its independent audit write is slow or temporarily unavailable.
+                try:
+                    await asyncio.wait_for(
+                        shadow_compare_gate(
+                            session, user=user, feature=feature, legacy=result, client="android"
+                        ),
+                        timeout=ANDROID_SHADOW_TIMEOUT_SECONDS,
+                    )
+                except asyncio.TimeoutError:
+                    logger.warning("Skipping slow Android shadow comparison for %s", feature)
                 if not result.get("allowed"):
                     return JSONResponse(
                         status_code=403,
