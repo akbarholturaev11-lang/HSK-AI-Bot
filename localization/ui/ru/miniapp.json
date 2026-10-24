@@ -597,7 +597,8 @@
     "ui.admin_pwa.pushConsentHint": "Для iPhone и Mac требуется отдельное разрешение на каждом устройстве.",
     "ui.admin_pwa.pushInstallFirst": "На iPhone сначала добавьте сайт на экран «Домой» через Safari и откройте установленное приложение.",
     "ui.admin_pwa.pushAppleOnly": "Пока доступно только для iPhone и Mac.",
-    "ui.admin_pwa.pushNotSending": "Регистрация подписки готова. Отправка уведомлений ещё не включена."
+    "ui.admin_pwa.pushNotSending": "Регистрация подписки готова. Отправка уведомлений ещё не включена.",
+    "ui.admin_pwa.inboxPaymentReceipt": "Чеки об оплате"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
