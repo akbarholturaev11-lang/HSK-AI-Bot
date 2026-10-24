@@ -54,7 +54,11 @@ back to its Telegram metadata. Release feedback has only a genuine positive
 Telegram ID, joined to its current canonical User. Source ID, campaign ID,
 original status/rating, timestamp and attachment presence retain their source
 meaning. Unknown/deleted ownership is null. There is no invented severity,
-read/assigned/resolved status or reply action. The earlier single-source `feedback/list` response retains its historical\n`unavailable_sources` compatibility marker; it has not been extended to native\nreports. The newer `inbox/list` reads only retained reports written after\nAndroid intake was enabled. Historical Telegram-only Android reports cannot be\nreconstructed. Secure attachment viewing and triage remain separate work.
+read/assigned/resolved status or reply action. The earlier single-source `feedback/list` response retains its historical
+`unavailable_sources` compatibility marker; it has not been extended to native
+reports. The newer `inbox/list` reads only retained reports written after
+Android intake was enabled. Historical Telegram-only Android reports cannot be
+reconstructed. Secure attachment viewing and triage remain separate work.
 
 These are browser-admin projections, **not** the future AI/MCP or sanitized
 CSV export contract. No service-account/write tool or live DB access is added.
