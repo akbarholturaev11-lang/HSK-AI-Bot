@@ -1,3 +1,5 @@
+> **CURRENT MCP workstream branch clarification (2026-10-24):** Previous `codex/admin-pwa` was merged to `main` in PR #200. All NEW MCP work is intentionally isolated to **`feat/admin-pwa-mcp-readonly-20261024` / Draft PR #201**, as specified in [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Continue obeying every scoped safety/UI/approval rule below; replace ONLY the outdated branch name for this follow-up. No new merge/deploy/flag enablement is authorized.
+
 # Admin PWA — scoped AI work rules (temporary)
 
 > **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `codex/admin-pwa`.
