@@ -100,7 +100,7 @@ class SessionTests(unittest.IsolatedAsyncioTestCase):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="https://hskai.app", cookies={ADMIN_PWA_COOKIE_NAME: TOKEN}) as client:
             result = await client.get("/api/admin/v1/me")
             self.assertEqual(200, result.status_code)
-            self.assertEqual({"ok": True, "user_id": 14, "auth_method": "webauthn", "mcp_available": False}, result.json())
+            self.assertEqual({"ok": True, "user_id": 14, "auth_method": "webauthn", "push_available": False, "mcp_available": False}, result.json())
             self.assertEqual("no-store", result.headers["cache-control"])
             self.assertNotIn("set-cookie", result.headers)
 
