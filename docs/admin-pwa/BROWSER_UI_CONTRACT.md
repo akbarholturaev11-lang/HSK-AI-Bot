@@ -106,6 +106,14 @@ PWA behavior and real Google/Telegram/provider/proxy E2E still require staging.
 Keep `ADMIN_PWA_ENABLED=false`; no production/main promotion is authorized.
 
 
+## Mobile controls during sign-in completion
+
+The mobile More button stays disabled while the sign-in action finishes boot's
+last existing server read. The authenticated shell can render before that read
+returns; a visible button must not silently lose a tap to the busy guard.
+Browser QA holds the unread-count response and verifies disabled → enabled →
+More/logout, without adding requests, weakening auth or increasing timeouts.
+
 ## MCP connection controls and reauthorization (2026-10-24)
 
 - Verified `/me` exposes `mcp_available` only when the WebAuthn actor, all three gates and exact registered configuration are ready. Desktop sidebar and mobile More open the existing V10 drawer; disabled rollout exposes no connection action.

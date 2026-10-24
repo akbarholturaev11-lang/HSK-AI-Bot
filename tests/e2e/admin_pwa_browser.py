@@ -108,8 +108,10 @@ async def browser_checks(output):
         app.include_router(factory(**common))
     app.include_router(create_admin_pwa_receipt_router(**common,loader=AsyncMock(return_value=(png(),'image/png'))))
     calls=[];drop_review=False;fail_reads=False;fail_prepare=False;receipt_failure=False
+    hold_boot_unread=False
+    unread_paused,release_unread=asyncio.Event(),asyncio.Event()
     async def serve(route):
-        nonlocal drop_review
+        nonlocal drop_review,hold_boot_unread
         request=route.request
         path=request.url.removeprefix(ORIGIN)
         if not request.url.startswith(ORIGIN+'/'):
@@ -125,6 +127,10 @@ async def browser_checks(output):
             await route.fulfill(status=503,json={'ok':False});return
         async with AsyncClient(transport=ASGITransport(app=app),base_url=ORIGIN) as client:
             response=await client.request(request.method,path,headers=await request.all_headers(),content=request.post_data_buffer)
+        if hold_boot_unread and path=='/api/admin/v1/inbox/unread-count':
+            hold_boot_unread=False
+            unread_paused.set()
+            await release_unread.wait()
         headers=dict(response.headers)
         headers.pop('content-length',None)
         cookies=response.headers.get_list('set-cookie')
@@ -483,8 +489,17 @@ async def browser_checks(output):
         await expect(enrolled.locator('[data-action=signin]')).to_be_visible(timeout=20000)
         async with fixture.sessions() as db:
             assert await db.scalar(select(func.count()).select_from(AdminPwaCredential))==2
+        # A visible authenticated shell precedes the end of boot's last read.
+        # Hold that response so the More click cannot be lost to busy=true.
+        hold_boot_unread=True
         await enrolled.locator('[data-action=signin]').click()
-        await expect(enrolled.locator('.mobile-tabs')).to_be_visible(timeout=20000)
+        try:
+            await asyncio.wait_for(unread_paused.wait(),20)
+            await expect(enrolled.locator('.mobile-tabs')).to_be_visible(timeout=20000)
+            await expect(enrolled.locator('[data-action=more]')).to_be_disabled()
+        finally:
+            release_unread.set()
+        await expect(enrolled.locator('[data-action=more]')).to_be_enabled(timeout=20000)
         await enrolled.locator('[data-action=more]').click()
         await enrolled.locator('#dialogs [data-action=logout]').click()
         await expect(enrolled.locator('[data-action=signin]')).to_be_visible()
