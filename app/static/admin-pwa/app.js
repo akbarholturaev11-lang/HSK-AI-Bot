@@ -382,7 +382,7 @@ async function pushSettings(){
     const platform=applePushPlatform();
     const eligible=platform&&pushInstallReady(platform)&&'Notification' in window&&
                    'serviceWorker' in navigator&&'PushManager' in window&&
-                   Notification.permission!=='denied'&&data.sending_enabled===false;
+                   Notification.permission!=='denied';
     if(eligible){
       // No permission prompt here. Prepare public VAPID and active worker
       // before the opt-in click so subscribe() can begin with user activation.
