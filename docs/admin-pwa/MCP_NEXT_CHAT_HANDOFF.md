@@ -2,6 +2,14 @@
 
 Updated 2026-10-24. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current increment — bounded first-party feedback categories, 2026-10-25
+
+- **Runtime commits:** `61d80109` (initial code), `47b98f17` (test-only authentication-vs-feedback SQL assertion), `0472f44f` (indexed native retention ordering), `a77b1168` (native SQL projection regression). Confirm full CI for the exact latest branch SHA before marking this verified; local/physical/staging were not executed here.
+- New first-party, WebAuthn-admin-cookie-only `POST /api/admin/v1/feedback/categories` and `/api/admin/v1/feedback/categories/export` (JSON/CSV). Strict HTTPS/Origin/Fetch Metadata and bounded JSON; no bearer/MCP. Existing read-only PG transaction, no new migrations/tables, cache scans, scheduler, image loading or writes. Data kept exclusively in bounded memory.
+- Source-bounded queries: per-source <=500 recent rows plus one sentinel, weekly/monthly only. Bot: only completed disliked codes from the existing fixed `DISLIKED_OPTIONS` list; unknown/missing codes become `unclassified`. Release: stored 1-2/3/4-5 star groups; invalid rating explicitly unclassified. Android: only retained, unexpired reports labelled `reported_issue` without guessing a complaint category from private description. Native row order uses the existing `expires_at` index and 30-day retention policy, not an unindexed `created_at` sort; window filter remains on created_at.
+- Output includes per-source `records_scanned`, `truncated` boolean, exact date basis, time window and `historical_android_reports_complete=false`. Counts are **sampled recent source records, not whole-population totals** if truncated. Strict code-controlled category labels and output size <=128 KiB; raw user feedback text, IDs, Telegram metadata, campaign titles, media/file references, prompts and screenshots never selected or exported. Formula-like stored codes become `unclassified`. Tests check privacy, current WebAuthn/admin flags, CSRF, response bounds, truncation semantics, no DB writes, no raw fields and existing index. All external MCP scopes stay statistics-only.
+- **Remaining:** V10 first-party feedback categories/export button and canonical UZ/RU/TJ copy + browser download and stale-response tests; separate technical-event sanitization/retention, remaining management, real staging/Apple/ChatGPT acceptance. No main merge or deploy.
+
 ## Verified continuation checkpoint — 2026-10-25
 
 - **Last tested code commit:** `1175a5144d202a56f07a9ee5cc522aa9189d9f48` (`feat(admin-pwa): add audited access grants`), [Draft PR #201](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/201) remains OPEN / Draft, base `main`, mergeable and not merged. Remote code HEAD was this commit when checked. Do not infer that `main`, staging, production or live migrations changed.

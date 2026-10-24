@@ -23,7 +23,9 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
    source/range/scope and separate currencies retained. Explicit V10 downloads,
    128 KiB / 96-row / 32-currency bounds, WebAuthn cookie/current-admin recheck,
    no force-refresh, new aggregate SQL on cache hits, disk job or R2. Sanitized
-   feedback export still needs separate privacy/schema review. External MCP
+   bounded feedback **category-only backend** JSON/CSV routes now exist; V10 UI
+   and browser export acceptance remain outstanding. Broader sanitized raw-
+   feedback or complaint-text exports still require separate privacy review. External MCP
    remains statistics-only; exports do not add an external tool or scope.
 4. **First-party management**: shared course/access/pricing/marketing/settings
    commands with exact WebAuthn payload binding, confirmation and audit; keep

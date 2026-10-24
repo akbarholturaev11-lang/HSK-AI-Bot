@@ -69,6 +69,40 @@ exports are implemented below; sanitized feedback exports remain separate work.
 See [current handoff](MCP_NEXT_CHAT_HANDOFF.md) for exact
 SHA/test evidence; no real-device/provider E2E or rollout is established.
 
+## First-party bounded feedback categories (2026-10-25)
+
+Two separate WebAuthn-cookie-only POST routes implement a **limited recent-record
+feedback category export**: `/api/admin/v1/feedback/categories` and
+`/api/admin/v1/feedback/categories/export` (format `json|csv`). They are not
+external MCP tools, do not expose raw feedback or extend OAuth scope, and do not
+add background refreshing or any new tables. Existing canonical HTTPS/Origin,
+same-origin Fetch Metadata, strict 2 KiB JSON input, no-store and read-only SQL
+transaction with current admin allowlist/auth checks all apply.
+
+Selector `period=weekly|monthly`, `source=all|bot|release|android`.
+Each enabled source reads at most 501 indexed, recent records; only the first
+500 contribute to category counts. `truncated=true` means records exist beyond
+the bound, **not** that all source feedback was counted. Output includes the
+per-source scanned count, original date column, date window and explicit
+historical Android incompleteness. Bot uses completed `disliked_code` values
+only from fixed keyboard codes; unknown becomes `unclassified`. Release groups
+1-2, 3, and 4-5 star ratings without parsing private comments. Android counts
+stored, still-retained bug reports as `reported_issue`, no guessing from raw
+private descriptions. Android's 30-day expiry is written from created_at and
+the query orders by indexed `expires_at` to avoid an unindexed created_at sort.
+Current data sources have bounded row scans; 500 is per source, not a total.
+
+Both export formats are capped at 128 KiB and contain code-controlled labels,
+integer counts, typed source/date metadata and privacy-preserving definitions.
+No user IDs, Telegram identifiers, free-form text, media bytes, attachment
+references, raw conversations, profile rows or sensitive strings are selected.
+CSV receives only fixed labels, so free-form formula payloads cannot be copied.
+Android older Telegram-only reports remain unavailable. This is not full
+historical sentiment analysis or a future-ChatGPT feedback permission. V10 UI
+buttons and localization are separate pending tasks; the first-party JSON/CSV
+endpoints exist server-side only. See `MCP_NEXT_CHAT_HANDOFF.md` for latest exact
+CI evidence and rollout limits.
+
 ## Bounded first-party statistics files (2026-10-24)
 
 `POST /api/admin/v1/statistics/export` accepts only `format=json|csv`, the existing
