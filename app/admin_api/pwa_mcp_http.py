@@ -135,11 +135,11 @@ def _reply_result(id_value: str | int, result: Any) -> JSONResponse:
     return JSONResponse(content={"jsonrpc": "2.0", "id": id_value, "result": result}, headers=_HEADERS)
 
 
-def _reply_error(id_value: str | int | None, code: int, message: str) -> JSONResponse:
+def _reply_error(id_value: str | int | None, code: int, message: str, *, http_status: int = 200) -> JSONResponse:
     return JSONResponse(content={
         "jsonrpc": "2.0", "id": id_value,
         "error": {"code": code, "message": message},
-    }, headers=_HEADERS)
+    }, status_code=http_status, headers=_HEADERS)
 
 
 def create_admin_pwa_mcp_http_router(
@@ -260,7 +260,7 @@ def create_admin_pwa_mcp_http_router(
             return _invalid_request(400, "unsupported_protocol_version")
         rpc = await _rpc_body(request)
         if rpc is None:
-            return _reply_error(None, -32700, "Invalid JSON-RPC request")
+            return _reply_error(None, -32700, "Invalid JSON-RPC request", http_status=400)
         auth = bearer_headers[0]
         try:
             async with session_factory() as db:
