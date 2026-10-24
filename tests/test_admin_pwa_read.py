@@ -10,6 +10,7 @@ from sqlalchemy import event
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.db.models.admin_pwa import AdminPwaSession
+from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
@@ -260,6 +261,90 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertIsNone(second["items"][0]["user_id"])
         self.assertIn("android_bug_reports",second["unavailable_sources"])
 
+    async def test_unified_inbox_canonical_identity_paging_privacy_and_history(self):
+        now = datetime.now(timezone.utc).replace(microsecond=0)
+        async with self.sessions() as db:
+            db.add(ReleaseFeedbackCampaign(id=701, title="QA release", send_at=now))
+            await db.flush()
+            db.add_all([
+                BotFeedback(user_id=1, telegram_id=1001, status="completed",
+                            disliked_text="Bot issue", created_at=now, completed_at=now),
+                BotFeedback(user_id=999, telegram_id=1001, status="completed",
+                            disliked_text="Orphan bot", created_at=now-timedelta(seconds=1),
+                            completed_at=now-timedelta(seconds=1)),
+                ReleaseFeedbackResponse(campaign_id=701, user_telegram_id=2002,
+                    rating=3, comment_text="Release issue", completed_at=now,
+                    attachment_file_id="secret-file-id"),
+                AdminPwaNativeReport(user_id=2, deduplication_key="c"*64,
+                    description="Native application crashed", app_version="4.2",
+                    screen="practice", attachment_bytes=b"secret-JPEG-byte-sequence",
+                    notification_state="failed", created_at=now, last_attempt_at=now,
+                    expires_at=now+timedelta(days=30)),
+                AdminPwaNativeReport(user_id=2, deduplication_key="d"*64,
+                    description="Expired native data", app_version="4.1",
+                    screen="home", attachment_bytes=None, notification_state="sent",
+                    created_at=now-timedelta(days=31), last_attempt_at=now-timedelta(days=31),
+                    expires_at=now-timedelta(days=1)),
+            ])
+            await db.commit()
+        cursor = None
+        items = []
+        for _ in range(6):
+            body = {"limit": 1}
+            if cursor is not None:
+                body["before"] = cursor
+            response = await self.post("inbox/list", body)
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertEqual(response.headers["cache-control"], "no-store")
+            text_body = response.text
+            self.assertNotIn("secret-JPEG-byte-sequence", text_body)
+            self.assertNotIn("secret-file-id", text_body)
+            self.assertNotIn("telegram_id", text_body)
+            page = response.json()
+            self.assertEqual(page["attachment_access"], "not_exposed")
+            self.assertFalse(page["triage_available"])
+            self.assertFalse(page["historical_android_reports_complete"])
+            items += page["items"]
+            cursor = page["next_before"]
+            if cursor is None:
+                break
+        self.assertEqual([row["source"] for row in items], ["bot", "release", "android", "bot"])
+        self.assertEqual([row["user_id"] for row in items], [1, 2, 2, None])
+        self.assertTrue(items[1]["has_attachment"])
+        self.assertTrue(items[2]["has_attachment"])
+        self.assertEqual(items[2]["notification_delivery"], "failed")
+        self.assertEqual(items[2]["screen"], "practice")
+        self.assertIsNone(items[2]["feedback_status"])
+        self.assertNotIn("read_at", items[0])
+        user = (await self.post("inbox/list", {"user_id": 2})).json()["items"]
+        self.assertEqual([row["source"] for row in user], ["release", "android"])
+        native = (await self.post("inbox/list", {"source": "android"})).json()["items"]
+        self.assertEqual(len(native), 1)
+        self.assertEqual(native[0]["message"], "Native application crashed")
+
+    async def test_unified_inbox_fails_closed_and_rejects_cursor_substitution(self):
+        for body in ({"source": "unsafe"}, {"limit": 0}, {"limit": 51}, {"limit": True},
+                     {"user_id": "1"}, {"before": {"source": "bot", "source_id": 1}},
+                     {"before": {"created_at": "2026-10-24T00:00:00",
+                                 "source": "bot", "source_id": 1}},
+                     {"before": {"created_at": "2026-10-24T00:00:00+00:00",
+                                 "source": "outside", "source_id": 1}},
+                     {"before": {"created_at": "2026-10-24T00:00:00+00:00",
+                                 "source": "bot", "source_id": 1, "state": "hijacked"}},
+                     {"sql": "SELECT * FROM users"}):
+            result = await self.post("inbox/list", body)
+            self.assertEqual(result.status_code, 400, (body, result.text))
+        for cookie, origin, expected in ((None, "https://hskai.app", 401),
+                                         ("T"*64, "https://hskai.app", 401),
+                                         (fixtures.COOKIE, "https://evil.example", 403)):
+            self.assertEqual((await self.post("inbox/list", {}, cookie=cookie,
+                                              origin=origin)).status_code, expected)
+        self.settings.ADMIN_PWA_ENABLED = False
+        self.assertEqual((await self.post("inbox/list", {})).status_code, 404)
+        self.settings.ADMIN_PWA_ENABLED = True
+        await self.change(AdminPwaSession, revoked_at=datetime.now(timezone.utc))
+        self.assertEqual((await self.post("inbox/list", {})).status_code, 401)
+
     async def test_native_platforms_reuse_real_services_without_summing_overlapping_users(self):
         now=datetime.now(timezone.utc)
         async with self.sessions() as db:
@@ -290,7 +375,7 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
 
     async def test_flag_csrf_cookie_revocation_and_strict_bounds(self):
         paths=(("payments/list",{}),("statistics",{}),("users/search",{}),("feedback/list",{"source":"bot"}),
-               ("users/detail",{"user_id":1}),("users/payments",{"user_id":1}))
+               ("users/detail",{"user_id":1}),("users/payments",{"user_id":1}),("inbox/list",{}))
         for path,body in paths:
             self.assertEqual((await self.post(path,body,cookie=None)).status_code,401)
             self.assertEqual((await self.post(path,body,cookie="T"*64)).status_code,401)
@@ -314,7 +399,7 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         event.listen(self.engine.sync_engine,"before_cursor_execute",observe)
         try:
             for path,body in (("statistics",{}),("users/search",{}),("feedback/list",{"source":"bot"}),
-                              ("users/detail",{"user_id":1}),("users/payments",{"user_id":1})):
+                              ("users/detail",{"user_id":1}),("users/payments",{"user_id":1}),("inbox/list",{})):
                 response=await self.post(path,body)
                 self.assertEqual(response.status_code,200,response.text)
         finally:
@@ -324,5 +409,5 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         from tests.test_main_imports import MainModuleImportTests
         main=MainModuleImportTests._import_main()
         paths=MainModuleImportTests._paths(main.app.routes)
-        for path in ("statistics","users/search","feedback/list","users/detail","users/payments"):
+        for path in ("statistics","users/search","feedback/list","inbox/list","users/detail","users/payments"):
             self.assertIn("/api/admin/v1/"+path,paths)
