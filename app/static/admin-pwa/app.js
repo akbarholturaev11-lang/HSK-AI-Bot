@@ -452,6 +452,93 @@ async function executeCoursePolicy(){
   }finally{if(signing===control)signing=null;}
 }
 
+
+async function hsk30Settings(){
+  closeDrawer();const current=drawerId,at=epoch;
+  drawer('hsk30Settings',statePanel('loading'));
+  try{
+    const data=await api('hsk30/read',{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const policy=data.hsk30;
+    if(!Array.isArray(policy.available_levels)||!Array.isArray(policy.live_levels))throw Error('invalid_hsk30');
+    const pick=(id,value,label)=>'<div class="form-field"><label for="'+id+'">'+esc(t(label))+'</label><select id="'+id+'" class="input"><option value="true" '+(value?'selected':'')+'>'+esc(t('hsk30On'))+'</option><option value="false" '+(!value?'selected':'')+'>'+esc(t('hsk30Off'))+'</option></select></div>';
+    const levels=policy.available_levels.map(level=>'<label class="hsk30-level-option"><input type="checkbox" data-hsk30-level="'+esc(level)+'" '+(policy.live_levels.includes(level)?'checked':'')+'> '+esc(level.toUpperCase())+'</label>').join('');
+    const body='<p class="source-note">'+esc(t('hsk30Note'))+'</p>'
+      +pick('hsk30Enabled',policy.enabled,'hsk30Enabled')
+      +pick('hsk30Pay',policy.unlock_payment_enabled,'hsk30PaymentEnabled')
+      +'<div class="form-field"><label for="hsk30Price">'+esc(t('hsk30Price'))+'</label>'
+      +'<input class="input" id="hsk30Price" type="number" min="1" max="10000" step="1" value="'+esc(policy.unlock_price_tjs)+'" required></div>'
+      +'<fieldset class="form-field"><legend>'+esc(t('hsk30Levels'))+'</legend>'+levels+'</fieldset>';
+    drawer('hsk30Settings',body,btn('cancel','close')+btn('next','hsk30Prepare','primary'));
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    drawer('hsk30Settings',statePanel(errorKey(error)),btn('close','close')+btn('retry','hsk30Settings','primary'));
+  }
+}
+async function prepareHsk30Settings(){
+  if(!state.actor||signing)return;
+  const priceInput=$('hsk30Price');
+  if(!priceInput?.reportValidity())return;
+  const price=Number(priceInput.value);
+  if(!Number.isInteger(price)||price<1||price>10000)return;
+  const levels=[...document.querySelectorAll('[data-hsk30-level]')].filter(x=>x.checked).map(x=>x.dataset.hsk30Level);
+  const policy={enabled:$('hsk30Enabled')?.value==='true',
+    unlock_payment_enabled:$('hsk30Pay')?.value==='true',
+    unlock_price_tjs:price,live_levels:levels};
+  const current=drawerId,at=epoch;
+  $('drawerFoot')?.querySelectorAll('button').forEach(b=>b.disabled=true);
+  try{
+    const response=await api('hsk30/prepare',policy);
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=Object.freeze(structuredClone(response.operation));
+    if(confirmation.action!=='hsk30.settings'||confirmation.target!=='global')throw Error('invalid_hsk30');
+    const fields=[
+      ['hsk30Enabled',t(policy.enabled?'hsk30On':'hsk30Off')],
+      ['hsk30PaymentEnabled',t(policy.unlock_payment_enabled?'hsk30On':'hsk30Off')],
+      ['hsk30Price',String(price)+' TJS'],
+      ['hsk30Levels',levels.join(', ')||'—']
+    ];
+    drawer('hsk30Confirm','<p class="alert">'+esc(t('hsk30Note'))+'</p>'+profileFields(fields),
+      btn('cancel','close')+btn('confirmPasskey','hsk30Execute','primary'),'confirmation');
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=null;
+    drawer('hsk30Settings',statePanel(error.status===409?'changed':errorKey(error)),
+      btn('close','close')+btn('retry','hsk30Settings','primary'));
+  }
+}
+async function executeHsk30Settings(){
+  if(confirmation?.action!=='hsk30.settings'||!supportsPasskey()||signing)return;
+  const operation=structuredClone(confirmation),current=drawerId,at=epoch,control=new AbortController();
+  signing=control;let submitted=false;
+  $('drawerFoot')?.querySelectorAll('button').forEach(b=>b.disabled=true);
+  try{
+    const options=await api('auth/step-up/options',operation);
+    if(current!==drawerId||at!==epoch)return;
+    const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey),signal:control.signal});
+    if(current!==drawerId||at!==epoch)return;
+    await api('auth/step-up/verify',{step_up_id:options.step_up_id,credential:serialize(credential)});
+    if(current!==drawerId||at!==epoch)return;
+    submitted=true;
+    const result=await api('hsk30/save',{...operation.payload,step_up_id:options.step_up_id});
+    if(current!==drawerId||at!==epoch)return;
+    confirmation=null;
+    const p=result.hsk30;
+    drawer('hsk30Saved',profileFields([
+      ['hsk30Enabled',t(p.enabled?'hsk30On':'hsk30Off')],
+      ['hsk30PaymentEnabled',t(p.unlock_payment_enabled?'hsk30On':'hsk30Off')],
+      ['hsk30Price',String(p.unlock_price_tjs)+' TJS'],
+      ['hsk30Levels',p.live_levels.join(', ')||'—']
+    ]),btn('close','close'));
+  }catch(error){
+    if(current!==drawerId||at!==epoch)return;
+    confirmation=null;
+    const rejected=[400,403,404,409].includes(error.status);
+    drawer('hsk30Settings',statePanel(error.status===409?'changed':submitted&&!rejected?'uncertain':errorKey(error)),
+      btn('close','close')+btn('hsk30Settings','hsk30Settings','primary'));
+  }finally{if(signing===control)signing=null;}
+}
+
 function summary(operation) {
   const p=operation.payload,s=p.expected;
   const fields=[['payment','#'+p.payment_id],['account',s.user_id],['plan',t(s.plan_type)],['amount',s.amount+' '+s.currency],['method',s.payment_method],['source',s.source],['submitted',date(s.submitted_at)]];
@@ -805,6 +892,9 @@ async function action(name) {
   if(name==='mcpConnections'){await mcpConnections();return;}
   if(name==='pushSettings'){await pushSettings();return;}
   if(name==='courseSettings'){await courseSettings();return;}
+  if(name==='hsk30Settings'){await hsk30Settings();return;}
+  if(name==='hsk30Prepare'){await prepareHsk30Settings();return;}
+  if(name==='hsk30Execute'){await executeHsk30Settings();return;}
   if(name==='coursePrepare'){await prepareCoursePolicy();return;}
   if(name==='courseExecute'){await executeCoursePolicy();return;}
   if(name==='pushEnable'){await enablePush();return;}
@@ -813,7 +903,7 @@ async function action(name) {
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='execute'){if(!signing)await execute();return;}
   if(name==='executeAccess'){await executeAccess();return;}
-  if(name==='more'){drawer('more',languageSelect('drawerLocale')+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):'')+btn('courseAccess','courseSettings'),btn('install','install')+btn('logout','logout'));return;}
+  if(name==='more'){drawer('more',languageSelect('drawerLocale')+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):'')+btn('courseAccess','courseSettings')+btn('hsk30Settings','hsk30Settings'),btn('install','install')+btn('logout','logout'));return;}
   if(name==='install'){if(installPrompt){await installPrompt.prompt();installPrompt=null;}else showNotice('installHint');return;}
   if(name==='update'){publicRegistration?.waiting?.postMessage('ACTIVATE_PUBLIC_SHELL');return;}
   if(name==='next'&&state.next){state.previous.push(state.cursor);state.cursor=state.next;await load();}
