@@ -335,12 +335,20 @@ async def browser_checks(output):
         assert await page.locator('[data-inbox-op=mark_read]').first.evaluate(
             '(element) => element.getBoundingClientRect().height >= 44')
         await page.screenshot(path=str(output/'mobile-inbox-triage.png'),full_page=True)
+        async def wait_for_inbox_audit(expected):
+            async with asyncio.timeout(12):
+                while True:
+                    async with fixture.sessions() as db:
+                        actual=await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit))
+                    if actual==expected:
+                        return
+                    await asyncio.sleep(.04)
         await page.locator('[data-inbox-op=mark_read]').first.click()
-        await expect(page.locator('.inbox-shell')).to_be_visible()
+        await wait_for_inbox_audit(1)
+        await wait_js(page, "() => !!document.querySelector('.inbox-drawer button[data-inbox-op=assign_self]:not(:disabled)')")
         await page.locator('[data-inbox-op=assign_self]').first.click()
-        await expect(page.locator('.inbox-shell')).to_be_visible()
-        async with fixture.sessions() as db:
-            assert await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit)) == 2
+        await wait_for_inbox_audit(2)
+        await wait_js(page, "() => !!document.querySelector('.inbox-drawer button[data-inbox-op=resolve]:not(:disabled)')")
         assert len([path for path,_,_ in calls if path.endswith('/inbox/triage')]) == 2
         await page.keyboard.press('Escape')
         # Actual consent/code/token services seed one synthetic connection;
