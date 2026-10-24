@@ -48,8 +48,8 @@ class McpConsentTransportTests(unittest.TestCase):
             self.calls.append(("begin",kwargs))
             if kwargs.get("session_cookie")!=COOKIE:return None
             return SimpleNamespace(
-                client_id=CLIENT, redirect_uri=REDIRECT,
-                request_id=REQUEST_ID, csrf_proof=kwargs["csrf_proof"],
+                client_id=kwargs["client_id"], redirect_uri=kwargs["redirect_uri"],
+                request_id=REQUEST_ID, csrf_proof=CSRF,
             )
         async def decide(session, **kwargs):
             self.calls.append(("decide",kwargs))
