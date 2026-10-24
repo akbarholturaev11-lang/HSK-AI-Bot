@@ -44,6 +44,16 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('!PUBLIC.includes(url.pathname)',worker.text)
         self.assertIn('url.search',worker.text)
         self.assertNotIn("'/api/",worker.text)
+        # Apple Web Push must always show a visible generic notification,
+        # ignore all untrusted push payload, never access private API/cache,
+        # and navigate only to a fixed first-party inbox URL.
+        self.assertIn("self.addEventListener('push'", worker.text)
+        self.assertIn("self.registration.showNotification", worker.text)
+        self.assertIn("self.addEventListener('notificationclick'", worker.text)
+        self.assertIn("'/admin/?inbox=1'", worker.text)
+        self.assertIn("current.pathname === '/admin/'", worker.text)
+        self.assertNotIn("event.data", worker.text)
+        self.assertNotIn("pushSubscription", worker.text)
         for filename in ('app.js','styles.css','catalog.js','icon.png','icon-large.png'):
             response=await self.get('/admin/assets/'+filename)
             self.assertEqual(response.status_code,200,filename)
