@@ -39,6 +39,7 @@ from app.admin_api.pwa_payment_outbox import dispatch_payment_review
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
 from app.admin_api.pwa_push import create_admin_pwa_push_router
+from app.services.admin_pwa_push_dispatch import dispatch_batch, sender_config
 from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
 from app.admin_api.pwa_mcp_http import create_admin_pwa_mcp_http_router
 from app.admin_api.pwa_mcp_consent_transport import create_admin_pwa_mcp_consent_router
@@ -633,6 +634,23 @@ async def _background_scheduler(bot: Bot) -> None:
             print("Scheduler error:", e)
 
 
+async def _admin_pwa_apple_push_scheduler() -> None:
+    """Independent opt-in sender; never couples push failure to bot/payments."""
+    # Enabling only subscription enrollment NEVER initiates a send.
+    if sender_config(settings) is None:
+        return
+    while True:
+        try:
+            await dispatch_batch(async_session_maker, settings_obj=settings, limit=10)
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            # Provider exceptions may contain endpoints or keys. Do not include
+            # exception text, SQL parameters or private payloads in logs.
+            logger.error("Admin PWA Apple Push worker batch unavailable")
+        await asyncio.sleep(60)
+
+
 async def _desktop_auth_retention_scheduler() -> None:
     """Remove expired native-auth rows without blocking the bot scheduler."""
 
@@ -663,6 +681,8 @@ async def lifespan(app: FastAPI):
     desktop_auth_cleanup_task = asyncio.create_task(
         _desktop_auth_retention_scheduler()
     )
+    apple_push_task = (asyncio.create_task(_admin_pwa_apple_push_scheduler())
+                       if sender_config(settings) is not None else None)
     try:
         yield                                                # /health darhol ishlaydi
     finally:
@@ -670,6 +690,8 @@ async def lifespan(app: FastAPI):
         polling_task.cancel()
         scheduler_task.cancel()
         desktop_auth_cleanup_task.cancel()
+        if apple_push_task is not None:
+            apple_push_task.cancel()
         study_ai_tasks = tuple(_study_ai_tasks)
         for task in study_ai_tasks:
             task.cancel()
@@ -681,6 +703,9 @@ async def lifespan(app: FastAPI):
             await scheduler_task
         with contextlib.suppress(asyncio.CancelledError):
             await desktop_auth_cleanup_task
+        if apple_push_task is not None:
+            with contextlib.suppress(asyncio.CancelledError):
+                await apple_push_task
         for task in study_ai_tasks:
             with contextlib.suppress(asyncio.CancelledError):
                 await task
