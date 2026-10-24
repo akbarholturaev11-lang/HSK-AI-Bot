@@ -64,13 +64,23 @@ def _unauthorized() -> Response:
     )
 
 
+async def _limited_body(request: Request, maximum: int) -> bytes | None:
+    """Bound request size BEFORE buffering untrusted client data."""
+    content = bytearray()
+    async for chunk in request.stream():
+        if len(content) + len(chunk) > maximum:
+            return None
+        content.extend(chunk)
+    return bytes(content)
+
+
 async def _form(request: Request) -> dict[str, str] | None:
     if request.headers.get("content-type", "").split(";", 1)[0].strip().lower() != "application/x-www-form-urlencoded":
         return None
     if len(request.headers.getlist("content-type")) != 1:
         return None
-    body = await request.body()
-    if len(body) > _MAX_FORM:
+    body = await _limited_body(request, _MAX_FORM)
+    if body is None:
         return None
     try:
         raw = body.decode("utf-8", "strict")
@@ -102,8 +112,8 @@ async def _rpc_body(request: Request) -> dict | None:
         return None
     if request.headers.get("sec-fetch-site", "same-origin") == "cross-site":
         return None
-    data = await request.body()
-    if len(data) > _MAX_RPC:
+    data = await _limited_body(request, _MAX_RPC)
+    if data is None:
         return None
     try:
         obj = json.loads(data, object_pairs_hook=_no_duplicates)
