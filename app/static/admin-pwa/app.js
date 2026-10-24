@@ -39,7 +39,7 @@ const btn = (label, action, variant='', disabled=false) => `<button class="btn $
 const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
   query:'', status:'pending', source:'all', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
-let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null;
+let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false;
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
   epoch++;view++;closeDrawer();state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
@@ -268,6 +268,23 @@ async function execute() {
     if(submitted)await load();
   } finally {if(signing===control)signing=null;}
 }
+
+const inboxStatusLabels={new:'inboxStatusNew',read:'inboxStatusRead',assigned:'inboxStatusAssigned',resolved:'inboxStatusResolved'};
+function inboxControl(row,operation,key){
+  if(!['bot','release','android'].includes(row.source)||!Number.isSafeInteger(row.source_id)||!Number.isSafeInteger(row.triage_revision))return '';
+  return `<button class="btn small" data-inbox-op="${operation}" data-inbox-source="${row.source}" data-inbox-id="${row.source_id}" data-inbox-revision="${row.triage_revision}">${esc(t(key))}</button>`;
+}
+function inboxEntry(row){
+  const status=inboxStatusLabels[row.triage_status]||'inboxStatusNew';
+  const origin=row.source==='bot'?'botFeedback':row.source==='release'?'releaseFeedback':'inboxAndroid';
+  const flags=`<span class="inbox-state">${esc(t(status))}</span>${row.triage_priority==='important'?`<span class="inbox-state inbox-state-important">${esc(t('inboxImportant'))}</span>`:''}${row.triage_assigned_to===state.actor?.user_id?`<span class="inbox-state">${esc(t('inboxMine'))}</span>`:''}`;
+  const actions=[];
+  if(row.triage_status==='new')actions.push(inboxControl(row,'mark_read','inboxMarkRead'));
+  if(row.triage_status!=='resolved'&&row.triage_assigned_to!==state.actor?.user_id)actions.push(inboxControl(row,'assign_self','inboxAssignSelf'));
+  actions.push(row.triage_status==='resolved'?inboxControl(row,'reopen','inboxReopen'):inboxControl(row,'resolve','inboxResolve'));
+  actions.push(row.triage_priority==='important'?inboxControl(row,'clear_important','inboxClearImportant'):inboxControl(row,'mark_important','inboxMarkImportant'));
+  return `<article class="feedback-item inbox-feedback-item"><div class="inbox-entry-head"><strong>${esc(t(origin))} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+esc(row.rating)+'/5':''}</strong><small>${esc(date(row.created_at))}</small></div><div class="inbox-states">${flags}</div><p>${esc(row.message||'—')}</p>${row.has_attachment?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}<div class="inbox-entry-actions">${actions.join('')}</div></article>`;
+}
 async function inbox(before=null,userId=null) {
   closeDrawer();feedbackUserId=userId;inboxNextCursor=null;const current=drawerId;
   drawer('feedback',statePanel('loading'),'','inbox-drawer');
@@ -275,9 +292,35 @@ async function inbox(before=null,userId=null) {
     const data=await api('inbox/list',{source:state.source,user_id:userId,before,limit:30});
     if(current!==drawerId||!state.actor)return;
     inboxNextCursor=data.next_before;
-    const options=[['all','all'],['bot','botFeedback'],['release','releaseFeedback'],['android',null]];
-    drawer('feedback',`<div class="inbox-shell">${userId?`<p class="source-note">${esc(t('account'))}: #${userId}</p>`:''}<div class="data-toolbar">${options.map(([source,key])=>`<button class="btn ${state.source===source?'primary':''}" data-source="${source}">${esc(key?t(key):'Android')}</button>`).join('')}</div>${data.items.map(row=>`<article class="feedback-item"><strong>${esc(row.source==='bot'?t('botFeedback'):row.source==='release'?t('releaseFeedback'):'Android')} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+row.rating+'/5':''}</strong><p>${esc(row.message||'—')}</p><small>${esc(date(row.created_at))}</small>${row.has_attachment?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}</article>`).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`,'','inbox-drawer');
+    const options=[['all','all'],['bot','botFeedback'],['release','releaseFeedback'],['android','inboxAndroid']];
+    const body=`<div class="inbox-shell">${userId?`<p class="source-note">${esc(t('account'))}: #${esc(userId)}</p>`:''}<div class="data-toolbar">${options.map(([source,key])=>`<button class="btn ${state.source===source?'primary':''}" data-source="${source}" aria-pressed="${state.source===source}">${esc(t(key))}</button>`).join('')}</div><p class="source-note">${esc(t('inboxHistoryNote'))}</p>${data.items.map(inboxEntry).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`;
+    drawer('feedback',body,'','inbox-drawer');
   }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'));}
+}
+async function mutateInbox(button){
+  if(inboxUpdating||!state.actor)return;
+  const source=button.dataset.inboxSource,operation=button.dataset.inboxOp;
+  const source_id=Number(button.dataset.inboxId),expected_revision=Number(button.dataset.inboxRevision);
+  if(!['bot','release','android'].includes(source)||!Number.isSafeInteger(source_id)||source_id<1||!Number.isSafeInteger(expected_revision))return;
+  const prevDrawer=drawerId,prevEpoch=epoch,account=feedbackUserId;
+  inboxUpdating=true;
+  const controls=[...document.querySelectorAll('.inbox-drawer button')];
+  controls.forEach(el=>el.disabled=true);
+  try{
+    await api('inbox/triage',{source,source_id,operation,expected_revision});
+    if(prevEpoch!==epoch||prevDrawer!==drawerId||!state.actor)return;
+    showNotice('inboxSaved');
+    await inbox(null,account);
+  }catch(error){
+    if(prevEpoch!==epoch||prevDrawer!==drawerId||!state.actor)return;
+    if(error.status===409){
+      showNotice('inboxChanged');
+      await inbox(null,account);
+    }else{
+      showNotice('inboxActionError');
+      controls.forEach(el=>{if(el.isConnected)el.disabled=false;});
+    }
+  }finally{inboxUpdating=false;}
 }
 
 function mcpStateKey(row) {
@@ -358,6 +401,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.profilePayments){await moreUserPayments(Number(button.dataset.profilePayments),Number(button.dataset.before),button);}
     else if(button.dataset.userFeedback){await inbox(null,Number(button.dataset.userFeedback));}
     else if(button.dataset.source){state.source=button.dataset.source;await inbox(null,feedbackUserId);}
+    else if(button.dataset.inboxOp){await mutateInbox(button);}
     else if(button.dataset.feedbackNext&&inboxNextCursor){await inbox(inboxNextCursor,feedbackUserId);}
     else if(button.dataset.mcpRevoke){confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
     else if(button.dataset.action){await action(button.dataset.action);}
