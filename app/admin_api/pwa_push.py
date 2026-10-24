@@ -219,11 +219,15 @@ def create_admin_pwa_push_router(*, settings_obj, session_factory):
             return _reply(503, "admin_pwa_push_unavailable")
         if result is None:
             return _reply(403, "admin_pwa_push_denied")
+        # Never advertise live sending until the independent worker kill switch,
+        # private VAPID key/subject and public-key match are all valid.
+        from app.services.admin_pwa_push_dispatch import sender_config
+        sending_enabled = sender_config(settings_obj) is not None
         if operation == "list":
             data = {"subscriptions": result, "vapid_public_key": config[0],
-                    "sending_enabled": False}
+                    "sending_enabled": sending_enabled}
         elif operation == "subscribe":
-            data = result | {"sending_enabled": False}
+            data = result | {"sending_enabled": sending_enabled}
         else:
             data = {"revoked": True}
         return JSONResponse({"ok": True, **data}, headers=_PRIVATE_HEADERS)
