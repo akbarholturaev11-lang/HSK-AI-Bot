@@ -1,3 +1,5 @@
+> **CURRENT implementation/testing state (2026-10-24):** The later OAuth authorize + explicit UZ/RU/TJ mobile/desktop consent UI and three-gate-disabled MCP JSON-RPC transport are now implemented on **Draft PR #201**, with full green CI at code SHA `38f253d06bda251ecd4f011015650c70adc94ac2` ([Admin PWA security run 40076721766](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40076721766): 280 passed/13 skipped + 61 legacy + 13 real PostgreSQL; browser consent QA pass). **For current status and remaining release gates, read [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md).** Earlier "NOT IMPLEMENTED" checkpoint paragraphs below are historical and not up-to-date. Still NO real ChatGPT connection, production activation or merge.
+
 # HSK AI ↔ ChatGPT MCP — connection and security contract (NOT LIVE)
 
 **Status 2026-10-24:** An internal read-only Python adapter exists in
