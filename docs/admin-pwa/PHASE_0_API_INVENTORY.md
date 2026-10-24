@@ -1,3 +1,5 @@
+> **Initial source inventory, not current implementation status.** Current PWA routes, daily aggregate caching and live-read/security boundaries are in [READ_PROJECTIONS.md](READ_PROJECTIONS.md) and [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). This inventory does not change legacy Telegram APIs or authorize any listed endpoint as an MCP tool.
+
 # Admin PWA — Phase 0 API inventory and security gates
 
 Source inspected: `app/main.py` in `codex/admin-pwa`, baseline `e935e4315df42037d6aab4ab38b2c4e5d9bbb681`.

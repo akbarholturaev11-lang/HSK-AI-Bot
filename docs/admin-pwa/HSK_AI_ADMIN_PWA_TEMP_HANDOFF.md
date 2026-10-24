@@ -1,4 +1,6 @@
-# HSK AI ADMIN PWA ONLY — authoritative continuation handoff
+> **Historical checkpoints only.** Start at [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md) on `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201. Old branches, missing-feature statements and next steps below are superseded. Daily PWA/MCP statistics use the private 24-hour cache in [READ_PROJECTIONS.md](READ_PROJECTIONS.md); billing/access/auth remain current. Do not append new progress here or recreate completed foundations.
+
+# HSK AI ADMIN PWA ONLY — historical implementation record
 
 > **Task scope:** ONLY HSK AI Admin PWA on `codex/admin-pwa`. This is a temporary task-specific handoff, NOT a global repo policy.
 > **Last independently inspected branch head before this handoff update:** `86e8b5afee08be12fd330e3e67da433f5568794a` on 2026-10-23. **Always fetch branch HEAD again before coding.**

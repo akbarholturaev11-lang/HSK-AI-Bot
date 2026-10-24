@@ -1,3 +1,5 @@
+> **Historical PR #200 merge-preparation evidence.** PR #200 is already merged. Current Draft PR #201 work stays on `feat/admin-pwa-mcp-readonly-20261024`; no main promotion, rollout or deployment is authorized. Use [current handoff](MCP_NEXT_CHAT_HANDOFF.md) and [daily statistics contract](READ_PROJECTIONS.md), not the old next steps below.
+
 # Admin PWA — main merge preparation, rollout OFF
 
 Owner request (2026-10-24): prepare the Admin PWA for merging into main.

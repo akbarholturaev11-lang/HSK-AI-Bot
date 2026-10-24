@@ -2,6 +2,22 @@
 
 Updated 2026-10-24. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current continuation and guide synchronization — 2026-10-24
+
+Fetched runtime `d93b75fe468c217dee66e2c4fe277ccfeabadb4f` by fast-forward,
+preserving local documentation edits. Inbox read/triage/search, Apple Push
+sender code and retained Android JPEG proxy already exist; do not rebuild them.
+Next: connect Android preview in V10, then separately review other media and
+privacy-safe technical producers, remaining management/exports and approved
+staging/device/real ChatGPT gates. All rollout defaults remain OFF.
+
+Guides now route through this handoff; PR #200 resume/merge preparation and
+original phase checkpoints are historical. [READ_PROJECTIONS.md](READ_PROJECTIONS.md)
+is the detailed daily-cache contract: rolling 24 hours on authorized demand,
+private existing Redis, per-worker outage fallback, live auth/audit/quotas and
+billing/access, HTTP/SW no-store, no R2. Docs-only changes were checked for
+Markdown links and whitespace; no runtime tests are attributed to that edit.
+
 ## PRIVATE NATIVE INBOX ATTACHMENT PROXY — 2026-10-24
 
 - **New branch-only scoped increment:** `app/admin_api/pwa_inbox_attachments.py` serves only valid, retained Android JPEG attachment bytes via `GET /api/admin/v1/inbox/android/{id}/attachment`. It requires canonical HTTPS admin origin, active allowlisted WebAuthn Admin PWA session, same-origin Fetch Metadata, exact bounded DB record ID, valid nonexpired row and a structurally verified JPEG up to the existing 550 KiB intake limit. No Telegram file ID, path, student text or attachment metadata is reflected. Responses are private no-store with nosniff; SQL is READ ONLY. Missing/expired/corrupt files fail closed.
@@ -98,7 +114,7 @@ Updated 2026-10-24. Read this first; older checkpoints are historical. Verify re
 - No main merge/push, production/staging deployment, live migration, secret configuration, flag activation or real external ChatGPT linking is authorized by this checkpoint.
 - External MCP exposes ONLY `hskai_statistics` / `admin:analytics:read`. Users, feedback, payment, delete, broadcast, arbitrary SQL/URL and other write tools stay excluded.
 
-## Current priority — owner-selected daily statistics, 2026-10-24
+## Daily statistics policy — implemented at `4709c660`, 2026-10-24
 
 The owner clarified that minimizing unnecessary DB work is the purpose, then
 selected once-per-day updates. Implemented in `pwa_statistics_cache.py`: private
@@ -229,11 +245,11 @@ For UI, read actual `.agents/skills/hsk-ai-ui/SKILL.md` and `.agents/skills/weba
 - Revocation blocks subsequent authorization checks. A statistics snapshot already authorized before revocation may finish within its existing 10s bound; revocation does not cancel an in-flight SQL statement.
 - Quotas: authorize GET 60/min, consent POST 60/min, token 60/min, MCP POST 300/min, history 60/min, revoke 30/min; additional statistics cap 30/min per verified canonical admin across all tokens/workers. Endpoint-wide anonymous buckets prevent token/IP-driven bucket growth. 429 includes Retry-After; repeated global denials are aggregated to one audit row per endpoint/window. Edge network/connection limits still required before staging.
 - Audit stores only UUID, allowlisted action, outcome, HTTP status, canonical admin ID if verified, timestamp. No IP, URL/query, header, cookie, code/token/hash, state, PKCE, arguments or statistics result. Exceptions use content-free logs. Downgrade refuses to erase nonempty audit evidence.
-- Models registered; guarded disposable QA bootstrap and CI migration head updated to 0121. Existing `pwa_mcp_grants.py` is an earlier unmounted helper; the real mounted implementation is `pwa_mcp_management.py`.
+- Security foundation models registered at 0121; later inbox/push work advances the QA/migration head to 0125. Existing `pwa_mcp_grants.py` is an earlier unmounted helper; the real mounted implementation is `pwa_mcp_management.py`.
 
-## Actual validation
+## Historical OAuth/SDK validation (`5ef02f1f` / `4009e903`)
 
-Local Python 3.12 at the current runtime snapshot:
+Local Python 3.12 at those foundation snapshots:
 
 - Full scoped Admin PWA + localization/QA suite with official SDK regression: **298 passed, 16 PostgreSQL-only skipped** (297 before the SDK-only test commit).
 - Disposable local PostgreSQL **15**: **16 passed**, including atomic first-use quota under eight connections, simultaneous code redemption/revocation, READ ONLY checks and migration audit-preservation guard. CI independently uses PostgreSQL 16.

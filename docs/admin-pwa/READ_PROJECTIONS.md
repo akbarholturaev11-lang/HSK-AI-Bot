@@ -13,17 +13,18 @@ fixtures also verify all projection statements are SELECTs.
 
 | Endpoint | Input | Actual source and meaning |
 |---|---|---|
-| `/api/admin/v1/statistics` | `period`: weekly/monthly/all_time; `platform`: overall/telegram/android/macos/windows/iphone_pwa | Shared admin/native analytics; scopes below |
+| `/api/admin/v1/statistics` | `period`: weekly/monthly/all_time; `platform`: overall/telegram/android/macos/windows/iphone_pwa | Private daily aggregate snapshot; original generated_at and expiry; scopes below |
 | `/api/admin/v1/users/search` | optional `query` (≤80 chars), `limit` (1–100), `before_id` | Canonical User rows, descending ID keyset; shared entitlement resolver and payment-owner join |
 | `/api/admin/v1/users/detail` | required canonical `user_id` | Shared entitlement resolver; CourseProgress/track snapshots, referral owner aggregates, native device platform aggregates, Mini App presence, feedback counts and first ten payments |
 | `/api/admin/v1/users/payments` | required canonical `user_id`, optional `limit`, `before_id` | All statuses, canonical-first payment ownership, descending ID keyset; no receipt references |
 | `/api/admin/v1/feedback/list` | required `source`: bot/release; optional canonical `user_id`, `limit`, `before_id` | Existing durable source rows; no new inbox/triage state |
-| `/api/admin/v1/inbox/list` | `source`: all/bot/release/android; optional canonical `user_id`, `limit` 1–50, compound `before` cursor | Three bounded source projections, merged newest-first by timestamp/source/id; no attachment bytes, triage or MCP |
+| `/api/admin/v1/inbox/list` | `source`: all/bot/release/android/payment; optional canonical `user_id`, priority, bounded search, `limit` 1–50, compound `before` cursor | Four bounded projections with persisted triage metadata; no attachment bytes or MCP |
+| `/api/admin/v1/payments/list` | status, bounded limit, before_id | Live canonical-first payment queue; no receipt references |
 
 All IDs and limits are strict integers, unknown fields are denied. Numeric user
 search names only `users.id`; it never also guesses a Telegram ID. Text search
 escapes SQL wildcards. Names/username/feedback are untrusted data and must be
-escaped by the future UI. No raw attachments, email, Telegram IDs, or device
+escaped by the V10 UI. No raw attachments, email, Telegram IDs, or device
 identifiers are returned. Feedback list excerpts cap each text at 2,000
 characters and report truncation. Cursors are source-specific IDs, not offsets.
 
@@ -58,12 +59,14 @@ read/assigned/resolved status or reply action. The earlier single-source `feedba
 `unavailable_sources` compatibility marker; it has not been extended to native
 reports. The newer `inbox/list` reads only retained reports written after
 Android intake was enabled. Historical Telegram-only Android reports cannot be
-reconstructed. Secure attachment viewing and triage remain separate work.
+reconstructed. Persisted triage and V10 controls are now implemented. The private
+retained Android JPEG proxy exists; other media and preview UI are separate work.
 
-These are browser-admin projections, **not** the future AI/MCP or sanitized
-CSV export contract. No service-account/write tool or live DB access is added.
-No UI, real device/provider E2E, production rollout or synthetic production data
-is included. See CODEX_RESUME and the handoff for exact CI SHA/results.
+Only aggregate statistics are shared with the current statistics-only MCP.
+Account, inbox, feedback and payment projections remain first-party browser
+reads; they do not grant external MCP permission. Sanitized JSON/CSV exports
+remain separate work. See [current handoff](MCP_NEXT_CHAT_HANDOFF.md) for exact
+SHA/test evidence; no real-device/provider E2E or rollout is established.
 
 ## User profile increment (2026-10-24)
 
@@ -155,7 +158,18 @@ R2 snapshots/archives remain optional future work; nothing is uploaded to R2.
 Redis cache-aside/lease reference:
 [official Redis cache-aside guide](https://redis.io/docs/latest/develop/use-cases/cache-aside/redis-py/).
 
-## Unified inbox read-only increment (2026-10-24)
+## Inbox milestones (historical progression)
+
+Current inbox includes four sources (Bot, Release, retained Android and pending
+screenshot payments), V10 triage, important filter, capped unread count and
+bounded text search. The private Android JPEG proxy is first-party only. See
+[current handoff](MCP_NEXT_CHAT_HANDOFF.md), [native intake](NATIVE_INBOX_INTAKE.md),
+[technical source audit](TECHNICAL_ERROR_SOURCE_AUDIT.md) and
+[Apple Push acceptance](APPLE_PUSH_ACCEPTANCE.md). Earlier next-step statements
+below describe their original checkpoints and are superseded. None of these
+features extends the daily statistics cache to live inbox or security state.
+
+### Unified inbox read-only increment (2026-10-24)
 
 `app/admin_api/pwa_inbox.py` reads bot feedback, release responses and retained
 private Android reports through three bounded SELECT projections. It reads at
@@ -182,7 +196,7 @@ Next: V10 triage-action controls/UX and canonical UZ/RU/TJ labels, indexed
 search/filters, administrative/system alert sources and secure attachment proxy. Admin/system alert
 source inventory precedes claiming universal notifications complete.
 
-## Inbox triage state — 0123, backend only (2026-10-24)
+### Inbox triage state — 0123 foundation (2026-10-24)
 
 `app/admin_api/pwa_inbox_triage.py` is a protected first-party-only endpoint.
 An active WebAuthn Admin PWA session is required for changes; a Google/Telegram

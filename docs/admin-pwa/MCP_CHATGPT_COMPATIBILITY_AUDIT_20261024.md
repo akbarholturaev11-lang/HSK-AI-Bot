@@ -2,11 +2,17 @@
 
 Runtime snapshot: `e0270fb9`, integrated as `5ef02f1f`; official SDK regression commit `4009e903`. No live ChatGPT connection, staging deployment or production activation. All three flags remain OFF.
 
+Daily-cache follow-up (`4709c660`): statistics now reuse private server-side
+24-hour snapshots; authorization, expiry/revoke, quotas and audit still run on
+every call. Aggregate SQL runs only on cache misses after the auth transaction
+ends. See [read projections](READ_PROJECTIONS.md) and the [current handoff](MCP_NEXT_CHAT_HANDOFF.md). The validation below belongs to its stated OAuth
+foundation SHA, not every later runtime.
+
 ## Verified source contract
 
 - One predefined public OAuth client, exact HTTPS callback/resource, `none` token endpoint authentication with mandatory S256 PKCE, explicit WebAuthn-session consent, RFC 9207 issuer on allow/deny, single-use 60s code and 300s opaque access grant. No refresh or remote client-metadata fetch.
 - Owner-only history/revoke UI and APIs cancel codes/all grants without exposing a remote write tool. Revocation blocks subsequent checks; an already authorized snapshot may complete within the 10s call bound. Logout does not silently terminate independent OAuth access; it blocks new code redemption. A previously issued token survives only its remaining <=300s unless explicitly revoked.
-- `/mcp` remains statistics-only. Every call revalidates current admin, audience, scope, expiry and revoke state, with DB-shared quota, audit reservation and isolated READ ONLY statistics transaction. DB/admission/audit failures expose no result.
+- `/mcp` remains statistics-only. Every call revalidates current admin, audience, scope, expiry and revoke state, with DB-shared quota, audit reservation and, on refresh, an isolated READ ONLY statistics transaction. DB/admission/audit failures expose no result.
 - Seven-day content-free audit and fixed minute counters live in migration 0121. Admission limits are per endpoint plus 30 statistics calls/min per verified admin across tokens. Repeated anonymous/global limit denials are aggregated. This is application quota, not edge/network denial-of-service protection.
 - Strict UTF-8 JSON, duplicate/nonfinite/deep input rejection, Origin 403, exact media Accept/q validation, supported version headers, valid initialize schema/version agreement and correct accepted-notification 202 behavior have regression coverage. Only 2025-06-18 and 2025-11-25 are advertised.
 - Native consent form had an actual browser failure: `no-referrer` made Origin null on POST. HTML and response policy now use `strict-origin`, preserving Origin while sending no query/path in Referer. Same-origin + one-use CSRF checks remain enforced. Browser regression asserts the real Origin and origin-only Referer.

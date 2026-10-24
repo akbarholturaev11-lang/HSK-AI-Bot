@@ -1,6 +1,17 @@
-> **Current authoritative contract (2026-10-24, runtime `e0270fb9` / integrated `5ef02f1f`):** OAuth consent/history/revoke UI, privacy-minimal audit, distributed application quotas and expiry/reconnect handling are implemented. All three flags remain OFF. Read [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md) and [current compatibility audit](MCP_CHATGPT_COMPATIBILITY_AUDIT_20261024.md) first. Older milestone text below is historical; no real ChatGPT connection, staging or release is established.
+> **Current authoritative contract (2026-10-24, OAuth foundation `e0270fb9` / daily cache `4709c660`):** OAuth consent/history/revoke UI, privacy-minimal audit, distributed application quotas and expiry/reconnect handling are implemented. All three flags remain OFF. Read [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md) and [current compatibility audit](MCP_CHATGPT_COMPATIBILITY_AUDIT_20261024.md) first. Older milestone text below is historical; no real ChatGPT connection, staging or release is established.
 
-## Current security increment
+## Current statistics boundary
+
+`hskai_statistics` / `admin:analytics:read` is the sole external tool/scope.
+PWA and MCP share private server-side 24-hour snapshots from `generated_at`,
+refreshing only requested expired variants on authorized demand. There is no
+fixed nightly cron, force-refresh or R2 integration. Redis coordinates healthy
+workers; bounded outage fallback is daily per worker, with possible recalculation
+after restart. Token expiry/revoke, current admin, audit and quota checks still
+run on hits. Billing/profile/receipt/access/commands remain uncached, private
+HTTP/SW responses remain no-store. Details: [read projections](READ_PROJECTIONS.md).
+
+## Implemented security foundation
 
 - Migrations 0118–0121: hashed access grants, pending authorization/one-use code/CSRF and new `admin_pwa_mcp_audit` / `admin_pwa_mcp_quotas`. 0121 follows 0120; rollback refuses to destroy nonempty security evidence.
 - Predefined public OAuth client + exact configured callback/resource, mandatory S256, explicit same-session consent, RFC 9207 issuer, 60s code and <=300s access. Metadata advertises only implemented auth methods/versions. No CIMD/DCR or arbitrary metadata fetch. OpenAI officially supports predefined clients; real setup remains unverified.
@@ -12,9 +23,15 @@
 - Native form Origin is preserved via `strict-origin` HTML/header referrer policy; no OAuth path/query is sent as Referer. Exact Origin, Fetch Metadata and one-use CSRF remain mandatory.
 - Local evidence including SDK regression: 298 scoped passed/16 PG-only skipped; 16 real PostgreSQL 15 passed; 61 legacy passed; 63 catalogs/0 stale; mobile/desktop UZ/RU/TJ browser/PWA/SW passed. Runtime CI 40081833261 at 5ef02f1f passed both jobs; SDK-test head 4009e903 independently passed both jobs in run 40082233884 (298 scoped/16 skipped, 61 legacy, 16 PG16, browser/catalogs).
 
+## Historical milestones — superseded
+
+Everything below this heading records earlier partial implementations, not
+current missing work or authorization to add tools. Current runtime/remaining
+gates are in [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md).
+
 ---
 
-> **CURRENT implementation/testing state (2026-10-24):** The later OAuth authorize + explicit UZ/RU/TJ mobile/desktop consent UI and three-gate-disabled MCP JSON-RPC transport are now implemented on **Draft PR #201**, with full green CI at code SHA `38f253d06bda251ecd4f011015650c70adc94ac2` ([Admin PWA security run 40076721766](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40076721766): 280 passed/13 skipped + 61 legacy + 13 real PostgreSQL; browser consent QA pass). **For current status and remaining release gates, read [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md).** Earlier "NOT IMPLEMENTED" checkpoint paragraphs below are historical and not up-to-date. Still NO real ChatGPT connection, production activation or merge.
+> **Historical implementation/testing state (2026-10-24):** The later OAuth authorize + explicit UZ/RU/TJ mobile/desktop consent UI and three-gate-disabled MCP JSON-RPC transport are now implemented on **Draft PR #201**, with full green CI at code SHA `38f253d06bda251ecd4f011015650c70adc94ac2` ([Admin PWA security run 40076721766](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40076721766): 280 passed/13 skipped + 61 legacy + 13 real PostgreSQL; browser consent QA pass). **For current status and remaining release gates, read [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md).** Earlier "NOT IMPLEMENTED" checkpoint paragraphs below are historical and not up-to-date. Still NO real ChatGPT connection, production activation or merge.
 
 # HSK AI ↔ ChatGPT MCP — connection and security contract (NOT LIVE)
 
@@ -61,8 +78,8 @@ production access credential exists. Do not enable either flag now.
 | Tool | Required narrow scope | Existing data service |
 | ---- | --------------------- | --------------------- |
 | `hskai_statistics` | `admin:analytics:read` | `pwa_read.statistics` |
-| `hskai_users_search` | `admin:users:read` | `pwa_read.users` |
-| `hskai_feedback_list` | `admin:feedback:read` | `pwa_read.feedback` |
+
+Account and feedback tool proposals are excluded from the current approved MCP scope.
 
 **Privacy recommendation:** launch stats-only first. Explicit separate
 consent, audit and retention review are required before user profiles or

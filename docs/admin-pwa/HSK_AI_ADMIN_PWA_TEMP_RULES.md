@@ -1,20 +1,20 @@
-> **CURRENT MCP workstream branch clarification (2026-10-24):** Previous `codex/admin-pwa` was merged to `main` in PR #200. All NEW MCP work is intentionally isolated to **`feat/admin-pwa-mcp-readonly-20261024` / Draft PR #201**, as specified in [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Continue obeying every scoped safety/UI/approval rule below; replace ONLY the outdated branch name for this follow-up. No new merge/deploy/flag enablement is authorized.
+> **CURRENT MCP workstream branch clarification (2026-10-24):** Previous `codex/admin-pwa` was merged to `main` in PR #200. All NEW MCP work is intentionally isolated to **`feat/admin-pwa-mcp-readonly-20261024` / Draft PR #201**, as specified in [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Continue obeying every scoped safety/UI/approval rule below; the branch and startup sequence below reflect the current follow-up. No new merge/deploy/flag enablement is authorized.
 
 # Admin PWA — scoped AI work rules (temporary)
 
-> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `codex/admin-pwa`.
+> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-mcp-readonly-20261024`.
 > Not a repository-wide policy. Does not modify or supersede root `AGENTS.md` / `AI_RULES.md` / `PROJECT_MEMORY.md`.
 > All development and progress records for this task remain under `docs/admin-pwa/`.
 
 
 **Project:** HSK AI standalone Admin PWA
-**Working branch:** `codex/admin-pwa`
+**Working branch:** `feat/admin-pwa-mcp-readonly-20261024` (Draft PR #201)
 **Scope:** Only this Admin PWA initiative. These rules supplement, but do not replace, root `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, security invariants and localization policy.
 **State:** Temporary project-scoped handoff. Reconcile or archive when the initiative is finished. Do not copy these rules into unrelated platforms.
 
 ## Required startup sequence (every new chat/agent)
 
-1. Read `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md` for the verified checkpoint.
+1. Read `docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md` in full for the current verified checkpoint. `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md` and `CODEX_RESUME.md` preserve historical evidence only.
 2. Read this file, `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_CONTEXT.md`, `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_FINAL_RESULT.md`.
 3. Read `docs/admin-pwa/IMPLEMENTATION_PLAN.md` and `docs/admin-pwa/PHASE_0_API_INVENTORY.md`.
 4. Read root `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md` and relevant code/tests. When adding user-visible copy read `localization/README.md`.
@@ -22,9 +22,9 @@
 
 ## Scope and Git safety
 
-- **All implementation stays on `codex/admin-pwa` until the owner explicitly approves promotion.** Do not push/merge to `main`, deploy to production, switch live routes, change secrets, or touch public site / existing Telegram Admin Mini App except an indispensable backward-compatible adapter explicitly reviewed and tested.
+- **All implementation stays on `feat/admin-pwa-mcp-readonly-20261024` until the owner explicitly approves promotion.** Commit/push each completed, tested increment there. Do not push/merge to `main`, deploy to production, switch live routes, change secrets, or touch public site / existing Telegram Admin Mini App except an indispensable backward-compatible adapter explicitly reviewed and tested.
 - No force push, history rewrite or destructive cleanup. Do not edit outside task scope or silently import unrelated changes.
-- Use small, reviewable commits after scoped verification. Log every completed change and its exact validation in `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md`. Never label a planned, mocked or untested feature as done.
+- Use small, reviewable commits after scoped verification. Keep the current checkpoint and exact validation in `MCP_NEXT_CHAT_HANDOFF.md`; do not append new progress to the historical handoff. Never label a planned, mocked or untested feature as done.
 - If an existing repo-wide rule recommends `main` by default, this **user-selected project branch and no-production requirement** override the destination for this initiative; all other repository protections remain in force.
 - Work from existing service abstractions, not duplicate payment, entitlement, account or statistics logic.
 
@@ -37,7 +37,7 @@
 - For payments, deletion, granting paid access, broadcast and other high-risk mutations require an **action/target/payload-bound, one-time WebAuthn step-up**, explicit confirmation, audit trail and server-side authorization; normal statistics browsing should not require per-view biometric prompts.
 - Tokens in Secure HttpOnly cookie only; no browser JS-readable session secrets, no tokens in URLs/localStorage, strict Origin/CSRF/session expiry/revocation/CSP/rate limits. PWA SW only caches public shell; **never** accounts, authenticated API, reviews/attachments, payments or tokens.
 - Canonical user ID is `users.id`; never confuse it with Telegram transport ID. Demo data must never enter production datasets.
-- A browser/Cloud/ChatGPT/MCP client receives no production database credentials. AI analytics are **read-only** with metrics definitions, bounded ranges, redaction, explicit authorization, audit and limits; no billing/user mutations.
+- A browser/Cloud/ChatGPT/MCP client receives no production database credentials. External MCP exposes only `hskai_statistics` / `admin:analytics:read`, with metric definitions, bounded ranges, explicit authorization, audit and limits. No account/feedback/payment-list tools or mutations. Broader first-party reads/exports do not extend MCP scope.
 - Platform user counts can overlap. Do not sum them as all-users totals. Counts, visits, installs, retention, revenue and spend must retain clear server-side definitions; missing/untracked platforms render unavailable rather than artificial zero.
 
 ## UI/UX rules and skills
@@ -67,10 +67,14 @@
 ## Owner-selected statistics load policy (2026-10-24)
 
 Admin PWA/MCP aggregates use private server-side 24-hour snapshots with explicit
-source/expiry timestamps; only requested expired variants refresh. The owner
+source/expiry timestamps; only requested expired variants refresh on authorized
+demand, not a fixed nightly cron. The owner
 selected daily updates to avoid unnecessary database calculations. Auth,
 revocation, audit and security quotas remain current on every request. Billing,
 profiles, receipts, access decisions and commands remain uncached. Browser/SW
 private-response no-store rules above are unchanged. See `READ_PROJECTIONS.md`
 and the active plan for rationale, Redis coordination/failure behavior and
-rollout verification. R2 has not been configured or activated.
+rollout verification. Redis outage fallback is per worker, with possible
+recalculation after restart; never promise zero DB traffic or globally one
+refresh during an outage. Keep all three feature defaults false. R2 has not
+been configured or activated.

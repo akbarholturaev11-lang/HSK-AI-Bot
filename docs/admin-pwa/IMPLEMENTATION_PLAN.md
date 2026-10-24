@@ -1,9 +1,9 @@
 # HSK AI — Admin PWA implementation plan
 
-Status (updated 2026-10-24): **Auth/passkey/session/step-up, atomic payment prepare/review with audit/outbox (0117), and protected real-data read projections are implemented on `codex/admin-pwa` behind `ADMIN_PWA_ENABLED=false`. Verified code `8edd9ccf`: 185 Admin PWA + 61 legacy tests, 11 real PostgreSQL tests, scoped 0110–0117 migrations and the delivery-status reporting fix passed in CI 40033338435. V10 UI/action confirmation, remaining attribution/history gaps, pending-delivery reconciliation, hardware/provider E2E, delete/broadcast and release remain NOT DONE. Complete legacy cold-start migration still fails at 0011. Continue from `docs/admin-pwa/CODEX_RESUME.md`; do not redo completed foundations.**
-Target public URL: `https://hskai.app/admin` (owner-designated; live DNS/TLS/routing still needs verification).
-Branch: `codex/admin-pwa` (branched from `main` at `e935e4315df42037d6aab4ab38b2c4e5d9bbb681`).
-Scope: deliver a separate secure browser-installable Admin PWA without disrupting the existing Telegram Admin Mini App, admin Bot, Android, Desktop, production or main.
+Status (updated 2026-10-24): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, V10 UI, scoped OAuth/MCP controls, profiles, activity metrics, daily statistics cache, native intake, inbox read/triage/search and default-OFF Apple Push sender code exist. Fetched runtime `d93b75fe` adds a private retained Android JPEG proxy. Preview UI, technical events, remaining management/exports and real staging/provider/device/ChatGPT acceptance remain open. The old 0011 cold-start migration failure remains separate.**
+
+Target public URL: `https://hskai.app/admin` (owner-designated; live routing/TLS not verified).
+Branch: `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201; PR #200 foundations are already merged. No main push/merge, deploy or flag activation.
 
 ## Active continuation — owner instruction, 2026-10-24
 
@@ -12,11 +12,12 @@ push each completed, tested increment to that branch. Never merge/push main or
 deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
 `MCP_NEXT_CHAT_HANDOFF.md` supersedes its implementation counts.
 
-1. **Statistics and accounts**: canonical read-only user profile, paginated
+1. **Implemented statistics and accounts**: canonical read-only user profile, paginated
    billing history, course/referral/device/feedback summaries; then defined AI
    spend, engagement and conversion metrics. Preserve unavailable attribution.
-2. **Unified inbox**: durable native-report intake, source/history boundary,
-   search/filters, triage state, secure attachments and privacy/retention.
+2. **Unified inbox continuation**: read/triage/search/badge and native intake
+   are implemented. Connect the existing Android JPEG proxy to V10 preview;
+   then review other media, technical sources and retention/audit gaps.
 3. **First-party management**: shared course/access/pricing/marketing/settings
    commands with exact WebAuthn payload binding, confirmation and audit; keep
    every unsupported high-risk operation disabled until verified.
@@ -27,10 +28,11 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
    actual ChatGPT E2E, then owner review. Needs real staging configuration and
    available hardware; never count synthetic tests as that evidence.
 
-Progress: user profile `996ea058` and defined activity/conversion statistics
-`a7f0a5d1` are pushed; both Admin PWA CI runs passed. Durable Android intake
-foundation `5304cb7a` (0122) is pushed and all its CI workflows passed. Universal inbox UI/triage,
-remaining management, exports and real staging are still open.
+Progress: profiles `996ea058`, activity metrics `a7f0a5d1`, native intake
+`5304cb7a` and daily shared statistics `4709c660` are implemented. Subsequent
+GitHub updates through `d93b75fe` add inbox/triage/search, default-OFF Apple Push
+sender and the Android attachment proxy. Exact SHA-specific CI evidence belongs
+in the current handoff; do not infer live provider/device acceptance.
 
 Each increment records its actual checks in the current handoff before commit.
 No release completion claim until the final acceptance contract is satisfied.
@@ -40,25 +42,30 @@ No release completion claim until the final acceptance contract is satisfied.
 Primary purpose is to reduce unnecessary DB work. The owner selected daily
 updates after discussing R2. Reuse the existing Redis dependency/configuration
 for private 24-hour aggregate snapshots shared by Admin PWA and MCP; refresh
-only requested, expired variants. R2 integration is not required to achieve
+only requested, expired variants on first authorized demand after 24 hours
+from `generated_at`, not at a fixed nightly time. R2 integration is not required to achieve
 this read-load reduction and is not implemented here. No periodic all-platform
 full scans are added. Keep current timestamps and live billing/access commands;
-cache no identities/permissions. `READ_PROJECTIONS.md` records coordination,
+cache no identities/permissions. Redis outage fallback is per worker and may
+recalculate after restart; auth/revoke/audit/quotas still use current DB facts. `READ_PROJECTIONS.md` records coordination,
 failure limits and the private-Redis staging gate. This temporal contract
 supersedes the previous per-open aggregate calculation for these two surfaces.
 
 ## Fixed decisions
 
-1. **One backend, two authenticated entry points.** Keep current Telegram `/admin.html` and `X-Telegram-Init-Data` behavior unchanged. Use public browser URL `https://hskai.app/admin` with isolated PWA assets `/admin-pwa/assets/` and auth `/api/admin-pwa/auth/*`. Check all route collisions, reverse-proxy mapping and HTTPS before exposing. Reuse services and business logic; don't fork entitlement/payment rules.
+1. **One backend, two authenticated entry points.** Keep current Telegram `/admin.html` and `X-Telegram-Init-Data` behavior unchanged. Use public browser URL `https://hskai.app/admin` with isolated shell/assets under `/admin/` and auth `/api/admin/v1/auth/*`. Check all route collisions, reverse-proxy mapping and HTTPS before exposing. Reuse services and business logic; don't fork entitlement/payment rules.
 2. **UI source of layout:** locally reviewed HTML demo V10 (`hsk-ai-admin-ux-demo-v10.html`) is a DESIGN REFERENCE, not production code. Remove all synthetic users, sample metrics, browser-only financial changes, sample notifications, placeholder actions, and unsafe `file://` assumptions. Do not import demo fixture arrays into deployed code. Preserve clear UX sections and a single top-row period selector, platform filter, and notification bell.
 3. **Server authority.** Stats, permissions, subscriptions, user account identity, payment decisions, HSK 3.0 unlock and price changes remain server-authoritative. Both admin surfaces must resolve to the same canonical admin actor.
 4. **Telemetry semantics.** Overall = deduplicated canonical accounts where possible. Platform views must be defined explicitly as platform usage and can overlap; **do not sum** platform-user counts as total users. Label registration, activity, install, exposure, attribution and payment metrics separately. Show unsupported/untracked future platform metrics as "not available", never zero.
 5. **Risk / privacy.** Browser admin pages, API responses, personalized feedback and files use `Cache-Control: no-store`. PWA service worker may cache only public, versioned application-shell assets; NEVER cache authenticated JSON, token responses, PII, payment screenshots, feedback attachments or application credentials. Offline admin data returns a clear unavailable state.
 6. **Local-first localization.** Author any new permanent UI copy in canonical UZ/RU/TJ catalogs following `localization/README.md`, then generate and check bundles; demo-only prose is not a localization source.
 7. **Security:** no session token in localStorage, sessionStorage, URL, deep-link query or GitHub; use HttpOnly Secure cookies, HTTPS, strict origin/CSRF checks, CSP, no framing, idle/absolute timeout, revocation and rate limits. **Onboarding only:** verified Google OAuth OIDC identity + one-time approval by a Telegram account currently in `ADMIN_IDS` + verified binding to canonical admin + create discoverable WebAuthn passkey. **Returning sign-in priority:** WebAuthn passkey FIRST (without requiring Google again), verifying server challenge, RP ID, origin, credential ownership, user verification and current admin privileges; a still-valid browser session needs no new sign-in. Linked Google is a fallback, as is explicitly approved Telegram recovery. **High-risk mutations:** additional fresh WebAuthn transaction-bound re-verification, confirmation and audit logs. Passkey may invoke Face ID, Touch ID, Windows Hello, fingerprint or device PIN/passcode; web code cannot demand Face-ID-only.
-8. **Do not touch main or deploy** until acceptance and planned release. The PWA must remain functional without caching private data. No Cloud / MCP integration may have admin write privileges by default.
+8. **Do not touch main or deploy** until acceptance and planned release. Browser/SW must not cache private data; only the private server aggregate cache above is permitted. External MCP remains statistics-only without profile/feedback/payment-list or mutation tools.
 
-## Verified repository sources (Phase 0)
+## Historical repository sources (Phase 0)
+
+The initial inventory below predates current auth/UI/inbox code; it is not a
+missing-feature list. Use the current handoff and source before implementation.
 
 | Requirement / capability | Existing source and behavior | Gap |
 |---|---|---|
@@ -114,11 +121,14 @@ https://.../admin.html  Existing Telegram Admin Mini App
 
 **Recovery:** losing one passkey must not lock out the last admin. Enroll an additional passkey/security key where possible and implement a carefully audited emergency recovery using linked Google and fresh Telegram approval when needed. Recovery is not a bypass for sensitive actions.
 
-API layering: dedicated routes `/api/admin-pwa/auth/*` for browser sign-in/out/status; admin data endpoints use a common service and guard that accepts **verified** Telegram transport OR verified PWA session, with explicit route-specific CSRF checks on cookie-authenticated mutations. Prefer new `/api/admin/v1/*` projection routes over broad mechanical edits of every `/api/admin-miniapp/*` handler. Existing Telegram endpoints must stay backward-compatible. Never accept an arbitrary user ID from a client to establish admin privileges.
+API layering: dedicated routes `/api/admin/v1/auth/*` for browser sign-in/out/status; admin data endpoints use a common service and guard that accepts **verified** Telegram transport OR verified PWA session, with explicit route-specific CSRF checks on cookie-authenticated mutations. Prefer new `/api/admin/v1/*` projection routes over broad mechanical edits of every `/api/admin-miniapp/*` handler. Existing Telegram endpoints must stay backward-compatible. Never accept an arbitrary user ID from a client to establish admin privileges.
 
-## Implementation phases
+## Original implementation phases (design reference)
 
-### Phase 0 — Audit and contract (current)
+The active continuation above supersedes old phase order and incomplete
+checkboxes below. Acceptance still requires actual staging/device evidence.
+
+### Phase 0 — Audit and contract (initial inspection)
 - [x] Document public address target `https://hskai.app/admin`, first-run Google + Telegram link and passkey-first returning login.
 - [ ] Verify actual `hskai.app` HTTPS certificate, DNS, proxy/route, OAuth redirects, PWA scope and RP ID behavior before writing hostname-bound live auth.
 - [ ] Make the read/write/danger API inventory a signed-off gate; existing endpoint list is documented in `PHASE_0_API_INVENTORY.md`.
@@ -181,15 +191,11 @@ API layering: dedicated routes `/api/admin-pwa/auth/*` for browser sign-in/out/s
 ### Phase 6 — AI / Cloud data access (read-only first)
 **Quickest path:** authenticated, admin-only JSON + CSV exports from the same trusted analytics/feedback query layer, bounded date ranges, audit logs, sanitized defaults. ChatGPT or local tools can work from a downloaded export without database credentials.
 
-**Later:** dedicated HTTPS MCP server (remote Cloud/ChatGPT) and/or local stdio MCP bridge pointing to the same read-only API. Candidate tools:
-- `get_metrics_dictionary`
-- `get_statistics(period, platform, dimensions)`
-- `compare_platforms(period)`
-- `get_conversion_funnel(period)`
-- `get_feedback_summary(period, category, platform, severity)`
-- `list_feedback(period, status, limit, cursor)` (redacted by default)
-- `get_feedback_detail(id)` (explicitly scoped to admin with access)
-- `export_analysis_data(period, kind)`
+**Current MCP:** only `hskai_statistics` / `admin:analytics:read` is implemented
+and approved for external clients. It reuses the private daily aggregate cache.
+User/feedback/payment-list tools, arbitrary SQL/URL and mutations remain excluded.
+Broader sanitized exports are a separate first-party requirement, not permission
+to expand MCP. See [MCP contract](MCP_CONNECTION_CONTRACT.md).
 
 Use separately issued, revocable short-lived machine credentials with **read scopes**, audience binding, throttling, row and date limits, data minimization, access auditing and explicit PII opt-in. Do not expose write, billing, delete, broadcast or account-control endpoints to AI agents. GitHub connector alone can inspect code, **not runtime production database statistics**. Local workspace access to a staging clone is not production access.
 
@@ -201,7 +207,7 @@ Use separately issued, revocable short-lived machine credentials with **read sco
 - Deploy under explicit feature flag / isolated route; verify logs, page-cache headers, rate limits, origin/CSP, and rollback path.
 - Promote only after manual admin acceptance and rollback verification.
 
-## Updated execution sequence (dependency order)
+## Original dependency sequence (historical planning)
 
 1. **Phase 0:** domain and production-route verification, API threat model/inventory, existing Telegram regression baseline and demo UX-component mapping; no live deploy.
 2. **Phase 1A:** safe admin cookie session, protected `/api/admin/v1/me`, verified browser Google OAuth and **one-time Telegram Bot admin approval binding**. Separate from current Telegram Mini App.
@@ -216,7 +222,7 @@ Use separately issued, revocable short-lived machine credentials with **read sco
 
 **Parallelizable tasks:** PWA shell/design mapping and metric data dictionary can proceed after protected read session contract is stable. Inbox storage design can begin alongside statistics. Never ship privileged admin writes before Phase 1C.
 
-## Explicit open questions to resolve from code before implementing Phase 1
+## Initial Phase 1 questions (historical; recheck current source)
 
 - Owner designates production `https://hskai.app/admin`; verify live DNS, TLS, redirects, configured provider OAuth callback, server reverse-proxy route and whether RP ID is usable from this host. Which staging host/origin and bot username are canonical, and what callback/deep-link contract does the existing bot router already support?
 - How should a browser-authenticated admin actor map to canonical user ID while existing audit `created_by_telegram_id` fields remain backwards compatible?
@@ -224,7 +230,7 @@ Use separately issued, revocable short-lived machine credentials with **read sco
 - Which platform events are authoritative for Mac vs Windows, and which prospective iPhone PWA events have no instrumentation yet?
 - Which admin services unexpectedly commit on read? Extract read-only projections without importing these side effects into AI access.
 
-## Test and release notes
+## Historical test and release notes
 
 This document records source-code observations; it is not evidence of an active PWA, deployment, user-session security testing, database migration, or production end-to-end QA. No production endpoint is enabled by this planning change.
 
