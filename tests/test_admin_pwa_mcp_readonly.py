@@ -138,10 +138,11 @@ class ScopedReadTests(unittest.IsolatedAsyncioTestCase):
             ("hskai_statistics", {"platform": "other"}),
             ("payments.approve", {}),
         ]
+        permitted = (ANALYTICS, USERS, FEEDBACK)
         for name, args in cases:
             with self.subTest(name=name, args=args):
                 with self.assertRaises(McpReadOnlyBadRequest):
-                    await self.run_tool(name, args)
+                    await self.run_tool(name, args, scopes=permitted)
         self.assertEqual(self.events, [])
 
     async def test_no_client_supplied_scopes_are_accepted(self):
