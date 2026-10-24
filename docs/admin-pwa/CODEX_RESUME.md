@@ -7,7 +7,7 @@
 - Repo: `akbarholturaev11-lang/HSK-AI-Bot`
 - **ONLY working branch:** `codex/admin-pwa`
 - Last verified code/test SHA: `f6ec223dbab7db46695237fa82c511204badb809`. The head advances with later code/docs commits; always inspect current HEAD and the latest handoff before implementation.
-- Owner requested main-merge preparation on 2026-10-24. The existing three main commits (tip `fb185be5cf481afcc62964951377fdd769df2fbe`) are being merged **into codex/admin-pwa only**, preserving Android Play fixes. Two conflicts are resolved by retaining both catalogs and asserting 63 generated artifacts. No main promotion/deploy is authorized. Inspect the current merge state/HEAD and `MERGE_READINESS.md` before continuing; do not reset/rebase or rewrite history.
+- Owner requested main-merge preparation on 2026-10-24. The existing three main commits (tip `fb185be5cf481afcc62964951377fdd769df2fbe`) were merged **into codex/admin-pwa only**, preserving Android Play fixes. Two conflicts are resolved by retaining both catalogs and asserting 63 generated artifacts. No main promotion/deploy is authorized. Base sync + flag-OFF tests/PR CI commit: `9eace423b441818c9071f9ff4623d40058de3217`. Open PR: [#200](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/200); inspect its latest head/checks and `MERGE_READINESS.md` before continuing; do not reset/rebase or rewrite history.
 - Default: `ADMIN_PWA_ENABLED=false`. Keep it **OFF**. No production deployment, no merge to `main`, no changes to secrets or public site, no changes to the existing Telegram `/admin.html`, `X-Telegram-Init-Data`, native APK billing/update behavior, or normal user authentication.
 - Do not treat stale status summaries near the top of `IMPLEMENTATION_PLAN.md` or old sections of `NEXT_CHAT_START.md` as current; consult source and this verified checkpoint.
 
@@ -42,7 +42,12 @@ SHA-256 `1ff92bf82126ea65672ed703f9fff6553982db2f08f7c1ed2a06396cb6c89566`.
 Its title still says V9; the previous 8cd937… hash is historical. Source visual
 components were inspected and ported; never copy its demo records/handlers.
 
-## 4. Last VERIFIED test checkpoint
+## 4. Verified checkpoints and current merge gate
+
+Merge-preparation checkpoint `9eace423b441818c9071f9ff4623d40058de3217`, PR #200:
+[actual PR Admin PWA run 40065222994](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40065222994) both jobs SUCCESS; actual test merge commit `738d8195d40d5d435f47be312daebe3de0e61421` has the same tree as the head. Local checks: **215 passed / 11 skipped**, legacy **61**, PostgreSQL 15 **11**, both browser suites, **63 artifacts / 0 stale**. Current broader PR checks are the integration gate; inspect their latest SHA/status before declaring readiness or merging. The Android catalog count fix retains all 45 canonical native files (42 previous + three main Play bundles); no source/guard is waived. Merge-prep follow-up also pins the isolated QA initializer to reviewed 0117 and defers all migration-owned tables, with original isolation/empty/approval guards intact and a real PG 0103–0117 rehearsal. The old Play trial test now permits only its existing neutral Close action. Full P0 unit command passes 460 locally; final complete latest-head results live in PR Checks/description and the task report. No live initializer/provider/production operation is authorized.
+
+Previous complete browser/security checkpoint:
 
 Browser UI + auth/payment adapters + financial/read foundations verified at **`f6ec223dbab7db46695237fa82c511204badb809`**, [GitHub run 40064353383](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40064353383), both jobs SUCCESS; exact head SHA, job steps and decoded logs inspected:
 
@@ -59,7 +64,7 @@ CI: `.github/workflows/admin-pwa-security.yml`. Run the core/catalog, legacy, re
 
 **Payment adapter implementation is complete on this branch; verify the latest CI SHA before resuming.** Do not redo the shared financial refactor. Read `PAYMENT_REVIEW_CONTRACT.md`, the latest handoff and actual source/tests. Keep the flag OFF; the human confirmation UI exists on the branch; real device/provider E2E remains absent. Pending delivery recovery/reconciliation must preserve the at-most-once claim policy; never auto-retry attempting/uncertain sends.
 
-**Next:** exact-SHA browser CI is verified; perform staging/physical-device QA with separate credentials. Do not enable the flag or deploy without explicit authorization. Exercise installed iPhone PWA, Mac Touch ID, Windows Hello, real Google/Bot callback/recovery, proxy/TLS and session revocation; synthetic Chromium is not that evidence. Registration refresh/expired challenge may require restarting the existing Google/Bot recovery.
+**Next:** finish PR #200 merge preparation with the flag OFF and inspect all latest-head checks. The owner asked for preparation only: do not merge main or deploy. Separately, perform staging/physical-device QA with separate credentials before activation. Do not enable the flag or deploy without explicit authorization. Exercise installed iPhone PWA, Mac Touch ID, Windows Hello, real Google/Bot callback/recovery, proxy/TLS and session revocation; synthetic Chromium is not that evidence. Registration refresh/expired challenge may require restarting the existing Google/Bot recovery.
 
 **Subsequent priorities:** remaining Telegram-only attribution and durable Android feedback/history gaps; pending-delivery recovery/monitoring with explicit uncertain-send reconciliation, preserving at-most-once claims; separately audited delete/broadcast adapters and their confirmations; sanitized read-only export/MCP. Those management actions remain disabled. Do not redo the financial UoW, read projections or supplied-reference UI.
 

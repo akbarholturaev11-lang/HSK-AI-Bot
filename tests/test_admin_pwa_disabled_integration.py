@@ -20,6 +20,11 @@ def pwa_routes(routes):
 
 
 class AdminPwaDisabledIntegrationTests(unittest.IsolatedAsyncioTestCase):
+    def test_repository_rollout_defaults_remain_disabled_and_unconfigured(self):
+        from app.config import Settings
+        self.assertIs(Settings.model_fields['ADMIN_PWA_ENABLED'].default, False)
+        self.assertEqual(Settings.model_fields['ADMIN_PWA_PUBLIC_ORIGIN'].default, '')
+
     async def test_every_mounted_pwa_entry_is_hidden_before_any_database_work(self):
         main = main_imports.MainModuleImportTests._import_main()
         routes = list(pwa_routes(main.app.routes))

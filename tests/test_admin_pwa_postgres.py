@@ -311,6 +311,49 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
             self.assertEqual((await db.get(Payment, self.payment_id)).payment_status, "pending")
             self.assertEqual((await db.get(AdminPwaStepUp, receipt)).status, "verified")
 
+    async def test_empty_qa_table_selection_runs_real_0103_through_0117_ddl(self):
+        # Rehearse only in this disposable UUID schema, not through the guarded
+        # Railway CLI. The production allowlist/approval guards are untouched.
+        import importlib.util
+        from pathlib import Path
+        from sqlalchemy import inspect
+        from alembic.migration import MigrationContext
+        from alembic.operations import Operations
+        from scripts.qa_standalone_bootstrap import (
+            _registered_model_metadata, _initial_schema_tables, MIGRATION_CREATED_TABLES,
+        )
+        metadata = _registered_model_metadata()
+        schema = self.schema + "_bootstrap"
+        versions = Path(__file__).resolve().parents[1] / "alembic/versions"
+        paths = sorted(path for path in versions.glob("*.py")
+                       if path.name[:4].isdigit() and 103 <= int(path.name[:4]) <= 117)
+        self.assertEqual(len(paths), 15)
+        async with self.engine.begin() as conn:
+            await conn.execute(text(f"CREATE SCHEMA {schema}"))
+            await conn.execute(text(f"SET LOCAL search_path TO {schema}"))
+            await conn.run_sync(lambda sync: metadata.create_all(
+                sync, tables=_initial_schema_tables(metadata), checkfirst=False,
+            ))
+            initial = set(await conn.run_sync(lambda sync: inspect(sync).get_table_names(schema=schema)))
+            self.assertTrue(MIGRATION_CREATED_TABLES.isdisjoint(initial))
+            for path in paths:
+                spec = importlib.util.spec_from_file_location("qa_migration_"+path.stem, path)
+                migration = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(migration)
+                def upgrade(sync):
+                    with Operations.context(MigrationContext.configure(sync)):
+                        migration.upgrade()
+                await conn.run_sync(upgrade)
+            actual = set(await conn.run_sync(lambda sync: inspect(sync).get_table_names(schema=schema)))
+            self.assertTrue(set(metadata.tables).issubset(actual))
+            for name in sorted(MIGRATION_CREATED_TABLES):
+                columns = await conn.run_sync(lambda sync: {
+                    column["name"] for column in inspect(sync).get_columns(name, schema=schema)
+                })
+                self.assertEqual(columns, set(metadata.tables[name].columns.keys()), name)
+                self.assertEqual((await conn.execute(text(f"SELECT count(*) FROM {name}"))).scalar_one(), 0)
+            await conn.execute(text(f"DROP SCHEMA {schema} CASCADE"))
+
     async def test_actual_0117_migration_preserves_nonempty_financial_audit(self):
         import importlib.util
         from pathlib import Path

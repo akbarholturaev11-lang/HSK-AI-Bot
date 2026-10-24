@@ -333,3 +333,20 @@ Earlier `RESUME_NEXT_CHAT` messages and early status paragraphs stated no sessio
 - Admin PWA workflow now also runs on main pushes and main-targeted PRs; default PR checkout tests the actual merge candidate. Includes learner inline-catalog compatibility checks. Final exact-SHA test/PR evidence follows after push. See MERGE_READINESS.md for readiness vs activation boundaries.
 
 - Local synchronized-tree validation: **215 passed / 11 PG-only skipped** (199 Admin PWA + 7 catalog + 9 learner inline compatibility), separate legacy suite **61 passed**, disposable PostgreSQL 15 **11 passed**. Browser virtual WebAuthn and real-loopback SW suites passed; compileall/JS syntax and 63 artifacts/0 stale passed. Main AST comparison changes only the intended `_review_admin_payment`, removes no old function, and adds only the effects emitter/dispatcher. These are local facts; exact PR/CI results follow after creation.
+
+
+### PR #200 integration follow-up — canonical Android resource coverage
+
+- PR https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/200 is open against main, attached to the chat, and mergeable. Current integration commit `9eace423b441818c9071f9ff4623d40058de3217`; GitHub PR merge candidate `738d8195d40d5d435f47be312daebe3de0e61421` is tree-identical. Main remains `fb185be5cf481afcc62964951377fdd769df2fbe`.
+- Actual PR Admin PWA run 40065222994: both jobs SUCCESS. Existing broader workflows run independently. P0 (40065223106) and Android (40065223100) revealed a stale 42-file Android assertion inherited from main; its three new canonical play_limits.xml files make 45. Production generator already returned 45 current files. Fix updates the exact count and asserts all three new canonical owner paths; XML/code/values, frozen baselines and validation strength remain unchanged. Do not call the earlier failed jobs green.
+- Current PR check status is available from PR #200 Checks; final exact-head results are also recorded in the PR description and task report. No main merge, activation or deploy occurs during preparation.
+
+
+### Integration blockers repaired before final PR validation
+
+- QA bootstrap: the existing reviewed-head guard correctly rejected new head 0117 while pinned to 0109. Merely changing the pin would precreate PWA ORM tables and collide with real migrations. Reviewed fix pins 0117, defers all ten PWA tables plus traffic to their actual migrations, and checks those tables have zero rows. Production/old-staging/project/host/approval/nonempty-target guards are unchanged; no real QA initializer is executed.
+- Added disposable PostgreSQL regression rehearsing the exact initializer table selection and **all real 0103–0117 migration upgrades** on an empty synthetic ORM baseline; checks all migrated columns and zero rows. This is not a full-history 0001 cold-start or a live-schema rehearsal. Local PostgreSQL 15 test passed; full PWA PG suite now has 12 cases.
+- Old Play trial-entry static assertion incorrectly disallowed the main branch's neutral Close secondary action. Updated test still forbids trial entry and requires exact Close/onClose plus access-recheck callbacks on Play; Direct retains its no-secondary contract. No native UI/payment policy changed.
+- Native-resource/aggregate checks: 15 passed; full P0 source unit command: **460 passed** locally. Focused QA/trial/real-PG checks: **41 passed** before the additional rollout-default and zero-PWA-row guard assertions. Final complete suites are rerun in latest-head CI. Main readiness requires actual latest PR checks, not these earlier failed jobs. Existing PROJECT_MEMORY initializer fact is updated in place to prevent repeating the schema collision.
+
+- Final local follow-up checks before push: expanded security/catalog/QA suite **234 passed / 12 PG-only skipped**; dedicated PostgreSQL 15 + trial-entry contracts **31 passed** (12 real PG, 19 trial tests); 63 generated artifacts/0 stale. Previous synchronized-tree legacy suite 61 and browser/SW suites remain unchanged. Latest-head Linux/Windows/macOS/Android PR checks rerun after this commit; final facts belong to the exact latest SHA in PR #200 Checks and the task report.

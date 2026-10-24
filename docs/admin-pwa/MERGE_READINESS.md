@@ -40,8 +40,14 @@ Work remains on `codex/admin-pwa`; no main push, rebase or history rewrite.
   retention. Empty full-history migration failure at legacy 0011 predates PWA
   and is not repaired or claimed as passing.
 
-Exact local/remote CI, commit and PR evidence is appended to the handoff and
-indexed by CODEX_RESUME.md after completion. Do not call pending checks passed.
+PR: https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/200.
+Integration commit `9eace423b441818c9071f9ff4623d40058de3217` has the same tree
+as GitHub's test merge `738d8195d40d5d435f47be312daebe3de0e61421`.
+PR Admin PWA run 40065222994 passed both jobs; the earlier wider P0/Android
+checks found main's stale 42-file Android count. Preserve all three new Play
+bundles and require 45 native resources; total generated artifacts stay 63.
+Latest-head results are in PR Checks and the final PR description/task report.
+Do not treat an earlier head's checks as proof for later runtime changes.
 
 ## Merge versus activation
 
@@ -66,3 +72,15 @@ Pending outbox recovery/monitoring and explicit uncertain-send reconciliation,
 Telegram attribution, durable Android feedback history and separately audited
 management/export adapters remain follow-up scope. Never auto-resend an
 attempting/uncertain financial delivery or expose unaudited management writes.
+
+
+## Initializer compatibility repair
+
+The isolated empty-QA initializer now pins reviewed head 0117 and lets the real
+0109–0117 migrations create their eleven owned tables; it does not precreate
+PWA tables and skip DDL. All original target/approval/nonempty guards remain.
+A disposable PG regression applies actual 0103–0117 upgrades using the exact
+initial table selection, checks column parity/zero rows, and leaves production
+and the guarded Railway CLI untouched. The current native Close-action test
+also matches main's existing neutral Play behavior without permitting trial
+or checkout actions. Current CI/check evidence is available on PR #200.

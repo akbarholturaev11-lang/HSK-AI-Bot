@@ -26,6 +26,12 @@ on:
       - "localization/ui/**/miniapp.json"
       - "scripts/i18n_build*.py"
       - "tests/test_i18n_all_catalogs.py"
+      - "tests/test_i18n_android_catalog_adoption.py"
+      - "tests/test_i18n_miniapp_inline_adoption.py"
+      - "scripts/qa_standalone_bootstrap.py"
+      - "tests/test_qa_standalone_bootstrap.py"
+      - "app/config.py"
+      - ".env.example"
   # PR checkout tests GitHub's merge candidate, including current main.
   pull_request:
     branches:
@@ -51,6 +57,12 @@ on:
       - "localization/ui/**/miniapp.json"
       - "scripts/i18n_build*.py"
       - "tests/test_i18n_all_catalogs.py"
+      - "tests/test_i18n_android_catalog_adoption.py"
+      - "tests/test_i18n_miniapp_inline_adoption.py"
+      - "scripts/qa_standalone_bootstrap.py"
+      - "tests/test_qa_standalone_bootstrap.py"
+      - "app/config.py"
+      - ".env.example"
   workflow_dispatch:
 
 permissions:
@@ -92,7 +104,7 @@ jobs:
           python -c "from alembic.config import Config; from alembic.script import ScriptDirectory; assert len(ScriptDirectory.from_config(Config('alembic.ini')).get_heads()) == 1"
       - name: Run all Admin PWA regression tests without external services
         run: |
-          python -m pytest -q tests/test_admin_pwa_*.py tests/test_i18n_all_catalogs.py tests/test_i18n_miniapp_inline_adoption.py
+          python -m pytest -q tests/test_admin_pwa_*.py tests/test_i18n_all_catalogs.py tests/test_i18n_miniapp_inline_adoption.py tests/test_i18n_android_catalog_adoption.py tests/test_qa_standalone_bootstrap.py
       - name: Preserve legacy payment, subscription, preview and affiliate contracts
         run: |
           python -m pytest -q tests/test_native_account_payments.py tests/test_hsk30_admin_payment_flow.py tests/test_subscription_service.py tests/test_partner_payment_ownership.py tests/test_payment_review_preview.py tests/test_main_imports.py
