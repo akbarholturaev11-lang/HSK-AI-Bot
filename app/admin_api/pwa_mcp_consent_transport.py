@@ -90,6 +90,9 @@ def create_admin_pwa_mcp_consent_router(
             return _invalid_request()
         args = dict(query)
         if (args["response_type"] != "code"
+                or args["code_challenge_method"] != "S256"
+                or not re.fullmatch(r"[A-Za-z0-9_-]{43}", args["code_challenge"])
+                or not re.fullmatch(r"[A-Za-z0-9._~-]{16,256}", args["state"])
                 or not _registered_client(
                     settings_obj, args["client_id"], args["redirect_uri"],
                     args["resource"], args["scope"],
