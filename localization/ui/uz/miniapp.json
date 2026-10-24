@@ -506,7 +506,19 @@
     "ui.admin_pwa.update": "Yangi versiyani ochish",
     "ui.admin_pwa.discount": "Chegirma",
     "ui.admin_pwa.localAmount": "Mahalliy summa",
-    "ui.admin_pwa.cancel": "Bekor qilish"
+    "ui.admin_pwa.cancel": "Bekor qilish",
+    "ui.admin_pwa.mcpSecure": "Xavfsiz ulanish",
+    "ui.admin_pwa.mcpTitle": "Statistikaga kirishga ruxsat berish",
+    "ui.admin_pwa.mcpSubtitle": "Tashqi ilova HSK AI boshqaruv statistikangizni o‘qish uchun ruxsat so‘rayapti.",
+    "ui.admin_pwa.mcpClient": "Ilova identifikatori",
+    "ui.admin_pwa.mcpDestination": "Qaytish domeni",
+    "ui.admin_pwa.mcpPermission": "Faqat statistikani o‘qish",
+    "ui.admin_pwa.mcpPermissionNote": "Hisobotlar va umumiy ko‘rsatkichlarni ko‘ra oladi. Hisoblarni, to‘lovlarni va xabarlarni o‘zgartira olmaydi.",
+    "ui.admin_pwa.mcpSecurity": "Ruxsat faqat ushbu ulanish uchun. Siz tasdiqlamasangiz, hech qanday ma’lumot berilmaydi.",
+    "ui.admin_pwa.mcpAllow": "Statistikani o‘qishga ruxsat berish",
+    "ui.admin_pwa.mcpDeny": "Rad etish",
+    "ui.admin_pwa.mcpExpires": "Ushbu tasdiq 3 daqiqa ichida tugaydi.",
+    "ui.admin_pwa.mcpFooter": "HSK AI · Admin xavfsizligi"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
