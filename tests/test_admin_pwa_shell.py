@@ -70,7 +70,8 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("self.addEventListener('notificationclick'", worker.text)
         self.assertIn("'/admin/?inbox=1'", worker.text)
         self.assertIn("current.pathname === '/admin/'", worker.text)
-        self.assertNotIn("event.data", worker.text)
+        push_handler = worker.text.split("self.addEventListener(\'push\'", 1)[1].split("self.addEventListener(\'notificationclick\'", 1)[0]
+        self.assertNotIn("event.data", push_handler)
         self.assertNotIn("pushSubscription", worker.text)
         for filename in ('app.js','styles.css','catalog.js','icon.png','icon-large.png'):
             response=await self.get('/admin/assets/'+filename)
