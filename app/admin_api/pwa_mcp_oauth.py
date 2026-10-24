@@ -50,6 +50,8 @@ class PendingMcpConsent:
     scope: str
     state: str
     expires_at: datetime
+    # One-time secret returned ONLY to a trusted first-party consent page.
+    csrf_proof: str = ""
 
 
 @dataclass(frozen=True)
@@ -109,12 +111,15 @@ async def begin_mcp_authorization(
     db: Any, *, session_cookie: str, client_id: str, redirect_uri: str,
     resource: str, scope: str, state: str, code_challenge: str,
     code_challenge_method: str, settings_obj: Any, now: datetime | None = None,
+    csrf_proof: str | None = None,
 ) -> PendingMcpConsent | None:
     """Start pending browser consent. NEVER redirects/consents automatically."""
     if (not _registered_client(settings_obj, client_id, redirect_uri, resource, scope)
             or code_challenge_method != "S256" or not isinstance(code_challenge, str)
             or not _CHALLENGE.fullmatch(code_challenge)
-            or not isinstance(state, str) or not _STATE.fullmatch(state)):
+            or not isinstance(state, str) or not _STATE.fullmatch(state)
+            or (csrf_proof is not None and
+                (not isinstance(csrf_proof, str) or not _CODE.fullmatch(csrf_proof)))):
         return None
     stamp = _utc(now or datetime.now(timezone.utc))
     async with db.begin():
@@ -139,15 +144,17 @@ async def begin_mcp_authorization(
             resource=resource, scope=scope, pkce_challenge=code_challenge,
             client_state=state, status="pending", created_at=stamp,
             expires_at=expires_at,
+            consent_csrf_hash=_digest(csrf_proof) if csrf_proof else None,
         ))
         await db.flush()
     return PendingMcpConsent(identifier, client_id, redirect_uri, resource,
-                             scope, state, expires_at)
+                             scope, state, expires_at, csrf_proof or "")
 
 
 async def decide_mcp_consent(
     db: Any, *, request_id: str, session_cookie: str, approved: bool,
     settings_obj: Any, now: datetime | None = None,
+    csrf_proof: str | None = None,
 ) -> ApprovedMcpCode | None:
     """Require an explicit yes/no click from SAME HTTPS/CSRF-checked browser.
 
@@ -166,6 +173,13 @@ async def decide_mcp_consent(
                 or not _registered_client(settings_obj, row.client_id, row.redirect_uri,
                                           row.resource, row.scope)):
             return None
+        # Require exact double-bound one-time CSRF for any consent created
+        # through the HTTPS browser route. Never accept client OAuth state
+        # as a CSRF proof (it is public to the requesting client).
+        if row.consent_csrf_hash is not None:
+            if (not isinstance(csrf_proof, str) or not _CODE.fullmatch(csrf_proof)
+                    or not hmac.compare_digest(row.consent_csrf_hash, _digest(csrf_proof))):
+                return None
         pair = await _locked_session(db, session_cookie, settings_obj, stamp)
         if pair is None:
             return None
