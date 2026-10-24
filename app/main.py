@@ -663,6 +663,16 @@ async def _desktop_auth_retention_scheduler() -> None:
                 ).cleanup_expired_records()
             async with async_session_maker() as session:
                 await AccountDeletionService(session, settings).cleanup()
+            if getattr(settings, "ADMIN_PWA_ENABLED", False):
+                # Required 30-day private screenshot deletion; bounded to at
+                # most 1000 expired reports per hour, independent of Push.
+                from app.services.admin_pwa_native_reports import purge_expired_native_reports
+                async with async_session_maker() as session:
+                    async with session.begin():
+                        removed = await purge_expired_native_reports(
+                            session, now=datetime.now(timezone.utc), limit=1000)
+                if removed:
+                    logger.info("Admin PWA expired native reports removed: %d", removed)
             if any(result.values()):
                 logger.info("Desktop auth retention cleanup: %s", result)
         except Exception:
