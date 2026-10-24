@@ -1,0 +1,59 @@
+# HSK AI Admin PWA — MCP continuation checkpoint
+_Last source/CI verified on 2026-10-24; this is the current MCP workstream handoff. Re-check remote HEAD before editing._
+
+## 1. Exact repository state
+- **Repository:** `akbarholturaev11-lang/HSK-AI-Bot`
+- **ONLY MCP working branch:** `feat/admin-pwa-mcp-readonly-20261024`
+- **Draft PR #201:** https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/201 — still OPEN, **DRAFT**, NOT MERGED.
+- **Last VERIFIED CODE HEAD** before this handoff: `38f253d06bda251ecd4f011015650c70adc94ac2`. Documentation commits after it will advance the branch head. Always get the current SHA before making changes.
+- `main` SHA at the checkpoint: `891d9d9b6ffda5fba114d9c5c169eeb2f8a7836f` (Admin PWA foundation previously merged in PR #200). Current MCP feature branch is **81 ahead / 0 behind** `main` at that source snapshot.
+- GitHub PR #201 is mergeable/clean but **this is not release approval**. Do NOT merge, rebase, delete branch, deploy, activate production or set secrets without explicit owner approval.
+- Config defaults remain: `ADMIN_PWA_ENABLED=false`, `ADMIN_PWA_MCP_ENABLED=false`, `ADMIN_PWA_MCP_TRANSPORT_ENABLED=false`, `ADMIN_PWA_MCP_RESOURCE=""`, `ADMIN_PWA_MCP_CLIENT_ID=""`, `ADMIN_PWA_MCP_REDIRECT_URI=""`, `ADMIN_PWA_PUBLIC_ORIGIN=""`. These are defaults, not verified production environment variables. No live ChatGPT MCP connection has been tested or authorized.
+
+## 2. FIRST read (do not repeat completed work)
+1. **This document**, followed by `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_RULES.md` (historic rules say `codex/admin-pwa`; that branch has already merged through PR #200, and the **current user-selected MCP work branch above** is the successor). Follow all remaining scope/security/UI rules.
+2. `docs/admin-pwa/MCP_CONNECTION_CONTRACT.md` — cumulative architectural notes (dated earlier sections are HISTORICAL, not current).
+3. The **latest** part of `docs/admin-pwa/HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md` (large append-only history), `docs/admin-pwa/BROWSER_UI_CONTRACT.md`, `ADMIN_PWA_V10_UI_REFERENCE.md`.
+4. Root `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, then **real implementation and tests**. Do not use stale `CODEX_RESUME.md` status for current MCP tasks; that file describes historical PR #200, not current PR #201.
+5. **UI skills (read actual content before ANY UI change):** `.agents/skills/hsk-ai-ui/SKILL.md` and `.agents/skills/webapp-testing/SKILL.md`, plus `frontend-design` if actually present. The two named repository skills were read during the consent implementation. Apply V10 slate/card language, one clear primary action, accessible focus, iPhone safe area, mobile-first and explicit no-data/error/offline states.
+6. Read `localization/README.md` before text changes: author UZ/RU/TJ canonical `localization/ui/{uz,ru,tj}/miniapp.json` keys `ui.admin_pwa.*`, regenerate via `python3 scripts/i18n_build_all_catalogs.py --write` and verify `--check`. Generated `app/static/admin-pwa/catalog.js` is NOT the canonical source.
+
+## 3. ALREADY IMPLEMENTED on this MCP branch
+**Server-side resource / OAuth**
+- `app/admin_api/pwa_mcp_readonly.py`: internal narrow scope-based read adapters around existing real-data statistics, users and feedback projections. **These are internal; do not expose Users/feedback over ChatGPT.**
+- `app/admin_api/pwa_mcp_resource.py`: OAuth resource-side stats-only `admin:analytics:read`, current canonical Telegram-admin allowlist check, hashed opaque access token, audience `https://hskai.app/mcp`, expiry <= 5 minutes, revoke state. No browser cookie as MCP token.
+- `app/admin_api/pwa_mcp_oauth.py`: server-registered exact OAuth client/callback, authorization-code + PKCE S256, 3-minute pending user consent, one-use browser CSRF secret stored as hash, explicit allow/deny, 60-second code, atomic one-time code redemption and 5-minute stats-only token. No refresh tokens.
+- `app/admin_api/pwa_mcp_http.py`: independently disabled OAuth protected-resource / authorization-server metadata, form token exchange, stateless JSON-RPC `/mcp` subset (initialize/ping/tools list/tools call), **only** `hskai_statistics` callable. No payment, delete, broadcast, arbitrary SQL/URL, remote user profile or feedback tool.
+- `app/admin_api/pwa_mcp_consent_transport.py`: `GET/POST /oauth/authorize` renders an explicit first-party consent view, exact preregistered callback, protected admin session + Origin/Fetch Metadata + CSRF + request ID; approve returns OAuth code via registered redirect, deny returns `access_denied`. Real code was audited to avoid duplicated authorize routes and routes generating rather than service generating CSRF.
+- Data: `app/db/models/admin_pwa_mcp.py`, `admin_pwa_mcp_authorization.py`, Alembic `0118`, `0119`, `0120_admin_pwa_mcp_consent_csrf`, updated model registry.
+- Routes registered through `app/main.py`, **disabled by default under 3 feature flags**; UI assets served by bounded whitelist `app/admin_api/pwa_bootstrap.py` and no separate public credential.
+- UI `app/static/admin-pwa/mcp-consent.html`, `mcp-consent.css`, `mcp-consent.js`: responsive and accessible V10-inspired slate card, clear "allow stats only" / "deny" actions, exact registered client and callback hostname, original HTML escapings, no token storage in JS. 12 canonical message keys in UZ/RU/TJ, generated catalog. iPhone Safari focus/zoom styling corrected.
+- Browser QA: `tests/e2e/admin_pwa_mcp_consent_browser.py`, desktop 1440px / iPhone 390px, UZ/RU/TJ, overflow/a11y and screenshots.
+
+**What is NOT completed, regardless of green CI:** No verified real ChatGPT OAuth client registration/redirect metadata or live ChatGPT web connection; no real deployed OAuth server, external DNS/TLS/proxy testing, production consent or physical Face ID/Touch ID E2E. MCP implementation is a small stateless HTTP subset, not a proven full ChatGPT integration. No refresh token strategy for current 5-minute access tokens, no complete OAuth-grant revocation/logout management UI, dedicated per-call audit and quotas/privacy release sign-off. The wider Admin PWA may have unfinished user-deletion/broadcast functionality; DO NOT assume whole product complete.
+
+## 4. Verified tests at the exact CODE SHA
+Last full green source commit: `38f253d06bda251ecd4f011015650c70adc94ac2`.
+- **Admin PWA CI:** https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40076721766 — BOTH jobs green.
+  - Python 3.12 scoped Admin PWA suite: **280 passed, 13 skipped** (13 PostgreSQL-only tests run in separate job); legacy affected regressions: **61 passed**.
+  - **Actual disposable PostgreSQL 16:** **13 passed**; Alembic single head `0120`, scoped 0110–0120 upgrade, `0120` downgrade to `0119` and re-upgrade pass, PKCE one-use concurrency pass.
+  - Synthetic Linux Chromium/WebAuthn PWA flows and Service Worker install/offline/update pass.
+  - **MCP consent browser smoke:** 1440 desktop and 390 iPhone, UZ/RU/TJ, accessibility and overflow pass; screenshots uploaded by workflow. **These are synthetic browser QA, not actual iPhone hardware/production ChatGPT.**
+  - `python scripts/i18n_build_all_catalogs.py --check`: **63 artifacts, 0 stale**.
+- Same HEAD: Desktop UI https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40076721823; Localization https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40076721787; Backend https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40076721812; Android https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40076721793; TTS https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40076721782 — all green.
+- Known **independent legacy** issue: a completely empty full-history Alembic still fails at old revision `0011_add_course_workflow_fields` (missing `course_progress`). Admin PWA CI is scoped to migrations after a synthetic 0109 baseline. Do not claim cold-start full migration fixed.
+- When documenting new commits, **new SHA must get new CI** before a new success claim. Documentation-only commits do not imply new runtime tests.
+
+## 5. NEXT IMPLEMENTATION (stay on this branch)
+1. Re-audit latest real `pwa_mcp_oauth.py`, `pwa_mcp_http.py`, `pwa_mcp_consent_transport.py`, tests. The current flow is gated and tested, but now needs a complete **security/UX/real-client compatibility review** against current OAuth 2.1/MCP/ChatGPT requirements; compare to official docs. One static registered client in config must be matched with the real ChatGPT OAuth callback/client ID; do not invent an OpenAI OAuth client ID or redirect.
+2. Add first-party admin consent/grant history and **revocation** (not just a nullable DB `revoked_at` column), audit all authorization/denial/token/tool calls with data minimization; test replay/cross-session, client substitution, CSRF, denial, inactivity, clock expiry and redirected state preservation. Apply rate limiting and clear user-visible expired/sign-in-required states. **Do not expose write tools.**
+3. Assess whether 5-minute access token with no refresh works in actual ChatGPT; implement a safe refresh/reauthorization design only if necessary and security-reviewed (rotation/replay prevention/revocation).
+4. Evaluate MCP protocol compliance: initialize/version agreement, Accept headers, authorized 401 challenges with protected-resource metadata, auth discovery, stateful notifications vs stateless 202, redirection handling. Prove compatibility in a controlled test client then a **separate isolated staging**, not production.
+5. UI: maintain provided V10 visual language and existing UZ/RU/TJ canonical catalog. Use hsk-ai-ui + webapp-testing skills; add actual Playwright screenshots/behavior tests for mobile and desktop whenever UI changes.
+6. Run two Admin PWA CI jobs (incl REAL disposable PostgreSQL concurrency+migrations), affected legacy/Android/Localization and browser QA. Update this document, relevant contract, latest handoff and PR description with exact SHA/links/outcomes, then make small commits on the feature branch.
+7. **No merge to `main`, production deploy, activation, new secrets, database migration on live DB, or live external ChatGPT client without explicit owner approval.** Preserve existing Telegram `/admin.html` + legacy APIs and Android Direct/Play paths.
+
+## 6. Reporting contract / new-chat response
+**Continue IMPLEMENTATION, not another abstract plan.** First report actual current branch HEAD and CI, then audit the remaining OAuth/MCP blockers and implement the next bounded safe increment with real tests and commits. Report *actual changed paths/commit SHA/test coverage/new blockers*. Do not falsely say a full MCP/ChatGPT connector is connected until tested end-to-end with consent and real tool invocation in a permitted environment.
+
+This is the **current** MCP entry point. Earlier `CODEX_RESUME.md`, `HSK_AI_ADMIN_PWA_NEXT_CHAT_START.md`, old merge preparation sections and top of historical handoff are pre-merge PR #200 context, not the current MCP branch.
