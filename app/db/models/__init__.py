@@ -62,3 +62,4 @@ from .admin_pwa_mcp_security import AdminPwaMcpAudit, AdminPwaMcpQuota
 from .admin_pwa_native_report import AdminPwaNativeReport
 from .admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
 from .admin_pwa_push import AdminPwaPushSubscription
+from .admin_pwa_push_outbox import AdminPwaPushOutbox
