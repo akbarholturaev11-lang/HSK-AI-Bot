@@ -29,6 +29,7 @@ from app.db.models.course_progress import CourseProgress
 from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.db.models.admin_pwa import AdminPwaSession
+from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriageAudit
 from app.db.models.admin_pwa_payment_review import AdminPwaPaymentReview
 from app.db.models.admin_pwa_webauthn import AdminPwaCredential
 from app.admin_api.pwa_approval import start_pwa_approval, approve_pwa_approval
@@ -44,6 +45,7 @@ from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_rou
 from app.admin_api.pwa_mcp_oauth import begin_mcp_authorization, decide_mcp_consent, exchange_mcp_code, pkce_s256
 from app.admin_api.pwa_mcp_resource import verify_readonly_mcp_bearer
 from app.admin_api.pwa_read import create_admin_pwa_read_router
+from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
 from tests.test_admin_pwa_payment_review import PaymentFixtures
 from tests.test_admin_pwa_webauthn_crypto_vectors import CRED_ID, HANDLE
 from tests.test_admin_pwa_receipts import png
@@ -94,6 +96,7 @@ async def browser_checks(output):
     for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_google_router,
                     create_admin_pwa_passkey_login_router,create_admin_pwa_step_up_router,
                     create_admin_pwa_payment_review_router,create_admin_pwa_read_router,
+                    create_admin_pwa_inbox_triage_router,
                     create_admin_pwa_completion_router,create_admin_pwa_webauthn_router,
                     create_admin_pwa_mcp_management_router):
         app.include_router(factory(**common))
@@ -327,6 +330,14 @@ async def browser_checks(output):
             await page.locator(f'[data-source={source}]').click()
             await expect(page.locator('.inbox-shell')).to_be_visible()
             assert 'primary' in (await page.locator(f'[data-source={source}]').get_attribute('class'))
+        # Native iPhone-sized controls use the same real ASGI transaction as Mac.
+        await page.locator('[data-inbox-op=mark_read]').first.click()
+        await expect(page.locator('.inbox-shell')).to_be_visible()
+        await page.locator('[data-inbox-op=assign_self]').first.click()
+        await expect(page.locator('.inbox-shell')).to_be_visible()
+        async with fixture.sessions() as db:
+            assert await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit)) == 2
+        assert len([path for path,_,_ in calls if path.endswith('/inbox/triage')]) == 2
         await page.keyboard.press('Escape')
         # Actual consent/code/token services seed one synthetic connection;
         # the V10 drawer calls real session-bound management and audit services.
