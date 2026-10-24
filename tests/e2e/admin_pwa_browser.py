@@ -152,6 +152,9 @@ async def browser_checks(output):
         assert not any(path.endswith('step-up/options') for path,_,_ in calls)
         await page.locator('[data-action=signin]').click()
         await expect(page.locator('.sidebar')).to_be_visible(timeout=20000)
+        # Push flag defaults OFF: no button and no subscription/permission flow.
+        await expect(page.locator('[data-action=pushSettings]')).to_have_count(0)
+        assert not any('/push/' in path for path,_,_ in calls)
         assert any(path.endswith('login/verify') for path,_,_ in calls)
         cookies=await context.cookies()
         assert any(row['name']=='__Host-hskai_admin' and row['httpOnly'] and row['secure'] for row in cookies)
