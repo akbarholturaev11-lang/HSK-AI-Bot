@@ -157,10 +157,10 @@ def create_admin_pwa_mcp_consent_router(
             return _invalid_request(403, "access_denied")
         if isinstance(result, ApprovedMcpCode) and form["decision"] == "allow":
             location = _redirect(result.redirect_uri,
-                                 {"code": result.code, "state": result.state})
+                                 {"code": result.code, "state": result.state, "iss": _ISSUER})
         elif isinstance(result, DeniedMcpCode) and form["decision"] == "deny":
             location = _redirect(result.redirect_uri,
-                                 {"error": "access_denied", "state": result.state})
+                                 {"error": "access_denied", "state": result.state, "iss": _ISSUER})
         else:
             return _invalid_request(403, "access_denied")
         return RedirectResponse(location, status_code=303, headers=_CONSENT_HEADERS)
