@@ -58,7 +58,7 @@ safe rollback route.
 
 The newer unified bot/release/native read projection and V10 source tabs
 are present. Durable read/assigned/resolved triage and audit now exist **on the backend** in
-separate 0123 tables, but no V10 action buttons, unread counter, triage search,
+separate 0123 tables, with V10 localized triage buttons, but no unread counter, triage search,
 attachment proxy or admin/system alert inventory are implemented. Important/
 normal priority is an operator flag, NOT automated severity classification.
 Advanced filters/search, decoded attachments and admin/system notice integration
