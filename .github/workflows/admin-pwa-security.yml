@@ -183,7 +183,7 @@ jobs:
           python -m pip install -r requirements.txt "pytest==8.4.2" "aiosqlite==0.21.0"
       - name: Prepare minimal 0109 test baseline (no legacy data)
         run: |
-          # Scope is 0110-0123 ONLY: the legacy cold-start path currently
+          # Scope is 0110-0124 ONLY: the legacy cold-start path currently
           # fails at 0011 before course_progress exists. Do not mask that
           # unrelated issue or claim fresh-db full-history migration coverage.
           python - <<'PY'
@@ -199,7 +199,7 @@ jobs:
           asyncio.run(main())
           PY
           python -m alembic stamp 0109_public_site_traffic_daily
-      - name: Upgrade only the Admin PWA migrations 0110-0123
+      - name: Upgrade only the Admin PWA migrations 0110-0124
         run: |
           python -m alembic upgrade head
           python -m alembic current
@@ -211,13 +211,14 @@ jobs:
           from app.db.models.admin_pwa_payment_review import AdminPwaPaymentReview, AdminPwaPaymentOutbox
           from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
           from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
+          from app.db.models.admin_pwa_push import AdminPwaPushSubscription
           from sqlalchemy.ext.asyncio import create_async_engine
           import os
           async def main():
               engine = create_async_engine(os.environ["DATABASE_URL"])
               async with engine.connect() as conn:
                   names = await conn.run_sync(lambda c: set(inspect(c).get_table_names()))
-                  for model in (AdminPwaPaymentReview, AdminPwaPaymentOutbox, AdminPwaNativeReport, AdminPwaInboxTriage, AdminPwaInboxTriageAudit):
+                  for model in (AdminPwaPaymentReview, AdminPwaPaymentOutbox, AdminPwaNativeReport, AdminPwaInboxTriage, AdminPwaInboxTriageAudit, AdminPwaPushSubscription):
                       columns = await conn.run_sync(lambda c: {v["name"] for v in inspect(c).get_columns(model.__tablename__)})
                       assert columns == set(model.__table__.columns.keys())
               await engine.dispose()
@@ -230,6 +231,7 @@ jobs:
                   "admin_pwa_mcp_access_grants", "admin_pwa_mcp_authorizations",
                   "admin_pwa_mcp_audit", "admin_pwa_mcp_quotas",
                   "admin_pwa_native_reports", "admin_pwa_inbox_triage", "admin_pwa_inbox_triage_audit",
+                  "admin_pwa_push_subscriptions",
               ):
                   assert name in names, f"Missing migrated table: {name}"
               print("Admin PWA schema exists on disposable PostgreSQL")
