@@ -65,6 +65,17 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         # The actual Web Push provider and physical Apple delivery are not
         # exercised by this public-shell regression.
 
+    async def test_inbox_search_form_is_private_and_bounded(self):
+        script=(await self.get('/admin/assets/app.js')).text
+        self.assertIn("id=\\"inboxSearchForm\\"", script)
+        self.assertIn("id=\\"inboxSearchQuery\\"", script)
+        self.assertIn('minlength=\\"3\\" maxlength=\\"80\\"', script)
+        self.assertIn("search:state.inboxSearch||null", script)
+        self.assertIn("state.inboxSearch='';state.actor=null", script)
+        self.assertIn("state.inboxSearch=value", script)
+        self.assertIn("t('monthly')", script)
+        self.assertNotIn("localStorage.setItem('hsk-admin-inbox-search'", script)
+
     async def test_worker_scope_version_and_public_cache_allowlist(self):
         manifest=(await self.get('/admin/manifest.webmanifest')).json()
         self.assertEqual(manifest['scope'],'/admin/')

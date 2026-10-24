@@ -207,6 +207,17 @@ async def browser_checks(output):
         await page.locator('[data-user-feedback]').click()
         await expect(page.locator('#drawerContent')).to_contain_text('<script>private QA feedback</script>')
         await expect(page.locator('#drawerContent')).not_to_contain_text('other account QA feedback')
+        await page.locator('#inboxSearchQuery').fill('private')
+        await page.locator('#inboxSearchForm button').click()
+        await expect(page.locator('.inbox-feedback-item')).to_have_count(1)
+        assert any(path.endswith('/inbox/list') and body.get('search')=='private'
+                   and body.get('user_id')==1 for path,_,body in calls if isinstance(body,dict))
+        await page.locator('#inboxSearchQuery').fill('doesnotexist')
+        await page.locator('#inboxSearchForm button').click()
+        await expect(page.locator('.inbox-feedback-item')).to_have_count(0)
+        await page.locator('#inboxSearchQuery').fill('')
+        await page.locator('#inboxSearchForm button').click()
+        await expect(page.locator('.inbox-feedback-item')).to_have_count(1)
         await page.locator('[data-source=release]').click()
         assert calls[-1][2]['user_id']==1
         await page.locator('.drawer-close').click()

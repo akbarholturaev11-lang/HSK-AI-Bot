@@ -378,3 +378,9 @@
 .push-settings .feedback-item{margin:0;display:grid;gap:8px}
 .push-settings .feedback-item .btn{min-height:44px;white-space:normal}
 @media(max-width:760px){.push-settings .feedback-item .inbox-entry-actions .btn{width:100%}}
+
+/* Admin PWA Inbox: compact server-side search, scoped to 30 days for text. */
+.inbox-search-form{display:flex;align-items:center;gap:8px;margin:0 0 12px;min-width:0}
+.inbox-search-form .input{min-width:0;flex:1 1 auto;max-width:100%;height:42px}
+.inbox-search-form .btn{flex:0 0 auto;min-height:42px}
+@media(max-width:390px){.inbox-search-form{gap:6px}.inbox-search-form .btn{padding-inline:10px}}

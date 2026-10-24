@@ -37,12 +37,12 @@ try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj
 const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? '—';
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
 const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
-  query:'', status:'pending', source:'all', inboxPriority:'all', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
+  query:'', status:'pending', source:'all', inboxPriority:'all', inboxSearch:'', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
-  epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
+  epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.inboxSearch='';state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   state.phase=phase;state.error=null;render();
 }
 async function api(path, body, {publicAuth=false, method='POST'}={}) {
@@ -325,11 +325,12 @@ async function inbox(before=null,userId=null) {
   closeDrawer();feedbackUserId=userId;inboxNextCursor=null;const current=drawerId;
   drawer('feedback',statePanel('loading'),'','inbox-drawer');
   try {
-    const data=await api('inbox/list',{source:state.source,priority:state.inboxPriority,user_id:userId,before,limit:30});
+    const data=await api('inbox/list',{source:state.source,priority:state.inboxPriority,search:state.inboxSearch||null,user_id:userId,before,limit:30});
     if(current!==drawerId||!state.actor)return;
     inboxNextCursor=data.next_before;
     const options=[['all','all'],['payment','inboxPaymentReceipt'],['android','inboxAndroid'],['bot','botFeedback'],['release','releaseFeedback']];
-    const body=`<div class="inbox-shell">${userId?`<p class="source-note">${esc(t('account'))}: #${esc(userId)}</p>`:''}<div class="data-toolbar">${options.map(([source,key])=>`<button class="btn ${state.source===source?'primary':''}" data-source="${source}" aria-pressed="${state.source===source}">${esc(t(key))}</button>`).join('')}</div><div class="inbox-priority-filter"><button class="btn small ${state.inboxPriority==='all'?'primary':''}" data-inbox-priority="all" aria-pressed="${state.inboxPriority==='all'}">${esc(t('all'))}</button><button class="btn small ${state.inboxPriority==='important'?'primary':''}" data-inbox-priority="important" aria-pressed="${state.inboxPriority==='important'}">${esc(t('inboxImportant'))}</button></div><p class="source-note">${esc(t('inboxHistoryNote'))}</p>${data.items.map(inboxEntry).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`;
+    const searchUI=`<form id="inboxSearchForm" class="inbox-search-form" role="search"><input class="input" id="inboxSearchQuery" type="search" value="${esc(state.inboxSearch)}" minlength="3" maxlength="80" autocomplete="off" spellcheck="false" aria-label="${esc(t('find'))}" placeholder="${esc(t('find'))}"><button type="submit" class="btn primary">${esc(t('find'))}</button></form>${state.inboxSearch?`<p class="source-note">${esc(t('monthly'))}</p>`:''}`;
+    const body=`<div class="inbox-shell">${searchUI}${userId?`<p class="source-note">${esc(t('account'))}: #${esc(userId)}</p>`:''}<div class="data-toolbar">${options.map(([source,key])=>`<button class="btn ${state.source===source?'primary':''}" data-source="${source}" aria-pressed="${state.source===source}">${esc(t(key))}</button>`).join('')}</div><div class="inbox-priority-filter"><button class="btn small ${state.inboxPriority==='all'?'primary':''}" data-inbox-priority="all" aria-pressed="${state.inboxPriority==='all'}">${esc(t('all'))}</button><button class="btn small ${state.inboxPriority==='important'?'primary':''}" data-inbox-priority="important" aria-pressed="${state.inboxPriority==='important'}">${esc(t('inboxImportant'))}</button></div><p class="source-note">${esc(t('inboxHistoryNote'))}</p>${data.items.map(inboxEntry).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`;
     drawer('feedback',body,'','inbox-drawer');
   }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'));}
 }
@@ -515,7 +516,7 @@ async function action(name) {
   if(name==='pushSettings'){await pushSettings();return;}
   if(name==='pushEnable'){await enablePush();return;}
   if(name==='mcpRevokeConfirm'){await revokeMcp();return;}
-  if(name==='feedback'){await inbox();return;}
+  if(name==='feedback'){state.inboxSearch='';await inbox();return;}
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='execute'){if(!signing)await execute();return;}
   if(name==='more'){drawer('more',languageSelect('drawerLocale')+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):''),btn('install','install')+btn('logout','logout'));return;}
@@ -535,7 +536,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.review){await review(Number(button.dataset.review));}
     else if(button.dataset.userDetail){await userProfile(Number(button.dataset.userDetail));}
     else if(button.dataset.profilePayments){await moreUserPayments(Number(button.dataset.profilePayments),Number(button.dataset.before),button);}
-    else if(button.dataset.userFeedback){await inbox(null,Number(button.dataset.userFeedback));}
+    else if(button.dataset.userFeedback){state.inboxSearch='';await inbox(null,Number(button.dataset.userFeedback));}
     else if(button.dataset.source){state.source=button.dataset.source;await inbox(null,feedbackUserId);}
     else if(button.dataset.inboxPriority){state.inboxPriority=button.dataset.inboxPriority;await inbox(null,feedbackUserId);}
     else if(button.dataset.inboxOp){await mutateInbox(button);}
@@ -551,7 +552,16 @@ document.addEventListener('change',event=>{
     closeDrawer();render();
   }
 });
-document.addEventListener('submit',event=>{if(event.target.id==='searchForm'){event.preventDefault();state.query=$('userQuery').value;state.cursor=null;state.previous=[];load();}});
+document.addEventListener('submit',event=>{
+  if(event.target.id==='searchForm'){event.preventDefault();state.query=$('userQuery').value;state.cursor=null;state.previous=[];load();}
+  else if(event.target.id==='inboxSearchForm'){
+    event.preventDefault();
+    const value=$('inboxSearchQuery').value.trim();
+    if(value&&(value.length<3||value.length>80))return;
+    state.inboxSearch=value;
+    inbox(null,feedbackUserId).catch(()=>showNotice('error'));
+  }
+});
 document.addEventListener('keydown',event=>{
   if(event.key==='Escape'){closeDrawer();for(const id of ['periodMenu','platformMenu'])if($(id))$(id).hidden=true;}
   if(event.key==='Tab'&&$('overlay')){
