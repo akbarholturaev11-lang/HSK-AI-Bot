@@ -205,3 +205,17 @@ refuses nonempty audit/state. Disposable PostgreSQL + browser/test CI green at
 `838026d9`; no live migration/flag toggles/deployment. Before release, design
 bounded orphan/retention cleanup for expired or erased original source records,
 and audit access monitoring without silently deleting audit evidence.
+
+## Android-only attachment proxy — 2026-10-24
+
+A separate GET `/api/admin/v1/inbox/android/{report_id}/attachment` now serves
+only still-retained, structurally verified JPEG bytes from the durable Android
+private report table to a **current WebAuthn-authenticated allowlisted** Admin
+PWA browser session. It checks canonical same-origin Fetch Metadata and denies
+cross-site requests, rejects missing/expired/malformed records, caps original
+bytes at 550 KiB, and returns no-store/nosniff. Its path is not an Inbox list
+field and never appears in external MCP. The existing `attachment_access:
+not_exposed` on read-list projections remains accurate: no bytes, Telegram
+references or download URLs are returned by the lists. Frontend rendering and
+Bot/Release Telegram-media routes remain outstanding. CI verified this private
+route and flag-OFF 404 behavior at `d93b75fe` (run 40101181445).
