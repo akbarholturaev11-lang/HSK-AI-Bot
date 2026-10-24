@@ -3,7 +3,7 @@
 NEVER run this against production or the old staging project. This does not
 import, clone, read or copy any learner data from anywhere. It first creates
 an empty schema from the current ORM models, stamps the historical baseline
-only on the NEW empty QA DB, then executes 0103..0126 and checks the head.
+only on the NEW empty QA DB, then executes 0103..0127 and checks the head.
 
 The historical Alembic base cannot create all course tables from scratch.
 This explicitly isolated QA path is not a replacement for a production
@@ -22,7 +22,7 @@ QA_ENVIRONMENT = "qa"
 QA_HOST = "postgres.railway.internal"
 QA_DATABASE = "railway"
 EXPECTED_BASELINE = "0102_payment_review_preview"
-EXPECTED_HEAD = "0126_admin_pwa_command_audit"
+EXPECTED_HEAD = "0127_admin_pwa_technical_push"
 # These reviewed migrations create tables unconditionally. Defer their DDL
 # until after the empty ORM baseline is stamped; never precreate and then skip
 # their migrations. This list is reviewed alongside EXPECTED_HEAD.

@@ -22,6 +22,7 @@ from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.db.models.admin_pwa_push import AdminPwaPushSubscription
 from app.db.models.admin_pwa_push_outbox import AdminPwaPushOutbox
 from app.db.models.payment import Payment
+from app.db.models.message import Message
 from app.db.models.user import User
 
 logger = logging.getLogger(__name__)
@@ -103,6 +104,11 @@ async def _relevant(db, row, now):
     if row.source == "android":
         record = await db.get(AdminPwaNativeReport, row.source_id)
         return record is not None and _utc(record.expires_at) > now
+    if row.source == "technical":
+        record = await db.get(Message, row.source_id)
+        return (record is not None and record.role == "assistant"
+                and record.content_type == "app_error_context"
+                and _utc(record.created_at) >= now - timedelta(days=30))
     triage = await db.get(AdminPwaInboxTriage, (row.source, row.source_id))
     return triage is not None and triage.priority == "important" and triage.status != "resolved"
 

@@ -60,7 +60,7 @@ async def enqueue_automatic_alert(db, *, settings_obj, source: str, source_id: i
     if (not getattr(settings_obj, "ADMIN_PWA_ENABLED", False)
             or not getattr(settings_obj, "ADMIN_PWA_PUSH_ENABLED", False)):
         return 0
-    if source not in ("payment", "android") or source_id < 1:
+    if source not in ("payment", "android", "technical") or source_id < 1:
         raise ValueError("invalid_automatic_alert")
     admins = getattr(settings_obj, "admin_id_list", [])
     if not admins:

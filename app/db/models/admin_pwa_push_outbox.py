@@ -15,7 +15,7 @@ class AdminPwaPushOutbox(Base):
     __tablename__ = "admin_pwa_push_outbox"
     __table_args__ = (
         UniqueConstraint("subscription_id", "event_key", name="uq_admin_pwa_push_outbox_event_device"),
-        CheckConstraint("source IN ('bot', 'release', 'android', 'payment')",
+        CheckConstraint("source IN ('bot', 'release', 'android', 'payment', 'technical')",
                         name="ck_admin_pwa_push_outbox_source"),
         CheckConstraint("state IN ('pending', 'leased', 'retry', 'accepted', 'dead', 'cancelled')",
                         name="ck_admin_pwa_push_outbox_state"),

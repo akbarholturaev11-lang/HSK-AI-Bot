@@ -312,7 +312,7 @@ class AdminPwaPostgresConcurrencyTests(AccessGrantFixtures, PaymentFixtures, uni
             self.assertEqual((await db.get(Payment, self.payment_id)).payment_status, "pending")
             self.assertEqual((await db.get(AdminPwaStepUp, receipt)).status, "verified")
 
-    async def test_empty_qa_table_selection_runs_real_0103_through_0126_ddl(self):
+    async def test_empty_qa_table_selection_runs_real_0103_through_0127_ddl(self):
         # Rehearse only in this disposable UUID schema, not through the guarded
         # Railway CLI. The production allowlist/approval guards are untouched.
         import importlib.util
