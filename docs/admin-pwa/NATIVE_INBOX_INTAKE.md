@@ -1,8 +1,8 @@
 # Native inbox intake — branch-only foundation
 
 Enabled only with `ADMIN_PWA_ENABLED=true`; default remains false. No additional
-flag was added. External MCP still exposes statistics only. Migration head:
-`0122_admin_pwa_native_reports` (after 0121). No live migration/deploy performed.
+flag was added. External MCP still exposes statistics only. Current migration head:
+`0123_admin_pwa_inbox_triage` (after 0122 private native report intake). No live migration/deploy performed.
 
 ## Intake and legacy compatibility
 
@@ -57,8 +57,11 @@ safe rollback route.
 ## Remaining inbox work
 
 The newer unified bot/release/native read projection and V10 source tabs
-are present. Durable severity/read/assigned/resolved state and audit,
-advanced filters/search, decoded attachments and admin/system source inventory
+are present. Durable read/assigned/resolved triage and audit now exist **on the backend** in
+separate 0123 tables, but no V10 action buttons, unread counter, triage search,
+attachment proxy or admin/system alert inventory are implemented. Important/
+normal priority is an operator flag, NOT automated severity classification.
+Advanced filters/search, decoded attachments and admin/system notice integration
 remain future work. The existing feedback API deliberately still advertises its
 Android projection gap. Historical Telegram-only Android reports are not
 recoverable from this table. Do not claim a complete universal inbox.
