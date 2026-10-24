@@ -22,8 +22,5 @@
     try{localStorage.setItem('hsk-admin-locale',locale);}catch(_){}
     render();
   });
-  document.getElementById('mcp-consent-form')?.addEventListener('submit',()=>{
-    document.querySelectorAll('button[type=submit]').forEach(btn=>{btn.disabled=true;});
-  });
   render();
 })();
