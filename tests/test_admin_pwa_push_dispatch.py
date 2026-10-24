@@ -30,6 +30,46 @@ class AdminPwaAppleDeliveryTests(AdminPwaPushOutboxTests):
         self.settings.ADMIN_PWA_PUSH_VAPID_SUBJECT = "mailto:ops@example.com"
         self.settings.ADMIN_PWA_PUSH_SEND_ENABLED = True
 
+    async def test_real_pywebpush_encrypts_and_signs_without_network(self):
+        """Exercise the pinned encoder/VAPID integration, not just a fake sender."""
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        from app.services.admin_pwa_push_dispatch import _webpush
+
+        await self.enable_sender()
+        receiver = ec.generate_private_key(ec.SECP256R1())
+        subscription = {
+            "endpoint": "https://web.push.apple.com/isolated-no-network",
+            "keys": {
+                "p256dh": b64(receiver.public_key().public_bytes(
+                    Encoding.X962, PublicFormat.UncompressedPoint)),
+                "auth": b64(bytes(range(16))),
+            },
+        }
+        captured = []
+        def intercept_post(url, *args, **kwargs):
+            captured.append((url, kwargs))
+            return SimpleNamespace(status_code=201)
+
+        # pywebpush performs RFC 8291 encryption and VAPID signing, then
+        # reaches this intercepted HTTP boundary; no provider request occurs.
+        with patch("requests.post", side_effect=intercept_post):
+            code = await _webpush(
+                subscription,
+                self.settings.ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY,
+                self.settings.ADMIN_PWA_PUSH_VAPID_SUBJECT,
+            )
+        self.assertEqual(code, 201)
+        self.assertEqual(len(captured), 1)
+        self.assertEqual(captured[0][0], subscription["endpoint"])
+        opts = captured[0][1]
+        headers = {str(key).lower(): str(value) for key, value in opts["headers"].items()}
+        self.assertEqual(headers.get("content-encoding"), "aes128gcm")
+        self.assertEqual(headers.get("ttl"), "180")
+        self.assertTrue(headers.get("authorization", "").lower().startswith("vapid "))
+        self.assertIsInstance(opts["data"], bytes)
+        self.assertNotIn(b"important", opts["data"])
+
     async def test_disabled_or_wrong_key_never_claims_or_sends(self):
         await self.configure()
         device = await self.post("subscribe", self.subscription(count=1))
