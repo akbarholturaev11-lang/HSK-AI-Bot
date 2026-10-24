@@ -311,7 +311,7 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
             self.assertEqual((await db.get(Payment, self.payment_id)).payment_status, "pending")
             self.assertEqual((await db.get(AdminPwaStepUp, receipt)).status, "verified")
 
-    async def test_empty_qa_table_selection_runs_real_0103_through_0121_ddl(self):
+    async def test_empty_qa_table_selection_runs_real_0103_through_0122_ddl(self):
         # Rehearse only in this disposable UUID schema, not through the guarded
         # Railway CLI. The production allowlist/approval guards are untouched.
         import importlib.util
@@ -326,8 +326,8 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
         schema = self.schema + "_bootstrap"
         versions = Path(__file__).resolve().parents[1] / "alembic/versions"
         paths = sorted(path for path in versions.glob("*.py")
-                       if path.name[:4].isdigit() and 103 <= int(path.name[:4]) <= 121)
-        self.assertEqual(len(paths), 19)
+                       if path.name[:4].isdigit() and 103 <= int(path.name[:4]) <= 122)
+        self.assertEqual(len(paths), 20)
         async with self.engine.begin() as conn:
             await conn.execute(text(f"CREATE SCHEMA {schema}"))
             await conn.execute(text(f"SET LOCAL search_path TO {schema}"))
@@ -536,6 +536,36 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
         results = await asyncio.wait_for(asyncio.gather(*(attempt() for _ in range(8))), 30)
         self.assertEqual(sum(allowed for allowed, _, _ in results), 1)
         self.assertEqual(sum(first for _, first, _ in results), 1)
+
+    async def test_native_intake_lock_is_shared_and_rollback_cannot_erase_reports(self):
+        import importlib.util
+        from pathlib import Path
+        from alembic.migration import MigrationContext
+        from alembic.operations import Operations
+        from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
+        from app.services.admin_pwa_native_reports import NativeReportRateLimited, reserve_native_report
+        await self.seed_payment()
+        async def attempt():
+            try:
+                return await reserve_native_report(self.sessions, user_id=1, description="Concurrent native issue",
+                    app_version="qa", screen="course", screenshot=None)
+            except NativeReportRateLimited:
+                return "limited"
+        results = await asyncio.wait_for(asyncio.gather(*(attempt() for _ in range(4))), 30)
+        self.assertEqual(results.count("limited"), 3)
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaNativeReport)), 1)
+        path = Path(__file__).resolve().parents[1]/"alembic/versions/0122_admin_pwa_native_reports.py"
+        spec = importlib.util.spec_from_file_location("native_intake_migration", path)
+        migration = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(migration)
+        async with self.engine.begin() as conn:
+            def downgrade(sync):
+                with Operations.context(MigrationContext.configure(sync)):
+                    migration.downgrade()
+            with self.assertRaisesRegex(RuntimeError, "Archive private native reports"):
+                await conn.run_sync(downgrade)
+            self.assertEqual((await conn.execute(text("SELECT count(*) FROM admin_pwa_native_reports"))).scalar_one(), 1)
 
     async def test_mcp_authorization_code_redeems_once_under_pg_row_lock(self):
         """Two simultaneous PKCE exchanges must mint exactly ONE token."""

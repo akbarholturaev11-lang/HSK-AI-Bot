@@ -55,6 +55,34 @@ at desktop/mobile, screenshots `/tmp/hsk-metrics-browser-20261024`, desktop and
 mobile statistic screenshots visually inspected. These remain synthetic QA,
 not real ChatGPT or staging acceptance. Next work: universal durable inbox.
 
+## Durable native intake increment, 2026-10-24
+
+Statistics increment committed/pushed as `a7f0a5d13660c365ebd39dd108f715c644a39446`;
+[Admin PWA CI 40084708364](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40084708364)
+passed, as did Backend/Desktop/Localization/TTS for that head. Android was still
+running at the check; do not infer its outcome.
+
+`0122_admin_pwa_native_reports` adds private durable Android report intake,
+canonical ownership, DB-coordinated throttle/UTC-day deduplication, delivery
+state and bounded retention. The native API commits intake before Telegram only
+when the existing PWA flag is enabled; flag-off Telegram-only behavior and the
+existing success/503 contract remain. See `NATIVE_INBOX_INTAKE.md` for lifecycle,
+retention command and mandatory cleanup scheduling before activation. Reports
+and JPEG bytes are private; no inbox/attachment/MCP endpoint is added yet.
+Downgrade refuses nonempty report data. No live schema/flag/deploy change.
+
+Validation: combined Admin PWA/catalog/bootstrap + Android feature/report-flow +
+legacy financial/access/import suite: **443 passed, 17 PostgreSQL-only skipped**.
+Separate disposable PG15: **17 passed**, including concurrent intake, nonempty
+rollback refusal and actual 0103–0122 empty-QA migration DDL. Isolated Alembic
+0121→0122→0121→0122 succeeded. Retention CLI help/count-only exercised against
+that empty disposable DB, no rows removed. Full-history legacy cold start at
+0011 remains out of scope. No UI changes in this increment.
+
+Next: connect bot/release/native reports to the bounded inbox, then triage,
+secure attachments, admin/system sources, exports and remaining management and
+staging gates. Historical Android Telegram-only messages remain unrecoverable.
+
 ## Required reading
 
 Read root `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`; `HSK_AI_ADMIN_PWA_TEMP_RULES.md`, latest `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md`, `MCP_CONNECTION_CONTRACT.md`, `MCP_CHATGPT_COMPATIBILITY_AUDIT_20261024.md`, `BROWSER_UI_CONTRACT.md`, `ADMIN_PWA_V10_UI_REFERENCE.md`; then real source/tests. Historical `codex/admin-pwa` branch references are superseded by the user-selected feature branch above.

@@ -15,6 +15,9 @@ import time
 from html import escape
 from aiogram.types import BufferedInputFile
 from app.services.admin_notify_service import AdminNotifyService
+from app.services.admin_pwa_native_reports import (
+    NativeReportRateLimited, finish_native_report, reserve_native_report,
+)
 from typing import Annotated, Any, Callable, Literal, TypeVar
 
 from fastapi import APIRouter, Request
@@ -2160,6 +2163,7 @@ def create_android_features_router(
 
     @router.post("/api/v3/android/bug-report")
     async def android_bug_report(request: Request):
+        admission = None
         try:
             if request.query_params:
                 raise AndroidFeatureError("android_request_invalid", status_code=422)
@@ -2172,7 +2176,16 @@ def create_android_features_router(
                 )
             screenshot = _bug_report_image(report.screenshot_data_url)
             now = time.monotonic()
-            if now - bug_report_last_sent.get(user.id, -1e12) < 60:
+            if getattr(settings_obj, "ADMIN_PWA_ENABLED", False):
+                try:
+                    admission = await reserve_native_report(session_factory, user_id=user.id,
+                        description=report.description, app_version=report.app_version,
+                        screen=report.screen, screenshot=screenshot)
+                except NativeReportRateLimited:
+                    raise AndroidFeatureError("android_bug_report_rate_limited", status_code=429)
+                if admission.already_sent:
+                    return JSONResponse(content={"ok": True}, headers={"Cache-Control": "no-store"})
+            elif now - bug_report_last_sent.get(user.id, -1e12) < 60:
                 raise AndroidFeatureError("android_bug_report_rate_limited", status_code=429)
             if bot is None:
                 raise AndroidFeatureError("android_bug_report_unavailable", status_code=503)
@@ -2204,20 +2217,29 @@ def create_android_features_router(
                         )
                     await bot.send_message(chat_id=chat_id, text=message)
                     delivered += 1
-                except Exception:
-                    logger.exception("Android bug report delivery failed (chat_id=%s)", chat_id)
+                except Exception as exc:
+                    logger.error("Android bug report delivery failed (%s)", type(exc).__name__)
             if not delivered:
                 raise AndroidFeatureError("android_bug_report_unavailable", status_code=503)
-            bug_report_last_sent[user.id] = now
+            if admission is not None:
+                await finish_native_report(session_factory, admission.report_id, delivered=True)
+            else:
+                bug_report_last_sent[user.id] = now
             return JSONResponse(
                 content={"ok": True}, headers={"Cache-Control": "no-store"},
             )
         except (DesktopAuthError, AndroidFeatureError) as exc:
-            return _error_response(exc)
-        except Exception:
-            logger.exception("Android bug report failed")
-            return _error_response(
-                AndroidFeatureError("android_bug_report_unavailable", status_code=503)
-            )
+            failure = exc
+        except Exception as exc:
+            # SQL exceptions may contain description/image parameters. Never
+            # write request content or native bearer material into logs.
+            logger.error("Android bug report failed (%s)", type(exc).__name__)
+            failure = AndroidFeatureError("android_bug_report_unavailable", status_code=503)
+        if admission is not None:
+            try:
+                await finish_native_report(session_factory, admission.report_id, delivered=False)
+            except Exception as exc:
+                logger.error("Native report outcome unavailable (%s)", type(exc).__name__)
+        return _error_response(failure)
 
     return router

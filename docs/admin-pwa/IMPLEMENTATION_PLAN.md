@@ -27,6 +27,11 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
    actual ChatGPT E2E, then owner review. Needs real staging configuration and
    available hardware; never count synthetic tests as that evidence.
 
+Progress: user profile `996ea058` and defined activity/conversion statistics
+`a7f0a5d1` are pushed; both Admin PWA CI runs passed. Durable Android intake
+foundation (0122) is the next tested increment. Universal inbox UI/triage,
+remaining management, exports and real staging are still open.
+
 Each increment records its actual checks in the current handoff before commit.
 No release completion claim until the final acceptance contract is satisfied.
 

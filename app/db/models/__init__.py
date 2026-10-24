@@ -59,3 +59,4 @@ from .admin_pwa_mcp import AdminPwaMcpAccessGrant
 from .admin_pwa_mcp_authorization import AdminPwaMcpAuthorization
 
 from .admin_pwa_mcp_security import AdminPwaMcpAudit, AdminPwaMcpQuota
+from .admin_pwa_native_report import AdminPwaNativeReport
