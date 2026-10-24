@@ -7,17 +7,18 @@ from datetime import datetime, timezone
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import String, and_, func, or_, select
 
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage
 from app.db.models.bot_feedback import BotFeedback
+from app.db.models.payment import Payment
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 from app.db.models.user import User
 
-Source = Literal["bot", "release", "android"]
+Source = Literal["bot", "release", "android", "payment"]
 RowId = Annotated[int, Field(strict=True, ge=1, le=2_147_483_647)]
-_RANK = {"android": 1, "release": 2, "bot": 3}
+_RANK = {"payment": 4, "android": 3, "release": 2, "bot": 1}
 _MAX_MESSAGE = 2000
 
 
@@ -42,7 +43,7 @@ class InboxCursor(BaseModel):
 
 class InboxRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
-    source: Literal["all", "bot", "release", "android"] = "all"
+    source: Literal["all", "bot", "release", "android", "payment"] = "all"
     priority: Literal["all", "important"] = "all"
     user_id: RowId | None = None
     limit: Annotated[int, Field(strict=True, ge=1, le=50)] = 30
@@ -72,7 +73,7 @@ def _before(query, timestamp, row_id, source, cursor):
 def _triage(row):
     return {
         "triage_status": row.triage_status or "new",
-        "triage_priority": row.triage_priority or "normal",
+        "triage_priority": row.triage_priority or ("important" if row.source_type in ("payment", "android") else "normal"),
         "triage_assigned_to": row.triage_assignee,
         "triage_read_at": _utc(row.triage_read_at).isoformat() if row.triage_read_at else None,
         "triage_resolved_at": _utc(row.triage_resolved_at).isoformat() if row.triage_resolved_at else None,
@@ -96,6 +97,7 @@ async def unified_inbox(db, request: InboxRequest):
         stamp = func.coalesce(BotFeedback.completed_at, BotFeedback.created_at)
         query = select(
             BotFeedback.id.label("source_id"), stamp.label("created_at"),
+            func.cast("bot", String).label("source_type"),
             User.id.label("user_id"),
             func.substr(func.coalesce(BotFeedback.disliked_text, BotFeedback.liked_text,
                                       BotFeedback.disliked_code, BotFeedback.liked_code), 1,
@@ -130,6 +132,7 @@ async def unified_inbox(db, request: InboxRequest):
         stamp = ReleaseFeedbackResponse.completed_at
         query = select(
             ReleaseFeedbackResponse.id.label("source_id"), stamp.label("created_at"),
+            func.cast("release", String).label("source_type"),
             User.id.label("user_id"),
             func.substr(ReleaseFeedbackResponse.comment_text, 1, _MAX_MESSAGE).label("message"),
             ReleaseFeedbackResponse.attachment_file_id.is_not(None).label("has_attachment"),
@@ -164,6 +167,7 @@ async def unified_inbox(db, request: InboxRequest):
         stamp = AdminPwaNativeReport.created_at
         query = select(
             AdminPwaNativeReport.id.label("source_id"), stamp.label("created_at"),
+            func.cast("android", String).label("source_type"),
             AdminPwaNativeReport.user_id.label("user_id"),
             func.substr(AdminPwaNativeReport.description, 1, _MAX_MESSAGE).label("message"),
             AdminPwaNativeReport.attachment_bytes.is_not(None).label("has_attachment"),
@@ -180,7 +184,7 @@ async def unified_inbox(db, request: InboxRequest):
             AdminPwaInboxTriage.source == "android",
             AdminPwaInboxTriage.source_id == AdminPwaNativeReport.id)).where(AdminPwaNativeReport.expires_at > now)
         if request.priority == "important":
-            query = query.where(AdminPwaInboxTriage.priority == "important")
+            query = query.where(func.coalesce(AdminPwaInboxTriage.priority, "important") == "important")
         if request.user_id is not None:
             query = query.where(AdminPwaNativeReport.user_id == request.user_id)
         query = _before(query, stamp, AdminPwaNativeReport.id, "android", request.before)
@@ -193,6 +197,48 @@ async def unified_inbox(db, request: InboxRequest):
                 "feedback_status": None, "rating": None, "notification_delivery": row.notification_delivery,
                 **_triage(row),
                 "app_version": row.app_version, "screen": row.screen,
+            })
+
+
+    if "payment" in sources:
+        stamp = Payment.submitted_at
+        # Include only a RECEIVED pending receipt; drafts/no-upload never alert.
+        # Payment triage is a viewing state, never financial approval.
+        join_user = or_(
+            User.id == Payment.user_id,
+            and_(Payment.user_id.is_(None), Payment.user_telegram_id > 0,
+                 User.telegram_id == Payment.user_telegram_id),
+        )
+        query = select(
+            Payment.id.label("source_id"), stamp.label("created_at"),
+            func.cast("payment", String).label("source_type"),
+            User.id.label("user_id"),
+            AdminPwaInboxTriage.status.label("triage_status"),
+            AdminPwaInboxTriage.priority.label("triage_priority"),
+            AdminPwaInboxTriage.assigned_to_user_id.label("triage_assignee"),
+            AdminPwaInboxTriage.read_at.label("triage_read_at"),
+            AdminPwaInboxTriage.resolved_at.label("triage_resolved_at"),
+            AdminPwaInboxTriage.revision.label("triage_revision"),
+        ).outerjoin(AdminPwaInboxTriage, and_(
+            AdminPwaInboxTriage.source == "payment",
+            AdminPwaInboxTriage.source_id == Payment.id,
+        )).outerjoin(User, join_user).where(
+            Payment.payment_status == "pending",
+            Payment.screenshot_file_id.is_not(None),
+        )
+        if request.priority == "important":
+            query = query.where(func.coalesce(AdminPwaInboxTriage.priority, "important") == "important")
+        if request.user_id is not None:
+            query = query.where(User.id == request.user_id)
+        query = _before(query, stamp, Payment.id, "payment", request.before)
+        rows = (await db.execute(query.order_by(stamp.desc(), Payment.id.desc()).limit(take))).all()
+        for row in rows:
+            gathered.append({
+                "source": "payment", "source_id": row.source_id,
+                "created_at": _utc(row.created_at), "user_id": row.user_id,
+                "message": None, "has_attachment": True, "feedback_status": None,
+                "rating": None, "notification_delivery": None,
+                "app_version": None, "screen": None, **_triage(row),
             })
 
     gathered.sort(key=lambda r: (r["created_at"], _RANK[r["source"]], r["source_id"]), reverse=True)
@@ -230,7 +276,7 @@ async def unread_inbox(db, request: InboxUnreadRequest):
     maximum = 100
     found = 0
     for name, model in (("bot", BotFeedback), ("release", ReleaseFeedbackResponse),
-                        ("android", AdminPwaNativeReport)):
+                        ("android", AdminPwaNativeReport), ("payment", Payment)):
         remaining = maximum - found
         if remaining <= 0:
             break
@@ -241,6 +287,9 @@ async def unread_inbox(db, request: InboxUnreadRequest):
                     AdminPwaInboxTriage.status == "new"))
         if name == "android":
             query = query.where(AdminPwaNativeReport.expires_at > now)
+        if name == "payment":
+            query = query.where(Payment.payment_status == "pending",
+                                Payment.screenshot_file_id.is_not(None))
         ids = (await db.execute(query.order_by(model.id.desc()).limit(remaining))).all()
         found += len(ids)
     return {"unread_count": min(found, 99), "capped": found >= maximum,
