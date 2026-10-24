@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import func, select, update
+from sqlalchemy import event, func, select, update
 
 from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
 from app.admin_api.pwa_read import create_admin_pwa_read_router
@@ -13,6 +13,7 @@ from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.db.models.bot_feedback import BotFeedback
+from app.db.models.message import Message
 from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackResponse
 from tests import test_admin_pwa_payment_review as fixtures
 
@@ -203,3 +204,37 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
             "expected_revision": 0})).status_code, 403)
         async with self.sessions() as db:
             self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit)), 0)
+
+    async def test_technical_triage_never_selects_private_message_content(self):
+        now = datetime.now(timezone.utc).replace(microsecond=0)
+        async with self.sessions() as db:
+            marker = Message(user_id=1, role="assistant", content_type="app_error_context",
+                             content="PRIVATE STACK and URL token", created_at=now)
+            bad = Message(user_id=1, role="user", content_type="app_error_context",
+                          content="not eligible", created_at=now)
+            db.add_all([marker, bad])
+            await db.flush()
+            safe_id, bad_id = marker.id, bad.id
+            await db.commit()
+        statements = []
+        def collect(conn, cursor, statement, parameters, context, executemany):
+            if "from messages" in statement.lower():
+                statements.append(statement.lower())
+        event.listen(self.engine.sync_engine, "before_cursor_execute", collect)
+        try:
+            response = await self.post("inbox/triage", {
+                "source": "technical", "source_id": safe_id,
+                "operation": "mark_read", "expected_revision": 0})
+        finally:
+            event.remove(self.engine.sync_engine, "before_cursor_execute", collect)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["status"], "read")
+        self.assertNotIn("PRIVATE", response.text)
+        self.assertTrue(statements)
+        self.assertFalse(any("messages.content" in statement for statement in statements), statements)
+        listed = (await self.post("inbox/list", {"source": "technical"})).json()
+        self.assertEqual(listed["items"][0]["triage_status"], "read")
+        self.assertNotIn("PRIVATE", str(listed))
+        self.assertEqual((await self.post("inbox/triage", {
+            "source": "technical", "source_id": bad_id,
+            "operation": "mark_read", "expected_revision": 0})).status_code, 403)

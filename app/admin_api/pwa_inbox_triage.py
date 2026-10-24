@@ -54,15 +54,26 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
         if pair is None:
             return None
         _, actor = pair
-        source_row = await db.get(_SOURCES[command.source], command.source_id, with_for_update=True)
-        if source_row is None or (command.source == "android" and
-                                  _utc(source_row.expires_at) <= stamp):
-            # Do not disclose whether an unseen source ID exists.
-            return None
-        if command.source == "technical" and (
-                source_row.role != "assistant" or source_row.content_type != "app_error_context"
-                or _utc(source_row.created_at) < stamp - timedelta(days=30)):
-            return None
+        if command.source == "technical":
+            # Message.content holds raw stack, URL and user input. Restrict
+            # the locked projection to the ID of an eligible recent marker.
+            # Never hydrate the raw Message ORM row during Inbox triage.
+            eligible_id = await db.scalar(select(Message.id).where(
+                Message.id == command.source_id,
+                Message.role == "assistant",
+                Message.content_type == "app_error_context",
+                Message.created_at >= stamp - timedelta(days=30),
+                Message.created_at <= stamp,
+            ).with_for_update())
+            if eligible_id is None:
+                return None
+            source_row = None
+        else:
+            source_row = await db.get(_SOURCES[command.source], command.source_id, with_for_update=True)
+            if source_row is None or (command.source == "android" and
+                                      _utc(source_row.expires_at) <= stamp):
+                # Do not disclose whether an unseen source ID exists.
+                return None
         if command.source == "payment":
             # Inbox read-state cannot approve/reject a receipt; financial
             # decisions stay in the separately signed payment review flow.
