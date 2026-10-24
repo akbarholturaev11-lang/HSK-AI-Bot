@@ -29,9 +29,9 @@ class PaymentService:
         from app.config import settings
         if not (settings.ADMIN_PWA_ENABLED and settings.ADMIN_PWA_PUSH_ENABLED):
             return
-        from app.admin_api.pwa_push_outbox import enqueue_automatic_alert
         import logging
         try:
+            from app.admin_api.pwa_push_outbox import enqueue_automatic_alert
             # Savepoints isolate optional push infra failures from a real
             # payment receipt update/commit. No payload or amount is queued.
             async with self.session.begin_nested():
