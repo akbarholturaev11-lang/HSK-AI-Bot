@@ -14,6 +14,10 @@ from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaIn
 from app.db.models.admin_pwa_push_outbox import AdminPwaPushOutbox
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.payment import Payment
+from app.db.models.message import Message
+from app.db.models.user import User
+from app.services.app_error_context_service import AppErrorContextService
+from app.services.admin_pwa_push_dispatch import _relevant
 from app.services.payment_service import PaymentService
 from app.services.admin_pwa_native_reports import reserve_native_report
 from app.admin_api.pwa_push_outbox import enqueue_automatic_alert
@@ -104,6 +108,36 @@ class AdminPwaPushOutboxTests(fixtures.AdminPwaApplePushTests):
         async with self.sessions() as db:
             pending = (await db.scalars(select(AdminPwaPushOutbox))).all()
             self.assertEqual([item.subscription_id for item in pending],[mac["subscription_id"]])
+
+    async def test_every_persisted_miniapp_error_queues_opaque_per_device_event(self):
+        await self.configure()
+        i=await self.post("subscribe",self.subscription(count=1,platform="iphone"))
+        m=await self.post("subscribe",self.subscription(count=2,platform="mac"))
+        self.assertEqual(i.status_code,200,i.text)
+        self.assertEqual(m.status_code,200,m.text)
+        secret="https://private.example.invalid?token=DO_NOT_EXPOSE"
+        for attempt in (1,2):
+            async with self.sessions() as db:
+                owner=await db.get(User,2)
+                self.assertEqual(owner.telegram_id,2002)
+                with patch("app.config.settings",self.settings):
+                    saved=await AppErrorContextService(db).record_miniapp_error(
+                        2002, {"source":"miniapp","message":secret,"stack":"private stack",
+                               "error_name":"NetworkError","attempt":attempt})
+                self.assertTrue(saved)
+        async with self.sessions() as db:
+            events=(await db.scalars(select(AdminPwaPushOutbox)
+                .where(AdminPwaPushOutbox.source=="technical"))).all()
+            self.assertEqual(len(events),4)
+            self.assertEqual(len({e.event_key for e in events}),2)
+            for row in events:
+                self.assertTrue(await _relevant(db,row,datetime.now(timezone.utc)))
+                self.assertNotIn("DO_NOT_EXPOSE",repr(vars(row)))
+                self.assertNotIn("private stack",repr(vars(row)))
+            messages=(await db.scalars(select(Message).where(
+                Message.content_type=="app_error_context"))).all()
+            self.assertEqual(len(messages),2)
+            self.assertTrue(all(secret in msg.content for msg in messages))
 
     async def test_auto_receipt_and_error_only_one_event_per_apple_install(self):
         await self.configure()
