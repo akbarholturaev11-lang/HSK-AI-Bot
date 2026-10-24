@@ -28,3 +28,19 @@ independently reviewed Telegram-media access with ownership/source revalidation.
 2. Define a separate privacy-minimized, source-validated, explicitly allowlisted `system`/technical event schema, bounded retention and per-source deduplication/rate-limits. No raw stack, URL query string, exception body, cookies, token or student text.
 3. Add atomic intake and independently tested migration, then source/rank/triage/unread/outbox inclusion with strict platform/actor guards; update UZ/RU/TJ canonical UI and real iPhone/Mac notification QA.
 4. Perform separate security and device staging acceptance before activating any push or technical alert ingestion.
+
+## Owner-requested technical Inbox display — 2026-10-25
+
+The first-party Inbox now reads bounded, last-30-day Mini App technical event
+markers from existing stored `messages`, and the unread bell counts them.
+Only canonical user ID, time, and a **fixed** label are displayed. The original
+AI diagnostic text/stack/URL never leaves the source table or enters the
+response. These diagnostic rows are currently **read-only** within Admin PWA;
+no new triage mutation, provider push or arbitrary server exception collection
+is implied. UZ/RU/TJ Inbox filter and label are canonical/generated.
+
+To satisfy the owner's request for notifications for **each** error on an
+opted-in Apple device, a separately audited default-OFF durable push producer
+still needs source-specific event/triage schema and sender checks. Existing
+Android error notifications remain independent. Avoid sending raw diagnostics
+or misleadingly claiming that every server exception is captured.

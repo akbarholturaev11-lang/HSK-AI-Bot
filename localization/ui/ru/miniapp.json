@@ -609,6 +609,7 @@
     "ui.admin_pwa.pushAppleOnly": "Пока доступно только для iPhone и Mac.",
     "ui.admin_pwa.pushNotSending": "Регистрация подписки готова. Отправка уведомлений ещё не включена.",
     "ui.admin_pwa.inboxPaymentReceipt": "Чеки об оплате",
+    "ui.admin_pwa.inboxTechnical": "Технические ошибки Mini App",
     "ui.admin_pwa.feedbackAnalysis": "Анализ обращений",
     "ui.admin_pwa.feedbackSampled": "Выборка последних сохранённых обращений, не общее количество.",
     "ui.admin_pwa.feedbackTruncated": "Лимит 500 записей: результат неполный.",

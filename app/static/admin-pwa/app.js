@@ -483,7 +483,7 @@ function inboxControl(row,operation,key){
 }
 function inboxEntry(row){
   const status=inboxStatusLabels[row.triage_status]||'inboxStatusNew';
-  const origin=row.source==='bot'?'botFeedback':row.source==='release'?'releaseFeedback':row.source==='payment'?'inboxPaymentReceipt':'inboxAndroid';
+  const origin=row.source==='bot'?'botFeedback':row.source==='release'?'releaseFeedback':row.source==='payment'?'inboxPaymentReceipt':row.source==='technical'?'inboxTechnical':'inboxAndroid';
   const flags=`<span class="inbox-state">${esc(t(status))}</span>${row.triage_priority==='important'?`<span class="inbox-state inbox-state-important">${esc(t('inboxImportant'))}</span>`:''}${row.triage_assigned_to===state.actor?.user_id?`<span class="inbox-state">${esc(t('inboxMine'))}</span>`:''}`;
   const actions=[];
   const canView=(row.source==='android'?row.has_attachment:['bot','release'].includes(row.source)&&row.image_preview_available===true)&&Number.isSafeInteger(row.source_id)&&row.source_id>0&&row.source_id<=2147483647;
@@ -534,7 +534,7 @@ async function inbox(before=null,userId=null) {
     const data=await api('inbox/list',{source:state.source,priority:state.inboxPriority,search:state.inboxSearch||null,user_id:userId,before,limit:30});
     if(current!==drawerId||!state.actor)return;
     inboxNextCursor=data.next_before;
-    const options=[['all','all'],['payment','inboxPaymentReceipt'],['android','inboxAndroid'],['bot','botFeedback'],['release','releaseFeedback']];
+    const options=[['all','all'],['payment','inboxPaymentReceipt'],['android','inboxAndroid'],['technical','inboxTechnical'],['bot','botFeedback'],['release','releaseFeedback']];
     const searchUI=`<form id="inboxSearchForm" class="inbox-search-form" role="search"><input class="input" id="inboxSearchQuery" type="search" value="${esc(state.inboxSearch)}" minlength="3" maxlength="80" autocomplete="off" spellcheck="false" aria-label="${esc(t('find'))}" placeholder="${esc(t('find'))}"><button type="submit" class="btn primary">${esc(t('find'))}</button></form>${state.inboxSearch?`<p class="source-note">${esc(t('monthly'))}</p>`:''}`;
     const body=`<div class="inbox-shell">${searchUI}${userId?`<p class="source-note">${esc(t('account'))}: #${esc(userId)}</p>`:''}<div class="data-toolbar">${options.map(([source,key])=>`<button class="btn ${state.source===source?'primary':''}" data-source="${source}" aria-pressed="${state.source===source}">${esc(t(key))}</button>`).join('')}</div><div class="inbox-priority-filter"><button class="btn small ${state.inboxPriority==='all'?'primary':''}" data-inbox-priority="all" aria-pressed="${state.inboxPriority==='all'}">${esc(t('all'))}</button><button class="btn small ${state.inboxPriority==='important'?'primary':''}" data-inbox-priority="important" aria-pressed="${state.inboxPriority==='important'}">${esc(t('inboxImportant'))}</button></div><p class="source-note">${esc(t('inboxHistoryNote'))}</p>${data.items.map(inboxEntry).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`;
     drawer('feedback',body,'','inbox-drawer');
