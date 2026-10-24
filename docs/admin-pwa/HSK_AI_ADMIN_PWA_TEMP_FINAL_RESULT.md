@@ -64,6 +64,9 @@ browser/SW no-store and real-data/metric-definition requirements. Details:
 ### F. Cloud/ChatGPT/Local analytics without exposing admin credentials
 - [ ] Publish authorized **read-only** metrics dictionary and scoped statistics/feedback query with server-side filtering, pagination and PII-minimization.
 - [ ] JSON/CSV export with bounded ranges and source lineage. Useable by local tools or as ChatGPT-uploaded sanitized file.
+  Statistics export code/browser QA now exists: see [file contract](READ_PROJECTIONS.md#bounded-first-party-statistics-files-2026-10-24).
+  Broader sanitized feedback exports and real-device/staging acceptance remain open;
+  this is not a full-product completion mark.
 - [ ] Revocable, audited, scoped MCP uses **only** the approved statistics tool; actual ChatGPT/OAuth/protocol/reconnect acceptance is evidenced. User profiles, raw feedback, payment lists and mutation tools remain excluded from external MCP. Broader sanitized feedback exports are a separate first-party requirement, not permission to expand MCP.
 - [ ] An AI agent can explain a platform conversion change and top complaint categories citing datasets/metric definitions, but cannot approve payments, delete accounts, broadcast or execute arbitrary SQL.
 

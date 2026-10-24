@@ -8,6 +8,8 @@ import argparse
 import asyncio
 import base64
 import io
+import csv
+import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import socket
@@ -759,12 +761,124 @@ async def attachment_browser_checks(output):
         await fixture.engine.dispose()
 
 
+async def export_browser_checks(output):
+    """Actual aggregate file downloads, bounded errors and stale-response cleanup."""
+    fixture=Fixture()
+    fixture.engine=create_async_engine('sqlite+aiosqlite:///:memory:',poolclass=StaticPool)
+    async with fixture.engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    fixture.sessions=async_sessionmaker(fixture.engine,expire_on_commit=False)
+    await fixture.seed_payment()
+    async with fixture.sessions() as db:
+        (await db.get(User,1)).full_name='private-export-canary@example.invalid'
+        await db.commit()
+    app=FastAPI()
+    common={'settings_obj':fixture.settings,'session_factory':fixture.sessions}
+    for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router):
+        app.include_router(factory(**common))
+    mode='normal';calls=[];downloads=[]
+    started,release,finished=asyncio.Event(),asyncio.Event(),asyncio.Event()
+    async def serve(route):
+        request=route.request;path=request.url.removeprefix(ORIGIN)
+        if path=='/admin/sw.js':await route.abort();return
+        is_export=path=='/api/admin/v1/statistics/export'
+        if is_export:
+            calls.append((request.post_data_json,await request.all_headers()))
+            if mode=='failure':await route.fulfill(status=503,json={'ok':False});return
+            if mode=='wrong_type':await route.fulfill(status=200,content_type='text/html',body='invalid');return
+            if mode=='oversized':await route.fulfill(status=200,content_type='application/json',body='x'*(128*1024+1));return
+        async with AsyncClient(transport=ASGITransport(app=app),base_url=ORIGIN) as client:
+            response=await client.request(request.method,path,headers=await request.all_headers(),content=request.post_data_buffer)
+        delayed=is_export and mode=='delayed'
+        if delayed:started.set();await release.wait()
+        headers=dict(response.headers);headers.pop('content-length',None)
+        await route.fulfill(status=response.status_code,headers=headers,body=response.content)
+        if delayed:finished.set()
+    try:
+        async with async_playwright() as pw:
+            browser=await pw.chromium.launch()
+            context=await browser.new_context(viewport={'width':1440,'height':1000},service_workers='block')
+            await context.add_cookies([{'name':'__Host-hskai_admin','value':COOKIE,'url':ORIGIN,'secure':True,'httpOnly':True,'sameSite':'Strict'}])
+            await context.route('**/*',serve)
+            await context.add_init_script("""window.qaURLs=[];window.qaRevoked=[];
+                const create=URL.createObjectURL.bind(URL),revoke=URL.revokeObjectURL.bind(URL);
+                URL.createObjectURL=blob=>{const url=create(blob);qaURLs.push(url);return url;};
+                URL.revokeObjectURL=url=>{qaRevoked.push(url);return revoke(url);};""")
+            page=await context.new_page();errors=[]
+            page.on('pageerror',lambda error:errors.append(str(error)))
+            page.on('download',lambda download:downloads.append(download))
+            await page.goto(ORIGIN+'/admin/');await page.wait_for_load_state('networkidle')
+            await expect(page.locator('.metrics')).to_be_visible()
+            assert not calls,'Exports must only run after an explicit tap'
+            await page.locator('[data-route=stats]').first.click()
+            await expect(page.locator('[data-export-format]')).to_have_count(2)
+            original_time=None
+            for width in (1440,390):
+                await page.set_viewport_size({'width':width,'height':1000 if width==1440 else 844})
+                for language in ('uz','ru','tj'):
+                    if width==1440:await page.locator('#locale').select_option(language)
+                    else:
+                        await page.locator('[data-action=more]').click()
+                        await page.locator('#drawerLocale').select_option(language)
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                    assert await page.locator('[data-export-format=json]').evaluate('(el) => el.getBoundingClientRect().height>=44')
+                    await page.screenshot(path=str(output/f'statistics-export-{width}-{language}.png'),full_page=True)
+                    async with page.expect_download() as pending:
+                        await page.locator('[data-export-format=json]').click()
+                    download=await pending.value
+                    assert download.suggested_filename=='hskai-statistics-overall-weekly.json'
+                    text=Path(await download.path()).read_text()
+                    data=json.loads(text)
+                    assert 'private-export-canary' not in text and COOKIE not in text
+                    assert data['dataset']=='hskai_statistics' and data['metrics'][0]['value']==3
+                    original_time=original_time or data['generated_at']
+                    assert data['generated_at']==original_time
+                    await wait_js(page,'() => qaURLs.length===qaRevoked.length')
+            async with page.expect_download() as pending:
+                await page.locator('[data-export-format=csv]').click()
+            download=await pending.value
+            rows=list(csv.DictReader(io.StringIO(Path(await download.path()).read_text())))
+            assert rows and all(row['generated_at']==original_time for row in rows)
+            assert 'denominator' in next(row['definition'] for row in rows if row['metric']=='registration_conversion.percent')
+            await wait_js(page,'() => qaURLs.length===qaRevoked.length')
+            assert len(calls)==len(downloads)==7
+            assert all(headers['origin']==ORIGIN and headers['content-type']=='application/json' for _,headers in calls)
+            baseline=len(downloads)
+            for mode in ('failure','wrong_type','oversized'):
+                await page.locator('[data-export-format=json]').click()
+                await expect(page.locator('[data-export-format=json]')).to_be_enabled()
+                assert len(downloads)==baseline
+            await page.set_viewport_size({'width':1440,'height':1000})
+            for cancel in ('route','locale','offline','pagehide'):
+                mode='normal'
+                await page.reload();await page.wait_for_load_state('networkidle')
+                await page.locator('[data-route=stats]').first.click()
+                await expect(page.locator('[data-export-format=json]')).to_be_visible()
+                mode='delayed';started.clear();release.clear();finished.clear()
+                await page.locator('[data-export-format=json]').click()
+                await asyncio.wait_for(started.wait(),5)
+                await expect(page.locator('[data-export-format=json]')).to_be_disabled()
+                if cancel=='route':await page.locator('[data-route=users]').first.click()
+                elif cancel=='locale':await page.locator('#locale').select_option('uz' if await page.locator('#locale').input_value()!='uz' else 'ru')
+                else:await page.evaluate('(name) => window.dispatchEvent(new Event(name))',cancel)
+                release.set();await asyncio.wait_for(finished.wait(),5)
+                assert len(downloads)==baseline
+                assert await page.evaluate('qaURLs.length===qaRevoked.length')
+            assert not errors,errors
+            await browser.close()
+        print('Statistics JSON/CSV downloads: actual ASGI, UZ/RU/TJ 1440/390, daily timestamp, no PII, bounded errors and stale cancellation passed')
+    finally:
+        release.set()
+        await fixture.engine.dispose()
+
+
 async def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--output',default='/tmp/admin-pwa-browser')
     args=parser.parse_args();output=Path(args.output);output.mkdir(parents=True,exist_ok=True)
     with patch('app.services.ai_usage_budget_service.AIUsageBudgetService._live_or_manual_usd_rates',new=AsyncMock(return_value={'tjs':10,'cny':7})):
         await browser_checks(output)
+        await export_browser_checks(output)
         await attachment_browser_checks(output)
         await worker_checks(output)
 

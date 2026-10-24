@@ -453,6 +453,8 @@
     "ui.admin_pwa.approvedAmounts": "Подтверждённые суммы",
     "ui.admin_pwa.currencyNote": "Валюты учитываются отдельно.",
     "ui.admin_pwa.updated": "Обновлено",
+    "ui.admin_pwa.exportJson": "Скачать JSON",
+    "ui.admin_pwa.exportCsv": "Скачать CSV",
     "ui.admin_pwa.rolling30": "Показатели платформы — за последние 30 дней.",
     "ui.admin_pwa.overlap": "Один аккаунт может использовать несколько платформ.",
     "ui.admin_pwa.installedDevices": "Связанные устройства",

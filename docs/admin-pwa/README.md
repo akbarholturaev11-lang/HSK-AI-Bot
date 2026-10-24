@@ -32,6 +32,14 @@ remain uncached. This reduces aggregate SQL work, not all database traffic.
 Private browser/API responses remain no-store; the service worker caches only
 the public shell. R2 is not integrated or configured.
 
+The Statistics screen now offers explicit JSON/CSV downloads through cookie-only
+`POST /api/admin/v1/statistics/export`. Both use that same daily reader, retaining
+original timestamps, ranges, source/scope, metric definitions and separate
+currencies. Only allowlisted aggregate values leave the server (128 KiB maximum);
+no users, IDs, feedback text or payment records. No background job or forced SQL
+refresh is added. A cold/expired variant still follows the existing daily policy.
+Sanitized feedback exports remain a separate review; MCP permissions are unchanged.
+
 ## Contracts
 
 | Subject | Guide |
@@ -48,8 +56,7 @@ JPEG proxy and the Bot/Release JPEG/PNG/WebP proxies share the first-party
 V10 preview. Images load only on demand with metadata-only source queries,
 two active downloads and 30 attempts/minute per worker, without new quota DB
 writes. Unsupported formats and privacy-safe technical event intake remain open.
-Remaining
-management, exports and separately approved staging/real ChatGPT acceptance are
+Remaining management, sanitized feedback exports and separately approved staging/real ChatGPT acceptance are
 still open. Commit/push each completed, tested increment to the feature branch.
 Synthetic QA is not physical-device, staging or real ChatGPT evidence.
 

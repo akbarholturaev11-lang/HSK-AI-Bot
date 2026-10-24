@@ -453,6 +453,8 @@
     "ui.admin_pwa.approvedAmounts": "Маблағҳои тасдиқшуда",
     "ui.admin_pwa.currencyNote": "Асъорҳо алоҳида ҳисоб мешаванд.",
     "ui.admin_pwa.updated": "Навсозӣ",
+    "ui.admin_pwa.exportJson": "Боргирии JSON",
+    "ui.admin_pwa.exportCsv": "Боргирии CSV",
     "ui.admin_pwa.rolling30": "Нишондиҳандаҳои платформа барои 30 рӯзи охир мебошанд.",
     "ui.admin_pwa.overlap": "Як ҳисоб метавонад дар чанд платформа истифода шавад.",
     "ui.admin_pwa.installedDevices": "Дастгоҳҳои пайваст",

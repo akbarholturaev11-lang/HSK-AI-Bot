@@ -453,6 +453,8 @@
     "ui.admin_pwa.approvedAmounts": "Tasdiqlangan summalar",
     "ui.admin_pwa.currencyNote": "Valyutalar alohida hisoblanadi.",
     "ui.admin_pwa.updated": "Yangilangan vaqt",
+    "ui.admin_pwa.exportJson": "JSON yuklab olish",
+    "ui.admin_pwa.exportCsv": "CSV yuklab olish",
     "ui.admin_pwa.rolling30": "Platforma ko‘rsatkichlari oxirgi 30 kun uchun.",
     "ui.admin_pwa.overlap": "Bir hisob bir nechta platformada bo‘lishi mumkin.",
     "ui.admin_pwa.installedDevices": "Ulangan qurilmalar",

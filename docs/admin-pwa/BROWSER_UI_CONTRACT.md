@@ -173,3 +173,29 @@ late cancellation/reopen and URL cleanup. Intercepted requests omit Chromium's
 network-generated Fetch Metadata; API tests separately prove explicit cross-site
 rejection. This remains synthetic QA, not live Telegram/TLS/physical-device
 acceptance. Other image formats remain unavailable rather than guessed.
+
+## Explicit statistics file downloads (2026-10-24)
+
+The Statistics screen reuses a V10 toolbar row with two 44px actions, JSON and
+CSV, above the existing metrics. Repo hsk-ai-ui and webapp-testing skills were
+read/applied for this new interaction. Canonical UZ/RU/TJ owns the two labels;
+no learner UI resource or navigation redesign. Unavailable platforms can export
+their explicit missing-data reason, without invented zero metrics.
+
+Only a direct tap POSTs the selected platform/period/format to the fixed
+first-party export route. Same-origin cookies, no-store, redirect rejection,
+15-second abort and a streaming 128 KiB browser bound apply. Both controls stay
+disabled while the single download is pending. No preload/poll/retry, saved URL,
+private browser/SW cache or success claim for an unconfirmed filesystem save.
+The user-initiated file save is explicit; server-side files/jobs are not created.
+
+Epoch/view/locale guards discard late responses. Route/filter/locale changes,
+offline/pagehide and session clearing abort the request and release any Blob URL.
+Successful download URLs are released after a short one-second browser-consumption
+window; a 401 clears private UI. Filenames come from fixed client constants and
+allowlisted selected filters, never arbitrary server text.
+
+Browser QA downloads real JSON/CSV bytes via actual SQLite/ASGI routes at
+1440/390px in UZ/RU/TJ, checks source timestamps/PII omission/definitions, 44px
+controls and no overflow, error/type/size rejection, URL cleanup and delayed
+cancellation. This does not establish physical iPhone download/share behavior.

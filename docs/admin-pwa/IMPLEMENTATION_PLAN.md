@@ -1,6 +1,6 @@
 # HSK AI — Admin PWA implementation plan
 
-Status (updated 2026-10-24): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, V10 UI, scoped OAuth/MCP controls, profiles, activity metrics, daily statistics cache, native intake, inbox read/triage/search and default-OFF Apple Push sender code exist. Fetched runtime `d93b75fe` adds a private retained Android JPEG proxy. Android and Bot/Release raster-image proxies are connected to V10 preview; unsupported media, technical events, remaining management/exports and real staging/provider/device/ChatGPT acceptance remain open. The old 0011 cold-start migration failure remains separate.**
+Status (updated 2026-10-24): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, V10 UI, scoped OAuth/MCP controls, profiles, activity metrics, daily statistics cache, native intake, inbox read/triage/search and default-OFF Apple Push sender code exist. Android/Bot/Release raster previews and bounded first-party statistics JSON/CSV exports are implemented. Unsupported media, technical events, retention/audit follow-ups, remaining management/sanitized feedback exports and real staging/provider/device/ChatGPT acceptance remain open. The old 0011 cold-start migration failure remains separate.**
 
 Target public URL: `https://hskai.app/admin` (owner-designated; live routing/TLS not verified).
 Branch: `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201; PR #200 foundations are already merged. No main push/merge, deploy or flag activation.
@@ -18,11 +18,13 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
 2. **Unified inbox continuation**: read/triage/search/badge and native intake
    and Android/Bot/Release image preview are implemented. Technical sources,
    unsupported media and retention/audit gaps still require separate review.
-3. **Cached analytics exports**: bounded sanitized statistics JSON/CSV and
-   metric dictionary from the existing 24-hour reader, preserving generated_at,
-   no force-refresh or extra aggregate SQL. Prioritize this small read-only
-   increment under the owner's server-load clarification. External MCP remains
-   statistics-only; profile/feedback and mutation routes stay excluded.
+3. **Implemented cached statistics exports**: first-party JSON/CSV and metric
+   definitions from the existing 24-hour reader; original generation/expiry,
+   source/range/scope and separate currencies retained. Explicit V10 downloads,
+   128 KiB / 96-row / 32-currency bounds, WebAuthn cookie/current-admin recheck,
+   no force-refresh, new aggregate SQL on cache hits, disk job or R2. Sanitized
+   feedback export still needs separate privacy/schema review. External MCP
+   remains statistics-only; exports do not add an external tool or scope.
 4. **First-party management**: shared course/access/pricing/marketing/settings
    commands with exact WebAuthn payload binding, confirmation and audit; keep
    unsupported high-risk operations disabled until independently verified.

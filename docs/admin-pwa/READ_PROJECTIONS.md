@@ -64,9 +64,47 @@ retained Android JPEG and Bot/Release raster-image proxies reuse the V10 preview
 
 Only aggregate statistics are shared with the current statistics-only MCP.
 Account, inbox, feedback and payment projections remain first-party browser
-reads; they do not grant external MCP permission. Sanitized JSON/CSV exports
-remain separate work. See [current handoff](MCP_NEXT_CHAT_HANDOFF.md) for exact
+reads; they do not grant external MCP permission. First-party statistics JSON/CSV
+exports are implemented below; sanitized feedback exports remain separate work.
+See [current handoff](MCP_NEXT_CHAT_HANDOFF.md) for exact
 SHA/test evidence; no real-device/provider E2E or rollout is established.
+
+## Bounded first-party statistics files (2026-10-24)
+
+`POST /api/admin/v1/statistics/export` accepts only `format=json|csv`, the existing
+six platform values and `weekly|monthly|all_time` (default overall/weekly).
+No arbitrary dates, URLs, SQL, user IDs or force-refresh. Same canonical HTTPS,
+strict Origin/Fetch Metadata/JSON body (2 KiB maximum), HttpOnly session and
+current allowlisted admin guards apply. Exports require a WebAuthn session and
+recheck the actor/rollout after cache IO, with no auth connection held while
+waiting. Small live auth SELECTs remain necessary; exports write no DB records.
+
+The router reuses the same reader instance as dashboard/MCP. A warm export adds
+no aggregate SQL; cold/expired variants use the existing daily refresh and
+failure/cooldown rules. No export worker, server file, retention job, new cache,
+R2, dependency, schema or configuration. Files are generated in bounded memory.
+
+Schema v1 `hskai_statistics`: original UTC `generated_at`, `expires_at`, `since`,
+period/platform, 86400-second interval, source/scope, overlap/availability/reason
+and a list of numeric-or-null metric rows (`metric`, `value`, `unit`, `definition`,
+`date_basis`). JSON also carries the shared overall metric dictionary; CSV embeds
+each relevant shared definition in its row, alongside repeated source metadata.
+Fixed allowlists select scalar metric paths and metadata; unknown nested fields,
+user/profile IDs, names, contacts, raw feedback, prompts, provider references,
+receipt/payment rows and credentials never enter files. Currency totals are
+separate, with strict uppercase three-letter codes; no arbitrary spreadsheet
+strings or formulas. Invalid/nonfinite values and malformed snapshots fail closed.
+
+Maximum 96 metric rows, 32 currencies and 128 KiB per file. Unavailable Telegram/
+iPhone produces no fake zeros: JSON has an empty metric list and reason; CSV has
+one explicit unavailable status row with no metric/value. Desktop remains rolling
+30 days regardless of period; Android registry/activity/funnel retain their
+different grains. `all_time` is the existing bounded selector, not a bounded row
+scan or a promise to avoid the first daily historical aggregate calculation.
+
+Responses use attachment disposition, no-store/no-cache/nosniff and fixed safe
+filenames. First-party exports do not create a new MCP tool or accept a bearer.
+Broader sanitized feedback exports still require a separate privacy review.
 
 ## User profile increment (2026-10-24)
 

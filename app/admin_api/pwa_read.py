@@ -45,6 +45,10 @@ class StatisticsRequest(ReadRequest):
     platform: Literal["overall", "telegram", "android", "macos", "windows", "iphone_pwa"] = "overall"
 
 
+class StatisticsExportRequest(StatisticsRequest):
+    format: Literal["json", "csv"]
+
+
 class PageRequest(ReadRequest):
     limit: Annotated[int, Field(ge=1, le=100)] = 30
     before_id: Id | None = None
@@ -307,16 +311,30 @@ def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_re
             async with session_factory() as db:
                 async with read_transaction(db):
                     actor = await authenticate_admin_pwa_session(db, cookie, settings_obj)
-                    if actor is None:
+                    if actor is None or (schema is StatisticsExportRequest and actor.auth_method != "webauthn"):
                         return _reply(401, "admin_pwa_unauthorized")
-                    if schema is not StatisticsRequest:
+                    if not isinstance(query, StatisticsRequest):
                         result = await service(db, query)
                         if result is None:
                             return _reply(404, "admin_pwa_user_not_found")
-            if schema is StatisticsRequest:
+            if isinstance(query, StatisticsRequest):
                 # Release the auth transaction/connection before cache IO or
                 # waiting for another worker's refresh. Only a miss opens SQL.
-                result = await statistics_reader(query)
+                result = await statistics_reader(StatisticsRequest(period=query.period, platform=query.platform))
+            if schema is StatisticsExportRequest:
+                from app.admin_api.pwa_statistics_export import render_statistics_export
+
+                # A cache miss can wait for another worker. Do not deliver an
+                # export after logout/revocation/allowlist or rollout changes.
+                failure = _guard_post(request, settings_obj)
+                if failure is not None:
+                    return failure
+                async with session_factory() as db:
+                    async with read_transaction(db):
+                        actor = await authenticate_admin_pwa_session(db, cookie, settings_obj)
+                        if actor is None or actor.auth_method != "webauthn":
+                            return _reply(401, "admin_pwa_unauthorized")
+                return render_statistics_export(result, query)
         except Exception:
             logger.exception("Admin PWA read projection unavailable")
             return _reply(503, "admin_pwa_read_unavailable")
@@ -325,6 +343,10 @@ def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_re
     @router.post("/api/admin/v1/statistics")
     async def read_statistics(request: Request):
         return await handle(request, StatisticsRequest, statistics)
+
+    @router.post("/api/admin/v1/statistics/export")
+    async def export_statistics(request: Request):
+        return await handle(request, StatisticsExportRequest, statistics)
 
     @router.post("/api/admin/v1/users/search")
     async def read_users(request: Request):

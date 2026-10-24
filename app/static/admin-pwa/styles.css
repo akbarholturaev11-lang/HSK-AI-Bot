@@ -389,3 +389,4 @@
 .inbox-attachment{margin-top:14px;padding:10px;background:var(--bg);border:1px solid var(--line);border-radius:12px}
 .inbox-attachment-image{display:block;max-width:100%;max-height:65vh;object-fit:contain;margin:auto;border-radius:8px}
 .inbox-attachment p{font-size:13px;color:var(--muted)}
+.statistics-export .btn{min-height:44px}

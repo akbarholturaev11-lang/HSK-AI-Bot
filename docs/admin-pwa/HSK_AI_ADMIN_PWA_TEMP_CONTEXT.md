@@ -34,7 +34,7 @@ See [read projections](READ_PROJECTIONS.md) for the complete temporal contract.
 
 Owner needs a real Admin PWA accessible on iPhone, Mac and Windows **in addition to, never replacing**, the existing Telegram admin panel. It must use the locally reviewed professional Admin V10 UI/UX demo as a design starting point; strip synthetic numbers/users/notifications/actions; and connect to **actual HSK AI services and database**.
 
-The owner also wants a reliable way for ChatGPT, Cloud agents and local tools to analyze platform statistics and, through a separately reviewed export path, user feedback. Source code on GitHub is distinct from runtime DB. The current remote MCP is statistics-only; account/feedback tools and all mutations are excluded. Bounded sanitized JSON/CSV exports remain unfinished. Do not claim complete history where original sources were not persisted.
+The owner also wants a reliable way for ChatGPT, Cloud agents and local tools to analyze platform statistics and, through a separately reviewed export path, user feedback. Source code on GitHub is distinct from runtime DB. The current remote MCP is statistics-only; account/feedback tools and all mutations are excluded. Bounded first-party statistics JSON/CSV downloads now reuse the daily reader, with source/range/definitions and original timestamps. Sanitized feedback exports remain unfinished. Do not claim complete history where original sources were not persisted.
 
 ## Owner-approved user flows
 

@@ -41,8 +41,10 @@ const state = {actor:null, phase:'loading', route:'home', period:'weekly', platf
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
+let statisticsDownload=null;
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
+  cancelStatisticsDownload();
   epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.inboxSearch='';state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   state.phase=phase;state.error=null;render();
 }
@@ -95,7 +97,8 @@ function statePanel(key, hint='', retry=false) { return `<section class="state-p
 function metric(label,value,glyph='chart') { return `<div class="metric"><div class="metric-top"><span>${esc(t(label))}</span><span class="metric-icon">${icon(glyph)}</span></div><div class="metric-value">${esc(value ?? '—')}</div></div>`; }
 function statsView() {
   const data=state.stats;if(!data) return statePanel('loading');
-  if(!data.available) return statePanel('unavailable');
+  const exports=state.route==='stats'?`<div class="data-toolbar statistics-export"><button class="btn" data-export-format="json" ${statisticsDownload?'disabled aria-busy="true"':''}>${esc(t('exportJson'))}</button><button class="btn" data-export-format="csv" ${statisticsDownload?'disabled aria-busy="true"':''}>${esc(t('exportCsv'))}</button></div>`:'';
+  if(!data.available) return exports+statePanel('unavailable');
   let cards='', extra='';const m=data.metrics;
   if(data.platform==='overall') {
     cards=metric('usersTotal',m.users_total,'users')+metric('newAccounts',m.new_accounts,'users')+metric(state.period==='all_time'?'active30':'activeAccounts',m.active_accounts)+metric('pending',m.payments_by_status.pending,'wallet');
@@ -104,7 +107,51 @@ function statsView() {
     extra+=`<div class="stats-details"><section class="stat-detail"><h2>${esc(t('aiSpend'))}</h2>${profileFields([['estimatedCost',ai.estimated_cost_usd+' USD'],['recordedRequests',ai.recorded_requests],['tokens',ai.tokens]])}<p class="source-note">${esc(t('aiCostNote'))}</p></section><section class="stat-detail"><h2>${esc(t('courseEngagement'))}</h2>${profileFields([['engagedAccounts',c.engaged_accounts],['startedAccounts',c.started_accounts],['completedAccounts',c.completed_accounts]])}<p class="source-note">${esc(t('courseMetricNote'))}${c.unmatched_events?' '+esc(t('unmatchedEvents'))+': '+c.unmatched_events:''}</p></section><section class="stat-detail"><h2>${esc(t('registrationConversion'))}</h2>${profileFields([['conversion',r.percent===null?'—':r.percent+'%'],['registeredCohort',r.registered_accounts],['convertedAccounts',r.converted_accounts]])}<p class="source-note">${esc(t('conversionNote'))}</p></section></div>`;
   } else if(data.platform==='android') cards=metric('installedDevices',m.registry.installed_devices,'device')+metric('installedUsers',m.registry.installed_users,'users')+metric('active7',m.active.wau)+metric('active30',m.active.mau);
   else cards=metric('active30',m.active_users_30d)+metric('firstOpen',m.verified_first_open_30d,'device');
-  return `<div class="grid metrics">${cards}</div>${extra}<p class="source-note">${esc(t('overlap'))}${data.scope?.period_filter_applied===false?' '+esc(t('rolling30')):''}</p><p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`;
+  return `${exports}<div class="grid metrics">${cards}</div>${extra}<p class="source-note">${esc(t('overlap'))}${data.scope?.period_filter_applied===false?' '+esc(t('rolling30')):''}</p><p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`;
+}
+function cancelStatisticsDownload(){
+  const download=statisticsDownload;statisticsDownload=null;
+  if(!download)return;
+  download.control.abort();clearTimeout(download.timer);
+  if(download.url)URL.revokeObjectURL(download.url);
+  document.querySelectorAll('[data-export-format]').forEach(button=>{button.disabled=false;button.removeAttribute('aria-busy');});
+}
+async function exportStatistics(format){
+  if(!state.actor||state.phase!=='ready'||state.route!=='stats'||!['json','csv'].includes(format)||statisticsDownload)return;
+  const current=view,at=epoch,language=locale,control=new AbortController();
+  const download={control,url:null,timer:null};statisticsDownload=download;
+  const active=()=>statisticsDownload===download&&current===view&&at===epoch&&language===locale&&!!state.actor;
+  const buttons=[...document.querySelectorAll('[data-export-format]')];
+  buttons.forEach(button=>{button.disabled=true;button.setAttribute('aria-busy','true');});
+  const timer=setTimeout(()=>control.abort(),15000),platform=state.platform,period=state.period;
+  try{
+    const response=await fetch('/api/admin/v1/statistics/export',{method:'POST',credentials:'same-origin',cache:'no-store',redirect:'error',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({platform,period,format}),signal:control.signal});
+    if(!active())return;
+    if(response.status===401){clearPrivate('signin');state.error='authExpired';render();return;}
+    const mime=format==='json'?'application/json':'text/csv';
+    if(!response.ok||response.headers.get('content-type')?.split(';')[0]!==mime||!response.body)throw Error('export_failed');
+    const reader=response.body.getReader(),chunks=[];let size=0;
+    try{
+      while(true){
+        const {done,value}=await reader.read();if(done)break;
+        size+=value.byteLength;
+        if(size>128*1024){await reader.cancel();throw Error('export_too_large');}
+        chunks.push(value);
+      }
+    }finally{reader.releaseLock();}
+    if(!active())return;
+    if(!size)throw Error('empty_export');
+    download.url=URL.createObjectURL(new Blob(chunks,{type:mime}));
+    const link=document.createElement('a');link.href=download.url;link.download=`hskai-statistics-${platform}-${period}.${format}`;
+    link.hidden=true;document.body.append(link);link.click();link.remove();
+    // Give the browser time to consume the explicit download, then release it.
+    download.timer=setTimeout(()=>{if(statisticsDownload===download)cancelStatisticsDownload();},1000);
+  }catch(error){if(active())showNotice('error');}
+  finally{
+    clearTimeout(timer);
+    if(statisticsDownload===download&&!download.timer)cancelStatisticsDownload();
+  }
 }
 function date(value) { if(!value) return '—';const d=new Date(value);return Number.isNaN(d.valueOf())?'—':d.toLocaleString(locale==='tj'?'tg':locale,{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); }
 function pager() { return `<div class="pager">${btn('previous','previous','',state.previous.length===0)}${btn('next','next','',!state.next)}</div>`; }
@@ -118,6 +165,7 @@ function paymentsView() {
 }
 function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
 async function load() {
+  cancelStatisticsDownload();
   if(!state.actor) return;const current=++view, authEpoch=epoch;state.phase='loading';state.error=null;render();
   try {
     const data=await api(['home','stats'].includes(state.route)?'statistics':state.route==='users'?'users/search':'payments/list',
@@ -581,6 +629,7 @@ document.addEventListener('click',event=>{
     if(button.dataset.route){closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();}
     else if(button.dataset.period){state.period=button.dataset.period;await load();}
     else if(button.dataset.platform){state.platform=button.dataset.platform;await load();}
+    else if(button.dataset.exportFormat){await exportStatistics(button.dataset.exportFormat);}
     else if(button.dataset.status){state.status=button.dataset.status;state.cursor=null;state.previous=[];await load();}
     else if(button.dataset.review){await review(Number(button.dataset.review));}
     else if(button.dataset.userDetail){await userProfile(Number(button.dataset.userDetail));}
@@ -598,6 +647,7 @@ document.addEventListener('click',event=>{
 });
 document.addEventListener('change',event=>{
   if(['locale','drawerLocale'].includes(event.target.id)&&['uz','ru','tj'].includes(event.target.value)){
+    cancelStatisticsDownload();
     locale=event.target.value;try{localStorage.setItem('hsk-admin-locale',locale);}catch(_){}
     closeDrawer();render();
   }
