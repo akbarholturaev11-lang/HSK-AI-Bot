@@ -53,6 +53,7 @@ from app.admin_api.pwa_mcp_oauth import begin_mcp_authorization, decide_mcp_cons
 from app.admin_api.pwa_mcp_resource import verify_readonly_mcp_bearer
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_access_grants import create_admin_pwa_access_grant_router
+from app.admin_api.pwa_feedback_analytics import create_admin_pwa_feedback_analytics_router
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
 from app.admin_api.pwa_inbox_attachments import create_admin_pwa_inbox_attachment_router
@@ -87,7 +88,9 @@ async def browser_checks(output):
         (await db.get(User,1)).full_name='<img src=x onerror=alert(1)> QA account'
         db.add(CourseProgress(user_id=1,level='HSK1',completed_lessons_count=7))
         db.add(AIUsageEvent(user_id=1,source='qa',model='fixture',cost_usd=.025,total_tokens=123))
-        db.add(BotFeedback(user_id=1,telegram_id=1001,status='completed',disliked_text='<script>private QA feedback</script>'))
+        db.add(BotFeedback(user_id=1,telegram_id=1001,status='completed',disliked_code='price',
+                           disliked_text='<script>private QA feedback</script>',
+                           completed_at=datetime.now(timezone.utc)))
         db.add(BotFeedback(user_id=2,telegram_id=2002,status='completed',disliked_text='other account QA feedback'))
         for index in range(11):
             db.add(Payment(user_id=1,amount=index+1,currency='TJS',plan_type='1_month',payment_status='approved'))
@@ -106,7 +109,7 @@ async def browser_checks(output):
     for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_google_router,
                     create_admin_pwa_passkey_login_router,create_admin_pwa_step_up_router,
                     create_admin_pwa_payment_review_router,create_admin_pwa_read_router,
-                    create_admin_pwa_inbox_triage_router,
+                    create_admin_pwa_feedback_analytics_router,create_admin_pwa_inbox_triage_router,
                     create_admin_pwa_completion_router,create_admin_pwa_webauthn_router,
                     create_admin_pwa_mcp_management_router):
         app.include_router(factory(**common))
@@ -253,7 +256,9 @@ async def browser_checks(output):
         await page.locator('[data-action=more]').click()
         await page.locator('#drawerLocale').select_option('uz')
         await page.locator('[data-route=stats]').last.click()
-        await expect(page.locator('.stat-detail')).to_have_count(3)
+        await expect(page.locator('.stat-detail')).to_have_count(4)
+        await expect(page.locator('.feedback-analysis')).to_contain_text('Шикоятлар таҳлили')
+        await expect(page.locator('.feedback-analysis')).to_contain_text('Нарх')
         await page.screenshot(path=str(output/'mobile-statistics-details.png'),full_page=True)
         assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         await page.locator('[data-route=payments]').last.click()
@@ -776,7 +781,8 @@ async def export_browser_checks(output):
         await db.commit()
     app=FastAPI()
     common={'settings_obj':fixture.settings,'session_factory':fixture.sessions}
-    for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router):
+    for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router,
+                    create_admin_pwa_feedback_analytics_router):
         app.include_router(factory(**common))
     mode='normal';calls=[];downloads=[]
     started,release,finished=asyncio.Event(),asyncio.Event(),asyncio.Event()
@@ -814,6 +820,8 @@ async def export_browser_checks(output):
             assert not calls,'Exports must only run after an explicit tap'
             await page.locator('[data-route=stats]').first.click()
             await expect(page.locator('[data-export-format]')).to_have_count(2)
+            await expect(page.locator('.feedback-analysis')).to_be_visible()
+            await expect(page.locator('[data-feedback-export]')).to_have_count(2)
             original_time=None
             for width in (1440,390):
                 await page.set_viewport_size({'width':width,'height':1000 if width==1440 else 844})
@@ -866,9 +874,28 @@ async def export_browser_checks(output):
                 release.set();await asyncio.wait_for(finished.wait(),5)
                 assert len(downloads)==baseline
                 assert await page.evaluate('qaURLs.length===qaRevoked.length')
+            # Feedback export is an explicit first-party action, independent
+            # of the longer cached statistics window.
+            await page.reload();await page.wait_for_load_state('networkidle')
+            await page.locator('[data-route=stats]').first.click()
+            await expect(page.locator('[data-feedback-export=json]')).to_be_visible()
+            await page.locator('[data-feedback-source=bot]').click()
+            await expect(page.locator('.feedback-analysis-source')).to_have_count(1)
+            await page.locator('[data-feedback-period=monthly]').click()
+            await expect(page.locator('.feedback-analysis')).to_contain_text('30 kun')
+            async with page.expect_download() as pending:
+                await page.locator('[data-feedback-export=json]').click()
+            fb=await pending.value
+            assert fb.suggested_filename=='hskai-feedback-categories-bot-monthly.json'
+            raw=Path(await fb.path()).read_text()
+            parsed=json.loads(raw)
+            assert parsed['schema']=='hskai_feedback_categories_v1'
+            assert parsed['source']=='bot' and parsed['period']=='monthly'
+            assert 'private-export-canary' not in raw
+            await wait_js(page,'() => qaURLs.length===qaRevoked.length')
             assert not errors,errors
             await browser.close()
-        print('Statistics JSON/CSV downloads: actual ASGI, UZ/RU/TJ 1440/390, daily timestamp, no PII, bounded errors and stale cancellation passed')
+        print('Statistics and feedback downloads: ASGI, WebAuthn, locales, PII limits and cancellation passed')
     finally:
         release.set()
         await fixture.engine.dispose()
