@@ -533,7 +533,25 @@
     "ui.admin_pwa.mcpSignInHint": "Admin panelini yangi oynada ochib, passkey bilan kiring. Keyin ushbu oynaga qaytib, qayta urinib ko‘ring.",
     "ui.admin_pwa.mcpRestart": "Ruxsatni qayta so‘rang",
     "ui.admin_pwa.mcpRestartHint": "Tasdiq muddati tugagan yoki endi yaroqsiz. Tashqi ilovaga qaytib, ulanishni qayta boshlang.",
-    "ui.admin_pwa.mcpOpenAdmin": "Admin panelini ochish"
+    "ui.admin_pwa.mcpOpenAdmin": "Admin panelini ochish",
+    "ui.admin_pwa.openProfile": "Profilni ochish",
+    "ui.admin_pwa.userProfile": "Foydalanuvchi profili",
+    "ui.admin_pwa.userMissing": "Hisob topilmadi",
+    "ui.admin_pwa.created": "Ro‘yxatdan o‘tgan",
+    "ui.admin_pwa.accessUntil": "Kirish muddati",
+    "ui.admin_pwa.completedLessons": "Tugallangan darslar",
+    "ui.admin_pwa.lastLesson": "Oxirgi dars yakuni",
+    "ui.admin_pwa.unlocked": "Ochilgan",
+    "ui.admin_pwa.referrals": "Takliflar",
+    "ui.admin_pwa.invitedTotal": "Jami taklif qilingan",
+    "ui.admin_pwa.invitedActive": "Faollashgan takliflar",
+    "ui.admin_pwa.discountQualified": "Chegirmaga hisoblangan",
+    "ui.admin_pwa.devices": "Qurilmalar",
+    "ui.admin_pwa.linkedTotal": "Ulangan / jami",
+    "ui.admin_pwa.lastContact": "Oxirgi server aloqasi",
+    "ui.admin_pwa.miniappOpens": "Telegram Mini App ochilishlari",
+    "ui.admin_pwa.openFeedback": "Murojaatlarni ko‘rish",
+    "ui.admin_pwa.paymentHistory": "To‘lovlar tarixi"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

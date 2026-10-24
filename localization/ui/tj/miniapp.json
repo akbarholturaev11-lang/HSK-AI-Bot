@@ -533,7 +533,25 @@
     "ui.admin_pwa.mcpSignInHint": "Панелро дар равзанаи нав кушоед ва бо калиди дастрасӣ ворид шавед. Сипас ба ин равзана баргардед ва дубора кӯшиш кунед.",
     "ui.admin_pwa.mcpRestart": "Аз нав иҷозат пурсед",
     "ui.admin_pwa.mcpRestartHint": "Муҳлати тасдиқ гузаштааст ё он дигар эътибор надорад. Ба барномаи беруна баргардед ва пайвастшавиро аз нав оғоз кунед.",
-    "ui.admin_pwa.mcpOpenAdmin": "Кушодани панели мудир"
+    "ui.admin_pwa.mcpOpenAdmin": "Кушодани панели мудир",
+    "ui.admin_pwa.openProfile": "Кушодани профил",
+    "ui.admin_pwa.userProfile": "Профили корбар",
+    "ui.admin_pwa.userMissing": "Ҳисоб ёфт нашуд",
+    "ui.admin_pwa.created": "Санаи бақайдгирӣ",
+    "ui.admin_pwa.accessUntil": "Дастрасӣ то",
+    "ui.admin_pwa.completedLessons": "Дарсҳои анҷомшуда",
+    "ui.admin_pwa.lastLesson": "Охирин дарси анҷомшуда",
+    "ui.admin_pwa.unlocked": "Кушода шудааст",
+    "ui.admin_pwa.referrals": "Даъватҳо",
+    "ui.admin_pwa.invitedTotal": "Ҳамагӣ даъватшуда",
+    "ui.admin_pwa.invitedActive": "Даъватҳои фаъолшуда",
+    "ui.admin_pwa.discountQualified": "Барои тахфиф ҳисобшуда",
+    "ui.admin_pwa.devices": "Дастгоҳҳо",
+    "ui.admin_pwa.linkedTotal": "Пайвастшуда / ҳамагӣ",
+    "ui.admin_pwa.lastContact": "Охирин тамос бо сервер",
+    "ui.admin_pwa.miniappOpens": "Кушодани Telegram Mini App",
+    "ui.admin_pwa.openFeedback": "Кушодани муроҷиатҳо",
+    "ui.admin_pwa.paymentHistory": "Таърихи пардохтҳо"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

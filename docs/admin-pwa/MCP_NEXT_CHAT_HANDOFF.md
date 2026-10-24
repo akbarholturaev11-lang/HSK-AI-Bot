@@ -11,6 +11,30 @@ Updated 2026-10-24. Read this first; older checkpoints are historical. Verify re
 - No main merge/push, production/staging deployment, live migration, secret configuration, flag activation or real external ChatGPT linking is authorized by this checkpoint.
 - External MCP exposes ONLY `hskai_statistics` / `admin:analytics:read`. Users, feedback, payment, delete, broadcast, arbitrary SQL/URL and other write tools stay excluded.
 
+## Broader Admin PWA continuation — user profile increment, 2026-10-24
+
+The owner requested the remaining final-product work in tested parts, committing
+and pushing each part only to this feature branch. The active ordered worklist
+is in `IMPLEMENTATION_PLAN.md`; PR #200 and the MCP foundations below remain done.
+
+First increment: real read-only user profile and paginated all-status billing
+history (`pwa_read.py` users/detail and users/payments); existing V10 drawer,
+UZ/RU/TJ, course/track snapshots, canonical referral/device aggregates and
+account-filtered feedback. See `READ_PROJECTIONS.md` for field/grain boundaries.
+No MCP tool, flag default, schema migration or legacy mutation was changed.
+
+Validation in isolated local fixtures: **300 passed, 16 PostgreSQL-only skipped**
+for the Admin PWA/catalog/standalone suite; **16 passed on disposable PostgreSQL
+15**, including the extended read-only transaction test for profile/payment
+history. Real virtual-WebAuthn/browser and service-worker suites passed, with
+profile paging, canonical account filter, XSS, 1440px desktop and 390px UZ/RU/TJ
+screenshots in `/tmp/hsk-profile-browser-20261024`; mobile Uzbek and desktop
+profile screenshots visually inspected. Synthetic fixtures are not staging or
+physical-device evidence. Catalog generation: 63 artifacts, one bundle updated.
+
+Next: bounded AI-spend, course-engagement and clearly defined conversion
+statistics; then durable inbox and remaining management/export/staging gates.
+
 ## Required reading
 
 Read root `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`; `HSK_AI_ADMIN_PWA_TEMP_RULES.md`, latest `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md`, `MCP_CONNECTION_CONTRACT.md`, `MCP_CHATGPT_COMPATIBILITY_AUDIT_20261024.md`, `BROWSER_UI_CONTRACT.md`, `ADMIN_PWA_V10_UI_REFERENCE.md`; then real source/tests. Historical `codex/admin-pwa` branch references are superseded by the user-selected feature branch above.

@@ -1,7 +1,7 @@
 # Admin PWA real-data read projections
 
 Branch-only, `ADMIN_PWA_ENABLED=false`. `app/admin_api/pwa_read.py` registers
-three POST JSON read endpoints; they share the existing HTTPS/Origin/Fetch
+bounded POST JSON read endpoints; they share the existing HTTPS/Origin/Fetch
 Metadata/body/cookie guards and revalidate current canonical admin privileges.
 No Telegram initData bypass, provider linking, session issuance or management
 command is included. Responses are no-store and contain no session secrets.
@@ -15,6 +15,8 @@ fixtures also verify all projection statements are SELECTs.
 |---|---|---|
 | `/api/admin/v1/statistics` | `period`: weekly/monthly/all_time; `platform`: overall/telegram/android/macos/windows/iphone_pwa | Shared admin/native analytics; scopes below |
 | `/api/admin/v1/users/search` | optional `query` (≤80 chars), `limit` (1–100), `before_id` | Canonical User rows, descending ID keyset; shared entitlement resolver and payment-owner join |
+| `/api/admin/v1/users/detail` | required canonical `user_id` | Shared entitlement resolver; CourseProgress/track snapshots, referral owner aggregates, native device platform aggregates, Mini App presence, feedback counts and first ten payments |
+| `/api/admin/v1/users/payments` | required canonical `user_id`, optional `limit`, `before_id` | All statuses, canonical-first payment ownership, descending ID keyset; no receipt references |
 | `/api/admin/v1/feedback/list` | required `source`: bot/release; optional canonical `user_id`, `limit`, `before_id` | Existing durable source rows; no new inbox/triage state |
 
 All IDs and limits are strict integers, unknown fields are denied. Numeric user
@@ -60,3 +62,18 @@ These are browser-admin projections, **not** the future AI/MCP or sanitized
 CSV export contract. No service-account/write tool or live DB access is added.
 No UI, real device/provider E2E, production rollout or synthetic production data
 is included. See CODEX_RESUME and the handoff for exact CI SHA/results.
+
+## User profile increment (2026-10-24)
+
+The V10 user drawer loads only after a user opens an account. It reuses the
+cookie-admin read guard and SQL read-only snapshot. A nonexistent canonical ID
+returns 404; a numeric Telegram ID never resolves as an alternative namespace.
+Payment history is paginated (initial ten, further pages of ten). Native device
+records are aggregated into the fixed Android/macOS/Windows grain: linked/total
+and last server contact. Contact is not labeled foreground activity. Mini App
+presence retains its own foreground timestamp. No installation keys, raw device
+IDs, Telegram IDs, feedback contents or receipt file references enter the
+profile response. Feedback opens the existing paginated inbox filtered to that
+account, retaining the filter across source and next-page controls. No profile
+read initializes progress, changes access, sends notifications or issues MCP
+permissions. Android history and secure attachments remain separate increments.

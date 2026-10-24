@@ -12,8 +12,11 @@ from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_progress import CourseProgress
+from app.db.models.course_track_state import CourseTrackState
 from app.db.models.desktop import DesktopDevice
 from app.db.models.payment import Payment
+from app.db.models.referral import Referral
 from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackResponse
 from app.db.models.user import User
 from tests import test_admin_pwa_payment_review as fixtures
@@ -112,6 +115,70 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         data=(await self.post("users/search", {"query":"2"})).json()
         self.assertFalse(data["items"][0]["has_pending_payment"])
 
+    async def test_user_profile_ownership_progress_and_private_field_redaction(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            user = await db.get(User, 1)
+            user.status = "active"
+            user.payment_status = "approved"
+            user.end_date = now + timedelta(days=5)
+            # Stale transport metadata cannot steal canonical rows from user 1.
+            (await db.get(Payment, self.payment_id)).user_telegram_id = 2002
+            db.add_all([
+                CourseProgress(user_id=1, level="HSK1", completed_lessons_count=7),
+                CourseTrackState(user_id=1, track="hsk30", level="HSK30_1",
+                                 completed_lessons_count=3, unlocked_at=now),
+                Referral(referrer_user_id=1, invited_user_id=2, referrer_telegram_id=2002,
+                         status="active", counts_for_discount=True),
+                DesktopDevice(id="private-device-id", user_id=1, telegram_id=2002, platform="android", app_version="qa",
+                              installation_key_hash="private-installation-hash", last_seen_at=now),
+                DesktopDevice(id="revoked-device", user_id=1, platform="android", app_version="qa",
+                              installation_key_hash="private-revoked-hash", revoked_at=now),
+                BotFeedback(user_id=1, telegram_id=2002, status="completed", disliked_text="private-text"),
+            ])
+            await db.commit()
+        response = await self.post("users/detail", {"user_id": 1})
+        self.assertEqual(response.status_code, 200, response.text)
+        data = response.json()
+        self.assertEqual(data["user"]["user_id"], 1)
+        self.assertIsNotNone(data["user"]["access_expires_at"])
+        self.assertEqual(data["course"]["progress"]["completed_lessons"], 7)
+        self.assertEqual(data["course"]["tracks"][0]["completed_lessons"], 3)
+        self.assertEqual(data["referral"], {"invited_total": 1, "invited_active": 1, "discount_qualified": 1})
+        self.assertEqual((data["devices"][0]["total"], data["devices"][0]["linked"]), (2, 1))
+        self.assertEqual(data["feedback_counts"], {"bot": 1, "release": 0})
+        self.assertEqual(data["payments"]["items"][0]["payment_id"], self.payment_id)
+        for value in ("telegram_id", "installation_key_hash", "private-installation-hash",
+                      "private-device-id", "private-text", "synthetic-receipt", "screenshot_file_id"):
+            self.assertNotIn(value, response.text)
+        other = (await self.post("users/detail", {"user_id": 2})).json()
+        self.assertEqual(other["devices"], [])
+        self.assertEqual(other["payments"]["items"], [])
+        self.assertEqual(other["feedback_counts"]["bot"], 0)
+        self.assertEqual(other["referral"]["invited_total"], 0)
+        self.assertIsNone(other["course"]["progress"])
+        self.assertEqual(response.headers["cache-control"], "no-store")
+
+    async def test_user_payment_history_pages_and_legacy_identity_never_guesses_account_id(self):
+        async with self.sessions() as db:
+            db.add_all([
+                Payment(user_id=None, user_telegram_id=2, amount=99, currency="USD", plan_type="1_month"),
+                Payment(user_id=None, user_telegram_id=2002, amount=5, currency="USD", plan_type="1_month"),
+                Payment(user_id=2, user_telegram_id=9001, amount=7, currency="TJS", plan_type="1_month"),
+            ])
+            await db.commit()
+        first = (await self.post("users/payments", {"user_id": 2, "limit": 1})).json()
+        self.assertEqual(first["items"][0]["amount"], 7)
+        second = (await self.post("users/payments", {"user_id": 2, "limit": 1,
+                                                   "before_id": first["next_before_id"]})).json()
+        self.assertEqual(second["items"][0]["amount"], 5)
+        self.assertIsNone(second["next_before_id"])
+        for path in ("users/detail", "users/payments"):
+            self.assertEqual((await self.post(path, {"user_id": 2002})).status_code, 404)
+            for body in ({}, {"user_id": True}, {"user_id": "1"}, {"user_id": 0},
+                         {"user_id": 1, "telegram_id": 2002}):
+                self.assertEqual((await self.post(path, body)).status_code, 400)
+
     async def test_feedback_sources_keep_identity_campaign_and_attachment_boundaries(self):
         now=datetime.now(timezone.utc)
         async with self.sessions() as db:
@@ -166,7 +233,8 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
             self.assertIsNone(response.json()["metrics"])
 
     async def test_flag_csrf_cookie_revocation_and_strict_bounds(self):
-        paths=(("payments/list",{}),("statistics",{}),("users/search",{}),("feedback/list",{"source":"bot"}))
+        paths=(("payments/list",{}),("statistics",{}),("users/search",{}),("feedback/list",{"source":"bot"}),
+               ("users/detail",{"user_id":1}),("users/payments",{"user_id":1}))
         for path,body in paths:
             self.assertEqual((await self.post(path,body,cookie=None)).status_code,401)
             self.assertEqual((await self.post(path,body,cookie="T"*64)).status_code,401)
@@ -189,7 +257,8 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
             statements.append(statement.lstrip().split()[0].upper())
         event.listen(self.engine.sync_engine,"before_cursor_execute",observe)
         try:
-            for path,body in (("statistics",{}),("users/search",{}),("feedback/list",{"source":"bot"})):
+            for path,body in (("statistics",{}),("users/search",{}),("feedback/list",{"source":"bot"}),
+                              ("users/detail",{"user_id":1}),("users/payments",{"user_id":1})):
                 response=await self.post(path,body)
                 self.assertEqual(response.status_code,200,response.text)
         finally:
@@ -199,5 +268,5 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         from tests.test_main_imports import MainModuleImportTests
         main=MainModuleImportTests._import_main()
         paths=MainModuleImportTests._paths(main.app.routes)
-        for path in ("statistics","users/search","feedback/list"):
+        for path in ("statistics","users/search","feedback/list","users/detail","users/payments"):
             self.assertIn("/api/admin/v1/"+path,paths)

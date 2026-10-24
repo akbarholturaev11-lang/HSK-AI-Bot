@@ -39,7 +39,7 @@ const btn = (label, action, variant='', disabled=false) => `<button class="btn $
 const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
   query:'', status:'pending', source:'bot', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
-let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false;
+let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null;
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
   epoch++;view++;closeDrawer();state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
@@ -106,8 +106,8 @@ function statsView() {
 function date(value) { if(!value) return '—';const d=new Date(value);return Number.isNaN(d.valueOf())?'—':d.toLocaleString(locale==='tj'?'tg':locale,{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); }
 function pager() { return `<div class="pager">${btn('previous','previous','',state.previous.length===0)}${btn('next','next','',!state.next)}</div>`; }
 function usersView() {
-  const rows=state.rows.map(row=>`<tr><td><strong>${esc(row.name||'—')}</strong><small>${esc(row.username||'')} · #${row.user_id}</small></td><td>${esc(row.level||'—')}</td><td>${esc(row.language||'—')}</td><td>${esc(t(row.access_state))}</td><td>${esc(date(row.last_active_at))}</td></tr>`).join('');
-  const cards=state.rows.map(row=>`<article class="user-card"><div class="user-card-top"><div class="user-card-head"><strong>${esc(row.name||'—')}</strong><small>#${row.user_id} · ${esc(row.username||'')}</small></div><span class="pill">${esc(t(row.access_state))}</span></div><div class="user-card-details"><div class="u-mini-field"><small>${esc(t('level'))}</small><b>${esc(row.level||'—')}</b></div><div class="u-mini-field"><small>${esc(t('lastActive'))}</small><b>${esc(date(row.last_active_at))}</b></div></div></article>`).join('');
+  const rows=state.rows.map(row=>`<tr><td><button class="profile-link" data-user-detail="${row.user_id}">${esc(row.name||'—')}</button><small>${esc(row.username||'')} · #${row.user_id}</small></td><td>${esc(row.level||'—')}</td><td>${esc(row.language||'—')}</td><td>${esc(t(row.access_state))}</td><td>${esc(date(row.last_active_at))}</td></tr>`).join('');
+  const cards=state.rows.map(row=>`<article class="user-card"><div class="user-card-top"><div class="user-card-head"><strong>${esc(row.name||'—')}</strong><small>#${row.user_id} · ${esc(row.username||'')}</small></div><span class="pill">${esc(t(row.access_state))}</span></div><div class="user-card-details"><div class="u-mini-field"><small>${esc(t('level'))}</small><b>${esc(row.level||'—')}</b></div><div class="u-mini-field"><small>${esc(t('lastActive'))}</small><b>${esc(date(row.last_active_at))}</b></div></div><button class="btn small" data-user-detail="${row.user_id}">${esc(t('openProfile'))}</button></article>`).join('');
   return `<form id="searchForm" class="data-toolbar"><label class="screen-reader" for="userQuery">${esc(t('search'))}</label><input id="userQuery" class="search-input" maxlength="80" value="${esc(state.query)}" placeholder="${esc(t('search'))}"><button class="btn primary">${esc(t('find'))}</button></form>${state.rows.length?`<div class="table-wrap user-table-wrap"><table class="data-table user-table"><thead><tr>${['name','level','language','status','lastActive'].map(key=>`<th>${esc(t(key))}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div><div class="user-cards">${cards}</div>`:statePanel('empty')}${pager()}`;
 }
 function paymentsView() {
@@ -167,11 +167,42 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   if(!$('overlay'))returnFocus=document.activeElement;
   $('dialogs').innerHTML=`<div class="canvas-overlay show" id="overlay"><section class="drawer ${className}" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><div class="drawer-top"><h2 id="drawerTitle">${esc(t(title))}</h2><button class="drawer-close" data-action="close" aria-label="${esc(t('close'))}">×</button></div><div class="drawer-content" id="drawerContent">${body}</div><div class="drawer-foot" id="drawerFoot">${foot||btn('close','close')}</div></section></div>`;
   $('root').inert=true;document.querySelector('.drawer-close')?.focus();
+}
+function profileFields(fields) {
+  return `<dl class="review-summary">${fields.map(([key,value])=>`<dt>${esc(t(key))}</dt><dd>${esc(value??'—')}</dd>`).join('')}</dl>`;
+}
+function profilePayments(data,userId) {
+  return `${data.items.map(row=>`<article class="feedback-item"><strong>#${row.payment_id} · ${esc(row.amount)} ${esc(row.currency)}</strong><p>${esc(t(row.plan_type))} · ${esc(t(row.status))}</p><small>${esc(row.source)} · ${esc(date(row.reviewed_at||row.submitted_at))}</small></article>`).join('')||`<p class="source-note">${esc(t('empty'))}</p>`}${data.next_before_id?`<button class="btn" data-profile-payments="${userId}" data-before="${data.next_before_id}">${esc(t('next'))}</button>`:''}`;
+}
+async function userProfile(userId) {
+  closeDrawer();const current=drawerId;drawer('userProfile',statePanel('loading'));
+  try {
+    const data=await api('users/detail',{user_id:userId});
+    if(current!==drawerId||!state.actor)return;
+    const u=data.user,c=data.course,r=data.referral;
+    const section=(key,body)=>`<section class="profile-section"><h3>${esc(t(key))}</h3>${body}</section>`;
+    drawer('userProfile',`<div class="profile-heading"><h3>${esc(u.name||'—')}</h3><p>#${u.user_id} · ${esc(u.username||'—')}</p><span class="pill">${esc(t(u.access_state))}</span></div>`+
+      profileFields([['language',u.language],['level',u.level],['created',date(u.created_at)],['lastActive',date(u.last_active_at)],['plan',t(u.selected_plan_type)],['accessUntil',date(u.access_expires_at)]])+
+      section('course',(c.progress?profileFields([['level',c.progress.level],['completedLessons',c.progress.completed_lessons],['lastLesson',date(c.progress.last_completed_at)]]):`<p class="source-note">${esc(t('empty'))}</p>`)+c.tracks.map(row=>`<p class="source-note">${esc(row.track==='hsk30'?'HSK 3.0':'HSK 2.0')} · ${esc(row.level)} · ${esc(t('completedLessons'))}: ${row.completed_lessons}${row.unlocked_at?' · '+esc(t('unlocked'))+' '+esc(date(row.unlocked_at)):''}</p>`).join(''))+
+      section('referrals',profileFields([['invitedTotal',r.invited_total],['invitedActive',r.invited_active],['discountQualified',r.discount_qualified]]))+
+      section('devices',data.devices.map(row=>`<article class="feedback-item"><strong>${esc(row.platform)}</strong>${profileFields([['linkedTotal',row.linked+' / '+row.total],['lastContact',date(row.last_contact_at)]])}</article>`).join('')||`<p class="source-note">${esc(t('empty'))}</p>`)+
+      (data.miniapp_presence.length?section('miniappOpens',data.miniapp_presence.map(row=>`<p class="source-note">${esc(row.platform)} · ${esc(date(row.last_opened_at))}</p>`).join('')):'')+
+      section('feedback',profileFields([['botFeedback',data.feedback_counts.bot],['releaseFeedback',data.feedback_counts.release]])+`<button class="btn" data-user-feedback="${userId}">${esc(t('openFeedback'))}</button>`)+
+      section('paymentHistory',`<div id="profilePayments">${profilePayments(data.payments,userId)}</div>`)+`<p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`);
+  }catch(error){if(current===drawerId&&state.actor)drawer('userProfile',statePanel(error.status===404?'userMissing':'error'),btn('close','close')+`<button class="btn" data-user-detail="${userId}">${esc(t('retry'))}</button>`);}
+}
+async function moreUserPayments(userId,before,button) {
+  const current=drawerId;button.disabled=true;
+  try {
+    const data=await api('users/payments',{user_id:userId,before_id:before,limit:10});
+    if(current===drawerId&&state.actor&&$('profilePayments'))$('profilePayments').innerHTML=profilePayments(data,userId);
+  }catch(error){if(current===drawerId&&state.actor)showNotice('error');}
+  finally{if(button.isConnected)button.disabled=false;}
 }
 function summary(operation) {
   const p=operation.payload,s=p.expected;
@@ -235,13 +266,13 @@ async function execute() {
     if(submitted)await load();
   } finally {if(signing===control)signing=null;}
 }
-async function inbox(before=null) {
-  closeDrawer();const current=drawerId;
+async function inbox(before=null,userId=null) {
+  closeDrawer();feedbackUserId=userId;const current=drawerId;
   drawer('feedback',statePanel('loading'),'','inbox-drawer');
   try {
-    const data=await api('feedback/list',{source:state.source,before_id:before,limit:30});
+    const data=await api('feedback/list',{source:state.source,user_id:userId,before_id:before,limit:30});
     if(current!==drawerId||!state.actor)return;
-    drawer('feedback',`<div class="inbox-shell"><div class="data-toolbar">${['bot','release'].map(source=>`<button class="btn ${source===state.source?'primary':''}" data-source="${source}">${esc(t(source==='bot'?'botFeedback':'releaseFeedback'))}</button>`).join('')}</div><p class="source-note">${esc(t('feedbackGap'))}</p>${data.items.map(row=>`<article class="feedback-item"><strong>${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+row.rating+'/5':''}</strong><p>${esc(row.comment||row.disliked_text||row.liked_text||row.disliked_code||'—')}</p><small>${esc(date(row.completed_at||row.created_at))}</small>${row.has_attachment?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}</article>`).join('')||statePanel('empty')}${data.next_before_id?`<button class="btn" data-feedback-next="${data.next_before_id}">${esc(t('next'))}</button>`:''}</div>`,'','inbox-drawer');
+    drawer('feedback',`<div class="inbox-shell">${userId?`<p class="source-note">${esc(t('account'))}: #${userId}</p>`:''}<div class="data-toolbar">${['bot','release'].map(source=>`<button class="btn ${source===state.source?'primary':''}" data-source="${source}">${esc(t(source==='bot'?'botFeedback':'releaseFeedback'))}</button>`).join('')}</div><p class="source-note">${esc(t('feedbackGap'))}</p>${data.items.map(row=>`<article class="feedback-item"><strong>${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+row.rating+'/5':''}</strong><p>${esc(row.comment||row.disliked_text||row.liked_text||row.disliked_code||'—')}</p><small>${esc(date(row.completed_at||row.created_at))}</small>${row.has_attachment?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}</article>`).join('')||statePanel('empty')}${data.next_before_id?`<button class="btn" data-feedback-next="${data.next_before_id}">${esc(t('next'))}</button>`:''}</div>`,'','inbox-drawer');
   }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'));}
 }
 function mcpStateKey(row) {
@@ -318,8 +349,11 @@ document.addEventListener('click',event=>{
     else if(button.dataset.platform){state.platform=button.dataset.platform;await load();}
     else if(button.dataset.status){state.status=button.dataset.status;state.cursor=null;state.previous=[];await load();}
     else if(button.dataset.review){await review(Number(button.dataset.review));}
-    else if(button.dataset.source){state.source=button.dataset.source;await inbox();}
-    else if(button.dataset.feedbackNext){await inbox(Number(button.dataset.feedbackNext));}
+    else if(button.dataset.userDetail){await userProfile(Number(button.dataset.userDetail));}
+    else if(button.dataset.profilePayments){await moreUserPayments(Number(button.dataset.profilePayments),Number(button.dataset.before),button);}
+    else if(button.dataset.userFeedback){await inbox(null,Number(button.dataset.userFeedback));}
+    else if(button.dataset.source){state.source=button.dataset.source;await inbox(null,feedbackUserId);}
+    else if(button.dataset.feedbackNext){await inbox(Number(button.dataset.feedbackNext),feedbackUserId);}
     else if(button.dataset.mcpRevoke){confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
     else if(button.dataset.action){await action(button.dataset.action);}
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});

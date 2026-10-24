@@ -533,7 +533,25 @@
     "ui.admin_pwa.mcpSignInHint": "Откройте панель в новой вкладке и войдите с ключом доступа. Затем вернитесь сюда и повторите попытку.",
     "ui.admin_pwa.mcpRestart": "Запросите разрешение заново",
     "ui.admin_pwa.mcpRestartHint": "Подтверждение истекло или больше не действует. Вернитесь во внешнее приложение и начните подключение заново.",
-    "ui.admin_pwa.mcpOpenAdmin": "Открыть панель администратора"
+    "ui.admin_pwa.mcpOpenAdmin": "Открыть панель администратора",
+    "ui.admin_pwa.openProfile": "Открыть профиль",
+    "ui.admin_pwa.userProfile": "Профиль пользователя",
+    "ui.admin_pwa.userMissing": "Аккаунт не найден",
+    "ui.admin_pwa.created": "Дата регистрации",
+    "ui.admin_pwa.accessUntil": "Доступ до",
+    "ui.admin_pwa.completedLessons": "Завершённые уроки",
+    "ui.admin_pwa.lastLesson": "Последний завершённый урок",
+    "ui.admin_pwa.unlocked": "Открыт",
+    "ui.admin_pwa.referrals": "Рефералы",
+    "ui.admin_pwa.invitedTotal": "Всего приглашено",
+    "ui.admin_pwa.invitedActive": "Активированные приглашения",
+    "ui.admin_pwa.discountQualified": "Засчитано для скидки",
+    "ui.admin_pwa.devices": "Устройства",
+    "ui.admin_pwa.linkedTotal": "Привязано / всего",
+    "ui.admin_pwa.lastContact": "Последняя связь с сервером",
+    "ui.admin_pwa.miniappOpens": "Открытия Telegram Mini App",
+    "ui.admin_pwa.openFeedback": "Открыть обращения",
+    "ui.admin_pwa.paymentHistory": "История платежей"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

@@ -23,6 +23,8 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.db.base import Base
+from app.db.models.bot_feedback import BotFeedback
+from app.db.models.course_progress import CourseProgress
 from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.db.models.admin_pwa import AdminPwaSession
@@ -70,6 +72,11 @@ async def browser_checks(output):
     await fixture.seed_payment()
     async with fixture.sessions() as db:
         (await db.get(User,1)).full_name='<img src=x onerror=alert(1)> QA account'
+        db.add(CourseProgress(user_id=1,level='HSK1',completed_lessons_count=7))
+        db.add(BotFeedback(user_id=1,telegram_id=1001,status='completed',disliked_text='<script>private QA feedback</script>'))
+        db.add(BotFeedback(user_id=2,telegram_id=2002,status='completed',disliked_text='other account QA feedback'))
+        for index in range(11):
+            db.add(Payment(user_id=1,amount=index+1,currency='TJS',plan_type='1_month',payment_status='approved'))
         await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)))
         await db.commit()
     settings=fixture.settings
@@ -178,8 +185,34 @@ async def browser_checks(output):
         await page.locator('#userQuery').fill('1')
         await page.locator('#searchForm button').click()
         await expect(page.locator('.data-table tbody tr')).to_have_count(1)
+        await page.locator('.user-table [data-user-detail="1"]').click()
+        await expect(page.locator('#drawerTitle')).to_have_text('Foydalanuvchi profili')
+        await expect(page.locator('#drawerContent')).to_contain_text('<img src=x onerror=alert(1)> QA account')
+        await expect(page.locator('#drawerContent img')).to_have_count(0)
+        await expect(page.locator('#profilePayments article')).to_have_count(10)
+        await page.locator('[data-profile-payments]').click()
+        await expect(page.locator('#profilePayments article')).to_have_count(2)
+        await expect(page.locator('[data-profile-payments]')).to_have_count(0)
+        await page.screenshot(path=str(output/'desktop-user-profile.png'),full_page=True)
+        await page.locator('[data-user-feedback]').click()
+        await expect(page.locator('#drawerContent')).to_contain_text('<script>private QA feedback</script>')
+        await expect(page.locator('#drawerContent')).not_to_contain_text('other account QA feedback')
+        await page.locator('[data-source=release]').click()
+        assert calls[-1][2]['user_id']==1
+        await page.locator('.drawer-close').click()
         await page.set_viewport_size({'width':390,'height':844})
         await page.screenshot(path=str(output/'mobile-users.png'),full_page=True)
+        for language in ('uz','ru','tj'):
+            if language!='uz':
+                await page.locator('[data-action=more]').click()
+                await page.locator('#drawerLocale').select_option(language)
+            await page.locator('.user-cards [data-user-detail="1"]').click()
+            await expect(page.locator('#profilePayments article')).to_have_count(10)
+            await page.screenshot(path=str(output/f'mobile-user-profile-{language}.png'),full_page=True)
+            assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+            await page.locator('.drawer-close').click()
+        await page.locator('[data-action=more]').click()
+        await page.locator('#drawerLocale').select_option('uz')
         assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         await page.locator('[data-route=payments]').last.click()
         await expect(page.locator('[data-review]')).to_have_count(1)

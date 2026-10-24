@@ -350,3 +350,6 @@
 
 /* MCP history uses the existing V10 drawer and feedback card language. */
 .mcp-history{display:grid;gap:12px}.mcp-client-name{overflow-wrap:anywhere}.mcp-history .btn{min-height:44px}
+
+/* User profiles reuse the V10 drawer and existing metadata rows. */
+.profile-link{border:0;background:none;padding:8px 0;color:var(--accent);font:inherit;font-weight:700;text-align:left;overflow-wrap:anywhere;cursor:pointer;min-height:44px}.profile-link:hover{text-decoration:underline}.profile-heading{margin-bottom:24px;overflow-wrap:anywhere}.profile-heading h3{margin:0;font-size:21px}.profile-heading p{color:var(--muted)}.profile-section{border-top:1px solid var(--line);padding-top:18px;margin-top:24px}.profile-section h3{font-size:15px;margin:0 0 14px}.user-card>.btn{margin-top:14px;min-height:44px}

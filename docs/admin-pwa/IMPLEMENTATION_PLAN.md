@@ -5,6 +5,31 @@ Target public URL: `https://hskai.app/admin` (owner-designated; live DNS/TLS/rou
 Branch: `codex/admin-pwa` (branched from `main` at `e935e4315df42037d6aab4ab38b2c4e5d9bbb681`).
 Scope: deliver a separate secure browser-installable Admin PWA without disrupting the existing Telegram Admin Mini App, admin Bot, Android, Desktop, production or main.
 
+## Active continuation — owner instruction, 2026-10-24
+
+Work only on `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201. Commit and
+push each completed, tested increment to that branch. Never merge/push main or
+deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
+`MCP_NEXT_CHAT_HANDOFF.md` supersedes its implementation counts.
+
+1. **Statistics and accounts**: canonical read-only user profile, paginated
+   billing history, course/referral/device/feedback summaries; then defined AI
+   spend, engagement and conversion metrics. Preserve unavailable attribution.
+2. **Unified inbox**: durable native-report intake, source/history boundary,
+   search/filters, triage state, secure attachments and privacy/retention.
+3. **First-party management**: shared course/access/pricing/marketing/settings
+   commands with exact WebAuthn payload binding, confirmation and audit; keep
+   every unsupported high-risk operation disabled until verified.
+4. **Analytics exports and client compatibility**: bounded sanitized JSON/CSV,
+   metric dictionary, real approved ChatGPT client/callback setup. External MCP
+   remains statistics-only; profile/feedback and mutation routes stay excluded.
+5. **Staging acceptance**: isolated provider/device/TLS/proxy/migrations and
+   actual ChatGPT E2E, then owner review. Needs real staging configuration and
+   available hardware; never count synthetic tests as that evidence.
+
+Each increment records its actual checks in the current handoff before commit.
+No release completion claim until the final acceptance contract is satisfied.
+
 ## Fixed decisions
 
 1. **One backend, two authenticated entry points.** Keep current Telegram `/admin.html` and `X-Telegram-Init-Data` behavior unchanged. Use public browser URL `https://hskai.app/admin` with isolated PWA assets `/admin-pwa/assets/` and auth `/api/admin-pwa/auth/*`. Check all route collisions, reverse-proxy mapping and HTTPS before exposing. Reuse services and business logic; don't fork entitlement/payment rules.

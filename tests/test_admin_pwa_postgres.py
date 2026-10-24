@@ -437,7 +437,10 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
             self.assertEqual(await db.scalar(select(func.count()).select_from(PortfolioTransaction)), 1)
 
     async def test_projection_transaction_is_read_only_and_repeatable_on_postgres(self):
-        from app.admin_api.pwa_read import read_transaction, users, UsersRequest, statistics, StatisticsRequest
+        from app.admin_api.pwa_read import (
+            read_transaction, users, UsersRequest, statistics, StatisticsRequest,
+            user_detail, UserDetailRequest, user_payments, UserPaymentsRequest,
+        )
         from sqlalchemy import update
         from sqlalchemy.exc import DBAPIError
         await self.seed_payment()
@@ -446,6 +449,9 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
                 self.assertEqual(await db.scalar(text("SHOW transaction_read_only")), "on")
                 self.assertEqual(await db.scalar(text("SHOW transaction_isolation")), "repeatable read")
                 self.assertEqual((await statistics(db, StatisticsRequest()))["metrics"]["users_total"], 3)
+                profile = await user_detail(db, UserDetailRequest(user_id=1))
+                self.assertEqual(profile["user"]["user_id"], 1)
+                self.assertEqual(len((await user_payments(db, UserPaymentsRequest(user_id=1)))["items"]), 1)
                 self.assertEqual(len((await users(db, UsersRequest(limit=2)))["items"]), 2)
         with self.assertRaises(DBAPIError):
             async with self.sessions() as db:
