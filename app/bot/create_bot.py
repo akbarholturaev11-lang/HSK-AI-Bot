@@ -12,6 +12,7 @@ from app.db.session import init_db
 from app.bot.handlers.start import router as start_router
 from app.bot.handlers.account_deletion import router as account_deletion_router
 from app.bot.handlers.desktop_auth import router as desktop_auth_router
+from app.bot.handlers.admin_pwa import router as admin_pwa_router
 from app.bot.handlers.required_channel import router as required_channel_router
 from app.bot.handlers.commands import router as commands_router
 from app.bot.handlers.referral import router as referral_router
@@ -57,7 +58,8 @@ def create_bot(settings):
     # Telegram emits my_chat_member when a private user blocks/unblocks the bot.
     dp.include_router(bot_membership_router)
     dp.include_router(required_channel_router)
-    # Desktop deep links must be handled before the generic /start router.
+    # Browser admin challenge and native deep links precede generic /start.
+    dp.include_router(admin_pwa_router)
     dp.include_router(desktop_auth_router)
     dp.include_router(account_deletion_router)  # dedicated /start link before generic onboarding
     dp.include_router(start_router)
