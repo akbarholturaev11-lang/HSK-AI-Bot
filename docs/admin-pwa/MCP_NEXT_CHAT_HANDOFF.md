@@ -1,6 +1,17 @@
 # HSK AI Admin PWA — MCP continuation checkpoint
 _Last source/CI verified on 2026-10-24; this is the current MCP workstream handoff. Re-check remote HEAD before editing._
 
+## NEW VERIFIED INCREMENT — 2026-10-24 (latest CODE HEAD)
+
+- **Last verified code commit:** `7ee2f5ca70caf20a26763540589d02948ce639e9`. GitHub Actions **Admin PWA CI**: https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40080708288 — BOTH jobs passed; 288 Admin PWA Python tests passed + 13 PostgreSQL-only skipped, 61 affected legacy passed, 13 disposable PostgreSQL 16 tests passed, 63 locale artifacts / 0 stale; virtual WebAuthn, desktop/mobile PWA and 1440px/390px UZ/RU/TJ OAuth consent browser QA passed. This test evidence belongs to that exact code SHA, NOT to earlier commits. Additional documentation commits do not alter runtime code.
+- **New secure owner-only service/API:** `app/admin_api/pwa_mcp_management.py`, mounted in `app/main.py`. `GET /api/admin/v1/mcp/authorizations` returns bounded, token-free history for the currently approved WebAuthn admin. `POST /api/admin/v1/mcp/authorizations/revoke` requires the canonical HTTPS host, exact same Origin/Fetch Metadata and JSON, active signed-in admin browser cookie, same-user authorization; atomically cancels outstanding authorization codes and every token issued from that consent. This is FIRST-PARTY administrative revocation, not a remotely exposed ChatGPT write tool. Tests: `tests/test_admin_pwa_mcp_management.py` (actual SQLite transactions/cross-admin/replay) and `tests/test_admin_pwa_mcp_management_transport.py` (HTTP flags/CSRF/bad payload/no cookie); they are included in the green CI above. No schema change was necessary.
+- **RFC 9207 issuer identification:** `app/admin_api/pwa_mcp_http.py` now advertises `authorization_response_iss_parameter_supported=true`; `app/admin_api/pwa_mcp_consent_transport.py` appends the exact `iss=https://hskai.app` on BOTH success and denial callbacks, preserving original state and the exact allowlisted redirect. Regression assertions added in `tests/test_admin_pwa_mcp_http.py` and `tests/test_admin_pwa_mcp_consent_transport.py`.
+- **Client compatibility audit:** `docs/admin-pwa/MCP_CHATGPT_COMPATIBILITY_AUDIT_20261024.md`; official OpenAI current OAuth/CIMD/callback docs and MCP 2026-07-28 were checked. Unresolved: actual ChatGPT client ID and callback configuration (do NOT invent), robust CIMD/DCR negotiation, latest modern MCP protocol support, 5-minute token reauthorization/refresh UX, dedicated privacy-minimized per-tool audit and shared-rate limits, logout-to-grant policy, staging/real ChatGPT test. Issuer callback requirement above is now implemented, but **does not imply live compatibility**.
+- In this increment actual repository `hsk-ai-ui` and `webapp-testing` skill files, V10 browser references and localization policy were read. **No new visual UI screen or copy was changed**; revocation is an API-only management increment. Future management UI must follow those skills and canonical UZ/RU/TJ generation and Playwright screenshots.
+- User constraints unchanged: ONLY `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201, all three OFF flags and blank client credentials, statistics-only remote MCP, no main merge, production deploy, secrets or live staging without owner approval.
+
+---
+
 ## 1. Exact repository state
 - **Repository:** `akbarholturaev11-lang/HSK-AI-Bot`
 - **ONLY MCP working branch:** `feat/admin-pwa-mcp-readonly-20261024`
