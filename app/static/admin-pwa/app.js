@@ -129,7 +129,11 @@ async function load() {
 async function boot() {
   if(!navigator.onLine){clearPrivate('offline');return;}
   clearPrivate('loading');const current=epoch;
-  try {state.actor=await api('me',null,{method:'GET',publicAuth:true});if(current!==epoch)return;state.phase='ready';await load();await refreshInboxUnread();}
+  try {state.actor=await api('me',null,{method:'GET',publicAuth:true});if(current!==epoch)return;state.phase='ready';await load();await refreshInboxUnread();
+    if(current===epoch&&state.actor&&location.pathname==='/admin/'&&location.search==='?inbox=1'){
+      history.replaceState(null,'','/admin/');
+      await inbox(); // Only after current passkey Admin PWA login is verified.
+    }}
   catch(error) {
     if(current!==epoch)return;
     if(error.status!==401){state.phase='error';render();return;}
