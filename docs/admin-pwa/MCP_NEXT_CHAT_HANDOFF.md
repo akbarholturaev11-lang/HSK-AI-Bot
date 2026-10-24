@@ -2,6 +2,11 @@
 
 Updated 2026-10-24. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## PRIVATE NATIVE INBOX ATTACHMENT PROXY — 2026-10-24
+
+- **New branch-only scoped increment:** `app/admin_api/pwa_inbox_attachments.py` serves only valid, retained Android JPEG attachment bytes via `GET /api/admin/v1/inbox/android/{id}/attachment`. It requires canonical HTTPS admin origin, active allowlisted WebAuthn Admin PWA session, same-origin Fetch Metadata, exact bounded DB record ID, valid nonexpired row and a structurally verified JPEG up to the existing 550 KiB intake limit. No Telegram file ID, path, student text or attachment metadata is reflected. Responses are private no-store with nosniff; SQL is READ ONLY. Missing/expired/corrupt files fail closed.
+- Router is mounted in `app/main.py` behind the existing Admin PWA flag. Regression `tests/test_admin_pwa_inbox_attachments.py` covers valid bytes and privacy; no session/forged cookie, Google-only auth, blocked admin, cross-site/foreign origin, query tampering, missing/expired/corrupt records, disabled rollout. **No UI attachment action, Bot/Release Telegram media loader, real-device staging or MCP exposure is part of this increment.** This line describes authored scope; refer to CI at the new exact SHA before claiming verified.
+
 ## VERIFIED BOUNDED UNIVERSAL INBOX SEARCH — 2026-10-24
 
 - **Latest CI-verified implementation HEAD:** `15eeea3fc91d1d0d419165eba8d73b25ad5bfe82`, [Admin PWA Actions run 40100198739](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40100198739), **both jobs SUCCESS**. 368 Python passed / 17 PG-only skipped, 61 legacy passed, 17 disposable PostgreSQL 16 passed; 63 localized artifacts / 0 stale and actual headless Chromium virtual WebAuthn/mobile/desktop/Service Worker tests passed. No real device/proxy/production test was run. Other GitHub workflows are independent.

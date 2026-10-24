@@ -13,6 +13,15 @@ This is source-code evidence, **not** proof of production retention, alert deliv
 
 Authorized `inbox/list` now accepts a **strict optional 3–80-character search**, only over text already visible from BotFeedback, ReleaseFeedbackResponse and retained Android reports, plus exact numeric **payment ID**. SQL uses parameters and literal %/_ escaping; text search is limited to the most recent 30 days and each source is capped at `limit+1` for keyset merging. Source/status/important/account filters and no-store WebAuthn guards remain. Search does not access file references, receipt contents, bank/payment notes, stack traces or message history. Normal Inbox browsing still includes older records.
 
+## Attachment boundary (new separate increment)
+
+The standalone Admin PWA native JPEG attachment route is authenticated and
+strictly read-only, allowing a retained Android screenshot only with a current
+allowlisted WebAuthn admin cookie. Its provider-free read path does not import
+Mini App diagnostic history, old Telegram attachment references, payment receipts,
+or AI/MCP tools. No UI viewing action is enabled yet; Bot/Release files need
+independently reviewed Telegram-media access with ownership/source revalidation.
+
 ## Next safe technical-error work
 
 1. Inventory the actual inbound Mini App error API/router and trust boundary (not merely the storage helper).

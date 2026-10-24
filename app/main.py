@@ -38,6 +38,7 @@ from app.admin_api.pwa_payment_review_transport import create_admin_pwa_payment_
 from app.admin_api.pwa_payment_outbox import dispatch_payment_review
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
+from app.admin_api.pwa_inbox_attachments import create_admin_pwa_inbox_attachment_router
 from app.admin_api.pwa_push import create_admin_pwa_push_router
 from app.services.admin_pwa_push_dispatch import dispatch_batch, sender_config
 from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
@@ -749,6 +750,7 @@ admin_pwa_statistics_reader = AdminPwaStatisticsReader(settings_obj=settings, se
 app.include_router(create_admin_pwa_read_router(settings_obj=settings, session_factory=async_session_maker,
     statistics_reader=admin_pwa_statistics_reader))
 app.include_router(create_admin_pwa_inbox_triage_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_inbox_attachment_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_push_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_mcp_http_router(settings_obj=settings, session_factory=async_session_maker,
     statistics_reader=admin_pwa_statistics_reader))
