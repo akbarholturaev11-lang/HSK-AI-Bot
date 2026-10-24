@@ -1,3 +1,5 @@
+> **Current next-chat entry (MCP PR #201, 2026-10-24):** [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Work ONLY on `feat/admin-pwa-mcp-readonly-20261024` (Draft PR #201); PR #200 already merged. The older resume and handoff below describe historical PR #200 milestones and must not be used as current instructions. MCP transport and Admin PWA flags remain OFF; no real ChatGPT connection has been verified.
+
 # Admin PWA — CURRENT CODEx HANDOFF
 
 **Codex should start from [`CODEX_RESUME.md`](CODEX_RESUME.md), not from dated checkpoints lower in this README.** Read scoped rules and the most recent `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md` section. GitHub feature branch only; default flag OFF. Latest verified CI: [run 40029175593](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40029175593) (152 passed + 3 real PostgreSQL tests). The per-action WebAuthn step-up exists, but payment/delete/broadcast adapters and frontend remain unwired. Audited `app/main.py::_review_admin_payment` internally commits — refactor safely before trying atomic PWA mutations.
