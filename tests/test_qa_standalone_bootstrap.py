@@ -81,6 +81,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
             "admin_pwa_credentials", "admin_pwa_registration_challenges",
             "admin_pwa_authentication_challenges", "admin_pwa_step_ups",
             "admin_pwa_payment_reviews", "admin_pwa_payment_outbox",
+            "admin_pwa_mcp_access_grants",
         }
         self.assertEqual(set(metadata.tables) - initial, expected)
         self.assertIn("user_identities", initial)
