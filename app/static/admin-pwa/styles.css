@@ -366,3 +366,9 @@
 .inbox-entry-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
 .inbox-entry-actions .btn{min-height:44px;white-space:normal;text-align:center}
 @media(max-width:760px){.inbox-feedback-item{padding:15px 0}.inbox-entry-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.inbox-entry-actions .btn{width:100%;min-width:0;font-size:12px;padding:10px 7px;line-height:1.3}.inbox-entry-head{flex-direction:column;gap:3px}}
+
+/* Server-backed, touch-accessible triage filter for iPhone and Mac. */
+.inbox-priority-filter{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
+.inbox-priority-filter .btn{min-height:44px;min-width:86px}
+.top-icon-badge{pointer-events:none}
+@media(max-width:760px){.inbox-priority-filter .btn{flex:1;min-width:0}}
