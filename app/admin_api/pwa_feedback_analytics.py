@@ -189,9 +189,12 @@ class _FeedbackQueryLimit:
             self.active -= 1
 
 
-def create_admin_pwa_feedback_analytics_router(*, settings_obj, session_factory, clock=time.monotonic):
+def create_admin_pwa_feedback_analytics_router(*, settings_obj, session_factory, clock=time.monotonic, reader=None):
     router = APIRouter(tags=["admin-pwa-feedback-analytics"])
     throttle = _FeedbackQueryLimit(clock=clock)
+    if reader is None:
+        from app.admin_api.pwa_feedback_cache import AdminPwaFeedbackReader
+        reader = AdminPwaFeedbackReader(settings_obj=settings_obj, session_factory=session_factory)
 
     async def handle(request: Request, *, export: bool):
         failure = _guard_post(request, settings_obj)
@@ -218,7 +221,10 @@ def create_admin_pwa_feedback_analytics_router(*, settings_obj, session_factory,
                         response.headers["Retry-After"] = str(retry_after)
                         return response
                     admitted = True
-                    result = await feedback_analytics(db, query)
+            # Cached aggregate IO and a possible refresh run only AFTER the
+            # authentication transaction has closed; no SQL connection is
+            # pinned across Redis/R2 waits. Current auth is never cached.
+            result = await reader(FeedbackAnalyticsRequest(period=query.period, source=query.source))
             if export:
                 return render_feedback_analytics_export(result, query)
             return JSONResponse({"ok": True, **result}, headers=_PRIVATE_HEADERS)

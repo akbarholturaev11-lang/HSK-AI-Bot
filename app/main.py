@@ -38,6 +38,7 @@ from app.admin_api.pwa_payment_review_transport import create_admin_pwa_payment_
 from app.admin_api.pwa_payment_outbox import dispatch_payment_review
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_feedback_analytics import create_admin_pwa_feedback_analytics_router
+from app.admin_api.pwa_feedback_cache import AdminPwaFeedbackReader
 from app.admin_api.pwa_access_grants import create_admin_pwa_access_grant_router
 from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
 from app.admin_api.pwa_inbox_attachments import create_admin_pwa_inbox_attachment_router
@@ -723,6 +724,7 @@ async def lifespan(app: FastAPI):
             with contextlib.suppress(asyncio.CancelledError):
                 await task
         await admin_pwa_statistics_reader.aclose()
+        await admin_pwa_feedback_reader.aclose()
         await bot.session.close()
         await engine.dispose()
 
@@ -750,7 +752,9 @@ app.include_router(create_admin_pwa_payment_review_router(
 ))
 admin_pwa_statistics_reader = AdminPwaStatisticsReader(settings_obj=settings, session_factory=async_session_maker)
 app.include_router(create_admin_pwa_access_grant_router(settings_obj=settings, session_factory=async_session_maker))
-app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=settings, session_factory=async_session_maker))
+admin_pwa_feedback_reader = AdminPwaFeedbackReader(settings_obj=settings, session_factory=async_session_maker)
+app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=settings, session_factory=async_session_maker,
+    reader=admin_pwa_feedback_reader))
 app.include_router(create_admin_pwa_read_router(settings_obj=settings, session_factory=async_session_maker,
     statistics_reader=admin_pwa_statistics_reader))
 app.include_router(create_admin_pwa_inbox_triage_router(settings_obj=settings, session_factory=async_session_maker))
