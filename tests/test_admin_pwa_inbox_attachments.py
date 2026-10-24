@@ -70,6 +70,9 @@ class AdminPwaNativeAttachmentTests(fixtures.PaymentFixtures, unittest.IsolatedA
         self.assertEqual((await self.get(row_id,suffix="?raw=true")).status_code,400)
         self.settings.ADMIN_PWA_ENABLED=False
         self.assertEqual((await self.get(row_id)).status_code,404)
+        self.assertEqual((await self.get("{report_id}")).status_code,404)
+        self.settings.ADMIN_PWA_ENABLED=True
+        self.assertEqual((await self.get("{report_id}")).status_code,400)
 
     async def test_current_passkey_session_and_allowlist_rechecked(self):
         row_id=await self.seed()
