@@ -53,6 +53,49 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
             await db.commit()
         return ids
 
+    async def test_technical_alert_is_private_triable_and_never_arbitrary_message(self):
+        from app.db.models.message import Message
+        now = datetime.now(timezone.utc)
+        secret = "https://private.invalid/?token=DO_NOT_SHOW\\nstack=password"
+        async with self.sessions() as db:
+            rows = [
+                Message(user_id=1, role="assistant", content=secret,
+                        content_type="app_error_context", created_at=now),
+                Message(user_id=1, role="user", content=secret,
+                        content_type="text", created_at=now),
+                Message(user_id=1, role="assistant", content=secret,
+                        content_type="app_error_context", created_at=now-timedelta(days=31)),
+            ]
+            db.add_all(rows)
+            await db.flush()
+            technical_id, user_text_id, expired_id = [r.id for r in rows]
+            await db.commit()
+        listed = await self.post("inbox/list", {"source": "technical"})
+        self.assertEqual(listed.status_code, 200, listed.text)
+        self.assertEqual(len(listed.json()["items"]), 1)
+        self.assertEqual(listed.json()["items"][0]["source_id"], technical_id)
+        self.assertEqual(listed.json()["items"][0]["message"], "Mini App technical error")
+        self.assertEqual(listed.json()["items"][0]["triage_priority"], "important")
+        self.assertNotIn("DO_NOT_SHOW", listed.text)
+        before = (await self.post("inbox/unread-count", {})).json()["unread_count"]
+        marked = await self.post("inbox/triage", {"source": "technical",
+            "source_id": technical_id, "operation": "mark_read", "expected_revision": 0})
+        self.assertEqual(marked.status_code, 200, marked.text)
+        self.assertEqual(marked.json()["revision"], 1)
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], before-1)
+        resolved = await self.post("inbox/triage", {"source": "technical",
+            "source_id": technical_id, "operation": "resolve", "expected_revision": 1})
+        self.assertEqual(resolved.status_code, 200, resolved.text)
+        self.assertEqual(resolved.json()["status"], "resolved")
+        for source_id in (user_text_id,expired_id):
+            rejected = await self.post("inbox/triage", {"source":"technical",
+                "source_id":source_id,"operation":"mark_read","expected_revision":0})
+            self.assertEqual(rejected.status_code,403,rejected.text)
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(
+                AdminPwaInboxTriageAudit).where(
+                    AdminPwaInboxTriageAudit.source=="technical")), 2)
+
     async def test_three_sources_read_assign_priority_resolve_reopen_and_audit(self):
         ids = await self.seed()
         for source, source_id in ids.items():
