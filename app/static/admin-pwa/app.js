@@ -478,7 +478,7 @@ async function viewInboxAttachment(button){
   }finally{clearTimeout(timer);}
 }
 function inboxControl(row,operation,key){
-  if(!['bot','release','android','payment'].includes(row.source)||!Number.isSafeInteger(row.source_id)||!Number.isSafeInteger(row.triage_revision))return '';
+  if(!['bot','release','android','payment','technical'].includes(row.source)||!Number.isSafeInteger(row.source_id)||!Number.isSafeInteger(row.triage_revision))return '';
   return `<button class="btn small" data-inbox-op="${operation}" data-inbox-source="${row.source}" data-inbox-id="${row.source_id}" data-inbox-revision="${row.triage_revision}">${esc(t(key))}</button>`;
 }
 function inboxEntry(row){

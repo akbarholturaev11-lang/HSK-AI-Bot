@@ -17,7 +17,7 @@ from app.db.models.payment import Payment
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 from app.db.models.user import User
 
-Source = Literal["bot", "release", "android", "payment"]
+Source = Literal["bot", "release", "android", "payment", "technical"]
 RowId = Annotated[int, Field(strict=True, ge=1, le=2_147_483_647)]
 _RANK = {"technical": 5, "payment": 4, "android": 3, "release": 2, "bot": 1}
 _MAX_MESSAGE = 2000

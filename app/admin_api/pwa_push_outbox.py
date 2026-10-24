@@ -25,7 +25,7 @@ async def enqueue_important_triage(db, *, settings_obj, actor_id: int, source: s
     if (not getattr(settings_obj, "ADMIN_PWA_ENABLED", False)
             or not getattr(settings_obj, "ADMIN_PWA_PUSH_ENABLED", False)):
         return 0
-    if source not in ("bot", "release", "android") or revision < 1 or source_id < 1:
+    if source not in ("bot", "release", "android", "technical") or revision < 1 or source_id < 1:
         raise ValueError("invalid_push_event")
     # Browser enrollment already caps each admin at four devices. Treat any
     # inconsistent DB state conservatively by also bounding enqueue to four.

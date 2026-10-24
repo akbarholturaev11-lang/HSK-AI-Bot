@@ -1,6 +1,6 @@
 """Authenticated, audited first-party inbox triage. NEVER part of external MCP."""
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 from fastapi import APIRouter, Request
@@ -19,11 +19,12 @@ from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.admin_api.pwa_push_outbox import enqueue_important_triage
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.payment import Payment
+from app.db.models.message import Message
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 
 logger = logging.getLogger(__name__)
 _OPERATIONS = ("mark_read", "assign_self", "resolve", "reopen", "mark_important", "clear_important")
-_SOURCES = {"bot": BotFeedback, "release": ReleaseFeedbackResponse, "android": AdminPwaNativeReport, "payment": Payment}
+_SOURCES = {"bot": BotFeedback, "release": ReleaseFeedbackResponse, "android": AdminPwaNativeReport, "payment": Payment, "technical": Message}
 
 
 class TriageRequest(BaseModel):
@@ -58,6 +59,10 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
                                   _utc(source_row.expires_at) <= stamp):
             # Do not disclose whether an unseen source ID exists.
             return None
+        if command.source == "technical" and (
+                source_row.role != "assistant" or source_row.content_type != "app_error_context"
+                or _utc(source_row.created_at) < stamp - timedelta(days=30)):
+            return None
         if command.source == "payment":
             # Inbox read-state cannot approve/reject a receipt; financial
             # decisions stay in the separately signed payment review flow.
@@ -72,7 +77,7 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
         if row is None:
             row = AdminPwaInboxTriage(
                 source=command.source, source_id=command.source_id,
-                status="new", priority=("important" if command.source in ("payment", "android") else "normal"), revision=0, updated_at=stamp,
+                status="new", priority=("important" if command.source in ("payment", "android", "technical") else "normal"), revision=0, updated_at=stamp,
             )
             db.add(row)
         previous = (row.status, row.priority, row.assigned_to_user_id, row.read_at, row.resolved_at)
