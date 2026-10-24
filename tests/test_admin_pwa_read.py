@@ -31,6 +31,31 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
                                cookies={ADMIN_PWA_COOKIE_NAME:cookie} if cookie else {}) as client:
             return await client.post("/api/admin/v1/"+path, json=body)
 
+    async def test_payment_list_owner_status_paging_and_no_file_reference(self):
+        async with self.sessions() as db:
+            payment=await db.get(Payment,self.payment_id)
+            payment.user_telegram_id=2002
+            db.add(Payment(user_id=2,amount=50,currency="TJS",plan_type="1_month",payment_status="approved"))
+            db.add(Payment(user_id=2,amount=5,currency="USD",plan_type="10_days",payment_status="pending"))
+            await db.commit()
+        response=await self.post("payments/list",{"limit":1})
+        self.assertEqual(response.status_code,200,response.text)
+        data=response.json()
+        self.assertEqual(len(data["items"]),1)
+        self.assertEqual(data["items"][0]["currency"],"USD")
+        self.assertNotIn("telegram_id",response.text)
+        self.assertNotIn("screenshot_file_id",response.text)
+        second=(await self.post("payments/list",{"before_id":data["next_before_id"]})).json()
+        self.assertEqual(second["items"][0]["user_id"],1)
+        self.assertTrue(second["items"][0]["has_receipt"])
+        self.assertIsNone(second["next_before_id"])
+        self.assertNotIn("synthetic-receipt",str(second))
+        approved=(await self.post("payments/list",{"status":"approved"})).json()
+        self.assertEqual(len(approved["items"]),1)
+        self.assertEqual(approved["items"][0]["user_id"],2)
+        for body in ({"status":"all"},{"limit":True},{"before_id":0},{"user_id":1}):
+            self.assertEqual((await self.post("payments/list",body)).status_code,400)
+
     async def test_overall_canonical_population_dates_and_separate_currency_totals(self):
         now=datetime.now(timezone.utc)
         async with self.sessions() as db:
@@ -141,7 +166,7 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
             self.assertIsNone(response.json()["metrics"])
 
     async def test_flag_csrf_cookie_revocation_and_strict_bounds(self):
-        paths=(("statistics",{}),("users/search",{}),("feedback/list",{"source":"bot"}))
+        paths=(("payments/list",{}),("statistics",{}),("users/search",{}),("feedback/list",{"source":"bot"}))
         for path,body in paths:
             self.assertEqual((await self.post(path,body,cookie=None)).status_code,401)
             self.assertEqual((await self.post(path,body,cookie="T"*64)).status_code,401)

@@ -49,6 +49,27 @@ class FeedbackRequest(PageRequest):
     user_id: Id | None = None
 
 
+class PaymentsRequest(PageRequest):
+    status: Literal["pending", "approved", "rejected"] = "pending"
+
+
+async def payments(db, request: PaymentsRequest):
+    query = select(Payment, User).outerjoin(User, _payment_user_join()).where(
+        Payment.payment_status == request.status,
+    )
+    if request.before_id is not None:
+        query = query.where(Payment.id < request.before_id)
+    rows = (await db.execute(query.order_by(Payment.id.desc()).limit(request.limit+1))).all()
+    page = rows[:request.limit]
+    return {"items": [{"payment_id": p.id, "user_id": u.id if u else None,
+                       "name": u.full_name if u else None, "plan_type": p.plan_type,
+                       "payment_method": p.payment_method, "source": p.source,
+                       "amount": p.amount, "currency": p.currency, "status": p.payment_status,
+                       "submitted_at": _iso(p.submitted_at), "reviewed_at": _iso(p.reviewed_at),
+                       "has_receipt": bool(p.screenshot_file_id)} for p, u in page],
+            "next_before_id": page[-1][0].id if len(rows) > request.limit else None}
+
+
 @asynccontextmanager
 async def read_transaction(db):
     """Real PostgreSQL prevents writes and provides a coherent read snapshot."""
@@ -203,5 +224,9 @@ def create_admin_pwa_read_router(*, settings_obj, session_factory):
     @router.post("/api/admin/v1/feedback/list")
     async def read_feedback(request: Request):
         return await handle(request, FeedbackRequest, feedback)
+
+    @router.post("/api/admin/v1/payments/list")
+    async def read_payments(request: Request):
+        return await handle(request, PaymentsRequest, payments)
 
     return router

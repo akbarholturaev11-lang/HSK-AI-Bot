@@ -159,6 +159,27 @@ class AdminPwaGoogleTransportTests(unittest.TestCase):
             for line in response.headers.get_list("set-cookie")
         ))
 
+    def test_html_callback_fixed_redirect_and_private_status_cookie_fallback(self):
+        self.start()
+        response=self.client.get("/api/admin/v1/auth/google/callback?state=good&code=good-code",
+            headers={"accept":"text/html","sec-fetch-mode":"navigate","sec-fetch-dest":"document"},
+            follow_redirects=False)
+        self.assertEqual((response.status_code,response.headers["location"]),(303,"/admin/"))
+        self.assertNotIn(PROOF,response.text)
+        from app.admin_api.pwa_google_transport import _REQUEST_COOKIE
+        self.assertEqual(self.client.cookies.get(_REQUEST_COOKIE),"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
+        async def read_status(db, *, request_id, browser_proof, settings_obj):
+            self.assertEqual(request_id,"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
+            self.assertEqual(browser_proof,APPROVAL_PROOF)
+            return SimpleNamespace(status="pending",pairing_code="SYNTHETIC",
+                expires_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc))
+        with patch("app.admin_api.pwa_google_transport.read_browser_pwa_approval",new=read_status):
+            status=self.client.get("/api/admin/v1/auth/telegram/status")
+        self.assertEqual(status.status_code,200)
+        self.assertEqual(status.json()["pairing_code"],"SYNTHETIC")
+        self.client.cookies.delete(_APPROVAL_COOKIE)
+        self.assertEqual(self.client.get("/api/admin/v1/auth/telegram/status").status_code,401)
+
     def test_callback_missing_cookie_fails(self):
         self.assertEqual(self.callback().status_code, 400)
         self.assertEqual(self.finished, [])

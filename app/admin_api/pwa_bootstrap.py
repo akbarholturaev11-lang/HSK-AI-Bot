@@ -1,20 +1,28 @@
 """Isolated Admin PWA routes. Feature flag remains off by default.
 
 Existing Telegram admin endpoints continue to authenticate via initData. These
-routes ONLY trust a future browser session issued after verified onboarding.
+routes only trust a server-backed browser session issued after verified onboarding.
 """
 
 import logging
+import hashlib
+from pathlib import Path
 from typing import Any, Callable
 from urllib.parse import urlsplit
 
 from fastapi import APIRouter, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse, RedirectResponse, Response
 
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME, authenticate_admin_pwa_session
 
 
 logger = logging.getLogger(__name__)
+_ASSETS = Path(__file__).resolve().parents[1] / "static" / "admin-pwa"
+_PUBLIC_ASSETS = {"app.js": "text/javascript", "styles.css": "text/css",
+                  "catalog.js": "text/javascript", "icon.png": "image/png", "icon-large.png": "image/png"}
+_PAGE_CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; "
+             "img-src 'self' blob:; connect-src 'self'; manifest-src 'self'; "
+             "worker-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'")
 _PRIVATE_HEADERS = {
     "Cache-Control": "no-store",
     "Pragma": "no-cache",
@@ -66,7 +74,58 @@ def create_admin_pwa_bootstrap_router(*, settings_obj: Any, session_factory: Cal
     @router.get("/admin", include_in_schema=False)
     async def admin_pwa_entry(request: Request):
         error = gate(request)
-        return error if error is not None else response(503, "admin_pwa_auth_not_ready")
+        return error if error is not None else RedirectResponse("/admin/", status_code=303,
+                                                               headers=_PRIVATE_HEADERS)
+
+    @router.get("/admin/", include_in_schema=False)
+    async def shell(request: Request):
+        error = gate(request)
+        if error is not None:
+            return error
+        # Identical PUBLIC shell for every browser: no actor/account/secret is
+        # ever embedded. Only authenticated no-store APIs supply private data.
+        return FileResponse(_ASSETS / "index.html", media_type="text/html", headers={
+            **_PRIVATE_HEADERS, "Content-Security-Policy": _PAGE_CSP,
+            "Referrer-Policy": "no-referrer", "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        })
+
+    @router.get("/admin/assets/{filename}", include_in_schema=False)
+    async def asset(request: Request, filename: str):
+        error = gate(request)
+        if error is not None:
+            return error
+        if filename not in _PUBLIC_ASSETS:
+            return response(404, "not_found")
+        return FileResponse(_ASSETS / filename, media_type=_PUBLIC_ASSETS[filename], headers={
+            "Cache-Control": "public, max-age=0, must-revalidate", "X-Content-Type-Options": "nosniff",
+        })
+
+    @router.get("/admin/manifest.webmanifest", include_in_schema=False)
+    async def manifest(request: Request):
+        error = gate(request)
+        if error is not None:
+            return error
+        return JSONResponse({"id": "/admin/", "name": "HSK AI Admin", "short_name": "HSK AI",
+                             "start_url": "/admin/", "scope": "/admin/", "display": "standalone",
+                             "background_color": "#f5f7f7", "theme_color": "#172731",
+                             "icons": [{"src": "/admin/assets/icon.png", "sizes": "256x256",
+                                        "type": "image/png", "purpose": "any"},
+                                       {"src": "/admin/assets/icon-large.png", "sizes": "1024x1024",
+                                        "type": "image/png", "purpose": "any"}]},
+                            media_type="application/manifest+json", headers={"Cache-Control": "no-cache"})
+
+    @router.get("/admin/sw.js", include_in_schema=False)
+    async def service_worker(request: Request):
+        error = gate(request)
+        if error is not None:
+            return error
+        version = hashlib.sha256(b"".join((_ASSETS / name).read_bytes()
+            for name in ("index.html", *_PUBLIC_ASSETS))).hexdigest()[:16]
+        body = (_ASSETS / "sw.js").read_text().replace("__SHELL_VERSION__", version)
+        return Response(body, media_type="text/javascript", headers={
+            "Cache-Control": "no-cache", "Service-Worker-Allowed": "/admin/",
+            "X-Content-Type-Options": "nosniff",
+        })
 
     @router.get("/api/admin/v1/me")
     async def admin_pwa_me(request: Request):

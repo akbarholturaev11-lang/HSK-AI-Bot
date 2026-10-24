@@ -8,7 +8,7 @@ import logging
 from typing import Any, Callable
 
 from fastapi import APIRouter, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 
 from app.admin_api.pwa_oidc import (
     AdminPwaOidcError,
@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 # __Host- cookies MUST remain Secure, host-only and Path=/.
 _OIDC_COOKIE = "__Host-hskai_admin_oidc"
 _APPROVAL_COOKIE = "__Host-hskai_admin_approval"
+_REQUEST_COOKIE = "__Host-hskai_admin_request"
 _PRIVATE_HEADERS = {
     "Cache-Control": "no-store",
     "Pragma": "no-cache",
@@ -115,6 +116,7 @@ def create_admin_pwa_google_router(
         )
         _set_secret_cookie(response, _OIDC_COOKIE, started.browser_proof, 600)
         _drop_cookie(response, _APPROVAL_COOKIE)
+        _drop_cookie(response, _REQUEST_COOKIE)
         return response
 
     @router.get(
@@ -166,8 +168,13 @@ def create_admin_pwa_google_router(
             },
             headers=_PRIVATE_HEADERS,
         )
+        if "text/html" in request.headers.get("accept", ""):
+            # Fixed local destination, no OAuth code/state/proof in the URL.
+            # This is only a browser transport after the SAME verified flow.
+            response = RedirectResponse("/admin/", status_code=303, headers=_PRIVATE_HEADERS)
         _drop_cookie(response, _OIDC_COOKIE)
         _set_secret_cookie(response, _APPROVAL_COOKIE, pending.browser_proof, 300)
+        _set_secret_cookie(response, _REQUEST_COOKIE, pending.request_id, 300)
         return response
 
     @router.get("/api/admin/v1/auth/telegram/status")
@@ -178,6 +185,8 @@ def create_admin_pwa_google_router(
         if request.headers.get("sec-fetch-site", "same-origin") != "same-origin":
             return _reply(403, "admin_pwa_csrf")
         identifiers = request.query_params.getlist("request_id")
+        if not identifiers and request.cookies.get(_REQUEST_COOKIE):
+            identifiers = [request.cookies[_REQUEST_COOKIE]]
         if len(identifiers) != 1 or session_factory is None:
             return _reply(400, "admin_pwa_approval_invalid")
         browser_proof = request.cookies.get(_APPROVAL_COOKIE, "")
@@ -198,6 +207,7 @@ def create_admin_pwa_google_router(
             return _reply(404, "admin_pwa_approval_invalid")
         return JSONResponse(content={
             "ok": True,
+            "request_id": identifiers[0],
             "status": result.status,
             "pairing_code": result.pairing_code,
             "expires_at": result.expires_at.isoformat(),

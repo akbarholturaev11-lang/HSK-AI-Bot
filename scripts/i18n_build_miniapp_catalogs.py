@@ -115,7 +115,11 @@ def output_files(catalogs):
     def encode(value):
         return (json.dumps(value, ensure_ascii=False, separators=(",", ":"))
                 .replace("<", r"\u003c").replace("\u2028", r"\u2028").replace("\u2029", r"\u2029"))
-    messages = {locale: data["messages"] for locale, data in catalogs.items()}
+    # Keep admin-only copy out of learner bundles; one canonical namespace
+    # supplies a small, separately generated public Admin PWA catalog.
+    messages = {locale: {key: value for key, value in data["messages"].items()
+                         if not key.startswith("ui.admin_pwa.")}
+                for locale, data in catalogs.items()}
     references = {"common": set(), "course": set()}
     def collect(node):
         if "reference" in node:
@@ -152,7 +156,16 @@ def output_files(catalogs):
         "  var result={};Object.keys(fallback).forEach(function(locale){result[locale]=render(layout,fallback[locale],locale)});return result;\n"
         "};\n})(window);\n"
     )
-    return {TARGET: body}
+    admin = {locale: {key.removeprefix("ui.admin_pwa."): value
+                      for key, value in data["messages"].items() if key.startswith("ui.admin_pwa.")}
+             for locale, data in catalogs.items()}
+    for locale, data in catalogs.items():
+        for key, shared_key in {"close": "action.close", "logout": "action.logout",
+                                "retry": "desktopAuth.retry", "loading": "state.loading"}.items():
+            admin[locale][key] = data["_shared"]["common"][shared_key]
+    return {TARGET: body, "app/static/admin-pwa/catalog.js":
+            "/* Generated from canonical Mini App/common catalogs; do not edit. */\n"
+            + "window.HSKAI_ADMIN_I18N=" + encode(admin) + ";\n"}
 
 
 def generate(root: Path = ROOT, *, check: bool):
