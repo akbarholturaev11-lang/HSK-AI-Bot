@@ -297,6 +297,15 @@ async function refreshInboxUnread() {
     if(current!==epoch||state.actor?.user_id!==id)return;
     if(!Number.isSafeInteger(data.unread_count)||data.unread_count<0||typeof data.capped!=='boolean')return;
     inboxUnread={unread_count:data.unread_count,capped:data.capped};
+    // Apple Home Screen/Dock badge: only after the user explicitly opted in.
+    // Never clear or replace the badge when the authoritative read failed.
+    if(state.actor.push_available&&'Notification' in window&&Notification.permission==='granted'){
+      if(data.unread_count&&typeof navigator.setAppBadge==='function'){
+        navigator.setAppBadge(data.unread_count).catch(()=>{});
+      }else if(!data.unread_count&&typeof navigator.clearAppBadge==='function'){
+        navigator.clearAppBadge().catch(()=>{});
+      }
+    }
     const bell=document.querySelector('button[data-action="feedback"]');
     if(!bell)return;
     bell.querySelector('.top-icon-badge')?.remove();
