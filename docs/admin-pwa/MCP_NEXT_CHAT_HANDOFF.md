@@ -2,6 +2,14 @@
 
 Updated 2026-10-24. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## VERIFIED APPLE-PRIORITIZED INBOX TRIAGE UI — 2026-10-24
+
+- **Last CI-verified code SHA:** `a2ea94d6d9d95b0fa0159dcaee6f54574dab9ed8`; [Admin PWA run 40091110808](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40091110808): both jobs green, 325 Python passed (17 skipped PostgreSQL-only), 61 legacy passed, 17 disposable PostgreSQL 16 passed, 63 localization artifacts / 0 stale; browser virtual WebAuthn / V10 source & triage taps / 390px 44px touch target passed. Other workflow families may still be running.
+- `app/static/admin-pwa/app.js` now renders each item with server-derived read/assigned/resolved and important/normal state plus context-specific first-party triage buttons; compares `expected_revision`, reloads after success/409, disables controls during mutation, never fabricates success on an unknown response. New `styles.css` targets iPhone 390px touch controls and Mac desktop. `tests/e2e/admin_pwa_browser.py` clicks the real POST endpoint and awaits durable audit + re-render (first early test failed due to clicking twice before API completion; fixed without weakening backend checks). Synthetic screenshot `mobile-inbox-triage.png` is collected in CI.
+- New triage labels are canonical in `localization/ui/{uz,ru,tj}/miniapp.json`; regenerated `app/static/admin-pwa/catalog.js` matches the existing catalog builder. No learner bundle copy changed; `scripts/i18n_build_all_catalogs.py --check` green.
+- **Owner priority:** Apple **iPhone + Mac**, not Windows/Android Admin PWA. Important distinction: the current Inbox receives/manages stored feedback; **Web Push to the owner's iPhone/Mac is NOT implemented**. The staged security/device acceptance checklist is `docs/admin-pwa/APPLE_PUSH_ACCEPTANCE.md`. This new capability needs per-device VAPID subscriptions, server push/outbox, explicit installed-iPhone/ Mac consent and real physical device QA. No notification permission prompt, push subscription storage, production keys or live delivery was enabled.
+- Next scoped work: source-backed unread count + filters/severity search + system/admin event inventory, then secure attachment proxy and opt-in Apple Web Push. Keep all three rollout flags default OFF and external MCP statistics-only, no main merge/deploy.
+
 ## VERIFIED INBOX TRIAGE BACKEND INCREMENT — 2026-10-24
 
 - **CI-tested implementation head:** `838026d9a5ea33695d29a2b3be613d153eec642b`. [Admin PWA CI 40089654035](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40089654035): BOTH jobs green; **325 Python passed / 17 PostgreSQL-only skipped**, **17 real PostgreSQL 16** tests green, 61 affected legacy regressions green, 63 catalogs / 0 stale, desktop/mobile virtual-WebAuthn/Service Worker browser regression green. This is synthetic CI, **not** a production or physical-device test.
