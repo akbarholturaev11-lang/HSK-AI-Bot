@@ -26,12 +26,17 @@ class InboxCursor(BaseModel):
     source: Source
     source_id: RowId
 
-    @field_validator("created_at")
+    @field_validator("created_at", mode="before")
     @classmethod
     def require_timezone(cls, value):
-        if value.tzinfo is None or value.utcoffset() is None:
+        # The HTTP body has already been JSON-decoded into Python strings.
+        # Strict Pydantic datetime otherwise rejects our own ISO cursor.
+        if not isinstance(value, str) or not 20 <= len(value) <= 40:
+            raise ValueError("Cursor must be a bounded ISO 8601 string")
+        parsed = datetime.fromisoformat(value)
+        if parsed.tzinfo is None or parsed.utcoffset() is None:
             raise ValueError("Cursor must include a timezone")
-        return value.astimezone(timezone.utc)
+        return parsed.astimezone(timezone.utc)
 
 
 class InboxRequest(BaseModel):
