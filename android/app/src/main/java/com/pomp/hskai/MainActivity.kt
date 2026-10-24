@@ -630,6 +630,11 @@ private fun AppRoot(
 
             var checkoutVisible by rememberSaveable { mutableStateOf(false) }
             var checkoutOrigin by rememberSaveable { mutableStateOf("course_limit") }
+            // Same-package Direct -> Play updates can restore a saved checkout.
+            // Play must render the app immediately and clear that obsolete state.
+            LaunchedEffect(Unit) {
+                if (!BuildConfig.EXTERNAL_CHECKOUT_ENABLED) checkoutVisible = false
+            }
             val limitGate = rememberLimitGate(
                 repository = app.featureRepository,
                 viewModelStoreOwner = sessionOwner,
@@ -1122,7 +1127,7 @@ private fun AppRoot(
             }
 
             val launch = openLesson
-            if (checkoutVisible) {
+            if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && checkoutVisible) {
                 SubscriptionCheckoutHost(
                     repository = app.featureRepository,
                     viewModelStoreOwner = sessionOwner,

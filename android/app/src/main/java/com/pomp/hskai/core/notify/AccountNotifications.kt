@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.pomp.hskai.MainActivity
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.R
 import com.pomp.hskai.core.i18n.AppLocale
 import com.pomp.hskai.core.navigation.DeepLinkRouter
@@ -55,8 +56,15 @@ object AccountNotifications {
                 ?.getNotificationChannel(CHANNEL_ID)?.importance != NotificationManager.IMPORTANCE_NONE
     }
 
-    /** Returns false when nothing was shown, so the server falls back to Telegram. */
+    /**
+     * Returns whether the notice was handled. A Play policy skip is handled
+     * silently: false would disable useful notices and send the promotion to
+     * Telegram through the server's legacy `shown` acknowledgement contract.
+     */
     fun post(context: Context, notice: AccountNoticeDto): Boolean {
+        if (!AccountNoticePolicy.canShow(notice.key, notice.action, BuildConfig.EXTERNAL_CHECKOUT_ENABLED)) {
+            return true
+        }
         val title = notice.title.trim()
         val body = notice.body.trim()
         if (title.isEmpty() && body.isEmpty()) return false
@@ -65,7 +73,9 @@ object AccountNotifications {
         val notificationId = AccountNoticePolicy.notificationId(notice.key)
         val intent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_VIEW
-            data = Uri.parse(DeepLinkRouter.uriFor(AccountNoticePolicy.destination(notice.action)))
+            data = Uri.parse(DeepLinkRouter.uriFor(
+                AccountNoticePolicy.destination(notice.action, BuildConfig.EXTERNAL_CHECKOUT_ENABLED),
+            ))
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         val pending = PendingIntent.getActivity(

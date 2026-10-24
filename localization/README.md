@@ -11,7 +11,7 @@ python3 scripts/i18n_build_all_catalogs.py --check
 
 The builder validates every namespace before writing any output, rejects
 duplicate output ownership and reports missing/stale bundles. P0 checks all
-60 generated artifacts. The unified builder also refreshes existing browser
+63 generated artifacts. The unified builder also refreshes existing browser
 asset cache tokens using the generated file's Git-blob content hash. It changes
 tokens only in already reviewed HTML and updates the corresponding reviewed
 hash; unrelated source changes require review first. `--check` reports stale

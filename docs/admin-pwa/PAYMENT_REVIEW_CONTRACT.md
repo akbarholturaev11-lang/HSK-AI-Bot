@@ -89,7 +89,10 @@ outbox contention, lock-wait expiry, actual 0117 DDL and audit retention.
 The migration chain is tested only from the synthetic stamped 0109 baseline;
 the existing unrelated cold-start failure at 0011 remains.
 
-No browser confirmation UI, installed PWA, physical authenticator, real payment,
-Google/Telegram provider E2E, production migration or deployment is claimed.
-The financial API is branch-only and disabled by default. Do not enable it
-until the real confirmation UI and staging/device acceptance are completed.
+The real-data browser confirmation UI now exists; see `BROWSER_UI_CONTRACT.md`.
+Virtual WebAuthn registration/login/step-up and actual server payment writes
+are covered by synthetic browser QA. Physical installed-device biometrics,
+real Google/Telegram provider E2E, real payments, production migration and
+deployment remain unverified. The financial API stays disabled by default.
+Merge readiness with the flag OFF is distinct from activation acceptance;
+activation still requires staging/device QA and separate owner authorization.

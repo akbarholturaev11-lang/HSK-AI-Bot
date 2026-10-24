@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="play_limit_heading">Лимити ройгони шумо тамом шуд</string>
+    <string name="play_limit_daily_heading">Лимити ройгони имрӯзаи шумо тамом шуд</string>
+    <string name="play_limit_renewal">Лимити ройгон пагоҳ нав мешавад.</string>
+    <string name="play_limit_required">Барои ҳозир идома додан обунаи фаъоли HSK AI Pro лозим аст.</string>
+    <string name="play_limit_description">Дар ин барнома харидани обуна дастрас нест. Агар обунаатон фаъол бошад, дастрасиро дубора санҷед.</string>
+    <string name="play_limit_check_access">Санҷидани дастрасӣ</string>
+</resources>

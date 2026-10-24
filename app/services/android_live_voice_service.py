@@ -5,6 +5,7 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 
 from app.services.account_identity import actual_telegram_id
+from app.services.ai_safety import LEARNING_SAFETY_INSTRUCTION
 from app.services.voice_practice_service import (
     LANGUAGE_NAMES,
     ROLE_PROMPTS,
@@ -65,6 +66,7 @@ def live_voice_system_instruction(item) -> str:
         part
         for part in (
             ROLE_PROMPTS.get(item.role, ROLE_PROMPTS["friend"]),
+            LEARNING_SAFETY_INSTRUCTION,
             f"STRICT HSK level: {_level_guidance(item.level)}",
             "Speak only in short, natural Chinese sentences. Keep each spoken reply to one short sentence, at most two.",
             f"The learner understands {language}; do not switch away from Chinese during conversation.",

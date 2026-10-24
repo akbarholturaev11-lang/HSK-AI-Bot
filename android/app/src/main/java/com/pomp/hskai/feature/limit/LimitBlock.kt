@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompShapes
 import com.pomp.hskai.core.design.PompSpacing
@@ -88,7 +89,7 @@ fun LimitBlock(
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(PompSpacing.Large))
-        Surface(
+        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) Surface(
             color = PompColors.PaperRaised, shape = PompShapes.Large,
             border = BorderStroke(1.dp, PompColors.Divider),
         ) {

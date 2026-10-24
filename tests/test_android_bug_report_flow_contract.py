@@ -42,7 +42,8 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
         self.assertIn("val screenshot = captureReportScreen(visibleDialogView)", self.profile)
 
     def test_existing_bug_report_defaults_screenshot_on_and_ai_report_defaults_off(self):
-        self.assertIn('var attachScreenshot by remember(screen) { mutableStateOf(screen != "ai_assistant") }', self.form)
+        self.assertIn('val aiContentReport = screen == "ai_assistant" || screen == "ai_voice"', self.form)
+        self.assertIn('var attachScreenshot by remember(screen) { mutableStateOf(!aiContentReport) }', self.form)
         self.assertIn("initialDescription: String = \"\"", self.form)
         self.assertIn("checked = attachScreenshot", self.form)
         self.assertIn("onCheckedChange", self.form)
@@ -69,7 +70,7 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
         self.assertIn("menuExpanded = false\n                        onReport()", actions)
         self.assertGreaterEqual(actions.count("Modifier.size(48.dp)"), 3)
         self.assertIn("remember(turn.clientMessageId)", actions)
-        self.assertIn('if (screen == "ai_assistant") R.string.assistant_report_answer', self.form)
+        self.assertIn('if (aiContentReport) R.string.assistant_report_answer', self.form)
         self.assertIn('screen = "ai_assistant"', self.assistant)
         self.assertIn("turn.clientMessageId.take(80)", self.assistant)
         self.assertIn("turn.text.take(350)", self.assistant)

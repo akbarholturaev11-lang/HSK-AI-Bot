@@ -7,7 +7,7 @@
 - Repo: `akbarholturaev11-lang/HSK-AI-Bot`
 - **ONLY working branch:** `codex/admin-pwa`
 - Last verified code/test SHA: `f6ec223dbab7db46695237fa82c511204badb809`. The head advances with later code/docs commits; always inspect current HEAD and the latest handoff before implementation.
-- At the latest remote comparison the feature branch remained **3 commits behind `main`** and diverged. **Do not merge, rebase, reset, cherry-pick, or resolve drift automatically**. Review relevant `main` differences separately.
+- Owner requested main-merge preparation on 2026-10-24. The existing three main commits (tip `fb185be5cf481afcc62964951377fdd769df2fbe`) are being merged **into codex/admin-pwa only**, preserving Android Play fixes. Two conflicts are resolved by retaining both catalogs and asserting 63 generated artifacts. No main promotion/deploy is authorized. Inspect the current merge state/HEAD and `MERGE_READINESS.md` before continuing; do not reset/rebase or rewrite history.
 - Default: `ADMIN_PWA_ENABLED=false`. Keep it **OFF**. No production deployment, no merge to `main`, no changes to secrets or public site, no changes to the existing Telegram `/admin.html`, `X-Telegram-Init-Data`, native APK billing/update behavior, or normal user authentication.
 - Do not treat stale status summaries near the top of `IMPLEMENTATION_PLAN.md` or old sections of `NEXT_CHAT_START.md` as current; consult source and this verified checkpoint.
 
@@ -66,7 +66,7 @@ CI: `.github/workflows/admin-pwa-security.yml`. Run the core/catalog, legacy, re
 ## 6. Codex execution & completion contract
 
 - Continue **implementation**, not a new speculative multi-page plan.
-- Review actual code, current branch/HEAD, latest changed commits and the difference from `main`; branch is diverged, **do not merge or rebase** without explicit owner consent.
+- Review actual code, branch/HEAD, latest commits and main differences. The owner authorized preparing the feature for main; record base synchronization and test the actual PR merge candidate. Keep main unchanged until separately authorized; no rebase/reset/force push.
 - Make small, reviewed commits **ONLY to `codex/admin-pwa`**. Never enable flag, touch production, rewrite git history, edit live deployment/secrets, or alter legacy `/admin.html` auth. Reuse shared business services and preserve semantics.
 - For UI messages, author all new UZ/RU/TJ text in canonical sources, run `python3 scripts/i18n_build_all_catalogs.py --write` then `--check`, and commit generated outputs.
 - For each increment: report changed files, exact commit SHA, tested scope (unit/real PG/real FIDO/real device), CI link, regressions/limitations and next task; append factual results to `HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md` and update THIS short resume file when the authoritative checkpoint changes.

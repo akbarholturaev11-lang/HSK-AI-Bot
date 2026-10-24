@@ -23,6 +23,7 @@ from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services import course_daily_window
 from app.services.ai_service import AIService, AIUsageResult
+from app.services.ai_safety import LEARNING_SAFETY_INSTRUCTION
 from app.services.ai_provider import GEMINI_FAST_MODEL
 from app.services.ai_usage_budget_service import AIUsageBudgetService, BudgetRecordResult
 from app.services.study_miniapp_service import StudyMiniAppService
@@ -1099,7 +1100,8 @@ class VoicePracticeService:
                 "role": "system",
                 "content": (
                     f"{ROLE_PROMPTS[item.role]} "
-                    f"STRICT LEVEL RULE (most important): {_level_guidance(item.level)} "
+                    f"{LEARNING_SAFETY_INSTRUCTION} "
+                    f"STRICT LEVEL RULE (after safety rules): {_level_guidance(item.level)} "
                     "Never use any word or grammar above the learner's level, even if it feels natural. "
                     "If you must reference something harder, replace it with a simpler word the learner knows. "
                     f"Current-lesson target words: {target_words}. {used_instruction}"
