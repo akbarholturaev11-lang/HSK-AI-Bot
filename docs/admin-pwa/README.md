@@ -48,6 +48,7 @@ Sanitized feedback exports remain a separate review; MCP permissions are unchang
 | Browser V10, localization, private-data handling | [Browser UI contract](BROWSER_UI_CONTRACT.md), [V10 reference](ADMIN_PWA_V10_UI_REFERENCE.md) |
 | OAuth lifecycle, statistics-only tools, protocol and staging gates | [MCP contract](MCP_CONNECTION_CONTRACT.md), [compatibility audit](MCP_CHATGPT_COMPATIBILITY_AUDIT_20261024.md) |
 | Live financial review and exact-operation WebAuthn | [Payment review contract](PAYMENT_REVIEW_CONTRACT.md) |
+| Manual Pro grant, exact snapshot and command audit | [Access grants](ACCESS_GRANTS_CONTRACT.md) |
 | Durable native intake and historical-data boundary | [Native inbox intake](NATIVE_INBOX_INTAKE.md) |
 
 Inbox read/triage/search and default-OFF Apple Push code have since arrived from

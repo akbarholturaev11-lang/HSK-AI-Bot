@@ -52,6 +52,8 @@ from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_rou
 from app.admin_api.pwa_mcp_oauth import begin_mcp_authorization, decide_mcp_consent, exchange_mcp_code, pkce_s256
 from app.admin_api.pwa_mcp_resource import verify_readonly_mcp_bearer
 from app.admin_api.pwa_read import create_admin_pwa_read_router
+from app.admin_api.pwa_access_grants import create_admin_pwa_access_grant_router
+from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
 from app.admin_api.pwa_inbox_attachments import create_admin_pwa_inbox_attachment_router
 from tests.test_admin_pwa_payment_review import PaymentFixtures, COOKIE
@@ -872,6 +874,81 @@ async def export_browser_checks(output):
         await fixture.engine.dispose()
 
 
+async def access_grant_browser_checks(output):
+    fixture=Fixture();fixture.engine=create_async_engine('sqlite+aiosqlite:///:memory:',poolclass=StaticPool)
+    async with fixture.engine.begin() as conn:await conn.run_sync(Base.metadata.create_all)
+    fixture.sessions=async_sessionmaker(fixture.engine,expire_on_commit=False)
+    await fixture.seed_payment()
+    app=FastAPI();common={'settings_obj':fixture.settings,'session_factory':fixture.sessions}
+    for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router,
+                    create_admin_pwa_step_up_router,create_admin_pwa_access_grant_router):
+        app.include_router(factory(**common))
+    drop=False;calls=[]
+    async def serve(route):
+        nonlocal drop
+        request=route.request;path=request.url.removeprefix(ORIGIN)
+        if path=='/admin/sw.js':await route.abort();return
+        calls.append((path,request.post_data_json if request.method=='POST' else None))
+        async with AsyncClient(transport=ASGITransport(app=app),base_url=ORIGIN) as client:
+            response=await client.request(request.method,path,headers=await request.all_headers(),content=request.post_data_buffer)
+        if drop and path=='/api/admin/v1/users/grant-access':drop=False;await route.abort();return
+        headers=dict(response.headers);headers.pop('content-length',None)
+        await route.fulfill(status=response.status_code,headers=headers,body=response.content)
+    try:
+        async with async_playwright() as pw:
+            browser=await pw.chromium.launch();context=await browser.new_context(viewport={'width':1440,'height':1000},service_workers='block')
+            await context.add_cookies([{'name':'__Host-hskai_admin','value':COOKIE,'url':ORIGIN,'secure':True,'httpOnly':True,'sameSite':'Strict'}])
+            await context.route('**/*',serve)
+            page=await context.new_page();errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
+            cdp=await context.new_cdp_session(page);await cdp.send('WebAuthn.enable')
+            auth=await cdp.send('WebAuthn.addVirtualAuthenticator',{'options':{'protocol':'ctap2','transport':'internal','hasResidentKey':True,'hasUserVerification':True,'isUserVerified':True,'automaticPresenceSimulation':True}})
+            auth_id=auth['authenticatorId'];b64=lambda value:base64.b64encode(value).decode()
+            await cdp.send('WebAuthn.addCredential',{'authenticatorId':auth_id,'credential':{'credentialId':b64(CRED_ID),'isResidentCredential':True,'rpId':'hskai.app','privateKey':b64(fixture.key.private_bytes(serialization.Encoding.DER,serialization.PrivateFormat.PKCS8,serialization.NoEncryption())),'userHandle':b64(HANDLE),'signCount':0}})
+            await page.goto(ORIGIN+'/admin/');await page.wait_for_load_state('networkidle')
+            await page.locator('[data-route=users]').first.click()
+            async def prepare():
+                await page.locator('[data-user-detail="1"]:visible').first.click()
+                await page.locator('[data-access-user="1"]').click()
+                await page.locator('#accessDays').fill('10')
+                await page.locator('[data-prepare-access="1"]').click()
+                await expect(page.locator('[data-action=executeAccess]')).to_be_visible()
+            for width in (1440,390):
+                await page.set_viewport_size({'width':width,'height':1000 if width==1440 else 844})
+                for language in ('uz','ru','tj'):
+                    if width==1440:await page.locator('#locale').select_option(language)
+                    else:
+                        await page.locator('[data-action=more]').click();await page.locator('#drawerLocale').select_option(language)
+                    await prepare()
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                    await page.screenshot(path=str(output/f'access-confirm-{width}-{language}.png'),full_page=True)
+                    await page.locator('.drawer-close').click()
+            assert not any(path.endswith('/users/grant-access') for path,_ in calls)
+            await prepare();await page.locator('[data-action=executeAccess]').click()
+            await expect(page.locator('#drawerContent')).to_contain_text('10')
+            await expect(page.locator('[data-action=executeAccess]')).to_have_count(0)
+            async with fixture.sessions() as db:
+                assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit))==1
+                assert (await db.get(User,1)).payment_status=='approved'
+            await page.locator('.drawer-close').click()
+            await prepare()
+            async with fixture.sessions() as db:
+                (await db.get(User,1)).end_date=datetime.now(timezone.utc)+timedelta(days=40);await db.commit()
+            await page.locator('[data-action=executeAccess]').click()
+            await expect(page.locator('#drawerFoot [data-user-detail="1"]')).to_be_visible()
+            await expect(page.locator('[data-action=executeAccess]')).to_have_count(0)
+            async with fixture.sessions() as db:assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit))==1
+            await page.locator('.drawer-close').click()
+            await prepare();drop=True
+            await page.locator('[data-action=executeAccess]').click()
+            await expect(page.locator('#drawerFoot [data-user-detail="1"]')).to_be_visible()
+            assert len([path for path,_ in calls if path.endswith('/users/grant-access')])==3
+            async with fixture.sessions() as db:assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit))==2
+            assert not errors,errors
+            await browser.close()
+        print('Manual access: real WebAuthn signatures, canonical native target, UZ/RU/TJ 1440/390 confirmations/cancel, stale snapshot and lost-response no-retry passed')
+    finally:await fixture.engine.dispose()
+
+
 async def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--output',default='/tmp/admin-pwa-browser')
@@ -879,6 +956,7 @@ async def main():
     with patch('app.services.ai_usage_budget_service.AIUsageBudgetService._live_or_manual_usd_rates',new=AsyncMock(return_value={'tjs':10,'cny':7})):
         await browser_checks(output)
         await export_browser_checks(output)
+        await access_grant_browser_checks(output)
         await attachment_browser_checks(output)
         await worker_checks(output)
 

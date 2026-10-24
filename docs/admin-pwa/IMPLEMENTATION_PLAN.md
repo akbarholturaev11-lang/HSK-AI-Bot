@@ -28,6 +28,9 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
 4. **First-party management**: shared course/access/pricing/marketing/settings
    commands with exact WebAuthn payload binding, confirmation and audit; keep
    unsupported high-risk operations disabled until independently verified.
+   Manual Pro grants now use the shared subscription service and atomic 0126
+   command audit, with exact snapshot/target/day confirmation in V10. Remaining
+   course/HSK unlock/configuration/marketing operations still need their own adapters.
 5. **Staging acceptance**: isolated provider/device/TLS/proxy/migrations and
    actual ChatGPT E2E, then owner review. Needs real staging configuration and
    available hardware; never count synthetic tests as that evidence.

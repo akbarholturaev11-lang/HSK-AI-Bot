@@ -24,6 +24,7 @@ from app.admin_api.pwa_webauthn_login import (
 )
 from app.db.base import Base
 from tests.test_admin_pwa_payment_review import PaymentFixtures, COOKIE
+from tests.test_admin_pwa_access_grants import AccessGrantFixtures
 from app.admin_api.pwa_payment_review import execute_payment_review
 from app.admin_api.pwa_payment_outbox import dispatch_payment_review
 from app.db.models.admin_pwa_payment_review import AdminPwaPaymentReview, AdminPwaPaymentOutbox
@@ -49,7 +50,7 @@ def _b64(value: bytes) -> str:
     os.environ.get("ADMIN_PWA_TEST_DATABASE_URL"),
     "requires isolated ADMIN_PWA_TEST_DATABASE_URL (never production)",
 )
-class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncioTestCase):
+class AdminPwaPostgresConcurrencyTests(AccessGrantFixtures, PaymentFixtures, unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.schema = "adminpwa_test_" + uuid4().hex
         url = os.environ["ADMIN_PWA_TEST_DATABASE_URL"]
@@ -311,7 +312,7 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
             self.assertEqual((await db.get(Payment, self.payment_id)).payment_status, "pending")
             self.assertEqual((await db.get(AdminPwaStepUp, receipt)).status, "verified")
 
-    async def test_empty_qa_table_selection_runs_real_0103_through_0125_ddl(self):
+    async def test_empty_qa_table_selection_runs_real_0103_through_0126_ddl(self):
         # Rehearse only in this disposable UUID schema, not through the guarded
         # Railway CLI. The production allowlist/approval guards are untouched.
         import importlib.util
@@ -326,8 +327,8 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
         schema = self.schema + "_bootstrap"
         versions = Path(__file__).resolve().parents[1] / "alembic/versions"
         paths = sorted(path for path in versions.glob("*.py")
-                       if path.name[:4].isdigit() and 103 <= int(path.name[:4]) <= 125)
-        self.assertEqual(len(paths), 23)
+                       if path.name[:4].isdigit() and 103 <= int(path.name[:4]) <= 126)
+        self.assertEqual(len(paths), 24)
         async with self.engine.begin() as conn:
             await conn.execute(text(f"CREATE SCHEMA {schema}"))
             await conn.execute(text(f"SET LOCAL search_path TO {schema}"))
@@ -630,6 +631,87 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
             row = (await db.execute(select(AdminPwaMcpAuthorization))).scalar_one()
             self.assertEqual(row.status, "redeemed")
             self.assertIsNotNone(row.redeemed_at)
+
+
+    async def test_manual_grants_with_competing_proofs_apply_only_one_confirmed_snapshot(self):
+        from app.admin_api.pwa_access_grants import CommandError
+        from app.db.models.admin_pwa_command import AdminPwaCommandAudit
+        await self.seed_payment()
+        command = await self.grant_command()
+        proofs = [await self.grant_proof(command) for _ in range(2)]
+        async def attempt(proof):
+            try:
+                return await self.grant_execute(command, proof)
+            except CommandError as error:
+                return error.status
+        results = await asyncio.wait_for(asyncio.gather(*(attempt(proof) for proof in proofs)), 30)
+        self.assertEqual(sum(isinstance(result, dict) for result in results), 1)
+        self.assertIn(409, results)
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit)), 1)
+            user = await db.get(User, 1)
+            self.assertAlmostEqual((user.end_date-datetime.now(timezone.utc)).total_seconds(), 30*86400, delta=3)
+
+    async def test_manual_grant_rechecks_expiry_after_waiting_for_target_lock(self):
+        from sqlalchemy import event
+        from app.admin_api.pwa_access_grants import CommandError
+        await self.seed_payment()
+        command = await self.grant_command()
+        proof = await self.grant_proof(command)
+        attempted = asyncio.Event()
+        def observe(conn, cursor, statement, parameters, context, many):
+            if "FROM users" in statement and "FOR UPDATE" in statement and tuple(parameters) == (1,):
+                attempted.set()
+        event.listen(self.engine.sync_engine, "before_cursor_execute", observe)
+        task = None
+        try:
+            async with self.sessions() as blocker:
+                async with blocker.begin():
+                    await blocker.scalar(select(User).where(User.id == 1).with_for_update())
+                    attempted.clear()
+                    task = asyncio.create_task(self.grant_execute(command, proof))
+                    await asyncio.wait_for(attempted.wait(), 5)
+                    self.assertFalse(task.done())
+                    with patch("app.admin_api.pwa_access_grants.datetime") as clock:
+                        clock.now.return_value = datetime.now(timezone.utc)+timedelta(seconds=70)
+                        await blocker.commit()
+                        with self.assertRaisesRegex(CommandError, "step_up_denied"):
+                            await asyncio.wait_for(task, 10)
+        finally:
+            event.remove(self.engine.sync_engine, "before_cursor_execute", observe)
+            if task and not task.done():
+                task.cancel()
+        async with self.sessions() as db:
+            self.assertIsNone((await db.get(User, 1)).end_date)
+            self.assertEqual((await db.get(AdminPwaStepUp, proof)).status, "verified")
+
+
+    async def test_actual_0126_migration_preserves_nonempty_command_audit(self):
+        import importlib.util
+        from pathlib import Path
+        from alembic.migration import MigrationContext
+        from alembic.operations import Operations
+        path = Path(__file__).resolve().parents[1] / "alembic/versions/0126_admin_pwa_command_audit.py"
+        spec = importlib.util.spec_from_file_location("pwa_command_migration", path)
+        migration = importlib.util.module_from_spec(spec);spec.loader.exec_module(migration)
+        schema = self.schema + "_command"
+        async with self.engine.begin() as conn:
+            await conn.execute(text(f"CREATE SCHEMA {schema}"))
+            await conn.execute(text(f"SET LOCAL search_path TO {schema}"))
+            def upgrade(sync):
+                with Operations.context(MigrationContext.configure(sync)):
+                    migration.upgrade()
+            await conn.run_sync(upgrade)
+            await conn.execute(text("INSERT INTO admin_pwa_command_audit VALUES ('a','s',101,1,'users.grant_access','1','hash','{}',now())"))
+            def downgrade(sync):
+                with Operations.context(MigrationContext.configure(sync)):
+                    migration.downgrade()
+            with self.assertRaisesRegex(RuntimeError, "Archive command audit"):
+                await conn.run_sync(downgrade)
+            self.assertEqual((await conn.execute(text("SELECT count(*) FROM admin_pwa_command_audit"))).scalar_one(), 1)
+            await conn.execute(text("DELETE FROM admin_pwa_command_audit"))
+            await conn.run_sync(downgrade)
+            await conn.execute(text(f"DROP SCHEMA {schema}"))
 
 
 if __name__ == "__main__":

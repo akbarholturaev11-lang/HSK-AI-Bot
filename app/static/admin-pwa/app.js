@@ -248,7 +248,8 @@ async function userProfile(userId) {
       section('devices',data.devices.map(row=>`<article class="feedback-item"><strong>${esc(row.platform)}</strong>${profileFields([['linkedTotal',row.linked+' / '+row.total],['lastContact',date(row.last_contact_at)]])}</article>`).join('')||`<p class="source-note">${esc(t('empty'))}</p>`)+
       (data.miniapp_presence.length?section('miniappOpens',data.miniapp_presence.map(row=>`<p class="source-note">${esc(row.platform)} · ${esc(date(row.last_opened_at))}</p>`).join('')):'')+
       section('feedback',profileFields([['botFeedback',data.feedback_counts.bot],['releaseFeedback',data.feedback_counts.release]])+`<button class="btn" data-user-feedback="${userId}">${esc(t('openFeedback'))}</button>`)+
-      section('paymentHistory',`<div id="profilePayments">${profilePayments(data.payments,userId)}</div>`)+`<p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`);
+      section('paymentHistory',`<div id="profilePayments">${profilePayments(data.payments,userId)}</div>`)+`<p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`,
+      btn('close','close')+`<button class="btn primary" data-access-user="${userId}" ${u.status==='blocked'?'disabled':''}>${esc(t('grantAccess'))}</button>`);
   }catch(error){if(current===drawerId&&state.actor)drawer('userProfile',statePanel(error.status===404?'userMissing':'error'),btn('close','close')+`<button class="btn" data-user-detail="${userId}">${esc(t('retry'))}</button>`);}
 }
 async function moreUserPayments(userId,before,button) {
@@ -258,6 +259,50 @@ async function moreUserPayments(userId,before,button) {
     if(current===drawerId&&state.actor&&$('profilePayments'))$('profilePayments').innerHTML=profilePayments(data,userId);
   }catch(error){if(current===drawerId&&state.actor)showNotice('error');}
   finally{if(button.isConnected)button.disabled=false;}
+}
+function accessGrantForm(userId){
+  closeDrawer();
+  if(!state.actor||!Number.isSafeInteger(userId)||userId<1)return;
+  drawer('grantAccess',`<p>${esc(t('account'))}: #${userId}</p><p class="source-note">${esc(t('manualGrantHint'))}</p><div class="form-field"><label for="accessDays">${esc(t('durationDays'))}</label><input class="input" id="accessDays" type="number" min="1" max="36500" step="1" value="30" required></div>`,
+    btn('cancel','close')+`<button class="btn primary" data-prepare-access="${userId}">${esc(t('next'))}</button>`);
+}
+async function prepareAccess(userId){
+  const input=$('accessDays');if(!input?.reportValidity())return;
+  const days=Number(input.value);if(!Number.isInteger(days)||days<1||days>36500)return;
+  const current=drawerId,at=epoch;$('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
+  try{
+    const operation=await api('users/prepare-access',{user_id:userId,duration_days:days});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=Object.freeze(structuredClone(operation));
+    drawer('confirmAccess',`<p class="alert">${esc(t('manualGrantHint'))}</p>`+profileFields([
+      ['account','#'+operation.payload.user_id],['durationDays',operation.payload.duration_days],
+      ['accessUntil',date(operation.payload.expected.end_date)]]),btn('cancel','close')+btn('confirmPasskey','executeAccess','primary'),'confirmation');
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('grantAccess',statePanel(error.status===409?'changed':'error'));}
+}
+async function executeAccess(){
+  if(confirmation?.action!=='users.grant_access'||!supportsPasskey()||signing)return;
+  const operation=structuredClone(confirmation),current=drawerId,at=epoch,control=new AbortController();signing=control;
+  $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);let submitted=false;
+  try{
+    const options=await api('auth/step-up/options',operation);
+    if(current!==drawerId||at!==epoch)return;
+    const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey),signal:control.signal});
+    if(current!==drawerId||at!==epoch)return;
+    await api('auth/step-up/verify',{step_up_id:options.step_up_id,credential:serialize(credential)});
+    if(current!==drawerId||at!==epoch)return;
+    submitted=true;
+    const result=await api('users/grant-access',{...operation.payload,step_up_id:options.step_up_id});
+    if(current!==drawerId||at!==epoch)return;
+    confirmation=null;
+    drawer('accessGranted',profileFields([['account','#'+result.user_id],['durationDays',result.duration_days],['accessUntil',date(result.after.end_date)]]));
+    await load();
+  }catch(error){
+    if(current!==drawerId||at!==epoch)return;
+    confirmation=null;
+    const rejected=[400,403,404,409].includes(error.status);
+    drawer('grantAccess',statePanel(error.status===409?'changed':submitted&&!rejected?'uncertain':errorKey(error)),btn('close','close')+`<button class="btn" data-user-detail="${operation.payload.user_id}">${esc(t('openProfile'))}</button>`);
+    if(submitted)await load();
+  }finally{if(signing===control)signing=null;}
 }
 function summary(operation) {
   const p=operation.payload,s=p.expected;
@@ -616,6 +661,7 @@ async function action(name) {
   if(name==='feedback'){state.inboxSearch='';await inbox();return;}
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='execute'){if(!signing)await execute();return;}
+  if(name==='executeAccess'){await executeAccess();return;}
   if(name==='more'){drawer('more',languageSelect('drawerLocale')+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):''),btn('install','install')+btn('logout','logout'));return;}
   if(name==='install'){if(installPrompt){await installPrompt.prompt();installPrompt=null;}else showNotice('installHint');return;}
   if(name==='update'){publicRegistration?.waiting?.postMessage('ACTIVATE_PUBLIC_SHELL');return;}
@@ -633,6 +679,8 @@ document.addEventListener('click',event=>{
     else if(button.dataset.status){state.status=button.dataset.status;state.cursor=null;state.previous=[];await load();}
     else if(button.dataset.review){await review(Number(button.dataset.review));}
     else if(button.dataset.userDetail){await userProfile(Number(button.dataset.userDetail));}
+    else if(button.dataset.accessUser){accessGrantForm(Number(button.dataset.accessUser));}
+    else if(button.dataset.prepareAccess){await prepareAccess(Number(button.dataset.prepareAccess));}
     else if(button.dataset.profilePayments){await moreUserPayments(Number(button.dataset.profilePayments),Number(button.dataset.before),button);}
     else if(button.dataset.userFeedback){state.inboxSearch='';await inbox(null,Number(button.dataset.userFeedback));}
     else if(button.dataset.source){state.source=button.dataset.source;await inbox(null,feedbackUserId);}
