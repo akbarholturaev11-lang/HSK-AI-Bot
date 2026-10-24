@@ -118,6 +118,7 @@ class McpHttpTests(unittest.TestCase):
         self.assertEqual(metadata.status_code, 200)
         self.assertEqual(metadata.json()["code_challenge_methods_supported"], ["S256"])
         self.assertEqual(metadata.json()["token_endpoint_auth_methods_supported"], ["none"])
+        self.assertIs(metadata.json()["authorization_response_iss_parameter_supported"], True)
         self.assertNotIn("access_token", metadata.text)
         self.assertEqual(metadata.headers["cache-control"], "no-store")
 
