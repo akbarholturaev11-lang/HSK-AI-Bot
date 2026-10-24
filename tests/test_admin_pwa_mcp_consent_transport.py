@@ -103,7 +103,7 @@ class McpConsentTransportTests(unittest.TestCase):
         self.assertIn("form-action 'self'",r.headers["content-security-policy"])
         self.assertFalse(r.headers.get_list("set-cookie"))
         self.assertEqual(len(self.calls),1)
-        self.assertGreaterEqual(len(self.calls[0][1]["csrf_proof"]),43)
+        self.assertIn('name="csrf" value="'+CSRF+'"',r.text)
 
     def test_approve_redirects_only_to_exact_registered_uri_and_state(self):
         r=self.post()
