@@ -117,16 +117,16 @@ async def begin_mcp_authorization(
     db: Any, *, session_cookie: str, client_id: str, redirect_uri: str,
     resource: str, scope: str, state: str, code_challenge: str,
     code_challenge_method: str, settings_obj: Any, now: datetime | None = None,
-    csrf_proof: str | None = None,
 ) -> PendingMcpConsent | None:
     """Start pending browser consent. NEVER redirects/consents automatically."""
     if (not _registered_client(settings_obj, client_id, redirect_uri, resource, scope)
             or code_challenge_method != "S256" or not isinstance(code_challenge, str)
             or not _CHALLENGE.fullmatch(code_challenge)
-            or not isinstance(state, str) or not _STATE.fullmatch(state)
-            or (csrf_proof is not None and
-                (not isinstance(csrf_proof, str) or not _CODE.fullmatch(csrf_proof)))):
+            or not isinstance(state, str) or not _STATE.fullmatch(state)):
         return None
+    # The CSRF proof is generated SERVER-SIDE for each browser consent page.
+    # OAuth state comes from the external client and is never a CSRF secret.
+    csrf_proof = secrets.token_urlsafe(48)
     stamp = _utc(now or datetime.now(timezone.utc))
     async with db.begin():
         pair = await _locked_session(db, session_cookie, settings_obj, stamp)
@@ -150,11 +150,11 @@ async def begin_mcp_authorization(
             resource=resource, scope=scope, pkce_challenge=code_challenge,
             client_state=state, status="pending", created_at=stamp,
             expires_at=expires_at,
-            consent_csrf_hash=_digest(csrf_proof) if csrf_proof else None,
+            consent_csrf_hash=_digest(csrf_proof),
         ))
         await db.flush()
     return PendingMcpConsent(identifier, client_id, redirect_uri, resource,
-                             scope, state, expires_at, csrf_proof or "")
+                             scope, state, expires_at, csrf_proof)
 
 
 async def decide_mcp_consent(
@@ -182,10 +182,10 @@ async def decide_mcp_consent(
         # Require exact double-bound one-time CSRF for any consent created
         # through the HTTPS browser route. Never accept client OAuth state
         # as a CSRF proof (it is public to the requesting client).
-        if row.consent_csrf_hash is not None:
-            if (not isinstance(csrf_proof, str) or not _CODE.fullmatch(csrf_proof)
-                    or not hmac.compare_digest(row.consent_csrf_hash, _digest(csrf_proof))):
-                return None
+        if (not isinstance(row.consent_csrf_hash, str)
+                or not isinstance(csrf_proof, str) or not _CODE.fullmatch(csrf_proof)
+                or not hmac.compare_digest(row.consent_csrf_hash, _digest(csrf_proof))):
+            return None
         pair = await _locked_session(db, session_cookie, settings_obj, stamp)
         if pair is None:
             return None
