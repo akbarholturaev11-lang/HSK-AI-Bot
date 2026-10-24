@@ -89,3 +89,16 @@ commit `891d9d9b6ffda5fba114d9c5c169eeb2f8a7836f`.
 - `verify_readonly_mcp_bearer` checks an opaque token hash, current admin allowance, max five-minute lifetime, exact resource, consent-event ID, registered client ID shape and statistics-only scope. `read_mcp_statistics_with_verified_token` reuses existing PostgreSQL READ ONLY transaction. This module cannot mint tokens or accept cookies as MCP authorization.
 - Tests `tests/test_admin_pwa_mcp_readonly.py` and `tests/test_admin_pwa_mcp_resource.py` added; migration workflow expanded to 0118, including downgrade when no grants exist. **Do not claim passing CI until latest PR #201 SHA is green.**
 - Next: separate OAuth2.1 authorization-code + PKCE + explicit admin consent issuance and revocation with real audit, then authenticated MCP Streamable HTTP transport; stats only by default. User/feedback privacy needs additional review and separate explicit consent.
+
+## CI verification — GitHub Actions (2026-10-24)
+
+The full code snapshot at commit `e8f09319df8cb197afd53365c6394e4e62ef7e7b` passed both jobs in [Admin PWA isolated security regressions run 40071538466](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40071538466):
+
+- **249 passed, 12 skipped** in Admin PWA/QA suite. The 12 skipped tests are PostgreSQL-only cases; no failure in this job.
+- **61 passed** in legacy payment/subscription/affiliate/route regression suite. UI localization catalogs checked.
+- Headless Playwright desktop/mobile/virtual WebAuthn/Service Worker scenarios all passed; these are synthetic browser tests, not real physical Face ID or production OAuth.
+- **12 passed** in REAL disposable PostgreSQL 16 suite. Migration `0118_admin_pwa_mcp_read_grants` was applied, downgraded to `0117`, and reapplied. No production database touched.
+
+Earlier failures during development were from out-of-date QA schema head/table fixture expectations after adding `0118` and a test that omitted the required MCP scope. All were fixed and the exact final source SHA above is green. This does NOT prove real ChatGPT connectivity; OAuth authorization code/PKCE/consent, MCP HTTP transport, and activation remain missing.
+
+Draft PR #201 remains intentionally unmerged. Keep both `ADMIN_PWA_ENABLED=false` and `ADMIN_PWA_MCP_ENABLED=false`.
