@@ -18,6 +18,13 @@ private existing Redis, per-worker outage fallback, live auth/audit/quotas and
 billing/access, HTTP/SW no-store, no R2. Docs-only changes were checked for
 Markdown links and whitespace; no runtime tests are attributed to that edit.
 
+## VERIFIED private Android attachment route — 2026-10-24
+
+- **Last code HEAD:** `d93b75fe468c217dee66e2c4fe277ccfeabadb4f`. [Admin PWA workflow 40101181445](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40101181445): **both jobs SUCCESS**; 372 Python passed / 17 PostgreSQL-specific skipped, 61 legacy passed, 17 disposable PostgreSQL passed, 63 generated UI artifacts / 0 stale; synthetic mobile/desktop virtual-WebAuthn browser and Android API regressions passed. No production DB, TLS/provider or physical device exercised.
+- `a4ae3660` added the first **server-only Android JPEG attachment proxy** with a current canonical WebAuthn admin session, secure same-origin GET and nonexpired private retained source check, bounded/verified JPEG, read-only SQL and no-store/no-sniff response. It does not expose DB bytes through the Inbox list or MCP, and there is no UI button yet. Bot/Release Telegram media access remains unimplemented.
+- The initial build uncovered an actual flag-OFF route privacy regression: FastAPI converted `{report_id}` to integer *before* the guard, causing 422 instead of 404 while disabled. `63fd4723` changed ID parsing to occur **after** the rollout gate; `d93b75fe` added malformed placeholder and enabled/disabled regression assertions. Fixed head CI green; no legacy Telegram/admin auth changes.
+- Next scoped work: safe approved UI attachment view with canonical UZ/RU/TJ + browser tests, then reviewed Bot/Release attachment source validation. Keep raw Mini App stack/URL diagnostics excluded until independent redacted producer and retention schema are designed. Production/main/flags are untouched.
+
 ## PRIVATE NATIVE INBOX ATTACHMENT PROXY — 2026-10-24
 
 - **New branch-only scoped increment:** `app/admin_api/pwa_inbox_attachments.py` serves only valid, retained Android JPEG attachment bytes via `GET /api/admin/v1/inbox/android/{id}/attachment`. It requires canonical HTTPS admin origin, active allowlisted WebAuthn Admin PWA session, same-origin Fetch Metadata, exact bounded DB record ID, valid nonexpired row and a structurally verified JPEG up to the existing 550 KiB intake limit. No Telegram file ID, path, student text or attachment metadata is reflected. Responses are private no-store with nosniff; SQL is READ ONLY. Missing/expired/corrupt files fail closed.
