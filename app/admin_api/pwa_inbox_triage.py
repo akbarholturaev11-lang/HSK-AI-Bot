@@ -16,6 +16,7 @@ from app.admin_api.pwa_step_up import _locked_session
 from app.admin_api.pwa_webauthn_transport import _body, _guard_post
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
+from app.admin_api.pwa_push_outbox import enqueue_important_triage
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 
@@ -104,6 +105,12 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
                 operation=command.operation, actor_user_id=int(actor.id), created_at=stamp,
             ))
             await db.flush()
+            if command.operation == "mark_important" and previous[1] != "important":
+                await enqueue_important_triage(
+                    db, settings_obj=settings_obj, actor_id=int(actor.id),
+                    source=command.source, source_id=command.source_id,
+                    revision=row.revision, now=stamp,
+                )
         else:
             # New no-op states should never persist a misleading triage row.
             if not revision:
