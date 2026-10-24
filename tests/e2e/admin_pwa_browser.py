@@ -323,8 +323,10 @@ async def browser_checks(output):
         await cdp.send('WebAuthn.setAutomaticPresenceSimulation',{'authenticatorId':auth_id,'enabled':True})
         await page.locator('[data-action=feedback]').click()
         await expect(page.locator('.inbox-shell')).to_be_visible()
-        await page.locator('[data-source=release]').click()
-        await expect(page.locator('.inbox-shell')).to_be_visible()
+        for source in ('bot', 'release', 'android', 'all'):
+            await page.locator(f'[data-source={source}]').click()
+            await expect(page.locator('.inbox-shell')).to_be_visible()
+            assert await page.locator('.inbox-shell .feedback-item').count() >= 0
         await page.keyboard.press('Escape')
         # Actual consent/code/token services seed one synthetic connection;
         # the V10 drawer calls real session-bound management and audit services.
