@@ -118,6 +118,7 @@ jobs:
       - name: Exercise desktop/mobile PWA with virtual WebAuthn and real ASGI services
         run: |
           python -m tests.e2e.admin_pwa_browser --output /tmp/admin-pwa-browser
+          python -m tests.e2e.admin_pwa_mcp_consent_browser --output /tmp/admin-pwa-browser
       - name: Keep synthetic browser screenshots
         if: always()
         uses: actions/upload-artifact@v4
