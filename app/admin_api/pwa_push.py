@@ -19,6 +19,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from sqlalchemy import func, select
 
+from app.admin_api.pwa_bootstrap import _valid_pwa_origin
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.admin_api.pwa_step_up import _locked_session
@@ -65,7 +66,7 @@ def _decode(value: str) -> bytes:
 def _configuration(settings_obj):
     if (not getattr(settings_obj, "ADMIN_PWA_ENABLED", False)
             or not getattr(settings_obj, "ADMIN_PWA_PUSH_ENABLED", False)
-            or getattr(settings_obj, "ADMIN_PWA_PUBLIC_ORIGIN", None) != "https://hskai.app"):
+            or not _valid_pwa_origin(getattr(settings_obj, "ADMIN_PWA_PUBLIC_ORIGIN", ""))):
         return None
     try:
         public = str(getattr(settings_obj, "ADMIN_PWA_PUSH_VAPID_PUBLIC_KEY", ""))
