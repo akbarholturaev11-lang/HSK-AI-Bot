@@ -39,10 +39,10 @@ const btn = (label, action, variant='', disabled=false) => `<button class="btn $
 const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
   query:'', status:'pending', source:'all', inboxPriority:'all', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
-let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false;
+let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
-  epoch++;view++;closeDrawer();inboxUnread=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
+  epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   state.phase=phase;state.error=null;render();
 }
 async function api(path, body, {publicAuth=false, method='POST'}={}) {
@@ -369,56 +369,72 @@ function pushInstallReady(platform) {
 }
 async function pushSettings(){
   if(!state.actor?.push_available)return;
-  closeDrawer();const current=drawerId;
+  closeDrawer();pushReady=null;const current=drawerId,at=epoch;
   drawer('pushTitle',statePanel('loading'));
   try{
     const data=await api('push/list',{});
-    if(current!==drawerId||!state.actor)return;
+    if(current!==drawerId||at!==epoch||!state.actor)return;
     const platform=applePushPlatform();
-    const eligible=platform&&pushInstallReady(platform)&&'Notification' in window&&'serviceWorker' in navigator&&'PushManager' in window;
+    const eligible=platform&&pushInstallReady(platform)&&'Notification' in window&&
+                   'serviceWorker' in navigator&&'PushManager' in window&&
+                   Notification.permission!=='denied'&&data.sending_enabled===false;
+    if(eligible){
+      // No permission prompt here. Prepare public VAPID and active worker
+      // before the opt-in click so subscribe() can begin with user activation.
+      const registration=await navigator.serviceWorker.ready;
+      const previous=await registration.pushManager.getSubscription();
+      if(current!==drawerId||at!==epoch||!state.actor)return;
+      pushReady={registration,key:decode(data.vapid_public_key),previous:!!previous,epoch:at};
+    }
     const rows=data.subscriptions||[];
     const devices=rows.map(row=>`<article class="feedback-item"><strong>${esc(row.platform==='iphone'?'iPhone':'Mac')}</strong><small>${esc(date(row.created_at))}</small><div class="inbox-entry-actions"><button class="btn small danger" data-push-revoke="${esc(row.id)}">${esc(t('pushRevoke'))}</button></div></article>`).join('')||statePanel('empty');
     const note=!platform?t('pushAppleOnly'):!pushInstallReady(platform)?t('pushInstallFirst'):t('pushConsentHint');
     drawer('pushTitle',`<div class="push-settings"><p class="source-note">${esc(note)}</p><p class="source-note">${esc(t('pushNotSending'))}</p>${devices}</div>`,
-      eligible?btn('pushEnable','pushEnable','primary')+btn('close','close'):btn('close','close'));
+      pushReady?btn('pushEnable','pushEnable','primary')+btn('close','close'):btn('close','close'));
   }catch(error){
-    if(current!==drawerId||!state.actor)return;
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    pushReady=null;
     drawer('pushTitle',statePanel(error.status===404?'notReady':'error'),btn('close','close')+btn('retry','pushSettings'));
   }
 }
 async function enablePush(){
-  if(pushChanging||!state.actor?.push_available||!['iphone','mac'].includes(applePushPlatform())||!pushInstallReady(applePushPlatform())||
-     !('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window))return;
-  // Request permission synchronously from the user's button gesture, BEFORE
-  // any await/fetch. Safari on iPhone disallows deferred prompts.
-  let permissionPromise;
-  try{permissionPromise=Notification.permission==='granted'?Promise.resolve('granted'):Notification.requestPermission();}
-  catch(_){showNotice('pushPermissionDenied');return;}
-  const current=drawerId,at=epoch;
+  if(pushChanging||!state.actor?.push_available||!pushReady||pushReady.epoch!==epoch||
+     !['iphone','mac'].includes(applePushPlatform())||!pushInstallReady(applePushPlatform()))return;
+  if(Notification.permission==='denied'){showNotice('pushPermissionDenied');return;}
   pushChanging=true;
+  const prepared=pushReady;
+  // Apple Web Push: call subscribe() in this direct tap callback, BEFORE
+  // any await/fetch. A deferred request loses iPhone's user activation.
+  let subscriptionPromise;
+  try{
+    subscriptionPromise=prepared.registration.pushManager.subscribe({
+      userVisibleOnly:true,applicationServerKey:prepared.key
+    });
+  }catch(_){pushChanging=false;showNotice('pushSaveError');return;}
+  const current=drawerId,at=epoch;
   document.querySelectorAll('#drawerFoot button').forEach(el=>el.disabled=true);
   try{
-    const permission=await permissionPromise;
-    if(permission!=='granted'){showNotice('pushPermissionDenied');return;}
-    const data=await api('push/list',{});
-    if(at!==epoch||current!==drawerId||!state.actor||data.sending_enabled!==false)return;
-    const registration=await navigator.serviceWorker.ready;
-    let subscription=await registration.pushManager.getSubscription();
-    let created=false;
-    if(!subscription){subscription=await registration.pushManager.subscribe({
-      userVisibleOnly:true,applicationServerKey:decode(data.vapid_public_key)
-    });created=true;}
-    const payload=subscription.toJSON();
-    const keys=payload.keys||{};
+    const subscription=await subscriptionPromise;
+    if(at!==epoch||current!==drawerId||!state.actor)return;
+    const payload=subscription.toJSON(),keys=payload.keys||{};
     if(!payload.endpoint||!keys.p256dh||!keys.auth)throw Error('invalid_push_subscription');
     try{
-      await api('push/subscribe',{platform:applePushPlatform(),endpoint:payload.endpoint,keys:{p256dh:keys.p256dh,auth:keys.auth}});
-    }catch(error){if(created)await subscription.unsubscribe().catch(()=>{});throw error;}
+      await api('push/subscribe',{platform:applePushPlatform(),endpoint:payload.endpoint,
+        keys:{p256dh:keys.p256dh,auth:keys.auth}});
+    }catch(error){
+      if(!prepared.previous)await subscription.unsubscribe().catch(()=>{});
+      throw error;
+    }
     if(at!==epoch||current!==drawerId||!state.actor)return;
     showNotice('pushSaved');await pushSettings();
-  }catch(error){if(at===epoch&&state.actor)showNotice('pushSaveError');}
-  finally{pushChanging=false;document.querySelectorAll('#drawerFoot button').forEach(el=>el.disabled=false);}
+  }catch(error){
+    if(at===epoch&&state.actor)showNotice(Notification.permission==='denied'?'pushPermissionDenied':'pushSaveError');
+  }finally{
+    pushChanging=false;
+    document.querySelectorAll('#drawerFoot button').forEach(el=>el.disabled=false);
+  }
 }
+
 async function revokePush(id){
   if(pushChanging||!state.actor?.push_available||!/^[0-9a-f-]{36}$/.test(id))return;
   const current=drawerId,at=epoch;
