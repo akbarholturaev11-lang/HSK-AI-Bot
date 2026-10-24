@@ -129,7 +129,9 @@ class McpOAuthCeremonyTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_missing_explicit_consent_and_denial_fail_closed(self):
         pending = await self.start()
-        self.assertIsNone(await self.decide(pending.request_id, approved=False))
+        denied = await self.decide(pending.request_id, approved=False)
+        self.assertEqual(denied.redirect_uri, REDIRECT)
+        self.assertEqual(denied.state, STATE)
         self.assertIsNone(await self.decide(pending.request_id, approved=True))
         async with self.sessions() as db:
             record = await db.get(AdminPwaMcpAuthorization, pending.request_id)
