@@ -93,7 +93,7 @@ Google transport cases, and the existing financial/security/legacy suites.
 Playwright 1.56.0 + Chromium. Its HTTPS browser requests run against actual ASGI
 routers and isolated SQLite fixtures; real virtual-authenticator registration,
 assertion and step-up signatures are verified by py_webauthn. It checks approval,
-rejection, cancelled prompt, lost response without resend, receipt failures,
+rejection, cancelled prompt (including delayed old-prompt cleanup across a new prompt), lost response without resend, receipt failures,
 strict request shape, desktop/mobile, locales, XSS escaping, errors/empty state,
 offline/revocation, logout, and CSP. A separate actual loopback server verifies
 SW scope, installability, public-only cache, offline shell and explicit update.

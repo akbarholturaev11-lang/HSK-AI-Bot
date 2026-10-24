@@ -45,6 +45,15 @@ from tests.test_admin_pwa_receipts import png
 ORIGIN='https://hskai.app'
 
 
+async def wait_js(page, predicate):
+    # Playwright 1.56 wait_for_function internally calls in-page eval, which
+    # strict CSP correctly blocks on Linux. Direct debugger evaluation avoids
+    # that helper path without changing/bypassing the app's CSP.
+    async with asyncio.timeout(10):
+        while not await page.evaluate(predicate):
+            await asyncio.sleep(.025)
+
+
 class Fixture(PaymentFixtures):
     pass
 
@@ -247,19 +256,19 @@ async def browser_checks(output):
         await cdp.send('WebAuthn.setAutomaticPresenceSimulation',{'authenticatorId':auth_id,'enabled':False})
         async with page.expect_response('**/auth/step-up/options'):
             await page.locator('[data-action=execute]').click()
-        await page.wait_for_function('window.qaNativeCalls===1')
+        await wait_js(page,'() => window.qaNativeCalls===1')
         await page.locator('.drawer-close').click()
         await expect(page.locator('[data-review]')).to_have_count(1)
-        await page.wait_for_function('!!window.qaRelease')
+        await wait_js(page,'() => !!window.qaRelease')
         await page.locator('[data-review]').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
         await page.locator('[data-action=approve]').click()
         async with page.expect_response('**/auth/step-up/options'):
             await page.locator('[data-action=execute]').click()
-        await page.wait_for_function('window.qaNativeCalls===2')
+        await wait_js(page,'() => window.qaNativeCalls===2')
         await page.evaluate('window.qaRelease()')
         await page.locator('.drawer-close').click()
-        await page.wait_for_function('window.qaAbortCount===2')
+        await wait_js(page,'() => window.qaAbortCount===2')
         await page.evaluate('()=>{navigator.credentials.get=window.qaNativeGet;}')
         assert len([p for p,_,_ in calls if p.endswith('/payments/review')])==2
         await cdp.send('WebAuthn.setAutomaticPresenceSimulation',{'authenticatorId':auth_id,'enabled':True})
@@ -355,7 +364,7 @@ async def worker_checks(output):
             await page.goto(f'http://127.0.0.1:{port}/admin/')
             await page.evaluate('navigator.serviceWorker.ready')
             await page.reload()
-            await page.wait_for_function('!!navigator.serviceWorker.controller')
+            await wait_js(page,'() => !!navigator.serviceWorker.controller')
             assert (await page.evaluate('navigator.serviceWorker.getRegistration().then(r=>new URL(r.scope).pathname)'))=='/admin/'
             await page.evaluate("""async()=>{
                 await fetch('/api/admin/v1/cache-probe');
@@ -377,7 +386,7 @@ async def worker_checks(output):
             assert await page.evaluate("fetch('/api/admin/v1/cache-probe').then(()=>false,()=>true)")
             await page.screenshot(path=str(output/'mobile-offline.png'),full_page=True)
             await context.set_offline(False)
-            await page.wait_for_function('navigator.onLine')
+            await wait_js(page,'() => navigator.onLine')
             revision=1
             await page.evaluate('navigator.serviceWorker.getRegistration().then(r=>r.update())')
             await expect(page.locator('[data-action=update]')).to_be_visible(timeout=10000)

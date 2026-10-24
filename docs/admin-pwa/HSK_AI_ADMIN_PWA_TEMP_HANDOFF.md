@@ -307,3 +307,9 @@ Earlier `RESUME_NEXT_CHAT` messages and early status paragraphs stated no sessio
 ### Browser cancellation ownership guard
 
 - A cancelled old native prompt must not clear the global in-flight controller of a newly opened confirmation. `execute` now retains its own controller and only clears the shared pointer when it still owns it. A browser regression delays the old native rejection across a new prompt and checks both close actions really abort their respective native requests; no financial POST occurs. Existing real-signature browser QA is rerun; server one-use/transaction guards remain unchanged. Final CI SHA is recorded below.
+
+
+### Linux browser harness CSP correction
+
+- Run `40064054752` at `d6ce1865511c4eb5a684afb1d198be919c17c3e7`: core/catalog **204 passed / 11 skipped**, legacy **61 passed**, PG/migration job SUCCESS; browser job failed in Playwright `wait_for_function` because its expression-string branch used eval forbidden by the production CSP on Linux Chromium. Local macOS Chromium had accepted the helper path.
+- Test-only fix: source inspection of Playwright 1.56 `frames.js` confirms `wait_for_function` uses in-page eval even for function arguments. Poll direct debugger-evaluated predicates from Python instead, avoiding that helper entirely. No CSP relaxation, no bypass_csp, no runtime/security change. Local browser QA and the full exact-SHA Linux workflow are rerun. The earlier run remains failed; do not present it as a green checkpoint.
