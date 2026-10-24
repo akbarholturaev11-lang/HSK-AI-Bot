@@ -29,11 +29,23 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
 
 Progress: user profile `996ea058` and defined activity/conversion statistics
 `a7f0a5d1` are pushed; both Admin PWA CI runs passed. Durable Android intake
-foundation (0122) is the next tested increment. Universal inbox UI/triage,
+foundation `5304cb7a` (0122) is pushed and all its CI workflows passed. Universal inbox UI/triage,
 remaining management, exports and real staging are still open.
 
 Each increment records its actual checks in the current handoff before commit.
 No release completion claim until the final acceptance contract is satisfied.
+
+## Daily-statistics decision — owner clarification, 2026-10-24
+
+Primary purpose is to reduce unnecessary DB work. The owner selected daily
+updates after discussing R2. Reuse the existing Redis dependency/configuration
+for private 24-hour aggregate snapshots shared by Admin PWA and MCP; refresh
+only requested, expired variants. R2 integration is not required to achieve
+this read-load reduction and is not implemented here. No periodic all-platform
+full scans are added. Keep current timestamps and live billing/access commands;
+cache no identities/permissions. `READ_PROJECTIONS.md` records coordination,
+failure limits and the private-Redis staging gate. This temporal contract
+supersedes the previous per-open aggregate calculation for these two surfaces.
 
 ## Fixed decisions
 

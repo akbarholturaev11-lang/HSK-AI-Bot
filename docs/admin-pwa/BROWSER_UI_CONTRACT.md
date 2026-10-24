@@ -113,3 +113,11 @@ Keep `ADMIN_PWA_ENABLED=false`; no production/main promotion is authorized.
 - OAuth sign-in opens `/admin/` in another tab; retry reloads the original GET. An expired/replayed consent POST instructs a fresh external-client authorization instead of resubmitting old proof. No token/state is stored in browser storage or embedded in the error screen.
 - New patterns were absent from the V10 demo, so the actual repository `hsk-ai-ui` and `webapp-testing` skills were read/applied. Existing slate cards/drawers, focus handling, mobile safe areas and one main action were reused; canonical UZ/RU/TJ source and generator own copy.
 - Browser QA extended `tests/e2e/admin_pwa_browser.py` with actual session/DB history, cancellation, revoke and bearer rejection; 1440/390 UZ/RU/TJ screenshots. `admin_pwa_mcp_consent_browser.py` covers native form Origin/Referer, sign-in/retry and expired states. The latter bridge supplies synthetic Fetch Metadata omitted by interception, after checking actual browser Origin; it is not HTTPS proxy/physical-device evidence.
+
+## Daily aggregate data age (owner direction, 2026-10-24)
+
+Statistics reuse private server-side 24-hour snapshots. The existing updated
+label displays original `generated_at`; locale/navigation changes do not force
+an aggregate SQL refresh. The response includes snapshot expiry and refresh
+interval. Current profile/billing/access operations remain live. This is not a
+browser or service-worker private cache; no-store/offline rules are unchanged.

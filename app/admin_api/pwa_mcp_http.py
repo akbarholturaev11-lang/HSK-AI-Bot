@@ -12,6 +12,7 @@ Only exact-audience, revocable, 5-minute OAuth grants authorize statistics.
 import asyncio
 import json
 import logging
+from functools import partial
 from typing import Any, Callable
 from urllib.parse import parse_qsl
 
@@ -171,8 +172,14 @@ def create_admin_pwa_mcp_http_router(
     admission_service: Callable = admit_mcp_http,
     completion_service: Callable = finish_mcp_http,
     statistics_admission: Callable = admit_mcp_statistics,
+    statistics_reader=None,
 ) -> APIRouter:
     """Mountable only behind three default-off settings; no write tools."""
+    if read_service is read_mcp_statistics_with_verified_token and session_factory is not None:
+        from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
+        reader = statistics_reader or AdminPwaStatisticsReader(
+            settings_obj=settings_obj, session_factory=session_factory)
+        read_service = partial(read_service, statistics_reader=reader)
     router = APIRouter(tags=["admin-pwa-mcp"], route_class=mcp_route_class(
         settings_obj=settings_obj, session_factory=session_factory, gate=_inactive_response,
         admission=admission_service, completion=completion_service))
@@ -351,7 +358,7 @@ def create_admin_pwa_mcp_http_router(
         if method == "tools/list":
             return _reply_result(ident, {"tools": [{
                 "name": "hskai_statistics",
-                "description": "Read verified HSK AI administration statistics.",
+                "description": "Read verified daily HSK AI statistics; generated_at identifies the 24-hour snapshot.",
                 "inputSchema": StatisticsRequest.model_json_schema(),
                 "annotations": {"readOnlyHint": True, "destructiveHint": False, "openWorldHint": False},
                 "securitySchemes": [{"type": "oauth2", "scopes": [_ANALYTICS_SCOPE]}],

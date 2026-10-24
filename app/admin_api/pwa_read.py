@@ -284,7 +284,11 @@ async def feedback(db, request: FeedbackRequest):
             "unavailable_sources": ["android_bug_reports"], "attachment_access": "not_exposed"}
 
 
-def create_admin_pwa_read_router(*, settings_obj, session_factory):
+def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_reader=None):
+    from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
+
+    statistics_reader = statistics_reader or AdminPwaStatisticsReader(
+        settings_obj=settings_obj, session_factory=session_factory)
     router = APIRouter(tags=["admin-pwa-read"])
 
     async def handle(request: Request, schema, service):
@@ -304,9 +308,14 @@ def create_admin_pwa_read_router(*, settings_obj, session_factory):
                     actor = await authenticate_admin_pwa_session(db, cookie, settings_obj)
                     if actor is None:
                         return _reply(401, "admin_pwa_unauthorized")
-                    result = await service(db, query)
-                    if result is None:
-                        return _reply(404, "admin_pwa_user_not_found")
+                    if schema is not StatisticsRequest:
+                        result = await service(db, query)
+                        if result is None:
+                            return _reply(404, "admin_pwa_user_not_found")
+            if schema is StatisticsRequest:
+                # Release the auth transaction/connection before cache IO or
+                # waiting for another worker's refresh. Only a miss opens SQL.
+                result = await statistics_reader(query)
         except Exception:
             logger.exception("Admin PWA read projection unavailable")
             return _reply(503, "admin_pwa_read_unavailable")

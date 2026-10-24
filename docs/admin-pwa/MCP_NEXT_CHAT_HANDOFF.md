@@ -5,11 +5,52 @@ Updated 2026-10-24. Read this first; older checkpoints are historical. Verify re
 ## Repository and boundaries
 
 - Repository: `akbarholturaev11-lang/HSK-AI-Bot`; ONLY work branch `feat/admin-pwa-mcp-readonly-20261024`; [Draft PR #201](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/201), open and unmerged.
-- Current runtime changes: `e0270fb91d0c7e24c629d600964a09eb9816be9e`; integrated with concurrent documentation-only updates at `5ef02f1fc1716be8e9026f02aa41e6d312780e8c`. No history rewrite. Official SDK regression/QA dependency pin: `4009e903bb9ddbdbe7361280e229d4997903988b`. Later documentation commits advance HEAD without changing runtime code.
+- MCP transport foundation changes: `e0270fb91d0c7e24c629d600964a09eb9816be9e`; integrated with concurrent documentation-only updates at `5ef02f1fc1716be8e9026f02aa41e6d312780e8c`. No history rewrite. Official SDK regression/QA dependency pin: `4009e903bb9ddbdbe7361280e229d4997903988b`. Later documentation commits advance HEAD without changing runtime code.
 - Remote `main` verified unchanged at `891d9d9b6ffda5fba114d9c5c169eeb2f8a7836f` after the feature push. PR #200 is already merged; do not repeat its foundation work.
 - Keep `ADMIN_PWA_ENABLED=false`, `ADMIN_PWA_MCP_ENABLED=false`, `ADMIN_PWA_MCP_TRANSPORT_ENABLED=false`. Resource/client/callback/public-origin defaults remain empty. Defaults do not prove production environment values.
 - No main merge/push, production/staging deployment, live migration, secret configuration, flag activation or real external ChatGPT linking is authorized by this checkpoint.
 - External MCP exposes ONLY `hskai_statistics` / `admin:analytics:read`. Users, feedback, payment, delete, broadcast, arbitrary SQL/URL and other write tools stay excluded.
+
+## Current priority — owner-selected daily statistics, 2026-10-24
+
+The owner clarified that minimizing unnecessary DB work is the purpose, then
+selected once-per-day updates. Implemented in `pwa_statistics_cache.py`: private
+24-hour on-demand aggregate snapshots, shared across browser/MCP through one
+reader in `app/main.py`. It reuses the already pinned Redis 6.4.0 dependency and
+`REDIS_URL`; no R2 integration, new dependency/flag/schema or live configuration.
+Only requested expired variants refresh. Auth transactions close before cache
+IO/waits, and cached hits still revalidate the current session/token/admin and
+MCP audit/quotas. Current user/billing/access/review commands remain uncached.
+
+`READ_PROJECTIONS.md` specifies the temporal contract, scope/version keys,
+bounded JSON, 45-second shared refresh lease, fencing, eight-second load limit,
+failure cooldown and explicitly weaker per-worker daily fallback during Redis
+outage. Existing V10 generated_at display shows actual data age. HTTP and SW
+no-store/privacy constraints are unchanged. Relevant rules, target, plan,
+browser/MCP contracts were reconciled with the owner's daily-update decision.
+
+Local verification: **380 passed, 17 PG-only skipped** in the broad Admin PWA/
+catalog/bootstrap plus affected legacy payment/access/import suite. After final
+warm-CSRF/timeout additions: **14 cache tests passed**, including five tests on
+an actual temporary Redis **7.4.0** server (URL/client path, cross-worker reuse,
+serialization across variants, failed refresh lease and old-owner fencing).
+SQLite HTTP/MCP tests demonstrate warm responses still deny revoked/expired
+OAuth and blocked admins, release the auth DB session before cache work, and
+keep current billing/access reads live. Twenty simultaneous same-key requests
+invoke one loader. No performance claim about production is implied.
+
+Existing virtual-WebAuthn/browser/PWA/SW suite passed with the new daily reader;
+screenshots `/tmp/hsk-daily-cache-browser-20261024`. No UI/copy/layout change or
+new physical-device/staging evidence. CI now provisions an isolated Redis 7
+service for the real shared-cache tests. Check the new commit's own CI result
+before claiming head-specific success.
+
+Previous native-intake head `5304cb7ae687f2db0f38891c1da8e73cb9fd015d`: all seven
+returned workflows, including [Admin PWA 40085415751](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40085415751),
+Backend and Android, were independently verified green before this increment.
+Next original work remains universal inbox read/triage/attachments, remaining
+management/exports and approved staging/real ChatGPT acceptance. All three
+feature defaults remain false; no main push, deployment or live migration.
 
 ## Broader Admin PWA continuation — user profile increment, 2026-10-24
 

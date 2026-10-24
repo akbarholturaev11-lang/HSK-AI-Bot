@@ -114,7 +114,7 @@ async def verify_readonly_mcp_bearer(
 
 async def read_mcp_statistics_with_verified_token(
     db: Any, *, authorization: str, args: dict[str, Any],
-    settings_obj: Any,
+    settings_obj: Any, statistics_reader=None,
 ) -> dict[str, Any]:
     """Process one statistics-only read in the existing READ ONLY snapshot.
 
@@ -136,5 +136,10 @@ async def read_mcp_statistics_with_verified_token(
         )
         if actor is None:
             raise McpBearerDenied("resource authorization denied")
-        data = await statistics(db, query)
+        if statistics_reader is None:
+            data = await statistics(db, query)
+    if statistics_reader is not None:
+        # Token/admin checks are fresh even when the shared snapshot is warm.
+        # Do not retain the authentication DB connection during cache waits.
+        data = await statistics_reader(query)
     return {"tool": "hskai_statistics", "source": "admin_pwa_read", "data": data}

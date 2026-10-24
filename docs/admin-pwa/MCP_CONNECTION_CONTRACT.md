@@ -147,3 +147,15 @@ Draft PR #201 remains intentionally unmerged. Keep both `ADMIN_PWA_ENABLED=false
 - **LATEST PASSING CI:** [run 40074078909](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40074078909) tested exact code SHA above. Admin PWA job **270 passed, 13 PostgreSQL-only skipped**, legacy regressions **61 passed**, virtual WebAuthn, desktop/mobile browser and Service Worker QA passed; real PostgreSQL 16 job **13 passed**, Alembic 0119 upgraded, downgraded and upgraded again. One early test exposed incorrect HTTP 200 error for invalid Origin and malformed JSON-RPC; corrected to HTTP 400. CI for corrected code is green.
 - **UNFINISHED / no real ChatGPT connectivity:** The discovery response currently advertises `/oauth/authorize`, which is NOT mounted. A reviewed admin-facing, UZ/RU/TJ localized explicit consent screen, same-origin/CSRF-bound approval handling, client registration / identity verification appropriate to ChatGPT, consent/audit logs and an actual OAuth authorization endpoint are mandatory **before the third switch may ever be enabled**. Current tokens last five minutes and lack refresh; long-lived connection requires reviewed refresh/reauthorization behavior. MCP compatibility with live ChatGPT has NOT been tested, so transport is a tested, inactive protocol subset rather than a production-ready MCP integration.
 - **Next safe increment:** build explicit OAuth GET authorization and POST consent/deny with a separate CSRF-bound one-time browser proof and exact client name/redirect/domain/scope confirmation; use canonical UZ/RU/TJ sources and repo `.agents/skills/hsk-ai-ui/SKILL.md` + `.agents/skills/webapp-testing/SKILL.md` when implementing UI. Add consent/audit revocation and threat tests. No credentials, main merge, deployment or feature-flag enablement without separate owner approval.
+
+## Daily statistics snapshot (owner direction, 2026-10-24)
+
+The sole statistics tool now reuses the same private server-side 24-hour
+snapshot as Admin PWA. `generated_at` retains actual source calculation time;
+`snapshot` states expiry/86,400-second refresh interval. Every call still
+revalidates current token/admin, admission/audit and shared quotas. Cache
+lifetime never extends OAuth lifetime or revocation. Auth DB transactions close
+before cache/refresh waits; a miss alone opens the bounded read-only aggregate
+transaction. There is no MCP force-refresh argument. Cached data contains no
+profile/feedback/payment-list capability. See `READ_PROJECTIONS.md` for healthy
+Redis coordination and explicitly weaker per-worker outage fallback.

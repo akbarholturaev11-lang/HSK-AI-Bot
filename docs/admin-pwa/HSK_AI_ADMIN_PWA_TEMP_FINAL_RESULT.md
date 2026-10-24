@@ -26,6 +26,11 @@
 - [ ] New permanent UI strings sourced centrally for UZ/TJ/RU.
 
 ### C. Real statistics and users
+
+Owner clarification (2026-10-24): these aggregate reports may refresh once per
+24 hours on authorized demand to limit DB work. Keep the original refresh time
+visible; current billing/access actions still use live server facts. This does
+not change browser/SW no-store or real-data/metric-definition requirements.
 - [ ] Real overall dashboard: defined account totals, activity, conversion, payments, revenue, AI spend, course engagement with date source and last-refresh metadata.
 - [ ] Period options: 7 days, 30 days and all-time. Platform options: overall, Telegram Mini App, Android, Mac, Windows; future iPhone PWA is marked unavailable until instrumented.
 - [ ] No platform-user double counting when computing overall, no misleading site visits / installs / unique account substitutions, no mixed-currency totals.

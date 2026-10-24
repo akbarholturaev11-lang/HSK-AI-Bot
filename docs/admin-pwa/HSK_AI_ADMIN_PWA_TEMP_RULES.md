@@ -63,3 +63,14 @@
 
 - No new broad refactor, deployment or speculative credentials. Do not open write APIs to AI or skip owner approval for production.
 - Preserve current product scope, constraints and phase order. Any architectural change requires an explicit rationale and corresponding edits to this rule set, target/plan and handoff.
+
+## Owner-selected statistics load policy (2026-10-24)
+
+Admin PWA/MCP aggregates use private server-side 24-hour snapshots with explicit
+source/expiry timestamps; only requested expired variants refresh. The owner
+selected daily updates to avoid unnecessary database calculations. Auth,
+revocation, audit and security quotas remain current on every request. Billing,
+profiles, receipts, access decisions and commands remain uncached. Browser/SW
+private-response no-store rules above are unchanged. See `READ_PROJECTIONS.md`
+and the active plan for rationale, Redis coordination/failure behavior and
+rollout verification. R2 has not been configured or activated.

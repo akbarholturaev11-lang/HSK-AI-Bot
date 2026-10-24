@@ -6,7 +6,7 @@ Metadata/body/cookie guards and revalidate current canonical admin privileges.
 No Telegram initData bypass, provider linking, session issuance or management
 command is included. Responses are no-store and contain no session secrets.
 
-On PostgreSQL each request uses a REPEATABLE READ, READ ONLY transaction and a
+On PostgreSQL each database phase uses a REPEATABLE READ, READ ONLY transaction and a
 5-second SQL statement timeout. An accidental write fails in the database;
 transaction settings do not leak into subsequent payment requests. SQLite
 fixtures also verify all projection statements are SELECTs.
@@ -103,3 +103,52 @@ The V10 dashboard labels the estimates, numerator/denominator and timing caveat
 in all three locales. The existing statistics-only MCP can read these aggregate
 fields and dictionary; no account/profile/payment/feedback tool was added.
 Telegram attribution stays unavailable until independently audited.
+
+## Owner-selected daily snapshots (2026-10-24)
+
+The owner prioritizes avoiding repeated database work and selected daily
+statistics. `pwa_statistics_cache.py` reuses a snapshot for 86,400 seconds from
+its original `generated_at`. Each validated period/platform is computed on
+first authorized demand after expiry; unused variants create no scheduled SQL.
+It is a rolling 24-hour cache, not a fixed-time nightly cron or a claim of
+current-day live counters. The response keeps source timestamps and adds
+`snapshot.refresh_interval_seconds` and `snapshot.expires_at`. The existing V10
+last-update timestamp remains the visible data age.
+
+`app/main.py` injects one reader into browser statistics and the MCP transport.
+The existing pinned redis-py 6.4.0 / `REDIS_URL` provides a private shared cache;
+no dependency, feature flag, schema migration or R2 adapter was added. Each
+request first revalidates its current cookie/OAuth actor. The auth transaction
+ends before Redis IO or refresh waits, releasing the DB connection. A miss
+alone opens a separate read-only aggregate snapshot. MCP audit and shared
+security quotas still run for cached hits. They and authentication deliberately
+remain small DB operations.
+
+Memory caches contain at most the 18 allowlisted query variants. A global
+45-second Redis refresh lease serializes heavy refreshes across healthy workers,
+including different variants; a per-reader mutex coalesces local misses. Loads
+are capped at eight seconds, cache/wait work at nine seconds. Publication and
+lease release compare the unique owner token in Lua, so a delayed writer cannot
+overwrite another owner's snapshot or release its lease. Redis keys include a
+versioned hash of public origin and password-hidden DB identity, never admin
+identifiers, cookies or credentials. Redis values use bounded JSON (128 KiB),
+validate scope/version/expiry and contain the existing aggregate projection only.
+Increment cache version when changing the projection/metric contract.
+
+Redis failure retains a bounded per-worker daily memory fallback and a
+30-second connection circuit breaker with content-free logging. That degraded
+mode can calculate once per active worker/variant; it does not promise cluster
+coordination during Redis outage or restart. Failed/cancelled SQL refreshes
+back off locally for 30 seconds and leave the shared lease to expire, preventing
+per-request retries. Expired snapshots are not served. No manual browser
+refresh parameter bypasses the daily period.
+
+Browser/HTTP/SW still use no-store for private responses; Redis is server-side
+and must be private and isolated before rollout. No browser offline/private
+cache was enabled. User profiles, current billing/payment lists, receipt/review,
+access decisions and all commands remain uncached. Current payment/access
+facts can change immediately while the dashboard waits until its next snapshot.
+R2 snapshots/archives remain optional future work; nothing is uploaded to R2.
+
+Redis cache-aside/lease reference:
+[official Redis cache-aside guide](https://redis.io/docs/latest/develop/use-cases/cache-aside/redis-py/).
