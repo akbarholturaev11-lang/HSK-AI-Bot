@@ -311,7 +311,7 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
             self.assertEqual((await db.get(Payment, self.payment_id)).payment_status, "pending")
             self.assertEqual((await db.get(AdminPwaStepUp, receipt)).status, "verified")
 
-    async def test_empty_qa_table_selection_runs_real_0103_through_0119_ddl(self):
+    async def test_empty_qa_table_selection_runs_real_0103_through_0120_ddl(self):
         # Rehearse only in this disposable UUID schema, not through the guarded
         # Railway CLI. The production allowlist/approval guards are untouched.
         import importlib.util
@@ -326,8 +326,8 @@ class AdminPwaPostgresConcurrencyTests(PaymentFixtures, unittest.IsolatedAsyncio
         schema = self.schema + "_bootstrap"
         versions = Path(__file__).resolve().parents[1] / "alembic/versions"
         paths = sorted(path for path in versions.glob("*.py")
-                       if path.name[:4].isdigit() and 103 <= int(path.name[:4]) <= 119)
-        self.assertEqual(len(paths), 17)
+                       if path.name[:4].isdigit() and 103 <= int(path.name[:4]) <= 120)
+        self.assertEqual(len(paths), 18)
         async with self.engine.begin() as conn:
             await conn.execute(text(f"CREATE SCHEMA {schema}"))
             await conn.execute(text(f"SET LOCAL search_path TO {schema}"))
