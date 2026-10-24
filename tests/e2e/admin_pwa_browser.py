@@ -231,11 +231,36 @@ async def browser_checks(output):
         await page.locator('[data-review]').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
         await page.locator('[data-action=approve]').click()
+        # Delay an OLD rejected native promise across a NEW prompt. Closing
+        # the new drawer must still abort its own controller (not lose it to
+        # the old promise's finally). Native signatures are never fabricated.
+        await page.evaluate("""()=>{
+            window.qaNativeGet=navigator.credentials.get.bind(navigator.credentials);
+            window.qaAbortCount=0;window.qaNativeCalls=0;window.qaDelayFirst=true;window.qaRelease=null;
+            navigator.credentials.get=async options=>{
+                window.qaNativeCalls++;const delayed=window.qaDelayFirst;window.qaDelayFirst=false;
+                options.signal.addEventListener('abort',()=>window.qaAbortCount++);
+                try{return await window.qaNativeGet(options);}
+                catch(error){if(delayed)await new Promise(resolve=>window.qaRelease=resolve);throw error;}
+            };
+        }""")
         await cdp.send('WebAuthn.setAutomaticPresenceSimulation',{'authenticatorId':auth_id,'enabled':False})
         async with page.expect_response('**/auth/step-up/options'):
             await page.locator('[data-action=execute]').click()
+        await page.wait_for_function('window.qaNativeCalls===1')
         await page.locator('.drawer-close').click()
         await expect(page.locator('[data-review]')).to_have_count(1)
+        await page.wait_for_function('!!window.qaRelease')
+        await page.locator('[data-review]').click()
+        await expect(page.locator('[data-action=approve]')).to_be_enabled()
+        await page.locator('[data-action=approve]').click()
+        async with page.expect_response('**/auth/step-up/options'):
+            await page.locator('[data-action=execute]').click()
+        await page.wait_for_function('window.qaNativeCalls===2')
+        await page.evaluate('window.qaRelease()')
+        await page.locator('.drawer-close').click()
+        await page.wait_for_function('window.qaAbortCount===2')
+        await page.evaluate('()=>{navigator.credentials.get=window.qaNativeGet;}')
         assert len([p for p,_,_ in calls if p.endswith('/payments/review')])==2
         await cdp.send('WebAuthn.setAutomaticPresenceSimulation',{'authenticatorId':auth_id,'enabled':True})
         await page.locator('[data-action=feedback]').click()

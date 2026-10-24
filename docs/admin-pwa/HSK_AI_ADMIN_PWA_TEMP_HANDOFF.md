@@ -302,3 +302,8 @@ Earlier `RESUME_NEXT_CHAT` messages and early status paragraphs stated no sessio
 - Fix: all-time view now explicitly uses the canonical 30-day activity label; other selected periods keep their actual-window label. No counter/service/query change.
 - Risk: presentation-only scope correction; financial/auth/cache behavior unchanged.
 - Prevention: browser assertion selects all-time and checks the 30-day metric label. Full browser QA and exact-SHA workflow are rerun after this correction. Current earlier code commit is `f275a431b260df1f03d53e68e4c89e84470224e5`; final code SHA follows below.
+
+
+### Browser cancellation ownership guard
+
+- A cancelled old native prompt must not clear the global in-flight controller of a newly opened confirmation. `execute` now retains its own controller and only clears the shared pointer when it still owns it. A browser regression delays the old native rejection across a new prompt and checks both close actions really abort their respective native requests; no financial POST occurs. Existing real-signature browser QA is rerun; server one-use/transaction guards remain unchanged. Final CI SHA is recorded below.

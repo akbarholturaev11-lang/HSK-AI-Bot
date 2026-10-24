@@ -213,12 +213,12 @@ async function prepareDecision(decision) {
 async function execute() {
   if(!confirmation||!receiptLoaded||!supportsPasskey())return;
   const operation=structuredClone(confirmation), current=drawerId, authEpoch=epoch;
-  $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);signing=new AbortController();
+  $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);const control=new AbortController();signing=control;
   let submitted=false;
   try {
     const options=await api('auth/step-up/options',operation);
     if(current!==drawerId||authEpoch!==epoch)return;
-    const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey),signal:signing.signal});
+    const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey),signal:control.signal});
     if(current!==drawerId||authEpoch!==epoch)return;
     await api('auth/step-up/verify',{step_up_id:options.step_up_id,credential:serialize(credential)});
     if(current!==drawerId||authEpoch!==epoch)return;
@@ -233,7 +233,7 @@ async function execute() {
     confirmation=null;receiptLoaded=false;
     drawer('confirmPayment',statePanel(submitted?'uncertain':errorKey(error)));
     if(submitted)await load();
-  } finally {signing=null;}
+  } finally {if(signing===control)signing=null;}
 }
 async function inbox(before=null) {
   closeDrawer();const current=drawerId;
