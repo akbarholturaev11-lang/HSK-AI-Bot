@@ -181,6 +181,7 @@ def create_admin_pwa_mcp_http_router(
             "token_endpoint_auth_methods_supported": ["none"],
             "scopes_supported": [_ANALYTICS_SCOPE],
             "client_id_metadata_document_supported": False,
+            "authorization_response_iss_parameter_supported": True,
         }, headers=_HEADERS)
 
     @router.post("/oauth/token", include_in_schema=False)
