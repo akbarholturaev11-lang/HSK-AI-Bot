@@ -2,6 +2,14 @@
 
 Updated 2026-10-24. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## VERIFIED Apple sender integration + PWA status fix — 2026-10-24
+
+- Latest **code** commit: `108a8a994aa39b8fd5eb88922f5835c6a51a2c9e`. [Admin PWA CI run 40098811486](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40098811486) **BOTH jobs SUCCESS**: 366 Python passed / 17 skipped in that job; 17 disposable PostgreSQL passed; 61 legacy passed; 63 generated UI catalogs / 0 stale; virtual WebAuthn, mobile/desktop browser and 11 native/report regressions passed. Wider Android/Backend workflows are separate checks.
+- `4d6cf0b8`: `app/static/admin-pwa/app.js` stops displaying the old canonical `pushNotSending` warning when the authenticated Push API reports `sending_enabled=true`; when sender config is OFF, the existing warning remains. No new UI copy or catalog edit. `tests/test_admin_pwa_shell.py` guards this rendering contract. The existing shell-content-derived SW hash automatically changes with `app.js`.
+- `94e9887a` + `108a8a99`: offline integration test exercises the **real pinned pywebpush encryption + VAPID signing code**, intercepting only the final `requests.post` boundary. First run failed because test fixture omitted fake Response `text`/`headers`; fixture fixed, latest CI green. This is **not** Apple push-service acceptance or a physical notification.
+- Existing outbox, sender, conditional in-app scheduler and native report retention remain default OFF via independent feature flags. No production/staging secrets, real provider network, live device, migration, deployment or main merge was performed in this work increment.
+- **Next implementation priority:** inventory source-backed technical error/system alert producers and integrate only verified, rate-limited, privacy-safe important events; then secure screenshot/feedback attachment access and Inbox search. Separately, expand first-party management and sanitized JSON/CSV export under their own security tests. Staging and physical iPhone/Mac remain owner-authorized acceptance gates. No AI write/MCP-feedback exposure has been added.
+
 ## CURRENT sender/retention continuation — 2026-10-24
 
 - **Branch verified prior to this incremental UI/doc/test patch:** `171fc3efdc5d2109d6ef542c7441489f72509f14` on `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201 (not merged). [Admin PWA CI 40096641518](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40096641518) for that baseline: two jobs successful, **364 Python passed / 17 PG-only skipped**, **17 disposable PG passed**, 61 legacy, 63 localization artifacts/0 stale and browser virtual WebAuthn checks passed. This is not an Apple-provider or real-device test.
