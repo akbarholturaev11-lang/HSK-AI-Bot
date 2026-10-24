@@ -4,11 +4,14 @@ No raw text, IDs, media, free-form labels, user-level joins, MCP tools or AI
 classification. Every selected source query reads at most MAX_SOURCE_ROWS + 1
 recent indexed records; coverage is explicitly marked partial when capped.
 """
+import asyncio
 import csv
 from datetime import datetime, timedelta, timezone
 import io
 import json
 import logging
+import math
+import time
 from typing import Literal
 
 from fastapi import APIRouter, Request
@@ -29,6 +32,8 @@ logger = logging.getLogger(__name__)
 MAX_SOURCE_ROWS = 500
 MAX_EXPORT_BYTES = 128 * 1024
 _CODES = frozenset(DISLIKED_OPTIONS)
+_MAX_QUERIES_PER_MINUTE = 30
+_MAX_CONCURRENT_QUERIES = 2
 _SOURCES = ("bot", "release", "android")
 _RATING_BUCKETS = {1: "low_rating", 2: "low_rating", 3: "neutral_rating",
                    4: "positive_rating", 5: "positive_rating"}
@@ -152,8 +157,41 @@ def render_feedback_analytics_export(data, query: FeedbackAnalyticsExportRequest
     })
 
 
-def create_admin_pwa_feedback_analytics_router(*, settings_obj, session_factory):
+class _FeedbackQueryLimit:
+    """Bound expensive private feedback reads per worker, not a global quota.
+
+    Authenticated traffic only. No cookies, identities or addresses are
+    recorded; a fixed small amount of state is retained per API router.
+    """
+
+    def __init__(self, *, clock=time.monotonic):
+        self.clock = clock
+        self.lock = asyncio.Lock()
+        self.started = clock()
+        self.attempts = 0
+        self.active = 0
+
+    async def enter(self):
+        async with self.lock:
+            now = self.clock()
+            if now - self.started >= 60:
+                self.started, self.attempts = now, 0
+            if self.active >= _MAX_CONCURRENT_QUERIES:
+                return 1
+            if self.attempts >= _MAX_QUERIES_PER_MINUTE:
+                return max(1, math.ceil(60 - (now - self.started)))
+            self.attempts += 1
+            self.active += 1
+            return 0
+
+    async def leave(self):
+        async with self.lock:
+            self.active -= 1
+
+
+def create_admin_pwa_feedback_analytics_router(*, settings_obj, session_factory, clock=time.monotonic):
     router = APIRouter(tags=["admin-pwa-feedback-analytics"])
+    throttle = _FeedbackQueryLimit(clock=clock)
 
     async def handle(request: Request, *, export: bool):
         failure = _guard_post(request, settings_obj)
@@ -167,12 +205,19 @@ def create_admin_pwa_feedback_analytics_router(*, settings_obj, session_factory)
                 await _body(request, 2048))
         except ValidationError:
             return _reply(400, "admin_pwa_invalid_payload")
+        admitted = False
         try:
             async with session_factory() as db:
                 async with read_transaction(db):
                     actor = await authenticate_admin_pwa_session(db, cookie, settings_obj)
                     if actor is None or actor.auth_method != "webauthn":
                         return _reply(401, "admin_pwa_unauthorized")
+                    retry_after = await throttle.enter()
+                    if retry_after:
+                        response = _reply(429, "admin_pwa_feedback_busy")
+                        response.headers["Retry-After"] = str(retry_after)
+                        return response
+                    admitted = True
                     result = await feedback_analytics(db, query)
             if export:
                 return render_feedback_analytics_export(result, query)
@@ -180,6 +225,9 @@ def create_admin_pwa_feedback_analytics_router(*, settings_obj, session_factory)
         except Exception:
             logger.exception("Admin PWA feedback aggregate unavailable")
             return _reply(503, "admin_pwa_feedback_aggregate_unavailable")
+        finally:
+            if admitted:
+                await throttle.leave()
 
     @router.post("/api/admin/v1/feedback/categories")
     async def categories(request: Request):

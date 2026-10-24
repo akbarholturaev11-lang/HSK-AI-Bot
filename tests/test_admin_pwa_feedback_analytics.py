@@ -1,4 +1,5 @@
 """Bounded, first-party-only feedback category aggregation and export."""
+import asyncio
 import csv
 import io
 import unittest
@@ -9,7 +10,8 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import event, select
 
 from app.admin_api.pwa_feedback_analytics import (
-    FeedbackAnalyticsRequest, create_admin_pwa_feedback_analytics_router, feedback_analytics,
+    FeedbackAnalyticsRequest, _FeedbackQueryLimit,
+    create_admin_pwa_feedback_analytics_router, feedback_analytics,
 )
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.db.models.admin_pwa import AdminPwaSession
@@ -168,6 +170,50 @@ class FeedbackAnalyticsTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         self.settings.ADMIN_PWA_ENABLED=False
         self.assertEqual((await self.post("",query)).status_code,404)
         self.assertEqual((await self.post("/export",{**query,"format":"json"})).status_code,404)
+
+    async def test_worker_quota_counts_only_authorized_feedback_queries_and_resets(self):
+        await self.seed()
+        stamp = [100.0]
+        app = FastAPI()
+        app.include_router(create_admin_pwa_feedback_analytics_router(
+            settings_obj=self.settings, session_factory=self.sessions, clock=lambda: stamp[0]))
+        async with AsyncClient(transport=ASGITransport(app=app),
+                base_url="https://hskai.app", headers={"origin": "https://hskai.app"},
+                cookies={ADMIN_PWA_COOKIE_NAME: fixtures.COOKIE}) as client:
+            payload = {"source": "bot", "period": "weekly"}
+            # Forged/anonymous attempts must not exhaust valid admin capacity.
+            self.assertEqual((await client.post("/api/admin/v1/feedback/categories",
+                json=payload, cookies={ADMIN_PWA_COOKIE_NAME: "forged"})).status_code, 401)
+            for idx in range(30):
+                endpoint = "/api/admin/v1/feedback/categories" + ("/export" if idx % 2 else "")
+                body = {**payload, "format": "csv"} if idx % 2 else payload
+                response = await client.post(endpoint, json=body)
+                self.assertEqual(response.status_code, 200, (idx, response.text))
+            blocked = await client.post("/api/admin/v1/feedback/categories", json=payload)
+            self.assertEqual(blocked.status_code, 429)
+            self.assertEqual(blocked.headers["retry-after"], "60")
+            self.assertEqual(blocked.headers["cache-control"], "no-store")
+            stamp[0] += 61
+            self.assertEqual((await client.post("/api/admin/v1/feedback/categories",
+                json=payload)).status_code, 200)
+
+    async def test_worker_concurrency_admission_does_not_wait_or_leak_identity(self):
+        stamp = [300.0]
+        quota = _FeedbackQueryLimit(clock=lambda: stamp[0])
+        self.assertEqual(await quota.enter(), 0)
+        self.assertEqual(await quota.enter(), 0)
+        self.assertEqual(await quota.enter(), 1)
+        await quota.leave()
+        self.assertEqual(await quota.enter(), 0)
+        await quota.leave()
+        await quota.leave()
+        self.assertEqual(quota.active, 0)
+        self.assertEqual(quota.attempts, 3)
+        self.assertFalse(hasattr(quota, "cookie"))
+        stamp[0] += 61
+        self.assertEqual(await quota.enter(), 0)
+        self.assertEqual(quota.attempts, 1)
+        await quota.leave()
 
     async def test_service_uses_projection_only_and_no_sql_mutations(self):
         await self.seed()

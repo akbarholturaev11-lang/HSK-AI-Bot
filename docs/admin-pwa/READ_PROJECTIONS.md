@@ -335,3 +335,24 @@ not a cluster-wide rate guarantee. Browser object URLs are revoked on close or
 private-state invalidation. See [browser contract](BROWSER_UI_CONTRACT.md).
 Statistics still reuse their separate 24-hour cache; current auth/security facts
 and all first-party inbox/financial operations remain live.
+
+### Feedback analytics per-worker read admission — 2026-10-25
+
+To bound repeated **first-party** Bot/Release/Android category queries, the
+feedback read/JSON/CSV endpoints share a fixed small process-local admission
+state: at most 30 authenticated queries per 60 seconds and 2 active aggregate
+queries per worker. Excess requests fail fast with private no-store HTTP 429
+and a bounded Retry-After; neither the untrusted request body nor cookies,
+source text, account IDs or IP addresses are stored in the limiter. The gate
+runs only after live allowlisted WebAuthn session validation, so anonymous
+requests cannot consume the feedback workload budget. This limits the heavy
+aggregate SELECT path rather than generic admin authentication. No background
+refresh, new Redis DB dependency or cache of private feedback is added.
+
+These bounds are **per worker**, not shared across a multi-worker deployment:
+production deployment-wide admission and real DB indexing/load tests remain
+release acceptance items. Other first-party Inbox search and live billing
+queries retain their separate behavior and contracts. The external MCP tool
+remains statistics-only. Regression tests cover authenticated and forged
+requests, a shared export/read quota, overflow 429, reset and concurrent
+admission; they do not claim multi-worker enforcement.
