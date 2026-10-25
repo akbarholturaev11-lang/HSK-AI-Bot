@@ -2,6 +2,26 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current orphan-triage retention increment
+
+- `scan_orphaned_inbox_triage` and operator CLI
+  `python -m scripts.admin_pwa_inbox_retention` add one explicit metadata-only
+  keyset page (default 100, hard maximum 1000), at most five indexed source-ID
+  checks and exact missing-source deletes. All five sources are covered.
+  No raw text/BLOB, global COUNT, periodic scan, source deletion or audit change.
+- Default is read-only dry run. `--purge-orphans` opts into one transaction with
+  metadata `FOR UPDATE SKIP LOCKED`; `--after-source/--after-id` continue the
+  returned primary-key cursor. Full final pages may produce one empty next page;
+  locked rows/concurrent later source deletions wait for the next explicit sweep.
+- Five new cleanup tests plus payout regression: **11 passed**, zero skips with
+  disposable PostgreSQL. Tests cover all live/missing sources, exact keysets,
+  content-free/no-write dry run, audit/source preservation, rollback/idempotence,
+  strict bounds and actual PG locked-row skip. CLI help has no engine/startup IO.
+- Payout state checkpoint pushed at `6810c016`. Remaining code: messaging/
+  campaigns, payout proof upload/completion and recipient notices, other media/QR
+  uploads and payment-outbox operator reconciliation. Orphan metadata cleanup
+  is implemented; do not keep reporting it as wholly missing code.
+
 ## Current partner-payout state increment
 
 - `/partner-payouts/read|prepare|save` implements shared reservation/release,

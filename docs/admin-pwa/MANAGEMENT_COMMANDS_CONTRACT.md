@@ -74,8 +74,7 @@ unused step-up action name is not an implemented standalone command. Each
 needs its own strict payload, shared-service transaction and permission/audit
 contract before its UI can claim success. Messaging additionally needs durable
 claim/delivery evidence and bounded batches. Payment outbox uncertain-delivery
-operator reconciliation and non-native orphan triage cleanup remain separate
-operability work; immutable financial/command audits must stay intact.
+operator reconciliation remains separate operability work; immutable financial/command audits must stay intact.
 
 Account management binds canonical ID, current identity/subscription/status hash,
 the specific operation and (for deletion) repeated numeric ID confirmation.
@@ -142,3 +141,11 @@ Deadline confirmation binds the actual UTC instant, never a save-time shifted
 reservation-owner guards. Post-lock current authority/expiry, immutable
 content-free audit and proof consumption are atomic. Reserving does not move
 money or mark paid; a provider-verified proof workflow is required separately.
+
+Orphan triage cleanup is operator-only, not an MCP or browser management API.
+`python -m scripts.admin_pwa_inbox_retention --limit 100` previews a bounded
+primary-key page; `--purge-orphans` deletes only metadata whose original source
+no longer exists. Continue via the returned source/ID cursor. No COUNT or
+full-source query, background scheduler, raw content/BLOB, source deletion or
+audit removal. Each page uses existing indexes and at most five bounded source
+ID checks; active metadata locks are skipped and revisited on a later sweep.
