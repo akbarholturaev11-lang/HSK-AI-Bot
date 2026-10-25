@@ -45,6 +45,7 @@ const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', c
 let epoch=0, view=0, drawerId=0, confirmation=null, paymentPreview=null, reviewChoice=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
+let inboxLoadingMore=false,inboxListScrollTop=0,inboxRequestNonce=0;
 let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
 const sectionBackStack=[];
 let automaticLoginAttempted=false, automaticLoginInProgress=false;
@@ -794,7 +795,7 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {clearTimeout(savedCloseTimer);savedCloseTimer=null;editorBaseline=null;resetSwipePreview();clearNotice();managementPreparing=false;preparingEditor=null;drawerBack=null;closeActionMenus();closeInboxAttachment();releaseManagementMediaPreview();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;paymentPreview=null;reviewChoice=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {inboxRequestNonce++;inboxLoadingMore=false;clearTimeout(savedCloseTimer);savedCloseTimer=null;editorBaseline=null;resetSwipePreview();clearNotice();managementPreparing=false;preparingEditor=null;drawerBack=null;closeActionMenus();closeInboxAttachment();releaseManagementMediaPreview();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;paymentPreview=null;reviewChoice=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   clearTimeout(savedCloseTimer);savedCloseTimer=null;editorBaseline=null;
   if(!$('overlay'))returnFocus=document.activeElement;
@@ -2157,10 +2158,60 @@ function inboxDetails(row) {
       '<div class="inbox-attachment" id="'+attachmentId+'" aria-live="polite" hidden></div>':'')+'</div>';
 }
 let currentInboxRows=[];
+function inboxRequest(before=null,userId=feedbackUserId) {
+  return api('inbox/list',{source:'all',priority:'all',status:'all',period:'all_time',
+    search:null,user_id:userId,before,limit:30});
+}
+function maybeLoadInbox(){
+  const scroller=$('drawerContent');
+  if(!scroller||!scroller.querySelector('.inbox-minimal-list')||inboxLoadingMore||!inboxNextCursor)return;
+  if(scroller.scrollHeight-scroller.scrollTop-scroller.clientHeight<280)void loadMoreInbox();
+}
+function renderInboxList(scrollTop=0){
+  const body='<div class="inbox-shell inbox-minimal">'+
+    (feedbackUserId?'<p class="inbox-account">'+esc(t('account'))+' #'+esc(feedbackUserId)+'</p>':'')+
+    '<div class="inbox-minimal-list">'+(currentInboxRows.map(inboxEntry).join('')||statePanel('empty'))+'</div>'+
+    '<p class="inbox-scroll-status" aria-live="polite" role="status"></p></div>';
+  drawer('feedback',body,null,'inbox-drawer');
+  const scroller=$('drawerContent');
+  scroller.scrollTop=scrollTop;
+  scroller.addEventListener('scroll',maybeLoadInbox,{passive:true});
+  drawerBack=null;
+  requestAnimationFrame(()=>{if(scroller.isConnected)maybeLoadInbox();});
+}
+async function loadMoreInbox(){
+  if(inboxLoadingMore||!inboxNextCursor||!state.actor)return;
+  const scroller=$('drawerContent'),list=scroller?.querySelector('.inbox-minimal-list');
+  if(!list)return;
+  const at=epoch,nonce=inboxRequestNonce,before=inboxNextCursor,status=scroller.querySelector('.inbox-scroll-status');
+  inboxLoadingMore=true;
+  if(status)status.textContent=t('loading');
+  let success=false;
+  try{
+    const data=await inboxRequest(before);
+    if(at!==epoch||nonce!==inboxRequestNonce||!list.isConnected||!state.actor)return;
+    const seen=new Set(currentInboxRows.map(row=>row.source+':'+row.source_id));
+    const added=(Array.isArray(data.items)?data.items:[]).filter(row=>!seen.has(row.source+':'+row.source_id));
+    currentInboxRows.push(...added);
+    list.insertAdjacentHTML('beforeend',added.map(inboxEntry).join(''));
+    inboxNextCursor=added.length&&JSON.stringify(data.next_before)!==JSON.stringify(before)?data.next_before:null;
+    if(status)status.textContent='';
+    success=true;
+  }catch(_){
+    if(at===epoch&&nonce===inboxRequestNonce&&status?.isConnected)status.textContent=t('error');
+  }finally{
+    if(at===epoch&&nonce===inboxRequestNonce){
+      inboxLoadingMore=false;
+      if(success)requestAnimationFrame(()=>{if(list.isConnected)maybeLoadInbox();});
+    }
+  }
+}
 async function openInbox(source,id) {
   if(inboxUpdating||!state.actor)return;
   const row=currentInboxRows.find(item=>item.source===source&&item.source_id===id);
   if(!row)return;
+  inboxListScrollTop=$('drawerContent')?.scrollTop||0;
+  inboxRequestNonce++;inboxLoadingMore=false;
   const current=drawerId,at=epoch;
   inboxUpdating=true;
   try {
@@ -2179,14 +2230,13 @@ async function openInbox(source,id) {
       return;
     }
     drawer('feedback',inboxDetails(row),null,'inbox-drawer');
-    drawerBack=()=>inbox(null,originatingUser);
+    drawerBack=()=>renderInboxList(inboxListScrollTop);
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     showNotice(error.status===409?'inboxChanged':'inboxActionError');
     await inbox(null,feedbackUserId);
   }finally{inboxUpdating=false;}
 }
-
 async function refreshInboxUnread() {
   if(!state.actor)return;
   const id=state.actor.user_id,current=epoch;
@@ -2215,22 +2265,18 @@ async function refreshInboxUnread() {
   }catch(_){/* Never invent a zero badge on an unavailable private read. */}
 }
 async function inbox(before=null,userId=null) {
-  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;currentInboxRows=[];const current=drawerId;
+  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;currentInboxRows=[];inboxListScrollTop=0;
+  const current=drawerId,at=epoch;
   drawer('feedback',statePanel('loading'),null,'inbox-drawer');
   try {
-    const data=await api('inbox/list',{source:'all',priority:'all',status:'all',period:'all_time',
-      search:null,user_id:userId,before,limit:30});
-    if(current!==drawerId||!state.actor)return;
+    const data=await inboxRequest(before,userId);
+    if(current!==drawerId||at!==epoch||!state.actor)return;
     inboxNextCursor=data.next_before;currentInboxRows=data.items;
-    const body=`<div class="inbox-shell inbox-minimal">
-      ${userId?`<p class="inbox-account">${esc(t('account'))} #${esc(userId)}</p>`:''}
-      <div class="inbox-minimal-list">${data.items.map(inboxEntry).join('')||statePanel('empty')}</div>
-      ${inboxNextCursor?`<button type="button" class="btn inbox-more" data-feedback-next="1">${esc(t('next'))}</button>`:''}
-    </div>`;
-    drawer('feedback',body,null,'inbox-drawer');
-  }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'),null,'inbox-drawer');}
+    renderInboxList();
+  }catch(error){
+    if(current===drawerId&&at===epoch&&state.actor)drawer('feedback',statePanel('error'),null,'inbox-drawer');
+  }
 }
-
 // Apple-first Web Push opt-in; actual sending requires an independent server kill switch.
 function applePushPlatform() {
   const ua=navigator.userAgent||'';
@@ -2437,7 +2483,7 @@ async function action(name) {
   if(name==='pushEnable'){await enablePush();return;}
   if(name==='mcpRevokeConfirm'){await revokeMcp();return;}
   if(name==='feedback'){await inbox();return;}
-  if(name==='inboxBack'){await inbox(null,feedbackUserId);return;}
+  if(name==='inboxBack'){renderInboxList(inboxListScrollTop);return;}
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='more'){
     const sections=['course','marketing','system'].map(route=>managementRow(t(route),'data-route="'+route+'"',{course:'book',marketing:'mega',system:'settings'}[route])).join('');
@@ -2643,7 +2689,6 @@ document.addEventListener('click',event=>{
       if(match)await openInbox(match[1],Number(match[2]));
     }
     else if(button.dataset.inboxAttachment){await viewInboxAttachment(button);}
-    else if(button.dataset.feedbackNext&&inboxNextCursor){await inbox(inboxNextCursor,feedbackUserId);}
     else if(button.dataset.pushRevoke){await revokePush(button.dataset.pushRevoke);}
     else if(button.dataset.mcpRevoke){await confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
     else if(button.dataset.action){await action(button.dataset.action);}
