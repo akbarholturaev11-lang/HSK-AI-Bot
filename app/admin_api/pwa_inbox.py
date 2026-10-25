@@ -208,6 +208,9 @@ async def unified_inbox(db, request: InboxRequest):
                 "feedback_parts": {
                     "liked": row.liked_detail or row.liked_code,
                     "disliked": row.disliked_detail or row.disliked_code,
+                    # Paid-plan follow-up reuses disliked_* columns to hold the
+                    # subscriber's *reason*, even for a positive rating.
+                    "paid": bool(row.liked_code and row.liked_code.startswith("paid_")),
                 },
                 **_triage(row),
                 "rating": None, "notification_delivery": None, "app_version": None, "screen": None,
