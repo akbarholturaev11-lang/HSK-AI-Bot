@@ -592,3 +592,29 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
   .more-drawer .drawer-foot .btn{flex:1}
 }
 @media(min-width:761px){.payment-cards{display:none}.payment-table-wrap{display:block}}
+
+/* Compact laptop windows: keep the desktop navigation visible without page-level horizontal scroll. */
+.app{width:100%;min-width:0}
+.workspace{flex:1 1 0;min-width:0}
+.main{width:100%;min-width:0}
+@media (min-width:761px) and (max-width:1280px){
+  .sidebar{width:clamp(184px,19vw,220px);min-width:0;padding:20px 11px 14px}
+  .sidebar .brand{margin:0 7px 23px;gap:9px}
+  .sidebar .brand-logo{width:35px;height:35px;flex:0 0 35px}
+  .sidebar .brand-title{font-size:16px}
+  .sidebar .nav-cap{padding-inline:10px}
+  .sidebar .nav button{min-width:0;gap:9px;padding:11px 10px;font-size:12px}
+  .sidebar .side-foot{padding:14px 8px 0}
+  .topbar{padding-inline:clamp(16px,2vw,26px)}
+  .main{padding-inline:clamp(16px,2vw,26px)}
+  .management-page{width:100%;max-width:860px;min-width:0}
+}
+@media (min-width:761px) and (max-height:780px){
+  .sidebar{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+  .sidebar .brand{margin-bottom:14px}
+  .sidebar .nav{gap:2px}
+  .sidebar .nav button{padding-block:9px}
+  .sidebar .side-foot{flex-shrink:0;margin-top:16px;padding-top:12px}
+  .sidebar .side-foot .btn{min-height:36px;margin-top:4px;padding:7px 10px;font-size:12px}
+  .sidebar .locale-select{margin-top:7px;padding:6px}
+}
