@@ -30,6 +30,7 @@ from app.admin_api.pwa_partners import create_admin_pwa_partners_router
 from app.admin_api.pwa_notifications import create_admin_pwa_notifications_router
 from app.admin_api.pwa_portfolio import create_admin_pwa_portfolio_router
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
+from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_login_router
 from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
 from app.db.base import Base
 from app.db.models.admin_pwa import AdminPwaSession
@@ -69,7 +70,7 @@ async def browser_checks(output):
     app = FastAPI()
     common = dict(settings_obj=fixture.settings, session_factory=fixture.sessions)
     for factory in (create_admin_pwa_bootstrap_router, create_admin_pwa_read_router,
-                    create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
+                    create_admin_pwa_passkey_login_router, create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
                     create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router,
                     create_admin_pwa_user_management_router,create_admin_pwa_channels_router,
                     create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router,create_admin_pwa_partners_router,create_admin_pwa_partner_payouts_router):
@@ -111,8 +112,6 @@ async def browser_checks(output):
             browser = await pw.chromium.launch()
             try:
                 context = await browser.new_context(viewport={"width": 1440, "height": 1000}, service_workers="block")
-                await context.add_cookies([dict(name="__Host-hskai_admin", value=COOKIE, domain="hskai.app",
-                                                path="/", secure=True, httpOnly=True, sameSite="Strict")])
                 await context.route("**/*", serve)
                 page = await context.new_page()
                 page.on("pageerror", lambda error: errors.append(str(error)))
@@ -153,7 +152,9 @@ async def browser_checks(output):
                     await page.locator(".drawer-close").click()
 
                 await page.goto(ORIGIN + "/admin/")
-                await page.wait_for_load_state("networkidle")
+                await expect(page.locator("[data-action=signin]")).to_be_visible(timeout=15000)
+                await page.locator("[data-action=signin]").click()
+                await expect(page.locator(".sidebar")).to_be_visible(timeout=20000)
                 # Landing pages are navigation, with no per-page configuration queries.
                 configuration_reads = lambda: [path for path, _ in calls
                     if path in ('/api/admin/v1/settings/read', '/api/admin/v1/subscription-prices/read')]
