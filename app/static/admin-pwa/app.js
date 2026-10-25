@@ -586,7 +586,7 @@ async function saveCourseLimits(){
     submitted=true;
     await api('limits/save',{...operation.payload,step_up_id:options.step_up_id});
     if(current!==drawerId||at!==epoch)return;
-    confirmation=null;closeDrawer();await loadCourseData();showNotice('saved');
+    confirmation=null;showSavedAndDismiss('changesSaved');void loadCourseData();
   }catch(error){
     if(current!==drawerId||at!==epoch)return;
     confirmation=null;
