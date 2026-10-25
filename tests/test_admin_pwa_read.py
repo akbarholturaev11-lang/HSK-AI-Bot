@@ -122,9 +122,42 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertEqual(row["created_at"], joined.isoformat())
         self.assertEqual(row["selected_payment_method"], "alipay")
         self.assertEqual(row["selected_plan_type"], "1_month")
+        self.assertIsNone(row["last_approved_plan_type"])
         self.assertIn(row["access_state"], ("FREE", "TRIAL_ACTIVE", "PRO_ACTIVE", "EXPIRED", "TEMP_ACCESS", "BLOCKED"))
         self.assertNotIn("telegram_id", row)
         self.assertNotIn("screenshot_file_id", row)
+
+    async def test_user_directory_falls_back_to_latest_approved_payment_only_for_active_pro(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            pro = await db.get(User, 2)
+            pro.status = "active"
+            pro.payment_status = "approved"
+            pro.end_date = now + timedelta(days=25)
+            pro.selected_plan_type = None
+            pro.payment_method = None
+            db.add_all([
+                Payment(user_id=2, plan_type="10_days", payment_method="visa",
+                        payment_status="approved", amount=29, currency="TJS"),
+                Payment(user_id=2, plan_type="3_months", payment_method="alipay",
+                        payment_status="approved", amount=179, currency="TJS"),
+                Payment(user_id=2, plan_type="1_month", payment_method="wechat",
+                        payment_status="rejected", amount=89, currency="TJS"),
+                Payment(user_id=1, plan_type="1_month", payment_method="visa",
+                        payment_status="approved", amount=89, currency="TJS"),
+            ])
+            await db.commit()
+        response = await self.post("users/search", {"limit": 100})
+        self.assertEqual(response.status_code, 200, response.text)
+        by_id = {row["user_id"]: row for row in response.json()["items"]}
+        self.assertEqual(by_id[2]["access_state"], "PRO_ACTIVE")
+        self.assertIsNone(by_id[2]["selected_plan_type"])
+        self.assertEqual(by_id[2]["last_approved_plan_type"], "3_months")
+        self.assertEqual(by_id[2]["last_approved_payment_method"], "alipay")
+        self.assertEqual(by_id[1]["access_state"], "FREE")
+        self.assertIsNone(by_id[1]["last_approved_plan_type"])
+        self.assertIsNone(by_id[1]["last_approved_payment_method"])
+        self.assertNotIn("telegram_id", response.text)
 
     async def test_user_segments_use_server_filters_before_pagination(self):
         now = datetime.now(timezone.utc)

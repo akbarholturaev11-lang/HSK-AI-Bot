@@ -449,12 +449,18 @@ function userSelectedDuration(value){
   const known={'10_days':'directoryPlan10Days','1_month':'directoryPlan1Month','3_months':'directoryPlan3Months'};
   return known[plan]?t(known[plan]):displayPlan(plan);
 }
+function userDirectoryPlan(row){
+  return row.selected_plan_type||(row.access_state==='PRO_ACTIVE'?row.last_approved_plan_type:null);
+}
+function userDirectoryMethod(row){
+  return row.selected_payment_method||(row.access_state==='PRO_ACTIVE'?row.last_approved_payment_method:null);
+}
 function userPlanMethodText(row){
-  const plan=userSelectedDuration(row.selected_plan_type),method=userPaymentMethod(row.selected_payment_method);
+  const plan=userSelectedDuration(userDirectoryPlan(row)),method=userPaymentMethod(userDirectoryMethod(row));
   return [plan,method].filter(value=>value!=='—').join(' · ')||'—';
 }
 function userPlanMethod(row){
-  return '<span class="user-plan-method"><strong class="user-selected-duration">'+esc(userSelectedDuration(row.selected_plan_type))+'</strong><small class="user-payment-method">'+esc(userPaymentMethod(row.selected_payment_method))+'</small></span>';
+  return '<span class="user-plan-method"><strong class="user-selected-duration">'+esc(userSelectedDuration(userDirectoryPlan(row)))+'</strong><small class="user-payment-method">'+esc(userPaymentMethod(userDirectoryMethod(row)))+'</small></span>';
 }
 function userSummary(row){
   const raw=String(row.username||'').trim(),handle=raw?(raw.startsWith('@')?raw:'@'+raw):'—';
