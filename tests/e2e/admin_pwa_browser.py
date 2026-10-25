@@ -225,16 +225,19 @@ async def browser_checks(output):
         await page.screenshot(path=str(output/'desktop-user-profile.png'),full_page=True)
         await page.locator('[data-user-feedback]').click()
         await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
-        await expect(page.locator('#inboxSearchQuery')).to_have_count(0)
-        # The minimal list never leaks feedback text. Detail opens only on tap.
+        assert await page.locator('#inboxSearchForm,#inboxSource,#inboxPriority').count()==0
+        # Only title is shown in list; message and escaped private content
+        # appear only after opening the corresponding source-bound item.
         await expect(page.locator('#drawerContent')).not_to_contain_text('<script>private QA feedback</script>')
-        await page.locator('[data-inbox-open^="bot:"]').first.click()
-        await expect(page.locator('.inbox-details-text')).to_contain_text('<script>private QA feedback</script>')
+        bot_entry=page.locator('.inbox-minimal-row[data-inbox-open^="bot:"]').first
+        await bot_entry.click()
+        await expect(page.locator('.inbox-details')).to_contain_text('<script>private QA feedback</script>')
         await expect(page.locator('.inbox-details script')).to_have_count(0)
         await expect(page.locator('.inbox-details')).not_to_contain_text('other account QA feedback')
-        await page.locator('.inbox-back').click()
         assert any(path.endswith('/inbox/triage') and body.get('operation')=='mark_read'
-                   and body.get('source')=='bot' for path,_,body in calls if isinstance(body,dict))
+                   for path,_,body in calls if isinstance(body,dict))
+        await page.locator('.inbox-back').click()
+        await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.locator('.drawer-close').click()
         await page.set_viewport_size({'width':390,'height':844})
         await page.screenshot(path=str(output/'mobile-users.png'),full_page=True)
