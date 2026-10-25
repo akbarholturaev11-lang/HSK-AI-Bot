@@ -1,8 +1,9 @@
-> **OWNER UPDATE (2026-10-25):** Active work stays only on
-> `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204. Preserve its accepted
-> minimal notification window, automatic importance, read-on-open details,
-> fresh passkey on launch/resume and one-step iPhone back gesture. Earlier
-> branch/session-reuse references below are historical. No main push or deploy.
+> **OWNER UPDATE (2026-10-25):** Current scoped passkey follow-up:
+> `feat/admin-pwa-seamless-passkey-20261025`, based on merged PR #204.
+> Preserve accepted minimal Inbox and iPhone swipe-back. Reuse server-validated
+> cookie sessions and auto-attempt WebAuthn once when necessary, falling back to
+> the existing button on Safari/WebKit. This replaces prior forced revocation
+> on each launch/resume. No main push or deploy.
 
 > **CURRENT MCP workstream branch clarification (2026-10-24):** Previous `codex/admin-pwa` was merged to `main` in PR #200. All NEW MCP work is intentionally isolated to **`feat/admin-pwa-mcp-readonly-20261024` / Draft PR #201**, as specified in [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Continue obeying every scoped safety/UI/approval rule below; the branch and startup sequence below reflect the current follow-up. No new merge/deploy/flag enablement is authorized.
 
@@ -38,9 +39,9 @@
 
 - Keep Telegram Admin Mini App `/admin.html` and `X-Telegram-Init-Data` flows fully operational. No spoofed initData and no bypass in existing admin guards.
 - Admin PWA public target is `https://hskai.app/admin` **subject to real DNS, TLS, proxy and collision verification**. Do not claim it is live or that OAuth callback/RP ID is configured without evidence.
-- First onboarding: verified Google OIDC identity + one-time explicit approval by an authorized Telegram admin + secure canonical admin link + passkey enrollment. Returning login is **passkey-first without repeating Google/Telegram**. On launch/resume revoke the previous browser session and require a fresh passkey; failure to revoke fails closed. Linked Google and audited Telegram recovery are fallbacks, not each-open requirements.
+- First onboarding: verified Google OIDC identity + one-time explicit approval by an authorized Telegram admin + secure canonical admin link + passkey enrollment. Returning login is **passkey-first without repeating Google/Telegram**. On launch/resume validate the existing cookie on the server; if invalid, auto-attempt passkey once per foreground visit. Safari/WebKit may require interaction, so preserve the manual fallback. Explicit logout still revokes the server session. Linked Google and audited Telegram recovery are fallbacks, not each-open requirements.
 - WebAuthn (FIDO2) is platform authentication (Face ID, Touch ID, Windows Hello, PIN/passcode depending on device), **not a guaranteed Face-ID-only API**. Relying-party ID: `hskai.app` for production; origin `https://hskai.app`. Browser/server never receive biometric templates.
-- For payments, deletion, granting paid access, broadcast and other high-risk mutations require an **action/target/payload-bound, one-time WebAuthn step-up**, explicit confirmation, audit trail and server-side authorization; normal statistics browsing should not require per-view biometric prompts.
+- For payments, deletion, granting paid access, broadcast and other high-risk mutations require an **action/target/payload-bound, one-time WebAuthn step-up**, audit trail and server-side authorization. The original editor's contextual action opens native WebAuthn directly; do not add a second confirmation window or generic passkey button. Normal statistics browsing should not require per-view biometric prompts.
 - Tokens in Secure HttpOnly cookie only; no browser JS-readable session secrets, no tokens in URLs/localStorage, strict Origin/CSRF/session expiry/revocation/CSP/rate limits. PWA SW only caches public shell; **never** accounts, authenticated API, reviews/attachments, payments or tokens.
 - Canonical user ID is `users.id`; never confuse it with Telegram transport ID. Demo data must never enter production datasets.
 - A browser/Cloud/ChatGPT/MCP client receives no production database credentials. External MCP exposes only `hskai_statistics` / `admin:analytics:read`, with metric definitions, bounded ranges, explicit authorization, audit and limits. No account/feedback/payment-list tools or mutations. Broader first-party reads/exports do not extend MCP scope.

@@ -1,8 +1,11 @@
 # Admin PWA browser increment — branch-only, flag OFF
 
-## Owner payout-window update — 2026-10-25
+## Owner single-window action update — 2026-10-25
 
-Payout operations have one editor and one primary passkey confirmation button.
+All management operations have one editor and one contextual action button
+(Send, Save, Delete, Accept payment, etc.), followed directly by native WebAuthn
+and execution. There is no second confirmation screen or generic passkey CTA.
+Payout operations follow the same rule.
 Keep amounts/destination and protected uploaded proof visible in that editor;
 do not add a second before/after confirmation window. Preparing the exact
 server command and opening native WebAuthn are sequential backend operations
@@ -22,16 +25,20 @@ mutation handlers or fabricated success statuses are shipped.
 
 ## Current owner-approved baseline — 2026-10-25
 
-Active branch: `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204. Preserve
+Merged baseline: `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204. Follow-up: `feat/admin-pwa-seamless-passkey-20261025`. Preserve
 its title-only unread-first Inbox, automatic priority/red state, explicit
 read-on-open detail, separate receipt review and return to originating inbox.
 Keep the single close control and one-step iPhone left-zone back gesture with
 native Safari/scroll/text-selection exclusions. Existing audited triage/Push
 transport remains compatible; manual priority/assignment controls are absent.
-Fresh PWA launch/resume clears the old cookie session and requires a new
-discoverable passkey assertion, failing closed if logout fails. This supersedes
-older session-reuse descriptions below. Normal session navigation and exact
-transaction-bound high-risk confirmations remain separate.
+On launch/resume, first revalidate the Secure HttpOnly cookie with /me.
+An unexpired, non-revoked session with current admin rights opens directly;
+after a 401, try one automatic passkey assertion per foreground visit.
+iOS/macOS/WebKit may reject gesture-free modal assertions, so retain the
+manual passkey action without recurring prompts. Logout explicitly revokes
+the server session; private browser memory clears on hide/pagehide/offline.
+High-risk actions still require their own fresh transaction-bound proof from
+the original editor, even when the login session is reused.
 
 ## Routes, data and isolation
 
@@ -59,7 +66,8 @@ transaction-bound high-risk confirmations remain separate.
 - Telegram/iPhone attribution gaps, absent Android feedback history, overlapping
   platform counts, rolling desktop windows and separate currencies remain
   explicit. No invented charts, unread count, triage or reply status. Course,
-  marketing, settings, delete, grant-access and broadcast actions stay disabled.
+  marketing, settings, account, access and broadcast command coverage is defined
+  in `MANAGEMENT_COMMANDS_CONTRACT.md`; external MCP remains statistics-only.
 
 ## Exact payment confirmation
 
@@ -77,7 +85,7 @@ transaction-bound high-risk confirmations remain separate.
 3. Approve/reject buttons remain disabled until the receipt image loads.
    Reject requires a reason. Prepare again with the decision/reason and compare
    the exact server snapshot; any change requires viewing it again.
-4. Show a separate confirmation, then request step-up for exactly
+4. From that same receipt editor, the contextual payment action requests step-up for exactly
    `{action,target,payload}`. HTTP envelope `ok` is stripped before signing.
    Only the dedicated financial command with that same payload and step-up ID
    is sent. Closing cancels the native prompt; duplicate clicks are suppressed.
@@ -142,7 +150,7 @@ More/logout, without adding requests, weakening auth or increasing timeouts.
 ## MCP connection controls and reauthorization (2026-10-24)
 
 - Verified `/me` exposes `mcp_available` only when the WebAuthn actor, all three gates and exact registered configuration are ready. Desktop sidebar and mobile More open the existing V10 drawer; disabled rollout exposes no connection action.
-- History is a bounded server projection of the current admin's last 30 consents. Actual expiry/status, empty/error/offline/auth and uncertain-response states are explicit. Separate confirmation precedes revoke; cancel performs no mutation. Successful revoke reloads history; lost response requires reread rather than claiming success.
+- History is a bounded server projection of the current admin's last 30 consents. Actual expiry/status, empty/error/offline/auth and uncertain-response states are explicit. The contextual revoke button performs the existing scope-reducing command directly under its cookie/CSRF contract. Successful revoke reloads history; lost response requires reread rather than claiming success.
 - OAuth sign-in opens `/admin/` in another tab; retry reloads the original GET. An expired/replayed consent POST instructs a fresh external-client authorization instead of resubmitting old proof. No token/state is stored in browser storage or embedded in the error screen.
 - New patterns were absent from the V10 demo, so the actual repository `hsk-ai-ui` and `webapp-testing` skills were read/applied. Existing slate cards/drawers, focus handling, mobile safe areas and one main action were reused; canonical UZ/RU/TJ source and generator own copy.
 - Browser QA extended `tests/e2e/admin_pwa_browser.py` with actual session/DB history, cancellation, revoke and bearer rejection; 1440/390 UZ/RU/TJ screenshots. `admin_pwa_mcp_consent_browser.py` covers native form Origin/Referer, sign-in/retry and expired states. The latter bridge supplies synthetic Fetch Metadata omitted by interception, after checking actual browser Origin; it is not HTTPS proxy/physical-device evidence.

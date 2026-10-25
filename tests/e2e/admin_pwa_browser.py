@@ -99,23 +99,12 @@ async def setup_fresh_login(context, page, fixture):
 
 
 async def authenticate_fresh_launch(page):
-    """A fresh launch must authenticate with a real virtual UV assertion."""
-    await expect(page.locator('[data-action=signin]')).to_be_visible(timeout=15000)
-    results=[]
-    def observe(response):
-        if '/api/admin/v1/auth/passkey/' in response.url or response.url.endswith('/api/admin/v1/me'):
-            results.append((response.url.split('/api/admin/v1/')[-1],response.status))
-    page.on('response',observe)
-    try:
+    """Reuse an authorized session or authenticate via automatic/manual WebAuthn."""
+    await expect(page.locator('.app, [data-action=signin]')).to_be_visible(timeout=15000)
+    if await page.locator('[data-action=signin]').is_visible():
+        # WebKit can require user activation; Chromium virtual UV may be automatic.
         await page.locator('[data-action=signin]').click()
-        # The authenticated shell is visible on both viewport sizes. The
-        # desktop sidebar is intentionally hidden on mobile after fresh login.
-        await expect(page.locator('.app')).to_be_visible(timeout=20000)
-    except AssertionError as error:
-        state=await page.locator('.auth-panel').inner_text() if await page.locator('.auth-panel').count() else 'no-auth-panel'
-        raise AssertionError(f'Fresh WebAuthn login did not reach authenticated UI: requests={results}, state={state[:180]}') from error
-    finally:
-        page.remove_listener('response',observe)
+    await expect(page.locator('.app')).to_be_visible(timeout=20000)
 
 
 async def browser_checks(output):
@@ -209,9 +198,8 @@ async def browser_checks(output):
             'privateKey':b64(fixture.key.private_bytes(serialization.Encoding.DER,serialization.PrivateFormat.PKCS8,serialization.NoEncryption())),
             'userHandle':b64(HANDLE),'signCount':0,'userName':'synthetic-admin','userDisplayName':'Synthetic QA'}})
         await page.goto(ORIGIN+'/admin/')
-        await expect(page.locator('[data-action=signin]')).to_be_visible()
+        await authenticate_fresh_launch(page)
         assert not any(path.endswith('step-up/options') for path,_,_ in calls)
-        await page.locator('[data-action=signin]').click()
         await expect(page.locator('.sidebar')).to_be_visible(timeout=20000)
         # Push flag defaults OFF: no button and no subscription/permission flow.
         await expect(page.locator('[data-action=pushSettings]')).to_have_count(0)
@@ -422,13 +410,13 @@ async def browser_checks(output):
         await page.locator('.inbox-back').click()
         await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.keyboard.press('Escape')
-        # A fresh page load must require a new WebAuthn assertion.
+        # A valid HttpOnly session survives relaunch; no redundant ceremony/logout.
         prior_verifications=len([path for path,_,_ in calls if path.endswith('login/verify')])
+        prior_logouts=len([path for path,_,_ in calls if path.endswith('/auth/logout')])
         await page.goto(ORIGIN+'/admin/?inbox=1')
-        await expect(page.locator('[data-action=signin]')).to_be_visible()
-        await page.locator('[data-action=signin]').click()
         await expect(page.locator('.inbox-shell')).to_be_visible(timeout=20000)
-        assert len([path for path,_,_ in calls if path.endswith('login/verify')]) == prior_verifications+1
+        assert len([path for path,_,_ in calls if path.endswith('login/verify')]) == prior_verifications
+        assert len([path for path,_,_ in calls if path.endswith('/auth/logout')]) == prior_logouts
         assert page.url==ORIGIN+'/admin/'
         await page.keyboard.press('Escape')
         # Actual consent/code/token services seed one synthetic connection;

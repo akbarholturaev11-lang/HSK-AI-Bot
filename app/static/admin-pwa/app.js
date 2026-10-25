@@ -46,7 +46,7 @@ let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=
 let inboxAttachment=null;
 let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
 const sectionBackStack=[];
-let freshLoginInProgress=false, requireFreshLoginOnResume=false, sessionMustBeCleared=true;
+let automaticLoginAttempted=false, automaticLoginInProgress=false;
 let approvalWatchTimer=null, approvalChecking=false;
 let statisticsDownload=null;
 let managementDraft=null,managementReview=null,managementPreparing=false,preparingEditor=null;
@@ -338,22 +338,23 @@ async function boot() {
     if(current!==epoch)return;
     if(error.status!==401){state.phase='error';render();return;}
     try {await checkApproval();} catch(_) {state.phase='signin';render();}
+    if(state.phase==='signin')await tryAutomaticPasskeyLogin();
   }
 }
-async function lockAndRequirePasskey() {
-  if(freshLoginInProgress)return;
-  freshLoginInProgress=true;
-  clearPrivate('loading');
-  try {
-    // Revoke DB session, not merely hide screen. Fresh launch or resume cannot
-    // reuse a lingering valid cookie without another verified WebAuthn assertion.
-    await api('auth/logout',{}, {publicAuth:true});
-    sessionMustBeCleared=false;
-  }catch(error){
-    if(error.message!=='stale')clearPrivate(navigator.onLine?'error':'offline');
-    return;
-  }finally{freshLoginInProgress=false;}
-  await boot();
+async function tryAutomaticPasskeyLogin() {
+  // Try the modal ceremony once per foreground visit. Safari/WebKit can reject
+  // an invocation without user activation; the existing manual button remains
+  // the fallback. Never treat a rejected or cancelled ceremony as a login.
+  if(automaticLoginAttempted||automaticLoginInProgress||document.hidden||
+     !navigator.onLine||!supportsPasskey())return;
+  automaticLoginAttempted=true;
+  automaticLoginInProgress=true;
+  state.phase='loading';state.error=null;render();
+  try {await login();}
+  catch(error){
+    if(error.message==='stale')return;
+    state.phase='signin';state.error=null;render();
+  }finally{automaticLoginInProgress=false;}
 }
 function decode(value) { const normalized=value.replace(/-/g,'+').replace(/_/g,'/');return Uint8Array.from(atob(normalized+'='.repeat((4-normalized.length%4)%4)),ch=>ch.charCodeAt(0)); }
 function encode(buffer) { if(buffer==null)return null;let s='';for(const b of new Uint8Array(buffer))s+=String.fromCharCode(b);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
@@ -1713,12 +1714,12 @@ async function action(name) {
       if(name==='approval')await checkApproval();
       if(name==='enroll')await enroll();
       if(name==='google'){const data=await api('auth/google/start',{}, {publicAuth:true});const url=new URL(data.authorize_url);if(url.protocol!=='https:'||url.hostname!=='accounts.google.com')throw Error('invalid_authorize_url');location.assign(url.href);}
-      if(name==='logout'){await api('auth/logout',{});clearPrivate('signin');}
+      if(name==='logout'){await api('auth/logout',{});automaticLoginAttempted=true;clearPrivate('signin');}
     }catch(error){if(error.message!=='stale'){state.error=['signin','enroll'].includes(name)?errorKey(error):'authFailed';render();}}
     finally{busy=false;render();}return;
   }
   if(name==='close'){closeDrawer();return;}
-  if(name==='boot'){if(sessionMustBeCleared)await lockAndRequirePasskey();else await boot();return;}
+  if(name==='boot'){await boot();return;}
   if(name==='reload'){await load();return;}
   if(name==='mcpConnections'){await mcpConnections();return;}
   if(name==='pushSettings'){await pushSettings();return;}
@@ -1979,24 +1980,20 @@ document.addEventListener('focusin',event=>{
   if(open&&!open.parentElement.contains(event.target))closeActionMenus();
 });
 window.addEventListener('offline',()=>clearPrivate('offline'));
-window.addEventListener('online',()=>{if(sessionMustBeCleared)lockAndRequirePasskey();else boot();});
-window.addEventListener('pagehide',()=>clearPrivate('loading'));
-window.addEventListener('pageshow',event=>{if(event.persisted)lockAndRequirePasskey();});
+window.addEventListener('online',()=>boot());
+window.addEventListener('pagehide',()=>{automaticLoginAttempted=false;clearPrivate('loading');});
+window.addEventListener('pageshow',event=>{if(event.persisted)boot();});
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden){
     stopApprovalWatch();
-    if(state.actor&&!signing){
-      sessionMustBeCleared=true;
-      requireFreshLoginOnResume=true;
-      clearPrivate('loading');
-    }
+    automaticLoginAttempted=false;
+    // Discard in-memory private data immediately. The HttpOnly cookie stays
+    // revocable, and /me revalidates expiry and current admin rights on resume.
+    if(state.actor&&!signing)clearPrivate('loading');
     return;
   }
-  if(requireFreshLoginOnResume||sessionMustBeCleared){
-    requireFreshLoginOnResume=false;
-    lockAndRequirePasskey();
-  }else if(state.phase==='approval')checkApproval().catch(()=>{});
-  else if(state.actor&&!signing)boot();
+  if(state.phase==='approval')checkApproval().catch(()=>{});
+  else if(!signing)boot();
 });
 window.addEventListener('focus',()=>{if(state.phase==='approval')checkApproval().catch(()=>{});});
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;});
@@ -2008,5 +2005,5 @@ if('serviceWorker' in navigator){
   }).catch(()=>{});
   navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
 }
-lockAndRequirePasskey();
+boot();
 })();

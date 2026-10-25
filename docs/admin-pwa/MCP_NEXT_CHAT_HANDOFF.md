@@ -2,6 +2,28 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current main synchronization — owner request, 2026-10-25
+
+- The owner explicitly requested the latest `main` changes in the existing
+  feature branch. Sync source is `origin/main` at
+  `fb9772d3255166fca3ff3e37baa60fbbdfbf9c24` (PR #207 seamless-passkey policy).
+  Merge direction is main **into** the owner feature branch. Preserve the later
+  single-action command UI below; no feature-to-main promotion or deployment.
+- Launch/resume first revalidates the existing HttpOnly cookie with `/me`.
+  A valid authorized session opens directly. A 401 triggers one automatic
+  native passkey attempt per foreground visit with a manual browser fallback.
+  Explicit logout still revokes the session; private browser memory clears on
+  hide/pagehide/offline. This supersedes mandatory logout on every launch.
+  Sensitive commands still require their exact fresh one-use step-up proof.
+- Outbound browser QA now distinguishes a cookie-backed reload (same signed
+  job session) from explicit logout/reauthentication (fresh signed pending-only
+  resume). The one-click command flow and all backend limits remain intact.
+- Merge validation passed: shell contract **7 tests**, JS syntax and the
+  63-artifact catalog check (zero stale), plus full core browser,
+  settings/management and outbound browser suites under
+  `/tmp/hsk-admin-pwa-main-sync-*-20261025`. No merge conflicts or backend
+  permission/feature-default changes were introduced.
+
 ## Current all-section single-window owner instruction — 2026-10-25
 
 - The owner extended the payout instruction to **all** Admin PWA sections:
@@ -50,23 +72,22 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
 ## Current owner-selected branch and UI baseline
 
 - Continue **only** on `feat/admin-pwa-minimal-inbox-passkey-20261025`.
-  PR #204 was merged at an older head; branch commits after that merge remain
+  PR #204/#205 were merged at older heads; branch commits after those merges remain
   on this feature branch and must not be redirected to `main`.
   The owner selected this branch and accepted its notification-window changes
   on 2026-10-25. The previous MCP branch/PR #201 references below are historical;
-  those changes are already ancestors. Do not switch back, merge/push main or
-  revert this branch's minimal Inbox/fresh-passkey/swipe behavior.
+  those changes are already ancestors. Keep work on this feature branch and
+  preserve minimal Inbox/swipe behavior plus the current session policy above.
 - Owner baseline at `72d17493`: unread-first title-only notification rows,
   automatic-only importance, explicit read-on-open detail, receipt handoff to
   financial review and return to the originating user's inbox. Preserve the
   single close control, red important state and one-step narrow left-zone
   iPhone back gesture with native scrolling/selection/edge exclusions. Existing
   audited backend triage/Push contracts remain compatible; no manual priority UI.
-- Every PWA launch/resume revokes its persistent browser session and requires
-  fresh discoverable WebAuthn; failed startup logout fails closed. This owner
-  baseline supersedes earlier documents recommending silent session reuse.
-  Normal in-session navigation is unchanged; sensitive commands still need
-  their own exact transaction-bound proof. No OAuth/MCP permission expansion.
+- Launch/resume follows the owner-approved seamless session policy above;
+  it does not force a logout of a still-valid server-verified session.
+  Sensitive commands keep their own exact transaction-bound proof.
+  No OAuth/MCP permission expansion.
 - Payment reconciliation code/migration was committed at `e72c945a`; the branch
   adds its initial tests. Continuing work validates rollback, stale in-flight
   attempts, bounded queue pages, concurrent resolutions and real migration

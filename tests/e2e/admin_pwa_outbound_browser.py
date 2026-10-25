@@ -17,7 +17,7 @@ from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_login_router
 from app.db.base import Base
 from app.db.models.user import User
-from tests.e2e.admin_pwa_browser import setup_fresh_login
+from tests.e2e.admin_pwa_browser import setup_fresh_login, authenticate_fresh_launch
 from tests.test_admin_pwa_payment_review import PaymentFixtures
 
 ORIGIN='https://hskai.app'
@@ -67,8 +67,7 @@ async def browser_checks(output):
                 await page.add_init_script("window.cspFailures=[];document.addEventListener('securitypolicyviolation',e=>cspFailures.push(e.violatedDirective))")
                 await setup_fresh_login(context,page,fixture)
                 async def login():
-                    await expect(page.locator('[data-action=signin]')).to_be_visible()
-                    await page.locator('[data-action=signin]').click()
+                    await authenticate_fresh_launch(page)
                     await expect(page.locator('.sidebar')).to_be_visible(timeout=15000)
                 async def marketing():
                     await page.locator('.nav [data-route=marketing]').click()
@@ -116,11 +115,23 @@ async def browser_checks(output):
                 await expect(page.locator('[data-message-run]')).to_be_visible(timeout=15000)
                 assert len(sent)-baseline==10
                 job=await page.locator('[data-message-run]').get_attribute('data-message-run')
-                # Startup invalidates the old session. Pending work needs a new
-                # exact passkey proof; claimed recipients are never retried.
+                # A normal reload must retain this verified session and
+                # expose the next-batch action without another passkey.
+                prior_verifications=len([p for p,_ in calls if p.endswith('login/verify')])
+                await page.reload();await login();await marketing()
+                await page.locator(f'[data-message-job="{job}"]').click()
+                await expect(page.locator('[data-message-run]')).to_be_visible()
+                assert len([p for p,_ in calls if p.endswith('login/verify')])==prior_verifications
+                # Explicit logout deliberately ends the job's browser session.
+                # Reauthentication uses a fresh WebAuthn session, so the
+                # existing cross-session control must require a signed resume.
+                await page.locator('.drawer-close').click()
+                await page.locator('.side-foot [data-action=logout]').click()
+                await expect(page.locator('[data-action=signin]')).to_be_visible()
                 await page.reload();await login();await marketing()
                 await page.locator(f'[data-message-job="{job}"]').click()
                 await expect(page.locator('[data-message-run]')).to_have_count(0)
+                await expect(page.locator('[data-message-control=resume]')).to_be_visible()
                 await page.locator('[data-message-control=resume]').click();await confirm()
                 assert len(sent)-baseline==12
                 assert len({row[0] for row in sent[baseline:]})==12
