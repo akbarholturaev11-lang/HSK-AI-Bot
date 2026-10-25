@@ -633,6 +633,7 @@
     "ui.admin_pwa.inboxStatusAssigned": "Вобаста шудааст",
     "ui.admin_pwa.inboxStatusResolved": "Ҳал шудааст",
     "ui.admin_pwa.inboxMarkRead": "Ҳамчун хондашуда қайд кардан",
+    "ui.admin_pwa.inboxMarkAllRead": "Ҳамаро хондашуда қайд кардан",
     "ui.admin_pwa.inboxAssignSelf": "Ба худ вобаста кардан",
     "ui.admin_pwa.inboxResolve": "Ҳалшуда қайд кардан",
     "ui.admin_pwa.inboxReopen": "Аз нав кушодан",
