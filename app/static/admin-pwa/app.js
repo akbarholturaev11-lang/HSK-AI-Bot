@@ -43,12 +43,14 @@ const state = {actor:null, phase:'loading', route:'home', period:'weekly', platf
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
+let approvalWatchTimer=null, approvalChecking=false;
 let statisticsDownload=null;
 let managementDraft=null,managementReview=null,managementPreparing=false;
 let feedbackLoadId=0;
 const feedbackStats={source:'all',period:'weekly',data:null,loading:false,error:false};
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
+  stopApprovalWatch();
   cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
   epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.inboxSearch='';state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
@@ -77,12 +79,37 @@ function errorKey(error) {
   if(error?.name==='NotAllowedError'||error?.name==='AbortError') return 'passkeyCancelled';
   return error?.status===409?'changed':'error';
 }
+function telegramApprovalUrl(approval) {
+  const raw=approval?.telegram_url, requestId=approval?.request_id;
+  if(typeof raw!=='string'||typeof requestId!=='string'||!/^[0-9a-f-]{36}$/.test(requestId))return null;
+  try {
+    const url=new URL(raw);
+    if(url.protocol!=='https:'||url.hostname!=='t.me'||url.port||url.username||url.password||
+       url.hash||url.searchParams.size!==1||url.searchParams.get('start')!=='admin_pwa_'+requestId||
+       !/^\/[A-Za-z][A-Za-z0-9_]{4,31}$/.test(url.pathname))return null;
+    return url.href;
+  }catch(_){return null;}
+}
+function stopApprovalWatch() {
+  if(approvalWatchTimer!==null)clearTimeout(approvalWatchTimer);
+  approvalWatchTimer=null;
+}
+function watchApproval() {
+  stopApprovalWatch();
+  if(state.phase!=='approval'||document.hidden||!navigator.onLine)return;
+  // Only one outstanding read; never poll while Telegram is in the foreground.
+  approvalWatchTimer=setTimeout(()=>{approvalWatchTimer=null;checkApproval().catch(()=>{});},10000);
+}
 function auth() {
   let content='';
   if(state.phase==='loading') content=`<h1>${esc(t('loading'))}</h1>`;
   else if(state.phase==='offline') content=`<h1>${esc(t('offline'))}</h1><p>${esc(t('offlineHint'))}</p>${btn('retry','boot','primary')}`;
   else if(state.phase==='error') content=`<h1>${esc(t('error'))}</h1>${btn('retry','boot','primary')}`;
-  else if(state.phase==='approval') content=`<h1>${esc(t('approval'))}</h1><p>${esc(t('approvalHint'))}</p><p class="pairing-code">${esc(state.approval?.pairing_code)}</p>${btn('checkApproval','approval','primary',busy)}`;
+  else if(state.phase==='approval') {
+    const telegramUrl=telegramApprovalUrl(state.approval);
+    const link=telegramUrl?`<a class="btn primary" href="${esc(telegramUrl)}" target="_blank" rel="noopener noreferrer">${icon('send')}${esc(t('openTelegram'))}</a>`:`<p role="status">${esc(t('telegramUnavailable'))}</p>`;
+    content=`<h1>${esc(t('approval'))}</h1><p>${esc(t('approvalHint'))}</p><p class="pairing-code">${esc(state.approval?.pairing_code)}</p><div class="approval-actions">${link}${btn('checkApproval','approval','',busy)}</div>`;
+  }
   else if(state.phase==='enroll') content=`<h1>${esc(t('enroll'))}</h1><p>${esc(t('enrollHint'))}</p>${btn('enroll','enroll','primary',busy)}${state.error?btn('googleStart','google','',busy):''}`;
   else content=`<h1>${esc(t('signInTitle'))}</h1><p>${esc(t('passkeyHint'))}</p>${btn('signIn','signin','primary',busy)}<details><summary>${esc(t('google'))}</summary><p>${esc(t('googleHint'))}</p>${btn('googleStart','google','',busy)}</details>`;
   return `<main class="auth-wrap"><section class="auth-panel">${languageSelect()}<div class="brand-logo"><img src="/admin/assets/icon.png" alt="HSK AI"></div>${state.error?`<p class="alert" role="alert">${esc(t(state.error))}</p>`:''}${content}</section></main>`;
@@ -326,9 +353,16 @@ async function login() {
   await api('auth/passkey/login/verify',{credential:serialize(credential)},{publicAuth:true});await boot();
 }
 async function checkApproval() {
-  const data=await api('auth/telegram/status',null,{method:'GET',publicAuth:true});
-  if(!['pending','approved'].includes(data.status)){state.approval=null;state.phase='signin';throw new Error('approval_expired');}
-  state.approval=data;state.phase=data.status==='approved'?'enroll':'approval';render();
+  if(approvalChecking)return;
+  approvalChecking=true;stopApprovalWatch();
+  try {
+    const data=await api('auth/telegram/status',null,{method:'GET',publicAuth:true});
+    if(!['pending','approved'].includes(data.status)){
+      state.approval=null;state.phase='signin';state.error='authFailed';render();
+      throw new Error('approval_expired');
+    }
+    state.approval=data;state.phase=data.status==='approved'?'enroll':'approval';render();
+  } finally {approvalChecking=false;watchApproval();}
 }
 async function enroll() {
   if(!supportsPasskey()){state.error='passkeyUnsupported';render();return;}
@@ -1500,7 +1534,12 @@ window.addEventListener('offline',()=>clearPrivate('offline'));
 window.addEventListener('online',()=>boot());
 window.addEventListener('pagehide',()=>clearPrivate('loading'));
 window.addEventListener('pageshow',event=>{if(event.persisted)boot();});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.actor&&!signing)boot();});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){stopApprovalWatch();return;}
+  if(state.phase==='approval')checkApproval().catch(()=>{});
+  else if(state.actor&&!signing)boot();
+});
+window.addEventListener('focus',()=>{if(state.phase==='approval')checkApproval().catch(()=>{});});
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;});
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/admin/sw.js',{scope:'/admin/',updateViaCache:'none'}).then(registration=>{
