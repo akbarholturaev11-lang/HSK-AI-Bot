@@ -534,3 +534,61 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
   .stats-scope-chip svg{width:14px;height:14px}
   .stats-category-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 }
+
+/* V10: desktop source-style directories and mobile card-only lists. */
+.directory-table{min-width:790px}
+.directory-table th{white-space:nowrap;font-size:11px}
+.directory-table td{line-height:1.5}
+.directory-row-link{display:inline-flex;max-width:100%;border:0;background:transparent;text-align:left;cursor:pointer;padding:2px 0;color:inherit}
+.directory-row-link:hover .directory-person strong{text-decoration:underline;color:#2b6171}
+.directory-person{display:block;min-width:0}
+.directory-person strong,.directory-person small{display:block;overflow-wrap:anywhere}
+.directory-table .person{align-items:center;gap:9px}
+.directory-table .mini-avatar{margin:0;background:#e6f0f1;color:#315f6c}
+.directory-user-card{display:block;border-radius:14px;padding:17px}
+.directory-user-card .user-card-top{display:flex;align-items:center;gap:8px}
+.directory-user-card .user-card-top .person{min-width:0;flex:1;gap:9px;align-items:center}
+.directory-user-card .user-card-top .mini-avatar{margin:0}
+.directory-user-card .user-card-top .pill{flex:0 0 auto;white-space:nowrap;max-width:42%;overflow:hidden;text-overflow:ellipsis}
+.directory-user-card .user-card-details{display:grid}
+.directory-user-card:active,.directory-user-card:hover{background:#f5f9fa;border-color:#bfd1d5}
+.directory-pending{display:block;color:#9c6b27;font-size:11px;font-weight:700;margin-top:12px}
+.payment-cards{display:none}
+.payment-table-wrap{display:block}
+.payment-table{min-width:930px}
+.payment-table .pill{white-space:nowrap}
+.payment-card{display:block;border:1px solid var(--line);background:#fff;border-radius:15px;padding:17px;box-shadow:var(--shadow)}
+.payment-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:9px}
+.payment-card-top strong,.payment-card-top small{display:block}
+.payment-card-top strong{font-size:14px;color:#253945}
+.payment-card-top small{font-size:11px;color:var(--muted);margin-top:5px}
+.payment-card-top .pill{white-space:nowrap}
+.payment-card-amount{font-size:19px;color:#294c5a;font-weight:800;letter-spacing:-.035em;margin:16px 0}
+.payment-card .user-card-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;padding-top:13px;border-top:1px solid #edf0f1}
+.payment-card-review{width:100%;margin-top:17px;min-height:44px}
+.more-drawer .drawer-content{padding:14px 18px 18px}
+.more-sheet-content{display:grid;gap:14px}
+.more-sheet-list{border:1px solid var(--line);border-radius:15px;background:#fff;overflow:hidden}
+.more-sheet-list .management-row{border:0;border-radius:0}
+.more-sheet-list .management-row + .management-row{border-top:1px solid var(--line)}
+.more-sheet-extras{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.more-sheet-extras .locale-select{width:100%;max-width:none;min-height:44px}
+.more-drawer .drawer-foot{display:flex;justify-content:space-between;gap:9px}
+@media(max-width:760px){
+  /* Five equally tappable icons, without labels; closer than prior full-width tabs. */
+  .mobile-tabs{justify-content:center;gap:4px;padding:8px max(9px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(9px,env(safe-area-inset-left))}
+  .mobile-tabs button{flex:0 1 66px;display:flex;align-items:center;justify-content:center;min-width:48px;min-height:48px;padding:8px;border-radius:13px}
+  .mobile-tabs button.active{background:#ecf4f5;color:#2d5b69}
+  .mobile-tabs svg{width:24px;height:24px}
+  .payment-table-wrap{display:none}
+  .payment-cards{display:grid;gap:11px}
+  .payment-status-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .payment-status-filters .btn{min-width:0;white-space:normal;padding:9px 5px;line-height:1.3}
+  .canvas-overlay:has(.more-drawer){align-items:flex-end;justify-content:center;padding:0}
+  .canvas-overlay .drawer.more-drawer{width:100%;height:auto;max-height:min(76dvh,710px);border-radius:20px 20px 0 0;box-shadow:0 -12px 45px #0a15352e}
+  .more-drawer .drawer-top{padding:17px 19px}
+  .more-drawer .drawer-content{padding:12px 15px 15px;overflow-y:auto}
+  .more-drawer .drawer-foot{padding:11px 15px calc(14px + env(safe-area-inset-bottom))}
+  .more-drawer .drawer-foot .btn{flex:1}
+}
+@media(min-width:761px){.payment-cards{display:none}.payment-table-wrap{display:block}}
