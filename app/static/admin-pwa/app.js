@@ -129,6 +129,17 @@ function auth() {
   return `<main class="auth-wrap"><section class="auth-panel">${languageSelect()}<div class="brand-logo"><img src="/admin/assets/icon.png" alt="HSK AI"></div>${state.error?`<p class="alert" role="alert">${esc(t(state.error))}</p>`:''}${content}</section></main>`;
 }
 const routes=[['home','home'],['stats','chart'],['users','users'],['payments','wallet'],['course','book'],['marketing','mega'],['system','settings']];
+function pushQuickButton(){
+  if(!state.actor?.push_available||!pushReady||pushReady.epoch!==epoch||Notification.permission==='denied')return '';
+  return `<button type="button" class="btn push-quick-enable" data-action="pushEnable" aria-label="${esc(t('pushEnable'))}" title="${esc(t('pushEnable'))}">${icon('bell')}<span>${esc(t('pushEnable'))}</span></button>`;
+}
+function updatePushQuickButton(){
+  const tools=document.querySelector('.header-tools');
+  if(!tools)return;
+  tools.querySelector('.push-quick-enable')?.remove();
+  const bell=tools.querySelector('button[data-action="feedback"]');
+  if(bell)bell.insertAdjacentHTML('beforebegin',pushQuickButton());
+}
 function render() {
   document.documentElement.lang=locale==='tj'?'tg':locale;document.title=t('appTitle');
   if(!state.actor) { $('root').innerHTML=auth();return; }
@@ -137,7 +148,7 @@ function render() {
   const mobileNav=routes.slice(0,4).map(([route,glyph])=>`<button type="button" data-route="${route}" aria-label="${esc(t(route))}" title="${esc(t(route))}" class="${state.route===route?'active':''}" ${state.route===route?'aria-current="page"':''}>${icon(glyph)}</button>`).join('')
     +`<button type="button" data-action="more" aria-label="${esc(t('more'))}" title="${esc(t('more'))}" class="${['course','marketing','system'].includes(state.route)?'active':''}" ${busy?'disabled':''}>${icon('more')}</button>`;
   const disabled='';
-  $('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-logo"><img src="/admin/assets/icon.png" alt=""></div><div><div class="brand-title">HSK AI</div><div class="brand-sub">ADMIN</div></div></div><p class="nav-cap">${esc(t('sections'))}</p><nav class="nav">${navigation}${disabled}</nav><div class="side-foot"><p>${esc(t('account'))} · ${state.actor.user_id}</p>${languageSelect()}${state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''}${state.actor.push_available?btn('pushTitle','pushSettings'):''}${btn('logout','logout')}</div></aside><div class="workspace"><header class="topbar"><div class="topbar-context"><h1 class="page-title">${esc(t(state.route==='home'?'workspace':state.route))}</h1></div><div class="header-tools">${['home','stats'].includes(state.route)?filters():''}<button class="top-icon-btn" data-action="feedback" aria-label="${esc(t('feedback'))}">${icon('bell')}${inboxUnread?.unread_count?`<span class="top-icon-badge" aria-hidden="true">${inboxUnread.capped?'99+':inboxUnread.unread_count}</span>`:''}</button></div></header><main class="main" id="content">${content()}</main></div></div><nav class="mobile-tabs" aria-label="${esc(t('sections'))}">${mobileNav}</nav>`;
+  $('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-logo"><img src="/admin/assets/icon.png" alt=""></div><div><div class="brand-title">HSK AI</div><div class="brand-sub">ADMIN</div></div></div><p class="nav-cap">${esc(t('sections'))}</p><nav class="nav">${navigation}${disabled}</nav><div class="side-foot"><p>${esc(t('account'))} · ${state.actor.user_id}</p>${languageSelect()}${state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''}${state.actor.push_available?btn('pushTitle','pushSettings'):''}${btn('logout','logout')}</div></aside><div class="workspace"><header class="topbar"><div class="topbar-context"><h1 class="page-title">${esc(t(state.route==='home'?'workspace':state.route))}</h1></div><div class="header-tools">${['home','stats'].includes(state.route)?filters():''}${pushQuickButton()}<button class="top-icon-btn" data-action="feedback" aria-label="${esc(t('feedback'))}">${icon('bell')}${inboxUnread?.unread_count?`<span class="top-icon-badge" aria-hidden="true">${inboxUnread.capped?'99+':inboxUnread.unread_count}</span>`:''}</button></div></header><main class="main" id="content">${content()}</main></div></div><nav class="mobile-tabs" aria-label="${esc(t('sections'))}">${mobileNav}</nav>`;
   $('root').inert=!!$('overlay');
 }
 function filters() {
@@ -434,6 +445,8 @@ async function boot() {
   try {state.actor=await api('me',null,{method:'GET',publicAuth:true});if(current!==epoch)return;state.phase='ready';
     // Warm dashboard metrics and inbox independently after the biometric gate:
     // a slow unread query must never block the main dashboard from loading.
+    // Never block the dashboard or raise a permission prompt during sign-in.
+    void restorePushAfterLogin().catch(()=>{});
     await Promise.all([load(),refreshInboxUnread()]);
     if(current===epoch&&state.actor&&location.pathname==='/admin/'&&location.search==='?inbox=1'){
       history.replaceState(null,'','/admin/');
@@ -1878,9 +1891,43 @@ function pushInstallReady(platform) {
   if(platform!=='iphone')return true;
   return navigator.standalone===true||window.matchMedia?.('(display-mode: standalone)').matches===true;
 }
+async function registerPushSubscription(subscription,platform){
+  const payload=subscription.toJSON(),keys=payload.keys||{};
+  if(!payload.endpoint||!keys.p256dh||!keys.auth)throw Error('invalid_push_subscription');
+  return api('push/subscribe',{platform,endpoint:payload.endpoint,
+    keys:{p256dh:keys.p256dh,auth:keys.auth}});
+}
+async function restorePushAfterLogin(){
+  const platform=applePushPlatform(),at=epoch;
+  if(!state.actor?.push_available||!platform||!pushInstallReady(platform)||document.hidden||
+     !('Notification' in window)||Notification.permission==='denied'||
+     !('serviceWorker' in navigator)||!('PushManager' in window))return;
+  try{
+    const registration=await navigator.serviceWorker.ready;
+    const data=await api('push/list',{});
+    if(at!==epoch||!state.actor)return;
+    const existing=await registration.pushManager.getSubscription();
+    if(at!==epoch||!state.actor)return;
+    const prepared={registration,key:decode(data.vapid_public_key),previous:!!existing,epoch:at};
+    if(Notification.permission==='granted'){
+      try{
+        // Permission was already granted: repair/register silently on each
+        // authenticated app launch. Never show another OS permission prompt.
+        const subscription=existing||await registration.pushManager.subscribe({
+          userVisibleOnly:true,applicationServerKey:prepared.key
+        });
+        if(at!==epoch||!state.actor)return;
+        await registerPushSubscription(subscription,platform);
+        return;
+      }catch(_){ /* Some WebKit versions still require a fresh tap. */ }
+    }
+    if(at!==epoch||!state.actor)return;
+    pushReady=prepared;updatePushQuickButton();
+  }catch(_){ /* Fail closed; settings still shows the server error. */ }
+}
 async function pushSettings(){
   if(!state.actor?.push_available)return;
-  closeDrawer();pushReady=null;const current=drawerId,at=epoch;
+  closeDrawer();pushReady=null;updatePushQuickButton();const current=drawerId,at=epoch;
   drawer('pushTitle',statePanel('loading'));
   try{
     const data=await api('push/list',{});
@@ -1896,6 +1943,7 @@ async function pushSettings(){
       const previous=await registration.pushManager.getSubscription();
       if(current!==drawerId||at!==epoch||!state.actor)return;
       pushReady={registration,key:decode(data.vapid_public_key),previous:!!previous,epoch:at};
+      updatePushQuickButton();
     }
     const rows=data.subscriptions||[];
     const devices=rows.map(row=>`<article class="feedback-item settings-device-row"><div><strong>${esc(row.platform==='iphone'?'iPhone':'Mac')}</strong><small>${esc(date(row.created_at))}</small></div><button class="btn quiet-action danger" data-push-revoke="${esc(row.id)}">${esc(t('pushRevoke'))}</button></article>`).join('')||statePanel('empty');
@@ -1928,17 +1976,16 @@ async function enablePush(){
   try{
     const subscription=await subscriptionPromise;
     if(at!==epoch||current!==drawerId||!state.actor)return;
-    const payload=subscription.toJSON(),keys=payload.keys||{};
-    if(!payload.endpoint||!keys.p256dh||!keys.auth)throw Error('invalid_push_subscription');
     try{
-      await api('push/subscribe',{platform:applePushPlatform(),endpoint:payload.endpoint,
-        keys:{p256dh:keys.p256dh,auth:keys.auth}});
+      await registerPushSubscription(subscription,applePushPlatform());
     }catch(error){
       if(!prepared.previous)await subscription.unsubscribe().catch(()=>{});
       throw error;
     }
     if(at!==epoch||current!==drawerId||!state.actor)return;
-    showNotice('pushSaved');await pushSettings();
+    const settingsOpen=!!document.querySelector('.push-settings');
+    pushReady=null;updatePushQuickButton();showNotice('pushSaved');
+    if(settingsOpen)await pushSettings();
   }catch(error){
     if(at===epoch&&state.actor)showNotice(Notification.permission==='denied'?'pushPermissionDenied':'pushSaveError');
   }finally{
