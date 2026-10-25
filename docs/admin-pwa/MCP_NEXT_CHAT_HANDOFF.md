@@ -18,6 +18,13 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   CI's minimal public users table in a new disposable local database: all nine
   affected settings/HSK30/account cases passed with that baseline present.
   Do not resolve this by widening public.users or skipping the PG tests.
+- Final combined local gate with that populated public baseline: **35 passed**
+  across existing PG locks/revocation, new setting/price/account contention and
+  HSK30 transition regressions. Shared HSK30 enable now takes its setting lock
+  before deciding a no-op; record reads refresh already-loaded ORM state.
+  Real PG regression holds a concurrent disable uncommitted and keeps an old
+  identity-map row alive: explicit enable waits, sees the committed disable
+  and restores enabled, preserving actual-transition timestamp semantics.
 
 ## Current account increment — canonical block/unblock/delete
 

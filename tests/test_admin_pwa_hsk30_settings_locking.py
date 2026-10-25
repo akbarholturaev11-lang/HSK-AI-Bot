@@ -92,6 +92,39 @@ class Hsk30SettingPostgresLockTests(fixtures.PaymentFixtures, unittest.IsolatedA
     proof = hsk_fixtures.Hsk30SettingsTests.proof
     run_command = hsk_fixtures.Hsk30SettingsTests.run_command
 
+    async def test_legacy_enable_decides_transition_after_concurrent_disable_commits(self):
+        async with self.sessions() as db:
+            await BotSettingRepository(db).set_bool('hsk30_enabled',True)
+            await db.commit()
+        waiting=asyncio.Event();task=None
+        original_lock=BotSettingRepository.lock_key
+        async def observe(repo,key):
+            if asyncio.current_task().get_name()=='legacy-hsk-enable':
+                waiting.set()
+            await original_lock(repo,key)
+        async def enable():
+            async with self.sessions() as db:
+                async with db.begin():
+                    service=Hsk30FeatureService(db)
+                    previous=await service.setting_repo.get_record('hsk30_enabled')
+                    self.assertEqual(previous.value,'1')
+                    await service.set_enabled(True)
+                    return previous.value  # Keep the old identity-map row alive.
+        try:
+            async with self.sessions() as writer:
+                async with writer.begin():
+                    await BotSettingRepository(writer).set_bool('hsk30_enabled',False)
+                    with patch.object(BotSettingRepository,'lock_key',observe):
+                        task=asyncio.create_task(enable(),name='legacy-hsk-enable')
+                        await asyncio.wait_for(waiting.wait(),5)
+                        self.assertFalse(task.done())
+            await asyncio.wait_for(task,5)
+            async with self.sessions() as db:
+                self.assertTrue(await Hsk30FeatureService(db).is_enabled())
+        finally:
+            if task is not None and not task.done():
+                task.cancel();await asyncio.gather(task,return_exceptions=True)
+
     async def test_two_admins_cannot_overwrite_the_same_absent_hsk_settings(self):
         command = await self.prepare()
         first_proof = await self.proof(command)

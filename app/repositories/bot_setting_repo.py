@@ -41,6 +41,7 @@ class BotSettingRepository:
     async def get_record(self, key: str) -> BotSetting | None:
         result = await self.session.execute(
             select(BotSetting).where(BotSetting.key == key)
+            .execution_options(populate_existing=True)
         )
         return result.scalar_one_or_none()
 
