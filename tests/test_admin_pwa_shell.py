@@ -65,6 +65,17 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"directoryUserTariff":"Фойдаланувчи / тариф"', catalog)
         self.assertIn('"directoryPlan1Month":"1 ой"', catalog)
 
+    async def test_profile_shows_authoritative_course_once_and_separates_client_surfaces(self):
+        script = (await self.get('/admin/assets/app.js')).text
+        profile = script.split('async function userProfile(userId) {', 1)[1].split('async function moreUserPayments(', 1)[0]
+        self.assertIn('const courseRows=c.tracks.map(row=>{', profile)
+        self.assertIn("if(row.is_active&&c.progress)fields.push(['lastLesson'", profile)
+        self.assertIn("section('course',courseRows", profile)
+        self.assertNotIn("section('miniappOpens'", profile)
+        self.assertIn("Telegram Mini App · ", profile)
+        self.assertIn("row.before_registration", profile)
+        self.assertIn("section('devices',nativeRows+miniappRows", profile)
+
     async def test_apple_push_subscription_keeps_user_activation_on_direct_tap(self):
         # The public script can offer push settings only after the server
         # advertises the private feature. No permission prompt at boot/login.
