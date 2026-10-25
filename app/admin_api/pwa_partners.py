@@ -6,10 +6,11 @@ import logging
 from typing import Annotated, Literal
 from uuid import uuid4
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, BackgroundTasks, Request
 from fastapi.responses import JSONResponse
 from pydantic import Field, ValidationError, model_validator
 from sqlalchemy import func, select, text
+from sqlalchemy.orm import load_only
 
 from app.admin_api.pwa_access_grants import CommandError, StepId
 from app.admin_api.pwa_approval import _utc
@@ -27,6 +28,7 @@ from app.db.models.partner import Partner
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.partner_service import PARTNER_SIGNUP_BONUS_USD_KEY, PartnerService
+from app.bot.utils.i18n import t
 
 logger = logging.getLogger(__name__)
 _STATES = {'approve': 'pending', 'reject': 'pending', 'block': 'active', 'unblock': 'blocked'}
@@ -51,6 +53,16 @@ class PreparePartner(StrictModel):
 
 class PartnerCommand(PreparePartner):
     expected_hash: Annotated[str, Field(pattern=r'^[0-9a-f]{64}$')]
+    notice_user_id: PositiveId | None = None
+    notice_hash: Annotated[str, Field(pattern=r'^[0-9a-f]{64}$')] | None = None
+
+    @model_validator(mode='after')
+    def exact_notice_scope(self):
+        if (self.notice_user_id is None) != (self.notice_hash is None):
+            raise ValueError('Incomplete partner notice commitment')
+        if self.operation not in {'approve', 'reject'} and self.notice_user_id is not None:
+            raise ValueError('Partner state changes do not send application notices')
+        return self
 
     def operation_payload(self):
         return {'action': 'partners.update', 'target': str(self.partner_id), 'payload': self.model_dump()}
@@ -68,6 +80,27 @@ def _public(row):
     return {'id': row.id, 'status': row.status, 'promotion_channel': row.promotion_channel[:2000],
             'audience_size': row.audience_size, 'contact_username': row.contact_username,
             'created_at': _utc(row.created_at).isoformat()}
+
+
+async def _application_notice(db, row, operation, *, lock=False):
+    if operation not in {'approve', 'reject'}:
+        return None
+    statement = select(User).where(User.telegram_id == row.user_telegram_id).options(
+        load_only(User.id, User.telegram_id, User.status, User.language, User.full_name, User.username,
+            User.bot_blocked_at, User.bot_unblocked_at)
+    ).execution_options(populate_existing=True)
+    user = await db.scalar(statement.with_for_update() if lock else statement)
+    if user is None:
+        return None
+    from app.admin_api.pwa_outbound import LANGS, recipient_hash
+
+    key = 'partner_approved_notification' if operation == 'approve' else 'partner_rejected_notification'
+    texts = {language: t(key, language) for language in LANGS}
+    language = user.language if user.language in LANGS else 'tj'
+    snapshot_hash = recipient_hash(user)
+    snapshot = {'user_id': user.id, 'snapshot_hash': snapshot_hash, 'language': language}
+    digest = _hash({'user_id': user.id, 'snapshot_hash': snapshot_hash, 'language': language, 'texts': texts})
+    return {'user': user, 'snapshot': snapshot, 'texts': texts, 'hash': digest}
 
 
 async def _state(db, partner_id, *, lock=False):
@@ -120,13 +153,20 @@ async def prepare_partner(db, *, session_cookie, request, settings_obj):
         raise CommandError('not_found', 404)
     async with read_transaction(db):
         await _authenticate(db, session_cookie, settings_obj)
-        _, current, revision = await _state(db, request.partner_id)
+        row, current, revision = await _state(db, request.partner_id)
         if current['status'] != _STATES[request.operation]:
             raise CommandError('confirmation_changed', 409)
-        command = PartnerCommand(**request.model_dump(), expected_hash=revision)
+        notice = await _application_notice(db, row, request.operation)
+        command = PartnerCommand(**request.model_dump(), expected_hash=revision,
+            notice_user_id=notice['user'].id if notice else None,
+            notice_hash=notice['hash'] if notice else None)
     proposed = {'id': command.partner_id, 'operation': command.operation,
                 'status': {'approve': 'active', 'reject': 'rejected', 'block': 'blocked', 'unblock': 'active'}[command.operation],
                 'signup_bonus_usd': current['signup_bonus_usd'] if command.operation == 'approve' else '0'}
+    proposed['notice_count'] = 1 if notice else 0
+    if notice:
+        proposed['notice_user_id'] = notice['user'].id
+        proposed['notice_texts'] = notice['texts']
     return {'operation': command.operation_payload(), 'current': current, 'proposed': proposed}
 
 
@@ -151,6 +191,16 @@ async def execute_partner(db, *, session_cookie, request, settings_obj):
             raise CommandError('admin_pwa_step_up_denied', 403)
         if revision != command.expected_hash or row.status != _STATES[command.operation]:
             raise CommandError('confirmation_changed', 409)
+        notice = await _application_notice(db, row, command.operation, lock=True)
+        if ((notice is None) != (command.notice_user_id is None)
+                or notice is not None and (notice['user'].id != command.notice_user_id
+                    or notice['hash'] != command.notice_hash)):
+            raise CommandError('confirmation_changed', 409)
+        actor = await db.scalar(select(User).where(User.id == actor.id).execution_options(populate_existing=True))
+        if (not _enabled(settings_obj) or actor is None or not _authorized_admin(actor, settings_obj)
+                or session.revoked_at is not None
+                or min(_utc(step.expires_at), _utc(session.expires_at)) <= datetime.now(timezone.utc)):
+            raise CommandError('admin_pwa_step_up_denied', 403)
         service = PartnerService(db)
         if command.operation == 'approve':
             await service.approve(row, actor.telegram_id)
@@ -164,17 +214,23 @@ async def execute_partner(db, *, session_cookie, request, settings_obj):
         db.add(AdminPwaCommandAudit(id=audit_id, step_up_id=step.id, actor_user_id=actor.id, target_user_id=None,
             action=operation['action'], target=operation['target'], payload_hash=operation_digest(**operation),
             result_json=json.dumps({'operation': command.operation, 'status': row.status, 'before_hash': revision,
-                'signup_bonus_usd': before['signup_bonus_usd'] if command.operation == 'approve' else '0'})))
+                'signup_bonus_usd': before['signup_bonus_usd'] if command.operation == 'approve' else '0',
+                'notice_queued': notice is not None})))
         await db.flush()
+        if notice is not None:
+            from app.admin_api.pwa_outbound import enqueue_reviewed_message
+            await enqueue_reviewed_message(db, command_id=audit_id, actor_user_id=actor.id,
+                session_id=session.id, target_user_id=notice['user'].id, kind='direct',
+                texts=notice['texts'], filters={}, snapshots=[notice['snapshot']],
+                digest=_hash([notice['snapshot']]))
         result = _public(row)
-    # This command changes account state. Outbound partner notifications require
-    # their own durable delivery contract; no network runs under these locks.
-    return {'command_id': audit_id, 'partner': result}
+    return {'command_id': audit_id, 'partner': result, 'job_id': audit_id if notice is not None else None,
+        'notice_queued': notice is not None}
 
 
-def create_admin_pwa_partners_router(*, settings_obj, session_factory):
+def create_admin_pwa_partners_router(*, settings_obj, session_factory, drainer=None):
     router = APIRouter(tags=['admin-pwa-partners'])
-    async def handle(request, task, schema):
+    async def handle(request, task, schema, *, background=None):
         failure = _guard_post(request, settings_obj)
         if failure is not None:
             return failure
@@ -193,6 +249,8 @@ def create_admin_pwa_partners_router(*, settings_obj, session_factory):
         except Exception:
             logger.error('Admin PWA partner command unavailable')
             return _reply(503, 'admin_pwa_command_unavailable')
+        if background is not None and drainer is not None and result.get('job_id'):
+            background.add_task(drainer, result['job_id'])
         return JSONResponse({'ok': True, **result}, headers=_PRIVATE_HEADERS)
     @router.post('/api/admin/v1/partners/read')
     async def read(request: Request):
@@ -201,6 +259,6 @@ def create_admin_pwa_partners_router(*, settings_obj, session_factory):
     async def prepare(request: Request):
         return await handle(request, prepare_partner, PreparePartner)
     @router.post('/api/admin/v1/partners/save')
-    async def save(request: Request):
-        return await handle(request, execute_partner, ExecutePartner)
+    async def save(request: Request, background: BackgroundTasks):
+        return await handle(request, execute_partner, ExecutePartner, background=background)
     return router

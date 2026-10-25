@@ -65,8 +65,16 @@ browser/SW no-store and real-data/metric-definition requirements. Details:
 Implemented management code now includes signed direct/self-test and bounded
 text broadcasts, durable pre-provider claims, explicit cancellation and
 pending-only signed resume. Owned payout proof/completion and durable recipient notice also exist, using
-the owner-requested single payout window. Campaign creation, partner application
-notices and general media/QR/creative uploads remain code work; see [management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
+the owner-requested single payout window. Text-only campaign drafts can now be
+created signed and paused. Desktop-promo JPEG/PNG/WebP media can now be added,
+replaced or removed with one exact passkey confirmation. Existing course-ad
+images can also be replaced with one exact passkey confirmation. The six
+existing Alipay/WeChat subscription QR targets can now replace one bounded
+image using one passkey; price and payment/access state remain untouched. The
+legacy checkout contract stores the resulting Telegram `file_id`, not image
+bytes. Campaign activation/delivery, feedback/discount campaigns and new
+course-ad/video uploads remain code work. Partner application notices are
+implemented; see [management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
 This paragraph records scope and does not mark the entire acceptance list done.
 
 ### F. Cloud/ChatGPT/Local analytics without exposing admin credentials

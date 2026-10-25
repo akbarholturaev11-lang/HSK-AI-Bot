@@ -3,8 +3,6 @@ import contextlib
 import logging
 from pathlib import Path
 import os
-import shutil
-import subprocess
 import time
 import uuid
 from contextlib import asynccontextmanager
@@ -51,6 +49,7 @@ from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_rou
 from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
 from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_router
 from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
+from app.admin_api.pwa_payment_qr import create_admin_pwa_payment_qr_router
 from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
@@ -204,10 +203,14 @@ from app.services.course_ad_translation_service import (
     CourseAdTranslationService,
 )
 from app.services.course_ad_service import (
-    COURSE_AD_ALLOWED_IMAGE_EXTENSIONS,
-    COURSE_AD_ALLOWED_VIDEO_EXTENSIONS,
     COURSE_AD_MEDIA_ROOT,
     CourseAdService,
+)
+from app.services.course_ad_media import (
+    COURSE_AD_MAX_UPLOAD_BYTES,
+    CourseAdVideoError,
+    prepare_course_ad_image_file,
+    prepare_course_ad_video_file,
 )
 from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE
 from app.services.ai_usage_budget_service import REFERRAL_TRIAL_PLAN_TYPE
@@ -277,6 +280,7 @@ from app.services.desktop_app_promo_settings_service import (
     DESKTOP_APP_PROMO_MAX_UPLOAD_BYTES,
     DESKTOP_APP_PROMO_MEDIA_ROOT,
     desktop_app_promo_media_full_path,
+    desktop_app_promo_public_filename_allowed,
     get_desktop_app_promo_settings,
     save_desktop_app_promo_settings,
 )
@@ -317,11 +321,6 @@ logger = logging.getLogger(__name__)
 
 bot, dp = create_bot(settings)
 _study_ai_tasks = set()
-COURSE_AD_MAX_UPLOAD_BYTES = 25 * 1024 * 1024
-
-
-class CourseAdVideoError(Exception):
-    pass
 
 
 def _positive_int(value) -> int | None:
@@ -389,102 +388,6 @@ async def _support_url_for_error() -> str:
             return await get_admin_contact_url(session)
     except Exception:  # noqa: BLE001
         return ""
-
-
-def _prepare_course_ad_video_file(data: bytes, *, raw_ext: str, telegram_id: int) -> str:
-    """Store course ad video as Telegram WebView-safe MP4.
-
-    ffmpeg is expected in production (see nixpacks.toml). Without ffmpeg we
-    reject uploads instead of saving a video that may render black in Telegram
-    WebView.
-    """
-    os.makedirs(COURSE_AD_MEDIA_ROOT, exist_ok=True)
-    token = uuid.uuid4().hex[:10]
-    final_name = f"course_ad_{telegram_id}_{int(time.time())}_{token}.mp4"
-    final_path = os.path.join(COURSE_AD_MEDIA_ROOT, final_name)
-    source_ext = raw_ext if raw_ext in COURSE_AD_ALLOWED_VIDEO_EXTENSIONS else ".mp4"
-    ffmpeg = shutil.which("ffmpeg")
-
-    if not ffmpeg:
-        raise CourseAdVideoError("ffmpeg_not_available")
-
-    source_path = os.path.join(COURSE_AD_MEDIA_ROOT, f".course_ad_upload_{token}{source_ext}")
-    with open(source_path, "wb") as handle:
-        handle.write(data)
-
-    try:
-        subprocess.run(
-            [
-                ffmpeg,
-                "-y",
-                "-hide_banner",
-                "-loglevel",
-                "error",
-                "-i",
-                source_path,
-                "-map",
-                "0:v:0",
-                "-map",
-                "0:a?",
-                "-vf",
-                "scale='min(720,iw)':-2:force_original_aspect_ratio=decrease,format=yuv420p",
-                "-c:v",
-                "libx264",
-                "-preset",
-                "veryfast",
-                "-profile:v",
-                "main",
-                "-level",
-                "3.1",
-                "-c:a",
-                "aac",
-                "-b:a",
-                "128k",
-                "-movflags",
-                "+faststart",
-                "-shortest",
-                final_path,
-            ],
-            check=True,
-            timeout=120,
-        )
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
-        with contextlib.suppress(OSError):
-            os.remove(final_path)
-        raise CourseAdVideoError("video_transcode_failed") from exc
-    finally:
-        with contextlib.suppress(OSError):
-            os.remove(source_path)
-
-    if not os.path.exists(final_path) or os.path.getsize(final_path) <= 0:
-        raise CourseAdVideoError("video_transcode_failed")
-    return final_name
-
-
-def _prepare_course_ad_image_file(data: bytes, *, raw_ext: str, telegram_id: int) -> str:
-    """Surat reklamasini diskka saqlaydi.
-
-    Videodan farqli o'laroq qayta kodlash yo'q: ffmpeg talab qilinmaydi va fayl
-    o'z formatida (jpg/png/webp) qoladi — `<img>` ularning hammasini Telegram
-    WebView'da muammosiz ko'rsatadi.
-    """
-    os.makedirs(COURSE_AD_MEDIA_ROOT, exist_ok=True)
-    token = uuid.uuid4().hex[:10]
-    ext = raw_ext if raw_ext in COURSE_AD_ALLOWED_IMAGE_EXTENSIONS else ".jpg"
-    final_name = f"course_ad_{telegram_id}_{int(time.time())}_{token}{ext}"
-    final_path = os.path.join(COURSE_AD_MEDIA_ROOT, final_name)
-    tmp_path = f"{final_path}.upload"
-    try:
-        with open(tmp_path, "wb") as handle:
-            handle.write(data)
-        os.replace(tmp_path, final_path)
-    except OSError:
-        with contextlib.suppress(OSError):
-            os.remove(tmp_path)
-        raise
-    if not os.path.exists(final_path) or os.path.getsize(final_path) <= 0:
-        raise CourseAdVideoError("media_upload_failed")
-    return final_name
 
 
 async def _send_subscription_expired_offer(session, telegram_id) -> None:
@@ -775,6 +678,9 @@ app.include_router(create_admin_pwa_access_grant_router(settings_obj=settings, s
 app.include_router(create_admin_pwa_course_access_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_hsk30_settings_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_subscription_prices_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_payment_qr_router(
+    settings_obj=settings, session_factory=async_session_maker, bot_client=bot,
+))
 app.include_router(create_admin_pwa_settings_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_marketing_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_user_management_router(settings_obj=settings, session_factory=async_session_maker,
@@ -782,7 +688,6 @@ app.include_router(create_admin_pwa_user_management_router(settings_obj=settings
 app.include_router(create_admin_pwa_channels_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_portfolio_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_notifications_router(settings_obj=settings, session_factory=async_session_maker))
-app.include_router(create_admin_pwa_partners_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_partner_payouts_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_payment_reconciliation_router(settings_obj=settings, session_factory=async_session_maker))
 
@@ -809,6 +714,8 @@ async def _emit_admin_pwa_outbound(message):
 
 admin_pwa_message_drainer=create_message_drainer(settings_obj=settings,session_factory=async_session_maker,
     emit=_emit_admin_pwa_outbound)
+app.include_router(create_admin_pwa_partners_router(settings_obj=settings, session_factory=async_session_maker,
+    drainer=admin_pwa_message_drainer))
 app.include_router(create_admin_pwa_outbound_router(settings_obj=settings,session_factory=async_session_maker,
     emit=_emit_admin_pwa_outbound,drainer=admin_pwa_message_drainer))
 
@@ -3946,6 +3853,8 @@ async def admin_miniapp_desktop_promo_media_clear(request: Request):
 
 @app.get("/uploads/app_promo/{filename}")
 async def serve_desktop_app_promo_media(filename: str):
+    if not desktop_app_promo_public_filename_allowed(filename):
+        return JSONResponse(status_code=404, content={"ok": False, "error": "not_found"})
     safe = os.path.basename(filename)
     path = os.path.join(DESKTOP_APP_PROMO_MEDIA_ROOT, safe)
     if not safe or not os.path.exists(path):
@@ -5245,13 +5154,14 @@ async def admin_miniapp_course_ads_upload(request: Request):
         # Surat qayta kodlanmaydi (ffmpeg kerak emas), video esa WebView uchun
         # xavfsiz MP4 ga o'giriladi — eski xatti-harakat o'zgarmaydi.
         prepare = (
-            _prepare_course_ad_image_file if media_type == "photo" else _prepare_course_ad_video_file
+            prepare_course_ad_image_file if media_type == "photo" else prepare_course_ad_video_file
         )
         filename = await asyncio.to_thread(
             prepare,
             data,
             raw_ext=raw_ext,
             telegram_id=telegram_id,
+            media_root=COURSE_AD_MEDIA_ROOT,
         )
         media_backup = (
             data if CourseAdService.should_backup_media(media_type, data) else None

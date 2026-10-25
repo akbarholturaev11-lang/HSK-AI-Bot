@@ -4,7 +4,9 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
 
 ## Current owner-selected branch and UI baseline
 
-- Continue **only** on `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204.
+- Continue **only** on `feat/admin-pwa-minimal-inbox-passkey-20261025`.
+  PR #204 was merged at an older head; branch commits after that merge remain
+  on this feature branch and must not be redirected to `main`.
   The owner selected this branch and accepted its notification-window changes
   on 2026-10-25. The previous MCP branch/PR #201 references below are historical;
   those changes are already ancestors. Do not switch back, merge/push main or
@@ -55,9 +57,188 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   completion and lost-response no-retry. One notice and one command only.
   Screenshots `/tmp/hsk-admin-pwa-payout-single-final-20261025` inspected.
   Catalogs: 63 artifacts, zero stale; JS/Python syntax and diff checks passed.
-- Remaining code: campaign creation, partner application notices and general
-  media/QR/creative uploads. External MCP is still statistics-only; all feature
+- Remaining code: campaign activation/delivery, release-feedback/discount
+  campaign commands and general media/QR/creative uploads.
+  External MCP is still statistics-only; all feature
   defaults remain OFF, no main/deploy/live migration.
+
+## Current partner-application notice increment — 2026-10-25
+
+- PWA approve/reject now bind the canonical recipient, current account-language
+  snapshot and fixed UZ/RU/TJ notice copy to the existing `partners.update`
+  passkey proof. The status/bonus decision, hash-only command audit and one-user
+  outbound job commit together. A missing canonical Telegram account creates
+  no invented recipient and does not block the status decision. Block/unblock
+  remain unchanged.
+- The existing bounded outbound drainer starts only after commit, shares its
+  two worker slots, and rechecks recipient eligibility before its one attempt.
+  Unknown delivery is not automatically retried. The V10 comparison now shows
+  the actual localized notice before the action details; safe preview preserves
+  only fixed bold tags and escapes all other markup.
+- Local checks: partner, outbound, payout and payout-completion regression
+  suites **53 passed**, including disposable PostgreSQL lock-wait tests; main
+  import/catalog checks **9 passed**. Actual management browser/WebAuthn suite
+  passed UZ/RU/TJ at 390/1440px. Approval/rejection each produce one queued
+  notice; browser screenshots are in
+  `/tmp/hsk-admin-pwa-partner-notices-final-20261025`. Catalogs: 63 artifacts,
+  zero stale; JavaScript/Python syntax checks passed.
+- Next code: general media/QR/creative uploads and safe campaign delivery.
+  Feature defaults remain OFF; external MCP remains statistics-only.
+
+## Current campaign-draft increment — 2026-10-25
+
+- `/marketing/prepare|save` accepts a strict text-only campaign draft with
+  explicit UZ/RU/TJ copy, selected target languages, optional HSK track and a
+  1–720 hour window. The transaction-bound passkey proof signs a compact hash
+  of all three texts; text is HTML-escaped before the existing localized ad
+  payload storage. The same transaction creates one inactive ad campaign and
+  content-free hash-only command audit. No audience query, AI translation,
+  provider IO, delivery row, migration or automatic sender is added.
+- The V10 composer has localized controls and one before/after review followed
+  by one passkey ceremony. New records use `is_active=false` and
+  `next_send_at=NULL`, so the legacy due-ad worker cannot send them.
+- Local checks: marketing API plus legacy HSK ad-target regression **17 passed,
+  11 subtests passed**. Actual
+  ASGI/virtual-WebAuthn browser management passed at 390/1440px in UZ/RU/TJ,
+  including escaped hostile markup, persisted inactive state and no horizontal
+  overflow. Screenshots: `/tmp/hsk-admin-pwa-campaign-draft-20261025`.
+  Catalogs: 63 artifacts, zero stale; Python/JavaScript syntax and diff checks
+  passed. Commit/CI SHA will be recorded after push.
+- Remaining: bounded campaign activation/delivery, release-feedback/discount
+  campaign commands and general media/QR/creative uploads. Feature flags remain
+  OFF; MCP remains statistics-only.
+
+## Current desktop-promo raster media increment — 2026-10-25
+
+- The first-party Marketing editor can add, replace or clear the existing
+  desktop-promo image using one exact passkey confirmation. Only JPEG/PNG/WebP
+  raster files are accepted (2 MiB, 8 million pixels, one frame); bytes are
+  decoded server-side, hashed against the signed command, and written to the
+  existing media volume using a random server filename. The DB stores a path
+  in the existing settings record, never an image BLOB or new migration.
+- Settings and content-free audit commit together. Uncertain commits retain a
+  potentially referenced file; replacement cleanup runs only after commit. The
+  public route allowlists generated image names. Upload requires the active
+  same-origin WebAuthn session and exact transaction-bound one-use proof.
+- Browser UI stages and previews locally, binds digest/size into the review,
+  and asks for one passkey ceremony. No media goes to a provider, Bot, AI,
+  campaign, or external MCP; all rollout flags stay OFF.
+- Local evidence: marketing regression suite **18 passed / 11 subtests**;
+  desktop-download compatibility suite **21 passed**;
+  full ASGI/virtual-WebAuthn browser management suite passed at UZ/RU/TJ,
+  390/1440px. The file preview was checked in RU/TJ; upload and clear were
+  exercised in UZ. The final mobile
+  comparison screenshot
+  `/tmp/hsk-admin-pwa-desktop-promo-media-final2-20261025/desktop-promo-image-confirm-390.png`
+  was visually checked: the preview fits above the single footer confirmation.
+  Catalogs: 63 artifacts, zero stale; JS syntax, Python compilation and
+  `git diff --check` passed. Commit `0f099b3555ef4d8eeb4576ebf5d54d816456aeea`
+  is pushed and the feature branch remote was verified at that SHA. No CI
+  status for that exact SHA has been recorded here.
+- Remaining at this historical checkpoint: course-ad image replacement, new
+  creative/video uploads and payment QR media, safe campaign activation/delivery,
+  release-feedback/discount campaigns, and the other unimplemented items in
+  the acceptance contract. Do not infer full PWA completion from that increment.
+
+## Current course-ad image replacement increment — 2026-10-25
+
+- An existing course-ad creative can replace its media with one JPEG/PNG/WebP
+  image up to 1 MiB and 8 million pixels. The exact image hash/size and current
+  creative revision are bound into the existing `marketing.update` passkey
+  proof. Only the existing creative row changes; title, target, placement and
+  activation state are preserved. New creative creation and video upload stay
+  out of scope.
+- The upload streams within its small limit, checks the same-origin active
+  WebAuthn session, decodes a single-frame raster server-side, and atomically
+  writes a random filename to the existing course-ad media volume. The row and
+  content-free audit commit together; no DB image BLOB, backup metadata or
+  migration is added. Shared old media is retained; unshared old media is
+  cleaned only after commit. Uncertain commit outcomes preserve a potentially
+  referenced file.
+- The V10 editor shows current and proposed media, local preview and byte size
+  before one passkey confirmation. Copy is localized in UZ/RU/TJ. The mobile
+  review screenshot is
+  `/tmp/hsk-admin-pwa-course-ad-media-focused-20261025/course-ad-image-confirm-390.png`;
+  it was visually checked after correcting the course-ad title label.
+- Local evidence: marketing plus existing course-ad media/type suites
+  **55 passed / 33 subtests**; focused actual ASGI/virtual-WebAuthn image upload
+  passed at 390px with SQL/disk assertions;
+  the full management browser regression suite passed at UZ/RU/TJ 390/1440px
+  for the existing settings/prices/course-ad state/delete/account flows.
+  Catalogs: 63 artifacts, zero stale. Feature defaults stay OFF, external MCP
+  stays statistics-only. The full PWA remains incomplete.
+- Remaining media/code: new course-ad creative creation, payment QR,
+  campaign activation/delivery, feedback/discount commands and the other open
+  acceptance items. Keep each in its own exact signed contract and avoid
+  provider/media IO during read paths.
+
+## Current course-ad video replacement increment — 2026-10-25
+
+- `marketing.update` now has a distinct signed `replace_video` command for one
+  existing course-ad creative. It binds the existing row revision, exact
+  source SHA-256 and byte count to one passkey. Only MP4, MOV, WebM and M4V up
+  to 25 MiB are accepted; FFmpeg converts the upload to the established
+  WebView-safe H.264/AAC MP4 output. The operation cannot create a creative,
+  change its title/status/placement, or deliver a campaign.
+- Before streaming, the endpoint requires the current admin session and the
+  exact unexpired verified proof, including its still-active credential.
+  Encoding runs outside the target-row DB transaction, with one PWA video
+  encoder slot per worker and the established 120-second subprocess timeout.
+  A short write transaction consumes the proof, rechecks the creative revision,
+  attaches the atomically published random MP4 path and content-free audit.
+  Rollback cleanup re-reads the row and preserves media if commit state is
+  uncertain. The existing 1-MiB decoded-raster replacement remains separate.
+- The V10 editor uses the existing one-passkey confirmation, the browser-local
+  video preview and an escaped file name/size review. UZ/RU/TJ copy is sourced
+  from `localization/ui/*/miniapp.json`. Screenshot
+  `/tmp/hsk-admin-pwa-course-ad-video-20261025/course-ad-video-confirm-390.png`
+  was visually checked at 390px; there is one passkey action and no overflow.
+- Local evidence: `.venv/bin/python -m pytest -q tests/test_course_ad_media.py tests/test_admin_pwa_marketing.py`
+  **26 passed, 11 subtests passed**; actual ASGI + virtual-WebAuthn browser
+  upload/preview/save for course-ad image/video and payment QR passed at 390px.
+  `node --check`, Python compile checks and the 63-artifact catalog check
+  passed. Exact-head GitHub CI has not yet been queried for the implementation
+  commit. Feature flags remain OFF, MCP stays statistics-only, and no staging,
+  live ChatGPT, physical-device, merge or deployment action occurred.
+- Commit SHA and remote branch verification are recorded after the commit
+  below. Remaining code: new course-ad creation, safe campaign
+  activation/delivery and release-feedback/discount commands, plus other open
+  acceptance items. Full PWA acceptance/staging remains incomplete.
+
+## Current subscription QR media increment — 2026-10-25
+
+- `pwa_payment_qr.py` and `/payment-qr/read|prepare|media/save` now support
+  replacement for the six existing Alipay/WeChat plan targets in the standard
+  subscription scope. One WebAuthn confirmation binds the exact price/QR
+  revision plus image SHA-256 and byte count. Only a decoded one-frame
+  JPEG/PNG/WebP raster up to 1 MiB and 8 million pixels is accepted. Visa,
+  HSK 3.0 unlock, discount and campaign QR scopes are excluded.
+- The existing checkout contract uses Telegram `file_id`, so the image is
+  sent once to the authenticated admin's private Bot chat. The short database
+  transaction then rechecks proof, current target and revision, and atomically
+  saves only the `file_id` plus content-free command audit. No DB image BLOB,
+  new migration, price/payment/access write or network call in a DB transaction
+  is added. A failed write deletes the Bot message only if a fresh DB query
+  proves its media ID is unreferenced; uncertainty preserves the message. No
+  provider retry is automatic.
+- The V10 editor is reachable from the existing price editor for Alipay/WeChat.
+  It displays current QR-set state, a local preview and unchanged amount in the
+  before/after review, then asks for exactly one passkey. Copy is canonical in
+  UZ/RU/TJ. Mobile screenshot `/tmp/hsk-admin-pwa-payment-qr-e2e-20261025/payment-qr-confirm-390.png`
+  was visually checked; the old and proposed state fit at 390px.
+- Local evidence: payment QR, subscription prices, marketing, course-ad media
+  and type regression suites **72 passed, 40 subtests passed**; actual ASGI + virtual-WebAuthn media editor passed at
+  390px with Bot stub, SQL price/QR checks and one audit. `node --check` passed;
+  catalog generation/check: 63 artifacts, zero stale. Commit
+  `f355bef761c55c924c2212e55457d222b99a94f5` is pushed to
+  `feat/admin-pwa-minimal-inbox-passkey-20261025`; `git ls-remote` returned the
+  same SHA. GitHub combined commit status and commit workflow-run queries
+  returned no entries for this SHA, so no exact-head CI result is available.
+  Feature flags remain OFF, external MCP remains statistics-only; no staging,
+  ChatGPT live integration, physical-device QA, merge or deployment occurred.
+- Remaining: course-ad video and new creative creation, safe campaign
+  activation/delivery, release-feedback/discount commands, and other open
+  acceptance/staging gates. Do not infer full PWA completion from QR support.
 
 ## Mobile Inbox touch and fresh-login regression
 

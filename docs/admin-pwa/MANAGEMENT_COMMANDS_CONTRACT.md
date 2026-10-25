@@ -20,13 +20,14 @@ uncertain response.
 | `course.access_policy` | `/course-access/read`, `/prepare`, `/save` | Global subscription/free-until policy, explicit timezone, maximum 365-day free deadline |
 | `hsk30.settings` | `/hsk30/read`, `/prepare`, `/save` | Global rollout, canonical live levels, checkout switch, 1–10000 TJS price; no direct permanent grants |
 | `subscription.prices` | `/subscription-prices/read`, `/prepare`, `/save` | Nine fixed payment-method/plan targets; shared Visa normalization and currencies |
+| `subscription.qr_media` | `/payment-qr/read`, `/prepare`, `/media/save` | One existing subscription QR image for a fixed Alipay/WeChat plan; does not edit price |
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
-| `marketing.update` | `/marketing/read`, `/prepare`, `/save` | Sales experiment, app promotion settings, existing creative activation/deletion |
+| `marketing.update` | `/marketing/read`, `/prepare`, `/save`, `/media/save` | Sales experiment, app promotion settings, existing creative activation/deletion, bounded desktop-promo image replacement/removal |
 | `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
 | `broadcast.send` / `broadcast.control` | `/messages/read`, `/prepare`, `/save`, `/run`, `/prepare-control`, `/control`, `/stop` | Exact signed text/audience, durable pre-IO claims, owner-only bounded delivery and cancellation |
 | `payments.delivery_reconcile` | `/payment-deliveries/read`, `/prepare`, `/save` | Audited human resolution for uncertain or stale attempts; never resend or change finance |
 | `partners.payout` | `/partner-payouts/read`, `/prepare`, `/save` | Shared reserve/release/reject/deadline plus owned proof-bound completion and one durable recipient notice; no money transfer |
-| `partners.update` | `/partners/read`, `/prepare`, `/save` | Partner application approve/reject and partnership block/unblock via shared PartnerService |
+| `partners.update` | `/partners/read`, `/prepare`, `/save` | Partner application approve/reject with one durable notice, and partnership block/unblock via shared PartnerService |
 | `notifications.update` | `/notifications/read`, `/prepare`, `/save` | Five fixed reminder templates, enabled state and canonical UZ/RU/TJ text/defaults |
 | `portfolio.add` | `/portfolio/read`, `/prepare`, `/save` | Manual profit/expense through shared PortfolioService; no payment synchronization or entitlement mutation |
 | `channels.update` | `/channels/read`, `/prepare`, `/save` | Required-channel mode, add/upsert, state and removal through shared channel service |
@@ -61,18 +62,80 @@ Marketing read fetches two fixed settings plus at most 31 creative metadata
 rows, without BLOBs, file restoration or media URLs. Each creative is a signed
 individual target. Deletion uses the existing shared service, preserves files
 still referenced by other creatives and limits postcommit cleanup to a
-validated local basename. This adapter does not send messages or create
-campaigns. Course/System/Marketing navigation itself performs no settings read;
+validated local basename. Settings/creative changes do not send messages.
+Course/System/Marketing navigation itself performs no settings read;
 editors fetch only after an explicit tap. Every editor has a before/after
 confirmation and a single passkey save, with read-current recovery on lost
 responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 
+The separate signed campaign-draft command accepts only text, explicit
+UZ/RU/TJ copy, selected audience languages, optional HSK track and a bounded
+duration. It creates an existing `ad_campaigns` row as paused (`is_active=false`,
+`next_send_at=NULL`) with one round; it performs no recipient scan, provider
+call, automatic translation or delivery. The transaction-bound operation
+signs a compact hash of all three copies, while the immutable audit stores only
+that hash and the created campaign ID. Campaign activation/delivery, feedback
+and discount campaign creation, buttons and media stay outside this command
+until their bounded sender and asset contracts are implemented.
+
+Desktop-promo media accepts only one decoded JPEG/PNG/WebP raster (2 MiB and
+8-million-pixel bounds). The browser previews the file locally, then signs its
+SHA-256 and byte count together with the current promo-settings revision. The
+binary endpoint streams at most the bound, requires the same-origin PWA cookie,
+and rechecks the exact one-use passkey operation before publishing a random
+server-named asset. Settings and content-free audit commit together; a failed
+or uncertain commit re-reads the setting before cleanup so a referenced file
+is never removed. Replaced/cleared files are removed after commit. No image
+BLOB, DB migration, Bot upload, AI call or campaign delivery is introduced.
+The public media route allowlists only server-generated legacy/PWA filenames.
+
+Existing course-ad image replacement is a separate signed `replace_image`
+operation on one creative ID. It accepts a decoded JPEG/PNG/WebP image up to
+1 MiB and 8 million pixels, signs the content hash and byte count with the
+creative revision, and stores a random server-named file on the existing
+course-ad media volume. The current media row and content-free audit commit in
+the same transaction; no image BLOB, backup BLOB metadata or migration is
+created. A shared old file is retained, and an unreferenced old file is removed
+only after commit. This changes an existing creative's image only; it does not
+create or deliver campaigns, upload video, or authorize QR/other media.
+
+Existing course-ad video replacement is a distinct signed `replace_video`
+operation on one creative ID. It accepts one MP4, MOV, WebM or M4V upload up to
+25 MiB and binds the exact source SHA-256/byte count plus creative revision to
+one passkey. The server requires that exact verified receipt before invoking
+FFmpeg, uses one concurrent video-encode slot per worker, and converts to a
+WebView-safe H.264/AAC MP4 with the existing 720-pixel scaling and 120-second
+process timeout. Encoding and filesystem staging run outside the database
+write transaction. The final short transaction consumes the proof, rechecks
+the current creative revision, attaches the server-named MP4 path and records
+content-free audit evidence atomically; an unreferenced staged file is cleaned
+up after rollback, while uncertain commit state preserves referenced media.
+Only the existing creative's media changes. No new DB BLOB or migration is
+introduced; new creative creation and campaign delivery remain separate.
+
+Subscription QR replacement is a separate `subscription.qr_media` operation for
+the six fixed Alipay/WeChat plan targets in the existing `subscription` scope.
+The exact current price/QR revision and one JPEG/PNG/WebP file hash/size (1 MiB,
+8 million pixels, single frame) are bound to one passkey confirmation. It cannot
+create a QR for Visa, HSK 3.0, discount or campaign scopes, and cannot change a
+price, payment, subscription or access grant. The image is sent once to the
+current admin's private Telegram chat because existing checkout consumes a Bot
+`file_id`; the DB stores that ID and content-free revision audit only, never an
+image BLOB or a new migration. No DB transaction is held during Bot IO. A short
+write transaction rechecks proof, target and exact revision; a failed write
+best-effort deletes the Bot message only after a fresh DB read proves its ID is
+unreferenced. An uncertain DB read preserves the provider message. The provider
+upload is not retried automatically.
+
 ## Explicit code parity still outstanding
 
 These legacy capabilities are not silently proxied by the standalone PWA:
-campaign creation, partner application recipient notices, and general
-media/QR/creative uploads. Direct, self-test and bounded text broadcast now have
-their own standalone commands described below. A legacy endpoint or
+campaign activation/delivery, release-feedback and discount campaign creation,
+and new course-ad creation. Existing course-ad raster and video replacement,
+desktop-promo and subscription QR media each have their own signed flows
+described above; they do not authorize other upload types.
+Direct, self-test and
+bounded text broadcast now have their own standalone commands described below. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
 needs its own strict payload, shared-service transaction and permission/audit
 contract before its UI can claim success. Messaging additionally needs durable
@@ -131,9 +194,16 @@ signup-credit evidence. A shared setting-key lock and partner-row lock prevent
 stale approval or a rate/bonus edit; authority/expiry is rechecked after waiting.
 The shared service grants its existing locked signup bonus at most once. No
 learner block, subscription, payment or AI budget is changed. Immutable audit
-stores decision/status/bonus/hash only, without contact or promotion copy. This
-adapter records partnership state, not outbound-message or payout delivery;
-those remain explicit separate commands.
+stores decision/status/bonus/hash only, without contact or promotion copy.
+Approval and rejection prepare a fixed UZ/RU/TJ recipient notice from the
+canonical user's language snapshot. The exact canonical recipient and notice
+hash are bound to the same `partners.update` passkey operation. Partner status,
+bonus, immutable command audit and one-recipient outbound job commit atomically;
+the existing bounded drainer attempts delivery after commit. A missing
+canonical Telegram account does not fabricate a recipient or block the status
+decision. Provider uncertainty is not retried automatically. Block/unblock
+remain status-only operations. This records a send attempt workflow, not device
+delivery evidence.
 
 Payout metadata pages use 30-row primary-key keysets. Details load bounded
 account information but no Telegram QR/proof file IDs. Full raw payout state,
