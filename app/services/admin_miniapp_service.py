@@ -1310,13 +1310,13 @@ def is_admin_active_today(user, today_start: datetime, *, now: datetime | None =
     return bool(stamp and today_start <= stamp <= (now or datetime.now(timezone.utc)))
 
 
-def is_admin_hot_lead(user, hot_since: datetime) -> bool:
+def is_admin_hot_lead(user, hot_since: datetime, *, now: datetime | None = None) -> bool:
     return (
         str(getattr(user, "status", "") or "").lower() in HOT_LEAD_STATUSES
         and str(getattr(user, "payment_status", "") or "none").lower() in HOT_LEAD_PAYMENT_STATUSES
         and not BotBlockStatusService.is_bot_blocked(user)
         and _is_at_or_after(getattr(user, "last_active_at", None), hot_since)
-        and _as_utc(getattr(user, "last_active_at", None)) <= datetime.now(timezone.utc)
+        and _as_utc(getattr(user, "last_active_at", None)) <= (now or datetime.now(timezone.utc))
     )
 
 
@@ -1430,6 +1430,7 @@ class AdminMiniAppService:
             User.status.in_(HOT_LEAD_STATUSES),
             User.payment_status.in_(HOT_LEAD_PAYMENT_STATUSES),
             User.last_active_at >= hot_since,
+            User.last_active_at <= now,
             _bot_not_blocked_filter(),
             _no_pending_payment_filter(),
         )
@@ -3082,7 +3083,7 @@ class AdminMiniAppService:
                 "last_active": _ago(item.last_active_at, now=now),
                 "active_today": is_admin_active_today(item, today_start, now=now),
                 "hot_lead": (
-                    is_admin_hot_lead(item, hot_since)
+                    is_admin_hot_lead(item, hot_since, now=now)
                     and ("user", item.id) not in pending_user_ids
                 ),
                 "questions": f"{item.questions_used}/{item.question_limit}",
