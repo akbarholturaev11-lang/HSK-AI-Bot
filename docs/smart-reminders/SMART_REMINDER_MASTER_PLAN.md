@@ -89,7 +89,7 @@
 
 **I01 Identity:** барча study delivery policy ва frequency user_id=users.id бўйича. Telegram ID фақат reachability; email тенглиги аккаунт бирлаштирмайди.
 
-**I02 Consent:** study push учун user ва platform/OS рухсатлари талаб қилинади. Мавжуд on/off setting'ни ечимсиз override қилма; settings migration'ни аниқ лойиҳалаш. Opt-out дарҳол режалаштирилган job'ларни бекор қилади.
+**I02 Consent [D01 OWNER APPROVED 2026-10-25]:** Smart Reminder фойдаланувчининг АВВАЛДАН ЁҚИЛГАН ўқиш эслатмалари ўрнига автоматик ишга тушади, янги функция номи билан қайта-қайта алоҳида розилик сўралмайди. Бироқ мавжуд OFF/opt-out ва OS/platform permission'лар мутлақ ҳурмат қилинади; олдин рухсат берилмаган янги OS push канали учун тизим талаб қиладиган илк рухсатни четлаб ўтиб бўлмайди. Legacy settings аниқ mapping қилинмагунча бу канални automatically ON қилма; opt-out pending jobs'ни бекор қилади. Delivery old/new parallel бўлмасин.
 
 **I03 Account-level cadence:** бир аккаунт учун фақат битта танланган study канал/decision; бир нечта қурилма/transport бир пайтда намойиш этмасин. Транзакцион хабарлар алоҳида категория.
 
@@ -168,7 +168,7 @@ Overtaken/rating, weekly progress, onboarding, trial/churn ва admin campaign'�
 - timezone_name (IANA), quiet_start_local, quiet_end_local.
 - channel_policy: preferred|last_reliable|available; preferred_channel optional.
 - daily_max, weekly_max [server clamp], snooze_until UTC, paused_until UTC.
-- settings_version, updated_at, consent_source, consent_at; no implicit opt-in on account creation unless valid legacy mapping.
+- settings_version, updated_at, consent_source, consent_at; **D01:** олдиндан ёқилган, мувофиқ legacy study reminder channel'ларида автоматик Smart upgrade (алоҳида қайта сўраш йўқ); ҳеч қандай old opt-out override эмас; бошқа/янги channel'га permission auto-grant қилиш йўқ. Янги аккаунт default'ини кўчиришдан олдин legacy semantics ва OS талабларига мувофиқ текшир.
 
 ### 5.2 reminder_jobs (new immutable logical-intent ledger)
 - id UUID; user_id FK; local_day; intent; target_ref with validated type; timezone snapshot, scheduled_at_utc, expire_at_utc.
@@ -194,7 +194,7 @@ Overtaken/rating, weekly progress, onboarding, trial/churn ва admin campaign'�
 ### 5.5 Migration/backfill rules
 - Additive nullable columns/tables; unique constraints old data scan'дан кейин.
 - Legacy Mini App notifications_enabled, CourseProgress.reminder_enabled, Android study_reminders_enabled — учта алоҳида setting; ҳуқуқсиз барчасини глобал ON қилиш мумкин эмас.
-- Consent mapping: user-facing settings маъноси ва манбасини тасдиқлаб кейин change; opt-out устун бўлиши керак.
+- **D01 тасдиқланган:** эски эслатмани аллақачон ON қилган ва рухсатли каналларда Smart Reminder'га seamless ўтказиш; қайта consent modal/banner талаб қилинмайди. Legacy OFF/disabled ва OS denied ўзгармайди. Бир channel ON бўлиши бошқа channel'га янги permission бермайди; аниқ per-source precedence/mapping D14 да ҳал қилинади. Backfill ўрганилган танловни сақлайди.
 - Backfill one-time with source tag. Хавфли bulk re-send йўқ.
 - Purge data, revoked device, logout ва account-link change cascade semantics.
 - Alembic heads ва downstream old binaries compatibility.
@@ -215,7 +215,7 @@ CANDIDATE → ELIGIBLE / SUPPRESSED → SCHEDULED → CLAIMED → PROVIDER_ATTEM
 ## 7. Notification UX / localization / deep-link [PROPOSAL]
 
 - **Settings:** Smart Reminders on/off, Manual/Smart timing, preferred time, quiet hours, preferred channel, pause, opt-out; minimize user-visible explanation. Existing user prefs preserved until policy migration.
-- **Permission flow:** explicit primer → user interaction → OS notification prompt, never surprise; app-level opt-out ва OS-level off’ни ажрат.
+- **Permission flow [D01]:** мавжуд study notification рухсатини Smart upgrade учун такроран сўрама, функционал ҳақида мажбурий onboarding/marketing ойна очма. Янги platform/OS push permission ҳали йўқ бўлса, фақат OS талаб қиладиган рухсат user interaction орқали одатдаги бир марталик оқимда сўралиши мумкин; рад этишни ҳурмат қил. Existing OFF'ни ON қилма, app-level opt-out ва OS-level off'ни ажрат.
 - **Content:** UZ/RU/TJ canonical catalog; polite, short, contextual; no invented lesson numbers/XP/minutes. Render placeholders validated and escaped.
 - **CTA:** resume lesson vs daily goal vs review; deep-link internal validated target, track/level/access check. Telegram Mini App, Android native, later iPhone PWA and Desktop adaptors, all canonical data.
 - **Feed:** existing CourseUserNotification reused where appropriate, inbox item ≠ delivery ledger; re-render after language change and template version handling.
@@ -280,7 +280,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 ### P0 — Full integration audit / policy lock
 **Ҳолат:** [NOT STARTED]
 - [ ] Main/current feature target ref SHA, runtime environment, production flags, active scheduler/replicas and schema head аниқлансин.
-- [ ] Барча reminder senders, push/OS permissions, consent toggle, notification preferences ва policy matrix инвентаризация қилинсин.
+- [ ] Барча reminder senders, push/OS permissions, consent toggle, notification preferences ва policy matrix инвентаризация қилинсин; **D01 mandatory:** legacy enabled → silent Smart migration, disabled → remains off, denied channel → no push, no duplicate system permission prompt.
 - [ ] Canonical study event granularity, day/timezone semantics, idempotency, deep-link ва lessons guards аниқлансин.
 - [ ] P0 risks reported, owner-selected defaults and scope ledger DECISION деб қайд этилсин.
 **Acceptance:** repo code references + event flow diagram + old/new coexistence switch table + no unverified architecture claims.
@@ -289,7 +289,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 ### P1 — Instrumentation + schema foundation
 **Ҳолат:** [NOT STARTED]
 - [ ] Minimum additive models/migrations; unique keys, indexes, FK cleanup, dry-run explain reasons.
-- [ ] Preference mapping/API endpoints: auth, validation, optimistic revision, old client compatibility.
+- [ ] Preference mapping/API endpoints: auth, validation, optimistic revision, old client compatibility; D01 seamless migration only for pre-enabled same channel, explicit opt-out preserved, no extra Smart opt-in dialog.
 - [ ] Canonical event collector and daily-learning aggregation; no duplicate score/event counts.
 - [ ] Privacy and deletion/retention hooks, diagnostics.
 **Acceptance:** migration up/down where safe, invalid account/token rejected, dual-read settings coherent, no reminders newly sent.
@@ -307,7 +307,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 ### P3 — Telegram delivery integration
 **Ҳолат:** [NOT STARTED]
 - [ ] Telegram notifier adapter, templates UZ/RU/TJ, validated lesson deep-link; existing admin template edit.
-- [ ] Feature flag selectively routes Telegram study reminders new engine. Old CourseReminder/Motivation senders skip users controlled by new engine.
+- [ ] Feature flag selectively routes Telegram study reminders new engine. Old CourseReminder/Motivation senders skip users controlled by new engine. D01: eligible existing ON learners migrate without re-consent; OFF users are suppressed.
 - [ ] D1 holdout protected; opt-out/blocked, rate limiting, retry ledger and logging.
 - [ ] Pilot cohort + rollback to old behavior without double-send.
 **Acceptance:** canonical account receives no duplicate; all linked/unlinked/blocked cases correct; genuine reminder opens valid lesson.
@@ -374,7 +374,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 
 | ID | Савол | Тавсия / олдинги маълумот | Status |
 |---|---|---|---|
-| D01 | Smart Reminder default ON ёки explicit opt-in? | Existing legacy toggles ҳар хил; read semantics first, consent-preserving migration. | OPEN |
+| D01 | Smart Reminder'ни фойдаланувчи қандай қабул қилади? | **1-вариант танланди:** аллақачон рухсат берилган/ёқилган ўқиш эслатмаларини Smart Reminder'га автоматик seamless upgrade; қайта-қайта рухсат сўралмайди; фойдаланувчига функция номи эмас, қулайлик муҳим. Илгари OFF қилган ва OS denied каналлар ўзгармайди, янги OS каналига қўшимча permission талабини четлаб ўтмаймиз; exact legacy mapping D14 да. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
 | D02 | Smart time manual time’дан устунми? | Manual > Smart; user can switch. | PROPOSAL |
 | D03 | Study frequency max/day, max/week? | 1/day, 3/week. | PROPOSAL |
 | D04 | Quiet hours? | 22:00–08:00, timezone-based, editable. | PROPOSAL |
@@ -414,6 +414,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | Date | Scope | Result | Commit/PR | Tests | Next |
 |---|---|---|---|---|---|
 | 2026-10-25 | Initial discovery and single-file master-plan scaffold | Real main source inspected; planning proposals and unresolved decisions recorded. **Runtime unchanged.** | d01263f772f8cc72486cdfa8f6f113115783f615 (initial file commit) | NO TESTS RUN; code read only | P0 audit + D01–D14 lock |
+| 2026-10-25 | D01 owner decision | Option 1 approved, existing ON study notifications silent upgrade; OFF/OS-denied protected. Docs only. | жорий docs commit | NO TESTS RUN; requirements record only | D02 time behavior discussion; D14 mapping audit |
 
 **Final completion criteria:** P0–P8 acceptance achieved; automated + manual affected flow QA evidenced; global dedupe/opt-out/progress guards verified on real clients; experiment results/guardrails recorded; production rollout monitored; owner accepts completion. Until then status remains IN PROGRESS.
 
@@ -438,9 +439,10 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 - **Менинг тавсиям:** 1 ёки 2 ва аниқ сабаб.
 - **Сизнинг танловингиз:** 1 / 2 / ўзгартирилган қоида.
 
-**Жорий навбат:** D01 — янги Smart Reminder'ни қандай рухсат билан ёқиш; legacy Mini App, CourseProgress ва Android push settings'ларига таъсир. **OPEN; ҳали эгаси қарори йўқ.**
+**Жорий навбат:** **D02** — фойдаланувчи аввалдан белгилаб қўйган эслатма вақти сақланадими ёки Smart Reminder фойдаланувчи одатидан келиб чиқиб уни автоматик мослаштирадими? **OPEN; owner қарори кутилмоқда.** D01 тасдиқланган; D14 legacy toggle mapping техник деталлари OPEN.
 
 ### 16.1 Decision log
 | ID | Дата | Тасдиқ | Таъсир | Commit |
 |---|---|---|---|---|
 | PROCESS-01 | 2026-10-25 | Ҳар саволда содда тушунтириш + 2 вариант + агент тавсияси; фақат owner танлайди, сўнг дарҳол шу файлга қайд этилади | Барча кейинги Smart Reminder қарорларига | жорий docs commit |
+| D01 | 2026-10-25 | **1-вариант:** аллақачон эслатма ёқилган каналларни Smart Reminder'га автоматик ўтказиш, қайта-қайта рухсат сўрамаслик. OFF/denied ва OS илк рухсати сақланади. | I02, preferences/migration, P0/P1/P3, UX; D14 mapping still OPEN; no runtime change | жорий docs commit |
