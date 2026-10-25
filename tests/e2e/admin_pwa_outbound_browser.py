@@ -86,7 +86,7 @@ async def browser_checks(output):
                     await page.locator('#locale').select_option(language)
                     await page.locator('.nav [data-route=users]').click()
                     await page.locator('[data-user-detail="2"]:visible').click()
-                    await page.locator('[data-menu-toggle=userManagementMenu]').click()
+                    await page.locator('.profile-more-actions summary').click()
                     await page.locator('[data-message-user="2"]').click()
                     await page.locator('#messageText').fill('QA <img src=x onerror=alert(1)>')
                     await page.set_viewport_size({'width':390,'height':844})
