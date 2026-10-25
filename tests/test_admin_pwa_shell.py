@@ -39,6 +39,8 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         script = (await self.get('/admin/assets/app.js')).text
         self.assertIn("const committed=await api('limits/save'", script)
         self.assertIn("courseData.limits=committed.limits;", script)
+        self.assertIn('if(!courseLimitTouched[courseLimitPlan])return false;',script)
+        self.assertIn('courseLimitTouched={FREE:false,TRIAL_ACTIVE:false}',script)
         self.assertIn("courseLimitDraft={FREE:structuredClone(committed.limits.plans.FREE)", script)
         self.assertIn("courseTrialDraft={enabled:committed.limits.trial.enabled", script)
         self.assertIn("confirmation=null;showSavedAndDismiss('changesSaved');void loadCourseData();", script)
