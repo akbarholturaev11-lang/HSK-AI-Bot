@@ -563,7 +563,13 @@ async def _admin_pwa_apple_push_scheduler() -> None:
         return
     while True:
         try:
-            await dispatch_batch(async_session_maker, settings_obj=settings, limit=10)
+            result = await dispatch_batch(async_session_maker, settings_obj=settings, limit=10)
+            if result["claimed"]:
+                # Delivery status only: never log user, event, endpoint or content.
+                logger.info(
+                    "Admin PWA Apple Push batch: claimed=%d accepted=%d retry=%d dead=%d",
+                    result["claimed"], result["accepted"], result["retry"], result["dead"],
+                )
         except asyncio.CancelledError:
             raise
         except Exception:
