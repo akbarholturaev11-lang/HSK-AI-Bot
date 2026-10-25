@@ -65,7 +65,7 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         # The actual Web Push provider and physical Apple delivery are not
         # exercised by this public-shell regression.
 
-    async def test_minimal_inbox_and_fresh_passkey_launch_contract(self):
+    async def test_minimal_inbox_and_seamless_passkey_launch_contract(self):
         script=(await self.get('/admin/assets/app.js')).text
         list_section=script.split('async function inbox(before=null,userId=null)',1)[1].split('async function mutateInbox(',1)[0]
         self.assertNotIn('inboxSearchForm',list_section)
@@ -77,9 +77,12 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("if(source==='payment'){",script)
         self.assertIn("await review(id);",script)
         self.assertIn("drawerBack=()=>inbox(null,originatingUser)",script)
-        self.assertIn("lockAndRequirePasskey();",script)
-        self.assertIn("await api('auth/logout',{}, {publicAuth:true})",script)
-        self.assertIn("requireFreshLoginOnResume=true",script)
+        self.assertIn("if(state.phase==='signin')await tryAutomaticPasskeyLogin();",script)
+        self.assertIn("await api('me',null,{method:'GET',publicAuth:true})",script)
+        self.assertIn("automaticLoginAttempted=true",script)
+        self.assertIn("await api('auth/logout',{})",script)
+        self.assertNotIn("lockAndRequirePasskey",script)
+        self.assertNotIn("await api('auth/logout',{}, {publicAuth:true})",script)
         self.assertIn("await api('auth/passkey/login/verify'",script)
 
     async def test_iphone_left_zone_swipe_is_single_step_and_input_safe(self):

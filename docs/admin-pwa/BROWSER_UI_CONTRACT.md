@@ -22,16 +22,19 @@ mutation handlers or fabricated success statuses are shipped.
 
 ## Current owner-approved baseline — 2026-10-25
 
-Active branch: `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204. Preserve
+Merged baseline: `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204. Follow-up: `feat/admin-pwa-seamless-passkey-20261025`. Preserve
 its title-only unread-first Inbox, automatic priority/red state, explicit
 read-on-open detail, separate receipt review and return to originating inbox.
 Keep the single close control and one-step iPhone left-zone back gesture with
 native Safari/scroll/text-selection exclusions. Existing audited triage/Push
 transport remains compatible; manual priority/assignment controls are absent.
-Fresh PWA launch/resume clears the old cookie session and requires a new
-discoverable passkey assertion, failing closed if logout fails. This supersedes
-older session-reuse descriptions below. Normal session navigation and exact
-transaction-bound high-risk confirmations remain separate.
+On launch/resume, first revalidate the Secure HttpOnly cookie with /me.
+An unexpired, non-revoked session with current admin rights opens directly;
+after a 401, try one automatic passkey assertion per foreground visit.
+iOS/macOS/WebKit may reject gesture-free modal assertions, so retain the
+manual passkey action without recurring prompts. Logout explicitly revokes
+the server session; private browser memory clears on hide/pagehide/offline.
+Exact transaction-bound high-risk confirmations remain separate.
 
 ## Routes, data and isolation
 
