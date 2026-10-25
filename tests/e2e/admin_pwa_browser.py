@@ -655,7 +655,7 @@ async def attachment_browser_checks(output):
             comment_text='Synthetic release image',attachment_file_id='private-release-image',attachment_type='document')
         db.add_all([bot_report,release_report,BotFeedback(user_id=2,telegram_id=2002,status='completed',
             disliked_text='Unsupported media',disliked_attachment_file_id='never-download-audio',disliked_attachment_type='voice')])
-        await db.commit();report_id=report.id
+        await db.commit();report_id=report.id;bot_report_id=bot_report.id;release_report_id=release_report.id
     app=FastAPI()
     for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router,
                     create_admin_pwa_passkey_login_router,create_admin_pwa_inbox_triage_router):
@@ -708,12 +708,23 @@ async def attachment_browser_checks(output):
             assert not calls, 'Private images must not preload'
             telegram.get_file.assert_not_awaited()
             async def open_inbox():
-                await page.locator('[data-action=feedback]').click()
+                # The drawer is modal; the background bell cannot be clicked
+                # while a detail is open. Follow the real in-drawer back path.
+                if await page.locator('.inbox-back').count():
+                    await page.locator('.inbox-back').click()
+                elif not await page.locator('.inbox-minimal-row').count():
+                    if await page.locator('#overlay').count():
+                        await page.locator('.drawer-close').click()
+                    await page.locator('[data-action=feedback]').click()
                 await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
                 assert not await page.locator('[data-inbox-attachment]').count(), 'No media may preload in the list'
             async def view_source(source):
                 await open_inbox()
-                await page.locator(f'[data-inbox-open^="{source}:"]').first.click()
+                # The newest bot record can be a voice-only report. Open the
+                # fixture with an actual image, never assume the first source
+                # row is eligible for image preview.
+                source_id={'bot':bot_report_id,'release':release_report_id,'android':report_id}[source]
+                await page.locator(f'[data-inbox-open="{source}:{source_id}"]').click()
                 await expect(page.locator(f'[data-inbox-attachment][data-attachment-source={source}]')).to_have_count(1)
             async def loaded():
                 await wait_js(page,"() => {const i=document.querySelector('.inbox-attachment-image');return i?.complete&&i.naturalWidth===320;}")
