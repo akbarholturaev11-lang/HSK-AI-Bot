@@ -134,13 +134,18 @@ class AdminPwaBotHandlerTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(self.decide.await_args.kwargs["approve"])
         self.assertEqual(self.ack.await_args.args[0], bot_message("adminPwa.approved", "ru"))
         self.edit.assert_awaited_once()
-        self.assertIsNone(self.edit.await_args.kwargs["reply_markup"])
+        return_buttons = self.edit.await_args.kwargs["reply_markup"].inline_keyboard
+        self.assertEqual(len(return_buttons), 1)
+        self.assertEqual(return_buttons[0][0].url, "https://hskai.app/admin/")
+        self.assertEqual(return_buttons[0][0].text, bot_message("adminPwa.openBrowser", "ru"))
 
     async def test_deny_callback_is_explicit_and_terminal_in_service(self):
         cb = callback(message(), action="deny")
         await admin_pwa.decide_admin_pwa_approval(cb, session=object())
         self.assertFalse(self.decide.await_args.kwargs["approve"])
         self.assertEqual(self.ack.await_args.args[0], bot_message("adminPwa.denied", "ru"))
+        self.edit.assert_awaited_once()
+        self.assertIsNone(self.edit.await_args.kwargs["reply_markup"])
 
     async def test_replay_rejected_no_success_edit(self):
         self.decide.return_value = False
@@ -165,7 +170,7 @@ class AdminPwaBotHandlerTests(unittest.IsolatedAsyncioTestCase):
                 self.assertIn("hskai.app/admin", text)
                 self.assertIn("5", text)
                 for key in ("approve", "deny", "approved", "denied",
-                            "invalid", "privateOnly", "unavailable"):
+                            "invalid", "privateOnly", "unavailable", "openBrowser"):
                     self.assertTrue(bot_message("adminPwa." + key, lang))
 
     async def test_deeplink_regex_is_scoped_and_telegram_payload_valid(self):
