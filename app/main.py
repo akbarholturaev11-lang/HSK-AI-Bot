@@ -51,6 +51,7 @@ from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_rou
 from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
 from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_router
 from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
+from app.admin_api.pwa_payment_qr import create_admin_pwa_payment_qr_router
 from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
@@ -776,6 +777,9 @@ app.include_router(create_admin_pwa_access_grant_router(settings_obj=settings, s
 app.include_router(create_admin_pwa_course_access_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_hsk30_settings_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_subscription_prices_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_payment_qr_router(
+    settings_obj=settings, session_factory=async_session_maker, bot_client=bot,
+))
 app.include_router(create_admin_pwa_settings_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_marketing_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_user_management_router(settings_obj=settings, session_factory=async_session_maker,

@@ -172,6 +172,39 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   acceptance items. Keep each in its own exact signed contract and avoid
   provider/media IO during read paths.
 
+## Current subscription QR media increment — 2026-10-25
+
+- `pwa_payment_qr.py` and `/payment-qr/read|prepare|media/save` now support
+  replacement for the six existing Alipay/WeChat plan targets in the standard
+  subscription scope. One WebAuthn confirmation binds the exact price/QR
+  revision plus image SHA-256 and byte count. Only a decoded one-frame
+  JPEG/PNG/WebP raster up to 1 MiB and 8 million pixels is accepted. Visa,
+  HSK 3.0 unlock, discount and campaign QR scopes are excluded.
+- The existing checkout contract uses Telegram `file_id`, so the image is
+  sent once to the authenticated admin's private Bot chat. The short database
+  transaction then rechecks proof, current target and revision, and atomically
+  saves only the `file_id` plus content-free command audit. No DB image BLOB,
+  new migration, price/payment/access write or network call in a DB transaction
+  is added. A failed write deletes the Bot message only if a fresh DB query
+  proves its media ID is unreferenced; uncertainty preserves the message. No
+  provider retry is automatic.
+- The V10 editor is reachable from the existing price editor for Alipay/WeChat.
+  It displays current QR-set state, a local preview and unchanged amount in the
+  before/after review, then asks for exactly one passkey. Copy is canonical in
+  UZ/RU/TJ. Mobile screenshot `/tmp/hsk-admin-pwa-payment-qr-e2e-20261025/payment-qr-confirm-390.png`
+  was visually checked; the old and proposed state fit at 390px.
+- Local evidence: payment QR, subscription prices, marketing, course-ad media
+  and type regression suites **72 passed, 40 subtests passed**; actual ASGI + virtual-WebAuthn media editor passed at
+  390px with Bot stub, SQL price/QR checks and one audit. `node --check` passed;
+  catalog generation/check: 63 artifacts, zero stale. Exact-head GitHub CI has
+  not been checked. Commit SHA and remote branch verification are recorded
+  after the commit below.
+  Feature flags remain OFF, external MCP remains statistics-only; no staging,
+  ChatGPT live integration, physical-device QA, merge or deployment occurred.
+- Remaining: course-ad video and new creative creation, safe campaign
+  activation/delivery, release-feedback/discount commands, and other open
+  acceptance/staging gates. Do not infer full PWA completion from QR support.
+
 ## Mobile Inbox touch and fresh-login regression
 
 - Cause: the minimal detail image/back buttons inherited a sub-44px height;

@@ -13,6 +13,7 @@ import tempfile
 from io import BytesIO
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from cryptography.hazmat.primitives import serialization
@@ -39,6 +40,7 @@ from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_login_router
 from app.admin_api.pwa_payment_reconciliation import create_admin_pwa_payment_reconciliation_router
 from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
+from app.admin_api.pwa_payment_qr import create_admin_pwa_payment_qr_router
 from app.db.base import Base
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
@@ -49,10 +51,12 @@ from app.db.models.admin_pwa_outbound import AdminPwaOutboundJob
 from app.db.models.user import User
 from app.bot.utils.i18n import t
 from app.db.models.course_ad import CourseAdCreative
+from app.db.models.payment_qr_code import PaymentQrCode
 from app.db.models.ad_campaign import AdCampaign
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
 from app.services.desktop_app_promo_settings_service import get_desktop_app_promo_settings
+from app.services.subscription_price_service import SubscriptionPriceService
 from app.services import course_ad_service
 from app.services.support_contact_service import ADMIN_CONTACT_KEY
 from app.services.broadcast_translation_service import decode_localized_broadcast_text
@@ -61,6 +65,20 @@ from tests.test_admin_pwa_webauthn_crypto_vectors import CRED_ID, HANDLE
 
 ORIGIN = "https://hskai.app"
 ROOT = Path(__file__).resolve().parents[2]
+
+
+class BrowserQrBot:
+    def __init__(self):
+        self.sent = []
+        self.deleted = []
+
+    async def send_photo(self, *, chat_id, photo):
+        self.sent.append((chat_id, photo))
+        return SimpleNamespace(message_id=800 + len(self.sent),
+            photo=[SimpleNamespace(file_id=f"browser-qr-{len(self.sent)}")])
+
+    async def delete_message(self, *, chat_id, message_id):
+        self.deleted.append((chat_id, message_id))
 
 
 async def browser_checks(output, *, media_only=False):
@@ -107,6 +125,10 @@ async def browser_checks(output, *, media_only=False):
                     create_admin_pwa_user_management_router,create_admin_pwa_channels_router,
                     create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router,create_admin_pwa_partners_router,create_admin_pwa_partner_payouts_router,create_admin_pwa_payment_reconciliation_router):
         app.include_router(factory(**common))
+    qr_bot = BrowserQrBot()
+    app.include_router(create_admin_pwa_payment_qr_router(
+        **common, bot_client=qr_bot,
+    ))
     calls, errors = [], []
     drop_save = False
 
@@ -439,8 +461,48 @@ async def browser_checks(output, *, media_only=False):
                             CourseAdCreative.id==1)) is None
                         assert (Path(course_media_directory.name)/course_ad.media_path).read_bytes()==promo_image
                     assert any(path=='/api/admin/v1/marketing/media/save' for path,_ in calls)
+                    async with fixture.sessions() as db:
+                        await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == "consumed").values(
+                            created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
+                        price_before=await SubscriptionPriceService(db).get_price("alipay", "1_month")
+                        await db.commit()
+                    await page.locator('.drawer-close').click()
+                    await navigate('system',390)
+                    await page.locator('[data-action="priceSettings"]').click()
+                    await page.locator('#priceMethod').select_option('alipay')
+                    await page.locator('#pricePlan').select_option('1_month')
+                    await page.locator('#priceQrAction').click()
+                    await expect(page.locator('#paymentQrMediaFile')).to_be_visible()
+                    await page.locator('#paymentQrMediaFile').set_input_files({
+                        'name':'payment-qr.png','mimeType':'image/png','buffer':promo_image})
+                    await expect(page.locator('#paymentQrMediaPreview img')).to_be_visible()
+                    qr_ceremonies=len([path for path,_ in calls if path.endswith('step-up/options')])
+                    await page.locator('[data-action="managementPrepare"]').click()
+                    await expect(page.locator('.management-comparison')).to_be_visible()
+                    assert await page.locator('.management-comparison img').count()==1
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                    assert len([path for path,_ in calls if path.endswith('step-up/options')])==qr_ceremonies
+                    await page.screenshot(path=str(output/'payment-qr-confirm-390.png'))
+                    before_qr_audit=await audit_count()
+                    await page.locator('[data-action="managementExecute"]').click()
+                    await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
+                    assert len([path for path,_ in calls if path.endswith('step-up/options')])==qr_ceremonies+1
+                    async with fixture.sessions() as db:
+                        qr=await db.scalar(select(PaymentQrCode).where(
+                            PaymentQrCode.scope=='subscription',
+                            PaymentQrCode.payment_method=='alipay',
+                            PaymentQrCode.plan_type=='1_month',
+                            PaymentQrCode.amount==price_before.amount,
+                            PaymentQrCode.currency==price_before.currency,
+                        ))
+                        price_after=await SubscriptionPriceService(db).get_price("alipay", "1_month")
+                    assert qr and qr.file_id=='browser-qr-1'
+                    assert (price_after.amount,price_after.currency)==(price_before.amount,price_before.currency)
+                    assert len(qr_bot.sent)==1 and qr_bot.sent[0][0]==9001
+                    assert any(path=='/api/admin/v1/payment-qr/media/save' for path,_ in calls)
+                    assert await audit_count()==before_qr_audit+1
                     assert not errors, errors
-                    print('Course-ad media: ASGI + virtual WebAuthn upload, signed preview and disk-only persistence passed at 390px')
+                    print('Course-ad + payment QR media: ASGI + virtual WebAuthn; disk-only ad image, unchanged price and single signed QR replacement passed at 390px')
                     return
                 for operation in ('set_active','delete'):
                     await page.locator('[data-marketing-kind="course_ad"]').click()

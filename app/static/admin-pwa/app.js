@@ -490,9 +490,9 @@ function userManagementEditor(userId,operation){
 const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktopPromo',course_ad:'courseAds'};
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
 const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
-function managementNamespace(type){return ['message','message_control'].includes(type)?'messages':type==='delivery'?'payment-deliveries':type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
+function managementNamespace(type){return ['message','message_control'].includes(type)?'messages':type==='delivery'?'payment-deliveries':type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='payment_qr'?'payment-qr':type==='marketing'?'marketing':'settings';}
 function managementEndpoint(type,phase){if(type==='payout_completion')return 'partner-payouts/'+(phase==='prepare'?'prepare-completion':'complete');return type==='message_control'?'messages/'+(phase==='prepare'?'prepare-control':'control'):type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
-function managementAction(type,operation){return type==='message'?'broadcast.send':type==='message_control'?'broadcast.control':type==='delivery'?'payments.delivery_reconcile':['payout','payout_completion'].includes(type)?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+function managementAction(type,operation){return type==='message'?'broadcast.send':type==='message_control'?'broadcast.control':type==='delivery'?'payments.delivery_reconcile':['payout','payout_completion'].includes(type)?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='payment_qr'?'subscription.qr_media':type==='marketing'?'marketing.update':'settings.update';}
 const messageKindLabels={direct:'directMessage',broadcast:'broadcastMessage',test:'testMessage'};
 const messageJobLabels={ready:'messageReady',running:'messageRunning',complete:'messageComplete',closed:'messageClosed'};
 const messageCountLabels={pending:'messagePending',attempting:'messageAttempting',attempted:'messageAttempted',uncertain:'messageUncertain',skipped:'messageSkipped',removed:'messageRemoved'};
@@ -841,6 +841,11 @@ function managementFields(value,type){
   }
   if(type==='marketing')return marketingFields(value);
   if(type==='price')return profileFields([['method',value.method],['plan',t(value.plan)],['amount',value.amount+' '+value.currency]]);
+  if(type==='payment_qr')return profileFields([
+    ['method',value.method],['plan',t(value.plan)],['amount',value.amount+' '+value.currency],
+    ['paymentQrStatus',t(value.qr_set?'paymentQrSet':'paymentQrMissing')],
+    ...(value.media_name?[["paymentQrImage",`${value.media_name} · ${Number(value.media_size||0).toLocaleString()} B`]]:[]),
+  ]);
   if(value.kind==='payment_details')return profileFields([['method',value.bank==='dc_city'?'DC City':'Alif'],['paymentDetails',value.value||t('notSet')]]);
   if(value.kind==='ai_model')return profileFields([['aiModel',value.model]]);
   if(value.kind==='help_contact')return profileFields([['helpContact',value.value||t('notSet')]]);
@@ -858,6 +863,7 @@ function managementReread(draft){
   if(draft.type==='channel')return `<button class="btn" data-channels-kind="${draft.kind==='mode'?'mode':'list'}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='user')return `<button class="btn" data-user-detail="${draft.userId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind)}">${esc(t('readCurrent'))}</button>`;
+  if(draft.type==='payment_qr')return `<button class="btn" data-payment-qr-target="${esc(draft.method+'-'+draft.plan)}">${esc(t('readCurrent'))}</button>`;
   return draft.type==='price'?btn('readCurrent','priceSettings'):`<button class="btn" data-setting-kind="${draft.kind}" ${draft.bank?`data-bank="${draft.bank}"`:''}>${esc(t('readCurrent'))}</button>`;
 }
 function updatePriceFields(){
@@ -865,6 +871,10 @@ function updatePriceFields(){
   const row=managementDraft.prices.find(row=>row.method===$('priceMethod')?.value&&row.plan===$('pricePlan')?.value);
   if(!row)return;
   $('priceAmount').value=row.amount;$('priceCurrency').textContent=row.currency;
+  const qrButton=$('priceQrAction');
+  const qrField=$('priceQrField');
+  if(qrButton)qrButton.hidden=!['alipay','wechat'].includes(row.method);
+  if(qrField)qrField.hidden=!['alipay','wechat'].includes(row.method);
 }
 async function priceSettings(){
   closeDrawer();const current=drawerId,at=epoch;
@@ -875,11 +885,28 @@ async function priceSettings(){
     if(!Array.isArray(data.prices)||data.prices.length!==9)throw Error('invalid_prices');
     managementDraft={type:'price',prices:data.prices};
     const select=(id,label,options)=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><select id="${id}" class="input">${options.map(([key,text])=>`<option value="${key}">${esc(text)}</option>`).join('')}</select></div>`;
-    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div></form>`;
+    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div><div class="form-field" id="priceQrField"><button type="button" class="btn" id="priceQrAction" data-action="priceQrSettings">${esc(t('paymentQrManage'))}</button></div></form>`;
     drawer('subscriptionPrices',body,btn('cancel','close')+btn('next','managementPrepare','primary'));
     updatePriceFields();
   }catch(error){
     if(current===drawerId&&at===epoch&&state.actor)drawer('subscriptionPrices',statePanel(errorKey(error)),btn('close','close')+btn('retry','priceSettings','primary'));
+  }
+}
+async function priceQrSettings(method=null,plan=null){
+  method=method||$('priceMethod')?.value;plan=plan||$('pricePlan')?.value;
+  if(!['alipay','wechat'].includes(method)||!['10_days','1_month','3_months'].includes(plan))return;
+  closeDrawer();const current=drawerId,at=epoch;
+  drawer('paymentQrTitle',statePanel('loading'));
+  try{
+    const data=await api('payment-qr/read',{method,plan});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const qr=data.qr;
+    if(!qr||qr.method!==method||qr.plan!==plan)throw Error('invalid_payment_qr');
+    managementDraft={type:'payment_qr',method,plan,current:qr,mediaFile:null};
+    const body=`<form id="managementForm"><p class="source-note">${esc(t('paymentQrPrivateNote'))}</p>${managementFields(qr,'payment_qr')}<div class="form-field"><label for="paymentQrMediaFile">${esc(t('paymentQrImage'))}</label><input class="input" id="paymentQrMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">${esc(t('paymentQrMediaHint'))}</p><div id="paymentQrMediaPreview" aria-live="polite"></div><p class="alert" id="paymentQrMediaValidation" role="alert" hidden></p></div></form>`;
+    drawer('paymentQrTitle',body,btn('cancel','priceSettings')+btn('next','managementPrepare','primary'));
+  }catch(error){
+    if(current===drawerId&&at===epoch&&state.actor)drawer('paymentQrTitle',statePanel(errorKey(error)),btn('close','close')+`<button class="btn" data-payment-qr-target="${esc(method+'-'+plan)}">${esc(t('readCurrent'))}</button>`);
   }
 }
 function updateHelpVideoField(){
@@ -957,6 +984,14 @@ async function prepareManagement(){
     const amount=Number($('priceAmount').value);
     if(!Number.isSafeInteger(amount)||amount<1||amount>1000000)return;
     payload={method:$('priceMethod').value,plan:$('pricePlan').value,amount};
+  }else if(draft.type==='payment_qr'){
+    const file=draft.mediaFile,validation=$('paymentQrMediaValidation');
+    if(!file){if(validation){validation.textContent=t('paymentQrRequired');validation.hidden=false;}return;}
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size<1||file.size>1024*1024){
+      if(validation){validation.textContent=t(file.size>1024*1024?'paymentQrTooLarge':'paymentQrValidation');validation.hidden=false;}return;
+    }
+    const digest=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());
+    payload={method:draft.method,plan:draft.plan,media_sha256:[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join(''),media_size:file.size};
   }else if(draft.type==='marketing'){
     const change={kind:draft.kind};
     if(draft.kind==='campaign_draft'){
@@ -1014,12 +1049,13 @@ async function prepareManagement(){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const operation=structuredClone(result.operation);
     if(operation?.action!==managementAction(draft.type,draft.userOperation)||!operation.target||!operation.payload)throw Error('invalid_operation');
-    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,deliveryId:draft.deliveryId,jobId:draft.jobId,mediaFile:draft.mediaFile||null,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
+    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,method:draft.method,plan:draft.plan,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,deliveryId:draft.deliveryId,jobId:draft.jobId,mediaFile:draft.mediaFile||null,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
     if(['payout','payout_completion'].includes(draft.type)){
       if(operation.payload.expected_hash!==draft.payoutRevision)throw new ApiError('confirmation_changed',409);
       await executeManagement();return;
     }
     let proposed=['message','message_control','notice','partner','payout','payout_completion','delivery'].includes(draft.type)||draft.kind==='campaign_draft'?result.proposed:draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
+    if(draft.type==='payment_qr')proposed={method:draft.method,plan:draft.plan,amount:result.current.amount,currency:result.current.currency,qr_set:true,media_name:String(draft.mediaFile?.name||'').slice(0,120),media_size:draft.mediaFile?.size||0};
     if(draft.type==='marketing'&&draft.kind==='desktop_promo')proposed={...proposed,
       has_media:!!draft.mediaFile||(!draft.clearMedia&&!!result.current.has_media),
       clear_media:!!draft.clearMedia,
@@ -1027,8 +1063,10 @@ async function prepareManagement(){
     if(draft.type==='marketing'&&draft.kind==='course_ad'&&draft.mediaFile)proposed={...proposed,
       media_name:String(draft.mediaFile.name||'').slice(0,120),media_size:draft.mediaFile.size};
     const currentValue=draft.type==='marketing'||draft.type==='channel'?{kind:draft.kind,...result.current}:result.current;
-    const mediaPreview=draft.type==='marketing'&&['desktop_promo','course_ad'].includes(draft.kind)&&draft.mediaFile&&managementMediaPreviewUrl
-      ?`<figure class="management-media-preview"><img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t(draft.kind==='course_ad'?'courseAdMedia':'promoMedia'))}"></figure>`:'';
+    const mediaPreview=draft.type==='payment_qr'&&draft.mediaFile&&managementMediaPreviewUrl
+      ?`<figure class="management-media-preview"><img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t('paymentQrImage'))}"></figure>`
+      :draft.type==='marketing'&&['desktop_promo','course_ad'].includes(draft.kind)&&draft.mediaFile&&managementMediaPreviewUrl
+        ?`<figure class="management-media-preview"><img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t(draft.kind==='course_ad'?'courseAdMedia':'promoMedia'))}"></figure>`:'';
     const comparison=`<div class="management-comparison">${['message','payout_completion'].includes(draft.type)?(draft.type==='message'?`<p class="source-note">${esc(t('messageAttemptHint'))}</p>`:''):draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}${mediaPreview}</section></div>`;
     drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
   }catch(error){
@@ -1048,6 +1086,9 @@ async function prepareManagement(){
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
       }else if(draft.type==='marketing'&&draft.kind==='course_ad'&&error.status===400&&$('courseAdMediaValidation')){
         $('courseAdMediaValidation').textContent=t('courseAdMediaValidation');$('courseAdMediaValidation').hidden=false;
+        $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
+      }else if(draft.type==='payment_qr'&&[400,413].includes(error.status)&&$('paymentQrMediaValidation')){
+        $('paymentQrMediaValidation').textContent=t(error.status===413||error.message==='admin_pwa_media_too_large'?'paymentQrTooLarge':'paymentQrValidation');$('paymentQrMediaValidation').hidden=false;
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
       }else drawer('confirmChanges',statePanel(error.status===409?'configChanged':errorKey(error)),btn('close','close')+managementReread(draft));
     }
@@ -1072,13 +1113,15 @@ async function executeManagement(){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     submitted=true;
     const command={...review.executePayload,step_up_id:options.step_up_id};
-    const result=review.type==='marketing'&&['desktop_promo','course_ad'].includes(review.kind)&&review.mediaFile
+    const result=review.type==='payment_qr'&&review.mediaFile
+      ?await api('payment-qr/media/save',null,{rawBody:review.mediaFile,extraHeaders:{'X-Admin-PWA-Command':JSON.stringify(command)}})
+      :review.type==='marketing'&&['desktop_promo','course_ad'].includes(review.kind)&&review.mediaFile
       ?await api('marketing/media/save',null,{rawBody:review.mediaFile,extraHeaders:{'X-Admin-PWA-Command':JSON.stringify(command)}})
       :await api(managementEndpoint(review.type,'save'),command);
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
     if(['message','message_control'].includes(review.type)){await messageJob(result.job.job_id);return;}
-    const saved=review.type==='delivery'?result.delivery:['payout','payout_completion'].includes(review.type)?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
+    const saved=review.type==='delivery'?result.delivery:['payout','payout_completion'].includes(review.type)?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='payment_qr'?result.qr:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
     if(review.type==='user'&&result.deleted){state.rows=state.rows.filter(row=>row.user_id!==result.user_id);render();}
     drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review))+(result.job_id?`<button class="btn" data-message-job="${esc(result.job_id)}">${esc(t('messages'))}</button>`:''));
   }catch(error){
@@ -1094,7 +1137,10 @@ async function executeManagement(){
       ?'promoMediaTooLarge':review.type==='marketing'&&review.kind==='desktop_promo'&&error.status===400
         ?'promoMediaValidation':review.type==='marketing'&&review.kind==='course_ad'&&error.status===413
           ?'courseAdMediaTooLarge':review.type==='marketing'&&review.kind==='course_ad'&&error.status===400
-            ?'courseAdMediaValidation':error.status===409?'configChanged':submitted&&!rejected?'configUncertain':errorKey(error);
+          ?'courseAdMediaValidation':review.type==='payment_qr'&&error.status===413
+            ?'paymentQrTooLarge':review.type==='payment_qr'&&error.status===400
+              ?'paymentQrValidation':review.type==='payment_qr'&&error.status===502
+                ?'paymentQrUploadFailed':error.status===409?'configChanged':submitted&&!rejected?'configUncertain':errorKey(error);
     drawer('confirmChanges',statePanel(failureKey),btn('close','close')+managementReread(review));
   }finally{if(signing===control)signing=null;}
 }
@@ -1645,6 +1691,7 @@ async function action(name) {
   if(name==='pushSettings'){await pushSettings();return;}
   if(name==='courseSettings'){await courseSettings();return;}
   if(name==='priceSettings'){await priceSettings();return;}
+  if(name==='priceQrSettings'){await priceQrSettings();return;}
   if(name==='messageList'){await messageList();return;}
   if(name==='messageEditor'){messageEditor();return;}
   if(name==='deliveryList'){await deliveryEditor();return;}
@@ -1742,6 +1789,10 @@ document.addEventListener('click',event=>{
       closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();
     }
     else if(button.dataset.marketingKind){await marketingEditor(button.dataset.marketingKind);}
+    else if(button.dataset.paymentQrTarget){
+      const match=/^(alipay|wechat)-(10_days|1_month|3_months)$/.exec(button.dataset.paymentQrTarget);
+      if(match)await priceQrSettings(match[1],match[2]);
+    }
     else if(button.dataset.marketingNext){await marketingEditor('course_ad',Number(button.dataset.marketingNext));}
     else if(button.dataset.courseAd){editCourseAd(Number(button.dataset.courseAd));}
     else if(button.dataset.userManagement){userManagementEditor(Number(button.dataset.userManagement),button.dataset.userOperation);}
@@ -1796,14 +1847,15 @@ document.addEventListener('change',event=>{
   if(event.target.id==='messageLanguage')updateMessageLanguage();
   if(event.target.id==='messageKind'&&$('messageFilters'))$('messageFilters').hidden=event.target.value==='test';
   if(event.target.id==='payoutProofFile'){void stagePayoutProof(event.target.files[0]);return;}
-  if(['promoMediaFile','courseAdMediaFile'].includes(event.target.id)){
-    const isCourseAd=event.target.id==='courseAdMediaFile',file=event.target.files?.[0]||null,allowed=['image/jpeg','image/png','image/webp'];
-    const maxBytes=isCourseAd?1024*1024:2*1024*1024;
-    const previewId=isCourseAd?'courseAdMediaPreview':'promoMediaPreview';
-    const validationId=isCourseAd?'courseAdMediaValidation':'promoMediaValidation';
+  if(['promoMediaFile','courseAdMediaFile','paymentQrMediaFile'].includes(event.target.id)){
+    const isCourseAd=event.target.id==='courseAdMediaFile',isPaymentQr=event.target.id==='paymentQrMediaFile';
+    const file=event.target.files?.[0]||null,allowed=['image/jpeg','image/png','image/webp'];
+    const maxBytes=isCourseAd||isPaymentQr?1024*1024:2*1024*1024;
+    const previewId=isCourseAd?'courseAdMediaPreview':isPaymentQr?'paymentQrMediaPreview':'promoMediaPreview';
+    const validationId=isCourseAd?'courseAdMediaValidation':isPaymentQr?'paymentQrMediaValidation':'promoMediaValidation';
     const invalid=file&&(!allowed.includes(file.type)||file.size<1||file.size>maxBytes);
     const validation=$(validationId);
-    if(validation){validation.hidden=!invalid;if(invalid&&isCourseAd)validation.textContent=t(file.size>maxBytes?'courseAdMediaTooLarge':'courseAdMediaValidation');}
+    if(validation){validation.hidden=!invalid;if(invalid&&(isCourseAd||isPaymentQr))validation.textContent=t(file.size>maxBytes?(isPaymentQr?'paymentQrTooLarge':'courseAdMediaTooLarge'):(isPaymentQr?'paymentQrValidation':'courseAdMediaValidation'));}
     if(invalid){event.target.value='';if($('promoMediaClear'))$('promoMediaClear').checked=false;
       managementDraft={...managementDraft,mediaFile:null,clearMedia:false};releaseManagementMediaPreview();
       if($(previewId))$(previewId).innerHTML='';return;}
@@ -1811,7 +1863,7 @@ document.addEventListener('change',event=>{
     managementDraft={...managementDraft,mediaFile:file,clearMedia:false};
     if($('promoMediaClear'))$('promoMediaClear').checked=false;
     if(file){managementMediaPreviewUrl=URL.createObjectURL(file);
-      if($(previewId))$(previewId).innerHTML=`<figure class="management-media-preview"><img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t(isCourseAd?'courseAdMedia':'promoMedia'))}"><figcaption>${esc(String(file.name||'').slice(0,120))} · ${file.size.toLocaleString()} B</figcaption></figure>`;}
+      if($(previewId))$(previewId).innerHTML=`<figure class="management-media-preview"><img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t(isPaymentQr?'paymentQrImage':isCourseAd?'courseAdMedia':'promoMedia'))}"><figcaption>${esc(String(file.name||'').slice(0,120))} · ${file.size.toLocaleString()} B</figcaption></figure>`;}
     else if($(previewId))$(previewId).innerHTML='';
     return;
   }

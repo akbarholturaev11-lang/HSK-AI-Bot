@@ -20,6 +20,7 @@ uncertain response.
 | `course.access_policy` | `/course-access/read`, `/prepare`, `/save` | Global subscription/free-until policy, explicit timezone, maximum 365-day free deadline |
 | `hsk30.settings` | `/hsk30/read`, `/prepare`, `/save` | Global rollout, canonical live levels, checkout switch, 1–10000 TJS price; no direct permanent grants |
 | `subscription.prices` | `/subscription-prices/read`, `/prepare`, `/save` | Nine fixed payment-method/plan targets; shared Visa normalization and currencies |
+| `subscription.qr_media` | `/payment-qr/read`, `/prepare`, `/media/save` | One existing subscription QR image for a fixed Alipay/WeChat plan; does not edit price |
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
 | `marketing.update` | `/marketing/read`, `/prepare`, `/save`, `/media/save` | Sales experiment, app promotion settings, existing creative activation/deletion, bounded desktop-promo image replacement/removal |
 | `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
@@ -98,12 +99,26 @@ created. A shared old file is retained, and an unreferenced old file is removed
 only after commit. This changes an existing creative's image only; it does not
 create or deliver campaigns, upload video, or authorize QR/other media.
 
+Subscription QR replacement is a separate `subscription.qr_media` operation for
+the six fixed Alipay/WeChat plan targets in the existing `subscription` scope.
+The exact current price/QR revision and one JPEG/PNG/WebP file hash/size (1 MiB,
+8 million pixels, single frame) are bound to one passkey confirmation. It cannot
+create a QR for Visa, HSK 3.0, discount or campaign scopes, and cannot change a
+price, payment, subscription or access grant. The image is sent once to the
+current admin's private Telegram chat because existing checkout consumes a Bot
+`file_id`; the DB stores that ID and content-free revision audit only, never an
+image BLOB or a new migration. No DB transaction is held during Bot IO. A short
+write transaction rechecks proof, target and exact revision; a failed write
+best-effort deletes the Bot message only after a fresh DB read proves its ID is
+unreferenced. An uncertain DB read preserves the provider message. The provider
+upload is not retried automatically.
+
 ## Explicit code parity still outstanding
 
 These legacy capabilities are not silently proxied by the standalone PWA:
 campaign activation/delivery, release-feedback and discount campaign creation,
-course-ad creation/video uploads and payment QR uploads. Desktop-promo and
-existing course-ad raster media each have their own signed flows described
+and course-ad creation/video uploads. Desktop-promo, existing course-ad raster
+media and subscription QR media each have their own signed flows described
 above; they do not authorize other upload types.
 Direct, self-test and
 bounded text broadcast now have their own standalone commands described below. A legacy endpoint or
