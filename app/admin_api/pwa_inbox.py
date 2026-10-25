@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
-from sqlalchemy import String, and_, func, or_, select
+from sqlalchemy import String, and_, case, func, or_, select
 
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.db.models.message import Message
@@ -28,6 +28,8 @@ class InboxCursor(BaseModel):
     created_at: datetime
     source: Literal["bot", "release", "android", "payment", "technical"]
     source_id: RowId
+    unread: bool = True
+    important: bool = False
 
     @field_validator("created_at", mode="before")
     @classmethod
@@ -82,19 +84,46 @@ def _utc(value):
     return value.astimezone(timezone.utc)
 
 
+_AUTO_IMPORTANT = frozenset(("payment", "android", "technical"))
+
+
+def _is_unread(row):
+    return row["triage_status"] == "new"
+
+
+def _is_important(source):
+    return source in _AUTO_IMPORTANT
+
+
 def _before(query, timestamp, row_id, source, cursor):
     if cursor is None:
         return query
+    # Keyset order: unread first, then automatic importance, then newest.
+    # Derive priority only from server-owned source identity, never admin flags.
+    unread = case((func.coalesce(AdminPwaInboxTriage.status, "new") == "new", 1), else_=0)
+    u, priority = int(cursor.unread), int(cursor.important)
+    source_priority = int(_is_important(source))
     rank = _RANK[source]
     anchor_rank = _RANK[cursor.source]
-    anchor = cursor.created_at
-    # Global cursor ordering is (timestamp DESC, source rank DESC, id DESC).
     if rank > anchor_rank:
-        return query.where(timestamp < anchor)
-    if rank < anchor_rank:
-        return query.where(timestamp <= anchor)
-    return query.where(or_(timestamp < anchor, and_(timestamp == anchor, row_id < cursor.source_id)))
+        later = timestamp < cursor.created_at
+    elif rank < anchor_rank:
+        later = timestamp <= cursor.created_at
+    else:
+        later = or_(timestamp < cursor.created_at,
+                    and_(timestamp == cursor.created_at, row_id < cursor.source_id))
+    return query.where(or_(
+        unread < u,
+        and_(unread == u, or_(
+            source_priority < priority,
+            and_(source_priority == priority, later),
+        )),
+    ))
 
+
+def _source_order(query, timestamp, row_id, take):
+    unread = case((func.coalesce(AdminPwaInboxTriage.status, "new") == "new", 1), else_=0)
+    return query.order_by(unread.desc(), timestamp.desc(), row_id.desc()).limit(take)
 
 def _filters(query, request, timestamp, now):
     # Missing triage rows are new. Filter before taking each source's bounded
@@ -110,7 +139,7 @@ def _filters(query, request, timestamp, now):
 def _triage(row):
     return {
         "triage_status": row.triage_status or "new",
-        "triage_priority": row.triage_priority or ("important" if row.source_type in ("payment", "android", "technical") else "normal"),
+        "triage_priority": "important" if _is_important(row.source_type) else "normal",
         "triage_assigned_to": row.triage_assignee,
         "triage_read_at": _utc(row.triage_read_at).isoformat() if row.triage_read_at else None,
         "triage_resolved_at": _utc(row.triage_resolved_at).isoformat() if row.triage_resolved_at else None,
@@ -126,7 +155,8 @@ async def unified_inbox(db, request: InboxRequest):
     a fabricated inbox read/assigned/resolved status.
     """
     now = datetime.now(timezone.utc)
-    sources = tuple(_RANK) if request.source == "all" else (request.source,)
+    sources = tuple(source for source in _RANK if request.source in ("all", source)
+                    and (request.priority != "important" or _is_important(source)))
     gathered = []
     take = request.limit + 1
     search_start = now - timedelta(days=30) if request.search is not None else None
@@ -154,8 +184,6 @@ async def unified_inbox(db, request: InboxRequest):
         ).outerjoin(AdminPwaInboxTriage, and_(
             AdminPwaInboxTriage.source == "bot",
             AdminPwaInboxTriage.source_id == BotFeedback.id)).outerjoin(User, User.id == BotFeedback.user_id)
-        if request.priority == "important":
-            query = query.where(AdminPwaInboxTriage.priority == "important")
         if request.user_id is not None:
             query = query.where(User.id == request.user_id)
         if request.search is not None:
@@ -164,7 +192,7 @@ async def unified_inbox(db, request: InboxRequest):
             query = query.where(stamp >= search_start, _literal_contains(visible_text, request.search))
         query = _filters(query, request, stamp, now)
         query = _before(query, stamp, BotFeedback.id, "bot", request.before)
-        rows = (await db.execute(query.order_by(stamp.desc(), BotFeedback.id.desc()).limit(take))).all()
+        rows = (await db.execute(_source_order(query, stamp, BotFeedback.id, take))).all()
         for row in rows:
             gathered.append({
                 "source": "bot", "source_id": row.source_id, "created_at": _utc(row.created_at),
@@ -197,8 +225,6 @@ async def unified_inbox(db, request: InboxRequest):
             AdminPwaInboxTriage.source == "release",
             AdminPwaInboxTriage.source_id == ReleaseFeedbackResponse.id)).outerjoin(User, and_(User.telegram_id > 0,
                                 User.telegram_id == ReleaseFeedbackResponse.user_telegram_id))
-        if request.priority == "important":
-            query = query.where(AdminPwaInboxTriage.priority == "important")
         if request.user_id is not None:
             query = query.where(User.id == request.user_id)
         if request.search is not None:
@@ -206,8 +232,7 @@ async def unified_inbox(db, request: InboxRequest):
                                 _literal_contains(ReleaseFeedbackResponse.comment_text, request.search))
         query = _filters(query, request, stamp, now)
         query = _before(query, stamp, ReleaseFeedbackResponse.id, "release", request.before)
-        rows = (await db.execute(query.order_by(stamp.desc(),
-                                                ReleaseFeedbackResponse.id.desc()).limit(take))).all()
+        rows = (await db.execute(_source_order(query, stamp, ReleaseFeedbackResponse.id, take))).all()
         for row in rows:
             gathered.append({
                 "source": "release", "source_id": row.source_id, "created_at": _utc(row.created_at),
@@ -238,8 +263,6 @@ async def unified_inbox(db, request: InboxRequest):
         ).outerjoin(AdminPwaInboxTriage, and_(
             AdminPwaInboxTriage.source == "android",
             AdminPwaInboxTriage.source_id == AdminPwaNativeReport.id)).where(AdminPwaNativeReport.expires_at > now)
-        if request.priority == "important":
-            query = query.where(func.coalesce(AdminPwaInboxTriage.priority, "important") == "important")
         if request.user_id is not None:
             query = query.where(AdminPwaNativeReport.user_id == request.user_id)
         if request.search is not None:
@@ -247,8 +270,7 @@ async def unified_inbox(db, request: InboxRequest):
                                 _literal_contains(AdminPwaNativeReport.description, request.search))
         query = _filters(query, request, stamp, now)
         query = _before(query, stamp, AdminPwaNativeReport.id, "android", request.before)
-        rows = (await db.execute(query.order_by(stamp.desc(),
-                                                AdminPwaNativeReport.id.desc()).limit(take))).all()
+        rows = (await db.execute(_source_order(query, stamp, AdminPwaNativeReport.id, take))).all()
         for row in rows:
             gathered.append({
                 "source": "android", "source_id": row.source_id, "created_at": _utc(row.created_at),
@@ -282,15 +304,13 @@ async def unified_inbox(db, request: InboxRequest):
             stamp >= now - timedelta(days=30),
             stamp <= now,
         )
-        if request.priority == "important":
-            query = query.where(func.coalesce(AdminPwaInboxTriage.priority, "important") == "important")
         if request.user_id is not None:
             query = query.where(Message.user_id == request.user_id)
         if request.search is not None and request.search.casefold() not in "mini app technical error":
             query = query.where(Message.id == -1)
         query = _filters(query, request, stamp, now)
         query = _before(query, stamp, Message.id, "technical", request.before)
-        rows = (await db.execute(query.order_by(stamp.desc(), Message.id.desc()).limit(take))).all()
+        rows = (await db.execute(_source_order(query, stamp, Message.id, take))).all()
         for row in rows:
             gathered.append({
                 "source": "technical", "source_id": row.source_id,
@@ -327,8 +347,6 @@ async def unified_inbox(db, request: InboxRequest):
             Payment.payment_status == "pending",
             Payment.screenshot_file_id.is_not(None),
         )
-        if request.priority == "important":
-            query = query.where(func.coalesce(AdminPwaInboxTriage.priority, "important") == "important")
         if request.user_id is not None:
             query = query.where(User.id == request.user_id)
         if request.search is not None:
@@ -336,7 +354,7 @@ async def unified_inbox(db, request: InboxRequest):
             query = query.where(stamp >= search_start, Payment.id == (number if number is not None else -1))
         query = _filters(query, request, stamp, now)
         query = _before(query, stamp, Payment.id, "payment", request.before)
-        rows = (await db.execute(query.order_by(stamp.desc(), Payment.id.desc()).limit(take))).all()
+        rows = (await db.execute(_source_order(query, stamp, Payment.id, take))).all()
         for row in rows:
             gathered.append({
                 "source": "payment", "source_id": row.source_id,
@@ -346,13 +364,18 @@ async def unified_inbox(db, request: InboxRequest):
                 "app_version": None, "screen": None, **_triage(row),
             })
 
-    gathered.sort(key=lambda r: (r["created_at"], _RANK[r["source"]], r["source_id"]), reverse=True)
+    gathered.sort(key=lambda r: (
+        int(_is_unread(r)), int(_is_important(r["source"])),
+        r["created_at"], _RANK[r["source"]], r["source_id"],
+    ), reverse=True)
     page = gathered[:request.limit]
     next_before = None
     if len(gathered) > request.limit:
         last = page[-1]
         next_before = {"created_at": last["created_at"].isoformat(),
-                       "source": last["source"], "source_id": last["source_id"]}
+                       "source": last["source"], "source_id": last["source_id"],
+                       "unread": _is_unread(last),
+                       "important": _is_important(last["source"])}
     for row in page:
         row["created_at"] = row["created_at"].isoformat()
     return {
