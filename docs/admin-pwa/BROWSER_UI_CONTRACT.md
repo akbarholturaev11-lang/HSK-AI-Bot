@@ -61,11 +61,30 @@ Its document title still says V9. This replaces the previously unavailable
 and fixed SVG icon paths are reused. No demo arrays, users, payments, charts,
 mutation handlers or fabricated success statuses are shipped.
 
+## Inbox and loading refinement — 2026-10-26
+
+The owner replaced title-only inbox entries with compact source-labelled rows:
+the original feedback preview, record ID, account ID (when resolved), timestamp,
+and attributable platform must be visible. Show both stored Bot feedback answers,
+including subscription worth and reason, not just the last one. The source labels
+for existing records are Telegram Bot (bot/release), Telegram Mini App (technical)
+and Android (native report); pending payment receipts have no trustworthy
+client-platform field, so do not invent Telegram/Android/Desktop attribution.
+No Desktop source exists in this unified projection yet.
+
+Load the bounded, server-owned keyset page when the drawer scrolls near its end,
+append it in place, guard concurrent/stale requests and repeated cursors, and
+do not add a manual Next control. Keep the previous list and scroll position
+when opening/closing a non-payment detail. Preserve payment-specific review
+and read-on-open rules. Use the Course Mini App's launch logo geometry and visual
+timings on the PWA loading state, but no artificial authentication/API delay and
+no attempted sound or vibration in the admin surface.
+
 ## Current owner-approved baseline — 2026-10-25
 
 Merged baselines: PRs #204, #206, #207 and #209. Current owner branch:
 `feat/admin-pwa-minimal-inbox-passkey-20261025`. Preserve
-its title-only unread-first Inbox, automatic priority/red state, explicit
+its unread-first Inbox and automatic important-source ordering, explicit
 read-on-open detail, separate receipt review and return to originating inbox.
 Keep the single close control and one-step iPhone left-zone back gesture with
 native Safari/scroll/text-selection exclusions. Existing audited triage/Push
