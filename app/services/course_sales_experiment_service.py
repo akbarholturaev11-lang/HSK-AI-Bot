@@ -233,6 +233,9 @@ class CourseSalesExperimentService:
         now: datetime | None = None,
         updated_by_telegram_id: int | None = None,
     ) -> CourseSalesExperimentSettings:
+        # Serialize partial updates before reading the previous configuration,
+        # including its first-row state and the original experiment start.
+        await self.setting_repo.lock_key(SALES_EXPERIMENT_SETTINGS_KEY)
         current = await self.get_settings()
         settings = CourseSalesExperimentSettings.from_payload(
             payload,

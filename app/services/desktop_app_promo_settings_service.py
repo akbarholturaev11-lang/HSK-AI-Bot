@@ -198,6 +198,9 @@ async def save_desktop_app_promo_settings(
     session,
     payload: dict[str, Any],
 ) -> DesktopAppPromoSettings:
+    # A partial legacy request must preserve media/current options from the
+    # same serialized state that the signed PWA configuration command checks.
+    await BotSettingRepository(session).lock_key(DESKTOP_APP_PROMO_SETTINGS_KEY)
     current = await get_desktop_app_promo_settings(session)
     settings = DesktopAppPromoSettings.from_payload(payload, previous=current)
     await BotSettingRepository(session).set(

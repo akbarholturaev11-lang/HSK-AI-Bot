@@ -19,7 +19,8 @@ from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME, authenticate_admin
 logger = logging.getLogger(__name__)
 _ASSETS = Path(__file__).resolve().parents[1] / "static" / "admin-pwa"
 _PUBLIC_ASSETS = {"app.js": "text/javascript", "styles.css": "text/css",
-                  "catalog.js": "text/javascript", "icon.png": "image/png", "icon-large.png": "image/png"}
+                  "catalog.js": "text/javascript", "mcp-consent.js": "text/javascript",
+                  "mcp-consent.css": "text/css", "icon.png": "image/png", "icon-large.png": "image/png"}
 _PAGE_CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; "
              "img-src 'self' blob:; connect-src 'self'; manifest-src 'self'; "
              "worker-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'")
@@ -147,8 +148,19 @@ def create_admin_pwa_bootstrap_router(*, settings_obj: Any, session_factory: Cal
             return response(503, "admin_pwa_auth_unavailable")
         if actor is None:
             return response(401, "admin_pwa_unauthorized")
+        # Local import avoids the existing bootstrap -> Google transport -> read cycle.
+        from app.admin_api.pwa_mcp_oauth import _registered_client
+        from app.admin_api.pwa_mcp_resource import _REQUIRED_RESOURCE, _ANALYTICS_SCOPE
         return JSONResponse(
-            content={"ok": True, "user_id": actor.user_id, "auth_method": actor.auth_method},
+            content={"ok": True, "user_id": actor.user_id, "auth_method": actor.auth_method,
+                     "push_available": actor.auth_method == "webauthn" and bool(
+                         getattr(settings_obj, "ADMIN_PWA_PUSH_ENABLED", False)),
+                     "mcp_available": actor.auth_method == "webauthn" and bool(
+                         getattr(settings_obj, "ADMIN_PWA_MCP_TRANSPORT_ENABLED", False)
+                     ) and _registered_client(settings_obj,
+                         getattr(settings_obj, "ADMIN_PWA_MCP_CLIENT_ID", ""),
+                         getattr(settings_obj, "ADMIN_PWA_MCP_REDIRECT_URI", ""),
+                         _REQUIRED_RESOURCE, _ANALYTICS_SCOPE)},
             headers=_PRIVATE_HEADERS,
         )
 

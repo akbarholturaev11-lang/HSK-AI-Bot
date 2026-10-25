@@ -114,6 +114,7 @@ class Hsk30FeatureServiceTests(unittest.IsolatedAsyncioTestCase):
         service.setting_repo = SimpleNamespace(
             get_record=AsyncMock(return_value=SimpleNamespace(value="0")),
             set_bool=AsyncMock(return_value=setting),
+            lock_key=AsyncMock(),
         )
         self.assertIs(await service.set_enabled(True), setting)
         service.setting_repo.set_bool.assert_awaited_once_with(
@@ -127,6 +128,7 @@ class Hsk30FeatureServiceTests(unittest.IsolatedAsyncioTestCase):
         service.setting_repo = SimpleNamespace(
             get_record=AsyncMock(return_value=record),
             set_bool=AsyncMock(),
+            lock_key=AsyncMock(),
         )
         self.assertIs(await service.set_enabled(True), record)
         service.setting_repo.set_bool.assert_not_awaited()

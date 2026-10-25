@@ -5,7 +5,7 @@ The outbox is separate so delivery never edits the financial audit record.
 """
 from datetime import datetime, timezone
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, Integer, String, Text, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -37,6 +37,8 @@ class AdminPwaPaymentOutbox(Base):
     __table_args__ = (
         CheckConstraint("status IN ('pending', 'attempting', 'attempted', 'uncertain')",
                         name="ck_pwa_payment_outbox_status"),
+        Index("ix_pwa_payment_outbox_unreconciled", "status", "review_id",
+              postgresql_where=text("reconciled_at IS NULL"), sqlite_where=text("reconciled_at IS NULL")),
     )
     review_id: Mapped[str] = mapped_column(
         ForeignKey("admin_pwa_payment_reviews.id", ondelete="RESTRICT"), primary_key=True,
@@ -45,3 +47,4 @@ class AdminPwaPaymentOutbox(Base):
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="pending", index=True)
     attempted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    reconciled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
