@@ -397,7 +397,8 @@ function supportsPasskey() { return !!(window.PublicKeyCredential&&navigator.cre
 async function login() {
   if(!supportsPasskey()){state.error='passkeyUnsupported';render();return;}
   const options=await api('auth/passkey/login/options',{}, {publicAuth:true});
-  const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey)});
+  // Optional mediation requests the normal modal passkey UI, not autofill-only conditional UI.
+  const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey),mediation:'optional'});
   await api('auth/passkey/login/verify',{credential:serialize(credential)},{publicAuth:true});await boot();
 }
 async function checkApproval() {
