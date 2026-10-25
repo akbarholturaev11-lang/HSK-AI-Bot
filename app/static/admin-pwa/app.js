@@ -2137,7 +2137,7 @@ function inboxPreview(row){
   const paid=parts.paid===true;
   const phrases=[parts.liked?(paid?'💎 ':'👍 ')+parts.liked:null,parts.disliked?(paid?'🔎 ':'👎 ')+parts.disliked:null].filter(Boolean);
   return phrases.join(' · ')||row.message||
-    (row.rating?row.rating+'/5':row.source==='payment'?t('inboxPaymentReceipt'):t('empty'));
+    (row.rating?row.rating+'/5':row.has_attachment?t('viewAttachment'):row.source==='payment'?t('inboxPaymentReceipt'):t('empty'));
 }
 function inboxEntry(row){
   const unread=row.triage_status==='new',important=autoImportantSources.has(row.source);
@@ -2151,7 +2151,7 @@ function inboxEntry(row){
     '<span class="inbox-row-main"><span class="inbox-row-heading"><strong class="inbox-row-title">'+esc(inboxKind(row))+'</strong>'+
     '<time class="inbox-row-date">'+esc(date(row.created_at))+'</time></span>'+
     '<span class="inbox-row-preview">'+esc(inboxPreview(row))+'</span>'+
-    '<span class="inbox-row-meta">'+(platform?'<span>'+esc(platform)+'</span>':'')+
+    '<span class="inbox-row-meta"><span>'+esc(platform||t('unavailable'))+'</span>'+
     '<span>#'+esc(row.source_id)+'</span>'+(row.user_id?'<span>'+esc(t('account'))+' '+esc(row.user_id)+'</span>':'')+
     '</span></span><span class="inbox-row-dot" aria-hidden="true"></span></button>';
 }
