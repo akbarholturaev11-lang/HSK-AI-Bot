@@ -25,6 +25,17 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   attempts, bounded queue pages, concurrent resolutions and real migration
   preservation, and adapts remaining management browser QA to real fresh login.
 
+## Mobile Inbox touch and fresh-login regression
+
+- Cause: the minimal detail image/back buttons inherited a sub-44px height;
+  browser login QA also incorrectly required the desktop-only sidebar to be
+  visible after a mobile reload. The real passkey API had succeeded.
+- Fix: scope `min-height:44px` to detail buttons; fresh-login QA checks the
+  authenticated shell on both viewports. No list/detail redesign or auth bypass.
+- Risk/prevention: existing 390px image-target assertion remains strict; full
+  WebAuthn/payment/access/export/image/offline/revoke/SW browser suite passed
+  at `/tmp/hsk-admin-pwa-touch-and-auth-20261025`. New payout work is separate.
+
 ## Current bounded outbound text increment
 
 - `pwa_outbound.py`, migration 0129 and V10 Messages/profile editors implement

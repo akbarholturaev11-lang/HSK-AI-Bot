@@ -106,9 +106,9 @@ async def authenticate_fresh_launch(page):
     page.on('response',observe)
     try:
         await page.locator('[data-action=signin]').click()
-        # .sidebar is the authenticated UI; statistics may be unavailable in
-        # a fixture focused on export/settings, independent of WebAuthn.
-        await expect(page.locator('.sidebar')).to_be_visible(timeout=20000)
+        # The authenticated shell is visible on both viewport sizes. The
+        # desktop sidebar is intentionally hidden on mobile after fresh login.
+        await expect(page.locator('.app')).to_be_visible(timeout=20000)
     except AssertionError as error:
         state=await page.locator('.auth-panel').inner_text() if await page.locator('.auth-panel').count() else 'no-auth-panel'
         raise AssertionError(f'Fresh WebAuthn login did not reach authenticated UI: requests={results}, state={state[:180]}') from error

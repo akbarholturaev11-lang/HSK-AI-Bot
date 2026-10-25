@@ -500,6 +500,7 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 .inbox-details time{color:#91a0a9;font-size:12px}
 .inbox-details-text{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;font-size:14px;padding-top:15px}
 .inbox-details .inbox-attachment{margin-top:12px}
+.inbox-details .btn,.inbox-details .inbox-back{min-height:44px}
 @media(max-width:760px){
  .inbox-minimal{padding:14px 14px 25px}
  .inbox-minimal-row{min-height:66px;padding:16px 15px;border-radius:14px}
