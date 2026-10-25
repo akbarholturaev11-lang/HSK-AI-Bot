@@ -214,14 +214,14 @@ async function loadFeedbackStats(){
   feedbackStats.loading=true;feedbackStats.error=false;refreshFeedbackPanel();
   try{
     const d=await api('feedback/categories',{source,period});
-    if(id!==feedbackLoadId||at!==epoch||seen!==view||state.route!=='stats'||state.statsTab!=='report'||!state.actor)return;
+    if(id!==feedbackLoadId||at!==epoch||seen!==view||state.route!=='stats'||!state.actor)return;
     if(d.schema!=='hskai_feedback_categories_v1'||!Array.isArray(d.sources))throw Error('invalid_feedback');
     feedbackStats.data=d;
   }catch(error){
-    if(id!==feedbackLoadId||at!==epoch||seen!==view||state.route!=='stats'||state.statsTab!=='report'||!state.actor)return;
+    if(id!==feedbackLoadId||at!==epoch||seen!==view||state.route!=='stats'||!state.actor)return;
     feedbackStats.data=null;feedbackStats.error=true;
   }finally{
-    if(id===feedbackLoadId&&at===epoch&&seen===view&&state.route==='stats'&&state.statsTab==='report'&&state.actor){
+    if(id===feedbackLoadId&&at===epoch&&seen===view&&state.route==='stats'&&state.actor){
       feedbackStats.loading=false;refreshFeedbackPanel();
     }
   }
