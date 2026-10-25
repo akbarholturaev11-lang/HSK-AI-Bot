@@ -47,6 +47,7 @@ let inboxAttachment=null;
 let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
 const sectionBackStack=[];
 let automaticLoginAttempted=false, automaticLoginInProgress=false;
+let freshLoginInProgress=false, sessionMustBeCleared=true, requireFreshLoginOnResume=false;
 let approvalWatchTimer=null, approvalChecking=false;
 let statisticsDownload=null;
 let managementDraft=null,managementReview=null,managementPreparing=false;
@@ -326,6 +327,7 @@ async function load() {
   } catch(error) {if(current!==view||authEpoch!==epoch||!state.actor) return;state.phase='ready';state.error='error';render();}
 }
 async function boot() {
+  if(sessionMustBeCleared){await lockAndRequirePasskey();return;}
   if(!navigator.onLine){clearPrivate('offline');return;}
   clearPrivate('loading');const current=epoch;
   try {state.actor=await api('me',null,{method:'GET',publicAuth:true});if(current!==epoch)return;state.phase='ready';await load();await refreshInboxUnread();
@@ -340,6 +342,24 @@ async function boot() {
     if(state.phase==='signin')await tryAutomaticPasskeyLogin();
   }
 }
+async function lockAndRequirePasskey() {
+  if(freshLoginInProgress||automaticLoginInProgress||document.hidden)return;
+  freshLoginInProgress=true;
+  sessionMustBeCleared=true;
+  // Keep the public PWA shell loading, but never show or fetch private
+  // admin projections using an unverified previous-visit session.
+  clearPrivate('loading');
+  try {
+    // A prior verified cookie must not bypass biometric entry after reopening.
+    // Logout revokes the DB session; errors fail closed.
+    await api('auth/logout',{}, {publicAuth:true});
+    sessionMustBeCleared=false;
+  }catch(error){
+    if(error.message!=='stale')clearPrivate(navigator.onLine?'error':'offline');
+    return;
+  }finally{freshLoginInProgress=false;}
+  if(!document.hidden)await boot();
+}
 async function tryAutomaticPasskeyLogin() {
   // Try the modal ceremony once per foreground visit. Safari/WebKit can reject
   // an invocation without user activation; the existing manual button remains
@@ -353,7 +373,12 @@ async function tryAutomaticPasskeyLogin() {
   catch(error){
     if(error.message==='stale')return;
     state.phase='signin';state.error=null;render();
-  }finally{automaticLoginInProgress=false;}
+  }finally{
+    automaticLoginInProgress=false;
+    // If the app was backgrounded during the biometric ceremony, the next
+    // foreground must begin another fresh launch, never unlock on old proof.
+    if(sessionMustBeCleared&&!document.hidden)lockAndRequirePasskey();
+  }
 }
 function decode(value) { const normalized=value.replace(/-/g,'+').replace(/_/g,'/');return Uint8Array.from(atob(normalized+'='.repeat((4-normalized.length%4)%4)),ch=>ch.charCodeAt(0)); }
 function encode(buffer) { if(buffer==null)return null;let s='';for(const b of new Uint8Array(buffer))s+=String.fromCharCode(b);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
@@ -1687,12 +1712,12 @@ async function action(name) {
       if(name==='approval')await checkApproval();
       if(name==='enroll')await enroll();
       if(name==='google'){const data=await api('auth/google/start',{}, {publicAuth:true});const url=new URL(data.authorize_url);if(url.protocol!=='https:'||url.hostname!=='accounts.google.com')throw Error('invalid_authorize_url');location.assign(url.href);}
-      if(name==='logout'){await api('auth/logout',{});automaticLoginAttempted=true;clearPrivate('signin');}
+      if(name==='logout'){await api('auth/logout',{});automaticLoginAttempted=true;sessionMustBeCleared=false;clearPrivate('signin');}
     }catch(error){if(error.message!=='stale'){state.error=['signin','enroll'].includes(name)?errorKey(error):'authFailed';render();}}
     finally{busy=false;render();}return;
   }
   if(name==='close'){closeDrawer();return;}
-  if(name==='boot'){await boot();return;}
+  if(name==='boot'){if(sessionMustBeCleared)await lockAndRequirePasskey();else await boot();return;}
   if(name==='reload'){await load();return;}
   if(name==='mcpConnections'){await mcpConnections();return;}
   if(name==='pushSettings'){await pushSettings();return;}
@@ -1957,20 +1982,25 @@ document.addEventListener('focusin',event=>{
   if(open&&!open.parentElement.contains(event.target))closeActionMenus();
 });
 window.addEventListener('offline',()=>clearPrivate('offline'));
-window.addEventListener('online',()=>boot());
-window.addEventListener('pagehide',()=>{automaticLoginAttempted=false;clearPrivate('loading');});
-window.addEventListener('pageshow',event=>{if(event.persisted)boot();});
+window.addEventListener('online',()=>{if(sessionMustBeCleared)lockAndRequirePasskey();else boot();});
+window.addEventListener('pagehide',()=>{
+  sessionMustBeCleared=true;automaticLoginAttempted=false;clearPrivate('loading');
+});
+window.addEventListener('pageshow',event=>{if(event.persisted)lockAndRequirePasskey();});
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden){
     stopApprovalWatch();
+    sessionMustBeCleared=true;requireFreshLoginOnResume=true;
     automaticLoginAttempted=false;
-    // Discard in-memory private data immediately. The HttpOnly cookie stays
-    // revocable, and /me revalidates expiry and current admin rights on resume.
-    if(state.actor&&!signing)clearPrivate('loading');
+    // Clear private DOM and abort any open high-risk confirmation on hide.
+    if(state.actor)clearPrivate('loading');
     return;
   }
-  if(state.phase==='approval')checkApproval().catch(()=>{});
-  else if(!signing)boot();
+  if(requireFreshLoginOnResume||sessionMustBeCleared){
+    requireFreshLoginOnResume=false;
+    lockAndRequirePasskey();
+  }else if(state.phase==='approval')checkApproval().catch(()=>{});
+  else if(state.actor&&!signing)boot();
 });
 window.addEventListener('focus',()=>{if(state.phase==='approval')checkApproval().catch(()=>{});});
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;});
@@ -1982,5 +2012,5 @@ if('serviceWorker' in navigator){
   }).catch(()=>{});
   navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
 }
-boot();
+lockAndRequirePasskey();
 })();
