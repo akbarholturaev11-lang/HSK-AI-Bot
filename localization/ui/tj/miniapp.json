@@ -727,7 +727,19 @@
     "ui.admin_pwa.partnerAudience": "Шунавандагон",
     "ui.admin_pwa.partnerBonus": "Бонуси нави баста ҳангоми тасдиқ",
     "ui.admin_pwa.partnerBlock": "Бастани шарикӣ",
-    "ui.admin_pwa.partnerUnblock": "Барқарор кардани шарикӣ"
+    "ui.admin_pwa.partnerUnblock": "Барқарор кардани шарикӣ",
+    "ui.admin_pwa.partnerPayouts": "Пардохтҳо ба шарикон",
+    "ui.admin_pwa.payoutId": "ID-и пардохт",
+    "ui.admin_pwa.payoutDeadline": "Муайян кардани муҳлат",
+    "ui.admin_pwa.payoutDeadlineSet": "Муҳлат муайян шудааст",
+    "ui.admin_pwa.payoutReserved": "Банд шудааст",
+    "ui.admin_pwa.payoutPaid": "Пардохт шудааст",
+    "ui.admin_pwa.payoutClaim": "Пардохтро барои худ банд кардан",
+    "ui.admin_pwa.payoutRelease": "Бекор кардани бандкунӣ",
+    "ui.admin_pwa.payoutHolder": "Соҳиби ҳисоб",
+    "ui.admin_pwa.payoutAccount": "Маълумоти пардохт",
+    "ui.admin_pwa.payoutReserveHint": "Бандкунӣ пул намефиристад. Онро танҳо мудире бекор карда метавонад, ки пардохтро банд кардааст.",
+    "ui.admin_pwa.payoutDueAt": "Муҳлати муайяншуда"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

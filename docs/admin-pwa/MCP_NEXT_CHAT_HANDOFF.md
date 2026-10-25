@@ -2,6 +2,26 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current partner-payout state increment
+
+- `/partner-payouts/read|prepare|save` implements shared reservation/release,
+  rejection and signed exact UTC deadlines (1/3/7 days). Reservation ownership
+  is enforced; another admin cannot release, reject or steal a processing row.
+  Full raw payout revision binds amounts, destination and provider references;
+  post-row-wait authority/expiry and shared conditional updates precede atomic
+  one-use proof/audit. No money transfer, paid flag, Payment or ledger entry.
+- Marketing payout list projects at most 31 metadata rows; details explicitly
+  load bounded bank/account data without exposing Telegram file IDs. Compact
+  editors use a single operation select and passkey confirmation. UZ/RU/TJ
+  actual ASGI/virtual-WebAuthn desktop/mobile browser passed all four state
+  operations and existing management flows; screenshots visually checked.
+- Payout/import gate: eight passed, including real ES256/replay, exact deadline,
+  wrong reservation owner/closed row, destination and date tamper, audit rollback,
+  no-payment/access/ledger mutation and real-PG competing-admin reservation.
+- Payout completion with verified proof upload and outbound recipient notices
+  remain separate media/durable-delivery work. No arbitrary file-ID acceptance
+  or claim of payment delivery is added. Other remaining code remains below.
+
 ## Current partner-application increment
 
 - `/partners/read|prepare|save` now implements pending approve/reject and

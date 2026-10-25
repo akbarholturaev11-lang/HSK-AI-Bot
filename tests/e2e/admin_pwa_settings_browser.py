@@ -25,6 +25,7 @@ from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
 from app.admin_api.pwa_channels import create_admin_pwa_channels_router
+from app.admin_api.pwa_partner_payouts import create_admin_pwa_partner_payouts_router
 from app.admin_api.pwa_partners import create_admin_pwa_partners_router
 from app.admin_api.pwa_notifications import create_admin_pwa_notifications_router
 from app.admin_api.pwa_portfolio import create_admin_pwa_portfolio_router
@@ -34,7 +35,7 @@ from app.db.base import Base
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
-from app.db.models.partner import Partner
+from app.db.models.partner import Partner, PartnerPayout
 from app.db.models.course_ad import CourseAdCreative
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
@@ -61,6 +62,9 @@ async def browser_checks(output):
         db.add_all([Partner(id=i,user_telegram_id=7100+i,status='pending',
             promotion_channel='QA promotion <img src=x onerror=alert(1)>',
             audience_size='1000',contact_username='@qa_partner') for i in (1,2)])
+        await db.flush()
+        db.add_all([PartnerPayout(id=i,partner_id=i,amount_usd=10,exchange_rate=10.9,local_amount=109,
+            local_currency='TJS',status='pending',payment_method='bank',account_details='QA account <img src=x onerror=alert(1)>') for i in (1,2)])
         await db.commit()
     app = FastAPI()
     common = dict(settings_obj=fixture.settings, session_factory=fixture.sessions)
@@ -68,7 +72,7 @@ async def browser_checks(output):
                     create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
                     create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router,
                     create_admin_pwa_user_management_router,create_admin_pwa_channels_router,
-                    create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router,create_admin_pwa_partners_router):
+                    create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router,create_admin_pwa_partners_router,create_admin_pwa_partner_payouts_router):
         app.include_router(factory(**common))
     calls, errors = [], []
     drop_save = False
@@ -435,6 +439,29 @@ async def browser_checks(output):
                     await page.locator('[data-action="partnerList"]').click()
                     await page.locator(f'[data-partner-id="{partner_id}"]').click()
                     await page.locator('#partnerOperation').select_option(operation)
+                    await prepare_and_save('uz')
+                async with fixture.sessions() as db:
+                    await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == 'consumed').values(
+                        created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
+                    await db.commit()
+                for language in ('uz','ru','tj'):
+                    await page.locator('#locale').select_option(language)
+                    await page.locator('[data-action="payoutList"]').click()
+                    await page.locator('[data-payout-id="1"]').click()
+                    await page.locator('#payoutDays').select_option('3')
+                    await page.set_viewport_size({'width':390,'height':844})
+                    await page.locator('[data-action="managementPrepare"]').click()
+                    await expect(page.locator('.management-comparison')).to_be_visible()
+                    assert await page.locator('.management-comparison img').count()==0
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                    await page.screenshot(path=str(output/f'payout-confirm-{language}-390.png'))
+                    await page.locator('[data-action="close"]').last.click()
+                    await page.set_viewport_size({'width':1440,'height':1000})
+                await page.locator('#locale').select_option('uz')
+                for payout_id,operation in ((1,'deadline'),(1,'claim'),(1,'release'),(2,'reject')):
+                    await page.locator('[data-action="payoutList"]').click()
+                    await page.locator(f'[data-payout-id="{payout_id}"]').click()
+                    await page.locator('#payoutOperation').select_option(operation)
                     await prepare_and_save('uz')
                 await navigate('system',1440)
                 # Revocation between confirmation and proof fails before any write.

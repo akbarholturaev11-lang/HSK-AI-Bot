@@ -274,7 +274,7 @@ function managementRow(label,attributes,glyph='settings'){
 function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
   if(state.route==='course')return `<div class="management-page">${group('course',managementRow(t('courseAccess'),'data-action="courseSettings"','book')+managementRow(t('hsk30Settings'),'data-action="hsk30Settings"','book'))}</div>`;
-  if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users'))}</div>`;
+  if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
   return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
 function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
@@ -434,9 +434,26 @@ function userManagementEditor(userId,operation){
 const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktopPromo',course_ad:'courseAds'};
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
 const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
-function managementNamespace(type){return type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
+function managementNamespace(type){return type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
 function managementEndpoint(type,phase){return type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
-function managementAction(type,operation){return type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+function managementAction(type,operation){return type==='payout'?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+const payoutStatusLabels={pending:'pending',deadline_set:'payoutDeadlineSet',processing:'payoutReserved',paid:'payoutPaid',rejected:'rejected'};
+const payoutOperationLabels={deadline:'payoutDeadline',reject:'reject',claim:'payoutClaim',release:'payoutRelease'};
+async function payoutEditor(id=null,before=null){
+  closeDrawer();const current=drawerId,at=epoch;drawer('partnerPayouts',statePanel('loading'));
+  try{
+    const data=await api('partner-payouts/read',id?{payout_id:id}:before?{before_id:before}:{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    if(!id){
+      const rows=data.items.map(row=>managementRow(`#${row.id} · ${row.local_amount} ${row.local_currency} · ${t(payoutStatusLabels[row.status])}`,`data-payout-id="${Number(row.id)}"`,'wallet')).join('');
+      drawer('partnerPayouts',(rows?`<div class="management-list">${rows}</div>`:statePanel('empty'))+(data.next_before_id?`<button class="btn" data-payout-next="${data.next_before_id}">${esc(t('next'))}</button>`:''),btn('close','close'));return;
+    }
+    const row=data.payout,operations=row.operations.filter(op=>Object.hasOwn(payoutOperationLabels,op));
+    managementDraft={type:'payout',payoutId:id};
+    const selection=operations.length?`<div class="form-field"><label for="payoutOperation">${esc(t('operation'))}</label><select class="input" id="payoutOperation">${operations.map(op=>`<option value="${op}">${esc(t(payoutOperationLabels[op]))}</option>`).join('')}</select></div><div class="form-field" id="payoutDaysField" ${operations[0]==='deadline'?'':'hidden'}><label for="payoutDays">${esc(t('durationDays'))}</label><select class="input" id="payoutDays">${[1,3,7].map(days=>`<option>${days}</option>`).join('')}</select></div>`:'';
+    drawer('partnerPayouts',`<form id="managementForm"><p class="source-note">${esc(t('payoutReserveHint'))}</p>${managementFields(row,'payout')}${selection}</form>`,btn('close','close')+(operations.length?btn('next','managementPrepare','primary'):''));
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('partnerPayouts',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','payoutList'));}
+}
 const partnerStatusLabels={pending:'pending',active:'accountActive',blocked:'BLOCKED',rejected:'rejected'};
 const partnerOperationLabels={approve:'approve',reject:'reject',block:'partnerBlock',unblock:'partnerUnblock'};
 async function partnerEditor(id=null,before=null){
@@ -563,6 +580,16 @@ function editCourseAd(id){
   drawer('courseAds',form,btn('cancel','close')+btn('next','managementPrepare','primary'));
 }
 function managementFields(value,type){
+  if(type==='payout'){
+    const fields=[['payoutId',value.id],['partnerId',value.partner_id],['status',t(payoutStatusLabels[value.status])],['amount',value.local_amount+' '+value.local_currency],['ledgerUSD',value.amount_usd+' USD']];
+    if(value.operation)fields.push(['operation',t(payoutOperationLabels[value.operation])]);
+    fields.push(['method',value.bank_name||value.payment_method]);
+    if(value.holder_name)fields.push(['payoutHolder',value.holder_name]);
+    fields.push(['payoutAccount',value.account_details]);
+    if(value.deadline_at)fields.push(['payoutDueAt',date(value.deadline_at)]);
+    if(value.note)fields.push(['ledgerNote',value.note]);
+    return profileFields(fields);
+  }
   if(type==='partner'){
     const fields=[['partnerId',value.id],['status',t(partnerStatusLabels[value.status])]];
     if(value.operation)fields.push(['operation',t(partnerOperationLabels[value.operation])]);
@@ -601,6 +628,7 @@ function managementFields(value,type){
   throw Error('invalid_settings');
 }
 function managementReread(draft){
+  if(draft.type==='payout')return `<button class="btn" data-payout-id="${draft.payoutId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='partner')return `<button class="btn" data-partner-id="${draft.partnerId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='notice')return `<button class="btn" data-notice-key="${esc(draft.noticeKey)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='portfolio')return btn('readCurrent','portfolioHistory');
@@ -666,7 +694,9 @@ async function editSetting(kind,bank=null){
 async function prepareManagement(){
   if(managementPreparing||!state.actor||signing||!managementDraft||!$('managementForm')?.reportValidity())return;
   const draft=managementDraft;let payload;
-  if(draft.type==='partner'){
+  if(draft.type==='payout'){
+    payload={payout_id:draft.payoutId,operation:$('payoutOperation').value,days:$('payoutOperation').value==='deadline'?Number($('payoutDays').value):null};
+  }else if(draft.type==='partner'){
     payload={partner_id:draft.partnerId,operation:$('partnerOperation').value};
   }else if(draft.type==='notice'){
     draft.texts[draft.textLanguage]=$('noticeText').value;
@@ -711,8 +741,8 @@ async function prepareManagement(){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const operation=structuredClone(result.operation);
     if(operation?.action!==managementAction(draft.type,draft.userOperation)||!operation.target||!operation.payload)throw Error('invalid_operation');
-    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
-    const proposed=['notice','partner'].includes(draft.type)?result.proposed:draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
+    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
+    const proposed=['notice','partner','payout'].includes(draft.type)?result.proposed:draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
     const currentValue=draft.type==='marketing'||draft.type==='channel'?{kind:draft.kind,...result.current}:result.current;
     const comparison=`<div class="management-comparison">${draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
     drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
@@ -743,7 +773,7 @@ async function executeManagement(){
     const result=await api(managementEndpoint(review.type,'save'),{...review.executePayload,step_up_id:options.step_up_id});
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
-    const saved=review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
+    const saved=review.type==='payout'?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
     if(review.type==='user'&&result.deleted){state.rows=state.rows.filter(row=>row.user_id!==result.user_id);render();}
     drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review)));
   }catch(error){
@@ -1284,6 +1314,7 @@ async function action(name) {
   if(name==='pushSettings'){await pushSettings();return;}
   if(name==='courseSettings'){await courseSettings();return;}
   if(name==='priceSettings'){await priceSettings();return;}
+  if(name==='payoutList'){await payoutEditor();return;}
   if(name==='partnerList'){await partnerEditor();return;}
   if(name==='noticeList'){await noticeEditor();return;}
   if(name==='portfolioHistory'){await portfolioHistory();return;}
@@ -1321,6 +1352,8 @@ document.addEventListener('click',event=>{
     else if(button.dataset.channelsKind){await channelEditor(button.dataset.channelsKind);}
     else if(button.dataset.channelsNext){await channelEditor('list',Number(button.dataset.channelsNext));}
     else if(button.dataset.channelId){editChannel(Number(button.dataset.channelId));}
+    else if(button.dataset.payoutId){await payoutEditor(Number(button.dataset.payoutId));}
+    else if(button.dataset.payoutNext){await payoutEditor(null,Number(button.dataset.payoutNext));}
     else if(button.dataset.partnerId){await partnerEditor(Number(button.dataset.partnerId));}
     else if(button.dataset.partnerNext){await partnerEditor(null,Number(button.dataset.partnerNext));}
     else if(button.dataset.noticeKey){await noticeEditor(button.dataset.noticeKey);}
@@ -1354,6 +1387,7 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('change',event=>{
+  if(event.target.id==='payoutOperation'&&$('payoutDaysField'))$('payoutDaysField').hidden=event.target.value!=='deadline';
   if(event.target.id==='noticeLanguage')updateNoticeLanguage();
   if(event.target.id==='channelOperation'&&$('channelActiveField'))$('channelActiveField').hidden=event.target.value==='delete';
   if(event.target.id==='adOperation'){

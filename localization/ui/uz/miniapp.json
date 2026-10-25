@@ -727,7 +727,19 @@
     "ui.admin_pwa.partnerAudience": "Auditoriya",
     "ui.admin_pwa.partnerBonus": "Tasdiqlashda qo‘shiladigan yopiq bonus",
     "ui.admin_pwa.partnerBlock": "Hamkorlikni bloklash",
-    "ui.admin_pwa.partnerUnblock": "Hamkorlikni tiklash"
+    "ui.admin_pwa.partnerUnblock": "Hamkorlikni tiklash",
+    "ui.admin_pwa.partnerPayouts": "Hamkorlarga to‘lovlar",
+    "ui.admin_pwa.payoutId": "To‘lov ID",
+    "ui.admin_pwa.payoutDeadline": "Muddat belgilash",
+    "ui.admin_pwa.payoutDeadlineSet": "Muddat belgilangan",
+    "ui.admin_pwa.payoutReserved": "Rezervlangan",
+    "ui.admin_pwa.payoutPaid": "To‘langan",
+    "ui.admin_pwa.payoutClaim": "To‘lovni o‘zimga rezervlash",
+    "ui.admin_pwa.payoutRelease": "Rezervni bekor qilish",
+    "ui.admin_pwa.payoutHolder": "Hisob egasi",
+    "ui.admin_pwa.payoutAccount": "To‘lov rekvizitlari",
+    "ui.admin_pwa.payoutReserveHint": "Rezervlash pul o‘tkazmaydi. Rezervni faqat uni olgan admin bekor qilishi mumkin.",
+    "ui.admin_pwa.payoutDueAt": "Belgilangan muddat"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

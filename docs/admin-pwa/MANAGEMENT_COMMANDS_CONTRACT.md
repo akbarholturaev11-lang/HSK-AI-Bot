@@ -23,6 +23,7 @@ uncertain response.
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
 | `marketing.update` | `/marketing/read`, `/prepare`, `/save` | Sales experiment, app promotion settings, existing creative activation/deletion |
 | `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
+| `partners.payout` | `/partner-payouts/read`, `/prepare`, `/save` | Shared reserve/release, reject and exact 1/3/7-day UTC deadline; no transfer or paid-without-proof |
 | `partners.update` | `/partners/read`, `/prepare`, `/save` | Partner application approve/reject and partnership block/unblock via shared PartnerService |
 | `notifications.update` | `/notifications/read`, `/prepare`, `/save` | Five fixed reminder templates, enabled state and canonical UZ/RU/TJ text/defaults |
 | `portfolio.add` | `/portfolio/read`, `/prepare`, `/save` | Manual profit/expense through shared PortfolioService; no payment synchronization or entitlement mutation |
@@ -132,3 +133,12 @@ learner block, subscription, payment or AI budget is changed. Immutable audit
 stores decision/status/bonus/hash only, without contact or promotion copy. This
 adapter records partnership state, not outbound-message or payout delivery;
 those remain explicit separate commands.
+
+Payout metadata pages use 30-row primary-key keysets. Details load bounded
+account information but no Telegram QR/proof file IDs. Full raw payout state,
+including amounts/rate/destination and processing owner, participates in CAS.
+Deadline confirmation binds the actual UTC instant, never a save-time shifted
+"N days". Shared conditional repository updates preserve closed-row and
+reservation-owner guards. Post-lock current authority/expiry, immutable
+content-free audit and proof consumption are atomic. Reserving does not move
+money or mark paid; a provider-verified proof workflow is required separately.

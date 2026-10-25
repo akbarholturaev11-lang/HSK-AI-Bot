@@ -727,7 +727,19 @@
     "ui.admin_pwa.partnerAudience": "Аудитория",
     "ui.admin_pwa.partnerBonus": "Новый заблокированный бонус при одобрении",
     "ui.admin_pwa.partnerBlock": "Заблокировать партнёрство",
-    "ui.admin_pwa.partnerUnblock": "Восстановить партнёрство"
+    "ui.admin_pwa.partnerUnblock": "Восстановить партнёрство",
+    "ui.admin_pwa.partnerPayouts": "Выплаты партнёрам",
+    "ui.admin_pwa.payoutId": "ID выплаты",
+    "ui.admin_pwa.payoutDeadline": "Установить срок",
+    "ui.admin_pwa.payoutDeadlineSet": "Срок установлен",
+    "ui.admin_pwa.payoutReserved": "Зарезервировано",
+    "ui.admin_pwa.payoutPaid": "Оплачено",
+    "ui.admin_pwa.payoutClaim": "Зарезервировать выплату за собой",
+    "ui.admin_pwa.payoutRelease": "Отменить резервирование",
+    "ui.admin_pwa.payoutHolder": "Владелец счёта",
+    "ui.admin_pwa.payoutAccount": "Платёжные реквизиты",
+    "ui.admin_pwa.payoutReserveHint": "Резервирование не переводит деньги. Отменить резервирование может только занявший выплату администратор.",
+    "ui.admin_pwa.payoutDueAt": "Установленный срок"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
