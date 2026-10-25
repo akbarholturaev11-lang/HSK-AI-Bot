@@ -617,7 +617,8 @@ async def attachment_browser_checks(output):
             disliked_text='Unsupported media',disliked_attachment_file_id='never-download-audio',disliked_attachment_type='voice')])
         await db.commit();report_id=report.id
     app=FastAPI()
-    for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router):
+    for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router,
+                    create_admin_pwa_inbox_triage_router):
         app.include_router(factory(settings_obj=fixture.settings,session_factory=fixture.sessions))
     app.include_router(create_admin_pwa_inbox_attachment_router(settings_obj=fixture.settings,
         session_factory=fixture.sessions,loader=lambda reference:download_receipt_image(telegram,reference)))
@@ -629,6 +630,10 @@ async def attachment_browser_checks(output):
         path=request.url.removeprefix(ORIGIN)
         if path=='/admin/sw.js':
             await route.abort();return
+        if path=='/api/admin/v1/auth/logout':
+            # Media-only fixture: real fresh-passkey/logout behavior is asserted
+            # by browser_checks with the real ASGI auth/logout and virtual WebAuthn.
+            await route.fulfill(status=200,json={'ok':True,'status':'logged_out'});return
         if path==attachment_path:
             calls.append(await request.all_headers())
             if mode=='unavailable':
@@ -665,16 +670,20 @@ async def attachment_browser_checks(output):
             telegram.get_file.assert_not_awaited()
             async def open_inbox():
                 await page.locator('[data-action=feedback]').click()
-                await expect(page.locator('[data-inbox-attachment]')).to_have_count(3)
-                assert await page.evaluate("() => {const ids=[...document.querySelectorAll('.inbox-attachment')].map(e=>e.id);return new Set(ids).size===3;}")
+                await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
+                assert not await page.locator('[data-inbox-attachment]').count(), 'No media may preload in the list'
+            async def view_source(source):
+                await open_inbox()
+                await page.locator(f'[data-inbox-open^="{source}:"]').first.click()
+                await expect(page.locator(f'[data-inbox-attachment][data-attachment-source={source}]')).to_have_count(1)
             async def loaded():
                 await wait_js(page,"() => {const i=document.querySelector('.inbox-attachment-image');return i?.complete&&i.naturalWidth===320;}")
             for locale in ('uz','ru','tj'):
                 await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option(locale)
-                await open_inbox()
                 assert await page.locator('.inbox-attachment-image').count()==0
                 for source in ('bot','release','android'):
+                    await view_source(source)
                     await page.locator(f'[data-inbox-attachment][data-attachment-source={source}]').click()
                     await loaded()
                     await expect(page.locator('.inbox-attachment-image')).to_have_count(1)
@@ -703,7 +712,7 @@ async def attachment_browser_checks(output):
             assert [call.args[0] for call in telegram.get_file.await_args_list]==[
                 'private-file-never-returned','private-release-image']*3
             # Server retention is rechecked after the list was loaded.
-            await open_inbox()
+            await view_source('android')
             async with fixture.sessions() as db:
                 await db.execute(update(AdminPwaNativeReport).values(expires_at=now-timedelta(seconds=1)))
                 await db.commit()
@@ -722,7 +731,7 @@ async def attachment_browser_checks(output):
             await native_button.click();mode='delayed'
             await native_button.click();await asyncio.wait_for(started.wait(),10)
             await page.keyboard.press('Escape');mode=None
-            await open_inbox();await page.locator('[data-inbox-attachment][data-attachment-source=bot]').click();await loaded()
+            await view_source('bot');await page.locator('[data-inbox-attachment][data-attachment-source=bot]').click();await loaded()
             current_url=await page.locator('.inbox-attachment-image').get_attribute('src')
             release.set();await asyncio.wait_for(finished.wait(),10)
             assert await page.locator('.inbox-attachment-image').get_attribute('src')==current_url
@@ -732,9 +741,9 @@ async def attachment_browser_checks(output):
                 assert await page.locator('.inbox-attachment-image').count()==0
                 assert await page.evaluate('qaURLs.length===qaRevoked.length')
                 await page.reload();await expect(page.locator('.metrics')).to_be_visible()
-                await open_inbox()
+                await view_source('android')
                 await native_button.click();await loaded()
-            await page.keyboard.press('Escape');await open_inbox()
+            await page.keyboard.press('Escape');await view_source('android')
             async with fixture.sessions() as db:
                 await db.execute(update(AdminPwaSession).values(revoked_at=now))
                 await db.commit()
