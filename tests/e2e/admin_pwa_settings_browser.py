@@ -666,14 +666,13 @@ async def browser_checks(output, *, media_only=False):
                 async with fixture.sessions() as db:
                     self_ad = await db.get(CourseAdCreative,1)
                     assert self_ad is None
-                # The account footer keeps its primary subscription action;
-                # destructive/state actions use the same secondary menu.
+                # Account actions now live inside the profile: block is visible,
+                # deletion stays in the expandable additional-actions group.
                 for language in ('uz','ru','tj'):
                     await page.locator('#locale').select_option(language)
                     await page.set_viewport_size({'width':390,'height':844})
                     await page.locator('.mobile-tabs [data-route="users"]').click()
                     await page.locator('[data-user-detail="2"]:visible').click()
-                    await page.locator('[data-menu-toggle="userManagementMenu"]').click()
                     await page.locator('[data-user-management="2"][data-user-operation="block"]').click()
                     await begin_management()
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
@@ -683,7 +682,8 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('#locale').select_option('uz')
                 for operation,user_id in (('block',2),('unblock',2),('delete',1)):
                     await page.locator('[data-user-detail="'+str(user_id)+'"]:visible').click()
-                    await page.locator('[data-menu-toggle="userManagementMenu"]').click()
+                    if operation == 'delete':
+                        await page.locator('.profile-more-actions summary').click()
                     await page.locator(f'[data-user-management="{user_id}"][data-user-operation="{operation}"]').click()
                     if operation=='delete':
                         before_prepare=len([p for p,_ in calls if p.endswith('prepare-management')])

@@ -241,11 +241,30 @@ async def browser_checks(output):
         await page.locator('[data-route=users]').first.click()
         await expect(page.locator('.data-table tbody tr')).to_have_count(3)
         await expect(page.locator('.data-table img')).to_have_count(0)
+        await expect(page.locator('.user-search-icon svg')).to_have_count(1)
+        await page.locator('[data-user-filter-toggle]').click()
+        await expect(page.locator('#userFilterPanel .user-filter-choice')).to_have_count(10)
+        await page.locator('[data-user-segment="all"]').last.click()
+        await expect(page.locator('#userFilterPanel')).to_be_hidden()
+        # Unsaved search text must be applied with the selected filter, rather
+        # than resetting to the last submitted query on rerender.
         await page.locator('#userQuery').fill('999999')
-        await page.locator('#searchForm button').click()
+        await page.locator('[data-user-filter-toggle]').click()
+        await page.locator('.user-filter-choice[data-user-segment="free"]').click()
+        await expect(page.locator('#userQuery')).to_have_value('999999')
+        await expect(page.locator('.data-table')).to_have_count(0)
+        assert any(path.endswith('/users/search') and body.get('segment')=='free'
+                   and body.get('query')=='999999'
+                   for path,_,body in calls if isinstance(body,dict))
+        await page.locator('#userQuery').fill('')
+        await page.locator('[data-user-filter-toggle]').click()
+        await page.locator('.user-filter-choice[data-user-segment="all"]').click()
+        await expect(page.locator('.data-table tbody tr')).to_have_count(3)
+        await page.locator('#userQuery').fill('999999')
+        await page.locator('#searchForm button[type=submit]').click()
         await expect(page.locator('.data-table')).to_have_count(0)
         await page.locator('#userQuery').fill('1')
-        await page.locator('#searchForm button').click()
+        await page.locator('#searchForm button[type=submit]').click()
         await expect(page.locator('.data-table tbody tr')).to_have_count(1)
         await page.locator('.user-table [data-user-detail="1"]').click()
         await expect(page.locator('#drawerTitle')).to_have_text('Foydalanuvchi profili')
@@ -1055,8 +1074,10 @@ async def access_grant_browser_checks(output):
             await page.locator('[data-route=users]').first.click()
             async def prepare():
                 await page.locator('[data-user-detail="1"]:visible').first.click()
-                await page.locator('[data-access-user="1"]').click()
-                await page.locator('#accessDays').fill('10')
+                await expect(page.locator('.profile-access-editor #accessDays')).to_be_visible()
+                await expect(page.locator('.profile-more-actions')).to_be_visible()
+                await page.locator('[data-user-days="10"]').click()
+                await expect(page.locator('#accessDays')).to_have_value('10')
                 await page.locator('[data-prepare-access="1"]').click()
                 await wait_step_up(page)
             for width in (1440,390):
@@ -1071,6 +1092,10 @@ async def access_grant_browser_checks(output):
                     await page.locator('.drawer-close').click()
             assert not any(path.endswith('/users/grant-access') for path,_ in calls)
             await prepare();await finish_step_up(page)
+            # Inline profile already displays the "10 days" preset; it cannot
+            # signal a completed write. Wait for the server-backed success drawer.
+            granted_title = await page.evaluate('window.HSKAI_ADMIN_I18N.tj.accessGranted')
+            await expect(page.locator('#drawerTitle')).to_have_text(granted_title)
             await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
             await expect(page.locator('[data-action=executeAccess]')).to_have_count(0)
             async with fixture.sessions() as db:
