@@ -222,6 +222,29 @@ async def browser_checks(output):
                     await page.locator(target).click()
                     await expect(page.locator('[data-action="mcpRevokeConfirm"]')).to_have_count(0)
                 await page.locator(".drawer-close").click()
+
+            # Mac-sized Safari/Chromium windows retain the full sidebar and Kurs view.
+            for width, height in ((820, 600), (1024, 650), (1280, 800)):
+                await page.set_viewport_size({"width": width, "height": height})
+                await page.locator('.sidebar [data-route="course"]').click()
+                await expect(page.locator(".management-page .management-row")).to_have_count(2)
+                geometry = await page.evaluate("""() => {
+                    const sidebar = document.querySelector('.sidebar').getBoundingClientRect();
+                    const main = document.querySelector('main.main').getBoundingClientRect();
+                    return {scrollWidth: document.documentElement.scrollWidth,
+                            sidebarLeft: sidebar.left, sidebarRight: sidebar.right,
+                            mainLeft: main.left, mainRight: main.right};
+                }""")
+                assert geometry["scrollWidth"] <= width + 1, geometry
+                assert geometry["sidebarLeft"] >= -1, geometry
+                assert geometry["sidebarRight"] <= width * 0.29, geometry
+                assert geometry["mainLeft"] >= geometry["sidebarRight"] - 1, geometry
+                assert geometry["mainRight"] <= width + 1, geometry
+                if height < 780:
+                    await page.locator(".sidebar").evaluate("(el) => { el.scrollTop = el.scrollHeight; }")
+                    assert await page.locator(".sidebar .side-foot").evaluate(
+                        "(el) => el.getBoundingClientRect().bottom <= innerHeight + 2")
+                await page.screenshot(path=str(output / f"course-compact-mac-{width}.png"))
             assert not errors, errors
             assert not await page.evaluate("window.cspFailures"), await page.evaluate("window.cspFailures")
         finally:
