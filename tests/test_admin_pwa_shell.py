@@ -102,7 +102,14 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('inboxSearchForm',list_section)
         self.assertNotIn('filterSelect',list_section)
         self.assertNotIn('inboxHistoryNote',list_section)
-        self.assertIn('data.items.map(inboxEntry)',list_section)
+        # V10 originally rebuilt the entire list and rendered a manual Next.
+        # The newer inbox appends each server-owned cursor page on scroll.
+        self.assertIn('renderInboxList();',list_section)
+        self.assertIn('currentInboxRows.map(inboxEntry)',script)
+        self.assertIn("scroller.addEventListener('scroll',maybeLoadInbox",script)
+        self.assertIn("async function loadMoreInbox()",script)
+        self.assertNotIn('data-feedback-next',script)
+        self.assertIn('adminLaunchScreen()',script)
         self.assertIn("operation:'mark_read'",script)
         self.assertIn('data-inbox-open',script)
         self.assertIn("if(source==='payment'){",script)
