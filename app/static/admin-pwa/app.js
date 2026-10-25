@@ -1994,6 +1994,20 @@ document.addEventListener('submit',event=>{
 
 });
 document.addEventListener('keydown',event=>{
+  const statsTab=event.target.closest?.('[data-stats-tab]');
+  if(statsTab&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){
+    const tabs=[...statsTab.closest('.stats-category-tabs').querySelectorAll('[data-stats-tab]')];
+    const index=tabs.indexOf(statsTab),n=tabs.length;
+    if(index>=0&&n){
+      event.preventDefault();
+      const target=tabs[event.key==='Home'?0:event.key==='End'?n-1:
+        (index+(event.key==='ArrowRight'?1:-1)+n)%n];
+      const next=target.dataset.statsTab;
+      target.click();
+      document.querySelector('[data-stats-tab="'+next+'"]')?.focus();
+      return;
+    }
+  }
   if(event.key==='Escape'){
     if(closeActionMenus(true)){event.preventDefault();return;}
     closeDrawer();for(const id of ['periodMenu','platformMenu'])if($(id)){$(id).hidden=true;document.querySelector(`[data-action="${id==='periodMenu'?'period':'platform'}"]`)?.setAttribute('aria-expanded','false');}
