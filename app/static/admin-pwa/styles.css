@@ -472,3 +472,22 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 .auth-panel .approval-actions .btn{margin-top:0;white-space:normal;text-align:center;text-decoration:none;min-height:48px}
 .auth-panel .approval-actions .btn:not(.primary){background:transparent}
 .auth-panel .approval-actions a:focus-visible{outline:3px solid #87afb5;outline-offset:2px}
+
+/* Admin inbox: single-line notification titles, detail-only content. */
+.inbox-simple-list{display:grid;align-content:start;gap:0}
+.inbox-simple-row{border-bottom:1px solid var(--line)}
+.inbox-simple-row:last-of-type{border-bottom:0}
+.inbox-row-open{display:flex;gap:12px;align-items:center;width:100%;padding:18px 2px;text-align:left;background:transparent;border:0;color:var(--ink);min-height:78px}
+.inbox-row-open:hover{background:var(--accent-soft)}
+.inbox-row-open:focus-visible{outline:3px solid #87afb5;outline-offset:2px;border-radius:10px}
+.inbox-row-copy{flex:1;display:grid;gap:7px;min-width:0}
+.inbox-row-copy strong{font-size:15px;line-height:1.4;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inbox-simple-row.unread .inbox-row-copy strong{font-weight:790}
+.inbox-row-copy small{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.inbox-row-open svg{width:19px;height:19px;flex:none;color:var(--muted)}
+.inbox-unread-dot,.inbox-important-dot{height:8px;width:8px;flex:none;border-radius:50%;background:var(--accent)}
+.inbox-important-dot{background:var(--red)}
+.inbox-detail{padding:5px 2px 22px}
+.inbox-full-message{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;font-size:15px;margin:22px 0}
+.inbox-drawer .drawer-foot[hidden]{display:none}
+@media(max-width:760px){.inbox-row-open{min-height:70px;padding:14px 1px}.inbox-row-copy strong{font-size:14px}.inbox-detail{padding:5px 2px 30px}}
