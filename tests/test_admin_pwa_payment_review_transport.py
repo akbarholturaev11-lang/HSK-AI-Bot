@@ -88,6 +88,8 @@ class AdminPwaPaymentHttpTests(PaymentFixtures, unittest.IsolatedAsyncioTestCase
     async def test_flag_off_legacy_headers_or_foreign_origin_never_authorize(self):
         request={"payment_id": self.payment_id, "decision": "approve", "reason": None}
         for path in ("/api/admin/v1/payments/inspect-review", "/api/admin/v1/payments/prepare-review", "/api/admin/v1/payments/review"):
+            request = ({"payment_id": self.payment_id} if path.endswith("/inspect-review") else
+                       {"payment_id": self.payment_id, "decision": "approve", "reason": None})
             self.settings.ADMIN_PWA_ENABLED=False
             async with await self.client() as client:
                 self.assertEqual((await client.post(path, json=request)).status_code, 404)
