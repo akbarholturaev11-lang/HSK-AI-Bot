@@ -112,20 +112,14 @@ async def browser_checks(output):
                 await expect(page.locator('[data-message-run]')).to_be_visible(timeout=15000)
                 assert len(sent)-baseline==10
                 job=await page.locator('[data-message-run]').get_attribute('data-message-run')
-                # A normal reload must retain this verified session and
-                # expose the next-batch action without another passkey.
+                # Reload revokes the current browser session; reopening
+                # verifies a fresh passkey, and broadcast continuation needs
+                # an explicit transaction-bound signed resume.
                 prior_verifications=len([p for p,_ in calls if p.endswith('login/verify')])
+                prior_logouts=len([p for p,_ in calls if p.endswith('/auth/logout')])
                 await page.reload();await login();await marketing()
-                await page.locator(f'[data-message-job="{job}"]').click()
-                await expect(page.locator('[data-message-run]')).to_be_visible()
-                assert len([p for p,_ in calls if p.endswith('login/verify')])==prior_verifications
-                # Explicit logout deliberately ends the job's browser session.
-                # Reauthentication uses a fresh WebAuthn session, so the
-                # existing cross-session control must require a signed resume.
-                await page.locator('.drawer-close').click()
-                await page.locator('.side-foot [data-action=logout]').click()
-                await expect(page.locator('[data-action=signin]')).to_be_visible()
-                await page.reload();await login();await marketing()
+                assert len([p for p,_ in calls if p.endswith('login/verify')])==prior_verifications+1
+                assert len([p for p,_ in calls if p.endswith('/auth/logout')])==prior_logouts+1
                 await page.locator(f'[data-message-job="{job}"]').click()
                 await expect(page.locator('[data-message-run]')).to_have_count(0)
                 await expect(page.locator('[data-message-control=resume]')).to_be_visible()
