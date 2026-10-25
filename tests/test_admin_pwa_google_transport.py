@@ -177,6 +177,19 @@ class AdminPwaGoogleTransportTests(unittest.TestCase):
             status=self.client.get("/api/admin/v1/auth/telegram/status")
         self.assertEqual(status.status_code,200)
         self.assertEqual(status.json()["pairing_code"],"SYNTHETIC")
+        self.assertIsNone(status.json()["telegram_url"])  # Unconfigured Bot never invents an URL.
+        self.settings.BOT_USERNAME = "@HSKAI_TEST_bot"
+        with patch("app.admin_api.pwa_google_transport.read_browser_pwa_approval", new=read_status):
+            linked = self.client.get("/api/admin/v1/auth/telegram/status")
+        self.assertEqual(linked.status_code, 200)
+        self.assertEqual(
+            linked.json()["telegram_url"],
+            "https://t.me/HSKAI_TEST_bot?start=admin_pwa_aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        )
+        self.settings.BOT_USERNAME = "bad?start=malicious"
+        with patch("app.admin_api.pwa_google_transport.read_browser_pwa_approval", new=read_status):
+            invalid = self.client.get("/api/admin/v1/auth/telegram/status")
+        self.assertIsNone(invalid.json()["telegram_url"])
         self.client.cookies.delete(_APPROVAL_COOKIE)
         self.assertEqual(self.client.get("/api/admin/v1/auth/telegram/status").status_code,401)
 
