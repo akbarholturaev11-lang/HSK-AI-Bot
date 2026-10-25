@@ -550,14 +550,14 @@ async def browser_checks(output):
         await expect(page.locator('.sidebar')).to_have_count(1)
         async with fixture.sessions() as db:
             await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)));await db.commit()
-        # Use the visible mobile Users navigation to force a real protected
-        # read after revocation. The previous .last locator could resolve to a
-        # hidden desktop button, time out, then silently skip the auth check.
-        # Re-authentication/notification refresh can replace the tab element
-        # after the sidebar first appears. Dispatch on the current live tab
-        # rather than Playwright waiting for an animation-stable DOM node.
-        await expect(page.locator('.mobile-tabs [data-route=users]')).to_be_visible()
-        await page.locator('.mobile-tabs [data-route=users]').click(force=True,timeout=15000)
+        # The background unread/read refresh may already detect the revoked
+        # session and replace the whole authenticated shell with login.
+        # Otherwise click the *live* mobile Users nav to trigger an authorized
+        # server request. A missing tab after revocation is not an error if the
+        # app has already signed out; the security assertion remains mandatory.
+        await page.evaluate("""() => {
+            document.querySelector('.mobile-tabs [data-route="users"]')?.click();
+        }""")
         await expect(page.locator('[data-action=signin]')).to_be_visible(timeout=15000)
         assert 'QA account' not in await page.locator('body').inner_text()
         assert await page.evaluate('Object.keys(localStorage)')==['hsk-admin-locale']
