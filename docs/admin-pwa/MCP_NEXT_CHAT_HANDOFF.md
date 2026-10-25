@@ -2,26 +2,202 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Owner-approved main promotion — 2026-10-25
+
+- The owner explicitly authorized pushing the ready Admin PWA code to `main`.
+  This supersedes this workstream's earlier feature-only push restriction for
+  the verified code promotion. Feature defaults remain OFF; no flag activation
+  or manual deployment is included in that authorization.
+- Source is `e7470a28ac85c167ebf54381d78d4c5a23430746`, including main PR #209.
+  GitHub Actions [40199126920](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40199126920)
+  completed successfully for code parent `71629eda`: both `admin-pwa` and
+  `postgres-locks-and-migrations` passed, including all browser commands.
+- Promotion uses an isolated clean worktree from `origin/main`; only the
+  intended Admin PWA commits are copied. The prepared application, tests,
+  catalogs and workflow are byte-identical to the verified source; only this
+  promotion documentation is added. Unrelated local Graphify outputs stay out
+  of the commit. Existing AI-branch work must be preserved when synchronizing.
+
+## Latest owner-requested main sync — PR #209, 2026-10-25
+
+- A fresh owner request found `origin/main` at
+  `1cb799c6` (PR #209, biometric on each open). Merge this source into the
+  existing feature branch; no feature-to-main promotion or deployment.
+- **Current auth policy:** each launch/foreground resume revokes the previous
+  cookie session and requires a new native passkey assertion. Keep automatic
+  prompting and the manual browser-gesture fallback. Private DOM clears before
+  login; active native biometric/transaction sheets do not cause prompt loops.
+  Dashboard and unread reads run concurrently after verification. This
+  supersedes the earlier seamless cookie-reuse checkpoints below.
+- Queued jobs reopened after a fresh login use the existing signed pending-only
+  resume. Preserve all feature commands, original-editor contextual actions,
+  V10 statistics/navigation, daily snapshots and statistics-only external MCP.
+- Merge validation: shell/import **9 passed, 11 subtests**, actual core,
+  outbound and campaign ASGI/virtual-WebAuthn browser suites passed against
+  the merged policy. Evidence `/tmp/hsk-admin-pwa-main209-*-20261025`.
+  JavaScript syntax, diff and 63-artifact catalog checks passed (zero stale).
+- Code increment `74e48740` and merge `71629eda30b5791d5b4c9b12e6b3c892aba793e1`
+  are pushed to the owner feature branch; the exact remote SHA was verified.
+  The broad checkpoint’s single skip was the local optional official MCP SDK.
+  Installing the workflow’s existing pinned QA dependencies (`mcp==1.27.0`,
+  `sse-starlette==3.0.3`) allowed that protocol harness to run: **1 passed** on
+  the merged code. Application requirements are unchanged. GitHub Actions run
+  `40199126920` started for the merge; no CI-success claim is made while pending.
+
+## Current bounded campaigns increment — 2026-10-25
+
+- `pwa_campaigns.py` and `/campaigns/read|prepare|save` add metadata-only keyset
+  lists, explicit details, signed one-round text ad delivery, release-feedback
+  creation/delivery and discount create/state. V10 Marketing links the actual
+  forms; UZ/RU/TJ sources generate the bundled catalog. Contextual Send/Create/
+  Save uses the original editor and one native passkey; no confirmation screen.
+- Ads reserve one existing shared round without scheduling the legacy sender.
+  Release campaigns use existing try/rating callbacks and unchanged reward
+  policy, durable shared delivery evidence and the same claimed outbound queue.
+  No DB connection spans provider IO. A recipient filter/transport/campaign
+  change skips before claim; Stop, late acknowledgement, signed pending-only
+  resume, expired payload retention and no uncertain retry remain coherent.
+- Discount offers preserve the existing checkout/eligibility/quota/repeat
+  contract and canonical native ownership. Plain three-language copy is stored
+  for the existing text consumers; no entity double-escaping. Creation defaults
+  paused and never sends a notification or grants access. Enabling an existing
+  notification-enabled offer through this command is refused.
+- No schema/migration/cron, AI translation, DB media BLOB, feature-default or
+  external MCP scope change. Private aggregate snapshots remain daily-on-demand.
+- Broad PWA/catalog/initializer/legacy payment suite with isolated PostgreSQL
+  and Redis: **694 passed, 1 skipped, 632 subtests passed**. Later focused final
+  campaign/outbound/marketing/discount regressions: **77 passed, 54 subtests**,
+  including real PostgreSQL single-round races, proof expiry during recipient
+  lock waits and concurrent drainers. This includes stop-during-provider and
+  original-transport reservation regressions added after the broad checkpoint.
+- Actual campaign ASGI/virtual-WebAuthn browser passed UZ/RU/TJ at 390/1440,
+  missing-language disclosure, native cancellation/draft preservation, native
+  personal discount, release markup and one-round ad delivery. Shared outbound,
+  full settings/management and media-only browser suites also passed. Evidence
+  `/tmp/hsk-admin-pwa-campaigns*-20261025`; mobile screenshots reviewed.
+- Security workflow now follows this owner feature branch and includes campaign
+  browser and PostgreSQL tests. Arbitrary campaign media/buttons and unattended
+  scheduling are outside the explicit standalone contract, not silently proxied.
+
+## Latest statistics/navigation sync — 2026-10-25
+
+- A second owner-requested refresh found `origin/main` at
+  `7aee50bd` (PR #206). Its seven real-data statistics tabs, five-icon mobile
+  navigation, bottom More sheet, responsive users/payments and browser QA
+  are integrated into this feature branch. Feature single-window native
+  signing and course-ad creation remain intact. Generated catalogs were
+  rebuilt from the merged canonical UZ/RU/TJ sources.
+- Actual core and full settings/management ASGI/WebAuthn browser suites passed
+  after conflict resolution. Evidence: `/tmp/hsk-admin-pwa-main2-sync-*-20261025`.
+  Merge direction remains main into feature; no feature promotion/deploy.
+
+## Current new-course-ad creation increment — 2026-10-25
+
+- The owner feature branch now supports signed `course_ad_create`: one-language
+  or explicit UZ/RU/TJ title/CTA, photo/video, fixed type/placements, bounded
+  duration/link and paused default. The original V10 editor uses one contextual
+  Create action and native passkey; cancellation preserves the draft. Media
+  stays on the existing volume with no BLOB/migration/AI request.
+- UTF-8 binary-command metadata uses strict base64url under the existing header
+  bound. Video proof ownership is checked against the actual cookie session
+  before any encoding, including two sessions for the same actor. Encoding
+  stays outside DB transactions with one worker slot; creative/proof/audit are
+  atomic and rollback cleanup uses only the exact created PK.
+- Marketing/media/shared translation tests: **76 passed, 50 subtests passed**.
+  Actual ASGI/virtual-WebAuthn media browser passed image/video replacement,
+  QR and new multilingual creation. UZ/RU/TJ 390px cancellation retains inputs;
+  the signed all-language create writes one inactive creative, one audit,
+  authored copy and disk bytes. Screenshots under
+  `/tmp/hsk-admin-pwa-course-ad-create-20261025` were visually reviewed.
+- Remaining code: bounded campaign activation/delivery, release-feedback and
+  discount campaigns. No main promotion, deployment or feature-default change.
+
+## Current main synchronization — owner request, 2026-10-25
+
+- The owner explicitly requested the latest `main` changes in the existing
+  feature branch. Sync source is `origin/main` at
+  `fb9772d3255166fca3ff3e37baa60fbbdfbf9c24` (PR #207 seamless-passkey policy).
+  Merge direction is main **into** the owner feature branch. Preserve the later
+  single-action command UI below; no feature-to-main promotion or deployment.
+- Launch/resume first revalidates the existing HttpOnly cookie with `/me`.
+  A valid authorized session opens directly. A 401 triggers one automatic
+  native passkey attempt per foreground visit with a manual browser fallback.
+  Explicit logout still revokes the session; private browser memory clears on
+  hide/pagehide/offline. This supersedes mandatory logout on every launch.
+  Sensitive commands still require their exact fresh one-use step-up proof.
+- Outbound browser QA now distinguishes a cookie-backed reload (same signed
+  job session) from explicit logout/reauthentication (fresh signed pending-only
+  resume). The one-click command flow and all backend limits remain intact.
+- Merge validation passed: shell contract **7 tests**, JS syntax and the
+  63-artifact catalog check (zero stale), plus full core browser,
+  settings/management and outbound browser suites under
+  `/tmp/hsk-admin-pwa-main-sync-*-20261025`. No merge conflicts or backend
+  permission/feature-default changes were introduced.
+
+## Current all-section single-window owner instruction — 2026-10-25
+
+- The owner extended the payout instruction to **all** Admin PWA sections:
+  remove the second confirmation screen. The original editor's contextual
+  Send/Save/Delete/Grant/Accept-payment action prepares the exact server payload,
+  opens native WebAuthn and executes immediately after that one ceremony.
+  Generic “confirm with passkey” and action-related “Next” buttons are removed.
+  Pagination and navigation Next buttons are unrelated and remain.
+  The editor/ceremony flow lives in `app/static/admin-pwa/app.js`;
+  `singleEditorAction` owns draft locking and cancellation isolation.
+- Shared management, payment decisions with loaded receipts, access grants,
+  course policy and HSK 3.0 settings use that flow. Inputs freeze while the
+  operation is prepared/signed; loaded state is checked before signing where
+  available. Native cancellation restores the original editor/draft. A closed
+  old native promise cannot clear a newer editor's busy/controller state.
+  Lost save responses expose only reread recovery. Backend proof/CAS/audit,
+  receipt loading, typed account-deletion ID and messaging bounds remain active.
+- Existing scope-reducing message-stop and MCP-revoke buttons no longer open
+  an extra app confirmation. They use their original cookie/CSRF contracts;
+  no new write capability or external MCP scope is added.
+- Canonical UZ/RU/TJ labels and browser QA now follow this interaction. Browser
+  tests pause the real native ceremony using a test-only gate to exercise
+  cancellation, stale writes and lost responses without adding a second UI.
+- Validation: all Admin PWA unit/API and affected catalog tests passed:
+  **546 passed, 58 environment-dependent skipped, 457 subtests passed**.
+  Full core browser (including payment/access/receipt/revoke/offline/SW), full
+  settings/management, media-only, outbound, payout and minimal-Inbox browser
+  suites passed. Settings QA additionally exercises course/HSK 3.0 saves,
+  native cancellation retaining drafts, stale state before the ceremony and
+  stale writes after it. The local environment was missing the existing pinned
+  `pywebpush==2.5.0` dependency; installing that pin resolved its encoder test.
+  The service-worker harness explicitly reapplies CDP offline state after a
+  SW-controlled reload for the current Chromium build.
+- `node --check`, Python compile, diff checks and the 63-artifact catalog check
+  passed (zero stale). UZ/RU/TJ mobile/desktop controls have no overflow.
+  `/tmp/hsk-admin-pwa-single-action-outbound-20261025/direct-message-confirm-uz-390.png`
+  and `/tmp/hsk-admin-pwa-single-action-browser-20261025/mobile-payment-receipt.png`
+  were visually checked: the original editor has Send/Accept-payment actions.
+  Screenshot filenames retaining “confirm” are historical names, not a second
+  confirmation screen. Implementation commit
+  `f188c243c80a9a339db731d757bd84376db39c52` is pushed to the owner branch;
+  `git ls-remote` returned that exact SHA. GitHub combined status and Actions
+  queries returned zero entries for this SHA, so no GitHub CI result is
+  available. All feature defaults remain OFF; no main merge or deployment.
+
 ## Current owner-selected branch and UI baseline
 
 - Continue **only** on `feat/admin-pwa-minimal-inbox-passkey-20261025`.
-  PR #204 was merged at an older head; branch commits after that merge remain
+  PR #204/#205 were merged at older heads; branch commits after those merges remain
   on this feature branch and must not be redirected to `main`.
   The owner selected this branch and accepted its notification-window changes
   on 2026-10-25. The previous MCP branch/PR #201 references below are historical;
-  those changes are already ancestors. Do not switch back, merge/push main or
-  revert this branch's minimal Inbox/fresh-passkey/swipe behavior.
+  those changes are already ancestors. Keep work on this feature branch and
+  preserve minimal Inbox/swipe behavior plus the current session policy above.
 - Owner baseline at `72d17493`: unread-first title-only notification rows,
   automatic-only importance, explicit read-on-open detail, receipt handoff to
   financial review and return to the originating user's inbox. Preserve the
   single close control, red important state and one-step narrow left-zone
   iPhone back gesture with native scrolling/selection/edge exclusions. Existing
   audited backend triage/Push contracts remain compatible; no manual priority UI.
-- Every PWA launch/resume revokes its persistent browser session and requires
-  fresh discoverable WebAuthn; failed startup logout fails closed. This owner
-  baseline supersedes earlier documents recommending silent session reuse.
-  Normal in-session navigation is unchanged; sensitive commands still need
-  their own exact transaction-bound proof. No OAuth/MCP permission expansion.
+- Launch/resume follows the owner-approved seamless session policy above;
+  it does not force a logout of a still-valid server-verified session.
+  Sensitive commands keep their own exact transaction-bound proof.
+  No OAuth/MCP permission expansion.
 - Payment reconciliation code/migration was committed at `e72c945a`; the branch
   adds its initial tests. Continuing work validates rollback, stale in-flight
   attempts, bounded queue pages, concurrent resolutions and real migration
@@ -200,8 +376,9 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   passed. Exact-head GitHub CI has not yet been queried for the implementation
   commit. Feature flags remain OFF, MCP stays statistics-only, and no staging,
   live ChatGPT, physical-device, merge or deployment action occurred.
-- Commit SHA and remote branch verification are recorded after the commit
-  below. Remaining code: new course-ad creation, safe campaign
+- The implementation was included in owner sync commit
+  `486052607d40fa37dbae456b92e062218b02e2dc`, now an ancestor of the verified
+  feature branch. Remaining code: new course-ad creation, safe campaign
   activation/delivery and release-feedback/discount commands, plus other open
   acceptance items. Full PWA acceptance/staging remains incomplete.
 
@@ -223,7 +400,8 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   provider retry is automatic.
 - The V10 editor is reachable from the existing price editor for Alipay/WeChat.
   It displays current QR-set state, a local preview and unchanged amount in the
-  before/after review, then asks for exactly one passkey. Copy is canonical in
+  original editor; Replace opens native passkey directly under the current
+  all-section interaction rule above. Copy is canonical in
   UZ/RU/TJ. Mobile screenshot `/tmp/hsk-admin-pwa-payment-qr-e2e-20261025/payment-qr-confirm-390.png`
   was visually checked; the old and proposed state fit at 390px.
 - Local evidence: payment QR, subscription prices, marketing, course-ad media

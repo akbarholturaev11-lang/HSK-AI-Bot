@@ -6,12 +6,24 @@ External MCP has no management capability. Rollout defaults remain OFF.
 
 Every command requires an active canonical allowlisted WebAuthn cookie, strict
 same-origin HTTPS POST and a validated bounded body. Prepare returns the exact
-operation for confirmation; the browser passes it unchanged through the
-existing step-up ceremony. Save validates the canonical payload again, locks
+operation for the native passkey ceremony; the browser passes it unchanged
+through that ceremony directly from the original editor. Save validates the canonical payload again, locks
 the target, compares the prepared revision, rechecks current actor/expiry, and
 commits the shared-service change, one-use proof consumption and immutable
 0126 command audit together. No mutation is automatically retried after an
 uncertain response.
+
+Owner interaction rule (2026-10-25): every management editor uses one contextual
+action such as Send, Save, Delete, Grant subscription or Accept payment. That
+tap prepares the exact payload, invokes native WebAuthn and executes; there is
+no intermediate before/after confirmation window and no generic passkey button.
+The editor remains visible with frozen inputs throughout the ceremony. Native
+cancellation restores the same form and its drafts. Loaded revisions/visible
+state are compared before signing where available, and server-side proof,
+revision, receipt and audit checks still run at the write boundary. Closing
+an old ceremony cannot clear the controller/lock for a newer editor. Existing
+scope-reducing stop/revoke buttons execute directly under their original
+cookie/CSRF contracts; this UI change adds no new management permission.
 
 | Command | Routes | Scope and existing owner |
 | --- | --- | --- |
@@ -22,7 +34,7 @@ uncertain response.
 | `subscription.prices` | `/subscription-prices/read`, `/prepare`, `/save` | Nine fixed payment-method/plan targets; shared Visa normalization and currencies |
 | `subscription.qr_media` | `/payment-qr/read`, `/prepare`, `/media/save` | One existing subscription QR image for a fixed Alipay/WeChat plan; does not edit price |
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
-| `marketing.update` | `/marketing/read`, `/prepare`, `/save`, `/media/save` | Sales experiment, app promotion settings, existing creative activation/deletion, bounded desktop-promo image replacement/removal |
+| `marketing.update` | `/marketing/read`, `/prepare`, `/save`, `/media/save`; `/campaigns/read`, `/prepare`, `/save` | Signed creative creation/media/settings, paused ad drafts, bounded one-round ad/release delivery and discount offer configuration |
 | `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
 | `broadcast.send` / `broadcast.control` | `/messages/read`, `/prepare`, `/save`, `/run`, `/prepare-control`, `/control`, `/stop` | Exact signed text/audience, durable pre-IO claims, owner-only bounded delivery and cancellation |
 | `payments.delivery_reconcile` | `/payment-deliveries/read`, `/prepare`, `/save` | Audited human resolution for uncertain or stale attempts; never resend or change finance |
@@ -64,8 +76,8 @@ individual target. Deletion uses the existing shared service, preserves files
 still referenced by other creatives and limits postcommit cleanup to a
 validated local basename. Settings/creative changes do not send messages.
 Course/System/Marketing navigation itself performs no settings read;
-editors fetch only after an explicit tap. Every editor has a before/after
-confirmation and a single passkey save, with read-current recovery on lost
+editors fetch only after an explicit tap. Every editor has one contextual
+action and a direct native passkey ceremony, with read-current recovery on lost
 responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 
 The separate signed campaign-draft command accepts only text, explicit
@@ -74,9 +86,8 @@ duration. It creates an existing `ad_campaigns` row as paused (`is_active=false`
 `next_send_at=NULL`) with one round; it performs no recipient scan, provider
 call, automatic translation or delivery. The transaction-bound operation
 signs a compact hash of all three copies, while the immutable audit stores only
-that hash and the created campaign ID. Campaign activation/delivery, feedback
-and discount campaign creation, buttons and media stay outside this command
-until their bounded sender and asset contracts are implemented.
+that hash and the created campaign ID. Starting this draft now uses the separate
+bounded campaign command below; this draft operation itself never delivers.
 
 Desktop-promo media accepts only one decoded JPEG/PNG/WebP raster (2 MiB and
 8-million-pixel bounds). The browser previews the file locally, then signs its
@@ -111,7 +122,25 @@ the current creative revision, attaches the server-named MP4 path and records
 content-free audit evidence atomically; an unreferenced staged file is cleaned
 up after rollback, while uncertain commit state preserves referenced media.
 Only the existing creative's media changes. No new DB BLOB or migration is
-introduced; new creative creation and campaign delivery remain separate.
+introduced; campaign delivery remains separate.
+
+New course-ad creation is a distinct `course_ad_create` signed command. The
+original V10 editor accepts either one selected language or explicit UZ/RU/TJ
+copy, one photo/video, allowed type/placements, 5–120 second duration and an
+optional HTTPS/Telegram link. It defaults to paused and performs no AI
+translation or recipient delivery. Exact copy hash, media hash/size and all
+settings participate in the proof. The shared creation service, one-use proof
+and content-free audit commit atomically. Raster limits/storage match image
+replacement; videos use the same single-slot encoder outside the DB
+transaction. Same-session proof ownership is checked before encoding, including
+when two sessions belong to the same admin. No media BLOB or migration.
+
+Binary marketing saves encode UTF-8 JSON as base64url in
+`X-Admin-PWA-Command` with `X-Admin-PWA-Command-Encoding: base64url`; the existing
+8192-character header limit is unchanged. Strict decoding, duplicate-key
+rejection and canonical payload validation precede proof consumption. Legacy
+ASCII JSON commands remain accepted. This allows authored RU/TJ/Chinese copy
+without invalid HTTP-header characters.
 
 Subscription QR replacement is a separate `subscription.qr_media` operation for
 the six fixed Alipay/WeChat plan targets in the existing `subscription` scope.
@@ -127,19 +156,58 @@ best-effort deletes the Bot message only after a fresh DB read proves its ID is
 unreferenced. An uncertain DB read preserves the provider message. The provider
 upload is not retried automatically.
 
-## Explicit code parity still outstanding
+## Signed text campaign delivery and discount offers
 
-These legacy capabilities are not silently proxied by the standalone PWA:
-campaign activation/delivery, release-feedback and discount campaign creation,
-and new course-ad creation. Existing course-ad raster and video replacement,
-desktop-promo and subscription QR media each have their own signed flows
-described above; they do not authorize other upload types.
-Direct, self-test and
-bounded text broadcast now have their own standalone commands described below. A legacy endpoint or
-unused step-up action name is not an implemented standalone command. Each
-needs its own strict payload, shared-service transaction and permission/audit
-contract before its UI can claim success. Messaging additionally needs durable
-claim/delivery evidence and bounded batches. Payment-delivery reconciliation now has its own signed human-evidence command; immutable financial/command audits remain intact.
+`/campaigns/read` returns one explicit campaign or a 30-row PK-keyset metadata
+page for ads, release feedback or discounts. List queries omit full copy and
+provider IDs; section navigation performs no read. Detail/prepare/save use live
+cookie/CSRF/authority checks, never daily aggregate caches. The original V10
+editor retains the contextual Send/Create/Save → native passkey interaction.
+
+- `ad_send` accepts one paused, explicit UZ/RU/TJ text-only draft with one
+  unsent round and a current time window. It signs the exact stored copy,
+  revision, filters and at most 1000 eligible canonical recipients. Save
+  reserves the shared round and legacy delivery evidence, consumes proof,
+  writes content-free audit and enqueues the reviewed body atomically. It
+  keeps `is_active=false` and `next_send_at=NULL`, so the legacy scheduler
+  cannot take over or repeat an uncertain attempt. Round reservation denotes
+  authorization of one attempt, not device delivery; the queue owns outcomes.
+- `release_create` signs authored UZ/RU/TJ text, fixed localized prompt/rating
+  markup, chosen existing feature, filters and exact bounded audience. It
+  creates the shared campaign directly in `sending` with one claimed queue;
+  it never leaves a `scheduled` row for the legacy sender. Existing try/rating
+  callbacks and reward policy remain: 30-minute trial, 20% for 24 hours after
+  feedback, with their original user-side eligibility checks. Sending alone
+  does not grant access, discount or payment. Durable legacy delivery evidence
+  records pending/attempting/sent/uncertain/skipped and provider message IDs
+  where acknowledged. A stopped in-flight call may finish once; counters and
+  receipts retain its actual outcome.
+- `discount_create` uses the existing shared repository and checkout policy:
+  explicit three-language plain title/reason, 1–90%, 1–720 hours, optional
+  canonical personal account or existing segment, existing payment/plan rules,
+  optional quota/repeat interval. New offers default off. `discount_state`
+  binds the raw current revision to activation/deactivation. Notifications
+  stay off and no recipient scan, Bot/AI call, Payment or entitlement is
+  created. Activation of a legacy notification-enabled offer is refused, so
+  this path cannot start an unbounded legacy sender. Native personal accounts
+  retain `target_user_id` with no invented Telegram ID.
+
+Campaign jobs share the existing two drainer slots, ten-recipient batches,
+committed pre-provider claim, one-hour private body retention, Stop and signed
+pending-only resume. No DB connection spans provider IO. Each claim rechecks
+session, current recipient, campaign revision/time and the selected filters.
+An original transport snapshot prevents an identity change from leaving a
+legacy reservation pointing at the wrong person. Unknown attempts never retry
+automatically. Expiry/cancellation closes unclaimed work; content-free audit
+outlives private job retention. No new schema, cron, media BLOB, translation
+request, aggregate refresh or external MCP capability is introduced.
+
+These commands intentionally accept the formats above. Arbitrary provider
+references, future unattended campaign scheduling, legacy campaign media and
+arbitrary promotion buttons are not accepted by these standalone commands.
+Existing course-ad photo/video, desktop-promo images, subscription QR and owned
+payout proof each retain their separate signed asset contract. A legacy route
+is not an implicit standalone permission.
 
 Account management binds canonical ID, current identity/subscription/status hash,
 the specific operation and (for deletion) repeated numeric ID confirmation.
@@ -149,8 +217,8 @@ anonymous approved payment/finance facts and removes personal account state.
 Audit/proof and the command commit or roll back together. Telegram guard cache
 is invalidated only after commit; the optional unblock notice is attempted
 once outside the DB transaction, with no automatic retry or claim of device
-delivery. UI uses the existing profile overflow menu and exact before/after
-passkey confirmation. Test-generated account/creative deletions never touch
+delivery. UI uses the existing profile overflow menu and a single editor whose
+contextual action signs the exact operation. Test-generated account/creative deletions never touch
 live records.
 
 Required-channel reads use 30-row PK keysets and never backfill settings.
@@ -277,8 +345,9 @@ already claimed attempt may finish. Signed control closes stale/uncertain
 work or resumes pending recipients. UI refresh is explicit; no polling.
 
 Marketing's compact Messages row and profile overflow open the existing V10
-editor. One copy editor is visible at a time; filters are collapsed and the
-full escaped texts/audience are reviewed before signing. The owner-approved
+editor. One copy editor is visible at a time; filters are collapsed. The same
+editor's Send button signs the exact escaped texts and computed audience before
+delivery, without an intermediate confirmation window. The owner-approved
 notification window, fresh-launch passkey and back gesture remain intact.
 
 ## Payout proof and single-window completion — owner update, 2026-10-25

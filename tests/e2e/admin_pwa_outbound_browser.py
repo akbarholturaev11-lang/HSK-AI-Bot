@@ -24,6 +24,9 @@ ORIGIN='https://hskai.app'
 ROOT=Path(__file__).resolve().parents[2]
 
 
+from tests.e2e.admin_pwa_step_up_gate import install_step_up_gate, wait_step_up, finish_step_up
+
+
 async def browser_checks(output):
     output.mkdir(parents=True,exist_ok=True)
     fixture=PaymentFixtures();fixture.engine=create_async_engine('sqlite+aiosqlite:///:memory:',poolclass=StaticPool)
@@ -59,7 +62,7 @@ async def browser_checks(output):
             browser=await pw.chromium.launch()
             try:
                 context=await browser.new_context(viewport={'width':1440,'height':1000},service_workers='block')
-                await context.route('**/*',serve);page=await context.new_page()
+                await context.route('**/*',serve);page=await context.new_page();await install_step_up_gate(page)
                 page.on('pageerror',lambda error:errors.append(str(error)))
                 await page.add_init_script("window.cspFailures=[];document.addEventListener('securitypolicyviolation',e=>cspFailures.push(e.violatedDirective))")
                 await setup_fresh_login(context,page,fixture)
@@ -75,8 +78,8 @@ async def browser_checks(output):
                         await page.locator('#messageText').fill('QA '+lang+' <b>你好</b>')
                 async def confirm():
                     await page.locator('[data-action=managementPrepare]').click()
-                    await expect(page.locator('.management-comparison')).to_be_visible()
-                    await page.locator('[data-action=managementExecute]').click()
+                    await wait_step_up(page)
+                    await finish_step_up(page)
                     await expect(page.locator('[data-message-job]')).to_be_visible(timeout=15000)
                 await page.goto(ORIGIN+'/admin/');await page.wait_for_load_state('networkidle');await login()
                 for language in ('uz','ru','tj'):
@@ -89,12 +92,12 @@ async def browser_checks(output):
                     await page.set_viewport_size({'width':390,'height':844})
                     before=len([p for p,_ in calls if p.endswith('step-up/options')])
                     await page.locator('[data-action=managementPrepare]').click()
-                    await expect(page.locator('.management-comparison')).to_be_visible()
-                    assert await page.locator('.management-comparison img').count()==0
+                    await wait_step_up(page)
+                    assert await page.locator('#drawerContent img').count()==0
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-                    assert len([p for p,_ in calls if p.endswith('step-up/options')])==before
+                    assert len([p for p,_ in calls if p.endswith('step-up/options')])==before+1
                     await page.screenshot(path=str(output/f'direct-message-confirm-{language}-390.png'))
-                    await page.locator('[data-action=close]').last.click()
+                    await page.locator('.drawer-close').click()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz');await marketing()
                 await page.locator('[data-action=messageEditor]').click()
@@ -105,10 +108,10 @@ async def browser_checks(output):
                 await page.locator('#messageFilters summary').click()
                 await page.locator('[data-message-language=ru]').check()
                 await page.locator('[data-action=managementPrepare]').click()
-                await expect(page.locator('.management-comparison')).to_be_visible()
+                await wait_step_up(page)
                 await page.screenshot(path=str(output/'broadcast-confirm-uz.png'))
                 baseline=len(sent)
-                await page.locator('[data-action=managementExecute]').click()
+                await finish_step_up(page)
                 await expect(page.locator('[data-message-run]')).to_be_visible(timeout=15000)
                 assert len(sent)-baseline==10
                 job=await page.locator('[data-message-run]').get_attribute('data-message-run')

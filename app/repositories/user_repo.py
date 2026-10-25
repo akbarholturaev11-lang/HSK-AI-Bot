@@ -299,8 +299,16 @@ class UserRepository:
         delivery_admin_ids: Optional[list[int]] = None,
         limit: Optional[int] = None,
         for_update: bool = False,
+        delivery_user_ids: Optional[list[int]] = None,
+        exclude_active_subscribers: bool = False,
     ) -> list[User]:
         query = select(User)
+        if delivery_user_ids is not None:
+            if not 1 <= len(delivery_user_ids) <= 1000:
+                raise ValueError('Invalid bounded delivery targets')
+            query = query.where(User.id.in_(delivery_user_ids))
+        if exclude_active_subscribers:
+            query = query.where(User.status != 'active')
         if languages:
             query = query.where(User.language.in_(languages))
         elif language:

@@ -1,13 +1,18 @@
+> Owner update, 2026-10-25: verified code promotion to `main` is explicitly
+> authorized. See the latest handoff for successful source CI and scope;
+> feature flags remain OFF and no manual deployment is requested.
+
 # HSK AI — Admin PWA implementation plan
 
 Status (updated 2026-10-25): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, manual grants, course/HSK30 controls, scoped OAuth/MCP, profiles, daily statistics/feedback snapshots and bounded JSON/CSV, native/technical inbox and default-OFF Apple Push sender exist. Private Redis/R2 reuse is implemented. The owner baseline uses minimal title-only Inbox rows and automatic importance; the latest owner correction requires a new automatic biometric passkey assertion on every launch/resume, without a separate initial button; private data remains locked until verified. Remaining management, retention/operator flows and release acceptance are tracked explicitly below. The old 0011 cold-start migration failure remains separate.**
 
 Target public URL: `https://hskai.app/admin` (owner-designated; live routing/TLS not verified).
-Branch: `fix/admin-pwa-biometric-every-open-20261025` (corrective follow-up after merged PR #207). No main push/merge, deploy or flag activation.
+Branch: `feat/admin-pwa-minimal-inbox-passkey-20261025` (includes merged PR #209). No main push/merge, deploy or flag activation.
 
 ## Owner UI and branch update — 2026-10-25
 
-Latest owner clarification: `fix/admin-pwa-biometric-every-open-20261025`.
+Latest owner main synchronization includes PR #209 on
+`feat/admin-pwa-minimal-inbox-passkey-20261025`.
 Preserve accepted Inbox, automatic importance and scoped iPhone back gesture.
 Every launch and foreground resume must REVOKE the prior server session and
 automatically request fresh WebAuthn, without requiring a preliminary button.
@@ -18,7 +23,7 @@ reuse instruction is superseded.
 
 ## Active continuation — owner instruction, 2026-10-24
 
-Work only on `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201. Commit and
+Work only on `feat/admin-pwa-minimal-inbox-passkey-20261025`. PR #201 is historical. Commit and
 push each completed, tested increment to that branch. Never merge/push main or
 deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
 `MCP_NEXT_CHAT_HANDOFF.md` supersedes its implementation counts.
@@ -49,8 +54,10 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
    adapter with raw-state CAS and shared legacy-writer key locks. Individual
    permanent HSK30 access still requires approved owned payment. Further
    settings and marketing configuration adapters now exist with localized
-   before/after editors, exact proof, raw revision CAS and atomic hash-only
-   audit. Required channels, account block/unblock/delete and manual ledger now have
+   original editors, one contextual action/native proof, raw revision CAS and
+   atomic hash-only audit. Signed creative photo/video creation, bounded
+   one-round ad/release delivery and canonical discount configuration now
+   have dedicated contracts; see `MANAGEMENT_COMMANDS_CONTRACT.md`. Required channels, account block/unblock/delete and manual ledger now have
    bounded signed adapters and localized editors. Partner applications also have signed approve/reject/block/unblock commands.
    Direct/self-test/bounded text broadcast now has exact signed audience/copy,
    pre-IO durable claims, stop and pending-only signed resume. Partner payout

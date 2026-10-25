@@ -109,7 +109,9 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("sectionBackStack.pop()",gesture)
         self.assertIn("if(source==='payment'){",script)
         self.assertIn("drawerBack=()=>inbox(null,originatingUser)",script)
-        self.assertIn("const previousDrawerBack=drawerBack",script)
+        # Payment decisions stay in their original editor and keep the Inbox
+        # return target; there is no extra confirmation layer to navigate back.
+        self.assertNotIn("drawer('confirmPayment'",script)
         # The gesture must not turn into browser history navigation.
         self.assertNotIn("history.back()",gesture)
         self.assertNotIn("location.assign(",gesture)

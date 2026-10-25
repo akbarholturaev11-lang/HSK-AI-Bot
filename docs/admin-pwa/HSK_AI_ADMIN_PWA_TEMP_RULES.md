@@ -1,22 +1,28 @@
-> **OWNER CORRECTION (2026-10-25):** Current corrective follow-up:
-> `fix/admin-pwa-biometric-every-open-20261025` after merged PR #207.
+> **MAIN PROMOTION AUTHORIZED (2026-10-25):** The owner explicitly requested
+> pushing the verified Admin PWA code to `main`. This authorizes that code
+> promotion; the earlier feature-only restriction below is historical for this
+> increment. All three feature defaults remain OFF. No manual production
+> deployment or flag activation was requested.
+
+> **OWNER CORRECTION (2026-10-25):** Current work branch:
+> `feat/admin-pwa-minimal-inbox-passkey-20261025`, including merged PR #209.
 > On every new launch/foreground resume, revoke the old server session and
 > attempt fresh WebAuthn automatically without a preliminary button; fallback
 > only for WebKit gesture limits/cancellation. Never expose private admin data
 > until verified. Preserve accepted minimal Inbox and iPhone swipe-back.
 > The previous session-reuse instruction is superseded. No main push or deploy.
 
-> **CURRENT MCP workstream branch clarification (2026-10-24):** Previous `codex/admin-pwa` was merged to `main` in PR #200. All NEW MCP work is intentionally isolated to **`feat/admin-pwa-mcp-readonly-20261024` / Draft PR #201**, as specified in [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Continue obeying every scoped safety/UI/approval rule below; the branch and startup sequence below reflect the current follow-up. No new merge/deploy/flag enablement is authorized.
+> **CURRENT BRANCH:** Continue only on `feat/admin-pwa-minimal-inbox-passkey-20261025`. PR #200/#201 and their branches are historical foundations. Latest `main` is merged into this feature branch at the owner’s request; no feature-to-main promotion, deploy or flag enablement.
 
 # Admin PWA — scoped AI work rules (temporary)
 
-> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-mcp-readonly-20261024`.
+> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-minimal-inbox-passkey-20261025`.
 > Not a repository-wide policy. Does not modify or supersede root `AGENTS.md` / `AI_RULES.md` / `PROJECT_MEMORY.md`.
 > All development and progress records for this task remain under `docs/admin-pwa/`.
 
 
 **Project:** HSK AI standalone Admin PWA
-**Working branch:** `feat/admin-pwa-mcp-readonly-20261024` (Draft PR #201)
+**Working branch:** `feat/admin-pwa-minimal-inbox-passkey-20261025` (owner-selected continuing branch)
 **Scope:** Only this Admin PWA initiative. These rules supplement, but do not replace, root `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, security invariants and localization policy.
 **State:** Temporary project-scoped handoff. Reconcile or archive when the initiative is finished. Do not copy these rules into unrelated platforms.
 
@@ -30,7 +36,7 @@
 
 ## Scope and Git safety
 
-- **All implementation stays on `feat/admin-pwa-mcp-readonly-20261024` until the owner explicitly approves promotion.** Commit/push each completed, tested increment there. Do not push/merge to `main`, deploy to production, switch live routes, change secrets, or touch public site / existing Telegram Admin Mini App except an indispensable backward-compatible adapter explicitly reviewed and tested.
+- **All implementation stays on `feat/admin-pwa-minimal-inbox-passkey-20261025` until the owner explicitly approves promotion.** Commit/push each completed, tested increment there. Do not push/merge to `main`, deploy to production, switch live routes, change secrets, or touch public site / existing Telegram Admin Mini App except an indispensable backward-compatible adapter explicitly reviewed and tested.
 - No force push, history rewrite or destructive cleanup. Do not edit outside task scope or silently import unrelated changes.
 - Use small, reviewable commits after scoped verification. Keep the current checkpoint and exact validation in `MCP_NEXT_CHAT_HANDOFF.md`; do not append new progress to the historical handoff. Never label a planned, mocked or untested feature as done.
 - If an existing repo-wide rule recommends `main` by default, this **user-selected project branch and no-production requirement** override the destination for this initiative; all other repository protections remain in force.
@@ -42,7 +48,7 @@
 - Admin PWA public target is `https://hskai.app/admin` **subject to real DNS, TLS, proxy and collision verification**. Do not claim it is live or that OAuth callback/RP ID is configured without evidence.
 - First onboarding: verified Google OIDC identity + one-time explicit approval by an authorized Telegram admin + secure canonical admin link + passkey enrollment. Returning login is **passkey-first without repeating Google/Telegram**. On EACH launch/resume revoke the old cookie session server-side and auto-attempt new WebAuthn, even when the old session has not expired. The browser cannot guarantee an automatic modal prompt; Safari/WebKit may require an explicit passkey fallback, which cannot be removed safely. Never display private UI or consume private data before successful proof. Explicit logout also revokes the server session. Linked Google and audited Telegram recovery are fallbacks, not each-open requirements.
 - WebAuthn (FIDO2) is platform authentication (Face ID, Touch ID, Windows Hello, PIN/passcode depending on device), **not a guaranteed Face-ID-only API**. Relying-party ID: `hskai.app` for production; origin `https://hskai.app`. Browser/server never receive biometric templates.
-- For payments, deletion, granting paid access, broadcast and other high-risk mutations require an **action/target/payload-bound, one-time WebAuthn step-up**, explicit confirmation, audit trail and server-side authorization; normal statistics browsing should not require per-view biometric prompts.
+- For payments, deletion, granting paid access, broadcast and other high-risk mutations require an **action/target/payload-bound, one-time WebAuthn step-up**, audit trail and server-side authorization. The original editor's contextual action opens native WebAuthn directly; do not add a second confirmation window or generic passkey button. Normal statistics browsing should not require per-view biometric prompts.
 - Tokens in Secure HttpOnly cookie only; no browser JS-readable session secrets, no tokens in URLs/localStorage, strict Origin/CSRF/session expiry/revocation/CSP/rate limits. PWA SW only caches public shell; **never** accounts, authenticated API, reviews/attachments, payments or tokens.
 - Canonical user ID is `users.id`; never confuse it with Telegram transport ID. Demo data must never enter production datasets.
 - A browser/Cloud/ChatGPT/MCP client receives no production database credentials. External MCP exposes only `hskai_statistics` / `admin:analytics:read`, with metric definitions, bounded ranges, explicit authorization, audit and limits. No account/feedback/payment-list tools or mutations. Broader first-party reads/exports do not extend MCP scope.

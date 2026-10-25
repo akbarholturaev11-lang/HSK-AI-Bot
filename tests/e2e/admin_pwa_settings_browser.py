@@ -29,6 +29,8 @@ from PIL import Image
 from app.admin_api.pwa_bootstrap import create_admin_pwa_bootstrap_router
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_settings import create_admin_pwa_settings_router
+from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
+from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api import pwa_marketing as pwa_marketing_api
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
@@ -37,6 +39,8 @@ from app.admin_api.pwa_partner_payouts import create_admin_pwa_partner_payouts_r
 from app.admin_api.pwa_partners import create_admin_pwa_partners_router
 from app.admin_api.pwa_notifications import create_admin_pwa_notifications_router
 from app.admin_api.pwa_portfolio import create_admin_pwa_portfolio_router
+from app.admin_api.pwa_campaigns import create_admin_pwa_campaigns_router
+from app.admin_api.pwa_outbound import create_admin_pwa_outbound_router
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_login_router
 from app.admin_api.pwa_payment_reconciliation import create_admin_pwa_payment_reconciliation_router
@@ -63,6 +67,7 @@ from app.services.support_contact_service import ADMIN_CONTACT_KEY
 from app.services.broadcast_translation_service import decode_localized_broadcast_text
 from tests.test_admin_pwa_payment_review import COOKIE, PaymentFixtures
 from tests.test_admin_pwa_webauthn_crypto_vectors import CRED_ID, HANDLE
+from tests.e2e.admin_pwa_step_up_gate import install_step_up_gate, wait_step_up, finish_step_up
 
 ORIGIN = "https://hskai.app"
 ROOT = Path(__file__).resolve().parents[2]
@@ -124,6 +129,8 @@ async def browser_checks(output, *, media_only=False):
     for factory in (create_admin_pwa_bootstrap_router, create_admin_pwa_read_router,
                     create_admin_pwa_passkey_login_router, create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
                     create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router,
+                    create_admin_pwa_campaigns_router,create_admin_pwa_outbound_router,
+                    create_admin_pwa_course_access_router, create_admin_pwa_hsk30_settings_router,
                     create_admin_pwa_user_management_router,create_admin_pwa_channels_router,
                     create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router,create_admin_pwa_partners_router,create_admin_pwa_partner_payouts_router,create_admin_pwa_payment_reconciliation_router):
         app.include_router(factory(**common))
@@ -173,6 +180,7 @@ async def browser_checks(output, *, media_only=False):
                 context = await browser.new_context(viewport={"width": 1440, "height": 1000}, service_workers="block")
                 await context.route("**/*", serve)
                 page = await context.new_page()
+                await install_step_up_gate(page)
                 page.on("pageerror", lambda error: errors.append(str(error)))
                 await page.add_init_script("""window.cspFailures=[];window.webauthnErrors=[];
                   document.addEventListener('securitypolicyviolation',e=>window.cspFailures.push(e.violatedDirective));
@@ -199,20 +207,28 @@ async def browser_checks(output, *, media_only=False):
                         await page.locator(f'.nav [data-route="{route_name}"]').click()
                     await expect(page.locator(".management-page")).to_be_visible()
 
+                async def begin_management():
+                    label=await page.locator('[data-action="managementPrepare"]').inner_text()
+                    assert label not in await page.evaluate("() => Object.values(window.HSKAI_ADMIN_I18N).flatMap(c=>[c.next,c.confirmPasskey])")
+                    await page.locator('[data-action="managementPrepare"]').click()
+                    await wait_step_up(page)
+
                 async def prepare_and_save(language, label=None):
+                    # Native-cancel scenarios now create real pending proofs.
+                    # Retire earlier independent scenarios from the quota window;
+                    # dedicated server tests exercise that quota itself.
+                    async with fixture.sessions() as db:
+                        await db.execute(update(AdminPwaStepUp).values(
+                            created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
+                        await db.commit()
                     before = await audit_count()
                     ceremonies = len([path for path, _ in calls if path.endswith("step-up/options")])
-                    single_window = await page.locator('#payoutOperation').count() > 0
-                    if single_window and label:
+                    await begin_management()
+                    assert await audit_count() == before
+                    assert len([path for path, _ in calls if path.endswith("step-up/options")]) == ceremonies + 1
+                    if label:
                         await page.screenshot(path=str(output / label))
-                    await page.locator('[data-action="managementPrepare"]').click()
-                    if not single_window:
-                        await expect(page.locator(".management-comparison")).to_be_visible()
-                        assert await audit_count() == before
-                        assert len([path for path, _ in calls if path.endswith("step-up/options")]) == ceremonies
-                        if label:
-                            await page.screenshot(path=str(output / label))
-                        await page.locator('[data-action="managementExecute"]').click()
+                    await finish_step_up(page)
                     expected = json.loads((ROOT / f"localization/ui/{language}/miniapp.json").read_text())["messages"]["ui.admin_pwa.changesSaved"]
                     try:
                         await expect(page.locator("#drawerTitle")).to_have_text(expected, timeout=15000)
@@ -244,6 +260,26 @@ async def browser_checks(output, *, media_only=False):
                 await navigate("course", 1440)
                 await expect(page.locator('[data-action="hsk30Settings"]')).to_be_visible()
                 await expect(page.locator('[data-action="courseSettings"]')).to_be_visible()
+                before_policy=await audit_count()
+                await page.locator('[data-action="courseSettings"]').click()
+                await page.locator('#courseMode').select_option('free_until')
+                deadline=await page.evaluate("() => {const d=new Date(Date.now()+86400000);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}")
+                await page.locator('#courseUntil').fill(deadline)
+                await page.locator('[data-action="coursePrepare"]').click()
+                await wait_step_up(page)
+                await expect(page.locator('#courseUntil')).to_be_disabled()
+                await finish_step_up(page)
+                await expect(page.locator('#drawerTitle')).to_have_text(await page.evaluate('() => window.HSKAI_ADMIN_I18N.uz.courseSaved'))
+                assert await audit_count()==before_policy+1
+                await page.locator('.drawer-close').click()
+                await page.locator('[data-action="hsk30Settings"]').click()
+                await page.locator('#hsk30Price').fill('101')
+                await page.locator('[data-action="hsk30Prepare"]').click()
+                await wait_step_up(page)
+                await finish_step_up(page)
+                await expect(page.locator('#drawerTitle')).to_have_text(await page.evaluate('() => window.HSKAI_ADMIN_I18N.uz.hsk30Saved'))
+                assert await audit_count()==before_policy+2
+                await page.locator('.drawer-close').click()
                 await navigate("system", 1440)
                 assert configuration_reads() == initial
                 for width in (1440, 390):
@@ -269,17 +305,20 @@ async def browser_checks(output, *, media_only=False):
                 # window. Rate limits have their own regression suite; all
                 # browser signatures above still used the real server quota.
                 async with fixture.sessions() as db:
-                    await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == "consumed").values(
+                    await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
                     await db.commit()
                 # Cancel has no proof/command side effects and never persists an edit.
                 before = await audit_count()
                 await page.locator('[data-setting-kind="payment_details"][data-bank="dc_city"]').click()
                 await page.locator("#settingValue").fill("QA cancellation")
-                await page.locator('[data-action="managementPrepare"]').click()
-                await expect(page.locator(".management-comparison")).to_be_visible()
-                assert await page.locator(".management-comparison img").count() == 0
-                await page.locator('[data-action="close"]').last.click()
+                await begin_management()
+                assert await page.locator("#drawerContent img").count() == 0
+                await page.evaluate("window.cancelStepUp()")
+                await expect(page.locator('#settingValue')).to_be_enabled()
+                await expect(page.locator('#settingValue')).to_have_value('QA cancellation')
+                await expect(page.locator('[data-action="managementPrepare"]')).to_be_enabled()
+                await page.locator('.drawer-close').click()
                 assert await audit_count() == before
                 for bank in ("dc_city", "alif"):
                     await page.locator(f'[data-setting-kind="payment_details"][data-bank="{bank}"]').click()
@@ -300,14 +339,24 @@ async def browser_checks(output, *, media_only=False):
                 await prepare_and_save("uz", "help-video-confirm.png")
                 # A real concurrent config change invalidates the server snapshot.
                 before = await audit_count()
+                ceremonies=len([path for path,_ in calls if path.endswith('step-up/options')])
+                await page.locator('[data-setting-kind="help_contact"]').click()
+                await page.locator('#settingValue').fill('@stale_editor')
+                async with fixture.sessions() as db:
+                    await BotSettingRepository(db).set(ADMIN_CONTACT_KEY, '@changed_before_click')
+                    await db.commit()
+                await page.locator('[data-action="managementPrepare"]').click()
+                await expect(page.locator('#drawerFoot [data-setting-kind="help_contact"]')).to_be_visible()
+                assert len([path for path,_ in calls if path.endswith('step-up/options')])==ceremonies
+                assert await audit_count()==before
+                await page.locator('.drawer-close').click()
                 await page.locator('[data-setting-kind="help_contact"]').click()
                 await page.locator("#settingValue").fill("@next_support")
-                await page.locator('[data-action="managementPrepare"]').click()
-                await expect(page.locator(".management-comparison")).to_be_visible()
+                await begin_management()
                 async with fixture.sessions() as db:
                     await BotSettingRepository(db).set(ADMIN_CONTACT_KEY, "@changed_elsewhere")
                     await db.commit()
-                await page.locator('[data-action="managementExecute"]').click()
+                await finish_step_up(page)
                 await expect(page.locator('[data-setting-kind="help_contact"]')).to_have_count(2)
                 assert await audit_count() == before
                 await expect(page.locator('[data-action="managementExecute"]')).to_have_count(0)
@@ -315,11 +364,10 @@ async def browser_checks(output, *, media_only=False):
                 # A lost response AFTER the command commits exposes only a reread action.
                 await page.locator('[data-action="priceSettings"]').click()
                 await page.locator("#priceAmount").fill("101")
-                await page.locator('[data-action="managementPrepare"]').click()
-                await expect(page.locator(".management-comparison")).to_be_visible()
+                await begin_management()
                 saves = len([path for path, _ in calls if path.endswith("subscription-prices/save")])
                 drop_save = True
-                await page.locator('[data-action="managementExecute"]').click()
+                await finish_step_up(page)
                 await expect(page.locator('#drawerFoot [data-action="priceSettings"]')).to_be_visible()
                 await expect(page.locator('[data-action="managementExecute"]')).to_have_count(0)
                 assert await audit_count() == before + 1
@@ -332,7 +380,7 @@ async def browser_checks(output, *, media_only=False):
                 # configuration services. Read each localized editor before
                 # exercising saved changes and a single creative deletion.
                 async with fixture.sessions() as db:
-                    await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == "consumed").values(
+                    await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
                     await db.commit()
                 for width in (1440, 390):
@@ -351,6 +399,7 @@ async def browser_checks(output, *, media_only=False):
                             assert await page.locator('#drawerContent img').count() == 0
                             await page.screenshot(path=str(output / f'marketing-{kind}-{language}-{width}.png'))
                             await page.locator('.drawer-close').click()
+                        await page.locator('[data-campaign-list="ad"]').click()
                         await page.locator('[data-marketing-kind="campaign_draft"]').click()
                         await expect(page.locator('#campaignTitle')).to_be_visible()
                         assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')
@@ -358,6 +407,7 @@ async def browser_checks(output, *, media_only=False):
                         await page.locator('.drawer-close').click()
                 await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
+                await page.locator('[data-campaign-list="ad"]').click()
                 await page.locator('[data-marketing-kind="campaign_draft"]').click()
                 await page.locator('#campaignTitle').fill('QA campaign')
                 await page.locator('#campaignText-uz').fill('Yangi kurs <img src=x onerror=alert(1)>')
@@ -369,13 +419,12 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('[data-campaign-language="ru"]').check()
                 await page.locator('#campaignTrack').select_option('hsk30')
                 await page.locator('#campaignDuration').fill('72')
-                await page.locator('[data-action="managementPrepare"]').click()
-                await expect(page.locator('.management-comparison')).to_be_visible()
-                assert await page.locator('.management-comparison .notice-languages').count()==3
-                assert await page.locator('.management-comparison img').count()==0
+                await begin_management()
+                assert await page.locator('#drawerContent .notice-languages').count()==3
+                assert await page.locator('#drawerContent img').count()==0
                 assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 await page.screenshot(path=str(output/'campaign-draft-confirm-uz.png'))
-                await page.locator('[data-action="managementExecute"]').click()
+                await finish_step_up(page)
                 saved_title=json.loads((ROOT/'localization/ui/uz/miniapp.json').read_text())['messages']['ui.admin_pwa.changesSaved']
                 await expect(page.locator('#drawerTitle')).to_have_text(saved_title, timeout=15000)
                 async with fixture.sessions() as db:
@@ -409,12 +458,11 @@ async def browser_checks(output, *, media_only=False):
                     'name':'qa-promo.png','mimeType':'image/png','buffer':promo_image})
                 await expect(page.locator('#promoMediaPreview img')).to_be_visible()
                 assert await page.locator('#promoMediaPreview img').evaluate('(img)=>img.naturalWidth===320&&img.naturalHeight===180')
-                await page.locator('[data-action="managementPrepare"]').click()
-                await expect(page.locator('.management-comparison')).to_be_visible()
-                assert await page.locator('.management-comparison img').count()==1
+                await begin_management()
+                assert await page.locator('#drawerContent img').count()==1
                 assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 await page.screenshot(path=str(output/'desktop-promo-image-confirm-390.png'))
-                await page.locator('[data-action="managementExecute"]').click()
+                await finish_step_up(page)
                 saved_title=json.loads((ROOT/'localization/ui/uz/miniapp.json').read_text())['messages']['ui.admin_pwa.changesSaved']
                 await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
                 async with fixture.sessions() as db:
@@ -425,11 +473,10 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('.drawer-close').click()
                 await page.locator('[data-marketing-kind="desktop_promo"]').click()
                 await page.locator('#promoMediaClear').check()
-                await page.locator('[data-action="managementPrepare"]').click()
-                await expect(page.locator('.management-comparison')).to_be_visible()
-                await expect(page.locator('.management-comparison img')).to_have_count(0)
+                await begin_management()
+                await expect(page.locator('#drawerContent img')).to_have_count(0)
                 await page.screenshot(path=str(output/'desktop-promo-image-clear-confirm.png'))
-                await page.locator('[data-action="managementExecute"]').click()
+                await finish_step_up(page)
                 await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
                 async with fixture.sessions() as db:
                     cleared_promo=await get_desktop_app_promo_settings(db)
@@ -445,12 +492,11 @@ async def browser_checks(output, *, media_only=False):
                     await page.locator('#courseAdMediaFile').set_input_files({
                         'name':'qa-course-banner.png','mimeType':'image/png','buffer':promo_image})
                     await expect(page.locator('#courseAdMediaPreview img')).to_be_visible()
-                    await page.locator('[data-action="managementPrepare"]').click()
-                    await expect(page.locator('.management-comparison')).to_be_visible()
-                    assert await page.locator('.management-comparison img').count()==1
+                    await begin_management()
+                    assert await page.locator('#drawerContent img').count()==1
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/'course-ad-image-confirm-390.png'))
-                    await page.locator('[data-action="managementExecute"]').click()
+                    await finish_step_up(page)
                     saved_title=json.loads((ROOT/'localization/ui/uz/miniapp.json').read_text())['messages']['ui.admin_pwa.changesSaved']
                     await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
                     async with fixture.sessions() as db:
@@ -469,9 +515,8 @@ async def browser_checks(output, *, media_only=False):
                     await page.locator('#courseAdMediaFile').set_input_files({
                         'name':'qa-course-video.mp4','mimeType':'video/mp4','buffer':COURSE_AD_TEST_VIDEO})
                     await expect(page.locator('#courseAdMediaPreview video')).to_be_visible()
-                    await page.locator('[data-action="managementPrepare"]').click()
-                    await expect(page.locator('.management-comparison video')).to_be_visible()
-                    assert await page.locator('.management-comparison video').count()==1
+                    await begin_management()
+                    assert await page.locator('#drawerContent video').count()==1
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/'course-ad-video-confirm-390.png'))
                     video_filename='course_ad_pwa_0123456789abcdef0123456789abcdef.mp4'
@@ -482,7 +527,7 @@ async def browser_checks(output, *, media_only=False):
                     with patch.object(pwa_marketing_api,'prepare_pwa_course_ad_video_file',
                                       side_effect=fake_video_transcode) as video_transcode:
                         before_video_audit=await audit_count()
-                        await page.locator('[data-action="managementExecute"]').click()
+                        await finish_step_up(page)
                         await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
                     video_transcode.assert_called_once()
                     async with fixture.sessions() as db:
@@ -492,8 +537,62 @@ async def browser_checks(output, *, media_only=False):
                         assert (Path(course_media_directory.name)/video_filename).read_bytes()==COURSE_AD_TEST_VIDEO
                     assert await audit_count()==before_video_audit+1
                     assert len([path for path,_ in calls if path.endswith('step-up/options')])>=2
+                    await page.locator('.drawer-close').click()
                     async with fixture.sessions() as db:
-                        await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == "consumed").values(
+                        await db.execute(update(AdminPwaStepUp).values(
+                            created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
+                        await db.commit()
+                    for language in ('uz','ru','tj'):
+                        await page.set_viewport_size({'width':1440,'height':1000})
+                        await page.locator('#locale').select_option(language)
+                        await page.locator('[data-marketing-kind="course_ad"]').click()
+                        await page.locator('[data-marketing-kind="course_ad_create"]').click()
+                        await expect(page.locator('#newAdLanguage')).to_have_value(language)
+                        await page.locator('#newAdTitle-'+language).fill('QA 中文 '+language)
+                        await page.locator('#courseAdMediaFile').set_input_files({
+                            'name':'new-ad.png','mimeType':'image/png','buffer':promo_image})
+                        await page.set_viewport_size({'width':390,'height':844})
+                        await begin_management()
+                        assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                        await page.screenshot(path=str(output/f'course-ad-create-{language}-390.png'))
+                        await page.evaluate('window.cancelStepUp()')
+                        await expect(page.locator('#newAdTitle-'+language)).to_be_enabled()
+                        await expect(page.locator('#newAdTitle-'+language)).to_have_value('QA 中文 '+language)
+                        await page.locator('.drawer-close').click()
+                    await page.set_viewport_size({'width':1440,'height':1000})
+                    await page.locator('#locale').select_option('uz')
+                    await page.locator('[data-marketing-kind="course_ad"]').click()
+                    await page.locator('[data-marketing-kind="course_ad_create"]').click()
+                    await page.locator('#newAdLanguage').select_option('all')
+                    for language,title,button in (('uz','中文 kursi','O‘rganish'),
+                                                   ('ru','Курс китайского','Учиться'),
+                                                   ('tj','Курси чинӣ','Омӯхтан')):
+                        section=page.locator('#newAdCopy-'+language)
+                        if await section.get_attribute('open') is None:
+                            await section.locator('summary').click()
+                        await page.locator('#newAdTitle-'+language).fill(title)
+                        await page.locator('#newAdButton-'+language).fill(button)
+                    await page.locator('[data-course-ad-placement="lesson_end"]').check()
+                    await page.locator('#newAdDuration').fill('12')
+                    await page.locator('#newAdLink').fill('https://example.invalid/course')
+                    await page.locator('#courseAdMediaFile').set_input_files({
+                        'name':'new-ad-all.png','mimeType':'image/png','buffer':promo_image})
+                    before_creation=await audit_count()
+                    await begin_management()
+                    await finish_step_up(page)
+                    await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
+                    assert await audit_count()==before_creation+1
+                    async with fixture.sessions() as db:
+                        created=await db.get(CourseAdCreative,2)
+                        assert created and created.language=='all' and created.title=='Курси чинӣ'
+                        assert created.is_active is False and created.duration_seconds==12
+                        assert created.placements=='lesson_end,screen_center'
+                        assert set(json.loads(created.localized_copy))=={'uz','ru','tj'}
+                        assert (Path(course_media_directory.name)/created.media_path).read_bytes()==promo_image
+                        assert await db.scalar(select(CourseAdCreative.media_blob).where(CourseAdCreative.id==2)) is None
+                    await page.set_viewport_size({'width':390,'height':844})
+                    async with fixture.sessions() as db:
+                        await db.execute(update(AdminPwaStepUp).values(
                             created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
                         price_before=await SubscriptionPriceService(db).get_price("alipay", "1_month")
                         await db.commit()
@@ -508,14 +607,13 @@ async def browser_checks(output, *, media_only=False):
                         'name':'payment-qr.png','mimeType':'image/png','buffer':promo_image})
                     await expect(page.locator('#paymentQrMediaPreview img')).to_be_visible()
                     qr_ceremonies=len([path for path,_ in calls if path.endswith('step-up/options')])
-                    await page.locator('[data-action="managementPrepare"]').click()
-                    await expect(page.locator('.management-comparison')).to_be_visible()
-                    assert await page.locator('.management-comparison img').count()==1
+                    await begin_management()
+                    assert await page.locator('#drawerContent img').count()==1
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-                    assert len([path for path,_ in calls if path.endswith('step-up/options')])==qr_ceremonies
+                    assert len([path for path,_ in calls if path.endswith('step-up/options')])==qr_ceremonies+1
                     await page.screenshot(path=str(output/'payment-qr-confirm-390.png'))
                     before_qr_audit=await audit_count()
-                    await page.locator('[data-action="managementExecute"]').click()
+                    await finish_step_up(page)
                     await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
                     assert len([path for path,_ in calls if path.endswith('step-up/options')])==qr_ceremonies+1
                     async with fixture.sessions() as db:
@@ -556,11 +654,10 @@ async def browser_checks(output, *, media_only=False):
                     await page.locator('[data-user-detail="2"]:visible').click()
                     await page.locator('[data-menu-toggle="userManagementMenu"]').click()
                     await page.locator('[data-user-management="2"][data-user-operation="block"]').click()
-                    await page.locator('[data-action="managementPrepare"]').click()
-                    await expect(page.locator('.management-comparison')).to_be_visible()
+                    await begin_management()
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/f'account-block-confirm-{language}-390.png'))
-                    await page.locator('[data-action="close"]').last.click()
+                    await page.locator('.drawer-close').click()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 for operation,user_id in (('block',2),('unblock',2),('delete',1)):
@@ -578,7 +675,7 @@ async def browser_checks(output, *, media_only=False):
                 # Fixed channel settings are read only on an explicit editor
                 # tap; these are DB commands and never Telegram API requests.
                 async with fixture.sessions() as db:
-                    await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == 'consumed').values(
+                    await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
                     await db.commit()
                 for language in ('uz','ru','tj'):
@@ -613,11 +710,10 @@ async def browser_checks(output, *, media_only=False):
                     await page.locator('#portfolioAmount').fill('12.99')
                     await page.locator('#portfolioNote').fill('QA expense <img src=x onerror=alert(1)>')
                     await page.set_viewport_size({'width':390,'height':844})
-                    await page.locator('[data-action="managementPrepare"]').click()
-                    await expect(page.locator('.management-comparison')).to_be_visible()
-                    assert await page.locator('.management-comparison img').count()==0
+                    await begin_management()
+                    assert await page.locator('#drawerContent img').count()==0
                     await page.screenshot(path=str(output/f'ledger-confirm-{language}-390.png'))
-                    await page.locator('[data-action="close"]').last.click()
+                    await page.locator('.drawer-close').click()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 await page.locator('[data-action="portfolioHistory"]').click()
@@ -631,7 +727,7 @@ async def browser_checks(output, *, media_only=False):
                 await expect(page.locator('#drawerContent')).to_contain_text('QA committed expense')
                 await page.locator('.drawer-close').click()
                 async with fixture.sessions() as db:
-                    await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == 'consumed').values(
+                    await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
                     await db.commit()
                 for language in ('uz','ru','tj'):
@@ -656,11 +752,10 @@ async def browser_checks(output, *, media_only=False):
                     await page.locator('#noticeText').fill('Дақиқа: {minutes}')
                     await page.locator('#noticeLanguage').select_option('uz')
                     await expect(page.locator('#noticeText')).to_have_value('QA <b>{minutes}</b> <img src=x onerror=alert(1)>')
-                    await page.locator('[data-action="managementPrepare"]').click()
-                    await expect(page.locator('.management-comparison')).to_be_visible()
-                    assert await page.locator('.management-comparison img').count()==0
+                    await begin_management()
+                    assert await page.locator('#drawerContent img').count()==0
                     await page.screenshot(path=str(output/f'notice-confirm-{language}-390.png'))
-                    await page.locator('[data-action="close"]').last.click()
+                    await page.locator('.drawer-close').click()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 await page.locator('[data-action="noticeList"]').click()
@@ -675,7 +770,7 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('.drawer-close').click()
                 await navigate('marketing',1440)
                 async with fixture.sessions() as db:
-                    await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == 'consumed').values(
+                    await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
                     await db.commit()
                 for language in ('uz','ru','tj'):
@@ -684,16 +779,12 @@ async def browser_checks(output, *, media_only=False):
                     await page.locator('[data-partner-id="1"]').click()
                     await page.set_viewport_size({'width':390,'height':844})
                     await expect(page.locator('#partnerOperation')).to_have_value('approve')
-                    await page.locator('[data-action="managementPrepare"]').click()
-                    await expect(page.locator('.management-comparison')).to_be_visible()
-                    assert await page.locator('.management-comparison .notice-languages').count()==3
-                    assert await page.locator('.management-comparison .notice-preview').all_text_contents()==[
-                        t('partner_approved_notification',language).replace('<b>','').replace('</b>','')
-                        for language in ('uz','ru','tj')]
-                    assert await page.locator('.management-comparison img').count()==0
+                    await begin_management()
+                    assert await page.locator('#partnerOperation').input_value()=='approve'
+                    assert await page.locator('#drawerContent img').count()==0
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/f'partner-confirm-{language}-390.png'))
-                    await page.locator('[data-action="close"]').last.click()
+                    await page.locator('.drawer-close').click()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 for partner_id,operation in ((1,'approve'),(1,'block'),(1,'unblock'),(2,'reject')):
@@ -708,7 +799,7 @@ async def browser_checks(output, *, media_only=False):
                     assert {job.target_user_id for job in jobs}=={303,304}
                     assert all(job.status=='ready' and job.audience_count==1 for job in jobs)
                 async with fixture.sessions() as db:
-                    await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == 'consumed').values(
+                    await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
                     await db.commit()
                 for language in ('uz','ru','tj'):
@@ -722,7 +813,7 @@ async def browser_checks(output, *, media_only=False):
                     assert await page.locator('#managementForm img').count()==0
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/f'payout-confirm-{language}-390.png'))
-                    await page.locator('[data-action="close"]').last.click()
+                    await page.locator('.drawer-close').click()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 for payout_id,operation in ((1,'deadline'),(1,'claim'),(1,'release'),(2,'reject')):
@@ -738,12 +829,11 @@ async def browser_checks(output, *, media_only=False):
                     await page.locator('#deliveryResolution').select_option('no_retry')
                     await page.locator('#deliveryReason').fill('QA reviewed <img src=x onerror=alert(1)>')
                     await page.set_viewport_size({'width':390,'height':844})
-                    await page.locator('[data-action="managementPrepare"]').click()
-                    await expect(page.locator('.management-comparison')).to_be_visible()
-                    assert await page.locator('.management-comparison img').count()==0
+                    await begin_management()
+                    assert await page.locator('#drawerContent img').count()==0
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/f'reconciliation-confirm-{language}-390.png'))
-                    await page.locator('[data-action="close"]').last.click()
+                    await page.locator('.drawer-close').click()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 await page.locator('[data-action="deliveryList"]').click()
@@ -758,12 +848,11 @@ async def browser_checks(output, *, media_only=False):
                 before = await audit_count()
                 await page.locator('[data-setting-kind="help_contact"]').click()
                 await page.locator("#settingValue").fill("@revoked_session")
-                await page.locator('[data-action="managementPrepare"]').click()
-                await expect(page.locator(".management-comparison")).to_be_visible()
+                await begin_management()
                 async with fixture.sessions() as db:
                     (await db.get(AdminPwaSession, fixture.session_id)).revoked_at = datetime.now(timezone.utc)
                     await db.commit()
-                await page.locator('[data-action="managementExecute"]').click()
+                await finish_step_up(page)
                 # Step-up deliberately returns 403 without disclosing session
                 # status. A read-current tap revalidates the session with401.
                 await page.locator('#drawerFoot [data-setting-kind="help_contact"]').click()

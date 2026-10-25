@@ -1,6 +1,8 @@
 """Signed marketing commands against real isolated SQL; no live messaging."""
 import json
 import hashlib
+import base64
+from copy import deepcopy
 import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -27,6 +29,7 @@ from app.db.models.course_ad import CourseAdCreative, CourseAdView
 from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.services.course_ad_service import CourseAdService
+from app.services.course_ad_translation_service import localize_ad_copy
 from app.services import course_ad_service
 from app.services.course_sales_experiment_service import CourseSalesExperimentService
 from app.services.desktop_app_promo_settings_service import (
@@ -97,6 +100,145 @@ class AdminPwaMarketingTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         output = BytesIO()
         Image.new("RGB", (3, 2), (26, 106, 117)).save(output, format="PNG")
         return output.getvalue()
+
+    @staticmethod
+    def creative_change(data, *, language="all", media_type="photo"):
+        copies = {"uz": {"title": "QA 中文 kursi", "button_text": "O‘rganish"},
+                  "ru": {"title": "QA курс китайского", "button_text": "Учиться"},
+                  "tj": {"title": "QA курси чинӣ", "button_text": "Омӯхтан"}}
+        return {"kind": "course_ad_create", "language": language,
+                "copies": {lang: copy if language == "all" or language == lang else None
+                           for lang, copy in copies.items()},
+                "ad_type": "odiy", "placements": ["screen_center", "lesson_end"],
+                "duration_seconds": 7, "link_url": "@qa_course_bot", "is_active": False,
+                "media_type": media_type, "media_sha256": hashlib.sha256(data).hexdigest(),
+                "media_size": len(data)}
+
+    async def test_create_multilingual_course_ad_http_is_signed_disk_only_and_not_replayed(self):
+        data = self.promo_png()
+        change = self.creative_change(data)
+        command = await self.prepare_marketing(change)
+        operation = command.operation()
+        self.assertNotIn("copies", operation["payload"]["change"])
+        self.assertEqual(operation["payload"]["copy_hash"], marketing._hash(change["copies"]))
+        self.assertLess(len(json.dumps(operation)), 4096)
+        proof = await self.proof_marketing(command, signed=True)
+        raw_command = json.dumps({**command.model_dump(), "step_up_id": proof}, ensure_ascii=False).encode()
+        encoded = base64.urlsafe_b64encode(raw_command).decode().rstrip("=")
+        self.assertLess(len(encoded), 8192)
+        headers = {"origin": ORIGIN, "sec-fetch-site": "same-origin", "content-type": "image/png",
+                   "cookie": "__Host-hskai_admin=" + fixtures.COOKIE,
+                   "x-admin-pwa-command": encoded, "x-admin-pwa-command-encoding": "base64url"}
+        app = FastAPI()
+        app.include_router(marketing.create_admin_pwa_marketing_router(
+            settings_obj=self.settings, session_factory=self.sessions))
+        with tempfile.TemporaryDirectory(prefix="admin-pwa-create-ad-") as media_root:
+            with patch.object(marketing, "COURSE_AD_MEDIA_ROOT", media_root):
+                async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url=ORIGIN) as client:
+                    for encoded_bad, encoding in (("not_base64!", "base64url"), (encoded, "unknown")):
+                        rejected = await client.post("/api/admin/v1/marketing/media/save", content=data,
+                            headers={**headers, "x-admin-pwa-command": encoded_bad,
+                                     "x-admin-pwa-command-encoding": encoding})
+                        self.assertEqual(rejected.status_code, 400)
+                    result = await client.post("/api/admin/v1/marketing/media/save", headers=headers, content=data)
+                    self.assertEqual(result.status_code, 200, result.text)
+                    replay = await client.post("/api/admin/v1/marketing/media/save", headers=headers, content=data)
+                    self.assertEqual(replay.status_code, 403)
+                async with self.sessions() as db:
+                    saved = await db.scalar(select(CourseAdCreative))
+                    self.assertFalse(saved.is_active)
+                    self.assertEqual(saved.created_by_telegram_id, 9001)
+                    self.assertEqual(saved.placements, "lesson_end,screen_center")
+                    self.assertEqual(saved.link_url, "https://t.me/qa_course_bot")
+                    self.assertEqual(saved.media_type, "photo")
+                    self.assertEqual((Path(media_root) / saved.media_path).read_bytes(), data)
+                    self.assertIsNone(await db.scalar(select(CourseAdCreative.media_blob)))
+                    self.assertIsNone(saved.media_size)
+                    for lang, copy in change["copies"].items():
+                        self.assertEqual(localize_ad_copy(saved.localized_copy, title=saved.title,
+                            button_text=saved.button_text, language=lang), (copy["title"], copy["button_text"]))
+                    self.assertEqual(await db.scalar(select(func.count()).select_from(CourseAdCreative)), 1)
+                    self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit)), 1)
+                    self.assertEqual(await db.scalar(select(func.count()).select_from(AdCampaign)), 0)
+                    audit = await db.get(AdminPwaCommandAudit, result.json()["command_id"])
+                    self.assertEqual(audit.payload_hash, operation_digest(**operation))
+                    for forbidden in (saved.title, saved.media_path, "Учиться", "media_blob"):
+                        self.assertNotIn(forbidden, audit.result_json)
+
+    async def test_new_creative_validation_rejects_inexact_copy_target_and_media(self):
+        valid = self.creative_change(self.promo_png())
+        invalid = []
+        for field, value in (("language", "tg"), ("ad_type", "app"), ("placements", ["practice"]),
+                             ("placements", ["screen_center", "screen_center"]),
+                             ("duration_seconds", True), ("media_size", 1024 * 1024 + 1),
+                             ("link_url", "javascript:alert(1)"), ("link_url", "http://example.invalid"),
+                             ("link_url", "https://user:pass@example.invalid"), ("link_url", "@")):
+            invalid.append({**valid, field: value})
+        missing = deepcopy(valid); missing["copies"]["ru"] = None; invalid.append(missing)
+        mixed = deepcopy(valid); mixed["copies"]["ru"]["button_text"] = ""; invalid.append(mixed)
+        wrong_single = deepcopy(valid); wrong_single["language"] = "uz"; invalid.append(wrong_single)
+        blank = deepcopy(valid); blank["copies"]["tj"]["title"] = "  "; invalid.append(blank)
+        for value in invalid:
+            with self.subTest(value=value), self.assertRaises(ValidationError):
+                marketing.PrepareMarketing.model_validate({"change": value})
+
+    async def test_new_creative_video_preflight_is_same_session_and_encoding_has_no_db_transaction(self):
+        data = b"source-video"
+        command = await self.prepare_marketing(self.creative_change(data, language="uz", media_type="video"))
+        proof = await self.proof_marketing(command, signed=True)
+        request = marketing.ExecuteMarketing(**command.model_dump(), step_up_id=proof)
+        foreign_cookie = "V" * 64
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            db.add(AdminPwaSession(id=str(uuid4()), user_id=101,
+                token_hash=hashlib.sha256(foreign_cookie.encode()).hexdigest(), auth_method="webauthn",
+                created_at=now, expires_at=now + timedelta(hours=1)))
+            await db.commit()
+        with tempfile.TemporaryDirectory(prefix="admin-pwa-create-video-") as media_root:
+            with patch.object(marketing, "COURSE_AD_MEDIA_ROOT", media_root):
+                with patch.object(marketing, "prepare_pwa_course_ad_video_file") as encode:
+                    async with self.sessions() as db:
+                        with self.assertRaisesRegex(marketing.CommandError, "step_up_denied"):
+                            await marketing.execute_marketing(db, session_cookie=foreign_cookie,
+                                request=request, settings_obj=self.settings,
+                                media_bytes=data, media_content_type="video/mp4")
+                    encode.assert_not_called()
+                async with self.sessions() as db:
+                    def fake_encode(raw, *, raw_ext, media_root):
+                        self.assertFalse(db.in_transaction())
+                        filename = "course_ad_pwa_0123456789abcdef0123456789abcdef.mp4"
+                        (Path(media_root) / filename).write_bytes(b"encoded-mp4")
+                        return filename
+                    with patch.object(marketing, "prepare_pwa_course_ad_video_file", side_effect=fake_encode):
+                        result = await marketing.execute_marketing(db, session_cookie=fixtures.COOKIE,
+                            request=request, settings_obj=self.settings,
+                            media_bytes=data, media_content_type="video/mp4")
+                async with self.sessions() as db:
+                    saved = await db.get(CourseAdCreative, result["result"]["id"])
+                    self.assertEqual(saved.media_type, "video")
+                    self.assertEqual(saved.language, "uz")
+                    self.assertIsNone(saved.localized_copy)
+                    self.assertFalse(saved.is_active)
+
+    async def test_new_creative_audit_failure_rolls_back_row_proof_and_unreferenced_asset(self):
+        data = self.promo_png()
+        command = await self.prepare_marketing(self.creative_change(data))
+        proof = await self.proof_marketing(command, signed=True)
+        original = AsyncSession.flush
+        async def fail_audit(db, *args, **kwargs):
+            if any(isinstance(row, AdminPwaCommandAudit) for row in db.new):
+                raise RuntimeError("synthetic audit failure")
+            return await original(db, *args, **kwargs)
+        with tempfile.TemporaryDirectory(prefix="admin-pwa-create-rollback-") as media_root:
+            with patch.object(marketing, "COURSE_AD_MEDIA_ROOT", media_root), \
+                    patch.object(AsyncSession, "flush", fail_audit):
+                with self.assertRaisesRegex(RuntimeError, "audit failure"):
+                    await self.execute_marketing(command, proof, media_bytes=data, media_content_type="image/png")
+            self.assertEqual(list(Path(media_root).iterdir()), [])
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(CourseAdCreative)), 0)
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit)), 0)
+            self.assertEqual((await db.get(AdminPwaStepUp, proof)).status, "verified")
 
     async def seed_ads(self, count=1, *, shared_path=False):
         async with self.sessions() as db:

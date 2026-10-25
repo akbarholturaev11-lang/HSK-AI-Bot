@@ -55,6 +55,7 @@ from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
 from app.admin_api.pwa_channels import create_admin_pwa_channels_router
 from app.admin_api.pwa_outbound import create_admin_pwa_outbound_router, create_message_drainer
+from app.admin_api.pwa_campaigns import create_admin_pwa_campaigns_router
 from app.admin_api.pwa_payout_completion import create_admin_pwa_payout_completion_router
 from app.admin_api.pwa_payment_reconciliation import create_admin_pwa_payment_reconciliation_router
 from app.admin_api.pwa_partner_payouts import create_admin_pwa_partner_payouts_router
@@ -694,9 +695,16 @@ app.include_router(create_admin_pwa_payment_reconciliation_router(settings_obj=s
 async def _emit_admin_pwa_outbound(message):
     # Reuse the existing Bot sender. No DB connection is held during provider IO.
     failure=None
+    provider_message_id=None
     try:
-        await AdminBroadcastService(bot,None)._send_one(message.telegram_id,text=message.text,
-            content_type='photo' if message.photo_file_id else 'text',media_file_id=message.photo_file_id,reply_markup=None)
+        if message.reply_markup:
+            from aiogram.types import InlineKeyboardMarkup
+            sent=await bot.send_message(chat_id=message.telegram_id,text=message.text,
+                reply_markup=InlineKeyboardMarkup.model_validate(message.reply_markup),parse_mode='HTML')
+            provider_message_id=sent.message_id
+        else:
+            await AdminBroadcastService(bot,None)._send_one(message.telegram_id,text=message.text,
+                content_type='photo' if message.photo_file_id else 'text',media_file_id=message.photo_file_id,reply_markup=None)
     except Exception as exc:
         failure=exc
     try:
@@ -711,6 +719,7 @@ async def _emit_admin_pwa_outbound(message):
     except Exception:
         logger.warning('Admin PWA outbound reachability bookkeeping unavailable')
     if failure is not None:raise failure
+    return provider_message_id
 
 admin_pwa_message_drainer=create_message_drainer(settings_obj=settings,session_factory=async_session_maker,
     emit=_emit_admin_pwa_outbound)
@@ -718,6 +727,8 @@ app.include_router(create_admin_pwa_partners_router(settings_obj=settings, sessi
     drainer=admin_pwa_message_drainer))
 app.include_router(create_admin_pwa_outbound_router(settings_obj=settings,session_factory=async_session_maker,
     emit=_emit_admin_pwa_outbound,drainer=admin_pwa_message_drainer))
+app.include_router(create_admin_pwa_campaigns_router(settings_obj=settings,session_factory=async_session_maker,
+    drainer=admin_pwa_message_drainer))
 
 async def _upload_admin_pwa_payout_proof(proof):
     # Private staging to the verified uploading admin; no partner notification

@@ -113,6 +113,8 @@ async def browser_checks(output):
         elif path.endswith("/mcp/authorizations"):
             data.update(authorizations=[dict(id=UUID, client_id="Synthetic analytics client", status="redeemed",
                                              active_access=True, created_at=STAMP, access_expires_at=STAMP)])
+        elif path.endswith("/mcp/authorizations/revoke"):
+            data.update(revoked=True)
         elif path.endswith("/push/list"):
             data.update(sending_enabled=False, subscriptions=[dict(id=UUID, platform="iphone", created_at=STAMP)])
         elif path.endswith("/payments/list"):
@@ -218,7 +220,7 @@ async def browser_checks(output):
                 await page.screenshot(path=str(output / f"{action}-mobile.png"))
                 if action == "mcpConnections":
                     await page.locator(target).click()
-                    await expect(page.locator('[data-action="mcpRevokeConfirm"]')).to_be_visible()
+                    await expect(page.locator('[data-action="mcpRevokeConfirm"]')).to_have_count(0)
                 await page.locator(".drawer-close").click()
             assert not errors, errors
             assert not await page.evaluate("window.cspFailures"), await page.evaluate("window.cspFailures")

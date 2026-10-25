@@ -1,6 +1,6 @@
 # Admin PWA — final product and acceptance contract (temporary)
 
-> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `fix/admin-pwa-biometric-every-open-20261025` (PR #207 is merged baseline).
+> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-minimal-inbox-passkey-20261025` (PRs #204/#206/#207/#209 are merged baselines).
 > Not a repository-wide policy. Does not modify or supersede root `AGENTS.md` / `AI_RULES.md` / `PROJECT_MEMORY.md`.
 > All development and progress records for this task remain under `docs/admin-pwa/`.
 
@@ -11,7 +11,8 @@ This checklist describes full product acceptance, not a list of wholly missing
 code. Read [current handoff](MCP_NEXT_CHAT_HANDOFF.md) for implemented increments
 and their evidence; uncompleted staging/device/provider acceptance remains open.
 The current branch's external MCP permission is statistics-only. Keep all three
-feature defaults false; no main promotion or deployment is authorized here.
+feature defaults false. The owner authorized the verified code promotion to
+main on 2026-10-25; deployment and flag activation remain separate.
 
 ## Required end-user result
 
@@ -29,6 +30,7 @@ feature defaults false; no main promotion or deployment is authorized here.
 - [ ] Responsive on installed iPhone Home Screen PWA, mobile browser, Mac and Windows; navigation, collapsed filters and single top toolbar work.
 - [ ] Installation manifest/icons/versioning, shell-only offline behavior, proper update UI; **zero** private admin data/API credentials cached by service worker.
 - [ ] Clear loading, no-data, offline, expired-session, access-denied and error/retry states; no duplicate meaningless prose.
+- [ ] All management actions use the original editor's contextual button (Send, Save, Delete, Accept payment, etc.) → native passkey → execution, with no second confirmation window. Native cancellation keeps the original draft; exact proof, receipt, revision, audit and no-retry guards stay active.
 - [ ] New permanent UI strings sourced centrally for UZ/TJ/RU.
 
 ### C. Real statistics and users
@@ -67,13 +69,19 @@ text broadcasts, durable pre-provider claims, explicit cancellation and
 pending-only signed resume. Owned payout proof/completion and durable recipient notice also exist, using
 the owner-requested single payout window. Text-only campaign drafts can now be
 created signed and paused. Desktop-promo JPEG/PNG/WebP media can now be added,
-replaced or removed with one exact passkey confirmation. Existing course-ad
-images can also be replaced with one exact passkey confirmation. The six
+replaced or removed with one exact passkey confirmation. Course ads can be created with photo/video, explicit selected-language or
+UZ/RU/TJ copy and validated settings; existing images/videos can be replaced
+with one exact passkey action. Media remains disk-only and creation defaults
+to paused. The six
 existing Alipay/WeChat subscription QR targets can now replace one bounded
 image using one passkey; price and payment/access state remain untouched. The
 legacy checkout contract stores the resulting Telegram `file_id`, not image
-bytes. Campaign activation/delivery, feedback/discount campaigns and new
-course-ad/video uploads remain code work. Partner application notices are
+bytes. Signed single-round ad delivery, release-feedback creation/delivery with the
+existing rating/try callbacks, and discount creation/state management are now
+implemented through `/campaigns/*`. Delivery uses the bounded claimed queue;
+new discount offers default off with notifications disabled. These commands
+accept the explicit text formats in the management contract; they do not
+enable unattended legacy scheduling or arbitrary campaign assets. Partner application notices are
 implemented; see [management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
 This paragraph records scope and does not mark the entire acceptance list done.
 
