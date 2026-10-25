@@ -106,6 +106,58 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertTrue(data["items"][0]["has_pending_payment"])
         self.assertNotIn("telegram_id",data["items"][0])
 
+    async def test_user_segments_use_server_filters_before_pagination(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            ordinary = await db.get(User, 1)
+            ordinary.status = "free"
+            ordinary.payment_status = "none"
+            ordinary.last_active_at = now
+            ordinary.payment_method = "alipay"
+            ordinary.selected_plan_type = "10_days"
+            paid = await db.get(User, 2)
+            paid.status = "active"
+            paid.payment_status = "approved"
+            paid.end_date = now + timedelta(days=10)
+            # ID 101 is the authenticated Admin PWA actor; blocking it here
+            # would revoke the session and invalidate every subsequent read.
+            db.add(User(id=105, full_name="Blocked", status="blocked",
+                        bot_blocked_at=now - timedelta(hours=1)))
+            db.add_all([
+                User(id=102, full_name="Hot lead", status="free", payment_status="none",
+                     last_active_at=now),
+                User(id=103, full_name="Trial", status="trial", payment_status="none",
+                     pro_trial_ends_at=now + timedelta(days=4)),
+                User(id=104, full_name="Expired", status="expired", payment_status="approved",
+                     end_date=now - timedelta(days=2)),
+            ])
+            await db.commit()
+
+        async def matching(segment, **extra):
+            response = await self.post("users/search", {"segment": segment, **extra})
+            self.assertEqual(response.status_code, 200, response.text)
+            return [row["user_id"] for row in response.json()["items"]]
+
+        self.assertEqual(await matching("paid"), [2])
+        self.assertEqual(await matching("trial"), [103])
+        self.assertEqual(await matching("expired"), [104])
+        self.assertEqual(await matching("blocked"), [105])
+        self.assertEqual(await matching("bot_blocked"), [105])
+        # The original Mini App hot-lead rule also includes trial-status users.
+        self.assertEqual(await matching("wants_pay"), [103, 102])
+        self.assertEqual(await matching("pending"), [1])
+        self.assertEqual(await matching("free"), [102, 101, 1])
+        self.assertEqual(await matching("free", limit=1), [102])
+        self.assertEqual(await matching("free", limit=1, before_id=102), [101])
+        self.assertEqual(await matching("free", limit=1, before_id=101), [1])
+        self.assertEqual(await matching("free", query="102"), [102])
+        self.assertIn(102, await matching("active_today"))
+        self.assertEqual((await self.post("users/search", {"segment": "bogus"})).status_code, 400)
+
+        profile = (await self.post("users/detail", {"user_id": 1})).json()
+        self.assertEqual(profile["user"]["selected_plan_type"], "10_days")
+        self.assertEqual(profile["user"]["selected_payment_method"], "alipay")
+
     async def test_activity_metrics_are_bounded_deduplicated_and_conversion_is_a_real_cohort(self):
         now = datetime.now(timezone.utc)
         old = now-timedelta(days=40)

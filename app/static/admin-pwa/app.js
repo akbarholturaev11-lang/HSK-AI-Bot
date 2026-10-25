@@ -27,6 +27,7 @@ more:'<path d="M12 5h.01M12 12h.01M12 19h.01"/>',
 download:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/>',
 chevron:'<path d="m9 5 7 7-7 7"/>',
 gift:'<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-10 0-8-8-4-6 2 1 4 6 4 6Zm0 0c10 0 8-8 4-6-2 1-4 6-4 6Z"/>',
+delete:'<path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15M10 10v7M14 10v7"/>',
 device:'<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>',
 sliders:'<path d="M4 5h16M4 12h16M4 19h16"/><circle cx="9" cy="5" r="2" fill="white"/><circle cx="16" cy="12" r="2" fill="white"/><circle cx="11" cy="19" r="2" fill="white"/>',
 link:'<path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-2 2M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l2-2"/>'
@@ -40,7 +41,7 @@ try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj
 const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? '—';
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
 const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', period:'weekly', platform:'overall', rows:[], stats:null,
-  query:'', status:'pending', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
+  query:'', segment:'all', status:'pending', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
@@ -50,6 +51,8 @@ let automaticLoginAttempted=false, automaticLoginInProgress=false;
 let freshLoginInProgress=false, biometricPromptInProgress=false, resumeAuthenticationRequired=false, biometricAbort=null;
 let approvalWatchTimer=null, approvalChecking=false;
 let statisticsDownload=null;
+let userFilterOpen=false;
+const USER_SEGMENTS=[['all','userFilterAll'],['active_today','userFilterActiveToday'],['paid','userFilterPaid'],['pending','userFilterPending'],['wants_pay','userFilterWantsPay'],['trial','userFilterTrial'],['free','userFilterFree'],['expired','userFilterExpired'],['blocked','userFilterBlocked'],['bot_blocked','userFilterBotBlocked']];
 let managementDraft=null,managementReview=null,managementPreparing=false,preparingEditor=null;
 let coursePolicyRevision=null,hsk30Baseline=null;
 let managementMediaPreviewUrl=null;
@@ -354,11 +357,29 @@ async function exportStatistics(format,dataset='statistics'){
   }
 }
 function date(value) { if(!value) return '—';const d=new Date(value);return Number.isNaN(d.valueOf())?'—':d.toLocaleString(locale==='tj'?'tg':locale,{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+function relativeLastActive(value, clock=Date.now()) {
+  if(!value)return '—';
+  const time=Date.parse(value);
+  if(!Number.isFinite(time))return '—';
+  const minutes=Math.max(0,Math.floor((clock-time)/60000));
+  if(minutes<1)return t('relativeNow');
+  let amount,unit,extra='';
+  if(minutes<60){amount=minutes;unit='relativeMinute';}
+  else if(minutes<1440){
+    amount=Math.floor(minutes/60);unit='relativeHour';
+    const remainder=minutes%60;
+    if(remainder)extra=' '+remainder+' '+t('relativeMinute');
+  }else if(minutes<43200){amount=Math.floor(minutes/1440);unit='relativeDay';}
+  else if(minutes<525600){amount=Math.floor(minutes/43200);unit='relativeMonth';}
+  else{amount=Math.floor(minutes/525600);unit='relativeYear';}
+  return amount+' '+t(unit)+extra+' '+t('relativeAgo');
+}
+function displayPlan(value){if(!value)return '—';const label=t(value);return label==='—'?String(value):label;}
 function pager() { return `<div class="pager">${btn('previous','previous','',state.previous.length===0)}${btn('next','next','',!state.next)}</div>`; }
 function userSummary(row){
   const label=esc(row.name||'—'),handle=esc(row.username||'');
   const details=`<span class="person"><span class="mini-avatar" aria-hidden="true">${esc((row.name||'H').trim().charAt(0).toUpperCase())}</span><span class="directory-person"><strong>${label}</strong><small>${handle?handle+' · ':''}#${row.user_id}</small></span></span>`;
-  const fields=[['level',row.level],['language',row.language],['lastActive',date(row.last_active_at)],['accessUntil',date(row.end_date)]];
+  const fields=[['level',row.level],['language',row.language],['lastActive',relativeLastActive(row.last_active_at)],['accessUntil',date(row.end_date)]];
   const info=fields.map(([key,value])=>`<span class="u-mini-field"><small>${esc(t(key))}</small><b>${esc(value||'—')}</b></span>`).join('');
   const access=`<span class="pill">${esc(t(row.access_state))}</span>`;
   return {details,info,access};
@@ -367,13 +388,13 @@ function userSummary(row){
 function usersView(){
   const rows=state.rows.map(row=>{
     const {details,access}=userSummary(row);
-    return `<tr class="user-row" tabindex="0" role="button" aria-label="${esc(t('openProfile'))}: ${esc(row.name||'—')}" data-user-row="${row.user_id}"><td><button type="button" class="directory-row-link" data-user-detail="${row.user_id}">${details}</button></td><td>${esc(row.level||'—')}</td><td>${esc(row.language||'—')}</td><td>${access}${row.has_pending_payment?`<small>${esc(t('pending'))}</small>`:''}</td><td>${esc(date(row.last_active_at))}</td><td>${esc(date(row.end_date))}</td></tr>`;
+    return `<tr class="user-row" tabindex="0" role="button" aria-label="${esc(t('openProfile'))}: ${esc(row.name||'—')}" data-user-row="${row.user_id}"><td><button type="button" class="directory-row-link" data-user-detail="${row.user_id}">${details}</button></td><td>${esc(row.level||'—')}</td><td>${esc(row.language||'—')}</td><td>${access}${row.has_pending_payment?`<small>${esc(t('pending'))}</small>`:''}</td><td>${esc(relativeLastActive(row.last_active_at))}</td><td>${esc(date(row.end_date))}</td></tr>`;
   }).join('');
   const cards=state.rows.map(row=>{
     const {details,info,access}=userSummary(row);
     return `<button type="button" class="user-card directory-user-card" data-user-detail="${row.user_id}"><span class="user-card-top">${details}${access}</span><span class="user-card-details">${info}</span>${row.has_pending_payment?`<span class="directory-pending">${esc(t('pending'))}</span>`:''}</button>`;
   }).join('');
-  const search=`<form id="searchForm" class="data-toolbar"><label class="screen-reader" for="userQuery">${esc(t('search'))}</label><input id="userQuery" class="search-input" maxlength="80" value="${esc(state.query)}" placeholder="${esc(t('search'))}"><button class="btn primary">${esc(t('find'))}</button></form>`;
+  const search=`<form id="searchForm" class="data-toolbar user-search-toolbar"><label class="screen-reader" for="userQuery">${esc(t('search'))}</label><input id="userQuery" class="search-input" maxlength="80" value="${esc(state.query)}" placeholder="${esc(t('search'))}" autocomplete="off"><button type="submit" class="btn primary user-search-icon" aria-label="${esc(t('find'))}" title="${esc(t('find'))}">${icon('search')}</button><div class="user-filter-area"><button type="button" class="btn user-filter-icon ${state.segment!=='all'?'is-active':''}" data-user-filter-toggle aria-controls="userFilterPanel" aria-expanded="${userFilterOpen}" aria-label="${esc(t('filters'))}" title="${esc(t('filters'))}">${icon('filter')}${state.segment!=='all'?'<i aria-hidden="true"></i>':''}</button><div id="userFilterPanel" class="user-filter-panel" ${userFilterOpen?'':'hidden'}><div class="user-filter-title"><strong>${esc(t('filters'))}</strong><button type="button" data-user-segment="all">${esc(t('userFilterAll'))}</button></div><div class="user-filter-choices">${USER_SEGMENTS.map(([segment,key])=>`<button type="button" class="user-filter-choice ${state.segment===segment?'active':''}" aria-pressed="${state.segment===segment}" data-user-segment="${segment}">${esc(t(key))}${state.segment===segment?icon('check'):''}</button>`).join('')}</div></div></div></form>`;
   const table=`<div class="table-wrap user-table-wrap"><table class="data-table user-table directory-table"><thead><tr>${['name','level','language','status','lastActive','accessUntil'].map(key=>`<th>${esc(t(key))}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
   return search+(state.rows.length?table+`<div class="user-cards">${cards}</div>`:statePanel('empty'))+pager();
 }
@@ -400,7 +421,7 @@ async function load() {
   if(['course','system','marketing'].includes(state.route)){state.phase='ready';render();return;}
   try {
     const data=await api(['home','stats'].includes(state.route)?'statistics':state.route==='users'?'users/search':'payments/list',
-      ['home','stats'].includes(state.route)?{period:state.period,platform:state.platform}:state.route==='users'?{query:state.query,before_id:state.cursor,limit:30}:{status:state.status,before_id:state.cursor,limit:30});
+      ['home','stats'].includes(state.route)?{period:state.period,platform:state.platform}:state.route==='users'?{query:state.query,segment:state.segment,before_id:state.cursor,limit:30}:{status:state.status,before_id:state.cursor,limit:30});
     if(current!==view||authEpoch!==epoch) return;
     if(['home','stats'].includes(state.route)) state.stats=data; else {state.rows=data.items;state.next=data.next_before_id;}
     state.phase='ready';render();
@@ -568,7 +589,7 @@ function profileFields(fields) {
   return `<dl class="review-summary">${fields.map(([key,value])=>`<dt>${esc(t(key))}</dt><dd>${esc(value??'—')}</dd>`).join('')}</dl>`;
 }
 function profilePayments(data,userId) {
-  return `${data.items.map(row=>`<article class="feedback-item"><strong>#${row.payment_id} · ${esc(row.amount)} ${esc(row.currency)}</strong><p>${esc(t(row.plan_type))} · ${esc(t(row.status))}</p><small>${esc(row.source)} · ${esc(date(row.reviewed_at||row.submitted_at))}</small></article>`).join('')||`<p class="source-note">${esc(t('empty'))}</p>`}${data.next_before_id?`<button class="btn" data-profile-payments="${userId}" data-before="${data.next_before_id}">${esc(t('next'))}</button>`:''}`;
+  return `${data.items.map(row=>`<article class="feedback-item"><strong>#${row.payment_id} · ${esc(row.amount)} ${esc(row.currency)}</strong><p>${esc(displayPlan(row.plan_type))} · ${esc(t(row.status))} · ${esc(row.payment_method||'—')}</p><small>${esc(row.source)} · ${esc(date(row.reviewed_at||row.submitted_at))}</small></article>`).join('')||`<p class="source-note">${esc(t('empty'))}</p>`}${data.next_before_id?`<button class="btn" data-profile-payments="${userId}" data-before="${data.next_before_id}">${esc(t('next'))}</button>`:''}`;
 }
 async function userProfile(userId) {
   closeDrawer();const current=drawerId;drawer('userProfile',statePanel('loading'));
@@ -578,15 +599,28 @@ async function userProfile(userId) {
     const u=data.user,c=data.course,r=data.referral,blocked=String(data.user.status||'').trim().toLowerCase()==='blocked';
     const section=(key,body)=>`<section class="profile-section"><h3>${esc(t(key))}</h3>${body}</section>`;
     drawer('userProfile',`<div class="profile-heading"><h3>${esc(u.name||'—')}</h3><p>#${u.user_id} · ${esc(u.username||'—')}</p><span class="pill">${esc(t(u.access_state))}</span></div>`+
-      profileFields([['language',u.language],['level',u.level],['created',date(u.created_at)],['lastActive',date(u.last_active_at)],['plan',t(u.selected_plan_type)],['accessUntil',date(u.access_expires_at)]])+
+      profileFields([['language',u.language],['level',u.level],['created',date(u.created_at)],['lastActive',relativeLastActive(u.last_active_at)],['userSelectedPlan',displayPlan(u.selected_plan_type)],['userSelectedMethod',u.selected_payment_method||'—'],['accessUntil',date(u.access_expires_at)]])+
       section('course',(c.progress?profileFields([['level',c.progress.level],['completedLessons',c.progress.completed_lessons],['lastLesson',date(c.progress.last_completed_at)]]):`<p class="source-note">${esc(t('empty'))}</p>`)+c.tracks.map(row=>`<p class="source-note">${esc(row.track==='hsk30'?'HSK 3.0':'HSK 2.0')} · ${esc(row.level)} · ${esc(t('completedLessons'))}: ${row.completed_lessons}${row.unlocked_at?' · '+esc(t('unlocked'))+' '+esc(date(row.unlocked_at)):''}</p>`).join(''))+
       section('referrals',profileFields([['invitedTotal',r.invited_total],['invitedActive',r.invited_active],['discountQualified',r.discount_qualified]]))+
       section('devices',data.devices.map(row=>`<article class="feedback-item"><strong>${esc(row.platform)}</strong>${profileFields([['linkedTotal',row.linked+' / '+row.total],['lastContact',date(row.last_contact_at)]])}</article>`).join('')||`<p class="source-note">${esc(t('empty'))}</p>`)+
       (data.miniapp_presence.length?section('miniappOpens',data.miniapp_presence.map(row=>`<p class="source-note">${esc(row.platform)} · ${esc(date(row.last_opened_at))}</p>`).join('')):'')+
       section('feedback',profileFields([['botFeedback',data.feedback_counts.bot],['releaseFeedback',data.feedback_counts.release]])+`<button class="btn" data-user-feedback="${userId}">${esc(t('openFeedback'))}</button>`)+
-      section('paymentHistory',`<div id="profilePayments">${profilePayments(data.payments,userId)}</div>`)+`<p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`,
-      btn('close','close')+`<button class="btn primary" data-access-user="${userId}" ${blocked?'disabled':''}>${esc(t('grantAccess'))}</button>`+
-      (userId===state.actor.user_id?'':actionMenu('userManagementMenu',`<button role="menuitem" data-message-user="${userId}">${esc(t('directMessage'))}</button><button role="menuitem" data-user-management="${userId}" data-user-operation="${blocked?'unblock':'block'}">${esc(t(blocked?'unblockAccount':'blockAccount'))}</button><button role="menuitem" data-user-management="${userId}" data-user-operation="delete">${esc(t('deleteAccount'))}</button>`)));
+      section('paymentHistory',`<div id="profilePayments">${profilePayments(data.payments,userId)}</div>`)+
+      section('userActions',`<div class="profile-access-editor">
+        <h4>${esc(t('grantAccess'))}</h4>
+        <label for="accessDays">${esc(t('durationDays'))}</label>
+        <input class="input" id="accessDays" type="number" min="1" max="365" value="30" step="1" required>
+        <div class="profile-day-presets">${[10,30,90].map(days=>`<button type="button" class="profile-day-preset ${days===30?'selected':''}" data-user-days="${days}">${days} ${esc(t('relativeDay'))}</button>`).join('')}</div>
+        <p class="source-note">${esc(t('manualGrantHint'))}</p>
+        <button type="button" class="btn primary profile-main-action" data-prepare-access="${userId}" ${blocked?'disabled':''}>${esc(t('grantAccess'))}</button>
+      </div>${userId===state.actor.user_id?'':`<button type="button" class="btn profile-block-action" data-user-management="${userId}" data-user-operation="${blocked?'unblock':'block'}">${icon('shield')}${esc(t(blocked?'unblockAccount':'blockAccount'))}</button>
+      <details class="profile-more-actions"><summary>${esc(t('userMoreActions'))}</summary>
+      <div class="profile-extra-buttons">
+        <button type="button" data-message-user="${userId}">${icon('send')}${esc(t('directMessage'))}</button>
+        <button type="button" data-user-discount="${userId}">${icon('gift')}${esc(t('userDiscount'))}</button>
+        <button type="button" class="profile-delete-action" data-user-management="${userId}" data-user-operation="delete">${icon('delete')}${esc(t('deleteAccount'))}</button>
+      </div></details>`}`)+`<p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`, 
+      '', 'user-profile-drawer');
   }catch(error){if(current===drawerId&&state.actor)drawer('userProfile',statePanel(error.status===404?'userMissing':'error'),btn('close','close')+`<button class="btn" data-user-detail="${userId}">${esc(t('retry'))}</button>`);}
 }
 async function moreUserPayments(userId,before,button) {
@@ -972,7 +1006,7 @@ async function campaignDetail(kind,id){
     drawer(campaignLabels[kind],`<form id="managementForm">${campaignFields(row)}${hint}${selection}<p class="alert" id="campaignCommandValidation" role="alert" hidden></p></form>`,btn('close','close')+(editable?btn('saveChanges','managementPrepare','primary'):''));
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer(campaignLabels[kind],statePanel(errorKey(error)),btn('close','close'));}
 }
-function campaignCreate(kind){
+function campaignCreate(kind,userId=null){
   if(!['release','discount'].includes(kind))return;
   closeDrawer();managementDraft={type:'campaign',kind:kind+'_create',campaignKind:kind};
   const input=(id,label,max,extra='')=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><input class="input" id="${id}" maxlength="${max}" ${extra}></div>`;
@@ -993,6 +1027,10 @@ function campaignCreate(kind){
   }
   body+='<p class="alert" id="campaignCommandValidation" role="alert" hidden></p>';
   drawer(kind==='release'?'newReleaseCampaign':'newDiscountCampaign',`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('saveChanges','managementPrepare','primary'));
+  if(kind==='discount'&&Number.isSafeInteger(userId)&&userId>0&&$('discountTarget')){
+    $('discountTarget').value=String(userId);
+    if($('discountSegment'))$('discountSegment').hidden=true;
+  }
 }
 function campaignChange(draft){
   if(draft.kind==='ad_send')return {kind:draft.kind,campaign_id:draft.campaignId};
@@ -2077,15 +2115,33 @@ document.addEventListener('keydown',event=>{
 });
 document.addEventListener('click',event=>{
   if(!event.target.closest('.action-disclosure,.header-dropdown'))closeActionMenus();
+  if(userFilterOpen&&!event.target.closest('.user-filter-area')){
+    userFilterOpen=false;const panel=$('userFilterPanel');if(panel)panel.hidden=true;
+    document.querySelector('[data-user-filter-toggle]')?.setAttribute('aria-expanded','false');
+  }
   const button=event.target.closest('button');
   if(!button){const row=event.target.closest('tr[data-user-row]');if(row){userProfile(Number(row.dataset.userRow));return;}}
   if(!button||button.disabled)return;
   const run=async()=>{
-    if(button.dataset.menuToggle){toggleActionMenu(button);}
+    if(button.hasAttribute('data-user-filter-toggle')){
+      userFilterOpen=!userFilterOpen;
+      const panel=$('userFilterPanel');
+      if(panel)panel.hidden=!userFilterOpen;
+      button.setAttribute('aria-expanded',String(userFilterOpen));
+    }
+    else if(button.dataset.userSegment){
+      userFilterOpen=false;state.segment=button.dataset.userSegment;state.cursor=null;state.previous=[];await load();
+    }
+    else if(button.dataset.userDays){
+      const input=$('accessDays');if(input){input.value=button.dataset.userDays;
+        document.querySelectorAll('[data-user-days]').forEach(item=>item.classList.toggle('selected',item===button));}
+    }
+    else if(button.dataset.userDiscount){campaignCreate('discount',Number(button.dataset.userDiscount));}
+    else if(button.dataset.menuToggle){toggleActionMenu(button);}
     else if(button.dataset.route){
       if(state.route!==button.dataset.route)sectionBackStack.push(state.route);
       cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;
-      closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();
+      closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';state.segment='all';userFilterOpen=false;await load();
     }
     else if(button.dataset.campaignList){await campaignList(button.dataset.campaignList,Number(button.dataset.before)||null);}
     else if(button.dataset.campaignDetail){await campaignDetail(button.dataset.campaignKind,Number(button.dataset.campaignDetail));}
