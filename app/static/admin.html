@@ -1520,12 +1520,12 @@
       return row&&!row.account_id ? {telegram_id:Number(row.id)} : {user_id:Number(id)};
     }
     function statusTone(u){
-      if(u.has_pending_payment||u.payment_status==="pending") return ["Тўлов текширувда","amber"];
+      if(u.has_pending_payment===true) return ["Тўлов текширувда","amber"];
       if(u.bot_blocked) return ["Telegram етиб бормайди","red"];
-      if(u.access_type==="PRO_ACTIVE"||u.access_type==="pro_active"||(u.payment_status==="approved"&&u.status==="active")) return [u.access_label||"Пуллик обуна","green"];
+      if(u.access_type==="PRO_ACTIVE"||u.access_type==="pro_active") return [u.access_label||"Пуллик обуна","green"];
       if(u.access_type==="TRIAL_ACTIVE"||u.access_type==="trial_active") return [u.access_label||"Про синови","blue"];
-      if(u.access_type==="TEMP_ACCESS"||u.access_type==="temp_access"||(u.status==="active"&&u.payment_status!=="approved")) return [u.access_label||"Вақтинчалик кириш ҳуқуқи","violet"];
-      if(u.status==="expired") return ["Муддати тугаган","red"];
+      if(u.access_type==="TEMP_ACCESS"||u.access_type==="temp_access") return [u.access_label||"Вақтинчалик кириш ҳуқуқи","violet"];
+      if(u.access_type==="EXPIRED"||u.access_type==="expired") return ["Муддати тугаган","red"];
       if(u.status==="blocked") return ["Блокланган","red"];
       return [u.access_label||u.status_label||"Ҳолат йўқ","violet"];
     }
@@ -1535,13 +1535,13 @@
       const src = useRemote ? state.remoteUsers : (state.overview.users||[]);
       return src.filter(u=>{
         const f = state.filter==="all"
-          || (state.filter==="paid"&&u.payment_status==="approved"&&u.status==="active")
+          || (state.filter==="paid"&&u.access_type==="PRO_ACTIVE")
           || (state.filter==="active_today"&&u.active_today===true)
-          || (state.filter==="pending"&&(u.has_pending_payment===true||u.payment_status==="pending"))
+          || (state.filter==="pending"&&u.has_pending_payment===true)
           || (state.filter==="wants_pay"&&u.hot_lead===true)
           || (state.filter==="trial"&&u.access_type==="TRIAL_ACTIVE")
           || (state.filter==="free"&&u.access_type==="FREE")
-          || (state.filter==="expired"&&u.status==="expired")
+          || (state.filter==="expired"&&u.access_type==="EXPIRED")
           || (state.filter==="blocked"&&u.status==="blocked")
           || (state.filter==="bot_blocked"&&u.bot_blocked);
         const hay = `${u.account_id||""} ${u.id||""} ${u.name} ${u.username||""} ${u.language} ${u.level} ${u.status_label} ${u.payment_label} ${u.plan} ${u.method}`.toLowerCase();
