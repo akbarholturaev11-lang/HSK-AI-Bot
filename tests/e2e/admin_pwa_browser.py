@@ -366,7 +366,10 @@ async def browser_checks(output):
         operations=[body for path,_,body in calls if path.endswith('step-up/options')]
         assert len(writes)==len(operations)==1
         assert {k:v for k,v in writes[0].items() if k!='step_up_id'}==operations[0]['payload']
-        await page.locator('.drawer-close').click()
+        if await page.locator('.save-success-drawer').count():
+            await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+        elif await page.locator('#overlay').count():
+            await page.locator('.drawer-close').click()
         # Rejected payment uses a new ceremony and the exact visible reason.
         async with fixture.sessions() as db:
             payment=Payment(user_id=2,amount=10,currency='USD',plan_type='10_days',payment_method='visa',payment_status='pending',screenshot_file_id='synthetic-receipt')
@@ -1070,12 +1073,12 @@ async def access_grant_browser_checks(output):
                     await page.locator('.drawer-close').click()
             assert not any(path.endswith('/users/grant-access') for path,_ in calls)
             await prepare();await finish_step_up(page)
-            await expect(page.locator('#drawerContent')).to_contain_text('10')
+            await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
             await expect(page.locator('[data-action=executeAccess]')).to_have_count(0)
             async with fixture.sessions() as db:
                 assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit))==1
                 assert (await db.get(User,1)).payment_status=='approved'
-            await page.locator('.drawer-close').click()
+            await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
             await prepare()
             async with fixture.sessions() as db:
                 (await db.get(User,1)).end_date=datetime.now(timezone.utc)+timedelta(days=40);await db.commit()
