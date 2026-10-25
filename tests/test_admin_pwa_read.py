@@ -414,7 +414,10 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertEqual(data["user"]["user_id"], 1)
         self.assertIsNotNone(data["user"]["access_expires_at"])
         self.assertEqual(data["course"]["progress"]["completed_lessons"], 7)
-        self.assertEqual(data["course"]["tracks"][0]["completed_lessons"], 3)
+        tracks = {row["track"]: row for row in data["course"]["tracks"]}
+        self.assertEqual(tracks["hsk20"]["completed_lessons"], 7)
+        self.assertTrue(tracks["hsk20"]["is_active"])
+        self.assertEqual(tracks["hsk30"]["completed_lessons"], 3)
         self.assertEqual(data["referral"], {"invited_total": 1, "invited_active": 1, "discount_qualified": 1})
         self.assertEqual((data["devices"][0]["total"], data["devices"][0]["linked"]), (2, 1))
         self.assertEqual(data["feedback_counts"], {"bot": 1, "release": 0})
