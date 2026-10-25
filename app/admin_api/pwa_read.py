@@ -233,6 +233,7 @@ async def users(db, request: UsersRequest):
                        "has_pending_payment": row.id in pending,
                        "created_at": _iso(row.created_at),
                        "selected_payment_method": row.payment_method,
+                       "selected_plan_type": row.selected_plan_type,
                        "last_active_at": _iso(row.last_active_at),
                        "access_expires_at": _iso(access_expires_at(
                            row, resolve_state(row, now=now), now=now))}

@@ -103,6 +103,7 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         data=(await self.post("users/search", {"query":"1"})).json()
         self.assertEqual(data["numeric_query_namespace"],"users.id")
         self.assertEqual(data["items"][0]["user_id"],1)
+        self.assertIsNone(data["items"][0]["selected_plan_type"])
         self.assertTrue(data["items"][0]["has_pending_payment"])
         self.assertNotIn("telegram_id",data["items"][0])
 
@@ -120,6 +121,7 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         row = response.json()["items"][0]
         self.assertEqual(row["created_at"], joined.isoformat())
         self.assertEqual(row["selected_payment_method"], "alipay")
+        self.assertEqual(row["selected_plan_type"], "1_month")
         self.assertIn(row["access_state"], ("FREE", "TRIAL_ACTIVE", "PRO_ACTIVE", "EXPIRED", "TEMP_ACCESS", "BLOCKED"))
         self.assertNotIn("telegram_id", row)
         self.assertNotIn("screenshot_file_id", row)

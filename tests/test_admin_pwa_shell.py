@@ -52,10 +52,16 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("['directoryUserTariff','directoryAge','language','level','directoryPlanMethod','lastActive','status']", script)
         self.assertIn('function accountAge(value,clock=Date.now())', script)
         self.assertIn('userPaymentMethod(row.selected_payment_method)', script)
+        self.assertIn('userSelectedDuration(row.selected_plan_type)', script)
+        self.assertIn('userPlanMethod(row)', script)
+        self.assertIn("if(row.access_state==='TRIAL_ACTIVE')return 'Pro trial';", script)
+        self.assertIn("type==='PRO_ACTIVE'||type==='TEMP_ACCESS'?'blue':'gray'", script)
         self.assertIn("esc(row.name||'—')", script)
         self.assertIn('.user-status-pill{', stylesheet)
+        self.assertIn('.user-status-pill.blue{', stylesheet)
         self.assertIn('.user-table{min-width:1020px;table-layout:fixed}', stylesheet)
         self.assertIn('"directoryUserTariff":"Фойдаланувчи / тариф"', catalog)
+        self.assertIn('"directoryPlan1Month":"1 ой"', catalog)
 
     async def test_apple_push_subscription_keeps_user_activation_on_direct_tap(self):
         # The public script can offer push settings only after the server
