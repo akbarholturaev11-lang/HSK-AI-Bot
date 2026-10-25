@@ -16,6 +16,7 @@ from app.admin_api.pwa_step_up import begin_step_up, operation_digest, verify_st
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
+from app.db.models.ad_campaign import AdCampaign, AdCampaignDelivery
 from app.db.models.bot_setting import BotSetting
 from app.db.models.course_ad import CourseAdCreative, CourseAdView
 from app.db.models.payment import Payment
@@ -26,6 +27,8 @@ from app.services.desktop_app_promo_settings_service import (
     DESKTOP_APP_PROMO_SETTINGS_KEY, get_desktop_app_promo_settings,
     save_desktop_app_promo_settings,
 )
+from app.services.broadcast_translation_service import decode_localized_broadcast_text
+from app.repositories.ad_campaign_repo import AdCampaignRepository
 from tests import test_admin_pwa_payment_review as fixtures
 from tests.test_admin_pwa_webauthn_crypto_vectors import CRED_ID, make_assertion
 
@@ -34,6 +37,11 @@ PROMO_CHANGE = {"kind": "desktop_promo", "enabled": False, "daily_limit": 2,
                 "require_learning_progress": True,
                 "placements": {"home_prompt": True, "lesson_end_promo": False, "ad_promo": True},
                 "platforms": {"macos": True, "windows": True, "android": False, "ios": False}}
+CAMPAIGN_CHANGE = {"kind": "campaign_draft", "title": "Spring course",
+    "texts": {"uz": "<b>Salom</b> & xitoy tili", "ru": "Привет и китайский",
+              "tj": "Салом ва забони чинӣ"},
+    "languages": ["uz", "ru"], "track": "hsk30", "level": None,
+    "duration_hours": 72, "include_active_subscribers": False}
 
 
 class AdminPwaMarketingTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCase):
@@ -44,7 +52,8 @@ class AdminPwaMarketingTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         async with self.sessions() as db:
             result = await marketing.prepare_marketing(db, session_cookie=fixtures.COOKIE,
                 request=marketing.PrepareMarketing.model_validate({"change": change}), settings_obj=self.settings)
-        return marketing.MarketingCommand.model_validate(result["operation"]["payload"])
+        return marketing.MarketingCommand.model_validate(
+            result.get("execute_payload") or result["operation"]["payload"])
 
     async def proof_marketing(self, command, *, signed=False, **overrides):
         if signed:
@@ -163,6 +172,78 @@ class AdminPwaMarketingTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
             self.assertEqual(actual.media_type, "photo")
             self.assertTrue(actual.require_learning_progress)
             self.assertNotIn("private-promo-canary", (await db.get(AdminPwaCommandAudit, result["command_id"])).result_json)
+
+    async def test_campaign_creation_is_localized_signed_paused_and_content_free_in_audit(self):
+        command = await self.prepare_marketing(CAMPAIGN_CHANGE)
+        operation = command.operation()
+        self.assertEqual(operation["action"], "marketing.update")
+        self.assertEqual(operation["target"], "campaign_draft")
+        self.assertEqual(operation["payload"]["content_hash"], marketing._hash(CAMPAIGN_CHANGE["texts"]))
+        self.assertNotIn("texts", operation["payload"]["change"])
+        self.assertNotIn("Salom", json.dumps(operation, ensure_ascii=False))
+        proof = await self.proof_marketing(command, signed=True)
+        result = await self.execute_marketing(command, proof)
+        self.assertEqual(result["result"]["status"], "paused_draft")
+        self.assertFalse(result["result"]["is_active"])
+
+        async with self.sessions() as db:
+            campaign = await db.get(AdCampaign, result["result"]["id"])
+            self.assertEqual(campaign.title, "Spring course")
+            self.assertEqual(campaign.content_type, "text")
+            self.assertIsNone(campaign.media_file_id)
+            self.assertFalse(campaign.is_active)
+            self.assertIsNone(campaign.next_send_at)
+            self.assertEqual(campaign.send_count_total, 1)
+            self.assertEqual(campaign.target_languages, "ru,uz")
+            self.assertEqual(campaign.target_track, "hsk30")
+            self.assertEqual(campaign.created_by_telegram_id, self.settings.admin_id_list[0])
+            stored = decode_localized_broadcast_text(campaign.message_text)
+            self.assertEqual(stored["uz"], "&lt;b&gt;Salom&lt;/b&gt; &amp; xitoy tili")
+            self.assertEqual(stored["ru"], "Привет и китайский")
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdCampaignDelivery)), 0)
+            self.assertEqual(await AdCampaignRepository(db).list_due(), [])
+            audit = await db.get(AdminPwaCommandAudit, result["command_id"])
+            self.assertEqual(audit.step_up_id, proof)
+            self.assertEqual(audit.payload_hash, operation_digest(**operation))
+            self.assertEqual(json.loads(audit.result_json), {"kind": "campaign_draft",
+                "campaign_id": campaign.id, "content_hash": marketing._hash(CAMPAIGN_CHANGE["texts"])})
+            for private_copy in CAMPAIGN_CHANGE["texts"].values():
+                self.assertNotIn(private_copy, audit.result_json)
+            self.assertEqual((await db.get(AdminPwaStepUp, proof)).status, "consumed")
+
+    async def test_campaign_copy_tampering_and_unbounded_inputs_are_rejected(self):
+        command = await self.prepare_marketing(CAMPAIGN_CHANGE)
+        proof = await self.proof_marketing(command)
+        changed = dict(CAMPAIGN_CHANGE, texts={**CAMPAIGN_CHANGE["texts"], "uz": "Changed copy"})
+        altered = marketing.MarketingCommand.model_validate({**command.model_dump(), "change": changed})
+        with self.assertRaisesRegex(marketing.CommandError, "step_up_denied"):
+            await self.execute_marketing(altered, proof)
+        with self.assertRaises(ValidationError):
+            marketing.CampaignDraftChange.model_validate({**CAMPAIGN_CHANGE, "languages": []})
+        with self.assertRaises(ValidationError):
+            marketing.CampaignDraftChange.model_validate({**CAMPAIGN_CHANGE, "languages": ["uz", "uz"]})
+        with self.assertRaises(ValidationError):
+            marketing.CampaignDraftChange.model_validate({**CAMPAIGN_CHANGE,
+                "texts": {**CAMPAIGN_CHANGE["texts"], "uz": "&" * 2000}})
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdCampaign)), 0)
+
+    async def test_campaign_insert_rolls_back_with_command_audit(self):
+        command = await self.prepare_marketing(CAMPAIGN_CHANGE)
+        proof = await self.proof_marketing(command)
+        original_flush = AsyncSession.flush
+
+        async def fail_audit(session, *args, **kwargs):
+            if any(isinstance(item, AdminPwaCommandAudit) for item in session.new):
+                raise RuntimeError("audit storage unavailable")
+            return await original_flush(session, *args, **kwargs)
+
+        with patch.object(AsyncSession, "flush", fail_audit):
+            with self.assertRaisesRegex(RuntimeError, "audit storage unavailable"):
+                await self.execute_marketing(command, proof)
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdCampaign)), 0)
+            self.assertEqual((await db.get(AdminPwaStepUp, proof)).status, "verified")
 
     async def test_course_ad_toggle_and_delete_preserve_view_facts_with_content_free_audit(self):
         await self.seed_ads()

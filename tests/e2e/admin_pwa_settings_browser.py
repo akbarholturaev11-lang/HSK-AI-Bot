@@ -44,9 +44,11 @@ from app.db.models.admin_pwa_outbound import AdminPwaOutboundJob
 from app.db.models.user import User
 from app.bot.utils.i18n import t
 from app.db.models.course_ad import CourseAdCreative
+from app.db.models.ad_campaign import AdCampaign
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
 from app.services.support_contact_service import ADMIN_CONTACT_KEY
+from app.services.broadcast_translation_service import decode_localized_broadcast_text
 from tests.test_admin_pwa_payment_review import COOKIE, PaymentFixtures
 from tests.test_admin_pwa_webauthn_crypto_vectors import CRED_ID, HANDLE
 
@@ -294,8 +296,40 @@ async def browser_checks(output):
                             assert await page.locator('#drawerContent img').count() == 0
                             await page.screenshot(path=str(output / f'marketing-{kind}-{language}-{width}.png'))
                             await page.locator('.drawer-close').click()
+                        await page.locator('[data-marketing-kind="campaign_draft"]').click()
+                        await expect(page.locator('#campaignTitle')).to_be_visible()
+                        assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+                        await page.screenshot(path=str(output / f'campaign-create-{language}-{width}.png'))
+                        await page.locator('.drawer-close').click()
                 await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
+                await page.locator('[data-marketing-kind="campaign_draft"]').click()
+                await page.locator('#campaignTitle').fill('QA campaign')
+                await page.locator('#campaignText-uz').fill('Yangi kurs <img src=x onerror=alert(1)>')
+                await page.locator('.campaign-locale-copy').nth(1).locator('summary').click()
+                await page.locator('#campaignText-ru').fill('Новый курс <b>без HTML</b>')
+                await page.locator('.campaign-locale-copy').nth(2).locator('summary').click()
+                await page.locator('#campaignText-tj').fill('Курси нав')
+                await page.locator('[data-campaign-language="uz"]').check()
+                await page.locator('[data-campaign-language="ru"]').check()
+                await page.locator('#campaignTrack').select_option('hsk30')
+                await page.locator('#campaignDuration').fill('72')
+                await page.locator('[data-action="managementPrepare"]').click()
+                await expect(page.locator('.management-comparison')).to_be_visible()
+                assert await page.locator('.management-comparison .notice-languages').count()==3
+                assert await page.locator('.management-comparison img').count()==0
+                assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                await page.screenshot(path=str(output/'campaign-draft-confirm-uz.png'))
+                await page.locator('[data-action="managementExecute"]').click()
+                saved_title=json.loads((ROOT/'localization/ui/uz/miniapp.json').read_text())['messages']['ui.admin_pwa.changesSaved']
+                await expect(page.locator('#drawerTitle')).to_have_text(saved_title, timeout=15000)
+                async with fixture.sessions() as db:
+                    campaign=await db.scalar(select(AdCampaign).order_by(AdCampaign.id.desc()).limit(1))
+                    assert campaign and campaign.title=='QA campaign' and campaign.is_active is False
+                    assert campaign.next_send_at is None and campaign.target_languages=='ru,uz'
+                    copies=decode_localized_broadcast_text(campaign.message_text)
+                    assert copies['uz']=='Yangi kurs &lt;img src=x onerror=alert(1)&gt;'
+                await page.locator('.drawer-close').click()
                 await page.locator('[data-marketing-kind="sales_experiment"]').click()
                 await page.locator('#salesMode').select_option('ab')
                 await page.locator('#salesPercent').select_option('50')

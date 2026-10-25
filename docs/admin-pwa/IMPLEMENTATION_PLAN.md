@@ -54,8 +54,9 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
    reserve/release/reject/deadline and payment-delivery reconciliation exist.
    Payout proof/completion/durable notice now uses the single editor and exact
    passkey. Partner approval/rejection notices now use the existing bounded
-   outbound queue and exact passkey. Campaign creation and general media uploads
-   remain legacy-parity work. Five fixed reminder
+   outbound queue and exact passkey. Signed text-only campaign drafts now save
+   paused; campaign activation/delivery, feedback/discount campaigns and general
+   media uploads remain legacy-parity work. Five fixed reminder
    templates now have signed UZ/RU/TJ editors with compact content commitments.
 5. **Staging acceptance**: isolated provider/device/TLS/proxy/migrations and
    actual ChatGPT E2E, then owner review. Needs real staging configuration and

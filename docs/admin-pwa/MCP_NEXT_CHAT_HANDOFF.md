@@ -55,7 +55,8 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   completion and lost-response no-retry. One notice and one command only.
   Screenshots `/tmp/hsk-admin-pwa-payout-single-final-20261025` inspected.
   Catalogs: 63 artifacts, zero stale; JS/Python syntax and diff checks passed.
-- Remaining code: campaign creation and general media/QR/creative uploads.
+- Remaining code: campaign activation/delivery, release-feedback/discount
+  campaign commands and general media/QR/creative uploads.
   External MCP is still statistics-only; all feature
   defaults remain OFF, no main/deploy/live migration.
 
@@ -79,8 +80,31 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   notice; browser screenshots are in
   `/tmp/hsk-admin-pwa-partner-notices-final-20261025`. Catalogs: 63 artifacts,
   zero stale; JavaScript/Python syntax checks passed.
-- Next code: bounded campaign creation, then general media/QR/creative uploads.
+- Next code: general media/QR/creative uploads and safe campaign delivery.
   Feature defaults remain OFF; external MCP remains statistics-only.
+
+## Current campaign-draft increment — 2026-10-25
+
+- `/marketing/prepare|save` accepts a strict text-only campaign draft with
+  explicit UZ/RU/TJ copy, selected target languages, optional HSK track and a
+  1–720 hour window. The transaction-bound passkey proof signs a compact hash
+  of all three texts; text is HTML-escaped before the existing localized ad
+  payload storage. The same transaction creates one inactive ad campaign and
+  content-free hash-only command audit. No audience query, AI translation,
+  provider IO, delivery row, migration or automatic sender is added.
+- The V10 composer has localized controls and one before/after review followed
+  by one passkey ceremony. New records use `is_active=false` and
+  `next_send_at=NULL`, so the legacy due-ad worker cannot send them.
+- Local checks: marketing API plus legacy HSK ad-target regression **17 passed,
+  11 subtests passed**. Actual
+  ASGI/virtual-WebAuthn browser management passed at 390/1440px in UZ/RU/TJ,
+  including escaped hostile markup, persisted inactive state and no horizontal
+  overflow. Screenshots: `/tmp/hsk-admin-pwa-campaign-draft-20261025`.
+  Catalogs: 63 artifacts, zero stale; Python/JavaScript syntax and diff checks
+  passed. Commit/CI SHA will be recorded after push.
+- Remaining: bounded campaign activation/delivery, release-feedback/discount
+  campaign commands and general media/QR/creative uploads. Feature flags remain
+  OFF; MCP remains statistics-only.
 
 ## Mobile Inbox touch and fresh-login regression
 

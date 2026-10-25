@@ -5,11 +5,12 @@ command. No media/URL input, arbitrary setting keys, student targeting or MCP.
 """
 import asyncio
 import hashlib
+import html
 import json
 import logging
 import os
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Annotated, Literal
 from uuid import uuid4
 
@@ -35,6 +36,8 @@ from app.db.models.bot_setting import BotSetting
 from app.db.models.course_ad import CourseAdCreative
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
+from app.repositories.ad_campaign_repo import AdCampaignRepository
+from app.services.broadcast_translation_service import encode_localized_broadcast_text
 from app.services.course_ad_service import COURSE_AD_MEDIA_ROOT, CourseAdService
 from app.services.course_sales_experiment_service import (
     SALES_EXPERIMENT_SETTINGS_KEY, CourseSalesExperimentService, CourseSalesExperimentSettings,
@@ -102,7 +105,62 @@ class CourseAdChange(StrictModel):
         return self
 
 
-MarketingChange = Annotated[SalesExperimentChange | DesktopPromoChange | CourseAdChange,
+class CampaignTexts(StrictModel):
+    uz: Annotated[str, Field(min_length=2, max_length=3500)]
+    ru: Annotated[str, Field(min_length=2, max_length=3500)]
+    tj: Annotated[str, Field(min_length=2, max_length=3500)]
+
+    @field_validator("uz", "ru", "tj")
+    @classmethod
+    def valid_text(cls, value):
+        value = value.strip()
+        try:
+            utf16_length = len(value.encode("utf-16-le")) // 2
+        except UnicodeEncodeError as exc:
+            raise ValueError("Invalid Unicode text") from exc
+        if len(value) < 2 or utf16_length > 3500:
+            raise ValueError("Invalid Telegram text length")
+        if any(ord(char) < 32 and char not in "\n\r\t" for char in value):
+            raise ValueError("Control characters are not allowed")
+        # Existing ad delivery uses Telegram HTML parse mode. Store plain text
+        # as escaped entities so authored markup can never become Bot markup.
+        escaped = html.escape(value, quote=False)
+        if len(escaped.encode("utf-16-le")) // 2 > 3500:
+            raise ValueError("Escaped Telegram text is too long")
+        return value
+
+
+class CampaignDraftChange(StrictModel):
+    kind: Literal["campaign_draft"]
+    title: Annotated[str, Field(min_length=1, max_length=120)]
+    texts: CampaignTexts
+    languages: Annotated[list[Literal["uz", "ru", "tj"]], Field(min_length=1, max_length=3)]
+    track: Literal["hsk20", "hsk30"] | None = None
+    level: Literal["beginner", "hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"] | None = None
+    duration_hours: Annotated[int, Field(strict=True, ge=1, le=720)] = 24
+    include_active_subscribers: bool = False
+
+    @field_validator("title")
+    @classmethod
+    def valid_title(cls, value):
+        value = value.strip()
+        try:
+            value.encode("utf-8")
+        except UnicodeEncodeError as exc:
+            raise ValueError("Invalid Unicode title") from exc
+        if not value or any(ord(char) < 32 for char in value):
+            raise ValueError("Invalid campaign title")
+        return value
+
+    @field_validator("languages")
+    @classmethod
+    def unique_languages(cls, value):
+        if not value or len(value) != len(set(value)):
+            raise ValueError("Select unique target languages")
+        return sorted(value)
+
+
+MarketingChange = Annotated[SalesExperimentChange | DesktopPromoChange | CourseAdChange | CampaignDraftChange,
                             Field(discriminator="kind")]
 
 
@@ -116,7 +174,11 @@ class MarketingCommand(PrepareMarketing):
     def operation(self):
         target = (f"course_ad-{self.change.ad_id}" if self.change.kind == "course_ad"
                   else self.change.kind)
-        return {"action": "marketing.update", "target": target, "payload": self.model_dump()}
+        payload = self.model_dump()
+        if self.change.kind == "campaign_draft":
+            payload["change"] = self.change.model_dump(exclude={"texts"})
+            payload["content_hash"] = _hash(self.change.texts.model_dump())
+        return {"action": "marketing.update", "target": target, "payload": payload}
 
 
 class ExecuteMarketing(MarketingCommand):
@@ -181,6 +243,8 @@ async def _authenticate(db, cookie, settings_obj):
 
 
 async def _target(db, change, *, lock=False):
+    if change.kind == "campaign_draft":
+        return None, {"new_draft": True, "revision_hash": _hash({"campaign_draft": "new"})}
     if change.kind == "course_ad":
         query = _ad_query().where(CourseAdCreative.id == change.ad_id).execution_options(populate_existing=True)
         row = await db.scalar(query.with_for_update() if lock else query)
@@ -219,7 +283,12 @@ async def prepare_marketing(db, *, session_cookie, request, settings_obj):
         await _authenticate(db, session_cookie, settings_obj)
         _, current = await _target(db, request.change)
         command = MarketingCommand(change=request.change, expected_hash=current["revision_hash"])
-    return {"operation": command.operation(), "current": current}
+    result = {"operation": command.operation(), "current": current}
+    if request.change.kind == "campaign_draft":
+        result["execute_payload"] = command.model_dump()
+        result["proposed"] = {"kind": "campaign_draft", **request.change.model_dump(),
+                               "status": "paused_draft"}
+    return result
 
 
 def _cleanup_deleted_media(filename):
@@ -260,7 +329,31 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj):
         if before["revision_hash"] != command.expected_hash:
             raise CommandError("confirmation_changed", 409)
         change = command.change
-        if change.kind == "sales_experiment":
+        if change.kind == "campaign_draft":
+            now = datetime.now(timezone.utc)
+            safe_texts = {language: html.escape(text, quote=False)
+                          for language, text in change.texts.model_dump().items()}
+            campaign = await AdCampaignRepository(db).create(
+                title=change.title,
+                message_text=encode_localized_broadcast_text(safe_texts),
+                content_type="text",
+                media_file_id=None,
+                starts_at=now,
+                ends_at=now + timedelta(hours=change.duration_hours),
+                send_count_total=1,
+                target_languages=change.languages,
+                target_track=change.track,
+                target_level=change.level,
+                include_active_subscribers=change.include_active_subscribers,
+                created_by_telegram_id=actor.telegram_id,
+                is_active=False,
+            )
+            result = {"id": campaign.id, "title": campaign.title,
+                      "status": "paused_draft", "is_active": False,
+                      "starts_at": _utc(campaign.starts_at).isoformat(),
+                      "ends_at": _utc(campaign.ends_at).isoformat(),
+                      "rounds_total": campaign.send_count_total}
+        elif change.kind == "sales_experiment":
             await CourseSalesExperimentService(db).save_settings(
                 change.model_dump(exclude={"kind"}), updated_by_telegram_id=actor.telegram_id)
             _, result = await _target(db, change)
@@ -280,14 +373,19 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj):
             cleanup = path if shared is None else None
             result = {"deleted_id": change.ad_id}
         audit_id = str(uuid4())
+        if change.kind == "campaign_draft":
+            audit_result = {"kind": change.kind, "campaign_id": result["id"],
+                            "content_hash": _hash(change.texts.model_dump())}
+        else:
+            audit_result = {"kind": change.kind, "before_hash": command.expected_hash,
+                            "after_hash": result.get("revision_hash"),
+                            "deleted_id": result.get("deleted_id")}
         db.add(AdminPwaCommandAudit(id=audit_id, step_up_id=step.id,
             actor_user_id=actor.id, target_user_id=None, action=operation["action"],
             target=operation["target"], payload_hash=operation_digest(**operation),
-            # Content-free evidence: creative copy/media paths never enter
-            # command history; kind/target/hash bind the reviewed operation.
-            result_json=json.dumps({"kind": change.kind, "before_hash": command.expected_hash,
-                                    "after_hash": result.get("revision_hash"),
-                                    "deleted_id": result.get("deleted_id")}, sort_keys=True)))
+            # Content-free evidence: campaign text and creative media paths
+            # never enter command history; kind/target/hash bind the operation.
+            result_json=json.dumps(audit_result, sort_keys=True)))
         await db.flush()
     if cleanup is not None:
         # Commit is authoritative; best-effort local cleanup never changes a
@@ -302,7 +400,7 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj):
 def create_admin_pwa_marketing_router(*, settings_obj, session_factory):
     router = APIRouter(tags=["admin-pwa-marketing"])
 
-    async def handle(request, task, schema):
+    async def handle(request, task, schema, *, body_limit=4096):
         failure = _guard_post(request, settings_obj)
         if failure is not None:
             return failure
@@ -310,7 +408,7 @@ def create_admin_pwa_marketing_router(*, settings_obj, session_factory):
         if not cookie:
             return _reply(401, "admin_pwa_unauthorized")
         try:
-            parsed = schema.model_validate(await _body(request, 4096))
+            parsed = schema.model_validate(await _body(request, body_limit))
         except ValidationError:
             return _reply(400, "admin_pwa_invalid_payload")
         try:
@@ -329,10 +427,10 @@ def create_admin_pwa_marketing_router(*, settings_obj, session_factory):
 
     @router.post("/api/admin/v1/marketing/prepare")
     async def prepare(request: Request):
-        return await handle(request, prepare_marketing, PrepareMarketing)
+        return await handle(request, prepare_marketing, PrepareMarketing, body_limit=48_000)
 
     @router.post("/api/admin/v1/marketing/save")
     async def save(request: Request):
-        return await handle(request, execute_marketing, ExecuteMarketing)
+        return await handle(request, execute_marketing, ExecuteMarketing, body_limit=48_000)
 
     return router

@@ -40,6 +40,7 @@ class AdCampaignRepository:
         include_active_subscribers: bool = False,
         created_by_telegram_id: Optional[int] = None,
         button_config: Optional[str] = None,
+        is_active: bool = True,
     ) -> AdCampaign:
         campaign = AdCampaign(
             title=title,
@@ -47,9 +48,10 @@ class AdCampaignRepository:
             content_type=content_type,
             media_file_id=media_file_id,
             button_config=button_config,
+            is_active=is_active,
             starts_at=starts_at,
             ends_at=ends_at,
-            next_send_at=starts_at,
+            next_send_at=starts_at if is_active else None,
             send_count_total=send_count_total,
             target_languages=encode_languages(target_languages),
             target_track=(target_track or None),

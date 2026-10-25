@@ -61,16 +61,27 @@ Marketing read fetches two fixed settings plus at most 31 creative metadata
 rows, without BLOBs, file restoration or media URLs. Each creative is a signed
 individual target. Deletion uses the existing shared service, preserves files
 still referenced by other creatives and limits postcommit cleanup to a
-validated local basename. This adapter does not send messages or create
-campaigns. Course/System/Marketing navigation itself performs no settings read;
+validated local basename. Settings/creative changes do not send messages.
+Course/System/Marketing navigation itself performs no settings read;
 editors fetch only after an explicit tap. Every editor has a before/after
 confirmation and a single passkey save, with read-current recovery on lost
 responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 
+The separate signed campaign-draft command accepts only text, explicit
+UZ/RU/TJ copy, selected audience languages, optional HSK track and a bounded
+duration. It creates an existing `ad_campaigns` row as paused (`is_active=false`,
+`next_send_at=NULL`) with one round; it performs no recipient scan, provider
+call, automatic translation or delivery. The transaction-bound operation
+signs a compact hash of all three copies, while the immutable audit stores only
+that hash and the created campaign ID. Campaign activation/delivery, feedback
+and discount campaign creation, buttons and media stay outside this command
+until their bounded sender and asset contracts are implemented.
+
 ## Explicit code parity still outstanding
 
 These legacy capabilities are not silently proxied by the standalone PWA:
-campaign creation and general media/QR/creative uploads. Direct, self-test and
+campaign activation/delivery, release-feedback and discount campaign creation,
+and general media/QR/creative uploads. Direct, self-test and
 bounded text broadcast now have their own standalone commands described below. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
 needs its own strict payload, shared-service transaction and permission/audit
