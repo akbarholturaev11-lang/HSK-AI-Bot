@@ -40,8 +40,9 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
    settings and marketing configuration adapters now exist with localized
    before/after editors, exact proof, raw revision CAS and atomic hash-only
    audit. Required channels, account block/unblock/delete and manual ledger now have
-   bounded signed adapters and localized editors. Messaging/campaigns, partner
-   operations and media uploads remain legacy-parity work. Five fixed reminder
+   bounded signed adapters and localized editors. Partner applications also have signed approve/reject/block/unblock commands.
+   Messaging/campaigns, partner payouts/delivery and media uploads remain
+   legacy-parity work. Five fixed reminder
    templates now have signed UZ/RU/TJ editors with compact content commitments.
 5. **Staging acceptance**: isolated provider/device/TLS/proxy/migrations and
    actual ChatGPT E2E, then owner review. Needs real staging configuration and

@@ -719,7 +719,15 @@
     "ui.admin_pwa.noticeDefaultHint": "Ҳар забон алоҳида нигоҳ дошта мешавад. Майдони холӣ матни стандартиро барқарор мекунад.",
     "ui.admin_pwa.noticePlaceholders": "Тағйирёбандаҳои иҷозатдодашуда",
     "ui.admin_pwa.noticeInvalid": "Матн ва тағйирёбандаҳоро санҷед. Танҳо тағйирёбандаҳои нишондодашударо истифода баред.",
-    "ui.admin_pwa.noticeTooLong": "Матн хеле дароз аст. Дар қолаби дорои медиа матни ҳар забон набояд аз 1024 аломат зиёд бошад."
+    "ui.admin_pwa.noticeTooLong": "Матн хеле дароз аст. Дар қолаби дорои медиа матни ҳар забон набояд аз 1024 аломат зиёд бошад.",
+    "ui.admin_pwa.partners": "Шарикон",
+    "ui.admin_pwa.partnerId": "ID-и шарик",
+    "ui.admin_pwa.partnerContact": "Тамос",
+    "ui.admin_pwa.partnerPromotion": "Канали таблиғ",
+    "ui.admin_pwa.partnerAudience": "Шунавандагон",
+    "ui.admin_pwa.partnerBonus": "Бонуси нави баста ҳангоми тасдиқ",
+    "ui.admin_pwa.partnerBlock": "Бастани шарикӣ",
+    "ui.admin_pwa.partnerUnblock": "Барқарор кардани шарикӣ"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

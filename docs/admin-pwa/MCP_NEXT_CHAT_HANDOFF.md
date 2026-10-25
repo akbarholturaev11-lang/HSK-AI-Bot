@@ -2,6 +2,29 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current partner-application increment
+
+- `/partners/read|prepare|save` now implements pending approve/reject and
+  partnership block/unblock through shared PartnerService. Exact passkey proof,
+  raw application/bonus revision, shared bonus-setting + partner-row locks,
+  post-wait authority/expiry and atomic content-free audit. Existing locked
+  signup bonus is granted once; no Payment/learner block/Pro/budget changes.
+- Marketing has a compact partner row, 30-row metadata keysets and explicit
+  details/operation select/before-after confirmation. Canonical UZ/RU/TJ, mobile
+  screenshots checked, stored promotion text escaped, no polling/provider IO.
+- Partner/ownership/import gate: **18 passed**, including real ES256/replay,
+  bonus config and decision tamper, rollback, fixed page projections, real-PG
+  legacy row conflict and proof expiry during partner-row wait. Extended actual
+  ASGI/virtual-WebAuthn management browser passed all four partner operations
+  and prior management flows; 390px confirmation screenshots in all locales.
+- Reminder/late-feedback checkpoint pushed at `cfde1c49`; its broad local gate
+  passed 522 tests without service skips. Its GitHub CI outcome must be checked
+  for that exact head, not inferred from local success.
+- Remaining code parity: direct/mass messaging, campaigns, partner payout and
+  outbound notice delivery, media/QR/creative uploads, operator reconciliation
+  and non-native orphan-triage cleanup. Keep these explicit; no complete-product
+  claim and no automatic proxy to legacy mutation routes.
+
 ## Current reminder-template and late-feedback UI increment
 
 - Five fixed reminder keys have `/notifications/read|prepare|save`, current

@@ -719,7 +719,15 @@
     "ui.admin_pwa.noticeDefaultHint": "Каждый язык сохраняется отдельно. Пустое поле восстанавливает стандартный текст.",
     "ui.admin_pwa.noticePlaceholders": "Допустимые переменные",
     "ui.admin_pwa.noticeInvalid": "Проверьте текст и переменные. Используйте только указанные переменные.",
-    "ui.admin_pwa.noticeTooLong": "Текст слишком длинный. В шаблоне с медиа текст на каждом языке не должен превышать 1024 символа."
+    "ui.admin_pwa.noticeTooLong": "Текст слишком длинный. В шаблоне с медиа текст на каждом языке не должен превышать 1024 символа.",
+    "ui.admin_pwa.partners": "Партнёры",
+    "ui.admin_pwa.partnerId": "ID партнёра",
+    "ui.admin_pwa.partnerContact": "Контакт",
+    "ui.admin_pwa.partnerPromotion": "Канал продвижения",
+    "ui.admin_pwa.partnerAudience": "Аудитория",
+    "ui.admin_pwa.partnerBonus": "Новый заблокированный бонус при одобрении",
+    "ui.admin_pwa.partnerBlock": "Заблокировать партнёрство",
+    "ui.admin_pwa.partnerUnblock": "Восстановить партнёрство"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

@@ -719,7 +719,15 @@
     "ui.admin_pwa.noticeDefaultHint": "Har bir til alohida saqlanadi. Maydon bo‘sh qolsa, standart matn ishlatiladi.",
     "ui.admin_pwa.noticePlaceholders": "Ruxsat etilgan o‘zgaruvchilar",
     "ui.admin_pwa.noticeInvalid": "Matn va o‘zgaruvchilarni tekshiring. Faqat ko‘rsatilgan o‘zgaruvchilardan foydalaning.",
-    "ui.admin_pwa.noticeTooLong": "Matn juda uzun. Media bor shablonda barcha tillardagi matn 1024 belgidan oshmasin."
+    "ui.admin_pwa.noticeTooLong": "Matn juda uzun. Media bor shablonda barcha tillardagi matn 1024 belgidan oshmasin.",
+    "ui.admin_pwa.partners": "Hamkorlar",
+    "ui.admin_pwa.partnerId": "Hamkor ID",
+    "ui.admin_pwa.partnerContact": "Aloqa",
+    "ui.admin_pwa.partnerPromotion": "Targ‘ibot kanali",
+    "ui.admin_pwa.partnerAudience": "Auditoriya",
+    "ui.admin_pwa.partnerBonus": "Tasdiqlashda qo‘shiladigan yopiq bonus",
+    "ui.admin_pwa.partnerBlock": "Hamkorlikni bloklash",
+    "ui.admin_pwa.partnerUnblock": "Hamkorlikni tiklash"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

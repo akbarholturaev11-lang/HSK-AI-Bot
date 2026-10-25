@@ -23,6 +23,7 @@ uncertain response.
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
 | `marketing.update` | `/marketing/read`, `/prepare`, `/save` | Sales experiment, app promotion settings, existing creative activation/deletion |
 | `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
+| `partners.update` | `/partners/read`, `/prepare`, `/save` | Partner application approve/reject and partnership block/unblock via shared PartnerService |
 | `notifications.update` | `/notifications/read`, `/prepare`, `/save` | Five fixed reminder templates, enabled state and canonical UZ/RU/TJ text/defaults |
 | `portfolio.add` | `/portfolio/read`, `/prepare`, `/save` | Manual profit/expense through shared PortfolioService; no payment synchronization or entitlement mutation |
 | `channels.update` | `/channels/read`, `/prepare`, `/save` | Required-channel mode, add/upsert, state and removal through shared channel service |
@@ -67,7 +68,7 @@ responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 
 These legacy capabilities are not silently proxied by the standalone PWA:
 direct messages,
-mass messages, campaign creation, partner actions/payouts and media/QR/creative uploads. A legacy endpoint or
+mass messages, campaign creation, partner payout/delivery operations and media/QR/creative uploads. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
 needs its own strict payload, shared-service transaction and permission/audit
 contract before its UI can claim success. Messaging additionally needs durable
@@ -119,3 +120,15 @@ key/row locks as legacy text/media writers and atomically commits proof, shared
 service update and hash-only audit. Media/default changes invalidate review.
 The browser preserves unsaved language drafts and inline validation errors;
 text previews are escaped, with accessible per-language disclosure controls.
+
+Partner application pages select only ID/status/bounded contact in 30-row
+keysets; details are loaded explicitly. Approve/reject require pending state,
+block requires active partnership and unblock requires blocked partnership.
+The reviewed revision binds the full application, bonus setting and existing
+signup-credit evidence. A shared setting-key lock and partner-row lock prevent
+stale approval or a rate/bonus edit; authority/expiry is rechecked after waiting.
+The shared service grants its existing locked signup bonus at most once. No
+learner block, subscription, payment or AI budget is changed. Immutable audit
+stores decision/status/bonus/hash only, without contact or promotion copy. This
+adapter records partnership state, not outbound-message or payout delivery;
+those remain explicit separate commands.
