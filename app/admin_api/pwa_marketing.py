@@ -57,6 +57,7 @@ _SETTINGS = {"sales_experiment": SALES_EXPERIMENT_SETTINGS_KEY,
 _AD_PAGE_SIZE = 30
 _PWA_PROMO_IMAGE_MAX_BYTES = 2 * 1024 * 1024
 _PWA_PROMO_IMAGE_MAX_PIXELS = 8_000_000
+_PWA_COURSE_AD_IMAGE_MAX_BYTES = 1 * 1024 * 1024
 _PWA_PROMO_IMAGE_TYPES = {
     "image/jpeg": ("JPEG", ".jpg"),
     "image/png": ("PNG", ".png"),
@@ -117,13 +118,20 @@ class DesktopPromoChange(StrictModel):
 class CourseAdChange(StrictModel):
     kind: Literal["course_ad"]
     ad_id: PositiveId
-    operation: Literal["set_active", "delete"]
+    operation: Literal["set_active", "delete", "replace_image"]
     is_active: bool | None = None
+    media_sha256: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")] | None = None
+    media_size: Annotated[int, Field(strict=True, ge=1, le=_PWA_COURSE_AD_IMAGE_MAX_BYTES)] | None = None
 
     @model_validator(mode="after")
     def exact_operation(self):
-        if (self.operation == "set_active" and self.is_active is None
-                or self.operation == "delete" and self.is_active is not None):
+        has_digest = self.media_sha256 is not None
+        has_size = self.media_size is not None
+        if has_digest != has_size:
+            raise ValueError("Media digest and byte count must be supplied together")
+        if (self.operation == "set_active" and (self.is_active is None or has_digest)
+                or self.operation == "delete" and (self.is_active is not None or has_digest)
+                or self.operation == "replace_image" and (self.is_active is not None or not has_digest)):
             raise ValueError("Exact course-ad operation required")
         return self
 
@@ -377,6 +385,27 @@ def _write_promo_image(data: bytes, extension: str) -> str:
     return filename
 
 
+def _write_course_ad_image(data: bytes, extension: str) -> str:
+    """Atomically publish a PWA course-ad raster with a server-owned name."""
+    os.makedirs(COURSE_AD_MEDIA_ROOT, exist_ok=True)
+    token = uuid4().hex
+    filename = f"course_ad_pwa_{token}{extension}"
+    final_path = os.path.join(COURSE_AD_MEDIA_ROOT, filename)
+    temporary_path = os.path.join(COURSE_AD_MEDIA_ROOT, f".admin-pwa-{token}.tmp")
+    descriptor = os.open(temporary_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(data)
+        os.replace(temporary_path, final_path)
+    except Exception:
+        try:
+            os.unlink(temporary_path)
+        except OSError:
+            pass
+        raise
+    return filename
+
+
 def _cleanup_promo_media(filename):
     # The caller supplies only a server-generated new filename or the current
     # normalized setting value. Reject path manipulation before unlinking.
@@ -402,12 +431,18 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
     operation = command.operation()
     cleanup = None
     cleanup_promo = None
+    cleanup_course_ad = None
     new_promo_filename = None
+    new_course_ad_filename = None
     change = command.change
-    if change.kind == "desktop_promo" and change.media_sha256 is not None:
+    if (change.kind == "desktop_promo" and change.media_sha256 is not None
+            or change.kind == "course_ad" and change.operation == "replace_image"):
         if (media_bytes is None or len(media_bytes) != change.media_size
                 or hashlib.sha256(media_bytes).hexdigest() != change.media_sha256):
             raise CommandError("admin_pwa_invalid_media", 400)
+        if (change.kind == "course_ad"
+                and len(media_bytes) > _PWA_COURSE_AD_IMAGE_MAX_BYTES):
+            raise CommandError("admin_pwa_media_too_large", 413)
         media_extension = _validate_promo_image(media_bytes, media_content_type or "")
     elif media_bytes is not None:
         raise CommandError("admin_pwa_invalid_media", 400)
@@ -476,6 +511,25 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
                 if previous.media_path and previous.media_path != promo.media_path:
                     cleanup_promo = previous.media_path
                 _, result = await _target(db, change)
+            elif change.kind == "course_ad" and change.operation == "replace_image":
+                previous_path = row.media_path
+                shared = await db.scalar(select(CourseAdCreative.id).where(
+                    CourseAdCreative.media_path == previous_path,
+                    CourseAdCreative.id != row.id).limit(1))
+                new_course_ad_filename = await asyncio.to_thread(
+                    _write_course_ad_image, media_bytes, media_extension,
+                )
+                row.media_path = new_course_ad_filename
+                row.media_type = "photo"
+                # The PWA keeps the asset on the existing media volume. Do not
+                # add a DB image backup or reinterpret legacy backup metadata.
+                row.media_blob = None
+                row.media_size = None
+                row.media_checksum = None
+                await db.flush()
+                if previous_path and previous_path != new_course_ad_filename and shared is None:
+                    cleanup_course_ad = previous_path
+                _, result = await _target(db, change)
             elif change.operation == "set_active":
                 await CourseAdService(db).set_active(change.ad_id, change.is_active)
                 _, result = await _target(db, change)
@@ -518,6 +572,21 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
                     await asyncio.to_thread(_cleanup_promo_media, new_promo_filename)
                 except Exception:
                     logger.warning("Uncommitted desktop promo media requires cleanup")
+        if new_course_ad_filename is not None:
+            referenced = True
+            try:
+                await db.rollback()
+                async with db.begin():
+                    current = await db.scalar(select(CourseAdCreative.media_path).where(
+                        CourseAdCreative.id == change.ad_id))
+                    referenced = current == new_course_ad_filename
+            except Exception:
+                logger.warning("Course ad media commit outcome requires operator review")
+            if not referenced:
+                try:
+                    await asyncio.to_thread(_cleanup_deleted_media, new_course_ad_filename)
+                except Exception:
+                    logger.warning("Uncommitted course ad media requires cleanup")
         raise
     if cleanup is not None:
         # Commit is authoritative; best-effort local cleanup never changes a
@@ -531,6 +600,11 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
             await asyncio.to_thread(_cleanup_promo_media, cleanup_promo)
         except Exception:
             logger.warning("Replaced desktop promo media requires cleanup")
+    if cleanup_course_ad is not None:
+        try:
+            await asyncio.to_thread(_cleanup_deleted_media, cleanup_course_ad)
+        except Exception:
+            logger.warning("Replaced course ad media requires cleanup")
     return {"command_id": audit_id, "result": result}
 
 
@@ -589,14 +663,21 @@ def create_admin_pwa_marketing_router(*, settings_obj, session_factory):
             parsed = ExecuteMarketing.model_validate(raw_command)
         except (ValidationError, ValueError, TypeError):
             return _reply(400, "admin_pwa_invalid_payload")
-        if (parsed.change.kind != "desktop_promo"
-                or parsed.change.media_sha256 is None
-                or parsed.change.media_size is None):
+        is_promo_image = (parsed.change.kind == "desktop_promo"
+                          and parsed.change.media_sha256 is not None
+                          and parsed.change.media_size is not None)
+        is_course_ad_image = (parsed.change.kind == "course_ad"
+                              and parsed.change.operation == "replace_image"
+                              and parsed.change.media_sha256 is not None
+                              and parsed.change.media_size is not None)
+        if not (is_promo_image or is_course_ad_image):
             return _reply(400, "admin_pwa_invalid_payload")
+        max_bytes = (_PWA_COURSE_AD_IMAGE_MAX_BYTES if is_course_ad_image
+                     else _PWA_PROMO_IMAGE_MAX_BYTES)
         declared_length = request.headers.get("content-length")
         if declared_length:
             try:
-                if int(declared_length) > _PWA_PROMO_IMAGE_MAX_BYTES:
+                if int(declared_length) > max_bytes:
                     return _reply(413, "admin_pwa_media_too_large")
             except ValueError:
                 return _reply(400, "admin_pwa_invalid_payload")
@@ -611,7 +692,7 @@ def create_admin_pwa_marketing_router(*, settings_obj, session_factory):
             return _reply(503, "admin_pwa_command_unavailable")
         data = bytearray()
         async for chunk in request.stream():
-            if len(data) + len(chunk) > _PWA_PROMO_IMAGE_MAX_BYTES:
+            if len(data) + len(chunk) > max_bytes:
                 return _reply(413, "admin_pwa_media_too_large")
             data.extend(chunk)
         if len(data) != parsed.change.media_size:

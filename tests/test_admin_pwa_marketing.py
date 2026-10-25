@@ -27,6 +27,7 @@ from app.db.models.course_ad import CourseAdCreative, CourseAdView
 from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.services.course_ad_service import CourseAdService
+from app.services import course_ad_service
 from app.services.course_sales_experiment_service import CourseSalesExperimentService
 from app.services.desktop_app_promo_settings_service import (
     DESKTOP_APP_PROMO_SETTINGS_KEY, get_desktop_app_promo_settings,
@@ -266,6 +267,86 @@ class AdminPwaMarketingTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         for filename in (".admin-pwa-0123456789abcdef.tmp", "../desktop_app_promo_1_2_0123456789.jpg",
                          "arbitrary.jpg", "desktop_app_promo_pwa_bad.jpg"):
             self.assertFalse(desktop_app_promo_public_filename_allowed(filename), filename)
+
+    async def test_course_ad_image_replace_is_signed_disk_only_and_preserves_shared_old_file(self):
+        data = self.promo_png()
+        await self.seed_ads(2, shared_path=True)
+        with tempfile.TemporaryDirectory(prefix="admin-pwa-course-ad-") as media_root:
+            old_path = Path(media_root) / "retained-private-media.mp4"
+            old_path.write_bytes(b"old shared creative")
+            with patch.object(marketing, "COURSE_AD_MEDIA_ROOT", media_root), \
+                    patch.object(course_ad_service, "COURSE_AD_MEDIA_ROOT", media_root):
+                change = {"kind": "course_ad", "ad_id": 1, "operation": "replace_image",
+                          "is_active": None, "media_sha256": hashlib.sha256(data).hexdigest(),
+                          "media_size": len(data)}
+                command = await self.prepare_marketing(change)
+                operation = command.operation()
+                proof = await self.proof_marketing(command, signed=True)
+                result = await self.execute_marketing(command, proof, media_bytes=data,
+                                                       media_content_type="image/png")
+                async with self.sessions() as db:
+                    saved = await db.get(CourseAdCreative, 1)
+                    self.assertEqual(saved.media_type, "photo")
+                    self.assertTrue(saved.media_path.startswith("course_ad_pwa_"))
+                    self.assertIsNone(saved.media_size)
+                    self.assertIsNone(saved.media_checksum)
+                    self.assertIsNone(await db.scalar(select(CourseAdCreative.media_blob).where(
+                        CourseAdCreative.id == 1)))
+                    self.assertEqual((Path(media_root) / saved.media_path).read_bytes(), data)
+                    audit = await db.get(AdminPwaCommandAudit, result["command_id"])
+                    self.assertEqual(audit.payload_hash, operation_digest(**operation))
+                    self.assertNotIn(saved.media_path, audit.result_json)
+                self.assertTrue(old_path.is_file(), "shared old asset must remain available")
+                second_change = {**change, "ad_id": 2}
+                second_command = await self.prepare_marketing(second_change)
+                second_proof = await self.proof_marketing(second_command)
+                await self.execute_marketing(second_command, second_proof, media_bytes=data,
+                                             media_content_type="image/png")
+                self.assertFalse(old_path.exists(), "unreferenced old asset is removed after commit")
+
+    async def test_course_ad_image_audit_rollback_removes_unreferenced_new_asset(self):
+        data = self.promo_png()
+        await self.seed_ads(1)
+        with tempfile.TemporaryDirectory(prefix="admin-pwa-course-ad-rollback-") as media_root:
+            old_path = Path(media_root) / "private-media-1.mp4"
+            old_path.write_bytes(b"old creative")
+            with patch.object(marketing, "COURSE_AD_MEDIA_ROOT", media_root), \
+                    patch.object(course_ad_service, "COURSE_AD_MEDIA_ROOT", media_root):
+                change = {"kind": "course_ad", "ad_id": 1, "operation": "replace_image",
+                          "is_active": None, "media_sha256": hashlib.sha256(data).hexdigest(),
+                          "media_size": len(data)}
+                command = await self.prepare_marketing(change)
+                proof = await self.proof_marketing(command)
+                original_flush = AsyncSession.flush
+
+                async def fail_audit(session, *args, **kwargs):
+                    if any(isinstance(item, AdminPwaCommandAudit) for item in session.new):
+                        raise RuntimeError("synthetic audit failure")
+                    return await original_flush(session, *args, **kwargs)
+
+                with patch.object(AsyncSession, "flush", fail_audit):
+                    with self.assertRaisesRegex(RuntimeError, "audit failure"):
+                        await self.execute_marketing(command, proof, media_bytes=data,
+                                                     media_content_type="image/png")
+                self.assertEqual({path.name for path in Path(media_root).iterdir()},
+                                 {"private-media-1.mp4"})
+                async with self.sessions() as db:
+                    row = await db.get(CourseAdCreative, 1)
+                    self.assertEqual(row.media_path, "private-media-1.mp4")
+                    self.assertEqual((await db.get(AdminPwaStepUp, proof)).status, "verified")
+                    self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit)), 0)
+
+    async def test_course_ad_media_payload_rejects_inexact_replace_contract(self):
+        with self.assertRaises(ValidationError):
+            marketing.PrepareMarketing.model_validate({"change": {
+                "kind": "course_ad", "ad_id": 1, "operation": "replace_image",
+                "is_active": None, "media_sha256": "0" * 64,
+            }})
+        with self.assertRaises(ValidationError):
+            marketing.PrepareMarketing.model_validate({"change": {
+                "kind": "course_ad", "ad_id": 1, "operation": "set_active",
+                "is_active": True, "media_sha256": "0" * 64, "media_size": 1,
+            }})
 
     async def test_campaign_creation_is_localized_signed_paused_and_content_free_in_audit(self):
         command = await self.prepare_marketing(CAMPAIGN_CHANGE)

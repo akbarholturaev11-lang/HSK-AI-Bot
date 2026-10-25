@@ -132,12 +132,45 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   `/tmp/hsk-admin-pwa-desktop-promo-media-final2-20261025/desktop-promo-image-confirm-390.png`
   was visually checked: the preview fits above the single footer confirmation.
   Catalogs: 63 artifacts, zero stale; JS syntax, Python compilation and
-  `git diff --check` passed. Record the pushed commit and exact-SHA CI only
-  after this increment is committed.
-- Remaining: separately scoped course-ad image uploads and payment QR media,
-  safe campaign activation/delivery, release-feedback/discount campaigns,
-  and the other unimplemented items in the acceptance contract. Do not infer
-  full PWA completion from this increment.
+  `git diff --check` passed. Commit `0f099b3555ef4d8eeb4576ebf5d54d816456aeea`
+  is pushed and the feature branch remote was verified at that SHA. No CI
+  status for that exact SHA has been recorded here.
+- Remaining at this historical checkpoint: course-ad image replacement, new
+  creative/video uploads and payment QR media, safe campaign activation/delivery,
+  release-feedback/discount campaigns, and the other unimplemented items in
+  the acceptance contract. Do not infer full PWA completion from that increment.
+
+## Current course-ad image replacement increment — 2026-10-25
+
+- An existing course-ad creative can replace its media with one JPEG/PNG/WebP
+  image up to 1 MiB and 8 million pixels. The exact image hash/size and current
+  creative revision are bound into the existing `marketing.update` passkey
+  proof. Only the existing creative row changes; title, target, placement and
+  activation state are preserved. New creative creation and video upload stay
+  out of scope.
+- The upload streams within its small limit, checks the same-origin active
+  WebAuthn session, decodes a single-frame raster server-side, and atomically
+  writes a random filename to the existing course-ad media volume. The row and
+  content-free audit commit together; no DB image BLOB, backup metadata or
+  migration is added. Shared old media is retained; unshared old media is
+  cleaned only after commit. Uncertain commit outcomes preserve a potentially
+  referenced file.
+- The V10 editor shows current and proposed media, local preview and byte size
+  before one passkey confirmation. Copy is localized in UZ/RU/TJ. The mobile
+  review screenshot is
+  `/tmp/hsk-admin-pwa-course-ad-media-focused-20261025/course-ad-image-confirm-390.png`;
+  it was visually checked after correcting the course-ad title label.
+- Local evidence: marketing plus existing course-ad media/type suites
+  **55 passed / 33 subtests**; focused actual ASGI/virtual-WebAuthn image upload
+  passed at 390px with SQL/disk assertions;
+  the full management browser regression suite passed at UZ/RU/TJ 390/1440px
+  for the existing settings/prices/course-ad state/delete/account flows.
+  Catalogs: 63 artifacts, zero stale. Feature defaults stay OFF, external MCP
+  stays statistics-only. The full PWA remains incomplete.
+- Remaining media/code: course-ad video and new creative uploads, payment QR,
+  campaign activation/delivery, feedback/discount commands and the other open
+  acceptance items. Keep each in its own exact signed contract and avoid
+  provider/media IO during read paths.
 
 ## Mobile Inbox touch and fresh-login regression
 

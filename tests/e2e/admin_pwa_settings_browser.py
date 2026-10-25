@@ -53,6 +53,7 @@ from app.db.models.ad_campaign import AdCampaign
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
 from app.services.desktop_app_promo_settings_service import get_desktop_app_promo_settings
+from app.services import course_ad_service
 from app.services.support_contact_service import ADMIN_CONTACT_KEY
 from app.services.broadcast_translation_service import decode_localized_broadcast_text
 from tests.test_admin_pwa_payment_review import COOKIE, PaymentFixtures
@@ -62,16 +63,19 @@ ORIGIN = "https://hskai.app"
 ROOT = Path(__file__).resolve().parents[2]
 
 
-async def browser_checks(output):
+async def browser_checks(output, *, media_only=False):
     output.mkdir(parents=True, exist_ok=True)
     image_buffer=BytesIO()
     Image.new('RGB',(320,180),(22,108,119)).save(image_buffer,format='PNG')
     promo_image=image_buffer.getvalue()
     media_directory=tempfile.TemporaryDirectory(prefix='admin-pwa-promo-browser-')
+    course_media_directory=tempfile.TemporaryDirectory(prefix='admin-pwa-course-ad-browser-')
     media_root_patch=patch.object(pwa_marketing_api,'DESKTOP_APP_PROMO_MEDIA_ROOT',media_directory.name)
     media_path_patch=patch.object(pwa_marketing_api,'desktop_app_promo_media_full_path',
         lambda name:str(Path(media_directory.name)/name) if name else None)
-    media_root_patch.start();media_path_patch.start()
+    course_media_root_patch=patch.object(pwa_marketing_api,'COURSE_AD_MEDIA_ROOT',course_media_directory.name)
+    course_service_media_root_patch=patch.object(course_ad_service,'COURSE_AD_MEDIA_ROOT',course_media_directory.name)
+    media_root_patch.start();media_path_patch.start();course_media_root_patch.start();course_service_media_root_patch.start()
     fixture = PaymentFixtures()
     fixture.engine = create_async_engine("sqlite+aiosqlite:///:memory:", poolclass=StaticPool)
     async with fixture.engine.begin() as connection:
@@ -146,7 +150,11 @@ async def browser_checks(output):
                 await context.route("**/*", serve)
                 page = await context.new_page()
                 page.on("pageerror", lambda error: errors.append(str(error)))
-                await page.add_init_script("window.cspFailures=[];document.addEventListener('securitypolicyviolation',e=>window.cspFailures.push(e.violatedDirective));")
+                await page.add_init_script("""window.cspFailures=[];window.webauthnErrors=[];
+                  document.addEventListener('securitypolicyviolation',e=>window.cspFailures.push(e.violatedDirective));
+                  const credentialGet=navigator.credentials.get.bind(navigator.credentials);
+                  navigator.credentials.get=async options=>{try{return await credentialGet(options)}catch(error){
+                    window.webauthnErrors.push({name:error.name,message:error.message});throw error;}};""")
                 cdp = await context.new_cdp_session(page)
                 await cdp.send("WebAuthn.enable")
                 authenticator = await cdp.send("WebAuthn.addVirtualAuthenticator", {"options": {
@@ -182,7 +190,16 @@ async def browser_checks(output):
                             await page.screenshot(path=str(output / label))
                         await page.locator('[data-action="managementExecute"]').click()
                     expected = json.loads((ROOT / f"localization/ui/{language}/miniapp.json").read_text())["messages"]["ui.admin_pwa.changesSaved"]
-                    await expect(page.locator("#drawerTitle")).to_have_text(expected, timeout=15000)
+                    try:
+                        await expect(page.locator("#drawerTitle")).to_have_text(expected, timeout=15000)
+                    except AssertionError as exc:
+                        await page.screenshot(path=str(output / f"failed-{label or 'command'}.png"))
+                        recent_paths=[path for path,_ in calls[-8:]]
+                        raise AssertionError(
+                            f"{label or 'command'} did not save; drawer="
+                            f"{await page.locator('#drawerContent').inner_text()} calls={recent_paths} "
+                            f"errors={errors[-8:]} webauthn={await page.evaluate('window.webauthnErrors')}"
+                        ) from exc
                     assert await audit_count() == before + 1
                     await page.locator(".drawer-close").click()
 
@@ -397,6 +414,34 @@ async def browser_checks(output):
                 assert not (Path(media_directory.name)/promo.media_path).exists()
                 await page.locator('.drawer-close').click()
                 await page.set_viewport_size({'width':1440,'height':1000})
+                if media_only:
+                    await page.locator('[data-marketing-kind="course_ad"]').click()
+                    await page.locator('[data-course-ad="1"]').click()
+                    await page.set_viewport_size({'width':390,'height':844})
+                    await page.locator('#adOperation').select_option('replace_image')
+                    await page.locator('#courseAdMediaFile').set_input_files({
+                        'name':'qa-course-banner.png','mimeType':'image/png','buffer':promo_image})
+                    await expect(page.locator('#courseAdMediaPreview img')).to_be_visible()
+                    await page.locator('[data-action="managementPrepare"]').click()
+                    await expect(page.locator('.management-comparison')).to_be_visible()
+                    assert await page.locator('.management-comparison img').count()==1
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                    await page.screenshot(path=str(output/'course-ad-image-confirm-390.png'))
+                    await page.locator('[data-action="managementExecute"]').click()
+                    saved_title=json.loads((ROOT/'localization/ui/uz/miniapp.json').read_text())['messages']['ui.admin_pwa.changesSaved']
+                    await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
+                    async with fixture.sessions() as db:
+                        course_ad=await db.get(CourseAdCreative,1)
+                        assert course_ad and course_ad.media_type=='photo'
+                        assert course_ad.media_path.startswith('course_ad_pwa_')
+                        assert course_ad.media_size is None
+                        assert await db.scalar(select(CourseAdCreative.media_blob).where(
+                            CourseAdCreative.id==1)) is None
+                        assert (Path(course_media_directory.name)/course_ad.media_path).read_bytes()==promo_image
+                    assert any(path=='/api/admin/v1/marketing/media/save' for path,_ in calls)
+                    assert not errors, errors
+                    print('Course-ad media: ASGI + virtual WebAuthn upload, signed preview and disk-only persistence passed at 390px')
+                    return
                 for operation in ('set_active','delete'):
                     await page.locator('[data-marketing-kind="course_ad"]').click()
                     await page.locator('[data-course-ad="1"]').click()
@@ -637,11 +682,14 @@ async def browser_checks(output):
                 await browser.close()
     finally:
         await fixture.engine.dispose()
-        media_path_patch.stop();media_root_patch.stop();media_directory.cleanup()
-    print("Management: real SQL + WebAuthn; UZ/RU/TJ 390/1440; settings/prices/marketing/account state+delete; cancel/CAS/lost-response/revoke passed")
+        course_service_media_root_patch.stop();course_media_root_patch.stop()
+        media_path_patch.stop();media_root_patch.stop();course_media_directory.cleanup();media_directory.cleanup()
+    print("Management: real SQL + WebAuthn; UZ/RU/TJ 390/1440; settings/prices/marketing/course-ad state+delete/account state+delete; cancel/CAS/lost-response/revoke passed")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=Path("/tmp/hsk-admin-pwa-settings"))
-    asyncio.run(browser_checks(parser.parse_args().output))
+    parser.add_argument("--media-only", action="store_true", help="Stop after the first-party course-ad image upload scenario")
+    args = parser.parse_args()
+    asyncio.run(browser_checks(args.output, media_only=args.media_only))

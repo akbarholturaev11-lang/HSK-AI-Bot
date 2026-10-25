@@ -725,8 +725,11 @@ function marketingFields(value){
     ['promoMedia',value.media_sha256?(value.media_name||t('mediaSelected')):t(value.clear_media?'notSet':value.has_media?'mediaAttached':'notSet')]]);
   if(value.deleted_id)return profileFields([['courseAdId',value.deleted_id],['status',t('deleted')]]);
   const fields=[['courseAdId',value.ad_id||value.id]];
-  if(value.title)fields.push(['name',value.title]);
-  fields.push(['status',value.operation==='delete'?t('deleteItem'):yes(value.is_active)]);
+  if(value.title)fields.push(['courseAdTitle',value.title]);
+  if(value.media_name||value.media_type)fields.push(['courseAdMedia',value.media_name
+    ?`${value.media_name} · ${Number(value.media_size||0).toLocaleString()} B`
+    :t(value.media_type==='photo'?'courseAdPhoto':'courseAdVideo')]);
+  fields.push([value.operation==='replace_image'?'operation':'status',value.operation==='delete'?t('deleteItem'):value.operation==='replace_image'?t('courseAdReplaceImage'):yes(value.is_active)]);
   return profileFields(fields);
 }
 function boolSelect(id,label,value){return `<div class="form-field"><label for="${id}">${esc(t(label))}</label><select class="input" id="${id}"><option value="true" ${value?'selected':''}>${esc(t('hsk30On'))}</option><option value="false" ${!value?'selected':''}>${esc(t('hsk30Off'))}</option></select></div>`;}
@@ -766,7 +769,7 @@ function editCourseAd(id){
   const ad=managementDraft?.data?.course_ads?.items?.find(row=>row.id===id);
   if(!ad||managementDraft.kind!=='course_ad')return;
   managementDraft={...managementDraft,ad};
-  const form=`<form id="managementForm">${profileFields([['courseAdId',ad.id],['name',ad.title],['language',ad.language]])}<div class="form-field"><label for="adOperation">${esc(t('operation'))}</label><select id="adOperation" class="input"><option value="set_active">${esc(t('changeStatus'))}</option><option value="delete">${esc(t('deleteItem'))}</option></select></div><div id="adActiveField">${boolSelect('adActive','status',ad.is_active)}</div><p class="alert" id="adDeleteHint" hidden>${esc(t('deleteAdHint'))}</p></form>`;
+  const form=`<form id="managementForm">${profileFields([['courseAdId',ad.id],['courseAdTitle',ad.title],['language',ad.language],['courseAdMedia',t(ad.media_type==='photo'?'courseAdPhoto':'courseAdVideo')]])}<div class="form-field"><label for="adOperation">${esc(t('operation'))}</label><select id="adOperation" class="input"><option value="set_active">${esc(t('changeStatus'))}</option><option value="replace_image">${esc(t('courseAdReplaceImage'))}</option><option value="delete">${esc(t('deleteItem'))}</option></select></div><div id="adActiveField">${boolSelect('adActive','status',ad.is_active)}</div><div class="form-field" id="adMediaField" hidden><label for="courseAdMediaFile">${esc(t('courseAdMedia'))}</label><input class="input" id="courseAdMediaFile" type="file" accept="image/jpeg,image/png,image/webp" disabled><p class="form-hint">${esc(t('courseAdMediaHint'))}</p><div id="courseAdMediaPreview" aria-live="polite"></div><p class="alert" id="courseAdMediaValidation" role="alert" hidden></p></div><p class="alert" id="adDeleteHint" hidden>${esc(t('deleteAdHint'))}</p></form>`;
   drawer('courseAds',form,btn('cancel','close')+btn('next','managementPrepare','primary'));
 }
 function managementFields(value,type){
@@ -975,7 +978,20 @@ async function prepareManagement(){
         change.media_size=file.size;
       }
     }
-    if(draft.kind==='course_ad')Object.assign(change,{ad_id:draft.ad.id,operation:$('adOperation').value,is_active:$('adOperation').value==='delete'?null:$('adActive').value==='true'});
+    if(draft.kind==='course_ad'){
+      const operation=$('adOperation').value;
+      Object.assign(change,{ad_id:draft.ad.id,operation,is_active:operation==='set_active'?$('adActive').value==='true':null});
+      if(operation==='replace_image'){
+        const file=draft.mediaFile;
+        if(!file){const validation=$('courseAdMediaValidation');validation.textContent=t('courseAdMediaRequired');validation.hidden=false;return;}
+        if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size<1||file.size>1024*1024){
+          const validation=$('courseAdMediaValidation');validation.textContent=t(file.size>1024*1024?'courseAdMediaTooLarge':'courseAdMediaValidation');validation.hidden=false;return;
+        }
+        const digest=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());
+        change.media_sha256=[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
+        change.media_size=file.size;
+      }
+    }
     payload={change};
   }else{
     const change={kind:draft.kind};
@@ -1008,9 +1024,11 @@ async function prepareManagement(){
       has_media:!!draft.mediaFile||(!draft.clearMedia&&!!result.current.has_media),
       clear_media:!!draft.clearMedia,
       ...(draft.mediaFile?{media_name:String(draft.mediaFile.name||'').slice(0,120)}:{})};
+    if(draft.type==='marketing'&&draft.kind==='course_ad'&&draft.mediaFile)proposed={...proposed,
+      media_name:String(draft.mediaFile.name||'').slice(0,120),media_size:draft.mediaFile.size};
     const currentValue=draft.type==='marketing'||draft.type==='channel'?{kind:draft.kind,...result.current}:result.current;
-    const mediaPreview=draft.type==='marketing'&&draft.kind==='desktop_promo'&&draft.mediaFile&&managementMediaPreviewUrl
-      ?`<figure class="management-media-preview"><img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t('promoMedia'))}"></figure>`:'';
+    const mediaPreview=draft.type==='marketing'&&['desktop_promo','course_ad'].includes(draft.kind)&&draft.mediaFile&&managementMediaPreviewUrl
+      ?`<figure class="management-media-preview"><img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t(draft.kind==='course_ad'?'courseAdMedia':'promoMedia'))}"></figure>`:'';
     const comparison=`<div class="management-comparison">${['message','payout_completion'].includes(draft.type)?(draft.type==='message'?`<p class="source-note">${esc(t('messageAttemptHint'))}</p>`:''):draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}${mediaPreview}</section></div>`;
     drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
   }catch(error){
@@ -1027,6 +1045,9 @@ async function prepareManagement(){
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
       }else if(draft.type==='marketing'&&draft.kind==='desktop_promo'&&error.status===400&&$('promoMediaValidation')){
         $('promoMediaValidation').textContent=t(error.message==='admin_pwa_media_too_large'?'promoMediaTooLarge':'promoMediaValidation');$('promoMediaValidation').hidden=false;
+        $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
+      }else if(draft.type==='marketing'&&draft.kind==='course_ad'&&error.status===400&&$('courseAdMediaValidation')){
+        $('courseAdMediaValidation').textContent=t('courseAdMediaValidation');$('courseAdMediaValidation').hidden=false;
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
       }else drawer('confirmChanges',statePanel(error.status===409?'configChanged':errorKey(error)),btn('close','close')+managementReread(draft));
     }
@@ -1051,7 +1072,7 @@ async function executeManagement(){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     submitted=true;
     const command={...review.executePayload,step_up_id:options.step_up_id};
-    const result=review.type==='marketing'&&review.kind==='desktop_promo'&&review.mediaFile
+    const result=review.type==='marketing'&&['desktop_promo','course_ad'].includes(review.kind)&&review.mediaFile
       ?await api('marketing/media/save',null,{rawBody:review.mediaFile,extraHeaders:{'X-Admin-PWA-Command':JSON.stringify(command)}})
       :await api(managementEndpoint(review.type,'save'),command);
     if(current!==drawerId||at!==epoch||!state.actor)return;
@@ -1071,7 +1092,9 @@ async function executeManagement(){
     const rejected=[400,403,404,409,413].includes(error.status);
     const failureKey=review.type==='marketing'&&review.kind==='desktop_promo'&&error.status===413
       ?'promoMediaTooLarge':review.type==='marketing'&&review.kind==='desktop_promo'&&error.status===400
-        ?'promoMediaValidation':error.status===409?'configChanged':submitted&&!rejected?'configUncertain':errorKey(error);
+        ?'promoMediaValidation':review.type==='marketing'&&review.kind==='course_ad'&&error.status===413
+          ?'courseAdMediaTooLarge':review.type==='marketing'&&review.kind==='course_ad'&&error.status===400
+            ?'courseAdMediaValidation':error.status===409?'configChanged':submitted&&!rejected?'configUncertain':errorKey(error);
     drawer('confirmChanges',statePanel(failureKey),btn('close','close')+managementReread(review));
   }finally{if(signing===control)signing=null;}
 }
@@ -1773,20 +1796,23 @@ document.addEventListener('change',event=>{
   if(event.target.id==='messageLanguage')updateMessageLanguage();
   if(event.target.id==='messageKind'&&$('messageFilters'))$('messageFilters').hidden=event.target.value==='test';
   if(event.target.id==='payoutProofFile'){void stagePayoutProof(event.target.files[0]);return;}
-  if(event.target.id==='promoMediaFile'){
-    const file=event.target.files?.[0]||null,allowed=['image/jpeg','image/png','image/webp'];
-    const invalid=file&&(!allowed.includes(file.type)||file.size<1||file.size>2*1024*1024);
-    const validation=$('promoMediaValidation');
-    if(validation)validation.hidden=!invalid;
+  if(['promoMediaFile','courseAdMediaFile'].includes(event.target.id)){
+    const isCourseAd=event.target.id==='courseAdMediaFile',file=event.target.files?.[0]||null,allowed=['image/jpeg','image/png','image/webp'];
+    const maxBytes=isCourseAd?1024*1024:2*1024*1024;
+    const previewId=isCourseAd?'courseAdMediaPreview':'promoMediaPreview';
+    const validationId=isCourseAd?'courseAdMediaValidation':'promoMediaValidation';
+    const invalid=file&&(!allowed.includes(file.type)||file.size<1||file.size>maxBytes);
+    const validation=$(validationId);
+    if(validation){validation.hidden=!invalid;if(invalid&&isCourseAd)validation.textContent=t(file.size>maxBytes?'courseAdMediaTooLarge':'courseAdMediaValidation');}
     if(invalid){event.target.value='';if($('promoMediaClear'))$('promoMediaClear').checked=false;
       managementDraft={...managementDraft,mediaFile:null,clearMedia:false};releaseManagementMediaPreview();
-      if($('promoMediaPreview'))$('promoMediaPreview').innerHTML='';return;}
+      if($(previewId))$(previewId).innerHTML='';return;}
     releaseManagementMediaPreview();
     managementDraft={...managementDraft,mediaFile:file,clearMedia:false};
     if($('promoMediaClear'))$('promoMediaClear').checked=false;
     if(file){managementMediaPreviewUrl=URL.createObjectURL(file);
-      if($('promoMediaPreview'))$('promoMediaPreview').innerHTML=`<figure class="management-media-preview"><img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t('promoMedia'))}"><figcaption>${esc(String(file.name||'').slice(0,120))} · ${file.size.toLocaleString()} B</figcaption></figure>`;}
-    else if($('promoMediaPreview'))$('promoMediaPreview').innerHTML='';
+      if($(previewId))$(previewId).innerHTML=`<figure class="management-media-preview"><img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t(isCourseAd?'courseAdMedia':'promoMedia'))}"><figcaption>${esc(String(file.name||'').slice(0,120))} · ${file.size.toLocaleString()} B</figcaption></figure>`;}
+    else if($(previewId))$(previewId).innerHTML='';
     return;
   }
   if(event.target.id==='promoMediaClear'){
@@ -1806,8 +1832,15 @@ document.addEventListener('change',event=>{
   if(event.target.id==='channelOperation'&&$('channelActiveField'))$('channelActiveField').hidden=event.target.value==='delete';
   if(event.target.id==='adOperation'){
     const deleting=event.target.value==='delete';
-    if($('adActiveField'))$('adActiveField').hidden=deleting;
+    const replacing=event.target.value==='replace_image';
+    if($('adActiveField'))$('adActiveField').hidden=!['set_active'].includes(event.target.value);
     if($('adDeleteHint'))$('adDeleteHint').hidden=!deleting;
+    const mediaField=$('adMediaField'),mediaInput=$('courseAdMediaFile');
+    if(mediaField)mediaField.hidden=!replacing;
+    if(mediaInput){mediaInput.disabled=!replacing;mediaInput.required=replacing;
+      if(!replacing){mediaInput.value='';managementDraft={...managementDraft,mediaFile:null};releaseManagementMediaPreview();
+        if($('courseAdMediaPreview'))$('courseAdMediaPreview').innerHTML='';}}
+    if(!replacing&&$('courseAdMediaValidation'))$('courseAdMediaValidation').hidden=true;
   }
   if(['priceMethod','pricePlan'].includes(event.target.id))updatePriceFields();
   if(['helpVideoKey','helpVideoLanguage'].includes(event.target.id))updateHelpVideoField();

@@ -88,12 +88,23 @@ is never removed. Replaced/cleared files are removed after commit. No image
 BLOB, DB migration, Bot upload, AI call or campaign delivery is introduced.
 The public media route allowlists only server-generated legacy/PWA filenames.
 
+Existing course-ad image replacement is a separate signed `replace_image`
+operation on one creative ID. It accepts a decoded JPEG/PNG/WebP image up to
+1 MiB and 8 million pixels, signs the content hash and byte count with the
+creative revision, and stores a random server-named file on the existing
+course-ad media volume. The current media row and content-free audit commit in
+the same transaction; no image BLOB, backup BLOB metadata or migration is
+created. A shared old file is retained, and an unreferenced old file is removed
+only after commit. This changes an existing creative's image only; it does not
+create or deliver campaigns, upload video, or authorize QR/other media.
+
 ## Explicit code parity still outstanding
 
 These legacy capabilities are not silently proxied by the standalone PWA:
 campaign activation/delivery, release-feedback and discount campaign creation,
-course-ad media uploads and payment QR uploads. Desktop-promo raster media has
-its own signed flow described above; it does not authorize other upload types.
+course-ad creation/video uploads and payment QR uploads. Desktop-promo and
+existing course-ad raster media each have their own signed flows described
+above; they do not authorize other upload types.
 Direct, self-test and
 bounded text broadcast now have their own standalone commands described below. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
