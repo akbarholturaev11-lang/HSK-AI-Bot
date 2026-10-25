@@ -55,6 +55,28 @@ class AdminPwaInboxFilterTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
             await db.commit()
         return now, ids
 
+    async def test_bot_structured_feedback_keeps_both_original_answers(self):
+        now = datetime.now(timezone.utc).replace(microsecond=0)
+        async with self.sessions() as db:
+            feedback = BotFeedback(
+                user_id=1, telegram_id=1001, status="completed", language="ru",
+                liked_code="worth", liked_text="Стоила того — посоветую другу",
+                disliked_code="daily", disliked_text="Ежедневная практика",
+                completed_at=now,
+            )
+            db.add(feedback)
+            await db.flush()
+            feedback_id = feedback.id
+            await db.commit()
+        page = await self.read(source="bot")
+        row = next(r for r in page["items"] if r["source_id"] == feedback_id)
+        self.assertEqual(row["feedback_parts"], {
+            "liked": "Стоила того — посоветую другу",
+            "disliked": "Ежедневная практика",
+        })
+        self.assertEqual(row["message"], "Ежедневная практика")
+        self.assertNotIn("telegram_id", row)
+
     async def test_periods_use_each_source_timestamp_and_preserve_retention(self):
         _, ids = await self.seed_sources()
         for source, source_ids in ids.items():
