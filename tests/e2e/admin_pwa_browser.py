@@ -683,6 +683,11 @@ async def attachment_browser_checks(output):
         if delayed:
             started.set();await release.wait()
         headers=dict(response.headers);headers.pop('content-length',None)
+        # Preserve the separate assertion-cookie deletion and new session
+        # cookie. A comma-folded Set-Cookie hides the WebAuthn session from
+        # Chromium and makes the subsequent authenticated /me return 401.
+        cookies=response.headers.get_list('set-cookie')
+        if cookies:headers['set-cookie']='\n'.join(cookies)
         await route.fulfill(status=response.status_code,headers=headers,body=response.content)
         if delayed:finished.set()
     try:
@@ -831,6 +836,11 @@ async def export_browser_checks(output):
         delayed=is_export and mode=='delayed'
         if delayed:started.set();await release.wait()
         headers=dict(response.headers);headers.pop('content-length',None)
+        # Preserve the separate assertion-cookie deletion and new session
+        # cookie. A comma-folded Set-Cookie hides the WebAuthn session from
+        # Chromium and makes the subsequent authenticated /me return 401.
+        cookies=response.headers.get_list('set-cookie')
+        if cookies:headers['set-cookie']='\n'.join(cookies)
         await route.fulfill(status=response.status_code,headers=headers,body=response.content)
         if delayed:finished.set()
     try:
@@ -973,6 +983,11 @@ async def access_grant_browser_checks(output):
             response=await client.request(request.method,path,headers=await request.all_headers(),content=request.post_data_buffer)
         if drop and path=='/api/admin/v1/users/grant-access':drop=False;await route.abort();return
         headers=dict(response.headers);headers.pop('content-length',None)
+        # Preserve the separate assertion-cookie deletion and new session
+        # cookie. A comma-folded Set-Cookie hides the WebAuthn session from
+        # Chromium and makes the subsequent authenticated /me return 401.
+        cookies=response.headers.get_list('set-cookie')
+        if cookies:headers['set-cookie']='\n'.join(cookies)
         await route.fulfill(status=response.status_code,headers=headers,body=response.content)
     try:
         async with async_playwright() as pw:
