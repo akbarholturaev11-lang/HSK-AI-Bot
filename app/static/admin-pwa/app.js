@@ -1944,6 +1944,11 @@ async function prepareDecisionCommand(decision) {
   if(JSON.stringify(actual.payload.expected)!==JSON.stringify(previous.expected)){showNotice('changed');await review(paymentId);return;}
   if(actual.payload.decision!==decision||actual.payload.payment_id!==paymentId){drawer('review',statePanel('uncertain'));return;}
   confirmation=Object.freeze(structuredClone(actual));reviewChoice=decision;
+  // Keep the loaded receipt and the typed rejection reason in place while
+  // showing the *actual signed decision* before the system passkey prompt.
+  const visibleSummary=$('drawerContent')?.querySelector('.review-summary');
+  if(!visibleSummary){showNotice('error');return;}
+  visibleSummary.outerHTML=summary(actual);
   await execute();
 }
 async function execute() {
