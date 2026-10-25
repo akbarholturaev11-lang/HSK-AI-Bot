@@ -22,8 +22,9 @@ self.addEventListener('fetch', event => {
   }));
 });
 
-/* Display-only handler; push payload is never trusted or rendered. No server
-   sender is enabled yet. Safari revokes permission for invisible pushes. */
+/* Display-only handler; push payload is never trusted or rendered. Server
+   delivery is independently guarded by VAPID and a private admin subscription.
+   Safari revokes permission for invisible pushes. */
 self.addEventListener('push', event => {
   event.waitUntil(self.registration.showNotification('HSK AI Admin', {
     body: 'Yangi muhim xabar',
