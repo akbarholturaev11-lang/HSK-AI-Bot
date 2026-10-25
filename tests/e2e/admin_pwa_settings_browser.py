@@ -326,6 +326,13 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('#courseTrialSave').click()
                 await wait_step_up(page)
                 await finish_step_up(page)
+                try:
+                    await expect(page.locator('.save-success-drawer')).to_be_visible(timeout=15000)
+                except AssertionError as exc:
+                    raise AssertionError(
+                        f"Trial save did not confirm: drawer={await page.locator('#drawerContent').inner_text()} "
+                        f"calls={calls[-10:]} page_errors={errors[-5:]}"
+                    ) from exc
                 await close_or_wait()
                 await expect(page.locator('#courseTrialSave')).to_be_disabled()
                 async with fixture.sessions() as db:
