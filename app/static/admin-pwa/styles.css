@@ -745,3 +745,26 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
  .course-panel .v6-buttons .btn{min-height:42px}
 }
 @media(max-width:400px){.course-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.course-stats .metric:last-child{grid-column:1/-1}.course-limits-rows .v6-limit-row{grid-template-columns:minmax(55px,1fr) 60px 90px;gap:5px}}
+/* V10: seven-column source-aligned desktop user directory, retained mobile cards. */
+.user-table{min-width:1020px;table-layout:fixed}
+.user-table th:nth-child(1){width:25%}
+.user-table th:nth-child(2){width:13%}
+.user-table th:nth-child(3){width:10%}
+.user-table th:nth-child(4){width:9%}
+.user-table th:nth-child(5){width:15%}
+.user-table th:nth-child(6){width:17%}
+.user-table th:nth-child(7){width:11%}
+.user-table thead th{padding:19px 15px;font-size:12px;letter-spacing:.01em;background:#fbfbfd;color:#9aa5b5}
+.user-table td{padding:21px 15px;height:90px;vertical-align:middle;font-size:13px;color:#56647c}
+.user-table .directory-row-link{align-items:center;width:100%}
+.user-table .person{min-width:0}
+.user-table .mini-avatar{width:44px;height:44px;border-radius:13px;background:#e9f1f3;color:#627cdb;font-size:16px}
+.user-table .directory-person strong{font-size:14px;font-weight:790;line-height:1.3}
+.user-table .directory-person small{color:#9aa7bb;font-size:11px;line-height:1.45;margin-top:5px}
+.user-table .user-duration{display:block;font-size:13px;color:#33405b;font-weight:800}
+.user-table .user-date{display:block;font-size:11px;color:#9aa7bb;margin-top:5px}
+.user-table .user-payment-method{overflow-wrap:anywhere}
+.user-status-pill{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;font-size:12px;font-weight:750;padding:6px 11px;white-space:nowrap}
+.user-row .directory-pending{margin-top:6px}
+.directory-user-card .user-card-top .user-status-pill{max-width:45%}
+@media(max-width:760px){.directory-user-card .user-card-details{grid-template-columns:repeat(2,minmax(0,1fr))}.directory-user-card .directory-person small{line-height:1.5}}

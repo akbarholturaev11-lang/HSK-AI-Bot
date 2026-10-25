@@ -390,26 +390,82 @@ function relativeLastActive(value, clock=Date.now()) {
 }
 function displayPlan(value){if(!value)return '—';const label=t(value);return label==='—'?String(value):label;}
 function pager() { return `<div class="pager">${btn('previous','previous','',state.previous.length===0)}${btn('next','next','',!state.next)}</div>`; }
-function userSummary(row){
-  const label=esc(row.name||'—'),handle=esc(row.username||'');
-  const details=`<span class="person"><span class="mini-avatar" aria-hidden="true">${esc((row.name||'H').trim().charAt(0).toUpperCase())}</span><span class="directory-person"><strong>${label}</strong><small>${handle?handle+' · ':''}#${row.user_id}</small></span></span>`;
-  const fields=[['level',row.level],['language',row.language],['lastActive',relativeLastActive(row.last_active_at)],['accessUntil',date(row.access_expires_at||(row.access_state==='EXPIRED'?row.end_date:null))]];
-  const info=fields.map(([key,value])=>`<span class="u-mini-field"><small>${esc(t(key))}</small><b>${esc(value||'—')}</b></span>`).join('');
-  const access=`<span class="pill">${esc(t(row.access_state))}</span>`;
-  return {details,info,access};
+function dateOnly(value){
+  if(!value)return '—';
+  const d=new Date(value);
+  return Number.isNaN(d.valueOf())?'—':new Intl.DateTimeFormat('ru-RU',{timeZone:'UTC',day:'2-digit',month:'2-digit',year:'numeric'}).format(d);
 }
-
+function accountAge(value,clock=Date.now()){
+  if(!value)return '—';
+  const start=new Date(value),end=new Date(clock);
+  if(!Number.isFinite(start.valueOf())||!Number.isFinite(end.valueOf())||start>end)return '—';
+  const endDay=Date.UTC(end.getUTCFullYear(),end.getUTCMonth(),end.getUTCDate());
+  const anchor=months=>{
+    const month=start.getUTCMonth()+months,year=start.getUTCFullYear()+Math.floor(month/12);
+    const m=(month%12+12)%12,last=new Date(Date.UTC(year,m+1,0)).getUTCDate();
+    return Date.UTC(year,m,Math.min(start.getUTCDate(),last));
+  };
+  let months=(end.getUTCFullYear()-start.getUTCFullYear())*12+end.getUTCMonth()-start.getUTCMonth();
+  while(months>0&&anchor(months)>endDay)months--;
+  const days=Math.floor((endDay-anchor(months))/86400000),years=Math.floor(months/12),parts=[];
+  if(years)parts.push(years+' '+t('directoryAgeYear'));
+  if(months%12)parts.push(months%12+' '+t('directoryAgeMonth'));
+  if(days||!parts.length)parts.push(days+' '+t('directoryAgeDay'));
+  return parts.join(' ');
+}
+function userTier(row){
+  if(row.access_state==='PRO_ACTIVE')return 'Pro';
+  if(row.access_state==='TRIAL_ACTIVE')return 'Trial';
+  if(row.access_state==='TEMP_ACCESS')return t('TEMP_ACCESS');
+  return 'Free';
+}
+function userAccessBadge(row){
+  const type=row.access_state;
+  const key=type==='BLOCKED'?'directoryStatusBlocked':type==='EXPIRED'?'directoryStatusExpired':
+    type==='TRIAL_ACTIVE'?'directoryStatusTrial':'directoryStatusActive';
+  const tone=type==='BLOCKED'?'red':type==='EXPIRED'?'gray':type==='TRIAL_ACTIVE'?'amber':'green';
+  return '<span class="pill user-status-pill '+tone+'">'+esc(t(key))+'</span>';
+}
+function userLanguage(value){
+  const code=String(value||'').trim().toLowerCase();
+  const names={uz:'directoryLanguageUz',ru:'directoryLanguageRu',tj:'directoryLanguageTj',tg:'directoryLanguageTj','tg-cyrl':'directoryLanguageTj'};
+  return names[code]?t(names[code]):value||'—';
+}
+function userLevel(value){
+  const raw=String(value||'').trim(),match=/^HSK\s*([1-9])$/i.exec(raw);
+  return match?'HSK '+match[1]:raw||'—';
+}
+function userPaymentMethod(value){
+  if(!value)return '—';
+  const names={alipay:'Alipay',alif:'Alif',wechat:'WeChat',wechat_pay:'WeChat',visa:'Visa',mastercard:'Mastercard',dushanbe_city:'Dushanbe City',dushanbecity:'Dushanbe City'};
+  const name=String(value).trim();
+  return names[name.toLowerCase()]||name||'—';
+}
+function userSummary(row){
+  const raw=String(row.username||'').trim(),handle=raw?(raw.startsWith('@')?raw:'@'+raw):'—';
+  const details='<span class="person"><span class="mini-avatar" aria-hidden="true">'+esc((row.name||'H').trim().charAt(0).toUpperCase())+'</span><span class="directory-person"><strong>'+esc(row.name||'—')+'</strong><small>'+esc(handle)+' · '+esc(row.user_id)+' · '+esc(userTier(row))+'</small></span></span>';
+  const fields=[
+    ['directoryAge',accountAge(row.created_at)],
+    ['language',userLanguage(row.language)],
+    ['level',userLevel(row.level)],
+    ['directoryPlanMethod',userPaymentMethod(row.selected_payment_method)],
+    ['lastActive',relativeLastActive(row.last_active_at)]
+  ];
+  const info=fields.map(([key,value])=>'<span class="u-mini-field"><small>'+esc(t(key))+'</small><b>'+esc(value)+'</b></span>').join('');
+  return {details,info,access:userAccessBadge(row)};
+}
 function usersView(){
   const rows=state.rows.map(row=>{
     const {details,access}=userSummary(row);
-    return `<tr class="user-row" tabindex="0" role="button" aria-label="${esc(t('openProfile'))}: ${esc(row.name||'—')}" data-user-row="${row.user_id}"><td><button type="button" class="directory-row-link" data-user-detail="${row.user_id}">${details}</button></td><td>${esc(row.level||'—')}</td><td>${esc(row.language||'—')}</td><td>${access}${row.has_pending_payment?`<small>${esc(t('pending'))}</small>`:''}</td><td>${esc(relativeLastActive(row.last_active_at))}</td><td>${esc(date(row.access_expires_at||(row.access_state==='EXPIRED'?row.end_date:null)))}</td></tr>`;
+    return '<tr class="user-row" tabindex="0" role="button" aria-label="'+esc(t('openProfile'))+': '+esc(row.name||'—')+'" data-user-row="'+esc(row.user_id)+'"><td><button type="button" class="directory-row-link" data-user-detail="'+esc(row.user_id)+'">'+details+'</button></td><td class="user-age"><strong class="user-duration">'+esc(accountAge(row.created_at))+'</strong><small class="user-date">'+esc(dateOnly(row.created_at))+'</small></td><td>'+esc(userLanguage(row.language))+'</td><td>'+esc(userLevel(row.level))+'</td><td class="user-payment-method">'+esc(userPaymentMethod(row.selected_payment_method))+'</td><td>'+esc(relativeLastActive(row.last_active_at))+'</td><td>'+access+(row.has_pending_payment?'<small class="directory-pending">'+esc(t('pending'))+'</small>':'')+'</td></tr>';
   }).join('');
   const cards=state.rows.map(row=>{
     const {details,info,access}=userSummary(row);
     return `<button type="button" class="user-card directory-user-card" data-user-detail="${row.user_id}"><span class="user-card-top">${details}${access}</span><span class="user-card-details">${info}</span>${row.has_pending_payment?`<span class="directory-pending">${esc(t('pending'))}</span>`:''}</button>`;
   }).join('');
   const search=`<form id="searchForm" class="data-toolbar user-search-toolbar"><label class="screen-reader" for="userQuery">${esc(t('search'))}</label><input id="userQuery" class="search-input" maxlength="80" value="${esc(state.query)}" placeholder="${esc(t('search'))}" autocomplete="off"><button type="submit" class="btn primary user-search-icon" aria-label="${esc(t('find'))}" title="${esc(t('find'))}">${icon('search')}</button><div class="user-filter-area"><button type="button" class="btn user-filter-icon ${state.segment!=='all'?'is-active':''}" data-user-filter-toggle aria-controls="userFilterPanel" aria-expanded="${userFilterOpen}" aria-label="${esc(t('filters'))}" title="${esc(t('filters'))}">${icon('filter')}${state.segment!=='all'?'<i aria-hidden="true"></i>':''}</button><div id="userFilterPanel" class="user-filter-panel" ${userFilterOpen?'':'hidden'}><div class="user-filter-title"><strong>${esc(t('filters'))}</strong><button type="button" data-user-segment="all">${esc(t('userFilterAll'))}</button></div><div class="user-filter-choices">${USER_SEGMENTS.map(([segment,key])=>`<button type="button" class="user-filter-choice ${state.segment===segment?'active':''}" aria-pressed="${state.segment===segment}" data-user-segment="${segment}">${esc(t(key))}${state.segment===segment?icon('check'):''}</button>`).join('')}</div></div></div></form>`;
-  const table=`<div class="table-wrap user-table-wrap"><table class="data-table user-table directory-table"><thead><tr>${['name','level','language','status','lastActive','accessUntil'].map(key=>`<th>${esc(t(key))}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  const headers=['directoryUserTariff','directoryAge','language','level','directoryPlanMethod','lastActive','status'];
+  const table='<div class="table-wrap user-table-wrap"><table class="data-table user-table directory-table"><thead><tr>'+headers.map(key=>'<th>'+esc(t(key))+'</th>').join('')+'</tr></thead><tbody>'+rows+'</tbody></table></div>';
   return search+(state.rows.length?table+`<div class="user-cards">${cards}</div>`:statePanel('empty'))+pager();
 }
 
