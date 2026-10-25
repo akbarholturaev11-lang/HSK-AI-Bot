@@ -224,23 +224,17 @@ async def browser_checks(output):
         await expect(page.locator('[data-profile-payments]')).to_have_count(0)
         await page.screenshot(path=str(output/'desktop-user-profile.png'),full_page=True)
         await page.locator('[data-user-feedback]').click()
-        await expect(page.locator('#drawerContent')).to_contain_text('<script>private QA feedback</script>')
-        await expect(page.locator('#drawerContent')).not_to_contain_text('other account QA feedback')
-        baseline_inbox_rows = await page.locator('.inbox-feedback-item').count()
-        assert baseline_inbox_rows >= 1
-        await page.locator('#inboxSearchQuery').fill('private')
-        await page.locator('#inboxSearchForm button').click()
-        await expect(page.locator('.inbox-feedback-item')).to_have_count(1)
-        assert any(path.endswith('/inbox/list') and body.get('search')=='private'
-                   and body.get('user_id')==1 for path,_,body in calls if isinstance(body,dict))
-        await page.locator('#inboxSearchQuery').fill('doesnotexist')
-        await page.locator('#inboxSearchForm button').click()
-        await expect(page.locator('.inbox-feedback-item')).to_have_count(0)
-        await page.locator('#inboxSearchQuery').fill('')
-        await page.locator('#inboxSearchForm button').click()
-        await expect(page.locator('.inbox-feedback-item')).to_have_count(baseline_inbox_rows)
-        await page.locator('#inboxSource').select_option('release')
-        assert calls[-1][2]['user_id']==1
+        await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
+        await expect(page.locator('#inboxSearchQuery')).to_have_count(0)
+        # The minimal list never leaks feedback text. Detail opens only on tap.
+        await expect(page.locator('#drawerContent')).not_to_contain_text('<script>private QA feedback</script>')
+        await page.locator('[data-inbox-open^="bot:"]').first.click()
+        await expect(page.locator('.inbox-details-text')).to_contain_text('<script>private QA feedback</script>')
+        await expect(page.locator('.inbox-details script')).to_have_count(0)
+        await expect(page.locator('.inbox-details')).not_to_contain_text('other account QA feedback')
+        await page.locator('.inbox-back').click()
+        assert any(path.endswith('/inbox/triage') and body.get('operation')=='mark_read'
+                   and body.get('source')=='bot' for path,_,body in calls if isinstance(body,dict))
         await page.locator('.drawer-close').click()
         await page.set_viewport_size({'width':390,'height':844})
         await page.screenshot(path=str(output/'mobile-users.png'),full_page=True)
@@ -362,48 +356,33 @@ async def browser_checks(output):
         assert len([p for p,_,_ in calls if p.endswith('/payments/review')])==2
         await cdp.send('WebAuthn.setAutomaticPresenceSimulation',{'authenticatorId':auth_id,'enabled':True})
         await page.locator('[data-action=feedback]').click()
-        await expect(page.locator('.inbox-shell')).to_be_visible()
-        for source in ('bot', 'release', 'android', 'payment', 'all'):
-            await page.locator('#inboxSource').select_option(source)
-            await expect(page.locator('.inbox-shell')).to_be_visible()
-            await expect(page.locator('#inboxSource')).to_have_value(source)
-        # Real count uses all eligible source records, not the visible 30-row page.
-        await wait_js(page, "() => !!document.querySelector('[data-action=feedback] .top-icon-badge')")
-        assert (await page.locator('[data-action=feedback] .top-icon-badge').inner_text())=='3'
-        await page.locator('#inboxPriority').select_option('important')
-        await expect(page.locator('.inbox-shell')).to_be_visible()
-        assert await page.locator('.inbox-shell .feedback-item').count()==1
-        await expect(page.locator('.inbox-shell')).to_contain_text('Тўлов чеклари')
-        await page.locator('#inboxPriority').select_option('all')
-        await expect(page.locator('.inbox-shell .feedback-item')).to_have_count(3)
-        # The 390px viewport mirrors the installed iPhone PWA layout.
-        assert page.viewport_size['width']==390
-        await page.locator('.inbox-shell [data-menu-toggle]').first.click()
-        assert await page.locator('[data-inbox-op=mark_read]').first.evaluate(
-            '(element) => element.getBoundingClientRect().height >= 44')
-        await page.screenshot(path=str(output/'mobile-inbox-triage.png'),full_page=True)
-        async def wait_for_inbox_audit(expected):
-            async with asyncio.timeout(12):
-                while True:
-                    async with fixture.sessions() as db:
-                        actual=await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit))
-                    if actual==expected:
-                        return
-                    await asyncio.sleep(.04)
-        await page.locator('[data-inbox-op=mark_read]').first.click()
-        await wait_for_inbox_audit(1)
-        await wait_js(page, "() => !!document.querySelector('[data-action=feedback] .top-icon-badge') && document.querySelector('[data-action=feedback] .top-icon-badge').textContent === '2'")
-        await wait_js(page, "() => !!document.querySelector('.inbox-drawer button[data-inbox-op=assign_self]:not(:disabled)')")
-        await page.locator('.inbox-shell [data-menu-toggle]').first.click()
-        await page.locator('[data-inbox-op=assign_self]').first.click()
-        await wait_for_inbox_audit(2)
-        await wait_js(page, "() => !!document.querySelector('.inbox-drawer button[data-inbox-op=resolve]:not(:disabled)')")
-        assert len([path for path,_,_ in calls if path.endswith('/inbox/triage')]) == 2
+        await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
+        assert not await page.locator('#inboxSource,#inboxPriority,#inboxSearchQuery').count()
+        assert not await page.locator('.inbox-drawer .drawer-foot:visible').count()
+        # The list is title-only: no manual resolve/assign/priority decisions.
+        assert not await page.locator('[data-inbox-op]').count()
+        await page.screenshot(path=str(output/'mobile-inbox-minimal.png'),full_page=True)
+        unread=page.locator('.inbox-minimal-row.is-unread').first
+        assert await unread.count(), 'A fresh unread alert is expected'
+        async with fixture.sessions() as db:
+            previous_audit=await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit))
+        await unread.click()
+        await expect(page.locator('.inbox-details')).to_be_visible()
+        async with fixture.sessions() as db:
+            after_audit=await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit))
+        assert after_audit == previous_audit + 1
+        assert any(path.endswith('/inbox/triage') and body.get('operation')=='mark_read'
+                   for path,_,body in calls if isinstance(body,dict))
+        await page.locator('.inbox-back').click()
+        await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.keyboard.press('Escape')
-        # Apple notificationclick always uses a fixed /admin/?inbox=1 link.
-        # A valid passkey session must be verified before showing private inbox.
+        # A fresh page load must require a new WebAuthn assertion.
+        prior_verifications=len([path for path,_,_ in calls if path.endswith('login/verify')])
         await page.goto(ORIGIN+'/admin/?inbox=1')
-        await expect(page.locator('.inbox-shell')).to_be_visible()
+        await expect(page.locator('[data-action=signin]')).to_be_visible()
+        await page.locator('[data-action=signin]').click()
+        await expect(page.locator('.inbox-shell')).to_be_visible(timeout=20000)
+        assert len([path for path,_,_ in calls if path.endswith('login/verify')]) == prior_verifications+1
         assert page.url==ORIGIN+'/admin/'
         await page.keyboard.press('Escape')
         # Actual consent/code/token services seed one synthetic connection;
