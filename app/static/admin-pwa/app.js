@@ -379,7 +379,7 @@ function pager() { return `<div class="pager">${btn('previous','previous','',sta
 function userSummary(row){
   const label=esc(row.name||'—'),handle=esc(row.username||'');
   const details=`<span class="person"><span class="mini-avatar" aria-hidden="true">${esc((row.name||'H').trim().charAt(0).toUpperCase())}</span><span class="directory-person"><strong>${label}</strong><small>${handle?handle+' · ':''}#${row.user_id}</small></span></span>`;
-  const fields=[['level',row.level],['language',row.language],['lastActive',relativeLastActive(row.last_active_at)],['accessUntil',date(row.end_date)]];
+  const fields=[['level',row.level],['language',row.language],['lastActive',relativeLastActive(row.last_active_at)],['accessUntil',date(row.access_expires_at||(row.access_state==='EXPIRED'?row.end_date:null))]];
   const info=fields.map(([key,value])=>`<span class="u-mini-field"><small>${esc(t(key))}</small><b>${esc(value||'—')}</b></span>`).join('');
   const access=`<span class="pill">${esc(t(row.access_state))}</span>`;
   return {details,info,access};
@@ -388,7 +388,7 @@ function userSummary(row){
 function usersView(){
   const rows=state.rows.map(row=>{
     const {details,access}=userSummary(row);
-    return `<tr class="user-row" tabindex="0" role="button" aria-label="${esc(t('openProfile'))}: ${esc(row.name||'—')}" data-user-row="${row.user_id}"><td><button type="button" class="directory-row-link" data-user-detail="${row.user_id}">${details}</button></td><td>${esc(row.level||'—')}</td><td>${esc(row.language||'—')}</td><td>${access}${row.has_pending_payment?`<small>${esc(t('pending'))}</small>`:''}</td><td>${esc(relativeLastActive(row.last_active_at))}</td><td>${esc(date(row.end_date))}</td></tr>`;
+    return `<tr class="user-row" tabindex="0" role="button" aria-label="${esc(t('openProfile'))}: ${esc(row.name||'—')}" data-user-row="${row.user_id}"><td><button type="button" class="directory-row-link" data-user-detail="${row.user_id}">${details}</button></td><td>${esc(row.level||'—')}</td><td>${esc(row.language||'—')}</td><td>${access}${row.has_pending_payment?`<small>${esc(t('pending'))}</small>`:''}</td><td>${esc(relativeLastActive(row.last_active_at))}</td><td>${esc(date(row.access_expires_at||(row.access_state==='EXPIRED'?row.end_date:null)))}</td></tr>`;
   }).join('');
   const cards=state.rows.map(row=>{
     const {details,info,access}=userSummary(row);
@@ -2130,6 +2130,9 @@ document.addEventListener('click',event=>{
       button.setAttribute('aria-expanded',String(userFilterOpen));
     }
     else if(button.dataset.userSegment){
+      // Applying a segment must also include unsent text currently in the box.
+      // Otherwise the rerender discards the user's query and uses the old one.
+      if($('userQuery'))state.query=$('userQuery').value;
       userFilterOpen=false;state.segment=button.dataset.userSegment;state.cursor=null;state.previous=[];await load();
     }
     else if(button.dataset.userDays){
