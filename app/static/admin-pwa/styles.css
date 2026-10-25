@@ -592,3 +592,83 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
   .more-drawer .drawer-foot .btn{flex:1}
 }
 @media(min-width:761px){.payment-cards{display:none}.payment-table-wrap{display:block}}
+
+/* Compact laptop windows: keep the desktop navigation visible without page-level horizontal scroll. */
+.app{width:100%;min-width:0}
+.workspace{flex:1 1 0;min-width:0}
+.main{width:100%;min-width:0}
+@media (min-width:761px) and (max-width:1280px){
+  .sidebar{width:clamp(184px,19vw,220px);min-width:0;padding:20px 11px 14px}
+  .sidebar .brand{margin:0 7px 23px;gap:9px}
+  .sidebar .brand-logo{width:35px;height:35px;flex:0 0 35px}
+  .sidebar .brand-title{font-size:16px}
+  .sidebar .nav-cap{padding-inline:10px}
+  .sidebar .nav button{min-width:0;gap:9px;padding:11px 10px;font-size:12px}
+  .sidebar .side-foot{padding:14px 8px 0}
+  .topbar{padding-inline:clamp(16px,2vw,26px)}
+  .main{padding-inline:clamp(16px,2vw,26px)}
+  .management-page{width:100%;max-width:860px;min-width:0}
+}
+@media (min-width:761px) and (max-height:780px){
+  .sidebar{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+  .sidebar .brand{margin-bottom:14px}
+  .sidebar .nav{gap:2px}
+  .sidebar .nav button{padding-block:9px}
+  .sidebar .side-foot{flex-shrink:0;margin-top:16px;padding-top:12px}
+  .sidebar .side-foot .btn{min-height:36px;margin-top:4px;padding:7px 10px;font-size:12px}
+  .sidebar .locale-select{margin-top:7px;padding:6px}
+}
+
+
+/* User directory: compact, keyboard-accessible search + server-backed segments. */
+.user-search-toolbar{display:flex;align-items:center;flex-wrap:nowrap;gap:9px;position:relative;max-width:100%}
+.user-search-toolbar .search-input{flex:1 1 auto;min-width:0;width:0;min-height:44px;margin:0}
+.user-search-icon,.user-filter-icon{width:44px;min-width:44px;height:44px;min-height:44px;padding:0;display:inline-flex;align-items:center;justify-content:center;position:relative;flex:none;border-radius:12px}
+.user-search-icon svg,.user-filter-icon svg{width:19px;height:19px}
+.user-filter-area{position:relative;flex:none}
+.user-filter-icon{color:#335d6a;background:#fff;border:1px solid #dce5e8}
+.user-filter-icon:hover,.user-filter-icon.is-active{background:#eaf3f5;border-color:#7fa5b0}
+.user-filter-icon i{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#df7666;border:1px solid white}
+.user-filter-panel{position:absolute;z-index:45;top:calc(100% + 9px);right:0;width:min(335px,calc(100vw - 32px));max-height:min(66dvh,520px);overflow-y:auto;border:1px solid #dce4e7;border-radius:16px;background:#fff;box-shadow:0 18px 44px #1a33412c;padding:14px}
+.user-filter-panel[hidden]{display:none}
+.user-filter-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px;font-size:13px;color:#263c45}
+.user-filter-title>button{border:0;background:transparent;color:#356775;font-size:12px;font-weight:750;cursor:pointer}
+.user-filter-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.user-filter-choice{border:1px solid #e1e8eb;border-radius:10px;min-height:42px;background:#fafcfc;text-align:left;color:#425c67;padding:8px 10px;font:inherit;font-size:12px;font-weight:720;cursor:pointer;display:flex;gap:5px;align-items:center;justify-content:space-between}
+.user-filter-choice.active{border-color:#7babb6;background:#eaf4f6;color:#285767}
+.user-filter-choice svg{width:15px;height:15px;flex:none}
+.user-filter-choice:hover{border-color:#85aab2}
+.user-profile-drawer .drawer-foot{display:none}
+.user-profile-drawer .drawer-content{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+.user-profile-drawer .profile-heading{margin-bottom:16px}
+.user-profile-drawer .profile-section{margin-top:17px}
+.user-profile-drawer .profile-access-editor{border:1px solid #e0e8eb;background:#f8fbfc;border-radius:15px;padding:16px;display:grid;gap:11px}
+.profile-access-editor h4{font-size:14px;color:#2b3f49;margin:0 0 2px;font-weight:780}
+.profile-access-editor label{color:#6d8089;font-size:12px;font-weight:720}
+.profile-access-editor .input{font-size:20px;min-height:46px}
+.profile-day-presets{display:flex;gap:8px;flex-wrap:wrap}
+.profile-day-preset{border:1px solid #dce5e8;border-radius:10px;background:#fff;min-height:37px;padding:7px 11px;cursor:pointer;font-size:12px;font-weight:710;color:#68808a}
+.profile-day-preset.selected{background:#e8f2f5;border-color:#8fb1ba;color:#2c6170}
+.profile-access-editor .source-note{font-size:11px;line-height:1.6;margin:0}
+.profile-main-action{width:100%;min-height:47px;margin-top:5px}
+.profile-block-action{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:45px;margin-top:13px;background:#f4f7f8;border:1px solid #dce5e8;color:#3b525d}
+.profile-block-action svg{width:18px;height:18px}
+.profile-more-actions{border:1px solid #dce5e8;border-radius:15px;background:#fff;margin-top:18px;overflow:hidden}
+.profile-more-actions summary{display:list-item;padding:16px 17px;cursor:pointer;font-size:13px;color:#304a56;font-weight:750}
+.profile-more-actions[open] summary{border-bottom:1px solid #e6edef}
+.profile-extra-buttons{display:grid;gap:10px;padding:13px}
+.profile-extra-buttons button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:45px;border-radius:10px;border:1px solid #e2e8eb;background:#f6f9fa;color:#334f5b;font:inherit;font-size:12px;font-weight:740;cursor:pointer;padding:10px}
+.profile-extra-buttons button svg{width:18px;height:18px}
+.profile-extra-buttons .profile-delete-action{background:#fff0f1;border-color:#f1bec2;color:#b34755}
+@media(max-width:760px){
+  .user-search-toolbar{gap:7px}
+  .user-search-toolbar .search-input{min-width:0;padding:0 12px;font-size:16px}
+  .user-search-icon,.user-filter-icon{width:43px;min-width:43px;height:43px}
+  .user-filter-panel{right:0;width:min(325px,calc(100vw - 25px))}
+  .user-profile-drawer .drawer-content{padding:18px 16px calc(24px + env(safe-area-inset-bottom))}
+}
+
+/* One-tap first-use Apple push consent; hidden once device is registered. */
+.push-quick-enable{min-height:40px;padding:0 11px;gap:7px;background:var(--accent-soft);border-color:#d8e8ea;color:var(--accent)}
+.push-quick-enable svg{width:17px;height:17px;flex:none}
+@media(max-width:900px){.push-quick-enable{padding:0;width:40px;min-width:40px}.push-quick-enable span{display:none}}

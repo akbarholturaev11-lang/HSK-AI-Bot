@@ -139,6 +139,12 @@ linguistic signoff.** Structural tests are not semantic approval. Keep
 original answer/grade/Pro/auth data and source SHA guards intact;
 do not merge or release with unresolved content/safety failures.
 
+## Selective OpenSpec planning (opt-in by risk)
+
+For high-risk/cross-platform features, auth, payments, entitlements, database schema changes, or substantial new modules, use the HSK AI planning skill at `.agents/skills/hsk-ai-openspec-planning/SKILL.md` and the project configuration `openspec/config.yaml` **before implementation**. Start from current source, tests, and authoritative scoped handoff documents. OpenSpec records a **proposed delta**, not a replacement for `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, localization policy, or existing product contracts.
+
+Do not require OpenSpec for small UI/copy changes, isolated bug fixes, routine documentation, or already-scoped tasks. Do not retroactively migrate active plans or maintain parallel progress logs. If using OpenSpec, keep the proposal linked to the canonical relevant feature handoff; it must not silently overrule it. Never equate a spec or checked task with passing tests, a main push, or production acceptance. Continue to follow the repository's existing risk-based tests and Git rules.
+
 ## Git intizomi
 
 Agar git ishlatilsa:

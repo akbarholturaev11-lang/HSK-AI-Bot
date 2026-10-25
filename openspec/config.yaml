@@ -1,0 +1,42 @@
+# OpenSpec is an optional change-planning overlay, not the project authority.
+schema: spec-driven
+context: |
+  HSK AI is a Chinese-learning platform with Telegram Bot/Mini App, Android
+  (Kotlin/Jetpack Compose), macOS/Windows Desktop (Tauri), a public website,
+  standalone Admin PWA, and a shared FastAPI/SQLAlchemy/Alembic backend.
+  Read AGENTS.md, AI_RULES.md, PROJECT_MEMORY.md and current code/tests first.
+  Treat source code and corresponding tests as the verified implementation
+  contract; scoped feature handoffs document current checkpoints and choices.
+  OpenSpec is only for substantial new features, cross-platform contracts,
+  architecture/database changes, or high-risk auth/payment/entitlement changes.
+  Small UI/copy edits, routine documentation and isolated bug fixes use the
+  existing workflow. Do not copy an existing handoff into OpenSpec or produce
+  two competing status trackers. If an OpenSpec change touches an active
+  feature, link to its current canonical handoff and reconcile discrepancies
+  before making technical decisions. Never infer implementation or test status
+  from plan checkboxes. Preserve server-owned account, payment, access, course
+  result, source lesson data, locale, and security invariants. New user-facing
+  text follows localization/README.md for applicable UZ/TJ/RU clients.
+  Follow existing branch, test, release and user-approval rules; OpenSpec does
+  not independently authorize code changes, pushes, feature flags or deploys.
+rules:
+  proposal:
+    - "Explain why the existing scoped plan or direct Codex task is insufficient, and identify the authoritative source documents."
+    - "State impacted platforms, current evidence, excluded scope, user-visible outcome, risks, and rollback strategy; do not duplicate existing handoff text."
+  specs:
+    - "Express externally observable acceptance scenarios; preserve account ownership, access, payment, course progress, Telegram SDK, and localization contracts where relevant."
+    - "Differentiate verified current behavior from requested changes; never invent capabilities or test results."
+  design:
+    - "Ground the design in current source, service boundaries, real migrations, known tests, and affected platform clients."
+    - "Include focused testing and rollback for security, data, billing, or cross-platform changes."
+  tasks:
+    - "List bounded file/area-level implementation steps and risk-based regression checks; do not demand unrelated full suites for trivial edits."
+    - "Record acceptance evidence needed before calling the feature complete; distinguish automated CI from staging/device/provider QA."
+operations:
+  apply:
+    guidance:
+      - "Use the current AGENTS.md and AI_RULES.md implementation and Git workflows. Revalidate live branch and affected source; no task checkbox alone proves success."
+      - "Run relevant focused tests and critical regressions before main promotion; preserve existing feature-scoped Git restrictions and user-selected destinations."
+  archive:
+    guidance:
+      - "Archive the completed delta only after verified completion. Do not overwrite authoritative historical plans, handoffs, or PROJECT_MEMORY.md with temporary planning notes."
