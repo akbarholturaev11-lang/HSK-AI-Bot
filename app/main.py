@@ -691,6 +691,7 @@ admin_pwa_statistics_reader = AdminPwaStatisticsReader(settings_obj=settings, se
 app.include_router(create_admin_pwa_access_grant_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_course_access_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_hsk30_settings_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_limits_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_subscription_prices_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_payment_qr_router(
     settings_obj=settings, session_factory=async_session_maker, bot_client=bot,
