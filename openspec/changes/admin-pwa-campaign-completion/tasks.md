@@ -28,7 +28,7 @@ Canonical execution checkpoint and evidence: [Admin PWA handoff](../../../docs/a
 
 ## 5. Integration
 
-- [ ] 5.1 Run applicable Admin PWA security, PostgreSQL, media, legacy subscription/notification and browser suites; record executed results without treating planning validation as product QA.
+- [x] 5.1 Run applicable Admin PWA security, PostgreSQL, media, legacy subscription/notification and browser suites; record executed results without treating planning validation as product QA.
 - [ ] 5.2 Commit/push each verified increment and promote the authorized tested code with exact remote verification; preserve unrelated work and unchanged external MCP scope.
 
 ## Workflow follow-up

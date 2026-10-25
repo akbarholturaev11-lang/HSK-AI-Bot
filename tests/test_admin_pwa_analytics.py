@@ -368,3 +368,15 @@ class AnalyticsR2Tests(unittest.IsolatedAsyncioTestCase):
             await second(AnalyticsRequest(section='home'))
             self.assertEqual(calls['home'],2)
         finally:await first.aclose();await second.aclose()
+
+class AnalyticsTrafficCalendarTests(AnalyticsProjectionTests):
+    async def test_traffic_respects_existing_seven_utc_calendar_days_not_eight_partial_days(self):
+        from app.admin_api.pwa_analytics_finance import sources_metrics,Traffic
+        async with self.sessions() as db:
+            for days,visits in ((7,100),(6,5),(0,2),(-1,999)):
+                db.add(Traffic(visit_day=NOW.date()-timedelta(days=days),source='youtube',visits=visits))
+            await db.commit()
+            result=await sources_metrics(db,since=NOW-timedelta(days=7),now=NOW)
+        self.assertEqual(result['traffic'],[{'source':'youtube','visits':7}])
+        self.assertEqual(result['traffic_since'],'2026-10-20')
+        self.assertEqual(result['traffic_timezone'],'UTC')

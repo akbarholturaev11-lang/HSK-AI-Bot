@@ -6,6 +6,7 @@ on:
       - codex/admin-pwa
       - feat/admin-pwa-mcp-readonly-20261024
       - feat/admin-pwa-minimal-inbox-passkey-20261025
+      - feat/admin-pwa-users-directory-v10-20261026
       - main
     paths:
       - ".github/workflows/admin-pwa-security.yml"
@@ -121,8 +122,10 @@ concurrency:
 jobs:
   admin-pwa:
     # Playwright 1.56 Chromium supports Ubuntu 24.04; latest now resolves to 26.04.
+    # First CI audit exhausted 15m on browser installation + seven full E2E suites.
+    # Keep every browser regression; allow enough time for a complete run.
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
     services:
       redis:
         image: redis:7-alpine

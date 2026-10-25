@@ -129,6 +129,25 @@ async def browser_checks(output):
             data.update(sending_enabled=False, subscriptions=[dict(id=UUID, platform="iphone", created_at=STAMP)])
         elif path.endswith("/payments/list"):
             data.update(items=[], next_before_id=None)
+        elif path.endswith("/hsk30/analytics"):
+            data.update(analytics=dict(period_days=payload["days"],track_activated_users=2,
+                 selected_level_users=3,payments={"approved":1},
+                 course_funnel=[{"key":"promo_shown","label":"Таклиф кўрсатилди","users":4},
+                                {"key":"track_activated","label":"HSK 3.0 курси очилди","users":2}],
+                 coverage_note="Synthetic HSK 3.0 funnel"))
+        elif path.endswith("/hsk30/read"):
+            data.update(hsk30=dict(enabled=True,unlock_payment_enabled=True,unlock_price_tjs=99,
+                                   live_levels=["nhsk1","nhsk2"],available_levels=["nhsk1","nhsk2","nhsk3"]))
+        elif path.endswith("/course-access/read"):
+            data.update(course_access=dict(mode="subscription",free_until=None,saved_at=STAMP))
+        elif path.endswith("/limits/read"):
+            rules={"lesson.start":{"limit":2,"window":"daily"},
+                   "ai.text":{"limit":5,"window":"daily"},
+                   "practice.placement":{"limit":1,"window":"lifetime"}}
+            data.update(limits=dict(plans={"FREE":rules,"TRIAL_ACTIVE":copy.deepcopy(rules)},
+                                    trial={"enabled":True,"days":7,"disabled_reason":"",
+                                           "ai_budget_usd":1.5,"min_account_age_hours":0}),
+                        revision_hash="0"*64)
         else:
             raise AssertionError("Unexpected UI request: " + path)
         await route.fulfill(status=200, json=data)
@@ -237,7 +256,17 @@ async def browser_checks(output):
             for width, height in ((820, 600), (1024, 650), (1280, 800)):
                 await page.set_viewport_size({"width": width, "height": height})
                 await page.locator('.sidebar [data-route="course"]').click()
-                await expect(page.locator(".management-page .management-row")).to_have_count(2)
+                await expect(page.locator(".course-subtabs [role=tab]")).to_have_count(4)
+                await expect(page.locator('[data-action="hsk30Settings"]')).to_have_count(2)
+                await page.locator('[data-course-tab="access"]').click()
+                await expect(page.locator('[data-course-window]')).to_have_count(3)
+                for field in await page.locator('[data-course-window]').all():
+                    assert await field.locator("option").all_text_contents() == [
+                        "Кунлик" if await page.evaluate("document.documentElement.lang")=="uz" else
+                        "В день" if await page.evaluate("document.documentElement.lang")=="ru" else "Ҳар рӯз",
+                        "Бир умр" if await page.evaluate("document.documentElement.lang")=="uz" else
+                        "За всё время" if await page.evaluate("document.documentElement.lang")=="ru" else "Барои тамоми умр"]
+                await page.locator('[data-course-tab="tracks"]').click()
                 geometry = await page.evaluate("""() => {
                     const sidebar = document.querySelector('.sidebar').getBoundingClientRect();
                     const main = document.querySelector('main.main').getBoundingClientRect();

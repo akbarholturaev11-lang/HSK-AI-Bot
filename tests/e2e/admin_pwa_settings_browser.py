@@ -31,6 +31,8 @@ from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
 from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_router
+from app.admin_api.pwa_limits import create_admin_pwa_limits_router
+from app.services.entitlements.limits_config import LimitConfigService
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api import pwa_marketing as pwa_marketing_api
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
@@ -130,7 +132,7 @@ async def browser_checks(output, *, media_only=False):
                     create_admin_pwa_passkey_login_router, create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
                     create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router,
                     create_admin_pwa_campaigns_router,create_admin_pwa_outbound_router,
-                    create_admin_pwa_course_access_router, create_admin_pwa_hsk30_settings_router,
+                    create_admin_pwa_course_access_router, create_admin_pwa_hsk30_settings_router,create_admin_pwa_limits_router,
                     create_admin_pwa_user_management_router,create_admin_pwa_channels_router,
                     create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router,create_admin_pwa_partners_router,create_admin_pwa_partner_payouts_router,create_admin_pwa_payment_reconciliation_router):
         app.include_router(factory(**common))
@@ -216,7 +218,7 @@ async def browser_checks(output, *, media_only=False):
                         await page.locator(f'.more-sheet-list [data-route="{route_name}"]').click()
                     else:
                         await page.locator(f'.nav [data-route="{route_name}"]').click()
-                    await expect(page.locator(".management-page")).to_be_visible()
+                    await expect(page.locator(".course-dashboard" if route_name=="course" else ".management-page")).to_be_visible()
 
                 async def begin_management():
                     label=await page.locator('[data-action="managementPrepare"]').inner_text()
@@ -264,13 +266,15 @@ async def browser_checks(output, *, media_only=False):
                     fixture.session_id=await db.scalar(select(AdminPwaSession.id).where(
                         AdminPwaSession.token_hash==hashlib.sha256(live_cookie.encode()).hexdigest()))
 
-                # Landing pages are navigation, with no per-page configuration queries.
+                # Course tabs load read-only global state; the other management pages stay lazy.
                 configuration_reads = lambda: [path for path, _ in calls
                     if path in ('/api/admin/v1/settings/read', '/api/admin/v1/subscription-prices/read')]
                 initial = list(configuration_reads())
                 await navigate("course", 1440)
-                await expect(page.locator('[data-action="hsk30Settings"]')).to_be_visible()
+                await expect(page.locator('[data-action="hsk30Settings"]').first).to_be_visible()
+                await page.locator('[data-course-tab="access"]').click()
                 await expect(page.locator('[data-action="courseSettings"]')).to_be_visible()
+                await expect(page.locator('[data-course-window] >> option')).to_have_count(20)
                 before_policy=await audit_count()
                 await page.locator('[data-action="courseSettings"]').click()
                 await page.locator('#courseMode').select_option('free_until')
@@ -283,7 +287,8 @@ async def browser_checks(output, *, media_only=False):
                 await expect(page.locator('#drawerTitle')).to_have_text(await page.evaluate('() => window.HSKAI_ADMIN_I18N.uz.courseSaved'))
                 assert await audit_count()==before_policy+1
                 await close_or_wait()
-                await page.locator('[data-action="hsk30Settings"]').click()
+                await page.locator('[data-course-tab="tracks"]').click()
+                await page.locator('[data-action="hsk30Settings"]').first.click()
                 await page.locator('#hsk30Price').fill('101')
                 await page.locator('[data-action="hsk30Prepare"]').click()
                 await wait_step_up(page)
@@ -291,6 +296,49 @@ async def browser_checks(output, *, media_only=False):
                 await expect(page.locator('#drawerTitle')).to_have_text(await page.evaluate('() => window.HSKAI_ADMIN_I18N.uz.hsk30Saved'))
                 assert await audit_count()==before_policy+2
                 await close_or_wait()
+                # The new limits editor sends the exact daily/lifetime schema
+                # through the same virtual WebAuthn proof, not the Telegram API.
+                await page.locator('[data-course-tab="access"]').click()
+                await expect(page.locator('#courseLimitSave')).to_be_disabled()
+                await page.locator('[data-course-window="ai.text"]').select_option('lifetime')
+                await page.locator('[data-course-limit="ai.text"]').fill('6')
+                await expect(page.locator('#courseLimitSave')).to_be_enabled()
+                await page.locator('#courseLimitSave').click()
+                await wait_step_up(page)
+                await finish_step_up(page)
+                try:
+                    await expect(page.locator('.save-success-drawer')).to_be_visible(timeout=15000)
+                except AssertionError as exc:
+                    raise AssertionError(
+                        f"Limits save did not confirm: drawer={await page.locator('#drawerContent').inner_text()} "
+                        f"calls={calls[-10:]} page_errors={errors[-5:]}"
+                    ) from exc
+                await close_or_wait()
+                await expect(page.locator('[data-course-tab="access"]')).to_be_visible()
+                await expect(page.locator('#courseLimitSave')).to_be_disabled()
+                async with fixture.sessions() as db:
+                    policy=await LimitConfigService(db).get_payload()
+                    assert policy["plans"]["FREE"]["ai.text"]=={"limit":6,"window":"lifetime"}
+                assert await audit_count()==before_policy+3
+                await page.locator('[data-course-tab="trial"]').click()
+                await expect(page.locator('#courseTrialSave')).to_be_disabled()
+                await page.locator('#courseTrialDays').fill('8')
+                await page.locator('#courseTrialSave').click()
+                await wait_step_up(page)
+                await finish_step_up(page)
+                try:
+                    await expect(page.locator('.save-success-drawer')).to_be_visible(timeout=15000)
+                except AssertionError as exc:
+                    raise AssertionError(
+                        f"Trial save did not confirm: drawer={await page.locator('#drawerContent').inner_text()} "
+                        f"calls={calls[-10:]} page_errors={errors[-5:]}"
+                    ) from exc
+                await close_or_wait()
+                await expect(page.locator('#courseTrialSave')).to_be_disabled()
+                async with fixture.sessions() as db:
+                    policy=await LimitConfigService(db).get_payload()
+                    assert policy["trial"]["days"]==8
+                assert await audit_count()==before_policy+4
                 await navigate("system", 1440)
                 assert configuration_reads() == initial
                 for width in (1440, 390):
@@ -413,7 +461,7 @@ async def browser_checks(output, *, media_only=False):
                         else:
                             await page.locator('#locale').select_option(language)
                         await navigate('marketing', width)
-                        for kind in ('sales_experiment','desktop_promo','course_ad'):
+                        for kind in ('desktop_promo','course_ad'):
                             await page.locator(f'[data-marketing-kind="{kind}"]').click()
                             await expect(page.locator('#salesMode' if kind=='sales_experiment' else '#promoEnabled' if kind=='desktop_promo' else '[data-course-ad="1"]')).to_be_visible()
                             assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')
@@ -455,10 +503,14 @@ async def browser_checks(output, *, media_only=False):
                     copies=decode_localized_broadcast_text(campaign.message_text)
                     assert copies['uz']=='Yangi kurs &lt;img src=x onerror=alert(1)&gt;'
                 await close_or_wait()
+                # Sales A/B now has one entry point: Kurs → Sotuv A/B.
+                await navigate('course', 1440)
+                await page.locator('[data-course-tab="experiment"]').click()
                 await page.locator('[data-marketing-kind="sales_experiment"]').click()
                 await page.locator('#salesMode').select_option('ab')
                 await page.locator('#salesPercent').select_option('50')
                 await prepare_and_save('uz','sales-experiment-confirm.png')
+                await navigate('marketing', 1440)
                 await page.set_viewport_size({'width':390,'height':844})
                 for language in ('ru','tj'):
                     await page.locator('[data-action="more"]').click()

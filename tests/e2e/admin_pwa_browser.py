@@ -55,6 +55,9 @@ from app.admin_api.pwa_mcp_oauth import begin_mcp_authorization, decide_mcp_cons
 from app.admin_api.pwa_mcp_resource import verify_readonly_mcp_bearer
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_access_grants import create_admin_pwa_access_grant_router
+from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
+from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_router
+from app.admin_api.pwa_limits import create_admin_pwa_limits_router
 from app.admin_api.pwa_feedback_analytics import create_admin_pwa_feedback_analytics_router
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
@@ -118,7 +121,10 @@ async def browser_checks(output):
     fixture.sessions=async_sessionmaker(fixture.engine,expire_on_commit=False)
     await fixture.seed_payment()
     async with fixture.sessions() as db:
-        (await db.get(User,1)).full_name='<img src=x onerror=alert(1)> QA account'
+        user=await db.get(User,1)
+        user.full_name='<img src=x onerror=alert(1)> QA account'
+        user.created_at=datetime(2026,5,12,tzinfo=timezone.utc)
+        user.payment_method='alipay'
         db.add(CourseProgress(user_id=1,level='HSK1',completed_lessons_count=7))
         db.add(AIUsageEvent(user_id=1,source='qa',model='fixture',cost_usd=.025,total_tokens=123))
         db.add(BotFeedback(user_id=1,telegram_id=1001,status='completed',disliked_code='price',
@@ -144,7 +150,9 @@ async def browser_checks(output):
                     create_admin_pwa_payment_review_router,create_admin_pwa_read_router,
                     create_admin_pwa_feedback_analytics_router,create_admin_pwa_inbox_triage_router,
                     create_admin_pwa_completion_router,create_admin_pwa_webauthn_router,
-                    create_admin_pwa_mcp_management_router):
+                    create_admin_pwa_mcp_management_router,
+                     create_admin_pwa_course_access_router,create_admin_pwa_hsk30_settings_router,
+                     create_admin_pwa_limits_router):
         app.include_router(factory(**common))
     app.include_router(create_admin_pwa_receipt_router(**common,loader=AsyncMock(return_value=(png(),'image/png'))))
     calls=[];drop_review=False;fail_reads=False;fail_prepare=False;receipt_failure=False
@@ -248,6 +256,13 @@ async def browser_checks(output):
         await expect(page.locator('.metric')).to_have_count(8)
         await page.locator('[data-route=users]').first.click()
         await expect(page.locator('.data-table tbody tr')).to_have_count(3)
+        await expect(page.locator('.user-table thead th')).to_have_count(7)
+        await expect(page.locator('.user-table thead')).to_contain_text('Фойдаланувчи / тариф')
+        await expect(page.locator('.user-table thead')).to_contain_text('HSK AI’да')
+        await expect(page.locator('.user-table tr[data-user-row="1"] td')).to_have_count(7)
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-date')).to_have_text('12.05.2026')
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-duration')).not_to_have_text('—')
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-payment-method')).to_have_text('Alipay')
         await expect(page.locator('.data-table img')).to_have_count(0)
         await expect(page.locator('.user-search-icon svg')).to_have_count(1)
         await page.locator('[data-user-filter-toggle]').click()
@@ -310,13 +325,19 @@ async def browser_checks(output):
         await expect(page.locator('.topbar [data-action=more]')).to_have_count(0)
         await expect(page.locator('.user-table-wrap')).to_be_hidden()
         await expect(page.locator('.user-cards .user-card')).not_to_have_count(0)
+        await expect(page.locator('.user-cards [data-user-detail="1"]')).to_contain_text('Alipay')
+        await expect(page.locator('.user-cards [data-user-detail="1"]')).to_contain_text('HSK AI’да')
         await page.locator('.mobile-tabs [data-action=more]').click()
         await expect(page.locator('.more-drawer')).to_be_visible()
         await expect(page.locator('.more-drawer [data-route=course]')).to_be_visible()
         sheet=await page.locator('.more-drawer').bounding_box()
         assert sheet and 0<sheet['height']<844 and abs(sheet['y']+sheet['height']-844)<3
         await page.locator('.more-drawer [data-route=course]').click()
-        await expect(page.locator('.management-page')).to_be_visible()
+        await expect(page.locator('.course-dashboard')).to_be_visible()
+        await expect(page.locator('.course-subtabs [role="tab"]')).to_have_count(4)
+        await page.locator('[data-course-tab="access"]').click()
+        await expect(page.locator('[data-course-window]')).not_to_have_count(0)
+        await page.locator('[data-course-tab="tracks"]').click()
         await page.locator('.mobile-tabs [data-route=users]').click()
         await page.screenshot(path=str(output/'mobile-users.png'),full_page=True)
         for language in ('uz','ru','tj'):
@@ -385,6 +406,8 @@ async def browser_checks(output):
         receipt_failure=False
         await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
+        assert any(p.endswith('/payments/inspect-review') for p,_,_ in calls)
+        assert not any(p.endswith('/payments/prepare-review') for p,_,_ in calls), 'Opening a receipt must not pre-authorize approval'
         await page.locator('[data-action=reject]').click()
         await expect(page.locator('#rejectReason')).to_be_focused()
         assert not any(path.endswith('step-up/options') for path,_,_ in calls)
@@ -436,6 +459,8 @@ async def browser_checks(output):
         await finish_step_up(page)
         await expect(page.locator('[data-review]:visible')).to_have_count(0,timeout=20000)
         assert len([p for p,_,_ in calls if p.endswith('/payments/review')])==2
+        actual_decisions=[b['decision'] for p,_,b in calls if p.endswith('/payments/review')]
+        assert actual_decisions==['approve','reject'], actual_decisions
         async with fixture.sessions() as db:
             assert (await db.get(Payment,second_id)).payment_status=='rejected'
             assert await db.scalar(select(func.count()).select_from(AdminPwaPaymentReview))==2
@@ -577,10 +602,14 @@ async def browser_checks(output):
         await expect(page.locator('.sidebar')).to_have_count(1)
         async with fixture.sessions() as db:
             await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)));await db.commit()
-        # Use the visible mobile Users navigation to force a real protected
-        # read after revocation. The previous .last locator could resolve to a
-        # hidden desktop button, time out, then silently skip the auth check.
-        await page.locator('.mobile-tabs [data-route=users]').click(timeout=15000)
+        # The background unread/read refresh may already detect the revoked
+        # session and replace the whole authenticated shell with login.
+        # Otherwise click the *live* mobile Users nav to trigger an authorized
+        # server request. A missing tab after revocation is not an error if the
+        # app has already signed out; the security assertion remains mandatory.
+        await page.evaluate("""() => {
+            document.querySelector('.mobile-tabs [data-route="users"]')?.click();
+        }""")
         await expect(page.locator('[data-action=signin]')).to_be_visible(timeout=15000)
         assert 'QA account' not in await page.locator('body').inner_text()
         assert await page.evaluate('Object.keys(localStorage)')==['hsk-admin-locale']

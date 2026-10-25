@@ -1,4 +1,6 @@
 """Aggregate-only finance and source lineage; no raw payment history export."""
+from datetime import timedelta
+
 from sqlalchemy import Float, String, and_, case, cast, func, literal, or_, select
 
 from app.admin_api.pwa_analytics import _known
@@ -85,7 +87,6 @@ async def money_metrics(db, *, since, now):
         func.coalesce(func.sum(Ledger.amount_usd).filter(Ledger.transaction_type=='expense'),0),
         func.coalesce(func.sum(Ledger.amount_usd).filter(marketing),0))
         .where(*_window(Ledger.created_at,since,now)))).one()
-    from datetime import timedelta
     active_since=since or now-timedelta(days=30)
     active=int(await db.scalar(select(func.count()).select_from(User).where(
         *_window(User.last_active_at,active_since,now))) or 0)
@@ -134,11 +135,13 @@ async def sources_metrics(db, *, since, now):
     attribution=(await db.execute(select(payment_source.label('source'),func.count(Payment.id),func.sum(usd_expression()))
         .select_from(Payment).outerjoin(User,_payment_user_join()).where(Payment.payment_status=='approved',
             Payment.plan_type!=HSK30_UNLOCK_PLAN_TYPE,*_window(at,since,now)).group_by(payment_source))).all()
+    traffic_start=now.date()-timedelta(days=(now-since).days-1) if since else None
     traffic=(await db.execute(select(Traffic.source,func.sum(Traffic.visits)).where(
-        Traffic.visit_day<=now.date(),*([Traffic.visit_day>=since.date()] if since else []))
+        Traffic.visit_day<=now.date(),*([Traffic.visit_day>=traffic_start] if traffic_start else []))
         .group_by(Traffic.source))).all()
     return {'entries':[{'source':s,'visits':n,'histories':unique} for s,n,unique in rows],
         'attribution':[{'source':s,'payments':n,'usd':round(float(usd or 0),4)} for s,n,usd in attribution],
         'traffic':[{'source':s,'visits':int(n)} for s,n in traffic if s in PUBLIC_SITE_TRAFFIC_SOURCES],
         'attribution_basis':'nearest recorded entry at or before payment submission; all prior history; descriptive, not causal',
-        'traffic_grain':'anonymous tagged public-site visits by stored visit_day; not users or registrations'}
+        'traffic_grain':'anonymous tagged public-site visits by UTC calendar visit_day; not users or registrations',
+        'traffic_since':traffic_start.isoformat() if traffic_start else None,'traffic_timezone':'UTC'}

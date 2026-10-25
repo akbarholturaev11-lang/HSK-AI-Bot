@@ -106,6 +106,24 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertTrue(data["items"][0]["has_pending_payment"])
         self.assertNotIn("telegram_id",data["items"][0])
 
+
+    async def test_user_directory_exposes_registration_and_preferred_method_without_private_data(self):
+        joined = datetime(2026, 5, 12, tzinfo=timezone.utc)
+        async with self.sessions() as db:
+            user = await db.get(User, 1)
+            user.created_at = joined
+            user.payment_method = "alipay"
+            user.selected_plan_type = "1_month"
+            await db.commit()
+        response = await self.post("users/search", {"query": "1"})
+        self.assertEqual(response.status_code, 200, response.text)
+        row = response.json()["items"][0]
+        self.assertEqual(row["created_at"], joined.isoformat())
+        self.assertEqual(row["selected_payment_method"], "alipay")
+        self.assertIn(row["access_state"], ("FREE", "TRIAL_ACTIVE", "PRO_ACTIVE", "EXPIRED", "TEMP_ACCESS", "BLOCKED"))
+        self.assertNotIn("telegram_id", row)
+        self.assertNotIn("screenshot_file_id", row)
+
     async def test_user_segments_use_server_filters_before_pagination(self):
         now = datetime.now(timezone.utc)
         async with self.sessions() as db:

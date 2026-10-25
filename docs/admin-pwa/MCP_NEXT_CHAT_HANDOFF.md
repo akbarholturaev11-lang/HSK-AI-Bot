@@ -31,14 +31,21 @@ worker and minimal-Inbox browser passes are recorded under
 `/tmp/hsk-admin-pwa-v10-browser-20261026` and
 `/tmp/hsk-admin-pwa-v10-ui-cleanup-20261026`. A final small Home task correction
 reuses the blocked cohort instead of duplicating the header Inbox bell;
-focused/core reruns are in progress. Catalogs: 63 artifacts, zero stale; adoption
+focused/core reruns passed: 27 projection tests (including actual PostgreSQL),
+plus private R2 recovery. The header retains exactly one Inbox control. Catalogs: 63 artifacts, zero stale; adoption
 79 classified/zero stale and frozen baseline guard passed.
 
-A fresh fetch now finds main at `d9e70fa5` (PR #218), including the owner's course
-limits/Trial, seven-column user directory and explicit payment-decision work.
-Integrate that latest main after committing this reviewed source increment,
-resolve UI/catalog/test overlaps preserving both, then re-run affected checks.
-The older clean promotion candidate below must not be pushed over newer main.
+Latest `main` `d9e70fa5` (PR #218) is now integrated locally, preserving course
+limits/Trial, the seven-column user directory and explicit payment choice before
+signing. Home's Limits shortcut opens that actual access/limits tab; it does not
+load the unopened course funnel. Combined core browser passed all seven tabs and
+actual signed review; relevant backend/PG/media/discount/import regressions:
+118 passed, 57 subtests. Legacy payment/subscription/native notice suite:
+96 passed, 114 subtests. Full settings and campaign browsers passed on the combined code, including
+actual signed limits/Trial writes, dirty-state/reversion, payment decisions,
+owned media, scheduling and one-round discount sends. The old stale promotion candidate is archived; a fresh managed candidate
+from `d9e70fa5` is attached at `admin-pwa-v10-promotion-20261026/HSK AI bot`.
+No new campaign/analytics promotion has been pushed yet.
 
 Campaign code is pushed through `194ae4df`, which fixes legacy active-offer
 dirty-state hydration and the CI branded media browser.
