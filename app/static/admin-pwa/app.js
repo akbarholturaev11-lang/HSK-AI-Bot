@@ -57,6 +57,7 @@ const USER_SEGMENTS=[['all','userFilterAll'],['active_today','userFilterActiveTo
 let managementDraft=null,managementReview=null,managementPreparing=false,preparingEditor=null;
 let coursePolicyRevision=null,hsk30Baseline=null;
 let courseData=null,courseLimitDraft=null,courseTrialDraft=null,courseLimitPlan='FREE';
+let courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};
 let courseAnalytics=null,courseAnalyticsDays=30,courseAnalyticsLoading=false,courseAnalyticsToken=0;
 let managementMediaPreviewUrl=null;
 let feedbackLoadId=0;
@@ -67,7 +68,7 @@ function clearPrivate(phase) {
   cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
   epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
-  courseData=null;courseLimitDraft=null;courseTrialDraft=null;courseAnalytics=null;courseAnalyticsToken++;courseAnalyticsLoading=false;state.phase=phase;state.error=null;render();
+  courseData=null;courseLimitDraft=null;courseTrialDraft=null;courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};courseAnalytics=null;courseAnalyticsToken++;courseAnalyticsLoading=false;state.phase=phase;state.error=null;render();
 }
 function releaseManagementMediaPreview(){if(managementMediaPreviewUrl){URL.revokeObjectURL(managementMediaPreviewUrl);managementMediaPreviewUrl=null;}}
 async function api(path, body, {publicAuth=false, method='POST',rawBody=null,extraHeaders={},timeoutMs=15000}={}) {
@@ -491,6 +492,7 @@ function renderCourseView(){
   return `<div class="course-dashboard">${tabBar}<div class="course-content">${body}</div></div>`;
 }
 function courseLimitDirty(){
+  if(!courseLimitTouched[courseLimitPlan])return false;
   const plan=courseLimitPlan,original=courseData?.limits?.plans?.[plan],draft=courseLimitDraft?.[plan];
   if(!original||!draft)return false;
   return Object.keys(draft).some(key=>draft[key].limit!==original[key]?.limit||(draft[key].window!=='lifetime'?'daily':'lifetime')!==(original[key]?.window==='lifetime'?'lifetime':'daily'));
@@ -531,6 +533,7 @@ async function loadCourseData(){
     if(current!==view||at!==epoch||state.route!=='course'||!state.actor)return;
     courseData={hsk30:hsk.hsk30,course_access:access.course_access,limits:limit.limits,limitsRevision:limit.revision_hash};
     courseLimitDraft={FREE:structuredClone(limit.limits.plans.FREE),TRIAL_ACTIVE:structuredClone(limit.limits.plans.TRIAL_ACTIVE)};
+    courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};
     for(const rules of Object.values(courseLimitDraft))for(const rule of Object.values(rules)){
       if(typeof rule==='object'&&Number.isInteger(rule.limit)&&!['daily','lifetime'].includes(rule.window))rule.window='daily';
     }
@@ -2546,12 +2549,16 @@ document.addEventListener('click',event=>{
 document.addEventListener('input',event=>{
   if(event.target.closest?.('#drawerContent'))updateEditorSaveEnabled();
 });
-document.addEventListener('input',event=>{if(event.target.matches('[data-course-limit],#courseTrialDays,#courseTrialReason'))keepCourseEdits();});
+document.addEventListener('input',event=>{
+  if(event.target.matches('[data-course-limit]'))courseLimitTouched[courseLimitPlan]=true;
+  if(event.target.matches('[data-course-limit],#courseTrialDays,#courseTrialReason'))keepCourseEdits();
+});
 document.addEventListener('change',event=>{
   if(event.target.id==='courseLimitPlan'){keepCourseEdits();courseLimitPlan=event.target.value;render();return;}
-  if(event.target.matches('[data-course-window],#courseTrialEnabled')){keepCourseEdits();return;}
-  if(event.target.id==='courseLimitPlan'){keepCourseEdits();courseLimitPlan=event.target.value;render();return;}
-  if(event.target.matches('[data-course-window],#courseTrialEnabled')){keepCourseEdits();return;}
+  if(event.target.matches('[data-course-window],#courseTrialEnabled')){
+    if(event.target.matches('[data-course-window]'))courseLimitTouched[courseLimitPlan]=true;
+    keepCourseEdits();return;
+  }
   if(event.target.id==='discountTarget'&&$('discountSegment'))$('discountSegment').hidden=Boolean(event.target.value);
   if(event.target.id==='newAdLanguage')updateCourseAdCreateLanguage();
   if(event.target.id==='newAdMediaType'){updateCourseAdCreateMedia();return;}
