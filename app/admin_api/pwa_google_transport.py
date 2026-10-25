@@ -5,6 +5,7 @@ It never links a user, issues an admin cookie or opens admin data endpoints.
 """
 
 import logging
+import re
 from typing import Any, Callable
 
 from fastapi import APIRouter, Request
@@ -25,6 +26,7 @@ logger = logging.getLogger(__name__)
 _OIDC_COOKIE = "__Host-hskai_admin_oidc"
 _APPROVAL_COOKIE = "__Host-hskai_admin_approval"
 _REQUEST_COOKIE = "__Host-hskai_admin_request"
+_BOT_USERNAME = re.compile(r"^[A-Za-z][A-Za-z0-9_]{4,31}$")
 _PRIVATE_HEADERS = {
     "Cache-Control": "no-store",
     "Pragma": "no-cache",
@@ -67,6 +69,14 @@ def _gate(request: Request, settings_obj: Any) -> JSONResponse | None:
     if request_origin != origin:
         return _reply(403, "admin_pwa_wrong_origin")
     return None
+
+
+def _approval_bot_url(settings_obj: Any, request_id: str) -> str | None:
+    """Use only the configured Bot identity and the existing non-secret request UUID."""
+    username = str(getattr(settings_obj, "BOT_USERNAME", "") or "").strip().lstrip("@")
+    if not _BOT_USERNAME.fullmatch(username):
+        return None
+    return f"https://t.me/{username}?start=admin_pwa_{request_id}"
 
 
 def create_admin_pwa_google_router(
@@ -210,6 +220,7 @@ def create_admin_pwa_google_router(
             "request_id": identifiers[0],
             "status": result.status,
             "pairing_code": result.pairing_code,
+            "telegram_url": _approval_bot_url(settings_obj, identifiers[0]) if result.status == "pending" else None,
             "expires_at": result.expires_at.isoformat(),
         }, headers=_PRIVATE_HEADERS)
 
