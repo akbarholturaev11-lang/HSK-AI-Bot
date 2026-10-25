@@ -538,6 +538,12 @@ async def browser_checks(output):
         await expect(page.locator('.sidebar')).to_have_count(0)
         await expect(page.locator('.auth-panel')).to_be_visible()
         await context.set_offline(False)
+        await authenticate_fresh_launch(page)
+        # Fresh login publishes the shell before its independent protected reads
+        # finish. Settle them before this test revokes the new session: otherwise
+        # a correct 401 from an outstanding read can remove the Users button
+        # before the intended navigation is dispatched (Linux CI timing).
+        await page.wait_for_load_state('networkidle')
         await expect(page.locator('.sidebar')).to_have_count(1)
         async with fixture.sessions() as db:
             await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)));await db.commit()
