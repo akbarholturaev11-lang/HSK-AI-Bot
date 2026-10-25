@@ -2,6 +2,22 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Owner-approved main promotion — 2026-10-25
+
+- The owner explicitly authorized pushing the ready Admin PWA code to `main`.
+  This supersedes this workstream's earlier feature-only push restriction for
+  the verified code promotion. Feature defaults remain OFF; no flag activation
+  or manual deployment is included in that authorization.
+- Source is `e7470a28ac85c167ebf54381d78d4c5a23430746`, including main PR #209.
+  GitHub Actions [40199126920](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40199126920)
+  completed successfully for code parent `71629eda`: both `admin-pwa` and
+  `postgres-locks-and-migrations` passed, including all browser commands.
+- Promotion uses an isolated clean worktree from `origin/main`; only the
+  intended Admin PWA commits are copied. The prepared application, tests,
+  catalogs and workflow are byte-identical to the verified source; only this
+  promotion documentation is added. Unrelated local Graphify outputs stay out
+  of the commit. Existing AI-branch work must be preserved when synchronizing.
+
 ## Latest owner-requested main sync — PR #209, 2026-10-25
 
 - A fresh owner request found `origin/main` at

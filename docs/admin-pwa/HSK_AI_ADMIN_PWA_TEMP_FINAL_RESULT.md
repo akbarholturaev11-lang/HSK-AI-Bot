@@ -11,7 +11,8 @@ This checklist describes full product acceptance, not a list of wholly missing
 code. Read [current handoff](MCP_NEXT_CHAT_HANDOFF.md) for implemented increments
 and their evidence; uncompleted staging/device/provider acceptance remains open.
 The current branch's external MCP permission is statistics-only. Keep all three
-feature defaults false; no main promotion or deployment is authorized here.
+feature defaults false. The owner authorized the verified code promotion to
+main on 2026-10-25; deployment and flag activation remain separate.
 
 ## Required end-user result
 

@@ -1,3 +1,7 @@
+> Owner update, 2026-10-25: verified code promotion to `main` is explicitly
+> authorized. See the latest handoff for successful source CI and scope;
+> feature flags remain OFF and no manual deployment is requested.
+
 # HSK AI — Admin PWA implementation plan
 
 Status (updated 2026-10-25): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, manual grants, course/HSK30 controls, scoped OAuth/MCP, profiles, daily statistics/feedback snapshots and bounded JSON/CSV, native/technical inbox and default-OFF Apple Push sender exist. Private Redis/R2 reuse is implemented. The owner baseline uses minimal title-only Inbox rows and automatic importance; the latest owner correction requires a new automatic biometric passkey assertion on every launch/resume, without a separate initial button; private data remains locked until verified. Remaining management, retention/operator flows and release acceptance are tracked explicitly below. The old 0011 cold-start migration failure remains separate.**

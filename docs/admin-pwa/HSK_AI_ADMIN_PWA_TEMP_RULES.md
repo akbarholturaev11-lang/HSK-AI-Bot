@@ -1,3 +1,9 @@
+> **MAIN PROMOTION AUTHORIZED (2026-10-25):** The owner explicitly requested
+> pushing the verified Admin PWA code to `main`. This authorizes that code
+> promotion; the earlier feature-only restriction below is historical for this
+> increment. All three feature defaults remain OFF. No manual production
+> deployment or flag activation was requested.
+
 > **OWNER CORRECTION (2026-10-25):** Current work branch:
 > `feat/admin-pwa-minimal-inbox-passkey-20261025`, including merged PR #209.
 > On every new launch/foreground resume, revoke the old server session and
