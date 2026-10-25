@@ -1077,6 +1077,10 @@ async def access_grant_browser_checks(output):
                     await page.locator('.drawer-close').click()
             assert not any(path.endswith('/users/grant-access') for path,_ in calls)
             await prepare();await finish_step_up(page)
+            # Inline profile already displays the "10 days" preset; it cannot
+            # signal a completed write. Wait for the server-backed success drawer.
+            granted_title = await page.evaluate('window.HSKAI_ADMIN_I18N.tj.accessGranted')
+            await expect(page.locator('#drawerTitle')).to_have_text(granted_title)
             await expect(page.locator('#drawerContent')).to_contain_text('10')
             await expect(page.locator('[data-action=executeAccess]')).to_have_count(0)
             async with fixture.sessions() as db:
