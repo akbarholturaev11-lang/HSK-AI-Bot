@@ -2384,7 +2384,7 @@ async function markAllInboxRead(){
   inboxBulkReading=true;
   const at=epoch,nonce=inboxRequestNonce,button=document.querySelector('[data-inbox-mark-all]');
   if(button){button.disabled=true;button.setAttribute('aria-busy','true');}
-  let cutoff=null,done=false;
+  let cutoff=null,done=false,problem=false;
   try{
     // Each response updates at most 200 rows; the initial server cutoff
     // ensures messages arriving during the reset remain unread.
@@ -2398,15 +2398,14 @@ async function markAllInboxRead(){
       if(data.updated===0)throw new Error('stalled_bulk_read');
     }
     if(at!==epoch||nonce!==inboxRequestNonce||!state.actor)return;
-    if(done)showNotice('inboxSaved');
-    else showNotice('inboxActionError');
-  }catch(error){
-    if(at===epoch&&nonce===inboxRequestNonce&&state.actor)showNotice('inboxActionError');
-  }finally{
+    if(!done)problem=true;
+  }catch(error){problem=true;}
+  finally{
     inboxBulkReading=false;
     if(at===epoch&&nonce===inboxRequestNonce&&state.actor){
       await refreshInboxUnread();
       if(document.querySelector('.inbox-minimal-list'))await inbox(null,feedbackUserId);
+      showNotice(problem?'inboxActionError':'inboxSaved');
     }
   }
 }
