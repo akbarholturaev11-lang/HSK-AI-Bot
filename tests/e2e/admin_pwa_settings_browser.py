@@ -306,6 +306,7 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('#courseLimitSave').click()
                 await wait_step_up(page)
                 await finish_step_up(page)
+                await close_or_wait()
                 await expect(page.locator('[data-course-tab="access"]')).to_be_visible()
                 await expect(page.locator('#courseLimitSave')).to_be_disabled()
                 async with fixture.sessions() as db:
@@ -318,6 +319,7 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('#courseTrialSave').click()
                 await wait_step_up(page)
                 await finish_step_up(page)
+                await close_or_wait()
                 await expect(page.locator('#courseTrialSave')).to_be_disabled()
                 async with fixture.sessions() as db:
                     policy=await LimitConfigService(db).get_payload()
