@@ -153,6 +153,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt "pytest==8.4.2" "aiosqlite==0.21.0" "mcp==1.27.0" "sse-starlette==3.0.3"
+      - name: Install bounded media test runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y ffmpeg
       - name: Compile touched admin and database code
         run: |
           python -m compileall -q app/admin_api app/db/models app/bot/handlers/admin_pwa.py app/services/admin_payment_review_service.py app/services/subscription_service.py app/main.py
