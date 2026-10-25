@@ -2,6 +2,27 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current new-course-ad creation increment — 2026-10-25
+
+- The owner feature branch now supports signed `course_ad_create`: one-language
+  or explicit UZ/RU/TJ title/CTA, photo/video, fixed type/placements, bounded
+  duration/link and paused default. The original V10 editor uses one contextual
+  Create action and native passkey; cancellation preserves the draft. Media
+  stays on the existing volume with no BLOB/migration/AI request.
+- UTF-8 binary-command metadata uses strict base64url under the existing header
+  bound. Video proof ownership is checked against the actual cookie session
+  before any encoding, including two sessions for the same actor. Encoding
+  stays outside DB transactions with one worker slot; creative/proof/audit are
+  atomic and rollback cleanup uses only the exact created PK.
+- Marketing/media/shared translation tests: **76 passed, 50 subtests passed**.
+  Actual ASGI/virtual-WebAuthn media browser passed image/video replacement,
+  QR and new multilingual creation. UZ/RU/TJ 390px cancellation retains inputs;
+  the signed all-language create writes one inactive creative, one audit,
+  authored copy and disk bytes. Screenshots under
+  `/tmp/hsk-admin-pwa-course-ad-create-20261025` were visually reviewed.
+- Remaining code: bounded campaign activation/delivery, release-feedback and
+  discount campaigns. No main promotion, deployment or feature-default change.
+
 ## Current main synchronization — owner request, 2026-10-25
 
 - The owner explicitly requested the latest `main` changes in the existing

@@ -712,7 +712,7 @@
     "ui.admin_pwa.courseAdReplaceVideo": "Заменить видео рекламы",
     "ui.admin_pwa.courseAdMedia": "Медиафайл рекламы",
     "ui.admin_pwa.courseAdTitle": "Название рекламы",
-    "ui.admin_pwa.courseAdMediaHint": "JPEG, PNG или WebP, до 1 МиБ. Изображение заменится после подтверждения passkey.",
+    "ui.admin_pwa.courseAdMediaHint": "JPEG, PNG или WebP, до 1 МиБ. Изображение сохранится после подтверждения.",
     "ui.admin_pwa.courseAdMediaValidation": "Выберите одно изображение в формате JPEG, PNG или WebP.",
     "ui.admin_pwa.courseAdMediaTooLarge": "Изображение рекламы не должно превышать 1 МиБ.",
     "ui.admin_pwa.courseAdMediaRequired": "Сначала выберите медиафайл для замены.",
@@ -864,7 +864,22 @@
     "ui.admin_pwa.rejectPartner": "Отклонить партнёра",
     "ui.admin_pwa.acceptPayment": "Принять оплату",
     "ui.admin_pwa.rejectPayment": "Отклонить оплату",
-    "ui.admin_pwa.operationResult": "Результат действия"
+    "ui.admin_pwa.operationResult": "Результат действия",
+    "ui.admin_pwa.newCourseAd": "Создать рекламу",
+    "ui.admin_pwa.createItem": "Создать",
+    "ui.admin_pwa.allLanguages": "Все языки",
+    "ui.admin_pwa.courseAdButton": "Текст кнопки",
+    "ui.admin_pwa.courseAdCopiesHint": "Для всех языков заполните тексты на трёх языках. Текст кнопки необязателен.",
+    "ui.admin_pwa.courseAdKind": "Тип рекламы",
+    "ui.admin_pwa.courseAdScreenCenter": "Центр экрана",
+    "ui.admin_pwa.courseAdLessonEnd": "Конец урока",
+    "ui.admin_pwa.durationSeconds": "Длительность (секунды)",
+    "ui.admin_pwa.courseAdLink": "Ссылка (HTTPS или @username)",
+    "ui.admin_pwa.courseAdCreateValidation": "Проверьте тексты, место показа и ссылку. Для общей рекламы заполните текст кнопки на трёх языках или оставьте его пустым везде.",
+    "ui.admin_pwa.adTypeStandard": "Обычная реклама",
+    "ui.admin_pwa.adTypePartner": "Предложение сотрудничества",
+    "ui.admin_pwa.adTypeBot": "Реклама бота",
+    "ui.admin_pwa.adTypeLessonEnd": "Предложение подписки"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

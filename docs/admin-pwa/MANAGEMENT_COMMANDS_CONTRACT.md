@@ -123,7 +123,25 @@ the current creative revision, attaches the server-named MP4 path and records
 content-free audit evidence atomically; an unreferenced staged file is cleaned
 up after rollback, while uncertain commit state preserves referenced media.
 Only the existing creative's media changes. No new DB BLOB or migration is
-introduced; new creative creation and campaign delivery remain separate.
+introduced; campaign delivery remains separate.
+
+New course-ad creation is a distinct `course_ad_create` signed command. The
+original V10 editor accepts either one selected language or explicit UZ/RU/TJ
+copy, one photo/video, allowed type/placements, 5–120 second duration and an
+optional HTTPS/Telegram link. It defaults to paused and performs no AI
+translation or recipient delivery. Exact copy hash, media hash/size and all
+settings participate in the proof. The shared creation service, one-use proof
+and content-free audit commit atomically. Raster limits/storage match image
+replacement; videos use the same single-slot encoder outside the DB
+transaction. Same-session proof ownership is checked before encoding, including
+when two sessions belong to the same admin. No media BLOB or migration.
+
+Binary marketing saves encode UTF-8 JSON as base64url in
+`X-Admin-PWA-Command` with `X-Admin-PWA-Command-Encoding: base64url`; the existing
+8192-character header limit is unchanged. Strict decoding, duplicate-key
+rejection and canonical payload validation precede proof consumption. Legacy
+ASCII JSON commands remain accepted. This allows authored RU/TJ/Chinese copy
+without invalid HTTP-header characters.
 
 Subscription QR replacement is a separate `subscription.qr_media` operation for
 the six fixed Alipay/WeChat plan targets in the existing `subscription` scope.
@@ -143,7 +161,7 @@ upload is not retried automatically.
 
 These legacy capabilities are not silently proxied by the standalone PWA:
 campaign activation/delivery, release-feedback and discount campaign creation,
-and new course-ad creation. Existing course-ad raster and video replacement,
+and their bounded delivery. New course-ad creation, raster and video replacement,
 desktop-promo and subscription QR media each have their own signed flows
 described above; they do not authorize other upload types.
 Direct, self-test and

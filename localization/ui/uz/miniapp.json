@@ -712,7 +712,7 @@
     "ui.admin_pwa.courseAdReplaceVideo": "Reklama videosini almashtirish",
     "ui.admin_pwa.courseAdMedia": "Reklama media fayli",
     "ui.admin_pwa.courseAdTitle": "Reklama sarlavhasi",
-    "ui.admin_pwa.courseAdMediaHint": "JPEG, PNG yoki WebP, 1 MiB gacha. Rasm passkey bilan tasdiqlangandan keyin almashtiriladi.",
+    "ui.admin_pwa.courseAdMediaHint": "JPEG, PNG yoki WebP, 1 MiB gacha. Rasm tasdiqdan keyin saqlanadi.",
     "ui.admin_pwa.courseAdMediaValidation": "JPEG, PNG yoki WebP formatidagi bitta rasmni tanlang.",
     "ui.admin_pwa.courseAdMediaTooLarge": "Reklama rasmi 1 MiB dan katta bo‘lmasin.",
     "ui.admin_pwa.courseAdMediaRequired": "Almashtirish uchun avval media faylni tanlang.",
@@ -864,7 +864,22 @@
     "ui.admin_pwa.rejectPartner": "Hamkorni rad etish",
     "ui.admin_pwa.acceptPayment": "To‘lovni qabul qilish",
     "ui.admin_pwa.rejectPayment": "To‘lovni rad etish",
-    "ui.admin_pwa.operationResult": "Amal natijasi"
+    "ui.admin_pwa.operationResult": "Amal natijasi",
+    "ui.admin_pwa.newCourseAd": "Reklama yaratish",
+    "ui.admin_pwa.createItem": "Yaratish",
+    "ui.admin_pwa.allLanguages": "Barcha tillar",
+    "ui.admin_pwa.courseAdButton": "Tugma matni",
+    "ui.admin_pwa.courseAdCopiesHint": "Barcha tillarni tanlasangiz, matnlarni uch tilda kiriting. Tugma matni ixtiyoriy.",
+    "ui.admin_pwa.courseAdKind": "Reklama turi",
+    "ui.admin_pwa.courseAdScreenCenter": "Ekran markazi",
+    "ui.admin_pwa.courseAdLessonEnd": "Dars yakuni",
+    "ui.admin_pwa.durationSeconds": "Davomiyligi (soniya)",
+    "ui.admin_pwa.courseAdLink": "Havola (HTTPS yoki @username)",
+    "ui.admin_pwa.courseAdCreateValidation": "Matnlarni, ko‘rsatish joyini va havolani tekshiring. Umumiy reklamada tugma matni uchala tilda bo‘lsin yoki hammasida bo‘sh qolsin.",
+    "ui.admin_pwa.adTypeStandard": "Oddiy reklama",
+    "ui.admin_pwa.adTypePartner": "Hamkorlik taklifi",
+    "ui.admin_pwa.adTypeBot": "Bot reklamasi",
+    "ui.admin_pwa.adTypeLessonEnd": "Obuna taklifi"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

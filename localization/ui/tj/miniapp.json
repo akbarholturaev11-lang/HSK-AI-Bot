@@ -712,7 +712,7 @@
     "ui.admin_pwa.courseAdReplaceVideo": "Видеои рекламаро иваз кардан",
     "ui.admin_pwa.courseAdMedia": "Файли медиаи реклама",
     "ui.admin_pwa.courseAdTitle": "Сарлавҳаи реклама",
-    "ui.admin_pwa.courseAdMediaHint": "JPEG, PNG ё WebP, то 1 МиБ. Акс пас аз тасдиқи passkey иваз мешавад.",
+    "ui.admin_pwa.courseAdMediaHint": "JPEG, PNG ё WebP, то 1 МиБ. Акс баъди тасдиқ сабт мешавад.",
     "ui.admin_pwa.courseAdMediaValidation": "Як аксро бо формати JPEG, PNG ё WebP интихоб кунед.",
     "ui.admin_pwa.courseAdMediaTooLarge": "Акс набояд аз 1 МиБ зиёд бошад.",
     "ui.admin_pwa.courseAdMediaRequired": "Аввал барои иваз кардан файли медиаро интихоб кунед.",
@@ -864,7 +864,22 @@
     "ui.admin_pwa.rejectPartner": "Рад кардани шарик",
     "ui.admin_pwa.acceptPayment": "Қабул кардани пардохт",
     "ui.admin_pwa.rejectPayment": "Рад кардани пардохт",
-    "ui.admin_pwa.operationResult": "Натиҷаи амал"
+    "ui.admin_pwa.operationResult": "Натиҷаи амал",
+    "ui.admin_pwa.newCourseAd": "Эҷоди реклама",
+    "ui.admin_pwa.createItem": "Эҷод кардан",
+    "ui.admin_pwa.allLanguages": "Ҳамаи забонҳо",
+    "ui.admin_pwa.courseAdButton": "Матни тугма",
+    "ui.admin_pwa.courseAdCopiesHint": "Барои ҳамаи забонҳо матнҳоро бо се забон ворид кунед. Матни тугма ихтиёрист.",
+    "ui.admin_pwa.courseAdKind": "Навъи реклама",
+    "ui.admin_pwa.courseAdScreenCenter": "Маркази экран",
+    "ui.admin_pwa.courseAdLessonEnd": "Охири дарс",
+    "ui.admin_pwa.durationSeconds": "Давомнокӣ (сония)",
+    "ui.admin_pwa.courseAdLink": "Пайванд (HTTPS ё @username)",
+    "ui.admin_pwa.courseAdCreateValidation": "Матнҳо, ҷойи намоиш ва пайвандро санҷед. Матни тугма барои ҳамаи забонҳо бояд дар ҳар се забон бошад ё дар ҳама холӣ монад.",
+    "ui.admin_pwa.adTypeStandard": "Рекламаи одӣ",
+    "ui.admin_pwa.adTypePartner": "Пешниҳоди ҳамкорӣ",
+    "ui.admin_pwa.adTypeBot": "Рекламаи бот",
+    "ui.admin_pwa.adTypeLessonEnd": "Пешниҳоди обуна"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

@@ -1,6 +1,6 @@
 # Admin PWA — final product and acceptance contract (temporary)
 
-> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-seamless-passkey-20261025` (PR #204 is merged baseline).
+> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-minimal-inbox-passkey-20261025` (PR #204 is merged baseline).
 > Not a repository-wide policy. Does not modify or supersede root `AGENTS.md` / `AI_RULES.md` / `PROJECT_MEMORY.md`.
 > All development and progress records for this task remain under `docs/admin-pwa/`.
 
@@ -68,13 +68,14 @@ text broadcasts, durable pre-provider claims, explicit cancellation and
 pending-only signed resume. Owned payout proof/completion and durable recipient notice also exist, using
 the owner-requested single payout window. Text-only campaign drafts can now be
 created signed and paused. Desktop-promo JPEG/PNG/WebP media can now be added,
-replaced or removed with one exact passkey confirmation. Existing course-ad
-images can also be replaced with one exact passkey confirmation. The six
+replaced or removed with one exact passkey confirmation. Course ads can be created with photo/video, explicit selected-language or
+UZ/RU/TJ copy and validated settings; existing images/videos can be replaced
+with one exact passkey action. Media remains disk-only and creation defaults
+to paused. The six
 existing Alipay/WeChat subscription QR targets can now replace one bounded
 image using one passkey; price and payment/access state remain untouched. The
 legacy checkout contract stores the resulting Telegram `file_id`, not image
-bytes. Campaign activation/delivery, feedback/discount campaigns and new
-course-ad/video uploads remain code work. Partner application notices are
+bytes. Campaign activation/delivery and feedback/discount campaigns remain code work. Partner application notices are
 implemented; see [management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
 This paragraph records scope and does not mark the entire acceptance list done.
 

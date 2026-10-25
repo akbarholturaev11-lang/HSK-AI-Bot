@@ -5,6 +5,7 @@ command. Media is restricted to the specific validated assets below; no
 arbitrary setting keys, student targeting or MCP access is added.
 """
 import asyncio
+import base64
 import hashlib
 import html
 import hmac
@@ -16,6 +17,7 @@ import re
 from threading import BoundedSemaphore
 from datetime import datetime, timedelta, timezone
 from typing import Annotated, Literal
+from urllib.parse import urlsplit
 from uuid import uuid4
 
 from fastapi import APIRouter, Request
@@ -44,6 +46,7 @@ from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.ad_campaign_repo import AdCampaignRepository
 from app.services.broadcast_translation_service import encode_localized_broadcast_text
 from app.services.course_ad_service import COURSE_AD_MEDIA_ROOT, CourseAdService
+from app.services.ad_placement_service import AD_PLACEMENTS
 from app.services.course_ad_media import (
     COURSE_AD_MAX_UPLOAD_BYTES,
     CourseAdVideoError,
@@ -155,6 +158,91 @@ class CourseAdChange(StrictModel):
         return self
 
 
+class CourseAdCopy(StrictModel):
+    title: Annotated[str, Field(min_length=1, max_length=120)]
+    button_text: Annotated[str, Field(max_length=64)] = ""
+
+    @field_validator("title", "button_text")
+    @classmethod
+    def valid_copy(cls, value, info):
+        value = value.strip()
+        try:
+            value.encode("utf-8")
+        except UnicodeEncodeError as exc:
+            raise ValueError("Invalid Unicode copy") from exc
+        if ((info.field_name == "title" and not value)
+                or any(ord(char) < 32 for char in value)):
+            raise ValueError("Invalid creative copy")
+        return value
+
+
+class CourseAdCopies(StrictModel):
+    uz: CourseAdCopy | None = None
+    ru: CourseAdCopy | None = None
+    tj: CourseAdCopy | None = None
+
+
+class CourseAdCreateChange(StrictModel):
+    kind: Literal["course_ad_create"]
+    language: Literal["all", "uz", "ru", "tj"]
+    copies: CourseAdCopies
+    ad_type: Literal["odiy", "hamkorlik", "bot", "dars_yakuni"] = "odiy"
+    placements: Annotated[list[Literal["lesson_end", "screen_center"]], Field(min_length=1, max_length=2)]
+    duration_seconds: Annotated[int, Field(strict=True, ge=5, le=120)] = 7
+    link_url: Annotated[str, Field(max_length=512)] | None = None
+    is_active: bool = False
+    media_type: Literal["photo", "video"]
+    media_sha256: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
+    media_size: Annotated[int, Field(strict=True, ge=1, le=_PWA_COURSE_AD_VIDEO_MAX_BYTES)]
+
+    @field_validator("placements")
+    @classmethod
+    def unique_placements(cls, value):
+        if len(value) != len(set(value)):
+            raise ValueError("Select unique placements")
+        return [placement for placement in AD_PLACEMENTS if placement in value]
+
+    @field_validator("link_url")
+    @classmethod
+    def valid_link(cls, value):
+        if value is None or not value.strip():
+            return None
+        value = value.strip()
+        if any(ord(char) < 33 for char in value):
+            raise ValueError("Invalid creative link")
+        if not value.startswith(("https://", "@")):
+            raise ValueError("Use an HTTPS or Telegram link")
+        if value.startswith("@") and not re.fullmatch(r"@[A-Za-z0-9_]{5,32}", value):
+            raise ValueError("Invalid Telegram link")
+        normalized = CourseAdService.normalize_link(value)
+        try:
+            parsed = urlsplit(normalized)
+            if (parsed.scheme != "https" or not parsed.hostname
+                    or parsed.username is not None or parsed.password is not None
+                    or parsed.port is not None and not 1 <= parsed.port <= 65535):
+                raise ValueError("Invalid creative link")
+        except ValueError as exc:
+            raise ValueError("Invalid creative link") from exc
+        return normalized
+
+    @model_validator(mode="after")
+    def exact_copy_and_media(self):
+        copies = self.copies.model_dump(exclude_none=True)
+        required = {"uz", "ru", "tj"} if self.language == "all" else {self.language}
+        if set(copies) != required:
+            raise ValueError("Supply exactly the selected creative languages")
+        if self.language == "all":
+            has_button = bool(self.copies.tj.button_text)
+            if any(bool(getattr(self.copies, lang).button_text) != has_button for lang in required):
+                raise ValueError("A multilingual CTA needs all three copies")
+        if self.media_type == "photo" and self.media_size > _PWA_COURSE_AD_IMAGE_MAX_BYTES:
+            raise ValueError("Creative image is too large")
+        return self
+
+    def source_copy(self):
+        return getattr(self.copies, "tj" if self.language == "all" else self.language)
+
+
 class CampaignTexts(StrictModel):
     uz: Annotated[str, Field(min_length=2, max_length=3500)]
     ru: Annotated[str, Field(min_length=2, max_length=3500)]
@@ -210,7 +298,7 @@ class CampaignDraftChange(StrictModel):
         return sorted(value)
 
 
-MarketingChange = Annotated[SalesExperimentChange | DesktopPromoChange | CourseAdChange | CampaignDraftChange,
+MarketingChange = Annotated[SalesExperimentChange | DesktopPromoChange | CourseAdChange | CourseAdCreateChange | CampaignDraftChange,
                             Field(discriminator="kind")]
 
 
@@ -228,6 +316,9 @@ class MarketingCommand(PrepareMarketing):
         if self.change.kind == "campaign_draft":
             payload["change"] = self.change.model_dump(exclude={"texts"})
             payload["content_hash"] = _hash(self.change.texts.model_dump())
+        elif self.change.kind == "course_ad_create":
+            payload["change"] = self.change.model_dump(exclude={"copies"})
+            payload["copy_hash"] = _hash(self.change.copies.model_dump())
         return {"action": "marketing.update", "target": target, "payload": payload}
 
 
@@ -305,7 +396,10 @@ async def _preflight_course_ad_video(db, *, session_cookie, request, settings_ob
         raise CommandError("admin_pwa_step_up_denied", 403)
     async with db.begin():
         actor = await _authenticate(db, session_cookie, settings_obj)
-        step = await db.get(AdminPwaStepUp, request.step_up_id)
+        step = await db.scalar(select(AdminPwaStepUp).join(
+            AdminPwaSession, AdminPwaSession.id == AdminPwaStepUp.session_id,
+        ).where(AdminPwaStepUp.id == request.step_up_id,
+                AdminPwaSession.token_hash == hashlib.sha256(session_cookie.encode("ascii")).hexdigest()))
         now = datetime.now(timezone.utc)
         if (step is None or step.status != "verified" or step.verified_at is None
                 or step.consumed_at is not None or _utc(step.expires_at) <= now
@@ -329,6 +423,8 @@ async def _preflight_course_ad_video(db, *, session_cookie, request, settings_ob
 async def _target(db, change, *, lock=False):
     if change.kind == "campaign_draft":
         return None, {"new_draft": True, "revision_hash": _hash({"campaign_draft": "new"})}
+    if change.kind == "course_ad_create":
+        return None, {"new_creative": True, "revision_hash": _hash({"course_ad_create": "new"})}
     if change.kind == "course_ad":
         query = _ad_query().where(CourseAdCreative.id == change.ad_id).execution_options(populate_existing=True)
         row = await db.scalar(query.with_for_update() if lock else query)
@@ -368,8 +464,9 @@ async def prepare_marketing(db, *, session_cookie, request, settings_obj):
         _, current = await _target(db, request.change)
         command = MarketingCommand(change=request.change, expected_hash=current["revision_hash"])
     result = {"operation": command.operation(), "current": current}
-    if request.change.kind == "campaign_draft":
+    if request.change.kind in ("campaign_draft", "course_ad_create"):
         result["execute_payload"] = command.model_dump()
+    if request.change.kind == "campaign_draft":
         result["proposed"] = {"kind": "campaign_draft", **request.change.model_dump(),
                                "status": "paused_draft"}
     return result
@@ -498,11 +595,14 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
     cleanup_course_ad = None
     new_promo_filename = None
     new_course_ad_filename = None
+    created_course_ad_id = None
     change = command.change
     media_extension = None
     is_promo_image = change.kind == "desktop_promo" and change.media_sha256 is not None
-    is_course_ad_image = change.kind == "course_ad" and change.operation == "replace_image"
-    is_course_ad_video = change.kind == "course_ad" and change.operation == "replace_video"
+    is_course_ad_image = (change.kind == "course_ad" and change.operation == "replace_image"
+                          or change.kind == "course_ad_create" and change.media_type == "photo")
+    is_course_ad_video = (change.kind == "course_ad" and change.operation == "replace_video"
+                          or change.kind == "course_ad_create" and change.media_type == "video")
     if is_promo_image or is_course_ad_image or is_course_ad_video:
         if (media_bytes is None or len(media_bytes) != change.media_size
                 or hashlib.sha256(media_bytes).hexdigest() != change.media_sha256):
@@ -556,7 +656,28 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
                 raise CommandError("admin_pwa_step_up_denied", 403)
             if before["revision_hash"] != command.expected_hash:
                 raise CommandError("confirmation_changed", 409)
-            if change.kind == "campaign_draft":
+            if change.kind == "course_ad_create":
+                if change.media_type == "photo":
+                    new_course_ad_filename = await asyncio.to_thread(
+                        _write_course_ad_image, media_bytes, media_extension,
+                    )
+                copy = change.source_copy()
+                localized_copy = (json.dumps(change.copies.model_dump(exclude_none=True),
+                                             ensure_ascii=False, separators=(",", ":"))
+                                  if change.language == "all" else None)
+                row = await CourseAdService(db).create_video(
+                    title=copy.title, button_text=copy.button_text or None,
+                    media_path=new_course_ad_filename, media_type=change.media_type,
+                    media_blob=None, language=change.language, localized_copy=localized_copy,
+                    duration_seconds=change.duration_seconds, link_url=change.link_url,
+                    ad_type=change.ad_type, placements=",".join(change.placements),
+                    created_by_telegram_id=actor.telegram_id,
+                )
+                created_course_ad_id = row.id
+                row.is_active = change.is_active
+                await db.flush()
+                result = {**_ad_payload(row), "created": True}
+            elif change.kind == "campaign_draft":
                 now = datetime.now(timezone.utc)
                 safe_texts = {language: html.escape(text, quote=False)
                               for language, text in change.texts.model_dump().items()}
@@ -638,7 +759,11 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
                 cleanup = path if shared is None else None
                 result = {"deleted_id": change.ad_id}
             audit_id = str(uuid4())
-            if change.kind == "campaign_draft":
+            if change.kind == "course_ad_create":
+                audit_result = {"kind": change.kind, "creative_id": created_course_ad_id,
+                                "copy_hash": _hash(change.copies.model_dump()),
+                                "after_hash": result["revision_hash"]}
+            elif change.kind == "campaign_draft":
                 audit_result = {"kind": change.kind, "campaign_id": result["id"],
                                 "content_hash": _hash(change.texts.model_dump())}
             else:
@@ -672,9 +797,12 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
             try:
                 await db.rollback()
                 async with db.begin():
-                    current = await db.scalar(select(CourseAdCreative.media_path).where(
-                        CourseAdCreative.id == change.ad_id))
-                    referenced = current == new_course_ad_filename
+                    target_id = (created_course_ad_id if change.kind == "course_ad_create"
+                                 else change.ad_id)
+                    if target_id is not None:
+                        current = await db.scalar(select(CourseAdCreative.media_path).where(
+                            CourseAdCreative.id == target_id))
+                        referenced = current == new_course_ad_filename
             except Exception:
                 logger.warning("Course ad media commit outcome requires operator review")
             if not referenced:
@@ -755,9 +883,19 @@ def create_admin_pwa_marketing_router(*, settings_obj, session_factory):
         if not encoded_command or len(encoded_command) > 8192:
             return _reply(400, "admin_pwa_invalid_payload")
         try:
+            encoding = request.headers.get("x-admin-pwa-command-encoding", "json")
+            if encoding == "base64url":
+                if not re.fullmatch(r"[A-Za-z0-9_-]+", encoded_command):
+                    return _reply(400, "admin_pwa_invalid_payload")
+                encoded_command = base64.b64decode(
+                    encoded_command + "=" * (-len(encoded_command) % 4),
+                    altchars=b"-_", validate=True,
+                ).decode("utf-8")
+            elif encoding != "json":
+                return _reply(400, "admin_pwa_invalid_payload")
             raw_command = json.loads(encoded_command, object_pairs_hook=_no_duplicate_json_keys)
             parsed = ExecuteMarketing.model_validate(raw_command)
-        except (ValidationError, ValueError, TypeError):
+        except (ValidationError, ValueError, TypeError, UnicodeDecodeError):
             return _reply(400, "admin_pwa_invalid_payload")
         is_promo_image = (parsed.change.kind == "desktop_promo"
                           and parsed.change.media_sha256 is not None
@@ -765,11 +903,15 @@ def create_admin_pwa_marketing_router(*, settings_obj, session_factory):
         is_course_ad_image = (parsed.change.kind == "course_ad"
                               and parsed.change.operation == "replace_image"
                               and parsed.change.media_sha256 is not None
-                              and parsed.change.media_size is not None)
+                              and parsed.change.media_size is not None
+                              or parsed.change.kind == "course_ad_create"
+                              and parsed.change.media_type == "photo")
         is_course_ad_video = (parsed.change.kind == "course_ad"
                               and parsed.change.operation == "replace_video"
                               and parsed.change.media_sha256 is not None
-                              and parsed.change.media_size is not None)
+                              and parsed.change.media_size is not None
+                              or parsed.change.kind == "course_ad_create"
+                              and parsed.change.media_type == "video")
         if not (is_promo_image or is_course_ad_image or is_course_ad_video):
             return _reply(400, "admin_pwa_invalid_payload")
         max_bytes = (_PWA_COURSE_AD_IMAGE_MAX_BYTES if is_course_ad_image else

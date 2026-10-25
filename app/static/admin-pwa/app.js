@@ -428,7 +428,7 @@ function updateManagementAction(){
   else if(d.type==='portfolio')label='addLedgerEntry';
   else if(d.type==='payment_qr')label='replaceMedia';
   else if(d.type==='channel'){label=d.kind==='add'?'addItem':$('channelOperation')?.value==='delete'?'deleteItem':'saveChanges';danger=label==='deleteItem';}
-  else if(d.type==='marketing'){label=d.kind==='campaign_draft'?'createCampaign':d.kind==='course_ad'?({delete:'deleteItem',replace_image:'replaceMedia',replace_video:'replaceMedia'}[$('adOperation')?.value]||'saveChanges'):'saveChanges';danger=label==='deleteItem';}
+  else if(d.type==='marketing'){label=d.kind==='campaign_draft'?'createCampaign':d.kind==='course_ad_create'?'createItem':d.kind==='course_ad'?({delete:'deleteItem',replace_image:'replaceMedia',replace_video:'replaceMedia'}[$('adOperation')?.value]||'saveChanges'):'saveChanges';danger=label==='deleteItem';}
   button.textContent=t(label);button.classList.toggle('danger',danger);button.classList.toggle('primary',!danger);
 }
 function managementCurrentUnchanged(d,result,payload){
@@ -538,6 +538,7 @@ function userManagementEditor(userId,operation){
   drawer(userOperationLabels[operation],`<form id="managementForm">${profileFields([['account',userId],['operation',t(userOperationLabels[operation])]])}${confirmation}</form>`,btn('cancel','close')+btn('saveChanges','managementPrepare','primary'));
 }
 const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktopPromo',course_ad:'courseAds'};
+const courseAdTypeLabels={odiy:'adTypeStandard',hamkorlik:'adTypePartner',bot:'adTypeBot',dars_yakuni:'adTypeLessonEnd'};
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
 const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
 function managementNamespace(type){return ['message','message_control'].includes(type)?'messages':type==='delivery'?'payment-deliveries':type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='payment_qr'?'payment-qr':type==='marketing'?'marketing':'settings';}
@@ -780,7 +781,38 @@ function marketingFields(value){
   return profileFields(fields);
 }
 function boolSelect(id,label,value){return `<div class="form-field"><label for="${id}">${esc(t(label))}</label><select class="input" id="${id}"><option value="true" ${value?'selected':''}>${esc(t('hsk30On'))}</option><option value="false" ${!value?'selected':''}>${esc(t('hsk30Off'))}</option></select></div>`;}
+function courseAdCreateEditor(){
+  closeDrawer();managementDraft={type:'marketing',kind:'course_ad_create',mediaFile:null};
+  const select=(id,label,options)=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><select id="${id}" class="input">${options.map(([value,label])=>`<option value="${value}">${esc(['UZ','RU','TJ'].includes(label)?label:t(label))}</option>`).join('')}</select></div>`;
+  const copies=['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" id="newAdCopy-${lang}" open><summary>${lang.toUpperCase()}</summary><div class="form-field"><label for="newAdTitle-${lang}">${esc(t('courseAdTitle'))}</label><input id="newAdTitle-${lang}" class="input" maxlength="120" required></div><div class="form-field"><label for="newAdButton-${lang}">${esc(t('courseAdButton'))}</label><input id="newAdButton-${lang}" class="input" maxlength="64"></div></details>`).join('');
+  const body=select('newAdLanguage','language',[['uz','UZ'],['ru','RU'],['tj','TJ'],['all','allLanguages']])+`<p class="form-hint">${esc(t('courseAdCopiesHint'))}</p>${copies}`
+    +select('newAdType','courseAdKind',Object.entries(courseAdTypeLabels))
+    +`<fieldset class="form-field"><legend>${esc(t('promoPlacements'))}</legend>${[['screen_center','courseAdScreenCenter'],['lesson_end','courseAdLessonEnd']].map(([value,label])=>`<label class="management-check"><input type="checkbox" data-course-ad-placement="${value}" ${value==='screen_center'?'checked':''}>${esc(t(label))}</label>`).join('')}</fieldset>`
+    +`<div class="form-field"><label for="newAdDuration">${esc(t('durationSeconds'))}</label><input id="newAdDuration" type="number" class="input" min="5" max="120" step="1" value="7" required></div><div class="form-field"><label for="newAdLink">${esc(t('courseAdLink'))}</label><input id="newAdLink" type="text" class="input" maxlength="512" placeholder="https://…"></div>`
+    +boolSelect('newAdActive','status',false)+select('newAdMediaType','courseAdMedia',[['photo','courseAdPhoto'],['video','courseAdVideo']])
+    +`<div class="form-field"><label for="courseAdMediaFile">${esc(t('courseAdMedia'))}</label><input class="input" id="courseAdMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint" id="courseAdMediaHint">${esc(t('courseAdMediaHint'))}</p><div id="courseAdMediaPreview" aria-live="polite"></div><p class="alert" id="courseAdMediaValidation" role="alert" hidden></p></div><p class="alert" id="courseAdCreateValidation" role="alert" hidden>${esc(t('courseAdCreateValidation'))}</p>`;
+  drawer('newCourseAd',`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('createItem','managementPrepare','primary'));
+  $('newAdLanguage').value=locale;updateCourseAdCreateLanguage();
+}
+function updateCourseAdCreateLanguage(){
+  if(managementDraft?.kind!=='course_ad_create')return;
+  const selected=$('newAdLanguage').value;
+  for(const lang of ['uz','ru','tj']){
+    const active=selected==='all'||selected===lang,section=$('newAdCopy-'+lang);
+    section.hidden=!active;section.open=selected!=='all'||lang===locale;
+    for(const input of section.querySelectorAll('input'))input.disabled=!active;
+  }
+}
+function updateCourseAdCreateMedia(){
+  if(managementDraft?.kind!=='course_ad_create')return;
+  const video=$('newAdMediaType').value==='video',input=$('courseAdMediaFile');
+  input.value='';input.accept=video?'video/mp4,video/quicktime,video/webm,video/x-m4v':'image/jpeg,image/png,image/webp';
+  $('courseAdMediaHint').textContent=t(video?'courseAdVideoHint':'courseAdMediaHint');
+  managementDraft={...managementDraft,mediaFile:null};releaseManagementMediaPreview();
+  $('courseAdMediaPreview').innerHTML='';$('courseAdMediaValidation').hidden=true;
+}
 async function marketingEditor(kind,before=null){
+  if(kind==='course_ad_create'){courseAdCreateEditor();return;}
   if(kind==='campaign_draft'){
     closeDrawer();managementDraft={type:'marketing',kind};
     const copy=['uz','ru','tj'].map(language=>`<details class="profile-section notice-languages campaign-locale-copy" ${language===locale?'open':''}><summary>${language.toUpperCase()}</summary><div class="form-field"><label for="campaignText-${language}">${esc(t('campaignCopy'))}</label><textarea class="input setting-value" id="campaignText-${language}" maxlength="3500" rows="5" required></textarea></div></details>`).join('');
@@ -800,7 +832,7 @@ async function marketingEditor(kind,before=null){
       const page=data.course_ads;
       if(!Array.isArray(page?.items)||page.items.length>30)throw Error('invalid_ads');
       const rows=page.items.map(ad=>managementRow(`#${ad.id} · ${ad.title}`,`data-course-ad="${Number(ad.id)}"`,'mega')).join('');
-      drawer('courseAds',rows?`<div class="management-list">${rows}</div>`:statePanel('empty'),btn('close','close')+(page.next_before_id?`<button class="btn primary" data-marketing-next="${page.next_before_id}">${esc(t('next'))}</button>`:''));
+      drawer('courseAds',(rows?`<div class="management-list">${rows}</div>`:statePanel('empty'))+(page.next_before_id?`<button class="btn" data-marketing-next="${page.next_before_id}">${esc(t('next'))}</button>`:''),btn('close','close')+`<button class="btn primary" data-marketing-kind="course_ad_create">${esc(t('newCourseAd'))}</button>`);
       return;
     }
     const value=data[kind];let body;
@@ -909,7 +941,7 @@ function managementReread(draft){
   if(draft.type==='portfolio')return btn('readCurrent','portfolioHistory');
   if(draft.type==='channel')return `<button class="btn" data-channels-kind="${draft.kind==='mode'?'mode':'list'}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='user')return `<button class="btn" data-user-detail="${draft.userId}">${esc(t('readCurrent'))}</button>`;
-  if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind)}">${esc(t('readCurrent'))}</button>`;
+  if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind==='course_ad_create'?'course_ad':draft.kind)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='payment_qr')return `<button class="btn" data-payment-qr-target="${esc(draft.method+'-'+draft.plan)}">${esc(t('readCurrent'))}</button>`;
   return draft.type==='price'?btn('readCurrent','priceSettings'):`<button class="btn" data-setting-kind="${draft.kind}" ${draft.bank?`data-bank="${draft.bank}"`:''}>${esc(t('readCurrent'))}</button>`;
 }
@@ -1045,6 +1077,19 @@ async function prepareManagementCommand(current,at){
     payload={method:draft.method,plan:draft.plan,media_sha256:[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join(''),media_size:file.size};
   }else if(draft.type==='marketing'){
     const change={kind:draft.kind};
+    if(draft.kind==='course_ad_create'){
+      const language=$('newAdLanguage').value,mediaType=$('newAdMediaType').value,file=draft.mediaFile;
+      const placements=[...document.querySelectorAll('[data-course-ad-placement]:checked')].map(input=>input.dataset.courseAdPlacement);
+      if(!placements.length){$('courseAdCreateValidation').hidden=false;return;}
+      if(!file){$('courseAdMediaValidation').textContent=t('courseAdMediaRequired');$('courseAdMediaValidation').hidden=false;return;}
+      const video=mediaType==='video',maxBytes=video?25*1024*1024:1024*1024;
+      const allowed=video?['video/mp4','video/quicktime','video/webm','video/x-m4v']:['image/jpeg','image/png','image/webp'];
+      if(!allowed.includes(file.type)||file.size<1||file.size>maxBytes){$('courseAdMediaValidation').textContent=t(file.size>maxBytes?(video?'courseAdVideoTooLarge':'courseAdMediaTooLarge'):(video?'courseAdVideoValidation':'courseAdMediaValidation'));$('courseAdMediaValidation').hidden=false;return;}
+      const digest=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());
+      Object.assign(change,{language,copies:Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,language==='all'||language===lang?{title:$('newAdTitle-'+lang).value,button_text:$('newAdButton-'+lang).value}:null])),
+        ad_type:$('newAdType').value,placements,duration_seconds:Number($('newAdDuration').value),link_url:$('newAdLink').value||null,is_active:$('newAdActive').value==='true',media_type:mediaType,
+        media_sha256:[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join(''),media_size:file.size});
+    }
     if(draft.kind==='campaign_draft'){
       const languages=[...document.querySelectorAll('[data-campaign-language]:checked')].map(input=>input.dataset.campaignLanguage);
       if(!languages.length){$('campaignValidation').hidden=false;return;}
@@ -1116,6 +1161,9 @@ async function prepareManagementCommand(current,at){
       }else if(draft.type==='marketing'&&draft.kind==='campaign_draft'&&error.status===400&&$('campaignValidation')){
         $('campaignValidation').textContent=t('campaignValidation');$('campaignValidation').hidden=false;
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
+      }else if(draft.type==='marketing'&&draft.kind==='course_ad_create'&&error.status===400&&$('courseAdCreateValidation')){
+        $('courseAdCreateValidation').hidden=false;
+        $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
       }else if(draft.type==='marketing'&&draft.kind==='desktop_promo'&&error.status===400&&$('promoMediaValidation')){
         $('promoMediaValidation').textContent=t(error.message==='admin_pwa_media_too_large'?'promoMediaTooLarge':'promoMediaValidation');$('promoMediaValidation').hidden=false;
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
@@ -1147,8 +1195,8 @@ async function executeManagement(){
     const command={...review.executePayload,step_up_id:options.step_up_id};
     const result=review.type==='payment_qr'&&review.mediaFile
       ?await api('payment-qr/media/save',null,{rawBody:review.mediaFile,extraHeaders:{'X-Admin-PWA-Command':JSON.stringify(command)}})
-      :review.type==='marketing'&&['desktop_promo','course_ad'].includes(review.kind)&&review.mediaFile
-      ?await api('marketing/media/save',null,{rawBody:review.mediaFile,extraHeaders:{'X-Admin-PWA-Command':JSON.stringify(command)},timeoutMs:review.kind==='course_ad'&&review.executePayload?.change?.operation==='replace_video'?150000:15000})
+      :review.type==='marketing'&&['desktop_promo','course_ad','course_ad_create'].includes(review.kind)&&review.mediaFile
+      ?await api('marketing/media/save',null,{rawBody:review.mediaFile,extraHeaders:{'X-Admin-PWA-Command':encode(new TextEncoder().encode(JSON.stringify(command))),'X-Admin-PWA-Command-Encoding':'base64url'},timeoutMs:review.executePayload?.change?.operation==='replace_video'||review.executePayload?.change?.media_type==='video'?150000:15000})
       :await api(managementEndpoint(review.type,'save'),command);
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
@@ -1165,14 +1213,15 @@ async function executeManagement(){
     managementDraft=null;
     releaseManagementMediaPreview();
     const rejected=[400,403,404,409,413,422,429].includes(error.status)||['course_ad_video_unavailable','course_ad_video_busy'].includes(error.message);
+    const adMediaKind=review.type==='marketing'&&['course_ad','course_ad_create'].includes(review.kind),adVideo=review.executePayload?.change?.operation==='replace_video'||review.executePayload?.change?.media_type==='video';
     const failureKey=review.type==='marketing'&&review.kind==='desktop_promo'&&error.status===413
       ?'promoMediaTooLarge':review.type==='marketing'&&review.kind==='desktop_promo'&&error.status===400
-        ?'promoMediaValidation':review.type==='marketing'&&review.kind==='course_ad'&&error.status===413
-          ?(review.executePayload?.change?.operation==='replace_video'?'courseAdVideoTooLarge':'courseAdMediaTooLarge'):review.type==='marketing'&&review.kind==='course_ad'&&error.status===422
-          ?'courseAdVideoInvalid':review.type==='marketing'&&review.kind==='course_ad'&&error.message==='course_ad_video_unavailable'
-            ?'courseAdVideoUnavailable':review.type==='marketing'&&review.kind==='course_ad'&&error.message==='course_ad_video_busy'
-              ?'courseAdVideoBusy':review.type==='marketing'&&review.kind==='course_ad'&&error.status===400
-          ?(review.executePayload?.change?.operation==='replace_video'?'courseAdVideoValidation':'courseAdMediaValidation'):review.type==='payment_qr'&&error.status===413
+        ?'promoMediaValidation':adMediaKind&&error.status===413
+          ?(adVideo?'courseAdVideoTooLarge':'courseAdMediaTooLarge'):adMediaKind&&error.status===422
+          ?'courseAdVideoInvalid':adMediaKind&&error.message==='course_ad_video_unavailable'
+            ?'courseAdVideoUnavailable':adMediaKind&&error.message==='course_ad_video_busy'
+              ?'courseAdVideoBusy':adMediaKind&&error.status===400
+          ?(adVideo?'courseAdVideoValidation':'courseAdMediaValidation'):review.type==='payment_qr'&&error.status===413
             ?'paymentQrTooLarge':review.type==='payment_qr'&&error.status===400
               ?'paymentQrValidation':review.type==='payment_qr'&&error.status===502
                 ?'paymentQrUploadFailed':error.status===409?'configChanged':submitted&&!rejected?'configUncertain':errorKey(error);
@@ -1873,13 +1922,15 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('change',event=>{
+  if(event.target.id==='newAdLanguage')updateCourseAdCreateLanguage();
+  if(event.target.id==='newAdMediaType'){updateCourseAdCreateMedia();return;}
   if(['messageKind','payoutOperation','partnerOperation','channelOperation','adOperation'].includes(event.target.id))updateManagementAction();
   if(event.target.id==='messageLanguage')updateMessageLanguage();
   if(event.target.id==='messageKind'&&$('messageFilters'))$('messageFilters').hidden=event.target.value==='test';
   if(event.target.id==='payoutProofFile'){void stagePayoutProof(event.target.files[0]);return;}
   if(['promoMediaFile','courseAdMediaFile','paymentQrMediaFile'].includes(event.target.id)){
     const isCourseAd=event.target.id==='courseAdMediaFile',isPaymentQr=event.target.id==='paymentQrMediaFile';
-    const isCourseAdVideo=isCourseAd&&$('adOperation')?.value==='replace_video';
+    const isCourseAdVideo=isCourseAd&&($('adOperation')?.value==='replace_video'||managementDraft?.kind==='course_ad_create'&&$('newAdMediaType')?.value==='video');
     const file=event.target.files?.[0]||null,allowed=isCourseAdVideo?['video/mp4','video/quicktime','video/webm','video/x-m4v']:['image/jpeg','image/png','image/webp'];
     const maxBytes=isCourseAdVideo?25*1024*1024:isCourseAd||isPaymentQr?1024*1024:2*1024*1024;
     const previewId=isCourseAd?'courseAdMediaPreview':isPaymentQr?'paymentQrMediaPreview':'promoMediaPreview';

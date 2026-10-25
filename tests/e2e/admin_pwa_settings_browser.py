@@ -532,6 +532,60 @@ async def browser_checks(output, *, media_only=False):
                         assert (Path(course_media_directory.name)/video_filename).read_bytes()==COURSE_AD_TEST_VIDEO
                     assert await audit_count()==before_video_audit+1
                     assert len([path for path,_ in calls if path.endswith('step-up/options')])>=2
+                    await page.locator('.drawer-close').click()
+                    async with fixture.sessions() as db:
+                        await db.execute(update(AdminPwaStepUp).values(
+                            created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
+                        await db.commit()
+                    for language in ('uz','ru','tj'):
+                        await page.set_viewport_size({'width':1440,'height':1000})
+                        await page.locator('#locale').select_option(language)
+                        await page.locator('[data-marketing-kind="course_ad"]').click()
+                        await page.locator('[data-marketing-kind="course_ad_create"]').click()
+                        await expect(page.locator('#newAdLanguage')).to_have_value(language)
+                        await page.locator('#newAdTitle-'+language).fill('QA 中文 '+language)
+                        await page.locator('#courseAdMediaFile').set_input_files({
+                            'name':'new-ad.png','mimeType':'image/png','buffer':promo_image})
+                        await page.set_viewport_size({'width':390,'height':844})
+                        await begin_management()
+                        assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                        await page.screenshot(path=str(output/f'course-ad-create-{language}-390.png'))
+                        await page.evaluate('window.cancelStepUp()')
+                        await expect(page.locator('#newAdTitle-'+language)).to_be_enabled()
+                        await expect(page.locator('#newAdTitle-'+language)).to_have_value('QA 中文 '+language)
+                        await page.locator('.drawer-close').click()
+                    await page.set_viewport_size({'width':1440,'height':1000})
+                    await page.locator('#locale').select_option('uz')
+                    await page.locator('[data-marketing-kind="course_ad"]').click()
+                    await page.locator('[data-marketing-kind="course_ad_create"]').click()
+                    await page.locator('#newAdLanguage').select_option('all')
+                    for language,title,button in (('uz','中文 kursi','O‘rganish'),
+                                                   ('ru','Курс китайского','Учиться'),
+                                                   ('tj','Курси чинӣ','Омӯхтан')):
+                        section=page.locator('#newAdCopy-'+language)
+                        if await section.get_attribute('open') is None:
+                            await section.locator('summary').click()
+                        await page.locator('#newAdTitle-'+language).fill(title)
+                        await page.locator('#newAdButton-'+language).fill(button)
+                    await page.locator('[data-course-ad-placement="lesson_end"]').check()
+                    await page.locator('#newAdDuration').fill('12')
+                    await page.locator('#newAdLink').fill('https://example.invalid/course')
+                    await page.locator('#courseAdMediaFile').set_input_files({
+                        'name':'new-ad-all.png','mimeType':'image/png','buffer':promo_image})
+                    before_creation=await audit_count()
+                    await begin_management()
+                    await finish_step_up(page)
+                    await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
+                    assert await audit_count()==before_creation+1
+                    async with fixture.sessions() as db:
+                        created=await db.get(CourseAdCreative,2)
+                        assert created and created.language=='all' and created.title=='Курси чинӣ'
+                        assert created.is_active is False and created.duration_seconds==12
+                        assert created.placements=='lesson_end,screen_center'
+                        assert set(json.loads(created.localized_copy))=={'uz','ru','tj'}
+                        assert (Path(course_media_directory.name)/created.media_path).read_bytes()==promo_image
+                        assert await db.scalar(select(CourseAdCreative.media_blob).where(CourseAdCreative.id==2)) is None
+                    await page.set_viewport_size({'width':390,'height':844})
                     async with fixture.sessions() as db:
                         await db.execute(update(AdminPwaStepUp).values(
                             created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
