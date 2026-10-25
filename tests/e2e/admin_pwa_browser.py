@@ -708,7 +708,14 @@ async def attachment_browser_checks(output):
             assert not calls, 'Private images must not preload'
             telegram.get_file.assert_not_awaited()
             async def open_inbox():
-                await page.locator('[data-action=feedback]').click()
+                # The drawer is modal; the background bell cannot be clicked
+                # while a detail is open. Follow the real in-drawer back path.
+                if await page.locator('.inbox-back').count():
+                    await page.locator('.inbox-back').click()
+                elif not await page.locator('.inbox-minimal-row').count():
+                    if await page.locator('#overlay').count():
+                        await page.locator('.drawer-close').click()
+                    await page.locator('[data-action=feedback]').click()
                 await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
                 assert not await page.locator('[data-inbox-attachment]').count(), 'No media may preload in the list'
             async def view_source(source):
