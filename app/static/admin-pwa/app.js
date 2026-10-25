@@ -43,6 +43,7 @@ const state = {actor:null, phase:'loading', route:'home', period:'weekly', platf
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
+let inboxRows=[];
 let approvalWatchTimer=null, approvalChecking=false;
 let statisticsDownload=null;
 let managementDraft=null,managementReview=null,managementPreparing=false;
@@ -53,7 +54,7 @@ function clearPrivate(phase) {
   stopApprovalWatch();
   cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
-  epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.inboxSearch='';state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
+  epoch++;view++;closeDrawer();inboxRows=[];inboxUnread=null;pushReady=null;state.inboxSearch='';state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   state.phase=phase;state.error=null;render();
 }
 async function api(path, body, {publicAuth=false, method='POST'}={}) {
@@ -318,17 +319,29 @@ async function load() {
     if(state.route==='stats'&&!feedbackStats.data&&!feedbackStats.loading)loadFeedbackStats();
   } catch(error) {if(current!==view||authEpoch!==epoch||!state.actor) return;state.phase='ready';state.error='error';render();}
 }
+async function readSessionWithRetry(current) {
+  for(let attempt=0;attempt<3;attempt++){
+    try {return await api('me',null,{method:'GET',publicAuth:true});}
+    catch(error){
+      // No retry on auth denial or changed document; only transient requests.
+      if(current!==epoch||error.message==='stale'||error.status===401||
+         (error.status>=400&&error.status<500)||attempt===2||!navigator.onLine)throw error;
+      await new Promise(resolve=>setTimeout(resolve,400*(attempt+1)));
+      if(current!==epoch)throw new ApiError('stale',0);
+    }
+  }
+}
 async function boot() {
   if(!navigator.onLine){clearPrivate('offline');return;}
   clearPrivate('loading');const current=epoch;
-  try {state.actor=await api('me',null,{method:'GET',publicAuth:true});if(current!==epoch)return;state.phase='ready';await load();await refreshInboxUnread();
+  try {state.actor=await readSessionWithRetry(current);if(current!==epoch)return;state.phase='ready';await load();await refreshInboxUnread();
     if(current===epoch&&state.actor&&location.pathname==='/admin/'&&location.search==='?inbox=1'){
       history.replaceState(null,'','/admin/');
       await inbox(); // Only after current passkey Admin PWA login is verified.
     }}
   catch(error) {
-    if(current!==epoch)return;
-    if(error.status!==401){state.phase='error';render();return;}
+    if(current!==epoch||error.message==='stale')return;
+    if(error.status!==401){state.phase=navigator.onLine?'error':'offline';render();return;}
     try {await checkApproval();} catch(_) {state.phase='signin';render();}
   }
 }
@@ -375,7 +388,8 @@ async function enroll() {
 function closeDrawer() {closeActionMenus();closeInboxAttachment();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   if(!$('overlay'))returnFocus=document.activeElement;
-  $('dialogs').innerHTML=`<div class="canvas-overlay show" id="overlay"><section class="drawer ${className}" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><div class="drawer-top"><h2 id="drawerTitle">${esc(t(title))}</h2><button class="drawer-close" data-action="close" aria-label="${esc(t('close'))}">×</button></div><div class="drawer-content" id="drawerContent">${body}</div><div class="drawer-foot" id="drawerFoot">${foot||btn('close','close')}</div></section></div>`;
+  const footer=className==='inbox-drawer'&&!foot?'':foot||btn('close','close');
+  $('dialogs').innerHTML=`<div class="canvas-overlay show" id="overlay"><section class="drawer ${className}" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><div class="drawer-top"><h2 id="drawerTitle">${esc(t(title))}</h2><button class="drawer-close" data-action="close" aria-label="${esc(t('close'))}">×</button></div><div class="drawer-content" id="drawerContent">${body}</div><div class="drawer-foot" id="drawerFoot" ${footer?'':'hidden'}>${footer}</div></section></div>`;
   $('root').inert=true;document.querySelector('.drawer-close')?.focus();
 }
 function profileFields(fields) {
@@ -1124,29 +1138,54 @@ async function viewInboxAttachment(button){
     if(active()){host.setAttribute('aria-busy','false');host.innerHTML=`<p role="status">${esc(t('unavailable'))}</p>`;}
   }finally{clearTimeout(timer);}
 }
-function inboxControl(row,operation,key,primary=false){
-  if(!['bot','release','android','payment','technical'].includes(row.source)||!Number.isSafeInteger(row.source_id)||!Number.isSafeInteger(row.triage_revision))return '';
-  return `<button type="button" ${primary?'class="btn primary inbox-primary-action"':'role="menuitem" tabindex="-1"'} data-inbox-op="${operation}" data-inbox-source="${row.source}" data-inbox-id="${row.source_id}" data-inbox-revision="${row.triage_revision}">${esc(t(key))}</button>`;
+function inboxSourceKey(row) {
+  return row.source==='payment'?'inboxPaymentReceipt':row.source==='technical'?'inboxTechnical':
+    row.source==='android'?'inboxAndroid':row.source==='release'?'releaseFeedback':'botFeedback';
 }
-function inboxEntry(row){
-  const status=inboxStatusLabels[row.triage_status]||'inboxStatusNew';
-  const origin=row.source==='bot'?'botFeedback':row.source==='release'?'releaseFeedback':row.source==='payment'?'inboxPaymentReceipt':row.source==='technical'?'inboxTechnical':'inboxAndroid';
-  const flags=`<span class="inbox-state">${esc(t(status))}</span>${row.triage_priority==='important'?`<span class="inbox-state inbox-state-important">${esc(t('inboxImportant'))}</span>`:''}${row.triage_assigned_to===state.actor?.user_id?`<span class="inbox-state">${esc(t('inboxMine'))}</span>`:''}`;
-  const secondary=[];
-  const canView=(row.source==='android'?row.has_attachment:['bot','release'].includes(row.source)&&row.image_preview_available===true)&&Number.isSafeInteger(row.source_id)&&row.source_id>0&&row.source_id<=2147483647;
-  const attachmentId=`inboxAttachment-${row.source}-${row.source_id}`;
-  const media=canView?`<button type="button" class="inbox-media-action" data-inbox-attachment="${row.source_id}" data-attachment-source="${row.source}" aria-controls="${attachmentId}" aria-expanded="false">${esc(t('viewAttachment'))}</button>`:'';
-  if(row.triage_status==='new')secondary.push(inboxControl(row,'mark_read','inboxMarkRead'));
-  let primary;
-  if(row.source==='payment'){
-    // Opening Payments is NOT the same as approving an unverified receipt.
-    primary=`<button class="btn primary inbox-primary-action" data-route="payments">${esc(t('payments'))}</button>`;
-  }else{
-    if(row.triage_status!=='resolved'&&row.triage_assigned_to!==state.actor?.user_id)secondary.push(inboxControl(row,'assign_self','inboxAssignSelf'));
-    primary=row.triage_status==='resolved'?inboxControl(row,'reopen','inboxReopen',true):inboxControl(row,'resolve','inboxResolve',true);
-    secondary.push(row.triage_priority==='important'?inboxControl(row,'clear_important','inboxClearImportant'):inboxControl(row,'mark_important','inboxMarkImportant'));
-  }
-  return `<article class="feedback-item inbox-feedback-item"><div class="inbox-entry-head"><strong>${esc(t(origin))} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+esc(row.rating)+'/5':''}</strong><small>${esc(date(row.created_at))}</small></div><div class="inbox-states">${flags}</div><p>${esc(row.message||'—')}</p>${row.has_attachment&&!canView?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}<div class="inbox-entry-actions">${media}<div class="inbox-triage-actions">${primary}${secondary.length?actionMenu(`inboxMenu-${row.source}-${row.source_id}`,secondary.join('')):''}</div></div>${canView?`<div class="inbox-attachment" id="${attachmentId}" aria-live="polite" hidden></div>`:''}</article>`;
+function inboxHeadline(row) {
+  if(row.source==='payment')return t('inboxPaymentReceipt')+' #'+row.source_id;
+  if(row.source==='technical')return t('inboxTechnical');
+  const preview=typeof row.message==='string'?row.message.trim().split('\n')[0]:'';
+  return preview?preview.slice(0,92):t(inboxSourceKey(row));
+}
+function inboxEntry(row) {
+  const unread=row.triage_status==='new',important=row.triage_priority==='important';
+  return `<article class="inbox-simple-row ${unread?'unread':''}"><button type="button" class="inbox-row-open" data-inbox-open="${esc(row.source)}" data-inbox-id="${row.source_id}"><span class="inbox-row-copy"><strong>${esc(inboxHeadline(row))}</strong><small>${esc(t(inboxSourceKey(row)))} · ${esc(date(row.created_at))}</small></span>${important?`<span class="inbox-important-dot" aria-label="${esc(t('inboxImportant'))}"></span>`:''}${unread?`<span class="inbox-unread-dot" aria-label="${esc(t('inboxStatusNew'))}"></span>`:''}${icon('chevron')}</button></article>`;
+}
+async function openInboxItem(button) {
+  if(!state.actor||inboxUpdating)return;
+  const source=button.dataset.inboxOpen,sourceId=Number(button.dataset.inboxId);
+  if(!['bot','release','android','payment','technical'].includes(source)||!Number.isSafeInteger(sourceId))return;
+  const row=inboxRows.find(x=>x.source===source&&x.source_id===sourceId);
+  if(!row)return;
+  const previous=drawerId,at=epoch;
+  inboxUpdating=true;button.disabled=true;
+  try{
+    if(row.triage_status==='new'){
+      const updated=await api('inbox/triage',{
+        source,source_id:sourceId,operation:'mark_read',expected_revision:row.triage_revision,
+      });
+      if(previous!==drawerId||at!==epoch||!state.actor)return;
+      row.triage_status=updated.status;row.triage_revision=updated.revision;
+      refreshInboxUnread().catch(()=>{});
+    }
+    if(previous!==drawerId||at!==epoch||!state.actor)return;
+    if(source==='payment'){
+      // Reuse the signed original receipt review; merely reading is not approval.
+      await review(sourceId);return;
+    }
+    const canView=(source==='android'?row.has_attachment:['bot','release'].includes(source)&&row.image_preview_available===true)
+      &&Number.isSafeInteger(sourceId)&&sourceId>0&&sourceId<=2147483647;
+    const attachmentId=`inboxAttachment-${source}-${sourceId}`;
+    const media=canView?`<button type="button" class="inbox-media-action" data-inbox-attachment="${sourceId}" data-attachment-source="${source}" aria-controls="${attachmentId}" aria-expanded="false">${esc(t('viewAttachment'))}</button><div class="inbox-attachment" id="${attachmentId}" aria-live="polite" hidden></div>`:'';
+    const body=`<div class="inbox-detail"><p class="source-note">${esc(t(inboxSourceKey(row)))} · ${esc(date(row.created_at))}</p>${row.user_id?`<p class="source-note">${esc(t('account'))} #${esc(row.user_id)}</p>`:''}<p class="inbox-full-message">${esc(row.message||'—')}</p>${row.has_attachment&&!canView?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}${media}</div>`;
+    drawer('feedback',body,'','inbox-drawer');
+  }catch(error){
+    if(previous!==drawerId||at!==epoch||!state.actor)return;
+    showNotice(error.status===409?'inboxChanged':'inboxActionError');
+    button.disabled=false;
+    if(error.status===409)inbox(null,feedbackUserId).catch(()=>{});
+  }finally{inboxUpdating=false;}
 }
 async function refreshInboxUnread() {
   if(!state.actor)return;
@@ -1176,51 +1215,16 @@ async function refreshInboxUnread() {
   }catch(_){/* Never invent a zero badge on an unavailable private read. */}
 }
 async function inbox(before=null,userId=null) {
-  const filtersOpen=document.querySelector('.inbox-extra-filters')?.open===true;
-  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;const current=drawerId;
+  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;inboxRows=[];const current=drawerId;
   drawer('feedback',statePanel('loading'),'','inbox-drawer');
-  try {
-    const data=await api('inbox/list',{source:state.source,priority:state.inboxPriority,status:state.inboxStatus,period:state.inboxPeriod,search:state.inboxSearch||null,user_id:userId,before,limit:30});
-    if(current!==drawerId||!state.actor)return;
-    inboxNextCursor=data.next_before;
-    const options=[['all','all'],['payment','inboxPaymentReceipt'],['android','inboxAndroid'],['technical','inboxTechnical'],['bot','botFeedback'],['release','releaseFeedback']];
-    const statusOptions=[['all','all'],['new','inboxStatusNew'],['read','inboxStatusRead'],['assigned','inboxStatusAssigned'],['resolved','inboxStatusResolved']];
-    const selectedFilters=[state.inboxStatus!=='all'?t(inboxStatusLabels[state.inboxStatus]):'',state.inboxPeriod!=='all_time'?t(state.inboxPeriod):''].filter(Boolean).join(' · ');
-    const extraFilters=`<details class="inbox-extra-filters" ${filtersOpen?'open':''}><summary>${icon('filter')}<span>${esc(t('filters'))}</span>${selectedFilters?`<small>${esc(selectedFilters)}</small>`:''}</summary><div class="inbox-filter-controls">${filterSelect('inboxStatus','status',state.inboxStatus,statusOptions)}${filterSelect('inboxPeriod','period',state.inboxPeriod,[['all_time','all_time'],['weekly','weekly'],['monthly','monthly']])}</div></details>`;
-    const searchUI=`<form id="inboxSearchForm" class="inbox-search-form" role="search"><input class="input" id="inboxSearchQuery" type="search" value="${esc(state.inboxSearch)}" minlength="3" maxlength="80" autocomplete="off" spellcheck="false" aria-label="${esc(t('find'))}" placeholder="${esc(t('find'))}"><button type="submit" class="btn primary">${esc(t('find'))}</button></form>${state.inboxSearch?`<p class="source-note">${esc(t('monthly'))}</p>`:''}`;
-    const body=`<div class="inbox-shell">${searchUI}${userId?`<p class="source-note">${esc(t('account'))}: #${esc(userId)}</p>`:''}<div class="inbox-filter-controls">${filterSelect('inboxSource','source',state.source,options)}${filterSelect('inboxPriority','inboxPriority',state.inboxPriority,[['all','all'],['important','inboxImportant']])}</div>${extraFilters}<p class="source-note">${esc(t('inboxHistoryNote'))}</p>${data.items.map(inboxEntry).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`;
-    drawer('feedback',body,'','inbox-drawer');
-  }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'));}
-}
-async function mutateInbox(button){
-  if(inboxUpdating||!state.actor)return;
-  const source=button.dataset.inboxSource,operation=button.dataset.inboxOp;
-  const source_id=Number(button.dataset.inboxId),expected_revision=Number(button.dataset.inboxRevision);
-  if(!['bot','release','android','payment','technical'].includes(source)||!Number.isSafeInteger(source_id)||source_id<1||!Number.isSafeInteger(expected_revision))return;
-  closeActionMenus(true);
-  const prevDrawer=drawerId,prevEpoch=epoch,account=feedbackUserId;
-  inboxUpdating=true;
-  const controls=[...document.querySelectorAll('.inbox-drawer button')];
-  controls.forEach(el=>el.disabled=true);
   try{
-    await api('inbox/triage',{source,source_id,operation,expected_revision});
-    if(prevEpoch!==epoch||prevDrawer!==drawerId||!state.actor)return;
-    showNotice('inboxSaved');
-    await inbox(null,account);
-    await refreshInboxUnread();
-  }catch(error){
-    if(prevEpoch!==epoch||prevDrawer!==drawerId||!state.actor)return;
-    if(error.status===409){
-      showNotice('inboxChanged');
-      await inbox(null,account);
-      await refreshInboxUnread();
-    }else{
-      showNotice('inboxActionError');
-      controls.forEach(el=>{if(el.isConnected)el.disabled=false;});
-    }
-  }finally{inboxUpdating=false;}
+    const data=await api('inbox/list',{source:'all',priority:'all',status:'all',period:'all_time',search:null,user_id:userId,before,limit:30});
+    if(current!==drawerId||!state.actor)return;
+    inboxNextCursor=data.next_before;inboxRows=data.items;
+    const body=`<div class="inbox-shell inbox-simple-list">${userId?`<p class="source-note">${esc(t('account'))}: #${esc(userId)}</p>`:''}${data.items.map(inboxEntry).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`;
+    drawer('feedback',body,'','inbox-drawer');
+  }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error','',true),'','inbox-drawer');}
 }
-
 // Apple-first Web Push opt-in; actual sending requires an independent server kill switch.
 function applePushPlatform() {
   const ua=navigator.userAgent||'';
@@ -1440,10 +1444,8 @@ document.addEventListener('click',event=>{
     else if(button.dataset.prepareAccess){await prepareAccess(Number(button.dataset.prepareAccess));}
     else if(button.dataset.profilePayments){await moreUserPayments(Number(button.dataset.profilePayments),Number(button.dataset.before),button);}
     else if(button.dataset.userFeedback){state.inboxSearch='';await inbox(null,Number(button.dataset.userFeedback));}
-    else if(button.dataset.source){state.source=button.dataset.source;await inbox(null,feedbackUserId);}
-    else if(button.dataset.inboxPriority){state.inboxPriority=button.dataset.inboxPriority;await inbox(null,feedbackUserId);}
     else if(button.dataset.inboxAttachment){await viewInboxAttachment(button);}
-    else if(button.dataset.inboxOp){await mutateInbox(button);}
+    else if(button.dataset.inboxOpen){await openInboxItem(button);}
     else if(button.dataset.feedbackNext&&inboxNextCursor){await inbox(inboxNextCursor,feedbackUserId);}
     else if(button.dataset.pushRevoke){await revokePush(button.dataset.pushRevoke);}
     else if(button.dataset.mcpRevoke){confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
@@ -1461,18 +1463,6 @@ document.addEventListener('change',event=>{
   }
   if(['priceMethod','pricePlan'].includes(event.target.id))updatePriceFields();
   if(['helpVideoKey','helpVideoLanguage'].includes(event.target.id))updateHelpVideoField();
-  if(['inboxSource','inboxPriority'].includes(event.target.id)){
-    const source=event.target.id==='inboxSource',value=event.target.value;
-    if(!(source?['all','payment','android','technical','bot','release']:['all','important']).includes(value))return;
-    if(source)state.source=value;else state.inboxPriority=value;
-    inbox(null,feedbackUserId).catch(()=>showNotice('error'));
-  }
-  if(['inboxStatus','inboxPeriod'].includes(event.target.id)){
-    const status=event.target.id==='inboxStatus',value=event.target.value;
-    if(!(status?['all','new','read','assigned','resolved']:['all_time','weekly','monthly']).includes(value))return;
-    if(status)state.inboxStatus=value;else state.inboxPeriod=value;
-    inbox(null,feedbackUserId).catch(()=>showNotice('error'));
-  }
   if(['feedbackPeriod','feedbackSource'].includes(event.target.id)){
     const period=event.target.id==='feedbackPeriod',value=event.target.value;
     if(!(period?['weekly','monthly']:['all','bot','release','android']).includes(value))return;
@@ -1495,13 +1485,7 @@ document.addEventListener('change',event=>{
 document.addEventListener('submit',event=>{
   if(event.target.id==='managementForm'){event.preventDefault();prepareManagement();}
   else if(event.target.id==='searchForm'){event.preventDefault();state.query=$('userQuery').value;state.cursor=null;state.previous=[];load();}
-  else if(event.target.id==='inboxSearchForm'){
-    event.preventDefault();
-    const value=$('inboxSearchQuery').value.trim();
-    if(value&&(value.length<3||value.length>80))return;
-    state.inboxSearch=value;
-    inbox(null,feedbackUserId).catch(()=>showNotice('error'));
-  }
+
 });
 document.addEventListener('keydown',event=>{
   if(event.key==='Escape'){
@@ -1537,7 +1521,8 @@ window.addEventListener('pageshow',event=>{if(event.persisted)boot();});
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden){stopApprovalWatch();return;}
   if(state.phase==='approval')checkApproval().catch(()=>{});
-  else if(state.actor&&!signing)boot();
+  else if(state.phase==='error')boot().catch(()=>{});
+  else if(state.actor&&!signing)refreshInboxUnread().catch(()=>{});
 });
 window.addEventListener('focus',()=>{if(state.phase==='approval')checkApproval().catch(()=>{});});
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;});
