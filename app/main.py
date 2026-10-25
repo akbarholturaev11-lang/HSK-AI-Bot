@@ -53,6 +53,7 @@ from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_rou
 from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
 from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
+from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
 from app.admin_api.pwa_payment_receipts import create_admin_pwa_receipt_router, download_receipt_image
 from app.api.android_auth import create_android_auth_router
 from app.api.course_tracks import create_course_tracks_router
@@ -751,6 +752,12 @@ async def _dispatch_admin_pwa_payment_review(review_id):
     )
 
 
+async def _emit_admin_pwa_unblocked_notice(notice):
+    await bot.send_message(chat_id=notice.telegram_id,
+        text=t("admin_unblocked_notice",notice.language),parse_mode="HTML")
+    return True  # Provider accepted the attempt; not device delivery evidence.
+
+
 app.include_router(create_admin_pwa_payment_review_router(
     settings_obj=settings, session_factory=async_session_maker,
     dispatch=_dispatch_admin_pwa_payment_review,
@@ -762,6 +769,8 @@ app.include_router(create_admin_pwa_hsk30_settings_router(settings_obj=settings,
 app.include_router(create_admin_pwa_subscription_prices_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_settings_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_marketing_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_user_management_router(settings_obj=settings, session_factory=async_session_maker,
+    emit_unblocked=_emit_admin_pwa_unblocked_notice))
 admin_pwa_feedback_reader = AdminPwaFeedbackReader(settings_obj=settings, session_factory=async_session_maker)
 app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=settings, session_factory=async_session_maker,
     reader=admin_pwa_feedback_reader))

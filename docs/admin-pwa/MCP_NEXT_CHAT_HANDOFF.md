@@ -2,6 +2,29 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current account increment — canonical block/unblock/delete
+
+- Settings/marketing checkpoint pushed at `06b99d08d25af896ace5b1ed901656c14248e3ae`.
+  New `/users/prepare-management` and `/users/manage` use exact `users.block` /
+  `users.delete` proofs, current target hash/row lock, self/admin target
+  protection and atomic immutable command audit. Existing shared UserRepository
+  owns blocked-state restoration and personal-data deletion/anonymous finance
+  retention. No synthetic payment or independent entitlement logic.
+- Profile overflow keeps one main subscription action. Localized UZ/RU/TJ
+  block/unblock/removal forms show exact canonical ID/current state/requested
+  operation; removal requires typing that ID. Lost responses offer read-current
+  recovery only. Optional unblock notice runs once after commit, no network IO
+  under account locks and no delivery guarantee. Guard cache invalidates after
+  commit only.
+- Local gate: six new security/financial/rollback tests plus existing native
+  and import regressions **20 passed**; legacy delete/cleanup/block guards
+  **35 passed**. Extended ASGI/virtual-WebAuthn management browser passed real
+  block/unblock/removal, mobile UZ/RU/TJ confirmation/ID validation, existing
+  settings/price/marketing saves and cancel/stale/lost-response/revoke flows.
+  Real-PG target-lock expiry regression is included in the dedicated CI job.
+- Remaining legacy parity stays explicit in the management contract, including
+  required channels, messaging/campaigns, partners, manual ledger and media.
+
 ## Current completed increment — localized settings and marketing editors
 
 - Last pushed checkpoint is `1a3be7bc0ad9e45f2613450e1113a58cfeca921f`;

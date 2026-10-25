@@ -23,6 +23,7 @@ from app.admin_api.pwa_bootstrap import create_admin_pwa_bootstrap_router
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
+from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
 from app.db.base import Base
@@ -57,7 +58,8 @@ async def browser_checks(output):
     common = dict(settings_obj=fixture.settings, session_factory=fixture.sessions)
     for factory in (create_admin_pwa_bootstrap_router, create_admin_pwa_read_router,
                     create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
-                    create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router):
+                    create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router,
+                    create_admin_pwa_user_management_router):
         app.include_router(factory(**common))
     calls, errors = [], []
     drop_save = False
@@ -275,6 +277,33 @@ async def browser_checks(output):
                 async with fixture.sessions() as db:
                     self_ad = await db.get(CourseAdCreative,1)
                     assert self_ad is None
+                # The account footer keeps its primary subscription action;
+                # destructive/state actions use the same secondary menu.
+                for language in ('uz','ru','tj'):
+                    await page.locator('#locale').select_option(language)
+                    await page.set_viewport_size({'width':390,'height':844})
+                    await page.locator('.mobile-tabs [data-route="users"]').click()
+                    await page.locator('[data-user-detail="2"]:visible').click()
+                    await page.locator('[data-menu-toggle="userManagementMenu"]').click()
+                    await page.locator('[data-user-management="2"][data-user-operation="block"]').click()
+                    await page.locator('[data-action="managementPrepare"]').click()
+                    await expect(page.locator('.management-comparison')).to_be_visible()
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                    await page.screenshot(path=str(output/f'account-block-confirm-{language}-390.png'))
+                    await page.locator('[data-action="close"]').last.click()
+                    await page.set_viewport_size({'width':1440,'height':1000})
+                await page.locator('#locale').select_option('uz')
+                for operation,user_id in (('block',2),('unblock',2),('delete',1)):
+                    await page.locator('[data-user-detail="'+str(user_id)+'"]:visible').click()
+                    await page.locator('[data-menu-toggle="userManagementMenu"]').click()
+                    await page.locator(f'[data-user-management="{user_id}"][data-user-operation="{operation}"]').click()
+                    if operation=='delete':
+                        before_prepare=len([p for p,_ in calls if p.endswith('prepare-management')])
+                        await page.locator('#manageConfirm').fill('2')
+                        await page.locator('[data-action="managementPrepare"]').click()
+                        assert len([p for p,_ in calls if p.endswith('prepare-management')])==before_prepare
+                        await page.locator('#manageConfirm').fill('1')
+                    await prepare_and_save('uz',f'account-{operation}-confirm.png')
                 await navigate('system',1440)
                 # Revocation between confirmation and proof fails before any write.
                 before = await audit_count()
@@ -297,7 +326,7 @@ async def browser_checks(output):
                 await browser.close()
     finally:
         await fixture.engine.dispose()
-    print("Settings/prices/marketing: SQL + native WebAuthn, UZ/RU/TJ 390/1440, before/after, creative delete, cancel, CAS, lost response and revoke passed")
+    print("Management: real SQL + WebAuthn; UZ/RU/TJ 390/1440; settings/prices/marketing/account state+delete; cancel/CAS/lost-response/revoke passed")
 
 
 if __name__ == "__main__":

@@ -686,7 +686,13 @@
     "ui.admin_pwa.deleteItem": "O‘chirish",
     "ui.admin_pwa.operation": "Amal",
     "ui.admin_pwa.changeStatus": "Holatni o‘zgartirish",
-    "ui.admin_pwa.deleteAdHint": "Reklama o‘chiriladi. Bu amalni orqaga qaytarib bo‘lmaydi."
+    "ui.admin_pwa.deleteAdHint": "Reklama o‘chiriladi. Bu amalni orqaga qaytarib bo‘lmaydi.",
+    "ui.admin_pwa.blockAccount": "Hisobni bloklash",
+    "ui.admin_pwa.unblockAccount": "Blokdan chiqarish",
+    "ui.admin_pwa.deleteAccount": "Hisobni o‘chirish",
+    "ui.admin_pwa.deleteAccountHint": "Hisob va shaxsiy ma’lumotlar o‘chiriladi. Moliyaviy tarix anonim holda saqlanadi. Bu amalni qaytarib bo‘lmaydi.",
+    "ui.admin_pwa.confirmAccountId": "Hisob ID raqamini kiriting",
+    "ui.admin_pwa.accountActive": "Faol"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

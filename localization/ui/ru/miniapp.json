@@ -686,7 +686,13 @@
     "ui.admin_pwa.deleteItem": "Удалить",
     "ui.admin_pwa.operation": "Действие",
     "ui.admin_pwa.changeStatus": "Изменить состояние",
-    "ui.admin_pwa.deleteAdHint": "Реклама будет удалена. Это действие нельзя отменить."
+    "ui.admin_pwa.deleteAdHint": "Реклама будет удалена. Это действие нельзя отменить.",
+    "ui.admin_pwa.blockAccount": "Заблокировать аккаунт",
+    "ui.admin_pwa.unblockAccount": "Разблокировать",
+    "ui.admin_pwa.deleteAccount": "Удалить аккаунт",
+    "ui.admin_pwa.deleteAccountHint": "Аккаунт и личные данные будут удалены. Финансовая история сохранится анонимно. Это действие нельзя отменить.",
+    "ui.admin_pwa.confirmAccountId": "Введите ID аккаунта",
+    "ui.admin_pwa.accountActive": "Активен"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

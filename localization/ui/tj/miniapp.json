@@ -686,7 +686,13 @@
     "ui.admin_pwa.deleteItem": "Нест кардан",
     "ui.admin_pwa.operation": "Амал",
     "ui.admin_pwa.changeStatus": "Тағйир додани ҳолат",
-    "ui.admin_pwa.deleteAdHint": "Реклама нест карда мешавад. Ин амалро баргардонида намешавад."
+    "ui.admin_pwa.deleteAdHint": "Реклама нест карда мешавад. Ин амалро баргардонида намешавад.",
+    "ui.admin_pwa.blockAccount": "Масдуд кардани ҳисоб",
+    "ui.admin_pwa.unblockAccount": "Кушодани масдудият",
+    "ui.admin_pwa.deleteAccount": "Нест кардани ҳисоб",
+    "ui.admin_pwa.deleteAccountHint": "Ҳисоб ва маълумоти шахсӣ нест мешаванд. Таърихи молиявӣ беном нигоҳ дошта мешавад. Ин амалро баргардонида намешавад.",
+    "ui.admin_pwa.confirmAccountId": "ID-и ҳисобро ворид кунед",
+    "ui.admin_pwa.accountActive": "Фаъол"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

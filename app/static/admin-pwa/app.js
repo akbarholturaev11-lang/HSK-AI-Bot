@@ -350,7 +350,7 @@ async function userProfile(userId) {
   try {
     const data=await api('users/detail',{user_id:userId});
     if(current!==drawerId||!state.actor)return;
-    const u=data.user,c=data.course,r=data.referral;
+    const u=data.user,c=data.course,r=data.referral,blocked=String(data.user.status||'').trim().toLowerCase()==='blocked';
     const section=(key,body)=>`<section class="profile-section"><h3>${esc(t(key))}</h3>${body}</section>`;
     drawer('userProfile',`<div class="profile-heading"><h3>${esc(u.name||'—')}</h3><p>#${u.user_id} · ${esc(u.username||'—')}</p><span class="pill">${esc(t(u.access_state))}</span></div>`+
       profileFields([['language',u.language],['level',u.level],['created',date(u.created_at)],['lastActive',date(u.last_active_at)],['plan',t(u.selected_plan_type)],['accessUntil',date(u.access_expires_at)]])+
@@ -360,7 +360,8 @@ async function userProfile(userId) {
       (data.miniapp_presence.length?section('miniappOpens',data.miniapp_presence.map(row=>`<p class="source-note">${esc(row.platform)} · ${esc(date(row.last_opened_at))}</p>`).join('')):'')+
       section('feedback',profileFields([['botFeedback',data.feedback_counts.bot],['releaseFeedback',data.feedback_counts.release]])+`<button class="btn" data-user-feedback="${userId}">${esc(t('openFeedback'))}</button>`)+
       section('paymentHistory',`<div id="profilePayments">${profilePayments(data.payments,userId)}</div>`)+`<p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`,
-      btn('close','close')+`<button class="btn primary" data-access-user="${userId}" ${u.status==='blocked'?'disabled':''}>${esc(t('grantAccess'))}</button>`);
+      btn('close','close')+`<button class="btn primary" data-access-user="${userId}" ${blocked?'disabled':''}>${esc(t('grantAccess'))}</button>`+
+      (userId===state.actor.user_id?'':actionMenu('userManagementMenu',`<button role="menuitem" data-user-management="${userId}" data-user-operation="${blocked?'unblock':'block'}">${esc(t(blocked?'unblockAccount':'blockAccount'))}</button><button role="menuitem" data-user-management="${userId}" data-user-operation="delete">${esc(t('deleteAccount'))}</button>`)));
   }catch(error){if(current===drawerId&&state.actor)drawer('userProfile',statePanel(error.status===404?'userMissing':'error'),btn('close','close')+`<button class="btn" data-user-detail="${userId}">${esc(t('retry'))}</button>`);}
 }
 async function moreUserPayments(userId,before,button) {
@@ -418,11 +419,19 @@ async function executeAccess(){
 
 const settingLabels={payment_details:'paymentDetails',ai_model:'aiModel',help_contact:'helpContact',help_video:'helpVideos'};
 const helpVideoLabels={course_hsk:'course',qa_mode:'questionAnswer',voice_translator:'voiceTranslator',subscription:'subscriptionHelp'};
+const userOperationLabels={block:'blockAccount',unblock:'unblockAccount',delete:'deleteAccount'};
+function userManagementEditor(userId,operation){
+  if(!Number.isSafeInteger(userId)||userId<1||!Object.hasOwn(userOperationLabels,operation))return;
+  closeDrawer();managementDraft={type:'user',userId,userOperation:operation};
+  const confirmation=operation==='delete'?`<p class="alert">${esc(t('deleteAccountHint'))}</p><div class="form-field"><label for="manageConfirm">${esc(t('confirmAccountId'))}</label><input class="input" id="manageConfirm" inputmode="numeric" pattern="${userId}" maxlength="10" required autocomplete="off"></div>`:'';
+  drawer(userOperationLabels[operation],`<form id="managementForm">${profileFields([['account',userId],['operation',t(userOperationLabels[operation])]])}${confirmation}</form>`,btn('cancel','close')+btn('next','managementPrepare','primary'));
+}
 const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktopPromo',course_ad:'courseAds'};
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
 const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
-function managementNamespace(type){return type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
-function managementAction(type){return type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+function managementNamespace(type){return type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
+function managementEndpoint(type,phase){return type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
+function managementAction(type,operation){return type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
 function marketingFields(value){
   const yes=value=>t(value?'hsk30On':'hsk30Off');
   if(value.kind==='sales_experiment')return profileFields([['salesMode',t(salesModes[value.mode])],['salesPercent',value.treatment_percent+'%']]);
@@ -468,6 +477,14 @@ function editCourseAd(id){
   drawer('courseAds',form,btn('cancel','close')+btn('next','managementPrepare','primary'));
 }
 function managementFields(value,type){
+  if(type==='user'){
+    const fields=[['account',value.user_id]];
+    if(value.name)fields.push(['name',value.name]);
+    if(value.operation)fields.push(['operation',t(userOperationLabels[value.operation])]);
+    if(value.deleted)fields.push(['status',t('deleted')]);
+    else if(value.status)fields.push(['status',t({free:'FREE',active:'accountActive',blocked:'BLOCKED'}[value.status])]);
+    return profileFields(fields);
+  }
   if(type==='marketing')return marketingFields(value);
   if(type==='price')return profileFields([['method',value.method],['plan',t(value.plan)],['amount',value.amount+' '+value.currency]]);
   if(value.kind==='payment_details')return profileFields([['method',value.bank==='dc_city'?'DC City':'Alif'],['paymentDetails',value.value||t('notSet')]]);
@@ -477,6 +494,7 @@ function managementFields(value,type){
   throw Error('invalid_settings');
 }
 function managementReread(draft){
+  if(draft.type==='user')return `<button class="btn" data-user-detail="${draft.userId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind)}">${esc(t('readCurrent'))}</button>`;
   return draft.type==='price'?btn('readCurrent','priceSettings'):`<button class="btn" data-setting-kind="${draft.kind}" ${draft.bank?`data-bank="${draft.bank}"`:''}>${esc(t('readCurrent'))}</button>`;
 }
@@ -537,7 +555,9 @@ async function editSetting(kind,bank=null){
 async function prepareManagement(){
   if(managementPreparing||!state.actor||signing||!managementDraft||!$('managementForm')?.reportValidity())return;
   const draft=managementDraft;let payload;
-  if(draft.type==='price'){
+  if(draft.type==='user'){
+    payload={user_id:draft.userId,operation:draft.userOperation,confirm_user_id:draft.userOperation==='delete'?Number($('manageConfirm').value):null};
+  }else if(draft.type==='price'){
     const amount=Number($('priceAmount').value);
     if(!Number.isSafeInteger(amount)||amount<1||amount>1000000)return;
     payload={method:$('priceMethod').value,plan:$('pricePlan').value,amount};
@@ -560,12 +580,12 @@ async function prepareManagement(){
   const current=drawerId,at=epoch;managementPreparing=true;
   $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
   try{
-    const result=await api(managementNamespace(draft.type)+'/prepare',payload);
+    const result=await api(managementEndpoint(draft.type,'prepare'),payload);
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const operation=structuredClone(result.operation);
-    if(operation?.action!==managementAction(draft.type)||!operation.target||!operation.payload)throw Error('invalid_operation');
-    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,operation:Object.freeze(operation)});
-    const proposed=draft.type==='price'?{...operation.payload,currency:result.current.currency}:operation.payload.change;
+    if(operation?.action!==managementAction(draft.type,draft.userOperation)||!operation.target||!operation.payload)throw Error('invalid_operation');
+    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,operation:Object.freeze(operation)});
+    const proposed=draft.type==='price'?{...operation.payload,currency:result.current.currency}:draft.type==='user'?operation.payload:operation.payload.change;
     const currentValue=draft.type==='marketing'?{kind:draft.kind,...result.current}:result.current;
     const comparison=`<div class="management-comparison"><section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section><section><h3>${esc(t('proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
     drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
@@ -577,7 +597,7 @@ async function executeManagement(){
   if(!managementReview||signing||!state.actor)return;
   if(!supportsPasskey()){showNotice('passkeyUnsupported');return;}
   const review=managementReview,operation=structuredClone(review.operation),current=drawerId,at=epoch,control=new AbortController();
-  if(operation.action!==managementAction(review.type))return;
+  if(operation.action!==managementAction(review.type,review.userOperation))return;
   signing=control;let submitted=false;
   $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
   try{
@@ -588,11 +608,12 @@ async function executeManagement(){
     await api('auth/step-up/verify',{step_up_id:options.step_up_id,credential:serialize(credential)});
     if(current!==drawerId||at!==epoch||!state.actor)return;
     submitted=true;
-    const result=await api(managementNamespace(review.type)+'/save',{...operation.payload,step_up_id:options.step_up_id});
+    const result=await api(managementEndpoint(review.type,'save'),{...operation.payload,step_up_id:options.step_up_id});
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
-    const saved=review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:result.setting;
-    drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+managementReread(review));
+    const saved=review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='user'?result:result.setting;
+    if(review.type==='user'&&result.deleted){state.rows=state.rows.filter(row=>row.user_id!==result.user_id);render();}
+    drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review)));
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
@@ -1160,6 +1181,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.marketingKind){await marketingEditor(button.dataset.marketingKind);}
     else if(button.dataset.marketingNext){await marketingEditor('course_ad',Number(button.dataset.marketingNext));}
     else if(button.dataset.courseAd){editCourseAd(Number(button.dataset.courseAd));}
+    else if(button.dataset.userManagement){userManagementEditor(Number(button.dataset.userManagement),button.dataset.userOperation);}
     else if(button.dataset.period){state.period=button.dataset.period;await load();}
     else if(button.dataset.platform){state.platform=button.dataset.platform;await load();}
     else if(button.dataset.exportFormat){await exportStatistics(button.dataset.exportFormat);}

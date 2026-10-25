@@ -22,6 +22,7 @@ uncertain response.
 | `subscription.prices` | `/subscription-prices/read`, `/prepare`, `/save` | Nine fixed payment-method/plan targets; shared Visa normalization and currencies |
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
 | `marketing.update` | `/marketing/read`, `/prepare`, `/save` | Sales experiment, app promotion settings, existing creative activation/deletion |
+| `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
 
 Subscription price read returns a fixed nine-row projection, never a paginated
 scan. Prepare accepts only `method=visa|alipay|wechat`,
@@ -62,7 +63,7 @@ responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 ## Explicit code parity still outstanding
 
 These legacy capabilities are not silently proxied by the standalone PWA:
-required-channel mode/add/toggle/delete, account block/delete/direct messages,
+required-channel mode/add/toggle/delete, direct messages,
 mass messages, campaign creation, partner actions/payouts, manual ledger input,
 notice-template management and media/QR/creative uploads. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
@@ -71,3 +72,15 @@ contract before its UI can claim success. Messaging additionally needs durable
 claim/delivery evidence and bounded batches. Payment outbox uncertain-delivery
 operator reconciliation and non-native orphan triage cleanup remain separate
 operability work; immutable financial/command audits must stay intact.
+
+Account management binds canonical ID, current identity/subscription/status hash,
+the specific operation and (for deletion) repeated numeric ID confirmation.
+Actor/self and current allowlisted-admin targets are protected. A target-row
+wait is followed by fresh authority/expiry checks. Shared deletion preserves
+anonymous approved payment/finance facts and removes personal account state.
+Audit/proof and the command commit or roll back together. Telegram guard cache
+is invalidated only after commit; the optional unblock notice is attempted
+once outside the DB transaction, with no automatic retry or claim of device
+delivery. UI uses the existing profile overflow menu and exact before/after
+passkey confirmation. Test-generated account/creative deletions never touch
+live records.
