@@ -91,7 +91,7 @@
 
 **I02 Consent [D01 OWNER APPROVED 2026-10-25]:** Smart Reminder фойдаланувчининг АВВАЛДАН ЁҚИЛГАН ўқиш эслатмалари ўрнига автоматик ишга тушади, янги функция номи билан қайта-қайта алоҳида розилик сўралмайди. Бироқ мавжуд OFF/opt-out ва OS/platform permission'лар мутлақ ҳурмат қилинади; олдин рухсат берилмаган янги OS push канали учун тизим талаб қиладиган илк рухсатни четлаб ўтиб бўлмайди. Legacy settings аниқ mapping қилинмагунча бу канални automatically ON қилма; opt-out pending jobs'ни бекор қилади. Delivery old/new parallel бўлмасин.
 
-**I03 Account-level cadence [D03 APPROVED 2026-10-25]:** Бир аккаунт учун каналлараро ягона study frequency policy: реакция ва фойдали ўқиш натижасига қараб индивидуал хабар тезлиги ўзгаради (ignored / no study → пасайсин; фойдали реакция → хавфсиз бюджетда кўпайиши мумкин). **Қатъий юқори чегара: календар маҳаллий кунида 1 тадан ортиқ study reminder йўқ**, ҳатто бир нечта қурилма бўлса ҳам. Ҳафталик абсолют max ва adaptive thresholds ҳали owner томонидан тасдиқланмаган. Транзакцион хабарлар алоҳида категория.
+**I03 Account-level cadence [D03/D06 APPROVED 2026-10-25]:** Бир аккаунт учун каналлараро ягона study frequency policy: реакция ва фойдали ўқиш натижасига қараб индивидуал хабар тезлиги ўзгаради (ignored / no study → пасайсин; фойдали реакция → хавфсиз бюджетда кўпайиши мумкин). **Қатъий юқори чегара: календар маҳаллий кунида 1 тадан ортиқ study reminder йўқ**, ҳатто бир нечта қурилма бўлса ҳам. **D06:** сервер фойдаланувчи ҳақиқатан қайси платформада кўпроқ ўқиётганини, delivery reachability/permission ва ишончлиликни ҳисобга олиб *битта канал ва битта мақсадли қурилмани* танлайди; фойдаланувчи хоҳласа ўз каналини қўлда қотиради (auto selection override). Ҳафталик абсолют max ва adaptive thresholds ҳали owner томонидан тасдиқланмаган. Транзакцион хабарлар алоҳида категория.
 
 **I04 Completed goal:** dispatch олдидан canonical daily progress'ни янгидан текшир; мақсад бажарилса бекор қил. Current lesson ва selected HSK track ҳам қайта текширилсин.
 
@@ -117,7 +117,7 @@
 2. **UserHabitEstimator** — одатий вақт слоти; ишонч даражаси (cold/warm/confident), weekday/weekend variation, travel changes.
 3. **ReminderPolicyEngine (pure deterministic)** — send/suppress, priority, D03 frequency cap, D04 no global time blackout (only explicit user restrictions/OS permission), streak, daily goal, target access; explainable reason codes.
 4. **ReminderScheduler/Planner** — account local-date + fire_time_utc + expiration; future jobs reschedule/cancel.
-5. **DeliveryOrchestrator** — account-level claim/lock/idempotency, one selected channel; Telegram/Android ҳозир, learner iPhone PWA/Desktop кейин.
+5. **DeliveryOrchestrator [D06]** — account-level claim/lock/idempotency, auto-select a single reachable permitted channel and a single eligible device using real per-platform study activity + delivery reliability; user-pinned channel wins if currently permitted and reachable. No parallel Telegram+Android+PWA+Desktop fanout. Telegram/Android V1, learner iPhone PWA/Desktop later; D07 fallback on ambiguous delivery remains OPEN.
 6. **NotificationRenderer** — versioned notification template, canonical i18n, safe parameters, CTA target; no live LLM requirement.
 7. **OutcomeAttribution** — planned/attempted/accepted/displayed/opened/resumed/completed/optout counters.
 8. **Optimizer** — аввал A/B, кейин маълумот етарли бўлса channel/time/content optimization; shadow→guarded ramp.
@@ -168,13 +168,13 @@ Priority only among eligible intents, all study intents share frequency budget:
 - user_id PRIMARY KEY → users.id, ON DELETE CASCADE.
 - study_enabled (explicit/effective consent semantics), user_selected_time_local nullable, time_mode: manual_locked|smart_auto (D02: smart automatically learns once sufficient real study history exists; old selected time is preserved during cold start; user may lock manual time). Persist mode and timestamp/source; do not infer explicit manual lock from mere presence of legacy reminder_time.
 - timezone_name (IANA); user_quiet_start_local/user_quiet_end_local **nullable explicit override only**. Default = no predefined quiet-hours exclusion (D04). Auto schedule depends on individual reliable learning habit, not a global allowed-hours range.
-- channel_policy: preferred|last_reliable|available; preferred_channel optional.
+- channel_policy: **auto|manual_locked** (D06 approved: auto selects one channel/device based on actual account learning activity and observed delivery reliability; user may lock a preferred channel); preferred_channel nullable, optional preferred_device_id subject to ownership verification, last_channel_selection_reason / capability snapshot (proposed). Existing disabled/blocked/OS-denied channels never silently enabled.
 - daily_max (hard server maximum = **1 study reminder per local day**, D03 approved), weekly_max [exact upper bound OPEN; proposal default 3/week], adaptive_cadence_state/cooldown_until (proposed), snooze_until UTC, paused_until UTC. Across Telegram/Android/PWA/Desktop shared canonical account budget; never multiply caps by channel.
 - settings_version, updated_at, consent_source, consent_at; **D01:** олдиндан ёқилган, мувофиқ legacy study reminder channel'ларида автоматик Smart upgrade (алоҳида қайта сўраш йўқ); ҳеч қандай old opt-out override эмас; бошқа/янги channel'га permission auto-grant қилиш йўқ. Янги аккаунт default'ини кўчиришдан олдин legacy semantics ва OS талабларига мувофиқ текшир.
 
 ### 5.2 reminder_jobs (new immutable logical-intent ledger)
 - id UUID; user_id FK; local_day; intent; target_ref with validated type; timezone snapshot, scheduled_at_utc, expire_at_utc.
-- policy_version, variant_id, experiment_id/arm, chosen_channel / chosen_device_id nullable.
+- policy_version, variant_id, experiment_id/arm, chosen_channel / chosen_device_id nullable, channel_selection_reason (D06), manual_override_applied bool, selection evidence timestamp; only ONE account-level job per logical study reminder.
 - status: scheduled|claimed|suppressed|sent_unconfirmed|shown|failed|cancelled|expired.
 - Unique constraint (user_id, local_day, category="study") ёки equivalent partial unique index; “битта study message/day” policy'си ўзгарса schema strategy version'ланган бўлсин.
 - decision_reason, suppression_reason, attempt counter, last_attempt_at, claim lease/claimed_until.
@@ -216,7 +216,7 @@ CANDIDATE → ELIGIBLE / SUPPRESSED → SCHEDULED → CLAIMED → PROVIDER_ATTEM
 
 ## 7. Notification UX / localization / deep-link [PROPOSAL]
 
-- **Settings [D02/D04]:** фойдаланувчи хоҳласа эслатма вақтини қўлда қотиради; акс ҳолда Smart вақт одатга қараб автоматик ўзгаради. Default 22:00–08:00 ёки бошқа тақиқланган соатлар йўқ. Фойдаланувчи ўзи танласа ихтиёрий quiet hours, pause, preferred channel ва opt-out амал қилади; OS Focus/DND'ни четлаб ўтмаймиз. Етарли ўқиш маълумоти йўқ пайтда эски белгиланган вақт сақланади (D02); мажбурий feature promo ёки қайта permission prompt йўқ (D01).
+- **Settings [D02/D04/D06]:** фойдаланувчи хоҳласа эслатма вақтини қўлда қотиради; акс ҳолда Smart вақт одатга қараб автоматик ўзгаради. Default 22:00–08:00 ёки бошқа тақиқланган соатлар йўқ. **D06:** эслатма канали ҳам фойдаланувчи қайси платформада ҳақиқий ўқиётганига ва етказиш ишончлилигига қараб автоматик танланади; хоҳласа фойдаланувчи битта канални қўлда белгилай олади. Хоҳласа quiet hours, pause ва opt-out амал қилади; OS Focus/DND'ни четлаб ўтмаймиз. Етарли ўқиш маълумоти йўқ пайтда эски белгиланган вақт сақланади (D02); мажбурий feature promo ёки қайта permission prompt йўқ (D01).
 - **Permission flow [D01]:** мавжуд study notification рухсатини Smart upgrade учун такроран сўрама, функционал ҳақида мажбурий onboarding/marketing ойна очма. Янги platform/OS push permission ҳали йўқ бўлса, фақат OS талаб қиладиган рухсат user interaction орқали одатдаги бир марталик оқимда сўралиши мумкин; рад этишни ҳурмат қил. Existing OFF'ни ON қилма, app-level opt-out ва OS-level off'ни ажрат.
 - **Content:** UZ/RU/TJ canonical catalog; polite, short, contextual; no invented lesson numbers/XP/minutes. Render placeholders validated and escaped.
 - **CTA:** resume lesson vs daily goal vs review; deep-link internal validated target, track/level/access check. Telegram Mini App, Android native, later iPhone PWA and Desktop adaptors, all canonical data.
@@ -225,7 +225,11 @@ CANDIDATE → ELIGIBLE / SUPPRESSED → SCHEDULED → CLAIMED → PROVIDER_ATTEM
 - **Play/Direct:** learner notification may navigate to existing content but cannot introduce forbidden external checkout/self-updater in Play flavour.
 - **Privacy:** quiet lockscreen text defaults, user-level sensitive context in notification text must be restrained.
 
-## 8. Channel strategy [PROPOSAL]
+## 8. Channel strategy — D06 owner approved, channel adapters/ACK mechanics proposed
+
+**[DECISION D06, 2026-10-25]:** 2-вариант тасдиқланди. Агар бир аккаунтда Telegram/Android/iPhone PWA/Desktop бир нечтаси бўлса, система мавжуд рухсатли каналлардан фойдаланувчи амалда кўпроқ ўқийдиган ва эслатма ишончлироқ етказиладиган **биттасини** автоматик танлайди. Битта study reminder'ни ҳамма платформага бирдан тарқатмайди. Фойдаланувчи хоҳласа канални қўлда танлаб қотиради; ўчирилган канал, OS permission йўқ канал, blocked Telegram ёки аккаунтга тегишли бўлмаган қурилма танланмайди. Бу танлов ҳозирча ишловчи код эмас. Қайси сигналларга неча балл ва no-ack/fallback handling D07/P0–P4 дизайнида аниқланади; фақат 'app open' ҳақиқий study engagement дегани эмас.
+
+**[PROPOSAL] Selection order:** (1) explicit user locked channel if permitted and reachable; (2) verified platform-level recent actual learning + reliable displayed ack when supported; (3) permitted/reachable channel with sufficient confidence; (4) none → no send. Do not mistake FCM accepted for shown. A manually locked but unavailable channel should not silently trigger a second channel without D07 approved fallback semantics. D03 global daily cap ва D05 cross-category coordination сақланади.
 
 | Channel | First target | Eligibility | Delivery proof | Notes |
 |---|---|---|---|---|
@@ -292,7 +296,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 ### P1 — Instrumentation + schema foundation
 **Ҳолат:** [NOT STARTED]
 - [ ] Minimum additive models/migrations; unique keys, indexes, FK cleanup, dry-run explain reasons.
-- [ ] Preference mapping/API endpoints: auth, validation, optimistic revision, old client compatibility; D01 seamless migration only for pre-enabled same channel, explicit opt-out preserved, no extra Smart opt-in dialog.
+- [ ] Preference mapping/API endpoints: auth, validation, optimistic revision, old client compatibility; D01 seamless migration only for pre-enabled same channel, explicit opt-out preserved, no extra Smart opt-in dialog. D06 channel_policy auto/manual_locked, manual priority, account/device ownership validation and conservative unavailable-channel behavior.
 - [ ] Canonical event collector and daily-learning aggregation; no duplicate score/event counts.
 - [ ] Privacy and deletion/retention hooks, diagnostics.
 **Acceptance:** migration up/down where safe, invalid account/token rejected, dual-read settings coherent, no reminders newly sent.
@@ -309,7 +313,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 
 ### P3 — Telegram delivery integration
 **Ҳолат:** [NOT STARTED]
-- [ ] Telegram notifier adapter, templates UZ/RU/TJ, validated lesson deep-link; existing admin template edit.
+- [ ] Telegram notifier adapter, templates UZ/RU/TJ, validated lesson deep-link; existing admin template edit. D06 only one chosen allowed channel can claim a study job; Telegram study sender cannot independently fire after Android was selected.
 - [ ] Feature flag selectively routes Telegram study reminders new engine. Old CourseReminder/Motivation senders skip users controlled by new engine. D01: eligible existing ON learners migrate without re-consent; OFF users are suppressed. D03: account daily study cap enforced also when course reminder and motivation intent compete.
 - [ ] D1 holdout protected; opt-out/blocked, rate limiting, retry ledger and logging.
 - [ ] Pilot cohort + rollback to old behavior without double-send. D05: existing Telegram ranking/weekly sender must consult global category anti-spam policy without dropping useful weekly summary or violating D03 study cap; no double dispatch during migration.
@@ -319,7 +323,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 ### P4 — Android unified reminder
 **Ҳолат:** [NOT STARTED]
 - [ ] Android FCM data contract includes job ID, TTL, policy version, no sensitive payload.
-- [ ] Client verifies account/device, current goal/consent, notified job state; post ack with safe auth.
+- [ ] Client verifies account/device, current goal/consent, notified job state; post ack with safe auth. D06: chosen device only; app activity and delivery reliability derive from verified cross-platform signals rather than mere device installation.
 - [ ] WorkManager local fallback consults shared job semantics or is suppressed when server-owned; no dual display.
 - [ ] Direct+Play parity; OS notification channel user preference respected.
 **Acceptance:** one account Telegram+2 Android devices ≤1 visible study reminder within policy, as far as ack/capability allows. No false done/failure statuses.
@@ -330,7 +334,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 - [ ] Confirm learner PWA installability, HTTPS, manifest, service worker scope, consent, push subscription cleanup.
 - [ ] Build learner push subscription endpoints; do not reuse Admin PWA auth/push as learner API.
 - [ ] macOS/Windows OS notification parity, foreground/background support boundaries, deep-link and logged-out behavior.
-- [ ] Cross-platform opt-out, channel preference, fallback and suppression tests; D03 adaptive cadence and at most one study reminder/account/local day even when Telegram+Android+PWA+Desktop are concurrently available.
+- [ ] Cross-platform opt-out, channel preference, fallback and suppression tests; D03 adaptive cadence and at most one study reminder/account/local day even when Telegram+Android+PWA+Desktop are concurrently available. D06: auto choose one channel/device using real study activity+reliability, manual channel lock, unknown delivery ACK and denied channel handling (fallback D07 still OPEN).
 **Acceptance:** supported conditions send, unsupported/denied conditions clearly no-send; shared ledger with Telegram/Android.
 **QA:** real supported iPhone Home Screen PWA, Safari/macOS, Windows, multi-account, device removal, blocked OS notifications.
 
@@ -362,7 +366,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 ## 12. Regression matrix (қатъий текширилади)
 
 - [ ] Telegram-linked + Android same user, Telegram-only, native Google/Apple-only (Telegram ID NULL), unlinked, re-linked valid Telegram, blocked Telegram.
-- [ ] Same user multiple Android devices, Android+PWA+Desktop, stale/revoked token, old APK clients.
+- [ ] Same user multiple Android devices, Android+PWA+Desktop, stale/revoked token, old APK clients; D06 test auto selection using verified recent study activity and channel availability, same-account multi-device singular target, manual override and unavailable user-locked channel.
 - [ ] Global off / Android OS off / Telegram opt-out / wrong channel / double permission toggle / paused/snoozed.
 - [ ] Daily goal complete just before send; unfinished lesson completed on another platform; course switched HSK2→HSK3; restricted course CTA.
 - [ ] 2 workers concurrently tick; queue restart; DB timeout; send succeeds then commit fails; provider accepted but unshown; retry after cancellation.
@@ -382,7 +386,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | D03 | Study reminder'лар қанчалик тез-тез юборилади? | **2-вариант тасдиқланди:** фойдаланувчининг ҳақиқий ўқиш реакциясига мосланувчи индивидуал frequency; эътиборсиз қолса камаяди, фойда берса хавфсиз доирада ошиши мумкин. **Қатъий чегара: 1 study reminder / account / local day, барча каналлар бирга.** Ҳафталик max ва аниқ adaptive thresholds OPEN, 3/week фақат таклиф. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
 | D04 | Эслатманинг тақиқланган умумий соати борми? | **OWNER CUSTOM DECISION:** умумий белгиланган вақт лимити ЙЎҚ; вақт фойдаланувчининг ўқиш одатига максимал мослашади, ҳатто кечаси ҳам. User manual time / self-set quiet hours / pause / opt-out ва OS DND/permission устун; D03 кунлик 1 та лимит сақланади. Cold-start D02'га мувофиқ. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
 | D05 | Рейтинг ва ҳафталик натижалар дарс лимитига кирадими? | **2-вариант тасдиқланди:** дарс, рейтинг ва ҳафталик натижа алоҳида category сифатида қолади, лекин битта account-level anti-spam/coordinator ўзаро устма-уст тушишини назорат қилади. Рейтинг хабарлари камайтирилиши/кечиктирилиши мумкин; фойдали ҳафталик натижа сақланади. D03 кунига 1 та фақат study reminder учун; глобал category лимит рақами ҳали OPEN. Payment/receipt transactional хабарлари мавжуд йўлда қолади. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
-| D06 | Channel preference? | User manually override, otherwise most reliable available single channel. | PROPOSAL |
+| D06 | Қайси платформага эслатма келади? | **2-вариант тасдиқланди:** ҳар бир study reminder учун Telegram/Android/learner PWA/Desktop орасидан битта рухсатли, reachable канал ва битта eligible device автоматик танланади; меъёр — ҳақиқий platform learning activity ва delivery reliability. User битта канални қўлда қотириши мумкин; off/denied каналлар ёқилмайди, all-platform broadcast йўқ. Delivery uncertain fallback D07 ҳали OPEN. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
 | D07 | Multi-device ack timeout/fallback? | Unknown display бўлса blind Telegram duplicate’га йўл қўйма. | PROPOSAL |
 | D08 | 3/7/14 кун inactivity sequences? | staged reactivation + cap, hard stop threshold after data. | PROPOSAL |
 | D09 | AI/ML қачон? | Rules → A/B → verified lift → optimizer, LLM optional. | PROPOSAL |
@@ -421,7 +425,8 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | 2026-10-25 | D02 owner decision | Option 2 approved: smart time learns habit and adapts; manual lock optional; old time kept until confident. Docs only. | 55aeb68f6b7a379e3bcd6b78ab88f065277dc4be | NO TESTS RUN; requirements record only | D03 notification frequency; D14 legacy time migration |
 | 2026-10-25 | D03 owner decision | Option 2 approved: personalized adaptive cadence; strict 1 study reminder/account/local day; weekly ceiling and thresholds remain OPEN. Docs only. | 7989bb0d74a4d26f122e81423df8b33cf277bb80 | NO TESTS RUN; requirement record only | D04 quiet hours discussion, cadence tuning later |
 | 2026-10-25 | D04 owner custom decision | No system-wide time-of-day limits: maximum personalization even at night; optional personal quiet/pause, OS Focus/DND preserved; 1/day from D03 unaffected. Docs only. | 78da152f698f1283acb309fa0b919c5bccc0fb95 | NO TESTS RUN; decision captured only | D05 rating and weekly progress notification budget |
-| 2026-10-25 | D05 owner decision | Option 2 approved: separate study/rating/weekly purposes, shared account-level anti-spam coordination; low-value ranking de-prioritized; useful weekly summary retained; exact global threshold still OPEN. Docs only. | жорий docs commit | NO TESTS RUN; decision captured only | D06 cross-platform preferred notification channel |
+| 2026-10-25 | D05 owner decision | Option 2 approved: separate study/rating/weekly purposes, shared account-level anti-spam coordination; low-value ranking de-prioritized; useful weekly summary retained; exact global threshold still OPEN. Docs only. | 430d81841698a5ec26e62e1d4847c15fbd5c1dc2 | NO TESTS RUN; decision captured only | D06 cross-platform preferred notification channel |
+| 2026-10-25 | D06 owner decision | Option 2 approved: auto pick a single user-permitted study channel/device based on actual platform study behavior and delivery reliability, optional manual channel lock; D07 delivery-uncertain fallback OPEN. Docs only. | жорий docs commit | NO TESTS RUN; decision recorded, runtime unchanged | D07 fallback/ACK behavior |
 
 **Final completion criteria:** P0–P8 acceptance achieved; automated + manual affected flow QA evidenced; global dedupe/opt-out/progress guards verified on real clients; experiment results/guardrails recorded; production rollout monitored; owner accepts completion. Until then status remains IN PROGRESS.
 
@@ -446,7 +451,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 - **Менинг тавсиям:** 1 ёки 2 ва аниқ сабаб.
 - **Сизнинг танловингиз:** 1 / 2 / ўзгартирилган қоида.
 
-**Жорий навбат:** **D06** — Telegram, Android, iPhone PWA ва Desktop бир аккаунтда бўлса, эслатма қайси битта канал орқали келади? **OPEN; owner қарори кутилмоқда.** D01–D05 тасдиқланган; D03 weekly upper cap, D05 global anti-spam thresholds ва D14 legacy mapping техник деталлари ҳали OPEN.
+**Жорий навбат:** **D07** — танланган платформага эслатма жўнатилди, лекин етказилгани/экранда кўрсатилгани тасдиқланмади: бошқа платформага автоматик қайта юбориш керакми? **OPEN; owner қарори кутилмоқда.** D01–D06 тасдиқланган; D03 weekly upper cap, D05 global anti-spam thresholds ва D14 legacy mapping ҳали OPEN.
 
 ### 16.1 Decision log
 | ID | Дата | Тасдиқ | Таъсир | Commit |
@@ -456,4 +461,5 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | D02 | 2026-10-25 | **2-вариант:** Smart Reminder ўқиш одатини ўрганиб вақтни автоматик мослаштиради; маълумот етарли бўлмагунча эски вақтни сақлайди; фойдаланувчи хоҳласа аниқ вақтни қўлда белгилаб қотиради. | Habit estimator, preferences/time_mode, UI, P2 ва timezone QA; time thresholds ҳали PROPOSAL; runtime ўзгармаган | 55aeb68f6b7a379e3bcd6b78ab88f065277dc4be |
 | D03 | 2026-10-25 | **2-вариант:** individual adaptive cadence, ignored → frequency decreases; real study response → increases only within safe bound; **max 1 study reminder/user/local day** across platforms. Weekly absolute cap / algorithm thresholds NOT DECIDED. | I03, preferences, P2/P3/P5, policy and regressions; runtime unchanged | 7989bb0d74a4d26f122e81423df8b33cf277bb80 |
 | D04 | 2026-10-25 | **Owner modification:** no predefined hours/blackout, completely habit-adaptive time including nighttime, user manual/quiet/pause and OS DND preserved, D03 cap remains. | I05, engine eligibility, user preferences, UX, policy, P2 DST/night-time test; runtime unchanged | 78da152f698f1283acb309fa0b919c5bccc0fb95 |
-| D05 | 2026-10-25 | **2-вариант:** study, ranking and weekly results keep separate purposes; global per-account category-aware dedup/anti-spam coordination; low-value ranking suppressed/deferred; valuable weekly summary not blindly dropped; no hard global numeric threshold decided. | Priorities, frequency/collision policy, P0/P2/P3/P6 and QA; transaction notifications separately governed; runtime unchanged | жорий docs commit |
+| D05 | 2026-10-25 | **2-вариант:** study, ranking and weekly results keep separate purposes; global per-account category-aware dedup/anti-spam coordination; low-value ranking suppressed/deferred; valuable weekly summary not blindly dropped; no hard global numeric threshold decided. | Priorities, frequency/collision policy, P0/P2/P3/P6 and QA; transaction notifications separately governed; runtime unchanged | 430d81841698a5ec26e62e1d4847c15fbd5c1dc2 |
+| D06 | 2026-10-25 | **2-вариант:** select ONE notification channel/device automatically from genuine user learning activity + notification delivery reliability; optional user manual lock; no parallel cross-channel broadcast; denied/unavailable must be respected. | I03, delivery orchestrator, preferences/schema, Android+Telegram+PWA/Desktop adapter rules, P1/P3/P4/P5, QA; D07 fallback remains OPEN, runtime unchanged | жорий docs commit |
