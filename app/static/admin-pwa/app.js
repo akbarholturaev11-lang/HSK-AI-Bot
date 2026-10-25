@@ -519,6 +519,11 @@ function drawer(title,body,foot='',className='') {
   if(!$('overlay'))returnFocus=document.activeElement;
   $('dialogs').innerHTML=`<div class="canvas-overlay show" id="overlay"><section class="drawer ${className}" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><div class="drawer-top"><h2 id="drawerTitle">${esc(t(title))}</h2><button class="drawer-close" data-action="close" aria-label="${esc(t('close'))}">×</button></div><div class="drawer-content" id="drawerContent">${body}</div><div class="drawer-foot" id="drawerFoot">${foot||btn('close','close')}</div></section></div>`;
   $('root').inert=true;document.querySelector('.drawer-close')?.focus();
+  // Editors have a single top-right dismissal control; a second bottom
+  // Close/Cancel button adds no action and crowds the iPhone safe area.
+  const footer=$('drawerFoot');
+  if(footer.querySelector('[data-action="managementPrepare"],[data-action="coursePrepare"],[data-action="hsk30Prepare"]'))
+    footer.querySelectorAll('[data-action="close"]').forEach(button=>button.remove());
   updateManagementAction();
   // Capture hydrated values after editors synchronously populate dependent
   // inputs (price amount, media type, notification language, help video).
