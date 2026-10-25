@@ -319,10 +319,12 @@ async def browser_checks(output):
         await page.locator('[data-user-feedback]').click()
         await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         assert await page.locator('#inboxSearchForm,#inboxSource,#inboxPriority').count()==0
-        # Only title is shown in list; message and escaped private content
-        # appear only after opening the corresponding source-bound item.
-        await expect(page.locator('#drawerContent')).not_to_contain_text('<script>private QA feedback</script>')
+        # A source-labelled preview is now visible in the authenticated list,
+        # but any markup from a user must remain escaped and non-executable.
         bot_entry=page.locator('.inbox-minimal-row[data-inbox-open^="bot:"]').first
+        await expect(bot_entry.locator('.inbox-row-preview')).to_contain_text('<script>private QA feedback</script>')
+        await expect(page.locator('#drawerContent script')).to_have_count(0)
+        await expect(page.locator('#drawerContent')).not_to_contain_text('other account QA feedback')
         await bot_entry.click()
         await expect(page.locator('.inbox-details')).to_contain_text('<script>private QA feedback</script>')
         await expect(page.locator('.inbox-details script')).to_have_count(0)

@@ -45,6 +45,7 @@ const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', c
 let epoch=0, view=0, drawerId=0, confirmation=null, paymentPreview=null, reviewChoice=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
+let inboxLoadingMore=false,inboxListScrollTop=0,inboxRequestNonce=0;
 let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
 const sectionBackStack=[];
 let automaticLoginAttempted=false, automaticLoginInProgress=false;
@@ -120,9 +121,32 @@ function watchApproval() {
   // Only one outstanding read; never poll while Telegram is in the foreground.
   approvalWatchTimer=setTimeout(()=>{approvalWatchTimer=null;checkApproval().catch(()=>{});},10000);
 }
+function adminLaunchScreen(){
+  // Same seal shapes and timing as the Course Mini App splash. No wait timer:
+  // authentication and API results replace this view immediately when ready.
+  return '<main class="admin-launch-screen" role="status" aria-label="'+esc(t('loading'))+'">'+
+    '<div class="admin-launch-stage"><div class="admin-launch-halo" aria-hidden="true"></div>'+
+    '<div class="admin-launch-seal" aria-hidden="true"><div class="admin-launch-knot"><div class="admin-launch-spin">'+
+    '<svg class="admin-launch-logo" viewBox="0 0 108 108" aria-hidden="true">'+
+    '<defs><linearGradient id="admin-launch-casing" x1="0" y1="0" x2="108" y2="108" gradientUnits="userSpaceOnUse"><stop stop-color="#F0614C"/><stop offset="1" stop-color="#C02F32"/></linearGradient>'+
+    '<linearGradient id="admin-launch-gold" x1="0" y1="28" x2="0" y2="80" gradientUnits="userSpaceOnUse"><stop stop-color="#F7C948"/><stop offset="1" stop-color="#D9920F"/></linearGradient></defs>'+
+    '<g class="admin-launch-piece admin-launch-flat">'+
+    '<path d="M39.5 35h29a4.5 4.5 0 0 1 4.5 4.5v29a4.5 4.5 0 0 1-4.5 4.5h-29a4.5 4.5 0 0 1-4.5-4.5v-29a4.5 4.5 0 0 1 4.5-4.5Z" fill="none" stroke="url(#admin-launch-casing)" stroke-width="9.5" stroke-linejoin="round"/>'+
+    '<path d="M39.5 35h29a4.5 4.5 0 0 1 4.5 4.5v29a4.5 4.5 0 0 1-4.5 4.5h-29a4.5 4.5 0 0 1-4.5-4.5v-29a4.5 4.5 0 0 1 4.5-4.5Z" fill="none" stroke="url(#admin-launch-gold)" stroke-width="6" stroke-linejoin="round"/></g>'+
+    '<g class="admin-launch-piece admin-launch-diagonal">'+
+    '<path d="m57.18 30.31 20.51 20.51a4.5 4.5 0 0 1 0 6.36L57.18 77.69a4.5 4.5 0 0 1-6.36 0L30.31 57.18a4.5 4.5 0 0 1 0-6.36l20.51-20.51a4.5 4.5 0 0 1 6.36 0Z" fill="none" stroke="url(#admin-launch-casing)" stroke-width="9.5" stroke-linejoin="round"/>'+
+    '<path d="m57.18 30.31 20.51 20.51a4.5 4.5 0 0 1 0 6.36L57.18 77.69a4.5 4.5 0 0 1-6.36 0L30.31 57.18a4.5 4.5 0 0 1 0-6.36l20.51-20.51a4.5 4.5 0 0 1 6.36 0Z" fill="none" stroke="url(#admin-launch-gold)" stroke-width="6" stroke-linejoin="round"/></g>'+
+    '<g class="admin-launch-piece admin-launch-crossings">'+
+    '<path d="M39.5 35h13.4M73 39.5v13.4M68.5 73H55.1M35 68.5V55.1" fill="none" stroke="url(#admin-launch-casing)" stroke-width="9.5"/>'+
+    '<path d="M39.5 35h13.4M73 39.5v13.4M68.5 73H55.1M35 68.5V55.1" fill="none" stroke="url(#admin-launch-gold)" stroke-width="6"/></g></svg>'+
+    '</div></div></div><div class="admin-launch-brandline"><p class="admin-launch-title">HSK AI</p>'+
+    '<svg class="admin-launch-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
+    '<path d="M12 7v14"/><path d="M3 18V5a2 2 0 0 1 2-2h3a4 4 0 0 1 4 4 4 4 0 0 1 4-4h3a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-3a4 4 0 0 0-4 2 4 4 0 0 0-4-2H5a2 2 0 0 1-2-2Z"/></svg>'+
+    '</div></div></main>';
+}
 function auth() {
   let content='';
-  if(state.phase==='loading') content=`<h1>${esc(t('loading'))}</h1>`;
+  if(state.phase==='loading') return adminLaunchScreen();
   else if(state.phase==='offline') content=`<h1>${esc(t('offline'))}</h1><p>${esc(t('offlineHint'))}</p>${btn('retry','boot','primary')}`;
   else if(state.phase==='error') content=`<h1>${esc(t('error'))}</h1>${btn('retry','boot','primary')}`;
   else if(state.phase==='approval') {
@@ -846,7 +870,7 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {campaignMediaUpload?.control.abort();campaignMediaUpload=null;clearTimeout(savedCloseTimer);savedCloseTimer=null;editorBaseline=null;resetSwipePreview();clearNotice();managementPreparing=false;preparingEditor=null;drawerBack=null;closeActionMenus();closeInboxAttachment();releaseManagementMediaPreview();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;paymentPreview=null;reviewChoice=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {inboxRequestNonce++;inboxLoadingMore=false;campaignMediaUpload?.control.abort();campaignMediaUpload=null;clearTimeout(savedCloseTimer);savedCloseTimer=null;editorBaseline=null;resetSwipePreview();clearNotice();managementPreparing=false;preparingEditor=null;drawerBack=null;closeActionMenus();closeInboxAttachment();releaseManagementMediaPreview();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;paymentPreview=null;reviewChoice=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   clearTimeout(savedCloseTimer);savedCloseTimer=null;editorBaseline=null;
   if(!$('overlay'))returnFocus=document.activeElement;
@@ -2243,44 +2267,122 @@ async function viewInboxAttachment(button){
   }finally{clearTimeout(timer);}
 }
 const autoImportantSources=new Set(['payment','android','technical']);
-function inboxTitle(row){
+function inboxKind(row){
   const label=row.source==='payment'?'inboxPaymentReceipt':row.source==='android'?'inboxAndroid':row.source==='technical'?'inboxTechnical':row.source==='release'?'releaseFeedback':'botFeedback';
-  return t(label)+(row.user_id?' · '+t('account')+' '+row.user_id:'');
+  return t(label);
+}
+function inboxPlatform(row){
+  // Never attribute an unmarked payment to Android, Telegram or Desktop.
+  if(row.source==='android')return 'Android';
+  if(row.source==='technical')return 'Telegram Mini App';
+  if(row.source==='bot'||row.source==='release')return 'Telegram Bot';
+  return null;
+}
+function inboxTitle(row){return inboxKind(row)+(row.user_id?' · '+t('account')+' '+row.user_id:'');}
+function inboxPreview(row){
+  const parts=row.feedback_parts||{};
+  const paid=parts.paid===true;
+  const phrases=[parts.liked?(paid?'💎 ':'👍 ')+parts.liked:null,parts.disliked?(paid?'🔎 ':'👎 ')+parts.disliked:null].filter(Boolean);
+  return phrases.join(' · ')||row.message||
+    (row.rating?row.rating+'/5':row.has_attachment?t('viewAttachment'):row.source==='payment'?t('inboxPaymentReceipt'):t('empty'));
 }
 function inboxEntry(row){
-  const unread=row.triage_status==='new', important=autoImportantSources.has(row.source);
+  const unread=row.triage_status==='new',important=autoImportantSources.has(row.source);
   if(!['bot','release','android','payment','technical'].includes(row.source)||
      !Number.isSafeInteger(row.source_id)||row.source_id<1)return '';
-  return `<button type="button" class="inbox-minimal-row ${unread?'is-unread':'is-read'} ${important?'is-important':''}"
-    data-inbox-open="${row.source}:${row.source_id}" aria-label="${esc(inboxTitle(row))}">
-      <span class="inbox-row-dot" aria-hidden="true"></span>
-      <span class="inbox-row-title">${esc(inboxTitle(row))}</span>
-      ${icon('chevron')}
-    </button>`;
+  const platform=inboxPlatform(row);
+  const kindIcon=icon(row.source==='android'?'device':row.source==='payment'?'credit':row.source==='technical'?'settings':'send');
+  return '<button type="button" class="inbox-minimal-row '+(unread?'is-unread':'is-read')+' '+(important?'is-important':'')+'"'+
+    ' data-inbox-open="'+row.source+':'+row.source_id+'" aria-label="'+esc(inboxTitle(row))+'">'+
+    '<span class="inbox-platform-icon" aria-hidden="true">'+kindIcon+'</span>'+
+    '<span class="inbox-row-main"><span class="inbox-row-heading"><strong class="inbox-row-title">'+esc(inboxKind(row))+'</strong>'+
+    '<time class="inbox-row-date">'+esc(date(row.created_at))+'</time></span>'+
+    '<span class="inbox-row-preview">'+esc(inboxPreview(row))+'</span>'+
+    '<span class="inbox-row-meta"><span>'+esc(platform||t('unavailable'))+'</span>'+
+    '<span>#'+esc(row.source_id)+'</span>'+(row.user_id?'<span>'+esc(t('account'))+' '+esc(row.user_id)+'</span>':'')+
+    '</span></span><span class="inbox-row-dot" aria-hidden="true"></span></button>';
 }
 function inboxDetails(row) {
-  const source=row.source,id=row.source_id;
+  const source=row.source,id=row.source_id,platform=inboxPlatform(row);
   const canView=(source==='android'?row.has_attachment:['bot','release'].includes(source)&&row.image_preview_available===true)
     &&Number.isSafeInteger(id)&&id>0&&id<=2147483647;
-  const attachmentId=`inboxAttachment-${source}-${id}`;
-  return `<div class="inbox-details">
-    <button class="inbox-back" data-action="inboxBack" type="button">${icon('chevron')}${esc(t('feedback'))}</button>
-    <h2>${esc(inboxTitle(row))}</h2>
-    <time>${esc(date(row.created_at))}</time>
-    ${row.message?`<p class="inbox-details-text">${esc(row.message)}</p>`:''}
-    ${row.rating?`<p>${esc(row.rating)}/5</p>`:''}
-    ${row.app_version?`<p>${esc(row.app_version)}</p>`:''}
-    ${row.screen?`<p>${esc(row.screen)}</p>`:''}
-    ${canView?`<button type="button" class="btn" data-inbox-attachment="${id}"
-      data-attachment-source="${source}" aria-controls="${attachmentId}" aria-expanded="false">${esc(t('viewAttachment'))}</button>
-      <div class="inbox-attachment" id="${attachmentId}" aria-live="polite" hidden></div>`:''}
-  </div>`;
+  const attachmentId='inboxAttachment-'+source+'-'+id;
+  const parts=row.feedback_parts||{};
+  const feedbackParts=source==='bot'&&(parts.liked||parts.disliked);
+  const text=feedbackParts?'<div class="inbox-detail-messages">'+
+    (parts.liked?'<p class="inbox-details-text"><span aria-hidden="true">'+(parts.paid===true?'💎':'👍')+'</span> '+esc(parts.liked)+'</p>':'')+
+    (parts.disliked?'<p class="inbox-details-text"><span aria-hidden="true">'+(parts.paid===true?'🔎':'👎')+'</span> '+esc(parts.disliked)+'</p>':'')+
+    '</div>':'<p class="inbox-details-text">'+esc(row.message||(source==='payment'?t('inboxPaymentReceipt'):t('empty')))+'</p>';
+  const kindIcon=icon(source==='android'?'device':source==='payment'?'credit':source==='technical'?'settings':'send');
+  return '<div class="inbox-details">'+
+    '<button class="inbox-back" data-action="inboxBack" type="button">'+icon('chevron')+esc(t('feedback'))+'</button>'+
+    '<div class="inbox-detail-heading"><span class="inbox-platform-icon" aria-hidden="true">'+kindIcon+'</span>'+
+    '<div><h2>'+esc(inboxKind(row))+'</h2><time>'+esc(date(row.created_at))+'</time></div></div>'+
+    '<div class="inbox-detail-meta"><span>'+esc(t('platform'))+': <strong>'+esc(platform||t('unavailable'))+'</strong></span>'+
+    '<span>#'+esc(id)+'</span>'+(row.user_id?'<span>'+esc(t('account'))+' '+esc(row.user_id)+'</span>':'')+'</div>'+
+    '<div class="inbox-detail-body">'+text+
+    (row.rating?'<p class="inbox-rating">★ '+esc(row.rating)+'/5</p>':'')+
+    (row.app_version?'<p class="inbox-extra">'+esc(row.app_version)+'</p>':'')+
+    (row.screen?'<p class="inbox-extra">'+esc(row.screen)+'</p>':'')+'</div>'+
+    (canView?'<button type="button" class="btn" data-inbox-attachment="'+id+'" data-attachment-source="'+source+
+      '" aria-controls="'+attachmentId+'" aria-expanded="false">'+esc(t('viewAttachment'))+'</button>'+
+      '<div class="inbox-attachment" id="'+attachmentId+'" aria-live="polite" hidden></div>':'')+'</div>';
 }
 let currentInboxRows=[];
+function inboxRequest(before=null,userId=feedbackUserId) {
+  return api('inbox/list',{source:'all',priority:'all',status:'all',period:'all_time',
+    search:null,user_id:userId,before,limit:30});
+}
+function maybeLoadInbox(){
+  const scroller=$('drawerContent');
+  if(!scroller||!scroller.querySelector('.inbox-minimal-list')||inboxLoadingMore||!inboxNextCursor)return;
+  if(scroller.scrollHeight-scroller.scrollTop-scroller.clientHeight<280)void loadMoreInbox();
+}
+function renderInboxList(scrollTop=0){
+  const body='<div class="inbox-shell inbox-minimal">'+
+    (feedbackUserId?'<p class="inbox-account">'+esc(t('account'))+' #'+esc(feedbackUserId)+'</p>':'')+
+    '<div class="inbox-minimal-list">'+(currentInboxRows.map(inboxEntry).join('')||statePanel('empty'))+'</div>'+
+    '<p class="inbox-scroll-status" aria-live="polite" role="status"></p></div>';
+  drawer('feedback',body,null,'inbox-drawer');
+  const scroller=$('drawerContent');
+  scroller.scrollTop=scrollTop;
+  scroller.addEventListener('scroll',maybeLoadInbox,{passive:true});
+  drawerBack=null;
+  requestAnimationFrame(()=>{if(scroller.isConnected)maybeLoadInbox();});
+}
+async function loadMoreInbox(){
+  if(inboxLoadingMore||!inboxNextCursor||!state.actor)return;
+  const scroller=$('drawerContent'),list=scroller?.querySelector('.inbox-minimal-list');
+  if(!list)return;
+  const at=epoch,nonce=inboxRequestNonce,before=inboxNextCursor,status=scroller.querySelector('.inbox-scroll-status');
+  inboxLoadingMore=true;
+  if(status)status.textContent=t('loading');
+  let success=false;
+  try{
+    const data=await inboxRequest(before);
+    if(at!==epoch||nonce!==inboxRequestNonce||!list.isConnected||!state.actor)return;
+    const seen=new Set(currentInboxRows.map(row=>row.source+':'+row.source_id));
+    const added=(Array.isArray(data.items)?data.items:[]).filter(row=>!seen.has(row.source+':'+row.source_id));
+    currentInboxRows.push(...added);
+    list.insertAdjacentHTML('beforeend',added.map(inboxEntry).join(''));
+    inboxNextCursor=added.length&&JSON.stringify(data.next_before)!==JSON.stringify(before)?data.next_before:null;
+    if(status)status.textContent='';
+    success=true;
+  }catch(_){
+    if(at===epoch&&nonce===inboxRequestNonce&&status?.isConnected)status.textContent=t('error');
+  }finally{
+    if(at===epoch&&nonce===inboxRequestNonce){
+      inboxLoadingMore=false;
+      if(success)requestAnimationFrame(()=>{if(list.isConnected)maybeLoadInbox();});
+    }
+  }
+}
 async function openInbox(source,id) {
   if(inboxUpdating||!state.actor)return;
   const row=currentInboxRows.find(item=>item.source===source&&item.source_id===id);
   if(!row)return;
+  inboxListScrollTop=$('drawerContent')?.scrollTop||0;
+  inboxRequestNonce++;inboxLoadingMore=false;
   const current=drawerId,at=epoch;
   inboxUpdating=true;
   try {
@@ -2299,14 +2401,13 @@ async function openInbox(source,id) {
       return;
     }
     drawer('feedback',inboxDetails(row),null,'inbox-drawer');
-    drawerBack=()=>inbox(null,originatingUser);
+    drawerBack=()=>renderInboxList(inboxListScrollTop);
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     showNotice(error.status===409?'inboxChanged':'inboxActionError');
     await inbox(null,feedbackUserId);
   }finally{inboxUpdating=false;}
 }
-
 async function refreshInboxUnread() {
   if(!state.actor)return;
   const id=state.actor.user_id,current=epoch;
@@ -2335,22 +2436,18 @@ async function refreshInboxUnread() {
   }catch(_){/* Never invent a zero badge on an unavailable private read. */}
 }
 async function inbox(before=null,userId=null) {
-  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;currentInboxRows=[];const current=drawerId;
+  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;currentInboxRows=[];inboxListScrollTop=0;
+  const current=drawerId,at=epoch;
   drawer('feedback',statePanel('loading'),null,'inbox-drawer');
   try {
-    const data=await api('inbox/list',{source:'all',priority:'all',status:'all',period:'all_time',
-      search:null,user_id:userId,before,limit:30});
-    if(current!==drawerId||!state.actor)return;
+    const data=await inboxRequest(before,userId);
+    if(current!==drawerId||at!==epoch||!state.actor)return;
     inboxNextCursor=data.next_before;currentInboxRows=data.items;
-    const body=`<div class="inbox-shell inbox-minimal">
-      ${userId?`<p class="inbox-account">${esc(t('account'))} #${esc(userId)}</p>`:''}
-      <div class="inbox-minimal-list">${data.items.map(inboxEntry).join('')||statePanel('empty')}</div>
-      ${inboxNextCursor?`<button type="button" class="btn inbox-more" data-feedback-next="1">${esc(t('next'))}</button>`:''}
-    </div>`;
-    drawer('feedback',body,null,'inbox-drawer');
-  }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'),null,'inbox-drawer');}
+    renderInboxList();
+  }catch(error){
+    if(current===drawerId&&at===epoch&&state.actor)drawer('feedback',statePanel('error'),null,'inbox-drawer');
+  }
 }
-
 // Apple-first Web Push opt-in; actual sending requires an independent server kill switch.
 function applePushPlatform() {
   const ua=navigator.userAgent||'';
@@ -2559,7 +2656,7 @@ async function action(name) {
   if(name==='pushEnable'){await enablePush();return;}
   if(name==='mcpRevokeConfirm'){await revokeMcp();return;}
   if(name==='feedback'){await inbox();return;}
-  if(name==='inboxBack'){await inbox(null,feedbackUserId);return;}
+  if(name==='inboxBack'){renderInboxList(inboxListScrollTop);return;}
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='more'){
     const sections=['course','marketing','system'].map(route=>managementRow(t(route),'data-route="'+route+'"',{course:'book',marketing:'mega',system:'settings'}[route])).join('');
@@ -2770,7 +2867,6 @@ document.addEventListener('click',event=>{
       if(match)await openInbox(match[1],Number(match[2]));
     }
     else if(button.dataset.inboxAttachment){await viewInboxAttachment(button);}
-    else if(button.dataset.feedbackNext&&inboxNextCursor){await inbox(inboxNextCursor,feedbackUserId);}
     else if(button.dataset.pushRevoke){await revokePush(button.dataset.pushRevoke);}
     else if(button.dataset.mcpRevoke){await confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
     else if(button.dataset.action){await action(button.dataset.action);}
