@@ -2,6 +2,36 @@
 
 Updated 2026-10-26. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Verified main promotion — 2026-10-26
+
+The requested campaign completion and real V10 Home/seven-tab Statistics code
+is verified on `origin/main` at `ffa6c90c837f854174202f8b43fc4423b65556e6`.
+This includes the latest main `4741616b` (PR #219: rich Inbox, infinite scroll,
+launch screen), `b510b6fc` (real Pro tiers/selected duration) and PR #218 decisions.
+The final close handler preserves both stale-Inbox request cancellation and owned
+campaign-upload cancellation. All three rollout defaults remain OFF. There was
+no manual deployment, production migration, secret change or flag activation.
+
+Source CI [40244257194](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40244257194)
+completed successfully for `9137b4b2`: full unit/legacy/catalog, PostgreSQL
+migration/lock and all native-WebAuthn browser commands. The later PR #219 merge
+passed 40 read/Inbox/shell/import tests and 11 subtests, actual UZ/RU/TJ minimal
+Inbox/course and V10 core browser checks; evidence is in
+`/tmp/hsk-v10-main219-*.log` and `/tmp/hsk-admin-pwa-v10-main219-20261026`.
+Earlier new analytics PostgreSQL/Redis/R2, daily reuse/privacy and 706-test
+integration evidence is retained below. Basic exports/MCP remain compatible;
+new first-party section analytics do not expand external MCP scope.
+
+Remote main ref was checked after push. AI branches were merged with this tested
+main without force/reset; local-ai has the same tree, cloud-ai retains its two
+unrelated mobile-layout QA files. The original feature checkout was synchronized
+with the exact promoted tree; unrelated Graphify files remain unstaged.
+Completed campaign and analytics OpenSpec changes are archived under
+`openspec/changes/archive/2026-10-26-admin-pwa-*`; their specs are in
+`openspec/specs/`. These are completed code tasks, not a claim of flag activation.
+The fresh promotion worktree remains attached for review. Continue from current
+remote main and this checkpoint; older “not promoted” entries below are history.
+
 ## Owner's latest V10 Home + Statistics request — 2026-10-26
 
 The owner supplied `/Users/kaijimima1234/Downloads/hsk-ai-admin-ux-demo-v10 2.html`
@@ -13,7 +43,7 @@ Home and all seven Statistics views were read and rendered at desktop/mobile:
 `/tmp/hsk-admin-demo-reference-20261026`. No demo fixture is copied into runtime.
 
 Read the new CLI-generated planning delta
-`openspec/changes/admin-pwa-v10-control-center-statistics/` before implementation.
+`openspec/changes/archive/2026-10-26-admin-pwa-v10-control-center-statistics/` before implementation.
 Proposal/design/specs/tasks are written and CLI strict validation passes.
 Home and all seven Statistics sections are implemented through the new first-party
 `/analytics` reader. Advanced experiments are a separate lazy disclosure. Real
@@ -88,7 +118,7 @@ Owned local PostgreSQL 55137 and Redis 55138 were stopped after verification.
   Apple Web Push and selective OpenSpec planning are preserved. Their upstream
   defaults are not reverted by this work.
 - The owner asked to continue remaining Admin PWA work. The CLI-generated
-  [campaign delta](../../openspec/changes/admin-pwa-campaign-completion/proposal.md)
+  [campaign delta](../../openspec/changes/archive/2026-10-26-admin-pwa-campaign-completion/proposal.md)
   records button/media/scheduling/discount-notice contracts; OpenSpec 1.15.0
   `validate --strict` passes. That is planning validation only. This handoff
   remains the canonical execution checkpoint.

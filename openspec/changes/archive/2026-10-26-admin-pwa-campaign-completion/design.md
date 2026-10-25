@@ -2,7 +2,7 @@
 
 ## Context
 
-The authoritative state remains [the handoff](../../../docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md) and [the management contract](../../../docs/admin-pwa/MANAGEMENT_COMMANDS_CONTRACT.md). Current `pwa_campaigns.py` authorizes one exact audience and queues text; `pwa_outbound.py` commits recipient claims before provider IO, rechecks session revocation and expires private bodies after one hour. `promo_button.py` already owns the allowlisted learner actions. Existing payout proof staging demonstrates owner/session isolation; course-ad media validation already bounds raster/video processing. Main now includes user filters, compact Mac layout and automatic Apple Web Push; retain those changes.
+The authoritative state remains [the handoff](../../../../docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md) and [the management contract](../../../../docs/admin-pwa/MANAGEMENT_COMMANDS_CONTRACT.md). Current `pwa_campaigns.py` authorizes one exact audience and queues text; `pwa_outbound.py` commits recipient claims before provider IO, rechecks session revocation and expires private bodies after one hour. `promo_button.py` already owns the allowlisted learner actions. Existing payout proof staging demonstrates owner/session isolation; course-ad media validation already bounds raster/video processing. Main now includes user filters, compact Mac layout and automatic Apple Web Push; retain those changes.
 
 ## Goals / Non-Goals
 

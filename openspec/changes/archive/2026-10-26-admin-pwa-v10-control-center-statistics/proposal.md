@@ -2,7 +2,7 @@
 
 ## Why
 
-The owner supplied the V10 HTML again and explicitly requested both the control center and Statistics to match its layout while using complete real analytics. The existing handoff covers smaller read projections and the campaign delta; it does not specify the expanded section-level analytics/cache and visual mapping required here. The canonical execution checkpoint remains [the Admin PWA handoff](../../../docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md), with [read definitions](../../../docs/admin-pwa/READ_PROJECTIONS.md) and the verified V10 source reference.
+The owner supplied the V10 HTML again and explicitly requested both the control center and Statistics to match its layout while using complete real analytics. The existing handoff covers smaller read projections and the campaign delta; it does not specify the expanded section-level analytics/cache and visual mapping required here. The canonical execution checkpoint remains [the Admin PWA handoff](../../../../docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md), with [read definitions](../../../../docs/admin-pwa/READ_PROJECTIONS.md) and the verified V10 source reference.
 
 ## What Changes
 

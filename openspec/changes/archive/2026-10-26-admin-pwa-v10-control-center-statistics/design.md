@@ -2,7 +2,7 @@
 
 ## Context
 
-See the proposal and canonical [handoff](../../../docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md). The supplied HTML is the already verified 182,765-byte V10 reference. The current Home shows four counters and long detail lists; Statistics has seven tabs but several are sparse and Sources is unavailable. `pwa_read.statistics` already provides safe basic aggregates, and `pwa_statistics_cache` provides private daily Redis/R2 snapshots with an eight-second cold-load deadline and read-only five-second SQL deadlines.
+See the proposal and canonical [handoff](../../../../docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md). The supplied HTML is the already verified 182,765-byte V10 reference. The current Home shows four counters and long detail lists; Statistics has seven tabs but several are sparse and Sources is unavailable. `pwa_read.statistics` already provides safe basic aggregates, and `pwa_statistics_cache` provides private daily Redis/R2 snapshots with an eight-second cold-load deadline and read-only five-second SQL deadlines.
 
 Legacy `AdminMiniAppService.overview` is not a safe browser proxy: it loads latest private accounts/payments and unrelated settings; advanced helpers can materialize event/payment history. `AdminFinanceStatsService.build` loads historical approved payments and subscription entry events. Their definitions and appropriate aggregate helpers are reusable, not their entire responses.
 
