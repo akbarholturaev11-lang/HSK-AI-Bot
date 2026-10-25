@@ -246,6 +246,20 @@ async def browser_checks(output):
         await expect(page.locator('#userFilterPanel .user-filter-choice')).to_have_count(10)
         await page.locator('[data-user-segment="all"]').last.click()
         await expect(page.locator('#userFilterPanel')).to_be_hidden()
+        # Unsaved search text must be applied with the selected filter, rather
+        # than resetting to the last submitted query on rerender.
+        await page.locator('#userQuery').fill('999999')
+        await page.locator('[data-user-filter-toggle]').click()
+        await page.locator('.user-filter-choice[data-user-segment="free"]').click()
+        await expect(page.locator('#userQuery')).to_have_value('999999')
+        await expect(page.locator('.data-table')).to_have_count(0)
+        assert any(path.endswith('/users/search') and body.get('segment')=='free'
+                   and body.get('query')=='999999'
+                   for path,_,body in calls if isinstance(body,dict))
+        await page.locator('#userQuery').fill('')
+        await page.locator('[data-user-filter-toggle]').click()
+        await page.locator('.user-filter-choice[data-user-segment="all"]').click()
+        await expect(page.locator('.data-table tbody tr')).to_have_count(3)
         await page.locator('#userQuery').fill('999999')
         await page.locator('#searchForm button[type=submit]').click()
         await expect(page.locator('.data-table')).to_have_count(0)

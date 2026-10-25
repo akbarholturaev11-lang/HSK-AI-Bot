@@ -162,8 +162,9 @@ def _user_segment_clause(segment: str, *, now: datetime):
     Entitlement predicates follow resolve_state precedence; paid never includes
     previews/trials and hot leads exclude pending receipts.
     """
-    status = func.lower(func.coalesce(User.status, ""))
-    payment = func.lower(func.coalesce(User.payment_status, ""))
+    # The canonical classifier strips outer whitespace; filtering must agree.
+    status = func.trim(func.lower(func.coalesce(User.status, "")))
+    payment = func.trim(func.lower(func.coalesce(User.payment_status, "")))
     blocked = status == "blocked"
     # Include IS NOT NULL before negating these predicates: SQL's three-valued
     # NULL logic must not discard ordinary free/expired accounts.
@@ -185,12 +186,16 @@ def _user_segment_clause(segment: str, *, now: datetime):
     ).exists()
     clauses = {
         "all": True,
-        "active_today": User.last_active_at >= admin_miniapp_today_start(now),
+        "active_today": and_(User.last_active_at >= admin_miniapp_today_start(now),
+                             User.last_active_at <= now),
         "paid": and_(~blocked, paid),
-        "pending": or_(payment == "pending", pending_receipt),
+        # Only actual pending payment records require review. The account's
+        # denormalized payment_status may be stale after a review/cancellation.
+        "pending": pending_receipt,
         "wants_pay": and_(status.in_(HOT_LEAD_STATUSES),
                           payment.in_(HOT_LEAD_PAYMENT_STATUSES),
                           User.last_active_at >= now - HOT_LEAD_ACTIVITY_WINDOW,
+                          User.last_active_at <= now,
                           ~bot_blocked, ~pending_receipt),
         "trial": trial,
         "free": and_(~blocked, ~paid, ~temporary_access, ~trial, ~expired),
@@ -225,7 +230,10 @@ async def users(db, request: UsersRequest):
     return {"items": [{"user_id": row.id, "name": row.full_name, "username": row.username,
                        "language": row.language, "level": row.level, "status": row.status,
                        "access_state": resolve_state(row, now=now), "end_date": _iso(row.end_date),
-                       "has_pending_payment": row.id in pending, "last_active_at": _iso(row.last_active_at)}
+                       "has_pending_payment": row.id in pending,
+                       "last_active_at": _iso(row.last_active_at),
+                       "access_expires_at": _iso(access_expires_at(
+                           row, resolve_state(row, now=now), now=now))}
                       for row in page],
             "next_before_id": page[-1].id if len(rows) > request.limit else None,
             "numeric_query_namespace": "users.id"}

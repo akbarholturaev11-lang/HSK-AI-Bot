@@ -158,6 +158,114 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertEqual(profile["user"]["selected_plan_type"], "10_days")
         self.assertEqual(profile["user"]["selected_payment_method"], "alipay")
 
+    async def test_filter_entitlements_match_canonical_access_matrix_and_real_pending_payments(self):
+        """Regression: paid/trial/free/expired must agree with displayed access_state."""
+        from app.services.entitlements import resolve_state
+
+        now = datetime.now(timezone.utc)
+        soon = now + timedelta(days=4)
+        past = now - timedelta(days=4)
+        users = [
+            User(id=201, status="trial", payment_status="none"),  # Legacy trial = FREE
+            User(id=202, status="free", payment_status="none",
+                 pro_trial_ends_at=soon),  # Genuine Pro trial
+            User(id=203, status="active", payment_status="approved", end_date=past),
+            User(id=204, status="active", payment_status="approved", end_date=soon),
+            User(id=205, status="active", payment_status="none", end_date=soon),  # Bonus
+            User(id=206, status="expired", payment_status="approved", end_date=past,
+                 pro_trial_ends_at=soon),  # Trial overrides legacy expiry
+            User(id=207, status="blocked", payment_status="approved", end_date=soon,
+                 pro_trial_ends_at=soon),  # Blocking overrides everything
+            User(id=208, status="active", payment_status="approved", end_date=past,
+                 pro_trial_ends_at=soon),
+            User(id=209, status="free", payment_status="pending"),  # Stale account flag
+            User(id=210, status="free", payment_status="none",
+                 pro_trial_ends_at=soon, pro_trial_revoked_at=past),
+            User(id=211, status="free", payment_status="none",
+                 payment_preview_payment_id=87611, pro_trial_ends_at=soon),
+            User(id=212, status="free", payment_status="none",
+                 payment_preview_payment_id=87612),  # Temporary payment preview
+            User(id=213, status=" active ", payment_status=" APPROVED ",
+                 end_date=soon),  # Canonical classifier strips whitespace
+            User(id=214, status="expired", payment_status="none", end_date=past,
+                 payment_preview_payment_id=87614),  # Preview overrides expired
+            User(id=215, status="active", payment_status="approved"),  # No end date
+            User(id=216, status="free", payment_status="none",
+                 last_active_at=now + timedelta(days=1)),  # Impossible future activity
+        ]
+        ids = {user.id for user in users}
+        async with self.sessions() as db:
+            db.add_all(users)
+            db.add(Payment(user_id=210, payment_method="wechat", plan_type="10_days",
+                           payment_status="pending", amount=5, currency="USD"))
+            await db.commit()
+            expected = {u.id: resolve_state(u, now=now) for u in users}
+
+        # Server-side membership must agree with the canonical user access
+        # classifier, including temporary access and legacy status values.
+        for segment, access_state in (
+            ("paid", "PRO_ACTIVE"), ("trial", "TRIAL_ACTIVE"),
+            ("free", "FREE"), ("expired", "EXPIRED"), ("blocked", "BLOCKED"),
+        ):
+            response = await self.post("users/search", {"segment": segment, "limit": 100})
+            self.assertEqual(response.status_code, 200, response.text)
+            actual = {row["user_id"] for row in response.json()["items"] if row["user_id"] in ids}
+            self.assertEqual(actual, {user_id for user_id, state in expected.items()
+                                      if state == access_state}, segment)
+            for row in response.json()["items"]:
+                if row["user_id"] in ids:
+                    self.assertEqual(row["access_state"], access_state, row)
+
+        pending = (await self.post("users/search", {"segment": "pending", "limit": 100})).json()
+        self.assertEqual({row["user_id"] for row in pending["items"] if row["user_id"] in ids},
+                         {210}, "Only actual unreviewed receipts are pending")
+        active = (await self.post("users/search", {"segment": "active_today", "limit": 100})).json()
+        self.assertNotIn(216, {row["user_id"] for row in active["items"]},
+                         "Future-dated activity must not be classified as today")
+        hot = (await self.post("users/search", {"segment": "wants_pay", "limit": 100})).json()
+        self.assertNotIn(216, {row["user_id"] for row in hot["items"]},
+                         "Future-dated activity must not be a hot lead")
+        all_rows = (await self.post("users/search", {"limit": 100})).json()["items"]
+        by_id = {row["user_id"]: row for row in all_rows}
+        self.assertFalse(by_id[209]["has_pending_payment"])
+        self.assertTrue(by_id[210]["has_pending_payment"])
+        self.assertEqual(by_id[205]["access_state"], "TEMP_ACCESS")
+        self.assertEqual(by_id[205]["access_expires_at"], soon.isoformat())
+        self.assertIsNone(by_id[212]["access_expires_at"],
+                          "Receipt previews have no subscription end date")
+        self.assertEqual(by_id[204]["access_expires_at"], soon.isoformat())
+        self.assertIsNone(by_id[203]["access_expires_at"],
+                          "Expired access must not claim an active entitlement")
+
+    async def test_filter_search_limits_are_applied_before_pagination_and_no_stale_pending(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            db.add_all([User(id=301, full_name="Target 301", status="free",
+                             last_active_at=now),
+                        User(id=302, full_name="Target 302", status="free",
+                             last_active_at=now),
+                        User(id=303, full_name="Target 303", status="active",
+                             payment_status="approved", end_date=now+timedelta(days=20)),
+                        User(id=304, full_name="Target 304", status="free",
+                             payment_status="pending")])
+            await db.commit()
+        first = (await self.post("users/search", {
+            "segment": "free", "query": "Target", "limit": 1
+        })).json()
+        self.assertEqual([x["user_id"] for x in first["items"]], [304])
+        self.assertEqual(first["next_before_id"], 304)
+        second = (await self.post("users/search", {
+            "segment": "free", "query": "Target", "limit": 1,
+            "before_id": first["next_before_id"],
+        })).json()
+        self.assertEqual([x["user_id"] for x in second["items"]], [302])
+        self.assertEqual([x["user_id"] for x in (await self.post("users/search", {
+            "segment": "paid", "query": "Target"
+        })).json()["items"]], [303])
+        self.assertEqual((await self.post("users/search", {
+            "segment": "pending", "query": "Target"
+        })).json()["items"], [])
+
     async def test_activity_metrics_are_bounded_deduplicated_and_conversion_is_a_real_cohort(self):
         now = datetime.now(timezone.utc)
         old = now-timedelta(days=40)
