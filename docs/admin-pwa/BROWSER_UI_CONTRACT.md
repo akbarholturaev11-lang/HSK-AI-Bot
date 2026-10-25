@@ -275,3 +275,26 @@ Browser QA downloads real JSON/CSV bytes via actual SQLite/ASGI routes at
 1440/390px in UZ/RU/TJ, checks source timestamps/PII omission/definitions, 44px
 controls and no overflow, error/type/size rejection, URL cleanup and delayed
 cancellation. This does not establish physical iPhone download/share behavior.
+
+## Source-backed V10 Home and seven-tab Statistics — 2026-10-26
+
+The supplied V10 Home/Statistics structure is now backed by the separate guarded
+section reader described in `READ_PROJECTIONS.md`. Four real Home KPIs, calendar
+learning-activity SVG, pending/expiring/blocked queue links and four existing
+protected shortcuts replace the old long detail lists. The header retains its
+single Inbox bell; Home does not duplicate that control. Choosing Grant first
+selects a canonical account from the existing user list; the operation still
+runs once from its original contextual editor through native WebAuthn.
+
+Overview/course/platform/funnel/finance/sources/report retain the V10 cards,
+tracks, panels and mobile horizontal tab strip. Sections request only their own
+daily snapshot. The advanced disclosure loads experiments only on first opening;
+route/filter/session changes abort it and reject late results. Empty/immature
+rates are dashes or collecting, real zeros remain zero. Per-platform global-data
+gaps remain explicit. The report identifies basic aggregate downloads and overall
+coverage rather than claiming unimplemented section exports. No demo arrays,
+growth percentages, guessed platform shares or source-code filler are included.
+
+Canonical UZ/RU/TJ bundles own new labels. Layout uses fixed CSS/SVG attributes
+under the existing CSP, no inline styles or public private-data cache. Every
+original-editor/dirty-state/passkey/unknown-result rule above remains in force.

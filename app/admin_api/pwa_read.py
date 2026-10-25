@@ -60,7 +60,7 @@ class PageRequest(ReadRequest):
 class UsersRequest(PageRequest):
     query: Annotated[str, Field(max_length=80)] = ""
     segment: Literal["all", "active_today", "paid", "pending", "wants_pay",
-                     "trial", "free", "expired", "blocked", "bot_blocked"] = "all"
+                     "trial", "free", "expired", "blocked", "bot_blocked", "expiring_pro"] = "all"
 
 
 class UserDetailRequest(ReadRequest):
@@ -189,6 +189,7 @@ def _user_segment_clause(segment: str, *, now: datetime):
         "active_today": and_(User.last_active_at >= admin_miniapp_today_start(now),
                              User.last_active_at <= now),
         "paid": and_(~blocked, paid),
+        "expiring_pro": and_(~blocked, paid, User.end_date <= now+timedelta(days=3)),
         # Only actual pending payment records require review. The account's
         # denormalized payment_status may be stale after a review/cancellation.
         "pending": pending_receipt,
@@ -348,12 +349,19 @@ async def feedback(db, request: FeedbackRequest):
             "unavailable_sources": ["android_bug_reports"], "attachment_access": "not_exposed"}
 
 
-def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_reader=None):
+def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_reader=None, analytics_reader=None):
     from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
 
     statistics_reader = statistics_reader or AdminPwaStatisticsReader(
         settings_obj=settings_obj, session_factory=session_factory)
     router = APIRouter(tags=["admin-pwa-read"])
+    from app.admin_api.pwa_analytics_transport import create_admin_pwa_analytics_router
+    from app.admin_api.pwa_analytics_cache import AdminPwaAnalyticsReader
+    if analytics_reader is None:
+        analytics_reader = AdminPwaAnalyticsReader(settings_obj=settings_obj,session_factory=session_factory,
+            refresh_mutex=getattr(statistics_reader,"_mutex",None))
+    router.include_router(create_admin_pwa_analytics_router(settings_obj=settings_obj,
+        session_factory=session_factory,analytics_reader=analytics_reader))
 
     async def handle(request: Request, schema, service):
         failure = _guard_post(request, settings_obj)

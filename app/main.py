@@ -34,6 +34,7 @@ from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_payment_review_transport import create_admin_pwa_payment_review_router
 from app.admin_api.pwa_payment_outbox import dispatch_payment_review
+from app.admin_api.pwa_analytics_cache import AdminPwaAnalyticsReader
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_feedback_analytics import create_admin_pwa_feedback_analytics_router
 from app.admin_api.pwa_feedback_cache import AdminPwaFeedbackReader
@@ -658,6 +659,7 @@ async def lifespan(app: FastAPI):
                 await task
         await admin_pwa_due_campaigns.close()
         await admin_pwa_statistics_reader.aclose()
+        await admin_pwa_analytics_reader.aclose()
         await admin_pwa_feedback_reader.aclose()
         await bot.session.close()
         await engine.dispose()
@@ -691,6 +693,8 @@ app.include_router(create_admin_pwa_payment_review_router(
     dispatch=_dispatch_admin_pwa_payment_review,
 ))
 admin_pwa_statistics_reader = AdminPwaStatisticsReader(settings_obj=settings, session_factory=async_session_maker)
+admin_pwa_analytics_reader = AdminPwaAnalyticsReader(settings_obj=settings, session_factory=async_session_maker,
+    refresh_mutex=admin_pwa_statistics_reader._mutex)
 app.include_router(create_admin_pwa_access_grant_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_course_access_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_hsk30_settings_router(settings_obj=settings, session_factory=async_session_maker))
@@ -780,7 +784,7 @@ admin_pwa_feedback_reader = AdminPwaFeedbackReader(settings_obj=settings, sessio
 app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=settings, session_factory=async_session_maker,
     reader=admin_pwa_feedback_reader))
 app.include_router(create_admin_pwa_read_router(settings_obj=settings, session_factory=async_session_maker,
-    statistics_reader=admin_pwa_statistics_reader))
+    statistics_reader=admin_pwa_statistics_reader,analytics_reader=admin_pwa_analytics_reader))
 app.include_router(create_admin_pwa_inbox_triage_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_inbox_attachment_router(
     settings_obj=settings, session_factory=async_session_maker,

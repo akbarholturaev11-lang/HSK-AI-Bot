@@ -15,17 +15,30 @@ Home and all seven Statistics views were read and rendered at desktop/mobile:
 Read the new CLI-generated planning delta
 `openspec/changes/admin-pwa-v10-control-center-statistics/` before implementation.
 Proposal/design/specs/tasks are written and CLI strict validation passes.
-Detailed source/definition/query audit continues per module. Initial unmounted
-Home/overview scalar/grouped SQL projections are now in `pwa_analytics.py`;
-initial isolated per-section cache composition is in `pwa_analytics_cache.py`.
-Projection/cache/guarded transport regressions: 24 passed (five real Redis tests
-require the isolated service). UI wiring remains in progress; the new readers
-are not mounted or used by the frontend yet. No new analytics UI is connected yet.
-Plan section-on-demand daily private snapshots, bounded typed source projections,
-V10 cards/charts/queues/shortcuts and complete seven-tab views with UZ/RU/TJ.
-Do not blindly proxy the legacy overview or finance builders: some methods load
-private/latest rows and unbounded event/payment history, and legacy all-time
-advanced detail is intentionally rolling 30 days.
+Home and all seven Statistics sections are implemented through the new first-party
+`/analytics` reader. Advanced experiments are a separate lazy disclosure. Real
+canonical counts, Shanghai-calendar learning activity, mature retention, Starter,
+timing/features, platform inventory/foreground, attempt funnel, currency/AI/renewal,
+source/traffic and report coverage are connected. See `READ_PROJECTIONS.md` for
+exact definitions, bounds, unsupported attribution and basic-export scope.
+No demo data is shipped; original one-editor WebAuthn and all OFF flags remain.
+
+Verification so far: focused actual PostgreSQL/Redis suite 46 passed; broader
+Admin PWA/catalog/QA suite 706 passed and 567 subtests, no skips. Actual ASGI/
+virtual-WebAuthn core browser passed seven tabs at 390/1440 in UZ/RU/TJ, including
+lazy experiments and console/overflow checks. Separate export/access/attachment/
+worker and minimal-Inbox browser passes are recorded under
+`/tmp/hsk-admin-pwa-v10-browser-20261026` and
+`/tmp/hsk-admin-pwa-v10-ui-cleanup-20261026`. A final small Home task correction
+reuses the blocked cohort instead of duplicating the header Inbox bell;
+focused/core reruns are in progress. Catalogs: 63 artifacts, zero stale; adoption
+79 classified/zero stale and frozen baseline guard passed.
+
+A fresh fetch now finds main at `d9e70fa5` (PR #218), including the owner's course
+limits/Trial, seven-column user directory and explicit payment-decision work.
+Integrate that latest main after committing this reviewed source increment,
+resolve UI/catalog/test overlaps preserving both, then re-run affected checks.
+The older clean promotion candidate below must not be pushed over newer main.
 
 Campaign code is pushed through `194ae4df`, which fixes legacy active-offer
 dirty-state hydration and the CI branded media browser.
@@ -38,7 +51,8 @@ and the actual branded-Chrome MP4 preview.
 The latest local campaign browser including legacy offer Off/revert/sign passed
 in `/tmp/hsk-admin-pwa-final-legacy-offer-20261026`; shell tests: eight passed.
 
-Main is still `1db08846`; **no campaign promotion has been pushed yet**. A clean
+The older promotion base was `1db08846`; **no new campaign/analytics promotion
+has been pushed yet**. Remote main has advanced as described above. A clean
 managed promotion worktree is attached at
 `/Users/kaijimima1234/.codex/worktrees/admin-pwa-campaign-promotion-20261026/HSK AI bot`,
 currently prepared at `c93443f8` (campaigns plus deterministic revoke test).

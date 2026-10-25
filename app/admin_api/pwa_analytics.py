@@ -44,7 +44,7 @@ async def learning_activity_series(db,*,period,now):
     rows=(await db.execute(select(day.label('day'),func.count(func.distinct(User.id)).label('accounts'))
         .select_from(Event).join(User,and_(analytics_user_join(Event),
             or_(Event.user_id.is_not(None),Event.telegram_id>0)))
-        .where(Event.event_name.in_(COURSE_EVENTS),Event.created_at>=start,Event.created_at<=now)
+        .where(User.created_at<=now,Event.event_name.in_(COURSE_EVENTS),Event.created_at>=start,Event.created_at<=now)
         .group_by(day).order_by(day))).all()
     counts={str(row.day):int(row.accounts) for row in rows}
     return {'points':[{'date':(today-timedelta(days=days-1-index)).isoformat(),
@@ -62,7 +62,7 @@ async def home_overview_metrics(db,*,period,now=None,overview=False):
     since=now-timedelta(days={'weekly':7,'monthly':30}[period]) if period!='all_time' else None
     active_since=since or now-timedelta(days=30)
     paid=_user_segment_clause('paid',now=now)
-    expiring=and_(paid,User.end_date<=now+timedelta(days=3))
+    expiring=_user_segment_clause('expiring_pro',now=now)
     current_block=and_(User.bot_blocked_at.is_not(None),User.bot_blocked_at<=now,or_(User.bot_unblocked_at.is_(None),
         User.bot_unblocked_at<User.bot_blocked_at))
     bot_period=and_(current_block,*_window(User.bot_blocked_at,since,now)) if since else current_block
@@ -74,6 +74,7 @@ async def home_overview_metrics(db,*,period,now=None,overview=False):
         func.count(User.id).filter(paid).label('active_pro'),
         func.count(User.id).filter(expiring).label('expiring_pro'),
         func.count(User.id).filter(bot_period).label('bot_blocked'),
+        func.count(User.id).filter(_user_segment_clause('blocked',now=now)).label('blocked_current'),
     ).where(User.created_at<=now))).one()
     result={key:int(value or 0) for key,value in row._mapping.items()}
     pay_date=func.coalesce(Payment.reviewed_at,Payment.submitted_at)

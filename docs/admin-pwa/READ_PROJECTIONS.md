@@ -388,3 +388,37 @@ Changing query period/source yields a separate on-demand daily snapshot. Snapsho
 revalidation checks exact query, timestamps, schema, safe category counts and
 payload size. Export does NOT trigger independent uncached SQL. No background
 polling, early forced refresh, account caches or production rollout are introduced.
+
+## V10 Home and section analytics — 2026-10-26
+
+`POST /api/admin/v1/analytics` is a first-party read endpoint included by the
+existing read-router factory. Strict 2 KiB input: `section=home|overview|course|
+platform|funnel|money|sources|report|experiments`, the existing three periods and
+six platforms. No arbitrary dates, fields, IDs, URLs or refresh control. A current
+allowlisted WebAuthn admin session is checked before and after cache IO; no SQL
+connection spans Redis/R2 waits. Disabling the flag or revoking the session denies
+a late response. External OAuth/MCP gains no new section, tool or permission.
+
+The existing daily reader is reused with separate fixed section Redis/R2
+identities. Section readers share a compute mutex and the basic reader's Redis
+refresh lease; the production reader also shares its process mutex with basic
+statistics. Original timestamps/expiry survive warm reads and R2 restoration.
+128 KiB payload, read-only repeatable-read transaction, 5s statement/8s computation
+bounds and existing outage/cooldown behavior apply. Nothing preloads other tabs.
+
+| Section | Actual definitions |
+|---|---|
+| Home / overview | Current canonical accounts, exact paid entitlement, pending payments, Shanghai-calendar active today; selected-period new/active/payment/payer counts. Expiring Pro uses the same paid predicate and next-three-days bound as `users/search segment=expiring_pro`. Current blocked accounts link to the existing blocked filter. Current action lists remain live despite daily counters. |
+| Calendar chart | Distinct canonical accounts with recorded lesson/practice activity per Asia/Shanghai calendar day; positive legacy fallback only without canonical ownership. Seven days weekly; 30 days monthly/all-time. Missing dates are real zero. This is learning activity, not total product DAU. |
+| Course | Existing event names/estimators for activation ≤2min, version-bound Starter/first-attempt/checkpoint and paired session/lesson duration. D1/D7 use fully observed signup cohorts, return windows [24,48) / [168,192) hours; selected signup window shifted back by observation maturity. Empty denominator gives null. Feature counts split by current paid/nonpaid entitlement; rate denominators are all current canonical accounts in each group. AI chat reads message counts only. Voice measures elapsed completed sessions with answers, not speech time. |
+| Detailed history | Course timings/foundation/activation/features and all-time experiments retain an explicit last-30-days detail scope. Detailed event reads cap at 5,001 sentinel rows and 4,097 payload characters; over-limit calculations become unavailable, never a partial sample presented as complete. Raw payloads, conversation contents and identities never leave projections. Scalar/grouped totals and retention remain SQL aggregates. |
+| Platforms | Current nonrevoked native registry devices/accounts; online-device contact is separate from real foreground activity. Android uses authenticated open events; macOS/Windows use existing proof-event/platform parsing. Actual Mini App presence reports distinct recorded accounts and last foreground within 30 days. Foreground counters are rolling 1/7/30 regardless of chosen period. Top 12 native version groups per platform; unknown text collapses to unknown. Groups overlap. iPhone remains unavailable; native course/payment attribution is not inferred from global figures. |
+| Funnel | Registration cohort → approved recognized Pro plan retains its original definition. Separate checkout stages require recorded attempt IDs and chronological screenshot/payment bindings; receipt/approval stages require the same actual canonical payment owner. Missing attempt instrumentation is collecting, not unrelated event counts treated as a conversion rate. |
+| Finance | Exact recognized-currency sums stay separate; USD uses existing fixed portfolio TJS/CNY rates and stored TJS base fallback, explicitly an estimate. Unknown prices are counted/excluded from USD. HSK 3.0 unlock is excluded from subscription revenue. Stored AI cost/tokens by model/tier are estimates, never repriced or called invoices. Net includes only manual-profit and expense ledger aggregates. Renewal uses row-number over full prior approved subscription history with canonical-first ownership and separate orphan namespaces. ARPU uses active accounts (all-time: rolling 30d); ARPPU includes distinct retained payer histories. First-payment delay uses canonical registration and first historical payment. Tagged CAC uses existing marketing tags and newly paying canonical accounts; absent tags/denominator give null. |
+| Sources | Fixed subscription source groups, visits and distinct canonical/retained histories. Payment attribution is the nearest recorded entry at/before submission across all prior history, with canonical ownership taking precedence; this is descriptive proximity, not causal credit or a cohort conversion. Public traffic uses the existing anonymous stored visit-day/source counters, not users/registrations; there is no invented Telegram traffic source. |
+| Experiments | Loaded only when the advanced disclosure opens. Existing server-assigned mature 7d sales ITT/SRM/CI, 48h D1 recovery and 48h reminder-open proxy estimators; only numeric aggregate fields are returned. No automatic recommendation changes rollout. Bounded history overflow is unavailable. |
+| Report / files | Overall stored-record coverage/latest timestamps are explicitly independent of selected platform/period. The download retains the existing basic `/statistics/export` contract and privacy allowlist; it does not claim to export every new section table. Sanitized feedback files remain separate. |
+
+Implementation: `pwa_analytics*.py`, existing `pwa_statistics_cache.py`,
+`pwa_read.py` and V10 `app/static/admin-pwa/`. Regression evidence and promotion
+state are in the [handoff](MCP_NEXT_CHAT_HANDOFF.md).

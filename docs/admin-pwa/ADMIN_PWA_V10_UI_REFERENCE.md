@@ -14,8 +14,8 @@ Current owner-supplied source, received 2026-10-24:
   supply the visual language. No complete demo HTML or demo dataset is shipped.
 
 The branch now has a separate public shell using protected real-data APIs,
-canonical UZ/RU/TJ text, native passkey enrollment/login and explicit payment
-confirmation. Toolbar period/filter/bell share one row. Unsupported management
+canonical UZ/RU/TJ text, native passkey enrollment/login and single-editor payment
+review. Toolbar period/filter/bell share one row. Unsupported management
 features stay disabled; unavailable telemetry remains unavailable. See
 `BROWSER_UI_CONTRACT.md` for source paths, exact behavior and QA boundaries.
 
@@ -40,6 +40,7 @@ handoff describe that checkpoint; do not ask for the original again.
 Keep the verified visual components; never copy demo fixtures or success
 handlers. Render actual bounded server projections with clear loading/empty/
 error/offline/expired/unavailable states. All privileged commands require their
-own audited adapter, server validation, exact one-use WebAuthn and explicit
-confirmation. Existing Telegram `/admin.html` and authentication remain intact.
-`ADMIN_PWA_ENABLED=false`; no production/main promotion is authorized.
+own audited adapter, server validation, exact one-use WebAuthn from the original contextual action. Existing Telegram `/admin.html` and authentication remain intact.
+All three rollout defaults stay OFF. The owner authorized tested intended-code
+promotion to main; current remote evidence is in `MCP_NEXT_CHAT_HANDOFF.md`.
+No manual deployment or flag activation is included.

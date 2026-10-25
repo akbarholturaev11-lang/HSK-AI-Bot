@@ -1,74 +1,54 @@
 # HSK AI Admin PWA — current guide
 
-Work only on `feat/admin-pwa-mcp-readonly-20261024`, [Draft PR #201](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/201).
-PR #200 is already merged. No main push/merge, deployment, live migration,
-secret configuration or flag activation is authorized. Keep
-`ADMIN_PWA_ENABLED=false`, `ADMIN_PWA_MCP_ENABLED=false` and
-`ADMIN_PWA_MCP_TRANSPORT_ENABLED=false`.
+Start with the [current handoff](MCP_NEXT_CHAT_HANDOFF.md), then root `AGENTS.md`,
+`AI_RULES.md`, `PROJECT_MEMORY.md` and the relevant contracts below. Older PR #200
+and feature-only checkpoints are historical. Current source branch:
+`feat/admin-pwa-minimal-inbox-passkey-20261025`. The owner authorized promotion
+of tested intended Admin PWA code to `origin/main`; verify remote evidence in
+the handoff. Manual deployment, live migrations and feature activation remain
+outside that authorization. All three Admin PWA/MCP defaults stay OFF.
 
-## Start here
+## Home and Statistics
 
-1. [Current handoff](MCP_NEXT_CHAT_HANDOFF.md): verified runtime, tests, CI and remaining work. Read it in full before continuing; verify remote HEAD again.
-2. [Scoped rules](HSK_AI_ADMIN_PWA_TEMP_RULES.md) and [context](HSK_AI_ADMIN_PWA_TEMP_CONTEXT.md), alongside root `AGENTS.md`, `AI_RULES.md` and `PROJECT_MEMORY.md`.
-3. [Final product / acceptance](HSK_AI_ADMIN_PWA_TEMP_FINAL_RESULT.md) and [active implementation plan](IMPLEMENTATION_PLAN.md).
-4. The relevant contracts and real source/tests before changing code.
+The owner-supplied V10 HTML is the visual reference, never a data source.
+Home has real account/Pro/pending/today counts, a calendar learning-activity
+chart, exact live queue/cohort navigation and existing protected quick actions.
+Statistics has seven sections: overview, course, platforms, funnel, finance,
+sources and report. Expanded experiment analysis loads only when opened.
+No invented growth, chart values, platform shares or demo rows are shipped.
 
-[Copy/paste next-chat prompt](HSK_AI_ADMIN_PWA_NEXT_CHAT_START.md).
+Cookie-only `POST /api/admin/v1/analytics` provides a separate first-party daily
+snapshot per requested section/platform/period. Basic `/statistics`, its
+allowlisted JSON/CSV files and the statistics-only MCP contract remain compatible.
+The report labels those downloads as **basic aggregates**, not an export of all
+new section tables. Feedback categories retain their separate sanitized files.
 
 ## Statistics load policy
 
-Runtime `4709c66024f568e3e9ce40ecec0019bd6d1535eb` adds private server-side
-statistics snapshots shared by Admin PWA and the statistics-only MCP tool.
-Each requested platform/period refreshes on the first authorized request after
-its rolling 24-hour expiry. There is no nightly cron or unused-variant scan.
-The UI keeps the original `generated_at`; statistics can be up to 24 hours old.
+Each requested variant refreshes on the first authorized request after its
+rolling 24-hour expiry. Unopened sections do no work. There is no nightly scan,
+card-by-card request, force refresh or background analytics polling. The UI shows
+original `generated_at`; aggregate statistics can be up to 24 hours old.
 
-Existing Redis / `REDIS_URL` coordinates healthy workers. If Redis is unavailable,
-the bounded daily memory fallback is per worker and can calculate again after
-restart; it does not guarantee one calculation for the whole deployment.
-Authentication, revocation, audit and quotas remain current on every request.
-User profiles, billing/payment lists, receipts, access decisions and commands
-remain uncached. This reduces aggregate SQL work, not all database traffic.
-Private browser/API responses remain no-store; the service worker caches only
-the public shell. R2 is not integrated or configured.
-
-The Statistics screen now offers explicit JSON/CSV downloads through cookie-only
-`POST /api/admin/v1/statistics/export`. Both use that same daily reader, retaining
-original timestamps, ranges, source/scope, metric definitions and separate
-currencies. Only allowlisted aggregate values leave the server (128 KiB maximum);
-no users, IDs, feedback text or payment records. No background job or forced SQL
-refresh is added. A cold/expired variant still follows the existing daily policy.
-Sanitized feedback exports remain a separate review; MCP permissions are unchanged.
+Existing Redis coordinates healthy workers. Optional private R2 stores only
+bounded aggregate snapshots for recovery; the adapter exists but credentials
+and production configuration are not established by source code. Without R2,
+Redis plus bounded worker-local daily fallback still works. During a Redis outage
+or worker restart, separate workers can calculate separately. Auth/revocation,
+payment/access decisions, queues, profiles and command authority stay live.
+Private API responses remain no-store; browser/SW caches contain no private data.
 
 ## Contracts
 
 | Subject | Guide |
 |---|---|
-| Metric definitions, daily expiry, coordination/failure limits | [Read projections](READ_PROJECTIONS.md) |
-| Browser V10, localization, private-data handling | [Browser UI contract](BROWSER_UI_CONTRACT.md), [V10 reference](ADMIN_PWA_V10_UI_REFERENCE.md) |
-| OAuth lifecycle, statistics-only tools, protocol and staging gates | [MCP contract](MCP_CONNECTION_CONTRACT.md), [compatibility audit](MCP_CHATGPT_COMPATIBILITY_AUDIT_20261024.md) |
-| Live financial review and exact-operation WebAuthn | [Payment review contract](PAYMENT_REVIEW_CONTRACT.md) |
-| Manual Pro grant, exact snapshot and command audit | [Access grants](ACCESS_GRANTS_CONTRACT.md) |
-| Durable native intake and historical-data boundary | [Native inbox intake](NATIVE_INBOX_INTAKE.md) |
+| Section definitions, source/grain, bounds, daily cache and exports | [Read projections](READ_PROJECTIONS.md) |
+| V10, one contextual action, localization and private-data handling | [Browser contract](BROWSER_UI_CONTRACT.md), [V10 reference](ADMIN_PWA_V10_UI_REFERENCE.md) |
+| OAuth lifecycle and statistics-only tools | [MCP contract](MCP_CONNECTION_CONTRACT.md), [compatibility audit](MCP_CHATGPT_COMPATIBILITY_AUDIT_20261024.md) |
+| Live review and exact-operation WebAuthn | [Payment review](PAYMENT_REVIEW_CONTRACT.md), [access grants](ACCESS_GRANTS_CONTRACT.md) |
+| Campaign media/buttons/scheduling/discounts and other commands | [Management commands](MANAGEMENT_COMMANDS_CONTRACT.md) |
+| Retained native intake and historical limits | [Native inbox](NATIVE_INBOX_INTAKE.md) |
 
-Inbox read/triage/search and default-OFF Apple Push code have since arrived from
-GitHub at `d93b75fe468c217dee66e2c4fe277ccfeabadb4f`. The retained Android
-JPEG proxy and the Bot/Release JPEG/PNG/WebP proxies share the first-party
-V10 preview. Images load only on demand with metadata-only source queries,
-two active downloads and 30 attempts/minute per worker, without new quota DB
-writes. Unsupported formats and privacy-safe technical event intake remain open.
-Remaining management, sanitized feedback exports and separately approved staging/real ChatGPT acceptance are
-still open. Commit/push each completed, tested increment to the feature branch.
-Synthetic QA is not physical-device, staging or real ChatGPT evidence.
-
-## Historical references
-
-[Original implementation record](HSK_AI_ADMIN_PWA_TEMP_HANDOFF.md),
-[PR #200 resume](CODEX_RESUME.md), [PR #200 merge preparation](MERGE_READINESS.md)
-and [Phase 0 API inventory](PHASE_0_API_INVENTORY.md) preserve earlier evidence.
-Their old branch names, test counts and next-step instructions do not supersede
-the current handoff. Do not recreate completed OAuth/passkey/payment foundations.
-
-These documents apply only to Admin PWA. The existing Telegram `/admin.html`
-and other platform/business contracts remain preserved. Source code and test
-results do not establish live DNS/TLS, provider or deployment configuration.
+The handoff records executed tests, latest CI, current main and remaining work.
+Planning checkboxes, feature pushes and synthetic fixtures do not establish a
+live rollout. Do not recreate completed OAuth, passkey, payment or Inbox work.

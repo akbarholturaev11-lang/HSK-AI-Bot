@@ -216,3 +216,155 @@ class AnalyticsTransportTests(fixtures.PaymentFixtures,unittest.IsolatedAsyncioT
             event.remove(self.engine.sync_engine,'checkout',checkout);event.remove(self.engine.sync_engine,'checkin',checkin)
         self.assertEqual(response.status_code,401)
         self.assertNotIn('PRIVATE',response.text)
+
+class CompleteAnalyticsTests(AnalyticsProjectionTests):
+    async def test_all_sections_execute_real_sql_and_never_export_private_records(self):
+        from app.admin_api.pwa_analytics_cache import section_projection, AnalyticsRequest
+        from unittest.mock import patch
+        from app.admin_api.pwa_analytics_finance import Entry, Traffic, Ledger, Usage
+        from app.db.models.desktop import DesktopDevice
+        await self.seed_analytics()
+        async with self.sessions() as db:
+            db.add_all([
+                Entry(user_id=1,telegram_id=2002,source='profile',created_at=NOW-timedelta(hours=3)),
+                Entry(user_id=1,source='PRIVATE secret',created_at=NOW-timedelta(hours=4)),
+                Traffic(visit_day=NOW.date(),source='youtube',visits=7),
+                Ledger(transaction_type='profit',source='manual_profit',amount_usd=4,created_at=NOW),
+                Ledger(transaction_type='expense',source='PRIVATE note',amount_usd=2,created_at=NOW),
+                Usage(user_id=1,source='qa',model='gemini-2.5-flash',billing_tier='paid_estimate',cost_usd=.25,total_tokens=123,created_at=NOW),
+                DesktopDevice(id='synthetic-device',user_id=1,platform='android',installation_key_hash='PRIVATE key',app_version='1.2.3',created_at=NOW),
+            ])
+            await db.commit()
+        class FixedDatetime:
+            @staticmethod
+            def now(*args):return NOW
+        values={}
+        for section in ('home','overview','course','platform','funnel','money','sources','report','experiments'):
+            async with self.sessions() as db:
+                async with read_transaction(db):
+                    with patch('app.admin_api.pwa_analytics_cache.datetime',FixedDatetime):
+                        values[section]=await section_projection(db,AnalyticsRequest(section=section),section=section)
+            self.assertEqual(values[section]['scope']['section'],section)
+            self.assertNotIn('PRIVATE',json.dumps(values[section]))
+            self.assertLess(len(json.dumps(values[section])),128*1024)
+        m=values['money']['metrics']
+        self.assertEqual(m['payments'],3)
+        self.assertEqual(m['ai_requests'],1)
+        self.assertAlmostEqual(m['ai_usd'],.25)
+        self.assertEqual(m['currencies'],[{'currency':'TJS','amount':300,'payments':3}])
+        self.assertEqual(m['renewal_payments'],0)
+        self.assertEqual(values['sources']['metrics']['traffic'],[{'source':'youtube','visits':7}])
+        self.assertEqual(values['sources']['metrics']['entries'][0]['histories'],1)
+        self.assertEqual(values['course']['metrics']['foundation']['completion_percent'],None)
+        self.assertEqual(values['course']['metrics']['retention']['d1']['returned'],0)
+        self.assertEqual(values['platform']['metrics']['platforms'][0]['devices'],1)
+
+    async def test_detail_limit_refuses_partial_metric_and_exact_expiring_cohort(self):
+        from app.admin_api.pwa_analytics_learning import bounded_rows
+        from app.admin_api.pwa_read import _user_segment_clause
+        from unittest.mock import patch
+        await self.seed_analytics()
+        async with self.sessions() as db:
+            with patch('app.admin_api.pwa_analytics_learning.DETAIL_LIMIT',1):
+                self.assertIsNone(await bounded_rows(db,select(User.id)))
+            ids=(await db.scalars(select(User.id).where(_user_segment_clause('expiring_pro',now=NOW)))).all()
+        result=await self.projection()
+        self.assertEqual(ids,[1])
+        self.assertEqual(len(ids),result['metrics']['expiring_pro'])
+
+class AnalyticsDefinitionTests(AnalyticsProjectionTests):
+    async def test_retention_maturity_and_exact_window_boundaries(self):
+        from app.admin_api.pwa_analytics_learning import retention
+        async with self.sessions() as db:
+            first=await db.get(User,1);first.created_at=NOW-timedelta(days=2)
+            second=await db.get(User,2);second.created_at=NOW-timedelta(days=1)
+            admin=await db.get(User,101);admin.created_at=NOW-timedelta(days=100)
+            db.add_all([Event(user_id=1,event_name='miniapp_opened',created_at=NOW-timedelta(days=1)),
+                Event(user_id=2,event_name='miniapp_opened',created_at=NOW)])
+            await db.commit()
+            result=await retention(db,since=NOW-timedelta(days=7),now=NOW)
+        self.assertEqual(result['d1']['eligible'],1)
+        self.assertEqual(result['d1']['returned'],1)
+        self.assertEqual(result['d1']['percent'],100)
+        self.assertEqual(result['d7']['percent'],None)
+
+    async def test_finance_uses_full_prior_canonical_history_and_unknown_currency_is_not_priced(self):
+        from app.admin_api.pwa_analytics_finance import money_metrics, sources_metrics, Entry
+        await self.seed_analytics()
+        async with self.sessions() as db:
+            db.add_all([Payment(user_id=1,user_telegram_id=2002,amount=10,currency='USD',plan_type='1_month',
+                payment_method='visa',payment_status='approved',submitted_at=NOW-timedelta(days=40),reviewed_at=NOW-timedelta(days=40)),
+                Payment(user_id=2,amount=999,currency='PRIVATE',plan_type='1_month',payment_method='visa',payment_status='approved',
+                submitted_at=NOW-timedelta(minutes=5),reviewed_at=NOW-timedelta(minutes=4)),
+                Entry(user_id=1,telegram_id=2002,source='profile',created_at=NOW-timedelta(hours=2)),
+                Entry(user_id=1,source='broadcast',created_at=NOW-timedelta(minutes=2))])
+            await db.commit()
+            m=await money_metrics(db,since=NOW-timedelta(days=7),now=NOW)
+            sources=await sources_metrics(db,since=NOW-timedelta(days=7),now=NOW)
+        self.assertEqual(m['payments'],4)
+        self.assertEqual(m['renewal_payments'],2)
+        self.assertEqual(m['unpriced_payments'],1)
+        self.assertEqual(m['unknown_currency_payments'],1)
+        self.assertNotIn('PRIVATE',json.dumps(m))
+        self.assertEqual(next(row['payments'] for row in sources['attribution'] if row['source']=='profile'),1)
+        self.assertFalse(any(row['source']=='broadcast' for row in sources['attribution']))
+
+    async def test_lazy_experiments_empty_and_mature_recovery_have_no_private_payload(self):
+        from app.admin_api.pwa_analytics_experiments import experiment_metrics
+        async with self.sessions() as db:
+            initial=await experiment_metrics(db,since=NOW-timedelta(days=7),now=NOW)
+            self.assertTrue(initial['recovery']['collecting'])
+            self.assertIsNone(initial['sales']['ci_95_pp']['low_pp'])
+            for uid,arm in ((1,'treatment'),(2,'control')):
+                db.add(Event(user_id=uid,event_name='d1_recovery_assigned',source='d1_recovery_v1',
+                    level='hsk1',lesson_order=1,created_at=NOW-timedelta(days=3),
+                    payload_json=json.dumps({'arm':arm,'PRIVATE':'secret'})))
+            db.add(Event(user_id=1,event_name='lesson_completed',level='hsk1',lesson_order=1,created_at=NOW-timedelta(days=2)))
+            await db.commit()
+            result=await experiment_metrics(db,since=NOW-timedelta(days=7),now=NOW)
+        self.assertEqual(result['recovery']['matured'],2)
+        self.assertEqual(result['recovery']['arms']['treatment']['lesson_completed_48h'],1)
+        self.assertNotIn('PRIVATE',json.dumps(result))
+
+
+import os
+@unittest.skipUnless(os.environ.get('ADMIN_PWA_TEST_DATABASE_URL'),'requires isolated test PostgreSQL')
+class AnalyticsPostgresTests(fixtures.PaymentFixtures,unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        from tests.test_admin_pwa_postgres import AdminPwaPostgresConcurrencyTests
+        await AdminPwaPostgresConcurrencyTests.asyncSetUp(self)
+        await self.seed_payment()
+    async def asyncTearDown(self):
+        from tests.test_admin_pwa_postgres import AdminPwaPostgresConcurrencyTests
+        await AdminPwaPostgresConcurrencyTests.asyncTearDown(self)
+    seed_analytics=AnalyticsProjectionTests.seed_analytics
+    test_all_sections_execute_real_sql_and_never_export_private_records=CompleteAnalyticsTests.test_all_sections_execute_real_sql_and_never_export_private_records
+    test_retention_maturity_and_exact_window_boundaries=AnalyticsDefinitionTests.test_retention_maturity_and_exact_window_boundaries
+    test_finance_uses_full_prior_canonical_history_and_unknown_currency_is_not_priced=AnalyticsDefinitionTests.test_finance_uses_full_prior_canonical_history_and_unknown_currency_is_not_priced
+    test_lazy_experiments_empty_and_mature_recovery_have_no_private_payload=AnalyticsDefinitionTests.test_lazy_experiments_empty_and_mature_recovery_have_no_private_payload
+
+class AnalyticsR2Tests(unittest.IsolatedAsyncioTestCase):
+    async def test_private_r2_restores_each_section_without_recompute_and_never_crosses_basic_cache(self):
+        from tests.test_admin_pwa_daily_r2_cache import DailyAggregateFixtures
+        from app.admin_api.pwa_analytics_cache import AdminPwaAnalyticsReader,AnalyticsRequest
+        fixture=DailyAggregateFixtures();fixture.setUp();calls={'home':0,'overview':0}
+        def projection(section):
+            async def load(db,query):
+                calls[section]+=1
+                return {'platform':query.platform,'period':query.period,'generated_at':datetime.fromtimestamp(fixture.clock,timezone.utc).isoformat(),
+                    'available':True,'scope':{'section':section},'metrics':{'accounts':calls[section]}}
+            return load
+        args=dict(settings_obj=fixture.settings,session_factory=fixture.sessions,
+            projections={s:projection(s) for s in calls},reader_options={'r2_store':fixture.r2,'clock':lambda:fixture.clock})
+        first=AdminPwaAnalyticsReader(**args);second=AdminPwaAnalyticsReader(**args)
+        try:
+            original=await first(AnalyticsRequest(section='home'))
+            await first(AnalyticsRequest(section='overview'))
+            restored=await second(AnalyticsRequest(section='home'))
+            self.assertEqual(calls,{'home':1,'overview':1})
+            self.assertEqual(restored['generated_at'],original['generated_at'])
+            self.assertEqual(len(fixture.r2.items),2)
+            fixture.clock+=86401
+            await second(AnalyticsRequest(section='home'))
+            self.assertEqual(calls['home'],2)
+        finally:await first.aclose();await second.aclose()

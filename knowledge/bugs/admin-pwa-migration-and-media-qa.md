@@ -34,3 +34,13 @@ media test (`ADMIN_PWA_MEDIA_BROWSER_CHANNEL=chrome`), while other fixtures
 retain Chromium. Keep the actual videoWidth/decode assertion rather than
 weakening it to a visible element; branded-browser media codec support is
 documented at https://playwright.dev/python/docs/browsers .
+
+
+## PostgreSQL aggregate expressions
+
+SQLite accepts separately constructed equivalent CASE expressions in SELECT and
+GROUP BY. PostgreSQL sees their different bind parameters as different expressions
+and refuses the aggregate. Reuse the same SQLAlchemy expression object, and run
+new analytics projections against the real isolated PostgreSQL fixture. The
+analytics suite covers the complete section set and canonical/currency/cohort
+regressions; SQLite alone is insufficient evidence.
