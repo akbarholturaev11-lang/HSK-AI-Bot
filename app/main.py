@@ -48,6 +48,7 @@ from app.admin_api.pwa_mcp_consent_transport import create_admin_pwa_mcp_consent
 from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_router
 from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
 from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_router
+from app.admin_api.pwa_limits import create_admin_pwa_limits_router
 from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
 from app.admin_api.pwa_payment_qr import create_admin_pwa_payment_qr_router
 from app.admin_api.pwa_settings import create_admin_pwa_settings_router
