@@ -58,7 +58,7 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("type==='PRO_ACTIVE'||type==='TEMP_ACCESS'?'blue':'gray'", script)
         self.assertIn("esc(row.name||'—')", script)
         self.assertIn('.user-status-pill{', stylesheet)
-        self.assertIn('.user-status-pill.blue{', stylesheet)
+        self.assertIn('.pill.user-status-pill.blue:not(.green):not(.red):not(.amber):not(.gray){', stylesheet)
         self.assertIn('.user-table{min-width:1020px;table-layout:fixed}', stylesheet)
         self.assertIn('"directoryUserTariff":"Фойдаланувчи / тариф"', catalog)
         self.assertIn('"directoryPlan1Month":"1 ой"', catalog)
