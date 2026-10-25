@@ -640,8 +640,18 @@ async function saveCourseLimits(){
     await api('auth/step-up/verify',{step_up_id:options.step_up_id,credential:serialize(credential)});
     if(current!==drawerId||at!==epoch)return;
     submitted=true;
-    await api('limits/save',{...operation.payload,step_up_id:options.step_up_id});
+    const committed=await api('limits/save',{...operation.payload,step_up_id:options.step_up_id});
     if(current!==drawerId||at!==epoch)return;
+    // A confirmed save is authoritative even if the follow-up refresh races
+    // a tab change or a slower read. Clear the dirty draft before dismissal.
+    if(courseData&&committed.limits){
+      courseData.limits=committed.limits;
+      courseLimitDraft={FREE:structuredClone(committed.limits.plans.FREE),
+        TRIAL_ACTIVE:structuredClone(committed.limits.plans.TRIAL_ACTIVE)};
+      courseTrialDraft={enabled:committed.limits.trial.enabled,
+        days:committed.limits.trial.days,disabled_reason:committed.limits.trial.disabled_reason||''};
+      render();
+    }
     confirmation=null;showSavedAndDismiss('changesSaved');void loadCourseData();
   }catch(error){
     if(current!==drawerId||at!==epoch)return;
