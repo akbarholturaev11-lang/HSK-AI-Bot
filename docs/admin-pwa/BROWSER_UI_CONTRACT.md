@@ -66,7 +66,9 @@ mutation handlers or fabricated success statuses are shipped.
 The owner replaced title-only inbox entries with compact source-labelled rows:
 the original feedback preview, record ID, account ID (when resolved), timestamp,
 and attributable platform must be visible. Show both stored Bot feedback answers,
-including subscription worth and reason, not just the last one. The source labels
+including subscription worth and reason, not just the last one. The Bot's
+paid feedback follow-up uses a legacy `disliked_*` field for the reason;
+do not render that reason as a negative vote. The source labels
 for existing records are Telegram Bot (bot/release), Telegram Mini App (technical)
 and Android (native report); pending payment receipts have no trustworthy
 client-platform field, so do not invent Telegram/Android/Desktop attribution.
