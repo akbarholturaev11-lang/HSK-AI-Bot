@@ -16,13 +16,14 @@ from app.admin_api.pwa_step_up import _locked_session
 from app.admin_api.pwa_webauthn_transport import _body, _guard_post
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
+from app.admin_api.pwa_push_outbox import enqueue_important_triage
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.payment import Payment
 from app.db.models.message import Message
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 
 logger = logging.getLogger(__name__)
-_OPERATIONS = ("mark_read", "assign_self", "resolve", "reopen")
+_OPERATIONS = ("mark_read", "assign_self", "resolve", "reopen", "mark_important", "clear_important")
 _SOURCES = {"bot": BotFeedback, "release": ReleaseFeedbackResponse, "android": AdminPwaNativeReport, "payment": Payment, "technical": Message}
 
 
@@ -30,7 +31,7 @@ class TriageRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     source: Source
     source_id: RowId
-    operation: str = Field(pattern=r"^(mark_read|assign_self|resolve|reopen)$")
+    operation: str = Field(pattern=r"^(mark_read|assign_self|resolve|reopen|mark_important|clear_important)$")
     expected_revision: int = Field(strict=True, ge=0, le=2_147_483_646)
 
 
@@ -121,6 +122,10 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
                 raise TriageConflict()
             row.resolved_at = None
             row.status = "assigned" if row.assigned_to_user_id else "read"
+        elif command.operation == "mark_important":
+            row.priority = "important"
+        elif command.operation == "clear_important":
+            row.priority = "normal"
         else:
             raise TriageConflict()
         current = (row.status, row.priority, row.assigned_to_user_id, row.read_at, row.resolved_at)
@@ -133,13 +138,19 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
                 operation=command.operation, actor_user_id=int(actor.id), created_at=stamp,
             ))
             await db.flush()
+            if command.operation == "mark_important" and previous[1] != "important":
+                await enqueue_important_triage(
+                    db, settings_obj=settings_obj, actor_id=int(actor.id),
+                    source=command.source, source_id=command.source_id,
+                    revision=row.revision, now=stamp,
+                )
         else:
             # New no-op states should never persist a misleading triage row.
             if not revision:
                 db.expunge(row)
         return {
             "source": command.source, "source_id": command.source_id, "status": row.status,
-            "priority": "important" if command.source in ("payment", "android", "technical") else "normal", "assigned_to_user_id": row.assigned_to_user_id,
+            "priority": row.priority, "assigned_to_user_id": row.assigned_to_user_id,
             "read_at": _utc(row.read_at).isoformat() if row.read_at else None,
             "resolved_at": _utc(row.resolved_at).isoformat() if row.resolved_at else None,
             "revision": row.revision,
