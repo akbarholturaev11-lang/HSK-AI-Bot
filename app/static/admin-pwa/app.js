@@ -1173,7 +1173,7 @@ function inboxDetails(row) {
     &&Number.isSafeInteger(id)&&id>0&&id<=2147483647;
   const attachmentId=`inboxAttachment-${source}-${id}`;
   return `<div class="inbox-details">
-    <button class="inbox-back" data-action="feedback" type="button">${icon('chevron')}${esc(t('feedback'))}</button>
+    <button class="inbox-back" data-action="inboxBack" type="button">${icon('chevron')}${esc(t('feedback'))}</button>
     <h2>${esc(inboxTitle(row))}</h2>
     <time>${esc(date(row.created_at))}</time>
     ${row.message?`<p class="inbox-details-text">${esc(row.message)}</p>`:''}
@@ -1459,6 +1459,7 @@ async function action(name) {
   if(name==='pushEnable'){await enablePush();return;}
   if(name==='mcpRevokeConfirm'){await revokeMcp();return;}
   if(name==='feedback'){state.inboxSearch='';await inbox();return;}
+  if(name==='inboxBack'){await inbox(null,feedbackUserId);return;}
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='execute'){if(!signing)await execute();return;}
   if(name==='executeAccess'){await executeAccess();return;}
