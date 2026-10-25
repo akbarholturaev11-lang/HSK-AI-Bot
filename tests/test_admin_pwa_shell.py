@@ -35,6 +35,14 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('user_id',shell.text)
 
 
+    async def test_confirmed_limits_save_reconciles_visible_draft_before_refresh(self):
+        script = (await self.get('/admin/assets/app.js')).text
+        self.assertIn("const committed=await api('limits/save'", script)
+        self.assertIn("courseData.limits=committed.limits;", script)
+        self.assertIn("courseLimitDraft={FREE:structuredClone(committed.limits.plans.FREE)", script)
+        self.assertIn("courseTrialDraft={enabled:committed.limits.trial.enabled", script)
+        self.assertIn("confirmation=null;showSavedAndDismiss('changesSaved');void loadCourseData();", script)
+
     async def test_user_directory_seven_column_visual_contract(self):
         script = (await self.get('/admin/assets/app.js')).text
         stylesheet = (await self.get('/admin/assets/styles.css')).text
