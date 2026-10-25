@@ -522,13 +522,11 @@ async def browser_checks(output):
         await expect(page.locator('.sidebar')).to_have_count(1)
         async with fixture.sessions() as db:
             await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)));await db.commit()
-        # Session revalidation may lock the shell before a navigation click.
-        # Both proactive lock and a route-triggered 401 must clear private UI.
-        try:
-            await page.locator('[data-route=users]').last.click(timeout=3000)
-        except PlaywrightTimeoutError:
-            pass
-        await expect(page.locator('[data-action=signin]')).to_be_visible()
+        # Use the visible mobile Users navigation to force a real protected
+        # read after revocation. The previous .last locator could resolve to a
+        # hidden desktop button, time out, then silently skip the auth check.
+        await page.locator('.mobile-tabs [data-route=users]').click(timeout=15000)
+        await expect(page.locator('[data-action=signin]')).to_be_visible(timeout=15000)
         assert 'QA account' not in await page.locator('body').inner_text()
         assert await page.evaluate('Object.keys(localStorage)')==['hsk-admin-locale']
         assert not await page.evaluate('window.cspFailures')
