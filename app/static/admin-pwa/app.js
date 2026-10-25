@@ -39,7 +39,7 @@ let locale = 'uz';
 try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj'].includes(saved)) locale = saved; } catch (_) {}
 const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? '—';
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
-const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
+const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', period:'weekly', platform:'overall', rows:[], stats:null,
   query:'', status:'pending', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
@@ -127,8 +127,10 @@ function render() {
   if(!state.actor) { $('root').innerHTML=auth();return; }
   const navButton=([route,glyph])=>`<button data-route="${route}" class="${state.route===route?'active':''}" ${state.route===route?'aria-current="page"':''}>${icon(glyph)}${esc(t(route))}</button>`;
   const navigation=routes.map(navButton).join('');
+  const mobileNav=routes.slice(0,4).map(([route,glyph])=>`<button type="button" data-route="${route}" aria-label="${esc(t(route))}" title="${esc(t(route))}" class="${state.route===route?'active':''}" ${state.route===route?'aria-current="page"':''}>${icon(glyph)}</button>`).join('')
+    +`<button type="button" data-action="more" aria-label="${esc(t('more'))}" title="${esc(t('more'))}" class="${['course','marketing','system'].includes(state.route)?'active':''}" ${busy?'disabled':''}>${icon('more')}</button>`;
   const disabled='';
-  $('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-logo"><img src="/admin/assets/icon.png" alt=""></div><div><div class="brand-title">HSK AI</div><div class="brand-sub">ADMIN</div></div></div><p class="nav-cap">${esc(t('sections'))}</p><nav class="nav">${navigation}${disabled}</nav><div class="side-foot"><p>${esc(t('account'))} · ${state.actor.user_id}</p>${languageSelect()}${state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''}${state.actor.push_available?btn('pushTitle','pushSettings'):''}${btn('logout','logout')}</div></aside><div class="workspace"><header class="topbar"><div class="topbar-context"><h1 class="page-title">${esc(t(state.route==='home'?'workspace':state.route))}</h1></div><div class="header-tools">${['home','stats'].includes(state.route)?filters():''}<button class="top-icon-btn" data-action="feedback" aria-label="${esc(t('feedback'))}">${icon('bell')}${inboxUnread?.unread_count?`<span class="top-icon-badge" aria-hidden="true">${inboxUnread.capped?'99+':inboxUnread.unread_count}</span>`:''}</button><button class="top-icon-btn mobile-only" data-action="more" aria-label="${esc(t('more'))}" ${busy?'disabled':''}>${icon('more')}</button></div></header><main class="main" id="content">${content()}</main></div></div><nav class="mobile-tabs" aria-label="${esc(t('sections'))}">${routes.slice(0,4).map(navButton).join('')}</nav>`;
+  $('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-logo"><img src="/admin/assets/icon.png" alt=""></div><div><div class="brand-title">HSK AI</div><div class="brand-sub">ADMIN</div></div></div><p class="nav-cap">${esc(t('sections'))}</p><nav class="nav">${navigation}${disabled}</nav><div class="side-foot"><p>${esc(t('account'))} · ${state.actor.user_id}</p>${languageSelect()}${state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''}${state.actor.push_available?btn('pushTitle','pushSettings'):''}${btn('logout','logout')}</div></aside><div class="workspace"><header class="topbar"><div class="topbar-context"><h1 class="page-title">${esc(t(state.route==='home'?'workspace':state.route))}</h1></div><div class="header-tools">${['home','stats'].includes(state.route)?filters():''}<button class="top-icon-btn" data-action="feedback" aria-label="${esc(t('feedback'))}">${icon('bell')}${inboxUnread?.unread_count?`<span class="top-icon-badge" aria-hidden="true">${inboxUnread.capped?'99+':inboxUnread.unread_count}</span>`:''}</button></div></header><main class="main" id="content">${content()}</main></div></div><nav class="mobile-tabs" aria-label="${esc(t('sections'))}">${mobileNav}</nav>`;
   $('root').inert=!!$('overlay');
 }
 function filters() {
@@ -208,7 +210,7 @@ function refreshFeedbackPanel(){
   if(panel&&state.route==='stats')panel.outerHTML=feedbackPanel();
 }
 async function loadFeedbackStats(){
-  if(!state.actor||state.route!=='stats'||feedbackStats.loading)return;
+  if(!state.actor||state.route!=='stats'||state.statsTab!=='report'||feedbackStats.loading)return;
   const id=++feedbackLoadId,at=epoch,seen=view;
   const source=feedbackStats.source,period=feedbackStats.period;
   feedbackStats.loading=true;feedbackStats.error=false;refreshFeedbackPanel();
@@ -227,7 +229,62 @@ async function loadFeedbackStats(){
   }
 }
 
+function statsCategoryNav(){
+  const choices=[['overview','statsTabOverview'],['course','statsTabCourse'],['platform','statsTabPlatforms'],['funnel','statsTabConversion'],['money','statsTabFinance'],['sources','statsTabSources'],['report','statsTabReport']];
+  const selectedPlatform={overall:t('all'),android:'Android',telegram:'Telegram Mini App',macos:'macOS',windows:'Windows',iphone_pwa:'iPhone PWA'}[state.platform]||state.platform;
+  return `<div class="stats-top-row"><div class="subtabs stats-category-tabs" role="tablist" aria-label="${esc(t('stats'))}">${choices.map(([id,label])=>`<button type="button" role="tab" class="subtab ${state.statsTab===id?'active':''}" data-stats-tab="${id}" aria-selected="${state.statsTab===id}" tabindex="${state.statsTab===id?'0':'-1'}">${esc(t(label))}</button>`).join('')}</div><span class="stats-scope-chip">${icon('device')}${esc(selectedPlatform)}</span></div>`;
+}
+
+function statsCategorySection(title,fields,note){
+  return `<section class="stat-detail stats-category-section"><h2>${esc(t(title))}</h2>${profileFields(fields)}${note?`<p class="source-note">${esc(t(note))}</p>`:''}</section>`;
+}
+
+function categorizedStatsView(){
+  const data=state.stats;
+  if(!data)return statePanel('loading');
+  const nav=statsCategoryNav();
+  const footer=`<p class="source-note stats-category-footnote">${esc(t('overlap'))}${data.scope?.period_filter_applied===false?' '+esc(t('rolling30')):''}</p><p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`;
+  if(!data.available)return nav+statePanel('unavailable')+(state.statsTab==='report'?feedbackPanel():'')+footer;
+  const m=data.metrics;
+  const tab=state.statsTab;
+  if(data.platform!=='overall'&&tab!=='platform'&&tab!=='report')
+    return nav+statePanel('unavailable', 'statsPlatformChoose')+footer;
+  let content='';
+  if(tab==='overview'){
+    content=`<div class="grid metrics stats-category-metrics">${metric('usersTotal',m.users_total,'users')}${metric('newAccounts',m.new_accounts,'users')}${metric(state.period==='all_time'?'active30':'activeAccounts',m.active_accounts,'chart')}${metric('pending',m.payments_by_status.pending,'wallet')}</div>`;
+    content+=statsCategorySection('payments', [['pending',m.payments_by_status.pending],['approved',m.payments_by_status.approved],['rejected',m.payments_by_status.rejected]],'currencyNote');
+  }else if(tab==='course'){
+    const c=m.course_engagement;
+    content=`<div class="grid metrics stats-category-metrics">${metric('engagedAccounts',c.engaged_accounts,'users')}${metric('startedAccounts',c.started_accounts,'book')}${metric('completedAccounts',c.completed_accounts,'check')}</div>`;
+    content+=statsCategorySection('courseEngagement',[['engagedAccounts',c.engaged_accounts],['startedAccounts',c.started_accounts],['completedAccounts',c.completed_accounts]],'courseMetricNote');
+    if(c.unmatched_events)content+=`<p class="source-note">${esc(t('unmatchedEvents'))}: ${esc(c.unmatched_events)}</p>`;
+  }else if(tab==='platform'){
+    if(data.platform==='overall'){
+      content=`<div class="grid metrics stats-category-metrics">${metric('usersTotal',m.users_total,'users')}${metric('activeAccounts',m.active_accounts,'chart')}</div><p class="source-note">${esc(t('statsPlatformChoose'))}</p>`;
+    }else if(data.platform==='android'){
+      content=`<div class="grid metrics stats-category-metrics">${metric('installedDevices',m.registry.installed_devices,'device')}${metric('installedUsers',m.registry.installed_users,'users')}${metric('active7',m.active.wau,'chart')}${metric('active30',m.active.mau,'chart')}</div>`;
+    }else{
+      content=`<div class="grid metrics stats-category-metrics">${metric('active30',m.active_users_30d,'chart')}${metric('firstOpen',m.verified_first_open_30d,'device')}</div>`;
+    }
+  }else if(tab==='funnel'){
+    const r=m.registration_conversion;
+    content=`<div class="grid metrics stats-category-metrics">${metric('conversion',r.percent===null?'—':r.percent+'%','target')}${metric('registeredCohort',r.registered_accounts,'users')}${metric('convertedAccounts',r.converted_accounts,'wallet')}</div>`;
+    content+=statsCategorySection('registrationConversion',[['registeredCohort',r.registered_accounts],['convertedAccounts',r.converted_accounts],['conversion',r.percent===null?'—':r.percent+'%']],'conversionNote');
+  }else if(tab==='money'){
+    const ai=m.ai_usage;
+    content=`<div class="grid metrics stats-category-metrics">${metric('estimatedCost',ai.estimated_cost_usd+' USD','spark')}${metric('recordedRequests',ai.recorded_requests,'chart')}${metric('tokens',ai.tokens,'chart')}</div>`;
+    content+=statsCategorySection('aiSpend',[['estimatedCost',ai.estimated_cost_usd+' USD'],['recordedRequests',ai.recorded_requests],['tokens',ai.tokens]],'aiCostNote');
+    content+=`<section class="stat-detail stats-category-section"><h2>${esc(t('approvedAmounts'))}</h2><div class="currency-rows">${m.approved_amounts_by_currency.map(row=>`<div class="currency-row">${esc(row.currency)}<strong>${esc(row.amount)}</strong></div>`).join('')||`<p>${esc(t('empty'))}</p>`}</div><p class="source-note">${esc(t('currencyNote'))}</p></section>`;
+  }else if(tab==='sources'){
+    content=statePanel('unavailable','statsSourcesUnavailable');
+  }else if(tab==='report'){
+    content=`<section class="stat-detail stats-category-section"><h2>${esc(t('statsTabReport'))}</h2>${profileFields([['source',data.source||'—'],['platform',data.platform],['period',t(data.period)],['updated',date(data.generated_at)]])}<p class="source-note">${esc(t('statsReportNote'))}</p><div class="statistics-export">${exportMenu('statistics')}</div></section>${feedbackPanel()}`;
+  }
+  return nav+`<div class="stats-category-content">${content}</div>`+footer;
+}
+
 function statsView() {
+  if(state.route==='stats')return categorizedStatsView();
   const data=state.stats;if(!data) return statePanel('loading');
   const exports=state.route==='stats'?`<div class="statistics-export">${exportMenu('statistics')}</div>`:'';
   if(!data.available) return exports+statePanel('unavailable')+feedbackPanel();
@@ -294,13 +351,34 @@ async function exportStatistics(format,dataset='statistics'){
 }
 function date(value) { if(!value) return '—';const d=new Date(value);return Number.isNaN(d.valueOf())?'—':d.toLocaleString(locale==='tj'?'tg':locale,{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); }
 function pager() { return `<div class="pager">${btn('previous','previous','',state.previous.length===0)}${btn('next','next','',!state.next)}</div>`; }
-function usersView() {
-  const rows=state.rows.map(row=>`<tr><td><button class="profile-link" data-user-detail="${row.user_id}">${esc(row.name||'—')}</button><small>${esc(row.username||'')} · #${row.user_id}</small></td><td>${esc(row.level||'—')}</td><td>${esc(row.language||'—')}</td><td>${esc(t(row.access_state))}</td><td>${esc(date(row.last_active_at))}</td></tr>`).join('');
-  const cards=state.rows.map(row=>`<article class="user-card"><div class="user-card-top"><div class="user-card-head"><strong>${esc(row.name||'—')}</strong><small>#${row.user_id} · ${esc(row.username||'')}</small></div><span class="pill">${esc(t(row.access_state))}</span></div><div class="user-card-details"><div class="u-mini-field"><small>${esc(t('level'))}</small><b>${esc(row.level||'—')}</b></div><div class="u-mini-field"><small>${esc(t('lastActive'))}</small><b>${esc(date(row.last_active_at))}</b></div></div><button class="btn small" data-user-detail="${row.user_id}">${esc(t('openProfile'))}</button></article>`).join('');
-  return `<form id="searchForm" class="data-toolbar"><label class="screen-reader" for="userQuery">${esc(t('search'))}</label><input id="userQuery" class="search-input" maxlength="80" value="${esc(state.query)}" placeholder="${esc(t('search'))}"><button class="btn primary">${esc(t('find'))}</button></form>${state.rows.length?`<div class="table-wrap user-table-wrap"><table class="data-table user-table"><thead><tr>${['name','level','language','status','lastActive'].map(key=>`<th>${esc(t(key))}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div><div class="user-cards">${cards}</div>`:statePanel('empty')}${pager()}`;
+function userSummary(row){
+  const label=esc(row.name||'—'),handle=esc(row.username||'');
+  const details=`<span class="person"><span class="mini-avatar" aria-hidden="true">${esc((row.name||'H').trim().charAt(0).toUpperCase())}</span><span class="directory-person"><strong>${label}</strong><small>${handle?handle+' · ':''}#${row.user_id}</small></span></span>`;
+  const fields=[['level',row.level],['language',row.language],['lastActive',date(row.last_active_at)],['accessUntil',date(row.end_date)]];
+  const info=fields.map(([key,value])=>`<span class="u-mini-field"><small>${esc(t(key))}</small><b>${esc(value||'—')}</b></span>`).join('');
+  const access=`<span class="pill">${esc(t(row.access_state))}</span>`;
+  return {details,info,access};
 }
-function paymentsView() {
-  return `<div class="data-toolbar">${['pending','approved','rejected'].map(status=>`<button class="btn ${state.status===status?'primary':''}" data-status="${status}">${esc(t(status))}</button>`).join('')}</div>${state.rows.length?`<div class="table-wrap"><table class="data-table"><thead><tr>${['name','plan','amount','status','review'].map(key=>`<th>${esc(t(key))}</th>`).join('')}</tr></thead><tbody>${state.rows.map(row=>`<tr><td>${esc(row.name||'—')}<small>${esc(t('account'))}: ${esc(row.user_id??'—')} · #${row.payment_id}</small></td><td>${esc(t(row.plan_type))}<small>${esc(row.payment_method)}</small></td><td><strong>${esc(row.amount)} ${esc(row.currency)}</strong></td><td>${esc(t(row.status))}</td><td>${row.status==='pending'?`<button class="btn small" data-review="${row.payment_id}">${esc(t('review'))}</button>`:'—'}</td></tr>`).join('')}</tbody></table></div>`:statePanel('empty')}${pager()}`;
+
+function usersView(){
+  const rows=state.rows.map(row=>{
+    const {details,access}=userSummary(row);
+    return `<tr class="user-row" tabindex="0" role="button" aria-label="${esc(t('openProfile'))}: ${esc(row.name||'—')}" data-user-row="${row.user_id}"><td><button type="button" class="directory-row-link" data-user-detail="${row.user_id}">${details}</button></td><td>${esc(row.level||'—')}</td><td>${esc(row.language||'—')}</td><td>${access}${row.has_pending_payment?`<small>${esc(t('pending'))}</small>`:''}</td><td>${esc(date(row.last_active_at))}</td><td>${esc(date(row.end_date))}</td></tr>`;
+  }).join('');
+  const cards=state.rows.map(row=>{
+    const {details,info,access}=userSummary(row);
+    return `<button type="button" class="user-card directory-user-card" data-user-detail="${row.user_id}"><span class="user-card-top">${details}${access}</span><span class="user-card-details">${info}</span>${row.has_pending_payment?`<span class="directory-pending">${esc(t('pending'))}</span>`:''}</button>`;
+  }).join('');
+  const search=`<form id="searchForm" class="data-toolbar"><label class="screen-reader" for="userQuery">${esc(t('search'))}</label><input id="userQuery" class="search-input" maxlength="80" value="${esc(state.query)}" placeholder="${esc(t('search'))}"><button class="btn primary">${esc(t('find'))}</button></form>`;
+  const table=`<div class="table-wrap user-table-wrap"><table class="data-table user-table directory-table"><thead><tr>${['name','level','language','status','lastActive','accessUntil'].map(key=>`<th>${esc(t(key))}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  return search+(state.rows.length?table+`<div class="user-cards">${cards}</div>`:statePanel('empty'))+pager();
+}
+
+function paymentsView(){
+  const reviewButton=row=>row.status==='pending'?`<button type="button" class="btn small" data-review="${row.payment_id}">${esc(t('review'))}</button>`:'—';
+  const head=state.rows.map(row=>`<tr class="payment-row"><td><strong>${esc(row.name||'—')}</strong><small>${esc(t('account'))}: #${esc(row.user_id??'—')} · #${row.payment_id}</small></td><td>${esc(t(row.plan_type))}<small>${esc(row.payment_method||'—')}</small></td><td><strong>${esc(row.amount)} ${esc(row.currency)}</strong></td><td>${esc(row.source||'—')}</td><td><span class="pill">${esc(t(row.status))}</span></td><td>${esc(date(row.submitted_at))}</td><td>${reviewButton(row)}</td></tr>`).join('');
+  const cards=state.rows.map(row=>`<article class="payment-card"><div class="payment-card-top"><div><strong>${esc(row.name||'—')}</strong><small>#${row.payment_id} · ${esc(t('account'))}: #${esc(row.user_id??'—')}</small></div><span class="pill">${esc(t(row.status))}</span></div><div class="payment-card-amount">${esc(row.amount)} ${esc(row.currency)}</div><div class="user-card-details"><span class="u-mini-field"><small>${esc(t('plan'))}</small><b>${esc(t(row.plan_type))}</b></span><span class="u-mini-field"><small>${esc(t('method'))}</small><b>${esc(row.payment_method||'—')}</b></span><span class="u-mini-field"><small>${esc(t('source'))}</small><b>${esc(row.source||'—')}</b></span><span class="u-mini-field"><small>${esc(t('submitted'))}</small><b>${esc(date(row.submitted_at))}</b></span></div>${row.status==='pending'?`<button type="button" class="btn primary payment-card-review" data-review="${row.payment_id}">${esc(t('review'))}</button>`:''}</article>`).join('');
+  return `<div class="data-toolbar payment-status-filters">${['pending','approved','rejected'].map(status=>`<button class="btn ${state.status===status?'primary':''}" data-status="${status}">${esc(t(status))}</button>`).join('')}</div>${state.rows.length?`<div class="table-wrap payment-table-wrap"><table class="data-table payment-table directory-table"><thead><tr>${['name','plan','amount','source','status','submitted','review'].map(key=>`<th>${esc(t(key))}</th>`).join('')}</tr></thead><tbody>${head}</tbody></table></div><div class="payment-cards">${cards}</div>`:statePanel('empty')}${pager()}`;
 }
 function managementRow(label,attributes,glyph='settings'){
   return `<button class="management-row" ${attributes}><span class="management-row-icon">${icon(glyph)}</span><strong>${esc(label)}</strong>${icon('chevron')}</button>`;
@@ -322,7 +400,7 @@ async function load() {
     if(current!==view||authEpoch!==epoch) return;
     if(['home','stats'].includes(state.route)) state.stats=data; else {state.rows=data.items;state.next=data.next_before_id;}
     state.phase='ready';render();
-    if(state.route==='stats'&&!feedbackStats.data&&!feedbackStats.loading)loadFeedbackStats();
+    if(state.route==='stats'&&state.statsTab==='report'&&!feedbackStats.data&&!feedbackStats.loading)loadFeedbackStats();
   } catch(error) {if(current!==view||authEpoch!==epoch||!state.actor) return;state.phase='ready';state.error='error';render();}
 }
 async function boot() {
@@ -1721,7 +1799,11 @@ async function action(name) {
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='execute'){if(!signing)await execute();return;}
   if(name==='executeAccess'){await executeAccess();return;}
-  if(name==='more'){drawer('more',languageSelect('drawerLocale')+'<div class="panel-action-list">'+['course','marketing','system'].map(route=>`<button class="btn" data-route="${route}">${esc(t(route))}</button>`).join('')+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):'')+'</div>',btn('install','install')+btn('logout','logout'));return;}
+  if(name==='more'){
+    const sections=['course','marketing','system'].map(route=>managementRow(t(route),'data-route="'+route+'"',{course:'book',marketing:'mega',system:'settings'}[route])).join('');
+    const extras=(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):'');
+    drawer('more',`<div class="more-sheet-content"><div class="more-sheet-list">${sections}</div><div class="more-sheet-extras">${extras}${languageSelect('drawerLocale')}</div></div>`,btn('install','install')+btn('logout','logout'),'more-drawer');return;
+  }
   if(name==='install'){if(installPrompt){await installPrompt.prompt();installPrompt=null;}else showNotice('installHint');return;}
   if(name==='update'){publicRegistration?.waiting?.postMessage('ACTIVATE_PUBLIC_SHELL');return;}
   if(name==='next'&&state.next){state.previous.push(state.cursor);state.cursor=state.next;await load();}
@@ -1785,9 +1867,17 @@ if(iosTouchDevice){
     if(Date.now()<blockSwipeClickUntil){event.preventDefault();event.stopImmediatePropagation();}
   },true);
 }
+document.addEventListener('keydown',event=>{
+  const row=event.target.closest('tr[data-user-row]');
+  if(row&&event.target===row&&(event.key==='Enter'||event.key===' ')){
+    event.preventDefault();userProfile(Number(row.dataset.userRow));
+  }
+});
 document.addEventListener('click',event=>{
   if(!event.target.closest('.action-disclosure,.header-dropdown'))closeActionMenus();
-  const button=event.target.closest('button');if(!button||button.disabled)return;
+  const button=event.target.closest('button');
+  if(!button){const row=event.target.closest('tr[data-user-row]');if(row){userProfile(Number(row.dataset.userRow));return;}}
+  if(!button||button.disabled)return;
   const run=async()=>{
     if(button.dataset.menuToggle){toggleActionMenu(button);}
     else if(button.dataset.route){
@@ -1821,8 +1911,16 @@ document.addEventListener('click',event=>{
     else if(button.dataset.partnerNext){await partnerEditor(null,Number(button.dataset.partnerNext));}
     else if(button.dataset.noticeKey){await noticeEditor(button.dataset.noticeKey);}
     else if(button.dataset.portfolioNext){await portfolioHistory(Number(button.dataset.portfolioNext));}
+    else if(button.dataset.statsTab){
+      const next=button.dataset.statsTab;
+      if(['overview','course','platform','funnel','money','sources','report'].includes(next)&&state.route==='stats'){
+        const left=button.closest('.stats-category-tabs')?.scrollLeft||0;
+        state.statsTab=next;render();const tabs=document.querySelector('.stats-category-tabs');if(tabs)tabs.scrollLeft=left;
+        if(next==='report'&&!feedbackStats.data&&!feedbackStats.loading)loadFeedbackStats();
+      }
+    }
     else if(button.dataset.period){state.period=button.dataset.period;await load();}
-    else if(button.dataset.platform){state.platform=button.dataset.platform;await load();}
+    else if(button.dataset.platform){state.platform=button.dataset.platform;if(state.route==='stats'&&state.platform!=='overall')state.statsTab='platform';await load();}
     else if(button.dataset.exportFormat){await exportStatistics(button.dataset.exportFormat);}
     else if(button.dataset.feedbackExport){await exportStatistics(button.dataset.feedbackExport,'feedback');}
     else if(button.dataset.feedbackPeriod||button.dataset.feedbackSource||button.dataset.feedbackRetry){
@@ -1932,6 +2030,20 @@ document.addEventListener('submit',event=>{
 
 });
 document.addEventListener('keydown',event=>{
+  const statsTab=event.target.closest?.('[data-stats-tab]');
+  if(statsTab&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){
+    const tabs=[...statsTab.closest('.stats-category-tabs').querySelectorAll('[data-stats-tab]')];
+    const index=tabs.indexOf(statsTab),n=tabs.length;
+    if(index>=0&&n){
+      event.preventDefault();
+      const target=tabs[event.key==='Home'?0:event.key==='End'?n-1:
+        (index+(event.key==='ArrowRight'?1:-1)+n)%n];
+      const next=target.dataset.statsTab;
+      target.click();
+      document.querySelector('[data-stats-tab="'+next+'"]')?.focus();
+      return;
+    }
+  }
   if(event.key==='Escape'){
     if(closeActionMenus(true)){event.preventDefault();return;}
     closeDrawer();for(const id of ['periodMenu','platformMenu'])if($(id)){$(id).hidden=true;document.querySelector(`[data-action="${id==='periodMenu'?'period':'platform'}"]`)?.setAttribute('aria-expanded','false');}
