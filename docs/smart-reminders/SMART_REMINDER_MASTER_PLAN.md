@@ -138,7 +138,7 @@ Priority only among eligible intents, all study intents share frequency budget:
 5. **due_review:** ишончли mastery/spaced repetition сигнали, реал ишлайдиган route.
 6. **generic_habit:** фақат бошқа муҳим, ҳақиқий фойдали intent йўқ бўлса.
 
-Overtaken/rating, weekly progress, onboarding, trial/churn ва admin campaign'ларнинг scope/frequency budget'га кириш-кирмаслиги — [OPEN] бизнес қарори.
+**[DECISION D05, 2026-10-25]:** рейтингда орқага тушиш ва ҳафталик натижа каби хабарлар study reminder'нинг D03 **1/day** лимитига автоматик киритилмайди — алоҳида мақсадда сақланади. Лекин **барча шу турдаги ўқиш/мотивация хабарлари users.id бўйича ягона cross-channel coordination/anti-spam policy'дан ўтади**: устма-уст вақтда юбориш, такрорланиш ва фойдасиз ranking хабарлари камайтирилади; фойдали weekly summary эса ўринсиз ташлаб юборилмайди, зарур бўлса кейинги маъқул вақтга сурилади. Бу бир кунда study + рейтинг + ҳисобот учун чекланмаган хабар юбориш дегани эмас. Аниқ cross-category cooldown ва priority чегаралари [OPEN], реал audit/owner қарордан кейин. Payment/receipt/account-decision transactional notices ҳозирги ўз жойида ва study cap'га аралашмайди. Onboarding, trial/churn ва marketing campaign budget қоидаларини кейин алоҳида audit/қарор билан белгилаш.
 
 ### 4.2 Habit/time estimator [D02 APPROVED: smart by default; technical details PROPOSAL]
 - Event: real lesson/practice session start; app_open’нинг ўзи “ўқиди” эмас.
@@ -249,7 +249,7 @@ CANDIDATE → ELIGIBLE / SUPPRESSED → SCHEDULED → CLAIMED → PROVIDER_ATTEM
 - If daily goal done before send: cancel; do not silently reschedule to a different intent same day.
 - Message ignored on repeated cycles: reduce frequency gradually; 14+ inactive days pause [OPEN].
 - Cooldown after voluntary lesson session so it never nags somebody already learning.
-- Frequency budget: do rating notifications and weekly reports share? [OPEN]; sales/marketing on different budgets but global annoyance cap considered.
+- **[DECISION D05, 2026-10-25]:** study reminder, рейтинг ва ҳафталик натижа алоҳида мақсадли категориялар; D03 daily max=1 фақат study reminder'га тааллуқли. Лекин ягона per-account notification coordinator ҳаммасининг юборилиш вақти, duplicate key, category priority ва global nuisance/anti-spam ҳолатини ҳисоблайди. Категориялар яқин келса кўпинча рейтинг каби кам аҳамиятли хабарни suppression/defer қилиш, фойдали weekly report'ни эса алоҳида навбатда сақлаш. Нормал хабарлар consent/blocked ва per-channel permission'га бўйсунади. Аниқ global cap/cooldown [OPEN], олдиндан рақам тўқилмайди. Receipt/payment/security/account notices study cap'га киритилмайди, мавжуд алоҳида доставка ва эскалация қоидалари ўзгармайди.
 - Consent “off” must trump AI recommendation. Snooze/disable easy from settings and where platform supports direct notification actions.
 - No fear/pressure manipulative streak text. No false prediction that user “will lose all progress”.
 - All numbers above are proposals, NOT final business decisions.
@@ -283,7 +283,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 ### P0 — Full integration audit / policy lock
 **Ҳолат:** [NOT STARTED]
 - [ ] Main/current feature target ref SHA, runtime environment, production flags, active scheduler/replicas and schema head аниқлансин.
-- [ ] Барча reminder senders, push/OS permissions, consent toggle, notification preferences ва policy matrix инвентаризация қилинсин; **D01 mandatory:** legacy enabled → silent Smart migration, disabled → remains off, denied channel → no push, no duplicate system permission prompt.
+- [ ] Барча reminder senders, push/OS permissions, consent toggle, notification preferences ва policy matrix инвентаризация қилинсин; **D01 mandatory:** legacy enabled → silent Smart migration, disabled → remains off, denied channel → no push, no duplicate system permission prompt. **D05:** study/rating/weekly reports and transactional/marketing notices category ownership, eligibility, urgency and cross-category overlap matrix.
 - [ ] Canonical study event granularity, day/timezone semantics, idempotency, deep-link ва lessons guards аниқлансин.
 - [ ] P0 risks reported, owner-selected defaults and scope ledger DECISION деб қайд этилсин.
 **Acceptance:** repo code references + event flow diagram + old/new coexistence switch table + no unverified architecture claims.
@@ -300,7 +300,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 
 ### P2 — Deterministic decision engine (DRY RUN)
 **Ҳолат:** [NOT STARTED]
-- [ ] Policy pure function: reasons, priorities, frequency budget, only user-selected quiet hours/pause (D04: no global preset), current-day done, snooze; D03 personalized cadence by verified learning reaction, one study reminder/user/local day absolute cap, ignored→decelerate, safe learning return→increase only under cap; weekly hard cap still OPEN.
+- [ ] Policy pure function: reasons, priorities, frequency budget, only user-selected quiet hours/pause (D04: no global preset), current-day done, snooze; D03 personalized cadence by verified learning reaction, one study reminder/user/local day absolute cap, ignored→decelerate, safe learning return→increase only under cap; weekly hard cap still OPEN. **D05:** eligible study/rating/weekly category coordination: collisions suppressed or deferred (ranking low priority, weekly summary retained where possible), all platforms counted by users.id; account/payment transactional notices excluded.
 - [ ] **D02:** Smart habit estimator with reliability; enough observed study days бўлмагунча existing reminder time сақлаш; user қўлда вақтни қотирган бўлса optimizer override қилмасин; changed habit adaptation and zone/DST tests.
 - [ ] Job reservation/cancel/recompute and policy versioning; no network delivery.
 - [ ] Shadow logs compared against old reminders without user notification.
@@ -312,7 +312,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 - [ ] Telegram notifier adapter, templates UZ/RU/TJ, validated lesson deep-link; existing admin template edit.
 - [ ] Feature flag selectively routes Telegram study reminders new engine. Old CourseReminder/Motivation senders skip users controlled by new engine. D01: eligible existing ON learners migrate without re-consent; OFF users are suppressed. D03: account daily study cap enforced also when course reminder and motivation intent compete.
 - [ ] D1 holdout protected; opt-out/blocked, rate limiting, retry ledger and logging.
-- [ ] Pilot cohort + rollback to old behavior without double-send.
+- [ ] Pilot cohort + rollback to old behavior without double-send. D05: existing Telegram ranking/weekly sender must consult global category anti-spam policy without dropping useful weekly summary or violating D03 study cap; no double dispatch during migration.
 **Acceptance:** canonical account receives no duplicate; all linked/unlinked/blocked cases correct; genuine reminder opens valid lesson.
 **QA:** unit+integration with fake bot, multi-instance, callback/deeplink, rendered locale, 3-day cooldown, failure/retry.
 
@@ -336,7 +336,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 
 ### P6 — Analytics + controlled experiments + admin observability
 **Ҳолат:** [NOT STARTED]
-- [ ] Server events, attribution IDs, cohorts, dashboards with real denominators.
+- [ ] Server events, attribution IDs, cohorts, dashboards with real denominators; D05 category-level suppression/defer/dispatch counts and per-account all-category frequency, duplicate and nuisance metrics.
 - [ ] Stable user-level randomized control, D1 experiment interference audit, metrics baselines.
 - [ ] Admin controls: kill switch, content preview, delivery/suppression counts, volume metrics, not fake sample data.
 - [ ] Notification annoyance guardrails and alerting.
@@ -371,7 +371,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 - [ ] Event duplicate/replay, experimental holdout, analytics attribution, client forgery safety.
 - [ ] Free/trial/Pro/expired account; Android Play notification action never links prohibited direct payment.
 - [ ] Notification enable/disable legacy migration, data export/purge and user deletion.
-- [ ] Cost/frequency cap guardrail, study message vs subscription/receipt separate routing.
+- [ ] Cost/frequency cap guardrail, study message vs subscription/receipt separate routing; D05: same-day study + rating + weekly collision, rating suppressed/deferrable, weekly report not silently lost, transactional delivery unaffected.
 
 ## 13. [OPEN] Owner product decisions — confirm BEFORE relevant code
 
@@ -381,7 +381,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | D02 | Эслатма вақти автоматик ўрганиладими? | **2-вариант тасдиқланди:** вақт фойдаланувчи одатига автоматик мослашади; ишончли маълумот йиғилмагунча мавжуд вақт сақланади; user истаса аниқ вақтни ўзи белгилаб автоматик ўзгаришни тўхтатади. D01'га мувофиқ янги activation prompt талаб қилинмайди. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
 | D03 | Study reminder'лар қанчалик тез-тез юборилади? | **2-вариант тасдиқланди:** фойдаланувчининг ҳақиқий ўқиш реакциясига мосланувчи индивидуал frequency; эътиборсиз қолса камаяди, фойда берса хавфсиз доирада ошиши мумкин. **Қатъий чегара: 1 study reminder / account / local day, барча каналлар бирга.** Ҳафталик max ва аниқ adaptive thresholds OPEN, 3/week фақат таклиф. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
 | D04 | Эслатманинг тақиқланган умумий соати борми? | **OWNER CUSTOM DECISION:** умумий белгиланган вақт лимити ЙЎҚ; вақт фойдаланувчининг ўқиш одатига максимал мослашади, ҳатто кечаси ҳам. User manual time / self-set quiet hours / pause / opt-out ва OS DND/permission устун; D03 кунлик 1 та лимит сақланади. Cold-start D02'га мувофиқ. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
-| D05 | Рейтинг/weekly progress ҳам global study budget’гами? | Рейтингни камайтириш/алоҳида product decision. | OPEN |
+| D05 | Рейтинг ва ҳафталик натижалар дарс лимитига кирадими? | **2-вариант тасдиқланди:** дарс, рейтинг ва ҳафталик натижа алоҳида category сифатида қолади, лекин битта account-level anti-spam/coordinator ўзаро устма-уст тушишини назорат қилади. Рейтинг хабарлари камайтирилиши/кечиктирилиши мумкин; фойдали ҳафталик натижа сақланади. D03 кунига 1 та фақат study reminder учун; глобал category лимит рақами ҳали OPEN. Payment/receipt transactional хабарлари мавжуд йўлда қолади. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
 | D06 | Channel preference? | User manually override, otherwise most reliable available single channel. | PROPOSAL |
 | D07 | Multi-device ack timeout/fallback? | Unknown display бўлса blind Telegram duplicate’га йўл қўйма. | PROPOSAL |
 | D08 | 3/7/14 кун inactivity sequences? | staged reactivation + cap, hard stop threshold after data. | PROPOSAL |
@@ -420,7 +420,8 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | 2026-10-25 | D01 owner decision | Option 1 approved, existing ON study notifications silent upgrade; OFF/OS-denied protected. Docs only. | feca3f44086128fb213dbeb9e48814673c9c6c2c | NO TESTS RUN; requirements record only | D02 time behavior discussion; D14 mapping audit |
 | 2026-10-25 | D02 owner decision | Option 2 approved: smart time learns habit and adapts; manual lock optional; old time kept until confident. Docs only. | 55aeb68f6b7a379e3bcd6b78ab88f065277dc4be | NO TESTS RUN; requirements record only | D03 notification frequency; D14 legacy time migration |
 | 2026-10-25 | D03 owner decision | Option 2 approved: personalized adaptive cadence; strict 1 study reminder/account/local day; weekly ceiling and thresholds remain OPEN. Docs only. | 7989bb0d74a4d26f122e81423df8b33cf277bb80 | NO TESTS RUN; requirement record only | D04 quiet hours discussion, cadence tuning later |
-| 2026-10-25 | D04 owner custom decision | No system-wide time-of-day limits: maximum personalization even at night; optional personal quiet/pause, OS Focus/DND preserved; 1/day from D03 unaffected. Docs only. | жорий docs commit | NO TESTS RUN; decision captured only | D05 rating and weekly progress notification budget |
+| 2026-10-25 | D04 owner custom decision | No system-wide time-of-day limits: maximum personalization even at night; optional personal quiet/pause, OS Focus/DND preserved; 1/day from D03 unaffected. Docs only. | 78da152f698f1283acb309fa0b919c5bccc0fb95 | NO TESTS RUN; decision captured only | D05 rating and weekly progress notification budget |
+| 2026-10-25 | D05 owner decision | Option 2 approved: separate study/rating/weekly purposes, shared account-level anti-spam coordination; low-value ranking de-prioritized; useful weekly summary retained; exact global threshold still OPEN. Docs only. | жорий docs commit | NO TESTS RUN; decision captured only | D06 cross-platform preferred notification channel |
 
 **Final completion criteria:** P0–P8 acceptance achieved; automated + manual affected flow QA evidenced; global dedupe/opt-out/progress guards verified on real clients; experiment results/guardrails recorded; production rollout monitored; owner accepts completion. Until then status remains IN PROGRESS.
 
@@ -445,7 +446,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 - **Менинг тавсиям:** 1 ёки 2 ва аниқ сабаб.
 - **Сизнинг танловингиз:** 1 / 2 / ўзгартирилган қоида.
 
-**Жорий навбат:** **D05** — рейтингда орқага тушиш ва ҳафталик ҳисоботлар ҳам study reminder'нинг битта кунлик лимитига кирадими ёки улар алоҳида, лекин global anti-spam guard биланми? **OPEN; owner қарори кутилмоқда.** D01/D02/D03/D04 тасдиқланган; D03 weekly upper cap ва D14 technical mapping алоҳида OPEN.
+**Жорий навбат:** **D06** — Telegram, Android, iPhone PWA ва Desktop бир аккаунтда бўлса, эслатма қайси битта канал орқали келади? **OPEN; owner қарори кутилмоқда.** D01–D05 тасдиқланган; D03 weekly upper cap, D05 global anti-spam thresholds ва D14 legacy mapping техник деталлари ҳали OPEN.
 
 ### 16.1 Decision log
 | ID | Дата | Тасдиқ | Таъсир | Commit |
@@ -454,4 +455,5 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | D01 | 2026-10-25 | **1-вариант:** аллақачон эслатма ёқилган каналларни Smart Reminder'га автоматик ўтказиш, қайта-қайта рухсат сўрамаслик. OFF/denied ва OS илк рухсати сақланади. | I02, preferences/migration, P0/P1/P3, UX; D14 mapping still OPEN; no runtime change | feca3f44086128fb213dbeb9e48814673c9c6c2c |
 | D02 | 2026-10-25 | **2-вариант:** Smart Reminder ўқиш одатини ўрганиб вақтни автоматик мослаштиради; маълумот етарли бўлмагунча эски вақтни сақлайди; фойдаланувчи хоҳласа аниқ вақтни қўлда белгилаб қотиради. | Habit estimator, preferences/time_mode, UI, P2 ва timezone QA; time thresholds ҳали PROPOSAL; runtime ўзгармаган | 55aeb68f6b7a379e3bcd6b78ab88f065277dc4be |
 | D03 | 2026-10-25 | **2-вариант:** individual adaptive cadence, ignored → frequency decreases; real study response → increases only within safe bound; **max 1 study reminder/user/local day** across platforms. Weekly absolute cap / algorithm thresholds NOT DECIDED. | I03, preferences, P2/P3/P5, policy and regressions; runtime unchanged | 7989bb0d74a4d26f122e81423df8b33cf277bb80 |
-| D04 | 2026-10-25 | **Owner modification:** no predefined hours/blackout, completely habit-adaptive time including nighttime, user manual/quiet/pause and OS DND preserved, D03 cap remains. | I05, engine eligibility, user preferences, UX, policy, P2 DST/night-time test; runtime unchanged | жорий docs commit |
+| D04 | 2026-10-25 | **Owner modification:** no predefined hours/blackout, completely habit-adaptive time including nighttime, user manual/quiet/pause and OS DND preserved, D03 cap remains. | I05, engine eligibility, user preferences, UX, policy, P2 DST/night-time test; runtime unchanged | 78da152f698f1283acb309fa0b919c5bccc0fb95 |
+| D05 | 2026-10-25 | **2-вариант:** study, ranking and weekly results keep separate purposes; global per-account category-aware dedup/anti-spam coordination; low-value ranking suppressed/deferred; valuable weekly summary not blindly dropped; no hard global numeric threshold decided. | Priorities, frequency/collision policy, P0/P2/P3/P6 and QA; transaction notifications separately governed; runtime unchanged | жорий docs commit |
