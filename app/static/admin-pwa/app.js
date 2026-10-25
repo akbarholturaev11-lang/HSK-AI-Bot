@@ -363,7 +363,7 @@ function userSummary(row){
 function usersView(){
   const rows=state.rows.map(row=>{
     const {details,access}=userSummary(row);
-    return `<tr class="user-row" data-user-row="${row.user_id}"><td><button type="button" class="directory-row-link" data-user-detail="${row.user_id}">${details}</button></td><td>${esc(row.level||'—')}</td><td>${esc(row.language||'—')}</td><td>${access}${row.has_pending_payment?`<small>${esc(t('pending'))}</small>`:''}</td><td>${esc(date(row.last_active_at))}</td><td>${esc(date(row.end_date))}</td></tr>`;
+    return `<tr class="user-row" tabindex="0" role="button" aria-label="${esc(t('openProfile'))}: ${esc(row.name||'—')}" data-user-row="${row.user_id}"><td><button type="button" class="directory-row-link" data-user-detail="${row.user_id}">${details}</button></td><td>${esc(row.level||'—')}</td><td>${esc(row.language||'—')}</td><td>${access}${row.has_pending_payment?`<small>${esc(t('pending'))}</small>`:''}</td><td>${esc(date(row.last_active_at))}</td><td>${esc(date(row.end_date))}</td></tr>`;
   }).join('');
   const cards=state.rows.map(row=>{
     const {details,info,access}=userSummary(row);
@@ -1866,9 +1866,17 @@ if(iosTouchDevice){
     if(Date.now()<blockSwipeClickUntil){event.preventDefault();event.stopImmediatePropagation();}
   },true);
 }
+document.addEventListener('keydown',event=>{
+  const row=event.target.closest('tr[data-user-row]');
+  if(row&&event.target===row&&(event.key==='Enter'||event.key===' ')){
+    event.preventDefault();userProfile(Number(row.dataset.userRow));
+  }
+});
 document.addEventListener('click',event=>{
   if(!event.target.closest('.action-disclosure,.header-dropdown'))closeActionMenus();
-  const button=event.target.closest('button');if(!button||button.disabled)return;
+  const button=event.target.closest('button');
+  if(!button){const row=event.target.closest('tr[data-user-row]');if(row){userProfile(Number(row.dataset.userRow));return;}}
+  if(!button||button.disabled)return;
   const run=async()=>{
     if(button.dataset.menuToggle){toggleActionMenu(button);}
     else if(button.dataset.route){
