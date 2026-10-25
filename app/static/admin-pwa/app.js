@@ -33,6 +33,7 @@ link:'<path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-2 2M14 11a5 5 0 0 0-7 0l-
 };
 const $ = id => document.getElementById(id);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const telegramPreview = value => esc(value).replace(/&lt;(\/?)b&gt;/g, '<$1b>');
 const icon = name => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[name] || icons.folder}</svg>`;
 let locale = 'uz';
 try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj'].includes(saved)) locale = saved; } catch (_) {}
@@ -777,7 +778,7 @@ function managementFields(value,type){
     if(value.notice_count!==undefined)fields.push(['messageAudience',value.notice_count]);
     if(value.notice_user_id)fields.push(['account',value.notice_user_id]);
     const proof=value.proof_id?`<p class="source-note">${esc(t('payoutProofReviewHint'))}</p><img class="inbox-attachment-image" src="/api/admin/v1/payout-proofs/${esc(value.proof_id)}" alt="${esc(t('payoutProofFile'))}">`:'';
-    const notice=value.notice_texts?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages"><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(value.notice_texts[lang])}</p></details>`).join(''):'';
+    const notice=value.notice_texts?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages"><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${telegramPreview(value.notice_texts[lang])}</p></details>`).join(''):'';
     return proof+profileFields(fields)+notice;
   }
   if(type==='partner'){
@@ -787,7 +788,9 @@ function managementFields(value,type){
     if(value.promotion_channel)fields.push(['partnerPromotion',value.promotion_channel]);
     if(value.audience_size)fields.push(['partnerAudience',value.audience_size]);
     if(value.signup_bonus_usd!==undefined)fields.push(['partnerBonus',value.signup_bonus_usd+' USD']);
-    return profileFields(fields);
+    if(value.notice_count!==undefined)fields.push(['messageAudience',value.notice_count]);
+    const notice=value.notice_texts?`<p class="source-note">${esc(t('messageAttemptHint'))}</p>`+['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${telegramPreview(value.notice_texts[lang])}</p></details>`).join(''):'';
+    return notice+profileFields(fields);
   }
   if(type==='notice')return profileFields([['status',t(value.enabled?'hsk30On':'hsk30Off')]])+['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(value.effective_texts[lang])}</p></details>`).join('');
   if(type==='portfolio')return profileFields([['ledgerType',t(value.transaction_type==='profit'?'ledgerProfit':'ledgerExpense')],['amount',(value.amount_minor/100).toFixed(2)+' '+value.currency],['ledgerUSD',(value.expected_usd||value.amount_usd)+' USD'],['ledgerNote',value.note]]);

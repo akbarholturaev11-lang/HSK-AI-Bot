@@ -26,7 +26,7 @@ uncertain response.
 | `broadcast.send` / `broadcast.control` | `/messages/read`, `/prepare`, `/save`, `/run`, `/prepare-control`, `/control`, `/stop` | Exact signed text/audience, durable pre-IO claims, owner-only bounded delivery and cancellation |
 | `payments.delivery_reconcile` | `/payment-deliveries/read`, `/prepare`, `/save` | Audited human resolution for uncertain or stale attempts; never resend or change finance |
 | `partners.payout` | `/partner-payouts/read`, `/prepare`, `/save` | Shared reserve/release/reject/deadline plus owned proof-bound completion and one durable recipient notice; no money transfer |
-| `partners.update` | `/partners/read`, `/prepare`, `/save` | Partner application approve/reject and partnership block/unblock via shared PartnerService |
+| `partners.update` | `/partners/read`, `/prepare`, `/save` | Partner application approve/reject with one durable notice, and partnership block/unblock via shared PartnerService |
 | `notifications.update` | `/notifications/read`, `/prepare`, `/save` | Five fixed reminder templates, enabled state and canonical UZ/RU/TJ text/defaults |
 | `portfolio.add` | `/portfolio/read`, `/prepare`, `/save` | Manual profit/expense through shared PortfolioService; no payment synchronization or entitlement mutation |
 | `channels.update` | `/channels/read`, `/prepare`, `/save` | Required-channel mode, add/upsert, state and removal through shared channel service |
@@ -70,9 +70,8 @@ responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 ## Explicit code parity still outstanding
 
 These legacy capabilities are not silently proxied by the standalone PWA:
-campaign creation, partner application recipient notices, and general
-media/QR/creative uploads. Direct, self-test and bounded text broadcast now have
-their own standalone commands described below. A legacy endpoint or
+campaign creation and general media/QR/creative uploads. Direct, self-test and
+bounded text broadcast now have their own standalone commands described below. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
 needs its own strict payload, shared-service transaction and permission/audit
 contract before its UI can claim success. Messaging additionally needs durable
@@ -131,9 +130,16 @@ signup-credit evidence. A shared setting-key lock and partner-row lock prevent
 stale approval or a rate/bonus edit; authority/expiry is rechecked after waiting.
 The shared service grants its existing locked signup bonus at most once. No
 learner block, subscription, payment or AI budget is changed. Immutable audit
-stores decision/status/bonus/hash only, without contact or promotion copy. This
-adapter records partnership state, not outbound-message or payout delivery;
-those remain explicit separate commands.
+stores decision/status/bonus/hash only, without contact or promotion copy.
+Approval and rejection prepare a fixed UZ/RU/TJ recipient notice from the
+canonical user's language snapshot. The exact canonical recipient and notice
+hash are bound to the same `partners.update` passkey operation. Partner status,
+bonus, immutable command audit and one-recipient outbound job commit atomically;
+the existing bounded drainer attempts delivery after commit. A missing
+canonical Telegram account does not fabricate a recipient or block the status
+decision. Provider uncertainty is not retried automatically. Block/unblock
+remain status-only operations. This records a send attempt workflow, not device
+delivery evidence.
 
 Payout metadata pages use 30-row primary-key keysets. Details load bounded
 account information but no Telegram QR/proof file IDs. Full raw payout state,

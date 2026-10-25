@@ -40,6 +40,9 @@ from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.admin_pwa_payment_review import AdminPwaPaymentReview,AdminPwaPaymentOutbox
 from app.db.models.partner import Partner, PartnerPayout
+from app.db.models.admin_pwa_outbound import AdminPwaOutboundJob
+from app.db.models.user import User
+from app.bot.utils.i18n import t
 from app.db.models.course_ad import CourseAdCreative
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
@@ -66,6 +69,8 @@ async def browser_checks(output):
         db.add_all([Partner(id=i,user_telegram_id=7100+i,status='pending',
             promotion_channel='QA promotion <img src=x onerror=alert(1)>',
             audience_size='1000',contact_username='@qa_partner') for i in (1,2)])
+        db.add_all([User(id=303,telegram_id=7101,status='free',language='uz'),
+                    User(id=304,telegram_id=7102,status='free',language='ru')])
         await db.flush()
         db.add_all([PartnerPayout(id=i,partner_id=i,amount_usd=10,exchange_rate=10.9,local_amount=109,
             local_currency='TJS',status='pending',payment_method='bank',account_details='QA account <img src=x onerror=alert(1)>') for i in (1,2)])
@@ -450,6 +455,10 @@ async def browser_checks(output):
                     await expect(page.locator('#partnerOperation')).to_have_value('approve')
                     await page.locator('[data-action="managementPrepare"]').click()
                     await expect(page.locator('.management-comparison')).to_be_visible()
+                    assert await page.locator('.management-comparison .notice-languages').count()==3
+                    assert await page.locator('.management-comparison .notice-preview').all_text_contents()==[
+                        t('partner_approved_notification',language).replace('<b>','').replace('</b>','')
+                        for language in ('uz','ru','tj')]
                     assert await page.locator('.management-comparison img').count()==0
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/f'partner-confirm-{language}-390.png'))
@@ -461,6 +470,12 @@ async def browser_checks(output):
                     await page.locator(f'[data-partner-id="{partner_id}"]').click()
                     await page.locator('#partnerOperation').select_option(operation)
                     await prepare_and_save('uz')
+                async with fixture.sessions() as db:
+                    jobs=(await db.scalars(select(AdminPwaOutboundJob).where(
+                        AdminPwaOutboundJob.target_user_id.in_([303,304])).order_by(AdminPwaOutboundJob.id))).all()
+                    assert len(jobs)==2
+                    assert {job.target_user_id for job in jobs}=={303,304}
+                    assert all(job.status=='ready' and job.audience_count==1 for job in jobs)
                 async with fixture.sessions() as db:
                     await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == 'consumed').values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))

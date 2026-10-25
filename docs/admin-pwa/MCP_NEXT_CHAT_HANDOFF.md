@@ -55,9 +55,32 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   completion and lost-response no-retry. One notice and one command only.
   Screenshots `/tmp/hsk-admin-pwa-payout-single-final-20261025` inspected.
   Catalogs: 63 artifacts, zero stale; JS/Python syntax and diff checks passed.
-- Remaining code: campaign creation, partner application notices and general
-  media/QR/creative uploads. External MCP is still statistics-only; all feature
+- Remaining code: campaign creation and general media/QR/creative uploads.
+  External MCP is still statistics-only; all feature
   defaults remain OFF, no main/deploy/live migration.
+
+## Current partner-application notice increment — 2026-10-25
+
+- PWA approve/reject now bind the canonical recipient, current account-language
+  snapshot and fixed UZ/RU/TJ notice copy to the existing `partners.update`
+  passkey proof. The status/bonus decision, hash-only command audit and one-user
+  outbound job commit together. A missing canonical Telegram account creates
+  no invented recipient and does not block the status decision. Block/unblock
+  remain unchanged.
+- The existing bounded outbound drainer starts only after commit, shares its
+  two worker slots, and rechecks recipient eligibility before its one attempt.
+  Unknown delivery is not automatically retried. The V10 comparison now shows
+  the actual localized notice before the action details; safe preview preserves
+  only fixed bold tags and escapes all other markup.
+- Local checks: partner, outbound, payout and payout-completion regression
+  suites **53 passed**, including disposable PostgreSQL lock-wait tests; main
+  import/catalog checks **9 passed**. Actual management browser/WebAuthn suite
+  passed UZ/RU/TJ at 390/1440px. Approval/rejection each produce one queued
+  notice; browser screenshots are in
+  `/tmp/hsk-admin-pwa-partner-notices-final-20261025`. Catalogs: 63 artifacts,
+  zero stale; JavaScript/Python syntax checks passed.
+- Next code: bounded campaign creation, then general media/QR/creative uploads.
+  Feature defaults remain OFF; external MCP remains statistics-only.
 
 ## Mobile Inbox touch and fresh-login regression
 

@@ -782,7 +782,6 @@ app.include_router(create_admin_pwa_user_management_router(settings_obj=settings
 app.include_router(create_admin_pwa_channels_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_portfolio_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_notifications_router(settings_obj=settings, session_factory=async_session_maker))
-app.include_router(create_admin_pwa_partners_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_partner_payouts_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_payment_reconciliation_router(settings_obj=settings, session_factory=async_session_maker))
 
@@ -809,6 +808,8 @@ async def _emit_admin_pwa_outbound(message):
 
 admin_pwa_message_drainer=create_message_drainer(settings_obj=settings,session_factory=async_session_maker,
     emit=_emit_admin_pwa_outbound)
+app.include_router(create_admin_pwa_partners_router(settings_obj=settings, session_factory=async_session_maker,
+    drainer=admin_pwa_message_drainer))
 app.include_router(create_admin_pwa_outbound_router(settings_obj=settings,session_factory=async_session_maker,
     emit=_emit_admin_pwa_outbound,drainer=admin_pwa_message_drainer))
 
