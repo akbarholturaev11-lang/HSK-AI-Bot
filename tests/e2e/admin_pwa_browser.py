@@ -278,7 +278,25 @@ async def browser_checks(output):
         await page.locator('.inbox-back').click()
         await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.locator('.drawer-close').click()
+        await page.locator('[data-route=payments]').first.click()
+        await expect(page.locator('.payment-table-wrap')).to_be_visible()
+        await expect(page.locator('.payment-table thead th')).to_have_count(7)
+        await expect(page.locator('.payment-cards')).to_be_hidden()
+        await page.locator('[data-route=users]').first.click()
         await page.set_viewport_size({'width':390,'height':844})
+        await expect(page.locator('.mobile-tabs button')).to_have_count(5)
+        assert await page.locator('.mobile-tabs button').all_text_contents()==['']*5
+        await expect(page.locator('.topbar [data-action=more]')).to_have_count(0)
+        await expect(page.locator('.user-table-wrap')).to_be_hidden()
+        await expect(page.locator('.user-cards .user-card')).not_to_have_count(0)
+        await page.locator('.mobile-tabs [data-action=more]').click()
+        await expect(page.locator('.more-drawer')).to_be_visible()
+        await expect(page.locator('.more-drawer [data-route=course]')).to_be_visible()
+        sheet=await page.locator('.more-drawer').bounding_box()
+        assert sheet and 0<sheet['height']<844 and abs(sheet['y']+sheet['height']-844)<3
+        await page.locator('.more-drawer [data-route=course]').click()
+        await expect(page.locator('.management-page')).to_be_visible()
+        await page.locator('.mobile-tabs [data-route=users]').click()
         await page.screenshot(path=str(output/'mobile-users.png'),full_page=True)
         for language in ('uz','ru','tj'):
             if language!='uz':
@@ -314,13 +332,15 @@ async def browser_checks(output):
         await page.screenshot(path=str(output/'mobile-statistics-details.png'),full_page=True)
         assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         await page.locator('[data-route=payments]').last.click()
-        await expect(page.locator('[data-review]')).to_have_count(1)
+        await expect(page.locator('.payment-cards .payment-card')).to_have_count(1)
+        await expect(page.locator('.payment-table-wrap')).to_be_hidden()
+        await expect(page.locator('[data-review]:visible')).to_have_count(1)
         receipt_failure=True
-        await page.locator('[data-review]').click()
+        await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_disabled()
         await page.locator('.drawer-close').click()
         receipt_failure=False
-        await page.locator('[data-review]').click()
+        await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
         await page.locator('[data-action=reject]').click()
         await expect(page.locator('#rejectReason')).to_be_focused()
@@ -330,7 +350,7 @@ async def browser_checks(output):
         await expect(page.locator('[data-action=execute]')).to_have_count(0)
         await page.locator('.drawer-close').click()
         fail_prepare=False
-        await page.locator('[data-review]').click()
+        await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
         await page.screenshot(path=str(output/'mobile-payment-receipt.png'),full_page=True)
         await page.locator('[data-action=approve]').click()
@@ -339,7 +359,7 @@ async def browser_checks(output):
         await page.screenshot(path=str(output/'mobile-payment-confirmation.png'),full_page=True)
         assert not any(path.endswith('step-up/options') for path,_,_ in calls)
         await page.locator('[data-action=execute]').click()
-        try:await expect(page.locator('[data-review]')).to_have_count(0,timeout=20000)
+        try:await expect(page.locator('[data-review]:visible')).to_have_count(0,timeout=20000)
         except AssertionError:
             print(await page.locator('#dialogs').inner_text(),[p for p,_,_ in calls],flush=True)
             await page.screenshot(path=str(output/'failure.png'),full_page=True)
@@ -358,8 +378,8 @@ async def browser_checks(output):
             payment=Payment(user_id=2,amount=10,currency='USD',plan_type='10_days',payment_method='visa',payment_status='pending',screenshot_file_id='synthetic-receipt')
             db.add(payment);await db.flush();second_id=payment.id;await db.commit()
         await page.locator('[data-route=payments]').last.click()
-        await expect(page.locator('[data-review]')).to_have_count(1)
-        await page.locator('[data-review]').click()
+        await expect(page.locator('[data-review]:visible')).to_have_count(1)
+        await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=reject]')).to_be_enabled()
         await page.locator('#rejectReason').fill('Synthetic QA duplicate')
         await page.locator('[data-action=reject]').click()
@@ -367,7 +387,7 @@ async def browser_checks(output):
         # A lost HTTP response AFTER a real commit must not resend the write.
         drop_review=True
         await page.locator('[data-action=execute]').click()
-        await expect(page.locator('[data-review]')).to_have_count(0,timeout=20000)
+        await expect(page.locator('[data-review]:visible')).to_have_count(0,timeout=20000)
         assert len([p for p,_,_ in calls if p.endswith('/payments/review')])==2
         async with fixture.sessions() as db:
             assert (await db.get(Payment,second_id)).payment_status=='rejected'
@@ -377,8 +397,8 @@ async def browser_checks(output):
             db.add(Payment(user_id=2,amount=10,currency='USD',plan_type='10_days',payment_method='visa',payment_status='pending',screenshot_file_id='synthetic-receipt'))
             await db.commit()
         await page.locator('[data-route=payments]').last.click()
-        await expect(page.locator('[data-review]')).to_have_count(1)
-        await page.locator('[data-review]').click()
+        await expect(page.locator('[data-review]:visible')).to_have_count(1)
+        await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
         await page.locator('[data-action=approve]').click()
         # Delay an OLD rejected native promise across a NEW prompt. Closing
@@ -399,9 +419,9 @@ async def browser_checks(output):
             await page.locator('[data-action=execute]').click()
         await wait_js(page,'() => window.qaNativeCalls===1')
         await page.locator('.drawer-close').click()
-        await expect(page.locator('[data-review]')).to_have_count(1)
+        await expect(page.locator('[data-review]:visible')).to_have_count(1)
         await wait_js(page,'() => !!window.qaRelease')
-        await page.locator('[data-review]').click()
+        await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
         await page.locator('[data-action=approve]').click()
         async with page.expect_response('**/auth/step-up/options'):
