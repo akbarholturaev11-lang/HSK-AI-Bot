@@ -1605,8 +1605,12 @@
       renderTelegramReachability();
       const rows = filterUsers();
       $("userList").innerHTML = rows.length ? rows.map(u=>{
-        const t = statusTone(u),end=u.access_ends_at||u.end_date;
-        const accessTag=end?tag((u.payment_status==="approved"?"обуна":"кириш ҳуқуқи")+(u.status==="expired"?" тугаган ":" тугайди ")+end,u.status==="expired"?"":u.payment_status==="approved"?"green":"violet"):"";
+        const t = statusTone(u),accessType=String(u.access_type||"").toUpperCase();
+        const expired=accessType==="EXPIRED";
+        const end=expired?u.end_date:u.access_ends_at;
+        const accessTag=end?tag((accessType==="PRO_ACTIVE"?"обуна":"кириш ҳуқуқи")+
+          (expired?" тугаган ":" тугайди ")+end,
+          expired?"":accessType==="PRO_ACTIVE"?"green":"violet"):"";
         return `<button class="ucard" data-user="${adminUserKey(u)}">
           <div class="uhead"><div><div class="uname">${esc(u.name)}</div>
             <div class="usub">${u.username?"@"+esc(u.username)+" · ":""}User ID ${esc(adminUserKey(u))}${u.id?" · Telegram "+esc(u.id):" · Telegram уланмаган"}<br>${esc(adminLanguageLabel(u.language))} · ${esc(u.level)} · ${esc(metricLabel(u.last_active))}</div></div>
