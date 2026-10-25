@@ -42,7 +42,7 @@ const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? courseCopy?.[locale
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
 const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', courseTab:'tracks', period:'weekly', platform:'overall', rows:[], stats:null,
   query:'', segment:'all', status:'pending', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
-let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
+let epoch=0, view=0, drawerId=0, confirmation=null, paymentPreview=null, reviewChoice=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
 let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
@@ -794,7 +794,7 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {clearTimeout(savedCloseTimer);savedCloseTimer=null;editorBaseline=null;resetSwipePreview();clearNotice();managementPreparing=false;preparingEditor=null;drawerBack=null;closeActionMenus();closeInboxAttachment();releaseManagementMediaPreview();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {clearTimeout(savedCloseTimer);savedCloseTimer=null;editorBaseline=null;resetSwipePreview();clearNotice();managementPreparing=false;preparingEditor=null;drawerBack=null;closeActionMenus();closeInboxAttachment();releaseManagementMediaPreview();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;paymentPreview=null;reviewChoice=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   clearTimeout(savedCloseTimer);savedCloseTimer=null;editorBaseline=null;
   if(!$('overlay'))returnFocus=document.activeElement;
@@ -1982,11 +1982,11 @@ function summary(operation) {
 async function review(paymentId) {
   closeDrawer();const current=drawerId;reviewId=paymentId;drawer('review',statePanel('loading'));
   try {
-    const operation=await api('payments/prepare-review',{payment_id:paymentId,decision:'approve',reason:null});
+    const preview=await api('payments/inspect-review',{payment_id:paymentId});
     if(current!==drawerId||!state.actor)return;
-    confirmation=operation;receiptLoaded=false;
-    const fingerprint=operation.payload.expected.receipt_sha256;
-    drawer('review',summary(operation)+`<p class="alert" id="receiptStatus">${esc(t('receiptMissing'))}</p>${fingerprint?`<img class="receipt-image" id="receiptImage" alt="${esc(t('receipt'))}">`:''}<div class="form-field"><label for="rejectReason">${esc(t('reason'))}</label><textarea id="rejectReason" class="input textarea" maxlength="300"></textarea></div>`,btn('rejectPayment','reject','danger',true)+btn('acceptPayment','approve','primary',true));
+    paymentPreview=Object.freeze(structuredClone(preview));confirmation=null;reviewChoice=null;receiptLoaded=false;
+    const fingerprint=preview.expected.receipt_sha256;
+    drawer('review',summary({payload:preview})+`<p class="alert" id="receiptStatus">${esc(t('receiptMissing'))}</p>${fingerprint?`<img class="receipt-image" id="receiptImage" alt="${esc(t('receipt'))}">`:''}<div class="form-field"><label for="rejectReason">${esc(t('reason'))}</label><textarea id="rejectReason" class="input textarea" maxlength="300"></textarea></div>`,btn('rejectPayment','reject','danger',true)+btn('acceptPayment','approve','primary',true));
     if(fingerprint) {
       const image=$('receiptImage');image.onload=()=>{if(current!==drawerId)return;receiptLoaded=true;$('receiptStatus').hidden=true;document.querySelectorAll('[data-action="approve"],[data-action="reject"]').forEach(button=>button.disabled=false);};
       image.onerror=()=>{if(current===drawerId)receiptLoaded=false;};
@@ -1999,8 +1999,8 @@ async function prepareDecision(decision){
   await singleEditorAction(()=>prepareDecisionCommand(decision));
 }
 async function prepareDecisionCommand(decision) {
-  if(!receiptLoaded||!confirmation)return;
-  const previous=confirmation, paymentId=reviewId, current=drawerId;
+  if(!receiptLoaded||!paymentPreview)return;
+  const previous=paymentPreview, paymentId=reviewId, current=drawerId;
   const reason=decision==='reject'?$('rejectReason').value.trim():null;
   if(decision==='reject'&&!reason){$('rejectReason').focus();return;}
   document.querySelectorAll('[data-action="approve"],[data-action="reject"]').forEach(button=>button.disabled=true);
@@ -2008,12 +2008,16 @@ async function prepareDecisionCommand(decision) {
   try {actual=await api('payments/prepare-review',{payment_id:paymentId,decision,reason});}
   catch(error){if(current===drawerId&&state.actor)drawer('review',statePanel(error.status===409?'changed':'error'));return;}
   if(current!==drawerId||!state.actor)return;
-  if(JSON.stringify(actual.payload.expected)!==JSON.stringify(previous.payload.expected)){showNotice('changed');await review(paymentId);return;}
-  confirmation=Object.freeze(structuredClone(actual));
+  if(JSON.stringify(actual.payload.expected)!==JSON.stringify(previous.expected)){showNotice('changed');await review(paymentId);return;}
+  if(actual.payload.decision!==decision||actual.payload.payment_id!==paymentId){drawer('review',statePanel('uncertain'));return;}
+  confirmation=Object.freeze(structuredClone(actual));reviewChoice=decision;
   await execute();
 }
 async function execute() {
-  if(!confirmation||!receiptLoaded||!supportsPasskey())return;
+  if(!confirmation||!receiptLoaded||!supportsPasskey()||
+     !['approve','reject'].includes(reviewChoice)||
+     confirmation.payload?.decision!==reviewChoice||
+     confirmation.payload?.payment_id!==reviewId)return;
   const operation=structuredClone(confirmation), current=drawerId, authEpoch=epoch;
   $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);const control=new AbortController();signing=control;
   let submitted=false;
@@ -2027,7 +2031,12 @@ async function execute() {
     submitted=true;
     const result=await api('payments/review',{...operation.payload,step_up_id:options.step_up_id});
     if(current!==drawerId||authEpoch!==epoch)return;
-    confirmation=null;receiptLoaded=false;
+    const intendedStatus=operation.payload.decision==='reject'?'rejected':'approved';
+    if(result.status!==intendedStatus){
+      confirmation=null;paymentPreview=null;reviewChoice=null;receiptLoaded=false;
+      drawer('review',statePanel('uncertain'));await load();return;
+    }
+    confirmation=null;paymentPreview=null;reviewChoice=null;receiptLoaded=false;
     if(['uncertain','attempting','unconfirmed'].includes(result.delivery_status))
       drawer('decisionSaved',`<div class="state-panel"><h2>${esc(t(result.status))}</h2><p>#${esc(operation.payload.payment_id)}</p><p>${esc(t('deliveryUncertain'))}</p></div>`);
     else showSavedAndDismiss('decisionSaved');
