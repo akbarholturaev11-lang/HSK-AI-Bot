@@ -78,6 +78,32 @@ class AdminPwaInboxFilterTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         self.assertEqual(row["message"], "Ежедневная практика")
         self.assertNotIn("telegram_id", row)
 
+    async def test_unfinished_bot_prompts_do_not_create_phantom_alerts(self):
+        now = datetime.now(timezone.utc).replace(microsecond=0)
+        async with self.sessions() as db:
+            pending = BotFeedback(
+                user_id=1, telegram_id=1001, status="pending",
+                liked_code="course", liked_text="only first step", created_at=now,
+            )
+            empty = BotFeedback(
+                user_id=1, telegram_id=1001, status="completed",
+                completed_at=now, created_at=now,
+            )
+            complete = BotFeedback(
+                user_id=1, telegram_id=1001, status="completed",
+                liked_code="course", liked_text="positive",
+                disliked_code="price", disliked_text="negative",
+                completed_at=now, created_at=now,
+            )
+            db.add_all([pending, empty, complete])
+            await db.flush()
+            ids = (pending.id, empty.id, complete.id)
+            await db.commit()
+        page = await self.read(source="bot")
+        self.assertEqual([r["source_id"] for r in page["items"]], [ids[2]])
+        self.assertEqual(page["items"][0]["feedback_parts"]["liked"], "positive")
+        self.assertEqual(page["items"][0]["feedback_parts"]["disliked"], "negative")
+
     async def test_periods_use_each_source_timestamp_and_preserve_retention(self):
         _, ids = await self.seed_sources()
         for source, source_ids in ids.items():
