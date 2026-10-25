@@ -1,0 +1,57 @@
+name: OpenSpec planning integration
+on:
+  push:
+    branches:
+      - main
+      - feat/openspec-selective-planning-20261025
+    paths:
+      - "openspec/**"
+      - ".agents/skills/hsk-ai-openspec-planning/**"
+      - "AGENTS.md"
+      - ".github/workflows/openspec-planning.yml"
+  pull_request:
+    paths:
+      - "openspec/**"
+      - ".agents/skills/hsk-ai-openspec-planning/**"
+      - "AGENTS.md"
+      - ".github/workflows/openspec-planning.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  openspec-scaffold:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      OPENSPEC_TELEMETRY: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install official OpenSpec CLI
+        run: npm install --global @fission-ai/openspec@latest
+      - name: Verify Codex compatibility and config
+        run: |
+          openspec --version
+          test -f openspec/config.yaml
+          test -f .agents/skills/hsk-ai-openspec-planning/SKILL.md
+          test -f .agents/skills/hsk-ai-ui/SKILL.md
+          test -f .agents/skills/webapp-testing/SKILL.md
+          openspec context --json > /tmp/openspec-context.json
+          openspec list --json > /tmp/openspec-list.json
+          openspec init --tools codex
+          test -f .agents/skills/openspec-propose/SKILL.md
+          test -f .agents/skills/hsk-ai-openspec-planning/SKILL.md
+          openspec new change openspec-ci-scaffold
+          openspec status --change openspec-ci-scaffold --json > /tmp/openspec-status.json
+          openspec instructions proposal --change openspec-ci-scaffold --json > /tmp/openspec-proposal-instructions.json
+          test -s /tmp/openspec-status.json
+          test -s /tmp/openspec-proposal-instructions.json
+          test -f openspec/changes/openspec-ci-scaffold/.openspec.yaml
+      - name: Existing repository guidance remains intact
+        run: |
+          git diff --exit-code -- AGENTS.md AI_RULES.md PROJECT_MEMORY.md
+          test -f .agents/skills/hsk-ai-ui/SKILL.md
+          test -f .agents/skills/webapp-testing/SKILL.md
