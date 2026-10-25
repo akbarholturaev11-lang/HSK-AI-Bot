@@ -929,7 +929,15 @@
     "ui.admin_pwa.discountTarget": "ID-и ҳисоб · барои гурӯҳ холӣ гузоред",
     "ui.admin_pwa.discountQuota": "Ҳадди истифода · холӣ — бе маҳдудият",
     "ui.admin_pwa.discountRepeatDays": "Фосилаи такрор (рӯз) · холӣ — як бор",
-    "ui.admin_pwa.campaignExpiry": "Муҳлати амал"
+    "ui.admin_pwa.campaignExpiry": "Муҳлати амал",
+    "ui.admin_pwa.campaignButton": "Тугмаи таблиғ",
+    "ui.admin_pwa.campaignButtonNone": "Бе тугма",
+    "ui.admin_pwa.campaignButtonSubscription": "Обуна",
+    "ui.admin_pwa.campaignButtonReminder": "Вақти ёдрасӣ",
+    "ui.admin_pwa.campaignButtonHelp": "Кумак",
+    "ui.admin_pwa.campaignButtonUrl": "Пайванди беруна",
+    "ui.admin_pwa.campaignButtonCustom": "Матни худ бо се забон",
+    "ui.admin_pwa.campaignButtonHint": "Агар матни худро нанависед, номи тайёри тугма ба забони қабулкунанда истифода мешавад. Манзил ҳангоми фиристодан ба passkey пайваст мешавад."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

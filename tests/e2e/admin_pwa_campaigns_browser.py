@@ -198,13 +198,62 @@ async def browser_checks(output):
                     row = await db.get(AdCampaign, 1)
                     assert row.rounds_sent == 1 and not row.is_active and row.next_send_at is None
                     assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit)) == 3
+                await page.locator('.drawer-close').click()
+                async def button_draft(language):
+                    await marketing(language)
+                    await page.locator('[data-campaign-list=ad]').click()
+                    await page.locator('[data-marketing-kind=campaign_draft]').click()
+                    await page.locator('#campaignTitle').fill('QA button campaign')
+                    for lang in ('uz','ru','tj'):
+                        panel=page.locator('.campaign-locale-copy').filter(has=page.locator('#campaignText-'+lang))
+                        if await panel.get_attribute('open') is None:
+                            await panel.locator('summary').click()
+                        await page.locator('#campaignText-'+lang).fill('QA button copy '+lang)
+                    await page.locator('[data-campaign-language=ru]').check()
+                    await page.locator('#campaignButtonSection summary').click()
+                    await page.locator('#campaignButtonAction').select_option('url')
+                    await page.locator('#campaignButtonUrl').fill('https://example.invalid/course')
+                    await page.locator('#campaignButtonCustom').check()
+                    for lang in ('uz','ru','tj'):
+                        await page.locator('#campaignButtonLabel-'+lang).fill('QA '+lang+' 中文 <test>')
+                for language in ('uz','ru','tj'):
+                    await button_draft(language)
+                    for width in (1440,390):
+                        await page.set_viewport_size({'width':width,'height':1000 if width==1440 else 844})
+                        await page.locator('#campaignButtonSection').scroll_into_view_if_needed()
+                        assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                        await page.screenshot(path=str(output/f'campaign-button-{language}-{width}.png'))
+                    await begin()
+                    await page.evaluate('window.cancelStepUp()')
+                    await expect(page.locator('.drawer')).not_to_have_attribute('aria-busy','true')
+                    await expect(page.locator('#campaignButtonAction')).to_have_value('url')
+                    await expect(page.locator('#campaignButtonUrl')).to_have_value('https://example.invalid/course')
+                    await expect(page.locator('#campaignButtonLabel-ru')).to_have_value('QA ru 中文 <test>')
+                    await page.locator('.drawer-close').click()
+                await button_draft('uz')
+                await page.locator('#campaignButtonAction').select_option('course')
+                await expect(page.locator('#campaignButtonUrl')).to_be_disabled()
+                await begin()
+                await finish_step_up(page)
+                await expect(page.locator('#drawerTitle')).to_have_text(saved_label,timeout=15000)
+                await page.locator('#drawerFoot [data-campaign-list=ad]').click()
+                await page.locator('[data-campaign-detail="2"]').click()
+                assert await page.locator('#drawerContent img').count()==0
+                await expect(page.locator('#drawerContent')).to_contain_text('QA uz 中文 <test>')
+                await begin()
+                await finish_step_up(page)
+                await expect(page.locator('[data-message-job]')).to_be_visible(timeout=15000)
+                assert len(sent)==3
+                assert sent[-1].reply_markup['inline_keyboard'][0][0]=={'text':'QA ru 中文 <test>','callback_data':'promo:action:course'}
+                async with fixture.sessions() as db:
+                    assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit))==5
                 assert not errors, errors
                 assert not await page.evaluate('cspFailures')
             finally:
                 await browser.close()
     finally:
         await fixture.engine.dispose()
-    print('Campaigns: real ASGI/WebAuthn; UZ/RU/TJ 390/1440, one-window cancel, native personal discount, claimed release/ad delivery and no duplicate sends passed')
+    print('Campaigns: real ASGI/WebAuthn; UZ/RU/TJ 390/1440, one-window cancel, native personal discount, claimed release/ad delivery, localized promotion buttons and no duplicate sends passed')
 
 
 if __name__ == '__main__':

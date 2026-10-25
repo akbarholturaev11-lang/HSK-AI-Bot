@@ -975,6 +975,30 @@ function updateCourseAdCreateMedia(){
   managementDraft={...managementDraft,mediaFile:null};releaseManagementMediaPreview();
   $('courseAdMediaPreview').innerHTML='';$('courseAdMediaValidation').hidden=true;
 }
+const campaignButtonLabels={subscription:'campaignButtonSubscription',partner:'partners',course:'course',reminder:'campaignButtonReminder',help:'campaignButtonHelp',contact:'helpContact',profile:'userProfile',url:'campaignButtonUrl'};
+function campaignButtonFields(){
+  const select=campaignSelect('campaignButtonAction','campaignButton',[['','campaignButtonNone'],...Object.entries(campaignButtonLabels)]);
+  const labels=['uz','ru','tj'].map(lang=>`<div class="form-field"><label for="campaignButtonLabel-${lang}">${lang.toUpperCase()} · ${esc(t('courseAdButton'))}</label><input class="input" id="campaignButtonLabel-${lang}" maxlength="64" disabled></div>`).join('');
+  return `<details class="profile-section" id="campaignButtonSection"><summary>${esc(t('campaignButton'))}</summary>${select}<div id="campaignButtonSettings" hidden><div class="form-field" id="campaignButtonUrlField" hidden><label for="campaignButtonUrl">${esc(t('courseAdLink'))}</label><input class="input" id="campaignButtonUrl" maxlength="512" placeholder="https://…" disabled></div><label class="management-check"><input type="checkbox" id="campaignButtonCustom">${esc(t('campaignButtonCustom'))}</label><div id="campaignButtonLabels" hidden>${labels}</div><p class="source-note">${esc(t('campaignButtonHint'))}</p></div></details>`;
+}
+function updateCampaignButtonFields(){
+  if(managementDraft?.kind!=='campaign_draft'||!$('campaignButtonAction'))return;
+  const action=$('campaignButtonAction').value,enabled=Boolean(action),custom=enabled&&$('campaignButtonCustom').checked,url=action==='url';
+  $('campaignButtonSettings').hidden=!enabled;$('campaignButtonUrlField').hidden=!url;
+  $('campaignButtonUrl').disabled=!url;$('campaignButtonUrl').required=url;
+  $('campaignButtonLabels').hidden=!custom;
+  for(const lang of ['uz','ru','tj']){const input=$('campaignButtonLabel-'+lang);input.disabled=!custom;input.required=custom;}
+}
+function campaignButtonChange(){
+  const action=$('campaignButtonAction').value;
+  return action?{action,url:action==='url'?$('campaignButtonUrl').value:null,labels:$('campaignButtonCustom').checked?Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,$('campaignButtonLabel-'+lang).value])):null}:null;
+}
+function campaignButtonPreview(row,lang){
+  const button=row.buttons?.[lang]?.inline_keyboard?.[0]?.[0];
+  if(!button)return '';
+  const target=button.url||button.web_app?.url||t(campaignButtonLabels[row.button?.action]);
+  return `<div class="notice-preview"><strong>${esc(t('campaignButton'))}: ${esc(button.text)}</strong><p class="source-note">${esc(target)}</p></div>`;
+}
 const campaignLabels={ad:'adCampaigns',release:'releaseCampaigns',discount:'discountCampaigns'};
 const campaignFeatureLabels={general:'all',qa:'questionAnswer',image:'releaseFeatureImage',course:'course',profile:'userProfile',subscription:'subscriptionPrices',android_subscription:'releaseFeatureAndroid'};
 function campaignSelect(id,label,options,selected=''){
@@ -988,7 +1012,7 @@ function campaignFields(row){
   if(row.quota_total)fields.push(['discountQuota',row.quota_total]);
   if(row.repeat_interval_days)fields.push(['discountRepeatDays',row.repeat_interval_days]);
   if(row.sent_count!==undefined)fields.push(['messageAttempted',row.sent_count],['messageUncertain',row.failed_count]);
-  const copies=row.texts?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(row.texts[lang])}</p></details>`).join(''):row.copies?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><strong>${esc(row.copies[lang].title)}</strong><p class="notice-preview">${esc(row.copies[lang].reason)}</p></details>`).join(''):'';
+  const copies=row.texts?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(row.texts[lang])}</p>${campaignButtonPreview(row,lang)}</details>`).join(''):row.copies?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><strong>${esc(row.copies[lang].title)}</strong><p class="notice-preview">${esc(row.copies[lang].reason)}</p></details>`).join(''):'';
   return profileFields(fields)+copies;
 }
 async function campaignList(kind,before=null){
@@ -1065,8 +1089,9 @@ async function marketingEditor(kind,before=null){
     closeDrawer();managementDraft={type:'marketing',kind};
     const copy=['uz','ru','tj'].map(language=>`<details class="profile-section notice-languages campaign-locale-copy" ${language===locale?'open':''}><summary>${language.toUpperCase()}</summary><div class="form-field"><label for="campaignText-${language}">${esc(t('campaignCopy'))}</label><textarea class="input setting-value" id="campaignText-${language}" maxlength="3500" rows="5" required></textarea></div></details>`).join('');
     const languages=['uz','ru','tj'].map(language=>`<label class="management-check"><input type="checkbox" data-campaign-language="${language}">${language.toUpperCase()}</label>`).join('');
-    const body=`<p class="source-note campaign-paused-note">${esc(t('campaignPausedHint'))}</p><div class="form-field"><label for="campaignTitle">${esc(t('campaignTitle'))}</label><input class="input" id="campaignTitle" maxlength="120" required></div>${copy}<fieldset class="form-field"><legend>${esc(t('targetLanguages'))}</legend><div class="v6-toggles">${languages}</div></fieldset><div class="management-form-pair"><div class="form-field"><label for="campaignTrack">${esc(t('campaignTrack'))}</label><select class="input" id="campaignTrack"><option value="">${esc(t('all'))}</option><option value="hsk20">HSK 2.0</option><option value="hsk30">HSK 3.0</option></select></div><div class="form-field"><label for="campaignDuration">${esc(t('campaignDurationHours'))}</label><input class="input" id="campaignDuration" type="number" min="1" max="720" step="1" value="24" required></div></div><label class="management-check"><input type="checkbox" id="campaignSubscribers">${esc(t('includeActiveSubscribers'))}</label><p class="alert" id="campaignValidation" hidden>${esc(t('campaignValidation'))}</p>`;
+    const body=`<p class="source-note campaign-paused-note">${esc(t('campaignPausedHint'))}</p><div class="form-field"><label for="campaignTitle">${esc(t('campaignTitle'))}</label><input class="input" id="campaignTitle" maxlength="120" required></div>${copy}<fieldset class="form-field"><legend>${esc(t('targetLanguages'))}</legend><div class="v6-toggles">${languages}</div></fieldset><div class="management-form-pair"><div class="form-field"><label for="campaignTrack">${esc(t('campaignTrack'))}</label><select class="input" id="campaignTrack"><option value="">${esc(t('all'))}</option><option value="hsk20">HSK 2.0</option><option value="hsk30">HSK 3.0</option></select></div><div class="form-field"><label for="campaignDuration">${esc(t('campaignDurationHours'))}</label><input class="input" id="campaignDuration" type="number" min="1" max="720" step="1" value="24" required></div></div><label class="management-check"><input type="checkbox" id="campaignSubscribers">${esc(t('includeActiveSubscribers'))}</label>${campaignButtonFields()}<p class="alert" id="campaignValidation" hidden>${esc(t('campaignValidation'))}</p>`;
     drawer('createCampaign',`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('saveChanges','managementPrepare','primary'));
+    updateCampaignButtonFields();
     return;
   }
   if(!Object.hasOwn(marketingLabels,kind))return;
@@ -1191,6 +1216,7 @@ function managementReread(draft){
   if(draft.type==='campaign')return `<button class="btn" data-campaign-list="${esc(draft.campaignKind||({ad_send:'ad',release_create:'release',discount_create:'discount',discount_state:'discount'}[draft.kind]))}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='channel')return `<button class="btn" data-channels-kind="${draft.kind==='mode'?'mode':'list'}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='user')return `<button class="btn" data-user-detail="${draft.userId}">${esc(t('readCurrent'))}</button>`;
+  if(draft.type==='marketing'&&draft.kind==='campaign_draft')return `<button class="btn" data-campaign-list="ad">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind==='course_ad_create'?'course_ad':draft.kind)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='payment_qr')return `<button class="btn" data-payment-qr-target="${esc(draft.method+'-'+draft.plan)}">${esc(t('readCurrent'))}</button>`;
   return draft.type==='price'?btn('readCurrent','priceSettings'):`<button class="btn" data-setting-kind="${draft.kind}" ${draft.bank?`data-bank="${draft.bank}"`:''}>${esc(t('readCurrent'))}</button>`;
@@ -1350,7 +1376,7 @@ async function prepareManagementCommand(current,at){
       const languages=[...document.querySelectorAll('[data-campaign-language]:checked')].map(input=>input.dataset.campaignLanguage);
       if(!languages.length){$('campaignValidation').hidden=false;return;}
       Object.assign(change,{title:$('campaignTitle').value,texts:Object.fromEntries(['uz','ru','tj'].map(language=>[language,$('campaignText-'+language).value])),
-        languages,track:$('campaignTrack').value||null,duration_hours:Number($('campaignDuration').value),include_active_subscribers:$('campaignSubscribers').checked});
+        languages,track:$('campaignTrack').value||null,duration_hours:Number($('campaignDuration').value),include_active_subscribers:$('campaignSubscribers').checked,button:campaignButtonChange()});
     }
     if(draft.kind==='sales_experiment')Object.assign(change,{mode:$('salesMode').value,treatment_percent:Number($('salesPercent').value)});
     if(draft.kind==='desktop_promo')Object.assign(change,{enabled:$('promoEnabled').value==='true',daily_limit:Number($('promoLimit').value),require_learning_progress:$('promoProgress').checked,
@@ -2260,6 +2286,7 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('change',event=>{
+  if(['campaignButtonAction','campaignButtonCustom'].includes(event.target.id))updateCampaignButtonFields();
   if(event.target.id==='discountTarget'&&$('discountSegment'))$('discountSegment').hidden=Boolean(event.target.value);
   if(event.target.id==='newAdLanguage')updateCourseAdCreateLanguage();
   if(event.target.id==='newAdMediaType'){updateCourseAdCreateMedia();return;}

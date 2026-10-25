@@ -331,6 +331,8 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
                     if campaign['kind']=='release':
                         from app.bot.keyboards.release_feedback import release_feedback_rating_keyboard
                         markup=release_feedback_rating_keyboard(campaign['campaign_id'],recipient.language).model_dump(mode='json')
+                    elif campaign['kind']=='ad':
+                        markup=campaign.get('buttons',{}).get(recipient.language)
                 message=OutboundMessage(user.id,user.telegram_id,recipient.language,copies[recipient.language],photo_file_id,markup)
         status='uncertain'
         provider_result=None

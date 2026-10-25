@@ -18,7 +18,7 @@ from sqlalchemy import func, insert, select, text, update
 from app.admin_api.pwa_access_grants import CommandError, StepId
 from app.admin_api.pwa_approval import _utc
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
-from app.admin_api.pwa_marketing import CampaignTexts
+from app.admin_api.pwa_marketing import CampaignTexts, reviewed_campaign_buttons
 from app.admin_api.pwa_outbound import (
     LANGS, MAX_AUDIENCE, MessageFilters, _hash, enqueue_reviewed_message, recipient_hash,
 )
@@ -212,7 +212,7 @@ def _view(row, kind, *, detail=False):
             result.update(ends_at=_utc(row.ends_at).isoformat(), rounds_sent=row.rounds_sent,
                           can_send=not row.is_active and row.next_send_at is None and row.rounds_sent == 0
                           and row.send_count_total == 1 and row.content_type == 'text'
-                          and not row.media_file_id and not row.button_config and bool(copies)
+                          and not row.media_file_id and bool(copies)
                           and _utc(row.starts_at) <= datetime.now(timezone.utc) < _utc(row.ends_at))
         else:
             result.update(sent_count=row.sent_count, failed_count=row.failed_count, feature_key=row.feature_key)
@@ -225,7 +225,17 @@ async def read_campaigns(db, *, session_cookie, request, settings_obj):
     async with read_transaction(db):
         await _authenticate(db, session_cookie, settings_obj)
         if request.campaign_id:
-            return {'campaign': _view(await _row(db, request.kind, request.campaign_id), request.kind, detail=True)}
+            row = await _row(db, request.kind, request.campaign_id)
+            result = _view(row, request.kind, detail=True)
+            if request.kind == 'ad':
+                try:
+                    button, rendered = await reviewed_campaign_buttons(db, row.button_config)
+                    result.update(button=button, buttons=rendered)
+                    if rendered:
+                        result['revision_hash'] = _hash({'campaign': revision(row), 'buttons': rendered})
+                except CommandError:
+                    result['can_send'] = False
+            return {'campaign': result}
         model = MODELS[request.kind]
         # Metadata-only keyset. No provider IDs or long copy in the list query.
         state = model.status if request.kind == 'release' else model.is_active
@@ -270,8 +280,11 @@ async def _prepare_state(db, change, settings_obj, *, lock=False):
                                  level=row.target_level).model_dump()
         metadata = {'kind': 'ad', 'campaign_id': row.id, 'filters': filters,
                     'exclude_active': not row.include_active_subscribers}
-        current_hash = revision(row)
-        content = {'texts': texts}
+        _, rendered = await reviewed_campaign_buttons(db, row.button_config, lock=lock)
+        if rendered:
+            metadata['buttons'] = rendered
+        current_hash = _hash({'campaign': revision(row), 'buttons': rendered}) if rendered else revision(row)
+        content = {'texts': texts, 'buttons': rendered}
     elif change.kind == 'release_create':
         texts = {lang: html.escape(value, quote=False) + release_feedback_prompt(lang)
                  for lang, value in change.texts.model_dump().items()}

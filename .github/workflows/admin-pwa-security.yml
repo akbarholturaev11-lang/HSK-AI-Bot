@@ -26,6 +26,8 @@ on:
       - "tests/test_partner_payment_ownership.py"
       - "tests/test_payment_review_preview.py"
       - "app/bot/handlers/admin_pwa.py"
+      - "app/bot/keyboards/promo_button.py"
+      - "tests/test_bot_promo_button_localization.py"
       - "alembic/versions/01[12][0-9]_admin_pwa*.py"
       - "requirements.txt"
       - "tests/test_admin_pwa_*.py"
@@ -71,6 +73,8 @@ on:
       - "tests/test_partner_payment_ownership.py"
       - "tests/test_payment_review_preview.py"
       - "app/bot/handlers/admin_pwa.py"
+      - "app/bot/keyboards/promo_button.py"
+      - "tests/test_bot_promo_button_localization.py"
       - "alembic/versions/01[12][0-9]_admin_pwa*.py"
       - "requirements.txt"
       - "tests/test_admin_pwa_*.py"
@@ -149,7 +153,7 @@ jobs:
           python -m pytest -q tests/test_admin_pwa_*.py tests/test_i18n_all_catalogs.py tests/test_i18n_miniapp_inline_adoption.py tests/test_i18n_android_catalog_adoption.py tests/test_qa_standalone_bootstrap.py
       - name: Preserve legacy payment, subscription, preview and affiliate contracts
         run: |
-          python -m pytest -q tests/test_native_account_payments.py tests/test_hsk30_admin_payment_flow.py tests/test_subscription_service.py tests/test_partner_payment_ownership.py tests/test_payment_review_preview.py tests/test_main_imports.py
+          python -m pytest -q tests/test_native_account_payments.py tests/test_hsk30_admin_payment_flow.py tests/test_subscription_service.py tests/test_partner_payment_ownership.py tests/test_payment_review_preview.py tests/test_bot_promo_button_localization.py tests/test_main_imports.py
       - name: Check canonical UI catalogs and generated artifacts
         run: |
           python scripts/i18n_build_all_catalogs.py --check
@@ -279,4 +283,4 @@ jobs:
           python -m alembic upgrade head
       - name: Run PostgreSQL advisory-lock, single-use and revoke regressions
         run: |
-          python -m pytest -q tests/test_admin_pwa_postgres.py tests/test_admin_pwa_settings_postgres.py tests/test_admin_pwa_hsk30_settings_locking.py tests/test_admin_pwa_user_management_postgres.py tests/test_admin_pwa_channels.py::ChannelPostgresTests tests/test_admin_pwa_portfolio.py::PortfolioPostgresTests tests/test_admin_pwa_notifications.py::NotificationPostgresTests tests/test_admin_pwa_partners.py::PartnerPostgresTests tests/test_admin_pwa_partner_payouts.py::PayoutPostgresTests tests/test_admin_pwa_inbox_retention.py::InboxRetentionPostgresTests tests/test_admin_pwa_payment_reconciliation.py::ReconciliationPostgresTests tests/test_admin_pwa_outbound.py::OutboundPostgresTests tests/test_admin_pwa_campaigns.py::CampaignPostgresTests tests/test_admin_pwa_payout_completion.py::CompletionPostgresTests
+          python -m pytest -q tests/test_admin_pwa_postgres.py tests/test_admin_pwa_settings_postgres.py tests/test_admin_pwa_hsk30_settings_locking.py tests/test_admin_pwa_user_management_postgres.py tests/test_admin_pwa_channels.py::ChannelPostgresTests tests/test_admin_pwa_portfolio.py::PortfolioPostgresTests tests/test_admin_pwa_notifications.py::NotificationPostgresTests tests/test_admin_pwa_partners.py::PartnerPostgresTests tests/test_admin_pwa_partner_payouts.py::PayoutPostgresTests tests/test_admin_pwa_inbox_retention.py::InboxRetentionPostgresTests tests/test_admin_pwa_payment_reconciliation.py::ReconciliationPostgresTests tests/test_admin_pwa_outbound.py::OutboundPostgresTests tests/test_admin_pwa_campaigns.py::CampaignPostgresTests tests/test_admin_pwa_campaign_buttons.py::CampaignButtonPostgresTests tests/test_admin_pwa_payout_completion.py::CompletionPostgresTests

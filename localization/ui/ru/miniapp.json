@@ -929,7 +929,15 @@
     "ui.admin_pwa.discountTarget": "ID аккаунта · пусто для сегмента",
     "ui.admin_pwa.discountQuota": "Лимит применений · пусто без лимита",
     "ui.admin_pwa.discountRepeatDays": "Интервал повторения (дни) · пусто для одного раза",
-    "ui.admin_pwa.campaignExpiry": "Срок действия"
+    "ui.admin_pwa.campaignExpiry": "Срок действия",
+    "ui.admin_pwa.campaignButton": "Кнопка рекламы",
+    "ui.admin_pwa.campaignButtonNone": "Без кнопки",
+    "ui.admin_pwa.campaignButtonSubscription": "Подписка",
+    "ui.admin_pwa.campaignButtonReminder": "Время напоминаний",
+    "ui.admin_pwa.campaignButtonHelp": "Помощь",
+    "ui.admin_pwa.campaignButtonUrl": "Внешняя ссылка",
+    "ui.admin_pwa.campaignButtonCustom": "Свой текст на трёх языках",
+    "ui.admin_pwa.campaignButtonHint": "Без своего текста используется готовое название кнопки на языке получателя. Адрес привязывается к passkey при отправке."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

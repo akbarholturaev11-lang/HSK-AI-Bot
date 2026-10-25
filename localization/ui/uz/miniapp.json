@@ -929,7 +929,15 @@
     "ui.admin_pwa.discountTarget": "Hisob ID · bo‘sh bo‘lsa segment",
     "ui.admin_pwa.discountQuota": "Foydalanish limiti · bo‘sh bo‘lsa cheksiz",
     "ui.admin_pwa.discountRepeatDays": "Takrorlash oralig‘i (kun) · bo‘sh bo‘lsa bir marta",
-    "ui.admin_pwa.campaignExpiry": "Amal qilish muddati"
+    "ui.admin_pwa.campaignExpiry": "Amal qilish muddati",
+    "ui.admin_pwa.campaignButton": "Reklama tugmasi",
+    "ui.admin_pwa.campaignButtonNone": "Tugmasiz",
+    "ui.admin_pwa.campaignButtonSubscription": "Obuna",
+    "ui.admin_pwa.campaignButtonReminder": "Eslatma vaqti",
+    "ui.admin_pwa.campaignButtonHelp": "Yordam",
+    "ui.admin_pwa.campaignButtonUrl": "Tashqi havola",
+    "ui.admin_pwa.campaignButtonCustom": "Uch tilda o‘z matnimni yozish",
+    "ui.admin_pwa.campaignButtonHint": "O‘z matningizni yozmasangiz, har bir tilning tayyor tugma nomi ishlatiladi. Manzil yuborish paytidagi passkey amaliga bog‘lanadi."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

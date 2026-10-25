@@ -1,6 +1,36 @@
 # HSK AI Admin PWA — current MCP continuation checkpoint
 
-Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
+Updated 2026-10-26. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
+
+## Current campaign continuation — 2026-10-26
+
+- Prior ready code is verified on `origin/main` at `8d473cd9`. The feature was
+  synchronized with that promotion, then the latest main `0905dedc` was merged:
+  compact Mac layout, user/profile filters and audited billing state, automatic
+  Apple Web Push and selective OpenSpec planning are preserved. Their upstream
+  defaults are not reverted by this work.
+- The owner asked to continue remaining Admin PWA work. The CLI-generated
+  [campaign delta](../../openspec/changes/admin-pwa-campaign-completion/proposal.md)
+  records button/media/scheduling/discount-notice contracts; OpenSpec 1.15.0
+  `validate --strict` passes. That is planning validation only. This handoff
+  remains the canonical execution checkpoint.
+- First increment implemented: strict optional promotion button in a signed ad
+  draft, existing allowlisted actions and HTTPS/@username link, existing
+  localized defaults or explicit three-language labels. Shared legacy behavior
+  remains compatible. Rendered labels/targets participate in detail revision
+  and send commitment; save rechecks contact under the shared key lock. The
+  queue holds the reviewed markup, so later changes cannot replace it and no
+  per-recipient contact query is added. Browser callback/provider JSON is denied.
+- Tests: campaign button/marketing/outbound/shared Bot regressions with real
+  isolated PostgreSQL **65 passed, 71 subtests**. Actual campaign browser passed
+  UZ/RU/TJ at 390/1440, native cancellation preserving all inputs, real signed
+  draft creation, safe preview and one exact callback delivery. Full settings
+  browser passed after latest main integration. Evidence:
+  `/tmp/hsk-admin-pwa-campaign-buttons*-20261026`. Mobile screenshot reviewed.
+  JS/Python syntax, diff and catalog checks passed: 63 artifacts, zero stale.
+- Next increment: owned campaign media; then bounded session-preserving schedule
+  and discount notices retaining native/Play policy. No claim that these later
+  controls are implemented. No external MCP scope or manual deployment change.
 
 ## Owner-approved main promotion — 2026-10-25
 

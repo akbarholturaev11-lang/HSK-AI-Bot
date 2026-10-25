@@ -47,6 +47,10 @@ from app.repositories.ad_campaign_repo import AdCampaignRepository
 from app.services.broadcast_translation_service import encode_localized_broadcast_text
 from app.services.course_ad_service import COURSE_AD_MEDIA_ROOT, CourseAdService
 from app.services.ad_placement_service import AD_PLACEMENTS
+from app.bot.keyboards.promo_button import (
+    build_promo_button_markup, decode_promo_button_config, encode_promo_button_config,
+)
+from app.services.support_contact_service import ADMIN_CONTACT_KEY, get_admin_contact_url
 from app.services.course_ad_media import (
     COURSE_AD_MAX_UPLOAD_BYTES,
     CourseAdVideoError,
@@ -268,6 +272,72 @@ class CampaignTexts(StrictModel):
         return value
 
 
+class CampaignButtonLabels(StrictModel):
+    uz: Annotated[str, Field(min_length=1, max_length=64)]
+    ru: Annotated[str, Field(min_length=1, max_length=64)]
+    tj: Annotated[str, Field(min_length=1, max_length=64)]
+
+    @field_validator('uz', 'ru', 'tj')
+    @classmethod
+    def bounded_label(cls, value):
+        value = value.strip()
+        if not value or len(value.encode('utf-16-le')) // 2 > 64 or any(ord(c) < 32 for c in value):
+            raise ValueError('Invalid button label')
+        return value
+
+
+class CampaignButton(StrictModel):
+    action: Literal['subscription', 'partner', 'course', 'reminder', 'help', 'contact', 'profile', 'url']
+    labels: CampaignButtonLabels | None = None
+    url: Annotated[str, Field(max_length=512)] | None = None
+
+    @field_validator('url')
+    @classmethod
+    def safe_url(cls, value):
+        return CourseAdCreateChange.valid_link(value)
+
+    @model_validator(mode='after')
+    def exact_action(self):
+        if (self.action == 'url') != (self.url is not None):
+            raise ValueError('Only the URL action has an explicit destination')
+        return self
+
+    def config(self):
+        return self.model_dump(exclude_none=True)
+
+
+async def reviewed_campaign_buttons(db, stored, *, lock=False):
+    """Render once per reviewed command, never look up destinations during IO."""
+    if not stored:
+        return None, None
+    config = decode_promo_button_config(stored)
+    if config is None:
+        raise CommandError('admin_pwa_campaign_button_invalid', 400)
+    if config.get('text') and not config.get('labels'):
+        config['labels'] = {lang: config['text'] for lang in ('uz', 'ru', 'tj')}
+    config.pop('text', None)
+    try:
+        button = CampaignButton.model_validate(config)
+    except ValidationError as exc:
+        raise CommandError('admin_pwa_campaign_button_invalid', 400) from exc
+    contact_url = None
+    if button.action == 'contact':
+        if lock:
+            await BotSettingRepository(db).lock_key(ADMIN_CONTACT_KEY)
+        contact_url = await get_admin_contact_url(db)
+        if contact_url:
+            try:
+                contact_url = CampaignButton.safe_url(contact_url)
+            except ValueError as exc:
+                raise CommandError('admin_pwa_campaign_button_invalid', 400) from exc
+    rendered = {}
+    for lang in ('uz', 'ru', 'tj'):
+        markup = await build_promo_button_markup(db, button.config(), lang=lang,
+            source='admin_pwa_ad_campaign', contact_url=contact_url)
+        rendered[lang] = markup.model_dump(mode='json', exclude_none=True)
+    return button.config(), rendered
+
+
 class CampaignDraftChange(StrictModel):
     kind: Literal["campaign_draft"]
     title: Annotated[str, Field(min_length=1, max_length=120)]
@@ -277,6 +347,7 @@ class CampaignDraftChange(StrictModel):
     level: Literal["beginner", "hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"] | None = None
     duration_hours: Annotated[int, Field(strict=True, ge=1, le=720)] = 24
     include_active_subscribers: bool = False
+    button: CampaignButton | None = None
 
     @field_validator("title")
     @classmethod
@@ -695,6 +766,7 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
                     include_active_subscribers=change.include_active_subscribers,
                     created_by_telegram_id=actor.telegram_id,
                     is_active=False,
+                    button_config=encode_promo_button_config(change.button.config()) if change.button else None,
                 )
                 result = {"id": campaign.id, "title": campaign.title,
                           "status": "paused_draft", "is_active": False,

@@ -192,6 +192,23 @@ editor retains the contextual Send/Create/Save → native passkey interaction.
   this path cannot start an unbounded legacy sender. Native personal accounts
   retain `target_user_id` with no invented Telegram ID.
 
+Signed ad drafts now accept one optional existing promotion action: subscription,
+partner, course, reminder, help, contact, profile or a strict HTTPS/Telegram
+username link. Browser callback JSON and provider IDs remain forbidden. Labels
+use the existing shared localized defaults or explicit UZ/RU/TJ text together
+(maximum 64 UTF-16 units each). Shared legacy single-label decoding is preserved.
+The original V10 editor has one contextual creation/send action, retains fields
+on native cancellation and shows the real button/destination with loaded copy.
+
+Prepare renders all three buttons through the shared builder and binds their
+full markup to the command content hash. Detail revisions include the rendered
+buttons, so a changed loaded contact is rejected before native signing. Save
+repeats rendering under the contact setting's shared lock, then atomically
+stores that reviewed markup with the claimed queue. A later setting edit cannot
+replace an already signed destination; dispatch performs no per-recipient
+contact lookup. Immutable audit contains hashes, never destination URLs or
+custom button copy. Unsafe legacy button formats remain read-only in this path.
+
 Campaign jobs share the existing two drainer slots, ten-recipient batches,
 committed pre-provider claim, one-hour private body retention, Stop and signed
 pending-only resume. No DB connection spans provider IO. Each claim rechecks
@@ -203,8 +220,7 @@ outlives private job retention. No new schema, cron, media BLOB, translation
 request, aggregate refresh or external MCP capability is introduced.
 
 These commands intentionally accept the formats above. Arbitrary provider
-references, future unattended campaign scheduling, legacy campaign media and
-arbitrary promotion buttons are not accepted by these standalone commands.
+references, future unattended campaign scheduling, legacy campaign media are not accepted by these standalone commands.
 Existing course-ad photo/video, desktop-promo images, subscription QR and owned
 payout proof each retain their separate signed asset contract. A legacy route
 is not an implicit standalone permission.

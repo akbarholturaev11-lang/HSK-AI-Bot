@@ -104,6 +104,7 @@ def normalize_promo_button_config(
     *,
     text: str | None = None,
     url: str | None = None,
+    labels: dict | None = None,
 ) -> dict | None:
     if action not in PROMO_BUTTON_ACTIONS:
         return None
@@ -112,6 +113,10 @@ def normalize_promo_button_config(
     config = {"action": action}
     if clean_text:
         config["text"] = clean_text
+    if (isinstance(labels, dict) and set(labels) == {"uz", "ru", "tj"}
+            and all(isinstance(value, str) and value.strip() and len(value.strip()) <= 64
+                    and not any(ord(char) < 32 for char in value) for value in labels.values())):
+        config["labels"] = {lang: value.strip() for lang, value in labels.items()}
 
     if action == "url":
         clean_url = normalize_promo_button_url(url)
@@ -137,6 +142,7 @@ def decode_promo_button_config(value) -> dict | None:
         data.get("action"),
         text=data.get("text"),
         url=data.get("url"),
+        labels=data.get("labels"),
     )
 
 
@@ -172,7 +178,9 @@ async def build_promo_button_markup(
         return None
 
     action = config["action"]
-    text = config.get("text") or default_promo_button_text(action, lang)
+    label_language = "tj" if lang in {"tg", "tg-TJ"} else lang
+    text = (config.get("labels", {}).get(label_language)
+            or config.get("text") or default_promo_button_text(action, lang))
 
     if action == "subscription":
         button = subscription_miniapp_button(
