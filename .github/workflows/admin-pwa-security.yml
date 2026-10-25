@@ -6,6 +6,7 @@ on:
       - codex/admin-pwa
       - feat/admin-pwa-mcp-readonly-20261024
       - feat/admin-pwa-minimal-inbox-passkey-20261025
+      - feat/admin-pwa-users-directory-v10-20261026
       - main
     paths:
       - ".github/workflows/admin-pwa-security.yml"
