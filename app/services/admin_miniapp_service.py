@@ -1316,6 +1316,7 @@ def is_admin_hot_lead(user, hot_since: datetime) -> bool:
         and str(getattr(user, "payment_status", "") or "none").lower() in HOT_LEAD_PAYMENT_STATUSES
         and not BotBlockStatusService.is_bot_blocked(user)
         and _is_at_or_after(getattr(user, "last_active_at", None), hot_since)
+        and _as_utc(getattr(user, "last_active_at", None)) <= datetime.now(timezone.utc)
     )
 
 
