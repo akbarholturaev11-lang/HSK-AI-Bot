@@ -87,6 +87,9 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("lockAndRequirePasskey();\n})();",script)
         self.assertIn("await api('auth/logout',{})",script)
         self.assertIn("await api('auth/passkey/login/verify'",script)
+        self.assertIn("if(resumed&&shouldReloadForApplePwaBiometric()){location.reload();return;}",script)
+        login_gate=script.split('async function lockAndRequirePasskey() {',1)[1].split('async function tryAutomaticPasskeyLogin()',1)[0]
+        self.assertLess(login_gate.index("await api('auth/logout',{}, {publicAuth:true})"),login_gate.index("await boot()"))
 
     async def test_iphone_left_zone_swipe_is_single_step_and_input_safe(self):
         script=(await self.get('/admin/assets/app.js')).text
