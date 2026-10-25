@@ -66,7 +66,7 @@ async def browser_checks(output):
             data.update(user_id=101, mcp_available=True, push_available=True)
         elif path.endswith("/auth/logout"):
             data.update(status="logged_out")
-        elif path.endswith("/analytics"):
+        elif path == "/api/admin/v1/analytics":
             metrics={"users_total":3,"new_accounts":1,"active_accounts":2,"active_pro":1,
                 "active_today":2,"pending_current":1,"expiring_pro":1,"paying_accounts":1,"bot_blocked":0,"blocked_current":0,
                 "payments_by_status":{"pending":1,"approved":1,"rejected":0},

@@ -44,3 +44,12 @@ and refuses the aggregate. Reuse the same SQLAlchemy expression object, and run
 new analytics projections against the real isolated PostgreSQL fixture. The
 analytics suite covers the complete section set and canonical/currency/cohort
 regressions; SQLite alone is insufficient evidence.
+
+
+## Exact analytics routes in browser bridges
+
+The standalone section endpoint and course HSK 3.0 endpoint both end in
+`/analytics`, but have different strict payloads. A suffix-based UI fixture
+intercepted `hsk30/analytics` and read a nonexistent section, stopping the combined
+Linux suite. Match `/api/admin/v1/analytics` exactly and retain the separate
+course bridge. The combined minimal-Inbox/course browser is the regression.
