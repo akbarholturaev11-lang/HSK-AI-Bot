@@ -153,7 +153,7 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         self.assertEqual(marked.status_code, 400, marked.text)
         self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 4)
         important = (await self.post("inbox/list", {"priority":"important","limit":1})).json()
-        self.assertEqual(important["items"][0]["source"], "payment")
+        self.assertEqual(important["items"][0]["source"], "android")
         self.assertIsNotNone(important["next_before"])
         marked = await self.post("inbox/triage", {
             "source":"bot","source_id":ids["bot"],"operation":"mark_read",
