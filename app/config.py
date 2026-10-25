@@ -120,12 +120,14 @@ class Settings(BaseSettings):
     ADMIN_PWA_MCP_ENABLED: bool = False
     # Never enable before complete OAuth consent UI, client registration and security review.
     ADMIN_PWA_MCP_TRANSPORT_ENABLED: bool = False
-    # Apple Web Push subscriptions and sender are separately opt-in; disabled by default.
-    ADMIN_PWA_PUSH_ENABLED: bool = False
+    # Owner-only Apple Web Push is active by default when Admin PWA and its
+    # persistent VAPID/storage secrets are configured; platform consent remains mandatory.
+    ADMIN_PWA_PUSH_ENABLED: bool = True
     ADMIN_PWA_PUSH_VAPID_PUBLIC_KEY: str = ""
     ADMIN_PWA_PUSH_STORAGE_KEY: str = ""
-    # Outbox dispatch is independent from device enrollment; disabled by default.
-    ADMIN_PWA_PUSH_SEND_ENABLED: bool = False
+    # Sender starts automatically when the VAPID pair/subject and storage key validate.
+    # ADMIN_PWA_PUSH_SEND_ENABLED=false remains an emergency kill switch.
+    ADMIN_PWA_PUSH_SEND_ENABLED: bool = True
     # URL-safe base64 raw 32-byte private EC scalar, matching the public VAPID key.
     ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY: str = ""
     ADMIN_PWA_PUSH_VAPID_SUBJECT: str = ""
