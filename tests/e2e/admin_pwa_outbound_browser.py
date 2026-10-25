@@ -82,8 +82,8 @@ async def browser_checks(output):
                     await expect(page.locator('.saved-animation')).to_be_visible(timeout=15000)
                     await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
                     await marketing()
-                    await expect(page.locator('[data-message-job]')).to_be_visible(timeout=15000)
-                    await page.locator('[data-message-job]').first.click()
+                    await expect(page.locator('[data-message-job]').last).to_be_visible(timeout=15000)
+                    await page.locator('[data-message-job]').last.click()
                 async def confirm():
                     await page.locator('[data-action=managementPrepare]').click()
                     await wait_step_up(page)
