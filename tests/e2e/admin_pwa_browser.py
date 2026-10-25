@@ -97,7 +97,7 @@ async def setup_fresh_login(context, page, fixture):
 
 
 async def authenticate_fresh_launch(page):
-    """Reuse an authorized session or authenticate via automatic/manual WebAuthn."""
+    """Each new page launch requires an automatic or manual UV assertion."""
     await expect(page.locator('.app, [data-action=signin]')).to_be_visible(timeout=15000)
     if await page.locator('[data-action=signin]').is_visible():
         # WebKit can require user activation; Chromium virtual UV may be automatic.
@@ -407,13 +407,19 @@ async def browser_checks(output):
         await page.locator('.inbox-back').click()
         await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.keyboard.press('Escape')
-        # A valid HttpOnly session survives relaunch; no redundant ceremony/logout.
+        # A fresh launch always revokes the previous cookie and requires
+        # another verified WebAuthn assertion, but no extra sign-in button.
         prior_verifications=len([path for path,_,_ in calls if path.endswith('login/verify')])
         prior_logouts=len([path for path,_,_ in calls if path.endswith('/auth/logout')])
+        previous_cookie=next(x['value'] for x in await context.cookies() if x['name']=='__Host-hskai_admin')
         await page.goto(ORIGIN+'/admin/?inbox=1')
+        await authenticate_fresh_launch(page)
         await expect(page.locator('.inbox-shell')).to_be_visible(timeout=20000)
-        assert len([path for path,_,_ in calls if path.endswith('login/verify')]) == prior_verifications
-        assert len([path for path,_,_ in calls if path.endswith('/auth/logout')]) == prior_logouts
+        assert len([path for path,_,_ in calls if path.endswith('login/verify')]) == prior_verifications+1
+        assert len([path for path,_,_ in calls if path.endswith('/auth/logout')]) == prior_logouts+1
+        async with fixture.sessions() as db:
+            from app.admin_api.pwa_sessions import authenticate_admin_pwa_session
+            assert await authenticate_admin_pwa_session(db,previous_cookie,settings) is None
         assert page.url==ORIGIN+'/admin/'
         await page.keyboard.press('Escape')
         # Actual consent/code/token services seed one synthetic connection;
