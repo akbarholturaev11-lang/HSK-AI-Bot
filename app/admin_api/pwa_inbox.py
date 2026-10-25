@@ -170,6 +170,10 @@ async def unified_inbox(db, request: InboxRequest):
             func.substr(func.coalesce(BotFeedback.disliked_text, BotFeedback.liked_text,
                                       BotFeedback.disliked_code, BotFeedback.liked_code), 1,
                         _MAX_MESSAGE).label("message"),
+            func.substr(BotFeedback.liked_text, 1, _MAX_MESSAGE).label("liked_detail"),
+            func.substr(BotFeedback.disliked_text, 1, _MAX_MESSAGE).label("disliked_detail"),
+            BotFeedback.liked_code.label("liked_code"),
+            BotFeedback.disliked_code.label("disliked_code"),
             BotFeedback.disliked_attachment_file_id.is_not(None).label("has_attachment"),
             and_(BotFeedback.disliked_attachment_file_id.is_not(None),
                  BotFeedback.disliked_attachment_type.in_(("photo", "document")),
@@ -199,6 +203,12 @@ async def unified_inbox(db, request: InboxRequest):
                 "user_id": row.user_id, "message": row.message, "has_attachment": row.has_attachment,
                 "image_preview_available": bool(row.image_preview_available),
                 "feedback_status": row.feedback_status,
+                # Structured Telegram feedback has separate positive and negative answers.
+                # Do not lose the first answer when the second one was also supplied.
+                "feedback_parts": {
+                    "liked": row.liked_detail or row.liked_code,
+                    "disliked": row.disliked_detail or row.disliked_code,
+                },
                 **_triage(row),
                 "rating": None, "notification_delivery": None, "app_version": None, "screen": None,
             })
