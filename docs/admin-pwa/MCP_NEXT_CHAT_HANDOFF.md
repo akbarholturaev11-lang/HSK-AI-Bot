@@ -47,6 +47,17 @@ owned media, scheduling and one-round discount sends. The old stale promotion ca
 from `d9e70fa5` is attached at `admin-pwa-v10-promotion-20261026/HSK AI bot`.
 No new campaign/analytics promotion has been pushed yet.
 
+CI 40242998550 passed PostgreSQL, unit/legacy/catalog checks, actual V10 core,
+exports, access, attachment, worker and consent browsers. It then exposed a
+UI-only bridge collision: suffix `/analytics` intercepted `hsk30/analytics`.
+The bridge now matches the standalone endpoint exactly; the combined minimal
+Inbox/course UZ/RU/TJ browser passed locally. No runtime guard was weakened.
+While waiting, main advanced to `b510b6fc` (real selected duration/Pro-tier
+columns); this is integrated too. Relevant read/shell/import tests: 34 passed,
+11 subtests; actual core browser passed again. The latest source CI is pending
+before authorized promotion. Both worktrees retain the intended code only;
+Graphify dirt remains unrelated and unstaged.
+
 Campaign code is pushed through `194ae4df`, which fixes legacy active-offer
 dirty-state hydration and the CI branded media browser.
 Core/revoke Linux browser, consent, inbox, settings and outbound passed in CI

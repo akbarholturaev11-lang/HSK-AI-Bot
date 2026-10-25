@@ -228,12 +228,35 @@ async def users(db, request: UsersRequest):
         or_(Payment.user_id.is_not(None), User.telegram_id > 0),
     ))).all()) if ids else set()
     now = datetime.now(timezone.utc)
+    paid_ids = [row.id for row in page if resolve_state(row, now=now) == "PRO_ACTIVE"]
+    last_paid = {}
+    if paid_ids:
+        # A completed subscription clears users.selected_plan_type. Recover
+        # the last purchased duration from canonical-owned approved payments.
+        # Rank inside the bounded page, never mix legacy Telegram identifiers
+        # with canonically owned payments, and never fall back for Free users.
+        ranked = (select(
+            User.id.label("owner_id"),
+            Payment.plan_type.label("plan_type"),
+            Payment.payment_method.label("payment_method"),
+            func.row_number().over(partition_by=User.id,
+                                   order_by=Payment.id.desc()).label("payment_rank"),
+        ).join(Payment, _payment_user_join()).where(
+            User.id.in_(paid_ids), Payment.payment_status == "approved",
+        ).subquery())
+        approved = (await db.execute(select(
+            ranked.c.owner_id, ranked.c.plan_type, ranked.c.payment_method,
+        ).where(ranked.c.payment_rank == 1))).all()
+        last_paid = {owner: (plan, method) for owner, plan, method in approved}
     return {"items": [{"user_id": row.id, "name": row.full_name, "username": row.username,
                        "language": row.language, "level": row.level, "status": row.status,
                        "access_state": resolve_state(row, now=now), "end_date": _iso(row.end_date),
                        "has_pending_payment": row.id in pending,
                        "created_at": _iso(row.created_at),
                        "selected_payment_method": row.payment_method,
+                       "selected_plan_type": row.selected_plan_type,
+                       "last_approved_plan_type": last_paid.get(row.id, (None, None))[0],
+                       "last_approved_payment_method": last_paid.get(row.id, (None, None))[1],
                        "last_active_at": _iso(row.last_active_at),
                        "access_expires_at": _iso(access_expires_at(
                            row, resolve_state(row, now=now), now=now))}
