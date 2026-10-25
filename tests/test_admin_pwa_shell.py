@@ -51,7 +51,7 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         catalog = (await self.get('/admin/assets/catalog.js')).text
         self.assertIn("['directoryUserTariff','directoryAge','language','level','directoryPlanMethod','lastActive','status']", script)
         self.assertIn('function accountAge(value,clock=Date.now())', script)
-        self.assertIn('userPaymentMethod(row.selected_payment_method)', script)
+        self.assertIn('userPaymentMethod(userDirectoryMethod(row))', script)
         self.assertIn('userSelectedDuration(userDirectoryPlan(row))', script)
         self.assertIn("row.access_state==='PRO_ACTIVE'?row.last_approved_plan_type:null",script)
         self.assertIn("row.access_state==='PRO_ACTIVE'?row.last_approved_payment_method:null",script)
