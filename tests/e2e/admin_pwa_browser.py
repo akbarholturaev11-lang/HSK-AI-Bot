@@ -97,12 +97,15 @@ async def setup_fresh_login(context, page, fixture):
 
 
 async def authenticate_fresh_launch(page):
-    """Reuse an authorized session or authenticate via automatic/manual WebAuthn."""
-    await expect(page.locator('.app, [data-action=signin]')).to_be_visible(timeout=15000)
-    if await page.locator('[data-action=signin]').is_visible():
-        # WebKit can require user activation; Chromium virtual UV may be automatic.
+    """Require a new browser-backed assertion, with manual fallback if blocked."""
+    try:
+        # Chromium virtual UV normally accepts the launch-triggered ceremony
+        # without a button. Safari can require a user activation on fallback.
+        await expect(page.locator('.app')).to_be_visible(timeout=12000)
+    except AssertionError:
+        await expect(page.locator('[data-action=signin]')).to_be_visible(timeout=10000)
         await page.locator('[data-action=signin]').click()
-    await expect(page.locator('.app')).to_be_visible(timeout=20000)
+        await expect(page.locator('.app')).to_be_visible(timeout=20000)
 
 
 async def browser_checks(output):
@@ -407,13 +410,15 @@ async def browser_checks(output):
         await page.locator('.inbox-back').click()
         await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.keyboard.press('Escape')
-        # A valid HttpOnly session survives relaunch; no redundant ceremony/logout.
+        # Every fresh app launch revokes even a still-valid cookie and requires
+        # a new UV assertion. The private inbox opens only after that proof.
         prior_verifications=len([path for path,_,_ in calls if path.endswith('login/verify')])
         prior_logouts=len([path for path,_,_ in calls if path.endswith('/auth/logout')])
         await page.goto(ORIGIN+'/admin/?inbox=1')
+        await authenticate_fresh_launch(page)
         await expect(page.locator('.inbox-shell')).to_be_visible(timeout=20000)
-        assert len([path for path,_,_ in calls if path.endswith('login/verify')]) == prior_verifications
-        assert len([path for path,_,_ in calls if path.endswith('/auth/logout')]) == prior_logouts
+        assert len([path for path,_,_ in calls if path.endswith('login/verify')]) == prior_verifications+1
+        assert len([path for path,_,_ in calls if path.endswith('/auth/logout')]) == prior_logouts+1
         assert page.url==ORIGIN+'/admin/'
         await page.keyboard.press('Escape')
         # Actual consent/code/token services seed one synthetic connection;
