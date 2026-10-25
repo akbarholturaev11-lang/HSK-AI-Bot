@@ -43,6 +43,8 @@ const state = {actor:null, phase:'loading', route:'home', period:'weekly', platf
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
+let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
+const sectionBackStack=[];
 let freshLoginInProgress=false, requireFreshLoginOnResume=false, sessionMustBeCleared=true;
 let approvalWatchTimer=null, approvalChecking=false;
 let statisticsDownload=null;
@@ -388,7 +390,7 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {closeActionMenus();closeInboxAttachment();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {drawerBack=null;closeActionMenus();closeInboxAttachment();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   if(!$('overlay'))returnFocus=document.activeElement;
   $('dialogs').innerHTML=`<div class="canvas-overlay show" id="overlay"><section class="drawer ${className}" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><div class="drawer-top"><h2 id="drawerTitle">${esc(t(title))}</h2><button class="drawer-close" data-action="close" aria-label="${esc(t('close'))}">×</button></div><div class="drawer-content" id="drawerContent">${body}</div><div class="drawer-foot" id="drawerFoot">${foot||btn('close','close')}</div></section></div>`;
@@ -1066,7 +1068,12 @@ async function prepareDecision(decision) {
   if(current!==drawerId||!state.actor)return;
   if(JSON.stringify(actual.payload.expected)!==JSON.stringify(previous.payload.expected)){showNotice('changed');await review(paymentId);return;}
   confirmation=Object.freeze(structuredClone(actual));
+  const previousDrawerBack=drawerBack;
   drawer('confirmPayment',`<p class="alert">${esc(t('confirmHint'))}</p><h3>${esc(t(decision))}</h3>${summary(actual)}`,btn('cancel','close')+btn('confirmPasskey','execute',decision==='reject'?'danger':'primary'),'confirmation');
+  drawerBack=async()=>{
+    await review(paymentId);
+    if(previousDrawerBack&&state.actor&&$('overlay'))drawerBack=previousDrawerBack;
+  };
 }
 async function execute() {
   if(!confirmation||!receiptLoaded||!supportsPasskey())return;
@@ -1194,8 +1201,14 @@ async function openInbox(source,id) {
       await refreshInboxUnread();
     }
     if(current!==drawerId||at!==epoch||!state.actor)return;
-    if(source==='payment'){await review(id);return;}
+    const originatingUser=feedbackUserId;
+    if(source==='payment'){
+      await review(id);
+      if(state.actor&&$('overlay'))drawerBack=()=>inbox(null,originatingUser);
+      return;
+    }
     drawer('feedback',inboxDetails(row),null,'inbox-drawer');
+    drawerBack=()=>inbox(null,originatingUser);
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     showNotice(error.status===409?'inboxChanged':'inboxActionError');
@@ -1456,12 +1469,73 @@ async function action(name) {
   if(name==='previous'&&state.previous.length){state.cursor=state.previous.pop();await load();}
   if(name==='period'||name==='platform'){const menu=$(name+'Menu');menu.hidden=!menu.hidden;document.querySelector(`[data-action="${name}"]`).setAttribute('aria-expanded',String(!menu.hidden));}
 }
+// iPhone PWA: one-step right swipe from the left 30% of the screen.
+// Native Safari owns the extreme left edge when this is not a standalone PWA.
+function canSwipeBack(target) {
+  if(!state.actor||state.phase!=='ready'||busy||signing||inboxUpdating||backSwipeInProgress||
+     document.querySelector('.canvas-overlay .confirmation[aria-busy="true"]'))return false;
+  if(target.closest('input,textarea,select,[contenteditable],.mobile-tabs,[role="slider"]'))return false;
+  for(let node=target;node&&node!==document.body;node=node.parentElement){
+    if(node.scrollWidth>node.clientWidth+8&&
+       ['auto','scroll'].includes(getComputedStyle(node).overflowX))return false;
+  }
+  return Boolean($('overlay')||state.route!=='home'||sectionBackStack.length);
+}
+async function oneStepBack() {
+  if(backSwipeInProgress)return;
+  backSwipeInProgress=true;
+  try{
+    if($('overlay')){
+      const previous=drawerBack;
+      drawerBack=null;
+      if(previous)await previous();
+      else closeDrawer();
+    }else if(state.actor){
+      const previous=sectionBackStack.pop();
+      if(previous||state.route!=='home'){
+        state.route=previous||'home';state.cursor=null;state.previous=[];state.query='';
+        await load();
+      }
+    }
+  }finally{backSwipeInProgress=false;}
+}
+const iosTouchDevice=/iPhone|iPad|iPod/.test(navigator.userAgent||'')||
+  (/Macintosh/.test(navigator.userAgent||'')&&navigator.maxTouchPoints>1);
+if(iosTouchDevice){
+  document.addEventListener('touchstart',event=>{
+    backSwipeStart=null;
+    if(event.touches.length!==1||!canSwipeBack(event.target))return;
+    const touch=event.touches[0],standalone=navigator.standalone===true||
+      window.matchMedia?.('(display-mode: standalone)').matches===true;
+    if(touch.clientX>window.innerWidth*0.30||(!standalone&&touch.clientX<24))return;
+    backSwipeStart={x:touch.clientX,y:touch.clientY,id:touch.identifier,at:Date.now()};
+  },{passive:true});
+  document.addEventListener('touchcancel',()=>{backSwipeStart=null;},{passive:true});
+  document.addEventListener('touchend',event=>{
+    const start=backSwipeStart;backSwipeStart=null;
+    if(!start||event.touches.length||event.changedTouches.length!==1||!canSwipeBack(event.target))return;
+    const touch=event.changedTouches[0];
+    if(touch.identifier!==start.id||Date.now()-start.at>900)return;
+    const dx=touch.clientX-start.x,dy=Math.abs(touch.clientY-start.y);
+    if(dx<Math.max(72,window.innerWidth*0.28)||dy>Math.max(35,dx*0.35))return;
+    blockSwipeClickUntil=Date.now()+400;
+    oneStepBack().catch(()=>showNotice('error'));
+  },{passive:true});
+  // A completed swipe must never also activate a button beneath the finger.
+  document.addEventListener('click',event=>{
+    if(Date.now()<blockSwipeClickUntil){event.preventDefault();event.stopImmediatePropagation();}
+  },true);
+}
 document.addEventListener('click',event=>{
   if(!event.target.closest('.action-disclosure,.header-dropdown'))closeActionMenus();
   const button=event.target.closest('button');if(!button||button.disabled)return;
   const run=async()=>{
     if(button.dataset.menuToggle){toggleActionMenu(button);}
-    else if(button.dataset.route){cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();}
+    else if(button.dataset.route){
+      if(state.route!==button.dataset.route)sectionBackStack.push(state.route);
+      cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;
+      closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();
+    }
     else if(button.dataset.marketingKind){await marketingEditor(button.dataset.marketingKind);}
     else if(button.dataset.marketingNext){await marketingEditor('course_ad',Number(button.dataset.marketingNext));}
     else if(button.dataset.courseAd){editCourseAd(Number(button.dataset.courseAd));}
