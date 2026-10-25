@@ -471,6 +471,9 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         now = datetime.now(timezone.utc)
         async with self.sessions() as db:
             user = await db.get(User, 1)
+            # The canonical-only fixture has no Telegram identity by default;
+            # Mini App presence requires a real linked Telegram account.
+            user.telegram_id = 1001
             user.status, user.payment_status = "active", "approved"
             user.end_date, user.created_at = now + timedelta(days=10), now - timedelta(days=1)
             user.selected_plan_type, user.payment_method = None, None
