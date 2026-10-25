@@ -487,3 +487,129 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | D12 | 2026-10-25 | **2-вариант:** experiment targets and duration from actual baseline/traffic with sample size/power and guardrails, owner reviews concrete values after evidence; no fixed target invented. | Metrics definitions P6, controlled experiments, D09 model evaluation and admin reporting; docs only | a1d256a50262ab62334a99172283c3ca929d84ee |
 | D13 | 2026-10-25 | **2-вариант:** finite raw behavioral detail retention, privacy-safe aggregates and minimal necessary per-user habit summaries, do not retain everything forever, preserve account deletion, exact TTL not yet approved. | Data inventory + privacy design, schema P1, analytics P6, data deletion and QA, runtime unchanged | existing docs commit (verified 2026-10-26) |
 | D14 | 2026-10-26 | **2-вариант:** unify all account-level reminder settings in one UX; preserve each channel's explicit OFF/OS denied and previously enabled compatible study setting, cold-start time, explicit manual lock; unknown toggles fail closed; migration must be source-backed and idempotent. | I02, preferences schema, P0 source consent mapping, P1 API+backfill, P3/P4 old-client/duplicate guards, P8 regression; runtime unchanged | this docs commit |
+
+
+---
+
+## 17. OpenSpec selective planning — real-code evidence, execution design and CLI handoff (2026-10-26)
+
+**[PLANNING / PARTIAL SOURCE AUDIT — NOT AN OPENSPEC CLI ARTIFACT]**
+Бу бўлим D01–D14'ни қайта ёзмайди, 1–16-бўлимлар ягона owner-approved master handoff бўлиб қолади. \`main\`даги \`.agents/skills/hsk-ai-openspec-planning/SKILL.md\` ва \`openspec/config.yaml\` қоидасига мувофиқ OpenSpec *proposed delta* ишга тушириш учун source audit, acceptance matrix, test/rollback талаблари ва CLI next steps сақланади. **Бу бўлим \`openspec new change\` ёки \`openspec validate\` ўтганини англатмайди.**
+
+### 17.1 Source, baseline ва environment чекловлари
+
+| Нима | Текширилган факт | Хулоса / мажбурий амал |
+|---|---|---|
+| Authoritative requirements | Ушбу Master Plan §1–16, owner-approved D01–D14 | Янги OpenSpec proposal бу файлга link беради, алоҳида progress/қарор журнали очмайди |
+| Code authority | \`main\` HEAD \`706b8c78cf07d5e6c9269886190aa864113ea901\`, 2026-10-25 | Бевосита код ёзишдан олдин HEAD қайта текширилади; 2026-10-25 код аудитдан кейин ҳам ўзгариши мумкин |
+| Planning branch | \`feat/smart-reminder-master-plan-20261025\` HEAD at this audit \`0ab061cc14ab094f816852bf9504c5661246c364\` (prior to this section commit) | **DIVERGED:** \`main\` 98 commit олдинда, planning branch 17 commit олдинда; автоматик merge, reset, force-push ёки main promotion йўқ; тоза актуал integration worktree/branch'da master plan commit'ларини source-aware reconcile қилиш |
+| Skill presence | Planning skill ва \`openspec/config.yaml\` \`main\`да мавжуд; мазкур planning branch'да skill йўқ | Келгуси OpenSpec CLI session **актуал main-derived project root**дан бошланади; skill/config'ни эски тармоқда бор деб ҳисоблама |
+| OpenSpec CLI check | Container \`node v22.16.0\` (>=20.19); \`openspec: command not found\`; npm registry DNS \`EAI_AGAIN\`; Git remote DNS ҳам ишламади | Бу муҳитда \`context/new/status/instructions/validate\` воқеан бажарилмади. CLI install'га рухсатли connectivity ва тўлиқ repo workspace керак; scaffold'ни қўлда ясама, **BLOCKED: CLI generation/validation** |
+| Checked guidance | \`main: AGENTS.md\`, \`AI_RULES.md\`, \`PROJECT_MEMORY.md\`, \`localization/README.md\`, skill/config | Scope'dan ташқари тўлов, Play/direct entitlement, course grading, lesson content ва auth'ни ўзгартириш ман |
+| First source tests | \`main: tests/test_motivation_reminder_service.py\`, 423 lines: D1 holdout, template, lesson deeplink, rank-related assertions | Реал тестлар мавжуд, **лекин бу ишда ишлатилмади**; бошқа affected тест номлари репо tree/CI билан кейин inventory қилинади |
+
+**Integration safety gate:** \`main\` билан тарих reconciliation бўлмасдан, бу ҳужжатдаги эски branch state'га янги OpenSpec runtime code binding қилинмайди. Cherry-pick/merge стратегияси merge base + diff ва мавжуд change'ларни текшириб қабул қилинади. User'нинг асосий тасдиқланган scope'и Smart Reminder planning; production код ёки flags ўзгартиришга бу audit ўзича рухсат бермайди.
+
+### 17.2 Current sender inventory — [VERIFIED SOURCE ON main 706b8c]; runtime QA йўқ
+
+| Мавжуд service / path | Source contract | D01–D14 migration хавфи |
+|---|---|---|
+| \`app/main.py::_background_scheduler\` | 60s tick; Motivation, Android due study, account notice fallback, Telegram course reminder, weekly report ва бошқалар кетма-кет, умумий \`try/except\` | Бир sender хато қилса шу циклда кейинги sender'лар ишламаслиги мумкин; old/new parallel фаол бўлса double-send; payment/transactional flows'ни янги engine билан тўхтатма |
+| \`app/services/course_reminder_service.py:95–162\` | \`CourseProgress.reminder_enabled\`, \`reminder_time\`, UTC **integer** \`reminder_tz_offset\`, ±2min window, \`last_reminder_sent_at\` local-day; Telegram send + separate inbox | Фақат Telegram ичидаги cap; account-level Android/Telegram dedup йўқ; DST ва half-hour timezone; old time D02 cold-start'да сақланиши шарт |
+| \`app/services/course_reminder_service.py:163–229\` | Monday ~09:00 weekly progress, last report, baseline lessons | D05: category budget'га қўшиш, фойдали weekly report'ни беасос ташлаб юбормаслик, study cap билан адаштирмаслик |
+| \`app/services/motivation_reminder_service.py:573+\` | Mini App \`notifications_enabled\`, active<14d, D1 holdout, rank overtake, streak/daily intents, Telegram delivery | Mini App toggle **motivation scope**; курснинг study consent'ига автоматик ON сифатида миграция қилма; existing D1 cohort/holdout ва UX/templates'ни сақла; new D08 reactivation 14-day fixed cut-off'га суянмасин |
+| \`app/db/models/course_miniapp_profile.py:69–71\` | \`notifications_enabled default=True\` — motivational sender master switch | D14: default true = study notifications учун user explicit opt-in дегани ЭМАС |
+| \`app/db/models/course_progress.py:44–50\` | \`reminder_enabled default=False\`, nullable \`reminder_time\`, integer TZ, weekly counters | D01 safe migrate only genuine enabled study reminders; old saved time D02 fallback |
+| \`app/services/android_realtime_push_service.py:104–179\` | \`ANDROID_PUSH_STUDY_ENABLED\` gate; AndroidPushToken join DesktopDevice; IANA zone; fixed \`STUDY_PUSH_HOUR\`; **per device** \`last_study_push_day\`; FCM batch accepted results | D03 requires single account-local-day reservation shared across devices; D02/D04 adaptive hour means old fixed global hour cannot remain sole decision; FCM accepted != displayed |
+| \`app/db/models/android_push.py:9–39\` | device-owned token, \`study_reminders_enabled default=False\`, IANA zone, \`notifications_allowed nullable\` | D06 only eligible owned allowed device, no blanket enable; revoke/logout and stale-token cleanup |
+| \`app/services/notification_delivery_service.py\` | Account subscription/limit notices Android ACK + Telegram fallback, independently of learner study logic | D07 study fail-closed fallback **must not modify** transactional account notice escalation |
+| \`app/db/models/course_miniapp_event.py\` + XP / daily plan | \`lesson_started/completed\`, \`android_lesson_started/completed\`, Android notification-open events, \`users.id\` | Real learning outcome != open/click; D08/D09 estimator must dedupe sessions and server-validate learning |
+| \`app/services/account_identity.py\` / \`PROJECT_MEMORY.md\` | \`users.id\` canonical; Telegram identity only linked transport; native-only user exists | No telegram-only primary key, email similarity never account merge, consent not inferred across providers |
+| \`localization/README.md\` / \`localization/ui/{uz,ru,tj}/notifications.json\` | Canonical UZ/RU/TJ localization + existing admin/DB template priority | New notification keys/messages must use existing catalog/generator, templates honored and testable |
+
+**Limit:** above is code-reading evidence, not production scheduler topology, end-to-end push verification, complete affected-test inventory ёки source changes beyond recorded main HEAD. P0 must inspect current \`android/\` WorkManager/FCM handlers, Telegram Mini App settings endpoints \`/api/v3/notify\`, all legacy Android settings APIs, bot blocked/permission handling, DB Alembic head, active branches and production replicas **before** finalizing migration contracts.
+
+### 17.3 P0 focused deliverables — only after verified current main ref
+
+**P0-A · Git/architecture parity.** Capture current \`main\` SHA, compare planning branch to main (98/17 split at this audit), locate the exact active integration worktree and existing OpenSpec changes. Preserve unrelated Admin PWA changes. Inventory bot worker replicas/leases, FastAPI scheduler tick order, feature flags, current migrations and available CI. **Acceptance:** source path + observed behavior + SHA + risk/owner per producer, no unverified deploy statements.
+
+**P0-B · Consent/time migration matrix (D01/D02/D06/D14).** For each source (Mini App motivation, CourseProgress course reminder, Android per-device study flag, OS permission and blocked Telegram) trace API reader/writer/UI client and original default, explicit user action vs default, own channel scope, last edit provenance, effective state. Include \`ON+OFF\`, \`all OFF\`, \`ON but OS denied\`, older client writes, linked/native-only, missing time, conflicting old timestamps. **Acceptance:** no default-ON motivation flag accidentally opts user into study; per-channel OFF and OS denies preserved; single UI/one account effective source of truth; migration of legacy explicit time is not treated as forever-manual lock.
+
+**P0-C · Sender+intent map (D03/D05/D07/D08).** Enumerate each sender: study/reminder vs weekly vs ranking vs transactional/marketing, frequencies, user-key, local day, idempotency, provider ack vs display, false-positive duplicate cases, opt-out, old D1 test holdout and ranking reward. Draw dispatch-before/after graph; document atomic claim owner and cancellation handshake; account notices explicitly excluded. **Acceptance:** no pathway from Telegram/Android/WorkManager to two study notifications for same \`users.id/local-day\` except unavoidable OS-delivery ambiguity honestly acknowledged.
+
+**P0-D · Verified learning/event contract (D02/D04/D08/D09/D12/D13).** Check server study completion, start, resumed session, daily goal, streak, timezone IANA vs offsets, event trust/dedup, opt-out/retention deletion, sparse-history fallback. Identify feature quality metrics, per-category event storage and guardrails (no exact thresholds invented). **Acceptance:** every personalization input has canonical provenance, privacy/TTL classification and outcome definition; app-open != learning, Telegram ACK != shown.
+
+**P0-E · UX, localization and tests.** Map old Telegram/Mini App and Android toggle UX to one settings API; audit existing Admin PWA control/template editor and scoped read-only statistics. Locate complete affected tests/CI for course, motivation, Android push, D1, identity, auth, timezone, localization, DB, WorkManager. **Acceptance:** specific old/new state screenshots/API payload contracts and runnable test identifiers; proposed UZ/RU/TJ keys per existing catalog owner; user is not prompted for already existing consent.
+
+**P0 EXIT / NO-GO:** Complete P0-A–E inventory + evidence, source-dated migration matrix, risk and rollback owners; master plan reconciliation; no production send/migration until these are reviewed. Mark P0 \`[DONE]\` only with explicit commit and actual affected tests or documented dry-run evidence.
+
+### 17.4 OpenSpec change candidate and official CLI sequence — [PENDING, NOT RUN]
+
+Proposed **change slug**: \`smart-reminder-account-orchestrator\`. It represents a **delta** from existing senders and specs; authoritative decision log stays in *this* file, not duplicated in \`openspec/changes\`.
+
+In a **real up-to-date full repo workspace** (on a clean branch after reconciling main), run:
+
+\`\`\`bash
+node --version                            # requires >=20.19.0
+openspec --version                        # install official CLI if absent and permitted
+openspec context --json                   # verify existing project root/config
+cat openspec/config.yaml
+openspec list --json                      # ensure slug does not exist
+openspec new change "smart-reminder-account-orchestrator"
+openspec status --change "smart-reminder-account-orchestrator" --json
+openspec instructions proposal --change "smart-reminder-account-orchestrator" --json
+# Follow returned artifact paths/templates and dependency order, not guessed paths:
+# proposal -> design/specs -> tasks, only where actual status/instructions demand.
+openspec status --change "smart-reminder-account-orchestrator" --json
+openspec validate "smart-reminder-account-orchestrator"
+\`\`\`
+
+- **Proposal content:** why old independent senders break D03/D14; owner-approved D01–D14 are *requirements*, operational status *not complete*; affected TG/Android, future PWA/Desktop only via adapters, out-of-scope billing/access/language grading; current-head evidence and rollback.
+- **Specs content:** externally observable test scenarios from §17.5, including consent, no duplicate, learning completed, channel selection/fallback, time adaptation, reactivation, admin readout and no false ML claims.
+- **Design content:** one \`users.id\` policy owner, finite event collector, preference/provenance schema decision, logical job + atomic reservation and delivery attempts, plan/cancel/recheck, platform adapters, verified ack, feature flag, D1 holdout and old sender sunset. Avoid a second unrelated scheduler in V1.
+- **Tasks content:** small reviewed file-area increments P1–P4 for V1, P5/P7 deferred/flagged, P6 analytics and P8 release QA. Include migration dry-run and rollback before live switching.
+- **Validation honesty:** \`openspec validate\` once CLI files are actually generated validates **spec shape**, NOT unit tests, FCM arrival, Telegram output, live app acceptance, merge or deployment. Record actual CLI version/status/hash/test evidence only after running.
+
+### 17.5 Acceptance and regression contract — D01–D14
+
+| Owner decision | Required observable scenario / test gate |
+|---|---|
+| D01 | Existing explicit study ON in eligible channel gets seamless new engine with no new modal; explicit OFF/OS-denied remains OFF and no duplicate old sender |
+| D02 | Cold-start preserves real old scheduled time; observed habit moves time only when reliable; explicit user manual lock wins |
+| D03 | Telegram + two Android devices, concurrent scheduler workers: **≤1 logical study reminder/user/local day** across all senders, irrespective of different device/timezone state |
+| D04 | Verified midnight/02:00 learner can receive at habit-based time; no global 22:00–08:00 ban; user-selected quiet/DND and OS restrictions win |
+| D05 | Study vs ranking vs weekly collision prioritized once per account; low-value rank suppressed/deferred; valid weekly report retained; transactions isolated |
+| D06 | Automatic most reliable *permitted* channel/device from actual learning signal; manual channel override; no multi-device fanout, ownership verified |
+| D07 | Confirmed non-display/provider definite failure may allow SAME logical job controlled alternate; no ACK/timeout/unknown never triggers blind second channel |
+| D08 | Daily learner vs twice-weekly learner with same 3-day gap get different reactivation assessment; diminishing-return reminder gaps increase, eventually stop |
+| D09 | New/low-data users get rules immediately; model unavailable/unproven gives rules, eligible users transition only after validated ML + good personal data; rollback on regression |
+| D10 | TG/Mini App + Android V1; unsupported learner PWA/Desktop not promised as active; new V2 adapters integrate without core change |
+| D11 | Admin PWA authorized on/off/templates + **real** sent/suppressed/optout/study-return metrics only; no fake data, protected audit trail |
+| D12 | KPI success target / experiment horizon derived from actual baseline, powered sample/traffic; underpowered / no data displayed explicitly |
+| D13 | Per-class finite raw retention + privacy-safe summary; deleted account revokes derived features, queued jobs and tokens without leakage |
+| D14 | One account settings view, explicit per-channel OFF and global OFF; old UI/API and new clients cannot silently re-enable; motivation default=True ≠ study opt-in |
+
+**Critical cross-cutting negative tests:** account link/unlink and native-only users, bot blocked, stale FCM token, OS denial, user deletion/logout, date rollover/DST/timezone change, late push ack, crash after provider accepts before DB commit, two replicas claiming same job, completed lesson between planning/send, invalid deep-link/Pro access, localization UZ/TJ/RU, trial/expired/Play direct purchase restrictions, D1 control suppression and old user opt-out. Mark whether automated unit/integration, staging real provider, Android device, Telegram manual or production monitoring — **do not mark any as passed now**.
+
+### 17.6 Ordered build and release gates (not started)
+
+| Phase | Depends on | Concrete outcome and gate |
+|---|---|---|
+| **P0 Audit** | D01–D14, current main | §17.3 source inventory, consent/time/intent mapping, tests and migration risk review, OpenSpec CLI availability |
+| **OpenSpec proposal/spec/design/tasks** | P0 source evidence + CLI working | Official CLI-generated and validated change linked to this master; owner scope preserved, no duplicate handoff |
+| **P1 Schema + APIs** | Reviewed source mapping | Additive migration for account preferences/provenance + logical job ledger; transparent read-only dual-read, idempotent backfill, auth and old-client race tests; **no sends yet** |
+| **P2 Engine shadow/dry-run** | P1 | Deterministic account/day budget, content eligibility, adaptive time and cadence, channel planning, D08 and notification coordination; no real push; compare with legacy outcomes |
+| **P3 Telegram canary** | P2 | Single owner of Telegram study intents, feature flags suppress original sender for migrated cohort, preserve D1 holdout and approved templates; verified rollback |
+| **P4 Android canary** | P3 or jointly validated single policy | FCM user/device ownership, WorkManager/OS gate, shown-vs-accepted ACK, account dedupe with TG, direct/Play parity; staged device QA |
+| **P6 Analytics + Admin control** | P1 events, P3/P4 source truth | Real study outcomes/denominators; Admin PWA compact view + fail-closed kill switch; instrument cohort baseline, no invented attribution |
+| **P7 ML gated upgrade** | P6 reliable experimental evidence | Shared validated model only if uplift and safety confirmed; per-user auto rule→ML and rule fallback; never block V1 for model |
+| **P5 V2 learner PWA/Desktop** | V1 universal adapter contract + OS capability QA | Browser/OS-consented transports and supported deep-links; no Admin PWA push reuse; no new account ID |
+| **P8 Release verification** | Target features above | Focused automated + affected regression + real Telegram/Android/where supported PWA/Desktop QA, migrations and rollback drill, monitored canary → staged production approval |
+
+**Explicit open engineering values (NOT approved by owner):** D03 exact weekly max, D05 all-category cooldown/cap, D08 adaptive stop/restart thresholds, D09 confident-learning-day minimum, ML model eligibility/cost/uplift, D13 per-class retention TTL, D14 precise precedence for conflicting legacy toggle changes. Source analysis and simulation should produce options/measurements; owner approval is needed for genuinely new product policy. Do not silently turn previous **3/week**, **22:00–08:00**, **3/7/14 days**, **10% / 14 days** proposals into decisions.
+
+### 17.7 Completed here / remaining
+
+- **Completed [docs + source audit only]:** located real installed project skill on \`main\`; read OpenSpec config and primary HSK AI instructions; verified current source sender mechanics, one actual motivation regression test file, main/planning branch divergence; recorded P0 source evidence and ready-to-execute OpenSpec preparation/acceptance plan.
+- **Blocked:** OpenSpec CLI install/execute and official generated artifacts due absent CLI/network/full repo workspace. Also cannot claim actual scheduler replica topology, complete CI coverage, mobile UI inspection or production metric baseline without further access.
+- **Next action:** run P0-A–E in clean updated repository and complete source-linked matrix; then execute real CLI artifact graph and its validation in the authorized Codex environment. Update **this** file with actual refs, commands and evidence. **No runtime code changed, no app tests run, no merge/main push, no deployment.**
