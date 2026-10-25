@@ -329,7 +329,10 @@ async function load() {
 async function boot() {
   if(!navigator.onLine){clearPrivate('offline');return;}
   clearPrivate('loading');const current=epoch;
-  try {state.actor=await api('me',null,{method:'GET',publicAuth:true});if(current!==epoch)return;state.phase='ready';await load();await refreshInboxUnread();
+  try {state.actor=await api('me',null,{method:'GET',publicAuth:true});if(current!==epoch)return;state.phase='ready';
+    // Warm dashboard metrics and inbox independently after the biometric gate:
+    // a slow unread query must never block the main dashboard from loading.
+    await Promise.all([load(),refreshInboxUnread()]);
     if(current===epoch&&state.actor&&location.pathname==='/admin/'&&location.search==='?inbox=1'){
       history.replaceState(null,'','/admin/');
       await inbox(); // Only after current passkey Admin PWA login is verified.
@@ -2004,12 +2007,12 @@ document.addEventListener('visibilitychange',()=>{
     stopApprovalWatch();
     // A native Face ID / Touch ID sheet can briefly hide a PWA. Do not cancel
     // that same WebAuthn ceremony or accidentally start a second prompt.
-    if(biometricPromptInProgress)return;
+    if(biometricPromptInProgress||signing)return;
     resumeAuthenticationRequired=true;
     clearPrivate('loading');
     return;
   }
-  if(biometricPromptInProgress)return;
+  if(biometricPromptInProgress||signing)return;
   if(resumeAuthenticationRequired)lockAndRequirePasskey();
   else if(state.phase==='approval')checkApproval().catch(()=>{});
 });
