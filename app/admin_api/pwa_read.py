@@ -195,6 +195,7 @@ def _user_segment_clause(segment: str, *, now: datetime):
         "wants_pay": and_(status.in_(HOT_LEAD_STATUSES),
                           payment.in_(HOT_LEAD_PAYMENT_STATUSES),
                           User.last_active_at >= now - HOT_LEAD_ACTIVITY_WINDOW,
+                          User.last_active_at <= now,
                           ~bot_blocked, ~pending_receipt),
         "trial": trial,
         "free": and_(~blocked, ~paid, ~temporary_access, ~trial, ~expired),
