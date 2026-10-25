@@ -91,14 +91,29 @@ async def setup_fresh_login(context, page, fixture):
         'credentialId':base64.b64encode(CRED_ID).decode(),
         'isResidentCredential':True,'rpId':'hskai.app',
         'privateKey':base64.b64encode(private_key).decode(),
-        'userHandle':base64.b64encode(HANDLE).decode(),'signCount':0}})
+        'userHandle':base64.b64encode(HANDLE).decode(),'signCount':0,
+        'userName':'synthetic-admin','userDisplayName':'Synthetic QA'}})
     return cdp
 
 
 async def authenticate_fresh_launch(page):
+    """A fresh launch must authenticate with a real virtual UV assertion."""
     await expect(page.locator('[data-action=signin]')).to_be_visible(timeout=15000)
-    await page.locator('[data-action=signin]').click()
-    await expect(page.locator('.metrics')).to_be_visible(timeout=20000)
+    results=[]
+    def observe(response):
+        if '/api/admin/v1/auth/passkey/' in response.url or response.url.endswith('/api/admin/v1/me'):
+            results.append((response.url.split('/api/admin/v1/')[-1],response.status))
+    page.on('response',observe)
+    try:
+        await page.locator('[data-action=signin]').click()
+        # .sidebar is the authenticated UI; statistics may be unavailable in
+        # a fixture focused on export/settings, independent of WebAuthn.
+        await expect(page.locator('.sidebar')).to_be_visible(timeout=20000)
+    except AssertionError as error:
+        state=await page.locator('.auth-panel').inner_text() if await page.locator('.auth-panel').count() else 'no-auth-panel'
+        raise AssertionError(f'Fresh WebAuthn login did not reach authenticated UI: requests={results}, state={state[:180]}') from error
+    finally:
+        page.remove_listener('response',observe)
 
 
 async def browser_checks(output):
@@ -668,6 +683,11 @@ async def attachment_browser_checks(output):
         if delayed:
             started.set();await release.wait()
         headers=dict(response.headers);headers.pop('content-length',None)
+        # Preserve the separate assertion-cookie deletion and new session
+        # cookie. A comma-folded Set-Cookie hides the WebAuthn session from
+        # Chromium and makes the subsequent authenticated /me return 401.
+        cookies=response.headers.get_list('set-cookie')
+        if cookies:headers['set-cookie']='\n'.join(cookies)
         await route.fulfill(status=response.status_code,headers=headers,body=response.content)
         if delayed:finished.set()
     try:
@@ -816,6 +836,11 @@ async def export_browser_checks(output):
         delayed=is_export and mode=='delayed'
         if delayed:started.set();await release.wait()
         headers=dict(response.headers);headers.pop('content-length',None)
+        # Preserve the separate assertion-cookie deletion and new session
+        # cookie. A comma-folded Set-Cookie hides the WebAuthn session from
+        # Chromium and makes the subsequent authenticated /me return 401.
+        cookies=response.headers.get_list('set-cookie')
+        if cookies:headers['set-cookie']='\n'.join(cookies)
         await route.fulfill(status=response.status_code,headers=headers,body=response.content)
         if delayed:finished.set()
     try:
@@ -958,6 +983,11 @@ async def access_grant_browser_checks(output):
             response=await client.request(request.method,path,headers=await request.all_headers(),content=request.post_data_buffer)
         if drop and path=='/api/admin/v1/users/grant-access':drop=False;await route.abort();return
         headers=dict(response.headers);headers.pop('content-length',None)
+        # Preserve the separate assertion-cookie deletion and new session
+        # cookie. A comma-folded Set-Cookie hides the WebAuthn session from
+        # Chromium and makes the subsequent authenticated /me return 401.
+        cookies=response.headers.get_list('set-cookie')
+        if cookies:headers['set-cookie']='\n'.join(cookies)
         await route.fulfill(status=response.status_code,headers=headers,body=response.content)
     try:
         async with async_playwright() as pw:
