@@ -39,9 +39,11 @@ async def browser_checks(output):
                              triage_status=status, triage_priority=priority,
                              triage_revision=0, triage_assigned_to=None,
                              created_at="2026-09-01T01:00:00+00:00" if source == "release" else STAMP, message="Synthetic " + source + " message",
-                             has_attachment=source == "bot", image_preview_available=source == "bot"))
+                             has_attachment=source == "bot", image_preview_available=source == "bot",
+                             feedback_parts={"liked": "Synthetic bot message", "disliked": "Synthetic issue", "paid": True} if source == "bot" else None))
     rows = copy.deepcopy(original)
     requests, triage, errors = [], [], []
+    paginated = [False]
     stream = io.BytesIO()
     Image.new("RGB", (320, 150), "#e7f0f2").save(stream, "PNG")
 
@@ -91,7 +93,16 @@ async def browser_checks(output):
                         and (payload["status"] == "all" or row["triage_status"] == payload["status"])
                         and (payload["period"] == "all_time" or datetime.fromisoformat(row["created_at"]) >=
                              datetime.fromisoformat(STAMP) - timedelta(days=7 if payload["period"] == "weekly" else 30))]
-            data.update(items=copy.deepcopy(selected), next_before=None)
+            if paginated[0]:
+                if payload.get("before") is None:
+                    data.update(items=[dict(copy.deepcopy(original[0]), source_id=i) for i in range(200, 230)],
+                                next_before={"created_at": STAMP, "source": "bot", "source_id": 229,
+                                             "unread": True, "important": False})
+                else:
+                    data.update(items=[dict(copy.deepcopy(original[0]), source_id=i) for i in range(230, 235)],
+                                next_before=None)
+            else:
+                data.update(items=copy.deepcopy(selected), next_before=None)
         elif path.endswith("/inbox/triage"):
             triage.append(payload)
             row = next(row for row in rows if row["source"] == payload["source"])
@@ -179,10 +190,16 @@ async def browser_checks(output):
                     bot = page.locator('[data-inbox-open="bot:1"]')
                     await expect(bot).to_have_count(1)
                     assert await bot.evaluate("e=>e.getBoundingClientRect().height>=44")
-                    assert "Synthetic bot message" not in await page.locator('#drawerContent').inner_text()
+                    await expect(bot.locator(".inbox-row-preview")).to_contain_text("Synthetic bot message")
+                    await expect(bot.locator(".inbox-row-meta")).to_contain_text("Telegram Bot")
+                    assert not await page.locator("[data-feedback-next]").count()
                     await page.screenshot(path=str(output / f"inbox-minimal-{language}-{width}.png"))
                     await bot.click()
-                    await expect(page.locator(".inbox-details-text")).to_contain_text("Synthetic bot message")
+                    await expect(page.locator(".inbox-details-text")).to_have_count(2)
+                    await expect(page.locator(".inbox-details-text").first).to_contain_text("Synthetic bot message")
+                    await expect(page.locator(".inbox-details-text").last).to_contain_text("Synthetic issue")
+                    assert "👎" not in await page.locator(".inbox-detail-messages").inner_text()
+                    await expect(page.locator(".inbox-detail-meta")).to_contain_text("Telegram Bot")
                     assert triage[-1]["source"]=="bot" and triage[-1]["operation"]=="mark_read"
                     await expect(page.locator('[data-inbox-attachment]')).to_have_count(1)
                     before = len(requests)
@@ -236,6 +253,17 @@ async def browser_checks(output):
             await expect(page.locator('[data-inbox-open="technical:1"]')).to_have_class(__import__("re").compile("is-read"))
             assert not await page.locator('[data-inbox-op]').count()
             await page.locator(".drawer-close").click()
+            # Paged Inbox appends, never replaces rows or exposes a "Next" button.
+            paginated[0] = True
+            await page.locator('[data-action="feedback"]').click()
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(30)
+            assert not await page.locator('[data-feedback-next]').count()
+            await page.locator("#drawerContent").evaluate("(el) => { el.scrollTop=el.scrollHeight; }")
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(35)
+            assert any(path.endswith("/inbox/list") and payload.get("before")
+                       for path, payload in requests if payload)
+            await page.locator(".drawer-close").click()
+            paginated[0] = False
             for action, target in (("pushSettings", "[data-push-revoke]"),
                                    ("mcpConnections", "[data-mcp-revoke]")):
                 await page.locator('[data-action="more"]').click()
