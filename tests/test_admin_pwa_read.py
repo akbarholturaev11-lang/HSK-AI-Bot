@@ -119,10 +119,10 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
             paid.status = "active"
             paid.payment_status = "approved"
             paid.end_date = now + timedelta(days=10)
-            blocked = await db.get(User, 101)
-            blocked.status = "blocked"
-            blocked.bot_blocked_at = now - timedelta(hours=1)
-            blocked.bot_unblocked_at = None
+            # ID 101 is the authenticated Admin PWA actor; blocking it here
+            # would revoke the session and invalidate every subsequent read.
+            db.add(User(id=105, full_name="Blocked", status="blocked",
+                        bot_blocked_at=now - timedelta(hours=1)))
             db.add_all([
                 User(id=102, full_name="Hot lead", status="free", payment_status="none",
                      last_active_at=now),
@@ -141,13 +141,14 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertEqual(await matching("paid"), [2])
         self.assertEqual(await matching("trial"), [103])
         self.assertEqual(await matching("expired"), [104])
-        self.assertEqual(await matching("blocked"), [101])
-        self.assertEqual(await matching("bot_blocked"), [101])
+        self.assertEqual(await matching("blocked"), [105])
+        self.assertEqual(await matching("bot_blocked"), [105])
         self.assertEqual(await matching("wants_pay"), [102])
         self.assertEqual(await matching("pending"), [1])
-        self.assertEqual(await matching("free"), [102, 1])
+        self.assertEqual(await matching("free"), [102, 101, 1])
         self.assertEqual(await matching("free", limit=1), [102])
-        self.assertEqual(await matching("free", limit=1, before_id=102), [1])
+        self.assertEqual(await matching("free", limit=1, before_id=102), [101])
+        self.assertEqual(await matching("free", limit=1, before_id=101), [1])
         self.assertEqual(await matching("free", query="102"), [102])
         self.assertIn(102, await matching("active_today"))
         self.assertEqual((await self.post("users/search", {"segment": "bogus"})).status_code, 400)
