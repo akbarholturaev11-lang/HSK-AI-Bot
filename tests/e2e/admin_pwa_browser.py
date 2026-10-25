@@ -643,7 +643,7 @@ async def attachment_browser_checks(output):
         await db.commit();report_id=report.id
     app=FastAPI()
     for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router,
-                    create_admin_pwa_inbox_triage_router):
+                    create_admin_pwa_passkey_login_router,create_admin_pwa_inbox_triage_router):
         app.include_router(factory(settings_obj=fixture.settings,session_factory=fixture.sessions))
     app.include_router(create_admin_pwa_inbox_attachment_router(settings_obj=fixture.settings,
         session_factory=fixture.sessions,loader=lambda reference:download_receipt_image(telegram,reference)))
@@ -655,10 +655,6 @@ async def attachment_browser_checks(output):
         path=request.url.removeprefix(ORIGIN)
         if path=='/admin/sw.js':
             await route.abort();return
-        if path=='/api/admin/v1/auth/logout':
-            # Media-only fixture: real fresh-passkey/logout behavior is asserted
-            # by browser_checks with the real ASGI auth/logout and virtual WebAuthn.
-            await route.fulfill(status=200,json={'ok':True,'status':'logged_out'});return
         if path==attachment_path:
             calls.append(await request.all_headers())
             if mode=='unavailable':
@@ -678,8 +674,6 @@ async def attachment_browser_checks(output):
         async with async_playwright() as pw:
             browser=await pw.chromium.launch()
             context=await browser.new_context(viewport={'width':1440,'height':1000},service_workers='block')
-            await context.add_cookies([{'name':'__Host-hskai_admin','value':COOKIE,'url':ORIGIN,
-                                       'secure':True,'httpOnly':True,'sameSite':'Strict'}])
             await context.route('**/*',serve)
             await context.add_init_script("""window.qaURLs=[];window.qaRevoked=[];
                 const create=URL.createObjectURL.bind(URL),revoke=URL.revokeObjectURL.bind(URL);
@@ -687,10 +681,10 @@ async def attachment_browser_checks(output):
                 URL.revokeObjectURL=url=>{qaRevoked.push(url);return revoke(url);};
                 window.cspFailures=[];document.addEventListener('securitypolicyviolation',e=>cspFailures.push(e.violatedDirective));""")
             page=await context.new_page();errors=[]
+            await setup_fresh_login(context,page,fixture)
             native_button=page.locator('[data-inbox-attachment][data-attachment-source=android]')
             page.on('pageerror',lambda error:errors.append(str(error)))
-            await page.goto(ORIGIN+'/admin/');await page.wait_for_load_state('networkidle')
-            await expect(page.locator('.metrics')).to_be_visible()
+            await page.goto(ORIGIN+'/admin/');await authenticate_fresh_launch(page)
             assert not calls, 'Private images must not preload'
             telegram.get_file.assert_not_awaited()
             async def open_inbox():
@@ -765,7 +759,7 @@ async def attachment_browser_checks(output):
                 await page.evaluate('(event)=>window.dispatchEvent(new Event(event))',event)
                 assert await page.locator('.inbox-attachment-image').count()==0
                 assert await page.evaluate('qaURLs.length===qaRevoked.length')
-                await page.reload();await expect(page.locator('.metrics')).to_be_visible()
+                await page.reload();await authenticate_fresh_launch(page)
                 await view_source('android')
                 await native_button.click();await loaded()
             await page.keyboard.press('Escape');await view_source('android')
