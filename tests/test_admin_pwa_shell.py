@@ -51,11 +51,19 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         catalog = (await self.get('/admin/assets/catalog.js')).text
         self.assertIn("['directoryUserTariff','directoryAge','language','level','directoryPlanMethod','lastActive','status']", script)
         self.assertIn('function accountAge(value,clock=Date.now())', script)
-        self.assertIn('userPaymentMethod(row.selected_payment_method)', script)
+        self.assertIn('userPaymentMethod(userDirectoryMethod(row))', script)
+        self.assertIn('userSelectedDuration(userDirectoryPlan(row))', script)
+        self.assertIn("row.access_state==='PRO_ACTIVE'?row.last_approved_plan_type:null",script)
+        self.assertIn("row.access_state==='PRO_ACTIVE'?row.last_approved_payment_method:null",script)
+        self.assertIn('userPlanMethod(row)', script)
+        self.assertIn("if(row.access_state==='TRIAL_ACTIVE')return 'Pro trial';", script)
+        self.assertIn("type==='PRO_ACTIVE'||type==='TEMP_ACCESS'?'blue':'gray'", script)
         self.assertIn("esc(row.name||'—')", script)
         self.assertIn('.user-status-pill{', stylesheet)
+        self.assertIn('.pill.user-status-pill.blue:not(.green):not(.red):not(.amber):not(.gray){', stylesheet)
         self.assertIn('.user-table{min-width:1020px;table-layout:fixed}', stylesheet)
         self.assertIn('"directoryUserTariff":"Фойдаланувчи / тариф"', catalog)
+        self.assertIn('"directoryPlan1Month":"1 ой"', catalog)
 
     async def test_apple_push_subscription_keeps_user_activation_on_direct_tap(self):
         # The public script can offer push settings only after the server

@@ -125,6 +125,16 @@ async def browser_checks(output):
         user.full_name='<img src=x onerror=alert(1)> QA account'
         user.created_at=datetime(2026,5,12,tzinfo=timezone.utc)
         user.payment_method='alipay'
+        user.selected_plan_type='1_month'
+        # Only these QA accounts cover visual entitlement badge variants.
+        subscriber=await db.get(User,101)
+        subscriber.status='active'
+        subscriber.payment_status='approved'
+        subscriber.end_date=datetime.now(timezone.utc)+timedelta(days=40)
+        subscriber.selected_plan_type='3_months'
+        trial=await db.get(User,2)
+        trial.pro_trial_ends_at=datetime.now(timezone.utc)+timedelta(days=4)
+        trial.selected_plan_type='10_days'
         db.add(CourseProgress(user_id=1,level='HSK1',completed_lessons_count=7))
         db.add(AIUsageEvent(user_id=1,source='qa',model='fixture',cost_usd=.025,total_tokens=123))
         db.add(BotFeedback(user_id=1,telegram_id=1001,status='completed',disliked_code='price',
@@ -262,7 +272,15 @@ async def browser_checks(output):
         await expect(page.locator('.user-table tr[data-user-row="1"] td')).to_have_count(7)
         await expect(page.locator('.user-table tr[data-user-row="1"] .user-date')).to_have_text('12.05.2026')
         await expect(page.locator('.user-table tr[data-user-row="1"] .user-duration')).not_to_have_text('—')
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-selected-duration')).to_have_text('1 ой')
         await expect(page.locator('.user-table tr[data-user-row="1"] .user-payment-method')).to_have_text('Alipay')
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-status-pill')).to_have_text('Free')
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-status-pill')).to_have_class('pill user-status-pill gray')
+        await expect(page.locator('.user-table tr[data-user-row="2"] .user-status-pill')).to_have_text('Pro trial')
+        await expect(page.locator('.user-table tr[data-user-row="2"] .user-status-pill')).to_have_class('pill user-status-pill amber')
+        await expect(page.locator('.user-table tr[data-user-row="101"] .user-status-pill')).to_have_text('Pro')
+        await expect(page.locator('.user-table tr[data-user-row="101"] .user-status-pill')).to_have_class('pill user-status-pill blue')
+        await expect(page.locator('.user-table tr[data-user-row="101"] .user-selected-duration')).to_have_text('3 ой')
         await expect(page.locator('.data-table img')).to_have_count(0)
         await expect(page.locator('.user-search-icon svg')).to_have_count(1)
         await page.locator('[data-user-filter-toggle]').click()
@@ -325,7 +343,10 @@ async def browser_checks(output):
         await expect(page.locator('.topbar [data-action=more]')).to_have_count(0)
         await expect(page.locator('.user-table-wrap')).to_be_hidden()
         await expect(page.locator('.user-cards .user-card')).not_to_have_count(0)
-        await expect(page.locator('.user-cards [data-user-detail="1"]')).to_contain_text('Alipay')
+        await expect(page.locator('.user-cards [data-user-detail="1"]')).to_contain_text('1 ой · Alipay')
+        await expect(page.locator('.user-cards [data-user-detail="1"] .user-status-pill')).to_have_text('Free')
+        await expect(page.locator('.user-cards [data-user-detail="2"] .user-status-pill')).to_have_text('Pro trial')
+        await expect(page.locator('.user-cards [data-user-detail="101"] .user-status-pill')).to_have_text('Pro')
         await expect(page.locator('.user-cards [data-user-detail="1"]')).to_contain_text('HSK AI’да')
         await page.locator('.mobile-tabs [data-action=more]').click()
         await expect(page.locator('.more-drawer')).to_be_visible()
