@@ -188,6 +188,8 @@ async def browser_checks(output):
                 await page.locator('.drawer-close').click()
                 await page.locator('[data-campaign-list=ad]').click()
                 await page.locator('[data-campaign-detail="1"]').click()
+                # Sending is explicit action-only, not an unsaved field change.
+                await expect(page.locator('[data-action=managementPrepare]')).to_be_enabled()
                 await begin()
                 await finish_step_up(page)
                 await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
