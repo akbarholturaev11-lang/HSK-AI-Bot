@@ -39,7 +39,7 @@ let locale = 'uz';
 try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj'].includes(saved)) locale = saved; } catch (_) {}
 const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? '—';
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
-const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
+const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', period:'weekly', platform:'overall', rows:[], stats:null,
   query:'', status:'pending', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
@@ -208,26 +208,81 @@ function refreshFeedbackPanel(){
   if(panel&&state.route==='stats')panel.outerHTML=feedbackPanel();
 }
 async function loadFeedbackStats(){
-  if(!state.actor||state.route!=='stats'||feedbackStats.loading)return;
+  if(!state.actor||state.route!=='stats'||state.statsTab!=='report'||feedbackStats.loading)return;
   const id=++feedbackLoadId,at=epoch,seen=view;
   const source=feedbackStats.source,period=feedbackStats.period;
   feedbackStats.loading=true;feedbackStats.error=false;refreshFeedbackPanel();
   try{
     const d=await api('feedback/categories',{source,period});
-    if(id!==feedbackLoadId||at!==epoch||seen!==view||state.route!=='stats'||!state.actor)return;
+    if(id!==feedbackLoadId||at!==epoch||seen!==view||state.route!=='stats'||state.statsTab!=='report'||!state.actor)return;
     if(d.schema!=='hskai_feedback_categories_v1'||!Array.isArray(d.sources))throw Error('invalid_feedback');
     feedbackStats.data=d;
   }catch(error){
-    if(id!==feedbackLoadId||at!==epoch||seen!==view||state.route!=='stats'||!state.actor)return;
+    if(id!==feedbackLoadId||at!==epoch||seen!==view||state.route!=='stats'||state.statsTab!=='report'||!state.actor)return;
     feedbackStats.data=null;feedbackStats.error=true;
   }finally{
-    if(id===feedbackLoadId&&at===epoch&&seen===view&&state.route==='stats'&&state.actor){
+    if(id===feedbackLoadId&&at===epoch&&seen===view&&state.route==='stats'&&state.statsTab==='report'&&state.actor){
       feedbackStats.loading=false;refreshFeedbackPanel();
     }
   }
 }
 
+function statsCategoryNav(){
+  const choices=[['overview','statsTabOverview'],['course','statsTabCourse'],['platform','statsTabPlatforms'],['funnel','statsTabConversion'],['money','statsTabFinance'],['sources','statsTabSources'],['report','statsTabReport']];
+  const selectedPlatform={overall:t('all'),android:'Android',telegram:'Telegram Mini App',macos:'macOS',windows:'Windows',iphone_pwa:'iPhone PWA'}[state.platform]||state.platform;
+  return `<div class="stats-top-row"><div class="subtabs stats-category-tabs" role="tablist" aria-label="${esc(t('stats'))}">${choices.map(([id,label])=>`<button type="button" role="tab" class="subtab ${state.statsTab===id?'active':''}" data-stats-tab="${id}" aria-selected="${state.statsTab===id}" tabindex="${state.statsTab===id?'0':'-1'}">${esc(t(label))}</button>`).join('')}</div><span class="stats-scope-chip">${icon('device')}${esc(selectedPlatform)}</span></div>`;
+}
+
+function statsCategorySection(title,fields,note){
+  return `<section class="stat-detail stats-category-section"><h2>${esc(t(title))}</h2>${profileFields(fields)}${note?`<p class="source-note">${esc(t(note))}</p>`:''}</section>`;
+}
+
+function categorizedStatsView(){
+  const data=state.stats;
+  if(!data)return statePanel('loading');
+  const nav=statsCategoryNav();
+  const footer=`<p class="source-note stats-category-footnote">${esc(t('overlap'))}${data.scope?.period_filter_applied===false?' '+esc(t('rolling30')):''}</p><p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`;
+  if(!data.available)return nav+statePanel('unavailable')+footer;
+  const m=data.metrics;
+  const tab=state.statsTab;
+  if(data.platform!=='overall'&&tab!=='platform'&&tab!=='report')
+    return nav+statePanel('unavailable', 'statsPlatformChoose')+footer;
+  let content='';
+  if(tab==='overview'){
+    content=`<div class="grid metrics stats-category-metrics">${metric('usersTotal',m.users_total,'users')}${metric('newAccounts',m.new_accounts,'users')}${metric(state.period==='all_time'?'active30':'activeAccounts',m.active_accounts,'chart')}${metric('pending',m.payments_by_status.pending,'wallet')}</div>`;
+    content+=statsCategorySection('payments', [['pending',m.payments_by_status.pending],['approved',m.payments_by_status.approved],['rejected',m.payments_by_status.rejected]],'currencyNote');
+  }else if(tab==='course'){
+    const c=m.course_engagement;
+    content=`<div class="grid metrics stats-category-metrics">${metric('engagedAccounts',c.engaged_accounts,'users')}${metric('startedAccounts',c.started_accounts,'book')}${metric('completedAccounts',c.completed_accounts,'check')}</div>`;
+    content+=statsCategorySection('courseEngagement',[['engagedAccounts',c.engaged_accounts],['startedAccounts',c.started_accounts],['completedAccounts',c.completed_accounts]],'courseMetricNote');
+    if(c.unmatched_events)content+=`<p class="source-note">${esc(t('unmatchedEvents'))}: ${esc(c.unmatched_events)}</p>`;
+  }else if(tab==='platform'){
+    if(data.platform==='overall'){
+      content=`<div class="grid metrics stats-category-metrics">${metric('usersTotal',m.users_total,'users')}${metric('activeAccounts',m.active_accounts,'chart')}</div><p class="source-note">${esc(t('statsPlatformChoose'))}</p>`;
+    }else if(data.platform==='android'){
+      content=`<div class="grid metrics stats-category-metrics">${metric('installedDevices',m.registry.installed_devices,'device')}${metric('installedUsers',m.registry.installed_users,'users')}${metric('active7',m.active.wau,'chart')}${metric('active30',m.active.mau,'chart')}</div>`;
+    }else{
+      content=`<div class="grid metrics stats-category-metrics">${metric('active30',m.active_users_30d,'chart')}${metric('firstOpen',m.verified_first_open_30d,'device')}</div>`;
+    }
+  }else if(tab==='funnel'){
+    const r=m.registration_conversion;
+    content=`<div class="grid metrics stats-category-metrics">${metric('conversion',r.percent===null?'—':r.percent+'%','target')}${metric('registeredCohort',r.registered_accounts,'users')}${metric('convertedAccounts',r.converted_accounts,'wallet')}</div>`;
+    content+=statsCategorySection('registrationConversion',[['registeredCohort',r.registered_accounts],['convertedAccounts',r.converted_accounts],['conversion',r.percent===null?'—':r.percent+'%']],'conversionNote');
+  }else if(tab==='money'){
+    const ai=m.ai_usage;
+    content=`<div class="grid metrics stats-category-metrics">${metric('estimatedCost',ai.estimated_cost_usd+' USD','spark')}${metric('recordedRequests',ai.recorded_requests,'chart')}${metric('tokens',ai.tokens,'chart')}</div>`;
+    content+=statsCategorySection('aiSpend',[['estimatedCost',ai.estimated_cost_usd+' USD'],['recordedRequests',ai.recorded_requests],['tokens',ai.tokens]],'aiCostNote');
+    content+=`<section class="stat-detail stats-category-section"><h2>${esc(t('approvedAmounts'))}</h2><div class="currency-rows">${m.approved_amounts_by_currency.map(row=>`<div class="currency-row">${esc(row.currency)}<strong>${esc(row.amount)}</strong></div>`).join('')||`<p>${esc(t('empty'))}</p>`}</div><p class="source-note">${esc(t('currencyNote'))}</p></section>`;
+  }else if(tab==='sources'){
+    content=statePanel('unavailable','statsSourcesUnavailable');
+  }else if(tab==='report'){
+    content=`<section class="stat-detail stats-category-section"><h2>${esc(t('statsTabReport'))}</h2>${profileFields([['source',data.source||'—'],['platform',data.platform],['period',t(data.period)],['updated',date(data.generated_at)]])}<p class="source-note">${esc(t('statsReportNote'))}</p><div class="statistics-export">${exportMenu('statistics')}</div></section>${feedbackPanel()}`;
+  }
+  return nav+`<div class="stats-category-content">${content}</div>`+footer;
+}
+
 function statsView() {
+  if(state.route==='stats')return categorizedStatsView();
   const data=state.stats;if(!data) return statePanel('loading');
   const exports=state.route==='stats'?`<div class="statistics-export">${exportMenu('statistics')}</div>`:'';
   if(!data.available) return exports+statePanel('unavailable')+feedbackPanel();
@@ -322,7 +377,7 @@ async function load() {
     if(current!==view||authEpoch!==epoch) return;
     if(['home','stats'].includes(state.route)) state.stats=data; else {state.rows=data.items;state.next=data.next_before_id;}
     state.phase='ready';render();
-    if(state.route==='stats'&&!feedbackStats.data&&!feedbackStats.loading)loadFeedbackStats();
+    if(state.route==='stats'&&state.statsTab==='report'&&!feedbackStats.data&&!feedbackStats.loading)loadFeedbackStats();
   } catch(error) {if(current!==view||authEpoch!==epoch||!state.actor) return;state.phase='ready';state.error='error';render();}
 }
 async function boot() {
@@ -1820,8 +1875,16 @@ document.addEventListener('click',event=>{
     else if(button.dataset.partnerNext){await partnerEditor(null,Number(button.dataset.partnerNext));}
     else if(button.dataset.noticeKey){await noticeEditor(button.dataset.noticeKey);}
     else if(button.dataset.portfolioNext){await portfolioHistory(Number(button.dataset.portfolioNext));}
+    else if(button.dataset.statsTab){
+      const next=button.dataset.statsTab;
+      if(['overview','course','platform','funnel','money','sources','report'].includes(next)&&state.route==='stats'){
+        const left=button.closest('.stats-category-tabs')?.scrollLeft||0;
+        state.statsTab=next;render();const tabs=document.querySelector('.stats-category-tabs');if(tabs)tabs.scrollLeft=left;
+        if(next==='report'&&!feedbackStats.data&&!feedbackStats.loading)loadFeedbackStats();
+      }
+    }
     else if(button.dataset.period){state.period=button.dataset.period;await load();}
-    else if(button.dataset.platform){state.platform=button.dataset.platform;await load();}
+    else if(button.dataset.platform){state.platform=button.dataset.platform;if(state.route==='stats'&&state.platform!=='overall')state.statsTab='platform';await load();}
     else if(button.dataset.exportFormat){await exportStatistics(button.dataset.exportFormat);}
     else if(button.dataset.feedbackExport){await exportStatistics(button.dataset.feedbackExport,'feedback');}
     else if(button.dataset.feedbackPeriod||button.dataset.feedbackSource||button.dataset.feedbackRetry){
