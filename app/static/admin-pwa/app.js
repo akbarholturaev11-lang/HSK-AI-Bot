@@ -45,7 +45,7 @@ const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', c
 let epoch=0, view=0, drawerId=0, confirmation=null, paymentPreview=null, reviewChoice=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
-let inboxLoadingMore=false,inboxListScrollTop=0,inboxRequestNonce=0;
+let inboxLoadingMore=false,inboxListScrollTop=0,inboxRequestNonce=0,inboxBulkReading=false;
 let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
 const sectionBackStack=[];
 let automaticLoginAttempted=false, automaticLoginInProgress=false;
@@ -2315,7 +2315,6 @@ function inboxDetails(row) {
     '</div>':'<p class="inbox-details-text">'+esc(row.message||(source==='payment'?t('inboxPaymentReceipt'):t('empty')))+'</p>';
   const kindIcon=icon(source==='android'?'device':source==='payment'?'credit':source==='technical'?'settings':'send');
   return '<div class="inbox-details">'+
-    '<button class="inbox-back" data-action="inboxBack" type="button">'+icon('chevron')+esc(t('feedback'))+'</button>'+
     '<div class="inbox-detail-heading"><span class="inbox-platform-icon" aria-hidden="true">'+kindIcon+'</span>'+
     '<div><h2>'+esc(inboxKind(row))+'</h2><time>'+esc(date(row.created_at))+'</time></div></div>'+
     '<div class="inbox-detail-meta"><span>'+esc(t('platform'))+': <strong>'+esc(platform||t('unavailable'))+'</strong></span>'+
@@ -2341,6 +2340,9 @@ function maybeLoadInbox(){
 function renderInboxList(scrollTop=0){
   const body='<div class="inbox-shell inbox-minimal">'+
     (feedbackUserId?'<p class="inbox-account">'+esc(t('account'))+' #'+esc(feedbackUserId)+'</p>':'')+
+    (!feedbackUserId&&inboxUnread?.unread_count?
+      '<div class="inbox-bulk-tools"><button type="button" class="inbox-bulk-read" data-inbox-mark-all '+(inboxBulkReading?'disabled aria-busy="true"':'')+'>'+
+      icon('check')+esc(t('inboxMarkAllRead'))+'</button></div>':'')+
     '<div class="inbox-minimal-list">'+(currentInboxRows.map(inboxEntry).join('')||statePanel('empty'))+'</div>'+
     '<p class="inbox-scroll-status" aria-live="polite" role="status"></p></div>';
   drawer('feedback',body,null,'inbox-drawer');
@@ -2374,6 +2376,37 @@ async function loadMoreInbox(){
     if(at===epoch&&nonce===inboxRequestNonce){
       inboxLoadingMore=false;
       if(success)requestAnimationFrame(()=>{if(list.isConnected)maybeLoadInbox();});
+    }
+  }
+}
+async function markAllInboxRead(){
+  if(inboxBulkReading||!state.actor||feedbackUserId!==null)return;
+  inboxBulkReading=true;
+  const at=epoch,nonce=inboxRequestNonce,button=document.querySelector('[data-inbox-mark-all]');
+  if(button){button.disabled=true;button.setAttribute('aria-busy','true');}
+  let cutoff=null,done=false;
+  try{
+    // Each response updates at most 200 rows; the initial server cutoff
+    // ensures messages arriving during the reset remain unread.
+    for(let i=0;i<250;i++){
+      const data=await api('inbox/mark-all-read',{cutoff});
+      if(at!==epoch||nonce!==inboxRequestNonce||!state.actor)return;
+      if(typeof data.cutoff!=='string'||typeof data.has_more!=='boolean'||
+         !Number.isSafeInteger(data.updated)||data.updated<0)throw new Error('invalid_bulk_read');
+      cutoff=data.cutoff;
+      if(!data.has_more){done=true;break;}
+      if(data.updated===0)throw new Error('stalled_bulk_read');
+    }
+    if(at!==epoch||nonce!==inboxRequestNonce||!state.actor)return;
+    if(done)showNotice('inboxSaved');
+    else showNotice('inboxActionError');
+  }catch(error){
+    if(at===epoch&&nonce===inboxRequestNonce&&state.actor)showNotice('inboxActionError');
+  }finally{
+    inboxBulkReading=false;
+    if(at===epoch&&nonce===inboxRequestNonce&&state.actor){
+      await refreshInboxUnread();
+      if(document.querySelector('.inbox-minimal-list'))await inbox(null,feedbackUserId);
     }
   }
 }
@@ -2656,7 +2689,6 @@ async function action(name) {
   if(name==='pushEnable'){await enablePush();return;}
   if(name==='mcpRevokeConfirm'){await revokeMcp();return;}
   if(name==='feedback'){await inbox();return;}
-  if(name==='inboxBack'){renderInboxList(inboxListScrollTop);return;}
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='more'){
     const sections=['course','marketing','system'].map(route=>managementRow(t(route),'data-route="'+route+'"',{course:'book',marketing:'mega',system:'settings'}[route])).join('');
@@ -2866,6 +2898,7 @@ document.addEventListener('click',event=>{
       const match=/^(bot|release|android|payment|technical):([1-9][0-9]*)$/.exec(button.dataset.inboxOpen);
       if(match)await openInbox(match[1],Number(match[2]));
     }
+    else if(button.hasAttribute('data-inbox-mark-all')){await markAllInboxRead();}
     else if(button.dataset.inboxAttachment){await viewInboxAttachment(button);}
     else if(button.dataset.pushRevoke){await revokePush(button.dataset.pushRevoke);}
     else if(button.dataset.mcpRevoke){await confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
