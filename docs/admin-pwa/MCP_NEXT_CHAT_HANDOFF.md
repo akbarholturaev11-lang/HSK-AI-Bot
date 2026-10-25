@@ -2,6 +2,24 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## CI follow-up — healthy Redis coordination versus outage timing
+
+- At `c6d4af7a`, [run 40157595462](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40157595462)
+  passed PG but the healthy Redis concurrency case entered outage fallback:
+  asyncio debug logs show a 415ms event-loop stall, exceeding the fixed 350ms
+  IO deadline. Per-worker fallback correctly allowed separate worker refreshes;
+  that is not the healthy coordination guarantee this test intended to check.
+- Production budgets remain 250ms socket / 350ms IO, now named constants.
+  Healthy-service integration tests use a bounded three-second test budget and
+  explicitly assert that fallback was never entered. A separate deterministic
+  10ms stalled-IO regression confirms one local daily refresh and no repeated
+  Redis/SQL attempts after timeout. No production timeout, quota or coordination
+  assertion was weakened.
+- Built Redis 7.4.2 under `/tmp` and ran an isolated loopback-only 64MiB test
+  service, with no global installation or application config changes. Actual
+  Redis/cache/R2/feedback gate: **29 passed**, zero service skips; healthy
+  coordinator and timeout cases passed again independently.
+
 ## Current required-channel increment
 
 - First-party `/channels/read|prepare|save` adds strict mode, add/upsert, state

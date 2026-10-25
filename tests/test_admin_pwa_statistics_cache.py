@@ -52,6 +52,16 @@ class StatisticsCacheFixtures:
 
 
 class StatisticsCacheTests(StatisticsCacheFixtures, unittest.IsolatedAsyncioTestCase):
+    async def test_redis_io_timeout_reuses_one_local_snapshot_without_repeated_queries(self):
+        async def stalled(*args):
+            await asyncio.sleep(.1)
+        self.reader._client=SimpleNamespace(getrange=AsyncMock(side_effect=stalled))
+        with patch('app.admin_api.pwa_statistics_cache._REDIS_IO_SECONDS',.01):
+            for _ in range(3):
+                self.assertEqual((await self.reader(StatisticsRequest()))['metrics']['users_total'],1)
+        self.assertEqual(self.calls,1)
+        self.assertEqual(self.reader._client.getrange.await_count,1)
+
     async def test_simultaneous_requests_compute_once_and_snapshot_is_reused_for_24_hours(self):
         results = await asyncio.gather(*(self.reader(StatisticsRequest()) for _ in range(20)))
         self.assertEqual(self.calls, 1)
@@ -228,6 +238,14 @@ class StatisticsCacheIntegrationTests(fixtures.PaymentFixtures, unittest.Isolate
 class StatisticsRedisTests(StatisticsCacheFixtures, unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         await super().asyncSetUp()
+        # These tests verify healthy Redis coordination, not scheduler latency.
+        # A loaded debug-mode CI event loop can stall >350ms and accidentally
+        # exercise the separately tested per-worker outage path instead.
+        # Production deadlines stay .25/.35s; deterministic timeout tests above
+        # still verify that slow IO cannot restart SQL on every request.
+        for name in ('_REDIS_SOCKET_SECONDS','_REDIS_IO_SECONDS'):
+            patcher=patch('app.admin_api.pwa_statistics_cache.'+name,3)
+            patcher.start();self.addCleanup(patcher.stop)
         self.namespace = "qa-"+uuid4().hex
         self.clients = [Redis.from_url(os.environ["ADMIN_PWA_TEST_REDIS_URL"]) for _ in range(2)]
         self.readers = [AdminPwaStatisticsReader(settings_obj=self.settings, session_factory=self.sessions,
@@ -278,6 +296,8 @@ class StatisticsRedisTests(StatisticsCacheFixtures, unittest.IsolatedAsyncioTest
         await asyncio.gather(self.readers[0](StatisticsRequest()),
                              self.readers[1](StatisticsRequest(period="monthly")))
         self.assertEqual(self.calls, 2)
+        self.assertTrue(all(reader._redis_retry_at==0 for reader in self.readers),
+                        'Healthy-coordination test unexpectedly used outage fallback')
         self.assertEqual(peak, 1)
 
     async def test_failure_holds_shared_lease_instead_of_restarting_sql_on_another_worker(self):

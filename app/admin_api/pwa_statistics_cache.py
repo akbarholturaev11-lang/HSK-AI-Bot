@@ -21,6 +21,8 @@ logger = logging.getLogger(__name__)
 _LOAD_SECONDS = 8
 _LEASE_SECONDS = 45
 _RETRY_SECONDS = 30
+_REDIS_SOCKET_SECONDS = .25
+_REDIS_IO_SECONDS = .35
 _MAX_BYTES = 128 * 1024
 _FIELDS = {"platform", "period", "since", "generated_at", "timezone", "platform_counts_overlap",
            "available", "metrics", "source", "scope", "reason", "metric_definitions"}
@@ -88,9 +90,9 @@ class AdminPwaStatisticsReader:
             raise _SharedUnavailable()
         try:
             if self._client is None:
-                self._client = Redis.from_url(self._redis_url, socket_connect_timeout=.25,
-                    socket_timeout=.25, retry=Retry(NoBackoff(), 0), max_connections=4)
-            async with asyncio.timeout(.35):
+                self._client = Redis.from_url(self._redis_url, socket_connect_timeout=_REDIS_SOCKET_SECONDS,
+                    socket_timeout=_REDIS_SOCKET_SECONDS, retry=Retry(NoBackoff(), 0), max_connections=4)
+            async with asyncio.timeout(_REDIS_IO_SECONDS):
                 return await getattr(self._client, method)(*args, **kwargs)
         except (RedisError, OSError, TimeoutError, ValueError):
             self._redis_retry_at = self.clock()+_RETRY_SECONDS
