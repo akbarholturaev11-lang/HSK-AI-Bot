@@ -43,7 +43,7 @@ const state = {actor:null, phase:'loading', route:'home', period:'weekly', platf
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
-let freshLoginInProgress=false, requireFreshLoginOnResume=false;
+let freshLoginInProgress=false, requireFreshLoginOnResume=false, sessionMustBeCleared=true;
 let approvalWatchTimer=null, approvalChecking=false;
 let statisticsDownload=null;
 let managementDraft=null,managementReview=null,managementPreparing=false;
@@ -341,6 +341,7 @@ async function lockAndRequirePasskey() {
     // Revoke DB session, not merely hide screen. Fresh launch or resume cannot
     // reuse a lingering valid cookie without another verified WebAuthn assertion.
     await api('auth/logout',{}, {publicAuth:true});
+    sessionMustBeCleared=false;
   }catch(error){
     if(error.message!=='stale')clearPrivate(navigator.onLine?'error':'offline');
     return;
@@ -1423,7 +1424,7 @@ async function action(name) {
     finally{busy=false;render();}return;
   }
   if(name==='close'){closeDrawer();return;}
-  if(name==='boot'){await boot();return;}
+  if(name==='boot'){if(sessionMustBeCleared)await lockAndRequirePasskey();else await boot();return;}
   if(name==='reload'){await load();return;}
   if(name==='mcpConnections'){await mcpConnections();return;}
   if(name==='pushSettings'){await pushSettings();return;}
@@ -1589,19 +1590,20 @@ document.addEventListener('focusin',event=>{
   if(open&&!open.parentElement.contains(event.target))closeActionMenus();
 });
 window.addEventListener('offline',()=>clearPrivate('offline'));
-window.addEventListener('online',()=>boot());
+window.addEventListener('online',()=>{if(sessionMustBeCleared)lockAndRequirePasskey();else boot();});
 window.addEventListener('pagehide',()=>clearPrivate('loading'));
 window.addEventListener('pageshow',event=>{if(event.persisted)lockAndRequirePasskey();});
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden){
     stopApprovalWatch();
     if(state.actor&&!signing){
+      sessionMustBeCleared=true;
       requireFreshLoginOnResume=true;
       clearPrivate('loading');
     }
     return;
   }
-  if(requireFreshLoginOnResume){
+  if(requireFreshLoginOnResume||sessionMustBeCleared){
     requireFreshLoginOnResume=false;
     lockAndRequirePasskey();
   }else if(state.phase==='approval')checkApproval().catch(()=>{});
