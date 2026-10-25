@@ -196,9 +196,11 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
 - Local evidence: payment QR, subscription prices, marketing, course-ad media
   and type regression suites **72 passed, 40 subtests passed**; actual ASGI + virtual-WebAuthn media editor passed at
   390px with Bot stub, SQL price/QR checks and one audit. `node --check` passed;
-  catalog generation/check: 63 artifacts, zero stale. Exact-head GitHub CI has
-  not been checked. Commit SHA and remote branch verification are recorded
-  after the commit below.
+  catalog generation/check: 63 artifacts, zero stale. Commit
+  `f355bef761c55c924c2212e55457d222b99a94f5` is pushed to
+  `feat/admin-pwa-minimal-inbox-passkey-20261025`; `git ls-remote` returned the
+  same SHA. GitHub combined commit status and commit workflow-run queries
+  returned no entries for this SHA, so no exact-head CI result is available.
   Feature flags remain OFF, external MCP remains statistics-only; no staging,
   ChatGPT live integration, physical-device QA, merge or deployment occurred.
 - Remaining: course-ad video and new creative creation, safe campaign
