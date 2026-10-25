@@ -51,34 +51,63 @@ class AdminPwaPushOutboxTests(fixtures.AdminPwaApplePushTests):
             await db.commit()
         return number
 
-    async def test_read_never_sends_push_and_manual_importance_is_forbidden(self):
+    async def test_only_opted_in_iphone_and_mac_each_receive_content_free_event(self):
         await self.configure()
-        iphone = await self.post("subscribe", self.subscription(count=1, platform="iphone"))
-        mac = await self.post("subscribe", self.subscription(count=2, platform="mac"))
-        self.assertEqual(iphone.status_code, 200)
-        self.assertEqual(mac.status_code, 200)
+        iphone = self.subscription(count=1, platform="iphone")
+        mac = self.subscription(count=2, platform="mac")
+        i = await self.post("subscribe", iphone)
+        m = await self.post("subscribe", mac)
+        self.assertEqual(i.status_code, 200, i.text)
+        self.assertEqual(m.status_code, 200, m.text)
         row_id = await self.bot_source()
-        for operation in ("mark_important", "clear_important"):
-            self.assertEqual((await self.triage(
-                row_id=row_id, revision=0, operation=operation)).status_code, 400)
-        read = await self.triage(row_id=row_id, revision=0, operation="mark_read")
-        self.assertEqual(read.status_code, 200)
-        self.assertEqual(read.json()["priority"], "normal")
-        self.assertEqual((await self.triage(
-            row_id=row_id, revision=0, operation="mark_read")).status_code, 409)
+        result = await self.triage(row_id=row_id, revision=0)
+        self.assertEqual(result.status_code, 200, result.text)
+        self.assertEqual(result.json()["priority"], "important")
         async with self.sessions() as db:
-            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPushOutbox)), 0)
-            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit)), 1)
+            items = (await db.scalars(select(AdminPwaPushOutbox))).all()
+            self.assertEqual(len(items), 2)
+            self.assertEqual({r.subscription_id for r in items},
+                             {i.json()["subscription_id"], m.json()["subscription_id"]})
+            self.assertEqual(len({r.event_key for r in items}), 1)
+            for entry in items:
+                self.assertEqual(entry.state, "pending")
+                self.assertEqual(entry.attempts, 0)
+                self.assertEqual(entry.source, "bot")
+                self.assertEqual(entry.source_id, row_id)
+                self.assertEqual(entry.triage_revision, 1)
+                self.assertEqual(len(entry.event_key), 64)
+                self.assertNotIn("Student", repr(vars(entry)))
+                self.assertNotIn("push.apple.com", repr(vars(entry)))
+        self.assertEqual((await self.triage(row_id=row_id,revision=0)).status_code,409)
+        again = await self.triage(row_id=row_id,revision=1)
+        self.assertEqual(again.status_code, 200, again.text)
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPushOutbox)),2)
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit)),1)
+        self.assertEqual((await self.triage(row_id=row_id,revision=1,
+                                          operation="clear_important")).status_code,200)
+        self.assertEqual((await self.triage(row_id=row_id,revision=2)).status_code,200)
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPushOutbox)),4)
 
-    async def test_disabled_push_never_enqueues_on_manual_inbox_read(self):
+    async def test_flag_off_and_revoked_device_never_get_queued(self):
         await self.configure()
-        await self.post("subscribe", self.subscription(count=1, platform="iphone"))
+        iphone = (await self.post("subscribe", self.subscription(count=1))).json()
+        mac = (await self.post("subscribe", self.subscription(count=2,platform="mac"))).json()
         row_id = await self.bot_source()
         self.settings.ADMIN_PWA_PUSH_ENABLED = False
-        self.assertEqual((await self.triage(
-            row_id=row_id, revision=0, operation="mark_read")).status_code, 200)
+        self.assertEqual((await self.triage(row_id=row_id,revision=0)).status_code,200)
         async with self.sessions() as db:
-            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPushOutbox)), 0)
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPushOutbox)),0)
+        self.settings.ADMIN_PWA_PUSH_ENABLED = True
+        self.assertEqual((await self.post("revoke", {
+            "subscription_id":iphone["subscription_id"]})).status_code,200)
+        self.assertEqual((await self.triage(row_id=row_id,revision=1,
+                                          operation="clear_important")).status_code,200)
+        self.assertEqual((await self.triage(row_id=row_id,revision=2)).status_code,200)
+        async with self.sessions() as db:
+            pending = (await db.scalars(select(AdminPwaPushOutbox))).all()
+            self.assertEqual([item.subscription_id for item in pending],[mac["subscription_id"]])
 
     async def test_every_persisted_miniapp_error_queues_opaque_per_device_event(self):
         await self.configure()
@@ -171,13 +200,19 @@ class AdminPwaPushOutboxTests(fixtures.AdminPwaApplePushTests):
             self.assertEqual((await db.get(Payment,self.payment_id)).admin_comment,"receipt preserved")
             self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPushOutbox)),0)
 
-    async def test_rejected_manual_priority_has_no_triage_or_outbox_writes(self):
+    async def test_enqueue_failure_rolls_back_triage_and_audit(self):
         await self.configure()
+        self.assertEqual((await self.post("subscribe",
+                                          self.subscription(count=1))).status_code,200)
         row_id = await self.bot_source()
-        for operation in ("mark_important", "clear_important"):
-            self.assertEqual((await self.triage(
-                row_id=row_id, revision=0, operation=operation)).status_code, 400)
+        with patch("app.admin_api.pwa_inbox_triage.enqueue_important_triage",
+                   side_effect=RuntimeError("injected database failure")):
+            result=await self.triage(row_id=row_id,revision=0)
+        self.assertEqual(result.status_code,503)
         async with self.sessions() as db:
-            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaInboxTriage)), 0)
-            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit)), 0)
-            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPushOutbox)), 0)
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaInboxTriage)),0)
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit)),0)
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPushOutbox)),0)
+        self.assertEqual((await self.triage(row_id=row_id,revision=0)).status_code,200)
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPushOutbox)),1)
