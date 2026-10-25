@@ -40,7 +40,7 @@ async def browser_checks(output):
                              triage_revision=0, triage_assigned_to=None,
                              created_at="2026-09-01T01:00:00+00:00" if source == "release" else STAMP, message="Synthetic " + source + " message",
                              has_attachment=source == "bot", image_preview_available=source == "bot",
-                             feedback_parts={"liked": "Synthetic bot message", "disliked": "Synthetic issue"} if source == "bot" else None))
+                             feedback_parts={"liked": "Synthetic bot message", "disliked": "Synthetic issue", "paid": True} if source == "bot" else None))
     rows = copy.deepcopy(original)
     requests, triage, errors = [], [], []
     paginated = [False]
@@ -187,6 +187,8 @@ async def browser_checks(output):
                     await bot.click()
                     await expect(page.locator(".inbox-details-text")).to_have_count(2)
                     await expect(page.locator(".inbox-details-text").first).to_contain_text("Synthetic bot message")
+                    await expect(page.locator(".inbox-details-text").last).to_contain_text("Synthetic issue")
+                    assert "👎" not in await page.locator(".inbox-detail-messages").inner_text()
                     await expect(page.locator(".inbox-detail-meta")).to_contain_text("Telegram Bot")
                     assert triage[-1]["source"]=="bot" and triage[-1]["operation"]=="mark_read"
                     await expect(page.locator('[data-inbox-attachment]')).to_have_count(1)
