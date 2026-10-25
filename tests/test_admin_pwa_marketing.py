@@ -1,7 +1,11 @@
 """Signed marketing commands against real isolated SQL; no live messaging."""
 import json
+import hashlib
+import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from io import BytesIO
 from unittest.mock import Mock, patch
 from uuid import uuid4
 
@@ -10,6 +14,7 @@ from fastapi import FastAPI
 from pydantic import ValidationError
 from sqlalchemy import event, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from PIL import Image
 
 from app.admin_api import pwa_marketing as marketing
 from app.admin_api.pwa_step_up import begin_step_up, operation_digest, verify_step_up
@@ -25,7 +30,7 @@ from app.services.course_ad_service import CourseAdService
 from app.services.course_sales_experiment_service import CourseSalesExperimentService
 from app.services.desktop_app_promo_settings_service import (
     DESKTOP_APP_PROMO_SETTINGS_KEY, get_desktop_app_promo_settings,
-    save_desktop_app_promo_settings,
+    desktop_app_promo_public_filename_allowed, save_desktop_app_promo_settings,
 )
 from app.services.broadcast_translation_service import decode_localized_broadcast_text
 from app.repositories.ad_campaign_repo import AdCampaignRepository
@@ -80,11 +85,17 @@ class AdminPwaMarketingTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
             await db.commit()
         return proof
 
-    async def execute_marketing(self, command, proof):
+    async def execute_marketing(self, command, proof, **kwargs):
         async with self.sessions() as db:
             return await marketing.execute_marketing(db, session_cookie=fixtures.COOKIE,
                 request=marketing.ExecuteMarketing(**command.model_dump(), step_up_id=proof),
-                settings_obj=self.settings)
+                settings_obj=self.settings, **kwargs)
+
+    @staticmethod
+    def promo_png():
+        output = BytesIO()
+        Image.new("RGB", (3, 2), (26, 106, 117)).save(output, format="PNG")
+        return output.getvalue()
 
     async def seed_ads(self, count=1, *, shared_path=False):
         async with self.sessions() as db:
@@ -172,6 +183,89 @@ class AdminPwaMarketingTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
             self.assertEqual(actual.media_type, "photo")
             self.assertTrue(actual.require_learning_progress)
             self.assertNotIn("private-promo-canary", (await db.get(AdminPwaCommandAudit, result["command_id"])).result_json)
+
+    async def test_desktop_promo_image_is_hash_bound_and_clear_removes_only_after_commit(self):
+        data = self.promo_png()
+        with tempfile.TemporaryDirectory(prefix="admin-pwa-promo-") as media_root:
+            with patch.object(marketing, "DESKTOP_APP_PROMO_MEDIA_ROOT", media_root), \
+                    patch.object(marketing, "desktop_app_promo_media_full_path",
+                                 lambda name: str(Path(media_root) / name) if name else None):
+                change = {**PROMO_CHANGE, "media_sha256": hashlib.sha256(data).hexdigest(),
+                          "media_size": len(data), "clear_media": False}
+                command = await self.prepare_marketing(change)
+                operation = command.operation()
+                self.assertEqual(operation["target"], "desktop_promo")
+                self.assertEqual(operation["payload"]["change"]["media_sha256"],
+                                 hashlib.sha256(data).hexdigest())
+                proof = await self.proof_marketing(command, signed=True)
+                result = await self.execute_marketing(command, proof, media_bytes=data,
+                                                       media_content_type="image/png")
+                async with self.sessions() as db:
+                    saved = await get_desktop_app_promo_settings(db)
+                    self.assertEqual(saved.media_type, "photo")
+                    self.assertTrue(saved.media_path.startswith("desktop_app_promo_pwa_"))
+                    self.assertTrue((Path(media_root) / saved.media_path).is_file())
+                    audit = await db.get(AdminPwaCommandAudit, result["command_id"])
+                    self.assertEqual(audit.payload_hash, operation_digest(**operation))
+                    self.assertNotIn(saved.media_path, audit.result_json)
+                    self.assertNotIn(data.hex(), audit.result_json)
+
+                clear_change = {**PROMO_CHANGE, "clear_media": True}
+                clear = await self.prepare_marketing(clear_change)
+                clear_proof = await self.proof_marketing(clear)
+                await self.execute_marketing(clear, clear_proof)
+                async with self.sessions() as db:
+                    cleared = await get_desktop_app_promo_settings(db)
+                    self.assertIsNone(cleared.media_path)
+                    self.assertIsNone(cleared.media_type)
+                self.assertFalse((Path(media_root) / saved.media_path).exists())
+
+    async def test_desktop_promo_media_tampering_and_audit_rollback_leave_no_asset(self):
+        data = self.promo_png()
+        with tempfile.TemporaryDirectory(prefix="admin-pwa-promo-") as media_root:
+            with patch.object(marketing, "DESKTOP_APP_PROMO_MEDIA_ROOT", media_root), \
+                    patch.object(marketing, "desktop_app_promo_media_full_path",
+                                 lambda name: str(Path(media_root) / name) if name else None):
+                change = {**PROMO_CHANGE, "media_sha256": hashlib.sha256(data).hexdigest(),
+                          "media_size": len(data), "clear_media": False}
+                command = await self.prepare_marketing(change)
+                proof = await self.proof_marketing(command)
+                altered = data[:-1] + bytes([data[-1] ^ 1])
+                with self.assertRaisesRegex(marketing.CommandError, "invalid_media"):
+                    await self.execute_marketing(command, proof, media_bytes=altered,
+                                                 media_content_type="image/png")
+                with self.assertRaisesRegex(marketing.CommandError, "invalid_media"):
+                    await self.execute_marketing(command, proof, media_bytes=data,
+                                                 media_content_type="image/jpeg")
+                async with self.sessions() as db:
+                    self.assertEqual((await db.get(AdminPwaStepUp, proof)).status, "verified")
+                    self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit)), 0)
+
+                proof = await self.proof_marketing(command)
+                original_flush = AsyncSession.flush
+
+                async def fail_audit(session, *args, **kwargs):
+                    if any(isinstance(item, AdminPwaCommandAudit) for item in session.new):
+                        raise RuntimeError("synthetic audit failure")
+                    return await original_flush(session, *args, **kwargs)
+
+                with patch.object(AsyncSession, "flush", fail_audit):
+                    with self.assertRaisesRegex(RuntimeError, "audit failure"):
+                        await self.execute_marketing(command, proof, media_bytes=data,
+                                                     media_content_type="image/png")
+                self.assertEqual(list(Path(media_root).iterdir()), [])
+                async with self.sessions() as db:
+                    self.assertEqual((await db.get(AdminPwaStepUp, proof)).status, "verified")
+                    self.assertEqual(await db.scalar(select(func.count()).select_from(BotSetting)), 0)
+
+    async def test_desktop_promo_public_media_accepts_only_server_generated_names(self):
+        self.assertTrue(desktop_app_promo_public_filename_allowed(
+            "desktop_app_promo_123456_1761350000_0123456789.png"))
+        self.assertTrue(desktop_app_promo_public_filename_allowed(
+            "desktop_app_promo_pwa_0123456789abcdef0123456789abcdef.webp"))
+        for filename in (".admin-pwa-0123456789abcdef.tmp", "../desktop_app_promo_1_2_0123456789.jpg",
+                         "arbitrary.jpg", "desktop_app_promo_pwa_bad.jpg"):
+            self.assertFalse(desktop_app_promo_public_filename_allowed(filename), filename)
 
     async def test_campaign_creation_is_localized_signed_paused_and_content_free_in_audit(self):
         command = await self.prepare_marketing(CAMPAIGN_CHANGE)

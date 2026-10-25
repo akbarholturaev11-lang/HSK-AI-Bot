@@ -66,9 +66,11 @@ Implemented management code now includes signed direct/self-test and bounded
 text broadcasts, durable pre-provider claims, explicit cancellation and
 pending-only signed resume. Owned payout proof/completion and durable recipient notice also exist, using
 the owner-requested single payout window. Text-only campaign drafts can now be
-created signed and paused; activation/delivery, feedback/discount campaigns and
-general media/QR/creative uploads remain code work. Partner application notices
-are implemented; see [management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
+created signed and paused. Desktop-promo JPEG/PNG/WebP media can now be added,
+replaced or removed with one exact passkey confirmation. Campaign
+activation/delivery, feedback/discount campaigns, course-ad media and payment
+QR uploads remain code work. Partner application notices are implemented; see
+[management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
 This paragraph records scope and does not mark the entire acceptance list done.
 
 ### F. Cloud/ChatGPT/Local analytics without exposing admin credentials

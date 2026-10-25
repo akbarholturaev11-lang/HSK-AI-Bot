@@ -9,8 +9,11 @@ import asyncio
 import base64
 import json
 import hashlib
+import tempfile
+from io import BytesIO
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from unittest.mock import patch
 
 from cryptography.hazmat.primitives import serialization
 from fastapi import FastAPI
@@ -19,11 +22,13 @@ from playwright.async_api import async_playwright, expect
 from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
+from PIL import Image
 
 from app.admin_api.pwa_bootstrap import create_admin_pwa_bootstrap_router
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
+from app.admin_api import pwa_marketing as pwa_marketing_api
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
 from app.admin_api.pwa_channels import create_admin_pwa_channels_router
 from app.admin_api.pwa_partner_payouts import create_admin_pwa_partner_payouts_router
@@ -47,6 +52,7 @@ from app.db.models.course_ad import CourseAdCreative
 from app.db.models.ad_campaign import AdCampaign
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
+from app.services.desktop_app_promo_settings_service import get_desktop_app_promo_settings
 from app.services.support_contact_service import ADMIN_CONTACT_KEY
 from app.services.broadcast_translation_service import decode_localized_broadcast_text
 from tests.test_admin_pwa_payment_review import COOKIE, PaymentFixtures
@@ -58,6 +64,14 @@ ROOT = Path(__file__).resolve().parents[2]
 
 async def browser_checks(output):
     output.mkdir(parents=True, exist_ok=True)
+    image_buffer=BytesIO()
+    Image.new('RGB',(320,180),(22,108,119)).save(image_buffer,format='PNG')
+    promo_image=image_buffer.getvalue()
+    media_directory=tempfile.TemporaryDirectory(prefix='admin-pwa-promo-browser-')
+    media_root_patch=patch.object(pwa_marketing_api,'DESKTOP_APP_PROMO_MEDIA_ROOT',media_directory.name)
+    media_path_patch=patch.object(pwa_marketing_api,'desktop_app_promo_media_full_path',
+        lambda name:str(Path(media_directory.name)/name) if name else None)
+    media_root_patch.start();media_path_patch.start()
     fixture = PaymentFixtures()
     fixture.engine = create_async_engine("sqlite+aiosqlite:///:memory:", poolclass=StaticPool)
     async with fixture.engine.begin() as connection:
@@ -104,7 +118,8 @@ async def browser_checks(output):
         if path == "/admin/sw.js":
             await route.abort()
             return
-        body = request.post_data_json if request.method == "POST" else None
+        try:body = request.post_data_json if request.method == "POST" else None
+        except Exception:body = None
         calls.append((path, body))
         if path == "/api/admin/v1/statistics":
             await route.fulfill(status=200, json={"ok": True, "available": False})
@@ -334,10 +349,54 @@ async def browser_checks(output):
                 await page.locator('#salesMode').select_option('ab')
                 await page.locator('#salesPercent').select_option('50')
                 await prepare_and_save('uz','sales-experiment-confirm.png')
+                await page.set_viewport_size({'width':390,'height':844})
+                for language in ('ru','tj'):
+                    await page.locator('[data-action="more"]').click()
+                    await page.locator('#drawerLocale').select_option(language)
+                    await page.locator('[data-marketing-kind="desktop_promo"]').click()
+                    await page.locator('#promoMediaFile').set_input_files({
+                        'name':'qa-promo.png','mimeType':'image/png','buffer':promo_image})
+                    assert await page.locator('#promoMediaPreview img').evaluate('(img)=>img.naturalWidth===320&&img.naturalHeight===180')
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                    await page.screenshot(path=str(output/f'desktop-promo-image-{language}-390.png'))
+                    await page.locator('.drawer-close').click()
+                await page.locator('[data-action="more"]').click()
+                await page.locator('#drawerLocale').select_option('uz')
                 await page.locator('[data-marketing-kind="desktop_promo"]').click()
                 await page.locator('#promoEnabled').select_option('true')
                 await page.locator('#promoLimit').fill('2')
-                await prepare_and_save('uz','desktop-promo-confirm.png')
+                await page.locator('#promoMediaFile').set_input_files({
+                    'name':'qa-promo.png','mimeType':'image/png','buffer':promo_image})
+                await expect(page.locator('#promoMediaPreview img')).to_be_visible()
+                assert await page.locator('#promoMediaPreview img').evaluate('(img)=>img.naturalWidth===320&&img.naturalHeight===180')
+                await page.locator('[data-action="managementPrepare"]').click()
+                await expect(page.locator('.management-comparison')).to_be_visible()
+                assert await page.locator('.management-comparison img').count()==1
+                assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                await page.screenshot(path=str(output/'desktop-promo-image-confirm-390.png'))
+                await page.locator('[data-action="managementExecute"]').click()
+                saved_title=json.loads((ROOT/'localization/ui/uz/miniapp.json').read_text())['messages']['ui.admin_pwa.changesSaved']
+                await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
+                async with fixture.sessions() as db:
+                    promo=await get_desktop_app_promo_settings(db)
+                    assert promo.media_type=='photo' and promo.media_path.startswith('desktop_app_promo_pwa_')
+                    assert (Path(media_directory.name)/promo.media_path).read_bytes()==promo_image
+                assert any(path=='/api/admin/v1/marketing/media/save' for path,_ in calls)
+                await page.locator('.drawer-close').click()
+                await page.locator('[data-marketing-kind="desktop_promo"]').click()
+                await page.locator('#promoMediaClear').check()
+                await page.locator('[data-action="managementPrepare"]').click()
+                await expect(page.locator('.management-comparison')).to_be_visible()
+                await expect(page.locator('.management-comparison img')).to_have_count(0)
+                await page.screenshot(path=str(output/'desktop-promo-image-clear-confirm.png'))
+                await page.locator('[data-action="managementExecute"]').click()
+                await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
+                async with fixture.sessions() as db:
+                    cleared_promo=await get_desktop_app_promo_settings(db)
+                    assert cleared_promo.media_path is None and cleared_promo.media_type is None
+                assert not (Path(media_directory.name)/promo.media_path).exists()
+                await page.locator('.drawer-close').click()
+                await page.set_viewport_size({'width':1440,'height':1000})
                 for operation in ('set_active','delete'):
                     await page.locator('[data-marketing-kind="course_ad"]').click()
                     await page.locator('[data-course-ad="1"]').click()
@@ -578,6 +637,7 @@ async def browser_checks(output):
                 await browser.close()
     finally:
         await fixture.engine.dispose()
+        media_path_patch.stop();media_root_patch.stop();media_directory.cleanup()
     print("Management: real SQL + WebAuthn; UZ/RU/TJ 390/1440; settings/prices/marketing/account state+delete; cancel/CAS/lost-response/revoke passed")
 
 

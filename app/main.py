@@ -277,6 +277,7 @@ from app.services.desktop_app_promo_settings_service import (
     DESKTOP_APP_PROMO_MAX_UPLOAD_BYTES,
     DESKTOP_APP_PROMO_MEDIA_ROOT,
     desktop_app_promo_media_full_path,
+    desktop_app_promo_public_filename_allowed,
     get_desktop_app_promo_settings,
     save_desktop_app_promo_settings,
 )
@@ -3947,6 +3948,8 @@ async def admin_miniapp_desktop_promo_media_clear(request: Request):
 
 @app.get("/uploads/app_promo/{filename}")
 async def serve_desktop_app_promo_media(filename: str):
+    if not desktop_app_promo_public_filename_allowed(filename):
+        return JSONResponse(status_code=404, content={"ok": False, "error": "not_found"})
     safe = os.path.basename(filename)
     path = os.path.join(DESKTOP_APP_PROMO_MEDIA_ROOT, safe)
     if not safe or not os.path.exists(path):

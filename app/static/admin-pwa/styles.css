@@ -459,6 +459,11 @@
 .management-comparison .review-summary dd{white-space:pre-wrap}
 .management-check,.hsk30-level-option{display:flex;align-items:center;gap:12px;min-height:44px;font-size:13px;cursor:pointer}
 .management-check input,.hsk30-level-option input{width:18px;height:18px;accent-color:var(--accent);flex:none}
+.management-media-preview{display:grid;justify-items:start;gap:8px;margin:12px 0 0;max-width:100%}
+.management-media-preview img{display:block;max-width:min(100%,360px);max-height:240px;object-fit:contain;border:1px solid var(--line);border-radius:12px;background:#f4f7f8}
+.management-comparison .management-media-preview{margin-top:8px}
+.management-comparison .management-media-preview img{max-height:90px}
+.management-media-preview figcaption{max-width:100%;color:var(--muted);font-size:12px;overflow-wrap:anywhere}
 fieldset.form-field{border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:20px 0}
 fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 @media(max-width:760px){.management-page{gap:23px}.management-row{padding:14px;gap:12px}.management-row strong{font-size:13px}}

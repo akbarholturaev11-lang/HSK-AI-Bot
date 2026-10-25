@@ -21,7 +21,7 @@ uncertain response.
 | `hsk30.settings` | `/hsk30/read`, `/prepare`, `/save` | Global rollout, canonical live levels, checkout switch, 1–10000 TJS price; no direct permanent grants |
 | `subscription.prices` | `/subscription-prices/read`, `/prepare`, `/save` | Nine fixed payment-method/plan targets; shared Visa normalization and currencies |
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
-| `marketing.update` | `/marketing/read`, `/prepare`, `/save` | Sales experiment, app promotion settings, existing creative activation/deletion |
+| `marketing.update` | `/marketing/read`, `/prepare`, `/save`, `/media/save` | Sales experiment, app promotion settings, existing creative activation/deletion, bounded desktop-promo image replacement/removal |
 | `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
 | `broadcast.send` / `broadcast.control` | `/messages/read`, `/prepare`, `/save`, `/run`, `/prepare-control`, `/control`, `/stop` | Exact signed text/audience, durable pre-IO claims, owner-only bounded delivery and cancellation |
 | `payments.delivery_reconcile` | `/payment-deliveries/read`, `/prepare`, `/save` | Audited human resolution for uncertain or stale attempts; never resend or change finance |
@@ -77,11 +77,24 @@ that hash and the created campaign ID. Campaign activation/delivery, feedback
 and discount campaign creation, buttons and media stay outside this command
 until their bounded sender and asset contracts are implemented.
 
+Desktop-promo media accepts only one decoded JPEG/PNG/WebP raster (2 MiB and
+8-million-pixel bounds). The browser previews the file locally, then signs its
+SHA-256 and byte count together with the current promo-settings revision. The
+binary endpoint streams at most the bound, requires the same-origin PWA cookie,
+and rechecks the exact one-use passkey operation before publishing a random
+server-named asset. Settings and content-free audit commit together; a failed
+or uncertain commit re-reads the setting before cleanup so a referenced file
+is never removed. Replaced/cleared files are removed after commit. No image
+BLOB, DB migration, Bot upload, AI call or campaign delivery is introduced.
+The public media route allowlists only server-generated legacy/PWA filenames.
+
 ## Explicit code parity still outstanding
 
 These legacy capabilities are not silently proxied by the standalone PWA:
 campaign activation/delivery, release-feedback and discount campaign creation,
-and general media/QR/creative uploads. Direct, self-test and
+course-ad media uploads and payment QR uploads. Desktop-promo raster media has
+its own signed flow described above; it does not authorize other upload types.
+Direct, self-test and
 bounded text broadcast now have their own standalone commands described below. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
 needs its own strict payload, shared-service transaction and permission/audit

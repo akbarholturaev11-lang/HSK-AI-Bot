@@ -4,7 +4,9 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
 
 ## Current owner-selected branch and UI baseline
 
-- Continue **only** on `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204.
+- Continue **only** on `feat/admin-pwa-minimal-inbox-passkey-20261025`.
+  PR #204 was merged at an older head; branch commits after that merge remain
+  on this feature branch and must not be redirected to `main`.
   The owner selected this branch and accepted its notification-window changes
   on 2026-10-25. The previous MCP branch/PR #201 references below are historical;
   those changes are already ancestors. Do not switch back, merge/push main or
@@ -105,6 +107,37 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
 - Remaining: bounded campaign activation/delivery, release-feedback/discount
   campaign commands and general media/QR/creative uploads. Feature flags remain
   OFF; MCP remains statistics-only.
+
+## Current desktop-promo raster media increment — 2026-10-25
+
+- The first-party Marketing editor can add, replace or clear the existing
+  desktop-promo image using one exact passkey confirmation. Only JPEG/PNG/WebP
+  raster files are accepted (2 MiB, 8 million pixels, one frame); bytes are
+  decoded server-side, hashed against the signed command, and written to the
+  existing media volume using a random server filename. The DB stores a path
+  in the existing settings record, never an image BLOB or new migration.
+- Settings and content-free audit commit together. Uncertain commits retain a
+  potentially referenced file; replacement cleanup runs only after commit. The
+  public route allowlists generated image names. Upload requires the active
+  same-origin WebAuthn session and exact transaction-bound one-use proof.
+- Browser UI stages and previews locally, binds digest/size into the review,
+  and asks for one passkey ceremony. No media goes to a provider, Bot, AI,
+  campaign, or external MCP; all rollout flags stay OFF.
+- Local evidence: marketing regression suite **18 passed / 11 subtests**;
+  desktop-download compatibility suite **21 passed**;
+  full ASGI/virtual-WebAuthn browser management suite passed at UZ/RU/TJ,
+  390/1440px. The file preview was checked in RU/TJ; upload and clear were
+  exercised in UZ. The final mobile
+  comparison screenshot
+  `/tmp/hsk-admin-pwa-desktop-promo-media-final2-20261025/desktop-promo-image-confirm-390.png`
+  was visually checked: the preview fits above the single footer confirmation.
+  Catalogs: 63 artifacts, zero stale; JS syntax, Python compilation and
+  `git diff --check` passed. Record the pushed commit and exact-SHA CI only
+  after this increment is committed.
+- Remaining: separately scoped course-ad image uploads and payment QR media,
+  safe campaign activation/delivery, release-feedback/discount campaigns,
+  and the other unimplemented items in the acceptance contract. Do not infer
+  full PWA completion from this increment.
 
 ## Mobile Inbox touch and fresh-login regression
 
