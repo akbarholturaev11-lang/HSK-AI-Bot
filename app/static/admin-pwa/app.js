@@ -2134,7 +2134,8 @@ function inboxPlatform(row){
 function inboxTitle(row){return inboxKind(row)+(row.user_id?' · '+t('account')+' '+row.user_id:'');}
 function inboxPreview(row){
   const parts=row.feedback_parts||{};
-  const phrases=[parts.liked?'👍 '+parts.liked:null,parts.disliked?'👎 '+parts.disliked:null].filter(Boolean);
+  const paid=parts.paid===true;
+  const phrases=[parts.liked?(paid?'💎 ':'👍 ')+parts.liked:null,parts.disliked?(paid?'🔎 ':'👎 ')+parts.disliked:null].filter(Boolean);
   return phrases.join(' · ')||row.message||
     (row.rating?row.rating+'/5':row.source==='payment'?t('inboxPaymentReceipt'):t('empty'));
 }
@@ -2162,8 +2163,8 @@ function inboxDetails(row) {
   const parts=row.feedback_parts||{};
   const feedbackParts=source==='bot'&&(parts.liked||parts.disliked);
   const text=feedbackParts?'<div class="inbox-detail-messages">'+
-    (parts.liked?'<p class="inbox-details-text"><span aria-hidden="true">👍</span> '+esc(parts.liked)+'</p>':'')+
-    (parts.disliked?'<p class="inbox-details-text"><span aria-hidden="true">👎</span> '+esc(parts.disliked)+'</p>':'')+
+    (parts.liked?'<p class="inbox-details-text"><span aria-hidden="true">'+(parts.paid===true?'💎':'👍')+'</span> '+esc(parts.liked)+'</p>':'')+
+    (parts.disliked?'<p class="inbox-details-text"><span aria-hidden="true">'+(parts.paid===true?'🔎':'👎')+'</span> '+esc(parts.disliked)+'</p>':'')+
     '</div>':'<p class="inbox-details-text">'+esc(row.message||(source==='payment'?t('inboxPaymentReceipt'):t('empty')))+'</p>';
   const kindIcon=icon(source==='android'?'device':source==='payment'?'credit':source==='technical'?'settings':'send');
   return '<div class="inbox-details">'+
