@@ -141,6 +141,7 @@ jobs:
       DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
       REDIS_URL: "redis://127.0.0.1:1/0"
       ADMIN_PWA_TEST_REDIS_URL: "redis://127.0.0.1:6379/15"
+      ADMIN_PWA_MEDIA_BROWSER_CHANNEL: "chrome"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -176,7 +177,7 @@ jobs:
       - name: Install isolated browser QA tooling
         run: |
           python -m pip install "playwright==1.56.0"
-          python -m playwright install --with-deps chromium
+          python -m playwright install --with-deps chromium chrome
       - name: Exercise desktop/mobile PWA with virtual WebAuthn and real ASGI services
         run: |
           python -m tests.e2e.admin_pwa_browser --output /tmp/admin-pwa-browser

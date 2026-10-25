@@ -21,3 +21,16 @@ a correctly denied outstanding read can remove the navigation element before
 the test's intended protected navigation. Await fresh authentication and
 network idle; keep the actual post-revoke UI read/401 assertion. Do not weaken
 server revocation or silently swallow a missing-button timeout.
+
+A legacy active discount with notifications enabled must hydrate its current
+On option before allowing the permitted Off change. Omitting the current
+option silently selected Off as the initial baseline, making dirty-state Save
+unreachable. Preserve current state; test Off -> On reversion disables Save,
+then sign the actual Off mutation. Activation of legacy notices stays denied.
+
+The campaign preview browser regression decodes actual H.264 MP4 metadata.
+Linux CI uses the explicitly installed branded Chrome channel for this
+media test (`ADMIN_PWA_MEDIA_BROWSER_CHANNEL=chrome`), while other fixtures
+retain Chromium. Keep the actual videoWidth/decode assertion rather than
+weakening it to a visible element; branded-browser media codec support is
+documented at https://playwright.dev/python/docs/browsers .

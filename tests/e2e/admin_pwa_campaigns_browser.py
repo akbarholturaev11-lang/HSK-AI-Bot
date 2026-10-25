@@ -3,6 +3,7 @@ import argparse
 import asyncio
 from datetime import datetime, timedelta, timezone
 import html
+import os
 import json
 from pathlib import Path
 from io import BytesIO
@@ -104,7 +105,7 @@ async def browser_checks(output):
             await db.commit()
     try:
         async with async_playwright() as pw:
-            browser = await pw.chromium.launch()
+            browser = await pw.chromium.launch(channel=os.environ.get('ADMIN_PWA_MEDIA_BROWSER_CHANNEL') or None)
             try:
                 context = await browser.new_context(viewport={'width': 1440, 'height': 1000}, service_workers='block')
                 await context.route('**/*', serve)
@@ -392,6 +393,26 @@ async def browser_checks(output):
                 await page.locator('[data-campaign-list=discount]').click()
                 await page.locator('[data-campaign-detail="2"]').click()
                 await expect(page.locator('#discountOperation')).to_have_count(0)
+                await page.locator('.drawer-close').click()
+                async with fixture.sessions() as db:
+                    (await db.get(DiscountCampaign,2)).notify_enabled=True
+                    await db.commit()
+                await page.locator('[data-campaign-list=discount]').click()
+                await page.locator('[data-campaign-detail="2"]').click()
+                # A legacy active offer may be disabled. Hydrate its actual
+                # active state first; a missing current option previously
+                # selected Off as the baseline and made Save unreachable.
+                await expect(page.locator('#campaignActive')).to_have_value('true')
+                await expect(page.locator('[data-action=managementPrepare]')).to_be_disabled()
+                await page.locator('#campaignActive').select_option('false')
+                await expect(page.locator('[data-action=managementPrepare]')).to_be_enabled()
+                await page.locator('#campaignActive').select_option('true')
+                await expect(page.locator('[data-action=managementPrepare]')).to_be_disabled()
+                await page.locator('#campaignActive').select_option('false')
+                await begin();await finish_step_up(page)
+                await expect(page.locator('.saved-animation')).to_be_visible(timeout=15000)
+                async with fixture.sessions() as db:
+                    assert not (await db.get(DiscountCampaign,2)).is_active
                 assert len(upload_calls)==6 and len(sent)==7
                 assert not errors, errors
                 assert not await page.evaluate('cspFailures')
