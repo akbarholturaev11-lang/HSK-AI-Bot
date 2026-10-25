@@ -6,12 +6,24 @@ External MCP has no management capability. Rollout defaults remain OFF.
 
 Every command requires an active canonical allowlisted WebAuthn cookie, strict
 same-origin HTTPS POST and a validated bounded body. Prepare returns the exact
-operation for confirmation; the browser passes it unchanged through the
-existing step-up ceremony. Save validates the canonical payload again, locks
+operation for the native passkey ceremony; the browser passes it unchanged
+through that ceremony directly from the original editor. Save validates the canonical payload again, locks
 the target, compares the prepared revision, rechecks current actor/expiry, and
 commits the shared-service change, one-use proof consumption and immutable
 0126 command audit together. No mutation is automatically retried after an
 uncertain response.
+
+Owner interaction rule (2026-10-25): every management editor uses one contextual
+action such as Send, Save, Delete, Grant subscription or Accept payment. That
+tap prepares the exact payload, invokes native WebAuthn and executes; there is
+no intermediate before/after confirmation window and no generic passkey button.
+The editor remains visible with frozen inputs throughout the ceremony. Native
+cancellation restores the same form and its drafts. Loaded revisions/visible
+state are compared before signing where available, and server-side proof,
+revision, receipt and audit checks still run at the write boundary. Closing
+an old ceremony cannot clear the controller/lock for a newer editor. Existing
+scope-reducing stop/revoke buttons execute directly under their original
+cookie/CSRF contracts; this UI change adds no new management permission.
 
 | Command | Routes | Scope and existing owner |
 | --- | --- | --- |
@@ -64,8 +76,8 @@ individual target. Deletion uses the existing shared service, preserves files
 still referenced by other creatives and limits postcommit cleanup to a
 validated local basename. Settings/creative changes do not send messages.
 Course/System/Marketing navigation itself performs no settings read;
-editors fetch only after an explicit tap. Every editor has a before/after
-confirmation and a single passkey save, with read-current recovery on lost
+editors fetch only after an explicit tap. Every editor has one contextual
+action and a direct native passkey ceremony, with read-current recovery on lost
 responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 
 The separate signed campaign-draft command accepts only text, explicit
@@ -149,8 +161,8 @@ anonymous approved payment/finance facts and removes personal account state.
 Audit/proof and the command commit or roll back together. Telegram guard cache
 is invalidated only after commit; the optional unblock notice is attempted
 once outside the DB transaction, with no automatic retry or claim of device
-delivery. UI uses the existing profile overflow menu and exact before/after
-passkey confirmation. Test-generated account/creative deletions never touch
+delivery. UI uses the existing profile overflow menu and a single editor whose
+contextual action signs the exact operation. Test-generated account/creative deletions never touch
 live records.
 
 Required-channel reads use 30-row PK keysets and never backfill settings.
@@ -277,8 +289,9 @@ already claimed attempt may finish. Signed control closes stale/uncertain
 work or resumes pending recipients. UI refresh is explicit; no polling.
 
 Marketing's compact Messages row and profile overflow open the existing V10
-editor. One copy editor is visible at a time; filters are collapsed and the
-full escaped texts/audience are reviewed before signing. The owner-approved
+editor. One copy editor is visible at a time; filters are collapsed. The same
+editor's Send button signs the exact escaped texts and computed audience before
+delivery, without an intermediate confirmation window. The owner-approved
 notification window, fresh-launch passkey and back gesture remain intact.
 
 ## Payout proof and single-window completion — owner update, 2026-10-25

@@ -27,6 +27,8 @@ from sqlalchemy import select, func, update
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.pool import StaticPool
 
+from tests.e2e.admin_pwa_step_up_gate import install_step_up_gate, wait_step_up, finish_step_up
+
 from app.db.base import Base
 from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.bot_feedback import BotFeedback
@@ -191,6 +193,7 @@ async def browser_checks(output):
         context=await browser.new_context(viewport={'width':1440,'height':1000},service_workers='block')
         await context.route('**/*',serve)
         page=await context.new_page()
+        await install_step_up_gate(page)
         errors=[]
         page.on('pageerror',lambda error:errors.append(str(error)))
         await page.add_init_script("window.cspFailures=[];document.addEventListener('securitypolicyviolation',e=>window.cspFailures.push(e.violatedDirective));")
@@ -318,11 +321,11 @@ async def browser_checks(output):
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
         await page.screenshot(path=str(output/'mobile-payment-receipt.png'),full_page=True)
         await page.locator('[data-action=approve]').click()
-        await expect(page.locator('[data-action=execute]')).to_be_enabled()
+        await wait_step_up(page)
         await expect(page.locator('.amount-value')).to_have_text('100 TJS')
         await page.screenshot(path=str(output/'mobile-payment-confirmation.png'),full_page=True)
-        assert not any(path.endswith('step-up/options') for path,_,_ in calls)
-        await page.locator('[data-action=execute]').click()
+        assert len([path for path,_,_ in calls if path.endswith('step-up/options')])==1
+        await finish_step_up(page)
         try:await expect(page.locator('[data-review]')).to_have_count(0,timeout=20000)
         except AssertionError:
             print(await page.locator('#dialogs').inner_text(),[p for p,_,_ in calls],flush=True)
@@ -347,10 +350,11 @@ async def browser_checks(output):
         await expect(page.locator('[data-action=reject]')).to_be_enabled()
         await page.locator('#rejectReason').fill('Synthetic QA duplicate')
         await page.locator('[data-action=reject]').click()
-        await expect(page.locator('.review-summary')).to_contain_text('Synthetic QA duplicate')
+        await wait_step_up(page)
+        await expect(page.locator('#rejectReason')).to_have_value('Synthetic QA duplicate')
         # A lost HTTP response AFTER a real commit must not resend the write.
         drop_review=True
-        await page.locator('[data-action=execute]').click()
+        await finish_step_up(page)
         await expect(page.locator('[data-review]')).to_have_count(0,timeout=20000)
         assert len([p for p,_,_ in calls if p.endswith('/payments/review')])==2
         async with fixture.sessions() as db:
@@ -364,7 +368,7 @@ async def browser_checks(output):
         await expect(page.locator('[data-review]')).to_have_count(1)
         await page.locator('[data-review]').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
-        await page.locator('[data-action=approve]').click()
+        await page.evaluate('window.holdStepUp=false')
         # Delay an OLD rejected native promise across a NEW prompt. Closing
         # the new drawer must still abort its own controller (not lose it to
         # the old promise's finally). Native signatures are never fabricated.
@@ -380,21 +384,20 @@ async def browser_checks(output):
         }""")
         await cdp.send('WebAuthn.setAutomaticPresenceSimulation',{'authenticatorId':auth_id,'enabled':False})
         async with page.expect_response('**/auth/step-up/options'):
-            await page.locator('[data-action=execute]').click()
+            await page.locator('[data-action=approve]').click()
         await wait_js(page,'() => window.qaNativeCalls===1')
         await page.locator('.drawer-close').click()
         await expect(page.locator('[data-review]')).to_have_count(1)
         await wait_js(page,'() => !!window.qaRelease')
         await page.locator('[data-review]').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
-        await page.locator('[data-action=approve]').click()
         async with page.expect_response('**/auth/step-up/options'):
-            await page.locator('[data-action=execute]').click()
+            await page.locator('[data-action=approve]').click()
         await wait_js(page,'() => window.qaNativeCalls===2')
         await page.evaluate('window.qaRelease()')
         await page.locator('.drawer-close').click()
         await wait_js(page,'() => window.qaAbortCount===2')
-        await page.evaluate('()=>{navigator.credentials.get=window.qaNativeGet;}')
+        await page.evaluate('()=>{navigator.credentials.get=window.qaNativeGet;window.holdStepUp=true;}')
         assert len([p for p,_,_ in calls if p.endswith('/payments/review')])==2
         await cdp.send('WebAuthn.setAutomaticPresenceSimulation',{'authenticatorId':auth_id,'enabled':True})
         await page.locator('[data-action=feedback]').click()
@@ -469,14 +472,10 @@ async def browser_checks(output):
                 await page.keyboard.press('Escape')
         await set_mcp_locale('uz',390)
         await open_connections(390)
-        await page.locator('[data-mcp-revoke]').click()
-        await expect(page.locator('[data-action=mcpRevokeConfirm]')).to_be_visible()
-        await page.keyboard.press('Escape')
         async with fixture.sessions() as db:
             assert await verify_readonly_mcp_bearer(db,authorization='Bearer '+token.token,settings_obj=settings)
-        await open_connections(390)
         await page.locator('[data-mcp-revoke]').click()
-        await page.locator('[data-action=mcpRevokeConfirm]').click()
+        await expect(page.locator('[data-action=mcpRevokeConfirm]')).to_have_count(0)
         await expect(page.locator('[data-mcp-revoke]')).to_have_count(0)
         await expect(page.locator('.mcp-history')).to_contain_text('Ruxsat bekor qilingan')
         async with fixture.sessions() as db:
@@ -597,7 +596,11 @@ async def worker_checks(output):
             await context.set_offline(True)
             await page.reload()
             await expect(page.locator('.auth-panel')).to_be_visible()
-            assert await page.evaluate('navigator.onLine') is False
+            # Reapply page emulation after the service-worker-controlled reload:
+            # this Chromium build resets the new document's navigator state.
+            await cdp.send('Network.emulateNetworkConditions',{
+                'offline':True,'latency':0,'downloadThroughput':-1,'uploadThroughput':-1})
+            await wait_js(page,'() => navigator.onLine === false')
             assert await page.evaluate("fetch('/api/admin/v1/cache-probe').then(()=>false,()=>true)")
             await page.screenshot(path=str(output/'mobile-offline.png'),full_page=True)
             await context.set_offline(False)
@@ -1005,6 +1008,7 @@ async def access_grant_browser_checks(output):
             browser=await pw.chromium.launch();context=await browser.new_context(viewport={'width':1440,'height':1000},service_workers='block')
             await context.route('**/*',serve)
             page=await context.new_page();errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
+            await install_step_up_gate(page)
             cdp=await context.new_cdp_session(page);await cdp.send('WebAuthn.enable')
             auth=await cdp.send('WebAuthn.addVirtualAuthenticator',{'options':{'protocol':'ctap2','transport':'internal','hasResidentKey':True,'hasUserVerification':True,'isUserVerified':True,'automaticPresenceSimulation':True}})
             auth_id=auth['authenticatorId'];b64=lambda value:base64.b64encode(value).decode()
@@ -1016,7 +1020,7 @@ async def access_grant_browser_checks(output):
                 await page.locator('[data-access-user="1"]').click()
                 await page.locator('#accessDays').fill('10')
                 await page.locator('[data-prepare-access="1"]').click()
-                await expect(page.locator('[data-action=executeAccess]')).to_be_visible()
+                await wait_step_up(page)
             for width in (1440,390):
                 await page.set_viewport_size({'width':width,'height':1000 if width==1440 else 844})
                 for language in ('uz','ru','tj'):
@@ -1028,7 +1032,7 @@ async def access_grant_browser_checks(output):
                     await page.screenshot(path=str(output/f'access-confirm-{width}-{language}.png'),full_page=True)
                     await page.locator('.drawer-close').click()
             assert not any(path.endswith('/users/grant-access') for path,_ in calls)
-            await prepare();await page.locator('[data-action=executeAccess]').click()
+            await prepare();await finish_step_up(page)
             await expect(page.locator('#drawerContent')).to_contain_text('10')
             await expect(page.locator('[data-action=executeAccess]')).to_have_count(0)
             async with fixture.sessions() as db:
@@ -1038,13 +1042,13 @@ async def access_grant_browser_checks(output):
             await prepare()
             async with fixture.sessions() as db:
                 (await db.get(User,1)).end_date=datetime.now(timezone.utc)+timedelta(days=40);await db.commit()
-            await page.locator('[data-action=executeAccess]').click()
+            await finish_step_up(page)
             await expect(page.locator('#drawerFoot [data-user-detail="1"]')).to_be_visible()
             await expect(page.locator('[data-action=executeAccess]')).to_have_count(0)
             async with fixture.sessions() as db:assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit))==1
             await page.locator('.drawer-close').click()
             await prepare();drop=True
-            await page.locator('[data-action=executeAccess]').click()
+            await finish_step_up(page)
             await expect(page.locator('#drawerFoot [data-user-detail="1"]')).to_be_visible()
             assert len([path for path,_ in calls if path.endswith('/users/grant-access')])==3
             async with fixture.sessions() as db:assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit))==2

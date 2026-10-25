@@ -819,7 +819,7 @@
     "ui.admin_pwa.messageAudience": "Гирандагони тасдиқшуда",
     "ui.admin_pwa.messageExpiry": "Муҳлати нигоҳдории матн",
     "ui.admin_pwa.messageNextBatch": "Фиристодани 10 паёми навбатӣ",
-    "ui.admin_pwa.messageResume": "Идома додани боқимондаҳо бо passkey",
+    "ui.admin_pwa.messageResume": "Идома додани фиристодан",
     "ui.admin_pwa.messageStop": "Боздоштани паёмҳои боқимонда",
     "ui.admin_pwa.messageAttemptHint": "Барои ҳар гиранда як кӯшиш мешавад. Кӯшиши фиристодан маънои хондан дар дастгоҳро надорад. Натиҷаҳои номаълум дубора фиристода намешаванд.",
     "ui.admin_pwa.messageEditorHint": "Матнро ба се забон ворид кунед. Тарҷумаи AI истифода намешавад. То 1000 гиранда, фиристодан бо қисмҳои маҳдуди 10-нафарӣ. Навбат як соат амал мекунад.",
@@ -852,7 +852,19 @@
     "ui.admin_pwa.payoutProofFile": "Акси расиди пардохт",
     "ui.admin_pwa.payoutProofUploadHint": "JPEG, PNG ё WebP, то 2 МБ. Акси интихобшуда ба чати шахсии шумо бо бот бор шуда, дар ҳамин ҷо нишон дода мешавад.",
     "ui.admin_pwa.payoutProofReviewHint": "Расид, қабулкунанда ва маблағро санҷед. Тасдиқ пардохти аллакай иҷрошударо сабт мекунад. Барои огоҳ кардани шарик як бор кӯшиш мешавад.",
-    "ui.admin_pwa.payoutProofInvalid": "Акси JPEG, PNG ё WebP то 2 МБ интихоб кунед. Агар боркунӣ ноком шавад, файлро аз нав интихоб кунед."
+    "ui.admin_pwa.payoutProofInvalid": "Акси JPEG, PNG ё WebP то 2 МБ интихоб кунед. Агар боркунӣ ноком шавад, файлро аз нав интихоб кунед.",
+    "ui.admin_pwa.saveChanges": "Сабт кардан",
+    "ui.admin_pwa.sendMessage": "Фиристодан",
+    "ui.admin_pwa.sendTestMessage": "Фиристодани паёми санҷишӣ",
+    "ui.admin_pwa.replaceMedia": "Иваз кардан",
+    "ui.admin_pwa.addLedgerEntry": "Илова кардани сабт",
+    "ui.admin_pwa.addItem": "Илова кардан",
+    "ui.admin_pwa.recordResult": "Сабт кардани натиҷа",
+    "ui.admin_pwa.acceptPartner": "Қабул кардани шарик",
+    "ui.admin_pwa.rejectPartner": "Рад кардани шарик",
+    "ui.admin_pwa.acceptPayment": "Қабул кардани пардохт",
+    "ui.admin_pwa.rejectPayment": "Рад кардани пардохт",
+    "ui.admin_pwa.operationResult": "Натиҷаи амал"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

@@ -29,6 +29,7 @@ feature defaults false; no main promotion or deployment is authorized here.
 - [ ] Responsive on installed iPhone Home Screen PWA, mobile browser, Mac and Windows; navigation, collapsed filters and single top toolbar work.
 - [ ] Installation manifest/icons/versioning, shell-only offline behavior, proper update UI; **zero** private admin data/API credentials cached by service worker.
 - [ ] Clear loading, no-data, offline, expired-session, access-denied and error/retry states; no duplicate meaningless prose.
+- [ ] All management actions use the original editor's contextual button (Send, Save, Delete, Accept payment, etc.) → native passkey → execution, with no second confirmation window. Native cancellation keeps the original draft; exact proof, receipt, revision, audit and no-retry guards stay active.
 - [ ] New permanent UI strings sourced centrally for UZ/TJ/RU.
 
 ### C. Real statistics and users

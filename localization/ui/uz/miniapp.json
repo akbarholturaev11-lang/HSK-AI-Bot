@@ -819,7 +819,7 @@
     "ui.admin_pwa.messageAudience": "Tasdiqlangan oluvchilar",
     "ui.admin_pwa.messageExpiry": "Xususiy matn muddati",
     "ui.admin_pwa.messageNextBatch": "Keyingi 10 tasini yuborish",
-    "ui.admin_pwa.messageResume": "Qolganlarni passkey bilan davom ettirish",
+    "ui.admin_pwa.messageResume": "Yuborishni davom ettirish",
     "ui.admin_pwa.messageStop": "Qolgan xabarlarni to‘xtatish",
     "ui.admin_pwa.messageAttemptHint": "Har bir oluvchiga bir marta uriniladi. Yuborishga urinish qurilmada o‘qilganini anglatmaydi. Noma’lum urinishlar qayta yuborilmaydi.",
     "ui.admin_pwa.messageEditorHint": "Uchala til uchun matn kiriting. AI tarjimasi ishlatilmaydi. Ko‘pi bilan 1000 oluvchi, 10 tadan cheklangan qismlarda yuboriladi. Navbat 1 soat amal qiladi.",
@@ -852,7 +852,19 @@
     "ui.admin_pwa.payoutProofFile": "To‘lov cheki rasmi",
     "ui.admin_pwa.payoutProofUploadHint": "JPEG, PNG yoki WebP, 2 MB gacha. Tanlangan rasm o‘zingizning yopiq Telegram chatingizga yuklanadi va shu yerda ko‘rsatiladi.",
     "ui.admin_pwa.payoutProofReviewHint": "Chek, oluvchi va summani tekshiring. Tasdiq mavjud to‘lovni bajarilgan deb qayd etadi. Hamkorga xabar bir marta yuborishga uriniladi.",
-    "ui.admin_pwa.payoutProofInvalid": "JPEG, PNG yoki WebP rasm tanlang (2 MB gacha). Yuklash muvaffaqiyatsiz bo‘lsa, faylni qayta tanlang."
+    "ui.admin_pwa.payoutProofInvalid": "JPEG, PNG yoki WebP rasm tanlang (2 MB gacha). Yuklash muvaffaqiyatsiz bo‘lsa, faylni qayta tanlang.",
+    "ui.admin_pwa.saveChanges": "Saqlash",
+    "ui.admin_pwa.sendMessage": "Yuborish",
+    "ui.admin_pwa.sendTestMessage": "Sinov xabarini yuborish",
+    "ui.admin_pwa.replaceMedia": "Almashtirish",
+    "ui.admin_pwa.addLedgerEntry": "Qayd qo‘shish",
+    "ui.admin_pwa.addItem": "Qo‘shish",
+    "ui.admin_pwa.recordResult": "Natijani qayd etish",
+    "ui.admin_pwa.acceptPartner": "Hamkorni qabul qilish",
+    "ui.admin_pwa.rejectPartner": "Hamkorni rad etish",
+    "ui.admin_pwa.acceptPayment": "To‘lovni qabul qilish",
+    "ui.admin_pwa.rejectPayment": "To‘lovni rad etish",
+    "ui.admin_pwa.operationResult": "Amal natijasi"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
