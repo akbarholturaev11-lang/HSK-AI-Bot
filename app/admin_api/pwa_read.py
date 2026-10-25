@@ -165,10 +165,14 @@ def _user_segment_clause(segment: str, *, now: datetime):
     status = func.lower(func.coalesce(User.status, ""))
     payment = func.lower(func.coalesce(User.payment_status, ""))
     blocked = status == "blocked"
-    paid = and_(status == "active", payment == "approved", User.end_date > now)
+    # Include IS NOT NULL before negating these predicates: SQL's three-valued
+    # NULL logic must not discard ordinary free/expired accounts.
+    active_end = and_(User.end_date.is_not(None), User.end_date > now)
+    paid = and_(status == "active", payment == "approved", active_end)
     preview = User.payment_preview_payment_id.is_not(None)
-    temporary = or_(preview, and_(status == "active", User.end_date > now))
-    pro_trial = and_(User.pro_trial_ends_at > now, User.pro_trial_revoked_at.is_(None))
+    temporary = or_(preview, and_(status == "active", active_end))
+    pro_trial = and_(User.pro_trial_ends_at.is_not(None),
+                     User.pro_trial_ends_at > now, User.pro_trial_revoked_at.is_(None))
     trial = and_(~blocked, ~paid, pro_trial, or_(preview, ~temporary))
     temporary_access = and_(~blocked, ~paid, temporary, ~and_(preview, pro_trial))
     expired = and_(~blocked, ~paid, ~temporary, ~pro_trial,
