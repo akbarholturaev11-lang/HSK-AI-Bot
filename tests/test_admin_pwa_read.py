@@ -201,6 +201,19 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
             await db.commit()
             expected = {u.id: resolve_state(u, now=now) for u in users}
 
+        # Legacy Mini App counts and new PWA lists must classify the same
+        # accounts; neither raw users.status nor an old payment flag is paid.
+        from collections import Counter
+        from sqlalchemy import select
+        from app.services.admin_miniapp_service import AdminMiniAppService
+        async with self.sessions() as db:
+            all_users = list((await db.scalars(select(User))).all())
+            service = AdminMiniAppService(db)
+            expected_counts = Counter(resolve_state(user, now=now) for user in all_users)
+            self.assertEqual(await service._entitlement_state_counts(now), dict(expected_counts))
+            self.assertEqual(await service._paid_user_count(now),
+                             expected_counts["PRO_ACTIVE"])
+
         for segment, access_state in (
             ("paid", "PRO_ACTIVE"), ("trial", "TRIAL_ACTIVE"),
             ("free", "FREE"), ("expired", "EXPIRED"), ("blocked", "BLOCKED"),
