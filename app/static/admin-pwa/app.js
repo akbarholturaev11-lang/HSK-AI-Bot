@@ -242,7 +242,7 @@ function categorizedStatsView(){
   if(!data)return statePanel('loading');
   const nav=statsCategoryNav();
   const footer=`<p class="source-note stats-category-footnote">${esc(t('overlap'))}${data.scope?.period_filter_applied===false?' '+esc(t('rolling30')):''}</p><p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`;
-  if(!data.available)return nav+statePanel('unavailable')+footer;
+  if(!data.available)return nav+statePanel('unavailable')+(state.statsTab==='report'?feedbackPanel():'')+footer;
   const m=data.metrics;
   const tab=state.statsTab;
   if(data.platform!=='overall'&&tab!=='platform'&&tab!=='report')
