@@ -691,3 +691,8 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
   .user-filter-panel{right:0;width:min(325px,calc(100vw - 25px))}
   .user-profile-drawer .drawer-content{padding:18px 16px calc(24px + env(safe-area-inset-bottom))}
 }
+
+/* One-tap first-use Apple push consent; hidden once device is registered. */
+.push-quick-enable{min-height:40px;padding:0 11px;gap:7px;background:var(--accent-soft);border-color:#d8e8ea;color:var(--accent)}
+.push-quick-enable svg{width:17px;height:17px;flex:none}
+@media(max-width:900px){.push-quick-enable{padding:0;width:40px;min-width:40px}.push-quick-enable span{display:none}}
