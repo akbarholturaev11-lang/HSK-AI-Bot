@@ -462,3 +462,7 @@
 fieldset.form-field{border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:20px 0}
 fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 @media(max-width:760px){.management-page{gap:23px}.management-row{padding:14px;gap:12px}.management-row strong{font-size:13px}}
+
+.notice-preview{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.6}
+
+.notice-languages summary{display:flex;align-items:center;min-height:44px;cursor:pointer;font-weight:650;gap:8px}.notice-languages summary:before{content:"+"}.notice-languages[open] summary:before{content:"−"}

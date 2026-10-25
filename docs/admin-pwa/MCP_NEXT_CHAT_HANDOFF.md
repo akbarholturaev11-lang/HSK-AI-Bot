@@ -2,6 +2,34 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current reminder-template and late-feedback UI increment
+
+- Five fixed reminder keys have `/notifications/read|prepare|save`, current
+  enabled state and canonical UZ/RU/TJ custom/default text. Safe placeholders,
+  UTF-16 text/caption limits, raw revision CAS, shared legacy-writer locks,
+  exact one-use passkey commitment and atomic hash-only audit. No provider IO.
+  The full three-language copy stays separate from its compact signed digest;
+  the existing 4096-byte step-up payload limit is unchanged.
+- System's compact template list and single-language editor preserve unsaved
+  drafts across language switches and invalid input. Escaped per-language
+  before/after confirmation, default restoration, no auto retry. New localized
+  copy is canonical and generated. Screenshots checked at 390px in UZ/RU/TJ.
+- Broad local PWA/catalog/reminder gate with actual isolated PostgreSQL and
+  Redis: **522 passed, zero skipped**. Full auth/payment/grant/export/image/SW
+  browser suite passed. Template/import gate: nine passed, including real ES256 for large multi-locale
+  copy, tamper/default/media changes, replay, audit rollback, strict placeholders,
+  UTF-16 limits, bounded metadata reads and real-PG legacy first-insert conflict.
+  Extended real ASGI/virtual-WebAuthn management browser passed real template
+  save/reread, validation/draft retention and existing management flows.
+- CI at `2cea2fd5` passed Python/Redis and PG but reproduced a late feedback
+  response replacing the whole statistics page and closing its open export
+  menu (run 40158996994). Feedback refresh now updates only its own panel.
+  A deterministic held-response browser regression verifies the unrelated
+  menu and keyboard focus remain open; full export/cancellation checks passed.
+  No extra request, polling, CSP exception or weaker hit-target assertion.
+- Remaining code: messaging/campaigns, partner actions/payouts, media/QR uploads
+  and operator/retention items. Historical checkpoints below retain old scope.
+
 ## Current manual-ledger increment
 
 - `/portfolio/read|prepare|save` uses integer minor units, fixed currencies and

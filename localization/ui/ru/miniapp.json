@@ -708,7 +708,18 @@
     "ui.admin_pwa.ledgerNote": "Примечание",
     "ui.admin_pwa.ledgerUSD": "Учётная сумма в USD",
     "ui.admin_pwa.ledgerRateHint": "Сумма в USD рассчитывается по внутреннему учётному курсу системы.",
-    "ui.admin_pwa.ledgerHint": "Эта запись не меняет подписку пользователя."
+    "ui.admin_pwa.ledgerHint": "Эта запись не меняет подписку пользователя.",
+    "ui.admin_pwa.notices": "Шаблоны напоминаний",
+    "ui.admin_pwa.noticeRating": "Снижение в рейтинге",
+    "ui.admin_pwa.noticeLesson": "Незавершённый урок",
+    "ui.admin_pwa.noticeD1": "Возврат к первому уроку",
+    "ui.admin_pwa.noticeDaily": "Цель на день",
+    "ui.admin_pwa.noticeStreak": "Серия под угрозой",
+    "ui.admin_pwa.noticeText": "Текст сообщения",
+    "ui.admin_pwa.noticeDefaultHint": "Каждый язык сохраняется отдельно. Пустое поле восстанавливает стандартный текст.",
+    "ui.admin_pwa.noticePlaceholders": "Допустимые переменные",
+    "ui.admin_pwa.noticeInvalid": "Проверьте текст и переменные. Используйте только указанные переменные.",
+    "ui.admin_pwa.noticeTooLong": "Текст слишком длинный. В шаблоне с медиа текст на каждом языке не должен превышать 1024 символа."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

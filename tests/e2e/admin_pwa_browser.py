@@ -788,9 +788,13 @@ async def export_browser_checks(output):
         app.include_router(factory(**common))
     mode='normal';calls=[];downloads=[]
     started,release,finished=asyncio.Event(),asyncio.Event(),asyncio.Event()
+    feedback_started,feedback_release=asyncio.Event(),asyncio.Event()
+    hold_feedback=True
     async def serve(route):
         request=route.request;path=request.url.removeprefix(ORIGIN)
         if path=='/admin/sw.js':await route.abort();return
+        if path=='/api/admin/v1/feedback/categories' and hold_feedback:
+            feedback_started.set();await feedback_release.wait()
         is_export=path=='/api/admin/v1/statistics/export'
         if is_export:
             calls.append((request.post_data_json,await request.all_headers()))
@@ -823,7 +827,16 @@ async def export_browser_checks(output):
             await page.locator('[data-route=stats]').first.click()
             await expect(page.locator('[data-export-format]')).to_have_count(2)
             await expect(page.locator('.feedback-analysis')).to_be_visible()
+            await asyncio.wait_for(feedback_started.wait(),5)
+            await page.locator('[data-menu-toggle=statisticsExportMenu]').click()
+            await expect(page.locator('[data-export-format=json]')).to_be_visible()
+            hold_feedback=False;feedback_release.set()
             await expect(page.locator('[data-feedback-export]')).to_have_count(2)
+            # A late independent feedback response must preserve this open
+            # menu and its focused action; no re-tap or test-only retry.
+            await expect(page.locator('[data-export-format=json]')).to_be_visible()
+            await expect(page.locator('[data-export-format=json]')).to_be_focused()
+            await page.keyboard.press('Escape')
             original_time=None
             for width in (1440,390):
                 await page.set_viewport_size({'width':width,'height':1000 if width==1440 else 844})

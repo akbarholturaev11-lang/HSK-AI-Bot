@@ -23,6 +23,7 @@ uncertain response.
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
 | `marketing.update` | `/marketing/read`, `/prepare`, `/save` | Sales experiment, app promotion settings, existing creative activation/deletion |
 | `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
+| `notifications.update` | `/notifications/read`, `/prepare`, `/save` | Five fixed reminder templates, enabled state and canonical UZ/RU/TJ text/defaults |
 | `portfolio.add` | `/portfolio/read`, `/prepare`, `/save` | Manual profit/expense through shared PortfolioService; no payment synchronization or entitlement mutation |
 | `channels.update` | `/channels/read`, `/prepare`, `/save` | Required-channel mode, add/upsert, state and removal through shared channel service |
 
@@ -66,8 +67,7 @@ responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 
 These legacy capabilities are not silently proxied by the standalone PWA:
 direct messages,
-mass messages, campaign creation, partner actions/payouts,
-notice-template management and media/QR/creative uploads. A legacy endpoint or
+mass messages, campaign creation, partner actions/payouts and media/QR/creative uploads. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
 needs its own strict payload, shared-service transaction and permission/audit
 contract before its UI can claim success. Messaging additionally needs durable
@@ -105,3 +105,17 @@ confirmation binds the exact shared internal-rate USD conversion; a changed
 rate rejects before append. Append, proof consumption and hash-only note audit
 commit atomically. No Payment, subscription, access or AI budget is created.
 One proof cannot append twice across PostgreSQL workers.
+
+Reminder-template list reads select only five fixed keys and enabled states;
+opening an editor loads that template's three custom/effective/default texts
+without file paths. Empty custom text restores the shared localized default.
+Only known placeholders are accepted; field traversal, conversions and format
+specifiers are rejected. Telegram UTF-16 text/caption limits apply to every
+effective locale. Prepare returns the reviewed full copy separately from a
+compact digest operation. The existing 4096-byte step-up limit is unchanged;
+its digest binds all custom and effective fallback text plus enabled/revision.
+Save reconstructs that commitment from the full validated copy, takes the same
+key/row locks as legacy text/media writers and atomically commits proof, shared
+service update and hash-only audit. Media/default changes invalidate review.
+The browser preserves unsaved language drafts and inline validation errors;
+text previews are escaped, with accessible per-language disclosure controls.

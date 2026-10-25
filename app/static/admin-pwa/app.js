@@ -168,11 +168,16 @@ function feedbackPanel(){
   }
   return result+'</section>';
 }
+function refreshFeedbackPanel(){
+  // Feedback IO must not replace unrelated controls or close an export menu.
+  const panel=document.querySelector('.feedback-analysis');
+  if(panel&&state.route==='stats')panel.outerHTML=feedbackPanel();
+}
 async function loadFeedbackStats(){
   if(!state.actor||state.route!=='stats'||feedbackStats.loading)return;
   const id=++feedbackLoadId,at=epoch,seen=view;
   const source=feedbackStats.source,period=feedbackStats.period;
-  feedbackStats.loading=true;feedbackStats.error=false;render();
+  feedbackStats.loading=true;feedbackStats.error=false;refreshFeedbackPanel();
   try{
     const d=await api('feedback/categories',{source,period});
     if(id!==feedbackLoadId||at!==epoch||seen!==view||state.route!=='stats'||!state.actor)return;
@@ -183,7 +188,7 @@ async function loadFeedbackStats(){
     feedbackStats.data=null;feedbackStats.error=true;
   }finally{
     if(id===feedbackLoadId&&at===epoch&&seen===view&&state.route==='stats'&&state.actor){
-      feedbackStats.loading=false;render();
+      feedbackStats.loading=false;refreshFeedbackPanel();
     }
   }
 }
@@ -270,7 +275,7 @@ function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
   if(state.route==='course')return `<div class="management-page">${group('course',managementRow(t('courseAccess'),'data-action="courseSettings"','book')+managementRow(t('hsk30Settings'),'data-action="hsk30Settings"','book'))}</div>`;
   if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega'))}</div>`;
-  return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
+  return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
 function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
 async function load() {
@@ -429,9 +434,33 @@ function userManagementEditor(userId,operation){
 const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktopPromo',course_ad:'courseAds'};
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
 const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
-function managementNamespace(type){return type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
+function managementNamespace(type){return type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
 function managementEndpoint(type,phase){return type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
-function managementAction(type,operation){return type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+function managementAction(type,operation){return type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+const noticeLabels={rating_overtaken:'noticeRating',lesson_unfinished:'noticeLesson',d1_lesson_recovery:'noticeD1',daily_goal:'noticeDaily',streak_risk:'noticeStreak'};
+async function noticeEditor(key=null){
+  if(key!==null&&!Object.hasOwn(noticeLabels,key))return;
+  closeDrawer();const current=drawerId,at=epoch;drawer('notices',statePanel('loading'));
+  try{
+    const data=await api('notifications/read',key?{key}:{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    if(!key){
+      const rows=data.items.filter(item=>Object.hasOwn(noticeLabels,item.key)).map(item=>managementRow(t(noticeLabels[item.key])+' · '+t(item.enabled?'hsk30On':'hsk30Off'),`data-notice-key="${item.key}"`,'bell')).join('');
+      drawer('notices',`<div class="management-list">${rows}</div>`,btn('close','close'));return;
+    }
+    const template=data.template;
+    managementDraft={type:'notice',noticeKey:key,template,texts:{...template.custom_texts},textLanguage:locale};
+    const body=boolSelect('noticeEnabled','status',template.enabled)+`<p class="source-note">${esc(t('noticeDefaultHint'))}</p><p class="source-note">${esc(t('noticePlaceholders'))}: ${template.placeholders.map(esc).join(' ')}</p><div class="form-field"><label for="noticeLanguage">${esc(t('language'))}</label><select class="input" id="noticeLanguage">${['uz','ru','tj'].map(lang=>`<option value="${lang}" ${lang===locale?'selected':''}>${lang.toUpperCase()}</option>`).join('')}</select></div><div class="form-field"><label for="noticeText">${esc(t('noticeText'))}</label><textarea class="input setting-value" id="noticeText" maxlength="${template.text_max}">${esc(template.custom_texts[locale])}</textarea></div><p id="noticeValidation" class="alert" role="alert" hidden></p>`;
+    drawer(noticeLabels[key],`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('next','managementPrepare','primary'));
+    $('noticeText').placeholder=template.defaults[locale];
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('notices',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','noticeList'));}
+}
+function updateNoticeLanguage(){
+  const draft=managementDraft,next=$('noticeLanguage')?.value;
+  if(draft?.type!=='notice'||!['uz','ru','tj'].includes(next))return;
+  draft.texts[draft.textLanguage]=$('noticeText').value;draft.textLanguage=next;
+  $('noticeText').value=draft.texts[next];$('noticeText').placeholder=draft.template.defaults[next];
+}
 async function portfolioHistory(before=null){
   closeDrawer();const current=drawerId,at=epoch;drawer('ledger',statePanel('loading'));
   try{
@@ -517,6 +546,7 @@ function editCourseAd(id){
   drawer('courseAds',form,btn('cancel','close')+btn('next','managementPrepare','primary'));
 }
 function managementFields(value,type){
+  if(type==='notice')return profileFields([['status',t(value.enabled?'hsk30On':'hsk30Off')]])+['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(value.effective_texts[lang])}</p></details>`).join('');
   if(type==='portfolio')return profileFields([['ledgerType',t(value.transaction_type==='profit'?'ledgerProfit':'ledgerExpense')],['amount',(value.amount_minor/100).toFixed(2)+' '+value.currency],['ledgerUSD',(value.expected_usd||value.amount_usd)+' USD'],['ledgerNote',value.note]]);
   if(type==='channel'){
     if(Object.hasOwn(value,'enabled'))return profileFields([['channelMode',t(value.enabled?'hsk30On':'hsk30Off')]]);
@@ -545,6 +575,7 @@ function managementFields(value,type){
   throw Error('invalid_settings');
 }
 function managementReread(draft){
+  if(draft.type==='notice')return `<button class="btn" data-notice-key="${esc(draft.noticeKey)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='portfolio')return btn('readCurrent','portfolioHistory');
   if(draft.type==='channel')return `<button class="btn" data-channels-kind="${draft.kind==='mode'?'mode':'list'}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='user')return `<button class="btn" data-user-detail="${draft.userId}">${esc(t('readCurrent'))}</button>`;
@@ -608,7 +639,10 @@ async function editSetting(kind,bank=null){
 async function prepareManagement(){
   if(managementPreparing||!state.actor||signing||!managementDraft||!$('managementForm')?.reportValidity())return;
   const draft=managementDraft;let payload;
-  if(draft.type==='portfolio'){
+  if(draft.type==='notice'){
+    draft.texts[draft.textLanguage]=$('noticeText').value;
+    payload={key:draft.noticeKey,enabled:$('noticeEnabled').value==='true',...Object.fromEntries(['uz','ru','tj'].map(lang=>['text_'+lang,draft.texts[lang]]))};
+  }else if(draft.type==='portfolio'){
     const raw=$('portfolioAmount').value;
     if(!/^(?:0|[1-9][0-9]{0,6})(?:\.[0-9]{1,2})?$/.test(raw))return;
     const [whole,fraction='']=raw.split('.'),minor=Number(whole)*100+Number(fraction.padEnd(2,'0'));
@@ -648,13 +682,18 @@ async function prepareManagement(){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const operation=structuredClone(result.operation);
     if(operation?.action!==managementAction(draft.type,draft.userOperation)||!operation.target||!operation.payload)throw Error('invalid_operation');
-    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,operation:Object.freeze(operation)});
-    const proposed=draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
+    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
+    const proposed=draft.type==='notice'?result.proposed:draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
     const currentValue=draft.type==='marketing'||draft.type==='channel'?{kind:draft.kind,...result.current}:result.current;
     const comparison=`<div class="management-comparison">${draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
     drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
   }catch(error){
-    if(current===drawerId&&at===epoch&&state.actor)drawer('confirmChanges',statePanel(error.status===409?'configChanged':errorKey(error)),btn('close','close')+managementReread(draft));
+    if(current===drawerId&&at===epoch&&state.actor){
+      if(draft.type==='notice'&&error.status===400&&$('noticeValidation')){
+        $('noticeValidation').textContent=t(error.message==='admin_pwa_notice_too_long'?'noticeTooLong':'noticeInvalid');$('noticeValidation').hidden=false;
+        $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
+      }else drawer('confirmChanges',statePanel(error.status===409?'configChanged':errorKey(error)),btn('close','close')+managementReread(draft));
+    }
   }finally{managementPreparing=false;}
 }
 async function executeManagement(){
@@ -672,10 +711,10 @@ async function executeManagement(){
     await api('auth/step-up/verify',{step_up_id:options.step_up_id,credential:serialize(credential)});
     if(current!==drawerId||at!==epoch||!state.actor)return;
     submitted=true;
-    const result=await api(managementEndpoint(review.type,'save'),{...operation.payload,step_up_id:options.step_up_id});
+    const result=await api(managementEndpoint(review.type,'save'),{...review.executePayload,step_up_id:options.step_up_id});
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
-    const saved=review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
+    const saved=review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
     if(review.type==='user'&&result.deleted){state.rows=state.rows.filter(row=>row.user_id!==result.user_id);render();}
     drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review)));
   }catch(error){
@@ -1216,6 +1255,7 @@ async function action(name) {
   if(name==='pushSettings'){await pushSettings();return;}
   if(name==='courseSettings'){await courseSettings();return;}
   if(name==='priceSettings'){await priceSettings();return;}
+  if(name==='noticeList'){await noticeEditor();return;}
   if(name==='portfolioHistory'){await portfolioHistory();return;}
   if(name==='portfolioEditor'){portfolioEditor();return;}
   if(name==='managementPrepare'){await prepareManagement();return;}
@@ -1251,6 +1291,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.channelsKind){await channelEditor(button.dataset.channelsKind);}
     else if(button.dataset.channelsNext){await channelEditor('list',Number(button.dataset.channelsNext));}
     else if(button.dataset.channelId){editChannel(Number(button.dataset.channelId));}
+    else if(button.dataset.noticeKey){await noticeEditor(button.dataset.noticeKey);}
     else if(button.dataset.portfolioNext){await portfolioHistory(Number(button.dataset.portfolioNext));}
     else if(button.dataset.period){state.period=button.dataset.period;await load();}
     else if(button.dataset.platform){state.platform=button.dataset.platform;await load();}
@@ -1281,6 +1322,7 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('change',event=>{
+  if(event.target.id==='noticeLanguage')updateNoticeLanguage();
   if(event.target.id==='channelOperation'&&$('channelActiveField'))$('channelActiveField').hidden=event.target.value==='delete';
   if(event.target.id==='adOperation'){
     const deleting=event.target.value==='delete';

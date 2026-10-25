@@ -708,7 +708,18 @@
     "ui.admin_pwa.ledgerNote": "Izoh",
     "ui.admin_pwa.ledgerUSD": "Hisobdagi USD qiymati",
     "ui.admin_pwa.ledgerRateHint": "USD qiymati tizimning ichki hisob-kitob kursi bo‘yicha hisoblanadi.",
-    "ui.admin_pwa.ledgerHint": "Bu yozuv foydalanuvchining obunasini o‘zgartirmaydi."
+    "ui.admin_pwa.ledgerHint": "Bu yozuv foydalanuvchining obunasini o‘zgartirmaydi.",
+    "ui.admin_pwa.notices": "Eslatma shablonlari",
+    "ui.admin_pwa.noticeRating": "Reytingda ortda qolish",
+    "ui.admin_pwa.noticeLesson": "Tugallanmagan dars",
+    "ui.admin_pwa.noticeD1": "Birinchi darsga qaytish",
+    "ui.admin_pwa.noticeDaily": "Kunlik maqsad",
+    "ui.admin_pwa.noticeStreak": "Uzilayotgan seriya",
+    "ui.admin_pwa.noticeText": "Xabar matni",
+    "ui.admin_pwa.noticeDefaultHint": "Har bir til alohida saqlanadi. Maydon bo‘sh qolsa, standart matn ishlatiladi.",
+    "ui.admin_pwa.noticePlaceholders": "Ruxsat etilgan o‘zgaruvchilar",
+    "ui.admin_pwa.noticeInvalid": "Matn va o‘zgaruvchilarni tekshiring. Faqat ko‘rsatilgan o‘zgaruvchilardan foydalaning.",
+    "ui.admin_pwa.noticeTooLong": "Matn juda uzun. Media bor shablonda barcha tillardagi matn 1024 belgidan oshmasin."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

@@ -25,6 +25,7 @@ from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
 from app.admin_api.pwa_channels import create_admin_pwa_channels_router
+from app.admin_api.pwa_notifications import create_admin_pwa_notifications_router
 from app.admin_api.pwa_portfolio import create_admin_pwa_portfolio_router
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
@@ -62,7 +63,7 @@ async def browser_checks(output):
                     create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
                     create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router,
                     create_admin_pwa_user_management_router,create_admin_pwa_channels_router,
-                    create_admin_pwa_portfolio_router):
+                    create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router):
         app.include_router(factory(**common))
     calls, errors = [], []
     drop_save = False
@@ -362,6 +363,49 @@ async def browser_checks(output):
                 await prepare_and_save('uz')
                 await page.locator('[data-action="portfolioHistory"]').click()
                 await expect(page.locator('#drawerContent')).to_contain_text('QA committed expense')
+                await page.locator('.drawer-close').click()
+                async with fixture.sessions() as db:
+                    await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == 'consumed').values(
+                        created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
+                    await db.commit()
+                for language in ('uz','ru','tj'):
+                    await page.locator('#locale').select_option(language)
+                    await page.locator('[data-action="noticeList"]').click()
+                    await expect(page.locator('[data-notice-key]')).to_have_count(5)
+                    await page.locator('[data-notice-key="daily_goal"]').click()
+                    await page.set_viewport_size({'width':390,'height':844})
+                    await expect(page.locator('#noticeText')).to_be_visible()
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                    await page.screenshot(path=str(output/f'notice-editor-{language}-390.png'))
+                    # Drafts survive language switches and invalid placeholders.
+                    await page.locator('#noticeLanguage').select_option('uz')
+                    await page.locator('#noticeText').fill('QA {unsafe}')
+                    await page.locator('[data-action="managementPrepare"]').click()
+                    await expect(page.locator('#noticeValidation')).to_be_visible()
+                    await expect(page.locator('#noticeText')).to_have_value('QA {unsafe}')
+                    await page.locator('#noticeText').fill('QA <b>{minutes}</b> <img src=x onerror=alert(1)>')
+                    await page.locator('#noticeLanguage').select_option('ru')
+                    await page.locator('#noticeText').fill('Минуты: {minutes}')
+                    await page.locator('#noticeLanguage').select_option('tj')
+                    await page.locator('#noticeText').fill('Дақиқа: {minutes}')
+                    await page.locator('#noticeLanguage').select_option('uz')
+                    await expect(page.locator('#noticeText')).to_have_value('QA <b>{minutes}</b> <img src=x onerror=alert(1)>')
+                    await page.locator('[data-action="managementPrepare"]').click()
+                    await expect(page.locator('.management-comparison')).to_be_visible()
+                    assert await page.locator('.management-comparison img').count()==0
+                    await page.screenshot(path=str(output/f'notice-confirm-{language}-390.png'))
+                    await page.locator('[data-action="close"]').last.click()
+                    await page.set_viewport_size({'width':1440,'height':1000})
+                await page.locator('#locale').select_option('uz')
+                await page.locator('[data-action="noticeList"]').click()
+                await page.locator('[data-notice-key="daily_goal"]').click()
+                await page.locator('#noticeEnabled').select_option('false')
+                await page.locator('#noticeText').fill('Saved {minutes}')
+                await prepare_and_save('uz')
+                await page.locator('[data-action="noticeList"]').click()
+                await page.locator('[data-notice-key="daily_goal"]').click()
+                await expect(page.locator('#noticeText')).to_have_value('Saved {minutes}')
+                await expect(page.locator('#noticeEnabled')).to_have_value('false')
                 await page.locator('.drawer-close').click()
                 # Revocation between confirmation and proof fails before any write.
                 before = await audit_count()
