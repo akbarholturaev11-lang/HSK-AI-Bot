@@ -77,6 +77,30 @@ class Fixture(PaymentFixtures):
     pass
 
 
+async def setup_fresh_login(context, page, fixture):
+    """Use actual WebAuthn registration fixture key, never inject a session cookie."""
+    cdp=await context.new_cdp_session(page)
+    await cdp.send('WebAuthn.enable')
+    auth=await cdp.send('WebAuthn.addVirtualAuthenticator',{'options':{
+        'protocol':'ctap2','transport':'internal','hasResidentKey':True,
+        'hasUserVerification':True,'isUserVerified':True,
+        'automaticPresenceSimulation':True}})
+    private_key=fixture.key.private_bytes(serialization.Encoding.DER,serialization.PrivateFormat.PKCS8,
+                                         serialization.NoEncryption())
+    await cdp.send('WebAuthn.addCredential',{'authenticatorId':auth['authenticatorId'],'credential':{
+        'credentialId':base64.b64encode(CRED_ID).decode(),
+        'isResidentCredential':True,'rpId':'hskai.app',
+        'privateKey':base64.b64encode(private_key).decode(),
+        'userHandle':base64.b64encode(HANDLE).decode(),'signCount':0}})
+    return cdp
+
+
+async def authenticate_fresh_launch(page):
+    await expect(page.locator('[data-action=signin]')).to_be_visible(timeout=15000)
+    await page.locator('[data-action=signin]').click()
+    await expect(page.locator('.metrics')).to_be_visible(timeout=20000)
+
+
 async def browser_checks(output):
     fixture=Fixture()
     fixture.engine=create_async_engine('sqlite+aiosqlite:///:memory:',poolclass=StaticPool)
@@ -776,7 +800,7 @@ async def export_browser_checks(output):
     app=FastAPI()
     common={'settings_obj':fixture.settings,'session_factory':fixture.sessions}
     for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router,
-                    create_admin_pwa_feedback_analytics_router):
+                    create_admin_pwa_passkey_login_router,create_admin_pwa_feedback_analytics_router):
         app.include_router(factory(**common))
     mode='normal';calls=[];downloads=[]
     started,release,finished=asyncio.Event(),asyncio.Event(),asyncio.Event()
@@ -804,17 +828,16 @@ async def export_browser_checks(output):
         async with async_playwright() as pw:
             browser=await pw.chromium.launch()
             context=await browser.new_context(viewport={'width':1440,'height':1000},service_workers='block')
-            await context.add_cookies([{'name':'__Host-hskai_admin','value':COOKIE,'url':ORIGIN,'secure':True,'httpOnly':True,'sameSite':'Strict'}])
             await context.route('**/*',serve)
             await context.add_init_script("""window.qaURLs=[];window.qaRevoked=[];
                 const create=URL.createObjectURL.bind(URL),revoke=URL.revokeObjectURL.bind(URL);
                 URL.createObjectURL=blob=>{const url=create(blob);qaURLs.push(url);return url;};
                 URL.revokeObjectURL=url=>{qaRevoked.push(url);return revoke(url);};""")
             page=await context.new_page();errors=[]
+            await setup_fresh_login(context,page,fixture)
             page.on('pageerror',lambda error:errors.append(str(error)))
             page.on('download',lambda download:downloads.append(download))
-            await page.goto(ORIGIN+'/admin/');await page.wait_for_load_state('networkidle')
-            await expect(page.locator('.metrics')).to_be_visible()
+            await page.goto(ORIGIN+'/admin/');await authenticate_fresh_launch(page)
             assert not calls,'Exports must only run after an explicit tap'
             await page.locator('[data-route=stats]').first.click()
             await expect(page.locator('[data-export-format]')).to_have_count(2)
@@ -879,7 +902,7 @@ async def export_browser_checks(output):
             await page.set_viewport_size({'width':1440,'height':1000})
             for cancel in ('route','locale','offline','pagehide'):
                 mode='normal'
-                await page.reload();await page.wait_for_load_state('networkidle')
+                await page.reload();await authenticate_fresh_launch(page)
                 await page.locator('[data-route=stats]').first.click()
                 await page.locator('[data-menu-toggle=statisticsExportMenu]').click()
                 await expect(page.locator('[data-export-format=json]')).to_be_visible()
@@ -895,7 +918,7 @@ async def export_browser_checks(output):
                 assert await page.evaluate('qaURLs.length===qaRevoked.length')
             # Feedback export is an explicit first-party action, independent
             # of the longer cached statistics window.
-            await page.reload();await page.wait_for_load_state('networkidle')
+            await page.reload();await authenticate_fresh_launch(page)
             await page.locator('[data-route=stats]').first.click()
             await expect(page.locator('[data-menu-toggle=feedbackExportMenu]')).to_be_visible()
             await page.locator('#feedbackSource').select_option('bot')
@@ -928,7 +951,8 @@ async def access_grant_browser_checks(output):
     await fixture.seed_payment()
     app=FastAPI();common={'settings_obj':fixture.settings,'session_factory':fixture.sessions}
     for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router,
-                    create_admin_pwa_step_up_router,create_admin_pwa_access_grant_router):
+                    create_admin_pwa_passkey_login_router,create_admin_pwa_step_up_router,
+                    create_admin_pwa_access_grant_router):
         app.include_router(factory(**common))
     drop=False;calls=[]
     async def serve(route):
@@ -944,14 +968,13 @@ async def access_grant_browser_checks(output):
     try:
         async with async_playwright() as pw:
             browser=await pw.chromium.launch();context=await browser.new_context(viewport={'width':1440,'height':1000},service_workers='block')
-            await context.add_cookies([{'name':'__Host-hskai_admin','value':COOKIE,'url':ORIGIN,'secure':True,'httpOnly':True,'sameSite':'Strict'}])
             await context.route('**/*',serve)
             page=await context.new_page();errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
             cdp=await context.new_cdp_session(page);await cdp.send('WebAuthn.enable')
             auth=await cdp.send('WebAuthn.addVirtualAuthenticator',{'options':{'protocol':'ctap2','transport':'internal','hasResidentKey':True,'hasUserVerification':True,'isUserVerified':True,'automaticPresenceSimulation':True}})
             auth_id=auth['authenticatorId'];b64=lambda value:base64.b64encode(value).decode()
             await cdp.send('WebAuthn.addCredential',{'authenticatorId':auth_id,'credential':{'credentialId':b64(CRED_ID),'isResidentCredential':True,'rpId':'hskai.app','privateKey':b64(fixture.key.private_bytes(serialization.Encoding.DER,serialization.PrivateFormat.PKCS8,serialization.NoEncryption())),'userHandle':b64(HANDLE),'signCount':0}})
-            await page.goto(ORIGIN+'/admin/');await page.wait_for_load_state('networkidle')
+            await page.goto(ORIGIN+'/admin/');await authenticate_fresh_launch(page)
             await page.locator('[data-route=users]').first.click()
             async def prepare():
                 await page.locator('[data-user-detail="1"]:visible').first.click()
