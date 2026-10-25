@@ -7,6 +7,7 @@
     "adminPwa.denied": "❌ Запрос входа в Admin PWA отклонён.",
     "adminPwa.deny": "❌ Отклонить",
     "adminPwa.invalid": "Запрос не найден, истёк или уже обработан. Начните вход заново в браузере.",
+    "adminPwa.openBrowser": "↩️ Вернуться в Admin PWA",
     "adminPwa.privateOnly": "Подтверждение возможно только в личном Telegram-чате администратора.",
     "adminPwa.unavailable": "Сервис подтверждения Admin PWA временно недоступен.",
     "course.course_all_levels_completed": "🏆 Вы завершили все доступные курсы HSK.",
