@@ -2,6 +2,23 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## CI correction — isolate ORM fixtures from migrated public tables
+
+- [Admin PWA run 40155795894](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40155795894)
+  at `06b99d08` passed the primary app/Redis/browser/legacy gate and scoped
+  migration/rollback steps. Five new PG cases failed at fixture seeding with
+  `UndefinedColumnError: users.telegram_id`.
+- Root cause: the new UUID-schema fixture used `search_path=<schema>,public`.
+  SQLAlchemy `create_all(checkfirst=True)` found CI's intentionally minimal
+  migrated `public.users`, skipped creating the full local-schema User table,
+  and attempted fixture inserts into the wrong table. A local empty public
+  schema had concealed this isolation bug.
+- Fix: test connections use only their own UUID schema, matching the existing
+  PG suite; no production schema, migration or validation is changed. Reproduced
+  CI's minimal public users table in a new disposable local database: all nine
+  affected settings/HSK30/account cases passed with that baseline present.
+  Do not resolve this by widening public.users or skipping the PG tests.
+
 ## Current account increment — canonical block/unblock/delete
 
 - Settings/marketing checkpoint pushed at `06b99d08d25af896ace5b1ed901656c14248e3ae`.

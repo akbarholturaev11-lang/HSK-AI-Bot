@@ -48,7 +48,11 @@ class AdminPwaSettingsPostgresTests(payment_fixtures.PaymentFixtures,
         async with self.admin_engine.begin() as connection:
             await connection.execute(text(f"CREATE SCHEMA {self.schema}"))
         self.engine = create_async_engine(url, connect_args={"server_settings": {
-            "search_path": self.schema + ",public", "statement_timeout": "15000",
+            # CI keeps a deliberately minimal migrated public.users table.
+            # Including public makes create_all(checkfirst=True) see that
+            # table and skip this schema's full User model. Never fall back
+            # to any public table in an isolated fixture.
+            "search_path": self.schema, "statement_timeout": "15000",
             "lock_timeout": "10000",
         }})
         async with self.engine.begin() as connection:
