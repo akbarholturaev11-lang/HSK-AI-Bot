@@ -2,6 +2,41 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current bounded campaigns increment — 2026-10-25
+
+- `pwa_campaigns.py` and `/campaigns/read|prepare|save` add metadata-only keyset
+  lists, explicit details, signed one-round text ad delivery, release-feedback
+  creation/delivery and discount create/state. V10 Marketing links the actual
+  forms; UZ/RU/TJ sources generate the bundled catalog. Contextual Send/Create/
+  Save uses the original editor and one native passkey; no confirmation screen.
+- Ads reserve one existing shared round without scheduling the legacy sender.
+  Release campaigns use existing try/rating callbacks and unchanged reward
+  policy, durable shared delivery evidence and the same claimed outbound queue.
+  No DB connection spans provider IO. A recipient filter/transport/campaign
+  change skips before claim; Stop, late acknowledgement, signed pending-only
+  resume, expired payload retention and no uncertain retry remain coherent.
+- Discount offers preserve the existing checkout/eligibility/quota/repeat
+  contract and canonical native ownership. Plain three-language copy is stored
+  for the existing text consumers; no entity double-escaping. Creation defaults
+  paused and never sends a notification or grants access. Enabling an existing
+  notification-enabled offer through this command is refused.
+- No schema/migration/cron, AI translation, DB media BLOB, feature-default or
+  external MCP scope change. Private aggregate snapshots remain daily-on-demand.
+- Broad PWA/catalog/initializer/legacy payment suite with isolated PostgreSQL
+  and Redis: **694 passed, 1 skipped, 632 subtests passed**. Later focused final
+  campaign/outbound/marketing/discount regressions: **77 passed, 54 subtests**,
+  including real PostgreSQL single-round races, proof expiry during recipient
+  lock waits and concurrent drainers. This includes stop-during-provider and
+  original-transport reservation regressions added after the broad checkpoint.
+- Actual campaign ASGI/virtual-WebAuthn browser passed UZ/RU/TJ at 390/1440,
+  missing-language disclosure, native cancellation/draft preservation, native
+  personal discount, release markup and one-round ad delivery. Shared outbound,
+  full settings/management and media-only browser suites also passed. Evidence
+  `/tmp/hsk-admin-pwa-campaigns*-20261025`; mobile screenshots reviewed.
+- Security workflow now follows this owner feature branch and includes campaign
+  browser and PostgreSQL tests. Arbitrary campaign media/buttons and unattended
+  scheduling are outside the explicit standalone contract, not silently proxied.
+
 ## Latest statistics/navigation sync — 2026-10-25
 
 - A second owner-requested refresh found `origin/main` at

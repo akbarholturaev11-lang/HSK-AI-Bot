@@ -889,7 +889,25 @@
     "ui.admin_pwa.adTypeStandard": "Рекламаи одӣ",
     "ui.admin_pwa.adTypePartner": "Пешниҳоди ҳамкорӣ",
     "ui.admin_pwa.adTypeBot": "Рекламаи бот",
-    "ui.admin_pwa.adTypeLessonEnd": "Пешниҳоди обуна"
+    "ui.admin_pwa.adTypeLessonEnd": "Пешниҳоди обуна",
+    "ui.admin_pwa.adCampaigns": "Маъракаҳои таблиғотӣ",
+    "ui.admin_pwa.releaseCampaigns": "Фикрҳо дар бораи навсозӣ",
+    "ui.admin_pwa.discountCampaigns": "Маъракаҳои тахфиф",
+    "ui.admin_pwa.newReleaseCampaign": "Фиристодани дархости фикр",
+    "ui.admin_pwa.newDiscountCampaign": "Сохтани тахфиф",
+    "ui.admin_pwa.releaseCampaignHint": "Як бор, то 1000 қабулкунанда. Тугмаҳои санҷиш ва баҳои 1–5 илова мешаванд. Ҳавасмандии мавҷуда: санҷиши 30 дақиқа, тахфифи 20% барои 24 соат барои фикр.",
+    "ui.admin_pwa.campaignSendHint": "Матн ва гурӯҳи қабулкунандагон ба як passkey пайвастанд. Як кӯшиши фиристодан анҷом мешавад; натиҷаи номуайян худкор такрор намешавад.",
+    "ui.admin_pwa.campaignReadOnly": "Маърака аллакай фиристода шудааст, муҳлаташ гузаштааст ё шаклаш ба ин роҳи фиристодан мувофиқ нест.",
+    "ui.admin_pwa.discountNoNotificationHint": "Ин танзими тахфиф аст. Паёми алоҳида фиристода намешавад. Нарх, муҳлат ва шартҳоро checkout-и мавҷуда месанҷад. Тахфифи нав пешфарз хомӯш аст.",
+    "ui.admin_pwa.releaseFeature": "Бахш барои санҷиш",
+    "ui.admin_pwa.releaseFeatureImage": "Таҳлили расм",
+    "ui.admin_pwa.releaseFeatureAndroid": "Обунаи Android",
+    "ui.admin_pwa.discountReason": "Сабаби тахфиф",
+    "ui.admin_pwa.discountPercent": "Тахфиф (%)",
+    "ui.admin_pwa.discountTarget": "ID-и ҳисоб · барои гурӯҳ холӣ гузоред",
+    "ui.admin_pwa.discountQuota": "Ҳадди истифода · холӣ — бе маҳдудият",
+    "ui.admin_pwa.discountRepeatDays": "Фосилаи такрор (рӯз) · холӣ — як бор",
+    "ui.admin_pwa.campaignExpiry": "Муҳлати амал"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

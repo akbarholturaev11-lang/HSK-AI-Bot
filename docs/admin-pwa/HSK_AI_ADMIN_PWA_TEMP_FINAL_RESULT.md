@@ -75,7 +75,12 @@ to paused. The six
 existing Alipay/WeChat subscription QR targets can now replace one bounded
 image using one passkey; price and payment/access state remain untouched. The
 legacy checkout contract stores the resulting Telegram `file_id`, not image
-bytes. Campaign activation/delivery and feedback/discount campaigns remain code work. Partner application notices are
+bytes. Signed single-round ad delivery, release-feedback creation/delivery with the
+existing rating/try callbacks, and discount creation/state management are now
+implemented through `/campaigns/*`. Delivery uses the bounded claimed queue;
+new discount offers default off with notifications disabled. These commands
+accept the explicit text formats in the management contract; they do not
+enable unattended legacy scheduling or arbitrary campaign assets. Partner application notices are
 implemented; see [management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
 This paragraph records scope and does not mark the entire acceptance list done.
 

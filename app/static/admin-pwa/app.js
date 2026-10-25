@@ -82,7 +82,9 @@ async function api(path, body, {publicAuth=false, method='POST',rawBody=null,ext
   } finally { clearTimeout(timer); }
 }
 function languageSelect(id='locale') { return `<select class="locale-select" id="${id}" aria-label="${esc(t('language'))}">${[['uz','O‘zbekcha'],['ru','Русский'],['tj','Тоҷикӣ']].map(([id,name])=>`<option value="${id}" ${locale===id?'selected':''}>${name}</option>`).join('')}</select>`; }
-function showNotice(key) { $('notice').textContent=t(key);$('notice').classList.add('show');setTimeout(()=>$('notice').classList.remove('show'),6000); }
+let noticeTimer=null;
+function clearNotice(){clearTimeout(noticeTimer);noticeTimer=null;$('notice')?.classList.remove('show');}
+function showNotice(key) { clearNotice();$('notice').textContent=t(key);$('notice').classList.add('show');noticeTimer=setTimeout(clearNotice,6000); }
 function errorKey(error) {
   if(error?.name==='NotAllowedError'||error?.name==='AbortError') return 'passkeyCancelled';
   return error?.status===409?'changed':'error';
@@ -387,7 +389,7 @@ function managementRow(label,attributes,glyph='settings'){
 function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
   if(state.route==='course')return `<div class="management-page">${group('course',managementRow(t('courseAccess'),'data-action="courseSettings"','book')+managementRow(t('hsk30Settings'),'data-action="hsk30Settings"','book'))}</div>`;
-  if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('messages'),'data-action="messageList"','mega')+managementRow(t('createCampaign'),'data-marketing-kind="campaign_draft"','mega')+managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
+  if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('messages'),'data-action="messageList"','mega')+managementRow(t('adCampaigns'),'data-campaign-list="ad"','mega')+managementRow(t('releaseCampaigns'),'data-campaign-list="release"','bell')+managementRow(t('discountCampaigns'),'data-campaign-list="discount"','wallet')+managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
   return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow(t('deliveryQueue'),'data-action="deliveryList"','bell')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
 function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
@@ -474,7 +476,7 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {managementPreparing=false;preparingEditor=null;drawerBack=null;closeActionMenus();closeInboxAttachment();releaseManagementMediaPreview();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {clearNotice();managementPreparing=false;preparingEditor=null;drawerBack=null;closeActionMenus();closeInboxAttachment();releaseManagementMediaPreview();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   if(!$('overlay'))returnFocus=document.activeElement;
   $('dialogs').innerHTML=`<div class="canvas-overlay show" id="overlay"><section class="drawer ${className}" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><div class="drawer-top"><h2 id="drawerTitle">${esc(t(title))}</h2><button class="drawer-close" data-action="close" aria-label="${esc(t('close'))}">×</button></div><div class="drawer-content" id="drawerContent">${body}</div><div class="drawer-foot" id="drawerFoot">${foot||btn('close','close')}</div></section></div>`;
@@ -497,7 +499,8 @@ function updateManagementAction(){
   const button=document.querySelector('[data-action="managementPrepare"]'),d=managementDraft;
   if(!button||!d)return;
   let label='saveChanges',danger=false;
-  if(d.type==='user'){label=userOperationLabels[d.userOperation];danger=d.userOperation==='delete';}
+  if(d.type==='campaign'){label=['ad_send','release_create'].includes(d.kind)?'sendMessage':d.kind==='discount_create'?'createItem':'saveChanges';}
+  else if(d.type==='user'){label=userOperationLabels[d.userOperation];danger=d.userOperation==='delete';}
   else if(d.type==='message')label=!d.userId&&$('messageKind')?.value==='test'?'sendTestMessage':'sendMessage';
   else if(d.type==='message_control')label=d.controlOperation==='resume'?'messageResume':'messageStop';
   else if(d.type==='payout')label=payoutOperationLabels[$('payoutOperation')?.value]||'saveChanges';
@@ -619,9 +622,9 @@ const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktop
 const courseAdTypeLabels={odiy:'adTypeStandard',hamkorlik:'adTypePartner',bot:'adTypeBot',dars_yakuni:'adTypeLessonEnd'};
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
 const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
-function managementNamespace(type){return ['message','message_control'].includes(type)?'messages':type==='delivery'?'payment-deliveries':type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='payment_qr'?'payment-qr':type==='marketing'?'marketing':'settings';}
+function managementNamespace(type){return type==='campaign'?'campaigns':['message','message_control'].includes(type)?'messages':type==='delivery'?'payment-deliveries':type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='payment_qr'?'payment-qr':type==='marketing'?'marketing':'settings';}
 function managementEndpoint(type,phase){if(type==='payout_completion')return 'partner-payouts/'+(phase==='prepare'?'prepare-completion':'complete');return type==='message_control'?'messages/'+(phase==='prepare'?'prepare-control':'control'):type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
-function managementAction(type,operation){return type==='message'?'broadcast.send':type==='message_control'?'broadcast.control':type==='delivery'?'payments.delivery_reconcile':['payout','payout_completion'].includes(type)?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='payment_qr'?'subscription.qr_media':type==='marketing'?'marketing.update':'settings.update';}
+function managementAction(type,operation){return type==='campaign'?'marketing.update':type==='message'?'broadcast.send':type==='message_control'?'broadcast.control':type==='delivery'?'payments.delivery_reconcile':['payout','payout_completion'].includes(type)?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='payment_qr'?'subscription.qr_media':type==='marketing'?'marketing.update':'settings.update';}
 const messageKindLabels={direct:'directMessage',broadcast:'broadcastMessage',test:'testMessage'};
 const messageJobLabels={ready:'messageReady',running:'messageRunning',complete:'messageComplete',closed:'messageClosed'};
 const messageCountLabels={pending:'messagePending',attempting:'messageAttempting',attempted:'messageAttempted',uncertain:'messageUncertain',skipped:'messageSkipped',removed:'messageRemoved'};
@@ -889,6 +892,86 @@ function updateCourseAdCreateMedia(){
   managementDraft={...managementDraft,mediaFile:null};releaseManagementMediaPreview();
   $('courseAdMediaPreview').innerHTML='';$('courseAdMediaValidation').hidden=true;
 }
+const campaignLabels={ad:'adCampaigns',release:'releaseCampaigns',discount:'discountCampaigns'};
+const campaignFeatureLabels={general:'all',qa:'questionAnswer',image:'releaseFeatureImage',course:'course',profile:'userProfile',subscription:'subscriptionPrices',android_subscription:'releaseFeatureAndroid'};
+function campaignSelect(id,label,options,selected=''){
+  return `<div class="form-field"><label for="${id}">${esc(t(label))}</label><select class="input" id="${id}">${options.map(([value,text])=>`<option value="${esc(value)}" ${value===selected?'selected':''}>${esc(t(text))}</option>`).join('')}</select></div>`;
+}
+function campaignFields(row){
+  const fields=[['campaignId',row.id],['campaignTitle',row.title],['status',t(({active:'hsk30On',paused:'campaignDraftStatus',sending:'messageRunning',sent:'messageComplete',stopped:'messageClosed',scheduled:'messageReady'})[row.status]||'unavailable')]];
+  if(row.ends_at)fields.push(['campaignExpiry',date(row.ends_at)]);
+  if(row.percent)fields.push(['discount',row.percent+'%']);
+  if(row.target_user_id)fields.push(['account',row.target_user_id]);
+  if(row.quota_total)fields.push(['discountQuota',row.quota_total]);
+  if(row.repeat_interval_days)fields.push(['discountRepeatDays',row.repeat_interval_days]);
+  if(row.sent_count!==undefined)fields.push(['messageAttempted',row.sent_count],['messageUncertain',row.failed_count]);
+  const copies=row.texts?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(row.texts[lang])}</p></details>`).join(''):row.copies?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><strong>${esc(row.copies[lang].title)}</strong><p class="notice-preview">${esc(row.copies[lang].reason)}</p></details>`).join(''):'';
+  return profileFields(fields)+copies;
+}
+async function campaignList(kind,before=null){
+  if(!Object.hasOwn(campaignLabels,kind))return;
+  closeDrawer();const current=drawerId,at=epoch;drawer(campaignLabels[kind],statePanel('loading'));
+  try{
+    const data=await api('campaigns/read',{kind,...(before?{before_id:before}:{})});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    if(!Array.isArray(data.items)||data.items.length>30)throw Error('invalid_campaigns');
+    const rows=data.items.map(row=>managementRow(`#${row.id} · ${row.title}`,`data-campaign-detail="${Number(row.id)}" data-campaign-kind="${kind}"`,'mega')).join('');
+    const next=data.next_before_id?`<button class="btn" data-campaign-list="${kind}" data-before="${Number(data.next_before_id)}">${esc(t('next'))}</button>`:'';
+    const create=kind==='ad'?`<button class="btn primary" data-marketing-kind="campaign_draft">${esc(t('createCampaign'))}</button>`:`<button class="btn primary" data-campaign-create="${kind}">${esc(t(kind==='release'?'newReleaseCampaign':'newDiscountCampaign'))}</button>`;
+    drawer(campaignLabels[kind],(rows?`<div class="management-list">${rows}</div>`:statePanel('empty'))+next,btn('close','close')+create);
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer(campaignLabels[kind],statePanel(errorKey(error)),btn('close','close'));}
+}
+async function campaignDetail(kind,id){
+  if(!Object.hasOwn(campaignLabels,kind))return;
+  closeDrawer();const current=drawerId,at=epoch;drawer(campaignLabels[kind],statePanel('loading'));
+  try{
+    const data=await api('campaigns/read',{kind,campaign_id:id});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const row=data.campaign;
+    if(row.id!==id||row.kind!==kind)throw Error('invalid_campaign');
+    const editable=kind==='ad'&&row.can_send||kind==='discount'&&(row.can_activate||row.is_active);
+    managementDraft=editable?{type:'campaign',kind:kind==='ad'?'ad_send':'discount_state',campaignKind:kind,campaignId:id,current:row}:null;
+    const selection=kind==='discount'&&editable?campaignSelect('campaignActive','status',row.can_activate?[['false','hsk30Off'],['true','hsk30On']]:[['false','hsk30Off']],String(row.is_active)):'';
+    const hint=kind==='ad'?`<p class="source-note">${esc(t(row.can_send?'campaignSendHint':'campaignReadOnly'))}</p>`:kind==='discount'?`<p class="source-note">${esc(t('discountNoNotificationHint'))}</p>`:'';
+    drawer(campaignLabels[kind],`<form id="managementForm">${campaignFields(row)}${hint}${selection}<p class="alert" id="campaignCommandValidation" role="alert" hidden></p></form>`,btn('close','close')+(editable?btn('saveChanges','managementPrepare','primary'):''));
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer(campaignLabels[kind],statePanel(errorKey(error)),btn('close','close'));}
+}
+function campaignCreate(kind){
+  if(!['release','discount'].includes(kind))return;
+  closeDrawer();managementDraft={type:'campaign',kind:kind+'_create',campaignKind:kind};
+  const input=(id,label,max,extra='')=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><input class="input" id="${id}" maxlength="${max}" ${extra}></div>`;
+  let body='';
+  if(kind==='release'){
+    body=`<p class="source-note">${esc(t('releaseCampaignHint'))}</p>`+input('releaseTitle','campaignTitle',120,'required');
+    body+=['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><div class="form-field"><label for="releaseText-${lang}">${esc(t('campaignCopy'))}</label><textarea class="input setting-value" id="releaseText-${lang}" maxlength="3500" rows="5" required></textarea></div></details>`).join('');
+    body+=campaignSelect('releaseFeature','releaseFeature',Object.entries(campaignFeatureLabels));
+    body+=`<details class="profile-section"><summary>${esc(t('filters'))}</summary><fieldset class="form-field"><legend>${esc(t('targetLanguages'))}</legend>${['uz','ru','tj'].map(lang=>`<label class="management-check"><input type="checkbox" data-release-language="${lang}" checked>${lang.toUpperCase()}</label>`).join('')}</fieldset><div class="management-form-pair">${Object.entries(messageFilterConfig).map(([key,[label,options]])=>campaignSelect('releaseFilter-'+key,label,[['','all'],...options])).join('')}</div></details>`;
+  }else{
+    body=`<p class="source-note">${esc(t('discountNoNotificationHint'))}</p>`;
+    body+=['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary>${input('discountTitle-'+lang,'campaignTitle',120,'required')}<div class="form-field"><label for="discountReason-${lang}">${esc(t('discountReason'))}</label><textarea class="input setting-value" id="discountReason-${lang}" maxlength="500" rows="3"></textarea></div></details>`).join('');
+    body+=`<div class="management-form-pair">${input('discountPercent','discountPercent',2,'type="number" min="1" max="90" step="1" value="20" required')}${input('discountHours','campaignDurationHours',3,'type="number" min="1" max="720" step="1" value="24" required')}</div>`;
+    body+=input('discountTarget','discountTarget',12,'type="number" min="1" step="1"');
+    body+=`<div class="management-form-pair" id="discountSegment">${campaignSelect('discountStatus','status',[['','all'],...messageFilterConfig.status[1]])}${campaignSelect('discountLanguage','language',[['','all'],['uz','UZ'],['ru','RU'],['tj','TJ']])}${campaignSelect('discountLevel','level',[['','all'],...messageFilterConfig.level[1]])}</div>`;
+    body+=`<div class="management-form-pair">${campaignSelect('discountMethod','method',[['','all'],...messageFilterConfig.payment_method[1]])}${campaignSelect('discountPlan','plan',[['','all'],...messageFilterConfig.plan[1].filter(([plan])=>plan!=='3_months')])}${input('discountQuota','discountQuota',6,'type="number" min="1" max="100000" step="1"')}${input('discountRepeat','discountRepeatDays',3,'type="number" min="1" max="365" step="1"')}</div>`;
+    body+=campaignSelect('campaignActive','status',[['false','hsk30Off'],['true','hsk30On']]);
+  }
+  body+='<p class="alert" id="campaignCommandValidation" role="alert" hidden></p>';
+  drawer(kind==='release'?'newReleaseCampaign':'newDiscountCampaign',`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('saveChanges','managementPrepare','primary'));
+}
+function campaignChange(draft){
+  if(draft.kind==='ad_send')return {kind:draft.kind,campaign_id:draft.campaignId};
+  if(draft.kind==='discount_state')return {kind:draft.kind,campaign_id:draft.campaignId,is_active:$('campaignActive').value==='true'};
+  if(draft.kind==='release_create'){
+    const filters={languages:[...document.querySelectorAll('[data-release-language]:checked')].map(input=>input.dataset.releaseLanguage)};
+    for(const key of Object.keys(messageFilterConfig))if($('releaseFilter-'+key).value)filters[key]=$('releaseFilter-'+key).value;
+    return {kind:draft.kind,title:$('releaseTitle').value,texts:Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,$('releaseText-'+lang).value])),feature_key:$('releaseFeature').value,filters};
+  }
+  const target=Number($('discountTarget').value)||null;
+  return {kind:draft.kind,copies:Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,{title:$('discountTitle-'+lang).value,reason:$('discountReason-'+lang).value}])),
+    percent:Number($('discountPercent').value),duration_hours:Number($('discountHours').value),target_user_id:target,
+    audience_status:target?null:$('discountStatus').value||null,audience_language:target?null:$('discountLanguage').value||null,audience_level:target?null:$('discountLevel').value||null,
+    payment_method:$('discountMethod').value||null,plan_type:$('discountPlan').value||null,quota_total:Number($('discountQuota').value)||null,repeat_interval_days:Number($('discountRepeat').value)||null,is_active:$('campaignActive').value==='true'};
+}
 async function marketingEditor(kind,before=null){
   if(kind==='course_ad_create'){courseAdCreateEditor();return;}
   if(kind==='campaign_draft'){
@@ -996,6 +1079,7 @@ function managementFields(value,type){
     else if(value.status)fields.push(['status',t({free:'FREE',active:'accountActive',blocked:'BLOCKED'}[value.status])]);
     return profileFields(fields);
   }
+  if(type==='campaign')return campaignFields(value);
   if(type==='marketing')return marketingFields(value);
   if(type==='price')return profileFields([['method',value.method],['plan',t(value.plan)],['amount',value.amount+' '+value.currency]]);
   if(type==='payment_qr')return profileFields([
@@ -1017,6 +1101,7 @@ function managementReread(draft){
   if(draft.type==='partner')return `<button class="btn" data-partner-id="${draft.partnerId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='notice')return `<button class="btn" data-notice-key="${esc(draft.noticeKey)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='portfolio')return btn('readCurrent','portfolioHistory');
+  if(draft.type==='campaign')return `<button class="btn" data-campaign-list="${esc(draft.campaignKind||({ad_send:'ad',release_create:'release',discount_create:'discount',discount_state:'discount'}[draft.kind]))}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='channel')return `<button class="btn" data-channels-kind="${draft.kind==='mode'?'mode':'list'}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='user')return `<button class="btn" data-user-detail="${draft.userId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind==='course_ad_create'?'course_ad':draft.kind)}">${esc(t('readCurrent'))}</button>`;
@@ -1099,14 +1184,20 @@ async function editSetting(kind,bank=null){
   }
 }
 async function prepareManagement(){
-  if(managementPreparing||!state.actor||signing||!managementDraft||!$('managementForm')?.reportValidity())return;
+  if(managementPreparing||!state.actor||signing||!managementDraft)return;
+  const form=$('managementForm');
+  if(!form)return;
+  const invalid=form.querySelector(':invalid');
+  if(invalid){for(let parent=invalid.parentElement;parent&&parent!==form;parent=parent.parentElement)if(parent.tagName==='DETAILS')parent.open=true;}
+  if(!form.reportValidity())return;
   if(!supportsPasskey()){showNotice('passkeyUnsupported');return;}
   const current=drawerId,at=epoch;
   await singleEditorAction(()=>prepareManagementCommand(current,at));
 }
 async function prepareManagementCommand(current,at){
   const draft={...managementDraft};let payload;
-  if(draft.type==='message'){
+  if(draft.type==='campaign'){payload={change:campaignChange(draft)};}
+  else if(draft.type==='message'){
     const kind=draft.userId?'direct':$('messageKind').value;
     if(draft.userId)draft.texts={uz:$('messageText').value,ru:$('messageText').value,tj:$('messageText').value};
     else draft.texts[draft.textLanguage]=$('messageText').value;
@@ -1229,7 +1320,9 @@ async function prepareManagementCommand(current,at){
   }catch(error){
     managementReview=null;
     if(current===drawerId&&at===epoch&&state.actor){
-      if(draft.type==='message'&&[400,409].includes(error.status)&&$('messageValidation')){
+      if(draft.type==='campaign'&&[400,409].includes(error.status)&&$('campaignCommandValidation')){
+        $('campaignCommandValidation').textContent=t(error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':error.message==='admin_pwa_message_no_targets'?'messageNoTargets':'campaignValidation');$('campaignCommandValidation').hidden=false;
+      }else if(draft.type==='message'&&[400,409].includes(error.status)&&$('messageValidation')){
         const key=error.message==='admin_pwa_message_no_targets'?'messageNoTargets':error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':'messageInvalid';
         $('messageValidation').textContent=t(key);$('messageValidation').hidden=false;
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
@@ -1279,7 +1372,8 @@ async function executeManagement(){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
     if(['message','message_control'].includes(review.type)){await messageJob(result.job.job_id);return;}
-    const saved=review.type==='delivery'?result.delivery:['payout','payout_completion'].includes(review.type)?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='payment_qr'?result.qr:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
+    if(review.type==='campaign'&&result.job_id){await messageJob(result.job_id);return;}
+    const saved=review.type==='campaign'?result.campaign:review.type==='delivery'?result.delivery:['payout','payout_completion'].includes(review.type)?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='payment_qr'?result.qr:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
     if(review.type==='user'&&result.deleted){state.rows=state.rows.filter(row=>row.user_id!==result.user_id);render();}
     drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review))+(result.job_id?`<button class="btn" data-message-job="${esc(result.job_id)}">${esc(t('messages'))}</button>`:''));
   }catch(error){
@@ -1957,6 +2051,9 @@ document.addEventListener('click',event=>{
       cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;
       closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();
     }
+    else if(button.dataset.campaignList){await campaignList(button.dataset.campaignList,Number(button.dataset.before)||null);}
+    else if(button.dataset.campaignDetail){await campaignDetail(button.dataset.campaignKind,Number(button.dataset.campaignDetail));}
+    else if(button.dataset.campaignCreate){campaignCreate(button.dataset.campaignCreate);}
     else if(button.dataset.marketingKind){await marketingEditor(button.dataset.marketingKind);}
     else if(button.dataset.paymentQrTarget){
       const match=/^(alipay|wechat)-(10_days|1_month|3_months)$/.exec(button.dataset.paymentQrTarget);
@@ -2021,6 +2118,7 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('change',event=>{
+  if(event.target.id==='discountTarget'&&$('discountSegment'))$('discountSegment').hidden=Boolean(event.target.value);
   if(event.target.id==='newAdLanguage')updateCourseAdCreateLanguage();
   if(event.target.id==='newAdMediaType'){updateCourseAdCreateMedia();return;}
   if(['messageKind','payoutOperation','partnerOperation','channelOperation','adOperation'].includes(event.target.id))updateManagementAction();

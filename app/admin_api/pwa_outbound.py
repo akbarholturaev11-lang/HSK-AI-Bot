@@ -249,7 +249,7 @@ async def execute_message(db,*,session_cookie,request,settings_obj):
 
 
 async def enqueue_reviewed_message(db,*,command_id,actor_user_id,session_id,target_user_id,kind,
-                                   texts,filters,snapshots,digest,photo_file_id=None,now=None):
+                                   texts,filters,snapshots,digest,photo_file_id=None,campaign=None,now=None):
     """Internal only: caller atomically owns exact proof and command audit.
 
     A provider reference is accepted only from another server-validated
@@ -259,6 +259,7 @@ async def enqueue_reviewed_message(db,*,command_id,actor_user_id,session_id,targ
     now=now or datetime.now(timezone.utc)
     body={'kind':kind,'user_id':target_user_id,'texts':texts,'filters':filters}
     if photo_file_id:body['photo_file_id']=photo_file_id
+    if campaign:body['campaign']=campaign
     job=Job(id=command_id,actor_user_id=actor_user_id,session_id=session_id,target_user_id=target_user_id,
         kind=kind,status='ready',body_json=json.dumps(body,ensure_ascii=False),audience_hash=digest,
         audience_count=len(snapshots),created_at=now,expires_at=now+timedelta(hours=1))
@@ -274,6 +275,7 @@ class OutboundMessage:
     language:str
     text:str
     photo_file_id:str|None=None
+    reply_markup:dict|None=None
 
 
 async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limit=10):
@@ -285,6 +287,7 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
             if job is None or job.status!='ready' or _utc(job.expires_at)<=datetime.now(timezone.utc):return False
             run_token=str(uuid4());job.status='running';job.run_token=run_token;job.started_at=datetime.now(timezone.utc)
             body=json.loads(job.body_json);copies=body['texts'];photo_file_id=body.get('photo_file_id')
+            campaign=body.get('campaign')
     for _ in range(min(max(limit,1),10)):
         async with session_factory() as db:
             async with db.begin():
@@ -309,14 +312,30 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
                     .with_for_update(of=Recipient,skip_locked=True))).one_or_none()
                 if selected is None:break
                 recipient,user=selected
+                campaign_allowed=True
+                if campaign:
+                    from app.admin_api.pwa_campaigns import campaign_recipient_allowed
+                    campaign_allowed=await campaign_recipient_allowed(db,campaign,user,settings_obj)
                 if (not _deliverable(user,settings_obj,test=state.kind=='test')
-                        or recipient_hash(user)!=recipient.snapshot_hash):
-                    recipient.status='skipped';recipient.finished_at=now;continue
+                        or recipient_hash(user)!=recipient.snapshot_hash or not campaign_allowed):
+                    recipient.status='skipped';recipient.finished_at=now
+                    if campaign:
+                        from app.admin_api.pwa_campaigns import record_campaign_attempt
+                        await record_campaign_attempt(db,campaign,campaign.get('targets',{}).get(str(user.id),user.telegram_id),'skipped')
+                    continue
                 recipient.status='attempting';recipient.attempted_at=now
-                message=OutboundMessage(user.id,user.telegram_id,recipient.language,copies[recipient.language],photo_file_id)
+                markup=None
+                if campaign:
+                    from app.admin_api.pwa_campaigns import record_campaign_attempt
+                    await record_campaign_attempt(db,campaign,campaign.get('targets',{}).get(str(user.id),user.telegram_id),'attempting')
+                    if campaign['kind']=='release':
+                        from app.bot.keyboards.release_feedback import release_feedback_rating_keyboard
+                        markup=release_feedback_rating_keyboard(campaign['campaign_id'],recipient.language).model_dump(mode='json')
+                message=OutboundMessage(user.id,user.telegram_id,recipient.language,copies[recipient.language],photo_file_id,markup)
         status='uncertain'
+        provider_result=None
         try:
-            await asyncio.wait_for(emit(message),timeout=5)
+            provider_result=await asyncio.wait_for(emit(message),timeout=5)
             status='attempted'
         except Exception:
             logger.warning('Admin PWA outbound attempt requires operator review')
@@ -324,12 +343,19 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
             async with db.begin():
                 await db.execute(update(Recipient).where(Recipient.job_id==job_id,Recipient.user_id==message.user_id,
                     Recipient.status=='attempting').values(status=status,finished_at=datetime.now(timezone.utc)))
+                if campaign:
+                    from app.admin_api.pwa_campaigns import record_campaign_attempt
+                    await record_campaign_attempt(db,campaign,campaign.get('targets',{}).get(str(message.user_id),message.telegram_id),
+                        'sent' if status=='attempted' else status,provider_result)
         await asyncio.sleep(.1)
     async with session_factory() as db:
         async with db.begin():
             pending=await db.scalar(select(Recipient.user_id).where(Recipient.job_id==job_id,Recipient.status=='pending').limit(1))
-            await db.execute(update(Job).where(Job.id==job_id,Job.status=='running',Job.run_token==run_token)
+            finished=await db.execute(update(Job).where(Job.id==job_id,Job.status=='running',Job.run_token==run_token)
                 .values(status='ready' if pending else 'complete',run_token=None))
+            if finished.rowcount and not pending and campaign:
+                from app.admin_api.pwa_campaigns import finish_campaign_job
+                await finish_campaign_job(db,campaign)
     return True
 
 
@@ -368,6 +394,10 @@ async def stop_message(db,*,session_cookie,request,settings_obj):
                 .values(status='skipped',finished_at=datetime.now(timezone.utc)))
             db.add(AdminPwaOutboundEvent(id=str(uuid4()),job_id=job.id,actor_user_id=actor.user_id,
                 operation='stop',created_at=datetime.now(timezone.utc)))
+            campaign=json.loads(job.body_json).get('campaign')
+            if campaign:
+                from app.admin_api.pwa_campaigns import finish_campaign_job
+                await finish_campaign_job(db,campaign,closed=True)
             await db.flush()
         result=await _job_view(db,job)
     return {'job':result}
@@ -421,6 +451,10 @@ async def execute_message_control(db,*,session_cookie,request,settings_obj):
                 .values(status='skipped',finished_at=datetime.now(timezone.utc)))
             await db.execute(update(Recipient).where(Recipient.job_id==job.id,Recipient.status=='attempting')
                 .values(status='uncertain',finished_at=datetime.now(timezone.utc)))
+            campaign=json.loads(job.body_json).get('campaign')
+            if campaign:
+                from app.admin_api.pwa_campaigns import finish_campaign_job
+                await finish_campaign_job(db,campaign,closed=True)
         audit_id=str(uuid4())
         db.add(AdminPwaCommandAudit(id=audit_id,step_up_id=step.id,actor_user_id=user.id,target_user_id=job.target_user_id,
             action=operation['action'],target=operation['target'],payload_hash=operation_digest(**operation),
@@ -434,6 +468,11 @@ async def purge_expired_message_jobs(db,*,limit=100,now=None):
     keys=(await db.scalars(select(Job.id).where(Job.expires_at<=(now or datetime.now(timezone.utc)))
         .order_by(Job.expires_at,Job.id).limit(limit).with_for_update(skip_locked=True))).all()
     if not keys:return 0
+    for job in (await db.scalars(select(Job).where(Job.id.in_(keys)))).all():
+        campaign=json.loads(job.body_json).get('campaign')
+        if campaign:
+            from app.admin_api.pwa_campaigns import finish_campaign_job
+            await finish_campaign_job(db,campaign,closed=True)
     await db.execute(delete(Recipient).where(Recipient.job_id.in_(keys)))
     await db.execute(delete(Job).where(Job.id.in_(keys)))
     return len(keys)

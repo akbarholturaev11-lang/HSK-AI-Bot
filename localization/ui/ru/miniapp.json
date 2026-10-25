@@ -889,7 +889,25 @@
     "ui.admin_pwa.adTypeStandard": "Обычная реклама",
     "ui.admin_pwa.adTypePartner": "Предложение сотрудничества",
     "ui.admin_pwa.adTypeBot": "Реклама бота",
-    "ui.admin_pwa.adTypeLessonEnd": "Предложение подписки"
+    "ui.admin_pwa.adTypeLessonEnd": "Предложение подписки",
+    "ui.admin_pwa.adCampaigns": "Рекламные кампании",
+    "ui.admin_pwa.releaseCampaigns": "Отзывы об обновлении",
+    "ui.admin_pwa.discountCampaigns": "Кампании скидок",
+    "ui.admin_pwa.newReleaseCampaign": "Отправить запрос отзыва",
+    "ui.admin_pwa.newDiscountCampaign": "Создать скидку",
+    "ui.admin_pwa.releaseCampaignHint": "Одна отправка, до 1000 получателей. Добавятся кнопки пробы и оценки 1–5. Прежнее поощрение: проба 30 минут, скидка 20% на 24 часа за отзыв.",
+    "ui.admin_pwa.campaignSendHint": "Текст и аудитория привязаны к одному passkey. Выполняется одна попытка отправки; неопределённый результат не повторяется автоматически.",
+    "ui.admin_pwa.campaignReadOnly": "Кампания уже отправлена, истекла или её формат не поддерживается этим способом отправки.",
+    "ui.admin_pwa.discountNoNotificationHint": "Это настройка скидки. Отдельное сообщение не отправляется. Цену, срок и условия применения проверяет существующий checkout. Новая скидка по умолчанию выключена.",
+    "ui.admin_pwa.releaseFeature": "Раздел для пробы",
+    "ui.admin_pwa.releaseFeatureImage": "Анализ изображения",
+    "ui.admin_pwa.releaseFeatureAndroid": "Подписка Android",
+    "ui.admin_pwa.discountReason": "Причина скидки",
+    "ui.admin_pwa.discountPercent": "Скидка (%)",
+    "ui.admin_pwa.discountTarget": "ID аккаунта · пусто для сегмента",
+    "ui.admin_pwa.discountQuota": "Лимит применений · пусто без лимита",
+    "ui.admin_pwa.discountRepeatDays": "Интервал повторения (дни) · пусто для одного раза",
+    "ui.admin_pwa.campaignExpiry": "Срок действия"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

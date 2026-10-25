@@ -39,6 +39,8 @@ from app.admin_api.pwa_partner_payouts import create_admin_pwa_partner_payouts_r
 from app.admin_api.pwa_partners import create_admin_pwa_partners_router
 from app.admin_api.pwa_notifications import create_admin_pwa_notifications_router
 from app.admin_api.pwa_portfolio import create_admin_pwa_portfolio_router
+from app.admin_api.pwa_campaigns import create_admin_pwa_campaigns_router
+from app.admin_api.pwa_outbound import create_admin_pwa_outbound_router
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_login_router
 from app.admin_api.pwa_payment_reconciliation import create_admin_pwa_payment_reconciliation_router
@@ -127,6 +129,7 @@ async def browser_checks(output, *, media_only=False):
     for factory in (create_admin_pwa_bootstrap_router, create_admin_pwa_read_router,
                     create_admin_pwa_passkey_login_router, create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
                     create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router,
+                    create_admin_pwa_campaigns_router,create_admin_pwa_outbound_router,
                     create_admin_pwa_course_access_router, create_admin_pwa_hsk30_settings_router,
                     create_admin_pwa_user_management_router,create_admin_pwa_channels_router,
                     create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router,create_admin_pwa_partners_router,create_admin_pwa_partner_payouts_router,create_admin_pwa_payment_reconciliation_router):
@@ -396,6 +399,7 @@ async def browser_checks(output, *, media_only=False):
                             assert await page.locator('#drawerContent img').count() == 0
                             await page.screenshot(path=str(output / f'marketing-{kind}-{language}-{width}.png'))
                             await page.locator('.drawer-close').click()
+                        await page.locator('[data-campaign-list="ad"]').click()
                         await page.locator('[data-marketing-kind="campaign_draft"]').click()
                         await expect(page.locator('#campaignTitle')).to_be_visible()
                         assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')
@@ -403,6 +407,7 @@ async def browser_checks(output, *, media_only=False):
                         await page.locator('.drawer-close').click()
                 await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
+                await page.locator('[data-campaign-list="ad"]').click()
                 await page.locator('[data-marketing-kind="campaign_draft"]').click()
                 await page.locator('#campaignTitle').fill('QA campaign')
                 await page.locator('#campaignText-uz').fill('Yangi kurs <img src=x onerror=alert(1)>')
