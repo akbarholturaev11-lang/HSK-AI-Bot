@@ -1,5 +1,14 @@
 # Admin PWA browser increment — branch-only, flag OFF
 
+## Permanent prohibition on redundant controls — owner direction 2026-10-26
+
+**Binding rule for all future Admin PWA work, not merely Required Channels:**
+- Do **not** add a second button that performs a job already provided by X, swipe-back, the single primary editor action, or an existing navigation control. In particular, **never restore a bottom “Cancel / Bekor qilish / Отмена” or extra “Close” beside Save** in any edit drawer. The existing top-right X or supported right-swipe handles dismissal.
+- Do **not** add decorative, explanatory, or redundant buttons to make the UI appear more functional. New controls need a **unique user purpose** and should preserve the minimum number of decisions and taps. If the requested behavior can use an existing control or automatic state change, reuse it.
+- Only enable Save when a persisted value actually differs from its initial state; disabling again on exact reversion is mandatory. After confirmed success use the single animated checkmark and auto-close (~2.5 seconds); avoid a second result/confirmation page.
+- This applies to **every Admin PWA section**, new pages and future refactors on desktop and mobile. Do not undo it while updating demo parity, translations, automation or legacy tests. Tests must be updated to the accepted interaction, not the other way around.
+- Do not weaken security for visual minimalism. Explicit actions requiring WebAuthn and irreversible/high-risk flows keep their distinct security boundaries. Uncertain transactions still require a recoverable status/reread and **must not** display a success checkmark. A necessary new independent action or exceptional second control requires owner approval before it is introduced.
+
 ## Unified editor and navigation UX — owner-approved 2026-10-25
 
 Based on current `main` including the compact Mac window update (PR #210),

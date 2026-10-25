@@ -276,6 +276,10 @@ Use these skills when relevant:
 - webapp-testing
 - playwright
 
+## Admin PWA — mandatory minimal-action UX contract
+
+All Admin PWA screens and editors MUST follow [docs/admin-pwa/BROWSER_UI_CONTRACT.md](docs/admin-pwa/BROWSER_UI_CONTRACT.md) whenever adding or modifying UI. **Do not reintroduce redundant buttons, duplicate Cancel/Close actions, secondary Save/Confirm/Passkey prompts, or buttons that repeat an existing X, swipe-back or contextual action.** An edit drawer has one top-right X dismissal, supported right-swipe dismissal and at most one contextual primary action (Save/Send/etc.); no redundant footer Cancel/Close. Save remains disabled until there is a real persisted-value change and must disable again if reverted. On server-confirmed success show the existing animated checkmark then dismiss after 2.5 s. Existing transaction-bound WebAuthn, legally necessary confirmations and explicit unknown/error states are exceptions to *simplification*, not grounds to add duplicate UI. Before adding a control, verify it performs a necessary **distinct** task not already available; changes that intentionally add a second control for the same action require explicit owner approval. Keep this invariant across desktop, mobile, all future Admin PWA pages, and test updates.
+
 ## UI/UX rules
 
 The interface must be:
