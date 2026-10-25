@@ -260,7 +260,7 @@ async def browser_checks(output, *, media_only=False):
                     if path in ('/api/admin/v1/settings/read', '/api/admin/v1/subscription-prices/read')]
                 initial = list(configuration_reads())
                 await navigate("course", 1440)
-                await expect(page.locator('[data-action="hsk30Settings"]')).to_be_visible()
+                await expect(page.locator('[data-action="hsk30Settings"]').first).to_be_visible()
                 await page.locator('[data-course-tab="access"]').click()
                 await expect(page.locator('[data-action="courseSettings"]')).to_be_visible()
                 await expect(page.locator('[data-course-window] >> option')).to_have_count(20)
@@ -277,7 +277,7 @@ async def browser_checks(output, *, media_only=False):
                 assert await audit_count()==before_policy+1
                 await page.locator('.drawer-close').click()
                 await page.locator('[data-course-tab="tracks"]').click()
-                await page.locator('[data-action="hsk30Settings"]').click()
+                await page.locator('[data-action="hsk30Settings"]').first.click()
                 await page.locator('#hsk30Price').fill('101')
                 await page.locator('[data-action="hsk30Prepare"]').click()
                 await wait_step_up(page)
