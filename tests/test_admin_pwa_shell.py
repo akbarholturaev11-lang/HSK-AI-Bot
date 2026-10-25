@@ -34,6 +34,37 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('v6Demo',shell.text)
         self.assertNotIn('user_id',shell.text)
 
+
+    async def test_confirmed_limits_save_reconciles_visible_draft_before_refresh(self):
+        script = (await self.get('/admin/assets/app.js')).text
+        self.assertIn("const committed=await api('limits/save'", script)
+        self.assertIn("courseData.limits=committed.limits;", script)
+        self.assertIn('if(!courseLimitTouched[courseLimitPlan])return false;',script)
+        self.assertIn('courseLimitTouched={FREE:false,TRIAL_ACTIVE:false}',script)
+        self.assertIn("courseLimitDraft={FREE:structuredClone(committed.limits.plans.FREE)", script)
+        self.assertIn("courseTrialDraft={enabled:committed.limits.trial.enabled", script)
+        self.assertIn("confirmation=null;showSavedAndDismiss('changesSaved');void loadCourseData();", script)
+
+    async def test_user_directory_seven_column_visual_contract(self):
+        script = (await self.get('/admin/assets/app.js')).text
+        stylesheet = (await self.get('/admin/assets/styles.css')).text
+        catalog = (await self.get('/admin/assets/catalog.js')).text
+        self.assertIn("['directoryUserTariff','directoryAge','language','level','directoryPlanMethod','lastActive','status']", script)
+        self.assertIn('function accountAge(value,clock=Date.now())', script)
+        self.assertIn('userPaymentMethod(userDirectoryMethod(row))', script)
+        self.assertIn('userSelectedDuration(userDirectoryPlan(row))', script)
+        self.assertIn("row.access_state==='PRO_ACTIVE'?row.last_approved_plan_type:null",script)
+        self.assertIn("row.access_state==='PRO_ACTIVE'?row.last_approved_payment_method:null",script)
+        self.assertIn('userPlanMethod(row)', script)
+        self.assertIn("if(row.access_state==='TRIAL_ACTIVE')return 'Pro trial';", script)
+        self.assertIn("type==='PRO_ACTIVE'||type==='TEMP_ACCESS'?'blue':'gray'", script)
+        self.assertIn("esc(row.name||'—')", script)
+        self.assertIn('.user-status-pill{', stylesheet)
+        self.assertIn('.pill.user-status-pill.blue:not(.green):not(.red):not(.amber):not(.gray){', stylesheet)
+        self.assertIn('.user-table{min-width:1020px;table-layout:fixed}', stylesheet)
+        self.assertIn('"directoryUserTariff":"Фойдаланувчи / тариф"', catalog)
+        self.assertIn('"directoryPlan1Month":"1 ой"', catalog)
+
     async def test_apple_push_subscription_keeps_user_activation_on_direct_tap(self):
         # The public script can offer push settings only after the server
         # advertises the private feature. No permission prompt at boot/login.
@@ -71,7 +102,14 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('inboxSearchForm',list_section)
         self.assertNotIn('filterSelect',list_section)
         self.assertNotIn('inboxHistoryNote',list_section)
-        self.assertIn('data.items.map(inboxEntry)',list_section)
+        # V10 originally rebuilt the entire list and rendered a manual Next.
+        # The newer inbox appends each server-owned cursor page on scroll.
+        self.assertIn('renderInboxList();',list_section)
+        self.assertIn('currentInboxRows.map(inboxEntry)',script)
+        self.assertIn("scroller.addEventListener('scroll',maybeLoadInbox",script)
+        self.assertIn("async function loadMoreInbox()",script)
+        self.assertNotIn('data-feedback-next',script)
+        self.assertIn('adminLaunchScreen()',script)
         self.assertIn("operation:'mark_read'",script)
         self.assertIn('data-inbox-open',script)
         self.assertIn("if(source==='payment'){",script)
@@ -86,7 +124,7 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("credential=await navigator.credentials.get(",script)
         self.assertIn("await api('auth/passkey/login/verify'",script)
 
-    async def test_iphone_left_zone_swipe_is_single_step_and_input_safe(self):
+    async def test_iphone_full_width_swipe_is_single_step_and_input_safe(self):
         script=(await self.get('/admin/assets/app.js')).text
         start=script.index('function canSwipeBack(target) {')
         end=script.index("document.addEventListener('click',event=>{",start)
@@ -95,14 +133,17 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("document.addEventListener('touchstart'",gesture)
         self.assertIn("document.addEventListener('touchend'",gesture)
         self.assertIn("document.addEventListener('touchcancel'",gesture)
-        self.assertIn("window.innerWidth*0.30",gesture)
-        self.assertIn("window.innerWidth*0.28",gesture)
+        self.assertIn("document.addEventListener('touchmove'",gesture)
+        self.assertIn("swipePreview(dx)",gesture)
+        self.assertIn("await animateBack()",gesture)
+        self.assertNotIn("touch.clientX>window.innerWidth*0.30",gesture)
+        self.assertIn("if(dx<78",gesture)
         self.assertIn("event.touches.length!==1",gesture)
         self.assertIn("touch.identifier!==start.id",gesture)
         self.assertIn("getComputedStyle(node).overflowX",gesture)
         self.assertIn("input,textarea,select,[contenteditable]",gesture)
         self.assertIn("signing||inboxUpdating",gesture)
-        self.assertIn("(!standalone&&touch.clientX<24)",gesture)
+        self.assertIn("if(!standalone&&touch.clientX<24)return;",gesture)
         self.assertIn("oneStepBack().catch",gesture)
         self.assertIn("event.stopImmediatePropagation()",script)
         self.assertIn("const previous=drawerBack",gesture)
@@ -115,6 +156,25 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         # The gesture must not turn into browser history navigation.
         self.assertNotIn("history.back()",gesture)
         self.assertNotIn("location.assign(",gesture)
+
+
+    async def test_all_editors_have_single_dirty_save_and_short_success_feedback(self):
+        script=(await self.get('/admin/assets/app.js')).text
+        stylesheet=(await self.get('/admin/assets/styles.css')).text
+        # The top-right X is the cancel action, even on iPhone.
+        self.assertNotIn("btn('cancel','close')",script)
+        self.assertNotIn("btn('cancel','priceSettings')",script)
+        self.assertIn("editorBaseline={panel,value:editorValue()}",script)
+        self.assertIn("function updateEditorSaveEnabled(){",script)
+        self.assertIn("b.disabled=!dirty||requiresProof||mediaPending||managementPreparing||!!signing",script)
+        self.assertIn("function showSavedAndDismiss(key='changesSaved'){",script)
+        self.assertIn("role=\"status\"",script)
+        self.assertIn("},2500)",script)
+        self.assertIn(".saved-tick{",stylesheet)
+        self.assertIn(".swipe-back-cue",stylesheet)
+        # Transaction-bound WebAuthn still gates all confirmed writes.
+        self.assertIn("await api('auth/step-up/verify'",script)
+        self.assertIn("await api(managementEndpoint(review.type,'save'),command)",script)
 
     async def test_worker_scope_version_and_public_cache_allowlist(self):
         manifest=(await self.get('/admin/manifest.webmanifest')).json()

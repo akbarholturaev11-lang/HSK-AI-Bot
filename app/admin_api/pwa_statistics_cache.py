@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import logging
+import re
 import time
 from uuid import uuid4
 
@@ -58,7 +59,7 @@ class AdminPwaStatisticsReader:
     """
 
     def __init__(self, *, settings_obj, session_factory, loader=statistics, redis_client=None,
-                 namespace=None, clock=time.time, r2_store=None):
+                 namespace=None, clock=time.time, r2_store=None, cache_scope=None, refresh_mutex=None):
         self.settings = settings_obj
         self.sessions = session_factory
         self.loader = loader
@@ -70,11 +71,18 @@ class AdminPwaStatisticsReader:
         bind = getattr(session_factory, "kw", {}).get("bind")
         identity = str(getattr(bind, "url", ""))
         digest = hashlib.sha256((getattr(settings_obj, "ADMIN_PWA_PUBLIC_ORIGIN", "")+"|"+identity).encode()).hexdigest()[:24]
-        self.prefix = "hsk:admin:stats:v1:{"+(namespace or digest)+"}"
-        self._r2_namespace = digest
+        if cache_scope is not None and (not isinstance(cache_scope,str) or not re.fullmatch(r"[a-z0-9_-]{1,48}", cache_scope)):
+            raise ValueError("Invalid internal aggregate cache scope")
+        base_prefix = "hsk:admin:stats:v1:{"+(namespace or digest)+"}"
+        self.prefix = base_prefix + (":"+cache_scope if cache_scope else "")
+        # Scoped payloads stay separate while healthy workers share one refresh
+        # lease/hash slot across basic stats and on-demand analytics sections.
+        self._lease_key = base_prefix+":refresh"
+        self._r2_namespace = (hashlib.sha256((digest+"|"+cache_scope).encode()).hexdigest()[:24]
+                              if cache_scope else digest)
         self._r2 = r2_store if r2_store is not None else PrivateR2AggregateStore(settings_obj=settings_obj)
         self._local = {}
-        self._mutex = asyncio.Lock()
+        self._mutex = refresh_mutex if refresh_mutex is not None else asyncio.Lock()
         self._redis_retry_at = 0.0
         self._load_retry_at = 0.0
 
@@ -181,7 +189,7 @@ class AdminPwaStatisticsReader:
                 if cached is not None and self.clock() < cached["expires_at"]:
                     return self._result(cached)
                 key = self.prefix+":"+query.platform+":"+query.period
-                lease = self.prefix+":refresh"
+                lease = self._lease_key
                 token = uuid4().hex
                 shared = True
                 try:

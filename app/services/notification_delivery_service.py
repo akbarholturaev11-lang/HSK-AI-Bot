@@ -161,21 +161,19 @@ class NotificationDeliveryService:
             self.push.configured
         )
 
-    async def _android_targets(self, telegram_id: int) -> list[tuple[str, str]]:
+    async def _android_targets(self, telegram_id: int, *, limit: int | None = None) -> list[tuple[str, str]]:
         if not self.android_enabled:
             return []
-        rows = (
-            await self.session.execute(
-                select(AndroidPushToken.token, AndroidPushToken.device_id)
-                .join(DesktopDevice, AndroidPushToken.device_id == DesktopDevice.id)
-                .where(
-                    owner_clause(DesktopDevice, telegram_id, telegram_column="telegram_id"),
-                    DesktopDevice.platform == "android",
-                    DesktopDevice.revoked_at.is_(None),
-                    AndroidPushToken.notifications_allowed.is_(True),
-                )
-            )
-        ).all()
+        query = select(AndroidPushToken.token, AndroidPushToken.device_id).join(
+            DesktopDevice, AndroidPushToken.device_id == DesktopDevice.id).where(
+                owner_clause(DesktopDevice, telegram_id, telegram_column="telegram_id"),
+                DesktopDevice.platform == "android", DesktopDevice.revoked_at.is_(None),
+                AndroidPushToken.notifications_allowed.is_(True))
+        if limit is not None:
+            if type(limit) is not int or not 1 <= limit <= 8:
+                raise ValueError("Invalid reviewed notice device bound")
+            query = query.order_by(AndroidPushToken.updated_at.desc(), AndroidPushToken.device_id).limit(limit)
+        rows = (await self.session.execute(query)).all()
         return [(str(token), str(device_id)) for token, device_id in rows]
 
     async def reachable(self, user) -> bool:
@@ -199,6 +197,7 @@ class NotificationDeliveryService:
         title: str | None = None,
         body: str | None = None,
         action: str = "subscription",
+        release_before_io: bool = False,
     ) -> str:
         """Send one notice; returns android, telegram, failed or skipped.
 
@@ -206,9 +205,10 @@ class NotificationDeliveryService:
         phone's confirmation; the caller should treat it as delivered.
         """
         telegram_id = actual_telegram_id(user)
-        targets = await self._android_targets(user)
+        targets = (await self._android_targets(user, limit=8) if release_before_io
+                   else await self._android_targets(user))
         if not targets:
-            return await self._send_telegram(bot, user, telegram, reason=reason)
+            return await self._send_telegram(bot, user, telegram, reason=reason, release_before_io=release_before_io)
 
         lang = lang if lang in ("uz", "ru", "tj") else "ru"
         phone_title, phone_body = phone_copy(key, lang, telegram.text)
@@ -227,7 +227,7 @@ class NotificationDeliveryService:
             telegram_payload=telegram.to_payload(),
             reason=str(reason or "account_notice")[:40],
             created_at=now,
-            fallback_due_at=now + ANDROID_CONFIRM_TIMEOUT,
+            fallback_due_at=None if release_before_io else now + ANDROID_CONFIRM_TIMEOUT,
         )
         self.session.add(row)
         # The phone reads the notice back as soon as the push lands, which can
@@ -248,14 +248,20 @@ class NotificationDeliveryService:
         accepted = sum(1 for result in results if result.accepted)
         if accepted:
             row.android_targets = accepted
+            if release_before_io:
+                # Unknown/cancelled FCM attempts retain no automatic TG fallback.
+                row.fallback_due_at = now + ANDROID_CONFIRM_TIMEOUT
             return OUTCOME_ANDROID
         # No phone took it, so waiting would only delay the Telegram copy.
-        return await self._fall_back(bot, row, user=user)
+        return await self._fall_back(bot, row, user=user, release_before_io=release_before_io)
 
-    async def _send_telegram(self, bot, user, notice: TelegramNotice, *, reason: str) -> str:
+    async def _send_telegram(self, bot, user, notice: TelegramNotice, *, reason: str, release_before_io: bool = False) -> str:
         if bot is None or not actual_telegram_id(user) or BotBlockStatusService.is_bot_blocked(user):
             return OUTCOME_SKIPPED
         blocks = BotBlockStatusService(self.session)
+        if release_before_io:
+            # Opt-in caller owns a dedicated notice session, with its outer claim committed.
+            await self.session.commit()
         try:
             await notice.send(bot, int(user.telegram_id))
         except Exception as exc:  # noqa: BLE001 - a failed chat must not stop the batch
@@ -264,7 +270,7 @@ class NotificationDeliveryService:
         await blocks.handle_send_success(user, reason=reason)
         return OUTCOME_TELEGRAM
 
-    async def _fall_back(self, bot, row: AccountNoticeDelivery, *, user=None) -> str:
+    async def _fall_back(self, bot, row: AccountNoticeDelivery, *, user=None, release_before_io: bool = False) -> str:
         if user is None:
             user = (
                 await self.session.execute(
@@ -278,8 +284,10 @@ class NotificationDeliveryService:
         if user is None:
             row.status = STATUS_FAILED
             return OUTCOME_FAILED
+        if release_before_io:
+            row.status = STATUS_FAILED
         outcome = await self._send_telegram(
-            bot, user, TelegramNotice.from_payload(row.telegram_payload), reason=row.reason
+            bot, user, TelegramNotice.from_payload(row.telegram_payload), reason=row.reason, release_before_io=release_before_io
         )
         if outcome == OUTCOME_TELEGRAM:
             row.status = STATUS_TELEGRAM

@@ -5,6 +5,33 @@ Safari / Add to Dock web app**. Do not spend this increment implementing
 Android/Windows-specific Admin PWA push. Keep Telegram Admin Mini App and
 all learner apps unchanged.
 
+## Owner operation decision — 2026-10-26
+
+The owner wants important Admin PWA Apple Web Push **on by default**, with no
+database-side preference/configuration and no repeated in-app enable steps.
+The current behavior supersedes the historic default-OFF rollout description
+below:
+
+- Backend enrollment and sender **default ON when** private Admin PWA, valid
+  persistent VAPID key pair, encrypted subscription storage key and valid HTTPS
+  origin are configured. Explicit environment flags can still disable delivery
+  during incidents. Never mint ephemeral secrets, log subscriptions or bypass
+  allowlisted passkey administration.
+- On an authenticated iPhone Home Screen PWA or eligible Mac browser/web app,
+  an **existing OS permission grant** allows best-effort automatic subscription
+  repair and authenticated registration during launch. No browser permission
+  dialog appears without direct interaction. If OS consent has not been granted,
+  the ready-to-subscribe header action requires **one tap**. On permission denial,
+  respect OS settings instead of asking repeatedly or presenting fake success.
+- Once enrolled, the first-party event outbox/scheduler works with the PWA
+  closed, provided the production worker remains active; do not enable Railway
+  App Sleeping for the worker-bearing web service.
+- Per-install server subscriptions still use the private database as durable
+  delivery routing state. The owner does **not** need to edit those rows.
+- Physical iPhone + Mac acceptance is still required before claiming real
+  notifications displayed. Provider-accepted HTTP responses alone do not
+  establish user-visible delivery.
+
 ## Implemented, behind default-OFF flag (2026-10-24)
 
 - **Inbox badge and priority filter:** `/api/admin/v1/inbox/unread-count`

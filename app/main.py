@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, timezone
 from html import escape as html_escape
 
 from aiogram import Bot
-from aiogram.types import BufferedInputFile
+from aiogram.types import BufferedInputFile, FSInputFile
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from sqlalchemy import and_, func, or_, select
@@ -34,6 +34,7 @@ from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_payment_review_transport import create_admin_pwa_payment_review_router
 from app.admin_api.pwa_payment_outbox import dispatch_payment_review
+from app.admin_api.pwa_analytics_cache import AdminPwaAnalyticsReader
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_feedback_analytics import create_admin_pwa_feedback_analytics_router
 from app.admin_api.pwa_feedback_cache import AdminPwaFeedbackReader
@@ -48,14 +49,17 @@ from app.admin_api.pwa_mcp_consent_transport import create_admin_pwa_mcp_consent
 from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_router
 from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
 from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_router
+from app.admin_api.pwa_limits import create_admin_pwa_limits_router
 from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
 from app.admin_api.pwa_payment_qr import create_admin_pwa_payment_qr_router
 from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
 from app.admin_api.pwa_channels import create_admin_pwa_channels_router
+from app.admin_api.pwa_campaign_schedule import create_due_campaign_poller
 from app.admin_api.pwa_outbound import create_admin_pwa_outbound_router, create_message_drainer
 from app.admin_api.pwa_campaigns import create_admin_pwa_campaigns_router
+from app.admin_api.pwa_campaign_assets import create_admin_pwa_campaign_assets_router
 from app.admin_api.pwa_payout_completion import create_admin_pwa_payout_completion_router
 from app.admin_api.pwa_payment_reconciliation import create_admin_pwa_payment_reconciliation_router
 from app.admin_api.pwa_partner_payouts import create_admin_pwa_partner_payouts_router
@@ -503,6 +507,7 @@ async def _background_scheduler(bot: Bot) -> None:
     while True:
         await asyncio.sleep(60)
         try:
+            await admin_pwa_due_campaigns()
             async with async_session_maker() as session:
                 _, expired_paid_user_ids = await AccessService(session).downgrade_expired_active_users()
                 for telegram_id in expired_paid_user_ids:
@@ -563,7 +568,13 @@ async def _admin_pwa_apple_push_scheduler() -> None:
         return
     while True:
         try:
-            await dispatch_batch(async_session_maker, settings_obj=settings, limit=10)
+            result = await dispatch_batch(async_session_maker, settings_obj=settings, limit=10)
+            if result["claimed"]:
+                # Delivery status only: never log user, event, endpoint or content.
+                logger.info(
+                    "Admin PWA Apple Push batch: claimed=%d accepted=%d retry=%d dead=%d",
+                    result["claimed"], result["accepted"], result["retry"], result["dead"],
+                )
         except asyncio.CancelledError:
             raise
         except Exception:
@@ -613,8 +624,14 @@ async def lifespan(app: FastAPI):
     desktop_auth_cleanup_task = asyncio.create_task(
         _desktop_auth_retention_scheduler()
     )
+    push_ready = sender_config(settings) is not None
+    if push_ready:
+        logger.info("Admin PWA Apple Push sender started (provider delivery unverified)")
+    elif settings.ADMIN_PWA_ENABLED and settings.ADMIN_PWA_PUSH_ENABLED:
+        # Operator signal only. Never log key material or subscription endpoints.
+        logger.warning("Admin PWA Apple Push unavailable: verify VAPID/storage/subject config")
     apple_push_task = (asyncio.create_task(_admin_pwa_apple_push_scheduler())
-                       if sender_config(settings) is not None else None)
+                       if push_ready else None)
     try:
         yield                                                # /health darhol ishlaydi
     finally:
@@ -641,7 +658,9 @@ async def lifespan(app: FastAPI):
         for task in study_ai_tasks:
             with contextlib.suppress(asyncio.CancelledError):
                 await task
+        await admin_pwa_due_campaigns.close()
         await admin_pwa_statistics_reader.aclose()
+        await admin_pwa_analytics_reader.aclose()
         await admin_pwa_feedback_reader.aclose()
         await bot.session.close()
         await engine.dispose()
@@ -675,9 +694,12 @@ app.include_router(create_admin_pwa_payment_review_router(
     dispatch=_dispatch_admin_pwa_payment_review,
 ))
 admin_pwa_statistics_reader = AdminPwaStatisticsReader(settings_obj=settings, session_factory=async_session_maker)
+admin_pwa_analytics_reader = AdminPwaAnalyticsReader(settings_obj=settings, session_factory=async_session_maker,
+    refresh_mutex=admin_pwa_statistics_reader._mutex)
 app.include_router(create_admin_pwa_access_grant_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_course_access_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_hsk30_settings_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_limits_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_subscription_prices_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_payment_qr_router(
     settings_obj=settings, session_factory=async_session_maker, bot_client=bot,
@@ -693,18 +715,20 @@ app.include_router(create_admin_pwa_partner_payouts_router(settings_obj=settings
 app.include_router(create_admin_pwa_payment_reconciliation_router(settings_obj=settings, session_factory=async_session_maker))
 
 async def _emit_admin_pwa_outbound(message):
+    if message.notice_key == 'discount_offer':
+        from app.admin_api.pwa_discount_notices import emit_discount_notice
+        return await emit_discount_notice(message,session_factory=async_session_maker,settings_obj=settings,bot=bot)
+
     # Reuse the existing Bot sender. No DB connection is held during provider IO.
     failure=None
     provider_message_id=None
     try:
-        if message.reply_markup:
-            from aiogram.types import InlineKeyboardMarkup
-            sent=await bot.send_message(chat_id=message.telegram_id,text=message.text,
-                reply_markup=InlineKeyboardMarkup.model_validate(message.reply_markup),parse_mode='HTML')
-            provider_message_id=sent.message_id
-        else:
-            await AdminBroadcastService(bot,None)._send_one(message.telegram_id,text=message.text,
-                content_type='photo' if message.photo_file_id else 'text',media_file_id=message.photo_file_id,reply_markup=None)
+        from aiogram.types import InlineKeyboardMarkup
+        sent=await AdminBroadcastService(bot,None)._send_one(message.telegram_id,text=message.text,
+            content_type='video' if message.video_file_id else 'photo' if message.photo_file_id else 'text',
+            media_file_id=message.video_file_id or message.photo_file_id,
+            reply_markup=InlineKeyboardMarkup.model_validate(message.reply_markup) if message.reply_markup else None)
+        provider_message_id=getattr(sent,'message_id',None)
     except Exception as exc:
         failure=exc
     try:
@@ -727,8 +751,21 @@ app.include_router(create_admin_pwa_partners_router(settings_obj=settings, sessi
     drainer=admin_pwa_message_drainer))
 app.include_router(create_admin_pwa_outbound_router(settings_obj=settings,session_factory=async_session_maker,
     emit=_emit_admin_pwa_outbound,drainer=admin_pwa_message_drainer))
+admin_pwa_due_campaigns=create_due_campaign_poller(settings_obj=settings,session_factory=async_session_maker,
+    drainer=admin_pwa_message_drainer)
 app.include_router(create_admin_pwa_campaigns_router(settings_obj=settings,session_factory=async_session_maker,
     drainer=admin_pwa_message_drainer))
+
+async def _upload_admin_pwa_campaign_asset(media):
+    file=FSInputFile(media.path,filename='campaign.mp4' if media.media_type=='video' else 'campaign'+Path(media.path).suffix)
+    if media.media_type=='video':
+        sent=await bot.send_video(chat_id=media.actor_telegram_id,video=file)
+        return sent.video.file_id if sent.video else None
+    sent=await bot.send_photo(chat_id=media.actor_telegram_id,photo=file)
+    return sent.photo[-1].file_id if sent.photo else None
+
+app.include_router(create_admin_pwa_campaign_assets_router(settings_obj=settings,session_factory=async_session_maker,
+    upload=_upload_admin_pwa_campaign_asset))
 
 async def _upload_admin_pwa_payout_proof(proof):
     # Private staging to the verified uploading admin; no partner notification
@@ -749,7 +786,7 @@ admin_pwa_feedback_reader = AdminPwaFeedbackReader(settings_obj=settings, sessio
 app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=settings, session_factory=async_session_maker,
     reader=admin_pwa_feedback_reader))
 app.include_router(create_admin_pwa_read_router(settings_obj=settings, session_factory=async_session_maker,
-    statistics_reader=admin_pwa_statistics_reader))
+    statistics_reader=admin_pwa_statistics_reader,analytics_reader=admin_pwa_analytics_reader))
 app.include_router(create_admin_pwa_inbox_triage_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_inbox_attachment_router(
     settings_obj=settings, session_factory=async_session_maker,

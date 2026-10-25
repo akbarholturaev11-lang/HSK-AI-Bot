@@ -55,6 +55,9 @@ from app.admin_api.pwa_mcp_oauth import begin_mcp_authorization, decide_mcp_cons
 from app.admin_api.pwa_mcp_resource import verify_readonly_mcp_bearer
 from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_access_grants import create_admin_pwa_access_grant_router
+from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
+from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_router
+from app.admin_api.pwa_limits import create_admin_pwa_limits_router
 from app.admin_api.pwa_feedback_analytics import create_admin_pwa_feedback_analytics_router
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
@@ -118,7 +121,20 @@ async def browser_checks(output):
     fixture.sessions=async_sessionmaker(fixture.engine,expire_on_commit=False)
     await fixture.seed_payment()
     async with fixture.sessions() as db:
-        (await db.get(User,1)).full_name='<img src=x onerror=alert(1)> QA account'
+        user=await db.get(User,1)
+        user.full_name='<img src=x onerror=alert(1)> QA account'
+        user.created_at=datetime(2026,5,12,tzinfo=timezone.utc)
+        user.payment_method='alipay'
+        user.selected_plan_type='1_month'
+        # Only these QA accounts cover visual entitlement badge variants.
+        subscriber=await db.get(User,101)
+        subscriber.status='active'
+        subscriber.payment_status='approved'
+        subscriber.end_date=datetime.now(timezone.utc)+timedelta(days=40)
+        subscriber.selected_plan_type='3_months'
+        trial=await db.get(User,2)
+        trial.pro_trial_ends_at=datetime.now(timezone.utc)+timedelta(days=4)
+        trial.selected_plan_type='10_days'
         db.add(CourseProgress(user_id=1,level='HSK1',completed_lessons_count=7))
         db.add(AIUsageEvent(user_id=1,source='qa',model='fixture',cost_usd=.025,total_tokens=123))
         db.add(BotFeedback(user_id=1,telegram_id=1001,status='completed',disliked_code='price',
@@ -144,7 +160,9 @@ async def browser_checks(output):
                     create_admin_pwa_payment_review_router,create_admin_pwa_read_router,
                     create_admin_pwa_feedback_analytics_router,create_admin_pwa_inbox_triage_router,
                     create_admin_pwa_completion_router,create_admin_pwa_webauthn_router,
-                    create_admin_pwa_mcp_management_router):
+                    create_admin_pwa_mcp_management_router,
+                     create_admin_pwa_course_access_router,create_admin_pwa_hsk30_settings_router,
+                     create_admin_pwa_limits_router):
         app.include_router(factory(**common))
     app.include_router(create_admin_pwa_receipt_router(**common,loader=AsyncMock(return_value=(png(),'image/png'))))
     calls=[];drop_review=False;fail_reads=False;fail_prepare=False;receipt_failure=False
@@ -159,7 +177,7 @@ async def browser_checks(output):
         if path=='/admin/sw.js':
             await route.abort();return
         calls.append((path,request.method,request.post_data_json if request.method=='POST' else None))
-        if fail_reads and path=='/api/admin/v1/statistics':
+        if fail_reads and path in ('/api/admin/v1/statistics','/api/admin/v1/analytics'):
             await route.fulfill(status=503,json={'ok':False,'error':'synthetic_failure'});return
         if fail_prepare and path=='/api/admin/v1/payments/prepare-review':
             await route.fulfill(status=503,json={'ok':False,'error':'synthetic_failure'});return
@@ -212,8 +230,16 @@ async def browser_checks(output):
         assert any(row['name']=='__Host-hskai_admin' and row['httpOnly'] and row['secure'] for row in cookies)
         assert '__Host-hskai_admin=' not in await page.evaluate('document.cookie')
         await expect(page.locator('.metric')).to_have_count(4)
-        await expect(page.locator('.stat-detail')).to_have_count(3)
-        await expect(page.locator('.stat-detail').first).to_contain_text('0.025 USD')
+        await expect(page.locator('.analytics-panel')).to_have_count(3)
+        await expect(page.locator('.activity-bar')).to_have_count(7)
+        await expect(page.locator('[data-action=feedback]')).to_have_count(1)
+        await expect(page.locator('.analytics-task')).to_have_count(3)
+        await page.locator('[data-home-cohort=expiring_pro]').click()
+        await expect(page.locator('[data-user-filter-toggle]')).to_be_visible()
+        assert any(path=='/api/admin/v1/users/search' and body['segment']=='expiring_pro' for path,method,body in calls if body)
+        await page.locator('[data-route=home]').first.click()
+        await expect(page.locator('.activity-bar')).to_have_count(7)
+
         await page.screenshot(path=str(output/'desktop-statistics.png'),full_page=True)
         await page.locator('#locale').select_option('ru')
         await expect(page.locator('html')).to_have_attribute('lang','ru')
@@ -230,22 +256,56 @@ async def browser_checks(output):
         await page.locator('[data-action=period]').click()
         await page.locator('[data-period=all_time]').click()
         await expect(page.locator('.metric')).to_have_count(4)
-        label=await page.evaluate('window.HSKAI_ADMIN_I18N.uz.active30')
-        await expect(page.locator('.metric').nth(2)).to_contain_text(label)
+        label=await page.evaluate('window.HSKAI_ADMIN_I18N.uz.analyticsActivePro')
+        await expect(page.locator('.metric').nth(1)).to_contain_text(label)
         fail_reads=True
         await page.locator('[data-route=stats]').first.click()
         await expect(page.locator('[data-action=reload]')).to_be_visible()
         fail_reads=False
         await page.locator('[data-action=reload]').click()
-        await expect(page.locator('.metric')).to_have_count(4)
+        await expect(page.locator('.metric')).to_have_count(8)
         await page.locator('[data-route=users]').first.click()
         await expect(page.locator('.data-table tbody tr')).to_have_count(3)
+        await expect(page.locator('.user-table thead th')).to_have_count(7)
+        await expect(page.locator('.user-table thead')).to_contain_text('Фойдаланувчи / тариф')
+        await expect(page.locator('.user-table thead')).to_contain_text('HSK AI’да')
+        await expect(page.locator('.user-table tr[data-user-row="1"] td')).to_have_count(7)
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-date')).to_have_text('12.05.2026')
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-duration')).not_to_have_text('—')
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-selected-duration')).to_have_text('1 ой')
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-payment-method')).to_have_text('Alipay')
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-status-pill')).to_have_text('Free')
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-status-pill')).to_have_class('pill user-status-pill gray')
+        await expect(page.locator('.user-table tr[data-user-row="2"] .user-status-pill')).to_have_text('Pro trial')
+        await expect(page.locator('.user-table tr[data-user-row="2"] .user-status-pill')).to_have_class('pill user-status-pill amber')
+        await expect(page.locator('.user-table tr[data-user-row="101"] .user-status-pill')).to_have_text('Pro')
+        await expect(page.locator('.user-table tr[data-user-row="101"] .user-status-pill')).to_have_class('pill user-status-pill blue')
+        await expect(page.locator('.user-table tr[data-user-row="101"] .user-selected-duration')).to_have_text('3 ой')
         await expect(page.locator('.data-table img')).to_have_count(0)
+        await expect(page.locator('.user-search-icon svg')).to_have_count(1)
+        await page.locator('[data-user-filter-toggle]').click()
+        await expect(page.locator('#userFilterPanel .user-filter-choice')).to_have_count(11)
+        await page.locator('[data-user-segment="all"]').last.click()
+        await expect(page.locator('#userFilterPanel')).to_be_hidden()
+        # Unsaved search text must be applied with the selected filter, rather
+        # than resetting to the last submitted query on rerender.
         await page.locator('#userQuery').fill('999999')
-        await page.locator('#searchForm button').click()
+        await page.locator('[data-user-filter-toggle]').click()
+        await page.locator('.user-filter-choice[data-user-segment="free"]').click()
+        await expect(page.locator('#userQuery')).to_have_value('999999')
+        await expect(page.locator('.data-table')).to_have_count(0)
+        assert any(path.endswith('/users/search') and body.get('segment')=='free'
+                   and body.get('query')=='999999'
+                   for path,_,body in calls if isinstance(body,dict))
+        await page.locator('#userQuery').fill('')
+        await page.locator('[data-user-filter-toggle]').click()
+        await page.locator('.user-filter-choice[data-user-segment="all"]').click()
+        await expect(page.locator('.data-table tbody tr')).to_have_count(3)
+        await page.locator('#userQuery').fill('999999')
+        await page.locator('#searchForm button[type=submit]').click()
         await expect(page.locator('.data-table')).to_have_count(0)
         await page.locator('#userQuery').fill('1')
-        await page.locator('#searchForm button').click()
+        await page.locator('#searchForm button[type=submit]').click()
         await expect(page.locator('.data-table tbody tr')).to_have_count(1)
         await page.locator('.user-table [data-user-detail="1"]').click()
         await expect(page.locator('#drawerTitle')).to_have_text('Foydalanuvchi profili')
@@ -259,10 +319,12 @@ async def browser_checks(output):
         await page.locator('[data-user-feedback]').click()
         await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         assert await page.locator('#inboxSearchForm,#inboxSource,#inboxPriority').count()==0
-        # Only title is shown in list; message and escaped private content
-        # appear only after opening the corresponding source-bound item.
-        await expect(page.locator('#drawerContent')).not_to_contain_text('<script>private QA feedback</script>')
+        # A source-labelled preview is now visible in the authenticated list,
+        # but any markup from a user must remain escaped and non-executable.
         bot_entry=page.locator('.inbox-minimal-row[data-inbox-open^="bot:"]').first
+        await expect(bot_entry.locator('.inbox-row-preview')).to_contain_text('<script>private QA feedback</script>')
+        await expect(page.locator('#drawerContent script')).to_have_count(0)
+        await expect(page.locator('#drawerContent')).not_to_contain_text('other account QA feedback')
         await bot_entry.click()
         await expect(page.locator('.inbox-details')).to_contain_text('<script>private QA feedback</script>')
         await expect(page.locator('.inbox-details script')).to_have_count(0)
@@ -283,13 +345,22 @@ async def browser_checks(output):
         await expect(page.locator('.topbar [data-action=more]')).to_have_count(0)
         await expect(page.locator('.user-table-wrap')).to_be_hidden()
         await expect(page.locator('.user-cards .user-card')).not_to_have_count(0)
+        await expect(page.locator('.user-cards [data-user-detail="1"]')).to_contain_text('1 ой · Alipay')
+        await expect(page.locator('.user-cards [data-user-detail="1"] .user-status-pill')).to_have_text('Free')
+        await expect(page.locator('.user-cards [data-user-detail="2"] .user-status-pill')).to_have_text('Pro trial')
+        await expect(page.locator('.user-cards [data-user-detail="101"] .user-status-pill')).to_have_text('Pro')
+        await expect(page.locator('.user-cards [data-user-detail="1"]')).to_contain_text('HSK AI’да')
         await page.locator('.mobile-tabs [data-action=more]').click()
         await expect(page.locator('.more-drawer')).to_be_visible()
         await expect(page.locator('.more-drawer [data-route=course]')).to_be_visible()
         sheet=await page.locator('.more-drawer').bounding_box()
         assert sheet and 0<sheet['height']<844 and abs(sheet['y']+sheet['height']-844)<3
         await page.locator('.more-drawer [data-route=course]').click()
-        await expect(page.locator('.management-page')).to_be_visible()
+        await expect(page.locator('.course-dashboard')).to_be_visible()
+        await expect(page.locator('.course-subtabs [role="tab"]')).to_have_count(4)
+        await page.locator('[data-course-tab="access"]').click()
+        await expect(page.locator('[data-course-window]')).not_to_have_count(0)
+        await page.locator('[data-course-tab="tracks"]').click()
         await page.locator('.mobile-tabs [data-route=users]').click()
         await page.screenshot(path=str(output/'mobile-users.png'),full_page=True)
         for language in ('uz','ru','tj'):
@@ -305,25 +376,47 @@ async def browser_checks(output):
         await page.locator('#drawerLocale').select_option('uz')
         await page.locator('[data-route=stats]').last.click()
         await expect(page.locator('[data-stats-tab]')).to_have_count(7)
-        await expect(page.locator('.stat-detail')).to_have_count(1)
+        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(8)
         await page.locator('[data-stats-tab=overview]').focus()
         await page.keyboard.press('End')
         await expect(page.locator('[data-stats-tab=report]')).to_have_attribute('aria-selected','true')
         await page.keyboard.press('Home')
         await expect(page.locator('[data-stats-tab=overview]')).to_have_attribute('aria-selected','true')
         await page.locator('[data-stats-tab=course]').click()
-        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(3)
+        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(9)
+        assert not any(body and body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics')
+        await page.locator('[data-advanced-analytics] summary').click()
+        await expect(page.locator('#advancedAnalyticsBody table')).to_have_count(2)
+        assert sum(body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics' and body)==1
+        await page.screenshot(path=str(output/'v10-advanced-uz-390.png'),full_page=True)
+
         await page.locator('[data-stats-tab=funnel]').click()
         await expect(page.locator('.stats-category-metrics .metric')).to_have_count(3)
         await page.locator('[data-stats-tab=money]').click()
-        await expect(page.locator('.stat-detail')).to_have_count(2)
-        await expect(page.locator('.stat-detail').first).to_contain_text('0.025 USD')
+        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(8)
+        await expect(page.locator('.analytics-panel').last).to_contain_text(await page.evaluate("new Intl.NumberFormat('uz',{maximumFractionDigits:8}).format(0.025)+' USD'"))
         await page.locator('[data-stats-tab=sources]').click()
-        await expect(page.locator('.stats-category-content .state-panel')).to_be_visible()
+        await expect(page.locator('.stats-category-content .analytics-panel')).to_have_count(3)
         await page.locator('[data-stats-tab=report]').click()
         await expect(page.locator('.feedback-analysis')).to_contain_text('Шикоятлар таҳлили')
         await expect(page.locator('.feedback-analysis')).to_contain_text('Нарх')
         await page.screenshot(path=str(output/'mobile-statistics-details.png'),full_page=True)
+        for width in (390,1440):
+            await page.set_viewport_size({'width':width,'height':1000})
+            for language in ('uz','ru','tj'):
+                if width==390:
+                    await page.locator('[data-action=more]').click()
+                    await page.locator('#drawerLocale').select_option(language)
+                else:await page.locator('#locale').select_option(language)
+                for section in ('overview','course','platform','funnel','money','sources','report'):
+                    await page.locator('[data-stats-tab='+section+']').click()
+                    await expect(page.locator('.stats-category-content')).to_be_visible()
+                    await page.screenshot(path=str(output/f'v10-{section}-{language}-{width}.png'),full_page=True)
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+        await page.set_viewport_size({'width':390,'height':844})
+        await page.locator('[data-action=more]').click()
+        await page.locator('#drawerLocale').select_option('uz')
+
         assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         await page.locator('[data-route=payments]').last.click()
         await expect(page.locator('.payment-cards .payment-card')).to_have_count(1)
@@ -336,6 +429,8 @@ async def browser_checks(output):
         receipt_failure=False
         await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
+        assert any(p.endswith('/payments/inspect-review') for p,_,_ in calls)
+        assert not any(p.endswith('/payments/prepare-review') for p,_,_ in calls), 'Opening a receipt must not pre-authorize approval'
         await page.locator('[data-action=reject]').click()
         await expect(page.locator('#rejectReason')).to_be_focused()
         assert not any(path.endswith('step-up/options') for path,_,_ in calls)
@@ -366,7 +461,10 @@ async def browser_checks(output):
         operations=[body for path,_,body in calls if path.endswith('step-up/options')]
         assert len(writes)==len(operations)==1
         assert {k:v for k,v in writes[0].items() if k!='step_up_id'}==operations[0]['payload']
-        await page.locator('.drawer-close').click()
+        if await page.locator('.save-success-drawer').count():
+            await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+        elif await page.locator('#overlay').count():
+            await page.locator('.drawer-close').click()
         # Rejected payment uses a new ceremony and the exact visible reason.
         async with fixture.sessions() as db:
             payment=Payment(user_id=2,amount=10,currency='USD',plan_type='10_days',payment_method='visa',payment_status='pending',screenshot_file_id='synthetic-receipt')
@@ -384,6 +482,8 @@ async def browser_checks(output):
         await finish_step_up(page)
         await expect(page.locator('[data-review]:visible')).to_have_count(0,timeout=20000)
         assert len([p for p,_,_ in calls if p.endswith('/payments/review')])==2
+        actual_decisions=[b['decision'] for p,_,b in calls if p.endswith('/payments/review')]
+        assert actual_decisions==['approve','reject'], actual_decisions
         async with fixture.sessions() as db:
             assert (await db.get(Payment,second_id)).payment_status=='rejected'
             assert await db.scalar(select(func.count()).select_from(AdminPwaPaymentReview))==2
@@ -516,11 +616,24 @@ async def browser_checks(output):
         await expect(page.locator('.sidebar')).to_have_count(0)
         await expect(page.locator('.auth-panel')).to_be_visible()
         await context.set_offline(False)
+        await authenticate_fresh_launch(page)
+        # Fresh login publishes the shell before its independent protected reads
+        # finish. Settle them before this test revokes the new session: otherwise
+        # a correct 401 from an outstanding read can remove the Users button
+        # before the intended navigation is dispatched (Linux CI timing).
+        await page.wait_for_load_state('networkidle')
         await expect(page.locator('.sidebar')).to_have_count(1)
         async with fixture.sessions() as db:
             await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)));await db.commit()
-        await page.locator('[data-route=users]').last.click()
-        await expect(page.locator('[data-action=signin]')).to_be_visible()
+        # The background unread/read refresh may already detect the revoked
+        # session and replace the whole authenticated shell with login.
+        # Otherwise click the *live* mobile Users nav to trigger an authorized
+        # server request. A missing tab after revocation is not an error if the
+        # app has already signed out; the security assertion remains mandatory.
+        await page.evaluate("""() => {
+            document.querySelector('.mobile-tabs [data-route="users"]')?.click();
+        }""")
+        await expect(page.locator('[data-action=signin]')).to_be_visible(timeout=15000)
         assert 'QA account' not in await page.locator('body').inner_text()
         assert await page.evaluate('Object.keys(localStorage)')==['hsk-admin-locale']
         assert not await page.evaluate('window.cspFailures')
@@ -1049,8 +1162,10 @@ async def access_grant_browser_checks(output):
             await page.locator('[data-route=users]').first.click()
             async def prepare():
                 await page.locator('[data-user-detail="1"]:visible').first.click()
-                await page.locator('[data-access-user="1"]').click()
-                await page.locator('#accessDays').fill('10')
+                await expect(page.locator('.profile-access-editor #accessDays')).to_be_visible()
+                await expect(page.locator('.profile-more-actions')).to_be_visible()
+                await page.locator('[data-user-days="10"]').click()
+                await expect(page.locator('#accessDays')).to_have_value('10')
                 await page.locator('[data-prepare-access="1"]').click()
                 await wait_step_up(page)
             for width in (1440,390):
@@ -1065,12 +1180,16 @@ async def access_grant_browser_checks(output):
                     await page.locator('.drawer-close').click()
             assert not any(path.endswith('/users/grant-access') for path,_ in calls)
             await prepare();await finish_step_up(page)
-            await expect(page.locator('#drawerContent')).to_contain_text('10')
+            # Inline profile already displays the "10 days" preset; it cannot
+            # signal a completed write. Wait for the server-backed success drawer.
+            granted_title = await page.evaluate('window.HSKAI_ADMIN_I18N.tj.accessGranted')
+            await expect(page.locator('#drawerTitle')).to_have_text(granted_title)
+            await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
             await expect(page.locator('[data-action=executeAccess]')).to_have_count(0)
             async with fixture.sessions() as db:
                 assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit))==1
                 assert (await db.get(User,1)).payment_status=='approved'
-            await page.locator('.drawer-close').click()
+            await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
             await prepare()
             async with fixture.sessions() as db:
                 (await db.get(User,1)).end_date=datetime.now(timezone.utc)+timedelta(days=40);await db.commit()
