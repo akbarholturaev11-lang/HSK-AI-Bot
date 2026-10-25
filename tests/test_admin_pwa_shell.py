@@ -82,7 +82,7 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("lockAndRequirePasskey();",script)
         self.assertIn("await api('auth/logout',{}, {publicAuth:true})",script)
         self.assertIn("resumeAuthenticationRequired=true",script)
-        self.assertIn("if(biometricPromptInProgress)return;",script)
+        self.assertIn("if(biometricPromptInProgress||signing)return;",script)
         self.assertIn("credential=await navigator.credentials.get(",script)
         self.assertIn("await api('auth/passkey/login/verify'",script)
 
