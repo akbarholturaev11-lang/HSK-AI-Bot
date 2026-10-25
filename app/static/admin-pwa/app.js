@@ -555,7 +555,7 @@ async function saveCourseLimits(){
   }catch(error){
     if(current!==drawerId||at!==epoch)return;
     confirmation=null;
-    if(!submitted&&['NotAllowedError','AbortError'].includes(error.name)){showNotice('passkeyCancelled');closeDrawer();return;}
+    if(!submitted&&['NotAllowedError','AbortError'].includes(error.name)){closeDrawer();showNotice('passkeyCancelled');return;}
     const rejected=[400,403,404,409].includes(error.status);
     drawer('limitSaving',statePanel(error.status===409?'changed':submitted&&!rejected?'uncertain':errorKey(error)),btn('close','close')+btn('reload','reload','primary'));
   }finally{if(signing===control)signing=null;}
@@ -1703,6 +1703,7 @@ async function executeCoursePolicy(){
     if(current!==drawerId||at!==epoch)return;
     confirmation=null;
     const policy=result.course_access;
+    if(courseData&&state.route==='course')courseData.course_access=structuredClone(policy);
     drawer('courseSaved',profileFields([['courseMode',t(policy.mode==='free_until'?'courseFreeUntil':'courseSubscription')],
       ['courseUntil',date(policy.free_until)]]),btn('close','close'));
   }catch(error){
@@ -1785,6 +1786,7 @@ async function executeHsk30Settings(){
     if(current!==drawerId||at!==epoch)return;
     confirmation=null;
     const p=result.hsk30;
+    if(courseData&&state.route==='course')courseData.hsk30=structuredClone(p);
     drawer('hsk30Saved',profileFields([
       ['hsk30Enabled',t(p.enabled?'hsk30On':'hsk30Off')],
       ['hsk30PaymentEnabled',t(p.unlock_payment_enabled?'hsk30On':'hsk30Off')],
@@ -2203,7 +2205,7 @@ async function action(name) {
     }catch(error){if(error.message!=='stale'){state.error=['signin','enroll'].includes(name)?errorKey(error):'authFailed';render();}}
     finally{busy=false;render();}return;
   }
-  if(name==='close'){closeDrawer();return;}
+  if(name==='close'){closeDrawer();if(state.route==='course'&&courseData)render();return;}
   if(name==='boot'){await lockAndRequirePasskey();return;}
   if(name==='reload'){await load();return;}
   if(name==='mcpConnections'){await mcpConnections();return;}
