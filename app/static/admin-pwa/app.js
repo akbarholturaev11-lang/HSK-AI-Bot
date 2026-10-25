@@ -1906,11 +1906,11 @@ async function executeHsk30Settings(){
 
 function summary(operation) {
   const p=operation.payload,s=p.expected;
-  const fields=[...(p.decision?[['reviewDecision',t(p.decision==='reject'?'rejected':'approved')]]:[]),['payment','#'+p.payment_id],['account',s.user_id],['plan',t(s.plan_type)],['amount',s.amount+' '+s.currency],['method',s.payment_method],['source',s.source],['submitted',date(s.submitted_at)]];
+  const fields=[['payment','#'+p.payment_id],['account',s.user_id],['plan',t(s.plan_type)],['amount',s.amount+' '+s.currency],['method',s.payment_method],['source',s.source],['submitted',date(s.submitted_at)]];
   if(s.local_amount)fields.push(['localAmount',s.local_amount+' '+(s.local_currency||'')]);
   if(s.discount_percent)fields.push(['discount',s.discount_percent+'% · '+s.discount_source]);
   if(p.reason)fields.push(['reason',p.reason]);
-  return `<dl class="review-summary" data-review-decision="${esc(p.decision||'inspect')}">${fields.map(([key,value])=>`<dt>${esc(t(key))}</dt><dd ${key==='amount'?'class="amount-value"':''}>${esc(value??'—')}</dd>`).join('')}</dl>`;
+  return `<dl class="review-summary">${fields.map(([key,value])=>`<dt>${esc(t(key))}</dt><dd ${key==='amount'?'class="amount-value"':''}>${esc(value??'—')}</dd>`).join('')}</dl>`;
 }
 async function review(paymentId) {
   closeDrawer();const current=drawerId;reviewId=paymentId;drawer('review',statePanel('loading'));
@@ -1944,11 +1944,6 @@ async function prepareDecisionCommand(decision) {
   if(JSON.stringify(actual.payload.expected)!==JSON.stringify(previous.expected)){showNotice('changed');await review(paymentId);return;}
   if(actual.payload.decision!==decision||actual.payload.payment_id!==paymentId){drawer('review',statePanel('uncertain'));return;}
   confirmation=Object.freeze(structuredClone(actual));reviewChoice=decision;
-  // Keep the loaded receipt and the typed rejection reason in place while
-  // showing the *actual signed decision* before the system passkey prompt.
-  const visibleSummary=$('drawerContent')?.querySelector('.review-summary');
-  if(!visibleSummary){showNotice('error');return;}
-  visibleSummary.outerHTML=summary(actual);
   await execute();
 }
 async function execute() {
