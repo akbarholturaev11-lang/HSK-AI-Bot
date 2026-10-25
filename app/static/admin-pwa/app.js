@@ -1008,7 +1008,7 @@ async function userProfile(userId) {
       if(row.is_active&&c.progress)fields.push(['lastLesson',date(c.progress.last_completed_at)]);
       return `<article class="feedback-item"><strong>${esc(row.track==='hsk30'?'HSK 3.0':'HSK 2.0')}${row.is_active?' · '+esc(t('directoryStatusActive')):''}</strong>${profileFields(fields)}</article>`;
     }).join('');
-    const nativeRows=data.devices.map(row=>`<article class="feedback-item"><strong>${esc(row.platform)} · Native</strong>${profileFields([['linkedTotal',row.linked+' / '+row.total],['lastContact',date(row.last_contact_at)]])}</article>`).join('');
+    const nativeRows=data.devices.map(row=>`<article class="feedback-item"><strong>${esc({android:'Android',macos:'macOS',windows:'Windows'}[row.platform]||row.platform)}</strong>${profileFields([['linkedTotal',row.linked+' / '+row.total],['lastContact',date(row.last_contact_at)]])}</article>`).join('');
     const miniappRows=data.miniapp_presence.map(row=>{
       const platform={android:'Android',ios:'iOS',macos:'macOS',windows:'Windows',web:'Web',unknown:'—'}[row.platform]||row.platform;
       const preRegistration=row.before_registration?`<p class="source-note">⚠ ${esc(t('created'))}: ${esc(date(u.created_at))}</p>`:'';
