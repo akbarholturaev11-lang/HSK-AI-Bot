@@ -47,6 +47,7 @@ let inboxAttachment=null;
 let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
 const sectionBackStack=[];
 let automaticLoginAttempted=false, automaticLoginInProgress=false;
+let freshLoginInProgress=false, biometricPromptInProgress=false, resumeAuthenticationRequired=false, biometricAbort=null;
 let approvalWatchTimer=null, approvalChecking=false;
 let statisticsDownload=null;
 let managementDraft=null,managementReview=null,managementPreparing=false;
@@ -340,6 +341,28 @@ async function boot() {
     if(state.phase==='signin')await tryAutomaticPasskeyLogin();
   }
 }
+async function lockAndRequirePasskey() {
+  // Every fresh load and foreground resume must pass a NEW WebAuthn assertion.
+  // Revocation happens server-side, including for a still-valid cookie; never
+  // rely on a client-only lock in front of a usable admin session.
+  if(freshLoginInProgress)return;
+  freshLoginInProgress=true;
+  resumeAuthenticationRequired=false;
+  automaticLoginAttempted=false;
+  clearPrivate('loading');
+  try {
+    if(!navigator.onLine){clearPrivate('offline');return;}
+    await api('auth/logout',{}, {publicAuth:true});
+    if(!document.hidden)await boot();
+  }catch(error){
+    if(error.message!=='stale')clearPrivate(navigator.onLine?'error':'offline');
+  }finally{
+    freshLoginInProgress=false;
+    if(resumeAuthenticationRequired&&!document.hidden&&!biometricPromptInProgress){
+      lockAndRequirePasskey();
+    }
+  }
+}
 async function tryAutomaticPasskeyLogin() {
   // Try the modal ceremony once per foreground visit. Safari/WebKit can reject
   // an invocation without user activation; the existing manual button remains
@@ -372,7 +395,17 @@ function supportsPasskey() { return !!(window.PublicKeyCredential&&navigator.cre
 async function login() {
   if(!supportsPasskey()){state.error='passkeyUnsupported';render();return;}
   const options=await api('auth/passkey/login/options',{}, {publicAuth:true});
-  const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey)});
+  const loginEpoch=epoch, control=new AbortController();
+  biometricAbort=control;
+  biometricPromptInProgress=true;
+  let credential;
+  try {
+    credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey),signal:control.signal});
+  }finally{
+    biometricPromptInProgress=false;
+    if(biometricAbort===control)biometricAbort=null;
+  }
+  if(loginEpoch!==epoch)throw new ApiError('stale',0);
   await api('auth/passkey/login/verify',{credential:serialize(credential)},{publicAuth:true});await boot();
 }
 async function checkApproval() {
@@ -1692,7 +1725,7 @@ async function action(name) {
     finally{busy=false;render();}return;
   }
   if(name==='close'){closeDrawer();return;}
-  if(name==='boot'){await boot();return;}
+  if(name==='boot'){await lockAndRequirePasskey();return;}
   if(name==='reload'){await load();return;}
   if(name==='mcpConnections'){await mcpConnections();return;}
   if(name==='pushSettings'){await pushSettings();return;}
@@ -1957,20 +1990,28 @@ document.addEventListener('focusin',event=>{
   if(open&&!open.parentElement.contains(event.target))closeActionMenus();
 });
 window.addEventListener('offline',()=>clearPrivate('offline'));
-window.addEventListener('online',()=>boot());
-window.addEventListener('pagehide',()=>{automaticLoginAttempted=false;clearPrivate('loading');});
-window.addEventListener('pageshow',event=>{if(event.persisted)boot();});
+window.addEventListener('online',()=>{if(!document.hidden)lockAndRequirePasskey();});
+window.addEventListener('pagehide',()=>{
+  resumeAuthenticationRequired=true;
+  biometricAbort?.abort();
+  clearPrivate('loading');
+});
+window.addEventListener('pageshow',event=>{
+  if(event.persisted){resumeAuthenticationRequired=true;lockAndRequirePasskey();}
+});
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden){
     stopApprovalWatch();
-    automaticLoginAttempted=false;
-    // Discard in-memory private data immediately. The HttpOnly cookie stays
-    // revocable, and /me revalidates expiry and current admin rights on resume.
-    if(state.actor&&!signing)clearPrivate('loading');
+    // A native Face ID / Touch ID sheet can briefly hide a PWA. Do not cancel
+    // that same WebAuthn ceremony or accidentally start a second prompt.
+    if(biometricPromptInProgress)return;
+    resumeAuthenticationRequired=true;
+    clearPrivate('loading');
     return;
   }
-  if(state.phase==='approval')checkApproval().catch(()=>{});
-  else if(!signing)boot();
+  if(biometricPromptInProgress)return;
+  if(resumeAuthenticationRequired)lockAndRequirePasskey();
+  else if(state.phase==='approval')checkApproval().catch(()=>{});
 });
 window.addEventListener('focus',()=>{if(state.phase==='approval')checkApproval().catch(()=>{});});
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;});
@@ -1982,5 +2023,5 @@ if('serviceWorker' in navigator){
   }).catch(()=>{});
   navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
 }
-boot();
+lockAndRequirePasskey();
 })();
