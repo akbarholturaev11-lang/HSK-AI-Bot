@@ -1,6 +1,6 @@
 # HSK AI — Admin PWA implementation plan
 
-Status (updated 2026-10-25): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, manual grants, course/HSK30 controls, scoped OAuth/MCP, profiles, daily statistics/feedback snapshots and bounded JSON/CSV, native/technical inbox and default-OFF Apple Push sender exist. Private Redis/R2 reuse is implemented. Inbox actions now use one primary button plus an accessible secondary menu and status/time filters. Remaining management, retention/operator flows and release acceptance are tracked explicitly below. The old 0011 cold-start migration failure remains separate.**
+Status (updated 2026-10-25): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, manual grants, course/HSK30 controls, scoped OAuth/MCP, profiles, daily statistics/feedback snapshots and bounded JSON/CSV, native/technical inbox and default-OFF Apple Push sender exist. Private Redis/R2 reuse is implemented. The owner baseline uses minimal title-only Inbox rows, automatic importance and fresh passkey on launch/resume. Remaining management, retention/operator flows and release acceptance are tracked explicitly below. The old 0011 cold-start migration failure remains separate.**
 
 Target public URL: `https://hskai.app/admin` (owner-designated; live routing/TLS not verified).
 Branch: `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204; previous PR #201 code is an ancestor; PR #200 foundations are already merged. No main push/merge, deploy or flag activation.
@@ -49,7 +49,10 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
    before/after editors, exact proof, raw revision CAS and atomic hash-only
    audit. Required channels, account block/unblock/delete and manual ledger now have
    bounded signed adapters and localized editors. Partner applications also have signed approve/reject/block/unblock commands.
-   Messaging/campaigns, partner payouts/delivery and media uploads remain
+   Direct/self-test/bounded text broadcast now has exact signed audience/copy,
+   pre-IO durable claims, stop and pending-only signed resume. Partner payout
+   reserve/release/reject/deadline and payment-delivery reconciliation exist.
+   Campaign creation, payout proof/completion/notices and media uploads remain
    legacy-parity work. Five fixed reminder
    templates now have signed UZ/RU/TJ editors with compact content commitments.
 5. **Staging acceptance**: isolated provider/device/TLS/proxy/migrations and

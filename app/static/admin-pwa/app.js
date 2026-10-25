@@ -304,7 +304,7 @@ function managementRow(label,attributes,glyph='settings'){
 function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
   if(state.route==='course')return `<div class="management-page">${group('course',managementRow(t('courseAccess'),'data-action="courseSettings"','book')+managementRow(t('hsk30Settings'),'data-action="hsk30Settings"','book'))}</div>`;
-  if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
+  if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('messages'),'data-action="messageList"','mega')+managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
   return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow(t('deliveryQueue'),'data-action="deliveryList"','bell')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
 function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
@@ -418,7 +418,7 @@ async function userProfile(userId) {
       section('feedback',profileFields([['botFeedback',data.feedback_counts.bot],['releaseFeedback',data.feedback_counts.release]])+`<button class="btn" data-user-feedback="${userId}">${esc(t('openFeedback'))}</button>`)+
       section('paymentHistory',`<div id="profilePayments">${profilePayments(data.payments,userId)}</div>`)+`<p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`,
       btn('close','close')+`<button class="btn primary" data-access-user="${userId}" ${blocked?'disabled':''}>${esc(t('grantAccess'))}</button>`+
-      (userId===state.actor.user_id?'':actionMenu('userManagementMenu',`<button role="menuitem" data-user-management="${userId}" data-user-operation="${blocked?'unblock':'block'}">${esc(t(blocked?'unblockAccount':'blockAccount'))}</button><button role="menuitem" data-user-management="${userId}" data-user-operation="delete">${esc(t('deleteAccount'))}</button>`)));
+      (userId===state.actor.user_id?'':actionMenu('userManagementMenu',`<button role="menuitem" data-message-user="${userId}">${esc(t('directMessage'))}</button><button role="menuitem" data-user-management="${userId}" data-user-operation="${blocked?'unblock':'block'}">${esc(t(blocked?'unblockAccount':'blockAccount'))}</button><button role="menuitem" data-user-management="${userId}" data-user-operation="delete">${esc(t('deleteAccount'))}</button>`)));
   }catch(error){if(current===drawerId&&state.actor)drawer('userProfile',statePanel(error.status===404?'userMissing':'error'),btn('close','close')+`<button class="btn" data-user-detail="${userId}">${esc(t('retry'))}</button>`);}
 }
 async function moreUserPayments(userId,before,button) {
@@ -486,9 +486,82 @@ function userManagementEditor(userId,operation){
 const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktopPromo',course_ad:'courseAds'};
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
 const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
-function managementNamespace(type){return type==='delivery'?'payment-deliveries':type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
-function managementEndpoint(type,phase){return type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
-function managementAction(type,operation){return type==='delivery'?'payments.delivery_reconcile':type==='payout'?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+function managementNamespace(type){return ['message','message_control'].includes(type)?'messages':type==='delivery'?'payment-deliveries':type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
+function managementEndpoint(type,phase){return type==='message_control'?'messages/'+(phase==='prepare'?'prepare-control':'control'):type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
+function managementAction(type,operation){return type==='message'?'broadcast.send':type==='message_control'?'broadcast.control':type==='delivery'?'payments.delivery_reconcile':type==='payout'?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+const messageKindLabels={direct:'directMessage',broadcast:'broadcastMessage',test:'testMessage'};
+const messageJobLabels={ready:'messageReady',running:'messageRunning',complete:'messageComplete',closed:'messageClosed'};
+const messageCountLabels={pending:'messagePending',attempting:'messageAttempting',attempted:'messageAttempted',uncertain:'messageUncertain',skipped:'messageSkipped',removed:'messageRemoved'};
+async function messageList(before=null){
+  closeDrawer();const current=drawerId,at=epoch;drawer('messages',statePanel('loading'));
+  try{
+    const data=await api('messages/read',before?{before_id:before}:{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const rows=data.items.map(row=>managementRow(t(messageKindLabels[row.kind])+' · '+row.audience_count+' · '+t(messageJobLabels[row.status]),`data-message-job="${esc(row.job_id)}"`,'mega')).join('');
+    drawer('messages',(rows?`<div class="management-list">${rows}</div>`:statePanel('empty'))+(data.next_before_id?`<button class="btn" data-message-next="${esc(data.next_before_id)}">${esc(t('next'))}</button>`:''),btn('close','close')+btn('newMessage','messageEditor','primary'));
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('messages',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','messageList'));}
+}
+async function messageJob(id){
+  closeDrawer();const current=drawerId,at=epoch;drawer('messages',statePanel('loading'));
+  try{
+    const data=await api('messages/read',{job_id:id});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const job=data.job;
+    const refresh=`<button class="btn" data-message-job="${esc(id)}">${esc(t('readCurrent'))}</button>`;
+    const pending=job.counts.pending>0;
+    const run=pending&&job.status==='ready'&&job.session_current?`<button class="btn primary" data-message-run="${esc(id)}">${esc(t('messageNextBatch'))}</button>`:pending&&job.can_control?`<button class="btn primary" data-message-control="resume" data-job-id="${esc(id)}">${esc(t('messageResume'))}</button>`:'';
+    const stop=job.can_stop?actionMenu('messageControlMenu',`<button role="menuitem" data-message-stop="${esc(id)}">${esc(t('messageStop'))}</button>`):'';
+    drawer('messages',`<p class="source-note">${esc(t('messageAttemptHint'))}</p>${managementFields(job,'message')}${stop}`,refresh+run);
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('messages',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','messageList'));}
+}
+async function runMessage(id){
+  const current=drawerId,at=epoch;$('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
+  try{await api('messages/run',{job_id:id});}catch(error){if(current===drawerId&&at===epoch&&state.actor)showNotice(errorKey(error));}
+  if(current===drawerId&&at===epoch&&state.actor)await messageJob(id);
+}
+function confirmMessageStop(id){
+  closeDrawer();
+  drawer('messageStop',`<p class="source-note">${esc(t('messageStopHint'))}</p>`,btn('cancel','close')+`<button class="btn primary" data-message-stop-confirm="${esc(id)}">${esc(t('messageStop'))}</button>`);
+}
+async function stopMessage(id){
+  const current=drawerId,at=epoch;$('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
+  try{await api('messages/stop',{job_id:id});}catch(error){if(current===drawerId&&at===epoch&&state.actor)showNotice(errorKey(error));}
+  if(current===drawerId&&at===epoch&&state.actor)await messageJob(id);
+}
+function messageControlEditor(id,operation){
+  if(!['resume','close'].includes(operation))return;
+  closeDrawer();managementDraft={type:'message_control',jobId:id,controlOperation:operation};
+  drawer(operation==='resume'?'messageResume':'messageStop',`<form id="managementForm"><p class="source-note">${esc(t('messageControlHint'))}</p></form>`,btn('cancel','close')+btn('next','managementPrepare','primary'));
+}
+const messageFilterConfig={
+  status:['status',[['free','FREE'],['trial','messageTrial'],['active','accountActive'],['expired','messageExpired']]],
+  track:['messageTrack',[['hsk20','HSK 2.0'],['hsk30','HSK 3.0']]],
+  level:['level',[['beginner','messageBeginner'],...['hsk1','hsk2','hsk3','hsk4','nhsk1','nhsk2','nhsk3'].map(value=>[value,(value.startsWith('nhsk')?'HSK 3.0 · ':'HSK 2.0 · ')+value.at(-1)])]],
+  mode:['messageMode',[['qa','questionAnswer'],['course','course']]],
+  payment_status:['messagePaymentStatus',[['none','messageNoPayment'],['pending','pending'],['approved','approved'],['rejected','rejected']]],
+  payment_method:['method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']]],
+  plan:['plan',[['10_days','10_days'],['1_month','1_month'],['3_months','3_months']]],
+  discount:['discount',[['eligible','messageDiscountEligible'],['used','messageDiscountUsed'],['none','messageNoDiscount']]],
+  course_promo:['messagePromo',[['sent','messagePromoSent'],['not_sent','messagePromoNotSent']]],
+  activity:['messageActivity',[['active_7d','messageActive7d'],['inactive_7d','messageInactive7d'],['new_7d','messageNew7d']]]
+};
+function messageEditor(userId=null){
+  closeDrawer();managementDraft={type:'message',userId,textLanguage:locale,texts:{uz:'',ru:'',tj:''}};
+  const select=(id,label,options)=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><select class="input" id="${id}">${options.map(([value,text])=>`<option value="${value}">${esc(t(text))}</option>`).join('')}</select></div>`;
+  let body=userId?profileFields([['account',userId]]):select('messageKind','operation',[['broadcast','broadcastMessage'],['test','testMessage']]);
+  body+=`<p class="source-note">${esc(t(userId?'directMessageHint':'messageEditorHint'))}</p>`;
+  if(!userId)body+=select('messageLanguage','language',[['uz','UZ'],['ru','RU'],['tj','TJ']]);
+  body+=`<div class="form-field"><label for="messageText">${esc(t('noticeText'))}</label><textarea class="input setting-value" id="messageText" maxlength="3500" minlength="2" required></textarea></div>`;
+  if(!userId)body+=`<details class="profile-section notice-languages" id="messageFilters"><summary>${esc(t('filters'))}</summary><fieldset class="form-field"><legend>${esc(t('language'))}</legend>${['uz','ru','tj'].map(lang=>`<label class="management-check"><input type="checkbox" data-message-language="${lang}">${lang.toUpperCase()}</label>`).join('')}</fieldset>${Object.entries(messageFilterConfig).map(([key,[label,options]])=>select('messageFilter-'+key,label,[['','all'],...options])).join('')}</details>`;
+  body+='<p id="messageValidation" class="alert" role="alert" hidden></p>';
+  drawer(userId?'directMessage':'newMessage',`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('next','managementPrepare','primary'));
+  if(!userId)$('messageLanguage').value=locale;
+}
+function updateMessageLanguage(){
+  const draft=managementDraft,next=$('messageLanguage')?.value;
+  if(draft?.type!=='message'||!['uz','ru','tj'].includes(next))return;
+  draft.texts[draft.textLanguage]=$('messageText').value;draft.textLanguage=next;$('messageText').value=draft.texts[next];
+}
 const deliveryStatusLabels={pending:'pending',attempting:'deliveryAttempting',attempted:'deliveryAttempted',uncertain:'deliveryUncertain'};
 const deliveryResolutionLabels={observed:'deliveryObserved',no_retry:'deliveryNoRetry'};
 async function deliveryEditor(id=null,before=null){
@@ -648,6 +721,19 @@ function editCourseAd(id){
   drawer('courseAds',form,btn('cancel','close')+btn('next','managementPrepare','primary'));
 }
 function managementFields(value,type){
+  if(['message','message_control'].includes(type)){
+    const fields=[['operation',t(messageKindLabels[value.kind])],['messageAudience',value.audience_count]];
+    if(value.user_id)fields.push(['account',value.user_id]);
+    if(value.filters){
+      if(value.filters.languages?.length)fields.push(['language',value.filters.languages.join(', ').toUpperCase()]);
+      for(const [key,[label,options]] of Object.entries(messageFilterConfig))if(value.filters[key])fields.push([label,t(options.find(item=>item[0]===value.filters[key])?.[1]||value.filters[key])]);
+    }
+    if(value.status)fields.push(['status',t(value.stale?'messageStale':messageJobLabels[value.status])]);
+    if(value.operation)fields.push(['operation',t(value.operation==='resume'?'messageResume':'messageStop')]);
+    if(value.expires_at)fields.push(['messageExpiry',date(value.expires_at)]);
+    for(const [key,label] of Object.entries(messageCountLabels))if(value.counts)fields.push([label,value.counts[key]||0]);
+    return profileFields(fields)+['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(value.texts[lang])}</p></details>`).join('');
+  }
   if(type==='delivery'){
     const fields=[['paymentId',value.payment_id],['reviewDecision',t(value.decision==='approve'?'approved':'rejected')],['deliveryStatus',t(deliveryStatusLabels[value.delivery_status])]];
     if(value.resolution)fields.push(['deliveryResolution',t(deliveryResolutionLabels[value.resolution])]);
@@ -704,6 +790,8 @@ function managementFields(value,type){
   throw Error('invalid_settings');
 }
 function managementReread(draft){
+  if(draft.type==='message')return btn('readCurrent','messageList');
+  if(draft.type==='message_control')return `<button class="btn" data-message-job="${esc(draft.jobId)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='delivery')return `<button class="btn" data-delivery-id="${esc(draft.deliveryId)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='payout')return `<button class="btn" data-payout-id="${draft.payoutId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='partner')return `<button class="btn" data-partner-id="${draft.partnerId}">${esc(t('readCurrent'))}</button>`;
@@ -771,7 +859,19 @@ async function editSetting(kind,bank=null){
 async function prepareManagement(){
   if(managementPreparing||!state.actor||signing||!managementDraft||!$('managementForm')?.reportValidity())return;
   const draft=managementDraft;let payload;
-  if(draft.type==='delivery'){
+  if(draft.type==='message'){
+    const kind=draft.userId?'direct':$('messageKind').value;
+    if(draft.userId)draft.texts={uz:$('messageText').value,ru:$('messageText').value,tj:$('messageText').value};
+    else draft.texts[draft.textLanguage]=$('messageText').value;
+    const filters={};
+    if(kind==='broadcast'){
+      filters.languages=[...document.querySelectorAll('[data-message-language]:checked')].map(input=>input.dataset.messageLanguage);
+      for(const key of Object.keys(messageFilterConfig))if($('messageFilter-'+key).value)filters[key]=$('messageFilter-'+key).value;
+    }
+    payload={kind,user_id:draft.userId||null,texts:{...draft.texts},filters};
+  }else if(draft.type==='message_control'){
+    payload={job_id:draft.jobId,operation:draft.controlOperation};
+  }else if(draft.type==='delivery'){
     payload={review_id:draft.deliveryId,resolution:$('deliveryResolution').value,reason:$('deliveryReason').value};
   }else if(draft.type==='payout'){
     payload={payout_id:draft.payoutId,operation:$('payoutOperation').value,days:$('payoutOperation').value==='deadline'?Number($('payoutDays').value):null};
@@ -820,14 +920,18 @@ async function prepareManagement(){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const operation=structuredClone(result.operation);
     if(operation?.action!==managementAction(draft.type,draft.userOperation)||!operation.target||!operation.payload)throw Error('invalid_operation');
-    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,deliveryId:draft.deliveryId,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
-    const proposed=['notice','partner','payout','delivery'].includes(draft.type)?result.proposed:draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
+    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,deliveryId:draft.deliveryId,jobId:draft.jobId,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
+    const proposed=['message','message_control','notice','partner','payout','delivery'].includes(draft.type)?result.proposed:draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
     const currentValue=draft.type==='marketing'||draft.type==='channel'?{kind:draft.kind,...result.current}:result.current;
-    const comparison=`<div class="management-comparison">${draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
+    const comparison=`<div class="management-comparison">${draft.type==='message'?`<p class="source-note">${esc(t('messageAttemptHint'))}</p>`:draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
     drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
   }catch(error){
     if(current===drawerId&&at===epoch&&state.actor){
-      if(draft.type==='notice'&&error.status===400&&$('noticeValidation')){
+      if(draft.type==='message'&&[400,409].includes(error.status)&&$('messageValidation')){
+        const key=error.message==='admin_pwa_message_no_targets'?'messageNoTargets':error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':'messageInvalid';
+        $('messageValidation').textContent=t(key);$('messageValidation').hidden=false;
+        $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
+      }else if(draft.type==='notice'&&error.status===400&&$('noticeValidation')){
         $('noticeValidation').textContent=t(error.message==='admin_pwa_notice_too_long'?'noticeTooLong':'noticeInvalid');$('noticeValidation').hidden=false;
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
       }else drawer('confirmChanges',statePanel(error.status===409?'configChanged':errorKey(error)),btn('close','close')+managementReread(draft));
@@ -852,6 +956,7 @@ async function executeManagement(){
     const result=await api(managementEndpoint(review.type,'save'),{...review.executePayload,step_up_id:options.step_up_id});
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
+    if(['message','message_control'].includes(review.type)){await messageJob(result.job.job_id);return;}
     const saved=review.type==='delivery'?result.delivery:review.type==='payout'?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
     if(review.type==='user'&&result.deleted){state.rows=state.rows.filter(row=>row.user_id!==result.user_id);render();}
     drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review)));
@@ -1409,6 +1514,8 @@ async function action(name) {
   if(name==='pushSettings'){await pushSettings();return;}
   if(name==='courseSettings'){await courseSettings();return;}
   if(name==='priceSettings'){await priceSettings();return;}
+  if(name==='messageList'){await messageList();return;}
+  if(name==='messageEditor'){messageEditor();return;}
   if(name==='deliveryList'){await deliveryEditor();return;}
   if(name==='payoutList'){await payoutEditor();return;}
   if(name==='partnerList'){await partnerEditor();return;}
@@ -1510,6 +1617,13 @@ document.addEventListener('click',event=>{
     else if(button.dataset.channelsKind){await channelEditor(button.dataset.channelsKind);}
     else if(button.dataset.channelsNext){await channelEditor('list',Number(button.dataset.channelsNext));}
     else if(button.dataset.channelId){editChannel(Number(button.dataset.channelId));}
+    else if(button.dataset.messageUser){messageEditor(Number(button.dataset.messageUser));}
+    else if(button.dataset.messageNext){await messageList(button.dataset.messageNext);}
+    else if(button.dataset.messageJob){await messageJob(button.dataset.messageJob);}
+    else if(button.dataset.messageRun){await runMessage(button.dataset.messageRun);}
+    else if(button.dataset.messageStop){confirmMessageStop(button.dataset.messageStop);}
+    else if(button.dataset.messageStopConfirm){await stopMessage(button.dataset.messageStopConfirm);}
+    else if(button.dataset.messageControl){messageControlEditor(button.dataset.jobId,button.dataset.messageControl);}
     else if(button.dataset.deliveryId){await deliveryEditor(button.dataset.deliveryId);}
     else if(button.dataset.deliveryNext){await deliveryEditor(null,button.dataset.deliveryNext);}
     else if(button.dataset.payoutId){await payoutEditor(Number(button.dataset.payoutId));}
@@ -1548,6 +1662,8 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('change',event=>{
+  if(event.target.id==='messageLanguage')updateMessageLanguage();
+  if(event.target.id==='messageKind'&&$('messageFilters'))$('messageFilters').hidden=event.target.value==='test';
   if(event.target.id==='payoutOperation'&&$('payoutDaysField'))$('payoutDaysField').hidden=event.target.value!=='deadline';
   if(event.target.id==='noticeLanguage')updateNoticeLanguage();
   if(event.target.id==='channelOperation'&&$('channelActiveField'))$('channelActiveField').hidden=event.target.value==='delete';

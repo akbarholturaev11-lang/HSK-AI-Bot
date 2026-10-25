@@ -55,6 +55,7 @@ from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
 from app.admin_api.pwa_channels import create_admin_pwa_channels_router
+from app.admin_api.pwa_outbound import create_admin_pwa_outbound_router
 from app.admin_api.pwa_payment_reconciliation import create_admin_pwa_payment_reconciliation_router
 from app.admin_api.pwa_partner_payouts import create_admin_pwa_partner_payouts_router
 from app.admin_api.pwa_partners import create_admin_pwa_partners_router
@@ -783,6 +784,31 @@ app.include_router(create_admin_pwa_notifications_router(settings_obj=settings, 
 app.include_router(create_admin_pwa_partners_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_partner_payouts_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_payment_reconciliation_router(settings_obj=settings, session_factory=async_session_maker))
+
+async def _emit_admin_pwa_outbound(message):
+    # Reuse the existing Bot sender. No DB connection is held during provider IO.
+    failure=None
+    try:
+        await AdminBroadcastService(bot,None)._send_one(message.telegram_id,text=message.text,
+            content_type='text',media_file_id=None,reply_markup=None)
+    except Exception as exc:
+        failure=exc
+    try:
+        async with async_session_maker() as db:
+            async with db.begin():
+                user=await db.scalar(select(User).where(User.id==message.user_id,
+                    User.telegram_id==message.telegram_id).with_for_update())
+                if user is not None:
+                    blocks=BotBlockStatusService(db)
+                    if failure is None:await blocks.handle_send_success(user,reason='admin_pwa_outbound')
+                    else:await blocks.handle_send_exception(message.telegram_id,failure,reason='admin_pwa_outbound')
+    except Exception:
+        logger.warning('Admin PWA outbound reachability bookkeeping unavailable')
+    if failure is not None:raise failure
+
+app.include_router(create_admin_pwa_outbound_router(settings_obj=settings,session_factory=async_session_maker,
+    emit=_emit_admin_pwa_outbound))
+
 admin_pwa_feedback_reader = AdminPwaFeedbackReader(settings_obj=settings, session_factory=async_session_maker)
 app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=settings, session_factory=async_session_maker,
     reader=admin_pwa_feedback_reader))

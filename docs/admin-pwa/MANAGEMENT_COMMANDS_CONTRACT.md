@@ -23,6 +23,7 @@ uncertain response.
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
 | `marketing.update` | `/marketing/read`, `/prepare`, `/save` | Sales experiment, app promotion settings, existing creative activation/deletion |
 | `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
+| `broadcast.send` / `broadcast.control` | `/messages/read`, `/prepare`, `/save`, `/run`, `/prepare-control`, `/control`, `/stop` | Exact signed text/audience, durable pre-IO claims, owner-only bounded delivery and cancellation |
 | `payments.delivery_reconcile` | `/payment-deliveries/read`, `/prepare`, `/save` | Audited human resolution for uncertain or stale attempts; never resend or change finance |
 | `partners.payout` | `/partner-payouts/read`, `/prepare`, `/save` | Shared reserve/release, reject and exact 1/3/7-day UTC deadline; no transfer or paid-without-proof |
 | `partners.update` | `/partners/read`, `/prepare`, `/save` | Partner application approve/reject and partnership block/unblock via shared PartnerService |
@@ -69,8 +70,9 @@ responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 ## Explicit code parity still outstanding
 
 These legacy capabilities are not silently proxied by the standalone PWA:
-direct messages,
-mass messages, campaign creation, partner payout/delivery operations and media/QR/creative uploads. A legacy endpoint or
+campaign creation, partner payout proof/completion and recipient notices, and
+media/QR/creative uploads. Direct, self-test and bounded text broadcast now have
+their own standalone commands described below. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
 needs its own strict payload, shared-service transaction and permission/audit
 contract before its UI can claim success. Messaging additionally needs durable
@@ -161,3 +163,50 @@ Two indexed exact-status pages (maximum 62 rows) produce the combined 30-row
 queue without loading message effects or payment snapshots. Migration 0128
 provides partial unresolved-status and command action/target indexes; it refuses
 to remove nonempty reconciliation metadata.
+
+## Reviewed text delivery — migration 0129
+
+`pwa_outbound.py` accepts direct canonical account, server-selected self-test or
+filtered broadcast. All UZ/RU/TJ copy is validated locally (2–3500 UTF-16 units);
+filters are strict fixed enums using the existing UserRepository predicates.
+Prepare reads at most 1001 eligible metadata rows; over 1000 recipients is an
+explicit error. No unbounded count/load, hidden translation request or native
+account/blocked/unreachable/admin targeting. Direct targets use canonical ID;
+self-test deliberately selects the current admin.
+
+The exact compact passkey commitment includes copy hash, audience hash/count
+and filters. Save locks and rechecks that snapshot and current authority after
+waits; proof, immutable hash-only command evidence, one private body and bounded
+recipient metadata commit together. Full copy is never duplicated in each
+recipient/audit or exposed through MCP. Lost HTTP responses are reread, never
+blindly resubmitted.
+
+Migration `0129_admin_pwa_outbound` adds jobs, recipient claims and separate
+content-free cancellation events, with expiry/pending/ownership/FK indexes.
+Nonempty downgrade is refused. The job payload expires after one hour;
+`python -m scripts.admin_pwa_outbound_retention` is a bounded read-only preview,
+`--purge-expired --limit 100` explicitly removes one expired private batch.
+Command and stop evidence survive that cleanup. Canonical account deletion
+removes its recipient/direct private payload through FKs; a deleted broadcast
+recipient is reported as removed. No new periodic scan or automatic scheduler.
+
+An in-process drainer has two worker slots and up to 100 batches of ten. Each
+recipient is durably marked attempting before a provider call; no connection
+spans that call or pacing sleep. Current session/admin/feature/recipient state
+is checked before every claim. Existing Bot text sender and reachability
+bookkeeping are reused. Acknowledged attempts, uncertain failures and skips
+are distinguished; neither means a device read the message. Crash/timeout/
+uncertain attempts are never automatically retried. Expired/revoked session
+pauses remaining work. A new session needs a fresh exact signed resume, which
+selects pending recipients only. A stale worker is fenced by a run token.
+
+Owner-only same-origin `/stop` uses the ordinary live WebAuthn cookie and CSRF
+guard to cancel remaining work; it cannot add text, recipients or retry rights.
+It records a distinct stop event, without pretending a new FIDO proof. One
+already claimed attempt may finish. Signed control closes stale/uncertain
+work or resumes pending recipients. UI refresh is explicit; no polling.
+
+Marketing's compact Messages row and profile overflow open the existing V10
+editor. One copy editor is visible at a time; filters are collapsed and the
+full escaped texts/audience are reviewed before signing. The owner-approved
+notification window, fresh-launch passkey and back gesture remain intact.

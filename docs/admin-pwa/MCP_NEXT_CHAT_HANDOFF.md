@@ -25,6 +25,36 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   attempts, bounded queue pages, concurrent resolutions and real migration
   preservation, and adapts remaining management browser QA to real fresh login.
 
+## Current bounded outbound text increment
+
+- `pwa_outbound.py`, migration 0129 and V10 Messages/profile editors implement
+  direct canonical target, current-admin self-test and filtered broadcast.
+  Maximum 1000 recipients, one private three-language copy, compact exact
+  content/audience commitment, atomic proof/audit/queue and pre-provider claims.
+  Existing shared filtering/Bot sender/reachability logic is preserved.
+- Two local drainer slots process ten-recipient batches, with no DB connection
+  during provider IO/pacing, no UI polling or automatic uncertain retry.
+  Session/authority/TTL is checked before every claim. A new session needs a
+  fresh exact signed pending-only resume. Stop only reduces scope and appends
+  separate content-free evidence; one already claimed attempt may finish.
+- Private payload lifetime is one hour. Explicit bounded retention CLI previews
+  by default, purges only with `--purge-expired`, retains command/stop audits.
+  Canonical deletion removes direct payload/recipient; broadcast deleted count
+  is visible. Nonempty migration downgrade refuses data loss.
+- Actual ASGI/fresh virtual-WebAuthn outbound browser passed UZ/RU/TJ 390px,
+  self-test, 12-recipient broadcast split at ten, fresh-login signed resume of
+  only two remaining recipients, XSS escaping and no overflow/script errors.
+  Screenshots `/tmp/hsk-admin-pwa-outbound-verified-20261025` visually inspected.
+  API/PG/initializer/0103–0129 DDL gate: **44 passed**. Broader PWA, catalog,
+  initializer and affected legacy payment/access/import gate with actual local
+  PostgreSQL/Redis: **622 passed, zero skipped**. After final narrow-query and
+  audit-preservation additions, outbound gate: **15 passed**, including real PG
+  worker contention, canonical purge and nonempty actual-migration refusal.
+  Catalogs: 63 artifacts, zero stale; JS/Python syntax and diff checks passed.
+- Remaining code: campaign creation, media/QR/creative uploads and partner payout
+  verified proof/completion plus recipient notices. Preserve owner's Inbox and
+  current branch; all defaults OFF, external MCP remains statistics-only.
+
 ## Current payment-delivery reconciliation validation
 
 - The existing `/payment-deliveries/read|prepare|save` command now has actual

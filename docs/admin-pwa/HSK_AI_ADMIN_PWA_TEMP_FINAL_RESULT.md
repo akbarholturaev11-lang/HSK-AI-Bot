@@ -62,6 +62,12 @@ browser/SW no-store and real-data/metric-definition requirements. Details:
 - [ ] High-risk actions are disabled in PWA until **fresh, transaction-bound WebAuthn step-up** exists and is tested (exact action/target/payload, expiry, signature, replay/CSRF, confirmation and audit).
 - [ ] Financial approvals and rejections cannot double-process; canonical account identity and existing payment-preview/Pro business rules preserved.
 
+Implemented management code now includes signed direct/self-test and bounded
+text broadcasts, durable pre-provider claims, explicit cancellation and
+pending-only signed resume. Campaign creation, payout proof/completion/notices
+and media uploads remain code work; see [management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
+This paragraph records scope and does not mark the entire acceptance list done.
+
 ### F. Cloud/ChatGPT/Local analytics without exposing admin credentials
 - [ ] Publish authorized **read-only** metrics dictionary and scoped statistics/feedback query with server-side filtering, pagination and PII-minimization.
 - [ ] JSON/CSV export with bounded ranges and source lineage. Useable by local tools or as ChatGPT-uploaded sanitized file.
