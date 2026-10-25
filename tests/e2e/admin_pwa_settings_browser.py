@@ -32,6 +32,7 @@ from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
 from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_router
 from app.admin_api.pwa_limits import create_admin_pwa_limits_router
+from app.services.entitlements.limits_config import LimitConfigService
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api import pwa_marketing as pwa_marketing_api
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
@@ -254,7 +255,7 @@ async def browser_checks(output, *, media_only=False):
                     fixture.session_id=await db.scalar(select(AdminPwaSession.id).where(
                         AdminPwaSession.token_hash==hashlib.sha256(live_cookie.encode()).hexdigest()))
 
-                # Landing pages are navigation, with no per-page configuration queries.
+                # Course tabs load read-only global state; the other management pages stay lazy.
                 configuration_reads = lambda: [path for path, _ in calls
                     if path in ('/api/admin/v1/settings/read', '/api/admin/v1/subscription-prices/read')]
                 initial = list(configuration_reads())
@@ -284,6 +285,33 @@ async def browser_checks(output, *, media_only=False):
                 await expect(page.locator('#drawerTitle')).to_have_text(await page.evaluate('() => window.HSKAI_ADMIN_I18N.uz.hsk30Saved'))
                 assert await audit_count()==before_policy+2
                 await page.locator('.drawer-close').click()
+                # The new limits editor sends the exact daily/lifetime schema
+                # through the same virtual WebAuthn proof, not the Telegram API.
+                await page.locator('[data-course-tab="access"]').click()
+                await expect(page.locator('#courseLimitSave')).to_be_disabled()
+                await page.locator('[data-course-window="ai.text"]').select_option('lifetime')
+                await page.locator('[data-course-limit="ai.text"]').fill('6')
+                await expect(page.locator('#courseLimitSave')).to_be_enabled()
+                await page.locator('#courseLimitSave').click()
+                await wait_step_up(page)
+                await finish_step_up(page)
+                await expect(page.locator('[data-course-tab="access"]')).to_be_visible()
+                await expect(page.locator('#courseLimitSave')).to_be_disabled()
+                async with fixture.sessions() as db:
+                    policy=await LimitConfigService(db).get_payload()
+                    assert policy["plans"]["FREE"]["ai.text"]=={"limit":6,"window":"lifetime"}
+                assert await audit_count()==before_policy+3
+                await page.locator('[data-course-tab="trial"]').click()
+                await expect(page.locator('#courseTrialSave')).to_be_disabled()
+                await page.locator('#courseTrialDays').fill('8')
+                await page.locator('#courseTrialSave').click()
+                await wait_step_up(page)
+                await finish_step_up(page)
+                await expect(page.locator('#courseTrialSave')).to_be_disabled()
+                async with fixture.sessions() as db:
+                    policy=await LimitConfigService(db).get_payload()
+                    assert policy["trial"]["days"]==8
+                assert await audit_count()==before_policy+4
                 await navigate("system", 1440)
                 assert configuration_reads() == initial
                 for width in (1440, 390):
