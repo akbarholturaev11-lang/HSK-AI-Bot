@@ -2,6 +2,52 @@
 
 Updated 2026-10-26. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Owner's latest V10 Home + Statistics request — 2026-10-26
+
+The owner supplied `/Users/kaijimima1234/Downloads/hsk-ai-admin-ux-demo-v10 2.html`
+again and explicitly requested the control center **and** Statistics to match
+the demo using real complete analytics, with no fake copy or numbers. This is
+current steering of the same Admin PWA task; preserve completed campaign work.
+The file remains 182,765 bytes and matches the existing reference. Original
+Home and all seven Statistics views were read and rendered at desktop/mobile:
+`/tmp/hsk-admin-demo-reference-20261026`. No demo fixture is copied into runtime.
+
+Read the new CLI-generated planning delta
+`openspec/changes/admin-pwa-v10-control-center-statistics/` before implementation.
+Proposal/design/specs/tasks are written and CLI strict validation passes.
+Detailed source/definition/query audit continues per module. Initial unmounted
+Home/overview scalar/grouped SQL projections are now in `pwa_analytics.py`;
+initial isolated per-section cache composition is in `pwa_analytics_cache.py`.
+Projection/cache/guarded transport regressions: 24 passed (five real Redis tests
+require the isolated service). UI wiring remains in progress; the new readers
+are not mounted or used by the frontend yet. No new analytics UI is connected yet.
+Plan section-on-demand daily private snapshots, bounded typed source projections,
+V10 cards/charts/queues/shortcuts and complete seven-tab views with UZ/RU/TJ.
+Do not blindly proxy the legacy overview or finance builders: some methods load
+private/latest rows and unbounded event/payment history, and legacy all-time
+advanced detail is intentionally rolling 30 days.
+
+Campaign code is pushed through `194ae4df`, which fixes legacy active-offer
+dirty-state hydration and the CI branded media browser.
+Core/revoke Linux browser, consent, inbox, settings and outbound passed in CI
+40222121551; only actual H.264 preview failed in Linux Chromium. The correction
+installs/uses branded Chrome for the campaign media test without weakening
+videoWidth assertions (official Playwright media-codec guidance is recorded).
+CI 40223121959 completed successfully for `194ae4df`, including PostgreSQL
+and the actual branded-Chrome MP4 preview.
+The latest local campaign browser including legacy offer Off/revert/sign passed
+in `/tmp/hsk-admin-pwa-final-legacy-offer-20261026`; shell tests: eight passed.
+
+Main is still `1db08846`; **no campaign promotion has been pushed yet**. A clean
+managed promotion worktree is attached at
+`/Users/kaijimima1234/.codex/worktrees/admin-pwa-campaign-promotion-20261026/HSK AI bot`,
+currently prepared at `c93443f8` (campaigns plus deterministic revoke test).
+It must receive the final media CI/offer correction and any later approved
+code before promotion, and current remote main must be refreshed. Root source
+branch remains `feat/admin-pwa-minimal-inbox-passkey-20261025`. Graphify outputs
+are unrelated dirty files: never stage them or reset the user's local main.
+Owned local PostgreSQL 55137 and Redis 55138 were stopped after verification.
+
 ## Current campaign continuation — 2026-10-26
 
 - Prior ready code is verified on `origin/main` at `8d473cd9`. The feature was
