@@ -1304,8 +1304,10 @@ def _is_at_or_after(value: datetime | None, cutoff: datetime) -> bool:
     return bool(value and value >= cutoff)
 
 
-def is_admin_active_today(user, today_start: datetime) -> bool:
-    return _is_at_or_after(getattr(user, "last_active_at", None), today_start)
+def is_admin_active_today(user, today_start: datetime, *, now: datetime | None = None) -> bool:
+    # Future timestamps can arise from clock drift and cannot be activity today.
+    stamp = _as_utc(getattr(user, "last_active_at", None))
+    return bool(stamp and today_start <= stamp <= (now or datetime.now(timezone.utc)))
 
 
 def is_admin_hot_lead(user, hot_since: datetime) -> bool:
@@ -1368,7 +1370,7 @@ class AdminMiniAppService:
         new_today = await self._count_users(User.created_at >= today_start)
         new_week = await self._count_users(User.created_at >= week_ago)
         new_month = await self._count_users(User.created_at >= month_ago)
-        active_today = await self._count_users(User.last_active_at >= today_start)
+        active_today = await self._count_users(User.last_active_at >= today_start, User.last_active_at <= now)
         active_24h = await self._count_users(User.last_active_at >= last_24h)
         active_week = await self._count_users(User.last_active_at >= week_ago)
 
@@ -1525,7 +1527,7 @@ class AdminMiniAppService:
                 "wants_pay": hot_leads,
                 "trial": int(entitlement_counts.get(EntitlementState.TRIAL_ACTIVE, 0)),
                 "free": int(entitlement_counts.get(EntitlementState.FREE, 0)),
-                "expired": int(status_counts.get("expired", 0)),
+                "expired": int(entitlement_counts.get(EntitlementState.EXPIRED, 0)),
                 "blocked": int(status_counts.get("blocked", 0)),
                 "bot_blocked": bot_blocked_users,
             },
@@ -3077,7 +3079,7 @@ class AdminMiniAppService:
                     access_expires_at(item, resolve_state(item, now=now), now=now)
                 ),
                 "last_active": _ago(item.last_active_at, now=now),
-                "active_today": is_admin_active_today(item, today_start),
+                "active_today": is_admin_active_today(item, today_start, now=now),
                 "hot_lead": (
                     is_admin_hot_lead(item, hot_since)
                     and ("user", item.id) not in pending_user_ids
