@@ -20,6 +20,13 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   outbound and campaign ASGI/virtual-WebAuthn browser suites passed against
   the merged policy. Evidence `/tmp/hsk-admin-pwa-main209-*-20261025`.
   JavaScript syntax, diff and 63-artifact catalog checks passed (zero stale).
+- Code increment `74e48740` and merge `71629eda30b5791d5b4c9b12e6b3c892aba793e1`
+  are pushed to the owner feature branch; the exact remote SHA was verified.
+  The broad checkpoint’s single skip was the local optional official MCP SDK.
+  Installing the workflow’s existing pinned QA dependencies (`mcp==1.27.0`,
+  `sse-starlette==3.0.3`) allowed that protocol harness to run: **1 passed** on
+  the merged code. Application requirements are unchanged. GitHub Actions run
+  `40199126920` started for the merge; no CI-success claim is made while pending.
 
 ## Current bounded campaigns increment — 2026-10-25
 
