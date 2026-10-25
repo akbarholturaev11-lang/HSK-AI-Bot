@@ -65,16 +65,20 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         # The actual Web Push provider and physical Apple delivery are not
         # exercised by this public-shell regression.
 
-    async def test_inbox_search_form_is_private_and_bounded(self):
+    async def test_minimal_inbox_and_fresh_passkey_launch_contract(self):
         script=(await self.get('/admin/assets/app.js')).text
-        self.assertIn('id="inboxSearchForm"', script)
-        self.assertIn('id="inboxSearchQuery"', script)
-        self.assertIn('minlength="3" maxlength="80"', script)
-        self.assertIn("search:state.inboxSearch||null", script)
-        self.assertIn("state.inboxSearch='';state.actor=null", script)
-        self.assertIn("state.inboxSearch=value", script)
-        self.assertIn("t('monthly')", script)
-        self.assertNotIn("localStorage.setItem('hsk-admin-inbox-search'", script)
+        list_section=script.split('async function inbox(before=null,userId=null)',1)[1].split('async function mutateInbox(',1)[0]
+        self.assertNotIn('inboxSearchForm',list_section)
+        self.assertNotIn('filterSelect',list_section)
+        self.assertNotIn('inboxHistoryNote',list_section)
+        self.assertIn('data.items.map(inboxEntry)',list_section)
+        self.assertIn("operation:'mark_read'",script)
+        self.assertIn('data-inbox-open',script)
+        self.assertIn("if(source==='payment'){await review(id);return;}",script)
+        self.assertIn("lockAndRequirePasskey();",script)
+        self.assertIn("await api('auth/logout',{}, {publicAuth:true})",script)
+        self.assertIn("requireFreshLoginOnResume=true",script)
+        self.assertIn("await api('auth/passkey/login/verify'",script)
 
     async def test_worker_scope_version_and_public_cache_allowlist(self):
         manifest=(await self.get('/admin/manifest.webmanifest')).json()
