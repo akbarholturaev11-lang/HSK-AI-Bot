@@ -22,19 +22,23 @@ mutation handlers or fabricated success statuses are shipped.
 
 ## Current owner-approved baseline — 2026-10-25
 
-Merged baseline: `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204. Follow-up: `feat/admin-pwa-seamless-passkey-20261025`. Preserve
+Merged baselines: PRs #204 and #207. Corrective follow-up: `fix/admin-pwa-biometric-every-open-20261025`. Preserve
 its title-only unread-first Inbox, automatic priority/red state, explicit
 read-on-open detail, separate receipt review and return to originating inbox.
 Keep the single close control and one-step iPhone left-zone back gesture with
 native Safari/scroll/text-selection exclusions. Existing audited triage/Push
 transport remains compatible; manual priority/assignment controls are absent.
-On launch/resume, first revalidate the Secure HttpOnly cookie with /me.
-An unexpired, non-revoked session with current admin rights opens directly;
-after a 401, try one automatic passkey assertion per foreground visit.
-iOS/macOS/WebKit may reject gesture-free modal assertions, so retain the
-manual passkey action without recurring prompts. Logout explicitly revokes
-the server session; private browser memory clears on hide/pagehide/offline.
-Exact transaction-bound high-risk confirmations remain separate.
+Owner correction: EACH new PWA launch and foreground resume must attempt a fresh
+passkey assertion, even if the previous cookie is still valid. Immediately clear
+the private DOM and revoke the old server session before starting an automatic
+WebAuthn login. Never display admin data until the new assertion is verified.
+An iOS/macOS WebKit user-gesture limitation may require the existing manual
+passkey button as an unavoidable fallback. Do not restart an active WebAuthn
+ceremony when iOS temporarily obscures the PWA for the native biometric sheet.
+After verification, dashboard data and unread count load concurrently. Public
+PWA shell, script, locale and service-worker caching are already loaded without
+blocking on biometrics; private API reads are deliberately not prefetched from a
+revoked session. High-risk transaction-bound WebAuthn confirmations remain separate.
 
 ## Routes, data and isolation
 

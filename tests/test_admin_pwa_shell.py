@@ -79,10 +79,11 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("drawerBack=()=>inbox(null,originatingUser)",script)
         self.assertIn("if(state.phase==='signin')await tryAutomaticPasskeyLogin();",script)
         self.assertIn("await api('me',null,{method:'GET',publicAuth:true})",script)
-        self.assertIn("automaticLoginAttempted=true",script)
-        self.assertIn("await api('auth/logout',{})",script)
-        self.assertNotIn("lockAndRequirePasskey",script)
-        self.assertNotIn("await api('auth/logout',{}, {publicAuth:true})",script)
+        self.assertIn("lockAndRequirePasskey();",script)
+        self.assertIn("await api('auth/logout',{}, {publicAuth:true})",script)
+        self.assertIn("resumeAuthenticationRequired=true",script)
+        self.assertIn("if(biometricPromptInProgress||signing)return;",script)
+        self.assertIn("credential=await navigator.credentials.get(",script)
         self.assertIn("await api('auth/passkey/login/verify'",script)
 
     async def test_iphone_left_zone_swipe_is_single_step_and_input_safe(self):
