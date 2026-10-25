@@ -214,24 +214,26 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
                 if row["user_id"] in ids:
                     self.assertEqual(row["access_state"], access_state, row)
 
-        for segment, expected_ids in (
-            ("pending", {210}), ("active_today", {216} - {216}),
-        ):
-            response = await self.post("users/search", {"segment": segment, "limit": 100})
-            self.assertEqual(response.status_code, 200, response.text)
-            actual = {row["user_id"] for row in response.json()["items"] if row["user_id"] in ids}
-            if segment == "pending":
-                self.assertEqual(actual, expected_ids)
-            else:
-                self.assertNotIn(216, actual, "Future activity is not today")
+        pending = (await self.post("users/search", {"segment": "pending", "limit": 100})).json()
+        self.assertEqual({row["user_id"] for row in pending["items"] if row["user_id"] in ids},
+                         {210}, "Only actual unreviewed receipts are pending")
+        active = (await self.post("users/search", {"segment": "active_today", "limit": 100})).json()
+        self.assertNotIn(216, {row["user_id"] for row in active["items"]},
+                         "Future-dated activity must not be classified as today")
+        hot = (await self.post("users/search", {"segment": "wants_pay", "limit": 100})).json()
+        self.assertNotIn(216, {row["user_id"] for row in hot["items"]},
+                         "Future-dated activity must not be a hot lead")
         all_rows = (await self.post("users/search", {"limit": 100})).json()["items"]
         by_id = {row["user_id"]: row for row in all_rows}
         self.assertFalse(by_id[209]["has_pending_payment"])
         self.assertTrue(by_id[210]["has_pending_payment"])
-        self.assertIsNone(by_id[205]["access_expires_at"] if
-                          by_id[205]["access_state"] != "TEMP_ACCESS" else None)
-        self.assertEqual(by_id[205]["access_expires_at"],
-                         soon.isoformat() if by_id[205]["access_state"] == "TEMP_ACCESS" else None)
+        self.assertEqual(by_id[205]["access_state"], "TEMP_ACCESS")
+        self.assertEqual(by_id[205]["access_expires_at"], soon.isoformat())
+        self.assertIsNone(by_id[212]["access_expires_at"],
+                          "Receipt previews have no subscription end date")
+        self.assertEqual(by_id[204]["access_expires_at"], soon.isoformat())
+        self.assertIsNone(by_id[203]["access_expires_at"],
+                          "Expired access must not claim an active entitlement")
 
     async def test_filter_search_limits_are_applied_before_pagination_and_no_stale_pending(self):
         now = datetime.now(timezone.utc)
