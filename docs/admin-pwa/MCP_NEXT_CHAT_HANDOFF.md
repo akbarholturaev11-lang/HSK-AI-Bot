@@ -2,6 +2,25 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Latest owner-requested main sync — PR #209, 2026-10-25
+
+- A fresh owner request found `origin/main` at
+  `1cb799c6` (PR #209, biometric on each open). Merge this source into the
+  existing feature branch; no feature-to-main promotion or deployment.
+- **Current auth policy:** each launch/foreground resume revokes the previous
+  cookie session and requires a new native passkey assertion. Keep automatic
+  prompting and the manual browser-gesture fallback. Private DOM clears before
+  login; active native biometric/transaction sheets do not cause prompt loops.
+  Dashboard and unread reads run concurrently after verification. This
+  supersedes the earlier seamless cookie-reuse checkpoints below.
+- Queued jobs reopened after a fresh login use the existing signed pending-only
+  resume. Preserve all feature commands, original-editor contextual actions,
+  V10 statistics/navigation, daily snapshots and statistics-only external MCP.
+- Merge validation: shell/import **9 passed, 11 subtests**, actual core,
+  outbound and campaign ASGI/virtual-WebAuthn browser suites passed against
+  the merged policy. Evidence `/tmp/hsk-admin-pwa-main209-*-20261025`.
+  JavaScript syntax, diff and 63-artifact catalog checks passed (zero stale).
+
 ## Current bounded campaigns increment — 2026-10-25
 
 - `pwa_campaigns.py` and `/campaigns/read|prepare|save` add metadata-only keyset
