@@ -413,6 +413,6 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 
 | Date | Scope | Result | Commit/PR | Tests | Next |
 |---|---|---|---|---|---|
-| 2026-10-25 | Initial discovery and single-file master-plan scaffold | Real main source inspected; planning proposals and unresolved decisions recorded. **Runtime unchanged.** | pending doc commit | NO TESTS RUN; code read only | P0 audit + D01–D14 lock |
+| 2026-10-25 | Initial discovery and single-file master-plan scaffold | Real main source inspected; planning proposals and unresolved decisions recorded. **Runtime unchanged.** | d01263f772f8cc72486cdfa8f6f113115783f615 (initial file commit) | NO TESTS RUN; code read only | P0 audit + D01–D14 lock |
 
 **Final completion criteria:** P0–P8 acceptance achieved; automated + manual affected flow QA evidenced; global dedupe/opt-out/progress guards verified on real clients; experiment results/guardrails recorded; production rollout monitored; owner accepts completion. Until then status remains IN PROGRESS.
