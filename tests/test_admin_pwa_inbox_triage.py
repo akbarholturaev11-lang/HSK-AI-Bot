@@ -97,7 +97,7 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
                 AdminPwaInboxTriageAudit).where(
                     AdminPwaInboxTriageAudit.source=="technical")), 2)
 
-    async def test_three_sources_read_assign_resolve_reopen_and_audit(self):
+    async def test_three_sources_read_assign_priority_resolve_reopen_and_audit(self):
         ids = await self.seed()
         for source, source_id in ids.items():
             initial = (await self.post("inbox/list", {"source": source})).json()["items"][0]
@@ -105,14 +105,17 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
             self.assertEqual(initial["triage_priority"], "important" if source=="android" else "normal")
             self.assertEqual(initial["triage_revision"], 0)
             expected = 0
-            priority = "important" if source=="android" else "normal"
             operations = [
-                ("mark_read", "read"),
-                ("assign_self", "assigned"),
-                ("resolve", "resolved"),
-                ("reopen", "assigned"),
+                ("mark_read", "read", "normal"),
+                ("assign_self", "assigned", "normal"),
+                ("mark_important", "assigned", "important"),
+                ("resolve", "resolved", "important"),
+                ("reopen", "assigned", "important"),
+                ("clear_important", "assigned", "normal"),
             ]
-            for operation, status in operations:
+            if source=="android":
+                operations=[("clear_important", "new", "normal"), *operations]
+            for operation, status, priority in operations:
                 reply = await self.post("inbox/triage", {
                     "source": source, "source_id": source_id,
                     "operation": operation, "expected_revision": expected})
@@ -125,14 +128,15 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
                 expected += 1
             final = (await self.post("inbox/list", {"source": source})).json()["items"][0]
             self.assertEqual(final["triage_status"], "assigned")
-            self.assertEqual(final["triage_revision"], 4)
+            self.assertEqual(final["triage_revision"], 7 if source=="android" else 6)
             self.assertEqual(final["triage_assigned_to"], 101)
         async with self.sessions() as db:
             self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaInboxTriage)), 3)
             audits = (await db.scalars(select(AdminPwaInboxTriageAudit))).all()
-            self.assertEqual(len(audits), 12)
+            self.assertEqual(len(audits), 19)
             self.assertTrue(all(a.actor_user_id == 101 for a in audits))
-            self.assertTrue(all(a.operation in ("mark_read", "assign_self", "resolve", "reopen") for a in audits))
+            self.assertTrue(all(a.operation in ("mark_read", "assign_self", "mark_important",
+                                                "resolve", "reopen", "clear_important") for a in audits))
             self.assertNotIn("private", repr([(a.operation, a.source_id) for a in audits]))
 
     async def test_unread_badge_is_source_authoritative_and_important_filter_is_paged(self):
@@ -150,11 +154,11 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         marked = await self.post("inbox/triage", {
             "source":"android","source_id":ids["android"],
             "operation":"clear_important","expected_revision":0})
-        self.assertEqual(marked.status_code, 400, marked.text)
+        self.assertEqual(marked.status_code, 200, marked.text)
         self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 4)
         important = (await self.post("inbox/list", {"priority":"important","limit":1})).json()
-        self.assertEqual(important["items"][0]["source"], "android")
-        self.assertIsNotNone(important["next_before"])
+        self.assertEqual([x["source"] for x in important["items"]], ["payment"])
+        self.assertIsNotNone(important["next_before"])  # Android remains auto-important despite legacy clear.
         marked = await self.post("inbox/triage", {
             "source":"bot","source_id":ids["bot"],"operation":"mark_read",
             "expected_revision":0})
