@@ -1006,6 +1006,7 @@ async function userProfile(userId) {
     const courseRows=c.tracks.map(row=>{
       const fields=[['level',row.level],['completedLessons',row.completed_lessons]];
       if(row.is_active&&c.progress)fields.push(['lastLesson',date(c.progress.last_completed_at)]);
+      if(row.unlocked_at)fields.push(['unlocked',date(row.unlocked_at)]);
       return `<article class="feedback-item"><strong>${esc(row.track==='hsk30'?'HSK 3.0':'HSK 2.0')}${row.is_active?' · '+esc(t('directoryStatusActive')):''}</strong>${profileFields(fields)}</article>`;
     }).join('');
     const nativeRows=data.devices.map(row=>`<article class="feedback-item"><strong>${esc({android:'Android',macos:'macOS',windows:'Windows'}[row.platform]||row.platform)}</strong>${profileFields([['linkedTotal',row.linked+' / '+row.total],['lastContact',date(row.last_contact_at)]])}</article>`).join('');
