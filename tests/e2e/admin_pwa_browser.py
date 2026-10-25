@@ -331,7 +331,9 @@ async def browser_checks(output):
         await expect(page.locator('.inbox-details')).not_to_contain_text('other account QA feedback')
         assert any(path.endswith('/inbox/triage') and body.get('operation')=='mark_read'
                    for path,_,body in calls if isinstance(body,dict))
-        await page.locator('.inbox-back').click()
+        await expect(page.locator('.inbox-back')).to_have_count(0)
+        await page.locator('.drawer-close').click()
+        await page.locator('[data-action=feedback]').click()
         await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.locator('.drawer-close').click()
         await page.locator('[data-route=payments]').first.click()
@@ -546,7 +548,9 @@ async def browser_checks(output):
         assert after_audit == previous_audit + 1
         assert any(path.endswith('/inbox/triage') and body.get('operation')=='mark_read'
                    for path,_,body in calls if isinstance(body,dict))
-        await page.locator('.inbox-back').click()
+        await expect(page.locator('.inbox-back')).to_have_count(0)
+        await page.locator('.drawer-close').click()
+        await page.locator('[data-action=feedback]').click()
         await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.keyboard.press('Escape')
         # Every fresh app launch revokes even a still-valid cookie and requires
@@ -853,11 +857,9 @@ async def attachment_browser_checks(output):
             assert not calls, 'Private images must not preload'
             telegram.get_file.assert_not_awaited()
             async def open_inbox():
-                # The drawer is modal; the background bell cannot be clicked
-                # while a detail is open. Follow the real in-drawer back path.
-                if await page.locator('.inbox-back').count():
-                    await page.locator('.inbox-back').click()
-                elif not await page.locator('.inbox-minimal-row').count():
+                # The duplicate in-drawer back control was removed.
+                # Close the detail and reopen the Inbox with the toolbar bell.
+                if not await page.locator('.inbox-minimal-row').count():
                     if await page.locator('#overlay').count():
                         await page.locator('.drawer-close').click()
                     await page.locator('[data-action=feedback]').click()
