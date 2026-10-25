@@ -2,7 +2,7 @@
 
 ## Why
 
-The standalone PWA has verified text-only, immediate campaign delivery, but the remaining legacy campaign controls are not connected: promotion buttons, owned photo/video, scheduled delivery and discount notices. The current [handoff](../../../docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md) and [management contract](../../../docs/admin-pwa/MANAGEMENT_COMMANDS_CONTRACT.md) deliberately exclude these contracts; implementing them requires an explicit delta rather than enabling the unbounded legacy sender.
+The standalone PWA has verified text-only, immediate campaign delivery, but the remaining legacy campaign controls are not connected: promotion buttons, owned photo/video, scheduled delivery and discount notices. The current [handoff](../../../../docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md) and [management contract](../../../../docs/admin-pwa/MANAGEMENT_COMMANDS_CONTRACT.md) deliberately exclude these contracts; implementing them requires an explicit delta rather than enabling the unbounded legacy sender.
 
 ## What Changes
 
