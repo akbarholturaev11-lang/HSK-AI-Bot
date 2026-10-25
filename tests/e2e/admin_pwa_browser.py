@@ -22,7 +22,7 @@ from PIL import Image, ImageDraw
 from cryptography.hazmat.primitives import serialization
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from playwright.async_api import async_playwright, expect
+from playwright.async_api import async_playwright, expect, TimeoutError as PlaywrightTimeoutError
 from sqlalchemy import select, func, update
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -519,7 +519,12 @@ async def browser_checks(output):
         await expect(page.locator('.sidebar')).to_have_count(1)
         async with fixture.sessions() as db:
             await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)));await db.commit()
-        await page.locator('[data-route=users]').last.click()
+        # Session revalidation may lock the shell before a navigation click.
+        # Both proactive lock and a route-triggered 401 must clear private UI.
+        try:
+            await page.locator('[data-route=users]').last.click(timeout=3000)
+        except PlaywrightTimeoutError:
+            pass
         await expect(page.locator('[data-action=signin]')).to_be_visible()
         assert 'QA account' not in await page.locator('body').inner_text()
         assert await page.evaluate('Object.keys(localStorage)')==['hsk-admin-locale']
