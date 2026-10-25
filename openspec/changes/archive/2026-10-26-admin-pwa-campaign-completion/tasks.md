@@ -1,6 +1,6 @@
 # Tasks
 
-Canonical execution checkpoint and evidence: [Admin PWA handoff](../../../docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md). This list covers only the new delta.
+Canonical execution checkpoint and evidence: [Admin PWA handoff](../../../../docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md). This list covers only the new delta.
 
 ## 1. Promotion buttons
 
@@ -29,7 +29,7 @@ Canonical execution checkpoint and evidence: [Admin PWA handoff](../../../docs/a
 ## 5. Integration
 
 - [x] 5.1 Run applicable Admin PWA security, PostgreSQL, media, legacy subscription/notification and browser suites; record executed results without treating planning validation as product QA.
-- [ ] 5.2 Commit/push each verified increment and promote the authorized tested code with exact remote verification; preserve unrelated work and unchanged external MCP scope.
+- [x] 5.2 Commit/push each verified increment and promote the authorized tested code with exact remote verification; preserve unrelated work and unchanged external MCP scope.
 
 ## Workflow follow-up
 
