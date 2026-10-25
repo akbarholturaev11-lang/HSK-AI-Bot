@@ -633,6 +633,7 @@
     "ui.admin_pwa.inboxStatusAssigned": "Biriktirilgan",
     "ui.admin_pwa.inboxStatusResolved": "Hal qilingan",
     "ui.admin_pwa.inboxMarkRead": "O‘qildi deb belgilash",
+    "ui.admin_pwa.inboxMarkAllRead": "Барча хабарларни ўқилган деб белгилаш",
     "ui.admin_pwa.inboxAssignSelf": "O‘zimga biriktirish",
     "ui.admin_pwa.inboxResolve": "Hal qilish",
     "ui.admin_pwa.inboxReopen": "Qayta ochish",
