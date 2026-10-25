@@ -22,7 +22,7 @@ from PIL import Image, ImageDraw
 from cryptography.hazmat.primitives import serialization
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from playwright.async_api import async_playwright, expect, TimeoutError as PlaywrightTimeoutError
+from playwright.async_api import async_playwright, expect
 from sqlalchemy import select, func, update
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.pool import StaticPool
