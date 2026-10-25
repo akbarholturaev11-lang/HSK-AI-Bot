@@ -3,8 +3,11 @@ import argparse
 import asyncio
 from datetime import datetime, timedelta, timezone
 import html
+import os
 import json
 from pathlib import Path
+from io import BytesIO
+from PIL import Image
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
@@ -14,6 +17,9 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
 from app.admin_api.pwa_bootstrap import create_admin_pwa_bootstrap_router
+from app.admin_api.pwa_campaign_assets import create_admin_pwa_campaign_assets_router
+from app.admin_api.pwa_campaign_schedule import create_due_campaign_poller
+from app.db.models.admin_pwa_outbound import AdminPwaOutboundJob
 from app.admin_api.pwa_campaigns import create_admin_pwa_campaigns_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_outbound import create_admin_pwa_outbound_router, create_message_drainer
@@ -22,6 +28,7 @@ from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_login_router
 from app.db.base import Base
 from app.db.models.ad_campaign import AdCampaign
+from app.db.models.admin_pwa_campaign_asset import AdminPwaCampaignAsset
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.discount_campaign import DiscountCampaign
@@ -64,6 +71,12 @@ async def browser_checks(output):
                     create_admin_pwa_passkey_login_router, create_admin_pwa_step_up_router,
                     create_admin_pwa_marketing_router):
         app.include_router(factory(**common))
+    upload_calls=[]
+    async def upload(media):
+        assert media.actor_telegram_id==9001 and Path(media.path).is_file()
+        upload_calls.append(media.media_type)
+        return 'PRIVATE_browser_media_'+str(len(upload_calls))
+    app.include_router(create_admin_pwa_campaign_assets_router(**common,upload=upload))
     app.include_router(create_admin_pwa_campaigns_router(**common, drainer=drainer))
     app.include_router(create_admin_pwa_outbound_router(**common, emit=emit, drainer=drainer))
     async def serve(route):
@@ -92,7 +105,7 @@ async def browser_checks(output):
             await db.commit()
     try:
         async with async_playwright() as pw:
-            browser = await pw.chromium.launch()
+            browser = await pw.chromium.launch(channel=os.environ.get('ADMIN_PWA_MEDIA_BROWSER_CHANNEL') or None)
             try:
                 context = await browser.new_context(viewport={'width': 1440, 'height': 1000}, service_workers='block')
                 await context.route('**/*', serve)
@@ -170,26 +183,40 @@ async def browser_checks(output):
                     row = await db.scalar(select(DiscountCampaign))
                     assert row.target_user_id == 1 and row.target_telegram_id is None and row.is_active
                     assert not row.notify_enabled and row.quota_total == 1
-                await page.locator('.drawer-close').click()
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
                 await create('release')
                 await fill('release')
+                buffer=BytesIO();Image.new('RGB',(160,90),(26,108,116)).save(buffer,format='PNG')
+                await page.locator('#campaignMediaSection summary').click()
+                await page.locator('#campaignMediaFile').set_input_files({'name':'QA-release.png','mimeType':'image/png','buffer':buffer.getvalue()})
+                await expect(page.locator('#campaignMediaPreview img')).to_be_visible(timeout=15000)
+                await begin();await page.evaluate('window.cancelStepUp()')
+                await expect(page.locator('.drawer')).not_to_have_attribute('aria-busy','true')
+                await expect(page.locator('#campaignMediaPreview img')).to_be_visible()
                 await page.locator('#releaseFeature').select_option('course')
                 await page.set_viewport_size({'width': 390, 'height': 844})
                 await begin()
                 await finish_step_up(page)
-                await expect(page.locator('[data-message-job]')).to_be_visible(timeout=15000)
+                await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
                 assert len(sent) == 1 and sent[0].reply_markup['inline_keyboard'][0][0]['callback_data'] == 'relfb:1:try'
-                assert '&lt;b&gt;plain&lt;/b&gt;' in sent[0].text
+                assert '&lt;b&gt;plain&lt;/b&gt;' in sent[0].text and sent[0].photo_file_id
+                async with fixture.sessions() as db:
+                    assert (await db.scalar(select(AdminPwaCampaignAsset))).status=='used'
                 await page.screenshot(path=str(output / 'release-sent-uz-390.png'))
-                await page.locator('.drawer-close').click()
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
                 await marketing()
+                await page.locator('[data-action=messageList]').click()
+                await expect(page.locator('[data-message-job]')).not_to_have_count(0)
+                await page.locator('.drawer-close').click()
                 await page.locator('[data-campaign-list=ad]').click()
                 await page.locator('[data-campaign-detail="1"]').click()
+                # Sending is explicit action-only, not an unsaved field change.
+                await expect(page.locator('[data-action=managementPrepare]')).to_be_enabled()
                 await begin()
                 await finish_step_up(page)
-                await expect(page.locator('[data-message-job]')).to_be_visible(timeout=15000)
+                await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
                 assert len(sent) == 2
-                await page.locator('.drawer-close').click()
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
                 await page.locator('[data-campaign-list=ad]').click()
                 await page.locator('[data-campaign-detail="1"]').click()
                 await expect(page.locator('[data-action=managementPrepare]')).to_have_count(0)
@@ -198,13 +225,202 @@ async def browser_checks(output):
                     row = await db.get(AdCampaign, 1)
                     assert row.rounds_sent == 1 and not row.is_active and row.next_send_at is None
                     assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit)) == 3
+                await page.locator('.drawer-close').click()
+                async def button_draft(language):
+                    await marketing(language)
+                    await page.locator('[data-campaign-list=ad]').click()
+                    await page.locator('[data-marketing-kind=campaign_draft]').click()
+                    await page.locator('#campaignTitle').fill('QA button campaign')
+                    for lang in ('uz','ru','tj'):
+                        panel=page.locator('.campaign-locale-copy').filter(has=page.locator('#campaignText-'+lang))
+                        if await panel.get_attribute('open') is None:
+                            await panel.locator('summary').click()
+                        await page.locator('#campaignText-'+lang).fill('QA button copy '+lang)
+                    await page.locator('[data-campaign-language=ru]').check()
+                    await page.locator('#campaignButtonSection summary').click()
+                    await page.locator('#campaignButtonAction').select_option('url')
+                    await page.locator('#campaignButtonUrl').fill('https://example.invalid/course')
+                    await page.locator('#campaignButtonCustom').check()
+                    for lang in ('uz','ru','tj'):
+                        await page.locator('#campaignButtonLabel-'+lang).fill('QA '+lang+' 中文 <test>')
+                for language in ('uz','ru','tj'):
+                    await button_draft(language)
+                    for width in (1440,390):
+                        await page.set_viewport_size({'width':width,'height':1000 if width==1440 else 844})
+                        await page.locator('#campaignButtonSection').scroll_into_view_if_needed()
+                        assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                        await page.screenshot(path=str(output/f'campaign-button-{language}-{width}.png'))
+                    await begin()
+                    await page.evaluate('window.cancelStepUp()')
+                    await expect(page.locator('.drawer')).not_to_have_attribute('aria-busy','true')
+                    await expect(page.locator('#campaignButtonAction')).to_have_value('url')
+                    await expect(page.locator('#campaignButtonUrl')).to_have_value('https://example.invalid/course')
+                    await expect(page.locator('#campaignButtonLabel-ru')).to_have_value('QA ru 中文 <test>')
+                    await page.locator('.drawer-close').click()
+                await button_draft('uz')
+                await page.locator('#campaignButtonAction').select_option('course')
+                await expect(page.locator('#campaignButtonUrl')).to_be_disabled()
+                await begin()
+                await finish_step_up(page)
+                await expect(page.locator('#drawerTitle')).to_have_text(saved_label,timeout=15000)
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                await page.locator('[data-campaign-list=ad]').click()
+                await page.locator('[data-campaign-detail="2"]').click()
+                assert await page.locator('#drawerContent img').count()==0
+                await expect(page.locator('#drawerContent')).to_contain_text('QA uz 中文 <test>')
+                await begin()
+                await finish_step_up(page)
+                await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
+                assert len(sent)==3
+                assert sent[-1].reply_markup['inline_keyboard'][0][0]=={'text':'QA ru 中文 <test>','callback_data':'promo:action:course'}
+                async with fixture.sessions() as db:
+                    assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit))==5
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                buffer=BytesIO();Image.new('RGB',(160,90),(26,108,116)).save(buffer,format='PNG')
+                photo=buffer.getvalue()
+                for language in ('uz','ru','tj'):
+                    await button_draft(language)
+                    await page.locator('#campaignMediaSection summary').click()
+                    await page.locator('#campaignMediaFile').set_input_files({'name':'QA-photo.png','mimeType':'image/png','buffer':photo})
+                    await expect(page.locator('#campaignMediaPreview img')).to_be_visible(timeout=15000)
+                    assert await page.locator('#campaignMediaPreview img').evaluate('(image)=>image.naturalWidth===160')
+                    await page.set_viewport_size({'width':390,'height':844})
+                    await page.locator('#campaignMediaSection').scroll_into_view_if_needed()
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                    await page.screenshot(path=str(output/f'campaign-media-{language}-390.png'))
+                    await begin();await page.evaluate('window.cancelStepUp()')
+                    await expect(page.locator('.drawer')).not_to_have_attribute('aria-busy','true')
+                    await expect(page.locator('#campaignMediaPreview img')).to_be_visible()
+                    await expect(page.locator('[data-action=managementPrepare]')).to_be_enabled()
+                    await page.locator('[data-action=campaignMediaClear]').click()
+                    await expect(page.locator('#campaignMediaPreview img')).to_have_count(0)
+                    await page.locator('.drawer-close').click()
+                for media in ('photo','video'):
+                    await button_draft('uz')
+                    await page.locator('#campaignMediaSection summary').click()
+                    payload=photo if media=='photo' else (ROOT/'tests/fixtures/admin_pwa_course_ad_test.mp4').read_bytes()
+                    await page.locator('#campaignMediaFile').set_input_files({'name':'QA-media.'+('png' if media=='photo' else 'mp4'),'mimeType':'image/png' if media=='photo' else 'video/mp4','buffer':payload})
+                    await expect(page.locator('#campaignMediaPreview '+('img' if media=='photo' else 'video'))).to_be_visible(timeout=150000)
+                    if media=='video':await expect(page.locator('#campaignMediaPreview video')).to_have_js_property('videoWidth',64)
+                    await begin();await finish_step_up(page)
+                    await expect(page.locator('#drawerTitle')).to_have_text(saved_label,timeout=15000)
+                    async with fixture.sessions() as db:
+                        ad=await db.scalar(select(AdCampaign).order_by(AdCampaign.id.desc()).limit(1))
+                        ad_id=ad.id
+                        assert ad.content_type==media and ad.media_file_id.startswith('PRIVATE_browser_media_')
+                        assert not ad.is_active
+                        used=await db.scalar(select(AdminPwaCampaignAsset).where(AdminPwaCampaignAsset.command_id==
+                            (await db.scalar(select(AdminPwaCommandAudit.id).order_by(AdminPwaCommandAudit.created_at.desc()).limit(1)))))
+                        assert used and used.status=='used'
+                    await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                    await page.locator('[data-campaign-list=ad]').click()
+                    await page.locator(f'[data-campaign-detail="{ad_id}"]').click()
+                    await begin();await finish_step_up(page)
+                    await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
+                    assert (sent[-1].photo_file_id if media=='photo' else sent[-1].video_file_id).startswith('PRIVATE_browser_media_')
+                    assert sent[-1].reply_markup['inline_keyboard'][0][0]['url']=='https://example.invalid/course'
+                    await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                await create('release','ru');await fill('release')
+                schedule_input=page.locator('#campaignSendAt')
+                await schedule_input.locator('xpath=ancestor::details/summary').click()
+                planned=await page.evaluate("new Date(Date.now()+180000-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16)")
+                await schedule_input.fill(planned)
+                await begin();await page.evaluate('window.cancelStepUp()')
+                await expect(page.locator('.drawer')).not_to_have_attribute('aria-busy','true')
+                await expect(schedule_input).to_have_value(planned)
+                await page.set_viewport_size({'width':390,'height':844})
+                await schedule_input.scroll_into_view_if_needed()
+                await page.screenshot(path=str(output/'release-schedule-ru-390.png'))
+                await begin();await finish_step_up(page)
+                await expect(page.locator('.saved-animation')).to_be_visible(timeout=15000)
+                assert len(sent)==5
+                async with fixture.sessions() as db:
+                    job=await db.scalar(select(AdminPwaOutboundJob).where(AdminPwaOutboundJob.not_before.is_not(None)))
+                    job_id=job.id
+                    assert job.status=='ready' and job.not_before
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                await page.locator('[data-action=messageList]').click()
+                await page.locator(f'[data-message-job="{job_id}"]').click()
+                await expect(page.locator(f'#drawerFoot [data-message-job="{job_id}"]')).to_be_visible()
+                await page.wait_for_load_state('networkidle')
+                await expect(page.locator('[data-message-run]')).to_have_count(0)
+                await expect(page.locator('[data-message-control=resume]')).to_have_count(0)
+                await drainer(job_id);assert len(sent)==5
+                async with fixture.sessions() as db:
+                    (await db.get(AdminPwaOutboundJob,job_id)).not_before=datetime.now(timezone.utc)-timedelta(seconds=1)
+                    await db.commit()
+                poll=create_due_campaign_poller(**common,drainer=drainer)
+                try:
+                    assert await poll()==1
+                    for _ in range(100):
+                        await asyncio.sleep(.05)
+                        if len(sent)==6:break
+                    assert len(sent)==6
+                finally:await poll.close()
+                for language in ('uz','ru','tj'):
+                    await marketing(language)
+                    await page.locator('[data-campaign-list=discount]').click()
+                    await page.locator('[data-campaign-detail="1"]').click()
+                    await expect(page.locator('#discountOperation')).to_have_value('send')
+                    await expect(page.locator('[data-action=managementPrepare]')).to_be_enabled()
+                    await page.locator('#discountOperation').select_option('state')
+                    await expect(page.locator('[data-action=managementPrepare]')).to_be_disabled()
+                    await page.locator('#discountOperation').select_option('send')
+                    # The first offer targets a native-only account without a registered channel.
+                    await page.locator('[data-action=managementPrepare]').click()
+                    await expect(page.locator('#campaignCommandValidation')).to_be_visible()
+                    await page.locator('.drawer-close').click()
+                await create('discount');await fill('discount')
+                await page.locator('#discountTarget').fill('2')
+                await page.locator('#campaignActive').select_option('true')
+                await begin();await finish_step_up(page)
+                await expect(page.locator('.saved-animation')).to_be_visible(timeout=15000)
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                await page.locator('[data-campaign-list=discount]').click()
+                await page.locator('[data-campaign-detail="2"]').click()
+                await begin();await page.evaluate('window.cancelStepUp()')
+                await expect(page.locator('.drawer')).not_to_have_attribute('aria-busy','true')
+                await expect(page.locator('#discountOperation')).to_have_value('send')
+                await page.set_viewport_size({'width':390,'height':844})
+                assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                await page.screenshot(path=str(output/'discount-send-uz-390.png'))
+                await begin();await finish_step_up(page)
+                await expect(page.locator('.saved-animation')).to_be_visible(timeout=15000)
+                assert len(sent)==7 and sent[-1].notice_key=='discount_offer'
+                assert sent[-1].notice_campaign_id==2 and sent[-1].phone_body
+                assert '&lt;test&gt;' in sent[-1].text
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                await page.locator('[data-campaign-list=discount]').click()
+                await page.locator('[data-campaign-detail="2"]').click()
+                await expect(page.locator('#discountOperation')).to_have_count(0)
+                await page.locator('.drawer-close').click()
+                async with fixture.sessions() as db:
+                    (await db.get(DiscountCampaign,2)).notify_enabled=True
+                    await db.commit()
+                await page.locator('[data-campaign-list=discount]').click()
+                await page.locator('[data-campaign-detail="2"]').click()
+                # A legacy active offer may be disabled. Hydrate its actual
+                # active state first; a missing current option previously
+                # selected Off as the baseline and made Save unreachable.
+                await expect(page.locator('#campaignActive')).to_have_value('true')
+                await expect(page.locator('[data-action=managementPrepare]')).to_be_disabled()
+                await page.locator('#campaignActive').select_option('false')
+                await expect(page.locator('[data-action=managementPrepare]')).to_be_enabled()
+                await page.locator('#campaignActive').select_option('true')
+                await expect(page.locator('[data-action=managementPrepare]')).to_be_disabled()
+                await page.locator('#campaignActive').select_option('false')
+                await begin();await finish_step_up(page)
+                await expect(page.locator('.saved-animation')).to_be_visible(timeout=15000)
+                async with fixture.sessions() as db:
+                    assert not (await db.get(DiscountCampaign,2)).is_active
+                assert len(upload_calls)==6 and len(sent)==7
                 assert not errors, errors
                 assert not await page.evaluate('cspFailures')
             finally:
                 await browser.close()
     finally:
         await fixture.engine.dispose()
-    print('Campaigns: real ASGI/WebAuthn; UZ/RU/TJ 390/1440, one-window cancel, native personal discount, claimed release/ad delivery and no duplicate sends passed')
+    print('Campaigns: real ASGI/WebAuthn; UZ/RU/TJ 390/1440, one-window cancel, native personal discount, claimed release/ad delivery, localized buttons, owned photo/video staging and no duplicate sends passed')
 
 
 if __name__ == '__main__':

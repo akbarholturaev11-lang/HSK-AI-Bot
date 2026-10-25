@@ -139,6 +139,12 @@ linguistic signoff.** Structural tests are not semantic approval. Keep
 original answer/grade/Pro/auth data and source SHA guards intact;
 do not merge or release with unresolved content/safety failures.
 
+## Selective OpenSpec planning (opt-in by risk)
+
+For high-risk/cross-platform features, auth, payments, entitlements, database schema changes, or substantial new modules, use the HSK AI planning skill at `.agents/skills/hsk-ai-openspec-planning/SKILL.md` and the project configuration `openspec/config.yaml` **before implementation**. Start from current source, tests, and authoritative scoped handoff documents. OpenSpec records a **proposed delta**, not a replacement for `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, localization policy, or existing product contracts.
+
+Do not require OpenSpec for small UI/copy changes, isolated bug fixes, routine documentation, or already-scoped tasks. Do not retroactively migrate active plans or maintain parallel progress logs. If using OpenSpec, keep the proposal linked to the canonical relevant feature handoff; it must not silently overrule it. Never equate a spec or checked task with passing tests, a main push, or production acceptance. Continue to follow the repository's existing risk-based tests and Git rules.
+
 ## Git intizomi
 
 Agar git ishlatilsa:
@@ -269,6 +275,10 @@ Use these skills when relevant:
 - frontend-design
 - webapp-testing
 - playwright
+
+## Admin PWA — mandatory minimal-action UX contract
+
+All Admin PWA screens and editors MUST follow [docs/admin-pwa/BROWSER_UI_CONTRACT.md](docs/admin-pwa/BROWSER_UI_CONTRACT.md) whenever adding or modifying UI. **Do not reintroduce redundant buttons, duplicate Cancel/Close actions, secondary Save/Confirm/Passkey prompts, or buttons that repeat an existing X, swipe-back or contextual action.** An edit drawer has one top-right X dismissal, supported right-swipe dismissal and at most one contextual primary action (Save/Send/etc.); no redundant footer Cancel/Close. Save remains disabled until there is a real persisted-value change and must disable again if reverted. On server-confirmed success show the existing animated checkmark then dismiss after 2.5 s. Existing transaction-bound WebAuthn, legally necessary confirmations and explicit unknown/error states are exceptions to *simplification*, not grounds to add duplicate UI. Before adding a control, verify it performs a necessary **distinct** task not already available; changes that intentionally add a second control for the same action require explicit owner approval. Keep this invariant across desktop, mobile, all future Admin PWA pages, and test updates.
 
 ## UI/UX rules
 

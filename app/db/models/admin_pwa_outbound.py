@@ -13,6 +13,7 @@ class AdminPwaOutboundJob(Base):
         CheckConstraint('audience_count BETWEEN 1 AND 1000',name='ck_pwa_outbound_audience'),
         Index('ix_pwa_outbound_actor_created','actor_user_id','created_at','id'),
         Index('ix_pwa_outbound_expires','expires_at'),
+        Index('ix_pwa_outbound_due','status','not_before','id'),
     )
     id: Mapped[str]=mapped_column(ForeignKey('admin_pwa_command_audit.id',ondelete='RESTRICT'),primary_key=True)
     actor_user_id: Mapped[int]=mapped_column(ForeignKey('users.id',ondelete='CASCADE'),nullable=False)
@@ -26,6 +27,7 @@ class AdminPwaOutboundJob(Base):
     created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),nullable=False,default=lambda:datetime.now(timezone.utc))
     expires_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),nullable=False)
     started_at: Mapped[datetime|None]=mapped_column(DateTime(timezone=True),nullable=True)
+    not_before: Mapped[datetime|None]=mapped_column(DateTime(timezone=True),nullable=True)
     run_token: Mapped[str|None]=mapped_column(String(36),nullable=True)
 
 

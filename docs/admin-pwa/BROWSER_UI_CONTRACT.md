@@ -1,5 +1,43 @@
 # Admin PWA browser increment — branch-only, flag OFF
 
+## Permanent prohibition on redundant controls — owner direction 2026-10-26
+
+**Binding rule for all future Admin PWA work, not merely Required Channels:**
+- Do **not** add a second button that performs a job already provided by X, swipe-back, the single primary editor action, or an existing navigation control. In particular, **never restore a bottom “Cancel / Bekor qilish / Отмена” or extra “Close” beside Save** in any edit drawer. The existing top-right X or supported right-swipe handles dismissal.
+- Do **not** add decorative, explanatory, or redundant buttons to make the UI appear more functional. New controls need a **unique user purpose** and should preserve the minimum number of decisions and taps. If the requested behavior can use an existing control or automatic state change, reuse it.
+- Only enable Save when a persisted value actually differs from its initial state; disabling again on exact reversion is mandatory. After confirmed success use the single animated checkmark and auto-close (~2.5 seconds); avoid a second result/confirmation page.
+- This applies to **every Admin PWA section**, new pages and future refactors on desktop and mobile. Do not undo it while updating demo parity, translations, automation or legacy tests. Tests must be updated to the accepted interaction, not the other way around.
+- Do not weaken security for visual minimalism. Explicit actions requiring WebAuthn and irreversible/high-risk flows keep their distinct security boundaries. Uncertain transactions still require a recoverable status/reread and **must not** display a success checkmark. A necessary new independent action or exceptional second control requires owner approval before it is introduced.
+
+## Unified editor and navigation UX — owner-approved 2026-10-25
+
+Based on current `main` including the compact Mac window update (PR #210),
+all Admin PWA edit drawers use top-right X or iPhone right-swipe instead of
+an additional bottom Cancel/Close button. Only the contextual mutation action
+remains in the footer. Save/edit policy buttons are disabled when the
+persisted form value is unchanged (including reversions); selection between
+price plans, help-video targets or notification languages alone does not
+count as an edit. Explicit action-only operations (blocked-account changes,
+partner decisions, payout commands, message controls) remain actionable
+because the initiating operation is already an explicit mutation intent.
+File-based proof requirements and passkey-bound command protections remain
+in force; cancellation must preserve an unsubmitted draft.
+
+After a verified successful save, replace the drawer body with an accessible
+animated SVG checkmark and the existing localized saved title, then close
+automatically after 2.5 seconds. Do not auto-claim completion on uncertain
+provider delivery or rejected/ambiguous commands, and never auto-retry them.
+The same confirmation UX covers management, access, course, HSK 3.0,
+payments with settled status and successful Push settings.
+
+On installed iPhone PWA, a rightward gesture may start anywhere on the page,
+including a drawer (no left-30%-only start zone), with a visible back indicator,
+small pull motion and short exiting slide. Exclude editable inputs, active
+WebAuthn/management commits, native horizontal scroll areas and selected text.
+Non-standalone iOS Safari retains the native outer-edge navigation zone.
+One gesture still goes back at most one section or drawer level. Respect
+reduced-motion accessibility settings.
+
 ## Owner single-window action update — 2026-10-25
 
 All management operations have one editor and one contextual action button
@@ -23,11 +61,32 @@ Its document title still says V9. This replaces the previously unavailable
 and fixed SVG icon paths are reused. No demo arrays, users, payments, charts,
 mutation handlers or fabricated success statuses are shipped.
 
+## Inbox and loading refinement — 2026-10-26
+
+The owner replaced title-only inbox entries with compact source-labelled rows:
+the original feedback preview, record ID, account ID (when resolved), timestamp,
+and attributable platform must be visible. Show both stored Bot feedback answers,
+including subscription worth and reason, not just the last one. The Bot's
+paid feedback follow-up uses a legacy `disliked_*` field for the reason;
+do not render that reason as a negative vote. The source labels
+for existing records are Telegram Bot (bot/release), Telegram Mini App (technical)
+and Android (native report); pending payment receipts have no trustworthy
+client-platform field, so do not invent Telegram/Android/Desktop attribution.
+No Desktop source exists in this unified projection yet.
+
+Load the bounded, server-owned keyset page when the drawer scrolls near its end,
+append it in place, guard concurrent/stale requests and repeated cursors, and
+do not add a manual Next control. Keep the previous list and scroll position
+when opening/closing a non-payment detail. Preserve payment-specific review
+and read-on-open rules. Use the Course Mini App's launch logo geometry and visual
+timings on the PWA loading state, but no artificial authentication/API delay and
+no attempted sound or vibration in the admin surface.
+
 ## Current owner-approved baseline — 2026-10-25
 
 Merged baselines: PRs #204, #206, #207 and #209. Current owner branch:
 `feat/admin-pwa-minimal-inbox-passkey-20261025`. Preserve
-its title-only unread-first Inbox, automatic priority/red state, explicit
+its unread-first Inbox and automatic important-source ordering, explicit
 read-on-open detail, separate receipt review and return to originating inbox.
 Keep the single close control and one-step iPhone left-zone back gesture with
 native Safari/scroll/text-selection exclusions. Existing audited triage/Push
@@ -237,3 +296,26 @@ Browser QA downloads real JSON/CSV bytes via actual SQLite/ASGI routes at
 1440/390px in UZ/RU/TJ, checks source timestamps/PII omission/definitions, 44px
 controls and no overflow, error/type/size rejection, URL cleanup and delayed
 cancellation. This does not establish physical iPhone download/share behavior.
+
+## Source-backed V10 Home and seven-tab Statistics — 2026-10-26
+
+The supplied V10 Home/Statistics structure is now backed by the separate guarded
+section reader described in `READ_PROJECTIONS.md`. Four real Home KPIs, calendar
+learning-activity SVG, pending/expiring/blocked queue links and four existing
+protected shortcuts replace the old long detail lists. The header retains its
+single Inbox bell; Home does not duplicate that control. Choosing Grant first
+selects a canonical account from the existing user list; the operation still
+runs once from its original contextual editor through native WebAuthn.
+
+Overview/course/platform/funnel/finance/sources/report retain the V10 cards,
+tracks, panels and mobile horizontal tab strip. Sections request only their own
+daily snapshot. The advanced disclosure loads experiments only on first opening;
+route/filter/session changes abort it and reject late results. Empty/immature
+rates are dashes or collecting, real zeros remain zero. Per-platform global-data
+gaps remain explicit. The report identifies basic aggregate downloads and overall
+coverage rather than claiming unimplemented section exports. No demo arrays,
+growth percentages, guessed platform shares or source-code filler are included.
+
+Canonical UZ/RU/TJ bundles own new labels. Layout uses fixed CSS/SVG attributes
+under the existing CSP, no inline styles or public private-data cache. Every
+original-editor/dirty-state/passkey/unknown-result rule above remains in force.

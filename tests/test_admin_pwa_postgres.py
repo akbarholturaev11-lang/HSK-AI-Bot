@@ -312,7 +312,7 @@ class AdminPwaPostgresConcurrencyTests(AccessGrantFixtures, PaymentFixtures, uni
             self.assertEqual((await db.get(Payment, self.payment_id)).payment_status, "pending")
             self.assertEqual((await db.get(AdminPwaStepUp, receipt)).status, "verified")
 
-    async def test_empty_qa_table_selection_runs_real_0103_through_0130_ddl(self):
+    async def test_empty_qa_table_selection_runs_real_0103_through_reviewed_head_ddl(self):
         # Rehearse only in this disposable UUID schema, not through the guarded
         # Railway CLI. The production allowlist/approval guards are untouched.
         import importlib.util
@@ -321,14 +321,17 @@ class AdminPwaPostgresConcurrencyTests(AccessGrantFixtures, PaymentFixtures, uni
         from alembic.migration import MigrationContext
         from alembic.operations import Operations
         from scripts.qa_standalone_bootstrap import (
-            _registered_model_metadata, _initial_schema_tables, MIGRATION_CREATED_TABLES,
+            _registered_model_metadata, _initial_schema_tables, MIGRATION_CREATED_TABLES, EXPECTED_HEAD,
         )
         metadata = _registered_model_metadata()
         schema = self.schema + "_bootstrap"
         versions = Path(__file__).resolve().parents[1] / "alembic/versions"
+        # The reviewed initializer head owns the boundary; a new deferred table
+        # must not silently fall outside this real migration rehearsal.
+        reviewed_version = int(EXPECTED_HEAD.split("_", 1)[0])
         paths = sorted(path for path in versions.glob("*.py")
-                       if path.name[:4].isdigit() and 103 <= int(path.name[:4]) <= 130)
-        self.assertEqual(len(paths), 28)
+                       if path.name[:4].isdigit() and 103 <= int(path.name[:4]) <= reviewed_version)
+        self.assertEqual(len(paths), reviewed_version - 102)
         async with self.engine.begin() as conn:
             await conn.execute(text(f"CREATE SCHEMA {schema}"))
             await conn.execute(text(f"SET LOCAL search_path TO {schema}"))

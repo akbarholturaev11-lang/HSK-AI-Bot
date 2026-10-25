@@ -120,6 +120,14 @@ async def browser_checks(output):
                 await editor()
                 drop_complete=True
                 await page.locator('[data-action=managementPrepare]').click()
+                # A lost HTTP response after the payment was committed is NOT
+                # positive confirmation. Show the uncertain state and require
+                # explicit authoritative re-read; never auto-resubmit or show ✓.
+                await expect(page.locator('#drawerContent')).to_contain_text(
+                    await page.evaluate('window.HSKAI_ADMIN_I18N.uz.configUncertain'),timeout=15000)
+                await expect(page.locator('.saved-animation')).to_have_count(0)
+                await page.locator('.drawer-close').click()
+                await page.locator('[data-action=payoutList]').click()
                 await expect(page.locator('[data-payout-id]')).to_be_visible(timeout=15000)
                 assert await audit_count()==1
                 async with fixture.sessions() as db:assert (await db.get(PartnerPayout,payout)).status=='paid'

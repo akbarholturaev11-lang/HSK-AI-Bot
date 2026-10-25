@@ -26,7 +26,10 @@ from app.db.models.user import User
 from app.db.models.user_client_presence import UserClientPresence
 from app.repositories.referral_repo import referral_owner_clause
 from app.services.account_identity import owner_clause
-from app.services.admin_miniapp_service import AdminMiniAppService, _payment_user_join
+from app.services.admin_miniapp_service import (
+    AdminMiniAppService, HOT_LEAD_ACTIVITY_WINDOW, HOT_LEAD_PAYMENT_STATUSES,
+    HOT_LEAD_STATUSES, _payment_user_join, admin_miniapp_today_start,
+)
 from app.services.android_analytics_service import AndroidAnalyticsService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.entitlements import resolve_state
@@ -56,6 +59,8 @@ class PageRequest(ReadRequest):
 
 class UsersRequest(PageRequest):
     query: Annotated[str, Field(max_length=80)] = ""
+    segment: Literal["all", "active_today", "paid", "pending", "wants_pay",
+                     "trial", "free", "expired", "blocked", "bot_blocked", "expiring_pro"] = "all"
 
 
 class UserDetailRequest(ReadRequest):
@@ -151,8 +156,59 @@ async def statistics(db, request: StatisticsRequest):
                                                          for row in sorted(totals, key=lambda r: r.currency)]}}
 
 
+def _user_segment_clause(segment: str, *, now: datetime):
+    """SQL-level, paginated counterparts of the Mini App's user segments.
+
+    Entitlement predicates follow resolve_state precedence; paid never includes
+    previews/trials and hot leads exclude pending receipts.
+    """
+    # The canonical classifier strips outer whitespace; filtering must agree.
+    status = func.trim(func.lower(func.coalesce(User.status, "")))
+    payment = func.trim(func.lower(func.coalesce(User.payment_status, "")))
+    blocked = status == "blocked"
+    # Include IS NOT NULL before negating these predicates: SQL's three-valued
+    # NULL logic must not discard ordinary free/expired accounts.
+    active_end = and_(User.end_date.is_not(None), User.end_date > now)
+    paid = and_(status == "active", payment == "approved", active_end)
+    preview = User.payment_preview_payment_id.is_not(None)
+    temporary = or_(preview, and_(status == "active", active_end))
+    pro_trial = and_(User.pro_trial_ends_at.is_not(None),
+                     User.pro_trial_ends_at > now, User.pro_trial_revoked_at.is_(None))
+    trial = and_(~blocked, ~paid, pro_trial, or_(preview, ~temporary))
+    temporary_access = and_(~blocked, ~paid, temporary, ~and_(preview, pro_trial))
+    expired = and_(~blocked, ~paid, ~temporary, ~pro_trial,
+                   or_(status == "expired", and_(status == "active", payment == "approved")))
+    bot_blocked = and_(User.bot_blocked_at.is_not(None),
+                       or_(User.bot_unblocked_at.is_(None),
+                           User.bot_unblocked_at < User.bot_blocked_at))
+    pending_receipt = select(Payment.id).where(
+        _payment_user_join(), Payment.payment_status == "pending",
+    ).exists()
+    clauses = {
+        "all": True,
+        "active_today": and_(User.last_active_at >= admin_miniapp_today_start(now),
+                             User.last_active_at <= now),
+        "paid": and_(~blocked, paid),
+        "expiring_pro": and_(~blocked, paid, User.end_date <= now+timedelta(days=3)),
+        # Only actual pending payment records require review. The account's
+        # denormalized payment_status may be stale after a review/cancellation.
+        "pending": pending_receipt,
+        "wants_pay": and_(status.in_(HOT_LEAD_STATUSES),
+                          payment.in_(HOT_LEAD_PAYMENT_STATUSES),
+                          User.last_active_at >= now - HOT_LEAD_ACTIVITY_WINDOW,
+                          User.last_active_at <= now,
+                          ~bot_blocked, ~pending_receipt),
+        "trial": trial,
+        "free": and_(~blocked, ~paid, ~temporary_access, ~trial, ~expired),
+        "expired": expired,
+        "blocked": blocked,
+        "bot_blocked": bot_blocked,
+    }
+    return clauses[segment]
+
+
 async def users(db, request: UsersRequest):
-    query = select(User)
+    query = select(User).where(_user_segment_clause(request.segment, now=datetime.now(timezone.utc)))
     value = request.query.strip()
     if value:
         if value.isascii() and value.isdigit():
@@ -172,10 +228,38 @@ async def users(db, request: UsersRequest):
         or_(Payment.user_id.is_not(None), User.telegram_id > 0),
     ))).all()) if ids else set()
     now = datetime.now(timezone.utc)
+    paid_ids = [row.id for row in page if resolve_state(row, now=now) == "PRO_ACTIVE"]
+    last_paid = {}
+    if paid_ids:
+        # A completed subscription clears users.selected_plan_type. Recover
+        # the last purchased duration from canonical-owned approved payments.
+        # Rank inside the bounded page, never mix legacy Telegram identifiers
+        # with canonically owned payments, and never fall back for Free users.
+        ranked = (select(
+            User.id.label("owner_id"),
+            Payment.plan_type.label("plan_type"),
+            Payment.payment_method.label("payment_method"),
+            func.row_number().over(partition_by=User.id,
+                                   order_by=Payment.id.desc()).label("payment_rank"),
+        ).join(Payment, _payment_user_join()).where(
+            User.id.in_(paid_ids), Payment.payment_status == "approved",
+        ).subquery())
+        approved = (await db.execute(select(
+            ranked.c.owner_id, ranked.c.plan_type, ranked.c.payment_method,
+        ).where(ranked.c.payment_rank == 1))).all()
+        last_paid = {owner: (plan, method) for owner, plan, method in approved}
     return {"items": [{"user_id": row.id, "name": row.full_name, "username": row.username,
                        "language": row.language, "level": row.level, "status": row.status,
                        "access_state": resolve_state(row, now=now), "end_date": _iso(row.end_date),
-                       "has_pending_payment": row.id in pending, "last_active_at": _iso(row.last_active_at)}
+                       "has_pending_payment": row.id in pending,
+                       "created_at": _iso(row.created_at),
+                       "selected_payment_method": row.payment_method,
+                       "selected_plan_type": row.selected_plan_type,
+                       "last_approved_plan_type": last_paid.get(row.id, (None, None))[0],
+                       "last_approved_payment_method": last_paid.get(row.id, (None, None))[1],
+                       "last_active_at": _iso(row.last_active_at),
+                       "access_expires_at": _iso(access_expires_at(
+                           row, resolve_state(row, now=now), now=now))}
                       for row in page],
             "next_before_id": page[-1].id if len(rows) > request.limit else None,
             "numeric_query_namespace": "users.id"}
@@ -237,6 +321,7 @@ async def user_detail(db, request: UserDetailRequest):
         "user_id": user.id, "name": user.full_name, "username": user.username,
         "language": user.language, "level": user.level, "status": user.status,
         "created_at": _iso(user.created_at), "last_active_at": _iso(user.last_active_at),
+        "selected_payment_method": user.payment_method,
         "access_state": access, "access_expires_at": _iso(access_expires_at(user, access, now=now)),
         "selected_plan_type": user.selected_plan_type,
     }, "course": {"progress": {"level": progress.level,
@@ -289,12 +374,19 @@ async def feedback(db, request: FeedbackRequest):
             "unavailable_sources": ["android_bug_reports"], "attachment_access": "not_exposed"}
 
 
-def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_reader=None):
+def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_reader=None, analytics_reader=None):
     from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
 
     statistics_reader = statistics_reader or AdminPwaStatisticsReader(
         settings_obj=settings_obj, session_factory=session_factory)
     router = APIRouter(tags=["admin-pwa-read"])
+    from app.admin_api.pwa_analytics_transport import create_admin_pwa_analytics_router
+    from app.admin_api.pwa_analytics_cache import AdminPwaAnalyticsReader
+    if analytics_reader is None:
+        analytics_reader = AdminPwaAnalyticsReader(settings_obj=settings_obj,session_factory=session_factory,
+            refresh_mutex=getattr(statistics_reader,"_mutex",None))
+    router.include_router(create_admin_pwa_analytics_router(settings_obj=settings_obj,
+        session_factory=session_factory,analytics_reader=analytics_reader))
 
     async def handle(request: Request, schema, service):
         failure = _guard_post(request, settings_obj)

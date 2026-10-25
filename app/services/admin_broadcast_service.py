@@ -130,11 +130,11 @@ class AdminBroadcastService:
 
     async def _send_one(self, chat_id, *, text, content_type, media_file_id, reply_markup):
         if content_type == "photo" and media_file_id:
-            await self.bot.send_photo(chat_id, media_file_id, caption=text or None, reply_markup=reply_markup)
+            return await self.bot.send_photo(chat_id, media_file_id, caption=text or None, reply_markup=reply_markup)
         elif content_type == "video" and media_file_id:
-            await self.bot.send_video(chat_id, media_file_id, caption=text or None, reply_markup=reply_markup)
+            return await self.bot.send_video(chat_id, media_file_id, caption=text or None, reply_markup=reply_markup)
         else:
-            await self.bot.send_message(chat_id, text, reply_markup=reply_markup)
+            return await self.bot.send_message(chat_id, text, reply_markup=reply_markup)
 
     async def _contact_url(self, button_config) -> str | None:
         config = decode_promo_button_config(button_config) or {}

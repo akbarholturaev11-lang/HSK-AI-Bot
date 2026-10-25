@@ -1,6 +1,185 @@
 # HSK AI Admin PWA — current MCP continuation checkpoint
 
-Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
+Updated 2026-10-26. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
+
+## Owner's latest V10 Home + Statistics request — 2026-10-26
+
+The owner supplied `/Users/kaijimima1234/Downloads/hsk-ai-admin-ux-demo-v10 2.html`
+again and explicitly requested the control center **and** Statistics to match
+the demo using real complete analytics, with no fake copy or numbers. This is
+current steering of the same Admin PWA task; preserve completed campaign work.
+The file remains 182,765 bytes and matches the existing reference. Original
+Home and all seven Statistics views were read and rendered at desktop/mobile:
+`/tmp/hsk-admin-demo-reference-20261026`. No demo fixture is copied into runtime.
+
+Read the new CLI-generated planning delta
+`openspec/changes/admin-pwa-v10-control-center-statistics/` before implementation.
+Proposal/design/specs/tasks are written and CLI strict validation passes.
+Home and all seven Statistics sections are implemented through the new first-party
+`/analytics` reader. Advanced experiments are a separate lazy disclosure. Real
+canonical counts, Shanghai-calendar learning activity, mature retention, Starter,
+timing/features, platform inventory/foreground, attempt funnel, currency/AI/renewal,
+source/traffic and report coverage are connected. See `READ_PROJECTIONS.md` for
+exact definitions, bounds, unsupported attribution and basic-export scope.
+No demo data is shipped; original one-editor WebAuthn and all OFF flags remain.
+
+Verification so far: focused actual PostgreSQL/Redis suite 46 passed; broader
+Admin PWA/catalog/QA suite 706 passed and 567 subtests, no skips. Actual ASGI/
+virtual-WebAuthn core browser passed seven tabs at 390/1440 in UZ/RU/TJ, including
+lazy experiments and console/overflow checks. Separate export/access/attachment/
+worker and minimal-Inbox browser passes are recorded under
+`/tmp/hsk-admin-pwa-v10-browser-20261026` and
+`/tmp/hsk-admin-pwa-v10-ui-cleanup-20261026`. A final small Home task correction
+reuses the blocked cohort instead of duplicating the header Inbox bell;
+focused/core reruns passed: 27 projection tests (including actual PostgreSQL),
+plus private R2 recovery. The header retains exactly one Inbox control. Catalogs: 63 artifacts, zero stale; adoption
+79 classified/zero stale and frozen baseline guard passed.
+
+Latest `main` `d9e70fa5` (PR #218) is now integrated locally, preserving course
+limits/Trial, the seven-column user directory and explicit payment choice before
+signing. Home's Limits shortcut opens that actual access/limits tab; it does not
+load the unopened course funnel. Combined core browser passed all seven tabs and
+actual signed review; relevant backend/PG/media/discount/import regressions:
+118 passed, 57 subtests. Legacy payment/subscription/native notice suite:
+96 passed, 114 subtests. Full settings and campaign browsers passed on the combined code, including
+actual signed limits/Trial writes, dirty-state/reversion, payment decisions,
+owned media, scheduling and one-round discount sends. The old stale promotion candidate is archived; a fresh managed candidate
+from `d9e70fa5` is attached at `admin-pwa-v10-promotion-20261026/HSK AI bot`.
+No new campaign/analytics promotion has been pushed yet.
+
+CI 40242998550 passed PostgreSQL, unit/legacy/catalog checks, actual V10 core,
+exports, access, attachment, worker and consent browsers. It then exposed a
+UI-only bridge collision: suffix `/analytics` intercepted `hsk30/analytics`.
+The bridge now matches the standalone endpoint exactly; the combined minimal
+Inbox/course UZ/RU/TJ browser passed locally. No runtime guard was weakened.
+While waiting, main advanced to `b510b6fc` (real selected duration/Pro-tier
+columns); this is integrated too. Relevant read/shell/import tests: 34 passed,
+11 subtests; actual core browser passed again. The latest source CI is pending
+before authorized promotion. Both worktrees retain the intended code only;
+Graphify dirt remains unrelated and unstaged.
+
+Campaign code is pushed through `194ae4df`, which fixes legacy active-offer
+dirty-state hydration and the CI branded media browser.
+Core/revoke Linux browser, consent, inbox, settings and outbound passed in CI
+40222121551; only actual H.264 preview failed in Linux Chromium. The correction
+installs/uses branded Chrome for the campaign media test without weakening
+videoWidth assertions (official Playwright media-codec guidance is recorded).
+CI 40223121959 completed successfully for `194ae4df`, including PostgreSQL
+and the actual branded-Chrome MP4 preview.
+The latest local campaign browser including legacy offer Off/revert/sign passed
+in `/tmp/hsk-admin-pwa-final-legacy-offer-20261026`; shell tests: eight passed.
+
+The older promotion base was `1db08846`; **no new campaign/analytics promotion
+has been pushed yet**. Remote main has advanced as described above. A clean
+managed promotion worktree is attached at
+`/Users/kaijimima1234/.codex/worktrees/admin-pwa-campaign-promotion-20261026/HSK AI bot`,
+currently prepared at `c93443f8` (campaigns plus deterministic revoke test).
+It must receive the final media CI/offer correction and any later approved
+code before promotion, and current remote main must be refreshed. Root source
+branch remains `feat/admin-pwa-minimal-inbox-passkey-20261025`. Graphify outputs
+are unrelated dirty files: never stage them or reset the user's local main.
+Owned local PostgreSQL 55137 and Redis 55138 were stopped after verification.
+
+## Current campaign continuation — 2026-10-26
+
+- Prior ready code is verified on `origin/main` at `8d473cd9`. The feature was
+  synchronized with that promotion, then the latest main `0905dedc` was merged:
+  compact Mac layout, user/profile filters and audited billing state, automatic
+  Apple Web Push and selective OpenSpec planning are preserved. Their upstream
+  defaults are not reverted by this work.
+- The owner asked to continue remaining Admin PWA work. The CLI-generated
+  [campaign delta](../../openspec/changes/admin-pwa-campaign-completion/proposal.md)
+  records button/media/scheduling/discount-notice contracts; OpenSpec 1.15.0
+  `validate --strict` passes. That is planning validation only. This handoff
+  remains the canonical execution checkpoint.
+- First increment implemented: strict optional promotion button in a signed ad
+  draft, existing allowlisted actions and HTTPS/@username link, existing
+  localized defaults or explicit three-language labels. Shared legacy behavior
+  remains compatible. Rendered labels/targets participate in detail revision
+  and send commitment; save rechecks contact under the shared key lock. The
+  queue holds the reviewed markup, so later changes cannot replace it and no
+  per-recipient contact query is added. Browser callback/provider JSON is denied.
+- Tests: campaign button/marketing/outbound/shared Bot regressions with real
+  isolated PostgreSQL **65 passed, 71 subtests**. Actual campaign browser passed
+  UZ/RU/TJ at 390/1440, native cancellation preserving all inputs, real signed
+  draft creation, safe preview and one exact callback delivery. Full settings
+  browser passed after latest main integration. Evidence:
+  `/tmp/hsk-admin-pwa-campaign-buttons*-20261026`. Mobile screenshot reviewed.
+  JS/Python syntax, diff and catalog checks passed: 63 artifacts, zero stale.
+- Owned media increment is implemented: migration 0131, same-admin/session
+  ready assets (15 min), 20/hour quota, two upload slots and one encoder.
+  Photo 2 MiB/8MP; video 25 MiB/4K/3min, forced local containers/protocols.
+  Provider references stay server-owned; SQL contains no binary. Ad drafts
+  and release feedback consume ready media atomically with proof/audit/queue.
+  Caption plus release prompt is bounded to 1024 escaped UTF-16 units.
+  Metadata retention preserves the one-hour quota window and referenced media.
+- Media/campaign/button/outbound/shared/QA/import regressions: 93 passed and
+  105 subtests; an added release test's incorrect callback expectation was
+  corrected to the shared `relfb:` contract and its rerun passed. All 13 media
+  tests including actual PostgreSQL migration/expiry-lock tests then passed.
+  Actual campaign ASGI/virtual-WebAuthn browser passed local photo and real MP4
+  decode, CSP, native cancellation, signed ad/release sends and UZ/RU/TJ mobile
+  layout. Existing course media browser passed. Evidence:
+  `/tmp/hsk-admin-pwa-release-media-20261026`,
+  `/tmp/hsk-admin-pwa-course-media-secure-20261026`. Screenshot reviewed.
+  Catalogs: 63 artifacts, zero stale; syntax/diff/OpenSpec checks passed.
+- Newly fetched main `1db08846` original-editor/swipe UX is integrated; media
+  readiness shares the dirty-state controller, without duplicate footer actions.
+  Shell tests (8) and actual campaign browser passed on the merged code.
+- Next: policy-preserving discount notices after scheduling below. No external MCP scope or manual deployment change.
+
+## Session-bound campaign scheduling — 2026-10-26
+
+- 0132 adds nullable indexed `not_before`. Ad/release send accepts explicit
+  UTC time up to 30 minutes ahead, strictly before session expiry and the ad
+  window end. Prepare and save recheck it; no session/private-body TTL extension.
+  Early manual/API/background sends refuse before claim/provider IO.
+- The existing minute worker selects at most two due ready jobs under a 3s
+  statement deadline, excluding revoked/expired/non-admin sessions. Two tracked
+  tasks reuse the existing shared drainer slots; disabled PWA causes zero SQL.
+  Cross-worker job claims prevent duplicate attempts. Shutdown cancels tasks;
+  an uncertain claim still requires explicit pending-only handling.
+- Native cancel retains the selected local time. The same original editor
+  sends once through passkey; successful queue save uses main's existing short
+  checkmark/dismiss UX. Job detail shows due time and no early Run/Resume CTA.
+  Fresh signed pending-only resume preserves original due time and expiry.
+- Verification: scheduling tests **8 passed** including real PostgreSQL
+  migration parity/refused nonempty downgrade/concurrent drainers. Related
+  campaign/media/outbound/QA/import suite **56 passed, 46 subtests**. Actual
+  ASGI/WebAuthn campaign browser passed staged media, UTC schedule, native
+  cancellation, no early send and due poll delivery. Evidence:
+  `/tmp/hsk-admin-pwa-schedule-final-20261026`; RU mobile screenshot reviewed.
+  Main211 full settings browser also passed. Catalog/syntax/diff checks passed.
+- Next code increment: policy-preserving discount notices, then integration
+  verification and authorized main promotion. No manual deployment/flag change.
+
+## Signed discount notices — 2026-10-26
+
+- A separate `discount_send` signs active-offer revision, exact canonical
+  audience, escaped three-language Telegram/phone copy and shared subscription
+  entry markup. `notification_sent_at` reserves one round atomically with
+  proof/audit/queue; legacy notifications stay off and checkout is unchanged.
+- The audience is one bounded query (1001 sentinel), using canonical/legacy
+  payment ownership, shared quota/repeat rules and global paid-user exclusion.
+  Native-only/Bot-blocked accounts retain the existing Android-first notice
+  route. Provider fanout is capped at eight recent native devices.
+- The production adapter uses shared `discount_offer` delivery and existing
+  Play silent acknowledgement, never a direct promotional Bot bypass. The
+  dedicated session releases SQL before provider IO. Unknown native attempts
+  have no automatic fallback deadline; known accepted ones keep the existing
+  ten-minute acknowledgement policy. Stop/late receipt and uncertain no-retry
+  behavior remain consistent. Notice sending changes no access/payment state.
+- Focused new notice/shared Android suite **32 passed**, including actual
+  PostgreSQL ownership/claim tests, one-query audience, bounded native fanout,
+  SQL release, Play acknowledgement, no unknown fallback, Stop/late counters,
+  stale-offer/audit rollback and live usage/expiry. Earlier combined
+  notice/shared/campaign/outbound/import run: **70 passed, 31 subtests**.
+  Actual ASGI/WebAuthn campaign browser passed UZ/RU/TJ no-channel errors,
+  operation selector dirty-state, native cancellation, exact signed notice and
+  one-round denial after send, plus media and scheduling regression. Evidence:
+  `/tmp/hsk-admin-pwa-discount-final-20261026`; mobile screenshot reviewed.
+- Full integration suite and authorized main promotion are next. Do not call
+  planning checkboxes, feature push or provider acceptance product completion.
 
 ## Owner-approved main promotion — 2026-10-25
 

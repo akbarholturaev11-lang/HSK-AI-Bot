@@ -39,9 +39,11 @@ async def browser_checks(output):
                              triage_status=status, triage_priority=priority,
                              triage_revision=0, triage_assigned_to=None,
                              created_at="2026-09-01T01:00:00+00:00" if source == "release" else STAMP, message="Synthetic " + source + " message",
-                             has_attachment=source == "bot", image_preview_available=source == "bot"))
+                             has_attachment=source == "bot", image_preview_available=source == "bot",
+                             feedback_parts={"liked": "Synthetic bot message", "disliked": "Synthetic issue", "paid": True} if source == "bot" else None))
     rows = copy.deepcopy(original)
     requests, triage, errors = [], [], []
+    paginated = [False]
     stream = io.BytesIO()
     Image.new("RGB", (320, 150), "#e7f0f2").save(stream, "PNG")
 
@@ -66,6 +68,16 @@ async def browser_checks(output):
             data.update(user_id=101, mcp_available=True, push_available=True)
         elif path.endswith("/auth/logout"):
             data.update(status="logged_out")
+        elif path == "/api/admin/v1/analytics":
+            metrics={"users_total":3,"new_accounts":1,"active_accounts":2,"active_pro":1,
+                "active_today":2,"pending_current":1,"expiring_pro":1,"paying_accounts":1,"bot_blocked":0,"blocked_current":0,
+                "payments_by_status":{"pending":1,"approved":1,"rejected":0},
+                "activity":{"points":[]},"levels":[],"languages":[],
+                "course_engagement":{"engaged_accounts":2,"started_accounts":1,"completed_accounts":1}}
+            if payload['section']=='report':
+                metrics={"quality":[],"detail_row_limit":5000}
+            data.update(available=True,platform="overall",period=payload['period'],generated_at=STAMP,
+                scope={"section":payload['section']},metrics=metrics)
         elif path.endswith("/statistics"):
             data.update(available=True, platform="overall", generated_at=STAMP, metrics={
                 "users_total": 3, "new_accounts": 1, "active_accounts": 2,
@@ -81,7 +93,16 @@ async def browser_checks(output):
                         and (payload["status"] == "all" or row["triage_status"] == payload["status"])
                         and (payload["period"] == "all_time" or datetime.fromisoformat(row["created_at"]) >=
                              datetime.fromisoformat(STAMP) - timedelta(days=7 if payload["period"] == "weekly" else 30))]
-            data.update(items=copy.deepcopy(selected), next_before=None)
+            if paginated[0]:
+                if payload.get("before") is None:
+                    data.update(items=[dict(copy.deepcopy(original[0]), source_id=i) for i in range(200, 230)],
+                                next_before={"created_at": STAMP, "source": "bot", "source_id": 229,
+                                             "unread": True, "important": False})
+                else:
+                    data.update(items=[dict(copy.deepcopy(original[0]), source_id=i) for i in range(230, 235)],
+                                next_before=None)
+            else:
+                data.update(items=copy.deepcopy(selected), next_before=None)
         elif path.endswith("/inbox/triage"):
             triage.append(payload)
             row = next(row for row in rows if row["source"] == payload["source"])
@@ -119,6 +140,25 @@ async def browser_checks(output):
             data.update(sending_enabled=False, subscriptions=[dict(id=UUID, platform="iphone", created_at=STAMP)])
         elif path.endswith("/payments/list"):
             data.update(items=[], next_before_id=None)
+        elif path.endswith("/hsk30/analytics"):
+            data.update(analytics=dict(period_days=payload["days"],track_activated_users=2,
+                 selected_level_users=3,payments={"approved":1},
+                 course_funnel=[{"key":"promo_shown","label":"Таклиф кўрсатилди","users":4},
+                                {"key":"track_activated","label":"HSK 3.0 курси очилди","users":2}],
+                 coverage_note="Synthetic HSK 3.0 funnel"))
+        elif path.endswith("/hsk30/read"):
+            data.update(hsk30=dict(enabled=True,unlock_payment_enabled=True,unlock_price_tjs=99,
+                                   live_levels=["nhsk1","nhsk2"],available_levels=["nhsk1","nhsk2","nhsk3"]))
+        elif path.endswith("/course-access/read"):
+            data.update(course_access=dict(mode="subscription",free_until=None,saved_at=STAMP))
+        elif path.endswith("/limits/read"):
+            rules={"lesson.start":{"limit":2,"window":"daily"},
+                   "ai.text":{"limit":5,"window":"daily"},
+                   "practice.placement":{"limit":1,"window":"lifetime"}}
+            data.update(limits=dict(plans={"FREE":rules,"TRIAL_ACTIVE":copy.deepcopy(rules)},
+                                    trial={"enabled":True,"days":7,"disabled_reason":"",
+                                           "ai_budget_usd":1.5,"min_account_age_hours":0}),
+                        revision_hash="0"*64)
         else:
             raise AssertionError("Unexpected UI request: " + path)
         await route.fulfill(status=200, json=data)
@@ -150,10 +190,16 @@ async def browser_checks(output):
                     bot = page.locator('[data-inbox-open="bot:1"]')
                     await expect(bot).to_have_count(1)
                     assert await bot.evaluate("e=>e.getBoundingClientRect().height>=44")
-                    assert "Synthetic bot message" not in await page.locator('#drawerContent').inner_text()
+                    await expect(bot.locator(".inbox-row-preview")).to_contain_text("Synthetic bot message")
+                    await expect(bot.locator(".inbox-row-meta")).to_contain_text("Telegram Bot")
+                    assert not await page.locator("[data-feedback-next]").count()
                     await page.screenshot(path=str(output / f"inbox-minimal-{language}-{width}.png"))
                     await bot.click()
-                    await expect(page.locator(".inbox-details-text")).to_contain_text("Synthetic bot message")
+                    await expect(page.locator(".inbox-details-text")).to_have_count(2)
+                    await expect(page.locator(".inbox-details-text").first).to_contain_text("Synthetic bot message")
+                    await expect(page.locator(".inbox-details-text").last).to_contain_text("Synthetic issue")
+                    assert "👎" not in await page.locator(".inbox-detail-messages").inner_text()
+                    await expect(page.locator(".inbox-detail-meta")).to_contain_text("Telegram Bot")
                     assert triage[-1]["source"]=="bot" and triage[-1]["operation"]=="mark_read"
                     await expect(page.locator('[data-inbox-attachment]')).to_have_count(1)
                     before = len(requests)
@@ -207,6 +253,17 @@ async def browser_checks(output):
             await expect(page.locator('[data-inbox-open="technical:1"]')).to_have_class(__import__("re").compile("is-read"))
             assert not await page.locator('[data-inbox-op]').count()
             await page.locator(".drawer-close").click()
+            # Paged Inbox appends, never replaces rows or exposes a "Next" button.
+            paginated[0] = True
+            await page.locator('[data-action="feedback"]').click()
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(30)
+            assert not await page.locator('[data-feedback-next]').count()
+            await page.locator("#drawerContent").evaluate("(el) => { el.scrollTop=el.scrollHeight; }")
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(35)
+            assert any(path.endswith("/inbox/list") and payload.get("before")
+                       for path, payload in requests if payload)
+            await page.locator(".drawer-close").click()
+            paginated[0] = False
             for action, target in (("pushSettings", "[data-push-revoke]"),
                                    ("mcpConnections", "[data-mcp-revoke]")):
                 await page.locator('[data-action="more"]').click()
@@ -222,6 +279,39 @@ async def browser_checks(output):
                     await page.locator(target).click()
                     await expect(page.locator('[data-action="mcpRevokeConfirm"]')).to_have_count(0)
                 await page.locator(".drawer-close").click()
+
+            # Mac-sized Safari/Chromium windows retain the full sidebar and Kurs view.
+            for width, height in ((820, 600), (1024, 650), (1280, 800)):
+                await page.set_viewport_size({"width": width, "height": height})
+                await page.locator('.sidebar [data-route="course"]').click()
+                await expect(page.locator(".course-subtabs [role=tab]")).to_have_count(4)
+                await expect(page.locator('[data-action="hsk30Settings"]')).to_have_count(2)
+                await page.locator('[data-course-tab="access"]').click()
+                await expect(page.locator('[data-course-window]')).to_have_count(3)
+                for field in await page.locator('[data-course-window]').all():
+                    assert await field.locator("option").all_text_contents() == [
+                        "Кунлик" if await page.evaluate("document.documentElement.lang")=="uz" else
+                        "В день" if await page.evaluate("document.documentElement.lang")=="ru" else "Ҳар рӯз",
+                        "Бир умр" if await page.evaluate("document.documentElement.lang")=="uz" else
+                        "За всё время" if await page.evaluate("document.documentElement.lang")=="ru" else "Барои тамоми умр"]
+                await page.locator('[data-course-tab="tracks"]').click()
+                geometry = await page.evaluate("""() => {
+                    const sidebar = document.querySelector('.sidebar').getBoundingClientRect();
+                    const main = document.querySelector('main.main').getBoundingClientRect();
+                    return {scrollWidth: document.documentElement.scrollWidth,
+                            sidebarLeft: sidebar.left, sidebarRight: sidebar.right,
+                            mainLeft: main.left, mainRight: main.right};
+                }""")
+                assert geometry["scrollWidth"] <= width + 1, geometry
+                assert geometry["sidebarLeft"] >= -1, geometry
+                assert geometry["sidebarRight"] <= width * 0.29, geometry
+                assert geometry["mainLeft"] >= geometry["sidebarRight"] - 1, geometry
+                assert geometry["mainRight"] <= width + 1, geometry
+                if height < 780:
+                    await page.locator(".sidebar").evaluate("(el) => { el.scrollTop = el.scrollHeight; }")
+                    assert await page.locator(".sidebar .side-foot").evaluate(
+                        "(el) => el.getBoundingClientRect().bottom <= innerHeight + 2")
+                await page.screenshot(path=str(output / f"course-compact-mac-{width}.png"))
             assert not errors, errors
             assert not await page.evaluate("window.cspFailures"), await page.evaluate("window.cspFailures")
         finally:
