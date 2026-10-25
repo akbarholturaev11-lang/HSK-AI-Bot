@@ -1,6 +1,6 @@
 # Admin PWA — final product and acceptance contract (temporary)
 
-> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-seamless-passkey-20261025` (PR #204 is merged baseline).
+> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `fix/admin-pwa-faceid-every-open-20261025` (PR #207 is merged baseline).
 > Not a repository-wide policy. Does not modify or supersede root `AGENTS.md` / `AI_RULES.md` / `PROJECT_MEMORY.md`.
 > All development and progress records for this task remain under `docs/admin-pwa/`.
 
@@ -18,7 +18,7 @@ feature defaults false; no main promotion or deployment is authorized here.
 ### A. Identity and admin access
 - [ ] Existing Telegram Admin Mini App works identically at its present endpoint with signed initData; no admin guard/flow regression.
 - [ ] First standalone Admin PWA onboarding: verified Google OAuth **AND** one-time Telegram approval by an allowlisted admin → canonical identity binding → passkey enrollment.
-- [ ] Returning PWA login: transparently revalidate an unexpired server session; if absent/expired, attempt a fresh registered passkey automatically once and show an explicit button only when WebKit/user activation or user cancellation prevents this. No repeat Google/Telegram; session expiry/revocation and current admin role remain server-enforced. Google or audited Telegram recovery is secondary.
+- [ ] Returning PWA login: on each launch/resume revoke any prior authenticated cookie and require a fresh registered passkey. Start the biometric WebAuthn prompt automatically with a manual button only if browser user-activation restrictions or cancellation prevent it. Show the public shell/loading while waiting; no private data before verified assertion. Google/Telegram recovery remains secondary; server-side access guards are unchanged.
 - [ ] WebAuthn verification is implemented **server-side** using correct origin `https://hskai.app`, RP ID `hskai.app`, fresh one-use challenges, verified credential ID/public key, user verification and admin allowlist re-checks.
 - [ ] Face ID / Touch ID / Windows Hello / PIN fallback explained truthfully and manually checked on available devices; inability to force Face-ID-only is documented.
 - [ ] Secure session expiry/revocation, HttpOnly Secure cookies, CSRF/origin protection, same-origin policy and accessible sign-in/error/recovery UI.

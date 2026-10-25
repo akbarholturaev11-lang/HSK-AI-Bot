@@ -65,7 +65,7 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         # The actual Web Push provider and physical Apple delivery are not
         # exercised by this public-shell regression.
 
-    async def test_minimal_inbox_and_seamless_passkey_launch_contract(self):
+    async def test_minimal_inbox_and_fresh_biometric_each_open_contract(self):
         script=(await self.get('/admin/assets/app.js')).text
         list_section=script.split('async function inbox(before=null,userId=null)',1)[1].split('async function mutateInbox(',1)[0]
         self.assertNotIn('inboxSearchForm',list_section)
@@ -80,10 +80,16 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("if(state.phase==='signin')await tryAutomaticPasskeyLogin();",script)
         self.assertIn("await api('me',null,{method:'GET',publicAuth:true})",script)
         self.assertIn("automaticLoginAttempted=true",script)
+        self.assertIn("if(sessionMustBeCleared){await lockAndRequirePasskey();return;}",script)
+        self.assertIn("await api('auth/logout',{}, {publicAuth:true})",script)
+        self.assertIn("sessionMustBeCleared=true;requireFreshLoginOnResume=true;",script)
+        self.assertIn("if(sessionMustBeCleared&&!document.hidden)lockAndRequirePasskey();",script)
+        self.assertIn("lockAndRequirePasskey();\n})();",script)
         self.assertIn("await api('auth/logout',{})",script)
-        self.assertNotIn("lockAndRequirePasskey",script)
-        self.assertNotIn("await api('auth/logout',{}, {publicAuth:true})",script)
         self.assertIn("await api('auth/passkey/login/verify'",script)
+        self.assertIn("if(resumed&&shouldReloadForApplePwaBiometric()){location.reload();return;}",script)
+        login_gate=script.split('async function lockAndRequirePasskey() {',1)[1].split('async function tryAutomaticPasskeyLogin()',1)[0]
+        self.assertLess(login_gate.index("await api('auth/logout',{}, {publicAuth:true})"),login_gate.index("await boot()"))
 
     async def test_iphone_left_zone_swipe_is_single_step_and_input_safe(self):
         script=(await self.get('/admin/assets/app.js')).text

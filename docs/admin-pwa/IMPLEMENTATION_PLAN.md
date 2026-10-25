@@ -3,16 +3,17 @@
 Status (updated 2026-10-25): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, manual grants, course/HSK30 controls, scoped OAuth/MCP, profiles, daily statistics/feedback snapshots and bounded JSON/CSV, native/technical inbox and default-OFF Apple Push sender exist. Private Redis/R2 reuse is implemented. The owner baseline uses minimal title-only Inbox rows and automatic importance; the latest follow-up revalidates an existing admin session and auto-attempts passkey when needed. Remaining management, retention/operator flows and release acceptance are tracked explicitly below. The old 0011 cold-start migration failure remains separate.**
 
 Target public URL: `https://hskai.app/admin` (owner-designated; live routing/TLS not verified).
-Branch: `feat/admin-pwa-seamless-passkey-20261025` (follow-up based on merged PR #204; PR #201/#200 foundations are merged). No main push/merge, deploy or flag activation.
+Branch: `fix/admin-pwa-faceid-every-open-20261025` (follow-up to merged PR #207). No main push/merge, deploy or flag activation until reviewed.
 
 ## Owner UI and branch update — 2026-10-25
 
-Current scoped passkey follow-up: `feat/admin-pwa-seamless-passkey-20261025`.
-Preserve accepted Inbox, automatic importance and scoped iPhone back gesture.
-Revalidate existing server session on launch/resume, then auto-attempt WebAuthn
-once if required, with manual fallback for gesture-restricted browsers.
-Prior forced logout/session-revocation-on-resume instruction is superseded
-by the owner's later iPhone/Mac minimal-step approval.
+Current scoped fix: `fix/admin-pwa-faceid-every-open-20261025`.
+Owner requires fresh Face ID/Touch ID on every new launch and resume, without
+tapping an app-level sign-in button. Revoke prior session before any private read,
+show shell/loading while WebAuthn is pending, attempt one automatic modal
+WebAuthn ceremony, and keep the manual fallback where Safari/WebKit restricts
+gesture-free prompts. Preserve minimal Inbox, automatic importance, iPhone back
+gesture, enrollment and exact operation-bound step-up confirmations.
 
 ## Active continuation — owner instruction, 2026-10-24
 
@@ -185,7 +186,7 @@ checkboxes below. Acceptance still requires actual staging/device evidence.
 ### Phase 1B — Register passkey + passwordless returning login (core requirement)
 - Post-onboarding passkey setup: server challenge and registration; store credential ID, public key, canonical admin owner, backup/sync flags, sign count and lifecycle metadata. Request `residentKey:"required"` and `userVerification:"required"` where supported.
 - Sign in by passkey alone on later browser visits without Google or Telegram: verify assertion challenge/expiry, RP ID `hskai.app`, exact allowed origin(s), signature, account ownership, user-verification flag, revocation and up-to-date admin permission. Issue a new HttpOnly browser session only after proof.
-- Open PWA without prompts when existing session is valid; otherwise present **“Passkey / Face ID билан кириш”** first and linked Google/Telegram as recovery options. Do not call it guaranteed Face-ID-only.
+- Always require fresh passkey at launch/resume; attempt the prompt automatically and show **“Passkey / Face ID билан кириш”** only as Safari/WebKit fallback. Google/Telegram remain recovery options. Never claim Face-ID-only guarantees.
 - Verify manual Safari vs standalone Home Screen PWA, Mac Touch ID, Windows Hello, Android supported-device cases and browser failure/recovery states.
 **Acceptance:** user can log out, return and log in solely with registered passkey; cross-account, replay, wrong domain/origin, revoked credential and missing verification fail closed.
 

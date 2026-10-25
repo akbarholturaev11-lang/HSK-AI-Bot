@@ -22,18 +22,20 @@ mutation handlers or fabricated success statuses are shipped.
 
 ## Current owner-approved baseline — 2026-10-25
 
-Merged baseline: `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204. Follow-up: `feat/admin-pwa-seamless-passkey-20261025`. Preserve
+Current follow-up: `fix/admin-pwa-faceid-every-open-20261025` (after merged PR #207). Preserve
 its title-only unread-first Inbox, automatic priority/red state, explicit
 read-on-open detail, separate receipt review and return to originating inbox.
 Keep the single close control and one-step iPhone left-zone back gesture with
 native Safari/scroll/text-selection exclusions. Existing audited triage/Push
 transport remains compatible; manual priority/assignment controls are absent.
-On launch/resume, first revalidate the Secure HttpOnly cookie with /me.
-An unexpired, non-revoked session with current admin rights opens directly;
-after a 401, try one automatic passkey assertion per foreground visit.
-iOS/macOS/WebKit may reject gesture-free modal assertions, so retain the
-manual passkey action without recurring prompts. Logout explicitly revokes
-the server session; private browser memory clears on hide/pagehide/offline.
+On every new launch and foreground resume, revoke the previous Secure HttpOnly
+session server-side before any protected data read. Render the public shell and
+loading state in parallel with authorization, but never fetch/render sensitive
+admin projections until the fresh WebAuthn assertion is verified. Automatically
+attempt a modal passkey request (Face ID/Touch ID when the OS offers it), with
+the existing manual Passkey button only when WebKit blocks the gesture-free
+request or it is cancelled. Failed revocation fails closed. Hide/pagehide
+clears private browser memory; step-up for risky mutations remains separate.
 Exact transaction-bound high-risk confirmations remain separate.
 
 ## Routes, data and isolation
@@ -100,7 +102,7 @@ existing atomic financial transaction.
   no-query allowlist caches shell + five public assets only. It never handles
   API/auth/receipt/attachment/legacy requests. Private responses are no-store;
   private data lives in memory and is cleared on offline, pagehide and 401.
-  Reopening/returning verifies the current session. LocalStorage holds only
+  Reopening/returning revokes the old session and requires fresh passkey. LocalStorage holds only
   the allowlisted locale. Tokens/proofs stay Secure HttpOnly cookies.
 - Shell uses external scripts/styles and strict CSP without unsafe-inline.
   Dynamic server text is HTML escaped. Modal focus trap, inert background,

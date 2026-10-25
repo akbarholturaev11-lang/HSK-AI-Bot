@@ -1,9 +1,10 @@
-> **OWNER UPDATE (2026-10-25):** Current scoped passkey follow-up:
-> `feat/admin-pwa-seamless-passkey-20261025`, based on merged PR #204.
-> Preserve accepted minimal Inbox and iPhone swipe-back. Reuse server-validated
-> cookie sessions and auto-attempt WebAuthn once when necessary, falling back to
-> the existing button on Safari/WebKit. This replaces prior forced revocation
-> on each launch/resume. No main push or deploy.
+> **OWNER UPDATE (2026-10-25):** Current fix:
+> `fix/admin-pwa-faceid-every-open-20261025`, based on merged PR #207.
+> Every launch/resume must revoke the old cookie and attempt a fresh automatic
+> WebAuthn biometric assertion before private admin reads. Public shell loading
+> can continue; Safari/WebKit may require a manual fallback button. Preserve
+> minimal Inbox, exact high-risk step-up and iPhone swipe-back. No main push
+> or deploy until relevant CI succeeds.
 
 > **CURRENT MCP workstream branch clarification (2026-10-24):** Previous `codex/admin-pwa` was merged to `main` in PR #200. All NEW MCP work is intentionally isolated to **`feat/admin-pwa-mcp-readonly-20261024` / Draft PR #201**, as specified in [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Continue obeying every scoped safety/UI/approval rule below; the branch and startup sequence below reflect the current follow-up. No new merge/deploy/flag enablement is authorized.
 
@@ -39,7 +40,7 @@
 
 - Keep Telegram Admin Mini App `/admin.html` and `X-Telegram-Init-Data` flows fully operational. No spoofed initData and no bypass in existing admin guards.
 - Admin PWA public target is `https://hskai.app/admin` **subject to real DNS, TLS, proxy and collision verification**. Do not claim it is live or that OAuth callback/RP ID is configured without evidence.
-- First onboarding: verified Google OIDC identity + one-time explicit approval by an authorized Telegram admin + secure canonical admin link + passkey enrollment. Returning login is **passkey-first without repeating Google/Telegram**. On launch/resume validate the existing cookie on the server; if invalid, auto-attempt passkey once per foreground visit. Safari/WebKit may require interaction, so preserve the manual fallback. Explicit logout still revokes the server session. Linked Google and audited Telegram recovery are fallbacks, not each-open requirements.
+- First onboarding: verified Google OIDC identity + one-time explicit approval by an authorized Telegram admin + secure canonical admin link + passkey enrollment. Returning login is **passkey-first without repeating Google/Telegram**. On launch/resume revoke the old server session, then auto-attempt fresh passkey before any private reads. Safari/WebKit may require interaction, so preserve the manual fallback. Failed revocation blocks login; explicit logout also revokes. Linked Google and audited Telegram recovery are fallbacks, not each-open requirements.
 - WebAuthn (FIDO2) is platform authentication (Face ID, Touch ID, Windows Hello, PIN/passcode depending on device), **not a guaranteed Face-ID-only API**. Relying-party ID: `hskai.app` for production; origin `https://hskai.app`. Browser/server never receive biometric templates.
 - For payments, deletion, granting paid access, broadcast and other high-risk mutations require an **action/target/payload-bound, one-time WebAuthn step-up**, explicit confirmation, audit trail and server-side authorization; normal statistics browsing should not require per-view biometric prompts.
 - Tokens in Secure HttpOnly cookie only; no browser JS-readable session secrets, no tokens in URLs/localStorage, strict Origin/CSRF/session expiry/revocation/CSP/rate limits. PWA SW only caches public shell; **never** accounts, authenticated API, reviews/attachments, payments or tokens.
