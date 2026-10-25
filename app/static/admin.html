@@ -1526,7 +1526,7 @@
       if(u.access_type==="TRIAL_ACTIVE"||u.access_type==="trial_active") return [u.access_label||"Про синови","blue"];
       if(u.access_type==="TEMP_ACCESS"||u.access_type==="temp_access") return [u.access_label||"Вақтинчалик кириш ҳуқуқи","violet"];
       if(u.access_type==="EXPIRED"||u.access_type==="expired") return ["Муддати тугаган","red"];
-      if(u.status==="blocked") return ["Блокланган","red"];
+      if(u.access_type==="BLOCKED"||u.access_type==="blocked") return ["Блокланган","red"];
       return [u.access_label||u.status_label||"Ҳолат йўқ","violet"];
     }
     function filterUsers(){
@@ -1542,7 +1542,7 @@
           || (state.filter==="trial"&&u.access_type==="TRIAL_ACTIVE")
           || (state.filter==="free"&&u.access_type==="FREE")
           || (state.filter==="expired"&&u.access_type==="EXPIRED")
-          || (state.filter==="blocked"&&u.status==="blocked")
+          || (state.filter==="blocked"&&u.access_type==="BLOCKED")
           || (state.filter==="bot_blocked"&&u.bot_blocked);
         const hay = `${u.account_id||""} ${u.id||""} ${u.name} ${u.username||""} ${u.language} ${u.level} ${u.status_label} ${u.payment_label} ${u.plan} ${u.method}`.toLowerCase();
         return f && (!q || hay.includes(q));
