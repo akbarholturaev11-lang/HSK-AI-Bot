@@ -1990,6 +1990,10 @@ window.addEventListener('pageshow',event=>{if(event.persisted)lockAndRequirePass
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden){
     stopApprovalWatch();
+    // Native biometric UI may temporarily hide a Home Screen PWA.
+    // An in-flight fresh passkey assertion is already locked and must not be
+    // invalidated merely because the OS presented its own secure dialog.
+    if(automaticLoginInProgress)return;
     sessionMustBeCleared=true;requireFreshLoginOnResume=true;
     automaticLoginAttempted=false;
     // Clear private DOM and abort any open high-risk confirmation on hide.
