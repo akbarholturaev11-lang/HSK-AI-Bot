@@ -76,22 +76,31 @@ async def browser_checks(output):
                     for lang in ('uz','ru','tj'):
                         await page.locator('#messageLanguage').select_option(lang)
                         await page.locator('#messageText').fill('QA '+lang+' <b>你好</b>')
-                async def open_latest_job():
-                    # The verified save ends in one short checkmark instead
-                    # of a second result screen; navigate explicitly to work.
+                async def finish_and_open_exact_job(endpoint='messages/save'):
+                    # Job IDs are random UUIDs. Neither .first nor .last in a
+                    # list ordered by Job.id DESC identifies the newest job!
+                    # Bind this navigation to the actual signed server result.
+                    async with page.expect_response(
+                        lambda r: r.url.endswith('/api/admin/v1/'+endpoint)
+                        and r.request.method=='POST',timeout=15000
+                    ) as result_wait:
+                        await finish_step_up(page)
+                    response=await result_wait.value
+                    assert response.ok,(endpoint,response.status)
+                    result=await response.json()
+                    assert result['ok'] and result['job']['job_id'],result
+                    job_id=result['job']['job_id']
                     await expect(page.locator('.saved-animation')).to_be_visible(timeout=15000)
                     await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
                     await marketing()
-                    # messages/read is ordered by Job.id DESC. The newest
-                    # broadcast job is FIRST; .last selects an older completed
-                    # test job with no pending recipients / run action.
-                    await expect(page.locator('#drawerContent [data-message-job]').first).to_be_visible(timeout=15000)
-                    await page.locator('#drawerContent [data-message-job]').first.click()
-                async def confirm():
+                    exact_job=page.locator(f'#drawerContent [data-message-job="{job_id}"]')
+                    await expect(exact_job).to_be_visible(timeout=15000)
+                    await exact_job.click()
+                    return job_id
+                async def confirm(control=False):
                     await page.locator('[data-action=managementPrepare]').click()
                     await wait_step_up(page)
-                    await finish_step_up(page)
-                    await open_latest_job()
+                    return await finish_and_open_exact_job('messages/control' if control else 'messages/save')
                 await page.goto(ORIGIN+'/admin/');await page.wait_for_load_state('networkidle');await login()
                 for language in ('uz','ru','tj'):
                     await page.locator('#locale').select_option(language)
@@ -122,11 +131,11 @@ async def browser_checks(output):
                 await wait_step_up(page)
                 await page.screenshot(path=str(output/'broadcast-confirm-uz.png'))
                 baseline=len(sent)
-                await finish_step_up(page)
-                await open_latest_job()
+                saved_job=await finish_and_open_exact_job()
                 await expect(page.locator('[data-message-run]')).to_be_visible(timeout=15000)
                 assert len(sent)-baseline==10
                 job=await page.locator('[data-message-run]').get_attribute('data-message-run')
+                assert job==saved_job,(job,saved_job)
                 # Reload revokes the current browser session; reopening
                 # verifies a fresh passkey, and broadcast continuation needs
                 # an explicit transaction-bound signed resume.
@@ -138,7 +147,9 @@ async def browser_checks(output):
                 await page.locator(f'[data-message-job="{job}"]').click()
                 await expect(page.locator('[data-message-run]')).to_have_count(0)
                 await expect(page.locator('[data-message-control=resume]')).to_be_visible()
-                await page.locator('[data-message-control=resume]').click();await confirm()
+                await page.locator('[data-message-control=resume]').click()
+                resumed_job=await confirm(control=True)
+                assert resumed_job==job
                 assert len(sent)-baseline==12
                 assert len({row[0] for row in sent[baseline:]})==12
                 await expect(page.locator('[data-message-run]')).to_have_count(0)
