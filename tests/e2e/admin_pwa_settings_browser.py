@@ -8,6 +8,7 @@ import argparse
 import asyncio
 import base64
 import json
+import hashlib
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -76,10 +77,10 @@ async def browser_checks(output):
     app = FastAPI()
     common = dict(settings_obj=fixture.settings, session_factory=fixture.sessions)
     for factory in (create_admin_pwa_bootstrap_router, create_admin_pwa_read_router,
-                    create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
+                    create_admin_pwa_passkey_login_router, create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
                     create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router,
                     create_admin_pwa_user_management_router,create_admin_pwa_channels_router,
-                    create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router,create_admin_pwa_partners_router,create_admin_pwa_partner_payouts_router,create_admin_pwa_payment_reconciliation_router,create_admin_pwa_passkey_login_router):
+                    create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router,create_admin_pwa_partners_router,create_admin_pwa_partner_payouts_router,create_admin_pwa_payment_reconciliation_router):
         app.include_router(factory(**common))
     calls, errors = [], []
     drop_save = False
@@ -120,8 +121,6 @@ async def browser_checks(output):
             browser = await pw.chromium.launch()
             try:
                 context = await browser.new_context(viewport={"width": 1440, "height": 1000}, service_workers="block")
-                await context.add_cookies([dict(name="__Host-hskai_admin", value=COOKIE, domain="hskai.app",
-                                                path="/", secure=True, httpOnly=True, sameSite="Strict")])
                 await context.route("**/*", serve)
                 page = await context.new_page()
                 page.on("pageerror", lambda error: errors.append(str(error)))
@@ -163,11 +162,15 @@ async def browser_checks(output):
 
                 await page.goto(ORIGIN + "/admin/")
                 await page.wait_for_load_state("networkidle")
-                await expect(page.locator('[data-action="signin"]')).to_be_visible()
-                await page.locator('[data-action="signin"]').click()
-                await expect(page.locator(".nav")).to_be_visible(timeout=15000)
+                await expect(page.locator("[data-action=signin]")).to_be_visible(timeout=15000)
+                await page.locator("[data-action=signin]").click()
+                await expect(page.locator(".sidebar")).to_be_visible(timeout=20000)
+                live_cookie=next(cookie['value'] for cookie in await context.cookies()
+                    if cookie['name']=='__Host-hskai_admin')
                 async with fixture.sessions() as db:
-                    fixture.session_id=(await db.scalars(select(AdminPwaSession.id).where(AdminPwaSession.revoked_at.is_(None)))).one()
+                    fixture.session_id=await db.scalar(select(AdminPwaSession.id).where(
+                        AdminPwaSession.token_hash==hashlib.sha256(live_cookie.encode()).hexdigest()))
+
                 # Landing pages are navigation, with no per-page configuration queries.
                 configuration_reads = lambda: [path for path, _ in calls
                     if path in ('/api/admin/v1/settings/read', '/api/admin/v1/subscription-prices/read')]
