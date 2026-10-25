@@ -91,14 +91,29 @@ async def setup_fresh_login(context, page, fixture):
         'credentialId':base64.b64encode(CRED_ID).decode(),
         'isResidentCredential':True,'rpId':'hskai.app',
         'privateKey':base64.b64encode(private_key).decode(),
-        'userHandle':base64.b64encode(HANDLE).decode(),'signCount':0}})
+        'userHandle':base64.b64encode(HANDLE).decode(),'signCount':0,
+        'userName':'synthetic-admin','userDisplayName':'Synthetic QA'}})
     return cdp
 
 
 async def authenticate_fresh_launch(page):
+    """A fresh launch must authenticate with a real virtual UV assertion."""
     await expect(page.locator('[data-action=signin]')).to_be_visible(timeout=15000)
-    await page.locator('[data-action=signin]').click()
-    await expect(page.locator('.metrics')).to_be_visible(timeout=20000)
+    results=[]
+    def observe(response):
+        if '/api/admin/v1/auth/passkey/' in response.url or response.url.endswith('/api/admin/v1/me'):
+            results.append((response.url.split('/api/admin/v1/')[-1],response.status))
+    page.on('response',observe)
+    try:
+        await page.locator('[data-action=signin]').click()
+        # .sidebar is the authenticated UI; statistics may be unavailable in
+        # a fixture focused on export/settings, independent of WebAuthn.
+        await expect(page.locator('.sidebar')).to_be_visible(timeout=20000)
+    except AssertionError as error:
+        state=await page.locator('.auth-panel').inner_text() if await page.locator('.auth-panel').count() else 'no-auth-panel'
+        raise AssertionError(f'Fresh WebAuthn login did not reach authenticated UI: requests={results}, state={state[:180]}') from error
+    finally:
+        page.remove_listener('response',observe)
 
 
 async def browser_checks(output):
