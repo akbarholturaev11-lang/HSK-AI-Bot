@@ -99,7 +99,9 @@ concurrency:
 
 jobs:
   admin-pwa:
-    runs-on: ubuntu-latest
+    # Playwright 1.56 Chromium binaries support Ubuntu 24.04, not the
+    # ubuntu26.04 fallback image that ubuntu-latest may resolve to.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     services:
       redis:
