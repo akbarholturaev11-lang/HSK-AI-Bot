@@ -2070,22 +2070,47 @@ async function action(name) {
   if(name==='previous'&&state.previous.length){state.cursor=state.previous.pop();await load();}
   if(name==='period'||name==='platform'){const menu=$(name+'Menu');menu.hidden=!menu.hidden;document.querySelector(`[data-action="${name}"]`).setAttribute('aria-expanded',String(!menu.hidden));}
 }
-// iPhone PWA: one-step right swipe from the left 30% of the screen.
-// Native Safari owns the extreme left edge when this is not a standalone PWA.
+// iPhone PWA: swipe right from anywhere in the current view. Protect
+// editable controls, deliberate horizontal scrollers and native browser edges.
 function canSwipeBack(target) {
   if(!state.actor||state.phase!=='ready'||busy||managementPreparing||signing||inboxUpdating||backSwipeInProgress||
      document.querySelector('.canvas-overlay .confirmation[aria-busy="true"]'))return false;
-  if(target.closest('input,textarea,select,[contenteditable],.mobile-tabs,[role="slider"]'))return false;
+  if(target.closest('input,textarea,select,[contenteditable],.mobile-tabs,[role="slider"],video,audio')||
+     String(window.getSelection?.()||'').length>0)return false;
   for(let node=target;node&&node!==document.body;node=node.parentElement){
     if(node.scrollWidth>node.clientWidth+8&&
        ['auto','scroll'].includes(getComputedStyle(node).overflowX))return false;
   }
   return Boolean($('overlay')||state.route!=='home'||sectionBackStack.length);
 }
+function resetSwipePreview(){
+  const panel=document.querySelector('.canvas-overlay .drawer');
+  if(panel){panel.classList.remove('swipe-peeking');panel.style.removeProperty('--swipe-distance');}
+  document.querySelector('.swipe-back-cue')?.remove();
+}
+function swipePreview(distance){
+  const panel=document.querySelector('.canvas-overlay .drawer');
+  if(panel){panel.classList.add('swipe-peeking');panel.style.setProperty('--swipe-distance',Math.min(42,Math.max(0,distance*.23))+'px');}
+  let cue=document.querySelector('.swipe-back-cue');
+  if(!cue){cue=document.createElement('div');cue.className='swipe-back-cue';cue.setAttribute('aria-hidden','true');cue.textContent='‹';document.body.append(cue);}
+  cue.classList.toggle('is-ready',distance>=78);
+  cue.style.opacity=String(Math.min(1,Math.max(.18,distance/90)));
+}
+async function animateBack(){
+  if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
+  const element=document.querySelector('.canvas-overlay .drawer')||document.querySelector('.main');
+  if(!element?.animate)return;
+  try {
+    const anim=element.animate([{transform:'translateX(0)',opacity:1},{transform:'translateX(60px)',opacity:.3}],
+      {duration:160,easing:'cubic-bezier(.22,1,.36,1)'});
+    await anim.finished;
+  }catch(_){/* Navigation must work even when an animation is interrupted. */}
+}
 async function oneStepBack() {
   if(backSwipeInProgress)return;
   backSwipeInProgress=true;
   try{
+    await animateBack();
     if($('overlay')){
       const previous=drawerBack;
       drawerBack=null;
@@ -2104,22 +2129,30 @@ const iosTouchDevice=/iPhone|iPad|iPod/.test(navigator.userAgent||'')||
   (/Macintosh/.test(navigator.userAgent||'')&&navigator.maxTouchPoints>1);
 if(iosTouchDevice){
   document.addEventListener('touchstart',event=>{
-    backSwipeStart=null;
+    backSwipeStart=null;resetSwipePreview();
     if(event.touches.length!==1||!canSwipeBack(event.target))return;
     const touch=event.touches[0],standalone=navigator.standalone===true||
       window.matchMedia?.('(display-mode: standalone)').matches===true;
-    if(touch.clientX>window.innerWidth*0.30||(!standalone&&touch.clientX<24))return;
-    backSwipeStart={x:touch.clientX,y:touch.clientY,id:touch.identifier,at:Date.now()};
+    // Safari itself owns the outermost edge outside standalone display mode.
+    if(!standalone&&touch.clientX<24)return;
+    backSwipeStart={x:touch.clientX,y:touch.clientY,id:touch.identifier,at:Date.now(),vertical:false};
   },{passive:true});
-  document.addEventListener('touchcancel',()=>{backSwipeStart=null;},{passive:true});
+  document.addEventListener('touchmove',event=>{
+    const start=backSwipeStart;
+    if(!start||event.touches.length!==1||event.touches[0].identifier!==start.id)return;
+    const touch=event.touches[0],dx=touch.clientX-start.x,dy=Math.abs(touch.clientY-start.y);
+    if(start.vertical||dy>Math.max(14,Math.abs(dx)*.8)){start.vertical=true;resetSwipePreview();return;}
+    if(dx>16)swipePreview(dx);else resetSwipePreview();
+  },{passive:true});
+  document.addEventListener('touchcancel',()=>{backSwipeStart=null;resetSwipePreview();},{passive:true});
   document.addEventListener('touchend',event=>{
-    const start=backSwipeStart;backSwipeStart=null;
-    if(!start||event.touches.length||event.changedTouches.length!==1||!canSwipeBack(event.target))return;
+    const start=backSwipeStart;backSwipeStart=null;resetSwipePreview();
+    if(!start||start.vertical||event.touches.length||event.changedTouches.length!==1||!canSwipeBack(event.target))return;
     const touch=event.changedTouches[0];
-    if(touch.identifier!==start.id||Date.now()-start.at>900)return;
+    if(touch.identifier!==start.id||Date.now()-start.at>1100)return;
     const dx=touch.clientX-start.x,dy=Math.abs(touch.clientY-start.y);
-    if(dx<Math.max(72,window.innerWidth*0.28)||dy>Math.max(35,dx*0.35))return;
-    blockSwipeClickUntil=Date.now()+400;
+    if(dx<78||dy>Math.max(40,dx*.45))return;
+    blockSwipeClickUntil=Date.now()+440;
     oneStepBack().catch(()=>showNotice('error'));
   },{passive:true});
   // A completed swipe must never also activate a button beneath the finger.
