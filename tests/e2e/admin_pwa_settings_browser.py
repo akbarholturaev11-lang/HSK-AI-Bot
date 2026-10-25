@@ -193,7 +193,7 @@ async def browser_checks(output, *, media_only=False):
                 async def navigate(route_name, width):
                     if width == 390:
                         await page.locator('[data-action="more"]').click()
-                        await page.locator(f'.panel-action-list [data-route="{route_name}"]').click()
+                        await page.locator(f'.more-sheet-list [data-route="{route_name}"]').click()
                     else:
                         await page.locator(f'.nav [data-route="{route_name}"]').click()
                     await expect(page.locator(".management-page")).to_be_visible()
