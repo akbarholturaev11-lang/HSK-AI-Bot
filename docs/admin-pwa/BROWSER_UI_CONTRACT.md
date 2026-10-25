@@ -1,5 +1,34 @@
 # Admin PWA browser increment — branch-only, flag OFF
 
+## Unified editor and navigation UX — owner-approved 2026-10-25
+
+Based on current `main` including the compact Mac window update (PR #210),
+all Admin PWA edit drawers use top-right X or iPhone right-swipe instead of
+an additional bottom Cancel/Close button. Only the contextual mutation action
+remains in the footer. Save/edit policy buttons are disabled when the
+persisted form value is unchanged (including reversions); selection between
+price plans, help-video targets or notification languages alone does not
+count as an edit. Explicit action-only operations (blocked-account changes,
+partner decisions, payout commands, message controls) remain actionable
+because the initiating operation is already an explicit mutation intent.
+File-based proof requirements and passkey-bound command protections remain
+in force; cancellation must preserve an unsubmitted draft.
+
+After a verified successful save, replace the drawer body with an accessible
+animated SVG checkmark and the existing localized saved title, then close
+automatically after 2.5 seconds. Do not auto-claim completion on uncertain
+provider delivery or rejected/ambiguous commands, and never auto-retry them.
+The same confirmation UX covers management, access, course, HSK 3.0,
+payments with settled status and successful Push settings.
+
+On installed iPhone PWA, a rightward gesture may start anywhere on the page,
+including a drawer (no left-30%-only start zone), with a visible back indicator,
+small pull motion and short exiting slide. Exclude editable inputs, active
+WebAuthn/management commits, native horizontal scroll areas and selected text.
+Non-standalone iOS Safari retains the native outer-edge navigation zone.
+One gesture still goes back at most one section or drawer level. Respect
+reduced-motion accessibility settings.
+
 ## Owner single-window action update — 2026-10-25
 
 All management operations have one editor and one contextual action button

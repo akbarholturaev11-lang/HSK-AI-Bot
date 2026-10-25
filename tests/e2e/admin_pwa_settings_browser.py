@@ -199,6 +199,17 @@ async def browser_checks(output, *, media_only=False):
                         serialization.PrivateFormat.PKCS8, serialization.NoEncryption())),
                     "userHandle": b64(HANDLE), "signCount": 0, "userName": "settings-qa"}})
 
+                async def close_or_wait():
+                    # A verified write now shows a short drawn check and
+                    # auto-dismisses; ordinary editors still close via X.
+                    overlay=page.locator('#overlay')
+                    if not await overlay.count():
+                        return
+                    if await page.locator('.save-success-drawer').count():
+                        await expect(overlay).to_have_count(0, timeout=6500)
+                    else:
+                        await page.locator('.drawer-close').click()
+
                 async def navigate(route_name, width):
                     if width == 390:
                         await page.locator('[data-action="more"]').click()
@@ -241,7 +252,7 @@ async def browser_checks(output, *, media_only=False):
                             f"errors={errors[-8:]} webauthn={await page.evaluate('window.webauthnErrors')}"
                         ) from exc
                     assert await audit_count() == before + 1
-                    await page.locator(".drawer-close").click()
+                    await close_or_wait()
 
                 await page.goto(ORIGIN + "/admin/")
                 await page.wait_for_load_state("networkidle")
@@ -271,7 +282,7 @@ async def browser_checks(output, *, media_only=False):
                 await finish_step_up(page)
                 await expect(page.locator('#drawerTitle')).to_have_text(await page.evaluate('() => window.HSKAI_ADMIN_I18N.uz.courseSaved'))
                 assert await audit_count()==before_policy+1
-                await page.locator('.drawer-close').click()
+                await close_or_wait()
                 await page.locator('[data-action="hsk30Settings"]').click()
                 await page.locator('#hsk30Price').fill('101')
                 await page.locator('[data-action="hsk30Prepare"]').click()
@@ -279,7 +290,7 @@ async def browser_checks(output, *, media_only=False):
                 await finish_step_up(page)
                 await expect(page.locator('#drawerTitle')).to_have_text(await page.evaluate('() => window.HSKAI_ADMIN_I18N.uz.hsk30Saved'))
                 assert await audit_count()==before_policy+2
-                await page.locator('.drawer-close').click()
+                await close_or_wait()
                 await navigate("system", 1440)
                 assert configuration_reads() == initial
                 for width in (1440, 390):
@@ -318,7 +329,7 @@ async def browser_checks(output, *, media_only=False):
                 await expect(page.locator('#settingValue')).to_be_enabled()
                 await expect(page.locator('#settingValue')).to_have_value('QA cancellation')
                 await expect(page.locator('[data-action="managementPrepare"]')).to_be_enabled()
-                await page.locator('.drawer-close').click()
+                await close_or_wait()
                 assert await audit_count() == before
                 for bank in ("dc_city", "alif"):
                     await page.locator(f'[data-setting-kind="payment_details"][data-bank="{bank}"]').click()
@@ -330,6 +341,16 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator("#settingModel").select_option(models[-1])
                 await prepare_and_save("uz")
                 await page.locator('[data-setting-kind="help_contact"]').click()
+                # Every ordinary edit starts with a disabled Save; changing
+                # then restoring the original value disables it again.
+                save=page.locator('[data-action="managementPrepare"]')
+                await expect(save).to_be_disabled()
+                original_value=await page.locator('#settingValue').input_value()
+                await page.locator('#settingValue').fill('@temporary_not_saved')
+                await expect(save).to_be_enabled()
+                await page.locator('#settingValue').fill(original_value)
+                await expect(save).to_be_disabled()
+                assert not await page.locator('#drawerFoot [data-action=close]').count()
                 await page.locator("#settingValue").fill("@synthetic_support")
                 await prepare_and_save("uz")
                 await page.locator('[data-setting-kind="help_video"]').click()
@@ -349,7 +370,7 @@ async def browser_checks(output, *, media_only=False):
                 await expect(page.locator('#drawerFoot [data-setting-kind="help_contact"]')).to_be_visible()
                 assert len([path for path,_ in calls if path.endswith('step-up/options')])==ceremonies
                 assert await audit_count()==before
-                await page.locator('.drawer-close').click()
+                await close_or_wait()
                 await page.locator('[data-setting-kind="help_contact"]').click()
                 await page.locator("#settingValue").fill("@next_support")
                 await begin_management()
@@ -360,7 +381,7 @@ async def browser_checks(output, *, media_only=False):
                 await expect(page.locator('[data-setting-kind="help_contact"]')).to_have_count(2)
                 assert await audit_count() == before
                 await expect(page.locator('[data-action="managementExecute"]')).to_have_count(0)
-                await page.locator(".drawer-close").click()
+                await close_or_wait()
                 # A lost response AFTER the command commits exposes only a reread action.
                 await page.locator('[data-action="priceSettings"]').click()
                 await page.locator("#priceAmount").fill("101")
@@ -375,7 +396,7 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('#drawerFoot [data-action="priceSettings"]').click()
                 await expect(page.locator("#priceAmount")).to_have_value("101")
                 assert len([path for path, _ in calls if path.endswith("subscription-prices/save")]) == saves + 1
-                await page.locator(".drawer-close").click()
+                await close_or_wait()
                 # Marketing is the same exact passkey flow over shared real
                 # configuration services. Read each localized editor before
                 # exercising saved changes and a single creative deletion.
@@ -398,13 +419,13 @@ async def browser_checks(output, *, media_only=False):
                             assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                             assert await page.locator('#drawerContent img').count() == 0
                             await page.screenshot(path=str(output / f'marketing-{kind}-{language}-{width}.png'))
-                            await page.locator('.drawer-close').click()
+                            await close_or_wait()
                         await page.locator('[data-campaign-list="ad"]').click()
                         await page.locator('[data-marketing-kind="campaign_draft"]').click()
                         await expect(page.locator('#campaignTitle')).to_be_visible()
                         assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                         await page.screenshot(path=str(output / f'campaign-create-{language}-{width}.png'))
-                        await page.locator('.drawer-close').click()
+                        await close_or_wait()
                 await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 await page.locator('[data-campaign-list="ad"]').click()
@@ -433,7 +454,7 @@ async def browser_checks(output, *, media_only=False):
                     assert campaign.next_send_at is None and campaign.target_languages=='ru,uz'
                     copies=decode_localized_broadcast_text(campaign.message_text)
                     assert copies['uz']=='Yangi kurs &lt;img src=x onerror=alert(1)&gt;'
-                await page.locator('.drawer-close').click()
+                await close_or_wait()
                 await page.locator('[data-marketing-kind="sales_experiment"]').click()
                 await page.locator('#salesMode').select_option('ab')
                 await page.locator('#salesPercent').select_option('50')
@@ -448,7 +469,7 @@ async def browser_checks(output, *, media_only=False):
                     assert await page.locator('#promoMediaPreview img').evaluate('(img)=>img.naturalWidth===320&&img.naturalHeight===180')
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/f'desktop-promo-image-{language}-390.png'))
-                    await page.locator('.drawer-close').click()
+                    await close_or_wait()
                 await page.locator('[data-action="more"]').click()
                 await page.locator('#drawerLocale').select_option('uz')
                 await page.locator('[data-marketing-kind="desktop_promo"]').click()
@@ -470,7 +491,7 @@ async def browser_checks(output, *, media_only=False):
                     assert promo.media_type=='photo' and promo.media_path.startswith('desktop_app_promo_pwa_')
                     assert (Path(media_directory.name)/promo.media_path).read_bytes()==promo_image
                 assert any(path=='/api/admin/v1/marketing/media/save' for path,_ in calls)
-                await page.locator('.drawer-close').click()
+                await close_or_wait()
                 await page.locator('[data-marketing-kind="desktop_promo"]').click()
                 await page.locator('#promoMediaClear').check()
                 await begin_management()
@@ -482,7 +503,7 @@ async def browser_checks(output, *, media_only=False):
                     cleared_promo=await get_desktop_app_promo_settings(db)
                     assert cleared_promo.media_path is None and cleared_promo.media_type is None
                 assert not (Path(media_directory.name)/promo.media_path).exists()
-                await page.locator('.drawer-close').click()
+                await close_or_wait()
                 await page.set_viewport_size({'width':1440,'height':1000})
                 if media_only:
                     await page.locator('[data-marketing-kind="course_ad"]').click()
@@ -508,7 +529,7 @@ async def browser_checks(output, *, media_only=False):
                             CourseAdCreative.id==1)) is None
                         assert (Path(course_media_directory.name)/course_ad.media_path).read_bytes()==promo_image
                     assert any(path=='/api/admin/v1/marketing/media/save' for path,_ in calls)
-                    await page.locator('.drawer-close').click()
+                    await close_or_wait()
                     await page.locator('[data-marketing-kind="course_ad"]').click()
                     await page.locator('[data-course-ad="1"]').click()
                     await page.locator('#adOperation').select_option('replace_video')
@@ -537,7 +558,7 @@ async def browser_checks(output, *, media_only=False):
                         assert (Path(course_media_directory.name)/video_filename).read_bytes()==COURSE_AD_TEST_VIDEO
                     assert await audit_count()==before_video_audit+1
                     assert len([path for path,_ in calls if path.endswith('step-up/options')])>=2
-                    await page.locator('.drawer-close').click()
+                    await close_or_wait()
                     async with fixture.sessions() as db:
                         await db.execute(update(AdminPwaStepUp).values(
                             created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
@@ -558,7 +579,7 @@ async def browser_checks(output, *, media_only=False):
                         await page.evaluate('window.cancelStepUp()')
                         await expect(page.locator('#newAdTitle-'+language)).to_be_enabled()
                         await expect(page.locator('#newAdTitle-'+language)).to_have_value('QA 中文 '+language)
-                        await page.locator('.drawer-close').click()
+                        await close_or_wait()
                     await page.set_viewport_size({'width':1440,'height':1000})
                     await page.locator('#locale').select_option('uz')
                     await page.locator('[data-marketing-kind="course_ad"]').click()
@@ -596,7 +617,7 @@ async def browser_checks(output, *, media_only=False):
                             created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
                         price_before=await SubscriptionPriceService(db).get_price("alipay", "1_month")
                         await db.commit()
-                    await page.locator('.drawer-close').click()
+                    await close_or_wait()
                     await navigate('system',390)
                     await page.locator('[data-action="priceSettings"]').click()
                     await page.locator('#priceMethod').select_option('alipay')
@@ -656,7 +677,7 @@ async def browser_checks(output, *, media_only=False):
                     await begin_management()
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/f'account-block-confirm-{language}-390.png'))
-                    await page.locator('.drawer-close').click()
+                    await close_or_wait()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 for operation,user_id in (('block',2),('unblock',2),('delete',1)):
@@ -685,7 +706,7 @@ async def browser_checks(output, *, media_only=False):
                     await page.set_viewport_size({'width':390,'height':844})
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/f'channel-mode-{language}-390.png'))
-                    await page.locator('.drawer-close').click()
+                    await close_or_wait()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 await page.locator('[data-channels-kind="list"]').click()
@@ -713,7 +734,7 @@ async def browser_checks(output, *, media_only=False):
                     await begin_management()
                     assert await page.locator('#drawerContent img').count()==0
                     await page.screenshot(path=str(output/f'ledger-confirm-{language}-390.png'))
-                    await page.locator('.drawer-close').click()
+                    await close_or_wait()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 await page.locator('[data-action="portfolioHistory"]').click()
@@ -725,7 +746,7 @@ async def browser_checks(output, *, media_only=False):
                 await prepare_and_save('uz')
                 await page.locator('[data-action="portfolioHistory"]').click()
                 await expect(page.locator('#drawerContent')).to_contain_text('QA committed expense')
-                await page.locator('.drawer-close').click()
+                await close_or_wait()
                 async with fixture.sessions() as db:
                     await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
@@ -755,7 +776,7 @@ async def browser_checks(output, *, media_only=False):
                     await begin_management()
                     assert await page.locator('#drawerContent img').count()==0
                     await page.screenshot(path=str(output/f'notice-confirm-{language}-390.png'))
-                    await page.locator('.drawer-close').click()
+                    await close_or_wait()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 await page.locator('[data-action="noticeList"]').click()
@@ -767,7 +788,7 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('[data-notice-key="daily_goal"]').click()
                 await expect(page.locator('#noticeText')).to_have_value('Saved {minutes}')
                 await expect(page.locator('#noticeEnabled')).to_have_value('false')
-                await page.locator('.drawer-close').click()
+                await close_or_wait()
                 await navigate('marketing',1440)
                 async with fixture.sessions() as db:
                     await db.execute(update(AdminPwaStepUp).values(
@@ -784,7 +805,7 @@ async def browser_checks(output, *, media_only=False):
                     assert await page.locator('#drawerContent img').count()==0
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/f'partner-confirm-{language}-390.png'))
-                    await page.locator('.drawer-close').click()
+                    await close_or_wait()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 for partner_id,operation in ((1,'approve'),(1,'block'),(1,'unblock'),(2,'reject')):
@@ -813,7 +834,7 @@ async def browser_checks(output, *, media_only=False):
                     assert await page.locator('#managementForm img').count()==0
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/f'payout-confirm-{language}-390.png'))
-                    await page.locator('.drawer-close').click()
+                    await close_or_wait()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 for payout_id,operation in ((1,'deadline'),(1,'claim'),(1,'release'),(2,'reject')):
@@ -833,7 +854,7 @@ async def browser_checks(output, *, media_only=False):
                     assert await page.locator('#drawerContent img').count()==0
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/f'reconciliation-confirm-{language}-390.png'))
-                    await page.locator('.drawer-close').click()
+                    await close_or_wait()
                     await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option('uz')
                 await page.locator('[data-action="deliveryList"]').click()
@@ -843,7 +864,7 @@ async def browser_checks(output, *, media_only=False):
                 await prepare_and_save('uz')
                 await page.locator('[data-action="deliveryList"]').click()
                 await expect(page.locator('[data-delivery-id]')).to_have_count(0)
-                await page.locator('.drawer-close').click()
+                await close_or_wait()
                 # Revocation between confirmation and proof fails before any write.
                 before = await audit_count()
                 await page.locator('[data-setting-kind="help_contact"]').click()

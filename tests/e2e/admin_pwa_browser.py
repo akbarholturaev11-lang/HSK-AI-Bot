@@ -22,7 +22,7 @@ from PIL import Image, ImageDraw
 from cryptography.hazmat.primitives import serialization
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from playwright.async_api import async_playwright, expect, TimeoutError as PlaywrightTimeoutError
+from playwright.async_api import async_playwright, expect
 from sqlalchemy import select, func, update
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -385,7 +385,10 @@ async def browser_checks(output):
         operations=[body for path,_,body in calls if path.endswith('step-up/options')]
         assert len(writes)==len(operations)==1
         assert {k:v for k,v in writes[0].items() if k!='step_up_id'}==operations[0]['payload']
-        await page.locator('.drawer-close').click()
+        if await page.locator('.save-success-drawer').count():
+            await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+        elif await page.locator('#overlay').count():
+            await page.locator('.drawer-close').click()
         # Rejected payment uses a new ceremony and the exact visible reason.
         async with fixture.sessions() as db:
             payment=Payment(user_id=2,amount=10,currency='USD',plan_type='10_days',payment_method='visa',payment_status='pending',screenshot_file_id='synthetic-receipt')
@@ -538,13 +541,11 @@ async def browser_checks(output):
         await expect(page.locator('.sidebar')).to_have_count(1)
         async with fixture.sessions() as db:
             await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)));await db.commit()
-        # Session revalidation may lock the shell before a navigation click.
-        # Both proactive lock and a route-triggered 401 must clear private UI.
-        try:
-            await page.locator('[data-route=users]').last.click(timeout=3000)
-        except PlaywrightTimeoutError:
-            pass
-        await expect(page.locator('[data-action=signin]')).to_be_visible()
+        # Use the visible mobile Users navigation to force a real protected
+        # read after revocation. The previous .last locator could resolve to a
+        # hidden desktop button, time out, then silently skip the auth check.
+        await page.locator('.mobile-tabs [data-route=users]').click(timeout=15000)
+        await expect(page.locator('[data-action=signin]')).to_be_visible(timeout=15000)
         assert 'QA account' not in await page.locator('body').inner_text()
         assert await page.evaluate('Object.keys(localStorage)')==['hsk-admin-locale']
         assert not await page.evaluate('window.cspFailures')
@@ -1095,12 +1096,12 @@ async def access_grant_browser_checks(output):
             # signal a completed write. Wait for the server-backed success drawer.
             granted_title = await page.evaluate('window.HSKAI_ADMIN_I18N.tj.accessGranted')
             await expect(page.locator('#drawerTitle')).to_have_text(granted_title)
-            await expect(page.locator('#drawerContent')).to_contain_text('10')
+            await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
             await expect(page.locator('[data-action=executeAccess]')).to_have_count(0)
             async with fixture.sessions() as db:
                 assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit))==1
                 assert (await db.get(User,1)).payment_status=='approved'
-            await page.locator('.drawer-close').click()
+            await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
             await prepare()
             async with fixture.sessions() as db:
                 (await db.get(User,1)).end_date=datetime.now(timezone.utc)+timedelta(days=40);await db.commit()
