@@ -143,7 +143,8 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertEqual(await matching("expired"), [104])
         self.assertEqual(await matching("blocked"), [105])
         self.assertEqual(await matching("bot_blocked"), [105])
-        self.assertEqual(await matching("wants_pay"), [102])
+        # The original Mini App hot-lead rule also includes trial-status users.
+        self.assertEqual(await matching("wants_pay"), [103, 102])
         self.assertEqual(await matching("pending"), [1])
         self.assertEqual(await matching("free"), [102, 101, 1])
         self.assertEqual(await matching("free", limit=1), [102])
