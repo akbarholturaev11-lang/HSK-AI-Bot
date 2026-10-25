@@ -136,6 +136,45 @@ def _filters(query, request, timestamp, now):
     return query
 
 
+def source_eligible(source, now):
+    """One source-owned visibility predicate shared by list, badge and bulk read."""
+    if source == "bot":
+        # Requests are created *before* a subscriber answers. Drafts must
+        # never appear as alerts and cannot gain content just from aging.
+        return and_(
+            BotFeedback.status == "completed",
+            or_(BotFeedback.liked_code.is_not(None),
+                BotFeedback.liked_text.is_not(None),
+                BotFeedback.disliked_code.is_not(None),
+                BotFeedback.disliked_text.is_not(None),
+                BotFeedback.disliked_attachment_file_id.is_not(None)),
+        )
+    if source == "release":
+        return ReleaseFeedbackResponse.completed_at <= now
+    if source == "android":
+        return AdminPwaNativeReport.expires_at > now
+    if source == "payment":
+        return and_(Payment.payment_status == "pending",
+                    Payment.screenshot_file_id.is_not(None),
+                    Payment.submitted_at.is_not(None))
+    if source == "technical":
+        return and_(Message.role == "assistant",
+                    Message.content_type == "app_error_context",
+                    Message.created_at >= now - timedelta(days=30),
+                    Message.created_at <= now)
+    raise ValueError("unsupported inbox source")
+
+
+def source_timestamp(source):
+    return {
+        "bot": func.coalesce(BotFeedback.completed_at, BotFeedback.created_at),
+        "release": ReleaseFeedbackResponse.completed_at,
+        "android": AdminPwaNativeReport.created_at,
+        "payment": Payment.submitted_at,
+        "technical": Message.created_at,
+    }[source]
+
+
 def _triage(row):
     return {
         "triage_status": row.triage_status or "new",
@@ -188,6 +227,7 @@ async def unified_inbox(db, request: InboxRequest):
         ).outerjoin(AdminPwaInboxTriage, and_(
             AdminPwaInboxTriage.source == "bot",
             AdminPwaInboxTriage.source_id == BotFeedback.id)).outerjoin(User, User.id == BotFeedback.user_id)
+        query = query.where(source_eligible("bot", now))
         if request.user_id is not None:
             query = query.where(User.id == request.user_id)
         if request.search is not None:
@@ -428,15 +468,7 @@ async def unread_inbox(db, request: InboxUnreadRequest):
             AdminPwaInboxTriage.source_id == model.id,
         )).where(or_(AdminPwaInboxTriage.status.is_(None),
                     AdminPwaInboxTriage.status == "new"))
-        if name == "android":
-            query = query.where(AdminPwaNativeReport.expires_at > now)
-        if name == "technical":
-            query = query.where(Message.role == "assistant",
-                Message.content_type == "app_error_context",
-                Message.created_at >= now - timedelta(days=30))
-        if name == "payment":
-            query = query.where(Payment.payment_status == "pending",
-                                Payment.screenshot_file_id.is_not(None))
+        query = query.where(source_eligible(name, now))
         # The private technical feed uses its narrow, partial timestamp index.
         ordering = ((Message.created_at.desc(), Message.id.desc()) if name == "technical"
                     else (model.id.desc(),))
