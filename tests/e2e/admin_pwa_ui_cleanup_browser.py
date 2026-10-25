@@ -66,6 +66,16 @@ async def browser_checks(output):
             data.update(user_id=101, mcp_available=True, push_available=True)
         elif path.endswith("/auth/logout"):
             data.update(status="logged_out")
+        elif path.endswith("/analytics"):
+            metrics={"users_total":3,"new_accounts":1,"active_accounts":2,"active_pro":1,
+                "active_today":2,"pending_current":1,"expiring_pro":1,"paying_accounts":1,"bot_blocked":0,"blocked_current":0,
+                "payments_by_status":{"pending":1,"approved":1,"rejected":0},
+                "activity":{"points":[]},"levels":[],"languages":[],
+                "course_engagement":{"engaged_accounts":2,"started_accounts":1,"completed_accounts":1}}
+            if payload['section']=='report':
+                metrics={"quality":[],"detail_row_limit":5000}
+            data.update(available=True,platform="overall",period=payload['period'],generated_at=STAMP,
+                scope={"section":payload['section']},metrics=metrics)
         elif path.endswith("/statistics"):
             data.update(available=True, platform="overall", generated_at=STAMP, metrics={
                 "users_total": 3, "new_accounts": 1, "active_accounts": 2,

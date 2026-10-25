@@ -53,26 +53,28 @@ let freshLoginInProgress=false, biometricPromptInProgress=false, resumeAuthentic
 let approvalWatchTimer=null, approvalChecking=false;
 let statisticsDownload=null;
 let userFilterOpen=false;
-const USER_SEGMENTS=[['all','userFilterAll'],['active_today','userFilterActiveToday'],['paid','userFilterPaid'],['pending','userFilterPending'],['wants_pay','userFilterWantsPay'],['trial','userFilterTrial'],['free','userFilterFree'],['expired','userFilterExpired'],['blocked','userFilterBlocked'],['bot_blocked','userFilterBotBlocked']];
+const USER_SEGMENTS=[['all','userFilterAll'],['active_today','userFilterActiveToday'],['paid','userFilterPaid'],['pending','userFilterPending'],['wants_pay','userFilterWantsPay'],['trial','userFilterTrial'],['free','userFilterFree'],['expired','userFilterExpired'],['blocked','userFilterBlocked'],['bot_blocked','userFilterBotBlocked'],['expiring_pro','analyticsExpiringPro']];
 let managementDraft=null,managementReview=null,managementPreparing=false,preparingEditor=null;
 let coursePolicyRevision=null,hsk30Baseline=null;
 let courseData=null,courseLimitDraft=null,courseTrialDraft=null,courseLimitPlan='FREE';
 let courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};
 let courseAnalytics=null,courseAnalyticsDays=30,courseAnalyticsLoading=false,courseAnalyticsToken=0;
-let managementMediaPreviewUrl=null;
+let managementMediaPreviewUrl=null, campaignMediaUpload=null;
 let feedbackLoadId=0;
 const feedbackStats={source:'all',period:'weekly',data:null,loading:false,error:false};
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
   stopApprovalWatch();
-  cancelStatisticsDownload();feedbackLoadId++;
+  cancelAdvancedAnalytics();cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
   epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   courseData=null;courseLimitDraft=null;courseTrialDraft=null;courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};courseAnalytics=null;courseAnalyticsToken++;courseAnalyticsLoading=false;state.phase=phase;state.error=null;render();
 }
 function releaseManagementMediaPreview(){if(managementMediaPreviewUrl){URL.revokeObjectURL(managementMediaPreviewUrl);managementMediaPreviewUrl=null;}}
-async function api(path, body, {publicAuth=false, method='POST',rawBody=null,extraHeaders={},timeoutMs=15000}={}) {
+async function api(path, body, {publicAuth=false, method='POST',rawBody=null,extraHeaders={},timeoutMs=15000,requestSignal=null}={}) {
   const current=epoch, control=new AbortController(), timer=setTimeout(()=>control.abort(),timeoutMs);
+  const abortExternal=()=>control.abort();
+  if(requestSignal?.aborted)control.abort();else requestSignal?.addEventListener('abort',abortExternal,{once:true});
   try {
     const headers=method==='POST'?{'Content-Type':rawBody?rawBody.type:'application/json',...extraHeaders}:extraHeaders;
     const response=await fetch('/api/admin/v1/'+path,{method, credentials:'same-origin',cache:'no-store',redirect:'error',
@@ -87,7 +89,7 @@ async function api(path, body, {publicAuth=false, method='POST',rawBody=null,ext
   } catch(error) {
     if (epoch!==current) throw new ApiError('stale',0);
     throw error;
-  } finally { clearTimeout(timer); }
+  } finally { clearTimeout(timer);requestSignal?.removeEventListener('abort',abortExternal); }
 }
 function languageSelect(id='locale') { return `<select class="locale-select" id="${id}" aria-label="${esc(t('language'))}">${[['uz','O‘zbekcha'],['ru','Русский'],['tj','Тоҷикӣ']].map(([id,name])=>`<option value="${id}" ${locale===id?'selected':''}>${name}</option>`).join('')}</select>`; }
 let noticeTimer=null;
@@ -261,64 +263,94 @@ function statsCategorySection(title,fields,note){
   return `<section class="stat-detail stats-category-section"><h2>${esc(t(title))}</h2>${profileFields(fields)}${note?`<p class="source-note">${esc(t(note))}</p>`:''}</section>`;
 }
 
-function categorizedStatsView(){
-  const data=state.stats;
-  if(!data)return statePanel('loading');
-  const nav=statsCategoryNav();
-  const footer=`<p class="source-note stats-category-footnote">${esc(t('overlap'))}${data.scope?.period_filter_applied===false?' '+esc(t('rolling30')):''}</p><p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`;
-  if(!data.available)return nav+statePanel('unavailable')+(state.statsTab==='report'?feedbackPanel():'')+footer;
-  const m=data.metrics;
-  const tab=state.statsTab;
-  if(data.platform!=='overall'&&tab!=='platform'&&tab!=='report')
-    return nav+statePanel('unavailable', 'statsPlatformChoose')+footer;
-  let content='';
-  if(tab==='overview'){
-    content=`<div class="grid metrics stats-category-metrics">${metric('usersTotal',m.users_total,'users')}${metric('newAccounts',m.new_accounts,'users')}${metric(state.period==='all_time'?'active30':'activeAccounts',m.active_accounts,'chart')}${metric('pending',m.payments_by_status.pending,'wallet')}</div>`;
-    content+=statsCategorySection('payments', [['pending',m.payments_by_status.pending],['approved',m.payments_by_status.approved],['rejected',m.payments_by_status.rejected]],'currencyNote');
-  }else if(tab==='course'){
-    const c=m.course_engagement;
-    content=`<div class="grid metrics stats-category-metrics">${metric('engagedAccounts',c.engaged_accounts,'users')}${metric('startedAccounts',c.started_accounts,'book')}${metric('completedAccounts',c.completed_accounts,'check')}</div>`;
-    content+=statsCategorySection('courseEngagement',[['engagedAccounts',c.engaged_accounts],['startedAccounts',c.started_accounts],['completedAccounts',c.completed_accounts]],'courseMetricNote');
-    if(c.unmatched_events)content+=`<p class="source-note">${esc(t('unmatchedEvents'))}: ${esc(c.unmatched_events)}</p>`;
-  }else if(tab==='platform'){
-    if(data.platform==='overall'){
-      content=`<div class="grid metrics stats-category-metrics">${metric('usersTotal',m.users_total,'users')}${metric('activeAccounts',m.active_accounts,'chart')}</div><p class="source-note">${esc(t('statsPlatformChoose'))}</p>`;
-    }else if(data.platform==='android'){
-      content=`<div class="grid metrics stats-category-metrics">${metric('installedDevices',m.registry.installed_devices,'device')}${metric('installedUsers',m.registry.installed_users,'users')}${metric('active7',m.active.wau,'chart')}${metric('active30',m.active.mau,'chart')}</div>`;
-    }else{
-      content=`<div class="grid metrics stats-category-metrics">${metric('active30',m.active_users_30d,'chart')}${metric('firstOpen',m.verified_first_open_30d,'device')}</div>`;
-    }
-  }else if(tab==='funnel'){
-    const r=m.registration_conversion;
-    content=`<div class="grid metrics stats-category-metrics">${metric('conversion',r.percent===null?'—':r.percent+'%','target')}${metric('registeredCohort',r.registered_accounts,'users')}${metric('convertedAccounts',r.converted_accounts,'wallet')}</div>`;
-    content+=statsCategorySection('registrationConversion',[['registeredCohort',r.registered_accounts],['convertedAccounts',r.converted_accounts],['conversion',r.percent===null?'—':r.percent+'%']],'conversionNote');
-  }else if(tab==='money'){
-    const ai=m.ai_usage;
-    content=`<div class="grid metrics stats-category-metrics">${metric('estimatedCost',ai.estimated_cost_usd+' USD','spark')}${metric('recordedRequests',ai.recorded_requests,'chart')}${metric('tokens',ai.tokens,'chart')}</div>`;
-    content+=statsCategorySection('aiSpend',[['estimatedCost',ai.estimated_cost_usd+' USD'],['recordedRequests',ai.recorded_requests],['tokens',ai.tokens]],'aiCostNote');
-    content+=`<section class="stat-detail stats-category-section"><h2>${esc(t('approvedAmounts'))}</h2><div class="currency-rows">${m.approved_amounts_by_currency.map(row=>`<div class="currency-row">${esc(row.currency)}<strong>${esc(row.amount)}</strong></div>`).join('')||`<p>${esc(t('empty'))}</p>`}</div><p class="source-note">${esc(t('currencyNote'))}</p></section>`;
-  }else if(tab==='sources'){
-    content=statePanel('unavailable','statsSourcesUnavailable');
-  }else if(tab==='report'){
-    content=`<section class="stat-detail stats-category-section"><h2>${esc(t('statsTabReport'))}</h2>${profileFields([['source',data.source||'—'],['platform',data.platform],['period',t(data.period)],['updated',date(data.generated_at)]])}<p class="source-note">${esc(t('statsReportNote'))}</p><div class="statistics-export">${exportMenu('statistics')}</div></section>${feedbackPanel()}`;
-  }
-  return nav+`<div class="stats-category-content">${content}</div>`+footer;
+function analyticPanel(title,body,note=''){
+  return `<section class="panel analytics-panel"><div class="panel-title"><h2>${esc(t(title))}</h2></div>${body}${note?`<p class="source-note">${esc(t(note))}</p>`:''}</section>`;
 }
-
-function statsView() {
+const number=value=>typeof value==='number'&&Number.isFinite(value)?new Intl.NumberFormat(locale==='tj'?'tg':locale,{maximumFractionDigits:2}).format(value):'—';
+const percent=value=>value===null||value===undefined?'—':number(value)+'%';
+const usd=(value,precise=false)=>value===null||value===undefined?'—':new Intl.NumberFormat(locale==='tj'?'tg':locale,{maximumFractionDigits:precise?8:2}).format(value)+' USD';
+const seconds=value=>{if(value===null||value===undefined)return '—';let remaining=Math.max(0,Math.round(value)),parts=[];for(const [unit,size] of [['analyticsDays',86400],['analyticsHours',3600],['analyticsMinutes',60],['analyticsSeconds',1]]){const amount=Math.floor(remaining/size);remaining%=size;if(amount||(size===1&&!parts.length))parts.push(number(amount)+' '+t(unit));if(parts.length===2)break;}return parts.join(' ');};
+function analyticCards(fields){return `<div class="grid metrics stats-many stats-category-metrics">${fields.map(([label,value,glyph])=>metric(label,value,glyph)).join('')}</div>`;}
+function analyticRows(fields){return fields.map(([label,value])=>`<div class="stat-info-row"><span>${esc(t(label))}</span><strong>${esc(value??'—')}</strong></div>`).join('');}
+function analyticTable(headers,rows){return `<div class="table-wrap analytics-table-wrap"><table class="data-table stat-table"><thead><tr>${headers.map(h=>`<th scope="col">${esc(t(h))}</th>`).join('')}</tr></thead><tbody>${rows.map(cells=>`<tr>${cells.map(c=>`<td>${esc(c??'—')}</td>`).join('')}</tr>`).join('')||`<tr><td colspan="${headers.length}">${esc(t('empty'))}</td></tr>`}</tbody></table></div>`;}
+function activityChart(activity){
+  const points=activity?.points||[],max=Math.max(1,...points.map(p=>p.accounts)),width=600,step=width/Math.max(points.length,1);
+  return `<div class="activity-chart"><svg viewBox="0 0 600 220" role="img" aria-label="${esc(t('analyticsLearningActivity'))}"><title>${esc(t('analyticsLearningActivity'))}</title>${[40,90,140,190].map(y=>`<path class="activity-grid" d="M0 ${y}H600"/>`).join('')}${points.map((p,i)=>{const h=160*p.accounts/max,x=i*step+step*.2;return `<g><title>${esc(p.date)} · ${esc(number(p.accounts))}</title><rect class="activity-bar ${i===points.length-1?'last':''}" x="${x}" y="${190-h}" width="${step*.6}" height="${h}" rx="4"/>${points.length<=7||i%5===0||i===points.length-1?`<text x="${i*step+step/2}" y="211" text-anchor="middle">${esc(p.date.slice(5))}</text>`:''}</g>`;}).join('')}</svg></div><p class="chart-legend"><span class="dot"></span>${esc(t('analyticsLearningActivity'))} · ${esc(t(points.length===7?'weekly':'monthly'))}</p>`;
+}
+function analyticTrack(label,value,total){const width=typeof value==='number'&&total>0?Math.min(100,100*value/total):0;return `<div class="stat-step"><div class="stat-step-label"><strong>${esc(t(label))}</strong><span>${esc(number(value))}</span></div><svg class="analytics-track" viewBox="0 0 100 2" preserveAspectRatio="none" aria-hidden="true"><rect width="100" height="2" rx="1" class="track-bg"/><rect width="${width}" height="2" rx="1" class="track-fill"/></svg></div>`;}
+function analyticsFooter(data){return `<p class="source-note analytics-age">${esc(t('updated'))}: ${esc(date(data.generated_at))} · ${esc(t('analyticsDailyCache'))}</p>`;}
+function platformAnalytics(m){
+  const cards=(m.platforms||[]).map(row=>analyticPanel(row.platform==='telegram'?'analyticsTelegram':row.platform==='android'?'analyticsAndroid':row.platform==='macos'?'analyticsMac':'analyticsWindows',
+    analyticRows([['installedDevices',number(row.devices)],['installedUsers',number(row.accounts)],
+      ...(row.platform==='telegram'?[['analyticsForeground30',number(row.foreground_accounts_30d)]]:
+        [['analyticsDau',number(row.active_dau)],['active7',number(row.active_wau)],['active30',number(row.active_mau)],['analyticsOnline30',number(row.online_devices_30d)]])]))).join('');
+  return `<div class="grid analytics-platform-grid">${cards}</div>`+analyticPanel('analyticsVersions',analyticTable(['platform','analyticsVersion','installedDevices','installedUsers'],(m.versions||[]).map(row=>[t('analytics'+({android:'Android',macos:'Mac',windows:'Windows'}[row.platform]||'Unknown')),row.version==='unknown'?t('analyticsUnknown'):row.version,number(row.devices),number(row.accounts)])),'analyticsPlatformNote');
+}
+let advancedAnalytics=null,advancedController=null;
+function cancelAdvancedAnalytics(){advancedController?.abort();advancedController=null;advancedAnalytics=null;}
+function advancedAnalyticsView(){
+  if(advancedAnalytics?.error)return statePanel('unavailable');
+  if(!advancedAnalytics?.data)return statePanel('loading');
+  const m=advancedAnalytics.data.metrics,s=m.sales,r=m.recovery,n=m.notification;
+  const arms=(data,sales=false)=>data?analyticTable(['analyticsArm','analyticsAssigned','analyticsMatured',sales?'analyticsPaidOutcome':'analyticsCompletedOutcome'],['control','treatment'].map(key=>{const a=data.arms[key];return [t('analyticsArm'+key),number(a.assigned),number(a.matured),number(sales?a.approved_users:a.lesson_completed_48h)];})):statePanel('unavailable');
+  return analyticPanel('analyticsSalesExperiment',arms(s,true)+(s?analyticRows([['analyticsUplift',s.matured?number(s.uplift_pp):'—'],['analyticsCi',s.ci_95_pp?.low_pp!==null&&s.ci_95_pp?.low_pp!==undefined?[s.ci_95_pp.low_pp,s.ci_95_pp.high_pp].map(number).join(' … '):'—'],['analyticsSrm',s.srm?.checked?number(s.srm.p_value):'—']]):''),'analyticsExperimentNote')+analyticPanel('analyticsRecoveryExperiment',arms(r), 'analyticsRecoveryNote')+analyticPanel('analyticsReminder',n?analyticRows([['analyticsMatured',number(n.sent)],['analyticsOpened',number(n.opened_after)],['analyticsPercent',n.sent?percent(n.open_rate):'—']]):statePanel('unavailable'),'analyticsReminderNote')+analyticsFooter(advancedAnalytics.data);
+}
+function advancedAnalyticsDisclosure(){return `<details class="stat-details" data-advanced-analytics><summary>${esc(t('analyticsAdvanced'))}</summary><div id="advancedAnalyticsBody">${advancedAnalyticsView()}</div></details>`;}
+async function loadAdvancedAnalytics(){
+  if(advancedController||advancedAnalytics?.data||state.route!=='stats'||!['course','funnel'].includes(state.statsTab)||state.platform!=='overall'||!state.actor)return;
+  const controller=new AbortController(),current=view,at=epoch;advancedController=controller;
+  try{
+    const data=await api('analytics',{section:'experiments',platform:state.platform,period:state.period},{requestSignal:controller.signal});
+    if(controller!==advancedController||current!==view||at!==epoch)return;
+    advancedAnalytics={data};
+  }catch(error){if(controller!==advancedController||current!==view||at!==epoch)return;advancedAnalytics={error:true};}
+  finally{if(advancedController===controller){advancedController=null;const body=$('advancedAnalyticsBody');if(body)body.innerHTML=advancedAnalyticsView();}}
+}
+document.addEventListener('toggle',event=>{if(event.target.matches('[data-advanced-analytics]')&&event.target.open)void loadAdvancedAnalytics();},true);
+function categorizedStatsView(){
+  const data=state.stats,nav=statsCategoryNav();if(!data)return nav+statePanel('loading');
+  const footer=analyticsFooter(data);if(!data.available)return nav+statePanel('unavailable','statsPlatformChoose')+footer;
+  const m=data.metrics,tab=state.statsTab;let body='';
+  if(data.platform!=='overall'&&['home','overview','platform'].includes(tab))body=platformAnalytics(m);
+  else if(tab==='overview'){
+    body=analyticCards([['usersTotal',number(m.users_total),'users'],['newAccounts',number(m.new_accounts),'users'],[state.period==='all_time'?'active30':'activeAccounts',number(m.active_accounts),'chart'],['analyticsActivePro',number(m.active_pro),'spark'],['analyticsPayers',number(m.paying_accounts),'wallet'],['pending',number(m.pending_current),'clock'],['approved',number(m.payments_by_status.approved),'check'],['userFilterBotBlocked',number(m.bot_blocked),'shield']]);
+    const c=m.course_engagement;
+    body+=`<div class="columns">${analyticPanel('courseEngagement',analyticTrack('engagedAccounts',c.engaged_accounts,c.engaged_accounts)+analyticTrack('startedAccounts',c.started_accounts,c.engaged_accounts)+analyticTrack('completedAccounts',c.completed_accounts,c.engaged_accounts),'courseMetricNote')}${analyticPanel('analyticsLearningActivity',activityChart(m.activity))}</div>`;
+    body+=`<div class="double">${analyticPanel('analyticsLevels',analyticTable(['level','analyticsAccounts'],m.levels.map(r=>[(r.key==='beginner'?t('messageBeginner'):r.key==='unknown'?t('analyticsUnknown'):r.key.toUpperCase()),number(r.accounts)])))}${analyticPanel('analyticsLanguages',analyticTable(['language','analyticsAccounts'],m.languages.map(r=>[(r.key==='unknown'?t('analyticsUnknown'):r.key.toUpperCase()),number(r.accounts)])))}</div>`;
+  }else if(tab==='course'){
+    const d1=m.retention.d1,d7=m.retention.d7,f=m.foundation,a=m.activation;
+    body=analyticCards([['analyticsRetentionD1',percent(d1.percent),'users'],['analyticsRetentionD7',percent(d7.percent),'users'],['analyticsActivation',percent(a?.percent),'target'],['analyticsStarter',percent(f?.completion_percent),'book'],['analyticsFirstAttempt',percent(f?.first_attempt?.percent),'check'],['analyticsSessionTime',seconds(m.session_seconds),'clock'],['analyticsLessonTime',seconds(m.lesson_seconds),'clock'],['analyticsChatAverage',number(m.chat.average),'spark'],['analyticsVoiceMinutes',number(m.voice_minutes),'clock']]);
+    body+=`<div class="double">${analyticPanel('analyticsCohorts',analyticTable(['analyticsMetric','analyticsNumerator','analyticsDenominator'],[['D1',number(d1.returned),number(d1.eligible)],['D7',number(d7.returned),number(d7.eligible)],[t('analyticsActivation'),number(a?.started),number(a?.eligible)],[t('analyticsStarter'),number(f?.completed_users),number(f?.started_users)],[t('analyticsFirstAttempt'),number(f?.first_attempt?.correct),number(f?.first_attempt?.objectives)],[t('analyticsCheckpoint'),number(f?.checkpoint?.reached),number(f?.checkpoint?.eligible)],[t('analyticsDirectStart'),number(m.direct_activation?.started),number(m.direct_activation?.eligible)]]),'analyticsRetentionNote')}${analyticPanel('analyticsFoundationParts',f?f.parts.map(p=>analyticTrack('analyticsPart'+p.part,p.completed_users,f.completed_users)).join('')+analyticRows([['completedAccounts',number(m.course_engagement.completed_accounts)],['analyticsCompletedUserLessons',number(m.completed_user_lessons)]]):statePanel('unavailable'))}</div>`;
+    body+=analyticPanel('analyticsFeatureUse',analyticTable(['analyticsFeature','analyticsPaidNow','analyticsFreeNow','analyticsPaidRate','analyticsFreeRate'],m.features.map(r=>[t('analyticsFeature'+r.key),number(r.paid),number(r.free),percent(m.feature_denominators.paid?100*r.paid/m.feature_denominators.paid:null),percent(m.feature_denominators.free?100*r.free/m.feature_denominators.free:null)])),'analyticsFeaturesNote');
+    body+=`<p class="source-note">${esc(t('analyticsDetailWindow'))}: ${esc(date(m.detail_since))}${m.detail_limited?' · '+esc(t('analyticsDetailLimited')):''}</p>`;
+  }else if(tab==='platform')body=platformAnalytics(m);
+  else if(tab==='funnel'){
+    const c=m.registration_conversion,f=m.attempt_funnel;
+    body=analyticCards([['registeredCohort',number(c.registered_accounts),'users'],['convertedAccounts',number(c.converted_accounts),'wallet'],['conversion',percent(c.percent),'target']]);
+    body+=`<div class="double">${analyticPanel('analyticsPaymentJourney',f&&!f.collecting?f.steps.map(row=>analyticTrack('analyticsStage'+row.key,row.accounts,f.steps[0]?.accounts)).join(''):statePanel('analyticsCollecting'),'analyticsAttemptNote')}${analyticPanel('analyticsLosses',f&&!f.collecting?analyticTable(['analyticsStage','analyticsLost','analyticsPercent'],f.drops.map(r=>[t('analyticsStage'+r.from)+' → '+t('analyticsStage'+r.to),number(r.lost),percent(r.percent)])):statePanel('analyticsCollecting'))}</div>`;
+  }else if(tab==='money'){
+    body=analyticCards([['analyticsRevenue',usd(m.revenue_usd),'wallet'],['estimatedCost',usd(m.ai_usd,true),'spark'],['analyticsManualProfit',usd(m.manual_profit_usd),'wallet'],['analyticsExpense',usd(m.expense_usd),'wallet'],['analyticsNet',usd(m.net_usd),'chart'],['analyticsArpu',usd(m.arpu_usd),'users'],['analyticsArppu',usd(m.arppu_usd),'users'],['analyticsAverageCheck',usd(m.average_payment_usd),'wallet']]);
+    body+=`<div class="double">${analyticPanel('approvedAmounts',analyticTable(['currency','amount','payments'],m.currencies.map(r=>[r.currency,number(r.amount),number(r.payments)])),'analyticsCurrencyBasis')}${analyticPanel('analyticsRenewals',analyticRows([['payments',number(m.payments)],['analyticsFirstPayments',number(m.first_payments)],['analyticsRepeatPayments',number(m.renewal_payments)],['analyticsRenewalShare',percent(m.renewal_percent)],['analyticsUnpriced',number(m.unpriced_payments)],['analyticsArpuDenominator',number(m.active_denominator)],['analyticsFirstPaymentTime',seconds(m.first_payment_seconds)],['analyticsTaggedCac',usd(m.tagged_cac_usd)]]),'analyticsRenewalNote')}</div>`;
+    body+=analyticPanel('aiSpend',m.ai_models?analyticTable(['aiModel','analyticsBillingTier','recordedRequests','tokens','estimatedCost'],m.ai_models.map(r=>[r.model==='unknown'?t('analyticsUnknown'):r.model,t('analyticsTier'+r.tier),number(r.requests),number(r.tokens),usd(r.usd,true)])):statePanel('unavailable'),'aiCostNote');
+  }else if(tab==='sources'){
+    const sourceName=key=>t('analyticsSource'+key)!=='—'?t('analyticsSource'+key):t('analyticsOtherSource');
+    body=`<div class="double">${analyticPanel('analyticsSubscriptionEntries',analyticTable(['source','analyticsVisits','analyticsHistories'],m.entries.map(r=>[sourceName(r.source),number(r.visits),number(r.histories)])))}${analyticPanel('analyticsPaymentSources',analyticTable(['source','payments','analyticsRevenue'],m.attribution.map(r=>[sourceName(r.source),number(r.payments),usd(r.usd)])),'analyticsAttributionNote')}</div>`;
+    body+=analyticPanel('analyticsPublicTraffic',analyticTable(['source','analyticsVisits'],m.traffic.map(r=>[r.source==='other'?t('analyticsOtherSource'):r.source,number(r.visits)])),'analyticsTrafficNote');
+  }else{
+    body=`<div class="double">${analyticPanel('analyticsDataQuality',analyticTable(['source','analyticsRecords','updated'],m.quality.map(r=>[t('analyticsQuality'+r.source),number(r.records),r.latest_at?date(r.latest_at):'—'])))}${analyticPanel('analyticsDefinitions',analyticRows([['analyticsRefresh',t('analyticsDailyCache')],['analyticsFinancialGrain',t('analyticsSeparateCurrencies')],['analyticsAiBasis',t('analyticsStoredEstimate')],['analyticsPlatformTotal',t('analyticsOverlapping')],['analyticsDetailBound',number(m.detail_row_limit)]]))}</div>`;
+    body+=analyticPanel('analyticsBasicExport',`<div class="statistics-export">${exportMenu('statistics')}</div>`,'analyticsExportNote')+feedbackPanel();
+  }
+  if(data.platform==='overall'&&['course','funnel'].includes(tab))body+=advancedAnalyticsDisclosure();
+  return nav+`<div class="stats-category-content">${body}</div>`+footer;
+}
+function statsView(){
   if(state.route==='stats')return categorizedStatsView();
-  const data=state.stats;if(!data) return statePanel('loading');
-  const exports=state.route==='stats'?`<div class="statistics-export">${exportMenu('statistics')}</div>`:'';
-  if(!data.available) return exports+statePanel('unavailable')+feedbackPanel();
-  let cards='', extra='';const m=data.metrics;
-  if(data.platform==='overall') {
-    cards=metric('usersTotal',m.users_total,'users')+metric('newAccounts',m.new_accounts,'users')+metric(state.period==='all_time'?'active30':'activeAccounts',m.active_accounts)+metric('pending',m.payments_by_status.pending,'wallet');
-    extra=`<h2 class="section-title">${esc(t('approvedAmounts'))}</h2><div class="currency-rows">${m.approved_amounts_by_currency.map(row=>`<div class="currency-row">${esc(row.currency)}<strong>${esc(row.amount)}</strong></div>`).join('')||`<p>${esc(t('empty'))}</p>`}</div><p class="source-note">${esc(t('currencyNote'))}</p>`;
-    const ai=m.ai_usage,c=m.course_engagement,r=m.registration_conversion;
-    extra+=`<div class="stats-details"><section class="stat-detail"><h2>${esc(t('aiSpend'))}</h2>${profileFields([['estimatedCost',ai.estimated_cost_usd+' USD'],['recordedRequests',ai.recorded_requests],['tokens',ai.tokens]])}<p class="source-note">${esc(t('aiCostNote'))}</p></section><section class="stat-detail"><h2>${esc(t('courseEngagement'))}</h2>${profileFields([['engagedAccounts',c.engaged_accounts],['startedAccounts',c.started_accounts],['completedAccounts',c.completed_accounts]])}<p class="source-note">${esc(t('courseMetricNote'))}${c.unmatched_events?' '+esc(t('unmatchedEvents'))+': '+c.unmatched_events:''}</p></section><section class="stat-detail"><h2>${esc(t('registrationConversion'))}</h2>${profileFields([['conversion',r.percent===null?'—':r.percent+'%'],['registeredCohort',r.registered_accounts],['convertedAccounts',r.converted_accounts]])}<p class="source-note">${esc(t('conversionNote'))}</p></section></div>`;
-  } else if(data.platform==='android') cards=metric('installedDevices',m.registry.installed_devices,'device')+metric('installedUsers',m.registry.installed_users,'users')+metric('active7',m.active.wau)+metric('active30',m.active.mau);
-  else cards=metric('active30',m.active_users_30d)+metric('firstOpen',m.verified_first_open_30d,'device');
-  return `${exports}<div class="grid metrics">${cards}</div>${extra}<p class="source-note">${esc(t('overlap'))}${data.scope?.period_filter_applied===false?' '+esc(t('rolling30')):''}</p><p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>${feedbackPanel()}`;
+  const data=state.stats;if(!data)return statePanel('loading');
+  if(!data.available)return statePanel('unavailable')+analyticsFooter(data);
+  const m=data.metrics;if(data.platform!=='overall')return platformAnalytics(m)+analyticsFooter(data);
+  const task=(label,count,glyph,attributes)=>`<button class="task analytics-task" ${attributes}><span class="task-icon">${icon(glyph)}</span><span class="task-text"><strong>${esc(t(label))}</strong><small>${esc(number(count))}</small></span>${icon('chevron')}</button>`;
+  const quick=(label,glyph,attributes)=>`<button class="quick-item" ${attributes}><span class="qi-icon">${icon(glyph)}</span><span>${esc(t(label))}</span></button>`;
+  return `<div class="grid metrics">${metric('usersTotal',number(m.users_total),'users')}${metric('analyticsActivePro',number(m.active_pro),'spark')}${metric('pending',number(m.pending_current),'wallet')}${metric('activeToday',number(m.active_today),'chart')}</div><div class="columns">${analyticPanel('analyticsLearningActivity',activityChart(m.activity))}${analyticPanel('analyticsAttention',task('pending',m.pending_current,'clock','data-home-cohort="pending"')+task('analyticsExpiringPro',m.expiring_pro,'users','data-home-cohort="expiring_pro"')+task('userFilterBlocked',m.blocked_current,'shield','data-home-cohort="blocked"'))}</div>${analyticPanel('analyticsQuickActions',`<div class="grid quick-grid">${quick('grantAccess','gift','data-home-cohort="grant"')}${quick('analyticsSendMessage','send','data-action="messageEditor"')}${quick('limits','sliders','data-action="homeLimits"')}${quick('subscriptionPrices','credit','data-action="priceSettings"')}</div>`)}${analyticsFooter(data)}`;
 }
 function cancelStatisticsDownload(){
   const download=statisticsDownload;statisticsDownload=null;
@@ -595,7 +627,7 @@ async function loadCourseData(){
     }
     courseTrialDraft={enabled:limit.limits.trial.enabled,days:limit.limits.trial.days,disabled_reason:limit.limits.trial.disabled_reason||''};
     state.phase='ready';render();
-    void loadCourseAnalytics();
+    if(state.courseTab==='tracks')void loadCourseAnalytics();
   }catch(error){
     if(current!==view||at!==epoch||state.route!=='course'||!state.actor)return;
     state.phase='ready';state.error='error';render();
@@ -672,15 +704,15 @@ function managementView(){
   if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('messages'),'data-action="messageList"','mega')+managementRow(t('adCampaigns'),'data-campaign-list="ad"','mega')+managementRow(t('releaseCampaigns'),'data-campaign-list="release"','bell')+managementRow(t('discountCampaigns'),'data-campaign-list="discount"','wallet')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
   return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow(t('deliveryQueue'),'data-action="deliveryList"','bell')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
-function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
+function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return (state.route==='stats'?statsCategoryNav():'')+statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
 async function load() {
-  cancelStatisticsDownload();feedbackLoadId++;feedbackStats.loading=false;feedbackStats.data=null;
+  cancelAdvancedAnalytics();cancelStatisticsDownload();feedbackLoadId++;feedbackStats.loading=false;feedbackStats.data=null;
   if(!state.actor) return;const current=++view, authEpoch=epoch;state.phase='loading';state.error=null;render();
   if(state.route==='course'){await loadCourseData();return;}
    if(['system','marketing'].includes(state.route)){state.phase='ready';render();return;}
   try {
-    const data=await api(['home','stats'].includes(state.route)?'statistics':state.route==='users'?'users/search':'payments/list',
-      ['home','stats'].includes(state.route)?{period:state.period,platform:state.platform}:state.route==='users'?{query:state.query,segment:state.segment,before_id:state.cursor,limit:30}:{status:state.status,before_id:state.cursor,limit:30});
+    const data=await api(['home','stats'].includes(state.route)?'analytics':state.route==='users'?'users/search':'payments/list',
+      ['home','stats'].includes(state.route)?{section:state.route==='home'?'home':state.statsTab,period:state.period,platform:state.platform}:state.route==='users'?{query:state.query,segment:state.segment,before_id:state.cursor,limit:30}:{status:state.status,before_id:state.cursor,limit:30});
     if(current!==view||authEpoch!==epoch) return;
     if(['home','stats'].includes(state.route)) state.stats=data; else {state.rows=data.items;state.next=data.next_before_id;}
     state.phase='ready';render();
@@ -794,7 +826,7 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {clearTimeout(savedCloseTimer);savedCloseTimer=null;editorBaseline=null;resetSwipePreview();clearNotice();managementPreparing=false;preparingEditor=null;drawerBack=null;closeActionMenus();closeInboxAttachment();releaseManagementMediaPreview();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;paymentPreview=null;reviewChoice=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {campaignMediaUpload?.control.abort();campaignMediaUpload=null;clearTimeout(savedCloseTimer);savedCloseTimer=null;editorBaseline=null;resetSwipePreview();clearNotice();managementPreparing=false;preparingEditor=null;drawerBack=null;closeActionMenus();closeInboxAttachment();releaseManagementMediaPreview();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;paymentPreview=null;reviewChoice=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   clearTimeout(savedCloseTimer);savedCloseTimer=null;editorBaseline=null;
   if(!$('overlay'))returnFocus=document.activeElement;
@@ -826,13 +858,13 @@ async function singleEditorAction(task){
   if(managementPreparing||signing||!state.actor)return;
   if(!supportsPasskey()){showNotice('passkeyUnsupported');return;}
   const restore=lockEditor(),token={};preparingEditor=token;managementPreparing=true;
-  try{await task();}finally{restore();if(preparingEditor===token){managementPreparing=false;preparingEditor=null;}}
+  try{await task();}finally{restore();if(preparingEditor===token){managementPreparing=false;preparingEditor=null;updateCampaignMediaButton();}}
 }
 function updateManagementAction(){
   const button=document.querySelector('[data-action="managementPrepare"]'),d=managementDraft;
   if(!button||!d)return;
   let label='saveChanges',danger=false;
-  if(d.type==='campaign'){label=['ad_send','release_create'].includes(d.kind)?'sendMessage':d.kind==='discount_create'?'createItem':'saveChanges';}
+  if(d.type==='campaign'){label=(['ad_send','release_create','discount_send'].includes(d.kind)||d.kind==='discount_state'&&$('discountOperation')?.value==='send')?'sendMessage':d.kind==='discount_create'?'createItem':'saveChanges';}
   else if(d.type==='user'){label=userOperationLabels[d.userOperation];danger=d.userOperation==='delete';}
   else if(d.type==='message')label=!d.userId&&$('messageKind')?.value==='test'?'sendTestMessage':'sendMessage';
   else if(d.type==='message_control')label=d.controlOperation==='resume'?'messageResume':'messageStop';
@@ -850,6 +882,9 @@ function updateManagementAction(){
 // method/plan, notice/help-video language) is not a persisted change.
 function editorValue(){
   const d=managementDraft;
+  if(d?.type==='campaign'&&d.kind==='discount_state'){
+    return JSON.stringify({active:$('campaignActive')?.value===String(d.current?.is_active)?'unchanged':$('campaignActive')?.value});
+  }
   if(d?.type==='price'){
     const row=d.prices?.find(r=>r.method===$('priceMethod')?.value&&r.plan===$('pricePlan')?.value);
     return JSON.stringify({amount:row?String(Number($('priceAmount')?.value))===String(Number(row.amount))?'unchanged':$('priceAmount')?.value:'unchanged'});
@@ -875,7 +910,7 @@ function editorActionOnly(){
   // Sending an existing campaign is an explicit signed command, not a
   // draft edit; it must remain clickable even when all fields are read-only.
   return !!d&&(d.type==='message_control'||d.type==='partner'||d.type==='delivery'||
-    d.type==='payout'||d.type==='campaign'&&d.kind==='ad_send'||
+    d.type==='payout'||d.type==='campaign'&&(d.kind==='ad_send'||d.kind==='discount_state'&&$('discountOperation')?.value==='send')||
     d.type==='user'&&d.userOperation!=='delete');
 }
 function updateEditorSaveEnabled(){
@@ -883,7 +918,8 @@ function updateEditorSaveEnabled(){
   if(!b||!editorBaseline||editorBaseline.panel!==$('overlay'))return;
   const dirty=editorActionOnly()||editorValue()!==editorBaseline.value;
   const requiresProof=managementDraft?.type==='payout'&&$('payoutOperation')?.value==='complete'&&!managementDraft.proofLoaded;
-  b.disabled=!dirty||requiresProof||managementPreparing||!!signing;
+  const mediaPending=['campaign_draft','release_create'].includes(managementDraft?.kind)&&Boolean(managementDraft.assetUploading||managementDraft.campaignMediaFile&&!managementDraft.assetId);
+  b.disabled=!dirty||requiresProof||mediaPending||managementPreparing||!!signing;
 }
 function showSavedAndDismiss(key='changesSaved'){
   const check='<svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><circle class="saved-ring" cx="50" cy="50" r="42"/><path class="saved-tick" d="M29 51 44 66 72 35"/></svg>';
@@ -1040,9 +1076,9 @@ async function messageJob(id){
     const job=data.job;
     const refresh=`<button class="btn" data-message-job="${esc(id)}">${esc(t('readCurrent'))}</button>`;
     const pending=job.counts.pending>0;
-    const run=pending&&job.status==='ready'&&job.session_current?`<button class="btn primary" data-message-run="${esc(id)}">${esc(t('messageNextBatch'))}</button>`:pending&&job.can_control?`<button class="btn primary" data-message-control="resume" data-job-id="${esc(id)}">${esc(t('messageResume'))}</button>`:'';
+    const run=pending&&job.status==='ready'&&job.session_current&&job.can_run!==false?`<button class="btn primary" data-message-run="${esc(id)}">${esc(t('messageNextBatch'))}</button>`:pending&&job.can_control&&(!job.session_current||job.stale)?`<button class="btn primary" data-message-control="resume" data-job-id="${esc(id)}">${esc(t('messageResume'))}</button>`:'';
     const stop=job.can_stop?actionMenu('messageControlMenu',`<button role="menuitem" data-message-stop="${esc(id)}">${esc(t('messageStop'))}</button>`):'';
-    drawer('messages',`<p class="source-note">${esc(t('messageAttemptHint'))}</p>${managementFields(job,'message')}${stop}`,refresh+run);
+    drawer('messages',`<p class="source-note">${esc(t('messageAttemptHint'))}</p>${managementFields(job,'message')}${job.not_before?profileFields([['campaignSendAt',date(job.not_before)]]):''}${stop}`,refresh+run);
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('messages',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','messageList'));}
 }
 async function runMessage(id){
@@ -1287,6 +1323,78 @@ function updateCourseAdCreateMedia(){
   managementDraft={...managementDraft,mediaFile:null};releaseManagementMediaPreview();
   $('courseAdMediaPreview').innerHTML='';$('courseAdMediaValidation').hidden=true;
 }
+const campaignButtonLabels={subscription:'campaignButtonSubscription',partner:'partners',course:'course',reminder:'campaignButtonReminder',help:'campaignButtonHelp',contact:'helpContact',profile:'userProfile',url:'campaignButtonUrl'};
+function campaignMediaFields(){
+  return `<details class="profile-section" id="campaignMediaSection"><summary>${esc(t('courseAdMedia'))}</summary><div class="form-field"><label for="campaignMediaFile">${esc(t('courseAdMedia'))}</label><input class="input" id="campaignMediaFile" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm,video/x-m4v"><p class="form-hint">${esc(t('campaignMediaHint'))}</p><p class="source-note" id="campaignMediaStatus" role="status"></p><div id="campaignMediaPreview"></div><button type="button" class="btn" data-action="campaignMediaClear" id="campaignMediaClear" hidden>${esc(t('campaignMediaClear'))}</button><p class="alert" id="campaignMediaValidation" role="alert" hidden></p></div></details>`;
+}
+function updateCampaignMediaButton(){updateEditorSaveEnabled();}
+function clearCampaignMedia(){
+  if(!['campaign_draft','release_create'].includes(managementDraft?.kind)||signing||managementPreparing)return;
+  campaignMediaUpload?.control.abort();campaignMediaUpload=null;
+  Object.assign(managementDraft,{campaignMediaFile:null,assetId:null,assetHash:null,assetUploading:false});
+  if($('campaignMediaFile'))$('campaignMediaFile').value='';
+  releaseManagementMediaPreview();
+  if($('campaignMediaPreview'))$('campaignMediaPreview').innerHTML='';
+  if($('campaignMediaStatus'))$('campaignMediaStatus').textContent='';
+  if($('campaignMediaClear'))$('campaignMediaClear').hidden=true;
+  if($('campaignMediaValidation'))$('campaignMediaValidation').hidden=true;
+  for(const lang of ['uz','ru','tj']){const input=$((managementDraft.kind==='release_create'?'releaseText-':'campaignText-')+lang);if(input)input.maxLength=3500;}
+  updateCampaignMediaButton();
+}
+async function stageCampaignMedia(file){
+  if(!['campaign_draft','release_create'].includes(managementDraft?.kind)||signing||managementPreparing)return;
+  campaignMediaUpload?.control.abort();campaignMediaUpload=null;
+  const current=drawerId,at=epoch,draft=managementDraft;
+  Object.assign(draft,{campaignMediaFile:file||null,assetId:null,assetHash:null,assetUploading:false});
+  releaseManagementMediaPreview();$('campaignMediaPreview').innerHTML='';$('campaignMediaValidation').hidden=true;
+  if(!file){clearCampaignMedia();return;}
+  $('campaignMediaClear').hidden=false;
+  const video=file.type.startsWith('video/'),types=['image/jpeg','image/png','image/webp','video/mp4','video/quicktime','video/webm','video/x-m4v'];
+  if(!types.includes(file.type)||file.size<1||file.size>(video?25:2)*1024*1024){$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;updateCampaignMediaButton();return;}
+  draft.assetUploading=true;updateCampaignMediaButton();
+  $('campaignMediaStatus').textContent=t('campaignMediaUploading');
+  const upload={control:new AbortController()};campaignMediaUpload=upload;
+  try{
+    const sourceHash=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());
+    if(current!==drawerId||at!==epoch||campaignMediaUpload!==upload)return;
+    const result=await api('campaign-assets',null,{rawBody:file,timeoutMs:150000,requestSignal:upload.control.signal});
+    if(current!==drawerId||at!==epoch||campaignMediaUpload!==upload||!state.actor)return;
+    const hash=[...new Uint8Array(sourceHash)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
+    if(result.content_hash!==hash||result.byte_count!==file.size||!result.asset_id||!result.asset_hash)throw Error('invalid_asset');
+    Object.assign(draft,{assetId:result.asset_id,assetHash:result.asset_hash});
+    managementMediaPreviewUrl=URL.createObjectURL(file);
+    $('campaignMediaPreview').innerHTML=video?`<figure class="management-media-preview"><video controls playsinline preload="metadata" src="${managementMediaPreviewUrl}"></video></figure>`:`<figure class="management-media-preview"><img src="${managementMediaPreviewUrl}" alt="${esc(t('courseAdMedia'))}"></figure>`;
+    $('campaignMediaStatus').textContent=t('campaignMediaReady');
+    for(const lang of ['uz','ru','tj'])$((draft.kind==='release_create'?'releaseText-':'campaignText-')+lang).maxLength=1024;
+  }catch(error){
+    if(current===drawerId&&at===epoch&&campaignMediaUpload===upload&&state.actor){$('campaignMediaStatus').textContent='';$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;$('campaignMediaFile').value='';}
+  }finally{
+    if(current===drawerId&&at===epoch&&campaignMediaUpload===upload){campaignMediaUpload=null;draft.assetUploading=false;updateCampaignMediaButton();}
+  }
+}
+function campaignButtonFields(){
+  const select=campaignSelect('campaignButtonAction','campaignButton',[['','campaignButtonNone'],...Object.entries(campaignButtonLabels)]);
+  const labels=['uz','ru','tj'].map(lang=>`<div class="form-field"><label for="campaignButtonLabel-${lang}">${lang.toUpperCase()} · ${esc(t('courseAdButton'))}</label><input class="input" id="campaignButtonLabel-${lang}" maxlength="64" disabled></div>`).join('');
+  return `<details class="profile-section" id="campaignButtonSection"><summary>${esc(t('campaignButton'))}</summary>${select}<div id="campaignButtonSettings" hidden><div class="form-field" id="campaignButtonUrlField" hidden><label for="campaignButtonUrl">${esc(t('courseAdLink'))}</label><input class="input" id="campaignButtonUrl" maxlength="512" placeholder="https://…" disabled></div><label class="management-check"><input type="checkbox" id="campaignButtonCustom">${esc(t('campaignButtonCustom'))}</label><div id="campaignButtonLabels" hidden>${labels}</div><p class="source-note">${esc(t('campaignButtonHint'))}</p></div></details>`;
+}
+function updateCampaignButtonFields(){
+  if(managementDraft?.kind!=='campaign_draft'||!$('campaignButtonAction'))return;
+  const action=$('campaignButtonAction').value,enabled=Boolean(action),custom=enabled&&$('campaignButtonCustom').checked,url=action==='url';
+  $('campaignButtonSettings').hidden=!enabled;$('campaignButtonUrlField').hidden=!url;
+  $('campaignButtonUrl').disabled=!url;$('campaignButtonUrl').required=url;
+  $('campaignButtonLabels').hidden=!custom;
+  for(const lang of ['uz','ru','tj']){const input=$('campaignButtonLabel-'+lang);input.disabled=!custom;input.required=custom;}
+}
+function campaignButtonChange(){
+  const action=$('campaignButtonAction').value;
+  return action?{action,url:action==='url'?$('campaignButtonUrl').value:null,labels:$('campaignButtonCustom').checked?Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,$('campaignButtonLabel-'+lang).value])):null}:null;
+}
+function campaignButtonPreview(row,lang){
+  const button=row.buttons?.[lang]?.inline_keyboard?.[0]?.[0];
+  if(!button)return '';
+  const target=button.url||button.web_app?.url||t(campaignButtonLabels[row.button?.action]);
+  return `<div class="notice-preview"><strong>${esc(t('campaignButton'))}: ${esc(button.text)}</strong><p class="source-note">${esc(target)}</p></div>`;
+}
 const campaignLabels={ad:'adCampaigns',release:'releaseCampaigns',discount:'discountCampaigns'};
 const campaignFeatureLabels={general:'all',qa:'questionAnswer',image:'releaseFeatureImage',course:'course',profile:'userProfile',subscription:'subscriptionPrices',android_subscription:'releaseFeatureAndroid'};
 function campaignSelect(id,label,options,selected=''){
@@ -1295,12 +1403,13 @@ function campaignSelect(id,label,options,selected=''){
 function campaignFields(row){
   const fields=[['campaignId',row.id],['campaignTitle',row.title],['status',t(({active:'hsk30On',paused:'campaignDraftStatus',sending:'messageRunning',sent:'messageComplete',stopped:'messageClosed',scheduled:'messageReady'})[row.status]||'unavailable')]];
   if(row.ends_at)fields.push(['campaignExpiry',date(row.ends_at)]);
+  if(row.media_type&&row.media_type!=='text')fields.push(['courseAdMedia',t(row.media_type==='photo'?'courseAdPhoto':'courseAdVideo')]);
   if(row.percent)fields.push(['discount',row.percent+'%']);
   if(row.target_user_id)fields.push(['account',row.target_user_id]);
   if(row.quota_total)fields.push(['discountQuota',row.quota_total]);
   if(row.repeat_interval_days)fields.push(['discountRepeatDays',row.repeat_interval_days]);
   if(row.sent_count!==undefined)fields.push(['messageAttempted',row.sent_count],['messageUncertain',row.failed_count]);
-  const copies=row.texts?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(row.texts[lang])}</p></details>`).join(''):row.copies?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><strong>${esc(row.copies[lang].title)}</strong><p class="notice-preview">${esc(row.copies[lang].reason)}</p></details>`).join(''):'';
+  const copies=row.texts?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(row.texts[lang])}</p>${campaignButtonPreview(row,lang)}</details>`).join(''):row.copies?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><strong>${esc(row.copies[lang].title)}</strong><p class="notice-preview">${esc(row.copies[lang].reason)}</p></details>`).join(''):'';
   return profileFields(fields)+copies;
 }
 async function campaignList(kind,before=null){
@@ -1326,10 +1435,17 @@ async function campaignDetail(kind,id){
     if(row.id!==id||row.kind!==kind)throw Error('invalid_campaign');
     const editable=kind==='ad'&&row.can_send||kind==='discount'&&(row.can_activate||row.is_active);
     managementDraft=editable?{type:'campaign',kind:kind==='ad'?'ad_send':'discount_state',campaignKind:kind,campaignId:id,current:row}:null;
-    const selection=kind==='discount'&&editable?campaignSelect('campaignActive','status',row.can_activate?[['false','hsk30Off'],['true','hsk30On']]:[['false','hsk30Off']],String(row.is_active)):'';
-    const hint=kind==='ad'?`<p class="source-note">${esc(t(row.can_send?'campaignSendHint':'campaignReadOnly'))}</p>`:kind==='discount'?`<p class="source-note">${esc(t('discountNoNotificationHint'))}</p>`:'';
-    drawer(campaignLabels[kind],`<form id="managementForm">${campaignFields(row)}${hint}${selection}<p class="alert" id="campaignCommandValidation" role="alert" hidden></p></form>`,btn('close','close')+(editable?btn('saveChanges','managementPrepare','primary'):''));
+    const selection=kind==='discount'&&editable?(row.can_send?campaignSelect('discountOperation','operation',[['state','changeStatus'],['send','sendMessage']],'send'):'')+`<div id="discountStateFields" ${row.can_send?'hidden':''}>`+campaignSelect('campaignActive','status',row.can_activate||row.is_active?[['false','hsk30Off'],['true','hsk30On']]:[['false','hsk30Off']],String(row.is_active))+'</div>':'';
+    const hint=kind==='ad'?`<p class="source-note">${esc(t(row.can_send?'campaignSendHint':'campaignReadOnly'))}</p>`:kind==='discount'?`<p class="source-note">${esc(t(row.can_send?'discountSendHint':'discountNoNotificationHint'))}</p>`:'';
+    drawer(campaignLabels[kind],`<form id="managementForm">${campaignFields(row)}${hint}${selection}${kind==='ad'&&editable?campaignScheduleFields():''}<p class="alert" id="campaignCommandValidation" role="alert" hidden></p></form>`,btn('close','close')+(editable?btn('saveChanges','managementPrepare','primary'):''));
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer(campaignLabels[kind],statePanel(errorKey(error)),btn('close','close'));}
+}
+function campaignScheduleFields(){
+  return `<details class="profile-section"><summary>${esc(t('campaignSendAt'))}</summary><div class="form-field"><label for="campaignSendAt">${esc(t('campaignSendAt'))}</label><input class="input" id="campaignSendAt" type="datetime-local" step="60"><p class="form-hint">${esc(t('campaignScheduleHint'))}</p></div></details>`;
+}
+function campaignSendTime(){
+  const value=$('campaignSendAt')?.value;
+  return value?new Date(value).toISOString():null;
 }
 function campaignCreate(kind,userId=null){
   if(!['release','discount'].includes(kind))return;
@@ -1339,6 +1455,7 @@ function campaignCreate(kind,userId=null){
   if(kind==='release'){
     body=`<p class="source-note">${esc(t('releaseCampaignHint'))}</p>`+input('releaseTitle','campaignTitle',120,'required');
     body+=['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><div class="form-field"><label for="releaseText-${lang}">${esc(t('campaignCopy'))}</label><textarea class="input setting-value" id="releaseText-${lang}" maxlength="3500" rows="5" required></textarea></div></details>`).join('');
+    body+=campaignMediaFields()+campaignScheduleFields();
     body+=campaignSelect('releaseFeature','releaseFeature',Object.entries(campaignFeatureLabels));
     body+=`<details class="profile-section"><summary>${esc(t('filters'))}</summary><fieldset class="form-field"><legend>${esc(t('targetLanguages'))}</legend>${['uz','ru','tj'].map(lang=>`<label class="management-check"><input type="checkbox" data-release-language="${lang}" checked>${lang.toUpperCase()}</label>`).join('')}</fieldset><div class="management-form-pair">${Object.entries(messageFilterConfig).map(([key,[label,options]])=>campaignSelect('releaseFilter-'+key,label,[['','all'],...options])).join('')}</div></details>`;
   }else{
@@ -1358,12 +1475,13 @@ function campaignCreate(kind,userId=null){
   }
 }
 function campaignChange(draft){
-  if(draft.kind==='ad_send')return {kind:draft.kind,campaign_id:draft.campaignId};
+  if(draft.kind==='ad_send')return {kind:draft.kind,campaign_id:draft.campaignId,send_at:campaignSendTime()};
+  if(draft.kind==='discount_state'&&$('discountOperation')?.value==='send')return {kind:'discount_send',campaign_id:draft.campaignId};
   if(draft.kind==='discount_state')return {kind:draft.kind,campaign_id:draft.campaignId,is_active:$('campaignActive').value==='true'};
   if(draft.kind==='release_create'){
     const filters={languages:[...document.querySelectorAll('[data-release-language]:checked')].map(input=>input.dataset.releaseLanguage)};
     for(const key of Object.keys(messageFilterConfig))if($('releaseFilter-'+key).value)filters[key]=$('releaseFilter-'+key).value;
-    return {kind:draft.kind,title:$('releaseTitle').value,texts:Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,$('releaseText-'+lang).value])),feature_key:$('releaseFeature').value,filters};
+    return {kind:draft.kind,title:$('releaseTitle').value,texts:Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,$('releaseText-'+lang).value])),feature_key:$('releaseFeature').value,filters,send_at:campaignSendTime(),asset_id:draft.assetId||null,asset_hash:draft.assetHash||null};
   }
   const target=Number($('discountTarget').value)||null;
   return {kind:draft.kind,copies:Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,{title:$('discountTitle-'+lang).value,reason:$('discountReason-'+lang).value}])),
@@ -1377,8 +1495,9 @@ async function marketingEditor(kind,before=null){
     closeDrawer();managementDraft={type:'marketing',kind};
     const copy=['uz','ru','tj'].map(language=>`<details class="profile-section notice-languages campaign-locale-copy" ${language===locale?'open':''}><summary>${language.toUpperCase()}</summary><div class="form-field"><label for="campaignText-${language}">${esc(t('campaignCopy'))}</label><textarea class="input setting-value" id="campaignText-${language}" maxlength="3500" rows="5" required></textarea></div></details>`).join('');
     const languages=['uz','ru','tj'].map(language=>`<label class="management-check"><input type="checkbox" data-campaign-language="${language}">${language.toUpperCase()}</label>`).join('');
-    const body=`<p class="source-note campaign-paused-note">${esc(t('campaignPausedHint'))}</p><div class="form-field"><label for="campaignTitle">${esc(t('campaignTitle'))}</label><input class="input" id="campaignTitle" maxlength="120" required></div>${copy}<fieldset class="form-field"><legend>${esc(t('targetLanguages'))}</legend><div class="v6-toggles">${languages}</div></fieldset><div class="management-form-pair"><div class="form-field"><label for="campaignTrack">${esc(t('campaignTrack'))}</label><select class="input" id="campaignTrack"><option value="">${esc(t('all'))}</option><option value="hsk20">HSK 2.0</option><option value="hsk30">HSK 3.0</option></select></div><div class="form-field"><label for="campaignDuration">${esc(t('campaignDurationHours'))}</label><input class="input" id="campaignDuration" type="number" min="1" max="720" step="1" value="24" required></div></div><label class="management-check"><input type="checkbox" id="campaignSubscribers">${esc(t('includeActiveSubscribers'))}</label><p class="alert" id="campaignValidation" hidden>${esc(t('campaignValidation'))}</p>`;
+    const body=`<p class="source-note campaign-paused-note">${esc(t('campaignPausedHint'))}</p><div class="form-field"><label for="campaignTitle">${esc(t('campaignTitle'))}</label><input class="input" id="campaignTitle" maxlength="120" required></div>${copy}<fieldset class="form-field"><legend>${esc(t('targetLanguages'))}</legend><div class="v6-toggles">${languages}</div></fieldset><div class="management-form-pair"><div class="form-field"><label for="campaignTrack">${esc(t('campaignTrack'))}</label><select class="input" id="campaignTrack"><option value="">${esc(t('all'))}</option><option value="hsk20">HSK 2.0</option><option value="hsk30">HSK 3.0</option></select></div><div class="form-field"><label for="campaignDuration">${esc(t('campaignDurationHours'))}</label><input class="input" id="campaignDuration" type="number" min="1" max="720" step="1" value="24" required></div></div><label class="management-check"><input type="checkbox" id="campaignSubscribers">${esc(t('includeActiveSubscribers'))}</label>${campaignButtonFields()}${campaignMediaFields()}<p class="alert" id="campaignValidation" hidden>${esc(t('campaignValidation'))}</p>`;
     drawer('createCampaign',`<form id="managementForm">${body}</form>`,btn('saveChanges','managementPrepare','primary'));
+    updateCampaignButtonFields();
     return;
   }
   if(!Object.hasOwn(marketingLabels,kind))return;
@@ -1503,6 +1622,7 @@ function managementReread(draft){
   if(draft.type==='campaign')return `<button class="btn" data-campaign-list="${esc(draft.campaignKind||({ad_send:'ad',release_create:'release',discount_create:'discount',discount_state:'discount'}[draft.kind]))}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='channel')return `<button class="btn" data-channels-kind="${draft.kind==='mode'?'mode':'list'}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='user')return `<button class="btn" data-user-detail="${draft.userId}">${esc(t('readCurrent'))}</button>`;
+  if(draft.type==='marketing'&&draft.kind==='campaign_draft')return `<button class="btn" data-campaign-list="ad">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind==='course_ad_create'?'course_ad':draft.kind)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='payment_qr')return `<button class="btn" data-payment-qr-target="${esc(draft.method+'-'+draft.plan)}">${esc(t('readCurrent'))}</button>`;
   return draft.type==='price'?btn('readCurrent','priceSettings'):`<button class="btn" data-setting-kind="${draft.kind}" ${draft.bank?`data-bank="${draft.bank}"`:''}>${esc(t('readCurrent'))}</button>`;
@@ -1585,7 +1705,7 @@ async function editSetting(kind,bank=null){
   }
 }
 async function prepareManagement(){
-  if(managementPreparing||!state.actor||signing||!managementDraft)return;
+  if(managementPreparing||!state.actor||signing||!managementDraft||managementDraft.assetUploading)return;
   const form=$('managementForm');
   if(!form)return;
   const invalid=form.querySelector(':invalid');
@@ -1663,10 +1783,11 @@ async function prepareManagementCommand(current,at){
         media_sha256:[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join(''),media_size:file.size});
     }
     if(draft.kind==='campaign_draft'){
+      if(draft.campaignMediaFile&&!draft.assetId){$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;return;}
       const languages=[...document.querySelectorAll('[data-campaign-language]:checked')].map(input=>input.dataset.campaignLanguage);
       if(!languages.length){$('campaignValidation').hidden=false;return;}
       Object.assign(change,{title:$('campaignTitle').value,texts:Object.fromEntries(['uz','ru','tj'].map(language=>[language,$('campaignText-'+language).value])),
-        languages,track:$('campaignTrack').value||null,duration_hours:Number($('campaignDuration').value),include_active_subscribers:$('campaignSubscribers').checked});
+        languages,track:$('campaignTrack').value||null,duration_hours:Number($('campaignDuration').value),include_active_subscribers:$('campaignSubscribers').checked,button:campaignButtonChange(),asset_id:draft.assetId||null,asset_hash:draft.assetHash||null});
     }
     if(draft.kind==='sales_experiment')Object.assign(change,{mode:$('salesMode').value,treatment_percent:Number($('salesPercent').value)});
     if(draft.kind==='desktop_promo')Object.assign(change,{enabled:$('promoEnabled').value==='true',daily_limit:Number($('promoLimit').value),require_learning_progress:$('promoProgress').checked,
@@ -1713,6 +1834,7 @@ async function prepareManagementCommand(current,at){
       if(!draft.proofId||!draft.proofLoaded)throw new ApiError('admin_pwa_proof_invalid',400);
       payload.proof_id=draft.proofId;
     }
+    if(['campaign_draft','release_create'].includes(draft.kind)&&draft.campaignMediaFile&&!draft.assetId){$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;return;}
     const result=await api(managementEndpoint(draft.type,'prepare'),payload);
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const operation=structuredClone(result.operation);
@@ -1723,8 +1845,10 @@ async function prepareManagementCommand(current,at){
   }catch(error){
     managementReview=null;
     if(current===drawerId&&at===epoch&&state.actor){
-      if(draft.type==='campaign'&&[400,409].includes(error.status)&&$('campaignCommandValidation')){
-        $('campaignCommandValidation').textContent=t(error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':error.message==='admin_pwa_message_no_targets'?'messageNoTargets':'campaignValidation');$('campaignCommandValidation').hidden=false;
+      if(['campaign_draft','release_create'].includes(draft.kind)&&error.message.startsWith('admin_pwa_campaign_asset')&&$('campaignMediaValidation')){
+        draft.assetId=null;draft.assetHash=null;$('campaignMediaFile').value='';$('campaignMediaStatus').textContent='';$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;
+      }else if(draft.type==='campaign'&&[400,409].includes(error.status)&&$('campaignCommandValidation')){
+        $('campaignCommandValidation').textContent=t(error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':error.message==='admin_pwa_message_no_targets'?'messageNoTargets':error.message==='admin_pwa_campaign_schedule_invalid'?'campaignScheduleHint':'campaignValidation');$('campaignCommandValidation').hidden=false;
       }else if(draft.type==='message'&&[400,409].includes(error.status)&&$('messageValidation')){
         const key=error.message==='admin_pwa_message_no_targets'?'messageNoTargets':error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':'messageInvalid';
         $('messageValidation').textContent=t(key);$('messageValidation').hidden=false;
@@ -1732,6 +1856,9 @@ async function prepareManagementCommand(current,at){
       }else if(draft.type==='notice'&&error.status===400&&$('noticeValidation')){
         $('noticeValidation').textContent=t(error.message==='admin_pwa_notice_too_long'?'noticeTooLong':'noticeInvalid');$('noticeValidation').hidden=false;
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
+      }else if(draft.type==='marketing'&&draft.kind==='campaign_draft'&&error.message.startsWith('admin_pwa_campaign_asset')&&$('campaignMediaValidation')){
+        if(managementDraft){managementDraft.assetId=null;managementDraft.assetHash=null;}
+        $('campaignMediaFile').value='';$('campaignMediaStatus').textContent='';$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;
       }else if(draft.type==='marketing'&&draft.kind==='campaign_draft'&&error.status===400&&$('campaignValidation')){
         $('campaignValidation').textContent=t('campaignValidation');$('campaignValidation').hidden=false;
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
@@ -2390,6 +2517,7 @@ async function action(name) {
   if(name==='reload'){await load();return;}
   if(name==='mcpConnections'){await mcpConnections();return;}
   if(name==='pushSettings'){await pushSettings();return;}
+  if(name==='homeLimits'){sectionBackStack.push(state.route);state.route='course';state.courseTab='access';await load();return;}
   if(name==='courseSettings'){await courseSettings();return;}
   if(name==='limitsPrepare'){await prepareCourseLimits();return;}
   if(name==='trialPrepare'){await prepareCourseLimits(true);return;}
@@ -2403,6 +2531,7 @@ async function action(name) {
   if(name==='noticeList'){await noticeEditor();return;}
   if(name==='portfolioHistory'){await portfolioHistory();return;}
   if(name==='portfolioEditor'){portfolioEditor();return;}
+  if(name==='campaignMediaClear'){clearCampaignMedia();return;}
   if(name==='managementPrepare'){await prepareManagement();return;}
   if(name==='hsk30Settings'){await hsk30Settings();return;}
   if(name==='hsk30Prepare'){await prepareHsk30Settings();return;}
@@ -2542,6 +2671,11 @@ document.addEventListener('click',event=>{
       if($('userQuery'))state.query=$('userQuery').value;
       userFilterOpen=false;state.segment=button.dataset.userSegment;state.cursor=null;state.previous=[];await load();
     }
+    else if(button.dataset.homeCohort){
+      sectionBackStack.push(state.route);const target=button.dataset.homeCohort;
+      state.route=target==='pending'?'payments':'users';state.status='pending';
+      state.segment=['expiring_pro','blocked'].includes(target)?target:'all';state.query='';state.cursor=null;state.previous=[];await load();
+    }
     else if(button.dataset.userDays){
       const input=$('accessDays');if(input){input.value=button.dataset.userDays;
         document.querySelectorAll('[data-user-days]').forEach(item=>item.classList.toggle('selected',item===button));}
@@ -2582,14 +2716,14 @@ document.addEventListener('click',event=>{
     else if(button.dataset.partnerNext){await partnerEditor(null,Number(button.dataset.partnerNext));}
     else if(button.dataset.noticeKey){await noticeEditor(button.dataset.noticeKey);}
     else if(button.dataset.portfolioNext){await portfolioHistory(Number(button.dataset.portfolioNext));}
-    else if(button.dataset.courseTab){keepCourseEdits();state.courseTab=button.dataset.courseTab;render();}
+    else if(button.dataset.courseTab){keepCourseEdits();state.courseTab=button.dataset.courseTab;render();if(state.courseTab==='tracks'&&!courseAnalytics&&!courseAnalyticsLoading)void loadCourseAnalytics();}
     else if(button.dataset.courseDays){courseAnalyticsDays=Number(button.dataset.courseDays);void loadCourseAnalytics();}
     else if(button.dataset.courseStats){state.route='stats';state.statsTab='course';await load();}
     else if(button.dataset.statsTab){
       const next=button.dataset.statsTab;
       if(['overview','course','platform','funnel','money','sources','report'].includes(next)&&state.route==='stats'){
         const left=button.closest('.stats-category-tabs')?.scrollLeft||0;
-        state.statsTab=next;render();const tabs=document.querySelector('.stats-category-tabs');if(tabs)tabs.scrollLeft=left;
+        state.statsTab=next;await load();const tabs=document.querySelector('.stats-category-tabs');if(tabs)tabs.scrollLeft=left;
         if(next==='report'&&!feedbackStats.data&&!feedbackStats.loading)loadFeedbackStats();
       }
     }
@@ -2630,6 +2764,9 @@ document.addEventListener('input',event=>{
   if(event.target.matches('[data-course-limit],#courseTrialDays,#courseTrialReason'))keepCourseEdits();
 });
 document.addEventListener('change',event=>{
+  if(event.target.id==='discountOperation'){if($('discountStateFields'))$('discountStateFields').hidden=event.target.value==='send';updateManagementAction();return;}
+  if(event.target.id==='campaignMediaFile'){void stageCampaignMedia(event.target.files?.[0]);return;}
+  if(['campaignButtonAction','campaignButtonCustom'].includes(event.target.id))updateCampaignButtonFields();
   if(event.target.id==='courseLimitPlan'){keepCourseEdits();courseLimitPlan=event.target.value;render();return;}
   if(event.target.matches('[data-course-window],#courseTrialEnabled')){
     if(event.target.matches('[data-course-window]'))courseLimitTouched[courseLimitPlan]=true;

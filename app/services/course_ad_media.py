@@ -19,7 +19,7 @@ class CourseAdVideoError(Exception):
 
 
 def _transcode_course_ad_video(data: bytes, *, raw_ext: str, media_root: str,
-                               output_path: str) -> None:
+                               output_path: str, safe_input: bool = False) -> None:
     ffmpeg = shutil.which("ffmpeg")
     if not ffmpeg:
         raise CourseAdVideoError("ffmpeg_not_available")
@@ -30,12 +30,21 @@ def _transcode_course_ad_video(data: bytes, *, raw_ext: str, media_root: str,
     try:
         with os.fdopen(descriptor, "wb") as handle:
             handle.write(data)
+        input_options = []
+        if safe_input:
+            # A claimed MP4/WebM must never be auto-detected as an HLS or
+            # concat playlist capable of reaching network or sibling files.
+            input_options = ['-max_alloc', '67108864', '-filter_threads', '1', '-threads', '2', '-protocol_whitelist', 'file,pipe', '-f',
+                             'matroska' if source_ext == '.webm' else 'mov']
+            if source_ext != '.webm':
+                input_options += ['-enable_drefs', '0', '-use_absolute_path', '0']
         subprocess.run(
             [
                 ffmpeg, "-y", "-nostdin", "-hide_banner", "-loglevel", "error",
+                *input_options,
                 "-i", source_path, "-map", "0:v:0", "-map", "0:a?",
                 "-vf", "scale='min(720,iw)':-2:force_original_aspect_ratio=decrease,format=yuv420p",
-                "-c:v", "libx264", "-preset", "veryfast", "-profile:v", "main",
+                "-c:v", "libx264", *(["-threads", "2"] if safe_input else []), "-preset", "veryfast", "-profile:v", "main",
                 "-level", "3.1", "-c:a", "aac", "-b:a", "128k",
                 "-movflags", "+faststart", "-shortest", output_path,
             ],
@@ -79,6 +88,7 @@ def prepare_pwa_course_ad_video_file(data: bytes, *, raw_ext: str,
         _transcode_course_ad_video(
             data, raw_ext=raw_ext, media_root=media_root,
             output_path=temporary_path,
+            safe_input=True,
         )
         os.replace(temporary_path, final_path)
     except Exception:

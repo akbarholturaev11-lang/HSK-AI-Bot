@@ -151,7 +151,7 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("btn('cancel','priceSettings')",script)
         self.assertIn("editorBaseline={panel,value:editorValue()}",script)
         self.assertIn("function updateEditorSaveEnabled(){",script)
-        self.assertIn("b.disabled=!dirty||requiresProof||managementPreparing||!!signing",script)
+        self.assertIn("b.disabled=!dirty||requiresProof||mediaPending||managementPreparing||!!signing",script)
         self.assertIn("function showSavedAndDismiss(key='changesSaved'){",script)
         self.assertIn("role=\"status\"",script)
         self.assertIn("},2500)",script)

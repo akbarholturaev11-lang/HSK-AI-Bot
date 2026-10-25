@@ -167,7 +167,7 @@ async def browser_checks(output):
         if path=='/admin/sw.js':
             await route.abort();return
         calls.append((path,request.method,request.post_data_json if request.method=='POST' else None))
-        if fail_reads and path=='/api/admin/v1/statistics':
+        if fail_reads and path in ('/api/admin/v1/statistics','/api/admin/v1/analytics'):
             await route.fulfill(status=503,json={'ok':False,'error':'synthetic_failure'});return
         if fail_prepare and path=='/api/admin/v1/payments/prepare-review':
             await route.fulfill(status=503,json={'ok':False,'error':'synthetic_failure'});return
@@ -220,8 +220,16 @@ async def browser_checks(output):
         assert any(row['name']=='__Host-hskai_admin' and row['httpOnly'] and row['secure'] for row in cookies)
         assert '__Host-hskai_admin=' not in await page.evaluate('document.cookie')
         await expect(page.locator('.metric')).to_have_count(4)
-        await expect(page.locator('.stat-detail')).to_have_count(3)
-        await expect(page.locator('.stat-detail').first).to_contain_text('0.025 USD')
+        await expect(page.locator('.analytics-panel')).to_have_count(3)
+        await expect(page.locator('.activity-bar')).to_have_count(7)
+        await expect(page.locator('[data-action=feedback]')).to_have_count(1)
+        await expect(page.locator('.analytics-task')).to_have_count(3)
+        await page.locator('[data-home-cohort=expiring_pro]').click()
+        await expect(page.locator('[data-user-filter-toggle]')).to_be_visible()
+        assert any(path=='/api/admin/v1/users/search' and body['segment']=='expiring_pro' for path,method,body in calls if body)
+        await page.locator('[data-route=home]').first.click()
+        await expect(page.locator('.activity-bar')).to_have_count(7)
+
         await page.screenshot(path=str(output/'desktop-statistics.png'),full_page=True)
         await page.locator('#locale').select_option('ru')
         await expect(page.locator('html')).to_have_attribute('lang','ru')
@@ -238,14 +246,14 @@ async def browser_checks(output):
         await page.locator('[data-action=period]').click()
         await page.locator('[data-period=all_time]').click()
         await expect(page.locator('.metric')).to_have_count(4)
-        label=await page.evaluate('window.HSKAI_ADMIN_I18N.uz.active30')
-        await expect(page.locator('.metric').nth(2)).to_contain_text(label)
+        label=await page.evaluate('window.HSKAI_ADMIN_I18N.uz.analyticsActivePro')
+        await expect(page.locator('.metric').nth(1)).to_contain_text(label)
         fail_reads=True
         await page.locator('[data-route=stats]').first.click()
         await expect(page.locator('[data-action=reload]')).to_be_visible()
         fail_reads=False
         await page.locator('[data-action=reload]').click()
-        await expect(page.locator('.metric')).to_have_count(4)
+        await expect(page.locator('.metric')).to_have_count(8)
         await page.locator('[data-route=users]').first.click()
         await expect(page.locator('.data-table tbody tr')).to_have_count(3)
         await expect(page.locator('.user-table thead th')).to_have_count(7)
@@ -258,7 +266,7 @@ async def browser_checks(output):
         await expect(page.locator('.data-table img')).to_have_count(0)
         await expect(page.locator('.user-search-icon svg')).to_have_count(1)
         await page.locator('[data-user-filter-toggle]').click()
-        await expect(page.locator('#userFilterPanel .user-filter-choice')).to_have_count(10)
+        await expect(page.locator('#userFilterPanel .user-filter-choice')).to_have_count(11)
         await page.locator('[data-user-segment="all"]').last.click()
         await expect(page.locator('#userFilterPanel')).to_be_hidden()
         # Unsaved search text must be applied with the selected filter, rather
@@ -345,25 +353,47 @@ async def browser_checks(output):
         await page.locator('#drawerLocale').select_option('uz')
         await page.locator('[data-route=stats]').last.click()
         await expect(page.locator('[data-stats-tab]')).to_have_count(7)
-        await expect(page.locator('.stat-detail')).to_have_count(1)
+        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(8)
         await page.locator('[data-stats-tab=overview]').focus()
         await page.keyboard.press('End')
         await expect(page.locator('[data-stats-tab=report]')).to_have_attribute('aria-selected','true')
         await page.keyboard.press('Home')
         await expect(page.locator('[data-stats-tab=overview]')).to_have_attribute('aria-selected','true')
         await page.locator('[data-stats-tab=course]').click()
-        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(3)
+        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(9)
+        assert not any(body and body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics')
+        await page.locator('[data-advanced-analytics] summary').click()
+        await expect(page.locator('#advancedAnalyticsBody table')).to_have_count(2)
+        assert sum(body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics' and body)==1
+        await page.screenshot(path=str(output/'v10-advanced-uz-390.png'),full_page=True)
+
         await page.locator('[data-stats-tab=funnel]').click()
         await expect(page.locator('.stats-category-metrics .metric')).to_have_count(3)
         await page.locator('[data-stats-tab=money]').click()
-        await expect(page.locator('.stat-detail')).to_have_count(2)
-        await expect(page.locator('.stat-detail').first).to_contain_text('0.025 USD')
+        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(8)
+        await expect(page.locator('.analytics-panel').last).to_contain_text('0.025 USD')
         await page.locator('[data-stats-tab=sources]').click()
-        await expect(page.locator('.stats-category-content .state-panel')).to_be_visible()
+        await expect(page.locator('.stats-category-content .analytics-panel')).to_have_count(3)
         await page.locator('[data-stats-tab=report]').click()
         await expect(page.locator('.feedback-analysis')).to_contain_text('Шикоятлар таҳлили')
         await expect(page.locator('.feedback-analysis')).to_contain_text('Нарх')
         await page.screenshot(path=str(output/'mobile-statistics-details.png'),full_page=True)
+        for width in (390,1440):
+            await page.set_viewport_size({'width':width,'height':1000})
+            for language in ('uz','ru','tj'):
+                if width==390:
+                    await page.locator('[data-action=more]').click()
+                    await page.locator('#drawerLocale').select_option(language)
+                else:await page.locator('#locale').select_option(language)
+                for section in ('overview','course','platform','funnel','money','sources','report'):
+                    await page.locator('[data-stats-tab='+section+']').click()
+                    await expect(page.locator('.stats-category-content')).to_be_visible()
+                    await page.screenshot(path=str(output/f'v10-{section}-{language}-{width}.png'),full_page=True)
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+        await page.set_viewport_size({'width':390,'height':844})
+        await page.locator('[data-action=more]').click()
+        await page.locator('#drawerLocale').select_option('uz')
+
         assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         await page.locator('[data-route=payments]').last.click()
         await expect(page.locator('.payment-cards .payment-card')).to_have_count(1)
@@ -563,6 +593,12 @@ async def browser_checks(output):
         await expect(page.locator('.sidebar')).to_have_count(0)
         await expect(page.locator('.auth-panel')).to_be_visible()
         await context.set_offline(False)
+        await authenticate_fresh_launch(page)
+        # Fresh login publishes the shell before its independent protected reads
+        # finish. Settle them before this test revokes the new session: otherwise
+        # a correct 401 from an outstanding read can remove the Users button
+        # before the intended navigation is dispatched (Linux CI timing).
+        await page.wait_for_load_state('networkidle')
         await expect(page.locator('.sidebar')).to_have_count(1)
         async with fixture.sessions() as db:
             await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)));await db.commit()
