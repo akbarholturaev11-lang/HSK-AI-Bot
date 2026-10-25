@@ -1128,26 +1128,65 @@ function inboxControl(row,operation,key,primary=false){
   if(!['bot','release','android','payment','technical'].includes(row.source)||!Number.isSafeInteger(row.source_id)||!Number.isSafeInteger(row.triage_revision))return '';
   return `<button type="button" ${primary?'class="btn primary inbox-primary-action"':'role="menuitem" tabindex="-1"'} data-inbox-op="${operation}" data-inbox-source="${row.source}" data-inbox-id="${row.source_id}" data-inbox-revision="${row.triage_revision}">${esc(t(key))}</button>`;
 }
-function inboxEntry(row){
-  const status=inboxStatusLabels[row.triage_status]||'inboxStatusNew';
-  const origin=row.source==='bot'?'botFeedback':row.source==='release'?'releaseFeedback':row.source==='payment'?'inboxPaymentReceipt':row.source==='technical'?'inboxTechnical':'inboxAndroid';
-  const flags=`<span class="inbox-state">${esc(t(status))}</span>${row.triage_priority==='important'?`<span class="inbox-state inbox-state-important">${esc(t('inboxImportant'))}</span>`:''}${row.triage_assigned_to===state.actor?.user_id?`<span class="inbox-state">${esc(t('inboxMine'))}</span>`:''}`;
-  const secondary=[];
-  const canView=(row.source==='android'?row.has_attachment:['bot','release'].includes(row.source)&&row.image_preview_available===true)&&Number.isSafeInteger(row.source_id)&&row.source_id>0&&row.source_id<=2147483647;
-  const attachmentId=`inboxAttachment-${row.source}-${row.source_id}`;
-  const media=canView?`<button type="button" class="inbox-media-action" data-inbox-attachment="${row.source_id}" data-attachment-source="${row.source}" aria-controls="${attachmentId}" aria-expanded="false">${esc(t('viewAttachment'))}</button>`:'';
-  if(row.triage_status==='new')secondary.push(inboxControl(row,'mark_read','inboxMarkRead'));
-  let primary;
-  if(row.source==='payment'){
-    // Opening Payments is NOT the same as approving an unverified receipt.
-    primary=`<button class="btn primary inbox-primary-action" data-route="payments">${esc(t('payments'))}</button>`;
-  }else{
-    if(row.triage_status!=='resolved'&&row.triage_assigned_to!==state.actor?.user_id)secondary.push(inboxControl(row,'assign_self','inboxAssignSelf'));
-    primary=row.triage_status==='resolved'?inboxControl(row,'reopen','inboxReopen',true):inboxControl(row,'resolve','inboxResolve',true);
-    secondary.push(row.triage_priority==='important'?inboxControl(row,'clear_important','inboxClearImportant'):inboxControl(row,'mark_important','inboxMarkImportant'));
-  }
-  return `<article class="feedback-item inbox-feedback-item"><div class="inbox-entry-head"><strong>${esc(t(origin))} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+esc(row.rating)+'/5':''}</strong><small>${esc(date(row.created_at))}</small></div><div class="inbox-states">${flags}</div><p>${esc(row.message||'—')}</p>${row.has_attachment&&!canView?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}<div class="inbox-entry-actions">${media}<div class="inbox-triage-actions">${primary}${secondary.length?actionMenu(`inboxMenu-${row.source}-${row.source_id}`,secondary.join('')):''}</div></div>${canView?`<div class="inbox-attachment" id="${attachmentId}" aria-live="polite" hidden></div>`:''}</article>`;
+const autoImportantSources=new Set(['payment','android','technical']);
+function inboxTitle(row){
+  const label=row.source==='payment'?'inboxPaymentReceipt':row.source==='android'?'inboxAndroid':row.source==='technical'?'inboxTechnical':row.source==='release'?'releaseFeedback':'botFeedback';
+  return t(label)+(row.user_id?' · '+t('account')+' '+row.user_id:'');
 }
+function inboxEntry(row){
+  const unread=row.triage_status==='new', important=autoImportantSources.has(row.source);
+  if(!['bot','release','android','payment','technical'].includes(row.source)||
+     !Number.isSafeInteger(row.source_id)||row.source_id<1)return '';
+  return `<button type="button" class="inbox-minimal-row ${unread?'is-unread':'is-read'} ${important?'is-important':''}"
+    data-inbox-open="${row.source}:${row.source_id}" aria-label="${esc(inboxTitle(row))}">
+      <span class="inbox-row-dot" aria-hidden="true"></span>
+      <span class="inbox-row-title">${esc(inboxTitle(row))}</span>
+      ${icon('chevron')}
+    </button>`;
+}
+function inboxDetails(row) {
+  const source=row.source,id=row.source_id;
+  const canView=(source==='android'?row.has_attachment:['bot','release'].includes(source)&&row.image_preview_available===true)
+    &&Number.isSafeInteger(id)&&id>0&&id<=2147483647;
+  const attachmentId=`inboxAttachment-${source}-${id}`;
+  return `<div class="inbox-details">
+    <button class="inbox-back" data-action="feedback" type="button">${icon('chevron')}${esc(t('feedback'))}</button>
+    <h2>${esc(inboxTitle(row))}</h2>
+    <time>${esc(date(row.created_at))}</time>
+    ${row.message?`<p class="inbox-details-text">${esc(row.message)}</p>`:''}
+    ${row.rating?`<p>${esc(row.rating)}/5</p>`:''}
+    ${row.app_version?`<p>${esc(row.app_version)}</p>`:''}
+    ${row.screen?`<p>${esc(row.screen)}</p>`:''}
+    ${canView?`<button type="button" class="btn" data-inbox-attachment="${id}"
+      data-attachment-source="${source}" aria-controls="${attachmentId}" aria-expanded="false">${esc(t('viewAttachment'))}</button>
+      <div class="inbox-attachment" id="${attachmentId}" aria-live="polite" hidden></div>`:''}
+  </div>`;
+}
+let currentInboxRows=[];
+async function openInbox(source,id) {
+  if(inboxUpdating||!state.actor)return;
+  const row=currentInboxRows.find(item=>item.source===source&&item.source_id===id);
+  if(!row)return;
+  const current=drawerId,at=epoch;
+  inboxUpdating=true;
+  try {
+    if(row.triage_status==='new'){
+      // Persist read before presenting details; a payment receipt is not approved.
+      await api('inbox/triage',{source,source_id:id,operation:'mark_read',expected_revision:row.triage_revision});
+      if(current!==drawerId||at!==epoch||!state.actor)return;
+      row.triage_status='read';row.triage_revision++;
+      await refreshInboxUnread();
+    }
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    if(source==='payment'){await review(id);return;}
+    drawer('feedback',inboxDetails(row),null,'inbox-drawer');
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    showNotice(error.status===409?'inboxChanged':'inboxActionError');
+    await inbox(null,feedbackUserId);
+  }finally{inboxUpdating=false;}
+}
+
 async function refreshInboxUnread() {
   if(!state.actor)return;
   const id=state.actor.user_id,current=epoch;
@@ -1176,22 +1215,22 @@ async function refreshInboxUnread() {
   }catch(_){/* Never invent a zero badge on an unavailable private read. */}
 }
 async function inbox(before=null,userId=null) {
-  const filtersOpen=document.querySelector('.inbox-extra-filters')?.open===true;
-  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;const current=drawerId;
-  drawer('feedback',statePanel('loading'),'','inbox-drawer');
+  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;currentInboxRows=[];const current=drawerId;
+  drawer('feedback',statePanel('loading'),null,'inbox-drawer');
   try {
-    const data=await api('inbox/list',{source:state.source,priority:state.inboxPriority,status:state.inboxStatus,period:state.inboxPeriod,search:state.inboxSearch||null,user_id:userId,before,limit:30});
+    const data=await api('inbox/list',{source:'all',priority:'all',status:'all',period:'all_time',
+      search:null,user_id:userId,before,limit:30});
     if(current!==drawerId||!state.actor)return;
-    inboxNextCursor=data.next_before;
-    const options=[['all','all'],['payment','inboxPaymentReceipt'],['android','inboxAndroid'],['technical','inboxTechnical'],['bot','botFeedback'],['release','releaseFeedback']];
-    const statusOptions=[['all','all'],['new','inboxStatusNew'],['read','inboxStatusRead'],['assigned','inboxStatusAssigned'],['resolved','inboxStatusResolved']];
-    const selectedFilters=[state.inboxStatus!=='all'?t(inboxStatusLabels[state.inboxStatus]):'',state.inboxPeriod!=='all_time'?t(state.inboxPeriod):''].filter(Boolean).join(' · ');
-    const extraFilters=`<details class="inbox-extra-filters" ${filtersOpen?'open':''}><summary>${icon('filter')}<span>${esc(t('filters'))}</span>${selectedFilters?`<small>${esc(selectedFilters)}</small>`:''}</summary><div class="inbox-filter-controls">${filterSelect('inboxStatus','status',state.inboxStatus,statusOptions)}${filterSelect('inboxPeriod','period',state.inboxPeriod,[['all_time','all_time'],['weekly','weekly'],['monthly','monthly']])}</div></details>`;
-    const searchUI=`<form id="inboxSearchForm" class="inbox-search-form" role="search"><input class="input" id="inboxSearchQuery" type="search" value="${esc(state.inboxSearch)}" minlength="3" maxlength="80" autocomplete="off" spellcheck="false" aria-label="${esc(t('find'))}" placeholder="${esc(t('find'))}"><button type="submit" class="btn primary">${esc(t('find'))}</button></form>${state.inboxSearch?`<p class="source-note">${esc(t('monthly'))}</p>`:''}`;
-    const body=`<div class="inbox-shell">${searchUI}${userId?`<p class="source-note">${esc(t('account'))}: #${esc(userId)}</p>`:''}<div class="inbox-filter-controls">${filterSelect('inboxSource','source',state.source,options)}${filterSelect('inboxPriority','inboxPriority',state.inboxPriority,[['all','all'],['important','inboxImportant']])}</div>${extraFilters}<p class="source-note">${esc(t('inboxHistoryNote'))}</p>${data.items.map(inboxEntry).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`;
-    drawer('feedback',body,'','inbox-drawer');
-  }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'));}
+    inboxNextCursor=data.next_before;currentInboxRows=data.items;
+    const body=`<div class="inbox-shell inbox-minimal">
+      ${userId?`<p class="inbox-account">${esc(t('account'))} #${esc(userId)}</p>`:''}
+      <div class="inbox-minimal-list">${data.items.map(inboxEntry).join('')||statePanel('empty')}</div>
+      ${inboxNextCursor?`<button type="button" class="btn inbox-more" data-feedback-next="1">${esc(t('next'))}</button>`:''}
+    </div>`;
+    drawer('feedback',body,null,'inbox-drawer');
+  }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'),null,'inbox-drawer');}
 }
+
 async function mutateInbox(button){
   if(inboxUpdating||!state.actor)return;
   const source=button.dataset.inboxSource,operation=button.dataset.inboxOp;
@@ -1442,6 +1481,10 @@ document.addEventListener('click',event=>{
     else if(button.dataset.userFeedback){state.inboxSearch='';await inbox(null,Number(button.dataset.userFeedback));}
     else if(button.dataset.source){state.source=button.dataset.source;await inbox(null,feedbackUserId);}
     else if(button.dataset.inboxPriority){state.inboxPriority=button.dataset.inboxPriority;await inbox(null,feedbackUserId);}
+    else if(button.dataset.inboxOpen){
+      const match=/^(bot|release|android|payment|technical):([1-9][0-9]*)$/.exec(button.dataset.inboxOpen);
+      if(match)await openInbox(match[1],Number(match[2]));
+    }
     else if(button.dataset.inboxAttachment){await viewInboxAttachment(button);}
     else if(button.dataset.inboxOp){await mutateInbox(button);}
     else if(button.dataset.feedbackNext&&inboxNextCursor){await inbox(inboxNextCursor,feedbackUserId);}
