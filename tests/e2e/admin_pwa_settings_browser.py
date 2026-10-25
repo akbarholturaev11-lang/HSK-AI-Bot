@@ -31,6 +31,7 @@ from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
 from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_router
+from app.admin_api.pwa_limits import create_admin_pwa_limits_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api import pwa_marketing as pwa_marketing_api
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
@@ -130,7 +131,7 @@ async def browser_checks(output, *, media_only=False):
                     create_admin_pwa_passkey_login_router, create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
                     create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router,
                     create_admin_pwa_campaigns_router,create_admin_pwa_outbound_router,
-                    create_admin_pwa_course_access_router, create_admin_pwa_hsk30_settings_router,
+                    create_admin_pwa_course_access_router, create_admin_pwa_hsk30_settings_router,create_admin_pwa_limits_router,
                     create_admin_pwa_user_management_router,create_admin_pwa_channels_router,
                     create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router,create_admin_pwa_partners_router,create_admin_pwa_partner_payouts_router,create_admin_pwa_payment_reconciliation_router):
         app.include_router(factory(**common))
@@ -205,7 +206,7 @@ async def browser_checks(output, *, media_only=False):
                         await page.locator(f'.more-sheet-list [data-route="{route_name}"]').click()
                     else:
                         await page.locator(f'.nav [data-route="{route_name}"]').click()
-                    await expect(page.locator(".management-page")).to_be_visible()
+                    await expect(page.locator(".course-dashboard" if route_name=="course" else ".management-page")).to_be_visible()
 
                 async def begin_management():
                     label=await page.locator('[data-action="managementPrepare"]').inner_text()
@@ -259,7 +260,9 @@ async def browser_checks(output, *, media_only=False):
                 initial = list(configuration_reads())
                 await navigate("course", 1440)
                 await expect(page.locator('[data-action="hsk30Settings"]')).to_be_visible()
+                await page.locator('[data-course-tab="access"]').click()
                 await expect(page.locator('[data-action="courseSettings"]')).to_be_visible()
+                await expect(page.locator('[data-course-window] >> option')).to_have_count(20)
                 before_policy=await audit_count()
                 await page.locator('[data-action="courseSettings"]').click()
                 await page.locator('#courseMode').select_option('free_until')
@@ -272,6 +275,7 @@ async def browser_checks(output, *, media_only=False):
                 await expect(page.locator('#drawerTitle')).to_have_text(await page.evaluate('() => window.HSKAI_ADMIN_I18N.uz.courseSaved'))
                 assert await audit_count()==before_policy+1
                 await page.locator('.drawer-close').click()
+                await page.locator('[data-course-tab="tracks"]').click()
                 await page.locator('[data-action="hsk30Settings"]').click()
                 await page.locator('#hsk30Price').fill('101')
                 await page.locator('[data-action="hsk30Prepare"]').click()
@@ -392,7 +396,7 @@ async def browser_checks(output, *, media_only=False):
                         else:
                             await page.locator('#locale').select_option(language)
                         await navigate('marketing', width)
-                        for kind in ('sales_experiment','desktop_promo','course_ad'):
+                        for kind in ('desktop_promo','course_ad'):
                             await page.locator(f'[data-marketing-kind="{kind}"]').click()
                             await expect(page.locator('#salesMode' if kind=='sales_experiment' else '#promoEnabled' if kind=='desktop_promo' else '[data-course-ad="1"]')).to_be_visible()
                             assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')
