@@ -131,9 +131,19 @@ async def decide_admin_pwa_approval(callback: CallbackQuery, session) -> None:
         return
     text = t("bot.adminPwa." + key, language)
     await callback.answer(text)
-    # DB commit precedes UI success; remove stale buttons to discourage replay.
+    # Decision is committed before the reply. Telegram Bot API cannot force the
+    # phone's default browser to open after an inline callback. Provide a
+    # same-origin return link; the existing browser observes status on return.
     if isinstance(callback.message, Message):
         try:
-            await callback.message.edit_text(text, parse_mode="HTML", reply_markup=None)
+            return_keyboard = (InlineKeyboardMarkup(inline_keyboard=[[
+                InlineKeyboardButton(
+                    text=t("bot.adminPwa.openBrowser", language),
+                    url="https://hskai.app/admin/",
+                ),
+            ]]) if action == "approve" else None)
+            await callback.message.edit_text(
+                text, parse_mode="HTML", reply_markup=return_keyboard,
+            )
         except TelegramBadRequest:
             logger.info("Admin PWA Bot approval message cannot be edited")
