@@ -7,6 +7,7 @@
     "adminPwa.denied": "❌ Дархости воридшавӣ ба Admin PWA рад карда шуд.",
     "adminPwa.deny": "❌ Рад кардан",
     "adminPwa.invalid": "Дархост ёфт нашуд, муҳлаташ гузашт ё аллакай баррасӣ шудааст. Дар браузер аз нав оғоз кунед.",
+    "adminPwa.openBrowser": "↩️ Бозгашт ба Admin PWA",
     "adminPwa.privateOnly": "Тасдиқ танҳо дар чати шахсии Telegram-и администратор кор мекунад.",
     "adminPwa.unavailable": "Хидмати тасдиқи Admin PWA муваққатан дастнорас аст.",
     "course.course_all_levels_completed": "🏆 Шумо ҳамаи курсҳои дастраси HSK-ро анҷом додед.",
