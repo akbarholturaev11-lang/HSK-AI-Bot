@@ -613,8 +613,14 @@ async def lifespan(app: FastAPI):
     desktop_auth_cleanup_task = asyncio.create_task(
         _desktop_auth_retention_scheduler()
     )
+    push_ready = sender_config(settings) is not None
+    if push_ready:
+        logger.info("Admin PWA Apple Push sender started (provider delivery unverified)")
+    elif settings.ADMIN_PWA_ENABLED and settings.ADMIN_PWA_PUSH_ENABLED:
+        # Operator signal only. Never log key material or subscription endpoints.
+        logger.warning("Admin PWA Apple Push unavailable: verify VAPID/storage/subject config")
     apple_push_task = (asyncio.create_task(_admin_pwa_apple_push_scheduler())
-                       if sender_config(settings) is not None else None)
+                       if push_ready else None)
     try:
         yield                                                # /health darhol ishlaydi
     finally:
