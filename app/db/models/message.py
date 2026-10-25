@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import BigInteger, String, Text, DateTime, ForeignKey
+from sqlalchemy import BigInteger, String, Text, DateTime, ForeignKey, Index, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -9,6 +9,11 @@ from app.db.base import Base
 
 class Message(Base):
     __tablename__ = "messages"
+    __table_args__ = (Index("ix_messages_admin_pwa_technical_recent",
+        "created_at", "id",
+        postgresql_where=text("role = 'assistant' AND content_type = 'app_error_context'"),
+        sqlite_where=text("role = 'assistant' AND content_type = 'app_error_context'")),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)

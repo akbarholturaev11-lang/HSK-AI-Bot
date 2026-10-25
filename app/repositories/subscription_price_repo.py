@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.subscription_price import SubscriptionPrice
+from app.repositories.bot_setting_repo import BotSettingRepository
 
 
 class SubscriptionPriceRepository:
@@ -15,7 +16,7 @@ class SubscriptionPriceRepository:
             select(SubscriptionPrice).where(
                 SubscriptionPrice.payment_method == payment_method,
                 SubscriptionPrice.plan_type == plan_type,
-            )
+            ).execution_options(populate_existing=True)
         )
         return result.scalar_one_or_none()
 
@@ -37,6 +38,10 @@ class SubscriptionPriceRepository:
         currency: str,
         updated_by_telegram_id: int | None = None,
     ) -> SubscriptionPrice:
+        # A first price row has nothing FOR UPDATE could lock. Share the
+        # signed PWA command's transaction lock with legacy Telegram writers.
+        await BotSettingRepository(self.session).lock_key(
+            f"subscription_price:{payment_method}:{plan_type}")
         price = await self.get(payment_method, plan_type)
         if price:
             price.amount = amount

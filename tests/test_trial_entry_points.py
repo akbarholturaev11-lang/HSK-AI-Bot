@@ -114,12 +114,18 @@ class AndroidOffersTheSameTrialTests(unittest.TestCase):
         self.assertNotIn("planChoiceSeen", ANDROID_MAIN)
         self.assertNotIn('onUnlock("onboarding_plan")', ANDROID_MAIN)
 
-    def test_the_limit_block_has_one_action_without_trial_in_both_channels(self):
+    def test_limit_actions_exclude_trial_and_keep_play_close_neutral(self):
         for name, source in (("direct", ANDROID_LIMIT_DIRECT), ("play", ANDROID_LIMIT_PLAY)):
             with self.subTest(channel=name):
                 self.assertNotIn("limit.actions.onStartTrial", source)
                 self.assertNotIn("R.string.limit_try_trial", source)
-                self.assertNotIn("secondaryLabel =", source)
+                if name == "direct":
+                    self.assertNotIn("secondaryLabel =", source)
+                else:
+                    self.assertIn("secondaryLabel = stringResource(R.string.action_close)", source)
+                    self.assertIn("onSecondary = onClose", source)
+                    self.assertIn("primaryLabel = checkLabel", source)
+                    self.assertIn("onPrimary = limit.actions.onRecheck", source)
 
     def test_profile_has_one_carousel_and_reuses_the_existing_trial_callback(self):
         self.assertNotIn("TrialCard(", ANDROID_PROFILE)

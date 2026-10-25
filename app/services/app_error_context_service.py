@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime, timezone
 from typing import Any
 
@@ -7,6 +8,7 @@ from app.repositories.user_repo import UserRepository
 
 
 APP_ERROR_CONTENT_TYPE = "app_error_context"
+logger = logging.getLogger(__name__)
 
 
 class AppErrorContextService:
@@ -59,12 +61,26 @@ class AppErrorContextService:
             return False
 
         content = self._format_context(payload)
-        await self.message_repo.create(
+        record = await self.message_repo.create(
             user_id=user.id,
             role="assistant",
             content=content,
             content_type=APP_ERROR_CONTENT_TYPE,
         )
+        # One private event marker per persisted Mini App error, with no
+        # raw stack, URL, content or Telegram ID in the delivery outbox.
+        from app.config import settings
+        if settings.ADMIN_PWA_ENABLED and settings.ADMIN_PWA_PUSH_ENABLED:
+            try:
+                from app.admin_api.pwa_push_outbox import enqueue_automatic_alert
+                async with self.session.begin_nested():
+                    await enqueue_automatic_alert(
+                        self.session, settings_obj=settings,
+                        source="technical", source_id=record.id,
+                        now=record.created_at,
+                    )
+            except Exception:
+                logger.warning("Optional sanitized Mini App error push enqueue failed")
         await self.session.commit()
         return True
 

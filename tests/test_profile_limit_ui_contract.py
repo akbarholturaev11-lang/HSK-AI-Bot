@@ -189,7 +189,7 @@ class AndroidLimitParityTests(unittest.TestCase):
         self.assertNotIn("onStartTrial", overlay)
         self.assertNotIn("secondaryLabel =", overlay)
 
-    def test_channel_fallbacks_do_not_show_trial_or_footer(self):
+    def test_channel_fallbacks_exclude_trial_and_keep_play_status_guidance(self):
         direct = ANDROID_DIRECT_LIMIT
         play = Path(
             "android/app/src/play/java/com/pomp/hskai/feature/limit/SectionLimitBlock.kt"
@@ -197,8 +197,13 @@ class AndroidLimitParityTests(unittest.TestCase):
         for code in (direct, play):
             self.assertNotIn("limit.actions.onStartTrial", code)
             self.assertNotIn("limit_try_trial", code)
-            self.assertNotIn("secondaryLabel =", code)
-            self.assertNotIn("hint =", code)
+        self.assertNotIn("secondaryLabel =", direct)
+        self.assertNotIn("hint =", direct)
+        self.assertIn("secondaryLabel = stringResource(R.string.action_close)", play)
+        self.assertIn("onSecondary = onClose", play)
+        self.assertIn("R.string.play_limit_description", play)
+        self.assertIn("R.string.play_limit_renewal", play)
+        self.assertNotIn("openSubscription", play)
         self.assertIn("onPrimary = openSubscription", direct)
         self.assertIn("onPrimary = limit.actions.onRecheck", play)
 

@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from dataclasses import dataclass
 from typing import Any
 
@@ -22,6 +23,10 @@ DESKTOP_APP_PROMO_MAX_UPLOAD_BYTES = 25 * 1024 * 1024
 DESKTOP_APP_PROMO_ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 DESKTOP_APP_PROMO_ALLOWED_VIDEO_EXTENSIONS = {".mp4", ".mov", ".webm", ".m4v"}
 DESKTOP_APP_PROMO_MEDIA_TYPES = ("photo", "video")
+_PROMO_PUBLIC_FILENAME = re.compile(
+    r"desktop_app_promo_(?:[0-9]+_[0-9]+_[a-f0-9]{10}|pwa_[a-f0-9]{32})"
+    r"\.(?:jpg|jpeg|png|webp|mp4|mov|webm|m4v)\Z"
+)
 
 
 def _bool_map(value: Any, keys: tuple[str, ...], defaults: dict[str, bool]) -> dict[str, bool]:
@@ -66,6 +71,12 @@ def desktop_app_promo_media_url(media_path: str | None) -> str | None:
 def desktop_app_promo_media_full_path(media_path: str | None) -> str | None:
     safe = _safe_media_path(media_path)
     return os.path.join(DESKTOP_APP_PROMO_MEDIA_ROOT, safe) if safe else None
+
+
+def desktop_app_promo_public_filename_allowed(filename: str | None) -> bool:
+    """Allow only server-created legacy/PWA names on the public media route."""
+    return (isinstance(filename, str) and filename == os.path.basename(filename)
+            and _PROMO_PUBLIC_FILENAME.fullmatch(filename) is not None)
 
 
 def desktop_app_promo_media_available(media_path: str | None) -> bool:
@@ -198,6 +209,9 @@ async def save_desktop_app_promo_settings(
     session,
     payload: dict[str, Any],
 ) -> DesktopAppPromoSettings:
+    # A partial legacy request must preserve media/current options from the
+    # same serialized state that the signed PWA configuration command checks.
+    await BotSettingRepository(session).lock_key(DESKTOP_APP_PROMO_SETTINGS_KEY)
     current = await get_desktop_app_promo_settings(session)
     settings = DesktopAppPromoSettings.from_payload(payload, previous=current)
     await BotSettingRepository(session).set(

@@ -7,6 +7,23 @@
   // iOS has no build of its own. It is offered because an iPhone owner
   // deserves an answer, and the answer is the Mini App inside Telegram.
   var BOT_URL = "https://t.me/darsi_chini_bot";
+  var socialApkFallbackArmed = false;
+
+  function isAndroidSocialBrowser() {
+    var agent = String(navigator.userAgent || "");
+    return /Android/i.test(agent) &&
+      /Instagram|FBAN|FBAV|FB_IAB|FB4A|TikTok|musical_ly|Bytedance|Aweme/i.test(agent);
+  }
+
+  function externalAndroidBrowserIntent() {
+    var target = new URL(window.location.href);
+    target.searchParams.set("platform", "android");
+    target.hash = "";
+    return "intent://" + target.host + target.pathname + target.search +
+      "#Intent;scheme=" + target.protocol.slice(0, -1) +
+      ";action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;" +
+      "S.browser_fallback_url=" + encodeURIComponent(websiteApkBotLink()) + ";end";
+  }
   var referralCode = /^[0-9a-f]{8}$/.test(String(params.get("ref") || ""))
     ? String(params.get("ref")) : "";
   var referralMode = params.get("mode") === "trial" ? "trial" : "discount";
@@ -754,6 +771,24 @@
     return BOT_URL + "?start=" + prefix + referralCode;
   }
 
+  function websiteApkBotLink() {
+    if (!referralCode) return BOT_URL + "?start=apk_web";
+    return BOT_URL + "?start=apk_web_" +
+      (referralMode === "trial" ? "rt_" : "ra_") + referralCode;
+  }
+
+  function renderSocialApkFallback(button, status, localized) {
+    if (!socialApkFallbackArmed || state.platform !== "android" ||
+        !isAndroidSocialBrowser()) return false;
+    button.href = websiteApkBotLink();
+    button.removeAttribute("aria-disabled");
+    button.dataset.action = "open";
+    setText("[data-download-label]", localized.iosDownload);
+    status.dataset.state = "ready";
+    status.lastElementChild.textContent = localized.iosSteps[0][1];
+    return true;
+  }
+
   function renderReferral() {
     var block = document.querySelector("[data-referral-guide]");
     if (!block) return;
@@ -843,6 +878,10 @@
       return;
     }
 
+    // After an in-app browser rejects the OS handoff, the same APK button
+    // opens the bot, which sends the published direct-build APK into the chat.
+    if (renderSocialApkFallback(button, status, localized)) return;
+
     var url = downloadUrl(state.platform);
     if (!url) {
       button.href = "#";
@@ -863,6 +902,7 @@
 
   function setPlatform(platform) {
     if (supportedPlatforms.indexOf(platform) < 0) return;
+    if (state.platform !== platform) socialApkFallbackArmed = false;
     state.platform = platform;
     resetTransferFeedback();
     renderPlatform();
@@ -1018,6 +1058,19 @@
           return;
         }
         if (downloadButton.dataset.action === "open") return;
+        if (state.platform === "android" && isAndroidSocialBrowser()) {
+          // There is no reliable success callback for an external-browser
+          // handoff. Arm a visible Telegram fallback *before* attempting it.
+          event.preventDefault();
+          socialApkFallbackArmed = true;
+          renderRelease();
+          try {
+            window.location.assign(externalAndroidBrowserIntent());
+          } catch (error) {
+            // The now-visible button goes to Telegram on the next tap.
+          }
+          return;
+        }
         var startedPlatform = state.platform;
         setText("[data-download-label]", copy().opening);
         openQuickGuide();

@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.required_channel import RequiredChannel
+from app.repositories.bot_setting_repo import BotSettingRepository
 
 
 class RequiredChannelRepository:
@@ -18,7 +19,9 @@ class RequiredChannelRepository:
         invite_link: Optional[str],
         created_by_telegram_id: Optional[int],
     ) -> RequiredChannel:
-        existing = await self.get_by_chat_id(chat_id)
+        await BotSettingRepository(self.session).lock_key('required_channel:'+chat_id.casefold())
+        existing = await self.session.scalar(select(RequiredChannel).where(RequiredChannel.chat_id==chat_id)
+            .with_for_update().execution_options(populate_existing=True))
         if existing:
             existing.title = title
             existing.invite_link = invite_link
@@ -62,10 +65,20 @@ class RequiredChannelRepository:
         )
         return list(result.scalars().all())
 
-    async def set_active(self, channel: RequiredChannel, is_active: bool) -> None:
-        channel.is_active = is_active
+    async def set_active(self, channel: RequiredChannel, is_active: bool) -> bool:
+        current=await self.session.scalar(select(RequiredChannel).where(RequiredChannel.id==channel.id)
+            .with_for_update().execution_options(populate_existing=True))
+        if current is None:
+            return False
+        current.is_active = is_active
         await self.session.flush()
+        return True
 
-    async def delete(self, channel: RequiredChannel) -> None:
-        await self.session.delete(channel)
+    async def delete(self, channel: RequiredChannel) -> bool:
+        current=await self.session.scalar(select(RequiredChannel).where(RequiredChannel.id==channel.id)
+            .with_for_update().execution_options(populate_existing=True))
+        if current is None:
+            return False
+        await self.session.delete(current)
         await self.session.flush()
+        return True

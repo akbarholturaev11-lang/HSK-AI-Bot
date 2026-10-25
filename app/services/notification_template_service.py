@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.notification_template import NotificationTemplate
 from app.services.notification_i18n import notification_message
+from app.repositories.bot_setting_repo import BotSettingRepository
 
 
 # Reminder keys handled by MotivationReminderService.
@@ -157,15 +158,17 @@ class NotificationTemplateService:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def _get_row(self, key: str) -> NotificationTemplate | None:
+    async def _get_row(self, key: str, *, lock: bool = False) -> NotificationTemplate | None:
+        query=select(NotificationTemplate).where(NotificationTemplate.key==key).execution_options(populate_existing=True)
         return (
             await self.session.execute(
-                select(NotificationTemplate).where(NotificationTemplate.key == key)
+                query.with_for_update() if lock else query
             )
         ).scalar_one_or_none()
 
     async def _get_or_create(self, key: str) -> NotificationTemplate:
-        row = await self._get_row(key)
+        await BotSettingRepository(self.session).lock_key('notification_template:'+key)
+        row = await self._get_row(key,lock=True)
         if row is None:
             row = NotificationTemplate(key=key, enabled=True, media_type="none")
             self.session.add(row)

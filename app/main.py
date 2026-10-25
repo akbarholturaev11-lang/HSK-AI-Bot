@@ -3,8 +3,6 @@ import contextlib
 import logging
 from pathlib import Path
 import os
-import shutil
-import subprocess
 import time
 import uuid
 from contextlib import asynccontextmanager
@@ -25,6 +23,46 @@ from app.api.public_site import (
     record_event,
 )
 from app.config import settings
+from app.services.admin_payment_review_service import (
+    PaymentReviewError, lock_pending_payment, review_locked_payment,
+)
+from app.admin_api.pwa_bootstrap import create_admin_pwa_bootstrap_router
+from app.admin_api.pwa_google_transport import create_admin_pwa_google_router
+from app.admin_api.pwa_enrollment_transport import create_admin_pwa_completion_router
+from app.admin_api.pwa_webauthn_transport import create_admin_pwa_webauthn_router
+from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_login_router
+from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
+from app.admin_api.pwa_payment_review_transport import create_admin_pwa_payment_review_router
+from app.admin_api.pwa_payment_outbox import dispatch_payment_review
+from app.admin_api.pwa_read import create_admin_pwa_read_router
+from app.admin_api.pwa_feedback_analytics import create_admin_pwa_feedback_analytics_router
+from app.admin_api.pwa_feedback_cache import AdminPwaFeedbackReader
+from app.admin_api.pwa_access_grants import create_admin_pwa_access_grant_router
+from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
+from app.admin_api.pwa_inbox_attachments import create_admin_pwa_inbox_attachment_router
+from app.admin_api.pwa_push import create_admin_pwa_push_router
+from app.services.admin_pwa_push_dispatch import dispatch_batch, sender_config
+from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
+from app.admin_api.pwa_mcp_http import create_admin_pwa_mcp_http_router
+from app.admin_api.pwa_mcp_consent_transport import create_admin_pwa_mcp_consent_router
+from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_router
+from app.admin_api.pwa_course_access import create_admin_pwa_course_access_router
+from app.admin_api.pwa_hsk30_settings import create_admin_pwa_hsk30_settings_router
+from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
+from app.admin_api.pwa_payment_qr import create_admin_pwa_payment_qr_router
+from app.admin_api.pwa_settings import create_admin_pwa_settings_router
+from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
+from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
+from app.admin_api.pwa_channels import create_admin_pwa_channels_router
+from app.admin_api.pwa_outbound import create_admin_pwa_outbound_router, create_message_drainer
+from app.admin_api.pwa_campaigns import create_admin_pwa_campaigns_router
+from app.admin_api.pwa_payout_completion import create_admin_pwa_payout_completion_router
+from app.admin_api.pwa_payment_reconciliation import create_admin_pwa_payment_reconciliation_router
+from app.admin_api.pwa_partner_payouts import create_admin_pwa_partner_payouts_router
+from app.admin_api.pwa_partners import create_admin_pwa_partners_router
+from app.admin_api.pwa_notifications import create_admin_pwa_notifications_router
+from app.admin_api.pwa_portfolio import create_admin_pwa_portfolio_router
+from app.admin_api.pwa_payment_receipts import create_admin_pwa_receipt_router, download_receipt_image
 from app.api.android_auth import create_android_auth_router
 from app.api.course_tracks import create_course_tracks_router
 from app.api.android_course import create_android_course_router
@@ -166,10 +204,14 @@ from app.services.course_ad_translation_service import (
     CourseAdTranslationService,
 )
 from app.services.course_ad_service import (
-    COURSE_AD_ALLOWED_IMAGE_EXTENSIONS,
-    COURSE_AD_ALLOWED_VIDEO_EXTENSIONS,
     COURSE_AD_MEDIA_ROOT,
     CourseAdService,
+)
+from app.services.course_ad_media import (
+    COURSE_AD_MAX_UPLOAD_BYTES,
+    CourseAdVideoError,
+    prepare_course_ad_image_file,
+    prepare_course_ad_video_file,
 )
 from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE
 from app.services.ai_usage_budget_service import REFERRAL_TRIAL_PLAN_TYPE
@@ -239,6 +281,7 @@ from app.services.desktop_app_promo_settings_service import (
     DESKTOP_APP_PROMO_MAX_UPLOAD_BYTES,
     DESKTOP_APP_PROMO_MEDIA_ROOT,
     desktop_app_promo_media_full_path,
+    desktop_app_promo_public_filename_allowed,
     get_desktop_app_promo_settings,
     save_desktop_app_promo_settings,
 )
@@ -279,11 +322,6 @@ logger = logging.getLogger(__name__)
 
 bot, dp = create_bot(settings)
 _study_ai_tasks = set()
-COURSE_AD_MAX_UPLOAD_BYTES = 25 * 1024 * 1024
-
-
-class CourseAdVideoError(Exception):
-    pass
 
 
 def _positive_int(value) -> int | None:
@@ -351,102 +389,6 @@ async def _support_url_for_error() -> str:
             return await get_admin_contact_url(session)
     except Exception:  # noqa: BLE001
         return ""
-
-
-def _prepare_course_ad_video_file(data: bytes, *, raw_ext: str, telegram_id: int) -> str:
-    """Store course ad video as Telegram WebView-safe MP4.
-
-    ffmpeg is expected in production (see nixpacks.toml). Without ffmpeg we
-    reject uploads instead of saving a video that may render black in Telegram
-    WebView.
-    """
-    os.makedirs(COURSE_AD_MEDIA_ROOT, exist_ok=True)
-    token = uuid.uuid4().hex[:10]
-    final_name = f"course_ad_{telegram_id}_{int(time.time())}_{token}.mp4"
-    final_path = os.path.join(COURSE_AD_MEDIA_ROOT, final_name)
-    source_ext = raw_ext if raw_ext in COURSE_AD_ALLOWED_VIDEO_EXTENSIONS else ".mp4"
-    ffmpeg = shutil.which("ffmpeg")
-
-    if not ffmpeg:
-        raise CourseAdVideoError("ffmpeg_not_available")
-
-    source_path = os.path.join(COURSE_AD_MEDIA_ROOT, f".course_ad_upload_{token}{source_ext}")
-    with open(source_path, "wb") as handle:
-        handle.write(data)
-
-    try:
-        subprocess.run(
-            [
-                ffmpeg,
-                "-y",
-                "-hide_banner",
-                "-loglevel",
-                "error",
-                "-i",
-                source_path,
-                "-map",
-                "0:v:0",
-                "-map",
-                "0:a?",
-                "-vf",
-                "scale='min(720,iw)':-2:force_original_aspect_ratio=decrease,format=yuv420p",
-                "-c:v",
-                "libx264",
-                "-preset",
-                "veryfast",
-                "-profile:v",
-                "main",
-                "-level",
-                "3.1",
-                "-c:a",
-                "aac",
-                "-b:a",
-                "128k",
-                "-movflags",
-                "+faststart",
-                "-shortest",
-                final_path,
-            ],
-            check=True,
-            timeout=120,
-        )
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
-        with contextlib.suppress(OSError):
-            os.remove(final_path)
-        raise CourseAdVideoError("video_transcode_failed") from exc
-    finally:
-        with contextlib.suppress(OSError):
-            os.remove(source_path)
-
-    if not os.path.exists(final_path) or os.path.getsize(final_path) <= 0:
-        raise CourseAdVideoError("video_transcode_failed")
-    return final_name
-
-
-def _prepare_course_ad_image_file(data: bytes, *, raw_ext: str, telegram_id: int) -> str:
-    """Surat reklamasini diskka saqlaydi.
-
-    Videodan farqli o'laroq qayta kodlash yo'q: ffmpeg talab qilinmaydi va fayl
-    o'z formatida (jpg/png/webp) qoladi — `<img>` ularning hammasini Telegram
-    WebView'da muammosiz ko'rsatadi.
-    """
-    os.makedirs(COURSE_AD_MEDIA_ROOT, exist_ok=True)
-    token = uuid.uuid4().hex[:10]
-    ext = raw_ext if raw_ext in COURSE_AD_ALLOWED_IMAGE_EXTENSIONS else ".jpg"
-    final_name = f"course_ad_{telegram_id}_{int(time.time())}_{token}{ext}"
-    final_path = os.path.join(COURSE_AD_MEDIA_ROOT, final_name)
-    tmp_path = f"{final_path}.upload"
-    try:
-        with open(tmp_path, "wb") as handle:
-            handle.write(data)
-        os.replace(tmp_path, final_path)
-    except OSError:
-        with contextlib.suppress(OSError):
-            os.remove(tmp_path)
-        raise
-    if not os.path.exists(final_path) or os.path.getsize(final_path) <= 0:
-        raise CourseAdVideoError("media_upload_failed")
-    return final_name
 
 
 async def _send_subscription_expired_offer(session, telegram_id) -> None:
@@ -614,6 +556,23 @@ async def _background_scheduler(bot: Bot) -> None:
             print("Scheduler error:", e)
 
 
+async def _admin_pwa_apple_push_scheduler() -> None:
+    """Independent opt-in sender; never couples push failure to bot/payments."""
+    # Enabling only subscription enrollment NEVER initiates a send.
+    if sender_config(settings) is None:
+        return
+    while True:
+        try:
+            await dispatch_batch(async_session_maker, settings_obj=settings, limit=10)
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            # Provider exceptions may contain endpoints or keys. Do not include
+            # exception text, SQL parameters or private payloads in logs.
+            logger.error("Admin PWA Apple Push worker batch unavailable")
+        await asyncio.sleep(60)
+
+
 async def _desktop_auth_retention_scheduler() -> None:
     """Remove expired native-auth rows without blocking the bot scheduler."""
 
@@ -626,6 +585,16 @@ async def _desktop_auth_retention_scheduler() -> None:
                 ).cleanup_expired_records()
             async with async_session_maker() as session:
                 await AccountDeletionService(session, settings).cleanup()
+            if getattr(settings, "ADMIN_PWA_ENABLED", False):
+                # Required 30-day private screenshot deletion; bounded to at
+                # most 1000 expired reports per hour, independent of Push.
+                from app.services.admin_pwa_native_reports import purge_expired_native_reports
+                async with async_session_maker() as session:
+                    async with session.begin():
+                        removed = await purge_expired_native_reports(
+                            session, now=datetime.now(timezone.utc), limit=1000)
+                if removed:
+                    logger.info("Admin PWA expired native reports removed: %d", removed)
             if any(result.values()):
                 logger.info("Desktop auth retention cleanup: %s", result)
         except Exception:
@@ -644,6 +613,8 @@ async def lifespan(app: FastAPI):
     desktop_auth_cleanup_task = asyncio.create_task(
         _desktop_auth_retention_scheduler()
     )
+    apple_push_task = (asyncio.create_task(_admin_pwa_apple_push_scheduler())
+                       if sender_config(settings) is not None else None)
     try:
         yield                                                # /health darhol ishlaydi
     finally:
@@ -651,6 +622,8 @@ async def lifespan(app: FastAPI):
         polling_task.cancel()
         scheduler_task.cancel()
         desktop_auth_cleanup_task.cancel()
+        if apple_push_task is not None:
+            apple_push_task.cancel()
         study_ai_tasks = tuple(_study_ai_tasks)
         for task in study_ai_tasks:
             task.cancel()
@@ -662,14 +635,135 @@ async def lifespan(app: FastAPI):
             await scheduler_task
         with contextlib.suppress(asyncio.CancelledError):
             await desktop_auth_cleanup_task
+        if apple_push_task is not None:
+            with contextlib.suppress(asyncio.CancelledError):
+                await apple_push_task
         for task in study_ai_tasks:
             with contextlib.suppress(asyncio.CancelledError):
                 await task
+        await admin_pwa_statistics_reader.aclose()
+        await admin_pwa_feedback_reader.aclose()
         await bot.session.close()
         await engine.dispose()
 
 
 app = FastAPI(lifespan=lifespan)
+# Isolated, fail-closed browser admin route. Does not affect Telegram /admin.html.
+app.include_router(create_admin_pwa_bootstrap_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_google_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_completion_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_webauthn_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_passkey_login_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_step_up_router(settings_obj=settings, session_factory=async_session_maker))
+
+
+async def _dispatch_admin_pwa_payment_review(review_id):
+    return await dispatch_payment_review(
+        review_id=review_id, session_factory=async_session_maker, settings_obj=settings,
+        emit=lambda db, result: _emit_admin_payment_review_effects(db, result, source_prefix="admin_pwa"),
+    )
+
+
+async def _emit_admin_pwa_unblocked_notice(notice):
+    await bot.send_message(chat_id=notice.telegram_id,
+        text=t("admin_unblocked_notice",notice.language),parse_mode="HTML")
+    return True  # Provider accepted the attempt; not device delivery evidence.
+
+
+app.include_router(create_admin_pwa_payment_review_router(
+    settings_obj=settings, session_factory=async_session_maker,
+    dispatch=_dispatch_admin_pwa_payment_review,
+))
+admin_pwa_statistics_reader = AdminPwaStatisticsReader(settings_obj=settings, session_factory=async_session_maker)
+app.include_router(create_admin_pwa_access_grant_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_course_access_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_hsk30_settings_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_subscription_prices_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_payment_qr_router(
+    settings_obj=settings, session_factory=async_session_maker, bot_client=bot,
+))
+app.include_router(create_admin_pwa_settings_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_marketing_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_user_management_router(settings_obj=settings, session_factory=async_session_maker,
+    emit_unblocked=_emit_admin_pwa_unblocked_notice))
+app.include_router(create_admin_pwa_channels_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_portfolio_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_notifications_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_partner_payouts_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_payment_reconciliation_router(settings_obj=settings, session_factory=async_session_maker))
+
+async def _emit_admin_pwa_outbound(message):
+    # Reuse the existing Bot sender. No DB connection is held during provider IO.
+    failure=None
+    provider_message_id=None
+    try:
+        if message.reply_markup:
+            from aiogram.types import InlineKeyboardMarkup
+            sent=await bot.send_message(chat_id=message.telegram_id,text=message.text,
+                reply_markup=InlineKeyboardMarkup.model_validate(message.reply_markup),parse_mode='HTML')
+            provider_message_id=sent.message_id
+        else:
+            await AdminBroadcastService(bot,None)._send_one(message.telegram_id,text=message.text,
+                content_type='photo' if message.photo_file_id else 'text',media_file_id=message.photo_file_id,reply_markup=None)
+    except Exception as exc:
+        failure=exc
+    try:
+        async with async_session_maker() as db:
+            async with db.begin():
+                user=await db.scalar(select(User).where(User.id==message.user_id,
+                    User.telegram_id==message.telegram_id).with_for_update())
+                if user is not None:
+                    blocks=BotBlockStatusService(db)
+                    if failure is None:await blocks.handle_send_success(user,reason='admin_pwa_outbound')
+                    else:await blocks.handle_send_exception(message.telegram_id,failure,reason='admin_pwa_outbound')
+    except Exception:
+        logger.warning('Admin PWA outbound reachability bookkeeping unavailable')
+    if failure is not None:raise failure
+    return provider_message_id
+
+admin_pwa_message_drainer=create_message_drainer(settings_obj=settings,session_factory=async_session_maker,
+    emit=_emit_admin_pwa_outbound)
+app.include_router(create_admin_pwa_partners_router(settings_obj=settings, session_factory=async_session_maker,
+    drainer=admin_pwa_message_drainer))
+app.include_router(create_admin_pwa_outbound_router(settings_obj=settings,session_factory=async_session_maker,
+    emit=_emit_admin_pwa_outbound,drainer=admin_pwa_message_drainer))
+app.include_router(create_admin_pwa_campaigns_router(settings_obj=settings,session_factory=async_session_maker,
+    drainer=admin_pwa_message_drainer))
+
+async def _upload_admin_pwa_payout_proof(proof):
+    # Private staging to the verified uploading admin; no partner notification
+    # or financial state change until the exact later passkey command commits.
+    suffix={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[proof.media_type]
+    sent=await bot.send_photo(chat_id=proof.actor_telegram_id,
+        photo=BufferedInputFile(proof.raw,filename='payout-proof.'+suffix))
+    return sent.photo[-1].file_id if sent.photo else None
+
+async def _load_admin_pwa_payout_proof(file_id):
+    raw,_=await download_receipt_image(bot,file_id)
+    return raw
+
+app.include_router(create_admin_pwa_payout_completion_router(settings_obj=settings,session_factory=async_session_maker,
+    upload=_upload_admin_pwa_payout_proof,loader=_load_admin_pwa_payout_proof,drainer=admin_pwa_message_drainer))
+
+admin_pwa_feedback_reader = AdminPwaFeedbackReader(settings_obj=settings, session_factory=async_session_maker)
+app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=settings, session_factory=async_session_maker,
+    reader=admin_pwa_feedback_reader))
+app.include_router(create_admin_pwa_read_router(settings_obj=settings, session_factory=async_session_maker,
+    statistics_reader=admin_pwa_statistics_reader))
+app.include_router(create_admin_pwa_inbox_triage_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_inbox_attachment_router(
+    settings_obj=settings, session_factory=async_session_maker,
+    loader=lambda reference: download_receipt_image(bot, reference),
+))
+app.include_router(create_admin_pwa_push_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_mcp_http_router(settings_obj=settings, session_factory=async_session_maker,
+    statistics_reader=admin_pwa_statistics_reader))
+app.include_router(create_admin_pwa_mcp_consent_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_mcp_management_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_receipt_router(
+    settings_obj=settings, session_factory=async_session_maker,
+    loader=lambda reference: download_receipt_image(bot, reference),
+))
 app.include_router(create_public_site_router(
     settings_obj=settings,
     session_factory=async_session_maker,
@@ -1706,37 +1800,39 @@ async def _review_admin_payment(
     action: str,
     reason: str | None,
 ) -> tuple[dict, int]:
-    payment_repo = PaymentRepository(session)
-    user_repo = UserRepository(session)
-    payment = await payment_repo.get_by_id(payment_id)
-    if not payment:
-        return {"ok": False, "error": "payment_not_found"}, 404
-    if payment.payment_status != "pending":
-        return {"ok": False, "error": "payment_already_reviewed"}, 409
+    # Telegram authorization stays in its existing route. The shared decision
+    # never commits; this adapter retains the legacy commit + delivery boundary.
+    try:
+        if not session.in_transaction():
+            await session.begin()
+        payment, user = await lock_pending_payment(session, payment_id)
+        result = await review_locked_payment(
+            session, payment=payment, user=user, decision=action,
+            comment=("approved by admin mini app" if action == "approve"
+                     else (reason or "rejected by admin mini app").strip()[:300]),
+        )
+        await session.commit()
+    except PaymentReviewError as exc:
+        if str(exc) in {"subscription_activation_failed", "hsk30_unlock_failed"}:
+            await session.rollback()
+        return {"ok": False, "error": str(exc)}, exc.status
+    await _emit_admin_payment_review_effects(session, result)
+    return result.response, 200
 
-    # Checkout locks User before Payment. Reviews use the same order, and a
-    # canonical owner never falls back to another learner's Telegram metadata.
-    user = await payment_repo.get_owner(payment, lock=True)
+
+async def _emit_admin_payment_review_effects(session, result, *, source_prefix="admin_miniapp"):
+    """Post-commit only; delivery is best effort, not financial execution."""
+    payment, user, action = result.payment, result.user, result.decision
+    partner, commission_usd, unlocked_bonus = result.partner, result.commission_usd, result.unlocked_bonus
+    for event in result.deferred_events:
+        await ConversionFunnelService().record(**event)
     if action == "approve":
-        if not user:
-            return {"ok": False, "error": "user_not_found"}, 404
-        if not await payment_repo.approve(payment, admin_comment="approved by admin mini app"):
-            return {"ok": False, "error": "payment_already_reviewed"}, 409
-
         if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE:
-            granted = await Hsk30UnlockService(session).grant(
-                user=user,
-                payment=payment,
-            )
-            if not granted:
-                await session.rollback()
-                return {"ok": False, "error": "hsk30_unlock_failed"}, 400
-            await session.commit()
             await ConversionFunnelService().record(
                 event_name="hsk30_unlock_approved",
                 user=user,
                 telegram_id=payment.user_telegram_id,
-                source="admin_miniapp_payment_approve",
+                source=f"{source_prefix}_payment_approve",
                 payment_id=payment.id,
                 payload={
                     "plan_type": payment.plan_type,
@@ -1750,7 +1846,7 @@ async def _review_admin_payment(
                     event_name="hsk30_unlock_approved",
                     telegram_id=payment.user_telegram_id,
                     user_id=getattr(user, "id", None),
-                    source="admin_miniapp_payment_approve",
+                    source=f"{source_prefix}_payment_approve",
                     dedupe_key=f"hsk30-unlock-payment:{payment.id}",
                     payload={
                         "plan_type": payment.plan_type,
@@ -1767,24 +1863,11 @@ async def _review_admin_payment(
                 )
             return {"ok": True, "status": "approved", "product": HSK30_UNLOCK_PLAN_TYPE}, 200
 
-        activated = await SubscriptionService(session).activate_plan(
-            telegram_id=user,
-            plan_type=payment.plan_type,
-            discount_source=payment.discount_source,
-            payment=payment,
-        )
-        if not activated:
-            await session.rollback()
-            return {"ok": False, "error": "subscription_activation_failed"}, 400
-        partner, commission_usd, unlocked_bonus = await PartnerService(
-            session
-        ).record_approved_payment(payment)
-        await session.commit()
         await ConversionFunnelService().record(
             event_name="payment_approved",
             user=user,
             telegram_id=payment.user_telegram_id,
-            source="admin_miniapp_payment_approve",
+            source=f"{source_prefix}_payment_approve",
             payment_id=payment.id,
             payload={
                 "plan_type": payment.plan_type,
@@ -1798,7 +1881,7 @@ async def _review_admin_payment(
                 event_name="subscription_approved",
                 telegram_id=payment.user_telegram_id,
                 user_id=getattr(user, "id", None),
-                source="admin_miniapp_payment_approve",
+                source=f"{source_prefix}_payment_approve",
                 dedupe_key=f"payment:{payment.id}",
                 payload={
                     "plan_type": payment.plan_type,
@@ -1825,13 +1908,6 @@ async def _review_admin_payment(
         return {"ok": True, "status": "approved"}, 200
 
     if action == "reject":
-        comment = (reason or "rejected by admin mini app").strip()[:300]
-        if not await payment_repo.reject(payment, admin_comment=comment):
-            return {"ok": False, "error": "payment_already_reviewed"}, 409
-        if user and payment.plan_type != HSK30_UNLOCK_PLAN_TYPE:
-            await user_repo.set_selected_plan_type(user, None)
-            await PaymentReviewPreviewService(session).review(user, payment, approved=False)
-        await session.commit()
         await ConversionFunnelService().record(
             event_name=(
                 "hsk30_unlock_rejected"
@@ -1840,9 +1916,9 @@ async def _review_admin_payment(
             ),
             user=user,
             telegram_id=payment.user_telegram_id,
-            source="admin_miniapp_payment_reject",
+            source=f"{source_prefix}_payment_reject",
             payment_id=payment.id,
-            payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method, "reason": comment},
+            payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method, "reason": payment.admin_comment},
         )
         with contextlib.suppress(Exception):
             notifier = PaymentNotifyService(session)
@@ -1861,8 +1937,6 @@ async def _review_admin_payment(
                     payment=payment,
                 )
         return {"ok": True, "status": "rejected"}, 200
-
-    return {"ok": False, "error": "invalid_action"}, 400
 
 
 @app.get("/health")
@@ -3790,6 +3864,8 @@ async def admin_miniapp_desktop_promo_media_clear(request: Request):
 
 @app.get("/uploads/app_promo/{filename}")
 async def serve_desktop_app_promo_media(filename: str):
+    if not desktop_app_promo_public_filename_allowed(filename):
+        return JSONResponse(status_code=404, content={"ok": False, "error": "not_found"})
     safe = os.path.basename(filename)
     path = os.path.join(DESKTOP_APP_PROMO_MEDIA_ROOT, safe)
     if not safe or not os.path.exists(path):
@@ -4316,6 +4392,17 @@ async def admin_miniapp_hsk30_settings(request: Request):
         )
 
     async with async_session_maker() as session:
+        # Match signed PWA writers' deterministic lock order, including keys
+        # not stored yet. Partial Telegram updates keep their original scope.
+        hsk30_setting_keys = {
+            "enabled": "hsk30_enabled",
+            "live_levels": "hsk30_live_levels",
+            "unlock_payment_enabled": "hsk30_unlock_payment_enabled",
+            "unlock_price_tjs": "hsk30_unlock_price_tjs",
+        }
+        setting_repo = BotSettingRepository(session)
+        for setting_key in sorted(hsk30_setting_keys[key] for key in payload if key in hsk30_setting_keys):
+            await setting_repo.lock_key(setting_key)
         feature = Hsk30FeatureService(session)
         unlock = Hsk30UnlockService(session)
         if "enabled" in payload:
@@ -5078,13 +5165,14 @@ async def admin_miniapp_course_ads_upload(request: Request):
         # Surat qayta kodlanmaydi (ffmpeg kerak emas), video esa WebView uchun
         # xavfsiz MP4 ga o'giriladi — eski xatti-harakat o'zgarmaydi.
         prepare = (
-            _prepare_course_ad_image_file if media_type == "photo" else _prepare_course_ad_video_file
+            prepare_course_ad_image_file if media_type == "photo" else prepare_course_ad_video_file
         )
         filename = await asyncio.to_thread(
             prepare,
             data,
             raw_ext=raw_ext,
             telegram_id=telegram_id,
+            media_root=COURSE_AD_MEDIA_ROOT,
         )
         media_backup = (
             data if CourseAdService.should_backup_media(media_type, data) else None

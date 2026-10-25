@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="referrer" content="strict-origin">
+  <meta name="theme-color" content="#172731">
+  <title>HSK AI — MCP OAuth</title>
+  <link rel="icon" href="/admin/assets/icon.png">
+  <link rel="stylesheet" href="/admin/assets/mcp-consent.css">
+  <script src="/admin/assets/catalog.js" defer></script>
+  <script src="/admin/assets/mcp-consent.js" defer></script>
+</head>
+<body>
+  <main class="consent-shell">
+    <article class="consent-card" aria-labelledby="consent-title">
+      <header class="consent-head">
+        <div class="brand-mark" aria-hidden="true">HSK</div>
+        <div class="brand-copy"><strong>HSK AI</strong><span data-i18n="mcpSecure" aria-live="polite">—</span></div>
+        <label class="language-label">
+          <span class="visually-hidden" data-i18n="language">—</span>
+          <select id="mcp-locale" aria-label="Language"><option value="uz">UZ</option><option value="ru">RU</option><option value="tj">TJ</option></select>
+        </label>
+      </header>
+      <div class="consent-icon" aria-hidden="true">↗</div>
+      <h1 id="consent-title" data-i18n="mcpTitle">—</h1>
+      <p class="consent-lead" data-i18n="mcpSubtitle">—</p>
+      <section class="consent-details" aria-labelledby="app-label">
+        <div class="detail"><span id="app-label" data-i18n="mcpClient">—</span><strong id="mcp-client">__MCP_CLIENT__</strong></div>
+        <div class="detail"><span data-i18n="mcpDestination">—</span><strong id="mcp-destination">__MCP_DESTINATION__</strong></div>
+      </section>
+      <section class="permission" aria-labelledby="permission-title">
+        <div class="permission-icon" aria-hidden="true">✓</div>
+        <div><h2 id="permission-title" data-i18n="mcpPermission">—</h2><p data-i18n="mcpPermissionNote">—</p></div>
+      </section>
+      <p class="security-note" data-i18n="mcpSecurity">—</p>
+      <form method="post" action="/oauth/authorize" id="mcp-consent-form">
+        <input type="hidden" name="request_id" value="__MCP_REQUEST_ID__">
+        <input type="hidden" name="csrf" value="__MCP_CSRF__">
+        <div class="actions">
+          <button type="submit" class="btn btn-primary" name="decision" value="allow" data-i18n="mcpAllow">—</button>
+          <button type="submit" class="btn btn-muted" name="decision" value="deny" data-i18n="mcpDeny">—</button>
+        </div>
+      </form>
+      <p class="expiry" data-i18n="mcpExpires">—</p>
+    </article>
+    <p class="footer" data-i18n="mcpFooter">—</p>
+  </main>
+</body>
+</html>

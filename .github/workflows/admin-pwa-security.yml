@@ -1,0 +1,282 @@
+name: Admin PWA isolated security regressions
+
+on:
+  push:
+    branches:
+      - codex/admin-pwa
+      - feat/admin-pwa-mcp-readonly-20261024
+      - feat/admin-pwa-minimal-inbox-passkey-20261025
+      - main
+    paths:
+      - ".github/workflows/admin-pwa-security.yml"
+      - "app/admin_api/pwa_*.py"
+      - "app/db/models/admin_pwa*.py"
+      - "app/main.py"
+      - "app/services/admin_payment_review_service.py"
+      - "app/services/subscription_service.py"
+      - "app/services/admin_pwa_*.py"
+      - "app/repositories/bot_setting_repo.py"
+      - "app/repositories/subscription_price_repo.py"
+      - "app/repositories/required_channel_repo.py"
+      - "app/services/required_channel_service.py"
+      - "app/services/hsk30_feature_service.py"
+      - "tests/test_native_account_payments.py"
+      - "tests/test_hsk30_admin_payment_flow.py"
+      - "tests/test_subscription_service.py"
+      - "tests/test_partner_payment_ownership.py"
+      - "tests/test_payment_review_preview.py"
+      - "app/bot/handlers/admin_pwa.py"
+      - "alembic/versions/01[12][0-9]_admin_pwa*.py"
+      - "requirements.txt"
+      - "tests/test_admin_pwa_*.py"
+      - "tests/e2e/admin_pwa_browser.py"
+      - "tests/e2e/admin_pwa_mcp_consent_browser.py"
+      - "tests/e2e/admin_pwa_ui_cleanup_browser.py"
+      - "tests/e2e/admin_pwa_settings_browser.py"
+      - "tests/e2e/admin_pwa_step_up_gate.py"
+      - "tests/e2e/admin_pwa_outbound_browser.py"
+      - "tests/e2e/admin_pwa_campaigns_browser.py"
+      - "tests/e2e/admin_pwa_payout_browser.py"
+      - "tests/mcp_transport_fakes.py"
+      - "app/static/admin-pwa/**"
+      - "localization/ui/**/miniapp.json"
+      - "scripts/i18n_build*.py"
+      - "tests/test_i18n_all_catalogs.py"
+      - "tests/test_i18n_android_catalog_adoption.py"
+      - "tests/test_i18n_miniapp_inline_adoption.py"
+      - "scripts/qa_standalone_bootstrap.py"
+      - "tests/test_qa_standalone_bootstrap.py"
+      - "app/config.py"
+      - ".env.example"
+  # PR checkout tests GitHub's merge candidate, including current main.
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/admin-pwa-security.yml"
+      - "app/admin_api/pwa_*.py"
+      - "app/db/models/admin_pwa*.py"
+      - "app/main.py"
+      - "app/services/admin_payment_review_service.py"
+      - "app/services/subscription_service.py"
+      - "app/services/admin_pwa_*.py"
+      - "app/repositories/bot_setting_repo.py"
+      - "app/repositories/subscription_price_repo.py"
+      - "app/repositories/required_channel_repo.py"
+      - "app/services/required_channel_service.py"
+      - "app/services/hsk30_feature_service.py"
+      - "tests/test_native_account_payments.py"
+      - "tests/test_hsk30_admin_payment_flow.py"
+      - "tests/test_subscription_service.py"
+      - "tests/test_partner_payment_ownership.py"
+      - "tests/test_payment_review_preview.py"
+      - "app/bot/handlers/admin_pwa.py"
+      - "alembic/versions/01[12][0-9]_admin_pwa*.py"
+      - "requirements.txt"
+      - "tests/test_admin_pwa_*.py"
+      - "tests/e2e/admin_pwa_browser.py"
+      - "tests/e2e/admin_pwa_mcp_consent_browser.py"
+      - "tests/e2e/admin_pwa_ui_cleanup_browser.py"
+      - "tests/e2e/admin_pwa_settings_browser.py"
+      - "tests/e2e/admin_pwa_step_up_gate.py"
+      - "tests/e2e/admin_pwa_outbound_browser.py"
+      - "tests/e2e/admin_pwa_campaigns_browser.py"
+      - "tests/e2e/admin_pwa_payout_browser.py"
+      - "tests/mcp_transport_fakes.py"
+      - "app/static/admin-pwa/**"
+      - "localization/ui/**/miniapp.json"
+      - "scripts/i18n_build*.py"
+      - "tests/test_i18n_all_catalogs.py"
+      - "tests/test_i18n_android_catalog_adoption.py"
+      - "tests/test_i18n_miniapp_inline_adoption.py"
+      - "scripts/qa_standalone_bootstrap.py"
+      - "tests/test_qa_standalone_bootstrap.py"
+      - "app/config.py"
+      - ".env.example"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: admin-pwa-security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  admin-pwa:
+    # Playwright 1.56 Chromium supports Ubuntu 24.04; latest now resolves to 26.04.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      HSK_STAGING_QA_MODE: "1"
+      RAILWAY_ENVIRONMENT_NAME: staging
+      HSK_STAGING_DB_HOST: localhost
+      BOT_TOKEN: "9123456:synthetic-test-only-unusable-token"
+      DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+      REDIS_URL: "redis://127.0.0.1:1/0"
+      ADMIN_PWA_TEST_REDIS_URL: "redis://127.0.0.1:6379/15"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install pinned app dependencies and test adapters
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt "pytest==8.4.2" "aiosqlite==0.21.0" "mcp==1.27.0" "sse-starlette==3.0.3"
+      - name: Compile touched admin and database code
+        run: |
+          python -m compileall -q app/admin_api app/db/models app/bot/handlers/admin_pwa.py app/services/admin_payment_review_service.py app/services/subscription_service.py app/main.py
+      - name: Ensure migration chain has one head
+        run: |
+          python -m alembic heads
+          python -c "from alembic.config import Config; from alembic.script import ScriptDirectory; assert len(ScriptDirectory.from_config(Config('alembic.ini')).get_heads()) == 1"
+      - name: Run all Admin PWA regression tests without external services
+        run: |
+          python -m pytest -q tests/test_admin_pwa_*.py tests/test_i18n_all_catalogs.py tests/test_i18n_miniapp_inline_adoption.py tests/test_i18n_android_catalog_adoption.py tests/test_qa_standalone_bootstrap.py
+      - name: Preserve legacy payment, subscription, preview and affiliate contracts
+        run: |
+          python -m pytest -q tests/test_native_account_payments.py tests/test_hsk30_admin_payment_flow.py tests/test_subscription_service.py tests/test_partner_payment_ownership.py tests/test_payment_review_preview.py tests/test_main_imports.py
+      - name: Check canonical UI catalogs and generated artifacts
+        run: |
+          python scripts/i18n_build_all_catalogs.py --check
+      - name: Install isolated browser QA tooling
+        run: |
+          python -m pip install "playwright==1.56.0"
+          python -m playwright install --with-deps chromium
+      - name: Exercise desktop/mobile PWA with virtual WebAuthn and real ASGI services
+        run: |
+          python -m tests.e2e.admin_pwa_browser --output /tmp/admin-pwa-browser
+          python -m tests.e2e.admin_pwa_mcp_consent_browser --output /tmp/admin-pwa-browser
+          python -m tests.e2e.admin_pwa_ui_cleanup_browser --output /tmp/admin-pwa-browser
+          python -m tests.e2e.admin_pwa_settings_browser --output /tmp/admin-pwa-browser
+          python -m tests.e2e.admin_pwa_outbound_browser --output /tmp/admin-pwa-browser
+          python -m tests.e2e.admin_pwa_campaigns_browser --output /tmp/admin-pwa-browser
+          python -m tests.e2e.admin_pwa_payout_browser --output /tmp/admin-pwa-browser
+      - name: Verify native report API compatibility and durable intake
+        run: python -m pytest -q tests/test_android_features_api.py -k AndroidBugReportApiTests
+      - name: Keep synthetic browser screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-pwa-browser-synthetic
+          path: /tmp/admin-pwa-browser
+          if-no-files-found: ignore
+
+  postgres-locks-and-migrations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: qa
+          POSTGRES_PASSWORD: qa-only
+          POSTGRES_DB: adminpwa_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U qa -d adminpwa_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 15
+    env:
+      HSK_STAGING_QA_MODE: "1"
+      RAILWAY_ENVIRONMENT_NAME: staging
+      HSK_STAGING_DB_HOST: localhost
+      BOT_TOKEN: "9123456:synthetic-test-only-unusable-token"
+      DATABASE_URL: "postgresql+asyncpg://qa:qa-only@127.0.0.1:5432/adminpwa_test"
+      ADMIN_PWA_TEST_DATABASE_URL: "postgresql+asyncpg://qa:qa-only@127.0.0.1:5432/adminpwa_test"
+      REDIS_URL: "redis://127.0.0.1:1/0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install pinned requirements and PostgreSQL testing tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt "pytest==8.4.2" "aiosqlite==0.21.0"
+      - name: Prepare minimal 0109 test baseline (no legacy data)
+        run: |
+          # Scope is 0110-0130 ONLY: the legacy cold-start path currently
+          # fails at 0011 before course_progress exists. Do not mask that
+          # unrelated issue or claim fresh-db full-history migration coverage.
+          python - <<'PY'
+          import asyncio
+          import os
+          from sqlalchemy import text
+          from sqlalchemy.ext.asyncio import create_async_engine
+          async def main():
+              engine = create_async_engine(os.environ["DATABASE_URL"])
+              async with engine.begin() as conn:
+                  await conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY)"))
+                  await conn.execute(text("CREATE TABLE partner_payouts (id INTEGER PRIMARY KEY)"))
+              await engine.dispose()
+          asyncio.run(main())
+          PY
+          python -m alembic stamp 0109_public_site_traffic_daily
+      - name: Upgrade only the Admin PWA migrations 0110-0130
+        run: |
+          python -m alembic upgrade head
+          python -m alembic current
+      - name: Verify Admin PWA columns and migration rollback
+        run: |
+          python - <<'PY'
+          import asyncio
+          from sqlalchemy import inspect
+          from app.db.models.admin_pwa_payment_review import AdminPwaPaymentReview, AdminPwaPaymentOutbox
+          from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
+          from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
+          from app.db.models.admin_pwa_push import AdminPwaPushSubscription
+          from app.db.models.admin_pwa_push_outbox import AdminPwaPushOutbox
+          from app.db.models.admin_pwa_command import AdminPwaCommandAudit
+          from app.db.models.admin_pwa_payout_proof import AdminPwaPayoutProof
+          from app.db.models.admin_pwa_outbound import AdminPwaOutboundJob, AdminPwaOutboundRecipient, AdminPwaOutboundEvent
+          from sqlalchemy.ext.asyncio import create_async_engine
+          import os
+          async def main():
+              engine = create_async_engine(os.environ["DATABASE_URL"])
+              async with engine.connect() as conn:
+                  names = await conn.run_sync(lambda c: set(inspect(c).get_table_names()))
+                  for model in (AdminPwaPaymentReview, AdminPwaPaymentOutbox, AdminPwaNativeReport, AdminPwaInboxTriage, AdminPwaInboxTriageAudit, AdminPwaPushSubscription, AdminPwaPushOutbox, AdminPwaCommandAudit, AdminPwaOutboundJob, AdminPwaOutboundRecipient, AdminPwaOutboundEvent, AdminPwaPayoutProof):
+                      columns = await conn.run_sync(lambda c: {v["name"] for v in inspect(c).get_columns(model.__tablename__)})
+                      assert columns == set(model.__table__.columns.keys())
+              await engine.dispose()
+              for name in (
+                  "admin_pwa_sessions", "admin_pwa_approvals",
+                  "admin_pwa_oauth_attempts", "admin_pwa_enrollment_grants",
+                  "admin_pwa_credentials", "admin_pwa_registration_challenges",
+                  "admin_pwa_authentication_challenges", "admin_pwa_step_ups",
+                  "admin_pwa_payment_reviews", "admin_pwa_payment_outbox",
+                  "admin_pwa_mcp_access_grants", "admin_pwa_mcp_authorizations",
+                  "admin_pwa_mcp_audit", "admin_pwa_mcp_quotas",
+                  "admin_pwa_native_reports", "admin_pwa_inbox_triage", "admin_pwa_inbox_triage_audit",
+                  "admin_pwa_push_subscriptions", "admin_pwa_push_outbox", "admin_pwa_command_audit",
+                  "admin_pwa_outbound_jobs", "admin_pwa_outbound_recipients", "admin_pwa_outbound_events", "admin_pwa_payout_proofs",
+              ):
+                  assert name in names, f"Missing migrated table: {name}"
+              print("Admin PWA schema exists on disposable PostgreSQL")
+          asyncio.run(main())
+          PY
+          python -m alembic downgrade 0120_admin_pwa_mcp_consent_csrf
+          python -m alembic upgrade head
+      - name: Run PostgreSQL advisory-lock, single-use and revoke regressions
+        run: |
+          python -m pytest -q tests/test_admin_pwa_postgres.py tests/test_admin_pwa_settings_postgres.py tests/test_admin_pwa_hsk30_settings_locking.py tests/test_admin_pwa_user_management_postgres.py tests/test_admin_pwa_channels.py::ChannelPostgresTests tests/test_admin_pwa_portfolio.py::PortfolioPostgresTests tests/test_admin_pwa_notifications.py::NotificationPostgresTests tests/test_admin_pwa_partners.py::PartnerPostgresTests tests/test_admin_pwa_partner_payouts.py::PayoutPostgresTests tests/test_admin_pwa_inbox_retention.py::InboxRetentionPostgresTests tests/test_admin_pwa_payment_reconciliation.py::ReconciliationPostgresTests tests/test_admin_pwa_outbound.py::OutboundPostgresTests tests/test_admin_pwa_campaigns.py::CampaignPostgresTests tests/test_admin_pwa_payout_completion.py::CompletionPostgresTests

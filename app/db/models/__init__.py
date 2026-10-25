@@ -1,4 +1,5 @@
 from .user import User
+from .admin_pwa_payout_proof import AdminPwaPayoutProof
 from .referral import Referral
 from .payment import Payment
 from .discount_campaign import DiscountCampaign
@@ -47,3 +48,21 @@ from .account_deletion import AccountDeletionRequest
 from .public_site_traffic import PublicSiteTrafficDaily
 
 from .user_client_presence import UserClientPresence, AppPromoState
+from .admin_pwa import AdminPwaSession
+from .admin_pwa_approval import AdminPwaApproval
+from .admin_pwa_oauth import AdminPwaOAuthAttempt
+from .admin_pwa_enrollment_grant import AdminPwaEnrollmentGrant
+from .admin_pwa_webauthn import AdminPwaRegistrationChallenge, AdminPwaCredential
+from .admin_pwa_authentication import AdminPwaAuthenticationChallenge
+from .admin_pwa_step_up import AdminPwaStepUp
+from .admin_pwa_payment_review import AdminPwaPaymentReview, AdminPwaPaymentOutbox
+from .admin_pwa_mcp import AdminPwaMcpAccessGrant
+from .admin_pwa_mcp_authorization import AdminPwaMcpAuthorization
+
+from .admin_pwa_mcp_security import AdminPwaMcpAudit, AdminPwaMcpQuota
+from .admin_pwa_native_report import AdminPwaNativeReport
+from .admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
+from .admin_pwa_push import AdminPwaPushSubscription
+from .admin_pwa_push_outbox import AdminPwaPushOutbox
+from .admin_pwa_command import AdminPwaCommandAudit
+from .admin_pwa_outbound import AdminPwaOutboundJob, AdminPwaOutboundRecipient, AdminPwaOutboundEvent

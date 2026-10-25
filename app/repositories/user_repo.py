@@ -4,6 +4,7 @@ import secrets
 
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import load_only
 
 from app.db.models.user import User
 
@@ -295,8 +296,19 @@ class UserRepository:
         discount_filter: Optional[str] = None,
         course_promo_filter: Optional[str] = None,
         activity_filter: Optional[str] = None,
+        delivery_admin_ids: Optional[list[int]] = None,
+        limit: Optional[int] = None,
+        for_update: bool = False,
+        delivery_user_ids: Optional[list[int]] = None,
+        exclude_active_subscribers: bool = False,
     ) -> list[User]:
         query = select(User)
+        if delivery_user_ids is not None:
+            if not 1 <= len(delivery_user_ids) <= 1000:
+                raise ValueError('Invalid bounded delivery targets')
+            query = query.where(User.id.in_(delivery_user_ids))
+        if exclude_active_subscribers:
+            query = query.where(User.status != 'active')
         if languages:
             query = query.where(User.language.in_(languages))
         elif language:
@@ -341,6 +353,17 @@ class UserRepository:
                 query = query.where(User.last_active_at < since_7d)
             elif activity_filter == "new_7d":
                 query = query.where(User.created_at >= since_7d)
+        if delivery_admin_ids is not None:
+            query=query.where(User.telegram_id>0,User.status!='blocked',or_(
+                User.bot_blocked_at.is_(None),User.bot_unblocked_at>=User.bot_blocked_at))
+            if delivery_admin_ids:query=query.where(User.telegram_id.not_in(delivery_admin_ids))
+            query=query.options(load_only(User.id,User.telegram_id,User.status,User.language,
+                User.full_name,User.username,User.bot_blocked_at,User.bot_unblocked_at))
+            query=query.execution_options(populate_existing=True)
+        if limit is not None:
+            if type(limit) is not int or not 1<=limit<=1001:raise ValueError('Invalid bounded user page')
+            query=query.order_by(User.id).limit(limit)
+        if for_update:query=query.with_for_update()
         result = await self.session.execute(query)
         return list(result.scalars().all())
 
