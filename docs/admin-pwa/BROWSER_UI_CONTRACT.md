@@ -1,5 +1,17 @@
 # Admin PWA browser increment — branch-only, flag OFF
 
+## Owner payout-window update — 2026-10-25
+
+Payout operations have one editor and one primary passkey confirmation button.
+Keep amounts/destination and protected uploaded proof visible in that editor;
+do not add a second before/after confirmation window. Preparing the exact
+server command and opening native WebAuthn are sequential backend operations
+behind the same click. A changed original payout revision requires reread.
+Disable completion until its owned proof image loads; freeze input during the
+ceremony, preserve the draft on native cancellation and never auto-retry a
+submitted uncertain result. Other existing command/auth security guards remain.
+
+
 The owner supplied `/Users/kaijimima1234/Downloads/hsk-ai-admin-ux-demo-v10 2.html`
 on 2026-10-24: 182,765 bytes, SHA-256
 `1ff92bf82126ea65672ed703f9fff6553982db2f08f7c1ed2a06396cb6c89566`.
@@ -7,6 +19,19 @@ Its document title still says V9. This replaces the previously unavailable
 184,575-byte visual reference; it is not a data or behavior contract. Only CSS
 and fixed SVG icon paths are reused. No demo arrays, users, payments, charts,
 mutation handlers or fabricated success statuses are shipped.
+
+## Current owner-approved baseline — 2026-10-25
+
+Active branch: `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204. Preserve
+its title-only unread-first Inbox, automatic priority/red state, explicit
+read-on-open detail, separate receipt review and return to originating inbox.
+Keep the single close control and one-step iPhone left-zone back gesture with
+native Safari/scroll/text-selection exclusions. Existing audited triage/Push
+transport remains compatible; manual priority/assignment controls are absent.
+Fresh PWA launch/resume clears the old cookie session and requires a new
+discoverable passkey assertion, failing closed if logout fails. This supersedes
+older session-reuse descriptions below. Normal session navigation and exact
+transaction-bound high-risk confirmations remain separate.
 
 ## Routes, data and isolation
 

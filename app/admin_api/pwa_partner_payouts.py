@@ -112,8 +112,8 @@ async def read_payouts(db,*,session_cookie,request,settings_obj):
     async with read_transaction(db):
         actor=await _authenticate(db,session_cookie,settings_obj)
         if request.payout_id is not None:
-            row,_=await _target(db,request.payout_id)
-            return {'payout':_public(row,actor)}
+            row,revision=await _target(db,request.payout_id)
+            return {'payout':_public(row,actor)|{'revision_hash':revision}}
         query=select(PartnerPayout.id,PartnerPayout.partner_id,PartnerPayout.status,
             PartnerPayout.amount_usd,PartnerPayout.local_amount,PartnerPayout.local_currency)
         if request.before_id is not None:query=query.where(PartnerPayout.id<request.before_id)

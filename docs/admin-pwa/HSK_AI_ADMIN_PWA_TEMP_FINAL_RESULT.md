@@ -1,6 +1,6 @@
 # Admin PWA — final product and acceptance contract (temporary)
 
-> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201.
+> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204.
 > Not a repository-wide policy. Does not modify or supersede root `AGENTS.md` / `AI_RULES.md` / `PROJECT_MEMORY.md`.
 > All development and progress records for this task remain under `docs/admin-pwa/`.
 
@@ -18,7 +18,7 @@ feature defaults false; no main promotion or deployment is authorized here.
 ### A. Identity and admin access
 - [ ] Existing Telegram Admin Mini App works identically at its present endpoint with signed initData; no admin guard/flow regression.
 - [ ] First standalone Admin PWA onboarding: verified Google OAuth **AND** one-time Telegram approval by an allowlisted admin → canonical identity binding → passkey enrollment.
-- [ ] Returning PWA login: open directly if authenticated session still valid; otherwise login **via registered passkey alone**, no mandatory repeated Google/Telegram. Google or audited Telegram recovery is secondary.
+- [ ] Returning PWA login: require a fresh **registered passkey** on each launch/resume after revoking the old browser session, with no mandatory repeated Google/Telegram; fail closed when cleanup is unavailable. Google or audited Telegram recovery is secondary.
 - [ ] WebAuthn verification is implemented **server-side** using correct origin `https://hskai.app`, RP ID `hskai.app`, fresh one-use challenges, verified credential ID/public key, user verification and admin allowlist re-checks.
 - [ ] Face ID / Touch ID / Windows Hello / PIN fallback explained truthfully and manually checked on available devices; inability to force Face-ID-only is documented.
 - [ ] Secure session expiry/revocation, HttpOnly Secure cookies, CSRF/origin protection, same-origin policy and accessible sign-in/error/recovery UI.
@@ -61,6 +61,13 @@ browser/SW no-store and real-data/metric-definition requirements. Details:
 - [ ] Course, subscription, HSK 3.0 unlock, access grants, payments, marketing, settings and other scoped admin operations call shared validated backend commands; Telegram UI still works.
 - [ ] High-risk actions are disabled in PWA until **fresh, transaction-bound WebAuthn step-up** exists and is tested (exact action/target/payload, expiry, signature, replay/CSRF, confirmation and audit).
 - [ ] Financial approvals and rejections cannot double-process; canonical account identity and existing payment-preview/Pro business rules preserved.
+
+Implemented management code now includes signed direct/self-test and bounded
+text broadcasts, durable pre-provider claims, explicit cancellation and
+pending-only signed resume. Owned payout proof/completion and durable recipient notice also exist, using
+the owner-requested single payout window. Campaign creation, partner application
+notices and general media/QR/creative uploads remain code work; see [management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
+This paragraph records scope and does not mark the entire acceptance list done.
 
 ### F. Cloud/ChatGPT/Local analytics without exposing admin credentials
 - [ ] Publish authorized **read-only** metrics dictionary and scoped statistics/feedback query with server-side filtering, pagination and PII-minimization.

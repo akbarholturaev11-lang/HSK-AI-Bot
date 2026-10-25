@@ -65,16 +65,50 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         # The actual Web Push provider and physical Apple delivery are not
         # exercised by this public-shell regression.
 
-    async def test_inbox_search_form_is_private_and_bounded(self):
+    async def test_minimal_inbox_and_fresh_passkey_launch_contract(self):
         script=(await self.get('/admin/assets/app.js')).text
-        self.assertIn('id="inboxSearchForm"', script)
-        self.assertIn('id="inboxSearchQuery"', script)
-        self.assertIn('minlength="3" maxlength="80"', script)
-        self.assertIn("search:state.inboxSearch||null", script)
-        self.assertIn("state.inboxSearch='';state.actor=null", script)
-        self.assertIn("state.inboxSearch=value", script)
-        self.assertIn("t('monthly')", script)
-        self.assertNotIn("localStorage.setItem('hsk-admin-inbox-search'", script)
+        list_section=script.split('async function inbox(before=null,userId=null)',1)[1].split('async function mutateInbox(',1)[0]
+        self.assertNotIn('inboxSearchForm',list_section)
+        self.assertNotIn('filterSelect',list_section)
+        self.assertNotIn('inboxHistoryNote',list_section)
+        self.assertIn('data.items.map(inboxEntry)',list_section)
+        self.assertIn("operation:'mark_read'",script)
+        self.assertIn('data-inbox-open',script)
+        self.assertIn("if(source==='payment'){",script)
+        self.assertIn("await review(id);",script)
+        self.assertIn("drawerBack=()=>inbox(null,originatingUser)",script)
+        self.assertIn("lockAndRequirePasskey();",script)
+        self.assertIn("await api('auth/logout',{}, {publicAuth:true})",script)
+        self.assertIn("requireFreshLoginOnResume=true",script)
+        self.assertIn("await api('auth/passkey/login/verify'",script)
+
+    async def test_iphone_left_zone_swipe_is_single_step_and_input_safe(self):
+        script=(await self.get('/admin/assets/app.js')).text
+        start=script.index('function canSwipeBack(target) {')
+        end=script.index("document.addEventListener('click',event=>{",start)
+        self.assertGreaterEqual(start,0)
+        gesture=script[start:end]
+        self.assertIn("document.addEventListener('touchstart'",gesture)
+        self.assertIn("document.addEventListener('touchend'",gesture)
+        self.assertIn("document.addEventListener('touchcancel'",gesture)
+        self.assertIn("window.innerWidth*0.30",gesture)
+        self.assertIn("window.innerWidth*0.28",gesture)
+        self.assertIn("event.touches.length!==1",gesture)
+        self.assertIn("touch.identifier!==start.id",gesture)
+        self.assertIn("getComputedStyle(node).overflowX",gesture)
+        self.assertIn("input,textarea,select,[contenteditable]",gesture)
+        self.assertIn("signing||inboxUpdating",gesture)
+        self.assertIn("(!standalone&&touch.clientX<24)",gesture)
+        self.assertIn("oneStepBack().catch",gesture)
+        self.assertIn("event.stopImmediatePropagation()",script)
+        self.assertIn("const previous=drawerBack",gesture)
+        self.assertIn("sectionBackStack.pop()",gesture)
+        self.assertIn("if(source==='payment'){",script)
+        self.assertIn("drawerBack=()=>inbox(null,originatingUser)",script)
+        self.assertIn("const previousDrawerBack=drawerBack",script)
+        # The gesture must not turn into browser history navigation.
+        self.assertNotIn("history.back()",gesture)
+        self.assertNotIn("location.assign(",gesture)
 
     async def test_worker_scope_version_and_public_cache_allowlist(self):
         manifest=(await self.get('/admin/manifest.webmanifest')).json()

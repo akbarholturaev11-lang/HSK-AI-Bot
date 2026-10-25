@@ -64,6 +64,13 @@ class Hsk30PromoServiceTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_two_show_cap_and_three_day_interval_are_server_owned(self):
         t0 = datetime(2026, 9, 30, 8, 0, tzinfo=timezone.utc)
+        # This scenario uses a fixed September clock. A fixture based on
+        # wall-clock time becomes newer than t0 as the calendar advances and
+        # incorrectly triggers the five-day new-learner grace period.
+        async with self.sessions() as session:
+            profile = await CourseMiniAppProfileService(session).get_or_create(1)
+            profile.onboarding_completed_at = t0 - timedelta(days=30)
+            await session.commit()
 
         async with self.sessions() as session:
             user = await session.get(User, 1)

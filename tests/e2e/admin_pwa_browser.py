@@ -77,6 +77,45 @@ class Fixture(PaymentFixtures):
     pass
 
 
+async def setup_fresh_login(context, page, fixture):
+    """Use actual WebAuthn registration fixture key, never inject a session cookie."""
+    cdp=await context.new_cdp_session(page)
+    await cdp.send('WebAuthn.enable')
+    auth=await cdp.send('WebAuthn.addVirtualAuthenticator',{'options':{
+        'protocol':'ctap2','transport':'internal','hasResidentKey':True,
+        'hasUserVerification':True,'isUserVerified':True,
+        'automaticPresenceSimulation':True}})
+    private_key=fixture.key.private_bytes(serialization.Encoding.DER,serialization.PrivateFormat.PKCS8,
+                                         serialization.NoEncryption())
+    await cdp.send('WebAuthn.addCredential',{'authenticatorId':auth['authenticatorId'],'credential':{
+        'credentialId':base64.b64encode(CRED_ID).decode(),
+        'isResidentCredential':True,'rpId':'hskai.app',
+        'privateKey':base64.b64encode(private_key).decode(),
+        'userHandle':base64.b64encode(HANDLE).decode(),'signCount':0,
+        'userName':'synthetic-admin','userDisplayName':'Synthetic QA'}})
+    return cdp
+
+
+async def authenticate_fresh_launch(page):
+    """A fresh launch must authenticate with a real virtual UV assertion."""
+    await expect(page.locator('[data-action=signin]')).to_be_visible(timeout=15000)
+    results=[]
+    def observe(response):
+        if '/api/admin/v1/auth/passkey/' in response.url or response.url.endswith('/api/admin/v1/me'):
+            results.append((response.url.split('/api/admin/v1/')[-1],response.status))
+    page.on('response',observe)
+    try:
+        await page.locator('[data-action=signin]').click()
+        # The authenticated shell is visible on both viewport sizes. The
+        # desktop sidebar is intentionally hidden on mobile after fresh login.
+        await expect(page.locator('.app')).to_be_visible(timeout=20000)
+    except AssertionError as error:
+        state=await page.locator('.auth-panel').inner_text() if await page.locator('.auth-panel').count() else 'no-auth-panel'
+        raise AssertionError(f'Fresh WebAuthn login did not reach authenticated UI: requests={results}, state={state[:180]}') from error
+    finally:
+        page.remove_listener('response',observe)
+
+
 async def browser_checks(output):
     fixture=Fixture()
     fixture.engine=create_async_engine('sqlite+aiosqlite:///:memory:',poolclass=StaticPool)
@@ -224,23 +263,20 @@ async def browser_checks(output):
         await expect(page.locator('[data-profile-payments]')).to_have_count(0)
         await page.screenshot(path=str(output/'desktop-user-profile.png'),full_page=True)
         await page.locator('[data-user-feedback]').click()
-        await expect(page.locator('#drawerContent')).to_contain_text('<script>private QA feedback</script>')
-        await expect(page.locator('#drawerContent')).not_to_contain_text('other account QA feedback')
-        baseline_inbox_rows = await page.locator('.inbox-feedback-item').count()
-        assert baseline_inbox_rows >= 1
-        await page.locator('#inboxSearchQuery').fill('private')
-        await page.locator('#inboxSearchForm button').click()
-        await expect(page.locator('.inbox-feedback-item')).to_have_count(1)
-        assert any(path.endswith('/inbox/list') and body.get('search')=='private'
-                   and body.get('user_id')==1 for path,_,body in calls if isinstance(body,dict))
-        await page.locator('#inboxSearchQuery').fill('doesnotexist')
-        await page.locator('#inboxSearchForm button').click()
-        await expect(page.locator('.inbox-feedback-item')).to_have_count(0)
-        await page.locator('#inboxSearchQuery').fill('')
-        await page.locator('#inboxSearchForm button').click()
-        await expect(page.locator('.inbox-feedback-item')).to_have_count(baseline_inbox_rows)
-        await page.locator('#inboxSource').select_option('release')
-        assert calls[-1][2]['user_id']==1
+        await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
+        assert await page.locator('#inboxSearchForm,#inboxSource,#inboxPriority').count()==0
+        # Only title is shown in list; message and escaped private content
+        # appear only after opening the corresponding source-bound item.
+        await expect(page.locator('#drawerContent')).not_to_contain_text('<script>private QA feedback</script>')
+        bot_entry=page.locator('.inbox-minimal-row[data-inbox-open^="bot:"]').first
+        await bot_entry.click()
+        await expect(page.locator('.inbox-details')).to_contain_text('<script>private QA feedback</script>')
+        await expect(page.locator('.inbox-details script')).to_have_count(0)
+        await expect(page.locator('.inbox-details')).not_to_contain_text('other account QA feedback')
+        assert any(path.endswith('/inbox/triage') and body.get('operation')=='mark_read'
+                   for path,_,body in calls if isinstance(body,dict))
+        await page.locator('.inbox-back').click()
+        await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.locator('.drawer-close').click()
         await page.set_viewport_size({'width':390,'height':844})
         await page.screenshot(path=str(output/'mobile-users.png'),full_page=True)
@@ -362,48 +398,34 @@ async def browser_checks(output):
         assert len([p for p,_,_ in calls if p.endswith('/payments/review')])==2
         await cdp.send('WebAuthn.setAutomaticPresenceSimulation',{'authenticatorId':auth_id,'enabled':True})
         await page.locator('[data-action=feedback]').click()
-        await expect(page.locator('.inbox-shell')).to_be_visible()
-        for source in ('bot', 'release', 'android', 'payment', 'all'):
-            await page.locator('#inboxSource').select_option(source)
-            await expect(page.locator('.inbox-shell')).to_be_visible()
-            await expect(page.locator('#inboxSource')).to_have_value(source)
-        # Real count uses all eligible source records, not the visible 30-row page.
-        await wait_js(page, "() => !!document.querySelector('[data-action=feedback] .top-icon-badge')")
-        assert (await page.locator('[data-action=feedback] .top-icon-badge').inner_text())=='3'
-        await page.locator('#inboxPriority').select_option('important')
-        await expect(page.locator('.inbox-shell')).to_be_visible()
-        assert await page.locator('.inbox-shell .feedback-item').count()==1
-        await expect(page.locator('.inbox-shell')).to_contain_text('Тўлов чеклари')
-        await page.locator('#inboxPriority').select_option('all')
-        await expect(page.locator('.inbox-shell .feedback-item')).to_have_count(3)
-        # The 390px viewport mirrors the installed iPhone PWA layout.
-        assert page.viewport_size['width']==390
-        await page.locator('.inbox-shell [data-menu-toggle]').first.click()
-        assert await page.locator('[data-inbox-op=mark_read]').first.evaluate(
-            '(element) => element.getBoundingClientRect().height >= 44')
-        await page.screenshot(path=str(output/'mobile-inbox-triage.png'),full_page=True)
-        async def wait_for_inbox_audit(expected):
-            async with asyncio.timeout(12):
-                while True:
-                    async with fixture.sessions() as db:
-                        actual=await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit))
-                    if actual==expected:
-                        return
-                    await asyncio.sleep(.04)
-        await page.locator('[data-inbox-op=mark_read]').first.click()
-        await wait_for_inbox_audit(1)
-        await wait_js(page, "() => !!document.querySelector('[data-action=feedback] .top-icon-badge') && document.querySelector('[data-action=feedback] .top-icon-badge').textContent === '2'")
-        await wait_js(page, "() => !!document.querySelector('.inbox-drawer button[data-inbox-op=assign_self]:not(:disabled)')")
-        await page.locator('.inbox-shell [data-menu-toggle]').first.click()
-        await page.locator('[data-inbox-op=assign_self]').first.click()
-        await wait_for_inbox_audit(2)
-        await wait_js(page, "() => !!document.querySelector('.inbox-drawer button[data-inbox-op=resolve]:not(:disabled)')")
-        assert len([path for path,_,_ in calls if path.endswith('/inbox/triage')]) == 2
+        await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
+        assert not await page.locator('#inboxSource,#inboxPriority,#inboxSearchQuery').count()
+        assert not await page.locator('.inbox-drawer .drawer-foot:visible').count()
+        # The list is title-only: no manual resolve/assign/priority decisions.
+        assert not await page.locator('[data-inbox-op]').count()
+        await page.screenshot(path=str(output/'mobile-inbox-minimal.png'),full_page=True)
+        # Receipts intentionally open payment review, not generic inbox details.
+        unread=page.locator('.inbox-minimal-row.is-unread[data-inbox-open^="bot:"]').first
+        assert await unread.count(), 'A fresh unread alert is expected'
+        async with fixture.sessions() as db:
+            previous_audit=await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit))
+        await unread.click()
+        await expect(page.locator('.inbox-details')).to_be_visible()
+        async with fixture.sessions() as db:
+            after_audit=await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit))
+        assert after_audit == previous_audit + 1
+        assert any(path.endswith('/inbox/triage') and body.get('operation')=='mark_read'
+                   for path,_,body in calls if isinstance(body,dict))
+        await page.locator('.inbox-back').click()
+        await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.keyboard.press('Escape')
-        # Apple notificationclick always uses a fixed /admin/?inbox=1 link.
-        # A valid passkey session must be verified before showing private inbox.
+        # A fresh page load must require a new WebAuthn assertion.
+        prior_verifications=len([path for path,_,_ in calls if path.endswith('login/verify')])
         await page.goto(ORIGIN+'/admin/?inbox=1')
-        await expect(page.locator('.inbox-shell')).to_be_visible()
+        await expect(page.locator('[data-action=signin]')).to_be_visible()
+        await page.locator('[data-action=signin]').click()
+        await expect(page.locator('.inbox-shell')).to_be_visible(timeout=20000)
+        assert len([path for path,_,_ in calls if path.endswith('login/verify')]) == prior_verifications+1
         assert page.url==ORIGIN+'/admin/'
         await page.keyboard.press('Escape')
         # Actual consent/code/token services seed one synthetic connection;
@@ -633,9 +655,10 @@ async def attachment_browser_checks(output):
             comment_text='Synthetic release image',attachment_file_id='private-release-image',attachment_type='document')
         db.add_all([bot_report,release_report,BotFeedback(user_id=2,telegram_id=2002,status='completed',
             disliked_text='Unsupported media',disliked_attachment_file_id='never-download-audio',disliked_attachment_type='voice')])
-        await db.commit();report_id=report.id
+        await db.commit();report_id=report.id;bot_report_id=bot_report.id;release_report_id=release_report.id
     app=FastAPI()
-    for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router):
+    for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router,
+                    create_admin_pwa_passkey_login_router,create_admin_pwa_inbox_triage_router):
         app.include_router(factory(settings_obj=fixture.settings,session_factory=fixture.sessions))
     app.include_router(create_admin_pwa_inbox_attachment_router(settings_obj=fixture.settings,
         session_factory=fixture.sessions,loader=lambda reference:download_receipt_image(telegram,reference)))
@@ -660,14 +683,17 @@ async def attachment_browser_checks(output):
         if delayed:
             started.set();await release.wait()
         headers=dict(response.headers);headers.pop('content-length',None)
+        # Preserve the separate assertion-cookie deletion and new session
+        # cookie. A comma-folded Set-Cookie hides the WebAuthn session from
+        # Chromium and makes the subsequent authenticated /me return 401.
+        cookies=response.headers.get_list('set-cookie')
+        if cookies:headers['set-cookie']='\n'.join(cookies)
         await route.fulfill(status=response.status_code,headers=headers,body=response.content)
         if delayed:finished.set()
     try:
         async with async_playwright() as pw:
             browser=await pw.chromium.launch()
             context=await browser.new_context(viewport={'width':1440,'height':1000},service_workers='block')
-            await context.add_cookies([{'name':'__Host-hskai_admin','value':COOKIE,'url':ORIGIN,
-                                       'secure':True,'httpOnly':True,'sameSite':'Strict'}])
             await context.route('**/*',serve)
             await context.add_init_script("""window.qaURLs=[];window.qaRevoked=[];
                 const create=URL.createObjectURL.bind(URL),revoke=URL.revokeObjectURL.bind(URL);
@@ -675,24 +701,39 @@ async def attachment_browser_checks(output):
                 URL.revokeObjectURL=url=>{qaRevoked.push(url);return revoke(url);};
                 window.cspFailures=[];document.addEventListener('securitypolicyviolation',e=>cspFailures.push(e.violatedDirective));""")
             page=await context.new_page();errors=[]
+            await setup_fresh_login(context,page,fixture)
             native_button=page.locator('[data-inbox-attachment][data-attachment-source=android]')
             page.on('pageerror',lambda error:errors.append(str(error)))
-            await page.goto(ORIGIN+'/admin/');await page.wait_for_load_state('networkidle')
-            await expect(page.locator('.metrics')).to_be_visible()
+            await page.goto(ORIGIN+'/admin/');await authenticate_fresh_launch(page)
             assert not calls, 'Private images must not preload'
             telegram.get_file.assert_not_awaited()
             async def open_inbox():
-                await page.locator('[data-action=feedback]').click()
-                await expect(page.locator('[data-inbox-attachment]')).to_have_count(3)
-                assert await page.evaluate("() => {const ids=[...document.querySelectorAll('.inbox-attachment')].map(e=>e.id);return new Set(ids).size===3;}")
+                # The drawer is modal; the background bell cannot be clicked
+                # while a detail is open. Follow the real in-drawer back path.
+                if await page.locator('.inbox-back').count():
+                    await page.locator('.inbox-back').click()
+                elif not await page.locator('.inbox-minimal-row').count():
+                    if await page.locator('#overlay').count():
+                        await page.locator('.drawer-close').click()
+                    await page.locator('[data-action=feedback]').click()
+                await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
+                assert not await page.locator('[data-inbox-attachment]').count(), 'No media may preload in the list'
+            async def view_source(source):
+                await open_inbox()
+                # The newest bot record can be a voice-only report. Open the
+                # fixture with an actual image, never assume the first source
+                # row is eligible for image preview.
+                source_id={'bot':bot_report_id,'release':release_report_id,'android':report_id}[source]
+                await page.locator(f'[data-inbox-open="{source}:{source_id}"]').click()
+                await expect(page.locator(f'[data-inbox-attachment][data-attachment-source={source}]')).to_have_count(1)
             async def loaded():
                 await wait_js(page,"() => {const i=document.querySelector('.inbox-attachment-image');return i?.complete&&i.naturalWidth===320;}")
             for locale in ('uz','ru','tj'):
                 await page.set_viewport_size({'width':1440,'height':1000})
                 await page.locator('#locale').select_option(locale)
-                await open_inbox()
                 assert await page.locator('.inbox-attachment-image').count()==0
                 for source in ('bot','release','android'):
+                    await view_source(source)
                     await page.locator(f'[data-inbox-attachment][data-attachment-source={source}]').click()
                     await loaded()
                     await expect(page.locator('.inbox-attachment-image')).to_have_count(1)
@@ -721,7 +762,7 @@ async def attachment_browser_checks(output):
             assert [call.args[0] for call in telegram.get_file.await_args_list]==[
                 'private-file-never-returned','private-release-image']*3
             # Server retention is rechecked after the list was loaded.
-            await open_inbox()
+            await view_source('android')
             async with fixture.sessions() as db:
                 await db.execute(update(AdminPwaNativeReport).values(expires_at=now-timedelta(seconds=1)))
                 await db.commit()
@@ -740,7 +781,7 @@ async def attachment_browser_checks(output):
             await native_button.click();mode='delayed'
             await native_button.click();await asyncio.wait_for(started.wait(),10)
             await page.keyboard.press('Escape');mode=None
-            await open_inbox();await page.locator('[data-inbox-attachment][data-attachment-source=bot]').click();await loaded()
+            await view_source('bot');await page.locator('[data-inbox-attachment][data-attachment-source=bot]').click();await loaded()
             current_url=await page.locator('.inbox-attachment-image').get_attribute('src')
             release.set();await asyncio.wait_for(finished.wait(),10)
             assert await page.locator('.inbox-attachment-image').get_attribute('src')==current_url
@@ -749,10 +790,10 @@ async def attachment_browser_checks(output):
                 await page.evaluate('(event)=>window.dispatchEvent(new Event(event))',event)
                 assert await page.locator('.inbox-attachment-image').count()==0
                 assert await page.evaluate('qaURLs.length===qaRevoked.length')
-                await page.reload();await expect(page.locator('.metrics')).to_be_visible()
-                await open_inbox()
+                await page.reload();await authenticate_fresh_launch(page)
+                await view_source('android')
                 await native_button.click();await loaded()
-            await page.keyboard.press('Escape');await open_inbox()
+            await page.keyboard.press('Escape');await view_source('android')
             async with fixture.sessions() as db:
                 await db.execute(update(AdminPwaSession).values(revoked_at=now))
                 await db.commit()
@@ -784,7 +825,7 @@ async def export_browser_checks(output):
     app=FastAPI()
     common={'settings_obj':fixture.settings,'session_factory':fixture.sessions}
     for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router,
-                    create_admin_pwa_feedback_analytics_router):
+                    create_admin_pwa_passkey_login_router,create_admin_pwa_feedback_analytics_router):
         app.include_router(factory(**common))
     mode='normal';calls=[];downloads=[]
     started,release,finished=asyncio.Event(),asyncio.Event(),asyncio.Event()
@@ -806,23 +847,27 @@ async def export_browser_checks(output):
         delayed=is_export and mode=='delayed'
         if delayed:started.set();await release.wait()
         headers=dict(response.headers);headers.pop('content-length',None)
+        # Preserve the separate assertion-cookie deletion and new session
+        # cookie. A comma-folded Set-Cookie hides the WebAuthn session from
+        # Chromium and makes the subsequent authenticated /me return 401.
+        cookies=response.headers.get_list('set-cookie')
+        if cookies:headers['set-cookie']='\n'.join(cookies)
         await route.fulfill(status=response.status_code,headers=headers,body=response.content)
         if delayed:finished.set()
     try:
         async with async_playwright() as pw:
             browser=await pw.chromium.launch()
             context=await browser.new_context(viewport={'width':1440,'height':1000},service_workers='block')
-            await context.add_cookies([{'name':'__Host-hskai_admin','value':COOKIE,'url':ORIGIN,'secure':True,'httpOnly':True,'sameSite':'Strict'}])
             await context.route('**/*',serve)
             await context.add_init_script("""window.qaURLs=[];window.qaRevoked=[];
                 const create=URL.createObjectURL.bind(URL),revoke=URL.revokeObjectURL.bind(URL);
                 URL.createObjectURL=blob=>{const url=create(blob);qaURLs.push(url);return url;};
                 URL.revokeObjectURL=url=>{qaRevoked.push(url);return revoke(url);};""")
             page=await context.new_page();errors=[]
+            await setup_fresh_login(context,page,fixture)
             page.on('pageerror',lambda error:errors.append(str(error)))
             page.on('download',lambda download:downloads.append(download))
-            await page.goto(ORIGIN+'/admin/');await page.wait_for_load_state('networkidle')
-            await expect(page.locator('.metrics')).to_be_visible()
+            await page.goto(ORIGIN+'/admin/');await authenticate_fresh_launch(page)
             assert not calls,'Exports must only run after an explicit tap'
             await page.locator('[data-route=stats]').first.click()
             await expect(page.locator('[data-export-format]')).to_have_count(2)
@@ -887,7 +932,7 @@ async def export_browser_checks(output):
             await page.set_viewport_size({'width':1440,'height':1000})
             for cancel in ('route','locale','offline','pagehide'):
                 mode='normal'
-                await page.reload();await page.wait_for_load_state('networkidle')
+                await page.reload();await authenticate_fresh_launch(page)
                 await page.locator('[data-route=stats]').first.click()
                 await page.locator('[data-menu-toggle=statisticsExportMenu]').click()
                 await expect(page.locator('[data-export-format=json]')).to_be_visible()
@@ -903,7 +948,7 @@ async def export_browser_checks(output):
                 assert await page.evaluate('qaURLs.length===qaRevoked.length')
             # Feedback export is an explicit first-party action, independent
             # of the longer cached statistics window.
-            await page.reload();await page.wait_for_load_state('networkidle')
+            await page.reload();await authenticate_fresh_launch(page)
             await page.locator('[data-route=stats]').first.click()
             await expect(page.locator('[data-menu-toggle=feedbackExportMenu]')).to_be_visible()
             await page.locator('#feedbackSource').select_option('bot')
@@ -936,7 +981,8 @@ async def access_grant_browser_checks(output):
     await fixture.seed_payment()
     app=FastAPI();common={'settings_obj':fixture.settings,'session_factory':fixture.sessions}
     for factory in (create_admin_pwa_bootstrap_router,create_admin_pwa_read_router,
-                    create_admin_pwa_step_up_router,create_admin_pwa_access_grant_router):
+                    create_admin_pwa_passkey_login_router,create_admin_pwa_step_up_router,
+                    create_admin_pwa_access_grant_router):
         app.include_router(factory(**common))
     drop=False;calls=[]
     async def serve(route):
@@ -948,18 +994,22 @@ async def access_grant_browser_checks(output):
             response=await client.request(request.method,path,headers=await request.all_headers(),content=request.post_data_buffer)
         if drop and path=='/api/admin/v1/users/grant-access':drop=False;await route.abort();return
         headers=dict(response.headers);headers.pop('content-length',None)
+        # Preserve the separate assertion-cookie deletion and new session
+        # cookie. A comma-folded Set-Cookie hides the WebAuthn session from
+        # Chromium and makes the subsequent authenticated /me return 401.
+        cookies=response.headers.get_list('set-cookie')
+        if cookies:headers['set-cookie']='\n'.join(cookies)
         await route.fulfill(status=response.status_code,headers=headers,body=response.content)
     try:
         async with async_playwright() as pw:
             browser=await pw.chromium.launch();context=await browser.new_context(viewport={'width':1440,'height':1000},service_workers='block')
-            await context.add_cookies([{'name':'__Host-hskai_admin','value':COOKIE,'url':ORIGIN,'secure':True,'httpOnly':True,'sameSite':'Strict'}])
             await context.route('**/*',serve)
             page=await context.new_page();errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
             cdp=await context.new_cdp_session(page);await cdp.send('WebAuthn.enable')
             auth=await cdp.send('WebAuthn.addVirtualAuthenticator',{'options':{'protocol':'ctap2','transport':'internal','hasResidentKey':True,'hasUserVerification':True,'isUserVerified':True,'automaticPresenceSimulation':True}})
             auth_id=auth['authenticatorId'];b64=lambda value:base64.b64encode(value).decode()
             await cdp.send('WebAuthn.addCredential',{'authenticatorId':auth_id,'credential':{'credentialId':b64(CRED_ID),'isResidentCredential':True,'rpId':'hskai.app','privateKey':b64(fixture.key.private_bytes(serialization.Encoding.DER,serialization.PrivateFormat.PKCS8,serialization.NoEncryption())),'userHandle':b64(HANDLE),'signCount':0}})
-            await page.goto(ORIGIN+'/admin/');await page.wait_for_load_state('networkidle')
+            await page.goto(ORIGIN+'/admin/');await authenticate_fresh_launch(page)
             await page.locator('[data-route=users]').first.click()
             async def prepare():
                 await page.locator('[data-user-detail="1"]:visible').first.click()

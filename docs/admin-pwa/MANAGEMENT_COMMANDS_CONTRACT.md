@@ -23,7 +23,9 @@ uncertain response.
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
 | `marketing.update` | `/marketing/read`, `/prepare`, `/save` | Sales experiment, app promotion settings, existing creative activation/deletion |
 | `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
-| `partners.payout` | `/partner-payouts/read`, `/prepare`, `/save` | Shared reserve/release, reject and exact 1/3/7-day UTC deadline; no transfer or paid-without-proof |
+| `broadcast.send` / `broadcast.control` | `/messages/read`, `/prepare`, `/save`, `/run`, `/prepare-control`, `/control`, `/stop` | Exact signed text/audience, durable pre-IO claims, owner-only bounded delivery and cancellation |
+| `payments.delivery_reconcile` | `/payment-deliveries/read`, `/prepare`, `/save` | Audited human resolution for uncertain or stale attempts; never resend or change finance |
+| `partners.payout` | `/partner-payouts/read`, `/prepare`, `/save` | Shared reserve/release/reject/deadline plus owned proof-bound completion and one durable recipient notice; no money transfer |
 | `partners.update` | `/partners/read`, `/prepare`, `/save` | Partner application approve/reject and partnership block/unblock via shared PartnerService |
 | `notifications.update` | `/notifications/read`, `/prepare`, `/save` | Five fixed reminder templates, enabled state and canonical UZ/RU/TJ text/defaults |
 | `portfolio.add` | `/portfolio/read`, `/prepare`, `/save` | Manual profit/expense through shared PortfolioService; no payment synchronization or entitlement mutation |
@@ -68,13 +70,13 @@ responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 ## Explicit code parity still outstanding
 
 These legacy capabilities are not silently proxied by the standalone PWA:
-direct messages,
-mass messages, campaign creation, partner payout/delivery operations and media/QR/creative uploads. A legacy endpoint or
+campaign creation, partner application recipient notices, and general
+media/QR/creative uploads. Direct, self-test and bounded text broadcast now have
+their own standalone commands described below. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
 needs its own strict payload, shared-service transaction and permission/audit
 contract before its UI can claim success. Messaging additionally needs durable
-claim/delivery evidence and bounded batches. Payment outbox uncertain-delivery
-operator reconciliation remains separate operability work; immutable financial/command audits must stay intact.
+claim/delivery evidence and bounded batches. Payment-delivery reconciliation now has its own signed human-evidence command; immutable financial/command audits remain intact.
 
 Account management binds canonical ID, current identity/subscription/status hash,
 the specific operation and (for deletion) repeated numeric ID confirmation.
@@ -149,3 +151,112 @@ no longer exists. Continue via the returned source/ID cursor. No COUNT or
 full-source query, background scheduler, raw content/BLOB, source deletion or
 audit removal. Each page uses existing indexes and at most five bounded source
 ID checks; active metadata locks are skipped and revisited on a later sweep.
+
+Payment-delivery reconciliation is a human observation, not provider/device
+delivery proof. Eligible rows are uncertain or attempts older than ten minutes.
+The exact signed revision covers immutable review/decision and current outbox
+state/effects hash; concurrent changes or prior reconciliation deny. A single
+transaction consumes proof, records reason hash/resolution audit and sets the
+nullable reconciliation timestamp. Financial rows, outbox transport outcome and
+notification effects are unchanged. The dispatcher never retries these states.
+Two indexed exact-status pages (maximum 62 rows) produce the combined 30-row
+queue without loading message effects or payment snapshots. Migration 0128
+provides partial unresolved-status and command action/target indexes; it refuses
+to remove nonempty reconciliation metadata.
+
+## Reviewed text delivery — migration 0129
+
+`pwa_outbound.py` accepts direct canonical account, server-selected self-test or
+filtered broadcast. All UZ/RU/TJ copy is validated locally (2–3500 UTF-16 units);
+filters are strict fixed enums using the existing UserRepository predicates.
+Prepare reads at most 1001 eligible metadata rows; over 1000 recipients is an
+explicit error. No unbounded count/load, hidden translation request or native
+account/blocked/unreachable/admin targeting. Direct targets use canonical ID;
+self-test deliberately selects the current admin.
+
+The exact compact passkey commitment includes copy hash, audience hash/count
+and filters. Save locks and rechecks that snapshot and current authority after
+waits; proof, immutable hash-only command evidence, one private body and bounded
+recipient metadata commit together. Full copy is never duplicated in each
+recipient/audit or exposed through MCP. Lost HTTP responses are reread, never
+blindly resubmitted.
+
+Migration `0129_admin_pwa_outbound` adds jobs, recipient claims and separate
+content-free cancellation events, with expiry/pending/ownership/FK indexes.
+Nonempty downgrade is refused. The job payload expires after one hour;
+`python -m scripts.admin_pwa_outbound_retention` is a bounded read-only preview,
+`--purge-expired --limit 100` explicitly removes one expired private batch.
+Command and stop evidence survive that cleanup. Canonical account deletion
+removes its recipient/direct private payload through FKs; a deleted broadcast
+recipient is reported as removed. No new periodic scan or automatic scheduler.
+
+An in-process drainer has two worker slots and up to 100 batches of ten. Each
+recipient is durably marked attempting before a provider call; no connection
+spans that call or pacing sleep. Current session/admin/feature/recipient state
+is checked before every claim. Existing Bot text sender and reachability
+bookkeeping are reused. Acknowledged attempts, uncertain failures and skips
+are distinguished; neither means a device read the message. Crash/timeout/
+uncertain attempts are never automatically retried. Expired/revoked session
+pauses remaining work. A new session needs a fresh exact signed resume, which
+selects pending recipients only. A stale worker is fenced by a run token.
+
+Owner-only same-origin `/stop` uses the ordinary live WebAuthn cookie and CSRF
+guard to cancel remaining work; it cannot add text, recipients or retry rights.
+It records a distinct stop event, without pretending a new FIDO proof. One
+already claimed attempt may finish. Signed control closes stale/uncertain
+work or resumes pending recipients. UI refresh is explicit; no polling.
+
+Marketing's compact Messages row and profile overflow open the existing V10
+editor. One copy editor is visible at a time; filters are collapsed and the
+full escaped texts/audience are reviewed before signing. The owner-approved
+notification window, fresh-launch passkey and back gesture remain intact.
+
+## Payout proof and single-window completion — owner update, 2026-10-25
+
+The owner explicitly removed the second payout confirmation window. The
+existing payout editor shows destination/amount, operation and the protected
+proof image together; its only primary action prepares the exact command and
+opens native WebAuthn directly. Other payout state operations use this same
+single-window behavior. The original read revision is compared before any
+ceremony; changed destinations/state force a reread. Inputs freeze while the
+command runs. Closing or native cancellation never submits a payout. A lost
+save response exposes only read-current, with no automatic retry. This owner
+instruction supersedes the earlier two-window payout examples.
+
+`POST /partner-payouts/{canonical_payout_id}/proof` is a strict same-origin
+binary JPEG/PNG/WebP upload, maximum 2 MiB and the existing 20-million-pixel
+validator. Only the currently reserved owner may stage it. A DB-shared bounded
+20-attempt recent quota and two local IO slots precede the provider request.
+The uploading admin's own private Bot chat receives the image; it is not sent
+to the partner at this step. Uploading is committed before provider IO, then
+authority/session/expiry is checked again. No image bytes, public URL or local
+file are stored. No provider or database connection spans the other IO.
+
+Migration 0130 stores only private owner/session/payout reference, source hash,
+size, status, opaque provider reference and 15-minute expiry. The reference
+never enters browser JSON/audit/MCP. Same-session private preview validates
+actual raster bytes and rechecks authority/reference after provider IO. A
+failed/foreign/used/expired proof cannot authorize completion. The image must
+load in the first editor before its completion button becomes available.
+
+`/partner-payouts/prepare-completion` returns a compact commitment to raw payout
+revision, owned proof and exact recipient/three-language notice. `/complete`
+locks the payout, proof, partner and canonical recipient, checks post-wait
+authority/expiry, calls shared `mark_payout_paid`, consumes the asset/proof and
+appends immutable content-free command evidence in one transaction. No money
+transfer, Payment, subscription or ledger change. Competing commands cannot
+complete the same reservation twice.
+
+An eligible current canonical partner receives one durable outbound photo
+notice through the existing claimed queue; no missing/unreachable recipient
+is invented. The notice content and recipient snapshot are signed. Provider
+uncertainty never rolls back the financial fact and never automatically retries
+the notification. Session revocation stops unclaimed work; explicit signed
+pending-only resume still applies. Text broadcasts retain no browser-supplied
+provider reference field. Both entry points share the same two drainer slots.
+
+`python -m scripts.admin_pwa_payout_proof_retention` previews one bounded
+metadata page; `--purge-expired --limit 100` opts into removing only expired
+staging references. It does not delete the retained paid payout proof, command
+audit, notice or Telegram chat image. No scheduler or image BLOB scan is added.
+Nonempty metadata prevents destructive 0130 downgrade.

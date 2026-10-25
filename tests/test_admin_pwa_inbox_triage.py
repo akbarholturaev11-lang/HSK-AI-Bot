@@ -158,7 +158,7 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 4)
         important = (await self.post("inbox/list", {"priority":"important","limit":1})).json()
         self.assertEqual([x["source"] for x in important["items"]], ["payment"])
-        self.assertIsNone(important["next_before"])
+        self.assertIsNotNone(important["next_before"])  # Android remains auto-important despite legacy clear.
         marked = await self.post("inbox/triage", {
             "source":"bot","source_id":ids["bot"],"operation":"mark_read",
             "expected_revision":0})

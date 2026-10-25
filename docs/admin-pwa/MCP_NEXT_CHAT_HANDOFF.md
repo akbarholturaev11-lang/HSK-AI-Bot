@@ -2,6 +2,128 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current owner-selected branch and UI baseline
+
+- Continue **only** on `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204.
+  The owner selected this branch and accepted its notification-window changes
+  on 2026-10-25. The previous MCP branch/PR #201 references below are historical;
+  those changes are already ancestors. Do not switch back, merge/push main or
+  revert this branch's minimal Inbox/fresh-passkey/swipe behavior.
+- Owner baseline at `72d17493`: unread-first title-only notification rows,
+  automatic-only importance, explicit read-on-open detail, receipt handoff to
+  financial review and return to the originating user's inbox. Preserve the
+  single close control, red important state and one-step narrow left-zone
+  iPhone back gesture with native scrolling/selection/edge exclusions. Existing
+  audited backend triage/Push contracts remain compatible; no manual priority UI.
+- Every PWA launch/resume revokes its persistent browser session and requires
+  fresh discoverable WebAuthn; failed startup logout fails closed. This owner
+  baseline supersedes earlier documents recommending silent session reuse.
+  Normal in-session navigation is unchanged; sensitive commands still need
+  their own exact transaction-bound proof. No OAuth/MCP permission expansion.
+- Payment reconciliation code/migration was committed at `e72c945a`; the branch
+  adds its initial tests. Continuing work validates rollback, stale in-flight
+  attempts, bounded queue pages, concurrent resolutions and real migration
+  preservation, and adapts remaining management browser QA to real fresh login.
+
+## Current payout proof / one-window owner instruction
+
+- The owner rejected the second payout confirmation window. Payout state and
+  completion now execute from the original editor with one primary passkey
+  button. A 2-MiB raster is staged on file selection, privately previewed in
+  that editor and required to load before completion. Current read revision
+  must match prepare before any native ceremony. Preserve this new baseline.
+- `pwa_payout_completion.py` and migration 0130 implement private same-session
+  proof metadata, bounded upload quota/IO, no DB image BLOB/public file, exact
+  proof/recipient/copy signature and shared reserved-owner `mark_payout_paid`.
+  Post-lock authority/expiry, asset consumption, financial state, immutable
+  command and optional one-recipient claimed photo notice are atomic.
+- Provider upload goes only to the current uploading admin's private Bot chat;
+  partner notification occurs after signed commit through the shared outbound
+  drainer. Both routers share two worker slots. A provider timeout is never an
+  automatic retry and does not undo a paid record. No actual money transfer.
+- Explicit proof metadata retention CLI defaults to bounded dry run. Expired
+  staging cleanup preserves financial proof, command/stop evidence and notice.
+  Nonempty actual migration downgrade refuses data loss. QA head is now 0130;
+  the fixture DDL rehearsal covers 0103–0130, including required payout FK.
+- Before final one-window browser additions, payout/outbound/state/PG/QA suite
+  passed **71 tests**. Final broad PWA/catalog/initializer and affected legacy
+  payment/access/import suite with real isolated PostgreSQL/Redis: **642 passed,
+  zero skipped**. Actual ASGI/WebAuthn management and outbound browser suites
+  passed. The single-window payout browser passed UZ/RU/TJ 390px, private image
+  decode, unchanged original editor during native preparation, no extra confirm
+  control, closing cancellation, stale initial revision before FIDO, genuine
+  completion and lost-response no-retry. One notice and one command only.
+  Screenshots `/tmp/hsk-admin-pwa-payout-single-final-20261025` inspected.
+  Catalogs: 63 artifacts, zero stale; JS/Python syntax and diff checks passed.
+- Remaining code: campaign creation, partner application notices and general
+  media/QR/creative uploads. External MCP is still statistics-only; all feature
+  defaults remain OFF, no main/deploy/live migration.
+
+## Mobile Inbox touch and fresh-login regression
+
+- Cause: the minimal detail image/back buttons inherited a sub-44px height;
+  browser login QA also incorrectly required the desktop-only sidebar to be
+  visible after a mobile reload. The real passkey API had succeeded.
+- Fix: scope `min-height:44px` to detail buttons; fresh-login QA checks the
+  authenticated shell on both viewports. No list/detail redesign or auth bypass.
+- Risk/prevention: existing 390px image-target assertion remains strict; full
+  WebAuthn/payment/access/export/image/offline/revoke/SW browser suite passed
+  at `/tmp/hsk-admin-pwa-touch-and-auth-20261025`. New payout work is separate.
+
+## Current bounded outbound text increment
+
+- `pwa_outbound.py`, migration 0129 and V10 Messages/profile editors implement
+  direct canonical target, current-admin self-test and filtered broadcast.
+  Maximum 1000 recipients, one private three-language copy, compact exact
+  content/audience commitment, atomic proof/audit/queue and pre-provider claims.
+  Existing shared filtering/Bot sender/reachability logic is preserved.
+- Two local drainer slots process ten-recipient batches, with no DB connection
+  during provider IO/pacing, no UI polling or automatic uncertain retry.
+  Session/authority/TTL is checked before every claim. A new session needs a
+  fresh exact signed pending-only resume. Stop only reduces scope and appends
+  separate content-free evidence; one already claimed attempt may finish.
+- Private payload lifetime is one hour. Explicit bounded retention CLI previews
+  by default, purges only with `--purge-expired`, retains command/stop audits.
+  Canonical deletion removes direct payload/recipient; broadcast deleted count
+  is visible. Nonempty migration downgrade refuses data loss.
+- Actual ASGI/fresh virtual-WebAuthn outbound browser passed UZ/RU/TJ 390px,
+  self-test, 12-recipient broadcast split at ten, fresh-login signed resume of
+  only two remaining recipients, XSS escaping and no overflow/script errors.
+  Screenshots `/tmp/hsk-admin-pwa-outbound-verified-20261025` visually inspected.
+  API/PG/initializer/0103–0129 DDL gate: **44 passed**. Broader PWA, catalog,
+  initializer and affected legacy payment/access/import gate with actual local
+  PostgreSQL/Redis: **622 passed, zero skipped**. After final narrow-query and
+  audit-preservation additions, outbound gate: **15 passed**, including real PG
+  worker contention, canonical purge and nonempty actual-migration refusal.
+  Catalogs: 63 artifacts, zero stale; JS/Python syntax and diff checks passed.
+- Remaining code: campaign creation, media/QR/creative uploads and partner payout
+  verified proof/completion plus recipient notices. Preserve owner's Inbox and
+  current branch; all defaults OFF, external MCP remains statistics-only.
+
+## Current payment-delivery reconciliation validation
+
+- The existing `/payment-deliveries/read|prepare|save` command now has actual
+  rollback, recent-versus-stale attempting, bounded mixed queue pagination,
+  real-PG concurrent-resolution and nonempty migration-downgrade regressions.
+  Operator notes retain reason hashes only, update reconciliation metadata and
+  never change payment decisions or resend. Two exact-status index pages cap
+  queue reads at 62 metadata rows; no private effects/review payload in lists.
+- Migration `0128_admin_pwa_command_lookup` adds nullable reconciliation time,
+  an unresolved-status partial index and action/target audit lookup. Nonempty
+  reconciliation metadata prevents destructive downgrade. Empty QA baseline
+  defers the 0127-owned Message index without mutating application metadata;
+  real PG now exercises every migration 0103–0128, rather than stopping at 0126.
+- Reconciliation/initializer tests: **19 passed** with actual PostgreSQL. The
+  combined reconciliation/PG/initializer gate before the additional cases also
+  passed **34 tests**, including the full 0103–0128 DDL rehearsal.
+- Actual ASGI/virtual-WebAuthn management browser now performs real fresh
+  passkey login, preserves secure cookie responses and revokes the genuinely
+  issued session in the final security check. All prior management commands
+  plus localized reconciliation confirm/save/queue removal passed at 1440/390
+  UZ/RU/TJ. Screenshots inspected; owner's notification window is unchanged.
+- Fixed two operator-view labels through canonical UZ/RU/TJ: payment ID and
+  reconciliation reason, avoiding the unrelated payment-rejection reason.
+
 ## Current orphan-triage retention increment
 
 - `scan_orphaned_inbox_triage` and operator CLI

@@ -39,10 +39,13 @@ try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj
 const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? '—';
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
 const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
-  query:'', status:'pending', source:'all', inboxPriority:'all', inboxStatus:'all', inboxPeriod:'all_time', inboxSearch:'', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
+  query:'', status:'pending', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
+let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
+const sectionBackStack=[];
+let freshLoginInProgress=false, requireFreshLoginOnResume=false, sessionMustBeCleared=true;
 let approvalWatchTimer=null, approvalChecking=false;
 let statisticsDownload=null;
 let managementDraft=null,managementReview=null,managementPreparing=false;
@@ -53,14 +56,14 @@ function clearPrivate(phase) {
   stopApprovalWatch();
   cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
-  epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.inboxSearch='';state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
+  epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   state.phase=phase;state.error=null;render();
 }
-async function api(path, body, {publicAuth=false, method='POST'}={}) {
+async function api(path, body, {publicAuth=false, method='POST',rawBody=null}={}) {
   const current=epoch, control=new AbortController(), timer=setTimeout(()=>control.abort(),15000);
   try {
     const response=await fetch('/api/admin/v1/'+path,{method, credentials:'same-origin',cache:'no-store',redirect:'error',
-      headers:method==='POST'?{'Content-Type':'application/json'}:{},body:method==='POST'?JSON.stringify(body):undefined,signal:control.signal});
+      headers:method==='POST'?{'Content-Type':rawBody?rawBody.type:'application/json'}:{},body:method==='POST'?(rawBody||JSON.stringify(body)):undefined,signal:control.signal});
     const data=await response.json();
     if (epoch!==current) throw new ApiError('stale',0);
     if (!response.ok || data.ok!==true) {
@@ -301,7 +304,7 @@ function managementRow(label,attributes,glyph='settings'){
 function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
   if(state.route==='course')return `<div class="management-page">${group('course',managementRow(t('courseAccess'),'data-action="courseSettings"','book')+managementRow(t('hsk30Settings'),'data-action="hsk30Settings"','book'))}</div>`;
-  if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
+  if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('messages'),'data-action="messageList"','mega')+managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
   return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow(t('deliveryQueue'),'data-action="deliveryList"','bell')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
 function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
@@ -331,6 +334,21 @@ async function boot() {
     if(error.status!==401){state.phase='error';render();return;}
     try {await checkApproval();} catch(_) {state.phase='signin';render();}
   }
+}
+async function lockAndRequirePasskey() {
+  if(freshLoginInProgress)return;
+  freshLoginInProgress=true;
+  clearPrivate('loading');
+  try {
+    // Revoke DB session, not merely hide screen. Fresh launch or resume cannot
+    // reuse a lingering valid cookie without another verified WebAuthn assertion.
+    await api('auth/logout',{}, {publicAuth:true});
+    sessionMustBeCleared=false;
+  }catch(error){
+    if(error.message!=='stale')clearPrivate(navigator.onLine?'error':'offline');
+    return;
+  }finally{freshLoginInProgress=false;}
+  await boot();
 }
 function decode(value) { const normalized=value.replace(/-/g,'+').replace(/_/g,'/');return Uint8Array.from(atob(normalized+'='.repeat((4-normalized.length%4)%4)),ch=>ch.charCodeAt(0)); }
 function encode(buffer) { if(buffer==null)return null;let s='';for(const b of new Uint8Array(buffer))s+=String.fromCharCode(b);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
@@ -372,7 +390,7 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {closeActionMenus();closeInboxAttachment();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {drawerBack=null;closeActionMenus();closeInboxAttachment();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   if(!$('overlay'))returnFocus=document.activeElement;
   $('dialogs').innerHTML=`<div class="canvas-overlay show" id="overlay"><section class="drawer ${className}" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><div class="drawer-top"><h2 id="drawerTitle">${esc(t(title))}</h2><button class="drawer-close" data-action="close" aria-label="${esc(t('close'))}">×</button></div><div class="drawer-content" id="drawerContent">${body}</div><div class="drawer-foot" id="drawerFoot">${foot||btn('close','close')}</div></section></div>`;
@@ -400,7 +418,7 @@ async function userProfile(userId) {
       section('feedback',profileFields([['botFeedback',data.feedback_counts.bot],['releaseFeedback',data.feedback_counts.release]])+`<button class="btn" data-user-feedback="${userId}">${esc(t('openFeedback'))}</button>`)+
       section('paymentHistory',`<div id="profilePayments">${profilePayments(data.payments,userId)}</div>`)+`<p class="source-note">${esc(t('updated'))}: ${esc(date(data.generated_at))}</p>`,
       btn('close','close')+`<button class="btn primary" data-access-user="${userId}" ${blocked?'disabled':''}>${esc(t('grantAccess'))}</button>`+
-      (userId===state.actor.user_id?'':actionMenu('userManagementMenu',`<button role="menuitem" data-user-management="${userId}" data-user-operation="${blocked?'unblock':'block'}">${esc(t(blocked?'unblockAccount':'blockAccount'))}</button><button role="menuitem" data-user-management="${userId}" data-user-operation="delete">${esc(t('deleteAccount'))}</button>`)));
+      (userId===state.actor.user_id?'':actionMenu('userManagementMenu',`<button role="menuitem" data-message-user="${userId}">${esc(t('directMessage'))}</button><button role="menuitem" data-user-management="${userId}" data-user-operation="${blocked?'unblock':'block'}">${esc(t(blocked?'unblockAccount':'blockAccount'))}</button><button role="menuitem" data-user-management="${userId}" data-user-operation="delete">${esc(t('deleteAccount'))}</button>`)));
   }catch(error){if(current===drawerId&&state.actor)drawer('userProfile',statePanel(error.status===404?'userMissing':'error'),btn('close','close')+`<button class="btn" data-user-detail="${userId}">${esc(t('retry'))}</button>`);}
 }
 async function moreUserPayments(userId,before,button) {
@@ -468,9 +486,82 @@ function userManagementEditor(userId,operation){
 const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktopPromo',course_ad:'courseAds'};
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
 const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
-function managementNamespace(type){return type==='delivery'?'payment-deliveries':type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
-function managementEndpoint(type,phase){return type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
-function managementAction(type,operation){return type==='delivery'?'payments.delivery_reconcile':type==='payout'?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+function managementNamespace(type){return ['message','message_control'].includes(type)?'messages':type==='delivery'?'payment-deliveries':type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
+function managementEndpoint(type,phase){if(type==='payout_completion')return 'partner-payouts/'+(phase==='prepare'?'prepare-completion':'complete');return type==='message_control'?'messages/'+(phase==='prepare'?'prepare-control':'control'):type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
+function managementAction(type,operation){return type==='message'?'broadcast.send':type==='message_control'?'broadcast.control':type==='delivery'?'payments.delivery_reconcile':['payout','payout_completion'].includes(type)?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+const messageKindLabels={direct:'directMessage',broadcast:'broadcastMessage',test:'testMessage'};
+const messageJobLabels={ready:'messageReady',running:'messageRunning',complete:'messageComplete',closed:'messageClosed'};
+const messageCountLabels={pending:'messagePending',attempting:'messageAttempting',attempted:'messageAttempted',uncertain:'messageUncertain',skipped:'messageSkipped',removed:'messageRemoved'};
+async function messageList(before=null){
+  closeDrawer();const current=drawerId,at=epoch;drawer('messages',statePanel('loading'));
+  try{
+    const data=await api('messages/read',before?{before_id:before}:{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const rows=data.items.map(row=>managementRow(t(messageKindLabels[row.kind])+' · '+row.audience_count+' · '+t(messageJobLabels[row.status]),`data-message-job="${esc(row.job_id)}"`,'mega')).join('');
+    drawer('messages',(rows?`<div class="management-list">${rows}</div>`:statePanel('empty'))+(data.next_before_id?`<button class="btn" data-message-next="${esc(data.next_before_id)}">${esc(t('next'))}</button>`:''),btn('close','close')+btn('newMessage','messageEditor','primary'));
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('messages',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','messageList'));}
+}
+async function messageJob(id){
+  closeDrawer();const current=drawerId,at=epoch;drawer('messages',statePanel('loading'));
+  try{
+    const data=await api('messages/read',{job_id:id});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const job=data.job;
+    const refresh=`<button class="btn" data-message-job="${esc(id)}">${esc(t('readCurrent'))}</button>`;
+    const pending=job.counts.pending>0;
+    const run=pending&&job.status==='ready'&&job.session_current?`<button class="btn primary" data-message-run="${esc(id)}">${esc(t('messageNextBatch'))}</button>`:pending&&job.can_control?`<button class="btn primary" data-message-control="resume" data-job-id="${esc(id)}">${esc(t('messageResume'))}</button>`:'';
+    const stop=job.can_stop?actionMenu('messageControlMenu',`<button role="menuitem" data-message-stop="${esc(id)}">${esc(t('messageStop'))}</button>`):'';
+    drawer('messages',`<p class="source-note">${esc(t('messageAttemptHint'))}</p>${managementFields(job,'message')}${stop}`,refresh+run);
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('messages',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','messageList'));}
+}
+async function runMessage(id){
+  const current=drawerId,at=epoch;$('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
+  try{await api('messages/run',{job_id:id});}catch(error){if(current===drawerId&&at===epoch&&state.actor)showNotice(errorKey(error));}
+  if(current===drawerId&&at===epoch&&state.actor)await messageJob(id);
+}
+function confirmMessageStop(id){
+  closeDrawer();
+  drawer('messageStop',`<p class="source-note">${esc(t('messageStopHint'))}</p>`,btn('cancel','close')+`<button class="btn primary" data-message-stop-confirm="${esc(id)}">${esc(t('messageStop'))}</button>`);
+}
+async function stopMessage(id){
+  const current=drawerId,at=epoch;$('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
+  try{await api('messages/stop',{job_id:id});}catch(error){if(current===drawerId&&at===epoch&&state.actor)showNotice(errorKey(error));}
+  if(current===drawerId&&at===epoch&&state.actor)await messageJob(id);
+}
+function messageControlEditor(id,operation){
+  if(!['resume','close'].includes(operation))return;
+  closeDrawer();managementDraft={type:'message_control',jobId:id,controlOperation:operation};
+  drawer(operation==='resume'?'messageResume':'messageStop',`<form id="managementForm"><p class="source-note">${esc(t('messageControlHint'))}</p></form>`,btn('cancel','close')+btn('next','managementPrepare','primary'));
+}
+const messageFilterConfig={
+  status:['status',[['free','FREE'],['trial','messageTrial'],['active','accountActive'],['expired','messageExpired']]],
+  track:['messageTrack',[['hsk20','HSK 2.0'],['hsk30','HSK 3.0']]],
+  level:['level',[['beginner','messageBeginner'],...['hsk1','hsk2','hsk3','hsk4','nhsk1','nhsk2','nhsk3'].map(value=>[value,(value.startsWith('nhsk')?'HSK 3.0 · ':'HSK 2.0 · ')+value.at(-1)])]],
+  mode:['messageMode',[['qa','questionAnswer'],['course','course']]],
+  payment_status:['messagePaymentStatus',[['none','messageNoPayment'],['pending','pending'],['approved','approved'],['rejected','rejected']]],
+  payment_method:['method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']]],
+  plan:['plan',[['10_days','10_days'],['1_month','1_month'],['3_months','3_months']]],
+  discount:['discount',[['eligible','messageDiscountEligible'],['used','messageDiscountUsed'],['none','messageNoDiscount']]],
+  course_promo:['messagePromo',[['sent','messagePromoSent'],['not_sent','messagePromoNotSent']]],
+  activity:['messageActivity',[['active_7d','messageActive7d'],['inactive_7d','messageInactive7d'],['new_7d','messageNew7d']]]
+};
+function messageEditor(userId=null){
+  closeDrawer();managementDraft={type:'message',userId,textLanguage:locale,texts:{uz:'',ru:'',tj:''}};
+  const select=(id,label,options)=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><select class="input" id="${id}">${options.map(([value,text])=>`<option value="${value}">${esc(t(text))}</option>`).join('')}</select></div>`;
+  let body=userId?profileFields([['account',userId]]):select('messageKind','operation',[['broadcast','broadcastMessage'],['test','testMessage']]);
+  body+=`<p class="source-note">${esc(t(userId?'directMessageHint':'messageEditorHint'))}</p>`;
+  if(!userId)body+=select('messageLanguage','language',[['uz','UZ'],['ru','RU'],['tj','TJ']]);
+  body+=`<div class="form-field"><label for="messageText">${esc(t('noticeText'))}</label><textarea class="input setting-value" id="messageText" maxlength="3500" minlength="2" required></textarea></div>`;
+  if(!userId)body+=`<details class="profile-section notice-languages" id="messageFilters"><summary>${esc(t('filters'))}</summary><fieldset class="form-field"><legend>${esc(t('language'))}</legend>${['uz','ru','tj'].map(lang=>`<label class="management-check"><input type="checkbox" data-message-language="${lang}">${lang.toUpperCase()}</label>`).join('')}</fieldset>${Object.entries(messageFilterConfig).map(([key,[label,options]])=>select('messageFilter-'+key,label,[['','all'],...options])).join('')}</details>`;
+  body+='<p id="messageValidation" class="alert" role="alert" hidden></p>';
+  drawer(userId?'directMessage':'newMessage',`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('next','managementPrepare','primary'));
+  if(!userId)$('messageLanguage').value=locale;
+}
+function updateMessageLanguage(){
+  const draft=managementDraft,next=$('messageLanguage')?.value;
+  if(draft?.type!=='message'||!['uz','ru','tj'].includes(next))return;
+  draft.texts[draft.textLanguage]=$('messageText').value;draft.textLanguage=next;$('messageText').value=draft.texts[next];
+}
 const deliveryStatusLabels={pending:'pending',attempting:'deliveryAttempting',attempted:'deliveryAttempted',uncertain:'deliveryUncertain'};
 const deliveryResolutionLabels={observed:'deliveryObserved',no_retry:'deliveryNoRetry'};
 async function deliveryEditor(id=null,before=null){
@@ -483,12 +574,12 @@ async function deliveryEditor(id=null,before=null){
       drawer('deliveryQueue',(rows?`<div class="management-list">${rows}</div>`:statePanel('empty'))+(data.next_before_id?`<button class="btn" data-delivery-next="${esc(data.next_before_id)}">${esc(t('next'))}</button>`:''),btn('close','close'));return;
     }
     const row=data.delivery;managementDraft={type:'delivery',deliveryId:id};
-    const form=row.eligible&&!row.resolution?`<div class="form-field"><label for="deliveryResolution">${esc(t('operation'))}</label><select class="input" id="deliveryResolution">${Object.entries(deliveryResolutionLabels).map(([value,label])=>`<option value="${value}">${esc(t(label))}</option>`).join('')}</select></div><div class="form-field"><label for="deliveryReason">${esc(t('reason'))}</label><textarea class="input setting-value" id="deliveryReason" minlength="5" maxlength="300" required></textarea></div>`:'';
+    const form=row.eligible&&!row.resolution?`<div class="form-field"><label for="deliveryResolution">${esc(t('operation'))}</label><select class="input" id="deliveryResolution">${Object.entries(deliveryResolutionLabels).map(([value,label])=>`<option value="${value}">${esc(t(label))}</option>`).join('')}</select></div><div class="form-field"><label for="deliveryReason">${esc(t('deliveryReason'))}</label><textarea class="input setting-value" id="deliveryReason" minlength="5" maxlength="300" required></textarea></div>`:'';
     drawer('deliveryQueue',`<p class="source-note">${esc(t('deliveryReconcileHint'))}</p><form id="managementForm">${managementFields(row,'delivery')}${form}</form>`,btn('close','close')+(form?btn('next','managementPrepare','primary'):''));
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('deliveryQueue',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','deliveryList'));}
 }
 const payoutStatusLabels={pending:'pending',deadline_set:'payoutDeadlineSet',processing:'payoutReserved',paid:'payoutPaid',rejected:'rejected'};
-const payoutOperationLabels={deadline:'payoutDeadline',reject:'reject',claim:'payoutClaim',release:'payoutRelease'};
+const payoutOperationLabels={deadline:'payoutDeadline',reject:'reject',claim:'payoutClaim',release:'payoutRelease',complete:'payoutComplete'};
 async function payoutEditor(id=null,before=null){
   closeDrawer();const current=drawerId,at=epoch;drawer('partnerPayouts',statePanel('loading'));
   try{
@@ -498,11 +589,35 @@ async function payoutEditor(id=null,before=null){
       const rows=data.items.map(row=>managementRow(`#${row.id} · ${row.local_amount} ${row.local_currency} · ${t(payoutStatusLabels[row.status])}`,`data-payout-id="${Number(row.id)}"`,'wallet')).join('');
       drawer('partnerPayouts',(rows?`<div class="management-list">${rows}</div>`:statePanel('empty'))+(data.next_before_id?`<button class="btn" data-payout-next="${data.next_before_id}">${esc(t('next'))}</button>`:''),btn('close','close'));return;
     }
-    const row=data.payout,operations=row.operations.filter(op=>Object.hasOwn(payoutOperationLabels,op));
-    managementDraft={type:'payout',payoutId:id};
+    const row=data.payout,operations=(row.owned_reservation?['complete',...row.operations]:row.operations).filter(op=>Object.hasOwn(payoutOperationLabels,op));
+    managementDraft={type:'payout',payoutId:id,payoutRevision:row.revision_hash};
     const selection=operations.length?`<div class="form-field"><label for="payoutOperation">${esc(t('operation'))}</label><select class="input" id="payoutOperation">${operations.map(op=>`<option value="${op}">${esc(t(payoutOperationLabels[op]))}</option>`).join('')}</select></div><div class="form-field" id="payoutDaysField" ${operations[0]==='deadline'?'':'hidden'}><label for="payoutDays">${esc(t('durationDays'))}</label><select class="input" id="payoutDays">${[1,3,7].map(days=>`<option>${days}</option>`).join('')}</select></div>`:'';
-    drawer('partnerPayouts',`<form id="managementForm"><p class="source-note">${esc(t('payoutReserveHint'))}</p>${managementFields(row,'payout')}${selection}</form>`,btn('close','close')+(operations.length?btn('next','managementPrepare','primary'):''));
+    drawer('partnerPayouts',`<form id="managementForm"><p class="source-note">${esc(t('payoutReserveHint'))}</p>${managementFields(row,'payout')}${selection}${row.owned_reservation?`<div class="form-field" id="payoutProofField"><label for="payoutProofFile">${esc(t('payoutProofFile'))}</label><input class="input" id="payoutProofFile" type="file" accept="image/jpeg,image/png,image/webp" required><p class="source-note">${esc(t('payoutProofUploadHint'))}</p><div id="payoutProofPreview" aria-live="polite"></div></div>`:''}</form>`,btn('close','close')+(operations.length?btn('confirmPasskey','managementPrepare','primary',row.owned_reservation):''));
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('partnerPayouts',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','payoutList'));}
+}
+async function stagePayoutProof(file){
+  const draft=managementDraft,current=drawerId,at=epoch;
+  if(draft?.type!=='payout'||!$('payoutProofPreview'))return;
+  draft.proofId=null;draft.proofLoaded=false;
+  const confirm=document.querySelector('[data-action=managementPrepare]');if(confirm)confirm.disabled=true;
+  $('payoutProofPreview').textContent=t('loading');
+  draft.uploadVersion=(draft.uploadVersion||0)+1;const version=draft.uploadVersion;
+  if(!file||file.size>2*1024*1024||!['image/jpeg','image/png','image/webp'].includes(file.type)){$('payoutProofPreview').textContent=t('payoutProofInvalid');return;}
+  try{
+    const staged=await api('partner-payouts/'+draft.payoutId+'/proof',null,{rawBody:file});
+    if(current!==drawerId||at!==epoch||draft!==managementDraft||version!==draft.uploadVersion)return;
+    draft.proofId=staged.proof_id;
+    const image=new Image();image.className='inbox-attachment-image';image.alt=t('payoutProofFile');
+    image.addEventListener('load',()=>{
+      if(current!==drawerId||at!==epoch||draft!==managementDraft||version!==draft.uploadVersion)return;
+      draft.proofLoaded=image.naturalWidth>0;
+      if(confirm)confirm.disabled=managementPreparing||!!signing||$('payoutOperation')?.value==='complete'&&!draft.proofLoaded;
+    },{once:true});
+    image.addEventListener('error',()=>{if(current===drawerId&&at===epoch&&version===draft.uploadVersion)$('payoutProofPreview').textContent=t('error');},{once:true});
+    image.src='/api/admin/v1/payout-proofs/'+encodeURIComponent(staged.proof_id);
+    const hint=document.createElement('p');hint.className='source-note';hint.textContent=t('payoutProofReviewHint');
+    $('payoutProofPreview').replaceChildren(image,hint);
+  }catch(error){if(current===drawerId&&at===epoch&&draft===managementDraft&&version===draft.uploadVersion){$('payoutProofPreview').textContent=t('payoutProofInvalid');$('payoutProofFile').value='';}}
 }
 const partnerStatusLabels={pending:'pending',active:'accountActive',blocked:'BLOCKED',rejected:'rejected'};
 const partnerOperationLabels={approve:'approve',reject:'reject',block:'partnerBlock',unblock:'partnerUnblock'};
@@ -630,23 +745,40 @@ function editCourseAd(id){
   drawer('courseAds',form,btn('cancel','close')+btn('next','managementPrepare','primary'));
 }
 function managementFields(value,type){
+  if(['message','message_control'].includes(type)){
+    const fields=[['operation',t(messageKindLabels[value.kind])],['messageAudience',value.audience_count]];
+    if(value.user_id)fields.push(['account',value.user_id]);
+    if(value.filters){
+      if(value.filters.languages?.length)fields.push(['language',value.filters.languages.join(', ').toUpperCase()]);
+      for(const [key,[label,options]] of Object.entries(messageFilterConfig))if(value.filters[key])fields.push([label,t(options.find(item=>item[0]===value.filters[key])?.[1]||value.filters[key])]);
+    }
+    if(value.status)fields.push(['status',t(value.stale?'messageStale':messageJobLabels[value.status])]);
+    if(value.operation)fields.push(['operation',t(value.operation==='resume'?'messageResume':'messageStop')]);
+    if(value.expires_at)fields.push(['messageExpiry',date(value.expires_at)]);
+    for(const [key,label] of Object.entries(messageCountLabels))if(value.counts)fields.push([label,value.counts[key]||0]);
+    return profileFields(fields)+['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(value.texts[lang])}</p></details>`).join('');
+  }
   if(type==='delivery'){
     const fields=[['paymentId',value.payment_id],['reviewDecision',t(value.decision==='approve'?'approved':'rejected')],['deliveryStatus',t(deliveryStatusLabels[value.delivery_status])]];
     if(value.resolution)fields.push(['deliveryResolution',t(deliveryResolutionLabels[value.resolution])]);
-    if(value.reason)fields.push(['reason',value.reason]);
+    if(value.reason)fields.push(['deliveryReason',value.reason]);
     if(value.attempted_at)fields.push(['deliveryAttemptTime',date(value.attempted_at)]);
     if(value.reconciled_at)fields.push(['deliveryReconciledTime',date(value.reconciled_at)]);
     return profileFields(fields);
   }
-  if(type==='payout'){
-    const fields=[['payoutId',value.id],['partnerId',value.partner_id],['status',t(payoutStatusLabels[value.status])],['amount',value.local_amount+' '+value.local_currency],['ledgerUSD',value.amount_usd+' USD']];
+  if(['payout','payout_completion'].includes(type)){
+    const fields=[['payoutId',value.id],['partnerId',value.partner_id],['status',value.previous_status?t(payoutStatusLabels[value.previous_status])+' → '+t(payoutStatusLabels[value.status]):t(payoutStatusLabels[value.status])],['amount',value.local_amount+' '+value.local_currency],['ledgerUSD',value.amount_usd+' USD']];
     if(value.operation)fields.push(['operation',t(payoutOperationLabels[value.operation])]);
     fields.push(['method',value.bank_name||value.payment_method]);
     if(value.holder_name)fields.push(['payoutHolder',value.holder_name]);
     fields.push(['payoutAccount',value.account_details]);
     if(value.deadline_at)fields.push(['payoutDueAt',date(value.deadline_at)]);
     if(value.note)fields.push(['ledgerNote',value.note]);
-    return profileFields(fields);
+    if(value.notice_count!==undefined)fields.push(['messageAudience',value.notice_count]);
+    if(value.notice_user_id)fields.push(['account',value.notice_user_id]);
+    const proof=value.proof_id?`<p class="source-note">${esc(t('payoutProofReviewHint'))}</p><img class="inbox-attachment-image" src="/api/admin/v1/payout-proofs/${esc(value.proof_id)}" alt="${esc(t('payoutProofFile'))}">`:'';
+    const notice=value.notice_texts?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages"><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(value.notice_texts[lang])}</p></details>`).join(''):'';
+    return proof+profileFields(fields)+notice;
   }
   if(type==='partner'){
     const fields=[['partnerId',value.id],['status',t(partnerStatusLabels[value.status])]];
@@ -686,8 +818,10 @@ function managementFields(value,type){
   throw Error('invalid_settings');
 }
 function managementReread(draft){
+  if(draft.type==='message')return btn('readCurrent','messageList');
+  if(draft.type==='message_control')return `<button class="btn" data-message-job="${esc(draft.jobId)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='delivery')return `<button class="btn" data-delivery-id="${esc(draft.deliveryId)}">${esc(t('readCurrent'))}</button>`;
-  if(draft.type==='payout')return `<button class="btn" data-payout-id="${draft.payoutId}">${esc(t('readCurrent'))}</button>`;
+  if(['payout','payout_completion'].includes(draft.type))return `<button class="btn" data-payout-id="${draft.payoutId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='partner')return `<button class="btn" data-partner-id="${draft.partnerId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='notice')return `<button class="btn" data-notice-key="${esc(draft.noticeKey)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='portfolio')return btn('readCurrent','portfolioHistory');
@@ -752,11 +886,25 @@ async function editSetting(kind,bank=null){
 }
 async function prepareManagement(){
   if(managementPreparing||!state.actor||signing||!managementDraft||!$('managementForm')?.reportValidity())return;
-  const draft=managementDraft;let payload;
-  if(draft.type==='delivery'){
+  if(managementDraft.type==='payout'&&!supportsPasskey()){showNotice('passkeyUnsupported');return;}
+  const draft={...managementDraft};let payload;
+  if(draft.type==='message'){
+    const kind=draft.userId?'direct':$('messageKind').value;
+    if(draft.userId)draft.texts={uz:$('messageText').value,ru:$('messageText').value,tj:$('messageText').value};
+    else draft.texts[draft.textLanguage]=$('messageText').value;
+    const filters={};
+    if(kind==='broadcast'){
+      filters.languages=[...document.querySelectorAll('[data-message-language]:checked')].map(input=>input.dataset.messageLanguage);
+      for(const key of Object.keys(messageFilterConfig))if($('messageFilter-'+key).value)filters[key]=$('messageFilter-'+key).value;
+    }
+    payload={kind,user_id:draft.userId||null,texts:{...draft.texts},filters};
+  }else if(draft.type==='message_control'){
+    payload={job_id:draft.jobId,operation:draft.controlOperation};
+  }else if(draft.type==='delivery'){
     payload={review_id:draft.deliveryId,resolution:$('deliveryResolution').value,reason:$('deliveryReason').value};
   }else if(draft.type==='payout'){
-    payload={payout_id:draft.payoutId,operation:$('payoutOperation').value,days:$('payoutOperation').value==='deadline'?Number($('payoutDays').value):null};
+    if($('payoutOperation').value==='complete'){draft.type='payout_completion';payload={payout_id:draft.payoutId};}
+    else payload={payout_id:draft.payoutId,operation:$('payoutOperation').value,days:$('payoutOperation').value==='deadline'?Number($('payoutDays').value):null};
   }else if(draft.type==='partner'){
     payload={partner_id:draft.partnerId,operation:$('partnerOperation').value};
   }else if(draft.type==='notice'){
@@ -796,25 +944,42 @@ async function prepareManagement(){
     payload={change};
   }
   const current=drawerId,at=epoch;managementPreparing=true;
+  const payoutFields=['payout','payout_completion'].includes(draft.type)?[...document.querySelectorAll('#managementForm input,#managementForm select')].map(input=>[input,input.disabled]):[];
+  payoutFields.forEach(([input])=>input.disabled=true);
   $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
   try{
+    if(draft.type==='payout_completion'){
+      if(!draft.proofId||!draft.proofLoaded)throw new ApiError('admin_pwa_proof_invalid',400);
+      payload.proof_id=draft.proofId;
+    }
     const result=await api(managementEndpoint(draft.type,'prepare'),payload);
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const operation=structuredClone(result.operation);
     if(operation?.action!==managementAction(draft.type,draft.userOperation)||!operation.target||!operation.payload)throw Error('invalid_operation');
-    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,deliveryId:draft.deliveryId,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
-    const proposed=['notice','partner','payout','delivery'].includes(draft.type)?result.proposed:draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
+    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,deliveryId:draft.deliveryId,jobId:draft.jobId,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
+    if(['payout','payout_completion'].includes(draft.type)){
+      if(operation.payload.expected_hash!==draft.payoutRevision)throw new ApiError('confirmation_changed',409);
+      await executeManagement();return;
+    }
+    const proposed=['message','message_control','notice','partner','payout','payout_completion','delivery'].includes(draft.type)?result.proposed:draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
     const currentValue=draft.type==='marketing'||draft.type==='channel'?{kind:draft.kind,...result.current}:result.current;
-    const comparison=`<div class="management-comparison">${draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
+    const comparison=`<div class="management-comparison">${['message','payout_completion'].includes(draft.type)?(draft.type==='message'?`<p class="source-note">${esc(t('messageAttemptHint'))}</p>`:''):draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
     drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
   }catch(error){
     if(current===drawerId&&at===epoch&&state.actor){
-      if(draft.type==='notice'&&error.status===400&&$('noticeValidation')){
+      if(draft.type==='message'&&[400,409].includes(error.status)&&$('messageValidation')){
+        const key=error.message==='admin_pwa_message_no_targets'?'messageNoTargets':error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':'messageInvalid';
+        $('messageValidation').textContent=t(key);$('messageValidation').hidden=false;
+        $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
+      }else if(draft.type==='notice'&&error.status===400&&$('noticeValidation')){
         $('noticeValidation').textContent=t(error.message==='admin_pwa_notice_too_long'?'noticeTooLong':'noticeInvalid');$('noticeValidation').hidden=false;
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
       }else drawer('confirmChanges',statePanel(error.status===409?'configChanged':errorKey(error)),btn('close','close')+managementReread(draft));
     }
-  }finally{managementPreparing=false;}
+  }finally{
+    if(current===drawerId&&at===epoch)payoutFields.forEach(([input,disabled])=>{if(input.isConnected)input.disabled=disabled;});
+    managementPreparing=false;
+  }
 }
 async function executeManagement(){
   if(!managementReview||signing||!state.actor)return;
@@ -834,12 +999,17 @@ async function executeManagement(){
     const result=await api(managementEndpoint(review.type,'save'),{...review.executePayload,step_up_id:options.step_up_id});
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
-    const saved=review.type==='delivery'?result.delivery:review.type==='payout'?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
+    if(['message','message_control'].includes(review.type)){await messageJob(result.job.job_id);return;}
+    const saved=review.type==='delivery'?result.delivery:['payout','payout_completion'].includes(review.type)?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
     if(review.type==='user'&&result.deleted){state.rows=state.rows.filter(row=>row.user_id!==result.user_id);render();}
-    drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review)));
+    drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review))+(result.job_id?`<button class="btn" data-message-job="${esc(result.job_id)}">${esc(t('messages'))}</button>`:''));
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;
-    managementReview=null;managementDraft=null;
+    managementReview=null;
+    if(!submitted&&['payout','payout_completion'].includes(review.type)&&['NotAllowedError','AbortError'].includes(error.name)){
+      $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);showNotice('passkeyCancelled');return;
+    }
+    managementDraft=null;
     const rejected=[400,403,404,409].includes(error.status);
     drawer('confirmChanges',statePanel(error.status===409?'configChanged':submitted&&!rejected?'configUncertain':errorKey(error)),btn('close','close')+managementReread(review));
   }finally{if(signing===control)signing=null;}
@@ -1050,7 +1220,12 @@ async function prepareDecision(decision) {
   if(current!==drawerId||!state.actor)return;
   if(JSON.stringify(actual.payload.expected)!==JSON.stringify(previous.payload.expected)){showNotice('changed');await review(paymentId);return;}
   confirmation=Object.freeze(structuredClone(actual));
+  const previousDrawerBack=drawerBack;
   drawer('confirmPayment',`<p class="alert">${esc(t('confirmHint'))}</p><h3>${esc(t(decision))}</h3>${summary(actual)}`,btn('cancel','close')+btn('confirmPasskey','execute',decision==='reject'?'danger':'primary'),'confirmation');
+  drawerBack=async()=>{
+    await review(paymentId);
+    if(previousDrawerBack&&state.actor&&$('overlay'))drawerBack=previousDrawerBack;
+  };
 }
 async function execute() {
   if(!confirmation||!receiptLoaded||!supportsPasskey())return;
@@ -1078,7 +1253,6 @@ async function execute() {
   } finally {if(signing===control)signing=null;}
 }
 
-const inboxStatusLabels={new:'inboxStatusNew',read:'inboxStatusRead',assigned:'inboxStatusAssigned',resolved:'inboxStatusResolved'};
 function closeInboxAttachment(){
   const preview=inboxAttachment;inboxAttachment=null;
   if(!preview)return;
@@ -1124,30 +1298,71 @@ async function viewInboxAttachment(button){
     if(active()){host.setAttribute('aria-busy','false');host.innerHTML=`<p role="status">${esc(t('unavailable'))}</p>`;}
   }finally{clearTimeout(timer);}
 }
-function inboxControl(row,operation,key,primary=false){
-  if(!['bot','release','android','payment','technical'].includes(row.source)||!Number.isSafeInteger(row.source_id)||!Number.isSafeInteger(row.triage_revision))return '';
-  return `<button type="button" ${primary?'class="btn primary inbox-primary-action"':'role="menuitem" tabindex="-1"'} data-inbox-op="${operation}" data-inbox-source="${row.source}" data-inbox-id="${row.source_id}" data-inbox-revision="${row.triage_revision}">${esc(t(key))}</button>`;
+const autoImportantSources=new Set(['payment','android','technical']);
+function inboxTitle(row){
+  const label=row.source==='payment'?'inboxPaymentReceipt':row.source==='android'?'inboxAndroid':row.source==='technical'?'inboxTechnical':row.source==='release'?'releaseFeedback':'botFeedback';
+  return t(label)+(row.user_id?' · '+t('account')+' '+row.user_id:'');
 }
 function inboxEntry(row){
-  const status=inboxStatusLabels[row.triage_status]||'inboxStatusNew';
-  const origin=row.source==='bot'?'botFeedback':row.source==='release'?'releaseFeedback':row.source==='payment'?'inboxPaymentReceipt':row.source==='technical'?'inboxTechnical':'inboxAndroid';
-  const flags=`<span class="inbox-state">${esc(t(status))}</span>${row.triage_priority==='important'?`<span class="inbox-state inbox-state-important">${esc(t('inboxImportant'))}</span>`:''}${row.triage_assigned_to===state.actor?.user_id?`<span class="inbox-state">${esc(t('inboxMine'))}</span>`:''}`;
-  const secondary=[];
-  const canView=(row.source==='android'?row.has_attachment:['bot','release'].includes(row.source)&&row.image_preview_available===true)&&Number.isSafeInteger(row.source_id)&&row.source_id>0&&row.source_id<=2147483647;
-  const attachmentId=`inboxAttachment-${row.source}-${row.source_id}`;
-  const media=canView?`<button type="button" class="inbox-media-action" data-inbox-attachment="${row.source_id}" data-attachment-source="${row.source}" aria-controls="${attachmentId}" aria-expanded="false">${esc(t('viewAttachment'))}</button>`:'';
-  if(row.triage_status==='new')secondary.push(inboxControl(row,'mark_read','inboxMarkRead'));
-  let primary;
-  if(row.source==='payment'){
-    // Opening Payments is NOT the same as approving an unverified receipt.
-    primary=`<button class="btn primary inbox-primary-action" data-route="payments">${esc(t('payments'))}</button>`;
-  }else{
-    if(row.triage_status!=='resolved'&&row.triage_assigned_to!==state.actor?.user_id)secondary.push(inboxControl(row,'assign_self','inboxAssignSelf'));
-    primary=row.triage_status==='resolved'?inboxControl(row,'reopen','inboxReopen',true):inboxControl(row,'resolve','inboxResolve',true);
-    secondary.push(row.triage_priority==='important'?inboxControl(row,'clear_important','inboxClearImportant'):inboxControl(row,'mark_important','inboxMarkImportant'));
-  }
-  return `<article class="feedback-item inbox-feedback-item"><div class="inbox-entry-head"><strong>${esc(t(origin))} · ${esc(row.user_id?t('account')+' '+row.user_id:'—')}${row.rating?' · '+esc(row.rating)+'/5':''}</strong><small>${esc(date(row.created_at))}</small></div><div class="inbox-states">${flags}</div><p>${esc(row.message||'—')}</p>${row.has_attachment&&!canView?`<p class="source-note">${esc(t('hasAttachment'))}</p>`:''}<div class="inbox-entry-actions">${media}<div class="inbox-triage-actions">${primary}${secondary.length?actionMenu(`inboxMenu-${row.source}-${row.source_id}`,secondary.join('')):''}</div></div>${canView?`<div class="inbox-attachment" id="${attachmentId}" aria-live="polite" hidden></div>`:''}</article>`;
+  const unread=row.triage_status==='new', important=autoImportantSources.has(row.source);
+  if(!['bot','release','android','payment','technical'].includes(row.source)||
+     !Number.isSafeInteger(row.source_id)||row.source_id<1)return '';
+  return `<button type="button" class="inbox-minimal-row ${unread?'is-unread':'is-read'} ${important?'is-important':''}"
+    data-inbox-open="${row.source}:${row.source_id}" aria-label="${esc(inboxTitle(row))}">
+      <span class="inbox-row-dot" aria-hidden="true"></span>
+      <span class="inbox-row-title">${esc(inboxTitle(row))}</span>
+      ${icon('chevron')}
+    </button>`;
 }
+function inboxDetails(row) {
+  const source=row.source,id=row.source_id;
+  const canView=(source==='android'?row.has_attachment:['bot','release'].includes(source)&&row.image_preview_available===true)
+    &&Number.isSafeInteger(id)&&id>0&&id<=2147483647;
+  const attachmentId=`inboxAttachment-${source}-${id}`;
+  return `<div class="inbox-details">
+    <button class="inbox-back" data-action="inboxBack" type="button">${icon('chevron')}${esc(t('feedback'))}</button>
+    <h2>${esc(inboxTitle(row))}</h2>
+    <time>${esc(date(row.created_at))}</time>
+    ${row.message?`<p class="inbox-details-text">${esc(row.message)}</p>`:''}
+    ${row.rating?`<p>${esc(row.rating)}/5</p>`:''}
+    ${row.app_version?`<p>${esc(row.app_version)}</p>`:''}
+    ${row.screen?`<p>${esc(row.screen)}</p>`:''}
+    ${canView?`<button type="button" class="btn" data-inbox-attachment="${id}"
+      data-attachment-source="${source}" aria-controls="${attachmentId}" aria-expanded="false">${esc(t('viewAttachment'))}</button>
+      <div class="inbox-attachment" id="${attachmentId}" aria-live="polite" hidden></div>`:''}
+  </div>`;
+}
+let currentInboxRows=[];
+async function openInbox(source,id) {
+  if(inboxUpdating||!state.actor)return;
+  const row=currentInboxRows.find(item=>item.source===source&&item.source_id===id);
+  if(!row)return;
+  const current=drawerId,at=epoch;
+  inboxUpdating=true;
+  try {
+    if(row.triage_status==='new'){
+      // Persist read before presenting details; a payment receipt is not approved.
+      await api('inbox/triage',{source,source_id:id,operation:'mark_read',expected_revision:row.triage_revision});
+      if(current!==drawerId||at!==epoch||!state.actor)return;
+      row.triage_status='read';row.triage_revision++;
+      await refreshInboxUnread();
+    }
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const originatingUser=feedbackUserId;
+    if(source==='payment'){
+      await review(id);
+      if(state.actor&&$('overlay'))drawerBack=()=>inbox(null,originatingUser);
+      return;
+    }
+    drawer('feedback',inboxDetails(row),null,'inbox-drawer');
+    drawerBack=()=>inbox(null,originatingUser);
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    showNotice(error.status===409?'inboxChanged':'inboxActionError');
+    await inbox(null,feedbackUserId);
+  }finally{inboxUpdating=false;}
+}
+
 async function refreshInboxUnread() {
   if(!state.actor)return;
   const id=state.actor.user_id,current=epoch;
@@ -1176,49 +1391,20 @@ async function refreshInboxUnread() {
   }catch(_){/* Never invent a zero badge on an unavailable private read. */}
 }
 async function inbox(before=null,userId=null) {
-  const filtersOpen=document.querySelector('.inbox-extra-filters')?.open===true;
-  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;const current=drawerId;
-  drawer('feedback',statePanel('loading'),'','inbox-drawer');
+  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;currentInboxRows=[];const current=drawerId;
+  drawer('feedback',statePanel('loading'),null,'inbox-drawer');
   try {
-    const data=await api('inbox/list',{source:state.source,priority:state.inboxPriority,status:state.inboxStatus,period:state.inboxPeriod,search:state.inboxSearch||null,user_id:userId,before,limit:30});
+    const data=await api('inbox/list',{source:'all',priority:'all',status:'all',period:'all_time',
+      search:null,user_id:userId,before,limit:30});
     if(current!==drawerId||!state.actor)return;
-    inboxNextCursor=data.next_before;
-    const options=[['all','all'],['payment','inboxPaymentReceipt'],['android','inboxAndroid'],['technical','inboxTechnical'],['bot','botFeedback'],['release','releaseFeedback']];
-    const statusOptions=[['all','all'],['new','inboxStatusNew'],['read','inboxStatusRead'],['assigned','inboxStatusAssigned'],['resolved','inboxStatusResolved']];
-    const selectedFilters=[state.inboxStatus!=='all'?t(inboxStatusLabels[state.inboxStatus]):'',state.inboxPeriod!=='all_time'?t(state.inboxPeriod):''].filter(Boolean).join(' · ');
-    const extraFilters=`<details class="inbox-extra-filters" ${filtersOpen?'open':''}><summary>${icon('filter')}<span>${esc(t('filters'))}</span>${selectedFilters?`<small>${esc(selectedFilters)}</small>`:''}</summary><div class="inbox-filter-controls">${filterSelect('inboxStatus','status',state.inboxStatus,statusOptions)}${filterSelect('inboxPeriod','period',state.inboxPeriod,[['all_time','all_time'],['weekly','weekly'],['monthly','monthly']])}</div></details>`;
-    const searchUI=`<form id="inboxSearchForm" class="inbox-search-form" role="search"><input class="input" id="inboxSearchQuery" type="search" value="${esc(state.inboxSearch)}" minlength="3" maxlength="80" autocomplete="off" spellcheck="false" aria-label="${esc(t('find'))}" placeholder="${esc(t('find'))}"><button type="submit" class="btn primary">${esc(t('find'))}</button></form>${state.inboxSearch?`<p class="source-note">${esc(t('monthly'))}</p>`:''}`;
-    const body=`<div class="inbox-shell">${searchUI}${userId?`<p class="source-note">${esc(t('account'))}: #${esc(userId)}</p>`:''}<div class="inbox-filter-controls">${filterSelect('inboxSource','source',state.source,options)}${filterSelect('inboxPriority','inboxPriority',state.inboxPriority,[['all','all'],['important','inboxImportant']])}</div>${extraFilters}<p class="source-note">${esc(t('inboxHistoryNote'))}</p>${data.items.map(inboxEntry).join('')||statePanel('empty')}${inboxNextCursor?`<button class="btn" data-feedback-next="1">${esc(t('next'))}</button>`:''}</div>`;
-    drawer('feedback',body,'','inbox-drawer');
-  }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'));}
-}
-async function mutateInbox(button){
-  if(inboxUpdating||!state.actor)return;
-  const source=button.dataset.inboxSource,operation=button.dataset.inboxOp;
-  const source_id=Number(button.dataset.inboxId),expected_revision=Number(button.dataset.inboxRevision);
-  if(!['bot','release','android','payment','technical'].includes(source)||!Number.isSafeInteger(source_id)||source_id<1||!Number.isSafeInteger(expected_revision))return;
-  closeActionMenus(true);
-  const prevDrawer=drawerId,prevEpoch=epoch,account=feedbackUserId;
-  inboxUpdating=true;
-  const controls=[...document.querySelectorAll('.inbox-drawer button')];
-  controls.forEach(el=>el.disabled=true);
-  try{
-    await api('inbox/triage',{source,source_id,operation,expected_revision});
-    if(prevEpoch!==epoch||prevDrawer!==drawerId||!state.actor)return;
-    showNotice('inboxSaved');
-    await inbox(null,account);
-    await refreshInboxUnread();
-  }catch(error){
-    if(prevEpoch!==epoch||prevDrawer!==drawerId||!state.actor)return;
-    if(error.status===409){
-      showNotice('inboxChanged');
-      await inbox(null,account);
-      await refreshInboxUnread();
-    }else{
-      showNotice('inboxActionError');
-      controls.forEach(el=>{if(el.isConnected)el.disabled=false;});
-    }
-  }finally{inboxUpdating=false;}
+    inboxNextCursor=data.next_before;currentInboxRows=data.items;
+    const body=`<div class="inbox-shell inbox-minimal">
+      ${userId?`<p class="inbox-account">${esc(t('account'))} #${esc(userId)}</p>`:''}
+      <div class="inbox-minimal-list">${data.items.map(inboxEntry).join('')||statePanel('empty')}</div>
+      ${inboxNextCursor?`<button type="button" class="btn inbox-more" data-feedback-next="1">${esc(t('next'))}</button>`:''}
+    </div>`;
+    drawer('feedback',body,null,'inbox-drawer');
+  }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'),null,'inbox-drawer');}
 }
 
 // Apple-first Web Push opt-in; actual sending requires an independent server kill switch.
@@ -1369,12 +1555,14 @@ async function action(name) {
     finally{busy=false;render();}return;
   }
   if(name==='close'){closeDrawer();return;}
-  if(name==='boot'){await boot();return;}
+  if(name==='boot'){if(sessionMustBeCleared)await lockAndRequirePasskey();else await boot();return;}
   if(name==='reload'){await load();return;}
   if(name==='mcpConnections'){await mcpConnections();return;}
   if(name==='pushSettings'){await pushSettings();return;}
   if(name==='courseSettings'){await courseSettings();return;}
   if(name==='priceSettings'){await priceSettings();return;}
+  if(name==='messageList'){await messageList();return;}
+  if(name==='messageEditor'){messageEditor();return;}
   if(name==='deliveryList'){await deliveryEditor();return;}
   if(name==='payoutList'){await payoutEditor();return;}
   if(name==='partnerList'){await partnerEditor();return;}
@@ -1390,7 +1578,8 @@ async function action(name) {
   if(name==='courseExecute'){await executeCoursePolicy();return;}
   if(name==='pushEnable'){await enablePush();return;}
   if(name==='mcpRevokeConfirm'){await revokeMcp();return;}
-  if(name==='feedback'){state.inboxSearch='';await inbox();return;}
+  if(name==='feedback'){await inbox();return;}
+  if(name==='inboxBack'){await inbox(null,feedbackUserId);return;}
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='execute'){if(!signing)await execute();return;}
   if(name==='executeAccess'){await executeAccess();return;}
@@ -1401,12 +1590,73 @@ async function action(name) {
   if(name==='previous'&&state.previous.length){state.cursor=state.previous.pop();await load();}
   if(name==='period'||name==='platform'){const menu=$(name+'Menu');menu.hidden=!menu.hidden;document.querySelector(`[data-action="${name}"]`).setAttribute('aria-expanded',String(!menu.hidden));}
 }
+// iPhone PWA: one-step right swipe from the left 30% of the screen.
+// Native Safari owns the extreme left edge when this is not a standalone PWA.
+function canSwipeBack(target) {
+  if(!state.actor||state.phase!=='ready'||busy||signing||inboxUpdating||backSwipeInProgress||
+     document.querySelector('.canvas-overlay .confirmation[aria-busy="true"]'))return false;
+  if(target.closest('input,textarea,select,[contenteditable],.mobile-tabs,[role="slider"]'))return false;
+  for(let node=target;node&&node!==document.body;node=node.parentElement){
+    if(node.scrollWidth>node.clientWidth+8&&
+       ['auto','scroll'].includes(getComputedStyle(node).overflowX))return false;
+  }
+  return Boolean($('overlay')||state.route!=='home'||sectionBackStack.length);
+}
+async function oneStepBack() {
+  if(backSwipeInProgress)return;
+  backSwipeInProgress=true;
+  try{
+    if($('overlay')){
+      const previous=drawerBack;
+      drawerBack=null;
+      if(previous)await previous();
+      else closeDrawer();
+    }else if(state.actor){
+      const previous=sectionBackStack.pop();
+      if(previous||state.route!=='home'){
+        state.route=previous||'home';state.cursor=null;state.previous=[];state.query='';
+        await load();
+      }
+    }
+  }finally{backSwipeInProgress=false;}
+}
+const iosTouchDevice=/iPhone|iPad|iPod/.test(navigator.userAgent||'')||
+  (/Macintosh/.test(navigator.userAgent||'')&&navigator.maxTouchPoints>1);
+if(iosTouchDevice){
+  document.addEventListener('touchstart',event=>{
+    backSwipeStart=null;
+    if(event.touches.length!==1||!canSwipeBack(event.target))return;
+    const touch=event.touches[0],standalone=navigator.standalone===true||
+      window.matchMedia?.('(display-mode: standalone)').matches===true;
+    if(touch.clientX>window.innerWidth*0.30||(!standalone&&touch.clientX<24))return;
+    backSwipeStart={x:touch.clientX,y:touch.clientY,id:touch.identifier,at:Date.now()};
+  },{passive:true});
+  document.addEventListener('touchcancel',()=>{backSwipeStart=null;},{passive:true});
+  document.addEventListener('touchend',event=>{
+    const start=backSwipeStart;backSwipeStart=null;
+    if(!start||event.touches.length||event.changedTouches.length!==1||!canSwipeBack(event.target))return;
+    const touch=event.changedTouches[0];
+    if(touch.identifier!==start.id||Date.now()-start.at>900)return;
+    const dx=touch.clientX-start.x,dy=Math.abs(touch.clientY-start.y);
+    if(dx<Math.max(72,window.innerWidth*0.28)||dy>Math.max(35,dx*0.35))return;
+    blockSwipeClickUntil=Date.now()+400;
+    oneStepBack().catch(()=>showNotice('error'));
+  },{passive:true});
+  // A completed swipe must never also activate a button beneath the finger.
+  document.addEventListener('click',event=>{
+    if(Date.now()<blockSwipeClickUntil){event.preventDefault();event.stopImmediatePropagation();}
+  },true);
+}
 document.addEventListener('click',event=>{
   if(!event.target.closest('.action-disclosure,.header-dropdown'))closeActionMenus();
   const button=event.target.closest('button');if(!button||button.disabled)return;
   const run=async()=>{
     if(button.dataset.menuToggle){toggleActionMenu(button);}
-    else if(button.dataset.route){cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();}
+    else if(button.dataset.route){
+      if(state.route!==button.dataset.route)sectionBackStack.push(state.route);
+      cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;
+      closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();
+    }
     else if(button.dataset.marketingKind){await marketingEditor(button.dataset.marketingKind);}
     else if(button.dataset.marketingNext){await marketingEditor('course_ad',Number(button.dataset.marketingNext));}
     else if(button.dataset.courseAd){editCourseAd(Number(button.dataset.courseAd));}
@@ -1414,6 +1664,13 @@ document.addEventListener('click',event=>{
     else if(button.dataset.channelsKind){await channelEditor(button.dataset.channelsKind);}
     else if(button.dataset.channelsNext){await channelEditor('list',Number(button.dataset.channelsNext));}
     else if(button.dataset.channelId){editChannel(Number(button.dataset.channelId));}
+    else if(button.dataset.messageUser){messageEditor(Number(button.dataset.messageUser));}
+    else if(button.dataset.messageNext){await messageList(button.dataset.messageNext);}
+    else if(button.dataset.messageJob){await messageJob(button.dataset.messageJob);}
+    else if(button.dataset.messageRun){await runMessage(button.dataset.messageRun);}
+    else if(button.dataset.messageStop){confirmMessageStop(button.dataset.messageStop);}
+    else if(button.dataset.messageStopConfirm){await stopMessage(button.dataset.messageStopConfirm);}
+    else if(button.dataset.messageControl){messageControlEditor(button.dataset.jobId,button.dataset.messageControl);}
     else if(button.dataset.deliveryId){await deliveryEditor(button.dataset.deliveryId);}
     else if(button.dataset.deliveryNext){await deliveryEditor(null,button.dataset.deliveryNext);}
     else if(button.dataset.payoutId){await payoutEditor(Number(button.dataset.payoutId));}
@@ -1439,11 +1696,12 @@ document.addEventListener('click',event=>{
     else if(button.dataset.settingKind){await editSetting(button.dataset.settingKind,button.dataset.bank||null);}
     else if(button.dataset.prepareAccess){await prepareAccess(Number(button.dataset.prepareAccess));}
     else if(button.dataset.profilePayments){await moreUserPayments(Number(button.dataset.profilePayments),Number(button.dataset.before),button);}
-    else if(button.dataset.userFeedback){state.inboxSearch='';await inbox(null,Number(button.dataset.userFeedback));}
-    else if(button.dataset.source){state.source=button.dataset.source;await inbox(null,feedbackUserId);}
-    else if(button.dataset.inboxPriority){state.inboxPriority=button.dataset.inboxPriority;await inbox(null,feedbackUserId);}
+    else if(button.dataset.userFeedback){await inbox(null,Number(button.dataset.userFeedback));}
+    else if(button.dataset.inboxOpen){
+      const match=/^(bot|release|android|payment|technical):([1-9][0-9]*)$/.exec(button.dataset.inboxOpen);
+      if(match)await openInbox(match[1],Number(match[2]));
+    }
     else if(button.dataset.inboxAttachment){await viewInboxAttachment(button);}
-    else if(button.dataset.inboxOp){await mutateInbox(button);}
     else if(button.dataset.feedbackNext&&inboxNextCursor){await inbox(inboxNextCursor,feedbackUserId);}
     else if(button.dataset.pushRevoke){await revokePush(button.dataset.pushRevoke);}
     else if(button.dataset.mcpRevoke){confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
@@ -1451,7 +1709,17 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('change',event=>{
-  if(event.target.id==='payoutOperation'&&$('payoutDaysField'))$('payoutDaysField').hidden=event.target.value!=='deadline';
+  if(event.target.id==='messageLanguage')updateMessageLanguage();
+  if(event.target.id==='messageKind'&&$('messageFilters'))$('messageFilters').hidden=event.target.value==='test';
+  if(event.target.id==='payoutProofFile'){void stagePayoutProof(event.target.files[0]);return;}
+  if(event.target.id==='payoutOperation'){
+    if($('payoutDaysField'))$('payoutDaysField').hidden=event.target.value!=='deadline';
+    if($('payoutProofField')){
+      $('payoutProofField').hidden=event.target.value!=='complete';$('payoutProofFile').disabled=event.target.value!=='complete';
+      const confirm=document.querySelector('[data-action=managementPrepare]');
+      if(confirm)confirm.disabled=event.target.value==='complete'&&!managementDraft?.proofLoaded;
+    }
+  }
   if(event.target.id==='noticeLanguage')updateNoticeLanguage();
   if(event.target.id==='channelOperation'&&$('channelActiveField'))$('channelActiveField').hidden=event.target.value==='delete';
   if(event.target.id==='adOperation'){
@@ -1461,18 +1729,6 @@ document.addEventListener('change',event=>{
   }
   if(['priceMethod','pricePlan'].includes(event.target.id))updatePriceFields();
   if(['helpVideoKey','helpVideoLanguage'].includes(event.target.id))updateHelpVideoField();
-  if(['inboxSource','inboxPriority'].includes(event.target.id)){
-    const source=event.target.id==='inboxSource',value=event.target.value;
-    if(!(source?['all','payment','android','technical','bot','release']:['all','important']).includes(value))return;
-    if(source)state.source=value;else state.inboxPriority=value;
-    inbox(null,feedbackUserId).catch(()=>showNotice('error'));
-  }
-  if(['inboxStatus','inboxPeriod'].includes(event.target.id)){
-    const status=event.target.id==='inboxStatus',value=event.target.value;
-    if(!(status?['all','new','read','assigned','resolved']:['all_time','weekly','monthly']).includes(value))return;
-    if(status)state.inboxStatus=value;else state.inboxPeriod=value;
-    inbox(null,feedbackUserId).catch(()=>showNotice('error'));
-  }
   if(['feedbackPeriod','feedbackSource'].includes(event.target.id)){
     const period=event.target.id==='feedbackPeriod',value=event.target.value;
     if(!(period?['weekly','monthly']:['all','bot','release','android']).includes(value))return;
@@ -1495,19 +1751,11 @@ document.addEventListener('change',event=>{
 document.addEventListener('submit',event=>{
   if(event.target.id==='managementForm'){event.preventDefault();prepareManagement();}
   else if(event.target.id==='searchForm'){event.preventDefault();state.query=$('userQuery').value;state.cursor=null;state.previous=[];load();}
-  else if(event.target.id==='inboxSearchForm'){
-    event.preventDefault();
-    const value=$('inboxSearchQuery').value.trim();
-    if(value&&(value.length<3||value.length>80))return;
-    state.inboxSearch=value;
-    inbox(null,feedbackUserId).catch(()=>showNotice('error'));
-  }
+
 });
 document.addEventListener('keydown',event=>{
   if(event.key==='Escape'){
     if(closeActionMenus(true)){event.preventDefault();return;}
-    const filters=document.querySelector('.inbox-extra-filters[open]');
-    if(filters){event.preventDefault();filters.open=false;filters.querySelector('summary')?.focus();return;}
     closeDrawer();for(const id of ['periodMenu','platformMenu'])if($(id)){$(id).hidden=true;document.querySelector(`[data-action="${id==='periodMenu'?'period':'platform'}"]`)?.setAttribute('aria-expanded','false');}
   }
   const trigger=event.target.closest('[data-menu-toggle]');
@@ -1531,12 +1779,23 @@ document.addEventListener('focusin',event=>{
   if(open&&!open.parentElement.contains(event.target))closeActionMenus();
 });
 window.addEventListener('offline',()=>clearPrivate('offline'));
-window.addEventListener('online',()=>boot());
+window.addEventListener('online',()=>{if(sessionMustBeCleared)lockAndRequirePasskey();else boot();});
 window.addEventListener('pagehide',()=>clearPrivate('loading'));
-window.addEventListener('pageshow',event=>{if(event.persisted)boot();});
+window.addEventListener('pageshow',event=>{if(event.persisted)lockAndRequirePasskey();});
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){stopApprovalWatch();return;}
-  if(state.phase==='approval')checkApproval().catch(()=>{});
+  if(document.hidden){
+    stopApprovalWatch();
+    if(state.actor&&!signing){
+      sessionMustBeCleared=true;
+      requireFreshLoginOnResume=true;
+      clearPrivate('loading');
+    }
+    return;
+  }
+  if(requireFreshLoginOnResume||sessionMustBeCleared){
+    requireFreshLoginOnResume=false;
+    lockAndRequirePasskey();
+  }else if(state.phase==='approval')checkApproval().catch(()=>{});
   else if(state.actor&&!signing)boot();
 });
 window.addEventListener('focus',()=>{if(state.phase==='approval')checkApproval().catch(()=>{});});
@@ -1549,5 +1808,5 @@ if('serviceWorker' in navigator){
   }).catch(()=>{});
   navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
 }
-boot();
+lockAndRequirePasskey();
 })();

@@ -64,6 +64,8 @@ async def browser_checks(output):
         data = {"ok": True}
         if path.endswith("/me"):
             data.update(user_id=101, mcp_available=True, push_available=True)
+        elif path.endswith("/auth/logout"):
+            data.update(status="logged_out")
         elif path.endswith("/statistics"):
             data.update(available=True, platform="overall", generated_at=STAMP, metrics={
                 "users_total": 3, "new_accounts": 1, "active_accounts": 2,
@@ -138,66 +140,28 @@ async def browser_checks(output):
                     else:
                         await page.locator("#locale").select_option(language)
                     await page.locator('[data-action="feedback"]').click()
-                    await expect(page.locator(".inbox-feedback-item")).to_have_count(4)
-                    assert not [path for path, _ in requests if path.endswith("/attachment")]
-                    item = page.locator(".inbox-feedback-item").first
-                    await expect(item.locator(".inbox-primary-action")).to_have_count(1)
-                    await expect(item.locator('[role="menuitem"]:visible')).to_have_count(0)
-                    # The screenshot regression: one compact row, no equal-weight 2x3 button grid.
-                    assert await item.locator(".inbox-entry-actions").evaluate("e=>getComputedStyle(e).display") == "flex"
-                    for control in (item.locator(".inbox-primary-action"), item.locator(".inbox-media-action"),
-                                    item.locator(".action-menu-trigger"), page.locator("#inboxSource")):
-                        box = await control.bounding_box()
-                        assert box["height"] >= 44 and box["x"] >= 0 and box["x"] + box["width"] <= width + 1, box
-                    trigger = item.locator('[data-menu-toggle]')
-                    no_action_requests = len(requests)
-                    await trigger.focus()
-                    await trigger.press("ArrowDown")
-                    menu = item.locator('[role="menu"]')
-                    await expect(menu).to_be_visible()
-                    await expect(menu.locator('button').first).to_be_focused()
-                    await page.keyboard.press("End")
-                    await expect(menu.locator('button').last).to_be_focused()
-                    await page.keyboard.press("Home")
-                    await expect(menu.locator('button').first).to_be_focused()
-                    await page.keyboard.press("ArrowUp")
-                    await expect(menu.locator('button').last).to_be_focused()
-                    await page.screenshot(path=str(output / f"inbox-menu-{language}-{width}.png"))
-                    await page.keyboard.press("Escape")
-                    await expect(menu).to_be_hidden()
-                    assert len(requests) == no_action_requests
-                    await expect(trigger).to_be_focused()
-                    await expect(page.locator(".inbox-drawer")).to_be_visible()
-                    await trigger.click()
-                    await item.locator("p").first.click()
-                    await expect(menu).to_be_hidden()
-                    await trigger.click()
-                    # Tab leaves the menu, then focusin closes it without stealing the destination.
-                    await page.keyboard.press("Tab")
-                    await expect(menu).to_be_hidden()
-                    await page.screenshot(path=str(output / f"inbox-clean-{language}-{width}.png"))
-                    await page.locator("#inboxSource").select_option("technical")
-                    await expect(page.locator(".inbox-feedback-item")).to_have_count(1)
-                    await expect(page.locator("#inboxSource")).to_have_value("technical")
-                    assert not await page.locator('[data-inbox-attachment]').count()
-                    await page.locator("#inboxPriority").select_option("important")
-                    await expect(page.locator(".inbox-feedback-item")).to_have_count(0)
-                    await page.locator("#inboxPriority").select_option("all")
-                    await page.locator("#inboxSource").select_option("all")
-                    await page.locator(".inbox-extra-filters summary").click()
-                    await page.locator("#inboxStatus").select_option("resolved")
-                    await expect(page.locator(".inbox-feedback-item")).to_have_count(0)
-                    await expect(page.locator(".inbox-extra-filters")).to_have_attribute("open", "")
-                    await page.locator("#inboxStatus").select_option("all")
-                    await page.locator("#inboxPeriod").select_option("weekly")
-                    await expect(page.locator(".inbox-feedback-item")).to_have_count(3)
-                    await expect(page.locator(".inbox-extra-filters summary small")).to_be_visible()
-                    await page.locator("#inboxPeriod").select_option("all_time")
-                    await expect(page.locator(".inbox-feedback-item")).to_have_count(4)
-                    await page.keyboard.press("Escape")
-                    await expect(page.locator(".inbox-extra-filters")).not_to_have_attribute("open", "")
-                    await expect(page.locator(".inbox-extra-filters summary")).to_be_focused()
-                    await expect(page.locator(".inbox-drawer")).to_be_visible()
+                    await expect(page.locator(".inbox-minimal-row")).to_have_count(4)
+                    assert not await page.locator("#inboxSource,#inboxPriority,#inboxStatus,#inboxPeriod,#inboxSearchQuery").count()
+                    assert not await page.locator('.inbox-drawer .drawer-foot:visible').count()
+                    assert not await page.locator('[data-inbox-op],.inbox-primary-action').count()
+                    await expect(page.locator(".inbox-minimal-row.is-important.is-unread")).to_have_count(2)
+                    bot = page.locator('[data-inbox-open="bot:1"]')
+                    await expect(bot).to_have_count(1)
+                    assert await bot.evaluate("e=>e.getBoundingClientRect().height>=44")
+                    assert "Synthetic bot message" not in await page.locator('#drawerContent').inner_text()
+                    await page.screenshot(path=str(output / f"inbox-minimal-{language}-{width}.png"))
+                    await bot.click()
+                    await expect(page.locator(".inbox-details-text")).to_contain_text("Synthetic bot message")
+                    assert triage[-1]["source"]=="bot" and triage[-1]["operation"]=="mark_read"
+                    await expect(page.locator('[data-inbox-attachment]')).to_have_count(1)
+                    before = len(requests)
+                    await page.locator('[data-inbox-attachment]').click()
+                    await expect(page.locator('.inbox-attachment-image')).to_be_visible()
+                    assert len([path for path, _ in requests[before:] if path.endswith("/attachment")])==1
+                    await page.screenshot(path=str(output / f"inbox-detail-{language}-{width}.png"))
+                    await page.locator(".inbox-back").click()
+                    await expect(page.locator('[data-inbox-open="bot:1"]')).to_have_class(__import__("re").compile("is-read"))
+                    await expect(page.locator(".inbox-minimal-row.is-important.is-unread")).to_have_count(2)
                     await page.locator(".drawer-close").click()
                     await page.locator('[data-route="stats"]:visible').first.click()
                     await expect(page.locator("#feedbackSource")).to_be_visible()
@@ -228,36 +192,17 @@ async def browser_checks(output):
                     await page.screenshot(path=str(output / f"feedback-stats-{language}-{width}.png"))
                     assert await page.evaluate("document.documentElement.scrollWidth <= innerWidth"), language
                     requests.clear()
-            # Exercise all secondary callbacks, including the formerly ignored technical source.
+            # The simplified UI has no manual triage, menus or importance flags.
             await page.set_viewport_size({"width": 390, "height": 844})
             await page.locator('[data-action="feedback"]').click()
-            for source in ("bot", "technical"):
-                await page.locator("#inboxSource").select_option(source)
-                revision = 0
-                for operation in ("mark_read", "assign_self", "mark_important", "clear_important"):
-                    await page.locator('.inbox-drawer [data-menu-toggle]').click()
-                    await page.locator(f'[data-inbox-op="{operation}"]').click()
-                    revision += 1
-                    await expect(page.locator(".inbox-primary-action")).to_have_attribute("data-inbox-revision", str(revision))
-                    assert triage[-1]["source"] == source and triage[-1]["operation"] == operation
-                for operation in ("resolve", "reopen"):
-                    await page.locator(f'[data-inbox-op="{operation}"]').click()
-                    revision += 1
-                    await expect(page.locator(".inbox-primary-action")).to_have_attribute("data-inbox-revision", str(revision))
-                    assert triage[-1]["source"] == source and triage[-1]["operation"] == operation
-            await page.locator("#inboxSource").select_option("bot")
-            before = len(requests)
-            await page.locator('[data-inbox-attachment]').click()
-            await expect(page.locator(".inbox-attachment-image")).to_be_visible()
-            assert len([path for path, _ in requests[before:] if path.endswith("/attachment")]) == 1
-            await page.screenshot(path=str(output / "inbox-image-mobile.png"))
-            await page.locator('[data-inbox-attachment]').click()
-            await expect(page.locator(".inbox-attachment-image")).to_have_count(0)
-            await page.locator("#inboxSource").select_option("payment")
-            # Receipts only mark read or open Payments; no generic Resolve/approve button.
-            assert not await page.locator('[data-inbox-op="resolve"]').count()
-            await page.locator('.inbox-primary-action[data-route="payments"]').click()
-            await expect(page.locator("#overlay")).to_have_count(0)
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(4)
+            await page.locator('[data-inbox-open="technical:1"]').click()
+            await expect(page.locator(".inbox-details")).to_be_visible()
+            assert triage[-1]["source"]=="technical" and triage[-1]["operation"]=="mark_read"
+            await page.locator(".inbox-back").click()
+            await expect(page.locator('[data-inbox-open="technical:1"]')).to_have_class(__import__("re").compile("is-read"))
+            assert not await page.locator('[data-inbox-op]').count()
+            await page.locator(".drawer-close").click()
             for action, target in (("pushSettings", "[data-push-revoke]"),
                                    ("mcpConnections", "[data-mcp-revoke]")):
                 await page.locator('[data-action="more"]').click()
@@ -275,7 +220,7 @@ async def browser_checks(output):
             assert not await page.evaluate("window.cspFailures"), await page.evaluate("window.cspFailures")
         finally:
             await browser.close()
-    print("V10 action hierarchy: 390/1440 UZ/RU/TJ, menu focus/keyboard/outside, exact triage, images, downloads and settings passed")
+    print("Minimal Inbox: mobile/desktop UZ/RU/TJ, automatic urgency, read-on-open, private images and settings passed")
 
 
 if __name__ == "__main__":
