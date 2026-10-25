@@ -500,6 +500,9 @@ async function loadCourseData(){
     if(current!==view||at!==epoch||state.route!=='course'||!state.actor)return;
     courseData={hsk30:hsk.hsk30,course_access:access.course_access,limits:limit.limits,limitsRevision:limit.revision_hash};
     courseLimitDraft={FREE:structuredClone(limit.limits.plans.FREE),TRIAL_ACTIVE:structuredClone(limit.limits.plans.TRIAL_ACTIVE)};
+    for(const rules of Object.values(courseLimitDraft))for(const rule of Object.values(rules)){
+      if(typeof rule==='object'&&Number.isInteger(rule.limit)&&!['daily','lifetime'].includes(rule.window))rule.window='daily';
+    }
     courseTrialDraft={enabled:limit.limits.trial.enabled,days:limit.limits.trial.days,disabled_reason:limit.limits.trial.disabled_reason||''};
     state.phase='ready';render();
   }catch(error){
