@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, timezone
 from html import escape as html_escape
 
 from aiogram import Bot
-from aiogram.types import BufferedInputFile
+from aiogram.types import BufferedInputFile, FSInputFile
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from sqlalchemy import and_, func, or_, select
@@ -56,6 +56,7 @@ from app.admin_api.pwa_user_management import create_admin_pwa_user_management_r
 from app.admin_api.pwa_channels import create_admin_pwa_channels_router
 from app.admin_api.pwa_outbound import create_admin_pwa_outbound_router, create_message_drainer
 from app.admin_api.pwa_campaigns import create_admin_pwa_campaigns_router
+from app.admin_api.pwa_campaign_assets import create_admin_pwa_campaign_assets_router
 from app.admin_api.pwa_payout_completion import create_admin_pwa_payout_completion_router
 from app.admin_api.pwa_payment_reconciliation import create_admin_pwa_payment_reconciliation_router
 from app.admin_api.pwa_partner_payouts import create_admin_pwa_partner_payouts_router
@@ -709,14 +710,12 @@ async def _emit_admin_pwa_outbound(message):
     failure=None
     provider_message_id=None
     try:
-        if message.reply_markup:
-            from aiogram.types import InlineKeyboardMarkup
-            sent=await bot.send_message(chat_id=message.telegram_id,text=message.text,
-                reply_markup=InlineKeyboardMarkup.model_validate(message.reply_markup),parse_mode='HTML')
-            provider_message_id=sent.message_id
-        else:
-            await AdminBroadcastService(bot,None)._send_one(message.telegram_id,text=message.text,
-                content_type='photo' if message.photo_file_id else 'text',media_file_id=message.photo_file_id,reply_markup=None)
+        from aiogram.types import InlineKeyboardMarkup
+        sent=await AdminBroadcastService(bot,None)._send_one(message.telegram_id,text=message.text,
+            content_type='video' if message.video_file_id else 'photo' if message.photo_file_id else 'text',
+            media_file_id=message.video_file_id or message.photo_file_id,
+            reply_markup=InlineKeyboardMarkup.model_validate(message.reply_markup) if message.reply_markup else None)
+        provider_message_id=getattr(sent,'message_id',None)
     except Exception as exc:
         failure=exc
     try:
@@ -741,6 +740,17 @@ app.include_router(create_admin_pwa_outbound_router(settings_obj=settings,sessio
     emit=_emit_admin_pwa_outbound,drainer=admin_pwa_message_drainer))
 app.include_router(create_admin_pwa_campaigns_router(settings_obj=settings,session_factory=async_session_maker,
     drainer=admin_pwa_message_drainer))
+
+async def _upload_admin_pwa_campaign_asset(media):
+    file=FSInputFile(media.path,filename='campaign.mp4' if media.media_type=='video' else 'campaign'+Path(media.path).suffix)
+    if media.media_type=='video':
+        sent=await bot.send_video(chat_id=media.actor_telegram_id,video=file)
+        return sent.video.file_id if sent.video else None
+    sent=await bot.send_photo(chat_id=media.actor_telegram_id,photo=file)
+    return sent.photo[-1].file_id if sent.photo else None
+
+app.include_router(create_admin_pwa_campaign_assets_router(settings_obj=settings,session_factory=async_session_maker,
+    upload=_upload_admin_pwa_campaign_asset))
 
 async def _upload_admin_pwa_payout_proof(proof):
     # Private staging to the verified uploading admin; no partner notification

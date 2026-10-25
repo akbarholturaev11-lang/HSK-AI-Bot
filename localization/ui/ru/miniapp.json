@@ -937,7 +937,12 @@
     "ui.admin_pwa.campaignButtonHelp": "Помощь",
     "ui.admin_pwa.campaignButtonUrl": "Внешняя ссылка",
     "ui.admin_pwa.campaignButtonCustom": "Свой текст на трёх языках",
-    "ui.admin_pwa.campaignButtonHint": "Без своего текста используется готовое название кнопки на языке получателя. Адрес привязывается к passkey при отправке."
+    "ui.admin_pwa.campaignButtonHint": "Без своего текста используется готовое название кнопки на языке получателя. Адрес привязывается к passkey при отправке.",
+    "ui.admin_pwa.campaignMediaHint": "Фото: JPG/PNG/WebP до 2 MiB и 8 MP. Видео: MP4/MOV/WebM до 25 MiB, 4K и 3 минут. С медиа текст каждого языка — до 1024 символов.",
+    "ui.admin_pwa.campaignMediaUploading": "Медиа загружается…",
+    "ui.admin_pwa.campaignMediaReady": "Медиа готово. Действует 15 минут.",
+    "ui.admin_pwa.campaignMediaClear": "Убрать медиа",
+    "ui.admin_pwa.campaignMediaInvalid": "Медиа не загружено или истекло. Проверьте формат и размер, выберите файл снова или уберите медиа."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

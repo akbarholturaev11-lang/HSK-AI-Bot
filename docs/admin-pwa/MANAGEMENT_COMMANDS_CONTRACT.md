@@ -80,7 +80,7 @@ editors fetch only after an explicit tap. Every editor has one contextual
 action and a direct native passkey ceremony, with read-current recovery on lost
 responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 
-The separate signed campaign-draft command accepts only text, explicit
+The separate signed campaign-draft command accepts text with optional owned photo/video, explicit
 UZ/RU/TJ copy, selected audience languages, optional HSK track and a bounded
 duration. It creates an existing `ad_campaigns` row as paused (`is_active=false`,
 `next_send_at=NULL`) with one round; it performs no recipient scan, provider
@@ -156,7 +156,7 @@ best-effort deletes the Bot message only after a fresh DB read proves its ID is
 unreferenced. An uncertain DB read preserves the provider message. The provider
 upload is not retried automatically.
 
-## Signed text campaign delivery and discount offers
+## Signed campaign delivery and discount offers
 
 `/campaigns/read` returns one explicit campaign or a 30-row PK-keyset metadata
 page for ads, release feedback or discounts. List queries omit full copy and
@@ -164,7 +164,7 @@ provider IDs; section navigation performs no read. Detail/prepare/save use live
 cookie/CSRF/authority checks, never daily aggregate caches. The original V10
 editor retains the contextual Send/Create/Save → native passkey interaction.
 
-- `ad_send` accepts one paused, explicit UZ/RU/TJ text-only draft with one
+- `ad_send` accepts one paused, explicit UZ/RU/TJ text/photo/video draft with one
   unsent round and a current time window. It signs the exact stored copy,
   revision, filters and at most 1000 eligible canonical recipients. Save
   reserves the shared round and legacy delivery evidence, consumes proof,
@@ -220,7 +220,7 @@ outlives private job retention. No new schema, cron, media BLOB, translation
 request, aggregate refresh or external MCP capability is introduced.
 
 These commands intentionally accept the formats above. Arbitrary provider
-references, future unattended campaign scheduling, legacy campaign media are not accepted by these standalone commands.
+references and future unattended campaign scheduling are not accepted by these standalone commands. Media is limited to the owned staging contract below.
 Existing course-ad photo/video, desktop-promo images, subscription QR and owned
 payout proof each retain their separate signed asset contract. A legacy route
 is not an implicit standalone permission.
@@ -415,3 +415,38 @@ metadata page; `--purge-expired --limit 100` opts into removing only expired
 staging references. It does not delete the retained paid payout proof, command
 audit, notice or Telegram chat image. No scheduler or image BLOB scan is added.
 Nonempty metadata prevents destructive 0130 downgrade.
+
+## Owned campaign media (0131)
+
+`POST /campaign-assets` accepts a bounded raw JPEG/PNG/WebP (2 MiB, 8M pixels)
+or MP4/MOV/WebM/M4V video (25 MiB, 4K, three minutes). Current cookie,
+allowlisted administrator, exact Origin/Fetch Metadata and enabled PWA are
+required before processing. Two upload slots, one shared encoder and an
+actor-wide database-coordinated 20/hour quota precede expensive provider work.
+Forced local container/protocol handling, bounded allocation/threads and
+probe/encode/provider deadlines prevent unbounded media work.
+
+Media is staged in the uploading admin's private Bot chat. No binary, public
+URL or provider ID is returned to the browser or stored in SQL BLOBs. 0131
+stores ownership, source hash/size/type, private provider reference, expiry,
+status and command link. `GET /campaign-assets/{id}` returns only ready owned
+metadata for the same browser session. The browser previews its selected
+local Blob, with `media-src 'self' blob:` and no provider download.
+
+Ready media expires in 15 minutes. Ad draft and release-feedback commands
+accept only paired owned `asset_id`/`asset_hash`; prepare/save recheck status,
+ownership, hash and expiry. The media and signed proof are consumed atomically
+with the campaign/audit/queue, and rollback preserves both. Media captions
+including release prompt must fit 1024 escaped UTF-16 units per locale.
+Release try/rating markup and ad button markup remain snapshotted.
+
+Upload/encoding hold no SQL connection. An uncertain upload is failed and
+never retried automatically. Original-editor cancellation retains the ready
+selection; close, clear or session loss aborts requests and releases local URLs.
+No second confirmation UI is introduced.
+
+`python -m scripts.admin_pwa_campaign_asset_retention` is a bounded count-only
+dry run; `--purge-expired --limit 100` removes eligible expired metadata only.
+Rows younger than one hour remain for rolling quota enforcement. No provider
+file deletion or campaign media revocation is performed. Nonempty downgrade
+refuses deletion. This adds no scheduled retention deployment or external MCP tool.

@@ -348,6 +348,17 @@ class CampaignDraftChange(StrictModel):
     duration_hours: Annotated[int, Field(strict=True, ge=1, le=720)] = 24
     include_active_subscribers: bool = False
     button: CampaignButton | None = None
+    asset_id: StepId | None = None
+    asset_hash: Annotated[str, Field(pattern=r'^[0-9a-f]{64}$')] | None = None
+
+    @model_validator(mode='after')
+    def exact_asset(self):
+        if (self.asset_id is None) != (self.asset_hash is None):
+            raise ValueError('An asset needs its exact commitment')
+        if self.asset_id and any(len(html.escape(value, quote=False).encode('utf-16-le')) // 2 > 1024
+                                 for value in self.texts.model_dump().values()):
+            raise ValueError('Media captions must fit one provider message')
+        return self
 
     @field_validator("title")
     @classmethod
@@ -533,6 +544,10 @@ async def prepare_marketing(db, *, session_cookie, request, settings_obj):
     async with db.begin():
         await _authenticate(db, session_cookie, settings_obj)
         _, current = await _target(db, request.change)
+        if request.change.kind == 'campaign_draft' and request.change.asset_id:
+            from app.admin_api.pwa_campaign_assets import owned_campaign_asset
+            await owned_campaign_asset(db, cookie=session_cookie, asset_id=request.change.asset_id,
+                expected_hash=request.change.asset_hash, settings_obj=settings_obj)
         command = MarketingCommand(change=request.change, expected_hash=current["revision_hash"])
     result = {"operation": command.operation(), "current": current}
     if request.change.kind in ("campaign_draft", "course_ad_create"):
@@ -667,6 +682,7 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
     new_promo_filename = None
     new_course_ad_filename = None
     created_course_ad_id = None
+    campaign_asset = None
     change = command.change
     media_extension = None
     is_promo_image = change.kind == "desktop_promo" and change.media_sha256 is not None
@@ -749,14 +765,18 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
                 await db.flush()
                 result = {**_ad_payload(row), "created": True}
             elif change.kind == "campaign_draft":
+                if change.asset_id:
+                    from app.admin_api.pwa_campaign_assets import owned_campaign_asset
+                    campaign_asset = await owned_campaign_asset(db, cookie=session_cookie, asset_id=change.asset_id,
+                        expected_hash=change.asset_hash, settings_obj=settings_obj, lock=True)
                 now = datetime.now(timezone.utc)
                 safe_texts = {language: html.escape(text, quote=False)
                               for language, text in change.texts.model_dump().items()}
                 campaign = await AdCampaignRepository(db).create(
                     title=change.title,
                     message_text=encode_localized_broadcast_text(safe_texts),
-                    content_type="text",
-                    media_file_id=None,
+                    content_type=campaign_asset.media_type if campaign_asset else "text",
+                    media_file_id=campaign_asset.provider_file_id if campaign_asset else None,
                     starts_at=now,
                     ends_at=now + timedelta(hours=change.duration_hours),
                     send_count_total=1,
@@ -769,6 +789,7 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
                     button_config=encode_promo_button_config(change.button.config()) if change.button else None,
                 )
                 result = {"id": campaign.id, "title": campaign.title,
+                          "media_type": campaign.content_type,
                           "status": "paused_draft", "is_active": False,
                           "starts_at": _utc(campaign.starts_at).isoformat(),
                           "ends_at": _utc(campaign.ends_at).isoformat(),
@@ -849,6 +870,15 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
                 # media paths never enter command history.
                 result_json=json.dumps(audit_result, sort_keys=True)))
             await db.flush()
+            if campaign_asset is not None:
+                if (not _enabled(settings_obj) or not _authorized_admin(actor, settings_obj)
+                        or session.revoked_at is not None
+                        or min(_utc(step.expires_at), _utc(session.expires_at), _utc(campaign_asset.expires_at))
+                        <= datetime.now(timezone.utc)):
+                    raise CommandError('admin_pwa_step_up_denied', 403)
+                campaign_asset.status = 'used'
+                campaign_asset.command_id = audit_id
+                await db.flush()
     except Exception:
         if new_promo_filename is not None:
             referenced = True  # Preserve the file if commit outcome cannot be determined.

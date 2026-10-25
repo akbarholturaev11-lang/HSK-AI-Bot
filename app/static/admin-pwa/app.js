@@ -55,7 +55,7 @@ let userFilterOpen=false;
 const USER_SEGMENTS=[['all','userFilterAll'],['active_today','userFilterActiveToday'],['paid','userFilterPaid'],['pending','userFilterPending'],['wants_pay','userFilterWantsPay'],['trial','userFilterTrial'],['free','userFilterFree'],['expired','userFilterExpired'],['blocked','userFilterBlocked'],['bot_blocked','userFilterBotBlocked']];
 let managementDraft=null,managementReview=null,managementPreparing=false,preparingEditor=null;
 let coursePolicyRevision=null,hsk30Baseline=null;
-let managementMediaPreviewUrl=null;
+let managementMediaPreviewUrl=null, campaignMediaUpload=null;
 let feedbackLoadId=0;
 const feedbackStats={source:'all',period:'weekly',data:null,loading:false,error:false};
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
@@ -67,8 +67,10 @@ function clearPrivate(phase) {
   state.phase=phase;state.error=null;render();
 }
 function releaseManagementMediaPreview(){if(managementMediaPreviewUrl){URL.revokeObjectURL(managementMediaPreviewUrl);managementMediaPreviewUrl=null;}}
-async function api(path, body, {publicAuth=false, method='POST',rawBody=null,extraHeaders={},timeoutMs=15000}={}) {
+async function api(path, body, {publicAuth=false, method='POST',rawBody=null,extraHeaders={},timeoutMs=15000,requestSignal=null}={}) {
   const current=epoch, control=new AbortController(), timer=setTimeout(()=>control.abort(),timeoutMs);
+  const abortExternal=()=>control.abort();
+  if(requestSignal?.aborted)control.abort();else requestSignal?.addEventListener('abort',abortExternal,{once:true});
   try {
     const headers=method==='POST'?{'Content-Type':rawBody?rawBody.type:'application/json',...extraHeaders}:extraHeaders;
     const response=await fetch('/api/admin/v1/'+path,{method, credentials:'same-origin',cache:'no-store',redirect:'error',
@@ -83,7 +85,7 @@ async function api(path, body, {publicAuth=false, method='POST',rawBody=null,ext
   } catch(error) {
     if (epoch!==current) throw new ApiError('stale',0);
     throw error;
-  } finally { clearTimeout(timer); }
+  } finally { clearTimeout(timer);requestSignal?.removeEventListener('abort',abortExternal); }
 }
 function languageSelect(id='locale') { return `<select class="locale-select" id="${id}" aria-label="${esc(t('language'))}">${[['uz','O‘zbekcha'],['ru','Русский'],['tj','Тоҷикӣ']].map(([id,name])=>`<option value="${id}" ${locale===id?'selected':''}>${name}</option>`).join('')}</select>`; }
 let noticeTimer=null;
@@ -546,7 +548,7 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {clearNotice();managementPreparing=false;preparingEditor=null;drawerBack=null;closeActionMenus();closeInboxAttachment();releaseManagementMediaPreview();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {campaignMediaUpload?.control.abort();campaignMediaUpload=null;clearNotice();managementPreparing=false;preparingEditor=null;drawerBack=null;closeActionMenus();closeInboxAttachment();releaseManagementMediaPreview();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   if(!$('overlay'))returnFocus=document.activeElement;
   $('dialogs').innerHTML=`<div class="canvas-overlay show" id="overlay"><section class="drawer ${className}" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><div class="drawer-top"><h2 id="drawerTitle">${esc(t(title))}</h2><button class="drawer-close" data-action="close" aria-label="${esc(t('close'))}">×</button></div><div class="drawer-content" id="drawerContent">${body}</div><div class="drawer-foot" id="drawerFoot">${foot||btn('close','close')}</div></section></div>`;
@@ -563,7 +565,7 @@ async function singleEditorAction(task){
   if(managementPreparing||signing||!state.actor)return;
   if(!supportsPasskey()){showNotice('passkeyUnsupported');return;}
   const restore=lockEditor(),token={};preparingEditor=token;managementPreparing=true;
-  try{await task();}finally{restore();if(preparingEditor===token){managementPreparing=false;preparingEditor=null;}}
+  try{await task();}finally{restore();if(preparingEditor===token){managementPreparing=false;preparingEditor=null;updateCampaignMediaButton();}}
 }
 function updateManagementAction(){
   const button=document.querySelector('[data-action="managementPrepare"]'),d=managementDraft;
@@ -580,7 +582,7 @@ function updateManagementAction(){
   else if(d.type==='payment_qr')label='replaceMedia';
   else if(d.type==='channel'){label=d.kind==='add'?'addItem':$('channelOperation')?.value==='delete'?'deleteItem':'saveChanges';danger=label==='deleteItem';}
   else if(d.type==='marketing'){label=d.kind==='campaign_draft'?'createCampaign':d.kind==='course_ad_create'?'createItem':d.kind==='course_ad'?({delete:'deleteItem',replace_image:'replaceMedia',replace_video:'replaceMedia'}[$('adOperation')?.value]||'saveChanges'):'saveChanges';danger=label==='deleteItem';}
-  button.textContent=t(label);button.classList.toggle('danger',danger);button.classList.toggle('primary',!danger);
+  button.textContent=t(label);button.classList.toggle('danger',danger);button.classList.toggle('primary',!danger);updateCampaignMediaButton();
 }
 function managementCurrentUnchanged(d,result,payload){
   let before=d.current;
@@ -976,6 +978,57 @@ function updateCourseAdCreateMedia(){
   $('courseAdMediaPreview').innerHTML='';$('courseAdMediaValidation').hidden=true;
 }
 const campaignButtonLabels={subscription:'campaignButtonSubscription',partner:'partners',course:'course',reminder:'campaignButtonReminder',help:'campaignButtonHelp',contact:'helpContact',profile:'userProfile',url:'campaignButtonUrl'};
+function campaignMediaFields(){
+  return `<details class="profile-section" id="campaignMediaSection"><summary>${esc(t('courseAdMedia'))}</summary><div class="form-field"><label for="campaignMediaFile">${esc(t('courseAdMedia'))}</label><input class="input" id="campaignMediaFile" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm,video/x-m4v"><p class="form-hint">${esc(t('campaignMediaHint'))}</p><p class="source-note" id="campaignMediaStatus" role="status"></p><div id="campaignMediaPreview"></div><button type="button" class="btn" data-action="campaignMediaClear" id="campaignMediaClear" hidden>${esc(t('campaignMediaClear'))}</button><p class="alert" id="campaignMediaValidation" role="alert" hidden></p></div></details>`;
+}
+function updateCampaignMediaButton(){
+  const draft=managementDraft,button=document.querySelector('[data-action="managementPrepare"]');
+  if(['campaign_draft','release_create'].includes(draft?.kind)&&button&&!signing&&!managementPreparing)button.disabled=Boolean(draft.assetUploading||draft.campaignMediaFile&&!draft.assetId);
+}
+function clearCampaignMedia(){
+  if(!['campaign_draft','release_create'].includes(managementDraft?.kind)||signing||managementPreparing)return;
+  campaignMediaUpload?.control.abort();campaignMediaUpload=null;
+  Object.assign(managementDraft,{campaignMediaFile:null,assetId:null,assetHash:null,assetUploading:false});
+  if($('campaignMediaFile'))$('campaignMediaFile').value='';
+  releaseManagementMediaPreview();
+  if($('campaignMediaPreview'))$('campaignMediaPreview').innerHTML='';
+  if($('campaignMediaStatus'))$('campaignMediaStatus').textContent='';
+  if($('campaignMediaClear'))$('campaignMediaClear').hidden=true;
+  if($('campaignMediaValidation'))$('campaignMediaValidation').hidden=true;
+  for(const lang of ['uz','ru','tj']){const input=$((managementDraft.kind==='release_create'?'releaseText-':'campaignText-')+lang);if(input)input.maxLength=3500;}
+  updateCampaignMediaButton();
+}
+async function stageCampaignMedia(file){
+  if(!['campaign_draft','release_create'].includes(managementDraft?.kind)||signing||managementPreparing)return;
+  campaignMediaUpload?.control.abort();campaignMediaUpload=null;
+  const current=drawerId,at=epoch,draft=managementDraft;
+  Object.assign(draft,{campaignMediaFile:file||null,assetId:null,assetHash:null,assetUploading:false});
+  releaseManagementMediaPreview();$('campaignMediaPreview').innerHTML='';$('campaignMediaValidation').hidden=true;
+  if(!file){clearCampaignMedia();return;}
+  $('campaignMediaClear').hidden=false;
+  const video=file.type.startsWith('video/'),types=['image/jpeg','image/png','image/webp','video/mp4','video/quicktime','video/webm','video/x-m4v'];
+  if(!types.includes(file.type)||file.size<1||file.size>(video?25:2)*1024*1024){$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;updateCampaignMediaButton();return;}
+  draft.assetUploading=true;updateCampaignMediaButton();
+  $('campaignMediaStatus').textContent=t('campaignMediaUploading');
+  const upload={control:new AbortController()};campaignMediaUpload=upload;
+  try{
+    const sourceHash=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());
+    if(current!==drawerId||at!==epoch||campaignMediaUpload!==upload)return;
+    const result=await api('campaign-assets',null,{rawBody:file,timeoutMs:150000,requestSignal:upload.control.signal});
+    if(current!==drawerId||at!==epoch||campaignMediaUpload!==upload||!state.actor)return;
+    const hash=[...new Uint8Array(sourceHash)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
+    if(result.content_hash!==hash||result.byte_count!==file.size||!result.asset_id||!result.asset_hash)throw Error('invalid_asset');
+    Object.assign(draft,{assetId:result.asset_id,assetHash:result.asset_hash});
+    managementMediaPreviewUrl=URL.createObjectURL(file);
+    $('campaignMediaPreview').innerHTML=video?`<figure class="management-media-preview"><video controls playsinline preload="metadata" src="${managementMediaPreviewUrl}"></video></figure>`:`<figure class="management-media-preview"><img src="${managementMediaPreviewUrl}" alt="${esc(t('courseAdMedia'))}"></figure>`;
+    $('campaignMediaStatus').textContent=t('campaignMediaReady');
+    for(const lang of ['uz','ru','tj'])$((draft.kind==='release_create'?'releaseText-':'campaignText-')+lang).maxLength=1024;
+  }catch(error){
+    if(current===drawerId&&at===epoch&&campaignMediaUpload===upload&&state.actor){$('campaignMediaStatus').textContent='';$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;$('campaignMediaFile').value='';}
+  }finally{
+    if(current===drawerId&&at===epoch&&campaignMediaUpload===upload){campaignMediaUpload=null;draft.assetUploading=false;updateCampaignMediaButton();}
+  }
+}
 function campaignButtonFields(){
   const select=campaignSelect('campaignButtonAction','campaignButton',[['','campaignButtonNone'],...Object.entries(campaignButtonLabels)]);
   const labels=['uz','ru','tj'].map(lang=>`<div class="form-field"><label for="campaignButtonLabel-${lang}">${lang.toUpperCase()} · ${esc(t('courseAdButton'))}</label><input class="input" id="campaignButtonLabel-${lang}" maxlength="64" disabled></div>`).join('');
@@ -1007,6 +1060,7 @@ function campaignSelect(id,label,options,selected=''){
 function campaignFields(row){
   const fields=[['campaignId',row.id],['campaignTitle',row.title],['status',t(({active:'hsk30On',paused:'campaignDraftStatus',sending:'messageRunning',sent:'messageComplete',stopped:'messageClosed',scheduled:'messageReady'})[row.status]||'unavailable')]];
   if(row.ends_at)fields.push(['campaignExpiry',date(row.ends_at)]);
+  if(row.media_type&&row.media_type!=='text')fields.push(['courseAdMedia',t(row.media_type==='photo'?'courseAdPhoto':'courseAdVideo')]);
   if(row.percent)fields.push(['discount',row.percent+'%']);
   if(row.target_user_id)fields.push(['account',row.target_user_id]);
   if(row.quota_total)fields.push(['discountQuota',row.quota_total]);
@@ -1051,6 +1105,7 @@ function campaignCreate(kind,userId=null){
   if(kind==='release'){
     body=`<p class="source-note">${esc(t('releaseCampaignHint'))}</p>`+input('releaseTitle','campaignTitle',120,'required');
     body+=['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><div class="form-field"><label for="releaseText-${lang}">${esc(t('campaignCopy'))}</label><textarea class="input setting-value" id="releaseText-${lang}" maxlength="3500" rows="5" required></textarea></div></details>`).join('');
+    body+=campaignMediaFields();
     body+=campaignSelect('releaseFeature','releaseFeature',Object.entries(campaignFeatureLabels));
     body+=`<details class="profile-section"><summary>${esc(t('filters'))}</summary><fieldset class="form-field"><legend>${esc(t('targetLanguages'))}</legend>${['uz','ru','tj'].map(lang=>`<label class="management-check"><input type="checkbox" data-release-language="${lang}" checked>${lang.toUpperCase()}</label>`).join('')}</fieldset><div class="management-form-pair">${Object.entries(messageFilterConfig).map(([key,[label,options]])=>campaignSelect('releaseFilter-'+key,label,[['','all'],...options])).join('')}</div></details>`;
   }else{
@@ -1075,7 +1130,7 @@ function campaignChange(draft){
   if(draft.kind==='release_create'){
     const filters={languages:[...document.querySelectorAll('[data-release-language]:checked')].map(input=>input.dataset.releaseLanguage)};
     for(const key of Object.keys(messageFilterConfig))if($('releaseFilter-'+key).value)filters[key]=$('releaseFilter-'+key).value;
-    return {kind:draft.kind,title:$('releaseTitle').value,texts:Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,$('releaseText-'+lang).value])),feature_key:$('releaseFeature').value,filters};
+    return {kind:draft.kind,title:$('releaseTitle').value,texts:Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,$('releaseText-'+lang).value])),feature_key:$('releaseFeature').value,filters,asset_id:draft.assetId||null,asset_hash:draft.assetHash||null};
   }
   const target=Number($('discountTarget').value)||null;
   return {kind:draft.kind,copies:Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,{title:$('discountTitle-'+lang).value,reason:$('discountReason-'+lang).value}])),
@@ -1089,7 +1144,7 @@ async function marketingEditor(kind,before=null){
     closeDrawer();managementDraft={type:'marketing',kind};
     const copy=['uz','ru','tj'].map(language=>`<details class="profile-section notice-languages campaign-locale-copy" ${language===locale?'open':''}><summary>${language.toUpperCase()}</summary><div class="form-field"><label for="campaignText-${language}">${esc(t('campaignCopy'))}</label><textarea class="input setting-value" id="campaignText-${language}" maxlength="3500" rows="5" required></textarea></div></details>`).join('');
     const languages=['uz','ru','tj'].map(language=>`<label class="management-check"><input type="checkbox" data-campaign-language="${language}">${language.toUpperCase()}</label>`).join('');
-    const body=`<p class="source-note campaign-paused-note">${esc(t('campaignPausedHint'))}</p><div class="form-field"><label for="campaignTitle">${esc(t('campaignTitle'))}</label><input class="input" id="campaignTitle" maxlength="120" required></div>${copy}<fieldset class="form-field"><legend>${esc(t('targetLanguages'))}</legend><div class="v6-toggles">${languages}</div></fieldset><div class="management-form-pair"><div class="form-field"><label for="campaignTrack">${esc(t('campaignTrack'))}</label><select class="input" id="campaignTrack"><option value="">${esc(t('all'))}</option><option value="hsk20">HSK 2.0</option><option value="hsk30">HSK 3.0</option></select></div><div class="form-field"><label for="campaignDuration">${esc(t('campaignDurationHours'))}</label><input class="input" id="campaignDuration" type="number" min="1" max="720" step="1" value="24" required></div></div><label class="management-check"><input type="checkbox" id="campaignSubscribers">${esc(t('includeActiveSubscribers'))}</label>${campaignButtonFields()}<p class="alert" id="campaignValidation" hidden>${esc(t('campaignValidation'))}</p>`;
+    const body=`<p class="source-note campaign-paused-note">${esc(t('campaignPausedHint'))}</p><div class="form-field"><label for="campaignTitle">${esc(t('campaignTitle'))}</label><input class="input" id="campaignTitle" maxlength="120" required></div>${copy}<fieldset class="form-field"><legend>${esc(t('targetLanguages'))}</legend><div class="v6-toggles">${languages}</div></fieldset><div class="management-form-pair"><div class="form-field"><label for="campaignTrack">${esc(t('campaignTrack'))}</label><select class="input" id="campaignTrack"><option value="">${esc(t('all'))}</option><option value="hsk20">HSK 2.0</option><option value="hsk30">HSK 3.0</option></select></div><div class="form-field"><label for="campaignDuration">${esc(t('campaignDurationHours'))}</label><input class="input" id="campaignDuration" type="number" min="1" max="720" step="1" value="24" required></div></div><label class="management-check"><input type="checkbox" id="campaignSubscribers">${esc(t('includeActiveSubscribers'))}</label>${campaignButtonFields()}${campaignMediaFields()}<p class="alert" id="campaignValidation" hidden>${esc(t('campaignValidation'))}</p>`;
     drawer('createCampaign',`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('saveChanges','managementPrepare','primary'));
     updateCampaignButtonFields();
     return;
@@ -1297,7 +1352,7 @@ async function editSetting(kind,bank=null){
   }
 }
 async function prepareManagement(){
-  if(managementPreparing||!state.actor||signing||!managementDraft)return;
+  if(managementPreparing||!state.actor||signing||!managementDraft||managementDraft.assetUploading)return;
   const form=$('managementForm');
   if(!form)return;
   const invalid=form.querySelector(':invalid');
@@ -1373,10 +1428,11 @@ async function prepareManagementCommand(current,at){
         media_sha256:[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join(''),media_size:file.size});
     }
     if(draft.kind==='campaign_draft'){
+      if(draft.campaignMediaFile&&!draft.assetId){$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;return;}
       const languages=[...document.querySelectorAll('[data-campaign-language]:checked')].map(input=>input.dataset.campaignLanguage);
       if(!languages.length){$('campaignValidation').hidden=false;return;}
       Object.assign(change,{title:$('campaignTitle').value,texts:Object.fromEntries(['uz','ru','tj'].map(language=>[language,$('campaignText-'+language).value])),
-        languages,track:$('campaignTrack').value||null,duration_hours:Number($('campaignDuration').value),include_active_subscribers:$('campaignSubscribers').checked,button:campaignButtonChange()});
+        languages,track:$('campaignTrack').value||null,duration_hours:Number($('campaignDuration').value),include_active_subscribers:$('campaignSubscribers').checked,button:campaignButtonChange(),asset_id:draft.assetId||null,asset_hash:draft.assetHash||null});
     }
     if(draft.kind==='sales_experiment')Object.assign(change,{mode:$('salesMode').value,treatment_percent:Number($('salesPercent').value)});
     if(draft.kind==='desktop_promo')Object.assign(change,{enabled:$('promoEnabled').value==='true',daily_limit:Number($('promoLimit').value),require_learning_progress:$('promoProgress').checked,
@@ -1423,6 +1479,7 @@ async function prepareManagementCommand(current,at){
       if(!draft.proofId||!draft.proofLoaded)throw new ApiError('admin_pwa_proof_invalid',400);
       payload.proof_id=draft.proofId;
     }
+    if(['campaign_draft','release_create'].includes(draft.kind)&&draft.campaignMediaFile&&!draft.assetId){$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;return;}
     const result=await api(managementEndpoint(draft.type,'prepare'),payload);
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const operation=structuredClone(result.operation);
@@ -1433,7 +1490,9 @@ async function prepareManagementCommand(current,at){
   }catch(error){
     managementReview=null;
     if(current===drawerId&&at===epoch&&state.actor){
-      if(draft.type==='campaign'&&[400,409].includes(error.status)&&$('campaignCommandValidation')){
+      if(['campaign_draft','release_create'].includes(draft.kind)&&error.message.startsWith('admin_pwa_campaign_asset')&&$('campaignMediaValidation')){
+        draft.assetId=null;draft.assetHash=null;$('campaignMediaFile').value='';$('campaignMediaStatus').textContent='';$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;
+      }else if(draft.type==='campaign'&&[400,409].includes(error.status)&&$('campaignCommandValidation')){
         $('campaignCommandValidation').textContent=t(error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':error.message==='admin_pwa_message_no_targets'?'messageNoTargets':'campaignValidation');$('campaignCommandValidation').hidden=false;
       }else if(draft.type==='message'&&[400,409].includes(error.status)&&$('messageValidation')){
         const key=error.message==='admin_pwa_message_no_targets'?'messageNoTargets':error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':'messageInvalid';
@@ -1442,6 +1501,9 @@ async function prepareManagementCommand(current,at){
       }else if(draft.type==='notice'&&error.status===400&&$('noticeValidation')){
         $('noticeValidation').textContent=t(error.message==='admin_pwa_notice_too_long'?'noticeTooLong':'noticeInvalid');$('noticeValidation').hidden=false;
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
+      }else if(draft.type==='marketing'&&draft.kind==='campaign_draft'&&error.message.startsWith('admin_pwa_campaign_asset')&&$('campaignMediaValidation')){
+        if(managementDraft){managementDraft.assetId=null;managementDraft.assetHash=null;}
+        $('campaignMediaFile').value='';$('campaignMediaStatus').textContent='';$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;
       }else if(draft.type==='marketing'&&draft.kind==='campaign_draft'&&error.status===400&&$('campaignValidation')){
         $('campaignValidation').textContent=t('campaignValidation');$('campaignValidation').hidden=false;
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
@@ -2102,6 +2164,7 @@ async function action(name) {
   if(name==='noticeList'){await noticeEditor();return;}
   if(name==='portfolioHistory'){await portfolioHistory();return;}
   if(name==='portfolioEditor'){portfolioEditor();return;}
+  if(name==='campaignMediaClear'){clearCampaignMedia();return;}
   if(name==='managementPrepare'){await prepareManagement();return;}
   if(name==='hsk30Settings'){await hsk30Settings();return;}
   if(name==='hsk30Prepare'){await prepareHsk30Settings();return;}
@@ -2286,6 +2349,7 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('change',event=>{
+  if(event.target.id==='campaignMediaFile'){void stageCampaignMedia(event.target.files?.[0]);return;}
   if(['campaignButtonAction','campaignButtonCustom'].includes(event.target.id))updateCampaignButtonFields();
   if(event.target.id==='discountTarget'&&$('discountSegment'))$('discountSegment').hidden=Boolean(event.target.value);
   if(event.target.id==='newAdLanguage')updateCourseAdCreateLanguage();

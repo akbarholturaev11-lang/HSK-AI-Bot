@@ -937,7 +937,12 @@
     "ui.admin_pwa.campaignButtonHelp": "Yordam",
     "ui.admin_pwa.campaignButtonUrl": "Tashqi havola",
     "ui.admin_pwa.campaignButtonCustom": "Uch tilda o‘z matnimni yozish",
-    "ui.admin_pwa.campaignButtonHint": "O‘z matningizni yozmasangiz, har bir tilning tayyor tugma nomi ishlatiladi. Manzil yuborish paytidagi passkey amaliga bog‘lanadi."
+    "ui.admin_pwa.campaignButtonHint": "O‘z matningizni yozmasangiz, har bir tilning tayyor tugma nomi ishlatiladi. Manzil yuborish paytidagi passkey amaliga bog‘lanadi.",
+    "ui.admin_pwa.campaignMediaHint": "Rasm: JPG/PNG/WebP, 2 MiB va 8 MP gacha. Video: MP4/MOV/WebM, 25 MiB, 4K va 3 daqiqagacha. Media bilan har bir til matni 1024 belgidan oshmasin.",
+    "ui.admin_pwa.campaignMediaUploading": "Media yuklanmoqda…",
+    "ui.admin_pwa.campaignMediaReady": "Media tayyor. 15 daqiqa amal qiladi.",
+    "ui.admin_pwa.campaignMediaClear": "Mediani olib tashlash",
+    "ui.admin_pwa.campaignMediaInvalid": "Media yuklanmadi yoki muddati tugadi. Format va hajmni tekshirib, qayta tanlang yoki mediani olib tashlang."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

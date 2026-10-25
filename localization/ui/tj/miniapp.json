@@ -937,7 +937,12 @@
     "ui.admin_pwa.campaignButtonHelp": "Кумак",
     "ui.admin_pwa.campaignButtonUrl": "Пайванди беруна",
     "ui.admin_pwa.campaignButtonCustom": "Матни худ бо се забон",
-    "ui.admin_pwa.campaignButtonHint": "Агар матни худро нанависед, номи тайёри тугма ба забони қабулкунанда истифода мешавад. Манзил ҳангоми фиристодан ба passkey пайваст мешавад."
+    "ui.admin_pwa.campaignButtonHint": "Агар матни худро нанависед, номи тайёри тугма ба забони қабулкунанда истифода мешавад. Манзил ҳангоми фиристодан ба passkey пайваст мешавад.",
+    "ui.admin_pwa.campaignMediaHint": "Расм: JPG/PNG/WebP то 2 MiB ва 8 MP. Видео: MP4/MOV/WebM то 25 MiB, 4K ва 3 дақиқа. Бо медиа матни ҳар забон то 1024 аломат бошад.",
+    "ui.admin_pwa.campaignMediaUploading": "Медиа бор мешавад…",
+    "ui.admin_pwa.campaignMediaReady": "Медиа омода аст. 15 дақиқа амал мекунад.",
+    "ui.admin_pwa.campaignMediaClear": "Гирифтани медиа",
+    "ui.admin_pwa.campaignMediaInvalid": "Медиа бор нашуд ё муҳлаташ гузашт. Шакл ва ҳаҷмро санҷед, файлро аз нав интихоб кунед ё медиаро гиред."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

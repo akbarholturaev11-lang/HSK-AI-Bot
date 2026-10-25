@@ -249,16 +249,18 @@ async def execute_message(db,*,session_cookie,request,settings_obj):
 
 
 async def enqueue_reviewed_message(db,*,command_id,actor_user_id,session_id,target_user_id,kind,
-                                   texts,filters,snapshots,digest,photo_file_id=None,campaign=None,now=None):
+                                   texts,filters,snapshots,digest,photo_file_id=None,video_file_id=None,campaign=None,now=None):
     """Internal only: caller atomically owns exact proof and command audit.
 
     A provider reference is accepted only from another server-validated
     command (currently owned payout proof), never from a browser payload.
     """
     if not 1<=len(snapshots)<=MAX_AUDIENCE:raise ValueError('Invalid reviewed audience')
+    if photo_file_id and video_file_id:raise ValueError('One reviewed media asset only')
     now=now or datetime.now(timezone.utc)
     body={'kind':kind,'user_id':target_user_id,'texts':texts,'filters':filters}
     if photo_file_id:body['photo_file_id']=photo_file_id
+    if video_file_id:body['video_file_id']=video_file_id
     if campaign:body['campaign']=campaign
     job=Job(id=command_id,actor_user_id=actor_user_id,session_id=session_id,target_user_id=target_user_id,
         kind=kind,status='ready',body_json=json.dumps(body,ensure_ascii=False),audience_hash=digest,
@@ -276,6 +278,7 @@ class OutboundMessage:
     text:str
     photo_file_id:str|None=None
     reply_markup:dict|None=None
+    video_file_id:str|None=None
 
 
 async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limit=10):
@@ -287,7 +290,7 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
             if job is None or job.status!='ready' or _utc(job.expires_at)<=datetime.now(timezone.utc):return False
             run_token=str(uuid4());job.status='running';job.run_token=run_token;job.started_at=datetime.now(timezone.utc)
             body=json.loads(job.body_json);copies=body['texts'];photo_file_id=body.get('photo_file_id')
-            campaign=body.get('campaign')
+            campaign=body.get('campaign');video_file_id=body.get('video_file_id')
     for _ in range(min(max(limit,1),10)):
         async with session_factory() as db:
             async with db.begin():
@@ -333,7 +336,7 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
                         markup=release_feedback_rating_keyboard(campaign['campaign_id'],recipient.language).model_dump(mode='json')
                     elif campaign['kind']=='ad':
                         markup=campaign.get('buttons',{}).get(recipient.language)
-                message=OutboundMessage(user.id,user.telegram_id,recipient.language,copies[recipient.language],photo_file_id,markup)
+                message=OutboundMessage(user.id,user.telegram_id,recipient.language,copies[recipient.language],photo_file_id,markup,video_file_id)
         status='uncertain'
         provider_result=None
         try:

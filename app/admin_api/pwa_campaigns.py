@@ -1,4 +1,4 @@
-"""First-party text campaigns; exact signed audiences use the existing claimed queue.
+"""First-party bounded campaigns; exact signed audiences use the existing claimed queue.
 
 No legacy scheduler is activated. Discount creation changes offer configuration
 only: shared checkout remains authoritative and notification defaults stay off.
@@ -73,6 +73,15 @@ class ReleaseCreate(StrictModel):
     title: Annotated[str, Field(min_length=1, max_length=120)]
     texts: CampaignTexts
     filters: MessageFilters = Field(default_factory=MessageFilters)
+    asset_id: StepId | None = None
+    asset_hash: Digest | None = None
+
+    @model_validator(mode='after')
+    def asset_pair(self):
+        if (self.asset_id is None) != (self.asset_hash is None):
+            raise ValueError('Exact asset reference required')
+        return self
+
     feature_key: Literal['general', 'qa', 'image', 'course', 'profile', 'subscription', 'android_subscription'] = 'general'
 
     @field_validator('title')
@@ -210,9 +219,11 @@ def _view(row, kind, *, detail=False):
         result['texts'] = {lang: html.unescape((copies or {}).get(lang, '')) for lang in LANGS}
         if kind == 'ad':
             result.update(ends_at=_utc(row.ends_at).isoformat(), rounds_sent=row.rounds_sent,
+                          media_type=row.content_type,
                           can_send=not row.is_active and row.next_send_at is None and row.rounds_sent == 0
-                          and row.send_count_total == 1 and row.content_type == 'text'
-                          and not row.media_file_id and bool(copies)
+                          and row.send_count_total == 1 and row.content_type in ('text', 'photo', 'video')
+                          and (not row.media_file_id if row.content_type == 'text' else bool(row.media_file_id))
+                          and bool(copies) and set(copies) == set(LANGS)
                           and _utc(row.starts_at) <= datetime.now(timezone.utc) < _utc(row.ends_at))
         else:
             result.update(sent_count=row.sent_count, failed_count=row.failed_count, feature_key=row.feature_key)
@@ -261,7 +272,7 @@ async def _targets(db, filters, settings_obj, *, exclude_active=False, lock=Fals
         exclude_active_subscribers=exclude_active)
 
 
-async def _prepare_state(db, change, settings_obj, *, lock=False):
+async def _prepare_state(db, change, settings_obj, *, cookie, lock=False):
     """Repeat all commitments inside the final transaction; no provider/AI IO."""
     row, metadata, snapshots = None, {}, []
     if change.kind == 'ad_send':
@@ -276,22 +287,34 @@ async def _prepare_state(db, change, settings_obj, *, lock=False):
         texts = {lang: html.escape(value, quote=False) for lang, value in copies.model_dump().items()}
         if texts != stored:
             raise CommandError('admin_pwa_invalid_payload', 400)
+        if row.content_type != 'text' and any(len(value.encode('utf-16-le')) // 2 > 1024 for value in texts.values()):
+            raise CommandError('admin_pwa_campaign_caption_too_long', 400)
         filters = MessageFilters(languages=decode_languages(row.target_languages), track=row.target_track,
                                  level=row.target_level).model_dump()
         metadata = {'kind': 'ad', 'campaign_id': row.id, 'filters': filters,
-                    'exclude_active': not row.include_active_subscribers}
+                    'exclude_active': not row.include_active_subscribers,
+                    'media_type': row.content_type, 'media_file_id': row.media_file_id}
         _, rendered = await reviewed_campaign_buttons(db, row.button_config, lock=lock)
         if rendered:
             metadata['buttons'] = rendered
         current_hash = _hash({'campaign': revision(row), 'buttons': rendered}) if rendered else revision(row)
-        content = {'texts': texts, 'buttons': rendered}
+        content = {'texts': texts, 'buttons': rendered,
+                   'media_hash': _hash([row.content_type, row.media_file_id])}
     elif change.kind == 'release_create':
         texts = {lang: html.escape(value, quote=False) + release_feedback_prompt(lang)
                  for lang, value in change.texts.model_dump().items()}
-        if any(len(value.encode('utf-16-le')) // 2 > 4096 for value in texts.values()):
+        media_hash = None
+        if change.asset_id:
+            from app.admin_api.pwa_campaign_assets import owned_campaign_asset, asset_digest
+            asset = await owned_campaign_asset(db, cookie=cookie, asset_id=change.asset_id,
+                expected_hash=change.asset_hash, settings_obj=settings_obj, lock=lock)
+            media_hash = asset_digest(asset)
+        if any(len(value.encode('utf-16-le')) // 2 > (1024 if change.asset_id else 4096) for value in texts.values()):
             raise CommandError('admin_pwa_invalid_payload', 400)
         metadata = {'kind': 'release', 'filters': change.filters.model_dump(), 'exclude_active': False}
-        content = {'texts': texts, 'markup': {lang: release_feedback_rating_keyboard(0, lang).model_dump(mode='json')
+        if change.asset_id:
+            metadata.update(media_type=asset.media_type, media_file_id=asset.provider_file_id)
+        content = {'media_hash': media_hash, 'texts': texts, 'markup': {lang: release_feedback_rating_keyboard(0, lang).model_dump(mode='json')
                                             for lang in LANGS},
                    'discount_percent': 20, 'discount_hours': 24, 'trial_access_minutes': 30}
         current_hash = _hash({'release_create': 'new'})
@@ -327,7 +350,7 @@ async def prepare_campaign(db, *, session_cookie, request, settings_obj):
         raise CommandError('not_found', 404)
     async with read_transaction(db):
         await _authenticate(db, session_cookie, settings_obj)
-        _, revision_hash, content_hash, snapshots, _, texts = await _prepare_state(db, request.change, settings_obj)
+        _, revision_hash, content_hash, snapshots, _, texts = await _prepare_state(db, request.change, settings_obj, cookie=session_cookie)
         command = CampaignCommand(change=request.change, expected_hash=revision_hash, content_hash=content_hash,
                                   audience_hash=_hash(snapshots) if snapshots else None,
                                   audience_count=len(snapshots) if snapshots else None)
@@ -352,7 +375,7 @@ async def execute_campaign(db, *, session_cookie, request, settings_obj):
         session = await db.get(AdminPwaSession, step.session_id)
         actor = await db.get(User, step.user_id)
         row, current_hash, content_hash, snapshots, metadata, texts = await _prepare_state(
-            db, command.change, settings_obj, lock=True)
+            db, command.change, settings_obj, cookie=session_cookie, lock=True)
         now = datetime.now(timezone.utc)
         if (not _enabled(settings_obj) or not _authorized_admin(actor, settings_obj) or session.revoked_at is not None
                 or min(_utc(step.expires_at), _utc(session.expires_at)) <= now):
@@ -370,7 +393,8 @@ async def execute_campaign(db, *, session_cookie, request, settings_obj):
             row = await ReleaseFeedbackRepository(db).create_campaign(
                 title=change.title, message_text=encode_localized_broadcast_text(
                     {lang: html.escape(value, quote=False) for lang, value in change.texts.model_dump().items()}),
-                content_type='text', media_file_id=None, send_at=now, feature_key=change.feature_key,
+                content_type=metadata.get('media_type', 'text'), media_file_id=metadata.get('media_file_id'),
+                send_at=now, feature_key=change.feature_key,
                 target_languages=filters.languages, status_filter=filters.status, level_filter=filters.level,
                 mode_filter=filters.mode, payment_status_filter=filters.payment_status,
                 payment_method_filter=filters.payment_method, plan_filter=filters.plan,
@@ -406,6 +430,16 @@ async def execute_campaign(db, *, session_cookie, request, settings_obj):
                                     'after_hash': revision(row), 'content_hash': content_hash,
                                     'audience_count': len(snapshots), 'audience_hash': command.audience_hash})))
         await db.flush()
+        if change.kind == 'release_create' and change.asset_id:
+            # Lock/recheck after every queue/campaign lock wait, within the same transaction.
+            from app.admin_api.pwa_campaign_assets import owned_campaign_asset
+            asset = await owned_campaign_asset(db, cookie=session_cookie, asset_id=change.asset_id,
+                expected_hash=change.asset_hash, settings_obj=settings_obj, lock=True)
+            if (not _authorized_admin(actor, settings_obj) or session.revoked_at is not None
+                    or min(_utc(step.expires_at), _utc(session.expires_at)) <= datetime.now(timezone.utc)):
+                raise CommandError('admin_pwa_step_up_denied', 403)
+            asset.status, asset.command_id = 'used', audit_id
+            await db.flush()
         job = None
         if snapshots:
             metadata['revision_hash'] = revision(row)
@@ -415,7 +449,9 @@ async def execute_campaign(db, *, session_cookie, request, settings_obj):
             job = await enqueue_reviewed_message(db, command_id=audit_id, actor_user_id=actor.id,
                 session_id=session.id, target_user_id=None, kind='broadcast', texts=texts,
                 filters=metadata['filters'], snapshots=snapshots, digest=command.audience_hash,
-                campaign=metadata, now=now)
+                campaign=metadata, now=now,
+                photo_file_id=metadata.get('media_file_id') if metadata.get('media_type') == 'photo' else None,
+                video_file_id=metadata.get('media_file_id') if metadata.get('media_type') == 'video' else None)
             # Unique legacy evidence reserves every intended transport before provider IO.
             delivery_model = AdCampaignDelivery if kind == 'ad' else ReleaseFeedbackDelivery
             await db.execute(insert(delivery_model), [dict(campaign_id=row.id,

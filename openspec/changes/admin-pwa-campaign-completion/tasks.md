@@ -10,9 +10,9 @@ Canonical execution checkpoint and evidence: [Admin PWA handoff](../../../docs/a
 
 ## 2. Owned campaign media
 
-- [ ] 2.1 Add purpose-bound owned metadata/migration and bounded upload/preview/retention; verify ownership, caps, quota, provider uncertainty, real PostgreSQL migration parity and nonempty downgrade protection.
-- [ ] 2.2 Bind ready photo/video to campaign commands and the single-attempt sender; verify caption limits, foreign/expired media, rollback and no DB connection during encoder/provider IO.
-- [ ] 2.3 Add localized original-editor staging/preview/cancellation; run affected mobile/desktop browser tests and catalog checks, then document the asset contract and evidence.
+- [x] 2.1 Add purpose-bound owned metadata/migration and bounded upload/preview/retention; verify ownership, caps, quota, provider uncertainty, real PostgreSQL migration parity and nonempty downgrade protection.
+- [x] 2.2 Bind ready photo/video to campaign commands and the single-attempt sender; verify caption limits, foreign/expired media, rollback and no DB connection during encoder/provider IO.
+- [x] 2.3 Add localized original-editor staging/preview/cancellation; run affected mobile/desktop browser tests and catalog checks, then document the asset contract and evidence.
 
 ## 3. Session-bound scheduling
 

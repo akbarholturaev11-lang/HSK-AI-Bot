@@ -67,7 +67,7 @@ browser/SW no-store and real-data/metric-definition requirements. Details:
 Implemented management code now includes signed direct/self-test and bounded
 text broadcasts, durable pre-provider claims, explicit cancellation and
 pending-only signed resume. Owned payout proof/completion and durable recipient notice also exist, using
-the owner-requested single payout window. Text-only campaign drafts can now be
+the owner-requested single payout window. Text/photo/video campaign drafts can now be
 created signed and paused. Desktop-promo JPEG/PNG/WebP media can now be added,
 replaced or removed with one exact passkey confirmation. Course ads can be created with photo/video, explicit selected-language or
 UZ/RU/TJ copy and validated settings; existing images/videos can be replaced
@@ -81,7 +81,9 @@ existing rating/try callbacks, and discount creation/state management are now
 implemented through `/campaigns/*`. Delivery uses the bounded claimed queue;
 new discount offers default off with notifications disabled. These commands
 accept the explicit text formats in the management contract; they do not
-enable unattended legacy scheduling or arbitrary campaign assets. Partner application notices are
+enable unattended legacy scheduling. Owned campaign media now follows the
+0131 actor/session-bound staging contract, with caption limits and private
+provider references; no arbitrary browser provider reference is accepted. Partner application notices are
 implemented; see [management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
 This paragraph records scope and does not mark the entire acceptance list done.
 

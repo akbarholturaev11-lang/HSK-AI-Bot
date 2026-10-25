@@ -22,7 +22,7 @@ _PUBLIC_ASSETS = {"app.js": "text/javascript", "styles.css": "text/css",
                   "catalog.js": "text/javascript", "mcp-consent.js": "text/javascript",
                   "mcp-consent.css": "text/css", "icon.png": "image/png", "icon-large.png": "image/png"}
 _PAGE_CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; "
-             "img-src 'self' blob:; connect-src 'self'; manifest-src 'self'; "
+             "img-src 'self' blob:; media-src 'self' blob:; connect-src 'self'; manifest-src 'self'; "
              "worker-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'")
 _PRIVATE_HEADERS = {
     "Cache-Control": "no-store",

@@ -28,9 +28,26 @@ Updated 2026-10-26. Read this first; older checkpoints are historical. Verify re
   browser passed after latest main integration. Evidence:
   `/tmp/hsk-admin-pwa-campaign-buttons*-20261026`. Mobile screenshot reviewed.
   JS/Python syntax, diff and catalog checks passed: 63 artifacts, zero stale.
-- Next increment: owned campaign media; then bounded session-preserving schedule
-  and discount notices retaining native/Play policy. No claim that these later
-  controls are implemented. No external MCP scope or manual deployment change.
+- Owned media increment is implemented: migration 0131, same-admin/session
+  ready assets (15 min), 20/hour quota, two upload slots and one encoder.
+  Photo 2 MiB/8MP; video 25 MiB/4K/3min, forced local containers/protocols.
+  Provider references stay server-owned; SQL contains no binary. Ad drafts
+  and release feedback consume ready media atomically with proof/audit/queue.
+  Caption plus release prompt is bounded to 1024 escaped UTF-16 units.
+  Metadata retention preserves the one-hour quota window and referenced media.
+- Media/campaign/button/outbound/shared/QA/import regressions: 93 passed and
+  105 subtests; an added release test's incorrect callback expectation was
+  corrected to the shared `relfb:` contract and its rerun passed. All 13 media
+  tests including actual PostgreSQL migration/expiry-lock tests then passed.
+  Actual campaign ASGI/virtual-WebAuthn browser passed local photo and real MP4
+  decode, CSP, native cancellation, signed ad/release sends and UZ/RU/TJ mobile
+  layout. Existing course media browser passed. Evidence:
+  `/tmp/hsk-admin-pwa-release-media-20261026`,
+  `/tmp/hsk-admin-pwa-course-media-secure-20261026`. Screenshot reviewed.
+  Catalogs: 63 artifacts, zero stale; syntax/diff/OpenSpec checks passed.
+- Next: integrate newly fetched main `1db08846` original-editor/swipe UX,
+  then bounded session-preserving scheduling and policy-preserving discount
+  notices. No external MCP scope or manual deployment change.
 
 ## Owner-approved main promotion — 2026-10-25
 
