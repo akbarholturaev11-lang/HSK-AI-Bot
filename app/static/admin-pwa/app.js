@@ -416,16 +416,17 @@ function accountAge(value,clock=Date.now()){
 }
 function userTier(row){
   if(row.access_state==='PRO_ACTIVE')return 'Pro';
-  if(row.access_state==='TRIAL_ACTIVE')return 'Trial';
+  if(row.access_state==='TRIAL_ACTIVE')return 'Pro trial';
   if(row.access_state==='TEMP_ACCESS')return t('TEMP_ACCESS');
+  if(row.access_state==='BLOCKED')return t('directoryStatusBlocked');
+  // Expired paid access no longer counts as an active Pro subscription.
   return 'Free';
 }
 function userAccessBadge(row){
   const type=row.access_state;
-  const key=type==='BLOCKED'?'directoryStatusBlocked':type==='EXPIRED'?'directoryStatusExpired':
-    type==='TRIAL_ACTIVE'?'directoryStatusTrial':'directoryStatusActive';
-  const tone=type==='BLOCKED'?'red':type==='EXPIRED'?'gray':type==='TRIAL_ACTIVE'?'amber':'green';
-  return '<span class="pill user-status-pill '+tone+'">'+esc(t(key))+'</span>';
+  const tone=type==='BLOCKED'?'red':type==='TRIAL_ACTIVE'?'amber':
+    type==='PRO_ACTIVE'||type==='TEMP_ACCESS'?'blue':'gray';
+  return '<span class="pill user-status-pill '+tone+'">'+esc(userTier(row))+'</span>';
 }
 function userLanguage(value){
   const code=String(value||'').trim().toLowerCase();
@@ -442,6 +443,25 @@ function userPaymentMethod(value){
   const name=String(value).trim();
   return names[name.toLowerCase()]||name||'—';
 }
+function userSelectedDuration(value){
+  const plan=String(value||'').trim();
+  if(!plan)return '—';
+  const known={'10_days':'directoryPlan10Days','1_month':'directoryPlan1Month','3_months':'directoryPlan3Months'};
+  return known[plan]?t(known[plan]):displayPlan(plan);
+}
+function userDirectoryPlan(row){
+  return row.selected_plan_type||(row.access_state==='PRO_ACTIVE'?row.last_approved_plan_type:null);
+}
+function userDirectoryMethod(row){
+  return row.selected_payment_method||(row.access_state==='PRO_ACTIVE'?row.last_approved_payment_method:null);
+}
+function userPlanMethodText(row){
+  const plan=userSelectedDuration(userDirectoryPlan(row)),method=userPaymentMethod(userDirectoryMethod(row));
+  return [plan,method].filter(value=>value!=='—').join(' · ')||'—';
+}
+function userPlanMethod(row){
+  return '<span class="user-plan-method"><strong class="user-selected-duration">'+esc(userSelectedDuration(userDirectoryPlan(row)))+'</strong><small class="user-payment-method">'+esc(userPaymentMethod(userDirectoryMethod(row)))+'</small></span>';
+}
 function userSummary(row){
   const raw=String(row.username||'').trim(),handle=raw?(raw.startsWith('@')?raw:'@'+raw):'—';
   const details='<span class="person"><span class="mini-avatar" aria-hidden="true">'+esc((row.name||'H').trim().charAt(0).toUpperCase())+'</span><span class="directory-person"><strong>'+esc(row.name||'—')+'</strong><small>'+esc(handle)+' · '+esc(row.user_id)+' · '+esc(userTier(row))+'</small></span></span>';
@@ -449,7 +469,7 @@ function userSummary(row){
     ['directoryAge',accountAge(row.created_at)],
     ['language',userLanguage(row.language)],
     ['level',userLevel(row.level)],
-    ['directoryPlanMethod',userPaymentMethod(row.selected_payment_method)],
+    ['directoryPlanMethod',userPlanMethodText(row)],
     ['lastActive',relativeLastActive(row.last_active_at)]
   ];
   const info=fields.map(([key,value])=>'<span class="u-mini-field"><small>'+esc(t(key))+'</small><b>'+esc(value)+'</b></span>').join('');
@@ -458,7 +478,7 @@ function userSummary(row){
 function usersView(){
   const rows=state.rows.map(row=>{
     const {details,access}=userSummary(row);
-    return '<tr class="user-row" tabindex="0" role="button" aria-label="'+esc(t('openProfile'))+': '+esc(row.name||'—')+'" data-user-row="'+esc(row.user_id)+'"><td><button type="button" class="directory-row-link" data-user-detail="'+esc(row.user_id)+'">'+details+'</button></td><td class="user-age"><strong class="user-duration">'+esc(accountAge(row.created_at))+'</strong><small class="user-date">'+esc(dateOnly(row.created_at))+'</small></td><td>'+esc(userLanguage(row.language))+'</td><td>'+esc(userLevel(row.level))+'</td><td class="user-payment-method">'+esc(userPaymentMethod(row.selected_payment_method))+'</td><td>'+esc(relativeLastActive(row.last_active_at))+'</td><td>'+access+(row.has_pending_payment?'<small class="directory-pending">'+esc(t('pending'))+'</small>':'')+'</td></tr>';
+    return '<tr class="user-row" tabindex="0" role="button" aria-label="'+esc(t('openProfile'))+': '+esc(row.name||'—')+'" data-user-row="'+esc(row.user_id)+'"><td><button type="button" class="directory-row-link" data-user-detail="'+esc(row.user_id)+'">'+details+'</button></td><td class="user-age"><strong class="user-duration">'+esc(accountAge(row.created_at))+'</strong><small class="user-date">'+esc(dateOnly(row.created_at))+'</small></td><td>'+esc(userLanguage(row.language))+'</td><td>'+esc(userLevel(row.level))+'</td><td class="user-plan-method-cell">'+userPlanMethod(row)+'</td><td>'+esc(relativeLastActive(row.last_active_at))+'</td><td>'+access+(row.has_pending_payment?'<small class="directory-pending">'+esc(t('pending'))+'</small>':'')+'</td></tr>';
   }).join('');
   const cards=state.rows.map(row=>{
     const {details,info,access}=userSummary(row);

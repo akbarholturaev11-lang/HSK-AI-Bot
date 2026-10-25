@@ -768,3 +768,8 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 .user-row .directory-pending{margin-top:6px}
 .directory-user-card .user-card-top .user-status-pill{max-width:45%}
 @media(max-width:760px){.directory-user-card .user-card-details{grid-template-columns:repeat(2,minmax(0,1fr))}.directory-user-card .directory-person small{line-height:1.5}}
+/* Subscription tier and selected duration in directory. */
+.user-table .user-plan-method{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0}
+.user-table .user-selected-duration{font-size:13px;font-weight:750;color:#33405b}
+.user-table .user-payment-method{font-size:11px;color:#99a5b7;overflow-wrap:anywhere}
+.pill.user-status-pill.blue:not(.green):not(.red):not(.amber):not(.gray){background:#e8eefc;color:#4e65ba}
