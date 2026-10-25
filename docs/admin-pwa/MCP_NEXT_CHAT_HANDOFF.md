@@ -2,6 +2,18 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Latest statistics/navigation sync — 2026-10-25
+
+- A second owner-requested refresh found `origin/main` at
+  `7aee50bd` (PR #206). Its seven real-data statistics tabs, five-icon mobile
+  navigation, bottom More sheet, responsive users/payments and browser QA
+  are integrated into this feature branch. Feature single-window native
+  signing and course-ad creation remain intact. Generated catalogs were
+  rebuilt from the merged canonical UZ/RU/TJ sources.
+- Actual core and full settings/management ASGI/WebAuthn browser suites passed
+  after conflict resolution. Evidence: `/tmp/hsk-admin-pwa-main2-sync-*-20261025`.
+  Merge direction remains main into feature; no feature promotion/deploy.
+
 ## Current new-course-ad creation increment — 2026-10-25
 
 - The owner feature branch now supports signed `course_ad_create`: one-language

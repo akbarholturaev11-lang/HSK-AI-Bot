@@ -269,7 +269,25 @@ async def browser_checks(output):
         await page.locator('.inbox-back').click()
         await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.locator('.drawer-close').click()
+        await page.locator('[data-route=payments]').first.click()
+        await expect(page.locator('.payment-table-wrap')).to_be_visible()
+        await expect(page.locator('.payment-table thead th')).to_have_count(7)
+        await expect(page.locator('.payment-cards')).to_be_hidden()
+        await page.locator('[data-route=users]').first.click()
         await page.set_viewport_size({'width':390,'height':844})
+        await expect(page.locator('.mobile-tabs button')).to_have_count(5)
+        assert await page.locator('.mobile-tabs button').all_text_contents()==['']*5
+        await expect(page.locator('.topbar [data-action=more]')).to_have_count(0)
+        await expect(page.locator('.user-table-wrap')).to_be_hidden()
+        await expect(page.locator('.user-cards .user-card')).not_to_have_count(0)
+        await page.locator('.mobile-tabs [data-action=more]').click()
+        await expect(page.locator('.more-drawer')).to_be_visible()
+        await expect(page.locator('.more-drawer [data-route=course]')).to_be_visible()
+        sheet=await page.locator('.more-drawer').bounding_box()
+        assert sheet and 0<sheet['height']<844 and abs(sheet['y']+sheet['height']-844)<3
+        await page.locator('.more-drawer [data-route=course]').click()
+        await expect(page.locator('.management-page')).to_be_visible()
+        await page.locator('.mobile-tabs [data-route=users]').click()
         await page.screenshot(path=str(output/'mobile-users.png'),full_page=True)
         for language in ('uz','ru','tj'):
             if language!='uz':
@@ -283,19 +301,37 @@ async def browser_checks(output):
         await page.locator('[data-action=more]').click()
         await page.locator('#drawerLocale').select_option('uz')
         await page.locator('[data-route=stats]').last.click()
-        await expect(page.locator('.stat-detail')).to_have_count(4)
+        await expect(page.locator('[data-stats-tab]')).to_have_count(7)
+        await expect(page.locator('.stat-detail')).to_have_count(1)
+        await page.locator('[data-stats-tab=overview]').focus()
+        await page.keyboard.press('End')
+        await expect(page.locator('[data-stats-tab=report]')).to_have_attribute('aria-selected','true')
+        await page.keyboard.press('Home')
+        await expect(page.locator('[data-stats-tab=overview]')).to_have_attribute('aria-selected','true')
+        await page.locator('[data-stats-tab=course]').click()
+        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(3)
+        await page.locator('[data-stats-tab=funnel]').click()
+        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(3)
+        await page.locator('[data-stats-tab=money]').click()
+        await expect(page.locator('.stat-detail')).to_have_count(2)
+        await expect(page.locator('.stat-detail').first).to_contain_text('0.025 USD')
+        await page.locator('[data-stats-tab=sources]').click()
+        await expect(page.locator('.stats-category-content .state-panel')).to_be_visible()
+        await page.locator('[data-stats-tab=report]').click()
         await expect(page.locator('.feedback-analysis')).to_contain_text('Шикоятлар таҳлили')
         await expect(page.locator('.feedback-analysis')).to_contain_text('Нарх')
         await page.screenshot(path=str(output/'mobile-statistics-details.png'),full_page=True)
         assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         await page.locator('[data-route=payments]').last.click()
-        await expect(page.locator('[data-review]')).to_have_count(1)
+        await expect(page.locator('.payment-cards .payment-card')).to_have_count(1)
+        await expect(page.locator('.payment-table-wrap')).to_be_hidden()
+        await expect(page.locator('[data-review]:visible')).to_have_count(1)
         receipt_failure=True
-        await page.locator('[data-review]').click()
+        await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_disabled()
         await page.locator('.drawer-close').click()
         receipt_failure=False
-        await page.locator('[data-review]').click()
+        await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
         await page.locator('[data-action=reject]').click()
         await expect(page.locator('#rejectReason')).to_be_focused()
@@ -305,7 +341,7 @@ async def browser_checks(output):
         await expect(page.locator('[data-action=execute]')).to_have_count(0)
         await page.locator('.drawer-close').click()
         fail_prepare=False
-        await page.locator('[data-review]').click()
+        await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
         await page.screenshot(path=str(output/'mobile-payment-receipt.png'),full_page=True)
         await page.locator('[data-action=approve]').click()
@@ -314,7 +350,7 @@ async def browser_checks(output):
         await page.screenshot(path=str(output/'mobile-payment-confirmation.png'),full_page=True)
         assert len([path for path,_,_ in calls if path.endswith('step-up/options')])==1
         await finish_step_up(page)
-        try:await expect(page.locator('[data-review]')).to_have_count(0,timeout=20000)
+        try:await expect(page.locator('[data-review]:visible')).to_have_count(0,timeout=20000)
         except AssertionError:
             print(await page.locator('#dialogs').inner_text(),[p for p,_,_ in calls],flush=True)
             await page.screenshot(path=str(output/'failure.png'),full_page=True)
@@ -333,8 +369,8 @@ async def browser_checks(output):
             payment=Payment(user_id=2,amount=10,currency='USD',plan_type='10_days',payment_method='visa',payment_status='pending',screenshot_file_id='synthetic-receipt')
             db.add(payment);await db.flush();second_id=payment.id;await db.commit()
         await page.locator('[data-route=payments]').last.click()
-        await expect(page.locator('[data-review]')).to_have_count(1)
-        await page.locator('[data-review]').click()
+        await expect(page.locator('[data-review]:visible')).to_have_count(1)
+        await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=reject]')).to_be_enabled()
         await page.locator('#rejectReason').fill('Synthetic QA duplicate')
         await page.locator('[data-action=reject]').click()
@@ -343,7 +379,7 @@ async def browser_checks(output):
         # A lost HTTP response AFTER a real commit must not resend the write.
         drop_review=True
         await finish_step_up(page)
-        await expect(page.locator('[data-review]')).to_have_count(0,timeout=20000)
+        await expect(page.locator('[data-review]:visible')).to_have_count(0,timeout=20000)
         assert len([p for p,_,_ in calls if p.endswith('/payments/review')])==2
         async with fixture.sessions() as db:
             assert (await db.get(Payment,second_id)).payment_status=='rejected'
@@ -353,8 +389,8 @@ async def browser_checks(output):
             db.add(Payment(user_id=2,amount=10,currency='USD',plan_type='10_days',payment_method='visa',payment_status='pending',screenshot_file_id='synthetic-receipt'))
             await db.commit()
         await page.locator('[data-route=payments]').last.click()
-        await expect(page.locator('[data-review]')).to_have_count(1)
-        await page.locator('[data-review]').click()
+        await expect(page.locator('[data-review]:visible')).to_have_count(1)
+        await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
         await page.evaluate('window.holdStepUp=false')
         # Delay an OLD rejected native promise across a NEW prompt. Closing
@@ -375,9 +411,9 @@ async def browser_checks(output):
             await page.locator('[data-action=approve]').click()
         await wait_js(page,'() => window.qaNativeCalls===1')
         await page.locator('.drawer-close').click()
-        await expect(page.locator('[data-review]')).to_have_count(1)
+        await expect(page.locator('[data-review]:visible')).to_have_count(1)
         await wait_js(page,'() => !!window.qaRelease')
-        await page.locator('[data-review]').click()
+        await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
         async with page.expect_response('**/auth/step-up/options'):
             await page.locator('[data-action=approve]').click()
@@ -861,6 +897,7 @@ async def export_browser_checks(output):
             await page.goto(ORIGIN+'/admin/');await authenticate_fresh_launch(page)
             assert not calls,'Exports must only run after an explicit tap'
             await page.locator('[data-route=stats]').first.click()
+            await page.locator('[data-stats-tab=report]').click()
             await expect(page.locator('[data-export-format]')).to_have_count(2)
             await expect(page.locator('.feedback-analysis')).to_be_visible()
             await asyncio.wait_for(feedback_started.wait(),5)
@@ -925,6 +962,7 @@ async def export_browser_checks(output):
                 mode='normal'
                 await page.reload();await authenticate_fresh_launch(page)
                 await page.locator('[data-route=stats]').first.click()
+                await page.locator('[data-stats-tab=report]').click()
                 await page.locator('[data-menu-toggle=statisticsExportMenu]').click()
                 await expect(page.locator('[data-export-format=json]')).to_be_visible()
                 mode='delayed';started.clear();release.clear();finished.clear()
@@ -941,6 +979,7 @@ async def export_browser_checks(output):
             # of the longer cached statistics window.
             await page.reload();await authenticate_fresh_launch(page)
             await page.locator('[data-route=stats]').first.click()
+            await page.locator('[data-stats-tab=report]').click()
             await expect(page.locator('[data-menu-toggle=feedbackExportMenu]')).to_be_visible()
             await page.locator('#feedbackSource').select_option('bot')
             await expect(page.locator('.feedback-analysis-source')).to_have_count(1)
