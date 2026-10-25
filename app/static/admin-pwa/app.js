@@ -56,6 +56,7 @@ const USER_SEGMENTS=[['all','userFilterAll'],['active_today','userFilterActiveTo
 let managementDraft=null,managementReview=null,managementPreparing=false,preparingEditor=null;
 let coursePolicyRevision=null,hsk30Baseline=null;
 let courseData=null,courseLimitDraft=null,courseTrialDraft=null,courseLimitPlan='FREE';
+let courseAnalytics=null,courseAnalyticsDays=30,courseAnalyticsLoading=false,courseAnalyticsToken=0;
 let managementMediaPreviewUrl=null;
 let feedbackLoadId=0;
 const feedbackStats={source:'all',period:'weekly',data:null,loading:false,error:false};
@@ -65,7 +66,7 @@ function clearPrivate(phase) {
   cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
   epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
-  courseData=null;courseLimitDraft=null;courseTrialDraft=null;state.phase=phase;state.error=null;render();
+  courseData=null;courseLimitDraft=null;courseTrialDraft=null;courseAnalytics=null;courseAnalyticsToken++;courseAnalyticsLoading=false;state.phase=phase;state.error=null;render();
 }
 function releaseManagementMediaPreview(){if(managementMediaPreviewUrl){URL.revokeObjectURL(managementMediaPreviewUrl);managementMediaPreviewUrl=null;}}
 async function api(path, body, {publicAuth=false, method='POST',rawBody=null,extraHeaders={},timeoutMs=15000}={}) {
@@ -430,6 +431,33 @@ const cx=key=>courseCopy[locale]?.[key]||courseCopy.uz[key]||key;
 const courseLimitTitles={'lesson.start':'Дарс бошлаш','ai.text':'AI матн','ai.photo':'AI расм','ai.voice':'AI овоз','speaking.session':'Speaking','practice.*':'Машқлар','practice.placement':'Даража тести','study.quiz':'Тест','study.audio':'Аудио','study.flashcard_translate':'Карточкалар'};
 const courseCard=(heading,body)=>`<section class="panel course-panel"><div class="panel-title"><h2>${esc(heading)}</h2></div>${body}</section>`;
 const courseMetric=(label,value,note)=>`<div class="metric"><div class="metric-top">${esc(label)}</div><div class="metric-value">${esc(value)}</div><div class="metric-note">${esc(note||'')}</div></div>`;
+function courseFunnelPanel(){
+  const labels={uz:{funnel:'HSK 3.0 очиш воронкаси',active:'HSK 3.0 трекда',selected:'Даража танлаган',approved:'Тўлов тасдиқланган',days7:'7 кун',days30:'30 кун',days90:'90 кун',all:'Бутун давр',stage:'Босқич',users:'Фойдаланувчи',unavailable:'Воронка маълумотлари мавжуд эмас'},ru:{funnel:'Воронка HSK 3.0',active:'На треке HSK 3.0',selected:'Выбрали уровень',approved:'Оплачено',days7:'7 дней',days30:'30 дней',days90:'90 дней',all:'За всё время',stage:'Этап',users:'Пользователи',unavailable:'Нет данных воронки'},tj:{funnel:'Воронкаи HSK 3.0',active:'Дар треки HSK 3.0',selected:'Сатҳро интихоб карданд',approved:'Пардохти тасдиқшуда',days7:'7 рӯз',days30:'30 рӯз',days90:'90 рӯз',all:'Ҳамаи давра',stage:'Марҳила',users:'Истифодабаранда',unavailable:'Маълумоти воронка дастрас нест'}};
+  const names=labels[locale]||labels.uz;
+  const a=courseAnalytics;
+  const tabs=[7,30,90,0].map((n,i)=>`<button type="button" data-course-days="${n}" class="btn small ${courseAnalyticsDays===n?'primary':''}" ${courseAnalyticsLoading?'disabled':''}>${esc(names[['days7','days30','days90','all'][i]])}</button>`).join('');
+  const funnel=Array.isArray(a?.course_funnel)?a.course_funnel:[];
+  const table=funnel.length?`<div class="table-wrap"><table class="data-table stat-table"><thead><tr><th>${esc(names.stage)}</th><th>${esc(names.users)}</th></tr></thead><tbody>${funnel.map(row=>`<tr><td>${esc(row.label||row.key)}</td><td>${esc(row.users)}</td></tr>`).join('')}</tbody></table></div>`:`<p class="source-note">${esc(courseAnalyticsLoading?t('loading'):names.unavailable)}</p>`;
+  return `<div class="course-spacer"></div>${courseCard(names.funnel,`<div class="v6-buttons course-funnel-period">${tabs}</div>${table}${a?.coverage_note?`<p class="form-hint">${esc(a.coverage_note)}</p>`:''}`)}`;
+}
+async function loadCourseAnalytics(){
+  const current=epoch,requested=courseAnalyticsDays,token=++courseAnalyticsToken;
+  courseAnalyticsLoading=true;
+  if(state.route==='course'&&state.courseTab==='tracks'&&state.phase==='ready')render();
+  try{
+    const result=await api('hsk30/analytics',{days:requested});
+    if(current!==epoch||token!==courseAnalyticsToken||state.route!=='course'||!state.actor)return;
+    courseAnalytics=result.analytics||null;
+  }catch(error){
+    if(current!==epoch||token!==courseAnalyticsToken||state.route!=='course'||!state.actor)return;
+    courseAnalytics=null;
+  }finally{
+    if(current===epoch&&token===courseAnalyticsToken){
+      courseAnalyticsLoading=false;
+      if(state.route==='course'&&state.courseTab==='tracks'&&state.phase==='ready')render();
+    }
+  }
+}
 function renderCourseView(){
   const tabs=[['tracks','tracks'],['access','access'],['trial','trial'],['experiment','experiment']];
   const tabBar=`<div class="subtabs course-subtabs" role="tablist" aria-label="${esc(t('course'))}">${tabs.map(([id,key])=>`<button type="button" role="tab" aria-selected="${state.courseTab===id}" class="subtab ${state.courseTab===id?'active':''}" data-course-tab="${id}">${esc(cx(key))}</button>`).join('')}</div>`;
@@ -438,10 +466,12 @@ function renderCourseView(){
   let body='';
   if(state.courseTab==='tracks'){
     const shown=(h.live_levels||[]).map(s=>s.toUpperCase()).join(' · ')||'—';
-    body=`<div class="grid stat-cards course-stats">${courseMetric(cx('enabled'),cx(h.enabled?'yes':'no'),'HSK 3.0')}${courseMetric(cx('levels'),String(h.live_levels?.length||0),shown)}${courseMetric(cx('price'),String(h.unlock_price_tjs)+' TJS',cx(h.unlock_payment_enabled?'paid':'free'))}</div>
+    const analyticsLabels=({uz:['HSK 3.0 трекда','Даража танлаган','Тўлов тасдиқланган'],ru:['На треке HSK 3.0','Выбрали уровень','Оплачено'],tj:['Дар треки HSK 3.0','Сатҳ интихоб карданд','Пардохти тасдиқшуда']})[locale];
+    const kpis=[courseAnalytics?.track_activated_users,courseAnalytics?.selected_level_users,courseAnalytics?.payments?.approved];
+    body=`<div class="grid stat-cards course-stats">${kpis.map((value,i)=>courseMetric(analyticsLabels[i],value==null?'—':String(value),courseAnalytics?shown:'—')).join('')}</div>
     <div class="v6-two">${courseCard(cx('trackTitle'),`<div class="switchline"><div><strong>${esc(cx('enabled'))}</strong><small>${esc(cx(h.enabled?'yes':'no'))}</small></div><span class="pill ${h.enabled?'green':'gray'}">${esc(cx(h.enabled?'active':'inactive'))}</span></div><div class="course-levels">${(h.available_levels||[]).map(l=>`<span class="v6-check ${h.live_levels.includes(l)?'chosen':''}">${esc(l.toUpperCase())}</span>`).join('')}</div><div class="v6-buttons"><button type="button" class="btn primary" data-action="hsk30Settings">${esc(cx('edit'))}</button></div>`)}
     ${courseCard(cx('unlock'),`<div class="switchline"><div><strong>${esc(cx('paid'))}</strong><small>${esc(cx(h.unlock_payment_enabled?'paid':'free'))}</small></div><span class="pill ${h.unlock_payment_enabled?'amber':'green'}">${esc(cx(h.unlock_payment_enabled?'yes':'no'))}</span></div><div class="course-price">${esc(String(h.unlock_price_tjs))} TJS</div><div class="v6-buttons"><button type="button" class="btn primary" data-action="hsk30Settings">${esc(cx('edit'))}</button></div>`)}</div>
-    <div class="course-spacer"></div>${courseCard(cx('courseStats'),`<p class="secondary-note">${esc(cx('courseStatsHint'))}</p><button type="button" class="btn" data-course-stats>${esc(cx('statsOpen'))}</button>`)}`;
+    <div class="course-spacer"></div>${courseFunnelPanel()}`;
   } else if(state.courseTab==='access'){
     const rules=courseLimitDraft?.[courseLimitPlan]||{};
     const options=Object.entries(rules).filter(([,rule])=>Number.isInteger(rule.limit));
@@ -505,6 +535,7 @@ async function loadCourseData(){
     }
     courseTrialDraft={enabled:limit.limits.trial.enabled,days:limit.limits.trial.days,disabled_reason:limit.limits.trial.disabled_reason||''};
     state.phase='ready';render();
+    void loadCourseAnalytics();
   }catch(error){
     if(current!==view||at!==epoch||state.route!=='course'||!state.actor)return;
     state.phase='ready';state.error='error';render();
@@ -2373,6 +2404,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.noticeKey){await noticeEditor(button.dataset.noticeKey);}
     else if(button.dataset.portfolioNext){await portfolioHistory(Number(button.dataset.portfolioNext));}
     else if(button.dataset.courseTab){keepCourseEdits();state.courseTab=button.dataset.courseTab;render();}
+    else if(button.dataset.courseDays){courseAnalyticsDays=Number(button.dataset.courseDays);void loadCourseAnalytics();}
     else if(button.dataset.courseStats){state.route='stats';state.statsTab='course';await load();}
     else if(button.dataset.statsTab){
       const next=button.dataset.statsTab;
