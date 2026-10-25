@@ -2,6 +2,41 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current completed increment — localized settings and marketing editors
+
+- Last pushed checkpoint is `1a3be7bc0ad9e45f2613450e1113a58cfeca921f`;
+  new increment adds `/settings/read|prepare|save` and
+  `/marketing/read|prepare|save`, exact `settings.update` / `marketing.update`
+  step-up actions and existing 0126 atomic command audit. No migration needed.
+- Fixed-key settings: bank details, allowed AI model, support contact and
+  language-specific help videos. One 16-key read, no arbitrary configuration
+  access/default writes, shared normalization, hash-only audit, postcommit AI
+  cache update. Marketing: shared sales experiment/app promotion controls and
+  bounded existing creative activation/deletion, no media BLOB or file scan.
+- Course/System/Marketing sections are usable through desktop navigation and
+  mobile More. Calm section rows fetch only when an editor opens. Before/after
+  confirmation, actual WebAuthn ceremony, stale 409 and lost-response read-only
+  recovery are shared across editors. Canonical UZ/RU/TJ regenerated. V10 and
+  four mobile tabs preserved; no polling or new dependency.
+- Hardened newly fetched HSK30 settings: deterministic locks cover all four
+  absent keys, raw timestamps participate in CAS, bounded strict read input,
+  coherent read-only snapshot. Added real-PG two-admin first-write race case.
+  Course policy read now uses the same strict body/coherent snapshot contract.
+- Native retention piggybacks metadata deletion on its existing indexed
+  expiry batch: remove corresponding Android triage state atomically, retain
+  content-free audit. No recurring orphan-table scan or additional scheduler.
+- Local broad gate: **497 passed, five Redis-only skipped**, including
+  isolated PostgreSQL contention; **61 legacy financial/import passed**.
+  Settings/prices/marketing ASGI+virtual-WebAuthn browser suite passed at
+  1440/390 UZ/RU/TJ: real saves, creative delete, cancel, stale confirmation,
+  lost response, revoked session, escaped stored text and strict CSP. Separate
+  compact Inbox/menu suite passed; screenshots visually inspected. Python,
+  JavaScript, catalogs and diff checks pass. CI includes both new browser and
+  PG suites. Exact committed-head CI is checked after push.
+- See [management contract](MANAGEMENT_COMMANDS_CONTRACT.md). Remaining code
+  parity is recorded there; do not equate these implemented commands with
+  unrestricted legacy admin endpoint access. External MCP stays statistics-only.
+
 ## Current continuation — inbox layout and live authority, 2026-10-25
 
 - Fetched and fast-forwarded 37 GitHub commits through `cb806ad1`; pricing caps,

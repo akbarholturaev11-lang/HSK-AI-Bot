@@ -25,6 +25,7 @@ globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 0 0 18M12
 menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
 more:'<path d="M12 5h.01M12 12h.01M12 19h.01"/>',
 download:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/>',
+chevron:'<path d="m9 5 7 7-7 7"/>',
 gift:'<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-10 0-8-8-4-6 2 1 4 6 4 6Zm0 0c10 0 8-8 4-6-2 1-4 6-4 6Z"/>',
 device:'<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>',
 sliders:'<path d="M4 5h16M4 12h16M4 19h16"/><circle cx="9" cy="5" r="2" fill="white"/><circle cx="16" cy="12" r="2" fill="white"/><circle cx="11" cy="19" r="2" fill="white"/>',
@@ -43,6 +44,7 @@ let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewI
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
 let statisticsDownload=null;
+let managementDraft=null,managementReview=null,managementPreparing=false;
 let feedbackLoadId=0;
 const feedbackStats={source:'all',period:'weekly',data:null,loading:false,error:false};
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
@@ -85,13 +87,14 @@ function auth() {
   else content=`<h1>${esc(t('signInTitle'))}</h1><p>${esc(t('passkeyHint'))}</p>${btn('signIn','signin','primary',busy)}<details><summary>${esc(t('google'))}</summary><p>${esc(t('googleHint'))}</p>${btn('googleStart','google','',busy)}</details>`;
   return `<main class="auth-wrap"><section class="auth-panel">${languageSelect()}<div class="brand-logo"><img src="/admin/assets/icon.png" alt="HSK AI"></div>${state.error?`<p class="alert" role="alert">${esc(t(state.error))}</p>`:''}${content}</section></main>`;
 }
-const routes=[['home','home'],['stats','chart'],['users','users'],['payments','wallet']];
+const routes=[['home','home'],['stats','chart'],['users','users'],['payments','wallet'],['course','book'],['marketing','mega'],['system','settings']];
 function render() {
   document.documentElement.lang=locale==='tj'?'tg':locale;document.title=t('appTitle');
   if(!state.actor) { $('root').innerHTML=auth();return; }
-  const navigation=routes.map(([route,glyph])=>`<button data-route="${route}" class="${state.route===route?'active':''}" ${state.route===route?'aria-current="page"':''}>${icon(glyph)}${esc(t(route))}</button>`).join('');
-  const disabled=['course','marketing','system'].map(route=>`<button disabled title="${esc(t('notReady'))}">${icon(route==='course'?'book':route==='marketing'?'mega':'settings')}${esc(t(route))}</button>`).join('');
-  $('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-logo"><img src="/admin/assets/icon.png" alt=""></div><div><div class="brand-title">HSK AI</div><div class="brand-sub">ADMIN</div></div></div><p class="nav-cap">${esc(t('sections'))}</p><nav class="nav">${navigation}${disabled}</nav><div class="side-foot"><p>${esc(t('account'))} · ${state.actor.user_id}</p>${languageSelect()}${state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''}${state.actor.push_available?btn('pushTitle','pushSettings'):''}${btn('logout','logout')}</div></aside><div class="workspace"><header class="topbar"><div class="topbar-context"><h1 class="page-title">${esc(t(state.route==='home'?'workspace':state.route))}</h1></div><div class="header-tools">${['home','stats'].includes(state.route)?filters():''}<button class="top-icon-btn" data-action="feedback" aria-label="${esc(t('feedback'))}">${icon('bell')}${inboxUnread?.unread_count?`<span class="top-icon-badge" aria-hidden="true">${inboxUnread.capped?'99+':inboxUnread.unread_count}</span>`:''}</button><button class="top-icon-btn mobile-only" data-action="more" aria-label="${esc(t('more'))}" ${busy?'disabled':''}>${icon('more')}</button></div></header><main class="main" id="content">${content()}</main></div></div><nav class="mobile-tabs" aria-label="${esc(t('sections'))}">${navigation}</nav>`;
+  const navButton=([route,glyph])=>`<button data-route="${route}" class="${state.route===route?'active':''}" ${state.route===route?'aria-current="page"':''}>${icon(glyph)}${esc(t(route))}</button>`;
+  const navigation=routes.map(navButton).join('');
+  const disabled='';
+  $('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-logo"><img src="/admin/assets/icon.png" alt=""></div><div><div class="brand-title">HSK AI</div><div class="brand-sub">ADMIN</div></div></div><p class="nav-cap">${esc(t('sections'))}</p><nav class="nav">${navigation}${disabled}</nav><div class="side-foot"><p>${esc(t('account'))} · ${state.actor.user_id}</p>${languageSelect()}${state.actor.mcp_available?btn('mcpConnections','mcpConnections'):''}${state.actor.push_available?btn('pushTitle','pushSettings'):''}${btn('logout','logout')}</div></aside><div class="workspace"><header class="topbar"><div class="topbar-context"><h1 class="page-title">${esc(t(state.route==='home'?'workspace':state.route))}</h1></div><div class="header-tools">${['home','stats'].includes(state.route)?filters():''}<button class="top-icon-btn" data-action="feedback" aria-label="${esc(t('feedback'))}">${icon('bell')}${inboxUnread?.unread_count?`<span class="top-icon-badge" aria-hidden="true">${inboxUnread.capped?'99+':inboxUnread.unread_count}</span>`:''}</button><button class="top-icon-btn mobile-only" data-action="more" aria-label="${esc(t('more'))}" ${busy?'disabled':''}>${icon('more')}</button></div></header><main class="main" id="content">${content()}</main></div></div><nav class="mobile-tabs" aria-label="${esc(t('sections'))}">${routes.slice(0,4).map(navButton).join('')}</nav>`;
   $('root').inert=!!$('overlay');
 }
 function filters() {
@@ -260,10 +263,20 @@ function usersView() {
 function paymentsView() {
   return `<div class="data-toolbar">${['pending','approved','rejected'].map(status=>`<button class="btn ${state.status===status?'primary':''}" data-status="${status}">${esc(t(status))}</button>`).join('')}</div>${state.rows.length?`<div class="table-wrap"><table class="data-table"><thead><tr>${['name','plan','amount','status','review'].map(key=>`<th>${esc(t(key))}</th>`).join('')}</tr></thead><tbody>${state.rows.map(row=>`<tr><td>${esc(row.name||'—')}<small>${esc(t('account'))}: ${esc(row.user_id??'—')} · #${row.payment_id}</small></td><td>${esc(t(row.plan_type))}<small>${esc(row.payment_method)}</small></td><td><strong>${esc(row.amount)} ${esc(row.currency)}</strong></td><td>${esc(t(row.status))}</td><td>${row.status==='pending'?`<button class="btn small" data-review="${row.payment_id}">${esc(t('review'))}</button>`:'—'}</td></tr>`).join('')}</tbody></table></div>`:statePanel('empty')}${pager()}`;
 }
-function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
+function managementRow(label,attributes,glyph='settings'){
+  return `<button class="management-row" ${attributes}><span class="management-row-icon">${icon(glyph)}</span><strong>${esc(label)}</strong>${icon('chevron')}</button>`;
+}
+function managementView(){
+  const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
+  if(state.route==='course')return `<div class="management-page">${group('course',managementRow(t('courseAccess'),'data-action="courseSettings"','book')+managementRow(t('hsk30Settings'),'data-action="hsk30Settings"','book'))}</div>`;
+  if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega'))}</div>`;
+  return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
+}
+function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
 async function load() {
   cancelStatisticsDownload();feedbackLoadId++;feedbackStats.loading=false;feedbackStats.data=null;
   if(!state.actor) return;const current=++view, authEpoch=epoch;state.phase='loading';state.error=null;render();
+  if(['course','system','marketing'].includes(state.route)){state.phase='ready';render();return;}
   try {
     const data=await api(['home','stats'].includes(state.route)?'statistics':state.route==='users'?'users/search':'payments/list',
       ['home','stats'].includes(state.route)?{period:state.period,platform:state.platform}:state.route==='users'?{query:state.query,before_id:state.cursor,limit:30}:{status:state.status,before_id:state.cursor,limit:30});
@@ -320,7 +333,7 @@ async function enroll() {
   const credential=await navigator.credentials.create({publicKey:publicKey(options.publicKey,true)});
   await api('auth/passkey/register/verify',{credential:serialize(credential)},{publicAuth:true});state.enrollment=false;state.enrollmentOptions=null;state.phase='signin';state.error=null;render();
 }
-function closeDrawer() {closeActionMenus();closeInboxAttachment();feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
+function closeDrawer() {closeActionMenus();closeInboxAttachment();managementDraft=null;managementReview=null;feedbackUserId=null;revokeTarget=null;drawerId++;signing?.abort();signing=null;confirmation=null;receiptLoaded=false;reviewId=null;$('dialogs').innerHTML='';$('root').inert=false;if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;}
 function drawer(title,body,foot='',className='') {
   if(!$('overlay'))returnFocus=document.activeElement;
   $('dialogs').innerHTML=`<div class="canvas-overlay show" id="overlay"><section class="drawer ${className}" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><div class="drawer-top"><h2 id="drawerTitle">${esc(t(title))}</h2><button class="drawer-close" data-action="close" aria-label="${esc(t('close'))}">×</button></div><div class="drawer-content" id="drawerContent">${body}</div><div class="drawer-foot" id="drawerFoot">${foot||btn('close','close')}</div></section></div>`;
@@ -400,6 +413,191 @@ async function executeAccess(){
     const rejected=[400,403,404,409].includes(error.status);
     drawer('grantAccess',statePanel(error.status===409?'changed':submitted&&!rejected?'uncertain':errorKey(error)),btn('close','close')+`<button class="btn" data-user-detail="${operation.payload.user_id}">${esc(t('openProfile'))}</button>`);
     if(submitted)await load();
+  }finally{if(signing===control)signing=null;}
+}
+
+const settingLabels={payment_details:'paymentDetails',ai_model:'aiModel',help_contact:'helpContact',help_video:'helpVideos'};
+const helpVideoLabels={course_hsk:'course',qa_mode:'questionAnswer',voice_translator:'voiceTranslator',subscription:'subscriptionHelp'};
+const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktopPromo',course_ad:'courseAds'};
+const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
+const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
+function managementNamespace(type){return type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
+function managementAction(type){return type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+function marketingFields(value){
+  const yes=value=>t(value?'hsk30On':'hsk30Off');
+  if(value.kind==='sales_experiment')return profileFields([['salesMode',t(salesModes[value.mode])],['salesPercent',value.treatment_percent+'%']]);
+  if(value.kind==='desktop_promo')return profileFields([['status',yes(value.enabled)],['dailyLimit',value.daily_limit],['requireProgress',yes(value.require_learning_progress)],
+    ['promoPlacements',Object.entries(value.placements||{}).filter(([,enabled])=>enabled).map(([key])=>t(promoLabels[key])).join(', ')||'—'],
+    ['platform',Object.entries(value.platforms||{}).filter(([,enabled])=>enabled).map(([key])=>promoLabels[key]).join(', ')||'—']]);
+  if(value.deleted_id)return profileFields([['courseAdId',value.deleted_id],['status',t('deleted')]]);
+  const fields=[['courseAdId',value.ad_id||value.id]];
+  if(value.title)fields.push(['name',value.title]);
+  fields.push(['status',value.operation==='delete'?t('deleteItem'):yes(value.is_active)]);
+  return profileFields(fields);
+}
+function boolSelect(id,label,value){return `<div class="form-field"><label for="${id}">${esc(t(label))}</label><select class="input" id="${id}"><option value="true" ${value?'selected':''}>${esc(t('hsk30On'))}</option><option value="false" ${!value?'selected':''}>${esc(t('hsk30Off'))}</option></select></div>`;}
+async function marketingEditor(kind,before=null){
+  if(!Object.hasOwn(marketingLabels,kind))return;
+  closeDrawer();const current=drawerId,at=epoch;
+  drawer(marketingLabels[kind],statePanel('loading'));
+  try{
+    const data=await api('marketing/read',before?{before_id:before}:{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    managementDraft={type:'marketing',kind,data};
+    if(kind==='course_ad'){
+      const page=data.course_ads;
+      if(!Array.isArray(page?.items)||page.items.length>30)throw Error('invalid_ads');
+      const rows=page.items.map(ad=>managementRow(`#${ad.id} · ${ad.title}`,`data-course-ad="${Number(ad.id)}"`,'mega')).join('');
+      drawer('courseAds',rows?`<div class="management-list">${rows}</div>`:statePanel('empty'),btn('close','close')+(page.next_before_id?`<button class="btn primary" data-marketing-next="${page.next_before_id}">${esc(t('next'))}</button>`:''));
+      return;
+    }
+    const value=data[kind];let body;
+    if(kind==='sales_experiment')body=`<div class="form-field"><label for="salesMode">${esc(t('salesMode'))}</label><select id="salesMode" class="input">${Object.entries(salesModes).map(([mode,label])=>`<option value="${mode}" ${value.mode===mode?'selected':''}>${esc(t(label))}</option>`).join('')}</select></div><div class="form-field"><label for="salesPercent">${esc(t('salesPercent'))}</label><select id="salesPercent" class="input">${[0,50,90,100].map(percent=>`<option value="${percent}" ${value.treatment_percent===percent?'selected':''}>${percent}%</option>`).join('')}</select></div>`;
+    else{
+      const check=(key,value,label)=>`<label class="management-check"><input type="checkbox" id="promo-${key}" ${value?'checked':''}>${esc(label)}</label>`;
+      body=boolSelect('promoEnabled','status',value.enabled)+`<div class="form-field"><label for="promoLimit">${esc(t('dailyLimit'))}</label><input class="input" id="promoLimit" type="number" min="1" max="3" step="1" value="${esc(value.daily_limit)}" required></div><label class="management-check"><input id="promoProgress" type="checkbox" ${value.require_learning_progress?'checked':''}>${esc(t('requireProgress'))}</label><fieldset class="form-field"><legend>${esc(t('promoPlacements'))}</legend>${['home_prompt','lesson_end_promo','ad_promo'].map(key=>check(key,value.placements?.[key],t(promoLabels[key]))).join('')}</fieldset><fieldset class="form-field"><legend>${esc(t('platform'))}</legend>${['macos','windows','android','ios'].map(key=>check(key,value.platforms?.[key],promoLabels[key])).join('')}</fieldset>`;
+    }
+    drawer(marketingLabels[kind],`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('next','managementPrepare','primary'));
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer(marketingLabels[kind],statePanel(errorKey(error)),btn('close','close')+managementReread({type:'marketing',kind}));}
+}
+function editCourseAd(id){
+  const ad=managementDraft?.data?.course_ads?.items?.find(row=>row.id===id);
+  if(!ad||managementDraft.kind!=='course_ad')return;
+  managementDraft={...managementDraft,ad};
+  const form=`<form id="managementForm">${profileFields([['courseAdId',ad.id],['name',ad.title],['language',ad.language]])}<div class="form-field"><label for="adOperation">${esc(t('operation'))}</label><select id="adOperation" class="input"><option value="set_active">${esc(t('changeStatus'))}</option><option value="delete">${esc(t('deleteItem'))}</option></select></div><div id="adActiveField">${boolSelect('adActive','status',ad.is_active)}</div><p class="alert" id="adDeleteHint" hidden>${esc(t('deleteAdHint'))}</p></form>`;
+  drawer('courseAds',form,btn('cancel','close')+btn('next','managementPrepare','primary'));
+}
+function managementFields(value,type){
+  if(type==='marketing')return marketingFields(value);
+  if(type==='price')return profileFields([['method',value.method],['plan',t(value.plan)],['amount',value.amount+' '+value.currency]]);
+  if(value.kind==='payment_details')return profileFields([['method',value.bank==='dc_city'?'DC City':'Alif'],['paymentDetails',value.value||t('notSet')]]);
+  if(value.kind==='ai_model')return profileFields([['aiModel',value.model]]);
+  if(value.kind==='help_contact')return profileFields([['helpContact',value.value||t('notSet')]]);
+  if(value.kind==='help_video')return profileFields([['videoTopic',t(helpVideoLabels[value.key])],['language',value.lang.toUpperCase()],['videoLink',value.value||t('notSet')]]);
+  throw Error('invalid_settings');
+}
+function managementReread(draft){
+  if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind)}">${esc(t('readCurrent'))}</button>`;
+  return draft.type==='price'?btn('readCurrent','priceSettings'):`<button class="btn" data-setting-kind="${draft.kind}" ${draft.bank?`data-bank="${draft.bank}"`:''}>${esc(t('readCurrent'))}</button>`;
+}
+function updatePriceFields(){
+  if(managementDraft?.type!=='price')return;
+  const row=managementDraft.prices.find(row=>row.method===$('priceMethod')?.value&&row.plan===$('pricePlan')?.value);
+  if(!row)return;
+  $('priceAmount').value=row.amount;$('priceCurrency').textContent=row.currency;
+}
+async function priceSettings(){
+  closeDrawer();const current=drawerId,at=epoch;
+  drawer('subscriptionPrices',statePanel('loading'));
+  try{
+    const data=await api('subscription-prices/read',{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    if(!Array.isArray(data.prices)||data.prices.length!==9)throw Error('invalid_prices');
+    managementDraft={type:'price',prices:data.prices};
+    const select=(id,label,options)=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><select id="${id}" class="input">${options.map(([key,text])=>`<option value="${key}">${esc(text)}</option>`).join('')}</select></div>`;
+    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div></form>`;
+    drawer('subscriptionPrices',body,btn('cancel','close')+btn('next','managementPrepare','primary'));
+    updatePriceFields();
+  }catch(error){
+    if(current===drawerId&&at===epoch&&state.actor)drawer('subscriptionPrices',statePanel(errorKey(error)),btn('close','close')+btn('retry','priceSettings','primary'));
+  }
+}
+function updateHelpVideoField(){
+  if(managementDraft?.kind!=='help_video')return;
+  const row=managementDraft.data.settings.help_videos.find(row=>row.key===$('helpVideoKey')?.value&&row.lang===$('helpVideoLanguage')?.value);
+  if($('settingValue'))$('settingValue').value=row?.value||'';
+}
+async function editSetting(kind,bank=null){
+  if(!Object.hasOwn(settingLabels,kind)||(kind==='payment_details'&&!['dc_city','alif'].includes(bank)))return;
+  closeDrawer();const current=drawerId,at=epoch,label=settingLabels[kind];
+  drawer(label,statePanel('loading'));
+  try{
+    const data=await api('settings/read',{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    if(!data.settings||!data.options)throw Error('invalid_settings');
+    managementDraft={type:'setting',kind,bank,data};
+    const s=data.settings,o=data.options;let body='';
+    if(kind==='ai_model')body=`<div class="form-field"><label for="settingModel">${esc(t(label))}</label><select id="settingModel" class="input">${o.ai_models.map(model=>`<option value="${esc(model)}" ${s.ai_model.model===model?'selected':''}>${esc(model)}</option>`).join('')}</select></div>`;
+    else{
+      let value='',maximum=512;
+      if(kind==='payment_details'){value=s.payment_details[bank];maximum=1500;body=`<p class="setting-target">${bank==='dc_city'?'DC City':'Alif'}</p>`;}
+      if(kind==='help_contact')value=s.help_contact.value;
+      if(kind==='help_video'){
+        maximum=2048;
+        body=`<div class="management-form-pair"><div class="form-field"><label for="helpVideoKey">${esc(t('videoTopic'))}</label><select id="helpVideoKey" class="input">${o.help_video_keys.filter(key=>Object.hasOwn(helpVideoLabels,key)).map(key=>`<option value="${key}">${esc(t(helpVideoLabels[key]))}</option>`).join('')}</select></div><div class="form-field"><label for="helpVideoLanguage">${esc(t('language'))}</label><select id="helpVideoLanguage" class="input">${o.help_languages.filter(lang=>['uz','ru','tj'].includes(lang)).map(lang=>`<option value="${lang}" ${lang===locale?'selected':''}>${lang.toUpperCase()}</option>`).join('')}</select></div></div>`;
+      }
+      body+=`<div class="form-field"><label for="settingValue">${esc(t(kind==='help_video'?'videoLink':label))}</label><textarea id="settingValue" class="input setting-value" rows="${kind==='payment_details'?5:3}" maxlength="${maximum}" ${kind==='payment_details'?'required':''}>${esc(value)}</textarea></div>`;
+    }
+    drawer(label,`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('next','managementPrepare','primary'));
+    if(kind==='help_video')updateHelpVideoField();
+  }catch(error){
+    if(current===drawerId&&at===epoch&&state.actor)drawer(label,statePanel(errorKey(error)),btn('close','close')+managementReread({type:'setting',kind,bank}));
+  }
+}
+async function prepareManagement(){
+  if(managementPreparing||!state.actor||signing||!managementDraft||!$('managementForm')?.reportValidity())return;
+  const draft=managementDraft;let payload;
+  if(draft.type==='price'){
+    const amount=Number($('priceAmount').value);
+    if(!Number.isSafeInteger(amount)||amount<1||amount>1000000)return;
+    payload={method:$('priceMethod').value,plan:$('pricePlan').value,amount};
+  }else if(draft.type==='marketing'){
+    const change={kind:draft.kind};
+    if(draft.kind==='sales_experiment')Object.assign(change,{mode:$('salesMode').value,treatment_percent:Number($('salesPercent').value)});
+    if(draft.kind==='desktop_promo')Object.assign(change,{enabled:$('promoEnabled').value==='true',daily_limit:Number($('promoLimit').value),require_learning_progress:$('promoProgress').checked,
+      placements:Object.fromEntries(['home_prompt','lesson_end_promo','ad_promo'].map(key=>[key,$('promo-'+key).checked])),
+      platforms:Object.fromEntries(['macos','windows','android','ios'].map(key=>[key,$('promo-'+key).checked]))});
+    if(draft.kind==='course_ad')Object.assign(change,{ad_id:draft.ad.id,operation:$('adOperation').value,is_active:$('adOperation').value==='delete'?null:$('adActive').value==='true'});
+    payload={change};
+  }else{
+    const change={kind:draft.kind};
+    if(draft.kind==='payment_details')Object.assign(change,{bank:draft.bank,value:$('settingValue').value});
+    if(draft.kind==='ai_model')change.model=$('settingModel').value;
+    if(draft.kind==='help_contact')change.value=$('settingValue').value;
+    if(draft.kind==='help_video')Object.assign(change,{key:$('helpVideoKey').value,lang:$('helpVideoLanguage').value,value:$('settingValue').value});
+    payload={change};
+  }
+  const current=drawerId,at=epoch;managementPreparing=true;
+  $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
+  try{
+    const result=await api(managementNamespace(draft.type)+'/prepare',payload);
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const operation=structuredClone(result.operation);
+    if(operation?.action!==managementAction(draft.type)||!operation.target||!operation.payload)throw Error('invalid_operation');
+    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,operation:Object.freeze(operation)});
+    const proposed=draft.type==='price'?{...operation.payload,currency:result.current.currency}:operation.payload.change;
+    const currentValue=draft.type==='marketing'?{kind:draft.kind,...result.current}:result.current;
+    const comparison=`<div class="management-comparison"><section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section><section><h3>${esc(t('proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
+    drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
+  }catch(error){
+    if(current===drawerId&&at===epoch&&state.actor)drawer('confirmChanges',statePanel(error.status===409?'configChanged':errorKey(error)),btn('close','close')+managementReread(draft));
+  }finally{managementPreparing=false;}
+}
+async function executeManagement(){
+  if(!managementReview||signing||!state.actor)return;
+  if(!supportsPasskey()){showNotice('passkeyUnsupported');return;}
+  const review=managementReview,operation=structuredClone(review.operation),current=drawerId,at=epoch,control=new AbortController();
+  if(operation.action!==managementAction(review.type))return;
+  signing=control;let submitted=false;
+  $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
+  try{
+    const options=await api('auth/step-up/options',operation);
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey),signal:control.signal});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    await api('auth/step-up/verify',{step_up_id:options.step_up_id,credential:serialize(credential)});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    submitted=true;
+    const result=await api(managementNamespace(review.type)+'/save',{...operation.payload,step_up_id:options.step_up_id});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    managementReview=null;managementDraft=null;
+    const saved=review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:result.setting;
+    drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+managementReread(review));
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    managementReview=null;managementDraft=null;
+    const rejected=[400,403,404,409].includes(error.status);
+    drawer('confirmChanges',statePanel(error.status===409?'configChanged':submitted&&!rejected?'configUncertain':errorKey(error)),btn('close','close')+managementReread(review));
   }finally{if(signing===control)signing=null;}
 }
 
@@ -932,6 +1130,9 @@ async function action(name) {
   if(name==='mcpConnections'){await mcpConnections();return;}
   if(name==='pushSettings'){await pushSettings();return;}
   if(name==='courseSettings'){await courseSettings();return;}
+  if(name==='priceSettings'){await priceSettings();return;}
+  if(name==='managementPrepare'){await prepareManagement();return;}
+  if(name==='managementExecute'){await executeManagement();return;}
   if(name==='hsk30Settings'){await hsk30Settings();return;}
   if(name==='hsk30Prepare'){await prepareHsk30Settings();return;}
   if(name==='hsk30Execute'){await executeHsk30Settings();return;}
@@ -943,7 +1144,7 @@ async function action(name) {
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='execute'){if(!signing)await execute();return;}
   if(name==='executeAccess'){await executeAccess();return;}
-  if(name==='more'){drawer('more',languageSelect('drawerLocale')+'<div class="panel-action-list">'+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):'')+btn('courseAccess','courseSettings')+btn('hsk30Settings','hsk30Settings')+'</div>',btn('install','install')+btn('logout','logout'));return;}
+  if(name==='more'){drawer('more',languageSelect('drawerLocale')+'<div class="panel-action-list">'+['course','marketing','system'].map(route=>`<button class="btn" data-route="${route}">${esc(t(route))}</button>`).join('')+(state.actor.mcp_available?btn('mcpConnections','mcpConnections'):'')+(state.actor.push_available?btn('pushTitle','pushSettings'):'')+'</div>',btn('install','install')+btn('logout','logout'));return;}
   if(name==='install'){if(installPrompt){await installPrompt.prompt();installPrompt=null;}else showNotice('installHint');return;}
   if(name==='update'){publicRegistration?.waiting?.postMessage('ACTIVATE_PUBLIC_SHELL');return;}
   if(name==='next'&&state.next){state.previous.push(state.cursor);state.cursor=state.next;await load();}
@@ -956,6 +1157,9 @@ document.addEventListener('click',event=>{
   const run=async()=>{
     if(button.dataset.menuToggle){toggleActionMenu(button);}
     else if(button.dataset.route){cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';await load();}
+    else if(button.dataset.marketingKind){await marketingEditor(button.dataset.marketingKind);}
+    else if(button.dataset.marketingNext){await marketingEditor('course_ad',Number(button.dataset.marketingNext));}
+    else if(button.dataset.courseAd){editCourseAd(Number(button.dataset.courseAd));}
     else if(button.dataset.period){state.period=button.dataset.period;await load();}
     else if(button.dataset.platform){state.platform=button.dataset.platform;await load();}
     else if(button.dataset.exportFormat){await exportStatistics(button.dataset.exportFormat);}
@@ -970,6 +1174,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.review){await review(Number(button.dataset.review));}
     else if(button.dataset.userDetail){await userProfile(Number(button.dataset.userDetail));}
     else if(button.dataset.accessUser){accessGrantForm(Number(button.dataset.accessUser));}
+    else if(button.dataset.settingKind){await editSetting(button.dataset.settingKind,button.dataset.bank||null);}
     else if(button.dataset.prepareAccess){await prepareAccess(Number(button.dataset.prepareAccess));}
     else if(button.dataset.profilePayments){await moreUserPayments(Number(button.dataset.profilePayments),Number(button.dataset.before),button);}
     else if(button.dataset.userFeedback){state.inboxSearch='';await inbox(null,Number(button.dataset.userFeedback));}
@@ -984,6 +1189,13 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('change',event=>{
+  if(event.target.id==='adOperation'){
+    const deleting=event.target.value==='delete';
+    if($('adActiveField'))$('adActiveField').hidden=deleting;
+    if($('adDeleteHint'))$('adDeleteHint').hidden=!deleting;
+  }
+  if(['priceMethod','pricePlan'].includes(event.target.id))updatePriceFields();
+  if(['helpVideoKey','helpVideoLanguage'].includes(event.target.id))updateHelpVideoField();
   if(['inboxSource','inboxPriority'].includes(event.target.id)){
     const source=event.target.id==='inboxSource',value=event.target.value;
     if(!(source?['all','payment','android','technical','bot','release']:['all','important']).includes(value))return;
@@ -1016,7 +1228,8 @@ document.addEventListener('change',event=>{
   }
 });
 document.addEventListener('submit',event=>{
-  if(event.target.id==='searchForm'){event.preventDefault();state.query=$('userQuery').value;state.cursor=null;state.previous=[];load();}
+  if(event.target.id==='managementForm'){event.preventDefault();prepareManagement();}
+  else if(event.target.id==='searchForm'){event.preventDefault();state.query=$('userQuery').value;state.cursor=null;state.previous=[];load();}
   else if(event.target.id==='inboxSearchForm'){
     event.preventDefault();
     const value=$('inboxSearchQuery').value.trim();

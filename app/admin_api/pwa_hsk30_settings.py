@@ -20,6 +20,7 @@ from app.admin_api.pwa_access_grants import CommandError, StepId
 from app.admin_api.pwa_approval import _utc
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
 from app.admin_api.pwa_payment_review import StrictModel
+from app.admin_api.pwa_read import read_transaction
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME, authenticate_admin_pwa_session, _authorized_admin
 from app.admin_api.pwa_step_up import _enabled, consume_step_up_in_mutation, operation_digest
 from app.admin_api.pwa_webauthn_transport import _body, _guard_post
@@ -28,6 +29,7 @@ from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.bot_setting import BotSetting
 from app.db.models.user import User
+from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.course_levels import hsk30_content_levels, level_spec
 from app.services.hsk30_feature_service import (
     HSK30_ENABLED_SETTINGS_KEY, HSK30_LIVE_LEVELS_SETTINGS_KEY, Hsk30FeatureService,
@@ -47,6 +49,10 @@ _KEYS = tuple(sorted((
 def _available():
     return tuple(level for level in hsk30_content_levels()
                  if level_spec(level) is not None and level_spec(level).selectable)
+
+
+class EmptyHsk30Request(StrictModel):
+    pass
 
 
 class Hsk30SettingsInput(StrictModel):
@@ -80,10 +86,17 @@ class ExecuteHsk30Settings(Hsk30SettingsCommand):
 
 
 async def _snapshot(db, *, lock=False):
-    statement = select(BotSetting.key, BotSetting.value).where(
-        BotSetting.key.in_(_KEYS)).order_by(BotSetting.key)
+    if lock:
+        # Row locks cannot serialize first writes to absent settings. These
+        # shared transaction locks also coordinate with legacy service writes.
+        repo = BotSettingRepository(db)
+        for key in _KEYS:
+            await repo.lock_key(key)
+    statement = select(BotSetting.key, BotSetting.value, BotSetting.updated_at).where(
+        BotSetting.key.in_(_KEYS)).order_by(BotSetting.key).limit(len(_KEYS))
     rows = (await db.execute(statement.with_for_update() if lock else statement)).all()
-    values = dict(rows)
+    values = {row.key: {"value": row.value, "updated_at": _utc(row.updated_at).isoformat()}
+              for row in rows}
     raw = json.dumps([[key, values.get(key)] for key in _KEYS],
                      ensure_ascii=True, separators=(",", ":"))
     return hashlib.sha256(raw.encode("ascii")).hexdigest()
@@ -101,7 +114,7 @@ async def _read(db):
 async def read_hsk30_settings(db, *, session_cookie, settings_obj):
     if not _enabled(settings_obj):
         raise CommandError("not_found", 404)
-    async with db.begin():
+    async with read_transaction(db):
         actor = await authenticate_admin_pwa_session(db, session_cookie, settings_obj)
         if actor is None or actor.auth_method != "webauthn":
             raise CommandError("admin_pwa_unauthorized", 401)
@@ -112,7 +125,7 @@ async def read_hsk30_settings(db, *, session_cookie, settings_obj):
 async def prepare_hsk30_settings(db, *, session_cookie, request, settings_obj):
     if not _enabled(settings_obj):
         raise CommandError("not_found", 404)
-    async with db.begin():
+    async with read_transaction(db):
         actor = await authenticate_admin_pwa_session(db, session_cookie, settings_obj)
         if actor is None or actor.auth_method != "webauthn":
             raise CommandError("admin_pwa_unauthorized", 401)
@@ -142,6 +155,7 @@ async def execute_hsk30_settings(db, *, session_cookie, request, settings_obj):
         current_hash = await _snapshot(db, lock=True)
         stamp = datetime.now(timezone.utc)
         if (not _enabled(settings_obj) or not _authorized_admin(actor, settings_obj)
+                or session.revoked_at is not None
                 or min(_utc(step.expires_at), _utc(session.expires_at)) <= stamp):
             raise CommandError("admin_pwa_step_up_denied", 403)
         if current_hash != command.expected_hash:
@@ -165,7 +179,7 @@ async def execute_hsk30_settings(db, *, session_cookie, request, settings_obj):
 def create_admin_pwa_hsk30_settings_router(*, settings_obj, session_factory):
     router = APIRouter(tags=["admin-pwa-hsk30-settings"])
 
-    async def handle(request, task, schema=None):
+    async def handle(request, task, schema):
         failure = _guard_post(request, settings_obj)
         if failure is not None:
             return failure
@@ -173,13 +187,13 @@ def create_admin_pwa_hsk30_settings_router(*, settings_obj, session_factory):
         if not cookie:
             return _reply(401, "admin_pwa_unauthorized")
         try:
-            parsed = schema.model_validate(await _body(request, 4096)) if schema else None
+            parsed = schema.model_validate(await _body(request, 4096))
         except ValidationError:
             return _reply(400, "admin_pwa_invalid_payload")
         try:
             async with session_factory() as db:
                 data = await task(db, session_cookie=cookie, settings_obj=settings_obj,
-                                  **({"request": parsed} if schema else {}))
+                                  **({} if schema is EmptyHsk30Request else {"request": parsed}))
         except CommandError as exc:
             return _reply(exc.status, str(exc))
         except Exception:
@@ -189,7 +203,7 @@ def create_admin_pwa_hsk30_settings_router(*, settings_obj, session_factory):
 
     @router.post("/api/admin/v1/hsk30/read")
     async def read(request: Request):
-        return await handle(request, read_hsk30_settings)
+        return await handle(request, read_hsk30_settings, EmptyHsk30Request)
 
     @router.post("/api/admin/v1/hsk30/prepare")
     async def prepare(request: Request):

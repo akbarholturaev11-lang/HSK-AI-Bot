@@ -7,6 +7,7 @@ import json
 from sqlalchemy import delete, select, update
 
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
+from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage
 from app.db.models.user import User
 
 RETENTION_DAYS = 30
@@ -99,6 +100,14 @@ async def purge_expired_native_reports(db, *, now=None, limit=100):
         raise ValueError("Invalid native report purge bound")
     expired = select(AdminPwaNativeReport.id).where(
         AdminPwaNativeReport.expires_at <= (now or datetime.now(timezone.utc)),
-    ).order_by(AdminPwaNativeReport.id).limit(limit)
-    result = await db.execute(delete(AdminPwaNativeReport).where(AdminPwaNativeReport.id.in_(expired)))
+    ).order_by(AdminPwaNativeReport.expires_at, AdminPwaNativeReport.id).limit(limit).with_for_update(skip_locked=True)
+    ids = list((await db.scalars(expired)).all())
+    if not ids:
+        return 0
+    # Piggyback on the existing indexed retention batch, avoiding a periodic
+    # orphan scan. Source locks match triage's source-before-state lock order;
+    # content-free immutable audit remains as evidence of completed actions.
+    await db.execute(delete(AdminPwaInboxTriage).where(
+        AdminPwaInboxTriage.source == "android", AdminPwaInboxTriage.source_id.in_(ids)))
+    result = await db.execute(delete(AdminPwaNativeReport).where(AdminPwaNativeReport.id.in_(ids)))
     return result.rowcount

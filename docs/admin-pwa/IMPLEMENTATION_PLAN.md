@@ -37,7 +37,10 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
    checkout price settings exist; subscription pricing now has a bounded signed
    adapter with raw-state CAS and shared legacy-writer key locks. Individual
    permanent HSK30 access still requires approved owned payment. Further
-   configuration/marketing adapters remain separately scoped work.
+   settings and marketing configuration adapters now exist with localized
+   before/after editors, exact proof, raw revision CAS and atomic hash-only
+   audit. Required channels, messaging/campaigns, partner operations, ledger
+   input and media uploads remain separately scoped legacy-parity work.
 5. **Staging acceptance**: isolated provider/device/TLS/proxy/migrations and
    actual ChatGPT E2E, then owner review. Needs real staging configuration and
    available hardware; never count synthetic tests as that evidence.

@@ -19,6 +19,7 @@ from app.admin_api.pwa_approval import _utc
 from app.admin_api.pwa_access_grants import CommandError, StepId
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
 from app.admin_api.pwa_payment_review import StrictModel
+from app.admin_api.pwa_read import read_transaction
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME, _authorized_admin, authenticate_admin_pwa_session
 from app.admin_api.pwa_step_up import _enabled, consume_step_up_in_mutation, operation_digest
 from app.admin_api.pwa_webauthn_transport import _body, _guard_post
@@ -66,6 +67,10 @@ class CoursePolicyInput(StrictModel):
         return self
 
 
+class EmptyCoursePolicyRequest(StrictModel):
+    pass
+
+
 class CoursePolicyCommand(CoursePolicyInput):
     expected_hash: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 
@@ -96,7 +101,7 @@ async def _current(db, *, lock=False):
 async def read_course_policy(db, *, session_cookie, settings_obj):
     if not _enabled(settings_obj):
         raise CommandError("not_found", 404)
-    async with db.begin():
+    async with read_transaction(db):
         actor = await authenticate_admin_pwa_session(db, session_cookie, settings_obj)
         if actor is None or actor.auth_method != "webauthn":
             raise CommandError("admin_pwa_unauthorized", 401)
@@ -108,7 +113,7 @@ async def read_course_policy(db, *, session_cookie, settings_obj):
 async def prepare_course_policy(db, *, session_cookie, request, settings_obj):
     if not _enabled(settings_obj):
         raise CommandError("not_found", 404)
-    async with db.begin():
+    async with read_transaction(db):
         actor = await authenticate_admin_pwa_session(db, session_cookie, settings_obj)
         if actor is None or actor.auth_method != "webauthn":
             raise CommandError("admin_pwa_unauthorized", 401)
@@ -163,7 +168,7 @@ async def execute_course_policy(db, *, session_cookie, request, settings_obj):
 def create_admin_pwa_course_access_router(*, settings_obj, session_factory):
     router = APIRouter(tags=["admin-pwa-course-access"])
 
-    async def handle(request, task, schema=None):
+    async def handle(request, task, schema=EmptyCoursePolicyRequest):
         failure = _guard_post(request, settings_obj)
         if failure is not None:
             return failure
@@ -171,13 +176,13 @@ def create_admin_pwa_course_access_router(*, settings_obj, session_factory):
         if not cookie:
             return _reply(401, "admin_pwa_unauthorized")
         try:
-            parsed = schema.model_validate(await _body(request, 2048)) if schema else None
+            parsed = schema.model_validate(await _body(request, 2048))
         except ValidationError:
             return _reply(400, "admin_pwa_invalid_payload")
         try:
             async with session_factory() as db:
                 data = await task(db, session_cookie=cookie, settings_obj=settings_obj,
-                                  **({"request": parsed} if schema else {}))
+                                  **({} if schema is EmptyCoursePolicyRequest else {"request": parsed}))
         except CommandError as exc:
             return _reply(exc.status, str(exc))
         except Exception:

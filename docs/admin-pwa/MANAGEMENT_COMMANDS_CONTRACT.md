@@ -20,6 +20,8 @@ uncertain response.
 | `course.access_policy` | `/course-access/read`, `/prepare`, `/save` | Global subscription/free-until policy, explicit timezone, maximum 365-day free deadline |
 | `hsk30.settings` | `/hsk30/read`, `/prepare`, `/save` | Global rollout, canonical live levels, checkout switch, 1–10000 TJS price; no direct permanent grants |
 | `subscription.prices` | `/subscription-prices/read`, `/prepare`, `/save` | Nine fixed payment-method/plan targets; shared Visa normalization and currencies |
+| `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
+| `marketing.update` | `/marketing/read`, `/prepare`, `/save` | Sales experiment, app promotion settings, existing creative activation/deletion |
 
 Subscription price read returns a fixed nine-row projection, never a paginated
 scan. Prepare accepts only `method=visa|alipay|wechat`,
@@ -40,3 +42,32 @@ Regression evidence lives in `test_admin_pwa_course_access.py`,
 the UUID-schema-only `test_admin_pwa_settings_postgres.py`. The PostgreSQL suite
 covers two admins on an absent setting, legacy-vs-PWA first-row writes and
 expiry during a real lock wait. Failure rolls back proof, audit and settings.
+
+Settings read selects exactly 16 allowed keys in one query. It never reads
+provider credentials or arbitrary keys and never writes defaults. Canonical
+normalization is repeated before hashing/signing. Bank details, contact values
+and URLs stay out of audit; evidence stores kind, target and before/after
+hashes. AI process cache changes only after the database transaction commits.
+
+Marketing read fetches two fixed settings plus at most 31 creative metadata
+rows, without BLOBs, file restoration or media URLs. Each creative is a signed
+individual target. Deletion uses the existing shared service, preserves files
+still referenced by other creatives and limits postcommit cleanup to a
+validated local basename. This adapter does not send messages or create
+campaigns. Course/System/Marketing navigation itself performs no settings read;
+editors fetch only after an explicit tap. Every editor has a before/after
+confirmation and a single passkey save, with read-current recovery on lost
+responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
+
+## Explicit code parity still outstanding
+
+These legacy capabilities are not silently proxied by the standalone PWA:
+required-channel mode/add/toggle/delete, account block/delete/direct messages,
+mass messages, campaign creation, partner actions/payouts, manual ledger input,
+notice-template management and media/QR/creative uploads. A legacy endpoint or
+unused step-up action name is not an implemented standalone command. Each
+needs its own strict payload, shared-service transaction and permission/audit
+contract before its UI can claim success. Messaging additionally needs durable
+claim/delivery evidence and bounded batches. Payment outbox uncertain-delivery
+operator reconciliation and non-native orphan triage cleanup remain separate
+operability work; immutable financial/command audits must stay intact.

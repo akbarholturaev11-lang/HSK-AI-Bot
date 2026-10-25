@@ -436,3 +436,29 @@
 .feedback-analysis-list span{overflow-wrap:anywhere}
 .feedback-analysis-download{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 @media(max-width:760px){.feedback-analysis-grid{grid-template-columns:1fr}.feedback-analysis{padding:16px}}
+
+/* Shared settings are reached through calm section rows; each editor has one next action. */
+.management-page{max-width:860px;display:grid;gap:28px}
+.management-section h2{font-size:13px;font-weight:750;color:var(--muted);margin:0 0 12px}
+.management-list{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.management-row{display:flex;align-items:center;gap:14px;width:100%;min-height:66px;padding:14px 18px;text-align:left;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;cursor:pointer}
+.management-row:last-child{border-bottom:0}
+.management-row:hover{background:#f4f8f9}
+.management-row:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
+.management-row strong{font-size:13px;font-weight:700;line-height:1.5;flex:1;min-width:0;overflow-wrap:anywhere}
+.management-row>svg{width:16px;height:16px;color:var(--muted);flex:none}
+.management-row-icon{width:34px;height:34px;display:grid;place-items:center;flex:none;border-radius:9px;color:var(--accent);background:#edf4f5}
+.management-row-icon svg{width:18px;height:18px}
+.management-form-pair{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px}
+.setting-value{width:100%;resize:vertical;line-height:1.6;min-height:100px}
+.setting-target{font-weight:750;color:var(--ink)}
+.management-comparison{display:grid;gap:22px}
+.management-comparison section{min-width:0}
+.management-comparison section+section{border-top:1px solid var(--line);padding-top:20px}
+.management-comparison h3{font-size:13px;color:var(--muted);margin:0 0 16px}
+.management-comparison .review-summary dd{white-space:pre-wrap}
+.management-check,.hsk30-level-option{display:flex;align-items:center;gap:12px;min-height:44px;font-size:13px;cursor:pointer}
+.management-check input,.hsk30-level-option input{width:18px;height:18px;accent-color:var(--accent);flex:none}
+fieldset.form-field{border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:20px 0}
+fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
+@media(max-width:760px){.management-page{gap:23px}.management-row{padding:14px;gap:12px}.management-row strong{font-size:13px}}
