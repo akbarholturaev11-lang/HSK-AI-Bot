@@ -2096,38 +2096,65 @@ async function viewInboxAttachment(button){
   }finally{clearTimeout(timer);}
 }
 const autoImportantSources=new Set(['payment','android','technical']);
-function inboxTitle(row){
+function inboxKind(row){
   const label=row.source==='payment'?'inboxPaymentReceipt':row.source==='android'?'inboxAndroid':row.source==='technical'?'inboxTechnical':row.source==='release'?'releaseFeedback':'botFeedback';
-  return t(label)+(row.user_id?' · '+t('account')+' '+row.user_id:'');
+  return t(label);
+}
+function inboxPlatform(row){
+  // Never attribute an unmarked payment to Android, Telegram or Desktop.
+  if(row.source==='android')return 'Android';
+  if(row.source==='technical')return 'Telegram Mini App';
+  if(row.source==='bot'||row.source==='release')return 'Telegram Bot';
+  return null;
+}
+function inboxTitle(row){return inboxKind(row)+(row.user_id?' · '+t('account')+' '+row.user_id:'');}
+function inboxPreview(row){
+  const parts=row.feedback_parts||{};
+  const phrases=[parts.liked?'👍 '+parts.liked:null,parts.disliked?'👎 '+parts.disliked:null].filter(Boolean);
+  return phrases.join(' · ')||row.message||
+    (row.rating?row.rating+'/5':row.source==='payment'?t('inboxPaymentReceipt'):t('empty'));
 }
 function inboxEntry(row){
-  const unread=row.triage_status==='new', important=autoImportantSources.has(row.source);
+  const unread=row.triage_status==='new',important=autoImportantSources.has(row.source);
   if(!['bot','release','android','payment','technical'].includes(row.source)||
      !Number.isSafeInteger(row.source_id)||row.source_id<1)return '';
-  return `<button type="button" class="inbox-minimal-row ${unread?'is-unread':'is-read'} ${important?'is-important':''}"
-    data-inbox-open="${row.source}:${row.source_id}" aria-label="${esc(inboxTitle(row))}">
-      <span class="inbox-row-dot" aria-hidden="true"></span>
-      <span class="inbox-row-title">${esc(inboxTitle(row))}</span>
-      ${icon('chevron')}
-    </button>`;
+  const platform=inboxPlatform(row);
+  const kindIcon=icon(row.source==='android'?'device':row.source==='payment'?'credit':row.source==='technical'?'settings':'send');
+  return '<button type="button" class="inbox-minimal-row '+(unread?'is-unread':'is-read')+' '+(important?'is-important':'')+'"'+
+    ' data-inbox-open="'+row.source+':'+row.source_id+'" aria-label="'+esc(inboxTitle(row))+'">'+
+    '<span class="inbox-platform-icon" aria-hidden="true">'+kindIcon+'</span>'+
+    '<span class="inbox-row-main"><span class="inbox-row-heading"><strong class="inbox-row-title">'+esc(inboxKind(row))+'</strong>'+
+    '<time class="inbox-row-date">'+esc(date(row.created_at))+'</time></span>'+
+    '<span class="inbox-row-preview">'+esc(inboxPreview(row))+'</span>'+
+    '<span class="inbox-row-meta">'+(platform?'<span>'+esc(platform)+'</span>':'')+
+    '<span>#'+esc(row.source_id)+'</span>'+(row.user_id?'<span>'+esc(t('account'))+' '+esc(row.user_id)+'</span>':'')+
+    '</span></span><span class="inbox-row-dot" aria-hidden="true"></span></button>';
 }
 function inboxDetails(row) {
-  const source=row.source,id=row.source_id;
+  const source=row.source,id=row.source_id,platform=inboxPlatform(row);
   const canView=(source==='android'?row.has_attachment:['bot','release'].includes(source)&&row.image_preview_available===true)
     &&Number.isSafeInteger(id)&&id>0&&id<=2147483647;
-  const attachmentId=`inboxAttachment-${source}-${id}`;
-  return `<div class="inbox-details">
-    <button class="inbox-back" data-action="inboxBack" type="button">${icon('chevron')}${esc(t('feedback'))}</button>
-    <h2>${esc(inboxTitle(row))}</h2>
-    <time>${esc(date(row.created_at))}</time>
-    ${row.message?`<p class="inbox-details-text">${esc(row.message)}</p>`:''}
-    ${row.rating?`<p>${esc(row.rating)}/5</p>`:''}
-    ${row.app_version?`<p>${esc(row.app_version)}</p>`:''}
-    ${row.screen?`<p>${esc(row.screen)}</p>`:''}
-    ${canView?`<button type="button" class="btn" data-inbox-attachment="${id}"
-      data-attachment-source="${source}" aria-controls="${attachmentId}" aria-expanded="false">${esc(t('viewAttachment'))}</button>
-      <div class="inbox-attachment" id="${attachmentId}" aria-live="polite" hidden></div>`:''}
-  </div>`;
+  const attachmentId='inboxAttachment-'+source+'-'+id;
+  const parts=row.feedback_parts||{};
+  const feedbackParts=source==='bot'&&(parts.liked||parts.disliked);
+  const text=feedbackParts?'<div class="inbox-detail-messages">'+
+    (parts.liked?'<p class="inbox-details-text"><span aria-hidden="true">👍</span> '+esc(parts.liked)+'</p>':'')+
+    (parts.disliked?'<p class="inbox-details-text"><span aria-hidden="true">👎</span> '+esc(parts.disliked)+'</p>':'')+
+    '</div>':'<p class="inbox-details-text">'+esc(row.message||(source==='payment'?t('inboxPaymentReceipt'):t('empty')))+'</p>';
+  const kindIcon=icon(source==='android'?'device':source==='payment'?'credit':source==='technical'?'settings':'send');
+  return '<div class="inbox-details">'+
+    '<button class="inbox-back" data-action="inboxBack" type="button">'+icon('chevron')+esc(t('feedback'))+'</button>'+
+    '<div class="inbox-detail-heading"><span class="inbox-platform-icon" aria-hidden="true">'+kindIcon+'</span>'+
+    '<div><h2>'+esc(inboxKind(row))+'</h2><time>'+esc(date(row.created_at))+'</time></div></div>'+
+    '<div class="inbox-detail-meta"><span>'+esc(t('platform'))+': <strong>'+esc(platform||t('unavailable'))+'</strong></span>'+
+    '<span>#'+esc(id)+'</span>'+(row.user_id?'<span>'+esc(t('account'))+' '+esc(row.user_id)+'</span>':'')+'</div>'+
+    '<div class="inbox-detail-body">'+text+
+    (row.rating?'<p class="inbox-rating">★ '+esc(row.rating)+'/5</p>':'')+
+    (row.app_version?'<p class="inbox-extra">'+esc(row.app_version)+'</p>':'')+
+    (row.screen?'<p class="inbox-extra">'+esc(row.screen)+'</p>':'')+'</div>'+
+    (canView?'<button type="button" class="btn" data-inbox-attachment="'+id+'" data-attachment-source="'+source+
+      '" aria-controls="'+attachmentId+'" aria-expanded="false">'+esc(t('viewAttachment'))+'</button>'+
+      '<div class="inbox-attachment" id="'+attachmentId+'" aria-live="polite" hidden></div>':'')+'</div>';
 }
 let currentInboxRows=[];
 async function openInbox(source,id) {
