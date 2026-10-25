@@ -1,5 +1,17 @@
 # Admin PWA browser increment — branch-only, flag OFF
 
+## Owner payout-window update — 2026-10-25
+
+Payout operations have one editor and one primary passkey confirmation button.
+Keep amounts/destination and protected uploaded proof visible in that editor;
+do not add a second before/after confirmation window. Preparing the exact
+server command and opening native WebAuthn are sequential backend operations
+behind the same click. A changed original payout revision requires reread.
+Disable completion until its owned proof image loads; freeze input during the
+ceremony, preserve the draft on native cancellation and never auto-retry a
+submitted uncertain result. Other existing command/auth security guards remain.
+
+
 The owner supplied `/Users/kaijimima1234/Downloads/hsk-ai-admin-ux-demo-v10 2.html`
 on 2026-10-24: 182,765 bytes, SHA-256
 `1ff92bf82126ea65672ed703f9fff6553982db2f08f7c1ed2a06396cb6c89566`.

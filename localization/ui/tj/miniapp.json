@@ -800,7 +800,12 @@
     "ui.admin_pwa.messageNew7d": "Сабти ном дар 7 рӯзи охир",
     "ui.admin_pwa.messageStale": "Ҳолати кӯшиш номаълум аст",
     "ui.admin_pwa.messageStopHint": "Паёмҳое, ки кӯшиши фиристодан надоранд, бекор мешаванд. Як кӯшиши оғозшуда метавонад анҷом ёбад. Бекоркунӣ дар аудит сабт мешавад.",
-    "ui.admin_pwa.messageRemoved": "Гирандагони ҳисоби ҳазфшуда"
+    "ui.admin_pwa.messageRemoved": "Гирандагони ҳисоби ҳазфшуда",
+    "ui.admin_pwa.payoutComplete": "Анҷом додан бо расид",
+    "ui.admin_pwa.payoutProofFile": "Акси расиди пардохт",
+    "ui.admin_pwa.payoutProofUploadHint": "JPEG, PNG ё WebP, то 2 МБ. Акси интихобшуда ба чати шахсии шумо бо бот бор шуда, дар ҳамин ҷо нишон дода мешавад.",
+    "ui.admin_pwa.payoutProofReviewHint": "Расид, қабулкунанда ва маблағро санҷед. Тасдиқ пардохти аллакай иҷрошударо сабт мекунад. Барои огоҳ кардани шарик як бор кӯшиш мешавад.",
+    "ui.admin_pwa.payoutProofInvalid": "Акси JPEG, PNG ё WebP то 2 МБ интихоб кунед. Агар боркунӣ ноком шавад, файлро аз нав интихоб кунед."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

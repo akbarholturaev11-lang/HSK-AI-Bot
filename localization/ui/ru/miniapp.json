@@ -800,7 +800,12 @@
     "ui.admin_pwa.messageNew7d": "Регистрация за последние 7 дней",
     "ui.admin_pwa.messageStale": "Состояние попытки неизвестно",
     "ui.admin_pwa.messageStopHint": "Сообщения без попытки отправки будут отменены. Одна уже начатая попытка может завершиться. Отмена записывается в аудит.",
-    "ui.admin_pwa.messageRemoved": "Получатели с удалённым аккаунтом"
+    "ui.admin_pwa.messageRemoved": "Получатели с удалённым аккаунтом",
+    "ui.admin_pwa.payoutComplete": "Завершить с чеком",
+    "ui.admin_pwa.payoutProofFile": "Изображение чека",
+    "ui.admin_pwa.payoutProofUploadHint": "JPEG, PNG или WebP, до 2 МБ. Выбранное изображение загрузится в ваш личный чат с ботом и появится здесь.",
+    "ui.admin_pwa.payoutProofReviewHint": "Проверьте чек, получателя и сумму. Подтверждение отмечает уже выполненную выплату. Уведомление партнёру отправляется одной попыткой.",
+    "ui.admin_pwa.payoutProofInvalid": "Выберите JPEG, PNG или WebP до 2 МБ. При ошибке загрузки выберите файл повторно."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

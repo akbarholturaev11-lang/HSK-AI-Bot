@@ -55,7 +55,8 @@ from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
 from app.admin_api.pwa_channels import create_admin_pwa_channels_router
-from app.admin_api.pwa_outbound import create_admin_pwa_outbound_router
+from app.admin_api.pwa_outbound import create_admin_pwa_outbound_router, create_message_drainer
+from app.admin_api.pwa_payout_completion import create_admin_pwa_payout_completion_router
 from app.admin_api.pwa_payment_reconciliation import create_admin_pwa_payment_reconciliation_router
 from app.admin_api.pwa_partner_payouts import create_admin_pwa_partner_payouts_router
 from app.admin_api.pwa_partners import create_admin_pwa_partners_router
@@ -790,7 +791,7 @@ async def _emit_admin_pwa_outbound(message):
     failure=None
     try:
         await AdminBroadcastService(bot,None)._send_one(message.telegram_id,text=message.text,
-            content_type='text',media_file_id=None,reply_markup=None)
+            content_type='photo' if message.photo_file_id else 'text',media_file_id=message.photo_file_id,reply_markup=None)
     except Exception as exc:
         failure=exc
     try:
@@ -806,8 +807,25 @@ async def _emit_admin_pwa_outbound(message):
         logger.warning('Admin PWA outbound reachability bookkeeping unavailable')
     if failure is not None:raise failure
 
+admin_pwa_message_drainer=create_message_drainer(settings_obj=settings,session_factory=async_session_maker,
+    emit=_emit_admin_pwa_outbound)
 app.include_router(create_admin_pwa_outbound_router(settings_obj=settings,session_factory=async_session_maker,
-    emit=_emit_admin_pwa_outbound))
+    emit=_emit_admin_pwa_outbound,drainer=admin_pwa_message_drainer))
+
+async def _upload_admin_pwa_payout_proof(proof):
+    # Private staging to the verified uploading admin; no partner notification
+    # or financial state change until the exact later passkey command commits.
+    suffix={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[proof.media_type]
+    sent=await bot.send_photo(chat_id=proof.actor_telegram_id,
+        photo=BufferedInputFile(proof.raw,filename='payout-proof.'+suffix))
+    return sent.photo[-1].file_id if sent.photo else None
+
+async def _load_admin_pwa_payout_proof(file_id):
+    raw,_=await download_receipt_image(bot,file_id)
+    return raw
+
+app.include_router(create_admin_pwa_payout_completion_router(settings_obj=settings,session_factory=async_session_maker,
+    upload=_upload_admin_pwa_payout_proof,loader=_load_admin_pwa_payout_proof,drainer=admin_pwa_message_drainer))
 
 admin_pwa_feedback_reader = AdminPwaFeedbackReader(settings_obj=settings, session_factory=async_session_maker)
 app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=settings, session_factory=async_session_maker,

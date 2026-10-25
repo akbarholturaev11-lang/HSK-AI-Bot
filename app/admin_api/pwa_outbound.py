@@ -241,13 +241,30 @@ async def execute_message(db,*,session_cookie,request,settings_obj):
             result_json=json.dumps({'kind':command.kind,'audience_count':len(snapshots),'audience_hash':digest,
                                    'content_hash':operation['payload']['content_hash']})))
         await db.flush()
-        job=Job(id=job_id,actor_user_id=user.id,session_id=session.id,target_user_id=command.user_id,
-            kind=command.kind,status='ready',body_json=command.model_dump_json(exclude={'audience_hash','audience_count'}),
-            audience_hash=digest,audience_count=len(snapshots),created_at=now,expires_at=now+timedelta(hours=1))
-        db.add(job);await db.flush()
-        await db.execute(insert(Recipient),[snapshot|{'job_id':job_id,'status':'pending'} for snapshot in snapshots])
+        job=await enqueue_reviewed_message(db,command_id=job_id,actor_user_id=user.id,session_id=session.id,
+            target_user_id=command.user_id,kind=command.kind,texts=command.texts.model_dump(),
+            filters=command.filters.model_dump(),snapshots=snapshots,digest=digest,now=now)
         result=await _job_view(db,job);result['session_current']=True
     return {'command_id':job_id,'job':result}
+
+
+async def enqueue_reviewed_message(db,*,command_id,actor_user_id,session_id,target_user_id,kind,
+                                   texts,filters,snapshots,digest,photo_file_id=None,now=None):
+    """Internal only: caller atomically owns exact proof and command audit.
+
+    A provider reference is accepted only from another server-validated
+    command (currently owned payout proof), never from a browser payload.
+    """
+    if not 1<=len(snapshots)<=MAX_AUDIENCE:raise ValueError('Invalid reviewed audience')
+    now=now or datetime.now(timezone.utc)
+    body={'kind':kind,'user_id':target_user_id,'texts':texts,'filters':filters}
+    if photo_file_id:body['photo_file_id']=photo_file_id
+    job=Job(id=command_id,actor_user_id=actor_user_id,session_id=session_id,target_user_id=target_user_id,
+        kind=kind,status='ready',body_json=json.dumps(body,ensure_ascii=False),audience_hash=digest,
+        audience_count=len(snapshots),created_at=now,expires_at=now+timedelta(hours=1))
+    db.add(job);await db.flush()
+    await db.execute(insert(Recipient),[snapshot|{'job_id':command_id,'status':'pending'} for snapshot in snapshots])
+    return job
 
 
 @dataclass(frozen=True)
@@ -256,6 +273,7 @@ class OutboundMessage:
     telegram_id:int
     language:str
     text:str
+    photo_file_id:str|None=None
 
 
 async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limit=10):
@@ -266,7 +284,7 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
             job=await db.scalar(select(Job).where(Job.id==job_id).with_for_update())
             if job is None or job.status!='ready' or _utc(job.expires_at)<=datetime.now(timezone.utc):return False
             run_token=str(uuid4());job.status='running';job.run_token=run_token;job.started_at=datetime.now(timezone.utc)
-            copies=json.loads(job.body_json)['texts']
+            body=json.loads(job.body_json);copies=body['texts'];photo_file_id=body.get('photo_file_id')
     for _ in range(min(max(limit,1),10)):
         async with session_factory() as db:
             async with db.begin():
@@ -295,7 +313,7 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
                         or recipient_hash(user)!=recipient.snapshot_hash):
                     recipient.status='skipped';recipient.finished_at=now;continue
                 recipient.status='attempting';recipient.attempted_at=now
-                message=OutboundMessage(user.id,user.telegram_id,recipient.language,copies[recipient.language])
+                message=OutboundMessage(user.id,user.telegram_id,recipient.language,copies[recipient.language],photo_file_id)
         status='uncertain'
         try:
             await asyncio.wait_for(emit(message),timeout=5)
@@ -421,8 +439,7 @@ async def purge_expired_message_jobs(db,*,limit=100,now=None):
     return len(keys)
 
 
-def create_admin_pwa_outbound_router(*,settings_obj,session_factory,emit=None,drain_batches=100):
-    router=APIRouter(tags=['admin-pwa-outbound'])
+def create_message_drainer(*,settings_obj,session_factory,emit,drain_batches=100):
     slots=asyncio.Semaphore(2)
     async def send_batch(job_id):
         async with slots:
@@ -432,6 +449,13 @@ def create_admin_pwa_outbound_router(*,settings_obj,session_factory,emit=None,dr
                 async with session_factory() as db:
                     status=await db.scalar(select(Job.status).where(Job.id==job_id))
                 if status!='ready':return
+    return send_batch
+
+
+def create_admin_pwa_outbound_router(*,settings_obj,session_factory,emit=None,drain_batches=100,drainer=None):
+    router=APIRouter(tags=['admin-pwa-outbound'])
+    send_batch=drainer or create_message_drainer(settings_obj=settings_obj,session_factory=session_factory,
+        emit=emit,drain_batches=drain_batches)
     async def handle(request,task,schema):
         failure=_guard_post(request,settings_obj)
         if failure is not None:return failure

@@ -64,8 +64,9 @@ browser/SW no-store and real-data/metric-definition requirements. Details:
 
 Implemented management code now includes signed direct/self-test and bounded
 text broadcasts, durable pre-provider claims, explicit cancellation and
-pending-only signed resume. Campaign creation, payout proof/completion/notices
-and media uploads remain code work; see [management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
+pending-only signed resume. Owned payout proof/completion and durable recipient notice also exist, using
+the owner-requested single payout window. Campaign creation, partner application
+notices and general media/QR/creative uploads remain code work; see [management contract](MANAGEMENT_COMMANDS_CONTRACT.md).
 This paragraph records scope and does not mark the entire acceptance list done.
 
 ### F. Cloud/ChatGPT/Local analytics without exposing admin credentials

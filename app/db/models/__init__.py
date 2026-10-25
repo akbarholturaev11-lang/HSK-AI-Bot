@@ -1,4 +1,5 @@
 from .user import User
+from .admin_pwa_payout_proof import AdminPwaPayoutProof
 from .referral import Referral
 from .payment import Payment
 from .discount_campaign import DiscountCampaign

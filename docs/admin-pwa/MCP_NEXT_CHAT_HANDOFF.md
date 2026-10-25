@@ -25,6 +25,40 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   attempts, bounded queue pages, concurrent resolutions and real migration
   preservation, and adapts remaining management browser QA to real fresh login.
 
+## Current payout proof / one-window owner instruction
+
+- The owner rejected the second payout confirmation window. Payout state and
+  completion now execute from the original editor with one primary passkey
+  button. A 2-MiB raster is staged on file selection, privately previewed in
+  that editor and required to load before completion. Current read revision
+  must match prepare before any native ceremony. Preserve this new baseline.
+- `pwa_payout_completion.py` and migration 0130 implement private same-session
+  proof metadata, bounded upload quota/IO, no DB image BLOB/public file, exact
+  proof/recipient/copy signature and shared reserved-owner `mark_payout_paid`.
+  Post-lock authority/expiry, asset consumption, financial state, immutable
+  command and optional one-recipient claimed photo notice are atomic.
+- Provider upload goes only to the current uploading admin's private Bot chat;
+  partner notification occurs after signed commit through the shared outbound
+  drainer. Both routers share two worker slots. A provider timeout is never an
+  automatic retry and does not undo a paid record. No actual money transfer.
+- Explicit proof metadata retention CLI defaults to bounded dry run. Expired
+  staging cleanup preserves financial proof, command/stop evidence and notice.
+  Nonempty actual migration downgrade refuses data loss. QA head is now 0130;
+  the fixture DDL rehearsal covers 0103–0130, including required payout FK.
+- Before final one-window browser additions, payout/outbound/state/PG/QA suite
+  passed **71 tests**. Final broad PWA/catalog/initializer and affected legacy
+  payment/access/import suite with real isolated PostgreSQL/Redis: **642 passed,
+  zero skipped**. Actual ASGI/WebAuthn management and outbound browser suites
+  passed. The single-window payout browser passed UZ/RU/TJ 390px, private image
+  decode, unchanged original editor during native preparation, no extra confirm
+  control, closing cancellation, stale initial revision before FIDO, genuine
+  completion and lost-response no-retry. One notice and one command only.
+  Screenshots `/tmp/hsk-admin-pwa-payout-single-final-20261025` inspected.
+  Catalogs: 63 artifacts, zero stale; JS/Python syntax and diff checks passed.
+- Remaining code: campaign creation, partner application notices and general
+  media/QR/creative uploads. External MCP is still statistics-only; all feature
+  defaults remain OFF, no main/deploy/live migration.
+
 ## Mobile Inbox touch and fresh-login regression
 
 - Cause: the minimal detail image/back buttons inherited a sub-44px height;

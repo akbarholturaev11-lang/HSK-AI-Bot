@@ -800,7 +800,12 @@
     "ui.admin_pwa.messageNew7d": "Oxirgi 7 kunda ro‘yxatdan o‘tgan",
     "ui.admin_pwa.messageStale": "Urinish holati noma’lum",
     "ui.admin_pwa.messageStopHint": "Hali urinilmagan xabarlar bekor qilinadi. Boshlangan bitta urinish yakunlanishi mumkin. Bekor qilish auditga yoziladi.",
-    "ui.admin_pwa.messageRemoved": "Hisobi o‘chirilgan oluvchilar"
+    "ui.admin_pwa.messageRemoved": "Hisobi o‘chirilgan oluvchilar",
+    "ui.admin_pwa.payoutComplete": "Chek bilan yakunlash",
+    "ui.admin_pwa.payoutProofFile": "To‘lov cheki rasmi",
+    "ui.admin_pwa.payoutProofUploadHint": "JPEG, PNG yoki WebP, 2 MB gacha. Tanlangan rasm o‘zingizning yopiq Telegram chatingizga yuklanadi va shu yerda ko‘rsatiladi.",
+    "ui.admin_pwa.payoutProofReviewHint": "Chek, oluvchi va summani tekshiring. Tasdiq mavjud to‘lovni bajarilgan deb qayd etadi. Hamkorga xabar bir marta yuborishga uriniladi.",
+    "ui.admin_pwa.payoutProofInvalid": "JPEG, PNG yoki WebP rasm tanlang (2 MB gacha). Yuklash muvaffaqiyatsiz bo‘lsa, faylni qayta tanlang."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

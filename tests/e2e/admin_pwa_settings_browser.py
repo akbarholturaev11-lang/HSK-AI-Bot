@@ -148,13 +148,17 @@ async def browser_checks(output):
                 async def prepare_and_save(language, label=None):
                     before = await audit_count()
                     ceremonies = len([path for path, _ in calls if path.endswith("step-up/options")])
-                    await page.locator('[data-action="managementPrepare"]').click()
-                    await expect(page.locator(".management-comparison")).to_be_visible()
-                    assert await audit_count() == before
-                    assert len([path for path, _ in calls if path.endswith("step-up/options")]) == ceremonies
-                    if label:
+                    single_window = await page.locator('#payoutOperation').count() > 0
+                    if single_window and label:
                         await page.screenshot(path=str(output / label))
-                    await page.locator('[data-action="managementExecute"]').click()
+                    await page.locator('[data-action="managementPrepare"]').click()
+                    if not single_window:
+                        await expect(page.locator(".management-comparison")).to_be_visible()
+                        assert await audit_count() == before
+                        assert len([path for path, _ in calls if path.endswith("step-up/options")]) == ceremonies
+                        if label:
+                            await page.screenshot(path=str(output / label))
+                        await page.locator('[data-action="managementExecute"]').click()
                     expected = json.loads((ROOT / f"localization/ui/{language}/miniapp.json").read_text())["messages"]["ui.admin_pwa.changesSaved"]
                     await expect(page.locator("#drawerTitle")).to_have_text(expected, timeout=15000)
                     assert await audit_count() == before + 1
@@ -467,9 +471,9 @@ async def browser_checks(output):
                     await page.locator('[data-payout-id="1"]').click()
                     await page.locator('#payoutDays').select_option('3')
                     await page.set_viewport_size({'width':390,'height':844})
-                    await page.locator('[data-action="managementPrepare"]').click()
-                    await expect(page.locator('.management-comparison')).to_be_visible()
-                    assert await page.locator('.management-comparison img').count()==0
+                    await expect(page.locator('#managementForm')).to_be_visible()
+                    await expect(page.locator('[data-action="managementExecute"]')).to_have_count(0)
+                    assert await page.locator('#managementForm img').count()==0
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                     await page.screenshot(path=str(output/f'payout-confirm-{language}-390.png'))
                     await page.locator('[data-action="close"]').last.click()

@@ -59,11 +59,11 @@ function clearPrivate(phase) {
   epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   state.phase=phase;state.error=null;render();
 }
-async function api(path, body, {publicAuth=false, method='POST'}={}) {
+async function api(path, body, {publicAuth=false, method='POST',rawBody=null}={}) {
   const current=epoch, control=new AbortController(), timer=setTimeout(()=>control.abort(),15000);
   try {
     const response=await fetch('/api/admin/v1/'+path,{method, credentials:'same-origin',cache:'no-store',redirect:'error',
-      headers:method==='POST'?{'Content-Type':'application/json'}:{},body:method==='POST'?JSON.stringify(body):undefined,signal:control.signal});
+      headers:method==='POST'?{'Content-Type':rawBody?rawBody.type:'application/json'}:{},body:method==='POST'?(rawBody||JSON.stringify(body)):undefined,signal:control.signal});
     const data=await response.json();
     if (epoch!==current) throw new ApiError('stale',0);
     if (!response.ok || data.ok!==true) {
@@ -487,8 +487,8 @@ const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktop
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
 const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
 function managementNamespace(type){return ['message','message_control'].includes(type)?'messages':type==='delivery'?'payment-deliveries':type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
-function managementEndpoint(type,phase){return type==='message_control'?'messages/'+(phase==='prepare'?'prepare-control':'control'):type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
-function managementAction(type,operation){return type==='message'?'broadcast.send':type==='message_control'?'broadcast.control':type==='delivery'?'payments.delivery_reconcile':type==='payout'?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+function managementEndpoint(type,phase){if(type==='payout_completion')return 'partner-payouts/'+(phase==='prepare'?'prepare-completion':'complete');return type==='message_control'?'messages/'+(phase==='prepare'?'prepare-control':'control'):type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
+function managementAction(type,operation){return type==='message'?'broadcast.send':type==='message_control'?'broadcast.control':type==='delivery'?'payments.delivery_reconcile':['payout','payout_completion'].includes(type)?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
 const messageKindLabels={direct:'directMessage',broadcast:'broadcastMessage',test:'testMessage'};
 const messageJobLabels={ready:'messageReady',running:'messageRunning',complete:'messageComplete',closed:'messageClosed'};
 const messageCountLabels={pending:'messagePending',attempting:'messageAttempting',attempted:'messageAttempted',uncertain:'messageUncertain',skipped:'messageSkipped',removed:'messageRemoved'};
@@ -579,7 +579,7 @@ async function deliveryEditor(id=null,before=null){
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('deliveryQueue',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','deliveryList'));}
 }
 const payoutStatusLabels={pending:'pending',deadline_set:'payoutDeadlineSet',processing:'payoutReserved',paid:'payoutPaid',rejected:'rejected'};
-const payoutOperationLabels={deadline:'payoutDeadline',reject:'reject',claim:'payoutClaim',release:'payoutRelease'};
+const payoutOperationLabels={deadline:'payoutDeadline',reject:'reject',claim:'payoutClaim',release:'payoutRelease',complete:'payoutComplete'};
 async function payoutEditor(id=null,before=null){
   closeDrawer();const current=drawerId,at=epoch;drawer('partnerPayouts',statePanel('loading'));
   try{
@@ -589,11 +589,35 @@ async function payoutEditor(id=null,before=null){
       const rows=data.items.map(row=>managementRow(`#${row.id} · ${row.local_amount} ${row.local_currency} · ${t(payoutStatusLabels[row.status])}`,`data-payout-id="${Number(row.id)}"`,'wallet')).join('');
       drawer('partnerPayouts',(rows?`<div class="management-list">${rows}</div>`:statePanel('empty'))+(data.next_before_id?`<button class="btn" data-payout-next="${data.next_before_id}">${esc(t('next'))}</button>`:''),btn('close','close'));return;
     }
-    const row=data.payout,operations=row.operations.filter(op=>Object.hasOwn(payoutOperationLabels,op));
-    managementDraft={type:'payout',payoutId:id};
+    const row=data.payout,operations=(row.owned_reservation?['complete',...row.operations]:row.operations).filter(op=>Object.hasOwn(payoutOperationLabels,op));
+    managementDraft={type:'payout',payoutId:id,payoutRevision:row.revision_hash};
     const selection=operations.length?`<div class="form-field"><label for="payoutOperation">${esc(t('operation'))}</label><select class="input" id="payoutOperation">${operations.map(op=>`<option value="${op}">${esc(t(payoutOperationLabels[op]))}</option>`).join('')}</select></div><div class="form-field" id="payoutDaysField" ${operations[0]==='deadline'?'':'hidden'}><label for="payoutDays">${esc(t('durationDays'))}</label><select class="input" id="payoutDays">${[1,3,7].map(days=>`<option>${days}</option>`).join('')}</select></div>`:'';
-    drawer('partnerPayouts',`<form id="managementForm"><p class="source-note">${esc(t('payoutReserveHint'))}</p>${managementFields(row,'payout')}${selection}</form>`,btn('close','close')+(operations.length?btn('next','managementPrepare','primary'):''));
+    drawer('partnerPayouts',`<form id="managementForm"><p class="source-note">${esc(t('payoutReserveHint'))}</p>${managementFields(row,'payout')}${selection}${row.owned_reservation?`<div class="form-field" id="payoutProofField"><label for="payoutProofFile">${esc(t('payoutProofFile'))}</label><input class="input" id="payoutProofFile" type="file" accept="image/jpeg,image/png,image/webp" required><p class="source-note">${esc(t('payoutProofUploadHint'))}</p><div id="payoutProofPreview" aria-live="polite"></div></div>`:''}</form>`,btn('close','close')+(operations.length?btn('confirmPasskey','managementPrepare','primary',row.owned_reservation):''));
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('partnerPayouts',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','payoutList'));}
+}
+async function stagePayoutProof(file){
+  const draft=managementDraft,current=drawerId,at=epoch;
+  if(draft?.type!=='payout'||!$('payoutProofPreview'))return;
+  draft.proofId=null;draft.proofLoaded=false;
+  const confirm=document.querySelector('[data-action=managementPrepare]');if(confirm)confirm.disabled=true;
+  $('payoutProofPreview').textContent=t('loading');
+  draft.uploadVersion=(draft.uploadVersion||0)+1;const version=draft.uploadVersion;
+  if(!file||file.size>2*1024*1024||!['image/jpeg','image/png','image/webp'].includes(file.type)){$('payoutProofPreview').textContent=t('payoutProofInvalid');return;}
+  try{
+    const staged=await api('partner-payouts/'+draft.payoutId+'/proof',null,{rawBody:file});
+    if(current!==drawerId||at!==epoch||draft!==managementDraft||version!==draft.uploadVersion)return;
+    draft.proofId=staged.proof_id;
+    const image=new Image();image.className='inbox-attachment-image';image.alt=t('payoutProofFile');
+    image.addEventListener('load',()=>{
+      if(current!==drawerId||at!==epoch||draft!==managementDraft||version!==draft.uploadVersion)return;
+      draft.proofLoaded=image.naturalWidth>0;
+      if(confirm)confirm.disabled=managementPreparing||!!signing||$('payoutOperation')?.value==='complete'&&!draft.proofLoaded;
+    },{once:true});
+    image.addEventListener('error',()=>{if(current===drawerId&&at===epoch&&version===draft.uploadVersion)$('payoutProofPreview').textContent=t('error');},{once:true});
+    image.src='/api/admin/v1/payout-proofs/'+encodeURIComponent(staged.proof_id);
+    const hint=document.createElement('p');hint.className='source-note';hint.textContent=t('payoutProofReviewHint');
+    $('payoutProofPreview').replaceChildren(image,hint);
+  }catch(error){if(current===drawerId&&at===epoch&&draft===managementDraft&&version===draft.uploadVersion){$('payoutProofPreview').textContent=t('payoutProofInvalid');$('payoutProofFile').value='';}}
 }
 const partnerStatusLabels={pending:'pending',active:'accountActive',blocked:'BLOCKED',rejected:'rejected'};
 const partnerOperationLabels={approve:'approve',reject:'reject',block:'partnerBlock',unblock:'partnerUnblock'};
@@ -742,15 +766,19 @@ function managementFields(value,type){
     if(value.reconciled_at)fields.push(['deliveryReconciledTime',date(value.reconciled_at)]);
     return profileFields(fields);
   }
-  if(type==='payout'){
-    const fields=[['payoutId',value.id],['partnerId',value.partner_id],['status',t(payoutStatusLabels[value.status])],['amount',value.local_amount+' '+value.local_currency],['ledgerUSD',value.amount_usd+' USD']];
+  if(['payout','payout_completion'].includes(type)){
+    const fields=[['payoutId',value.id],['partnerId',value.partner_id],['status',value.previous_status?t(payoutStatusLabels[value.previous_status])+' → '+t(payoutStatusLabels[value.status]):t(payoutStatusLabels[value.status])],['amount',value.local_amount+' '+value.local_currency],['ledgerUSD',value.amount_usd+' USD']];
     if(value.operation)fields.push(['operation',t(payoutOperationLabels[value.operation])]);
     fields.push(['method',value.bank_name||value.payment_method]);
     if(value.holder_name)fields.push(['payoutHolder',value.holder_name]);
     fields.push(['payoutAccount',value.account_details]);
     if(value.deadline_at)fields.push(['payoutDueAt',date(value.deadline_at)]);
     if(value.note)fields.push(['ledgerNote',value.note]);
-    return profileFields(fields);
+    if(value.notice_count!==undefined)fields.push(['messageAudience',value.notice_count]);
+    if(value.notice_user_id)fields.push(['account',value.notice_user_id]);
+    const proof=value.proof_id?`<p class="source-note">${esc(t('payoutProofReviewHint'))}</p><img class="inbox-attachment-image" src="/api/admin/v1/payout-proofs/${esc(value.proof_id)}" alt="${esc(t('payoutProofFile'))}">`:'';
+    const notice=value.notice_texts?['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages"><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(value.notice_texts[lang])}</p></details>`).join(''):'';
+    return proof+profileFields(fields)+notice;
   }
   if(type==='partner'){
     const fields=[['partnerId',value.id],['status',t(partnerStatusLabels[value.status])]];
@@ -793,7 +821,7 @@ function managementReread(draft){
   if(draft.type==='message')return btn('readCurrent','messageList');
   if(draft.type==='message_control')return `<button class="btn" data-message-job="${esc(draft.jobId)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='delivery')return `<button class="btn" data-delivery-id="${esc(draft.deliveryId)}">${esc(t('readCurrent'))}</button>`;
-  if(draft.type==='payout')return `<button class="btn" data-payout-id="${draft.payoutId}">${esc(t('readCurrent'))}</button>`;
+  if(['payout','payout_completion'].includes(draft.type))return `<button class="btn" data-payout-id="${draft.payoutId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='partner')return `<button class="btn" data-partner-id="${draft.partnerId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='notice')return `<button class="btn" data-notice-key="${esc(draft.noticeKey)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='portfolio')return btn('readCurrent','portfolioHistory');
@@ -858,7 +886,8 @@ async function editSetting(kind,bank=null){
 }
 async function prepareManagement(){
   if(managementPreparing||!state.actor||signing||!managementDraft||!$('managementForm')?.reportValidity())return;
-  const draft=managementDraft;let payload;
+  if(managementDraft.type==='payout'&&!supportsPasskey()){showNotice('passkeyUnsupported');return;}
+  const draft={...managementDraft};let payload;
   if(draft.type==='message'){
     const kind=draft.userId?'direct':$('messageKind').value;
     if(draft.userId)draft.texts={uz:$('messageText').value,ru:$('messageText').value,tj:$('messageText').value};
@@ -874,7 +903,8 @@ async function prepareManagement(){
   }else if(draft.type==='delivery'){
     payload={review_id:draft.deliveryId,resolution:$('deliveryResolution').value,reason:$('deliveryReason').value};
   }else if(draft.type==='payout'){
-    payload={payout_id:draft.payoutId,operation:$('payoutOperation').value,days:$('payoutOperation').value==='deadline'?Number($('payoutDays').value):null};
+    if($('payoutOperation').value==='complete'){draft.type='payout_completion';payload={payout_id:draft.payoutId};}
+    else payload={payout_id:draft.payoutId,operation:$('payoutOperation').value,days:$('payoutOperation').value==='deadline'?Number($('payoutDays').value):null};
   }else if(draft.type==='partner'){
     payload={partner_id:draft.partnerId,operation:$('partnerOperation').value};
   }else if(draft.type==='notice'){
@@ -914,16 +944,26 @@ async function prepareManagement(){
     payload={change};
   }
   const current=drawerId,at=epoch;managementPreparing=true;
+  const payoutFields=['payout','payout_completion'].includes(draft.type)?[...document.querySelectorAll('#managementForm input,#managementForm select')].map(input=>[input,input.disabled]):[];
+  payoutFields.forEach(([input])=>input.disabled=true);
   $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
   try{
+    if(draft.type==='payout_completion'){
+      if(!draft.proofId||!draft.proofLoaded)throw new ApiError('admin_pwa_proof_invalid',400);
+      payload.proof_id=draft.proofId;
+    }
     const result=await api(managementEndpoint(draft.type,'prepare'),payload);
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const operation=structuredClone(result.operation);
     if(operation?.action!==managementAction(draft.type,draft.userOperation)||!operation.target||!operation.payload)throw Error('invalid_operation');
     managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,deliveryId:draft.deliveryId,jobId:draft.jobId,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
-    const proposed=['message','message_control','notice','partner','payout','delivery'].includes(draft.type)?result.proposed:draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
+    if(['payout','payout_completion'].includes(draft.type)){
+      if(operation.payload.expected_hash!==draft.payoutRevision)throw new ApiError('confirmation_changed',409);
+      await executeManagement();return;
+    }
+    const proposed=['message','message_control','notice','partner','payout','payout_completion','delivery'].includes(draft.type)?result.proposed:draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
     const currentValue=draft.type==='marketing'||draft.type==='channel'?{kind:draft.kind,...result.current}:result.current;
-    const comparison=`<div class="management-comparison">${draft.type==='message'?`<p class="source-note">${esc(t('messageAttemptHint'))}</p>`:draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
+    const comparison=`<div class="management-comparison">${['message','payout_completion'].includes(draft.type)?(draft.type==='message'?`<p class="source-note">${esc(t('messageAttemptHint'))}</p>`:''):draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
     drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
   }catch(error){
     if(current===drawerId&&at===epoch&&state.actor){
@@ -936,7 +976,10 @@ async function prepareManagement(){
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
       }else drawer('confirmChanges',statePanel(error.status===409?'configChanged':errorKey(error)),btn('close','close')+managementReread(draft));
     }
-  }finally{managementPreparing=false;}
+  }finally{
+    if(current===drawerId&&at===epoch)payoutFields.forEach(([input,disabled])=>{if(input.isConnected)input.disabled=disabled;});
+    managementPreparing=false;
+  }
 }
 async function executeManagement(){
   if(!managementReview||signing||!state.actor)return;
@@ -957,12 +1000,16 @@ async function executeManagement(){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
     if(['message','message_control'].includes(review.type)){await messageJob(result.job.job_id);return;}
-    const saved=review.type==='delivery'?result.delivery:review.type==='payout'?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
+    const saved=review.type==='delivery'?result.delivery:['payout','payout_completion'].includes(review.type)?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
     if(review.type==='user'&&result.deleted){state.rows=state.rows.filter(row=>row.user_id!==result.user_id);render();}
-    drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review)));
+    drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review))+(result.job_id?`<button class="btn" data-message-job="${esc(result.job_id)}">${esc(t('messages'))}</button>`:''));
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;
-    managementReview=null;managementDraft=null;
+    managementReview=null;
+    if(!submitted&&['payout','payout_completion'].includes(review.type)&&['NotAllowedError','AbortError'].includes(error.name)){
+      $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);showNotice('passkeyCancelled');return;
+    }
+    managementDraft=null;
     const rejected=[400,403,404,409].includes(error.status);
     drawer('confirmChanges',statePanel(error.status===409?'configChanged':submitted&&!rejected?'configUncertain':errorKey(error)),btn('close','close')+managementReread(review));
   }finally{if(signing===control)signing=null;}
@@ -1664,7 +1711,15 @@ document.addEventListener('click',event=>{
 document.addEventListener('change',event=>{
   if(event.target.id==='messageLanguage')updateMessageLanguage();
   if(event.target.id==='messageKind'&&$('messageFilters'))$('messageFilters').hidden=event.target.value==='test';
-  if(event.target.id==='payoutOperation'&&$('payoutDaysField'))$('payoutDaysField').hidden=event.target.value!=='deadline';
+  if(event.target.id==='payoutProofFile'){void stagePayoutProof(event.target.files[0]);return;}
+  if(event.target.id==='payoutOperation'){
+    if($('payoutDaysField'))$('payoutDaysField').hidden=event.target.value!=='deadline';
+    if($('payoutProofField')){
+      $('payoutProofField').hidden=event.target.value!=='complete';$('payoutProofFile').disabled=event.target.value!=='complete';
+      const confirm=document.querySelector('[data-action=managementPrepare]');
+      if(confirm)confirm.disabled=event.target.value==='complete'&&!managementDraft?.proofLoaded;
+    }
+  }
   if(event.target.id==='noticeLanguage')updateNoticeLanguage();
   if(event.target.id==='channelOperation'&&$('channelActiveField'))$('channelActiveField').hidden=event.target.value==='delete';
   if(event.target.id==='adOperation'){

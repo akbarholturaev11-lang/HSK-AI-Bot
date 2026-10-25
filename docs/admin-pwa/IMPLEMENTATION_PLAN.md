@@ -52,7 +52,8 @@ deploy. Historical `codex/admin-pwa` status below describes PR #200 foundations;
    Direct/self-test/bounded text broadcast now has exact signed audience/copy,
    pre-IO durable claims, stop and pending-only signed resume. Partner payout
    reserve/release/reject/deadline and payment-delivery reconciliation exist.
-   Campaign creation, payout proof/completion/notices and media uploads remain
+   Payout proof/completion/durable notice now uses the single editor and exact
+   passkey. Campaign creation, partner application notices and general media uploads remain
    legacy-parity work. Five fixed reminder
    templates now have signed UZ/RU/TJ editors with compact content commitments.
 5. **Staging acceptance**: isolated provider/device/TLS/proxy/migrations and
