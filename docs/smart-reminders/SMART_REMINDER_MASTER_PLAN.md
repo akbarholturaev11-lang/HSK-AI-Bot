@@ -140,12 +140,13 @@ Priority only among eligible intents, all study intents share frequency budget:
 
 Overtaken/rating, weekly progress, onboarding, trial/churn ва admin campaign'ларнинг scope/frequency budget'га кириш-кирмаслиги — [OPEN] бизнес қарори.
 
-### 4.2 Habit/time estimator [PROPOSAL]
+### 4.2 Habit/time estimator [D02 APPROVED: smart by default; technical details PROPOSAL]
 - Event: real lesson/practice session start; app_open’нинг ўзи “ўқиди” эмас.
 - Recent 14–28 days, уникал active study days, foreground/login ва offline duplicate'ларни тозалаш.
 - “Confident” учун дастлаб тахминан 5+ мустақил active study day [НЕРАСМИЙ threshold].
 - Бир-бирига яқин ўқиш вақтларини slot'ларга бирлаштириш (масалан, 30 минут интервал), айлана вақт чегараси (23:50/00:10)ни тўғри ҳисоблаш.
-- User explicit reminder time > автомат ўрганилган вақт; бирон маълумот йўқ бўлса explicit on/off ва safe default.
+- **[DECISION D02, 2026-10-25]** Smart Reminder эслатма вақтини фойдаланувчининг амалдаги ўқиш одатлари асосида автоматик мослаштиради; аввалги белгиланган вақтни ўзгармас қоида деб ҳисоблама. Фойдаланувчи аниқ вақтни ўзи белгилаб **қотирса**, автоматик ўзгариш тўхтайди. Тизим етарли ишончли ўқиш маълумотини йиғмагунча аввалги ёқилган эслатманинг танланган вақтини сақлайди; аввалги вақт йўқ бўлса хавфсиз fallback аниқланади. Бунинг учун фойдаланувчига янги функцияни ёқиш ойнаси кўрсатилмайди (D01).
+- [PROPOSAL] Auto/manual status аниқ сақланади; manual lock фақат фойдаланувчининг онгли ҳаракатидан келиб чиқсин. Legacy saved reminder time'ни automatic манба билан адаштирма; migration'да D14 билан мослаштир.
 - Вақт ойнаси: фойдаланувчининг ўзи 20:00 да дарс бошласа 19:45–20:00 оралиғи [PROPOSAL]; аниқ вақт A/B далилсиз “optimal” эмас.
 - Timezone: IANA ZoneInfo (Asia/Shanghai) canonical; эски offset'ни миграция даврида ўқиш, DST ва travel учун сақланган zone name'ни қайта аниқлаш.
 - User маҳаллий куни турли OS/device'ларда бир хил ҳисоблансин; сервер authoritative clock.
@@ -164,7 +165,7 @@ Overtaken/rating, weekly progress, onboarding, trial/churn ва admin campaign'�
 
 ### 5.1 reminder_preferences (new; exact fields review)
 - user_id PRIMARY KEY → users.id, ON DELETE CASCADE.
-- study_enabled (explicit/effective consent semantics), user_selected_time_local nullable, time_mode: manual|smart.
+- study_enabled (explicit/effective consent semantics), user_selected_time_local nullable, time_mode: manual_locked|smart_auto (D02: smart automatically learns once sufficient real study history exists; old selected time is preserved during cold start; user may lock manual time). Persist mode and timestamp/source; do not infer explicit manual lock from mere presence of legacy reminder_time.
 - timezone_name (IANA), quiet_start_local, quiet_end_local.
 - channel_policy: preferred|last_reliable|available; preferred_channel optional.
 - daily_max, weekly_max [server clamp], snooze_until UTC, paused_until UTC.
@@ -214,7 +215,7 @@ CANDIDATE → ELIGIBLE / SUPPRESSED → SCHEDULED → CLAIMED → PROVIDER_ATTEM
 
 ## 7. Notification UX / localization / deep-link [PROPOSAL]
 
-- **Settings:** Smart Reminders on/off, Manual/Smart timing, preferred time, quiet hours, preferred channel, pause, opt-out; minimize user-visible explanation. Existing user prefs preserved until policy migration.
+- **Settings [D02]:** фойдаланувчи хоҳласа эслатма вақтини қўлда қотиради; бу автоматик мослашишни тўхтатади. Қолган ҳолларда Smart вақт одатга қараб ўзгаради, етарли маълумот йўқ пайтда эски белгиланган вақт сақланади. Тўлиқ настройка, quiet hours, preferred channel, pause, opt-out имконияти бўлсин; function promo ва қайта opt-in ойнаси қўшилмайди (D01).
 - **Permission flow [D01]:** мавжуд study notification рухсатини Smart upgrade учун такроран сўрама, функционал ҳақида мажбурий onboarding/marketing ойна очма. Янги platform/OS push permission ҳали йўқ бўлса, фақат OS талаб қиладиган рухсат user interaction орқали одатдаги бир марталик оқимда сўралиши мумкин; рад этишни ҳурмат қил. Existing OFF'ни ON қилма, app-level opt-out ва OS-level off'ни ажрат.
 - **Content:** UZ/RU/TJ canonical catalog; polite, short, contextual; no invented lesson numbers/XP/minutes. Render placeholders validated and escaped.
 - **CTA:** resume lesson vs daily goal vs review; deep-link internal validated target, track/level/access check. Telegram Mini App, Android native, later iPhone PWA and Desktop adaptors, all canonical data.
@@ -298,7 +299,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 ### P2 — Deterministic decision engine (DRY RUN)
 **Ҳолат:** [NOT STARTED]
 - [ ] Policy pure function: reasons, priorities, frequency budget, quiet hours, current-day done, snooze.
-- [ ] Habit estimator with reliability, fallback to manual time, zone/DST tests.
+- [ ] **D02:** Smart habit estimator with reliability; enough observed study days бўлмагунча existing reminder time сақлаш; user қўлда вақтни қотирган бўлса optimizer override қилмасин; changed habit adaptation and zone/DST tests.
 - [ ] Job reservation/cancel/recompute and policy versioning; no network delivery.
 - [ ] Shadow logs compared against old reminders without user notification.
 **Acceptance:** identical inputs → identical decisions, safe suppress when data unknown, one study job/account/day, dry-run has no side effects.
@@ -375,7 +376,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | ID | Савол | Тавсия / олдинги маълумот | Status |
 |---|---|---|---|
 | D01 | Smart Reminder'ни фойдаланувчи қандай қабул қилади? | **1-вариант танланди:** аллақачон рухсат берилган/ёқилган ўқиш эслатмаларини Smart Reminder'га автоматик seamless upgrade; қайта-қайта рухсат сўралмайди; фойдаланувчига функция номи эмас, қулайлик муҳим. Илгари OFF қилган ва OS denied каналлар ўзгармайди, янги OS каналига қўшимча permission талабини четлаб ўтмаймиз; exact legacy mapping D14 да. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
-| D02 | Smart time manual time’дан устунми? | Manual > Smart; user can switch. | PROPOSAL |
+| D02 | Эслатма вақти автоматик ўрганиладими? | **2-вариант тасдиқланди:** вақт фойдаланувчи одатига автоматик мослашади; ишончли маълумот йиғилмагунча мавжуд вақт сақланади; user истаса аниқ вақтни ўзи белгилаб автоматик ўзгаришни тўхтатади. D01'га мувофиқ янги activation prompt талаб қилинмайди. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
 | D03 | Study frequency max/day, max/week? | 1/day, 3/week. | PROPOSAL |
 | D04 | Quiet hours? | 22:00–08:00, timezone-based, editable. | PROPOSAL |
 | D05 | Рейтинг/weekly progress ҳам global study budget’гами? | Рейтингни камайтириш/алоҳида product decision. | OPEN |
@@ -414,7 +415,8 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | Date | Scope | Result | Commit/PR | Tests | Next |
 |---|---|---|---|---|---|
 | 2026-10-25 | Initial discovery and single-file master-plan scaffold | Real main source inspected; planning proposals and unresolved decisions recorded. **Runtime unchanged.** | d01263f772f8cc72486cdfa8f6f113115783f615 (initial file commit) | NO TESTS RUN; code read only | P0 audit + D01–D14 lock |
-| 2026-10-25 | D01 owner decision | Option 1 approved, existing ON study notifications silent upgrade; OFF/OS-denied protected. Docs only. | жорий docs commit | NO TESTS RUN; requirements record only | D02 time behavior discussion; D14 mapping audit |
+| 2026-10-25 | D01 owner decision | Option 1 approved, existing ON study notifications silent upgrade; OFF/OS-denied protected. Docs only. | feca3f44086128fb213dbeb9e48814673c9c6c2c | NO TESTS RUN; requirements record only | D02 time behavior discussion; D14 mapping audit |
+| 2026-10-25 | D02 owner decision | Option 2 approved: smart time learns habit and adapts; manual lock optional; old time kept until confident. Docs only. | жорий docs commit | NO TESTS RUN; requirements record only | D03 notification frequency; D14 legacy time migration |
 
 **Final completion criteria:** P0–P8 acceptance achieved; automated + manual affected flow QA evidenced; global dedupe/opt-out/progress guards verified on real clients; experiment results/guardrails recorded; production rollout monitored; owner accepts completion. Until then status remains IN PROGRESS.
 
@@ -439,10 +441,11 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 - **Менинг тавсиям:** 1 ёки 2 ва аниқ сабаб.
 - **Сизнинг танловингиз:** 1 / 2 / ўзгартирилган қоида.
 
-**Жорий навбат:** **D02** — фойдаланувчи аввалдан белгилаб қўйган эслатма вақти сақланадими ёки Smart Reminder фойдаланувчи одатидан келиб чиқиб уни автоматик мослаштирадими? **OPEN; owner қарори кутилмоқда.** D01 тасдиқланган; D14 legacy toggle mapping техник деталлари OPEN.
+**Жорий навбат:** **D03** — study reminder'нинг барча каналлар бўйича кунлик/ҳафталик максимал сони: аниқ лимит ёки activity-aware индивидуал лимит? **OPEN; owner қарори кутилмоқда.** D01 ва D02 тасдиқланган; D14 legacy toggle/time mapping техник деталлари OPEN.
 
 ### 16.1 Decision log
 | ID | Дата | Тасдиқ | Таъсир | Commit |
 |---|---|---|---|---|
 | PROCESS-01 | 2026-10-25 | Ҳар саволда содда тушунтириш + 2 вариант + агент тавсияси; фақат owner танлайди, сўнг дарҳол шу файлга қайд этилади | Барча кейинги Smart Reminder қарорларига | жорий docs commit |
-| D01 | 2026-10-25 | **1-вариант:** аллақачон эслатма ёқилган каналларни Smart Reminder'га автоматик ўтказиш, қайта-қайта рухсат сўрамаслик. OFF/denied ва OS илк рухсати сақланади. | I02, preferences/migration, P0/P1/P3, UX; D14 mapping still OPEN; no runtime change | жорий docs commit |
+| D01 | 2026-10-25 | **1-вариант:** аллақачон эслатма ёқилган каналларни Smart Reminder'га автоматик ўтказиш, қайта-қайта рухсат сўрамаслик. OFF/denied ва OS илк рухсати сақланади. | I02, preferences/migration, P0/P1/P3, UX; D14 mapping still OPEN; no runtime change | feca3f44086128fb213dbeb9e48814673c9c6c2c |
+| D02 | 2026-10-25 | **2-вариант:** Smart Reminder ўқиш одатини ўрганиб вақтни автоматик мослаштиради; маълумот етарли бўлмагунча эски вақтни сақлайди; фойдаланувчи хоҳласа аниқ вақтни қўлда белгилаб қотиради. | Habit estimator, preferences/time_mode, UI, P2 ва timezone QA; time thresholds ҳали PROPOSAL; runtime ўзгармаган | жорий docs commit |
