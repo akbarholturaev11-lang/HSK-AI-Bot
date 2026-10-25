@@ -73,6 +73,7 @@ class AdminPwaInboxFilterTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         self.assertEqual(row["feedback_parts"], {
             "liked": "Стоила того — посоветую другу",
             "disliked": "Ежедневная практика",
+            "paid": True,
         })
         self.assertEqual(row["message"], "Ежедневная практика")
         self.assertNotIn("telegram_id", row)
