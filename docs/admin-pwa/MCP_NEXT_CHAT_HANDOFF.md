@@ -45,8 +45,10 @@ Updated 2026-10-26. Read this first; older checkpoints are historical. Verify re
   `/tmp/hsk-admin-pwa-release-media-20261026`,
   `/tmp/hsk-admin-pwa-course-media-secure-20261026`. Screenshot reviewed.
   Catalogs: 63 artifacts, zero stale; syntax/diff/OpenSpec checks passed.
-- Next: integrate newly fetched main `1db08846` original-editor/swipe UX,
-  then bounded session-preserving scheduling and policy-preserving discount
+- Newly fetched main `1db08846` original-editor/swipe UX is integrated; media
+  readiness shares the dirty-state controller, without duplicate footer actions.
+  Shell tests (8) and actual campaign browser passed on the merged code.
+- Next: bounded session-preserving scheduling and policy-preserving discount
   notices. No external MCP scope or manual deployment change.
 
 ## Owner-approved main promotion — 2026-10-25

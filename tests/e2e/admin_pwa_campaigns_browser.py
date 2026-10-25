@@ -180,7 +180,7 @@ async def browser_checks(output):
                     row = await db.scalar(select(DiscountCampaign))
                     assert row.target_user_id == 1 and row.target_telegram_id is None and row.is_active
                     assert not row.notify_enabled and row.quota_total == 1
-                await page.locator('.drawer-close').click()
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
                 await create('release')
                 await fill('release')
                 buffer=BytesIO();Image.new('RGB',(160,90),(26,108,116)).save(buffer,format='PNG')
@@ -194,21 +194,26 @@ async def browser_checks(output):
                 await page.set_viewport_size({'width': 390, 'height': 844})
                 await begin()
                 await finish_step_up(page)
-                await expect(page.locator('[data-message-job]')).to_be_visible(timeout=15000)
+                await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
                 assert len(sent) == 1 and sent[0].reply_markup['inline_keyboard'][0][0]['callback_data'] == 'relfb:1:try'
                 assert '&lt;b&gt;plain&lt;/b&gt;' in sent[0].text and sent[0].photo_file_id
                 async with fixture.sessions() as db:
                     assert (await db.scalar(select(AdminPwaCampaignAsset))).status=='used'
                 await page.screenshot(path=str(output / 'release-sent-uz-390.png'))
-                await page.locator('.drawer-close').click()
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
                 await marketing()
+                await page.locator('[data-action=messageList]').click()
+                await expect(page.locator('[data-message-job]')).not_to_have_count(0)
+                await page.locator('.drawer-close').click()
                 await page.locator('[data-campaign-list=ad]').click()
                 await page.locator('[data-campaign-detail="1"]').click()
+                # Sending is explicit action-only, not an unsaved field change.
+                await expect(page.locator('[data-action=managementPrepare]')).to_be_enabled()
                 await begin()
                 await finish_step_up(page)
-                await expect(page.locator('[data-message-job]')).to_be_visible(timeout=15000)
+                await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
                 assert len(sent) == 2
-                await page.locator('.drawer-close').click()
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
                 await page.locator('[data-campaign-list=ad]').click()
                 await page.locator('[data-campaign-detail="1"]').click()
                 await expect(page.locator('[data-action=managementPrepare]')).to_have_count(0)
@@ -255,18 +260,19 @@ async def browser_checks(output):
                 await begin()
                 await finish_step_up(page)
                 await expect(page.locator('#drawerTitle')).to_have_text(saved_label,timeout=15000)
-                await page.locator('#drawerFoot [data-campaign-list=ad]').click()
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                await page.locator('[data-campaign-list=ad]').click()
                 await page.locator('[data-campaign-detail="2"]').click()
                 assert await page.locator('#drawerContent img').count()==0
                 await expect(page.locator('#drawerContent')).to_contain_text('QA uz 中文 <test>')
                 await begin()
                 await finish_step_up(page)
-                await expect(page.locator('[data-message-job]')).to_be_visible(timeout=15000)
+                await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
                 assert len(sent)==3
                 assert sent[-1].reply_markup['inline_keyboard'][0][0]=={'text':'QA ru 中文 <test>','callback_data':'promo:action:course'}
                 async with fixture.sessions() as db:
                     assert await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit))==5
-                await page.locator('.drawer-close').click()
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
                 buffer=BytesIO();Image.new('RGB',(160,90),(26,108,116)).save(buffer,format='PNG')
                 photo=buffer.getvalue()
                 for language in ('uz','ru','tj'):
@@ -303,13 +309,14 @@ async def browser_checks(output):
                         used=await db.scalar(select(AdminPwaCampaignAsset).where(AdminPwaCampaignAsset.command_id==
                             (await db.scalar(select(AdminPwaCommandAudit.id).order_by(AdminPwaCommandAudit.created_at.desc()).limit(1)))))
                         assert used and used.status=='used'
-                    await page.locator('#drawerFoot [data-campaign-list=ad]').click()
+                    await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                    await page.locator('[data-campaign-list=ad]').click()
                     await page.locator(f'[data-campaign-detail="{ad_id}"]').click()
                     await begin();await finish_step_up(page)
-                    await expect(page.locator('[data-message-job]')).to_be_visible(timeout=15000)
+                    await expect(page.locator('.save-success-drawer .saved-animation')).to_be_visible(timeout=15000)
                     assert (sent[-1].photo_file_id if media=='photo' else sent[-1].video_file_id).startswith('PRIVATE_browser_media_')
                     assert sent[-1].reply_markup['inline_keyboard'][0][0]['url']=='https://example.invalid/course'
-                    await page.locator('.drawer-close').click()
+                    await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
                 assert len(upload_calls)==6 and len(sent)==5
                 assert not errors, errors
                 assert not await page.evaluate('cspFailures')
