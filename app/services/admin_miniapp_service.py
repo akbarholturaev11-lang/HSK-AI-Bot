@@ -1530,7 +1530,7 @@ class AdminMiniAppService:
                 "trial": int(entitlement_counts.get(EntitlementState.TRIAL_ACTIVE, 0)),
                 "free": int(entitlement_counts.get(EntitlementState.FREE, 0)),
                 "expired": int(entitlement_counts.get(EntitlementState.EXPIRED, 0)),
-                "blocked": int(status_counts.get("blocked", 0)),
+                "blocked": int(entitlement_counts.get(EntitlementState.BLOCKED, 0)),
                 "bot_blocked": bot_blocked_users,
             },
             "levels": [{"label": _level_label(key), "value": value} for key, value in sorted(level_counts.items())],
@@ -1728,8 +1728,8 @@ class AdminMiniAppService:
 
     async def _paid_user_count(self, now: datetime) -> int:
         return await self._count_users(
-            User.payment_status == "approved",
-            User.status == "active",
+            func.trim(func.lower(User.payment_status)) == "approved",
+            func.trim(func.lower(User.status)) == "active",
             User.end_date.is_not(None),
             User.end_date > now,
         )
