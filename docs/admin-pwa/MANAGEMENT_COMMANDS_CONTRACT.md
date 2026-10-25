@@ -23,6 +23,7 @@ uncertain response.
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
 | `marketing.update` | `/marketing/read`, `/prepare`, `/save` | Sales experiment, app promotion settings, existing creative activation/deletion |
 | `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
+| `channels.update` | `/channels/read`, `/prepare`, `/save` | Required-channel mode, add/upsert, state and removal through shared channel service |
 
 Subscription price read returns a fixed nine-row projection, never a paginated
 scan. Prepare accepts only `method=visa|alipay|wechat`,
@@ -63,7 +64,7 @@ responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 ## Explicit code parity still outstanding
 
 These legacy capabilities are not silently proxied by the standalone PWA:
-required-channel mode/add/toggle/delete, direct messages,
+direct messages,
 mass messages, campaign creation, partner actions/payouts, manual ledger input,
 notice-template management and media/QR/creative uploads. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
@@ -84,3 +85,13 @@ once outside the DB transaction, with no automatic retry or claim of device
 delivery. UI uses the existing profile overflow menu and exact before/after
 passkey confirmation. Test-generated account/creative deletions never touch
 live records.
+
+Required-channel reads use 30-row PK keysets and never backfill settings.
+Commands accept bounded explicit Telegram usernames/numeric channel IDs and
+HTTPS `t.me` invitations; private IDs require an invitation. No Telegram call
+or arbitrary URL fetch occurs. Alias-aware PWA snapshots reject duplicate
+case variants; shared writers lock canonical chat keys before first inserts
+and existing rows before updates/deletion. Audits contain only hashes and
+operation metadata, never invitation URLs or channel copy. Read-only section
+navigation does not fetch the list. The editors use the same localized
+confirmation/recovery flow as other configuration commands.

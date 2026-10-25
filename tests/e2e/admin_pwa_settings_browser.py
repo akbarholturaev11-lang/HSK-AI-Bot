@@ -24,6 +24,7 @@ from app.admin_api.pwa_read import create_admin_pwa_read_router
 from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
+from app.admin_api.pwa_channels import create_admin_pwa_channels_router
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
 from app.db.base import Base
@@ -59,7 +60,7 @@ async def browser_checks(output):
     for factory in (create_admin_pwa_bootstrap_router, create_admin_pwa_read_router,
                     create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
                     create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router,
-                    create_admin_pwa_user_management_router):
+                    create_admin_pwa_user_management_router,create_admin_pwa_channels_router):
         app.include_router(factory(**common))
     calls, errors = [], []
     drop_save = False
@@ -305,6 +306,36 @@ async def browser_checks(output):
                         await page.locator('#manageConfirm').fill('1')
                     await prepare_and_save('uz',f'account-{operation}-confirm.png')
                 await navigate('system',1440)
+                # Fixed channel settings are read only on an explicit editor
+                # tap; these are DB commands and never Telegram API requests.
+                async with fixture.sessions() as db:
+                    await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == 'consumed').values(
+                        created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
+                    await db.commit()
+                for language in ('uz','ru','tj'):
+                    await page.locator('#locale').select_option(language)
+                    await page.locator('[data-channels-kind="mode"]').click()
+                    await expect(page.locator('#channelEnabled')).to_be_visible()
+                    await page.set_viewport_size({'width':390,'height':844})
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                    await page.screenshot(path=str(output/f'channel-mode-{language}-390.png'))
+                    await page.locator('.drawer-close').click()
+                    await page.set_viewport_size({'width':1440,'height':1000})
+                await page.locator('#locale').select_option('uz')
+                await page.locator('[data-channels-kind="list"]').click()
+                await page.locator('[data-channels-kind="add"]').click()
+                await page.locator('#channelChat').fill('@qa_channel')
+                await page.locator('#channelTitle').fill('QA channel <img src=x onerror=alert(1)>')
+                await prepare_and_save('uz','channel-add-confirm.png')
+                await page.locator('[data-channels-kind="mode"]').click()
+                await page.locator('#channelEnabled').select_option('true')
+                await prepare_and_save('uz')
+                for operation in ('state','delete'):
+                    await page.locator('[data-channels-kind="list"]').click()
+                    await page.locator('[data-channel-id]').click()
+                    await page.locator('#channelOperation').select_option(operation)
+                    if operation=='state':await page.locator('#channelActive').select_option('false')
+                    await prepare_and_save('uz',f'channel-{operation}-confirm.png')
                 # Revocation between confirmation and proof fails before any write.
                 before = await audit_count()
                 await page.locator('[data-setting-kind="help_contact"]').click()

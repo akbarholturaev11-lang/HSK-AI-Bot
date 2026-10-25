@@ -270,7 +270,7 @@ function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
   if(state.route==='course')return `<div class="management-page">${group('course',managementRow(t('courseAccess'),'data-action="courseSettings"','book')+managementRow(t('hsk30Settings'),'data-action="hsk30Settings"','book'))}</div>`;
   if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega'))}</div>`;
-  return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
+  return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
 function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
 async function load() {
@@ -429,9 +429,35 @@ function userManagementEditor(userId,operation){
 const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktopPromo',course_ad:'courseAds'};
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
 const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
-function managementNamespace(type){return type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
+function managementNamespace(type){return type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
 function managementEndpoint(type,phase){return type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
-function managementAction(type,operation){return type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+function managementAction(type,operation){return type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+async function channelEditor(kind,before=null){
+  if(!['mode','list','add'].includes(kind))return;
+  closeDrawer();const current=drawerId,at=epoch;
+  drawer('requiredChannels',statePanel('loading'));
+  try{
+    const data=kind==='add'?null:await api('channels/read',before?{before_id:before}:{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    managementDraft={type:'channel',kind,data};
+    if(kind==='list'){
+      const rows=data.items.map(row=>managementRow(`${row.title} · ${row.chat_id}`,`data-channel-id="${Number(row.id)}"`,'link')).join('');
+      const next=data.next_before_id?`<button class="btn" data-channels-next="${data.next_before_id}">${esc(t('next'))}</button>`:'';
+      drawer('requiredChannels',profileFields([['channelMode',t(data.enabled?'hsk30On':'hsk30Off')]])+(rows?`<div class="management-list">${rows}</div>`:statePanel('empty'))+next,btn('close','close')+`<button class="btn primary" data-channels-kind="add">${esc(t('addChannel'))}</button>`);
+      return;
+    }
+    const field=(id,label,max,type='text',required=true)=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><input class="input" type="${type}" id="${id}" maxlength="${max}" ${required?'required':''}></div>`;
+    const body=kind==='mode'?boolSelect('channelEnabled','channelMode',data.enabled):field('channelChat','channelChatId',40)+field('channelTitle','name',180)+field('channelInvite','channelInvite',300,'url',false);
+    drawer(kind==='mode'?'channelMode':'addChannel',`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('next','managementPrepare','primary'));
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('requiredChannels',statePanel(errorKey(error)),btn('close','close')+managementReread({type:'channel',kind}));}
+}
+function editChannel(id){
+  const row=managementDraft?.data?.items?.find(row=>row.id===id);
+  if(managementDraft?.type!=='channel'||!row)return;
+  managementDraft={...managementDraft,kind:'state',channelId:id};
+  const body=profileFields([['channelChatId',row.chat_id],['name',row.title]])+`<div class="form-field"><label for="channelOperation">${esc(t('operation'))}</label><select class="input" id="channelOperation"><option value="state">${esc(t('changeStatus'))}</option><option value="delete">${esc(t('deleteItem'))}</option></select></div><div id="channelActiveField">${boolSelect('channelActive','status',row.is_active)}</div>`;
+  drawer('requiredChannels',`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('next','managementPrepare','primary'));
+}
 function marketingFields(value){
   const yes=value=>t(value?'hsk30On':'hsk30Off');
   if(value.kind==='sales_experiment')return profileFields([['salesMode',t(salesModes[value.mode])],['salesPercent',value.treatment_percent+'%']]);
@@ -477,6 +503,16 @@ function editCourseAd(id){
   drawer('courseAds',form,btn('cancel','close')+btn('next','managementPrepare','primary'));
 }
 function managementFields(value,type){
+  if(type==='channel'){
+    if(Object.hasOwn(value,'enabled'))return profileFields([['channelMode',t(value.enabled?'hsk30On':'hsk30Off')]]);
+    const fields=[];const id=value.id||value.channel_id||value.deleted_id;
+    if(id)fields.push(['channelId',id]);
+    if(value.chat_id)fields.push(['channelChatId',value.chat_id]);
+    if(value.title)fields.push(['name',value.title]);
+    if(value.invite_link)fields.push(['channelInvite',value.invite_link]);
+    fields.push(['status',value.kind==='delete'||value.deleted_id?t('deleteItem'):value.exists===false?t('notSet'):t(value.is_active===false?'hsk30Off':'hsk30On')]);
+    return profileFields(fields);
+  }
   if(type==='user'){
     const fields=[['account',value.user_id]];
     if(value.name)fields.push(['name',value.name]);
@@ -494,6 +530,7 @@ function managementFields(value,type){
   throw Error('invalid_settings');
 }
 function managementReread(draft){
+  if(draft.type==='channel')return `<button class="btn" data-channels-kind="${draft.kind==='mode'?'mode':'list'}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='user')return `<button class="btn" data-user-detail="${draft.userId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind)}">${esc(t('readCurrent'))}</button>`;
   return draft.type==='price'?btn('readCurrent','priceSettings'):`<button class="btn" data-setting-kind="${draft.kind}" ${draft.bank?`data-bank="${draft.bank}"`:''}>${esc(t('readCurrent'))}</button>`;
@@ -555,7 +592,13 @@ async function editSetting(kind,bank=null){
 async function prepareManagement(){
   if(managementPreparing||!state.actor||signing||!managementDraft||!$('managementForm')?.reportValidity())return;
   const draft=managementDraft;let payload;
-  if(draft.type==='user'){
+  if(draft.type==='channel'){
+    let change;
+    if(draft.kind==='mode')change={kind:'mode',enabled:$('channelEnabled').value==='true'};
+    else if(draft.kind==='add')change={kind:'add',chat_id:$('channelChat').value,title:$('channelTitle').value,invite_link:$('channelInvite').value||null};
+    else change=$('channelOperation').value==='delete'?{kind:'delete',channel_id:draft.channelId}:{kind:'state',channel_id:draft.channelId,is_active:$('channelActive').value==='true'};
+    payload={change};
+  }else if(draft.type==='user'){
     payload={user_id:draft.userId,operation:draft.userOperation,confirm_user_id:draft.userOperation==='delete'?Number($('manageConfirm').value):null};
   }else if(draft.type==='price'){
     const amount=Number($('priceAmount').value);
@@ -586,7 +629,7 @@ async function prepareManagement(){
     if(operation?.action!==managementAction(draft.type,draft.userOperation)||!operation.target||!operation.payload)throw Error('invalid_operation');
     managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,operation:Object.freeze(operation)});
     const proposed=draft.type==='price'?{...operation.payload,currency:result.current.currency}:draft.type==='user'?operation.payload:operation.payload.change;
-    const currentValue=draft.type==='marketing'?{kind:draft.kind,...result.current}:result.current;
+    const currentValue=draft.type==='marketing'||draft.type==='channel'?{kind:draft.kind,...result.current}:result.current;
     const comparison=`<div class="management-comparison"><section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section><section><h3>${esc(t('proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
     drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
   }catch(error){
@@ -611,7 +654,7 @@ async function executeManagement(){
     const result=await api(managementEndpoint(review.type,'save'),{...operation.payload,step_up_id:options.step_up_id});
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
-    const saved=review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='user'?result:result.setting;
+    const saved=review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='user'?result:result.setting;
     if(review.type==='user'&&result.deleted){state.rows=state.rows.filter(row=>row.user_id!==result.user_id);render();}
     drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review)));
   }catch(error){
@@ -1182,6 +1225,9 @@ document.addEventListener('click',event=>{
     else if(button.dataset.marketingNext){await marketingEditor('course_ad',Number(button.dataset.marketingNext));}
     else if(button.dataset.courseAd){editCourseAd(Number(button.dataset.courseAd));}
     else if(button.dataset.userManagement){userManagementEditor(Number(button.dataset.userManagement),button.dataset.userOperation);}
+    else if(button.dataset.channelsKind){await channelEditor(button.dataset.channelsKind);}
+    else if(button.dataset.channelsNext){await channelEditor('list',Number(button.dataset.channelsNext));}
+    else if(button.dataset.channelId){editChannel(Number(button.dataset.channelId));}
     else if(button.dataset.period){state.period=button.dataset.period;await load();}
     else if(button.dataset.platform){state.platform=button.dataset.platform;await load();}
     else if(button.dataset.exportFormat){await exportStatistics(button.dataset.exportFormat);}
@@ -1211,6 +1257,7 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('change',event=>{
+  if(event.target.id==='channelOperation'&&$('channelActiveField'))$('channelActiveField').hidden=event.target.value==='delete';
   if(event.target.id==='adOperation'){
     const deleting=event.target.value==='delete';
     if($('adActiveField'))$('adActiveField').hidden=deleting;

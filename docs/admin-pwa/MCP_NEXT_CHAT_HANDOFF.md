@@ -2,6 +2,32 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current required-channel increment
+
+- First-party `/channels/read|prepare|save` adds strict mode, add/upsert, state
+  and delete schemas; exact `channels.update` passkey proof, raw-state CAS,
+  post-lock authority/expiry and atomic hash-only 0126 audit. Shared service/
+  repository semantics remain authoritative, including correct missing-row
+  results. Shared key locks serialize first writes and row locks protect
+  legacy updates. No new table, scheduler, dependency or Telegram IO.
+- System section exposes compact list/mode rows; lists use 30-row keysets.
+  Add/state/delete editors show exact before/after values, escaped stored
+  titles and private invitation URLs only to the current first-party admin.
+  UZ/RU/TJ canonical text, no background polling, no external MCP scope change.
+- Local broad Admin PWA/catalog/bootstrap gate with real PostgreSQL and CI's
+  minimal public baseline: **511 passed, five Redis-only skipped**. Shared
+  course/access/unlock/ad regressions **55 passed**. Channel command/import
+  gate **eight passed**, including real PG legacy-vs-PWA first-add contention,
+  genuine passkey/replay, strict URL/target validation, rollback, alias-aware
+  stale confirmation and keyset/no-default-write behavior.
+- Extended real ASGI/virtual-WebAuthn browser suite passed settings/prices,
+  marketing, account management and all four channel operations, with mobile
+  UZ/RU/TJ mode screens. No provider requests occur. CI explicitly includes
+  the channel PG case. Previous CI fixes are recorded immediately below.
+- Remaining code parity: direct/mass messaging, campaign creation, partner
+  actions/payouts, manual ledger, notice templates and media/QR uploads; keep
+  them absent/disabled until their own exact audited commands exist.
+
 ## CI follow-up — strict CSP browser polling
 
 - At `1d4d593b`, [Admin PWA run 40156625123](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40156625123)

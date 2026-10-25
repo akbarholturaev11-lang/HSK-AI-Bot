@@ -692,7 +692,13 @@
     "ui.admin_pwa.deleteAccount": "Hisobni o‘chirish",
     "ui.admin_pwa.deleteAccountHint": "Hisob va shaxsiy ma’lumotlar o‘chiriladi. Moliyaviy tarix anonim holda saqlanadi. Bu amalni qaytarib bo‘lmaydi.",
     "ui.admin_pwa.confirmAccountId": "Hisob ID raqamini kiriting",
-    "ui.admin_pwa.accountActive": "Faol"
+    "ui.admin_pwa.accountActive": "Faol",
+    "ui.admin_pwa.requiredChannels": "Majburiy kanallar",
+    "ui.admin_pwa.channelMode": "Kanallarga obuna talabi",
+    "ui.admin_pwa.addChannel": "Kanal qo‘shish yoki yangilash",
+    "ui.admin_pwa.channelChatId": "Telegram kanali (@nom yoki ID)",
+    "ui.admin_pwa.channelInvite": "Taklif havolasi (xususiy kanal uchun shart)",
+    "ui.admin_pwa.channelId": "Kanal ID"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

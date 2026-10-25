@@ -692,7 +692,13 @@
     "ui.admin_pwa.deleteAccount": "Удалить аккаунт",
     "ui.admin_pwa.deleteAccountHint": "Аккаунт и личные данные будут удалены. Финансовая история сохранится анонимно. Это действие нельзя отменить.",
     "ui.admin_pwa.confirmAccountId": "Введите ID аккаунта",
-    "ui.admin_pwa.accountActive": "Активен"
+    "ui.admin_pwa.accountActive": "Активен",
+    "ui.admin_pwa.requiredChannels": "Обязательные каналы",
+    "ui.admin_pwa.channelMode": "Требование подписки на каналы",
+    "ui.admin_pwa.addChannel": "Добавить или обновить канал",
+    "ui.admin_pwa.channelChatId": "Канал Telegram (@имя или ID)",
+    "ui.admin_pwa.channelInvite": "Приглашение (обязательно для закрытого канала)",
+    "ui.admin_pwa.channelId": "ID канала"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

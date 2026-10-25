@@ -692,7 +692,13 @@
     "ui.admin_pwa.deleteAccount": "Нест кардани ҳисоб",
     "ui.admin_pwa.deleteAccountHint": "Ҳисоб ва маълумоти шахсӣ нест мешаванд. Таърихи молиявӣ беном нигоҳ дошта мешавад. Ин амалро баргардонида намешавад.",
     "ui.admin_pwa.confirmAccountId": "ID-и ҳисобро ворид кунед",
-    "ui.admin_pwa.accountActive": "Фаъол"
+    "ui.admin_pwa.accountActive": "Фаъол",
+    "ui.admin_pwa.requiredChannels": "Каналҳои ҳатмӣ",
+    "ui.admin_pwa.channelMode": "Талаби обуна ба каналҳо",
+    "ui.admin_pwa.addChannel": "Илова ё нав кардани канал",
+    "ui.admin_pwa.channelChatId": "Канали Telegram (@ном ё ID)",
+    "ui.admin_pwa.channelInvite": "Пайванди даъват (барои канали хусусӣ ҳатмӣ)",
+    "ui.admin_pwa.channelId": "ID-и канал"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
