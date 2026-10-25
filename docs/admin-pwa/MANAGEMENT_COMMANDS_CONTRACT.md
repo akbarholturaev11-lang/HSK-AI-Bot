@@ -23,6 +23,7 @@ uncertain response.
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
 | `marketing.update` | `/marketing/read`, `/prepare`, `/save` | Sales experiment, app promotion settings, existing creative activation/deletion |
 | `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
+| `payments.delivery_reconcile` | `/payment-deliveries/read`, `/prepare`, `/save` | Audited human resolution for uncertain or stale attempts; never resend or change finance |
 | `partners.payout` | `/partner-payouts/read`, `/prepare`, `/save` | Shared reserve/release, reject and exact 1/3/7-day UTC deadline; no transfer or paid-without-proof |
 | `partners.update` | `/partners/read`, `/prepare`, `/save` | Partner application approve/reject and partnership block/unblock via shared PartnerService |
 | `notifications.update` | `/notifications/read`, `/prepare`, `/save` | Five fixed reminder templates, enabled state and canonical UZ/RU/TJ text/defaults |
@@ -73,8 +74,7 @@ mass messages, campaign creation, partner payout/delivery operations and media/Q
 unused step-up action name is not an implemented standalone command. Each
 needs its own strict payload, shared-service transaction and permission/audit
 contract before its UI can claim success. Messaging additionally needs durable
-claim/delivery evidence and bounded batches. Payment outbox uncertain-delivery
-operator reconciliation remains separate operability work; immutable financial/command audits must stay intact.
+claim/delivery evidence and bounded batches. Payment-delivery reconciliation now has its own signed human-evidence command; immutable financial/command audits remain intact.
 
 Account management binds canonical ID, current identity/subscription/status hash,
 the specific operation and (for deletion) repeated numeric ID confirmation.
@@ -149,3 +149,15 @@ no longer exists. Continue via the returned source/ID cursor. No COUNT or
 full-source query, background scheduler, raw content/BLOB, source deletion or
 audit removal. Each page uses existing indexes and at most five bounded source
 ID checks; active metadata locks are skipped and revisited on a later sweep.
+
+Payment-delivery reconciliation is a human observation, not provider/device
+delivery proof. Eligible rows are uncertain or attempts older than ten minutes.
+The exact signed revision covers immutable review/decision and current outbox
+state/effects hash; concurrent changes or prior reconciliation deny. A single
+transaction consumes proof, records reason hash/resolution audit and sets the
+nullable reconciliation timestamp. Financial rows, outbox transport outcome and
+notification effects are unchanged. The dispatcher never retries these states.
+Two indexed exact-status pages (maximum 62 rows) produce the combined 30-row
+queue without loading message effects or payment snapshots. Migration 0128
+provides partial unresolved-status and command action/target indexes; it refuses
+to remove nonempty reconciliation metadata.

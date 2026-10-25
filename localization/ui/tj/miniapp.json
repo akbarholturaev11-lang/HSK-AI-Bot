@@ -752,7 +752,9 @@
     "ui.admin_pwa.deliveryStatus": "Ҳолати фиристодани паём",
     "ui.admin_pwa.deliveryResolution": "Қайди оператор",
     "ui.admin_pwa.deliveryAttemptTime": "Вақти кӯшиши фиристодан",
-    "ui.admin_pwa.deliveryReconciledTime": "Вақти санҷиш"
+    "ui.admin_pwa.deliveryReconciledTime": "Вақти санҷиш",
+    "ui.admin_pwa.paymentId": "ID-и пардохт",
+    "ui.admin_pwa.deliveryReason": "Сабаби санҷиш"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

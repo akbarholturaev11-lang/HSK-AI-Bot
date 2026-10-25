@@ -3,7 +3,15 @@
 Status (updated 2026-10-25): **Current entry: [MCP_NEXT_CHAT_HANDOFF.md](MCP_NEXT_CHAT_HANDOFF.md). Auth/passkeys, payment review, manual grants, course/HSK30 controls, scoped OAuth/MCP, profiles, daily statistics/feedback snapshots and bounded JSON/CSV, native/technical inbox and default-OFF Apple Push sender exist. Private Redis/R2 reuse is implemented. Inbox actions now use one primary button plus an accessible secondary menu and status/time filters. Remaining management, retention/operator flows and release acceptance are tracked explicitly below. The old 0011 cold-start migration failure remains separate.**
 
 Target public URL: `https://hskai.app/admin` (owner-designated; live routing/TLS not verified).
-Branch: `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201; PR #200 foundations are already merged. No main push/merge, deploy or flag activation.
+Branch: `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204; previous PR #201 code is an ancestor; PR #200 foundations are already merged. No main push/merge, deploy or flag activation.
+
+## Owner UI and branch update — 2026-10-25
+
+Continue unfinished code only on `feat/admin-pwa-minimal-inbox-passkey-20261025`
+(PR #204). Preserve the owner-accepted minimal notification list/detail,
+automatic importance, fresh passkey at launch/resume and scoped iPhone back
+gesture. Older continuation branch/session-reuse text below is historical;
+current handoff and the owner's instruction take precedence.
 
 ## Active continuation — owner instruction, 2026-10-24
 

@@ -752,7 +752,9 @@
     "ui.admin_pwa.deliveryStatus": "Xabar yuborish holati",
     "ui.admin_pwa.deliveryResolution": "Operator qaydi",
     "ui.admin_pwa.deliveryAttemptTime": "Yuborishga urinish vaqti",
-    "ui.admin_pwa.deliveryReconciledTime": "Tekshiruv vaqti"
+    "ui.admin_pwa.deliveryReconciledTime": "Tekshiruv vaqti",
+    "ui.admin_pwa.paymentId": "To‘lov ID",
+    "ui.admin_pwa.deliveryReason": "Tekshiruv sababi"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

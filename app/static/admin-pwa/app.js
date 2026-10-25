@@ -501,7 +501,7 @@ async function deliveryEditor(id=null,before=null){
       drawer('deliveryQueue',(rows?`<div class="management-list">${rows}</div>`:statePanel('empty'))+(data.next_before_id?`<button class="btn" data-delivery-next="${esc(data.next_before_id)}">${esc(t('next'))}</button>`:''),btn('close','close'));return;
     }
     const row=data.delivery;managementDraft={type:'delivery',deliveryId:id};
-    const form=row.eligible&&!row.resolution?`<div class="form-field"><label for="deliveryResolution">${esc(t('operation'))}</label><select class="input" id="deliveryResolution">${Object.entries(deliveryResolutionLabels).map(([value,label])=>`<option value="${value}">${esc(t(label))}</option>`).join('')}</select></div><div class="form-field"><label for="deliveryReason">${esc(t('reason'))}</label><textarea class="input setting-value" id="deliveryReason" minlength="5" maxlength="300" required></textarea></div>`:'';
+    const form=row.eligible&&!row.resolution?`<div class="form-field"><label for="deliveryResolution">${esc(t('operation'))}</label><select class="input" id="deliveryResolution">${Object.entries(deliveryResolutionLabels).map(([value,label])=>`<option value="${value}">${esc(t(label))}</option>`).join('')}</select></div><div class="form-field"><label for="deliveryReason">${esc(t('deliveryReason'))}</label><textarea class="input setting-value" id="deliveryReason" minlength="5" maxlength="300" required></textarea></div>`:'';
     drawer('deliveryQueue',`<p class="source-note">${esc(t('deliveryReconcileHint'))}</p><form id="managementForm">${managementFields(row,'delivery')}${form}</form>`,btn('close','close')+(form?btn('next','managementPrepare','primary'):''));
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('deliveryQueue',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','deliveryList'));}
 }
@@ -651,7 +651,7 @@ function managementFields(value,type){
   if(type==='delivery'){
     const fields=[['paymentId',value.payment_id],['reviewDecision',t(value.decision==='approve'?'approved':'rejected')],['deliveryStatus',t(deliveryStatusLabels[value.delivery_status])]];
     if(value.resolution)fields.push(['deliveryResolution',t(deliveryResolutionLabels[value.resolution])]);
-    if(value.reason)fields.push(['reason',value.reason]);
+    if(value.reason)fields.push(['deliveryReason',value.reason]);
     if(value.attempted_at)fields.push(['deliveryAttemptTime',date(value.attempted_at)]);
     if(value.reconciled_at)fields.push(['deliveryReconciledTime',date(value.reconciled_at)]);
     return profileFields(fields);

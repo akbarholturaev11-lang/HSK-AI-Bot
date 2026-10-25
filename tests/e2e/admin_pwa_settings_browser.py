@@ -30,11 +30,14 @@ from app.admin_api.pwa_partners import create_admin_pwa_partners_router
 from app.admin_api.pwa_notifications import create_admin_pwa_notifications_router
 from app.admin_api.pwa_portfolio import create_admin_pwa_portfolio_router
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
+from app.admin_api.pwa_webauthn_login_transport import create_admin_pwa_passkey_login_router
+from app.admin_api.pwa_payment_reconciliation import create_admin_pwa_payment_reconciliation_router
 from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
 from app.db.base import Base
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
+from app.db.models.admin_pwa_payment_review import AdminPwaPaymentReview,AdminPwaPaymentOutbox
 from app.db.models.partner import Partner, PartnerPayout
 from app.db.models.course_ad import CourseAdCreative
 from app.repositories.bot_setting_repo import BotSettingRepository
@@ -65,6 +68,10 @@ async def browser_checks(output):
         await db.flush()
         db.add_all([PartnerPayout(id=i,partner_id=i,amount_usd=10,exchange_rate=10.9,local_amount=109,
             local_currency='TJS',status='pending',payment_method='bank',account_details='QA account <img src=x onerror=alert(1)>') for i in (1,2)])
+        await db.flush()
+        db.add(AdminPwaPaymentReview(id='00000000-0000-0000-0000-000000000001',step_up_id='00000000-0000-0000-0000-000000000002',payment_id=999,actor_user_id=101,target_user_id=1,action='payments.review',decision='approve',payload_hash='0'*64,payload_json='{}',status='applied'))
+        await db.flush()
+        db.add(AdminPwaPaymentOutbox(review_id='00000000-0000-0000-0000-000000000001',status='uncertain',effects_json='{}',attempted_at=datetime.now(timezone.utc)))
         await db.commit()
     app = FastAPI()
     common = dict(settings_obj=fixture.settings, session_factory=fixture.sessions)
@@ -72,7 +79,7 @@ async def browser_checks(output):
                     create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
                     create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router,
                     create_admin_pwa_user_management_router,create_admin_pwa_channels_router,
-                    create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router,create_admin_pwa_partners_router,create_admin_pwa_partner_payouts_router):
+                    create_admin_pwa_portfolio_router,create_admin_pwa_notifications_router,create_admin_pwa_partners_router,create_admin_pwa_partner_payouts_router,create_admin_pwa_payment_reconciliation_router,create_admin_pwa_passkey_login_router):
         app.include_router(factory(**common))
     calls, errors = [], []
     drop_save = False
@@ -104,6 +111,8 @@ async def browser_checks(output):
             return
         headers = dict(response.headers)
         headers.pop("content-length", None)
+        cookies=response.headers.get_list("set-cookie")
+        if cookies:headers["set-cookie"]="\n".join(cookies)
         await route.fulfill(status=response.status_code, headers=headers, body=response.content)
 
     try:
@@ -154,6 +163,11 @@ async def browser_checks(output):
 
                 await page.goto(ORIGIN + "/admin/")
                 await page.wait_for_load_state("networkidle")
+                await expect(page.locator('[data-action="signin"]')).to_be_visible()
+                await page.locator('[data-action="signin"]').click()
+                await expect(page.locator(".nav")).to_be_visible(timeout=15000)
+                async with fixture.sessions() as db:
+                    fixture.session_id=(await db.scalars(select(AdminPwaSession.id).where(AdminPwaSession.revoked_at.is_(None)))).one()
                 # Landing pages are navigation, with no per-page configuration queries.
                 configuration_reads = lambda: [path for path, _ in calls
                     if path in ('/api/admin/v1/settings/read', '/api/admin/v1/subscription-prices/read')]
@@ -464,6 +478,29 @@ async def browser_checks(output):
                     await page.locator('#payoutOperation').select_option(operation)
                     await prepare_and_save('uz')
                 await navigate('system',1440)
+                for language in ('uz','ru','tj'):
+                    await page.locator('#locale').select_option(language)
+                    await page.locator('[data-action="deliveryList"]').click()
+                    await page.locator('[data-delivery-id]').click()
+                    await page.locator('#deliveryResolution').select_option('no_retry')
+                    await page.locator('#deliveryReason').fill('QA reviewed <img src=x onerror=alert(1)>')
+                    await page.set_viewport_size({'width':390,'height':844})
+                    await page.locator('[data-action="managementPrepare"]').click()
+                    await expect(page.locator('.management-comparison')).to_be_visible()
+                    assert await page.locator('.management-comparison img').count()==0
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                    await page.screenshot(path=str(output/f'reconciliation-confirm-{language}-390.png'))
+                    await page.locator('[data-action="close"]').last.click()
+                    await page.set_viewport_size({'width':1440,'height':1000})
+                await page.locator('#locale').select_option('uz')
+                await page.locator('[data-action="deliveryList"]').click()
+                await page.locator('[data-delivery-id]').click()
+                await page.locator('#deliveryResolution').select_option('no_retry')
+                await page.locator('#deliveryReason').fill('Synthetic operator check')
+                await prepare_and_save('uz')
+                await page.locator('[data-action="deliveryList"]').click()
+                await expect(page.locator('[data-delivery-id]')).to_have_count(0)
+                await page.locator('.drawer-close').click()
                 # Revocation between confirmation and proof fails before any write.
                 before = await audit_count()
                 await page.locator('[data-setting-kind="help_contact"]').click()

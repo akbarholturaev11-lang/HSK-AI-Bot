@@ -752,7 +752,9 @@
     "ui.admin_pwa.deliveryStatus": "Статус отправки сообщения",
     "ui.admin_pwa.deliveryResolution": "Запись оператора",
     "ui.admin_pwa.deliveryAttemptTime": "Время попытки отправки",
-    "ui.admin_pwa.deliveryReconciledTime": "Время проверки"
+    "ui.admin_pwa.deliveryReconciledTime": "Время проверки",
+    "ui.admin_pwa.paymentId": "ID платежа",
+    "ui.admin_pwa.deliveryReason": "Причина проверки"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

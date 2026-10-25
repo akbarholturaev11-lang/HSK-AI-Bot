@@ -8,6 +8,19 @@ Its document title still says V9. This replaces the previously unavailable
 and fixed SVG icon paths are reused. No demo arrays, users, payments, charts,
 mutation handlers or fabricated success statuses are shipped.
 
+## Current owner-approved baseline — 2026-10-25
+
+Active branch: `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204. Preserve
+its title-only unread-first Inbox, automatic priority/red state, explicit
+read-on-open detail, separate receipt review and return to originating inbox.
+Keep the single close control and one-step iPhone left-zone back gesture with
+native Safari/scroll/text-selection exclusions. Existing audited triage/Push
+transport remains compatible; manual priority/assignment controls are absent.
+Fresh PWA launch/resume clears the old cookie session and requires a new
+discoverable passkey assertion, failing closed if logout fails. This supersedes
+older session-reuse descriptions below. Normal session navigation and exact
+transaction-bound high-risk confirmations remain separate.
+
 ## Routes, data and isolation
 
 - `/admin` redirects to `/admin/`; the latter serves an identical public shell

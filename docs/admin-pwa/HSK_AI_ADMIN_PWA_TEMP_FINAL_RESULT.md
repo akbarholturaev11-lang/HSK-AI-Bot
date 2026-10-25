@@ -1,6 +1,6 @@
 # Admin PWA — final product and acceptance contract (temporary)
 
-> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-mcp-readonly-20261024`, Draft PR #201.
+> **SCOPE: HSK AI ADMIN PWA ONLY** — temporary task file. Work branch: `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204.
 > Not a repository-wide policy. Does not modify or supersede root `AGENTS.md` / `AI_RULES.md` / `PROJECT_MEMORY.md`.
 > All development and progress records for this task remain under `docs/admin-pwa/`.
 
@@ -18,7 +18,7 @@ feature defaults false; no main promotion or deployment is authorized here.
 ### A. Identity and admin access
 - [ ] Existing Telegram Admin Mini App works identically at its present endpoint with signed initData; no admin guard/flow regression.
 - [ ] First standalone Admin PWA onboarding: verified Google OAuth **AND** one-time Telegram approval by an allowlisted admin → canonical identity binding → passkey enrollment.
-- [ ] Returning PWA login: open directly if authenticated session still valid; otherwise login **via registered passkey alone**, no mandatory repeated Google/Telegram. Google or audited Telegram recovery is secondary.
+- [ ] Returning PWA login: require a fresh **registered passkey** on each launch/resume after revoking the old browser session, with no mandatory repeated Google/Telegram; fail closed when cleanup is unavailable. Google or audited Telegram recovery is secondary.
 - [ ] WebAuthn verification is implemented **server-side** using correct origin `https://hskai.app`, RP ID `hskai.app`, fresh one-use challenges, verified credential ID/public key, user verification and admin allowlist re-checks.
 - [ ] Face ID / Touch ID / Windows Hello / PIN fallback explained truthfully and manually checked on available devices; inability to force Face-ID-only is documented.
 - [ ] Secure session expiry/revocation, HttpOnly Secure cookies, CSRF/origin protection, same-origin policy and accessible sign-in/error/recovery UI.

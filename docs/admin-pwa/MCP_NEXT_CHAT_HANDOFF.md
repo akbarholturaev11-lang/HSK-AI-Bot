@@ -2,6 +2,53 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current owner-selected branch and UI baseline
+
+- Continue **only** on `feat/admin-pwa-minimal-inbox-passkey-20261025`, PR #204.
+  The owner selected this branch and accepted its notification-window changes
+  on 2026-10-25. The previous MCP branch/PR #201 references below are historical;
+  those changes are already ancestors. Do not switch back, merge/push main or
+  revert this branch's minimal Inbox/fresh-passkey/swipe behavior.
+- Owner baseline at `72d17493`: unread-first title-only notification rows,
+  automatic-only importance, explicit read-on-open detail, receipt handoff to
+  financial review and return to the originating user's inbox. Preserve the
+  single close control, red important state and one-step narrow left-zone
+  iPhone back gesture with native scrolling/selection/edge exclusions. Existing
+  audited backend triage/Push contracts remain compatible; no manual priority UI.
+- Every PWA launch/resume revokes its persistent browser session and requires
+  fresh discoverable WebAuthn; failed startup logout fails closed. This owner
+  baseline supersedes earlier documents recommending silent session reuse.
+  Normal in-session navigation is unchanged; sensitive commands still need
+  their own exact transaction-bound proof. No OAuth/MCP permission expansion.
+- Payment reconciliation code/migration was committed at `e72c945a`; the branch
+  adds its initial tests. Continuing work validates rollback, stale in-flight
+  attempts, bounded queue pages, concurrent resolutions and real migration
+  preservation, and adapts remaining management browser QA to real fresh login.
+
+## Current payment-delivery reconciliation validation
+
+- The existing `/payment-deliveries/read|prepare|save` command now has actual
+  rollback, recent-versus-stale attempting, bounded mixed queue pagination,
+  real-PG concurrent-resolution and nonempty migration-downgrade regressions.
+  Operator notes retain reason hashes only, update reconciliation metadata and
+  never change payment decisions or resend. Two exact-status index pages cap
+  queue reads at 62 metadata rows; no private effects/review payload in lists.
+- Migration `0128_admin_pwa_command_lookup` adds nullable reconciliation time,
+  an unresolved-status partial index and action/target audit lookup. Nonempty
+  reconciliation metadata prevents destructive downgrade. Empty QA baseline
+  defers the 0127-owned Message index without mutating application metadata;
+  real PG now exercises every migration 0103–0128, rather than stopping at 0126.
+- Reconciliation/initializer tests: **19 passed** with actual PostgreSQL. The
+  combined reconciliation/PG/initializer gate before the additional cases also
+  passed **34 tests**, including the full 0103–0128 DDL rehearsal.
+- Actual ASGI/virtual-WebAuthn management browser now performs real fresh
+  passkey login, preserves secure cookie responses and revokes the genuinely
+  issued session in the final security check. All prior management commands
+  plus localized reconciliation confirm/save/queue removal passed at 1440/390
+  UZ/RU/TJ. Screenshots inspected; owner's notification window is unchanged.
+- Fixed two operator-view labels through canonical UZ/RU/TJ: payment ID and
+  reconciliation reason, avoiding the unrelated payment-rejection reason.
+
 ## Current orphan-triage retention increment
 
 - `scan_orphaned_inbox_triage` and operator CLI
