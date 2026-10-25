@@ -208,8 +208,10 @@ async def browser_checks(output):
             for action, target in (("pushSettings", "[data-push-revoke]"),
                                    ("mcpConnections", "[data-mcp-revoke]")):
                 await page.locator('[data-action="more"]').click()
-                await expect(page.locator(".panel-action-list")).to_be_visible()
-                await page.locator(f'.panel-action-list [data-action="{action}"]').click()
+                # Mobile More now opens a compact bottom sheet; account tools
+                # are grouped in .more-sheet-extras instead of the old action list.
+                await expect(page.locator(".more-drawer .more-sheet-list")).to_be_visible()
+                await page.locator(f'.more-drawer .more-sheet-extras [data-action="{action}"]').click()
                 await expect(page.locator(target)).to_be_visible()
                 box = await page.locator(target).bounding_box()
                 assert box["height"] >= 44 and box["x"] + box["width"] <= 390, box
