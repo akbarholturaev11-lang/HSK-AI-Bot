@@ -8,7 +8,7 @@ import hashlib
 import json
 import logging
 from datetime import datetime, timezone
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import uuid4
 
 from fastapi import APIRouter, Request
@@ -31,6 +31,7 @@ from app.db.models.bot_setting import BotSetting
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.course_levels import hsk30_content_levels, level_spec
+from app.services.admin_hsk30_analytics_service import AdminHsk30AnalyticsService
 from app.services.hsk30_feature_service import (
     HSK30_ENABLED_SETTINGS_KEY, HSK30_LIVE_LEVELS_SETTINGS_KEY, Hsk30FeatureService,
 )
@@ -53,6 +54,11 @@ def _available():
 
 class EmptyHsk30Request(StrictModel):
     pass
+
+
+class Hsk30AnalyticsRequest(StrictModel):
+    days: Literal[7, 30, 90, 0] = 30
+
 
 
 class Hsk30SettingsInput(StrictModel):
@@ -120,6 +126,27 @@ async def read_hsk30_settings(db, *, session_cookie, settings_obj):
             raise CommandError("admin_pwa_unauthorized", 401)
         current = await _read(db)
     return {"hsk30": current}
+
+
+async def read_hsk30_analytics(db, *, session_cookie, request, settings_obj):
+    """Expose aggregate-only HSK 3.0 funnel to this first-party PWA."""
+    if not _enabled(settings_obj):
+        raise CommandError("not_found", 404)
+    async with read_transaction(db):
+        actor = await authenticate_admin_pwa_session(db, session_cookie, settings_obj)
+        if actor is None or actor.auth_method != "webauthn":
+            raise CommandError("admin_pwa_unauthorized", 401)
+        snapshot = await AdminHsk30AnalyticsService(db).snapshot(days=request.days, user_limit=0)
+    return {"analytics": {
+        "period_days": snapshot["period_days"],
+        "generated_at": snapshot["generated_at"],
+        "course_funnel": snapshot["course_funnel"],
+        "payment_funnel": snapshot["payment_funnel"],
+        "selected_level_users": snapshot["selected_level_users"],
+        "track_activated_users": snapshot["track_activated_users"],
+        "payments": {"approved": snapshot["payments"]["approved"]},
+        "coverage_note": snapshot["coverage_note"]
+    }}
 
 
 async def prepare_hsk30_settings(db, *, session_cookie, request, settings_obj):
@@ -204,6 +231,10 @@ def create_admin_pwa_hsk30_settings_router(*, settings_obj, session_factory):
     @router.post("/api/admin/v1/hsk30/read")
     async def read(request: Request):
         return await handle(request, read_hsk30_settings, EmptyHsk30Request)
+
+    @router.post("/api/admin/v1/hsk30/analytics")
+    async def analytics(request: Request):
+        return await handle(request, read_hsk30_analytics, Hsk30AnalyticsRequest)
 
     @router.post("/api/admin/v1/hsk30/prepare")
     async def prepare(request: Request):

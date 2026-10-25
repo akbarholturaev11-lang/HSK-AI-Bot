@@ -38,9 +38,9 @@ const telegramPreview = value => esc(value).replace(/&lt;(\/?)b&gt;/g, '<$1b>');
 const icon = name => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[name] || icons.folder}</svg>`;
 let locale = 'uz';
 try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj'].includes(saved)) locale = saved; } catch (_) {}
-const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? '—';
+const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? courseCopy?.[locale]?.[key] ?? '—';
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
-const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', period:'weekly', platform:'overall', rows:[], stats:null,
+const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', courseTab:'tracks', period:'weekly', platform:'overall', rows:[], stats:null,
   query:'', segment:'all', status:'pending', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
@@ -56,6 +56,9 @@ let userFilterOpen=false;
 const USER_SEGMENTS=[['all','userFilterAll'],['active_today','userFilterActiveToday'],['paid','userFilterPaid'],['pending','userFilterPending'],['wants_pay','userFilterWantsPay'],['trial','userFilterTrial'],['free','userFilterFree'],['expired','userFilterExpired'],['blocked','userFilterBlocked'],['bot_blocked','userFilterBotBlocked']];
 let managementDraft=null,managementReview=null,managementPreparing=false,preparingEditor=null;
 let coursePolicyRevision=null,hsk30Baseline=null;
+let courseData=null,courseLimitDraft=null,courseTrialDraft=null,courseLimitPlan='FREE';
+let courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};
+let courseAnalytics=null,courseAnalyticsDays=30,courseAnalyticsLoading=false,courseAnalyticsToken=0;
 let managementMediaPreviewUrl=null;
 let feedbackLoadId=0;
 const feedbackStats={source:'all',period:'weekly',data:null,loading:false,error:false};
@@ -65,7 +68,7 @@ function clearPrivate(phase) {
   cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
   epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
-  state.phase=phase;state.error=null;render();
+  courseData=null;courseLimitDraft=null;courseTrialDraft=null;courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};courseAnalytics=null;courseAnalyticsToken++;courseAnalyticsLoading=false;state.phase=phase;state.error=null;render();
 }
 function releaseManagementMediaPreview(){if(managementMediaPreviewUrl){URL.revokeObjectURL(managementMediaPreviewUrl);managementMediaPreviewUrl=null;}}
 async function api(path, body, {publicAuth=false, method='POST',rawBody=null,extraHeaders={},timeoutMs=15000}={}) {
@@ -420,17 +423,194 @@ function paymentsView(){
 function managementRow(label,attributes,glyph='settings'){
   return `<button class="management-row" ${attributes}><span class="management-row-icon">${icon(glyph)}</span><strong>${esc(label)}</strong>${icon('chevron')}</button>`;
 }
+
+const courseCopy={
+uz:{tracks:'HSK 2.0 / 3.0',access:'Кириш ва лимитлар',trial:'Pro синови',experiment:'Сотув A/B',trackTitle:'HSK 3.0 курс',unlock:'Бир марталик очиш тўлови',active:'Фаол',inactive:'Ўчирилган',yes:'Ёқилган',no:'Ўчирилган',enabled:'Курс ҳолати',levels:'Фаол даражалар',price:'Бир марталик нарх',paid:'Тўлов талаб қилинади',free:'Бепул очилади',edit:'Таҳрирлаш',courseAccess:'Курсга кириш режими',courseAccessMode:'Кириш шарти',subscription:'Pro обуна талаб қилинади',freeUntil:'Маълум муддат бепул',until:'Бепул муддат тугайди',limits:'Free ва Trial лимитлари',plan:'Режа',freePlan:'Бепул (FREE)',trialPlan:'Pro синови (TRIAL_ACTIVE)',limitValue:'Миқдор',limitWindow:'Давр',daily:'Кунлик',lifetime:'Бир умр',save:'Сақлаш',note:'0 = функция ёпиқ. 1–10000 = рухсат этилган миқдор. Фақат кунлик ёки бир умр режими.',trialDays:'Муддат (кун)',trialReason:'Ўчириш сабаби',trialState:'Синов ҳолати',experimentNote:'Сотув тажрибаси ҳозирги хавфсиз бошқарув орқали созланади.',trialNote:'Trial AI бюджети ва бошқа қоидалар ўзгартирилмайди.',browse:'Кўриш ва бошқариш',courseStats:'Курс фаолияти',courseStatsHint:'Ҳақиқий статистика «Таҳлиллар → Курс ва фаоллик» бўлимида.',statsOpen:'Статистикани очиш',count:'Қоида',limitSaving:'Сақланаётган ўзгаришлар',trialSaving:'Синов созламаларини сақлаш',unchanged:'Ўзгариш киритилмаган',saved:'Сақланди'},
+ru:{tracks:'HSK 2.0 / 3.0',access:'Доступ и лимиты',trial:'Пробный Pro',experiment:'Продажи A/B',trackTitle:'Курс HSK 3.0',unlock:'Разовая разблокировка',active:'Активно',inactive:'Отключено',yes:'Включено',no:'Отключено',enabled:'Состояние курса',levels:'Открытые уровни',price:'Разовая цена',paid:'Платный доступ',free:'Бесплатный доступ',edit:'Изменить',courseAccess:'Режим доступа',courseAccessMode:'Условие доступа',subscription:'Требуется Pro',freeUntil:'Бесплатно до даты',until:'Действует до',limits:'Лимиты Free и Trial',plan:'Тариф',freePlan:'Бесплатный (FREE)',trialPlan:'Пробный Pro (TRIAL_ACTIVE)',limitValue:'Количество',limitWindow:'Период',daily:'В день',lifetime:'За всё время',save:'Сохранить',note:'0 = функция отключена. 1–10000 = разрешённое количество. Только дневной или пожизненный период.',trialDays:'Срок (дни)',trialReason:'Причина отключения',trialState:'Статус пробного периода',experimentNote:'Продажи A/B настраиваются через существующий защищённый редактор.',trialNote:'Бюджет AI и другие правила Trial не изменяются.',browse:'Открыть редактор',courseStats:'Активность курса',courseStatsHint:'Актуальные данные в «Аналитика → Курс и активность».',statsOpen:'Открыть аналитику',count:'Правило',limitSaving:'Сохраняемые изменения',trialSaving:'Сохранить Trial',unchanged:'Нет изменений',saved:'Сохранено'},
+tj:{tracks:'HSK 2.0 / 3.0',access:'Дастрасӣ ва маҳдудият',trial:'Санҷиши Pro',experiment:'Фурӯши A/B',trackTitle:'Курси HSK 3.0',unlock:'Кушодани якдафъаина',active:'Фаъол',inactive:'Хомӯш',yes:'Фаъол',no:'Хомӯш',enabled:'Ҳолати курс',levels:'Сатҳҳои фаъол',price:'Нархи якдафъаина',paid:'Бо пардохт',free:'Ройгон',edit:'Тағйир',courseAccess:'Реҷаи дастрасии курс',courseAccessMode:'Шарти дастрасӣ',subscription:'Обунаи Pro лозим',freeUntil:'То муҳлат ройгон',until:'То сана',limits:'Маҳдудияти Free ва Trial',plan:'Нақша',freePlan:'Ройгон (FREE)',trialPlan:'Санҷиши Pro (TRIAL_ACTIVE)',limitValue:'Миқдор',limitWindow:'Давра',daily:'Ҳар рӯз',lifetime:'Барои тамоми умр',save:'Сабт',note:'0 = ғайрифаъол. 1–10000 = миқдори иҷозат. Танҳо ҳаррӯз ё тамоми умр.',trialDays:'Муҳлат (рӯз)',trialReason:'Сабаби хомӯшкунӣ',trialState:'Ҳолати санҷиш',experimentNote:'Фурӯши A/B аз муҳаррири амн идора мешавад.',trialNote:'Буҷаи AI ва қоидаҳои дигари Trial тағйир намеёбанд.',browse:'Кушодани идоракунӣ',courseStats:'Фаъолияти курс',courseStatsHint:'Омори воқеӣ дар «Таҳлилҳо → Курс ва фаъолият».',statsOpen:'Кушодани омор',count:'Қоида',limitSaving:'Тағйироти сабтшаванда',trialSaving:'Сабти Trial',unchanged:'Тағйире нест',saved:'Сабт шуд'}
+};
+const cx=key=>courseCopy[locale]?.[key]||courseCopy.uz[key]||key;
+const courseLimitTitles={'lesson.start':'Дарс бошлаш','ai.text':'AI матн','ai.photo':'AI расм','ai.voice':'AI овоз','speaking.session':'Speaking','practice.*':'Машқлар','practice.placement':'Даража тести','study.quiz':'Тест','study.audio':'Аудио','study.flashcard_translate':'Карточкалар'};
+const courseCard=(heading,body)=>`<section class="panel course-panel"><div class="panel-title"><h2>${esc(heading)}</h2></div>${body}</section>`;
+const courseMetric=(label,value,note)=>`<div class="metric"><div class="metric-top">${esc(label)}</div><div class="metric-value">${esc(value)}</div><div class="metric-note">${esc(note||'')}</div></div>`;
+function courseFunnelPanel(){
+  const labels={uz:{funnel:'HSK 3.0 очиш воронкаси',active:'HSK 3.0 трекда',selected:'Даража танлаган',approved:'Тўлов тасдиқланган',days7:'7 кун',days30:'30 кун',days90:'90 кун',all:'Бутун давр',stage:'Босқич',users:'Фойдаланувчи',unavailable:'Воронка маълумотлари мавжуд эмас'},ru:{funnel:'Воронка HSK 3.0',active:'На треке HSK 3.0',selected:'Выбрали уровень',approved:'Оплачено',days7:'7 дней',days30:'30 дней',days90:'90 дней',all:'За всё время',stage:'Этап',users:'Пользователи',unavailable:'Нет данных воронки'},tj:{funnel:'Воронкаи HSK 3.0',active:'Дар треки HSK 3.0',selected:'Сатҳро интихоб карданд',approved:'Пардохти тасдиқшуда',days7:'7 рӯз',days30:'30 рӯз',days90:'90 рӯз',all:'Ҳамаи давра',stage:'Марҳила',users:'Истифодабаранда',unavailable:'Маълумоти воронка дастрас нест'}};
+  const names=labels[locale]||labels.uz;
+  const a=courseAnalytics;
+  const tabs=[7,30,90,0].map((n,i)=>`<button type="button" data-course-days="${n}" class="btn small ${courseAnalyticsDays===n?'primary':''}" ${courseAnalyticsLoading?'disabled':''}>${esc(names[['days7','days30','days90','all'][i]])}</button>`).join('');
+  const funnel=Array.isArray(a?.course_funnel)?a.course_funnel:[];
+  const table=funnel.length?`<div class="table-wrap"><table class="data-table stat-table"><thead><tr><th>${esc(names.stage)}</th><th>${esc(names.users)}</th></tr></thead><tbody>${funnel.map(row=>`<tr><td>${esc(row.label||row.key)}</td><td>${esc(row.users)}</td></tr>`).join('')}</tbody></table></div>`:`<p class="source-note">${esc(courseAnalyticsLoading?t('loading'):names.unavailable)}</p>`;
+  return `<div class="course-spacer"></div>${courseCard(names.funnel,`<div class="v6-buttons course-funnel-period">${tabs}</div>${table}${a?.coverage_note?`<p class="form-hint">${esc(a.coverage_note)}</p>`:''}`)}`;
+}
+async function loadCourseAnalytics(){
+  const current=epoch,requested=courseAnalyticsDays,token=++courseAnalyticsToken;
+  courseAnalyticsLoading=true;
+  if(state.route==='course'&&state.courseTab==='tracks'&&state.phase==='ready')render();
+  try{
+    const result=await api('hsk30/analytics',{days:requested});
+    if(current!==epoch||token!==courseAnalyticsToken||state.route!=='course'||!state.actor)return;
+    courseAnalytics=result.analytics||null;
+  }catch(error){
+    if(current!==epoch||token!==courseAnalyticsToken||state.route!=='course'||!state.actor)return;
+    courseAnalytics=null;
+  }finally{
+    if(current===epoch&&token===courseAnalyticsToken){
+      courseAnalyticsLoading=false;
+      if(state.route==='course'&&state.courseTab==='tracks'&&state.phase==='ready')render();
+    }
+  }
+}
+function renderCourseView(){
+  const tabs=[['tracks','tracks'],['access','access'],['trial','trial'],['experiment','experiment']];
+  const tabBar=`<div class="subtabs course-subtabs" role="tablist" aria-label="${esc(t('course'))}">${tabs.map(([id,key])=>`<button type="button" role="tab" aria-selected="${state.courseTab===id}" class="subtab ${state.courseTab===id?'active':''}" data-course-tab="${id}">${esc(cx(key))}</button>`).join('')}</div>`;
+  if(!courseData)return tabBar+statePanel('loading');
+  const h=courseData.hsk30,a=courseData.course_access,limits=courseData.limits;
+  let body='';
+  if(state.courseTab==='tracks'){
+    const shown=(h.live_levels||[]).map(s=>s.toUpperCase()).join(' · ')||'—';
+    const analyticsLabels=({uz:['HSK 3.0 трекда','Даража танлаган','Тўлов тасдиқланган'],ru:['На треке HSK 3.0','Выбрали уровень','Оплачено'],tj:['Дар треки HSK 3.0','Сатҳ интихоб карданд','Пардохти тасдиқшуда']})[locale];
+    const kpis=[courseAnalytics?.track_activated_users,courseAnalytics?.selected_level_users,courseAnalytics?.payments?.approved];
+    body=`<div class="grid stat-cards course-stats">${kpis.map((value,i)=>courseMetric(analyticsLabels[i],value==null?'—':String(value),courseAnalytics?shown:'—')).join('')}</div>
+    <div class="v6-two">${courseCard(cx('trackTitle'),`<div class="switchline"><div><strong>${esc(cx('enabled'))}</strong><small>${esc(cx(h.enabled?'yes':'no'))}</small></div><span class="pill ${h.enabled?'green':'gray'}">${esc(cx(h.enabled?'active':'inactive'))}</span></div><div class="course-levels">${(h.available_levels||[]).map(l=>`<span class="v6-check ${h.live_levels.includes(l)?'chosen':''}">${esc(l.toUpperCase())}</span>`).join('')}</div><div class="v6-buttons"><button type="button" class="btn primary" data-action="hsk30Settings">${esc(cx('edit'))}</button></div>`)}
+    ${courseCard(cx('unlock'),`<div class="switchline"><div><strong>${esc(cx('paid'))}</strong><small>${esc(cx(h.unlock_payment_enabled?'paid':'free'))}</small></div><span class="pill ${h.unlock_payment_enabled?'amber':'green'}">${esc(cx(h.unlock_payment_enabled?'yes':'no'))}</span></div><div class="course-price">${esc(String(h.unlock_price_tjs))} TJS</div><div class="v6-buttons"><button type="button" class="btn primary" data-action="hsk30Settings">${esc(cx('edit'))}</button></div>`)}</div>
+    <div class="course-spacer"></div>${courseFunnelPanel()}`;
+  } else if(state.courseTab==='access'){
+    const rules=courseLimitDraft?.[courseLimitPlan]||{};
+    const options=Object.entries(rules).filter(([,rule])=>Number.isInteger(rule.limit));
+    body=`<div class="v6-two">
+    ${courseCard(cx('courseAccess'),`<div class="form-field"><label class="form-label">${esc(cx('courseAccessMode'))}</label><div class="course-mode-value">${esc(cx(a.mode==='free_until'?'freeUntil':'subscription'))}</div></div>${a.mode==='free_until'?`<div class="form-field"><label class="form-label">${esc(cx('until'))}</label><strong>${esc(date(a.free_until))}</strong></div>`:''}<div class="v6-buttons"><button class="btn primary" type="button" data-action="courseSettings">${esc(cx('edit'))}</button></div>`)}
+    ${courseCard(cx('limits'),`<div class="form-field"><label class="form-label" for="courseLimitPlan">${esc(cx('plan'))}</label><select id="courseLimitPlan" class="input"><option value="FREE" ${courseLimitPlan==='FREE'?'selected':''}>${esc(cx('freePlan'))}</option><option value="TRIAL_ACTIVE" ${courseLimitPlan==='TRIAL_ACTIVE'?'selected':''}>${esc(cx('trialPlan'))}</option></select></div><div class="course-limits-rows">${options.map(([key,rule])=>`<div class="v6-limit-row"><span><strong>${esc(courseLimitTitles[key]||key)}</strong><small>${esc(key)}</small></span><label><span class="screen-reader">${esc(cx('limitValue'))}</span><input class="input" type="number" min="0" max="10000" step="1" required data-course-limit="${esc(key)}" value="${esc(rule.limit)}"></label><label><span class="screen-reader">${esc(cx('limitWindow'))}</span><select class="input" data-course-window="${esc(key)}"><option value="daily" ${rule.window!=='lifetime'?'selected':''}>${esc(cx('daily'))}</option><option value="lifetime" ${rule.window==='lifetime'?'selected':''}>${esc(cx('lifetime'))}</option></select></label></div>`).join('')}</div><p class="form-hint">${esc(cx('note'))}</p><div class="v6-buttons"><button type="button" id="courseLimitSave" class="btn primary" data-action="limitsPrepare" ${courseLimitDirty()?'':'disabled'}>${esc(cx('save'))}</button></div>`)}</div>`;
+  } else if(state.courseTab==='trial'){
+    const draft=courseTrialDraft||limits.trial;
+    body=`<div class="v6-two">
+    ${courseCard(cx('trial'),`<div class="switchline"><div><strong>${esc(cx('trialState'))}</strong></div><input id="courseTrialEnabled" type="checkbox" class="switch" aria-label="${esc(cx('trialState'))}" ${draft.enabled?'checked':''}></div><div class="form-field"><label class="form-label" for="courseTrialDays">${esc(cx('trialDays'))}</label><input id="courseTrialDays" class="input" type="number" min="1" max="90" step="1" required value="${esc(draft.days)}"></div><div class="form-field"><label class="form-label" for="courseTrialReason">${esc(cx('trialReason'))}</label><input id="courseTrialReason" class="input" maxlength="200" value="${esc(draft.disabled_reason||'')}"></div><div class="v6-buttons"><button type="button" id="courseTrialSave" data-action="trialPrepare" class="btn primary" ${courseTrialDirty()?'':'disabled'}>${esc(cx('save'))}</button></div>`)}
+    ${courseCard(cx('trialState'),`<p class="secondary-note">${esc(cx('trialNote'))}</p><div class="profile-kv"><span class="kv-key">AI budget</span><strong class="kv-value">${esc(limits.trial.ai_budget_usd)} USD</strong><span class="kv-key">Min. account age</span><strong class="kv-value">${esc(limits.trial.min_account_age_hours)} h</strong></div>`)}</div>`;
+  } else {
+    body=`<div class="v6-two">${courseCard(cx('experiment'),`<p class="secondary-note">${esc(cx('experimentNote'))}</p><button type="button" class="btn primary" data-marketing-kind="sales_experiment">${esc(cx('browse'))}</button>`)}
+    ${courseCard(cx('courseStats'),`<p class="secondary-note">${esc(cx('courseStatsHint'))}</p><button type="button" class="btn" data-course-stats>${esc(cx('statsOpen'))}</button>`)}</div>`;
+  }
+  return `<div class="course-dashboard">${tabBar}<div class="course-content">${body}</div></div>`;
+}
+function courseLimitDirty(){
+  if(!courseLimitTouched[courseLimitPlan])return false;
+  const plan=courseLimitPlan,original=courseData?.limits?.plans?.[plan],draft=courseLimitDraft?.[plan];
+  if(!original||!draft)return false;
+  return Object.keys(draft).some(key=>draft[key].limit!==original[key]?.limit||(draft[key].window!=='lifetime'?'daily':'lifetime')!==(original[key]?.window==='lifetime'?'lifetime':'daily'));
+}
+function courseTrialDirty(){
+  if(!courseTrialDraft||!courseData?.limits)return false;
+  const a=courseData.limits.trial,b=courseTrialDraft;
+  return b.enabled!==a.enabled||b.days!==a.days||b.disabled_reason!==a.disabled_reason;
+}
+function keepCourseEdits(){
+  if(state.route!=='course'||!courseData)return;
+  if(state.courseTab==='access'){
+    for(const input of document.querySelectorAll('[data-course-limit]')){
+      const rule=courseLimitDraft?.[courseLimitPlan]?.[input.dataset.courseLimit];
+      if(rule)rule.limit=input.value===''?null:Number(input.value);
+    }
+    for(const input of document.querySelectorAll('[data-course-window]')){
+      const rule=courseLimitDraft?.[courseLimitPlan]?.[input.dataset.courseWindow];
+      if(rule)rule.window=input.value;
+    }
+    const b=$('courseLimitSave');if(b)b.disabled=!courseLimitDirty();
+  }
+  if(state.courseTab==='trial'){
+    if(!courseTrialDraft)return;
+    if($('courseTrialEnabled'))courseTrialDraft.enabled=$('courseTrialEnabled').checked;
+    if($('courseTrialDays'))courseTrialDraft.days=$('courseTrialDays').value===''?null:Number($('courseTrialDays').value);
+    if($('courseTrialReason'))courseTrialDraft.disabled_reason=$('courseTrialReason').value;
+    const b=$('courseTrialSave');if(b)b.disabled=!courseTrialDirty();
+  }
+}
+async function loadCourseData(){
+  const current=++view,at=epoch;
+  state.phase='loading';state.error=null;render();
+  try {
+    const [hsk,access,limit]=await Promise.all([
+      api('hsk30/read',{}),api('course-access/read',{}),api('limits/read',{})
+    ]);
+    if(current!==view||at!==epoch||state.route!=='course'||!state.actor)return;
+    courseData={hsk30:hsk.hsk30,course_access:access.course_access,limits:limit.limits,limitsRevision:limit.revision_hash};
+    courseLimitDraft={FREE:structuredClone(limit.limits.plans.FREE),TRIAL_ACTIVE:structuredClone(limit.limits.plans.TRIAL_ACTIVE)};
+    courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};
+    for(const rules of Object.values(courseLimitDraft))for(const rule of Object.values(rules)){
+      if(typeof rule==='object'&&Number.isInteger(rule.limit)&&!['daily','lifetime'].includes(rule.window))rule.window='daily';
+    }
+    courseTrialDraft={enabled:limit.limits.trial.enabled,days:limit.limits.trial.days,disabled_reason:limit.limits.trial.disabled_reason||''};
+    state.phase='ready';render();
+    void loadCourseAnalytics();
+  }catch(error){
+    if(current!==view||at!==epoch||state.route!=='course'||!state.actor)return;
+    state.phase='ready';state.error='error';render();
+  }
+}
+async function prepareCourseLimits(trial=false){
+  keepCourseEdits();
+  if(!courseData||!state.actor||signing)return;
+  if(!(trial?courseTrialDirty():courseLimitDirty()))return;
+  const change=trial?{trial:courseTrialDraft}:{plan:courseLimitPlan,rules:courseLimitDraft[courseLimitPlan]};
+  if(!trial){
+    for(const rule of Object.values(change.rules)){
+      if(!Number.isInteger(rule.limit)||rule.limit<0||rule.limit>10000||!['daily','lifetime'].includes(rule.window)){
+        document.querySelector('[data-course-limit]:invalid')?.reportValidity();return;
+      }
+    }
+  }else if(!Number.isInteger(change.trial.days)||change.trial.days<1||change.trial.days>90||change.trial.disabled_reason.length>200){
+    $('courseTrialDays')?.reportValidity();return;
+  }
+  if(!supportsPasskey()){showNotice('passkeyUnsupported');return;}
+  const current=drawerId,at=epoch;
+  drawer(trial?'trialSaving':'limitSaving',statePanel('loading'));
+  try{
+    const prepared=await api('limits/prepare',change);
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    if(prepared.operation?.action!=='limits.update'||prepared.operation?.target!=='global'
+       ||prepared.operation.payload.expected_hash!==courseData.limitsRevision)throw new ApiError('confirmation_changed',409);
+    confirmation=Object.freeze(structuredClone(prepared.operation));
+    await saveCourseLimits();
+  }catch(error){
+    if(at!==epoch||!state.actor)return;
+    confirmation=null;
+    drawer(trial?'trialSaving':'limitSaving',statePanel(errorKey(error)),btn('close','close')+btn('reload','reload','primary'));
+  }
+}
+async function saveCourseLimits(){
+  if(confirmation?.action!=='limits.update'||!supportsPasskey()||signing)return;
+  const operation=structuredClone(confirmation),current=drawerId,at=epoch,control=new AbortController();
+  signing=control;let submitted=false;
+  try {
+    const options=await api('auth/step-up/options',operation);
+    if(current!==drawerId||at!==epoch)return;
+    const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey),signal:control.signal});
+    if(current!==drawerId||at!==epoch)return;
+    await api('auth/step-up/verify',{step_up_id:options.step_up_id,credential:serialize(credential)});
+    if(current!==drawerId||at!==epoch)return;
+    submitted=true;
+    await api('limits/save',{...operation.payload,step_up_id:options.step_up_id});
+    if(current!==drawerId||at!==epoch)return;
+    confirmation=null;showSavedAndDismiss('changesSaved');void loadCourseData();
+  }catch(error){
+    if(current!==drawerId||at!==epoch)return;
+    confirmation=null;
+    if(!submitted&&['NotAllowedError','AbortError'].includes(error.name)){closeDrawer();showNotice('passkeyCancelled');return;}
+    const rejected=[400,403,404,409].includes(error.status);
+    drawer('limitSaving',statePanel(error.status===409?'changed':submitted&&!rejected?'uncertain':errorKey(error)),btn('close','close')+btn('reload','reload','primary'));
+  }finally{if(signing===control)signing=null;}
+}
+
 function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
-  if(state.route==='course')return `<div class="management-page">${group('course',managementRow(t('courseAccess'),'data-action="courseSettings"','book')+managementRow(t('hsk30Settings'),'data-action="hsk30Settings"','book'))}</div>`;
-  if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('messages'),'data-action="messageList"','mega')+managementRow(t('adCampaigns'),'data-campaign-list="ad"','mega')+managementRow(t('releaseCampaigns'),'data-campaign-list="release"','bell')+managementRow(t('discountCampaigns'),'data-campaign-list="discount"','wallet')+managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
+  if(state.route==='course')return renderCourseView();
+  if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('messages'),'data-action="messageList"','mega')+managementRow(t('adCampaigns'),'data-campaign-list="ad"','mega')+managementRow(t('releaseCampaigns'),'data-campaign-list="release"','bell')+managementRow(t('discountCampaigns'),'data-campaign-list="discount"','wallet')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
   return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow(t('deliveryQueue'),'data-action="deliveryList"','bell')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
 function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
 async function load() {
   cancelStatisticsDownload();feedbackLoadId++;feedbackStats.loading=false;feedbackStats.data=null;
   if(!state.actor) return;const current=++view, authEpoch=epoch;state.phase='loading';state.error=null;render();
-  if(['course','system','marketing'].includes(state.route)){state.phase='ready';render();return;}
+  if(state.route==='course'){await loadCourseData();return;}
+   if(['system','marketing'].includes(state.route)){state.phase='ready';render();return;}
   try {
     const data=await api(['home','stats'].includes(state.route)?'statistics':state.route==='users'?'users/search':'payments/list',
       ['home','stats'].includes(state.route)?{period:state.period,platform:state.platform}:state.route==='users'?{query:state.query,segment:state.segment,before_id:state.cursor,limit:30}:{status:state.status,before_id:state.cursor,limit:30});
@@ -1630,6 +1810,7 @@ async function executeCoursePolicy(){
     if(current!==drawerId||at!==epoch)return;
     confirmation=null;
     const policy=result.course_access;
+    if(courseData&&state.route==='course')courseData.course_access=structuredClone(policy);
     showSavedAndDismiss('courseSaved');
   }catch(error){
     if(current!==drawerId||at!==epoch)return;
@@ -1711,6 +1892,7 @@ async function executeHsk30Settings(){
     if(current!==drawerId||at!==epoch)return;
     confirmation=null;
     const p=result.hsk30;
+    if(courseData&&state.route==='course')courseData.hsk30=structuredClone(p);
     showSavedAndDismiss('hsk30Saved');
   }catch(error){
     if(current!==drawerId||at!==epoch)return;
@@ -2127,12 +2309,14 @@ async function action(name) {
     }catch(error){if(error.message!=='stale'){state.error=['signin','enroll'].includes(name)?errorKey(error):'authFailed';render();}}
     finally{busy=false;render();}return;
   }
-  if(name==='close'){closeDrawer();return;}
+  if(name==='close'){closeDrawer();if(state.route==='course'&&courseData)render();return;}
   if(name==='boot'){await lockAndRequirePasskey();return;}
   if(name==='reload'){await load();return;}
   if(name==='mcpConnections'){await mcpConnections();return;}
   if(name==='pushSettings'){await pushSettings();return;}
   if(name==='courseSettings'){await courseSettings();return;}
+  if(name==='limitsPrepare'){await prepareCourseLimits();return;}
+  if(name==='trialPrepare'){await prepareCourseLimits(true);return;}
   if(name==='priceSettings'){await priceSettings();return;}
   if(name==='priceQrSettings'){await priceQrSettings();return;}
   if(name==='messageList'){await messageList();return;}
@@ -2322,6 +2506,9 @@ document.addEventListener('click',event=>{
     else if(button.dataset.partnerNext){await partnerEditor(null,Number(button.dataset.partnerNext));}
     else if(button.dataset.noticeKey){await noticeEditor(button.dataset.noticeKey);}
     else if(button.dataset.portfolioNext){await portfolioHistory(Number(button.dataset.portfolioNext));}
+    else if(button.dataset.courseTab){keepCourseEdits();state.courseTab=button.dataset.courseTab;render();}
+    else if(button.dataset.courseDays){courseAnalyticsDays=Number(button.dataset.courseDays);void loadCourseAnalytics();}
+    else if(button.dataset.courseStats){state.route='stats';state.statsTab='course';await load();}
     else if(button.dataset.statsTab){
       const next=button.dataset.statsTab;
       if(['overview','course','platform','funnel','money','sources','report'].includes(next)&&state.route==='stats'){
@@ -2362,7 +2549,16 @@ document.addEventListener('click',event=>{
 document.addEventListener('input',event=>{
   if(event.target.closest?.('#drawerContent'))updateEditorSaveEnabled();
 });
+document.addEventListener('input',event=>{
+  if(event.target.matches('[data-course-limit]'))courseLimitTouched[courseLimitPlan]=true;
+  if(event.target.matches('[data-course-limit],#courseTrialDays,#courseTrialReason'))keepCourseEdits();
+});
 document.addEventListener('change',event=>{
+  if(event.target.id==='courseLimitPlan'){keepCourseEdits();courseLimitPlan=event.target.value;render();return;}
+  if(event.target.matches('[data-course-window],#courseTrialEnabled')){
+    if(event.target.matches('[data-course-window]'))courseLimitTouched[courseLimitPlan]=true;
+    keepCourseEdits();return;
+  }
   if(event.target.id==='discountTarget'&&$('discountSegment'))$('discountSegment').hidden=Boolean(event.target.value);
   if(event.target.id==='newAdLanguage')updateCourseAdCreateLanguage();
   if(event.target.id==='newAdMediaType'){updateCourseAdCreateMedia();return;}
