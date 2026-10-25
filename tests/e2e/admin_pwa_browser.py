@@ -839,10 +839,10 @@ async def export_browser_checks(output):
                     # weakening the accessibility requirement.
                     await page.locator('[data-menu-toggle=statisticsExportMenu]').click()
                     await expect(page.locator('[data-export-format=json]')).to_be_visible()
-                    await page.wait_for_function("""() => {
+                    await wait_js(page,"""() => {
                         const el=document.querySelector('[data-export-format=json]');
                         return !!el && el.isConnected && el.getBoundingClientRect().height >= 44;
-                    }""",timeout=7000)
+                    }""")
                     await page.screenshot(path=str(output/f'statistics-export-{width}-{language}.png'),full_page=True)
                     async with page.expect_download() as pending:
                         await page.locator('[data-export-format=json]').click()

@@ -2,6 +2,20 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## CI follow-up — strict CSP browser polling
+
+- At `1d4d593b`, [Admin PWA run 40156625123](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40156625123)
+  confirmed the PG migration/contention job SUCCESS. The primary suite passed
+  its Python/Redis, legacy and catalog steps, then failed the export browser's
+  remaining `page.wait_for_function` call under Linux's strict CSP.
+- That single wait now uses the existing debugger-evaluation `wait_js` helper,
+  matching all other protected browser checks. The connected/visible >=44px
+  action invariant is retained; no CSP relaxation or browser bypass was added.
+  Targeted real ASGI statistics/feedback export browser checks passed locally.
+- Two old course-level test doubles now supply the repository's required
+  `lock_key` method; their existing value/no-op timestamp assertions remain.
+  Shared course/access/unlock/ad regressions: **55 passed**.
+
 ## CI correction — isolate ORM fixtures from migrated public tables
 
 - [Admin PWA run 40155795894](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40155795894)
