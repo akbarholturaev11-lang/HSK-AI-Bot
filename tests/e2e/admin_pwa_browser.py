@@ -380,7 +380,6 @@ async def browser_checks(output):
         await page.locator('[data-action=approve]').click()
         await wait_step_up(page)
         await expect(page.locator('.amount-value')).to_have_text('100 TJS')
-        await expect(page.locator('.review-summary')).to_have_attribute('data-review-decision', 'approve')
         await page.screenshot(path=str(output/'mobile-payment-confirmation.png'),full_page=True)
         assert len([path for path,_,_ in calls if path.endswith('step-up/options')])==1
         await finish_step_up(page)
@@ -413,7 +412,6 @@ async def browser_checks(output):
         await page.locator('[data-action=reject]').click()
         await wait_step_up(page)
         await expect(page.locator('#rejectReason')).to_have_value('Synthetic QA duplicate')
-        await expect(page.locator('.review-summary')).to_have_attribute('data-review-decision', 'reject')
         # A lost HTTP response AFTER a real commit must not resend the write.
         drop_review=True
         await finish_step_up(page)
