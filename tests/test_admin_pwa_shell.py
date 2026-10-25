@@ -86,7 +86,7 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("credential=await navigator.credentials.get(",script)
         self.assertIn("await api('auth/passkey/login/verify'",script)
 
-    async def test_iphone_left_zone_swipe_is_single_step_and_input_safe(self):
+    async def test_iphone_full_width_swipe_is_single_step_and_input_safe(self):
         script=(await self.get('/admin/assets/app.js')).text
         start=script.index('function canSwipeBack(target) {')
         end=script.index("document.addEventListener('click',event=>{",start)
@@ -95,14 +95,17 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("document.addEventListener('touchstart'",gesture)
         self.assertIn("document.addEventListener('touchend'",gesture)
         self.assertIn("document.addEventListener('touchcancel'",gesture)
-        self.assertIn("window.innerWidth*0.30",gesture)
-        self.assertIn("window.innerWidth*0.28",gesture)
+        self.assertIn("document.addEventListener('touchmove'",gesture)
+        self.assertIn("swipePreview(dx)",gesture)
+        self.assertIn("await animateBack()",gesture)
+        self.assertNotIn("touch.clientX>window.innerWidth*0.30",gesture)
+        self.assertIn("if(dx<78",gesture)
         self.assertIn("event.touches.length!==1",gesture)
         self.assertIn("touch.identifier!==start.id",gesture)
         self.assertIn("getComputedStyle(node).overflowX",gesture)
         self.assertIn("input,textarea,select,[contenteditable]",gesture)
         self.assertIn("signing||inboxUpdating",gesture)
-        self.assertIn("(!standalone&&touch.clientX<24)",gesture)
+        self.assertIn("if(!standalone&&touch.clientX<24)return;",gesture)
         self.assertIn("oneStepBack().catch",gesture)
         self.assertIn("event.stopImmediatePropagation()",script)
         self.assertIn("const previous=drawerBack",gesture)
@@ -115,6 +118,25 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         # The gesture must not turn into browser history navigation.
         self.assertNotIn("history.back()",gesture)
         self.assertNotIn("location.assign(",gesture)
+
+
+    async def test_all_editors_have_single_dirty_save_and_short_success_feedback(self):
+        script=(await self.get('/admin/assets/app.js')).text
+        stylesheet=(await self.get('/admin/assets/styles.css')).text
+        # The top-right X is the cancel action, even on iPhone.
+        self.assertNotIn("btn('cancel','close')",script)
+        self.assertNotIn("btn('cancel','priceSettings')",script)
+        self.assertIn("editorBaseline={panel,value:editorValue()}",script)
+        self.assertIn("function updateEditorSaveEnabled(){",script)
+        self.assertIn("b.disabled=!dirty||requiresProof||managementPreparing||!!signing",script)
+        self.assertIn("function showSavedAndDismiss(key='changesSaved'){",script)
+        self.assertIn("role=\"status\"",script)
+        self.assertIn("},2500)",script)
+        self.assertIn(".saved-tick{",stylesheet)
+        self.assertIn(".swipe-back-cue",stylesheet)
+        # Transaction-bound WebAuthn still gates all confirmed writes.
+        self.assertIn("await api('auth/step-up/verify'",script)
+        self.assertIn("await api(managementEndpoint(review.type,'save'),command)",script)
 
     async def test_worker_scope_version_and_public_cache_allowlist(self):
         manifest=(await self.get('/admin/manifest.webmanifest')).json()
