@@ -553,7 +553,11 @@ async def browser_checks(output):
         # Use the visible mobile Users navigation to force a real protected
         # read after revocation. The previous .last locator could resolve to a
         # hidden desktop button, time out, then silently skip the auth check.
-        await page.locator('.mobile-tabs [data-route=users]').click(timeout=15000)
+        # Re-authentication/notification refresh can replace the tab element
+        # after the sidebar first appears. Dispatch on the current live tab
+        # rather than Playwright waiting for an animation-stable DOM node.
+        await expect(page.locator('.mobile-tabs [data-route=users]')).to_be_visible()
+        await page.locator('.mobile-tabs [data-route=users]').click(force=True,timeout=15000)
         await expect(page.locator('[data-action=signin]')).to_be_visible(timeout=15000)
         assert 'QA account' not in await page.locator('body').inner_text()
         assert await page.evaluate('Object.keys(localStorage)')==['hsk-admin-locale']
