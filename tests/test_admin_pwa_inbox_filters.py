@@ -115,6 +115,40 @@ class AdminPwaInboxFilterTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         self.assertEqual(actual, expected)
         self.assertEqual(len(set(actual)), 10)
 
+    async def test_unread_automatic_importance_and_read_pagination(self):
+        now, ids = await self.seed_sources()
+        async with self.sessions() as db:
+            db.add(AdminPwaInboxTriage(
+                source="bot", source_id=ids["bot"][0], status="read",
+                priority="important", revision=1, updated_at=now))
+            db.add(AdminPwaInboxTriage(
+                source="android", source_id=ids["android"][0], status="read",
+                priority="normal", revision=1, updated_at=now))
+            await db.commit()
+        complete = await self.read(period="monthly")
+        rows = complete["items"]
+        key = lambda row: (
+            row["triage_status"] == "new",
+            row["triage_priority"] == "important",
+            row["created_at"],
+        )
+        self.assertEqual(list(map(key, rows)), sorted(map(key, rows), reverse=True))
+        bot = next(r for r in rows if r["source"] == "bot" and r["source_id"] == ids["bot"][0])
+        android = next(r for r in rows if r["source"] == "android" and r["source_id"] == ids["android"][0])
+        self.assertEqual(bot["triage_priority"], "normal")
+        self.assertEqual(android["triage_priority"], "important")
+        self.assertEqual(rows[-1]["triage_status"], "read")
+
+        expected = [(r["source"], r["source_id"]) for r in rows]
+        actual, before = [], None
+        for _ in range(len(expected) + 2):
+            page = await self.read(period="monthly", limit=1, before=before)
+            actual += [(r["source"], r["source_id"]) for r in page["items"]]
+            before = page["next_before"]
+            if before is None:
+                break
+        self.assertEqual(actual, expected)
+
     def test_filter_payload_is_strict_and_defaults_preserve_existing_reads(self):
         query = InboxRequest.model_validate({})
         self.assertEqual((query.status, query.period), ("all", "all_time"))
