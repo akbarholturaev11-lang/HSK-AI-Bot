@@ -698,7 +698,17 @@
     "ui.admin_pwa.addChannel": "Kanal qo‘shish yoki yangilash",
     "ui.admin_pwa.channelChatId": "Telegram kanali (@nom yoki ID)",
     "ui.admin_pwa.channelInvite": "Taklif havolasi (xususiy kanal uchun shart)",
-    "ui.admin_pwa.channelId": "Kanal ID"
+    "ui.admin_pwa.channelId": "Kanal ID",
+    "ui.admin_pwa.ledger": "Qo‘lda kiritilgan yozuvlar",
+    "ui.admin_pwa.newLedgerEntry": "Yozuv qo‘shish",
+    "ui.admin_pwa.ledgerType": "Yozuv turi",
+    "ui.admin_pwa.ledgerProfit": "Kirim",
+    "ui.admin_pwa.ledgerExpense": "Chiqim",
+    "ui.admin_pwa.ledgerCurrency": "Valyuta",
+    "ui.admin_pwa.ledgerNote": "Izoh",
+    "ui.admin_pwa.ledgerUSD": "Hisobdagi USD qiymati",
+    "ui.admin_pwa.ledgerRateHint": "USD qiymati tizimning ichki hisob-kitob kursi bo‘yicha hisoblanadi.",
+    "ui.admin_pwa.ledgerHint": "Bu yozuv foydalanuvchining obunasini o‘zgartirmaydi."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

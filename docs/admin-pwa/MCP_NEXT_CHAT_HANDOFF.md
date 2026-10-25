@@ -2,6 +2,23 @@
 
 Updated 2026-10-25. Read this first; older checkpoints are historical. Verify remote HEAD and CI before editing.
 
+## Current manual-ledger increment
+
+- `/portfolio/read|prepare|save` uses integer minor units, fixed currencies and
+  existing PortfolioService conversion. Exact conversion is reviewed/signed;
+  stale rates or payload changes deny without a ledger append. One-use proof,
+  append and hash-only note audit are atomic. No Payment/access/budget changes.
+- Read-only history uses 30-row keysets over manual sources only, preserves
+  legacy subcent values and bounds note projection. No payment synchronization,
+  all-ledger scan, provider request or background refresh. System navigation
+  adds compact history/new-entry editors with canonical UZ/RU/TJ and passkeys.
+- Local ledger/import gate: nine passed, including real-PG duplicate-proof
+  contention, ES256/replay, conversion changes, rollback and no-write/no-payment
+  history checks. Actual ASGI/virtual-WebAuthn management browser passed the
+  ledger confirmation and append together with all existing management flows.
+- Remaining code: messaging/campaigns, partner actions/payouts, notice templates,
+  media/QR uploads and the operator/retention items in the management contract.
+
 ## CI follow-up — healthy Redis coordination versus outage timing
 
 - At `c6d4af7a`, [run 40157595462](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40157595462)

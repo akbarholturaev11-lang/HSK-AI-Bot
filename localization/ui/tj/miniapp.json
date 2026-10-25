@@ -698,7 +698,17 @@
     "ui.admin_pwa.addChannel": "Илова ё нав кардани канал",
     "ui.admin_pwa.channelChatId": "Канали Telegram (@ном ё ID)",
     "ui.admin_pwa.channelInvite": "Пайванди даъват (барои канали хусусӣ ҳатмӣ)",
-    "ui.admin_pwa.channelId": "ID-и канал"
+    "ui.admin_pwa.channelId": "ID-и канал",
+    "ui.admin_pwa.ledger": "Сабтҳои молиявии дастӣ",
+    "ui.admin_pwa.newLedgerEntry": "Илова кардани сабт",
+    "ui.admin_pwa.ledgerType": "Навъи сабт",
+    "ui.admin_pwa.ledgerProfit": "Даромад",
+    "ui.admin_pwa.ledgerExpense": "Хароҷот",
+    "ui.admin_pwa.ledgerCurrency": "Асъор",
+    "ui.admin_pwa.ledgerNote": "Шарҳ",
+    "ui.admin_pwa.ledgerUSD": "Маблағи ҳисобӣ бо USD",
+    "ui.admin_pwa.ledgerRateHint": "Маблағи USD бо қурби дохилии ҳисобдории низом ҳисоб мешавад.",
+    "ui.admin_pwa.ledgerHint": "Ин сабт обунаи корбарро тағйир намедиҳад."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

@@ -25,6 +25,7 @@ from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
 from app.admin_api.pwa_channels import create_admin_pwa_channels_router
+from app.admin_api.pwa_portfolio import create_admin_pwa_portfolio_router
 from app.admin_api.pwa_step_up_transport import create_admin_pwa_step_up_router
 from app.admin_api.pwa_subscription_prices import create_admin_pwa_subscription_prices_router
 from app.db.base import Base
@@ -60,7 +61,8 @@ async def browser_checks(output):
     for factory in (create_admin_pwa_bootstrap_router, create_admin_pwa_read_router,
                     create_admin_pwa_step_up_router, create_admin_pwa_settings_router,
                     create_admin_pwa_subscription_prices_router, create_admin_pwa_marketing_router,
-                    create_admin_pwa_user_management_router,create_admin_pwa_channels_router):
+                    create_admin_pwa_user_management_router,create_admin_pwa_channels_router,
+                    create_admin_pwa_portfolio_router):
         app.include_router(factory(**common))
     calls, errors = [], []
     drop_save = False
@@ -336,6 +338,31 @@ async def browser_checks(output):
                     await page.locator('#channelOperation').select_option(operation)
                     if operation=='state':await page.locator('#channelActive').select_option('false')
                     await prepare_and_save('uz',f'channel-{operation}-confirm.png')
+                for language in ('uz','ru','tj'):
+                    await page.locator('#locale').select_option(language)
+                    await page.locator('[data-action="portfolioHistory"]').click()
+                    await page.locator('[data-action="portfolioEditor"]').click()
+                    await page.locator('#portfolioCurrency').select_option('TJS')
+                    await page.locator('#portfolioAmount').fill('12.99')
+                    await page.locator('#portfolioNote').fill('QA expense <img src=x onerror=alert(1)>')
+                    await page.set_viewport_size({'width':390,'height':844})
+                    await page.locator('[data-action="managementPrepare"]').click()
+                    await expect(page.locator('.management-comparison')).to_be_visible()
+                    assert await page.locator('.management-comparison img').count()==0
+                    await page.screenshot(path=str(output/f'ledger-confirm-{language}-390.png'))
+                    await page.locator('[data-action="close"]').last.click()
+                    await page.set_viewport_size({'width':1440,'height':1000})
+                await page.locator('#locale').select_option('uz')
+                await page.locator('[data-action="portfolioHistory"]').click()
+                await page.locator('[data-action="portfolioEditor"]').click()
+                await page.locator('#portfolioType').select_option('expense')
+                await page.locator('#portfolioCurrency').select_option('TJS')
+                await page.locator('#portfolioAmount').fill('12.99')
+                await page.locator('#portfolioNote').fill('QA committed expense')
+                await prepare_and_save('uz')
+                await page.locator('[data-action="portfolioHistory"]').click()
+                await expect(page.locator('#drawerContent')).to_contain_text('QA committed expense')
+                await page.locator('.drawer-close').click()
                 # Revocation between confirmation and proof fails before any write.
                 before = await audit_count()
                 await page.locator('[data-setting-kind="help_contact"]').click()

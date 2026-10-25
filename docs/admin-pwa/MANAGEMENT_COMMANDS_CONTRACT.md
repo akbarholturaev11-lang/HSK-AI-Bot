@@ -23,6 +23,7 @@ uncertain response.
 | `settings.update` | `/settings/read`, `/prepare`, `/save` | Fixed bank details, allowed AI models, support contact and UZ/RU/TJ help videos |
 | `marketing.update` | `/marketing/read`, `/prepare`, `/save` | Sales experiment, app promotion settings, existing creative activation/deletion |
 | `users.block` / `users.delete` | `/users/prepare-management`, `/users/manage` | Canonical block/unblock or typed-ID-confirmed removal through shared UserRepository |
+| `portfolio.add` | `/portfolio/read`, `/prepare`, `/save` | Manual profit/expense through shared PortfolioService; no payment synchronization or entitlement mutation |
 | `channels.update` | `/channels/read`, `/prepare`, `/save` | Required-channel mode, add/upsert, state and removal through shared channel service |
 
 Subscription price read returns a fixed nine-row projection, never a paginated
@@ -65,7 +66,7 @@ responses. These controls and bounded creative pages are localized in UZ/RU/TJ.
 
 These legacy capabilities are not silently proxied by the standalone PWA:
 direct messages,
-mass messages, campaign creation, partner actions/payouts, manual ledger input,
+mass messages, campaign creation, partner actions/payouts,
 notice-template management and media/QR/creative uploads. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
 needs its own strict payload, shared-service transaction and permission/audit
@@ -95,3 +96,12 @@ and existing rows before updates/deletion. Audits contain only hashes and
 operation metadata, never invitation URLs or channel copy. Read-only section
 navigation does not fetch the list. The editors use the same localized
 confirmation/recovery flow as other configuration commands.
+
+Manual ledger reads project at most 31 manual-source rows by primary key, with
+bounded note previews and original monetary precision. They never call the
+legacy summary/history helpers that synchronize approved payments. New entries
+accept integer minor units (1..100000000), USD/TJS/CNY and a bounded note. The
+confirmation binds the exact shared internal-rate USD conversion; a changed
+rate rejects before append. Append, proof consumption and hash-only note audit
+commit atomically. No Payment, subscription, access or AI budget is created.
+One proof cannot append twice across PostgreSQL workers.

@@ -270,7 +270,7 @@ function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
   if(state.route==='course')return `<div class="management-page">${group('course',managementRow(t('courseAccess'),'data-action="courseSettings"','book')+managementRow(t('hsk30Settings'),'data-action="hsk30Settings"','book'))}</div>`;
   if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega'))}</div>`;
-  return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
+  return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
 function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
 async function load() {
@@ -429,9 +429,23 @@ function userManagementEditor(userId,operation){
 const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktopPromo',course_ad:'courseAds'};
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
 const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
-function managementNamespace(type){return type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
+function managementNamespace(type){return type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
 function managementEndpoint(type,phase){return type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
-function managementAction(type,operation){return type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+function managementAction(type,operation){return type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+async function portfolioHistory(before=null){
+  closeDrawer();const current=drawerId,at=epoch;drawer('ledger',statePanel('loading'));
+  try{
+    const data=await api('portfolio/read',before?{before_id:before}:{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const rows=data.items.map(row=>`<article class="feedback-item"><strong>#${Number(row.id)} · ${esc(t({profit:'ledgerProfit',expense:'ledgerExpense'}[row.transaction_type]))} · ${esc(row.amount??'—')} ${esc(row.currency)}</strong><p>${esc(row.note)}${row.note_truncated?'…':''}</p><small>${esc(t('ledgerUSD'))}: ${esc(row.amount_usd??'—')} USD · ${esc(date(row.created_at))}</small></article>`).join('');
+    drawer('ledger',`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`+(rows||statePanel('empty'))+(data.next_before_id?`<button class="btn" data-portfolio-next="${data.next_before_id}">${esc(t('next'))}</button>`:''),btn('close','close')+btn('newLedgerEntry','portfolioEditor','primary'));
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('ledger',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','portfolioHistory'));}
+}
+function portfolioEditor(){
+  closeDrawer();managementDraft={type:'portfolio'};
+  const body=`<p class="source-note">${esc(t('ledgerHint'))}</p><div class="form-field"><label for="portfolioType">${esc(t('ledgerType'))}</label><select class="input" id="portfolioType"><option value="profit">${esc(t('ledgerProfit'))}</option><option value="expense">${esc(t('ledgerExpense'))}</option></select></div><div class="form-field"><label for="portfolioCurrency">${esc(t('ledgerCurrency'))}</label><select class="input" id="portfolioCurrency">${['USD','TJS','CNY'].map(code=>`<option>${code}</option>`).join('')}</select></div><div class="form-field"><label for="portfolioAmount">${esc(t('amount'))}</label><input class="input" id="portfolioAmount" type="number" min="0.01" max="1000000" step="0.01" required></div><div class="form-field"><label for="portfolioNote">${esc(t('ledgerNote'))}</label><textarea class="input setting-value" id="portfolioNote" minlength="2" maxlength="300" required></textarea></div>`;
+  drawer('newLedgerEntry',`<form id="managementForm">${body}</form>`,btn('cancel','close')+btn('next','managementPrepare','primary'));
+}
 async function channelEditor(kind,before=null){
   if(!['mode','list','add'].includes(kind))return;
   closeDrawer();const current=drawerId,at=epoch;
@@ -503,6 +517,7 @@ function editCourseAd(id){
   drawer('courseAds',form,btn('cancel','close')+btn('next','managementPrepare','primary'));
 }
 function managementFields(value,type){
+  if(type==='portfolio')return profileFields([['ledgerType',t(value.transaction_type==='profit'?'ledgerProfit':'ledgerExpense')],['amount',(value.amount_minor/100).toFixed(2)+' '+value.currency],['ledgerUSD',(value.expected_usd||value.amount_usd)+' USD'],['ledgerNote',value.note]]);
   if(type==='channel'){
     if(Object.hasOwn(value,'enabled'))return profileFields([['channelMode',t(value.enabled?'hsk30On':'hsk30Off')]]);
     const fields=[];const id=value.id||value.channel_id||value.deleted_id;
@@ -530,6 +545,7 @@ function managementFields(value,type){
   throw Error('invalid_settings');
 }
 function managementReread(draft){
+  if(draft.type==='portfolio')return btn('readCurrent','portfolioHistory');
   if(draft.type==='channel')return `<button class="btn" data-channels-kind="${draft.kind==='mode'?'mode':'list'}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='user')return `<button class="btn" data-user-detail="${draft.userId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind)}">${esc(t('readCurrent'))}</button>`;
@@ -592,7 +608,12 @@ async function editSetting(kind,bank=null){
 async function prepareManagement(){
   if(managementPreparing||!state.actor||signing||!managementDraft||!$('managementForm')?.reportValidity())return;
   const draft=managementDraft;let payload;
-  if(draft.type==='channel'){
+  if(draft.type==='portfolio'){
+    const raw=$('portfolioAmount').value;
+    if(!/^(?:0|[1-9][0-9]{0,6})(?:\.[0-9]{1,2})?$/.test(raw))return;
+    const [whole,fraction='']=raw.split('.'),minor=Number(whole)*100+Number(fraction.padEnd(2,'0'));
+    payload={transaction_type:$('portfolioType').value,amount_minor:minor,currency:$('portfolioCurrency').value,note:$('portfolioNote').value};
+  }else if(draft.type==='channel'){
     let change;
     if(draft.kind==='mode')change={kind:'mode',enabled:$('channelEnabled').value==='true'};
     else if(draft.kind==='add')change={kind:'add',chat_id:$('channelChat').value,title:$('channelTitle').value,invite_link:$('channelInvite').value||null};
@@ -628,9 +649,9 @@ async function prepareManagement(){
     const operation=structuredClone(result.operation);
     if(operation?.action!==managementAction(draft.type,draft.userOperation)||!operation.target||!operation.payload)throw Error('invalid_operation');
     managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,operation:Object.freeze(operation)});
-    const proposed=draft.type==='price'?{...operation.payload,currency:result.current.currency}:draft.type==='user'?operation.payload:operation.payload.change;
+    const proposed=draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
     const currentValue=draft.type==='marketing'||draft.type==='channel'?{kind:draft.kind,...result.current}:result.current;
-    const comparison=`<div class="management-comparison"><section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section><section><h3>${esc(t('proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
+    const comparison=`<div class="management-comparison">${draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
     drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
   }catch(error){
     if(current===drawerId&&at===epoch&&state.actor)drawer('confirmChanges',statePanel(error.status===409?'configChanged':errorKey(error)),btn('close','close')+managementReread(draft));
@@ -654,7 +675,7 @@ async function executeManagement(){
     const result=await api(managementEndpoint(review.type,'save'),{...operation.payload,step_up_id:options.step_up_id});
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
-    const saved=review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='user'?result:result.setting;
+    const saved=review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
     if(review.type==='user'&&result.deleted){state.rows=state.rows.filter(row=>row.user_id!==result.user_id);render();}
     drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review)));
   }catch(error){
@@ -1195,6 +1216,8 @@ async function action(name) {
   if(name==='pushSettings'){await pushSettings();return;}
   if(name==='courseSettings'){await courseSettings();return;}
   if(name==='priceSettings'){await priceSettings();return;}
+  if(name==='portfolioHistory'){await portfolioHistory();return;}
+  if(name==='portfolioEditor'){portfolioEditor();return;}
   if(name==='managementPrepare'){await prepareManagement();return;}
   if(name==='managementExecute'){await executeManagement();return;}
   if(name==='hsk30Settings'){await hsk30Settings();return;}
@@ -1228,6 +1251,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.channelsKind){await channelEditor(button.dataset.channelsKind);}
     else if(button.dataset.channelsNext){await channelEditor('list',Number(button.dataset.channelsNext));}
     else if(button.dataset.channelId){editChannel(Number(button.dataset.channelId));}
+    else if(button.dataset.portfolioNext){await portfolioHistory(Number(button.dataset.portfolioNext));}
     else if(button.dataset.period){state.period=button.dataset.period;await load();}
     else if(button.dataset.platform){state.platform=button.dataset.platform;await load();}
     else if(button.dataset.exportFormat){await exportStatistics(button.dataset.exportFormat);}

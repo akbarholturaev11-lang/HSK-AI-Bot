@@ -698,7 +698,17 @@
     "ui.admin_pwa.addChannel": "Добавить или обновить канал",
     "ui.admin_pwa.channelChatId": "Канал Telegram (@имя или ID)",
     "ui.admin_pwa.channelInvite": "Приглашение (обязательно для закрытого канала)",
-    "ui.admin_pwa.channelId": "ID канала"
+    "ui.admin_pwa.channelId": "ID канала",
+    "ui.admin_pwa.ledger": "Ручные финансовые записи",
+    "ui.admin_pwa.newLedgerEntry": "Добавить запись",
+    "ui.admin_pwa.ledgerType": "Тип записи",
+    "ui.admin_pwa.ledgerProfit": "Доход",
+    "ui.admin_pwa.ledgerExpense": "Расход",
+    "ui.admin_pwa.ledgerCurrency": "Валюта",
+    "ui.admin_pwa.ledgerNote": "Примечание",
+    "ui.admin_pwa.ledgerUSD": "Учётная сумма в USD",
+    "ui.admin_pwa.ledgerRateHint": "Сумма в USD рассчитывается по внутреннему учётному курсу системы.",
+    "ui.admin_pwa.ledgerHint": "Эта запись не меняет подписку пользователя."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
