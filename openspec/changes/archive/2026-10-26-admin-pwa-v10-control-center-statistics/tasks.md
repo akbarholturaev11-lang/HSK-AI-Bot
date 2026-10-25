@@ -1,6 +1,6 @@
 # Tasks
 
-Canonical execution checkpoint/evidence: [Admin PWA handoff](../../../docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md).
+Canonical execution checkpoint/evidence: [Admin PWA handoff](../../../../docs/admin-pwa/MCP_NEXT_CHAT_HANDOFF.md).
 
 ## 1. Read/cache foundation and Home/overview projection
 
@@ -27,7 +27,7 @@ Canonical execution checkpoint/evidence: [Admin PWA handoff](../../../docs/admin
 ## 5. Integration and promotion
 
 - [x] 5.1 Run applicable aggregate/cache/security/PostgreSQL/legacy and real ASGI/WebAuthn browser integration checks; record executed evidence and resolve campaign CI media prerequisites without weakening assertions.
-- [ ] 5.2 Commit/push verified increments and promote the authorized intended code from a clean worktree, verifying remote refs and preserving unrelated changes/AI branch work.
+- [x] 5.2 Commit/push verified increments and promote the authorized intended code from a clean worktree, verifying remote refs and preserving unrelated changes/AI branch work.
 
 ## Workflow follow-up
 
