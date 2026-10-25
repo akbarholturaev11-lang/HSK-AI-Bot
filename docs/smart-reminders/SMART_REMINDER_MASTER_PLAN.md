@@ -48,7 +48,7 @@
 
 ### 1.4 Scope / out-of-scope
 **V1 scope:** ўқиш эслатмаси, incomplete lesson, daily goal, streak, inactive learner recovery, account-level policy, Telegram+Android, аналитика асоси.
-**Кейинги scope:** learner iPhone PWA Web Push, Desktop каналлари, notification-optimize engine, multi-armed bandit, smart review/word-mastery recommendation, admin analytics UI.
+**Кейинги scope:** learner iPhone PWA Web Push, Desktop каналлари, ML-based notification optimization, multi-armed bandit, smart review/word-mastery recommendation, admin analytics UI. **[D09]:** V1 launch policy is already adaptive rule-based and must collect training-quality data; future ML infrastructure is staged/validated globally but automatically becomes active for an eligible user once sufficient high-quality personal signals and model-performance guardrails are met. No separate per-user ML training is required by product decision.
 **Out of scope:** Admin PWA’нинг ўз administrator push’ини learner’га айлантириш; тўлов/чеки каби транзакцион хабарларни маркетинг лимитига қўшиш; барча кампаниаларни автомат равишда бу engine’га кўчириш.
 
 ## 2. [VERIFIED-CODE] Бошланғич код аудити: 2026-10-25, main
@@ -120,7 +120,7 @@
 5. **DeliveryOrchestrator [D06/D07]** — account-level claim/lock/idempotency, auto-select a single reachable permitted channel and a single eligible device using real per-platform study activity + delivery reliability; user-pinned channel wins if currently permitted and reachable. No parallel Telegram+Android+PWA+Desktop fanout. **D07:** alternate permitted channel only after verifiable first-channel non-display/failure and fresh eligibility check; ambiguous/missing acknowledgement means no cross-channel resend. Telegram/Android V1, learner iPhone PWA/Desktop later.
 6. **NotificationRenderer** — versioned notification template, canonical i18n, safe parameters, CTA target; no live LLM requirement.
 7. **OutcomeAttribution** — planned/attempted/accepted/displayed/opened/resumed/completed/optout counters.
-8. **Optimizer** — аввал A/B, кейин маълумот етарли бўлса channel/time/content optimization; shadow→guarded ramp.
+8. **Hybrid Optimizer [D09 OWNER APPROVED 2026-10-25]** — newly registered/low-data user: real functioning personalized rule-based policy, not a nonfunctional waiting period. Gather reliable learning/outcome signals. When a globally validated ML model exists and this user's evidence crosses a **quality/confidence eligibility threshold**, **automatically** switch this user to ML-guided time/content/channel/cadence optimization, with no feature-prompt or extra user consent beyond existing valid notification permissions (D01). Transition is gradual and versioned; insufficient/conflicting/stale data, degradation, unsupported platform, model failure or guardrail breach immediately uses safe rules again. Account/user override and D01–D08 constraints always override ML. Exact eligibility threshold/ML design/experiment gates are technical [OPEN] until audit/test, not invented as a fixed count.
 9. **Admin Control** — on/off kill switch, template controls, experiment sample, delivery metrics; Admin PWA’нинг техник push функционалидан мустақил.
 
 **Қарор чиқариш кетма-кетлиги:**
@@ -280,7 +280,8 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 - Measure intent-to-treat (all assigned eligible users), also delivered-user diagnostics separately; never compare responders-only to all nonresponders.
 - 1st experiments: (a) reminder vs holdout, (b) manual/default vs habit-based time after verified value, (c) short lesson-oriented vs generic content, (d) channel preference after real consent.
 - Enforce safety guardrail thresholds + stop rule; sample size/power and duration chosen from real baseline, not arbitrary 7 days.
-- Models only after enough data: explainable ranking / contextual bandit; offline evaluation, exploration budget, strict cap, fallback deterministic, versioned policy. LLM-generated marketing copy not core.
+- **[DECISION D09 2026-10-25 — HYBRID]:** two stages are **one continuous product**, not two products and not a manual user toggle: stage 1 immediately runs adaptive deterministic rules for new and sparse-history users and captures verified learning signals; stage 2 turns on an already-trained and experimentally validated ML optimizer **automatically per eligible user** when their usable history meets an approved reliability/confidence gate. ML may personalize best time, content, channel, and reminder cadence but must honor fixed rule guardrails. If model unavailable/uncertain/regresses, auto fallback to stage 1 with no missing opt-out or extra push. A shared model with per-user features is preferred over training a separate model per person; architecture choice to verify during P7.
+- [OPEN technical thresholds]: define minimum distinct study days, quality/coverage of signal, warm/cold start, sample-size/causal lift, model confidence, max age of data, model version, staged cohort release, shadow test and rollback before ML dispatch goes live. No arbitrary numeric threshold approved; no claim model implemented. LLM-generated marketing copy not core.
 
 ## 11. Иш босқичлари, рақамланган чеклист ва acceptance
 
@@ -305,7 +306,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 ### P2 — Deterministic decision engine (DRY RUN)
 **Ҳолат:** [NOT STARTED]
 - [ ] Policy pure function: reasons, priorities, frequency budget, only user-selected quiet hours/pause (D04: no global preset), current-day done, snooze; D03 personalized cadence by verified learning reaction, one study reminder/user/local day absolute cap, ignored→decelerate, safe learning return→increase only under cap; weekly hard cap still OPEN. **D05:** eligible study/rating/weekly category coordination: collisions suppressed or deferred (ranking low priority, weekly summary retained where possible), all platforms counted by users.id; account/payment transactional notices excluded. **D07:** fail-closed alternate-channel routing on ambiguous delivery; confirmed failure only, no timeout-based blind resend.
-- [ ] **D02:** Smart habit estimator with reliability; enough observed study days бўлмагунча existing reminder time сақлаш; user қўлда вақтни қотирган бўлса optimizer override қилмасин; changed habit adaptation and zone/DST tests. **D08:** user-specific typical inter-study gap vs abnormal inactivity, gradual reactivation cooldown and final stop; cold-start sparse histories and real study resumption QA.
+- [ ] **D02:** Smart habit estimator with reliability; enough observed study days бўлмагунча existing reminder time сақлаш; user қўлда вақтни қотирган бўлса optimizer override қилмасин; changed habit adaptation and zone/DST tests. **D08:** user-specific typical inter-study gap vs abnormal inactivity, gradual reactivation cooldown and final stop; cold-start sparse histories and real study resumption QA. **D09 stage 1:** already-functioning personalized rule-based reminders from first eligible account use; persist model eligibility evidence without blocking core reminders.
 - [ ] Job reservation/cancel/recompute and policy versioning; no network delivery.
 - [ ] Shadow logs compared against old reminders without user notification.
 **Acceptance:** identical inputs → identical decisions, safe suppress when data unknown, one study job/account/day, dry-run has no side effects.
@@ -341,19 +342,22 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 ### P6 — Analytics + controlled experiments + admin observability
 **Ҳолат:** [NOT STARTED]
 - [ ] Server events, attribution IDs, cohorts, dashboards with real denominators; D05 category-level suppression/defer/dispatch counts and per-account all-category frequency, duplicate and nuisance metrics.
-- [ ] Stable user-level randomized control, D1 experiment interference audit, metrics baselines.
+- [ ] Stable user-level randomized control, D1 experiment interference audit, metrics baselines; D09 verify ML uplift and safety against the actual working rule baseline rather than against no reminders, and model readiness based on meaningful learning outcomes.
 - [ ] Admin controls: kill switch, content preview, delivery/suppression counts, volume metrics, not fake sample data.
 - [ ] Notification annoyance guardrails and alerting.
 **Acceptance:** replay sample data deterministic, cohort reports consistent, control never dispatched, production users not exposed without policy gate.
 **QA:** attribution late/duplicate event, logging failure isolation, control/treatment equality check, privacy.
 
-### P7 — Optimization (after statistically useful evidence)
+### P7 — Optimization: automatic rule-to-ML upgrade [D09 OWNER APPROVED; implementation not started]
 **Ҳолат:** [NOT STARTED]
-- [ ] Compare time/content/channel randomized performance and data sufficiency.
-- [ ] Simple transparent scoring first; stronger learner model only if causal uplift.
-- [ ] Exploration frequency caps + model rollback, holdout continual.
-**Acceptance:** experimentally measured better learning outcomes with guardrails; otherwise keep rule policy.
-**QA:** simulations, data leakage, sparse/cold-start cohorts, silent users, missing channel ack.
+- [ ] First production stage already uses useful rule-based personalized reminder decisioning (P2–P6); there is **no waiting for an ML model before users receive eligible reminders**.
+- [ ] Collect quality-checked canonical learning events/outcomes, compare verified time/content/channel/cadence performance and data sufficiency with a rule-policy baseline.
+- [ ] Train/validate shared user-personalizing model offline; assess leakage, consent/privacy, fairness for sparse-history users, silent users, and underrepresented languages/platforms. ML implementation and production support remain conditional on evidence.
+- [ ] Define and version `optimizer_mode=rules|ml`, `model_version`, user eligibility/confidence gate, feature freshness, evaluation and automatic transition reasons; **automatically enter ML mode once both the model is safely deployed and user eligibility is satisfied**, without manual opt-in. Use reversible gate: automatically fall back to rule mode when signals/model fail.
+- [ ] Shadow ML predictions against existing rule policy, controlled randomized A/B, explicit metric lift and safety thresholds, staged release/kill switch; preserve experimental holdout and all D01–D08 guards.
+- [ ] Exploration frequency caps + model rollback, no more than one study reminder/user/local day and no cross-channel duplicate.
+**Acceptance:** new users get rule-based reminders immediately; eligible users automatically adopt demonstrably better ML decisions when criteria are met, while ineligible ones stay on functioning rules; model failure or degraded evidence falls back automatically, respecting user preferences/permissions, channel and cadence limits. If ML uplift is unproven, rules remain the deployed policy; never claim model is production-ready merely because personal data count reached a threshold.
+**QA:** cold vs warm cohort, threshold-cross event, automatic transition, threshold lost/stale feature, model down or unreliable, model-rules conflict, duplicate/opt-out, experimental holdout and rollback.
 
 ### P8 — Release / documentation closeout
 **Ҳолат:** [NOT STARTED]
@@ -389,7 +393,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | D06 | Қайси платформага эслатма келади? | **2-вариант тасдиқланди:** ҳар бир study reminder учун Telegram/Android/learner PWA/Desktop орасидан битта рухсатли, reachable канал ва битта eligible device автоматик танланади; меъёр — ҳақиқий platform learning activity ва delivery reliability. User битта канални қўлда қотириши мумкин; off/denied каналлар ёқилмайди, all-platform broadcast йўқ. Delivery uncertain fallback D07 ҳали OPEN. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
 | D07 | Биринчи платформада хабар кўрсатилмагани/етказилгани номаълум бўлса fallback? | **2-вариант тасдиқланди:** бошқа каналга фақат биринчи канал хабарни **кўрсатмагани ишончли тасдиқланганда** шу logical job орқали назоратли қайта юбориш мумкин; provider accepted/no shown-ack, timeout, offline, unknown → **қайта юборилмайди**. D01/D03/D04/D06 қайта текширилади; study reminders scope, account/payment notices алоҳида. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
 | D08 | Узоқ ўқимаган фойдаланувчини қандай қайтарамиз? | **2-вариант тасдиқланди:** умумий 3/7/14 кунлик схема эмас, ҳар бир одамнинг шахсий ўқиш одатига қараб ноодатий танаффус; реал мавжуд енгил дарс таклиф этилади. Реакция бўлмаса камроқ эслатилади ва охирида тўхтайди. Exact observation/cooldown/stop/restart thresholds [OPEN]. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
-| D09 | AI/ML қачон? | Rules → A/B → verified lift → optimizer, LLM optional. | PROPOSAL |
+| D09 | Rules ва ML модели қандай бирлашади? | **OWNER HYBRID DECISION:** янги ва кам маълумотли user'га rule-based шахсий Smart Reminder **дарҳол ишлайди**; тизим ҳақиқий ўқиш маълумотларини йиғади. Етарли сифатли user signal/confidence threshold'и бажарилиб, умумий ML модели offline/A-B билан хавфсизлиги ва фойдаси тасдиқланиб production'da мавжуд бўлса, user **автоматик** ML оптимизацияга ўтади (time/content/channel/cadence). Фойдаланувчидан алоҳида AI activation сўралмайди. Model нотўғри/ишламаса auto rules fallback; D01–D08 override сақланади. Exact gate values/ML validation [OPEN technical]. | **DECISION 2026-10-25 — APPROVED / IMPLEMENTATION PENDING** |
 | D10 | iPhone PWA ва Desktop биринчи release scope’дами? | V1 TG+Android; V2 learner PWA+Desktop. | PROPOSAL |
 | D11 | Admin PWA'да қайси controls/statistics? | kill switch, templates, reachability, A/B results; no fake stats. | PROPOSAL |
 | D12 | KPI target % ва эксперимент муддати? | Реал baseline ва sample size'сиз аниқ рақам тасдиқланмайди. | OPEN |
@@ -428,7 +432,8 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | 2026-10-25 | D05 owner decision | Option 2 approved: separate study/rating/weekly purposes, shared account-level anti-spam coordination; low-value ranking de-prioritized; useful weekly summary retained; exact global threshold still OPEN. Docs only. | 430d81841698a5ec26e62e1d4847c15fbd5c1dc2 | NO TESTS RUN; decision captured only | D06 cross-platform preferred notification channel |
 | 2026-10-25 | D06 owner decision | Option 2 approved: auto pick a single user-permitted study channel/device based on actual platform study behavior and delivery reliability, optional manual channel lock; D07 delivery-uncertain fallback OPEN. Docs only. | 1cec1d2a2c4745243249fbb6a5ec9c5a1f61c4ee | NO TESTS RUN; decision recorded, runtime unchanged | D07 fallback/ACK behavior |
 | 2026-10-25 | D07 owner decision | Option 2: fallback only when original channel conclusively did NOT display (or send definitively failed); no resend on unknown/no ACK/timeout; same study job, verified consent/goal/cap; transactional notifications unaffected. Docs only. | 16ff220752a35731d6032f56c9c1d05c00c0d9a7 | NO TESTS RUN; requirement recorded, runtime unchanged | D08 inactivity/reactivation sequence |
-| 2026-10-25 | D08 owner decision | Option 2: individual abnormal inactivity recognition, realistic easy learning task, increasing gaps after unhelpful reminders and eventual stop; 3/7/14 day fixed schedule rejected. Docs only. | current docs commit | NO TESTS RUN; requirements only | D09 AI/ML timing and implementation |
+| 2026-10-25 | D08 owner decision | Option 2: individual abnormal inactivity recognition, realistic easy learning task, increasing gaps after unhelpful reminders and eventual stop; 3/7/14 day fixed schedule rejected. Docs only. | a3d31cd369b078356cea263bd7f5dbe904fbd9ee | NO TESTS RUN; requirements only | D09 AI/ML timing and implementation |
+| 2026-10-25 | D09 owner decision | HYBRID: personal adaptive rules operate immediately, collect high-quality user events, auto upgrade to safeguarded validated ML once model globally ready + user data sufficient; auto fallback to rules if quality/availability degrades. No extra UX permission and no hard threshold picked yet. Documentation only. | current docs commit | NO TESTS RUN; requirement record only | D10 release platform scope |
 
 **Final completion criteria:** P0–P8 acceptance achieved; automated + manual affected flow QA evidenced; global dedupe/opt-out/progress guards verified on real clients; experiment results/guardrails recorded; production rollout monitored; owner accepts completion. Until then status remains IN PROGRESS.
 
@@ -453,7 +458,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 - **Менинг тавсиям:** 1 ёки 2 ва аниқ сабаб.
 - **Сизнинг танловингиз:** 1 / 2 / ўзгартирилган қоида.
 
-**Жорий навбат:** **D09** — Smart Reminder'нинг AI механизмини бирданига мураккаб ML model орқали ишга туширамизми ёки ишлайдиган қоидалар ва маълумотга асосланган шахсий мослашувни бошлаб, кейин реал A/B натижасига қараб optimizer қўшамизми? **OPEN; owner қарори кутилмоқда.** D01–D08 тасдиқланган; D03 weekly cap, D05 global anti-spam ва D14 legacy mapping ҳали OPEN.
+**Жорий навбат:** **D10** — Smart Reminder биринчи ишлаб чиқариш босқичида фақат Telegram+Android'да тўлиқ delivery қиладими, ёки learner iPhone PWA ва Desktop'ни ҳам биринчи чиқишнинг шарти қиламизми? **OPEN; owner қарори кутилмоқда.** D01–D09 тасдиқланган; D03 weekly cap, D05 global anti-spam, D09 numeric model confidence gate ва D14 legacy mapping ҳали OPEN.
 
 ### 16.1 Decision log
 | ID | Дата | Тасдиқ | Таъсир | Commit |
@@ -466,4 +471,5 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 | D05 | 2026-10-25 | **2-вариант:** study, ranking and weekly results keep separate purposes; global per-account category-aware dedup/anti-spam coordination; low-value ranking suppressed/deferred; valuable weekly summary not blindly dropped; no hard global numeric threshold decided. | Priorities, frequency/collision policy, P0/P2/P3/P6 and QA; transaction notifications separately governed; runtime unchanged | 430d81841698a5ec26e62e1d4847c15fbd5c1dc2 |
 | D06 | 2026-10-25 | **2-вариант:** select ONE notification channel/device automatically from genuine user learning activity + notification delivery reliability; optional user manual lock; no parallel cross-channel broadcast; denied/unavailable must be respected. | I03, delivery orchestrator, preferences/schema, Android+Telegram+PWA/Desktop adapter rules, P1/P3/P4/P5, QA; D07 fallback remains OPEN, runtime unchanged | 1cec1d2a2c4745243249fbb6a5ec9c5a1f61c4ee |
 | D07 | 2026-10-25 | **2-вариант:** safe fallback only upon verified non-display/definitive send failure; unknown (no ACK/timeout/offline) → no cross-channel retry. Same job, account-level guards, study category only. | I12, delivery state machine, persistence, P1–P5, edge-case QA; runtime unchanged | 16ff220752a35731d6032f56c9c1d05c00c0d9a7 |
-| D08 | 2026-10-25 | **2-вариант:** analyze individual study rhythm; on unusual inactivity offer valid easy lesson; no useful response → progressively less frequent reminders and eventual stop, exact thresholds OPEN. | Reactivation policy, P2/P6, tracking and QA; only docs changed | current docs commit |
+| D08 | 2026-10-25 | **2-вариант:** analyze individual study rhythm; on unusual inactivity offer valid easy lesson; no useful response → progressively less frequent reminders and eventual stop, exact thresholds OPEN. | Reactivation policy, P2/P6, tracking and QA; only docs changed | a3d31cd369b078356cea263bd7f5dbe904fbd9ee |
+| D09 | 2026-10-25 | **Owner hybrid choice:** immediately working rule-based personalized reminders → collect verified account-level learning data → if safely validated shared ML available and user evidence reliable, automatic per-user ML switch; reversible fallbacks, D01–D08 always win. | Architecture optimizer, event capture, eligibility/version gates, P2/P6/P7, analytics/control/rollback; no runtime change | current docs commit |
