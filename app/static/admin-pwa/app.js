@@ -394,6 +394,13 @@ function serialize(credential) {
   return {id:credential.id,rawId:encode(credential.rawId),type:credential.type,response,clientExtensionResults:credential.getClientExtensionResults()};
 }
 function supportsPasskey() { return !!(window.PublicKeyCredential&&navigator.credentials&&window.isSecureContext); }
+function shouldReloadForApplePwaBiometric() {
+  // WebKit documents only one gesture-free modal request per page load.
+  // Reload a resumed installed Apple PWA so each opening gets a fresh chance
+  // to present the Face ID / Touch ID prompt without an extra app button.
+  return navigator.vendor==='Apple Computer, Inc.' &&
+    (navigator.standalone===true || window.matchMedia('(display-mode: standalone)').matches);
+}
 async function login() {
   if(!supportsPasskey()){state.error='passkeyUnsupported';render();return;}
   const options=await api('auth/passkey/login/options',{}, {publicAuth:true});
@@ -2002,7 +2009,9 @@ document.addEventListener('visibilitychange',()=>{
     return;
   }
   if(requireFreshLoginOnResume||sessionMustBeCleared){
+    const resumed=requireFreshLoginOnResume;
     requireFreshLoginOnResume=false;
+    if(resumed&&shouldReloadForApplePwaBiometric()){location.reload();return;}
     lockAndRequirePasskey();
   }else if(state.phase==='approval')checkApproval().catch(()=>{});
   else if(state.actor&&!signing)boot();
