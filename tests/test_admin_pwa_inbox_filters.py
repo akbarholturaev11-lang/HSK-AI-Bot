@@ -60,8 +60,8 @@ class AdminPwaInboxFilterTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         async with self.sessions() as db:
             feedback = BotFeedback(
                 user_id=1, telegram_id=1001, status="completed", language="ru",
-                liked_code="worth", liked_text="Стоила того — посоветую другу",
-                disliked_code="daily", disliked_text="Ежедневная практика",
+                liked_code="paid_worth", liked_text="Стоила того — посоветую другу",
+                disliked_code="paid_daily", disliked_text="Ежедневная практика",
                 completed_at=now,
             )
             db.add(feedback)
