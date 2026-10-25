@@ -365,7 +365,8 @@ async def browser_checks(output):
         # The list is title-only: no manual resolve/assign/priority decisions.
         assert not await page.locator('[data-inbox-op]').count()
         await page.screenshot(path=str(output/'mobile-inbox-minimal.png'),full_page=True)
-        unread=page.locator('.inbox-minimal-row.is-unread').first
+        # Receipts intentionally open payment review, not generic inbox details.
+        unread=page.locator('.inbox-minimal-row.is-unread[data-inbox-open^="bot:"]').first
         assert await unread.count(), 'A fresh unread alert is expected'
         async with fixture.sessions() as db:
             previous_audit=await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit))
