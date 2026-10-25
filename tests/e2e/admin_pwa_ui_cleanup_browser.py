@@ -164,6 +164,8 @@ async def browser_checks(output):
                     await expect(page.locator(".inbox-minimal-row.is-important.is-unread")).to_have_count(2)
                     await page.locator(".drawer-close").click()
                     await page.locator('[data-route="stats"]:visible').first.click()
+                    # V10 analytics keeps feedback controls in the Report tab.
+                    await page.locator('[data-stats-tab="report"]').click()
                     await expect(page.locator("#feedbackSource")).to_be_visible()
                     for header_menu in ("period", "platform"):
                         header_trigger = page.locator(f'[data-action="{header_menu}"]')
