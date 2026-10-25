@@ -197,6 +197,68 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         self.assertTrue(count["capped"])
         self.assertEqual(count["count_limit"],99)
 
+    async def test_one_tap_bulk_read_is_bounded_audited_and_keeps_future_alerts_new(self):
+        await self.seed()
+        now = datetime.now(timezone.utc).replace(microsecond=0)
+        async with self.sessions() as db:
+            db.add_all([
+                BotFeedback(
+                    user_id=1, telegram_id=1001,
+                    disliked_text="old subscriber feedback", status="completed",
+                    completed_at=now - timedelta(minutes=1),
+                )
+                for _ in range(204)
+            ])
+            # Unfinished questionnaire must not consume the reset batch or badge.
+            db.add_all([
+                BotFeedback(user_id=1, telegram_id=1001, status="pending")
+                for _ in range(30)
+            ])
+            await db.commit()
+        first = await self.post("inbox/mark-all-read", {})
+        self.assertEqual(first.status_code, 200, first.text)
+        self.assertEqual(first.json()["updated"], 200)
+        self.assertTrue(first.json()["has_more"])
+        cutoff = first.json()["cutoff"]
+        second = await self.post("inbox/mark-all-read", {"cutoff": cutoff})
+        self.assertEqual(second.status_code, 200, second.text)
+        self.assertFalse(second.json()["has_more"])
+        self.assertGreaterEqual(second.json()["updated"], 4)
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 0)
+        self.assertEqual((await self.post("inbox/mark-all-read", {"cutoff": cutoff})).json()["updated"], 0)
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(
+                select(func.count()).select_from(BotFeedback)
+                .where(BotFeedback.status == "pending")), 30)
+            self.assertGreaterEqual(await db.scalar(
+                select(func.count()).select_from(AdminPwaInboxTriageAudit)
+                .where(AdminPwaInboxTriageAudit.operation == "mark_read")), 208)
+        async with self.sessions() as db:
+            db.add(BotFeedback(
+                user_id=1, telegram_id=1001, status="completed",
+                disliked_text="fresh subscriber feedback",
+                completed_at=datetime.now(timezone.utc) + timedelta(seconds=1),
+            ))
+            await db.commit()
+        # The first request's cutoff must never touch newer completed reports.
+        later = await self.post("inbox/mark-all-read", {"cutoff": cutoff})
+        self.assertEqual(later.json()["updated"], 0)
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 1)
+
+    async def test_bulk_mark_read_requires_real_admin_session_and_strict_payload(self):
+        for body in ({"cutoff": "yesterday"}, {"cutoff": "2026-10-26T07:25:00"},
+                     {"status": "all"}, {"cutoff": True}):
+            self.assertEqual((await self.post("inbox/mark-all-read", body)).status_code, 400)
+        for cookie, origin, code in ((None, "https://hskai.app", 401),
+                                      ("X"*64, "https://hskai.app", 403),
+                                      (fixtures.COOKIE, "https://evil.invalid", 403)):
+            response = await self.post("inbox/mark-all-read", {},
+                                       cookie=cookie, origin=origin)
+            self.assertEqual(response.status_code, code, response.text)
+        future = (datetime.now(timezone.utc) + timedelta(days=1)).isoformat()
+        self.assertEqual((await self.post(
+            "inbox/mark-all-read", {"cutoff": future})).status_code, 409)
+
     async def test_stale_revision_noop_invalid_operation_and_missing_source(self):
         ids = await self.seed()
         target = {"source": "bot", "source_id": ids["bot"], "operation": "mark_read",
