@@ -39,7 +39,7 @@ try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj
 const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? '—';
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
 const state = {actor:null, phase:'loading', route:'home', period:'weekly', platform:'overall', rows:[], stats:null,
-  query:'', status:'pending', source:'all', inboxPriority:'all', inboxStatus:'all', inboxPeriod:'all_time', inboxSearch:'', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
+  query:'', status:'pending', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
@@ -56,7 +56,7 @@ function clearPrivate(phase) {
   stopApprovalWatch();
   cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
-  epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.inboxSearch='';state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
+  epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   state.phase=phase;state.error=null;render();
 }
 async function api(path, body, {publicAuth=false, method='POST'}={}) {
@@ -1101,7 +1101,6 @@ async function execute() {
   } finally {if(signing===control)signing=null;}
 }
 
-const inboxStatusLabels={new:'inboxStatusNew',read:'inboxStatusRead',assigned:'inboxStatusAssigned',resolved:'inboxStatusResolved'};
 function closeInboxAttachment(){
   const preview=inboxAttachment;inboxAttachment=null;
   if(!preview)return;
@@ -1146,10 +1145,6 @@ async function viewInboxAttachment(button){
   }catch(error){
     if(active()){host.setAttribute('aria-busy','false');host.innerHTML=`<p role="status">${esc(t('unavailable'))}</p>`;}
   }finally{clearTimeout(timer);}
-}
-function inboxControl(row,operation,key,primary=false){
-  if(!['bot','release','android','payment','technical'].includes(row.source)||!Number.isSafeInteger(row.source_id)||!Number.isSafeInteger(row.triage_revision))return '';
-  return `<button type="button" ${primary?'class="btn primary inbox-primary-action"':'role="menuitem" tabindex="-1"'} data-inbox-op="${operation}" data-inbox-source="${row.source}" data-inbox-id="${row.source_id}" data-inbox-revision="${row.triage_revision}">${esc(t(key))}</button>`;
 }
 const autoImportantSources=new Set(['payment','android','technical']);
 function inboxTitle(row){
@@ -1258,35 +1253,6 @@ async function inbox(before=null,userId=null) {
     </div>`;
     drawer('feedback',body,null,'inbox-drawer');
   }catch(error){if(current===drawerId&&state.actor)drawer('feedback',statePanel('error'),null,'inbox-drawer');}
-}
-
-async function mutateInbox(button){
-  if(inboxUpdating||!state.actor)return;
-  const source=button.dataset.inboxSource,operation=button.dataset.inboxOp;
-  const source_id=Number(button.dataset.inboxId),expected_revision=Number(button.dataset.inboxRevision);
-  if(!['bot','release','android','payment','technical'].includes(source)||!Number.isSafeInteger(source_id)||source_id<1||!Number.isSafeInteger(expected_revision))return;
-  closeActionMenus(true);
-  const prevDrawer=drawerId,prevEpoch=epoch,account=feedbackUserId;
-  inboxUpdating=true;
-  const controls=[...document.querySelectorAll('.inbox-drawer button')];
-  controls.forEach(el=>el.disabled=true);
-  try{
-    await api('inbox/triage',{source,source_id,operation,expected_revision});
-    if(prevEpoch!==epoch||prevDrawer!==drawerId||!state.actor)return;
-    showNotice('inboxSaved');
-    await inbox(null,account);
-    await refreshInboxUnread();
-  }catch(error){
-    if(prevEpoch!==epoch||prevDrawer!==drawerId||!state.actor)return;
-    if(error.status===409){
-      showNotice('inboxChanged');
-      await inbox(null,account);
-      await refreshInboxUnread();
-    }else{
-      showNotice('inboxActionError');
-      controls.forEach(el=>{if(el.isConnected)el.disabled=false;});
-    }
-  }finally{inboxUpdating=false;}
 }
 
 // Apple-first Web Push opt-in; actual sending requires an independent server kill switch.
@@ -1458,7 +1424,7 @@ async function action(name) {
   if(name==='courseExecute'){await executeCoursePolicy();return;}
   if(name==='pushEnable'){await enablePush();return;}
   if(name==='mcpRevokeConfirm'){await revokeMcp();return;}
-  if(name==='feedback'){state.inboxSearch='';await inbox();return;}
+  if(name==='feedback'){await inbox();return;}
   if(name==='inboxBack'){await inbox(null,feedbackUserId);return;}
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='execute'){if(!signing)await execute();return;}
@@ -1569,15 +1535,12 @@ document.addEventListener('click',event=>{
     else if(button.dataset.settingKind){await editSetting(button.dataset.settingKind,button.dataset.bank||null);}
     else if(button.dataset.prepareAccess){await prepareAccess(Number(button.dataset.prepareAccess));}
     else if(button.dataset.profilePayments){await moreUserPayments(Number(button.dataset.profilePayments),Number(button.dataset.before),button);}
-    else if(button.dataset.userFeedback){state.inboxSearch='';await inbox(null,Number(button.dataset.userFeedback));}
-    else if(button.dataset.source){state.source=button.dataset.source;await inbox(null,feedbackUserId);}
-    else if(button.dataset.inboxPriority){state.inboxPriority=button.dataset.inboxPriority;await inbox(null,feedbackUserId);}
+    else if(button.dataset.userFeedback){await inbox(null,Number(button.dataset.userFeedback));}
     else if(button.dataset.inboxOpen){
       const match=/^(bot|release|android|payment|technical):([1-9][0-9]*)$/.exec(button.dataset.inboxOpen);
       if(match)await openInbox(match[1],Number(match[2]));
     }
     else if(button.dataset.inboxAttachment){await viewInboxAttachment(button);}
-    else if(button.dataset.inboxOp){await mutateInbox(button);}
     else if(button.dataset.feedbackNext&&inboxNextCursor){await inbox(inboxNextCursor,feedbackUserId);}
     else if(button.dataset.pushRevoke){await revokePush(button.dataset.pushRevoke);}
     else if(button.dataset.mcpRevoke){confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
@@ -1595,18 +1558,6 @@ document.addEventListener('change',event=>{
   }
   if(['priceMethod','pricePlan'].includes(event.target.id))updatePriceFields();
   if(['helpVideoKey','helpVideoLanguage'].includes(event.target.id))updateHelpVideoField();
-  if(['inboxSource','inboxPriority'].includes(event.target.id)){
-    const source=event.target.id==='inboxSource',value=event.target.value;
-    if(!(source?['all','payment','android','technical','bot','release']:['all','important']).includes(value))return;
-    if(source)state.source=value;else state.inboxPriority=value;
-    inbox(null,feedbackUserId).catch(()=>showNotice('error'));
-  }
-  if(['inboxStatus','inboxPeriod'].includes(event.target.id)){
-    const status=event.target.id==='inboxStatus',value=event.target.value;
-    if(!(status?['all','new','read','assigned','resolved']:['all_time','weekly','monthly']).includes(value))return;
-    if(status)state.inboxStatus=value;else state.inboxPeriod=value;
-    inbox(null,feedbackUserId).catch(()=>showNotice('error'));
-  }
   if(['feedbackPeriod','feedbackSource'].includes(event.target.id)){
     const period=event.target.id==='feedbackPeriod',value=event.target.value;
     if(!(period?['weekly','monthly']:['all','bot','release','android']).includes(value))return;
@@ -1629,19 +1580,11 @@ document.addEventListener('change',event=>{
 document.addEventListener('submit',event=>{
   if(event.target.id==='managementForm'){event.preventDefault();prepareManagement();}
   else if(event.target.id==='searchForm'){event.preventDefault();state.query=$('userQuery').value;state.cursor=null;state.previous=[];load();}
-  else if(event.target.id==='inboxSearchForm'){
-    event.preventDefault();
-    const value=$('inboxSearchQuery').value.trim();
-    if(value&&(value.length<3||value.length>80))return;
-    state.inboxSearch=value;
-    inbox(null,feedbackUserId).catch(()=>showNotice('error'));
-  }
+
 });
 document.addEventListener('keydown',event=>{
   if(event.key==='Escape'){
     if(closeActionMenus(true)){event.preventDefault();return;}
-    const filters=document.querySelector('.inbox-extra-filters[open]');
-    if(filters){event.preventDefault();filters.open=false;filters.querySelector('summary')?.focus();return;}
     closeDrawer();for(const id of ['periodMenu','platformMenu'])if($(id)){$(id).hidden=true;document.querySelector(`[data-action="${id==='periodMenu'?'period':'platform'}"]`)?.setAttribute('aria-expanded','false');}
   }
   const trigger=event.target.closest('[data-menu-toggle]');
