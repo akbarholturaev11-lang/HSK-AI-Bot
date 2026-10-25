@@ -618,3 +618,27 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
   .sidebar .side-foot .btn{min-height:36px;margin-top:4px;padding:7px 10px;font-size:12px}
   .sidebar .locale-select{margin-top:7px;padding:6px}
 }
+
+/* Unified editor UX: one primary action, no duplicate Cancel footer control. */
+.drawer-foot:has(> .btn:only-child) .btn{width:100%;justify-content:center}
+.drawer-foot [data-action="managementPrepare"]:disabled,
+.drawer-foot [data-action="coursePrepare"]:disabled,
+.drawer-foot [data-action="hsk30Prepare"]:disabled{opacity:.42;cursor:default;filter:grayscale(.38)}
+.save-success-drawer .drawer-top,.save-success-drawer .drawer-foot{display:none!important}
+.save-success-drawer .drawer-content{display:grid;place-items:center;padding:24px}
+.saved-animation{display:grid;place-content:center;justify-items:center;gap:22px;min-height:180px;text-align:center;color:#243642}
+.saved-animation strong{font-size:18px;font-weight:760;line-height:1.35}
+.saved-animation svg{width:100px;height:100px;overflow:visible;stroke:#437c83;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.saved-ring{stroke:#d5e9e7;stroke-dasharray:265;stroke-dashoffset:265;animation:saved-ring-draw .48s ease-out .04s both}
+.saved-tick{stroke-dasharray:66;stroke-dashoffset:66;animation:saved-tick-draw .45s cubic-bezier(.2,.8,.25,1) .42s both}
+@keyframes saved-ring-draw{to{stroke-dashoffset:0}}
+@keyframes saved-tick-draw{to{stroke-dashoffset:0}}
+.swipe-back-cue{position:fixed;left:14px;top:50%;width:46px;height:46px;border-radius:24px;background:#2e626a;color:white;z-index:110;
+  box-shadow:0 8px 25px #0d354031;display:grid;place-items:center;pointer-events:none;
+  font:600 40px/1 system-ui;transform:translateY(-50%) scale(.82);transition:background .12s,transform .12s}
+.swipe-back-cue.is-ready{background:#1c5058;transform:translateY(-50%) scale(1)}
+.canvas-overlay .drawer.swipe-peeking{transform:translate3d(var(--swipe-distance,0px),0,0);transition:none;will-change:transform}
+@media(prefers-reduced-motion:reduce){
+  .saved-ring,.saved-tick{animation:none;stroke-dashoffset:0}
+  .swipe-back-cue{transition:none}
+}
