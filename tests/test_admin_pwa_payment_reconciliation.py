@@ -18,6 +18,7 @@ from app.admin_api.pwa_step_up import begin_step_up, verify_step_up
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_payment_review import AdminPwaPaymentOutbox
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
+from app.db.models.admin_pwa_webauthn import AdminPwaCredential
 from app.db.models.payment import Payment
 from tests import test_admin_pwa_payment_review as fixtures
 from tests.test_admin_pwa_webauthn_crypto_vectors import make_assertion
@@ -54,10 +55,17 @@ class ReconciliationTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTest
         async with self.sessions() as db:
             step = await db.get(AdminPwaStepUp, started.step_up_id)
             challenge = bytes(step.challenge)
+        # This fixture already signed the original financial approval.
+        # The authenticator must increment its monotonic counter; replaying
+        # count=1 here is intentionally rejected by production WebAuthn.
+        async with self.sessions() as db:
+            credential = (await db.execute(select(AdminPwaCredential))).scalar_one()
+            next_count = credential.sign_count + 1
         async with self.sessions() as db:
             self.assertTrue(await verify_step_up(db, session_cookie=fixtures.COOKIE,
                 step_up_id=started.step_up_id,
-                credential=make_assertion(self.key, challenge=challenge), settings_obj=self.settings))
+                credential=make_assertion(self.key, challenge=challenge,
+                                         sign_count=next_count), settings_obj=self.settings))
         return started.step_up_id
 
     async def run_command(self, command, step_id):
