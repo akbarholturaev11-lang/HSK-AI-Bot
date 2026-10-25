@@ -120,6 +120,9 @@ async def browser_checks(output):
                 await editor()
                 drop_complete=True
                 await page.locator('[data-action=managementPrepare]').click()
+                await expect(page.locator('.saved-animation')).to_be_visible(timeout=15000)
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                await page.locator('[data-action=payoutList]').click()
                 await expect(page.locator('[data-payout-id]')).to_be_visible(timeout=15000)
                 assert await audit_count()==1
                 async with fixture.sessions() as db:assert (await db.get(PartnerPayout,payout)).status=='paid'
