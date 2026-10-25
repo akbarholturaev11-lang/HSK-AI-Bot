@@ -472,3 +472,36 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 .auth-panel .approval-actions .btn{margin-top:0;white-space:normal;text-align:center;text-decoration:none;min-height:48px}
 .auth-panel .approval-actions .btn:not(.primary){background:transparent}
 .auth-panel .approval-actions a:focus-visible{outline:3px solid #87afb5;outline-offset:2px}
+
+/* HSK AI UI: concise notification inbox, automatic urgency, no duplicate footer. */
+.inbox-drawer .drawer-foot{display:none}
+.inbox-drawer .drawer-content{background:#f7f9fa}
+.inbox-minimal{padding:15px 18px}
+.inbox-minimal-list{display:grid;gap:9px}
+.inbox-minimal-row{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:15px 17px;border:1px solid #e4eaec;background:#fff;border-radius:15px;text-align:left;color:#344650;transition:background .15s,border-color .15s}
+.inbox-minimal-row .inbox-row-title{display:block;flex:1;min-width:0;font-size:14px;line-height:1.4;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.inbox-minimal-row .inbox-row-dot{width:8px;height:8px;flex:none;border-radius:50%;background:transparent}
+.inbox-minimal-row svg{width:16px;height:16px;flex:none;color:#9aabb2}
+.inbox-minimal-row.is-unread{border-color:#d8e4e8;background:#fff;box-shadow:0 3px 12px rgba(28,55,70,.035)}
+.inbox-minimal-row.is-unread .inbox-row-title{font-weight:780;color:#182d36}
+.inbox-minimal-row.is-unread .inbox-row-dot{background:#2e7389}
+.inbox-minimal-row.is-read{background:#f9fafb;border-color:#edf0f1}
+.inbox-minimal-row.is-read .inbox-row-title{color:#85949d;font-weight:530}
+.inbox-minimal-row.is-important.is-unread{background:#fff0f1;border-color:#efbfc3}
+.inbox-minimal-row.is-important.is-unread .inbox-row-dot{background:#d95162}
+.inbox-minimal-row.is-important.is-unread .inbox-row-title{color:#85313c}
+.inbox-minimal-row:hover{border-color:#9fb9c0}
+.inbox-account{margin:0 0 12px;color:#748791;font-size:12px}
+.inbox-more{width:100%;margin:18px 0 0}
+.inbox-details{padding:18px 21px 34px}
+.inbox-details .inbox-back{border:0;background:transparent;color:#466b76;display:inline-flex;align-items:center;gap:5px;font-weight:680;padding:7px 0;margin-bottom:22px}
+.inbox-details .inbox-back svg{width:15px;height:15px;transform:rotate(180deg)}
+.inbox-details h2{font-size:19px;line-height:1.3;margin:0 0 10px;overflow-wrap:anywhere}
+.inbox-details time{color:#91a0a9;font-size:12px}
+.inbox-details-text{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;font-size:14px;padding-top:15px}
+.inbox-details .inbox-attachment{margin-top:12px}
+@media(max-width:760px){
+ .inbox-minimal{padding:14px 14px 25px}
+ .inbox-minimal-row{min-height:66px;padding:16px 15px;border-radius:14px}
+ .inbox-details{padding:18px 17px 35px}
+}
