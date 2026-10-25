@@ -364,6 +364,8 @@ async def browser_checks(output):
         receipt_failure=False
         await page.locator('[data-review]:visible').click()
         await expect(page.locator('[data-action=approve]')).to_be_enabled()
+        assert any(p.endswith('/payments/inspect-review') for p,_,_ in calls)
+        assert not any(p.endswith('/payments/prepare-review') for p,_,_ in calls), 'Opening a receipt must not pre-authorize approval'
         await page.locator('[data-action=reject]').click()
         await expect(page.locator('#rejectReason')).to_be_focused()
         assert not any(path.endswith('step-up/options') for path,_,_ in calls)
@@ -378,6 +380,7 @@ async def browser_checks(output):
         await page.locator('[data-action=approve]').click()
         await wait_step_up(page)
         await expect(page.locator('.amount-value')).to_have_text('100 TJS')
+        await expect(page.locator('.review-summary')).to_have_attribute('data-review-decision', 'approve')
         await page.screenshot(path=str(output/'mobile-payment-confirmation.png'),full_page=True)
         assert len([path for path,_,_ in calls if path.endswith('step-up/options')])==1
         await finish_step_up(page)
@@ -410,11 +413,14 @@ async def browser_checks(output):
         await page.locator('[data-action=reject]').click()
         await wait_step_up(page)
         await expect(page.locator('#rejectReason')).to_have_value('Synthetic QA duplicate')
+        await expect(page.locator('.review-summary')).to_have_attribute('data-review-decision', 'reject')
         # A lost HTTP response AFTER a real commit must not resend the write.
         drop_review=True
         await finish_step_up(page)
         await expect(page.locator('[data-review]:visible')).to_have_count(0,timeout=20000)
         assert len([p for p,_,_ in calls if p.endswith('/payments/review')])==2
+        actual_decisions=[b['decision'] for p,_,b in calls if p.endswith('/payments/review')]
+        assert actual_decisions==['approve','reject'], actual_decisions
         async with fixture.sessions() as db:
             assert (await db.get(Payment,second_id)).payment_status=='rejected'
             assert await db.scalar(select(func.count()).select_from(AdminPwaPaymentReview))==2

@@ -145,6 +145,13 @@ class AdminPwaPaymentReviewTests(PaymentFixtures, unittest.IsolatedAsyncioTestCa
             for model in (AdminPwaPaymentReview, AdminPwaPaymentOutbox, PortfolioTransaction):
                 self.assertEqual(await db.scalar(select(func.count()).select_from(model)), 0)
 
+    async def test_rejection_requires_a_reason_at_api_boundary(self):
+        for reason in (None, "", "  "):
+            with self.subTest(reason=reason), self.assertRaises(ValidationError):
+                PreparePaymentReview(payment_id=self.payment_id, decision="reject", reason=reason)
+        with self.assertRaises(ValidationError):
+            PreparePaymentReview(payment_id=self.payment_id, decision="approve", reason="not allowed")
+
     async def test_genuine_es256_step_up_approval_and_replay(self):
         command = await self.command()
         receipt = await self.receipt(command, signed=True)

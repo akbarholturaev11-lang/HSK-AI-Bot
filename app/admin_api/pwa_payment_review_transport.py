@@ -9,7 +9,8 @@ from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.admin_api.pwa_webauthn_transport import _guard_post, _body
 from app.admin_api.pwa_payment_review import (
-    ExecutePaymentReview, PreparePaymentReview, execute_payment_review, prepare_payment_review,
+    ExecutePaymentReview, InspectPaymentReview, PreparePaymentReview,
+    execute_payment_review, inspect_payment_review, prepare_payment_review,
 )
 from app.services.admin_payment_review_service import PaymentReviewError
 from app.db.models.admin_pwa_payment_review import AdminPwaPaymentOutbox
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 def create_admin_pwa_payment_review_router(*, settings_obj, session_factory, dispatch=None):
     router = APIRouter(tags=["admin-pwa-payments"])
 
-    async def handle(request, *, execute):
+    async def handle(request, *, execute=False, inspect=False):
         failure = _guard_post(request, settings_obj)
         if failure is not None:
             return failure
@@ -29,13 +30,13 @@ def create_admin_pwa_payment_review_router(*, settings_obj, session_factory, dis
             return _reply(401, "admin_pwa_unauthorized")
         body = await _body(request, 4096)
         try:
-            model = ExecutePaymentReview if execute else PreparePaymentReview
+            model = ExecutePaymentReview if execute else (InspectPaymentReview if inspect else PreparePaymentReview)
             command = model.model_validate(body)
         except ValidationError:
             return _reply(400, "admin_pwa_invalid_payload")
         try:
             async with session_factory() as db:
-                service = execute_payment_review if execute else prepare_payment_review
+                service = execute_payment_review if execute else (inspect_payment_review if inspect else prepare_payment_review)
                 result = await service(db, session_cookie=cookie, request=command, settings_obj=settings_obj)
         except PaymentReviewError as exc:
             return _reply(exc.status, str(exc))
@@ -61,6 +62,10 @@ def create_admin_pwa_payment_review_router(*, settings_obj, session_factory, dis
             except Exception:
                 logger.exception("Admin PWA payment delivery state unavailable")
         return JSONResponse(content={"ok": True, **result}, headers=_PRIVATE_HEADERS)
+
+    @router.post("/api/admin/v1/payments/inspect-review")
+    async def inspect(request: Request):
+        return await handle(request, inspect=True)
 
     @router.post("/api/admin/v1/payments/prepare-review")
     async def prepare(request: Request):

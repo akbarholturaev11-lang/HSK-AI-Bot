@@ -7,7 +7,9 @@ from httpx import ASGITransport, AsyncClient
 from app.admin_api.pwa_payment_review_transport import create_admin_pwa_payment_review_router
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.db.models.payment import Payment
-from app.db.models.admin_pwa_payment_review import AdminPwaPaymentOutbox
+from app.db.models.user import User
+from sqlalchemy import select, func
+from app.db.models.admin_pwa_payment_review import AdminPwaPaymentOutbox, AdminPwaPaymentReview
 from tests import test_admin_pwa_payment_review as payment_tests
 from tests.test_admin_pwa_payment_review import COOKIE
 
@@ -33,6 +35,37 @@ class AdminPwaPaymentHttpTests(PaymentFixtures, unittest.IsolatedAsyncioTestCase
             client.cookies.set(ADMIN_PWA_COOKIE_NAME, cookie)
         return client
 
+    async def test_read_only_inspection_then_explicit_rejection_never_approves(self):
+        async with await self.client() as client:
+            inspected = await client.post("/api/admin/v1/payments/inspect-review",
+                                          json={"payment_id": self.payment_id})
+            self.assertEqual(inspected.status_code, 200, inspected.text)
+            preview = inspected.json()
+            self.assertEqual(preview["payment_id"], self.payment_id)
+            self.assertEqual(preview["expected"]["amount"], 100)
+            self.assertNotIn("decision", preview)
+            self.assertNotIn("action", preview)
+            self.assertNotIn("payload", preview)
+            prepared = await client.post("/api/admin/v1/payments/prepare-review", json={
+                "payment_id": self.payment_id, "decision": "reject", "reason": "invalid receipt"})
+            self.assertEqual(prepared.status_code, 200, prepared.text)
+            operation = prepared.json()
+            self.assertEqual(operation["payload"]["decision"], "reject")
+            self.assertEqual(operation["payload"]["expected"], preview["expected"])
+            from app.admin_api.pwa_payment_review import PaymentReviewCommand
+            command = PaymentReviewCommand.model_validate(operation["payload"])
+            proof = await self.receipt(command, signed=True)
+            committed = await client.post("/api/admin/v1/payments/review", json={
+                **operation["payload"], "step_up_id": proof})
+            self.assertEqual(committed.status_code, 200, committed.text)
+            self.assertEqual(committed.json()["status"], "rejected")
+        async with self.sessions() as db:
+            self.assertEqual((await db.get(Payment, self.payment_id)).payment_status, "rejected")
+            self.assertIsNone((await db.get(User, 1)).end_date)
+            audit = await db.scalar(select(AdminPwaPaymentReview))
+            self.assertEqual(audit.decision, "reject")
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPaymentReview)), 1)
+
     async def test_real_http_prepare_signed_operation_and_review(self):
         async with await self.client() as client:
             prepared = await client.post("/api/admin/v1/payments/prepare-review", json={
@@ -54,7 +87,7 @@ class AdminPwaPaymentHttpTests(PaymentFixtures, unittest.IsolatedAsyncioTestCase
 
     async def test_flag_off_legacy_headers_or_foreign_origin_never_authorize(self):
         request={"payment_id": self.payment_id, "decision": "approve", "reason": None}
-        for path in ("/api/admin/v1/payments/prepare-review", "/api/admin/v1/payments/review"):
+        for path in ("/api/admin/v1/payments/inspect-review", "/api/admin/v1/payments/prepare-review", "/api/admin/v1/payments/review"):
             self.settings.ADMIN_PWA_ENABLED=False
             async with await self.client() as client:
                 self.assertEqual((await client.post(path, json=request)).status_code, 404)
@@ -107,6 +140,7 @@ class AdminPwaPaymentHttpTests(PaymentFixtures, unittest.IsolatedAsyncioTestCase
         paths=MainModuleImportTests._paths(main.app.routes)
         self.assertIn("/api/admin/v1/payments/review", paths)
         self.assertIn("/api/admin/v1/payments/prepare-review", paths)
+        self.assertIn("/api/admin/v1/payments/inspect-review", paths)
         async with AsyncClient(transport=ASGITransport(app=main.app), base_url="https://hskai.app",
                                cookies={ADMIN_PWA_COOKIE_NAME: COOKIE}) as client:
             response=await client.post("/api/admin-miniapp/payments/review", json={"payment_id":1,"action":"approve"})

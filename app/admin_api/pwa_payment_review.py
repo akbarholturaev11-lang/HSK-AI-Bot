@@ -48,6 +48,11 @@ class PaymentSnapshot(StrictModel):
     receipt_sha256: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")] | None
 
 
+class InspectPaymentReview(StrictModel):
+    """Read-only receipt preview with no implicit approval or signed decision."""
+    payment_id: PositiveId
+
+
 class PreparePaymentReview(StrictModel):
     payment_id: PositiveId
     decision: Literal["approve", "reject"]
@@ -57,6 +62,8 @@ class PreparePaymentReview(StrictModel):
     def validate_reason(self):
         if self.decision == "approve" and self.reason is not None:
             raise ValueError("approval_reason_not_supported")
+        if self.decision == "reject" and not self.reason:
+            raise ValueError("rejection_reason_required")
         if self.reason is not None and (self.reason != self.reason.strip()
                                         or any(ord(c) < 32 for c in self.reason)):
             raise ValueError("invalid_rejection_reason")
@@ -98,6 +105,19 @@ def payment_snapshot(payment, user) -> PaymentSnapshot:
     )
 
 
+async def inspect_payment_review(db, *, session_cookie, request: InspectPaymentReview, settings_obj):
+    """Only return the current pending receipt snapshot; never preselect approve."""
+    if not _enabled(settings_obj):
+        raise PaymentReviewError("not_found", 404)
+    async with db.begin():
+        actor = await authenticate_admin_pwa_session(db, session_cookie, settings_obj)
+        if actor is None or actor.auth_method != "webauthn":
+            raise PaymentReviewError("admin_pwa_unauthorized", 401)
+        payment, user = await lock_pending_payment(db, request.payment_id)
+        expected = payment_snapshot(payment, user).model_dump()
+    return {"payment_id": request.payment_id, "expected": expected}
+
+
 async def prepare_payment_review(db, *, session_cookie, request: PreparePaymentReview, settings_obj):
     if not _enabled(settings_obj):
         raise PaymentReviewError("not_found", 404)
@@ -136,6 +156,12 @@ async def execute_payment_review(db, *, session_cookie, request: ExecutePaymentR
             comment=("approved by admin PWA" if command.decision == "approve"
                      else command.reason or "rejected by admin PWA"),
         )
+        # Re-read the persisted row before auditing a financial decision.
+        # A mismatch rolls back payment, entitlements and the one-use proof.
+        await db.refresh(payment, attribute_names=["payment_status"])
+        intended_status = {"approve": "approved", "reject": "rejected"}[command.decision]
+        if payment.payment_status != intended_status:
+            raise PaymentReviewError("payment_decision_mismatch", 409)
         audit_id = str(uuid4())
         db.add(AdminPwaPaymentReview(
             id=audit_id, step_up_id=request.step_up_id, payment_id=payment.id,
