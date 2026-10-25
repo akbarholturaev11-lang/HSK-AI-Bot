@@ -43,6 +43,7 @@ const state = {actor:null, phase:'loading', route:'home', period:'weekly', platf
 let epoch=0, view=0, drawerId=0, confirmation=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
+let freshLoginInProgress=false, requireFreshLoginOnResume=false;
 let approvalWatchTimer=null, approvalChecking=false;
 let statisticsDownload=null;
 let managementDraft=null,managementReview=null,managementPreparing=false;
@@ -331,6 +332,20 @@ async function boot() {
     if(error.status!==401){state.phase='error';render();return;}
     try {await checkApproval();} catch(_) {state.phase='signin';render();}
   }
+}
+async function lockAndRequirePasskey() {
+  if(freshLoginInProgress)return;
+  freshLoginInProgress=true;
+  clearPrivate('loading');
+  try {
+    // Revoke DB session, not merely hide screen. Fresh launch or resume cannot
+    // reuse a lingering valid cookie without another verified WebAuthn assertion.
+    await api('auth/logout',{}, {publicAuth:true});
+  }catch(error){
+    if(error.message!=='stale')clearPrivate(navigator.onLine?'error':'offline');
+    return;
+  }finally{freshLoginInProgress=false;}
+  await boot();
 }
 function decode(value) { const normalized=value.replace(/-/g,'+').replace(/_/g,'/');return Uint8Array.from(atob(normalized+'='.repeat((4-normalized.length%4)%4)),ch=>ch.charCodeAt(0)); }
 function encode(buffer) { if(buffer==null)return null;let s='';for(const b of new Uint8Array(buffer))s+=String.fromCharCode(b);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
@@ -1576,10 +1591,20 @@ document.addEventListener('focusin',event=>{
 window.addEventListener('offline',()=>clearPrivate('offline'));
 window.addEventListener('online',()=>boot());
 window.addEventListener('pagehide',()=>clearPrivate('loading'));
-window.addEventListener('pageshow',event=>{if(event.persisted)boot();});
+window.addEventListener('pageshow',event=>{if(event.persisted)lockAndRequirePasskey();});
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){stopApprovalWatch();return;}
-  if(state.phase==='approval')checkApproval().catch(()=>{});
+  if(document.hidden){
+    stopApprovalWatch();
+    if(state.actor&&!signing){
+      requireFreshLoginOnResume=true;
+      clearPrivate('loading');
+    }
+    return;
+  }
+  if(requireFreshLoginOnResume){
+    requireFreshLoginOnResume=false;
+    lockAndRequirePasskey();
+  }else if(state.phase==='approval')checkApproval().catch(()=>{});
   else if(state.actor&&!signing)boot();
 });
 window.addEventListener('focus',()=>{if(state.phase==='approval')checkApproval().catch(()=>{});});
@@ -1592,5 +1617,5 @@ if('serviceWorker' in navigator){
   }).catch(()=>{});
   navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
 }
-boot();
+lockAndRequirePasskey();
 })();
