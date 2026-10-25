@@ -3,7 +3,7 @@
 NEVER run this against production or the old staging project. This does not
 import, clone, read or copy any learner data from anywhere. It first creates
 an empty schema from the current ORM models, stamps the historical baseline
-only on the NEW empty QA DB, then executes 0103..0127 and checks the head.
+only on the NEW empty QA DB, then executes 0103..0128 and checks the head.
 
 The historical Alembic base cannot create all course tables from scratch.
 This explicitly isolated QA path is not a replacement for a production
@@ -22,7 +22,7 @@ QA_ENVIRONMENT = "qa"
 QA_HOST = "postgres.railway.internal"
 QA_DATABASE = "railway"
 EXPECTED_BASELINE = "0102_payment_review_preview"
-EXPECTED_HEAD = "0127_admin_pwa_technical_push"
+EXPECTED_HEAD = "0128_admin_pwa_command_lookup"
 # These reviewed migrations create tables unconditionally. Defer their DDL
 # until after the empty ORM baseline is stamped; never precreate and then skip
 # their migrations. This list is reviewed alongside EXPECTED_HEAD.
@@ -125,7 +125,19 @@ async def _create_empty_orm_schema() -> None:
 
 
 def _initial_schema_tables(metadata):
-    return [table for table in metadata.sorted_tables
+    # ORM metadata contains the latest index as well as latest columns. An
+    # empty baseline must defer the 0127-owned technical index to its migration,
+    # without mutating the process-global application metadata.
+    from sqlalchemy import MetaData
+    baseline = MetaData()
+    for table in metadata.tables.values():
+        table.to_metadata(baseline)
+    messages = baseline.tables.get("messages")
+    if messages is not None:
+        for index in list(messages.indexes):
+            if index.name == "ix_messages_admin_pwa_technical_recent":
+                messages.indexes.remove(index)
+    return [table for table in baseline.sorted_tables
             if table.name not in MIGRATION_CREATED_TABLES]
 
 

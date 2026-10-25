@@ -202,7 +202,7 @@ jobs:
           python -m pip install -r requirements.txt "pytest==8.4.2" "aiosqlite==0.21.0"
       - name: Prepare minimal 0109 test baseline (no legacy data)
         run: |
-          # Scope is 0110-0127 ONLY: the legacy cold-start path currently
+          # Scope is 0110-0128 ONLY: the legacy cold-start path currently
           # fails at 0011 before course_progress exists. Do not mask that
           # unrelated issue or claim fresh-db full-history migration coverage.
           python - <<'PY'
@@ -218,7 +218,7 @@ jobs:
           asyncio.run(main())
           PY
           python -m alembic stamp 0109_public_site_traffic_daily
-      - name: Upgrade only the Admin PWA migrations 0110-0127
+      - name: Upgrade only the Admin PWA migrations 0110-0128
         run: |
           python -m alembic upgrade head
           python -m alembic current

@@ -55,6 +55,7 @@ from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
 from app.admin_api.pwa_channels import create_admin_pwa_channels_router
+from app.admin_api.pwa_payment_reconciliation import create_admin_pwa_payment_reconciliation_router
 from app.admin_api.pwa_partner_payouts import create_admin_pwa_partner_payouts_router
 from app.admin_api.pwa_partners import create_admin_pwa_partners_router
 from app.admin_api.pwa_notifications import create_admin_pwa_notifications_router
@@ -781,6 +782,7 @@ app.include_router(create_admin_pwa_portfolio_router(settings_obj=settings, sess
 app.include_router(create_admin_pwa_notifications_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_partners_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_partner_payouts_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_payment_reconciliation_router(settings_obj=settings, session_factory=async_session_maker))
 admin_pwa_feedback_reader = AdminPwaFeedbackReader(settings_obj=settings, session_factory=async_session_maker)
 app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=settings, session_factory=async_session_maker,
     reader=admin_pwa_feedback_reader))

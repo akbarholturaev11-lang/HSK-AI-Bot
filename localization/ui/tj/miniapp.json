@@ -502,7 +502,7 @@
     "ui.admin_pwa.changed": "Маълумоти пардохт тағйир ёфт. Расид ва маълумотро аз нав санҷед.",
     "ui.admin_pwa.decisionSaved": "Қарори пардохт сабт шуд",
     "ui.admin_pwa.uncertain": "Натиҷа номаълум аст. Аз нав тасдиқ накунед; ҳолати пардохтро санҷед.",
-    "ui.admin_pwa.deliveryUncertain": "Расидани огоҳинома тасдиқ нашудааст. Қарори пардохт сабт шудааст.",
+    "ui.admin_pwa.deliveryUncertain": "Натиҷа номаълум аст",
     "ui.admin_pwa.feedback": "Фикру мулоҳизаҳо",
     "ui.admin_pwa.botFeedback": "Фикрҳои бот",
     "ui.admin_pwa.releaseFeedback": "Фикрҳо оид ба навсозӣ",
@@ -739,7 +739,18 @@
     "ui.admin_pwa.payoutHolder": "Соҳиби ҳисоб",
     "ui.admin_pwa.payoutAccount": "Маълумоти пардохт",
     "ui.admin_pwa.payoutReserveHint": "Бандкунӣ пул намефиристад. Онро танҳо мудире бекор карда метавонад, ки пардохтро банд кардааст.",
-    "ui.admin_pwa.payoutDueAt": "Муҳлати муайяншуда"
+    "ui.admin_pwa.payoutDueAt": "Муҳлати муайяншуда",
+    "ui.admin_pwa.deliveryQueue": "Ҳолати огоҳиномаҳои пардохт",
+    "ui.admin_pwa.deliveryAttempting": "Фиристодан оғоз шудааст",
+    "ui.admin_pwa.deliveryAttempted": "Кӯшиши фиристодан анҷом ёфт",
+    "ui.admin_pwa.deliveryObserved": "Қабули паём санҷида шуд",
+    "ui.admin_pwa.deliveryNoRetry": "Бастан бе фиристодани дубора",
+    "ui.admin_pwa.deliveryReconcileHint": "Ин қайди оператор аст. Қарори пардохт тағйир намеёбад ва паём дубора фиристода намешавад. Сабаб дар аудит танҳо ҳамчун ҳеш нигоҳ дошта мешавад.",
+    "ui.admin_pwa.reviewDecision": "Қарори пардохт",
+    "ui.admin_pwa.deliveryStatus": "Ҳолати фиристодани паём",
+    "ui.admin_pwa.deliveryResolution": "Қайди оператор",
+    "ui.admin_pwa.deliveryAttemptTime": "Вақти кӯшиши фиристодан",
+    "ui.admin_pwa.deliveryReconciledTime": "Вақти санҷиш"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

@@ -54,7 +54,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
 
         config = mod._reviewed_alembic_config()
         self.assertEqual(ScriptDirectory.from_config(config).get_heads(),
-                         ["0127_admin_pwa_technical_push"])
+                         ["0128_admin_pwa_command_lookup"])
         self.assertEqual(mod.EXPECTED_BASELINE, "0102_payment_review_preview")
 
     def test_new_or_multiple_heads_stop_before_any_schema_creation_or_stamp(self):
@@ -91,6 +91,14 @@ class StandaloneQAInitializerTests(unittest.TestCase):
         self.assertIn("user_identities", initial)
         self.assertIn("users", initial)
         self.assertIn("notification_templates", initial)
+
+    def test_migration_owned_index_is_deferred_without_mutating_live_metadata(self):
+        metadata=mod._registered_model_metadata()
+        name='ix_messages_admin_pwa_technical_recent'
+        self.assertIn(name,{index.name for index in metadata.tables['messages'].indexes})
+        baseline={table.name:table for table in mod._initial_schema_tables(metadata)}
+        self.assertNotIn(name,{index.name for index in baseline['messages'].indexes})
+        self.assertIn(name,{index.name for index in metadata.tables['messages'].indexes})
 
     def test_fresh_cli_process_registers_every_orm_model_without_importing_app(self):
         # Shared test-process imports can hide a missing registration: the HTTP

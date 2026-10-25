@@ -502,7 +502,7 @@
     "ui.admin_pwa.changed": "Данные платежа изменились. Повторно проверьте квитанцию и данные.",
     "ui.admin_pwa.decisionSaved": "Решение по платежу сохранено",
     "ui.admin_pwa.uncertain": "Результат неизвестен. Не подтверждайте повторно; проверьте статус платежа.",
-    "ui.admin_pwa.deliveryUncertain": "Доставка уведомления не подтверждена. Решение по платежу сохранено.",
+    "ui.admin_pwa.deliveryUncertain": "Результат неизвестен",
     "ui.admin_pwa.feedback": "Обратная связь",
     "ui.admin_pwa.botFeedback": "Отзывы бота",
     "ui.admin_pwa.releaseFeedback": "Отзывы об обновлении",
@@ -739,7 +739,18 @@
     "ui.admin_pwa.payoutHolder": "Владелец счёта",
     "ui.admin_pwa.payoutAccount": "Платёжные реквизиты",
     "ui.admin_pwa.payoutReserveHint": "Резервирование не переводит деньги. Отменить резервирование может только занявший выплату администратор.",
-    "ui.admin_pwa.payoutDueAt": "Установленный срок"
+    "ui.admin_pwa.payoutDueAt": "Установленный срок",
+    "ui.admin_pwa.deliveryQueue": "Статус платёжных уведомлений",
+    "ui.admin_pwa.deliveryAttempting": "Отправка начата",
+    "ui.admin_pwa.deliveryAttempted": "Попытка отправки завершена",
+    "ui.admin_pwa.deliveryObserved": "Получение сообщения проверено",
+    "ui.admin_pwa.deliveryNoRetry": "Закрыть без повторной отправки",
+    "ui.admin_pwa.deliveryReconcileHint": "Это запись оператора. Решение по платежу не меняется, сообщение не отправляется повторно. Причина сохраняется в аудите только в виде хеша.",
+    "ui.admin_pwa.reviewDecision": "Решение по платежу",
+    "ui.admin_pwa.deliveryStatus": "Статус отправки сообщения",
+    "ui.admin_pwa.deliveryResolution": "Запись оператора",
+    "ui.admin_pwa.deliveryAttemptTime": "Время попытки отправки",
+    "ui.admin_pwa.deliveryReconciledTime": "Время проверки"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

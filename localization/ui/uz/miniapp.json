@@ -502,7 +502,7 @@
     "ui.admin_pwa.changed": "To‘lov ma’lumotlari o‘zgardi. Chek va ma’lumotlarni qayta ko‘ring.",
     "ui.admin_pwa.decisionSaved": "To‘lov qarori saqlandi",
     "ui.admin_pwa.uncertain": "Natija aniq emas. Qayta tasdiqlamang; to‘lov holatini tekshiring.",
-    "ui.admin_pwa.deliveryUncertain": "Xabar yetkazilishi tasdiqlanmagan. To‘lov qarori saqlangan.",
+    "ui.admin_pwa.deliveryUncertain": "Natija noma’lum",
     "ui.admin_pwa.feedback": "Fikr-mulohazalar",
     "ui.admin_pwa.botFeedback": "Bot fikrlari",
     "ui.admin_pwa.releaseFeedback": "Yangilanish fikrlari",
@@ -739,7 +739,18 @@
     "ui.admin_pwa.payoutHolder": "Hisob egasi",
     "ui.admin_pwa.payoutAccount": "To‘lov rekvizitlari",
     "ui.admin_pwa.payoutReserveHint": "Rezervlash pul o‘tkazmaydi. Rezervni faqat uni olgan admin bekor qilishi mumkin.",
-    "ui.admin_pwa.payoutDueAt": "Belgilangan muddat"
+    "ui.admin_pwa.payoutDueAt": "Belgilangan muddat",
+    "ui.admin_pwa.deliveryQueue": "To‘lov xabarlari holati",
+    "ui.admin_pwa.deliveryAttempting": "Yuborish boshlangan",
+    "ui.admin_pwa.deliveryAttempted": "Yuborishga urinish tugagan",
+    "ui.admin_pwa.deliveryObserved": "Xabar yetib borgani tekshirildi",
+    "ui.admin_pwa.deliveryNoRetry": "Qayta yubormasdan yopish",
+    "ui.admin_pwa.deliveryReconcileHint": "Bu operator qaydi. To‘lov qarori o‘zgarmaydi, xabar qayta yuborilmaydi. Sabab auditda faqat xesh shaklida saqlanadi.",
+    "ui.admin_pwa.reviewDecision": "To‘lov bo‘yicha qaror",
+    "ui.admin_pwa.deliveryStatus": "Xabar yuborish holati",
+    "ui.admin_pwa.deliveryResolution": "Operator qaydi",
+    "ui.admin_pwa.deliveryAttemptTime": "Yuborishga urinish vaqti",
+    "ui.admin_pwa.deliveryReconciledTime": "Tekshiruv vaqti"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

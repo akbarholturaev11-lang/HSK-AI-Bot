@@ -275,7 +275,7 @@ function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
   if(state.route==='course')return `<div class="management-page">${group('course',managementRow(t('courseAccess'),'data-action="courseSettings"','book')+managementRow(t('hsk30Settings'),'data-action="hsk30Settings"','book'))}</div>`;
   if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('salesExperiment'),'data-marketing-kind="sales_experiment"','chart')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
-  return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
+  return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow(t('deliveryQueue'),'data-action="deliveryList"','bell')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
 function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
 async function load() {
@@ -434,9 +434,25 @@ function userManagementEditor(userId,operation){
 const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktopPromo',course_ad:'courseAds'};
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
 const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
-function managementNamespace(type){return type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
+function managementNamespace(type){return type==='delivery'?'payment-deliveries':type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='marketing'?'marketing':'settings';}
 function managementEndpoint(type,phase){return type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
-function managementAction(type,operation){return type==='payout'?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+function managementAction(type,operation){return type==='delivery'?'payments.delivery_reconcile':type==='payout'?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='marketing'?'marketing.update':'settings.update';}
+const deliveryStatusLabels={pending:'pending',attempting:'deliveryAttempting',attempted:'deliveryAttempted',uncertain:'deliveryUncertain'};
+const deliveryResolutionLabels={observed:'deliveryObserved',no_retry:'deliveryNoRetry'};
+async function deliveryEditor(id=null,before=null){
+  closeDrawer();const current=drawerId,at=epoch;drawer('deliveryQueue',statePanel('loading'));
+  try{
+    const data=await api('payment-deliveries/read',id?{review_id:id}:before?{before_id:before}:{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    if(!id){
+      const rows=data.items.map(row=>managementRow(`#${row.payment_id} · ${t(deliveryStatusLabels[row.delivery_status])}`,`data-delivery-id="${esc(row.review_id)}"`,'bell')).join('');
+      drawer('deliveryQueue',(rows?`<div class="management-list">${rows}</div>`:statePanel('empty'))+(data.next_before_id?`<button class="btn" data-delivery-next="${esc(data.next_before_id)}">${esc(t('next'))}</button>`:''),btn('close','close'));return;
+    }
+    const row=data.delivery;managementDraft={type:'delivery',deliveryId:id};
+    const form=row.eligible&&!row.resolution?`<div class="form-field"><label for="deliveryResolution">${esc(t('operation'))}</label><select class="input" id="deliveryResolution">${Object.entries(deliveryResolutionLabels).map(([value,label])=>`<option value="${value}">${esc(t(label))}</option>`).join('')}</select></div><div class="form-field"><label for="deliveryReason">${esc(t('reason'))}</label><textarea class="input setting-value" id="deliveryReason" minlength="5" maxlength="300" required></textarea></div>`:'';
+    drawer('deliveryQueue',`<p class="source-note">${esc(t('deliveryReconcileHint'))}</p><form id="managementForm">${managementFields(row,'delivery')}${form}</form>`,btn('close','close')+(form?btn('next','managementPrepare','primary'):''));
+  }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('deliveryQueue',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','deliveryList'));}
+}
 const payoutStatusLabels={pending:'pending',deadline_set:'payoutDeadlineSet',processing:'payoutReserved',paid:'payoutPaid',rejected:'rejected'};
 const payoutOperationLabels={deadline:'payoutDeadline',reject:'reject',claim:'payoutClaim',release:'payoutRelease'};
 async function payoutEditor(id=null,before=null){
@@ -580,6 +596,14 @@ function editCourseAd(id){
   drawer('courseAds',form,btn('cancel','close')+btn('next','managementPrepare','primary'));
 }
 function managementFields(value,type){
+  if(type==='delivery'){
+    const fields=[['paymentId',value.payment_id],['reviewDecision',t(value.decision==='approve'?'approved':'rejected')],['deliveryStatus',t(deliveryStatusLabels[value.delivery_status])]];
+    if(value.resolution)fields.push(['deliveryResolution',t(deliveryResolutionLabels[value.resolution])]);
+    if(value.reason)fields.push(['reason',value.reason]);
+    if(value.attempted_at)fields.push(['deliveryAttemptTime',date(value.attempted_at)]);
+    if(value.reconciled_at)fields.push(['deliveryReconciledTime',date(value.reconciled_at)]);
+    return profileFields(fields);
+  }
   if(type==='payout'){
     const fields=[['payoutId',value.id],['partnerId',value.partner_id],['status',t(payoutStatusLabels[value.status])],['amount',value.local_amount+' '+value.local_currency],['ledgerUSD',value.amount_usd+' USD']];
     if(value.operation)fields.push(['operation',t(payoutOperationLabels[value.operation])]);
@@ -628,6 +652,7 @@ function managementFields(value,type){
   throw Error('invalid_settings');
 }
 function managementReread(draft){
+  if(draft.type==='delivery')return `<button class="btn" data-delivery-id="${esc(draft.deliveryId)}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='payout')return `<button class="btn" data-payout-id="${draft.payoutId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='partner')return `<button class="btn" data-partner-id="${draft.partnerId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='notice')return `<button class="btn" data-notice-key="${esc(draft.noticeKey)}">${esc(t('readCurrent'))}</button>`;
@@ -694,7 +719,9 @@ async function editSetting(kind,bank=null){
 async function prepareManagement(){
   if(managementPreparing||!state.actor||signing||!managementDraft||!$('managementForm')?.reportValidity())return;
   const draft=managementDraft;let payload;
-  if(draft.type==='payout'){
+  if(draft.type==='delivery'){
+    payload={review_id:draft.deliveryId,resolution:$('deliveryResolution').value,reason:$('deliveryReason').value};
+  }else if(draft.type==='payout'){
     payload={payout_id:draft.payoutId,operation:$('payoutOperation').value,days:$('payoutOperation').value==='deadline'?Number($('payoutDays').value):null};
   }else if(draft.type==='partner'){
     payload={partner_id:draft.partnerId,operation:$('partnerOperation').value};
@@ -741,8 +768,8 @@ async function prepareManagement(){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const operation=structuredClone(result.operation);
     if(operation?.action!==managementAction(draft.type,draft.userOperation)||!operation.target||!operation.payload)throw Error('invalid_operation');
-    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
-    const proposed=['notice','partner','payout'].includes(draft.type)?result.proposed:draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
+    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,deliveryId:draft.deliveryId,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
+    const proposed=['notice','partner','payout','delivery'].includes(draft.type)?result.proposed:draft.type==='price'?{...operation.payload,currency:result.current.currency}:['user','portfolio'].includes(draft.type)?operation.payload:operation.payload.change;
     const currentValue=draft.type==='marketing'||draft.type==='channel'?{kind:draft.kind,...result.current}:result.current;
     const comparison=`<div class="management-comparison">${draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}</section></div>`;
     drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
@@ -773,7 +800,7 @@ async function executeManagement(){
     const result=await api(managementEndpoint(review.type,'save'),{...review.executePayload,step_up_id:options.step_up_id});
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
-    const saved=review.type==='payout'?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
+    const saved=review.type==='delivery'?result.delivery:review.type==='payout'?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
     if(review.type==='user'&&result.deleted){state.rows=state.rows.filter(row=>row.user_id!==result.user_id);render();}
     drawer('changesSaved',managementFields(saved,review.type),btn('close','close')+(result.deleted?'':managementReread(review)));
   }catch(error){
@@ -1314,6 +1341,7 @@ async function action(name) {
   if(name==='pushSettings'){await pushSettings();return;}
   if(name==='courseSettings'){await courseSettings();return;}
   if(name==='priceSettings'){await priceSettings();return;}
+  if(name==='deliveryList'){await deliveryEditor();return;}
   if(name==='payoutList'){await payoutEditor();return;}
   if(name==='partnerList'){await partnerEditor();return;}
   if(name==='noticeList'){await noticeEditor();return;}
@@ -1352,6 +1380,8 @@ document.addEventListener('click',event=>{
     else if(button.dataset.channelsKind){await channelEditor(button.dataset.channelsKind);}
     else if(button.dataset.channelsNext){await channelEditor('list',Number(button.dataset.channelsNext));}
     else if(button.dataset.channelId){editChannel(Number(button.dataset.channelId));}
+    else if(button.dataset.deliveryId){await deliveryEditor(button.dataset.deliveryId);}
+    else if(button.dataset.deliveryNext){await deliveryEditor(null,button.dataset.deliveryNext);}
     else if(button.dataset.payoutId){await payoutEditor(Number(button.dataset.payoutId));}
     else if(button.dataset.payoutNext){await payoutEditor(null,Number(button.dataset.payoutNext));}
     else if(button.dataset.partnerId){await partnerEditor(Number(button.dataset.partnerId));}
