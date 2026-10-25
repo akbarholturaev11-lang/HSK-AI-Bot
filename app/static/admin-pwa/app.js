@@ -119,9 +119,32 @@ function watchApproval() {
   // Only one outstanding read; never poll while Telegram is in the foreground.
   approvalWatchTimer=setTimeout(()=>{approvalWatchTimer=null;checkApproval().catch(()=>{});},10000);
 }
+function adminLaunchScreen(){
+  // Same seal shapes and timing as the Course Mini App splash. No wait timer:
+  // authentication and API results replace this view immediately when ready.
+  return '<main class="admin-launch-screen" role="status" aria-label="'+esc(t('loading'))+'">'+
+    '<div class="admin-launch-stage"><div class="admin-launch-halo" aria-hidden="true"></div>'+
+    '<div class="admin-launch-seal" aria-hidden="true"><div class="admin-launch-knot"><div class="admin-launch-spin">'+
+    '<svg class="admin-launch-logo" viewBox="0 0 108 108" aria-hidden="true">'+
+    '<defs><linearGradient id="admin-launch-casing" x1="0" y1="0" x2="108" y2="108" gradientUnits="userSpaceOnUse"><stop stop-color="#F0614C"/><stop offset="1" stop-color="#C02F32"/></linearGradient>'+
+    '<linearGradient id="admin-launch-gold" x1="0" y1="28" x2="0" y2="80" gradientUnits="userSpaceOnUse"><stop stop-color="#F7C948"/><stop offset="1" stop-color="#D9920F"/></linearGradient></defs>'+
+    '<g class="admin-launch-piece admin-launch-flat">'+
+    '<path d="M39.5 35h29a4.5 4.5 0 0 1 4.5 4.5v29a4.5 4.5 0 0 1-4.5 4.5h-29a4.5 4.5 0 0 1-4.5-4.5v-29a4.5 4.5 0 0 1 4.5-4.5Z" fill="none" stroke="url(#admin-launch-casing)" stroke-width="9.5" stroke-linejoin="round"/>'+
+    '<path d="M39.5 35h29a4.5 4.5 0 0 1 4.5 4.5v29a4.5 4.5 0 0 1-4.5 4.5h-29a4.5 4.5 0 0 1-4.5-4.5v-29a4.5 4.5 0 0 1 4.5-4.5Z" fill="none" stroke="url(#admin-launch-gold)" stroke-width="6" stroke-linejoin="round"/></g>'+
+    '<g class="admin-launch-piece admin-launch-diagonal">'+
+    '<path d="m57.18 30.31 20.51 20.51a4.5 4.5 0 0 1 0 6.36L57.18 77.69a4.5 4.5 0 0 1-6.36 0L30.31 57.18a4.5 4.5 0 0 1 0-6.36l20.51-20.51a4.5 4.5 0 0 1 6.36 0Z" fill="none" stroke="url(#admin-launch-casing)" stroke-width="9.5" stroke-linejoin="round"/>'+
+    '<path d="m57.18 30.31 20.51 20.51a4.5 4.5 0 0 1 0 6.36L57.18 77.69a4.5 4.5 0 0 1-6.36 0L30.31 57.18a4.5 4.5 0 0 1 0-6.36l20.51-20.51a4.5 4.5 0 0 1 6.36 0Z" fill="none" stroke="url(#admin-launch-gold)" stroke-width="6" stroke-linejoin="round"/></g>'+
+    '<g class="admin-launch-piece admin-launch-crossings">'+
+    '<path d="M39.5 35h13.4M73 39.5v13.4M68.5 73H55.1M35 68.5V55.1" fill="none" stroke="url(#admin-launch-casing)" stroke-width="9.5"/>'+
+    '<path d="M39.5 35h13.4M73 39.5v13.4M68.5 73H55.1M35 68.5V55.1" fill="none" stroke="url(#admin-launch-gold)" stroke-width="6"/></g></svg>'+
+    '</div></div></div><div class="admin-launch-brandline"><p class="admin-launch-title">HSK AI</p>'+
+    '<svg class="admin-launch-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
+    '<path d="M12 7v14"/><path d="M3 18V5a2 2 0 0 1 2-2h3a4 4 0 0 1 4 4 4 4 0 0 1 4-4h3a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-3a4 4 0 0 0-4 2 4 4 0 0 0-4-2H5a2 2 0 0 1-2-2Z"/></svg>'+
+    '</div></div></main>';
+}
 function auth() {
   let content='';
-  if(state.phase==='loading') content=`<h1>${esc(t('loading'))}</h1>`;
+  if(state.phase==='loading') return adminLaunchScreen();
   else if(state.phase==='offline') content=`<h1>${esc(t('offline'))}</h1><p>${esc(t('offlineHint'))}</p>${btn('retry','boot','primary')}`;
   else if(state.phase==='error') content=`<h1>${esc(t('error'))}</h1>${btn('retry','boot','primary')}`;
   else if(state.phase==='approval') {
