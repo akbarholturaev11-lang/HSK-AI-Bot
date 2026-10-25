@@ -20,6 +20,7 @@ from cryptography.hazmat.primitives import serialization
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from playwright.async_api import async_playwright, expect
+from tests.e2e.admin_pwa_browser import authenticate_fresh_launch
 from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
@@ -228,8 +229,7 @@ async def browser_checks(output, *, media_only=False):
 
                 await page.goto(ORIGIN + "/admin/")
                 await page.wait_for_load_state("networkidle")
-                await expect(page.locator("[data-action=signin]")).to_be_visible(timeout=15000)
-                await page.locator("[data-action=signin]").click()
+                await authenticate_fresh_launch(page)
                 await expect(page.locator(".sidebar")).to_be_visible(timeout=20000)
                 live_cookie=next(cookie['value'] for cookie in await context.cookies()
                     if cookie['name']=='__Host-hskai_admin')
