@@ -50,6 +50,10 @@ class Hsk30FeatureService:
         course is already enabled must not restart that clock.
         """
         target = bool(enabled)
+        # Decide whether this is a real transition only after any concurrent
+        # shared writer commits. An unlocked stale read can incorrectly turn
+        # an explicit enable request into a no-op while another admin disables.
+        await self.setting_repo.lock_key(HSK30_ENABLED_SETTINGS_KEY)
         record = await self.setting_repo.get_record(HSK30_ENABLED_SETTINGS_KEY)
         if record is not None:
             current = str(record.value or "").strip().lower() in {"1", "true", "yes", "on"}

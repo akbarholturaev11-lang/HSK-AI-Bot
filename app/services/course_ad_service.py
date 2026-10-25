@@ -463,6 +463,7 @@ class CourseAdService:
     async def set_active(self, ad_id: int, is_active: bool) -> CourseAdCreative | None:
         result = await self.session.execute(
             self._select_without_blob().where(CourseAdCreative.id == ad_id)
+            .with_for_update().execution_options(populate_existing=True)
         )
         ad = result.scalar_one_or_none()
         if not ad:
@@ -476,6 +477,7 @@ class CourseAdService:
         (mavjud bo'lsa) — chaqiruvchi diskdan ham o'chirishi uchun."""
         result = await self.session.execute(
             self._select_without_blob().where(CourseAdCreative.id == ad_id)
+            .with_for_update().execution_options(populate_existing=True)
         )
         ad = result.scalar_one_or_none()
         if not ad:

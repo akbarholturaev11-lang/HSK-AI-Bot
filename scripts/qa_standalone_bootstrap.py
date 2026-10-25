@@ -3,7 +3,7 @@
 NEVER run this against production or the old staging project. This does not
 import, clone, read or copy any learner data from anywhere. It first creates
 an empty schema from the current ORM models, stamps the historical baseline
-only on the NEW empty QA DB, then executes 0103..0109 and checks the head.
+only on the NEW empty QA DB, then executes 0103..0130 and checks the head.
 
 The historical Alembic base cannot create all course tables from scratch.
 This explicitly isolated QA path is not a replacement for a production
@@ -22,10 +22,24 @@ QA_ENVIRONMENT = "qa"
 QA_HOST = "postgres.railway.internal"
 QA_DATABASE = "railway"
 EXPECTED_BASELINE = "0102_payment_review_preview"
-EXPECTED_HEAD = "0109_public_site_traffic_daily"
-# Unlike the earlier native migrations, 0109 creates its table unconditionally.
-# Let the reviewed migration create it after the empty ORM baseline is stamped.
-MIGRATION_CREATED_TABLES = frozenset({"public_site_traffic_daily"})
+EXPECTED_HEAD = "0130_admin_pwa_payout_proofs"
+# These reviewed migrations create tables unconditionally. Defer their DDL
+# until after the empty ORM baseline is stamped; never precreate and then skip
+# their migrations. This list is reviewed alongside EXPECTED_HEAD.
+MIGRATION_CREATED_TABLES = frozenset({
+    "admin_pwa_outbound_jobs", "admin_pwa_outbound_recipients", "admin_pwa_outbound_events", "admin_pwa_payout_proofs",
+    "public_site_traffic_daily", "admin_pwa_sessions", "admin_pwa_approvals",
+    "admin_pwa_oauth_attempts", "admin_pwa_enrollment_grants",
+    "admin_pwa_credentials", "admin_pwa_registration_challenges",
+    "admin_pwa_authentication_challenges", "admin_pwa_step_ups",
+    "admin_pwa_payment_reviews", "admin_pwa_payment_outbox",
+    "admin_pwa_mcp_access_grants",
+    "admin_pwa_mcp_authorizations",
+    "admin_pwa_native_reports",
+    "admin_pwa_inbox_triage", "admin_pwa_inbox_triage_audit",
+    "admin_pwa_push_subscriptions", "admin_pwa_push_outbox", "admin_pwa_command_audit",
+    "admin_pwa_mcp_audit", "admin_pwa_mcp_quotas",
+})
 
 
 def _registered_model_metadata():
@@ -87,7 +101,7 @@ async def verify_qa_tables() -> None:
                     or set(traffic_primary_key["constrained_columns"]) != {"visit_day", "source"}):
                 raise RuntimeError("standalone_qa_bad_public_traffic_schema")
             for table in ("users", "payments", "referrals", "course_progress",
-                          "user_identities", "public_site_traffic_daily"):
+                          "user_identities", *sorted(MIGRATION_CREATED_TABLES)):
                 n = (await con.execute(text(f"SELECT count(*) FROM {table}"))).scalar()
                 if n != 0:
                     raise RuntimeError("standalone_qa_unexpected_user_rows")
@@ -112,7 +126,19 @@ async def _create_empty_orm_schema() -> None:
 
 
 def _initial_schema_tables(metadata):
-    return [table for table in metadata.sorted_tables
+    # ORM metadata contains the latest index as well as latest columns. An
+    # empty baseline must defer the 0127-owned technical index to its migration,
+    # without mutating the process-global application metadata.
+    from sqlalchemy import MetaData
+    baseline = MetaData()
+    for table in metadata.tables.values():
+        table.to_metadata(baseline)
+    messages = baseline.tables.get("messages")
+    if messages is not None:
+        for index in list(messages.indexes):
+            if index.name == "ix_messages_admin_pwa_technical_recent":
+                messages.indexes.remove(index)
+    return [table for table in baseline.sorted_tables
             if table.name not in MIGRATION_CREATED_TABLES]
 
 
@@ -132,7 +158,7 @@ def main() -> None:
     cfg = _reviewed_alembic_config()
     asyncio.run(_create_empty_orm_schema())
     # QA ONLY. ORM-created tables model the latest empty schema; migration
-    # 0103..0109 is then exercised to apply/refuse any missing constraints.
+    # 0103..0121 is then exercised to apply/refuse any missing constraints.
     command.stamp(cfg, EXPECTED_BASELINE)
     command.upgrade(cfg, "head")
     asyncio.run(verify_qa_tables())

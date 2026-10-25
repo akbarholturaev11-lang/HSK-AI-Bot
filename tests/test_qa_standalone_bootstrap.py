@@ -54,7 +54,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
 
         config = mod._reviewed_alembic_config()
         self.assertEqual(ScriptDirectory.from_config(config).get_heads(),
-                         ["0109_public_site_traffic_daily"])
+                         ["0130_admin_pwa_payout_proofs"])
         self.assertEqual(mod.EXPECTED_BASELINE, "0102_payment_review_preview")
 
     def test_new_or_multiple_heads_stop_before_any_schema_creation_or_stamp(self):
@@ -72,13 +72,34 @@ class StandaloneQAInitializerTests(unittest.TestCase):
                 stamp.assert_not_called()
                 upgrade.assert_not_called()
 
-    def test_0109_table_is_deferred_to_its_real_migration_only(self):
+    def test_all_new_tables_are_deferred_to_their_real_migrations_only(self):
         metadata = mod._registered_model_metadata()
         initial = {table.name for table in mod._initial_schema_tables(metadata)}
-        self.assertEqual(set(metadata.tables) - initial, {"public_site_traffic_daily"})
+        expected = {
+            "admin_pwa_outbound_jobs", "admin_pwa_outbound_recipients", "admin_pwa_outbound_events", "admin_pwa_payout_proofs",
+            "public_site_traffic_daily", "admin_pwa_sessions", "admin_pwa_approvals",
+            "admin_pwa_oauth_attempts", "admin_pwa_enrollment_grants",
+            "admin_pwa_credentials", "admin_pwa_registration_challenges",
+            "admin_pwa_authentication_challenges", "admin_pwa_step_ups",
+            "admin_pwa_payment_reviews", "admin_pwa_payment_outbox",
+            "admin_pwa_mcp_access_grants",
+            "admin_pwa_mcp_authorizations",
+            "admin_pwa_mcp_audit", "admin_pwa_mcp_quotas",
+            "admin_pwa_native_reports", "admin_pwa_inbox_triage", "admin_pwa_inbox_triage_audit",
+            "admin_pwa_push_subscriptions", "admin_pwa_push_outbox", "admin_pwa_command_audit",
+        }
+        self.assertEqual(set(metadata.tables) - initial, expected)
         self.assertIn("user_identities", initial)
         self.assertIn("users", initial)
         self.assertIn("notification_templates", initial)
+
+    def test_migration_owned_index_is_deferred_without_mutating_live_metadata(self):
+        metadata=mod._registered_model_metadata()
+        name='ix_messages_admin_pwa_technical_recent'
+        self.assertIn(name,{index.name for index in metadata.tables['messages'].indexes})
+        baseline={table.name:table for table in mod._initial_schema_tables(metadata)}
+        self.assertNotIn(name,{index.name for index in baseline['messages'].indexes})
+        self.assertIn(name,{index.name for index in metadata.tables['messages'].indexes})
 
     def test_fresh_cli_process_registers_every_orm_model_without_importing_app(self):
         # Shared test-process imports can hide a missing registration: the HTTP
@@ -132,7 +153,7 @@ class StandaloneQASchemaSafetyTests(unittest.IsolatedAsyncioTestCase):
         columns = [{"name": name, "nullable": False} for name in ("visit_day", "source", "visits")]
         primary = {"constrained_columns": ["visit_day", "source"]}
         for case in ("valid", "missing_table", "missing_notification_table",
-                     "bad_columns", "bad_primary_key", "identity_rows"):
+                     "bad_columns", "bad_primary_key", "identity_rows", "pwa_rows"):
             with self.subTest(case=case):
                 missing = ("public_site_traffic_daily" if case == "missing_table" else
                            "notification_templates" if case == "missing_notification_table" else None)
@@ -142,7 +163,8 @@ class StandaloneQASchemaSafetyTests(unittest.IsolatedAsyncioTestCase):
                 def execute(statement):
                     query = str(statement)
                     value = (mod.EXPECTED_HEAD if "version_num" in query else
-                             1 if case == "identity_rows" and "FROM user_identities" in query else 0)
+                             1 if ((case == "identity_rows" and "FROM user_identities" in query)
+                                   or (case == "pwa_rows" and "FROM admin_pwa_credentials" in query)) else 0)
                     return SimpleNamespace(scalar=lambda: value)
                 connection = SimpleNamespace(
                     run_sync=AsyncMock(side_effect=[tables, (shape, key)]),
@@ -154,7 +176,7 @@ class StandaloneQASchemaSafetyTests(unittest.IsolatedAsyncioTestCase):
                         await mod.verify_qa_tables()
                     else:
                         expected = ("missing_schema_tables" if missing else
-                                    "unexpected_user_rows" if case == "identity_rows" else
+                                    "unexpected_user_rows" if case in {"identity_rows", "pwa_rows"} else
                                     "bad_public_traffic_schema")
                         with self.assertRaisesRegex(RuntimeError, expected):
                             await mod.verify_qa_tables()

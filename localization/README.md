@@ -11,7 +11,7 @@ python3 scripts/i18n_build_all_catalogs.py --check
 
 The builder validates every namespace before writing any output, rejects
 duplicate output ownership and reports missing/stale bundles. P0 checks all
-62 generated artifacts. The unified builder also refreshes existing browser
+63 generated artifacts. The unified builder also refreshes existing browser
 asset cache tokens using the generated file's Git-blob content hash. It changes
 tokens only in already reviewed HTML and updates the corresponding reviewed
 hash; unrelated source changes require review first. `--check` reports stale
@@ -21,7 +21,7 @@ artifacts or cache tokens without writing them.
 | --- | --- |
 | `ui/{uz,ru,tj}/common.json` | Shared Android, browser, Desktop and Bot UI |
 | `ui/{uz,ru,tj}/course.json` | Existing course and Mini App UI; platform bundles |
-| `ui/{uz,ru,tj}/miniapp.json` | Mini App inline/helper maps through the bundled `hsk-miniapp-i18n.js`; shared messages retain common/course references |
+| `ui/{uz,ru,tj}/miniapp.json` (`ui.admin_pwa.*` → separate generated `app/static/admin-pwa/catalog.js`, excluded from learner bundle) | Mini App inline/helper maps through the bundled `hsk-miniapp-i18n.js`; shared messages retain common/course references |
 | `ui/{uz,ru,tj}/desktop.json` | Desktop-specific labels, with shared keys owned by common/course |
 | `ui/{uz,ru,tj}/bot.json` | Bot messages and compatibility key tables; shared keys are references |
 | `ui/{uz,ru,tj}/notifications.json` | Fixed notification defaults/titles/CTAs; admin/custom campaign copy keeps precedence |

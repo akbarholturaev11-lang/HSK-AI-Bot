@@ -67,15 +67,13 @@ class RequiredChannelService:
         channel = await self.repo.get_by_id(channel_id)
         if not channel:
             return False
-        await self.repo.set_active(channel, is_active)
-        return True
+        return await self.repo.set_active(channel, is_active)
 
     async def delete_channel(self, channel_id: int) -> bool:
         channel = await self.repo.get_by_id(channel_id)
         if not channel:
             return False
-        await self.repo.delete(channel)
-        return True
+        return await self.repo.delete(channel)
 
     async def missing_channels(self, bot: Bot, user_id: int):
         if not await self.is_enabled():

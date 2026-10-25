@@ -29,12 +29,24 @@ class BotCatalogTests(unittest.TestCase):
         }
         from app.bot.utils.i18n import COURSE_I18N, TEXTS
         self.assertEqual(tables, {"TEXTS": TEXTS, "COURSE_I18N": COURSE_I18N})
+        # The original 276 Bot compatibility keys remain byte-for-byte
+        # unchanged. One explicitly approved partner rejection key extends
+        # each locale without changing any existing effective message.
+        partner_rejected_key = "partner_rejected_notification"
         for name, value in tables.items():
-            serialized = json.dumps(value, ensure_ascii=False, sort_keys=True,
+            frozen = ({"uz": {key: text for key, text in value["uz"].items()
+                              if key != partner_rejected_key},
+                       "ru": {key: text for key, text in value["ru"].items()
+                              if key != partner_rejected_key},
+                       "tj": {key: text for key, text in value["tj"].items()
+                              if key != partner_rejected_key}}
+                      if name == "TEXTS" else value)
+            serialized = json.dumps(frozen, ensure_ascii=False, sort_keys=True,
                                     separators=(",", ":")).encode()
             self.assertEqual(hashlib.sha256(serialized).hexdigest(), expected[name])
+        self.assertTrue(all(partner_rejected_key in texts for texts in TEXTS.values()))
         self.assertEqual({locale: len(values) for locale, values in TEXTS.items()},
-                         {"uz": 276, "ru": 276, "tj": 276})
+                         {"uz": 277, "ru": 277, "tj": 277})
         self.assertEqual({locale: len(values) for locale, values in COURSE_I18N.items()},
                          {"uz": 92, "ru": 92, "tj": 92})
 
