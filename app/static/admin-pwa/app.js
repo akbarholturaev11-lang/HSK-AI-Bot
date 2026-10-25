@@ -591,8 +591,11 @@ function editorValue(){
 }
 function editorActionOnly(){
   const d=managementDraft;
+  // Sending an existing campaign is an explicit signed command, not a
+  // draft edit; it must remain clickable even when all fields are read-only.
   return !!d&&(d.type==='message_control'||d.type==='partner'||d.type==='delivery'||
-    d.type==='payout'||d.type==='user'&&d.userOperation!=='delete');
+    d.type==='payout'||d.type==='campaign'&&d.kind==='ad_send'||
+    d.type==='user'&&d.userOperation!=='delete');
 }
 function updateEditorSaveEnabled(){
   const b=document.querySelector('#drawerFoot [data-action="managementPrepare"],#drawerFoot [data-action="coursePrepare"],#drawerFoot [data-action="hsk30Prepare"]');
