@@ -371,7 +371,7 @@ async def browser_checks(output):
         await expect(page.locator('.stats-category-metrics .metric')).to_have_count(3)
         await page.locator('[data-stats-tab=money]').click()
         await expect(page.locator('.stats-category-metrics .metric')).to_have_count(8)
-        await expect(page.locator('.analytics-panel').last).to_contain_text('0.025 USD')
+        await expect(page.locator('.analytics-panel').last).to_contain_text(await page.evaluate("new Intl.NumberFormat('uz',{maximumFractionDigits:8}).format(0.025)+' USD'"))
         await page.locator('[data-stats-tab=sources]').click()
         await expect(page.locator('.stats-category-content .analytics-panel')).to_have_count(3)
         await page.locator('[data-stats-tab=report]').click()
