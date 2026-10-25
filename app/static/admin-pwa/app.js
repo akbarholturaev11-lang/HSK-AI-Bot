@@ -85,7 +85,7 @@ function telegramApprovalUrl(approval) {
   try {
     const url=new URL(raw);
     if(url.protocol!=='https:'||url.hostname!=='t.me'||url.port||url.username||url.password||
-       url.hash||url.searchParams.size!==1||url.searchParams.get('start')!=='admin_pwa_'+requestId||
+       url.hash||Array.from(url.searchParams).length!==1||url.searchParams.get('start')!=='admin_pwa_'+requestId||
        !/^\/[A-Za-z][A-Za-z0-9_]{4,31}$/.test(url.pathname))return null;
     return url.href;
   }catch(_){return null;}
