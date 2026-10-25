@@ -3,8 +3,6 @@ import contextlib
 import logging
 from pathlib import Path
 import os
-import shutil
-import subprocess
 import time
 import uuid
 from contextlib import asynccontextmanager
@@ -205,10 +203,14 @@ from app.services.course_ad_translation_service import (
     CourseAdTranslationService,
 )
 from app.services.course_ad_service import (
-    COURSE_AD_ALLOWED_IMAGE_EXTENSIONS,
-    COURSE_AD_ALLOWED_VIDEO_EXTENSIONS,
     COURSE_AD_MEDIA_ROOT,
     CourseAdService,
+)
+from app.services.course_ad_media import (
+    COURSE_AD_MAX_UPLOAD_BYTES,
+    CourseAdVideoError,
+    prepare_course_ad_image_file,
+    prepare_course_ad_video_file,
 )
 from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE
 from app.services.ai_usage_budget_service import REFERRAL_TRIAL_PLAN_TYPE
@@ -319,11 +321,6 @@ logger = logging.getLogger(__name__)
 
 bot, dp = create_bot(settings)
 _study_ai_tasks = set()
-COURSE_AD_MAX_UPLOAD_BYTES = 25 * 1024 * 1024
-
-
-class CourseAdVideoError(Exception):
-    pass
 
 
 def _positive_int(value) -> int | None:
@@ -391,102 +388,6 @@ async def _support_url_for_error() -> str:
             return await get_admin_contact_url(session)
     except Exception:  # noqa: BLE001
         return ""
-
-
-def _prepare_course_ad_video_file(data: bytes, *, raw_ext: str, telegram_id: int) -> str:
-    """Store course ad video as Telegram WebView-safe MP4.
-
-    ffmpeg is expected in production (see nixpacks.toml). Without ffmpeg we
-    reject uploads instead of saving a video that may render black in Telegram
-    WebView.
-    """
-    os.makedirs(COURSE_AD_MEDIA_ROOT, exist_ok=True)
-    token = uuid.uuid4().hex[:10]
-    final_name = f"course_ad_{telegram_id}_{int(time.time())}_{token}.mp4"
-    final_path = os.path.join(COURSE_AD_MEDIA_ROOT, final_name)
-    source_ext = raw_ext if raw_ext in COURSE_AD_ALLOWED_VIDEO_EXTENSIONS else ".mp4"
-    ffmpeg = shutil.which("ffmpeg")
-
-    if not ffmpeg:
-        raise CourseAdVideoError("ffmpeg_not_available")
-
-    source_path = os.path.join(COURSE_AD_MEDIA_ROOT, f".course_ad_upload_{token}{source_ext}")
-    with open(source_path, "wb") as handle:
-        handle.write(data)
-
-    try:
-        subprocess.run(
-            [
-                ffmpeg,
-                "-y",
-                "-hide_banner",
-                "-loglevel",
-                "error",
-                "-i",
-                source_path,
-                "-map",
-                "0:v:0",
-                "-map",
-                "0:a?",
-                "-vf",
-                "scale='min(720,iw)':-2:force_original_aspect_ratio=decrease,format=yuv420p",
-                "-c:v",
-                "libx264",
-                "-preset",
-                "veryfast",
-                "-profile:v",
-                "main",
-                "-level",
-                "3.1",
-                "-c:a",
-                "aac",
-                "-b:a",
-                "128k",
-                "-movflags",
-                "+faststart",
-                "-shortest",
-                final_path,
-            ],
-            check=True,
-            timeout=120,
-        )
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
-        with contextlib.suppress(OSError):
-            os.remove(final_path)
-        raise CourseAdVideoError("video_transcode_failed") from exc
-    finally:
-        with contextlib.suppress(OSError):
-            os.remove(source_path)
-
-    if not os.path.exists(final_path) or os.path.getsize(final_path) <= 0:
-        raise CourseAdVideoError("video_transcode_failed")
-    return final_name
-
-
-def _prepare_course_ad_image_file(data: bytes, *, raw_ext: str, telegram_id: int) -> str:
-    """Surat reklamasini diskka saqlaydi.
-
-    Videodan farqli o'laroq qayta kodlash yo'q: ffmpeg talab qilinmaydi va fayl
-    o'z formatida (jpg/png/webp) qoladi — `<img>` ularning hammasini Telegram
-    WebView'da muammosiz ko'rsatadi.
-    """
-    os.makedirs(COURSE_AD_MEDIA_ROOT, exist_ok=True)
-    token = uuid.uuid4().hex[:10]
-    ext = raw_ext if raw_ext in COURSE_AD_ALLOWED_IMAGE_EXTENSIONS else ".jpg"
-    final_name = f"course_ad_{telegram_id}_{int(time.time())}_{token}{ext}"
-    final_path = os.path.join(COURSE_AD_MEDIA_ROOT, final_name)
-    tmp_path = f"{final_path}.upload"
-    try:
-        with open(tmp_path, "wb") as handle:
-            handle.write(data)
-        os.replace(tmp_path, final_path)
-    except OSError:
-        with contextlib.suppress(OSError):
-            os.remove(tmp_path)
-        raise
-    if not os.path.exists(final_path) or os.path.getsize(final_path) <= 0:
-        raise CourseAdVideoError("media_upload_failed")
-    return final_name
 
 
 async def _send_subscription_expired_offer(session, telegram_id) -> None:
@@ -5253,13 +5154,14 @@ async def admin_miniapp_course_ads_upload(request: Request):
         # Surat qayta kodlanmaydi (ffmpeg kerak emas), video esa WebView uchun
         # xavfsiz MP4 ga o'giriladi — eski xatti-harakat o'zgarmaydi.
         prepare = (
-            _prepare_course_ad_image_file if media_type == "photo" else _prepare_course_ad_video_file
+            prepare_course_ad_image_file if media_type == "photo" else prepare_course_ad_video_file
         )
         filename = await asyncio.to_thread(
             prepare,
             data,
             raw_ext=raw_ext,
             telegram_id=telegram_id,
+            media_root=COURSE_AD_MEDIA_ROOT,
         )
         media_backup = (
             data if CourseAdService.should_backup_media(media_type, data) else None

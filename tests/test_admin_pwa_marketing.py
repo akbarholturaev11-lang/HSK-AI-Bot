@@ -336,6 +336,68 @@ class AdminPwaMarketingTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
                     self.assertEqual((await db.get(AdminPwaStepUp, proof)).status, "verified")
                     self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit)), 0)
 
+    async def test_course_ad_video_replace_transcodes_before_write_and_commits_exact_media(self):
+        source = b"bounded-video-source"
+        await self.seed_ads(1)
+        with tempfile.TemporaryDirectory(prefix="admin-pwa-course-ad-video-") as media_root:
+            previous_path = Path(media_root) / "private-media-1.mp4"
+            previous_path.write_bytes(b"old video")
+            with patch.object(marketing, "COURSE_AD_MEDIA_ROOT", media_root), \
+                    patch.object(course_ad_service, "COURSE_AD_MEDIA_ROOT", media_root):
+                change = {"kind": "course_ad", "ad_id": 1, "operation": "replace_video",
+                          "is_active": None, "media_sha256": hashlib.sha256(source).hexdigest(),
+                          "media_size": len(source)}
+                command = await self.prepare_marketing(change)
+                operation = command.operation()
+                proof = await self.proof_marketing(command, signed=True)
+
+                def fake_transcode(data, *, raw_ext, media_root):
+                    self.assertEqual(data, source)
+                    self.assertEqual(raw_ext, ".mp4")
+                    filename = "course_ad_pwa_0123456789abcdef0123456789abcdef.mp4"
+                    (Path(media_root) / filename).write_bytes(b"transcoded-mp4")
+                    return filename
+
+                with patch.object(marketing, "prepare_pwa_course_ad_video_file",
+                                  side_effect=fake_transcode) as transcode:
+                    result = await self.execute_marketing(
+                        command, proof, media_bytes=source, media_content_type="video/mp4",
+                    )
+                transcode.assert_called_once()
+
+                async with self.sessions() as db:
+                    saved = await db.get(CourseAdCreative, 1)
+                    self.assertEqual(saved.media_type, "video")
+                    self.assertEqual(saved.media_path, "course_ad_pwa_0123456789abcdef0123456789abcdef.mp4")
+                    self.assertIsNone(await db.scalar(select(CourseAdCreative.media_blob).where(
+                        CourseAdCreative.id == 1)))
+                    self.assertEqual((Path(media_root) / saved.media_path).read_bytes(), b"transcoded-mp4")
+                    audit = await db.get(AdminPwaCommandAudit, result["command_id"])
+                    self.assertEqual(audit.payload_hash, operation_digest(**operation))
+                    self.assertNotIn(saved.media_path, audit.result_json)
+                self.assertFalse(previous_path.exists())
+
+    async def test_course_ad_video_requires_verified_exact_passkey_before_transcoding(self):
+        source = b"video-source"
+        await self.seed_ads(1)
+        change = {"kind": "course_ad", "ad_id": 1, "operation": "replace_video",
+                  "is_active": None, "media_sha256": hashlib.sha256(source).hexdigest(),
+                  "media_size": len(source)}
+        command = await self.prepare_marketing(change)
+        request = marketing.ExecuteMarketing(**command.model_dump(), step_up_id=str(uuid4()))
+        with tempfile.TemporaryDirectory(prefix="admin-pwa-course-ad-video-proof-") as media_root:
+            with patch.object(marketing, "COURSE_AD_MEDIA_ROOT", media_root), \
+                    patch.object(marketing, "prepare_pwa_course_ad_video_file",
+                                  side_effect=AssertionError("transcoding must require verified proof")):
+                with self.assertRaisesRegex(marketing.CommandError, "step_up_denied"):
+                    async with self.sessions() as db:
+                        await marketing.execute_marketing(
+                            db, session_cookie=fixtures.COOKIE, request=request,
+                            settings_obj=self.settings, media_bytes=source,
+                            media_content_type="video/mp4",
+                        )
+            self.assertEqual(list(Path(media_root).iterdir()), [])
+
     async def test_course_ad_media_payload_rejects_inexact_replace_contract(self):
         with self.assertRaises(ValidationError):
             marketing.PrepareMarketing.model_validate({"change": {

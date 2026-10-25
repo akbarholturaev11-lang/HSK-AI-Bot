@@ -167,10 +167,43 @@ Updated 2026-10-25. Read this first; older checkpoints are historical. Verify re
   for the existing settings/prices/course-ad state/delete/account flows.
   Catalogs: 63 artifacts, zero stale. Feature defaults stay OFF, external MCP
   stays statistics-only. The full PWA remains incomplete.
-- Remaining media/code: course-ad video and new creative uploads, payment QR,
+- Remaining media/code: new course-ad creative creation, payment QR,
   campaign activation/delivery, feedback/discount commands and the other open
   acceptance items. Keep each in its own exact signed contract and avoid
   provider/media IO during read paths.
+
+## Current course-ad video replacement increment — 2026-10-25
+
+- `marketing.update` now has a distinct signed `replace_video` command for one
+  existing course-ad creative. It binds the existing row revision, exact
+  source SHA-256 and byte count to one passkey. Only MP4, MOV, WebM and M4V up
+  to 25 MiB are accepted; FFmpeg converts the upload to the established
+  WebView-safe H.264/AAC MP4 output. The operation cannot create a creative,
+  change its title/status/placement, or deliver a campaign.
+- Before streaming, the endpoint requires the current admin session and the
+  exact unexpired verified proof, including its still-active credential.
+  Encoding runs outside the target-row DB transaction, with one PWA video
+  encoder slot per worker and the established 120-second subprocess timeout.
+  A short write transaction consumes the proof, rechecks the creative revision,
+  attaches the atomically published random MP4 path and content-free audit.
+  Rollback cleanup re-reads the row and preserves media if commit state is
+  uncertain. The existing 1-MiB decoded-raster replacement remains separate.
+- The V10 editor uses the existing one-passkey confirmation, the browser-local
+  video preview and an escaped file name/size review. UZ/RU/TJ copy is sourced
+  from `localization/ui/*/miniapp.json`. Screenshot
+  `/tmp/hsk-admin-pwa-course-ad-video-20261025/course-ad-video-confirm-390.png`
+  was visually checked at 390px; there is one passkey action and no overflow.
+- Local evidence: `.venv/bin/python -m pytest -q tests/test_course_ad_media.py tests/test_admin_pwa_marketing.py`
+  **26 passed, 11 subtests passed**; actual ASGI + virtual-WebAuthn browser
+  upload/preview/save for course-ad image/video and payment QR passed at 390px.
+  `node --check`, Python compile checks and the 63-artifact catalog check
+  passed. Exact-head GitHub CI has not yet been queried for the implementation
+  commit. Feature flags remain OFF, MCP stays statistics-only, and no staging,
+  live ChatGPT, physical-device, merge or deployment action occurred.
+- Commit SHA and remote branch verification are recorded after the commit
+  below. Remaining code: new course-ad creation, safe campaign
+  activation/delivery and release-feedback/discount commands, plus other open
+  acceptance items. Full PWA acceptance/staging remains incomplete.
 
 ## Current subscription QR media increment — 2026-10-25
 

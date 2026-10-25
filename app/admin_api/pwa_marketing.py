@@ -7,11 +7,13 @@ arbitrary setting keys, student targeting or MCP access is added.
 import asyncio
 import hashlib
 import html
+import hmac
 import io
 import json
 import logging
 import os
 import re
+from threading import BoundedSemaphore
 from datetime import datetime, timedelta, timezone
 from typing import Annotated, Literal
 from uuid import uuid4
@@ -34,6 +36,7 @@ from app.admin_api.pwa_webauthn_transport import _body, _guard_post, _no_duplica
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
+from app.db.models.admin_pwa_webauthn import AdminPwaCredential
 from app.db.models.bot_setting import BotSetting
 from app.db.models.course_ad import CourseAdCreative
 from app.db.models.user import User
@@ -41,6 +44,11 @@ from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.ad_campaign_repo import AdCampaignRepository
 from app.services.broadcast_translation_service import encode_localized_broadcast_text
 from app.services.course_ad_service import COURSE_AD_MEDIA_ROOT, CourseAdService
+from app.services.course_ad_media import (
+    COURSE_AD_MAX_UPLOAD_BYTES,
+    CourseAdVideoError,
+    prepare_pwa_course_ad_video_file,
+)
 from app.services.course_sales_experiment_service import (
     SALES_EXPERIMENT_SETTINGS_KEY, CourseSalesExperimentService, CourseSalesExperimentSettings,
 )
@@ -58,10 +66,18 @@ _AD_PAGE_SIZE = 30
 _PWA_PROMO_IMAGE_MAX_BYTES = 2 * 1024 * 1024
 _PWA_PROMO_IMAGE_MAX_PIXELS = 8_000_000
 _PWA_COURSE_AD_IMAGE_MAX_BYTES = 1 * 1024 * 1024
+_PWA_COURSE_AD_VIDEO_MAX_BYTES = COURSE_AD_MAX_UPLOAD_BYTES
+_PWA_COURSE_AD_VIDEO_SLOT = BoundedSemaphore(1)
 _PWA_PROMO_IMAGE_TYPES = {
     "image/jpeg": ("JPEG", ".jpg"),
     "image/png": ("PNG", ".png"),
     "image/webp": ("WEBP", ".webp"),
+}
+_PWA_COURSE_AD_VIDEO_TYPES = {
+    "video/mp4": ".mp4",
+    "video/quicktime": ".mov",
+    "video/webm": ".webm",
+    "video/x-m4v": ".m4v",
 }
 
 
@@ -118,10 +134,10 @@ class DesktopPromoChange(StrictModel):
 class CourseAdChange(StrictModel):
     kind: Literal["course_ad"]
     ad_id: PositiveId
-    operation: Literal["set_active", "delete", "replace_image"]
+    operation: Literal["set_active", "delete", "replace_image", "replace_video"]
     is_active: bool | None = None
     media_sha256: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")] | None = None
-    media_size: Annotated[int, Field(strict=True, ge=1, le=_PWA_COURSE_AD_IMAGE_MAX_BYTES)] | None = None
+    media_size: Annotated[int, Field(strict=True, ge=1, le=_PWA_COURSE_AD_VIDEO_MAX_BYTES)] | None = None
 
     @model_validator(mode="after")
     def exact_operation(self):
@@ -131,7 +147,10 @@ class CourseAdChange(StrictModel):
             raise ValueError("Media digest and byte count must be supplied together")
         if (self.operation == "set_active" and (self.is_active is None or has_digest)
                 or self.operation == "delete" and (self.is_active is not None or has_digest)
-                or self.operation == "replace_image" and (self.is_active is not None or not has_digest)):
+                or self.operation in ("replace_image", "replace_video")
+                and (self.is_active is not None or not has_digest)
+                or self.operation == "replace_image" and self.media_size is not None
+                and self.media_size > _PWA_COURSE_AD_IMAGE_MAX_BYTES):
             raise ValueError("Exact course-ad operation required")
         return self
 
@@ -273,6 +292,40 @@ async def _authenticate(db, cookie, settings_obj):
     return actor
 
 
+async def _preflight_course_ad_video(db, *, session_cookie, request, settings_obj):
+    """Require the exact verified proof before spending CPU on video transcoding.
+
+    This read is only a preflight. The mutation transaction consumes the proof
+    again at the write boundary, so a concurrent use or expiry still fails.
+    """
+    command = MarketingCommand.model_validate(request.model_dump(exclude={"step_up_id"}))
+    operation = command.operation()
+    digest = operation_digest(**operation)
+    if digest is None:
+        raise CommandError("admin_pwa_step_up_denied", 403)
+    async with db.begin():
+        actor = await _authenticate(db, session_cookie, settings_obj)
+        step = await db.get(AdminPwaStepUp, request.step_up_id)
+        now = datetime.now(timezone.utc)
+        if (step is None or step.status != "verified" or step.verified_at is None
+                or step.consumed_at is not None or _utc(step.expires_at) <= now
+                or step.action != operation["action"] or step.target != operation["target"]
+                or not hmac.compare_digest(step.payload_hash, digest)
+                or int(step.user_id) != int(actor.user_id) or not step.credential_id):
+            raise CommandError("admin_pwa_step_up_denied", 403)
+        credential = await db.scalar(select(AdminPwaCredential).where(
+            AdminPwaCredential.credential_id == bytes(step.credential_id),
+            AdminPwaCredential.user_id == step.user_id,
+            AdminPwaCredential.revoked_at.is_(None),
+        ))
+        if credential is None:
+            raise CommandError("admin_pwa_step_up_denied", 403)
+        if not isinstance(actor.telegram_id, int) or actor.telegram_id <= 0:
+            raise CommandError("admin_pwa_unauthorized", 401)
+        telegram_id = int(actor.telegram_id)
+    return telegram_id
+
+
 async def _target(db, change, *, lock=False):
     if change.kind == "campaign_draft":
         return None, {"new_draft": True, "revision_hash": _hash({"campaign_draft": "new"})}
@@ -406,6 +459,17 @@ def _write_course_ad_image(data: bytes, extension: str) -> str:
     return filename
 
 
+def _prepare_course_ad_video_bounded(data: bytes, *, raw_ext: str, media_root: str) -> str:
+    if not _PWA_COURSE_AD_VIDEO_SLOT.acquire(blocking=False):
+        raise CommandError("course_ad_video_busy", 429)
+    try:
+        return prepare_pwa_course_ad_video_file(
+            data, raw_ext=raw_ext, media_root=media_root,
+        )
+    finally:
+        _PWA_COURSE_AD_VIDEO_SLOT.release()
+
+
 def _cleanup_promo_media(filename):
     # The caller supplies only a server-generated new filename or the current
     # normalized setting value. Reject path manipulation before unlinking.
@@ -435,19 +499,44 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
     new_promo_filename = None
     new_course_ad_filename = None
     change = command.change
-    if (change.kind == "desktop_promo" and change.media_sha256 is not None
-            or change.kind == "course_ad" and change.operation == "replace_image"):
+    media_extension = None
+    is_promo_image = change.kind == "desktop_promo" and change.media_sha256 is not None
+    is_course_ad_image = change.kind == "course_ad" and change.operation == "replace_image"
+    is_course_ad_video = change.kind == "course_ad" and change.operation == "replace_video"
+    if is_promo_image or is_course_ad_image or is_course_ad_video:
         if (media_bytes is None or len(media_bytes) != change.media_size
                 or hashlib.sha256(media_bytes).hexdigest() != change.media_sha256):
             raise CommandError("admin_pwa_invalid_media", 400)
-        if (change.kind == "course_ad"
-                and len(media_bytes) > _PWA_COURSE_AD_IMAGE_MAX_BYTES):
-            raise CommandError("admin_pwa_media_too_large", 413)
-        media_extension = _validate_promo_image(media_bytes, media_content_type or "")
+        if is_course_ad_image:
+            if len(media_bytes) > _PWA_COURSE_AD_IMAGE_MAX_BYTES:
+                raise CommandError("admin_pwa_media_too_large", 413)
+            media_extension = _validate_promo_image(media_bytes, media_content_type or "")
+        elif is_course_ad_video:
+            if len(media_bytes) > _PWA_COURSE_AD_VIDEO_MAX_BYTES:
+                raise CommandError("admin_pwa_media_too_large", 413)
+            raw_ext = _PWA_COURSE_AD_VIDEO_TYPES.get(media_content_type or "")
+            if raw_ext is None:
+                raise CommandError("admin_pwa_invalid_media", 400)
+            await _preflight_course_ad_video(
+                db, session_cookie=session_cookie, request=request, settings_obj=settings_obj,
+            )
+            try:
+                new_course_ad_filename = await asyncio.to_thread(
+                    _prepare_course_ad_video_bounded, media_bytes,
+                    raw_ext=raw_ext, media_root=COURSE_AD_MEDIA_ROOT,
+                )
+            except CourseAdVideoError as exc:
+                if str(exc) == "ffmpeg_not_available":
+                    raise CommandError("course_ad_video_unavailable", 503) from exc
+                raise CommandError("course_ad_video_invalid", 422) from exc
+            except OSError as exc:
+                raise CommandError("course_ad_video_unavailable", 503) from exc
+        else:
+            if len(media_bytes) > _PWA_PROMO_IMAGE_MAX_BYTES:
+                raise CommandError("admin_pwa_media_too_large", 413)
+            media_extension = _validate_promo_image(media_bytes, media_content_type or "")
     elif media_bytes is not None:
         raise CommandError("admin_pwa_invalid_media", 400)
-    else:
-        media_extension = None
 
     try:
         async with db.begin():
@@ -511,16 +600,22 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
                 if previous.media_path and previous.media_path != promo.media_path:
                     cleanup_promo = previous.media_path
                 _, result = await _target(db, change)
-            elif change.kind == "course_ad" and change.operation == "replace_image":
+            elif (change.kind == "course_ad"
+                  and change.operation in ("replace_image", "replace_video")):
                 previous_path = row.media_path
                 shared = await db.scalar(select(CourseAdCreative.id).where(
                     CourseAdCreative.media_path == previous_path,
                     CourseAdCreative.id != row.id).limit(1))
-                new_course_ad_filename = await asyncio.to_thread(
-                    _write_course_ad_image, media_bytes, media_extension,
-                )
+                if change.operation == "replace_image":
+                    new_course_ad_filename = await asyncio.to_thread(
+                        _write_course_ad_image, media_bytes, media_extension,
+                    )
+                    row.media_type = "photo"
+                else:
+                    # Video encoding ran before the target-row transaction;
+                    # this write transaction only attaches the staged MP4.
+                    row.media_type = "video"
                 row.media_path = new_course_ad_filename
-                row.media_type = "photo"
                 # The PWA keeps the asset on the existing media volume. Do not
                 # add a DB image backup or reinterpret legacy backup metadata.
                 row.media_blob = None
@@ -650,7 +745,8 @@ def create_admin_pwa_marketing_router(*, settings_obj, session_factory):
                 or request.headers.get("sec-fetch-site", "same-origin") != "same-origin"):
             return _reply(403, "admin_pwa_csrf")
         content_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
-        if content_type not in _PWA_PROMO_IMAGE_TYPES:
+        if (content_type not in _PWA_PROMO_IMAGE_TYPES
+                and content_type not in _PWA_COURSE_AD_VIDEO_TYPES):
             return _reply(415, "unsupported_media_type")
         cookie = request.cookies.get(ADMIN_PWA_COOKIE_NAME, "")
         if not cookie:
@@ -670,10 +766,15 @@ def create_admin_pwa_marketing_router(*, settings_obj, session_factory):
                               and parsed.change.operation == "replace_image"
                               and parsed.change.media_sha256 is not None
                               and parsed.change.media_size is not None)
-        if not (is_promo_image or is_course_ad_image):
+        is_course_ad_video = (parsed.change.kind == "course_ad"
+                              and parsed.change.operation == "replace_video"
+                              and parsed.change.media_sha256 is not None
+                              and parsed.change.media_size is not None)
+        if not (is_promo_image or is_course_ad_image or is_course_ad_video):
             return _reply(400, "admin_pwa_invalid_payload")
-        max_bytes = (_PWA_COURSE_AD_IMAGE_MAX_BYTES if is_course_ad_image
-                     else _PWA_PROMO_IMAGE_MAX_BYTES)
+        max_bytes = (_PWA_COURSE_AD_IMAGE_MAX_BYTES if is_course_ad_image else
+                     _PWA_COURSE_AD_VIDEO_MAX_BYTES if is_course_ad_video else
+                     _PWA_PROMO_IMAGE_MAX_BYTES)
         declared_length = request.headers.get("content-length")
         if declared_length:
             try:
@@ -683,8 +784,13 @@ def create_admin_pwa_marketing_router(*, settings_obj, session_factory):
                 return _reply(400, "admin_pwa_invalid_payload")
         try:
             async with session_factory() as db:
-                async with db.begin():
-                    await _authenticate(db, cookie, settings_obj)
+                if is_course_ad_video:
+                    await _preflight_course_ad_video(
+                        db, session_cookie=cookie, request=parsed, settings_obj=settings_obj,
+                    )
+                else:
+                    async with db.begin():
+                        await _authenticate(db, cookie, settings_obj)
         except CommandError as exc:
             return _reply(exc.status, str(exc))
         except Exception:

@@ -62,8 +62,8 @@ function clearPrivate(phase) {
   state.phase=phase;state.error=null;render();
 }
 function releaseManagementMediaPreview(){if(managementMediaPreviewUrl){URL.revokeObjectURL(managementMediaPreviewUrl);managementMediaPreviewUrl=null;}}
-async function api(path, body, {publicAuth=false, method='POST',rawBody=null,extraHeaders={}}={}) {
-  const current=epoch, control=new AbortController(), timer=setTimeout(()=>control.abort(),15000);
+async function api(path, body, {publicAuth=false, method='POST',rawBody=null,extraHeaders={},timeoutMs=15000}={}) {
+  const current=epoch, control=new AbortController(), timer=setTimeout(()=>control.abort(),timeoutMs);
   try {
     const headers=method==='POST'?{'Content-Type':rawBody?rawBody.type:'application/json',...extraHeaders}:extraHeaders;
     const response=await fetch('/api/admin/v1/'+path,{method, credentials:'same-origin',cache:'no-store',redirect:'error',
@@ -729,7 +729,7 @@ function marketingFields(value){
   if(value.media_name||value.media_type)fields.push(['courseAdMedia',value.media_name
     ?`${value.media_name} · ${Number(value.media_size||0).toLocaleString()} B`
     :t(value.media_type==='photo'?'courseAdPhoto':'courseAdVideo')]);
-  fields.push([value.operation==='replace_image'?'operation':'status',value.operation==='delete'?t('deleteItem'):value.operation==='replace_image'?t('courseAdReplaceImage'):yes(value.is_active)]);
+  fields.push([value.operation?'operation':'status',value.operation==='delete'?t('deleteItem'):value.operation==='replace_image'?t('courseAdReplaceImage'):value.operation==='replace_video'?t('courseAdReplaceVideo'):yes(value.is_active)]);
   return profileFields(fields);
 }
 function boolSelect(id,label,value){return `<div class="form-field"><label for="${id}">${esc(t(label))}</label><select class="input" id="${id}"><option value="true" ${value?'selected':''}>${esc(t('hsk30On'))}</option><option value="false" ${!value?'selected':''}>${esc(t('hsk30Off'))}</option></select></div>`;}
@@ -769,7 +769,7 @@ function editCourseAd(id){
   const ad=managementDraft?.data?.course_ads?.items?.find(row=>row.id===id);
   if(!ad||managementDraft.kind!=='course_ad')return;
   managementDraft={...managementDraft,ad};
-  const form=`<form id="managementForm">${profileFields([['courseAdId',ad.id],['courseAdTitle',ad.title],['language',ad.language],['courseAdMedia',t(ad.media_type==='photo'?'courseAdPhoto':'courseAdVideo')]])}<div class="form-field"><label for="adOperation">${esc(t('operation'))}</label><select id="adOperation" class="input"><option value="set_active">${esc(t('changeStatus'))}</option><option value="replace_image">${esc(t('courseAdReplaceImage'))}</option><option value="delete">${esc(t('deleteItem'))}</option></select></div><div id="adActiveField">${boolSelect('adActive','status',ad.is_active)}</div><div class="form-field" id="adMediaField" hidden><label for="courseAdMediaFile">${esc(t('courseAdMedia'))}</label><input class="input" id="courseAdMediaFile" type="file" accept="image/jpeg,image/png,image/webp" disabled><p class="form-hint">${esc(t('courseAdMediaHint'))}</p><div id="courseAdMediaPreview" aria-live="polite"></div><p class="alert" id="courseAdMediaValidation" role="alert" hidden></p></div><p class="alert" id="adDeleteHint" hidden>${esc(t('deleteAdHint'))}</p></form>`;
+  const form=`<form id="managementForm">${profileFields([['courseAdId',ad.id],['courseAdTitle',ad.title],['language',ad.language],['courseAdMedia',t(ad.media_type==='photo'?'courseAdPhoto':'courseAdVideo')]])}<div class="form-field"><label for="adOperation">${esc(t('operation'))}</label><select id="adOperation" class="input"><option value="set_active">${esc(t('changeStatus'))}</option><option value="replace_image">${esc(t('courseAdReplaceImage'))}</option><option value="replace_video">${esc(t('courseAdReplaceVideo'))}</option><option value="delete">${esc(t('deleteItem'))}</option></select></div><div id="adActiveField">${boolSelect('adActive','status',ad.is_active)}</div><div class="form-field" id="adMediaField" hidden><label for="courseAdMediaFile">${esc(t('courseAdMedia'))}</label><input class="input" id="courseAdMediaFile" type="file" accept="image/jpeg,image/png,image/webp" disabled><p class="form-hint" id="courseAdMediaHint">${esc(t('courseAdMediaHint'))}</p><div id="courseAdMediaPreview" aria-live="polite"></div><p class="alert" id="courseAdMediaValidation" role="alert" hidden></p></div><p class="alert" id="adDeleteHint" hidden>${esc(t('deleteAdHint'))}</p></form>`;
   drawer('courseAds',form,btn('cancel','close')+btn('next','managementPrepare','primary'));
 }
 function managementFields(value,type){
@@ -1016,11 +1016,14 @@ async function prepareManagement(){
     if(draft.kind==='course_ad'){
       const operation=$('adOperation').value;
       Object.assign(change,{ad_id:draft.ad.id,operation,is_active:operation==='set_active'?$('adActive').value==='true':null});
-      if(operation==='replace_image'){
+      if(operation==='replace_image'||operation==='replace_video'){
         const file=draft.mediaFile;
         if(!file){const validation=$('courseAdMediaValidation');validation.textContent=t('courseAdMediaRequired');validation.hidden=false;return;}
-        if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size<1||file.size>1024*1024){
-          const validation=$('courseAdMediaValidation');validation.textContent=t(file.size>1024*1024?'courseAdMediaTooLarge':'courseAdMediaValidation');validation.hidden=false;return;
+        const isVideo=operation==='replace_video';
+        const allowed=isVideo?['video/mp4','video/quicktime','video/webm','video/x-m4v']:['image/jpeg','image/png','image/webp'];
+        const maxBytes=isVideo?25*1024*1024:1024*1024;
+        if(!allowed.includes(file.type)||file.size<1||file.size>maxBytes){
+          const validation=$('courseAdMediaValidation');validation.textContent=t(file.size>maxBytes?(isVideo?'courseAdVideoTooLarge':'courseAdMediaTooLarge'):(isVideo?'courseAdVideoValidation':'courseAdMediaValidation'));validation.hidden=false;return;
         }
         const digest=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());
         change.media_sha256=[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
@@ -1066,7 +1069,7 @@ async function prepareManagement(){
     const mediaPreview=draft.type==='payment_qr'&&draft.mediaFile&&managementMediaPreviewUrl
       ?`<figure class="management-media-preview"><img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t('paymentQrImage'))}"></figure>`
       :draft.type==='marketing'&&['desktop_promo','course_ad'].includes(draft.kind)&&draft.mediaFile&&managementMediaPreviewUrl
-        ?`<figure class="management-media-preview"><img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t(draft.kind==='course_ad'?'courseAdMedia':'promoMedia'))}"></figure>`:'';
+        ?`<figure class="management-media-preview">${draft.mediaFile.type.startsWith('video/')?`<video src="${esc(managementMediaPreviewUrl)}" controls playsinline preload="metadata" aria-label="${esc(t('courseAdVideo'))}"></video>`:`<img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t(draft.kind==='course_ad'?'courseAdMedia':'promoMedia'))}">`}</figure>`:'';
     const comparison=`<div class="management-comparison">${['message','payout_completion'].includes(draft.type)?(draft.type==='message'?`<p class="source-note">${esc(t('messageAttemptHint'))}</p>`:''):draft.type==='portfolio'?`<p class="source-note">${esc(t('ledgerRateHint'))}</p>`:`<section><h3>${esc(t('currentValue'))}</h3>${managementFields(currentValue,draft.type)}</section>`}<section><h3>${esc(t(draft.type==='portfolio'?'newLedgerEntry':'proposedValue'))}</h3>${managementFields(proposed,draft.type)}${mediaPreview}</section></div>`;
     drawer('confirmChanges',comparison,btn('cancel','close')+btn('confirmPasskey','managementExecute','primary'),'confirmation');
   }catch(error){
@@ -1116,7 +1119,7 @@ async function executeManagement(){
     const result=review.type==='payment_qr'&&review.mediaFile
       ?await api('payment-qr/media/save',null,{rawBody:review.mediaFile,extraHeaders:{'X-Admin-PWA-Command':JSON.stringify(command)}})
       :review.type==='marketing'&&['desktop_promo','course_ad'].includes(review.kind)&&review.mediaFile
-      ?await api('marketing/media/save',null,{rawBody:review.mediaFile,extraHeaders:{'X-Admin-PWA-Command':JSON.stringify(command)}})
+      ?await api('marketing/media/save',null,{rawBody:review.mediaFile,extraHeaders:{'X-Admin-PWA-Command':JSON.stringify(command)},timeoutMs:review.kind==='course_ad'&&review.executePayload?.change?.operation==='replace_video'?150000:15000})
       :await api(managementEndpoint(review.type,'save'),command);
     if(current!==drawerId||at!==epoch||!state.actor)return;
     managementReview=null;managementDraft=null;
@@ -1132,12 +1135,15 @@ async function executeManagement(){
     }
     managementDraft=null;
     releaseManagementMediaPreview();
-    const rejected=[400,403,404,409,413].includes(error.status);
+    const rejected=[400,403,404,409,413,422,429].includes(error.status)||['course_ad_video_unavailable','course_ad_video_busy'].includes(error.message);
     const failureKey=review.type==='marketing'&&review.kind==='desktop_promo'&&error.status===413
       ?'promoMediaTooLarge':review.type==='marketing'&&review.kind==='desktop_promo'&&error.status===400
         ?'promoMediaValidation':review.type==='marketing'&&review.kind==='course_ad'&&error.status===413
-          ?'courseAdMediaTooLarge':review.type==='marketing'&&review.kind==='course_ad'&&error.status===400
-          ?'courseAdMediaValidation':review.type==='payment_qr'&&error.status===413
+          ?(review.executePayload?.change?.operation==='replace_video'?'courseAdVideoTooLarge':'courseAdMediaTooLarge'):review.type==='marketing'&&review.kind==='course_ad'&&error.status===422
+          ?'courseAdVideoInvalid':review.type==='marketing'&&review.kind==='course_ad'&&error.message==='course_ad_video_unavailable'
+            ?'courseAdVideoUnavailable':review.type==='marketing'&&review.kind==='course_ad'&&error.message==='course_ad_video_busy'
+              ?'courseAdVideoBusy':review.type==='marketing'&&review.kind==='course_ad'&&error.status===400
+          ?(review.executePayload?.change?.operation==='replace_video'?'courseAdVideoValidation':'courseAdMediaValidation'):review.type==='payment_qr'&&error.status===413
             ?'paymentQrTooLarge':review.type==='payment_qr'&&error.status===400
               ?'paymentQrValidation':review.type==='payment_qr'&&error.status===502
                 ?'paymentQrUploadFailed':error.status===409?'configChanged':submitted&&!rejected?'configUncertain':errorKey(error);
@@ -1849,13 +1855,14 @@ document.addEventListener('change',event=>{
   if(event.target.id==='payoutProofFile'){void stagePayoutProof(event.target.files[0]);return;}
   if(['promoMediaFile','courseAdMediaFile','paymentQrMediaFile'].includes(event.target.id)){
     const isCourseAd=event.target.id==='courseAdMediaFile',isPaymentQr=event.target.id==='paymentQrMediaFile';
-    const file=event.target.files?.[0]||null,allowed=['image/jpeg','image/png','image/webp'];
-    const maxBytes=isCourseAd||isPaymentQr?1024*1024:2*1024*1024;
+    const isCourseAdVideo=isCourseAd&&$('adOperation')?.value==='replace_video';
+    const file=event.target.files?.[0]||null,allowed=isCourseAdVideo?['video/mp4','video/quicktime','video/webm','video/x-m4v']:['image/jpeg','image/png','image/webp'];
+    const maxBytes=isCourseAdVideo?25*1024*1024:isCourseAd||isPaymentQr?1024*1024:2*1024*1024;
     const previewId=isCourseAd?'courseAdMediaPreview':isPaymentQr?'paymentQrMediaPreview':'promoMediaPreview';
     const validationId=isCourseAd?'courseAdMediaValidation':isPaymentQr?'paymentQrMediaValidation':'promoMediaValidation';
     const invalid=file&&(!allowed.includes(file.type)||file.size<1||file.size>maxBytes);
     const validation=$(validationId);
-    if(validation){validation.hidden=!invalid;if(invalid&&(isCourseAd||isPaymentQr))validation.textContent=t(file.size>maxBytes?(isPaymentQr?'paymentQrTooLarge':'courseAdMediaTooLarge'):(isPaymentQr?'paymentQrValidation':'courseAdMediaValidation'));}
+    if(validation){validation.hidden=!invalid;if(invalid&&(isCourseAd||isPaymentQr))validation.textContent=t(file.size>maxBytes?(isPaymentQr?'paymentQrTooLarge':isCourseAdVideo?'courseAdVideoTooLarge':'courseAdMediaTooLarge'):(isPaymentQr?'paymentQrValidation':isCourseAdVideo?'courseAdVideoValidation':'courseAdMediaValidation'));}
     if(invalid){event.target.value='';if($('promoMediaClear'))$('promoMediaClear').checked=false;
       managementDraft={...managementDraft,mediaFile:null,clearMedia:false};releaseManagementMediaPreview();
       if($(previewId))$(previewId).innerHTML='';return;}
@@ -1863,7 +1870,7 @@ document.addEventListener('change',event=>{
     managementDraft={...managementDraft,mediaFile:file,clearMedia:false};
     if($('promoMediaClear'))$('promoMediaClear').checked=false;
     if(file){managementMediaPreviewUrl=URL.createObjectURL(file);
-      if($(previewId))$(previewId).innerHTML=`<figure class="management-media-preview"><img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t(isPaymentQr?'paymentQrImage':isCourseAd?'courseAdMedia':'promoMedia'))}"><figcaption>${esc(String(file.name||'').slice(0,120))} · ${file.size.toLocaleString()} B</figcaption></figure>`;}
+      if($(previewId))$(previewId).innerHTML=`<figure class="management-media-preview">${isCourseAdVideo?`<video src="${esc(managementMediaPreviewUrl)}" controls playsinline preload="metadata" aria-label="${esc(t('courseAdVideo'))}"></video>`:`<img src="${esc(managementMediaPreviewUrl)}" alt="${esc(t(isPaymentQr?'paymentQrImage':isCourseAd?'courseAdMedia':'promoMedia'))}">`}<figcaption>${esc(String(file.name||'').slice(0,120))} · ${file.size.toLocaleString()} B</figcaption></figure>`;}
     else if($(previewId))$(previewId).innerHTML='';
     return;
   }
@@ -1884,14 +1891,17 @@ document.addEventListener('change',event=>{
   if(event.target.id==='channelOperation'&&$('channelActiveField'))$('channelActiveField').hidden=event.target.value==='delete';
   if(event.target.id==='adOperation'){
     const deleting=event.target.value==='delete';
-    const replacing=event.target.value==='replace_image';
+    const replacing=['replace_image','replace_video'].includes(event.target.value);
+    const video=event.target.value==='replace_video';
     if($('adActiveField'))$('adActiveField').hidden=!['set_active'].includes(event.target.value);
     if($('adDeleteHint'))$('adDeleteHint').hidden=!deleting;
     const mediaField=$('adMediaField'),mediaInput=$('courseAdMediaFile');
     if(mediaField)mediaField.hidden=!replacing;
-    if(mediaInput){mediaInput.disabled=!replacing;mediaInput.required=replacing;
+    if(mediaInput){mediaInput.disabled=!replacing;mediaInput.required=replacing;mediaInput.accept=video?'video/mp4,video/quicktime,video/webm,video/x-m4v':'image/jpeg,image/png,image/webp';
       if(!replacing){mediaInput.value='';managementDraft={...managementDraft,mediaFile:null};releaseManagementMediaPreview();
-        if($('courseAdMediaPreview'))$('courseAdMediaPreview').innerHTML='';}}
+        if($('courseAdMediaPreview'))$('courseAdMediaPreview').innerHTML='';}
+      if(replacing&&managementDraft?.mediaFile){mediaInput.value='';managementDraft={...managementDraft,mediaFile:null};releaseManagementMediaPreview();if($('courseAdMediaPreview'))$('courseAdMediaPreview').innerHTML='';}}
+    if($('courseAdMediaHint'))$('courseAdMediaHint').textContent=t(video?'courseAdVideoHint':'courseAdMediaHint');
     if(!replacing&&$('courseAdMediaValidation'))$('courseAdMediaValidation').hidden=true;
   }
   if(['priceMethod','pricePlan'].includes(event.target.id))updatePriceFields();

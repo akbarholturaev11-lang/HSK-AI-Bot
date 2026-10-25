@@ -65,6 +65,7 @@ from tests.test_admin_pwa_webauthn_crypto_vectors import CRED_ID, HANDLE
 
 ORIGIN = "https://hskai.app"
 ROOT = Path(__file__).resolve().parents[2]
+COURSE_AD_TEST_VIDEO = (ROOT / "tests/fixtures/admin_pwa_course_ad_test.mp4").read_bytes()
 
 
 class BrowserQrBot:
@@ -461,6 +462,36 @@ async def browser_checks(output, *, media_only=False):
                             CourseAdCreative.id==1)) is None
                         assert (Path(course_media_directory.name)/course_ad.media_path).read_bytes()==promo_image
                     assert any(path=='/api/admin/v1/marketing/media/save' for path,_ in calls)
+                    await page.locator('.drawer-close').click()
+                    await page.locator('[data-marketing-kind="course_ad"]').click()
+                    await page.locator('[data-course-ad="1"]').click()
+                    await page.locator('#adOperation').select_option('replace_video')
+                    await page.locator('#courseAdMediaFile').set_input_files({
+                        'name':'qa-course-video.mp4','mimeType':'video/mp4','buffer':COURSE_AD_TEST_VIDEO})
+                    await expect(page.locator('#courseAdMediaPreview video')).to_be_visible()
+                    await page.locator('[data-action="managementPrepare"]').click()
+                    await expect(page.locator('.management-comparison video')).to_be_visible()
+                    assert await page.locator('.management-comparison video').count()==1
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                    await page.screenshot(path=str(output/'course-ad-video-confirm-390.png'))
+                    video_filename='course_ad_pwa_0123456789abcdef0123456789abcdef.mp4'
+                    def fake_video_transcode(data, *, raw_ext, media_root):
+                        assert data==COURSE_AD_TEST_VIDEO and raw_ext=='.mp4'
+                        (Path(media_root)/video_filename).write_bytes(data)
+                        return video_filename
+                    with patch.object(pwa_marketing_api,'prepare_pwa_course_ad_video_file',
+                                      side_effect=fake_video_transcode) as video_transcode:
+                        before_video_audit=await audit_count()
+                        await page.locator('[data-action="managementExecute"]').click()
+                        await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
+                    video_transcode.assert_called_once()
+                    async with fixture.sessions() as db:
+                        course_ad=await db.get(CourseAdCreative,1)
+                        assert course_ad and course_ad.media_type=='video'
+                        assert course_ad.media_path==video_filename
+                        assert (Path(course_media_directory.name)/video_filename).read_bytes()==COURSE_AD_TEST_VIDEO
+                    assert await audit_count()==before_video_audit+1
+                    assert len([path for path,_ in calls if path.endswith('step-up/options')])>=2
                     async with fixture.sessions() as db:
                         await db.execute(update(AdminPwaStepUp).where(AdminPwaStepUp.status == "consumed").values(
                             created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
@@ -502,7 +533,7 @@ async def browser_checks(output, *, media_only=False):
                     assert any(path=='/api/admin/v1/payment-qr/media/save' for path,_ in calls)
                     assert await audit_count()==before_qr_audit+1
                     assert not errors, errors
-                    print('Course-ad + payment QR media: ASGI + virtual WebAuthn; disk-only ad image, unchanged price and single signed QR replacement passed at 390px')
+                    print('Course-ad image/video + payment QR media: ASGI + virtual WebAuthn; disk-only creative media, unchanged price and single signed QR replacement passed at 390px')
                     return
                 for operation in ('set_active','delete'):
                     await page.locator('[data-marketing-kind="course_ad"]').click()
@@ -752,6 +783,6 @@ async def browser_checks(output, *, media_only=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=Path("/tmp/hsk-admin-pwa-settings"))
-    parser.add_argument("--media-only", action="store_true", help="Stop after the first-party course-ad image upload scenario")
+    parser.add_argument("--media-only", action="store_true", help="Stop after the first-party course-ad image/video and payment QR upload scenarios")
     args = parser.parse_args()
     asyncio.run(browser_checks(args.output, media_only=args.media_only))

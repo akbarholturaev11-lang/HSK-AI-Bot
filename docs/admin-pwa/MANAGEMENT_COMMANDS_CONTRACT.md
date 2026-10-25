@@ -99,6 +99,20 @@ created. A shared old file is retained, and an unreferenced old file is removed
 only after commit. This changes an existing creative's image only; it does not
 create or deliver campaigns, upload video, or authorize QR/other media.
 
+Existing course-ad video replacement is a distinct signed `replace_video`
+operation on one creative ID. It accepts one MP4, MOV, WebM or M4V upload up to
+25 MiB and binds the exact source SHA-256/byte count plus creative revision to
+one passkey. The server requires that exact verified receipt before invoking
+FFmpeg, uses one concurrent video-encode slot per worker, and converts to a
+WebView-safe H.264/AAC MP4 with the existing 720-pixel scaling and 120-second
+process timeout. Encoding and filesystem staging run outside the database
+write transaction. The final short transaction consumes the proof, rechecks
+the current creative revision, attaches the server-named MP4 path and records
+content-free audit evidence atomically; an unreferenced staged file is cleaned
+up after rollback, while uncertain commit state preserves referenced media.
+Only the existing creative's media changes. No new DB BLOB or migration is
+introduced; new creative creation and campaign delivery remain separate.
+
 Subscription QR replacement is a separate `subscription.qr_media` operation for
 the six fixed Alipay/WeChat plan targets in the existing `subscription` scope.
 The exact current price/QR revision and one JPEG/PNG/WebP file hash/size (1 MiB,
@@ -117,9 +131,9 @@ upload is not retried automatically.
 
 These legacy capabilities are not silently proxied by the standalone PWA:
 campaign activation/delivery, release-feedback and discount campaign creation,
-and course-ad creation/video uploads. Desktop-promo, existing course-ad raster
-media and subscription QR media each have their own signed flows described
-above; they do not authorize other upload types.
+and new course-ad creation. Existing course-ad raster and video replacement,
+desktop-promo and subscription QR media each have their own signed flows
+described above; they do not authorize other upload types.
 Direct, self-test and
 bounded text broadcast now have their own standalone commands described below. A legacy endpoint or
 unused step-up action name is not an implemented standalone command. Each
