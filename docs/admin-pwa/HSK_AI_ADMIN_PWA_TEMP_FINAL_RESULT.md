@@ -79,7 +79,10 @@ legacy checkout contract stores the resulting Telegram `file_id`, not image
 bytes. Signed single-round ad delivery, release-feedback creation/delivery with the
 existing rating/try callbacks, and discount creation/state management are now
 implemented through `/campaigns/*`. Delivery uses the bounded claimed queue;
-new discount offers default off with notifications disabled. These commands
+new discount offers default off with legacy notifications disabled. A separate
+signed one-round notice now retains canonical eligibility and the shared
+Android-first/Play acknowledgement path. Ad/release sends may be scheduled
+within 30 minutes and the current session, using the indexed bounded drainer. These commands
 accept the explicit text formats in the management contract; they do not
 enable unattended legacy scheduling. Owned campaign media now follows the
 0131 actor/session-bound staging contract, with caption limits and private

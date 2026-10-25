@@ -587,7 +587,7 @@ function updateManagementAction(){
   const button=document.querySelector('[data-action="managementPrepare"]'),d=managementDraft;
   if(!button||!d)return;
   let label='saveChanges',danger=false;
-  if(d.type==='campaign'){label=['ad_send','release_create'].includes(d.kind)?'sendMessage':d.kind==='discount_create'?'createItem':'saveChanges';}
+  if(d.type==='campaign'){label=(['ad_send','release_create','discount_send'].includes(d.kind)||d.kind==='discount_state'&&$('discountOperation')?.value==='send')?'sendMessage':d.kind==='discount_create'?'createItem':'saveChanges';}
   else if(d.type==='user'){label=userOperationLabels[d.userOperation];danger=d.userOperation==='delete';}
   else if(d.type==='message')label=!d.userId&&$('messageKind')?.value==='test'?'sendTestMessage':'sendMessage';
   else if(d.type==='message_control')label=d.controlOperation==='resume'?'messageResume':'messageStop';
@@ -605,6 +605,9 @@ function updateManagementAction(){
 // method/plan, notice/help-video language) is not a persisted change.
 function editorValue(){
   const d=managementDraft;
+  if(d?.type==='campaign'&&d.kind==='discount_state'){
+    return JSON.stringify({active:$('campaignActive')?.value===String(d.current?.is_active)?'unchanged':$('campaignActive')?.value});
+  }
   if(d?.type==='price'){
     const row=d.prices?.find(r=>r.method===$('priceMethod')?.value&&r.plan===$('pricePlan')?.value);
     return JSON.stringify({amount:row?String(Number($('priceAmount')?.value))===String(Number(row.amount))?'unchanged':$('priceAmount')?.value:'unchanged'});
@@ -630,7 +633,7 @@ function editorActionOnly(){
   // Sending an existing campaign is an explicit signed command, not a
   // draft edit; it must remain clickable even when all fields are read-only.
   return !!d&&(d.type==='message_control'||d.type==='partner'||d.type==='delivery'||
-    d.type==='payout'||d.type==='campaign'&&d.kind==='ad_send'||
+    d.type==='payout'||d.type==='campaign'&&(d.kind==='ad_send'||d.kind==='discount_state'&&$('discountOperation')?.value==='send')||
     d.type==='user'&&d.userOperation!=='delete');
 }
 function updateEditorSaveEnabled(){
@@ -1155,8 +1158,8 @@ async function campaignDetail(kind,id){
     if(row.id!==id||row.kind!==kind)throw Error('invalid_campaign');
     const editable=kind==='ad'&&row.can_send||kind==='discount'&&(row.can_activate||row.is_active);
     managementDraft=editable?{type:'campaign',kind:kind==='ad'?'ad_send':'discount_state',campaignKind:kind,campaignId:id,current:row}:null;
-    const selection=kind==='discount'&&editable?campaignSelect('campaignActive','status',row.can_activate?[['false','hsk30Off'],['true','hsk30On']]:[['false','hsk30Off']],String(row.is_active)):'';
-    const hint=kind==='ad'?`<p class="source-note">${esc(t(row.can_send?'campaignSendHint':'campaignReadOnly'))}</p>`:kind==='discount'?`<p class="source-note">${esc(t('discountNoNotificationHint'))}</p>`:'';
+    const selection=kind==='discount'&&editable?(row.can_send?campaignSelect('discountOperation','operation',[['state','changeStatus'],['send','sendMessage']],'send'):'')+`<div id="discountStateFields" ${row.can_send?'hidden':''}>`+campaignSelect('campaignActive','status',row.can_activate?[['false','hsk30Off'],['true','hsk30On']]:[['false','hsk30Off']],String(row.is_active))+'</div>':'';
+    const hint=kind==='ad'?`<p class="source-note">${esc(t(row.can_send?'campaignSendHint':'campaignReadOnly'))}</p>`:kind==='discount'?`<p class="source-note">${esc(t(row.can_send?'discountSendHint':'discountNoNotificationHint'))}</p>`:'';
     drawer(campaignLabels[kind],`<form id="managementForm">${campaignFields(row)}${hint}${selection}${kind==='ad'&&editable?campaignScheduleFields():''}<p class="alert" id="campaignCommandValidation" role="alert" hidden></p></form>`,btn('close','close')+(editable?btn('saveChanges','managementPrepare','primary'):''));
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer(campaignLabels[kind],statePanel(errorKey(error)),btn('close','close'));}
 }
@@ -1196,6 +1199,7 @@ function campaignCreate(kind,userId=null){
 }
 function campaignChange(draft){
   if(draft.kind==='ad_send')return {kind:draft.kind,campaign_id:draft.campaignId,send_at:campaignSendTime()};
+  if(draft.kind==='discount_state'&&$('discountOperation')?.value==='send')return {kind:'discount_send',campaign_id:draft.campaignId};
   if(draft.kind==='discount_state')return {kind:draft.kind,campaign_id:draft.campaignId,is_active:$('campaignActive').value==='true'};
   if(draft.kind==='release_create'){
     const filters={languages:[...document.querySelectorAll('[data-release-language]:checked')].map(input=>input.dataset.releaseLanguage)};
@@ -2457,6 +2461,7 @@ document.addEventListener('input',event=>{
   if(event.target.closest?.('#drawerContent'))updateEditorSaveEnabled();
 });
 document.addEventListener('change',event=>{
+  if(event.target.id==='discountOperation'){if($('discountStateFields'))$('discountStateFields').hidden=event.target.value==='send';updateManagementAction();return;}
   if(event.target.id==='campaignMediaFile'){void stageCampaignMedia(event.target.files?.[0]);return;}
   if(['campaignButtonAction','campaignButtonCustom'].includes(event.target.id))updateCampaignButtonFields();
   if(event.target.id==='discountTarget'&&$('discountSegment'))$('discountSegment').hidden=Boolean(event.target.value);

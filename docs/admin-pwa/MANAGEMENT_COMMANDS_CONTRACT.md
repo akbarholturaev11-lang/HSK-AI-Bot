@@ -467,3 +467,41 @@ current live session/admin authority. Two tracked tasks use the existing two
 shared drainer slots; transactional claims fence other workers. It never scans
 statistics variants or holds the minute worker while provider IO runs. Flag-off
 performs zero scheduler SQL. Nonempty scheduled state prevents 0132 downgrade.
+
+## Separate signed discount notice
+
+`discount_send` is an explicit one-round notice for an active, current offer
+with legacy notifications disabled and no earlier notice reservation. It binds
+the offer revision, rendered UZ/RU/TJ Telegram/phone copy, shared subscription
+entry markup and at most 1000 exact canonical recipients. Authored plain title
+and reason are escaped once for shared HTML formatting. Configuring an offer
+still sends nothing; the detail editor's single contextual action chooses Send
+or a real state change. No duplicate Save/Confirm window is added.
+
+Audience selection is one bounded SQL query with canonical payment ownership,
+legacy-unowned Telegram fallback, original repeat/quota/reservation rules and
+shared global paid-user exclusion. Native-only and Bot-blocked accounts can
+qualify through current Android notice tokens. Expiry, eligibility, identity
+and ownership are rechecked before each durable recipient claim. One shared
+`notification_sent_at` reservation is written atomically with proof/audit/queue;
+a failed audit or stale offer rolls it back. Content-free evidence never stores
+notice text or provider tokens. Mutable receipt counters do not alter the offer
+authorization revision; the private queue retains actual attempt states.
+
+Delivery reuses `NotificationDeliveryService`: Android first, then its existing
+Telegram fallback, with `discount_offer` key and canonical user ownership.
+Play's client continues to acknowledge suppressed promotional offers as handled
+before checking OS permission; it is not bypassed through a separate Bot send.
+This retains the existing client/network acknowledgement limits and is not a
+new server-side Play-channel detector. At most eight recent native device tokens
+are loaded for a reviewed PWA notice. Legacy callers retain their current policy.
+The dedicated PWA notice session commits before provider IO, including immediate
+fallback. Unknown/cancelled FCM attempts have no automatic fallback deadline; a
+known accepted native attempt retains the original ten-minute acknowledgement
+fallback. Uncertain outer claims are never retried automatically. Stop may let
+one already claimed attempt finish; its late receipt updates counts.
+
+The shared course notice feed is recorded with its existing campaign dedupe key.
+No payment, discount use, entitlement or access grant is created by delivery.
+Existing private job retention, revocation, bounded drainer and signed pending-only
+resume remain in force. No external MCP write capability is added.

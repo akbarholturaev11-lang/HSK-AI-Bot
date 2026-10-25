@@ -709,6 +709,10 @@ app.include_router(create_admin_pwa_partner_payouts_router(settings_obj=settings
 app.include_router(create_admin_pwa_payment_reconciliation_router(settings_obj=settings, session_factory=async_session_maker))
 
 async def _emit_admin_pwa_outbound(message):
+    if message.notice_key == 'discount_offer':
+        from app.admin_api.pwa_discount_notices import emit_discount_notice
+        return await emit_discount_notice(message,session_factory=async_session_maker,settings_obj=settings,bot=bot)
+
     # Reuse the existing Bot sender. No DB connection is held during provider IO.
     failure=None
     provider_message_id=None

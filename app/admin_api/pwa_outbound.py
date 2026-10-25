@@ -275,12 +275,15 @@ async def enqueue_reviewed_message(db,*,command_id,actor_user_id,session_id,targ
 @dataclass(frozen=True)
 class OutboundMessage:
     user_id:int
-    telegram_id:int
+    telegram_id:int|None
     language:str
     text:str
     photo_file_id:str|None=None
     reply_markup:dict|None=None
     video_file_id:str|None=None
+    notice_key:str|None=None
+    phone_body:str|None=None
+    notice_campaign_id:int|None=None
 
 
 async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limit=10):
@@ -303,7 +306,11 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
                     AdminPwaSession.expires_at.label('session_expires'),AdminPwaSession.auth_method)
                     .join(User,User.id==Job.actor_user_id).join(AdminPwaSession,AdminPwaSession.id==Job.session_id)
                     .where(Job.id==job_id).with_for_update(of=Job))).one_or_none()
-                if state is None or state.job_status!='running' or state.run_token!=run_token:return False
+                if state is None or state.job_status!='running' or state.run_token!=run_token:
+                    if state is not None and state.job_status=='closed' and campaign and campaign['kind']=='discount':
+                        from app.admin_api.pwa_campaigns import finish_campaign_job
+                        await finish_campaign_job(db,campaign,closed=True)
+                    return False
                 now=datetime.now(timezone.utc)
                 if (not _enabled(settings_obj) or not _authorized_admin(SimpleNamespace(
                         status=state.actor_status,telegram_id=state.actor_telegram_id),settings_obj)
@@ -314,7 +321,8 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
                 selected=(await db.execute(select(Recipient,User).join(User,User.id==Recipient.user_id).where(
                     Recipient.job_id==job_id,Recipient.status=='pending').order_by(Recipient.user_id).limit(1)
                     .options(load_only(User.id,User.telegram_id,User.status,User.language,User.full_name,
-                        User.username,User.bot_blocked_at,User.bot_unblocked_at))
+                        User.username,User.bot_blocked_at,User.bot_unblocked_at,User.level,
+                        User.payment_status,User.payment_method,User.end_date))
                     .with_for_update(of=Recipient,skip_locked=True))).one_or_none()
                 if selected is None:break
                 recipient,user=selected
@@ -322,8 +330,15 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
                 if campaign:
                     from app.admin_api.pwa_campaigns import campaign_recipient_allowed
                     campaign_allowed=await campaign_recipient_allowed(db,campaign,user,settings_obj)
-                if (not _deliverable(user,settings_obj,test=state.kind=='test')
-                        or recipient_hash(user)!=recipient.snapshot_hash or not campaign_allowed):
+                discount_notice=bool(campaign and campaign['kind']=='discount')
+                if discount_notice:
+                    from app.admin_api.pwa_discount_notices import notice_recipient_hash
+                    same_recipient=notice_recipient_hash(user)==recipient.snapshot_hash
+                    deliverable=campaign_allowed  # Shared canonical Android/TG reachability, never fabricate TG.
+                else:
+                    same_recipient=recipient_hash(user)==recipient.snapshot_hash
+                    deliverable=_deliverable(user,settings_obj,test=state.kind=='test')
+                if not deliverable or not same_recipient or not campaign_allowed:
                     recipient.status='skipped';recipient.finished_at=now
                     if campaign:
                         from app.admin_api.pwa_campaigns import record_campaign_attempt
@@ -337,9 +352,12 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
                     if campaign['kind']=='release':
                         from app.bot.keyboards.release_feedback import release_feedback_rating_keyboard
                         markup=release_feedback_rating_keyboard(campaign['campaign_id'],recipient.language).model_dump(mode='json')
-                    elif campaign['kind']=='ad':
+                    elif campaign['kind'] in ('ad','discount'):
                         markup=campaign.get('buttons',{}).get(recipient.language)
-                message=OutboundMessage(user.id,user.telegram_id,recipient.language,copies[recipient.language],photo_file_id,markup,video_file_id)
+                message=OutboundMessage(user.id,user.telegram_id,recipient.language,copies[recipient.language],photo_file_id,markup,video_file_id,
+                    'discount_offer' if discount_notice else None,
+                    campaign['phone_texts'][recipient.language] if discount_notice else None,
+                    campaign['campaign_id'] if discount_notice else None)
         status='uncertain'
         provider_result=None
         try:
@@ -361,6 +379,9 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
             pending=await db.scalar(select(Recipient.user_id).where(Recipient.job_id==job_id,Recipient.status=='pending').limit(1))
             finished=await db.execute(update(Job).where(Job.id==job_id,Job.status=='running',Job.run_token==run_token)
                 .values(status='ready' if pending else 'complete',run_token=None))
+            if not finished.rowcount and campaign and campaign['kind']=='discount':
+                from app.admin_api.pwa_campaigns import finish_campaign_job
+                await finish_campaign_job(db,campaign,closed=True)
             if finished.rowcount and not pending and campaign:
                 from app.admin_api.pwa_campaigns import finish_campaign_job
                 await finish_campaign_job(db,campaign)

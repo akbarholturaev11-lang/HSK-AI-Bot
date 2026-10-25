@@ -22,9 +22,9 @@ Canonical execution checkpoint and evidence: [Admin PWA handoff](../../../docs/a
 
 ## 4. Discount notices
 
-- [ ] 4.1 Audit and retain shared native/Play delivery policy, then bind exact eligible offer audience and copy to a separate signed notice; verify policy and stale-offer regression tests.
-- [ ] 4.2 Queue provider work through the corresponding bounded claimed path without access/payment mutation; verify stop, revoke, uncertainty and one-notice behavior.
-- [ ] 4.3 Add contextual localized Send control, browser QA and contract/handoff evidence.
+- [x] 4.1 Audit and retain shared native/Play delivery policy, then bind exact eligible offer audience and copy to a separate signed notice; verify policy and stale-offer regression tests.
+- [x] 4.2 Queue provider work through the corresponding bounded claimed path without access/payment mutation; verify stop, revoke, uncertainty and one-notice behavior.
+- [x] 4.3 Add contextual localized Send control, browser QA and contract/handoff evidence.
 
 ## 5. Integration
 

@@ -356,7 +356,43 @@ async def browser_checks(output):
                         if len(sent)==6:break
                     assert len(sent)==6
                 finally:await poll.close()
-                assert len(upload_calls)==6 and len(sent)==6
+                for language in ('uz','ru','tj'):
+                    await marketing(language)
+                    await page.locator('[data-campaign-list=discount]').click()
+                    await page.locator('[data-campaign-detail="1"]').click()
+                    await expect(page.locator('#discountOperation')).to_have_value('send')
+                    await expect(page.locator('[data-action=managementPrepare]')).to_be_enabled()
+                    await page.locator('#discountOperation').select_option('state')
+                    await expect(page.locator('[data-action=managementPrepare]')).to_be_disabled()
+                    await page.locator('#discountOperation').select_option('send')
+                    # The first offer targets a native-only account without a registered channel.
+                    await page.locator('[data-action=managementPrepare]').click()
+                    await expect(page.locator('#campaignCommandValidation')).to_be_visible()
+                    await page.locator('.drawer-close').click()
+                await create('discount');await fill('discount')
+                await page.locator('#discountTarget').fill('2')
+                await page.locator('#campaignActive').select_option('true')
+                await begin();await finish_step_up(page)
+                await expect(page.locator('.saved-animation')).to_be_visible(timeout=15000)
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                await page.locator('[data-campaign-list=discount]').click()
+                await page.locator('[data-campaign-detail="2"]').click()
+                await begin();await page.evaluate('window.cancelStepUp()')
+                await expect(page.locator('.drawer')).not_to_have_attribute('aria-busy','true')
+                await expect(page.locator('#discountOperation')).to_have_value('send')
+                await page.set_viewport_size({'width':390,'height':844})
+                assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                await page.screenshot(path=str(output/'discount-send-uz-390.png'))
+                await begin();await finish_step_up(page)
+                await expect(page.locator('.saved-animation')).to_be_visible(timeout=15000)
+                assert len(sent)==7 and sent[-1].notice_key=='discount_offer'
+                assert sent[-1].notice_campaign_id==2 and sent[-1].phone_body
+                assert '&lt;test&gt;' in sent[-1].text
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                await page.locator('[data-campaign-list=discount]').click()
+                await page.locator('[data-campaign-detail="2"]').click()
+                await expect(page.locator('#discountOperation')).to_have_count(0)
+                assert len(upload_calls)==6 and len(sent)==7
                 assert not errors, errors
                 assert not await page.evaluate('cspFailures')
             finally:

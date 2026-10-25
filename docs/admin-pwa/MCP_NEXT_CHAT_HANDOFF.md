@@ -75,6 +75,34 @@ Updated 2026-10-26. Read this first; older checkpoints are historical. Verify re
 - Next code increment: policy-preserving discount notices, then integration
   verification and authorized main promotion. No manual deployment/flag change.
 
+## Signed discount notices — 2026-10-26
+
+- A separate `discount_send` signs active-offer revision, exact canonical
+  audience, escaped three-language Telegram/phone copy and shared subscription
+  entry markup. `notification_sent_at` reserves one round atomically with
+  proof/audit/queue; legacy notifications stay off and checkout is unchanged.
+- The audience is one bounded query (1001 sentinel), using canonical/legacy
+  payment ownership, shared quota/repeat rules and global paid-user exclusion.
+  Native-only/Bot-blocked accounts retain the existing Android-first notice
+  route. Provider fanout is capped at eight recent native devices.
+- The production adapter uses shared `discount_offer` delivery and existing
+  Play silent acknowledgement, never a direct promotional Bot bypass. The
+  dedicated session releases SQL before provider IO. Unknown native attempts
+  have no automatic fallback deadline; known accepted ones keep the existing
+  ten-minute acknowledgement policy. Stop/late receipt and uncertain no-retry
+  behavior remain consistent. Notice sending changes no access/payment state.
+- Focused new notice/shared Android suite **32 passed**, including actual
+  PostgreSQL ownership/claim tests, one-query audience, bounded native fanout,
+  SQL release, Play acknowledgement, no unknown fallback, Stop/late counters,
+  stale-offer/audit rollback and live usage/expiry. Earlier combined
+  notice/shared/campaign/outbound/import run: **70 passed, 31 subtests**.
+  Actual ASGI/WebAuthn campaign browser passed UZ/RU/TJ no-channel errors,
+  operation selector dirty-state, native cancellation, exact signed notice and
+  one-round denial after send, plus media and scheduling regression. Evidence:
+  `/tmp/hsk-admin-pwa-discount-final-20261026`; mobile screenshot reviewed.
+- Full integration suite and authorized main promotion are next. Do not call
+  planning checkboxes, feature push or provider acceptance product completion.
+
 ## Owner-approved main promotion — 2026-10-25
 
 - The owner explicitly authorized pushing the ready Admin PWA code to `main`.
