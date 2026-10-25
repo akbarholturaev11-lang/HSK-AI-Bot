@@ -119,6 +119,12 @@ async def browser_checks(output):
             data.update(sending_enabled=False, subscriptions=[dict(id=UUID, platform="iphone", created_at=STAMP)])
         elif path.endswith("/payments/list"):
             data.update(items=[], next_before_id=None)
+        elif path.endswith("/hsk30/analytics"):
+            data.update(analytics=dict(period_days=payload["days"],track_activated_users=2,
+                 selected_level_users=3,payments={"approved":1},
+                 course_funnel=[{"key":"promo_shown","label":"Таклиф кўрсатилди","users":4},
+                                {"key":"track_activated","label":"HSK 3.0 курси очилди","users":2}],
+                 coverage_note="Synthetic HSK 3.0 funnel"))
         elif path.endswith("/hsk30/read"):
             data.update(hsk30=dict(enabled=True,unlock_payment_enabled=True,unlock_price_tjs=99,
                                    live_levels=["nhsk1","nhsk2"],available_levels=["nhsk1","nhsk2","nhsk3"]))
