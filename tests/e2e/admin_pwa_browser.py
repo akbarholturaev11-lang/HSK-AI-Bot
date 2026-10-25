@@ -121,7 +121,10 @@ async def browser_checks(output):
     fixture.sessions=async_sessionmaker(fixture.engine,expire_on_commit=False)
     await fixture.seed_payment()
     async with fixture.sessions() as db:
-        (await db.get(User,1)).full_name='<img src=x onerror=alert(1)> QA account'
+        user=await db.get(User,1)
+        user.full_name='<img src=x onerror=alert(1)> QA account'
+        user.created_at=datetime(2026,5,12,tzinfo=timezone.utc)
+        user.payment_method='alipay'
         db.add(CourseProgress(user_id=1,level='HSK1',completed_lessons_count=7))
         db.add(AIUsageEvent(user_id=1,source='qa',model='fixture',cost_usd=.025,total_tokens=123))
         db.add(BotFeedback(user_id=1,telegram_id=1001,status='completed',disliked_code='price',
@@ -245,6 +248,13 @@ async def browser_checks(output):
         await expect(page.locator('.metric')).to_have_count(4)
         await page.locator('[data-route=users]').first.click()
         await expect(page.locator('.data-table tbody tr')).to_have_count(3)
+        await expect(page.locator('.user-table thead th')).to_have_count(7)
+        await expect(page.locator('.user-table thead')).to_contain_text('Фойдаланувчи / тариф')
+        await expect(page.locator('.user-table thead')).to_contain_text('HSK AI’да')
+        await expect(page.locator('.user-table tr[data-user-row="1"] td')).to_have_count(7)
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-date')).to_have_text('12.05.2026')
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-duration')).not_to_have_text('—')
+        await expect(page.locator('.user-table tr[data-user-row="1"] .user-payment-method')).to_have_text('Alipay')
         await expect(page.locator('.data-table img')).to_have_count(0)
         await expect(page.locator('.user-search-icon svg')).to_have_count(1)
         await page.locator('[data-user-filter-toggle]').click()
@@ -307,6 +317,8 @@ async def browser_checks(output):
         await expect(page.locator('.topbar [data-action=more]')).to_have_count(0)
         await expect(page.locator('.user-table-wrap')).to_be_hidden()
         await expect(page.locator('.user-cards .user-card')).not_to_have_count(0)
+        await expect(page.locator('.user-cards [data-user-detail="1"]')).to_contain_text('Alipay')
+        await expect(page.locator('.user-cards [data-user-detail="1"]')).to_contain_text('HSK AI’да')
         await page.locator('.mobile-tabs [data-action=more]').click()
         await expect(page.locator('.more-drawer')).to_be_visible()
         await expect(page.locator('.more-drawer [data-route=course]')).to_be_visible()

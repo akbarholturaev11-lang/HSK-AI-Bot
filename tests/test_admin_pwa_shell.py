@@ -34,6 +34,19 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('v6Demo',shell.text)
         self.assertNotIn('user_id',shell.text)
 
+
+    async def test_user_directory_seven_column_visual_contract(self):
+        script = (await self.get('/admin/assets/app.js')).text
+        stylesheet = (await self.get('/admin/assets/styles.css')).text
+        catalog = (await self.get('/admin/assets/catalog.js')).text
+        self.assertIn("['directoryUserTariff','directoryAge','language','level','directoryPlanMethod','lastActive','status']", script)
+        self.assertIn('function accountAge(value,clock=Date.now())', script)
+        self.assertIn('userPaymentMethod(row.selected_payment_method)', script)
+        self.assertIn("esc(row.name||'—')", script)
+        self.assertIn('.user-status-pill{', stylesheet)
+        self.assertIn('.user-table{min-width:1020px;table-layout:fixed}', stylesheet)
+        self.assertIn('"directoryUserTariff":"Фойдаланувчи / тариф"', catalog)
+
     async def test_apple_push_subscription_keeps_user_activation_on_direct_tap(self):
         # The public script can offer push settings only after the server
         # advertises the private feature. No permission prompt at boot/login.
