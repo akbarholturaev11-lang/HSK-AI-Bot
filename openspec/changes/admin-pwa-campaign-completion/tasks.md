@@ -16,9 +16,9 @@ Canonical execution checkpoint and evidence: [Admin PWA handoff](../../../docs/a
 
 ## 3. Session-bound scheduling
 
-- [ ] 3.1 Add indexed due time and bounded window validation without extending existing job/session authority; verify migration, early-send fence, UTC bounds, expiry and revoke tests.
-- [ ] 3.2 Connect at most two indexed due jobs to the existing minute worker and shared drainer; verify disabled-boundary zero work, concurrency and no uncertain replay.
-- [ ] 3.3 Add localized permitted-window controls and job status; run actual browser schedule/cancel/resume checks and update the contract/handoff.
+- [x] 3.1 Add indexed due time and bounded window validation without extending existing job/session authority; verify migration, early-send fence, UTC bounds, expiry and revoke tests.
+- [x] 3.2 Connect at most two indexed due jobs to the existing minute worker and shared drainer; verify disabled-boundary zero work, concurrency and no uncertain replay.
+- [x] 3.3 Add localized permitted-window controls and job status; run actual browser schedule/cancel/resume checks and update the contract/handoff.
 
 ## 4. Discount notices
 

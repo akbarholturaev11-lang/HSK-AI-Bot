@@ -197,7 +197,9 @@ async def _job_view(db,job):
         'audience_count':job.audience_count,'counts':counts,'expires_at':_utc(job.expires_at).isoformat(),
         'can_control':job.status=='ready' or stale or bool(job.status=='complete' and counts.get('uncertain')),
         'stale':stale,'can_stop':job.status in ('ready','running'),
-        'texts':body['texts'],'filters':body['filters']}
+        'texts':body['texts'],'filters':body['filters'],
+        'not_before':_utc(job.not_before).isoformat() if job.not_before else None,
+        'can_run':job.not_before is None or _utc(job.not_before)<=datetime.now(timezone.utc)}
 
 
 async def read_messages(db,*,session_cookie,request,settings_obj):
@@ -249,7 +251,7 @@ async def execute_message(db,*,session_cookie,request,settings_obj):
 
 
 async def enqueue_reviewed_message(db,*,command_id,actor_user_id,session_id,target_user_id,kind,
-                                   texts,filters,snapshots,digest,photo_file_id=None,video_file_id=None,campaign=None,now=None):
+                                   texts,filters,snapshots,digest,photo_file_id=None,video_file_id=None,campaign=None,now=None,not_before=None):
     """Internal only: caller atomically owns exact proof and command audit.
 
     A provider reference is accepted only from another server-validated
@@ -264,7 +266,7 @@ async def enqueue_reviewed_message(db,*,command_id,actor_user_id,session_id,targ
     if campaign:body['campaign']=campaign
     job=Job(id=command_id,actor_user_id=actor_user_id,session_id=session_id,target_user_id=target_user_id,
         kind=kind,status='ready',body_json=json.dumps(body,ensure_ascii=False),audience_hash=digest,
-        audience_count=len(snapshots),created_at=now,expires_at=now+timedelta(hours=1))
+        audience_count=len(snapshots),created_at=now,expires_at=now+timedelta(hours=1),not_before=not_before)
     db.add(job);await db.flush()
     await db.execute(insert(Recipient),[snapshot|{'job_id':command_id,'status':'pending'} for snapshot in snapshots])
     return job
@@ -288,6 +290,7 @@ async def dispatch_message_batch(*,job_id,session_factory,settings_obj,emit,limi
         async with db.begin():
             job=await db.scalar(select(Job).where(Job.id==job_id).with_for_update())
             if job is None or job.status!='ready' or _utc(job.expires_at)<=datetime.now(timezone.utc):return False
+            if job.not_before is not None and _utc(job.not_before)>datetime.now(timezone.utc):return False
             run_token=str(uuid4());job.status='running';job.run_token=run_token;job.started_at=datetime.now(timezone.utc)
             body=json.loads(job.body_json);copies=body['texts'];photo_file_id=body.get('photo_file_id')
             campaign=body.get('campaign');video_file_id=body.get('video_file_id')
@@ -372,6 +375,8 @@ async def authorize_message_run(db,*,session_cookie,request,settings_obj):
         if session_hash!=hashlib.sha256(session_cookie.encode()).hexdigest():
             raise CommandError('admin_pwa_message_new_session',409)
         if job.status!='ready':raise CommandError('confirmation_changed',409)
+        if job.not_before is not None and _utc(job.not_before)>datetime.now(timezone.utc):
+            raise CommandError('admin_pwa_campaign_schedule_invalid',409)
     return {'job_id':job.id,'accepted':True}
 
 
@@ -414,6 +419,7 @@ async def _control_state(db,job):
     state=await _job_view(db,job)
     revision=_hash({'status':job.status,'run_token':job.run_token,'session_id':job.session_id,
         'body_hash':hashlib.sha256(job.body_json.encode()).hexdigest(),'counts':state['counts'],
+        'not_before':state['not_before'],'expires_at':state['expires_at'],
         'pending':[(r.user_id,r.snapshot_hash) for r in pending]})
     return state,revision
 

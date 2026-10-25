@@ -54,7 +54,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
 
         config = mod._reviewed_alembic_config()
         self.assertEqual(ScriptDirectory.from_config(config).get_heads(),
-                         ["0131_admin_pwa_campaign_assets"])
+                         ["0132_admin_pwa_campaign_schedule"])
         self.assertEqual(mod.EXPECTED_BASELINE, "0102_payment_review_preview")
 
     def test_new_or_multiple_heads_stop_before_any_schema_creation_or_stamp(self):

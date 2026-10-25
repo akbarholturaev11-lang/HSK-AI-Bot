@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse
 from pydantic import Field, ValidationError, field_validator, model_validator
 from sqlalchemy import func, insert, select, text, update
 
+from app.admin_api.pwa_campaign_schedule import utc_send_time, validate_schedule
 from app.admin_api.pwa_access_grants import CommandError, StepId
 from app.admin_api.pwa_approval import _utc
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
@@ -63,12 +64,21 @@ class CampaignRead(StrictModel):
         return self
 
 
-class AdSend(StrictModel):
+class ScheduledSend(StrictModel):
+    send_at: str | None = None
+
+    @field_validator('send_at')
+    @classmethod
+    def utc_time(cls, value):
+        return utc_send_time(value)
+
+
+class AdSend(ScheduledSend):
     kind: Literal['ad_send']
     campaign_id: PositiveId
 
 
-class ReleaseCreate(StrictModel):
+class ReleaseCreate(ScheduledSend):
     kind: Literal['release_create']
     title: Annotated[str, Field(min_length=1, max_length=120)]
     texts: CampaignTexts
@@ -334,6 +344,9 @@ async def _prepare_state(db, change, settings_obj, *, cookie, lock=False):
         if change.is_active and (row.notify_enabled or _utc(row.ends_at) <= datetime.now(timezone.utc)):
             raise CommandError('confirmation_changed', 409)
         return row, revision(row), _hash({'is_active': change.is_active}), snapshots, metadata, None
+    metadata['not_before'] = await validate_schedule(db, cookie=cookie, send_at=change.send_at)
+    if row is not None and change.kind == 'ad_send' and metadata['not_before'] and _utc(row.ends_at) <= metadata['not_before']:
+        raise CommandError('admin_pwa_campaign_schedule_invalid', 409)
     users = await _targets(db, metadata['filters'], settings_obj,
                            exclude_active=metadata['exclude_active'], lock=lock)
     if not users:
@@ -394,7 +407,7 @@ async def execute_campaign(db, *, session_cookie, request, settings_obj):
                 title=change.title, message_text=encode_localized_broadcast_text(
                     {lang: html.escape(value, quote=False) for lang, value in change.texts.model_dump().items()}),
                 content_type=metadata.get('media_type', 'text'), media_file_id=metadata.get('media_file_id'),
-                send_at=now, feature_key=change.feature_key,
+                send_at=metadata.get('not_before') or now, feature_key=change.feature_key,
                 target_languages=filters.languages, status_filter=filters.status, level_filter=filters.level,
                 mode_filter=filters.mode, payment_status_filter=filters.payment_status,
                 payment_method_filter=filters.payment_method, plan_filter=filters.plan,
@@ -442,6 +455,10 @@ async def execute_campaign(db, *, session_cookie, request, settings_obj):
             await db.flush()
         job = None
         if snapshots:
+            not_before = metadata.pop('not_before', None)
+            # Final time check follows recipient/campaign lock waits.
+            if not_before is not None:
+                await validate_schedule(db, cookie=session_cookie, send_at=change.send_at)
             metadata['revision_hash'] = revision(row)
             users = (await db.execute(select(User.id, User.telegram_id).where(
                 User.id.in_([snapshot['user_id'] for snapshot in snapshots])))).all()
@@ -449,7 +466,7 @@ async def execute_campaign(db, *, session_cookie, request, settings_obj):
             job = await enqueue_reviewed_message(db, command_id=audit_id, actor_user_id=actor.id,
                 session_id=session.id, target_user_id=None, kind='broadcast', texts=texts,
                 filters=metadata['filters'], snapshots=snapshots, digest=command.audience_hash,
-                campaign=metadata, now=now,
+                campaign=metadata, now=now, not_before=not_before,
                 photo_file_id=metadata.get('media_file_id') if metadata.get('media_type') == 'photo' else None,
                 video_file_id=metadata.get('media_file_id') if metadata.get('media_type') == 'video' else None)
             # Unique legacy evidence reserves every intended transport before provider IO.

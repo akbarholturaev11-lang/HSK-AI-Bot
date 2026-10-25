@@ -942,7 +942,9 @@
     "ui.admin_pwa.campaignMediaUploading": "Media yuklanmoqda…",
     "ui.admin_pwa.campaignMediaReady": "Media tayyor. 15 daqiqa amal qiladi.",
     "ui.admin_pwa.campaignMediaClear": "Mediani olib tashlash",
-    "ui.admin_pwa.campaignMediaInvalid": "Media yuklanmadi yoki muddati tugadi. Format va hajmni tekshirib, qayta tanlang yoki mediani olib tashlang."
+    "ui.admin_pwa.campaignMediaInvalid": "Media yuklanmadi yoki muddati tugadi. Format va hajmni tekshirib, qayta tanlang yoki mediani olib tashlang.",
+    "ui.admin_pwa.campaignSendAt": "Yuborish vaqti",
+    "ui.admin_pwa.campaignScheduleHint": "Bo‘sh qoldirsangiz hozir yuboriladi. Vaqtni 30 daqiqagacha va joriy sessiya muddati ichida tanlang. Ilovani qayta ochish sessiyani almashtiradi; qolgan xabarlar uchun qayta ruxsat kerak."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

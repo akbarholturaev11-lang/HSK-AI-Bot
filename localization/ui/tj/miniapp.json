@@ -942,7 +942,9 @@
     "ui.admin_pwa.campaignMediaUploading": "Медиа бор мешавад…",
     "ui.admin_pwa.campaignMediaReady": "Медиа омода аст. 15 дақиқа амал мекунад.",
     "ui.admin_pwa.campaignMediaClear": "Гирифтани медиа",
-    "ui.admin_pwa.campaignMediaInvalid": "Медиа бор нашуд ё муҳлаташ гузашт. Шакл ва ҳаҷмро санҷед, файлро аз нав интихоб кунед ё медиаро гиред."
+    "ui.admin_pwa.campaignMediaInvalid": "Медиа бор нашуд ё муҳлаташ гузашт. Шакл ва ҳаҷмро санҷед, файлро аз нав интихоб кунед ё медиаро гиред.",
+    "ui.admin_pwa.campaignSendAt": "Вақти фиристодан",
+    "ui.admin_pwa.campaignScheduleHint": "Барои ҳозир фиристодан холӣ гузоред. Вақтро то 30 дақиқа ва дар муҳлати сессияи ҷорӣ интихоб кунед. Бозкушоӣ сессияро иваз мекунад; барои паёмҳои боқимонда иҷозати нав лозим аст."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

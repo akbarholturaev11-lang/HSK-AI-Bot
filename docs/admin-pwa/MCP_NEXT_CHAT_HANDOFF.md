@@ -48,8 +48,32 @@ Updated 2026-10-26. Read this first; older checkpoints are historical. Verify re
 - Newly fetched main `1db08846` original-editor/swipe UX is integrated; media
   readiness shares the dirty-state controller, without duplicate footer actions.
   Shell tests (8) and actual campaign browser passed on the merged code.
-- Next: bounded session-preserving scheduling and policy-preserving discount
-  notices. No external MCP scope or manual deployment change.
+- Next: policy-preserving discount notices after scheduling below. No external MCP scope or manual deployment change.
+
+## Session-bound campaign scheduling — 2026-10-26
+
+- 0132 adds nullable indexed `not_before`. Ad/release send accepts explicit
+  UTC time up to 30 minutes ahead, strictly before session expiry and the ad
+  window end. Prepare and save recheck it; no session/private-body TTL extension.
+  Early manual/API/background sends refuse before claim/provider IO.
+- The existing minute worker selects at most two due ready jobs under a 3s
+  statement deadline, excluding revoked/expired/non-admin sessions. Two tracked
+  tasks reuse the existing shared drainer slots; disabled PWA causes zero SQL.
+  Cross-worker job claims prevent duplicate attempts. Shutdown cancels tasks;
+  an uncertain claim still requires explicit pending-only handling.
+- Native cancel retains the selected local time. The same original editor
+  sends once through passkey; successful queue save uses main's existing short
+  checkmark/dismiss UX. Job detail shows due time and no early Run/Resume CTA.
+  Fresh signed pending-only resume preserves original due time and expiry.
+- Verification: scheduling tests **8 passed** including real PostgreSQL
+  migration parity/refused nonempty downgrade/concurrent drainers. Related
+  campaign/media/outbound/QA/import suite **56 passed, 46 subtests**. Actual
+  ASGI/WebAuthn campaign browser passed staged media, UTC schedule, native
+  cancellation, no early send and due poll delivery. Evidence:
+  `/tmp/hsk-admin-pwa-schedule-final-20261026`; RU mobile screenshot reviewed.
+  Main211 full settings browser also passed. Catalog/syntax/diff checks passed.
+- Next code increment: policy-preserving discount notices, then integration
+  verification and authorized main promotion. No manual deployment/flag change.
 
 ## Owner-approved main promotion — 2026-10-25
 

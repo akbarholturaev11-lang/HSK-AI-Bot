@@ -54,6 +54,7 @@ from app.admin_api.pwa_settings import create_admin_pwa_settings_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_user_management import create_admin_pwa_user_management_router
 from app.admin_api.pwa_channels import create_admin_pwa_channels_router
+from app.admin_api.pwa_campaign_schedule import create_due_campaign_poller
 from app.admin_api.pwa_outbound import create_admin_pwa_outbound_router, create_message_drainer
 from app.admin_api.pwa_campaigns import create_admin_pwa_campaigns_router
 from app.admin_api.pwa_campaign_assets import create_admin_pwa_campaign_assets_router
@@ -504,6 +505,7 @@ async def _background_scheduler(bot: Bot) -> None:
     while True:
         await asyncio.sleep(60)
         try:
+            await admin_pwa_due_campaigns()
             async with async_session_maker() as session:
                 _, expired_paid_user_ids = await AccessService(session).downgrade_expired_active_users()
                 for telegram_id in expired_paid_user_ids:
@@ -654,6 +656,7 @@ async def lifespan(app: FastAPI):
         for task in study_ai_tasks:
             with contextlib.suppress(asyncio.CancelledError):
                 await task
+        await admin_pwa_due_campaigns.close()
         await admin_pwa_statistics_reader.aclose()
         await admin_pwa_feedback_reader.aclose()
         await bot.session.close()
@@ -738,6 +741,8 @@ app.include_router(create_admin_pwa_partners_router(settings_obj=settings, sessi
     drainer=admin_pwa_message_drainer))
 app.include_router(create_admin_pwa_outbound_router(settings_obj=settings,session_factory=async_session_maker,
     emit=_emit_admin_pwa_outbound,drainer=admin_pwa_message_drainer))
+admin_pwa_due_campaigns=create_due_campaign_poller(settings_obj=settings,session_factory=async_session_maker,
+    drainer=admin_pwa_message_drainer)
 app.include_router(create_admin_pwa_campaigns_router(settings_obj=settings,session_factory=async_session_maker,
     drainer=admin_pwa_message_drainer))
 

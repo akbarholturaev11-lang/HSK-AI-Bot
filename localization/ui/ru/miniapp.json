@@ -942,7 +942,9 @@
     "ui.admin_pwa.campaignMediaUploading": "Медиа загружается…",
     "ui.admin_pwa.campaignMediaReady": "Медиа готово. Действует 15 минут.",
     "ui.admin_pwa.campaignMediaClear": "Убрать медиа",
-    "ui.admin_pwa.campaignMediaInvalid": "Медиа не загружено или истекло. Проверьте формат и размер, выберите файл снова или уберите медиа."
+    "ui.admin_pwa.campaignMediaInvalid": "Медиа не загружено или истекло. Проверьте формат и размер, выберите файл снова или уберите медиа.",
+    "ui.admin_pwa.campaignSendAt": "Время отправки",
+    "ui.admin_pwa.campaignScheduleHint": "Оставьте пустым для отправки сейчас. Выберите время в пределах 30 минут и текущей сессии. Повторное открытие заменяет сессию; оставшимся сообщениям потребуется новое разрешение."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

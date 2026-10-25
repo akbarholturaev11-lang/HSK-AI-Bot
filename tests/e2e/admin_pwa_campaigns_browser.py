@@ -17,6 +17,8 @@ from sqlalchemy.pool import StaticPool
 
 from app.admin_api.pwa_bootstrap import create_admin_pwa_bootstrap_router
 from app.admin_api.pwa_campaign_assets import create_admin_pwa_campaign_assets_router
+from app.admin_api.pwa_campaign_schedule import create_due_campaign_poller
+from app.db.models.admin_pwa_outbound import AdminPwaOutboundJob
 from app.admin_api.pwa_campaigns import create_admin_pwa_campaigns_router
 from app.admin_api.pwa_marketing import create_admin_pwa_marketing_router
 from app.admin_api.pwa_outbound import create_admin_pwa_outbound_router, create_message_drainer
@@ -317,7 +319,44 @@ async def browser_checks(output):
                     assert (sent[-1].photo_file_id if media=='photo' else sent[-1].video_file_id).startswith('PRIVATE_browser_media_')
                     assert sent[-1].reply_markup['inline_keyboard'][0][0]['url']=='https://example.invalid/course'
                     await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
-                assert len(upload_calls)==6 and len(sent)==5
+                await create('release','ru');await fill('release')
+                schedule_input=page.locator('#campaignSendAt')
+                await schedule_input.locator('xpath=ancestor::details/summary').click()
+                planned=await page.evaluate("new Date(Date.now()+180000-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16)")
+                await schedule_input.fill(planned)
+                await begin();await page.evaluate('window.cancelStepUp()')
+                await expect(page.locator('.drawer')).not_to_have_attribute('aria-busy','true')
+                await expect(schedule_input).to_have_value(planned)
+                await page.set_viewport_size({'width':390,'height':844})
+                await schedule_input.scroll_into_view_if_needed()
+                await page.screenshot(path=str(output/'release-schedule-ru-390.png'))
+                await begin();await finish_step_up(page)
+                await expect(page.locator('.saved-animation')).to_be_visible(timeout=15000)
+                assert len(sent)==5
+                async with fixture.sessions() as db:
+                    job=await db.scalar(select(AdminPwaOutboundJob).where(AdminPwaOutboundJob.not_before.is_not(None)))
+                    job_id=job.id
+                    assert job.status=='ready' and job.not_before
+                await expect(page.locator('#overlay')).to_have_count(0,timeout=6500)
+                await page.locator('[data-action=messageList]').click()
+                await page.locator(f'[data-message-job="{job_id}"]').click()
+                await expect(page.locator(f'#drawerFoot [data-message-job="{job_id}"]')).to_be_visible()
+                await page.wait_for_load_state('networkidle')
+                await expect(page.locator('[data-message-run]')).to_have_count(0)
+                await expect(page.locator('[data-message-control=resume]')).to_have_count(0)
+                await drainer(job_id);assert len(sent)==5
+                async with fixture.sessions() as db:
+                    (await db.get(AdminPwaOutboundJob,job_id)).not_before=datetime.now(timezone.utc)-timedelta(seconds=1)
+                    await db.commit()
+                poll=create_due_campaign_poller(**common,drainer=drainer)
+                try:
+                    assert await poll()==1
+                    for _ in range(100):
+                        await asyncio.sleep(.05)
+                        if len(sent)==6:break
+                    assert len(sent)==6
+                finally:await poll.close()
+                assert len(upload_calls)==6 and len(sent)==6
                 assert not errors, errors
                 assert not await page.evaluate('cspFailures')
             finally:

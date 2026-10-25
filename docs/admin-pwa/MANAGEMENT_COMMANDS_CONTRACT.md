@@ -220,7 +220,7 @@ outlives private job retention. No new schema, cron, media BLOB, translation
 request, aggregate refresh or external MCP capability is introduced.
 
 These commands intentionally accept the formats above. Arbitrary provider
-references and future unattended campaign scheduling are not accepted by these standalone commands. Media is limited to the owned staging contract below.
+references and long-lived unattended campaign scheduling is not accepted by these standalone commands. Media is limited to the owned staging contract below.
 Existing course-ad photo/video, desktop-promo images, subscription QR and owned
 payout proof each retain their separate signed asset contract. A legacy route
 is not an implicit standalone permission.
@@ -450,3 +450,20 @@ dry run; `--purge-expired --limit 100` removes eligible expired metadata only.
 Rows younger than one hour remain for rolling quota enforcement. No provider
 file deletion or campaign media revocation is performed. Nonempty downgrade
 refuses deletion. This adds no scheduled retention deployment or external MCP tool.
+
+## Session-bound campaign schedule (0132)
+
+Ad/release send may contain `send_at`, an explicit UTC ISO string ending in Z.
+It must be in the future, no more than 30 minutes ahead, before session expiry
+and before the ad's own window ends. Save rechecks after lock waits. Absent
+time retains immediate delivery. Indexed `not_before` fences manual API and
+background drainers before claim. Existing one-hour private job retention and
+live session authority remain unchanged; Stop and fresh signed pending-only
+resume retain the original due time/expiry.
+
+The existing minute worker does at most one bounded due query (three-second
+statement deadline) when PWA is enabled, taking at most two ready jobs with
+current live session/admin authority. Two tracked tasks use the existing two
+shared drainer slots; transactional claims fence other workers. It never scans
+statistics variants or holds the minute worker while provider IO runs. Flag-off
+performs zero scheduler SQL. Nonempty scheduled state prevents 0132 downgrade.

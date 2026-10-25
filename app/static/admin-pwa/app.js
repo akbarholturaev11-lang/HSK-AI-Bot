@@ -796,9 +796,9 @@ async function messageJob(id){
     const job=data.job;
     const refresh=`<button class="btn" data-message-job="${esc(id)}">${esc(t('readCurrent'))}</button>`;
     const pending=job.counts.pending>0;
-    const run=pending&&job.status==='ready'&&job.session_current?`<button class="btn primary" data-message-run="${esc(id)}">${esc(t('messageNextBatch'))}</button>`:pending&&job.can_control?`<button class="btn primary" data-message-control="resume" data-job-id="${esc(id)}">${esc(t('messageResume'))}</button>`:'';
+    const run=pending&&job.status==='ready'&&job.session_current&&job.can_run!==false?`<button class="btn primary" data-message-run="${esc(id)}">${esc(t('messageNextBatch'))}</button>`:pending&&job.can_control&&(!job.session_current||job.stale)?`<button class="btn primary" data-message-control="resume" data-job-id="${esc(id)}">${esc(t('messageResume'))}</button>`:'';
     const stop=job.can_stop?actionMenu('messageControlMenu',`<button role="menuitem" data-message-stop="${esc(id)}">${esc(t('messageStop'))}</button>`):'';
-    drawer('messages',`<p class="source-note">${esc(t('messageAttemptHint'))}</p>${managementFields(job,'message')}${stop}`,refresh+run);
+    drawer('messages',`<p class="source-note">${esc(t('messageAttemptHint'))}</p>${managementFields(job,'message')}${job.not_before?profileFields([['campaignSendAt',date(job.not_before)]]):''}${stop}`,refresh+run);
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('messages',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','messageList'));}
 }
 async function runMessage(id){
@@ -1157,8 +1157,15 @@ async function campaignDetail(kind,id){
     managementDraft=editable?{type:'campaign',kind:kind==='ad'?'ad_send':'discount_state',campaignKind:kind,campaignId:id,current:row}:null;
     const selection=kind==='discount'&&editable?campaignSelect('campaignActive','status',row.can_activate?[['false','hsk30Off'],['true','hsk30On']]:[['false','hsk30Off']],String(row.is_active)):'';
     const hint=kind==='ad'?`<p class="source-note">${esc(t(row.can_send?'campaignSendHint':'campaignReadOnly'))}</p>`:kind==='discount'?`<p class="source-note">${esc(t('discountNoNotificationHint'))}</p>`:'';
-    drawer(campaignLabels[kind],`<form id="managementForm">${campaignFields(row)}${hint}${selection}<p class="alert" id="campaignCommandValidation" role="alert" hidden></p></form>`,btn('close','close')+(editable?btn('saveChanges','managementPrepare','primary'):''));
+    drawer(campaignLabels[kind],`<form id="managementForm">${campaignFields(row)}${hint}${selection}${kind==='ad'&&editable?campaignScheduleFields():''}<p class="alert" id="campaignCommandValidation" role="alert" hidden></p></form>`,btn('close','close')+(editable?btn('saveChanges','managementPrepare','primary'):''));
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer(campaignLabels[kind],statePanel(errorKey(error)),btn('close','close'));}
+}
+function campaignScheduleFields(){
+  return `<details class="profile-section"><summary>${esc(t('campaignSendAt'))}</summary><div class="form-field"><label for="campaignSendAt">${esc(t('campaignSendAt'))}</label><input class="input" id="campaignSendAt" type="datetime-local" step="60"><p class="form-hint">${esc(t('campaignScheduleHint'))}</p></div></details>`;
+}
+function campaignSendTime(){
+  const value=$('campaignSendAt')?.value;
+  return value?new Date(value).toISOString():null;
 }
 function campaignCreate(kind,userId=null){
   if(!['release','discount'].includes(kind))return;
@@ -1168,7 +1175,7 @@ function campaignCreate(kind,userId=null){
   if(kind==='release'){
     body=`<p class="source-note">${esc(t('releaseCampaignHint'))}</p>`+input('releaseTitle','campaignTitle',120,'required');
     body+=['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><div class="form-field"><label for="releaseText-${lang}">${esc(t('campaignCopy'))}</label><textarea class="input setting-value" id="releaseText-${lang}" maxlength="3500" rows="5" required></textarea></div></details>`).join('');
-    body+=campaignMediaFields();
+    body+=campaignMediaFields()+campaignScheduleFields();
     body+=campaignSelect('releaseFeature','releaseFeature',Object.entries(campaignFeatureLabels));
     body+=`<details class="profile-section"><summary>${esc(t('filters'))}</summary><fieldset class="form-field"><legend>${esc(t('targetLanguages'))}</legend>${['uz','ru','tj'].map(lang=>`<label class="management-check"><input type="checkbox" data-release-language="${lang}" checked>${lang.toUpperCase()}</label>`).join('')}</fieldset><div class="management-form-pair">${Object.entries(messageFilterConfig).map(([key,[label,options]])=>campaignSelect('releaseFilter-'+key,label,[['','all'],...options])).join('')}</div></details>`;
   }else{
@@ -1188,12 +1195,12 @@ function campaignCreate(kind,userId=null){
   }
 }
 function campaignChange(draft){
-  if(draft.kind==='ad_send')return {kind:draft.kind,campaign_id:draft.campaignId};
+  if(draft.kind==='ad_send')return {kind:draft.kind,campaign_id:draft.campaignId,send_at:campaignSendTime()};
   if(draft.kind==='discount_state')return {kind:draft.kind,campaign_id:draft.campaignId,is_active:$('campaignActive').value==='true'};
   if(draft.kind==='release_create'){
     const filters={languages:[...document.querySelectorAll('[data-release-language]:checked')].map(input=>input.dataset.releaseLanguage)};
     for(const key of Object.keys(messageFilterConfig))if($('releaseFilter-'+key).value)filters[key]=$('releaseFilter-'+key).value;
-    return {kind:draft.kind,title:$('releaseTitle').value,texts:Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,$('releaseText-'+lang).value])),feature_key:$('releaseFeature').value,filters,asset_id:draft.assetId||null,asset_hash:draft.assetHash||null};
+    return {kind:draft.kind,title:$('releaseTitle').value,texts:Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,$('releaseText-'+lang).value])),feature_key:$('releaseFeature').value,filters,send_at:campaignSendTime(),asset_id:draft.assetId||null,asset_hash:draft.assetHash||null};
   }
   const target=Number($('discountTarget').value)||null;
   return {kind:draft.kind,copies:Object.fromEntries(['uz','ru','tj'].map(lang=>[lang,{title:$('discountTitle-'+lang).value,reason:$('discountReason-'+lang).value}])),
@@ -1560,7 +1567,7 @@ async function prepareManagementCommand(current,at){
       if(['campaign_draft','release_create'].includes(draft.kind)&&error.message.startsWith('admin_pwa_campaign_asset')&&$('campaignMediaValidation')){
         draft.assetId=null;draft.assetHash=null;$('campaignMediaFile').value='';$('campaignMediaStatus').textContent='';$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;
       }else if(draft.type==='campaign'&&[400,409].includes(error.status)&&$('campaignCommandValidation')){
-        $('campaignCommandValidation').textContent=t(error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':error.message==='admin_pwa_message_no_targets'?'messageNoTargets':'campaignValidation');$('campaignCommandValidation').hidden=false;
+        $('campaignCommandValidation').textContent=t(error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':error.message==='admin_pwa_message_no_targets'?'messageNoTargets':error.message==='admin_pwa_campaign_schedule_invalid'?'campaignScheduleHint':'campaignValidation');$('campaignCommandValidation').hidden=false;
       }else if(draft.type==='message'&&[400,409].includes(error.status)&&$('messageValidation')){
         const key=error.message==='admin_pwa_message_no_targets'?'messageNoTargets':error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':'messageInvalid';
         $('messageValidation').textContent=t(key);$('messageValidation').hidden=false;
