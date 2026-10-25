@@ -489,10 +489,14 @@ async def browser_checks(output, *, media_only=False):
                     copies=decode_localized_broadcast_text(campaign.message_text)
                     assert copies['uz']=='Yangi kurs &lt;img src=x onerror=alert(1)&gt;'
                 await close_or_wait()
+                # Sales A/B now has one entry point: Kurs → Sotuv A/B.
+                await navigate('course', 1440)
+                await page.locator('[data-course-tab="experiment"]').click()
                 await page.locator('[data-marketing-kind="sales_experiment"]').click()
                 await page.locator('#salesMode').select_option('ab')
                 await page.locator('#salesPercent').select_option('50')
                 await prepare_and_save('uz','sales-experiment-confirm.png')
+                await navigate('marketing', 1440)
                 await page.set_viewport_size({'width':390,'height':844})
                 for language in ('ru','tj'):
                     await page.locator('[data-action="more"]').click()
