@@ -66,6 +66,13 @@ class InboxRequest(BaseModel):
         return value
 
 
+class InboxFeedbackDetailRequest(BaseModel):
+    """A passkey-gated detail lookup, separate from the identifier-free inbox list."""
+    model_config = ConfigDict(extra="forbid", strict=True)
+    source: Literal["bot", "release"]
+    source_id: RowId
+
+
 def _literal_contains(column, needle):
     # Explicit ESCAPE ensures %, _ and backslash in user input are literal.
     escaped = needle.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
@@ -440,6 +447,71 @@ async def unified_inbox(db, request: InboxRequest):
         "historical_android_reports_complete": False,
         "history_note": "Android reports previously sent only to Telegram cannot be reconstructed",
     }
+
+
+async def inbox_feedback_detail(db, request: InboxFeedbackDetailRequest):
+    """Return one completed feedback and its linked user's display context.
+
+    Never return Telegram IDs in the inbox list, analytics or external MCP.
+    The HTTP route for this detail is strictly WebAuthn-session-gated.
+    """
+    now = datetime.now(timezone.utc)
+    if request.source == "bot":
+        record = (await db.execute(
+            select(BotFeedback, User).outerjoin(User, User.id == BotFeedback.user_id)
+            .where(BotFeedback.id == request.source_id, source_eligible("bot", now))
+            .limit(1)
+        )).one_or_none()
+    else:
+        record = (await db.execute(
+            select(ReleaseFeedbackResponse, User).outerjoin(
+                User, and_(User.telegram_id > 0,
+                           User.telegram_id == ReleaseFeedbackResponse.user_telegram_id))
+            .where(ReleaseFeedbackResponse.id == request.source_id,
+                   source_eligible("release", now))
+            .limit(1)
+        )).one_or_none()
+    if record is None:
+        return None
+
+    feedback, user = record
+    telegram_id = (user.telegram_id if user and user.telegram_id and user.telegram_id > 0
+                   else feedback.telegram_id if request.source == "bot"
+                   else feedback.user_telegram_id)
+    age_days = max(0, (now - _utc(user.created_at)).days) if user and user.created_at else None
+    detail = {
+        "source": request.source,
+        "source_id": feedback.id,
+        "user_id": user.id if user else None,
+        "name": (user.full_name or user.username) if user else None,
+        "telegram_id": telegram_id if telegram_id and telegram_id > 0 else None,
+        "language": user.language if user else (feedback.language if request.source == "bot" else None),
+        "level": user.level if user else None,
+        "mode": user.learning_mode if user else None,
+        "bot_days": age_days,
+    }
+    if request.source == "bot":
+        paid = bool(feedback.liked_code and feedback.liked_code.startswith("paid_"))
+        detail.update({
+            "feedback_parts": {
+                "liked": (feedback.liked_text or feedback.liked_code or "")[:_MAX_MESSAGE],
+                "disliked": (feedback.disliked_text or feedback.disliked_code or "")[:_MAX_MESSAGE],
+                "paid": paid,
+            },
+            "reward_granted": bool(feedback.reward_granted_at) if not paid else None,
+            "has_attachment": bool(feedback.disliked_attachment_file_id),
+            "rating": None,
+            "message": None,
+        })
+    else:
+        detail.update({
+            "feedback_parts": None,
+            "reward_granted": None,
+            "has_attachment": bool(feedback.attachment_file_id),
+            "rating": feedback.rating,
+            "message": (feedback.comment_text or "")[:_MAX_MESSAGE],
+        })
+    return detail
 
 
 class InboxUnreadRequest(BaseModel):
