@@ -822,7 +822,7 @@ function financeView(){
     const qr=['alipay','wechat'].flatMap(method=>['10_days','1_month','3_months'].map(plan=>
       '<div class="finance-tile"><button type="button" class="management-row" data-payment-qr-target="'+method+'-'+plan+'"><span class="management-row-icon">'+icon('credit')+'</span><strong>'+esc(method==='alipay'?'Alipay':'WeChat')+' · '+esc(t(plan))+'</strong>'+icon('chevron')+'</button></div>'
     )).join('');
-    const discountQr=['alipay','wechat'].flatMap(method=>['10_days','1_month'].map(plan=>
+    const discountQr=['alipay','wechat'].flatMap(method=>['10_days','1_month','3_months'].map(plan=>
       '<div class="finance-tile"><button type="button" class="management-row" data-payment-qr-target="'+method+'-'+plan+'" data-qr-scope="subscription_20"><span class="management-row-icon">'+icon('gift')+'</span><strong>'+esc(method==='alipay'?'Alipay':'WeChat')+' · '+esc(t(plan))+' · '+esc(t('discount'))+' 20%</strong>'+icon('chevron')+'</button></div>'
     )).join('');
     body='<section class="finance-group"><h2>'+esc(t('paymentDetails'))+'</h2><div class="finance-card-grid">'+
@@ -1820,7 +1820,7 @@ async function priceSettings(){
     if(!Array.isArray(data.prices)||data.prices.length!==9)throw Error('invalid_prices');
     managementDraft={type:'price',prices:data.prices};
     const select=(id,label,options)=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><select id="${id}" class="input">${options.map(([key,text])=>`<option value="${key}">${esc(text)}</option>`).join('')}</select></div>`;
-    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div><div class="form-field" id="priceQrField"><button type="button" class="btn" id="priceQrAction" data-action="priceQrSettings">${esc(t('paymentQrManage'))}</button></div><div class="form-field"><button type="button" class="btn" id="priceDiscountAction" data-finance-discount="visa-10_days">${esc(t('newDiscountCampaign'))}</button></div></form>`;
+    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div><div class="form-field" id="priceQrField"><button type="button" class="btn" id="priceQrAction" data-action="priceQrSettings">${esc(t('paymentQrManage'))}</button><button type="button" class="btn" id="priceQrDiscountAction" data-action="priceQrDiscountSettings">${esc(t('discount'))} 20% · ${esc(t('paymentQrManage'))}</button></div><div class="form-field"><button type="button" class="btn" id="priceDiscountAction" data-finance-discount="visa-10_days">${esc(t('newDiscountCampaign'))}</button></div></form>`;
     drawer('subscriptionPrices',body,btn('saveChanges','managementPrepare','primary'));
     updatePriceFields();
   }catch(error){
@@ -2837,11 +2837,11 @@ async function action(name) {
   if(name==='limitsPrepare'){await prepareCourseLimits();return;}
   if(name==='trialPrepare'){await prepareCourseLimits(true);return;}
   if(name==='priceSettings'){await priceSettings();return;}
-  if(name==='priceQrSettings'){
+  if(name==='priceQrSettings'||name==='priceQrDiscountSettings'){
     const method=$('priceMethod')?.value,plan=$('pricePlan')?.value;
     const amount=Number($('priceAmount')?.value);
     if(!Number.isSafeInteger(amount)||amount<1||amount>1000000)return;
-    await priceQrSettings(method,plan,{amount});return;
+    await priceQrSettings(method,plan,{amount,...(name==='priceQrDiscountSettings'?{scope:'subscription_20'}:{})});return;
   }
   if(name==='messageList'){await messageList();return;}
   if(name==='messageEditor'){messageEditor();return;}
