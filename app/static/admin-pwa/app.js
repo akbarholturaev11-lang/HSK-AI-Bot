@@ -2489,12 +2489,15 @@ function startInboxRefresh(){
   stopInboxRefresh();
   const at=epoch;
   const schedule=()=>{
-    if(at===epoch&&state.actor&&!document.hidden&&navigator.onLine)
+    if(at===epoch&&state.actor&&navigator.onLine)
       inboxRefreshTimer=setTimeout(refresh,15000);
   };
   const refresh=async()=>{
     inboxRefreshTimer=null;
-    if(at!==epoch||!state.actor||document.hidden||!navigator.onLine)return;
+    if(at!==epoch||!state.actor||!navigator.onLine)return;
+    // WebKit can obscure the PWA during a native signing sheet while the
+    // existing visibility handler deliberately preserves that active session.
+    if(document.hidden){schedule();return;}
     const control=new AbortController();inboxRefreshControl=control;
     try{
       if(busy||signing||inboxUpdating||inboxBulkReading)return;
