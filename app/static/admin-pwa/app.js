@@ -63,6 +63,7 @@ let courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};
 let courseAnalytics=null,courseAnalyticsDays=30,courseAnalyticsLoading=false,courseAnalyticsToken=0;
 let courseSalesMetrics=null,courseSalesLoading=false,courseSalesError=false,courseSalesToken=0;
 let managementMediaPreviewUrl=null, campaignMediaUpload=null;
+let financePortfolio=null,financePortfolioLoading=false,financePortfolioRequest=0;
 let feedbackLoadId=0;
 const feedbackStats={source:'all',period:'weekly',data:null,loading:false,error:false};
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
@@ -70,7 +71,7 @@ function clearPrivate(phase) {
   stopApprovalWatch();stopInboxRefresh();
   cancelAdvancedAnalytics();cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
-  epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
+  epoch++;view++;financePortfolioRequest++;financePortfolio=null;financePortfolioLoading=false;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   courseData=null;courseLimitDraft=null;courseTrialDraft=null;courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};courseAnalytics=null;courseAnalyticsToken++;courseAnalyticsLoading=false;courseSalesMetrics=null;courseSalesLoading=false;courseSalesError=false;courseSalesToken++;state.phase=phase;state.error=null;render();
 }
 function releaseManagementMediaPreview(){if(managementMediaPreviewUrl){URL.revokeObjectURL(managementMediaPreviewUrl);managementMediaPreviewUrl=null;}}
@@ -818,24 +819,58 @@ function financeView(){
     body='<div class="finance-payments-content">'+paymentsView()+'</div>'+
       '<div class="finance-secondary">'+tile('deliveryQueue','data-action="deliveryList"','bell')+'</div>';
   }else if(selected==='prices'){
-    body=tile('subscriptionPrices','data-action="priceSettings"','wallet');
+    // A selected Prices tab already communicates the destination: expose
+    // actual tariff records directly, not a second identically titled tile.
+    body='<div class="finance-card-grid finance-price-grid">'+
+      [['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']].flatMap(([method,title])=>
+        ['10_days','1_month','3_months'].map(plan=>
+          '<div class="finance-tile">'+managementRow(title+' · '+t(plan),
+            'data-price-target="'+method+'-'+plan+'"','wallet')+'</div>'
+        )).join('')+'</div>';
   }else if(selected==='methods'){
-    const qr=['alipay','wechat'].flatMap(method=>['10_days','1_month','3_months'].map(plan=>
-      '<div class="finance-tile"><button type="button" class="management-row" data-payment-qr-target="'+method+'-'+plan+'"><span class="management-row-icon">'+icon('credit')+'</span><strong>'+esc(method==='alipay'?'Alipay':'WeChat')+' · '+esc(t(plan))+'</strong>'+icon('chevron')+'</button></div>'
-    )).join('');
-    const discountQr=['alipay','wechat'].flatMap(method=>['10_days','1_month','3_months'].map(plan=>
-      '<div class="finance-tile"><button type="button" class="management-row" data-payment-qr-target="'+method+'-'+plan+'" data-qr-scope="subscription_20"><span class="management-row-icon">'+icon('gift')+'</span><strong>'+esc(method==='alipay'?'Alipay':'WeChat')+' · '+esc(t(plan))+' · '+esc(t('discount'))+' 20%</strong>'+icon('chevron')+'</button></div>'
-    )).join('');
+    // One tariff is ONE parent. Both QR scopes are direct child actions;
+    // the 20% scope must never appear as a separate tariff/category card.
+    const qr=['alipay','wechat'].flatMap(method=>['10_days','1_month','3_months'].map(plan=>{
+      const target=method+'-'+plan;
+      const scopeRow=(scope,glyph,title)=>'<button type="button" class="finance-qr-action" data-payment-qr-target="'+target+'" data-qr-scope="'+scope+'"><span class="finance-qr-action-icon">'+icon(glyph)+'</span><span>'+esc(title)+'</span>'+icon('chevron')+'</button>';
+      return '<article class="finance-tile finance-qr-tariff" data-qr-tariff="'+target+'"><div class="finance-qr-tariff-title"><span class="management-row-icon">'+icon('credit')+'</span><strong>'+esc(method==='alipay'?'Alipay':'WeChat')+' · '+esc(t(plan))+'</strong></div><div class="finance-qr-actions">'+
+        scopeRow('subscription','credit',t('paymentQrTitle'))+
+        scopeRow('subscription_20','gift',t('discount')+' 20%')+
+        '</div></article>';
+    })).join('');
     body='<section class="finance-group"><h2>'+esc(t('paymentDetails'))+'</h2><div class="finance-card-grid">'+
       tile('paymentDetails','data-setting-kind="payment_details" data-bank="dc_city"','credit').replace('<strong>'+esc(t('paymentDetails'))+'</strong>','<strong>DC City</strong>')+
       tile('paymentDetails','data-setting-kind="payment_details" data-bank="alif"','credit').replace('<strong>'+esc(t('paymentDetails'))+'</strong>','<strong>Alif</strong>')+
-      '</div></section><section class="finance-group"><h2>'+esc(t('paymentQrTitle'))+'</h2><div class="finance-card-grid">'+qr+'</div><h3>'+esc(t('discount'))+' 20%</h3><div class="finance-card-grid">'+discountQr+'</div></section>';
+      '</div></section><section class="finance-group"><h2>'+esc(t('paymentQrTitle'))+'</h2><div class="finance-card-grid">'+qr+'</div></section>';
   }else{
-    body=tile('ledger','data-action="portfolioHistory"','wallet');
+    // No extra "Ledger" tile inside the already-selected Ledger tab.
+    const entries=(financePortfolio?.items||[]).map(row=>
+      '<article class="feedback-item"><strong>#'+Number(row.id)+' · '+esc(t({profit:'ledgerProfit',expense:'ledgerExpense'}[row.transaction_type]))+' · '+esc(row.amount??'—')+' '+esc(row.currency)+'</strong><p>'+esc(row.note)+(row.note_truncated?'…':'')+'</p><small>'+esc(t('ledgerUSD'))+': '+esc(row.amount_usd??'—')+' USD · '+esc(date(row.created_at))+'</small></article>'
+    ).join('');
+    body='<section class="finance-portfolio-inline"><div class="finance-portfolio-toolbar"><p class="source-note">'+esc(t('ledgerRateHint'))+'</p>'+btn('newLedgerEntry','portfolioEditor','primary')+'</div>'+
+      (financePortfolioLoading?statePanel('loading'):financePortfolio?.error?statePanel('error'):entries||statePanel('empty'))+
+      (financePortfolio?.next_before_id?'<button class="btn" data-finance-portfolio-next="'+Number(financePortfolio.next_before_id)+'">'+esc(t('next'))+'</button>':'')+'</section>';
   }
   return '<div class="finance-page">'+tabBar+'<div id="finance-tabpanel" class="finance-content" role="tabpanel" aria-labelledby="finance-tab-'+selected+'">'+body+'</div></div>';
 }
 
+async function loadFinancePortfolio(before=null){
+  if(!state.actor||state.route!=='payments'||state.financeTab!=='portfolio')return;
+  const ticket=++financePortfolioRequest,at=epoch;
+  financePortfolioLoading=true;render();
+  try{
+    const data=await api('portfolio/read',before?{before_id:before}:{});
+    if(ticket!==financePortfolioRequest||at!==epoch||state.route!=='payments'||state.financeTab!=='portfolio')return;
+    financePortfolio={items:Array.isArray(data.items)?data.items:[],next_before_id:data.next_before_id||null};
+  }catch(error){
+    if(ticket!==financePortfolioRequest||at!==epoch||state.route!=='payments'||state.financeTab!=='portfolio')return;
+    financePortfolio={error:true,items:[]};
+  }finally{
+    if(ticket===financePortfolioRequest&&at===epoch&&state.route==='payments'&&state.financeTab==='portfolio'){
+      financePortfolioLoading=false;render();
+    }
+  }
+}
 function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
   if(state.route==='course')return renderCourseView();
@@ -1906,7 +1941,8 @@ function updatePriceFields(){
   if(['alipay','wechat'].includes(row.method))void refreshPriceQrStatus();
   updateEditorSaveEnabled();
 }
-async function priceSettings(){
+async function priceSettings(method='visa',plan='10_days'){
+  if(!['visa','alipay','wechat'].includes(method)||!['10_days','1_month','3_months'].includes(plan))return;
   closeDrawer();const current=drawerId,at=epoch;
   drawer('subscriptionPrices',statePanel('loading'));
   try{
@@ -1918,6 +1954,7 @@ async function priceSettings(){
     const qrField=(scope,id,title)=>'<div class="form-field"><label for="'+id+'">'+esc(title)+'</label><input id="'+id+'" class="input" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">'+esc(t('paymentQrMediaHint'))+'</p><p class="form-hint" id="'+id+'Status" role="status" aria-live="polite"></p></div>';
     const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div><div id="priceQrField" class="management-qr-inline" hidden><p class="source-note">${esc(t('paymentQrPrivateNote'))}</p>${qrField('subscription','priceQrBaseFile',t('paymentQrImage'))}${qrField('subscription_20','priceQrDiscountFile',t('discount')+' 20% · '+t('paymentQrImage'))}</div></form>`;
     drawer('subscriptionPrices',body,btn('saveChanges','managementPrepare','primary'));
+    $('priceMethod').value=method;$('pricePlan').value=plan;
     updatePriceFields();
   }catch(error){
     if(current===drawerId&&at===epoch&&state.actor)drawer('subscriptionPrices',statePanel(errorKey(error)),btn('close','close')+btn('retry','priceSettings','primary'));
@@ -2177,6 +2214,7 @@ async function executeManagement(){
     }
     const saved=review.type==='campaign'?result.campaign:review.type==='delivery'?result.delivery:['payout','payout_completion'].includes(review.type)?result.payout:review.type==='partner'?result.partner:review.type==='notice'?result.template:review.type==='price'?result.price:review.type==='payment_qr'?result.qr:review.type==='marketing'?{kind:review.kind,...result.result}:review.type==='channel'?result.channel:review.type==='portfolio'?result.transaction:review.type==='user'?result:result.setting;
     if(review.type==='user'&&result.deleted){state.rows=state.rows.filter(row=>row.user_id!==result.user_id);render();}
+    if(review.type==='portfolio'&&state.route==='payments'&&state.financeTab==='portfolio')void loadFinancePortfolio();
     showSavedAndDismiss();
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;
@@ -3146,8 +3184,9 @@ document.addEventListener('click',event=>{
       if(state.route==='payments'&&['payments','prices','methods','portfolio'].includes(button.dataset.financeTab)){
         const next=button.dataset.financeTab;
         state.financeTab=next;
+        financePortfolioRequest++;
         if(next==='payments'){state.cursor=null;state.previous=[];await load();}
-        else{state.phase='ready';state.error=null;render();}
+        else{state.phase='ready';state.error=null;render();if(next==='portfolio')void loadFinancePortfolio();}
       }
     }
     else if(button.dataset.route){
@@ -3159,6 +3198,11 @@ document.addEventListener('click',event=>{
     else if(button.dataset.campaignDetail){await campaignDetail(button.dataset.campaignKind,Number(button.dataset.campaignDetail));}
     else if(button.dataset.campaignCreate){campaignCreate(button.dataset.campaignCreate);}
     else if(button.dataset.marketingKind){await marketingEditor(button.dataset.marketingKind);}
+    else if(button.dataset.priceTarget){
+      const match=/^(visa|alipay|wechat)-(10_days|1_month|3_months)$/.exec(button.dataset.priceTarget);
+      if(match)await priceSettings(match[1],match[2]);
+    }
+    else if(button.dataset.financePortfolioNext){await loadFinancePortfolio(Number(button.dataset.financePortfolioNext));}
     else if(button.dataset.paymentQrTarget){
       const match=/^(alipay|wechat)-(10_days|1_month|3_months)$/.exec(button.dataset.paymentQrTarget);
       if(match)await priceQrSettings(match[1],match[2],{scope:button.dataset.qrScope||'subscription',campaign_id:Number(button.dataset.qrCampaign)||null,amount:Number(button.dataset.qrAmount)||null});
