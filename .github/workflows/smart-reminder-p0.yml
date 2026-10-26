@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - "tests/test_smart_reminder_p0_regression.py"
+      - "tests/test_smart_reminder_legacy_evidence.py"
+      - "app/services/smart_reminder_legacy_evidence.py"
+      - "scripts/audit_smart_reminder_legacy.py"
       - "tests/test_miniapp_course_context.py"
       - "tests/test_android_course_api.py"
       - "tests/test_course_miniapp_practice*.py"
@@ -13,6 +16,8 @@ on:
       - "android/app/src/main/java/com/pomp/hskai/core/notify/**"
       - "android/app/src/test/java/com/pomp/hskai/core/navigation/DeepLinkRouterTest.kt"
       - "android/app/src/main/java/com/pomp/hskai/core/navigation/DeepLinkRouter.kt"
+      - "android/app/src/test/java/com/pomp/hskai/widget/WidgetStoreTest.kt"
+      - "android/app/src/androidTest/java/com/pomp/hskai/core/notify/**"
       - ".github/workflows/smart-reminder-p0.yml"
   push:
     branches:
@@ -20,6 +25,9 @@ on:
       - "codex/smart-reminder-p0-**"
     paths:
       - "tests/test_smart_reminder_p0_regression.py"
+      - "tests/test_smart_reminder_legacy_evidence.py"
+      - "app/services/smart_reminder_legacy_evidence.py"
+      - "scripts/audit_smart_reminder_legacy.py"
       - "tests/test_miniapp_course_context.py"
       - "tests/test_android_course_api.py"
       - "tests/test_course_miniapp_practice*.py"
@@ -29,6 +37,8 @@ on:
       - "android/app/src/main/java/com/pomp/hskai/core/notify/**"
       - "android/app/src/test/java/com/pomp/hskai/core/navigation/DeepLinkRouterTest.kt"
       - "android/app/src/main/java/com/pomp/hskai/core/navigation/DeepLinkRouter.kt"
+      - "android/app/src/test/java/com/pomp/hskai/widget/WidgetStoreTest.kt"
+      - "android/app/src/androidTest/java/com/pomp/hskai/core/notify/**"
       - ".github/workflows/smart-reminder-p0.yml"
   workflow_dispatch:
 
@@ -56,7 +66,9 @@ jobs:
       - name: Compile new P0 tests
         run: |
           python -m py_compile tests/test_smart_reminder_p0_regression.py \
-            tests/test_miniapp_course_context.py tests/test_android_course_api.py
+            tests/test_miniapp_course_context.py tests/test_android_course_api.py \
+            tests/test_smart_reminder_legacy_evidence.py \
+            app/services/smart_reminder_legacy_evidence.py scripts/audit_smart_reminder_legacy.py
       - name: Run actual legacy status and consent baselines
         env:
           BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
@@ -66,6 +78,7 @@ jobs:
         run: |
           python -m unittest -v \
             tests.test_smart_reminder_p0_regression \
+            tests.test_smart_reminder_legacy_evidence \
             tests.test_native_scheduler_transport \
             tests.test_motivation_reminder_service \
             tests.test_android_push \
@@ -109,10 +122,12 @@ jobs:
           ./gradlew --no-daemon testPlayDebugUnitTest \
             --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
             --tests "com.pomp.hskai.core.notify.ReminderScheduleTest" \
-            --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest"
+            --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest" \
+            --tests "com.pomp.hskai.widget.WidgetStoreTest"
       - name: Test Direct reminder decision, scheduling and deep links
         run: |
           ./gradlew --no-daemon testDirectDebugUnitTest \
             --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
             --tests "com.pomp.hskai.core.notify.ReminderScheduleTest" \
-            --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest"
+            --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest" \
+            --tests "com.pomp.hskai.widget.WidgetStoreTest"
