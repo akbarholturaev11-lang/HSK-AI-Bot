@@ -13,7 +13,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from pydantic import Field, ValidationError
-from sqlalchemy import select, text
+from sqlalchemy import or_, select, text
 
 from app.admin_api.pwa_access_grants import CommandError, StepId
 from app.admin_api.pwa_approval import _utc
@@ -174,8 +174,10 @@ async def execute_subscription_price(db, *, session_cookie, request, settings_ob
             campaigns = (await db.scalars(select(DiscountCampaign).where(
                 DiscountCampaign.is_active.is_(True),
                 DiscountCampaign.ends_at > now,
-                DiscountCampaign.payment_method.in_((command.method, None)),
-                DiscountCampaign.plan_type.in_((command.plan, None)),
+                or_(DiscountCampaign.payment_method == command.method,
+                    DiscountCampaign.payment_method.is_(None)),
+                or_(DiscountCampaign.plan_type == command.plan,
+                    DiscountCampaign.plan_type.is_(None)),
             ))).all()
             for campaign in campaigns:
                 campaign_amount = int(round(command.amount * (100 - campaign.percent) / 100))
