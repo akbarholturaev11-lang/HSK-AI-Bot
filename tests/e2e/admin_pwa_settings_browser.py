@@ -461,6 +461,7 @@ async def browser_checks(output, *, media_only=False):
                         else:
                             await page.locator('#locale').select_option(language)
                         await navigate('marketing', width)
+                        await page.locator('[data-marketing-tab="creatives"]').click()
                         for kind in ('desktop_promo','course_ad'):
                             await page.locator(f'[data-marketing-kind="{kind}"]').click()
                             await expect(page.locator('#salesMode' if kind=='sales_experiment' else '#promoEnabled' if kind=='desktop_promo' else '[data-course-ad="1"]')).to_be_visible()
@@ -511,6 +512,7 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('#salesPercent').select_option('50')
                 await prepare_and_save('uz','sales-experiment-confirm.png')
                 await navigate('marketing', 1440)
+                await page.locator('[data-marketing-tab="creatives"]').click()
                 await page.set_viewport_size({'width':390,'height':844})
                 for language in ('ru','tj'):
                     await page.locator('[data-action="more"]').click()
@@ -803,6 +805,8 @@ async def browser_checks(output, *, media_only=False):
                     await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
                     await db.commit()
+                await navigate('marketing',1440)
+                await page.locator('[data-marketing-tab="notifications"]').click()
                 for language in ('uz','ru','tj'):
                     await page.locator('#locale').select_option(language)
                     await page.locator('[data-action="noticeList"]').click()
@@ -842,6 +846,7 @@ async def browser_checks(output, *, media_only=False):
                 await expect(page.locator('#noticeEnabled')).to_have_value('false')
                 await close_or_wait()
                 await navigate('marketing',1440)
+                await page.locator('[data-marketing-tab="partners"]').click()
                 async with fixture.sessions() as db:
                     await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
