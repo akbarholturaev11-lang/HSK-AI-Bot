@@ -928,6 +928,7 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('[data-action="deliveryList"]').click()
                 await expect(page.locator('[data-delivery-id]')).to_have_count(0)
                 await close_or_wait()
+                await navigate('system',1440)
                 # Revocation between confirmation and proof fails before any write.
                 before = await audit_count()
                 await page.locator('[data-setting-kind="help_contact"]').click()
