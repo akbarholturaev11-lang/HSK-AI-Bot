@@ -2531,7 +2531,22 @@ async function viewInboxAttachment(button){
   }finally{clearTimeout(timer);}
 }
 const autoImportantSources=new Set(['payment','android','technical']);
+// The backend only returns allowlisted classification codes; raw diagnostic
+// payloads, stack traces and URLs must never be rendered in Admin PWA.
+const technicalDescriptions=Object.freeze({
+  onboarding_recovered:'inboxTechOnboardingRecovered',
+  onboarding_placement_required:'inboxTechOnboardingPlacement',
+  onboarding_timeout:'inboxTechOnboardingTimeout',
+  onboarding_unconfirmed:'inboxTechOnboardingUnconfirmed'
+});
+function inboxTechnicalSummary(row){
+  const key=Object.prototype.hasOwnProperty.call(technicalDescriptions,row.technical_code)
+    ?technicalDescriptions[row.technical_code]:'inboxTechUnknown';
+  return t(key);
+}
 function inboxKind(row){
+  if(row.source==='technical'&&Object.prototype.hasOwnProperty.call(technicalDescriptions,row.technical_code))
+    return t('inboxTechOnboardingTitle');
   const label=row.source==='payment'?'inboxPaymentReceipt':row.source==='android'?'inboxAndroid':row.source==='technical'?'inboxTechnical':row.source==='release'?'releaseFeedback':'botFeedback';
   return t(label);
 }
@@ -2544,6 +2559,7 @@ function inboxPlatform(row){
 }
 function inboxTitle(row){return inboxKind(row)+(row.user_id?' · '+t('account')+' '+row.user_id:'');}
 function inboxPreview(row){
+  if(row.source==='technical')return inboxTechnicalSummary(row);
   const parts=row.feedback_parts||{};
   const paid=parts.paid===true;
   const phrases=[parts.liked?(paid?'💎 ':'👍 ')+parts.liked:null,parts.disliked?(paid?'🔎 ':'👎 ')+parts.disliked:null].filter(Boolean);
@@ -2597,7 +2613,7 @@ function inboxDetails(row) {
     (!paid&&row.reward_granted!==null&&row.reward_granted!==undefined?
       '<p class="inbox-feedback-reward">🎁 '+esc(t('inboxFeedbackBonus'))+': <strong>'+
       esc(t(row.reward_granted?'inboxFeedbackGranted':'inboxFeedbackNotGranted'))+'</strong></p>':'')+
-    '</div>':'<p class="inbox-details-text">'+esc(row.message||(source==='payment'?t('inboxPaymentReceipt'):t('empty')))+'</p>';
+    '</div>':'<p class="inbox-details-text">'+esc(source==='technical'?inboxTechnicalSummary(row):row.message||(source==='payment'?t('inboxPaymentReceipt'):t('empty')))+'</p>';
   const actions=info&&userId?'<div class="inbox-detail-toolbar">'+
     '<button type="button" class="btn primary" data-message-user="'+userId+'">'+icon('send')+esc(t('inboxFeedbackReply'))+'</button>'+
     '<button type="button" class="btn" data-user-detail="'+userId+'">'+icon('user')+esc(t('openProfile'))+'</button>'+
