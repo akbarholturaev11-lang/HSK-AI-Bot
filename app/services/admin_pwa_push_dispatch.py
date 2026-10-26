@@ -7,6 +7,7 @@ No private inbox text or recipient details are sent or logged.
 """
 import asyncio
 import hashlib
+import json
 import logging
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlsplit
@@ -14,7 +15,7 @@ from uuid import uuid4
 
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import and_, case, func, or_, select
 
 from app.admin_api.pwa_push import _configuration, _decode, _validate_subscription, SubscribeRequest
 from app.admin_api.pwa_sessions import _authorized_admin
@@ -30,7 +31,7 @@ logger = logging.getLogger(__name__)
 _LEASE_SECONDS = 45
 _DEVICE_COOLDOWN_SECONDS = 30
 _MAX_ATTEMPTS = 4
-_GENERIC_PAYLOAD = '{"kind":"important"}'
+_PUSH_SOURCES = frozenset({'payment', 'android', 'technical', 'bot', 'release'})
 
 
 def _utc(value):
@@ -72,14 +73,17 @@ def sender_config(settings_obj):
         return None
 
 
-async def _webpush(subscription, encoded_key, subject):
-    """RFC 8291 aes128gcm encryption + RFC 8292 VAPID signing via pywebpush."""
+async def _webpush(subscription, encoded_key, subject, *, source):
+    """Send only a trusted event category, never report text or payment details."""
+    if source not in _PUSH_SOURCES:
+        raise ValueError('invalid_push_source')
+    public_data = json.dumps({'kind': 'important', 'source': source}, separators=(',', ':'))
     from pywebpush import webpush
     from py_vapid import Vapid
     # pywebpush is blocking and must never block the async DB/event loop.
     def send():
         result = webpush(
-            subscription_info=subscription, data=_GENERIC_PAYLOAD,
+            subscription_info=subscription, data=public_data,
             vapid_private_key=Vapid.from_raw(encoded_key.encode("ascii")),
             vapid_claims={"sub": subject}, content_encoding="aes128gcm",
             ttl=180, timeout=8, verbose=False,
@@ -154,7 +158,8 @@ async def _claim_one(session_factory, settings_obj, now, worker_id):
                              ((AdminPwaPushOutbox.state == "leased")
                               & (AdminPwaPushOutbox.lease_expires_at <= now)),
                          ))
-                     .order_by(AdminPwaPushOutbox.created_at, AdminPwaPushOutbox.id)
+                     .order_by(case((AdminPwaPushOutbox.source == 'payment', 0), else_=1),
+                               AdminPwaPushOutbox.created_at, AdminPwaPushOutbox.id)
                      .limit(24).with_for_update(skip_locked=True, of=AdminPwaPushOutbox))
             rows = (await db.scalars(query)).all()
             for row in rows:
@@ -195,7 +200,7 @@ async def _claim_one(session_factory, settings_obj, now, worker_id):
                 row.attempts += 1
                 row.next_attempt_at = None
                 await db.flush()
-                return row.id, subscription.id, subscription.encrypted_payload
+                return row.id, subscription.id, subscription.encrypted_payload, row.source
     return None
 
 
@@ -255,7 +260,7 @@ async def dispatch_batch(session_factory, *, settings_obj, limit=10, sender=None
         item = await _claim_one(session_factory, settings_obj, current, worker_id)
         if item is None:
             break
-        event_id, subscription_id, sealed = item
+        event_id, subscription_id, sealed, source = item
         if subscription_id in sent_to:
             # No second send on one device during one batch, even with fake clocks.
             state = await _finish(session_factory, event_id=event_id,
@@ -267,15 +272,14 @@ async def dispatch_batch(session_factory, *, settings_obj, limit=10, sender=None
         results["claimed"] += 1
         status = None
         try:
-            import json
             payload = json.loads(fernet.decrypt(sealed.encode("ascii")).decode("ascii"))
             command = SubscribeRequest.model_validate({"platform": "mac", **payload})
             if _validate_subscription(command) is None:
                 raise ValueError("corrupt_subscription")
             if sender is None:
-                status = await _webpush(payload, private_key, subject)
+                status = await _webpush(payload, private_key, subject, source=source)
             else:
-                status = await sender(payload, private_key, subject)
+                status = await sender(payload, private_key, subject, source)
         except Exception as exc:
             status = _http_status(exc)
             # No endpoint, key, subject or user/message values in logs.

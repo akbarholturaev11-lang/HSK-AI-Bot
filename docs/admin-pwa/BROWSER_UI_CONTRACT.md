@@ -61,6 +61,25 @@ Its document title still says V9. This replaces the previously unavailable
 and fixed SVG icon paths are reused. No demo arrays, users, payments, charts,
 mutation handlers or fabricated success statuses are shipped.
 
+## Inbox follow-up: legitimate alerts, one-tap read-all and minimal details
+
+Pending or empty BotFeedback questionnaire rows are not notifications and are
+excluded from both the list and badge. Completed feedback retains both positive
+and negative answers; paid-subscription reasons stay semantically distinct from
+negative votes. Missing historical message content is not fabricated.
+
+The Inbox list offers one distinct "Mark all read" action when global unread
+notifications exist. This never deletes source records and never approves a
+pending payment. It uses authenticated, audited server-side batches (up to 200),
+a frozen server-owned timestamp cutoff, and safe retry. Alerts that arrive after
+that cutoff remain unread. Failure does not claim a zero badge or successful
+delivery. The existing global count still refreshes from the authoritative API.
+
+The duplicate secondary back label/button inside a notification's details is
+removed. Keep the one top-right X dismissal and iPhone right-swipe one-step
+back. Preserve detail source, ID, timestamp, both feedback answers, and
+attachment guards. Do not introduce a second footer dismiss control.
+
 ## Inbox and loading refinement — 2026-10-26
 
 The owner replaced title-only inbox entries with compact source-labelled rows:

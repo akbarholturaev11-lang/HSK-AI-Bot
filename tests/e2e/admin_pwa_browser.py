@@ -331,13 +331,29 @@ async def browser_checks(output):
         await expect(page.locator('.inbox-details')).not_to_contain_text('other account QA feedback')
         assert any(path.endswith('/inbox/triage') and body.get('operation')=='mark_read'
                    for path,_,body in calls if isinstance(body,dict))
-        await page.locator('.inbox-back').click()
+        await expect(page.locator('.inbox-back')).to_have_count(0)
+        await page.locator('.drawer-close').click()
+        await page.locator('[data-action=feedback]').click()
         await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.locator('.drawer-close').click()
         await page.locator('[data-route=payments]').first.click()
         await expect(page.locator('.payment-table-wrap')).to_be_visible()
         await expect(page.locator('.payment-table thead th')).to_have_count(7)
         await expect(page.locator('.payment-cards')).to_be_hidden()
+        # Financial review stays server-backed while the V10 tab layout moves
+        # every existing financial editor out of the legacy System directory.
+        await expect(page.locator('.finance-tabs [role="tab"]')).to_have_count(4)
+        await page.locator('[data-finance-tab="prices"]').click()
+        await expect(page.locator('.finance-tile [data-action="priceSettings"]')).to_have_count(1)
+        await page.locator('[data-finance-tab="methods"]').click()
+        await expect(page.locator('.finance-tile')).to_have_count(8)
+        await expect(page.locator('[data-payment-qr-target]')).to_have_count(6)
+        await expect(page.locator('[data-setting-kind="payment_details"]')).to_have_count(2)
+        await page.locator('[data-finance-tab="portfolio"]').click()
+        await expect(page.locator('.finance-tile [data-action="portfolioHistory"]')).to_have_count(1)
+        assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+        await page.locator('[data-finance-tab="payments"]').click()
+        await expect(page.locator('.payment-table-wrap')).to_be_visible()
         await page.locator('[data-route=users]').first.click()
         await page.set_viewport_size({'width':390,'height':844})
         await expect(page.locator('.mobile-tabs button')).to_have_count(5)
@@ -358,6 +374,11 @@ async def browser_checks(output):
         await page.locator('.more-drawer [data-route=course]').click()
         await expect(page.locator('.course-dashboard')).to_be_visible()
         await expect(page.locator('.course-subtabs [role="tab"]')).to_have_count(4)
+        await page.locator('[data-course-tab="experiment"]').click()
+        await expect(page.locator('.course-panel').last).to_contain_text('A/B сотув натижалари')
+        await expect(page.locator('[data-course-stats]')).to_have_count(0)
+        await expect(page.locator('.course-panel').last).not_to_contain_text('Статистикани очиш')
+        assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         await page.locator('[data-course-tab="access"]').click()
         await expect(page.locator('[data-course-window]')).not_to_have_count(0)
         await page.locator('[data-course-tab="tracks"]').click()
@@ -384,10 +405,13 @@ async def browser_checks(output):
         await expect(page.locator('[data-stats-tab=overview]')).to_have_attribute('aria-selected','true')
         await page.locator('[data-stats-tab=course]').click()
         await expect(page.locator('.stats-category-metrics .metric')).to_have_count(9)
-        assert not any(body and body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics')
+        course_experiment_reads=sum(body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics' and body)
+        # The Course > Sales A/B tab requests its own real metrics; the Stats disclosure
+        # must remain lazy and issue exactly one *additional* read when expanded.
+        assert course_experiment_reads==1
         await page.locator('[data-advanced-analytics] summary').click()
         await expect(page.locator('#advancedAnalyticsBody table')).to_have_count(2)
-        assert sum(body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics' and body)==1
+        assert sum(body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics' and body)==course_experiment_reads+1
         await page.screenshot(path=str(output/'v10-advanced-uz-390.png'),full_page=True)
 
         await page.locator('[data-stats-tab=funnel]').click()
@@ -546,7 +570,9 @@ async def browser_checks(output):
         assert after_audit == previous_audit + 1
         assert any(path.endswith('/inbox/triage') and body.get('operation')=='mark_read'
                    for path,_,body in calls if isinstance(body,dict))
-        await page.locator('.inbox-back').click()
+        await expect(page.locator('.inbox-back')).to_have_count(0)
+        await page.locator('.drawer-close').click()
+        await page.locator('[data-action=feedback]').click()
         await expect(page.locator('.inbox-minimal-row')).not_to_have_count(0)
         await page.keyboard.press('Escape')
         # Every fresh app launch revokes even a still-valid cookie and requires
@@ -853,11 +879,9 @@ async def attachment_browser_checks(output):
             assert not calls, 'Private images must not preload'
             telegram.get_file.assert_not_awaited()
             async def open_inbox():
-                # The drawer is modal; the background bell cannot be clicked
-                # while a detail is open. Follow the real in-drawer back path.
-                if await page.locator('.inbox-back').count():
-                    await page.locator('.inbox-back').click()
-                elif not await page.locator('.inbox-minimal-row').count():
+                # The duplicate in-drawer back control was removed.
+                # Close the detail and reopen the Inbox with the toolbar bell.
+                if not await page.locator('.inbox-minimal-row').count():
                     if await page.locator('#overlay').count():
                         await page.locator('.drawer-close').click()
                     await page.locator('[data-action=feedback]').click()

@@ -214,11 +214,14 @@ async def browser_checks(output, *, media_only=False):
 
                 async def navigate(route_name, width):
                     if width == 390:
-                        await page.locator('[data-action="more"]').click()
-                        await page.locator(f'.more-sheet-list [data-route="{route_name}"]').click()
+                        if route_name=="payments":
+                            await page.locator('.mobile-tabs [data-route="payments"]').click()
+                        else:
+                            await page.locator('[data-action="more"]').click()
+                            await page.locator(f'.more-sheet-list [data-route="{route_name}"]').click()
                     else:
                         await page.locator(f'.nav [data-route="{route_name}"]').click()
-                    await expect(page.locator(".course-dashboard" if route_name=="course" else ".management-page")).to_be_visible()
+                    await expect(page.locator(".course-dashboard" if route_name=="course" else ".finance-page" if route_name=="payments" else ".management-page")).to_be_visible()
 
                 async def begin_management():
                     label=await page.locator('[data-action="managementPrepare"]').inner_text()
@@ -349,11 +352,17 @@ async def browser_checks(output, *, media_only=False):
                             await page.locator("#drawerLocale").select_option(language)
                         else:
                             await page.locator("#locale").select_option(language)
-                        await navigate("system", width)
-                        await page.screenshot(path=str(output / f"system-{language}-{width}.png"))
+                        await navigate("payments", width)
+                        await page.locator('[data-finance-tab="prices"]').click()
+                        await page.screenshot(path=str(output / f"finance-prices-{language}-{width}.png"))
                         await page.locator('[data-action="priceSettings"]').click()
                         await expect(page.locator("#priceAmount")).to_have_value("29")
+                        await expect(page.locator('#priceDiscountAction')).to_have_attribute('data-finance-discount', 'visa-10_days')
+                        await page.locator("#pricePlan").select_option("3_months")
+                        await expect(page.locator('#priceDiscountAction')).to_have_attribute('data-campaign-list', 'discount')
+                        await expect(page.locator('#priceDiscountAction')).not_to_have_attribute('data-finance-discount', 'visa-3_months')
                         await page.locator("#pricePlan").select_option("1_month")
+                        await expect(page.locator('#priceDiscountAction')).to_have_attribute('data-finance-discount', 'visa-1_month')
                         await page.locator("#priceAmount").fill(str(300 + index + (10 if width == 390 else 0)))
                         await prepare_and_save(language, f"price-confirm-{language}-{width}.png")
                         assert await page.evaluate("document.documentElement.scrollWidth <= innerWidth")
@@ -367,9 +376,13 @@ async def browser_checks(output, *, media_only=False):
                     await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
                     await db.commit()
+                # Bank details now live solely under Finance > Payment details.
+                await navigate("payments", 1440)
+                await page.locator('[data-finance-tab="methods"]').click()
                 # Cancel has no proof/command side effects and never persists an edit.
                 before = await audit_count()
                 await page.locator('[data-setting-kind="payment_details"][data-bank="dc_city"]').click()
+                await expect(page.locator('#drawerContent [data-campaign-list="discount"]')).to_be_visible()
                 await page.locator("#settingValue").fill("QA cancellation")
                 await begin_management()
                 assert await page.locator("#drawerContent img").count() == 0
@@ -383,6 +396,7 @@ async def browser_checks(output, *, media_only=False):
                     await page.locator(f'[data-setting-kind="payment_details"][data-bank="{bank}"]').click()
                     await page.locator("#settingValue").fill(f"QA {bank} bank\nAccount 1234")
                     await prepare_and_save("uz")
+                await navigate("system", 1440)
                 await page.locator('[data-setting-kind="ai_model"]').click()
                 await expect(page.locator("#settingModel")).to_be_visible()
                 models = await page.locator("#settingModel option").evaluate_all("rows=>rows.map(r=>r.value)")
@@ -431,6 +445,8 @@ async def browser_checks(output, *, media_only=False):
                 await expect(page.locator('[data-action="managementExecute"]')).to_have_count(0)
                 await close_or_wait()
                 # A lost response AFTER the command commits exposes only a reread action.
+                await navigate("payments", 1440)
+                await page.locator('[data-finance-tab="prices"]').click()
                 await page.locator('[data-action="priceSettings"]').click()
                 await page.locator("#priceAmount").fill("101")
                 await begin_management()
@@ -670,11 +686,20 @@ async def browser_checks(output, *, media_only=False):
                         price_before=await SubscriptionPriceService(db).get_price("alipay", "1_month")
                         await db.commit()
                     await close_or_wait()
-                    await navigate('system',390)
-                    await page.locator('[data-action="priceSettings"]').click()
-                    await page.locator('#priceMethod').select_option('alipay')
-                    await page.locator('#pricePlan').select_option('1_month')
-                    await page.locator('#priceQrAction').click()
+                    await navigate('payments',390)
+                    await page.locator('[data-finance-tab="methods"]').click()
+                    await page.locator('[data-payment-qr-target="alipay-1_month"]').click()
+                    await expect(page.locator('[data-finance-discount="alipay-1_month"]')).to_be_visible()
+                    await page.locator('[data-finance-discount="alipay-1_month"]').click()
+                    await expect(page.locator('#discountMethod')).to_have_value('alipay')
+                    await expect(page.locator('#discountPlan')).to_have_value('1_month')
+                    await expect(page.locator('#discountPercent')).to_have_value('20')
+                    await close_or_wait()
+                    await page.locator('[data-payment-qr-target="alipay-3_months"]').click()
+                    await expect(page.locator('#drawerContent [data-campaign-list="discount"]')).to_be_visible()
+                    await expect(page.locator('#drawerContent [data-finance-discount]')).to_have_count(0)
+                    await close_or_wait()
+                    await page.locator('[data-payment-qr-target="alipay-1_month"]').click()
                     await expect(page.locator('#paymentQrMediaFile')).to_be_visible()
                     await page.locator('#paymentQrMediaFile').set_input_files({
                         'name':'payment-qr.png','mimeType':'image/png','buffer':promo_image})
@@ -775,6 +800,8 @@ async def browser_checks(output, *, media_only=False):
                     await page.locator('#channelOperation').select_option(operation)
                     if operation=='state':await page.locator('#channelActive').select_option('false')
                     await prepare_and_save('uz',f'channel-{operation}-confirm.png')
+                await navigate('payments',1440)
+                await page.locator('[data-finance-tab="portfolio"]').click()
                 for language in ('uz','ru','tj'):
                     await page.locator('#locale').select_option(language)
                     await page.locator('[data-action="portfolioHistory"]').click()
@@ -799,6 +826,7 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('[data-action="portfolioHistory"]').click()
                 await expect(page.locator('#drawerContent')).to_contain_text('QA committed expense')
                 await close_or_wait()
+                await navigate('system',1440)
                 async with fixture.sessions() as db:
                     await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
@@ -894,7 +922,7 @@ async def browser_checks(output, *, media_only=False):
                     await page.locator(f'[data-payout-id="{payout_id}"]').click()
                     await page.locator('#payoutOperation').select_option(operation)
                     await prepare_and_save('uz')
-                await navigate('system',1440)
+                await navigate('payments',1440)
                 for language in ('uz','ru','tj'):
                     await page.locator('#locale').select_option(language)
                     await page.locator('[data-action="deliveryList"]').click()
@@ -917,6 +945,7 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('[data-action="deliveryList"]').click()
                 await expect(page.locator('[data-delivery-id]')).to_have_count(0)
                 await close_or_wait()
+                await navigate('system',1440)
                 # Revocation between confirmation and proof fails before any write.
                 before = await audit_count()
                 await page.locator('[data-setting-kind="help_contact"]').click()

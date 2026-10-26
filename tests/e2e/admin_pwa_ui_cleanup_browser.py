@@ -44,6 +44,7 @@ async def browser_checks(output):
     rows = copy.deepcopy(original)
     requests, triage, errors = [], [], []
     paginated = [False]
+    held_inbox = [None]
     stream = io.BytesIO()
     Image.new("RGB", (320, 150), "#e7f0f2").save(stream, "PNG")
 
@@ -103,6 +104,28 @@ async def browser_checks(output):
                                 next_before=None)
             else:
                 data.update(items=copy.deepcopy(selected), next_before=None)
+            if held_inbox[0] is not None:
+                started, release = held_inbox[0]
+                held_inbox[0] = None
+                started.set()
+                await release.wait()
+        elif path.endswith("/inbox/feedback-detail"):
+            assert payload["source"] in ("bot", "release")
+            assert payload["source_id"] == 1
+            data.update(source=payload["source"], source_id=1, user_id=7,
+                        name="Synthetic Learner", telegram_id=123456789,
+                        language="tj", level="hsk4", mode="qa", bot_days=150,
+                        feedback_parts={"liked": "Synthetic bot message",
+                                        "disliked": "Synthetic issue", "paid": True}
+                        if payload["source"] == "bot" else None,
+                        reward_granted=None, rating=4 if payload["source"] == "release" else None,
+                        message="Synthetic release message" if payload["source"] == "release" else None)
+        elif path.endswith("/inbox/mark-all-read"):
+            for row in rows:
+                if row["triage_status"] == "new":
+                    row["triage_status"] = "read"
+                    row["triage_revision"] += 1
+            data.update(updated=len(rows), has_more=False, cutoff=STAMP)
         elif path.endswith("/inbox/triage"):
             triage.append(payload)
             row = next(row for row in rows if row["source"] == payload["source"])
@@ -195,11 +218,20 @@ async def browser_checks(output):
                     assert not await page.locator("[data-feedback-next]").count()
                     await page.screenshot(path=str(output / f"inbox-minimal-{language}-{width}.png"))
                     await bot.click()
-                    await expect(page.locator(".inbox-details-text")).to_have_count(2)
-                    await expect(page.locator(".inbox-details-text").first).to_contain_text("Synthetic bot message")
-                    await expect(page.locator(".inbox-details-text").last).to_contain_text("Synthetic issue")
-                    assert "👎" not in await page.locator(".inbox-detail-messages").inner_text()
+                    await expect(page.locator(".inbox-feedback-person-row")).to_have_count(6)
+                    await expect(page.locator(".inbox-feedback-person")).to_contain_text("Synthetic Learner")
+                    await expect(page.locator(".inbox-feedback-person")).to_contain_text("123456789")
+                    await expect(page.locator(".inbox-feedback-person")).to_contain_text("HSK4")
+                    await expect(page.locator(".inbox-feedback-person")).to_contain_text("150")
+                    await expect(page.locator(".inbox-feedback-answer")).to_have_count(2)
+                    await expect(page.locator(".inbox-feedback-answer").first).to_contain_text("Synthetic bot message")
+                    await expect(page.locator(".inbox-feedback-answer").last).to_contain_text("Synthetic issue")
+                    assert "👎" not in await page.locator(".inbox-feedback-answers").inner_text()
                     await expect(page.locator(".inbox-detail-meta")).to_contain_text("Telegram Bot")
+                    await expect(page.locator('[data-message-user="7"]')).to_have_count(1)
+                    await expect(page.locator('[data-user-detail="7"]')).to_have_count(1)
+                    assert any(path.endswith("/inbox/feedback-detail") and payload["source"] == "bot"
+                               for path, payload in requests)
                     assert triage[-1]["source"]=="bot" and triage[-1]["operation"]=="mark_read"
                     await expect(page.locator('[data-inbox-attachment]')).to_have_count(1)
                     before = len(requests)
@@ -207,7 +239,9 @@ async def browser_checks(output):
                     await expect(page.locator('.inbox-attachment-image')).to_be_visible()
                     assert len([path for path, _ in requests[before:] if path.endswith("/attachment")])==1
                     await page.screenshot(path=str(output / f"inbox-detail-{language}-{width}.png"))
-                    await page.locator(".inbox-back").click()
+                    assert not await page.locator(".inbox-back").count()
+                    await page.locator(".drawer-close").click()
+                    await page.locator('[data-action="feedback"]').click()
                     await expect(page.locator('[data-inbox-open="bot:1"]')).to_have_class(__import__("re").compile("is-read"))
                     await expect(page.locator(".inbox-minimal-row.is-important.is-unread")).to_have_count(2)
                     await page.locator(".drawer-close").click()
@@ -249,9 +283,15 @@ async def browser_checks(output):
             await page.locator('[data-inbox-open="technical:1"]').click()
             await expect(page.locator(".inbox-details")).to_be_visible()
             assert triage[-1]["source"]=="technical" and triage[-1]["operation"]=="mark_read"
-            await page.locator(".inbox-back").click()
+            assert not await page.locator(".inbox-back").count()
+            await page.locator(".drawer-close").click()
+            await page.locator('[data-action="feedback"]').click()
             await expect(page.locator('[data-inbox-open="technical:1"]')).to_have_class(__import__("re").compile("is-read"))
             assert not await page.locator('[data-inbox-op]').count()
+            await page.locator("[data-inbox-mark-all]").click()
+            await expect(page.locator(".inbox-minimal-row.is-unread")).to_have_count(0)
+            await expect(page.locator("[data-inbox-mark-all]")).to_have_count(0)
+            assert any(path.endswith("/inbox/mark-all-read") for path, payload in requests)
             await page.locator(".drawer-close").click()
             # Paged Inbox appends, never replaces rows or exposes a "Next" button.
             paginated[0] = True
@@ -312,11 +352,100 @@ async def browser_checks(output):
                     assert await page.locator(".sidebar .side-foot").evaluate(
                         "(el) => el.getBoundingClientRect().bottom <= innerHeight + 2")
                 await page.screenshot(path=str(output / f"course-compact-mac-{width}.png"))
+
+            # An already-open foreground Inbox must receive a new receipt
+            # without another bell tap, while protected reading stays stable.
+            await page.close()
+            rows[:] = copy.deepcopy(original)
+            paginated[0] = False
+            page = await context.new_page()
+            page.on("pageerror", lambda error: errors.append(str(error)))
+            await page.add_init_script("window.cspFailures=[];document.addEventListener('securitypolicyviolation',e=>window.cspFailures.push(e.violatedDirective));")
+            await page.clock.install()
+            await page.goto(ORIGIN + "/admin/")
+            await page.wait_for_load_state("networkidle")
+            await page.locator('[data-action="feedback"]').click()
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(4)
+
+            def inbox_reads():
+                return [body for path, body in requests if path.endswith("/inbox/list")]
+
+            async def refresh_tick(poll=True, list_refresh=False):
+                if poll:
+                    path = "inbox/list" if list_refresh else "inbox/unread-count"
+                    async with page.expect_response("**/api/admin/v1/" + path) as pending:
+                        await page.clock.fast_forward(16_000)
+                    await (await pending.value).body()
+                else:
+                    await page.clock.fast_forward(16_000)
+                await page.clock.run_for(100)
+                await page.wait_for_load_state("networkidle")
+
+            rows.insert(0, dict(copy.deepcopy(original[3]), source_id=173,
+                                message="Synthetic new Android receipt"))
+            reads_before = len(inbox_reads())
+            await refresh_tick(list_refresh=True)
+            await expect(page.locator('[data-inbox-open="payment:173"]')).to_be_visible()
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(5)
+            assert len(inbox_reads()) == reads_before + 1, (reads_before, len(inbox_reads()))
+            await expect(page.locator(".top-icon-badge")).to_have_text("4")
+
+            await page.locator('[data-inbox-open="technical:1"]').click()
+            await expect(page.locator(".inbox-details")).to_be_visible()
+            detail_before = await page.locator(".inbox-details").inner_text()
+            reads_before = len(inbox_reads())
+            rows.insert(0, dict(copy.deepcopy(original[3]), source_id=174))
+            await refresh_tick()
+            assert len(inbox_reads()) == reads_before
+            assert await page.locator(".inbox-details").inner_text() == detail_before
+            assert not await page.locator(".inbox-minimal-list").count()
+            await page.locator(".drawer-close").click()
+
+            paginated[0] = True
+            await page.locator('[data-action="feedback"]').click()
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(30)
+            await page.locator("#drawerContent").evaluate("el => { el.scrollTop=el.scrollHeight; }")
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(35)
+            scroll_before = await page.locator("#drawerContent").evaluate("el => el.scrollTop")
+            assert scroll_before > 40
+            reads_before = len(inbox_reads())
+            await refresh_tick()
+            assert len(inbox_reads()) == reads_before
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(35)
+            assert await page.locator("#drawerContent").evaluate("el => el.scrollTop") == scroll_before
+            # Checking an unchanged first page at the top must retain older
+            # pages already appended by keyset pagination.
+            await page.locator("#drawerContent").evaluate("el => { el.scrollTop=0; }")
+            await refresh_tick(list_refresh=True)
+            assert len(inbox_reads()) == reads_before + 1
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(35)
+            await page.locator(".drawer-close").click()
+
+            paginated[0] = False
+            await page.locator('[data-action="feedback"]').click()
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(6)
+            started, release = asyncio.Event(), asyncio.Event()
+            held_inbox[0] = (started, release)
+            rows.insert(0, dict(copy.deepcopy(original[3]), source_id=175))
+            await page.clock.fast_forward(16_000)
+            await asyncio.wait_for(started.wait(), timeout=5)
+            await page.locator(".drawer-close").click()
+            release.set()
+            await page.wait_for_load_state("networkidle")
+            assert not await page.locator("#overlay,.inbox-minimal-list").count()
+
+            # Clearing the private surface on offline cancels its timer too.
+            await page.evaluate("window.dispatchEvent(new Event('offline'))")
+            await expect(page.locator('[data-action="feedback"]')).to_have_count(0)
+            requests_before = len(requests)
+            await refresh_tick(poll=False)
+            assert len(requests) == requests_before
+            assert not await page.locator("#overlay,.inbox-minimal-list").count()
             assert not errors, errors
             assert not await page.evaluate("window.cspFailures"), await page.evaluate("window.cspFailures")
         finally:
             await browser.close()
-    print("Minimal Inbox: mobile/desktop UZ/RU/TJ, automatic urgency, read-on-open, private images and settings passed")
+    print("Minimal Inbox: mobile/desktop UZ/RU/TJ, automatic urgency, read-on-open, private images, foreground refresh and settings passed")
 
 
 if __name__ == "__main__":

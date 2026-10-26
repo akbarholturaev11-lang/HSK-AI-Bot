@@ -5,12 +5,12 @@ from uuid import uuid4
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
-from sqlalchemy import select
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+from sqlalchemy import or_, select, and_
 
 from app.admin_api.pwa_approval import _utc
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
-from app.admin_api.pwa_inbox import RowId, Source
+from app.admin_api.pwa_inbox import RowId, Source, source_eligible, source_timestamp
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.admin_api.pwa_step_up import _locked_session
 from app.admin_api.pwa_webauthn_transport import _body, _guard_post
@@ -33,6 +33,104 @@ class TriageRequest(BaseModel):
     source_id: RowId
     operation: str = Field(pattern=r"^(mark_read|assign_self|resolve|reopen|mark_important|clear_important)$")
     expected_revision: int = Field(strict=True, ge=0, le=2_147_483_646)
+
+
+class MarkAllReadRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    cutoff: str | None = Field(default=None, max_length=40)
+
+    @field_validator("cutoff")
+    @classmethod
+    def valid_cutoff(cls, value):
+        if value is None:
+            return None
+        if len(value) < 20:
+            raise ValueError("invalid timestamp")
+        timestamp = datetime.fromisoformat(value)
+        if timestamp.utcoffset() is None:
+            raise ValueError("timezone required")
+        return value
+
+
+async def mark_unread_batch(db, *, session_cookie, settings_obj, command, now=None):
+    """One authorized, bounded, audited batch. Never delete original reports.
+
+    Only rows created/submitted before the first request's server cutoff are
+    touched; new alerts arriving during the operation stay unread.
+    """
+    if not getattr(settings_obj, "ADMIN_PWA_ENABLED", False):
+        return None
+    stamp = _utc(now or datetime.now(timezone.utc))
+    cutoff = _utc(datetime.fromisoformat(command.cutoff)) if command.cutoff else stamp
+    if cutoff > stamp:
+        raise TriageConflict()
+    batch_limit = 200
+    modified = 0
+    async with db.begin():
+        pair = await _locked_session(db, session_cookie, settings_obj, stamp)
+        if pair is None:
+            return None
+        _, actor = pair
+        for source, model in _SOURCES.items():
+            if modified >= batch_limit:
+                break
+            row_ids = (await db.execute(
+                select(model.id).outerjoin(
+                    AdminPwaInboxTriage,
+                    and_(AdminPwaInboxTriage.source == source,
+                         AdminPwaInboxTriage.source_id == model.id),
+                ).where(
+                    source_eligible(source, stamp),
+                    source_timestamp(source) <= cutoff,
+                    or_(AdminPwaInboxTriage.status.is_(None),
+                        AdminPwaInboxTriage.status == "new"),
+                ).order_by(model.id.desc()).limit(batch_limit - modified)
+                .with_for_update(of=model)
+            )).scalars().all()
+            for source_id in row_ids:
+                key = (source, source_id)
+                triage = await db.get(AdminPwaInboxTriage, key, with_for_update=True)
+                if triage is not None and triage.status != "new":
+                    continue
+                if triage is None:
+                    triage = AdminPwaInboxTriage(
+                        source=source, source_id=source_id, status="read",
+                        priority="important" if source in ("payment", "android", "technical") else "normal",
+                        revision=1, read_at=stamp, updated_at=stamp,
+                        updated_by_user_id=int(actor.id),
+                    )
+                    db.add(triage)
+                else:
+                    triage.status = "read"
+                    triage.read_at = triage.read_at or stamp
+                    triage.updated_at = stamp
+                    triage.updated_by_user_id = int(actor.id)
+                    triage.revision += 1
+                db.add(AdminPwaInboxTriageAudit(
+                    id=str(uuid4()), source=source, source_id=source_id,
+                    operation="mark_read", actor_user_id=int(actor.id), created_at=stamp,
+                ))
+                modified += 1
+        await db.flush()
+        has_more = False
+        for source, model in _SOURCES.items():
+            left = await db.scalar(
+                select(model.id).outerjoin(
+                    AdminPwaInboxTriage,
+                    and_(AdminPwaInboxTriage.source == source,
+                         AdminPwaInboxTriage.source_id == model.id),
+                ).where(
+                    source_eligible(source, stamp),
+                    source_timestamp(source) <= cutoff,
+                    or_(AdminPwaInboxTriage.status.is_(None),
+                        AdminPwaInboxTriage.status == "new"),
+                ).limit(1)
+            )
+            if left is not None:
+                has_more = True
+                break
+    return {"updated": modified, "has_more": has_more,
+            "cutoff": cutoff.isoformat()}
 
 
 class TriageConflict(Exception):
@@ -159,6 +257,31 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
 
 def create_admin_pwa_inbox_triage_router(*, settings_obj, session_factory):
     router = APIRouter(tags=["admin-pwa-inbox-triage"])
+
+    @router.post("/api/admin/v1/inbox/mark-all-read")
+    async def mark_all_read(request: Request):
+        failure = _guard_post(request, settings_obj)
+        if failure is not None:
+            return failure
+        cookie = request.cookies.get(ADMIN_PWA_COOKIE_NAME, "")
+        if not cookie:
+            return _reply(401, "admin_pwa_unauthorized")
+        try:
+            command = MarkAllReadRequest.model_validate(await _body(request, 1024))
+        except (ValidationError, ValueError):
+            return _reply(400, "admin_pwa_invalid_payload")
+        try:
+            async with session_factory() as db:
+                result = await mark_unread_batch(
+                    db, session_cookie=cookie, settings_obj=settings_obj, command=command)
+        except TriageConflict:
+            return _reply(409, "admin_pwa_inbox_changed")
+        except Exception:
+            logger.error("Admin PWA inbox bulk read unavailable")
+            return _reply(503, "admin_pwa_inbox_unavailable")
+        if result is None:
+            return _reply(403, "admin_pwa_inbox_denied")
+        return JSONResponse({"ok": True, **result}, headers=_PRIVATE_HEADERS)
 
     @router.post("/api/admin/v1/inbox/triage")
     async def triage(request: Request):

@@ -16,6 +16,7 @@ from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.message import Message
 from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackResponse
+from app.db.models.user import User
 from tests import test_admin_pwa_payment_review as fixtures
 
 
@@ -197,6 +198,68 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         self.assertTrue(count["capped"])
         self.assertEqual(count["count_limit"],99)
 
+    async def test_one_tap_bulk_read_is_bounded_audited_and_keeps_future_alerts_new(self):
+        await self.seed()
+        now = datetime.now(timezone.utc).replace(microsecond=0)
+        async with self.sessions() as db:
+            db.add_all([
+                BotFeedback(
+                    user_id=1, telegram_id=1001,
+                    disliked_text="old subscriber feedback", status="completed",
+                    completed_at=now - timedelta(minutes=1),
+                )
+                for _ in range(204)
+            ])
+            # Unfinished questionnaire must not consume the reset batch or badge.
+            db.add_all([
+                BotFeedback(user_id=1, telegram_id=1001, status="pending")
+                for _ in range(30)
+            ])
+            await db.commit()
+        first = await self.post("inbox/mark-all-read", {})
+        self.assertEqual(first.status_code, 200, first.text)
+        self.assertEqual(first.json()["updated"], 200)
+        self.assertTrue(first.json()["has_more"])
+        cutoff = first.json()["cutoff"]
+        second = await self.post("inbox/mark-all-read", {"cutoff": cutoff})
+        self.assertEqual(second.status_code, 200, second.text)
+        self.assertFalse(second.json()["has_more"])
+        self.assertGreaterEqual(second.json()["updated"], 4)
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 0)
+        self.assertEqual((await self.post("inbox/mark-all-read", {"cutoff": cutoff})).json()["updated"], 0)
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(
+                select(func.count()).select_from(BotFeedback)
+                .where(BotFeedback.status == "pending")), 30)
+            self.assertGreaterEqual(await db.scalar(
+                select(func.count()).select_from(AdminPwaInboxTriageAudit)
+                .where(AdminPwaInboxTriageAudit.operation == "mark_read")), 208)
+        async with self.sessions() as db:
+            db.add(BotFeedback(
+                user_id=1, telegram_id=1001, status="completed",
+                disliked_text="fresh subscriber feedback",
+                completed_at=datetime.now(timezone.utc) + timedelta(seconds=1),
+            ))
+            await db.commit()
+        # The first request's cutoff must never touch newer completed reports.
+        later = await self.post("inbox/mark-all-read", {"cutoff": cutoff})
+        self.assertEqual(later.json()["updated"], 0)
+        self.assertEqual((await self.post("inbox/unread-count", {})).json()["unread_count"], 1)
+
+    async def test_bulk_mark_read_requires_real_admin_session_and_strict_payload(self):
+        for body in ({"cutoff": "yesterday"}, {"cutoff": "2026-10-26T07:25:00"},
+                     {"status": "all"}, {"cutoff": True}):
+            self.assertEqual((await self.post("inbox/mark-all-read", body)).status_code, 400)
+        for cookie, origin, code in ((None, "https://hskai.app", 401),
+                                      ("X"*64, "https://hskai.app", 403),
+                                      (fixtures.COOKIE, "https://evil.invalid", 403)):
+            response = await self.post("inbox/mark-all-read", {},
+                                       cookie=cookie, origin=origin)
+            self.assertEqual(response.status_code, code, response.text)
+        future = (datetime.now(timezone.utc) + timedelta(days=1)).isoformat()
+        self.assertEqual((await self.post(
+            "inbox/mark-all-read", {"cutoff": future})).status_code, 409)
+
     async def test_stale_revision_noop_invalid_operation_and_missing_source(self):
         ids = await self.seed()
         target = {"source": "bot", "source_id": ids["bot"], "operation": "mark_read",
@@ -219,6 +282,87 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
             **target, "operation": "reopen", "expected_revision": 1})).status_code, 409)
         async with self.sessions() as db:
             self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit)), 1)
+
+
+    async def test_passkey_feedback_detail_shows_user_context_without_leaking_inbox_ids(self):
+        ids = await self.seed()
+        now = datetime.now(timezone.utc).replace(microsecond=0)
+        async with self.sessions() as db:
+            user = await db.get(User, 1)
+            user.telegram_id = 1001
+            user.full_name = "Feedback Learner"
+            user.language = "tj"
+            user.level = "hsk4"
+            user.learning_mode = "qa"
+            user.created_at = now - timedelta(days=150)
+            basic = await db.get(BotFeedback, ids["bot"])
+            basic.liked_code = "course"
+            basic.liked_text = "Режими курс"
+            basic.disliked_code = "limits"
+            basic.disliked_text = "Лимитҳо каманд"
+            basic.reward_granted_at = now
+            paid = BotFeedback(
+                user_id=1, telegram_id=1001, status="completed", language="tj",
+                liked_code="paid_worth", liked_text="Стоила того — посоветую другу",
+                disliked_code="paid_daily", disliked_text="Ежедневная практика",
+                completed_at=now,
+            )
+            unfinished = BotFeedback(
+                user_id=1, telegram_id=1001, status="pending",
+                liked_code="course", liked_text="draft"
+            )
+            db.add_all([paid, unfinished])
+            await db.flush()
+            paid_id, unfinished_id = paid.id, unfinished.id
+            await db.commit()
+
+        listed = await self.post("inbox/list", {"source": "bot"})
+        self.assertEqual(listed.status_code, 200, listed.text)
+        self.assertNotIn("telegram_id", listed.text)
+        self.assertNotIn("Feedback Learner", listed.text)
+
+        free = await self.post("inbox/feedback-detail", {"source": "bot", "source_id": ids["bot"]})
+        self.assertEqual(free.status_code, 200, free.text)
+        self.assertEqual(free.headers["cache-control"], "no-store")
+        self.assertEqual(free.json()["name"], "Feedback Learner")
+        self.assertEqual(free.json()["telegram_id"], 1001)
+        self.assertEqual(free.json()["user_id"], 1)
+        self.assertEqual(free.json()["language"], "tj")
+        self.assertEqual(free.json()["level"], "hsk4")
+        self.assertEqual(free.json()["mode"], "qa")
+        self.assertGreaterEqual(free.json()["bot_days"], 149)
+        self.assertEqual(free.json()["feedback_parts"]["liked"], "Режими курс")
+        self.assertEqual(free.json()["feedback_parts"]["disliked"], "Лимитҳо каманд")
+        self.assertFalse(free.json()["feedback_parts"]["paid"])
+        self.assertTrue(free.json()["reward_granted"])
+
+        subscriber = await self.post("inbox/feedback-detail", {"source": "bot", "source_id": paid_id})
+        self.assertEqual(subscriber.status_code, 200, subscriber.text)
+        self.assertTrue(subscriber.json()["feedback_parts"]["paid"])
+        self.assertEqual(subscriber.json()["feedback_parts"]["disliked"], "Ежедневная практика")
+        self.assertIsNone(subscriber.json()["reward_granted"])
+
+        release = await self.post("inbox/feedback-detail", {"source": "release", "source_id": ids["release"]})
+        self.assertEqual(release.status_code, 200, release.text)
+        self.assertEqual(release.json()["telegram_id"], 2002)
+        self.assertEqual(release.json()["rating"], 4)
+        self.assertEqual(release.json()["message"], "private release")
+
+        self.assertEqual((await self.post("inbox/feedback-detail", {
+            "source": "bot", "source_id": unfinished_id})).status_code, 404)
+        self.assertEqual((await self.post("inbox/feedback-detail", {
+            "source": "payment", "source_id": self.payment_id})).status_code, 400)
+        self.assertEqual((await self.post("inbox/feedback-detail", {
+            "source": "bot", "source_id": -1})).status_code, 400)
+        self.assertEqual((await self.post("inbox/feedback-detail", {
+            "source": "bot", "source_id": paid_id}, cookie=None)).status_code, 401)
+        self.assertEqual((await self.post("inbox/feedback-detail", {
+            "source": "bot", "source_id": paid_id}, origin="https://evil.example")).status_code, 403)
+        async with self.sessions() as db:
+            await db.execute(update(AdminPwaSession).values(auth_method="google_telegram"))
+            await db.commit()
+        self.assertEqual((await self.post("inbox/feedback-detail", {
+            "source": "bot", "source_id": paid_id})).status_code, 401)
 
     async def test_fail_closed_for_cookie_origin_flag_expiry_and_non_passkey_session(self):
         ids = await self.seed()

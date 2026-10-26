@@ -21,6 +21,7 @@ from app.db.models.payment import Payment
 from app.db.models.referral import Referral
 from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackResponse
 from app.db.models.user import User
+from app.db.models.user_client_presence import UserClientPresence
 from tests import test_admin_pwa_payment_review as fixtures
 
 
@@ -413,7 +414,10 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertEqual(data["user"]["user_id"], 1)
         self.assertIsNotNone(data["user"]["access_expires_at"])
         self.assertEqual(data["course"]["progress"]["completed_lessons"], 7)
-        self.assertEqual(data["course"]["tracks"][0]["completed_lessons"], 3)
+        tracks = {row["track"]: row for row in data["course"]["tracks"]}
+        self.assertEqual(tracks["hsk20"]["completed_lessons"], 7)
+        self.assertTrue(tracks["hsk20"]["is_active"])
+        self.assertEqual(tracks["hsk30"]["completed_lessons"], 3)
         self.assertEqual(data["referral"], {"invited_total": 1, "invited_active": 1, "discount_qualified": 1})
         self.assertEqual((data["devices"][0]["total"], data["devices"][0]["linked"]), (2, 1))
         self.assertEqual(data["feedback_counts"], {"bot": 1, "release": 0})
@@ -428,6 +432,72 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertEqual(other["referral"]["invited_total"], 0)
         self.assertIsNone(other["course"]["progress"])
         self.assertEqual(response.headers["cache-control"], "no-store")
+
+    async def test_profile_live_course_count_overrides_stale_active_track_snapshot(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            user = await db.get(User, 1)
+            user.level = "nhsk1"
+            db.add_all([
+                CourseProgress(user_id=1, level="nhsk1", completed_lessons_count=2,
+                               last_completed_at=now),
+                CourseTrackState(user_id=1, track="hsk30", level="nhsk1",
+                                 completed_lessons_count=0),
+                CourseTrackState(user_id=1, track="hsk20", level="hsk2",
+                                 completed_lessons_count=4),
+            ])
+            await db.commit()
+        response = await self.post("users/detail", {"user_id": 1})
+        self.assertEqual(response.status_code, 200, response.text)
+        course = response.json()["course"]
+        tracks = {row["track"]: row for row in course["tracks"]}
+        self.assertEqual(course["progress"]["completed_lessons"], 2)
+        self.assertEqual(tracks["hsk30"]["completed_lessons"], 2)
+        self.assertTrue(tracks["hsk30"]["is_active"])
+        self.assertEqual(tracks["hsk20"]["completed_lessons"], 4)
+        self.assertFalse(tracks["hsk20"]["is_active"])
+
+    async def test_profile_active_track_without_saved_row_is_not_hidden(self):
+        async with self.sessions() as db:
+            user = await db.get(User, 1)
+            user.level = "nhsk1"
+            db.add(CourseProgress(user_id=1, level="nhsk1", completed_lessons_count=2))
+            await db.commit()
+        course = (await self.post("users/detail", {"user_id": 1})).json()["course"]
+        self.assertEqual(course["tracks"], [dict(track="hsk30", level="nhsk1",
+                         completed_lessons=2, unlocked_at=None, is_active=True)])
+
+    async def test_profile_pro_checkout_fallback_excludes_hsk30_and_flags_old_presence(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            user = await db.get(User, 1)
+            # The canonical-only fixture has no Telegram identity by default;
+            # Mini App presence requires a real linked Telegram account.
+            user.telegram_id = 1001
+            user.status, user.payment_status = "active", "approved"
+            user.end_date, user.created_at = now + timedelta(days=10), now - timedelta(days=1)
+            user.selected_plan_type, user.payment_method = None, None
+            db.add_all([
+                Payment(user_id=1, amount=90, currency="USD", plan_type="3_months",
+                        payment_method="visa", payment_status="approved"),
+                Payment(user_id=1, amount=10, currency="USD", plan_type="hsk30_unlock",
+                        payment_method="alipay", payment_status="approved"),
+                UserClientPresence(user_id=1, telegram_id=user.telegram_id,
+                                   surface="telegram_miniapp", platform="android",
+                                   first_seen_at=now-timedelta(days=5),
+                                   last_foreground_at=now-timedelta(days=3)),
+            ])
+            await db.commit()
+        response = await self.post("users/detail", {"user_id": 1})
+        self.assertEqual(response.status_code, 200, response.text)
+        profile = response.json()
+        self.assertEqual(profile["user"]["selected_plan_type"], "3_months")
+        self.assertEqual(profile["user"]["selected_payment_method"], "visa")
+        self.assertEqual(profile["miniapp_presence"][0]["platform"], "android")
+        self.assertTrue(profile["miniapp_presence"][0]["before_registration"])
+        directory = (await self.post("users/search", {"query": "1"})).json()
+        self.assertEqual(directory["items"][0]["last_approved_plan_type"], "3_months")
+        self.assertEqual(directory["items"][0]["last_approved_payment_method"], "visa")
 
     async def test_user_payment_history_pages_and_legacy_identity_never_guesses_account_id(self):
         async with self.sessions() as db:

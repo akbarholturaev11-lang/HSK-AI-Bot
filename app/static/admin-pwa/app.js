@@ -40,12 +40,13 @@ let locale = 'uz';
 try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj'].includes(saved)) locale = saved; } catch (_) {}
 const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? courseCopy?.[locale]?.[key] ?? '—';
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
-const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', courseTab:'tracks', period:'weekly', platform:'overall', rows:[], stats:null,
+const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', courseTab:'tracks', financeTab:'payments', period:'weekly', platform:'overall', rows:[], stats:null,
   query:'', segment:'all', status:'pending', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, paymentPreview=null, reviewChoice=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
-let inboxLoadingMore=false,inboxListScrollTop=0,inboxRequestNonce=0;
+let inboxLoadingMore=false,inboxListScrollTop=0,inboxRequestNonce=0,inboxBulkReading=false;
+let inboxRefreshTimer=null,inboxRefreshControl=null;
 let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
 const sectionBackStack=[];
 let automaticLoginAttempted=false, automaticLoginInProgress=false;
@@ -60,16 +61,17 @@ let coursePolicyRevision=null,hsk30Baseline=null;
 let courseData=null,courseLimitDraft=null,courseTrialDraft=null,courseLimitPlan='FREE';
 let courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};
 let courseAnalytics=null,courseAnalyticsDays=30,courseAnalyticsLoading=false,courseAnalyticsToken=0;
+let courseSalesMetrics=null,courseSalesLoading=false,courseSalesError=false,courseSalesToken=0;
 let managementMediaPreviewUrl=null, campaignMediaUpload=null;
 let feedbackLoadId=0;
 const feedbackStats={source:'all',period:'weekly',data:null,loading:false,error:false};
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
-  stopApprovalWatch();
+  stopApprovalWatch();stopInboxRefresh();
   cancelAdvancedAnalytics();cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
   epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
-  courseData=null;courseLimitDraft=null;courseTrialDraft=null;courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};courseAnalytics=null;courseAnalyticsToken++;courseAnalyticsLoading=false;state.phase=phase;state.error=null;render();
+  courseData=null;courseLimitDraft=null;courseTrialDraft=null;courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};courseAnalytics=null;courseAnalyticsToken++;courseAnalyticsLoading=false;courseSalesMetrics=null;courseSalesLoading=false;courseSalesError=false;courseSalesToken++;state.phase=phase;state.error=null;render();
 }
 function releaseManagementMediaPreview(){if(managementMediaPreviewUrl){URL.revokeObjectURL(managementMediaPreviewUrl);managementMediaPreviewUrl=null;}}
 async function api(path, body, {publicAuth=false, method='POST',rawBody=null,extraHeaders={},timeoutMs=15000,requestSignal=null}={}) {
@@ -557,9 +559,9 @@ function managementRow(label,attributes,glyph='settings'){
 }
 
 const courseCopy={
-uz:{tracks:'HSK 2.0 / 3.0',access:'Кириш ва лимитлар',trial:'Pro синови',experiment:'Сотув A/B',trackTitle:'HSK 3.0 курс',unlock:'Бир марталик очиш тўлови',active:'Фаол',inactive:'Ўчирилган',yes:'Ёқилган',no:'Ўчирилган',enabled:'Курс ҳолати',levels:'Фаол даражалар',price:'Бир марталик нарх',paid:'Тўлов талаб қилинади',free:'Бепул очилади',edit:'Таҳрирлаш',courseAccess:'Курсга кириш режими',courseAccessMode:'Кириш шарти',subscription:'Pro обуна талаб қилинади',freeUntil:'Маълум муддат бепул',until:'Бепул муддат тугайди',limits:'Free ва Trial лимитлари',plan:'Режа',freePlan:'Бепул (FREE)',trialPlan:'Pro синови (TRIAL_ACTIVE)',limitValue:'Миқдор',limitWindow:'Давр',daily:'Кунлик',lifetime:'Бир умр',save:'Сақлаш',note:'0 = функция ёпиқ. 1–10000 = рухсат этилган миқдор. Фақат кунлик ёки бир умр режими.',trialDays:'Муддат (кун)',trialReason:'Ўчириш сабаби',trialState:'Синов ҳолати',experimentNote:'Сотув тажрибаси ҳозирги хавфсиз бошқарув орқали созланади.',trialNote:'Trial AI бюджети ва бошқа қоидалар ўзгартирилмайди.',browse:'Кўриш ва бошқариш',courseStats:'Курс фаолияти',courseStatsHint:'Ҳақиқий статистика «Таҳлиллар → Курс ва фаоллик» бўлимида.',statsOpen:'Статистикани очиш',count:'Қоида',limitSaving:'Сақланаётган ўзгаришлар',trialSaving:'Синов созламаларини сақлаш',unchanged:'Ўзгариш киритилмаган',saved:'Сақланди'},
-ru:{tracks:'HSK 2.0 / 3.0',access:'Доступ и лимиты',trial:'Пробный Pro',experiment:'Продажи A/B',trackTitle:'Курс HSK 3.0',unlock:'Разовая разблокировка',active:'Активно',inactive:'Отключено',yes:'Включено',no:'Отключено',enabled:'Состояние курса',levels:'Открытые уровни',price:'Разовая цена',paid:'Платный доступ',free:'Бесплатный доступ',edit:'Изменить',courseAccess:'Режим доступа',courseAccessMode:'Условие доступа',subscription:'Требуется Pro',freeUntil:'Бесплатно до даты',until:'Действует до',limits:'Лимиты Free и Trial',plan:'Тариф',freePlan:'Бесплатный (FREE)',trialPlan:'Пробный Pro (TRIAL_ACTIVE)',limitValue:'Количество',limitWindow:'Период',daily:'В день',lifetime:'За всё время',save:'Сохранить',note:'0 = функция отключена. 1–10000 = разрешённое количество. Только дневной или пожизненный период.',trialDays:'Срок (дни)',trialReason:'Причина отключения',trialState:'Статус пробного периода',experimentNote:'Продажи A/B настраиваются через существующий защищённый редактор.',trialNote:'Бюджет AI и другие правила Trial не изменяются.',browse:'Открыть редактор',courseStats:'Активность курса',courseStatsHint:'Актуальные данные в «Аналитика → Курс и активность».',statsOpen:'Открыть аналитику',count:'Правило',limitSaving:'Сохраняемые изменения',trialSaving:'Сохранить Trial',unchanged:'Нет изменений',saved:'Сохранено'},
-tj:{tracks:'HSK 2.0 / 3.0',access:'Дастрасӣ ва маҳдудият',trial:'Санҷиши Pro',experiment:'Фурӯши A/B',trackTitle:'Курси HSK 3.0',unlock:'Кушодани якдафъаина',active:'Фаъол',inactive:'Хомӯш',yes:'Фаъол',no:'Хомӯш',enabled:'Ҳолати курс',levels:'Сатҳҳои фаъол',price:'Нархи якдафъаина',paid:'Бо пардохт',free:'Ройгон',edit:'Тағйир',courseAccess:'Реҷаи дастрасии курс',courseAccessMode:'Шарти дастрасӣ',subscription:'Обунаи Pro лозим',freeUntil:'То муҳлат ройгон',until:'То сана',limits:'Маҳдудияти Free ва Trial',plan:'Нақша',freePlan:'Ройгон (FREE)',trialPlan:'Санҷиши Pro (TRIAL_ACTIVE)',limitValue:'Миқдор',limitWindow:'Давра',daily:'Ҳар рӯз',lifetime:'Барои тамоми умр',save:'Сабт',note:'0 = ғайрифаъол. 1–10000 = миқдори иҷозат. Танҳо ҳаррӯз ё тамоми умр.',trialDays:'Муҳлат (рӯз)',trialReason:'Сабаби хомӯшкунӣ',trialState:'Ҳолати санҷиш',experimentNote:'Фурӯши A/B аз муҳаррири амн идора мешавад.',trialNote:'Буҷаи AI ва қоидаҳои дигари Trial тағйир намеёбанд.',browse:'Кушодани идоракунӣ',courseStats:'Фаъолияти курс',courseStatsHint:'Омори воқеӣ дар «Таҳлилҳо → Курс ва фаъолият».',statsOpen:'Кушодани омор',count:'Қоида',limitSaving:'Тағйироти сабтшаванда',trialSaving:'Сабти Trial',unchanged:'Тағйире нест',saved:'Сабт шуд'}
+uz:{tracks:'HSK 2.0 / 3.0',access:'Кириш ва лимитлар',trial:'Pro синови',experiment:'Сотув A/B',trackTitle:'HSK 3.0 курс',unlock:'Бир марталик очиш тўлови',active:'Фаол',inactive:'Ўчирилган',yes:'Ёқилган',no:'Ўчирилган',enabled:'Курс ҳолати',levels:'Фаол даражалар',price:'Бир марталик нарх',paid:'Тўлов талаб қилинади',free:'Бепул очилади',edit:'Таҳрирлаш',courseAccess:'Курсга кириш режими',courseAccessMode:'Кириш шарти',subscription:'Pro обуна талаб қилинади',freeUntil:'Маълум муддат бепул',until:'Бепул муддат тугайди',limits:'Free ва Trial лимитлари',plan:'Режа',freePlan:'Бепул (FREE)',trialPlan:'Pro синови (TRIAL_ACTIVE)',limitValue:'Миқдор',limitWindow:'Давр',daily:'Кунлик',lifetime:'Бир умр',save:'Сақлаш',note:'0 = функция ёпиқ. 1–10000 = рухсат этилган миқдор. Фақат кунлик ёки бир умр режими.',trialDays:'Муддат (кун)',trialReason:'Ўчириш сабаби',trialState:'Синов ҳолати',experimentNote:'Сотув тажрибаси ҳозирги хавфсиз бошқарув орқали созланади.',trialNote:'Trial AI бюджети ва бошқа қоидалар ўзгартирилмайди.',browse:'Кўриш ва бошқариш',count:'Қоида',limitSaving:'Сақланаётган ўзгаришлар',trialSaving:'Синов созламаларини сақлаш',unchanged:'Ўзгариш киритилмаган',saved:'Сақланди'},
+ru:{tracks:'HSK 2.0 / 3.0',access:'Доступ и лимиты',trial:'Пробный Pro',experiment:'Продажи A/B',trackTitle:'Курс HSK 3.0',unlock:'Разовая разблокировка',active:'Активно',inactive:'Отключено',yes:'Включено',no:'Отключено',enabled:'Состояние курса',levels:'Открытые уровни',price:'Разовая цена',paid:'Платный доступ',free:'Бесплатный доступ',edit:'Изменить',courseAccess:'Режим доступа',courseAccessMode:'Условие доступа',subscription:'Требуется Pro',freeUntil:'Бесплатно до даты',until:'Действует до',limits:'Лимиты Free и Trial',plan:'Тариф',freePlan:'Бесплатный (FREE)',trialPlan:'Пробный Pro (TRIAL_ACTIVE)',limitValue:'Количество',limitWindow:'Период',daily:'В день',lifetime:'За всё время',save:'Сохранить',note:'0 = функция отключена. 1–10000 = разрешённое количество. Только дневной или пожизненный период.',trialDays:'Срок (дни)',trialReason:'Причина отключения',trialState:'Статус пробного периода',experimentNote:'Продажи A/B настраиваются через существующий защищённый редактор.',trialNote:'Бюджет AI и другие правила Trial не изменяются.',browse:'Открыть редактор',count:'Правило',limitSaving:'Сохраняемые изменения',trialSaving:'Сохранить Trial',unchanged:'Нет изменений',saved:'Сохранено'},
+tj:{tracks:'HSK 2.0 / 3.0',access:'Дастрасӣ ва маҳдудият',trial:'Санҷиши Pro',experiment:'Фурӯши A/B',trackTitle:'Курси HSK 3.0',unlock:'Кушодани якдафъаина',active:'Фаъол',inactive:'Хомӯш',yes:'Фаъол',no:'Хомӯш',enabled:'Ҳолати курс',levels:'Сатҳҳои фаъол',price:'Нархи якдафъаина',paid:'Бо пардохт',free:'Ройгон',edit:'Тағйир',courseAccess:'Реҷаи дастрасии курс',courseAccessMode:'Шарти дастрасӣ',subscription:'Обунаи Pro лозим',freeUntil:'То муҳлат ройгон',until:'То сана',limits:'Маҳдудияти Free ва Trial',plan:'Нақша',freePlan:'Ройгон (FREE)',trialPlan:'Санҷиши Pro (TRIAL_ACTIVE)',limitValue:'Миқдор',limitWindow:'Давра',daily:'Ҳар рӯз',lifetime:'Барои тамоми умр',save:'Сабт',note:'0 = ғайрифаъол. 1–10000 = миқдори иҷозат. Танҳо ҳаррӯз ё тамоми умр.',trialDays:'Муҳлат (рӯз)',trialReason:'Сабаби хомӯшкунӣ',trialState:'Ҳолати санҷиш',experimentNote:'Фурӯши A/B аз муҳаррири амн идора мешавад.',trialNote:'Буҷаи AI ва қоидаҳои дигари Trial тағйир намеёбанд.',browse:'Кушодани идоракунӣ',count:'Қоида',limitSaving:'Тағйироти сабтшаванда',trialSaving:'Сабти Trial',unchanged:'Тағйире нест',saved:'Сабт шуд'}
 };
 const cx=key=>courseCopy[locale]?.[key]||courseCopy.uz[key]||key;
 const courseLimitTitles={'lesson.start':'Дарс бошлаш','ai.text':'AI матн','ai.photo':'AI расм','ai.voice':'AI овоз','speaking.session':'Speaking','practice.*':'Машқлар','practice.placement':'Даража тести','study.quiz':'Тест','study.audio':'Аудио','study.flashcard_translate':'Карточкалар'};
@@ -592,6 +594,62 @@ async function loadCourseAnalytics(){
     }
   }
 }
+const courseSalesCopy={
+  uz:{title:'A/B сотув натижалари',period:'Охирги 30 кун',control:'A · Одатдаги усул',treatment:'B · Янги усул',assigned:'Тестга кирганлар',matured:'7 куни тўлганлар',paid:'Тасдиқланган тўлов қилганлар',rate:'Сотув конверсияси',revenue:'Тушум',empty:'Ҳали A/B тест маълумотлари йўқ.',loading:'Сотув статистикаси юкланмоқда…',error:'Сотув статистикасини юклаб бўлмади.',pending:'Натижа ҳали якуний эмас.',winner:'B вариантининг устунлиги тасдиқланган.',warning:'Тест тақсимоти ёки натижаларни текшириш керак.',basis:'Конверсия фақат 7 кунлик натижа муддати тўлган фойдаланувчилар ва тасдиқланган тўловлар асосида ҳисобланади.'},
+  ru:{title:'Результаты продаж A/B',period:'Последние 30 дней',control:'A · Обычный вариант',treatment:'B · Новый вариант',assigned:'Включено в тест',matured:'Прошло 7 дней',paid:'Пользователей с подтверждённой оплатой',rate:'Конверсия в оплату',revenue:'Выручка',empty:'Данных A/B-теста пока нет.',loading:'Загрузка статистики продаж…',error:'Не удалось загрузить статистику продаж.',pending:'Вывод пока не окончательный.',winner:'Преимущество варианта B подтверждено.',warning:'Требуется проверить распределение и результаты теста.',basis:'Конверсия рассчитана только по пользователям с завершённым 7-дневным окном и подтверждёнными платежами.'},
+  tj:{title:'Натиҷаҳои фурӯши A/B',period:'30 рӯзи охир',control:'A · Усули ҷорӣ',treatment:'B · Усули нав',assigned:'Ба санҷиш дохилшуда',matured:'7 рӯз гузаштааст',paid:'Корбарони пардохташон тасдиқшуда',rate:'Табдил ба пардохт',revenue:'Даромад',empty:'Ҳоло маълумоти санҷиши A/B нест.',loading:'Омори фурӯш бор мешавад…',error:'Бор кардани омори фурӯш муяссар нашуд.',pending:'Натиҷа ҳанӯз ниҳоӣ нест.',winner:'Бартарии варианти B тасдиқ шудааст.',warning:'Тақсимот ва натиҷаҳои санҷишро санҷидан лозим аст.',basis:'Табдил танҳо барои корбарони дорои давраи 7-рӯзаи анҷомшуда ва пардохтҳои тасдиқшуда ҳисоб шудааст.'}
+};
+function courseSalesStats(){
+  const l=courseSalesCopy[locale]||courseSalesCopy.uz;
+  if(courseSalesLoading)return `<p class="secondary-note" role="status">${esc(l.loading)}</p>`;
+  if(courseSalesError)return `<p class="secondary-note" role="status">${esc(l.error)}</p>`;
+  const sales=courseSalesMetrics;
+  if(!sales)return `<p class="secondary-note" role="status">${esc(l.loading)}</p>`;
+  if(!sales.assigned)return `<p class="secondary-note">${esc(l.empty)}</p>`;
+  if(!sales.arms?.control||!sales.arms?.treatment)return `<p class="secondary-note">${esc(l.error)}</p>`;
+  const revenue=arm=>Object.entries(arm.revenue_by_currency||{}).filter(([,amount])=>typeof amount==='number'&&Number.isFinite(amount)).map(([currency,amount])=>`${number(amount)} ${esc(currency)}`).join(' · ')||'—';
+  const armCard=(key,label)=>{
+    const arm=sales.arms[key];
+    const conversion=arm.matured>0?percent(arm.approval_rate):'—';
+    return `<div class="course-sales-arm">
+      <div class="course-sales-arm-label">${esc(label)}</div>
+      <div class="course-sales-rate">${esc(conversion)}</div>
+      <div class="course-sales-rate-label">${esc(l.rate)}</div>
+      <dl class="course-sales-rows">
+        <div><dt>${esc(l.assigned)}</dt><dd>${esc(number(arm.assigned))}</dd></div>
+        <div><dt>${esc(l.matured)}</dt><dd>${esc(number(arm.matured))}</dd></div>
+        <div><dt>${esc(l.paid)}</dt><dd>${esc(number(arm.approved_users))}</dd></div>
+        <div><dt>${esc(l.revenue)}</dt><dd>${revenue(arm)}</dd></div>
+      </dl>
+    </div>`;
+  };
+  const conclusion=sales.status==='winner'&&sales.decision_ready?l.winner:
+    ['srm_warning','guardrail_failed'].includes(sales.status)?l.warning:l.pending;
+  return `<p class="course-sales-period">${esc(l.period)}</p>
+    <div class="course-sales-comparison">${armCard('control',l.control)}${armCard('treatment',l.treatment)}</div>
+    <p class="course-sales-conclusion">${esc(conclusion)}</p>
+    <p class="source-note">${esc(l.basis)}</p>`;
+}
+async function loadCourseSalesStats(){
+  if(!state.actor||state.route!=='course'||state.courseTab!=='experiment'||courseSalesLoading)return;
+  const at=epoch,request=++courseSalesToken;
+  courseSalesMetrics=null;courseSalesLoading=true;courseSalesError=false;
+  if(state.phase==='ready')render();
+  try{
+    const data=await api('analytics',{section:'experiments',period:'monthly',platform:'overall'});
+    if(at!==epoch||request!==courseSalesToken||state.route!=='course'||!state.actor)return;
+    courseSalesMetrics=data.available===false?null:(data.metrics?.sales?{...data.metrics.sales,status:data.metrics.sales_status}:null);
+    courseSalesError=data.available===false||!courseSalesMetrics;
+  }catch(error){
+    if(at!==epoch||request!==courseSalesToken||state.route!=='course'||!state.actor)return;
+    courseSalesError=true;
+  }finally{
+    if(at===epoch&&request===courseSalesToken){
+      courseSalesLoading=false;
+      if(state.route==='course'&&state.courseTab==='experiment'&&state.phase==='ready')render();
+    }
+  }
+}
 function renderCourseView(){
   const tabs=[['tracks','tracks'],['access','access'],['trial','trial'],['experiment','experiment']];
   const tabBar=`<div class="subtabs course-subtabs" role="tablist" aria-label="${esc(t('course'))}">${tabs.map(([id,key])=>`<button type="button" role="tab" aria-selected="${state.courseTab===id}" class="subtab ${state.courseTab===id?'active':''}" data-course-tab="${id}">${esc(cx(key))}</button>`).join('')}</div>`;
@@ -619,7 +677,7 @@ function renderCourseView(){
     ${courseCard(cx('trialState'),`<p class="secondary-note">${esc(cx('trialNote'))}</p><div class="profile-kv"><span class="kv-key">AI budget</span><strong class="kv-value">${esc(limits.trial.ai_budget_usd)} USD</strong><span class="kv-key">Min. account age</span><strong class="kv-value">${esc(limits.trial.min_account_age_hours)} h</strong></div>`)}</div>`;
   } else {
     body=`<div class="v6-two">${courseCard(cx('experiment'),`<p class="secondary-note">${esc(cx('experimentNote'))}</p><button type="button" class="btn primary" data-marketing-kind="sales_experiment">${esc(cx('browse'))}</button>`)}
-    ${courseCard(cx('courseStats'),`<p class="secondary-note">${esc(cx('courseStatsHint'))}</p><button type="button" class="btn" data-course-stats>${esc(cx('statsOpen'))}</button>`)}</div>`;
+    ${courseCard(courseSalesCopy[locale]?.title||courseSalesCopy.uz.title,courseSalesStats())}</div>`;
   }
   return `<div class="course-dashboard">${tabBar}<div class="course-content">${body}</div></div>`;
 }
@@ -657,6 +715,7 @@ function keepCourseEdits(){
 }
 async function loadCourseData(){
   const current=++view,at=epoch;
+  courseSalesToken++;courseSalesLoading=false;courseSalesError=false;courseSalesMetrics=null;
   state.phase='loading';state.error=null;render();
   try {
     const [hsk,access,limit]=await Promise.all([
@@ -672,6 +731,7 @@ async function loadCourseData(){
     courseTrialDraft={enabled:limit.limits.trial.enabled,days:limit.limits.trial.days,disabled_reason:limit.limits.trial.disabled_reason||''};
     state.phase='ready';render();
     if(state.courseTab==='tracks')void loadCourseAnalytics();
+    if(state.courseTab==='experiment')void loadCourseSalesStats();
   }catch(error){
     if(current!==view||at!==epoch||state.route!=='course'||!state.actor)return;
     state.phase='ready';state.error='error';render();
@@ -742,18 +802,48 @@ async function saveCourseLimits(){
   }finally{if(signing===control)signing=null;}
 }
 
+function financeView(){
+  // V10 finance hierarchy. All records and edits remain first-party API-backed.
+  // No demo balances, inferred payment platforms, exchange rates or mock counts.
+  const tabs=[['payments','payments'],['prices','subscriptionPrices'],['methods','paymentDetails'],['portfolio','ledger']];
+  const selected=tabs.some(([id])=>id===state.financeTab)?state.financeTab:'payments';
+  const tabBar='<div class="subtabs finance-tabs" role="tablist" aria-label="'+esc(t('payments'))+'">'+tabs.map(([id,label])=>
+    '<button type="button" role="tab" id="finance-tab-'+id+'" class="subtab'+(selected===id?' active':'')+'" data-finance-tab="'+id+'" aria-controls="finance-tabpanel" aria-selected="'+(selected===id)+'" tabindex="'+(selected===id?'0':'-1')+'">'+esc(t(label))+'</button>'
+  ).join('')+'</div>';
+  const tile=(label,attributes,glyph='wallet')=>'<div class="finance-tile">'+managementRow(t(label),attributes,glyph)+'</div>';
+  let body='';
+  if(selected==='payments'){
+    // Existing server-paginated financial ledger and explicit review steps are unchanged.
+    body='<div class="finance-payments-content">'+paymentsView()+'</div>'+
+      '<div class="finance-secondary">'+tile('deliveryQueue','data-action="deliveryList"','bell')+'</div>';
+  }else if(selected==='prices'){
+    body=tile('subscriptionPrices','data-action="priceSettings"','wallet');
+  }else if(selected==='methods'){
+    const qr=['alipay','wechat'].flatMap(method=>['10_days','1_month','3_months'].map(plan=>
+      '<div class="finance-tile"><button type="button" class="management-row" data-payment-qr-target="'+method+'-'+plan+'"><span class="management-row-icon">'+icon('credit')+'</span><strong>'+esc(method==='alipay'?'Alipay':'WeChat')+' · '+esc(t(plan))+'</strong>'+icon('chevron')+'</button></div>'
+    )).join('');
+    body='<section class="finance-group"><h2>'+esc(t('paymentDetails'))+'</h2><div class="finance-card-grid">'+
+      tile('paymentDetails','data-setting-kind="payment_details" data-bank="dc_city"','credit').replace('<strong>'+esc(t('paymentDetails'))+'</strong>','<strong>DC City</strong>')+
+      tile('paymentDetails','data-setting-kind="payment_details" data-bank="alif"','credit').replace('<strong>'+esc(t('paymentDetails'))+'</strong>','<strong>Alif</strong>')+
+      '</div></section><section class="finance-group"><h2>'+esc(t('paymentQrTitle'))+'</h2><div class="finance-card-grid">'+qr+'</div></section>';
+  }else{
+    body=tile('ledger','data-action="portfolioHistory"','wallet');
+  }
+  return '<div class="finance-page">'+tabBar+'<div id="finance-tabpanel" class="finance-content" role="tabpanel" aria-labelledby="finance-tab-'+selected+'">'+body+'</div></div>';
+}
+
 function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
   if(state.route==='course')return renderCourseView();
   if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('messages'),'data-action="messageList"','mega')+managementRow(t('adCampaigns'),'data-campaign-list="ad"','mega')+managementRow(t('releaseCampaigns'),'data-campaign-list="release"','bell')+managementRow(t('discountCampaigns'),'data-campaign-list="discount"','wallet')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
-  return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow(t('deliveryQueue'),'data-action="deliveryList"','bell')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
+  return `<div class="management-page">${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
-function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return (state.route==='stats'?statsCategoryNav():'')+statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
+function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return (state.route==='stats'?statsCategoryNav():'')+statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():financeView(); }
 async function load() {
   cancelAdvancedAnalytics();cancelStatisticsDownload();feedbackLoadId++;feedbackStats.loading=false;feedbackStats.data=null;
   if(!state.actor) return;const current=++view, authEpoch=epoch;state.phase='loading';state.error=null;render();
   if(state.route==='course'){await loadCourseData();return;}
-   if(['system','marketing'].includes(state.route)){state.phase='ready';render();return;}
+   if(['system','marketing'].includes(state.route)||(state.route==='payments'&&state.financeTab!=='payments')){state.phase='ready';render();return;}
   try {
     const data=await api(['home','stats'].includes(state.route)?'analytics':state.route==='users'?'users/search':'payments/list',
       ['home','stats'].includes(state.route)?{section:state.route==='home'?'home':state.statsTab,period:state.period,platform:state.platform}:state.route==='users'?{query:state.query,segment:state.segment,before_id:state.cursor,limit:30}:{status:state.status,before_id:state.cursor,limit:30});
@@ -772,6 +862,7 @@ async function boot() {
     // Never block the dashboard or raise a permission prompt during sign-in.
     void restorePushAfterLogin().catch(()=>{});
     await Promise.all([load(),refreshInboxUnread()]);
+    if(current===epoch&&state.actor)startInboxRefresh();
     if(current===epoch&&state.actor&&location.pathname==='/admin/'&&location.search==='?inbox=1'){
       history.replaceState(null,'','/admin/');
       await inbox(); // Only after current passkey Admin PWA login is verified.
@@ -1003,12 +1094,23 @@ async function userProfile(userId) {
     if(current!==drawerId||!state.actor)return;
     const u=data.user,c=data.course,r=data.referral,blocked=String(data.user.status||'').trim().toLowerCase()==='blocked';
     const section=(key,body)=>`<section class="profile-section"><h3>${esc(t(key))}</h3>${body}</section>`;
+    const courseRows=c.tracks.map(row=>{
+      const fields=[['level',row.level],['completedLessons',row.completed_lessons]];
+      if(row.is_active&&c.progress)fields.push(['lastLesson',date(c.progress.last_completed_at)]);
+      if(row.unlocked_at)fields.push(['unlocked',date(row.unlocked_at)]);
+      return `<article class="feedback-item"><strong>${esc(row.track==='hsk30'?'HSK 3.0':'HSK 2.0')}${row.is_active?' · '+esc(t('directoryStatusActive')):''}</strong>${profileFields(fields)}</article>`;
+    }).join('');
+    const nativeRows=data.devices.map(row=>`<article class="feedback-item"><strong>${esc({android:'Android',macos:'macOS',windows:'Windows'}[row.platform]||row.platform)}</strong>${profileFields([['linkedTotal',row.linked+' / '+row.total],['lastContact',date(row.last_contact_at)]])}</article>`).join('');
+    const miniappRows=data.miniapp_presence.map(row=>{
+      const platform={android:'Android',ios:'iOS',macos:'macOS',windows:'Windows',web:'Web',unknown:'—'}[row.platform]||row.platform;
+      const preRegistration=row.before_registration?`<p class="source-note">⚠ ${esc(t('created'))}: ${esc(date(u.created_at))}</p>`:'';
+      return `<article class="feedback-item"><strong>Telegram Mini App · ${esc(platform)}</strong>${profileFields([['lastActive',date(row.last_opened_at)]])}${preRegistration}</article>`;
+    }).join('');
     drawer('userProfile',`<div class="profile-heading"><h3>${esc(u.name||'—')}</h3><p>#${u.user_id} · ${esc(u.username||'—')}</p><span class="pill">${esc(t(u.access_state))}</span></div>`+
       profileFields([['language',u.language],['level',u.level],['created',date(u.created_at)],['lastActive',relativeLastActive(u.last_active_at)],['userSelectedPlan',displayPlan(u.selected_plan_type)],['userSelectedMethod',u.selected_payment_method||'—'],['accessUntil',date(u.access_expires_at)]])+
-      section('course',(c.progress?profileFields([['level',c.progress.level],['completedLessons',c.progress.completed_lessons],['lastLesson',date(c.progress.last_completed_at)]]):`<p class="source-note">${esc(t('empty'))}</p>`)+c.tracks.map(row=>`<p class="source-note">${esc(row.track==='hsk30'?'HSK 3.0':'HSK 2.0')} · ${esc(row.level)} · ${esc(t('completedLessons'))}: ${row.completed_lessons}${row.unlocked_at?' · '+esc(t('unlocked'))+' '+esc(date(row.unlocked_at)):''}</p>`).join(''))+
+      section('course',courseRows||`<p class="source-note">${esc(t('empty'))}</p>`)+
       section('referrals',profileFields([['invitedTotal',r.invited_total],['invitedActive',r.invited_active],['discountQualified',r.discount_qualified]]))+
-      section('devices',data.devices.map(row=>`<article class="feedback-item"><strong>${esc(row.platform)}</strong>${profileFields([['linkedTotal',row.linked+' / '+row.total],['lastContact',date(row.last_contact_at)]])}</article>`).join('')||`<p class="source-note">${esc(t('empty'))}</p>`)+
-      (data.miniapp_presence.length?section('miniappOpens',data.miniapp_presence.map(row=>`<p class="source-note">${esc(row.platform)} · ${esc(date(row.last_opened_at))}</p>`).join('')):'')+
+      section('devices',nativeRows+miniappRows||`<p class="source-note">${esc(t('empty'))}</p>`)+
       section('feedback',profileFields([['botFeedback',data.feedback_counts.bot],['releaseFeedback',data.feedback_counts.release]])+`<button class="btn" data-user-feedback="${userId}">${esc(t('openFeedback'))}</button>`)+
       section('paymentHistory',`<div id="profilePayments">${profilePayments(data.payments,userId)}</div>`)+
       section('userActions',`<div class="profile-access-editor">
@@ -1491,7 +1593,7 @@ function campaignSendTime(){
   const value=$('campaignSendAt')?.value;
   return value?new Date(value).toISOString():null;
 }
-function campaignCreate(kind,userId=null){
+function campaignCreate(kind,userId=null,options=null){
   if(!['release','discount'].includes(kind))return;
   closeDrawer();managementDraft={type:'campaign',kind:kind+'_create',campaignKind:kind};
   const input=(id,label,max,extra='')=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><input class="input" id="${id}" maxlength="${max}" ${extra}></div>`;
@@ -1516,6 +1618,11 @@ function campaignCreate(kind,userId=null){
   if(kind==='discount'&&Number.isSafeInteger(userId)&&userId>0&&$('discountTarget')){
     $('discountTarget').value=String(userId);
     if($('discountSegment'))$('discountSegment').hidden=true;
+  }
+  // The existing checkout discount policy permits targeted offers for 10/30 days.
+  if(kind==='discount'&&options&&['visa','alipay','wechat'].includes(options.method)&&['10_days','1_month'].includes(options.plan)){
+    $('discountMethod').value=options.method;
+    $('discountPlan').value=options.plan;
   }
 }
 function campaignChange(draft){
@@ -1680,6 +1787,19 @@ function updatePriceFields(){
   const qrField=$('priceQrField');
   if(qrButton)qrButton.hidden=!['alipay','wechat'].includes(row.method);
   if(qrField)qrField.hidden=!['alipay','wechat'].includes(row.method);
+  const discountButton=$('priceDiscountAction');
+  if(discountButton){
+    if(['10_days','1_month'].includes(row.plan)){
+      discountButton.dataset.financeDiscount=row.method+'-'+row.plan;
+      delete discountButton.dataset.campaignList;
+      discountButton.textContent=t('newDiscountCampaign');
+    }else{
+      // Three-month discounts are intentionally unsupported by checkout policy.
+      delete discountButton.dataset.financeDiscount;
+      discountButton.dataset.campaignList='discount';
+      discountButton.textContent=t('discountCampaigns');
+    }
+  }
   updateEditorSaveEnabled();
 }
 async function priceSettings(){
@@ -1691,7 +1811,7 @@ async function priceSettings(){
     if(!Array.isArray(data.prices)||data.prices.length!==9)throw Error('invalid_prices');
     managementDraft={type:'price',prices:data.prices};
     const select=(id,label,options)=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><select id="${id}" class="input">${options.map(([key,text])=>`<option value="${key}">${esc(text)}</option>`).join('')}</select></div>`;
-    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div><div class="form-field" id="priceQrField"><button type="button" class="btn" id="priceQrAction" data-action="priceQrSettings">${esc(t('paymentQrManage'))}</button></div></form>`;
+    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div><div class="form-field" id="priceQrField"><button type="button" class="btn" id="priceQrAction" data-action="priceQrSettings">${esc(t('paymentQrManage'))}</button></div><div class="form-field"><button type="button" class="btn" id="priceDiscountAction" data-finance-discount="visa-10_days">${esc(t('newDiscountCampaign'))}</button></div></form>`;
     drawer('subscriptionPrices',body,btn('saveChanges','managementPrepare','primary'));
     updatePriceFields();
   }catch(error){
@@ -1709,7 +1829,10 @@ async function priceQrSettings(method=null,plan=null){
     const qr=data.qr;
     if(!qr||qr.method!==method||qr.plan!==plan)throw Error('invalid_payment_qr');
     managementDraft={type:'payment_qr',method,plan,current:qr,mediaFile:null};
-    const body=`<form id="managementForm"><p class="source-note">${esc(t('paymentQrPrivateNote'))}</p>${managementFields(qr,'payment_qr')}<div class="form-field"><label for="paymentQrMediaFile">${esc(t('paymentQrImage'))}</label><input class="input" id="paymentQrMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">${esc(t('paymentQrMediaHint'))}</p><div id="paymentQrMediaPreview" aria-live="polite"></div><p class="alert" id="paymentQrMediaValidation" role="alert" hidden></p></div></form>`;
+    const discountLink=['10_days','1_month'].includes(plan)
+      ?`<button type="button" class="btn" data-finance-discount="${esc(method+'-'+plan)}">${esc(t('newDiscountCampaign'))}</button>`
+      :`<button type="button" class="btn" data-campaign-list="discount">${esc(t('discountCampaigns'))}</button>`;
+    const body=`<form id="managementForm"><p class="source-note">${esc(t('paymentQrPrivateNote'))}</p>${managementFields(qr,'payment_qr')}<div class="form-field">${discountLink}</div><div class="form-field"><label for="paymentQrMediaFile">${esc(t('paymentQrImage'))}</label><input class="input" id="paymentQrMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">${esc(t('paymentQrMediaHint'))}</p><div id="paymentQrMediaPreview" aria-live="polite"></div><p class="alert" id="paymentQrMediaValidation" role="alert" hidden></p></div></form>`;
     drawer('paymentQrTitle',body,btn('saveChanges','managementPrepare','primary'));
   }catch(error){
     if(current===drawerId&&at===epoch&&state.actor)drawer('paymentQrTitle',statePanel(errorKey(error)),btn('close','close')+`<button class="btn" data-payment-qr-target="${esc(method+'-'+plan)}">${esc(t('readCurrent'))}</button>`);
@@ -1742,6 +1865,7 @@ async function editSetting(kind,bank=null){
       }
       body+=`<div class="form-field"><label for="settingValue">${esc(t(kind==='help_video'?'videoLink':label))}</label><textarea id="settingValue" class="input setting-value" rows="${kind==='payment_details'?5:3}" maxlength="${maximum}" ${kind==='payment_details'?'required':''}>${esc(value)}</textarea></div>`;
     }
+    if(kind==='payment_details')body+=`<div class="form-field"><button type="button" class="btn" data-campaign-list="discount">${esc(t('discountCampaigns'))}</button></div>`;
     drawer(label,`<form id="managementForm">${body}</form>`,btn('saveChanges','managementPrepare','primary'));
     if(kind==='help_video')updateHelpVideoField();
   }catch(error){
@@ -2308,30 +2432,95 @@ function inboxDetails(row) {
     &&Number.isSafeInteger(id)&&id>0&&id<=2147483647;
   const attachmentId='inboxAttachment-'+source+'-'+id;
   const parts=row.feedback_parts||{};
-  const feedbackParts=source==='bot'&&(parts.liked||parts.disliked);
-  const text=feedbackParts?'<div class="inbox-detail-messages">'+
-    (parts.liked?'<p class="inbox-details-text"><span aria-hidden="true">'+(parts.paid===true?'💎':'👍')+'</span> '+esc(parts.liked)+'</p>':'')+
-    (parts.disliked?'<p class="inbox-details-text"><span aria-hidden="true">'+(parts.paid===true?'🔎':'👎')+'</span> '+esc(parts.disliked)+'</p>':'')+
-    '</div>':'<p class="inbox-details-text">'+esc(row.message||(source==='payment'?t('inboxPaymentReceipt'):t('empty')))+'</p>';
+  const paid=source==='bot'&&parts.paid===true;
   const kindIcon=icon(source==='android'?'device':source==='payment'?'credit':source==='technical'?'settings':'send');
+  const title=source==='bot'?t(paid?'inboxPaidFeedbackTitle':'inboxBotFeedbackTitle'):inboxKind(row);
+  const userId=Number.isSafeInteger(row.user_id)&&row.user_id>0?row.user_id:null;
+  const info=source==='bot'||source==='release';
+  const mode=row.mode==='qa'?t('questionAnswer'):row.mode==='course'?t('course'):row.mode;
+  const fields=info?[
+    ['👤',t('inboxFeedbackUser'),row.name],
+    ['🆔',t('inboxFeedbackTelegramId'),row.telegram_id],
+    ['🌐',t('language'),row.language],
+    ['📚',t('level'),row.level?.toLowerCase()==='beginner'?t('messageBeginner'):row.level?.toUpperCase()],
+    ['🎛',t('messageMode'),mode],
+    ['⏱',t('inboxFeedbackAge'),Number.isSafeInteger(row.bot_days)?row.bot_days+' '+t('relativeDay'):null]
+  ].filter(field=>field[2]!==null&&field[2]!==undefined&&field[2]!==''):[];
+  const userInfo=fields.length?'<div class="inbox-feedback-person">'+fields.map(([emoji,label,value])=>
+    '<div class="inbox-feedback-person-row"><span aria-hidden="true">'+emoji+'</span><span><strong>'+
+    esc(label)+':</strong> '+esc(value)+'</span></div>').join('')+'</div>':'';
+  const segment=(label,value,emoji)=>'<section class="inbox-feedback-answer"><h3><span aria-hidden="true">'+emoji+
+    '</span> '+esc(label)+':</h3><p>'+esc(value||'—')+'</p></section>';
+  const answers=source==='bot'?'<div class="inbox-feedback-answers">'+
+    segment(t(paid?'inboxFeedbackWorth':'inboxFeedbackLiked'),parts.liked,paid?'💳':'👍')+
+    segment(t(paid?'inboxFeedbackReason':'inboxFeedbackDisliked'),parts.disliked,paid?'🔍':'👎')+
+    (!paid&&row.reward_granted!==null&&row.reward_granted!==undefined?
+      '<p class="inbox-feedback-reward">🎁 '+esc(t('inboxFeedbackBonus'))+': <strong>'+
+      esc(t(row.reward_granted?'inboxFeedbackGranted':'inboxFeedbackNotGranted'))+'</strong></p>':'')+
+    '</div>':'<p class="inbox-details-text">'+esc(row.message||(source==='payment'?t('inboxPaymentReceipt'):t('empty')))+'</p>';
+  const actions=info&&userId?'<div class="inbox-detail-toolbar">'+
+    '<button type="button" class="btn primary" data-message-user="'+userId+'">'+icon('send')+esc(t('inboxFeedbackReply'))+'</button>'+
+    '<button type="button" class="btn" data-user-detail="'+userId+'">'+icon('user')+esc(t('openProfile'))+'</button>'+
+    '</div>':'';
   return '<div class="inbox-details">'+
-    '<button class="inbox-back" data-action="inboxBack" type="button">'+icon('chevron')+esc(t('feedback'))+'</button>'+
     '<div class="inbox-detail-heading"><span class="inbox-platform-icon" aria-hidden="true">'+kindIcon+'</span>'+
-    '<div><h2>'+esc(inboxKind(row))+'</h2><time>'+esc(date(row.created_at))+'</time></div></div>'+
+    '<div><h2>'+(source==='bot'?'📝 ':'')+esc(title)+'</h2><time>'+esc(date(row.created_at))+'</time></div></div>'+
     '<div class="inbox-detail-meta"><span>'+esc(t('platform'))+': <strong>'+esc(platform||t('unavailable'))+'</strong></span>'+
-    '<span>#'+esc(id)+'</span>'+(row.user_id?'<span>'+esc(t('account'))+' '+esc(row.user_id)+'</span>':'')+'</div>'+
-    '<div class="inbox-detail-body">'+text+
+    '<span>#'+esc(id)+'</span>'+(userId?'<span>'+esc(t('account'))+' '+esc(userId)+'</span>':'')+'</div>'+
+    '<div class="inbox-detail-body">'+userInfo+answers+
     (row.rating?'<p class="inbox-rating">★ '+esc(row.rating)+'/5</p>':'')+
     (row.app_version?'<p class="inbox-extra">'+esc(row.app_version)+'</p>':'')+
     (row.screen?'<p class="inbox-extra">'+esc(row.screen)+'</p>':'')+'</div>'+
     (canView?'<button type="button" class="btn" data-inbox-attachment="'+id+'" data-attachment-source="'+source+
       '" aria-controls="'+attachmentId+'" aria-expanded="false">'+esc(t('viewAttachment'))+'</button>'+
-      '<div class="inbox-attachment" id="'+attachmentId+'" aria-live="polite" hidden></div>':'')+'</div>';
+      '<div class="inbox-attachment" id="'+attachmentId+'" aria-live="polite" hidden></div>':'')+
+    actions+'</div>';
 }
 let currentInboxRows=[];
-function inboxRequest(before=null,userId=feedbackUserId) {
+function inboxRequest(before=null,userId=feedbackUserId,requestSignal=null) {
   return api('inbox/list',{source:'all',priority:'all',status:'all',period:'all_time',
-    search:null,user_id:userId,before,limit:30});
+    search:null,user_id:userId,before,limit:30},{requestSignal});
+}
+function stopInboxRefresh(){
+  clearTimeout(inboxRefreshTimer);inboxRefreshTimer=null;
+  inboxRefreshControl?.abort();inboxRefreshControl=null;
+}
+function startInboxRefresh(){
+  stopInboxRefresh();
+  const at=epoch;
+  const schedule=()=>{
+    if(at===epoch&&state.actor&&!document.hidden&&navigator.onLine)
+      inboxRefreshTimer=setTimeout(refresh,15000);
+  };
+  const refresh=async()=>{
+    inboxRefreshTimer=null;
+    if(at!==epoch||!state.actor||document.hidden||!navigator.onLine)return;
+    const control=new AbortController();inboxRefreshControl=control;
+    try{
+      if(busy||signing||inboxUpdating||inboxBulkReading)return;
+      await refreshInboxUnread(control.signal);
+      const scroller=$('drawerContent'),list=scroller?.querySelector('.inbox-minimal-list');
+      // Never replace an open detail/receipt/editor, a focused row or older
+      // pages while the admin is reading them. The bell still stays current.
+      if(at!==epoch||!state.actor||!list||scroller.scrollTop>=40||inboxLoadingMore||
+         inboxUpdating||inboxBulkReading||busy||signing||list.contains(document.activeElement))return;
+      const nonce=inboxRequestNonce,userId=feedbackUserId;
+      const data=await inboxRequest(null,userId,control.signal);
+      if(at!==epoch||!state.actor||nonce!==inboxRequestNonce||!list.isConnected||
+         scroller.scrollTop>=40||inboxLoadingMore||inboxUpdating||inboxBulkReading||busy||signing||
+         list.contains(document.activeElement))return;
+      const rows=Array.isArray(data.items)?data.items:[];
+      if(JSON.stringify(currentInboxRows.slice(0,rows.length))===JSON.stringify(rows)&&
+         (data.next_before||currentInboxRows.length===rows.length))return;
+      currentInboxRows=rows;inboxNextCursor=data.next_before;
+      renderInboxList(scroller.scrollTop);
+    }catch(_){/* Keep the last verified list and badge when a read fails. */}
+    finally{
+      if(inboxRefreshControl===control)inboxRefreshControl=null;
+      schedule();
+    }
+  };
+  schedule();
 }
 function maybeLoadInbox(){
   const scroller=$('drawerContent');
@@ -2341,6 +2530,9 @@ function maybeLoadInbox(){
 function renderInboxList(scrollTop=0){
   const body='<div class="inbox-shell inbox-minimal">'+
     (feedbackUserId?'<p class="inbox-account">'+esc(t('account'))+' #'+esc(feedbackUserId)+'</p>':'')+
+    (!feedbackUserId&&inboxUnread?.unread_count?
+      '<div class="inbox-bulk-tools"><button type="button" class="inbox-bulk-read" data-inbox-mark-all '+(inboxBulkReading?'disabled aria-busy="true"':'')+'>'+
+      icon('check')+esc(t('inboxMarkAllRead'))+'</button></div>':'')+
     '<div class="inbox-minimal-list">'+(currentInboxRows.map(inboxEntry).join('')||statePanel('empty'))+'</div>'+
     '<p class="inbox-scroll-status" aria-live="polite" role="status"></p></div>';
   drawer('feedback',body,null,'inbox-drawer');
@@ -2377,6 +2569,36 @@ async function loadMoreInbox(){
     }
   }
 }
+async function markAllInboxRead(){
+  if(inboxBulkReading||!state.actor||feedbackUserId!==null)return;
+  inboxBulkReading=true;
+  const at=epoch,nonce=inboxRequestNonce,button=document.querySelector('[data-inbox-mark-all]');
+  if(button){button.disabled=true;button.setAttribute('aria-busy','true');}
+  let cutoff=null,done=false,problem=false;
+  try{
+    // Each response updates at most 200 rows; the initial server cutoff
+    // ensures messages arriving during the reset remain unread.
+    for(let i=0;i<250;i++){
+      const data=await api('inbox/mark-all-read',{cutoff});
+      if(at!==epoch||nonce!==inboxRequestNonce||!state.actor)return;
+      if(typeof data.cutoff!=='string'||typeof data.has_more!=='boolean'||
+         !Number.isSafeInteger(data.updated)||data.updated<0)throw new Error('invalid_bulk_read');
+      cutoff=data.cutoff;
+      if(!data.has_more){done=true;break;}
+      if(data.updated===0)throw new Error('stalled_bulk_read');
+    }
+    if(at!==epoch||nonce!==inboxRequestNonce||!state.actor)return;
+    if(!done)problem=true;
+  }catch(error){problem=true;}
+  finally{
+    inboxBulkReading=false;
+    if(at===epoch&&nonce===inboxRequestNonce&&state.actor){
+      await refreshInboxUnread();
+      if(document.querySelector('.inbox-minimal-list'))await inbox(null,feedbackUserId);
+      showNotice(problem?'inboxActionError':'inboxSaved');
+    }
+  }
+}
 async function openInbox(source,id) {
   if(inboxUpdating||!state.actor)return;
   const row=currentInboxRows.find(item=>item.source===source&&item.source_id===id);
@@ -2400,7 +2622,14 @@ async function openInbox(source,id) {
       if(state.actor&&$('overlay'))drawerBack=()=>inbox(null,originatingUser);
       return;
     }
-    drawer('feedback',inboxDetails(row),null,'inbox-drawer');
+    let opened=row;
+    if(source==='bot'||source==='release'){
+      const detail=await api('inbox/feedback-detail',{source,source_id:id});
+      if(current!==drawerId||at!==epoch||!state.actor)return;
+      if(detail.source!==source||detail.source_id!==id)throw Error('invalid_feedback_detail');
+      opened={...row,...detail};
+    }
+    drawer('feedback',inboxDetails(opened),null,'inbox-drawer');
     drawerBack=()=>renderInboxList(inboxListScrollTop);
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;
@@ -2408,11 +2637,11 @@ async function openInbox(source,id) {
     await inbox(null,feedbackUserId);
   }finally{inboxUpdating=false;}
 }
-async function refreshInboxUnread() {
+async function refreshInboxUnread(requestSignal=null) {
   if(!state.actor)return;
   const id=state.actor.user_id,current=epoch;
   try{
-    const data=await api('inbox/unread-count',{});
+    const data=await api('inbox/unread-count',{},{requestSignal});
     if(current!==epoch||state.actor?.user_id!==id)return;
     if(!Number.isSafeInteger(data.unread_count)||data.unread_count<0||typeof data.capped!=='boolean')return;
     inboxUnread={unread_count:data.unread_count,capped:data.capped};
@@ -2656,7 +2885,6 @@ async function action(name) {
   if(name==='pushEnable'){await enablePush();return;}
   if(name==='mcpRevokeConfirm'){await revokeMcp();return;}
   if(name==='feedback'){await inbox();return;}
-  if(name==='inboxBack'){renderInboxList(inboxListScrollTop);return;}
   if(name==='approve'||name==='reject'){await prepareDecision(name);return;}
   if(name==='more'){
     const sections=['course','marketing','system'].map(route=>managementRow(t(route),'data-route="'+route+'"',{course:'book',marketing:'mega',system:'settings'}[route])).join('');
@@ -2790,7 +3018,7 @@ document.addEventListener('click',event=>{
     }
     else if(button.dataset.homeCohort){
       sectionBackStack.push(state.route);const target=button.dataset.homeCohort;
-      state.route=target==='pending'?'payments':'users';state.status='pending';
+      state.route=target==='pending'?'payments':'users';if(state.route==='payments')state.financeTab='payments';state.status='pending';
       state.segment=['expiring_pro','blocked'].includes(target)?target:'all';state.query='';state.cursor=null;state.previous=[];await load();
     }
     else if(button.dataset.userDays){
@@ -2798,11 +3026,23 @@ document.addEventListener('click',event=>{
         document.querySelectorAll('[data-user-days]').forEach(item=>item.classList.toggle('selected',item===button));}
     }
     else if(button.dataset.userDiscount){campaignCreate('discount',Number(button.dataset.userDiscount));}
+    else if(button.dataset.financeDiscount){
+      const match=/^(visa|alipay|wechat)-(10_days|1_month)$/.exec(button.dataset.financeDiscount);
+      if(match)campaignCreate('discount',null,{method:match[1],plan:match[2]});
+    }
     else if(button.dataset.menuToggle){toggleActionMenu(button);}
+    else if(button.dataset.financeTab){
+      if(state.route==='payments'&&['payments','prices','methods','portfolio'].includes(button.dataset.financeTab)){
+        const next=button.dataset.financeTab;
+        state.financeTab=next;
+        if(next==='payments'){state.cursor=null;state.previous=[];await load();}
+        else{state.phase='ready';state.error=null;render();}
+      }
+    }
     else if(button.dataset.route){
       if(state.route!==button.dataset.route)sectionBackStack.push(state.route);
       cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;
-      closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';state.segment='all';userFilterOpen=false;await load();
+      closeDrawer();state.route=button.dataset.route;if(state.route==='payments')state.financeTab='payments';state.cursor=null;state.previous=[];state.query='';state.segment='all';userFilterOpen=false;await load();
     }
     else if(button.dataset.campaignList){await campaignList(button.dataset.campaignList,Number(button.dataset.before)||null);}
     else if(button.dataset.campaignDetail){await campaignDetail(button.dataset.campaignKind,Number(button.dataset.campaignDetail));}
@@ -2833,9 +3073,8 @@ document.addEventListener('click',event=>{
     else if(button.dataset.partnerNext){await partnerEditor(null,Number(button.dataset.partnerNext));}
     else if(button.dataset.noticeKey){await noticeEditor(button.dataset.noticeKey);}
     else if(button.dataset.portfolioNext){await portfolioHistory(Number(button.dataset.portfolioNext));}
-    else if(button.dataset.courseTab){keepCourseEdits();state.courseTab=button.dataset.courseTab;render();if(state.courseTab==='tracks'&&!courseAnalytics&&!courseAnalyticsLoading)void loadCourseAnalytics();}
+    else if(button.dataset.courseTab){keepCourseEdits();state.courseTab=button.dataset.courseTab;render();if(state.courseTab==='tracks'&&!courseAnalytics&&!courseAnalyticsLoading)void loadCourseAnalytics();if(state.courseTab==='experiment'&&!courseSalesMetrics&&!courseSalesLoading)void loadCourseSalesStats();}
     else if(button.dataset.courseDays){courseAnalyticsDays=Number(button.dataset.courseDays);void loadCourseAnalytics();}
-    else if(button.dataset.courseStats){state.route='stats';state.statsTab='course';await load();}
     else if(button.dataset.statsTab){
       const next=button.dataset.statsTab;
       if(['overview','course','platform','funnel','money','sources','report'].includes(next)&&state.route==='stats'){
@@ -2866,6 +3105,7 @@ document.addEventListener('click',event=>{
       const match=/^(bot|release|android|payment|technical):([1-9][0-9]*)$/.exec(button.dataset.inboxOpen);
       if(match)await openInbox(match[1],Number(match[2]));
     }
+    else if(button.hasAttribute('data-inbox-mark-all')){await markAllInboxRead();}
     else if(button.dataset.inboxAttachment){await viewInboxAttachment(button);}
     else if(button.dataset.pushRevoke){await revokePush(button.dataset.pushRevoke);}
     else if(button.dataset.mcpRevoke){await confirmMcpRevoke(button.dataset.mcpRevoke,button.closest('article').querySelector('strong').textContent);}
