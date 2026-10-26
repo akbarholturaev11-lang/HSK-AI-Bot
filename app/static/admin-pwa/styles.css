@@ -835,18 +835,15 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 .marketing-tabs .subtab{display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .marketing-tabs .subtab svg{width:16px;height:16px;flex:none}
 .marketing-sections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;min-width:0}
-.marketing-panel{margin:0;padding:19px;min-width:0}
-.marketing-panel .panel-title{margin-bottom:14px}
-.marketing-panel .panel-title h2{font-size:14px}
-.marketing-panel .management-list{border:1px solid var(--line);box-shadow:none}
-.marketing-panel .management-row{min-height:60px}
-.marketing-panel .management-row-icon{width:36px;height:36px}
+.marketing-tile{background:#fff;border:1px solid var(--line);border-radius:15px;min-width:0;overflow:hidden;box-shadow:var(--shadow)}
+.marketing-tile .management-row{min-height:84px;border:0;padding:18px 20px}
+.marketing-tile .management-row:hover{background:#f5fafb}
+.marketing-tile .management-row-icon{width:40px;height:40px;border-radius:12px}
 @media(max-width:900px){.marketing-sections{grid-template-columns:1fr}}
 @media(max-width:760px){
   .marketing-tabs{width:100%;margin-bottom:14px;justify-content:flex-start;scrollbar-width:thin}
   .marketing-tabs .subtab{padding:10px 12px;font-size:11px}
   .marketing-tabs .subtab svg{width:15px;height:15px}
-  .marketing-panel{padding:15px}
   .marketing-sections{gap:12px}
-  .marketing-panel .management-row{min-height:58px}
+  .marketing-tile .management-row{min-height:72px;padding:14px 16px}
 }
