@@ -100,6 +100,22 @@ def check_apk_manifest(badging: str, tree: str, facts: dict) -> None:
                     f"Unsafe APK flag: {name}")
 
 
+def check_language_splits_disabled(config: dict) -> None:
+    """Users choose UZ/RU/TJ in-app; Play may not omit another language from base."""
+    dimensions = (
+        config.get("optimizations", {})
+        .get("splitsConfig", {})
+        .get("splitDimension", [])
+    )
+    require(
+        any(
+            dimension.get("value") == "LANGUAGE" and dimension.get("negate") is True
+            for dimension in dimensions
+        ),
+        "Play AAB splits language resources: UZ/RU/TJ must be available offline in the base APK",
+    )
+
+
 def check_elf(data: bytes, name: str) -> None:
     require(len(data) >= 52 and data[:4] == b"\x7fELF", f"Invalid ELF: {name}")
     elf_class, byte_order = data[4:6]
@@ -161,8 +177,11 @@ def validate(apk: Path, aab: Path, aapt2: Path, bundletool: Path) -> dict:
     )
     libraries = check_native_libraries(aab, apk=False)
     require(libraries == check_native_libraries(apk, apk=True), "APK/AAB native libraries differ")
+    # Always inspect the actual AAB. A config regression can occur in an app
+    # without native libraries too, and source-only checks cannot catch it.
+    config = json.loads(run(*bundle_command, "dump", "config", f"--bundle={aab}"))
+    check_language_splits_disabled(config)
     if libraries:
-        config = json.loads(run(*bundle_command, "dump", "config", f"--bundle={aab}"))
         alignment = config.get("optimizations", {}).get("uncompressNativeLibraries", {}).get("alignment")
         require(alignment == "PAGE_ALIGNMENT_16K", "AAB must request PAGE_ALIGNMENT_16K")
     return {**facts, "native_libraries": libraries, "apk_sha256": sha256(apk), "aab_sha256": sha256(aab)}

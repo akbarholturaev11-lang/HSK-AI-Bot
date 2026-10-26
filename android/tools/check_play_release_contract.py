@@ -82,6 +82,13 @@ require(
     bool(re.search(r'targetSdk\s*=\s*(3[6-9]|[4-9][0-9])\b', gradle)),
     "Review targetSdk: this 2026 Play candidate must target API 36 or newer.",
 )
+# Google Play's default per-language AAB splits omit RU/TJ when device locale
+# differs from the in-app account language, causing mixed-language UI. Require
+# all three locales in the delivered base APK, not on-demand locale splits.
+require(
+    bool(re.search(r"bundle\s*\{\s*language\s*\{\s*enableSplit\s*=\s*false\b", gradle)),
+    "Play AAB must disable language splits: app-selectable UZ/RU/TJ cannot depend on device locale.",
+)
 require(
     '"EXTERNAL_CHECKOUT_ENABLED", "false"' in gradle
     and '"DISTRIBUTION_CHANNEL", "\\"play\\""' in gradle,
