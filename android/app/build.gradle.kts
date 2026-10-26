@@ -128,6 +128,17 @@ android {
         androidResources.localeFilters += listOf("uz", "ru", "tg")
     }
 
+    // The user picks UZ/RU/TJ inside HSK AI, independently of the device language.
+    // Google Play otherwise installs only the language splits matching device
+    // settings; switching to RU/TJ then silently falls back to Uzbek UI labels.
+    // Include all supported locales in the base APK of the Play AAB.
+    // The direct APK already bundles resources, and ABI/density splits stay on.
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
+
     // The two distribution channels differ in exactly one thing: whether the
     // app may point the learner at a checkout outside the app. Google Play
     // forbids that, so the `play` build must not even CONTAIN the wording —
