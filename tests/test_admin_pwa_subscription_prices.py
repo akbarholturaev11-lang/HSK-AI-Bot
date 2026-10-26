@@ -124,6 +124,13 @@ class AdminPwaSubscriptionPriceTests(fixtures.PaymentFixtures, unittest.Isolated
                 db.add(PaymentQrCode(scope='subscription',payment_method=method,plan_type='10_days',
                     amount=35,currency='¥',file_id='staged-future-price-qr'))
                 await db.commit()
+            with self.assertRaisesRegex(prices.CommandError, 'payment_qr_required'):
+                await self.execute_price(command, proof)
+            async with self.sessions() as db:
+                self.assertEqual((await db.get(AdminPwaStepUp, proof)).status, 'verified')
+                db.add(PaymentQrCode(scope='subscription_20',payment_method=method,plan_type='10_days',
+                    amount=28,currency='¥',file_id='staged-future-20-percent-qr'))
+                await db.commit()
             result = await self.execute_price(command, proof)
             self.assertEqual((result["price"]["amount"], result["price"]["currency"]), (35, "¥"))
 
