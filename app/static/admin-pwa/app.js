@@ -40,7 +40,7 @@ let locale = 'uz';
 try { const saved = localStorage.getItem('hsk-admin-locale'); if (['uz','ru','tj'].includes(saved)) locale = saved; } catch (_) {}
 const t = key => window.HSKAI_ADMIN_I18N?.[locale]?.[key] ?? courseCopy?.[locale]?.[key] ?? '—';
 const btn = (label, action, variant='', disabled=false) => `<button class="btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${esc(t(label))}</button>`;
-const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', courseTab:'tracks', period:'weekly', platform:'overall', rows:[], stats:null,
+const state = {actor:null, phase:'loading', route:'home', statsTab:'overview', courseTab:'tracks', financeTab:'payments', period:'weekly', platform:'overall', rows:[], stats:null,
   query:'', segment:'all', status:'pending', cursor:null, previous:[], next:null, error:null, approval:null, enrollment:false, enrollmentOptions:null};
 let epoch=0, view=0, drawerId=0, confirmation=null, paymentPreview=null, reviewChoice=null, receiptLoaded=false, reviewId=null, signing=null, busy=false;
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
@@ -801,18 +801,50 @@ async function saveCourseLimits(){
   }finally{if(signing===control)signing=null;}
 }
 
+function financeView(){
+  // V10 finance hierarchy. All records and edits remain first-party API-backed.
+  // No demo balances, inferred payment platforms, exchange rates or mock counts.
+  const tabs=[['payments','payments'],['prices','subscriptionPrices'],['methods','paymentDetails'],['portfolio','ledger']];
+  const selected=tabs.some(([id])=>id===state.financeTab)?state.financeTab:'payments';
+  const tabBar='<div class="subtabs finance-tabs" role="tablist" aria-label="'+esc(t('payments'))+'">'+tabs.map(([id,label])=>
+    '<button type="button" role="tab" id="finance-tab-'+id+'" class="subtab'+(selected===id?' active':'')+'" data-finance-tab="'+id+'" aria-controls="finance-tabpanel" aria-selected="'+(selected===id)+'" tabindex="'+(selected===id?'0':'-1')+'">'+esc(t(label))+'</button>'
+  ).join('')+'</div>';
+  const tile=(label,attributes,glyph='wallet')=>'<div class="finance-tile">'+managementRow(t(label),attributes,glyph)+'</div>';
+  let body='';
+  if(selected==='payments'){
+    // Existing server-paginated financial ledger and explicit review steps are unchanged.
+    body='<div class="finance-payments-content">'+paymentsView()+'</div>'+
+      '<div class="finance-secondary">'+tile('deliveryQueue','data-action="deliveryList"','bell')+'</div>';
+  }else if(selected==='prices'){
+    body=tile('subscriptionPrices','data-action="priceSettings"','wallet');
+  }else if(selected==='methods'){
+    const banks=tile('paymentDetails','data-setting-kind="payment_details" data-bank="dc_city"','credit')
+      +tile('paymentDetails','data-setting-kind="payment_details" data-bank="alif"','credit');
+    const qr=['alipay','wechat'].flatMap(method=>['10_days','1_month','3_months'].map(plan=>
+      '<div class="finance-tile"><button type="button" class="management-row" data-payment-qr-target="'+method+'-'+plan+'"><span class="management-row-icon">'+icon('credit')+'</span><strong>'+esc(method==='alipay'?'Alipay':'WeChat')+' · '+esc(t(plan))+'</strong>'+icon('chevron')+'</button></div>'
+    )).join('');
+    body='<section class="finance-group"><h2>'+esc(t('paymentDetails'))+'</h2><div class="finance-card-grid">'+
+      tile('paymentDetails','data-setting-kind="payment_details" data-bank="dc_city"','credit').replace('<strong>'+esc(t('paymentDetails'))+'</strong>','<strong>DC City</strong>')+
+      tile('paymentDetails','data-setting-kind="payment_details" data-bank="alif"','credit').replace('<strong>'+esc(t('paymentDetails'))+'</strong>','<strong>Alif</strong>')+
+      '</div></section><section class="finance-group"><h2>'+esc(t('paymentQrTitle'))+'</h2><div class="finance-card-grid">'+qr+'</div></section>';
+  }else{
+    body=tile('ledger','data-action="portfolioHistory"','wallet');
+  }
+  return '<div class="finance-page">'+tabBar+'<div id="finance-tabpanel" class="finance-content" role="tabpanel" aria-labelledby="finance-tab-'+selected+'">'+body+'</div></div>';
+}
+
 function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
   if(state.route==='course')return renderCourseView();
   if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('messages'),'data-action="messageList"','mega')+managementRow(t('adCampaigns'),'data-campaign-list="ad"','mega')+managementRow(t('releaseCampaigns'),'data-campaign-list="release"','bell')+managementRow(t('discountCampaigns'),'data-campaign-list="discount"','wallet')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
-  return `<div class="management-page">${group('payments',managementRow(t('subscriptionPrices'),'data-action="priceSettings"','wallet')+managementRow(t('ledger'),'data-action="portfolioHistory"','wallet')+managementRow(t('deliveryQueue'),'data-action="deliveryList"','bell')+managementRow('DC City','data-setting-kind="payment_details" data-bank="dc_city"','credit')+managementRow('Alif','data-setting-kind="payment_details" data-bank="alif"','credit'))}${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
+  return `<div class="management-page">${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
-function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return (state.route==='stats'?statsCategoryNav():'')+statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():paymentsView(); }
+function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return (state.route==='stats'?statsCategoryNav():'')+statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():financeView(); }
 async function load() {
   cancelAdvancedAnalytics();cancelStatisticsDownload();feedbackLoadId++;feedbackStats.loading=false;feedbackStats.data=null;
   if(!state.actor) return;const current=++view, authEpoch=epoch;state.phase='loading';state.error=null;render();
   if(state.route==='course'){await loadCourseData();return;}
-   if(['system','marketing'].includes(state.route)){state.phase='ready';render();return;}
+   if(['system','marketing'].includes(state.route)||(state.route==='payments'&&state.financeTab!=='payments')){state.phase='ready';render();return;}
   try {
     const data=await api(['home','stats'].includes(state.route)?'analytics':state.route==='users'?'users/search':'payments/list',
       ['home','stats'].includes(state.route)?{section:state.route==='home'?'home':state.statsTab,period:state.period,platform:state.platform}:state.route==='users'?{query:state.query,segment:state.segment,before_id:state.cursor,limit:30}:{status:state.status,before_id:state.cursor,limit:30});
@@ -2923,7 +2955,7 @@ document.addEventListener('click',event=>{
     }
     else if(button.dataset.homeCohort){
       sectionBackStack.push(state.route);const target=button.dataset.homeCohort;
-      state.route=target==='pending'?'payments':'users';state.status='pending';
+      state.route=target==='pending'?'payments':'users';if(state.route==='payments')state.financeTab='payments';state.status='pending';
       state.segment=['expiring_pro','blocked'].includes(target)?target:'all';state.query='';state.cursor=null;state.previous=[];await load();
     }
     else if(button.dataset.userDays){
@@ -2932,10 +2964,18 @@ document.addEventListener('click',event=>{
     }
     else if(button.dataset.userDiscount){campaignCreate('discount',Number(button.dataset.userDiscount));}
     else if(button.dataset.menuToggle){toggleActionMenu(button);}
+    else if(button.dataset.financeTab){
+      if(state.route==='payments'&&['payments','prices','methods','portfolio'].includes(button.dataset.financeTab)){
+        const next=button.dataset.financeTab;
+        state.financeTab=next;
+        if(next==='payments'){state.cursor=null;state.previous=[];await load();}
+        else{state.phase='ready';state.error=null;render();}
+      }
+    }
     else if(button.dataset.route){
       if(state.route!==button.dataset.route)sectionBackStack.push(state.route);
       cancelStatisticsDownload();feedbackLoadId++;feedbackStats.data=null;feedbackStats.loading=false;
-      closeDrawer();state.route=button.dataset.route;state.cursor=null;state.previous=[];state.query='';state.segment='all';userFilterOpen=false;await load();
+      closeDrawer();state.route=button.dataset.route;if(state.route==='payments')state.financeTab='payments';state.cursor=null;state.previous=[];state.query='';state.segment='all';userFilterOpen=false;await load();
     }
     else if(button.dataset.campaignList){await campaignList(button.dataset.campaignList,Number(button.dataset.before)||null);}
     else if(button.dataset.campaignDetail){await campaignDetail(button.dataset.campaignKind,Number(button.dataset.campaignDetail));}
