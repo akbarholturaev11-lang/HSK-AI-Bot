@@ -214,8 +214,11 @@ async def browser_checks(output, *, media_only=False):
 
                 async def navigate(route_name, width):
                     if width == 390:
-                        await page.locator('[data-action="more"]').click()
-                        await page.locator(f'.more-sheet-list [data-route="{route_name}"]').click()
+                        if route_name=="payments":
+                            await page.locator('.mobile-tabs [data-route="payments"]').click()
+                        else:
+                            await page.locator('[data-action="more"]').click()
+                            await page.locator(f'.more-sheet-list [data-route="{route_name}"]').click()
                     else:
                         await page.locator(f'.nav [data-route="{route_name}"]').click()
                     await expect(page.locator(".course-dashboard" if route_name=="course" else ".finance-page" if route_name=="payments" else ".management-page")).to_be_visible()
