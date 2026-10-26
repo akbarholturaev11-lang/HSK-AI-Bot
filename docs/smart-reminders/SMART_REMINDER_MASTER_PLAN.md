@@ -938,3 +938,33 @@ NO shared account-scoped consent + durable one-study-job reservation is implemen
 - **Still unverified:** actual signed Direct/Play builds in learners' possession, offline APK behavior in the field, production FCM flag/replicas/live Alembic stamp, actual Telegram/Android provider delivery. Prior Railway access was denied; do not retry without fresh authorization.
 
 **Status:** P0.1.1 source ownership **expanded/PARTIAL**, P0.1.2 current Telegram UI **substantially traced/PARTIAL**, P0.1.3 deployment/APK evidence **BLOCKED**, P0.1.4 end-to-end learning/provenance and tests **PARTIAL**. OpenSpec task boxes remain unchecked; P1–P8 runtime **NOT STARTED**. **Next Codex slice:** obtain runnable checkout and execute the source-pinned baseline, design regression coverage for lifecycle-status mismatch and all 3 setup-cancel paths; complete historic/offline APK inventory and authorized staging deployment proof before any dual-sender migration. Do not claim code tests or rollout from this docs-only checkpoint.
+
+### 17.23 Executed P0 backend regressions — 2026-10-26 [45/45 PASS; RUNTIME UNCHANGED]
+
+**Execution evidence:** GitHub Actions **Smart Reminder P0 regression**, successful workflow run [#40324231283](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40324231283), job [#121576663279](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40324231283/job/121576663279), tested source commit `2152a43f0ef666979c7a4554f1a4e404e5cf50ee` on isolated branch `codex/smart-reminder-p0-tests-20261026`, derived from `main@47a0554e2bbb2875fbf9e0d798a59c6f7737192e`. GitHub reported job **completed/success**, and decoded runner logs show **`Ran 45 tests in 18.571s`**, **`OK`**. Tests ran on GitHub-hosted Ubuntu with Python 3.11, pinned `requirements.txt`, added `aiosqlite`, synthetic nonfunctional bot/DB/Redis environment variables and in-memory SQLite fixtures. No production APIs or user notifications were invoked.
+
+**Actual CI command:**
+
+```sh
+python -m unittest -v \
+  tests.test_smart_reminder_p0_regression \
+  tests.test_native_scheduler_transport \
+  tests.test_motivation_reminder_service \
+  tests.test_android_push \
+  tests.test_account_deletion_cleanup
+```
+
+| Evidence / newly added source | Observed CI result | Interpretation / limits |
+|---|---|---|
+| `tests/test_smart_reminder_p0_regression.py` — 5 new tests | **5/5 passed** | SQLite-backed legacy Telegram daily/weekly sends select active accounts with actual Telegram IDs, not free/trial/expired/blocked or native-only; current course access separately allows supported Free/Trial/Expired states; inline setup Cancel clears workflow but preserves persisted ON/time; inline selection persists explicit study ON/time. These tests document the **old implementation**, not approval to copy old status filters into Smart. |
+| `tests/test_native_scheduler_transport.py` | Passed as part of aggregate | Native-only user must not receive fake Telegram transport; established motivation, weekly and reachability guardrails retained. |
+| `tests/test_motivation_reminder_service.py` | Passed as part of aggregate | Existing D1 treatment/control and motivation eligibility tested without asserting a new Smart behavior. |
+| `tests/test_android_push.py` | Passed as part of aggregate | Device-scoped registration/preference/time-zone and serial once-per-day push tests; not a multi-device server job or real OS display test. |
+| `tests/test_account_deletion_cleanup.py` | Passed as part of aggregate | Existing account purge invariants; does not verify deletion of future Smart-owned tables (not yet implemented). |
+| `.github/workflows/smart-reminder-p0.yml` | Compiled new tests and ran this exact suite in a committed, read-only CI environment. | CI can re-run on PR/main changes in scope; focused tests do not simulate Android WorkManager/offline APK, production DB or provider delivery. |
+
+**Source/account-status fact confirmed by exercised tests:** Existing `CourseReminderService` only sends scheduled Telegram lesson and weekly reports to `User.status=="active"`, even when valid `free`, `trial`, `expired` users can study limited content under the canonical access service. This is a *currently observed status-filter mismatch*, **not** confirmation of production loss or approval to alter legacy message traffic now. The new Smart service must use verified course/target entitlement and study consent + blocked/deletion checks instead, and must have a separate rollout decision/test for Free/Trial cohorts.
+
+**P0 progress after actual CI:** P0.1.1 **PARTIAL** (remaining historical/other sender completeness); P0.1.2 **PARTIAL** (inline Cancel/ON actually tested; two text Cancel paths and historic actual OFF actions still need end-to-end regression); P0.1.3 **BLOCKED** (installed Direct/Play APK inventory, authorized production scheduler/FCM/database stamp), P0.1.4 **PARTIAL with 45 executable backend regression passes** (canonical lesson-event/retention maps and Android JVM/instrumented tests remain). `tasks.md` boxes remain unchecked until each entire numbered task has its acceptance evidence. P1–P8 **NOT STARTED**.
+
+**Required next action:** run full handler-level text Cancel regressions, Android JVM `ReminderDecisionTest`/`ReminderScheduleTest` and instrumented/old APK checks in the appropriate runner, then collect authorized staging/installed-fleet proof and final P0 task 1.3/1.4 matrix. Keep legacy/transactional delivery, financial/access and motivation paths stable, and no production rollout before explicit reviewed cutover.
