@@ -101,6 +101,25 @@ class PlayManifestTests(unittest.TestCase):
                 guard.check_apk_manifest(badging, tree, facts)
 
 
+class PlayLanguageBundleTests(unittest.TestCase):
+    def test_in_app_languages_must_not_be_play_configuration_splits(self):
+        enabled = {"optimizations": {"splitsConfig": {"splitDimension": [
+            {"value": "LANGUAGE", "negate": True},
+            {"value": "ABI", "negate": False},
+        ]}}}
+        guard.check_language_splits_disabled(enabled)
+        for broken in (
+            {},
+            {"optimizations": {"splitsConfig": {"splitDimension": []}}},
+            {"optimizations": {"splitsConfig": {"splitDimension": [{"value": "LANGUAGE"}]}}},
+            {"optimizations": {"splitsConfig": {"splitDimension": [
+                {"value": "LANGUAGE", "negate": False},
+            ]}}},
+        ):
+            with self.subTest(broken=broken), self.assertRaisesRegex(ValueError, "language resources"):
+                guard.check_language_splits_disabled(broken)
+
+
 class PlayNativeLibraryTests(unittest.TestCase):
     def test_both_elf_classes_and_byte_orders_work(self):
         for bits in (32, 64):
@@ -157,7 +176,10 @@ class PlayArtifactValidationTests(unittest.TestCase):
             apk, aab = Path(folder) / "play.apk", Path(folder) / "play.aab"
             native_zip(apk)
             native_zip(aab, bundle=True, aligned=False)
-            config = {"optimizations": {"uncompressNativeLibraries": {"alignment": "PAGE_ALIGNMENT_16K"}}}
+            config = {"optimizations": {
+                "splitsConfig": {"splitDimension": [{"value": "LANGUAGE", "negate": True}]},
+                "uncompressNativeLibraries": {"alignment": "PAGE_ALIGNMENT_16K"},
+            }}
 
             def execute(*args):
                 if "manifest" in args:
@@ -174,6 +196,10 @@ class PlayArtifactValidationTests(unittest.TestCase):
                 facts = guard.validate(apk, aab, Path("aapt2"), Path("bundletool.jar"))
                 self.assertEqual(facts["native_libraries"], ["lib/arm64-v8a/libfixture.so"])
                 self.assertTrue(any("validate" in call.args for call in command.call_args_list))
+                config["optimizations"]["splitsConfig"]["splitDimension"][0]["negate"] = False
+                with self.assertRaisesRegex(ValueError, "language resources"):
+                    guard.validate(apk, aab, Path("aapt2"), Path("bundletool.jar"))
+                config["optimizations"]["splitsConfig"]["splitDimension"][0]["negate"] = True
                 config["optimizations"]["uncompressNativeLibraries"]["alignment"] = "PAGE_ALIGNMENT_4K"
                 with self.assertRaisesRegex(ValueError, "PAGE_ALIGNMENT_16K"):
                     guard.validate(apk, aab, Path("aapt2"), Path("bundletool.jar"))
