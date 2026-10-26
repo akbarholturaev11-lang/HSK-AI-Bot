@@ -1591,7 +1591,7 @@ function campaignSendTime(){
   const value=$('campaignSendAt')?.value;
   return value?new Date(value).toISOString():null;
 }
-function campaignCreate(kind,userId=null){
+function campaignCreate(kind,userId=null,options=null){
   if(!['release','discount'].includes(kind))return;
   closeDrawer();managementDraft={type:'campaign',kind:kind+'_create',campaignKind:kind};
   const input=(id,label,max,extra='')=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><input class="input" id="${id}" maxlength="${max}" ${extra}></div>`;
@@ -1616,6 +1616,11 @@ function campaignCreate(kind,userId=null){
   if(kind==='discount'&&Number.isSafeInteger(userId)&&userId>0&&$('discountTarget')){
     $('discountTarget').value=String(userId);
     if($('discountSegment'))$('discountSegment').hidden=true;
+  }
+  // The existing checkout discount policy permits targeted offers for 10/30 days.
+  if(kind==='discount'&&options&&['visa','alipay','wechat'].includes(options.method)&&['10_days','1_month'].includes(options.plan)){
+    $('discountMethod').value=options.method;
+    $('discountPlan').value=options.plan;
   }
 }
 function campaignChange(draft){
@@ -1780,6 +1785,19 @@ function updatePriceFields(){
   const qrField=$('priceQrField');
   if(qrButton)qrButton.hidden=!['alipay','wechat'].includes(row.method);
   if(qrField)qrField.hidden=!['alipay','wechat'].includes(row.method);
+  const discountButton=$('priceDiscountAction');
+  if(discountButton){
+    if(['10_days','1_month'].includes(row.plan)){
+      discountButton.dataset.financeDiscount=row.method+'-'+row.plan;
+      delete discountButton.dataset.campaignList;
+      discountButton.textContent=t('newDiscountCampaign');
+    }else{
+      // Three-month discounts are intentionally unsupported by checkout policy.
+      delete discountButton.dataset.financeDiscount;
+      discountButton.dataset.campaignList='discount';
+      discountButton.textContent=t('discountCampaigns');
+    }
+  }
   updateEditorSaveEnabled();
 }
 async function priceSettings(){
@@ -1791,7 +1809,7 @@ async function priceSettings(){
     if(!Array.isArray(data.prices)||data.prices.length!==9)throw Error('invalid_prices');
     managementDraft={type:'price',prices:data.prices};
     const select=(id,label,options)=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><select id="${id}" class="input">${options.map(([key,text])=>`<option value="${key}">${esc(text)}</option>`).join('')}</select></div>`;
-    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div><div class="form-field" id="priceQrField"><button type="button" class="btn" id="priceQrAction" data-action="priceQrSettings">${esc(t('paymentQrManage'))}</button></div></form>`;
+    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div><div class="form-field" id="priceQrField"><button type="button" class="btn" id="priceQrAction" data-action="priceQrSettings">${esc(t('paymentQrManage'))}</button></div><div class="form-field"><button type="button" class="btn" id="priceDiscountAction" data-finance-discount="visa-10_days">${esc(t('newDiscountCampaign'))}</button></div></form>`;
     drawer('subscriptionPrices',body,btn('saveChanges','managementPrepare','primary'));
     updatePriceFields();
   }catch(error){
@@ -1809,7 +1827,10 @@ async function priceQrSettings(method=null,plan=null){
     const qr=data.qr;
     if(!qr||qr.method!==method||qr.plan!==plan)throw Error('invalid_payment_qr');
     managementDraft={type:'payment_qr',method,plan,current:qr,mediaFile:null};
-    const body=`<form id="managementForm"><p class="source-note">${esc(t('paymentQrPrivateNote'))}</p>${managementFields(qr,'payment_qr')}<div class="form-field"><label for="paymentQrMediaFile">${esc(t('paymentQrImage'))}</label><input class="input" id="paymentQrMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">${esc(t('paymentQrMediaHint'))}</p><div id="paymentQrMediaPreview" aria-live="polite"></div><p class="alert" id="paymentQrMediaValidation" role="alert" hidden></p></div></form>`;
+    const discountLink=['10_days','1_month'].includes(plan)
+      ?`<button type="button" class="btn" data-finance-discount="${esc(method+'-'+plan)}">${esc(t('newDiscountCampaign'))}</button>`
+      :`<button type="button" class="btn" data-campaign-list="discount">${esc(t('discountCampaigns'))}</button>`;
+    const body=`<form id="managementForm"><p class="source-note">${esc(t('paymentQrPrivateNote'))}</p>${managementFields(qr,'payment_qr')}<div class="form-field">${discountLink}</div><div class="form-field"><label for="paymentQrMediaFile">${esc(t('paymentQrImage'))}</label><input class="input" id="paymentQrMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">${esc(t('paymentQrMediaHint'))}</p><div id="paymentQrMediaPreview" aria-live="polite"></div><p class="alert" id="paymentQrMediaValidation" role="alert" hidden></p></div></form>`;
     drawer('paymentQrTitle',body,btn('saveChanges','managementPrepare','primary'));
   }catch(error){
     if(current===drawerId&&at===epoch&&state.actor)drawer('paymentQrTitle',statePanel(errorKey(error)),btn('close','close')+`<button class="btn" data-payment-qr-target="${esc(method+'-'+plan)}">${esc(t('readCurrent'))}</button>`);
@@ -1842,6 +1863,7 @@ async function editSetting(kind,bank=null){
       }
       body+=`<div class="form-field"><label for="settingValue">${esc(t(kind==='help_video'?'videoLink':label))}</label><textarea id="settingValue" class="input setting-value" rows="${kind==='payment_details'?5:3}" maxlength="${maximum}" ${kind==='payment_details'?'required':''}>${esc(value)}</textarea></div>`;
     }
+    if(kind==='payment_details')body+=`<div class="form-field"><button type="button" class="btn" data-campaign-list="discount">${esc(t('discountCampaigns'))}</button></div>`;
     drawer(label,`<form id="managementForm">${body}</form>`,btn('saveChanges','managementPrepare','primary'));
     if(kind==='help_video')updateHelpVideoField();
   }catch(error){
@@ -2961,6 +2983,10 @@ document.addEventListener('click',event=>{
         document.querySelectorAll('[data-user-days]').forEach(item=>item.classList.toggle('selected',item===button));}
     }
     else if(button.dataset.userDiscount){campaignCreate('discount',Number(button.dataset.userDiscount));}
+    else if(button.dataset.financeDiscount){
+      const match=/^(visa|alipay|wechat)-(10_days|1_month)$/.exec(button.dataset.financeDiscount);
+      if(match)campaignCreate('discount',null,{method:match[1],plan:match[2]});
+    }
     else if(button.dataset.menuToggle){toggleActionMenu(button);}
     else if(button.dataset.financeTab){
       if(state.route==='payments'&&['payments','prices','methods','portfolio'].includes(button.dataset.financeTab)){
