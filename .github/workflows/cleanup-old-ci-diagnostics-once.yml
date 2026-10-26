@@ -1,0 +1,98 @@
+name: One-time cleanup of old CI diagnostic reports
+
+# Only this temporary branch triggers the cleanup.
+on:
+  push:
+    branches:
+      - chore/cleanup-old-ci-diagnostics-20261026
+    paths:
+      - .github/workflows/cleanup-old-ci-diagnostics-once.yml
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Delete only stale diagnostic reports, never release or APK artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import collections
+          import datetime as dt
+          import json
+          import os
+          import urllib.error
+          import urllib.request
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          token = os.environ["GH_TOKEN"]
+          api = f"https://api.github.com/repos/{repo}/actions/artifacts"
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+              "User-Agent": "hsk-ai-scoped-ci-diagnostic-cleanup",
+          }
+          # Intentionally strict allowlist; release, signing, APK, AAB and
+          # Play-readiness artifacts are not eligible even if very old.
+          allowed_exact = {
+              "android-reports",
+              "android-flow-regressions",
+              "admin-pwa-browser-synthetic",
+              "hsk-native-postgres-regressions",
+              "hsk-i18n-p0-audit",
+          }
+          allowed_prefix = ("hsk-i18n-p0-source-contracts-",)
+          now = dt.datetime.now(dt.timezone.utc)
+          cutoff = now - dt.timedelta(days=3)
+
+          def request(url, method="GET"):
+              req = urllib.request.Request(url, method=method, headers=headers)
+              with urllib.request.urlopen(req, timeout=35) as res:
+                  if method == "DELETE":
+                      return None
+                  return json.load(res)
+
+          artifacts = []
+          for page in range(1, 76):
+              data = request(f"{api}?per_page=100&page={page}")
+              batch = data.get("artifacts", [])
+              artifacts.extend(batch)
+              if len(batch) < 100:
+                  break
+          else:
+              raise RuntimeError("Artifact listing exceeds safe scan limit; no deletions performed")
+
+          groups = collections.defaultdict(list)
+          for art in artifacts:
+              name = art.get("name", "")
+              if name in allowed_exact or name.startswith(allowed_prefix):
+                  groups[name].append(art)
+          candidates = []
+          for name, group in groups.items():
+              # Always retain two most recent artifacts of each exact name.
+              group.sort(key=lambda a: a.get("created_at", ""), reverse=True)
+              for art in group[2:]:
+                  created = dt.datetime.fromisoformat(art["created_at"].replace("Z", "+00:00"))
+                  if created < cutoff and not art.get("expired", False):
+                      candidates.append(art)
+          # Free the most space with the fewest deletions; cap each one-off run.
+          candidates.sort(key=lambda a: (int(a.get("size_in_bytes", 0)), a.get("created_at", "")), reverse=True)
+          selected = candidates[:120]
+          print(f"Scanned {len(artifacts)} artifacts; {len(candidates)} eligible; deleting {len(selected)}")
+          released = 0
+          for art in selected:
+              art_id = int(art["id"])
+              name = art["name"]
+              size = int(art.get("size_in_bytes", 0))
+              request(f"{api}/{art_id}", method="DELETE")
+              released += size
+              print(f"Deleted diagnostic artifact {art_id} {name} {size} bytes")
+          print(f"Cleanup complete: deleted {len(selected)}, estimated freed {released / 1048576:.1f} MiB")
+          print("APK/AAB, release and all non-allowlisted artifacts were not touched")
+          PY
