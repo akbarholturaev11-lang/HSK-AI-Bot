@@ -357,12 +357,24 @@ async def browser_checks(output, *, media_only=False):
                         await page.screenshot(path=str(output / f"finance-prices-{language}-{width}.png"))
                         await page.locator('[data-action="priceSettings"]').click()
                         await expect(page.locator("#priceAmount")).to_have_value("29")
-                        await expect(page.locator('#priceDiscountAction')).to_have_attribute('data-finance-discount', 'visa-10_days')
+                        await expect(page.locator('#priceDiscountAction')).to_have_count(0)
+                        await expect(page.locator('#priceQrField')).to_be_hidden()
                         await page.locator("#pricePlan").select_option("3_months")
-                        await expect(page.locator('#priceDiscountAction')).to_have_attribute('data-campaign-list', 'discount')
-                        await expect(page.locator('#priceDiscountAction')).not_to_have_attribute('data-finance-discount', 'visa-3_months')
+                        await expect(page.locator('#priceDiscountAction')).to_have_count(0)
                         await page.locator("#pricePlan").select_option("1_month")
-                        await expect(page.locator('#priceDiscountAction')).to_have_attribute('data-finance-discount', 'visa-1_month')
+                        await page.locator("#priceMethod").select_option("alipay")
+                        await expect(page.locator('#priceQrField')).to_be_visible()
+                        await page.locator("#priceAmount").fill("79")
+                        await expect(page.locator("#priceQrBaseFile")).to_be_visible()
+                        await expect(page.locator("#priceQrDiscountFile")).to_be_visible()
+                        await expect(page.locator('#priceQrBaseFileStatus')).to_contain_text('79 ¥')
+                        await expect(page.locator('#priceQrDiscountFileStatus')).to_contain_text('63 ¥')
+                        await expect(page.locator('#priceQrAction')).to_have_count(0)
+                        await expect(page.locator('#priceQrDiscountAction')).to_have_count(0)
+                        await expect(page.locator('#drawerFoot [data-action="managementPrepare"]')).to_be_disabled()
+                        await close_or_wait()
+                        await page.locator('[data-action="priceSettings"]').click()
+                        await page.locator("#pricePlan").select_option("1_month")
                         await page.locator("#priceAmount").fill(str(300 + index + (10 if width == 390 else 0)))
                         await prepare_and_save(language, f"price-confirm-{language}-{width}.png")
                         assert await page.evaluate("document.documentElement.scrollWidth <= innerWidth")
@@ -376,6 +388,45 @@ async def browser_checks(output, *, media_only=False):
                     await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
                     await db.commit()
+                # An edited China price requires two signed, exact-amount QR uploads
+                # from THIS SAME editor. Save must remain locked after only one.
+                # No second drawer or duplicate create-discount button may appear.
+                if not media_only:
+                    await navigate("payments", 1440)
+                    await page.locator('[data-finance-tab="prices"]').click()
+                    await page.locator('[data-action="priceSettings"]').click()
+                    await page.locator('#priceMethod').select_option('alipay')
+                    await page.locator('#pricePlan').select_option('1_month')
+                    await page.locator('#priceAmount').fill('79')
+                    price_save=page.locator('#drawerFoot [data-action="managementPrepare"]')
+                    await expect(price_save).to_be_disabled()
+                    await page.locator('#priceQrBaseFile').set_input_files({
+                        'name':'price-standard.png','mimeType':'image/png','buffer':promo_image})
+                    await wait_step_up(page)
+                    await finish_step_up(page)
+                    await expect(page.locator('#priceQrBaseFileStatus')).to_contain_text(
+                        await page.evaluate('() => window.HSKAI_ADMIN_I18N.uz.paymentQrSet'),timeout=20000)
+                    await expect(price_save).to_be_disabled()
+                    assert await page.locator('#drawerTitle').inner_text() == (
+                        await page.evaluate('() => window.HSKAI_ADMIN_I18N.uz.subscriptionPrices'))
+                    await page.locator('#priceQrDiscountFile').set_input_files({
+                        'name':'price-discount-20.png','mimeType':'image/png','buffer':promo_image})
+                    await wait_step_up(page)
+                    await finish_step_up(page)
+                    await expect(page.locator('#priceQrDiscountFileStatus')).to_contain_text(
+                        await page.evaluate('() => window.HSKAI_ADMIN_I18N.uz.paymentQrSet'),timeout=20000)
+                    await expect(price_save).to_be_enabled()
+                    await prepare_and_save('uz','price-inline-qr-confirm.png')
+                    async with fixture.sessions() as db:
+                        actual=await SubscriptionPriceService(db).get_price('alipay','1_month')
+                        base=await db.scalar(select(PaymentQrCode).where(
+                            PaymentQrCode.scope=='subscription',PaymentQrCode.payment_method=='alipay',
+                            PaymentQrCode.plan_type=='1_month',PaymentQrCode.amount==79))
+                        discount=await db.scalar(select(PaymentQrCode).where(
+                            PaymentQrCode.scope=='subscription_20',PaymentQrCode.payment_method=='alipay',
+                            PaymentQrCode.plan_type=='1_month',PaymentQrCode.amount==63))
+                    assert actual.amount==79 and base and discount
+                    assert len(qr_bot.sent)==2
                 # Bank details now live solely under Finance > Payment details.
                 await navigate("payments", 1440)
                 await page.locator('[data-finance-tab="methods"]').click()
@@ -688,18 +739,23 @@ async def browser_checks(output, *, media_only=False):
                     await close_or_wait()
                     await navigate('payments',390)
                     await page.locator('[data-finance-tab="methods"]').click()
-                    await page.locator('[data-payment-qr-target="alipay-1_month"]').click()
+                    await expect(page.locator('[data-qr-scope="subscription_20"]')).to_have_count(6)
+                    await page.locator('[data-qr-scope="subscription_20"]').first.click()
+                    await expect(page.locator('#paymentQrMediaFile')).to_be_visible()
+                    await expect(page.locator('#drawerContent')).to_contain_text('23 ¥')
+                    await close_or_wait()
+                    await page.locator('[data-payment-qr-target="alipay-1_month"]:not([data-qr-scope])').click()
                     await expect(page.locator('[data-finance-discount="alipay-1_month"]')).to_be_visible()
                     await page.locator('[data-finance-discount="alipay-1_month"]').click()
                     await expect(page.locator('#discountMethod')).to_have_value('alipay')
                     await expect(page.locator('#discountPlan')).to_have_value('1_month')
                     await expect(page.locator('#discountPercent')).to_have_value('20')
                     await close_or_wait()
-                    await page.locator('[data-payment-qr-target="alipay-3_months"]').click()
+                    await page.locator('[data-payment-qr-target="alipay-3_months"]:not([data-qr-scope])').click()
                     await expect(page.locator('#drawerContent [data-campaign-list="discount"]')).to_be_visible()
                     await expect(page.locator('#drawerContent [data-finance-discount]')).to_have_count(0)
                     await close_or_wait()
-                    await page.locator('[data-payment-qr-target="alipay-1_month"]').click()
+                    await page.locator('[data-payment-qr-target="alipay-1_month"]:not([data-qr-scope])').click()
                     await expect(page.locator('#paymentQrMediaFile')).to_be_visible()
                     await page.locator('#paymentQrMediaFile').set_input_files({
                         'name':'payment-qr.png','mimeType':'image/png','buffer':promo_image})

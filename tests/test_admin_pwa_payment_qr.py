@@ -16,9 +16,11 @@ from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.payment import Payment
 from app.db.models.payment_qr_code import PaymentQrCode
+from app.db.models.discount_campaign import DiscountCampaign
 from app.db.models.subscription_price import SubscriptionPrice
 from app.db.models.user import User
 from app.services.subscription_price_service import SubscriptionPriceService
+from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from tests import test_admin_pwa_payment_review as fixtures
 from tests.test_admin_pwa_webauthn_crypto_vectors import make_assertion
 
@@ -52,13 +54,14 @@ class AdminPwaPaymentQrTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         Image.new("RGB", (320, 180), (12, 98, 120)).save(output, format="PNG")
         return output.getvalue()
 
-    async def prepare(self, *, method="alipay", plan="1_month", image=None):
+    async def prepare(self, *, method="alipay", plan="1_month", image=None,
+                      scope="subscription", campaign_id=None, amount=None):
         data = image or self.image_bytes()
         async with self.sessions() as db:
             result = await qr_api.prepare_payment_qr(
                 db, session_cookie=fixtures.COOKIE,
                 request=qr_api.PreparePaymentQr(
-                    method=method, plan=plan,
+                    method=method, plan=plan, scope=scope, campaign_id=campaign_id, amount=amount,
                     media_sha256=hashlib.sha256(data).hexdigest(), media_size=len(data),
                 ), settings_obj=self.settings,
             )
@@ -74,10 +77,11 @@ class AdminPwaPaymentQrTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         async with self.sessions() as db:
             step = await db.get(AdminPwaStepUp, started.step_up_id)
             challenge = bytes(step.challenge)
+        self.qr_sign_count = getattr(self, 'qr_sign_count', 0) + 1
         async with self.sessions() as db:
             self.assertTrue(await verify_step_up(
                 db, session_cookie=fixtures.COOKIE, step_up_id=started.step_up_id,
-                credential=make_assertion(self.key, challenge=challenge),
+                credential=make_assertion(self.key, challenge=challenge, sign_count=self.qr_sign_count),
                 settings_obj=self.settings,
             ))
         return started.step_up_id
@@ -118,6 +122,78 @@ class AdminPwaPaymentQrTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         with self.assertRaisesRegex(qr_api.CommandError, "step_up_denied"):
             await self.execute(command, proof, image, bot)
         self.assertEqual(len(bot.sent), 1)
+
+    async def test_20_percent_and_future_prices_have_separate_signed_qr_scopes(self):
+        bot = FakeBot()
+        discount, img = await self.prepare(scope="subscription_20")
+        self.assertEqual(discount.scope, "subscription_20")
+        result = await self.execute(discount, await self.proof(discount), img, bot)
+        self.assertEqual((result["qr"]["amount"], result["qr"]["discount_percent"]), (53, 20))
+        staged, img = await self.prepare(method="wechat", amount=85)
+        result = await self.execute(staged, await self.proof(staged), img, bot)
+        self.assertEqual((result["qr"]["amount"], result["qr"]["scope"]), (85, "subscription"))
+        staged_discount, img = await self.prepare(method="wechat", scope="subscription_20", amount=85)
+        result = await self.execute(staged_discount, await self.proof(staged_discount), img, bot)
+        self.assertEqual((result["qr"]["amount"], result["qr"]["scope"]), (68, "subscription_20"))
+        async with self.sessions() as db:
+            rows = (await db.scalars(select(PaymentQrCode).order_by(PaymentQrCode.id))).all()
+            self.assertEqual([(x.scope,x.payment_method,x.amount) for x in rows],
+                [("subscription_20","alipay",53),("subscription","wechat",85),("subscription_20","wechat",68)])
+            self.assertEqual(await db.scalar(select(func.count()).select_from(SubscriptionPrice)), 0)
+
+    async def test_campaign_qr_is_bound_to_existing_campaign_and_exact_discount_amount(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            campaign = DiscountCampaign(title="QR campaign", percent=20, is_active=False,
+                starts_at=now,ends_at=now+timedelta(days=1),
+                payment_method="alipay",plan_type="1_month")
+            db.add(campaign)
+            await db.commit()
+            campaign_id = campaign.id
+        command, img = await self.prepare(scope="admin_campaign", campaign_id=campaign_id)
+        bot = FakeBot()
+        result = await self.execute(command, await self.proof(command), img, bot)
+        self.assertEqual((result["qr"]["amount"],result["qr"]["campaign_id"]),(53,campaign_id))
+        async with self.sessions() as db:
+            row = await db.scalar(select(PaymentQrCode))
+            self.assertEqual((row.scope,row.amount),(f"admin_campaign:{campaign_id}",53))
+        async with self.sessions() as db:
+            with self.assertRaisesRegex(qr_api.CommandError,"invalid_payment_qr_target"):
+                await qr_api.read_payment_qr(db,session_cookie=fixtures.COOKIE,
+                    request=qr_api.ReadPaymentQr(method="wechat",plan="1_month",
+                        scope="admin_campaign",campaign_id=campaign_id),
+                    settings_obj=self.settings)
+
+    async def test_uploaded_discount_qr_overrides_static_and_broken_upload_fails_closed(self):
+        import base64
+        bot = FakeBot()
+        async def get_file(file_id):
+            return SimpleNamespace(file_path="synthetic-qr-image")
+        async def download_file(path):
+            return BytesIO(self.image_bytes())
+        bot.get_file = get_file
+        bot.download_file = download_file
+        async with self.sessions() as db:
+            db.add(PaymentQrCode(scope="subscription_20", payment_method="alipay",
+                plan_type="1_month",amount=53,currency="¥",file_id="uploaded-20-qr"))
+            await db.commit()
+        quote = {"discount_source":"referral","discount_percent":20,"discount_campaign_id":None,
+            "final_amount":53,"currency":"¥","discount_applied":True}
+        async with self.sessions() as db:
+            service = SubscriptionMiniAppService(db)
+            image = await service._qr_payload(bot=bot,user=None,payment_method="alipay",
+                plan_type="1_month",checkout_info=quote)
+            self.assertTrue(image["available"])
+            self.assertEqual(base64.b64decode(image["image_data_url"].split(",",1)[1]),
+                             self.image_bytes())
+            async def broken_file(file_id):
+                raise RuntimeError("synthetic inaccessible uploaded QR")
+            bot.get_file = broken_file
+            missing = await service._qr_payload(bot=bot,user=None,payment_method="alipay",
+                plan_type="1_month",checkout_info=quote)
+            self.assertFalse(missing["available"])
+            campaign = quote | {"discount_source":"admin_campaign","discount_campaign_id":1}
+            self.assertIsNone(service._static_qr_bytes("alipay","1_month",campaign))
 
     async def test_invalid_target_and_oversized_media_are_rejected(self):
         with self.assertRaises(ValueError):
