@@ -11,7 +11,8 @@ from sqlalchemy import and_, func, or_, select, text
 
 from app.admin_api.pwa_approval import _utc
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
-from app.admin_api.pwa_inbox import InboxRequest, InboxUnreadRequest, unified_inbox, unread_inbox
+from app.admin_api.pwa_inbox import (InboxRequest, InboxUnreadRequest, InboxFeedbackDetailRequest,
+                                     unified_inbox, unread_inbox, inbox_feedback_detail)
 from app.admin_api.pwa_metrics import METRIC_DEFINITIONS, overall_activity_metrics
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME, authenticate_admin_pwa_session
 from app.admin_api.pwa_webauthn_transport import _body, _guard_post
@@ -431,7 +432,7 @@ def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_re
             async with session_factory() as db:
                 async with read_transaction(db):
                     actor = await authenticate_admin_pwa_session(db, cookie, settings_obj)
-                    if actor is None or (schema is StatisticsExportRequest and actor.auth_method != "webauthn"):
+                    if actor is None or (schema in (StatisticsExportRequest, InboxFeedbackDetailRequest) and actor.auth_method != "webauthn"):
                         return _reply(401, "admin_pwa_unauthorized")
                     if not isinstance(query, StatisticsRequest):
                         result = await service(db, query)
@@ -488,6 +489,10 @@ def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_re
     @router.post("/api/admin/v1/inbox/list")
     async def read_inbox(request: Request):
         return await handle(request, InboxRequest, unified_inbox)
+
+    @router.post("/api/admin/v1/inbox/feedback-detail")
+    async def read_inbox_feedback_detail(request: Request):
+        return await handle(request, InboxFeedbackDetailRequest, inbox_feedback_detail)
 
     @router.post("/api/admin/v1/inbox/unread-count")
     async def read_unread_count(request: Request):
