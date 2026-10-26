@@ -538,6 +538,7 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 .inbox-detail-toolbar button{display:flex;align-items:center;justify-content:center;gap:7px}
 .inbox-detail-toolbar button svg{width:17px;height:17px}
 
+
 @media(max-width:760px){
  .inbox-minimal{padding:14px 13px 27px}
  .inbox-minimal-row{min-height:102px;padding:16px 12px;gap:10px;border-radius:13px}
@@ -813,6 +814,24 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
  .course-panel .v6-buttons .btn{min-height:42px}
 }
 @media(max-width:400px){.course-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.course-stats .metric:last-child{grid-column:1/-1}.course-limits-rows .v6-limit-row{grid-template-columns:minmax(55px,1fr) 60px 90px;gap:5px}}
+/* Course A/B: inline, source-backed sales comparison replaces the analytics link card. */
+.course-sales-period{font-size:11px;font-weight:700;color:#80909c;margin:0 0 12px}
+.course-sales-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.course-sales-arm{min-width:0;padding:15px 13px;border:1px solid #e4e9ec;background:#f8fafb;border-radius:13px}
+.course-sales-arm-label{font-size:12px;font-weight:800;color:#425c69;line-height:1.4}
+.course-sales-rate{font-size:28px;font-weight:800;letter-spacing:-.035em;color:#2e5968;margin-top:12px;font-variant-numeric:tabular-nums}
+.course-sales-rate-label{font-size:11px;color:#8595a2;margin-bottom:15px}
+.course-sales-rows{margin:0;display:grid;gap:10px}
+.course-sales-rows>div{display:grid;gap:3px;min-width:0}
+.course-sales-rows dt{font-size:10px;color:#8794a1;line-height:1.45}
+.course-sales-rows dd{margin:0;font-size:13px;font-weight:760;color:#334d5d;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.course-sales-conclusion{margin:13px 0 0;font-size:12px;line-height:1.5;font-weight:750;color:#4c6977}
+.course-panel .course-sales-conclusion+.source-note{margin-top:10px;font-size:10px;line-height:1.6}
+@media(max-width:760px){
+ .course-sales-comparison{gap:8px}
+ .course-sales-arm{padding:12px 10px}
+ .course-sales-rate{font-size:24px}
+}
 /* V10: seven-column source-aligned desktop user directory, retained mobile cards. */
 .user-table{min-width:1020px;table-layout:fixed}
 .user-table th:nth-child(1){width:25%}

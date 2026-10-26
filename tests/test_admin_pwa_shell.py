@@ -187,6 +187,22 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("await api('auth/step-up/verify'",script)
         self.assertIn("await api(managementEndpoint(review.type,'save'),command)",script)
 
+    async def test_course_ab_sales_inline_metrics_replace_navigation_card(self):
+        script=(await self.get('/admin/assets/app.js')).text
+        css=(await self.get('/admin/assets/styles.css')).text
+        self.assertIn("courseCard(courseSalesCopy[locale]?.title||courseSalesCopy.uz.title,courseSalesStats())",script)
+        self.assertIn("api('analytics',{section:'experiments',period:'monthly',platform:'overall'})",script)
+        self.assertIn("sales.arms?.control||!sales.arms?.treatment",script)
+        self.assertIn("arm.matured>0?percent(arm.approval_rate):'—'",script)
+        self.assertIn("sales.status==='winner'&&sales.decision_ready",script)
+        self.assertIn('status:data.metrics.sales_status',script)
+        self.assertIn("courseSalesToken++;courseSalesLoading=false;courseSalesError=false;courseSalesMetrics=null;",script)
+        self.assertIn("if(state.courseTab==='experiment')void loadCourseSalesStats();",script)
+        self.assertNotIn("data-course-stats",script)
+        self.assertNotIn("courseStatsHint",script)
+        self.assertIn(".course-sales-comparison{display:grid;",css)
+        self.assertIn("@media(max-width:760px)",css)
+
     async def test_worker_scope_version_and_public_cache_allowlist(self):
         manifest=(await self.get('/admin/manifest.webmanifest')).json()
         self.assertEqual(manifest['scope'],'/admin/')
