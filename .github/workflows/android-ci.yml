@@ -208,8 +208,11 @@ jobs:
       - name: Validate release bundles (unsigned)
         run: ./gradlew --no-daemon bundlePlayRelease bundleDirectRelease
 
+      # Artifacts are diagnostic only. Storage quota failures must not turn
+      # passing Android tests into a red CI result.
       - name: Upload test and lint reports
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: android-reports
