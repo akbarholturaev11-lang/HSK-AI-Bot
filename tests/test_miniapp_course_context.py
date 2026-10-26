@@ -24,6 +24,8 @@ from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
 from app.services.course_lesson_completion_proof import issue_lesson_completion_proof
+from app.services.course_gamification_service import CourseGamificationService
+from app.services.learning_signals import LearningSignalsService
 from app.services.course_lesson_start_grant import AUTHORIZED_START_EVENT
 from tests.test_i18n_miniapp_reservation_asgi import TEST_ID, TEST_TOKEN, synthetic_init_data
 
@@ -170,6 +172,83 @@ class MiniAppCourseContextTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(response.status_code, 403, response.text)
                 self.assertEqual(response.json()["error"], "lesson_completion_proof_required")
                 self.assertEqual(await self._snapshot(), before)
+
+    async def test_expired_or_future_signed_proof_cannot_use_recent_legacy_start(self):
+        started = await self._start_legacy_lesson()
+        self.assertEqual(started.status_code, 200, started.text)
+        before = await self._snapshot()
+        now = int(datetime.now(timezone.utc).timestamp())
+        for issued_at in (now - 25 * 3600, now + 3600):
+            with self.subTest(issued_at=issued_at):
+                proof = issue_lesson_completion_proof(
+                    user_id=1, level="hsk2", lesson_order=1, secret=TEST_TOKEN, now=issued_at,
+                )
+                response = await self.client.post(
+                    "/api/v3/lesson/complete", headers=self.headers,
+                    json={"lesson_id": 1, "level": "hsk2", "completion_proof": proof},
+                )
+                self.assertEqual(response.status_code, 403, response.text)
+                self.assertEqual(response.json()["error"], "lesson_completion_proof_required")
+                self.assertEqual(await self._snapshot(), before)
+
+    async def test_next_day_completion_replay_does_not_refresh_learning_evidence(self):
+        day = datetime(2026, 10, 25, tzinfo=timezone.utc).date()
+        with patch.object(CourseGamificationService, "_local_day", return_value=day):
+            first = await self._post("complete", {"lesson_id": 1, "level": "hsk2"})
+        self.assertEqual(first.status_code, 200, first.text)
+        before = await self._snapshot()
+        next_day = day + timedelta(days=1)
+        with patch.object(CourseGamificationService, "_local_day", return_value=next_day):
+            # Completed lessons remain idempotent even without a fresh proof.
+            replay = await self.client.post(
+                "/api/v3/lesson/complete", headers=self.headers,
+                json={"lesson_id": 1, "level": "hsk2"},
+            )
+        self.assertEqual(replay.status_code, 200, replay.text)
+        self.assertTrue(replay.json()["duplicate"])
+        self.assertEqual(await self._snapshot(), before)
+        async with self.sessions() as session:
+            events = list((await session.scalars(select(CourseXpEvent))).all())
+            self.assertEqual(len(events), 1)
+            self.assertEqual(events[0].activity_date, day)
+            signals = LearningSignalsService(session)
+            self.assertEqual(await signals._today(1, next_day), (0, set(), set()))
+            self.assertEqual(await signals._evidence_and_pace(1, next_day), (1, 1))
+
+    async def test_client_timestamp_cannot_backdate_accepted_learning(self):
+        day = datetime(2026, 10, 26, tzinfo=timezone.utc).date()
+        accepted_before = datetime.now(timezone.utc)
+        with patch.object(CourseGamificationService, "_local_day", return_value=day):
+            response = await self._post("complete", {
+                "lesson_id": 1, "level": "hsk2", "completed_at": "2000-01-01T00:00:00Z",
+            })
+        self.assertEqual(response.status_code, 200, response.text)
+        accepted_after = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            event = (await session.scalars(select(CourseXpEvent))).one()
+            self.assertEqual(event.activity_date, day)
+            # This is server acceptance time, not evidence of when an offline
+            # learner actually performed the work. Smart attribution must
+            # retain that distinction instead of trusting arbitrary payloads.
+            accepted_at = event.created_at.replace(tzinfo=timezone.utc)
+            self.assertLessEqual(accepted_before, accepted_at)
+            self.assertLessEqual(accepted_at, accepted_after)
+
+    async def test_block_after_authorized_start_denies_completion_without_learning(self):
+        started = await self._start_legacy_lesson()
+        self.assertEqual(started.status_code, 200, started.text)
+        async with self.sessions() as session:
+            (await session.get(User, 1)).status = "blocked"
+            await session.commit()
+        before = await self._snapshot()
+        response = await self.client.post(
+            "/api/v3/lesson/complete", headers=self.headers,
+            json={"lesson_id": 1, "level": "hsk2",
+                  "completion_proof": started.json()["completion_proof"]},
+        )
+        self.assertEqual(response.status_code, 403, response.text)
+        self.assertFalse(response.json()["allowed"])
+        self.assertEqual(await self._snapshot(), before)
 
     async def test_expired_or_other_user_server_start_never_grants_xp(self):
         started = await self._start_legacy_lesson()

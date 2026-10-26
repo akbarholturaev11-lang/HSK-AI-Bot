@@ -18,6 +18,7 @@ from sqlalchemy.pool import StaticPool
 from app.db import models  # noqa: F401
 from app.db.base import Base
 from app.db.models.account_deletion import AccountDeletionRequest
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
@@ -28,6 +29,8 @@ from app.bot.handlers.course import (
 )
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.course_reminder_service import CourseReminderService
+from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.learning_signals import LearningSignalsService
 from app.services.user_access_state_service import UserAccessStateService
 
@@ -365,6 +368,84 @@ class SmartReminderP0LearningAndDeletionEvidenceTests(unittest.IsolatedAsyncioTe
             self.assertEqual(xp, 220)
             self.assertIn("lesson", types)
             self.assertEqual((evidence, active_days), (1, 1))
+
+    async def test_practice_replay_next_day_is_not_fresh_learning(self):
+        """A stable legacy session ID is not a new dated learning receipt."""
+        async with self.sessions() as session:
+            service = CourseMiniAppPracticeService(session)
+            # Freeze only the question bank and local day. Grading, canonical
+            # ownership, event dedupe and XP writes use their real SQLite paths.
+            question = {
+                "id": "p0-question", "level": "hsk1", "lesson": 1,
+                "answer_index": 0,
+            }
+            with patch.object(service, "_questions", new=AsyncMock(return_value=[question])), patch.object(
+                CourseGamificationService, "_local_day", return_value=self.day,
+            ):
+                started = await service.start(
+                    3001, mode="mock", level="hsk1", lang="uz", gate_checked=True,
+                )
+                self.assertTrue(started["ok"])
+                session_id = started["session"]["id"]
+                arguments = dict(
+                    session_id=session_id, mode="mock", level="hsk1", lang="uz", skill="",
+                    answers=[{"question_id": question["id"], "selected_index": 0}],
+                    gate_checked=True,
+                )
+                first = await service.complete(3001, **arguments)
+            self.assertTrue(first["ok"])
+            self.assertEqual(first["percent"], 100)
+            self.assertGreater(first["reward"]["awarded_xp"], 0)
+            events_before = list((await session.scalars(
+                select(CourseMiniAppEvent).order_by(CourseMiniAppEvent.id)
+            )).all())
+            original_events = [(row.id, row.created_at) for row in events_before]
+
+            next_day = self.day + timedelta(days=1)
+            with patch.object(service, "_questions", new=AsyncMock(return_value=[question])), patch.object(
+                CourseGamificationService, "_local_day", return_value=next_day,
+            ):
+                replay = await service.complete(3001, **arguments)
+            self.assertTrue(replay["ok"])
+            self.assertTrue(replay["reward"]["duplicate"])
+            self.assertEqual(replay["reward"]["awarded_xp"], 0)
+
+        # Reload persisted data rather than relying on the request's identity map.
+        async with self.sessions() as session:
+            xp = list((await session.scalars(select(CourseXpEvent))).all())
+            self.assertEqual(len(xp), 1)
+            self.assertEqual((xp[0].user_id, xp[0].activity_type, xp[0].activity_date),
+                             (1, "test", self.day))
+            self.assertEqual(xp[0].activity_ref, f"{session_id}:completed")
+            events = list((await session.scalars(
+                select(CourseMiniAppEvent).order_by(CourseMiniAppEvent.id)
+            )).all())
+            self.assertEqual([(row.id, row.created_at) for row in events], original_events)
+            self.assertEqual(sum(row.event_name == "test_completed" for row in events), 1)
+            signals = LearningSignalsService(session)
+            self.assertEqual(await signals._today(1, next_day), (0, set(), set()))
+            self.assertEqual(await signals._evidence_and_pace(1, next_day), (1, 1))
+
+    async def test_incomplete_practice_cannot_create_learning_evidence(self):
+        async with self.sessions() as session:
+            service = CourseMiniAppPracticeService(session)
+            question = {"id": "p0-question", "level": "hsk1", "lesson": 1, "answer_index": 0}
+            with patch.object(service, "_questions", new=AsyncMock(return_value=[question])):
+                started = await service.start(
+                    3001, mode="mock", level="hsk1", lang="uz", gate_checked=True,
+                )
+                rejected = await service.complete(
+                    3001, session_id=started["session"]["id"], mode="mock",
+                    level="hsk1", lang="uz", skill="", answers=[], gate_checked=True,
+                )
+            self.assertEqual(rejected, {"ok": False, "error": "practice_answers_incomplete"})
+        async with self.sessions() as session:
+            self.assertEqual(list((await session.scalars(select(CourseXpEvent))).all()), [])
+            events = list((await session.scalars(select(CourseMiniAppEvent))).all())
+            self.assertEqual([row.event_name for row in events], ["test_started"])
+            signals = LearningSignalsService(session)
+            self.assertEqual(await signals._today(1, self.day), (0, set(), set()))
+            self.assertEqual(await signals._evidence_and_pace(1, self.day), (0, 0))
 
     async def test_submitted_deletion_is_visible_while_account_still_exists(self):
         """Pending deletion is not a completed purge or a status='blocked'."""
