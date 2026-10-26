@@ -1075,6 +1075,10 @@ function managementCurrentUnchanged(d,result,payload){
     before=d.kind==='payment_details'?{kind:d.kind,bank:d.bank,value:s.payment_details[d.bank]}:
       d.kind==='help_video'?{kind:d.kind,...s.help_videos.find(row=>row.key===c.key&&row.lang===c.lang)}:{kind:d.kind,...s[d.kind]};
   }
+  if(d.type==='payment_qr'&&d.newPrice!==undefined){
+    const initial=d.prices?.find(row=>row.method===d.method&&row.plan===d.plan);
+    return !!initial&&Number(initial.amount)===Number(result.current?.base_amount);
+  }
   if(!before)return true;
   if(before.revision_hash)return before.revision_hash===result.operation.payload.expected_hash;
   return Object.entries(before).filter(([key])=>Object.hasOwn(result.current||{},key)).every(([key,value])=>JSON.stringify(value)===JSON.stringify(result.current[key]));
@@ -1773,7 +1777,7 @@ function managementReread(draft){
   if(draft.type==='user')return `<button class="btn" data-user-detail="${draft.userId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing'&&draft.kind==='campaign_draft')return `<button class="btn" data-campaign-list="ad">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind==='course_ad_create'?'course_ad':draft.kind)}">${esc(t('readCurrent'))}</button>`;
-  if(draft.type==='payment_qr')return `<button class="btn" data-payment-qr-target="${esc(draft.method+'-'+draft.plan)}">${esc(t('readCurrent'))}</button>`;
+  if(draft.type==='payment_qr')return draft.newPrice!==undefined?btn('readCurrent','priceSettings'):`<button class="btn" data-payment-qr-target="${esc(draft.method+'-'+draft.plan)}" ${draft.campaignId?`data-campaign-id="${draft.campaignId}"`:''}>${esc(t('readCurrent'))}</button>`;
   return draft.type==='price'?btn('readCurrent','priceSettings'):`<button class="btn" data-setting-kind="${draft.kind}" ${draft.bank?`data-bank="${draft.bank}"`:''}>${esc(t('readCurrent'))}</button>`;
 }
 function updatePriceFields(){
@@ -2004,8 +2008,8 @@ async function prepareManagementCommand(current,at){
     const result=await api(managementEndpoint(draft.type,'prepare'),payload);
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const operation=structuredClone(result.operation);
-    if(operation?.action!==managementAction(draft.type,draft.userOperation)||!operation.target||!operation.payload)throw Error('invalid_operation');
-    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,method:draft.method,plan:draft.plan,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,deliveryId:draft.deliveryId,jobId:draft.jobId,mediaFile:draft.mediaFile||null,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
+    if(operation?.action!==(draft.type==='payment_qr'&&draft.newPrice!==undefined?'subscription.prices':managementAction(draft.type,draft.userOperation))||!operation.target||!operation.payload)throw Error('invalid_operation');
+    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,method:draft.method,plan:draft.plan,campaignId:draft.campaignId,newPrice:draft.newPrice,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,deliveryId:draft.deliveryId,jobId:draft.jobId,mediaFile:draft.mediaFile||null,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
     if(!managementCurrentUnchanged(draft,result,payload))throw new ApiError('confirmation_changed',409);
     await executeManagement();
   }catch(error){
@@ -2048,7 +2052,7 @@ async function executeManagement(){
   if(!managementReview||signing||!state.actor)return;
   if(!supportsPasskey()){showNotice('passkeyUnsupported');return;}
   const review=managementReview,operation=structuredClone(review.operation),current=drawerId,at=epoch,control=new AbortController();
-  if(operation.action!==managementAction(review.type,review.userOperation))return;
+  if(operation.action!==(review.type==='payment_qr'&&review.newPrice!==undefined?'subscription.prices':managementAction(review.type,review.userOperation)))return;
   signing=control;let submitted=false;
   $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
   try{
