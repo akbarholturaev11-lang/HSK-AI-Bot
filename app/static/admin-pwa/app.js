@@ -60,6 +60,7 @@ let coursePolicyRevision=null,hsk30Baseline=null;
 let courseData=null,courseLimitDraft=null,courseTrialDraft=null,courseLimitPlan='FREE';
 let courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};
 let courseAnalytics=null,courseAnalyticsDays=30,courseAnalyticsLoading=false,courseAnalyticsToken=0;
+let courseSalesMetrics=null,courseSalesLoading=false,courseSalesError=false,courseSalesToken=0;
 let managementMediaPreviewUrl=null, campaignMediaUpload=null;
 let feedbackLoadId=0;
 const feedbackStats={source:'all',period:'weekly',data:null,loading:false,error:false};
@@ -69,7 +70,7 @@ function clearPrivate(phase) {
   cancelAdvancedAnalytics();cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
   epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
-  courseData=null;courseLimitDraft=null;courseTrialDraft=null;courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};courseAnalytics=null;courseAnalyticsToken++;courseAnalyticsLoading=false;state.phase=phase;state.error=null;render();
+  courseData=null;courseLimitDraft=null;courseTrialDraft=null;courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};courseAnalytics=null;courseAnalyticsToken++;courseAnalyticsLoading=false;courseSalesMetrics=null;courseSalesLoading=false;courseSalesError=false;courseSalesToken++;state.phase=phase;state.error=null;render();
 }
 function releaseManagementMediaPreview(){if(managementMediaPreviewUrl){URL.revokeObjectURL(managementMediaPreviewUrl);managementMediaPreviewUrl=null;}}
 async function api(path, body, {publicAuth=false, method='POST',rawBody=null,extraHeaders={},timeoutMs=15000,requestSignal=null}={}) {
@@ -557,9 +558,9 @@ function managementRow(label,attributes,glyph='settings'){
 }
 
 const courseCopy={
-uz:{tracks:'HSK 2.0 / 3.0',access:'Кириш ва лимитлар',trial:'Pro синови',experiment:'Сотув A/B',trackTitle:'HSK 3.0 курс',unlock:'Бир марталик очиш тўлови',active:'Фаол',inactive:'Ўчирилган',yes:'Ёқилган',no:'Ўчирилган',enabled:'Курс ҳолати',levels:'Фаол даражалар',price:'Бир марталик нарх',paid:'Тўлов талаб қилинади',free:'Бепул очилади',edit:'Таҳрирлаш',courseAccess:'Курсга кириш режими',courseAccessMode:'Кириш шарти',subscription:'Pro обуна талаб қилинади',freeUntil:'Маълум муддат бепул',until:'Бепул муддат тугайди',limits:'Free ва Trial лимитлари',plan:'Режа',freePlan:'Бепул (FREE)',trialPlan:'Pro синови (TRIAL_ACTIVE)',limitValue:'Миқдор',limitWindow:'Давр',daily:'Кунлик',lifetime:'Бир умр',save:'Сақлаш',note:'0 = функция ёпиқ. 1–10000 = рухсат этилган миқдор. Фақат кунлик ёки бир умр режими.',trialDays:'Муддат (кун)',trialReason:'Ўчириш сабаби',trialState:'Синов ҳолати',experimentNote:'Сотув тажрибаси ҳозирги хавфсиз бошқарув орқали созланади.',trialNote:'Trial AI бюджети ва бошқа қоидалар ўзгартирилмайди.',browse:'Кўриш ва бошқариш',courseStats:'Курс фаолияти',courseStatsHint:'Ҳақиқий статистика «Таҳлиллар → Курс ва фаоллик» бўлимида.',statsOpen:'Статистикани очиш',count:'Қоида',limitSaving:'Сақланаётган ўзгаришлар',trialSaving:'Синов созламаларини сақлаш',unchanged:'Ўзгариш киритилмаган',saved:'Сақланди'},
-ru:{tracks:'HSK 2.0 / 3.0',access:'Доступ и лимиты',trial:'Пробный Pro',experiment:'Продажи A/B',trackTitle:'Курс HSK 3.0',unlock:'Разовая разблокировка',active:'Активно',inactive:'Отключено',yes:'Включено',no:'Отключено',enabled:'Состояние курса',levels:'Открытые уровни',price:'Разовая цена',paid:'Платный доступ',free:'Бесплатный доступ',edit:'Изменить',courseAccess:'Режим доступа',courseAccessMode:'Условие доступа',subscription:'Требуется Pro',freeUntil:'Бесплатно до даты',until:'Действует до',limits:'Лимиты Free и Trial',plan:'Тариф',freePlan:'Бесплатный (FREE)',trialPlan:'Пробный Pro (TRIAL_ACTIVE)',limitValue:'Количество',limitWindow:'Период',daily:'В день',lifetime:'За всё время',save:'Сохранить',note:'0 = функция отключена. 1–10000 = разрешённое количество. Только дневной или пожизненный период.',trialDays:'Срок (дни)',trialReason:'Причина отключения',trialState:'Статус пробного периода',experimentNote:'Продажи A/B настраиваются через существующий защищённый редактор.',trialNote:'Бюджет AI и другие правила Trial не изменяются.',browse:'Открыть редактор',courseStats:'Активность курса',courseStatsHint:'Актуальные данные в «Аналитика → Курс и активность».',statsOpen:'Открыть аналитику',count:'Правило',limitSaving:'Сохраняемые изменения',trialSaving:'Сохранить Trial',unchanged:'Нет изменений',saved:'Сохранено'},
-tj:{tracks:'HSK 2.0 / 3.0',access:'Дастрасӣ ва маҳдудият',trial:'Санҷиши Pro',experiment:'Фурӯши A/B',trackTitle:'Курси HSK 3.0',unlock:'Кушодани якдафъаина',active:'Фаъол',inactive:'Хомӯш',yes:'Фаъол',no:'Хомӯш',enabled:'Ҳолати курс',levels:'Сатҳҳои фаъол',price:'Нархи якдафъаина',paid:'Бо пардохт',free:'Ройгон',edit:'Тағйир',courseAccess:'Реҷаи дастрасии курс',courseAccessMode:'Шарти дастрасӣ',subscription:'Обунаи Pro лозим',freeUntil:'То муҳлат ройгон',until:'То сана',limits:'Маҳдудияти Free ва Trial',plan:'Нақша',freePlan:'Ройгон (FREE)',trialPlan:'Санҷиши Pro (TRIAL_ACTIVE)',limitValue:'Миқдор',limitWindow:'Давра',daily:'Ҳар рӯз',lifetime:'Барои тамоми умр',save:'Сабт',note:'0 = ғайрифаъол. 1–10000 = миқдори иҷозат. Танҳо ҳаррӯз ё тамоми умр.',trialDays:'Муҳлат (рӯз)',trialReason:'Сабаби хомӯшкунӣ',trialState:'Ҳолати санҷиш',experimentNote:'Фурӯши A/B аз муҳаррири амн идора мешавад.',trialNote:'Буҷаи AI ва қоидаҳои дигари Trial тағйир намеёбанд.',browse:'Кушодани идоракунӣ',courseStats:'Фаъолияти курс',courseStatsHint:'Омори воқеӣ дар «Таҳлилҳо → Курс ва фаъолият».',statsOpen:'Кушодани омор',count:'Қоида',limitSaving:'Тағйироти сабтшаванда',trialSaving:'Сабти Trial',unchanged:'Тағйире нест',saved:'Сабт шуд'}
+uz:{tracks:'HSK 2.0 / 3.0',access:'Кириш ва лимитлар',trial:'Pro синови',experiment:'Сотув A/B',trackTitle:'HSK 3.0 курс',unlock:'Бир марталик очиш тўлови',active:'Фаол',inactive:'Ўчирилган',yes:'Ёқилган',no:'Ўчирилган',enabled:'Курс ҳолати',levels:'Фаол даражалар',price:'Бир марталик нарх',paid:'Тўлов талаб қилинади',free:'Бепул очилади',edit:'Таҳрирлаш',courseAccess:'Курсга кириш режими',courseAccessMode:'Кириш шарти',subscription:'Pro обуна талаб қилинади',freeUntil:'Маълум муддат бепул',until:'Бепул муддат тугайди',limits:'Free ва Trial лимитлари',plan:'Режа',freePlan:'Бепул (FREE)',trialPlan:'Pro синови (TRIAL_ACTIVE)',limitValue:'Миқдор',limitWindow:'Давр',daily:'Кунлик',lifetime:'Бир умр',save:'Сақлаш',note:'0 = функция ёпиқ. 1–10000 = рухсат этилган миқдор. Фақат кунлик ёки бир умр режими.',trialDays:'Муддат (кун)',trialReason:'Ўчириш сабаби',trialState:'Синов ҳолати',experimentNote:'Сотув тажрибаси ҳозирги хавфсиз бошқарув орқали созланади.',trialNote:'Trial AI бюджети ва бошқа қоидалар ўзгартирилмайди.',browse:'Кўриш ва бошқариш',count:'Қоида',limitSaving:'Сақланаётган ўзгаришлар',trialSaving:'Синов созламаларини сақлаш',unchanged:'Ўзгариш киритилмаган',saved:'Сақланди'},
+ru:{tracks:'HSK 2.0 / 3.0',access:'Доступ и лимиты',trial:'Пробный Pro',experiment:'Продажи A/B',trackTitle:'Курс HSK 3.0',unlock:'Разовая разблокировка',active:'Активно',inactive:'Отключено',yes:'Включено',no:'Отключено',enabled:'Состояние курса',levels:'Открытые уровни',price:'Разовая цена',paid:'Платный доступ',free:'Бесплатный доступ',edit:'Изменить',courseAccess:'Режим доступа',courseAccessMode:'Условие доступа',subscription:'Требуется Pro',freeUntil:'Бесплатно до даты',until:'Действует до',limits:'Лимиты Free и Trial',plan:'Тариф',freePlan:'Бесплатный (FREE)',trialPlan:'Пробный Pro (TRIAL_ACTIVE)',limitValue:'Количество',limitWindow:'Период',daily:'В день',lifetime:'За всё время',save:'Сохранить',note:'0 = функция отключена. 1–10000 = разрешённое количество. Только дневной или пожизненный период.',trialDays:'Срок (дни)',trialReason:'Причина отключения',trialState:'Статус пробного периода',experimentNote:'Продажи A/B настраиваются через существующий защищённый редактор.',trialNote:'Бюджет AI и другие правила Trial не изменяются.',browse:'Открыть редактор',count:'Правило',limitSaving:'Сохраняемые изменения',trialSaving:'Сохранить Trial',unchanged:'Нет изменений',saved:'Сохранено'},
+tj:{tracks:'HSK 2.0 / 3.0',access:'Дастрасӣ ва маҳдудият',trial:'Санҷиши Pro',experiment:'Фурӯши A/B',trackTitle:'Курси HSK 3.0',unlock:'Кушодани якдафъаина',active:'Фаъол',inactive:'Хомӯш',yes:'Фаъол',no:'Хомӯш',enabled:'Ҳолати курс',levels:'Сатҳҳои фаъол',price:'Нархи якдафъаина',paid:'Бо пардохт',free:'Ройгон',edit:'Тағйир',courseAccess:'Реҷаи дастрасии курс',courseAccessMode:'Шарти дастрасӣ',subscription:'Обунаи Pro лозим',freeUntil:'То муҳлат ройгон',until:'То сана',limits:'Маҳдудияти Free ва Trial',plan:'Нақша',freePlan:'Ройгон (FREE)',trialPlan:'Санҷиши Pro (TRIAL_ACTIVE)',limitValue:'Миқдор',limitWindow:'Давра',daily:'Ҳар рӯз',lifetime:'Барои тамоми умр',save:'Сабт',note:'0 = ғайрифаъол. 1–10000 = миқдори иҷозат. Танҳо ҳаррӯз ё тамоми умр.',trialDays:'Муҳлат (рӯз)',trialReason:'Сабаби хомӯшкунӣ',trialState:'Ҳолати санҷиш',experimentNote:'Фурӯши A/B аз муҳаррири амн идора мешавад.',trialNote:'Буҷаи AI ва қоидаҳои дигари Trial тағйир намеёбанд.',browse:'Кушодани идоракунӣ',count:'Қоида',limitSaving:'Тағйироти сабтшаванда',trialSaving:'Сабти Trial',unchanged:'Тағйире нест',saved:'Сабт шуд'}
 };
 const cx=key=>courseCopy[locale]?.[key]||courseCopy.uz[key]||key;
 const courseLimitTitles={'lesson.start':'Дарс бошлаш','ai.text':'AI матн','ai.photo':'AI расм','ai.voice':'AI овоз','speaking.session':'Speaking','practice.*':'Машқлар','practice.placement':'Даража тести','study.quiz':'Тест','study.audio':'Аудио','study.flashcard_translate':'Карточкалар'};
@@ -592,6 +593,62 @@ async function loadCourseAnalytics(){
     }
   }
 }
+const courseSalesCopy={
+  uz:{title:'A/B сотув натижалари',period:'Охирги 30 кун',control:'A · Одатдаги усул',treatment:'B · Янги усул',assigned:'Тестга кирганлар',matured:'7 куни тўлганлар',paid:'Тасдиқланган тўлов қилганлар',rate:'Сотув конверсияси',revenue:'Тушум',empty:'Ҳали A/B тест маълумотлари йўқ.',loading:'Сотув статистикаси юкланмоқда…',error:'Сотув статистикасини юклаб бўлмади.',pending:'Натижа ҳали якуний эмас.',winner:'B вариантининг устунлиги тасдиқланган.',warning:'Тест тақсимоти ёки натижаларни текшириш керак.',basis:'Конверсия фақат 7 кунлик натижа муддати тўлган фойдаланувчилар ва тасдиқланган тўловлар асосида ҳисобланади.'},
+  ru:{title:'Результаты продаж A/B',period:'Последние 30 дней',control:'A · Обычный вариант',treatment:'B · Новый вариант',assigned:'Включено в тест',matured:'Прошло 7 дней',paid:'Пользователей с подтверждённой оплатой',rate:'Конверсия в оплату',revenue:'Выручка',empty:'Данных A/B-теста пока нет.',loading:'Загрузка статистики продаж…',error:'Не удалось загрузить статистику продаж.',pending:'Вывод пока не окончательный.',winner:'Преимущество варианта B подтверждено.',warning:'Требуется проверить распределение и результаты теста.',basis:'Конверсия рассчитана только по пользователям с завершённым 7-дневным окном и подтверждёнными платежами.'},
+  tj:{title:'Натиҷаҳои фурӯши A/B',period:'30 рӯзи охир',control:'A · Усули ҷорӣ',treatment:'B · Усули нав',assigned:'Ба санҷиш дохилшуда',matured:'7 рӯз гузаштааст',paid:'Корбарони пардохташон тасдиқшуда',rate:'Табдил ба пардохт',revenue:'Даромад',empty:'Ҳоло маълумоти санҷиши A/B нест.',loading:'Омори фурӯш бор мешавад…',error:'Бор кардани омори фурӯш муяссар нашуд.',pending:'Натиҷа ҳанӯз ниҳоӣ нест.',winner:'Бартарии варианти B тасдиқ шудааст.',warning:'Тақсимот ва натиҷаҳои санҷишро санҷидан лозим аст.',basis:'Табдил танҳо барои корбарони дорои давраи 7-рӯзаи анҷомшуда ва пардохтҳои тасдиқшуда ҳисоб шудааст.'}
+};
+function courseSalesStats(){
+  const l=courseSalesCopy[locale]||courseSalesCopy.uz;
+  if(courseSalesLoading)return `<p class="secondary-note" role="status">${esc(l.loading)}</p>`;
+  if(courseSalesError)return `<p class="secondary-note" role="status">${esc(l.error)}</p>`;
+  const sales=courseSalesMetrics;
+  if(!sales)return `<p class="secondary-note" role="status">${esc(l.loading)}</p>`;
+  if(!sales.assigned)return `<p class="secondary-note">${esc(l.empty)}</p>`;
+  if(!sales.arms?.control||!sales.arms?.treatment)return `<p class="secondary-note">${esc(l.error)}</p>`;
+  const revenue=arm=>Object.entries(arm.revenue_by_currency||{}).filter(([,amount])=>typeof amount==='number'&&Number.isFinite(amount)).map(([currency,amount])=>`${number(amount)} ${esc(currency)}`).join(' · ')||'—';
+  const armCard=(key,label)=>{
+    const arm=sales.arms[key];
+    const conversion=arm.matured>0?percent(arm.approval_rate):'—';
+    return `<div class="course-sales-arm">
+      <div class="course-sales-arm-label">${esc(label)}</div>
+      <div class="course-sales-rate">${esc(conversion)}</div>
+      <div class="course-sales-rate-label">${esc(l.rate)}</div>
+      <dl class="course-sales-rows">
+        <div><dt>${esc(l.assigned)}</dt><dd>${esc(number(arm.assigned))}</dd></div>
+        <div><dt>${esc(l.matured)}</dt><dd>${esc(number(arm.matured))}</dd></div>
+        <div><dt>${esc(l.paid)}</dt><dd>${esc(number(arm.approved_users))}</dd></div>
+        <div><dt>${esc(l.revenue)}</dt><dd>${revenue(arm)}</dd></div>
+      </dl>
+    </div>`;
+  };
+  const conclusion=sales.status==='winner'&&sales.decision_ready?l.winner:
+    ['srm_warning','guardrail_failed'].includes(sales.status)?l.warning:l.pending;
+  return `<p class="course-sales-period">${esc(l.period)}</p>
+    <div class="course-sales-comparison">${armCard('control',l.control)}${armCard('treatment',l.treatment)}</div>
+    <p class="course-sales-conclusion">${esc(conclusion)}</p>
+    <p class="source-note">${esc(l.basis)}</p>`;
+}
+async function loadCourseSalesStats(){
+  if(!state.actor||state.route!=='course'||state.courseTab!=='experiment'||courseSalesLoading)return;
+  const at=epoch,request=++courseSalesToken;
+  courseSalesMetrics=null;courseSalesLoading=true;courseSalesError=false;
+  if(state.phase==='ready')render();
+  try{
+    const data=await api('analytics',{section:'experiments',period:'monthly',platform:'overall'});
+    if(at!==epoch||request!==courseSalesToken||state.route!=='course'||!state.actor)return;
+    courseSalesMetrics=data.available===false?null:(data.metrics?.sales?{...data.metrics.sales,status:data.metrics.sales_status}:null);
+    courseSalesError=data.available===false||!courseSalesMetrics;
+  }catch(error){
+    if(at!==epoch||request!==courseSalesToken||state.route!=='course'||!state.actor)return;
+    courseSalesError=true;
+  }finally{
+    if(at===epoch&&request===courseSalesToken){
+      courseSalesLoading=false;
+      if(state.route==='course'&&state.courseTab==='experiment'&&state.phase==='ready')render();
+    }
+  }
+}
 function renderCourseView(){
   const tabs=[['tracks','tracks'],['access','access'],['trial','trial'],['experiment','experiment']];
   const tabBar=`<div class="subtabs course-subtabs" role="tablist" aria-label="${esc(t('course'))}">${tabs.map(([id,key])=>`<button type="button" role="tab" aria-selected="${state.courseTab===id}" class="subtab ${state.courseTab===id?'active':''}" data-course-tab="${id}">${esc(cx(key))}</button>`).join('')}</div>`;
@@ -619,7 +676,7 @@ function renderCourseView(){
     ${courseCard(cx('trialState'),`<p class="secondary-note">${esc(cx('trialNote'))}</p><div class="profile-kv"><span class="kv-key">AI budget</span><strong class="kv-value">${esc(limits.trial.ai_budget_usd)} USD</strong><span class="kv-key">Min. account age</span><strong class="kv-value">${esc(limits.trial.min_account_age_hours)} h</strong></div>`)}</div>`;
   } else {
     body=`<div class="v6-two">${courseCard(cx('experiment'),`<p class="secondary-note">${esc(cx('experimentNote'))}</p><button type="button" class="btn primary" data-marketing-kind="sales_experiment">${esc(cx('browse'))}</button>`)}
-    ${courseCard(cx('courseStats'),`<p class="secondary-note">${esc(cx('courseStatsHint'))}</p><button type="button" class="btn" data-course-stats>${esc(cx('statsOpen'))}</button>`)}</div>`;
+    ${courseCard(courseSalesCopy[locale]?.title||courseSalesCopy.uz.title,courseSalesStats())}</div>`;
   }
   return `<div class="course-dashboard">${tabBar}<div class="course-content">${body}</div></div>`;
 }
@@ -657,6 +714,7 @@ function keepCourseEdits(){
 }
 async function loadCourseData(){
   const current=++view,at=epoch;
+  courseSalesToken++;courseSalesLoading=false;courseSalesError=false;courseSalesMetrics=null;
   state.phase='loading';state.error=null;render();
   try {
     const [hsk,access,limit]=await Promise.all([
@@ -672,6 +730,7 @@ async function loadCourseData(){
     courseTrialDraft={enabled:limit.limits.trial.enabled,days:limit.limits.trial.days,disabled_reason:limit.limits.trial.disabled_reason||''};
     state.phase='ready';render();
     if(state.courseTab==='tracks')void loadCourseAnalytics();
+    if(state.courseTab==='experiment')void loadCourseSalesStats();
   }catch(error){
     if(current!==view||at!==epoch||state.route!=='course'||!state.actor)return;
     state.phase='ready';state.error='error';render();
@@ -2875,9 +2934,8 @@ document.addEventListener('click',event=>{
     else if(button.dataset.partnerNext){await partnerEditor(null,Number(button.dataset.partnerNext));}
     else if(button.dataset.noticeKey){await noticeEditor(button.dataset.noticeKey);}
     else if(button.dataset.portfolioNext){await portfolioHistory(Number(button.dataset.portfolioNext));}
-    else if(button.dataset.courseTab){keepCourseEdits();state.courseTab=button.dataset.courseTab;render();if(state.courseTab==='tracks'&&!courseAnalytics&&!courseAnalyticsLoading)void loadCourseAnalytics();}
+    else if(button.dataset.courseTab){keepCourseEdits();state.courseTab=button.dataset.courseTab;render();if(state.courseTab==='tracks'&&!courseAnalytics&&!courseAnalyticsLoading)void loadCourseAnalytics();if(state.courseTab==='experiment'&&!courseSalesMetrics&&!courseSalesLoading)void loadCourseSalesStats();}
     else if(button.dataset.courseDays){courseAnalyticsDays=Number(button.dataset.courseDays);void loadCourseAnalytics();}
-    else if(button.dataset.courseStats){state.route='stats';state.statsTab='course';await load();}
     else if(button.dataset.statsTab){
       const next=button.dataset.statsTab;
       if(['overview','course','platform','funnel','money','sources','report'].includes(next)&&state.route==='stats'){

@@ -260,6 +260,8 @@ jobs:
           python scripts/i18n_miniapp_catalog_audit.py --output /tmp/hsk-i18n-miniapp-catalog-audit.json
       - name: Save P0 localization audit reports
         if: always()
+        # Diagnostic uploads must not mask the actual test result.
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: hsk-i18n-p0-audit
@@ -413,6 +415,7 @@ jobs:
           PY
       - name: Save PostgreSQL regression report
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: hsk-native-postgres-regressions
