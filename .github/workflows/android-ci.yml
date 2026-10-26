@@ -210,6 +210,8 @@ jobs:
 
       - name: Upload test and lint reports
         if: always()
+        # Keep actual Gradle and emulator failures blocking; reports are optional.
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: android-reports
@@ -217,7 +219,7 @@ jobs:
             android/app/build/reports/tests/**
             android/app/build/reports/lint-results-*.html
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 3
 
   backend:
     name: Backend regression for the Android adapter

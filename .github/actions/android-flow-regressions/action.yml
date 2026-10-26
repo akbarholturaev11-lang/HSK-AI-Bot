@@ -27,6 +27,9 @@ runs:
 
     - name: Save emulator reports
       if: always()
+      # Optional diagnostics must not turn successful instrumentation tests red.
+      # A failure in the preceding emulator runner remains blocking.
+      continue-on-error: true
       uses: actions/upload-artifact@v4
       with:
         name: android-flow-regressions
@@ -34,4 +37,4 @@ runs:
           android/app/build/reports/androidTests/**
           android/app/build/outputs/androidTest-results/**
         if-no-files-found: ignore
-        retention-days: 7
+        retention-days: 3
