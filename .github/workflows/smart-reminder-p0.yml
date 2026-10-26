@@ -4,9 +4,15 @@ on:
   pull_request:
     paths:
       - "tests/test_smart_reminder_p0_regression.py"
+      - "tests/test_miniapp_course_context.py"
+      - "tests/test_android_course_api.py"
+      - "tests/test_course_miniapp_practice*.py"
+      - "tests/test_i18n_miniapp_reservation_asgi.py"
       - "docs/smart-reminders/**"
       - "android/app/src/test/java/com/pomp/hskai/core/notify/**"
       - "android/app/src/main/java/com/pomp/hskai/core/notify/**"
+      - "android/app/src/test/java/com/pomp/hskai/core/navigation/DeepLinkRouterTest.kt"
+      - "android/app/src/main/java/com/pomp/hskai/core/navigation/DeepLinkRouter.kt"
       - ".github/workflows/smart-reminder-p0.yml"
   push:
     branches:
@@ -14,7 +20,15 @@ on:
       - "codex/smart-reminder-p0-**"
     paths:
       - "tests/test_smart_reminder_p0_regression.py"
+      - "tests/test_miniapp_course_context.py"
+      - "tests/test_android_course_api.py"
+      - "tests/test_course_miniapp_practice*.py"
+      - "tests/test_i18n_miniapp_reservation_asgi.py"
       - "docs/smart-reminders/**"
+      - "android/app/src/test/java/com/pomp/hskai/core/notify/**"
+      - "android/app/src/main/java/com/pomp/hskai/core/notify/**"
+      - "android/app/src/test/java/com/pomp/hskai/core/navigation/DeepLinkRouterTest.kt"
+      - "android/app/src/main/java/com/pomp/hskai/core/navigation/DeepLinkRouter.kt"
       - ".github/workflows/smart-reminder-p0.yml"
   workflow_dispatch:
 
@@ -40,7 +54,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt aiosqlite
       - name: Compile new P0 tests
-        run: python -m py_compile tests/test_smart_reminder_p0_regression.py
+        run: |
+          python -m py_compile tests/test_smart_reminder_p0_regression.py \
+            tests/test_miniapp_course_context.py tests/test_android_course_api.py
       - name: Run actual legacy status and consent baselines
         env:
           BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
@@ -58,7 +74,12 @@ jobs:
             tests.test_course_today_service \
             tests.test_course_daily_window \
             tests.test_course_lesson_completion_proof \
-            tests.test_account_deletion_api
+            tests.test_account_deletion_api \
+            tests.test_miniapp_course_context \
+            tests.test_android_course_api \
+            tests.test_course_miniapp_practice \
+            tests.test_course_miniapp_practice_progress_window \
+            tests.test_i18n_miniapp_reservation_asgi
 
   android-jvm-legacy:
     name: Android reminder JVM baseline (Play and Direct)
@@ -83,13 +104,15 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: true
-      - name: Test Play reminder decision and scheduling
+      - name: Test Play reminder decision, scheduling and deep links
         run: |
           ./gradlew --no-daemon testPlayDebugUnitTest \
             --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
-            --tests "com.pomp.hskai.core.notify.ReminderScheduleTest"
-      - name: Test Direct reminder decision and scheduling
+            --tests "com.pomp.hskai.core.notify.ReminderScheduleTest" \
+            --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest"
+      - name: Test Direct reminder decision, scheduling and deep links
         run: |
           ./gradlew --no-daemon testDirectDebugUnitTest \
             --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
-            --tests "com.pomp.hskai.core.notify.ReminderScheduleTest"
+            --tests "com.pomp.hskai.core.notify.ReminderScheduleTest" \
+            --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest"

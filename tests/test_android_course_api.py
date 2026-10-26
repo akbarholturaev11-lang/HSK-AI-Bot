@@ -49,6 +49,8 @@ from app.services.course_miniapp_access_service import (
 )
 from app.repositories.user_repo import UserRepository
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+from app.services.course_gamification_service import CourseGamificationService
+from app.services.learning_signals import LearningSignalsService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.entitlements import actions as A
 from app.services.entitlements.limits_config import LimitConfigService
@@ -1272,6 +1274,38 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
             first.json()["completed_lessons_count"],
             retry.json()["completed_lessons_count"],
         )
+
+    async def test_next_day_completion_replay_is_not_new_learning(self):
+        headers = await self._bearer()
+        body = {"lesson_order": 1, "event_id": "android:p0-prior-day-result", "expected_level": "hsk1"}
+        day = datetime(2026, 10, 25, tzinfo=timezone.utc).date()
+        with patch.object(CourseGamificationService, "_local_day", return_value=day):
+            first = await self.client.post(
+                "/api/v3/android/course/complete", headers=headers, json=body,
+            )
+        self.assertEqual(first.status_code, 200, first.text)
+        next_day = day + timedelta(days=1)
+        with patch.object(CourseGamificationService, "_local_day", return_value=next_day):
+            replay = await self.client.post(
+                "/api/v3/android/course/complete", headers=headers, json=body,
+            )
+        self.assertEqual(replay.status_code, 200, replay.text)
+        self.assertTrue(replay.json()["duplicate"])
+        async with self.sessions() as session:
+            xp = list((await session.scalars(select(CourseXpEvent))).all())
+            self.assertEqual(len(xp), 1)
+            self.assertEqual((xp[0].user_id, xp[0].activity_date), (1, day))
+            completion = list((await session.scalars(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == "lesson_completed",
+            ))).all())
+            self.assertEqual(len(completion), 1)
+            self.assertEqual(completion[0].source, "android_course")
+            self.assertEqual(completion[0].session_id, body["event_id"])
+            progress = await CourseProgressRepository(session).get_by_user_id(1)
+            self.assertEqual(progress.completed_lessons_count, 1)
+            signals = LearningSignalsService(session)
+            self.assertEqual(await signals._today(1, next_day), (0, set(), set()))
+            self.assertEqual(await signals._evidence_and_pace(1, next_day), (1, 1))
 
     async def _completion_mutation_state(self, headers):
         response = await self.client.get("/api/v3/android/course/map", headers=headers)
