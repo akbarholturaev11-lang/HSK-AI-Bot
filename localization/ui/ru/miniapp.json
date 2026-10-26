@@ -411,6 +411,7 @@
     "ui.admin_pwa.inboxFeedbackDisliked": "Не понравилось",
     "ui.admin_pwa.inboxFeedbackWorth": "Стоила ли подписка своих денег",
     "ui.admin_pwa.inboxFeedbackReason": "Причина",
+    "ui.admin_pwa.inboxFeedbackReply": "Ответить",
     "ui.admin_pwa.inboxFeedbackBonus": "Бонус на 30 минут",
     "ui.admin_pwa.inboxFeedbackGranted": "начислен",
     "ui.admin_pwa.inboxFeedbackNotGranted": "не начислен",
