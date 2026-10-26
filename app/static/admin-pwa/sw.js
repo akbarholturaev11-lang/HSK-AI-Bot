@@ -22,15 +22,36 @@ self.addEventListener('fetch', event => {
   }));
 });
 
-/* Display-only handler; push payload is never trusted or rendered. Server
-   delivery is independently guarded by VAPID and a private admin subscription.
-   Safari revokes permission for invisible pushes. */
+/* Fixed, content-free labels for an allowlisted server event category.
+   Ignore all other push fields. No sensitive details or untrusted copy are displayed.
+   Safari requires a visible notification for each delivered push. */
 self.addEventListener('push', event => {
-  event.waitUntil(self.registration.showNotification('HSK AI Admin', {
-    body: 'Yangi muhim xabar',
+  const labels = {
+    payment: {title: '🧾 Yangi to‘lov cheki', body: 'Chekni tekshirish kerak.'},
+    android: {title: '📱 Android xatoligi', body: 'Android ilovasidan xatolik hisoboti keldi.'},
+    technical: {title: '⚠️ Texnik xatolik', body: 'Tizimda xatolik qayd etildi.'},
+    bot: {title: '💬 Bot fikr-mulohazasi', body: 'Muhim belgilangan fikr keldi.'},
+    release: {title: '🚀 Reliz xabari', body: 'Muhim reliz xabari keldi.'},
+  };
+  let source = null;
+  try {
+    const payload = event.data ? event.data.json() : null;
+    if (payload && payload.kind === 'important' &&
+        typeof payload.source === 'string' &&
+        Object.prototype.hasOwnProperty.call(labels, payload.source)) {
+      source = payload.source;
+    }
+  } catch (_) {
+    // Old or malformed pushes still show a safe fallback notification.
+  }
+  const message = source ? labels[source] :
+    {title: 'HSK AI Admin', body: 'Yangi admin bildirishnomasi.'};
+  event.waitUntil(self.registration.showNotification(message.title, {
+    body: message.body,
     icon: '/admin/assets/icon.png',
     badge: '/admin/assets/icon.png',
-    tag: 'hsk-admin-important',
+    // Do not share a single notification tag: iOS may replace a receipt alert
+    // with an unrelated Android error instead of showing both.
     data: {path: '/admin/?inbox=1'},
   }));
 });

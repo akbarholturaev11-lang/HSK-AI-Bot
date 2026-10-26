@@ -240,16 +240,24 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('!PUBLIC.includes(url.pathname)',worker.text)
         self.assertIn('url.search',worker.text)
         self.assertNotIn("'/api/",worker.text)
-        # Apple Web Push must always show a visible generic notification,
-        # ignore all untrusted push payload, never access private API/cache,
-        # and navigate only to a fixed first-party inbox URL.
+        # Apple Web Push must always show a visible category-specific notice,
+        # whitelist the source only, never access private API/cache or display
+        # untrusted report content, and open a fixed first-party inbox URL.
         self.assertIn("self.addEventListener('push'", worker.text)
         self.assertIn("self.registration.showNotification", worker.text)
         self.assertIn("self.addEventListener('notificationclick'", worker.text)
         self.assertIn("'/admin/?inbox=1'", worker.text)
         self.assertIn("current.pathname === '/admin/'", worker.text)
         push_handler = worker.text.split("self.addEventListener(\'push\'", 1)[1].split("self.addEventListener(\'notificationclick\'", 1)[0]
-        self.assertNotIn("event.data", push_handler)
+        self.assertIn("event.data.json()", push_handler)
+        self.assertIn("payload.kind === 'important'", push_handler)
+        self.assertIn("Object.prototype.hasOwnProperty.call(labels, payload.source)", push_handler)
+        self.assertIn("payment: {title:", push_handler)
+        self.assertIn("android: {title:", push_handler)
+        self.assertIn("technical: {title:", push_handler)
+        self.assertNotIn("tag: 'hsk-admin-important'", push_handler)
+        self.assertNotIn("payload.title", push_handler)
+        self.assertNotIn("payload.body", push_handler)
         self.assertNotIn("pushSubscription", worker.text)
         for filename in ('app.js','styles.css','catalog.js','icon.png','icon-large.png'):
             response=await self.get('/admin/assets/'+filename)
