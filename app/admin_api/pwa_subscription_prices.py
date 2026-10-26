@@ -13,7 +13,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from pydantic import Field, ValidationError
-from sqlalchemy import select, text
+from sqlalchemy import or_, select, text
 
 from app.admin_api.pwa_access_grants import CommandError, StepId
 from app.admin_api.pwa_approval import _utc
@@ -28,6 +28,9 @@ from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.subscription_price import SubscriptionPrice
+from app.db.models.payment_qr_code import PaymentQrCode
+from app.db.models.discount_campaign import DiscountCampaign
+from app.services.payment_qr_code_service import PaymentQrCodeService
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.subscription_price_service import (
@@ -149,6 +152,44 @@ async def execute_subscription_price(db, *, session_cookie, request, settings_ob
         if _revision(row) != command.expected_hash:
             raise CommandError("confirmation_changed", 409)
         before = _public_price(command.method, command.plan, row)
+        if command.method in ('alipay', 'wechat') and command.amount != before['amount']:
+            # A new China price cannot go live until its exact base-price QR
+            # has been staged and signed in the dedicated QR editor.
+            for qr_scope, required_amount in (
+                ('subscription', command.amount),
+                ('subscription_20', int(round(command.amount * 0.8))),
+            ):
+                matching_qr = await db.scalar(select(PaymentQrCode.id).where(
+                    PaymentQrCode.scope == qr_scope,
+                    PaymentQrCode.payment_method == command.method,
+                    PaymentQrCode.plan_type == command.plan,
+                    PaymentQrCode.amount == required_amount,
+                    PaymentQrCode.currency == '¥',
+                ).limit(1))
+                if matching_qr is None:
+                    raise CommandError('payment_qr_required', 409)
+            # Currently active campaigns must not lose their exact QR as a side
+            # effect of changing a shared base price. Bound the query to matching
+            # method/plan and keep the existing signed price transaction atomic.
+            campaigns = (await db.scalars(select(DiscountCampaign).where(
+                DiscountCampaign.is_active.is_(True),
+                DiscountCampaign.ends_at > now,
+                or_(DiscountCampaign.payment_method == command.method,
+                    DiscountCampaign.payment_method.is_(None)),
+                or_(DiscountCampaign.plan_type == command.plan,
+                    DiscountCampaign.plan_type.is_(None)),
+            ))).all()
+            for campaign in campaigns:
+                campaign_amount = int(round(command.amount * (100 - campaign.percent) / 100))
+                campaign_qr = await db.scalar(select(PaymentQrCode.id).where(
+                    PaymentQrCode.scope == PaymentQrCodeService.admin_campaign_scope(campaign.id),
+                    PaymentQrCode.payment_method == command.method,
+                    PaymentQrCode.plan_type == command.plan,
+                    PaymentQrCode.amount == campaign_amount,
+                    PaymentQrCode.currency == '¥',
+                ).limit(1))
+                if campaign_qr is None:
+                    raise CommandError('payment_qr_required', 409)
         price = await SubscriptionPriceService(db).set_price(
             payment_method=command.method, plan_type=command.plan, amount=command.amount,
             updated_by_telegram_id=actor.telegram_id)

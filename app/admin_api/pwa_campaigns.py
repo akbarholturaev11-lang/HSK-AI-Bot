@@ -35,6 +35,7 @@ from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.discount_campaign import DiscountCampaign
+from app.db.models.payment_qr_code import PaymentQrCode
 from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackDelivery
 from app.db.models.user import User
 from app.repositories.ad_campaign_repo import AdCampaignRepository, decode_languages
@@ -45,6 +46,8 @@ from app.services.broadcast_translation_service import (
     decode_localized_broadcast_text, encode_localized_broadcast_text,
 )
 from app.services.release_feedback_service import release_feedback_prompt
+from app.services.subscription_price_service import SubscriptionPriceService
+from app.services.payment_qr_code_service import PaymentQrCodeService
 
 logger = logging.getLogger(__name__)
 Kind = Literal['ad', 'release', 'discount']
@@ -361,12 +364,17 @@ async def _prepare_state(db, change, settings_obj, *, cookie, lock=False):
             current_hash = _hash([row.id, row.telegram_id, row.status])
         else:
             current_hash = _hash({'discount_create': 'new'})
+        if change.is_active and change.payment_method != 'visa':
+            # New QR campaigns start paused until the exact image is uploaded.
+            raise CommandError('payment_qr_required', 409)
         content = change.copies.model_dump()
         return row, current_hash, _hash(content), snapshots, metadata, None
     else:
         row = await _row(db, 'discount', change.campaign_id, lock=lock)
         if change.is_active and (row.notify_enabled or _utc(row.ends_at) <= datetime.now(timezone.utc)):
             raise CommandError('confirmation_changed', 409)
+        if change.is_active:
+            await require_discount_qr(db, row)
         return row, revision(row), _hash({'is_active': change.is_active}), snapshots, metadata, None
     metadata['not_before'] = await validate_schedule(db, cookie=cookie, send_at=change.send_at)
     if row is not None and change.kind == 'ad_send' and metadata['not_before'] and _utc(row.ends_at) <= metadata['not_before']:
@@ -380,6 +388,29 @@ async def _prepare_state(db, change, settings_obj, *, cookie, lock=False):
     snapshots = [{'user_id': user.id, 'snapshot_hash': recipient_hash(user),
                   'language': user.language if user.language in LANGS else 'tj'} for user in users]
     return row, current_hash, _hash(content), snapshots, metadata, texts
+
+
+async def require_discount_qr(db, campaign):
+    """Fail closed on an offer missing any required exact discounted China QR."""
+    methods = (campaign.payment_method,) if campaign.payment_method else ("alipay", "wechat")
+    plans = (campaign.plan_type,) if campaign.plan_type else ("10_days", "1_month")
+    for method in methods:
+        if method not in ("alipay", "wechat"):
+            continue
+        for plan in plans:
+            price = await SubscriptionPriceService(db).get_price(method, plan)
+            if not price or price.currency != "¥":
+                raise CommandError("payment_qr_required", 409)
+            amount = int(round(price.amount * (100 - campaign.percent) / 100))
+            qr = await db.scalar(select(PaymentQrCode.id).where(
+                PaymentQrCode.scope == PaymentQrCodeService.admin_campaign_scope(campaign.id),
+                PaymentQrCode.payment_method == method,
+                PaymentQrCode.plan_type == plan,
+                PaymentQrCode.amount == amount,
+                PaymentQrCode.currency == price.currency,
+            ).limit(1))
+            if qr is None:
+                raise CommandError("payment_qr_required", 409)
 
 
 async def prepare_campaign(db, *, session_cookie, request, settings_obj):
