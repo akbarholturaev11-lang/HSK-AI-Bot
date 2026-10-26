@@ -142,7 +142,7 @@ class AdminPwaSubscriptionPriceTests(fixtures.PaymentFixtures, unittest.Isolated
         async with self.sessions() as db:
             campaign = DiscountCampaign(title="Discount price QA", percent=25, is_active=True,
                 starts_at=now-timedelta(minutes=1), ends_at=now+timedelta(hours=1),
-                payment_method="alipay",plan_type="10_days")
+                payment_method=None,plan_type=None)  # Wildcard offer still requires an exact QR.
             db.add(campaign)
             db.add(PaymentQrCode(scope="subscription",payment_method="alipay",
                 plan_type="10_days",amount=35,currency="¥",file_id="full-price-qr"))
