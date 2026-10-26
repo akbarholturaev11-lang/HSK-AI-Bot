@@ -103,6 +103,17 @@ async def browser_checks(output):
                                 next_before=None)
             else:
                 data.update(items=copy.deepcopy(selected), next_before=None)
+        elif path.endswith("/inbox/feedback-detail"):
+            assert payload["source"] in ("bot", "release")
+            assert payload["source_id"] == 1
+            data.update(source=payload["source"], source_id=1, user_id=7,
+                        name="Synthetic Learner", telegram_id=123456789,
+                        language="tj", level="hsk4", mode="qa", bot_days=150,
+                        feedback_parts={"liked": "Synthetic bot message",
+                                        "disliked": "Synthetic issue", "paid": True}
+                        if payload["source"] == "bot" else None,
+                        reward_granted=None, rating=4 if payload["source"] == "release" else None,
+                        message="Synthetic release message" if payload["source"] == "release" else None)
         elif path.endswith("/inbox/mark-all-read"):
             for row in rows:
                 if row["triage_status"] == "new":
@@ -201,11 +212,20 @@ async def browser_checks(output):
                     assert not await page.locator("[data-feedback-next]").count()
                     await page.screenshot(path=str(output / f"inbox-minimal-{language}-{width}.png"))
                     await bot.click()
-                    await expect(page.locator(".inbox-details-text")).to_have_count(2)
-                    await expect(page.locator(".inbox-details-text").first).to_contain_text("Synthetic bot message")
-                    await expect(page.locator(".inbox-details-text").last).to_contain_text("Synthetic issue")
-                    assert "👎" not in await page.locator(".inbox-detail-messages").inner_text()
+                    await expect(page.locator(".inbox-feedback-person-row")).to_have_count(6)
+                    await expect(page.locator(".inbox-feedback-person")).to_contain_text("Synthetic Learner")
+                    await expect(page.locator(".inbox-feedback-person")).to_contain_text("123456789")
+                    await expect(page.locator(".inbox-feedback-person")).to_contain_text("HSK4")
+                    await expect(page.locator(".inbox-feedback-person")).to_contain_text("150")
+                    await expect(page.locator(".inbox-feedback-answer")).to_have_count(2)
+                    await expect(page.locator(".inbox-feedback-answer").first).to_contain_text("Synthetic bot message")
+                    await expect(page.locator(".inbox-feedback-answer").last).to_contain_text("Synthetic issue")
+                    assert "👎" not in await page.locator(".inbox-feedback-answers").inner_text()
                     await expect(page.locator(".inbox-detail-meta")).to_contain_text("Telegram Bot")
+                    await expect(page.locator('[data-message-user="7"]')).to_have_count(1)
+                    await expect(page.locator('[data-user-detail="7"]')).to_have_count(1)
+                    assert any(path.endswith("/inbox/feedback-detail") and payload["source"] == "bot"
+                               for path, payload in requests)
                     assert triage[-1]["source"]=="bot" and triage[-1]["operation"]=="mark_read"
                     await expect(page.locator('[data-inbox-attachment]')).to_have_count(1)
                     before = len(requests)
