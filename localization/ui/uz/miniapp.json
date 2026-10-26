@@ -411,6 +411,7 @@
     "ui.admin_pwa.inboxFeedbackDisliked": "Yoqmadi",
     "ui.admin_pwa.inboxFeedbackWorth": "Obuna arzidimi",
     "ui.admin_pwa.inboxFeedbackReason": "Sababi",
+    "ui.admin_pwa.inboxFeedbackReply": "Javob yozish",
     "ui.admin_pwa.inboxFeedbackBonus": "30 daqiqalik bonus",
     "ui.admin_pwa.inboxFeedbackGranted": "berildi",
     "ui.admin_pwa.inboxFeedbackNotGranted": "berilmadi",
