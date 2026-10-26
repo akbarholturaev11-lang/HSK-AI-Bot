@@ -637,7 +637,7 @@ async function loadCourseSalesStats(){
   try{
     const data=await api('analytics',{section:'experiments',period:'monthly',platform:'overall'});
     if(at!==epoch||request!==courseSalesToken||state.route!=='course'||!state.actor)return;
-    courseSalesMetrics=data.available===false?null:data.metrics?.sales||null;
+    courseSalesMetrics=data.available===false?null:(data.metrics?.sales?{...data.metrics.sales,status:data.metrics.sales_status}:null);
     courseSalesError=data.available===false||!courseSalesMetrics;
   }catch(error){
     if(at!==epoch||request!==courseSalesToken||state.route!=='course'||!state.actor)return;
