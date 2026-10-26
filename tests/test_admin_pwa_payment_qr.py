@@ -20,6 +20,7 @@ from app.db.models.discount_campaign import DiscountCampaign
 from app.db.models.subscription_price import SubscriptionPrice
 from app.db.models.user import User
 from app.services.subscription_price_service import SubscriptionPriceService
+from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from tests import test_admin_pwa_payment_review as fixtures
 from tests.test_admin_pwa_webauthn_crypto_vectors import make_assertion
 
@@ -158,6 +159,37 @@ class AdminPwaPaymentQrTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
                     request=qr_api.ReadPaymentQr(method="wechat",plan="1_month",
                         scope="admin_campaign",campaign_id=campaign_id),
                     settings_obj=self.settings)
+
+    async def test_uploaded_discount_qr_overrides_static_and_broken_upload_fails_closed(self):
+        import base64
+        bot = FakeBot()
+        async def get_file(file_id):
+            return SimpleNamespace(file_path="synthetic-qr-image")
+        async def download_file(path):
+            return BytesIO(self.image_bytes())
+        bot.get_file = get_file
+        bot.download_file = download_file
+        async with self.sessions() as db:
+            db.add(PaymentQrCode(scope="subscription_20", payment_method="alipay",
+                plan_type="1_month",amount=53,currency="¥",file_id="uploaded-20-qr"))
+            await db.commit()
+        quote = {"discount_source":"referral","discount_percent":20,"discount_campaign_id":None,
+            "final_amount":53,"currency":"¥","discount_applied":True}
+        async with self.sessions() as db:
+            service = SubscriptionMiniAppService(db)
+            image = await service._qr_payload(bot=bot,user=None,payment_method="alipay",
+                plan_type="1_month",checkout_info=quote)
+            self.assertTrue(image["available"])
+            self.assertEqual(base64.b64decode(image["image_data_url"].split(",",1)[1]),
+                             self.image_bytes())
+            async def broken_file(file_id):
+                raise RuntimeError("synthetic inaccessible uploaded QR")
+            bot.get_file = broken_file
+            missing = await service._qr_payload(bot=bot,user=None,payment_method="alipay",
+                plan_type="1_month",checkout_info=quote)
+            self.assertFalse(missing["available"])
+            campaign = quote | {"discount_source":"admin_campaign","discount_campaign_id":1}
+            self.assertIsNone(service._static_qr_bytes("alipay","1_month",campaign))
 
     async def test_invalid_target_and_oversized_media_are_rejected(self):
         with self.assertRaises(ValueError):
