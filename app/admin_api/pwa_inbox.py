@@ -119,6 +119,8 @@ def _technical_explanation_code():
     )
     timed_out = Message.content.contains("\n- error_message: onboarding_save_timeout\n")
     return case(
+        (and_(onboarding, recovered, placement), "onboarding_recovered_placement"),
+        (and_(onboarding, recovered, timed_out), "onboarding_recovered_timeout"),
         (and_(onboarding, recovered), "onboarding_recovered"),
         (and_(onboarding, placement), "onboarding_placement_required"),
         (and_(onboarding, timed_out), "onboarding_timeout"),
