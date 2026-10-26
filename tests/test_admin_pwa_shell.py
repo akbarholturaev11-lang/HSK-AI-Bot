@@ -195,6 +195,7 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("sales.arms?.control||!sales.arms?.treatment",script)
         self.assertIn("arm.matured>0?percent(arm.approval_rate):'—'",script)
         self.assertIn("sales.status==='winner'&&sales.decision_ready",script)
+        self.assertIn('status:data.metrics.sales_status',script)
         self.assertIn("courseSalesToken++;courseSalesLoading=false;courseSalesError=false;courseSalesMetrics=null;",script)
         self.assertIn("if(state.courseTab==='experiment')void loadCourseSalesStats();",script)
         self.assertNotIn("data-course-stats",script)
