@@ -101,6 +101,32 @@ def _is_unread(row):
 def _is_important(source):
     return source in _AUTO_IMPORTANT
 
+def _technical_explanation_code():
+    """Classify only allowlisted event markers without selecting diagnostic text.
+
+    Message.content contains arbitrary client-provided URL/stack/text. SQL CASE
+    yields fixed enum values only; no raw diagnostic content is transmitted.
+    Both the producer signature and the explicit recovery flag are required.
+    """
+    onboarding = and_(
+        Message.content.startswith("APP ERROR KONTEXTI:\n- source: miniapp\n"),
+        Message.content.contains("\n- event_source: course_v3_onboarding\n"),
+        Message.content.contains("\n- error_name: OnboardingSaveResponseError\n"),
+    )
+    recovered = Message.content.contains('\n- extra: {"recovered": true')
+    placement = Message.content.contains(
+        "\n- error_message: course_level_change_requires_placement\n"
+    )
+    timed_out = Message.content.contains("\n- error_message: onboarding_save_timeout\n")
+    return case(
+        (and_(onboarding, recovered), "onboarding_recovered"),
+        (and_(onboarding, placement), "onboarding_placement_required"),
+        (and_(onboarding, timed_out), "onboarding_timeout"),
+        (onboarding, "onboarding_unconfirmed"),
+        else_="unknown",
+    )
+
+
 
 def _before(query, timestamp, row_id, source, cursor):
     if cursor is None:
@@ -342,13 +368,14 @@ async def unified_inbox(db, request: InboxRequest):
 
 
     if "technical" in sources:
-        # Existing Mini App diagnostic records include raw stack/URL/user text:
-        # never SELECT content; the Admin PWA sees only a fixed safe label.
+        # Never SELECT raw diagnostic content. Only a fixed SQL CASE result
+        # identifying an allowlisted producer/outcome may leave this boundary.
         stamp = Message.created_at
         query = select(
             Message.id.label("source_id"), stamp.label("created_at"),
             func.cast("technical", String).label("source_type"),
             Message.user_id.label("user_id"),
+            _technical_explanation_code().label("technical_code"),
             AdminPwaInboxTriage.status.label("triage_status"),
             AdminPwaInboxTriage.priority.label("triage_priority"),
             AdminPwaInboxTriage.assigned_to_user_id.label("triage_assignee"),
@@ -375,7 +402,8 @@ async def unified_inbox(db, request: InboxRequest):
             gathered.append({
                 "source": "technical", "source_id": row.source_id,
                 "created_at": _utc(row.created_at), "user_id": row.user_id,
-                "message": "Mini App technical error", "has_attachment": False,
+                "message": "Mini App technical error", "technical_code": row.technical_code,
+                "has_attachment": False,
                 "image_preview_available": False,
                 "feedback_status": None, "rating": None, "notification_delivery": None,
                 "app_version": None, "screen": None, **_triage(row),
