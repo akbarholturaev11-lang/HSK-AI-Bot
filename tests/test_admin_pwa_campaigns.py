@@ -127,7 +127,7 @@ class CampaignTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCase):
             await self.prepare({'kind': 'ad_send', 'campaign_id': campaign_id})
 
     async def test_native_personal_discount_preserves_identity_no_send_or_fake_payment_and_exact_copy(self):
-        command = await self.prepare(DISCOUNT)
+        command = await self.prepare(DISCOUNT | {'payment_method':'visa'})
         proof = await self.proof(command, signed=True)
         saved = await self.execute(command, proof)
         self.assertIsNone(saved['job_id'])
