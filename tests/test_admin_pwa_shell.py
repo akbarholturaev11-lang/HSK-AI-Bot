@@ -56,6 +56,8 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('data-action="payoutList"', section)
         self.assertNotIn('v6.', section)
         self.assertNotIn('fakeCampaign', section)
+        self.assertNotIn("'readCurrent'", section)
+        self.assertIn('marketing-tile', section)
         self.assertEqual(script.count('data-action="noticeList"'), 1)
         self.assertIn('.marketing-sections{display:grid;', styles)
 
