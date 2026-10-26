@@ -53,7 +53,12 @@ jobs:
             tests.test_native_scheduler_transport \
             tests.test_motivation_reminder_service \
             tests.test_android_push \
-            tests.test_account_deletion_cleanup
+            tests.test_account_deletion_cleanup \
+            tests.test_learning_signals \
+            tests.test_course_today_service \
+            tests.test_course_daily_window \
+            tests.test_course_lesson_completion_proof \
+            tests.test_account_deletion_api
 
   android-jvm-legacy:
     name: Android reminder JVM baseline (Play and Direct)
