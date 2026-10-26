@@ -469,6 +469,7 @@ async def browser_checks(output, *, media_only=False):
                             assert await page.locator('#drawerContent img').count() == 0
                             await page.screenshot(path=str(output / f'marketing-{kind}-{language}-{width}.png'))
                             await close_or_wait()
+                        await page.locator('[data-marketing-tab="campaigns"]').click()
                         await page.locator('[data-campaign-list="ad"]').click()
                         await page.locator('[data-marketing-kind="campaign_draft"]').click()
                         await expect(page.locator('#campaignTitle')).to_be_visible()
