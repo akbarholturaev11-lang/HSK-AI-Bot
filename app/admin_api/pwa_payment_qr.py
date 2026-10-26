@@ -180,8 +180,8 @@ async def _target(db, method, plan, *, campaign_id=None, new_price=None, lock=Fa
     revision = _hash({"price": _price_raw(price_row), "qr": _qr_raw(qr_row),
                       "campaign": campaign_raw})
     current = {"method": method, "plan": plan, "amount": amount,
-               "currency": currency, "qr_set": qr_row is not None,
-               "revision_hash": revision}
+               "currency": currency, "base_amount": base_amount,
+               "qr_set": qr_row is not None, "revision_hash": revision}
     return price_row, qr_row, current
 
 
