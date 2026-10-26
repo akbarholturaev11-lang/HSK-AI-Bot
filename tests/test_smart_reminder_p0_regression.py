@@ -19,6 +19,7 @@ from app.db import models  # noqa: F401
 from app.db.base import Base
 from app.db.models.course_progress import CourseProgress
 from app.db.models.user import User
+from app.bot.handlers.messages import handle_text_message
 from app.bot.handlers.course import (
     course_cancel_reminder_setup_handler,
     course_set_reminder_time_handler,
@@ -190,6 +191,119 @@ class SmartReminderP0LegacyRegressionTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(persisted.reminder_enabled)
             self.assertEqual(persisted.reminder_time, time(8))
             self.assertEqual(persisted.waiting_for, "none")
+
+
+    async def test_message_level_cancel_preserves_legacy_reminder_on(self):
+        """The early text-message branch is a setup exit, not an OFF action."""
+        async with self.sessions() as session:
+            progress = await session.scalar(
+                select(CourseProgress).where(CourseProgress.user_id == 1)
+            )
+            progress.waiting_for = "reminder_setup"
+            progress.reminder_time = time(14)
+            user = await session.get(User, 1)
+            user.learning_mode = "qa"
+            await session.commit()
+
+            message = SimpleNamespace(
+                from_user=SimpleNamespace(id=3001),
+                text="❌ Отмена",
+                answer=AsyncMock(),
+            )
+            state = SimpleNamespace(get_data=AsyncMock(return_value={}))
+            with patch(
+                "app.bot.handlers.messages._is_admin_flow_message",
+                new_callable=AsyncMock, return_value=False,
+            ), patch(
+                "app.bot.handlers.messages._migrate_legacy_course_mode_to_qa",
+                new_callable=AsyncMock,
+            ), patch(
+                "app.bot.handlers.messages.bot_locale_map",
+                return_value={"uz": "❌ Отмена"},
+            ), patch(
+                "app.bot.handlers.messages.delete_message_safely",
+                new_callable=AsyncMock,
+            ) as deleted, patch(
+                "app.bot.handlers.messages._edit_reminder_panel",
+                new_callable=AsyncMock,
+            ) as panel:
+                await handle_text_message(message, state, session)
+                deleted.assert_awaited_once()
+                panel.assert_awaited_once()
+
+        async with self.sessions() as session:
+            saved = await session.get(CourseProgress, 1)
+            self.assertEqual(saved.waiting_for, "none")
+            self.assertTrue(saved.reminder_enabled)
+            self.assertEqual(saved.reminder_time, time(14))
+
+    async def test_course_branch_text_cancel_preserves_legacy_reminder_on(self):
+        """Exercise the second text branch without changing its old semantics."""
+        async with self.sessions() as session:
+            progress = await session.scalar(
+                select(CourseProgress).where(CourseProgress.user_id == 1)
+            )
+            progress.waiting_for = "reminder_setup"
+            progress.reminder_time = time(20)
+            user = await session.get(User, 1)
+            user.learning_mode = "course"
+            await session.commit()
+
+            message = SimpleNamespace(
+                from_user=SimpleNamespace(id=3001),
+                text="❌ Отмена",
+                answer=AsyncMock(),
+            )
+            state = SimpleNamespace(get_data=AsyncMock(return_value={}))
+            # The early branch sees no progress; the later branch retrieves
+            # the real session-backed record via its legacy course route.
+            repo_instance = CourseProgressRepository(session)
+            repo_instance.get_by_user_id = AsyncMock(side_effect=[None, progress])
+            fake_engine = SimpleNamespace(
+                progress_repo=repo_instance,
+                get_current_lesson=AsyncMock(
+                    return_value=(user, progress, SimpleNamespace(id=1), None)
+                ),
+            )
+            with patch(
+                "app.bot.handlers.messages._is_admin_flow_message",
+                new_callable=AsyncMock, return_value=False,
+            ), patch(
+                "app.bot.handlers.messages._migrate_legacy_course_mode_to_qa",
+                new_callable=AsyncMock,
+            ), patch(
+                "app.bot.handlers.messages._is_stale_course_menu_text",
+                return_value=False,
+            ), patch(
+                "app.bot.handlers.messages._ensure_active_course_access",
+                new_callable=AsyncMock, return_value=True,
+            ), patch(
+                "app.bot.handlers.messages._ensure_trial_lesson_access",
+                new_callable=AsyncMock, return_value=True,
+            ), patch(
+                "app.bot.handlers.messages.CourseEngineService",
+                return_value=fake_engine,
+            ), patch(
+                "app.bot.handlers.messages.bot_locale_map",
+                return_value={"uz": "❌ Отмена"},
+            ), patch(
+                "app.bot.handlers.messages.delete_message_safely",
+                new_callable=AsyncMock,
+            ) as deleted, patch(
+                "app.bot.handlers.messages._edit_reminder_panel",
+                new_callable=AsyncMock,
+            ) as panel:
+                await handle_text_message(message, state, session)
+                self.assertEqual(repo_instance.get_by_user_id.await_count, 1)
+                fake_engine.get_current_lesson.assert_awaited_once()
+                deleted.assert_awaited_once()
+                panel.assert_awaited_once()
+
+        async with self.sessions() as session:
+            saved = await session.get(CourseProgress, 1)
+            self.assertEqual(saved.waiting_for, "none")
+            self.assertTrue(saved.reminder_enabled)
+            self.assertEqual(saved.reminder_time, time(20))
 
 
 if __name__ == "__main__":
