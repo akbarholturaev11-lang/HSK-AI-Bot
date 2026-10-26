@@ -77,10 +77,11 @@ class AdminPwaPaymentQrTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         async with self.sessions() as db:
             step = await db.get(AdminPwaStepUp, started.step_up_id)
             challenge = bytes(step.challenge)
+        self.qr_sign_count = getattr(self, 'qr_sign_count', 0) + 1
         async with self.sessions() as db:
             self.assertTrue(await verify_step_up(
                 db, session_cookie=fixtures.COOKIE, step_up_id=started.step_up_id,
-                credential=make_assertion(self.key, challenge=challenge),
+                credential=make_assertion(self.key, challenge=challenge, sign_count=self.qr_sign_count),
                 settings_obj=self.settings,
             ))
         return started.step_up_id
