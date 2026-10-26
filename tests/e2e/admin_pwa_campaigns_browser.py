@@ -174,6 +174,10 @@ async def browser_checks(output):
                 await page.locator('#discountTarget').dispatch_event('change')
                 await expect(page.locator('#discountSegment')).to_be_hidden()
                 await page.locator('#discountQuota').fill('1')
+                # This synthetic activation covers Visa, where checkout uses
+                # bank details instead of a mandatory China QR. A generic
+                # Alipay/WeChat activation must first have exact QR media.
+                await page.locator('#discountMethod').select_option('visa')
                 await page.locator('#campaignActive').select_option('true')
                 await begin()
                 await finish_step_up(page)
