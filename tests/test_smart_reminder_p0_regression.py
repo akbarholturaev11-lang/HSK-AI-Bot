@@ -6,7 +6,7 @@ the inline reminder setup does not disable a saved study reminder. A future
 migration must intentionally review these distinctions instead of guessing.
 """
 
-from datetime import datetime, time, timedelta, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from types import SimpleNamespace
 import unittest
 from unittest.mock import AsyncMock, patch
@@ -17,7 +17,9 @@ from sqlalchemy.pool import StaticPool
 
 from app.db import models  # noqa: F401
 from app.db.base import Base
+from app.db.models.account_deletion import AccountDeletionRequest
 from app.db.models.course_progress import CourseProgress
+from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
 from app.bot.handlers.messages import handle_text_message
 from app.bot.handlers.course import (
@@ -26,6 +28,7 @@ from app.bot.handlers.course import (
 )
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.course_reminder_service import CourseReminderService
+from app.services.learning_signals import LearningSignalsService
 from app.services.user_access_state_service import UserAccessStateService
 
 
@@ -304,6 +307,99 @@ class SmartReminderP0LegacyRegressionTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(saved.waiting_for, "none")
             self.assertTrue(saved.reminder_enabled)
             self.assertEqual(saved.reminder_time, time(20))
+
+
+class SmartReminderP0LearningAndDeletionEvidenceTests(unittest.IsolatedAsyncioTestCase):
+    """P0 evidence boundaries, not new dispatcher or cancellation behavior."""
+
+    async def asyncSetUp(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:", poolclass=StaticPool
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        self.day = date(2026, 10, 26)
+        async with self.sessions() as session:
+            session.add(
+                User(
+                    id=1, telegram_id=3001, status="active",
+                    payment_status="approved", language="uz",
+                )
+            )
+            await session.commit()
+
+    async def asyncTearDown(self):
+        await self.engine.dispose()
+
+    async def test_reward_xp_is_not_verified_study_pace(self):
+        """Today's total XP is deliberately broader than verified learning."""
+        async with self.sessions() as session:
+            session.add(
+                CourseXpEvent(
+                    user_id=1, activity_type="reward_chest",
+                    activity_ref="chest:today", xp=200,
+                    activity_date=self.day, week_start=self.day,
+                )
+            )
+            await session.commit()
+            signals = LearningSignalsService(session)
+            xp, refs, types = await signals._today(1, self.day)
+            evidence, active_days = await signals._evidence_and_pace(1, self.day)
+
+            self.assertEqual(xp, 200)
+            self.assertEqual(refs, {"chest:today"})
+            self.assertEqual(types, {"reward_chest"})
+            self.assertEqual((evidence, active_days), (0, 0))
+
+            session.add(
+                CourseXpEvent(
+                    user_id=1, activity_type="lesson",
+                    activity_ref="v3-part:hsk1:1:complete", xp=20,
+                    activity_date=self.day, week_start=self.day,
+                )
+            )
+            await session.commit()
+            xp, refs, types = await signals._today(1, self.day)
+            evidence, active_days = await signals._evidence_and_pace(1, self.day)
+            self.assertEqual(xp, 220)
+            self.assertIn("lesson", types)
+            self.assertEqual((evidence, active_days), (1, 1))
+
+    async def test_submitted_deletion_is_visible_while_account_still_exists(self):
+        """Pending deletion is not a completed purge or a status='blocked'."""
+        async with self.sessions() as session:
+            submitted = datetime(2026, 10, 26, 12, tzinfo=timezone.utc)
+            session.add(
+                AccountDeletionRequest(
+                    id="11111111-2222-3333-4444-555555555555",
+                    user_id=1,
+                    active_user_id=1,
+                    provider="telegram",
+                    status="submitted",
+                    secret_hash="a" * 64,
+                    client_hash="b" * 64,
+                    created_at=submitted,
+                    expires_at=submitted + timedelta(days=2),
+                    requested_at=submitted,
+                    due_at=submitted + timedelta(days=14),
+                )
+            )
+            await session.commit()
+            user = await session.get(User, 1)
+            pending = await session.scalar(
+                select(AccountDeletionRequest).where(
+                    AccountDeletionRequest.active_user_id == user.id,
+                    AccountDeletionRequest.status == "submitted",
+                )
+            )
+            self.assertIsNotNone(user)
+            self.assertEqual(user.status, "active")
+            self.assertIsNotNone(pending)
+            self.assertEqual(pending.user_id, user.id)
+            # Smart send/claim MUST veto this row in P1/P2; no such veto
+            # exists today and these P0 tests must not pretend it does.
+
 
 
 if __name__ == "__main__":
