@@ -45,10 +45,19 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("state.route==='payments')state.financeTab='payments'",script)
         for tab in ('payments','prices','methods','portfolio'):
             self.assertIn("['"+tab+"'",finance)
-        for selector in ('data-action="priceSettings"', 'data-action="portfolioHistory"',
+        for selector in ('data-price-target=', 'data-action="portfolioEditor"',
                          'data-action="deliveryList"', 'data-setting-kind="payment_details"',
-                         'data-payment-qr-target='):
+                         'data-payment-qr-target=', 'data-qr-tariff=', 'data-qr-scope='):
             self.assertIn(selector,finance)
+        # Selected tabs must show records/actions without title-only proxy tiles.
+        for selector in ('data-action="priceSettings"', 'data-action="portfolioHistory"'):
+            self.assertNotIn(selector,finance)
+        self.assertIn('financePortfolio?.items',finance)
+        self.assertIn("api('portfolio/read'",finance)
+        self.assertIn("['alipay','wechat'].flatMap(method=>['10_days','1_month','3_months'].map(plan=>",finance)
+        self.assertIn("scopeRow('subscription','credit'",finance)
+        self.assertIn("scopeRow('subscription_20','gift'",finance)
+        self.assertNotIn('<h3>',finance)
         for selector in ('data-action="priceSettings"', 'data-action="portfolioHistory"',
                          'data-action="deliveryList"', 'data-setting-kind="payment_details"'):
             self.assertNotIn(selector,system)
@@ -61,6 +70,11 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('fakePayments',finance)
         self.assertNotIn('demoBalance',finance)
         self.assertIn('.finance-card-grid{display:grid;',styles)
+        self.assertIn('.finance-qr-actions{display:grid;',styles)
+        self.assertIn('.finance-qr-action+.finance-qr-action',styles)
+        self.assertIn('.finance-portfolio-inline{display:grid;',styles)
+        self.assertIn("if(match)await priceSettings(match[1],match[2]);",script)
+        self.assertNotIn("if(kind==='payment_details')body+=",script)
 
     async def test_confirmed_limits_save_reconciles_visible_draft_before_refresh(self):
         script = (await self.get('/admin/assets/app.js')).text
