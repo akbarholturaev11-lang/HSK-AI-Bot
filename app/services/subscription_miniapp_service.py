@@ -443,6 +443,8 @@ class SubscriptionMiniAppService:
         # Claim only AFTER admins actually receive the receipt. Rollback on
         # failed delivery must not spend the one-time opportunity.
         await PaymentReviewPreviewService(self.session).claim(user, payment)
+        if payment.screenshot_file_id:
+            await self.payment_service._queue_receipt_alert(payment)
         await self.session.commit()
 
         provisional_access = await self._provisional_access(user, payment)

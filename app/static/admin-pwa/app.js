@@ -46,6 +46,7 @@ let epoch=0, view=0, drawerId=0, confirmation=null, paymentPreview=null, reviewC
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
 let inboxLoadingMore=false,inboxListScrollTop=0,inboxRequestNonce=0,inboxBulkReading=false;
+let inboxRefreshTimer=null,inboxRefreshControl=null;
 let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
 const sectionBackStack=[];
 let automaticLoginAttempted=false, automaticLoginInProgress=false;
@@ -66,7 +67,7 @@ let feedbackLoadId=0;
 const feedbackStats={source:'all',period:'weekly',data:null,loading:false,error:false};
 class ApiError extends Error { constructor(code,status) { super(code);this.status=status; } }
 function clearPrivate(phase) {
-  stopApprovalWatch();
+  stopApprovalWatch();stopInboxRefresh();
   cancelAdvancedAnalytics();cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
   epoch++;view++;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
@@ -861,6 +862,7 @@ async function boot() {
     // Never block the dashboard or raise a permission prompt during sign-in.
     void restorePushAfterLogin().catch(()=>{});
     await Promise.all([load(),refreshInboxUnread()]);
+    if(current===epoch&&state.actor)startInboxRefresh();
     if(current===epoch&&state.actor&&location.pathname==='/admin/'&&location.search==='?inbox=1'){
       history.replaceState(null,'','/admin/');
       await inbox(); // Only after current passkey Admin PWA login is verified.
@@ -2475,9 +2477,50 @@ function inboxDetails(row) {
     actions+'</div>';
 }
 let currentInboxRows=[];
-function inboxRequest(before=null,userId=feedbackUserId) {
+function inboxRequest(before=null,userId=feedbackUserId,requestSignal=null) {
   return api('inbox/list',{source:'all',priority:'all',status:'all',period:'all_time',
-    search:null,user_id:userId,before,limit:30});
+    search:null,user_id:userId,before,limit:30},{requestSignal});
+}
+function stopInboxRefresh(){
+  clearTimeout(inboxRefreshTimer);inboxRefreshTimer=null;
+  inboxRefreshControl?.abort();inboxRefreshControl=null;
+}
+function startInboxRefresh(){
+  stopInboxRefresh();
+  const at=epoch;
+  const schedule=()=>{
+    if(at===epoch&&state.actor&&!document.hidden&&navigator.onLine)
+      inboxRefreshTimer=setTimeout(refresh,15000);
+  };
+  const refresh=async()=>{
+    inboxRefreshTimer=null;
+    if(at!==epoch||!state.actor||document.hidden||!navigator.onLine)return;
+    const control=new AbortController();inboxRefreshControl=control;
+    try{
+      if(busy||signing||inboxUpdating||inboxBulkReading)return;
+      await refreshInboxUnread(control.signal);
+      const scroller=$('drawerContent'),list=scroller?.querySelector('.inbox-minimal-list');
+      // Never replace an open detail/receipt/editor, a focused row or older
+      // pages while the admin is reading them. The bell still stays current.
+      if(at!==epoch||!state.actor||!list||scroller.scrollTop>=40||inboxLoadingMore||
+         inboxUpdating||inboxBulkReading||busy||signing||list.contains(document.activeElement))return;
+      const nonce=inboxRequestNonce,userId=feedbackUserId;
+      const data=await inboxRequest(null,userId,control.signal);
+      if(at!==epoch||!state.actor||nonce!==inboxRequestNonce||!list.isConnected||
+         scroller.scrollTop>=40||inboxLoadingMore||inboxUpdating||inboxBulkReading||busy||signing||
+         list.contains(document.activeElement))return;
+      const rows=Array.isArray(data.items)?data.items:[];
+      if(JSON.stringify(currentInboxRows.slice(0,rows.length))===JSON.stringify(rows)&&
+         (data.next_before||currentInboxRows.length===rows.length))return;
+      currentInboxRows=rows;inboxNextCursor=data.next_before;
+      renderInboxList(scroller.scrollTop);
+    }catch(_){/* Keep the last verified list and badge when a read fails. */}
+    finally{
+      if(inboxRefreshControl===control)inboxRefreshControl=null;
+      schedule();
+    }
+  };
+  schedule();
 }
 function maybeLoadInbox(){
   const scroller=$('drawerContent');
@@ -2594,11 +2637,11 @@ async function openInbox(source,id) {
     await inbox(null,feedbackUserId);
   }finally{inboxUpdating=false;}
 }
-async function refreshInboxUnread() {
+async function refreshInboxUnread(requestSignal=null) {
   if(!state.actor)return;
   const id=state.actor.user_id,current=epoch;
   try{
-    const data=await api('inbox/unread-count',{});
+    const data=await api('inbox/unread-count',{},{requestSignal});
     if(current!==epoch||state.actor?.user_id!==id)return;
     if(!Number.isSafeInteger(data.unread_count)||data.unread_count<0||typeof data.capped!=='boolean')return;
     inboxUnread={unread_count:data.unread_count,capped:data.capped};
