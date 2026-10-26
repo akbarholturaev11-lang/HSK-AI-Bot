@@ -35,6 +35,33 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('user_id',shell.text)
 
 
+    async def test_finance_v10_tabs_use_authoritative_payment_flows_without_duplicates(self):
+        script=(await self.get('/admin/assets/app.js')).text
+        styles=(await self.get('/admin/assets/styles.css')).text
+        finance=script.split('function financeView(){',1)[1].split('function managementView(){',1)[0]
+        system=script.split('function managementView(){',1)[1].split('function content()',1)[0]
+        self.assertIn("financeTab:'payments'",script)
+        self.assertIn("state.route==='payments'&&state.financeTab!=='payments'",script)
+        self.assertIn("state.route==='payments')state.financeTab='payments'",script)
+        for tab in ('payments','prices','methods','portfolio'):
+            self.assertIn("['"+tab+"'",finance)
+        for selector in ('data-action="priceSettings"', 'data-action="portfolioHistory"',
+                         'data-action="deliveryList"', 'data-setting-kind="payment_details"',
+                         'data-payment-qr-target='):
+            self.assertIn(selector,finance)
+        for selector in ('data-action="priceSettings"', 'data-action="portfolioHistory"',
+                         'data-action="deliveryList"', 'data-setting-kind="payment_details"'):
+            self.assertNotIn(selector,system)
+        self.assertIn('role="tablist"',finance)
+        self.assertIn('role="tabpanel"',finance)
+        self.assertIn('paymentsView()',finance)
+        self.assertIn("api('subscription-prices/read'",script)
+        self.assertIn("api('portfolio/read'",script)
+        self.assertIn("api('payment-qr/read'",script)
+        self.assertNotIn('fakePayments',finance)
+        self.assertNotIn('demoBalance',finance)
+        self.assertIn('.finance-card-grid{display:grid;',styles)
+
     async def test_confirmed_limits_save_reconciles_visible_draft_before_refresh(self):
         script = (await self.get('/admin/assets/app.js')).text
         self.assertIn("const committed=await api('limits/save'", script)
