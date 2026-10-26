@@ -2005,7 +2005,6 @@ async function editSetting(kind,bank=null){
       }
       body+=`<div class="form-field"><label for="settingValue">${esc(t(kind==='help_video'?'videoLink':label))}</label><textarea id="settingValue" class="input setting-value" rows="${kind==='payment_details'?5:3}" maxlength="${maximum}" ${kind==='payment_details'?'required':''}>${esc(value)}</textarea></div>`;
     }
-    if(kind==='payment_details')body+=`<div class="form-field"><button type="button" class="btn" data-campaign-list="discount">${esc(t('discountCampaigns'))}</button></div>`;
     drawer(label,`<form id="managementForm">${body}</form>`,btn('saveChanges','managementPrepare','primary'));
     if(kind==='help_video')updateHelpVideoField();
   }catch(error){
