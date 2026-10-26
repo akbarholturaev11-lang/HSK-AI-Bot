@@ -1132,7 +1132,13 @@
     "ui.admin_pwa.analyticsDays": "рӯз",
     "ui.admin_pwa.analyticsHours": "соат",
     "ui.admin_pwa.analyticsMinutes": "дақ.",
-    "ui.admin_pwa.analyticsCompletedUserLessons": "Дарсҳои анҷомёфтаи ҳисобҳо"
+    "ui.admin_pwa.analyticsCompletedUserLessons": "Дарсҳои анҷомёфтаи ҳисобҳо",
+    "ui.admin_pwa.inboxTechOnboardingTitle": "Ҳолати танзими аввалия",
+    "ui.admin_pwa.inboxTechOnboardingRecovered": "Маълумот сабт шудааст: ҷавоби аввал мушкил дошт, аммо санҷиши дубора танзимоти интихобшударо дар пойгоҳи додаҳо тасдиқ кард. Сабти такрорӣ лозим нест.",
+    "ui.admin_pwa.inboxTechOnboardingPlacement": "Иваз кардани сатҳи HSK рад шуд: пешрафти дарси қаблӣ мавҷуд аст. Барои оғоз аз дарси якуми сатҳи дигар аввал санҷиши муайянкунии сатҳ лозим аст. Сабт тасдиқ нашуд.",
+    "ui.admin_pwa.inboxTechOnboardingTimeout": "Дархости сабти танзимоти аввалия дар вақти муайян ҷавоб нагирифт. Санҷиши баъдӣ низ сабт шудани маълумотро тасдиқ накард.",
+    "ui.admin_pwa.inboxTechOnboardingUnconfirmed": "Сабти танзимоти аввалия тасдиқ нашуд. Санҷиши дубора амалиётро барқарор карда натавонист. Сабаби дақиқро бояд алоҳида санҷид.",
+    "ui.admin_pwa.inboxTechUnknown": "Ҳодисаи техникии Mini App сабт шудааст, аммо барои муайян кардани сабаби дақиқ маълумоти бехатари кофӣ нест."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
