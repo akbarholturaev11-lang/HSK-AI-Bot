@@ -681,11 +681,8 @@ async def browser_checks(output, *, media_only=False):
                         await db.commit()
                     await close_or_wait()
                     await navigate('payments',390)
-                    await page.locator('[data-finance-tab="prices"]').click()
-                    await page.locator('[data-action="priceSettings"]').click()
-                    await page.locator('#priceMethod').select_option('alipay')
-                    await page.locator('#pricePlan').select_option('1_month')
-                    await page.locator('#priceQrAction').click()
+                    await page.locator('[data-finance-tab="methods"]').click()
+                    await page.locator('[data-payment-qr-target="alipay-1_month"]').click()
                     await expect(page.locator('#paymentQrMediaFile')).to_be_visible()
                     await page.locator('#paymentQrMediaFile').set_input_files({
                         'name':'payment-qr.png','mimeType':'image/png','buffer':promo_image})
