@@ -24,7 +24,6 @@ from app.services.hsk30_unlock_service import (
 from app.services.payment_qr_code_service import (
     HSK30_UNLOCK_QR_SCOPE,
     PaymentQrCodeService,
-    SUBSCRIPTION_DISCOUNT_20_QR_SCOPE,
 )
 from app.services.payment_service import PaymentService
 from app.services.payment_review_preview_service import PaymentReviewPreviewService
@@ -827,7 +826,9 @@ class SubscriptionMiniAppService:
 
     def _static_qr_bytes(self, payment_method: str, plan_type: str, checkout_info: dict[str, Any]) -> bytes | None:
         discount_source = checkout_info.get("discount_source") or "none"
-        if discount_source not in {"none", "referral", "feedback_price_offer", "admin_campaign"}:
+        # A campaign always requires its own exact, signed QR, never the
+        # bundled generic 20% image even when the amounts happen to match.
+        if discount_source not in {"none", "referral", "feedback_price_offer"}:
             return None
         amount = int(checkout_info["final_amount"])
         currency = str(checkout_info["currency"])
@@ -888,20 +889,7 @@ class SubscriptionMiniAppService:
             amount=int(checkout_info["final_amount"]),
             currency=str(checkout_info["currency"]),
         )
-        if file_id:
-            return file_id
-        if (
-            checkout_info.get("discount_source") == "admin_campaign"
-            and int(checkout_info.get("discount_percent") or 0) == 20
-        ):
-            return await qr_service.get_file_id(
-                scope=SUBSCRIPTION_DISCOUNT_20_QR_SCOPE,
-                payment_method=payment_method,
-                plan_type=plan_type,
-                amount=int(checkout_info["final_amount"]),
-                currency=str(checkout_info["currency"]),
-            )
-        return None
+        return file_id
 
     @staticmethod
     def _decode_screenshot(value: str) -> tuple[ScreenshotPayload | None, str]:
