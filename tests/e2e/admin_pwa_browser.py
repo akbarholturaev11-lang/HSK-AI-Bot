@@ -391,10 +391,13 @@ async def browser_checks(output):
         await expect(page.locator('[data-stats-tab=overview]')).to_have_attribute('aria-selected','true')
         await page.locator('[data-stats-tab=course]').click()
         await expect(page.locator('.stats-category-metrics .metric')).to_have_count(9)
-        assert not any(body and body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics')
+        course_experiment_reads=sum(body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics' and body)
+        # The Course > Sales A/B tab requests its own real metrics; the Stats disclosure
+        # must remain lazy and issue exactly one *additional* read when expanded.
+        assert course_experiment_reads==1
         await page.locator('[data-advanced-analytics] summary').click()
         await expect(page.locator('#advancedAnalyticsBody table')).to_have_count(2)
-        assert sum(body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics' and body)==1
+        assert sum(body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics' and body)==course_experiment_reads+1
         await page.screenshot(path=str(output/'v10-advanced-uz-390.png'),full_page=True)
 
         await page.locator('[data-stats-tab=funnel]').click()
