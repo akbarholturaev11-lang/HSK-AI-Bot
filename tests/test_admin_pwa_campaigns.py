@@ -19,6 +19,7 @@ from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_outbound import AdminPwaOutboundJob as Job, AdminPwaOutboundRecipient as Recipient
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.discount_campaign import DiscountCampaign
+from app.db.models.payment_qr_code import PaymentQrCode
 from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackDelivery
 from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
@@ -153,6 +154,22 @@ class CampaignTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCase):
                 payment_method='visa', include_admin_campaigns=True)
             self.assertEqual((selected.campaign_id, selected.percent), (saved['campaign']['id'], 20))
             self.assertEqual(selected.title_ru, DISCOUNT['copies']['ru']['title'])
+
+    async def test_china_discount_cannot_activate_until_exact_campaign_qr_exists(self):
+        create = await self.prepare(DISCOUNT | {'payment_method':'alipay','plan_type':'1_month'})
+        saved = await self.execute(create, await self.proof(create))
+        campaign_id = saved['campaign']['id']
+        activate = {'kind':'discount_state','campaign_id':campaign_id,'is_active':True}
+        with self.assertRaisesRegex(api.CommandError, 'payment_qr_required'):
+            await self.prepare(activate)
+        async with self.sessions() as db:
+            db.add(PaymentQrCode(scope=f'admin_campaign:{campaign_id}',
+                payment_method='alipay',plan_type='1_month',amount=53,
+                currency='¥',file_id='synthetic-campaign-qr'))
+            await db.commit()
+        command = await self.prepare(activate)
+        result = await self.execute(command, await self.proof(command))
+        self.assertTrue(result['campaign']['is_active'])
 
     async def test_stale_state_and_audience_and_tampered_copy_preserve_proof_and_prevent_writes(self):
         command = await self.prepare(RELEASE)
