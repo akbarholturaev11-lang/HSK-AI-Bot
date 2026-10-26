@@ -99,6 +99,7 @@ function clearNotice(){clearTimeout(noticeTimer);noticeTimer=null;$('notice')?.c
 function showNotice(key) { clearNotice();$('notice').textContent=t(key);$('notice').classList.add('show');noticeTimer=setTimeout(clearNotice,6000); }
 function errorKey(error) {
   if(error?.name==='NotAllowedError'||error?.name==='AbortError') return 'passkeyCancelled';
+  if(error?.message==='payment_qr_required')return 'paymentQrMissing';
   return error?.status===409?'changed':'error';
 }
 function telegramApprovalUrl(approval) {
@@ -2025,7 +2026,7 @@ async function prepareManagementCommand(current,at){
       if(['campaign_draft','release_create'].includes(draft.kind)&&error.message.startsWith('admin_pwa_campaign_asset')&&$('campaignMediaValidation')){
         draft.assetId=null;draft.assetHash=null;$('campaignMediaFile').value='';$('campaignMediaStatus').textContent='';$('campaignMediaValidation').textContent=t('campaignMediaInvalid');$('campaignMediaValidation').hidden=false;
       }else if(draft.type==='campaign'&&[400,409].includes(error.status)&&$('campaignCommandValidation')){
-        $('campaignCommandValidation').textContent=t(error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':error.message==='admin_pwa_message_no_targets'?'messageNoTargets':error.message==='admin_pwa_campaign_schedule_invalid'?'campaignScheduleHint':'campaignValidation');$('campaignCommandValidation').hidden=false;
+        $('campaignCommandValidation').textContent=t(error.message==='payment_qr_required'?'paymentQrMissing':error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':error.message==='admin_pwa_message_no_targets'?'messageNoTargets':error.message==='admin_pwa_campaign_schedule_invalid'?'campaignScheduleHint':'campaignValidation');$('campaignCommandValidation').hidden=false;
       }else if(draft.type==='message'&&[400,409].includes(error.status)&&$('messageValidation')){
         const key=error.message==='admin_pwa_message_no_targets'?'messageNoTargets':error.message==='admin_pwa_message_too_many_targets'?'messageTooMany':'messageInvalid';
         $('messageValidation').textContent=t(key);$('messageValidation').hidden=false;
@@ -2051,7 +2052,7 @@ async function prepareManagementCommand(current,at){
       }else if(draft.type==='payment_qr'&&[400,413].includes(error.status)&&$('paymentQrMediaValidation')){
         $('paymentQrMediaValidation').textContent=t(error.status===413||error.message==='admin_pwa_media_too_large'?'paymentQrTooLarge':'paymentQrValidation');$('paymentQrMediaValidation').hidden=false;
         $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=false);
-      }else drawer('operationResult',statePanel(error.status===409?'configChanged':errorKey(error)),btn('close','close')+managementReread(draft));
+      }else drawer('operationResult',statePanel(error.message==='payment_qr_required'?'paymentQrMissing':error.status===409?'configChanged':errorKey(error)),btn('close','close')+managementReread(draft));
     }
   }
 }
