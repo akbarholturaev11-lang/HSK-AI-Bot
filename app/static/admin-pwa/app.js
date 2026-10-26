@@ -829,7 +829,7 @@ function financeView(){
     body='<section class="finance-group"><h2>'+esc(t('paymentDetails'))+'</h2><div class="finance-card-grid">'+
       tile('paymentDetails','data-setting-kind="payment_details" data-bank="dc_city"','credit').replace('<strong>'+esc(t('paymentDetails'))+'</strong>','<strong>DC City</strong>')+
       tile('paymentDetails','data-setting-kind="payment_details" data-bank="alif"','credit').replace('<strong>'+esc(t('paymentDetails'))+'</strong>','<strong>Alif</strong>')+
-      '</div></section><section class="finance-group"><h2>'+esc(t('paymentQrTitle'))+'</h2><div class="finance-card-grid">'+qr+'</div></section><section class="finance-group"><h2>'+esc(t('discount'))+' 20%</h2><div class="finance-card-grid">'+discountQr+'</div></section>';
+      '</div></section><section class="finance-group"><h2>'+esc(t('paymentQrTitle'))+'</h2><div class="finance-card-grid">'+qr+'</div><h3>'+esc(t('discount'))+' 20%</h3><div class="finance-card-grid">'+discountQr+'</div></section>';
   }else{
     body=tile('ledger','data-action="portfolioHistory"','wallet');
   }
@@ -1058,7 +1058,9 @@ function updateEditorSaveEnabled(){
   const dirty=editorActionOnly()||editorValue()!==editorBaseline.value;
   const requiresProof=managementDraft?.type==='payout'&&$('payoutOperation')?.value==='complete'&&!managementDraft.proofLoaded;
   const mediaPending=['campaign_draft','release_create'].includes(managementDraft?.kind)&&Boolean(managementDraft.assetUploading||managementDraft.campaignMediaFile&&!managementDraft.assetId);
-  b.disabled=!dirty||requiresProof||mediaPending||managementPreparing||!!signing;
+  const priceQrPending=managementDraft?.type==='price'&&['alipay','wechat'].includes($('priceMethod')?.value)&&
+    editorValue()!=='{"amount":"unchanged"}'&&!priceQrIsReady();
+  b.disabled=!dirty||requiresProof||mediaPending||priceQrPending||managementDraft?.priceQrBusy||managementPreparing||!!signing;
 }
 function showSavedAndDismiss(key='changesSaved'){
   const check='<svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><circle class="saved-ring" cx="50" cy="50" r="42"/><path class="saved-tick" d="M29 51 44 66 72 35"/></svg>';
@@ -1792,6 +1794,103 @@ function managementReread(draft){
   if(draft.type==='payment_qr')return qrRereadButton(draft.method,draft.plan,draft.scope,draft.campaignId,draft.targetAmount);
   return draft.type==='price'?btn('readCurrent','priceSettings'):`<button class="btn" data-setting-kind="${draft.kind}" ${draft.bank?`data-bank="${draft.bank}"`:''}>${esc(t('readCurrent'))}</button>`;
 }
+
+function priceQrKey(){
+  const method=$('priceMethod')?.value,plan=$('pricePlan')?.value,amount=Number($('priceAmount')?.value);
+  return ['alipay','wechat'].includes(method)&&['10_days','1_month','3_months'].includes(plan)&&
+    Number.isSafeInteger(amount)&&amount>=1&&amount<=1000000 ? method+'|'+plan+'|'+amount : null;
+}
+function priceQrIsReady(){
+  const data=managementDraft?.priceQrStatus;
+  return !!data&&data.key===priceQrKey()&&data.base===true&&data.discount===true&&!managementDraft.priceQrBusy;
+}
+function updatePriceQrStatus(){
+  if(managementDraft?.type!=='price')return;
+  const key=priceQrKey(),status=managementDraft.priceQrStatus,valid=key&&status?.key===key;
+  const amount=Number($('priceAmount')?.value);
+  const rows=[['priceQrBaseFile','base',amount],['priceQrDiscountFile','discount',Math.round(amount*0.8)]];
+  for(const [id,field,needed] of rows){
+    const element=$(id+'Status');if(!element)continue;
+    const stateText=!key?t('paymentQrValidation'):!valid?t('loading'):status.error?t('error'):t(status[field]?'paymentQrSet':'paymentQrMissing');
+    element.textContent=String(needed)+' ¥ · '+stateText;
+    const input=$(id);if(input)input.disabled=!key||managementDraft.priceQrBusy||!!signing;
+  }
+}
+async function refreshPriceQrStatus(){
+  if(managementDraft?.type!=='price')return;
+  const draft=managementDraft,key=priceQrKey();
+  const ticket=(draft.priceQrTicket||0)+1;draft.priceQrTicket=ticket;
+  if(!key){draft.priceQrStatus=null;updatePriceQrStatus();updateEditorSaveEnabled();return;}
+  draft.priceQrStatus={key,base:false,discount:false};
+  updatePriceQrStatus();updateEditorSaveEnabled();
+  const [method,plan,rawAmount]=key.split('|'),amount=Number(rawAmount);
+  try{
+    const [base,discount]=await Promise.all([
+      api('payment-qr/read',{method,plan,scope:'subscription',amount}),
+      api('payment-qr/read',{method,plan,scope:'subscription_20',amount}),
+    ]);
+    if(draft!==managementDraft||ticket!==draft.priceQrTicket||key!==priceQrKey())return;
+    draft.priceQrStatus={key,base:base.qr?.qr_set===true&&base.qr.amount===amount,
+      discount:discount.qr?.qr_set===true&&discount.qr.amount===Math.round(amount*.8)};
+  }catch(error){
+    if(draft!==managementDraft||ticket!==draft.priceQrTicket||key!==priceQrKey())return;
+    draft.priceQrStatus={key,base:false,discount:false,error:true};
+  }
+  updatePriceQrStatus();updateEditorSaveEnabled();
+}
+function schedulePriceQrRefresh(){
+  if(managementDraft?.type!=='price')return;
+  const draft=managementDraft;
+  clearTimeout(draft.priceQrRefreshTimer);
+  draft.priceQrTicket=(draft.priceQrTicket||0)+1;
+  draft.priceQrStatus=null;updatePriceQrStatus();updateEditorSaveEnabled();
+  if(priceQrKey())draft.priceQrRefreshTimer=setTimeout(()=>{if(draft===managementDraft)void refreshPriceQrStatus();},300);
+}
+async function uploadPriceQrInline(scope){
+  const draft=managementDraft,key=priceQrKey(),fileId=scope==='subscription'?'priceQrBaseFile':'priceQrDiscountFile';
+  const file=$(fileId)?.files?.[0],message=$(fileId+'Status');
+  if(draft?.type!=='price'||!key||draft.priceQrBusy||signing||!file)return;
+  if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size<1||file.size>1024*1024){
+    if(message)message.textContent=t(file.size>1024*1024?'paymentQrTooLarge':'paymentQrValidation');
+    $(fileId).value='';return;
+  }
+  if(!supportsPasskey()){showNotice('passkeyUnsupported');$(fileId).value='';return;}
+  const current=drawerId,at=epoch,control=new AbortController(),[method,plan,rawAmount]=key.split('|'),amount=Number(rawAmount);
+  draft.priceQrBusy=true;signing=control;updatePriceQrStatus();updateEditorSaveEnabled();
+  let submitted=false;
+  try{
+    const digest=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());
+    const hash=[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
+    const prepared=await api('payment-qr/prepare',{method,plan,scope,amount,media_sha256:hash,media_size:file.size});
+    if(current!==drawerId||at!==epoch||draft!==managementDraft||key!==priceQrKey())return;
+    const operation=prepared.operation;
+    if(operation?.action!=='subscription.qr_media'||!operation.payload)throw Error('invalid_operation');
+    const options=await api('auth/step-up/options',operation);
+    if(current!==drawerId||at!==epoch||draft!==managementDraft||key!==priceQrKey())return;
+    const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey),signal:control.signal});
+    if(current!==drawerId||at!==epoch||draft!==managementDraft||key!==priceQrKey())return;
+    await api('auth/step-up/verify',{step_up_id:options.step_up_id,credential:serialize(credential)});
+    if(current!==drawerId||at!==epoch||draft!==managementDraft||key!==priceQrKey())return;
+    submitted=true;
+    await api('payment-qr/media/save',null,{rawBody:file,
+      extraHeaders:{'X-Admin-PWA-Command':JSON.stringify({...prepared.execute_payload||operation.payload,step_up_id:options.step_up_id})},
+      timeoutMs:30000});
+    if(current!==drawerId||at!==epoch||draft!==managementDraft)return;
+    if(message)message.textContent=t('paymentQrSet');
+  }catch(error){
+    if(current!==drawerId||at!==epoch||draft!==managementDraft)return;
+    if(!submitted&&['NotAllowedError','AbortError'].includes(error.name))showNotice('passkeyCancelled');
+    else if(message)message.textContent=t(error.message==='payment_qr_required'?'paymentQrMissing':error.status===413?'paymentQrTooLarge':submitted&&![400,403,409,413].includes(error.status)?'configUncertain':errorKey(error));
+  }finally{
+    if(signing===control)signing=null;
+    if(draft===managementDraft){
+      draft.priceQrBusy=false;
+      if($(fileId))$(fileId).value='';
+      if(key===priceQrKey())await refreshPriceQrStatus();
+      else{updatePriceQrStatus();updateEditorSaveEnabled();}
+    }
+  }
+}
 function updatePriceFields(){
   if(managementDraft?.type!=='price')return;
   const row=managementDraft.prices.find(row=>row.method===$('priceMethod')?.value&&row.plan===$('pricePlan')?.value);
@@ -1801,19 +1900,10 @@ function updatePriceFields(){
   const qrField=$('priceQrField');
   if(qrButton)qrButton.hidden=!['alipay','wechat'].includes(row.method);
   if(qrField)qrField.hidden=!['alipay','wechat'].includes(row.method);
-  const discountButton=$('priceDiscountAction');
-  if(discountButton){
-    if(['10_days','1_month'].includes(row.plan)){
-      discountButton.dataset.financeDiscount=row.method+'-'+row.plan;
-      delete discountButton.dataset.campaignList;
-      discountButton.textContent=t('newDiscountCampaign');
-    }else{
-      // Three-month discounts are intentionally unsupported by checkout policy.
-      delete discountButton.dataset.financeDiscount;
-      discountButton.dataset.campaignList='discount';
-      discountButton.textContent=t('discountCampaigns');
-    }
-  }
+  if(managementDraft.priceQrRefreshTimer)clearTimeout(managementDraft.priceQrRefreshTimer);
+  managementDraft.priceQrStatus=null;
+  updatePriceQrStatus();
+  if(['alipay','wechat'].includes(row.method))void refreshPriceQrStatus();
   updateEditorSaveEnabled();
 }
 async function priceSettings(){
@@ -1823,9 +1913,10 @@ async function priceSettings(){
     const data=await api('subscription-prices/read',{});
     if(current!==drawerId||at!==epoch||!state.actor)return;
     if(!Array.isArray(data.prices)||data.prices.length!==9)throw Error('invalid_prices');
-    managementDraft={type:'price',prices:data.prices};
+    managementDraft={type:'price',prices:data.prices,priceQrStatus:null,priceQrRefreshTimer:null,priceQrBusy:false};
     const select=(id,label,options)=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><select id="${id}" class="input">${options.map(([key,text])=>`<option value="${key}">${esc(text)}</option>`).join('')}</select></div>`;
-    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div><div class="form-field" id="priceQrField"><button type="button" class="btn" id="priceQrAction" data-action="priceQrSettings">${esc(t('paymentQrManage'))}</button><button type="button" class="btn" id="priceQrDiscountAction" data-action="priceQrDiscountSettings">${esc(t('discount'))} 20% · ${esc(t('paymentQrManage'))}</button></div><div class="form-field"><button type="button" class="btn" id="priceDiscountAction" data-finance-discount="visa-10_days">${esc(t('newDiscountCampaign'))}</button></div></form>`;
+    const qrField=(scope,id,title)=>'<div class="form-field"><label for="'+id+'">'+esc(title)+'</label><input id="'+id+'" class="input" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">'+esc(t('paymentQrMediaHint'))+'</p><p class="form-hint" id="'+id+'Status" role="status" aria-live="polite"></p></div>';
+    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div><div id="priceQrField" class="management-qr-inline" hidden><p class="source-note">${esc(t('paymentQrPrivateNote'))}</p>${qrField('subscription','priceQrBaseFile',t('paymentQrImage'))}${qrField('subscription_20','priceQrDiscountFile',t('discount')+' 20% · '+t('paymentQrImage'))}</div></form>`;
     drawer('subscriptionPrices',body,btn('saveChanges','managementPrepare','primary'));
     updatePriceFields();
   }catch(error){
@@ -1844,10 +1935,7 @@ async function priceQrSettings(method=null,plan=null,options={}){
     const qr=data.qr;
     if(!qr||qr.method!==method||qr.plan!==plan)throw Error('invalid_payment_qr');
     managementDraft={type:'payment_qr',method,plan,scope:qr.scope||'subscription',campaignId:qr.campaign_id||null,targetAmount:options.amount||null,current:qr,mediaFile:null};
-    const discountLink=['10_days','1_month'].includes(plan)
-      ?`<button type="button" class="btn" data-finance-discount="${esc(method+'-'+plan)}">${esc(t('newDiscountCampaign'))}</button>`
-      :`<button type="button" class="btn" data-campaign-list="discount">${esc(t('discountCampaigns'))}</button>`;
-    const body=`<form id="managementForm"><p class="source-note">${esc(t('paymentQrPrivateNote'))}</p>${managementFields(qr,'payment_qr')}<div class="form-field">${discountLink}</div><div class="form-field"><label for="paymentQrMediaFile">${esc(t('paymentQrImage'))}</label><input class="input" id="paymentQrMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">${esc(t('paymentQrMediaHint'))}</p><div id="paymentQrMediaPreview" aria-live="polite"></div><p class="alert" id="paymentQrMediaValidation" role="alert" hidden></p></div></form>`;
+    const body=`<form id="managementForm"><p class="source-note">${esc(t('paymentQrPrivateNote'))}</p>${managementFields(qr,'payment_qr')}<div class="form-field"><label for="paymentQrMediaFile">${esc(t('paymentQrImage'))}</label><input class="input" id="paymentQrMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">${esc(t('paymentQrMediaHint'))}</p><div id="paymentQrMediaPreview" aria-live="polite"></div><p class="alert" id="paymentQrMediaValidation" role="alert" hidden></p></div></form>`;
     drawer('paymentQrTitle',body,btn('saveChanges','managementPrepare','primary'));
   }catch(error){
     if(current===drawerId&&at===epoch&&state.actor)drawer('paymentQrTitle',statePanel(errorKey(error)),btn('close','close')+qrRereadButton(method,plan,options.scope||'subscription',options.campaign_id,options.amount));
@@ -3136,6 +3224,7 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('input',event=>{
+  if(event.target.id==='priceAmount')schedulePriceQrRefresh();
   if(event.target.closest?.('#drawerContent'))updateEditorSaveEnabled();
 });
 document.addEventListener('input',event=>{
@@ -3210,6 +3299,9 @@ document.addEventListener('change',event=>{
     if(!replacing&&$('courseAdMediaValidation'))$('courseAdMediaValidation').hidden=true;
   }
   if(['priceMethod','pricePlan'].includes(event.target.id))updatePriceFields();
+  if(event.target.id==='priceQrBaseFile'||event.target.id==='priceQrDiscountFile'){
+    void uploadPriceQrInline(event.target.id==='priceQrBaseFile'?'subscription':'subscription_20');return;
+  }
   if(['helpVideoKey','helpVideoLanguage'].includes(event.target.id))updateHelpVideoField();
   if(['feedbackPeriod','feedbackSource'].includes(event.target.id)){
     const period=event.target.id==='feedbackPeriod',value=event.target.value;
