@@ -45,7 +45,8 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("state.route==='payments')state.financeTab='payments'",script)
         for tab in ('payments','prices','methods','portfolio'):
             self.assertIn("['"+tab+"'",finance)
-        for selector in ('data-price-target=', 'data-action="portfolioEditor"',
+        self.assertIn("btn('newLedgerEntry','portfolioEditor','primary')",finance)
+        for selector in ('data-price-target=',
                          'data-action="deliveryList"', 'data-setting-kind="payment_details"',
                          'data-payment-qr-target=', 'data-qr-tariff=', 'data-qr-scope='):
             self.assertIn(selector,finance)
