@@ -58,6 +58,7 @@ class AdminPwaAppleDeliveryTests(AdminPwaPushOutboxTests):
                 subscription,
                 self.settings.ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY,
                 self.settings.ADMIN_PWA_PUSH_VAPID_SUBJECT,
+                source='android',
             )
         self.assertEqual(code, 201)
         self.assertEqual(len(captured), 1)
@@ -69,6 +70,57 @@ class AdminPwaAppleDeliveryTests(AdminPwaPushOutboxTests):
         self.assertTrue(headers.get("authorization", "").lower().startswith("vapid "))
         self.assertIsInstance(opts["data"], bytes)
         self.assertNotIn(b"important", opts["data"])
+
+    async def test_push_payload_contains_only_allowlisted_source(self):
+        import json
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        from app.services.admin_pwa_push_dispatch import _webpush
+
+        await self.enable_sender()
+        sent = []
+        def provider(**kwargs):
+            sent.append(json.loads(kwargs["data"]))
+            return SimpleNamespace(status_code=201)
+        sources = ("payment", "android", "technical", "bot", "release")
+        with patch("pywebpush.webpush", side_effect=provider):
+            for source in sources:
+                self.assertEqual(await _webpush(
+                    {}, self.settings.ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY,
+                    self.settings.ADMIN_PWA_PUSH_VAPID_SUBJECT, source=source), 201)
+            with self.assertRaises(ValueError):
+                await _webpush({}, self.settings.ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY,
+                               self.settings.ADMIN_PWA_PUSH_VAPID_SUBJECT, source="secret")
+        self.assertEqual(sent, [
+            {"kind": "important", "source": source} for source in sources
+        ])
+
+    async def test_payment_push_takes_priority_over_earlier_feedback(self):
+        from app.admin_api.pwa_push_outbox import enqueue_automatic_alert
+
+        await self.enable_sender()
+        self.assertEqual((await self.post("subscribe",
+                                          self.subscription(count=1))).status_code, 200)
+        feedback = await self.bot_source()
+        self.assertEqual((await self.triage(row_id=feedback,
+                                           revision=0)).status_code, 200)
+        async with self.sessions() as db:
+            await enqueue_automatic_alert(
+                db, settings_obj=self.settings, source="payment",
+                source_id=self.payment_id, now=datetime.now(timezone.utc))
+            await db.commit()
+        sent = []
+        async def provider(subscription, key, subject, source):
+            sent.append(source)
+            return 201
+        result = await dispatch_batch(self.sessions, settings_obj=self.settings,
+                                      limit=1, sender=provider)
+        self.assertEqual(result["accepted"], 1, result)
+        self.assertEqual(sent, ["payment"])
+        async with self.sessions() as db:
+            rows = (await db.scalars(select(AdminPwaPushOutbox))).all()
+            self.assertEqual({(row.source, row.state) for row in rows},
+                             {("payment", "accepted"), ("bot", "pending")})
 
     async def test_disabled_or_wrong_key_never_claims_or_sends(self):
         await self.configure()
@@ -91,7 +143,7 @@ class AdminPwaAppleDeliveryTests(AdminPwaPushOutboxTests):
             row = (await db.scalars(select(AdminPwaPushOutbox))).one()
             self.assertEqual((row.state, row.attempts), ("pending", 0))
 
-    async def test_two_apple_devices_delivery_is_generic_at_most_once_per_outbox(self):
+    async def test_two_apple_devices_delivery_is_source_scoped_at_most_once_per_outbox(self):
         await self.enable_sender()
         i = await self.post("subscribe", self.subscription(count=1, platform="iphone"))
         m = await self.post("subscribe", self.subscription(count=2, platform="mac"))
@@ -100,18 +152,19 @@ class AdminPwaAppleDeliveryTests(AdminPwaPushOutboxTests):
         row_id = await self.bot_source()
         self.assertEqual((await self.triage(row_id=row_id, revision=0)).status_code, 200)
         sent = []
-        async def fake(payload, key, subject):
-            sent.append((payload, key, subject))
+        async def fake(payload, key, subject, source):
+            sent.append((payload, key, subject, source))
             return 201
         result = await dispatch_batch(self.sessions, settings_obj=self.settings, limit=10, sender=fake)
         self.assertEqual(result["accepted"], 2, result)
         self.assertEqual(result["claimed"], 2, result)
-        self.assertEqual({p["endpoint"] for p,_,_ in sent}, {
+        self.assertEqual({p["endpoint"] for p,_,_,_ in sent}, {
             "https://web.push.apple.com/synthetic-device-1",
             "https://web.push.apple.com/synthetic-device-2",
         })
-        self.assertTrue(all(key == self.settings.ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY for _, key, _ in sent))
-        self.assertTrue(all(subject == "mailto:ops@example.com" for _, _, subject in sent))
+        self.assertTrue(all(key == self.settings.ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY for _, key, _, _ in sent))
+        self.assertTrue(all(subject == "mailto:ops@example.com" for _, _, subject, _ in sent))
+        self.assertEqual({source for _, _, _, source in sent}, {"bot"})
         self.assertNotIn("Student", str(result))
         self.assertNotIn("Student", str(sent))
         self.assertEqual((await dispatch_batch(self.sessions, settings_obj=self.settings,

@@ -35,6 +35,33 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('user_id',shell.text)
 
 
+    async def test_finance_v10_tabs_use_authoritative_payment_flows_without_duplicates(self):
+        script=(await self.get('/admin/assets/app.js')).text
+        styles=(await self.get('/admin/assets/styles.css')).text
+        finance=script.split('function financeView(){',1)[1].split('function managementView(){',1)[0]
+        system=script.split('function managementView(){',1)[1].split('function content()',1)[0]
+        self.assertIn("financeTab:'payments'",script)
+        self.assertIn("state.route==='payments'&&state.financeTab!=='payments'",script)
+        self.assertIn("state.route==='payments')state.financeTab='payments'",script)
+        for tab in ('payments','prices','methods','portfolio'):
+            self.assertIn("['"+tab+"'",finance)
+        for selector in ('data-action="priceSettings"', 'data-action="portfolioHistory"',
+                         'data-action="deliveryList"', 'data-setting-kind="payment_details"',
+                         'data-payment-qr-target='):
+            self.assertIn(selector,finance)
+        for selector in ('data-action="priceSettings"', 'data-action="portfolioHistory"',
+                         'data-action="deliveryList"', 'data-setting-kind="payment_details"'):
+            self.assertNotIn(selector,system)
+        self.assertIn('role="tablist"',finance)
+        self.assertIn('role="tabpanel"',finance)
+        self.assertIn('paymentsView()',finance)
+        self.assertIn("api('subscription-prices/read'",script)
+        self.assertIn("api('portfolio/read'",script)
+        self.assertIn("api('payment-qr/read'",script)
+        self.assertNotIn('fakePayments',finance)
+        self.assertNotIn('demoBalance',finance)
+        self.assertIn('.finance-card-grid{display:grid;',styles)
+
     async def test_confirmed_limits_save_reconciles_visible_draft_before_refresh(self):
         script = (await self.get('/admin/assets/app.js')).text
         self.assertIn("const committed=await api('limits/save'", script)
@@ -64,6 +91,17 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('.user-table{min-width:1020px;table-layout:fixed}', stylesheet)
         self.assertIn('"directoryUserTariff":"Фойдаланувчи / тариф"', catalog)
         self.assertIn('"directoryPlan1Month":"1 ой"', catalog)
+
+    async def test_profile_shows_authoritative_course_once_and_separates_client_surfaces(self):
+        script = (await self.get('/admin/assets/app.js')).text
+        profile = script.split('async function userProfile(userId) {', 1)[1].split('async function moreUserPayments(', 1)[0]
+        self.assertIn('const courseRows=c.tracks.map(row=>{', profile)
+        self.assertIn("if(row.is_active&&c.progress)fields.push(['lastLesson'", profile)
+        self.assertIn("section('course',courseRows", profile)
+        self.assertNotIn("section('miniappOpens'", profile)
+        self.assertIn("Telegram Mini App · ", profile)
+        self.assertIn("row.before_registration", profile)
+        self.assertIn("section('devices',nativeRows+miniappRows", profile)
 
     async def test_apple_push_subscription_keeps_user_activation_on_direct_tap(self):
         # The public script can offer push settings only after the server
@@ -176,6 +214,22 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("await api('auth/step-up/verify'",script)
         self.assertIn("await api(managementEndpoint(review.type,'save'),command)",script)
 
+    async def test_course_ab_sales_inline_metrics_replace_navigation_card(self):
+        script=(await self.get('/admin/assets/app.js')).text
+        css=(await self.get('/admin/assets/styles.css')).text
+        self.assertIn("courseCard(courseSalesCopy[locale]?.title||courseSalesCopy.uz.title,courseSalesStats())",script)
+        self.assertIn("api('analytics',{section:'experiments',period:'monthly',platform:'overall'})",script)
+        self.assertIn("sales.arms?.control||!sales.arms?.treatment",script)
+        self.assertIn("arm.matured>0?percent(arm.approval_rate):'—'",script)
+        self.assertIn("sales.status==='winner'&&sales.decision_ready",script)
+        self.assertIn('status:data.metrics.sales_status',script)
+        self.assertIn("courseSalesToken++;courseSalesLoading=false;courseSalesError=false;courseSalesMetrics=null;",script)
+        self.assertIn("if(state.courseTab==='experiment')void loadCourseSalesStats();",script)
+        self.assertNotIn("data-course-stats",script)
+        self.assertNotIn("courseStatsHint",script)
+        self.assertIn(".course-sales-comparison{display:grid;",css)
+        self.assertIn("@media(max-width:760px)",css)
+
     async def test_worker_scope_version_and_public_cache_allowlist(self):
         manifest=(await self.get('/admin/manifest.webmanifest')).json()
         self.assertEqual(manifest['scope'],'/admin/')
@@ -186,16 +240,24 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('!PUBLIC.includes(url.pathname)',worker.text)
         self.assertIn('url.search',worker.text)
         self.assertNotIn("'/api/",worker.text)
-        # Apple Web Push must always show a visible generic notification,
-        # ignore all untrusted push payload, never access private API/cache,
-        # and navigate only to a fixed first-party inbox URL.
+        # Apple Web Push must always show a visible category-specific notice,
+        # whitelist the source only, never access private API/cache or display
+        # untrusted report content, and open a fixed first-party inbox URL.
         self.assertIn("self.addEventListener('push'", worker.text)
         self.assertIn("self.registration.showNotification", worker.text)
         self.assertIn("self.addEventListener('notificationclick'", worker.text)
         self.assertIn("'/admin/?inbox=1'", worker.text)
         self.assertIn("current.pathname === '/admin/'", worker.text)
         push_handler = worker.text.split("self.addEventListener(\'push\'", 1)[1].split("self.addEventListener(\'notificationclick\'", 1)[0]
-        self.assertNotIn("event.data", push_handler)
+        self.assertIn("event.data.json()", push_handler)
+        self.assertIn("payload.kind === 'important'", push_handler)
+        self.assertIn("Object.prototype.hasOwnProperty.call(labels, payload.source)", push_handler)
+        self.assertIn("payment: {title:", push_handler)
+        self.assertIn("android: {title:", push_handler)
+        self.assertIn("technical: {title:", push_handler)
+        self.assertNotIn("tag: 'hsk-admin-important'", push_handler)
+        self.assertNotIn("payload.title", push_handler)
+        self.assertNotIn("payload.body", push_handler)
         self.assertNotIn("pushSubscription", worker.text)
         for filename in ('app.js','styles.css','catalog.js','icon.png','icon-large.png'):
             response=await self.get('/admin/assets/'+filename)

@@ -8,6 +8,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import func, select, update
 
 from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
+from app.admin_api.pwa_inbox import InboxRequest, unified_inbox
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
@@ -19,13 +20,109 @@ from app.db.models.user import User
 from app.services.app_error_context_service import AppErrorContextService
 from app.services.admin_pwa_push_dispatch import _relevant
 from app.services.payment_service import PaymentService
+from app.repositories.bot_setting_repo import BotSettingRepository
+from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY, SubscriptionMiniAppService
 from app.services.admin_pwa_native_reports import reserve_native_report
 from app.admin_api.pwa_push_outbox import enqueue_automatic_alert
 from tests import test_admin_pwa_push as fixtures
+from tests.test_subscription_miniapp_submit import _BotStub, PNG_1X1_DATA_URL
 
 
 class AdminPwaPushOutboxTests(fixtures.AdminPwaApplePushTests):
     """Reuse the real subscription route, SQLite DB and passkey-admin fixture."""
+
+    async def shared_receipt(self, user_id, *, source, bot):
+        async with self.sessions() as db:
+            user = await db.get(User, user_id)
+            with patch("app.config.settings", self.settings), patch(
+                "app.services.admin_notify_service.settings.ADMIN_IDS", "9001"
+            ):
+                return await SubscriptionMiniAppService(db).submit(
+                    telegram_id=user, plan_type="1_month", payment_method="visa",
+                    card_country="tj", screenshot_data_url=PNG_1X1_DATA_URL,
+                    bot=bot, source=source,
+                )
+
+    async def seed_shared_receipt_users(self):
+        async with self.sessions() as db:
+            await BotSettingRepository(db).set(PAYMENT_DETAILS_KEY, "Synthetic QA payment details")
+            db.add_all([
+                User(id=11, telegram_id=None, status="free", language="uz", level="hsk1"),
+                User(id=12, telegram_id=None, status="free", language="uz", level="hsk1"),
+                User(id=13, telegram_id=4013, status="free", language="uz", level="hsk1"),
+            ])
+            await db.commit()
+
+    async def test_real_shared_client_submissions_commit_inbox_and_deduplicated_device_alerts(self):
+        await self.configure()
+        devices = set()
+        for count, platform in ((1, "iphone"), (2, "mac")):
+            response = await self.post("subscribe", self.subscription(count=count, platform=platform))
+            self.assertEqual(response.status_code, 200, response.text)
+            devices.add(response.json()["subscription_id"])
+        await self.seed_shared_receipt_users()
+        bot = _BotStub()
+        for user_id, source in ((11, "android"), (12, "desktop"), (13, "miniapp")):
+            with self.subTest(source=source):
+                result = await self.shared_receipt(user_id, source=source, bot=bot)
+                self.assertTrue(result["ok"], result)
+                self.assertTrue(result["provisional_access"])
+                payment_id = result["payment_id"]
+                retry = await self.shared_receipt(user_id, source=source, bot=bot)
+                self.assertTrue(retry["already_pending"])
+                self.assertEqual(retry["payment_id"], payment_id)
+                async with self.sessions() as db:
+                    payment = await db.get(Payment, payment_id)
+                    self.assertEqual((payment.source, payment.user_id, payment.payment_status),
+                                     (source, user_id, "pending"))
+                    self.assertEqual(payment.screenshot_file_id, "FILE_ID_1")
+                    inbox = await unified_inbox(db, InboxRequest(source="payment", user_id=user_id))
+                    self.assertEqual([item["source_id"] for item in inbox["items"]], [payment_id])
+                    events = (await db.scalars(select(AdminPwaPushOutbox).where(
+                        AdminPwaPushOutbox.source == "payment",
+                        AdminPwaPushOutbox.source_id == payment_id))).all()
+                    self.assertEqual({event.subscription_id for event in events}, devices)
+                    self.assertEqual(len(events), len(devices))
+                    self.assertEqual(len({event.event_key for event in events}), 1)
+                    self.assertTrue(all(event.state == "pending" and event.attempts == 0 for event in events))
+                    user = await db.get(User, user_id)
+                    self.assertNotEqual(user.payment_status, "approved")
+                    self.assertIsNone(user.end_date)
+        self.assertEqual(len(bot.photos), 3)
+
+    async def test_real_shared_submission_survives_disabled_or_failed_push_queue(self):
+        await self.configure()
+        response = await self.post("subscribe", self.subscription())
+        self.assertEqual(response.status_code, 200, response.text)
+        await self.seed_shared_receipt_users()
+        self.settings.ADMIN_PWA_PUSH_ENABLED = False
+        disabled = await self.shared_receipt(11, source="android", bot=_BotStub())
+        self.settings.ADMIN_PWA_PUSH_ENABLED = True
+        with patch("app.admin_api.pwa_push_outbox.enqueue_automatic_alert",
+                   side_effect=RuntimeError("Synthetic queue infrastructure failure")):
+            failed = await self.shared_receipt(12, source="desktop", bot=_BotStub())
+        for user_id, result in ((11, disabled), (12, failed)):
+            self.assertTrue(result["ok"], result)
+            self.assertTrue(result["provisional_access"])
+            async with self.sessions() as db:
+                payment = await db.get(Payment, result["payment_id"])
+                self.assertEqual((payment.payment_status, payment.screenshot_file_id), ("pending", "FILE_ID_1"))
+                inbox = await unified_inbox(db, InboxRequest(source="payment", user_id=user_id))
+                self.assertEqual([item["source_id"] for item in inbox["items"]], [payment.id])
+                self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPushOutbox)), 0)
+
+    async def test_failed_shared_receipt_delivery_creates_neither_payment_nor_alert(self):
+        await self.configure()
+        response = await self.post("subscribe", self.subscription())
+        self.assertEqual(response.status_code, 200, response.text)
+        await self.seed_shared_receipt_users()
+        with patch.object(_BotStub, "send_photo", side_effect=RuntimeError("Synthetic provider failure")):
+            result = await self.shared_receipt(11, source="android", bot=_BotStub())
+        self.assertEqual(result, {"ok": False, "error": "admin_notification_failed"})
+        async with self.sessions() as db:
+            self.assertIsNone(await db.scalar(select(Payment.id).where(Payment.user_id == 11)))
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaPushOutbox)), 0)
+            self.assertTrue((await db.get(User, 11)).payment_preview_available)
 
     async def triage(self, *, row_id, revision, operation="mark_important"):
         app = FastAPI()

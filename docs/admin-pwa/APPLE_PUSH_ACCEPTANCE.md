@@ -5,6 +5,21 @@ Safari / Add to Dock web app**. Do not spend this increment implementing
 Android/Windows-specific Admin PWA push. Keep Telegram Admin Mini App and
 all learner apps unchanged.
 
+## Source-aware push display — 2026-10-26
+
+Apple Web Push displays an allowlisted event class from the server outbox:
+pending **payment receipt**, **Android bug report**, **technical error**,
+important **bot feedback**, or **release**. This supersedes the generic-copy
+recommendation further below. Push data carries only `kind` and `source`,
+never receipt images, student identity, user IDs, amounts, error text, URLs,
+or arbitrary server/client text. The Service Worker chooses fixed Uzbek
+titles/descriptions and keeps the existing authenticated Inbox click target.
+Events no longer share one notification tag that can collapse independent
+payment and Android alerts. Payment review alerts are claimed before older
+non-payment events; the existing per-device cooldown, dedupe, sender gates,
+pending-only eligibility, and bounded retry semantics remain unchanged.
+Provider acceptance is not proof of visible Apple delivery.
+
 ## Owner operation decision — 2026-10-26
 
 The owner wants important Admin PWA Apple Web Push **on by default**, with no

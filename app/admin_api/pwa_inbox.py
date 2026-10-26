@@ -66,6 +66,13 @@ class InboxRequest(BaseModel):
         return value
 
 
+class InboxFeedbackDetailRequest(BaseModel):
+    """A passkey-gated detail lookup, separate from the identifier-free inbox list."""
+    model_config = ConfigDict(extra="forbid", strict=True)
+    source: Literal["bot", "release"]
+    source_id: RowId
+
+
 def _literal_contains(column, needle):
     # Explicit ESCAPE ensures %, _ and backslash in user input are literal.
     escaped = needle.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
@@ -136,6 +143,45 @@ def _filters(query, request, timestamp, now):
     return query
 
 
+def source_eligible(source, now):
+    """One source-owned visibility predicate shared by list, badge and bulk read."""
+    if source == "bot":
+        # Requests are created *before* a subscriber answers. Drafts must
+        # never appear as alerts and cannot gain content just from aging.
+        return and_(
+            BotFeedback.status == "completed",
+            or_(BotFeedback.liked_code.is_not(None),
+                BotFeedback.liked_text.is_not(None),
+                BotFeedback.disliked_code.is_not(None),
+                BotFeedback.disliked_text.is_not(None),
+                BotFeedback.disliked_attachment_file_id.is_not(None)),
+        )
+    if source == "release":
+        return ReleaseFeedbackResponse.completed_at <= now
+    if source == "android":
+        return AdminPwaNativeReport.expires_at > now
+    if source == "payment":
+        return and_(Payment.payment_status == "pending",
+                    Payment.screenshot_file_id.is_not(None),
+                    Payment.submitted_at.is_not(None))
+    if source == "technical":
+        return and_(Message.role == "assistant",
+                    Message.content_type == "app_error_context",
+                    Message.created_at >= now - timedelta(days=30),
+                    Message.created_at <= now)
+    raise ValueError("unsupported inbox source")
+
+
+def source_timestamp(source):
+    return {
+        "bot": func.coalesce(BotFeedback.completed_at, BotFeedback.created_at),
+        "release": ReleaseFeedbackResponse.completed_at,
+        "android": AdminPwaNativeReport.created_at,
+        "payment": Payment.submitted_at,
+        "technical": Message.created_at,
+    }[source]
+
+
 def _triage(row):
     return {
         "triage_status": row.triage_status or "new",
@@ -188,6 +234,7 @@ async def unified_inbox(db, request: InboxRequest):
         ).outerjoin(AdminPwaInboxTriage, and_(
             AdminPwaInboxTriage.source == "bot",
             AdminPwaInboxTriage.source_id == BotFeedback.id)).outerjoin(User, User.id == BotFeedback.user_id)
+        query = query.where(source_eligible("bot", now))
         if request.user_id is not None:
             query = query.where(User.id == request.user_id)
         if request.search is not None:
@@ -402,6 +449,71 @@ async def unified_inbox(db, request: InboxRequest):
     }
 
 
+async def inbox_feedback_detail(db, request: InboxFeedbackDetailRequest):
+    """Return one completed feedback and its linked user's display context.
+
+    Never return Telegram IDs in the inbox list, analytics or external MCP.
+    The HTTP route for this detail is strictly WebAuthn-session-gated.
+    """
+    now = datetime.now(timezone.utc)
+    if request.source == "bot":
+        record = (await db.execute(
+            select(BotFeedback, User).outerjoin(User, User.id == BotFeedback.user_id)
+            .where(BotFeedback.id == request.source_id, source_eligible("bot", now))
+            .limit(1)
+        )).one_or_none()
+    else:
+        record = (await db.execute(
+            select(ReleaseFeedbackResponse, User).outerjoin(
+                User, and_(User.telegram_id > 0,
+                           User.telegram_id == ReleaseFeedbackResponse.user_telegram_id))
+            .where(ReleaseFeedbackResponse.id == request.source_id,
+                   source_eligible("release", now))
+            .limit(1)
+        )).one_or_none()
+    if record is None:
+        return None
+
+    feedback, user = record
+    telegram_id = (user.telegram_id if user and user.telegram_id and user.telegram_id > 0
+                   else feedback.telegram_id if request.source == "bot"
+                   else feedback.user_telegram_id)
+    age_days = max(0, (now - _utc(user.created_at)).days) if user and user.created_at else None
+    detail = {
+        "source": request.source,
+        "source_id": feedback.id,
+        "user_id": user.id if user else None,
+        "name": (user.full_name or user.username) if user else None,
+        "telegram_id": telegram_id if telegram_id and telegram_id > 0 else None,
+        "language": user.language if user else (feedback.language if request.source == "bot" else None),
+        "level": user.level if user else None,
+        "mode": user.learning_mode if user else None,
+        "bot_days": age_days,
+    }
+    if request.source == "bot":
+        paid = bool(feedback.liked_code and feedback.liked_code.startswith("paid_"))
+        detail.update({
+            "feedback_parts": {
+                "liked": (feedback.liked_text or feedback.liked_code or "")[:_MAX_MESSAGE],
+                "disliked": (feedback.disliked_text or feedback.disliked_code or "")[:_MAX_MESSAGE],
+                "paid": paid,
+            },
+            "reward_granted": bool(feedback.reward_granted_at) if not paid else None,
+            "has_attachment": bool(feedback.disliked_attachment_file_id),
+            "rating": None,
+            "message": None,
+        })
+    else:
+        detail.update({
+            "feedback_parts": None,
+            "reward_granted": None,
+            "has_attachment": bool(feedback.attachment_file_id),
+            "rating": feedback.rating,
+            "message": (feedback.comment_text or "")[:_MAX_MESSAGE],
+        })
+    return detail
+
+
 class InboxUnreadRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
 
@@ -428,15 +540,7 @@ async def unread_inbox(db, request: InboxUnreadRequest):
             AdminPwaInboxTriage.source_id == model.id,
         )).where(or_(AdminPwaInboxTriage.status.is_(None),
                     AdminPwaInboxTriage.status == "new"))
-        if name == "android":
-            query = query.where(AdminPwaNativeReport.expires_at > now)
-        if name == "technical":
-            query = query.where(Message.role == "assistant",
-                Message.content_type == "app_error_context",
-                Message.created_at >= now - timedelta(days=30))
-        if name == "payment":
-            query = query.where(Payment.payment_status == "pending",
-                                Payment.screenshot_file_id.is_not(None))
+        query = query.where(source_eligible(name, now))
         # The private technical feed uses its narrow, partial timestamp index.
         ordering = ((Message.created_at.desc(), Message.id.desc()) if name == "technical"
                     else (model.id.desc(),))

@@ -11,7 +11,8 @@ from sqlalchemy import and_, func, or_, select, text
 
 from app.admin_api.pwa_approval import _utc
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
-from app.admin_api.pwa_inbox import InboxRequest, InboxUnreadRequest, unified_inbox, unread_inbox
+from app.admin_api.pwa_inbox import (InboxRequest, InboxUnreadRequest, InboxFeedbackDetailRequest,
+                                     unified_inbox, unread_inbox, inbox_feedback_detail)
 from app.admin_api.pwa_metrics import METRIC_DEFINITIONS, overall_activity_metrics
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME, authenticate_admin_pwa_session
 from app.admin_api.pwa_webauthn_transport import _body, _guard_post
@@ -31,6 +32,7 @@ from app.services.admin_miniapp_service import (
     HOT_LEAD_STATUSES, _payment_user_join, admin_miniapp_today_start,
 )
 from app.services.android_analytics_service import AndroidAnalyticsService
+from app.services.course_levels import level_spec
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.entitlements import resolve_state
 from app.services.entitlements.state import access_expires_at
@@ -243,6 +245,7 @@ async def users(db, request: UsersRequest):
                                    order_by=Payment.id.desc()).label("payment_rank"),
         ).join(Payment, _payment_user_join()).where(
             User.id.in_(paid_ids), Payment.payment_status == "approved",
+            Payment.plan_type != "hsk30_unlock",
         ).subquery())
         approved = (await db.execute(select(
             ranked.c.owner_id, ranked.c.plan_type, ranked.c.payment_method,
@@ -292,6 +295,32 @@ async def user_detail(db, request: UserDetailRequest):
     tracks = (await db.scalars(select(CourseTrackState).where(
         CourseTrackState.user_id == user.id, CourseTrackState.track.in_(("hsk20", "hsk30")),
     ).order_by(CourseTrackState.track))).all()
+    # Active course progress is authoritative; track snapshots are persisted
+    # on switches and can lag behind newly completed lessons.
+    active_spec = level_spec(user.level)
+    active_track = active_spec.track if active_spec else "hsk20"
+    track_data = [{"track": row.track, "level": row.level,
+                   "completed_lessons": row.completed_lessons_count,
+                   "unlocked_at": _iso(row.unlocked_at),
+                   "is_active": row.track == active_track} for row in tracks]
+    if progress is not None:
+        active = next((row for row in track_data if row["is_active"]), None)
+        if active is None:
+            active = {"track": active_track, "unlocked_at": None, "is_active": True}
+            track_data.append(active)
+        active["level"] = user.level
+        active["completed_lessons"] = progress.completed_lessons_count
+    track_data.sort(key=lambda row: row["track"])
+
+    # Settled Pro checkout clears selected_plan_type. Restore only display
+    # metadata from an approved subscription (not one-time HSK 3.0 unlock).
+    last_pro = None
+    if access == "PRO_ACTIVE" and (not user.selected_plan_type or not user.payment_method):
+        last_pro = await db.scalar(select(Payment).where(
+            owner_clause(Payment, user), Payment.payment_status == "approved",
+            Payment.plan_type != "hsk30_unlock",
+        ).order_by(Payment.id.desc()).limit(1))
+
     referral_counts = (await db.execute(select(
         func.count(Referral.id), func.count(Referral.id).filter(Referral.status == "active"),
         func.count(Referral.id).filter(Referral.counts_for_discount.is_(True)),
@@ -321,23 +350,23 @@ async def user_detail(db, request: UserDetailRequest):
         "user_id": user.id, "name": user.full_name, "username": user.username,
         "language": user.language, "level": user.level, "status": user.status,
         "created_at": _iso(user.created_at), "last_active_at": _iso(user.last_active_at),
-        "selected_payment_method": user.payment_method,
+        "selected_payment_method": user.payment_method or (last_pro.payment_method if last_pro else None),
         "access_state": access, "access_expires_at": _iso(access_expires_at(user, access, now=now)),
-        "selected_plan_type": user.selected_plan_type,
+        "selected_plan_type": user.selected_plan_type or (last_pro.plan_type if last_pro else None),
     }, "course": {"progress": {"level": progress.level,
         "completed_lessons": progress.completed_lessons_count,
         "last_opened_at": _iso(progress.last_opened_at),
         "last_completed_at": _iso(progress.last_completed_at),
         "homework_status": progress.homework_status} if progress else None,
-        "tracks": [{"track": row.track, "level": row.level,
-                    "completed_lessons": row.completed_lessons_count,
-                    "unlocked_at": _iso(row.unlocked_at)} for row in tracks]},
+        "tracks": track_data},
         "referral": {"invited_total": referral_counts[0], "invited_active": referral_counts[1],
                      "discount_qualified": referral_counts[2]},
         "devices": [{"platform": row.platform, "total": row.total, "linked": row.linked,
                      "first_open_at": _iso(row.first_open), "last_contact_at": _iso(row.last_contact)}
                     for row in devices],
-        "miniapp_presence": [{"platform": row.platform, "last_opened_at": _iso(row.last_open)}
+        "miniapp_presence": [{"platform": row.platform, "last_opened_at": _iso(row.last_open),
+                              "before_registration": bool(row.last_open and user.created_at and
+                                  _utc(row.last_open) < _utc(user.created_at))}
                              for row in presence],
         "feedback_counts": counts,
         "payments": await user_payments(db, UserPaymentsRequest(user_id=user.id, limit=10))}
@@ -403,7 +432,7 @@ def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_re
             async with session_factory() as db:
                 async with read_transaction(db):
                     actor = await authenticate_admin_pwa_session(db, cookie, settings_obj)
-                    if actor is None or (schema is StatisticsExportRequest and actor.auth_method != "webauthn"):
+                    if actor is None or (schema in (StatisticsExportRequest, InboxFeedbackDetailRequest) and actor.auth_method != "webauthn"):
                         return _reply(401, "admin_pwa_unauthorized")
                     if not isinstance(query, StatisticsRequest):
                         result = await service(db, query)
@@ -460,6 +489,10 @@ def create_admin_pwa_read_router(*, settings_obj, session_factory, statistics_re
     @router.post("/api/admin/v1/inbox/list")
     async def read_inbox(request: Request):
         return await handle(request, InboxRequest, unified_inbox)
+
+    @router.post("/api/admin/v1/inbox/feedback-detail")
+    async def read_inbox_feedback_detail(request: Request):
+        return await handle(request, InboxFeedbackDetailRequest, inbox_feedback_detail)
 
     @router.post("/api/admin/v1/inbox/unread-count")
     async def read_unread_count(request: Request):
