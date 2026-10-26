@@ -743,29 +743,27 @@ async function saveCourseLimits(){
 }
 
 function marketingView(){
-  // Marketing uses the existing authenticated API-backed editors and lists.
-  // The uploaded visual reference contains fabricated records; none are copied here.
+  // Only authenticated, first-party API-backed actions; no demo fixtures/metrics.
   const categories=[['campaigns','adCampaigns','mega'],['creatives','courseAds','device'],['notifications','notices','bell'],['partners','partners','users']];
   const selected=categories.some(([id])=>id===state.marketingTab)?state.marketingTab:'campaigns';
   const tabs='<div class="subtabs marketing-tabs" role="tablist" aria-label="'+esc(t('marketing'))+'">'+categories.map(([id,label,glyph])=>
     '<button type="button" role="tab" id="marketing-tab-'+id+'" class="subtab'+(selected===id?' active':'')+'" data-marketing-tab="'+id+'" aria-controls="marketing-tabpanel" aria-selected="'+(selected===id)+'" tabindex="'+(selected===id?'0':'-1')+'">'+icon(glyph)+'<span>'+esc(t(label))+'</span></button>'
   ).join('')+'</div>';
-  const panel=(label,body)=>'<section class="panel marketing-panel"><div class="panel-title"><h2>'+esc(t(label))+'</h2></div><div class="management-list">'+body+'</div></section>';
-  const row=(label,attributes,glyph)=>managementRow(t(label),attributes,glyph);
+  const card=(label,attributes,glyph)=>'<div class="marketing-tile">'+managementRow(t(label),attributes,glyph)+'</div>';
   let content='';
   if(selected==='campaigns'){
-    content=panel('messages',row('readCurrent','data-action="messageList"','mega'))+
-      panel('adCampaigns',row('readCurrent','data-campaign-list="ad"','mega'))+
-      panel('discountCampaigns',row('readCurrent','data-campaign-list="discount"','wallet'))+
-      panel('releaseCampaigns',row('readCurrent','data-campaign-list="release"','bell'));
+    content=card('messages','data-action="messageList"','mega')+
+      card('adCampaigns','data-campaign-list="ad"','mega')+
+      card('discountCampaigns','data-campaign-list="discount"','wallet')+
+      card('releaseCampaigns','data-campaign-list="release"','bell');
   }else if(selected==='creatives'){
-    content=panel('courseAds',row('readCurrent','data-marketing-kind="course_ad"','mega'))+
-      panel('marketing',row('desktopPromo','data-marketing-kind="desktop_promo"','device'));
+    content=card('courseAds','data-marketing-kind="course_ad"','mega')+
+      card('desktopPromo','data-marketing-kind="desktop_promo"','device');
   }else if(selected==='notifications'){
-    content=panel('notices',row('readCurrent','data-action="noticeList"','bell'));
+    content=card('notices','data-action="noticeList"','bell');
   }else{
-    content=panel('partners',row('readCurrent','data-action="partnerList"','users'))+
-      panel('partnerPayouts',row('readCurrent','data-action="payoutList"','wallet'));
+    content=card('partners','data-action="partnerList"','users')+
+      card('partnerPayouts','data-action="payoutList"','wallet');
   }
   return '<div class="management-page marketing-page">'+tabs+'<div id="marketing-tabpanel" class="marketing-sections" role="tabpanel" aria-labelledby="marketing-tab-'+selected+'">'+content+'</div></div>';
 }
