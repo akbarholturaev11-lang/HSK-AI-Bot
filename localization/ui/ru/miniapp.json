@@ -633,6 +633,7 @@
     "ui.admin_pwa.inboxStatusAssigned": "Назначено",
     "ui.admin_pwa.inboxStatusResolved": "Решено",
     "ui.admin_pwa.inboxMarkRead": "Отметить прочитанным",
+    "ui.admin_pwa.inboxMarkAllRead": "Отметить всё прочитанным",
     "ui.admin_pwa.inboxAssignSelf": "Назначить себе",
     "ui.admin_pwa.inboxResolve": "Пометить решённым",
     "ui.admin_pwa.inboxReopen": "Открыть снова",

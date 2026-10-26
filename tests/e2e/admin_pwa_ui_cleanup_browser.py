@@ -103,6 +103,12 @@ async def browser_checks(output):
                                 next_before=None)
             else:
                 data.update(items=copy.deepcopy(selected), next_before=None)
+        elif path.endswith("/inbox/mark-all-read"):
+            for row in rows:
+                if row["triage_status"] == "new":
+                    row["triage_status"] = "read"
+                    row["triage_revision"] += 1
+            data.update(updated=len(rows), has_more=False, cutoff=STAMP)
         elif path.endswith("/inbox/triage"):
             triage.append(payload)
             row = next(row for row in rows if row["source"] == payload["source"])
@@ -207,7 +213,9 @@ async def browser_checks(output):
                     await expect(page.locator('.inbox-attachment-image')).to_be_visible()
                     assert len([path for path, _ in requests[before:] if path.endswith("/attachment")])==1
                     await page.screenshot(path=str(output / f"inbox-detail-{language}-{width}.png"))
-                    await page.locator(".inbox-back").click()
+                    assert not await page.locator(".inbox-back").count()
+                    await page.locator(".drawer-close").click()
+                    await page.locator('[data-action="feedback"]').click()
                     await expect(page.locator('[data-inbox-open="bot:1"]')).to_have_class(__import__("re").compile("is-read"))
                     await expect(page.locator(".inbox-minimal-row.is-important.is-unread")).to_have_count(2)
                     await page.locator(".drawer-close").click()
@@ -249,9 +257,15 @@ async def browser_checks(output):
             await page.locator('[data-inbox-open="technical:1"]').click()
             await expect(page.locator(".inbox-details")).to_be_visible()
             assert triage[-1]["source"]=="technical" and triage[-1]["operation"]=="mark_read"
-            await page.locator(".inbox-back").click()
+            assert not await page.locator(".inbox-back").count()
+            await page.locator(".drawer-close").click()
+            await page.locator('[data-action="feedback"]').click()
             await expect(page.locator('[data-inbox-open="technical:1"]')).to_have_class(__import__("re").compile("is-read"))
             assert not await page.locator('[data-inbox-op]').count()
+            await page.locator("[data-inbox-mark-all]").click()
+            await expect(page.locator(".inbox-minimal-row.is-unread")).to_have_count(0)
+            await expect(page.locator("[data-inbox-mark-all]")).to_have_count(0)
+            assert any(path.endswith("/inbox/mark-all-read") for path, payload in requests)
             await page.locator(".drawer-close").click()
             # Paged Inbox appends, never replaces rows or exposes a "Next" button.
             paginated[0] = True
