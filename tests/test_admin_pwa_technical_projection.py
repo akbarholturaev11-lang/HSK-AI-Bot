@@ -53,5 +53,59 @@ class AdminPwaTechnicalProjectionTests(fixtures.PaymentFixtures, unittest.Isolat
         self.assertEqual(len(statements), 2)
         for statement in statements:
             projection = statement.split("from messages", 1)[0]
-            self.assertNotIn("messages.content", projection)
+            # CASE may inspect private context in SQL, but must not project
+            # raw diagnostic text or Telegram identity back into Python.
+            self.assertIn("case ", projection)
+            self.assertNotIn("messages.content as ", projection)
+            self.assertNotIn("messages.content,", projection)
             self.assertNotIn("messages.telegram_id", projection)
+
+    async def test_onboarding_explanations_use_recovery_result_not_http_success(self):
+        now = datetime.now(timezone.utc) - timedelta(seconds=1)
+        scenarios = (
+            ("onboarding_recovered", "course_level_change_requires_placement", True),
+            ("onboarding_placement_required", "course_level_change_requires_placement", False),
+            ("onboarding_timeout", "onboarding_save_timeout", False),
+            ("onboarding_unconfirmed", "onboarding_failed", False),
+        )
+        ids = {}
+        async with self.sessions() as db:
+            for expected, error_code, recovered in scenarios:
+                # Historical app_error_context format from the actual producer.
+                content = (
+                    "APP ERROR KONTEXTI:\n"
+                    "- source: miniapp\n"
+                    "- level: \n"
+                    "- event_source: course_v3_onboarding\n"
+                    "- block_no: \n"
+                    "- mode: \n"
+                    "- error_name: OnboardingSaveResponseError\n"
+                    f"- error_message: {error_code}\n"
+                    "- url: https://private.invalid/?token=SECRET\n"
+                    "- created_at: 2026-10-26T15:59:15Z\n"
+                    "- stack: PRIVATE_STACK\n"
+                    '- extra: {"recovered": ' + ("true" if recovered else "false") +
+                    ', "track": "hsk20"}'
+                )
+                marker = Message(user_id=1, role="assistant", content_type="app_error_context",
+                                 content=content, created_at=now)
+                db.add(marker)
+                await db.flush()
+                ids[marker.id] = expected
+            # Unrecognized records must never pass arbitrary text to the UI.
+            unknown = Message(user_id=1, role="assistant", content_type="app_error_context",
+                              content="PRIVATE diagnostic stack, token=SECRET", created_at=now)
+            db.add(unknown)
+            await db.flush()
+            ids[unknown.id] = "unknown"
+            await db.commit()
+
+        async with self.sessions() as db:
+            payload = await unified_inbox(db, InboxRequest(source="technical"))
+        actual = {row["source_id"]: row["technical_code"] for row in payload["items"]}
+        self.assertEqual(actual, ids)
+        for row in payload["items"]:
+            self.assertEqual(row["message"], "Mini App technical error")
+            self.assertNotIn("SECRET", str(row))
+            self.assertNotIn("PRIVATE_STACK", str(row))
+            self.assertNotIn("private.invalid", str(row))
