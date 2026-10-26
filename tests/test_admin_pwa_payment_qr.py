@@ -16,6 +16,7 @@ from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.payment import Payment
 from app.db.models.payment_qr_code import PaymentQrCode
+from app.db.models.discount_campaign import DiscountCampaign
 from app.db.models.subscription_price import SubscriptionPrice
 from app.db.models.user import User
 from app.services.subscription_price_service import SubscriptionPriceService
@@ -52,13 +53,14 @@ class AdminPwaPaymentQrTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         Image.new("RGB", (320, 180), (12, 98, 120)).save(output, format="PNG")
         return output.getvalue()
 
-    async def prepare(self, *, method="alipay", plan="1_month", image=None):
+    async def prepare(self, *, method="alipay", plan="1_month", image=None,
+                      scope="subscription", campaign_id=None, amount=None):
         data = image or self.image_bytes()
         async with self.sessions() as db:
             result = await qr_api.prepare_payment_qr(
                 db, session_cookie=fixtures.COOKIE,
                 request=qr_api.PreparePaymentQr(
-                    method=method, plan=plan,
+                    method=method, plan=plan, scope=scope, campaign_id=campaign_id, amount=amount,
                     media_sha256=hashlib.sha256(data).hexdigest(), media_size=len(data),
                 ), settings_obj=self.settings,
             )
@@ -118,6 +120,44 @@ class AdminPwaPaymentQrTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         with self.assertRaisesRegex(qr_api.CommandError, "step_up_denied"):
             await self.execute(command, proof, image, bot)
         self.assertEqual(len(bot.sent), 1)
+
+    async def test_20_percent_and_future_prices_have_separate_signed_qr_scopes(self):
+        bot = FakeBot()
+        discount, img = await self.prepare(scope="subscription_20")
+        self.assertEqual(discount.scope, "subscription_20")
+        result = await self.execute(discount, await self.proof(discount), img, bot)
+        self.assertEqual((result["qr"]["amount"], result["qr"]["discount_percent"]), (53, 20))
+        staged, img = await self.prepare(method="wechat", amount=85)
+        result = await self.execute(staged, await self.proof(staged), img, bot)
+        self.assertEqual((result["qr"]["amount"], result["qr"]["scope"]), (85, "subscription"))
+        async with self.sessions() as db:
+            rows = (await db.scalars(select(PaymentQrCode).order_by(PaymentQrCode.id))).all()
+            self.assertEqual([(x.scope,x.payment_method,x.amount) for x in rows],
+                [("subscription_20","alipay",53),("subscription","wechat",85)])
+            self.assertEqual(await db.scalar(select(func.count()).select_from(SubscriptionPrice)), 0)
+
+    async def test_campaign_qr_is_bound_to_existing_campaign_and_exact_discount_amount(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            campaign = DiscountCampaign(title="QR campaign", percent=20, is_active=False,
+                starts_at=now,ends_at=now+timedelta(days=1),
+                payment_method="alipay",plan_type="1_month")
+            db.add(campaign)
+            await db.commit()
+            campaign_id = campaign.id
+        command, img = await self.prepare(scope="admin_campaign", campaign_id=campaign_id)
+        bot = FakeBot()
+        result = await self.execute(command, await self.proof(command), img, bot)
+        self.assertEqual((result["qr"]["amount"],result["qr"]["campaign_id"]),(53,campaign_id))
+        async with self.sessions() as db:
+            row = await db.scalar(select(PaymentQrCode))
+            self.assertEqual((row.scope,row.amount),(f"admin_campaign:{campaign_id}",53))
+        async with self.sessions() as db:
+            with self.assertRaisesRegex(qr_api.CommandError,"invalid_payment_qr_target"):
+                await qr_api.read_payment_qr(db,session_cookie=fixtures.COOKIE,
+                    request=qr_api.ReadPaymentQr(method="wechat",plan="1_month",
+                        scope="admin_campaign",campaign_id=campaign_id),
+                    settings_obj=self.settings)
 
     async def test_invalid_target_and_oversized_media_are_rejected(self):
         with self.assertRaises(ValueError):
