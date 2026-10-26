@@ -525,6 +525,19 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 .inbox-extra{font-size:12px;color:#718592;margin:12px 0 0;overflow-wrap:anywhere}
 .inbox-details .inbox-attachment{margin-top:12px}
 .inbox-details .btn{min-height:44px}
+.inbox-feedback-person{display:grid;gap:10px;padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid #e8edf0}
+.inbox-feedback-person-row{display:flex;align-items:baseline;gap:9px;color:#304552;font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.inbox-feedback-person-row>span:first-child{flex:0 0 20px;text-align:center}
+.inbox-feedback-person-row strong{font-weight:750}
+.inbox-feedback-answers{display:grid;gap:17px}
+.inbox-feedback-answer h3{font-size:14px;margin:0 0 6px;color:#2b4251}
+.inbox-feedback-answer h3 span{margin-right:4px}
+.inbox-feedback-answer p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 0 25px;font-size:14px;line-height:1.6;color:#283e4c}
+.inbox-feedback-reward{border-top:1px solid #e8edf0;padding-top:16px;margin:0;font-size:13px;color:#344a55}
+.inbox-detail-toolbar{padding-top:5px}
+.inbox-detail-toolbar button{display:flex;align-items:center;justify-content:center;gap:7px}
+.inbox-detail-toolbar button svg{width:17px;height:17px}
+
 @media(max-width:760px){
  .inbox-minimal{padding:14px 13px 27px}
  .inbox-minimal-row{min-height:102px;padding:16px 12px;gap:10px;border-radius:13px}
