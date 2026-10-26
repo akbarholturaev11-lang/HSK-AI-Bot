@@ -5,6 +5,8 @@ on:
     paths:
       - "tests/test_smart_reminder_p0_regression.py"
       - "docs/smart-reminders/**"
+      - "android/app/src/test/java/com/pomp/hskai/core/notify/**"
+      - "android/app/src/main/java/com/pomp/hskai/core/notify/**"
       - ".github/workflows/smart-reminder-p0.yml"
   push:
     branches:
@@ -52,3 +54,37 @@ jobs:
             tests.test_motivation_reminder_service \
             tests.test_android_push \
             tests.test_account_deletion_cleanup
+
+  android-jvm-legacy:
+    name: Android reminder JVM baseline (Play and Direct)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: android
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require committed Gradle wrapper
+        run: |
+          test -f gradlew
+          test -f gradle/wrapper/gradle-wrapper.jar
+          test -f gradle/wrapper/gradle-wrapper.properties
+          chmod +x gradlew
+      - uses: gradle/actions/wrapper-validation@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: true
+      - name: Test Play reminder decision and scheduling
+        run: |
+          ./gradlew --no-daemon testPlayDebugUnitTest \
+            --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
+            --tests "com.pomp.hskai.core.notify.ReminderScheduleTest"
+      - name: Test Direct reminder decision and scheduling
+        run: |
+          ./gradlew --no-daemon testDirectDebugUnitTest \
+            --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
+            --tests "com.pomp.hskai.core.notify.ReminderScheduleTest"
