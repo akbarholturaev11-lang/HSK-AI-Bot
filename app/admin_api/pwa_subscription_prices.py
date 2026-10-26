@@ -153,15 +153,19 @@ async def execute_subscription_price(db, *, session_cookie, request, settings_ob
         if command.method in ('alipay', 'wechat') and command.amount != before['amount']:
             # A new China price cannot go live until its exact base-price QR
             # has been staged and signed in the dedicated QR editor.
-            matching_qr = await db.scalar(select(PaymentQrCode.id).where(
-                PaymentQrCode.scope == 'subscription',
-                PaymentQrCode.payment_method == command.method,
-                PaymentQrCode.plan_type == command.plan,
-                PaymentQrCode.amount == command.amount,
-                PaymentQrCode.currency == '¥',
-            ).limit(1))
-            if matching_qr is None:
-                raise CommandError('payment_qr_required', 409)
+            for qr_scope, required_amount in (
+                ('subscription', command.amount),
+                ('subscription_20', int(round(command.amount * 0.8))),
+            ):
+                matching_qr = await db.scalar(select(PaymentQrCode.id).where(
+                    PaymentQrCode.scope == qr_scope,
+                    PaymentQrCode.payment_method == command.method,
+                    PaymentQrCode.plan_type == command.plan,
+                    PaymentQrCode.amount == required_amount,
+                    PaymentQrCode.currency == '¥',
+                ).limit(1))
+                if matching_qr is None:
+                    raise CommandError('payment_qr_required', 409)
         price = await SubscriptionPriceService(db).set_price(
             payment_method=command.method, plan_type=command.plan, amount=command.amount,
             updated_by_telegram_id=actor.telegram_id)
