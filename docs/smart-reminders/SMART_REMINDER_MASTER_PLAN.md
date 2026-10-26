@@ -968,3 +968,25 @@ python -m unittest -v \
 **P0 progress after actual CI:** P0.1.1 **PARTIAL** (remaining historical/other sender completeness); P0.1.2 **PARTIAL** (inline Cancel/ON actually tested; two text Cancel paths and historic actual OFF actions still need end-to-end regression); P0.1.3 **BLOCKED** (installed Direct/Play APK inventory, authorized production scheduler/FCM/database stamp), P0.1.4 **PARTIAL with 45 executable backend regression passes** (canonical lesson-event/retention maps and Android JVM/instrumented tests remain). `tasks.md` boxes remain unchecked until each entire numbered task has its acceptance evidence. P1–P8 **NOT STARTED**.
 
 **Required next action:** run full handler-level text Cancel regressions, Android JVM `ReminderDecisionTest`/`ReminderScheduleTest` and instrumented/old APK checks in the appropriate runner, then collect authorized staging/installed-fleet proof and final P0 task 1.3/1.4 matrix. Keep legacy/transactional delivery, financial/access and motivation paths stable, and no production rollout before explicit reviewed cutover.
+
+### 17.24 Executed text-cancel and Android JVM P0 regressions — 2026-10-26 [PASS; NOT DEVICE/PRODUCTION PROOF]
+
+**Pinned input source:** branch `codex/smart-reminder-p0-text-android-jvm-20261026` began at `main@045aa5b5c7173151658b21f602cbb1e04650f104`; no Smart API/scheduler/product runtime code touched. **Executed CI:** GitHub Actions [Smart Reminder P0 regression #40327213519](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40327213519), successful **two-job** run for branch commit `3c493df21a286739e6ceddb6778a2743f281685b`. The decoded runner logs show **`Ran 47 tests in 20.062s`, `OK`** (Python 3.11 Ubuntu, synthetic nonproduction credentials and SQLite) and **`BUILD SUCCESSFUL in 15s`** for `testPlayDebugUnitTest` plus **`BUILD SUCCESSFUL in 11s`** for `testDirectDebugUnitTest` (JDK 17 Ubuntu with repository Gradle wrapper).
+
+**New exercised tests (2):** `test_text_cancel_primary_handler_preserves_prior_study_consent` invokes real `handle_text_message`, stored existing ON and time, normal QA path, and verifies only `waiting_for` is cleared. `test_text_cancel_secondary_course_branch_preserves_on_when_reached` exercises a **fallback branch artificially** by making the earlier progress lookup return absent, then entering course-mode setup with current stored progress: the alternate Cancel still preserves ON/time. This scenario proves that branch's semantics, **not that both text branches ordinarily run sequentially for a learner**. Prior real inline-callback Cancel/ON and lifecycle tests remain included in the 47.
+
+**Android actual focused commands in workflow:**
+
+```sh
+cd android
+./gradlew --no-daemon testPlayDebugUnitTest \
+  --tests 'com.pomp.hskai.core.notify.ReminderDecisionTest' \
+  --tests 'com.pomp.hskai.core.notify.ReminderScheduleTest'
+./gradlew --no-daemon testDirectDebugUnitTest \
+  --tests 'com.pomp.hskai.core.notify.ReminderDecisionTest' \
+  --tests 'com.pomp.hskai.core.notify.ReminderScheduleTest'
+```
+
+**Verified boundaries:** Android decision/schedule JVM tests are passing for **both** flavors. No physical/emulator instrumentation or `StudyNotificationChannelTest` run, no online/offline old APK, cross-device WorkManager+FCM, real Android OS channel, delivery receipt, stored consent bridge, live database/replicas or notifications-provider acceptance test. The calendar-helper `ReminderSchedule` test does not establish WorkManager fires at that same instant. The server still has no unified Smart ledger.
+
+**Canonical status:** P0.1.2 current Telegram inline+both text Cancel **legacy behavior regression-covered but migration provenance/OFF remains open**. P0.1.4 now has **47 backend test passes and focused Play/Direct JVM tests**, yet the event-trust/entitlement and deletion mapping and instrumented old-client proof are outstanding. P0.1.1 sender audit partial; P0.1.3 historical installed APK, live topology/FCM/DB stamp blocked on separately authorized evidence. OpenSpec `tasks.md` P0 checkboxes **still open**; P1–P8 NOT STARTED. No user-visible sender behavior, financial flow or production flags changed. **Next:** source-verified event and deletion provenance, optional emulator tests in a supported runner, old client capability fencing and staging deployment evidence before any P1/P3/P4 dispatch.
