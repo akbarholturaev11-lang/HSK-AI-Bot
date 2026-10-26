@@ -812,6 +812,7 @@ async def browser_checks(output, *, media_only=False):
                 await page.locator('[data-action="portfolioHistory"]').click()
                 await expect(page.locator('#drawerContent')).to_contain_text('QA committed expense')
                 await close_or_wait()
+                await navigate('system',1440)
                 async with fixture.sessions() as db:
                     await db.execute(update(AdminPwaStepUp).values(
                         created_at=datetime.now(timezone.utc)-timedelta(minutes=11)))
