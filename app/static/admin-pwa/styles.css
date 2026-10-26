@@ -860,3 +860,25 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 .user-table .user-selected-duration{font-size:13px;font-weight:750;color:#33405b}
 .user-table .user-payment-method{font-size:11px;color:#99a5b7;overflow-wrap:anywhere}
 .pill.user-status-pill.blue:not(.green):not(.red):not(.amber):not(.gray){background:#e8eefc;color:#4e65ba}
+
+/* Finance V10: semantic tabs, source-backed payments, and one canonical editor per action. */
+.finance-page{min-width:0}
+.finance-tabs{margin:0 0 20px;max-width:100%;width:max-content}
+.finance-content{min-width:0}
+.finance-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.finance-group{margin-bottom:23px}
+.finance-group h2{font-size:14px;font-weight:750;margin:0 0 13px;color:var(--ink)}
+.finance-tile{background:#fff;border:1px solid var(--line);border-radius:15px;min-width:0;overflow:hidden}
+.finance-tile .management-row{min-height:78px;padding:17px 20px;border:0}
+.finance-tile .management-row:hover{background:#f5fafb}
+.finance-tile .management-row-icon{width:40px;height:40px;border-radius:12px}
+.finance-secondary{max-width:460px;margin-top:19px}
+.finance-payments-content .payment-status-filters{margin-top:0}
+@media(max-width:850px){.finance-card-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+  .finance-tabs{width:100%;margin-bottom:16px}
+  .finance-tabs .subtab{padding:10px 12px;font-size:11px;white-space:nowrap}
+  .finance-card-grid{gap:10px}
+  .finance-tile .management-row{min-height:65px;padding:13px 15px}
+  .finance-secondary{max-width:none}
+}
