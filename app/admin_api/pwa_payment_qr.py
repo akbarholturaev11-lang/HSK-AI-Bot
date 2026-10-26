@@ -138,7 +138,7 @@ async def _target(db, method, plan, *, scope="subscription", campaign_id=None,
         raise CommandError("invalid_payment_qr_target", 400)
     if (scope == "admin_campaign") != (campaign_id is not None):
         raise CommandError("invalid_payment_qr_target", 400)
-    if scope != SUBSCRIPTION_QR_SCOPE and target_amount is not None:
+    if scope == "admin_campaign" and target_amount is not None:
         raise CommandError("invalid_payment_qr_target", 400)
     price_row = await _price_row(db, method, plan, lock=lock)
     if price_row is None:
@@ -162,7 +162,8 @@ async def _target(db, method, plan, *, scope="subscription", campaign_id=None,
     else:
         percent = 0
         qr_scope = scope
-    amount = (target_amount if target_amount is not None else base_amount) if not percent else int(round(base_amount * (100 - percent) / 100))
+    basis = target_amount if target_amount is not None else base_amount
+    amount = basis if not percent else int(round(basis * (100 - percent) / 100))
     if amount < 1 or currency != "¥":
         raise CommandError("invalid_payment_qr_target", 409)
     query = select(PaymentQrCode).where(
