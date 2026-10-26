@@ -2534,6 +2534,8 @@ const autoImportantSources=new Set(['payment','android','technical']);
 // The backend only returns allowlisted classification codes; raw diagnostic
 // payloads, stack traces and URLs must never be rendered in Admin PWA.
 const technicalDescriptions=Object.freeze({
+  onboarding_recovered_placement:'inboxTechOnboardingRecoveredPlacement',
+  onboarding_recovered_timeout:'inboxTechOnboardingRecoveredTimeout',
   onboarding_recovered:'inboxTechOnboardingRecovered',
   onboarding_placement_required:'inboxTechOnboardingPlacement',
   onboarding_timeout:'inboxTechOnboardingTimeout',
