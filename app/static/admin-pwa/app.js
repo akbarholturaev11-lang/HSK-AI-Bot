@@ -1003,12 +1003,23 @@ async function userProfile(userId) {
     if(current!==drawerId||!state.actor)return;
     const u=data.user,c=data.course,r=data.referral,blocked=String(data.user.status||'').trim().toLowerCase()==='blocked';
     const section=(key,body)=>`<section class="profile-section"><h3>${esc(t(key))}</h3>${body}</section>`;
+    const courseRows=c.tracks.map(row=>{
+      const fields=[['level',row.level],['completedLessons',row.completed_lessons]];
+      if(row.is_active&&c.progress)fields.push(['lastLesson',date(c.progress.last_completed_at)]);
+      if(row.unlocked_at)fields.push(['unlocked',date(row.unlocked_at)]);
+      return `<article class="feedback-item"><strong>${esc(row.track==='hsk30'?'HSK 3.0':'HSK 2.0')}${row.is_active?' · '+esc(t('directoryStatusActive')):''}</strong>${profileFields(fields)}</article>`;
+    }).join('');
+    const nativeRows=data.devices.map(row=>`<article class="feedback-item"><strong>${esc({android:'Android',macos:'macOS',windows:'Windows'}[row.platform]||row.platform)}</strong>${profileFields([['linkedTotal',row.linked+' / '+row.total],['lastContact',date(row.last_contact_at)]])}</article>`).join('');
+    const miniappRows=data.miniapp_presence.map(row=>{
+      const platform={android:'Android',ios:'iOS',macos:'macOS',windows:'Windows',web:'Web',unknown:'—'}[row.platform]||row.platform;
+      const preRegistration=row.before_registration?`<p class="source-note">⚠ ${esc(t('created'))}: ${esc(date(u.created_at))}</p>`:'';
+      return `<article class="feedback-item"><strong>Telegram Mini App · ${esc(platform)}</strong>${profileFields([['lastActive',date(row.last_opened_at)]])}${preRegistration}</article>`;
+    }).join('');
     drawer('userProfile',`<div class="profile-heading"><h3>${esc(u.name||'—')}</h3><p>#${u.user_id} · ${esc(u.username||'—')}</p><span class="pill">${esc(t(u.access_state))}</span></div>`+
       profileFields([['language',u.language],['level',u.level],['created',date(u.created_at)],['lastActive',relativeLastActive(u.last_active_at)],['userSelectedPlan',displayPlan(u.selected_plan_type)],['userSelectedMethod',u.selected_payment_method||'—'],['accessUntil',date(u.access_expires_at)]])+
-      section('course',(c.progress?profileFields([['level',c.progress.level],['completedLessons',c.progress.completed_lessons],['lastLesson',date(c.progress.last_completed_at)]]):`<p class="source-note">${esc(t('empty'))}</p>`)+c.tracks.map(row=>`<p class="source-note">${esc(row.track==='hsk30'?'HSK 3.0':'HSK 2.0')} · ${esc(row.level)} · ${esc(t('completedLessons'))}: ${row.completed_lessons}${row.unlocked_at?' · '+esc(t('unlocked'))+' '+esc(date(row.unlocked_at)):''}</p>`).join(''))+
+      section('course',courseRows||`<p class="source-note">${esc(t('empty'))}</p>`)+
       section('referrals',profileFields([['invitedTotal',r.invited_total],['invitedActive',r.invited_active],['discountQualified',r.discount_qualified]]))+
-      section('devices',data.devices.map(row=>`<article class="feedback-item"><strong>${esc(row.platform)}</strong>${profileFields([['linkedTotal',row.linked+' / '+row.total],['lastContact',date(row.last_contact_at)]])}</article>`).join('')||`<p class="source-note">${esc(t('empty'))}</p>`)+
-      (data.miniapp_presence.length?section('miniappOpens',data.miniapp_presence.map(row=>`<p class="source-note">${esc(row.platform)} · ${esc(date(row.last_opened_at))}</p>`).join('')):'')+
+      section('devices',nativeRows+miniappRows||`<p class="source-note">${esc(t('empty'))}</p>`)+
       section('feedback',profileFields([['botFeedback',data.feedback_counts.bot],['releaseFeedback',data.feedback_counts.release]])+`<button class="btn" data-user-feedback="${userId}">${esc(t('openFeedback'))}</button>`)+
       section('paymentHistory',`<div id="profilePayments">${profilePayments(data.payments,userId)}</div>`)+
       section('userActions',`<div class="profile-access-editor">
