@@ -344,15 +344,21 @@ async def browser_checks(output):
         # every existing financial editor out of the legacy System directory.
         await expect(page.locator('.finance-tabs [role="tab"]')).to_have_count(4)
         await page.locator('[data-finance-tab="prices"]').click()
-        await expect(page.locator('.finance-tile [data-action="priceSettings"]')).to_have_count(1)
+        # No redundant title-only price tile: all nine tariffs appear immediately.
+        await expect(page.locator('[data-price-target]')).to_have_count(9)
+        await expect(page.locator('.finance-tile [data-action="priceSettings"]')).to_have_count(0)
         await page.locator('[data-finance-tab="methods"]').click()
-        # Six standard QRs and six exact 20% QRs, plus two bank editors.
-        await expect(page.locator('.finance-tile')).to_have_count(14)
+        # Six parent tariffs, each containing two scoped actions, plus bank editors.
+        await expect(page.locator('.finance-tile')).to_have_count(8)
+        await expect(page.locator('[data-qr-tariff]')).to_have_count(6)
         await expect(page.locator('[data-payment-qr-target]')).to_have_count(12)
         await expect(page.locator('[data-qr-scope="subscription_20"]')).to_have_count(6)
+        await expect(page.locator('[data-qr-tariff="alipay-1_month"] [data-qr-scope="subscription"]')).to_have_count(1)
+        await expect(page.locator('[data-qr-tariff="alipay-1_month"] [data-qr-scope="subscription_20"]')).to_have_count(1)
         await expect(page.locator('[data-setting-kind="payment_details"]')).to_have_count(2)
         await page.locator('[data-finance-tab="portfolio"]').click()
-        await expect(page.locator('.finance-tile [data-action="portfolioHistory"]')).to_have_count(1)
+        await expect(page.locator('.finance-portfolio-inline')).to_be_visible()
+        await expect(page.locator('.finance-tile [data-action="portfolioHistory"]')).to_have_count(0)
         assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         await page.locator('[data-finance-tab="payments"]').click()
         await expect(page.locator('.payment-table-wrap')).to_be_visible()
