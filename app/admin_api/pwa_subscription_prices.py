@@ -29,6 +29,8 @@ from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.subscription_price import SubscriptionPrice
 from app.db.models.payment_qr_code import PaymentQrCode
+from app.db.models.discount_campaign import DiscountCampaign
+from app.services.payment_qr_code_service import PaymentQrCodeService
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.subscription_price_service import (
@@ -165,6 +167,26 @@ async def execute_subscription_price(db, *, session_cookie, request, settings_ob
                     PaymentQrCode.currency == '¥',
                 ).limit(1))
                 if matching_qr is None:
+                    raise CommandError('payment_qr_required', 409)
+            # Currently active campaigns must not lose their exact QR as a side
+            # effect of changing a shared base price. Bound the query to matching
+            # method/plan and keep the existing signed price transaction atomic.
+            campaigns = (await db.scalars(select(DiscountCampaign).where(
+                DiscountCampaign.is_active.is_(True),
+                DiscountCampaign.ends_at > now,
+                DiscountCampaign.payment_method.in_((command.method, None)),
+                DiscountCampaign.plan_type.in_((command.plan, None)),
+            ))).all()
+            for campaign in campaigns:
+                campaign_amount = int(round(command.amount * (100 - campaign.percent) / 100))
+                campaign_qr = await db.scalar(select(PaymentQrCode.id).where(
+                    PaymentQrCode.scope == PaymentQrCodeService.admin_campaign_scope(campaign.id),
+                    PaymentQrCode.payment_method == command.method,
+                    PaymentQrCode.plan_type == command.plan,
+                    PaymentQrCode.amount == campaign_amount,
+                    PaymentQrCode.currency == '¥',
+                ).limit(1))
+                if campaign_qr is None:
                     raise CommandError('payment_qr_required', 409)
         price = await SubscriptionPriceService(db).set_price(
             payment_method=command.method, plan_type=command.plan, amount=command.amount,
