@@ -1584,7 +1584,13 @@ async function campaignDetail(kind,id){
     managementDraft=editable?{type:'campaign',kind:kind==='ad'?'ad_send':'discount_state',campaignKind:kind,campaignId:id,current:row}:null;
     const selection=kind==='discount'&&editable?(row.can_send?campaignSelect('discountOperation','operation',[['state','changeStatus'],['send','sendMessage']],'send'):'')+`<div id="discountStateFields" ${row.can_send?'hidden':''}>`+campaignSelect('campaignActive','status',row.can_activate||row.is_active?[['false','hsk30Off'],['true','hsk30On']]:[['false','hsk30Off']],String(row.is_active))+'</div>':'';
     const hint=kind==='ad'?`<p class="source-note">${esc(t(row.can_send?'campaignSendHint':'campaignReadOnly'))}</p>`:kind==='discount'?`<p class="source-note">${esc(t(row.can_send?'discountSendHint':'discountNoNotificationHint'))}</p>`:'';
-    drawer(campaignLabels[kind],`<form id="managementForm">${campaignFields(row)}${hint}${selection}${kind==='ad'&&editable?campaignScheduleFields():''}<p class="alert" id="campaignCommandValidation" role="alert" hidden></p></form>`,btn('close','close')+(editable?btn('saveChanges','managementPrepare','primary'):''));
+    const qrMethods=kind==='discount'?(row.payment_method==='visa'?[]:row.payment_method?[row.payment_method]:['alipay','wechat']):[];
+    const qrPlans=row.plan_type?[row.plan_type]:['10_days','1_month'];
+    const campaignQrs=qrMethods.flatMap(method=>qrPlans.map(plan=>
+      '<button type="button" class="management-row" data-payment-qr-target="'+method+'-'+plan+'" data-qr-scope="admin_campaign" data-qr-campaign="'+row.id+'"><span class="management-row-icon">'+icon('credit')+'</span><strong>'+esc(method==='alipay'?'Alipay':'WeChat')+' · '+esc(t(plan))+' · '+esc(t('paymentQrTitle'))+'</strong>'+icon('chevron')+'</button>'
+    )).join('');
+    const qrUpload=campaignQrs?'<div class="management-list">'+campaignQrs+'</div>':'';
+    drawer(campaignLabels[kind],`<form id="managementForm">${campaignFields(row)}${hint}${qrUpload}${selection}${kind==='ad'&&editable?campaignScheduleFields():''}<p class="alert" id="campaignCommandValidation" role="alert" hidden></p></form>`,btn('close','close')+(editable?btn('saveChanges','managementPrepare','primary'):''));
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer(campaignLabels[kind],statePanel(errorKey(error)),btn('close','close'));}
 }
 function campaignScheduleFields(){
@@ -1754,6 +1760,7 @@ function managementFields(value,type){
   if(type==='price')return profileFields([['method',value.method],['plan',t(value.plan)],['amount',value.amount+' '+value.currency]]);
   if(type==='payment_qr')return profileFields([
     ['method',value.method],['plan',t(value.plan)],['amount',value.amount+' '+value.currency],
+    ...(value.discount_percent?[['discount',value.discount_percent+'%']]:[]),
     ['paymentQrStatus',t(value.qr_set?'paymentQrSet':'paymentQrMissing')],
     ...(value.media_name?[["paymentQrImage",`${value.media_name} · ${Number(value.media_size||0).toLocaleString()} B`]]:[]),
   ]);
