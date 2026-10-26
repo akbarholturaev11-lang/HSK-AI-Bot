@@ -1771,6 +1771,9 @@ function managementFields(value,type){
   if(value.kind==='help_video')return profileFields([['videoTopic',t(helpVideoLabels[value.key])],['language',value.lang.toUpperCase()],['videoLink',value.value||t('notSet')]]);
   throw Error('invalid_settings');
 }
+function qrRereadButton(method,plan,scope='subscription',campaignId=null,amount=null){
+  return `<button type="button" class="btn" data-payment-qr-target="${esc(method+'-'+plan)}" data-qr-scope="${esc(scope)}" ${campaignId?`data-qr-campaign="${Number(campaignId)}"`:''} ${amount?`data-qr-amount="${Number(amount)}"`:''}>${esc(t('readCurrent'))}</button>`;
+}
 function managementReread(draft){
   if(draft.type==='message')return btn('readCurrent','messageList');
   if(draft.type==='message_control')return `<button class="btn" data-message-job="${esc(draft.jobId)}">${esc(t('readCurrent'))}</button>`;
@@ -1784,7 +1787,7 @@ function managementReread(draft){
   if(draft.type==='user')return `<button class="btn" data-user-detail="${draft.userId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing'&&draft.kind==='campaign_draft')return `<button class="btn" data-campaign-list="ad">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind==='course_ad_create'?'course_ad':draft.kind)}">${esc(t('readCurrent'))}</button>`;
-  if(draft.type==='payment_qr')return `<button class="btn" data-payment-qr-target="${esc(draft.method+'-'+draft.plan)}">${esc(t('readCurrent'))}</button>`;
+  if(draft.type==='payment_qr')return qrRereadButton(draft.method,draft.plan,draft.scope,draft.campaignId,draft.targetAmount);
   return draft.type==='price'?btn('readCurrent','priceSettings'):`<button class="btn" data-setting-kind="${draft.kind}" ${draft.bank?`data-bank="${draft.bank}"`:''}>${esc(t('readCurrent'))}</button>`;
 }
 function updatePriceFields(){
@@ -1845,7 +1848,7 @@ async function priceQrSettings(method=null,plan=null,options={}){
     const body=`<form id="managementForm"><p class="source-note">${esc(t('paymentQrPrivateNote'))}</p>${managementFields(qr,'payment_qr')}<div class="form-field">${discountLink}</div><div class="form-field"><label for="paymentQrMediaFile">${esc(t('paymentQrImage'))}</label><input class="input" id="paymentQrMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">${esc(t('paymentQrMediaHint'))}</p><div id="paymentQrMediaPreview" aria-live="polite"></div><p class="alert" id="paymentQrMediaValidation" role="alert" hidden></p></div></form>`;
     drawer('paymentQrTitle',body,btn('saveChanges','managementPrepare','primary'));
   }catch(error){
-    if(current===drawerId&&at===epoch&&state.actor)drawer('paymentQrTitle',statePanel(errorKey(error)),btn('close','close')+`<button class="btn" data-payment-qr-target="${esc(method+'-'+plan)}">${esc(t('readCurrent'))}</button>`);
+    if(current===drawerId&&at===epoch&&state.actor)drawer('paymentQrTitle',statePanel(errorKey(error)),btn('close','close')+qrRereadButton(method,plan,options.scope||'subscription',options.campaign_id,options.amount));
   }
 }
 function updateHelpVideoField(){
@@ -3024,7 +3027,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.marketingKind){await marketingEditor(button.dataset.marketingKind);}
     else if(button.dataset.paymentQrTarget){
       const match=/^(alipay|wechat)-(10_days|1_month|3_months)$/.exec(button.dataset.paymentQrTarget);
-      if(match)await priceQrSettings(match[1],match[2],{scope:button.dataset.qrScope||'subscription',campaign_id:Number(button.dataset.qrCampaign)||null});
+      if(match)await priceQrSettings(match[1],match[2],{scope:button.dataset.qrScope||'subscription',campaign_id:Number(button.dataset.qrCampaign)||null,amount:Number(button.dataset.qrAmount)||null});
     }
     else if(button.dataset.marketingNext){await marketingEditor('course_ad',Number(button.dataset.marketingNext));}
     else if(button.dataset.courseAd){editCourseAd(Number(button.dataset.courseAd));}
