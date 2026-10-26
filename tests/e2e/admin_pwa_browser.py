@@ -346,8 +346,10 @@ async def browser_checks(output):
         await page.locator('[data-finance-tab="prices"]').click()
         await expect(page.locator('.finance-tile [data-action="priceSettings"]')).to_have_count(1)
         await page.locator('[data-finance-tab="methods"]').click()
-        await expect(page.locator('.finance-tile')).to_have_count(8)
-        await expect(page.locator('[data-payment-qr-target]')).to_have_count(6)
+        # Six standard QRs and six exact 20% QRs, plus two bank editors.
+        await expect(page.locator('.finance-tile')).to_have_count(14)
+        await expect(page.locator('[data-payment-qr-target]')).to_have_count(12)
+        await expect(page.locator('[data-qr-scope="subscription_20"]')).to_have_count(6)
         await expect(page.locator('[data-setting-kind="payment_details"]')).to_have_count(2)
         await page.locator('[data-finance-tab="portfolio"]').click()
         await expect(page.locator('.finance-tile [data-action="portfolioHistory"]')).to_have_count(1)
