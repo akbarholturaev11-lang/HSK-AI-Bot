@@ -65,7 +65,8 @@ jobs:
           print("Release/APK/build artifacts and unknown names remain untouched.")
           deleted = 0
           freed = 0
-          for item in sorted(candidates, key=lambda x: x.get("created_at", "")):
+          # Prefer the largest disposable reports to reclaim quota efficiently.
+          for item in sorted(candidates, key=lambda x: x.get("size_in_bytes", 0), reverse=True):
               # Bounded mutation prevents unexpected mass deletion.
               if deleted >= 250:
                   break
