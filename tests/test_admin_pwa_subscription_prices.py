@@ -17,6 +17,7 @@ from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.payment import Payment
+from app.db.models.payment_qr_code import PaymentQrCode
 from app.db.models.subscription_price import SubscriptionPrice
 from app.db.models.user import User
 from app.services.subscription_price_service import SubscriptionPriceService
@@ -115,7 +116,15 @@ class AdminPwaSubscriptionPriceTests(fixtures.PaymentFixtures, unittest.Isolated
     async def test_alipay_wechat_use_existing_service_currency(self):
         for method in ("alipay", "wechat"):
             command = await self.prepare_price(method=method, plan="10_days", amount=35)
-            result = await self.execute_price(command, await self.price_proof(command))
+            proof = await self.price_proof(command)
+            with self.assertRaisesRegex(prices.CommandError, 'payment_qr_required'):
+                await self.execute_price(command, proof)
+            async with self.sessions() as db:
+                self.assertEqual((await db.get(AdminPwaStepUp, proof)).status, 'verified')
+                db.add(PaymentQrCode(scope='subscription',payment_method=method,plan_type='10_days',
+                    amount=35,currency='¥',file_id='staged-future-price-qr'))
+                await db.commit()
+            result = await self.execute_price(command, proof)
             self.assertEqual((result["price"]["amount"], result["price"]["currency"]), (35, "¥"))
 
     async def test_raw_legacy_revision_change_is_rejected_even_when_display_matches(self):
