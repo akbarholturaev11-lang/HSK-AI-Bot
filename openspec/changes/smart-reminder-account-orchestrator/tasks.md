@@ -1,13 +1,13 @@
 # Tasks
 
-All boxes remain open: OpenSpec validation is planning evidence, not implementation or release acceptance. Use the [Master Plan](../../../docs/smart-reminders/SMART_REMINDER_MASTER_PLAN.md) as the sole phase and decision ledger. Refresh `origin/main`, actual Alembic head and affected source before each implementation slice.
+Checked boxes require the bounded task's source/test evidence; OpenSpec validation alone is planning evidence, not implementation or release acceptance. Master Plan §17.27 records the P0 source-audit acceptance and its external limits. Use the [Master Plan](../../../docs/smart-reminders/SMART_REMINDER_MASTER_PLAN.md) as the sole phase and decision ledger. Refresh `origin/main`, actual Alembic head and affected source before each implementation slice.
 
 ## 1. P0 — source and cutover proof
 
-- [ ] 1.1 Inventory all current Telegram course/motivation/weekly, Android FCM and WorkManager, campaign and transactional senders in `app/main.py`, service paths and client callbacks; deliver a source-linked ownership/category/claim diagram in the Master Plan and verify its paths against the refreshed HEAD.
-- [ ] 1.2 Trace Telegram saved-time ON, setup Cancel and any actual OFF action; Mini App `/api/v3/notify`; Android current Profile/onboarding local switch, legacy motivation API, `/push/preferences`, study OS channel and real user-action evidence. Deliver a source-cited ON/OFF/unknown/time/provenance matrix and verify the existing focused preference/notification tests match the stated bindings.
+- [x] 1.1 Inventory all current Telegram course/motivation/weekly, Android FCM and WorkManager, campaign and transactional senders in `app/main.py`, service paths and client callbacks; deliver a source-linked ownership/category/claim diagram in the Master Plan and verify its paths against the refreshed HEAD.
+- [x] 1.2 Trace Telegram saved-time ON, setup Cancel and any actual OFF action; Mini App `/api/v3/notify`; Android current Profile/onboarding local switch, legacy motivation API, `/push/preferences`, study OS channel and real user-action evidence. Deliver a source-cited ON/OFF/unknown/time/provenance matrix and verify the existing focused preference/notification tests match the stated bindings.
 - [ ] 1.3 Inventory historical Direct/Play installed APK versions, local autonomous WorkManager behavior, backend worker/replica configuration, FCM study flag and live Alembic stamp through authorized staging/release evidence; record unknowns and a testable migration exclusion rule in the Master Plan. Verify no old offline sender is called fenced merely from `app_version` or inactivity.
-- [ ] 1.4 Audit canonical lesson/practice/daily goal, timezone/deep-link/access, D1 holdout, bot block and account-deletion paths; deliver an event-trust/deletion map with source and focused existing-test identifiers. Run the affected baseline tests and record exact outputs in the Master Plan before marking P0 complete.
+- [x] 1.4 Audit canonical lesson/practice/daily goal, timezone/deep-link/access, D1 holdout, bot block and account-deletion paths; deliver an event-trust/deletion map with source and focused existing-test identifiers. Run the affected baseline tests and record exact outputs in the Master Plan before marking P0 complete.
 
 ## 2. P1 — additive storage and consent bridge, dispatch off
 

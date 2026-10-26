@@ -6,6 +6,9 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Test
@@ -57,6 +60,52 @@ class WidgetStoreTest {
         store.clear()
         assertFalse(store.remindOnce(epoch, "2026-09-13") { sent++; true })
         assertFalse(store.read().reminderEnabled)
+    }
+
+    @Test fun `concurrent legacy triggers share one installation day guard`() = runTest {
+        val store = WidgetStore(MemoryPreferences())
+        store.linked()
+        store.setReminder(true)
+        val epoch = store.read().epoch
+        val start = CompletableDeferred<Unit>()
+        var posts = 0
+        val results = (1..20).map {
+            async {
+                start.await()
+                store.remindOnce(epoch, "2026-10-26") { posts++; true }
+            }
+        }
+        start.complete(Unit)
+        assertEquals(1, results.awaitAll().count { it })
+        assertEquals(1, posts)
+    }
+
+    @Test fun `two legacy installations can both authorize the same day`() = runTest {
+        // Evidence of the current cross-device gap, NOT the Smart contract:
+        // independent old stores have no shared server job to consult.
+        val first = WidgetStore(MemoryPreferences())
+        val second = WidgetStore(MemoryPreferences())
+        first.linked()
+        second.linked()
+        first.setReminder(true)
+        second.setReminder(true)
+        var posts = 0
+        assertTrue(first.remindOnce(first.read().epoch, "2026-10-26") { posts++; true })
+        assertTrue(second.remindOnce(second.read().epoch, "2026-10-26") { posts++; true })
+        assertEquals(2, posts)
+    }
+
+    @Test fun `local off wins over a previously captured trigger and late map response`() = runTest {
+        val store = WidgetStore(MemoryPreferences())
+        store.linked()
+        store.setReminder(true)
+        val epoch = store.read().epoch
+        store.setReminder(false)
+        store.save(snapshot, epoch)
+        var posts = 0
+        assertFalse(store.remindOnce(epoch, "2026-10-26") { posts++; true })
+        assertFalse(store.read().reminderEnabled)
+        assertEquals(0, posts)
     }
     @Test fun `a cache written before the goal fields still opens`() = runTest {
         // An unreadable cache is dropped, and a dropped cache shows "link your
