@@ -16,6 +16,7 @@ from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.message import Message
 from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackResponse
+from app.db.models.user import User
 from tests import test_admin_pwa_payment_review as fixtures
 
 
@@ -281,6 +282,87 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
             **target, "operation": "reopen", "expected_revision": 1})).status_code, 409)
         async with self.sessions() as db:
             self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaInboxTriageAudit)), 1)
+
+
+    async def test_passkey_feedback_detail_shows_user_context_without_leaking_inbox_ids(self):
+        ids = await self.seed()
+        now = datetime.now(timezone.utc).replace(microsecond=0)
+        async with self.sessions() as db:
+            user = await db.get(User, 1)
+            user.telegram_id = 1001
+            user.full_name = "Feedback Learner"
+            user.language = "tj"
+            user.level = "hsk4"
+            user.learning_mode = "qa"
+            user.created_at = now - timedelta(days=150)
+            basic = await db.get(BotFeedback, ids["bot"])
+            basic.liked_code = "course"
+            basic.liked_text = "Режими курс"
+            basic.disliked_code = "limits"
+            basic.disliked_text = "Лимитҳо каманд"
+            basic.reward_granted_at = now
+            paid = BotFeedback(
+                user_id=1, telegram_id=1001, status="completed", language="tj",
+                liked_code="paid_worth", liked_text="Стоила того — посоветую другу",
+                disliked_code="paid_daily", disliked_text="Ежедневная практика",
+                completed_at=now,
+            )
+            unfinished = BotFeedback(
+                user_id=1, telegram_id=1001, status="pending",
+                liked_code="course", liked_text="draft"
+            )
+            db.add_all([paid, unfinished])
+            await db.flush()
+            paid_id, unfinished_id = paid.id, unfinished.id
+            await db.commit()
+
+        listed = await self.post("inbox/list", {"source": "bot"})
+        self.assertEqual(listed.status_code, 200, listed.text)
+        self.assertNotIn("telegram_id", listed.text)
+        self.assertNotIn("Feedback Learner", listed.text)
+
+        free = await self.post("inbox/feedback-detail", {"source": "bot", "source_id": ids["bot"]})
+        self.assertEqual(free.status_code, 200, free.text)
+        self.assertEqual(free.headers["cache-control"], "no-store")
+        self.assertEqual(free.json()["name"], "Feedback Learner")
+        self.assertEqual(free.json()["telegram_id"], 1001)
+        self.assertEqual(free.json()["user_id"], 1)
+        self.assertEqual(free.json()["language"], "tj")
+        self.assertEqual(free.json()["level"], "hsk4")
+        self.assertEqual(free.json()["mode"], "qa")
+        self.assertGreaterEqual(free.json()["bot_days"], 149)
+        self.assertEqual(free.json()["feedback_parts"]["liked"], "Режими курс")
+        self.assertEqual(free.json()["feedback_parts"]["disliked"], "Лимитҳо каманд")
+        self.assertFalse(free.json()["feedback_parts"]["paid"])
+        self.assertTrue(free.json()["reward_granted"])
+
+        subscriber = await self.post("inbox/feedback-detail", {"source": "bot", "source_id": paid_id})
+        self.assertEqual(subscriber.status_code, 200, subscriber.text)
+        self.assertTrue(subscriber.json()["feedback_parts"]["paid"])
+        self.assertEqual(subscriber.json()["feedback_parts"]["disliked"], "Ежедневная практика")
+        self.assertIsNone(subscriber.json()["reward_granted"])
+
+        release = await self.post("inbox/feedback-detail", {"source": "release", "source_id": ids["release"]})
+        self.assertEqual(release.status_code, 200, release.text)
+        self.assertEqual(release.json()["telegram_id"], 2002)
+        self.assertEqual(release.json()["rating"], 4)
+        self.assertEqual(release.json()["message"], "private release")
+
+        self.assertEqual((await self.post("inbox/feedback-detail", {
+            "source": "bot", "source_id": unfinished_id})).status_code, 404)
+        self.assertEqual((await self.post("inbox/feedback-detail", {
+            "source": "payment", "source_id": self.payment_id})).status_code, 400)
+        self.assertEqual((await self.post("inbox/feedback-detail", {
+            "source": "bot", "source_id": -1})).status_code, 400)
+        self.assertEqual((await self.post("inbox/feedback-detail", {
+            "source": "bot", "source_id": paid_id}, cookie=None)).status_code, 401)
+        self.assertEqual((await self.post("inbox/feedback-detail", {
+            "source": "bot", "source_id": paid_id}, origin="https://evil.example")).status_code, 403)
+        async with self.sessions() as db:
+            await db.execute(update(AdminPwaSession).values(auth_method="google_telegram"))
+            await db.commit()
+        self.assertEqual((await self.post("inbox/feedback-detail", {
+            "source": "bot", "source_id": paid_id})).status_code, 401)
 
     async def test_fail_closed_for_cookie_origin_flag_expiry_and_non_passkey_session(self):
         ids = await self.seed()
