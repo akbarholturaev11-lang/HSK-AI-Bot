@@ -63,7 +63,9 @@ class AdminPwaTechnicalProjectionTests(fixtures.PaymentFixtures, unittest.Isolat
     async def test_onboarding_explanations_use_recovery_result_not_http_success(self):
         now = datetime.now(timezone.utc) - timedelta(seconds=1)
         scenarios = (
-            ("onboarding_recovered", "course_level_change_requires_placement", True),
+            ("onboarding_recovered_placement", "course_level_change_requires_placement", True),
+            ("onboarding_recovered_timeout", "onboarding_save_timeout", True),
+            ("onboarding_recovered", "other_response_error", True),
             ("onboarding_placement_required", "course_level_change_requires_placement", False),
             ("onboarding_timeout", "onboarding_save_timeout", False),
             ("onboarding_unconfirmed", "onboarding_failed", False),
