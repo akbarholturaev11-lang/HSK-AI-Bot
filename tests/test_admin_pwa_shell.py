@@ -35,6 +35,32 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('user_id',shell.text)
 
 
+    async def test_marketing_v10_tabs_use_canonical_live_entries_without_demo_records(self):
+        script = (await self.get('/admin/assets/app.js')).text
+        styles = (await self.get('/admin/assets/styles.css')).text
+        section = script.split('function marketingView(){', 1)[1].split('function managementView(){', 1)[0]
+        for tab in ('campaigns', 'creatives', 'notifications', 'partners'):
+            self.assertIn("'"+tab+"'", section)
+            self.assertIn("['"+tab+"'", section)
+        self.assertIn('role="tablist"', section)
+        self.assertIn('role="tabpanel"', section)
+        self.assertIn('data-marketing-tab=', section)
+        self.assertIn('data-action="messageList"', section)
+        self.assertIn('data-campaign-list="ad"', section)
+        self.assertIn('data-campaign-list="discount"', section)
+        self.assertIn('data-campaign-list="release"', section)
+        self.assertIn('data-marketing-kind="course_ad"', section)
+        self.assertIn('data-marketing-kind="desktop_promo"', section)
+        self.assertIn('data-action="noticeList"', section)
+        self.assertIn('data-action="partnerList"', section)
+        self.assertIn('data-action="payoutList"', section)
+        self.assertNotIn('v6.', section)
+        self.assertNotIn('fakeCampaign', section)
+        self.assertNotIn("'readCurrent'", section)
+        self.assertIn('marketing-tile', section)
+        self.assertEqual(script.count('data-action="noticeList"'), 1)
+        self.assertIn('.marketing-sections{display:grid;', styles)
+
     async def test_confirmed_limits_save_reconciles_visible_draft_before_refresh(self):
         script = (await self.get('/admin/assets/app.js')).text
         self.assertIn("const committed=await api('limits/save'", script)

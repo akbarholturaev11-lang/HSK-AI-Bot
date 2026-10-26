@@ -73,6 +73,7 @@ async def browser_checks(output):
                 await page.goto(ORIGIN+'/admin/');await page.wait_for_load_state('networkidle');await authenticate_fresh_launch(page)
                 async def editor():
                     await page.locator('.nav [data-route=marketing]').click()
+                    await page.locator('[data-marketing-tab=partners]').click()
                     await page.locator('[data-action=payoutList]').click()
                     await page.locator(f'[data-payout-id="{payout}"]').click()
                     await expect(page.locator('#payoutProofFile')).to_be_visible()
