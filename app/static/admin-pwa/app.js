@@ -2319,24 +2319,49 @@ function inboxDetails(row) {
     &&Number.isSafeInteger(id)&&id>0&&id<=2147483647;
   const attachmentId='inboxAttachment-'+source+'-'+id;
   const parts=row.feedback_parts||{};
-  const feedbackParts=source==='bot'&&(parts.liked||parts.disliked);
-  const text=feedbackParts?'<div class="inbox-detail-messages">'+
-    (parts.liked?'<p class="inbox-details-text"><span aria-hidden="true">'+(parts.paid===true?'💎':'👍')+'</span> '+esc(parts.liked)+'</p>':'')+
-    (parts.disliked?'<p class="inbox-details-text"><span aria-hidden="true">'+(parts.paid===true?'🔎':'👎')+'</span> '+esc(parts.disliked)+'</p>':'')+
-    '</div>':'<p class="inbox-details-text">'+esc(row.message||(source==='payment'?t('inboxPaymentReceipt'):t('empty')))+'</p>';
+  const paid=source==='bot'&&parts.paid===true;
   const kindIcon=icon(source==='android'?'device':source==='payment'?'credit':source==='technical'?'settings':'send');
+  const title=source==='bot'?t(paid?'inboxPaidFeedbackTitle':'inboxBotFeedbackTitle'):inboxKind(row);
+  const userId=Number.isSafeInteger(row.user_id)&&row.user_id>0?row.user_id:null;
+  const info=source==='bot'||source==='release';
+  const mode=row.mode==='qa'?t('questionAnswer'):row.mode==='course'?t('course'):row.mode;
+  const fields=info?[
+    ['👤',t('inboxFeedbackUser'),row.name],
+    ['🆔',t('inboxFeedbackTelegramId'),row.telegram_id],
+    ['🌐',t('language'),row.language],
+    ['📚',t('level'),row.level?.toLowerCase()==='beginner'?t('messageBeginner'):row.level?.toUpperCase()],
+    ['🎛',t('messageMode'),mode],
+    ['⏱',t('inboxFeedbackAge'),Number.isSafeInteger(row.bot_days)?row.bot_days+' '+t('relativeDay'):null]
+  ].filter(field=>field[2]!==null&&field[2]!==undefined&&field[2]!==''):[];
+  const userInfo=fields.length?'<div class="inbox-feedback-person">'+fields.map(([emoji,label,value])=>
+    '<div class="inbox-feedback-person-row"><span aria-hidden="true">'+emoji+'</span><span><strong>'+
+    esc(label)+':</strong> '+esc(value)+'</span></div>').join('')+'</div>':'';
+  const segment=(label,value,emoji)=>'<section class="inbox-feedback-answer"><h3><span aria-hidden="true">'+emoji+
+    '</span> '+esc(label)+':</h3><p>'+esc(value||'—')+'</p></section>';
+  const answers=source==='bot'?'<div class="inbox-feedback-answers">'+
+    segment(t(paid?'inboxFeedbackWorth':'inboxFeedbackLiked'),parts.liked,paid?'💳':'👍')+
+    segment(t(paid?'inboxFeedbackReason':'inboxFeedbackDisliked'),parts.disliked,paid?'🔍':'👎')+
+    (!paid&&row.reward_granted!==null&&row.reward_granted!==undefined?
+      '<p class="inbox-feedback-reward">🎁 '+esc(t('inboxFeedbackBonus'))+': <strong>'+
+      esc(t(row.reward_granted?'inboxFeedbackGranted':'inboxFeedbackNotGranted'))+'</strong></p>':'')+
+    '</div>':'<p class="inbox-details-text">'+esc(row.message||(source==='payment'?t('inboxPaymentReceipt'):t('empty')))+'</p>';
+  const actions=info&&userId?'<div class="inbox-detail-toolbar">'+
+    '<button type="button" class="btn primary" data-message-user="'+userId+'">'+icon('send')+esc(t('inboxFeedbackReply'))+'</button>'+
+    '<button type="button" class="btn" data-user-detail="'+userId+'">'+icon('user')+esc(t('openProfile'))+'</button>'+
+    '</div>':'';
   return '<div class="inbox-details">'+
     '<div class="inbox-detail-heading"><span class="inbox-platform-icon" aria-hidden="true">'+kindIcon+'</span>'+
-    '<div><h2>'+esc(inboxKind(row))+'</h2><time>'+esc(date(row.created_at))+'</time></div></div>'+
+    '<div><h2>'+(source==='bot'?'📝 ':'')+esc(title)+'</h2><time>'+esc(date(row.created_at))+'</time></div></div>'+
     '<div class="inbox-detail-meta"><span>'+esc(t('platform'))+': <strong>'+esc(platform||t('unavailable'))+'</strong></span>'+
-    '<span>#'+esc(id)+'</span>'+(row.user_id?'<span>'+esc(t('account'))+' '+esc(row.user_id)+'</span>':'')+'</div>'+
-    '<div class="inbox-detail-body">'+text+
+    '<span>#'+esc(id)+'</span>'+(userId?'<span>'+esc(t('account'))+' '+esc(userId)+'</span>':'')+'</div>'+
+    '<div class="inbox-detail-body">'+userInfo+answers+
     (row.rating?'<p class="inbox-rating">★ '+esc(row.rating)+'/5</p>':'')+
     (row.app_version?'<p class="inbox-extra">'+esc(row.app_version)+'</p>':'')+
     (row.screen?'<p class="inbox-extra">'+esc(row.screen)+'</p>':'')+'</div>'+
     (canView?'<button type="button" class="btn" data-inbox-attachment="'+id+'" data-attachment-source="'+source+
       '" aria-controls="'+attachmentId+'" aria-expanded="false">'+esc(t('viewAttachment'))+'</button>'+
-      '<div class="inbox-attachment" id="'+attachmentId+'" aria-live="polite" hidden></div>':'')+'</div>';
+      '<div class="inbox-attachment" id="'+attachmentId+'" aria-live="polite" hidden></div>':'')+
+    actions+'</div>';
 }
 let currentInboxRows=[];
 function inboxRequest(before=null,userId=feedbackUserId) {
@@ -2443,7 +2468,14 @@ async function openInbox(source,id) {
       if(state.actor&&$('overlay'))drawerBack=()=>inbox(null,originatingUser);
       return;
     }
-    drawer('feedback',inboxDetails(row),null,'inbox-drawer');
+    let opened=row;
+    if(source==='bot'||source==='release'){
+      const detail=await api('inbox/feedback-detail',{source,source_id:id});
+      if(current!==drawerId||at!==epoch||!state.actor)return;
+      if(detail.source!==source||detail.source_id!==id)throw Error('invalid_feedback_detail');
+      opened={...row,...detail};
+    }
+    drawer('feedback',inboxDetails(opened),null,'inbox-drawer');
     drawerBack=()=>renderInboxList(inboxListScrollTop);
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;
