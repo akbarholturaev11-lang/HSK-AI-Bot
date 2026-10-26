@@ -434,6 +434,20 @@ async def browser_checks(output):
             await page.wait_for_load_state("networkidle")
             assert not await page.locator("#overlay,.inbox-minimal-list").count()
 
+            # Model WebKit's native-sheet obscuring state while the current
+            # ceremony retains its session. Hidden ticks do no IO, and the
+            # retained session must resume polling after the sheet disappears.
+            await page.locator('[data-action="feedback"]').click()
+            await expect(page.locator(".inbox-minimal-row")).to_have_count(7)
+            await page.evaluate("Object.defineProperty(document,'hidden',{configurable:true,value:true})")
+            requests_before = len(requests)
+            await refresh_tick(poll=False)
+            assert len(requests) == requests_before
+            rows.insert(0, dict(copy.deepcopy(original[3]), source_id=176))
+            await page.evaluate("delete document.hidden")
+            await refresh_tick(list_refresh=True)
+            await expect(page.locator('[data-inbox-open="payment:176"]')).to_be_visible()
+
             # Clearing the private surface on offline cancels its timer too.
             await page.evaluate("window.dispatchEvent(new Event('offline'))")
             await expect(page.locator('[data-action="feedback"]')).to_have_count(0)
