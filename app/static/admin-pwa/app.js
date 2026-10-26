@@ -1075,6 +1075,10 @@ function managementCurrentUnchanged(d,result,payload){
     before=d.kind==='payment_details'?{kind:d.kind,bank:d.bank,value:s.payment_details[d.bank]}:
       d.kind==='help_video'?{kind:d.kind,...s.help_videos.find(row=>row.key===c.key&&row.lang===c.lang)}:{kind:d.kind,...s[d.kind]};
   }
+  if(d.type==='payment_qr'&&d.newPrice!==undefined){
+    const initial=d.prices?.find(row=>row.method===d.method&&row.plan===d.plan);
+    return !!initial&&Number(initial.amount)===Number(result.current?.base_amount);
+  }
   if(!before)return true;
   if(before.revision_hash)return before.revision_hash===result.operation.payload.expected_hash;
   return Object.entries(before).filter(([key])=>Object.hasOwn(result.current||{},key)).every(([key,value])=>JSON.stringify(value)===JSON.stringify(result.current[key]));
@@ -1580,8 +1584,11 @@ async function campaignDetail(kind,id){
     const editable=kind==='ad'&&row.can_send||kind==='discount'&&(row.can_activate||row.is_active);
     managementDraft=editable?{type:'campaign',kind:kind==='ad'?'ad_send':'discount_state',campaignKind:kind,campaignId:id,current:row}:null;
     const selection=kind==='discount'&&editable?(row.can_send?campaignSelect('discountOperation','operation',[['state','changeStatus'],['send','sendMessage']],'send'):'')+`<div id="discountStateFields" ${row.can_send?'hidden':''}>`+campaignSelect('campaignActive','status',row.can_activate||row.is_active?[['false','hsk30Off'],['true','hsk30On']]:[['false','hsk30Off']],String(row.is_active))+'</div>':'';
-    const hint=kind==='ad'?`<p class="source-note">${esc(t(row.can_send?'campaignSendHint':'campaignReadOnly'))}</p>`:kind==='discount'?`<p class="source-note">${esc(t(row.can_send?'discountSendHint':'discountNoNotificationHint'))}</p>`:'';
-    drawer(campaignLabels[kind],`<form id="managementForm">${campaignFields(row)}${hint}${selection}${kind==='ad'&&editable?campaignScheduleFields():''}<p class="alert" id="campaignCommandValidation" role="alert" hidden></p></form>`,btn('close','close')+(editable?btn('saveChanges','managementPrepare','primary'):''));
+    const hint=kind==='ad'?`<p class="source-note">${esc(t(row.can_send?'campaignSendHint':'campaignReadOnly'))}</p>`:kind==='discount'?`<p class="source-note">${esc(t('paymentQrRequired'))}</p>`:'';
+    const qrMethods=kind==='discount'?(row.payment_method==='visa'?[]:row.payment_method?[row.payment_method]:['alipay','wechat']):[];
+    const qrPlans=row.plan_type?[row.plan_type]:['10_days','1_month'];
+    const qrLinks=qrMethods.length?`<section class="profile-section"><h3>${esc(t('paymentQrTitle'))}</h3><div class="management-list">${qrMethods.flatMap(method=>qrPlans.map(plan=>managementRow(`${method==='alipay'?'Alipay':'WeChat'} · ${t(plan)} · ${row.percent}%`,`data-campaign-qr-target="${id}-${method}-${plan}"`,'credit'))).join('')}</div></section>`:'';
+    drawer(campaignLabels[kind],`<form id="managementForm">${campaignFields(row)}${hint}${qrLinks}${selection}${kind==='ad'&&editable?campaignScheduleFields():''}<p class="alert" id="campaignCommandValidation" role="alert" hidden></p></form>`,btn('close','close')+(editable?btn('saveChanges','managementPrepare','primary'):''));
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer(campaignLabels[kind],statePanel(errorKey(error)),btn('close','close'));}
 }
 function campaignScheduleFields(){
@@ -1773,7 +1780,7 @@ function managementReread(draft){
   if(draft.type==='user')return `<button class="btn" data-user-detail="${draft.userId}">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing'&&draft.kind==='campaign_draft')return `<button class="btn" data-campaign-list="ad">${esc(t('readCurrent'))}</button>`;
   if(draft.type==='marketing')return `<button class="btn" data-marketing-kind="${esc(draft.kind==='course_ad_create'?'course_ad':draft.kind)}">${esc(t('readCurrent'))}</button>`;
-  if(draft.type==='payment_qr')return `<button class="btn" data-payment-qr-target="${esc(draft.method+'-'+draft.plan)}">${esc(t('readCurrent'))}</button>`;
+  if(draft.type==='payment_qr')return draft.newPrice!==undefined?btn('readCurrent','priceSettings'):`<button class="btn" data-payment-qr-target="${esc(draft.method+'-'+draft.plan)}" ${draft.campaignId?`data-campaign-id="${draft.campaignId}"`:''}>${esc(t('readCurrent'))}</button>`;
   return draft.type==='price'?btn('readCurrent','priceSettings'):`<button class="btn" data-setting-kind="${draft.kind}" ${draft.bank?`data-bank="${draft.bank}"`:''}>${esc(t('readCurrent'))}</button>`;
 }
 function updatePriceFields(){
@@ -1781,6 +1788,8 @@ function updatePriceFields(){
   const row=managementDraft.prices.find(row=>row.method===$('priceMethod')?.value&&row.plan===$('pricePlan')?.value);
   if(!row)return;
   $('priceAmount').value=row.amount;$('priceCurrency').textContent=row.currency;
+  if($('priceQrMediaFile')){$('priceQrMediaFile').value='';managementDraft.mediaFile=null;}
+  updatePriceQrRequired();
   const qrButton=$('priceQrAction');
   const qrField=$('priceQrField');
   if(qrButton)qrButton.hidden=!['alipay','wechat'].includes(row.method);
@@ -1800,6 +1809,16 @@ function updatePriceFields(){
   }
   updateEditorSaveEnabled();
 }
+function updatePriceQrRequired(){
+  if(managementDraft?.type!=='price'||!$('priceQrRequiredField'))return;
+  const row=managementDraft.prices.find(r=>r.method===$('priceMethod').value&&r.plan===$('pricePlan').value);
+  const needed=!!row&&['alipay','wechat'].includes(row.method)&&Number($('priceAmount').value)!==Number(row.amount);
+  $('priceQrRequiredField').hidden=!needed;
+  $('priceQrMediaFile').required=needed;
+  $('priceQrMediaFile').disabled=!needed;
+  if(!needed){$('priceQrMediaFile').value='';managementDraft.mediaFile=null;}
+  updateEditorSaveEnabled();
+}
 async function priceSettings(){
   closeDrawer();const current=drawerId,at=epoch;
   drawer('subscriptionPrices',statePanel('loading'));
@@ -1809,28 +1828,29 @@ async function priceSettings(){
     if(!Array.isArray(data.prices)||data.prices.length!==9)throw Error('invalid_prices');
     managementDraft={type:'price',prices:data.prices};
     const select=(id,label,options)=>`<div class="form-field"><label for="${id}">${esc(t(label))}</label><select id="${id}" class="input">${options.map(([key,text])=>`<option value="${key}">${esc(text)}</option>`).join('')}</select></div>`;
-    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div><div class="form-field" id="priceQrField"><button type="button" class="btn" id="priceQrAction" data-action="priceQrSettings">${esc(t('paymentQrManage'))}</button></div><div class="form-field"><button type="button" class="btn" id="priceDiscountAction" data-finance-discount="visa-10_days">${esc(t('newDiscountCampaign'))}</button></div></form>`;
+    const body=`<form id="managementForm">${select('priceMethod','method',[['visa','Visa'],['alipay','Alipay'],['wechat','WeChat']])}${select('pricePlan','plan',[['10_days',t('10_days')],['1_month',t('1_month')],['3_months',t('3_months')]])}<div class="form-field"><label for="priceAmount">${esc(t('amount'))} · <span id="priceCurrency"></span></label><input id="priceAmount" class="input" type="number" min="1" max="1000000" step="1" required></div><div class="form-field" id="priceQrField"><button type="button" class="btn" id="priceQrAction" data-action="priceQrSettings">${esc(t('paymentQrManage'))}</button></div><div class="form-field" id="priceQrRequiredField" hidden><label for="priceQrMediaFile">${esc(t('paymentQrImage'))}</label><input class="input" type="file" id="priceQrMediaFile" accept="image/jpeg,image/png,image/webp" disabled><p class="form-hint">${esc(t('paymentQrRequired'))} · ${esc(t('paymentQrMediaHint'))}</p><p class="alert" id="paymentQrMediaValidation" role="alert" hidden></p></div><div class="form-field"><button type="button" class="btn" id="priceDiscountAction" data-finance-discount="visa-10_days">${esc(t('newDiscountCampaign'))}</button></div></form>`;
     drawer('subscriptionPrices',body,btn('saveChanges','managementPrepare','primary'));
     updatePriceFields();
   }catch(error){
     if(current===drawerId&&at===epoch&&state.actor)drawer('subscriptionPrices',statePanel(errorKey(error)),btn('close','close')+btn('retry','priceSettings','primary'));
   }
 }
-async function priceQrSettings(method=null,plan=null){
+async function priceQrSettings(method=null,plan=null,campaignId=null){
   method=method||$('priceMethod')?.value;plan=plan||$('pricePlan')?.value;
   if(!['alipay','wechat'].includes(method)||!['10_days','1_month','3_months'].includes(plan))return;
+  if(campaignId!==null&&(!Number.isSafeInteger(campaignId)||campaignId<1||plan==='3_months'))return;
   closeDrawer();const current=drawerId,at=epoch;
   drawer('paymentQrTitle',statePanel('loading'));
   try{
-    const data=await api('payment-qr/read',{method,plan});
+    const data=await api('payment-qr/read',{method,plan,...(campaignId?{campaign_id:campaignId}:{})});
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const qr=data.qr;
     if(!qr||qr.method!==method||qr.plan!==plan)throw Error('invalid_payment_qr');
-    managementDraft={type:'payment_qr',method,plan,current:qr,mediaFile:null};
-    const discountLink=['10_days','1_month'].includes(plan)
+    managementDraft={type:'payment_qr',method,plan,campaignId,current:qr,mediaFile:null};
+    const discountLink=campaignId?'' : ['10_days','1_month'].includes(plan)
       ?`<button type="button" class="btn" data-finance-discount="${esc(method+'-'+plan)}">${esc(t('newDiscountCampaign'))}</button>`
       :`<button type="button" class="btn" data-campaign-list="discount">${esc(t('discountCampaigns'))}</button>`;
-    const body=`<form id="managementForm"><p class="source-note">${esc(t('paymentQrPrivateNote'))}</p>${managementFields(qr,'payment_qr')}<div class="form-field">${discountLink}</div><div class="form-field"><label for="paymentQrMediaFile">${esc(t('paymentQrImage'))}</label><input class="input" id="paymentQrMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">${esc(t('paymentQrMediaHint'))}</p><div id="paymentQrMediaPreview" aria-live="polite"></div><p class="alert" id="paymentQrMediaValidation" role="alert" hidden></p></div></form>`;
+    const body=`<form id="managementForm"><p class="source-note">${esc(t('paymentQrPrivateNote'))}</p>${campaignId?profileFields([['campaignId',campaignId]]):''}${managementFields(qr,'payment_qr')}<div class="form-field">${discountLink}</div><div class="form-field"><label for="paymentQrMediaFile">${esc(t('paymentQrImage'))}</label><input class="input" id="paymentQrMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">${esc(t('paymentQrMediaHint'))}</p><div id="paymentQrMediaPreview" aria-live="polite"></div><p class="alert" id="paymentQrMediaValidation" role="alert" hidden></p></div></form>`;
     drawer('paymentQrTitle',body,btn('saveChanges','managementPrepare','primary'));
   }catch(error){
     if(current===drawerId&&at===epoch&&state.actor)drawer('paymentQrTitle',statePanel(errorKey(error)),btn('close','close')+`<button class="btn" data-payment-qr-target="${esc(method+'-'+plan)}">${esc(t('readCurrent'))}</button>`);
@@ -1922,9 +1942,19 @@ async function prepareManagementCommand(current,at){
   }else if(draft.type==='user'){
     payload={user_id:draft.userId,operation:draft.userOperation,confirm_user_id:draft.userOperation==='delete'?Number($('manageConfirm').value):null};
   }else if(draft.type==='price'){
-    const amount=Number($('priceAmount').value);
+    const amount=Number($('priceAmount').value),method=$('priceMethod').value,plan=$('pricePlan').value;
     if(!Number.isSafeInteger(amount)||amount<1||amount>1000000)return;
-    payload={method:$('priceMethod').value,plan:$('pricePlan').value,amount};
+    const previous=draft.prices.find(row=>row.method===method&&row.plan===plan);
+    if(previous&&Number(previous.amount)!==amount&&['alipay','wechat'].includes(method)){
+      const file=$('priceQrMediaFile')?.files?.[0],validation=$('paymentQrMediaValidation');
+      if(!file){if(validation){validation.textContent=t('paymentQrRequired');validation.hidden=false;}return;}
+      if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size<1||file.size>1024*1024){
+        if(validation){validation.textContent=t(file.size>1024*1024?'paymentQrTooLarge':'paymentQrValidation');validation.hidden=false;}return;
+      }
+      const digest=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());
+      payload={method,plan,new_price:amount,media_sha256:[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join(''),media_size:file.size};
+      Object.assign(draft,{type:'payment_qr',method,plan,newPrice:amount,mediaFile:file});
+    }else payload={method,plan,amount};
   }else if(draft.type==='payment_qr'){
     const file=draft.mediaFile,validation=$('paymentQrMediaValidation');
     if(!file){if(validation){validation.textContent=t('paymentQrRequired');validation.hidden=false;}return;}
@@ -1932,7 +1962,7 @@ async function prepareManagementCommand(current,at){
       if(validation){validation.textContent=t(file.size>1024*1024?'paymentQrTooLarge':'paymentQrValidation');validation.hidden=false;}return;
     }
     const digest=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());
-    payload={method:draft.method,plan:draft.plan,media_sha256:[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join(''),media_size:file.size};
+    payload={method:draft.method,plan:draft.plan,...(draft.campaignId?{campaign_id:draft.campaignId}:{}),media_sha256:[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join(''),media_size:file.size};
   }else if(draft.type==='marketing'){
     const change={kind:draft.kind};
     if(draft.kind==='course_ad_create'){
@@ -2004,8 +2034,8 @@ async function prepareManagementCommand(current,at){
     const result=await api(managementEndpoint(draft.type,'prepare'),payload);
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const operation=structuredClone(result.operation);
-    if(operation?.action!==managementAction(draft.type,draft.userOperation)||!operation.target||!operation.payload)throw Error('invalid_operation');
-    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,method:draft.method,plan:draft.plan,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,deliveryId:draft.deliveryId,jobId:draft.jobId,mediaFile:draft.mediaFile||null,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
+    if(operation?.action!==(draft.type==='payment_qr'&&draft.newPrice!==undefined?'subscription.prices':managementAction(draft.type,draft.userOperation))||!operation.target||!operation.payload)throw Error('invalid_operation');
+    managementReview=Object.freeze({type:draft.type,kind:draft.kind,bank:draft.bank,method:draft.method,plan:draft.plan,campaignId:draft.campaignId,newPrice:draft.newPrice,userId:draft.userId,userOperation:draft.userOperation,noticeKey:draft.noticeKey,partnerId:draft.partnerId,payoutId:draft.payoutId,deliveryId:draft.deliveryId,jobId:draft.jobId,mediaFile:draft.mediaFile||null,executePayload:structuredClone(result.execute_payload||operation.payload),operation:Object.freeze(operation)});
     if(!managementCurrentUnchanged(draft,result,payload))throw new ApiError('confirmation_changed',409);
     await executeManagement();
   }catch(error){
@@ -2048,7 +2078,7 @@ async function executeManagement(){
   if(!managementReview||signing||!state.actor)return;
   if(!supportsPasskey()){showNotice('passkeyUnsupported');return;}
   const review=managementReview,operation=structuredClone(review.operation),current=drawerId,at=epoch,control=new AbortController();
-  if(operation.action!==managementAction(review.type,review.userOperation))return;
+  if(operation.action!==(review.type==='payment_qr'&&review.newPrice!==undefined?'subscription.prices':managementAction(review.type,review.userOperation)))return;
   signing=control;let submitted=false;
   $('drawerFoot').querySelectorAll('button').forEach(button=>button.disabled=true);
   try{
@@ -3003,11 +3033,15 @@ document.addEventListener('click',event=>{
     }
     else if(button.dataset.campaignList){await campaignList(button.dataset.campaignList,Number(button.dataset.before)||null);}
     else if(button.dataset.campaignDetail){await campaignDetail(button.dataset.campaignKind,Number(button.dataset.campaignDetail));}
+    else if(button.dataset.campaignQrTarget){
+      const match=/^([1-9][0-9]*)-(alipay|wechat)-(10_days|1_month)$/.exec(button.dataset.campaignQrTarget);
+      if(match)await priceQrSettings(match[2],match[3],Number(match[1]));
+    }
     else if(button.dataset.campaignCreate){campaignCreate(button.dataset.campaignCreate);}
     else if(button.dataset.marketingKind){await marketingEditor(button.dataset.marketingKind);}
     else if(button.dataset.paymentQrTarget){
       const match=/^(alipay|wechat)-(10_days|1_month|3_months)$/.exec(button.dataset.paymentQrTarget);
-      if(match)await priceQrSettings(match[1],match[2]);
+      if(match)await priceQrSettings(match[1],match[2],Number(button.dataset.campaignId)||null);
     }
     else if(button.dataset.marketingNext){await marketingEditor('course_ad',Number(button.dataset.marketingNext));}
     else if(button.dataset.courseAd){editCourseAd(Number(button.dataset.courseAd));}
@@ -3070,6 +3104,7 @@ document.addEventListener('click',event=>{
   };run().catch(error=>{if(error.message!=='stale')showNotice(errorKey(error));});
 });
 document.addEventListener('input',event=>{
+  if(event.target.id==='priceAmount')updatePriceQrRequired();
   if(event.target.closest?.('#drawerContent'))updateEditorSaveEnabled();
 });
 document.addEventListener('input',event=>{
@@ -3092,8 +3127,8 @@ document.addEventListener('change',event=>{
   if(event.target.id==='messageLanguage')updateMessageLanguage();
   if(event.target.id==='messageKind'&&$('messageFilters'))$('messageFilters').hidden=event.target.value==='test';
   if(event.target.id==='payoutProofFile'){void stagePayoutProof(event.target.files[0]);return;}
-  if(['promoMediaFile','courseAdMediaFile','paymentQrMediaFile'].includes(event.target.id)){
-    const isCourseAd=event.target.id==='courseAdMediaFile',isPaymentQr=event.target.id==='paymentQrMediaFile';
+  if(['promoMediaFile','courseAdMediaFile','paymentQrMediaFile','priceQrMediaFile'].includes(event.target.id)){
+    const isCourseAd=event.target.id==='courseAdMediaFile',isPaymentQr=['paymentQrMediaFile','priceQrMediaFile'].includes(event.target.id);
     const isCourseAdVideo=isCourseAd&&($('adOperation')?.value==='replace_video'||managementDraft?.kind==='course_ad_create'&&$('newAdMediaType')?.value==='video');
     const file=event.target.files?.[0]||null,allowed=isCourseAdVideo?['video/mp4','video/quicktime','video/webm','video/x-m4v']:['image/jpeg','image/png','image/webp'];
     const maxBytes=isCourseAdVideo?25*1024*1024:isCourseAd||isPaymentQr?1024*1024:2*1024*1024;

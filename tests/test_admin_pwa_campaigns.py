@@ -127,7 +127,7 @@ class CampaignTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCase):
             await self.prepare({'kind': 'ad_send', 'campaign_id': campaign_id})
 
     async def test_native_personal_discount_preserves_identity_no_send_or_fake_payment_and_exact_copy(self):
-        command = await self.prepare(DISCOUNT)
+        command = await self.prepare({**DISCOUNT, 'payment_method': 'visa'})
         proof = await self.proof(command, signed=True)
         saved = await self.execute(command, proof)
         self.assertIsNone(saved['job_id'])
@@ -153,6 +153,17 @@ class CampaignTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCase):
                 payment_method='visa', include_admin_campaigns=True)
             self.assertEqual((selected.campaign_id, selected.percent), (saved['campaign']['id'], 20))
             self.assertEqual(selected.title_ru, DISCOUNT['copies']['ru']['title'])
+
+    async def test_qr_discount_cannot_be_active_before_exact_campaign_qr_upload(self):
+        command = await self.prepare({**DISCOUNT, 'payment_method': 'alipay', 'plan_type': '1_month'})
+        saved = await self.execute(command, await self.proof(command, signed=True))
+        change = {'kind': 'discount_state', 'campaign_id': saved['campaign']['id'], 'is_active': True}
+        command = await self.prepare(change)
+        with self.assertRaisesRegex(api.CommandError, 'admin_pwa_payment_qr_required'):
+            await self.execute(command, await self.proof(command))
+        async with self.sessions() as db:
+            row = await db.get(DiscountCampaign, saved['campaign']['id'])
+            self.assertFalse(row.is_active)
 
     async def test_stale_state_and_audience_and_tampered_copy_preserve_proof_and_prevent_writes(self):
         command = await self.prepare(RELEASE)

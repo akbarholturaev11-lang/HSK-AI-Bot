@@ -15,6 +15,7 @@ from app.admin_api.pwa_step_up import begin_step_up, verify_step_up
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.payment import Payment
+from app.db.models.discount_campaign import DiscountCampaign
 from app.db.models.payment_qr_code import PaymentQrCode
 from app.db.models.subscription_price import SubscriptionPrice
 from app.db.models.user import User
@@ -52,13 +53,13 @@ class AdminPwaPaymentQrTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         Image.new("RGB", (320, 180), (12, 98, 120)).save(output, format="PNG")
         return output.getvalue()
 
-    async def prepare(self, *, method="alipay", plan="1_month", image=None):
+    async def prepare(self, *, method="alipay", plan="1_month", image=None, campaign_id=None, new_price=None):
         data = image or self.image_bytes()
         async with self.sessions() as db:
             result = await qr_api.prepare_payment_qr(
                 db, session_cookie=fixtures.COOKIE,
                 request=qr_api.PreparePaymentQr(
-                    method=method, plan=plan,
+                    method=method, plan=plan, campaign_id=campaign_id, new_price=new_price,
                     media_sha256=hashlib.sha256(data).hexdigest(), media_size=len(data),
                 ), settings_obj=self.settings,
             )
@@ -118,6 +119,36 @@ class AdminPwaPaymentQrTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         with self.assertRaisesRegex(qr_api.CommandError, "step_up_denied"):
             await self.execute(command, proof, image, bot)
         self.assertEqual(len(bot.sent), 1)
+
+    async def test_changing_qr_backed_price_commits_exact_price_and_media_together(self):
+        command, image = await self.prepare(method="alipay", plan="1_month", new_price=77)
+        self.assertEqual(command.operation()["action"], "subscription.prices")
+        self.assertEqual(command.operation()["target"], "price-alipay-1_month")
+        result = await self.execute(command, await self.proof(command), image, FakeBot())
+        self.assertEqual(result["qr"]["amount"], 77)
+        async with self.sessions() as db:
+            price = await db.scalar(select(SubscriptionPrice))
+            code = await db.scalar(select(PaymentQrCode))
+            self.assertEqual((price.amount, price.currency), (77, "¥"))
+            self.assertEqual((code.scope, code.amount, code.currency), ("subscription", 77, "¥"))
+
+    async def test_campaign_upload_is_scoped_to_exact_discounted_price(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            row = DiscountCampaign(title="Private targeted offer", percent=25,
+                payment_method="alipay", plan_type="1_month", is_active=False,
+                starts_at=now, ends_at=now+timedelta(hours=24))
+            db.add(row)
+            await db.commit()
+            campaign_id = row.id
+        command, image = await self.prepare(campaign_id=campaign_id)
+        self.assertEqual(command.operation()["target"], f"campaign-{campaign_id}-alipay-1_month")
+        result = await self.execute(command, await self.proof(command), image, FakeBot())
+        self.assertEqual(result["qr"]["amount"], 50)
+        async with self.sessions() as db:
+            qr = await db.scalar(select(PaymentQrCode))
+            self.assertEqual((qr.scope, qr.amount), (f"admin_campaign:{campaign_id}", 50))
+            self.assertEqual(await db.scalar(select(func.count()).select_from(SubscriptionPrice)), 0)
 
     async def test_invalid_target_and_oversized_media_are_rejected(self):
         with self.assertRaises(ValueError):

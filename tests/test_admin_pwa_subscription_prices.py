@@ -112,11 +112,12 @@ class AdminPwaSubscriptionPriceTests(fixtures.PaymentFixtures, unittest.Isolated
         with self.assertRaisesRegex(prices.CommandError, "step_up_denied"):
             await self.execute_price(command, proof)
 
-    async def test_alipay_wechat_use_existing_service_currency(self):
+    async def test_alipay_wechat_require_matching_qr_before_price_change(self):
         for method in ("alipay", "wechat"):
-            command = await self.prepare_price(method=method, plan="10_days", amount=35)
-            result = await self.execute_price(command, await self.price_proof(command))
-            self.assertEqual((result["price"]["amount"], result["price"]["currency"]), (35, "¥"))
+            with self.assertRaisesRegex(prices.CommandError, "admin_pwa_payment_qr_required"):
+                await self.prepare_price(method=method, plan="10_days", amount=35)
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(SubscriptionPrice)), 0)
 
     async def test_raw_legacy_revision_change_is_rejected_even_when_display_matches(self):
         async with self.sessions() as db:

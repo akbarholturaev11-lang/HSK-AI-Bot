@@ -122,6 +122,10 @@ async def prepare_subscription_price(db, *, session_cookie, request, settings_ob
         await _authenticate(db, session_cookie, settings_obj)
         row = await _row(db, request.method, request.plan)
         current = _public_price(request.method, request.plan, row)
+        if request.method in {"alipay", "wechat"} and request.amount != current["amount"]:
+            # QR-backed prices must change together with a matching QR image;
+            # the dedicated payment-qr signed command handles both atomically.
+            raise CommandError("admin_pwa_payment_qr_required", 409)
         command = SubscriptionPriceCommand(**request.model_dump(), expected_hash=_revision(row))
     return {"operation": command.operation(), "current": current}
 
@@ -149,6 +153,8 @@ async def execute_subscription_price(db, *, session_cookie, request, settings_ob
         if _revision(row) != command.expected_hash:
             raise CommandError("confirmation_changed", 409)
         before = _public_price(command.method, command.plan, row)
+        if command.method in {"alipay", "wechat"} and command.amount != before["amount"]:
+            raise CommandError("admin_pwa_payment_qr_required", 409)
         price = await SubscriptionPriceService(db).set_price(
             payment_method=command.method, plan_type=command.plan, amount=command.amount,
             updated_by_telegram_id=actor.telegram_id)

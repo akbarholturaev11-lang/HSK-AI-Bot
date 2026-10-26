@@ -14,7 +14,7 @@ from uuid import uuid4
 from aiogram.types import BufferedInputFile
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from pydantic import Field, ValidationError
+from pydantic import Field, ValidationError, model_validator
 from sqlalchemy import select, text
 
 from app.admin_api.pwa_access_grants import CommandError, StepId
@@ -30,6 +30,7 @@ from app.admin_api.pwa_webauthn_transport import _body, _guard_post, _no_duplica
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
+from app.db.models.discount_campaign import DiscountCampaign
 from app.db.models.payment_qr_code import PaymentQrCode
 from app.db.models.subscription_price import SubscriptionPrice
 from app.db.models.user import User
@@ -50,6 +51,16 @@ _PLAN = Literal["10_days", "1_month", "3_months"]
 class ReadPaymentQr(StrictModel):
     method: _METHOD
     plan: _PLAN
+    campaign_id: Annotated[int, Field(strict=True, ge=1)] | None = None
+    new_price: Annotated[int, Field(strict=True, ge=1, le=1_000_000)] | None = None
+
+    @model_validator(mode='after')
+    def exclusive_target(self):
+        if self.campaign_id is not None and self.new_price is not None:
+            raise ValueError('Overlapping price and campaign QR targets')
+        if self.campaign_id is not None and self.plan == '3_months':
+            raise ValueError('No 90-day campaign discounts')
+        return self
 
 
 class PreparePaymentQr(ReadPaymentQr):
@@ -61,17 +72,20 @@ class PaymentQrCommand(PreparePaymentQr):
     expected_hash: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 
     def operation(self):
-        return {
-            "action": "subscription.qr_media",
-            "target": f"{self.method}-{self.plan}",
-            "payload": {
-                "method": self.method,
-                "plan": self.plan,
-                "expected_hash": self.expected_hash,
-                "media_sha256": self.media_sha256,
-                "media_size": self.media_size,
-            },
-        }
+        payload = {"method": self.method, "plan": self.plan,
+                   "expected_hash": self.expected_hash,
+                   "media_sha256": self.media_sha256, "media_size": self.media_size}
+        if self.campaign_id is not None:
+            payload["campaign_id"] = self.campaign_id
+        if self.new_price is not None:
+            payload["new_price"] = self.new_price
+        target = (f"campaign-{self.campaign_id}-{self.method}-{self.plan}"
+                  if self.campaign_id is not None else
+                  f"price-{self.method}-{self.plan}" if self.new_price is not None
+                  else f"{self.method}-{self.plan}")
+        return {"action": "subscription.prices" if self.new_price is not None else "subscription.qr_media",
+                "target": target, "payload": payload}
+
 
 
 class ExecutePaymentQr(PaymentQrCommand):
@@ -123,33 +137,51 @@ async def _price_row(db, method, plan, *, lock=False):
     return await db.scalar(query.with_for_update() if lock else query)
 
 
-async def _target(db, method, plan, *, lock=False):
+def _scope(campaign_id):
+    return (PaymentQrCodeService.admin_campaign_scope(campaign_id)
+            if campaign_id is not None else SUBSCRIPTION_QR_SCOPE)
+
+
+async def _target(db, method, plan, *, campaign_id=None, new_price=None, lock=False):
+    # A different price or campaign always selects a distinct QR record.
     price_row = await _price_row(db, method, plan, lock=lock)
     if price_row is None:
-        amount, currency = DEFAULT_SUBSCRIPTION_PRICES[(method, plan)]
+        base_amount, currency = DEFAULT_SUBSCRIPTION_PRICES[(method, plan)]
     else:
-        amount, currency = SubscriptionPriceService._normalize_price(
-            method, plan, price_row.amount, price_row.currency,
-        )
+        base_amount, currency = SubscriptionPriceService._normalize_price(
+            method, plan, price_row.amount, price_row.currency)
+    campaign_raw = None
+    if campaign_id is not None:
+        if plan not in ("10_days", "1_month"):
+            raise CommandError("invalid_payment_qr_target", 400)
+        query = select(DiscountCampaign).where(DiscountCampaign.id == campaign_id)
+        campaign = await db.scalar(query.with_for_update() if lock else query)
+        if (campaign is None or campaign.payment_method not in (None, method)
+                or campaign.plan_type not in (None, plan)
+                or _utc(campaign.ends_at) <= datetime.now(timezone.utc)):
+            raise CommandError("invalid_payment_qr_target", 409)
+        amount = int(round(base_amount * (100 - campaign.percent) / 100))
+        campaign_raw = {"id": campaign.id, "percent": campaign.percent,
+                        "method": campaign.payment_method, "plan": campaign.plan_type,
+                        "active": campaign.is_active, "ends_at": _utc(campaign.ends_at).isoformat()}
+    else:
+        amount = new_price if new_price is not None else base_amount
     if amount < 1 or currency != "¥":
         raise CommandError("invalid_payment_qr_target", 409)
+    scope = _scope(campaign_id)
     query = select(PaymentQrCode).where(
-        PaymentQrCode.scope == SUBSCRIPTION_QR_SCOPE,
+        PaymentQrCode.scope == scope,
         PaymentQrCode.payment_method == method,
         PaymentQrCode.plan_type == plan,
         PaymentQrCode.amount == amount,
         PaymentQrCode.currency == currency,
     ).execution_options(populate_existing=True)
     qr_row = await db.scalar(query.with_for_update() if lock else query)
-    revision = _hash({"price": _price_raw(price_row), "qr": _qr_raw(qr_row)})
-    current = {
-        "method": method,
-        "plan": plan,
-        "amount": amount,
-        "currency": currency,
-        "qr_set": qr_row is not None,
-        "revision_hash": revision,
-    }
+    revision = _hash({"price": _price_raw(price_row), "qr": _qr_raw(qr_row),
+                      "campaign": campaign_raw})
+    current = {"method": method, "plan": plan, "amount": amount,
+               "currency": currency, "base_amount": base_amount,
+               "qr_set": qr_row is not None, "revision_hash": revision}
     return price_row, qr_row, current
 
 
@@ -165,7 +197,8 @@ async def read_payment_qr(db, *, session_cookie, request, settings_obj):
         raise CommandError("not_found", 404)
     async with db.begin():
         await _authenticate(db, session_cookie, settings_obj)
-        _, _, current = await _target(db, request.method, request.plan)
+        _, _, current = await _target(db, request.method, request.plan,
+            campaign_id=request.campaign_id, new_price=request.new_price)
     return {"qr": current}
 
 
@@ -174,7 +207,8 @@ async def prepare_payment_qr(db, *, session_cookie, request, settings_obj):
         raise CommandError("not_found", 404)
     async with db.begin():
         await _authenticate(db, session_cookie, settings_obj)
-        _, _, current = await _target(db, request.method, request.plan)
+        _, _, current = await _target(db, request.method, request.plan,
+            campaign_id=request.campaign_id, new_price=request.new_price)
         command = PaymentQrCommand(**request.model_dump(), expected_hash=current["revision_hash"])
     return {"operation": command.operation(), "current": current}
 
@@ -202,7 +236,8 @@ async def _preflight(db, *, cookie, request, settings_obj):
                 or int(step.user_id) != int(actor.user_id)
                 or _utc(step.expires_at) <= now or _utc(session.expires_at) <= now):
             raise CommandError("admin_pwa_step_up_denied", 403)
-        _, _, current = await _target(db, request.method, request.plan)
+        _, _, current = await _target(db, request.method, request.plan,
+            campaign_id=request.campaign_id, new_price=request.new_price)
         if current["revision_hash"] != request.expected_hash:
             raise CommandError("confirmation_changed", 409)
         return actor.telegram_id, current
@@ -223,7 +258,7 @@ async def _is_referenced(session_factory, request, file_id):
         async with session_factory() as db:
             async with db.begin():
                 found = await db.scalar(select(PaymentQrCode.id).where(
-                    PaymentQrCode.scope == SUBSCRIPTION_QR_SCOPE,
+                    PaymentQrCode.scope == _scope(request.campaign_id),
                     PaymentQrCode.payment_method == request.method,
                     PaymentQrCode.plan_type == request.plan,
                     PaymentQrCode.file_id == file_id,
@@ -292,15 +327,17 @@ async def execute_payment_qr(
                 actor = await db.get(User, step.user_id)
                 # The image is hosted by Telegram; lock the price target and
                 # its exact QR key only for this short DB transaction.
-                _, _, observed = await _target(db, request.method, request.plan)
+                _, _, observed = await _target(db, request.method, request.plan,
+            campaign_id=request.campaign_id, new_price=request.new_price)
                 keys = sorted((
-                    f"payment_qr:{SUBSCRIPTION_QR_SCOPE}:{request.method}:{request.plan}:{observed['amount']}:{observed['currency']}",
+                    f"payment_qr:{_scope(request.campaign_id)}:{request.method}:{request.plan}:{observed['amount']}:{observed['currency']}",
                     f"subscription_price:{request.method}:{request.plan}",
                 ))
                 lock_repo = BotSettingRepository(db)
                 for key in keys:
                     await lock_repo.lock_key(key)
-                _, _, current = await _target(db, request.method, request.plan, lock=True)
+                _, _, current = await _target(db, request.method, request.plan,
+                    campaign_id=request.campaign_id, new_price=request.new_price, lock=True)
                 now = datetime.now(timezone.utc)
                 if (not _enabled(settings_obj) or not _authorized_admin(actor, settings_obj)
                         or min(_utc(step.expires_at), _utc(session.expires_at)) <= now):
@@ -308,15 +345,23 @@ async def execute_payment_qr(
                 if current["revision_hash"] != request.expected_hash:
                     raise CommandError("confirmation_changed", 409)
                 before_hash = current["revision_hash"]
+                if request.new_price is not None:
+                    # Publish the price and matching media in the same short SQL transaction.
+                    price = await SubscriptionPriceService(db).set_price(
+                        payment_method=request.method, plan_type=request.plan,
+                        amount=request.new_price, updated_by_telegram_id=actor.telegram_id)
+                    if price is None:
+                        raise CommandError("invalid_subscription_price", 400)
                 await PaymentQrCodeService(db).save_qr_codes([{
-                    "scope": SUBSCRIPTION_QR_SCOPE,
+                    "scope": _scope(request.campaign_id),
                     "payment_method": request.method,
                     "plan_type": request.plan,
                     "amount": current["amount"],
                     "currency": current["currency"],
                     "file_id": file_id,
                 }], created_by_telegram_id=actor.telegram_id)
-                _, _, after = await _target(db, request.method, request.plan)
+                _, _, after = await _target(db, request.method, request.plan,
+                    campaign_id=request.campaign_id)
                 audit_id = str(uuid4())
                 db.add(AdminPwaCommandAudit(
                     id=audit_id, step_up_id=step.id, actor_user_id=actor.id,

@@ -35,6 +35,9 @@ from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.discount_campaign import DiscountCampaign
+from app.db.models.payment_qr_code import PaymentQrCode
+from app.services.payment_qr_code_service import PaymentQrCodeService
+from app.services.subscription_price_service import SubscriptionPriceService
 from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackDelivery
 from app.db.models.user import User
 from app.repositories.ad_campaign_repo import AdCampaignRepository, decode_languages
@@ -421,6 +424,28 @@ async def execute_campaign(db, *, session_cookie, request, settings_obj):
                 or snapshots and (_hash(snapshots) != command.audience_hash or len(snapshots) != command.audience_count)):
             raise CommandError('confirmation_changed', 409)
         change = command.change
+        if change.kind == 'discount_create' and change.is_active and change.payment_method != 'visa':
+            # The campaign ID is not known until creation. Create paused,
+            # upload each exact campaign QR, then explicitly activate.
+            raise CommandError('admin_pwa_payment_qr_required', 409)
+        if change.kind == 'discount_state' and change.is_active:
+            methods = ([row.payment_method] if row.payment_method in ('visa', 'alipay', 'wechat')
+                       else ['alipay', 'wechat'])
+            plans = [row.plan_type] if row.plan_type in ('10_days', '1_month') else ['10_days', '1_month']
+            qr_service = PaymentQrCodeService(db)
+            for method in methods:
+                if method == 'visa':
+                    continue
+                for plan in plans:
+                    price = await SubscriptionPriceService(db).get_price(method, plan)
+                    if price is None:
+                        raise CommandError('admin_pwa_payment_qr_required', 409)
+                    final_amount = int(round(price.amount * (100 - row.percent) / 100))
+                    if final_amount < 1 or not await qr_service.get_file_id(
+                        scope=qr_service.admin_campaign_scope(row.id),
+                        payment_method=method, plan_type=plan,
+                        amount=final_amount, currency=price.currency):
+                        raise CommandError('admin_pwa_payment_qr_required', 409)
         if change.kind == 'ad_send':
             # Reserve the single round atomically; never hand it to the legacy scheduler.
             await AdCampaignRepository(db).mark_round_finished(row, now=now)

@@ -827,7 +827,9 @@ class SubscriptionMiniAppService:
 
     def _static_qr_bytes(self, payment_method: str, plan_type: str, checkout_info: dict[str, Any]) -> bytes | None:
         discount_source = checkout_info.get("discount_source") or "none"
-        if discount_source not in {"none", "referral", "feedback_price_offer", "admin_campaign"}:
+        # Every admin campaign requires its own exact-amount QR; do not reuse
+        # an old packaged 20% image or a generic offer's code.
+        if discount_source not in {"none", "referral", "feedback_price_offer"}:
             return None
         amount = int(checkout_info["final_amount"])
         currency = str(checkout_info["currency"])
@@ -890,17 +892,7 @@ class SubscriptionMiniAppService:
         )
         if file_id:
             return file_id
-        if (
-            checkout_info.get("discount_source") == "admin_campaign"
-            and int(checkout_info.get("discount_percent") or 0) == 20
-        ):
-            return await qr_service.get_file_id(
-                scope=SUBSCRIPTION_DISCOUNT_20_QR_SCOPE,
-                payment_method=payment_method,
-                plan_type=plan_type,
-                amount=int(checkout_info["final_amount"]),
-                currency=str(checkout_info["currency"]),
-            )
+        # No fallback to a generic discount image for an admin campaign.
         return None
 
     @staticmethod
