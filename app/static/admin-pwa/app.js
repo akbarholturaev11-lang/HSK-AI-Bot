@@ -754,12 +754,12 @@ function marketingView(){
   const row=(label,attributes,glyph)=>managementRow(t(label),attributes,glyph);
   let content='';
   if(selected==='campaigns'){
-    content=panel('messages',row('readCurrent','data-action="messageList"','mega')+row('newMessage','data-action="messageEditor"','send'))+
-      panel('adCampaigns',row('readCurrent','data-campaign-list="ad"','mega')+row('createCampaign','data-marketing-kind="campaign_draft"','gift'))+
-      panel('discountCampaigns',row('readCurrent','data-campaign-list="discount"','wallet')+row('newDiscountCampaign','data-campaign-create="discount"','gift'))+
-      panel('releaseCampaigns',row('readCurrent','data-campaign-list="release"','bell')+row('newReleaseCampaign','data-campaign-create="release"','send'));
+    content=panel('messages',row('readCurrent','data-action="messageList"','mega'))+
+      panel('adCampaigns',row('readCurrent','data-campaign-list="ad"','mega'))+
+      panel('discountCampaigns',row('readCurrent','data-campaign-list="discount"','wallet'))+
+      panel('releaseCampaigns',row('readCurrent','data-campaign-list="release"','bell'));
   }else if(selected==='creatives'){
-    content=panel('courseAds',row('readCurrent','data-marketing-kind="course_ad"','mega')+row('newCourseAd','data-marketing-kind="course_ad_create"','gift'))+
+    content=panel('courseAds',row('readCurrent','data-marketing-kind="course_ad"','mega'))+
       panel('marketing',row('desktopPromo','data-marketing-kind="desktop_promo"','device'));
   }else if(selected==='notifications'){
     content=panel('notices',row('readCurrent','data-action="noticeList"','bell'));
