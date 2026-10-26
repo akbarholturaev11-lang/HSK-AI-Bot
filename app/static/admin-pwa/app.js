@@ -818,8 +818,6 @@ function financeView(){
   }else if(selected==='prices'){
     body=tile('subscriptionPrices','data-action="priceSettings"','wallet');
   }else if(selected==='methods'){
-    const banks=tile('paymentDetails','data-setting-kind="payment_details" data-bank="dc_city"','credit')
-      +tile('paymentDetails','data-setting-kind="payment_details" data-bank="alif"','credit');
     const qr=['alipay','wechat'].flatMap(method=>['10_days','1_month','3_months'].map(plan=>
       '<div class="finance-tile"><button type="button" class="management-row" data-payment-qr-target="'+method+'-'+plan+'"><span class="management-row-icon">'+icon('credit')+'</span><strong>'+esc(method==='alipay'?'Alipay':'WeChat')+' · '+esc(t(plan))+'</strong>'+icon('chevron')+'</button></div>'
     )).join('');
