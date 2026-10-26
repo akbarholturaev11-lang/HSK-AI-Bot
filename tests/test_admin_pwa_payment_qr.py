@@ -131,10 +131,13 @@ class AdminPwaPaymentQrTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
         staged, img = await self.prepare(method="wechat", amount=85)
         result = await self.execute(staged, await self.proof(staged), img, bot)
         self.assertEqual((result["qr"]["amount"], result["qr"]["scope"]), (85, "subscription"))
+        staged_discount, img = await self.prepare(method="wechat", scope="subscription_20", amount=85)
+        result = await self.execute(staged_discount, await self.proof(staged_discount), img, bot)
+        self.assertEqual((result["qr"]["amount"], result["qr"]["scope"]), (68, "subscription_20"))
         async with self.sessions() as db:
             rows = (await db.scalars(select(PaymentQrCode).order_by(PaymentQrCode.id))).all()
             self.assertEqual([(x.scope,x.payment_method,x.amount) for x in rows],
-                [("subscription_20","alipay",53),("subscription","wechat",85)])
+                [("subscription_20","alipay",53),("subscription","wechat",85),("subscription_20","wechat",68)])
             self.assertEqual(await db.scalar(select(func.count()).select_from(SubscriptionPrice)), 0)
 
     async def test_campaign_qr_is_bound_to_existing_campaign_and_exact_discount_amount(self):
