@@ -83,7 +83,7 @@ jobs:
                       candidates.append(art)
           # Free the most space with the fewest deletions; cap each one-off run.
           candidates.sort(key=lambda a: (int(a.get("size_in_bytes", 0)), a.get("created_at", "")), reverse=True)
-          selected = candidates[:120]
+          selected = candidates[:120]  # second pass: remaining old diagnostics only
           print(f"Scanned {len(artifacts)} artifacts; {len(candidates)} eligible; deleting {len(selected)}")
           released = 0
           for art in selected:
