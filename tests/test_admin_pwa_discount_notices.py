@@ -33,7 +33,7 @@ class DiscountNoticeTests(fixtures.fixtures.PaymentFixtures,unittest.IsolatedAsy
     execute=fixtures.CampaignTests.execute
 
     async def offer(self, **overrides):
-        command=await self.prepare(fixtures.DISCOUNT|{'target_user_id':2,'is_active':True}|overrides)
+        command=await self.prepare(fixtures.DISCOUNT|{'target_user_id':2,'payment_method':'visa','is_active':True}|overrides)
         result=await self.execute(command,await self.proof(command))
         return result['campaign']['id']
 
