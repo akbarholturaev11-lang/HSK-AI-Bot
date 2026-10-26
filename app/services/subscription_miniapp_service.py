@@ -800,29 +800,30 @@ class SubscriptionMiniAppService:
         if not PaymentQrCodeService.is_qr_method(payment_method):
             return {"available": False}
 
+        # An explicit current, amount-bound QR takes precedence over bundled
+        # defaults. Never silently display a stale/static QR after an uploaded
+        # provider image fails to load.
+        file_id = await self._uploaded_qr_file_id(payment_method, plan_type, checkout_info)
+        if file_id:
+            if not bot:
+                return {"available": False}
+            try:
+                file = await bot.get_file(file_id)
+                file_buffer = await bot.download_file(file.file_path)
+                file_buffer.seek(0)
+                return {
+                    "available": True,
+                    "image_data_url": self._data_url(file_buffer.read(), "image/jpeg"),
+                }
+            except Exception:
+                return {"available": False}
         image_bytes = self._static_qr_bytes(payment_method, plan_type, checkout_info)
         if image_bytes:
             return {
                 "available": True,
                 "image_data_url": self._data_url(image_bytes, "image/jpeg"),
             }
-
-        if not bot:
-            return {"available": False}
-
-        file_id = await self._uploaded_qr_file_id(payment_method, plan_type, checkout_info)
-        if not file_id:
-            return {"available": False}
-        try:
-            file = await bot.get_file(file_id)
-            file_buffer = await bot.download_file(file.file_path)
-            file_buffer.seek(0)
-            return {
-                "available": True,
-                "image_data_url": self._data_url(file_buffer.read(), "image/jpeg"),
-            }
-        except Exception:
-            return {"available": False}
+        return {"available": False}
 
     def _static_qr_bytes(self, payment_method: str, plan_type: str, checkout_info: dict[str, Any]) -> bytes | None:
         discount_source = checkout_info.get("discount_source") or "none"
