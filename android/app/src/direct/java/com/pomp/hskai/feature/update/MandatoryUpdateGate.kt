@@ -22,7 +22,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,22 +43,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * Stops a direct install from entering the app after it has missed three
- * published releases. The Play source set deliberately passes through.
+ * Blocks only releases older than the oldest allowed R2-published release.
+ * Existing Direct installer and update UI remain unchanged.
  */
 @Composable
 fun MandatoryUpdateGate(content: @Composable () -> Unit) {
     val context = LocalContext.current
     var release by remember { mutableStateOf<UpdateRelease?>(null) }
-    var allowedVersions by remember { mutableIntStateOf(AndroidUpdateThreshold.DEFAULT_ALLOWED_VERSIONS) }
+    var minimumSupportedVersion by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(Unit) {
         release = withContext(Dispatchers.IO) { fetchRelease(context) }
-        allowedVersions = UpdatePolicyClient.allowedVersions(context)
+        minimumSupportedVersion = UpdatePolicyClient.minimumSupportedVersion(context, "direct")
     }
 
     val available = release
-    if (available == null || !AppUpdate.isMandatoryUpdate(available, BuildConfig.VERSION_CODE, allowedVersions)) {
+    if (available == null || !AppUpdate.isMandatoryUpdate(available, BuildConfig.VERSION_CODE, minimumSupportedVersion)) {
         content()
         return
     }

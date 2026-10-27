@@ -60,7 +60,7 @@ fun MandatoryUpdateGate(content: @Composable () -> Unit) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val manager = remember(context) { AppUpdateManagerFactory.create(context) }
-    var allowedVersions by remember { mutableIntStateOf(AndroidUpdateThreshold.DEFAULT_ALLOWED_VERSIONS) }
+    var minimumSupportedVersion by remember { mutableStateOf<Int?>(null) }
     var updateInfo by remember { mutableStateOf<AppUpdateInfo?>(null) }
     var refresh by remember { mutableIntStateOf(0) }
     val launcher = rememberLauncherForActivityResult(
@@ -76,7 +76,7 @@ fun MandatoryUpdateGate(content: @Composable () -> Unit) {
     }
 
     LaunchedEffect(refresh) {
-        allowedVersions = UpdatePolicyClient.allowedVersions(context)
+        minimumSupportedVersion = UpdatePolicyClient.minimumSupportedVersion(context, "play")
         updateInfo = suspendCancellableCoroutine { continuation ->
             manager.appUpdateInfo
                 .addOnSuccessListener { info ->
@@ -96,7 +96,7 @@ fun MandatoryUpdateGate(content: @Composable () -> Unit) {
     val mandatory = available && AndroidUpdateThreshold.isMandatory(
         installedVersionCode = BuildConfig.VERSION_CODE,
         availableVersionCode = info!!.availableVersionCode(),
-        allowedVersions = allowedVersions,
+        minimumSupportedVersionCode = minimumSupportedVersion,
     )
     if (!mandatory) {
         content()

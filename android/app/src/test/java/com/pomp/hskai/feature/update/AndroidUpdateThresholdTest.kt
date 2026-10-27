@@ -5,25 +5,19 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AndroidUpdateThresholdTest {
-    @Test fun `same rule for both Play and Direct with four allowed versions`() {
-        assertFalse(AndroidUpdateThreshold.isMandatory(54, 54, 4))
-        assertFalse(AndroidUpdateThreshold.isMandatory(53, 54, 4))
-        assertFalse(AndroidUpdateThreshold.isMandatory(52, 54, 4))
-        assertFalse(AndroidUpdateThreshold.isMandatory(51, 54, 4))
-        assertTrue(AndroidUpdateThreshold.isMandatory(50, 54, 4))
+    @Test fun `sparse version codes use published release boundary only`() {
+        // The last four releases are 7, 20, 40, 54; allow code 7.
+        assertFalse(AndroidUpdateThreshold.isMandatory(7, 54, 7))
+        assertTrue(AndroidUpdateThreshold.isMandatory(6, 54, 7))
+        assertFalse(AndroidUpdateThreshold.isMandatory(20, 54, 7))
+        assertTrue(AndroidUpdateThreshold.isMandatory(40, 54, 54))
+        assertFalse(AndroidUpdateThreshold.isMandatory(54, 54, 54))
     }
 
-    @Test fun `all admin selections apply at their exact boundary`() {
-        for (count in 1..4) {
-            assertFalse(AndroidUpdateThreshold.isMandatory(54 - count + 1, 54, count))
-            assertTrue(AndroidUpdateThreshold.isMandatory(54 - count, 54, count))
-        }
-    }
-
-    @Test fun `unknown or nonnewer version never locks user`() {
-        assertFalse(AndroidUpdateThreshold.isMandatory(51, 54, 0))
-        assertFalse(AndroidUpdateThreshold.isMandatory(51, 54, 5))
-        assertFalse(AndroidUpdateThreshold.isMandatory(54, 54, 1))
-        assertFalse(AndroidUpdateThreshold.isMandatory(55, 54, 1))
+    @Test fun `unknown policy or unavailable required release cannot block`() {
+        assertFalse(AndroidUpdateThreshold.isMandatory(1, 54, null))
+        assertFalse(AndroidUpdateThreshold.isMandatory(1, 54, 0))
+        assertFalse(AndroidUpdateThreshold.isMandatory(1, 20, 40))
+        assertFalse(AndroidUpdateThreshold.isMandatory(60, 54, 40))
     }
 }
