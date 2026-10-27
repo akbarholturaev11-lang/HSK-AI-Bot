@@ -208,6 +208,14 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
         revision = row.revision if row else 0
         if revision != command.expected_revision:
             raise TriageConflict()
+        if command.operation == "resolve_fixed" and command.fix_kind == "app_update":
+            # Validate the published release BEFORE creating a provisional
+            # revision=0 triage row; any SQL query here would otherwise
+            # autoflush that row and violate its revision >= 1 DB guard.
+            release = await AndroidReleaseService(db).serve()
+            if (release is None or not release.can_self_update or
+                    not published_version_is_newer(source_row.app_version, release.version_name)):
+                raise TriageConflict()
         if row is None:
             row = AdminPwaInboxTriage(
                 source=command.source, source_id=command.source_id,
@@ -230,13 +238,6 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
             if command.operation == "resolve_fixed":
                 if row.status == "resolved":
                     raise TriageConflict()
-                if command.fix_kind == "app_update":
-                    # Never claim an APK-only bug is fixed until a genuinely
-                    # downloadable newer release is live on the update endpoint.
-                    release = await AndroidReleaseService(db).serve()
-                    if (release is None or not release.can_self_update or
-                            not published_version_is_newer(source_row.app_version, release.version_name)):
-                        raise TriageConflict()
             row.read_at = row.read_at or stamp
             row.status = "resolved"
             row.resolved_at = row.resolved_at or stamp
