@@ -2,6 +2,8 @@
 import unittest
 import re
 from datetime import datetime, timedelta, timezone
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
@@ -83,6 +85,27 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
         self.assertEqual(repeated.status_code, 409)
         async with self.sessions() as db:
             self.assertEqual(await db.scalar(select(func.count()).select_from(AccountNoticeDelivery)), 1)
+
+    async def test_published_newer_apk_fix_does_not_autoflush_provisional_row(self):
+        ids = await self.seed()
+        async with self.sessions() as db:
+            (await db.get(AdminPwaNativeReport, ids["android"])).app_version = "1.7.21"
+            await db.commit()
+        published = SimpleNamespace(
+            can_self_update=True, version_name="1.7.22",
+        )
+        with patch("app.admin_api.pwa_inbox_triage.AndroidReleaseService.serve",
+                   new_callable=AsyncMock, return_value=published):
+            fixed = await self.post("inbox/triage", {
+                "source": "android", "source_id": ids["android"],
+                "operation": "resolve_fixed", "fix_kind": "app_update",
+                "expected_revision": 0,
+            })
+        self.assertEqual(fixed.status_code, 200, fixed.text)
+        async with self.sessions() as db:
+            notice = (await db.scalars(select(AccountNoticeDelivery))).one()
+            self.assertIn("versiya", notice.body.lower())
+            self.assertEqual(notice.user_id, 2)
 
     async def test_unrelated_inbox_actions_never_enqueue_a_fixed_notice(self):
         ids = await self.seed()
