@@ -1,8 +1,9 @@
 """What an installed Android app asks before it offers to update itself.
 
-Only the `direct` channel ever calls this. Google Play forbids an app it
-distributes from updating itself by any other route, which is why the client
-half lives in `src/direct` and the Play build has a no-op in its place.
+The `/check` APK artifact route belongs to Direct exclusively. The
+non-secret `/policy` endpoint is shared, but its independently verified
+published-release ledger is channel-specific. Google Play clients must
+update using Play Core / Store, never via a Direct APK URL.
 
 The answer is deliberately thin: a version code to compare, a name to show and
 one https link. The server does not decide whether to update — it cannot know
