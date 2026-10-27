@@ -57,6 +57,16 @@ class DeepLinkRouterTest {
      * all, so tapping that button left the app exactly where it was.
      */
     @Test
+    fun `update link is exact and opens channel specific update screen`() {
+        assertEquals(AppDestination.Update, DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://update"))
+        assertEquals(
+            AppDestination.Update,
+            DeepLinkRouter.resolve(DeepLinkRouter.uriFor(AppDestination.Update)),
+        )
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://update/malicious"))
+    }
+
+    @Test
     fun `practice with no tool opens the section home`() {
         assertEquals(
             AppDestination.Practice(),
@@ -176,6 +186,7 @@ class DeepLinkRouterTest {
         val destinations = listOf(
             AppDestination.Today,
             AppDestination.Course,
+            AppDestination.Update,
             AppDestination.CurrentLesson,
             AppDestination.Lesson(1),
             AppDestination.Lesson(425),
