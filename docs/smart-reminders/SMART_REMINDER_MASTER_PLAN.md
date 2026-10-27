@@ -290,7 +290,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 ## 11. Иш босқичлари, рақамланган чеклист ва acceptance
 
 ### P0 — Full integration audit / policy lock
-**Ҳолат:** [NOT STARTED]
+**Ҳолат:** [PARTIAL] — source audits 1.1/1.2/1.4 accepted (§17.27); scoped live reads and anonymous version inventory recorded (§§17.29–17.32). Historical installed-build execution and account-specific fencing remain open in task 1.3. No new Smart dispatch is authorized by these observations.
 - [ ] Main/current feature target ref SHA, runtime environment, production flags, active scheduler/replicas and schema head аниқлансин.
 - [ ] Барча reminder senders, push/OS permissions, consent toggle, notification preferences ва policy matrix инвентаризация қилинсин; **D01/D14 mandatory:** per-source `Mini App notifications_enabled` (motivation scope), `CourseProgress.reminder_enabled/reminder_time`, Android `study_reminders_enabled`, OS/FCM, per-channel blocked/opt-out, old UX and client versions; source-linked ON/OFF/scope/precedence/time migration matrix; unknown conflicting consent fails closed. Enabled compatible study channel → silent Smart migration; disabled remains off, denied channel → no push, no duplicate system permission prompt. **D05:** study/rating/weekly reports and transactional/marketing notices category ownership, eligibility, urgency and cross-category overlap matrix.
 - [ ] Canonical study event granularity, day/timezone semantics, idempotency, deep-link ва lessons guards аниқлансин.
@@ -1204,3 +1204,57 @@ Added **six current-source JVM tests** to the existing `CourseRepositoryTest`: o
 **P0 CI carried forward:** [run #40457300795](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40457300795) for source commit `b02d61a50a37881ff229c1ff28ff72e0199cca0d` completed **SUCCESS**. This is the previous-base offline-test slice; the updated-main combination requires its own relevant Android checks before promotion. The anonymous inventory read is approved and pending an available browser window, not pending user permission.
 
 **Executed updated-main checks:** official OpenSpec **1.15.0** / Node **25.9.0**, resolved project root and existing artifact instructions; `openspec validate smart-reminder-account-orchestrator --strict` **PASS** with all four capability files. Local Markdown targets, workflow YAML and `git diff --check` pass. The clean combination of `d897f65b` and the offline-test cherry-pick was tested with JBR 21.0.11/Gradle 8.14.5 and the reserved QA origin: **BUILD SUCCESSFUL in 56s**, **102 tests per Direct/Play flavor, zero failures/errors**, from XML (11 deep-link + 10 decision + 4 schedule + 39 repository + 11 widget art + 6 widget access + 10 store + 11 widget visual). This includes the existing fixed-clock widget baseline and does not establish personal-widget runtime behavior. No backend, emulator, iOS or Desktop acceptance run is claimed for this plan-only extension. The final log and XML are retained with the existing local QA artifacts.
+
+### 17.32 Authorized anonymous Android version inventory — 2026-10-27 [LIVE READ; NO CUTOVER]
+
+**Source and authorization:** refreshed `origin/main@4dd494f8972d8ff8adad5e3bbfd2f33b18abdcc6`. The owner had already approved the explicit version/count-only production read, then confirmed the Mac was unlocked. The existing authenticated Railway Postgres Data session successfully executed the following SELECT; results were observed shortly before the **09:00 UTC** clock check (17:00 Asia/Shanghai). No new CLI authorization, credential grant, configuration/DB write, person-level read or provider send occurred.
+
+```sql
+SELECT CASE
+  WHEN app_version ~ '^[0-9]{1,3}([.][0-9]{1,4}){1,3}(-(debug|qa|direct|play))?$'
+  THEN app_version ELSE 'unknown'
+END AS reported_version,
+COUNT(*) AS device_count
+FROM desktop_devices
+WHERE platform = 'android'
+GROUP BY 1 ORDER BY 1 LIMIT 200;
+```
+
+The first result visibly reported **27 rows** (six UI pages). A second read of the same grouped values, using `ROW_NUMBER` and `STRING_AGG` solely to format six version/count pairs per row, displayed all **five result rows** together. All 27 groups were read, so the first query's 200-group limit did not truncate this inventory. No name, account/device/installation identifier, token or credential was selected. The regex maps non-version strings to `unknown`; there was no `unknown` group in this observation.
+
+| Server-reported app version | Android device rows |
+|---|---:|
+| 1.1.0-debug | 2 |
+| 1.1.1 | 1 |
+| 1.3.0 | 1 |
+| 1.3.0-debug | 1 |
+| 1.4.0 | 4 |
+| 1.5.3-debug | 1 |
+| 1.6.15 | 4 |
+| 1.6.4 | 1 |
+| 1.6.4-debug | 1 |
+| 1.6.6 | 1 |
+| 1.7.0 | 1 |
+| 1.7.1 | 3 |
+| 1.7.10 | 27 |
+| 1.7.13-debug | 1 |
+| 1.7.14 | 4 |
+| 1.7.15 | 1 |
+| 1.7.16 | 1 |
+| 1.7.17 | 14 |
+| 1.7.20 | 2 |
+| 1.7.21 | 35 |
+| 1.7.22 | 2 |
+| 1.7.23 | 2 |
+| 1.7.3 | 9 |
+| 1.7.3-debug | 1 |
+| 1.7.6 | 1 |
+| 1.7.9 | 1 |
+| 1.8.0-debug | 1 |
+| **Total: 27 versions** | **123** |
+
+**Interpretation:** these are all server-registered Android device rows, including revoked, tokenless and old rows; no last-seen, consent or active-device filter was applied. They are not a count of people, currently installed/running binaries, distribution channels or protocol-compatible devices. `app_version` supplies neither versionCode nor signer/APK hash nor trustworthy Direct/Play provenance. None of the exact embedded release-version labels from the three locally inspected APKs in §17.30 (`1.1.0`, `1.7.12`, `1.7.13`) appears here. In particular, `1.1.0-debug` and `1.7.13-debug` cannot be treated as the inspected signed release binaries. A missing matching label does not prove a binary is absent from an offline phone.
+
+**Task 1.3 acceptance boundary:** the previously pending anonymous inventory read is now **complete**. Historical installed Direct/Play behavior, mixed-device execution and positive account-specific fencing remain unverified, so **task 1.3 stays unchecked and P0 stays PARTIAL**. Version/inactivity/revocation/token absence or an empty server inventory never grants migration. The existing read-only bridge still unconditionally returns `dispatch_allowed=False` and `legacy_fleet_fencing_unverified`; it has no new runtime caller. A later compatible build must prove authenticated study capability, old local-sender disablement, study OS permission and epoch/claim behavior before an account enters central dispatch. Unknown or unmatched builds remain excluded, including accounts with no surviving device row. No physical exactly-once guarantee is inferred.
+
+**Verification and next scoped work:** this continuation changes only this ledger, its compact navigator and the task's evidence pointer. Executed checks pass: 27 unique version labels sum to 123, no inspected release-version label matches exactly, local Markdown targets exist, `git diff --check` is clean, and `openspec validate smart-reminder-account-orchestrator --strict` reports valid. No new app/backend/OS test result is claimed. The next remaining P0 work is isolated historical/mixed-build execution against synthetic QA accounts and a controlled test backend, with production messaging unavailable, followed by per-account exclusion/fencing evidence. Do not repeat production version queries or authentication requests merely because a future chat has lost its UI bindings. D15's shared personal-widget plan remains approved and unimplemented; preserve all dispatch-OFF and phase gates.
