@@ -123,6 +123,7 @@ private open class FakeCourseApi : AndroidCourseApi {
 
     /** Counted so a cache read can be proven to touch nothing. */
     var mapCalls = 0
+    var mapTransportFailure: IOException? = null
 
     override suspend fun courseMap(
         authorization: String,
@@ -131,6 +132,7 @@ private open class FakeCourseApi : AndroidCourseApi {
         mapCalls++
         lastAuthorization = authorization
         lastTimezoneOffset = timezoneOffsetMinutes
+        mapTransportFailure?.let { throw it }
         return Response.success(sampleMap())
     }
 
@@ -303,6 +305,119 @@ class CourseRepositoryTest {
 
         assertNull(cached)
         assertEquals(0, api.mapCalls)
+    }
+
+    // StudyReminderCoordinator uses courseMap(), not cachedCourseMap(). A
+    // failed refresh must never give it a fresh snapshot or a new receipt time.
+    @Test
+    fun `offline and timeout map refreshes retain stale cache without rewriting it`() = runTest {
+        for ((failure, expected) in listOf(
+            IOException("isolated offline fixture") to ApiError.Offline,
+            SocketTimeoutException("isolated timeout fixture") to ApiError.Timeout,
+        )) {
+            val dao = FakeCourseMapDao()
+            val api = FakeCourseApi()
+            val repo = repository(api, dao)
+            val online = (repo.courseMap() as ApiResult.Success).value
+            val stored = dao.rows.toMap()
+            api.mapTransportFailure = failure
+
+            val offline = (repo.courseMap() as ApiResult.Success).value
+
+            assertTrue(offline.isStale)
+            assertEquals(expected, offline.refreshError)
+            assertEquals(online.map, offline.map)
+            assertEquals(online.fetchedAtMillis, offline.fetchedAtMillis)
+            assertEquals(stored, dao.rows)
+            assertEquals(2, api.mapCalls)
+        }
+    }
+
+    @Test
+    fun `offline token lookup cannot promote a cached map to fresh`() = runTest {
+        val dao = FakeCourseMapDao()
+        repository(FakeCourseApi(), dao).courseMap()
+        val stored = dao.rows.toMap()
+        val api = FakeCourseApi()
+        val repo = repository(api, dao, token = { ApiResult.Failure(ApiError.Offline) })
+
+        val cached = (repo.courseMap() as ApiResult.Success).value
+
+        assertTrue(cached.isStale)
+        assertEquals(ApiError.Offline, cached.refreshError)
+        assertEquals(0, api.mapCalls)
+        assertEquals(stored, dao.rows)
+    }
+
+    @Test
+    fun `expired token cannot use a cached course map`() = runTest {
+        val dao = FakeCourseMapDao()
+        repository(FakeCourseApi(), dao).courseMap()
+        val api = FakeCourseApi()
+        val repo = repository(api, dao, token = { ApiResult.Failure(ApiError.SessionExpired) })
+
+        assertEquals(ApiResult.Failure(ApiError.SessionExpired), repo.courseMap())
+        assertEquals(0, api.mapCalls)
+    }
+
+    @Test
+    fun `server session rejection cannot fall back to cached map success`() = runTest {
+        val dao = FakeCourseMapDao()
+        repository(FakeCourseApi(), dao).courseMap()
+        var expired = 0
+        val api = object : FakeCourseApi() {
+            override suspend fun courseMap(
+                authorization: String,
+                timezoneOffsetMinutes: Int,
+            ): Response<CourseMapDto> {
+                mapCalls++
+                return Response.error(401, """{"ok":false,"error":"desktop_access_invalid"}""".toResponseBody())
+            }
+        }
+        val repo = repository(api, dao, onSessionExpired = { expired++ })
+
+        assertEquals(ApiResult.Failure(ApiError.SessionExpired), repo.courseMap())
+        assertEquals(1, expired)
+        assertEquals(1, api.mapCalls)
+    }
+
+    @Test
+    fun `offline map refresh without valid cache remains a failure`() = runTest {
+        val api = FakeCourseApi().apply { mapTransportFailure = IOException("isolated offline fixture") }
+        val dao = FakeCourseMapDao()
+        val repo = repository(api, dao)
+        assertEquals(ApiResult.Failure(ApiError.Offline), repo.courseMap())
+
+        dao.upsert(CourseMapCacheEntity("hsk1", "{corrupt", 123L))
+        val stored = dao.rows.toMap()
+        assertEquals(ApiResult.Failure(ApiError.Offline), repo.courseMap())
+        assertEquals(stored, dao.rows)
+    }
+
+    @Test
+    fun `successful refresh after offline cache is the only new fresh snapshot`() = runTest {
+        val dao = FakeCourseMapDao()
+        val api = FakeCourseApi()
+        repository(api, dao).courseMap()
+        api.mapTransportFailure = IOException("isolated offline fixture")
+        val later = CourseRepository(
+            api = api,
+            accessToken = { ApiResult.Success("synthetic-test-access") },
+            dao = dao,
+            json = json,
+            now = { 1_700_000_060_000L },
+            timezoneOffsetMinutes = { 300 },
+        )
+        val stale = (later.courseMap() as ApiResult.Success).value
+        assertTrue(stale.isStale)
+        assertEquals(1_700_000_000_000L, stale.fetchedAtMillis)
+
+        api.mapTransportFailure = null
+        val fresh = (later.courseMap() as ApiResult.Success).value
+        assertFalse(fresh.isStale)
+        assertNull(fresh.refreshError)
+        assertEquals(1_700_000_060_000L, fresh.fetchedAtMillis)
+        assertEquals(fresh.fetchedAtMillis, dao.findMostRecent()!!.fetchedAtMillis)
     }
 
     /**

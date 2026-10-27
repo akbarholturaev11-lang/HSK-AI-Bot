@@ -5,7 +5,8 @@ from uuid import uuid4
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
+from typing import Literal
 from sqlalchemy import or_, select, and_
 
 from app.admin_api.pwa_approval import _utc
@@ -17,13 +18,15 @@ from app.admin_api.pwa_webauthn_transport import _body, _guard_post
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.admin_api.pwa_push_outbox import enqueue_important_triage
+from app.services.admin_feedback_resolution import enqueue_android_fix_notice, published_version_is_newer
+from app.services.android_release_service import AndroidReleaseService
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.payment import Payment
 from app.db.models.message import Message
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 
 logger = logging.getLogger(__name__)
-_OPERATIONS = ("mark_read", "assign_self", "resolve", "reopen", "mark_important", "clear_important")
+_OPERATIONS = ("mark_read", "assign_self", "resolve", "resolve_fixed", "reopen", "mark_important", "clear_important")
 _SOURCES = {"bot": BotFeedback, "release": ReleaseFeedbackResponse, "android": AdminPwaNativeReport, "payment": Payment, "technical": Message}
 
 
@@ -31,8 +34,18 @@ class TriageRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     source: Source
     source_id: RowId
-    operation: str = Field(pattern=r"^(mark_read|assign_self|resolve|reopen|mark_important|clear_important)$")
+    operation: str = Field(pattern=r"^(mark_read|assign_self|resolve|resolve_fixed|reopen|mark_important|clear_important)$")
     expected_revision: int = Field(strict=True, ge=0, le=2_147_483_646)
+    fix_kind: Literal["server", "app_update"] | None = None
+
+    @model_validator(mode="after")
+    def fix_only_for_android(self):
+        if self.operation == "resolve_fixed":
+            if self.source != "android" or self.fix_kind is None:
+                raise ValueError("fix notice requires an Android report and fix kind")
+        elif self.fix_kind is not None:
+            raise ValueError("fix kind must only accompany resolve_fixed")
+        return self
 
 
 class MarkAllReadRequest(BaseModel):
@@ -174,6 +187,8 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
             columns = [model.id]
             if command.source == "android":
                 columns.append(model.expires_at)
+                if command.operation == "resolve_fixed":
+                    columns.extend((model.user_id, model.app_version))
             elif command.source == "payment":
                 columns.extend((model.payment_status, model.screenshot_file_id))
             source_row = (await db.execute(select(*columns).where(
@@ -193,6 +208,14 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
         revision = row.revision if row else 0
         if revision != command.expected_revision:
             raise TriageConflict()
+        if command.operation == "resolve_fixed" and command.fix_kind == "app_update":
+            # Validate the published release BEFORE creating a provisional
+            # revision=0 triage row; any SQL query here would otherwise
+            # autoflush that row and violate its revision >= 1 DB guard.
+            release = await AndroidReleaseService(db).serve()
+            if (release is None or not release.can_self_update or
+                    not published_version_is_newer(source_row.app_version, release.version_name)):
+                raise TriageConflict()
         if row is None:
             row = AdminPwaInboxTriage(
                 source=command.source, source_id=command.source_id,
@@ -211,7 +234,10 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
             row.assigned_to_user_id = int(actor.id)
             row.read_at = row.read_at or stamp
             row.status = "assigned"
-        elif command.operation == "resolve":
+        elif command.operation in ("resolve", "resolve_fixed"):
+            if command.operation == "resolve_fixed":
+                if row.status == "resolved":
+                    raise TriageConflict()
             row.read_at = row.read_at or stamp
             row.status = "resolved"
             row.resolved_at = row.resolved_at or stamp
@@ -233,9 +259,15 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
             row.revision = revision + 1
             db.add(AdminPwaInboxTriageAudit(
                 id=str(uuid4()), source=command.source, source_id=command.source_id,
-                operation=command.operation, actor_user_id=int(actor.id), created_at=stamp,
+                operation="resolve" if command.operation == "resolve_fixed" else command.operation,
+                actor_user_id=int(actor.id), created_at=stamp,
             ))
             await db.flush()
+            if command.operation == "resolve_fixed":
+                await enqueue_android_fix_notice(
+                    db, user_id=source_row.user_id, source_id=command.source_id,
+                    revision=row.revision, mode=command.fix_kind, now=stamp,
+                )
             if command.operation == "mark_important" and previous[1] != "important":
                 await enqueue_important_triage(
                     db, settings_obj=settings_obj, actor_id=int(actor.id),
@@ -252,6 +284,7 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
             "read_at": _utc(row.read_at).isoformat() if row.read_at else None,
             "resolved_at": _utc(row.resolved_at).isoformat() if row.resolved_at else None,
             "revision": row.revision,
+            "notice_queued": command.operation == "resolve_fixed" and previous != current,
         }
 
 
