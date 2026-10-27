@@ -296,9 +296,64 @@ class NotificationDeliveryService:
             row.status = STATUS_FAILED
         return outcome
 
+    async def dispatch_queued_fixes(self, bot, *, now: datetime | None = None) -> int:
+        """Dispatch durable admin-fixed notices before regular Telegram fallbacks.
+
+        The admin transaction creates the outbox row. Claiming it here is
+        committed before FCM so the phone can read it immediately. A worker
+        crash after claim still leaves a safe delayed Telegram fallback.
+        """
+        now = now or datetime.now(timezone.utc)
+        rows = (await self.session.execute(
+            select(AccountNoticeDelivery)
+            .where(AccountNoticeDelivery.status == "fix_queued")
+            .order_by(AccountNoticeDelivery.id)
+            .limit(25)
+            .with_for_update(skip_locked=True)
+        )).scalars().all()
+        claimed = 0
+        for row in rows:
+            user = await self.session.get(User, row.user_id) if row.user_id else None
+            if user is None:
+                row.status = STATUS_FAILED
+                await self.session.commit()
+                continue
+            targets = await self._android_targets(user, limit=8)
+            if targets:
+                row.status = STATUS_PENDING
+                row.android_targets = len(targets)
+                row.fallback_due_at = now + ANDROID_CONFIRM_TIMEOUT
+                await self.session.commit()
+                try:
+                    results = await self.push.send_batch([
+                        AndroidPushTarget(
+                            token=token, device_id=device_id,
+                            data={"kind": PUSH_KIND, "notice_id": row.id, "device_id": device_id},
+                        )
+                        for token, device_id in targets
+                    ], ttl_seconds=int(ANDROID_CONFIRM_TIMEOUT.total_seconds()))
+                except Exception:
+                    # The committed pending row still falls back through the
+                    # normal retry scheduler. Never requeue a duplicate.
+                    logger.warning("Reporter fix FCM dispatch failed")
+                    continue
+                accepted = sum(1 for result in results if result.accepted)
+                if accepted:
+                    row.android_targets = accepted
+                    await self.session.commit()
+                    claimed += 1
+                    continue
+            # No eligible device or no FCM acceptance: deliver only to the
+            # canonical user's Telegram account, with existing block handling.
+            await self._fall_back(bot, row, user=user)
+            await self.session.commit()
+            claimed += 1
+        return claimed
+
     async def send_due_fallbacks(self, bot, *, now: datetime | None = None) -> int:
         """Telegram copies for notices no phone confirmed in time."""
         now = now or datetime.now(timezone.utc)
+        await self.dispatch_queued_fixes(bot, now=now)
         rows = (
             await self.session.execute(
                 select(AccountNoticeDelivery)
