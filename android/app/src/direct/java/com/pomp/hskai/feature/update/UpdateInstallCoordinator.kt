@@ -24,11 +24,11 @@ internal object UpdateInstallCoordinator {
     private const val PREFS = "app_update_install_request"
     private const val PENDING_VERSION = "pending_version"
 
-    private fun pending(context: Context): Int =
+    private fun queuedVersion(context: Context): Int =
         context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .getInt(PENDING_VERSION, -1)
 
-    fun request(context: Context, release: UpdateRelease, fileIsValid: Boolean) {
+    fun beginUpdateRequest(context: Context, release: UpdateRelease, fileIsValid: Boolean) {
         if (BuildConfig.QA_BUILD) return
         if (!context.canInstallApks()) {
             context.openInstallPermissionSettings()
@@ -60,7 +60,7 @@ internal object UpdateInstallCoordinator {
         resumed: Boolean,
     ): Boolean = synchronized(this) {
         if (!shouldAutoInstall(
-                pending(context), releaseVersionCode, phase,
+                queuedVersion(context), releaseVersionCode, phase,
                 fileIsValid, canInstall, resumed,
             )
         ) return@synchronized false
