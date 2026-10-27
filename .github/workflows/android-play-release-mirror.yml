@@ -1,7 +1,9 @@
 name: Mirror published Google Play Android releases
 
 # The Play Console remains the publisher; this job only reads its live
-# production track and mirrors confirmed version codes to the existing R2 CDN.
+# production releases through the READ-ONLY releases.list API and mirrors
+# confirmed version codes to the existing R2 CDN. Never open edits.insert:
+# that can invalidate a concurrent Play Console editing session.
 # It never changes Google Play releases or the direct/latest.json manifest.
 on:
   workflow_dispatch:
@@ -27,21 +29,15 @@ jobs:
           token_format: access_token
           access_token_scopes: https://www.googleapis.com/auth/androidpublisher
 
-      - name: Read live Google Play production track
+      - name: Read published production releases (GET only, no Play edit)
         env:
           PLAY_TOKEN: ${{ steps.play_auth.outputs.access_token }}
         run: |
           set -euo pipefail
-          root="https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.pomp.hskai/edits"
-          edit_json="$(curl --fail --silent --show-error --retry 2 --request POST \
-            --header "Authorization: Bearer $PLAY_TOKEN" \
-            --header "Content-Type: application/json" \
-            --data '{}' "$root")"
-          edit_id="$(jq -er '.id | select(type == "string" and length > 0)' <<<"$edit_json")"
-          trap 'curl --silent --show-error --request DELETE --header "Authorization: Bearer $PLAY_TOKEN" "$root/$edit_id" >/dev/null || true' EXIT
+          url="https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.pomp.hskai/tracks/production/releases"
           curl --fail --silent --show-error --retry 2 \
             --header "Authorization: Bearer $PLAY_TOKEN" \
-            "$root/$edit_id/tracks/production" > "$RUNNER_TEMP/play-production-track.json"
+            "$url" > "$RUNNER_TEMP/play-production-releases.json"
 
       - name: Append verified Play releases to R2 ledger
         env:
@@ -67,7 +63,7 @@ jobs:
             echo "::error::Cannot verify prior Play release ledger"; exit 1
           fi
           python3 scripts/android_sync_play_releases.py \
-            --track "$RUNNER_TEMP/play-production-track.json" \
+            --releases "$RUNNER_TEMP/play-production-releases.json" \
             --existing "$previous" \
             --output "$RUNNER_TEMP/play-releases.json"
           # Only this service-account-verified workflow writes the Play ledger.
