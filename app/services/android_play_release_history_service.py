@@ -6,7 +6,7 @@ user. No sideload/download_url can enter this format.
 """
 from __future__ import annotations
 
-import asyncio
+import inspect
 import json
 import logging
 import threading
@@ -83,7 +83,7 @@ class AndroidPlayReleaseHistoryService:
                 payload = await resolver._fetch_bytes(self.url, 5, 16384)
             else:
                 maybe = self._fetcher(self.url)
-                payload = await maybe if asyncio.iscoroutine(maybe) else maybe
+                payload = await maybe if inspect.isawaitable(maybe) else maybe
             codes = parse_play_release_history(payload)
             with _LOCK:
                 previous = _CACHE.get(self.url)

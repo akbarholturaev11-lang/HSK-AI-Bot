@@ -125,6 +125,28 @@ class AndroidUpdatePolicyTests(DatabaseBackedTest):
         for allowed in range(1, 5):
             self.assertEqual(normalize_allowed_versions(str(allowed)), allowed)
 
+    async def test_direct_and_play_thresholds_use_separate_confirmed_histories(self):
+        from unittest.mock import patch
+        from app.services.android_release_manifest_service import AndroidReleaseManifestService
+        from app.services.android_play_release_history_service import AndroidPlayReleaseHistoryService
+
+        async with self.sessions() as db:
+            await BotSettingRepository(db).set(ANDROID_UPDATE_ALLOWED_VERSIONS_KEY, '2')
+            await db.commit()
+        client = await self.make_client()
+        with patch.object(AndroidReleaseManifestService, 'resolve',
+                          return_value=SimpleNamespace(published_version_codes=(5, 22, 60))):
+            response = await client.get('/api/v3/android-update/policy',
+                                        params={'channel': 'direct'})
+        self.assertEqual(response.json(), {'allowed_versions': 2, 'minimum_version_code': 22})
+        with patch.object(AndroidPlayReleaseHistoryService, 'resolve', return_value=(8, 15, 45)):
+            response = await client.get('/api/v3/android-update/policy',
+                                        params={'channel': 'play'})
+        self.assertEqual(response.json(), {'allowed_versions': 2, 'minimum_version_code': 15})
+        response = await client.get('/api/v3/android-update/policy',
+                                    params={'channel': 'invalid'})
+        self.assertEqual(response.status_code, 422)
+
     async def test_both_clients_share_public_policy_without_apk_details(self):
         client = await self.make_client()
         response = await client.get('/api/v3/android-update/policy')
