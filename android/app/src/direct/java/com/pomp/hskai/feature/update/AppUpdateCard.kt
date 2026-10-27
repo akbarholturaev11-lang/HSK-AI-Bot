@@ -50,8 +50,8 @@ private val updateCheckLock = Any()
  * "A newer version exists", in the one place a learner goes looking.
  *
  * Android cannot update a sideloaded app silently. A tap starts the download;
- * once it is ready, another tap opens Android's install confirmation. The
- * download continues if the learner leaves the app, and the card stays in the
+ * when ready, it automatically opens Android's install confirmation while
+ * the app is active. The download continues if the learner leaves; the card stays in the
  * profile so it does not stand between someone and a lesson.
  *
  * The Play build has a no-op in place of this file. Google Play forbids an app
@@ -93,6 +93,8 @@ fun AppUpdateCard(modifier: Modifier = Modifier) {
     val workInfo = UpdateDownload.currentWorkInfo(workInfos)
     val phase = UpdateDownload.downloadPhase(workInfos, downloadedFileIsValid)
 
+    AutoOpenDownloadedUpdate(available, phase, downloadedFileIsValid, canInstall)
+
     UpdateCardContent(
         release = available,
         phase = phase,
@@ -101,15 +103,7 @@ fun AppUpdateCard(modifier: Modifier = Modifier) {
         modifier = modifier,
         onClick = {
             if (phase == UpdatePhase.Downloading) return@UpdateCardContent
-            if (!canInstall) {
-                context.openInstallPermissionSettings()
-                return@UpdateCardContent
-            }
-            if (downloadedFileIsValid) {
-                context.launchInstaller(file)
-            } else {
-                UpdateDownload.enqueue(context, available)
-            }
+            UpdateInstallCoordinator.request(context, available, downloadedFileIsValid)
         },
     )
 }
