@@ -66,7 +66,10 @@ async def enqueue_android_fix_notice(
     row = AccountNoticeDelivery(
         user_id=user.id,
         telegram_id=user.telegram_id,
-        key="feedback_fixed" if mode == "server" else "feedback_update",
+        # Older Play builds only render the long-standing neutral course
+        # notification kind. Keep the familiar wire key until those versions
+        # age out; the title/body still identify this as a fix receipt.
+        key="daily_limit_renewed",
         language=lang,
         title=title,
         body=body,
