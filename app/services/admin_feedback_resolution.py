@@ -30,7 +30,7 @@ _FIX_COPY = {
 }
 
 
-_RELEASE_VERSION = re.compile(r"^[0-9]+(?:\\.[0-9]+){1,3}$")
+_RELEASE_VERSION = re.compile(r"^[0-9]+(?:\.[0-9]+){1,3}$")
 
 
 def published_version_is_newer(installed: str, published: str) -> bool:
