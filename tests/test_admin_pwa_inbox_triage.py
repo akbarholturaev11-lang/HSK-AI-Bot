@@ -73,7 +73,7 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
             row = notices[0]
             self.assertEqual((row.user_id, row.telegram_id), (2, 2002))
             self.assertEqual((row.status, row.action, row.key),
-                             ("fix_queued", "course", "feedback_fixed"))
+                             ("fix_queued", "course", "daily_limit_renewed"))
             self.assertNotIn("private Android screenshot", row.title + row.body)
         repeated = await self.post("inbox/triage", {
             "source": "android", "source_id": report_id,
