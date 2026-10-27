@@ -192,4 +192,33 @@ class AppUpdateTest {
         assertTrue(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 37))
         assertTrue(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 36))
     }
+
+    @Test
+    fun `one update tap opens installer after successful download while app is active`() {
+        val ready = UpdateInstallCoordinator.shouldAutoInstall(
+            pendingVersionCode = 42,
+            releaseVersionCode = 42,
+            phase = UpdatePhase.Downloaded,
+            fileIsValid = true,
+            canInstall = true,
+            resumed = true,
+        )
+        assertTrue(ready)
+    }
+
+    @Test
+    fun `installer does not auto-open prematurely or for another version`() {
+        fun check(pending: Int, version: Int, phase: UpdatePhase, valid: Boolean,
+                  permission: Boolean, resumed: Boolean): Boolean =
+            UpdateInstallCoordinator.shouldAutoInstall(
+                pending, version, phase, valid, permission, resumed,
+            )
+        assertFalse(check(42, 42, UpdatePhase.Ready, false, true, true))
+        assertFalse(check(42, 42, UpdatePhase.Downloading, false, true, true))
+        assertFalse(check(42, 42, UpdatePhase.Failed, false, true, true))
+        assertFalse(check(41, 42, UpdatePhase.Downloaded, true, true, true))
+        assertFalse(check(42, 42, UpdatePhase.Downloaded, false, true, true))
+        assertFalse(check(42, 42, UpdatePhase.Downloaded, true, false, true))
+        assertFalse(check(42, 42, UpdatePhase.Downloaded, true, true, false))
+    }
 }

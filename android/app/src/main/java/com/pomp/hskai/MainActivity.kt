@@ -128,6 +128,7 @@ import com.pomp.hskai.feature.hint.HintsViewModel
 import com.pomp.hskai.feature.limit.rememberLimitGate
 import com.pomp.hskai.feature.subscription.SubscriptionCheckoutHost
 import com.pomp.hskai.feature.update.MandatoryUpdateGate
+import com.pomp.hskai.feature.update.UpdateInstallMonitor
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.data.api.ChallengeDto
 import com.pomp.hskai.data.api.RatingEntryDto
@@ -170,6 +171,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             PompHskAiTheme {
+                UpdateInstallMonitor()
                 MandatoryUpdateGate {
                     val destination by requestedDestination.collectAsStateWithLifecycle()
                     com.pomp.hskai.feature.assistant.AssistantHost(app, ::deliverDestination) {

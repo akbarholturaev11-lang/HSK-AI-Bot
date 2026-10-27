@@ -89,6 +89,8 @@ private fun MandatoryUpdateWall(release: UpdateRelease) {
     val phase = UpdateDownload.downloadPhase(workInfos, downloadedFileIsValid)
     val progress = UpdateDownload.downloadProgressPercent(workInfo)
 
+    AutoOpenDownloadedUpdate(release, phase, downloadedFileIsValid, canInstall)
+
     MandatoryUpdateContent(
         release = release,
         phase = phase,
@@ -96,13 +98,7 @@ private fun MandatoryUpdateWall(release: UpdateRelease) {
         canInstall = canInstall,
         onUpdate = {
             if (phase == UpdatePhase.Downloading) return@MandatoryUpdateContent
-            if (!canInstall) {
-                context.openInstallPermissionSettings()
-            } else if (downloadedFileIsValid) {
-                context.launchInstaller(file)
-            } else {
-                UpdateDownload.enqueue(context, release)
-            }
+            UpdateInstallCoordinator.beginUpdateRequest(context, release, downloadedFileIsValid)
         },
     )
 }
