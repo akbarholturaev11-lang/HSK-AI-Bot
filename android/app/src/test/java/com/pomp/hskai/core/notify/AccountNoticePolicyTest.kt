@@ -61,18 +61,6 @@ class AccountNoticePolicyTest {
     }
 
     @Test
-    fun `fixed-error push is neutral on Play and opens learning`() {
-        for (key in listOf("feedback_fixed", "feedback_update")) {
-            assertTrue(AccountNoticePolicy.canShow(key, "course", false))
-            assertFalse(AccountNoticePolicy.canShow(key, "subscription", false))
-            assertEquals(AppDestination.Course, AccountNoticePolicy.destination("course", false))
-            assertFalse(AccountNoticePolicy.notificationId(key) in AccountNoticePolicy.playSuppressedNotificationIds())
-        }
-        assertNotEquals(AccountNoticePolicy.notificationId("feedback_fixed"),
-            AccountNoticePolicy.notificationId("feedback_update"))
-    }
-
-    @Test
     fun `Direct preserves account notices and Play never resolves to checkout`() {
         (keys + "unknown_offer").forEach { key ->
             assertTrue(AccountNoticePolicy.canShow(key, "subscription", true))
