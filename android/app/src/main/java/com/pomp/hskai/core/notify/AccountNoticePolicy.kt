@@ -28,6 +28,11 @@ object AccountNoticePolicy {
         externalCheckoutEnabled ||
             (key.trim() == "daily_limit_renewed" && action.trim() == "course")
 
+    /** A verified server hint overrides only the destination, never Play copy policy. */
+    fun destinationForNotice(action: String, externalCheckoutEnabled: Boolean, updateRequired: Boolean): AppDestination =
+        if (updateRequired && action.trim() == "course") AppDestination.Update
+        else destination(action, externalCheckoutEnabled)
+
     /** Remove old Direct offers from the shade without cancelling neutral notices. */
     fun playSuppressedNotificationIds(): Set<Int> =
         (SLOTS.keys.filterNot { canShow(it, "course", false) } + "")
