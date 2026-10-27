@@ -1,0 +1,26 @@
+package com.pomp.hskai.feature.update
+
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+
+/** Play-managed installs must open the listing, never a sideloaded APK. */
+@Composable
+fun UpdateNoticeScreen(onClose: () -> Unit) {
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        val packageName = context.packageName
+        val market = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val web = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("https://play.google.com/store/apps/details?id=$packageName"),
+        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (runCatching { context.startActivity(market) }.isFailure) {
+            runCatching { context.startActivity(web) }
+        }
+        onClose()
+    }
+}

@@ -93,6 +93,8 @@ fun AppUpdateBanner(modifier: Modifier = Modifier) {
     val workInfo = UpdateDownload.currentWorkInfo(workInfos)
     val phase = UpdateDownload.downloadPhase(workInfos, downloadedFileIsValid)
 
+    AutoOpenDownloadedUpdate(available, phase, downloadedFileIsValid, canInstall)
+
     UpdateBannerContent(
         release = available,
         phase = phase,
@@ -101,15 +103,7 @@ fun AppUpdateBanner(modifier: Modifier = Modifier) {
         modifier = modifier,
         onClick = {
             if (phase == UpdatePhase.Downloading) return@UpdateBannerContent
-            if (!canInstall) {
-                context.openInstallPermissionSettings()
-                return@UpdateBannerContent
-            }
-            if (downloadedFileIsValid) {
-                context.launchInstaller(file)
-            } else {
-                UpdateDownload.enqueue(context, available)
-            }
+            UpdateInstallCoordinator.beginUpdateRequest(context, available, downloadedFileIsValid)
         },
     )
 }
