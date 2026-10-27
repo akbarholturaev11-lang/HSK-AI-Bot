@@ -875,7 +875,7 @@ function managementView(){
   const group=(label,rows)=>`<section class="management-section"><h2>${esc(t(label))}</h2><div class="management-list">${rows}</div></section>`;
   if(state.route==='course')return renderCourseView();
   if(state.route==='marketing')return `<div class="management-page">${group('marketing',managementRow(t('messages'),'data-action="messageList"','mega')+managementRow(t('adCampaigns'),'data-campaign-list="ad"','mega')+managementRow(t('releaseCampaigns'),'data-campaign-list="release"','bell')+managementRow(t('discountCampaigns'),'data-campaign-list="discount"','wallet')+managementRow(t('desktopPromo'),'data-marketing-kind="desktop_promo"','device')+managementRow(t('courseAds'),'data-marketing-kind="course_ad"','mega')+managementRow(t('partners'),'data-action="partnerList"','users')+managementRow(t('partnerPayouts'),'data-action="payoutList"','wallet'))}</div>`;
-  return `<div class="management-page">${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
+  return `<div class="management-page">${group('notices',managementRow(t('notices'),'data-action="noticeList"','bell'))}${group('aiModel',managementRow(t('aiModel'),'data-setting-kind="ai_model"','spark'))${group('androidUpdates',managementRow(t('androidUpdatePolicy'),'data-setting-kind="android_update"','device'))}}${group('requiredChannels',managementRow(t('requiredChannels'),'data-channels-kind="list"','link')+managementRow(t('channelMode'),'data-channels-kind="mode"','shield'))}${group('helpSettings',managementRow(t('helpContact'),'data-setting-kind="help_contact"','link')+managementRow(t('helpVideos'),'data-setting-kind="help_video"','book'))}</div>`;
 }
 function content() { if(state.error) return statePanel(state.error,'',true);if(state.phase==='loading') return (state.route==='stats'?statsCategoryNav():'')+statePanel('loading');return ['course','system','marketing'].includes(state.route)?managementView():['home','stats'].includes(state.route)?statsView():state.route==='users'?usersView():financeView(); }
 async function load() {
@@ -1227,7 +1227,7 @@ async function executeAccess(){
   }finally{if(signing===control)signing=null;}
 }
 
-const settingLabels={payment_details:'paymentDetails',ai_model:'aiModel',help_contact:'helpContact',help_video:'helpVideos'};
+const settingLabels={payment_details:'paymentDetails',ai_model:'aiModel',android_update:'androidUpdatePolicy',help_contact:'helpContact',help_video:'helpVideos'};
 const helpVideoLabels={course_hsk:'course',qa_mode:'questionAnswer',voice_translator:'voiceTranslator',subscription:'subscriptionHelp'};
 const userOperationLabels={block:'blockAccount',unblock:'unblockAccount',delete:'deleteAccount'};
 function userManagementEditor(userId,operation){
@@ -1806,6 +1806,7 @@ function managementFields(value,type){
   ]);
   if(value.kind==='payment_details')return profileFields([['method',value.bank==='dc_city'?'DC City':'Alif'],['paymentDetails',value.value||t('notSet')]]);
   if(value.kind==='ai_model')return profileFields([['aiModel',value.model]]);
+  if(value.kind==='android_update')return profileFields([['androidUpdatePolicy',t('androidVersion'+value.allowed_versions)]]);
   if(value.kind==='help_contact')return profileFields([['helpContact',value.value||t('notSet')]]);
   if(value.kind==='help_video')return profileFields([['videoTopic',t(helpVideoLabels[value.key])],['language',value.lang.toUpperCase()],['videoLink',value.value||t('notSet')]]);
   throw Error('invalid_settings');
@@ -1995,6 +1996,7 @@ async function editSetting(kind,bank=null){
     managementDraft={type:'setting',kind,bank,data};
     const s=data.settings,o=data.options;let body='';
     if(kind==='ai_model')body=`<div class="form-field"><label for="settingModel">${esc(t(label))}</label><select id="settingModel" class="input">${o.ai_models.map(model=>`<option value="${esc(model)}" ${s.ai_model.model===model?'selected':''}>${esc(model)}</option>`).join('')}</select></div>`;
+    else if(kind==='android_update')body=`<div class="form-field"><label for="androidAllowedVersions">${esc(t('androidAllowedVersions'))}</label><select id="androidAllowedVersions" class="input">${o.android_update_allowed_versions.map(n=>`<option value="${n}" ${s.android_update.allowed_versions===n?'selected':''}>${esc(t('androidVersion'+n))}</option>`).join('')}</select></div>`;
     else{
       let value='',maximum=512;
       if(kind==='payment_details'){value=s.payment_details[bank];maximum=1500;body=`<p class="setting-target">${bank==='dc_city'?'DC City':'Alif'}</p>`;}
@@ -2131,6 +2133,7 @@ async function prepareManagementCommand(current,at){
     const change={kind:draft.kind};
     if(draft.kind==='payment_details')Object.assign(change,{bank:draft.bank,value:$('settingValue').value});
     if(draft.kind==='ai_model')change.model=$('settingModel').value;
+    if(draft.kind==='android_update')change.allowed_versions=Number($('androidAllowedVersions').value);
     if(draft.kind==='help_contact')change.value=$('settingValue').value;
     if(draft.kind==='help_video')Object.assign(change,{key:$('helpVideoKey').value,lang:$('helpVideoLanguage').value,value:$('settingValue').value});
     payload={change};
