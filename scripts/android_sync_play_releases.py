@@ -36,8 +36,10 @@ def confirmed_codes(track: dict) -> list[int]:
             if not 1 <= code <= MAX_CODE:
                 raise ValueError("invalid code range")
             parsed.append(code)
-        # Multiple APK splits in ONE release are one published release.
-        result.add(max(parsed))
+        # A Play release can ship several per-device APK version codes.
+        # Keep its LOWEST code as the conservative boundary. max() would
+        # wrongly force an install still running a permitted split.
+        result.add(min(parsed))
     return sorted(result)
 
 

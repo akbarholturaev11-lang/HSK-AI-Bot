@@ -168,6 +168,9 @@ jobs:
         run: |
           python -m alembic heads
           python -c "from alembic.config import Config; from alembic.script import ScriptDirectory; assert len(ScriptDirectory.from_config(Config('alembic.ini')).get_heads()) == 1"
+      - name: Check Admin PWA JavaScript parses before browser tests
+        run: node --check app/static/admin-pwa/app.js
+
       - name: Run all Admin PWA regression tests without external services
         run: |
           python -m pytest -q tests/test_admin_pwa_*.py tests/test_i18n_all_catalogs.py tests/test_i18n_miniapp_inline_adoption.py tests/test_i18n_android_catalog_adoption.py tests/test_qa_standalone_bootstrap.py

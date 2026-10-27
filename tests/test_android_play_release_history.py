@@ -16,7 +16,14 @@ class PlayReleaseHistoryTests(unittest.TestCase):
             release(10, 11), release(25, status="inProgress"),
             release(99, status="draft"), release(80, status="halted")
         ]}
-        self.assertEqual(confirmed_codes(track), [11, 25])
+        self.assertEqual(confirmed_codes(track), [10, 25])
+
+    def test_multi_apk_release_uses_oldest_supported_code_and_counts_once(self):
+        track = {"track": "production", "releases": [
+            release(21, 24), release(31, 35), release(60)
+        ]}
+        self.assertEqual(confirmed_codes(track), [21, 31, 60])
+        self.assertEqual(merge(track, {})["published_version_codes"], [21, 31, 60])
 
     def test_real_release_polling_only_appends_newly_published_version(self):
         one = merge({"track": "production", "releases": [release(11)]}, {})
