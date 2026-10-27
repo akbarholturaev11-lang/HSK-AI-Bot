@@ -1,0 +1,79 @@
+"""Server-owned Android report fix receipts; never trust a browser-supplied recipient.
+
+The admin's resolved transition and the delivery outbox are written in the
+same transaction, so a retry, process restart or double tap cannot silently
+create multiple notifications.
+"""
+from datetime import datetime, timezone
+import re
+
+from sqlalchemy import select
+
+from app.db.models.account_notice_delivery import AccountNoticeDelivery
+from app.db.models.user import User
+from app.services.notification_delivery_service import TelegramNotice
+
+
+_RELEASE_VERSION = re.compile(r"^[0-9]+(?:\.[0-9]+){1,3}$")
+
+
+def published_version_is_newer(installed: str, published: str) -> bool:
+    """Fail closed if client/server cannot compare the two actual APK versions."""
+    if not _RELEASE_VERSION.fullmatch(installed.strip()) or not _RELEASE_VERSION.fullmatch(published.strip()):
+        return False
+    def parts(value: str) -> tuple[int, ...]:
+        values = [int(x) for x in value.split(".")]
+        return tuple((values + [0, 0, 0, 0])[:4])
+    return parts(published) > parts(installed)
+
+
+def fixed_notice_copy(lang: str, mode: str) -> tuple[str, str]:
+    """Localized, content-free message: never include a private report."""
+    if mode not in ("server", "app_update"):
+        raise ValueError("invalid_fix_kind")
+    if lang == "ru":
+        return (("Ошибка исправлена ✅", "Доступна новая версия. Обновите приложение и продолжайте обучение! 🔥")
+                if mode == "app_update"
+                else ("Ошибка исправлена ✅", "Проблема решена. Продолжайте обучение! 🔥"))
+    if lang == "tj":
+        return (("Хатогӣ ислоҳ шуд ✅", "Версияи нав омода аст. Барномаро нав кунед ва дарсро давом диҳед! 🔥")
+                if mode == "app_update"
+                else ("Хатогӣ ислоҳ шуд ✅", "Мушкил ҳал шуд. Дарсро давом диҳед! 🔥"))
+    return (("Xatolik tuzatildi ✅", "Yangi versiya tayyor. Ilovani yangilab, darsni davom ettiring! 🔥")
+            if mode == "app_update"
+            else ("Xatolik tuzatildi ✅", "Muammo hal qilindi. Darsni davom ettiramiz! 🔥"))
+
+async def enqueue_android_fix_notice(
+    db, *, user_id: int, source_id: int, revision: int,
+    mode: str, now: datetime,
+) -> int:
+    """Call while holding the source + triage row locks inside the resolve tx."""
+    if not isinstance(source_id, int) or source_id < 1 or revision < 1:
+        raise ValueError("invalid_report_revision")
+    user = await db.scalar(select(User).where(User.id == user_id))
+    if user is None:
+        raise ValueError("missing_report_owner")
+    lang = user.language if user.language in ("uz", "ru", "tj") else "uz"
+    title, body = fixed_notice_copy(lang, mode)
+    row = AccountNoticeDelivery(
+        user_id=user.id,
+        telegram_id=user.telegram_id,
+        # Older Play builds only render the long-standing neutral course
+        # notification kind. Keep the familiar wire key until those versions
+        # age out; the title/body still identify this as a fix receipt.
+        key="daily_limit_renewed",
+        language=lang,
+        title=title,
+        body=body,
+        action="course",
+        status="fix_queued",
+        android_targets=0,
+        android_blocked=0,
+        telegram_payload=TelegramNotice(text=f"{title}\n{body}").to_payload(),
+        reason=f"android_fix_{source_id}_{revision}"[:40],
+        created_at=now,
+        fallback_due_at=None,
+    )
+    db.add(row)
+    await db.flush()
+    return row.id

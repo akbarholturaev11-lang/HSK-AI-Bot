@@ -2,6 +2,8 @@
 import unittest
 import re
 from datetime import datetime, timedelta, timezone
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
@@ -13,6 +15,7 @@ from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
+from app.db.models.account_notice_delivery import AccountNoticeDelivery
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.message import Message
 from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackResponse
@@ -54,6 +57,83 @@ class AdminPwaInboxTriageTests(fixtures.PaymentFixtures, unittest.IsolatedAsynci
             ids = {"bot": bot.id, "release": rel.id, "android": native.id}
             await db.commit()
         return ids
+
+    async def test_android_fixed_action_enqueues_single_owner_only_push_receipt(self):
+        ids = await self.seed()
+        report_id = ids["android"]
+        fixed = await self.post("inbox/triage", {
+            "source": "android", "source_id": report_id,
+            "operation": "resolve_fixed", "fix_kind": "server",
+            "expected_revision": 0,
+        })
+        self.assertEqual(fixed.status_code, 200, fixed.text)
+        self.assertEqual(fixed.json()["status"], "resolved")
+        self.assertTrue(fixed.json()["notice_queued"])
+        async with self.sessions() as db:
+            notices = (await db.scalars(select(AccountNoticeDelivery))).all()
+            self.assertEqual(len(notices), 1)
+            row = notices[0]
+            self.assertEqual((row.user_id, row.telegram_id), (2, 2002))
+            self.assertEqual((row.status, row.action, row.key),
+                             ("fix_queued", "course", "daily_limit_renewed"))
+            self.assertNotIn("private Android screenshot", row.title + row.body)
+        repeated = await self.post("inbox/triage", {
+            "source": "android", "source_id": report_id,
+            "operation": "resolve_fixed", "fix_kind": "server",
+            "expected_revision": 1,
+        })
+        self.assertEqual(repeated.status_code, 409)
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AccountNoticeDelivery)), 1)
+
+    async def test_published_newer_apk_fix_does_not_autoflush_provisional_row(self):
+        ids = await self.seed()
+        async with self.sessions() as db:
+            (await db.get(AdminPwaNativeReport, ids["android"])).app_version = "1.7.21"
+            await db.commit()
+        published = SimpleNamespace(
+            can_self_update=True, version_name="1.7.22",
+        )
+        with patch("app.admin_api.pwa_inbox_triage.AndroidReleaseService.serve",
+                   new_callable=AsyncMock, return_value=published):
+            fixed = await self.post("inbox/triage", {
+                "source": "android", "source_id": ids["android"],
+                "operation": "resolve_fixed", "fix_kind": "app_update",
+                "expected_revision": 0,
+            })
+        self.assertEqual(fixed.status_code, 200, fixed.text)
+        async with self.sessions() as db:
+            notice = (await db.scalars(select(AccountNoticeDelivery))).one()
+            self.assertTrue(notice.title and notice.body)
+            self.assertEqual(notice.user_id, 2)
+
+    async def test_unrelated_inbox_actions_never_enqueue_a_fixed_notice(self):
+        ids = await self.seed()
+        bad = await self.post("inbox/triage", {
+            "source": "bot", "source_id": ids["bot"],
+            "operation": "resolve_fixed", "fix_kind": "server",
+            "expected_revision": 0,
+        })
+        self.assertEqual(bad.status_code, 400)
+        invalid = await self.post("inbox/triage", {
+            "source": "android", "source_id": ids["android"],
+            "operation": "mark_read", "fix_kind": "server",
+            "expected_revision": 0,
+        })
+        self.assertEqual(invalid.status_code, 400)
+        unpublished = await self.post("inbox/triage", {
+            "source": "android", "source_id": ids["android"],
+            "operation": "resolve_fixed", "fix_kind": "app_update",
+            "expected_revision": 0,
+        })
+        self.assertEqual(unpublished.status_code, 409)
+        marked = await self.post("inbox/triage", {
+            "source": "android", "source_id": ids["android"],
+            "operation": "resolve", "expected_revision": 0,
+        })
+        self.assertEqual(marked.status_code, 200, marked.text)
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(AccountNoticeDelivery)), 0)
 
     async def test_technical_alert_is_private_triable_and_never_arbitrary_message(self):
         from app.db.models.message import Message

@@ -2616,6 +2616,14 @@ function inboxDetails(row) {
       '<p class="inbox-feedback-reward">🎁 '+esc(t('inboxFeedbackBonus'))+': <strong>'+
       esc(t(row.reward_granted?'inboxFeedbackGranted':'inboxFeedbackNotGranted'))+'</strong></p>':'')+
     '</div>':'<p class="inbox-details-text">'+esc(source==='technical'?inboxTechnicalSummary(row):row.message||(source==='payment'?t('inboxPaymentReceipt'):t('empty')))+'</p>';
+  const androidFix=source==='android'&&userId&&row.triage_status!=='resolved'?
+    '<div class="inbox-detail-toolbar inbox-fix-toolbar">'+
+    '<button type="button" class="btn primary" data-inbox-fixed="server" data-fix-source="android" data-fix-id="'+id+'">'+
+    icon('check')+esc(fixText('fixed'))+'</button>'+
+    '<button type="button" class="btn" data-inbox-fixed="app_update" data-fix-source="android" data-fix-id="'+id+'">'+
+    icon('device')+esc(fixText('apk'))+'</button></div>':'';
+  const fixedStatus=source==='android'&&row.triage_status==='resolved'?
+    '<p class="inbox-feedback-reward">'+esc(fixText('fixed'))+'</p>':'';
   const actions=info&&userId?'<div class="inbox-detail-toolbar">'+
     '<button type="button" class="btn primary" data-message-user="'+userId+'">'+icon('send')+esc(t('inboxFeedbackReply'))+'</button>'+
     '<button type="button" class="btn" data-user-detail="'+userId+'">'+icon('user')+esc(t('openProfile'))+'</button>'+
@@ -2632,9 +2640,16 @@ function inboxDetails(row) {
     (canView?'<button type="button" class="btn" data-inbox-attachment="'+id+'" data-attachment-source="'+source+
       '" aria-controls="'+attachmentId+'" aria-expanded="false">'+esc(t('viewAttachment'))+'</button>'+
       '<div class="inbox-attachment" id="'+attachmentId+'" aria-live="polite" hidden></div>':'')+
-    actions+'</div>';
+    fixedStatus+androidFix+actions+'</div>';
 }
 let currentInboxRows=[];
+let activeInboxDetail=null,inboxFixing=false;
+const fixLabels={
+  uz:{fixed:'Тузатилди ✅',apk:'Янги версияда тузатилди 📲',confirm:'Муаммо ҳақиқатан ҳал қилинганини тасдиқлайсизми? Фойдаланувчига хабар юборилади.',queued:'Хатолик тузатилди. Фойдаланувчига хабар навбатга қўйилди ✅'},
+  ru:{fixed:'Исправлено ✅',apk:'Исправлено в новой версии 📲',confirm:'Проблема действительно исправлена? Пользователь получит уведомление.',queued:'Исправлено. Уведомление пользователю поставлено в очередь ✅'},
+  tj:{fixed:'Ислоҳ шуд ✅',apk:'Дар версияи нав ислоҳ шуд 📲',confirm:'Мушкил воқеан ҳал шуд? Ба корбар огоҳинома фиристода мешавад.',queued:'Ислоҳ шуд. Огоҳинома барои корбар ба навбат гузошта шуд ✅'}
+};
+const fixText=key=>(fixLabels[locale]||fixLabels.uz)[key];
 function inboxRequest(before=null,userId=feedbackUserId,requestSignal=null) {
   return api('inbox/list',{source:'all',priority:'all',status:'all',period:'all_time',
     search:null,user_id:userId,before,limit:30},{requestSignal});
@@ -2760,6 +2775,40 @@ async function markAllInboxRead(){
     }
   }
 }
+async function resolveInboxFix(source,id,mode){
+  if(inboxFixing||!state.actor||source!=='android'||!['server','app_update'].includes(mode))return;
+  const row=currentInboxRows.find(item=>item.source===source&&item.source_id===id);
+  if(!row||row.triage_status==='resolved'||!Number.isSafeInteger(row.user_id)||row.user_id<1)return;
+  if(!window.confirm(fixText('confirm')))return;
+  const buttons=[...document.querySelectorAll('[data-inbox-fixed]')];
+  inboxFixing=true;
+  for(const button of buttons){button.disabled=true;button.setAttribute('aria-busy','true');}
+  const at=epoch,current=drawerId;
+  try{
+    const result=await api('inbox/triage',{source,source_id:id,operation:'resolve_fixed',
+      fix_kind:mode,expected_revision:row.triage_revision});
+    if(at!==epoch||current!==drawerId||!state.actor)return;
+    if(result.status!=='resolved'||result.notice_queued!==true)throw new Error('invalid_fix_receipt');
+    Object.assign(row,{triage_status:result.status,triage_revision:result.revision,
+      triage_resolved_at:result.resolved_at});
+    if(activeInboxDetail?.source===source&&activeInboxDetail?.source_id===id){
+      activeInboxDetail={...activeInboxDetail,...row};
+      const panel=document.querySelector('.inbox-details');
+      if(panel)panel.outerHTML=inboxDetails(activeInboxDetail);
+    }
+    await refreshInboxUnread();
+    clearNotice();
+    const notice=$('notice');
+    if(notice){notice.textContent=fixText('queued');notice.classList.add('show');}
+  }catch(error){
+    if(at===epoch&&current===drawerId){
+      showNotice(error.status===409?'inboxChanged':'inboxActionError');
+    }
+  }finally{
+    inboxFixing=false;
+    for(const button of buttons){if(button.isConnected){button.disabled=false;button.removeAttribute('aria-busy');}}
+  }
+}
 async function openInbox(source,id) {
   if(inboxUpdating||!state.actor)return;
   const row=currentInboxRows.find(item=>item.source===source&&item.source_id===id);
@@ -2790,6 +2839,7 @@ async function openInbox(source,id) {
       if(detail.source!==source||detail.source_id!==id)throw Error('invalid_feedback_detail');
       opened={...row,...detail};
     }
+    activeInboxDetail=opened;
     drawer('feedback',inboxDetails(opened),null,'inbox-drawer');
     drawerBack=()=>renderInboxList(inboxListScrollTop);
   }catch(error){
@@ -3277,6 +3327,7 @@ document.addEventListener('click',event=>{
       const match=/^(bot|release|android|payment|technical):([1-9][0-9]*)$/.exec(button.dataset.inboxOpen);
       if(match)await openInbox(match[1],Number(match[2]));
     }
+    else if(button.dataset.inboxFixed){await resolveInboxFix(button.dataset.fixSource,Number(button.dataset.fixId),button.dataset.inboxFixed);}
     else if(button.hasAttribute('data-inbox-mark-all')){await markAllInboxRead();}
     else if(button.dataset.inboxAttachment){await viewInboxAttachment(button);}
     else if(button.dataset.pushRevoke){await revokePush(button.dataset.pushRevoke);}
