@@ -17,6 +17,8 @@ on:
       - "android/app/src/test/java/com/pomp/hskai/core/navigation/DeepLinkRouterTest.kt"
       - "android/app/src/main/java/com/pomp/hskai/core/navigation/DeepLinkRouter.kt"
       - "android/app/src/test/java/com/pomp/hskai/widget/WidgetStoreTest.kt"
+      - "android/app/src/test/java/com/pomp/hskai/data/repository/CourseRepositoryTest.kt"
+      - "android/app/src/main/java/com/pomp/hskai/data/repository/CourseRepository.kt"
       - "android/app/src/androidTest/java/com/pomp/hskai/core/notify/**"
       - ".github/workflows/smart-reminder-p0.yml"
   push:
@@ -38,6 +40,8 @@ on:
       - "android/app/src/test/java/com/pomp/hskai/core/navigation/DeepLinkRouterTest.kt"
       - "android/app/src/main/java/com/pomp/hskai/core/navigation/DeepLinkRouter.kt"
       - "android/app/src/test/java/com/pomp/hskai/widget/WidgetStoreTest.kt"
+      - "android/app/src/test/java/com/pomp/hskai/data/repository/CourseRepositoryTest.kt"
+      - "android/app/src/main/java/com/pomp/hskai/data/repository/CourseRepository.kt"
       - "android/app/src/androidTest/java/com/pomp/hskai/core/notify/**"
       - ".github/workflows/smart-reminder-p0.yml"
   workflow_dispatch:
@@ -117,17 +121,19 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: true
-      - name: Test Play reminder decision, scheduling and deep links
+      - name: Test Play reminders, deep links and offline map authority
         run: |
           ./gradlew --no-daemon testPlayDebugUnitTest \
             --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
             --tests "com.pomp.hskai.core.notify.ReminderScheduleTest" \
             --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest" \
-            --tests "com.pomp.hskai.widget.WidgetStoreTest"
-      - name: Test Direct reminder decision, scheduling and deep links
+            --tests "com.pomp.hskai.widget.WidgetStoreTest" \
+            --tests "com.pomp.hskai.data.repository.CourseRepositoryTest"
+      - name: Test Direct reminders, deep links and offline map authority
         run: |
           ./gradlew --no-daemon testDirectDebugUnitTest \
             --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
             --tests "com.pomp.hskai.core.notify.ReminderScheduleTest" \
             --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest" \
-            --tests "com.pomp.hskai.widget.WidgetStoreTest"
+            --tests "com.pomp.hskai.widget.WidgetStoreTest" \
+            --tests "com.pomp.hskai.data.repository.CourseRepositoryTest"
