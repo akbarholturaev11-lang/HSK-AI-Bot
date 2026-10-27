@@ -186,7 +186,9 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
             model = _SOURCES[command.source]
             columns = [model.id]
             if command.source == "android":
-                columns.extend((model.expires_at, model.user_id, model.app_version))
+                columns.append(model.expires_at)
+                if command.operation == "resolve_fixed":
+                    columns.extend((model.user_id, model.app_version))
             elif command.source == "payment":
                 columns.extend((model.payment_status, model.screenshot_file_id))
             source_row = (await db.execute(select(*columns).where(
