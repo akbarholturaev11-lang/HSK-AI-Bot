@@ -129,6 +129,7 @@ import com.pomp.hskai.feature.limit.rememberLimitGate
 import com.pomp.hskai.feature.subscription.SubscriptionCheckoutHost
 import com.pomp.hskai.feature.update.MandatoryUpdateGate
 import com.pomp.hskai.feature.update.UpdateInstallMonitor
+import com.pomp.hskai.feature.update.UpdateNoticeScreen
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.data.api.ChallengeDto
 import com.pomp.hskai.data.api.RatingEntryDto
@@ -427,6 +428,7 @@ private fun AppRoot(
                 .collectAsStateWithLifecycle(initialValue = false)
             var limitOverlayVisible by remember { mutableStateOf(false) }
             var widgetSetupOpen by remember { mutableStateOf(false) }
+            var updateNoticeOpen by rememberSaveable { mutableStateOf(false) }
             var widgetPlacedNotice by remember { mutableStateOf(false) }
             var widgetPromptFromOnboarding by rememberSaveable { mutableStateOf(false) }
             var widgetOfferHandled by rememberSaveable { mutableStateOf(false) }
@@ -1058,7 +1060,12 @@ private fun AppRoot(
                 dictionaryOpen = false
                 val destinationTab = destination.toTab()
                 selectedTab = destinationTab ?: selectedTab
+                updateNoticeOpen = false
                 when (destination) {
+                    AppDestination.Update -> {
+                        updateNoticeOpen = true
+                        onDestinationConsumed()
+                    }
                     AppDestination.CurrentLesson,
                     is AppDestination.Lesson,
                     -> {
@@ -1129,7 +1136,9 @@ private fun AppRoot(
             }
 
             val launch = openLesson
-            if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && checkoutVisible) {
+            if (updateNoticeOpen) {
+                UpdateNoticeScreen(onClose = { updateNoticeOpen = false })
+            } else if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED && checkoutVisible) {
                 SubscriptionCheckoutHost(
                     repository = app.featureRepository,
                     viewModelStoreOwner = sessionOwner,
