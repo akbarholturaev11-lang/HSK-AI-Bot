@@ -140,7 +140,7 @@
     <string name="update_card_title">Yangi versiya %1$s</string>
     <string name="update_card_subtitle">%1$s · yangilash uchun bosing</string>
     <string name="update_card_downloading">Yuklanmoqda · %1$d%%</string>
-    <string name="update_card_downloaded">Yuklandi · 100% — o‘rnatish uchun bosing</string>
+    <string name="update_card_downloaded">Yuklandi · o‘rnatishga tayyor</string>
     <string name="update_card_failed">Yuklab bo‘lmadi — qayta urinib ko‘ring</string>
     <string name="update_card_permission">O‘rnatishga ruxsat bering</string>
     <string name="update_card_permission_hint">Android sozlamalari ochiladi</string>
@@ -151,7 +151,7 @@
     -->
     <string name="update_banner_text">Yangi versiya %1$s — yangilash uchun bosing</string>
     <string name="update_banner_downloading">Yuklanmoqda · %1$d%%</string>
-    <string name="update_banner_downloaded">Yuklandi · 100% — o‘rnatish uchun bosing</string>
+    <string name="update_banner_downloaded">Yuklandi · o‘rnatishga tayyor</string>
     <string name="update_banner_failed">Yuklab bo‘lmadi — qayta urinib ko‘ring</string>
     <string name="update_banner_permission">O‘rnatishga ruxsat bering — yangilash uchun bosing</string>
     <string name="update_channel_name">Ilova yangilanishlari</string>
@@ -162,7 +162,7 @@
     <string name="update_gate_body">Davom etish uchun ilovaning yangi versiyasi kerak.</string>
     <string name="update_gate_button">Ilovani yangilang</string>
     <string name="update_gate_downloading">Yuklanmoqda · %1$d%%</string>
-    <string name="update_gate_downloaded">Yuklandi. O‘rnatishni boshlash uchun tugmani bosing.</string>
+    <string name="update_gate_downloaded">Yuklandi. O‘rnatish oynasi ochiladi.</string>
     <string name="update_gate_failed">Yuklab bo‘lmadi. Qayta urinib ko‘ring.</string>
     <string name="update_gate_permission">Yangilashdan oldin ilovani o‘rnatishga ruxsat bering.</string>
     <string name="sub_hsk30_pending_title">So‘rovingiz tekshiruvda</string>
