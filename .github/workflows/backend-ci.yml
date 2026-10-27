@@ -90,6 +90,7 @@ on:
       - "tests/test_native_account_concurrency.py"
       - "tests/test_telegram_identity_link.py"
       - "tests/test_native_hsk30_payments.py"
+      - "tests/test_native_course_lesson_locking.py"
       - "tests/test_payment_service_receipt_lock.py"
       - "tests/test_native_account_statistics.py"
       - "tests/test_native_purge_ownership.py"
@@ -385,6 +386,7 @@ jobs:
           python -m pytest -q -rs --tb=short \
             tests/test_native_account_concurrency.py \
             tests/test_miniapp_course_map_concurrency.py \
+            tests/test_native_course_lesson_locking.py \
             tests/test_native_oauth_lifecycle.py::NativeOAuthConcurrencyTests \
             tests/test_telegram_identity_link.py::TelegramIdentityConcurrencyTests \
             tests/test_i18n_native_payment_repository.py::NativePaymentConcurrencyTests \

@@ -498,7 +498,9 @@ class DesktopCourseService:
         access_ref: str = "",
     ) -> dict[str, Any]:
         context = await self._context(access_token)
-        user = context.user
+        # Match map/completion lock order: account first, then progress.
+        # Reversing these locks can deadlock a concurrent map refresh.
+        user = await self._locked_context_user(context)
         level = self._level(user)
         lesson_order = int(lesson_order)
         total = total_parts(level)
