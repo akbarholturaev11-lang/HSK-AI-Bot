@@ -19,8 +19,6 @@ object AccountNoticePolicy {
         "trial_expiring" to 3,
         "daily_limit_renewed" to 4,
         "discount_offer" to 5,
-        "feedback_fixed" to 6,
-        "feedback_update" to 7,
     )
 
     fun notificationId(key: String): Int = BASE_ID + (SLOTS[key.trim()] ?: 0)
@@ -28,9 +26,7 @@ object AccountNoticePolicy {
     /** Consumption-only Play accepts only the known, neutral course reminder. */
     fun canShow(key: String, action: String, externalCheckoutEnabled: Boolean): Boolean =
         externalCheckoutEnabled ||
-            ((key.trim() == "daily_limit_renewed" ||
-                key.trim() == "feedback_fixed" ||
-                key.trim() == "feedback_update") && action.trim() == "course")
+            (key.trim() == "daily_limit_renewed" && action.trim() == "course")
 
     /** Remove old Direct offers from the shade without cancelling neutral notices. */
     fun playSuppressedNotificationIds(): Set<Int> =
