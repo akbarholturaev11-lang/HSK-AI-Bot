@@ -18,7 +18,7 @@ from app.admin_api.pwa_webauthn_transport import _body, _guard_post
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.admin_api.pwa_push_outbox import enqueue_important_triage
-from app.services.admin_feedback_resolution import enqueue_android_fix_notice
+from app.services.admin_feedback_resolution import enqueue_android_fix_notice, published_version_is_newer
 from app.services.android_release_service import AndroidReleaseService
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.payment import Payment
@@ -235,7 +235,7 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
                     # downloadable newer release is live on the update endpoint.
                     release = await AndroidReleaseService(db).serve()
                     if (release is None or not release.can_self_update or
-                            release.version_name == source_row.app_version):
+                            not published_version_is_newer(source_row.app_version, release.version_name)):
                         raise TriageConflict()
             row.read_at = row.read_at or stamp
             row.status = "resolved"
