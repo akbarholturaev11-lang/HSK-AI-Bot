@@ -17,6 +17,16 @@ def response(*items):
 
 
 class PlayReleaseHistoryTests(unittest.TestCase):
+    def test_workflow_is_read_only_and_never_opens_a_play_edit(self):
+        from pathlib import Path
+        workflow = (Path(__file__).resolve().parents[1] /
+                    ".github/workflows/android-play-release-mirror.yml").read_text()
+        self.assertIn("/tracks/production/releases", workflow)
+        self.assertNotIn("--request POST", workflow)
+        self.assertNotIn("--request DELETE", workflow)
+        self.assertNotIn("/edits", workflow)
+        self.assertIn("ANDROID_PLAY_RELEASE_SYNC_ENABLED", workflow)
+
     def test_only_published_production_releases_count(self):
         data = response(
             release(10, 11), release(25),
