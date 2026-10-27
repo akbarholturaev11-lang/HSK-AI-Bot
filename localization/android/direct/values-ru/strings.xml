@@ -139,7 +139,7 @@
     <string name="update_card_title">Новая версия %1$s</string>
     <string name="update_card_subtitle">%1$s · нажмите, чтобы обновить</string>
     <string name="update_card_downloading">Загрузка · %1$d%%</string>
-    <string name="update_card_downloaded">Загружено · 100% — нажмите, чтобы установить</string>
+    <string name="update_card_downloaded">Загружено · готово к установке</string>
     <string name="update_card_failed">Не удалось загрузить — попробуйте ещё раз</string>
     <string name="update_card_permission">Разрешите установку</string>
     <string name="update_card_permission_hint">Откроются настройки Android</string>
@@ -150,7 +150,7 @@
     -->
     <string name="update_banner_text">Новая версия %1$s — нажмите, чтобы обновить</string>
     <string name="update_banner_downloading">Загрузка · %1$d%%</string>
-    <string name="update_banner_downloaded">Загружено · 100% — нажмите, чтобы установить</string>
+    <string name="update_banner_downloaded">Загружено · готово к установке</string>
     <string name="update_banner_failed">Не удалось загрузить — попробуйте ещё раз</string>
     <string name="update_banner_permission">Разрешите установку — нажмите, чтобы обновить</string>
     <string name="update_channel_name">Обновления приложения</string>
@@ -161,7 +161,7 @@
     <string name="update_gate_body">Чтобы продолжить, установите новую версию приложения.</string>
     <string name="update_gate_button">Обновить приложение</string>
     <string name="update_gate_downloading">Загрузка · %1$d%%</string>
-    <string name="update_gate_downloaded">Загружено. Нажмите кнопку, чтобы начать установку.</string>
+    <string name="update_gate_downloaded">Загружено. Откроется окно установки.</string>
     <string name="update_gate_failed">Не удалось загрузить. Попробуйте ещё раз.</string>
     <string name="update_gate_permission">Разрешите установку приложения перед обновлением.</string>
     <string name="sub_hsk30_pending_title">Ваша заявка на проверке</string>
