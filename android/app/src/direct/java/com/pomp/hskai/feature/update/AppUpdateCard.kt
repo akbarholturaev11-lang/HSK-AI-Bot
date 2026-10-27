@@ -178,6 +178,7 @@ private val downloadClient: OkHttpClient by lazy {
 internal fun fetchRelease(
     context: Context,
     nowMillis: Long = System.currentTimeMillis(),
+    forceRefresh: Boolean = false,
 ): UpdateRelease? = synchronized(updateCheckLock) {
     // QA is installed beside production. No release cache/network response may
     // offer an APK that changes the server or collides with the release app.
@@ -195,7 +196,7 @@ internal fun fetchRelease(
         null
     }
 
-    if (
+    if (!forceRefresh &&
         AppUpdate.isCheckCacheFresh(
             checkedAtMillis = checkedAt,
             nowMillis = nowMillis,
