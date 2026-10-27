@@ -5,6 +5,7 @@ same transaction, so a retry, process restart or double tap cannot silently
 create multiple notifications.
 """
 from datetime import datetime, timezone
+import re
 
 from sqlalchemy import select
 
@@ -27,6 +28,19 @@ _FIX_COPY = {
         ("Хатогӣ ислоҳ шуд ✅", "Версияи нав омода аст. Барномаро нав кунед ва дарсро давом диҳед! 🔥"),
     ),
 }
+
+
+_RELEASE_VERSION = re.compile(r"^[0-9]+(?:\\.[0-9]+){1,3}$")
+
+
+def published_version_is_newer(installed: str, published: str) -> bool:
+    """Fail closed if client/server cannot compare the two actual APK versions."""
+    if not _RELEASE_VERSION.fullmatch(installed.strip()) or not _RELEASE_VERSION.fullmatch(published.strip()):
+        return False
+    def parts(value: str) -> tuple[int, ...]:
+        values = [int(x) for x in value.split(".")]
+        return tuple((values + [0, 0, 0, 0])[:4])
+    return parts(published) > parts(installed)
 
 
 def fixed_notice_copy(lang: str, mode: str) -> tuple[str, str]:
