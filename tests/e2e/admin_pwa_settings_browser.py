@@ -66,6 +66,7 @@ from app.services.desktop_app_promo_settings_service import get_desktop_app_prom
 from app.services.subscription_price_service import SubscriptionPriceService
 from app.services import course_ad_service
 from app.services.support_contact_service import ADMIN_CONTACT_KEY
+from app.services.android_update_policy_service import ANDROID_UPDATE_ALLOWED_VERSIONS_KEY
 from app.services.broadcast_translation_service import decode_localized_broadcast_text
 from tests.test_admin_pwa_payment_review import COOKIE, PaymentFixtures
 from tests.test_admin_pwa_webauthn_crypto_vectors import CRED_ID, HANDLE
@@ -450,6 +451,25 @@ async def browser_checks(output, *, media_only=False):
                     await page.locator("#settingValue").fill(f"QA {bank} bank\nAccount 1234")
                     await prepare_and_save("uz")
                 await navigate("system", 1440)
+                # Real native browser flow: setting renders, save enables only
+                # on a changed choice, WebAuthn signs the command, DB persists.
+                await expect(page.locator('[data-setting-kind="android_update"]')).to_be_visible()
+                await page.locator('[data-setting-kind="android_update"]').click()
+                await expect(page.locator("#androidAllowedVersions")).to_be_visible()
+                assert await page.locator("#androidAllowedVersions option").count() == 4
+                assert await page.locator("#androidAllowedVersions").input_value() == "4"
+                await expect(page.locator('[data-action="managementPrepare"]')).to_be_disabled()
+                await page.locator("#androidAllowedVersions").select_option("2")
+                await expect(page.locator('[data-action="managementPrepare"]')).to_be_enabled()
+                await page.locator("#androidAllowedVersions").select_option("4")
+                await expect(page.locator('[data-action="managementPrepare"]')).to_be_disabled()
+                await page.locator("#androidAllowedVersions").select_option("2")
+                await prepare_and_save("uz")
+                async with fixture.sessions() as db:
+                    assert await BotSettingRepository(db).get(ANDROID_UPDATE_ALLOWED_VERSIONS_KEY) == "2"
+                await page.locator('[data-setting-kind="android_update"]').click()
+                assert await page.locator("#androidAllowedVersions").input_value() == "2"
+                await close_or_wait()
                 await page.locator('[data-setting-kind="ai_model"]').click()
                 await expect(page.locator("#settingModel")).to_be_visible()
                 models = await page.locator("#settingModel option").evaluate_all("rows=>rows.map(r=>r.value)")

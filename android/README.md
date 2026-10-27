@@ -269,8 +269,9 @@ Secrets it needs, beyond the `R2_*` ones the desktop release already uses:
 | `POMP_ANDROID_KEY_ALIAS` | `pomp-hskai` |
 | `POMP_ANDROID_KEY_PASSWORD` | the key password |
 
-Uploading the APK to the bot is still a manual step — Telegram holds the file
-itself, and only an admin chat can hand it over.
+For manifest-backed releases the Telegram bot can download the verified R2 APK
+once and cache Telegram's `file_id` automatically. Manual admin upload stays
+available for bot-only releases when no manifest is configured.
 
 ## In-app updates, and why only one flavour has them
 
@@ -278,13 +279,12 @@ Android cannot update a sideloaded app silently. The system always shows its
 own install confirmation, so the `direct` build's update is one tap and then
 that dialog — never a background swap the way the Tauri desktop client does it.
 
-The Play build has none of it. Google Play forbids an app it distributes from
-updating itself by any other route, so this is a source set rather than a
-runtime flag: `src/direct` holds the card, the downloader,
-`REQUEST_INSTALL_PACKAGES` and the `FileProvider`, and `src/play` holds a
-composable that renders nothing. The permission and the provider are simply
-not in the Play APK — check with
-`aapt2 dump badging <apk> | grep REQUEST_INSTALL_PACKAGES`.
+The Play build has **no sideload APK installer**, because Google Play updates
+must be delivered by Google Play. The source sets enforce this separation:
+`src/direct` holds the APK card, downloader, `REQUEST_INSTALL_PACKAGES`
+and `FileProvider`; `src/play` instead contains a Google Play Core
+Immediate Update gate. It does **not** include those APK-install components.
+Verify its manifest lacks `REQUEST_INSTALL_PACKAGES` using `aapt2`.
 
 How it works:
 
@@ -300,7 +300,7 @@ How it works:
    it: an update is not urgent enough to stand between someone and the lesson
    they opened the app for.
 3. The first check to see a release posts **one** notification, on its own
-   `app_updates` channel, and writes the version code down so the same release
+   `app_updates_alerts` channel, and writes the version code down so the same release
    is never announced twice — not the next day, not after a reinstall.
    `POST_NOTIFICATIONS` is asked for once, at the end of onboarding
    (`NotificationPrimerScreen`), for both kinds of notification at once —
@@ -308,14 +308,30 @@ How it works:
    after two refusals, so there is no second chance to spend. Granting it also
    switches the evening study reminder on. Refusing costs nothing: the card
    and the banner do not depend on it, and the question is not asked again.
-4. Two releases behind (`AppUpdate.NUDGE_AFTER_MISSED_RELEASES`), a bar appears
-   above the tab bar and stays until the install is newer. At three releases
-   behind (`FORCE_UPDATE_AFTER_MISSED_RELEASES`), the Direct build replaces the
-   app UI with a mandatory update screen; its only action downloads or installs
-   the current APK. The Play build does not include this self-update gate.
-5. Tapping the card, bar or mandatory update action downloads the APK to
-   `filesDir/updates/update-<versionCode>.apk`, checks the size against what the
-   server announced, and opens the system installer.
+4. The Direct-only legacy nudge banner appears at a **versionCode gap of 2**;
+   this is an informational hint, **not** how mandatory release counting works.
+   The common mandatory gate is controlled by Admin PWA with a choice of
+   **last 1, 2, 3 or 4 actually published releases** (default 4). A shared
+   `/api/v3/android-update/policy?channel=direct|play` endpoint returns the
+   oldest allowed published version code for that specific channel. If the
+   ledger is unavailable/incomplete or has fewer than N verified releases,
+   the server returns a null minimum: do not block on guesses.
+5. Direct retrieves the confirmed release list from the R2 `android/latest.json`
+   manifest (`published_version_codes`); the existing manual release workflow
+   appends it only after publishing. Its update card/banner/gate still downloads
+   the current signed APK into `filesDir/updates/update-<versionCode>.apk`,
+   verifies size and asks the Android system installer to confirm it.
+6. Play retrieves only the separately confirmed Google Play **production**
+   publication history from R2 `android/play-releases.json`, written by the
+   opt-in `android-play-release-mirror.yml` job after Google Play Developer
+   API verification. The installed Play app also requires Play Core to report
+   a real available update and then uses Immediate Update/Play Store, **never**
+   an APK URL. The mirror requires the Play API service-account secret and an
+   explicit enabled repository variable; Play Preflight merely builds an AAB,
+   and publishing that AAB in Play Console is a separate decision.
+7. An already installed older Android binary cannot learn this new gate
+   until that binary itself has been updated. Runtime network failure is
+   fail-open, to prevent making an unreachable app unrepairable.
 
 Android refuses an update signed by a different key, so a swapped file cannot
 replace the app with something else. The size check catches the one thing that

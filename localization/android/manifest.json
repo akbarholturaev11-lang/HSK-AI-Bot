@@ -44,7 +44,10 @@
     "main/values/theme_mode.xml",
     "main/values/widget_strings.xml",
     "play/values-ru/strings.xml",
+    "play/values-ru/update_policy.xml",
     "play/values-tg/strings.xml",
-    "play/values/strings.xml"
+    "play/values-tg/update_policy.xml",
+    "play/values/strings.xml",
+    "play/values/update_policy.xml"
   ]
 }

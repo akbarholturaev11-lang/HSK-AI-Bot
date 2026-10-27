@@ -181,16 +181,17 @@ class AppUpdateTest {
     }
 
     @Test
-    fun `mandatory update starts after three missed releases`() {
+    fun `mandatory gate uses exact Direct published release boundary`() {
         val release = UpdateRelease(
             versionName = "1.7.6",
             versionCode = 40,
             url = "https://pub-example.r2.dev/hsk-ai-1.7.6-40-direct-release.apk",
         )
-
-        assertFalse(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 38))
-        assertTrue(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 37))
-        assertTrue(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 36))
+        // Actual releases 10, 18, 32, 40. Code gaps are irrelevant.
+        assertFalse(AppUpdate.isMandatoryUpdate(release, 10, minimumSupportedVersionCode = 10))
+        assertTrue(AppUpdate.isMandatoryUpdate(release, 9, minimumSupportedVersionCode = 10))
+        assertTrue(AppUpdate.isMandatoryUpdate(release, 18, minimumSupportedVersionCode = 32))
+        assertFalse(AppUpdate.isMandatoryUpdate(release, 9, minimumSupportedVersionCode = null))
     }
 
     @Test

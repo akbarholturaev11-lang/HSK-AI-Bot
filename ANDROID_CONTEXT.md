@@ -74,13 +74,14 @@ build'da ekanini bilmay chaqiradi.
   bo‘lsa ko‘rsatadi; u Telegram `file_id`ning o‘zi bilan link yasamaydi va
   URL albatta R2 bo‘lishi shart emas. Backendning stable route’i
   `/downloads/android`; joriy release manbasi `ANDROID_RELEASE_CHECKLIST.md`da.
-- Yangilanishdan xabar berish (faqat `direct`): ilova ochilganda va kuniga bir
+- Yangi (PR #247, hali live emas) Android update policy: Admin PWA sozlamasidagi 1–4 tanlov haqiqatan **e’lon qilingan release** sonidir, `versionCode` farqi emas. Direct R2 `android/latest.json` ichidagi `published_version_codes` tarixidan oladi va avvalgi APK installerini saqlaydi. Play esa Google Play Developer API’ning production track ma’lumotidan faqat tasdiqlangan release’larni R2’dagi alohida `android/play-releases.json`ga mirror qiladi (`android-play-release-mirror.yml`, opt-in). Play Core faqat Google Play orqali hozirgi qurilmaga mavjud yangi versiyani tasdiqlasa Immediate Update ochiladi. Eski tarix yetarli bo‘lmasa yoki Play sync yoqilmagan bo‘lsa, noto‘g‘ri lock qilinmaydi. Yangi qoida faqat yangilangan Android binary’dagi mijozlarda ishlaydi.
+- Yangilanishdan xabar berish (faqat `direct`, majburiy oynadan alohida): ilova ochilganda va kuniga bir
   marta fonda `…/android-update/check` so'raladi (`UpdateWatch`). Har release
   uchun **bitta** bildirishnoma (`app_updates_alerts` kanali, `UpdateNotices`), va
   `versionCode` farqi ≥ 2 bo'lsa tab paneli ustida yopib bo'lmaydigan qator
   (`AppUpdateBanner`); farq 1 bo'lsa yangilanish faqat profildagi kartada
-  ko‘rsatiladi. Threshold sonli farqni ishlatadi, published release sonini
-  emas; code increment convention workflow’da qat’iy tekshirilmaydi.
+  ko‘rsatiladi. Bu faqat ixtiyoriy xabar/banner threshold’i; majburiy
+  yangilash oynasi real nashr qilingan release tarixi bilan hisoblanadi.
 - Release avtomati `.github/workflows/android-release.yml` orqali qo‘lda
   (`workflow_dispatch`) boshlanadi. Workflow’da `main` branch bilan cheklov
   yo‘q; manifestdan past `versionCode` rad etiladi. Release tanlash, publish
