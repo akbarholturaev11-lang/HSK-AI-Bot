@@ -149,6 +149,24 @@ def check_native_libraries(path: Path, *, apk: bool) -> list[str]:
     return sorted(names)
 
 
+def check_language_splits(config: dict) -> None:
+    # Account/login language choices are independent of the device language.
+    # Without this, Play may omit RU/TG while API content still uses that choice.
+    message = (
+        "AAB must disable LANGUAGE splits (bundle.language.enableSplit = false) "
+        "so UZ/RU/TJ resources are always installed"
+    )
+    require(isinstance(config, dict), message)
+    optimizations = config.get("optimizations")
+    require(isinstance(optimizations, dict), message)
+    splits = optimizations.get("splitsConfig")
+    require(isinstance(splits, dict), message)
+    dimensions = splits.get("splitDimension")
+    require(isinstance(dimensions, list) and all(isinstance(item, dict) for item in dimensions), message)
+    language = [item for item in dimensions if item.get("value") == "LANGUAGE"]
+    require(len(language) == 1 and language[0].get("negate") is True, message)
+
+
 def validate(apk: Path, aab: Path, aapt2: Path, bundletool: Path) -> dict:
     require(sha256(bundletool) == BUNDLETOOL_SHA256, "bundletool SHA-256 differs from pinned official release")
     bundle_command = ("java", "-jar", str(bundletool))
@@ -161,11 +179,13 @@ def validate(apk: Path, aab: Path, aapt2: Path, bundletool: Path) -> dict:
     )
     libraries = check_native_libraries(aab, apk=False)
     require(libraries == check_native_libraries(apk, apk=True), "APK/AAB native libraries differ")
+    config = json.loads(run(*bundle_command, "dump", "config", f"--bundle={aab}"))
+    check_language_splits(config)
     if libraries:
-        config = json.loads(run(*bundle_command, "dump", "config", f"--bundle={aab}"))
         alignment = config.get("optimizations", {}).get("uncompressNativeLibraries", {}).get("alignment")
         require(alignment == "PAGE_ALIGNMENT_16K", "AAB must request PAGE_ALIGNMENT_16K")
-    return {**facts, "native_libraries": libraries, "apk_sha256": sha256(apk), "aab_sha256": sha256(aab)}
+    return {**facts, "language_splitting_enabled": False, "native_libraries": libraries,
+            "apk_sha256": sha256(apk), "aab_sha256": sha256(aab)}
 
 
 def main() -> None:
