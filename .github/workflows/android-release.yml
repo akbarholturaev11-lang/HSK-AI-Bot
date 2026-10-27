@@ -307,6 +307,21 @@ jobs:
             echo "::error::versionCode $APK_CODE is older than the published $previous_code"
             exit 1
           fi
+          # The immutable same-version contract must be enforced BEFORE
+          # refreshing latest.json, including on a cold backend cache.
+          # An equal code is only an idempotent repeat of identical bytes
+          # at the same link, not a new build with the same versionCode.
+          if [ "$APK_CODE" -eq "$previous_code" ] && [ "$previous_code" -gt 0 ]; then
+            prior_url="$(jq -er '.download_url' "$previous")"
+            prior_sha="$(jq -er '.sha256' "$previous")"
+            prior_size="$(jq -er '.size' "$previous")"
+            prior_name="$(jq -er '.version_name' "$previous")"
+            if [ "$prior_url" != "$url" ] || [ "$prior_sha" != "$APK_SHA256" ] || \
+               [ "$prior_size" != "$APK_SIZE" ] || [ "$prior_name" != "$APK_VERSION" ]; then
+              echo "::error::Cannot mutate a published Android release with the same versionCode"
+              exit 1
+            fi
+          fi
 
           # Only the published manifest proves a previous release was live.
           # Absent legacy history is NOT inferred from R2 artifact filenames.

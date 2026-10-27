@@ -54,6 +54,21 @@ def manifest_bytes(**overrides) -> bytes:
     return json.dumps(payload).encode()
 
 
+class DirectPublicationWorkflowSafetyTests(unittest.TestCase):
+    def test_same_version_may_not_mutate_artifact_even_before_backend_fetch(self):
+        from pathlib import Path
+        workflow = (Path(__file__).resolve().parents[1] /
+                    ".github/workflows/android-release.yml").read_text()
+        marker = 'if [ "$APK_CODE" -eq "$previous_code" ] && [ "$previous_code" -gt 0 ]; then'
+        self.assertIn(marker, workflow)
+        before_publish = workflow.split('aws s3 cp "$manifest" "s3://${R2_BUCKET}/android/latest.json"')[0]
+        guard = before_publish.split(marker)[-1]
+        for literal in ('prior_url', 'prior_sha', 'prior_size', 'prior_name',
+                        'Cannot mutate a published Android release with the same versionCode',
+                        'exit 1'):
+            self.assertIn(literal, guard)
+
+
 class ParsingTests(unittest.TestCase):
     def test_a_manifest_the_workflow_writes_is_read_back_whole(self):
         manifest = parse_android_release_manifest(manifest_bytes())
