@@ -55,6 +55,7 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 - The owner will perform real provider, upstream Voice and installed-client acceptance after code verification. Do not add person-level blocking/fingerprinting for unrelated new Google/Apple identities; the existing canonical account block and linked-provider protections remain.
 
 - Gemini Live supports both provider billing tiers; `GEMINI_BILLING_TIER` records real billing and must not be falsified to enable Live. Explicit Live flag, test Telegram allowlist, authenticated ownership/access checks, time and budget caps still apply to Mini App and native relay. Default rollout remains disabled.
+- Chinese Live practice sends a `zh-CN` input-transcription hint independently of the account's UZ/RU/TJ explanation language. SDK 1.75 exposes the type but rejects this field on the Developer API transport; the supported SDK 2.15 upgrade requires compatible Pydantic/Core/Aiogram pins together. Real SDK WebSocket and regular transcription HTTP regressions guard that compatibility; recognition quality still requires upstream audio verification. See `knowledge/bugs/live-voice-chinese-transcription-hints.md`.
 
 ## Important decisions and operational caveats
 

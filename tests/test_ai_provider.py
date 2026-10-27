@@ -1,5 +1,11 @@
+import base64
+import json
 import unittest
 from unittest.mock import AsyncMock, MagicMock
+
+import httpx
+from google import genai
+from google.genai import types
 
 from app.services import ai_provider
 from app.services.ai_provider import AIProviderChain, GEMINI_MODEL_OPTIONS
@@ -39,6 +45,44 @@ def _build_chain(*, gemini=False, openai=False, gemini_side_effect=None, openai_
 
 
 class AIProviderChainTests(unittest.IsolatedAsyncioTestCase):
+    async def test_native_transcription_preserves_audio_prompt_and_billed_usage_with_real_sdk(self):
+        requests = []
+
+        def respond(request):
+            requests.append(json.loads(request.content))
+            return httpx.Response(200, json={
+                "candidates": [{"content": {"parts": [{"text": "你好"}], "role": "model"}}],
+                "usageMetadata": {"promptTokenCount": 12, "candidatesTokenCount": 3, "totalTokenCount": 15},
+            })
+
+        client = genai.Client(
+            api_key="test-only",
+            http_options=types.HttpOptions(
+                async_client_args={"transport": httpx.MockTransport(respond)},
+            ),
+        )
+        chain = _build_chain()
+        chain._gemini_native = client
+        try:
+            async with client.aio:
+                text, usage, model = await chain._gemini_transcribe(
+                    audio_bytes=b"synthetic-audio",
+                    mime_type="audio/mp4",
+                    prompt="Transcribe Chinese as Hanzi.",
+                    model=ai_provider.GEMINI_FAST_MODEL,
+                )
+        finally:
+            client.close()
+
+        self.assertEqual(text, "你好")
+        self.assertEqual(usage, {"prompt_tokens": 12, "completion_tokens": 3, "total_tokens": 15})
+        self.assertEqual(model, ai_provider.GEMINI_FAST_MODEL)
+        self.assertEqual(len(requests), 1)
+        parts = requests[0]["contents"][0]["parts"]
+        self.assertEqual(base64.b64decode(parts[0]["inlineData"]["data"]), b"synthetic-audio")
+        self.assertEqual(parts[0]["inlineData"]["mimeType"], "audio/mp4")
+        self.assertEqual(parts[1]["text"], "Transcribe Chinese as Hanzi.")
+
     async def test_gemini_primary_used_and_params_normalized(self):
         chain = _build_chain(gemini=True, openai=True)
         _, model_used = await chain.chat_completion(

@@ -1,5 +1,6 @@
 """Exercise the WebSocket relay with the pinned SDK's real per-turn iterator."""
 import asyncio
+import json
 import unittest
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
@@ -11,6 +12,46 @@ from fastapi.testclient import TestClient
 from google.genai.live import AsyncSession
 
 from app.api.android_live_voice import create_android_live_voice_router
+from app.services.android_live_voice_service import connect_gemini_live
+
+
+class LiveChineseTranscriptionConfigTests(unittest.IsolatedAsyncioTestCase):
+    async def test_sdk_sends_chinese_input_hint_for_each_explanation_language(self):
+        """Exercise the pinned SDK's real Developer API setup serialization."""
+        for language, language_name in (("uz", "Uzbek"), ("ru", "Russian"), ("tj", "Tajik")):
+            with self.subTest(language=language):
+                messages = []
+
+                async def send(message):
+                    messages.append(json.loads(message))
+
+                @asynccontextmanager
+                async def websocket(*args, **kwargs):
+                    yield SimpleNamespace(
+                        send=send,
+                        recv=AsyncMock(return_value='{"setupComplete": {}}'),
+                    )
+
+                settings = SimpleNamespace(
+                    GEMINI_API_KEY="test-only",
+                    ANDROID_VOICE_LIVE_MODEL="gemini-3.8-live",
+                )
+                item = SimpleNamespace(
+                    role="friend", level="hsk1", language=language, voice="female",
+                    target_words=[], plan_json={}, history=[], live_resumption_handle=None,
+                )
+                with patch("google.genai.live.ws_connect", websocket):
+                    async with connect_gemini_live(settings, item):
+                        pass
+
+                setup = messages[0]["setup"]
+                self.assertEqual(setup["model"], "models/gemini-3.8-live")
+                # SDK 2.15 emits the original proto field name here. ProtoJSON
+                # accepts it as well as its languageCodes JSON alias.
+                self.assertEqual(setup["inputAudioTranscription"], {"language_codes": ["zh-CN"]})
+                # Chinese audio and the account's explanation language remain distinct.
+                self.assertEqual(setup["outputAudioTranscription"], {})
+                self.assertIn(language_name, str(setup["systemInstruction"]))
 
 
 class _Provider:
