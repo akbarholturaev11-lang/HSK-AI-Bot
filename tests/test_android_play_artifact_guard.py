@@ -32,6 +32,17 @@ TREE = """N: android=http://schemas.android.com/apk/res/android
 """
 
 
+def bundle_config():
+    return {"optimizations": {
+        "splitsConfig": {"splitDimension": [
+            {"value": "ABI"},
+            {"value": "SCREEN_DENSITY"},
+            {"value": "LANGUAGE", "negate": True},
+        ]},
+        "uncompressNativeLibraries": {"alignment": "PAGE_ALIGNMENT_16K"},
+    }}
+
+
 def elf(*, bits=64, alignment=guard.PAGE_SIZE, address=0, file_offset=0, endian="<"):
     data = bytearray(256)
     data[:7] = b"\x7fELF" + bytes((2 if bits == 64 else 1, 1 if endian == "<" else 2, 1))
@@ -157,7 +168,7 @@ class PlayArtifactValidationTests(unittest.TestCase):
             apk, aab = Path(folder) / "play.apk", Path(folder) / "play.aab"
             native_zip(apk)
             native_zip(aab, bundle=True, aligned=False)
-            config = {"optimizations": {"uncompressNativeLibraries": {"alignment": "PAGE_ALIGNMENT_16K"}}}
+            config = bundle_config()
 
             def execute(*args):
                 if "manifest" in args:
@@ -173,10 +184,62 @@ class PlayArtifactValidationTests(unittest.TestCase):
             with patch.object(guard, "sha256", return_value=guard.BUNDLETOOL_SHA256), patch.object(guard, "run", side_effect=execute) as command:
                 facts = guard.validate(apk, aab, Path("aapt2"), Path("bundletool.jar"))
                 self.assertEqual(facts["native_libraries"], ["lib/arm64-v8a/libfixture.so"])
+                self.assertIs(facts["language_splitting_enabled"], False)
                 self.assertTrue(any("validate" in call.args for call in command.call_args_list))
                 config["optimizations"]["uncompressNativeLibraries"]["alignment"] = "PAGE_ALIGNMENT_4K"
                 with self.assertRaisesRegex(ValueError, "PAGE_ALIGNMENT_16K"):
                     guard.validate(apk, aab, Path("aapt2"), Path("bundletool.jar"))
+
+
+    def test_language_config_is_checked_even_without_native_libraries(self):
+        with tempfile.TemporaryDirectory() as folder:
+            apk, aab = Path(folder) / "play.apk", Path(folder) / "play.aab"
+            for artifact in (apk, aab):
+                with zipfile.ZipFile(artifact, "w"):
+                    pass
+            config = bundle_config()
+
+            def execute(*args):
+                if "manifest" in args:
+                    return MANIFEST
+                if "badging" in args:
+                    return BADGING
+                if "xmltree" in args:
+                    return TREE
+                if "config" in args:
+                    return json.dumps(config)
+                return ""
+
+            with patch.object(guard, "sha256", return_value=guard.BUNDLETOOL_SHA256), patch.object(guard, "run", side_effect=execute):
+                facts = guard.validate(apk, aab, Path("aapt2"), Path("bundletool.jar"))
+                self.assertEqual(facts["native_libraries"], [])
+                self.assertIs(facts["language_splitting_enabled"], False)
+                # The old/default AAB config is unsafe even with no ELF files.
+                del config["optimizations"]["splitsConfig"]
+                with self.assertRaisesRegex(ValueError, "disable LANGUAGE splits"):
+                    guard.validate(apk, aab, Path("aapt2"), Path("bundletool.jar"))
+
+
+class PlayLanguageSplitTests(unittest.TestCase):
+    def test_explicitly_disabled_language_splits_are_accepted(self):
+        guard.check_language_splits(bundle_config())
+
+    def test_missing_enabled_malformed_or_conflicting_language_config_is_rejected(self):
+        cases = [None, [], {}, {"optimizations": None}, {"optimizations": {}},
+                 {"optimizations": {"splitsConfig": None}}]
+        for dimensions in (
+            None, {}, [], [None], [{"value": "ABI", "negate": True}],
+            [{"value": "LANGUAGE"}],
+            [{"value": "LANGUAGE", "negate": False}],
+            [{"value": "LANGUAGE", "negate": "true"}],
+            [{"value": "LANGUAGE", "negate": 1}],
+            [{"value": "LANGUAGE", "negate": True}, {"value": "LANGUAGE"}],
+            [{"value": "LANGUAGE", "negate": True}, {"value": "LANGUAGE", "negate": True}],
+        ):
+            cases.append({"optimizations": {"splitsConfig": {"splitDimension": dimensions}}})
+        for config in cases:
+            with self.subTest(config=config), self.assertRaisesRegex(ValueError, "disable LANGUAGE splits"):
+                guard.check_language_splits(config)
 
 
 if __name__ == "__main__":

@@ -44,3 +44,28 @@ opted-in Apple device, a separately audited default-OFF durable push producer
 still needs source-specific event/triage schema and sender checks. Existing
 Android error notifications remain independent. Avoid sending raw diagnostics
 or misleadingly claiming that every server exception is captured.
+
+## Safe onboarding explanations — 2026-10-27
+
+The Admin PWA Inbox derives **fixed allowlisted outcome codes** from the
+already-stored `app_error_context` messages, using server-side SQL CASE
+predicates. This is read-only: no migration, ingestion, backfill mutation or
+raw diagnostic-field serialization. Existing <=30-day onboarding records can
+be categorized when they have the canonical producer signature; unknown or
+malformed content still displays only a generic safe description.
+
+The onboarding producer (`course_v3_onboarding`) posts an
+`OnboardingSaveResponseError` event after the client rechecks whether a
+failed/timed-out save actually persisted. `extra.recovered=true` confirms
+the locally submitted level and preference fields matched the persisted
+profile; an HTTP 200 from the status endpoint **alone does not** establish
+recovery. In the Admin UI, allowlisted codes distinguish recovered response
+errors (including HTTP 409 level-change rejection and timeout) from
+unrecovered placement conflicts, timeouts and unconfirmed saves, with
+UZ/RU/TJ explanations. A recovered 409 does not assert that the user's
+HSK level was changed.
+
+Private message content, stack traces, URL/query parameters and learner
+text remain excluded from JSON responses, push alerts, raw detail panes
+and exports. Classification is **not** a general error monitor and it
+does not infer root causes for unknown Mini App error types.

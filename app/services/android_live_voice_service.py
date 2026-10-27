@@ -96,7 +96,10 @@ async def connect_gemini_live(settings_obj, item):
                 prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name=voice_name)
             )
         ),
-        input_audio_transcription=types.AudioTranscriptionConfig(),
+        # Speech practice expects Chinese even when explanations are UZ/RU/TJ.
+        # Bias ASR toward Chinese instead of leaving the language unspecified;
+        # this hint does not translate or rewrite the learner's transcript.
+        input_audio_transcription=types.AudioTranscriptionConfig(language_codes=["zh-CN"]),
         output_audio_transcription=types.AudioTranscriptionConfig(),
         session_resumption=(
             types.SessionResumptionConfig(handle=item.live_resumption_handle)
