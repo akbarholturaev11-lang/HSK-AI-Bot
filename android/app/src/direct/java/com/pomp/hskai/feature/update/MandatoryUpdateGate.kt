@@ -22,6 +22,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -49,10 +50,22 @@ import kotlinx.coroutines.withContext
 @Composable
 fun MandatoryUpdateGate(content: @Composable () -> Unit) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     var release by remember { mutableStateOf<UpdateRelease?>(null) }
     var minimumSupportedVersion by remember { mutableStateOf<Int?>(null) }
+    var refresh by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(Unit) {
+    // Like Play, re-read the admin policy on each foreground return; Direct's
+    // existing fetchRelease still owns release caching and APK verification.
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) refresh += 1
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    LaunchedEffect(refresh) {
         release = withContext(Dispatchers.IO) { fetchRelease(context) }
         minimumSupportedVersion = UpdatePolicyClient.minimumSupportedVersion(context, "direct")
     }
