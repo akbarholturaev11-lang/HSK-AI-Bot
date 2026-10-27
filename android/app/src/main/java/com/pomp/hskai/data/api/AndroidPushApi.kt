@@ -39,6 +39,7 @@ data class AccountNoticeDto(
     @SerialName("title") val title: String = "",
     @SerialName("body") val body: String = "",
     @SerialName("action") val action: String = "subscription",
+    @SerialName("update_required") val updateRequired: Boolean = false,
 )
 
 @Serializable
