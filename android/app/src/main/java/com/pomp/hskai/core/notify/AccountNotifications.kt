@@ -74,7 +74,9 @@ object AccountNotifications {
         val intent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_VIEW
             data = Uri.parse(DeepLinkRouter.uriFor(
-                AccountNoticePolicy.destination(notice.action, BuildConfig.EXTERNAL_CHECKOUT_ENABLED),
+                AccountNoticePolicy.destinationForNotice(
+                    notice.action, BuildConfig.EXTERNAL_CHECKOUT_ENABLED, notice.updateRequired,
+                ),
             ))
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
