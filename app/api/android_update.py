@@ -15,6 +15,9 @@ from fastapi import APIRouter, Query
 from fastapi.responses import JSONResponse, RedirectResponse, Response
 
 from app.services.android_release_service import AndroidReleaseService
+from app.services.android_update_policy_service import (
+    DEFAULT_ANDROID_ALLOWED_VERSIONS, read_allowed_versions,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -24,6 +27,17 @@ _NO_STORE = {"Cache-Control": "no-store"}
 
 def create_android_update_router(*, session_factory) -> APIRouter:
     router = APIRouter(tags=["android-update"])
+
+    @router.get("/api/v3/android-update/policy", response_model=None)
+    async def android_update_policy():
+        # Both flavours read this non-secret product policy, not a Direct APK URL.
+        try:
+            async with session_factory() as session:
+                allowed = await read_allowed_versions(session)
+        except Exception:
+            logger.exception("Android update policy unavailable")
+            allowed = DEFAULT_ANDROID_ALLOWED_VERSIONS
+        return JSONResponse(content={"allowed_versions": allowed}, headers=_NO_STORE)
 
     @router.get("/api/v3/android-update/check", response_model=None)
     async def android_update_check(

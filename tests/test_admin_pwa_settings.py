@@ -25,6 +25,7 @@ from app.services.ai_provider import ACTIVE_GEMINI_MODEL_KEY, GEMINI_MODEL_OPTIO
 from app.services.help_settings_service import HELP_VIDEO_FIELD_BY_KEY
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY, PAYMENT_DETAILS_ALIF_KEY
 from app.services.support_contact_service import ADMIN_CONTACT_KEY
+from app.services.android_update_policy_service import ANDROID_UPDATE_ALLOWED_VERSIONS_KEY
 from tests import test_admin_pwa_payment_review as fixtures
 from tests.test_admin_pwa_webauthn_crypto_vectors import CRED_ID, make_assertion
 
@@ -98,6 +99,8 @@ class AdminPwaSettingsTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTe
         self.assertEqual(data["settings"]["payment_details"], {"dc_city": "Environment bank fallback", "alif": ""})
         self.assertEqual(len(data["settings"]["help_videos"]), 12)
         self.assertEqual(data["options"]["ai_models"], GEMINI_MODEL_OPTIONS)
+        self.assertEqual(data["options"]["android_update_allowed_versions"], [1, 2, 3, 4])
+        self.assertEqual(data["settings"]["android_update"], {"allowed_versions": 4})
         self.assertNotIn("DO_NOT_READ", response.text)
         self.assertEqual(len(statements), 1, statements)
         self.assertTrue(statements[0][0].lstrip().startswith("select "))
@@ -113,6 +116,7 @@ class AdminPwaSettingsTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTe
             ({"kind": "payment_details", "bank": "alif", "value": "PRIVATE alif bank"}, PAYMENT_DETAILS_ALIF_KEY, "PRIVATE alif bank"),
             ({"kind": "ai_model", "model": GEMINI_MODEL_OPTIONS[1]}, ACTIVE_GEMINI_MODEL_KEY, GEMINI_MODEL_OPTIONS[1]),
             ({"kind": "help_contact", "value": " @private_support "}, ADMIN_CONTACT_KEY, "@private_support"),
+            ({"kind": "android_update", "allowed_versions": 2}, ANDROID_UPDATE_ALLOWED_VERSIONS_KEY, "2"),
         ]
         changes += [({"kind": "help_video", "key": "course_hsk", "lang": lang,
                        "value": "t.me/private_course_"+lang},
@@ -147,6 +151,15 @@ class AdminPwaSettingsTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTe
             learner = await db.get(User, 1)
             self.assertEqual((learner.status, learner.payment_status, learner.start_date, learner.end_date), before_access)
             self.assertEqual(await db.scalar(select(func.count()).select_from(AdminPwaCommandAudit)), len(changes))
+
+
+    async def test_android_update_setting_rejects_outside_four_choices(self):
+        for wrong in (0, 5, -2, 1.2, '2', None, True):
+            with self.subTest(wrong=wrong):
+                with self.assertRaises(ValidationError):
+                    api.PrepareSettings.model_validate({
+                        "change": {"kind": "android_update", "allowed_versions": wrong}
+                    })
 
     async def test_value_or_kind_target_tampering_does_not_consume_proof(self):
         command = await self.prepare({"kind": "payment_details", "bank": "dc_city", "value": "PRIVATE original"})
