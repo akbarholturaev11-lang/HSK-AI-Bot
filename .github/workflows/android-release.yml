@@ -290,10 +290,11 @@ jobs:
           # move it backwards: the server rejects a downgrade too, but a run
           # that fails is far easier to notice than a manifest quietly ignored.
           previous_code=0
+          previous="$(mktemp)"
+          printf '{}\n' > "$previous"
           manifest_error="$(mktemp)"
           if aws s3api head-object --bucket "$R2_BUCKET" --key "android/latest.json" \
             --endpoint-url "$endpoint" >/dev/null 2>"$manifest_error"; then
-            previous="$(mktemp)"
             aws s3 cp "s3://${R2_BUCKET}/android/latest.json" "$previous" \
               --endpoint-url "$endpoint" --only-show-errors
             previous_code="$(jq -er '.version_code' "$previous")"
@@ -307,10 +308,19 @@ jobs:
             exit 1
           fi
 
+          # Only the published manifest proves a previous release was live.
+          # Absent legacy history is NOT inferred from R2 artifact filenames.
+          published_codes="$(jq -cer --argjson current "$APK_CODE" '
+            (.published_version_codes // (if (.version_code | type) == "number" then [.version_code] else [] end))
+            | if type != "array" or any(.[]; type != "number") then error("invalid history") else . end
+            | if any(.[]; . > $current) then error("downgraded history") else . end
+            | (. + [$current] | unique | sort | .[-128:])
+          ' "$previous")"
           manifest="$(mktemp)"
           jq -n \
             --arg version_name "$APK_VERSION" \
             --argjson version_code "$APK_CODE" \
+            --argjson published_version_codes "$published_codes" \
             --arg download_url "$url" \
             --argjson size "$APK_SIZE" \
             --arg sha256 "$APK_SHA256" \
@@ -319,6 +329,7 @@ jobs:
               schema_version: 1,
               version_name: $version_name,
               version_code: $version_code,
+              published_version_codes: $published_version_codes,
               download_url: $download_url,
               size: $size,
               sha256: $sha256,

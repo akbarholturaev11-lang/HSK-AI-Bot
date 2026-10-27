@@ -82,6 +82,16 @@ class ParsingTests(unittest.TestCase):
                 with self.assertRaises(AndroidReleaseManifestError):
                     parse_android_release_manifest(manifest_bytes(version_code=code))
 
+    def test_published_history_accepts_only_sorted_actual_releases(self):
+        for invalid in ([1, 3, 3], [4, 3], [1, 9], [True, 3], "1,3", []):
+            with self.subTest(invalid=invalid):
+                with self.assertRaises(AndroidReleaseManifestError):
+                    parse_android_release_manifest(manifest_bytes(published_version_codes=invalid))
+        self.assertEqual(parse_android_release_manifest(
+            manifest_bytes(published_version_codes=[1, 3])
+        ).published_version_codes, (1, 3))
+        self.assertEqual(parse_android_release_manifest(manifest_bytes()).published_version_codes, ())
+
     def test_an_unknown_key_means_something_else_wrote_this_file(self):
         with self.assertRaises(AndroidReleaseManifestError):
             parse_android_release_manifest(manifest_bytes(surprise="yes"))

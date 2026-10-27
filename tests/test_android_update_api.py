@@ -25,6 +25,7 @@ from app.api.android_update import create_android_update_router
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.android_update_policy_service import (
     ANDROID_UPDATE_ALLOWED_VERSIONS_KEY, normalize_allowed_versions,
+    minimum_supported_published_version,
 )
 from app.db import models  # noqa: F401
 from app.db.base import Base
@@ -106,6 +107,16 @@ class DatabaseBackedTest(unittest.IsolatedAsyncioTestCase):
         return client
 
 
+class AndroidPublishedReleaseCountTests(unittest.TestCase):
+    def test_only_published_versions_count_even_when_codes_skip(self):
+        codes = (4, 11, 17, 54)
+        self.assertEqual([minimum_supported_published_version(codes, n) for n in (1, 2, 3, 4)],
+                         [54, 17, 11, 4])
+        self.assertEqual(minimum_supported_published_version((11, 54), 4), None)
+        self.assertEqual(minimum_supported_published_version((11, 54), 1), 54)
+        self.assertIsNone(minimum_supported_published_version((54, 17), 2))
+
+
 class AndroidUpdatePolicyTests(DatabaseBackedTest):
     def test_default_and_invalid_values_are_bounded(self):
         self.assertEqual(normalize_allowed_versions(None), 4)
@@ -118,13 +129,13 @@ class AndroidUpdatePolicyTests(DatabaseBackedTest):
         client = await self.make_client()
         response = await client.get('/api/v3/android-update/policy')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {'allowed_versions': 4})
+        self.assertEqual(response.json(), {'allowed_versions': 4, 'minimum_version_code': None})
         self.assertEqual(response.headers['cache-control'], 'no-store')
         async with self.sessions() as db:
             await BotSettingRepository(db).set(ANDROID_UPDATE_ALLOWED_VERSIONS_KEY, '2')
             await db.commit()
         response = await client.get('/api/v3/android-update/policy')
-        self.assertEqual(response.json(), {'allowed_versions': 2})
+        self.assertEqual(response.json(), {'allowed_versions': 2, 'minimum_version_code': None})
         self.assertNotIn('url', response.text)
 
 
