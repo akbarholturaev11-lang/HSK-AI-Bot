@@ -24,6 +24,7 @@ from app.db.models.android_push import AndroidPushToken
 from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.user import User
 from app.services.android_push_service import AndroidPushResult, AndroidPushService
+from app.services.admin_feedback_resolution import enqueue_android_fix_notice, fixed_notice_copy, published_version_is_newer
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.discount_notification_service import DiscountNotificationService
 from app.services.expiry_reminder_service import ExpiryReminderService
@@ -212,6 +213,49 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
             return await NotificationDeliveryService(session, self.settings).send_due_fallbacks(
                 bot, now=now
             )
+
+    async def test_fixed_notices_are_localized_and_versions_are_numeric(self):
+        self.assertIn("ислоҳ", fixed_notice_copy("tj", "server")[0].lower())
+        self.assertIn("Обновите", fixed_notice_copy("ru", "app_update")[1])
+        self.assertTrue(published_version_is_newer("1.7.9", "1.7.21"))
+        self.assertFalse(published_version_is_newer("1.7.21", "1.7.9"))
+        self.assertFalse(published_version_is_newer("QA", "1.7.21"))
+
+    async def test_durable_fixed_notice_goes_to_own_phone_once(self):
+        await self._register(self.token_a, allowed=True)
+        async with self.sessions() as session:
+            await enqueue_android_fix_notice(
+                session, user_id=1, source_id=3350, revision=2,
+                mode="server", now=datetime.now(timezone.utc),
+            )
+            await session.commit()
+        bot = _Bot()
+        with patch.object(AndroidPushService, "send_batch", new_callable=AsyncMock,
+                          return_value=[AndroidPushResult(True)]) as sender:
+            await self._sweep(bot)
+            await self._sweep(bot)
+            self.assertEqual(sender.await_count, 1)
+            target = sender.await_args.args[0][0]
+            self.assertEqual(target.device_id, self.device_a)
+            self.assertEqual(target.data["kind"], "account_notice")
+            self.assertFalse(bot.messages)
+        rows = await self._rows()
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0].status, "android_pending")
+
+    async def test_fixed_notice_without_an_eligible_phone_uses_telegram_once(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            await enqueue_android_fix_notice(
+                session, user_id=2, source_id=99, revision=1, mode="server", now=now,
+            )
+            await session.commit()
+        bot = _Bot()
+        await self._sweep(bot, now=now)
+        await self._sweep(bot, now=now)
+        self.assertEqual(len(bot.messages), 1)
+        self.assertEqual(bot.messages[0]["chat_id"], 1002)
+        self.assertEqual((await self._rows())[0].status, "telegram_sent")
 
     async def test_a_phone_that_allows_notices_gets_it_instead_of_telegram(self):
         await self._register(self.token_a, allowed=True)
