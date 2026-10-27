@@ -14,22 +14,6 @@ from app.db.models.user import User
 from app.services.notification_delivery_service import TelegramNotice
 
 
-_FIX_COPY = {
-    "uz": (
-        ("Xatolik tuzatildi ✅", "Muammo hal qilindi. Darsni davom ettiramiz! 🔥"),
-        ("Xatolik tuzatildi ✅", "Yangi versiya tayyor. Ilovani yangilab, darsni davom ettiring! 🔥"),
-    ),
-    "ru": (
-        ("Ошибка исправлена ✅", "Проблема решена. Продолжайте обучение! 🔥"),
-        ("Ошибка исправлена ✅", "Доступна новая версия. Обновите приложение и продолжайте обучение! 🔥"),
-    ),
-    "tj": (
-        ("Хатогӣ ислоҳ шуд ✅", "Мушкил ҳал шуд. Дарсро давом диҳед! 🔥"),
-        ("Хатогӣ ислоҳ шуд ✅", "Версияи нав омода аст. Барномаро нав кунед ва дарсро давом диҳед! 🔥"),
-    ),
-}
-
-
 _RELEASE_VERSION = re.compile(r"^[0-9]+(?:\.[0-9]+){1,3}$")
 
 
@@ -47,9 +31,17 @@ def fixed_notice_copy(lang: str, mode: str) -> tuple[str, str]:
     """Localized, content-free message: never include a private report."""
     if mode not in ("server", "app_update"):
         raise ValueError("invalid_fix_kind")
-    choices = _FIX_COPY.get(lang, _FIX_COPY["uz"])
-    return choices[0 if mode == "server" else 1]
-
+    if lang == "ru":
+        return (("Ошибка исправлена ✅", "Доступна новая версия. Обновите приложение и продолжайте обучение! 🔥")
+                if mode == "app_update"
+                else ("Ошибка исправлена ✅", "Проблема решена. Продолжайте обучение! 🔥"))
+    if lang == "tj":
+        return (("Хатогӣ ислоҳ шуд ✅", "Версияи нав омода аст. Барномаро нав кунед ва дарсро давом диҳед! 🔥")
+                if mode == "app_update"
+                else ("Хатогӣ ислоҳ шуд ✅", "Мушкил ҳал шуд. Дарсро давом диҳед! 🔥"))
+    return (("Xatolik tuzatildi ✅", "Yangi versiya tayyor. Ilovani yangilab, darsni davom ettiring! 🔥")
+            if mode == "app_update"
+            else ("Xatolik tuzatildi ✅", "Muammo hal qilindi. Darsni davom ettiramiz! 🔥"))
 
 async def enqueue_android_fix_notice(
     db, *, user_id: int, source_id: int, revision: int,
@@ -61,7 +53,7 @@ async def enqueue_android_fix_notice(
     user = await db.scalar(select(User).where(User.id == user_id))
     if user is None:
         raise ValueError("missing_report_owner")
-    lang = user.language if user.language in _FIX_COPY else "uz"
+    lang = user.language if user.language in ("uz", "ru", "tj") else "uz"
     title, body = fixed_notice_copy(lang, mode)
     row = AccountNoticeDelivery(
         user_id=user.id,
