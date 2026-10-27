@@ -98,7 +98,7 @@ private fun MandatoryUpdateWall(release: UpdateRelease) {
         canInstall = canInstall,
         onUpdate = {
             if (phase == UpdatePhase.Downloading) return@MandatoryUpdateContent
-            UpdateInstallCoordinator.request(context, release, downloadedFileIsValid)
+            UpdateInstallCoordinator.beginUpdateRequest(context, release, downloadedFileIsValid)
         },
     )
 }
