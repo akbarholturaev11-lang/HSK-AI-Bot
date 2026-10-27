@@ -103,7 +103,7 @@ fun AppUpdateCard(modifier: Modifier = Modifier) {
         modifier = modifier,
         onClick = {
             if (phase == UpdatePhase.Downloading) return@UpdateCardContent
-            UpdateInstallCoordinator.request(context, available, downloadedFileIsValid)
+            UpdateInstallCoordinator.beginUpdateRequest(context, available, downloadedFileIsValid)
         },
     )
 }
