@@ -108,6 +108,7 @@ object DeepLinkRouter {
         return when (head) {
             "today" -> AppDestination.Today.takeIf { tail.isEmpty() }
             "course" -> AppDestination.Course.takeIf { tail.isEmpty() }
+            "update" -> AppDestination.Update.takeIf { tail.isEmpty() }
             "voice" -> AppDestination.Voice.takeIf { tail.isEmpty() }
             "rating" -> AppDestination.Rating.takeIf { tail.isEmpty() }
             "subscription" -> AppDestination.Subscription.takeIf { tail.isEmpty() }
@@ -138,6 +139,7 @@ object DeepLinkRouter {
     fun uriFor(destination: AppDestination): String = when (destination) {
         AppDestination.Today -> "$SCHEME://today"
         AppDestination.Course -> "$SCHEME://course"
+        AppDestination.Update -> "$SCHEME://update"
         AppDestination.CurrentLesson -> "$SCHEME://lesson/current"
         AppDestination.Voice -> "$SCHEME://voice"
         AppDestination.Rating -> "$SCHEME://rating"
