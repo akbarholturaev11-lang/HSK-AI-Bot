@@ -140,7 +140,7 @@
     <string name="update_card_title">Версияи нав %1$s</string>
     <string name="update_card_subtitle">%1$s · барои навсозӣ пахш кунед</string>
     <string name="update_card_downloading">Боргирӣ · %1$d%%</string>
-    <string name="update_card_downloaded">Боргирӣ шуд · омодаи насб</string>
+    <string name="update_card_downloaded">Боргирӣ шуд · 100% — барои насб пахш кунед</string>
     <string name="update_card_failed">Боргирӣ нашуд — боз кӯшиш кунед</string>
     <string name="update_card_permission">Ба насб иҷозат диҳед</string>
     <string name="update_card_permission_hint">Танзимоти Android кушода мешавад</string>
@@ -151,7 +151,7 @@
     -->
     <string name="update_banner_text">Версияи нав %1$s — барои навсозӣ пахш кунед</string>
     <string name="update_banner_downloading">Боргирӣ · %1$d%%</string>
-    <string name="update_banner_downloaded">Боргирӣ шуд · омодаи насб</string>
+    <string name="update_banner_downloaded">Боргирӣ шуд · 100% — барои насб пахш кунед</string>
     <string name="update_banner_failed">Боргирӣ нашуд — боз кӯшиш кунед</string>
     <string name="update_banner_permission">Ба насб иҷозат диҳед — барои навсозӣ пахш кунед</string>
     <string name="update_channel_name">Навсозиҳои барнома</string>
@@ -162,7 +162,7 @@
     <string name="update_gate_body">Барои идома версияи нави барнома лозим аст.</string>
     <string name="update_gate_button">Барномаро нав кунед</string>
     <string name="update_gate_downloading">Боргирӣ · %1$d%%</string>
-    <string name="update_gate_downloaded">Боргирӣ шуд. Равзанаи насб кушода мешавад.</string>
+    <string name="update_gate_downloaded">Боргирӣ шуд. Барои оғоз кардани насб тугмаро пахш кунед.</string>
     <string name="update_gate_failed">Боргирӣ нашуд. Боз кӯшиш кунед.</string>
     <string name="update_gate_permission">Пеш аз навсозӣ иҷозати насби барномаро диҳед.</string>
     <string name="sub_hsk30_pending_title">Дархости шумо дар санҷиш аст</string>
