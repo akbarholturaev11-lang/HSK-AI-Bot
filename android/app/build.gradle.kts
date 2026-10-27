@@ -42,8 +42,8 @@ val hasReleaseSigning = releaseStoreFile != null &&
  * APK. `app-direct-release.apk` would leave the admin typing the version from
  * memory on every upload, so the artifact carries it instead.
  */
-val appVersionName = "1.7.22"
-val appVersionCode = 53
+val appVersionName = "1.7.23"
+val appVersionCode = 54
 
 val audioCdnOrigin: String = (
     (project.findProperty("POMP_AUDIO_CDN_ORIGIN") as String?)
@@ -126,6 +126,15 @@ android {
         buildConfigField("String", "FIREBASE_API_KEY", buildString(firebaseOption("POMP_FIREBASE_API_KEY")))
 
         androidResources.localeFilters += listOf("uz", "ru", "tg")
+    }
+
+    // The in-app picker follows the account, independently of the device's
+    // languages. Play must install every supported translation up front;
+    // otherwise a missing language split falls back to the default Uzbek UI.
+    bundle {
+        language {
+            enableSplit = false
+        }
     }
 
     // The two distribution channels differ in exactly one thing: whether the

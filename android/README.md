@@ -88,6 +88,13 @@ screens simply are not compiled into the build that must not have them. The
 Both flavours keep the same `applicationId`, so a learner who installed the
 APK can be updated from Play later without reinstalling.
 
+Keep `bundle.language.enableSplit = false`: the account/login language picker
+works independently of the device language, so Play must install UZ/RU/TJ
+resources together. `localeFilters` alone does not prevent language splitting.
+Test a device-targeted APK set, not just a universal APK. The actual AAB
+preflight rejects bundles that would omit a selected language; see
+[`android-play-language-splits.md`](../knowledge/bugs/android-play-language-splits.md).
+
 Play also suppresses subscription, trial and discount offer notifications,
 including offers already posted by a previous Direct installation. Neutral
 course reminders and server-granted access remain available. A Direct-to-Play
@@ -97,8 +104,9 @@ The manual **Android Play preflight** workflow validates the signed APK/AAB
 certificate and runs `tools/check_play_artifacts.py` against the built files.
 This verifies matching package/version/SDK, safe release flags, no installer
 or Billing permission, official bundletool validation and native ELF/ZIP
-16 KB compatibility. It uploads an AAB plus a JSON validation report for
-manual submission. It does not publish to Google Play or distribute an APK.
+16 KB compatibility, and disabled language splitting. It uploads an AAB plus a
+JSON validation report for manual submission. It does not publish to Google Play
+or distribute an APK.
 
 ## Configuration
 
