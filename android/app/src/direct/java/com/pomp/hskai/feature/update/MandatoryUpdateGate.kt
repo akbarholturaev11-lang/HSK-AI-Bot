@@ -22,6 +22,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,13 +51,15 @@ import kotlinx.coroutines.withContext
 fun MandatoryUpdateGate(content: @Composable () -> Unit) {
     val context = LocalContext.current
     var release by remember { mutableStateOf<UpdateRelease?>(null) }
+    var allowedVersions by remember { mutableIntStateOf(AndroidUpdateThreshold.DEFAULT_ALLOWED_VERSIONS) }
 
     LaunchedEffect(Unit) {
         release = withContext(Dispatchers.IO) { fetchRelease(context) }
+        allowedVersions = UpdatePolicyClient.allowedVersions(context)
     }
 
     val available = release
-    if (available == null || !AppUpdate.isMandatoryUpdate(available, BuildConfig.VERSION_CODE)) {
+    if (available == null || !AppUpdate.isMandatoryUpdate(available, BuildConfig.VERSION_CODE, allowedVersions)) {
         content()
         return
     }

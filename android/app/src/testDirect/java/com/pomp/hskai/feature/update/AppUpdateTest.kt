@@ -181,16 +181,19 @@ class AppUpdateTest {
     }
 
     @Test
-    fun `mandatory update starts after three missed releases`() {
+    fun `mandatory update obeys the shared admin window of one to four version codes`() {
         val release = UpdateRelease(
             versionName = "1.7.6",
             versionCode = 40,
             url = "https://pub-example.r2.dev/hsk-ai-1.7.6-40-direct-release.apk",
         )
 
-        assertFalse(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 38))
-        assertTrue(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 37))
+        assertFalse(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 37))
         assertTrue(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 36))
+        assertTrue(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 39, allowedVersions = 1))
+        assertFalse(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 39, allowedVersions = 2))
+        assertTrue(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 38, allowedVersions = 2))
+        assertFalse(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 40, allowedVersions = 1))
     }
 
     @Test
