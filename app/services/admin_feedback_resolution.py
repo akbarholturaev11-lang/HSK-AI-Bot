@@ -70,7 +70,8 @@ async def enqueue_android_fix_notice(
         android_targets=0,
         android_blocked=0,
         telegram_payload=TelegramNotice(text=f"{title}\n{body}").to_payload(),
-        reason=f"android_fix_{source_id}_{revision}"[:40],
+        reason=(f"android_update_{source_id}_{revision}" if mode == "app_update"
+                else f"android_fix_{source_id}_{revision}")[:40],
         created_at=now,
         fallback_due_at=None,
     )
