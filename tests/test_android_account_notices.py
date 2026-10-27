@@ -221,6 +221,48 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(published_version_is_newer("1.7.21", "1.7.9"))
         self.assertFalse(published_version_is_newer("QA", "1.7.21"))
 
+    async def test_update_fixed_notice_claim_has_safe_opt_in_route_for_new_apks(self):
+        """Older clients keep course; new Android APK sees only an optional hint."""
+        await self._register(self.token_a, allowed=True)
+        async with self.sessions() as session:
+            await enqueue_android_fix_notice(
+                session, user_id=1, source_id=123, revision=3,
+                mode="app_update", now=datetime.now(timezone.utc),
+            )
+            await session.commit()
+        with patch.object(AndroidPushService, "send_batch", new_callable=AsyncMock,
+                          return_value=[AndroidPushResult(True)]):
+            await self._sweep(_Bot())
+        rows = await self._rows()
+        self.assertEqual(rows[0].key, "daily_limit_renewed")
+        self.assertEqual(rows[0].action, "course")
+        async with self.sessions() as session:
+            claimed = await NotificationDeliveryService(session, self.settings).claim(
+                rows[0].id, telegram_id=1001,
+            )
+            self.assertTrue(claimed["show"])
+            self.assertTrue(claimed["update_required"])
+            self.assertEqual(claimed["action"], "course")
+
+    async def test_server_fixed_notice_does_not_open_an_update(self):
+        await self._register(self.token_a, allowed=True)
+        async with self.sessions() as session:
+            await enqueue_android_fix_notice(
+                session, user_id=1, source_id=124, revision=4,
+                mode="server", now=datetime.now(timezone.utc),
+            )
+            await session.commit()
+        with patch.object(AndroidPushService, "send_batch", new_callable=AsyncMock,
+                          return_value=[AndroidPushResult(True)]):
+            await self._sweep(_Bot())
+        rows = await self._rows()
+        async with self.sessions() as session:
+            claimed = await NotificationDeliveryService(session, self.settings).claim(
+                rows[0].id, telegram_id=1001,
+            )
+            self.assertFalse(claimed["update_required"])
+            self.assertEqual(claimed["action"], "course")
+
     async def test_durable_fixed_notice_goes_to_own_phone_once(self):
         await self._register(self.token_a, allowed=True)
         async with self.sessions() as session:

@@ -405,6 +405,9 @@ class NotificationDeliveryService:
                     "title": row.title,
                     "body": row.body,
                     "action": row.action if row.action in ACTIONS else "subscription",
+                    # Old clients ignore this optional hint and retain the
+                    # neutral course route; new clients open the update flow.
+                    "update_required": str(row.reason or "").startswith("android_update_"),
                 }
             )
         return payload

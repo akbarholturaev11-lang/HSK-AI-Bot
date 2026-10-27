@@ -72,6 +72,25 @@ class AccountNoticePolicyTest {
     }
 
     @Test
+    fun `only an explicitly tagged published Android fix routes to update`() {
+        for (play in listOf(true, false)) {
+            assertEquals(
+                AppDestination.Update,
+                AccountNoticePolicy.destinationForNotice("course", play, true),
+            )
+            assertEquals(
+                AppDestination.Course,
+                AccountNoticePolicy.destinationForNotice("course", play, false),
+            )
+            assertEquals(
+                AccountNoticePolicy.destination("subscription", play),
+                AccountNoticePolicy.destinationForNotice("subscription", play, true),
+            )
+            assertTrue(AccountNoticePolicy.canShow("daily_limit_renewed", "course", false))
+        }
+    }
+
+    @Test
     fun `Play migration clears old offer slots and preserves neutral and payment notices`() {
         val cleared = AccountNoticePolicy.playSuppressedNotificationIds()
         assertEquals(setOf(4500, 4501, 4502, 4503, 4505), cleared)
