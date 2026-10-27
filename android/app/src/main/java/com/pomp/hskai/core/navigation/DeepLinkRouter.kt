@@ -19,6 +19,8 @@ sealed interface AppDestination {
      */
     data object Today : AppDestination
     data object Course : AppDestination
+    /** Published APK fix notification: open the channel-specific update flow. */
+    data object Update : AppDestination
 
     /** The lesson the server currently reports as next. Always safe to ask for. */
     data object CurrentLesson : AppDestination
