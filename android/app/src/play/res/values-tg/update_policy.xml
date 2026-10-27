@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="play_update_gate_title">Версияи навро насб кунед</string>
+    <string name="play_update_gate_body">Барои идома барномаро тавассути Google Play навсозӣ кунед.</string>
+    <string name="play_update_gate_button">Навсозӣ дар Google Play</string>
+</resources>

@@ -180,6 +180,8 @@ to'lov yo'li ham, yangilanish kodi ham **umuman yo'q** (Google ikkalasini ham
 taqiqlaydi). Bu farq kodda emas, alohida papkalarda — ya'ni Play build'da u
 kodning o'zi yo'q, yashirilgan emas.
 
+**Admin update policy (pending branch):** `BotSetting.android_update_allowed_versions` default 4, Admin PWA Android/APK setting chooses 1..4. Direct and Play compare the same `versionCode` window. The Play gate needs a real Play-delivered newer build and requests Google Play Immediate update, never sideload. It is **not yet the exact count of published releases** when versionCode jumps. Do not merge/enable strict production blocking until channel-specific published release history, CI and device QA are resolved.
+
 **Yangilanish jim emas.** Android sideload qilingan ilovada har doim o'z
 o'rnatish dialogini ko'rsatadi. Bir bosish + dialog. Foydalanuvchiga «avtomatik
 yangilanadi» deb aytmang. Jim yangilanishni faqat Play Market beradi.

@@ -74,6 +74,7 @@ build'da ekanini bilmay chaqiradi.
   bo‘lsa ko‘rsatadi; u Telegram `file_id`ning o‘zi bilan link yasamaydi va
   URL albatta R2 bo‘lishi shart emas. Backendning stable route’i
   `/downloads/android`; joriy release manbasi `ANDROID_RELEASE_CHECKLIST.md`da.
+- Yangi (branch-only) Android update window: Admin PWA settings orqali 1–4 versionCode oralig‘i ruxsat etiladi, default 4. Direct APK install gate o‘z yo‘lini saqlaydi; Play Play Core orqali faqat Google Play’da mavjud versiyani tekshiradi va Immediate update ishlatadi. Bu source/PR tavsifi, live release emas. versionCode sakrasa ushbu son real chiqarilgan release miqdoriga teng emas; kanallar bo‘yicha published-history yechimi talab qilinadi.
 - Yangilanishdan xabar berish (faqat `direct`): ilova ochilganda va kuniga bir
   marta fonda `…/android-update/check` so'raladi (`UpdateWatch`). Har release
   uchun **bitta** bildirishnoma (`app_updates_alerts` kanali, `UpdateNotices`), va

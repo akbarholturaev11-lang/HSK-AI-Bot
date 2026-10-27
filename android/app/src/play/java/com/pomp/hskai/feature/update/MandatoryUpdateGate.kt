@@ -139,18 +139,18 @@ private fun PlayMandatoryUpdateWall(onUpdate: () -> Unit) {
     ) {
         Icon(Icons.Filled.SystemUpdate, contentDescription = null,
             tint = PompColors.Cinnabar, modifier = Modifier.size(48.dp))
-        Text(stringResource(R.string.update_gate_title),
+        Text(stringResource(R.string.play_update_gate_title),
             style = MaterialTheme.typography.headlineSmall,
             color = PompColors.Ink,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 24.dp))
-        Text(stringResource(R.string.update_gate_body),
+        Text(stringResource(R.string.play_update_gate_body),
             style = MaterialTheme.typography.bodyLarge,
             color = PompColors.InkSecondary,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().padding(top = 12.dp))
         HskPrimaryButton(
-            text = stringResource(R.string.update_gate_button),
+            text = stringResource(R.string.play_update_gate_button),
             onClick = onUpdate,
             modifier = Modifier.fillMaxWidth().padding(top = 28.dp),
         )

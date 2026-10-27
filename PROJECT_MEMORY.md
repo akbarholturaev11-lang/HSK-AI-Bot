@@ -33,6 +33,10 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 - `user_identities` links Google/Apple provider identities to `users.id`. Match accounts by provider subject identity; email/display metadata is not proof of ownership and must not be used to merge accounts.
 - Verified account-deletion requests enter `account_deletion_requests` via migration `0101_account_deletion_requests`; each account can have one active request with a 30-day processing target. Purging requires an explicit operator action, and documented financial-retention exceptions remain. Deletion does not cancel external-store renewals; see `docs/ACCOUNT_DELETION_OPERATIONS.md`.
 
+## Android mandatory update policy (branch-only; not live)
+
+- Shared `AndroidUpdateThreshold` and Admin PWA typed `android_update_allowed_versions` setting (default 4; one-use passkey CAS audit) in PR #247. Direct retains APK download/installer; Play uses Play Core and Play Store only. Production source versions, publication channels, and real release history remain separate. Before main merge replace versionCode-gap approximation with exact channel-specific published release positions (or obtain explicit owner approval for versionCode slots), verify both Android flows and preserve direct APK signing/checkout.
+
 ## Native account identity
 - Google/Apple first sign-in creates `users.id` only after existing OIDC verification; a known `(provider, subject_hash)` signs into its owner. Telegram private-chat approval can create a new Telegram learner. Email equality and a bound installation never authorize account merging/linking; no fake Telegram ID is stored.
 - Android Google provider discovery accepts the confidential browser client pair without the separate native-token audience. Native-token start still requires its own Android client ID before creating a request; browser/native OIDC audiences stay separate.
