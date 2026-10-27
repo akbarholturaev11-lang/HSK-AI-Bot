@@ -24,9 +24,11 @@ internal object UpdateInstallCoordinator {
     private const val PREFS = "app_update_install_request"
     private const val PENDING_VERSION = "pending_version"
 
-    private fun queuedVersion(context: Context): Int =
+    internal fun requestPreferences(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .getInt(PENDING_VERSION, -1)
+
+    internal fun queuedVersion(context: Context): Int =
+        requestPreferences(context).getInt(PENDING_VERSION, -1)
 
     fun beginUpdateRequest(context: Context, release: UpdateRelease, fileIsValid: Boolean) {
         if (BuildConfig.QA_BUILD) return
