@@ -159,7 +159,6 @@ jobs:
             tests.test_desktop_auth_service \
             tests.test_android_auth_api \
             tests.test_identity_link_service \
-            tests.test_native_oauth_lifecycle \
             tests.test_native_oauth_api \
             tests.test_account_deletion_request
 
@@ -237,4 +236,4 @@ jobs:
           HSK_STAGING_QA_MODE: "1"
         run: |
           python -m py_compile app/db/models/smart_reminder.py alembic/versions/0133_smart_reminder_storage.py app/services/smart_reminder_legacy_backfill.py app/services/smart_reminder_preferences.py app/api/smart_reminder.py alembic/versions/0134_smart_reminder_mutations.py app/services/smart_reminder_lifecycle.py
-          python -m unittest -v tests.test_smart_reminder_storage tests.test_smart_reminder_legacy_backfill tests.test_smart_reminder_preferences tests.test_smart_reminder_lifecycle tests.test_telegram_identity_link
+          python -m unittest -v tests.test_smart_reminder_storage tests.test_smart_reminder_legacy_backfill tests.test_smart_reminder_preferences tests.test_smart_reminder_lifecycle tests.test_telegram_identity_link tests.test_native_oauth_lifecycle
