@@ -227,6 +227,14 @@ class AdminPwaStatisticsReader:
                 try:
                     # Deliberately skip local, Redis and R2 reads on explicit demand.
                     raw, envelope = await self._compute(query)
+                    # Guard against an unexpected projection being written to
+                    # private R2 before the outer HTTP handler can inspect it.
+                    data = envelope["data"]
+                    if (data.get("available") is not True
+                            or not isinstance(data.get("scope"), dict)
+                            or data["scope"].get("section") != "overview"
+                            or data.get("source") != "users + payments + canonical learning events"):
+                        raise StatisticsUnavailable("Unexpected overview projection")
                     # Publish the new validated snapshot only after the R2 write
                     # succeeds; on failure leave the previous cache untouched.
                     await self._r2.put(kind="statistics", namespace=self._r2_namespace,
