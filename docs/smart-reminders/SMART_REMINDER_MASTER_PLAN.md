@@ -1,11 +1,11 @@
 # HSK AI — Smart Reminder System
 ## MASTER PLAN · Техник қарорлар · Execution Tracker · Context Handoff
 
-**Ҳолат:** IMPLEMENTATION · P1 storage verified; consent/backfill next · SMART DISPATCH OFF\
+**Ҳолат:** IMPLEMENTATION · P1 storage + legacy backfill verified; authenticated API next · SMART DISPATCH OFF\
 **Яратилган:** 2026-10-25\
 **Репозиторий:** akbarholturaev11-lang/HSK-AI-Bot\
 **Дастлабки режа тармоғи:** feat/smart-reminder-master-plan-20261025\
-**Жорий source текшируви:** main @ bedd14addc9e98ec9952c61d5e4b28685ed72fd1 (2026-10-28; §17.34)\
+**Жорий source текшируви:** main @ 620a5a3d5b15703d8c003ab9fcbd1c20d3a6b4cd (2026-10-28; §17.36)\
 **Масъул:** HSK AI лойиҳаси эгаси; кодни амалга оширувчи агентлар
 **Қатъий чеклов:** Бу ҳужжатдаги режа ишлаб чиқилган функция, тасдиқланган бизнес қарори ёки production тест натижаси эмас.
 
@@ -299,7 +299,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 **QA:** static audit, affected existing unit tests baseline ва version/branch check; production metrics only if legitimately accessible.
 
 ### P1 — Instrumentation + schema foundation
-**Ҳолат:** [IN PROGRESS] — task 2.1 storage/migration verified (§17.35); task 2.2 backfill next. No settings API, worker or provider integration yet.
+**Ҳолат:** [IN PROGRESS] — tasks 2.1 storage/migration (§17.35) and 2.2 internal legacy backfill (§17.36) verified; task 2.3 authenticated/CAS settings API next. No runtime backfill caller, worker or provider integration yet.
 - [ ] Minimum additive models/migrations; unique keys, indexes, FK cleanup, dry-run explain reasons; D07 distinguish confirmed_not_displayed vs unconfirmed/unknown, provider accepted vs shown ACK, fallback attempt on SAME job, authenticated device and monotonic state transition. Exact enum/database schema to be selected after source audit.
 - [ ] Preference mapping/API endpoints: auth, validation, optimistic revision, old client compatibility; **D01/D14** unified account-level Smart Reminder UX + effective per-channel consent provenance and permissions; map only actually enabled study channels, preserve explicit opt-out and cold-start time; global OFF propagates to all channel senders and scheduled jobs; conflicting legacy state denied rather than guessed; migration idempotent and versioned, no extra Smart opt-in dialog. **D06** channel_policy auto/manual_locked, manual priority, account/device ownership validation and conservative unavailable-channel behavior.
 - [ ] Canonical event collector and daily-learning aggregation; no duplicate score/event counts.
@@ -473,7 +473,7 @@ Supporting: resumed lessons per eligible user, percentage scheduled→shown→op
 - **Менинг тавсиям:** 1 ёки 2 ва аниқ сабаб.
 - **Сизнинг танловингиз:** 1 / 2 / ўзгартирилган қоида.
 
-**Жорий навбат:** **P1 task 2.2 — source-aware consent/backfill, dispatch OFF**. D01–D15 scope сақланади. P0 source audits ва bounded operational reads бажарилган; қолган installed/mixed-build қабул синовлари owner қарори билан P4/P8 activation gate’ига қолдирилган (§17.33). Янги source refresh — §17.34. Тарихий checkpoint’лар ўз ref/санасига тегишли; улардаги «not started», old update gate ёки read permission ҳолатини жорий ҳолат деб олма. Schema/API, Smart dispatch ва personal-widget implementation ҳолати фақат кейинги tested checkpoint’лардаги далил билан белгиланади.
+**Жорий навбат:** **P1 task 2.3 — authenticated Smart preferences/CAS, dispatch OFF**. D01–D15 scope сақланади. P0 source audits ва bounded operational reads бажарилган; қолган installed/mixed-build қабул синовлари owner қарори билан P4/P8 activation gate’ига қолдирилган (§17.33). Янги source refresh — §17.34. Тарихий checkpoint’лар ўз ref/санасига тегишли; улардаги «not started», old update gate ёки read permission ҳолатини жорий ҳолат деб олма. Schema/API, Smart dispatch ва personal-widget implementation ҳолати фақат кейинги tested checkpoint’лардаги далил билан белгиланади.
 
 ### 16.1 Decision log
 | ID | Дата | Тасдиқ | Таъсир | Commit |
@@ -1293,3 +1293,17 @@ These are **10 controlled entry-point checks**, not WorkManager scheduling/lease
 
 
 **Verified source CI / main preparation:** [Smart Reminder regression run #40669994633](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40669994633), exact source commit `6effc850183cc9e117e5ed06ceabc25e4dd8ca84`, completed **SUCCESS**. All three jobs passed: existing backend/consent baseline, Direct/Play reminder JVM baseline, and the new SQLite/PostgreSQL storage migration job. The clean main-promotion tree was compared byte-for-byte with that tested source before this documentation-only evidence addition. Remote main was refreshed again at `bedd14ad`; no unrelated source was overwritten. This confirms source/CI acceptance of task 2.1, not live migration execution or Smart dispatch activation.
+
+### 17.36 P1 task 2.2 source-aware versioned legacy backfill — 2026-10-28
+
+**Source/scope:** fetched and verified unchanged `origin/main@620a5a3d5b15703d8c003ab9fcbd1c20d3a6b4cd` before implementation and again before publication preparation. This slice adds only the internal `SmartReminderLegacyBackfillService` over the existing read-only evidence bridge and tested 0133 storage. No schema change, startup/API/batch caller, scheduler/provider call, client UI or production learner migration is introduced. Dispatch remains false. OpenSpec design §3.2 records the bounded contract before implementation; D01–D15 and the deferred historical APK gate are preserved.
+
+**Import/precedence:** caller-authorized canonical user is locked first, then fresh source/account/deletion evidence and preferences are read without autoflush. Version 1 marks a missing/pristine preference row once and advances revision to 1; master remains NULL and action provenance remains absent. Existing master ON/OFF, nonzero revision/epoch, action provenance or personal time/channel/quiet/pause settings fence the entire import with zero writes, including no marker/revision bump. Any existing consent for a channel prevents all competing legacy inserts for that channel. Current/newer migration replay changes no rows/timestamps, and another account is untouched. Future OFF/deletion writers must share the user-first transaction lock; this service owns no commit.
+
+**Evidence mapping:** genuine Telegram ON + saved time is historical channel ON only; disabled legacy flag is a labelled disabled snapshot, with no fabricated OFF-action timestamp. Missing/incomplete evidence stays unknown, native accounts receive no fake Telegram identity/ON, and bot blocking remains a separate eligibility veto. Saved time/validated coarse offset is cold-start evidence only; existing time is never overwritten and no IANA zone/manual lock is inferred. Android mirror ON/OFF/missing becomes device-bound **unknown** with source provenance; neither local intent, OS study permission, autonomous-worker fencing nor second-channel ON can be inferred. Revoked/tokenless observations and existing OS denial remain intact. Motivation default True/account-notice permission are not study consent. Capabilities/jobs/attempts are not written.
+
+**Executed checks:** Python 3.11, SQLite FK enforcement and a fresh PostgreSQL 15 loopback-only disposable cluster with generated owned test schemas. New backfill suite: **30 listed tests, 28 passed, two SQLite-only row-lock cases skipped**, with both real PostgreSQL two-transaction import/import and waiting-import/OFF cases passing. The complete 16 existing workflow backend modules plus storage and backfill: **327 tests in 73.355s, OK, three expected skips** (324 executed/pass; the third is SQLite storage race). Covers source ON/time and unchanged setup state, existing real Cancel regression, missing/native/mixed mirrors/motivation defaults/OS denial, all OFF and manual/revision fences, replay/newer version, no implicit commit/autoflush, caller rollback, other-owner preservation, invalid/blocked/unknown/deletion accounts and overflow refusal. No new job/attempt is created. No Android runtime path changed, so prior JVM evidence remains dated §17.35; no new physical-device/provider/staging acceptance is claimed.
+
+**Files/verification/next:** new service and `tests/test_smart_reminder_legacy_backfill.py`; dedicated workflow path triggers and SQLite/PostgreSQL job now execute both storage and backfill. Python compilation, workflow YAML, `git diff --check` and official strict OpenSpec validation pass. Raw local logs are retained outside the repository in the owned backfill QA directory; the disposable PostgreSQL cluster is stopped after tests. Source CI/main promotion evidence is appended only after verification. **Next active task 2.3** is authenticated Telegram/Android read and strict CAS writes; account/channel invalidation remains 2.4, later policy/widget/activation work remains unfinished.
+
+**Verified source CI / main preparation:** [Smart Reminder regression run #40675357957](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/40675357957), exact source `f8130a215c1c799d4ac48aabb80c2f6b8c814a72`, completed **SUCCESS**. All three jobs passed: backend/consent baseline, Android reminder JVM Direct/Play, and storage/backfill SQLite/PostgreSQL (**49 listed tests, 46 executed/pass, three SQLite race skips**, 31.834s). Real PostgreSQL import/import and waiting-import/OFF tests passed in CI. The clean main-promotion tree matches that source byte-for-byte before this documentation-only CI evidence addition. No production migration/activation or physical display acceptance is inferred.
