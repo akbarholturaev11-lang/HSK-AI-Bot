@@ -12,6 +12,7 @@ the desktop funnel.
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -34,6 +35,9 @@ from app.services.desktop_course_service import (
 )
 from app.services.course_v3_parts import total_parts
 from app.services.entitlements.lesson_access import LessonAccessService
+from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderPreferencesService
+from app.services.smart_widget_context import WidgetContextRequest
+from app.services.smart_widget_context_service import SmartWidgetContextService
 
 
 __all__ = ["AndroidCourseError", "AndroidCourseService"]
@@ -77,8 +81,17 @@ class AndroidCourseService(DesktopCourseService):
         access_token: str,
         *,
         timezone_offset_minutes: int | None = None,
+        widget_request: WidgetContextRequest | None = None,
     ) -> dict:
         """Return Course v3 plus the same server-owned Starter 0 state as Mini App."""
+        if widget_request is not None:
+            current = await self._context(access_token)
+            actor = SmartReminderActor(current.user.id, "android", device_id=current.device.id,
+                                       session_id=current.session.id)
+            # Refuse current block/deletion/revocation before the normal map's
+            # existing writes. Legacy calls add no Smart reads or behavior.
+            with self.session.no_autoflush:
+                await SmartReminderPreferencesService(self.session)._lock(actor)
         result = await super().course_map(
             access_token,
             timezone_offset_minutes=timezone_offset_minutes,
@@ -126,6 +139,14 @@ class AndroidCourseService(DesktopCourseService):
                     lesson.pop("preview_half", None)
                     lesson.pop("locked_premium", None)
         await self.session.commit()
+        if widget_request is not None:
+            current = await self._context(access_token)
+            actor = SmartReminderActor(current.user.id, "android", device_id=current.device.id,
+                                       session_id=current.session.id)
+            result["widget_context"] = await SmartWidgetContextService(self.session).project(
+                actor, widget_request, expected_level=result["level"],
+                authenticated_until=datetime.fromtimestamp(current.claims["exp"], timezone.utc),
+            )
         return result
 
     async def switch_course_track(
