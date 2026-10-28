@@ -13,6 +13,7 @@ from redis.asyncio import Redis
 from redis.asyncio.retry import Retry
 from redis.backoff import NoBackoff
 from redis.exceptions import RedisError
+from sqlalchemy import text
 
 from app.admin_api.pwa_read import StatisticsRequest, read_transaction, statistics
 from app.admin_api.pwa_r2_aggregate_store import PrivateR2AggregateStore, R2Unavailable, R2ConfigurationError
@@ -269,52 +270,110 @@ class AdminPwaStatisticsReader:
 
 
     async def refresh_overview_bundle(self):
-        """Run one bounded manual request across both reporting windows.
+        """Recompute only verified overall aggregates and publish to private R2.
 
-        The batch lock prevents two authorized requests from interleaving
-        weekly/monthly/all_time R2 writes. A short successful-request cooldown protects
-        SQL from accidental repeated triggers, without changing the 24h cache.
+        Manual owner requests do NOT require Redis. A transaction-scoped
+        PostgreSQL advisory lock protects multiple API processes, while the
+        existing shared asyncio lock protects sections in this worker.
+        All three projections are validated before the first R2 write.
         """
         if (not self._overview_local_revalidate
                 or not getattr(self.settings, "ADMIN_PWA_ENABLED", False)
-                or not self._r2.enabled or not self._redis_url):
+                or not self._r2.enabled):
             raise StatisticsUnavailable("Manual statistics refresh unavailable")
-        batch_key = self.prefix + ":manual_refresh_batch"
-        cooldown_key = self.prefix + ":manual_refresh_cooldown"
-        token = uuid4().hex
+        periods = ("weekly", "monthly", "all_time")
         try:
-            recent = await self._redis("get", cooldown_key)
-            if recent:
-                raise StatisticsUnavailable("Manual refresh recently completed")
-            acquired = await self._redis("set", batch_key, token, nx=True, ex=90)
-        except _SharedUnavailable:
-            raise StatisticsUnavailable("Manual refresh coordination unavailable") from None
-        if not acquired:
-            raise StatisticsUnavailable("Manual refresh already in progress")
-        results = {}
-        try:
-            for period in ("weekly", "monthly", "all_time"):
-                snapshot = await self.refresh_now(
-                    StatisticsRequest(platform="overall", period=period))
-                if (not snapshot.get("available")
-                        or snapshot.get("scope", {}).get("section") != "overview"):
-                    raise StatisticsUnavailable("Unexpected overview projection")
-                results[period] = {
-                    "generated_at": snapshot["generated_at"],
-                    "expires_at": snapshot["snapshot"]["expires_at"],
-                }
-            # A failed cooldown write cannot undo successful R2 and Redis writes;
-            # the request is successful but the next request may run sooner.
-            try:
-                await self._redis("set", cooldown_key, "1", ex=60)
-            except _SharedUnavailable:
-                logger.warning("Manual overview refresh cooldown write unavailable")
-            return results
-        finally:
-            try:
-                await self._redis("eval", _RELEASE, 1, batch_key, token)
-            except _SharedUnavailable:
-                logger.warning("Manual overview batch lock release deferred to TTL")
+            async with asyncio.timeout(80), self._mutex:
+                if self.clock() - getattr(self, "_last_manual_refresh_at", 0) < 60:
+                    raise StatisticsUnavailable("Manual refresh recently completed")
+                prepared = {}
+                results = {}
+                async with self.sessions() as db:
+                    async with read_transaction(db):
+                        dialect = db.get_bind().dialect.name
+                        if dialect == "postgresql":
+                            # Stable 64-bit advisory ID, scoped to this DB and
+                            # exact validated aggregate namespace.
+                            lock_id = int.from_bytes(
+                                hashlib.blake2b(self.prefix.encode(), digest_size=8).digest(),
+                                "big", signed=True)
+                            locked = (await db.execute(
+                                text("SELECT pg_try_advisory_xact_lock(:lock_id)"),
+                                {"lock_id": lock_id})).scalar()
+                            if locked is not True:
+                                raise StatisticsUnavailable("Manual refresh already in progress")
+                        elif dialect != "sqlite":
+                            raise StatisticsUnavailable("Manual refresh requires PostgreSQL")
+
+                        # R2 is also the durable cooldown across API workers;
+                        # the endpoint explicitly ignores its normal 24h TTL.
+                        recent = True
+                        for period in periods:
+                            query = StatisticsRequest(platform="overall", period=period)
+                            previous = await self._r2.get(
+                                kind="statistics", namespace=self._r2_namespace,
+                                variant="overall_" + period)
+                            stored = self._decode(previous, query)
+                            if stored is None:
+                                recent = False
+                                continue
+                            observed = datetime.fromisoformat(
+                                stored["data"]["generated_at"]).timestamp()
+                            if not 0 <= self.clock() - observed < 60:
+                                recent = False
+                        if recent:
+                            raise StatisticsUnavailable("Manual refresh recently completed")
+
+                        # One repeatable-read DB transaction provides a coherent
+                        # observation across the three overlapping windows.
+                        for period in periods:
+                            query = StatisticsRequest(platform="overall", period=period)
+                            data = await self.loader(db, query)
+                            if (data.get("available") is not True
+                                    or data.get("source") != "users + payments + canonical learning events"
+                                    or not isinstance(data.get("scope"), dict)
+                                    or data["scope"].get("section") != "overview"):
+                                raise StatisticsUnavailable("Unexpected overview projection")
+                            expires = (datetime.fromisoformat(
+                                data["generated_at"]).timestamp() + SNAPSHOT_SECONDS)
+                            raw = json.dumps({"version": 1, "expires_at": expires,
+                                              "data": data}, allow_nan=False,
+                                             separators=(",", ":")).encode()
+                            envelope = self._decode(raw, query)
+                            if envelope is None:
+                                raise StatisticsUnavailable("Invalid overview projection")
+                            prepared[period] = (raw, envelope)
+
+                        # An R2 failure can leave earlier periods updated, but
+                        # cannot mark this request successful. No fake numbers
+                        # or old latest aliases are returned by the workflow.
+                        for period in periods:
+                            await self._r2.put(
+                                kind="statistics", namespace=self._r2_namespace,
+                                variant="overall_" + period, raw=prepared[period][0])
+
+                for period in periods:
+                    envelope = prepared[period][1]
+                    self._remember(("overall", period), envelope)
+                    results[period] = {
+                        "generated_at": envelope["data"]["generated_at"],
+                        "expires_at": datetime.fromtimestamp(
+                            envelope["expires_at"], timezone.utc).isoformat(),
+                    }
+                self._last_manual_refresh_at = self.clock()
+                return results
+        except R2Unavailable:
+            logger.warning("Manual overview refresh failed: R2Unavailable")
+            raise StatisticsUnavailable("Manual statistics R2 write unavailable") from None
+        except TimeoutError:
+            raise StatisticsUnavailable("Manual statistics refresh timed out") from None
+        except StatisticsUnavailable:
+            raise
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:
+            logger.warning("Manual overview refresh failed: %s", type(exc).__name__)
+            raise StatisticsUnavailable("Manual statistics refresh unavailable") from None
 
     async def __call__(self, query):
         query = StatisticsRequest.model_validate(query.model_dump())
