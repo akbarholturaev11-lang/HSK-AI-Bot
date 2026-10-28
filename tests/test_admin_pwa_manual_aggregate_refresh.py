@@ -207,6 +207,47 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.calls, 3)
         self.assertEqual(self.redis.locks, {})
 
+    async def test_second_period_failure_is_not_reported_success(self):
+        reader = self.reader()
+        original = reader.loader
+
+        async def unavailable_month(db, query):
+            if query.period == "monthly":
+                raise ValueError("simulated projection error")
+            return await original(db, query)
+
+        reader.loader = unavailable_month
+        with self.assertRaises(StatisticsUnavailable):
+            await reader.refresh_overview_bundle()
+        # First period was durable, but no success cooldown was set and the
+        # remaining period was never computed. The caller must see failure.
+        self.assertEqual(self.calls, 1)
+        self.assertEqual(self.store.puts, 1)
+        self.assertNotIn(reader.prefix + ":manual_refresh_cooldown",
+                         self.redis.cache)
+        self.assertEqual(self.redis.locks, {})
+
+    async def test_redis_publication_failure_does_not_claim_success(self):
+        reader = self.reader()
+        query = StatisticsRequest()
+        published_before = await reader(query)
+        original_eval = self.redis.eval
+
+        async def fail_publish(script, numkeys, *args):
+            if script == _PUBLISH:
+                return 0
+            return await original_eval(script, numkeys, *args)
+
+        self.redis.eval = fail_publish
+        with self.assertRaisesRegex(StatisticsUnavailable, "lease lost"):
+            await reader.refresh_now(query)
+        # Mirrors can differ temporarily; an HTTP 503 must never be treated
+        # as proof that R2 was unchanged.
+        self.assertEqual(self.store.puts, 2)
+        self.assertEqual((await reader(query))["metrics"]["users_total"],
+                         published_before["metrics"]["users_total"])
+        self.assertEqual(self.redis.locks, {})
+
     async def test_bundle_lock_held_blocks_all_periods(self):
         reader = self.reader()
         self.redis.locks[reader.prefix + ":manual_refresh_batch"] = "another_token"
