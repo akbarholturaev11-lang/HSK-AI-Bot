@@ -112,6 +112,10 @@ class Settings(BaseSettings):
     # Optional private Cloudflare R2 mirror for 24-hour aggregate snapshots;
     # no browser/client credentials, public URLs or raw feedback are stored.
     ADMIN_PWA_R2_AGGREGATE_ENABLED: bool = False
+    # Optional machine-to-machine, owner-triggered refresh of only approved
+    # overview aggregates. Store a distinct random >=48-character secret in
+    # Railway and the analytics GitHub Actions secrets; disabled when blank.
+    ADMIN_PWA_MANUAL_AGGREGATE_REFRESH_TOKEN: str = ""
     ADMIN_PWA_R2_ACCOUNT_ID: str = ""
     ADMIN_PWA_R2_BUCKET: str = ""
     ADMIN_PWA_R2_ACCESS_KEY_ID: str = ""
