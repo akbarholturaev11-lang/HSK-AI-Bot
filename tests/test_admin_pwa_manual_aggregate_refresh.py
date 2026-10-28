@@ -210,6 +210,35 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.calls, 3)
         self.assertEqual(self.redis.locks, {})
 
+    async def test_owner_bundle_succeeds_without_any_redis(self):
+        reader = self.reader()
+        reader._redis_url = ""
+        reader._client = None
+        report = await reader.refresh_overview_bundle()
+        self.assertEqual(set(report), {"weekly", "monthly", "all_time"})
+        self.assertEqual(self.calls, 3)
+        self.assertEqual(self.store.puts, 3)
+        self.assertEqual(self.redis.locks, {})
+        self.assertEqual(self.redis.cache, {})
+
+    async def test_second_worker_reloads_r2_without_redis(self):
+        first = self.reader()
+        other = self.reader()
+        first._redis_url = ""
+        first._client = None
+        other._redis_url = ""
+        other._client = None
+        query = StatisticsRequest()
+        original = await other(query)
+        self.clock += 1
+        await first.refresh_overview_bundle()
+        self.assertEqual((await other(query))["generated_at"], original["generated_at"])
+        self.clock += 60
+        refreshed = await other(query)
+        self.assertGreater(
+            datetime.fromisoformat(refreshed["generated_at"]),
+            datetime.fromisoformat(original["generated_at"]))
+
     async def test_second_period_failure_is_not_reported_success(self):
         reader = self.reader()
         original = reader.loader
@@ -222,12 +251,10 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
         reader.loader = unavailable_month
         with self.assertRaises(StatisticsUnavailable):
             await reader.refresh_overview_bundle()
-        # First period was durable, but no success cooldown was set and the
-        # remaining period was never computed. The caller must see failure.
+        # All three projections are validated before any R2 publication.
+        # A failed month cannot publish an unverified partial bundle.
         self.assertEqual(self.calls, 1)
-        self.assertEqual(self.store.puts, 1)
-        self.assertNotIn(reader.prefix + ":manual_refresh_cooldown",
-                         self.redis.cache)
+        self.assertEqual(self.store.puts, 0)
         self.assertEqual(self.redis.locks, {})
 
     async def test_redis_publication_failure_does_not_claim_success(self):
@@ -251,9 +278,20 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
                          published_before["metrics"]["users_total"])
         self.assertEqual(self.redis.locks, {})
 
-    async def test_bundle_lock_held_blocks_all_periods(self):
+    async def test_pg_advisory_lock_held_blocks_all_periods(self):
         reader = self.reader()
-        self.redis.locks[reader.prefix + ":manual_refresh_batch"] = "another_token"
+
+        @asynccontextmanager
+        async def locked_sessions():
+            @asynccontextmanager
+            async def transaction():
+                yield
+            async def execute(statement, params=None):
+                return SimpleNamespace(scalar=lambda: False)
+            yield SimpleNamespace(begin=transaction, execute=execute,
+                get_bind=lambda: SimpleNamespace(dialect=SimpleNamespace(name="postgresql")))
+
+        reader.sessions = locked_sessions
         with self.assertRaisesRegex(StatisticsUnavailable, "in progress"):
             await reader.refresh_overview_bundle()
         self.assertEqual(self.calls, 0)

@@ -56,7 +56,26 @@ def create_manual_aggregate_refresh_router(*, settings_obj, analytics_reader):
         except StatisticsUnavailable as exc:
             if str(exc) == "Manual refresh recently completed":
                 return _reply(429, "admin_pwa_refresh_rate_limited")
-            logger.warning("Manual overview refresh unavailable; partial R2 updates possible")
+            # The exception is an internal fixed-code reason, not raw SQL or
+            # user data. Log only an enumerated reason; never a bearer token.
+            safe_reasons = {
+                "Manual statistics refresh unavailable",
+                "Manual refresh coordination unavailable",
+                "Manual refresh already in progress",
+                "Statistics refresh unavailable",
+                "Statistics refresh cooling down",
+                "Manual statistics coordination unavailable",
+                "Statistics refresh already in progress",
+                "Manual statistics R2 write unavailable",
+                "Manual statistics coordination lost",
+                "Manual statistics lease lost",
+                "Manual statistics refresh timed out",
+                "Manual refresh recently completed",
+                "Unexpected overview projection",
+            }
+            reason = str(exc)
+            logger.warning("Manual overview refresh failed; reason=%s",
+                           reason if reason in safe_reasons else "unclassified")
             return _reply(503, "admin_pwa_refresh_unavailable")
         except Exception:
             logger.error("Manual overview refresh failed")
