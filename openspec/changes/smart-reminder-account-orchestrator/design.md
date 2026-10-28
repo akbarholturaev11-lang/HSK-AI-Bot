@@ -141,6 +141,45 @@ Alternative considered: teach each widget platform its own hours/habit model. It
 
 ## Risks / Trade-offs
 
+### Bounded task 3.1 implementation boundary
+
+On the reviewed P1 baseline `19d71b50`, add a pure shadow evaluator and an
+internal read-only context adapter, without an API, scheduler consumer, schema
+change, job reservation or provider call. The adapter reuses the verified-actor
+preference reader's current account/session/deletion checks and user-first lock;
+readers must not flush, initialize a profile/plan, consume access or commit.
+Current course progress and `LessonAccessService.status(consume=False)` own the
+continuation target. Starter 0 remains a separate prerequisite. Course/day
+mismatch, inaccessible targets and ambiguous/nonexistent local times suppress.
+
+Learning inputs are a bounded observation window supplied explicitly by the
+internal caller, not a newly invented retention/inactivity threshold. Corroborate
+canonical lesson XP refs with server-only `lesson_completed` receipts and
+accepted current progress; corroborate practice XP with server-only
+`test_completed`/`training_completed` session refs. Deduplicate by the original
+XP ref and instant, including cross-client replay. Reward XP, opens, provider
+acceptance and uncorroborated activity are not study. Missing best-effort events,
+unsupported study types and window overflow remain explicit coverage limits;
+absence is never an inactivity finding. Positive verified XP and a matching
+stored plan are separate completion signals; do not create a new frozen plan.
+
+D09's minimum confident learning days is still undecided. Default evaluation
+therefore preserves a genuine saved time or returns unknown. A supplied,
+versioned calibration is an internal simulation input only, with no runtime
+configuration/caller enabling adaptation in this slice. Test distinct learning
+days (one vote per day), ambiguous habits, sparse history and a genuine 02:00
+mode without a universal night blackout. Exact observed minutes avoid invented
+hour bins or circular midnight averages. Manual locks and personal quiet/pause
+always prevail. All decisions unconditionally carry `dispatch_allowed=False`;
+permitted channel configuration is not an endpoint grant or old-client fencing.
+
+Test the pure evaluator and actual persisted XP/event/progress/access reader on
+SQLite and PostgreSQL, including reward-only/replay, canonical owner isolation,
+course switches, completed goals/plans, denied access, stale sessions/OFF and
+zero writes. Task 3.2 cadence, 3.3 reservations/DST travel ownership, 3.4 category
+coordination and 3.5 widget projection remain separate. Rollback removes these
+unused shadow modules; retain P1 consent, lifecycle guards and schema.
+
 - **Old offline APK can display outside the ledger** → Do not migrate accounts with unknown/unsupported autonomous sender state into new cross-channel dispatch. Test historical binaries and describe the remaining physical display limit honestly; no server-only “exactly once” claim.
 - **Provider success followed by crash leaves uncertain outcome** → Reserve/commit before IO, persist an attempt before send, classify uncertain result as unknown and suppress alternate delivery. Reconciliation never treats timeout alone as non-display.
 - **A single unique `(user, local_day)` may be bypassed during travel** → Freeze account zone/day/UTC window, compare overlapping proposed day intervals and suppress ambiguous transitions; include date-line, fractional zone and DST tests.
