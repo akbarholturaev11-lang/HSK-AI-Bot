@@ -146,9 +146,12 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
         query = StatisticsRequest(platform="overall", period="weekly")
         old = await other(query)
         self.assertEqual(old["metrics"]["users_total"], 1)
+        # Model a later source observation; equal timestamps cannot establish
+        # which independently generated snapshot is more recent.
+        self.clock += 1
         await first.refresh_now(query)
         self.assertEqual((await other(query))["metrics"]["users_total"], 1)
-        self.clock += 61
+        self.clock += 60
         self.assertEqual((await other(query))["metrics"]["users_total"], 2)
         self.assertEqual(self.calls, 2)
 
