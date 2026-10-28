@@ -162,7 +162,15 @@ class AdminPwaStatisticsReader:
         except _SharedUnavailable:
             shared = None
         if shared is not None and shared != cached:
-            return self._remember(variant, shared)
+            # A Redis read can lag a more recent local snapshot (e.g. after
+            # R2 succeeded but Redis publication failed). Never downgrade.
+            try:
+                old_at = datetime.fromisoformat(cached["data"]["generated_at"])
+                new_at = datetime.fromisoformat(shared["data"]["generated_at"])
+                if new_at > old_at:
+                    return self._remember(variant, shared)
+            except (KeyError, TypeError, ValueError):
+                pass
         return self._result(cached)
 
     @staticmethod
@@ -210,7 +218,7 @@ class AdminPwaStatisticsReader:
         if (not getattr(self.settings, "ADMIN_PWA_ENABLED", False)
                 or not self._r2.enabled or not self._redis_url
                 or query.platform != "overall"
-                or query.period not in ("weekly", "monthly")):
+                or query.period not in ("weekly", "monthly", "all_time")):
             raise StatisticsUnavailable("Manual statistics refresh unavailable")
 
         lease, token = self._lease_key, uuid4().hex
@@ -260,7 +268,7 @@ class AdminPwaStatisticsReader:
         """Run one bounded manual request across both reporting windows.
 
         The batch lock prevents two authorized requests from interleaving
-        weekly/monthly R2 writes. A short successful-request cooldown protects
+        weekly/monthly/all_time R2 writes. A short successful-request cooldown protects
         SQL from accidental repeated triggers, without changing the 24h cache.
         """
         if (not self._overview_local_revalidate
@@ -281,7 +289,7 @@ class AdminPwaStatisticsReader:
             raise StatisticsUnavailable("Manual refresh already in progress")
         results = {}
         try:
-            for period in ("weekly", "monthly"):
+            for period in ("weekly", "monthly", "all_time"):
                 snapshot = await self.refresh_now(
                     StatisticsRequest(platform="overall", period=period))
                 if (not snapshot.get("available")
