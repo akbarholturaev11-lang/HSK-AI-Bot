@@ -76,6 +76,22 @@ class SmartReminderConsent(Base):
     observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
+class SmartReminderMutation(Base):
+    """Minimal retry acknowledgement, never a cached settings/grant snapshot."""
+
+    __tablename__ = "smart_reminder_mutations"
+    __table_args__ = (
+        CheckConstraint("applied_revision >= 1", name="revision"),
+    )
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    request_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    actor_key: Mapped[str] = mapped_column(String(64))
+    body_sha256: Mapped[str] = mapped_column(String(64))
+    applied_revision: Mapped[int] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
 class SmartReminderCapability(Base):
     __tablename__ = "smart_reminder_capabilities"
     __table_args__ = (

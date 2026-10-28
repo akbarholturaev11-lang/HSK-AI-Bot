@@ -1,3 +1,5 @@
+from app.bot.utils.smart_reminder import INTERACTION_KEY
+from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderError, SmartReminderPreferencesService
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, FSInputFile
@@ -2215,8 +2217,11 @@ async def course_set_reminder_time_handler(callback: CallbackQuery, state: FSMCo
         return
 
     try:
-        hour = int(callback.data.split(":")[-2])
-        minute = int(callback.data.split(":")[-1])
+        parts = callback.data.split(":")
+        if len(parts) not in (4, 5):
+            raise ValueError("Invalid reminder callback")
+        hour = int(parts[2])
+        minute = int(parts[3])
         reminder_time = time(hour, minute)
     except (TypeError, ValueError, IndexError):
         await callback.answer()
@@ -2225,6 +2230,19 @@ async def course_set_reminder_time_handler(callback: CallbackQuery, state: FSMCo
     engine = CourseEngineService(session)
     progress = await engine.progress_repo.get_by_user_id(user.id)
     if not progress:
+        await callback.answer()
+        return
+
+    try:
+        binding = (await state.get_data()).get(INTERACTION_KEY) if state is not None else None
+        applied = await SmartReminderPreferencesService(session).bot_time(
+            SmartReminderActor(user.id, "telegram_bot", telegram_id=callback.from_user.id),
+            nonce=parts[4] if len(parts) == 5 else None, binding=binding, selected=reminder_time,
+        )
+        if applied is False:
+            await callback.answer()
+            return
+    except SmartReminderError:
         await callback.answer()
         return
 
@@ -2261,6 +2279,8 @@ async def course_cancel_reminder_setup_handler(callback: CallbackQuery, state: F
         await engine.progress_repo.set_waiting_for(progress, "none")
         await session.commit()
 
+    if state is not None:
+        await state.update_data(**{INTERACTION_KEY: None})
     await callback.answer()
     await edit_callback_workflow_message(
         callback,
