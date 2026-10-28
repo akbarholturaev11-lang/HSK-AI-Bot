@@ -134,7 +134,7 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
     async def test_unconfigured_redis_or_disallowed_platform_denied(self):
         reader = self.reader()
         for query in (StatisticsRequest(platform="android"),
-                      StatisticsRequest(period="all_time")):
+                      StatisticsRequest(platform="telegram")):
             with self.assertRaises(StatisticsUnavailable):
                 await reader.refresh_now(query)
         self.assertEqual(self.calls, 0)
@@ -151,6 +151,31 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
         self.clock += 61
         self.assertEqual((await other(query))["metrics"]["users_total"], 2)
         self.assertEqual(self.calls, 2)
+
+    async def test_redis_cannot_downgrade_a_newer_worker_local_snapshot(self):
+        reader = self.reader()
+        query = StatisticsRequest(period="weekly")
+        old = await reader(query)
+        stale = self.redis.cache[reader.prefix + ":overall:weekly"]
+        self.clock += 1
+        newer = await reader.refresh_now(query)
+        self.assertEqual(newer["metrics"]["users_total"], 2)
+        self.assertGreater(newer["snapshot"]["expires_at"], old["snapshot"]["expires_at"])
+        # Simulate Redis falling back to an older snapshot after R2 commit.
+        self.redis.cache[reader.prefix + ":overall:weekly"] = stale
+        self.clock += 61
+        checked = await reader(query)
+        self.assertEqual(checked["metrics"]["users_total"], 2)
+
+    async def test_all_time_is_included_and_retained_in_private_r2(self):
+        reader = self.reader()
+        result = await reader.refresh_overview_bundle()
+        self.assertEqual(set(result), {"weekly", "monthly", "all_time"})
+        obj = await self.store.get(kind="statistics",
+                                   namespace=reader._r2_namespace,
+                                   variant="overall_all_time")
+        self.assertEqual(json.loads(obj)["data"]["period"], "all_time")
+        self.assertEqual(self.calls, 3)
 
     async def test_untrusted_projection_is_rejected_before_any_r2_write(self):
         reader = self.reader()
@@ -175,11 +200,11 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
     async def test_bundle_is_serialized_and_cooldown_prevents_sql_flood(self):
         reader = self.reader()
         first = await reader.refresh_overview_bundle()
-        self.assertEqual(set(first), {"weekly", "monthly"})
-        self.assertEqual(self.calls, 2)
+        self.assertEqual(set(first), {"weekly", "monthly", "all_time"})
+        self.assertEqual(self.calls, 3)
         with self.assertRaisesRegex(StatisticsUnavailable, "recently completed"):
             await reader.refresh_overview_bundle()
-        self.assertEqual(self.calls, 2)
+        self.assertEqual(self.calls, 3)
         self.assertEqual(self.redis.locks, {})
 
     async def test_bundle_lock_held_blocks_all_periods(self):
@@ -196,12 +221,12 @@ class FakeOverview:
         self.calls = []
 
     async def refresh_overview_bundle(self):
-        self.calls.extend([("overall", "weekly"), ("overall", "monthly")])
+        self.calls.extend([("overall", period) for period in ("weekly", "monthly", "all_time")])
         return {
             period: {
                 "generated_at": "2026-10-28T01:00:00+00:00",
                 "expires_at": "2026-10-29T01:00:00+00:00",
-            } for period in ("weekly", "monthly")
+            } for period in ("weekly", "monthly", "all_time")
         }
 
 
@@ -235,7 +260,7 @@ class ManualRefreshTransportTests(unittest.IsolatedAsyncioTestCase):
         result = await self.post()
         self.assertEqual(result.status_code, 200)
         self.assertEqual(self.overview.calls,
-                         [("overall", "weekly"), ("overall", "monthly")])
+                         [("overall", "weekly"), ("overall", "monthly"), ("overall", "all_time")])
         self.assertEqual(result.json()["periods"]["weekly"]["generated_at"],
                          "2026-10-28T01:00:00+00:00")
         self.assertNotIn("metrics", result.text)
