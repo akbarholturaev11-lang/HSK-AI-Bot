@@ -300,6 +300,58 @@ DST/fractional/date-line overlap; commit failure, sink boundary and external
 crash model. Rollback keeps ledger uniqueness/windows, P1 consent/epochs/guards
 and uncertainty; no destructive downgrade, live migration or legacy resume.
 
+### Bounded task 3.4 coordination and independent shadow worker
+
+Add pure, channel-neutral study/rank/weekly collision simulation and an
+authenticated read-only source adapter. Keep transactional routing outside this
+budget. Candidates carry stable account-level identities, explicit windows and
+source eligibility; no body, endpoint or provider credential. An explicit
+versioned simulation calibration supplies spacing/priority with no production
+default (D05 remains OPEN). Defer a useful weekly candidate with its identity and
+window intact, or retain it as pending/unknown if no valid later slot is known;
+do not silently discard it or promise posting at an unvalidated quiet time.
+Proposed later times require fresh eligibility. Deferred weekly simulation
+outputs are not a new durable weekly delivery queue or consumed send cursor.
+
+Read existing canonical D1 assignment events, with fallback only for unowned
+historical events on this account's real positive Telegram identity. Preserve
+the existing 48-hour window for both arms; never hash/reassign by device or
+invent an assignment. Unknown/future/overflow assignment evidence fails closed.
+Apply this exclusion to new study and ranking simulation consistently with the
+existing motivation holdout. Existing weekly/transactional routing remains
+outside that motivation holdout. Add the mandatory D1 veto to shadow reservation
+and fresh queue checks, including an assignment arriving after claim. No new
+experiment exposure follows from a shadow candidate.
+
+The source adapter projects only notification keys/dedupe/instants, existing
+course weekly provider-return timestamps and verified progress delta. Feed rows
+are possible contacts, not display proof; shadow job completion is never a
+contact or learning signal. Legacy/offline contact coverage is partial. Do not
+query message bodies, rank peers' identities or tokens, mutate legacy counters,
+generate summaries, assign experiments, or call senders. Compare actual legacy
+fake-transport scenarios to the new simulation in tests; no live causal metrics.
+
+Run the existing shadow queue through a separate lifespan task, behind a single
+`SMART_REMINDER_SHADOW_ENABLED=False` technical flag. Disabled means zero Smart
+polling/SQL. It processes only already reserved versioned shadow jobs and has no
+producer enrollment, endpoint grant or provider callback. Resolve fresh trusted
+internal actors from canonical User/real Telegram or current owned Android
+session metadata; no fake Telegram identity or credential storage. Isolate the
+worker from the existing financial/legacy scheduler and Admin PWA poller, with
+bounded technical batches/timeouts, clean cancellation and no raw identifiers
+in logs. Do not reorder existing transaction/fallback/legacy routing. No flag is
+changed in production and no public/admin UI is added.
+
+Verify source-bound D1 control/treatment/expiry and native/unowned/conflicting
+ownership, zero-write reader, useful weekly defer/retention, duplicate and
+cross-category collision, unchanged transactional behavior and no provider IO.
+Use SQLite/PostgreSQL and actual scheduler source to demonstrate failing/slow
+Admin PWA does not block the separate shadow task; test disabled zero SQL,
+cancellation, timeout/restart, actor revocation and current D1 after claim.
+Rollback disables only shadow processing; retain P1 OFF/epoch/uncertainty and
+frozen job ownership. D05 thresholds, registered experiments and physical
+cutover acceptance stay open for subsequent phases.
+
 ## Risks / Trade-offs
 
 - **Old offline APK can display outside the ledger** → Do not migrate accounts with unknown/unsupported autonomous sender state into new cross-channel dispatch. Test historical binaries and describe the remaining physical display limit honestly; no server-only “exactly once” claim.

@@ -109,6 +109,8 @@ class Settings(BaseSettings):
     ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS: int = 86400
     # Separate browser Admin PWA stays disabled until Google/TG + passkey auth exists.
     ADMIN_PWA_ENABLED: bool = False
+    # Observes existing Smart shadow reservations only; grants no delivery.
+    SMART_REMINDER_SHADOW_ENABLED: bool = False
     # Optional private Cloudflare R2 mirror for 24-hour aggregate snapshots;
     # no browser/client credentials, public URLs or raw feedback are stored.
     ADMIN_PWA_R2_AGGREGATE_ENABLED: bool = False

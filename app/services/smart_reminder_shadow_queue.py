@@ -13,6 +13,7 @@ from sqlalchemy import insert, or_, select, update
 from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderJob
 from app.db.models.user import User
 from app.services.smart_reminder_cadence import evaluate_cadence
+from app.services.smart_reminder_coordination import read_d1_scope
 from app.services.smart_reminder_lifecycle import EXTERNAL_ATTEMPTS
 from app.services.smart_reminder_policy import _aware_utc, evaluate
 from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
@@ -105,6 +106,9 @@ class SmartReminderShadowQueue:
         async with self.sessions.begin() as session:
             await SmartReminderPreferencesService(session).read(actor)
             now = self._now()  # The User lock may have waited: never reuse a pre-lock clock.
+            d1 = await read_d1_scope(session, actor.user_id, now)
+            if d1.reason(now):
+                return ShadowResult(d1.reason(now))
             snapshot = await SmartReminderPolicyContextService(session).load_cadence(
                 actor, observed_at=now, history_since=since, expected_level=expected_level)
             decision = evaluate(snapshot.policy)
@@ -174,6 +178,9 @@ class SmartReminderShadowQueue:
         return tuple(results)
 
     async def _fresh(self, session, actor, row, now, since):
+        d1 = await read_d1_scope(session, actor.user_id, now)
+        if d1.reason(now):
+            return None, await self._close(session, row, "cancelled", d1.reason(now), now)
         if _aware_utc(since) > _utc(row["day_start_utc"]):
             return None, await self._close(session, row, "cancelled", "queue_history_incomplete", now)
         context = await SmartReminderPolicyContextService(session).load(
