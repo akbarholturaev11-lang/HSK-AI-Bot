@@ -22,11 +22,13 @@ QA_ENVIRONMENT = "qa"
 QA_HOST = "postgres.railway.internal"
 QA_DATABASE = "railway"
 EXPECTED_BASELINE = "0102_payment_review_preview"
-EXPECTED_HEAD = "0132_admin_pwa_campaign_schedule"
+EXPECTED_HEAD = "0133_smart_reminder_storage"
 # These reviewed migrations create tables unconditionally. Defer their DDL
 # until after the empty ORM baseline is stamped; never precreate and then skip
 # their migrations. This list is reviewed alongside EXPECTED_HEAD.
 MIGRATION_CREATED_TABLES = frozenset({
+    "smart_reminder_preferences", "smart_reminder_consents",
+    "smart_reminder_capabilities", "smart_reminder_jobs", "smart_reminder_attempts",
     "admin_pwa_outbound_jobs", "admin_pwa_outbound_recipients", "admin_pwa_outbound_events", "admin_pwa_payout_proofs", "admin_pwa_campaign_assets",
     "public_site_traffic_daily", "admin_pwa_sessions", "admin_pwa_approvals",
     "admin_pwa_oauth_attempts", "admin_pwa_enrollment_grants",
@@ -158,7 +160,7 @@ def main() -> None:
     cfg = _reviewed_alembic_config()
     asyncio.run(_create_empty_orm_schema())
     # QA ONLY. ORM-created tables model the latest empty schema; migration
-    # 0103..0121 is then exercised to apply/refuse any missing constraints.
+    # post-baseline revisions then apply/refuse their actual schema changes.
     command.stamp(cfg, EXPECTED_BASELINE)
     command.upgrade(cfg, "head")
     asyncio.run(verify_qa_tables())
