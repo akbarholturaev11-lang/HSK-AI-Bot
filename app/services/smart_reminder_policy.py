@@ -5,7 +5,7 @@ this policy yet; D09 habit confidence is deliberately unconfigured by default.
 """
 from collections import Counter
 from dataclasses import dataclass, field
-from datetime import date, datetime, time, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
@@ -91,6 +91,28 @@ def _aware_utc(value: datetime) -> datetime:
     if value.tzinfo is None or value.utcoffset() is None:
         raise ValueError("Policy instants must be timezone-aware")
     return value.astimezone(timezone.utc)
+
+
+def day_window(zone_name, local_day):
+    """Actual IANA midnight boundaries, shared by passive views and jobs."""
+    zone = ZoneInfo(zone_name)
+    day = date.fromisoformat(local_day)
+    start = datetime.combine(day, time.min, zone).astimezone(timezone.utc)
+    end = datetime.combine(day + timedelta(days=1), time.min, zone).astimezone(timezone.utc)
+    if start >= end:
+        raise ValueError("Local calendar day has no positive UTC interval")
+    return start, end
+
+
+def local_time_instants(local_day, clock, zone):
+    """Zero instants for a DST gap, two for a fold; never silently shift."""
+    naive = datetime.combine(date.fromisoformat(local_day), clock)
+    instants = set()
+    for fold in (0, 1):
+        instant = naive.replace(tzinfo=zone, fold=fold).astimezone(timezone.utc)
+        if instant.astimezone(zone).replace(tzinfo=None) == naive:
+            instants.add(instant)
+    return instants
 
 
 def _quiet(clock: time, start: time | None, end: time | None) -> bool:
@@ -207,12 +229,7 @@ def evaluate(context: PolicyContext, *, calibration: HabitCalibration | None = N
         return result("personal_quiet")
     # Refuse gaps/folds rather than silently shifting a user's clock. Durable
     # reservation/travel ownership belongs to 3.3, not this simulation.
-    naive = datetime.combine(date.fromisoformat(local_day), clock)
-    instants = set()
-    for fold in (0, 1):
-        instant = naive.replace(tzinfo=zone, fold=fold).astimezone(timezone.utc)
-        if instant.astimezone(zone).replace(tzinfo=None) == naive:
-            instants.add(instant)
+    instants = local_time_instants(local_day, clock, zone)
     if len(instants) != 1:
         return result("local_time_nonexistent" if not instants else "local_time_ambiguous")
     scheduled = next(iter(instants))
