@@ -27,10 +27,16 @@ class FakeRedis:
         raw = self.cache.get(key)
         return raw[start:end + 1] if raw is not None else None
 
-    async def set(self, key, token, *, nx, ex):
-        if key in self.locks:
+    async def get(self, key):
+        return self.cache.get(key)
+
+    async def set(self, key, token, *, nx=False, ex):
+        if nx and key in self.locks:
             return False
-        self.locks[key] = token
+        if nx:
+            self.locks[key] = token
+        else:
+            self.cache[key] = token
         return True
 
     async def eval(self, script, numkeys, *args):
@@ -134,16 +140,48 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.calls, 0)
 
 
+    async def test_other_worker_revalidates_valid_local_overview_after_60s(self):
+        first = self.reader()
+        other = self.reader()
+        query = StatisticsRequest(platform="overall", period="weekly")
+        old = await other(query)
+        self.assertEqual(old["metrics"]["users_total"], 1)
+        await first.refresh_now(query)
+        self.assertEqual((await other(query))["metrics"]["users_total"], 1)
+        self.clock += 61
+        self.assertEqual((await other(query))["metrics"]["users_total"], 2)
+        self.assertEqual(self.calls, 2)
+
+    async def test_bundle_is_serialized_and_cooldown_prevents_sql_flood(self):
+        reader = self.reader()
+        first = await reader.refresh_overview_bundle()
+        self.assertEqual(set(first), {"weekly", "monthly"})
+        self.assertEqual(self.calls, 2)
+        with self.assertRaisesRegex(StatisticsUnavailable, "recently completed"):
+            await reader.refresh_overview_bundle()
+        self.assertEqual(self.calls, 2)
+        self.assertEqual(self.redis.locks, {})
+
+    async def test_bundle_lock_held_blocks_all_periods(self):
+        reader = self.reader()
+        self.redis.locks[reader.prefix + ":manual_refresh_batch"] = "another_token"
+        with self.assertRaisesRegex(StatisticsUnavailable, "in progress"):
+            await reader.refresh_overview_bundle()
+        self.assertEqual(self.calls, 0)
+        self.assertEqual(self.store.puts, 0)
+
+
 class FakeOverview:
     def __init__(self):
         self.calls = []
 
-    async def refresh_now(self, query):
-        self.calls.append((query.platform, query.period))
+    async def refresh_overview_bundle(self):
+        self.calls.extend([("overall", "weekly"), ("overall", "monthly")])
         return {
-            "available": True, "scope": {"section": "overview"},
-            "generated_at": "2026-10-28T01:00:00+00:00",
-            "snapshot": {"expires_at": "2026-10-29T01:00:00+00:00"},
+            period: {
+                "generated_at": "2026-10-28T01:00:00+00:00",
+                "expires_at": "2026-10-29T01:00:00+00:00",
+            } for period in ("weekly", "monthly")
         }
 
 
