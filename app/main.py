@@ -44,6 +44,7 @@ from app.admin_api.pwa_inbox_attachments import create_admin_pwa_inbox_attachmen
 from app.admin_api.pwa_push import create_admin_pwa_push_router
 from app.services.admin_pwa_push_dispatch import dispatch_batch, sender_config
 from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
+from app.admin_api.pwa_manual_aggregate_refresh import create_manual_aggregate_refresh_router
 from app.admin_api.pwa_mcp_http import create_admin_pwa_mcp_http_router
 from app.admin_api.pwa_mcp_consent_transport import create_admin_pwa_mcp_consent_router
 from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_router
@@ -787,6 +788,8 @@ app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=setti
     reader=admin_pwa_feedback_reader))
 app.include_router(create_admin_pwa_read_router(settings_obj=settings, session_factory=async_session_maker,
     statistics_reader=admin_pwa_statistics_reader,analytics_reader=admin_pwa_analytics_reader))
+app.include_router(create_manual_aggregate_refresh_router(
+    settings_obj=settings, analytics_reader=admin_pwa_analytics_reader))
 app.include_router(create_admin_pwa_inbox_triage_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_inbox_attachment_router(
     settings_obj=settings, session_factory=async_session_maker,
