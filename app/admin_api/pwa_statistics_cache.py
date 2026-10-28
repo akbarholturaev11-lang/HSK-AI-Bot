@@ -173,6 +173,55 @@ class AdminPwaStatisticsReader:
             self._load_retry_at = self.clock()+_RETRY_SECONDS
             raise StatisticsUnavailable("Statistics refresh unavailable") from None
 
+
+    async def refresh_now(self, query):
+        """Explicit, authorized server-side refresh, even when daily caches are valid.
+
+        Only the caller's trusted transport may request this method. Redis is
+        required for a distributed lease; we fail closed rather than recomputing
+        concurrently across workers. Never delete an existing good snapshot.
+        """
+        query = StatisticsRequest.model_validate(query.model_dump())
+        if (not getattr(self.settings, "ADMIN_PWA_ENABLED", False)
+                or not self._r2.enabled or not self._redis_url
+                or query.platform != "overall"
+                or query.period not in ("weekly", "monthly")):
+            raise StatisticsUnavailable("Manual statistics refresh unavailable")
+
+        lease, token = self._lease_key, uuid4().hex
+        key = self.prefix + ":" + query.platform + ":" + query.period
+        variant = (query.platform, query.period)
+        try:
+            async with asyncio.timeout(15), self._mutex:
+                try:
+                    acquired = await self._redis("set", lease, token, nx=True, ex=_LEASE_SECONDS)
+                except _SharedUnavailable:
+                    raise StatisticsUnavailable("Manual statistics coordination unavailable") from None
+                if not acquired:
+                    raise StatisticsUnavailable("Statistics refresh already in progress")
+                try:
+                    # Deliberately skip local, Redis and R2 reads on explicit demand.
+                    raw, envelope = await self._compute(query)
+                    # Publish the new validated snapshot only after the R2 write
+                    # succeeds; on failure leave the previous cache untouched.
+                    await self._r2.put(kind="statistics", namespace=self._r2_namespace,
+                                       variant=query.platform + "_" + query.period, raw=raw)
+                    ttl = max(1, int(envelope["expires_at"] - self.clock()))
+                    if not await self._redis("eval", _PUBLISH, 2, lease, key, token, raw, ttl):
+                        raise StatisticsUnavailable("Manual statistics lease lost")
+                    return self._remember(variant, envelope)
+                except R2Unavailable:
+                    raise StatisticsUnavailable("Manual statistics R2 write unavailable") from None
+                except _SharedUnavailable:
+                    raise StatisticsUnavailable("Manual statistics coordination lost") from None
+                finally:
+                    try:
+                        await self._redis("eval", _RELEASE, 1, lease, token)
+                    except _SharedUnavailable:
+                        pass
+        except TimeoutError:
+            raise StatisticsUnavailable("Manual statistics refresh timed out") from None
+
     async def __call__(self, query):
         query = StatisticsRequest.model_validate(query.model_dump())
         if not getattr(self.settings, "ADMIN_PWA_ENABLED", False):
