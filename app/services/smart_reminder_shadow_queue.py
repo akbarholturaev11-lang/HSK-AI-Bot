@@ -4,9 +4,8 @@ Own short transactions; commit/close before an optional observational sink.
 No API, scheduler, provider adapter or runtime calibration enables this queue.
 """
 from dataclasses import dataclass, field, replace
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from uuid import uuid4
-from zoneinfo import ZoneInfo
 
 from sqlalchemy import insert, or_, select, update
 
@@ -15,7 +14,7 @@ from app.db.models.user import User
 from app.services.smart_reminder_cadence import evaluate_cadence
 from app.services.smart_reminder_coordination import read_d1_scope
 from app.services.smart_reminder_lifecycle import EXTERNAL_ATTEMPTS
-from app.services.smart_reminder_policy import _aware_utc, evaluate
+from app.services.smart_reminder_policy import _aware_utc, day_window, evaluate
 from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
 from app.services.smart_reminder_preferences import SmartReminderError, SmartReminderPreferencesService, _utc
 
@@ -41,17 +40,6 @@ class ShadowResult:
     lease_token: str | None = None
     lease_expires_at: datetime | None = None
     dispatch_allowed: bool = field(default=False, init=False)
-
-
-def day_window(zone_name, local_day):
-    """Freeze actual IANA midnight instants, never UTC start plus 24 hours."""
-    zone = ZoneInfo(zone_name)
-    day = date.fromisoformat(local_day)
-    start = datetime.combine(day, time.min, zone).astimezone(timezone.utc)
-    end = datetime.combine(day + timedelta(days=1), time.min, zone).astimezone(timezone.utc)
-    if start >= end:
-        raise ValueError("Local calendar day has no positive UTC interval")
-    return start, end
 
 
 class SmartReminderShadowQueue:
