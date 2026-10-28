@@ -247,6 +247,55 @@ class AdminPwaStatisticsReader:
         except TimeoutError:
             raise StatisticsUnavailable("Manual statistics refresh timed out") from None
 
+
+    async def refresh_overview_bundle(self):
+        """Run one bounded manual request across both reporting windows.
+
+        The batch lock prevents two authorized requests from interleaving
+        weekly/monthly R2 writes. A short successful-request cooldown protects
+        SQL from accidental repeated triggers, without changing the 24h cache.
+        """
+        if (not self._overview_local_revalidate
+                or not getattr(self.settings, "ADMIN_PWA_ENABLED", False)
+                or not self._r2.enabled or not self._redis_url):
+            raise StatisticsUnavailable("Manual statistics refresh unavailable")
+        batch_key = self.prefix + ":manual_refresh_batch"
+        cooldown_key = self.prefix + ":manual_refresh_cooldown"
+        token = uuid4().hex
+        try:
+            recent = await self._redis("get", cooldown_key)
+            if recent:
+                raise StatisticsUnavailable("Manual refresh recently completed")
+            acquired = await self._redis("set", batch_key, token, nx=True, ex=90)
+        except _SharedUnavailable:
+            raise StatisticsUnavailable("Manual refresh coordination unavailable") from None
+        if not acquired:
+            raise StatisticsUnavailable("Manual refresh already in progress")
+        results = {}
+        try:
+            for period in ("weekly", "monthly"):
+                snapshot = await self.refresh_now(
+                    StatisticsRequest(platform="overall", period=period))
+                if (not snapshot.get("available")
+                        or snapshot.get("scope", {}).get("section") != "overview"):
+                    raise StatisticsUnavailable("Unexpected overview projection")
+                results[period] = {
+                    "generated_at": snapshot["generated_at"],
+                    "expires_at": snapshot["snapshot"]["expires_at"],
+                }
+            # A failed cooldown write cannot undo successful R2 and Redis writes;
+            # the request is successful but the next request may run sooner.
+            try:
+                await self._redis("set", cooldown_key, "1", ex=60)
+            except _SharedUnavailable:
+                logger.warning("Manual overview refresh cooldown write unavailable")
+            return results
+        finally:
+            try:
+                await self._redis("eval", _RELEASE, 1, batch_key, token)
+            except _SharedUnavailable:
+                logger.warning("Manual overview batch lock release deferred to TTL")
+
     async def __call__(self, query):
         query = StatisticsRequest.model_validate(query.model_dump())
         if not getattr(self.settings, "ADMIN_PWA_ENABLED", False):
