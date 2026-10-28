@@ -446,6 +446,10 @@ class UserRepository:
         from app.db.models.ad_campaign import AdCampaignDelivery
         from app.db.models.ai_usage import AIUsageBudget, AIUsageEvent
         from app.db.models.android_push import AndroidPushToken
+        from app.db.models.smart_reminder import (
+            SmartReminderAttempt, SmartReminderCapability, SmartReminderConsent,
+            SmartReminderJob, SmartReminderPreference,
+        )
         from app.db.models.assistant import (
             AssistantAssessment,
             AssistantConversation,
@@ -581,6 +585,15 @@ class UserRepository:
                 contact_username="[deleted]",
             )
         )
+
+        # Remove account-owned Smart state explicitly, including attempts that
+        # only reference a job. Never touch another owner's consent or ledger.
+        smart_jobs = select(SmartReminderJob.id).where(SmartReminderJob.user_id == uid)
+        await self.session.execute(sql_delete(SmartReminderAttempt).where(
+            SmartReminderAttempt.job_id.in_(smart_jobs)))
+        for model in (SmartReminderJob, SmartReminderCapability,
+                      SmartReminderConsent, SmartReminderPreference):
+            await self.session.execute(sql_delete(model).where(model.user_id == uid))
 
         # Native/desktop auth zanjiri. SQLite test muhitida ham FK CASCADEga
         # suyanib qolmaslik uchun child rowlar aniq tartibda o'chiriladi.
