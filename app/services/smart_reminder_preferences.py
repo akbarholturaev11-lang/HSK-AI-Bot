@@ -200,7 +200,9 @@ class SmartReminderPreferencesService:
             pref = dict(row) if row else {}
             def value(key):
                 result = pref.get(key)
-                return result.isoformat() if isinstance(result, (time, datetime)) else result
+                if isinstance(result, datetime):
+                    return _utc(result).isoformat()
+                return result.isoformat() if isinstance(result, time) else result
             return {
                 "ok": True, "revision": pref.get("revision", 0),
                 "migration_version": pref.get("migration_version", 0),

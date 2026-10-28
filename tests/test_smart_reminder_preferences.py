@@ -233,6 +233,7 @@ class PreferenceChecks:
         current=await self.read()
         self.assertEqual(current['manual_time_local'],'02:00:00')
         self.assertEqual(current['timezone_name'],'Asia/Kathmandu')
+        self.assertEqual(current['pause_until'],'2026-10-29T02:15:00+00:00')
         self.assertEqual(current['time_mode'],'manual_locked')
         self.assertEqual(current['preferred_channel'],'android')
         await self.send(self.body(1,time_mode='auto',channel_mode='auto',quiet_start=None,quiet_end=None,pause_until=None))
