@@ -23,6 +23,10 @@ class FakeRedis:
         self.locks = {}
         self.cache = {}
 
+    async def getrange(self, key, start, end):
+        raw = self.cache.get(key)
+        return raw[start:end + 1] if raw is not None else None
+
     async def set(self, key, token, *, nx, ex):
         if key in self.locks:
             return False
