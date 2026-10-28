@@ -1140,7 +1140,14 @@
     "ui.admin_pwa.inboxTechOnboardingUnconfirmed": "Сабти танзимоти аввалия тасдиқ нашуд. Санҷиши дубора амалиётро барқарор карда натавонист. Сабаби дақиқро бояд алоҳида санҷид.",
     "ui.admin_pwa.inboxTechUnknown": "Ҳодисаи техникии Mini App сабт шудааст, аммо барои муайян кардани сабаби дақиқ маълумоти бехатари кофӣ нест.",
     "ui.admin_pwa.inboxTechOnboardingRecoveredPlacement": "Дархости иваз кардани сатҳи HSK бо рамзи 409 рад шуд. Аммо санҷиши дубора тасдиқ кард, ки танзимоти қаблан сабтшуда ба интихоб мувофиқанд ва барнома идома ёфт. Ин маънои иваз шудани сатҳро надорад.",
-    "ui.admin_pwa.inboxTechOnboardingRecoveredTimeout": "Ҷавоби сабт дар давоми 12 сония нарасид. Аммо санҷиши дубора тасдиқ кард, ки танзимоти интихобшуда сабт шудаанд ва барнома идома ёфт."
+    "ui.admin_pwa.inboxTechOnboardingRecoveredTimeout": "Ҷавоби сабт дар давоми 12 сония нарасид. Аммо санҷиши дубора тасдиқ кард, ки танзимоти интихобшуда сабт шудаанд ва барнома идома ёфт.",
+    "ui.admin_pwa.androidUpdates": "Навсозии APK",
+    "ui.admin_pwa.androidUpdatePolicy": "Навсозии ҳатмӣ",
+    "ui.admin_pwa.androidAllowedVersions": "Истифодаи чанд версияи охирин иҷозат аст?",
+    "ui.admin_pwa.androidVersion1": "Танҳо версияи охирин",
+    "ui.admin_pwa.androidVersion2": "2 версияи охирин",
+    "ui.admin_pwa.androidVersion3": "3 версияи охирин",
+    "ui.admin_pwa.androidVersion4": "4 версияи охирин"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

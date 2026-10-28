@@ -5,6 +5,13 @@ on:
     paths:
       - "tests/test_smart_reminder_p0_regression.py"
       - "tests/test_smart_reminder_legacy_evidence.py"
+      - "tests/test_smart_reminder_storage.py"
+      - "app/db/models/smart_reminder.py"
+      - "app/db/models/__init__.py"
+      - "app/repositories/user_repo.py"
+      - "tests/test_account_deletion_cleanup.py"
+      - "alembic/versions/0133_smart_reminder_storage.py"
+      - "scripts/qa_standalone_bootstrap.py"
       - "app/services/smart_reminder_legacy_evidence.py"
       - "scripts/audit_smart_reminder_legacy.py"
       - "tests/test_miniapp_course_context.py"
@@ -25,9 +32,17 @@ on:
     branches:
       - main
       - "codex/smart-reminder-p0-**"
+      - "codex/smart-reminder-p1-**"
     paths:
       - "tests/test_smart_reminder_p0_regression.py"
       - "tests/test_smart_reminder_legacy_evidence.py"
+      - "tests/test_smart_reminder_storage.py"
+      - "app/db/models/smart_reminder.py"
+      - "app/db/models/__init__.py"
+      - "app/repositories/user_repo.py"
+      - "tests/test_account_deletion_cleanup.py"
+      - "alembic/versions/0133_smart_reminder_storage.py"
+      - "scripts/qa_standalone_bootstrap.py"
       - "app/services/smart_reminder_legacy_evidence.py"
       - "scripts/audit_smart_reminder_legacy.py"
       - "tests/test_miniapp_course_context.py"
@@ -137,3 +152,34 @@ jobs:
             --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest" \
             --tests "com.pomp.hskai.widget.WidgetStoreTest" \
             --tests "com.pomp.hskai.data.repository.CourseRepositoryTest"
+
+  smart-storage:
+    name: Smart storage migration (SQLite and PostgreSQL)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: smart_qa
+          POSTGRES_PASSWORD: synthetic-ci-only
+          POSTGRES_DB: smart_reminder_qa
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U smart_qa -d smart_reminder_qa"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - name: Install repository dependencies
+        run: pip install -r requirements.txt aiosqlite
+      - name: Compile and test frozen migration on both engines
+        env:
+          SMART_REMINDER_TEST_DATABASE_URL: "postgresql+asyncpg://smart_qa:synthetic-ci-only@127.0.0.1:5432/smart_reminder_qa"
+        run: |
+          python -m py_compile app/db/models/smart_reminder.py alembic/versions/0133_smart_reminder_storage.py
+          python -m unittest -v tests.test_smart_reminder_storage

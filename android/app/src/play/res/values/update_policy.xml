@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="play_update_gate_title">Yangi versiyani o‘rnating</string>
+    <string name="play_update_gate_body">Davom etish uchun ilovani Google Play orqali yangilang.</string>
+    <string name="play_update_gate_button">Google Play’da yangilash</string>
+</resources>

@@ -37,11 +37,16 @@ from app.services.ai_provider import (
 from app.services.help_settings_service import HELP_LANGS, HELP_VIDEO_FIELDS, HELP_VIDEO_FIELD_BY_KEY, normalize_help_url
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY, PAYMENT_DETAILS_ALIF_KEY
 from app.services.support_contact_service import ADMIN_CONTACT_KEY, normalize_admin_contact, admin_contact_url
+from app.services.android_update_policy_service import (
+    ANDROID_UPDATE_ALLOWED_VERSIONS_KEY, ANDROID_ALLOWED_VERSION_CHOICES,
+    normalize_allowed_versions,
+)
 
 logger = logging.getLogger(__name__)
 _PAYMENT_KEYS = {"dc_city": PAYMENT_DETAILS_KEY, "alif": PAYMENT_DETAILS_ALIF_KEY}
 _ALL_KEYS = tuple(sorted((*_PAYMENT_KEYS.values(), ACTIVE_GEMINI_MODEL_KEY,
-    ADMIN_CONTACT_KEY, *(field.setting_key(lang) for field in HELP_VIDEO_FIELDS for lang in HELP_LANGS))))
+    ADMIN_CONTACT_KEY, ANDROID_UPDATE_ALLOWED_VERSIONS_KEY,
+    *(field.setting_key(lang) for field in HELP_VIDEO_FIELDS for lang in HELP_LANGS))))
 
 
 class EmptySettingsRequest(StrictModel):
@@ -120,8 +125,14 @@ class HelpVideoSetting(StrictModel):
         return value
 
 
+class AndroidUpdateSetting(StrictModel):
+    kind: Literal["android_update"]
+    allowed_versions: Annotated[int, Field(strict=True, ge=1, le=4)]
+
+
 SettingChange = Annotated[PaymentDetailsSetting | AiModelSetting |
-                          HelpContactSetting | HelpVideoSetting, Field(discriminator="kind")]
+                          HelpContactSetting | HelpVideoSetting | AndroidUpdateSetting,
+                          Field(discriminator="kind")]
 
 
 class PrepareSettings(StrictModel):
@@ -152,6 +163,8 @@ def _keys(change):
         return (ACTIVE_GEMINI_MODEL_KEY,)
     if isinstance(change, HelpContactSetting):
         return (ADMIN_CONTACT_KEY,)
+    if isinstance(change, AndroidUpdateSetting):
+        return (ANDROID_UPDATE_ALLOWED_VERSIONS_KEY,)
     return (HELP_VIDEO_FIELD_BY_KEY[change.key].setting_key(change.lang),)
 
 
@@ -192,6 +205,8 @@ def _public_settings(rows, settings_obj):
         },
         "ai_model": {"model": stored_model if stored_model in GEMINI_MODEL_OPTIONS else _default_gemini_model()},
         "help_contact": {"value": normalize_admin_contact(_get(rows, ADMIN_CONTACT_KEY))},
+        "android_update": {"allowed_versions": normalize_allowed_versions(
+            _get(rows, ANDROID_UPDATE_ALLOWED_VERSIONS_KEY))},
         "help_videos": [{"key": field.key, "lang": lang,
             "value": normalize_help_url(_get(rows, field.setting_key(lang)))}
             for field in HELP_VIDEO_FIELDS for lang in HELP_LANGS],
@@ -225,6 +240,7 @@ async def read_settings(db, *, session_cookie, settings_obj):
     return {"settings": settings, "options": {
         "payment_banks": list(_PAYMENT_KEYS), "ai_models": list(GEMINI_MODEL_OPTIONS),
         "help_video_keys": [field.key for field in HELP_VIDEO_FIELDS], "help_languages": list(HELP_LANGS),
+        "android_update_allowed_versions": list(ANDROID_ALLOWED_VERSION_CHOICES),
     }}
 
 
@@ -250,6 +266,8 @@ async def _write(db, change):
         await repo.set(ACTIVE_GEMINI_MODEL_KEY, change.model)
     elif isinstance(change, HelpContactSetting):
         await repo.set(ADMIN_CONTACT_KEY, change.value)
+    elif isinstance(change, AndroidUpdateSetting):
+        await repo.set(ANDROID_UPDATE_ALLOWED_VERSIONS_KEY, str(change.allowed_versions))
     else:
         await repo.set(HELP_VIDEO_FIELD_BY_KEY[change.key].setting_key(change.lang), change.value)
 

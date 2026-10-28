@@ -1140,7 +1140,14 @@
     "ui.admin_pwa.inboxTechOnboardingUnconfirmed": "Не удалось подтвердить сохранение начальных настроек. Повторная проверка не восстановила операцию. Требуется отдельная диагностика причины.",
     "ui.admin_pwa.inboxTechUnknown": "Зарегистрировано техническое событие Mini App, однако безопасных данных для установления точной причины недостаточно.",
     "ui.admin_pwa.inboxTechOnboardingRecoveredPlacement": "Запрос смены уровня HSK вернул 409. Однако повторная проверка подтвердила, что ранее сохранённые настройки совпадают с выбранными, и приложение продолжило работу. Это не означает, что уровень был изменён.",
-    "ui.admin_pwa.inboxTechOnboardingRecoveredTimeout": "Ответ на сохранение не поступил за 12 секунд. Однако повторная проверка подтвердила сохранение выбранных настроек, после чего приложение продолжило работу."
+    "ui.admin_pwa.inboxTechOnboardingRecoveredTimeout": "Ответ на сохранение не поступил за 12 секунд. Однако повторная проверка подтвердила сохранение выбранных настроек, после чего приложение продолжило работу.",
+    "ui.admin_pwa.androidUpdates": "Обновление APK",
+    "ui.admin_pwa.androidUpdatePolicy": "Обязательное обновление",
+    "ui.admin_pwa.androidAllowedVersions": "Сколько последних версий разрешено?",
+    "ui.admin_pwa.androidVersion1": "Только последняя версия",
+    "ui.admin_pwa.androidVersion2": "Последние 2 версии",
+    "ui.admin_pwa.androidVersion3": "Последние 3 версии",
+    "ui.admin_pwa.androidVersion4": "Последние 4 версии"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

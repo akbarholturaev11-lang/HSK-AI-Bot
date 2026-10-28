@@ -1,10 +1,10 @@
 """The Android APK that the bot hands out.
 
-Distribution is Telegram-only for now — there is no Play listing and no file
-host. The admin uploads one signed APK to the bot, Telegram keeps the bytes,
-and every learner afterwards receives that same `file_id`. Nothing of ours
-serves the download, there is no second copy to keep in sync, and the file
-arrives inside the chat the learner is already reading.
+This service implements the Direct APK release handoff for the bot as well as
+the R2 manifest-backed release preference. When manifest-backed, the bot can
+fetch the artifact from storage and cache the matching Telegram `file_id`;
+the older admin-uploaded Telegram release remains as an explicit fallback.
+The Google Play production release and update path is separate.
 
 The published release lives in `bot_settings` under a single JSON value rather
 than in its own table: it is exactly one row that only an admin ever writes, so

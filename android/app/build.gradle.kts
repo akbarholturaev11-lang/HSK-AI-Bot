@@ -289,6 +289,8 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.work.runtime.ktx)
+    // Only Play may request Google Play's Immediate In-App Update flow.
+    add("playImplementation", libs.google.play.appupdate)
 
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)

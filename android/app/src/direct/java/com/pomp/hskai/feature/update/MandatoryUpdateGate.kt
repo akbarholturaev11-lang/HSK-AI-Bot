@@ -22,6 +22,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,20 +44,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * Stops a direct install from entering the app after it has missed three
- * published releases. The Play source set deliberately passes through.
+ * Blocks only releases older than the oldest allowed R2-published release.
+ * Existing Direct installer and update UI remain unchanged.
  */
 @Composable
 fun MandatoryUpdateGate(content: @Composable () -> Unit) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     var release by remember { mutableStateOf<UpdateRelease?>(null) }
+    var minimumSupportedVersion by remember { mutableStateOf<Int?>(null) }
+    var refresh by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(Unit) {
+    // Like Play, re-read the admin policy on each foreground return; Direct's
+    // existing fetchRelease still owns release caching and APK verification.
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) refresh += 1
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    LaunchedEffect(refresh) {
         release = withContext(Dispatchers.IO) { fetchRelease(context) }
+        minimumSupportedVersion = UpdatePolicyClient.minimumSupportedVersion(context, "direct")
     }
 
     val available = release
-    if (available == null || !AppUpdate.isMandatoryUpdate(available, BuildConfig.VERSION_CODE)) {
+    if (available == null || !AppUpdate.isMandatoryUpdate(available, BuildConfig.VERSION_CODE, minimumSupportedVersion)) {
         content()
         return
     }

@@ -58,6 +58,7 @@ _TOP_LEVEL_KEYS = {
     "sha256",
     "published_at",
     "notes",
+    "published_version_codes",
 }
 
 
@@ -74,6 +75,7 @@ class AndroidReleaseManifest:
     sha256: str
     published_at: str
     notes: str
+    published_version_codes: tuple[int, ...] = ()
 
     def immutable_fingerprint(self) -> tuple[Any, ...]:
         """What may never change once a version is published."""
@@ -123,7 +125,19 @@ def parse_android_release_manifest(payload: bytes) -> AndroidReleaseManifest:
     if len(sha256) != 64 or any(c not in "0123456789abcdefABCDEF" for c in sha256):
         raise AndroidReleaseManifestError("manifest_invalid_sha256")
 
+    history = data.get("published_version_codes")
+    if history is None:
+        codes = ()  # Legacy manifest: unknown earlier releases, never guess.
+    else:
+        if (not isinstance(history, list) or len(history) < 1 or len(history) > 128
+                or any(type(code) is not int or not 1 <= code <= MAX_VERSION_CODE for code in history)
+                or history != sorted(set(history))
+                or history[-1] != data.get("version_code")):
+            raise AndroidReleaseManifestError("manifest_invalid_history")
+        codes = tuple(history)
+
     return AndroidReleaseManifest(
+        published_version_codes=codes,
         version_name=_strict_text(data.get("version_name"), max_length=40),
         version_code=_strict_int(
             data.get("version_code"), minimum=1, maximum=MAX_VERSION_CODE
@@ -292,6 +306,16 @@ class AndroidReleaseManifestService:
                     logger.warning(
                         "Android release manifest same-version artifact mutation was rejected"
                     )
+                    current.checked_at = now
+                    return previous
+            if previous is not None and previous.published_version_codes:
+                old_codes = previous.published_version_codes
+                new_codes = candidate.published_version_codes
+                # Publisher retains up to 128 entries; during a rollover the
+                # oldest entries may leave, but the overlapping suffix must match.
+                common = [code for code in old_codes if code >= new_codes[0]] if new_codes else []
+                if not new_codes or tuple(common) != new_codes[:len(common)]:
+                    logger.warning("Android release history was truncated or rewritten")
                     current.checked_at = now
                     return previous
             current.manifest = candidate

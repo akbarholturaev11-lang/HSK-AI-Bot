@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="play_update_gate_title">Установите новую версию</string>
+    <string name="play_update_gate_body">Для продолжения обновите приложение через Google Play.</string>
+    <string name="play_update_gate_button">Обновить в Google Play</string>
+</resources>

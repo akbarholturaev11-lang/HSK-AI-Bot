@@ -116,6 +116,10 @@ class Settings(BaseSettings):
     ADMIN_PWA_R2_BUCKET: str = ""
     ADMIN_PWA_R2_ACCESS_KEY_ID: str = ""
     ADMIN_PWA_R2_SECRET_ACCESS_KEY: str = ""
+    # Optional machine-to-machine, owner-triggered refresh of only approved
+    # overview aggregates. Store a distinct random >=48-character secret in
+    # Railway and the analytics GitHub Actions secrets; disabled when blank.
+    ADMIN_PWA_MANUAL_AGGREGATE_REFRESH_TOKEN: str = ""
     # Independent kill switch; no public MCP resource/OAuth flow is mounted.
     ADMIN_PWA_MCP_ENABLED: bool = False
     # Never enable before complete OAuth consent UI, client registration and security review.
