@@ -1,3 +1,4 @@
+from app.bot.utils.smart_reminder import smart_reminder_time_keyboard, INTERACTION_KEY
 import asyncio
 import json
 import logging
@@ -1476,6 +1477,8 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             msg_text = (message.text or "").strip()
             cancel_map = bot_locale_map('inline.handlers.messages.handle_text_message.copy1')
             if msg_text == cancel_map.get(user_lang, "❌ Отмена"):
+                if state is not None:
+                    await state.update_data(**{INTERACTION_KEY: None})
                 await reminder_engine.progress_repo.set_waiting_for(reminder_progress, "none")
                 await session.commit()
                 await delete_message_safely(message)
@@ -1489,7 +1492,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                     message,
                     state,
                     t("course_invalid_time_format", user_lang),
-                    reply_markup=reminder_time_keyboard(user_lang),
+                    reply_markup=await smart_reminder_time_keyboard(session, state, user.id, user_lang),
                 )
                 return
 
@@ -1602,7 +1605,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                 message,
                 state,
                 t("course_reminder_setup_msg", user_lang),
-                reply_markup=reminder_time_keyboard(user_lang),
+                reply_markup=await smart_reminder_time_keyboard(session, state, user.id, user_lang),
             )
             return
 
@@ -1622,6 +1625,8 @@ async def handle_text_message(message: Message, state: FSMContext, session):
         if progress.waiting_for == "reminder_setup":
             cancel_map = bot_locale_map('inline.handlers.messages.handle_text_message.copy2')
             if msg_text == cancel_map.get(user_lang, "❌ Отмена"):
+                if state is not None:
+                    await state.update_data(**{INTERACTION_KEY: None})
                 await engine.progress_repo.set_waiting_for(progress, "none")
                 await session.commit()
                 await delete_message_safely(message)
@@ -1634,7 +1639,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                     message,
                     state,
                     t("course_invalid_time_format", user_lang),
-                    reply_markup=reminder_time_keyboard(user_lang),
+                    reply_markup=await smart_reminder_time_keyboard(session, state, user.id, user_lang),
                 )
                 return
             await engine.progress_repo.set_reminder(progress, enabled=True, reminder_time=parsed_reminder)

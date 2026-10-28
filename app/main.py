@@ -107,6 +107,7 @@ from app.api.desktop_referral import create_desktop_referral_router
 from app.api.desktop_update import create_desktop_update_router
 from app.api.android_update import create_android_update_router
 from app.api.android_push import create_android_push_router
+from app.api.smart_reminder import create_smart_reminder_router
 from app.api.app_downloads import create_app_downloads_router
 from app.public_site.app_downloads_render import (
     downloads_section,
@@ -927,6 +928,7 @@ app.include_router(create_android_update_router(session_factory=async_session_ma
 app.include_router(
     create_android_push_router(session_factory=async_session_maker, settings_obj=settings)
 )
+app.include_router(create_smart_reminder_router(session_factory=async_session_maker, settings_obj=settings))
 app.include_router(
     create_app_downloads_router(
         session_factory=async_session_maker,
