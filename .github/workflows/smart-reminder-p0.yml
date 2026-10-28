@@ -7,6 +7,16 @@ on:
       - "tests/test_smart_reminder_legacy_evidence.py"
       - "tests/test_smart_reminder_storage.py"
       - "tests/test_smart_reminder_legacy_backfill.py"
+      - "tests/test_smart_reminder_preferences.py"
+      - "app/api/smart_reminder.py"
+      - "app/services/smart_reminder_preferences.py"
+      - "app/bot/utils/smart_reminder.py"
+      - "app/bot/handlers/course.py"
+      - "app/bot/handlers/menu.py"
+      - "app/bot/handlers/messages.py"
+      - "app/bot/keyboards/course.py"
+      - "app/main.py"
+      - "alembic/versions/0134_smart_reminder_mutations.py"
       - "app/db/models/smart_reminder.py"
       - "app/db/models/__init__.py"
       - "app/repositories/user_repo.py"
@@ -40,6 +50,16 @@ on:
       - "tests/test_smart_reminder_legacy_evidence.py"
       - "tests/test_smart_reminder_storage.py"
       - "tests/test_smart_reminder_legacy_backfill.py"
+      - "tests/test_smart_reminder_preferences.py"
+      - "app/api/smart_reminder.py"
+      - "app/services/smart_reminder_preferences.py"
+      - "app/bot/utils/smart_reminder.py"
+      - "app/bot/handlers/course.py"
+      - "app/bot/handlers/menu.py"
+      - "app/bot/handlers/messages.py"
+      - "app/bot/keyboards/course.py"
+      - "app/main.py"
+      - "alembic/versions/0134_smart_reminder_mutations.py"
       - "app/db/models/smart_reminder.py"
       - "app/db/models/__init__.py"
       - "app/repositories/user_repo.py"
@@ -115,7 +135,9 @@ jobs:
             tests.test_android_course_api \
             tests.test_course_miniapp_practice \
             tests.test_course_miniapp_practice_progress_window \
-            tests.test_i18n_miniapp_reservation_asgi
+            tests.test_i18n_miniapp_reservation_asgi \
+            tests.test_course_miniapp_onboarding \
+            tests.test_bot_menu_localization
 
   android-jvm-legacy:
     name: Android reminder JVM baseline (Play and Direct)
@@ -181,9 +203,13 @@ jobs:
           cache: "pip"
       - name: Install repository dependencies
         run: pip install -r requirements.txt aiosqlite
-      - name: Compile and test storage and legacy backfill on both engines
+      - name: Compile and test storage, backfill and preference CAS on both engines
         env:
           SMART_REMINDER_TEST_DATABASE_URL: "postgresql+asyncpg://smart_qa:synthetic-ci-only@127.0.0.1:5432/smart_reminder_qa"
+          BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+          DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          REDIS_URL: "redis://127.0.0.1:1/0"
+          HSK_STAGING_QA_MODE: "1"
         run: |
-          python -m py_compile app/db/models/smart_reminder.py alembic/versions/0133_smart_reminder_storage.py app/services/smart_reminder_legacy_backfill.py
-          python -m unittest -v tests.test_smart_reminder_storage tests.test_smart_reminder_legacy_backfill
+          python -m py_compile app/db/models/smart_reminder.py alembic/versions/0133_smart_reminder_storage.py app/services/smart_reminder_legacy_backfill.py app/services/smart_reminder_preferences.py app/api/smart_reminder.py alembic/versions/0134_smart_reminder_mutations.py
+          python -m unittest -v tests.test_smart_reminder_storage tests.test_smart_reminder_legacy_backfill tests.test_smart_reminder_preferences

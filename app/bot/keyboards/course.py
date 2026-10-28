@@ -199,13 +199,14 @@ def lesson_selection_keyboard(
 
 
 
-def reminder_time_keyboard(lang: str) -> InlineKeyboardMarkup:
+def reminder_time_keyboard(lang: str, *, nonce: str | None = None) -> InlineKeyboardMarkup:
+    suffix = ":" + nonce if nonce else ""
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="08:00", callback_data="course:reminder_time:08:00"),
-                InlineKeyboardButton(text="14:00", callback_data="course:reminder_time:14:00"),
-                InlineKeyboardButton(text="20:00", callback_data="course:reminder_time:20:00"),
+                InlineKeyboardButton(text="08:00", callback_data="course:reminder_time:08:00" + suffix),
+                InlineKeyboardButton(text="14:00", callback_data="course:reminder_time:14:00" + suffix),
+                InlineKeyboardButton(text="20:00", callback_data="course:reminder_time:20:00" + suffix),
             ],
             [
                 InlineKeyboardButton(

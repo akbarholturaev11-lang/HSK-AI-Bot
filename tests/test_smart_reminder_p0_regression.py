@@ -216,7 +216,7 @@ class SmartReminderP0LegacyRegressionTests(unittest.IsolatedAsyncioTestCase):
                 text="❌ Отмена",
                 answer=AsyncMock(),
             )
-            state = SimpleNamespace(get_data=AsyncMock(return_value={}))
+            state = SimpleNamespace(get_data=AsyncMock(return_value={}), update_data=AsyncMock())
             with patch(
                 "app.bot.handlers.messages._is_admin_flow_message",
                 new_callable=AsyncMock, return_value=False,
@@ -234,6 +234,7 @@ class SmartReminderP0LegacyRegressionTests(unittest.IsolatedAsyncioTestCase):
                 new_callable=AsyncMock,
             ) as panel:
                 await handle_text_message(message, state, session)
+                state.update_data.assert_awaited_once_with(smart_reminder_interaction=None)
                 deleted.assert_awaited_once()
                 panel.assert_awaited_once()
 
@@ -260,7 +261,7 @@ class SmartReminderP0LegacyRegressionTests(unittest.IsolatedAsyncioTestCase):
                 text="❌ Отмена",
                 answer=AsyncMock(),
             )
-            state = SimpleNamespace(get_data=AsyncMock(return_value={}))
+            state = SimpleNamespace(get_data=AsyncMock(return_value={}), update_data=AsyncMock())
             # The early branch sees no progress; the later branch retrieves
             # the real session-backed record via its legacy course route.
             repo_instance = CourseProgressRepository(session)
@@ -300,6 +301,7 @@ class SmartReminderP0LegacyRegressionTests(unittest.IsolatedAsyncioTestCase):
                 new_callable=AsyncMock,
             ) as panel:
                 await handle_text_message(message, state, session)
+                state.update_data.assert_awaited_once_with(smart_reminder_interaction=None)
                 self.assertEqual(repo_instance.get_by_user_id.await_count, 1)
                 fake_engine.get_current_lesson.assert_awaited_once()
                 deleted.assert_awaited_once()

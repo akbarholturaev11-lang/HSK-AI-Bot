@@ -293,3 +293,5 @@ class SmartReminderBootstrapContractTests(unittest.TestCase):
         self.assertTrue(set(TABLES) <= qa.MIGRATION_CREATED_TABLES)
         initial = {table.name for table in qa._initial_schema_tables(qa._registered_model_metadata())}
         self.assertFalse(set(TABLES) & initial)
+        self.assertIn("smart_reminder_mutations", qa.MIGRATION_CREATED_TABLES)
+        self.assertNotIn("smart_reminder_mutations", initial)
