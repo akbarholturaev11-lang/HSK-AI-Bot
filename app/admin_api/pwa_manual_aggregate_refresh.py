@@ -11,7 +11,6 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
-from app.admin_api.pwa_read import StatisticsRequest
 from app.admin_api.pwa_statistics_cache import StatisticsUnavailable
 from app.admin_api.pwa_webauthn_transport import _body
 
@@ -48,25 +47,15 @@ def create_manual_aggregate_refresh_router(*, settings_obj, analytics_reader):
             return _reply(400, "admin_pwa_invalid_payload")
 
         reader = getattr(analytics_reader, "_readers", {}).get("overview")
-        if reader is None or not hasattr(reader, "refresh_now"):
+        if reader is None or not hasattr(reader, "refresh_overview_bundle"):
             return _reply(503, "admin_pwa_refresh_unavailable")
 
-        results = {}
         try:
-            for period in ("weekly", "monthly"):
-                # Only the canonical overall/overview projection, never
-                # unapproved scopes, raw users, feedback or finance data.
-                snapshot = await reader.refresh_now(
-                    StatisticsRequest(platform="overall", period=period))
-                if (not snapshot.get("available")
-                        or snapshot.get("scope", {}).get("section") != "overview"):
-                    raise StatisticsUnavailable("Unexpected overview source")
-                results[period] = {
-                    "generated_at": snapshot["generated_at"],
-                    "expires_at": snapshot["snapshot"]["expires_at"],
-                }
-        except StatisticsUnavailable:
-            logger.warning("Manual overview refresh unavailable; previous cache retained where possible")
+            results = await reader.refresh_overview_bundle()
+        except StatisticsUnavailable as exc:
+            if str(exc) == "Manual refresh recently completed":
+                return _reply(429, "admin_pwa_refresh_rate_limited")
+            logger.warning("Manual overview refresh unavailable; partial R2 updates possible")
             return _reply(503, "admin_pwa_refresh_unavailable")
         except Exception:
             logger.error("Manual overview refresh failed")
