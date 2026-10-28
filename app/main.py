@@ -44,6 +44,7 @@ from app.admin_api.pwa_inbox_attachments import create_admin_pwa_inbox_attachmen
 from app.admin_api.pwa_push import create_admin_pwa_push_router
 from app.services.admin_pwa_push_dispatch import dispatch_batch, sender_config
 from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
+from app.admin_api.pwa_auto_aggregate_refresh import overview_refresh_scheduler
 from app.admin_api.pwa_mcp_http import create_admin_pwa_mcp_http_router
 from app.admin_api.pwa_mcp_consent_transport import create_admin_pwa_mcp_consent_router
 from app.admin_api.pwa_mcp_management import create_admin_pwa_mcp_management_router
@@ -624,6 +625,12 @@ async def lifespan(app: FastAPI):
     desktop_auth_cleanup_task = asyncio.create_task(
         _desktop_auth_retention_scheduler()
     )
+    # Server-owned, Redis-coordinated; does not require Admin PWA page visits.
+    auto_aggregate_refresh_task = (
+        asyncio.create_task(overview_refresh_scheduler(
+            settings_obj=settings, analytics_reader=admin_pwa_analytics_reader))
+        if settings.ADMIN_PWA_AUTO_AGGREGATE_REFRESH_ENABLED else None
+    )
     push_ready = sender_config(settings) is not None
     if push_ready:
         logger.info("Admin PWA Apple Push sender started (provider delivery unverified)")
@@ -639,6 +646,8 @@ async def lifespan(app: FastAPI):
         polling_task.cancel()
         scheduler_task.cancel()
         desktop_auth_cleanup_task.cancel()
+        if auto_aggregate_refresh_task is not None:
+            auto_aggregate_refresh_task.cancel()
         if apple_push_task is not None:
             apple_push_task.cancel()
         study_ai_tasks = tuple(_study_ai_tasks)
@@ -652,6 +661,9 @@ async def lifespan(app: FastAPI):
             await scheduler_task
         with contextlib.suppress(asyncio.CancelledError):
             await desktop_auth_cleanup_task
+        if auto_aggregate_refresh_task is not None:
+            with contextlib.suppress(asyncio.CancelledError):
+                await auto_aggregate_refresh_task
         if apple_push_task is not None:
             with contextlib.suppress(asyncio.CancelledError):
                 await apple_push_task

@@ -112,6 +112,9 @@ class Settings(BaseSettings):
     # Optional private Cloudflare R2 mirror for 24-hour aggregate snapshots;
     # no browser/client credentials, public URLs or raw feedback are stored.
     ADMIN_PWA_R2_AGGREGATE_ENABLED: bool = False
+    # Off by default; when enabled, hourly coordination only refreshes expired
+    # 24h overview projections and mirrors them to the existing private R2 cache.
+    ADMIN_PWA_AUTO_AGGREGATE_REFRESH_ENABLED: bool = False
     ADMIN_PWA_R2_ACCOUNT_ID: str = ""
     ADMIN_PWA_R2_BUCKET: str = ""
     ADMIN_PWA_R2_ACCESS_KEY_ID: str = ""
