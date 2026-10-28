@@ -202,7 +202,11 @@ class AdminPwaStatisticsReader:
         except asyncio.CancelledError:
             self._load_retry_at = self.clock()+_RETRY_SECONDS
             raise
-        except Exception:
+        except Exception as exc:
+            # Diagnostic only: the exception *type* is safe to record while
+            # SQL statements, credentials, payloads and exception text are not.
+            logger.warning("Admin statistics aggregate compute failed: %s",
+                           type(exc).__name__)
             self._load_retry_at = self.clock()+_RETRY_SECONDS
             raise StatisticsUnavailable("Statistics refresh unavailable") from None
 
