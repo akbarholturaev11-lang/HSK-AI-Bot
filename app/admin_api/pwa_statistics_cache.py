@@ -82,6 +82,11 @@ class AdminPwaStatisticsReader:
                               if cache_scope else digest)
         self._r2 = r2_store if r2_store is not None else PrivateR2AggregateStore(settings_obj=settings_obj)
         self._local = {}
+        # Manual overview refresh can update Redis/R2 while another worker still
+        # holds a valid in-process copy. Revalidate that scope at most once per
+        # minute, without re-running SQL on ordinary cache hits.
+        self._overview_local_revalidate = cache_scope == "analytics_overview_v1"
+        self._local_checked_at = {}
         self._mutex = refresh_mutex if refresh_mutex is not None else asyncio.Lock()
         self._redis_retry_at = 0.0
         self._load_retry_at = 0.0
@@ -138,7 +143,35 @@ class AdminPwaStatisticsReader:
 
     def _remember(self, variant, envelope):
         self._local[variant] = envelope
+        self._local_checked_at[variant] = self.clock()
         return self._result(envelope)
+
+    async def _overview_local_hit(self, variant, cached, query):
+        if not self._overview_local_revalidate:
+            return self._result(cached)
+        now = self.clock()
+        if now - self._local_checked_at.get(variant, now) < 60:
+            return self._result(cached)
+        self._local_checked_at[variant] = now
+        # A cross-worker manual refresh may have replaced this snapshot even
+        # though its original 24h expiry is still valid. Redis is only a source
+        # of a newer VALIDATED copy, never a reason for extra SQL recomputation.
+        try:
+            shared = await self._shared(self.prefix + ":" + query.platform +
+                                        ":" + query.period, query)
+        except _SharedUnavailable:
+            shared = None
+        if shared is not None and shared != cached:
+            # A Redis read can lag a more recent local snapshot (e.g. after
+            # R2 succeeded but Redis publication failed). Never downgrade.
+            try:
+                old_at = datetime.fromisoformat(cached["data"]["generated_at"])
+                new_at = datetime.fromisoformat(shared["data"]["generated_at"])
+                if new_at > old_at:
+                    return self._remember(variant, shared)
+            except (KeyError, TypeError, ValueError):
+                pass
+        return self._result(cached)
 
     @staticmethod
     def _result(envelope):
@@ -173,6 +206,112 @@ class AdminPwaStatisticsReader:
             self._load_retry_at = self.clock()+_RETRY_SECONDS
             raise StatisticsUnavailable("Statistics refresh unavailable") from None
 
+
+    async def refresh_now(self, query):
+        """Explicit, authorized server-side refresh, even when daily caches are valid.
+
+        Only the caller's trusted transport may request this method. Redis is
+        required for a distributed lease; we fail closed rather than recomputing
+        concurrently across workers. Never delete an existing good snapshot.
+        """
+        query = StatisticsRequest.model_validate(query.model_dump())
+        if (not getattr(self.settings, "ADMIN_PWA_ENABLED", False)
+                or not self._r2.enabled or not self._redis_url
+                or query.platform != "overall"
+                or query.period not in ("weekly", "monthly", "all_time")):
+            raise StatisticsUnavailable("Manual statistics refresh unavailable")
+
+        lease, token = self._lease_key, uuid4().hex
+        key = self.prefix + ":" + query.platform + ":" + query.period
+        variant = (query.platform, query.period)
+        try:
+            async with asyncio.timeout(15), self._mutex:
+                try:
+                    acquired = await self._redis("set", lease, token, nx=True, ex=_LEASE_SECONDS)
+                except _SharedUnavailable:
+                    raise StatisticsUnavailable("Manual statistics coordination unavailable") from None
+                if not acquired:
+                    raise StatisticsUnavailable("Statistics refresh already in progress")
+                try:
+                    # Deliberately skip local, Redis and R2 reads on explicit demand.
+                    raw, envelope = await self._compute(query)
+                    # Guard against an unexpected projection being written to
+                    # private R2 before the outer HTTP handler can inspect it.
+                    data = envelope["data"]
+                    if (data.get("available") is not True
+                            or not isinstance(data.get("scope"), dict)
+                            or data["scope"].get("section") != "overview"
+                            or data.get("source") != "users + payments + canonical learning events"):
+                        raise StatisticsUnavailable("Unexpected overview projection")
+                    # Publish the new validated snapshot only after the R2 write
+                    # succeeds; on failure leave the previous cache untouched.
+                    await self._r2.put(kind="statistics", namespace=self._r2_namespace,
+                                       variant=query.platform + "_" + query.period, raw=raw)
+                    ttl = max(1, int(envelope["expires_at"] - self.clock()))
+                    if not await self._redis("eval", _PUBLISH, 2, lease, key, token, raw, ttl):
+                        raise StatisticsUnavailable("Manual statistics lease lost")
+                    return self._remember(variant, envelope)
+                except R2Unavailable:
+                    raise StatisticsUnavailable("Manual statistics R2 write unavailable") from None
+                except _SharedUnavailable:
+                    raise StatisticsUnavailable("Manual statistics coordination lost") from None
+                finally:
+                    try:
+                        await self._redis("eval", _RELEASE, 1, lease, token)
+                    except _SharedUnavailable:
+                        pass
+        except TimeoutError:
+            raise StatisticsUnavailable("Manual statistics refresh timed out") from None
+
+
+    async def refresh_overview_bundle(self):
+        """Run one bounded manual request across both reporting windows.
+
+        The batch lock prevents two authorized requests from interleaving
+        weekly/monthly/all_time R2 writes. A short successful-request cooldown protects
+        SQL from accidental repeated triggers, without changing the 24h cache.
+        """
+        if (not self._overview_local_revalidate
+                or not getattr(self.settings, "ADMIN_PWA_ENABLED", False)
+                or not self._r2.enabled or not self._redis_url):
+            raise StatisticsUnavailable("Manual statistics refresh unavailable")
+        batch_key = self.prefix + ":manual_refresh_batch"
+        cooldown_key = self.prefix + ":manual_refresh_cooldown"
+        token = uuid4().hex
+        try:
+            recent = await self._redis("get", cooldown_key)
+            if recent:
+                raise StatisticsUnavailable("Manual refresh recently completed")
+            acquired = await self._redis("set", batch_key, token, nx=True, ex=90)
+        except _SharedUnavailable:
+            raise StatisticsUnavailable("Manual refresh coordination unavailable") from None
+        if not acquired:
+            raise StatisticsUnavailable("Manual refresh already in progress")
+        results = {}
+        try:
+            for period in ("weekly", "monthly", "all_time"):
+                snapshot = await self.refresh_now(
+                    StatisticsRequest(platform="overall", period=period))
+                if (not snapshot.get("available")
+                        or snapshot.get("scope", {}).get("section") != "overview"):
+                    raise StatisticsUnavailable("Unexpected overview projection")
+                results[period] = {
+                    "generated_at": snapshot["generated_at"],
+                    "expires_at": snapshot["snapshot"]["expires_at"],
+                }
+            # A failed cooldown write cannot undo successful R2 and Redis writes;
+            # the request is successful but the next request may run sooner.
+            try:
+                await self._redis("set", cooldown_key, "1", ex=60)
+            except _SharedUnavailable:
+                logger.warning("Manual overview refresh cooldown write unavailable")
+            return results
+        finally:
+            try:
+                await self._redis("eval", _RELEASE, 1, batch_key, token)
+            except _SharedUnavailable:
+                logger.warning("Manual overview batch lock release deferred to TTL")
+
     async def __call__(self, query):
         query = StatisticsRequest.model_validate(query.model_dump())
         if not getattr(self.settings, "ADMIN_PWA_ENABLED", False):
@@ -182,12 +321,12 @@ class AdminPwaStatisticsReader:
                        if self.clock() < entry["expires_at"] <= self.clock()+SNAPSHOT_SECONDS}
         cached = self._local.get(variant)
         if cached is not None and self.clock() < cached["expires_at"]:
-            return self._result(cached)
+            return await self._overview_local_hit(variant, cached, query)
         try:
             async with asyncio.timeout(16 if self._r2.enabled else 9), self._mutex:
                 cached = self._local.get(variant)
                 if cached is not None and self.clock() < cached["expires_at"]:
-                    return self._result(cached)
+                    return await self._overview_local_hit(variant, cached, query)
                 key = self.prefix+":"+query.platform+":"+query.period
                 lease = self._lease_key
                 token = uuid4().hex
