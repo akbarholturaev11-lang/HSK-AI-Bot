@@ -128,7 +128,8 @@ def _personal_time(context, studies, zone, calibration):
     return votes[0][0], "habit", "observed_learning_minute"
 
 
-def evaluate(context: PolicyContext, *, calibration: HabitCalibration | None = None) -> PolicyDecision:
+def evaluate(context: PolicyContext, *, calibration: HabitCalibration | None = None,
+             allow_elapsed_time: bool = False) -> PolicyDecision:
     now = _aware_utc(context.observed_at)
     try:
         zone = ZoneInfo(context.timezone_name) if context.timezone_name else None
@@ -217,6 +218,6 @@ def evaluate(context: PolicyContext, *, calibration: HabitCalibration | None = N
     scheduled = next(iter(instants))
     if context.pause_until and _aware_utc(context.pause_until) > scheduled:
         return result("paused_at_personal_time")
-    if scheduled < now:
+    if scheduled < now and not allow_elapsed_time:
         return result("personal_time_passed")
     return result("shadow_candidate", target=context.completed_parts + 1, scheduled=scheduled)

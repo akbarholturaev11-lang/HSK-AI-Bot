@@ -49,7 +49,7 @@ Alternative considered: last-write-wins across old/new endpoints. That allows st
 
 ### 3. Additive durable model and source-aware backfill
 
-After verifying actual Alembic head at implementation time (inspected source currently ends with `0132_admin_pwa_campaign_schedule`), add the smallest reviewed schema that supports:
+After verifying actual Alembic head at implementation time (the original pre-P1 audit ended at `0132_admin_pwa_campaign_schedule`; reviewed P1 added `0133` storage and `0134` mutation receipts, so re-read the real head before later DDL), add the smallest reviewed schema that supports:
 
 - A per-user preferences row with monotonic revision/grant epoch, nullable explicit global override, derived legacy state, auto/manual time and channel modes, validated IANA zone, explicit quiet/pause settings and action provenance.
 - Per-channel/per-device study consent with explicit ON/OFF/unknown, source category, migration key and evidence timestamp **only when actually known**. Separate a device capability row or equivalent bound observation for tested protocol generation, study-specific OS/channel permission and freshness. A client-reported app version alone is not trusted capability proof.
@@ -235,6 +235,70 @@ current OFF/access/manual/quiet restrictions. Read actual persisted job/attempt
 rows on SQLite and PostgreSQL without writes/flush/commit and without loading
 tokens or raw endpoint data. All decisions remain dispatch-OFF. Rollback drops
 these unused modules only and preserves P1 consent/epochs/ledger/legacy guards.
+
+### Bounded task 3.3 durable shadow queue
+
+Reuse frozen 0133/0134 storage; no schema or migration. An internal service owns
+short transactions, locks canonical User then preference/job state, and inserts
+at most one account/day study row. Refuse any same-label or overlapping frozen
+UTC day, including cancelled/expired ownership. Compute midnight boundaries with
+the chosen IANA zone (23/25-hour DST days and fractional/date-line zones), never
+an offset guess or UTC start plus 24 hours. Supply an explicit expiry strictly
+after the chosen personal clock and no later than day end; choose no production
+TTL, cadence threshold or global night rule.
+
+Reservation is **shadow evaluation ownership only**. It requires fresh 3.1
+account/consent/access/goal/personal eligibility and records the 3.2 cadence
+reason, including unconfigured/unknown coverage. Recording that suppressed
+cadence result is not a delivery grant. Use a distinct queue policy version,
+state `shadow`, NULL selected channel/device and zero attempts. This shadow row
+still owns its unique account/day; later rollout must reuse/recheck it or skip
+that day, never mint a parallel live intent. No API, main scheduler, cohort,
+endpoint selection, old-sender cutover or provider caller is enabled here.
+Insert directly in the owned outer transaction: a first-write savepoint under
+SQLite legacy transaction handling can release before the outer commit. The
+unique constraint refuses inconsistent concurrent writers; ordinary PostgreSQL
+reservation retries serialize on User. Claim/close use conditional lease/state
+updates as an additional stale-writer guard. Sample the clock after the User
+lock and recheck lease/expiry and current quiet state after validation IO; a
+pre-lock timestamp must not hide learning committed during the wait or revive
+an expired window. Bounded expiry-only maintenance
+locks User first and can close expired shadow jobs even for blocked accounts,
+without granting client/session authority; external attempts are quarantined.
+
+Bounded indexed due discovery yields only opaque owner/job handles and holds no
+job-first locks. Claim under a fresh verified actor/User-first lock; use a fresh
+opaque lease token, explicit technical lease duration capped by job expiry, and
+CAS/fresh checks on completion. Keep state `shadow` while leased so simulated
+work does not consume a live weekly send budget. An expired lease can be
+reclaimed; old tokens cannot finish. Expiry, OFF/epoch/revision, course/zone/
+personal-clock changes, completed goal or lost access suppress without changing
+the frozen window or creating another job. A due-window-only evaluator option
+allows the original clock to have elapsed while retaining *current* learning/
+goal/quiet/pause checks; never rewind evidence to the scheduled timestamp.
+
+Finish commits the shadow decision before an optional observational sink runs
+outside all SQL contexts. Sink failure leaves a durable completed row and does
+not re-run that effect; a process crash before finish can retry after lease
+expiry. The sink receives `dispatch_allowed=False` and no selected endpoint or
+provider adapter. Actor resolution is a trusted internal boundary, including
+native-only accounts; no session credential is stored in jobs. Existing P1
+session/revocation/deletion checks remain current on each claim/finish. Future
+autonomous cohort/claim/provider integration remains separately gated.
+
+Any unexpected attempt on an owned shadow job forbids shadow execution. Preserve
+external in-flight/accepted/unknown facts, quarantine ambiguous ownership and
+never create an alternate. Test a committed in-flight marker, a synthetic
+provider acceptance outside SQL and a crash rolling back its acceptance update;
+recovery must retain uncertainty and make no second call. This is a real DB
+fault-injection model, **not real provider/device acceptance or an enabled live
+dispatcher**. Known accepted/unresolved jobs are never recovered as pending.
+
+Verify SQLite and PostgreSQL, with real PostgreSQL two-reserver/two-claimer,
+restart/stale lease, completion-versus-OFF/learning races; missed tick and expiry;
+DST/fractional/date-line overlap; commit failure, sink boundary and external
+crash model. Rollback keeps ledger uniqueness/windows, P1 consent/epochs/guards
+and uncertainty; no destructive downgrade, live migration or legacy resume.
 
 ## Risks / Trade-offs
 
