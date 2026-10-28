@@ -139,7 +139,7 @@ Use shared golden input/output fixtures for personal phases, real completion, sp
 
 Alternative considered: teach each widget platform its own hours/habit model. It would drift from account-level scheduling and repeat the current fixed-clock problem; keep rules and signals shared, with native rendering and refresh scheduling at the edges.
 
-## Risks / Trade-offs
+## Bounded implementation slices
 
 ### Bounded task 3.1 implementation boundary
 
@@ -179,6 +179,64 @@ course switches, completed goals/plans, denied access, stale sessions/OFF and
 zero writes. Task 3.2 cadence, 3.3 reservations/DST travel ownership, 3.4 category
 coordination and 3.5 widget projection remain separate. Rollback removes these
 unused shadow modules; retain P1 consent, lifecycle guards and schema.
+
+### Bounded task 3.2 cadence simulation
+
+Extend the unused shadow boundary with a pure account-level cadence evaluator
+and a bounded read-only job/attempt projection under the same P1 User lock.
+No schema, scheduler, runtime configuration, provider, UI or client change.
+Evaluate existing eligibility first. A logical job already owning this local
+day or overlapping its frozen UTC interval prevents a new intent, including
+cancelled/expired ownership. Deduplicate by canonical job, never by attempts,
+channel, device or preference revision. Actual uniqueness/concurrent reservation
+and safe travel ownership still belong to 3.3.
+
+Use the median completed gap between distinct verified local study days as the
+observed personal rhythm. Compare elapsed local days with that rhythm times an
+explicit calibration factor, rather than universal 3/7/14-day triggers. A
+versioned simulation calibration must explicitly supply minimum learning days,
+abnormal-gap and observation multipliers, increasing-gap factor, finite
+unsuccessful-series limit and weekly cap; **none has a production default**.
+For simulation, the proposed weekly cap is a rolling seven local-calendar-day
+window and includes non-shadow live reservations/possibly externalized jobs;
+cancelled/expired unattempted jobs do not consume that weekly budget. Present
+this interpretation with D03/D08/D09's still-open values in the Master Plan
+before any runtime enabling decision; QA values do not approve a product policy.
+
+Only independently verified shown evidence can mature into an observed
+no-learning outcome, and only with explicitly complete authoritative learning
+coverage through a personal-rhythm observation window. Provider acceptance,
+post invocation, opens, missing ACKs and timeouts never imply ignored or shown.
+Count one unsuccessful outcome per logical job after its observation window;
+increase intervals from the last real exposure and eventually stop the series.
+A later original server learning receipt resets the unsuccessful streak;
+replayed XP/original timestamps, reward XP and opens do not restart it. This is
+observational sequence evidence, not a causal conversion/uplift claim.
+Definitive non-display/rejection is a separate transport outcome, never a
+failed learner response. Mixed/unknown attempts remain uncertain. A newer study
+cannot clear unresolved display timing just by comparing an old schedule;
+verified late exposure uses its actual shown instant. Reconciliation/expiry
+fencing remains a protocol gate. A cooldown is an earliest eligibility bound,
+not permission to post at that instant outside the personal clock/quiet checks.
+
+The actual legacy source reader explicitly declares **incomplete negative
+learning coverage**: best-effort events and deterministic practice replays can
+undercount learning even with no row overflow. It may expose observed positive
+rhythm and real account budget, but cannot assert abnormal inactivity or failed
+reactivation. Do not add a caller-controlled complete-coverage flag to an API or
+infer completeness from an empty query. Complete-coverage cases are synthetic
+pure-policy fixtures pending an authoritative outcome feed. Missing historical
+zone provenance also blocks operational habit/cadence adaptation after travel.
+
+Test daily versus twice-weekly histories, decreasing cadence, eventual stop and
+learning restart; exact same-day/overlapping-window and rolling-week boundaries;
+unknown provider outcomes; replay/dedup; missing coverage, sparse history and
+current OFF/access/manual/quiet restrictions. Read actual persisted job/attempt
+rows on SQLite and PostgreSQL without writes/flush/commit and without loading
+tokens or raw endpoint data. All decisions remain dispatch-OFF. Rollback drops
+these unused modules only and preserves P1 consent/epochs/ledger/legacy guards.
+
+## Risks / Trade-offs
 
 - **Old offline APK can display outside the ledger** → Do not migrate accounts with unknown/unsupported autonomous sender state into new cross-channel dispatch. Test historical binaries and describe the remaining physical display limit honestly; no server-only “exactly once” claim.
 - **Provider success followed by crash leaves uncertain outcome** → Reserve/commit before IO, persist an attempt before send, classify uncertain result as unknown and suppress alternate delivery. Reconciliation never treats timeout alone as non-display.
