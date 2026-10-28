@@ -172,6 +172,21 @@ class AdminPwaStatisticsReader:
                     return self._remember(variant, shared)
             except (KeyError, TypeError, ValueError):
                 pass
+        # A manual R2-only refresh may be newer than Redis, or Redis may be
+        # unavailable entirely. Recheck only the private overview R2 object
+        # once per minute; never replace newer local data with older records.
+        if self._r2.enabled:
+            try:
+                raw = await self._r2.get(
+                    kind="statistics", namespace=self._r2_namespace,
+                    variant=query.platform + "_" + query.period)
+                mirrored = self._decode(raw, query)
+                if (mirrored is not None and
+                        datetime.fromisoformat(mirrored["data"]["generated_at"]) >
+                        datetime.fromisoformat(cached["data"]["generated_at"])):
+                    return self._remember(variant, mirrored)
+            except R2Unavailable:
+                pass
         return self._result(cached)
 
     @staticmethod
