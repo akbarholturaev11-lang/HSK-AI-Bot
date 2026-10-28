@@ -96,8 +96,9 @@ def _after_days(instant, days):
     return instant + timedelta(microseconds=rounded)
 
 
-def evaluate_cadence(context: CadenceContext, *, calibration: CadenceCalibration | None = None) -> CadenceDecision:
-    base = evaluate(context.policy)
+def evaluate_cadence(context: CadenceContext, *, calibration: CadenceCalibration | None = None,
+                     allow_elapsed_time: bool = False) -> CadenceDecision:
+    base = evaluate(context.policy, allow_elapsed_time=allow_elapsed_time)
     gap = abnormal = misses = next_at = weekly = None
 
     def result(reason):
