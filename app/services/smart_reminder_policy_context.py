@@ -9,13 +9,13 @@ import re
 from datetime import datetime, time, timezone
 from types import SimpleNamespace
 
-from sqlalchemy import select
+from sqlalchemy import func, or_, select
 
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
-from app.db.models.smart_reminder import SmartReminderPreference
+from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderJob, SmartReminderPreference
 from app.db.models.user import User
 from app.services.course_daily_window import local_day_key
 from app.services.course_levels import content_level
@@ -26,6 +26,7 @@ from app.services.daily_plan_service import DailyPlanService, TASK_CONTINUE_LESS
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.learning_signals import LEARNING_ACTIVITY_TYPES, LearningSignals
 from app.services.smart_reminder_policy import PolicyContext, VerifiedStudy
+from app.services.smart_reminder_cadence import CadenceContext, StudyIntent
 from app.services.smart_reminder_preferences import SmartReminderPreferencesService
 
 
@@ -92,6 +93,55 @@ def verified_studies(*, user_id, level, completed_parts, xp_rows, event_rows):
 class SmartReminderPolicyContextService:
     def __init__(self, session):
         self.session = session
+
+    async def load_cadence(self, actor, *, observed_at: datetime, history_since: datetime, expected_level: str):
+        """Read new-intent budget/outcomes; legacy negative coverage is unknown.
+
+        Call under the same verified-actor/caller-owned transaction as `load`.
+        Correlated aggregates avoid loading attempts, endpoint IDs or tokens.
+        No public complete-coverage override is provided.
+        """
+        with self.session.no_autoflush:
+            policy = await self.load(actor, observed_at=observed_at, history_since=history_since,
+                                     expected_level=expected_level)
+            external_fact = or_(SmartReminderAttempt.started_at.is_not(None), SmartReminderAttempt.state.in_(
+                ("in_flight", "provider_accepted", "client_posted_unverified", "verified_shown", "unknown")))
+            external = select(SmartReminderAttempt.id).where(
+                SmartReminderAttempt.job_id == SmartReminderJob.id, external_fact).exists()
+            ambiguous = select(SmartReminderAttempt.id).where(
+                SmartReminderAttempt.job_id == SmartReminderJob.id, external_fact,
+                SmartReminderAttempt.state.not_in(("definite_failure", "confirmed_not_displayed")),
+            ).exists()
+            shown = select(func.min(SmartReminderAttempt.resolved_at)).where(
+                SmartReminderAttempt.job_id == SmartReminderJob.id,
+                SmartReminderAttempt.state == "verified_shown",
+                SmartReminderAttempt.started_at.is_not(None),
+                SmartReminderAttempt.started_at <= SmartReminderAttempt.resolved_at,
+                SmartReminderAttempt.resolved_at <= _utc(observed_at),
+            ).correlate(SmartReminderJob).scalar_subquery()
+            rows = (await self.session.execute(select(
+                SmartReminderJob.id, SmartReminderJob.user_id, SmartReminderJob.local_day,
+                SmartReminderJob.timezone_name, SmartReminderJob.day_start_utc, SmartReminderJob.day_end_utc,
+                SmartReminderJob.scheduled_at, SmartReminderJob.state,
+                external.label("external"), ambiguous.label("ambiguous"), shown.label("shown_at"),
+            ).where(SmartReminderJob.user_id == actor.user_id, SmartReminderJob.category == "study",
+                    SmartReminderJob.day_end_utc > _utc(history_since))
+                .order_by(SmartReminderJob.day_start_utc.desc(), SmartReminderJob.id)
+                .limit(MAX_POLICY_ROWS + 1))).mappings().all()
+            intents = tuple(StudyIntent(
+                job_id=row["id"], user_id=row["user_id"], local_day=row["local_day"],
+                timezone_name=row["timezone_name"], day_start_utc=_utc(row["day_start_utc"]),
+                day_end_utc=_utc(row["day_end_utc"]), scheduled_at=_utc(row["scheduled_at"]), state=row["state"],
+                externally_attempted=bool(row["external"] or row["state"] in {"provider_accepted", "unknown"}),
+                verified_shown_at=_utc(row["shown_at"]) if row["shown_at"] else None,
+                definite_non_display=bool(row["external"] and not row["ambiguous"] and row["shown_at"] is None
+                                           and row["state"] not in {"provider_accepted", "unknown"}),
+            ) for row in rows[:MAX_POLICY_ROWS])
+            return CadenceContext(
+                user_id=actor.user_id, policy=policy, history_since=_utc(history_since), intents=intents,
+                ledger_complete=len(rows) <= MAX_POLICY_ROWS,
+                learning_complete_since=None,  # Best-effort/replayed legacy activity is not complete coverage.
+            )
 
     async def load(self, actor, *, observed_at: datetime, history_since: datetime, expected_level: str):
         """Fresh account facts under P1's user lock, with zero writes/commit.

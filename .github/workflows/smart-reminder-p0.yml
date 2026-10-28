@@ -9,6 +9,8 @@ on:
       - "tests/test_smart_reminder_legacy_backfill.py"
       - "tests/test_smart_reminder_preferences.py"
       - "tests/test_smart_reminder_policy.py"
+      - "tests/test_smart_reminder_cadence.py"
+      - "app/services/smart_reminder_cadence.py"
       - "app/services/smart_reminder_policy*.py"
       - "app/api/smart_reminder.py"
       - "app/services/smart_reminder_preferences.py"
@@ -64,6 +66,8 @@ on:
       - "tests/test_smart_reminder_legacy_backfill.py"
       - "tests/test_smart_reminder_preferences.py"
       - "tests/test_smart_reminder_policy.py"
+      - "tests/test_smart_reminder_cadence.py"
+      - "app/services/smart_reminder_cadence.py"
       - "app/services/smart_reminder_policy*.py"
       - "app/api/smart_reminder.py"
       - "app/services/smart_reminder_preferences.py"
@@ -241,5 +245,5 @@ jobs:
           HSK_STAGING_QA_MODE: "1"
         run: |
           python -m py_compile app/db/models/smart_reminder.py alembic/versions/0133_smart_reminder_storage.py app/services/smart_reminder_legacy_backfill.py app/services/smart_reminder_preferences.py app/api/smart_reminder.py alembic/versions/0134_smart_reminder_mutations.py app/services/smart_reminder_lifecycle.py
-          python -m py_compile app/services/smart_reminder_policy.py app/services/smart_reminder_policy_context.py tests/test_smart_reminder_policy.py
-          python -m unittest -v tests.test_smart_reminder_storage tests.test_smart_reminder_legacy_backfill tests.test_smart_reminder_preferences tests.test_smart_reminder_lifecycle tests.test_smart_reminder_policy tests.test_telegram_identity_link tests.test_native_oauth_lifecycle
+          python -m py_compile app/services/smart_reminder_policy.py app/services/smart_reminder_policy_context.py app/services/smart_reminder_cadence.py tests/test_smart_reminder_policy.py tests/test_smart_reminder_cadence.py
+          python -m unittest -v tests.test_smart_reminder_storage tests.test_smart_reminder_legacy_backfill tests.test_smart_reminder_preferences tests.test_smart_reminder_lifecycle tests.test_smart_reminder_policy tests.test_smart_reminder_cadence tests.test_telegram_identity_link tests.test_native_oauth_lifecycle
