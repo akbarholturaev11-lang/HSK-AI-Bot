@@ -27,14 +27,15 @@ def create_manual_aggregate_refresh_router(*, settings_obj, analytics_reader):
         secret = str(getattr(settings_obj, "ADMIN_PWA_MANUAL_AGGREGATE_REFRESH_TOKEN", "") or "")
         if (not getattr(settings_obj, "ADMIN_PWA_ENABLED", False)
                 or not getattr(settings_obj, "ADMIN_PWA_R2_AGGREGATE_ENABLED", False)
-                or not 48 <= len(secret) <= 128):
+                or not 48 <= len(secret) <= 128 or not secret.isascii()):
             return _reply(404, "not_found")
         origin = str(getattr(settings_obj, "ADMIN_PWA_PUBLIC_ORIGIN", "") or "")
         if (not origin.startswith("https://") or
                 f"{request.url.scheme}://{request.url.netloc}" != origin):
             return _reply(403, "admin_pwa_wrong_origin")
         headers = request.headers.getlist("authorization")
-        if (len(headers) != 1
+        if (len(headers) != 1 or len(headers[0]) > 256
+                or not headers[0].isascii()
                 or not hmac.compare_digest(headers[0], "Bearer " + secret)):
             return _reply(401, "admin_pwa_unauthorized")
         if request.query_params:
