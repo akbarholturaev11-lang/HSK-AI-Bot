@@ -292,6 +292,16 @@ class SmartReminderPreferencesService:
                 await self.session.execute(insert(CONSENT).values(
                     user_id=actor.user_id, channel="android" if actor.kind == "android" else "telegram",
                     source_key=actor.source_key, device_id=actor.device_id if actor.kind == "android" else None, **consent))
+        if payload.master_enabled is False or payload.study_enabled is False:
+            from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
+            lifecycle = SmartReminderLifecycleService(self.session)
+            await lifecycle.invalidate(actor.user_id, reason="study_off", advance=False)
+            if payload.master_enabled is False:
+                await lifecycle.disable_legacy(actor.user_id)
+            else:
+                await lifecycle.disable_legacy(actor.user_id,
+                    channel="android" if actor.kind == "android" else "telegram",
+                    device_id=actor.device_id if actor.kind == "android" else None)
         await self.session.execute(insert(MUTATION).values(
             user_id=actor.user_id, request_id=payload.request_id, actor_key=actor.key,
             body_sha256=digest, applied_revision=revision + 1))
