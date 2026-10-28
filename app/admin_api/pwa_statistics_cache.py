@@ -82,6 +82,11 @@ class AdminPwaStatisticsReader:
                               if cache_scope else digest)
         self._r2 = r2_store if r2_store is not None else PrivateR2AggregateStore(settings_obj=settings_obj)
         self._local = {}
+        # Manual overview refresh can update Redis/R2 while another worker still
+        # holds a valid in-process copy. Revalidate that scope at most once per
+        # minute, without re-running SQL on ordinary cache hits.
+        self._overview_local_revalidate = cache_scope == "analytics_overview_v1"
+        self._local_checked_at = {}
         self._mutex = refresh_mutex if refresh_mutex is not None else asyncio.Lock()
         self._redis_retry_at = 0.0
         self._load_retry_at = 0.0
@@ -138,7 +143,27 @@ class AdminPwaStatisticsReader:
 
     def _remember(self, variant, envelope):
         self._local[variant] = envelope
+        self._local_checked_at[variant] = self.clock()
         return self._result(envelope)
+
+    async def _overview_local_hit(self, variant, cached, query):
+        if not self._overview_local_revalidate:
+            return self._result(cached)
+        now = self.clock()
+        if now - self._local_checked_at.get(variant, now) < 60:
+            return self._result(cached)
+        self._local_checked_at[variant] = now
+        # A cross-worker manual refresh may have replaced this snapshot even
+        # though its original 24h expiry is still valid. Redis is only a source
+        # of a newer VALIDATED copy, never a reason for extra SQL recomputation.
+        try:
+            shared = await self._shared(self.prefix + ":" + query.platform +
+                                        ":" + query.period, query)
+        except _SharedUnavailable:
+            shared = None
+        if shared is not None and shared != cached:
+            return self._remember(variant, shared)
+        return self._result(cached)
 
     @staticmethod
     def _result(envelope):
@@ -231,12 +256,12 @@ class AdminPwaStatisticsReader:
                        if self.clock() < entry["expires_at"] <= self.clock()+SNAPSHOT_SECONDS}
         cached = self._local.get(variant)
         if cached is not None and self.clock() < cached["expires_at"]:
-            return self._result(cached)
+            return await self._overview_local_hit(variant, cached, query)
         try:
             async with asyncio.timeout(16 if self._r2.enabled else 9), self._mutex:
                 cached = self._local.get(variant)
                 if cached is not None and self.clock() < cached["expires_at"]:
-                    return self._result(cached)
+                    return await self._overview_local_hit(variant, cached, query)
                 key = self.prefix+":"+query.platform+":"+query.period
                 lease = self._lease_key
                 token = uuid4().hex
