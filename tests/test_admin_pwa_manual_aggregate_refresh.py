@@ -152,6 +152,26 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await other(query))["metrics"]["users_total"], 2)
         self.assertEqual(self.calls, 2)
 
+    async def test_untrusted_projection_is_rejected_before_any_r2_write(self):
+        reader = self.reader()
+        async def wrong_scope(db, query):
+            self.calls += 1
+            return {
+                "platform": query.platform, "period": query.period,
+                "available": True,
+                "scope": {"section": "home"},
+                "source": "users + payments + canonical learning events",
+                "generated_at": datetime.fromtimestamp(self.clock, timezone.utc).isoformat(),
+                "metrics": {"users_total": 1},
+            }
+        reader.loader = wrong_scope
+        with self.assertRaisesRegex(StatisticsUnavailable, "Unexpected overview"):
+            await reader.refresh_now(StatisticsRequest())
+        self.assertEqual(self.calls, 1)
+        self.assertEqual(self.store.puts, 0)
+        self.assertEqual(self.redis.cache, {})
+        self.assertEqual(self.redis.locks, {})
+
     async def test_bundle_is_serialized_and_cooldown_prevents_sql_flood(self):
         reader = self.reader()
         first = await reader.refresh_overview_bundle()
