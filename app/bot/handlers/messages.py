@@ -1,3 +1,4 @@
+from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderError, SmartReminderPreferencesService
 from app.bot.utils.smart_reminder import smart_reminder_time_keyboard, INTERACTION_KEY
 import asyncio
 import json
@@ -1496,6 +1497,24 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                 )
                 return
 
+            try:
+                binding = (await state.get_data()).get(INTERACTION_KEY) if state is not None else None
+                applied = await SmartReminderPreferencesService(session).bot_time(
+                    SmartReminderActor(user.id, "telegram_bot", telegram_id=message.from_user.id),
+                    nonce=binding.get("nonce") if isinstance(binding, dict) else None,
+                    binding=binding, selected=parsed_reminder,
+                )
+                if applied is False:
+                    await delete_message_safely(message)
+                    return
+            except SmartReminderError:
+                await reminder_engine.progress_repo.set_waiting_for(reminder_progress, "none")
+                await session.commit()
+                if state is not None:
+                    await state.update_data(**{INTERACTION_KEY: None})
+                await delete_message_safely(message)
+                await _edit_reminder_panel(message, state, t("course_reminder_cancelled", user_lang))
+                return
             await reminder_engine.progress_repo.set_reminder(
                 reminder_progress,
                 enabled=True,
@@ -1641,6 +1660,24 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                     t("course_invalid_time_format", user_lang),
                     reply_markup=await smart_reminder_time_keyboard(session, state, user.id, user_lang),
                 )
+                return
+            try:
+                binding = (await state.get_data()).get(INTERACTION_KEY) if state is not None else None
+                applied = await SmartReminderPreferencesService(session).bot_time(
+                    SmartReminderActor(user.id, "telegram_bot", telegram_id=message.from_user.id),
+                    nonce=binding.get("nonce") if isinstance(binding, dict) else None,
+                    binding=binding, selected=parsed_reminder,
+                )
+                if applied is False:
+                    await delete_message_safely(message)
+                    return
+            except SmartReminderError:
+                await engine.progress_repo.set_waiting_for(progress, "none")
+                await session.commit()
+                if state is not None:
+                    await state.update_data(**{INTERACTION_KEY: None})
+                await delete_message_safely(message)
+                await _edit_reminder_panel(message, state, t("course_reminder_cancelled", user_lang))
                 return
             await engine.progress_repo.set_reminder(progress, enabled=True, reminder_time=parsed_reminder)
             await engine.progress_repo.set_waiting_for(progress, "none")

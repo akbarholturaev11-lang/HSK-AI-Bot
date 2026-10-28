@@ -117,6 +117,11 @@ class CourseProgressRepository:
         enabled: bool,
         reminder_time: Optional[time],
     ) -> None:
+        if enabled:
+            from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
+            from app.services.smart_reminder_preferences import SmartReminderError
+            if await SmartReminderLifecycleService(self.session).legacy_veto(progress.user_id, "telegram", lock=True):
+                raise SmartReminderError("smart_legacy_on_refused", 409)
         progress.reminder_enabled = enabled
         progress.reminder_time = reminder_time
         progress.last_opened_at = datetime.now(timezone.utc)

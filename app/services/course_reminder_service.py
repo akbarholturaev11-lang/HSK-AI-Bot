@@ -132,6 +132,9 @@ class CourseReminderService:
 
             lang = user.language if user.language else "ru"
             text, reminder_params = await self._build_reminder_text(progress, lang)
+            from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
+            if await SmartReminderLifecycleService(self.session).legacy_veto(user.id, "telegram"):
+                continue
             try:
                 await bot.send_message(
                     chat_id=user.telegram_id,
