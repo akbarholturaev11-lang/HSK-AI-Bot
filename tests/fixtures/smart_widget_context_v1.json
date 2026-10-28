@@ -1,0 +1,603 @@
+{
+  "version": 1,
+  "description": "Shared semantic fixtures. QA calibration is explicit test input, never a production confidence default. Auth validity is one hour in this fixture only.",
+  "base": {
+    "observed_at": "2026-10-29T12:00:00+00:00",
+    "level": "hsk1",
+    "progress_level": "hsk1",
+    "expected_level": "hsk1",
+    "completed_parts": 5,
+    "total_parts": 100,
+    "target_allowed": true,
+    "foundation_required": false,
+    "revision": 2,
+    "grant_epoch": 1,
+    "master_enabled": true,
+    "permitted_channels": [
+      "telegram"
+    ],
+    "timezone_name": "Etc/UTC",
+    "course_day": "2026-10-29",
+    "daily_goal_xp": 20,
+    "plan_completed": false,
+    "saved_time": "14:00"
+  },
+  "cases": [
+    {
+      "name": "saved_before",
+      "changes": {},
+      "expected": {
+        "phase": "before_study",
+        "reason": "before_personal_time",
+        "time_source": "saved",
+        "time_local": "14:00",
+        "verified_today_xp": 0,
+        "goal_state": "not_proven",
+        "action": "continue",
+        "lesson_order": 6
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "saved_reached",
+      "changes": {
+        "observed_at": "2026-10-29T15:00:00+00:00"
+      },
+      "expected": {
+        "phase": "study_time_reached",
+        "reason": "personal_time_reached"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "manual_two_am",
+      "changes": {
+        "observed_at": "2026-10-29T01:00:00+00:00",
+        "time_mode": "manual_locked",
+        "manual_time": "02:00"
+      },
+      "expected": {
+        "phase": "before_study",
+        "time_source": "manual",
+        "time_local": "02:00",
+        "valid_until": "2026-10-29T02:00:00Z"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "qa_two_am_habit",
+      "changes": {
+        "observed_at": "2026-10-29T01:00:00+00:00",
+        "saved_time": null,
+        "studies": [
+          {
+            "reference": "habit-0",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-28T02:00:00+00:00",
+            "course_day": "2026-10-28",
+            "xp": 20
+          },
+          {
+            "reference": "habit-1",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-27T02:00:00+00:00",
+            "course_day": "2026-10-27",
+            "xp": 20
+          },
+          {
+            "reference": "habit-2",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-26T02:00:00+00:00",
+            "course_day": "2026-10-26",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "phase": "before_study",
+        "time_source": "habit",
+        "time_local": "02:00"
+      },
+      "qa_habit_calibration": true
+    },
+    {
+      "name": "night_learner_at_22_no_critical",
+      "changes": {
+        "observed_at": "2026-10-29T22:00:00+00:00",
+        "saved_time": null,
+        "studies": [
+          {
+            "reference": "habit-0",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-28T02:00:00+00:00",
+            "course_day": "2026-10-28",
+            "xp": 20
+          },
+          {
+            "reference": "habit-1",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-27T02:00:00+00:00",
+            "course_day": "2026-10-27",
+            "xp": 20
+          },
+          {
+            "reference": "habit-2",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-26T02:00:00+00:00",
+            "course_day": "2026-10-26",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "phase": "study_time_reached",
+        "reason": "personal_time_reached",
+        "time_local": "02:00"
+      },
+      "qa_habit_calibration": true
+    },
+    {
+      "name": "daytime_habit",
+      "changes": {
+        "observed_at": "2026-10-29T13:00:00+00:00",
+        "saved_time": null,
+        "studies": [
+          {
+            "reference": "habit-0",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-28T14:00:00+00:00",
+            "course_day": "2026-10-28",
+            "xp": 20
+          },
+          {
+            "reference": "habit-1",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-27T14:00:00+00:00",
+            "course_day": "2026-10-27",
+            "xp": 20
+          },
+          {
+            "reference": "habit-2",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-26T14:00:00+00:00",
+            "course_day": "2026-10-26",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "phase": "before_study",
+        "time_local": "14:00"
+      },
+      "qa_habit_calibration": true
+    },
+    {
+      "name": "sparse_neutral",
+      "changes": {
+        "saved_time": null,
+        "studies": [
+          {
+            "reference": "habit-0",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-28T02:00:00+00:00",
+            "course_day": "2026-10-28",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "phase": "neutral",
+        "reason": "personal_time_unknown",
+        "time_source": "unknown",
+        "action": "continue"
+      },
+      "qa_habit_calibration": true
+    },
+    {
+      "name": "no_production_habit_threshold",
+      "changes": {
+        "saved_time": null,
+        "studies": [
+          {
+            "reference": "habit-0",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-28T02:00:00+00:00",
+            "course_day": "2026-10-28",
+            "xp": 20
+          },
+          {
+            "reference": "habit-1",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-27T02:00:00+00:00",
+            "course_day": "2026-10-27",
+            "xp": 20
+          },
+          {
+            "reference": "habit-2",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-26T02:00:00+00:00",
+            "course_day": "2026-10-26",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "phase": "neutral",
+        "time_source": "unknown",
+        "time_reason": "habit_threshold_unconfigured"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "manual_beats_habit",
+      "changes": {
+        "time_mode": "manual_locked",
+        "manual_time": "16:00",
+        "studies": [
+          {
+            "reference": "habit-0",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-28T02:00:00+00:00",
+            "course_day": "2026-10-28",
+            "xp": 20
+          },
+          {
+            "reference": "habit-1",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-27T02:00:00+00:00",
+            "course_day": "2026-10-27",
+            "xp": 20
+          },
+          {
+            "reference": "habit-2",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-26T02:00:00+00:00",
+            "course_day": "2026-10-26",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "time_source": "manual",
+        "time_local": "16:00"
+      },
+      "qa_habit_calibration": true
+    },
+    {
+      "name": "quiet_now",
+      "changes": {
+        "quiet_start": "11:00",
+        "quiet_end": "13:00"
+      },
+      "expected": {
+        "phase": "quiet",
+        "reason": "personal_quiet",
+        "valid_until": "2026-10-29T13:00:00Z",
+        "action": "course"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "quiet_across_midnight",
+      "changes": {
+        "observed_at": "2026-10-29T23:00:00+00:00",
+        "quiet_start": "22:00",
+        "quiet_end": "05:00"
+      },
+      "expected": {
+        "phase": "quiet",
+        "valid_until": "2026-10-30T00:00:00Z"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "paused",
+      "changes": {
+        "pause_until": "2026-10-29T12:30:00+00:00"
+      },
+      "expected": {
+        "phase": "paused",
+        "reason": "personal_pause",
+        "valid_until": "2026-10-29T12:30:00Z"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "master_off_keeps_progress",
+      "changes": {
+        "master_enabled": false,
+        "permitted_channels": []
+      },
+      "expected": {
+        "phase": "neutral",
+        "reason": "study_off",
+        "completed_parts": 5,
+        "action": "course"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "no_notification_permission_still_passive",
+      "changes": {
+        "permitted_channels": []
+      },
+      "expected": {
+        "phase": "before_study",
+        "action": "continue"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "verified_goal_complete",
+      "changes": {
+        "studies": [
+          {
+            "reference": "lesson-today",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-29T02:00:00+00:00",
+            "course_day": "2026-10-29",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "phase": "completed",
+        "reason": "goal_completed",
+        "goal_state": "met",
+        "verified_today_xp": 20,
+        "action": "course"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "reward_only_not_complete",
+      "changes": {
+        "studies": [
+          {
+            "reference": "lesson-today",
+            "activity_type": "reward",
+            "accepted_at": "2026-10-29T02:00:00+00:00",
+            "course_day": "2026-10-29",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "phase": "before_study",
+        "goal_state": "not_proven",
+        "verified_today_xp": 0,
+        "plan_completed": false
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "server_plan_complete",
+      "changes": {
+        "plan_completed": true
+      },
+      "expected": {
+        "phase": "completed",
+        "reason": "plan_completed",
+        "verified_today_xp": 0
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "completed_even_with_off",
+      "changes": {
+        "studies": [
+          {
+            "reference": "lesson-today",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-29T02:00:00+00:00",
+            "course_day": "2026-10-29",
+            "xp": 20
+          }
+        ],
+        "master_enabled": false,
+        "permitted_channels": []
+      },
+      "expected": {
+        "phase": "completed",
+        "reason": "goal_completed"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "target_locked",
+      "changes": {
+        "target_allowed": false
+      },
+      "expected": {
+        "phase": "neutral",
+        "reason": "target_inaccessible",
+        "action": "course",
+        "lesson_order": null
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "foundation_required",
+      "changes": {
+        "foundation_required": true,
+        "target_allowed": false
+      },
+      "expected": {
+        "phase": "neutral",
+        "reason": "foundation_required",
+        "action": "foundation",
+        "lesson_order": null
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "zone_unknown_no_daily_claim",
+      "changes": {
+        "timezone_name": null,
+        "plan_completed": true,
+        "studies": [
+          {
+            "reference": "lesson-today",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-29T02:00:00+00:00",
+            "course_day": "2026-10-29",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "phase": "neutral",
+        "reason": "timezone_unknown",
+        "local_day": null,
+        "timezone_name": null,
+        "plan_completed": null,
+        "verified_today_xp": null,
+        "goal_state": "unknown"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "coarse_day_mismatch",
+      "changes": {
+        "course_day": "2026-10-28",
+        "plan_completed": true
+      },
+      "expected": {
+        "phase": "neutral",
+        "reason": "course_day_mismatch",
+        "plan_completed": null,
+        "goal_state": "unknown"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "wrong_progress_course",
+      "changes": {
+        "progress_level": "hsk2"
+      },
+      "expected": {
+        "phase": "unavailable",
+        "reason": "course_context_changed",
+        "completed_parts": null,
+        "total_parts": null,
+        "action": "none"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "course_complete",
+      "changes": {
+        "completed_parts": 100
+      },
+      "expected": {
+        "phase": "completed",
+        "reason": "course_completed",
+        "action": "course"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "dst_gap_neutral",
+      "changes": {
+        "observed_at": "2026-03-08T06:00:00+00:00",
+        "timezone_name": "America/New_York",
+        "course_day": "2026-03-08",
+        "saved_time": "02:30"
+      },
+      "expected": {
+        "phase": "neutral",
+        "reason": "local_time_nonexistent"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "dst_fold_neutral",
+      "changes": {
+        "observed_at": "2026-11-01T04:00:00+00:00",
+        "timezone_name": "America/New_York",
+        "course_day": "2026-11-01",
+        "saved_time": "01:30"
+      },
+      "expected": {
+        "phase": "neutral",
+        "reason": "local_time_ambiguous"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "fractional_midnight_expiry",
+      "changes": {
+        "observed_at": "2026-10-29T18:14:00+00:00",
+        "timezone_name": "Asia/Kathmandu"
+      },
+      "expected": {
+        "phase": "study_time_reached",
+        "valid_until": "2026-10-29T18:15:00Z"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "hsk30_context",
+      "changes": {
+        "level": "nhsk1",
+        "progress_level": "nhsk1",
+        "expected_level": "nhsk1"
+      },
+      "expected": {
+        "track": "hsk30",
+        "level": "nhsk1"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "future_study_not_learning",
+      "changes": {
+        "studies": [
+          {
+            "reference": "lesson-today",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-30T02:00:00+00:00",
+            "course_day": "2026-10-29",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "phase": "before_study",
+        "verified_today_xp": 0,
+        "goal_state": "not_proven"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "quiet_dst_gap_restrains",
+      "changes": {
+        "observed_at": "2026-03-08T06:55:00+00:00",
+        "timezone_name": "America/New_York",
+        "course_day": "2026-03-08",
+        "quiet_start": "02:30",
+        "quiet_end": "04:00"
+      },
+      "expected": {
+        "phase": "quiet",
+        "reason": "personal_quiet"
+      },
+      "qa_habit_calibration": false
+    },
+    {
+      "name": "quiet_dst_fold_restrains",
+      "changes": {
+        "observed_at": "2026-11-01T04:55:00+00:00",
+        "timezone_name": "America/New_York",
+        "course_day": "2026-11-01",
+        "quiet_start": "01:30",
+        "quiet_end": "04:00"
+      },
+      "expected": {
+        "phase": "quiet",
+        "reason": "personal_quiet"
+      },
+      "qa_habit_calibration": false
+    }
+  ]
+}

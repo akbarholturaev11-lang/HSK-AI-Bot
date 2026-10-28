@@ -40,6 +40,8 @@ from app.services.course_v3_dictionary import (
 )
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 from app.services.desktop_course_service import DesktopCourseError
+from app.services.smart_reminder_preferences import SmartReminderError
+from app.services.smart_widget_context import WidgetContextRequest
 
 
 logger = logging.getLogger(__name__)
@@ -190,6 +192,24 @@ def _timezone_offset(request: Request) -> int | None:
     return offset
 
 
+def _widget_request(request: Request) -> WidgetContextRequest | None:
+    """Optional protocol pair; old clients keep the original map contract."""
+    keys = ("widget_context_version", "widget_context_epoch")
+    if not any(key in request.query_params for key in keys):
+        return None
+    if (set(request.query_params) - {"tz", *keys} or
+            any(len(request.query_params.getlist(key)) != 1 for key in keys) or
+            len(request.query_params.getlist("tz")) > 1 or
+            len(request.headers.getlist("Authorization")) > 1 or
+            request.headers.get("X-Telegram-Init-Data") or
+            request.query_params.get(keys[0]) != "1"):
+        raise DesktopCourseError("widget_context_request_invalid", status_code=422)
+    try:
+        return WidgetContextRequest(version=1, epoch=request.query_params[keys[1]])
+    except ValueError:
+        raise DesktopCourseError("widget_context_request_invalid", status_code=422) from None
+
+
 def _android_tts_text(value: str | None) -> str:
     text = str(value or "").strip()
     if not text or len(text) > 240 or not re.search(r"[\u4e00-\u9fff]", text):
@@ -333,14 +353,20 @@ def create_android_course_router(
     async def android_course_map(request: Request):
         try:
             offset = _timezone_offset(request)
+            widget = _widget_request(request)
+            optional = {"widget_request": widget} if widget is not None else {}
             async with session_factory() as session:
                 result = await service_factory(session, settings_obj).course_map(
                     bearer_access_token(request),
                     timezone_offset_minutes=offset,
+                    **optional,
                 )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopCourseError) as exc:
             return course_error_response(exc)
+        except SmartReminderError as exc:
+            return JSONResponse({"ok": False, "error": exc.code}, status_code=exc.status,
+                                headers={"Cache-Control": "no-store"})
         except Exception:
             logger.exception("Android course map failed")
             return _unavailable()

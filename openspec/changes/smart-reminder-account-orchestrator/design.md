@@ -352,6 +352,62 @@ Rollback disables only shadow processing; retain P1 OFF/epoch/uncertainty and
 frozen job ownership. D05 thresholds, registered experiments and physical
 cutover acceptance stay open for subsequent phases.
 
+### Bounded task 3.5 shared passive widget context
+
+On reviewed main `1b9ff214`, implement one strict version-1 platform-neutral
+projection and golden fixtures over the existing 3.1 verified policy context.
+Reuse its habit/time/goal derivation, extracting reusable IANA day/clock helpers
+without changing reminder decisions. No separate widget habit estimator or
+production habit-confidence default. Semantic phases are neutral, before-study,
+study-time-reached, completed, paused, quiet and unavailable; no fixed urgency,
+overdueness, broken-streak or comeback assertion. Verified learning XP and plan
+completion remain distinct from existing map display/reward XP. Unknown day/zone
+or mismatched progress cannot assert daily completion. Global OFF/pause/quiet
+restrain presentation while ordinary permitted progress stays available;
+notification-channel consent and OS denial do not authorize or prevent passive
+progress. Inaccessible/foundation targets never become a lesson access grant.
+
+Add an opt-in `widget_context` field to the existing authenticated Android map,
+requested with version 1 and a canonical per-link epoch UUID. Legacy requests
+retain their existing response and perform no new Smart reads. Validate the new
+parameter pair/duplicates/allowlist and native platform, use the real canonical
+account/device/session with fresh P1 block/deletion/revocation checks before map
+work and again for the projection. The existing native map and normal navigation
+remain the only content/access authorities. No public learner endpoint, desktop
+consent expansion, new schema, flag, telemetry or notification send is added.
+Later native adapters reuse the pure contract with their own verified bridge;
+no iOS/macOS/Windows host or Android renderer is claimed in this slice.
+
+The envelope carries only semantic facts, canonical level/track, IANA day/zone,
+revision, generated/expiry instants, the caller's epoch and an opaque non-auth
+SHA-256 binding of the verified canonical owner/device/session. Raw IDs,
+credentials, names, lesson bodies and behavioral history are excluded. Expiry
+is capped by the already verified bearer expiry, actual IANA midnight and the
+next relevant personal-time/quiet/pause transition. This introduces no arbitrary
+product TTL, refresh promise or retention policy. Unknown zone remains neutral
+and never invents an IANA zone from the legacy coarse offset. Re-sample time
+after User locking and validation; an expired proof cannot mint valid context.
+
+Publish the request/response, reason codes and minimal cache allowlist beside
+implementation. A strict reference acceptance function/golden fixtures reject
+unknown versions, future/expired/invalid envelopes, mismatched local epoch or
+opaque binding, wrong course/day/zone, regressed revision and older generation.
+These are contract tests, not installed adapter acceptance or a cryptographic
+snapshot access token. Adapters clear state on logout/relink/deletion, keep only
+this minimal envelope, bind each in-flight response to its captured current
+local epoch and apply known-current revision/generation fences. Offline cannot
+promise immediate remote revocation; expiry restricts presentation and every
+action reauthorizes normally. Rollback omits the opt-in field or renders neutral,
+without changing consent, P1 guards or shadow job ownership.
+
+Verify shared sparse/manual/02:00/daytime/quiet/pause/OFF/OS-denied/completed/reward
+fixtures, DST/fractional zones/day rollover, unknown progress/access/foundation,
+strict malformed snapshots and old-session replay. Exercise source SQLite and
+PostgreSQL readers with zero new writes/consent/jobs/attempts, fresh ownership,
+blocked/deletion/revocation and native-only accounts; test the actual optional
+Android map route and regular Android/desktop course regressions. Android art,
+render/store and physical launcher acceptance stay with P4 tasks 5.5–5.6.
+
 ## Risks / Trade-offs
 
 - **Old offline APK can display outside the ledger** → Do not migrate accounts with unknown/unsupported autonomous sender state into new cross-channel dispatch. Test historical binaries and describe the remaining physical display limit honestly; no server-only “exactly once” claim.
