@@ -225,6 +225,8 @@ class AccountDeletionService:
             row.requested_at = now()
             row.due_at = row.requested_at + timedelta(days=PROCESSING_DAYS)
             row.active_user_id = user.id
+            from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
+            await SmartReminderLifecycleService(self.session).invalidate(user.id, reason="account_deletion")
         row.status = "submitted"
         await self.session.commit()
         return self._result(row)

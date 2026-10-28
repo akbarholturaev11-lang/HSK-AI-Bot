@@ -1156,6 +1156,16 @@ class DesktopAuthService:
         if not 32 <= len(refresh_token) <= 512:
             raise DesktopAuthError("desktop_refresh_invalid", status_code=401)
         token_hash = self._hash("refresh", refresh_token)
+        from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
+        lifecycle = SmartReminderLifecycleService(self.session)
+        # Observe only the owner first, then user -> session -> device. This
+        # matches preference/deletion writers before any revocation mutation.
+        candidate_user_id = await self.session.scalar(select(DesktopDevice.user_id)
+            .join(DesktopSession, DesktopSession.device_id == DesktopDevice.id)
+            .where(or_(DesktopSession.refresh_token_hash == token_hash,
+                       DesktopSession.previous_refresh_token_hash == token_hash)))
+        if candidate_user_id is not None:
+            await lifecycle.lock_user(candidate_user_id)
         result = await self.session.execute(
             select(DesktopSession)
             .where(
@@ -1164,27 +1174,31 @@ class DesktopAuthService:
                     DesktopSession.previous_refresh_token_hash == token_hash,
                 )
             )
-            .with_for_update()
+            .with_for_update().execution_options(populate_existing=True)
         )
         desktop_session = result.scalar_one_or_none()
         if not desktop_session:
             raise DesktopAuthError("desktop_refresh_invalid", status_code=401)
+        device_result = await self.session.execute(
+            select(DesktopDevice)
+            .where(DesktopDevice.id == desktop_session.device_id)
+            .with_for_update().execution_options(populate_existing=True)
+        )
+        device = device_result.scalar_one_or_none()
+        if device is None or candidate_user_id is None or device.user_id != candidate_user_id:
+            raise DesktopAuthError("desktop_session_revoked", status_code=401)
         if hmac.compare_digest(
             str(desktop_session.previous_refresh_token_hash or ""),
             token_hash,
         ):
+            if desktop_session.revoked_at is None:
+                await lifecycle.invalidate(candidate_user_id, reason="refresh_reuse", device_id=device.id)
             desktop_session.revoked_at = _utcnow()
             await self.session.commit()
             raise DesktopAuthError(
                 "desktop_refresh_reuse_detected", status_code=401
             )
 
-        device_result = await self.session.execute(
-            select(DesktopDevice)
-            .where(DesktopDevice.id == desktop_session.device_id)
-            .with_for_update()
-        )
-        device = device_result.scalar_one_or_none()
         now = _utcnow()
         if (
             not device
@@ -1194,7 +1208,8 @@ class DesktopAuthService:
         ):
             raise DesktopAuthError("desktop_session_revoked", status_code=401)
 
-        user = await UserRepository(self.session).get_by_user_id(device.user_id)
+        user = await self.session.scalar(select(User).where(User.id == device.user_id)
+            .execution_options(populate_existing=True))
         if not user or user.status == "blocked":
             raise DesktopAuthError("user_blocked", status_code=403)
         new_refresh = self._refresh_token()
@@ -1265,6 +1280,20 @@ class DesktopAuthService:
         revoke_device: bool,
     ) -> dict[str, Any]:
         context = await self.authenticate(access_token)
+        from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
+        lifecycle = SmartReminderLifecycleService(self.session)
+        await lifecycle.lock_user(context.user.id)
+        # Re-read after the account lock; the earlier ORM context can be stale.
+        login = await self.session.scalar(select(DesktopSession).where(DesktopSession.id == context.session.id)
+            .with_for_update().execution_options(populate_existing=True))
+        device = await self.session.scalar(select(DesktopDevice).where(DesktopDevice.id == context.device.id)
+            .with_for_update().execution_options(populate_existing=True))
+        if (login is None or device is None or device.user_id != context.user.id
+                or login.device_id != device.id or login.revoked_at is not None
+                or device.revoked_at is not None or (_as_utc(login.expires_at) or _utcnow()) <= _utcnow()):
+            raise DesktopAuthError("desktop_session_revoked", status_code=401)
+        await lifecycle.invalidate(context.user.id, reason="device_revoked" if revoke_device else "session_logout",
+                                   device_id=device.id)
         now = _utcnow()
         context.session.revoked_at = now
         if context.device.platform == "android":

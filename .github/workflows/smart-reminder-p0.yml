@@ -10,6 +10,15 @@ on:
       - "tests/test_smart_reminder_preferences.py"
       - "app/api/smart_reminder.py"
       - "app/services/smart_reminder_preferences.py"
+      - "app/services/smart_reminder_lifecycle.py"
+      - "tests/test_smart_reminder_lifecycle.py"
+      - "app/services/desktop_auth_service.py"
+      - "app/services/identity_link_service.py"
+      - "app/services/account_deletion_service.py"
+      - "app/services/course_reminder_service.py"
+      - "app/services/android_push_service.py"
+      - "app/services/android_realtime_push_service.py"
+      - "app/repositories/course_progress_repo.py"
       - "app/bot/utils/smart_reminder.py"
       - "app/bot/handlers/course.py"
       - "app/bot/handlers/menu.py"
@@ -53,6 +62,15 @@ on:
       - "tests/test_smart_reminder_preferences.py"
       - "app/api/smart_reminder.py"
       - "app/services/smart_reminder_preferences.py"
+      - "app/services/smart_reminder_lifecycle.py"
+      - "tests/test_smart_reminder_lifecycle.py"
+      - "app/services/desktop_auth_service.py"
+      - "app/services/identity_link_service.py"
+      - "app/services/account_deletion_service.py"
+      - "app/services/course_reminder_service.py"
+      - "app/services/android_push_service.py"
+      - "app/services/android_realtime_push_service.py"
+      - "app/repositories/course_progress_repo.py"
       - "app/bot/utils/smart_reminder.py"
       - "app/bot/handlers/course.py"
       - "app/bot/handlers/menu.py"
@@ -137,7 +155,13 @@ jobs:
             tests.test_course_miniapp_practice_progress_window \
             tests.test_i18n_miniapp_reservation_asgi \
             tests.test_course_miniapp_onboarding \
-            tests.test_bot_menu_localization
+            tests.test_bot_menu_localization \
+            tests.test_desktop_auth_service \
+            tests.test_android_auth_api \
+            tests.test_identity_link_service \
+            tests.test_native_oauth_lifecycle \
+            tests.test_native_oauth_api \
+            tests.test_account_deletion_request
 
   android-jvm-legacy:
     name: Android reminder JVM baseline (Play and Direct)
@@ -206,10 +230,11 @@ jobs:
       - name: Compile and test storage, backfill and preference CAS on both engines
         env:
           SMART_REMINDER_TEST_DATABASE_URL: "postgresql+asyncpg://smart_qa:synthetic-ci-only@127.0.0.1:5432/smart_reminder_qa"
+          NATIVE_ACCOUNT_TEST_DATABASE_URL: "postgresql+asyncpg://smart_qa:synthetic-ci-only@127.0.0.1:5432/smart_reminder_qa"
           BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
           DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
           REDIS_URL: "redis://127.0.0.1:1/0"
           HSK_STAGING_QA_MODE: "1"
         run: |
-          python -m py_compile app/db/models/smart_reminder.py alembic/versions/0133_smart_reminder_storage.py app/services/smart_reminder_legacy_backfill.py app/services/smart_reminder_preferences.py app/api/smart_reminder.py alembic/versions/0134_smart_reminder_mutations.py
-          python -m unittest -v tests.test_smart_reminder_storage tests.test_smart_reminder_legacy_backfill tests.test_smart_reminder_preferences
+          python -m py_compile app/db/models/smart_reminder.py alembic/versions/0133_smart_reminder_storage.py app/services/smart_reminder_legacy_backfill.py app/services/smart_reminder_preferences.py app/api/smart_reminder.py alembic/versions/0134_smart_reminder_mutations.py app/services/smart_reminder_lifecycle.py
+          python -m unittest -v tests.test_smart_reminder_storage tests.test_smart_reminder_legacy_backfill tests.test_smart_reminder_preferences tests.test_smart_reminder_lifecycle tests.test_telegram_identity_link

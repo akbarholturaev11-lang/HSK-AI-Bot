@@ -84,8 +84,16 @@ class AndroidPushService:
         await self.session.commit()
 
     async def unregister(self, *, device: DesktopDevice) -> None:
+        from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
+        lifecycle = SmartReminderLifecycleService(self.session)
+        await lifecycle.lock_user(device.user_id)
+        owner = await self.session.scalar(select(DesktopDevice.user_id).where(
+            DesktopDevice.id == device.id, DesktopDevice.user_id == device.user_id))
+        if owner is None:
+            return
         row = await self.session.get(AndroidPushToken, device.id)
         if row:
+            await lifecycle.invalidate(device.user_id, reason="push_unregistered", device_id=device.id)
             await self.session.delete(row)
             await self.session.commit()
 
@@ -97,10 +105,18 @@ class AndroidPushService:
         timezone_name: str,
         notifications_allowed: bool | None = None,
     ) -> None:
+        from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
+        veto = await SmartReminderLifecycleService(self.session).legacy_veto(
+            device.user_id, "android", device_id=device.id, lock=True)
+        owner = await self.session.scalar(select(DesktopDevice.user_id).where(
+            DesktopDevice.id == device.id, DesktopDevice.user_id == device.user_id,
+            DesktopDevice.platform == "android", DesktopDevice.revoked_at.is_(None)))
+        if owner is None:
+            raise ValueError("android_device_required")
         row = await self.session.get(AndroidPushToken, device.id)
         if row is None:
             return
-        row.study_reminders_enabled = bool(study_reminders_enabled)
+        row.study_reminders_enabled = bool(study_reminders_enabled) and not veto
         row.timezone_name = timezone_name
         # Older builds do not send it; their account notices stay on Telegram.
         if notifications_allowed is not None:
