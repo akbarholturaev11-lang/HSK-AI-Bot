@@ -4,8 +4,9 @@ Provider tugmalari serverdagi konfiguratsiya to'liq bo'lgandagina ko'rinadi
 (fail-closed). Quyida sozlash tartibi keltirilgan; bu hujjat production
 credential'lari yoki real callback hozir tekshirilganini bildirmaydi.
 
-Universal akkaunt yaratish, migratsiya va release tekshiruvlari:
-[`docs/UNIVERSAL_NATIVE_ACCOUNTS.md`](docs/UNIVERSAL_NATIVE_ACCOUNTS.md).
+Universal akkauntning joriy arxitekturasi va saqlanishi shart bo'lgan
+biznes qoidalari: [`docs/UNIVERSAL_NATIVE_ACCOUNTS.md`](docs/UNIVERSAL_NATIVE_ACCOUNTS.md).
+Oldingi universal sign-in release hold tarixiy; hozirgi kod `main`da.
 
 Google va Apple birinchi tasdiqlangan kirishda Telegramsiz yangi HSK AI hisobini
 yaratadi. Avvaldan progress yoki obuna bor bo‘lsa, o‘sha hisobga kirib, boshqa
@@ -19,11 +20,11 @@ aynan ko‘rsatilgan akkauntga ulash alohida tasdiqlanadi. Telegram boshqa HSK A
 hisobiga tegishli bo‘lsa, ulash rad etiladi; hisoblar avtomatik birlashmaydi.
 Bu yo‘l yangi akkaunt ochmaydi va Pro, progress yoki AI limitini yangilamaydi.
 
-Hozirgi Play ilovasida xarid yo‘q. Saytdagi Direct APK va desktop mavjud
-chek/admin tasdiqlash oqimidan foydalanadi. Bu branch `main`/production’ga
-qabul tekshiruvlari tugamaguncha chiqarilmaydi. Staging OAuth tekshiruvida
-staging’ning o‘z origin/callback va provider client sozlamalaridan foydalaning;
-production konfiguratsiyasini sinov uchun o‘zgartirmang.
+Play ilovasida store ichidagi xarid alohida joriy etilmaguncha mavjud
+entitlement ko'rsatiladi; Direct APK va desktop mavjud chek/admin tasdiqlash
+oqimidan foydalanadi. Universal-account kodi `main` va production'da mavjud.
+Kelajakdagi OAuth o'zgarishlarini staging'ning o'z origin/callback/provider
+sozlamalari bilan sinang; production konfiguratsiyasini sinov uchun o'zgartirmang.
 
 Production domeni: `telegram-chinese-bot-production.up.railway.app`
 
@@ -142,11 +143,13 @@ Chrome/Custom Tabs avtomatik handoff'ni cheklasa, sahifada
 `HSK AI ↗` qo'lda bosiladigan havola bor. Desktop callback app'ni
 avtomatik ochmaydi; desktop avvalgi polling holatini yakunlaydi.
 
-**Deployment:** Bu o'zgarishlar faqat `codex/universal-sign-in` branch'ida.
-Provider callback va klient eski production bilan birga yangilanmasdan ishlaydi
-deb taxmin qilmang. Real Google callback, Android return va Apple testlari
-izolatsiyalangan staging ilova muhitida o'tkazilmaguncha production yoki
-`main`'ga chiqarmang.
+**Deployment (yangilangan):** Universal-account implementatsiyasi allaqachon
+`main` va Railway production'da. 2026-10-17/19 dagi branch-specific release
+hold yakunlangan tarixiy tekshiruv bosqichiga tegishli. Loyiha egasi real
+Google/Apple login sinovlari o'tkazilganini tasdiqlagan. Bu yangi OAuth
+konfiguratsiyasi, callback, Android/desktop yoki PWA o'zgarishlari avtomatik
+tasdiqlangan degani emas: yangi reliz uchun staging va real klient sinovlari
+alohida o'tkaziladi.
 
 ---
 
@@ -217,9 +220,10 @@ APPLE_OAUTH_ENABLED=true
 
 ## 3. Tekshirish
 
-Universal kirish release hold tugamaguncha alohida staging muhitini ishlating.
-Railway o'zgaruvchilarini saqlash deploy boshlashi mumkin; production xizmatini
-o'zgartirmang. Staging backend ishga tushgach browser oqimini tekshiring:
+Yangi provider sozlamalarini, callback yoki klient o'zgarishlarini avval alohida
+staging muhitida tekshiring. Railway o'zgaruvchilarini saqlash deploy
+boshlashi mumkin; faqat sinov uchun production xizmatini o'zgartirmang.
+Staging backend ishga tushgach browser oqimini tekshiring:
 
 ```bash
 curl -s "https://YOUR-STAGING-HOST/api/v3/native-auth/providers?platform=macos"

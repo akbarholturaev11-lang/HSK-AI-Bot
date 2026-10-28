@@ -31,15 +31,10 @@ object AppUpdate {
      * How many releases someone has to miss before the profile card stops
      * being enough.
      *
-     * Every release raises `versionCode` by exactly one, so the gap between
-     * the installed code and the published one is the number of releases
-     * skipped. One missed release is ordinary — the card in the profile says
-     * so and that is the end of it. Two means the card has been passed over
-     * at least once, and a learner running a build two releases old is the
-     * one who reports bugs that were fixed weeks ago.
+     * Informational Direct-only banner. This is a versionCode age hint, not
+     * the admin-controlled mandatory gate, which uses verified R2 history.
      */
     const val NUDGE_AFTER_MISSED_RELEASES = 2
-    const val FORCE_UPDATE_AFTER_MISSED_RELEASES = 3
     const val CHECK_CACHE_TTL_MILLIS = 30L * 60L * 1000L
 
     private val json = Json { ignoreUnknownKeys = true }
@@ -116,9 +111,12 @@ object AppUpdate {
     fun isFarBehind(release: UpdateRelease, installedVersionCode: Int): Boolean =
         release.versionCode - installedVersionCode >= NUDGE_AFTER_MISSED_RELEASES
 
-    /** A direct install three or more releases behind cannot enter the app. */
-    fun isMandatoryUpdate(release: UpdateRelease, installedVersionCode: Int): Boolean =
-        release.versionCode - installedVersionCode >= FORCE_UPDATE_AFTER_MISSED_RELEASES
+    /** Uses the same admin-managed gate as Play, with separate Direct delivery. */
+    fun isMandatoryUpdate(
+        release: UpdateRelease,
+        installedVersionCode: Int,
+        minimumSupportedVersionCode: Int?,
+    ): Boolean = AndroidUpdateThreshold.isMandatory(installedVersionCode, release.versionCode, minimumSupportedVersionCode)
 
     /**
      * Whether this release still owes the learner a notification.

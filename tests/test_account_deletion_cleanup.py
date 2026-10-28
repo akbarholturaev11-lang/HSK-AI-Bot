@@ -21,10 +21,44 @@ from app.db.models.portfolio import PortfolioTransaction
 from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
+from app.db.models.smart_reminder import (
+    SmartReminderAttempt, SmartReminderCapability, SmartReminderConsent,
+    SmartReminderJob, SmartReminderPreference,
+)
 from app.repositories.user_repo import UserRepository
 
 
 class AccountDeletionCleanupTests(unittest.IsolatedAsyncioTestCase):
+    async def test_native_account_purge_removes_only_its_smart_state(self):
+        await self._seed_accounts(telegramless=True)
+        start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+        async with self.sessions() as session:
+            for uid in (1, 2):
+                session.add(SmartReminderPreference(user_id=uid, master_enabled=False, revision=5, grant_epoch=2))
+                session.add(SmartReminderConsent(user_id=uid, channel="android", source_key=f"device-{uid}",
+                    device_id=f"device-{uid}", source="user_action", state="off"))
+                session.add(SmartReminderCapability(user_id=uid, device_id=f"device-{uid}"))
+                session.add(SmartReminderJob(id=f"smart-job-{uid}", user_id=uid, local_day=start.date(),
+                    timezone_name="Etc/UTC", day_start_utc=start, day_end_utc=start+timedelta(days=1),
+                    scheduled_at=start+timedelta(hours=12), expires_at=start+timedelta(hours=14),
+                    policy_version="qa-v1", state="unknown"))
+            await session.flush()
+            for uid in (1, 2):
+                session.add(SmartReminderAttempt(job_id=f"smart-job-{uid}", attempt_key=f"qa-attempt-{uid}",
+                    channel="android", device_id=f"device-{uid}", state="unknown",
+                    expires_at=datetime.now(timezone.utc)+timedelta(minutes=10)))
+            await session.commit()
+        async with self.sessions() as session:
+            self.assertTrue(await UserRepository(session).delete_by_user_id(1))
+            await session.commit()
+            for model in (SmartReminderPreference, SmartReminderConsent, SmartReminderCapability,
+                          SmartReminderJob, SmartReminderAttempt):
+                self.assertEqual(len(await self._rows(session, model)), 1)
+            kept = await session.get(SmartReminderPreference, 2)
+            self.assertFalse(kept.master_enabled)
+            self.assertEqual((kept.revision, kept.grant_epoch), (5, 2))
+            self.assertEqual((await self._rows(session, SmartReminderAttempt))[0].state, "unknown")
+
     async def asyncSetUp(self):
         self.engine = create_async_engine(
             "sqlite+aiosqlite:///:memory:", poolclass=StaticPool

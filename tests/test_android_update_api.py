@@ -22,6 +22,11 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
 from app.api.android_update import create_android_update_router
+from app.repositories.bot_setting_repo import BotSettingRepository
+from app.services.android_update_policy_service import (
+    ANDROID_UPDATE_ALLOWED_VERSIONS_KEY, normalize_allowed_versions,
+    minimum_supported_published_version,
+)
 from app.db import models  # noqa: F401
 from app.db.base import Base
 from app.services.android_release_service import (
@@ -100,6 +105,60 @@ class DatabaseBackedTest(unittest.IsolatedAsyncioTestCase):
         )
         self.clients.append(client)
         return client
+
+
+class AndroidPublishedReleaseCountTests(unittest.TestCase):
+    def test_only_published_versions_count_even_when_codes_skip(self):
+        codes = (4, 11, 17, 54)
+        self.assertEqual([minimum_supported_published_version(codes, n) for n in (1, 2, 3, 4)],
+                         [54, 17, 11, 4])
+        self.assertEqual(minimum_supported_published_version((11, 54), 4), None)
+        self.assertEqual(minimum_supported_published_version((11, 54), 1), 54)
+        self.assertIsNone(minimum_supported_published_version((54, 17), 2))
+
+
+class AndroidUpdatePolicyTests(DatabaseBackedTest):
+    def test_default_and_invalid_values_are_bounded(self):
+        self.assertEqual(normalize_allowed_versions(None), 4)
+        for raw in ('', '0', '5', 'four', '-1'):
+            self.assertEqual(normalize_allowed_versions(raw), 4)
+        for allowed in range(1, 5):
+            self.assertEqual(normalize_allowed_versions(str(allowed)), allowed)
+
+    async def test_direct_and_play_thresholds_use_separate_confirmed_histories(self):
+        from unittest.mock import patch
+        from app.services.android_release_manifest_service import AndroidReleaseManifestService
+        from app.services.android_play_release_history_service import AndroidPlayReleaseHistoryService
+
+        async with self.sessions() as db:
+            await BotSettingRepository(db).set(ANDROID_UPDATE_ALLOWED_VERSIONS_KEY, '2')
+            await db.commit()
+        client = await self.make_client()
+        with patch.object(AndroidReleaseManifestService, 'resolve',
+                          return_value=SimpleNamespace(published_version_codes=(5, 22, 60))):
+            response = await client.get('/api/v3/android-update/policy',
+                                        params={'channel': 'direct'})
+        self.assertEqual(response.json(), {'allowed_versions': 2, 'minimum_version_code': 22})
+        with patch.object(AndroidPlayReleaseHistoryService, 'resolve', return_value=(8, 15, 45)):
+            response = await client.get('/api/v3/android-update/policy',
+                                        params={'channel': 'play'})
+        self.assertEqual(response.json(), {'allowed_versions': 2, 'minimum_version_code': 15})
+        response = await client.get('/api/v3/android-update/policy',
+                                    params={'channel': 'invalid'})
+        self.assertEqual(response.status_code, 422)
+
+    async def test_both_clients_share_public_policy_without_apk_details(self):
+        client = await self.make_client()
+        response = await client.get('/api/v3/android-update/policy')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'allowed_versions': 4, 'minimum_version_code': None})
+        self.assertEqual(response.headers['cache-control'], 'no-store')
+        async with self.sessions() as db:
+            await BotSettingRepository(db).set(ANDROID_UPDATE_ALLOWED_VERSIONS_KEY, '2')
+            await db.commit()
+        response = await client.get('/api/v3/android-update/policy')
+        self.assertEqual(response.json(), {'allowed_versions': 2, 'minimum_version_code': None})
+        self.assertNotIn('url', response.text)
 
 
 class SettingTheUpdateUrlTests(DatabaseBackedTest):

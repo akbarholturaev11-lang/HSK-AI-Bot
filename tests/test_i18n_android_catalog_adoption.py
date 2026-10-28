@@ -19,7 +19,7 @@ class AndroidCanonicalCatalogTests(unittest.TestCase):
 
     def test_all_native_ui_resource_files_have_canonical_owners(self):
         expected = read_sources()
-        self.assertEqual(len(expected), 45)
+        self.assertEqual(len(expected), 48)
         self.assertTrue({
             f"android/app/src/main/res/{locale}/play_limits.xml"
             for locale in ("values", "values-ru", "values-tg")
@@ -42,7 +42,7 @@ class AndroidCanonicalCatalogTests(unittest.TestCase):
 
     def test_single_authoring_change_updates_only_its_native_file(self):
         root = self.fixture()
-        self.assertEqual(len(generate(root, check=False)), 45)
+        self.assertEqual(len(generate(root, check=False)), 48)
         self.assertEqual(generate(root, check=True), [])
         path = root / SOURCE / "main/values/strings.xml"
         original = path.read_bytes()
