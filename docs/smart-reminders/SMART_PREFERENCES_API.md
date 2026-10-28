@@ -3,8 +3,9 @@
 This is the P1 task 2.3 interface; execution evidence belongs only to the
 [Master Plan](SMART_REMINDER_MASTER_PLAN.md). No client settings screen uses it
 yet. `dispatch_allowed` and channel `eligible` remain false;
-`legacy_delivery_controlled` remains false until task 2.4's sender/invalidation
-integration. Persisting Smart OFF alone does not establish old-client fencing.
+Server OFF/lifecycle guards are implemented, but `legacy_delivery_controlled`
+remains false until compatible-client/cutover acceptance. Backend suppression
+does not establish control of unknown offline Android installations.
 
 ## Authentication and transactions
 
@@ -80,11 +81,49 @@ owner/revision/nonce and use the same CAS service. Old/unbound/stale callbacks,
 current global OFF and explicit manual time locks refuse mutation. Exact
 callback retries cannot replay legacy ON. Cancel clears only setup/interaction,
 without changing consent/revision. Non-Smart callback data and visible UZ/RU/TJ
-labels stay compatible. Typed legacy time input and other legacy writers remain
-task 2.4 integration work; they receive no Smart authority here.
+labels stay compatible. Typed time input uses the same server revision fence; rejection clears setup
+and returns the existing cancellation message instead of a saved-ON confirmation.
+Legacy repository/device-sync guards cannot clear OFF or advance Smart consent.
+Old Android sync still returns its supported response and updates independent
+zone/account-notice fields; it cannot set the study flag ON under a veto.
 
 Migration 0134 adds only minimal user-owned mutation receipts. Account purge
 removes them; application rollback must retain Smart state and migration
 knowledge. Empty receipt-table downgrade is supported; populated downgrade
 refuses before dropping it. D13's numeric transactional-receipt retention policy
 is still unresolved; this API invents no raw behavior retention period.
+
+## OFF, lifecycle and rollback
+
+- Global OFF advances revision/epoch once, disables existing Telegram-course and
+  Android study flags and invalidates pending Smart authorizations atomically.
+  Endpoint OFF disables only that endpoint's legacy flag; the account epoch
+  conservatively invalidates all old planning snapshots. Time, motivation,
+  weekly summary, app-update and account/payment notice settings are independent.
+- Active leases are cleared, prepared attempts are cancelled and unattempted
+  active jobs are cancelled. Account/day and attempt keys remain reserved.
+  Accepted, in-flight, posted, shown and unknown outcomes are never relabelled as
+  non-display; there is no timeout-based alternative send or physical recall.
+- Logout/device revoke, first detected refresh-token reuse, explicit push
+  unregister and identity-disconnect session revocation invalidate existing
+  state without enrolling a non-Smart account or changing durable consent.
+  Affected capability observations are removed and must be observed again;
+  identity disconnect conservatively removes the account's observations while
+  preserving its permitted current login. Successful refresh does not opt out.
+- First submitted deletion invalidates before the existing commit. Repeated
+  confirmation is idempotent, and canonical purge still removes all owned rows.
+- Legacy server study paths recheck current block/deletion, global/endpoint OFF
+  and known Android study-OS denial. These are vetoes on the existing path,
+  independent of new-dispatch flags. Already-admitted old provider operations
+  and uncontrolled offline posts remain outside a truthful recall guarantee.
+  P2/P4 must establish the durable authorization/provider boundary before
+  enabling new dispatch.
+
+Feature rollback must retain these mandatory vetoes, epochs and reviewed schema
+knowledge. A pre-guard server binary is not a safe rollback image for Smart
+accounts. Disabling the new dispatcher must never bypass legacy OFF guards.
+Minimal preferences/consent/receipt state survives feature rollback until
+canonical deletion; finite job/attempt expiry stops authorization, not evidence
+retention. Capability observations are removed at lifecycle invalidation. D13's
+exact per-class raw/job/attempt/receipt retention periods remain unresolved; no
+numeric cleanup policy or additional behavioral history is introduced here.

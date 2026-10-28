@@ -326,5 +326,9 @@ class IdentityLinkService:
                 .execution_options(synchronize_session=False)
             )
             revoked = max(0, int(outcome.rowcount or 0))
+            if revoked:
+                from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
+                await SmartReminderLifecycleService(self.session).invalidate(
+                    int(user_id), reason="identity_disconnected", clear_capabilities=True)
         await self.session.flush()
         return {"ok": True, "provider": provider, "sessions_revoked": revoked}
