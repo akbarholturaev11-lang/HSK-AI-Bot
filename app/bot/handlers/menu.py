@@ -1,3 +1,4 @@
+from app.bot.utils.smart_reminder import smart_reminder_time_keyboard
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
@@ -105,7 +106,7 @@ async def handle_promo_action_callback(callback: CallbackQuery, state: FSMContex
         await session.commit()
         sent = await callback.message.answer(
             t("course_reminder_setup_msg", lang),
-            reply_markup=reminder_time_keyboard(lang),
+            reply_markup=await smart_reminder_time_keyboard(session, state, user.id, lang),
         )
         await state.update_data(
             **{
@@ -251,7 +252,7 @@ async def handle_reminder_time_button(message: Message, state: FSMContext, sessi
         t("course_reminder_setup_msg", lang),
         chat_id_key=REMINDER_PANEL_CHAT_ID,
         message_id_key=REMINDER_PANEL_MSG_ID,
-        reply_markup=reminder_time_keyboard(lang),
+        reply_markup=await smart_reminder_time_keyboard(session, state, user.id, lang),
     )
 
 
