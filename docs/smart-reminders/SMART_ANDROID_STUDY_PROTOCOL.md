@@ -108,8 +108,9 @@ pre-post decline closes it as `cancelled`. All retain account-day ownership.
 ## Storage, rollout and limits
 
 `0136_smart_android_grants` adds the User/job/attempt-owned grant table with
-unique job/attempt and account/request constraints. Canonical purge cascades;
-populated downgrade refuses removal. The empty-QA initializer registers the
+unique job/attempt and account/request constraints. Canonical account purge
+explicitly deletes its grants before attempts/jobs, even without FK cascades;
+other accounts retain their outcomes. Populated downgrade refuses removal. The empty-QA initializer registers the
 model but defers its DDL to the actual migration. Apply the migration before
 installing any reviewed enabling factory. Do not run the initializer on an
 existing DB or treat local migration tests as a staging backup/restore drill.
