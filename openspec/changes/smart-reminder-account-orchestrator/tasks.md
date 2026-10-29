@@ -39,7 +39,9 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 - [ ] 5.3 Verify actual signed Direct/Play compatible builds and historical APK behavior before per-account migration. Run two-device mixed-build/old offline APK tests; keep unknown old-autonomous accounts excluded from central cross-channel dispatch and record the precise physical-display limit in the Master Plan.
 - [ ] 5.4 Canary one compatible Android device, then eligible Telegram plus two-device accounts only after capability/consent/fencing evidence; run real FCM/OS permission/late hint/unknown ACK/definite non-display fallback checks. Verify one authorized logical job and no blind alternate, and record real-device results and rollback in the Master Plan.
 - [x] 5.5 Consume the shared D15 projection in existing Android WidgetCoordinator/WidgetSnapshot/WidgetStore/WidgetVisualResolver and layout, preserving Direct/Play parity, installed cache decoding, art and normal navigation. Verify resolver/store tests for personal phase, completed-day calm, neutral cold/stale/quiet state, reward-XP exclusion, track/zone changes, late old-account responses and logout; record mapping to shared golden fixtures (36 after owner-approved §§17.46–17.47 follow-up).
-- [ ] 5.6 Validate Android widget pin/resize/refresh/tap, offline/future/expired context, midnight/DST, notification OFF and denied permission, canonical UZ/RU/TJ and rollback in an isolated launcher. Verify passive rendering creates no study intent, provider attempt, permission prompt or learning receipt; document OS refresh limits and distinguish JVM results from real widget/device acceptance.
+- [x] 5.6 Validate Android widget pin/resize/refresh/tap, offline/future/expired context, midnight/DST, notification OFF and denied permission, canonical UZ/RU/TJ and rollback in an isolated launcher. Verify passive rendering creates no study intent, provider attempt, permission prompt or learning receipt; document OS refresh limits and distinguish JVM results from real widget/device acceptance.
+
+  Bounded acceptance: Master Plan §17.49 records the actual isolated launcher/synthetic-cache proof and Glance redraw fix. Signed/real-account/Doze/provider acceptance remains outside this fixture and is not marked passed; next is 5.1 with dispatch OFF.
 
 ## 6. P6 — outcomes, experiments and protected administration
 
@@ -64,6 +66,8 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 - [ ] 9.1 Run affected backend, Android, localization, Admin PWA and account-notice regressions plus staging migration backup/restore; verify source lesson, scoring, auth, entitlement, payment, Play/direct and Telegram SDK contracts remain intact. Record command outputs and refs in the Master Plan.
 - [ ] 9.2 Drill kill-switch rollback during pending, accepted-unknown and explicit-OFF states; verify pending grants expire, no ambiguous replay or blind legacy resume, consent revisions persist and a destructive schema downgrade is refused. Record observed provider/device behavior and remaining limitations.
 - [ ] 9.3 Complete monitored staged canary and real Telegram/two-Android-device acceptance, reconcile all old study senders, experiment guardrails and owner acceptance; record exact commit, CI, staging, device and rollout evidence in the Master Plan before marking P8 or the feature complete.
+
+- [ ] 9.4 **D24 — LAST finishing task:** expand the selected modern panda into truthful beginner/growing/30+ streak/milestone and playful impatient/anxious/recovery/celebration variants after the other functional work. Keep streak age separate from personal daily phase; completed/quiet/unknown states remain calm, and broken-streak/comeback requires real evidence. Add canonical UZ/RU/TJ copy and affected client/renderer checks before final product signoff. Current active work remains 5.6; no extra art generation during it.
 
 ## Workflow follow-up
 
