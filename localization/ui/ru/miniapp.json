@@ -1147,7 +1147,8 @@
     "ui.admin_pwa.androidVersion1": "Только последняя версия",
     "ui.admin_pwa.androidVersion2": "Последние 2 версии",
     "ui.admin_pwa.androidVersion3": "Последние 3 версии",
-    "ui.admin_pwa.androidVersion4": "Последние 4 версии"
+    "ui.admin_pwa.androidVersion4": "Последние 4 версии",
+    "ui.admin_pwa.noticeSmartStudy": "Умное напоминание об уроке"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

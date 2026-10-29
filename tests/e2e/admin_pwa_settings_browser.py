@@ -917,7 +917,7 @@ async def browser_checks(output, *, media_only=False):
                 for language in ('uz','ru','tj'):
                     await page.locator('#locale').select_option(language)
                     await page.locator('[data-action="noticeList"]').click()
-                    await expect(page.locator('[data-notice-key]')).to_have_count(5)
+                    await expect(page.locator('[data-notice-key]')).to_have_count(6)
                     await page.locator('[data-notice-key="daily_goal"]').click()
                     await page.set_viewport_size({'width':390,'height':844})
                     await expect(page.locator('#noticeText')).to_be_visible()

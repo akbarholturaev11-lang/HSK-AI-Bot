@@ -29,7 +29,7 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 ## 4. P3 — Telegram ownership and canary
 
 - [x] 4.1 Make the legacy Telegram course sender consult verified cohort ownership and current master OFF before activating the new study adapter; verify one Telegram study send under two schedulers, old callback/stale OFF, bot block and native-only exclusion with fake Bot integration tests. Document exact cutover/rollback cohort checks.
-- [ ] 4.2 Add Telegram Smart rendering/inbox/CTA through canonical UZ/RU/TJ sources and existing admin template precedence; run catalog `--write` and `--check`, then focused DB roundtrip/language-switch and deep-link/access tests. Reproduce and separately fix the existing `template_service` persistence mismatch only if confirmed by the test; record the finding without changing source lesson/scoring data.
+- [x] 4.2 Add Telegram Smart rendering/inbox/CTA through canonical UZ/RU/TJ sources and existing admin template precedence; run catalog `--write` and `--check`, then focused DB roundtrip/language-switch and deep-link/access tests. Reproduce and separately fix the existing `template_service` persistence mismatch only if confirmed by the test; record the finding without changing source lesson/scoring data.
 - [ ] 4.3 Enable only a verified Telegram-only allowlisted canary after shadow evidence; run real Telegram account/opt-out/D1/locale and rollback checks in authorized staging, record provider acceptance separately from read/learning and save results in the Master Plan. Do not count a code test as real send acceptance.
 
 ## 5. P4 — Android protocol and mixed-build cutover
