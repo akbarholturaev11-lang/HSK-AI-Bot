@@ -5,8 +5,52 @@ This is P4 task 5.1b's dormant backend protocol. The real router constructs a
 disabled service. No production job producer, Android admission reader,
 authoritative complete-learning reader or enabled delivery factory is wired.
 Positive capability, an environment switch, client fields or a pending job
-alone cannot activate it. Android trigger integration is task 5.2; signed,
+alone cannot activate it. Android trigger integration is implemented within
+task 5.2's synthetic/isolated acceptance boundary; signed,
 mixed-build, actual fencing and canary acceptance remain tasks 5.3–5.4.
+
+## Android migration observation and triggers
+
+GET `/api/v3/android/smart-reminder/mode` uses the same native authentication,
+User-first rechecks and no-store response. It creates nothing and returns only
+`ok=true`, integer `version=1`, `dispatch_allowed=false` and a Boolean
+`server_claim_required`. An existing sticky routing row or this device's
+recorded autonomous-disable observation makes it true, even after observation
+expiry. It is neither consent, a cohort attestation nor posting authority.
+
+The client persists true in WidgetStore's current link epoch before reporting
+its autonomous sender disabled. False/missing/expired answers cannot undo that
+local latch. Unknown mode fails closed; a fresh explicit false allows the old
+non-migrated path. Logout/relink clears local account state and requires a new
+live observation. A call already beyond its legacy veto still needs actual
+hold/drain review; this is not a physical recall guarantee.
+
+New data-only FCM hints use `kind=smart_study_reminder`, `version="1"`, a
+canonical lowercase UUID `job_id` and ISO `local_day`. The handler enqueues
+unique network-constrained WorkManager work; it does not perform posting IO
+inside the FCM callback. Periodic and hinted workers share one bridge and the
+same server due/claim identity. A hint cannot select a different due job;
+old-day, malformed and legacy study hints never trigger a new Smart job.
+Cancel removes both periodic and pending hinted work. Payment/account/update
+notice routing is independent.
+
+A per-link durable journal reserves the request before HTTP and records a
+possible unknown outcome before OS IO. The current auth generation, epoch,
+local OFF, observed completed goal, OS study permission, strict version/types,
+job/fence/target binding, day/zone, wall expiry and elapsed-time deadline are
+rechecked before notify. A persisted grant is historical evidence and cannot
+be replayed. Lost responses, crashes, notify exceptions and receipt failures
+never restore the request/day or create another posting attempt. Receipts use
+one immutable ID/outcome and retry under the original current link/session,
+including after OFF/permission loss. Local logout/relink clears this private
+journal; remote deletion follows ordinary auth/session cleanup and cannot
+physically erase an offline device. Automatic authority-evidence pruning
+remains unspecified.
+
+The native transport explicitly serializes required default fields and rejects
+quoted Boolean/integer authority fields. Existing canonical notification copy
+and fresh-access open behavior are reused. The adapter makes no claim of
+shown/read/learning, actual provider delivery or two-device installed acceptance.
 
 ## Authentication and admission
 

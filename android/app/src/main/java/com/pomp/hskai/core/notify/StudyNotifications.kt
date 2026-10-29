@@ -24,9 +24,8 @@ import com.pomp.hskai.widget.WidgetIntents
 /**
  * Study reminders shown on the device itself.
  *
- * These are local: nothing is pushed from a server and no notification token
- * leaves the device. The bot keeps sending its own Telegram reminders — this
- * is a separate opt-in flag; installing a widget never changes the bot setting.
+ * Legacy accounts use the local opt-in path; migrated accounts additionally
+ * require a fresh server grant. Installing a widget never changes consent.
  */
 object StudyNotifications {
 
@@ -114,11 +113,14 @@ object StudyNotifications {
     }
 
     /**
-     * Posts the reminder. Returns false when the system refused it, so the
-     * caller does not record a delivery that never happened.
+     * Invoke notify with an explicit outcome. Success does not prove display.
+     * A thrown notify call remains unknown, never a pre-call decline.
      */
-    fun postReminder(context: Context, reminder: Reminder, variant: Int = 0): Boolean {
-        if (reminder == Reminder.NONE) return false
+    fun postReminder(context: Context, reminder: Reminder, variant: Int = 0): Boolean =
+        postReminderOutcome(context, reminder, variant) == StudyPostOutcome.POSTED_UNVERIFIED
+
+    fun postReminderOutcome(context: Context, reminder: Reminder, variant: Int = 0): StudyPostOutcome {
+        if (reminder == Reminder.NONE) return StudyPostOutcome.DECLINED_BEFORE_POST
         // Repeated inline rather than delegated: this is the guard that keeps
         // the notify() call below legal, and it has to be visible right here.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
@@ -127,23 +129,23 @@ object StudyNotifications {
                 Manifest.permission.POST_NOTIFICATIONS,
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            return false
+            return StudyPostOutcome.DECLINED_BEFORE_POST
         }
-        if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) return false
+        if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) return StudyPostOutcome.DECLINED_BEFORE_POST
 
         val localized = AppLocale.wrap(context)
         val channelId = ensureChannel(localized)
         if (context.getSystemService(NotificationManager::class.java)
                 ?.getNotificationChannel(channelId)?.importance == NotificationManager.IMPORTANCE_NONE
-        ) return false
+        ) return StudyPostOutcome.DECLINED_BEFORE_POST
 
         val titleRes = when (reminder) {
             Reminder.STREAK_AT_RISK -> R.string.notify_streak_title
             Reminder.DAILY_GOAL -> R.string.notify_goal_title
-            Reminder.NONE -> return false
+            Reminder.NONE -> return StudyPostOutcome.DECLINED_BEFORE_POST
         }
         val choices = bodies(reminder)
-        if (choices.isEmpty()) return false
+        if (choices.isEmpty()) return StudyPostOutcome.DECLINED_BEFORE_POST
         val bodyRes = choices[variant.mod(choices.size)]
 
         // Tapping opens the lesson the server says is next. Resolving the link
@@ -175,10 +177,10 @@ object StudyNotifications {
         return try {
             NotificationManagerCompat.from(context)
                 .notify(REMINDER_NOTIFICATION_ID, notification)
-            true
+            StudyPostOutcome.POSTED_UNVERIFIED
         } catch (_: SecurityException) {
             // The permission can be revoked between the check and the post.
-            false
+            StudyPostOutcome.UNKNOWN
         }
     }
 

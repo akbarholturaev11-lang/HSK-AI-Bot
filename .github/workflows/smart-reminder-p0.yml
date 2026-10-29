@@ -34,6 +34,11 @@ on:
       - "alembic/versions/0135_smart_reminder_routing.py"
       - "tests/fixtures/smart_widget_context_v1.json"
       - "scripts/export_smart_widget_goldens.py"
+      - "android/app/src/main/java/com/pomp/hskai/core/notify/**"
+      - "android/app/src/main/java/com/pomp/hskai/data/api/AndroidSmartReminderApi.kt"
+      - "android/app/src/test/java/com/pomp/hskai/core/notify/SmartStudyBridgeTest.kt"
+      - "android/app/src/test/java/com/pomp/hskai/data/api/AndroidSmartReminderApiTest.kt"
+      - "android/app/src/androidTest/java/com/pomp/hskai/core/notify/SmartStudyProtocolTest.kt"
       - "android/app/src/main/java/com/pomp/hskai/widget/**"
       - "android/app/src/main/java/com/pomp/hskai/core/auth/AuthRepository.kt"
       - "android/app/src/main/java/com/pomp/hskai/HskAiApplication.kt"
@@ -141,6 +146,11 @@ on:
       - "alembic/versions/0135_smart_reminder_routing.py"
       - "tests/fixtures/smart_widget_context_v1.json"
       - "scripts/export_smart_widget_goldens.py"
+      - "android/app/src/main/java/com/pomp/hskai/core/notify/**"
+      - "android/app/src/main/java/com/pomp/hskai/data/api/AndroidSmartReminderApi.kt"
+      - "android/app/src/test/java/com/pomp/hskai/core/notify/SmartStudyBridgeTest.kt"
+      - "android/app/src/test/java/com/pomp/hskai/data/api/AndroidSmartReminderApiTest.kt"
+      - "android/app/src/androidTest/java/com/pomp/hskai/core/notify/SmartStudyProtocolTest.kt"
       - "android/app/src/main/java/com/pomp/hskai/widget/**"
       - "android/app/src/main/java/com/pomp/hskai/core/auth/AuthRepository.kt"
       - "android/app/src/main/java/com/pomp/hskai/HskAiApplication.kt"
@@ -296,6 +306,8 @@ jobs:
       - name: Test Play reminders, deep links and offline map authority
         run: |
           ./gradlew --no-daemon testPlayDebugUnitTest \
+            --tests "com.pomp.hskai.core.notify.SmartStudyBridgeTest" \
+            --tests "com.pomp.hskai.data.api.AndroidSmartReminderApiTest" \
             --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
             --tests "com.pomp.hskai.core.notify.ReminderScheduleTest" \
             --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest" \
@@ -305,6 +317,8 @@ jobs:
       - name: Test Direct reminders, deep links and offline map authority
         run: |
           ./gradlew --no-daemon testDirectDebugUnitTest \
+            --tests "com.pomp.hskai.core.notify.SmartStudyBridgeTest" \
+            --tests "com.pomp.hskai.data.api.AndroidSmartReminderApiTest" \
             --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
             --tests "com.pomp.hskai.core.notify.ReminderScheduleTest" \
             --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest" \

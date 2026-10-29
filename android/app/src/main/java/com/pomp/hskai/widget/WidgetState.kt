@@ -90,4 +90,6 @@ data class WidgetSession(
     val contextRevision: Int = 0,
     val contextGeneratedMillis: Long = 0,
     val contextRequestGeneration: Long = 0,
+    val serverStudyOnly: Boolean = false,
+    val studyOperations: List<com.pomp.hskai.core.notify.SmartStudyOperation> = emptyList(),
 )
