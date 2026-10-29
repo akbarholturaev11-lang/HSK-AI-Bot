@@ -44,6 +44,7 @@ class AuthRepository(
     private val onSessionCleared: suspend () -> Unit = {},
     private val onSessionLinked: suspend () -> Unit = {},
     private val onAuthenticated: suspend (String) -> Unit = {},
+    private val onSessionReplacing: suspend () -> Unit = {},
 ) {
 
     private val refreshMutex = Mutex()
@@ -145,6 +146,8 @@ class AuthRepository(
                     // Persist first: the server will never return these again.
                     val accepted = refreshMutex.withLock {
                         if (sessionGeneration != generation) return@withLock false
+                        // Revoke the old account projection even if credential persistence is interrupted.
+                        onSessionReplacing()
                         store.saveRefreshToken(refresh)
                         _signupReferralCode.value = ""
                         sessionGeneration++
@@ -464,9 +467,9 @@ class AuthRepository(
         }
     }
 
-    private data class AuthenticatedSession(val token: String, val generation: Long)
+    internal data class AuthenticatedSession(val token: String, val generation: Long)
 
-    private suspend fun authenticatedSession(): ApiResult<AuthenticatedSession> {
+    internal suspend fun authenticatedSession(): ApiResult<AuthenticatedSession> {
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
@@ -477,8 +480,19 @@ class AuthRepository(
         }
     }
 
-    private suspend fun sessionIsCurrent(generation: Long): Boolean =
+    internal suspend fun sessionIsCurrent(generation: Long): Boolean =
         refreshMutex.withLock { sessionGeneration == generation && accessToken != null }
+
+    internal suspend fun invalidateSessionIfCurrent(generation: Long) {
+        refreshMutex.withLock { if (sessionGeneration == generation) clearLocalSession() }
+    }
+
+    /** Keep the existing auth -> widget-store lock order through cache acceptance. */
+    internal suspend fun withCurrentSession(generation: Long, accept: suspend () -> Unit): Boolean =
+        refreshMutex.withLock {
+            if (sessionGeneration != generation || accessToken == null) false
+            else { accept(); true }
+        }
 
     /**
      * Removes a provider identity.

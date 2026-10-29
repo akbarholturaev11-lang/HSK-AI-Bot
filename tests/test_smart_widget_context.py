@@ -52,6 +52,10 @@ def view(context=None, **kwargs):
 
 
 class WidgetGoldenTests(unittest.TestCase):
+    def test_android_complete_envelopes_match_the_shared_backend_fixtures(self):
+        from scripts.export_smart_widget_goldens import ROOT, TARGET, output
+        self.assertEqual((ROOT / TARGET).read_text(), output())
+
     def test_shared_semantic_goldens(self):
         self.assertEqual(len(GOLDENS["cases"]), 31)
         for case in GOLDENS["cases"]:

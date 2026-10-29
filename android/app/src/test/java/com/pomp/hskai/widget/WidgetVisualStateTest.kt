@@ -1,151 +1,100 @@
 package com.pomp.hskai.widget
 
+import java.time.Instant
+import java.time.ZoneId
 import java.time.ZonedDateTime
+import kotlinx.serialization.json.*
 import org.junit.Assert.*
 import org.junit.Test
 
-/** The one visual-state engine: local clock, today's completion, nothing else. */
+internal object PersonalFixtures {
+    const val EPOCH = "00000000-0000-4000-8000-000000000001"
+    const val BINDING = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    val cases = Json.parseToJsonElement(requireNotNull(javaClass.classLoader?.getResourceAsStream(
+        "smart_widget_context_v1.json")).bufferedReader().readText()).jsonObject.getValue("cases").jsonArray
+    fun raw(name: String = "saved_before"): JsonObject = cases.first {
+        it.jsonObject.getValue("name").jsonPrimitive.content == name
+    }.jsonObject.getValue("context").jsonObject
+    fun now(raw: JsonObject = raw()): ZonedDateTime = Instant.parse(raw.getValue("generated_at").jsonPrimitive.content)
+        .atZone(ZoneId.of(raw["timezone_name"]?.jsonPrimitive?.contentOrNull ?: "Etc/UTC"))
+    fun snapshot(raw: JsonObject = raw(), now: ZonedDateTime = now(raw)) = WidgetSnapshot(
+        now.toInstant().toEpochMilli(), now.toLocalDate().toString(), now.zone.id,
+        raw.getValue("level").jsonPrimitive.content, 6, 500, 7, true, false,
+        dailyXp = 500, goalXp = 20, personalContext = raw)
+    fun session(raw: JsonObject = raw(), now: ZonedDateTime = now(raw)) = WidgetSession(
+        epoch = EPOCH, linked = true, snapshot = snapshot(raw, now), contextBinding = BINDING)
+}
+
 class WidgetVisualStateTest {
-    private val day = ZonedDateTime.parse("2026-09-11T12:00:00+05:00[Asia/Tashkent]")
-    private val key = "3f6c2f0e-0a54-4c1b-9c6e-9a1c2d3e4f50"
-
-    private fun snapshot(complete: Boolean, streak: Int = 3) = WidgetSnapshot(
-        fetchedAtMillis = day.toInstant().toEpochMilli(),
-        localDay = day.toLocalDate().toString(),
-        zoneId = day.zone.id,
-        level = "hsk1",
-        lessonOrder = 2,
-        xp = 80,
-        streak = streak,
-        dayComplete = complete,
-        foundationRequired = false,
-    )
-
-    private fun at(hour: Int, minute: Int) = day.withHour(hour).withMinute(minute)
-
-    /** Every boundary of the local day, from both sides. */
-    private val boundaries = listOf(
-        4 to 59 to WidgetVisualState.MORNING,
-        5 to 0 to WidgetVisualState.MORNING,
-        9 to 59 to WidgetVisualState.MORNING,
-        10 to 0 to WidgetVisualState.DAY,
-        13 to 59 to WidgetVisualState.DAY,
-        14 to 0 to WidgetVisualState.WAITING,
-        17 to 59 to WidgetVisualState.WAITING,
-        18 to 0 to WidgetVisualState.EVENING,
-        19 to 59 to WidgetVisualState.EVENING,
-        20 to 0 to WidgetVisualState.LATE,
-        21 to 59 to WidgetVisualState.LATE,
-        22 to 0 to WidgetVisualState.CRITICAL,
-        23 to 59 to WidgetVisualState.CRITICAL,
-        0 to 0 to WidgetVisualState.MORNING,
-    )
-
-    @Test fun `an unfinished day escalates with the local clock`() {
-        boundaries.forEach { (clock, expected) ->
-            val (hour, minute) = clock
-            val now = at(hour, minute)
-            assertEquals("$hour:$minute", expected, WidgetVisualResolver.timeState(now))
-            assertEquals(
-                "$hour:$minute",
-                expected,
-                WidgetVisualResolver.resolve(snapshot(complete = false), key, now).state,
-            )
+    @Test fun `all 31 backend envelopes retain identical personal meaning`() {
+        assertEquals(31, PersonalFixtures.cases.size)
+        for (case in PersonalFixtures.cases) {
+            val raw = case.jsonObject.getValue("context").jsonObject
+            val name = case.jsonObject.getValue("name").jsonPrimitive.content
+            assertNotNull(name, WidgetPersonalContext.parse(raw))
+            val phase = raw.getValue("phase").jsonPrimitive.content
+            val visual = WidgetVisualResolver.resolve(PersonalFixtures.session(raw), PersonalFixtures.now(raw))
+            assertEquals(name, phase, visual.personalPhase)
+            assertEquals(name, when (phase) {
+                "completed" -> WidgetVisualState.COMPLETED
+                "study_time_reached" -> WidgetVisualState.WAITING
+                else -> WidgetVisualState.DAY
+            }, visual.state)
+            assertFalse(name, visual.state in setOf(WidgetVisualState.LATE, WidgetVisualState.CRITICAL))
         }
     }
 
-    @Test fun `a finished day overrides every time state`() {
-        boundaries.forEach { (clock, _) ->
-            val (hour, minute) = clock
-            assertEquals(
-                "$hour:$minute",
-                WidgetVisualState.COMPLETED,
-                WidgetVisualResolver.resolve(snapshot(complete = true), key, at(hour, minute)).state,
-            )
+    @Test fun `a raw completed flag and reward XP cannot complete personal learning`() {
+        val raw = PersonalFixtures.raw("reward_only_not_complete")
+        val session = PersonalFixtures.session(raw)
+        assertTrue(session.snapshot!!.dayComplete)
+        assertEquals(500, session.snapshot!!.dailyXp)
+        val visual = WidgetVisualResolver.resolve(session, PersonalFixtures.now(raw))
+        assertNotEquals(WidgetVisualState.COMPLETED, visual.state)
+        assertNull(visual.special)
+        val legacy = session.copy(contextBinding = null)
+        assertEquals("neutral", WidgetVisualResolver.resolve(legacy, PersonalFixtures.now(raw)).personalPhase)
+    }
+
+    @Test fun `legacy and unbound caches stay neutral at every global hour`() {
+        val raw = PersonalFixtures.raw()
+        val now = PersonalFixtures.now(raw)
+        for (hour in 0..23) {
+            val visual = WidgetVisualResolver.resolve(PersonalFixtures.snapshot(raw), PersonalFixtures.EPOCH, now.withHour(hour))
+            assertEquals(WidgetVisualState.DAY, visual.state)
+            assertEquals("neutral", visual.personalPhase)
         }
     }
 
-    @Test fun `2330 unfinished is critical and 2330 finished is not`() {
-        val night = at(23, 30)
-        assertEquals(WidgetVisualState.CRITICAL, WidgetVisualResolver.resolve(snapshot(false), key, night).state)
-        assertEquals(WidgetVisualState.COMPLETED, WidgetVisualResolver.resolve(snapshot(true), key, night).state)
-    }
-
-    @Test fun `the new local day opens gently instead of carrying critical over`() {
-        val midnight = day.plusDays(1).withHour(0).withMinute(0)
-        assertEquals(WidgetVisualState.MORNING, WidgetVisualResolver.resolve(snapshot(false), key, midnight).state)
-        assertEquals(WidgetVisualState.MORNING, WidgetVisualResolver.resolve(snapshot(false), key, midnight.withHour(4).withMinute(59)).state)
-    }
-
-    @Test fun `the same wall clock in another zone reads that zone`() {
-        val tashkent = ZonedDateTime.parse("2026-09-11T22:30:00+05:00[Asia/Tashkent]")
-        val london = tashkent.withZoneSameInstant(java.time.ZoneId.of("Europe/London"))
-        assertEquals(WidgetVisualState.CRITICAL, WidgetVisualResolver.timeState(tashkent))
-        assertEquals(WidgetVisualState.EVENING, WidgetVisualResolver.timeState(london))
-    }
-
-    @Test fun `urgency rises through an unfinished day and rests when it is done`() {
-        val order = listOf(
-            WidgetVisualState.MORNING, WidgetVisualState.DAY, WidgetVisualState.WAITING,
-            WidgetVisualState.EVENING, WidgetVisualState.LATE, WidgetVisualState.CRITICAL,
-        )
-        order.zipWithNext().forEach { (earlier, later) ->
-            assertTrue("$earlier -> $later", earlier.urgency < later.urgency)
+    @Test fun `expiry future day and zone changes neutralize personal state`() {
+        val raw = PersonalFixtures.raw()
+        val now = PersonalFixtures.now(raw)
+        val session = PersonalFixtures.session(raw)
+        for (changed in listOf(now.minusNanos(1), now.plusHours(2), now.plusDays(1),
+            now.withZoneSameInstant(ZoneId.of("Asia/Tashkent")))) {
+            assertEquals("neutral", WidgetVisualResolver.resolve(session, changed).personalPhase)
         }
-        assertEquals(0, WidgetVisualState.COMPLETED.urgency)
-        assertEquals(5, WidgetVisualState.CRITICAL.urgency)
     }
 
-    @Test fun `a milestone outranks a finished day and carries the streak`() {
-        val special = WidgetVisualResolver.resolve(snapshot(complete = true, streak = 7), key, at(23, 30))
-        assertEquals(WidgetSpecialState(WidgetSpecialKind.MILESTONE, 7), special.special)
-        assertEquals(WidgetVisualState.COMPLETED, special.state)
-        // Only the round numbers, and only once the day is actually finished.
-        assertNull(WidgetVisualResolver.resolve(snapshot(complete = true, streak = 8), key, day).special)
-        assertNull(WidgetVisualResolver.resolve(snapshot(complete = false, streak = 7), key, day).special)
-        assertNull(WidgetVisualResolver.resolve(null, key, day).special)
-        assertEquals(listOf(7, 30, 50, 100, 365), WidgetVisualResolver.MILESTONE_DAYS)
+    @Test fun `only verified current daily completion can carry a milestone`() {
+        val raw = PersonalFixtures.raw("verified_goal_complete")
+        val visual = WidgetVisualResolver.resolve(PersonalFixtures.session(raw), PersonalFixtures.now(raw))
+        assertEquals(WidgetVisualState.COMPLETED, visual.state)
+        assertEquals(WidgetSpecialState(WidgetSpecialKind.MILESTONE, 7), visual.special)
+        val course = PersonalFixtures.raw("course_complete")
+        assertNull(WidgetVisualResolver.resolve(PersonalFixtures.session(course), PersonalFixtures.now(course)).special)
     }
 
-    @Test fun `a variant is stable for one key one day and one state`() {
+    @Test fun `variants and the existing 28 art choices remain stable`() {
         WidgetVisualState.entries.forEach { state ->
-            val first = WidgetVisualResolver.variantFor(state, key, "2026-09-11")
-            repeat(50) { assertEquals(first, WidgetVisualResolver.variantFor(state, key, "2026-09-11")) }
-            assertTrue("$state -> $first", first in 0 until state.variants)
+            val variants = (1..120).map { day ->
+                val date = PersonalFixtures.now().plusDays(day.toLong()).toLocalDate().toString()
+                val choice = WidgetVisualResolver.variantFor(state, PersonalFixtures.EPOCH, date)
+                assertTrue(choice in 0 until state.variants)
+                assertEquals(choice, WidgetVisualResolver.variantFor(state, PersonalFixtures.EPOCH, date))
+                choice
+            }.toSet()
+            assertEquals(state.variants, variants.size)
         }
-    }
-
-    @Test fun `every day and every key lands inside the state's own range`() {
-        val keys = listOf(key, "uninitialized", "0", "e9b1c0aa-1111-2222-3333-444455556666")
-        WidgetVisualState.entries.forEach { state ->
-            (1..120).forEach { offset ->
-                val date = day.plusDays(offset.toLong()).toLocalDate().toString()
-                keys.forEach { candidate ->
-                    val variant = WidgetVisualResolver.variantFor(state, candidate, date)
-                    assertTrue("$state $candidate $date -> $variant", variant in 0 until state.variants)
-                }
-            }
-        }
-    }
-
-    @Test fun `the hash spreads over days rather than sticking on one drawing`() {
-        // Not a distribution guarantee — only that the panda is not frozen on
-        // the same face for four months, which a broken hash would do.
-        val seen = (1..120).map {
-            WidgetVisualResolver.variantFor(
-                WidgetVisualState.CRITICAL, key, day.plusDays(it.toLong()).toLocalDate().toString(),
-            )
-        }.toSet()
-        assertEquals(WidgetVisualState.CRITICAL.variants, seen.size)
-    }
-
-    @Test fun `resolve picks the variant of the state it resolved`() {
-        val now = at(20, 30)
-        val visual = WidgetVisualResolver.resolve(snapshot(false), key, now)
-        assertEquals(WidgetVisualState.LATE, visual.state)
-        assertEquals(
-            WidgetVisualResolver.variantFor(WidgetVisualState.LATE, key, now.toLocalDate().toString()),
-            visual.variant,
-        )
     }
 }

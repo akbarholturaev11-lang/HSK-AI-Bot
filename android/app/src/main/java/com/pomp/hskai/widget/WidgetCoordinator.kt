@@ -12,14 +12,25 @@ import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.data.repository.CourseMapSnapshot
 import java.time.ZoneId
+import kotlinx.serialization.json.JsonObject
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.Serializable
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface AndroidEventsApi {
+    @GET("api/v3/android/course/map")
+    suspend fun widgetMap(
+        @Header("Authorization") bearer: String,
+        @Query("tz") offsetMinutes: Int,
+        @Query("widget_context_version") version: Int,
+        @Query("widget_context_epoch") epoch: String,
+    ): retrofit2.Response<JsonObject>
+
     @POST("api/v3/android/events")
     suspend fun record(@Header("Authorization") bearer: String, @Body event: AndroidWidgetEvent): retrofit2.Response<EventResponse>
 }
@@ -31,38 +42,42 @@ data class EventResponse(val ok: Boolean = false)
 class WidgetCoordinator(private val app: HskAiApplication, private val eventsApi: AndroidEventsApi) {
     private val refreshMutex = Mutex()
     private val eventsMutex = Mutex()
+    private val bridge by lazy {
+        WidgetRefreshBridge(app.widgetStore, app.authRepository::authenticatedSession,
+            app.authRepository::withCurrentSession, app.authRepository::invalidateSessionIfCurrent,
+            fetch = { token, epoch, offset -> apiCall { eventsApi.widgetMap("Bearer $token", offset, 1, epoch) } })
+    }
 
     suspend fun publish(snapshot: CourseMapSnapshot, epoch: String) {
         if (snapshot.isStale) { render(); return }
-        val map = snapshot.map
-        app.widgetStore.save(
-            WidgetSnapshot(
-                fetchedAtMillis = snapshot.fetchedAtMillis,
-                localDay = map.today?.localDay ?: map.progress.localDate.orEmpty(),
-                zoneId = ZoneId.systemDefault().id,
-                level = map.level,
-                lessonOrder = map.currentLesson?.order,
-                xp = map.progress.xp,
-                streak = map.progress.streak,
-                dayComplete = map.today?.complete ?: false,
-                foundationRequired = map.foundation?.mustComeFirst == true,
-                dailyXp = map.progress.dailyXp,
-                // Zero when the server has no plan for today; the widget then
-                // says nothing about a goal rather than inventing one.
-                goalXp = map.today?.goalXp ?: 0,
-            ),
-            epoch,
-        )
+        app.widgetStore.save(widgetSnapshot(snapshot.map, snapshot.fetchedAtMillis, ZoneId.systemDefault().id), epoch)
         render()
+    }
+
+    suspend fun publishForeground(snapshot: CourseMapSnapshot, epoch: String) {
+        if (snapshot.isStale) {
+            app.widgetStore.invalidateContext(epoch)
+            render()
+            return
+        }
+        val session = app.widgetStore.read()
+        if (!session.linked || session.epoch != epoch) return
+        if (session.contextBinding != null ||
+            GlanceAppWidgetManager(app).getGlanceIds(HskAiSmartWidget::class.java).isNotEmpty()) {
+            // Ordinary UI maps may come from Room. They can invalidate an old
+            // presentation, but only the live session bridge may personalize.
+            app.widgetStore.invalidateContext(epoch)
+            refresh()
+            return
+        }
+        publish(snapshot, epoch)
     }
 
     suspend fun refresh() = refreshMutex.withLock {
         val session = app.widgetStore.read()
         if (session.linked) {
-            when (val result = app.courseRepository.courseMap()) {
-                is ApiResult.Success -> publish(result.value, session.epoch)
-                is ApiResult.Failure -> render()
-            }
+            bridge.refresh()
+            render()
             flushEvents()
         } else render()
     }
