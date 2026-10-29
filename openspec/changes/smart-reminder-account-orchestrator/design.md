@@ -615,3 +615,15 @@ personal evidence is insufficient, not a raw-data retention policy. Prove this i
 read-only SQLite/PostgreSQL fixtures, including old history, duplicate clients,
 reward/open exclusions, midnight/DST, jitter, sparse and mixed-mode cases. Reuse
 shared widget goldens and preserve manual/saved fallback and dispatch OFF.
+
+
+D18 is now approved: minimum 3 matching active days, at least 2/3 of observed
+eligible days in the interval, stable from 5 matches. Define one named approved
+habit preset and explicitly pass it only to the authenticated passive widget
+bridge; pure callers may still request no calibration. Query recent 30 days
+first, extend to 90 only if fewer than 3 eligible distinct days exist; filter
+actual local calendar dates in the pure evaluator. Historical habit selection
+must not reduce today's verified XP used for completion. No Smart activation
+cutoff, new write, dispatch, cadence default or purge is introduced. D19–D21
+configure future cadence/retention work in the Master Plan; they are not an
+instruction to activate providers or delete existing XP.
