@@ -3,7 +3,7 @@
 import unittest
 from datetime import datetime, timedelta, timezone
 
-from sqlalchemy import MetaData, event, select
+from sqlalchemy import MetaData, event, select, text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
@@ -22,7 +22,7 @@ from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
 from app.db.models.smart_reminder import (
-    SmartReminderAttempt, SmartReminderCapability, SmartReminderConsent,
+    SmartReminderAndroidGrant, SmartReminderAttempt, SmartReminderCapability, SmartReminderConsent,
     SmartReminderJob, SmartReminderPreference,
 )
 from app.repositories.user_repo import UserRepository
@@ -30,6 +30,14 @@ from app.repositories.user_repo import UserRepository
 
 class AccountDeletionCleanupTests(unittest.IsolatedAsyncioTestCase):
     async def test_native_account_purge_removes_only_its_smart_state(self):
+        await self._assert_native_smart_purge()
+
+    async def test_native_account_purge_explicitly_removes_grants_without_cascades(self):
+        async with self.engine.connect() as connection:
+            await connection.execute(text("PRAGMA foreign_keys=OFF"))
+        await self._assert_native_smart_purge()
+
+    async def _assert_native_smart_purge(self):
         await self._seed_accounts(telegramless=True)
         start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
         async with self.sessions() as session:
@@ -44,20 +52,33 @@ class AccountDeletionCleanupTests(unittest.IsolatedAsyncioTestCase):
                     policy_version="qa-v1", state="unknown"))
             await session.flush()
             for uid in (1, 2):
-                session.add(SmartReminderAttempt(job_id=f"smart-job-{uid}", attempt_key=f"qa-attempt-{uid}",
+                session.add(SmartReminderAttempt(id=f"smart-attempt-{uid}", job_id=f"smart-job-{uid}", attempt_key=f"qa-attempt-{uid}",
                     channel="android", device_id=f"device-{uid}", state="unknown",
                     expires_at=datetime.now(timezone.utc)+timedelta(minutes=10)))
+            await session.flush()
+            for uid in (1, 2):
+                session.add(SmartReminderAndroidGrant(id=f"smart-grant-{uid}", user_id=uid,
+                    job_id=f"smart-job-{uid}", attempt_id=f"smart-attempt-{uid}",
+                    device_id=f"device-{uid}", session_id=f"session-{uid}",
+                    local_epoch=f"qa-epoch-{uid}", claim_request_id=f"qa-request-{uid}",
+                    policy_version="qa-v1", admission_sha256="a"*64, grant_epoch=2,
+                    preference_revision=5, capability_generation=1, cohort_generation=1,
+                    issued_at=start, expires_at=start+timedelta(minutes=1),
+                    receipt_id=f"qa-receipt-{uid}", receipt_outcome="client_outcome_unknown",
+                    received_at=start+timedelta(minutes=2)))
             await session.commit()
         async with self.sessions() as session:
             self.assertTrue(await UserRepository(session).delete_by_user_id(1))
             await session.commit()
             for model in (SmartReminderPreference, SmartReminderConsent, SmartReminderCapability,
-                          SmartReminderJob, SmartReminderAttempt):
+                          SmartReminderJob, SmartReminderAttempt, SmartReminderAndroidGrant):
                 self.assertEqual(len(await self._rows(session, model)), 1)
             kept = await session.get(SmartReminderPreference, 2)
             self.assertFalse(kept.master_enabled)
             self.assertEqual((kept.revision, kept.grant_epoch), (5, 2))
             self.assertEqual((await self._rows(session, SmartReminderAttempt))[0].state, "unknown")
+            kept_grant = (await self._rows(session, SmartReminderAndroidGrant))[0]
+            self.assertEqual((kept_grant.user_id, kept_grant.receipt_outcome), (2, "client_outcome_unknown"))
 
     async def asyncSetUp(self):
         self.engine = create_async_engine(

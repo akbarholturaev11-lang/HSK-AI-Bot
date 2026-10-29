@@ -202,3 +202,40 @@ class SmartReminderAttempt(Base):
     resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     reason_code: Mapped[str | None] = mapped_column(String(64))
+
+
+class SmartReminderAndroidGrant(Base):
+    """One committed issuance tombstone; expiry never permits a new grant."""
+
+    __tablename__ = "smart_reminder_android_grants"
+    __table_args__ = (
+        UniqueConstraint("job_id", name="uq_smart_android_grant_job"),
+        UniqueConstraint("attempt_id", name="uq_smart_android_grant_attempt"),
+        UniqueConstraint("user_id", "claim_request_id", name="uq_smart_android_grant_request"),
+        CheckConstraint("grant_epoch >= 0 AND preference_revision >= 0 AND capability_generation >= 1 AND cohort_generation >= 1", name="versions"),
+        CheckConstraint("expires_at > issued_at", name="expiry"),
+        CheckConstraint("length(admission_sha256) = 64", name="admission_binding"),
+        CheckConstraint("receipt_outcome IS NULL OR receipt_outcome IN ('client_declined_before_post', 'client_posted_unverified', 'client_outcome_unknown')", name="receipt_outcome"),
+        CheckConstraint("(receipt_id IS NULL AND receipt_outcome IS NULL AND received_at IS NULL) OR (receipt_id IS NOT NULL AND receipt_outcome IS NOT NULL AND received_at IS NOT NULL AND received_at >= issued_at)", name="receipt_pair"),
+        Index("ix_smart_android_grant_user", "user_id"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_id)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    job_id: Mapped[str] = mapped_column(ForeignKey("smart_reminder_jobs.id", ondelete="CASCADE"))
+    attempt_id: Mapped[str] = mapped_column(ForeignKey("smart_reminder_attempts.id", ondelete="CASCADE"))
+    device_id: Mapped[str | None] = mapped_column(ForeignKey("desktop_devices.id", ondelete="SET NULL"))
+    session_id: Mapped[str | None] = mapped_column(ForeignKey("desktop_sessions.id", ondelete="SET NULL"))
+    local_epoch: Mapped[str] = mapped_column(String(36))
+    claim_request_id: Mapped[str] = mapped_column(String(36))
+    policy_version: Mapped[str] = mapped_column(String(64))
+    admission_sha256: Mapped[str] = mapped_column(String(64))
+    grant_epoch: Mapped[int] = mapped_column(Integer)
+    preference_revision: Mapped[int] = mapped_column(Integer)
+    capability_generation: Mapped[int] = mapped_column(Integer)
+    cohort_generation: Mapped[int] = mapped_column(Integer)
+    issued_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    receipt_id: Mapped[str | None] = mapped_column(String(36))
+    receipt_outcome: Mapped[str | None] = mapped_column(String(32))
+    received_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
