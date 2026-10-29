@@ -111,7 +111,7 @@ envelope contains only selected real Telegram destination and current safe
 course/lesson identity. No production callback is registered. Task 4.2 adds the dormant
 `smart_reminder_telegram_content.py` adapter: immediately after fresh target/access
 policy, render current account language and the existing DB template snapshot
-under User, then recheck the finite lease before the in-flight marker. The
+under User, then re-evaluate current policy and the finite lease before the in-flight marker. The
 injected Bot helper receives this content only after SQL commits.
 
 The canonical UZ/RU/TJ `smart_study` default uses only the validated lesson

@@ -2,7 +2,7 @@
 import unittest
 import os
 import tempfile
-from datetime import timedelta
+from datetime import time, timedelta
 from functools import partial
 from types import SimpleNamespace
 from urllib.parse import parse_qs, urlsplit
@@ -13,6 +13,7 @@ from sqlalchemy import select, update
 from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.notification_template import NotificationTemplate
 from app.db.models.user import User
+from app.db.models.smart_reminder import SmartReminderPreference
 from app.services.course_notification_service import CourseNotificationService
 from app.services.notification_template_service import KEY_SMART_STUDY, default_text
 from app.services.smart_reminder_preferences import SmartReminderError, SmartReminderPreferencesService
@@ -160,6 +161,24 @@ class ContentChecks:
             self.assertEqual((await self.dispatch(lease)).reason, "telegram_lease_lost")
         self.bot.send_message.assert_not_called()
         self.assertEqual((await self.rows(ATTEMPT))[0]["state"], "prepared")
+
+    async def test_quiet_window_crossed_during_template_read_vetoes_still_valid_lease(self):
+        async with self.sessions.begin() as s:
+            await s.execute(update(SmartReminderPreference).where(SmartReminderPreference.user_id == 1)
+                .values(quiet_start=time(14,1), quiet_end=time(15)))
+        await self.active()
+        planned = await self.prepare()
+        self.tick = self.tick.replace(hour=14)
+        lease = await self.claim(planned.job_id, lease_for=timedelta(minutes=5))
+        self.assertEqual(lease.reason, "telegram_claimed")
+        async def late(*args):
+            content = await render_telegram_content(*args)
+            self.tick += timedelta(minutes=2)
+            return content
+        with patch("app.services.smart_reminder_telegram.render_telegram_content", side_effect=late):
+            result = await self.dispatch(lease)
+        self.assertEqual(result.state, "cancelled")
+        self.bot.send_message.assert_not_called()
 
     async def test_track_change_after_claim_never_renders_or_sends_old_lesson(self):
         lease = await self.planned()
