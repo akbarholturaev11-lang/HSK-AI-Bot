@@ -21,7 +21,7 @@ class AllLocalCatalogTests(unittest.TestCase):
 
     def test_all_63_bundled_artifacts_are_current(self):
         outputs = output_files()
-        self.assertEqual(len(outputs), 66)
+        self.assertEqual(len(outputs), 69)
         self.assertEqual(generate(check=True), [])
         for path in outputs:
             self.assertTrue(path.startswith(("android/", "desktop/", "app/")))
@@ -37,7 +37,7 @@ class AllLocalCatalogTests(unittest.TestCase):
 
     def test_build_is_deterministic_and_reports_output_drift(self):
         root = self.fixture()
-        self.assertEqual(len(generate(root, check=False)), 66)
+        self.assertEqual(len(generate(root, check=False)), 69)
         self.assertEqual(generate(root, check=True), [])
         target = root / "app/bot/generated/bot_i18n.py"
         target.write_text("stale")

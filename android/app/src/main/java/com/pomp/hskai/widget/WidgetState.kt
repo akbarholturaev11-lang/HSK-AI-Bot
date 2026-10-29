@@ -2,8 +2,9 @@ package com.pomp.hskai.widget
 
 import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
-/** No credentials, identifiers, lesson content or access grants in this cache. */
+/** No credentials, raw account IDs, private lesson content or access grants in this cache. */
 @Serializable
 data class WidgetSnapshot(
     val fetchedAtMillis: Long,
@@ -25,6 +26,8 @@ data class WidgetSnapshot(
      */
     val dailyXp: Int = 0,
     val goalXp: Int = 0,
+    /** Strictly validated passive allowlist; never an auth or notification grant. */
+    val personalContext: JsonElement? = null,
 )
 
 /**
@@ -35,6 +38,16 @@ data class WidgetSnapshot(
  * what stops an expired cache from being read as a mood.
  */
 object WidgetStateResolver {
+    fun resolve(session: WidgetSession, now: ZonedDateTime = ZonedDateTime.now()): WidgetAccess {
+        val base = resolve(session.linked, session.snapshot, now)
+        if (base != WidgetAccess.ACTIVE) return base
+        val personal = WidgetPersonalContext.current(session, now)
+        return when {
+            personal?.phase == "unavailable" -> WidgetAccess.STALE
+            personal?.action == "foundation" -> WidgetAccess.FOUNDATION
+            else -> base
+        }
+    }
     fun resolve(
         linked: Boolean,
         snapshot: WidgetSnapshot?,
@@ -73,4 +86,8 @@ data class WidgetSession(
     val onboardingOffered: Boolean = false,
     val lastInstallPromptDay: String? = null,
     val events: List<AndroidWidgetEvent> = emptyList(),
+    val contextBinding: String? = null,
+    val contextRevision: Int = 0,
+    val contextGeneratedMillis: Long = 0,
+    val contextRequestGeneration: Long = 0,
 )

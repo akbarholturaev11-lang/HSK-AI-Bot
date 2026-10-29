@@ -12,6 +12,10 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import java.time.ZonedDateTime
+
+internal data class WidgetRefreshTicket(val epoch: String, val generation: Long)
 
 private val Context.widgetDataStore by preferencesDataStore("pomp_smart_widget")
 
@@ -45,10 +49,59 @@ class WidgetStore(private val dataStore: DataStore<Preferences>) {
 
     suspend fun save(snapshot: WidgetSnapshot, epoch: String) = mutex.withLock {
         change {
-            if (it.linked && it.epoch == epoch &&
+            if (it.linked && it.epoch == epoch && it.contextBinding == null &&
                 snapshot.fetchedAtMillis >= (it.snapshot?.fetchedAtMillis ?: 0)
-            ) it.copy(snapshot = snapshot) else it
+            ) it.copy(snapshot = snapshot.copy(personalContext = null)) else it
         }
+    }
+
+    internal suspend fun beginRefresh(epoch: String): WidgetRefreshTicket? = mutex.withLock {
+        var ticket: WidgetRefreshTicket? = null
+        change { old ->
+            if (!old.linked || old.epoch != epoch || old.contextRequestGeneration == Long.MAX_VALUE) old
+            else {
+                ticket = WidgetRefreshTicket(epoch, old.contextRequestGeneration + 1)
+                old.copy(contextRequestGeneration = old.contextRequestGeneration + 1)
+            }
+        }
+        ticket
+    }
+
+    /** A known foreground change revokes pending older projections, without relinking. */
+    internal suspend fun invalidateContext(epoch: String) = mutex.withLock {
+        change { old ->
+            if (!old.linked || old.epoch != epoch) old
+            else old.copy(snapshot = null, contextRequestGeneration =
+                if (old.contextRequestGeneration == Long.MAX_VALUE) Long.MAX_VALUE else old.contextRequestGeneration + 1)
+        }
+    }
+
+    internal suspend fun failedRefresh(ticket: WidgetRefreshTicket) = mutex.withLock {
+        change { old -> if (old.epoch == ticket.epoch && old.contextRequestGeneration == ticket.generation)
+            old.copy(snapshot = null) else old }
+    }
+
+    /** Only the live, generation-checked bridge calls this; a cache cannot establish an owner. */
+    internal suspend fun savePersonal(snapshot: WidgetSnapshot, raw: JsonElement?, ticket: WidgetRefreshTicket,
+                                     now: ZonedDateTime, clock: () -> ZonedDateTime = { now }): Boolean = mutex.withLock {
+        var saved = false
+        val c = WidgetPersonalContext.parse(raw)
+        change { old ->
+            when {
+                !old.linked || old.epoch != ticket.epoch || old.contextRequestGeneration != ticket.generation -> old
+                raw == null -> { saved = true; old.copy(snapshot = snapshot.copy(personalContext = null)) }
+                c == null -> old.copy(snapshot = null)
+                old.contextBinding != null && old.contextBinding != c.binding -> old.copy(snapshot = null)
+                c.revision < old.contextRevision || c.generatedMillis < old.contextGeneratedMillis -> old
+                !c.current(snapshot, ticket.epoch, clock()) -> old.copy(snapshot = null)
+                else -> {
+                    saved = true
+                    old.copy(snapshot = snapshot.copy(personalContext = raw), contextBinding = c.binding,
+                             contextRevision = c.revision, contextGeneratedMillis = c.generatedMillis)
+                }
+            }
+        }
+        saved
     }
 
     suspend fun setReminder(enabled: Boolean) = mutex.withLock {

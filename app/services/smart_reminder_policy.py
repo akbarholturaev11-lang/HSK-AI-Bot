@@ -1,12 +1,13 @@
-"""Pure, deterministic study-time simulation. Nothing here grants delivery.
+"""Pure, deterministic study-time policy. Nothing here grants delivery.
 
-The context adapter supplies fresh canonical facts. No scheduler/API consumes
-this policy yet; D09 habit confidence is deliberately unconfigured by default.
+The context adapter supplies fresh canonical facts. Calibration is explicit;
+the authenticated passive widget uses the D16–D18 approved interval preset.
+Reminder cadence/dispatch activation remains separately gated.
 """
-from collections import Counter
 from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta, timezone
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+from fractions import Fraction
 
 
 POLICY_VERSION = "smart-shadow-v1"
@@ -23,13 +24,30 @@ class VerifiedStudy:
 
 @dataclass(frozen=True)
 class HabitCalibration:
-    """Explicit simulation input, not owner approval or a production setting."""
+    """Explicit versioned confidence; no caller silently enables calibration."""
     version: str
     minimum_learning_days: int
+    window_minutes: int = 60
+    minimum_cluster_share: Fraction = Fraction(2, 3)
+    stable_learning_days: int = 5
+    recent_calendar_days: int = 30
+    extended_calendar_days: int = 90
 
     def __post_init__(self):
         if not self.version or type(self.minimum_learning_days) is not int or self.minimum_learning_days < 2:
             raise ValueError("Explicit version and multiple learning days required")
+        if (type(self.window_minutes) is not int or not 0 < self.window_minutes < 720 or
+                not isinstance(self.minimum_cluster_share, Fraction) or not 0 < self.minimum_cluster_share <= 1 or
+                type(self.stable_learning_days) is not int or self.stable_learning_days < self.minimum_learning_days or
+                type(self.recent_calendar_days) is not int or self.recent_calendar_days < self.stable_learning_days or
+                type(self.extended_calendar_days) is not int or self.extended_calendar_days < self.recent_calendar_days):
+            raise ValueError("Explicit coherent interval, confidence and calendar windows required")
+
+
+# D16–D18 owner-approved. Only consumers explicitly passing this preset adapt;
+# it grants no consent, cadence, notification or provider authority.
+APPROVED_HABIT_CALIBRATION = HabitCalibration("smart-habit-interval-v1", 3)
+
 
 
 @dataclass(frozen=True)
@@ -123,6 +141,37 @@ def _quiet(clock: time, start: time | None, end: time | None) -> bool:
     return start <= clock < end if start < end else clock >= start or clock < end
 
 
+def _study_day_votes(context, studies, zone, calibration):
+    """One original accepted completion minute per distinct local active day.
+
+    No activation/preference timestamp participates. The calendar window includes
+    today, and future/invalid observations cannot make a sparse history sufficient.
+    """
+    now = _aware_utc(context.observed_at)
+    oldest = now.astimezone(zone).date() - timedelta(days=calibration.extended_calendar_days - 1)
+    days = {}
+    for study in sorted(studies, key=lambda s: (s.accepted_at, s.reference)):
+        if (study.activity_type not in {"lesson", "test", "training"} or
+                type(study.xp) is not int or study.xp <= 0 or _aware_utc(study.accepted_at) > now):
+            continue
+        local = study.accepted_at.astimezone(zone)
+        if local.date() >= oldest:
+            days.setdefault(local.date(), local.hour * 60 + local.minute)
+    recent_start = now.astimezone(zone).date() - timedelta(days=calibration.recent_calendar_days - 1)
+    recent = {day: minute for day, minute in days.items() if day >= recent_start}
+    return recent, days
+
+
+def habit_history_needs_extension(context, calibration):
+    if context.time_mode != "auto" or context.coverage_limits or not context.timezone_name:
+        return False
+    try:
+        recent, _ = _study_day_votes(context, context.studies, ZoneInfo(context.timezone_name), calibration)
+    except (ValueError, ZoneInfoNotFoundError):
+        return False
+    return len(recent) < calibration.minimum_learning_days
+
+
 def _personal_time(context, studies, zone, calibration):
     if context.time_mode == "manual_locked":
         return context.manual_time, "manual", "manual_lock"
@@ -133,21 +182,33 @@ def _personal_time(context, studies, zone, calibration):
         return *fallback, "habit_threshold_unconfigured"
     if context.coverage_limits:
         return *fallback, "history_coverage_limited"
-    # One vote per observed local learning day. Repeated practice/XP cannot
-    # outweigh several days. Use an actual observed minute, not hour bins or
-    # a linear average that turns 23:59 and 00:01 into noon.
-    days = {}
-    for study in sorted(studies, key=lambda s: (s.accepted_at, s.reference)):
-        local = study.accepted_at.astimezone(zone)
-        days.setdefault(local.date(), time(local.hour, local.minute))
+    recent, extended = _study_day_votes(context, studies, zone, calibration)
+    days = recent if len(recent) >= calibration.minimum_learning_days else extended
     if len(days) < calibration.minimum_learning_days:
         return *fallback, "sparse_learning_days"
-    votes = Counter(days.values()).most_common()
-    if len(votes) > 1 and votes[0][1] == votes[1][1]:
-        return *fallback, "habit_ambiguous"
-    if votes[0][1] < calibration.minimum_learning_days:
+    minutes = list(days.values())
+    # Sliding circular windows avoid clock-bin edges and join 23:59 with 00:01.
+    # Keep distinct daily votes even when several days share one exact minute.
+    windows = {frozenset(i for i, minute in enumerate(minutes)
+                        if (minute - anchor) % 1440 <= calibration.window_minutes)
+               for anchor in minutes}
+    support = max(map(len, windows))
+    best = [members for members in windows if len(members) == support]
+    if support < calibration.minimum_learning_days:
         return *fallback, "sparse_matching_days"
-    return votes[0][0], "habit", "observed_learning_minute"
+    if Fraction(support, len(minutes)) < calibration.minimum_cluster_share:
+        return *fallback, "habit_low_concentration"
+    if len(best) != 1:
+        return *fallback, "habit_ambiguous"
+    cluster = [minutes[i] for i in sorted(best[0])]
+    def distance(a, b):
+        return min((a-b) % 1440, (b-a) % 1440)
+    # An observed circular medoid, never a linear midnight average. In a real
+    # median tie prefer the newest day's observed minute for a stable tie-break.
+    representative = min(cluster, key=lambda minute: (sum(distance(minute, other) for other in cluster),
+                                                     distance(minute, cluster[-1]), minute))
+    confidence = "stable" if support >= calibration.stable_learning_days else "provisional"
+    return time(representative // 60, representative % 60), "habit", "observed_learning_interval_" + confidence
 
 
 def evaluate(context: PolicyContext, *, calibration: HabitCalibration | None = None,

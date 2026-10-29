@@ -445,7 +445,7 @@ private fun AppRoot(
             }
             LaunchedEffect(courseState.snapshot, widgetEpoch, widgetTheme) {
                 val epoch = widgetEpoch ?: return@LaunchedEffect
-                courseState.snapshot?.let { app.widgetCoordinator.publish(it, epoch) }
+                courseState.snapshot?.let { app.widgetCoordinator.publishForeground(it, epoch) }
             }
             DisposableEffect(widgetLifecycle) {
                 val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
@@ -1074,7 +1074,7 @@ private fun AppRoot(
                         val epoch = app.widgetStore.read().epoch
                         val fresh = (app.courseRepository.courseMap() as? com.pomp.hskai.core.network.ApiResult.Success)?.value
                         val map = fresh?.takeUnless { it.isStale }?.map
-                        if (fresh != null) app.widgetCoordinator.publish(fresh, epoch)
+                        if (fresh != null) app.widgetCoordinator.publishForeground(fresh, epoch)
                         if (map == null || map.foundation?.mustComeFirst == true) {
                             courseViewModel.load()
                             onDestinationConsumed()
