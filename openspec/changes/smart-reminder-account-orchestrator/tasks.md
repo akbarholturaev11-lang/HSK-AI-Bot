@@ -65,6 +65,8 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 - [ ] 9.2 Drill kill-switch rollback during pending, accepted-unknown and explicit-OFF states; verify pending grants expire, no ambiguous replay or blind legacy resume, consent revisions persist and a destructive schema downgrade is refused. Record observed provider/device behavior and remaining limitations.
 - [ ] 9.3 Complete monitored staged canary and real Telegram/two-Android-device acceptance, reconcile all old study senders, experiment guardrails and owner acceptance; record exact commit, CI, staging, device and rollout evidence in the Master Plan before marking P8 or the feature complete.
 
+- [ ] 9.4 **D24 — LAST finishing task:** expand the selected modern panda into truthful beginner/growing/30+ streak/milestone and playful impatient/anxious/recovery/celebration variants after the other functional work. Keep streak age separate from personal daily phase; completed/quiet/unknown states remain calm, and broken-streak/comeback requires real evidence. Add canonical UZ/RU/TJ copy and affected client/renderer checks before final product signoff. Current active work remains 5.6; no extra art generation during it.
+
 ## Workflow follow-up
 
 - Archive this OpenSpec change only after implementation and the project's acceptance gates have actually passed. Update `PROJECT_MEMORY.md` only for durable implemented architecture, schema and business invariants.
