@@ -13,7 +13,7 @@ from app.db.models.course_progress import CourseProgress
 from app.db.models.desktop import DesktopDevice
 from app.db.models.smart_reminder import (
     SmartReminderAttempt, SmartReminderCapability, SmartReminderConsent,
-    SmartReminderJob, SmartReminderPreference,
+    SmartReminderJob, SmartReminderPreference, SmartReminderRouting,
 )
 from app.db.models.user import User
 from app.services.smart_reminder_legacy_evidence import KNOWN_ACCOUNT_STATES
@@ -78,7 +78,7 @@ class SmartReminderLifecycleService:
                     AndroidPushToken.device_id.in_(devices)).values(study_reminders_enabled=False))
 
     async def legacy_veto(self, user_id, channel, *, device_id=None, lock=False):
-        """Fresh OFF veto only; allowing legacy does not grant central dispatch."""
+        """Fresh configuration OFF veto; allowing legacy grants no dispatch."""
         with self.session.no_autoflush:
             if lock:
                 await self.lock_user(user_id)
@@ -121,3 +121,12 @@ class SmartReminderLifecycleService:
                     r["state"] == "off" and not r["source"].startswith("legacy_") and r["source_key"] != source_key
                     for r in rows)
             return any(r["state"] == "off" for r in rows)
+
+    async def legacy_send_veto(self, user_id, channel, *, device_id=None):
+        """Routing affects sends, never silently edits consent/settings mirrors."""
+        if await self.legacy_veto(user_id, channel, device_id=device_id):
+            return True
+        with self.session.no_autoflush:
+            # Sticky even when review expires or the new switch is off.
+            return await self.session.scalar(select(SmartReminderRouting.user_id).where(
+                SmartReminderRouting.user_id == user_id)) is not None
