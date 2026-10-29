@@ -105,6 +105,55 @@ class AuthRepositoryTest {
     private fun repository(api: AndroidAuthApi, store: CredentialStore) =
         AuthRepository(api, store, appVersion = "1.0.0", now = { clock })
 
+    @Test fun `widget privacy fence precedes new credentials even when persistence is interrupted`() = runTest {
+        var cleared = false
+        var linked = false
+        val backing = FakeCredentialStore(storedRefresh = "old-account")
+        val interrupted = object : CredentialStore by backing {
+            override suspend fun saveRefreshToken(token: String) {
+                assertTrue("Old widget must be cleared before new credentials persist", cleared)
+                throw IllegalStateException("simulated credential interruption")
+            }
+        }
+        val api = object : FakeAuthApi() {
+            override suspend fun linkStatus(body: LinkStatusRequest): Response<LinkStatusResponse> =
+                Response.success(LinkStatusResponse(ok = true, status = "linked", accessToken = "new-access",
+                    refreshToken = "new-refresh", accessExpiresIn = 900))
+        }
+        val repository = AuthRepository(api, interrupted, "test", now = { clock },
+            onSessionReplacing = { cleared = true }, onSessionLinked = { linked = true })
+        try { repository.pollLink(pendingLink()); error("Expected interruption") }
+        catch (expected: IllegalStateException) { assertEquals("simulated credential interruption", expected.message) }
+        assertTrue(cleared)
+        assertTrue(!linked)
+        assertTrue(backing.savedTokens.isEmpty())
+    }
+
+    @Test fun `an old widget rejection cannot clear a replacement authenticated session`() = runTest {
+        val store = FakeCredentialStore(storedRefresh = "refresh-A")
+        val api = object : FakeAuthApi() {
+            override suspend fun refresh(body: RefreshRequest): Response<RefreshResponse> =
+                Response.success(RefreshResponse(ok = true, accessToken = "access-" + body.refreshToken,
+                    accessExpiresIn = 900, refreshToken = "rotated-" + body.refreshToken))
+        }
+        val repository = repository(api, store)
+        val old = repository.authenticatedSession().success()
+        repository.invalidateSession()
+        store.storedRefresh = "refresh-B"
+        val replacement = repository.authenticatedSession().success()
+        assertTrue(old.generation != replacement.generation)
+        repository.invalidateSessionIfCurrent(old.generation)
+        assertTrue(repository.sessionIsCurrent(replacement.generation))
+        var accepted = false
+        assertTrue(repository.withCurrentSession(replacement.generation) { accepted = true })
+        assertTrue(accepted)
+        assertTrue(!repository.withCurrentSession(old.generation) { error("Stale acceptance") })
+        assertEquals(replacement.token, repository.authenticatedSession().success().token)
+        repository.invalidateSessionIfCurrent(replacement.generation)
+        assertTrue(!repository.sessionIsCurrent(replacement.generation))
+        assertNull(store.storedRefresh)
+    }
+
     @Test
     fun `link start surfaces the display code without leaking the polling secret into it`() =
         runTest {

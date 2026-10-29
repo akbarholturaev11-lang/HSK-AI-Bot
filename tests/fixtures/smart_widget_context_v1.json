@@ -598,6 +598,244 @@
         "reason": "personal_quiet"
       },
       "qa_habit_calibration": false
+    },
+    {
+      "name": "jitter_interval_stable",
+      "changes": {
+        "studies": [
+          {
+            "reference": "interval-0-1",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-28T20:57:00+00:00",
+            "course_day": "2026-10-28",
+            "xp": 20
+          },
+          {
+            "reference": "interval-1-2",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-27T21:02:00+00:00",
+            "course_day": "2026-10-27",
+            "xp": 20
+          },
+          {
+            "reference": "interval-2-3",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-26T21:05:00+00:00",
+            "course_day": "2026-10-26",
+            "xp": 20
+          },
+          {
+            "reference": "interval-3-4",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-25T20:59:00+00:00",
+            "course_day": "2026-10-25",
+            "xp": 20
+          },
+          {
+            "reference": "interval-4-5",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-24T21:01:00+00:00",
+            "course_day": "2026-10-24",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "time_local": "21:01",
+        "phase": "before_study",
+        "time_source": "habit",
+        "time_reason": "observed_learning_interval_stable"
+      },
+      "qa_habit_calibration": true
+    },
+    {
+      "name": "jitter_interval_provisional",
+      "changes": {
+        "studies": [
+          {
+            "reference": "interval-0-1",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-28T20:57:00+00:00",
+            "course_day": "2026-10-28",
+            "xp": 20
+          },
+          {
+            "reference": "interval-1-2",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-27T21:02:00+00:00",
+            "course_day": "2026-10-27",
+            "xp": 20
+          },
+          {
+            "reference": "interval-2-3",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-26T21:05:00+00:00",
+            "course_day": "2026-10-26",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "time_local": "21:02",
+        "phase": "before_study",
+        "time_source": "habit",
+        "time_reason": "observed_learning_interval_provisional"
+      },
+      "qa_habit_calibration": true
+    },
+    {
+      "name": "circular_midnight_interval",
+      "changes": {
+        "studies": [
+          {
+            "reference": "interval-0-1",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-28T23:57:00+00:00",
+            "course_day": "2026-10-28",
+            "xp": 20
+          },
+          {
+            "reference": "interval-1-2",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-27T00:02:00+00:00",
+            "course_day": "2026-10-27",
+            "xp": 20
+          },
+          {
+            "reference": "interval-2-3",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-26T00:05:00+00:00",
+            "course_day": "2026-10-26",
+            "xp": 20
+          },
+          {
+            "reference": "interval-3-4",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-25T23:59:00+00:00",
+            "course_day": "2026-10-25",
+            "xp": 20
+          },
+          {
+            "reference": "interval-4-5",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-24T00:01:00+00:00",
+            "course_day": "2026-10-24",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "time_local": "00:01",
+        "phase": "study_time_reached",
+        "time_source": "habit",
+        "time_reason": "observed_learning_interval_stable"
+      },
+      "qa_habit_calibration": true
+    },
+    {
+      "name": "pre_smart_history_extended",
+      "changes": {
+        "studies": [
+          {
+            "reference": "interval-0-45",
+            "activity_type": "lesson",
+            "accepted_at": "2026-09-14T20:57:00+00:00",
+            "course_day": "2026-09-14",
+            "xp": 20
+          },
+          {
+            "reference": "interval-1-46",
+            "activity_type": "lesson",
+            "accepted_at": "2026-09-13T21:02:00+00:00",
+            "course_day": "2026-09-13",
+            "xp": 20
+          },
+          {
+            "reference": "interval-2-47",
+            "activity_type": "lesson",
+            "accepted_at": "2026-09-12T21:05:00+00:00",
+            "course_day": "2026-09-12",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "time_local": "21:02",
+        "phase": "before_study",
+        "time_source": "habit",
+        "time_reason": "observed_learning_interval_provisional"
+      },
+      "qa_habit_calibration": true
+    },
+    {
+      "name": "recent_rhythm_over_old_history",
+      "changes": {
+        "studies": [
+          {
+            "reference": "interval-0-1",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-28T09:00:00+00:00",
+            "course_day": "2026-10-28",
+            "xp": 20
+          },
+          {
+            "reference": "interval-1-2",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-27T09:02:00+00:00",
+            "course_day": "2026-10-27",
+            "xp": 20
+          },
+          {
+            "reference": "interval-2-3",
+            "activity_type": "lesson",
+            "accepted_at": "2026-10-26T09:05:00+00:00",
+            "course_day": "2026-10-26",
+            "xp": 20
+          },
+          {
+            "reference": "interval-3-40",
+            "activity_type": "lesson",
+            "accepted_at": "2026-09-19T21:00:00+00:00",
+            "course_day": "2026-09-19",
+            "xp": 20
+          },
+          {
+            "reference": "interval-4-41",
+            "activity_type": "lesson",
+            "accepted_at": "2026-09-18T21:00:00+00:00",
+            "course_day": "2026-09-18",
+            "xp": 20
+          },
+          {
+            "reference": "interval-5-42",
+            "activity_type": "lesson",
+            "accepted_at": "2026-09-17T21:00:00+00:00",
+            "course_day": "2026-09-17",
+            "xp": 20
+          },
+          {
+            "reference": "interval-6-43",
+            "activity_type": "lesson",
+            "accepted_at": "2026-09-16T21:00:00+00:00",
+            "course_day": "2026-09-16",
+            "xp": 20
+          },
+          {
+            "reference": "interval-7-44",
+            "activity_type": "lesson",
+            "accepted_at": "2026-09-15T21:00:00+00:00",
+            "course_day": "2026-09-15",
+            "xp": 20
+          }
+        ]
+      },
+      "expected": {
+        "time_local": "09:02",
+        "phase": "study_time_reached",
+        "time_source": "habit",
+        "time_reason": "observed_learning_interval_provisional"
+      },
+      "qa_habit_calibration": true
     }
   ]
 }

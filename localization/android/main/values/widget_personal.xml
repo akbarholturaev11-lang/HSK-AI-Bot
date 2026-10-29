@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_personal_neutral">Bitta xitoycha dars?</string>
+    <string name="widget_personal_before">Darsimiz oldinda.</string>
+    <string name="widget_personal_reached">Boshlaymizmi?</string>
+    <string name="widget_personal_goal_completed">Maqsadga yetdingiz!</string>
+    <string name="widget_personal_plan_completed">Reja bajarildi!</string>
+    <string name="widget_personal_course_completed">Kurs yakunlandi!</string>
+    <plurals name="widget_personal_streak_days">
+        <item quantity="one">%1$d kunlik seriya</item>
+        <item quantity="few">%1$d kunlik seriya</item>
+        <item quantity="many">%1$d kunlik seriya</item>
+        <item quantity="other">%1$d kunlik seriya</item>
+    </plurals>
+</resources>

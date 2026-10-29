@@ -1,8 +1,9 @@
 """Platform-neutral passive widget semantics. No auth, SQL, IO or send grant.
 
 The native bridge authenticates the owner; adapters must enforce the envelope
-and their local session epoch before rendering. Numeric habit calibration is
-explicit QA input only, shared with the reminder policy, never a new default.
+and their local session epoch before rendering. Habit calibration is an
+explicit caller input shared with the reminder policy. The authenticated passive
+bridge supplies the owner-approved interval preset; no send authority follows.
 """
 import json
 from datetime import date, datetime, time

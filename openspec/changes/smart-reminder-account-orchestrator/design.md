@@ -510,6 +510,60 @@ source/CI evidence only in the Master Plan. Native widgets and real canary
 acceptance remain separate. Rollback retains 4.1 routing/day/attempt ownership;
 no new consent, schema, settings screen or redundant editor control is added.
 
+## Bounded task 5.5 — Android passive widget adapter (2026-10-29)
+
+Base: `origin/main@4213c37cd8deed4fa3eb24ed386f1b524c759585`, Master Plan
+§17.45 and the shared v1 widget contract. Source confirms 4.3 is not ready:
+runtime cadence/authoritative learning coverage and producer are absent, and
+no staging/cutover proof is recorded. Keep 4.3 unchecked and dispatch OFF.
+D15 passive rendering is explicitly independent of notification permission;
+its existing Android consumer task may proceed while these live-send gates
+remain open. This changes execution order only, not D01–D15 or canary acceptance.
+
+Use a dedicated passive map GET through the existing Retrofit transport,
+without changing ordinary CourseRepository/Room map contracts. Capture the
+actual AuthRepository bearer/session generation and widget link epoch before
+request, recheck both before accepting, and conditionally clear only that
+same generation on session expiry. No credential enters widget storage.
+Before replacement sign-in credentials persist, a widget-only callback clears
+old visible/cache state and pending study presentation. Keep existing post-token
+`onSessionLinked`, token durability, AI/payment callbacks and auth decisions
+unchanged. This closes process death between credential persistence and the
+later widget epoch reset; a failed credential write cannot restore old data.
+A small injectable refresh bridge makes delayed-response/auth races testable;
+foreground map publication for an installed widget requests this live bridge
+rather than adopting an arbitrary Room/cached context. Refresh failures are
+stale/neutral and cannot restore a previous account.
+
+Parse the complete shared v1 allowlist strictly and preserve only permitted
+fields. Unsupported/malformed cached personalization defaults to neutral while
+legacy session/snapshot JSON remains readable. Establish opaque binding only
+from a confirmed-current authenticated response, never an envelope echo;
+retain revision/generated floors across failed refreshes. Validate course,
+day/IANA zone, local epoch, real JSON booleans, future/expiry and semantic
+completion/target consistency. Newer authenticated course changes may replace
+context; old responses/revisions cannot move it back. Known device zone/day
+changes neutralize old presentation. No epoch is an auth credential.
+
+Extend existing snapshot/store/resolver/art copy and layout in place. Map
+before/reached/completed to existing calm/waiting/completed art families; no
+fixed 22:00 escalation, new habit estimator, invented duration or LLM request.
+Use corroborated learning/goal facts only for goal copy and completion; reward
+XP or old `dayComplete` alone is insufficient. Neutral/quiet/paused/unknown
+keeps ordinary permitted progress, not a fake failure. Preserve the 28 art
+assets, deterministic variants and normal CurrentLesson/foundation access
+navigation. New fixed labels are canonical UZ/RU/TJ native resources in a new
+bundle, with existing frozen XML intact. Direct/Play share all code.
+
+Validate decoder/store/refresh-generation/resolver against actual shared
+backend golden envelopes and adverse clock/zone/owner/replay cases; add only a
+small deterministic exporter if existing fixtures lack complete envelopes.
+Run relevant Android JVM tests on Direct/Play, compilation and canonical
+catalog/guard checks. Real launcher/installed refresh/layout acceptance remains
+5.6, with OS timing limits explicit; no APK release or iOS/Desktop widget
+support is implied. Rollback uses neutral/compatible rendering, preserving
+all notification flags, day guards and Smart consent/ownership.
+
 ## Risks / Trade-offs
 
 - **Old offline APK can display outside the ledger** → Do not migrate accounts with unknown/unsupported autonomous sender state into new cross-channel dispatch. Test historical binaries and describe the remaining physical display limit honestly; no server-only “exactly once” claim.
@@ -534,3 +588,54 @@ no new consent, schema, settings screen or redundant editor control is added.
 ## Open Questions
 
 The exact weekly cap, category cooldown, reactivation thresholds, retention TTLs, ML quality gate and experiment targets remain deliberately unset by D03/D05/D08/D09/D12/D13. P0/P6 measurement and the Master Plan's owner decision process must settle values before those policies are enabled. The contract and phased implementation path above do not depend on assuming any of these numbers.
+
+
+## Owner follow-up: widget typography and interval habit evidence
+
+Authoritative scope and decisions: Master Plan §17.47, D16 (60-minute circular
+sliding interval) and D17 (recent 30 calendar days, extend to 90 if insufficient).
+The previous task source has not reached main. Before publishing, remove the
+dark widget panel and secondary XP/lesson clutter, place the actual permitted
+streak at upper center with brief canonical UZ/RU/TJ copy beneath it, and keep
+panda art visible. Select readable per-art text styling without a panel; preserve
+normal tap/auth/expiry and retained assets. Verify real RemoteViews at all three
+sizes/languages/themes, including text fitting and unobscured art.
+
+Replace exact-minute habit votes with versioned explicit circular sliding-window
+calibration. Keep one first accepted verified sample per local day, no hour-bin
+boundary artifact, no arithmetic midnight average, no replays/outliers overriding
+a real cluster, and fail closed for comparable disjoint modes or limited coverage.
+The representative is an observed minute. Confidence/day thresholds stay explicit
+until D18 owner choice; no production default or provider wiring is inferred.
+
+Use existing trusted pre-Smart history with canonical owner/course/server-result
+proof; never gate it on preference creation or Smart activation date. Observation
+selection is 30 recent calendar days with a bounded 90-day extension when useful
+personal evidence is insufficient, not a raw-data retention policy. Prove this in
+read-only SQLite/PostgreSQL fixtures, including old history, duplicate clients,
+reward/open exclusions, midnight/DST, jitter, sparse and mixed-mode cases. Reuse
+shared widget goldens and preserve manual/saved fallback and dispatch OFF.
+
+
+D18 is now approved: minimum 3 matching active days, at least 2/3 of observed
+eligible days in the interval, stable from 5 matches. Define one named approved
+habit preset and explicitly pass it only to the authenticated passive widget
+bridge; pure callers may still request no calibration. Query recent 30 days
+first, extend to 90 only if fewer than 3 eligible distinct days exist; filter
+actual local calendar dates in the pure evaluator. Historical habit selection
+must not reduce today's verified XP used for completion. No Smart activation
+cutoff, new write, dispatch, cadence default or purge is introduced. D19–D21
+configure future cadence/retention work in the Master Plan; they are not an
+instruction to activate providers or delete existing XP.
+
+
+D23 supersedes the earlier full-scene overlay and first rejected flat-bear draft.
+The owner selected the modern broad-headed, expressive-eyed original panda and
+asked for Duolingo-like rounded count typography, colors and flame details.
+Use three consistent generated transparent poses in separate header/art cells,
+with a bundled open Nunito font/OFL, an orange-contoured completed counter and
+coordinated unfinished foregrounds. No panda pixels may sit beneath text. Share
+the native header with Compose preview, keep old scene assets unchanged for
+recovery and inspect only fresh per-run instrumentation images. Native decorative
+outline layers do not add accessible duplicate text. This UI delta changes no
+wire, auth, cadence, consent, grant, lesson or provider contract.
