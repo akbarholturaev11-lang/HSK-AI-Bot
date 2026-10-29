@@ -94,6 +94,8 @@ class SmartReminderActor:
     telegram_id: int | None = None
     device_id: str | None = None
     session_id: str | None = None
+    # Verified native bearer deadline, supplied by the HTTP adapter only.
+    access_expires_at: datetime | None = None
 
     @property
     def key(self):
