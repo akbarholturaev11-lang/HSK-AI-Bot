@@ -408,6 +408,70 @@ blocked/deletion/revocation and native-only accounts; test the actual optional
 Android map route and regular Android/desktop course regressions. Android art,
 render/store and physical launcher acceptance stay with P4 tasks 5.5–5.6.
 
+### Bounded task 4.1 Telegram ownership and internal dispatch boundary
+
+On reviewed main `dbc49900`, add minimal additive 0135 routing ownership storage,
+not a learner migration or activated dispatcher. A canonical User-owned row is
+sticky: held/Telegram ownership suppresses existing server study paths even
+when the new switch is off or proof expires. Add a send-only check alongside the existing
+configuration OFF veto, preserving deliberate time/consent writes; weekly/motivation/transactional behavior is unchanged.
+No row is created from a preference read, device/version inventory or absence
+of Android tokens. A bounded non-secret Android device/session/capability hash
+binds the hold/review and refuses later inventory drift. Present active Android
+installs additionally need fresh autonomous-disabled protocol proof through the
+review window; missing/revoked rows never replace external fencing review. Keep all P1 OFF, current session/account/deletion and epoch
+checks. Canonical purge and the empty-QA migration registry include the row;
+populated downgrade refuses destructive removal.
+
+Use an internal two-step operator boundary: hold under User first, cancelling
+unattempted work without resetting day/attempt ownership; then accept a strict
+versioned, generation/account-bound review attestation created AFTER that hold.
+It explicitly confirms legacy IO has drained, old-day/uncertain outcomes are
+reconciled and other autonomous study senders are fenced, with a SHA-256 evidence reference and finite explicit validity.
+This is a privileged internal review input, never client telemetry, a body/API
+field or an inference from inventory. All backend replicas must run the guard
+before holding; an old legacy call already past its veto can still be in IO.
+Actual quiescence/install/fleet verification is a future 4.3/P4 gate, not proven
+by a Boolean or a synthetic test. No production cohort, review or flag change
+is performed. There is no automatic legacy resume; rollback disables dispatch
+and retains held ownership, schema, OFF and ambiguous attempts for review.
+
+Implement the internal Telegram queue/attempt protocol behind
+`SMART_REMINDER_TELEGRAM_ENABLED=False`, with no scheduler/producer/provider
+wiring. It also requires explicit cadence calibration and a separately registered
+authoritative learning-coverage reader (neither supplied in runtime), fresh
+active cohort evidence, current consent/master/real Telegram and P1 account
+checks, existing D1 scope and 3.1/3.2 goal/access/quiet/cadence gates. Reuse/adopt
+only an unleased, unattempted existing 3.3 shadow reservation under the same
+frozen account/day identity, otherwise skip that day. Completed/cancelled rows
+and another policy's ownership are never replaced. Shared fresh frozen-job
+validation is reused; channel selection here is Telegram-only in an externally
+reviewed cohort, not D06 Android ranking or a new fallback decision.
+
+User-first transactions issue finite token leases and one deterministic initial
+Telegram attempt. Commit prepared ownership and revalidate before committing
+an in-flight marker; only then call an injected internal transport OUTSIDE SQL.
+No production transport is passed in this slice. Successful trusted Telegram
+receipt means provider accepted, never shown/read/learned. Exceptions, timeout,
+process death or acceptance-update rollback preserve in-flight/unknown state
+and refuse all retries/alternates for that intent. Prepared work can recover
+only with a new finite lease after expiry and fresh proof. OFF/hold committed
+before the in-flight authorization boundary denies sending; a change after
+that boundary cannot recall provider IO, but cannot authorize a second send.
+Record external outcomes even if OFF/block occurred meanwhile, under User and
+without minting new permission. Rendering/inbox/CTA/localization is task 4.2;
+this task uses synthetic fake-Bot payloads and adds no visible copy.
+
+Verify SQLite/PostgreSQL schema/up/down refusal/purge; strict hold/review and
+stale generation/identity/revision proof; disabled zero SQL/provider behavior;
+actual legacy guard and current master OFF, stale callback, D1 control/treatment,
+bot block/native-only exclusion, unique same-day ownership, lease recovery,
+learning/expiry/OFF after claim, IO after commit and accepted-before-DB-failure
+no replay. PostgreSQL two-worker and waiting OFF/hold/learning races must use
+real transactions. Actual legacy non-cohort scheduling remains unchanged; do
+not claim a global legacy dedupe or physical exactly-once guarantee. Record
+source/CI/limits only in the Master Plan and advance to 4.2 after acceptance.
+
 ## Risks / Trade-offs
 
 - **Old offline APK can display outside the ledger** → Do not migrate accounts with unknown/unsupported autonomous sender state into new cross-channel dispatch. Test historical binaries and describe the remaining physical display limit honestly; no server-only “exactly once” claim.

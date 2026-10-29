@@ -144,7 +144,7 @@ class AndroidRealtimePushService:
             if row.last_study_push_day == local_day:
                 continue
             from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
-            if await SmartReminderLifecycleService(self.session).legacy_veto(
+            if await SmartReminderLifecycleService(self.session).legacy_send_veto(
                     device.user_id, "android", device_id=device.id):
                 continue
             due_rows.append((row, local_day))
