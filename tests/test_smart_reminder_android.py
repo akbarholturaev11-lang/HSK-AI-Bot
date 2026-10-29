@@ -120,6 +120,20 @@ class AndroidChecks:
     async def learning(self, session, actor, since, now):
         return LearningCoverage(actor.user_id,since,now,'qa-complete-only') if self.coverage else None
 
+    async def second_installation(self, *, capable=True):
+        """Synthetic same-account installation, never a real fleet attestation."""
+        async with self.sessions.begin() as s:
+            await s.execute(update(DesktopDevice).where(DesktopDevice.id=='device-2').values(
+                user_id=1, app_version='synthetic-compatible' if capable else 'synthetic-legacy-unknown'))
+            if capable:
+                s.add(SmartReminderCapability(user_id=1,device_id='device-2',generation=1,protocol_version=1,
+                    autonomous_study_disabled=True,study_notifications_allowed=True,
+                    observed_at=self.tick-timedelta(seconds=1),expires_at=self.expiry))
+            s.add(AndroidPushToken(device_id='device-2',token='synthetic-other-no-provider',timezone_name='Etc/UTC',
+                notifications_allowed=True,study_reminders_enabled=False))
+        async with self.sessions() as s:
+            self.inventory,_=await _android_inventory(s,1,self.tick)
+
     def service(self, session):
         return SmartReminderAndroidService(session,**(dict(enabled=self.enabled,admission_reader=self.admission,
             calibration=QA,coverage_reader=self.learning,clock=lambda:self.tick)|self.options))
@@ -395,6 +409,37 @@ class AndroidChecks:
         async with self.sessions.begin() as s: await s.execute(update(User).where(User.id==1).values(status='active'))
         await self._deletion(active_uid=1,owner=1)
         await self.receipt(grant,status=409)
+
+    async def test_two_installations_same_account_only_selected_session_can_claim_or_receipt(self):
+        await self.second_installation()
+        other=await self.client.get(BASE+'/due',headers=await self.bearer(2))
+        self.assertEqual(other.status_code,200)
+        self.assertNotIn('job_id',other.json())
+        grant=await self.claim()
+        self.assertTrue(grant['dispatch_allowed'],grant)
+        await self.claim(uid=2,status=404)
+        await self.receipt(grant,uid=2,status=404)
+        await self.receipt(grant)
+        self.assertEqual(len(await self.rows(GRANT)),1)
+        self.assertEqual(len(await self.rows(ATTEMPT)),1)
+
+    async def test_unknown_other_installation_is_excluded_even_with_latest_version_metadata(self):
+        await self.second_installation(capable=False)
+        async with self.sessions.begin() as s:
+            await s.execute(update(DesktopDevice).where(DesktopDevice.id=='device-2').values(app_version='999.999.999'))
+        self.assertFalse((await self.claim())['dispatch_allowed'])
+        await self.no_grant()
+
+    async def test_second_installation_permission_loss_invalidates_old_review_without_an_alternate(self):
+        await self.second_installation()
+        old_review=self.inventory
+        headers=await self.bearer(2)
+        response=await self.client.patch(BASE+'/capability',headers=headers,json=dict(
+            expected_generation=1,protocol_version=1,autonomous_study_disabled=True,study_notifications_allowed=False))
+        self.assertEqual(response.status_code,200,response.text)
+        self.assertEqual(self.inventory,old_review)  # The reviewed snapshot is intentionally stale.
+        self.assertFalse((await self.claim())['dispatch_allowed'])
+        await self.no_grant()
 
     async def test_mode_is_read_only_sticky_observation_and_not_authority(self):
         headers = await self.bearer(1)
