@@ -111,6 +111,8 @@ class Settings(BaseSettings):
     ADMIN_PWA_ENABLED: bool = False
     # Observes existing Smart shadow reservations only; grants no delivery.
     SMART_REMINDER_SHADOW_ENABLED: bool = False
+    # Internal Telegram boundary only; no cohort enrollment or worker wiring.
+    SMART_REMINDER_TELEGRAM_ENABLED: bool = False
     # Optional private Cloudflare R2 mirror for 24-hour aggregate snapshots;
     # no browser/client credentials, public URLs or raw feedback are stored.
     ADMIN_PWA_R2_AGGREGATE_ENABLED: bool = False
