@@ -73,7 +73,7 @@ class HskAiApplication : Application() {
     val paymentDecisionMonitor by lazy {
         PaymentDecisionMonitor(this, retrofit.create(AndroidPushApi::class.java))
     }
-    val studyReminderCoordinator by lazy { StudyReminderCoordinator(this) }
+    val studyReminderCoordinator by lazy { StudyReminderCoordinator(this, retrofit.create(com.pomp.hskai.data.api.AndroidSmartReminderApi::class.java)) }
     val accountNoticeMonitor by lazy {
         AccountNoticeMonitor(this, retrofit.create(AndroidPushApi::class.java))
     }

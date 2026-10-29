@@ -396,6 +396,27 @@ class AndroidChecks:
         await self._deletion(active_uid=1,owner=1)
         await self.receipt(grant,status=409)
 
+    async def test_mode_is_read_only_sticky_observation_and_not_authority(self):
+        headers = await self.bearer(1)
+        response = await self.client.get(BASE+'/mode', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['cache-control'], 'no-store')
+        self.assertEqual(response.json(), dict(ok=True, version=1, dispatch_allowed=False, server_claim_required=True))
+        other = await self.client.get(BASE+'/mode', headers=await self.bearer(2))
+        self.assertEqual(other.status_code, 200)
+        self.assertFalse(other.json()['server_claim_required'])
+        await self.no_grant()
+        async with self.sessions.begin() as s:
+            await s.execute(delete(SmartReminderRouting))
+            await s.execute(update(SmartReminderCapability).values(autonomous_study_disabled=False))
+        self.assertFalse((await self.client.get(BASE+'/mode',headers=headers)).json()['server_claim_required'])
+        async with self.sessions.begin() as s:
+            # Old positive observation stays sticky even after its TTL expires.
+            await s.execute(update(SmartReminderCapability).values(autonomous_study_disabled=True,expires_at=self.tick))
+        self.assertTrue((await self.client.get(BASE+'/mode',headers=headers)).json()['server_claim_required'])
+        self.assertEqual((await self.client.get(BASE+'/mode')).status_code, 401)
+        self.assertEqual((await self.client.get(BASE+'/mode?user_id=2',headers=headers)).status_code, 422)
+
     async def test_schema_matches_and_populated_downgrade_refuses_while_purge_cascades(self):
         async with self.engine.begin() as c:
             diffs=await c.run_sync(lambda sync:compare_metadata(MigrationContext.configure(sync),Base.metadata))

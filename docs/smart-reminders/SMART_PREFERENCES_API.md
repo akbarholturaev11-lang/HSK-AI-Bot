@@ -170,9 +170,10 @@ invalidation grants no alternate send. A positive observation cannot restore
 OFF or enroll a cohort. Removing this adapter for rollback must retain the
 stored denial, existing P1 guards and schema knowledge.
 
-No Android client invokes this new adapter yet. The dormant selected-job
-due/claim/receipt backend is documented in
+Android task 5.2 now reports this observation only after persisting its local
+autonomous-disable latch; it does not infer consent. The dormant selected-job
+due/claim/receipt backend and read-only sticky mode are documented in
 [`SMART_ANDROID_STUDY_PROTOCOL.md`](SMART_ANDROID_STUDY_PROTOCOL.md); its real
-factory stays disabled and client integration remains task 5.2. This
+factory stays disabled; signed/real-provider acceptance remains 5.3–5.4. This
 observation row alone must never be used as authorization to post. Existing
 account-notice `/notices/{id}/ack` and its fallback remain independent.
