@@ -57,7 +57,7 @@ class WidgetGoldenTests(unittest.TestCase):
         self.assertEqual((ROOT / TARGET).read_text(), output())
 
     def test_shared_semantic_goldens(self):
-        self.assertEqual(len(GOLDENS["cases"]), 31)
+        self.assertEqual(len(GOLDENS["cases"]), 36)
         for case in GOLDENS["cases"]:
             with self.subTest(case=case["name"]):
                 qa = HabitCalibration("shared-fixture-only", 3) if case["qa_habit_calibration"] else None
@@ -165,6 +165,38 @@ class WidgetSourceChecks:
                 self.assertEqual(await s.scalar(select(func.count()).select_from(model)), 0)
             self.assertEqual(await s.scalar(select(SmartReminderPreference.revision).where(
                 SmartReminderPreference.user_id==1)), 2)
+
+    async def test_pre_smart_verified_history_qualifies_without_new_waiting_days(self):
+        for order,age in enumerate((35,36,37),1):
+            await self.study(days_ago=age,order=order)
+        sql=[]
+        def capture(c,cursor,statement,parameters,ctx,many): sql.append(statement)
+        event.listen(self.engine.sync_engine,"before_cursor_execute",capture)
+        try: result=await self.load()
+        finally: event.remove(self.engine.sync_engine,"before_cursor_execute",capture)
+        self.assertEqual((result["time_source"],result["time_local"],result["time_reason"]),
+            ("habit","02:00","observed_learning_interval_provisional"))
+        self.assertEqual(result["calibration_version"],"smart-habit-interval-v1")
+        self.assertEqual(result["verified_today_xp"],0)
+        self.assertFalse(any(q.lstrip().upper().startswith(("INSERT","UPDATE","DELETE")) for q in sql))
+        self.assertEqual(sum("FROM "+CourseXpEvent.__tablename__ in q for q in sql),2)
+
+    async def test_sufficient_recent_days_do_not_read_or_wait_for_older_history(self):
+        for order,age in enumerate((40,41,42,43,44,1,2,3),1):
+            await self.study(days_ago=age,order=order)
+        sql=[]
+        def capture(c,cursor,statement,parameters,ctx,many): sql.append(statement)
+        event.listen(self.engine.sync_engine,"before_cursor_execute",capture)
+        try: result=await self.load()
+        finally: event.remove(self.engine.sync_engine,"before_cursor_execute",capture)
+        self.assertEqual(result["time_source"],"habit")
+        self.assertEqual(result["time_reason"],"observed_learning_interval_provisional")
+        self.assertEqual(sum("FROM "+CourseXpEvent.__tablename__ in q for q in sql),1)
+
+    async def test_history_beyond_approved_extension_does_not_set_a_habit(self):
+        for order,age in enumerate((91,92,93),1): await self.study(days_ago=age,order=order)
+        result=await self.load()
+        self.assertEqual((result["time_source"],result["time_local"]),("saved","14:00"))
 
     async def test_native_only_off_and_os_unknown_still_return_permitted_progress(self):
         async with self.sessions.begin() as s:

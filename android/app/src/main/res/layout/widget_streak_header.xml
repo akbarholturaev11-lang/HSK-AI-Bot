@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_streak_header" android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical" android:gravity="top|center_horizontal"
+    android:paddingTop="2dp" android:paddingStart="4dp" android:paddingEnd="4dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center" android:clipChildren="false">
+        <ImageView android:id="@+id/widget_streak_flame" android:layout_width="14dp" android:layout_height="20dp"
+            android:layout_marginEnd="2dp" android:src="@drawable/widget_streak_flame" android:importantForAccessibility="no" />
+        <FrameLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:clipChildren="false">
+<TextView android:id="@+id/widget_streak_outline_n" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:gravity="center" android:fontFamily="@font/widget_round"
+        android:fontVariationSettings="'wght' 800" android:textSize="20sp"
+        android:includeFontPadding="false" android:maxLines="1" android:ellipsize="end"
+        android:paddingStart="2dp" android:paddingEnd="2dp" android:importantForAccessibility="no" android:textColor="#FF9600" android:translationX="0dp" android:translationY="-1dp" /><TextView android:id="@+id/widget_streak_outline_ne" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:gravity="center" android:fontFamily="@font/widget_round"
+        android:fontVariationSettings="'wght' 800" android:textSize="20sp"
+        android:includeFontPadding="false" android:maxLines="1" android:ellipsize="end"
+        android:paddingStart="2dp" android:paddingEnd="2dp" android:importantForAccessibility="no" android:textColor="#FF9600" android:translationX="1dp" android:translationY="-1dp" /><TextView android:id="@+id/widget_streak_outline_e" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:gravity="center" android:fontFamily="@font/widget_round"
+        android:fontVariationSettings="'wght' 800" android:textSize="20sp"
+        android:includeFontPadding="false" android:maxLines="1" android:ellipsize="end"
+        android:paddingStart="2dp" android:paddingEnd="2dp" android:importantForAccessibility="no" android:textColor="#FF9600" android:translationX="1dp" android:translationY="0dp" /><TextView android:id="@+id/widget_streak_outline_se" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:gravity="center" android:fontFamily="@font/widget_round"
+        android:fontVariationSettings="'wght' 800" android:textSize="20sp"
+        android:includeFontPadding="false" android:maxLines="1" android:ellipsize="end"
+        android:paddingStart="2dp" android:paddingEnd="2dp" android:importantForAccessibility="no" android:textColor="#FF9600" android:translationX="1dp" android:translationY="1dp" /><TextView android:id="@+id/widget_streak_outline_s" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:gravity="center" android:fontFamily="@font/widget_round"
+        android:fontVariationSettings="'wght' 800" android:textSize="20sp"
+        android:includeFontPadding="false" android:maxLines="1" android:ellipsize="end"
+        android:paddingStart="2dp" android:paddingEnd="2dp" android:importantForAccessibility="no" android:textColor="#FF9600" android:translationX="0dp" android:translationY="1dp" /><TextView android:id="@+id/widget_streak_outline_sw" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:gravity="center" android:fontFamily="@font/widget_round"
+        android:fontVariationSettings="'wght' 800" android:textSize="20sp"
+        android:includeFontPadding="false" android:maxLines="1" android:ellipsize="end"
+        android:paddingStart="2dp" android:paddingEnd="2dp" android:importantForAccessibility="no" android:textColor="#FF9600" android:translationX="-1dp" android:translationY="1dp" /><TextView android:id="@+id/widget_streak_outline_w" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:gravity="center" android:fontFamily="@font/widget_round"
+        android:fontVariationSettings="'wght' 800" android:textSize="20sp"
+        android:includeFontPadding="false" android:maxLines="1" android:ellipsize="end"
+        android:paddingStart="2dp" android:paddingEnd="2dp" android:importantForAccessibility="no" android:textColor="#FF9600" android:translationX="-1dp" android:translationY="0dp" /><TextView android:id="@+id/widget_streak_outline_nw" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:gravity="center" android:fontFamily="@font/widget_round"
+        android:fontVariationSettings="'wght' 800" android:textSize="20sp"
+        android:includeFontPadding="false" android:maxLines="1" android:ellipsize="end"
+        android:paddingStart="2dp" android:paddingEnd="2dp" android:importantForAccessibility="no" android:textColor="#FF9600" android:translationX="-1dp" android:translationY="-1dp" /><TextView android:id="@+id/widget_streak_count" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:gravity="center" android:fontFamily="@font/widget_round"
+        android:fontVariationSettings="'wght' 800" android:textSize="20sp"
+        android:includeFontPadding="false" android:maxLines="1" android:ellipsize="end"
+        android:paddingStart="2dp" android:paddingEnd="2dp" android:textColor="#FFFFFF" />
+        </FrameLayout>
+    </LinearLayout>
+    <TextView android:id="@+id/widget_streak_message" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:gravity="center" android:fontFamily="@font/widget_round" android:fontVariationSettings="'wght' 700"
+        android:textColor="#F0E8FF" android:textSize="10sp" android:includeFontPadding="false"
+        android:maxLines="2" android:ellipsize="end" />
+</LinearLayout>

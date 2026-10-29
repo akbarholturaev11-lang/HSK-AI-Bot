@@ -75,11 +75,34 @@ class WidgetPersonalLayoutTest {
                         is ViewGroup -> (0 until node.childCount).flatMap { labels(node.getChildAt(it)) }
                         else -> emptyList()
                     }
-                    val texts=labels(view)
+                    val texts=labels(view).filter { it.visibility==View.VISIBLE }
                     assertTrue(texts.isNotEmpty())
                     val expected=localized.getString(WidgetArt.assetFor(access,visual).text)
                     assertTrue("Missing personal copy: $language $reason $size",texts.any { it.text.toString()==expected })
                     assertFalse("Reward XP used as verified goal",texts.any { it.text.contains("500") })
+                    assertTrue("Missing real streak",texts.any { it.text.toString()=="8" })
+                    val counter=view.findViewById<TextView>(com.pomp.hskai.R.id.widget_streak_count)
+                    assertEquals(View.VISIBLE,counter.visibility)
+                    assertTrue(counter.width>0)
+                    assertTrue(counter.fontVariationSettings?.contains("800")==true)
+
+                    val header=view.findViewById<View>(com.pomp.hskai.R.id.widget_streak_header)
+                    assertNotNull(header)
+                    assertNull("No dark panel may cover panda art",header.background)
+                    assertTrue("Header is not near top",header.top < height/3)
+                    fun images(node: View): List<android.widget.ImageView> = when(node) {
+                        is android.widget.ImageView -> listOf(node)
+                        is ViewGroup -> (0 until node.childCount).flatMap { images(node.getChildAt(it)) }
+                        else -> emptyList()
+                    }
+                    val panda=images(view).first { it.contentDescription==expected }
+                    fun bounds(child: View)=android.graphics.Rect(0,0,child.width,child.height).also {
+                        (view as ViewGroup).offsetDescendantRectToMyCoords(child,it)
+                    }
+                    val pandaBounds=bounds(panda)
+                    texts.forEach { assertFalse("Text overlaps panda: $language $reason $size",
+                        android.graphics.Rect.intersects(bounds(it),pandaBounds)) }
+
                     if (size.height.value > 48) texts.filter { it.text.toString()==expected }.forEach { label ->
                         val layout=label.layout
                         if(layout!=null) for(line in 0 until layout.lineCount)
@@ -89,7 +112,8 @@ class WidgetPersonalLayoutTest {
                     texts.forEach { assertTrue("Clipped: $language $reason $size",it.height >= (it.layout?.height ?: 0)) }
                     val bitmap=Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888)
                     view.draw(Canvas(bitmap))
-                    val directory=File(context.getExternalFilesDir(null),"widget-personal-qa").apply { mkdirs() }
+                    val directory=File(context.getExternalFilesDir(null),
+                        InstrumentationRegistry.getArguments().getString("widgetQaOutput") ?: "widget-personal-qa").apply { mkdirs() }
                     File(directory,"$language-$reason-${if(dark)"dark" else "light"}-${size.width.value.toInt()}x${size.height.value.toInt()}.png")
                         .outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG,100,it) }
                     bitmap.recycle()

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="widget_personal_neutral">Омӯзишро идома диҳед.</string>
-    <string name="widget_personal_before">То дарси шумо вақт ҳаст.</string>
+    <string name="widget_personal_neutral">Як дарси чинӣ?</string>
+    <string name="widget_personal_before">Дарс ҳанӯз дар пеш.</string>
     <string name="widget_personal_reached">Вақти дарс расид.</string>
-    <string name="widget_personal_goal_completed">Ҳадаф иҷро шуд.</string>
-    <string name="widget_personal_plan_completed">Нақша иҷро шуд.</string>
-    <string name="widget_personal_course_completed">Курс анҷом ёфт.</string>
+    <string name="widget_personal_goal_completed">Ба ҳадаф расидед!</string>
+    <string name="widget_personal_plan_completed">Нақша иҷро шуд!</string>
+    <string name="widget_personal_course_completed">Курсро тамом кардед!</string>
+    <plurals name="widget_personal_streak_days">
+        <item quantity="one">%1$d рӯз пайдарҳам</item>
+        <item quantity="few">%1$d рӯз пайдарҳам</item>
+        <item quantity="many">%1$d рӯз пайдарҳам</item>
+        <item quantity="other">%1$d рӯз пайдарҳам</item>
+    </plurals>
 </resources>

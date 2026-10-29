@@ -51,4 +51,4 @@ if __name__ == "__main__":
         target.write_text(data)
     elif not target.is_file() or target.read_text() != data:
         raise SystemExit("Stale Android shared widget test envelopes; run --write")
-    print("Android shared widget envelopes: 31 cases, " + ("written" if args.write else "current"))
+    print(f"Android shared widget envelopes: {len(json.loads(data)['cases'])} cases, " + ("written" if args.write else "current"))

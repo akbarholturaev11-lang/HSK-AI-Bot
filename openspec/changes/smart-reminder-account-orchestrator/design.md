@@ -627,3 +627,15 @@ must not reduce today's verified XP used for completion. No Smart activation
 cutoff, new write, dispatch, cadence default or purge is introduced. D19–D21
 configure future cadence/retention work in the Master Plan; they are not an
 instruction to activate providers or delete existing XP.
+
+
+D23 supersedes the earlier full-scene overlay and first rejected flat-bear draft.
+The owner selected the modern broad-headed, expressive-eyed original panda and
+asked for Duolingo-like rounded count typography, colors and flame details.
+Use three consistent generated transparent poses in separate header/art cells,
+with a bundled open Nunito font/OFL, an orange-contoured completed counter and
+coordinated unfinished foregrounds. No panda pixels may sit beneath text. Share
+the native header with Compose preview, keep old scene assets unchanged for
+recovery and inspect only fresh per-run instrumentation images. Native decorative
+outline layers do not add accessible duplicate text. This UI delta changes no
+wire, auth, cadence, consent, grant, lesson or provider contract.
