@@ -5,7 +5,7 @@
 **Яратилган:** 2026-10-25\
 **Репозиторий:** akbarholturaev11-lang/HSK-AI-Bot\
 **Дастлабки режа тармоғи:** feat/smart-reminder-master-plan-20261025\
-**Жорий source текшируви:** tested source @ c2a67072d64a38e2654f2b588169f80fe9bff706 (2026-10-29; §17.47; main publication uses an identical committed tree)\
+**Жорий source текшируви:** tested source @ c2a67072d64a38e2654f2b588169f80fe9bff706 (2026-10-29; §17.47; publication differs only by recorded evidence)\
 **Масъул:** HSK AI лойиҳаси эгаси; кодни амалга оширувчи агентлар
 **Қатъий чеклов:** Бу ҳужжатдаги режа ишлаб чиқилган функция, тасдиқланган бизнес қарори ёки production тест натижаси эмас.
 
