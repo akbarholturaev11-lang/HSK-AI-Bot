@@ -16,6 +16,7 @@ KEY_LESSON_UNFINISHED = "lesson_unfinished"
 KEY_D1_RECOVERY = "d1_lesson_recovery"
 KEY_DAILY_GOAL = "daily_goal"
 KEY_STREAK = "streak_risk"
+KEY_SMART_STUDY = "smart_study"
 
 MOTIVATION_KEYS = (
     KEY_OVERTAKEN,
@@ -24,11 +25,17 @@ MOTIVATION_KEYS = (
     KEY_DAILY_GOAL,
     KEY_STREAK,
 )
+TEMPLATE_KEYS = (*MOTIVATION_KEYS, KEY_SMART_STUDY)
 
 # Human-facing metadata for the admin Mini App editor: title, short note and the
 # placeholders available for each reminder. Placeholders are filled per-user when
 # the reminder is actually sent.
 TEMPLATE_META: dict[str, dict] = {
+    KEY_SMART_STUDY: {
+        "title": notification_message("reminder.meta.smart_study.title", "uz"),
+        "note": notification_message("reminder.meta.smart_study.note", "uz"),
+        "placeholders": ["{lesson}"],
+    },
     KEY_OVERTAKEN: {
         "title": "🥇 Reytingda o'tib ketishdi",
         "note": "Mini App reytingida foydalanuvchini kimdir ortda qoldirsa yuboriladi.",
@@ -184,7 +191,7 @@ class NotificationTemplateService:
             ).scalars()
         }
         result = []
-        for key in MOTIVATION_KEYS:
+        for key in TEMPLATE_KEYS:
             row = rows.get(key)
             meta = TEMPLATE_META[key]
             result.append(

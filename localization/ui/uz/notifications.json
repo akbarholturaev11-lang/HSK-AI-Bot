@@ -11,6 +11,7 @@
     "course.title.limit_lesson_spent": "Bepul darslar tugadi",
     "course.title.limit_lesson_warning": "Bepul darslar tugayapti",
     "course.title.rating_overtaken": "Reytingda o'zib ketishdi",
+    "course.title.smart_study": "Darsni davom ettiring",
     "course.title.streak_risk": "Seriya xavf ostida",
     "course.title.subscription_expiring": "Obuna tugayapti",
     "course.title.subscription_offer": "Obunani davom ettiring",
@@ -25,8 +26,11 @@
     "reminder.default.daily_goal": "⏳ <b>Bugungi maqsad hali bajarilmadi</b>\nKun tugashiga oz qoldi, siz bugun hali dars yakunlamadingiz.\nAtigi <b>{minutes} daqiqa</b> — kunlik maqsadingizni yoping 🎯",
     "reminder.default.lesson_unfinished": "📚 <b>{lesson} hali yakunlanmadi</b>\nKun tugashiga oz qoldi. Boshlagan darsingizni tugatib qo'ying.\nAtigi <b>{minutes} daqiqa</b> — dars yopiladi va XP olinadi 🎯",
     "reminder.default.rating_overtaken": "🥇 <b>{name} sizni ortda qoldirdi!</b>\nSiz <b>{league} ligasida {rank}-o'ringa</b> tushdingiz.\nFarq atigi <b>{xp_gap} XP</b>. Bitta dars bilan o'rningizni qaytaring 💪",
+    "reminder.default.smart_study": "📖 <b>{lesson}-darsni davom ettiring</b>\nO‘rganishni davom ettirish uchun darsni oching.",
     "reminder.default.streak_risk": "🔥 <b>{streak} kunlik seriyangiz xavf ostida!</b>\nBugun kirmasangiz, ketma-ketlik uziladi va kalendarda kun muzlab qoladi.\nBitta kichik dars — seriya saqlanadi 🔥",
     "reminder.lessonLabel": "{level} {lesson}-dars",
+    "reminder.meta.smart_study.note": "Tekshirilgan Smart reja tanlagan dars uchun matn. Shablonni yoqish yuborishni ishga tushirmaydi.",
+    "reminder.meta.smart_study.title": "📖 Smart dars eslatmasi",
     "reminder.returnLesson": "▶️ Darsga qaytish",
     "reminder.startedLesson": "Boshlangan dars"
   }

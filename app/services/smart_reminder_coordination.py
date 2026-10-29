@@ -14,7 +14,7 @@ from app.services.motivation_reminder_service import (
     D1_RECOVERY_ASSIGNED_EVENT, D1_RECOVERY_EXPERIMENT, D1_RECOVERY_HOLDOUT,
 )
 from app.services.notification_template_service import (
-    KEY_D1_RECOVERY, KEY_DAILY_GOAL, KEY_LESSON_UNFINISHED, KEY_OVERTAKEN, KEY_STREAK,
+    KEY_D1_RECOVERY, KEY_DAILY_GOAL, KEY_LESSON_UNFINISHED, KEY_OVERTAKEN, KEY_STREAK, KEY_SMART_STUDY,
 )
 from app.services.smart_reminder_policy import _aware_utc
 from app.services.course_levels import content_level
@@ -210,7 +210,7 @@ class CoordinationReader:
                 CourseProgress.completed_lessons_count, CourseProgress.weekly_progress_baseline_lessons_count, CourseProgress.level,
             ).where(CourseProgress.user_id == actor.user_id))).mappings().one_or_none()
             mapping = {KEY_OVERTAKEN:"rank", **{key:"study" for key in (
-                "lesson_time", KEY_D1_RECOVERY, KEY_DAILY_GOAL, KEY_LESSON_UNFINISHED, KEY_STREAK)}}
+                "lesson_time", KEY_SMART_STUDY, KEY_D1_RECOVERY, KEY_DAILY_GOAL, KEY_LESSON_UNFINISHED, KEY_STREAK)}}
             rows = (await self.session.execute(select(CourseUserNotification.id, CourseUserNotification.key,
                 CourseUserNotification.dedupe_key, CourseUserNotification.created_at).where(
                     _owner(CourseUserNotification, actor.user_id, account["telegram_id"]),
