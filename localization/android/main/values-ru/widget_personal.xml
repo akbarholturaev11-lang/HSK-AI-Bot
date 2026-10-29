@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_personal_neutral">Продолжайте учиться.</string>
+    <string name="widget_personal_before">Ваш урок ещё впереди.</string>
+    <string name="widget_personal_reached">Время вашего урока.</string>
+    <string name="widget_personal_goal_completed">Цель достигнута.</string>
+    <string name="widget_personal_plan_completed">План выполнен.</string>
+    <string name="widget_personal_course_completed">Курс завершён.</string>
+</resources>

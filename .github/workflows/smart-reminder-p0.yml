@@ -26,6 +26,17 @@ on:
       - "app/services/smart_reminder_telegram.py"
       - "alembic/versions/0135_smart_reminder_routing.py"
       - "tests/fixtures/smart_widget_context_v1.json"
+      - "scripts/export_smart_widget_goldens.py"
+      - "android/app/src/main/java/com/pomp/hskai/widget/**"
+      - "android/app/src/main/java/com/pomp/hskai/core/auth/AuthRepository.kt"
+      - "android/app/src/main/java/com/pomp/hskai/HskAiApplication.kt"
+      - "android/app/src/main/java/com/pomp/hskai/MainActivity.kt"
+      - "android/app/src/test/java/com/pomp/hskai/widget/**"
+      - "android/app/src/test/java/com/pomp/hskai/core/auth/AuthRepositoryTest.kt"
+      - "android/app/src/test/resources/smart_widget_context_v1.json"
+      - "android/app/src/androidTest/java/com/pomp/hskai/widget/**"
+      - "localization/android/**"
+      - "android/app/src/main/res/**/widget_personal.xml"
       - "app/services/smart_widget_context*.py"
       - "app/services/android_course_service.py"
       - "app/api/android_course.py"
@@ -85,6 +96,7 @@ on:
       - "codex/smart-reminder-p1-**"
       - "codex/smart-reminder-p2-**"
       - "codex/smart-reminder-p3-**"
+      - "codex/smart-reminder-p4-**"
     paths:
       - "tests/test_smart_reminder_p0_regression.py"
       - "tests/test_smart_reminder_legacy_evidence.py"
@@ -109,6 +121,17 @@ on:
       - "app/services/smart_reminder_telegram.py"
       - "alembic/versions/0135_smart_reminder_routing.py"
       - "tests/fixtures/smart_widget_context_v1.json"
+      - "scripts/export_smart_widget_goldens.py"
+      - "android/app/src/main/java/com/pomp/hskai/widget/**"
+      - "android/app/src/main/java/com/pomp/hskai/core/auth/AuthRepository.kt"
+      - "android/app/src/main/java/com/pomp/hskai/HskAiApplication.kt"
+      - "android/app/src/main/java/com/pomp/hskai/MainActivity.kt"
+      - "android/app/src/test/java/com/pomp/hskai/widget/**"
+      - "android/app/src/test/java/com/pomp/hskai/core/auth/AuthRepositoryTest.kt"
+      - "android/app/src/test/resources/smart_widget_context_v1.json"
+      - "android/app/src/androidTest/java/com/pomp/hskai/widget/**"
+      - "localization/android/**"
+      - "android/app/src/main/res/**/widget_personal.xml"
       - "app/services/smart_widget_context*.py"
       - "app/services/android_course_service.py"
       - "app/api/android_course.py"
@@ -252,7 +275,8 @@ jobs:
             --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
             --tests "com.pomp.hskai.core.notify.ReminderScheduleTest" \
             --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest" \
-            --tests "com.pomp.hskai.widget.WidgetStoreTest" \
+            --tests "com.pomp.hskai.widget.*" \
+            --tests "com.pomp.hskai.core.auth.AuthRepository*" \
             --tests "com.pomp.hskai.data.repository.CourseRepositoryTest"
       - name: Test Direct reminders, deep links and offline map authority
         run: |
@@ -260,7 +284,8 @@ jobs:
             --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
             --tests "com.pomp.hskai.core.notify.ReminderScheduleTest" \
             --tests "com.pomp.hskai.core.navigation.DeepLinkRouterTest" \
-            --tests "com.pomp.hskai.widget.WidgetStoreTest" \
+            --tests "com.pomp.hskai.widget.*" \
+            --tests "com.pomp.hskai.core.auth.AuthRepository*" \
             --tests "com.pomp.hskai.data.repository.CourseRepositoryTest"
 
   smart-storage:
@@ -303,6 +328,7 @@ jobs:
 
       - name: Validate canonical notification and PWA catalogs
         run: |
+          python -m scripts.export_smart_widget_goldens --check
           python scripts/i18n_build_all_catalogs.py --check
           python scripts/i18n_course_ui_catalog_guard.py --output /tmp/smart-course-ui.json
           python scripts/i18n_ui_adoption_audit.py --output /tmp/smart-ui-adoption.json

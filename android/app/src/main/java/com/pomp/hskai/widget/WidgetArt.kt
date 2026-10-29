@@ -104,17 +104,29 @@ object WidgetArt {
 
     private fun active(visual: WidgetVisual): WidgetAsset {
         val drawn = variants(visual.state)[visual.variant.coerceIn(0, visual.state.variants - 1)]
-        val special = visual.special ?: return drawn
+        val copy = when (visual.personalPhase) {
+            "before_study" -> R.string.widget_personal_before
+            "study_time_reached" -> R.string.widget_personal_reached
+            "completed" -> when (visual.completionReason) {
+                "course_completed" -> R.string.widget_personal_course_completed
+                "plan_completed" -> R.string.widget_personal_plan_completed
+                else -> R.string.widget_personal_goal_completed
+            }
+            "neutral", "paused", "quiet", "unavailable" -> R.string.widget_personal_neutral
+            else -> drawn.text
+        }
+        val personal = drawn.copy(text = copy)
+        val special = visual.special ?: return personal
         // A milestone keeps the celebrating face and says what was reached.
         // The four kinds with no producer never arrive here; they borrow the
         // nearest family so adding one later is a row, not a redesign.
         return when (special.kind) {
-            WidgetSpecialKind.MILESTONE -> drawn.copy(text = R.string.widget_milestone)
+            WidgetSpecialKind.MILESTONE -> personal.copy(text = R.string.widget_milestone)
             WidgetSpecialKind.STREAK_BROKEN,
             WidgetSpecialKind.COMEBACK,
             WidgetSpecialKind.NEW_USER,
             WidgetSpecialKind.SEASONAL,
-            -> drawn
+            -> personal
         }
     }
 

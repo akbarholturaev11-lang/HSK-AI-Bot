@@ -4,8 +4,8 @@ Canonical scope/progress: [Master Plan](SMART_REMINDER_MASTER_PLAN.md), D15 and
 latest checkpoint. This document defines the wire and cache contract, not a
 second progress ledger. The pure implementation is
 `app/services/smart_widget_context.py`; authenticated source reads are in
-`smart_widget_context_service.py`. Android rendering/store integration is P4
-tasks 5.5–5.6. iOS and paired macOS/Windows hosts remain later adapters.
+`smart_widget_context_service.py`. The Android passive renderer/store adapter is task 5.5; task 5.6
+separately validates launcher/installed lifecycle. iOS and paired macOS/Windows hosts remain later adapters.
 
 ## Authenticated optional map field
 
@@ -126,3 +126,34 @@ ownership/zero writes and the actual authenticated Android map. Later render
 adapters must consume these semantics and add their real storage/host/privacy/
 launcher lifecycle acceptance. Rollback omits the optional field or uses a
 neutral renderer, preserving P1 OFF/revision/epoch guards and shadow ownership.
+
+## Android passive adapter
+
+`WidgetRefreshBridge` and `WidgetCoordinator` use the existing Retrofit client
+for the exact optional map request. Only a live native auth-generation proof
+can commit a frame under the auth lock; local epoch/request generation and the
+store's separately established binding/revision/generated floors fence replays.
+Ordinary Room/maps never initialize or overwrite accepted personalization.
+Foreground progress/course changes invalidate the old context before live refresh.
+Expiry and device zone/day are checked again inside durable store acceptance.
+
+`WidgetSnapshot.personalContext` is optional raw JSON to preserve installed cache
+decoding when a future or malformed envelope appears. `WidgetPersonalContext`
+checks the complete strict v1 allowlist and semantics before rendering. Unknown
+or expired data renders calm/stale, with no daily completion inferred from raw
+XP/dayComplete. New-session replacement clears old widget state before new
+credentials persist; logout/revoke clears state, and token refresh preserves the
+same link. No bearer token enters the widget cache or intent.
+
+All 31 shared semantic fixtures are exported as complete backend-generated
+wire envelopes by `scripts/export_smart_widget_goldens.py` and consumed by JVM
+resolver/store tests. Generated Android resources use canonical UZ/RU/TJ XML.
+The existing 28 art assets, normal fresh-auth/access destination and best-effort
+OS schedule remain. Rendering neither grants notification permission nor emits
+learning/study jobs. Existing install/open telemetry is separate.
+
+No exact-deadline launcher redraw, remote OFF discovery while offline, real
+provider delivery or installed iOS/Desktop widget support follows from this
+adapter. Task 5.6 covers pin/resize/tap/OS lifecycle; later hosts consume the same
+contract after protected platform bridges exist. Rollback is neutral/ordinary
+projection, retaining OFF, epoch and known revision floors.

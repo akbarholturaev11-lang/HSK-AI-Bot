@@ -6,64 +6,38 @@ Native Android home-screen widget for HSK AI. It is a Glance widget owned by the
 
 | Need | File | Edit |
 | --- | --- | --- |
-| Refresh/reminder/stale times | `android/app/src/main/java/com/pomp/hskai/widget/WidgetPolicy.kt` | Change the constant, then increment `SCHEDULE_VERSION` when the schedule changes. The visual-state boundaries live in `WidgetVisualState.kt`. |
+| Refresh/reminder/stale times | `android/app/src/main/java/com/pomp/hskai/widget/WidgetPolicy.kt` | Change the constant, then increment `SCHEDULE_VERSION` when the schedule changes. Shared semantic validity is defined by the server; the renderer adds no clock thresholds. |
 | When the panda is calm, bored, worried or relieved | `android/app/src/main/java/com/pomp/hskai/widget/WidgetVisualState.kt` | `WidgetVisualResolver` is the only engine that produces a state. Nothing else decides art. |
 | Which drawing and which line a state shows | `android/app/src/main/java/com/pomp/hskai/widget/WidgetArt.kt` | One table, 28 rows. Adding art is a row; the wording stays in resources. |
 | Link/stale/foundation behaviour | `android/app/src/main/java/com/pomp/hskai/widget/WidgetState.kt` | `WidgetStateResolver.resolve` answers access and freshness only, never mood. |
 | Reminder wording variants | `android/app/src/main/res/values*/strings.xml` (`notify_*_body*`) + `StudyNotifications.bodies` | Add the body in all three languages and to the list; `WidgetPolicy.REMINDER_VARIANTS` says how many are rotated. |
-| Widget copy | `android/app/src/main/res/values/widget_strings.xml`, `values-ru/widget_strings.xml`, `values-tg/widget_strings.xml` | Keep all three files in sync; the static translation check enforces this. |
+| Widget copy | `localization/android/main/values*/widget_personal.xml` | Author new personal labels in all three canonical bundles and regenerate. Frozen legacy resources stay byte-identical. |
 | Panda artwork | `android/app/src/main/res/drawable-nodpi/widget_panda_*.webp` | Replace a drawing without changing state or layout code. |
 | Responsive layout | `android/app/src/main/java/com/pomp/hskai/widget/HskAiSmartWidget.kt` | Layout only; state, art and copy selection stay elsewhere. |
 | Add-widget UI | `android/app/src/main/java/com/pomp/hskai/widget/WidgetInstallPromptScreen.kt` | One full-screen prompt for onboarding, the daily reminder and Profile. It previews the real widget (same art and `widgetCopy` as `WidgetContent`) at 2x2 cells on a blurred home screen, hides the AI button, closes itself the moment a widget lands (`HskAiWidgetReceiver.placements` or resume) and then `WidgetPlacedNotice` shows for 1.5 s. On Xiaomi a pin that shows no system UI within 2 s is treated as blocked by the home-screen-shortcuts permission (`WidgetInstallPromptPolicy.pinLooksBlocked`). |
 | API event allowlist | `app/api/android_events.py` | Add an event to the Pydantic literal and the server model allowlist together. |
 
-## Panda qachon nima deydi
+## Personal state and retained art
 
-Bitta dvigatel bor — `WidgetVisualResolver`. Oddiy holatni foydalanuvchining
-**mahalliy vaqti** va **bugungi dars bajarilganiga** qarab tanlaydi. Alohida
-`MILESTONE` signali uchun esa bugun bajarilgandan keyingi server `streak` ham
-o‘qiladi; u vaqt bo‘yicha kayfiyatni almashtirmaydi, faqat milestone matnini
-qo‘shadi.
+`WidgetVisualResolver` consumes only the current authenticated v1 projection
+from [the shared contract](docs/smart-reminders/SMART_WIDGET_CONTEXT.md).
+There are no universal morning/evening/22:00 urgency boundaries in this renderer.
 
-### Mahalliy vaqt bo‘yicha holatlar
+| Shared phase | Existing art family | Copy |
+| --- | --- | --- |
+| `before_study` | `DAY` | Personal study time is ahead |
+| `study_time_reached` | `WAITING` | Personal study time has arrived |
+| `completed` | `COMPLETED` | Verified goal, plan or course completion |
+| Neutral/unknown/quiet/paused/unavailable | `DAY` | Calm permitted progress, no invented urgency |
 
-| Vaqt (mahalliy) | Holat | Kayfiyat | Urgency | Variant |
-| --- | --- | --- | --- | --- |
-| 05:00–09:59 | `MORNING` | ijobiy, yumshoq | 0 | 3 |
-| 10:00–13:59 | `DAY` | do‘stona, tayyor | 1 | 3 |
-| 14:00–17:59 | `WAITING` | zerikkan, kutmoqda | 2 | 4 |
-| 18:00–19:59 | `EVENING` | xafa, xavotirli | 3 | 4 |
-| 20:00–21:59 | `LATE` | tashvishli, jiddiy | 4 | 4 |
-| 22:00–23:59 | `CRITICAL` | vahima, oxirgi imkon | 5 | 5 |
-| 00:00–04:59 | yangi kun oynasi → `MORNING` | ijobiy | 0 | 3 |
-| bugun bajarilgan | `COMPLETED` | xursand, yengil | 0 | 5 |
+Expired/future, wrong owner/epoch/course/day/zone and malformed contexts cannot
+personalize. Access/stale/foundation rendering remains separate. A milestone
+requires verified current-day goal/plan completion plus the known server streak;
+raw reward XP and `dayComplete` are not proof. Other special kinds remain dormant.
+The existing 28 art assets and deterministic FNV variants remain available; the
+passive personal resolver does not produce the old urgent art families.
 
-00:00 da mahalliy kun yangilanadi. Kechagi `CRITICAL` yangi kunga o‘tmaydi:
-soat 00:00–04:59 oynasi `MORNING` sifatida chiziladi.
-
-Vaqt **UTC emas**, foydalanuvchining o‘z zonasida hisoblanadi
-(`ZonedDateTime.hour`). Zona yoki soat o‘zgarsa `WidgetClockReceiver` qayta
-chizadi.
-
-### Ustuvorlik
-
-```
-SPECIAL  >  COMPLETED  >  TIME STATE
-```
-
-- `COMPLETED` **har doim** vaqt eskalatsiyasini bekor qiladi. 23:30 da dars
-  bajarilgan bo‘lsa — `COMPLETED`, `CRITICAL` emas.
-- `SPECIAL` (`WidgetSpecialKind`) — `MILESTONE`, `STREAK_BROKEN`, `COMEBACK`,
-  `NEW_USER`, `SEASONAL`. Bulardan faqat `MILESTONE` da haqiqiy signal bor:
-  kun yopilgan va serverdagi streak `7/30/50/100/365` ga tushgan. Qolgan
-  to‘rttasi arxitekturada nom sifatida turadi — ularni chiqaradigan server
-  yoki lokal maydon yo‘q, yo‘qini o‘ylab topish esa bosh ekranga yolg‘on
-  yozish bo‘lardi.
-- `UNLINKED`, `STALE`, `FOUNDATION` — bular kayfiyat emas, **kirish holati**
-  (`WidgetAccess`). Ular alohida turadi va tinch bir rasmni vaqtincha oladi,
-  chunki ular foydalanuvchining kuni haqida hech narsa demaydi.
-
-### 28 ta rasm va deterministik tanlov
+## 28 ta rasm va deterministik tanlov
 
 Har holatning o‘z rasm oilasi bor: `M01–M03`, `D01–D03`, `W01–W04`,
 `E01–E04`, `L01–L04`, `C01–C05`, `OK01–OK05` — jami 28 ta, `drawable-nodpi`
@@ -73,8 +47,7 @@ Yangi rasm qo‘yayotganda ikki narsaga qarang: **kayfiyat** holatga mos
 keladimi, va **rasmdagi yorug‘lik** holatning soatiga mos keladimi. Tunggi
 osmon `DAY` da turgani kayfiyat to‘g‘ri bo‘lsa ham xatodek ko‘rinadi.
 
-Variant tasodifiy emas. Widget har soatda, har soat o‘zgarganda va launcher
-qayta ishga tushganda qayta chiziladi; tasodifiy tanlov pandani
+Variant tasodifiy emas. Widget yangilanishi OS tomonidan kechiktirilishi mumkin; tasodifiy tanlov pandani
 miltillatardi. Shuning uchun:
 
 ```
@@ -96,16 +69,15 @@ tilda ham to‘liq.
 
 ## Operational contract
 
-- `WidgetSnapshot` contains only a small progress projection — including today's XP and the server's goal for today. Tokens, user IDs and lesson content never enter the widget store or launcher intent.
-- New `WidgetSnapshot` fields must have a default. A cache written by an older build that no longer decodes is dropped, and a dropped cache tells a linked learner to link their account.
-- A goal of `0` means "not known yet": the widget then shows the lifetime XP it used to show and claims nothing about today.
-- When online, every widget/notification lesson open gets a fresh authenticated server access check in `MainActivity`; a failed or stale check lands on Course and consumes the pending destination. Offline, no server check is possible: the app lands on the requested section and also consumes the destination, so a later connection cannot unexpectedly open a lesson.
-- `WidgetStore.epoch` changes on link/logout. A late network response from the previous account is ignored, and the panda's variant may change with it.
-- The widget renders from the local cache only. Glance never performs a network call; background refresh is hourly best effort and Android/WorkManager may delay it. A finished lesson reaches the widget through the existing snapshot publish, which re-renders immediately.
-- Local reminder is opt-in, checked from 20:00 onward, and `WidgetStore.remindOnce` caps delivery to one per local server day. It is separate from the widget's visual state.
-- The reminder body rotates by local day (`ReminderDecision.variant`), so a retried worker cannot change the wording mid-evening.
-- Existing widget work is unique. `SCHEDULE_VERSION` plus `UPDATE` replaces policy safely without parallel workers.
-- Streak is a display layer, not a state controller. It decides the milestone line and the stats line; it never replaces `MORNING`/`DAY`/`WAITING`/`EVENING`/`LATE`/`CRITICAL`.
+- `WidgetRefreshBridge` requests the optional v1 context through a live Android bearer session; Room/ordinary maps cannot establish personal ownership. The store holds only a minimal progress projection and strict allowlisted context, never tokens, raw user/device IDs or lesson content.
+- Installed snapshot fields retain defaults. Personal data is stored as a raw optional JSON element so an unsupported/malformed envelope cannot discard the older linked session. It renders neutral until a valid refresh.
+- Request generation, link epoch, separately established opaque binding, preference revision and generated-time floors fence late/replayed frames. Acceptance holds the auth generation lock through the store write and rechecks expiry at durable acceptance. Foreground progress/course changes invalidate pending personal context before a live refresh.
+- Logout clears the projection and rotates the epoch. Replacement sign-in clears old widget state **before** persisting new credentials, including the interrupted-write window. Token refresh does not relink the widget.
+- Only verified daily learning XP is shown against a verified goal. Otherwise permitted lifetime XP/streak remain ordinary stats; reward counters cannot claim goal completion.
+- Every tap uses the existing authenticated `CurrentLesson`/Course route and its fresh foundation/order/access checks. A cached suggestion never grants access, quota or identity.
+- Glance renders cache only. Existing hourly WorkManager and clock invalidations are best effort; already drawn launcher pixels cannot be revoked at an exact deadline. No new scheduling interval or notification permission is introduced.
+- Legacy opt-in study reminders remain separate pending the P4 server-claim protocol; passive projection does not enqueue/authorize another study send or change consent.
+- Rollback can omit the optional server field or render neutral while preserving epoch/revision floors and OFF settings. Do not restore old fixed-hour urgency as personalization.
 
 ## QA commands
 
@@ -120,4 +92,4 @@ python3 tools/check_palette_matches_miniapp.py
 ./gradlew testPlayDebugUnitTest testDirectDebugUnitTest lintPlayDebug lintDirectDebug assemblePlayDebug assembleDirectDebug
 ```
 
-`WidgetVisualStateTest` covers every local-hour boundary with the day finished and unfinished, the `COMPLETED` override, and deterministic variants. `WidgetArtTest` covers all 28 drawing/line mappings. The instrumentation test `WidgetLayoutTest` covers 2x1, 2x2 and 4x2 sizes, UZ/RU/TJ, light/dark, every access state and all 28 variants. `launcherFixture` can be run with `-e widgetFixture true` on an emulator for a real launcher placement pass.
+`WidgetVisualStateTest` consumes all 31 shared semantic goldens; `WidgetPersonalContextTest` covers strict envelope decoding, live bridge/store races and passive Retrofit fields. Regenerate complete JVM envelopes with `python -m scripts.export_smart_widget_goldens --write` and verify with `--check`. `WidgetPersonalLayoutTest` renders personal copy at all existing sizes in UZ/RU/TJ and both themes; it is not launcher/installed acceptance. `WidgetArtTest` covers all 28 drawing/line mappings. The instrumentation test `WidgetLayoutTest` covers 2x1, 2x2 and 4x2 sizes, UZ/RU/TJ, light/dark, every access state and all 28 variants. `launcherFixture` can be run with `-e widgetFixture true` on an emulator for a real launcher placement pass.

@@ -97,6 +97,10 @@ class HskAiApplication : Application() {
     private suspend fun clearWidgetSession() {
         paymentDecisionMonitor.clear()
         kotlinx.coroutines.withContext(Dispatchers.Main.immediate) { assistant.reset() }
+        clearWidgetProjection()
+    }
+
+    private suspend fun clearWidgetProjection() {
         widgetStore.clear()
         StudyNotifications.cancelReminder(this)
         applicationScope.launch { widgetCoordinator.render() }
@@ -207,6 +211,7 @@ class HskAiApplication : Application() {
                 webClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID,
             ),
             onSessionCleared = ::clearWidgetSession,
+            onSessionReplacing = ::clearWidgetProjection,
             onSessionLinked = { widgetStore.linked(newSession = true) },
             onAuthenticated = { deviceId ->
                 paymentDecisionMonitor.bindDevice(deviceId)

@@ -55,15 +55,15 @@ class HskAiSmartWidget : GlanceAppWidget() {
             val session by app.widgetStore.state.collectAsState(initial)
             val theme by app.appSettings.themeMode.collectAsState(initialTheme)
             // Widget updates are explicit; the state flow is the only source of the snapshot.
-            val now = remember(session.snapshot) { java.time.ZonedDateTime.now() }
+            val now = java.time.ZonedDateTime.now()
             val dark = theme == AppThemeMode.DARK || (theme == AppThemeMode.SYSTEM &&
                 context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
             WidgetContent(
                 context = AppLocale.wrap(context),
                 session = session,
-                access = WidgetStateResolver.resolve(session.linked, session.snapshot, now),
+                access = WidgetStateResolver.resolve(session, now),
                 dark = dark,
-                visual = WidgetVisualResolver.resolve(session.snapshot, session.epoch, now),
+                visual = WidgetVisualResolver.resolve(session, now),
             )
         }
     }
@@ -88,17 +88,18 @@ internal fun widgetCopy(
         else context.getString(asset.text)
     val fresh = access == WidgetAccess.FOUNDATION || access == WidgetAccess.ACTIVE
     val snapshot = session.snapshot
+    val personal = WidgetPersonalContext.current(session, java.time.ZonedDateTime.now())
 
     // Today against today's goal is what decides whether to open the app;
     // the lifetime total is kept only while the goal is still unknown.
     val stats = when {
         !fresh || snapshot == null -> context.getString(R.string.widget_open)
-        snapshot.goalXp > 0 ->
-            context.getString(R.string.widget_stats_goal, snapshot.dailyXp, snapshot.goalXp, snapshot.streak)
+        personal?.goalXp != null && personal.verifiedTodayXp != null ->
+            context.getString(R.string.widget_stats_goal, personal.verifiedTodayXp, personal.goalXp, snapshot.streak)
         else -> context.getString(R.string.widget_stats, snapshot.xp, snapshot.streak)
     }
-    val lesson = if (fresh && snapshot?.lessonOrder != null)
-        context.getString(R.string.widget_lesson, snapshot.level.uppercase(), snapshot.lessonOrder) else "HSK AI"
+    val lesson = if (fresh && personal?.action == "continue" && personal.lessonOrder != null)
+        context.getString(R.string.widget_lesson, personal.level.uppercase(), personal.lessonOrder) else "HSK AI"
     return WidgetCopy(message, stats, lesson)
 }
 
@@ -109,7 +110,7 @@ internal fun WidgetContent(
     session: WidgetSession,
     access: WidgetAccess,
     dark: Boolean,
-    visual: WidgetVisual = WidgetVisualResolver.resolve(session.snapshot, session.epoch),
+    visual: WidgetVisual = WidgetVisualResolver.resolve(session),
 ) {
     val size = LocalSize.current
     val compact = size.height < 110.dp

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_personal_neutral">Омӯзишро идома диҳед.</string>
+    <string name="widget_personal_before">То дарси шумо вақт ҳаст.</string>
+    <string name="widget_personal_reached">Вақти дарс расид.</string>
+    <string name="widget_personal_goal_completed">Ҳадаф иҷро шуд.</string>
+    <string name="widget_personal_plan_completed">Нақша иҷро шуд.</string>
+    <string name="widget_personal_course_completed">Курс анҷом ёфт.</string>
+</resources>

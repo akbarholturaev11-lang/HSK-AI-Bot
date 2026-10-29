@@ -103,8 +103,8 @@ class WidgetLayoutTest {
                     view.layout(0, 0, width, height)
                     val texts = textViews(view)
                     assertTrue("Missing widget copy: $language $state/$variant $size", texts.isNotEmpty())
-                    // Today against today's goal, never the lifetime total.
-                    assertTrue("Missing goal progress: $language $state/$variant", texts.any { it.text.contains("20") && it.text.contains("50") })
+                    // A legacy/reward counter has no verified daily-learning context.
+                    assertTrue("Missing compatible progress: $language $state/$variant", texts.any { it.text.contains("840") })
                     texts.forEach { text ->
                         assertTrue("Clipped vertically: $language $state/$variant ${text.text}", text.height >= (text.layout?.height ?: 0))
                     }

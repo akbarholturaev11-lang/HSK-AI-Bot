@@ -47,74 +47,34 @@ data class WidgetVisual(
     val state: WidgetVisualState,
     val variant: Int,
     val special: WidgetSpecialState? = null,
+    val personalPhase: String? = null,
+    val completionReason: String? = null,
 )
 
-/**
- * Time and today's completion decide the panda. Nothing else does.
- *
- * The order is fixed: a special moment, then a finished day, then the local
- * clock. A finished day therefore stays calm at 23:30 instead of escalating,
- * and an unfinished one keeps asking at 23:30 instead of going to sleep.
- */
+/** Personal semantics come only from the current authenticated shared projection. */
 object WidgetVisualResolver {
-    /** Local-hour boundaries, first hour inclusive. The gap 00:00–04:59 is the new day. */
-    const val MORNING_HOUR = 5
-    const val DAY_HOUR = 10
-    const val WAITING_HOUR = 14
-    const val EVENING_HOUR = 18
-    const val LATE_HOUR = 20
-    const val CRITICAL_HOUR = 22
-
-    /** Round streak days worth marking. The server owns the count; this only reads it. */
     val MILESTONE_DAYS = listOf(7, 30, 50, 100, 365)
 
-    /**
-     * The state the wall clock alone asks for, in the learner's own zone.
-     *
-     * 00:00–04:59 is the reset window: the local day has turned over, so it
-     * opens gently rather than carrying yesterday's [WidgetVisualState.CRITICAL]
-     * into a day that has not been missed yet.
-     */
-    fun timeState(now: ZonedDateTime): WidgetVisualState = when (now.hour) {
-        in MORNING_HOUR until DAY_HOUR -> WidgetVisualState.MORNING
-        in DAY_HOUR until WAITING_HOUR -> WidgetVisualState.DAY
-        in WAITING_HOUR until EVENING_HOUR -> WidgetVisualState.WAITING
-        in EVENING_HOUR until LATE_HOUR -> WidgetVisualState.EVENING
-        in LATE_HOUR until CRITICAL_HOUR -> WidgetVisualState.LATE
-        in CRITICAL_HOUR..23 -> WidgetVisualState.CRITICAL
-        else -> WidgetVisualState.MORNING
-    }
-
-    /**
-     * The only special moment with a real signal behind it.
-     *
-     * A milestone needs the day to be finished, because the streak the server
-     * reports is the run this finished day belongs to. Reading it on an
-     * unfinished day would celebrate yesterday.
-     */
-    fun special(snapshot: WidgetSnapshot?): WidgetSpecialState? {
-        val streak = snapshot?.takeIf { it.dayComplete }?.streak ?: return null
-        if (streak !in MILESTONE_DAYS) return null
-        return WidgetSpecialState(WidgetSpecialKind.MILESTONE, streak)
-    }
-
-    /**
-     * SPECIAL > COMPLETED > time. [key] is a stable per-install value, never
-     * an identifier: see [variantFor].
-     */
-    fun resolve(
-        snapshot: WidgetSnapshot?,
-        key: String,
-        now: ZonedDateTime = ZonedDateTime.now(),
-    ): WidgetVisual {
-        val special = special(snapshot)
-        val state = when {
-            special != null -> WidgetVisualState.COMPLETED
-            snapshot?.dayComplete == true -> WidgetVisualState.COMPLETED
-            else -> timeState(now)
+    fun resolve(session: WidgetSession, now: ZonedDateTime = ZonedDateTime.now()): WidgetVisual {
+        val personal = WidgetPersonalContext.current(session, now)
+        val phase = personal?.phase ?: "neutral"
+        val state = when (phase) {
+            "completed" -> WidgetVisualState.COMPLETED
+            "before_study" -> WidgetVisualState.DAY
+            "study_time_reached" -> WidgetVisualState.WAITING
+            else -> WidgetVisualState.DAY
         }
-        return WidgetVisual(state, variantFor(state, key, now.toLocalDate().toString()), special)
+        val streak = session.snapshot?.streak ?: 0
+        val special = if (phase == "completed" &&
+            (personal?.goalState == "met" || personal?.planCompleted == true) && streak in MILESTONE_DAYS)
+            WidgetSpecialState(WidgetSpecialKind.MILESTONE, streak) else null
+        return WidgetVisual(state, variantFor(state, session.epoch, now.toLocalDate().toString()), special,
+                            phase, personal?.reason)
     }
+
+    /** Legacy caches lack a confirmed binding and can only render neutral art. */
+    fun resolve(snapshot: WidgetSnapshot?, key: String, now: ZonedDateTime = ZonedDateTime.now()): WidgetVisual =
+        resolve(WidgetSession(epoch = key, linked = true, snapshot = snapshot), now)
 
     /**
      * Which drawing of the state to show today.

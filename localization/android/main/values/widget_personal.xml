@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_personal_neutral">O‘qishni davom ettiring.</string>
+    <string name="widget_personal_before">Dars vaqti hali oldinda.</string>
+    <string name="widget_personal_reached">Dars vaqtingiz keldi.</string>
+    <string name="widget_personal_goal_completed">Maqsad bajarildi.</string>
+    <string name="widget_personal_plan_completed">Reja bajarildi.</string>
+    <string name="widget_personal_course_completed">Kurs yakunlandi.</string>
+</resources>

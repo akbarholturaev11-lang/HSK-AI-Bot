@@ -9,6 +9,7 @@ on:
       - codex/i18n-local-first-foundation-20261017
       - codex/p3-main-integration-20261020
       - codex/smart-reminder-p3-telegram-rendering-20261029
+      - codex/smart-reminder-p4-widget-adapter-20261029
     paths:
       - "localization/**"
       - "scripts/i18n_*.py"
