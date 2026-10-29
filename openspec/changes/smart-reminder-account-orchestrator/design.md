@@ -487,8 +487,8 @@ authenticated destination retains current course/foundation/lesson/access
 checks without autostart, tokens or private content in the URL.
 
 Render the current account language and DB custom/default/disabled/media
-snapshot before external authorization, recheck the finite lease after these
-reads, then pass the immutable content to an injected Bot adapter outside SQL.
+snapshot before external authorization, re-evaluate current policy and the finite lease after these
+reads (including a quiet/day boundary crossed while rendering), then pass the immutable content to an injected Bot adapter outside SQL.
 The helper is not registered in runtime. Invalid placeholders, excessive
 provider text or disabled templates cancel before IO. Only provider acceptance
 may record a canonical account-owned, job-deduplicated inbox item in the same

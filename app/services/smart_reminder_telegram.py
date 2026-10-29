@@ -387,6 +387,9 @@ class SmartReminderTelegramService:
                 content = await render_telegram_content(session, actor, row)
             except SmartReminderError as exc:
                 return await self._cancel(session, row, exc.code)
+            # Template SQL may cross a quiet/day boundary even while the lease
+            # is valid. Re-sample all policy at the actual authorization clock.
+            if refused := await self._fresh(session, actor, row, cohort, history_since): return refused
             now = self._now()
             if _utc(row["lease_expires_at"]) <= now:
                 return TelegramResult("telegram_lease_lost", lease.job_id)
