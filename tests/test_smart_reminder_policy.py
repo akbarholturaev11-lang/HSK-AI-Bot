@@ -74,6 +74,22 @@ class PurePolicyTests(unittest.TestCase):
         self.assertEqual(d.scheduled_at, datetime(2026, 10, 28, 2, tzinfo=UTC))
         self.assertFalse(d.dispatch_allowed)
 
+    def test_jitter_around_an_hour_is_one_observed_interval(self):
+        clocks = [(20,57),(21,2),(21,5),(20,59),(21,1)]
+        studies = tuple(VerifiedStudy(f"jitter-{n}","lesson",
+            (context().observed_at-timedelta(days=n+1)).replace(hour=h,minute=m),"old",20)
+            for n,(h,m) in enumerate(clocks))
+        decision = evaluate(context(studies=studies),calibration=SIMULATION)
+        self.assertEqual((decision.time_local,decision.time_source),(time(21,1),"habit"))
+
+    def test_widely_scattered_days_do_not_make_a_minor_exact_mode_a_habit(self):
+        clocks = [(21,0)]*3+[(2,0),(5,0),(8,0),(11,0),(14,0),(17,0)]
+        studies = tuple(VerifiedStudy(f"scattered-{n}","lesson",
+            (context().observed_at-timedelta(days=n+1)).replace(hour=h,minute=m),"old",20)
+            for n,(h,m) in enumerate(clocks))
+        decision = evaluate(context(studies=studies),calibration=SIMULATION)
+        self.assertEqual(decision.time_source,"saved")
+
     def test_sparse_days_and_duplicate_replays_keep_saved_time(self):
         for studies in (samples(days=1) * 40, samples(days=2)):
             d = evaluate(context(studies=studies), calibration=SIMULATION)
@@ -84,11 +100,11 @@ class PurePolicyTests(unittest.TestCase):
                 datetime(2026, 10, 27, 20, n, tzinfo=UTC), "2026-10-27", 8) for n in range(40))
         self.assertEqual(evaluate(context(studies=studies), calibration=SIMULATION).time_local, time(2))
 
-    def test_midnight_tie_does_not_become_noon(self):
+    def test_midnight_cluster_does_not_become_noon(self):
         studies = tuple(VerifiedStudy(str(n), "lesson", datetime(2026, 10, 27-n,
                     23 if n % 2 else 0, 59 if n % 2 else 1, tzinfo=UTC), "old", 20) for n in range(6))
         d = evaluate(context(studies=studies), calibration=SIMULATION)
-        self.assertEqual((d.time_local, d.time_reason), (time(14), "habit_ambiguous"))
+        self.assertEqual((d.time_local, d.time_reason), (time(0, 1), "observed_learning_interval_stable"))
 
     def test_coverage_limits_prevent_adaptation(self):
         for limit in ("uncorroborated_study", "unsupported_study_type", "observation_window_over_limit"):

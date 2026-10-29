@@ -5,7 +5,9 @@ import hashlib
 import json
 
 from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
-from app.services.smart_reminder_policy import _aware_utc
+from app.services.smart_reminder_policy import (
+    APPROVED_HABIT_CALIBRATION, _aware_utc, habit_history_needs_extension,
+)
 from app.services.smart_reminder_preferences import SmartReminderError, SmartReminderPreferencesService
 from app.services.smart_widget_context import project_widget
 
@@ -26,9 +28,15 @@ class SmartWidgetContextService:
             now = _aware_utc(self.clock())  # Never freeze a pre-lock clock.
             context = await SmartReminderPolicyContextService(self.session).load(
                 actor, observed_at=now,
-                history_since=now.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=7),
+                history_since=now - timedelta(days=APPROVED_HABIT_CALIBRATION.recent_calendar_days),
                 expected_level=expected_level,
             )
+            if habit_history_needs_extension(context, APPROVED_HABIT_CALIBRATION):
+                context = await SmartReminderPolicyContextService(self.session).load(
+                    actor, observed_at=now,
+                    history_since=now - timedelta(days=APPROVED_HABIT_CALIBRATION.extended_calendar_days),
+                    expected_level=expected_level,
+                )
             if context.level != context.expected_level:
                 raise SmartReminderError("course_context_changed", 409)
             finished = _aware_utc(self.clock())
@@ -41,4 +49,5 @@ class SmartWidgetContextService:
                 separators=(",", ":"),
             ).encode()).hexdigest()
             return project_widget(replace(context, observed_at=finished), request=request,
-                                  binding=binding, valid_until=authenticated_until).model_dump(mode="json")
+                                  binding=binding, valid_until=authenticated_until,
+                                  calibration=APPROVED_HABIT_CALIBRATION).model_dump(mode="json")

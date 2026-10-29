@@ -15,6 +15,8 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -492,51 +494,21 @@ private fun HomeScreenSlice(session: WidgetSession?, modifier: Modifier = Modifi
 @Composable
 private fun PromptWidget(session: WidgetSession, modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val now = remember(session) { ZonedDateTime.now() }
+    val now = ZonedDateTime.now()
     val access = WidgetStateResolver.resolve(session, now)
     val visual = WidgetVisualResolver.resolve(session, now)
-    val asset = WidgetArt.assetFor(access, visual)
     val copy = widgetCopy(context, session, access, visual)
     val shape = RoundedCornerShape(20.dp)
-
-    Box(
-        modifier = modifier
-            .shadow(10.dp, shape)
-            .clip(shape),
-        contentAlignment = Alignment.BottomStart,
-    ) {
-        Image(
-            painter = painterResource(asset.drawable()),
-            contentDescription = copy.message,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
+    Column(modifier=modifier.shadow(10.dp,shape).clip(shape)
+        .background(WidgetPandaArt.palette(false,visual).background),horizontalAlignment=Alignment.CenterHorizontally) {
+        val palette=WidgetPandaArt.palette(false,visual)
+        androidx.compose.ui.viewinterop.AndroidView(
+            factory={ widgetHeaderViews(context,copy,false,false,palette).apply(context,android.widget.FrameLayout(context)) },
+            update={ widgetHeaderViews(context,copy,false,false,palette).reapply(context,it) },
+            modifier=Modifier.fillMaxWidth().height(54.dp),
         )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .clip(RoundedCornerShape(14.dp))
-                .background(Color.Black.copy(alpha = 0.58f))
-                .padding(horizontal = 10.dp, vertical = 7.dp),
-        ) {
-            Text(
-                text = copy.message,
-                color = Color.White,
-                fontSize = 13.sp,
-                lineHeight = 16.sp,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                text = copy.stats,
-                color = Color.White.copy(alpha = 0.84f),
-                fontSize = 10.sp,
-                lineHeight = 13.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
+        Image(bitmap=WidgetPandaArt.bitmap(context,access,visual).asImageBitmap(),contentDescription=copy.message,
+            contentScale=ContentScale.Fit,modifier=Modifier.fillMaxWidth().weight(1f))
     }
 }
 

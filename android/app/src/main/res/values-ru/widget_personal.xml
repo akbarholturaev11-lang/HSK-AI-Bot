@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="widget_personal_neutral">Продолжайте учиться.</string>
-    <string name="widget_personal_before">Ваш урок ещё впереди.</string>
-    <string name="widget_personal_reached">Время вашего урока.</string>
-    <string name="widget_personal_goal_completed">Цель достигнута.</string>
-    <string name="widget_personal_plan_completed">План выполнен.</string>
-    <string name="widget_personal_course_completed">Курс завершён.</string>
+    <string name="widget_personal_neutral">Урок китайского?</string>
+    <string name="widget_personal_before">До урока ещё время.</string>
+    <string name="widget_personal_reached">Пора за китайский!</string>
+    <string name="widget_personal_goal_completed">Цель взята!</string>
+    <string name="widget_personal_plan_completed">План выполнен!</string>
+    <string name="widget_personal_course_completed">Курс пройден!</string>
+    <plurals name="widget_personal_streak_days">
+        <item quantity="one">Серия: %1$d день</item>
+        <item quantity="few">Серия: %1$d дня</item>
+        <item quantity="many">Серия: %1$d дней</item>
+        <item quantity="other">Серия: %1$d дня</item>
+    </plurals>
 </resources>

@@ -3,11 +3,15 @@ package com.pomp.hskai.widget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.res.Configuration
+import android.util.TypedValue
+import android.widget.RemoteViews
+import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,12 +73,9 @@ class HskAiSmartWidget : GlanceAppWidget() {
     }
 }
 
-internal data class WidgetCopy(val message: String, val stats: String, val lesson: String)
+internal data class WidgetCopy(val message: String, val counter: String, val streakDescription: String)
 
-/**
- * The widget's words for one render. The install prompt draws its preview of
- * the widget from this too, so the two can never say different things.
- */
+/** Both launcher and install preview use the same truthful counter and copy. */
 internal fun widgetCopy(
     context: Context,
     session: WidgetSession,
@@ -86,21 +87,32 @@ internal fun widgetCopy(
         ?.takeIf { access == WidgetAccess.ACTIVE && it.kind == WidgetSpecialKind.MILESTONE }
     val message = if (milestone != null) context.getString(asset.text, milestone.days)
         else context.getString(asset.text)
-    val fresh = access == WidgetAccess.FOUNDATION || access == WidgetAccess.ACTIVE
-    val snapshot = session.snapshot
-    val personal = WidgetPersonalContext.current(session, java.time.ZonedDateTime.now())
+    val permitted = access == WidgetAccess.FOUNDATION || access == WidgetAccess.ACTIVE
+    val streak = session.snapshot?.streak?.takeIf { permitted && it >= 0 }
+    return WidgetCopy(message, streak?.toString() ?: "HSK AI",
+        streak?.let { context.resources.getQuantityString(R.plurals.widget_personal_streak_days,it,it) } ?: "HSK AI")
+}
 
-    // Today against today's goal is what decides whether to open the app;
-    // the lifetime total is kept only while the goal is still unknown.
-    val stats = when {
-        !fresh || snapshot == null -> context.getString(R.string.widget_open)
-        personal?.goalXp != null && personal.verifiedTodayXp != null ->
-            context.getString(R.string.widget_stats_goal, personal.verifiedTodayXp, personal.goalXp, snapshot.streak)
-        else -> context.getString(R.string.widget_stats, snapshot.xp, snapshot.streak)
+/** The launcher and Compose preview share the same rounded native typography. */
+internal fun widgetHeaderViews(context: Context,copy: WidgetCopy,compact: Boolean,wide: Boolean,
+                               palette: WidgetPandaArt.Palette): RemoteViews {
+    val outlineIds=listOf(R.id.widget_streak_outline_n,R.id.widget_streak_outline_ne,
+        R.id.widget_streak_outline_e,R.id.widget_streak_outline_se,R.id.widget_streak_outline_s,
+        R.id.widget_streak_outline_sw,R.id.widget_streak_outline_w,R.id.widget_streak_outline_nw)
+    return RemoteViews(context.packageName,R.layout.widget_streak_header).apply {
+        setViewVisibility(R.id.widget_streak_flame,if(copy.counter=="HSK AI") android.view.View.GONE else android.view.View.VISIBLE)
+        setImageViewResource(R.id.widget_streak_flame,if(palette.outlined) R.drawable.widget_streak_flame else R.drawable.widget_streak_flame_calm)
+        for(id in outlineIds+R.id.widget_streak_count) {
+            setTextViewText(id,copy.counter)
+            setTextViewTextSize(id,TypedValue.COMPLEX_UNIT_SP,if(compact) 15f else if(wide) 28f else 20f)
+        }
+        outlineIds.forEach { setViewVisibility(it,if(palette.outlined) android.view.View.VISIBLE else android.view.View.GONE) }
+        setTextColor(R.id.widget_streak_count,palette.counter.toArgb())
+        setContentDescription(R.id.widget_streak_count,copy.streakDescription)
+        setTextViewText(R.id.widget_streak_message,copy.message)
+        setTextColor(R.id.widget_streak_message,palette.caption.toArgb())
+        setTextViewTextSize(R.id.widget_streak_message,TypedValue.COMPLEX_UNIT_SP,if(wide) 12f else 9f)
     }
-    val lesson = if (fresh && personal?.action == "continue" && personal.lessonOrder != null)
-        context.getString(R.string.widget_lesson, personal.level.uppercase(), personal.lessonOrder) else "HSK AI"
-    return WidgetCopy(message, stats, lesson)
 }
 
 /** No scheduling, network calls or access decisions in the view. */
@@ -115,79 +127,36 @@ internal fun WidgetContent(
     val size = LocalSize.current
     val compact = size.height < 110.dp
     val wide = size.width >= 260.dp
-    val palette = PompColors.paletteFor(dark)
+    val palette = WidgetPandaArt.palette(dark,visual)
 
-    // One engine chose the state, one table chose the drawing and the line.
-    // The artwork fills the widget; copy is a readable overlay on top of it.
-    val asset = WidgetArt.assetFor(access, visual)
-    val (message, stats, lesson) = widgetCopy(context, session, access, visual)
+    val copy = widgetCopy(context, session, access, visual)
 
     // Every tap goes through CurrentLesson; MainActivity performs the fresh bearer/access check.
     val action = actionStartActivity(WidgetIntents.open(context, "widget"))
     val frame = GlanceModifier
         .fillMaxSize()
         .appWidgetBackground()
-        .background(palette.paper)
+        .background(ColorProvider(palette.background))
         .cornerRadius(20.dp)
         .clickable(action)
 
-    val overlay = GlanceModifier
-        .fillMaxWidth()
-        .padding(if (compact) 4.dp else 8.dp)
-        .background(ColorProvider(Color.Black.copy(alpha = if (dark) 0.68f else 0.58f)))
-        .cornerRadius(if (compact) 10.dp else 14.dp)
-        .padding(
-            horizontal = if (compact) 7.dp else 10.dp,
-            vertical = if (compact) 4.dp else 7.dp,
-        )
-
-    val primary = ColorProvider(Color.White)
-    val secondary = ColorProvider(Color.White.copy(alpha = 0.84f))
-
-    Box(modifier = frame, contentAlignment = Alignment.BottomStart) {
-        Image(
-            provider = ImageProvider(asset.drawable()),
-            contentDescription = message,
-            modifier = GlanceModifier.fillMaxSize().cornerRadius(20.dp),
-            contentScale = ContentScale.Crop,
-        )
-
-        Column(modifier = overlay) {
-            if (wide) {
-                Text(
-                    lesson,
-                    style = TextStyle(
-                        color = secondary,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                    ),
-                    maxLines = 1,
-                )
-                Spacer(GlanceModifier.height(2.dp))
-            }
-            Text(
-                message,
-                style = TextStyle(
-                    color = primary,
-                    fontSize = when {
-                        wide -> 15.sp
-                        compact -> 11.sp
-                        else -> 13.sp
-                    },
-                    fontWeight = FontWeight.Bold,
-                ),
-                maxLines = if (compact) 1 else 2,
-            )
-            Text(
-                stats,
-                style = TextStyle(
-                    color = secondary,
-                    fontSize = if (compact) 9.sp else 10.sp,
-                ),
-                maxLines = 1,
-            )
+    // Text and character occupy different cells, never overlapping layers.
+    val header = widgetHeaderViews(context,copy,compact,wide,palette)
+    val panda=WidgetPandaArt.bitmap(context,access,visual)
+    if(compact || wide) {
+        Row(modifier=frame,verticalAlignment=Alignment.CenterVertically) {
+            AndroidRemoteViews(header,modifier=GlanceModifier.width(size.width*0.60f).fillMaxHeight())
+            Image(provider=ImageProvider(panda),contentDescription=copy.message,
+                modifier=GlanceModifier.defaultWeight().fillMaxHeight().padding(2.dp),contentScale=ContentScale.Fit)
+        }
+    } else {
+        Column(modifier=frame,horizontalAlignment=Alignment.CenterHorizontally) {
+            AndroidRemoteViews(header,modifier=GlanceModifier.fillMaxWidth().height(54.dp))
+            Image(provider=ImageProvider(panda),contentDescription=copy.message,
+                modifier=GlanceModifier.fillMaxWidth().defaultWeight(),contentScale=ContentScale.Fit)
         }
     }
+
 }
 
 class HskAiWidgetReceiver : GlanceAppWidgetReceiver() {

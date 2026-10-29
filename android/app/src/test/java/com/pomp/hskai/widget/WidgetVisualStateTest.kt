@@ -26,8 +26,8 @@ internal object PersonalFixtures {
 }
 
 class WidgetVisualStateTest {
-    @Test fun `all 31 backend envelopes retain identical personal meaning`() {
-        assertEquals(31, PersonalFixtures.cases.size)
+    @Test fun `all 36 backend envelopes retain identical personal meaning`() {
+        assertEquals(36, PersonalFixtures.cases.size)
         for (case in PersonalFixtures.cases) {
             val raw = case.jsonObject.getValue("context").jsonObject
             val name = case.jsonObject.getValue("name").jsonPrimitive.content

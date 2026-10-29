@@ -85,9 +85,17 @@ action is not a quota reservation or lesson-access ticket.
 
 Notification channel OFF or OS denial does not blank permitted passive progress
 or create consent. Global OFF restrains unfinished presentation; a completed
-day can still be calmly completed while OFF. Current runtime habit confidence
-remains unconfigured: genuine saved/manual time works, and QA habit fixtures
-are not a deployed confidence threshold. No per-refresh LLM call is made.
+day can still be calmly completed while OFF. The authenticated passive bridge explicitly supplies D16–D18's approved
+`smart-habit-interval-v1` preset: a circular 60-minute sliding interval,
+at least three matching distinct active days and 2/3 concentration; five matching
+days is stable rather than provisional. It queries recent 30-day evidence first
+and extends to 90 only when recent distinct active days are insufficient. The
+pure evaluator selects actual IANA calendar days and an observed circular medoid,
+never a midnight arithmetic average. Existing verified pre-Smart history counts
+immediately; no activation-date waiting period. The original accepted completion
+time is an observation, not a claimed lesson-start timestamp. Missing, conflicting
+or incomplete history keeps manual/saved/neutral fallback. No cadence/send or
+retention purge is activated by this passive preset. No per-refresh LLM call is made.
 
 ## Response acceptance and lifecycle
 
@@ -120,7 +128,7 @@ Finite presentation expiry, local generation fences, known revision changes
 and mandatory live action checks bound that limitation. No instant global
 cache revocation or exact-time refresh is claimed.
 
-Shared fixture source: `tests/fixtures/smart_widget_context_v1.json` (31 semantic
+Shared fixture source: `tests/fixtures/smart_widget_context_v1.json` (36 semantic
 cases). Reference tests also cover envelope/session/replay failures, source
 ownership/zero writes and the actual authenticated Android map. Later render
 adapters must consume these semantics and add their real storage/host/privacy/
@@ -145,11 +153,13 @@ XP/dayComplete. New-session replacement clears old widget state before new
 credentials persist; logout/revoke clears state, and token refresh preserves the
 same link. No bearer token enters the widget cache or intent.
 
-All 31 shared semantic fixtures are exported as complete backend-generated
+All 36 shared semantic fixtures are exported as complete backend-generated
 wire envelopes by `scripts/export_smart_widget_goldens.py` and consumed by JVM
 resolver/store tests. Generated Android resources use canonical UZ/RU/TJ XML.
-The existing 28 art assets, normal fresh-auth/access destination and best-effort
-OS schedule remain. Rendering neither grants notification permission nor emits
+The existing 28 scene assets remain unchanged for recovery. The owner-requested
+active renderer uses three flat transparent panda poses with separate text/art
+cells, rounded readable semantic-color text on a solid canvas, and no overlay panel. The normal
+fresh-auth/access destination and best-effort OS schedule remain. Rendering neither grants notification permission nor emits
 learning/study jobs. Existing install/open telemetry is separate.
 
 No exact-deadline launcher redraw, remote OFF discovery while offline, real
