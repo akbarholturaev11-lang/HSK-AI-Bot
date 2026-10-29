@@ -177,3 +177,22 @@ Android posting authority SHALL bind a pre-reserved selected job, canonical owne
 #### Scenario: Receipt conflicts with its first outcome
 - **WHEN** a repeated callback changes the immutable receipt ID or outcome, or asserts shown/read/learning
 - **THEN** the conflict or unsupported assertion is refused; an exact receipt retry acknowledges once and creates no new attempt
+
+### Requirement: Durable compatible-client migration
+An authenticated read-only migration observation SHALL convey no posting authority. Compatible clients SHALL persist server-only mode before reporting autonomous posting disabled and SHALL require a fresh selected-job claim. They MUST NOT restore legacy posting from unknown mode, offline/error, expired proof or a later false response after the local latch.
+
+#### Scenario: Non-migrated account and unknown migration state
+- **WHEN** a current native session receives explicit supported false mode
+- **THEN** the existing non-migrated legacy policy may run; an unavailable or unsupported response instead fails closed
+
+#### Scenario: FCM and periodic checks race
+- **WHEN** a strict job/day hint and periodic WorkManager run for the same selected job
+- **THEN** one durable request/day journal and live server claim permit at most one local notify invocation; a different or stale hint cannot choose another due job
+
+#### Scenario: App crashes at the OS boundary
+- **WHEN** the request/grant was persisted but its response, OS result or receipt ACK is lost
+- **THEN** restart retries only immutable historical receipts where a grant is known; it never replays cached authority or refunds the consumed day
+
+#### Scenario: Local state changes while claiming
+- **WHEN** logout/relink, auth generation, local OFF, verified completion, permission, day/zone or grant expiry changes before notify
+- **THEN** the compatible client refuses posting; pre-call refusal is distinct from notify success without display proof or an unknown OS-call result

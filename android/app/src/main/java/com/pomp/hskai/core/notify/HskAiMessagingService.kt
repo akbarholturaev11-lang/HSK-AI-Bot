@@ -36,6 +36,10 @@ class HskAiMessagingService : FirebaseMessagingService() {
                     )
                 }
 
+                "smart_study_reminder" -> {
+                    SmartStudyHint.parse(data)?.let { StudyReminderScheduler.hint(applicationContext, it) }
+                }
+
                 "study_reminder" -> {
                     val localDay = data["local_day"]?.takeIf {
                         it.matches(Regex("\\d{4}-\\d{2}-\\d{2}"))

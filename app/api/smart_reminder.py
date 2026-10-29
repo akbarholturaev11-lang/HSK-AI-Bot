@@ -94,7 +94,7 @@ def create_smart_reminder_router(*, session_factory, settings_obj, android_deliv
                     current = await actor(session, request, android)
                     if delivery:
                         service = android_delivery_factory(session) if android_delivery_factory else SmartReminderAndroidService(session)
-                        if delivery == "due": result = await service.due(current)
+                        if delivery in {"due", "mode"}: result = await getattr(service, delivery)(current)
                         else:
                             model = AndroidStudyClaim if delivery == "claim" else AndroidStudyReceipt
                             result = await getattr(service, delivery)(current, job_id, await _payload(request, model))
@@ -140,6 +140,10 @@ def create_smart_reminder_router(*, session_factory, settings_obj, android_deliv
     @router.patch("/api/v3/android/smart-reminder/capability")
     async def android_capability_patch(request: Request):
         return await respond(request, android=True, write=True, capability=True)
+
+    @router.get("/api/v3/android/smart-reminder/mode")
+    async def android_study_mode(request: Request):
+        return await respond(request, android=True, write=False, delivery="mode")
 
     @router.get("/api/v3/android/smart-reminder/due")
     async def android_study_due(request: Request):

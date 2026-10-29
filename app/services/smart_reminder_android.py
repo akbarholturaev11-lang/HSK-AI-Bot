@@ -165,6 +165,17 @@ class SmartReminderAndroidService:
         until = min(_aware_utc(review.valid_until), fenced_until)
         return replace(review, valid_until=until) if now < until else None
 
+    async def mode(self, actor):
+        """Sticky migration observation, never admission or posting authority."""
+        with self.session.no_autoflush:
+            await self._auth(actor)
+            held = await self.session.scalar(select(SmartReminderRouting.user_id).where(
+                SmartReminderRouting.user_id == actor.user_id))
+            disabled = await self.session.scalar(select(CAP.c.autonomous_study_disabled).where(
+                CAP.c.user_id == actor.user_id, CAP.c.device_id == actor.device_id))
+            return {"ok": True, "version": 1, "dispatch_allowed": False,
+                    "server_claim_required": held is not None or disabled is True}
+
     async def due(self, actor):
         with self.session.no_autoflush:
             await self._auth(actor)

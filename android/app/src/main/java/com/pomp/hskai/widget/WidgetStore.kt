@@ -14,6 +14,9 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import java.time.ZonedDateTime
+import com.pomp.hskai.core.notify.SmartStudyOperation
+import com.pomp.hskai.core.notify.StudyPostOutcome
+import kotlinx.coroutines.CancellationException
 
 internal data class WidgetRefreshTicket(val epoch: String, val generation: Long)
 
@@ -125,10 +128,61 @@ class WidgetStore(private val dataStore: DataStore<Preferences>) {
         change { if (it.epoch == epoch) it.copy(events = it.events.filterNot { e -> e.event_id == eventId }) else it }
     }
 
-    /** Reserve durably before posting; logout cannot race a notification delivery. */
+    /** Sticky per account link; an absent/false server answer cannot restore legacy posting. */
+    internal suspend fun acceptStudyMode(epoch: String, required: Boolean): Boolean = mutex.withLock {
+        var accepted = false
+        change { old ->
+            if (!old.linked || old.epoch != epoch) old else {
+                accepted = true
+                old.copy(serverStudyOnly = old.serverStudyOnly || required)
+            }
+        }
+        accepted
+    }
+
+    internal suspend fun reserveStudy(epoch: String, job: String, day: String): SmartStudyOperation? = mutex.withLock {
+        var reserved: SmartStudyOperation? = null
+        change { old ->
+            if (!old.linked || old.epoch != epoch || !old.serverStudyOnly || !old.reminderEnabled ||
+                old.lastReminderDay == day || old.studyOperations.any { it.jobId == job || it.localDay == day }) old
+            else {
+                val op = SmartStudyOperation(jobId = job, localDay = day)
+                reserved = op
+                old.copy(studyOperations = old.studyOperations + op)
+            }
+        }
+        reserved
+    }
+
+    /** Persist possible external outcome before OS IO; never replay a stored grant. */
+    internal suspend fun postStudy(epoch: String, request: String, grant: String, day: String?,
+                                   valid: () -> Boolean, post: () -> StudyPostOutcome) = mutex.withLock {
+        val old = read()
+        val op = old.studyOperations.find { it.requestId == request } ?: return@withLock
+        if (!old.linked || old.epoch != epoch || !old.serverStudyOnly || op.grantId != null) return@withLock
+        val canPost = old.reminderEnabled && day == op.localDay && old.lastReminderDay != day &&
+            !(old.snapshot?.localDay == day && old.snapshot?.dayComplete == true) && valid()
+        val initial = if (canPost) StudyPostOutcome.UNKNOWN else StudyPostOutcome.DECLINED_BEFORE_POST
+        change { it.copy(lastReminderDay = if (canPost) day else it.lastReminderDay,
+            studyOperations = it.studyOperations.map { item -> if (item.requestId == request)
+                item.copy(grantId = grant, outcome = initial.wire) else item }) }
+        if (!canPost) return@withLock
+        val outcome = if (!valid()) StudyPostOutcome.DECLINED_BEFORE_POST else try { post() }
+            catch (cancel: CancellationException) { throw cancel }
+            catch (_: Exception) { StudyPostOutcome.UNKNOWN }
+        change { it.copy(studyOperations = it.studyOperations.map { item ->
+            if (item.requestId == request) item.copy(outcome = outcome.wire) else item }) }
+    }
+
+    internal suspend fun acknowledgeStudy(epoch: String, request: String) = mutex.withLock {
+        change { old -> if (old.epoch != epoch) old else old.copy(studyOperations = old.studyOperations.map {
+            if (it.requestId == request) it.copy(acknowledged = true) else it }) }
+    }
+
+    /** Reserve durably before legacy posting; sticky migration permanently vetoes it. */
     suspend fun remindOnce(epoch: String, day: String, post: () -> Boolean): Boolean = mutex.withLock {
         val current = read()
-        if (!current.linked || !current.reminderEnabled || current.epoch != epoch ||
+        if (!current.linked || !current.reminderEnabled || current.serverStudyOnly || current.epoch != epoch ||
             current.lastReminderDay == day
         ) return@withLock false
         change { it.copy(lastReminderDay = day) }
