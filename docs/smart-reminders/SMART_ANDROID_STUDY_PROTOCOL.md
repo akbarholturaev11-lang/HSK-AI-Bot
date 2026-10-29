@@ -171,3 +171,28 @@ call. An already authorized in-flight client cannot be physically recalled by
 a later OFF/hold. Provider acceptance or a successful notify call proves no
 display/read/learning. Real signed builds, two devices, offline client behavior,
 legacy-client fencing, provider delivery and monitored rollout remain open.
+
+## Repeatable two-device QA acceptance
+
+`tests/e2e/smart_android_two_device.py` drives only two explicitly named
+`Codex_Smart_Mixed_` emulators containing the separate `.qa` app/test package.
+It requires an owned disposable loopback `smart_reminder_qa` PostgreSQL DSN,
+an ephemeral loopback SAN certificate/key and an outside-Git output folder.
+It starts a loopback-only TLS FastAPI router with the existing synthetic native
+SQL fixtures and explicit test-only delivery factory. Real production remains
+disabled. No endpoint/fixture reads real accounts or real provider credentials.
+
+The driver writes synthetic bearer input into the private QA app cache through
+`run-as`, removes it after each test, counts HTTP paths without logging proof,
+and checks committed grants/attempts/outcomes. `SmartStudyTwoDeviceTest` pins
+only that fixture certificate, keeps hostname validation and the normal origin
+guard, and uses no global TLS or production auth bypass. Real API/native auth,
+Retrofit scalar decoding, PostgreSQL and Android durable/OS boundaries run.
+
+One compatible Direct QA and one Play QA installation share a canonical
+synthetic account: only the selected installation can claim/post/receipt.
+A second scenario leaves the other synthetic inventory record without trusted
+capability and requires zero new authority/notify. This negative inventory
+case does not execute or attest a real historical APK/account. Separate signed
+artifact/cold-start evidence likewise does not prove an authenticated signed
+study flow. See Master Plan §17.53; parent 5.3 and canary remain open.
