@@ -34,9 +34,9 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 
 ## 5. P4 — Android protocol and mixed-build cutover
 
-- [ ] 5.1 Add authenticated study-specific capability, selected-job due/claim and truthful receipt routes without reusing `/android/notices/{id}/ack`; verify ownership, blocked/deletion, revoked device, stale epoch, OS study channel denial and account-notice channel independence in focused backend tests. Document the versioned protocol.
+- [x] 5.1 Add authenticated study-specific capability, selected-job due/claim and truthful receipt routes without reusing `/android/notices/{id}/ack`; verify ownership, blocked/deletion, revoked device, stale epoch, OS study channel denial and account-notice channel independence in focused backend tests. Document the versioned protocol.
 - [x] 5.1a Add authenticated own-device study capability GET/PATCH with strict generation CAS, bearer/session-bounded expiry and permission-loss invalidation; verify isolated SQLite/PostgreSQL auth, OFF, lifecycle and notice-independence regressions (§17.50). This creates no posting grant or cohort.
-- [ ] 5.1b Add the selected-job due/claim/truthful-receipt protocol and session/install-bound posting authority under all documented guards. Capability observations alone never complete parent task 5.1.
+- [x] 5.1b Add the selected-job due/claim/truthful-receipt protocol and session/install-bound posting authority under all documented guards. Bounded dormant-backend acceptance is in §17.51; no actual client, producer, admission reader or enabled factory is claimed.
 - [ ] 5.2 Update `StudyReminderCoordinator`, `StudyReminderWorker`, FCM handler and `WidgetStore` so both triggers claim the same server job and compatible clients fail closed offline; verify same-install races, delayed FCM, logout/relink epoch, master OFF and local permission revocation in Android JVM/instrumented checks. Keep local durable guard and direct/Play parity.
 - [ ] 5.3 Verify actual signed Direct/Play compatible builds and historical APK behavior before per-account migration. Run two-device mixed-build/old offline APK tests; keep unknown old-autonomous accounts excluded from central cross-channel dispatch and record the precise physical-display limit in the Master Plan.
 - [ ] 5.4 Canary one compatible Android device, then eligible Telegram plus two-device accounts only after capability/consent/fencing evidence; run real FCM/OS permission/late hint/unknown ACK/definite non-display fallback checks. Verify one authorized logical job and no blind alternate, and record real-device results and rollback in the Master Plan.
@@ -45,7 +45,7 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 
   Bounded acceptance: Master Plan §17.49 records the actual isolated launcher/synthetic-cache proof and Glance redraw fix. Signed/real-account/Doze/provider acceptance remains outside this fixture and is not marked passed; next is 5.1 with dispatch OFF.
 
-  Task 5.1 is bounded into 5.1a capability observation and 5.1b selected-job due/claim/receipt. §17.50 specifies D09 admission checks; numerical model calibration remains open until P6/P7 evidence. Capability telemetry alone never completes 5.1.
+  Task 5.1 is bounded into 5.1a capability observation and 5.1b selected-job due/claim/receipt. §17.50 specifies D09 admission checks; numerical model calibration remains open until P6/P7 evidence. Both backend slices are accepted within §17.51; next is 5.2 and dispatch remains OFF.
 
 ## 6. P6 — outcomes, experiments and protected administration
 

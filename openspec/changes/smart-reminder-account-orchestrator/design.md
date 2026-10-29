@@ -699,3 +699,50 @@ platform/language/feature coverage, with evaluation source/version. Values
 come from held-out calibration plus the powered, owner-reviewed D12 experiment;
 no arbitrary universal days/count/probability is a production default. Missing
 numeric calibration is an explicit ML blocker, not a completed decision.
+
+
+## P4 task 5.1b — selected-job claim and truthful receipt
+
+Baseline `origin/main@3052ad72`, source head 0135. Add 0136 grant tombstones and
+an Android-specific service/HTTP adapter. Existing capability remains an
+observation; there is no job producer, Android admission reader, authoritative
+learning reader or enabling runtime factory installed by this slice. The
+production constructor is disabled and cannot mint authority from client facts.
+QA supplies explicit trusted account/job/device/session-bound admission and
+complete synthetic coverage. Sticky routing must be held before admission;
+existing Telegram ownership and unknown historical APKs cannot pass it.
+Review also pins the bounded current Android inventory digest; new installations,
+sessions or capability/version drift invalidate it. The earliest all-present
+fencing deadline bounds issuance. Hold alone is quarantine, not Android admission.
+
+GET due is non-persisting and returns at most one selected pending job for the
+authenticated device, with no posting grant. POST claim rechecks User-first
+native/account/deletion/consent/OFF, capability generation/freshness, frozen
+job window/epoch/revision/course/target, D1, verified learning/cadence, legacy
+contact and reviewed fencing. Admission and learning attestations are privileged
+inputs, not request flags. A grant binds job, attempt, owner/device/session,
+opaque local epoch, claim request ID, capability/cohort generation and current
+preference epoch/revision. Deadline is bounded by job, auth/session, capability,
+review and known semantic boundaries; no arbitrary product TTL.
+
+Issuance commits an `in_flight` attempt and one unique job grant BEFORE the HTTP
+response can authorize a client OS call. A repeated or lost-response claim does
+not return another grant, even for the same request ID. No automatic reclaim,
+timeout fallback or second-device/channel grant is implemented. The client must
+persist its local guard and recheck local epoch/OS permission/expiry immediately
+before notify; distributed OFF/OS timing cannot guarantee physical display.
+
+POST receipt accepts only original-session/epoch-bound `client_declined_before_post`,
+`client_posted_unverified` or `client_outcome_unknown`. The first receipt is
+immutable and exact retries acknowledge it; conflicting receipts are refused.
+Expired/OFF grants may still record authenticated historical outcome, but never
+renew authority. Revoked sessions/blocked/deletion accounts cannot write. No
+client assertion can become `verified_shown`, read or canonical learning.
+
+0136 retains one grant per job and request uniqueness, User/job/attempt cleanup,
+nullable device/session FKs for retained tombstones and refuses populated
+downgrade. Update model registration and standalone empty-QA head/deferred table
+list; tests validate the real migration, schema parity, account purge, races,
+commit/response-loss, OFF/revoke/permission loss, receipt conflict/replay, DST/day,
+D1/access/goal and current account-notice regressions on SQLite and PostgreSQL.
+Rollback disables admission but retains schema, issuance/outcomes and OFF guards.

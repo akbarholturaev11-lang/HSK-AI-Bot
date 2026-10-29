@@ -159,3 +159,21 @@ Study content and actions SHALL use canonical UZ/RU/TJ text, validated parameter
 #### Scenario: D1 holdout member
 - **WHEN** an account belongs to the active existing D1 recovery control window
 - **THEN** migration and new study routing preserve its no-treatment delivery behavior and do not reassign by device or Telegram transport
+### Requirement: Native issuance and outcome integrity
+Android posting authority SHALL bind a pre-reserved selected job, canonical owner/device/session, local account epoch, current preference/capability/cohort fences and finite server validity. Issuance SHALL commit before authority leaves the server. Client capability alone MUST NOT establish reviewed cohort admission or authorize dispatch.
+
+#### Scenario: Claim response is lost
+- **WHEN** the selected device loses or repeats a response after grant issuance
+- **THEN** the retained issuance prevents another posting grant, even after expiry; no second device/channel or blind retry follows from uncertainty
+
+#### Scenario: Device inventory changes after fencing review
+- **WHEN** the reviewed account gains an installation/session or its relevant device/version/capability evidence changes
+- **THEN** prior admission fails its inventory binding and cannot authorize a fresh grant
+
+#### Scenario: Historical receipt arrives after OFF
+- **WHEN** the original valid native session reports an already-issued outcome after OFF/expiry/dispatcher disable
+- **THEN** the result may be recorded as history without renewing authority; revoked, blocked and deletion contexts remain refused
+
+#### Scenario: Receipt conflicts with its first outcome
+- **WHEN** a repeated callback changes the immutable receipt ID or outcome, or asserts shown/read/learning
+- **THEN** the conflict or unsupported assertion is refused; an exact receipt retry acknowledges once and creates no new attempt
