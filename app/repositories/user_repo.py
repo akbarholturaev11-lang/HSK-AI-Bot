@@ -448,7 +448,7 @@ class UserRepository:
         from app.db.models.android_push import AndroidPushToken
         from app.db.models.smart_reminder import (
             SmartReminderAttempt, SmartReminderCapability, SmartReminderConsent,
-            SmartReminderJob, SmartReminderPreference, SmartReminderMutation,
+            SmartReminderJob, SmartReminderPreference, SmartReminderMutation, SmartReminderRouting,
         )
         from app.db.models.assistant import (
             AssistantAssessment,
@@ -592,7 +592,7 @@ class UserRepository:
         await self.session.execute(sql_delete(SmartReminderAttempt).where(
             SmartReminderAttempt.job_id.in_(smart_jobs)))
         for model in (SmartReminderJob, SmartReminderCapability,
-                      SmartReminderConsent, SmartReminderPreference, SmartReminderMutation):
+                      SmartReminderConsent, SmartReminderPreference, SmartReminderMutation, SmartReminderRouting):
             await self.session.execute(sql_delete(model).where(model.user_id == uid))
 
         # Native/desktop auth zanjiri. SQLite test muhitida ham FK CASCADEga
