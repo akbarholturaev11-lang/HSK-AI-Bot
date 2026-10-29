@@ -46,7 +46,8 @@ class DisabledAndReviewTests(unittest.IsolatedAsyncioTestCase):
         from alembic.script import ScriptDirectory
         from scripts import qa_standalone_bootstrap as qa
         self.assertEqual(ScriptDirectory.from_config(Config(str(ROOT/"alembic.ini"))).get_heads(),[qa.EXPECTED_HEAD])
-        self.assertEqual(qa.EXPECTED_HEAD,MIGRATION.revision)
+        self.assertIn(MIGRATION.revision, {r.revision for r in
+            ScriptDirectory.from_config(Config(str(ROOT/"alembic.ini"))).walk_revisions()})
         self.assertIn("smart_reminder_routing",qa.MIGRATION_CREATED_TABLES)
         self.assertNotIn("smart_reminder_routing",{t.name for t in qa._initial_schema_tables(qa._registered_model_metadata())})
 

@@ -17,6 +17,7 @@ from app.services.smart_reminder_preferences import (
 )
 from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
 from app.services.smart_reminder_capabilities import SmartCapabilityPatch, SmartReminderCapabilityService
+from app.services.smart_reminder_android import AndroidStudyClaim, AndroidStudyReceipt, SmartReminderAndroidService
 
 logger = logging.getLogger(__name__)
 HEADERS = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff"}
@@ -46,7 +47,7 @@ async def _payload(request, model=SmartReminderPatch):
         raise SmartReminderError("smart_request_invalid", 422) from None
 
 
-def create_smart_reminder_router(*, session_factory, settings_obj):
+def create_smart_reminder_router(*, session_factory, settings_obj, android_delivery_factory=None):
     router = APIRouter(tags=["smart-reminder"])
 
     async def actor(session, request, android):
@@ -82,7 +83,7 @@ def create_smart_reminder_router(*, session_factory, settings_obj):
             raise SmartReminderError("smart_account_not_found", 404)
         return SmartReminderActor(user_id, "telegram", telegram_id=verified)
 
-    async def respond(request, *, android, write, capability=False):
+    async def respond(request, *, android, write, capability=False, delivery=None, job_id=None):
         try:
             if request.query_params:
                 raise SmartReminderError("smart_request_invalid", 422)
@@ -91,9 +92,16 @@ def create_smart_reminder_router(*, session_factory, settings_obj):
             async with session_factory() as session:
                 async with session.begin():
                     current = await actor(session, request, android)
-                    service = SmartReminderCapabilityService(session) if capability else SmartReminderPreferencesService(session)
-                    model = SmartCapabilityPatch if capability else SmartReminderPatch
-                    result = await service.patch(current, await _payload(request, model)) if write else await service.read(current)
+                    if delivery:
+                        service = android_delivery_factory(session) if android_delivery_factory else SmartReminderAndroidService(session)
+                        if delivery == "due": result = await service.due(current)
+                        else:
+                            model = AndroidStudyClaim if delivery == "claim" else AndroidStudyReceipt
+                            result = await getattr(service, delivery)(current, job_id, await _payload(request, model))
+                    else:
+                        service = SmartReminderCapabilityService(session) if capability else SmartReminderPreferencesService(session)
+                        model = SmartCapabilityPatch if capability else SmartReminderPatch
+                        result = await service.patch(current, await _payload(request, model)) if write else await service.read(current)
             return JSONResponse(result, headers=HEADERS)
         except SmartReminderError as exc:
             body = {"ok": False, "error": exc.code}
@@ -132,5 +140,17 @@ def create_smart_reminder_router(*, session_factory, settings_obj):
     @router.patch("/api/v3/android/smart-reminder/capability")
     async def android_capability_patch(request: Request):
         return await respond(request, android=True, write=True, capability=True)
+
+    @router.get("/api/v3/android/smart-reminder/due")
+    async def android_study_due(request: Request):
+        return await respond(request, android=True, write=False, delivery="due")
+
+    @router.post("/api/v3/android/smart-reminder/jobs/{job_id}/claim")
+    async def android_study_claim(job_id: str, request: Request):
+        return await respond(request, android=True, write=True, delivery="claim", job_id=job_id)
+
+    @router.post("/api/v3/android/smart-reminder/jobs/{job_id}/receipt")
+    async def android_study_receipt(job_id: str, request: Request):
+        return await respond(request, android=True, write=True, delivery="receipt", job_id=job_id)
 
     return router
