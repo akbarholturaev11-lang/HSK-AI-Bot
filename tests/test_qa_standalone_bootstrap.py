@@ -54,7 +54,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
 
         config = mod._reviewed_alembic_config()
         self.assertEqual(ScriptDirectory.from_config(config).get_heads(),
-                         ["0132_admin_pwa_campaign_schedule"])
+                         [mod.EXPECTED_HEAD])
         self.assertEqual(mod.EXPECTED_BASELINE, "0102_payment_review_preview")
 
     def test_new_or_multiple_heads_stop_before_any_schema_creation_or_stamp(self):
@@ -76,6 +76,9 @@ class StandaloneQAInitializerTests(unittest.TestCase):
         metadata = mod._registered_model_metadata()
         initial = {table.name for table in mod._initial_schema_tables(metadata)}
         expected = {
+            "smart_reminder_android_grants", "smart_reminder_routing", "smart_reminder_mutations",
+            "smart_reminder_preferences", "smart_reminder_consents", "smart_reminder_capabilities",
+            "smart_reminder_jobs", "smart_reminder_attempts",
             "admin_pwa_outbound_jobs", "admin_pwa_outbound_recipients", "admin_pwa_outbound_events", "admin_pwa_payout_proofs", "admin_pwa_campaign_assets",
             "public_site_traffic_daily", "admin_pwa_sessions", "admin_pwa_approvals",
             "admin_pwa_oauth_attempts", "admin_pwa_enrollment_grants",
