@@ -588,3 +588,30 @@ all notification flags, day guards and Smart consent/ownership.
 ## Open Questions
 
 The exact weekly cap, category cooldown, reactivation thresholds, retention TTLs, ML quality gate and experiment targets remain deliberately unset by D03/D05/D08/D09/D12/D13. P0/P6 measurement and the Master Plan's owner decision process must settle values before those policies are enabled. The contract and phased implementation path above do not depend on assuming any of these numbers.
+
+
+## Owner follow-up: widget typography and interval habit evidence
+
+Authoritative scope and decisions: Master Plan §17.47, D16 (60-minute circular
+sliding interval) and D17 (recent 30 calendar days, extend to 90 if insufficient).
+The previous task source has not reached main. Before publishing, remove the
+dark widget panel and secondary XP/lesson clutter, place the actual permitted
+streak at upper center with brief canonical UZ/RU/TJ copy beneath it, and keep
+panda art visible. Select readable per-art text styling without a panel; preserve
+normal tap/auth/expiry and retained assets. Verify real RemoteViews at all three
+sizes/languages/themes, including text fitting and unobscured art.
+
+Replace exact-minute habit votes with versioned explicit circular sliding-window
+calibration. Keep one first accepted verified sample per local day, no hour-bin
+boundary artifact, no arithmetic midnight average, no replays/outliers overriding
+a real cluster, and fail closed for comparable disjoint modes or limited coverage.
+The representative is an observed minute. Confidence/day thresholds stay explicit
+until D18 owner choice; no production default or provider wiring is inferred.
+
+Use existing trusted pre-Smart history with canonical owner/course/server-result
+proof; never gate it on preference creation or Smart activation date. Observation
+selection is 30 recent calendar days with a bounded 90-day extension when useful
+personal evidence is insufficient, not a raw-data retention policy. Prove this in
+read-only SQLite/PostgreSQL fixtures, including old history, duplicate clients,
+reward/open exclusions, midnight/DST, jitter, sparse and mixed-mode cases. Reuse
+shared widget goldens and preserve manual/saved fallback and dispatch OFF.
