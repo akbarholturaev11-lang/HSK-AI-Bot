@@ -142,6 +142,7 @@ def notification_copy(key: str, lang: str, text: str) -> tuple[str, str]:
 def _localized_copy(
     row: CourseUserNotification,
     lang: str | None,
+    rendered: str | None = None,
 ) -> tuple[str, str]:
     """Render a stored notification in the language the reader is using now.
 
@@ -159,7 +160,7 @@ def _localized_copy(
     if params.get("template_service"):
         # Needs a database session, so `list_for_user` resolves these before
         # calling here and passes the result in as `_rendered`.
-        rendered = params.get("_rendered")
+        rendered = rendered or params.get("_rendered")
         if rendered:
             return notification_copy(row.key, reader, str(rendered))
         return notification_title(row.key, reader), row.body
@@ -185,11 +186,11 @@ class CourseNotificationService:
         self.session = session
 
     @staticmethod
-    def payload(row: CourseUserNotification, lang: str | None = None) -> dict[str, Any]:
+    def payload(row: CourseUserNotification, lang: str | None = None, *, rendered: str | None = None) -> dict[str, Any]:
         created_at = row.created_at
         if created_at and created_at.tzinfo is None:
             created_at = created_at.replace(tzinfo=timezone.utc)
-        title, body = _localized_copy(row, lang)
+        title, body = _localized_copy(row, lang, rendered)
         return {
             "id": int(row.id),
             "key": row.key,
@@ -211,23 +212,22 @@ class CourseNotificationService:
         )
         reader_language = getattr(user, "language", None)
         rows = list(result.scalars().all())
-        await self._resolve_admin_templates(rows, reader_language)
-        return [self.payload(row, reader_language) for row in rows]
+        rendered = await self._resolve_admin_templates(rows, reader_language)
+        return [self.payload(row, reader_language, rendered=rendered.get(row.id)) for row in rows]
 
     async def _resolve_admin_templates(
         self,
         rows: list[CourseUserNotification],
         lang: str | None,
-    ) -> None:
+    ) -> dict[int, str]:
         """Re-render motivation reminders, whose templates live in the database.
 
         These cannot be rebuilt inside `payload` because looking them up needs a
-        session. Rendering happens here, once per row, and the result rides
-        along in `params["_rendered"]` — an in-memory field only, never written
-        back, so the stored row keeps the text that was actually sent.
+        session. Return presentation data separately: assigning a replacement
+        JSON dict to a tracked ORM row would persist it on a later commit.
         """
         if lang not in ("uz", "ru", "tj"):
-            return
+            return {}
         pending = [
             row
             for row in rows
@@ -236,11 +236,12 @@ class CourseNotificationService:
             and row.language != lang
         ]
         if not pending:
-            return
+            return {}
         from app.services.notification_template_service import NotificationTemplateService
 
         templates = NotificationTemplateService(self.session)
         cache: dict[str, str] = {}
+        rendered: dict[int, str] = {}
         for row in pending:
             key = str(row.params.get("template_service") or "")
             try:
@@ -256,9 +257,10 @@ class CourseNotificationService:
                     if name != "template_service" and not name.startswith("_")
                 }
                 # A missing placeholder must leave the row alone, not blank it.
-                row.params = {**row.params, "_rendered": text.format(**fields)}
+                rendered[row.id] = text.format(**fields)
             except Exception:  # noqa: BLE001 - the stored copy is the fallback
                 continue
+        return rendered
 
     async def record(
         self,
@@ -295,7 +297,8 @@ class CourseNotificationService:
             language=lang,
             title=normalized_title[:160],
             body=normalized_body,
-            params=params if isinstance(params, dict) and params.get("template") else None,
+            params={k: v for k, v in params.items() if not k.startswith("_")}
+            if isinstance(params, dict) and (params.get("template") or params.get("template_service")) else None,
             action=action,
             level=str(level or "").strip().lower()[:32] or None,
             lesson_order=normalized_lesson,
