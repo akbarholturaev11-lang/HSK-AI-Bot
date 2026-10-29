@@ -17,6 +17,8 @@ spec.loader.exec_module(mod)
 
 SAFE = {
     "RAILWAY_PROJECT_ID": mod.QA_PROJECT_ID,
+    "RAILWAY_ENVIRONMENT_ID": mod.QA_ENVIRONMENT_ID,
+    "RAILWAY_SERVICE_ID": mod.QA_SERVICE_ID,
     "RAILWAY_ENVIRONMENT_NAME": "qa",
     "HSK_QA_EMPTY_DB_BOOTSTRAP": "I_APPROVE_EMPTY_QA_DB",
     "DATABASE_URL": "postgresql+asyncpg://test:dummy@postgres.railway.internal:5432/railway",
@@ -29,6 +31,9 @@ class StandaloneQAInitializerTests(unittest.TestCase):
 
     def test_all_other_environments_are_rejected(self):
         deltas = [
+            {"RAILWAY_PROJECT_ID": "7f737cb9-be6a-45cd-b6b3-8263b41d1cfd"},
+            {"RAILWAY_ENVIRONMENT_ID": "other"},
+            {"RAILWAY_SERVICE_ID": "other"},
             {"RAILWAY_PROJECT_ID": "82d12023-f6cd-46ce-ad43-b73fcc037027"},
             {"RAILWAY_ENVIRONMENT_NAME": "production"},
             {"RAILWAY_ENVIRONMENT_NAME": "staging"},
