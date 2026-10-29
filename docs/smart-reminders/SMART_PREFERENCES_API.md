@@ -127,3 +127,49 @@ canonical deletion; finite job/attempt expiry stops authorization, not evidence
 retention. Capability observations are removed at lifecycle invalidation. D13's
 exact per-class raw/job/attempt/receipt retention periods remain unresolved; no
 numeric cleanup policy or additional behavioral history is introduced here.
+
+## P4 task 5.1a: Android capability observation
+
+GET/PATCH `/api/v3/android/smart-reminder/capability` uses the same native-only
+bearer authentication, current User/device/session/deletion rechecks, bounded
+strict JSON parsing and no-store responses. There is one existing capability
+row per authenticated device; the client cannot supply owner, device/session,
+observation timestamps, expiry, cohort generation or posting authority.
+
+GET creates nothing. Missing state is generation/protocol `0`, unknown nullable
+flags, no timestamps and `fresh=false`. The response always includes
+`observation_only=true` and `dispatch_allowed=false`. `fresh` means the
+observation is within its auth-bounded interval, not that a device is eligible
+for new study delivery. No device IDs or credentials are returned.
+
+PATCH requires all four fields:
+
+| Field | Meaning |
+| --- | --- |
+| `expected_generation` | Strict nonnegative integer from this device's GET. CAS observation counter; distinct from preference revision, grant epoch and operator cohort generation. |
+| `protocol_version` | Strict integer 0 (unknown/unsupported) or 1 (reported contract version); never proves a signed build or historical-client fencing. |
+| `autonomous_study_disabled` | JSON boolean or null reporting this install's current state; not a trusted fleet attestation. |
+| `study_notifications_allowed` | JSON boolean or null reporting study-channel capability separately from account notices and study consent. |
+
+The server increments observation generation and sets `observed_at` and
+`expires_at`; expiry is the earlier of the verified access-bearer deadline and
+current native-session deadline. No arbitrary product TTL is introduced.
+Stale/saturated generation returns `409 smart_capability_generation_conflict`.
+An unknown permission cannot replace a known denial (`409
+smart_capability_denial_unresolved`); a fresh explicit boolean observation is
+required. Expiry does not erase stored denial. On a lost acknowledgement,
+read GET and reconcile; there is no blind write retry or posting grant to replay.
+
+Losing a protocol/autonomous-disable/study-permission prerequisite invalidates
+pending authority through the existing User-first lifecycle service. Preference
+revision/grant epoch may advance, so clients refresh preferences before a later
+intent CAS. Explicit master/channel ON/OFF and native account-notice settings
+are not rewritten. Already externalized/unknown attempts keep their truth;
+invalidation grants no alternate send. A positive observation cannot restore
+OFF or enroll a cohort. Removing this adapter for rollback must retain the
+stored denial, existing P1 guards and schema knowledge.
+
+No Android client invokes this new adapter yet. Selected-job due/claim/receipt
+routes and session/install-bound posting grants are still task 5.1b; this
+observation row alone must never be used as authorization to post. Existing
+account-notice `/notices/{id}/ack` and its fallback remain independent.

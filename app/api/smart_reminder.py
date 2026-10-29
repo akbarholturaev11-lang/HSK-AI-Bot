@@ -1,6 +1,7 @@
 """V1 Smart preference adapters. No cookie/query/body-selected ownership."""
 import json
 import logging
+from datetime import datetime, timezone
 from urllib.parse import parse_qsl
 
 from fastapi import APIRouter, Request
@@ -15,6 +16,7 @@ from app.services.smart_reminder_preferences import (
     SmartReminderActor, SmartReminderError, SmartReminderPatch, SmartReminderPreferencesService,
 )
 from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
+from app.services.smart_reminder_capabilities import SmartCapabilityPatch, SmartReminderCapabilityService
 
 logger = logging.getLogger(__name__)
 HEADERS = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff"}
@@ -30,7 +32,7 @@ def _unique(pairs):
     return result
 
 
-async def _payload(request):
+async def _payload(request, model=SmartReminderPatch):
     if request.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
         raise SmartReminderError("smart_json_required", 415)
     raw = bytearray()
@@ -39,7 +41,7 @@ async def _payload(request):
         if len(raw) > MAX_BYTES:
             raise SmartReminderError("smart_request_too_large", 413)
     try:
-        return SmartReminderPatch.model_validate(json.loads(raw, object_pairs_hook=_unique))
+        return model.model_validate(json.loads(raw, object_pairs_hook=_unique))
     except (ValueError, TypeError, ValidationError):
         raise SmartReminderError("smart_request_invalid", 422) from None
 
@@ -56,7 +58,9 @@ def create_smart_reminder_router(*, session_factory, settings_obj):
             current = await DesktopAuthService(session, settings_obj).authenticate(bearer_access_token(request))
             if current.device.platform != "android":
                 raise SmartReminderError("android_device_required", 403)
-            return SmartReminderActor(current.user.id, "android", device_id=current.device.id, session_id=current.session.id)
+            return SmartReminderActor(current.user.id, "android", device_id=current.device.id,
+                session_id=current.session.id,
+                access_expires_at=datetime.fromtimestamp(current.claims["exp"], timezone.utc))
         if request.headers.get("Authorization"):
             raise SmartReminderError("smart_auth_ambiguous", 401)
         raw = request.headers.get("X-Telegram-Init-Data", "")
@@ -78,7 +82,7 @@ def create_smart_reminder_router(*, session_factory, settings_obj):
             raise SmartReminderError("smart_account_not_found", 404)
         return SmartReminderActor(user_id, "telegram", telegram_id=verified)
 
-    async def respond(request, *, android, write):
+    async def respond(request, *, android, write, capability=False):
         try:
             if request.query_params:
                 raise SmartReminderError("smart_request_invalid", 422)
@@ -87,8 +91,9 @@ def create_smart_reminder_router(*, session_factory, settings_obj):
             async with session_factory() as session:
                 async with session.begin():
                     current = await actor(session, request, android)
-                    service = SmartReminderPreferencesService(session)
-                    result = await service.patch(current, await _payload(request)) if write else await service.read(current)
+                    service = SmartReminderCapabilityService(session) if capability else SmartReminderPreferencesService(session)
+                    model = SmartCapabilityPatch if capability else SmartReminderPatch
+                    result = await service.patch(current, await _payload(request, model)) if write else await service.read(current)
             return JSONResponse(result, headers=HEADERS)
         except SmartReminderError as exc:
             body = {"ok": False, "error": exc.code}
@@ -119,5 +124,13 @@ def create_smart_reminder_router(*, session_factory, settings_obj):
     @router.patch("/api/v3/android/smart-reminder/preferences")
     async def android_patch(request: Request):
         return await respond(request, android=True, write=True)
+
+    @router.get("/api/v3/android/smart-reminder/capability")
+    async def android_capability_read(request: Request):
+        return await respond(request, android=True, write=False, capability=True)
+
+    @router.patch("/api/v3/android/smart-reminder/capability")
+    async def android_capability_patch(request: Request):
+        return await respond(request, android=True, write=True, capability=True)
 
     return router
