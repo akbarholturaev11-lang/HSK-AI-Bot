@@ -62,7 +62,9 @@ the proof, adds a product TTL or promises an OS refresh at that instant. DST
 days use real midnight boundaries, including 23/25/23.5-hour days. Ambiguous or
 nonexistent personal clocks remain neutral instead of silently shifting time.
 If time advances while User is locked/validated, generated time is sampled
-again. Offline adapters become neutral at expiry even if the OS delays refresh.
+again. Every draw, including an offline draw, rechecks expiry and uses neutral
+semantics once proof expires. The OS may keep a previously drawn frame until
+the next permitted redraw; this is not an extension of proof or an access grant.
 
 ## Semantics and reason codes
 
@@ -167,3 +169,45 @@ provider delivery or installed iOS/Desktop widget support follows from this
 adapter. Task 5.6 covers pin/resize/tap/OS lifecycle; later hosts consume the same
 contract after protected platform bridges exist. Rollback is neutral/ordinary
 projection, retaining OFF, epoch and known revision floors.
+
+An active Glance session observes an in-process render clock, advanced by
+coordinator redraw, provider update and host resize. This is necessary even
+when stored Preferences are unchanged: `update` alone does not restart an
+active `provideGlance`. Existing best-effort hourly work and OS clock/zone
+broadcasts remain; no exact alarm or background timer is added.
+
+### Isolated launcher regression
+
+`WidgetLauncherTest` is opt-in (`-e widgetHost true`) and refuses non-QA
+packages and non-emulator hardware. Use a fresh isolated QA app installation
+on an owned API 36 emulator with the English Pixel Launcher and notification
+permission denied. It seeds synthetic widget cache only, not credentials or
+real learning, and temporarily changes/restores the emulator timezone. Normal
+instrumentation runs skip this test. The three existing render sizes and
+UZ/RU/TJ remain covered by the separate renderer/JVM fixtures.
+
+Build both test APKs from `android/` using a reserved, unreachable origin:
+
+```bash
+./gradlew --no-daemon -PPOMP_QA_API_ORIGIN=https://hsk-widget-qa.invalid \
+  assembleDirectDebug assembleDirectDebugAndroidTest assemblePlayDebugAndroidTest
+```
+
+After installing the Direct QA app and instrumentation APK on that emulator,
+run with its explicit serial and a fresh output directory name:
+
+```bash
+adb -s OWNED_EMULATOR_SERIAL shell am instrument -w -r \
+  -e class com.pomp.hskai.widget.WidgetLauncherTest \
+  -e widgetHost true -e widgetQaOutput UNIQUE_RUN_DIRECTORY \
+  com.pomp.hskai.qa.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+Require the successful result, then inspect that run's screenshots, UI dumps
+and real `AppWidgetManager` options under the QA app's external files. Pinning
+uses the real OS confirmation and resize uses launcher accessibility actions;
+hidden-page nodes do not count as visible proof. The test cancels QA work after
+pinning to isolate cached frames from missing-credential refresh. Its
+unauthenticated tap verifies the ordinary entry intent and failed auth, not a
+real account's lesson/access acceptance. Do not use a production account or
+claim real FCM, signed-build, Doze timing or another OS host from these fixtures.

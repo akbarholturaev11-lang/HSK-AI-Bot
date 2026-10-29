@@ -639,3 +639,16 @@ the native header with Compose preview, keep old scene assets unchanged for
 recovery and inspect only fresh per-run instrumentation images. Native decorative
 outline layers do not add accessible duplicate text. This UI delta changes no
 wire, auth, cadence, consent, grant, lesson or provider contract.
+
+
+## Bounded 5.6 launcher/lifecycle acceptance and D24 deferral
+
+Authority: Master Plan §17.48 and owner D24. Expanded streak/emotion artwork is
+last task 9.4; retain the selected current baseline and do not generate new poses
+in this slice. Existing 5.6 proceeds on refreshed main 4c986c09, with QA-only
+instrumentation and actual isolated host/launcher evidence. Bind fixtures only
+to the reserved QA app/origin, with no real account, provider or production DB.
+Exercise pin/host sizing, normal tap/auth, offline/expiry/future/day-zone,
+permission/OFF and logout epoch fences. Keep exact OS observations separate
+from renderer/unit results and fix only reproduced functional lifecycle issues.
+No new runtime module, dispatch/calibration/consent or signed release is inferred.

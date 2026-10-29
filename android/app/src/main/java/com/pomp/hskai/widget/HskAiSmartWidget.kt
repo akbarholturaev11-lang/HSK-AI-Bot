@@ -3,6 +3,7 @@ package com.pomp.hskai.widget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Bundle
 import android.util.TypedValue
 import android.widget.RemoteViews
 import androidx.glance.appwidget.AndroidRemoteViews
@@ -49,17 +50,24 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 
 class HskAiSmartWidget : GlanceAppWidget() {
+    companion object {
+        // A running Glance session can ignore an update with unchanged Preferences.
+        // Explicit redraws must still re-evaluate expiry, local day and device zone.
+        internal val renderClock = MutableStateFlow(java.time.ZonedDateTime.now())
+        internal fun advanceClock() { renderClock.value = java.time.ZonedDateTime.now() }
+    }
+
     override val sizeMode = SizeMode.Responsive(setOf(DpSize(130.dp, 48.dp), DpSize(130.dp, 110.dp), DpSize(260.dp, 110.dp)))
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val app = context.applicationContext as HskAiApplication
         val initial = app.widgetStore.read()
         val initialTheme = app.appSettings.themeMode.first()
+        advanceClock()
         provideContent {
             val session by app.widgetStore.state.collectAsState(initial)
             val theme by app.appSettings.themeMode.collectAsState(initialTheme)
-            // Widget updates are explicit; the state flow is the only source of the snapshot.
-            val now = java.time.ZonedDateTime.now()
+            val now by renderClock.collectAsState()
             val dark = theme == AppThemeMode.DARK || (theme == AppThemeMode.SYSTEM &&
                 context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
             WidgetContent(
@@ -172,6 +180,7 @@ class HskAiWidgetReceiver : GlanceAppWidgetReceiver() {
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        HskAiSmartWidget.advanceClock()
         // Only actual provider IDs mean "pinned". Dispatching a pin request is not success.
         val prefs = context.getSharedPreferences("widget_installations", Context.MODE_PRIVATE)
         val actual = appWidgetManager.getAppWidgetIds(android.content.ComponentName(context, javaClass)).toSet()
@@ -187,6 +196,12 @@ class HskAiWidgetReceiver : GlanceAppWidgetReceiver() {
         }
         WidgetScheduler.schedule(context)
         super.onUpdate(context, appWidgetManager, appWidgetIds)
+    }
+
+    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager,
+                                           appWidgetId: Int, newOptions: Bundle) {
+        HskAiSmartWidget.advanceClock()
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {

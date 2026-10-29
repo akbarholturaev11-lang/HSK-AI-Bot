@@ -83,6 +83,7 @@ class WidgetCoordinator(private val app: HskAiApplication, private val eventsApi
     }
 
     suspend fun render() {
+        HskAiSmartWidget.advanceClock()
         GlanceAppWidgetManager(app).getGlanceIds(HskAiSmartWidget::class.java).forEach { id ->
             HskAiSmartWidget().update(app, id)
         }
