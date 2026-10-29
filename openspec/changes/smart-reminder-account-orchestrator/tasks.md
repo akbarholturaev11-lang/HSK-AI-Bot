@@ -35,6 +35,8 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 ## 5. P4 — Android protocol and mixed-build cutover
 
 - [ ] 5.1 Add authenticated study-specific capability, selected-job due/claim and truthful receipt routes without reusing `/android/notices/{id}/ack`; verify ownership, blocked/deletion, revoked device, stale epoch, OS study channel denial and account-notice channel independence in focused backend tests. Document the versioned protocol.
+- [x] 5.1a Add authenticated own-device study capability GET/PATCH with strict generation CAS, bearer/session-bounded expiry and permission-loss invalidation; verify isolated SQLite/PostgreSQL auth, OFF, lifecycle and notice-independence regressions (§17.50). This creates no posting grant or cohort.
+- [ ] 5.1b Add the selected-job due/claim/truthful-receipt protocol and session/install-bound posting authority under all documented guards. Capability observations alone never complete parent task 5.1.
 - [ ] 5.2 Update `StudyReminderCoordinator`, `StudyReminderWorker`, FCM handler and `WidgetStore` so both triggers claim the same server job and compatible clients fail closed offline; verify same-install races, delayed FCM, logout/relink epoch, master OFF and local permission revocation in Android JVM/instrumented checks. Keep local durable guard and direct/Play parity.
 - [ ] 5.3 Verify actual signed Direct/Play compatible builds and historical APK behavior before per-account migration. Run two-device mixed-build/old offline APK tests; keep unknown old-autonomous accounts excluded from central cross-channel dispatch and record the precise physical-display limit in the Master Plan.
 - [ ] 5.4 Canary one compatible Android device, then eligible Telegram plus two-device accounts only after capability/consent/fencing evidence; run real FCM/OS permission/late hint/unknown ACK/definite non-display fallback checks. Verify one authorized logical job and no blind alternate, and record real-device results and rollback in the Master Plan.
@@ -42,6 +44,8 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 - [x] 5.6 Validate Android widget pin/resize/refresh/tap, offline/future/expired context, midnight/DST, notification OFF and denied permission, canonical UZ/RU/TJ and rollback in an isolated launcher. Verify passive rendering creates no study intent, provider attempt, permission prompt or learning receipt; document OS refresh limits and distinguish JVM results from real widget/device acceptance.
 
   Bounded acceptance: Master Plan §17.49 records the actual isolated launcher/synthetic-cache proof and Glance redraw fix. Signed/real-account/Doze/provider acceptance remains outside this fixture and is not marked passed; next is 5.1 with dispatch OFF.
+
+  Task 5.1 is bounded into 5.1a capability observation and 5.1b selected-job due/claim/receipt. §17.50 specifies D09 admission checks; numerical model calibration remains open until P6/P7 evidence. Capability telemetry alone never completes 5.1.
 
 ## 6. P6 — outcomes, experiments and protected administration
 
@@ -67,7 +71,7 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 - [ ] 9.2 Drill kill-switch rollback during pending, accepted-unknown and explicit-OFF states; verify pending grants expire, no ambiguous replay or blind legacy resume, consent revisions persist and a destructive schema downgrade is refused. Record observed provider/device behavior and remaining limitations.
 - [ ] 9.3 Complete monitored staged canary and real Telegram/two-Android-device acceptance, reconcile all old study senders, experiment guardrails and owner acceptance; record exact commit, CI, staging, device and rollout evidence in the Master Plan before marking P8 or the feature complete.
 
-- [ ] 9.4 **D24 — LAST finishing task:** expand the selected modern panda into truthful beginner/growing/30+ streak/milestone and playful impatient/anxious/recovery/celebration variants after the other functional work. Keep streak age separate from personal daily phase; completed/quiet/unknown states remain calm, and broken-streak/comeback requires real evidence. Add canonical UZ/RU/TJ copy and affected client/renderer checks before final product signoff. Current active work remains 5.6; no extra art generation during it.
+- [ ] 9.4 **D24 — LAST finishing task:** expand the selected modern panda into truthful beginner/growing/30+ streak/milestone and playful impatient/anxious/recovery/celebration variants after the other functional work. Keep streak age separate from personal daily phase; completed/quiet/unknown states remain calm, and broken-streak/comeback requires real evidence. Add canonical UZ/RU/TJ copy and affected client/renderer checks before final product signoff. Current active work is P4 5.1; no extra art generation during functional work.
 
 ## Workflow follow-up
 

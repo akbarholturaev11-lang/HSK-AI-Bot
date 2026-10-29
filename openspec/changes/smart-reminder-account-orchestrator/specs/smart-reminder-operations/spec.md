@@ -114,3 +114,15 @@ Eligible new and sparse-history learners SHALL receive useful deterministic rule
 #### Scenario: Model degraded after activation
 - **WHEN** model quality, freshness, availability or a safety guard fails
 - **THEN** decisions fall back to rules for that user, preserving already reserved jobs and avoiding a second same-day attempt
+
+#### Scenario: Habit estimate exists but ML calibration does not
+- **WHEN** the rule estimator has three initial or five stable active days, but the model lacks validated admission thresholds
+- **THEN** the habit estimate remains usable by rules and does not activate ML
+
+#### Scenario: Incomplete model admission manifest
+- **WHEN** a model lacks calibrated minimum usable days/results, maximum feature age, prediction confidence/uncertainty, learning advantage or applicable cohort coverage
+- **THEN** ML remains unavailable; every missing threshold is an explicit blocker, not an invented universal day count or probability
+
+#### Scenario: One prediction dimension is unproven
+- **WHEN** the selected model has no reliable personal prediction or validated advantage for a time/content/channel/cadence dimension
+- **THEN** that dimension keeps rules under the unchanged product guards, even if another dimension is eligible

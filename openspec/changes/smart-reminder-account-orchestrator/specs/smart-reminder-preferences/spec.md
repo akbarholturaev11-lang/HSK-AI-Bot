@@ -114,3 +114,17 @@ An account MUST NOT enter new cross-channel study dispatch while an uncontrolled
 #### Scenario: Old client remains outside cutover
 - **WHEN** an old client uses its supported legacy API before safe migration
 - **THEN** its existing response contract is preserved and it receives no new Smart job authority; the UI does not falsely claim that old offline local posting can be remotely stopped
+### Requirement: Authenticated own-device capability observation
+An Android capability observation SHALL derive canonical owner, device and session from verified native bearer authentication and recheck them under the User-first lock. The server SHALL bound observation validity by current verified auth deadlines and use observation-generation CAS. Capability SHALL remain separate from consent, cohort admission, old-client fencing and posting authority.
+
+#### Scenario: Late allow arrives after denial
+- **WHEN** an older observation generation reports permission allowed after a newer denied observation
+- **THEN** CAS refuses it and the stored denial remains effective; an unknown report cannot erase that denial either
+
+#### Scenario: All reported capability facts are positive
+- **WHEN** an authenticated device reports a supported protocol, autonomous posting disabled and study permission allowed
+- **THEN** it receives observation metadata only; no channel consent, cohort enrollment, job, attempt or posting grant is created
+
+#### Scenario: Study capability is lost
+- **WHEN** an authenticated observation loses a study prerequisite
+- **THEN** existing pending authority is invalidated while explicit intent, externalized outcomes and account-notice permission remain independent

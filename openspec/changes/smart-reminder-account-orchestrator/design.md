@@ -587,7 +587,7 @@ all notification flags, day guards and Smart consent/ownership.
 
 ## Open Questions
 
-The exact weekly cap, category cooldown, reactivation thresholds, retention TTLs, ML quality gate and experiment targets remain deliberately unset by D03/D05/D08/D09/D12/D13. P0/P6 measurement and the Master Plan's owner decision process must settle values before those policies are enabled. The contract and phased implementation path above do not depend on assuming any of these numbers.
+Later owner decisions D19–D22 settle the study cap (3 per rolling week, still 1/day), backoff (factor 2, stop after 5 verified unsuccessful messages), future Smart analysis retention (raw details 90 days, anonymous aggregates 12 months) and learning-category spacing (6 hours). Their runtime activation and authoritative outcome/cutover proof remain separate. Individual abnormal-gap calibration, class-specific job/attempt/consent retention, D09 numerical ML confidence/admission gates and D12 powered experiment targets still require actual evidence. Master Plan §17.50 makes D09 gate fields explicit; missing calibration keeps ML unavailable.
 
 
 ## Owner follow-up: widget typography and interval habit evidence
@@ -652,3 +652,50 @@ Exercise pin/host sizing, normal tap/auth, offline/expiry/future/day-zone,
 permission/OFF and logout epoch fences. Keep exact OS observations separate
 from renderer/unit results and fix only reproduced functional lifecycle issues.
 No new runtime module, dispatch/calibration/consent or signed release is inferred.
+
+
+## P4 task 5.1a — authenticated capability observation, dispatch OFF
+
+Baseline: refreshed `origin/main@392c90d14ec105ff87ddd180bea7238deed7ad12`;
+actual source Alembic head 0135. Reuse existing capability storage, native
+bearer authentication and User-first lifecycle guard; no schema addition.
+This bounded slice adds own-device GET/PATCH capability observations only.
+Full selected-job due/claim/receipt authorization remains 5.1b and must not be
+marked implemented by capability telemetry. No Android client or sender is
+changed in 5.1a.
+
+The body carries strict protocol/autonomous-disabled/study-OS-permission facts
+and an expected observation generation. Owner/device/session come only from
+verified bearer auth. Generation CAS prevents an old allow observation from
+replacing a newer denial. The server supplies observation time and bounds its
+expiry by the verified bearer and current session deadlines. An unknown
+permission cannot clear a known denial. Lost capability makes pending grants
+invalid through existing lifecycle handling; external/unknown attempts retain
+their original truth. GET never writes/imports consent. A capability report,
+including all-positive facts, grants no consent, cohort admission or dispatch;
+account-notice permission and its existing acknowledgement remain separate.
+
+Test real auth/HTTP, strict and duplicate payloads, generation conflicts,
+expiry, blocked/deletion/revoked ownership, permission loss, OFF preservation,
+notice independence and zero jobs/attempts created on isolated SQLite and
+PostgreSQL. Rollback removes the client adapter while retaining stored denial,
+OFF/epoch guards and the existing schema. The router never exposes jobs or a
+posting grant in this slice.
+
+## D09 — operational ML admission criteria
+
+Master Plan §17.50 owns this clarification. The 3/5-day habit rule is not an ML
+admission threshold. Evaluate a dimension (time/content/channel/cadence) only
+when all gates pass: released validated model; eligible, fresh and verified
+personal features; calibrated prediction confidence; measured advantage over
+the functioning rules baseline; current consent/access/cadence/holdout guards.
+A shared model can use pre-Smart history; no per-person training or activation
+wait is required. Missing or invalid gate inputs keep functioning rules.
+
+A versioned model manifest must specify `minimum_usable_active_days`,
+`minimum_verified_results`, `maximum_feature_age`, `minimum_confidence`,
+`maximum_prediction_uncertainty`, `minimum_learning_advantage` and applicable
+platform/language/feature coverage, with evaluation source/version. Values
+come from held-out calibration plus the powered, owner-reviewed D12 experiment;
+no arbitrary universal days/count/probability is a production default. Missing
+numeric calibration is an explicit ML blocker, not a completed decision.
