@@ -124,9 +124,10 @@ knowledge. A pre-guard server binary is not a safe rollback image for Smart
 accounts. Disabling the new dispatcher must never bypass legacy OFF guards.
 Minimal preferences/consent/receipt state survives feature rollback until
 canonical deletion; finite job/attempt expiry stops authorization, not evidence
-retention. Capability observations are removed at lifecycle invalidation. D13's
-exact per-class raw/job/attempt/receipt retention periods remain unresolved; no
-numeric cleanup policy or additional behavioral history is introduced here.
+retention. Capability observations are removed at lifecycle invalidation. D21 approves future Smart analysis raw-detail retention of 90 days and anonymous
+aggregate retention of 12 months. Job/attempt/consent/retry-proof retention is
+separate and still needs class-specific decisions. No cleanup or additional
+behavioral history is implemented by this API.
 
 ## P4 task 5.1a: Android capability observation
 

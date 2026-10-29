@@ -587,7 +587,7 @@ all notification flags, day guards and Smart consent/ownership.
 
 ## Open Questions
 
-The exact weekly cap, category cooldown, reactivation thresholds, retention TTLs, ML quality gate and experiment targets remain deliberately unset by D03/D05/D08/D09/D12/D13. P0/P6 measurement and the Master Plan's owner decision process must settle values before those policies are enabled. The contract and phased implementation path above do not depend on assuming any of these numbers.
+Later owner decisions D19–D22 settle the study cap (3 per rolling week, still 1/day), backoff (factor 2, stop after 5 verified unsuccessful messages), future Smart analysis retention (raw details 90 days, anonymous aggregates 12 months) and learning-category spacing (6 hours). Their runtime activation and authoritative outcome/cutover proof remain separate. Individual abnormal-gap calibration, class-specific job/attempt/consent retention, D09 numerical ML confidence/admission gates and D12 powered experiment targets still require actual evidence. Master Plan §17.50 makes D09 gate fields explicit; missing calibration keeps ML unavailable.
 
 
 ## Owner follow-up: widget typography and interval habit evidence
