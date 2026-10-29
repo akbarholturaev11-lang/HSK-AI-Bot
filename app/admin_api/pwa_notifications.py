@@ -27,7 +27,7 @@ from app.db.models.notification_template import NotificationTemplate
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.notification_template_service import (
-    MOTIVATION_KEYS,TEMPLATE_META,CAPTION_MAX,TEXT_MAX,NotificationTemplateService,default_text,
+    TEMPLATE_KEYS,TEMPLATE_META,CAPTION_MAX,TEXT_MAX,NotificationTemplateService,default_text,
 )
 
 logger=logging.getLogger(__name__)
@@ -44,7 +44,7 @@ class NoticeRead(StrictModel):
     @field_validator('key')
     @classmethod
     def known_key(cls,value):
-        if value is not None and value not in MOTIVATION_KEYS:
+        if value is not None and value not in TEMPLATE_KEYS:
             raise ValueError('Unknown template')
         return value
 
@@ -66,7 +66,7 @@ class PrepareNotice(StrictModel):
 
     @model_validator(mode='after')
     def safe_placeholders(self):
-        if self.key not in MOTIVATION_KEYS:
+        if self.key not in TEMPLATE_KEYS:
             raise ValueError('Unknown template')
         allowed={item[1:-1] for item in TEMPLATE_META[self.key]['placeholders']}
         for lang in _LANGS:
@@ -138,10 +138,10 @@ async def read_notices(db,*,session_cookie,request,settings_obj):
             result={'template':_preview(request.key,await _row(db,request.key))}
         else:
             rows=(await db.execute(select(NotificationTemplate.key,NotificationTemplate.enabled)
-                .where(NotificationTemplate.key.in_(MOTIVATION_KEYS)).limit(len(MOTIVATION_KEYS)))).all()
+                .where(NotificationTemplate.key.in_(TEMPLATE_KEYS)).limit(len(TEMPLATE_KEYS)))).all()
             stored={row.key:row for row in rows}
             result={'items':[{'key':key,'enabled':bool(stored[key].enabled) if key in stored else True}
-                             for key in MOTIVATION_KEYS]}
+                             for key in TEMPLATE_KEYS]}
     return result
 
 

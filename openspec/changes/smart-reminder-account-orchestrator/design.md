@@ -472,6 +472,44 @@ real transactions. Actual legacy non-cohort scheduling remains unchanged; do
 not claim a global legacy dedupe or physical exactly-once guarantee. Record
 source/CI/limits only in the Master Plan and advance to 4.2 after acceptance.
 
+## Bounded task 4.2 — Telegram content and inbox (main refresh 2026-10-29)
+
+Base: `origin/main@5e9a34f6b60bd49dc8f544e4dc4b4fdf3faa9f90` and Master
+Plan §17.44. Extend the dormant 4.1 dispatch boundary, without a scheduler,
+producer, live provider, cohort activation or new authorization/defaults.
+
+Use one canonical UZ/RU/TJ `smart_study` template with a validated lesson number,
+existing notification title/CTA adapter and `course_study_miniapp_url`. Expose
+it through the existing template editor/service and passkey/CAS boundary; keep
+the five motivation triggers separate. The current allowed frozen target is
+rechecked by 4.1 under User before rendering and in-flight commit. The normal
+authenticated destination retains current course/foundation/lesson/access
+checks without autostart, tokens or private content in the URL.
+
+Render the current account language and DB custom/default/disabled/media
+snapshot before external authorization, re-evaluate current policy and the finite lease after these
+reads (including a quiet/day boundary crossed while rendering), then pass the immutable content to an injected Bot adapter outside SQL.
+The helper is not registered in runtime. Invalid placeholders, excessive
+provider text or disabled templates cancel before IO. Only provider acceptance
+may record a canonical account-owned, job-deduplicated inbox item in the same
+outcome transaction. Unknown outcomes create no success/feed claim or retry.
+A DB rollback retains the existing uncertain in-flight boundary.
+
+First reproduce `template_service` parameter loss with an actual DB roundtrip,
+then fix only that persistence predicate. Inbox language resolution must return
+presentation data without assigning `_rendered` into tracked ORM JSON; test
+commit/reload, repeated language changes, custom fallback/disabled/broken copy,
+legacy rows, canonical owner isolation and duplicate recording. Never rewrite
+historical stored sent text or invent learning/read evidence.
+
+Verify actual renderer/dispatch/fake Bot and inbox roundtrips on SQLite and
+owned PostgreSQL, fresh access/track/OFF/D1 and current language after claim,
+admin signed template compatibility, URL/locale/escaping/length/media behavior,
+P1–P3 regressions and all canonical catalog generation/guards. Record actual
+source/CI evidence only in the Master Plan. Native widgets and real canary
+acceptance remain separate. Rollback retains 4.1 routing/day/attempt ownership;
+no new consent, schema, settings screen or redundant editor control is added.
+
 ## Risks / Trade-offs
 
 - **Old offline APK can display outside the ledger** → Do not migrate accounts with unknown/unsupported autonomous sender state into new cross-channel dispatch. Test historical binaries and describe the remaining physical display limit honestly; no server-only “exactly once” claim.

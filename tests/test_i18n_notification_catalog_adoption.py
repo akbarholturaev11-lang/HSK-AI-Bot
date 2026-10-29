@@ -23,7 +23,7 @@ class NotificationCatalogTests(unittest.TestCase):
 
     def test_all_fixed_copy_matches_generated_artifact(self):
         catalogs = read_sources()
-        self.assertEqual(len(catalogs["uz"]), 26)
+        self.assertEqual(len(catalogs["uz"]), 30)
         self.assertEqual(generate(check=True), [])
         tree = ast.parse((ROOT / TARGET).read_text(encoding="utf-8"))
         self.assertEqual(len(tree.body), 1)

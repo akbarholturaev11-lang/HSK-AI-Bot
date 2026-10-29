@@ -1387,7 +1387,7 @@ async function partnerEditor(id=null,before=null){
     drawer('partners',form,btn('close','close')+(operations.length?btn('saveChanges','managementPrepare','primary'):''));
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('partners',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','partnerList'));}
 }
-const noticeLabels={rating_overtaken:'noticeRating',lesson_unfinished:'noticeLesson',d1_lesson_recovery:'noticeD1',daily_goal:'noticeDaily',streak_risk:'noticeStreak'};
+const noticeLabels={rating_overtaken:'noticeRating',lesson_unfinished:'noticeLesson',d1_lesson_recovery:'noticeD1',daily_goal:'noticeDaily',streak_risk:'noticeStreak',smart_study:'noticeSmartStudy'};
 async function noticeEditor(key=null){
   if(key!==null&&!Object.hasOwn(noticeLabels,key))return;
   closeDrawer();const current=drawerId,at=epoch;drawer('notices',statePanel('loading'));

@@ -1147,7 +1147,8 @@
     "ui.admin_pwa.androidVersion1": "Фақат энг охирги версия",
     "ui.admin_pwa.androidVersion2": "Энг охирги 2 та версия",
     "ui.admin_pwa.androidVersion3": "Энг охирги 3 та версия",
-    "ui.admin_pwa.androidVersion4": "Энг охирги 4 та версия"
+    "ui.admin_pwa.androidVersion4": "Энг охирги 4 та версия",
+    "ui.admin_pwa.noticeSmartStudy": "Smart dars eslatmasi"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
