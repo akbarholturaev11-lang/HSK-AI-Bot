@@ -108,8 +108,33 @@ cannot survive reactivation. There is no Android destination or alternate.
 `dispatch` repeats the checks and conditionally commits `in_flight`/`started_at`
 before invoking an injected trusted transport **outside SQL**. The ephemeral
 envelope contains only selected real Telegram destination and current safe
-course/lesson identity. No production callback is passed. Rendering/inbox/CTA
-is task 4.2 and must follow canonical localization/admin-template precedence.
+course/lesson identity. No production callback is registered. Task 4.2 adds the dormant
+`smart_reminder_telegram_content.py` adapter: immediately after fresh target/access
+policy, render current account language and the existing DB template snapshot
+under User, then recheck the finite lease before the in-flight marker. The
+injected Bot helper receives this content only after SQL commits.
+
+The canonical UZ/RU/TJ `smart_study` default uses only the validated lesson
+number. Existing DB custom text, per-language fallback, disabled state and
+owned photo/video keep precedence. The sixth template uses the existing
+protected editor/Save/CAS/WebAuthn path; it is not a sixth legacy motivation
+trigger and enabling its template never starts dispatch. Unsafe fields, provider
+UTF-16 length overflow, unowned media paths or malformed configured destinations
+cancel before provider IO. Missing owned media falls back to the already
+rendered text; a media provider exception never tries another transport call.
+The shared URL helper targets the existing course page with normal signed
+identity, course/foundation/sequence/access guards on open. No credential,
+private lesson data or autostart is added to the URL.
+
+Only a positive provider result records the canonical owner/job-deduplicated
+inbox item in the same outcome transaction. Its template key and scalar lesson
+argument support later language changes using current DB/default copy; stored
+sent text remains historical. Unknown/exception results create no success item.
+Inbox commit rollback leaves the durable in-flight attempt, with no retry.
+`CourseNotificationService` now retains `template_service` arguments as well as
+legacy `template`, and resolves display copy separately without dirtying ORM
+JSON. Broken/disabled later translations fall back to stored text. No inbox
+read creates a study job, consent, provider receipt or learning evidence.
 
 A trusted positive Telegram `message_id` records `provider_accepted`, not
 shown/read/learned. Exception, uncertain return, cancellation/process death or

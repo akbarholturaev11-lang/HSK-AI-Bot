@@ -11,6 +11,7 @@
     "course.title.limit_lesson_spent": "Бесплатные уроки закончились",
     "course.title.limit_lesson_warning": "Бесплатные уроки заканчиваются",
     "course.title.rating_overtaken": "В рейтинге вас обошли",
+    "course.title.smart_study": "Продолжите урок",
     "course.title.streak_risk": "Серия под угрозой",
     "course.title.subscription_expiring": "Подписка скоро закончится",
     "course.title.subscription_offer": "Продлите подписку",
@@ -25,8 +26,11 @@
     "reminder.default.daily_goal": "⏳ <b>Сегодняшняя цель ещё не выполнена</b>\nДень заканчивается, а урок за сегодня ещё не завершён.\nВсего <b>{minutes} минут</b> — закройте дневную цель 🎯",
     "reminder.default.lesson_unfinished": "📚 <b>{lesson} ещё не завершён</b>\nДень скоро закончится. Завершите начатый урок.\nВсего <b>{minutes} минут</b> — закройте урок и получите XP 🎯",
     "reminder.default.rating_overtaken": "🥇 <b>{name} обошёл вас!</b>\nВы опустились на <b>{rank}-е место в лиге {league}</b>.\nРазница всего <b>{xp_gap} XP</b>. Один урок — и вы снова впереди 💪",
+    "reminder.default.smart_study": "📖 <b>Продолжите урок {lesson}</b>\nОткройте урок, чтобы продолжить обучение.",
     "reminder.default.streak_risk": "🔥 <b>Серия из {streak} дней под угрозой!</b>\nЕсли не зайдёте сегодня, серия прервётся и день пропадёт в календаре.\nОдин маленький урок — и серия сохранится 🔥",
     "reminder.lessonLabel": "{level} урок {lesson}",
+    "reminder.meta.smart_study.note": "Текст для урока, выбранного проверенным планом Smart. Включение шаблона не запускает отправку.",
+    "reminder.meta.smart_study.title": "📖 Умное напоминание об уроке",
     "reminder.returnLesson": "▶️ Вернуться к уроку",
     "reminder.startedLesson": "Начатый урок"
   }

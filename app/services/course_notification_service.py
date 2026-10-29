@@ -19,6 +19,7 @@ from app.services.notification_template_service import (
     KEY_LESSON_UNFINISHED,
     KEY_OVERTAKEN,
     KEY_STREAK,
+    KEY_SMART_STUDY,
 )
 
 
@@ -86,6 +87,7 @@ TITLE_BY_KEY: dict[str, dict[str, str]] = {
 }
 
 ACTION_BY_KEY = {
+    KEY_SMART_STUDY: "course",
     "subscription_expiring": "subscription",
     "subscription_offer": "subscription",
     KEY_OVERTAKEN: "rating",
@@ -99,6 +101,7 @@ ACTION_BY_KEY = {
     "limit_daily_spent": "subscription",
 }
 GLYPH_BY_KEY = {
+    KEY_SMART_STUDY: "课",
     "subscription_expiring": "会",
     "subscription_offer": "会",
     KEY_OVERTAKEN: "榜",
@@ -159,7 +162,7 @@ def _localized_copy(
     params = row.params if isinstance(row.params, dict) else {}
     if params.get("template_service"):
         # Needs a database session, so `list_for_user` resolves these before
-        # calling here and passes the result in as `_rendered`.
+        # calling here and passes separate presentation data.
         rendered = rendered or params.get("_rendered")
         if rendered:
             return notification_copy(row.key, reader, str(rendered))

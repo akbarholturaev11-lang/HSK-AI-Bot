@@ -27,6 +27,18 @@ class NotificationTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
     asyncTearDown = fixtures.AdminPwaPaymentReviewTests.asyncTearDown
     proof = proofs.AdminPwaSettingsTests.proof
 
+    async def test_smart_template_uses_existing_signed_editor_without_becoming_motivation_trigger(self):
+        from app.services.notification_template_service import KEY_SMART_STUDY, MOTIVATION_KEYS, TEMPLATE_KEYS
+        self.assertNotIn(KEY_SMART_STUDY, MOTIVATION_KEYS)
+        self.assertIn(KEY_SMART_STUDY, TEMPLATE_KEYS)
+        command = await self.prepare(key=KEY_SMART_STUDY, text_uz="Dars {lesson}",
+                                     text_ru="Урок {lesson}", text_tj="Дарси {lesson}")
+        result = await self.execute(command, await self.proof(command, signed=True))
+        self.assertEqual(result['template']['effective_texts']['tj'], "Дарси {lesson}")
+        with self.assertRaises(ValidationError):
+            api.PrepareNotice(key=KEY_SMART_STUDY, enabled=True,
+                text_uz="{minutes}", text_ru="", text_tj="")
+
     async def prepare(self, **overrides):
         values = dict(key='daily_goal', enabled=True, text_uz='PRIVATE {minutes}',
                       text_ru='Минуты: {minutes}', text_tj='Дақиқа: {minutes}') | overrides
@@ -122,7 +134,7 @@ class NotificationTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
             async with AsyncClient(transport=ASGITransport(app=app), base_url='https://hskai.app',
                     headers={'origin':'https://hskai.app'}, cookies={ADMIN_PWA_COOKIE_NAME:fixtures.COOKIE}) as client:
                 response = await client.post('/api/admin/v1/notifications/read', json={})
-                self.assertEqual(len(response.json()['items']), 5)
+                self.assertEqual(len(response.json()['items']), 6)
                 response = await client.post('/api/admin/v1/notifications/read', json={'key':'daily_goal'})
                 self.assertEqual(response.status_code, 200)
                 self.assertTrue(response.json()['template']['has_media'])

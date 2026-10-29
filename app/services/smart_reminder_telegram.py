@@ -26,6 +26,7 @@ from app.services.smart_reminder_policy import _aware_utc
 from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
 from app.services.smart_reminder_preferences import MAX_REVISION, SmartReminderError, SmartReminderPreferencesService, _utc
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION, SmartReminderShadowQueue
+from app.services.smart_reminder_telegram_content import TelegramContent, render_telegram_content
 
 
 ROUTING = SmartReminderRouting.__table__
@@ -84,6 +85,7 @@ class TelegramEnvelope:
     level: str
     lesson_order: int
     local_day: str
+    content: TelegramContent | None = None
 
 
 @dataclass(frozen=True)
@@ -381,6 +383,10 @@ class SmartReminderTelegramService:
             if len(attempts) != 1 or not self._prepared(attempts[0], row, now):
                 return TelegramResult("telegram_attempt_not_replayable", lease.job_id)
             if refused := await self._fresh(session, actor, row, cohort, history_since): return refused
+            try:
+                content = await render_telegram_content(session, actor, row)
+            except SmartReminderError as exc:
+                return await self._cancel(session, row, exc.code)
             now = self._now()
             if _utc(row["lease_expires_at"]) <= now:
                 return TelegramResult("telegram_lease_lost", lease.job_id)
@@ -389,7 +395,7 @@ class SmartReminderTelegramService:
                 ATTEMPT.c.started_at.is_(None)).values(state="in_flight", started_at=now, reason_code="telegram_started"))
             if changed.rowcount != 1: return TelegramResult("telegram_attempt_not_replayable", lease.job_id)
             envelope = TelegramEnvelope(actor.user_id, row["id"], actor.telegram_id,
-                                        row["course_key"], row["lesson_order"], row["local_day"].isoformat())
+                                        row["course_key"], row["lesson_order"], row["local_day"].isoformat(), content)
         # Authorization is committed. OFF/kill after this boundary cannot recall
         # provider IO; the durable marker forbids every retry/alternate.
         try:
@@ -397,9 +403,9 @@ class SmartReminderTelegramService:
         except Exception:
             return await self._finish(actor.user_id, lease.job_id, attempt_id, accepted=False)
         accepted = type(getattr(receipt, "message_id", None)) is int and receipt.message_id > 0
-        return await self._finish(actor.user_id, lease.job_id, attempt_id, accepted=accepted)
+        return await self._finish(actor.user_id, lease.job_id, attempt_id, accepted=accepted, content=content)
 
-    async def _finish(self, user_id, job_id, attempt_id, *, accepted):
+    async def _finish(self, user_id, job_id, attempt_id, *, accepted, content=None):
         # Record already-authorized external facts even after OFF/block/hold;
         # never run eligibility again to erase an uncertain provider boundary.
         async with self.sessions.begin() as session:
@@ -418,4 +424,14 @@ class SmartReminderTelegramService:
                 state=state, lease_token=None, lease_expires_at=None, updated_at=now, reason_code="telegram_"+state))
             if accepted:
                 await session.execute(update(CourseProgress).where(CourseProgress.user_id == user_id).values(last_reminder_sent_at=now))
+                if content is not None:
+                    from app.services.course_notification_service import CourseNotificationService
+                    from app.services.notification_template_service import KEY_SMART_STUDY
+                    user = await session.get(User, user_id)
+                    job = (await session.execute(select(JOB).where(JOB.c.id == job_id))).mappings().one()
+                    await CourseNotificationService(session).record_from_text(user,
+                        key=KEY_SMART_STUDY, lang=content.language, text=content.text,
+                        action="course", source="smart_telegram", level=job["course_key"],
+                        lesson_order=job["lesson_order"], dedupe_key="job:"+job_id,
+                        params={"template_service": KEY_SMART_STUDY, "lesson": content.lesson_order})
             return TelegramResult("telegram_"+state, job_id, state)
