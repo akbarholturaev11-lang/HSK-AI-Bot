@@ -57,3 +57,57 @@ def test_subscription_checkout_preserves_discount_modes():
     html = _html()
     for mode in ("subscription", "referral_discount", "admin_discount", "feedback_discount"):
         assert mode in html
+
+def test_checkout_telemetry_requires_ack_and_retries_only_transient_failures():
+    html = _html()
+    start = html.index("async function trackSubscriptionStage(stage){")
+    end = html.index("/* Sekin internetda", start)
+    snippet = html[start:end]
+    script = (
+        'const state={preview:false,plan:"1_month",method:"visa"};'
+        'const INIT_DATA="signed-test";const API={event:"/api/subscription-miniapp/event"};'
+        'function contextPayload(){return {attempt_id:"sub-test"}};'
+        'const warnings=[];console.warn=(...parts)=>warnings.push(parts);'
+        + snippet
+        + """
+async function check(items){
+  let count=0;
+  globalThis.fetch=async()=>{
+    count++;
+    const item=items.shift();
+    if(item==="network")throw new Error("offline");
+    return {status:item.status,ok:item.status>=200&&item.status<300,
+      json:async()=>item.body};
+  };
+  const success=await trackSubscriptionStage("payment_instructions_viewed");
+  return {success,count};
+}
+(async()=>{
+  const outcomes={
+    acknowledged:await check([{status:200,body:{ok:true}}]),
+    recovered:await check([{status:503,body:{ok:false}},{status:200,body:{ok:true}}]),
+    forbidden:await check([{status:409,body:{ok:false}}]),
+    noAck:await check([{status:200,body:{ok:false}},{status:200,body:{ok:true}}]),
+    offline:await check(["network",{status:200,body:{ok:true}}]),
+  };
+  process.stdout.write(JSON.stringify(outcomes));
+})().catch(e=>{process.stderr.write(String(e));process.exit(1)});
+"""
+    )
+    results = json.loads(subprocess.check_output(["node", "-e", script], text=True))
+    assert results == {
+        "acknowledged": {"success": True, "count": 1},
+        "recovered": {"success": True, "count": 2},
+        "forbidden": {"success": False, "count": 1},
+        "noAck": {"success": True, "count": 2},
+        "offline": {"success": True, "count": 2},
+    }
+
+
+def test_server_reports_failed_checkout_event_write_as_503():
+    # Guard the exact event route, without changing payment or submit responses.
+    source = Path("app/main.py").read_text(encoding="utf-8")
+    event_route = source.split('@app.post("/api/subscription-miniapp/event")', 1)[1]
+    event_route = event_route.split('@app.post("/api/subscription-miniapp/submit")', 1)[0]
+    assert 'status_code=200 if recorded else 503' in event_route
+    assert 'content={"ok": bool(recorded)}' in event_route
