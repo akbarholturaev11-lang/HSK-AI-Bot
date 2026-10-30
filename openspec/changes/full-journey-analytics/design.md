@@ -48,6 +48,21 @@ Use existing `app/admin_api/pwa_analytics_cache.py::section_projection`, `pwa_st
 - Extend index/manifests and `.github/workflows/sync-r2.yml` allowed commit path set. Publish only filtered, schema-valid, privacy-safe aggregates; keep 6h mirror **read-only to R2** and avoid changing server SQL from a scheduled archive task.
 - Fresh snapshots and historical immutable snapshots must be distinguishable. No claim of freshness for expired cache, no silent source mixing and no sum/difference presented as standalone daily change for overlapping rolling 7d/30d windows.
 
+## Downstream consumer: weekly proactive improvement agent (final goal)
+
+The existing weekly HSK AI agent is an **independent read-only consumer**, not a new analytics service and not an actuator. **The delivery is successful only if a real decision can be grounded in exported evidence and then checked against current code**.
+
+The bridge's `index.json`, status and each individual source projection MUST make it possible to:
+- Discover a real section and verified `latest`/historical path without hardcoded future sections; identify whether `courses` is a legacy overview-derived slice versus `analytics/course` from the actual course projection.
+- Recover original `section`, `source`, `platform`, `period`, `since`, `generated_at`, `expires_at`, `window`, `observation_date_utc`, `coverage`, `detail_limited`/`truncated`, `unit`, `numerator/denominator` **where actually available**, and known metric definitions and missingness statuses.
+- Compare like-for-like cohorts or nonoverlapping observations when present, without subtracting overlapping rolling windows as if they represented daily change or asserting causal attribution from nearest source.
+- Tie potential learning drop-off, checkout abandonment, payment friction, feedback or platform usage to the *actual verified metric*; then use the GitHub connector to read the current HSK AI application `main` and the relevant real code/test paths. Aggregate files need not contain private user IDs, arbitrary source-code snippets or a redundant replica of the repo.
+- Provide **1–3 concrete, ranked, minimal changes**, identify one highest-value implementation-ready brief (affected user flow, relevant files, test cases, risk, rollback, outcome KPI and guardrail), and note confirmed versus speculative diagnosis. The agent MUST NOT claim improvement just because a metric moved.
+
+**Read-only consumer acceptance:** with synthetic fixtures and then an available real fresh snapshot, verify the agent can locate a genuine independent `funnel` / `course` / `sources` entry and trace a specific question to an actual code function/test in the separately read `HSK-AI-Bot` repository. Produce a grounded recommendation if evidence supports it, otherwise an explicit observability gap. Test the `missing`, `expired`, small-cohort and partially capped cases, so the agent never fabricates a plausible but unsupported flaw. This smoke test checks **data usability and traceability**, not proof of uplift or agent autonomy.
+
+The agent's existing weekly automation, schedule, execution authority and actual implementation decisions are managed separately; Phase 1 does not require building a new agent or changing product behavior.
+
 ## Security and privacy invariants
 
 Both repositories are publicly readable. The private R2 bucket stays private. Public GitHub accepts no Telegram/canonical IDs, PII, payment receipt image/media references, text feedback, stack traces, arbitrary errors, URLs or tokens, individual-level journeys, user-supplied freeform dimensions or rare identifiable cohorts. Use per-section fixed allowlists, bounded dimensions and suppression of low-count combinations where needed. Hashes are not a substitute for aggregation. Sensitive feedback and errors continue in their existing protected interfaces.
