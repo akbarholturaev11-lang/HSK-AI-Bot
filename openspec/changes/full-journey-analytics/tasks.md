@@ -1,51 +1,31 @@
-# Tasks
+# Tasks — Phase 1 only: existing R2 → GitHub analytics bridge
 
-> Planning-only change for Issue #251. All checkboxes remain unchecked until code, migration, security checks and actual tests exist. Relevant source must be reverified against current `main` before applying any task.
+> Source audit recorded on 2026-10-30: 22 existing R2 aggregate objects (12 then-fresh, 10 expired), verified using GitHub Actions run 41031747420. This change remains **planning only**. All tasks are incomplete until implementation and executed tests exist. The four work packages replace the earlier 30-task implementation scope; no user-journey telemetry or Smart Reminder implementation belongs to Phase 1.
 
-## 1. Verify source contracts and define metrics
+## 1. Approve existing sources and safe export contract
 
-- [ ] 1.1 Recheck current `main`, all relevant tests and event producers across Telegram, Mini App, Android, Desktop, website and Admin PWA, including legacy clients and feature flags.
-- [ ] 1.2 Inventory each supported event with producing file, session/attempt/account identity, UTC timestamp, server trust boundary, accepted/rejected status, retention and real collection coverage; publish a measured/partial/uninstrumented matrix.
-- [ ] 1.3 Reconcile V10 Admin PWA funnel, source, learning, finance and experiment definitions with existing DB/grain, including payment status, D1/D7 maturity, anomalous source entries, 30-day detail cap and present display values.
-- [ ] 1.4 Audit `HSK-AI-Private-Analytics` allowlist, public visibility, source namespace, cache expiration, snapshot manifest and owner refresh; document existing 16-count limit without weakening it.
-- [ ] 1.5 Define 1–3 outcome KPIs, diagnostic drivers and counter-metrics with SQL grain, denominator, source, observation maturity, timezone, coverage and reasons to withhold claims.
+- [ ] **1. Source-to-export contract and privacy matrix.** On fresh `main` of BOTH repositories, map every real `home/overview/course/platform/funnel/money/sources/report/experiments` and `feedback` R2 cache to its `kind`, independently derived namespace, supported period/variant, original source signature, schema, generation timestamp, expiry, metric grain, max-source-row coverage and safe output allowlist. Confirm which of the 22 observed objects are fresh versus stale at run time. Distinguish basic-statistics and legacy 16-counter output. Reject user-level/receipt/text/error details, unknown keys and below-threshold combinations; explicitly preserve `detail_limited`, `truncated`, unavailable and `all_time` 30-day-detail semantics.
 
-## 2. Privacy, authorization and migration gate
+  **Acceptance:** Contract is verifiable against existing source code and fixed synthetic examples, public-field allowlists have negative privacy tests, and missing/expired object cases are not silently zeroed. No new SQL/event producers required.
 
-- [ ] 2.1 Document allowed / restricted / forbidden export fields per source and public small-cohort suppression/dimension allowlist; confirm current repository access and GDPR/consent/deletion requirements with owner.
-- [ ] 2.2 Specify protected first-party account timeline access roles, existing session/passkey reuse, pagination, rate limits, per-access audit and raw attachment redaction. Explicitly prohibit account-level GitHub/MCP export.
-- [ ] 2.3 Review existing account purge/anonymization for event and payment refs and choose retention period. If additions are unavoidable, create strictly additive, reversible Alembic migrations and indexes.
-- [ ] 2.4 Test canonical owner resolution, forged client fields, cross-account payment references, orphan/legacy IDs, profile unlinking and actual deletion in isolated fixtures.
+## 2. Warm only approved existing R2 caches safely
 
-## 3. Instrument canonical journey and checkout
+- [ ] **2. Bounded owner-triggered refresh of already implemented projections.** Reuse existing Admin PWA readers and private R2 writer to materialize missing or expired approved section/period objects independently of Admin PWA tab visits. Preserve owner-only token/origin checks, cross-worker coordination, cooldown, 24h TTL, early failure and old overview behavior. Implement bounded/serialized section batches with independently reported freshness and error outcomes; do not run 9 x 3 heavy queries in one synchronous 80-second request; do not let the 6h GitHub mirror execute production SQL. `feedback` only supports `weekly/monthly`; avoid claiming nonexistent sections. Avoid Redis becoming a mandatory component when the already-tested overview R2-only path does not require it.
 
-- [ ] 3.1 Introduce allowlisted versioned telemetry contract, idempotency keys, server resolved identity and bounded timestamp skew with safe off-by-default rollout.
-- [ ] 3.2 Attach missing plan selection, instruction view, receipt selection, receipt submission and review transitions to correct checkout attempt and payment refs; retain existing billing and access state unchanged.
-- [ ] 3.3 Add one platform's measured visibility/foreground/exit/heartbeat timing with cap, offline replay and background guards; leave unmeasured legacy duration unknown.
-- [ ] 3.4 Extend producer adapters for remaining platforms only after platform-specific auth/version tests and duplicate/out-of-order regression.
-- [ ] 3.5 Implement protected Admin PWA account timeline for available observed data with redaction, explicit lack-of-evidence states and audit logs; no user-level bulk export.
+  **Acceptance:** Existing overview force-refresh regression stays green; a source can be warmed without opening the Admin PWA UI; an unavailable source is reported unavailable; no payment, course, Smart Reminder, notifications or access logic is changed.
 
-## 4. Verified aggregate projections
+## 3. Publish separately verified R2 sections to GitHub
 
-- [ ] 4.1 Implement controlled checkout funnel summaries by attempted/unique account grains, stage loss and approval, plus selected plan/method when verified.
-- [ ] 4.2 Implement bounded descriptive source lineage and preserve anonymous public-site traffic grain; label attribution as observational.
-- [ ] 4.3 Implement matured D1/D7 retention and learning activation/session evidence with source row completeness, denominator and 30-day detail limits.
-- [ ] 4.4 Add notification accepted/shown/opened/actioned estimates only per instrumented channel, preserving fallback and no-send semantics.
-- [ ] 4.5 Aggregate safe categorical feedback and technical errors (including known app version/screen and status) without copying free text, stack traces or receipt contents.
-- [ ] 4.6 Add optional finance/product/experiment breakdowns only from reviewed first-party sources; retain unknown/unpriced/incomplete states.
+- [ ] **3. Extend strict GitHub R2 mirror and immutable archives.** In `HSK-AI-Private-Analytics`, extend `scripts/sync_from_r2.py`, `scripts/build_archive.py`, their tests, manifest and `sync-r2.yml` staging paths with fixed input schemas/allowlisted output and approved section namespaces. Keep existing `overview/users/sales/payments/courses` 16-counter compatibility files unchanged; use unambiguous separate paths for real source projections (e.g. `analytics/funnel`, `analytics/course`, `analytics/feedback`). Maintain independent source generated/expiry timestamps, exact rolling windows, partial/missing/stale statuses, idempotent date-indexed history and the R2-only six-hour schedule. No raw values or secrets in logs and no nonaggregate account data in commits.
 
-## 5. R2 and GitHub archive integration
+  **Acceptance:** Synthetic sources produce independently indexed and easily ChatGPT-readable `latest`/history files; malformed/unauthorized/PII/expired/oversized source is rejected; old archive compatibility tests still pass and the root manifest distinguishes source-derived vs overview-sliced datasets.
 
-- [ ] 5.1 Define and test per-section R2 aggregate envelopes (source version, period, window, generated/expires, coverage, metric definition, strict input size, source origin) while preserving current 16-count output.
-- [ ] 5.2 Extend GitHub-side `scripts/sync_from_r2.py` strict allowlists and `scripts/build_archive.py` immutable section histories/manifests without exporting private user/device/attempt IDs, raw content, rare cells or identity-linkable dimensions.
-- [ ] 5.3 Expand owner-authorized manual refresh only to vetted sections; preserve token validation, serialization, idempotency, fail-closed semantics and scheduled mirror-only behavior.
-- [ ] 5.4 Test expired, missing, partial, malformed, stale, out-of-order, unauthorized and duplicate snapshot handling; check no unsafe fields in commits, logs, summary or history.
-- [ ] 5.5 Verify source refresh AND downstream sync separately; compare GitHub snapshots against protected aggregate queries with exact metadata and period boundaries.
+## 4. Reconcile, test, release and rollback
 
-## 6. Validation, rollout and handoff
+- [ ] **4. End-to-end acceptance for Phase 1.** Run both repositories' focused server/bridge/archive/refresh tests, privacy and cross-scope cases, R2 failure/cooldown cases and full affected CI. Compare matched `section + platform + period + generated_at` results from Admin PWA → R2 → GitHub; explicitly check mixed grains and partial caps. Perform separate owner-authorized source refresh and GitHub archive sync tests with real timestamps, and inspect public Git diff for identifying data. Stage changes in independent reviewed branches and release only after successful CI/authorization. Keep rollback to existing 16-counter overview bridge; explicitly record any missing proof.
 
-- [ ] 6.1 Run focused unit/integration tests for telemetry, checkout, consent/deletion, payment approval, paid access, notification fallback and privacy boundaries; do not report unexecuted suites as passing.
-- [ ] 6.2 Test realistic event volume, query costs, timeouts, 24h cache lifetime, 6h mirror and Redis/R2 partial-write behavior in staging.
-- [ ] 6.3 Validate Admin PWA read-only drill-down and each client's telemetry flow with version-gated staged checks; prevent user-visible UI regressions.
-- [ ] 6.4 Roll out section by section behind explicit feature flags with a documented rollback that preserves existing 16-count reports, financial records and production access decisions.
-- [ ] 6.5 Run official `openspec validate` for this change, then follow `AGENTS.md` branch/CI/promotion rules; confirm any later `main` merge SHA and live data freshness separately from documentation validity.
+  **Acceptance:** Real evidence demonstrates correct newly exported section(s), truthful timestamps, unchanged business behavior and clean public output. OpenSpec validation is necessary but is not proof of runtime deployment.
+
+## Future work — intentionally NOT in Phase 1
+
+The existing `journey-event-contract`, `checkout-journey-attribution` and `engagement-and-feedback-observability` capability specs are **deferred**; do NOT execute them as part of the 4 work packages. After the separate Smart Reminder project completes its actual production event instrumentation, explicitly authorize a Phase 2 plan for missing user-level journey telemetry, screen time, additional error categories and Smart Reminder metrics, without duplicating its event collector or changing its delivery engine.
