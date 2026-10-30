@@ -8,6 +8,14 @@ The owner has explicitly narrowed the immediate objective: **complete the safe R
 
 Related GitHub Issue: [#251](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/issues/251). This is a **planning-only** change.
 
+## Final Product Goal — weekly improvement decisions
+
+**The R2 → GitHub → ChatGPT bridge is a means, not the outcome.** Its final purpose is to give the existing weekly **HSK AI product-improvement agent** sufficiently accurate, source-audited data to **proactively identify where learners get stuck, drop out of lessons, fail to reach a successful checkout, or do not return**, then read the matching **current real application code and tests** to distinguish a confirmed bug, a UX/product weakness, an instrumentation gap and an unproven hypothesis. The agent should present **1–3 prioritized improvements** with one **implementation-ready first action**, not a weekly list of changed numbers.
+
+A successful weekly recommendation must connect: **observed metric or explicit missing evidence → cohort/window/denominator and reliability → current GitHub `main` code path and relevant tests → a concrete user-visible improvement → smallest safe implementation plan → regression tests, risk, rollback and a measurable success/guardrail KPI**. Recommendations are hypotheses unless implementation, testing and measurement establish actual benefit; correlation is not proof of causation.
+
+**Phase 1's acceptance includes a read-only agent-consumer smoke test** using the verified published aggregate index and GitHub source code to produce at least one *grounded* prioritized improvement brief when source data supports it; when the evidence is insufficient, the correct output is an explicitly marked measurement gap and the minimal instrumentation/quality step, not a fabricated drop-off or bug. The weekly automation already exists and is separately configured; Phase 1 does not automatically rewrite it or authorize autonomous edits, PRs, notifications, deployments or Smart Reminder changes.
+
 ## What Changes — Phase 1 (NOW)
 
 1. **Allowlist currently implemented, source-validated R2 aggregate sections**, respecting their different generated times, expiry, allowed variants, real calculation grain, source coverage and privacy constraints. Enumerate available keys from the current cache contract rather than guessing keys from the GitHub overview namespace. Missing/expired objects are NOT treated as zero or fresh.
