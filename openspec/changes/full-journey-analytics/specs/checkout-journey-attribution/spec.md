@@ -1,5 +1,7 @@
 # Spec Delta
 
+> **DEFERRED PHASE 2:** These behavioral requirements are retained for a later, separately authorized implementation after Smart Reminder source maturity. Do not implement, deploy, migrate, instrument clients or change business logic under the Phase 1 R2→GitHub export scope. Phase 1 only applies to `verified-analytics-export`.
+
 ## Purpose
 
 This capability reveals the observed checkout journey and its recorded entry sources while preserving server-authoritative payment state and avoiding unsupported causal claims.
