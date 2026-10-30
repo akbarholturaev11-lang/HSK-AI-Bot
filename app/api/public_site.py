@@ -10,7 +10,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse, Response
 
 from app.public_site.account_deletion_render import render_account_deletion
-from app.public_site.content import DOWNLOAD_PATH, GOOGLE_SIGNIN_PRIVACY_PAGES, PAGES
+from app.public_site.content import DOWNLOAD_PATH, GOOGLE_SIGNIN_PRIVACY_PAGES, HOME_PATHS, PAGES
 from app.public_site.render import (
     BOT_URL,
     attribution,
@@ -121,7 +121,7 @@ def create_public_site_router(*, settings_obj, session_factory=None):
         tags = attribution(request.query_params)
         if request.method == "GET":
             record_event("landing_view", path, tags)
-            if path == "/":
+            if path in HOME_PATHS.values():
                 await record_attributed_source_visit(request, session_factory)
         return HTMLResponse(render_page(path, settings_obj, tags), headers={
             "Cache-Control": "no-cache", "Content-Language": PAGES[path]["lang"],
