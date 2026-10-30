@@ -30,6 +30,7 @@ import asyncio
 import logging
 from dataclasses import dataclass
 from datetime import datetime
+from weakref import WeakKeyDictionary
 
 from app.services.account_identity import owner_clause
 
@@ -66,6 +67,32 @@ from app.services.entitlements.state import (
 
 logger = logging.getLogger(__name__)
 LIMIT_HIT_ANALYTICS_TIMEOUT_SECONDS = 0.35
+# Keep user-facing limit checks fast without cancelling slow valid writes.
+# Work is best-effort, bounded per worker, and may be lost during shutdown.
+LIMIT_HIT_ANALYTICS_WRITE_TIMEOUT_SECONDS = 3.0
+LIMIT_HIT_ANALYTICS_MAX_PENDING = 24
+LIMIT_HIT_ANALYTICS_PARALLEL_WRITES = 4
+_PENDING_LIMIT_HIT_TASKS: set[asyncio.Task] = set()
+_LIMIT_HIT_WRITE_SLOTS: WeakKeyDictionary = WeakKeyDictionary()
+
+
+def _limit_hit_write_slots() -> asyncio.Semaphore:
+    loop = asyncio.get_running_loop()
+    slots = _LIMIT_HIT_WRITE_SLOTS.get(loop)
+    if slots is None:
+        slots = asyncio.Semaphore(LIMIT_HIT_ANALYTICS_PARALLEL_WRITES)
+        _LIMIT_HIT_WRITE_SLOTS[loop] = slots
+    return slots
+
+
+def _finish_limit_hit_write(task: asyncio.Task) -> None:
+    _PENDING_LIMIT_HIT_TASKS.discard(task)
+    if task.cancelled():
+        return
+    try:
+        task.result()
+    except Exception:
+        logger.exception("limit_hit analytics background write failed")
 
 
 @dataclass(frozen=True)
@@ -350,18 +377,33 @@ class EntitlementEngine:
             # yana qo'shimcha DB ishiga bog'lanadi.
             day_key = course_daily_window.local_day_key(0)
             source = f"{action}:{day_key}"
-            await asyncio.wait_for(
-                ConversionFunnelService().record_once(
-                    event_name="limit_hit",
-                    user_id=user_id,
-                    telegram_id=telegram_id,
-                    source=source,
-                    payload={"action": action},
-                ),
-                timeout=LIMIT_HIT_ANALYTICS_TIMEOUT_SECONDS,
-            )
-        except asyncio.TimeoutError:
-            logger.warning("limit_hit analytics timed out for %s", action)
+            if len(_PENDING_LIMIT_HIT_TASKS) >= LIMIT_HIT_ANALYTICS_MAX_PENDING:
+                logger.warning("limit_hit analytics backlog is full for %s", action)
+                return
+
+            async def write_event() -> bool:
+                async with _limit_hit_write_slots():
+                    return await ConversionFunnelService().record_once(
+                        event_name="limit_hit",
+                        user_id=user_id,
+                        telegram_id=telegram_id,
+                        source=source,
+                        payload={"action": action},
+                    )
+
+            # Shield the write: the 350ms UI budget must not cancel a DB
+            # operation which can still complete within the bounded deadline.
+            task = asyncio.create_task(asyncio.wait_for(
+                write_event(), timeout=LIMIT_HIT_ANALYTICS_WRITE_TIMEOUT_SECONDS,
+            ))
+            _PENDING_LIMIT_HIT_TASKS.add(task)
+            task.add_done_callback(_finish_limit_hit_write)
+            try:
+                await asyncio.wait_for(
+                    asyncio.shield(task), timeout=LIMIT_HIT_ANALYTICS_TIMEOUT_SECONDS,
+                )
+            except asyncio.TimeoutError:
+                logger.info("limit_hit analytics deferred for %s", action)
         except Exception:  # noqa: BLE001 — analitika limitni buzmasin
             logger.debug("limit_hit yozilmadi: %s", action, exc_info=True)
 
