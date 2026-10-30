@@ -284,6 +284,95 @@ class AdminPwaStatisticsReader:
             raise StatisticsUnavailable("Manual statistics refresh timed out") from None
 
 
+    async def refresh_approved_section(self, query, *, section):
+        """Owner-triggered ONE aggregate period; reuse existing scoped projection.
+
+        No Redis dependency, no event collection, no changed business outcomes.
+        A short PostgreSQL advisory lock and the per-worker shared mutex bound
+        concurrent recomputation. The scheduled GitHub mirror never calls SQL.
+        """
+        allowed = frozenset(("course", "funnel", "money", "sources"))
+        query = StatisticsRequest.model_validate(query.model_dump())
+        if (section not in allowed
+                or not self.prefix.endswith(":analytics_" + section + "_v1")
+                or query.platform != "overall"
+                or query.period not in ("weekly", "monthly", "all_time")
+                or not getattr(self.settings, "ADMIN_PWA_ENABLED", False)
+                or not self._r2.enabled):
+            raise StatisticsUnavailable("Manual statistics refresh unavailable")
+        try:
+            async with asyncio.timeout(65), self._mutex:
+                if self.clock() - getattr(self, "_last_manual_section_refresh_at", 0) < 60:
+                    raise StatisticsUnavailable("Manual refresh recently completed")
+                async with self.sessions() as db:
+                    async with read_transaction(db):
+                        dialect = db.get_bind().dialect.name
+                        if dialect == "postgresql":
+                            # Identical lock for this scoped source across workers.
+                            lock_id = int.from_bytes(
+                                hashlib.blake2b(self.prefix.encode(), digest_size=8).digest(),
+                                "big", signed=True)
+                            locked = (await db.execute(
+                                text("SELECT pg_try_advisory_xact_lock(:lock_id)"),
+                                {"lock_id": lock_id})).scalar()
+                            if locked is not True:
+                                raise StatisticsUnavailable("Manual refresh already in progress")
+                        elif dialect != "sqlite":
+                            raise StatisticsUnavailable("Manual refresh requires PostgreSQL")
+
+                        previous = await self._r2.get(
+                            kind="statistics", namespace=self._r2_namespace,
+                            variant="overall_" + query.period)
+                        stored = self._decode(previous, query)
+                        if stored is not None:
+                            observed = datetime.fromisoformat(
+                                stored["data"]["generated_at"]).timestamp()
+                            if 0 <= self.clock() - observed < 60:
+                                raise StatisticsUnavailable("Manual refresh recently completed")
+
+                        data = await self.loader(db, query)
+                        if (not isinstance(data, dict)
+                                or data.get("available") is not True
+                                or data.get("platform") != "overall"
+                                or data.get("period") != query.period
+                                or data.get("source") != "first-party stored aggregate projections"
+                                or not isinstance(data.get("scope"), dict)
+                                or data["scope"].get("section") != section):
+                            raise StatisticsUnavailable("Unexpected scoped projection")
+                        expires = (datetime.fromisoformat(
+                            data["generated_at"]).timestamp() + SNAPSHOT_SECONDS)
+                        raw = json.dumps(
+                            {"version": 1, "expires_at": expires, "data": data},
+                            allow_nan=False, separators=(",", ":")).encode()
+                        envelope = self._decode(raw, query)
+                        if envelope is None:
+                            raise StatisticsUnavailable("Invalid scoped projection")
+                        # Durable R2 first; no local success on failed storage.
+                        await self._r2.put(
+                            kind="statistics", namespace=self._r2_namespace,
+                            variant="overall_" + query.period, raw=raw)
+
+                self._remember(("overall", query.period), envelope)
+                self._last_manual_section_refresh_at = self.clock()
+                return {
+                    "section": section, "period": query.period,
+                    "generated_at": envelope["data"]["generated_at"],
+                    "expires_at": datetime.fromtimestamp(
+                        envelope["expires_at"], timezone.utc).isoformat(),
+                }
+        except R2Unavailable:
+            raise StatisticsUnavailable("Manual statistics R2 write unavailable") from None
+        except TimeoutError:
+            raise StatisticsUnavailable("Manual statistics refresh timed out") from None
+        except StatisticsUnavailable:
+            raise
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:
+            logger.warning("Manual scoped refresh failed: %s", type(exc).__name__)
+            raise StatisticsUnavailable("Manual statistics refresh unavailable") from None
+
+
     async def refresh_overview_bundle(self):
         """Recompute only verified overall aggregates and publish to private R2.
 
