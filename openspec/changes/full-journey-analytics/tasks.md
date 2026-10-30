@@ -1,12 +1,12 @@
-# Tasks — Phase 1 only: existing R2 → GitHub analytics bridge
+# Tasks — Phase 1: verified R2 → GitHub → weekly product-improvement evidence
 
-> Source audit recorded on 2026-10-30: 22 existing R2 aggregate objects (12 then-fresh, 10 expired), verified using GitHub Actions run 41031747420. This change remains **planning only**. All tasks are incomplete until implementation and executed tests exist. The four work packages replace the earlier 30-task implementation scope; no user-journey telemetry or Smart Reminder implementation belongs to Phase 1.
+> Source audit recorded on 2026-10-30: 22 existing R2 aggregate objects (12 then-fresh, 10 expired), verified using GitHub Actions run 41031747420. This change remains **planning only**. All tasks are incomplete until implementation and executed tests exist. The four work packages replace the earlier 30-task implementation scope; no user-journey telemetry or Smart Reminder implementation belongs to Phase 1. **Final goal:** enable the already scheduled weekly HSK AI improvement agent to propose evidence-grounded changes based on published analytics AND current real code, rather than counting metric deltas. The agent does not implement or deploy changes.
 
 ## 1. Approve existing sources and safe export contract
 
 - [ ] **1. Source-to-export contract and privacy matrix.** On fresh `main` of BOTH repositories, map every real `home/overview/course/platform/funnel/money/sources/report/experiments` and `feedback` R2 cache to its `kind`, independently derived namespace, supported period/variant, original source signature, schema, generation timestamp, expiry, metric grain, max-source-row coverage and safe output allowlist. Confirm which of the 22 observed objects are fresh versus stale at run time. Distinguish basic-statistics and legacy 16-counter output. Reject user-level/receipt/text/error details, unknown keys and below-threshold combinations; explicitly preserve `detail_limited`, `truncated`, unavailable and `all_time` 30-day-detail semantics.
 
-  **Acceptance:** Contract is verifiable against existing source code and fixed synthetic examples, public-field allowlists have negative privacy tests, and missing/expired object cases are not silently zeroed. No new SQL/event producers required.
+  **Acceptance:** Contract is verifiable against existing source code and fixed synthetic examples, public-field allowlists have negative privacy tests, and missing/expired object cases are not silently zeroed. Consumers can distinguish the observed metric, cohort/period/denominator, confidence, missing data and real first-party source; no new SQL/event producers required.
 
 ## 2. Warm only approved existing R2 caches safely
 
@@ -18,13 +18,13 @@
 
 - [ ] **3. Extend strict GitHub R2 mirror and immutable archives.** In `HSK-AI-Private-Analytics`, extend `scripts/sync_from_r2.py`, `scripts/build_archive.py`, their tests, manifest and `sync-r2.yml` staging paths with fixed input schemas/allowlisted output and approved section namespaces. Keep existing `overview/users/sales/payments/courses` 16-counter compatibility files unchanged; use unambiguous separate paths for real source projections (e.g. `analytics/funnel`, `analytics/course`, `analytics/feedback`). Maintain independent source generated/expiry timestamps, exact rolling windows, partial/missing/stale statuses, idempotent date-indexed history and the R2-only six-hour schedule. No raw values or secrets in logs and no nonaggregate account data in commits.
 
-  **Acceptance:** Synthetic sources produce independently indexed and easily ChatGPT-readable `latest`/history files; malformed/unauthorized/PII/expired/oversized source is rejected; old archive compatibility tests still pass and the root manifest distinguishes source-derived vs overview-sliced datasets.
+  **Acceptance:** Synthetic sources produce independently indexed and easily ChatGPT-readable `latest`/history files with truthful coverage/metric definitions; malformed/unauthorized/PII/expired/oversized source is rejected; old archive compatibility tests still pass and the root manifest distinguishes source-derived vs overview-sliced datasets. The weekly agent can discover available sections without guessing file names.
 
 ## 4. Reconcile, test, release and rollback
 
 - [ ] **4. End-to-end acceptance for Phase 1.** Run both repositories' focused server/bridge/archive/refresh tests, privacy and cross-scope cases, R2 failure/cooldown cases and full affected CI. Compare matched `section + platform + period + generated_at` results from Admin PWA → R2 → GitHub; explicitly check mixed grains and partial caps. Perform separate owner-authorized source refresh and GitHub archive sync tests with real timestamps, and inspect public Git diff for identifying data. Stage changes in independent reviewed branches and release only after successful CI/authorization. Keep rollback to existing 16-counter overview bridge; explicitly record any missing proof.
 
-  **Acceptance:** Real evidence demonstrates correct newly exported section(s), truthful timestamps, unchanged business behavior and clean public output. OpenSpec validation is necessary but is not proof of runtime deployment.
+  **Acceptance:** Real evidence demonstrates correct newly exported section(s), truthful timestamps, unchanged business behavior and clean public output. Also perform a **read-only weekly-agent consumer smoke test**: locate a fresh independent funnel/course/source metric, assess an observable product-friction hypothesis, inspect the matching HSK-AI-Bot `main` code and tests, and produce one prioritized **implementation-ready improvement brief** (proposed UX/flow change, target files, test/rollback plan, KPI/guardrails), with confidence and limitations. If available source cannot justify a recommendation, explicitly report the evidence gap rather than invent a bug or lift. The test must not create issues, PRs or changes. OpenSpec validation is necessary but is not proof of runtime deployment.
 
 ## Future work — intentionally NOT in Phase 1
 
