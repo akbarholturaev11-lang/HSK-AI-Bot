@@ -214,6 +214,14 @@ def main() -> int:
             name = match.group(1)
             if name in KEYWORDS or name in EXTERNAL_API_CALLS or name not in declared:
                 continue
+            # PreferenceDataStoreFactory.create belongs to Jetpack DataStore,
+            # not to a project-local create() with the same short name.
+            # Skip only this explicit external qualifier, not local create calls.
+            if name == "create" and re.search(
+                r"\bPreferenceDataStoreFactory\s*\.\s*$",
+                text[max(0, match.start() - 80):match.start()],
+            ):
+                continue
             # Skip the declaration itself.
             head = text.rfind("\n", 0, match.start())
             line_start = text[head + 1 : match.start()]
