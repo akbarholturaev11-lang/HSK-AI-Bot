@@ -1,45 +1,39 @@
-# Proposal
+# Proposal — phased HSK AI analytics exports
 
 ## Why
 
-HSK AI already records many user, course, checkout, notification, feedback and error events, and Admin PWA displays several independently computed funnels. However the R2→GitHub analytics mirror publishes only 16 overview counters; it cannot explain where learners reached checkout, which recorded entry preceded purchase, what proportion abandoned each stage, or which categories correlate with poor retention. The owner needs actionable, reproducible growth evidence without exposing individual students or weakening payment/access controls.
+HSK AI's Admin PWA already computes 9 analytics sections, with a separately cached feedback aggregate. The read-only R2 inventory on 2026-10-30 (GitHub Actions run 41031747420) **confirmed 22 aggregate objects**: 12 then-fresh and 10 expired. They include actual R2 objects for overview, home, course, funnel, money, sources, platform, experiments, report, basic statistics and feedback. Most of the desired aggregate data already reaches R2 on demand. Meanwhile the public `HSK-AI-Private-Analytics` mirror reads **only three overview objects**, exports exactly 16 allowlisted counters and splits them into apparent `overview/users/sales/payments/courses` sections. Those are slices of the same overview source, not independent section exports.
 
-This plan concerns GitHub Issue [#251](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/issues/251). It is **planning only**, not a production release.
+The owner has explicitly narrowed the immediate objective: **complete the safe R2 → GitHub → ChatGPT aggregate bridge now; postpone new user journey instrumentation and Smart Reminder integration until the latter is complete.**
 
-## What Changes
+Related GitHub Issue: [#251](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/issues/251). This is a **planning-only** change.
 
-- Define a versioned, first-party, server-owned journey event contract that reuses existing recorded sources and instruments genuinely missing checkout/plan/screen/notification stages. Missing historical observations remain unavailable.
-- Provide an authorized, privacy-restricted administrator journey drill-down with clear evidence and timestamp provenance, while keeping sensitive raw content in its existing protected system.
-- Extend validated R2 aggregate snapshots and the GitHub analytics mirror beyond the legacy 16 counters with real source-derived metrics for checkout, attribution, learning, retention, notifications, feedback categories, error categories, product usage, finance and experiment diagnostics where coverage is sufficient.
-- Enforce strict separation: internal identifiers/user journeys only in protected first-party infrastructure; GitHub contains safe aggregate statistics only. The analytics GitHub repository is **currently public**, despite its name.
-- Preserve existing payment approval, subscription entitlement, learning grading, notification dispatch, cache semantics and manual refresh authorization. Add bounded correctness, privacy, security and failure-mode tests before rollout.
+## What Changes — Phase 1 (NOW)
 
-## Capabilities
+1. **Allowlist currently implemented, source-validated R2 aggregate sections**, respecting their different generated times, expiry, allowed variants, real calculation grain, source coverage and privacy constraints. Enumerate available keys from the current cache contract rather than guessing keys from the GitHub overview namespace. Missing/expired objects are NOT treated as zero or fresh.
+2. **Extend the existing strict R2→GitHub mirror** (cross-repo `scripts/sync_from_r2.py`, `scripts/build_archive.py`, workflow staging paths, schema tests, indexes) to publish independently derived sanitized aggregate datasets for the eligible sections, not just 16 overview counters. Preserve original 16 counters and their compatibility paths.
+3. **Provide a bounded, owner-authorized cache warming/refresh mechanism** only for the approved aggregate sections and periods, so the publication does not depend on the owner opening each Admin PWA tab. Reuse existing section projections, private R2 store and lease/advisory-lock policy; scheduled six-hour GitHub sync remains R2-only and must not launch SQL. Implement batching/timeouts and partial/unavailable statuses rather than pretending every section/period is instantly available.
+4. **Test source-to-GitHub fidelity and privacy**, stale/missing/partial coverage, timing, forbidden fields, small-cell re-identification, index/archive immutability, and a staged end-to-end refresh. Do not alter business functions.
 
-### New Capabilities
-- `journey-event-contract`: canonical, privacy-bounded recorded events and status/coverage semantics across existing clients and server.
-- `checkout-journey-attribution`: account-scoped checkout attempts, plan/stage timing and carefully described descriptive entry-to-payment lineage.
-- `engagement-and-feedback-observability`: notification lifecycle, product learning, retention, feedback and technical error category aggregates without exposing private bodies.
-- `verified-analytics-export`: immutable, source-verified R2 and aggregate-only GitHub reports with freshness, lineage, coverage, safe small-cell handling and guarded refresh.
+## Phase 2 (DEFERRED; separate explicit authorization)
 
-### Modified Capabilities
-None; the existing feature behavior shall remain backward compatible. Work is additive and observational.
+- Per-user account journey history, new client telemetry for plan selection, screen active duration, notification open/display and detailed payment-attempt lineage.
+- Smart Reminder event and outcome integration after its own implementation, deployment and source maturity; only future compatibility is noted now.
+- Any new database models, migrations, entitlement/payment changes or autonomous AI analytics action.
 
-## Impact
+Phase 2 is **not part of Phase 1 acceptance**; the existing full-journey capability specs remain future requirements, not authorization to implement them now.
 
-- Backend: `app/admin_api/pwa_analytics_*.py`, `pwa_statistics_cache.py`, analytics identities and existing event models/producers; possible additive Alembic migration only after audit.
-- Clients: telemetry-producing subscription/paywall paths for Telegram Mini App, Android and Desktop; public website traffic stays anonymous and is not silently equated with account visits.
-- Operational/notification data: `subscription_entry_events`, `conversion_funnel_events`, `payments`, `account_notice_deliveries`, `bot_feedbacks`, `release_feedback_*`, `admin_pwa_native_reports`, course events, technical-error markers.
-- Archive: `akbarholturaev11-lang/HSK-AI-Private-Analytics` `scripts/sync_from_r2.py`, `scripts/build_archive.py`, `index.json`, `data/status.json`, and owner-authorized refresh workflow, as a separate reviewed repository change.
-- Risk: unauthorized personal-data disclosure, misleading attribution or denominators, duplicate/out-of-order events, time-spent mismeasurement, heavy DB scans, cache inconsistency and accidental payment side effects.
+## Current Source / Limitations
 
-## Out of Scope
+- Admin PWA source reader: `app/admin_api/pwa_analytics_cache.py` — `home/overview/course/platform/funnel/money/sources/report/experiments`, each with a `cache_scope`, R2 namespace and lazy 24h cache.
+- Dedicated feedback aggregates: `app/admin_api/pwa_feedback_cache.py` (`kind=feedback`, source `all/bot/release/android`, only weekly/monthly); reads at most 500 recent records per source and reports truncation.
+- Other analytics sections may be missing/expired, because their cache is generated only on demand; some detail calculations refuse incomplete streams above 5,000 rows; `all_time` can use recent 30d details; platform attribution may be unavailable.
+- Private R2 key contract: `app/admin_api/pwa_r2_aggregate_store.py` — `admin-pwa/aggregates/v1/{namespace}/{statistics|feedback}/{variant}.json`; maximum 128 KiB per object. A source namespace MUST be verified, not inferred from the historical `overview` value.
+- Public mirror today: `HSK-AI-Private-Analytics/scripts/sync_from_r2.py::sync_overview`, `OVERVIEW_PATHS` (16 counts); `scripts/build_archive.py` only slices the overview aggregate. GitHub workflow mirror runs every 6h and owner-only manual refresh explicitly refreshes overview only.
+- Both GitHub repositories are currently public. No user identifiers, receipts, user-level journeys, raw feedback, device identifiers, private error details, tokens, PII or unsafe tiny slices may be exported.
 
-- Automatic AI-directed subscription, marketing, payments, message sending, notification scheduling or changes to current billing/entitlement decisions.
-- Export of raw payment receipts, screenshots, user IDs, private feedback text, prompts, stack traces, tokens, message content or user-level timelines to public GitHub.
-- Reconstructing historical events or attributing conversions where the source never recorded the relevant step.
-- Switching existing R2, Redis, PostgreSQL or production deployment architecture as part of the planning task.
+## Impact and Safety
 
-## Evidence and Handoff
+Phase 1 modifies only **aggregate publication and necessary bounded refresh integration**. It MUST reuse the existing projections and storage, and keep native clients, Smart Reminder, checkout decision logic, financial records, access rights, notifications and Admin PWA UX unchanged. The export must be fail-closed on unsafe/unknown source content.
 
-Canonical repo rules: `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`; planning skill: `.agents/skills/hsk-ai-openspec-planning/SKILL.md`; issue: #251. Existing verified source files include `app/admin_api/pwa_analytics_cache.py`, `app/admin_api/pwa_analytics_finance.py`, `app/admin_api/pwa_analytics_learning.py`, `app/services/admin_miniapp_service.py` and the analytics mirror allowlist. Before implementation, recheck the then-current `main`, missing producer coverage, retention and current tests. No acceptance/test results are implied by this plan.
+Work must be staged in separate feature branches for the HSK AI server and analytics archive, tested independently, and merged/deployed only after review and actual test evidence. No runtime code or configuration was changed by writing this proposal.
