@@ -2,68 +2,104 @@
 
 ## Purpose
 
-This capability delivers verifiable, time-scoped and privacy-safe aggregate reports from a controlled first-party R2 cache to a public GitHub history, without opening protected personal records.
+**Phase 1: reuse existing R2 aggregate snapshots, extend public GitHub verified export, preserve the existing 16-counter overview mirror.** No runtime instrumentation, account-level user journey, Smart Reminder modifications or new business logic in this phase. Source freshness and original coverage MUST remain truthful.
 
 ## ADDED Requirements
 
-### Requirement: GitHub receives aggregates only
-The system SHALL export only verified schema-allowlisted aggregate metrics and dimensions to the public analytics mirror. It MUST reject identifiers, receipts, raw text, chat content, feedback bodies, error traces, bearer tokens and unapproved fields.
+### Requirement: The bridge exports only verified source-specific aggregates
 
-#### Scenario: Attempt to export private data
-- **WHEN** an upstream analytics JSON contains an unexpected user ID, screenshot reference, raw feedback text or token
-- **THEN** validation rejects that export without publishing the value, including in logs or immutable history
+The system SHALL read from a fixed, server-reviewed allowlist of supported R2 source kinds, approved section-specific namespaces and period/platform variants. Each section SHALL be identified by a validated source signature and its original scope; no arbitrary R2 object or user-provided path shall be accepted. The public analytics repository MUST contain only schema-allowlisted, nonidentifying aggregates.
 
-#### Scenario: Tiny segments
-- **WHEN** a combination of approved dimensions produces an individual-identifiable or below-threshold small segment
-- **THEN** public output suppresses that segment with a labeled suppression state rather than exposing its value or implying zero
+#### Scenario: Existing course and checkout aggregates
 
-### Requirement: Every report exposes provenance and reporting grain
-The system SHALL supply schema version, verified source, section, platform, generated and expiry timestamps, observation date, reporting period, window start, unit, numerator/denominator where applicable, and source coverage.
+- **WHEN** a valid R2 `course` or `funnel` aggregate is present and fresh for a supported period
+- **THEN** GitHub publishes a separate, source-identified safe aggregate section with its original grain, scope, generation time and exact window, independently of the legacy overview slices
 
-#### Scenario: Seven-day rolling report
-- **WHEN** the consumer opens a weekly report observed on a particular date
-- **THEN** it sees `rolling_7_days` with its exact `since` and `generated_at`, and the report is not described as one day's results
+#### Scenario: Arbitrary private field
 
-#### Scenario: Missing field
-- **WHEN** a source metric was not measured for a requested platform
-- **THEN** the section states `not_instrumented` or `unavailable` with a reason instead of emitting an invented count
+- **WHEN** any upstream payload contains a new unreviewed identifier, raw feedback text, payment screenshot reference, token, per-user timeline, trace or arbitrary dimension
+- **THEN** that field is not published or logged; unknown/unsafe source schemas are rejected without replacing previously safe history
 
-### Requirement: An expired cache is not live data
-The system SHALL expire convenient latest aliases according to source timestamps while retaining explicitly historical immutable snapshots and manifest evidence.
+### Requirement: Current overview compatibility is unchanged
 
-#### Scenario: Cache expiration
-- **WHEN** the clock exceeds an aggregate `expires_at` without new source data
-- **THEN** the GitHub consumer must see history-only or expired status rather than a fresh live claim
+The system SHALL preserve the existing 16 allowlisted overview counts, compatibility paths and meanings while adding independent source-derived sections in distinct paths.
 
-### Requirement: Archive synchronization remains a validated mirror
-The system SHALL preserve source-locked, versioned R2 objects, strict section-specific field validation, immutability of historical snapshots and idempotent synchronization on a fixed schedule.
+#### Scenario: Previously supported GitHub consumer
 
-#### Scenario: New section fails validation
-- **WHEN** a new R2 section includes invalid timestamps, unknown enum values, unexpected content or inconsistent counters
-- **THEN** the archive rejects the invalid section and does not overwrite a safe historical snapshot
+- **WHEN** an existing reader accesses `overview/latest.json`, `users/latest.json`, `sales/latest.json`, `payments/latest.json` or `courses/latest.json`
+- **THEN** it obtains the same overview-derived compatibility schema, not newly redefined `money` or `course` metrics
 
-#### Scenario: Repeated sync
-- **WHEN** the R2 objects have not changed since the previous successful sync
-- **THEN** repeated GitHub synchronization does not duplicate historical observations
+### Requirement: Cache presence is separate from source completeness
 
-### Requirement: Owner-authorized refresh remains controlled
-The system SHALL permit only an authorized owner to trigger recomputation of approved source aggregates, preserve current bounded/serialized refresh and the independent R2→GitHub mirror, and report both stages separately.
+The system SHALL distinguish present, missing, expired, invalid, partially recorded and uninstrumented section-period variants. Source-side warming SHALL reuse existing projections and respect real supported periods and fixed execution/cooldown budgets. A scheduled GitHub mirror MUST remain a read-only R2 consumer and SHALL NOT force SQL reads.
 
-#### Scenario: Unauthorized refresh
-- **WHEN** a nonowner attempts to request source recomputation
-- **THEN** the system rejects the request before any analytics database refresh or secret disclosure
+#### Scenario: Demand-driven cache never generated
 
-#### Scenario: Source refreshed, mirror failed
-- **WHEN** server recomputation succeeds but the downstream GitHub mirror fails
-- **THEN** monitoring reports partial completion rather than claiming a new GitHub snapshot exists
+- **WHEN** a supported `sources/monthly` aggregate has never been requested or generated
+- **THEN** GitHub reports `missing` or `not_cached` and never fabricates a zero or silently substitutes another period
 
-### Requirement: User-level detail stays behind first-party authorization
-The system SHALL expose owned account journeys only through existing or equivalent audited, authenticated administrative interfaces with least privilege and bounded redacted results. No user-level data SHALL be made available to generic GitHub, public JSON, or unrestricted MCP.
+#### Scenario: Expired feedback aggregate
 
-#### Scenario: Public GitHub reader
-- **WHEN** a GitHub-only reader accesses any report in the analytics repository
-- **THEN** it can inspect summary trends but cannot identify or reconstruct any individual learner's journey
+- **WHEN** only an expired `feedback/all_weekly` R2 object is available
+- **THEN** the source is not marked fresh; any approved owner refresh produces a new verified snapshot before it may be published as fresh
 
-#### Scenario: Unauthorized administrative request
-- **WHEN** an unauthenticated or insufficiently authorized caller requests an account timeline
-- **THEN** the request is rejected without returning any account data
+#### Scenario: Bounded owner refresh fails halfway
+
+- **WHEN** an authorized multisection source refresh exceeds its budget or a section cannot be computed
+- **THEN** it reports per-section success/failure separately, never falsely claims complete success and preserves last known safe history
+
+### Requirement: Coverage, grain and historical windows are explicit
+
+Every aggregate SHALL retain or supply section, original generated/expiry times, period, window, population/denominator where measurable, source, observation date and actual coverage. A metric based on capped rows SHALL be marked partial or unavailable and MUST NOT be generalized to complete history. Overlapping 7-day and 30-day snapshots SHALL NOT be interpreted as independent daily counts.
+
+#### Scenario: 5,000-row detail cap
+
+- **WHEN** `course`, `funnel` or `experiments` projections cannot calculate a complete detail metric within their existing row cap
+- **THEN** the export marks that field unavailable/limited instead of supplying a guessed count or total
+
+#### Scenario: Limited feedback classification
+
+- **WHEN** `feedback` only scanned at most 500 most recent records per source
+- **THEN** the output retains source coverage, scanned count and truncation metadata and never claims full-population categories
+
+#### Scenario: Mixed all-time metrics
+
+- **WHEN** an `all_time` section includes an existing recent 30-day detail measure
+- **THEN** both current-stock and recent-detail grains remain distinguished and the 30-day metric is never called lifetime activity
+
+### Requirement: Expired data is history, not live truth
+
+The system SHALL retain immutable, timestamped, idempotent histories but expire latest aliases/status as prescribed; malformed inputs MUST NOT overwrite valid existing history.
+
+#### Scenario: Stale data
+
+- **WHEN** the current time is beyond source `expires_at`
+- **THEN** the manifest reports expired/history-only as appropriate and does not label the object fresh
+
+#### Scenario: Repeated R2 sync
+
+- **WHEN** a six-hour mirror run sees the same source timestamps and content
+- **THEN** it does not create duplicate history entries or update unrelated reports
+
+### Requirement: Public aggregates resist identification
+
+The system SHALL permit only fixed safe grouped dimensions and bounded categories; low-count/rare combinations with re-identification risk SHALL be suppressed or not published. Hashing identifiers is not sufficient sanitization. Private feedback bodies and protected account-specific data remain outside GitHub.
+
+#### Scenario: Single-account segment
+
+- **WHEN** a platform/plan/source combination reveals a single account
+- **THEN** the detailed segment is suppressed, rather than being published with a hashed key or disguised identifier
+
+### Requirement: Cross-repository validation and rollback
+
+The rollout SHALL preserve the existing owner-only authorized refresh, locked/idempotent publisher and six-hour R2-only GitHub sync. It SHALL provide source/R2/GitHub parity checks for identical sections, periods and observation timestamps, plus focused regression and privacy tests, before any `main` merge or production deployment.
+
+#### Scenario: Source and mirror disagree
+
+- **WHEN** Admin PWA, R2 and GitHub disagree for the same verified projection timestamp and period
+- **THEN** the mismatch is reported and the new section rollout is held while existing 16-counter overview compatibility remains available
+
+#### Scenario: Unsafe publishing discovered
+
+- **WHEN** testing detects any prohibited personal datum in GitHub output or logs
+- **THEN** the new section publication is disabled and the old verified 16-counter bridge continues unchanged
