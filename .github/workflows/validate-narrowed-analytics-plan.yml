@@ -1,4 +1,4 @@
-name: Validate narrowed existing-R2 OpenSpec plan
+name: Validate narrowed existing-R2 OpenSpec plan (retry)
 
 on:
   push:
