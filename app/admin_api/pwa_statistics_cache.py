@@ -83,10 +83,12 @@ class AdminPwaStatisticsReader:
                               if cache_scope else digest)
         self._r2 = r2_store if r2_store is not None else PrivateR2AggregateStore(settings_obj=settings_obj)
         self._local = {}
-        # Manual overview refresh can update Redis/R2 while another worker still
-        # holds a valid in-process copy. Revalidate that scope at most once per
-        # minute, without re-running SQL on ordinary cache hits.
-        self._overview_local_revalidate = cache_scope == "analytics_overview_v1"
+        # Owner refresh may update R2 while another worker holds a valid local
+        # analytics snapshot. Recheck approved manually refreshable sections
+        # at most once per minute; do not re-run SQL on cache hits.
+        self._overview_local_revalidate = cache_scope in (
+            "analytics_overview_v1", "analytics_course_v1", "analytics_funnel_v1",
+            "analytics_money_v1", "analytics_sources_v1")
         self._local_checked_at = {}
         self._mutex = refresh_mutex if refresh_mutex is not None else asyncio.Lock()
         self._redis_retry_at = 0.0
