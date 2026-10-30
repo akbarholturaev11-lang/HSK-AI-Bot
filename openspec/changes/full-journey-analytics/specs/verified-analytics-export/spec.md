@@ -90,6 +90,30 @@ The system SHALL permit only fixed safe grouped dimensions and bounded categorie
 - **WHEN** a platform/plan/source combination reveals a single account
 - **THEN** the detailed segment is suppressed, rather than being published with a hashed key or disguised identifier
 
+### Requirement: Exported aggregate evidence supports actionable, code-grounded weekly improvement analysis
+
+The system SHALL make available a versioned index and source-specific safe aggregate projections that a read-only weekly HSK AI improvement agent can discover and interpret with section, exact time window, freshness, grain, denominator where measured, completeness and source definition. This SHALL enable the agent to inspect the **current HSK-AI-Bot main code and relevant tests independently** before proposing a specific, minimal, user-visible product improvement. Neither the export nor the agent SHALL assert an unverified code defect, causal uplift or unsupported drop-off, nor perform autonomous product/code changes.
+
+#### Scenario: Genuine checkout friction observation
+
+- **WHEN** a fresh, correctly attributed source-derived checkout funnel contains complete stage counts with verified denominators and a documented observation window
+- **THEN** a weekly agent can identify the specific observed dropout stage, inspect the matching current checkout flow code and tests, and propose a ranked, testable improvement with affected files, user-visible behavior, relevant guardrails, rollback and a measurable outcome; descriptive association is not presented as causation
+
+#### Scenario: Missing or partial journey evidence
+
+- **WHEN** the requested platform has no instrumented event, an aggregate is expired, or an existing projection refuses to calculate detail beyond its source cap
+- **THEN** the index/report marks that limitation and the agent is able to present a specific measurement or data-quality gap instead of fabricating a bug, conversion loss or improvement percentage
+
+#### Scenario: Legacy overview-only reader
+
+- **WHEN** only the old 16 overview counts are available
+- **THEN** the weekly agent can still provide source-qualified observations and inspect relevant code, but MUST NOT claim that complete payment, lesson or user-journey drop-off was measured without an independent verified funnel
+
+#### Scenario: Recommendation must not change production
+
+- **WHEN** an agent proposes a priority improvement based on the latest published statistics and reviewed source code
+- **THEN** its output is a read-only implementation brief requiring separate owner approval for any commits, deployment, notifications, payment changes or other actions
+
 ### Requirement: Cross-repository validation and rollback
 
 The rollout SHALL preserve the existing owner-only authorized refresh, locked/idempotent publisher and six-hour R2-only GitHub sync. It SHALL provide source/R2/GitHub parity checks for identical sections, periods and observation timestamps, plus focused regression and privacy tests, before any `main` merge or production deployment.
