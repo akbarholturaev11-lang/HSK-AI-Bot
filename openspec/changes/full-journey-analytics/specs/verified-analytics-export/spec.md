@@ -92,7 +92,7 @@ The system SHALL permit only fixed safe grouped dimensions and bounded categorie
 
 ### Requirement: Exported aggregate evidence supports actionable, code-grounded weekly improvement analysis
 
-The system SHALL make available a versioned index and source-specific safe aggregate projections that a read-only weekly HSK AI improvement agent can discover and interpret with section, exact time window, freshness, grain, denominator where measured, completeness and source definition. This SHALL enable the agent to inspect the **current HSK-AI-Bot main code and relevant tests independently** before proposing a specific, minimal, user-visible product improvement. Neither the export nor the agent SHALL assert an unverified code defect, causal uplift or unsupported drop-off, nor perform autonomous product/code changes.
+The system SHALL expose versioned, discoverable, source-verified aggregates with truthful provenance, reporting window, grain, denominators where measured, freshness and completeness. A read-only weekly improvement agent SHALL use this evidence and independently inspected current application code/tests to propose specific product improvements, not merely report numeric deltas. No unverified defect, causal uplift, fabricated drop-off or autonomous product change is permitted.
 
 #### Scenario: Genuine checkout friction observation
 
