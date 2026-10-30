@@ -1,0 +1,79 @@
+name: Plan HSK AI analytics with official OpenSpec CLI (isolated branch)
+
+on:
+  push:
+    branches:
+      - codex/analytics-openspec-plan-20261030
+    paths:
+      - .github/workflows/plan-analytics-openspec.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: isolated-openspec-analytics-plan
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    if: github.ref_name == 'codex/analytics-openspec-plan-20261030'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/analytics-openspec-plan-20261030
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install and verify official OpenSpec CLI
+        env:
+          OPENSPEC_NO_UPDATE_CHECK: '1'
+        run: |
+          set -euo pipefail
+          npm install --global @fission-ai/openspec@latest
+          openspec --version
+          test -f openspec/config.yaml
+          openspec context --json > /tmp/analytics-openspec-context.json
+      - name: Scaffold, populate and validate analytics plan
+        env:
+          OPENSPEC_NO_UPDATE_CHECK: '1'
+        run: |
+          set -euo pipefail
+          slug=full-journey-analytics
+          src=".planning-input/$slug"
+          dst="openspec/changes/$slug"
+          test -f "$src/proposal.md"
+          test -f "$src/tasks.md"
+          test ! -e "$dst"
+          openspec new change "$slug"
+          openspec status --change "$slug" --json > /tmp/analytics-openspec-initial.json
+          openspec instructions proposal --change "$slug" --json > /tmp/analytics-proposal-instructions.json
+          cp "$src/proposal.md" "$dst/proposal.md"
+          openspec instructions specs --change "$slug" --json > /tmp/analytics-specs-instructions.json
+          mkdir -p "$dst/specs"
+          cp -R "$src/specs/." "$dst/specs/"
+          openspec instructions design --change "$slug" --json > /tmp/analytics-design-instructions.json
+          cp "$src/design.md" "$dst/design.md"
+          openspec instructions tasks --change "$slug" --json > /tmp/analytics-tasks-instructions.json
+          cp "$src/tasks.md" "$dst/tasks.md"
+          openspec status --change "$slug" --json > /tmp/analytics-openspec-complete.json
+          openspec validate "$slug" --strict
+          python - <<'PY'
+          import json
+          j=json.load(open('/tmp/analytics-openspec-complete.json'))
+          print('OpenSpec status:',json.dumps(j,sort_keys=True)[:1800])
+          PY
+      - name: Commit validated plan and clean disposable execution helper
+        run: |
+          set -euo pipefail
+          git rm -r .planning-input/full-journey-analytics
+          git rm .github/workflows/plan-analytics-openspec.yml
+          git add openspec/changes/full-journey-analytics
+          git diff --cached --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(openspec): validated full-journey analytics plan [skip ci]"
+          git push origin HEAD:codex/analytics-openspec-plan-20261030
