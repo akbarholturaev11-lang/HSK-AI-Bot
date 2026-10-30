@@ -1,4 +1,4 @@
-name: Validate analytics final-product-goal OpenSpec
+name: Validate analytics final-product-goal OpenSpec (retry)
 
 on:
   push:
