@@ -170,6 +170,10 @@ jobs:
         run: python -m unittest tests.test_course_miniapp_analytics_activity tests.test_public_site_analytics
       - name: Verify deferred limit-hit telemetry remains bounded
         run: python -m unittest tests.test_limit_hit_deferred_analytics tests.test_funnel_wiring
+      - name: Verify checkout telemetry acknowledgement and transient retries
+        run: |
+          python -m pip install "pytest==8.4.2"
+          python -m pytest -q tests/test_subscription_miniapp_ui_contract.py
       - name: Verify onboarding save confirmation and recovery
         run: python -m unittest tests.test_miniapp_onboarding_save_confirmation tests.test_course_miniapp_onboarding
       - name: Run HSK 3.0 lesson limit regression
