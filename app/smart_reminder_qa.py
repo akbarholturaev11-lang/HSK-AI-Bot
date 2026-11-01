@@ -49,7 +49,8 @@ def create_app(*, session_factory=None, engine_obj=None, settings_obj=None):
     calibration = qa_calibration()
 
     async def admission(session, actor, job_id, now):
-        if actor.user_id != guard.USER_ID or actor.device_id != guard.DEVICE_IDS[0] or job_id not in guard.JOB_IDS:
+        if (actor.user_id != guard.USER_ID or actor.device_id != guard.DEVICE_IDS[0] or
+                job_id not in (*guard.JOB_IDS,guard.REOPEN_JOB_ID)):
             return None
         row = await session.get(SmartReminderRouting, guard.USER_ID)
         if not row or not row.verified_at or not row.verified_until or not row.evidence_sha256 or not row.inventory_sha256:

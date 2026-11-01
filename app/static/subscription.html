@@ -1096,18 +1096,39 @@ function focusContent(text){
   const key=focusKey();
   return key&&text.focus?text.focus[key]||null:null;
 }
-function trackSubscriptionStage(stage){
-  if(state.preview||!INIT_DATA)return Promise.resolve();
-  return fetch(API.event,{
-    method:"POST",
-    headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
-    body:JSON.stringify({
-      ...contextPayload(),stage,
-      plan_type:state.plan,
-      payment_method:state.method
-    }),
-    keepalive:true
-  }).catch(()=>null);
+async function trackSubscriptionStage(stage){
+  if(state.preview||!INIT_DATA)return false;
+  const body=JSON.stringify({
+    ...contextPayload(),stage,
+    plan_type:state.plan,
+    payment_method:state.method
+  });
+  // Telemetry never blocks payment or lesson UI. Retry transient failures
+  // once; 4xx attempt/auth errors must not fabricate checkout events.
+  for(let attempt=0;attempt<2;attempt++){
+    let status=0;
+    try{
+      const response=await fetch(API.event,{
+        method:"POST",
+        headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
+        body,keepalive:true
+      });
+      status=response.status;
+      if(response.ok){
+        const result=await response.json();
+        if(result&&result.ok===true)return true;
+      }
+      if(status>=400&&status<500){
+        console.warn("checkout stage telemetry rejected",stage,status);
+        return false;
+      }
+    }catch(_error){
+      // Offline/temporary network failure; follow the same bounded retry.
+    }
+    if(attempt===0)await new Promise(resolve=>setTimeout(resolve,250));
+  }
+  console.warn("checkout stage telemetry not recorded",stage);
+  return false;
 }
 /* Sekin internetda so'rov cheksiz osilib qolmasin: timeout bo'lmasa
    foydalanuvchi aylanayotgan spinnerdan boshqa hech narsa ko'rmaydi. */
