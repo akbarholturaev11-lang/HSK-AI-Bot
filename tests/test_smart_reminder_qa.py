@@ -139,6 +139,33 @@ class SmartQAIntegrationTests(unittest.IsolatedAsyncioTestCase):
                 future=(self.now+timedelta(days=3)).replace(hour=12,minute=0,second=0)
                 with self.assertRaisesRegex(RuntimeError,'used_or_changed'):
                     await open_unused_window(self.sessions,self.settings,now=future,until=future+timedelta(hours=1),refresh_tokens=REFRESH)
+                receipt=dict(version=1,grant_id=grant['grant_id'],receipt_id=str(uuid4()),
+                    local_epoch=body['local_epoch'],outcome='client_declined_before_post')
+                ack=await client.post(base+'/jobs/'+guard.JOB_ID+'/receipt',headers=headers,json=receipt)
+                self.assertTrue(ack.json()['ok'])
+                positive=['pomp_r1_synthetic_positive_'+str(n)+'p'*64 for n in (1,2)]
+                await seed(self.sessions,self.settings,now=self.now,until=self.now+timedelta(hours=2),
+                    refresh_tokens=positive,case_two=True)
+                response=await client.post('/api/v3/android-auth/refresh',json={'refresh_token':positive[0]})
+                self.assertEqual(response.status_code,200)
+                headers={'Authorization':'Bearer '+response.json()['access_token']}
+                self.assertTrue((await client.get('/api/v3/android/bootstrap',headers=headers,
+                    params={'app_version':guard.APP_VERSION})).json()['authenticated'])
+                due=(await client.get(base+'/due',headers=headers)).json()
+                self.assertEqual(due.get('job_id'),guard.POSITIVE_JOB_ID,due)
+                body.update(request_id=str(uuid4()),local_epoch=str(uuid4()),capability_generation=due['capability_generation'],
+                    preference_revision=due['preference_revision'],grant_epoch=due['grant_epoch'])
+                issued=(await client.post(base+'/jobs/'+guard.POSITIVE_JOB_ID+'/claim',headers=headers,json=body)).json()
+                self.assertTrue(issued['dispatch_allowed'],issued)
+                async with self.sessions() as s:
+                    self.assertEqual(await s.scalar(select(func.count()).select_from(GRANT)),2)
+                    self.assertEqual(await s.scalar(select(GRANT.c.receipt_outcome).where(GRANT.c.job_id==guard.JOB_ID)),
+                        'client_declined_before_post')
+                with self.assertRaisesRegex(RuntimeError,'requires_retained_declined'):
+                    await seed(self.sessions,self.settings,now=self.now,until=self.now+timedelta(hours=1),
+                        refresh_tokens=positive,case_two=True)
+        app=self.app()
+        async with app.router.lifespan_context(app): pass
 
     async def test_only_unused_expired_fixture_can_append_one_window_without_reset(self):
         from app.db.models.smart_reminder import SmartReminderJob, SmartReminderPreference
