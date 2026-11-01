@@ -12,7 +12,7 @@ import os
 from scripts import smart_reminder_qa_guard as guard
 
 
-async def seed(sessions, settings, *, now, until, refresh_tokens, case_two=False):
+async def seed(sessions, settings, *, now, until, refresh_tokens, case_two=False, case_three=False):
     from sqlalchemy import func, select, text
     from app.db.models.user import User
     from app.db.models.desktop import DesktopDevice, DesktopSession
@@ -33,6 +33,9 @@ async def seed(sessions, settings, *, now, until, refresh_tokens, case_two=False
     devices=guard.POSITIVE_DEVICE_IDS if case_two else guard.DEVICE_IDS
     native_sessions=guard.POSITIVE_SESSION_IDS if case_two else guard.SESSION_IDS
     job_ids=(guard.POSITIVE_JOB_ID,) if case_two else guard.JOB_IDS
+    if case_three:
+        uid,fixture,devices,native_sessions,job_ids=(guard.CLOCK_USER_ID,guard.CLOCK_VERSION,
+            guard.CLOCK_DEVICE_IDS,guard.CLOCK_SESSION_IDS,(guard.CLOCK_JOB_ID,))
     if now.tzinfo is None or until.tzinfo is None or not now < until <= now+timedelta(days=1):
         raise RuntimeError("smart_qa_finite_seed_window_required")
     start,end = day_window("Etc/UTC",now.date().isoformat())
@@ -40,7 +43,7 @@ async def seed(sessions, settings, *, now, until, refresh_tokens, case_two=False
         if session.bind.dialect.name == "postgresql":
             await session.execute(text("SELECT pg_advisory_xact_lock(1729492030)"))
         users=(await session.execute(select(User.id,User.full_name))).all()
-        if case_two:
+        if case_two or case_three:
             from app.db.models.smart_reminder import SmartReminderAndroidGrant, SmartReminderAttempt
             from app.db.models.payment import Payment
             from app.db.models.user_identity import UserIdentity
@@ -49,9 +52,15 @@ async def seed(sessions, settings, *, now, until, refresh_tokens, case_two=False
             forbidden=[await session.scalar(select(func.count()).select_from(model)) for model in (Payment,UserIdentity)]
             old_devices=set((await session.scalars(select(DesktopDevice.id))).all())
             old_sessions=set((await session.scalars(select(DesktopSession.id))).all())
-            if (users!=[(guard.USER_ID,guard.FIXTURE_VERSION)] or
-                    outcomes!=["client_declined_before_post"] or attempts!=["confirmed_not_displayed"] or
-                    any(forbidden) or old_devices!=set(guard.DEVICE_IDS) or old_sessions!=set(guard.SESSION_IDS)):
+            expected_users={(guard.USER_ID,guard.FIXTURE_VERSION)}
+            expected_devices=set(guard.DEVICE_IDS); expected_sessions=set(guard.SESSION_IDS)
+            count=1
+            if case_three:
+                expected_users.add((guard.POSITIVE_USER_ID,guard.POSITIVE_VERSION)); count=2
+                expected_devices.update(guard.POSITIVE_DEVICE_IDS); expected_sessions.update(guard.POSITIVE_SESSION_IDS)
+            if (set(users)!=expected_users or
+                    outcomes!=["client_declined_before_post"]*count or attempts!=["confirmed_not_displayed"]*count or
+                    any(forbidden) or old_devices!=expected_devices or old_sessions!=expected_sessions):
                 raise RuntimeError("smart_qa_positive_case_requires_retained_declined_case")
         elif users:
             raise RuntimeError("smart_qa_seed_refuses_existing_users")
@@ -196,6 +205,7 @@ def main():
     action.add_argument("--initialize-empty",action="store_true")
     action.add_argument("--open-unused-window",action="store_true")
     action.add_argument("--append-positive-case",action="store_true")
+    action.add_argument("--append-clock-case",action="store_true")
     args=parser.parse_args()
     os.environ["DATABASE_URL"]=guard.validate(dict(os.environ),seed=True)
     if args.initialize_empty:
@@ -208,7 +218,8 @@ def main():
         async def run():
             try:
                 from functools import partial
-                operation=(partial(seed,case_two=True) if args.append_positive_case else
+                operation=(partial(seed,case_three=True) if args.append_clock_case else
+                    partial(seed,case_two=True) if args.append_positive_case else
                     seed if args.initialize_empty else open_unused_window)
                 await operation(async_session_maker,settings,now=datetime.now(timezone.utc),until=until,
                     refresh_tokens=[os.environ["HSK_SMART_QA_REFRESH_"+str(n)] for n in (1,2)])

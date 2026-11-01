@@ -164,6 +164,27 @@ class SmartQAIntegrationTests(unittest.IsolatedAsyncioTestCase):
                 with self.assertRaisesRegex(RuntimeError,'requires_retained_declined'):
                     await seed(self.sessions,self.settings,now=self.now,until=self.now+timedelta(hours=1),
                         refresh_tokens=positive,case_two=True)
+                clock_tokens=['pomp_r1_synthetic_clock_'+str(n)+'c'*64 for n in (1,2)]
+                with self.assertRaisesRegex(RuntimeError,'requires_retained_declined'):
+                    await seed(self.sessions,self.settings,now=self.now,until=self.now+timedelta(hours=1),
+                        refresh_tokens=clock_tokens,case_three=True)
+                receipt.update(grant_id=issued['grant_id'],receipt_id=str(uuid4()),local_epoch=body['local_epoch'])
+                self.assertTrue((await client.post(base+'/jobs/'+guard.POSITIVE_JOB_ID+'/receipt',
+                    headers=headers,json=receipt)).json()['ok'])
+                await seed(self.sessions,self.settings,now=self.now,until=self.now+timedelta(hours=2),
+                    refresh_tokens=clock_tokens,case_three=True)
+                response=await client.post('/api/v3/android-auth/refresh',json={'refresh_token':clock_tokens[0]})
+                self.assertEqual(response.status_code,200)
+                headers={'Authorization':'Bearer '+response.json()['access_token']}
+                self.assertTrue((await client.get('/api/v3/android/bootstrap',headers=headers,
+                    params={'app_version':guard.APP_VERSION})).json()['authenticated'])
+                due=(await client.get(base+'/due',headers=headers)).json()
+                self.assertEqual(due.get('job_id'),guard.CLOCK_JOB_ID,due)
+                body.update(request_id=str(uuid4()),local_epoch=str(uuid4()),capability_generation=due['capability_generation'],
+                    preference_revision=due['preference_revision'],grant_epoch=due['grant_epoch'])
+                issued=(await client.post(base+'/jobs/'+guard.CLOCK_JOB_ID+'/claim',headers=headers,json=body)).json()
+                self.assertTrue(issued['dispatch_allowed'],issued)
+                async with self.sessions() as s: self.assertEqual(await s.scalar(select(func.count()).select_from(GRANT)),3)
         app=self.app()
         async with app.router.lifespan_context(app): pass
 
