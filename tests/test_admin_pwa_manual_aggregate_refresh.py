@@ -278,6 +278,51 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
                          published_before["metrics"]["users_total"])
         self.assertEqual(self.redis.locks, {})
 
+    async def test_scoped_owner_refresh_without_redis_uses_existing_projection(self):
+        query = StatisticsRequest(platform="overall", period="weekly")
+        async def scoped(db, req):
+            self.calls += 1
+            return {
+                "platform": "overall", "period": req.period, "available": True,
+                "scope": {"section": "funnel"},
+                "source": "first-party stored aggregate projections",
+                "generated_at": datetime.fromtimestamp(self.clock, timezone.utc).isoformat(),
+                "since": datetime.fromtimestamp(self.clock - 604800, timezone.utc).isoformat(),
+                "metrics": {"attempt_funnel": None, "registration_conversion": {
+                    "registered_accounts": 4, "converted_accounts": 1, "percent": 25}},
+            }
+        reader = AdminPwaStatisticsReader(
+            settings_obj=self.settings, session_factory=self.sessions,
+            loader=scoped, clock=lambda: self.clock, r2_store=self.store,
+            cache_scope="analytics_funnel_v1")
+        reader._redis_url = ""
+        first = await reader.refresh_approved_section(query, section="funnel")
+        self.assertEqual(first["section"], "funnel")
+        self.assertEqual(self.store.puts, 1)
+        stored = await self.store.get(
+            kind="statistics", namespace=reader._r2_namespace, variant="overall_weekly")
+        self.assertEqual(json.loads(stored)["data"]["metrics"]["registration_conversion"]["converted_accounts"], 1)
+        self.assertEqual(self.calls, 1)
+        with self.assertRaisesRegex(StatisticsUnavailable, "recently completed"):
+            await reader.refresh_approved_section(query, section="funnel")
+        self.assertEqual(self.calls, 1)
+        with self.assertRaises(StatisticsUnavailable):
+            await reader.refresh_approved_section(query, section="sources")
+
+    async def test_scoped_refresh_wrong_source_is_never_published(self):
+        async def wrong(db, req):
+            return {"platform": "overall", "period": req.period, "available": True,
+                    "scope": {"section": "funnel"}, "source": "untrusted",
+                    "generated_at": datetime.fromtimestamp(self.clock, timezone.utc).isoformat(),
+                    "metrics": {"attempt_funnel": None}}
+        reader = AdminPwaStatisticsReader(
+            settings_obj=self.settings, session_factory=self.sessions,
+            loader=wrong, clock=lambda: self.clock, r2_store=self.store,
+            cache_scope="analytics_funnel_v1")
+        with self.assertRaisesRegex(StatisticsUnavailable, "Unexpected scoped"):
+            await reader.refresh_approved_section(StatisticsRequest(), section="funnel")
+        self.assertEqual(self.store.puts, 0)
+
     async def test_pg_advisory_lock_held_blocks_all_periods(self):
         reader = self.reader()
 
@@ -312,9 +357,24 @@ class FakeOverview:
         }
 
 
+class FakeScoped:
+    def __init__(self):
+        self.calls = []
+
+    async def refresh_approved_section(self, query, *, section):
+        self.calls.append((section, query.period))
+        return {"section": section, "period": query.period,
+                "generated_at": "2026-10-30T10:00:00+00:00",
+                "expires_at": "2026-10-31T10:00:00+00:00"}
+
+    async def refresh_overview_bundle(self):
+        raise AssertionError("Scoped route must not invoke overview refresh")
+
+
 class ManualRefreshTransportTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.overview = FakeOverview()
+        self.scoped = FakeScoped()
         self.settings = SimpleNamespace(
             ADMIN_PWA_ENABLED=True, ADMIN_PWA_R2_AGGREGATE_ENABLED=True,
             ADMIN_PWA_PUBLIC_ORIGIN="https://hskai.app",
@@ -323,7 +383,7 @@ class ManualRefreshTransportTests(unittest.IsolatedAsyncioTestCase):
         app = FastAPI()
         app.include_router(create_manual_aggregate_refresh_router(
             settings_obj=self.settings,
-            analytics_reader=SimpleNamespace(_readers={"overview": self.overview})))
+            analytics_reader=SimpleNamespace(_readers={"overview": self.overview, "funnel": self.scoped})))
         self.app = app
 
     async def post(self, *, url="https://hskai.app", secret=SECRET, data="{}"):
@@ -346,6 +406,22 @@ class ManualRefreshTransportTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result.json()["periods"]["weekly"]["generated_at"],
                          "2026-10-28T01:00:00+00:00")
         self.assertNotIn("metrics", result.text)
+
+    async def test_single_approved_section_route_preserves_auth_and_overview(self):
+        result = await self.post(data='{"section":"funnel","period":"weekly"}')
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.json()["section"], "funnel")
+        self.assertEqual(self.scoped.calls, [("funnel", "weekly")])
+        self.assertEqual(self.overview.calls, [])
+        for bad in ('{"section":"funnel","period":"invalid"}',
+                    '{"section":"overview","period":"weekly"}',
+                    '{"section":"funnel","period":"weekly","user_id":11}',
+                    '{"section":"funnel"}'):
+            self.assertEqual((await self.post(data=bad)).status_code, 400)
+        self.assertEqual(len(self.scoped.calls), 1)
+        denied = await self.post(data='{"section":"funnel","period":"weekly"}', secret="wrong")
+        self.assertEqual(denied.status_code, 401)
+        self.assertEqual(len(self.scoped.calls), 1)
 
     async def test_disabled_token_or_bad_payload_fails_without_refresh(self):
         result = await self.post(data='{"section":"users"}')

@@ -64,10 +64,15 @@ require(apiOrigin.startsWith("https://")) {
 }
 
 // A staging client must never overwrite a learner's production/debug install
-// or reuse its credentials. This opt-in affects debug variants only.
+// or reuse its credentials. A signed QA variant additionally requires an
+// explicit opt-in; normal release variants never inherit a staging origin.
 val qaOriginProperty = project.findProperty("POMP_QA_API_ORIGIN") as String?
 val qaApiOrigin = qaOriginProperty.orEmpty().trim().trimEnd('/')
 val qaBuild = qaOriginProperty != null
+val qaReleaseBuild = project.findProperty("POMP_QA_RELEASE") == "1"
+require(!qaReleaseBuild || (qaBuild && hasReleaseSigning)) {
+    "POMP_QA_RELEASE requires a staging origin and the private release signing configuration"
+}
 if (qaBuild) {
     val uri = runCatching { URI(qaApiOrigin) }.getOrNull()
     require(uri != null && uri.scheme == "https" && !uri.host.isNullOrBlank() &&
@@ -199,7 +204,31 @@ android {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
+        if (qaReleaseBuild) {
+            create("qaRelease") {
+                initWith(getByName("release"))
+                matchingFallbacks += "release"
+                applicationIdSuffix = ".qa"
+                versionNameSuffix = "-qa"
+                isDebuggable = false
+                // Preserve the separate runner's shared ABI and test entry
+                // points; normal release rules stay intact.
+                proguardFile("qa-host-proguard-rules.pro")
+                testProguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "qa-test-proguard-rules.pro")
+                buildConfigField("String", "API_ORIGIN", buildString(qaApiOrigin))
+                buildConfigField("String", "DEEP_LINK_SCHEME", "\"pomp-hsk-ai-qa\"")
+                buildConfigField("boolean", "QA_BUILD", "true")
+                manifestPlaceholders["pompDeepLinkScheme"] = "pomp-hsk-ai-qa"
+                resValue("string", "qa_app_name", "HSK AI QA")
+                manifestPlaceholders["pompApplicationLabel"] = "@string/qa_app_name"
+                (listOf("FIREBASE_APP_ID", "FIREBASE_SENDER_ID", "FIREBASE_PROJECT_ID", "FIREBASE_API_KEY") +
+                    "GOOGLE_WEB_CLIENT_ID").forEach { buildConfigField("String", it, "\"\"") }
+            }
+        }
     }
+
+    if (qaReleaseBuild) testBuildType = "qaRelease"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

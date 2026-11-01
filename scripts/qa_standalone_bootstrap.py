@@ -3,7 +3,7 @@
 NEVER run this against production or the old staging project. This does not
 import, clone, read or copy any learner data from anywhere. It first creates
 an empty schema from the current ORM models, stamps the historical baseline
-only on the NEW empty QA DB, then executes 0103..0132 and checks the head.
+only on the NEW empty QA DB, then executes 0103..0136 and checks the head.
 
 The historical Alembic base cannot create all course tables from scratch.
 This explicitly isolated QA path is not a replacement for a production
@@ -17,7 +17,9 @@ import os
 
 from sqlalchemy.engine import make_url
 
-QA_PROJECT_ID = "7f737cb9-be6a-45cd-b6b3-8263b41d1cfd"
+QA_PROJECT_ID = "adfa0e91-0905-4cf6-82cb-ddcc806fa3c3"
+QA_ENVIRONMENT_ID = "3fcae398-1bca-4162-b839-57875ac20bc6"
+QA_SERVICE_ID = "a56e0543-d4b3-44dd-a080-eb5c93174756"
 QA_ENVIRONMENT = "qa"
 QA_HOST = "postgres.railway.internal"
 QA_DATABASE = "railway"
@@ -62,6 +64,8 @@ def validate_target(env: dict[str, str]) -> None:
         raise RuntimeError("standalone_qa_wrong_project")
     if env.get("RAILWAY_ENVIRONMENT_NAME") != QA_ENVIRONMENT:
         raise RuntimeError("standalone_qa_wrong_environment")
+    if env.get("RAILWAY_ENVIRONMENT_ID") != QA_ENVIRONMENT_ID or env.get("RAILWAY_SERVICE_ID") != QA_SERVICE_ID:
+        raise RuntimeError("standalone_qa_wrong_operator_binding")
     if env.get("HSK_QA_EMPTY_DB_BOOTSTRAP") != "I_APPROVE_EMPTY_QA_DB":
         raise RuntimeError("standalone_qa_not_approved")
     try:

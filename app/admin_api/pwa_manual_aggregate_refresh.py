@@ -1,4 +1,4 @@
-"""Authenticated machine-to-machine on-demand overview refresh.
+"""Authenticated machine-to-machine on-demand verified aggregate refresh.
 
 This route is intentionally NOT part of the browser cookie session or read-only
 ChatGPT MCP transport. It accepts only a separate server-side secret, requests
@@ -43,16 +43,32 @@ def create_manual_aggregate_refresh_router(*, settings_obj, analytics_reader):
         if (request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
                 != "application/json"):
             return _reply(415, "unsupported_media_type")
-        data = await _body(request, 32)
-        if data != {}:
+        data = await _body(request, 128)
+        if not isinstance(data, dict):
             return _reply(400, "admin_pwa_invalid_payload")
+        scoped = data != {}
+        if scoped:
+            if (set(data) != {"section", "period"}
+                    or data.get("section") not in ("course", "funnel", "money", "sources")
+                    or data.get("period") not in ("weekly", "monthly", "all_time")):
+                return _reply(400, "admin_pwa_invalid_payload")
+            section, period = data["section"], data["period"]
+        else:
+            section, period = "overview", None
 
-        reader = getattr(analytics_reader, "_readers", {}).get("overview")
+        reader = getattr(analytics_reader, "_readers", {}).get(section)
         if reader is None or not hasattr(reader, "refresh_overview_bundle"):
             return _reply(503, "admin_pwa_refresh_unavailable")
 
         try:
-            results = await reader.refresh_overview_bundle()
+            if scoped:
+                from app.admin_api.pwa_read import StatisticsRequest
+                result = await reader.refresh_approved_section(
+                    StatisticsRequest(platform="overall", period=period), section=section)
+                results = {period: {"generated_at": result["generated_at"],
+                                    "expires_at": result["expires_at"]}}
+            else:
+                results = await reader.refresh_overview_bundle()
         except StatisticsUnavailable as exc:
             if str(exc) == "Manual refresh recently completed":
                 return _reply(429, "admin_pwa_refresh_rate_limited")
@@ -72,14 +88,16 @@ def create_manual_aggregate_refresh_router(*, settings_obj, analytics_reader):
                 "Manual statistics refresh timed out",
                 "Manual refresh recently completed",
                 "Unexpected overview projection",
+                "Unexpected scoped projection",
+                "Invalid scoped projection",
             }
             reason = str(exc)
-            logger.warning("Manual overview refresh failed; reason=%s",
+            logger.warning("Manual aggregate refresh failed; reason=%s",
                            reason if reason in safe_reasons else "unclassified")
             return _reply(503, "admin_pwa_refresh_unavailable")
         except Exception:
-            logger.error("Manual overview refresh failed")
+            logger.error("Manual aggregate refresh failed")
             return _reply(503, "admin_pwa_refresh_unavailable")
-        return JSONResponse({"ok": True, "periods": results}, headers=_PRIVATE_HEADERS)
+        return JSONResponse({"ok": True, "periods": results, "section": section}, headers=_PRIVATE_HEADERS)
 
     return router

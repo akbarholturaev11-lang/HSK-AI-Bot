@@ -17,6 +17,17 @@ from app.db.models.user import User
 MAX_EVENT_PAYLOAD_CHARS = 8000
 logger = logging.getLogger(__name__)
 
+# Server-side notifications and billing/admin transitions are not evidence that
+# the learner opened a client or studied. They must not inflate active users.
+PASSIVE_SERVER_EVENT_NAMES = frozenset({
+    "subscription_approved",
+    "motivation_lesson_unfinished_sent",
+    "d1_recovery_assigned",
+    "d1_recovery_sent",
+    "d1_recovery_send_failed",
+    "sales_offer_assigned",
+})
+
 
 class CourseMiniAppAnalyticsService:
     CLIENT_EVENT_NAMES = frozenset(CLIENT_COURSE_MINIAPP_EVENT_NAMES)
@@ -65,10 +76,10 @@ class CourseMiniAppAnalyticsService:
         if not user_id and not telegram_id:
             return {"ok": False, "error": "course_event_user_required"}
 
-        # Mini App'dagi har qanday haqiqiy faollik ham "aktiv" deb hisoblansin.
-        # (Bot chat last_active_at'ni middleware yangilaydi; Mini App esa
-        # FastAPI orqali kelgani uchun shu yerda yangilanadi.)
-        await self._touch_user_active(telegram_id, user_id=user_id)
+        # Only real learner-facing activity can refresh last_active_at.
+        # Background reminders and admin payment approval are passive events.
+        if event_name not in PASSIVE_SERVER_EVENT_NAMES:
+            await self._touch_user_active(telegram_id, user_id=user_id)
         owner = (CourseMiniAppEvent.user_id == int(user_id) if user_id is not None
                  else CourseMiniAppEvent.telegram_id == int(telegram_id))
 

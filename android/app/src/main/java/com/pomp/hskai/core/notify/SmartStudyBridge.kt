@@ -123,12 +123,26 @@ internal class SmartStudyBridge(
                         val instant = clock()
                         val age = elapsed() - start
                         val ttl = Duration.between(issued, expires).toMillis()
-                        expires > issued && issued <= instant.toInstant() && instant.toInstant() < expires &&
+                        val accepted = expires > issued && issued <= instant.toInstant() && instant.toInstant() < expires &&
                             age >= 0 && age < ttl && instant.zone.id == now.zone.id &&
                             instant.zone.id == grant.timezoneName && grant.localDay == instant.toLocalDate().toString() &&
                             (hint == null || hint.localDay == grant.localDay) &&
                             !grant.courseKey.isNullOrBlank() && (grant.lessonOrder ?: 0) > 0 && permission()
-                    }.getOrDefault(false)
+                        if (com.pomp.hskai.BuildConfig.QA_BUILD && !accepted) {
+                            android.util.Log.i("SmartStudyQA", "veto wall_age_ms="+
+                                Duration.between(issued,instant.toInstant()).toMillis()+
+                                " elapsed_ms="+age+" ttl_ms="+ttl+
+                                " same_zone="+(instant.zone.id==now.zone.id)+
+                                " grant_zone="+(instant.zone.id==grant.timezoneName)+
+                                " same_day="+(grant.localDay==instant.toLocalDate().toString())+
+                                " target="+(!grant.courseKey.isNullOrBlank() && (grant.lessonOrder ?: 0)>0))
+                        }
+                        accepted
+                    }.getOrElse {
+                        if (com.pomp.hskai.BuildConfig.QA_BUILD)
+                            android.util.Log.i("SmartStudyQA","veto frame_error="+it.javaClass.simpleName)
+                        false
+                    }
                 }, post = { post(grant.localDay.orEmpty()) })
         }
         // Retry later from the immutable persisted outcome; never repeat notify on ACK failure.

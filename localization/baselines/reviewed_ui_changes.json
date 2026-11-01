@@ -75,8 +75,8 @@
     },
     "app/static/subscription.html": {
       "baseline_sha1": "6841d29b680d21f018133fc7a60079abebd45bf0",
-      "reviewed_sha1": "40f22f69603c51c9d0d2adb27971cad1460b3e43",
-      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added."
+      "reviewed_sha1": "707841a520be4cc11bc4fba1233ca9b6a4341183",
+      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added. 2026-10-31 reviewed telemetry-only event acknowledgment and one bounded retry; payment/price/auth/entitlement rules and localized visible text remain unchanged."
     }
   }
 }
