@@ -95,7 +95,9 @@ class SmartQAIntegrationTests(unittest.IsolatedAsyncioTestCase):
         from app.config import Settings
         self.settings=Settings(_env_file=None, DATABASE_URL=url.set(database=self.name).render_as_string(hide_password=False),
             DESKTOP_AUTH_SIGNING_SECRET=SAFE['DESKTOP_AUTH_SIGNING_SECRET'],BOT_TOKEN='')
-        await seed(self.sessions,self.settings,now=self.now,until=self.now+timedelta(hours=2),refresh_tokens=REFRESH)
+        self.seed_now=(self.now-timedelta(days=3) if self._testMethodName==
+            'test_only_unused_expired_fixture_can_append_one_window_without_reset' else self.now)
+        await seed(self.sessions,self.settings,now=self.seed_now,until=self.seed_now+timedelta(hours=2),refresh_tokens=REFRESH)
 
     async def asyncTearDown(self):
         if hasattr(self,'engine'):
@@ -140,19 +142,35 @@ class SmartQAIntegrationTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_only_unused_expired_fixture_can_append_one_window_without_reset(self):
         from app.db.models.smart_reminder import SmartReminderJob, SmartReminderPreference
+        unexpired=self.seed_now+timedelta(minutes=5)
         with self.assertRaisesRegex(RuntimeError,'used_or_changed'):
-            await open_unused_window(self.sessions,self.settings,now=self.now,until=self.now+timedelta(minutes=1),refresh_tokens=REFRESH)
-        future=(self.now+timedelta(days=3)).replace(hour=12,minute=0,second=0)
+            await open_unused_window(self.sessions,self.settings,now=unexpired,until=unexpired+timedelta(minutes=1),refresh_tokens=REFRESH)
+        future=self.now
+        end=(future+timedelta(days=1)).replace(hour=0,minute=0,second=0,microsecond=0)
+        until=min(future+timedelta(hours=1),end)
         async with self.sessions() as s:
             original={j.id:(j.state,j.expires_at) for j in (await s.scalars(select(SmartReminderJob))).all()}
-        await open_unused_window(self.sessions,self.settings,now=future,until=future+timedelta(hours=1),refresh_tokens=REFRESH)
+        await open_unused_window(self.sessions,self.settings,now=future,until=until,refresh_tokens=REFRESH)
         async with self.sessions() as s:
             after={j.id:(j.state,j.expires_at) for j in (await s.scalars(select(SmartReminderJob))).all()}
             self.assertEqual({key:after[key] for key in original},original)
             self.assertEqual(set(after)-set(original),{guard.REOPEN_JOB_ID})
             self.assertEqual((await s.get(SmartReminderPreference,guard.USER_ID)).grant_epoch,2)
         with self.assertRaisesRegex(RuntimeError,'used_or_changed'):
-            await open_unused_window(self.sessions,self.settings,now=future,until=future+timedelta(hours=1),refresh_tokens=REFRESH)
+            await open_unused_window(self.sessions,self.settings,now=future,until=until,refresh_tokens=REFRESH)
+        app=self.app()
+        async with app.router.lifespan_context(app):
+            async with AsyncClient(transport=ASGITransport(app=app),base_url='https://'+guard.DOMAIN) as client:
+                response=await client.post('/api/v3/android-auth/refresh',json={'refresh_token':REFRESH[0]})
+                self.assertEqual(response.status_code,200)
+                headers={'Authorization':'Bearer '+response.json()['access_token']}
+                base='/api/v3/android/smart-reminder'
+                due=(await client.get(base+'/due',headers=headers)).json()
+                self.assertEqual(due.get('job_id'),guard.REOPEN_JOB_ID,due)
+                body=dict(version=1,request_id=str(uuid4()),local_epoch=str(uuid4()),capability_generation=due['capability_generation'],
+                    preference_revision=due['preference_revision'],grant_epoch=due['grant_epoch'])
+                grant=(await client.post(base+'/jobs/'+guard.REOPEN_JOB_ID+'/claim',headers=headers,json=body)).json()
+                self.assertTrue(grant['dispatch_allowed'],grant)
 
     async def test_operator_reseed_and_unexpected_learner_are_refused(self):
         with self.assertRaisesRegex(RuntimeError,'existing_users'):

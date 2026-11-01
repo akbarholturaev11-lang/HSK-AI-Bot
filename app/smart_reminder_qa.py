@@ -6,6 +6,7 @@ seeding, provider, bot, scheduler, static/private lesson or public signup route.
 from contextlib import asynccontextmanager
 from datetime import timedelta
 from fractions import Fraction
+import json
 import os
 from pathlib import Path
 
@@ -38,7 +39,8 @@ def create_app(*, session_factory=None, engine_obj=None, settings_obj=None):
     from app.db.models.payment import Payment
     from app.db.models.user_identity import UserIdentity
     from app.db.models.desktop import DesktopDevice, DesktopSession
-    from app.db.models.smart_reminder import SmartReminderRouting
+    from app.db.models.smart_reminder import (SmartReminderRouting,SmartReminderJob,SmartReminderAttempt,
+        SmartReminderAndroidGrant,SmartReminderPreference,SmartReminderCapability)
     from app.api.android_auth import create_android_auth_router
     from app.api.smart_reminder import create_smart_reminder_router
     from app.services.smart_reminder_android import AndroidAdmission, SmartReminderAndroidService
@@ -74,6 +76,7 @@ def create_app(*, session_factory=None, engine_obj=None, settings_obj=None):
     async def lifespan(_):
         try:
             async with async_session_maker() as session:
+                await session.execute(text("SET TRANSACTION READ ONLY"))
                 revision = await session.scalar(text("SELECT version_num FROM alembic_version"))
                 users = (await session.execute(select(User.id,User.full_name))).all()
                 devices = set((await session.scalars(select(DesktopDevice.id))).all())
@@ -83,6 +86,17 @@ def create_app(*, session_factory=None, engine_obj=None, settings_obj=None):
                 if (revision != EXPECTED_HEAD or users != [(guard.USER_ID,guard.FIXTURE_VERSION)] or
                         devices != set(guard.DEVICE_IDS) or sessions != set(guard.SESSION_IDS) or payments or identities):
                     raise RuntimeError("smart_qa_fixture_or_schema_unverified")
+                # Private, synthetic-only operator evidence. No auth material,
+                # personal identifiers, public diagnostic route or DB writes.
+                queries={
+                    "jobs":select(SmartReminderJob.id,SmartReminderJob.state,SmartReminderJob.reason_code),
+                    "grants":select(SmartReminderAndroidGrant.receipt_outcome),
+                    "attempts":select(SmartReminderAttempt.state,SmartReminderAttempt.reason_code),
+                    "preferences":select(SmartReminderPreference.revision,SmartReminderPreference.grant_epoch),
+                    "capabilities":select(SmartReminderCapability.generation,SmartReminderCapability.study_notifications_allowed)}
+                report={key:[dict(row) for row in (await session.execute(query)).mappings()]
+                    for key,query in queries.items()}
+                print("SMART_QA_READONLY="+json.dumps(report,separators=(",",":")))
             yield
         finally:
             await engine.dispose()
