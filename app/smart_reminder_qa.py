@@ -51,20 +51,22 @@ def create_app(*, session_factory=None, engine_obj=None, settings_obj=None):
     calibration = qa_calibration()
 
     async def admission(session, actor, job_id, now):
-        if (actor.user_id != guard.USER_ID or actor.device_id != guard.DEVICE_IDS[0] or
-                job_id not in (*guard.JOB_IDS,guard.REOPEN_JOB_ID)):
+        cases={guard.USER_ID:(guard.DEVICE_IDS[0],guard.SESSION_IDS[0],(*guard.JOB_IDS,guard.REOPEN_JOB_ID)),
+            guard.POSITIVE_USER_ID:(guard.POSITIVE_DEVICE_IDS[0],guard.POSITIVE_SESSION_IDS[0],(guard.POSITIVE_JOB_ID,))}
+        case=cases.get(actor.user_id)
+        if case is None or actor.device_id!=case[0] or job_id not in case[2]:
             return None
-        row = await session.get(SmartReminderRouting, guard.USER_ID)
+        row = await session.get(SmartReminderRouting, actor.user_id)
         if not row or not row.verified_at or not row.verified_until or not row.evidence_sha256 or not row.inventory_sha256:
             return None
-        return AndroidAdmission(user_id=guard.USER_ID,job_id=job_id,device_id=guard.DEVICE_IDS[0],
-            session_id=guard.SESSION_IDS[0],generation=row.generation,preference_revision=row.preference_revision,
+        return AndroidAdmission(user_id=actor.user_id,job_id=job_id,device_id=case[0],
+            session_id=case[1],generation=row.generation,preference_revision=row.preference_revision,
             grant_epoch=row.grant_epoch,verified_at=row.verified_at,valid_until=row.verified_until,
             history_since=row.verified_at-timedelta(days=30),evidence_sha256=row.evidence_sha256,inventory_sha256=row.inventory_sha256,
             legacy_quiesced=True,legacy_outcomes_reconciled=True,other_study_fenced=True)
 
     async def coverage(session, actor, since, now):
-        if actor.user_id != guard.USER_ID:
+        if actor.user_id not in (guard.USER_ID,guard.POSITIVE_USER_ID):
             return None
         return LearningCoverage(actor.user_id,since,now,guard.FIXTURE_VERSION)
 
@@ -83,8 +85,16 @@ def create_app(*, session_factory=None, engine_obj=None, settings_obj=None):
                 sessions = set((await session.scalars(select(DesktopSession.id))).all())
                 payments = await session.scalar(select(func.count()).select_from(Payment))
                 identities = await session.scalar(select(func.count()).select_from(UserIdentity))
-                if (revision != EXPECTED_HEAD or users != [(guard.USER_ID,guard.FIXTURE_VERSION)] or
-                        devices != set(guard.DEVICE_IDS) or sessions != set(guard.SESSION_IDS) or payments or identities):
+                positive=(guard.POSITIVE_USER_ID,guard.POSITIVE_VERSION) in users
+                expected_users={(guard.USER_ID,guard.FIXTURE_VERSION)}
+                expected_devices=set(guard.DEVICE_IDS)
+                expected_sessions=set(guard.SESSION_IDS)
+                if positive:
+                    expected_users.add((guard.POSITIVE_USER_ID,guard.POSITIVE_VERSION))
+                    expected_devices.update(guard.POSITIVE_DEVICE_IDS)
+                    expected_sessions.update(guard.POSITIVE_SESSION_IDS)
+                if (revision != EXPECTED_HEAD or set(users)!=expected_users or
+                        devices != expected_devices or sessions != expected_sessions or payments or identities):
                     raise RuntimeError("smart_qa_fixture_or_schema_unverified")
                 # Private, synthetic-only operator evidence. No auth material,
                 # personal identifiers, public diagnostic route or DB writes.
