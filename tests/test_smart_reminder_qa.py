@@ -16,7 +16,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from scripts import smart_reminder_qa_guard as guard
 from scripts import qa_standalone_bootstrap as bootstrap
-from scripts.smart_reminder_qa_seed import seed
+from scripts.smart_reminder_qa_seed import seed, open_unused_window
 
 SAFE = {"RAILWAY_PROJECT_ID":guard.PROJECT_ID,"RAILWAY_ENVIRONMENT_ID":guard.ENVIRONMENT_ID,
         "RAILWAY_ENVIRONMENT_NAME":"qa","RAILWAY_SERVICE_ID":guard.SERVICE_ID,
@@ -134,6 +134,25 @@ class SmartQAIntegrationTests(unittest.IsolatedAsyncioTestCase):
                 self.assertTrue(grant['dispatch_allowed'],grant)
                 self.assertFalse((await client.post(base+'/jobs/'+guard.JOB_ID+'/claim',headers=headers,json=body)).json()['dispatch_allowed'])
                 async with self.sessions() as s: self.assertEqual(await s.scalar(select(func.count()).select_from(GRANT)),1)
+                future=(self.now+timedelta(days=3)).replace(hour=12,minute=0,second=0)
+                with self.assertRaisesRegex(RuntimeError,'used_or_changed'):
+                    await open_unused_window(self.sessions,self.settings,now=future,until=future+timedelta(hours=1),refresh_tokens=REFRESH)
+
+    async def test_only_unused_expired_fixture_can_append_one_window_without_reset(self):
+        from app.db.models.smart_reminder import SmartReminderJob, SmartReminderPreference
+        with self.assertRaisesRegex(RuntimeError,'used_or_changed'):
+            await open_unused_window(self.sessions,self.settings,now=self.now,until=self.now+timedelta(minutes=1),refresh_tokens=REFRESH)
+        future=(self.now+timedelta(days=3)).replace(hour=12,minute=0,second=0)
+        async with self.sessions() as s:
+            original={j.id:(j.state,j.expires_at) for j in (await s.scalars(select(SmartReminderJob))).all()}
+        await open_unused_window(self.sessions,self.settings,now=future,until=future+timedelta(hours=1),refresh_tokens=REFRESH)
+        async with self.sessions() as s:
+            after={j.id:(j.state,j.expires_at) for j in (await s.scalars(select(SmartReminderJob))).all()}
+            self.assertEqual({key:after[key] for key in original},original)
+            self.assertEqual(set(after)-set(original),{guard.REOPEN_JOB_ID})
+            self.assertEqual((await s.get(SmartReminderPreference,guard.USER_ID)).grant_epoch,2)
+        with self.assertRaisesRegex(RuntimeError,'used_or_changed'):
+            await open_unused_window(self.sessions,self.settings,now=future,until=future+timedelta(hours=1),refresh_tokens=REFRESH)
 
     async def test_operator_reseed_and_unexpected_learner_are_refused(self):
         with self.assertRaisesRegex(RuntimeError,'existing_users'):
