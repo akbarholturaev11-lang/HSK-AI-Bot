@@ -96,7 +96,7 @@ class PublicSiteAnalyticsTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn(date(2026, 10, 20) - timedelta(days=6), params.values())
         self.assertIn(date(2026, 10, 20) - timedelta(days=29), params.values())
 
-    async def test_only_tagged_root_gets_are_counted(self):
+    async def test_only_tagged_homepages_are_counted(self):
         factory = SessionFactory()
         app = FastAPI()
         app.include_router(create_public_site_router(
@@ -114,8 +114,17 @@ class PublicSiteAnalyticsTests(unittest.IsolatedAsyncioTestCase):
 
             factory.session.statement = None
             factory.session.committed = False
-            other_page = await client.get("/tj/?utm_source=tiktok")
-            self.assertEqual(other_page.status_code, 200)
+            for page, source in (("/tj/", "tiktok"), ("/ru/", "youtube"), ("/uz/", "instagram")):
+                factory.session.statement = None
+                factory.session.committed = False
+                localized = await client.get(page + "?utm_source=" + source)
+                self.assertEqual(localized.status_code, 200)
+                self.assertTrue(factory.session.committed, page)
+                self.assertEqual(factory.session.statement.compile().params["source"], source)
+
+            factory.session.statement = None
+            excluded = await client.get("/tj/hsk/?utm_source=instagram")
+            self.assertEqual(excluded.status_code, 200)
             self.assertIsNone(factory.session.statement)
 
             head_response = await client.head("/?utm_source=youtube")

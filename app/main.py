@@ -6158,7 +6158,13 @@ async def subscription_miniapp_event(request: Request):
                 "mode": _checkout_text(payload.get("mode"), 32),
             },
         )
-    return {"ok": bool(recorded)}
+    # A failed best-effort analytics write is not a successful delivery.
+    # Preserve checkout flow; let the client retry telemetry on HTTP 503.
+    return JSONResponse(
+        status_code=200 if recorded else 503,
+        content={"ok": bool(recorded)},
+        headers={"Cache-Control": "no-store"},
+    )
 
 
 @app.post("/api/subscription-miniapp/submit")
