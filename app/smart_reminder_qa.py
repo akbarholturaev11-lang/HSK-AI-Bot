@@ -4,7 +4,7 @@ Run with uvicorn app.smart_reminder_qa:create_app --factory. No DB bootstrap,
 seeding, provider, bot, scheduler, static/private lesson or public signup route.
 """
 from contextlib import asynccontextmanager
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 from fractions import Fraction
 import json
 import os
@@ -52,7 +52,8 @@ def create_app(*, session_factory=None, engine_obj=None, settings_obj=None):
 
     async def admission(session, actor, job_id, now):
         cases={guard.USER_ID:(guard.DEVICE_IDS[0],guard.SESSION_IDS[0],(*guard.JOB_IDS,guard.REOPEN_JOB_ID)),
-            guard.POSITIVE_USER_ID:(guard.POSITIVE_DEVICE_IDS[0],guard.POSITIVE_SESSION_IDS[0],(guard.POSITIVE_JOB_ID,))}
+            guard.POSITIVE_USER_ID:(guard.POSITIVE_DEVICE_IDS[0],guard.POSITIVE_SESSION_IDS[0],(guard.POSITIVE_JOB_ID,)),
+            guard.CLOCK_USER_ID:(guard.CLOCK_DEVICE_IDS[0],guard.CLOCK_SESSION_IDS[0],(guard.CLOCK_JOB_ID,))}
         case=cases.get(actor.user_id)
         if case is None or actor.device_id!=case[0] or job_id not in case[2]:
             return None
@@ -66,7 +67,7 @@ def create_app(*, session_factory=None, engine_obj=None, settings_obj=None):
             legacy_quiesced=True,legacy_outcomes_reconciled=True,other_study_fenced=True)
 
     async def coverage(session, actor, since, now):
-        if actor.user_id not in (guard.USER_ID,guard.POSITIVE_USER_ID):
+        if actor.user_id not in (guard.USER_ID,guard.POSITIVE_USER_ID,guard.CLOCK_USER_ID):
             return None
         return LearningCoverage(actor.user_id,since,now,guard.FIXTURE_VERSION)
 
@@ -93,6 +94,10 @@ def create_app(*, session_factory=None, engine_obj=None, settings_obj=None):
                     expected_users.add((guard.POSITIVE_USER_ID,guard.POSITIVE_VERSION))
                     expected_devices.update(guard.POSITIVE_DEVICE_IDS)
                     expected_sessions.update(guard.POSITIVE_SESSION_IDS)
+                if positive and (guard.CLOCK_USER_ID,guard.CLOCK_VERSION) in users:
+                    expected_users.add((guard.CLOCK_USER_ID,guard.CLOCK_VERSION))
+                    expected_devices.update(guard.CLOCK_DEVICE_IDS)
+                    expected_sessions.update(guard.CLOCK_SESSION_IDS)
                 if (revision != EXPECTED_HEAD or set(users)!=expected_users or
                         devices != expected_devices or sessions != expected_sessions or payments or identities):
                     raise RuntimeError("smart_qa_fixture_or_schema_unverified")
@@ -100,13 +105,14 @@ def create_app(*, session_factory=None, engine_obj=None, settings_obj=None):
                 # personal identifiers, public diagnostic route or DB writes.
                 queries={
                     "jobs":select(SmartReminderJob.id,SmartReminderJob.state,SmartReminderJob.reason_code),
-                    "grants":select(SmartReminderAndroidGrant.receipt_outcome),
+                    "grants":select(SmartReminderAndroidGrant.receipt_outcome,SmartReminderAndroidGrant.issued_at,
+                        SmartReminderAndroidGrant.received_at),
                     "attempts":select(SmartReminderAttempt.state,SmartReminderAttempt.reason_code),
                     "preferences":select(SmartReminderPreference.revision,SmartReminderPreference.grant_epoch),
                     "capabilities":select(SmartReminderCapability.generation,SmartReminderCapability.study_notifications_allowed)}
                 report={key:[dict(row) for row in (await session.execute(query)).mappings()]
                     for key,query in queries.items()}
-                print("SMART_QA_READONLY="+json.dumps(report,separators=(",",":")))
+                print("SMART_QA_READONLY="+json.dumps(report,separators=(",",":"),default=lambda value:value.isoformat()))
             yield
         finally:
             await engine.dispose()
@@ -131,5 +137,6 @@ def create_app(*, session_factory=None, engine_obj=None, settings_obj=None):
 
     @app.get("/health")
     async def health():
-        return {"ok":True,"synthetic_qa":True,"schema_revision":EXPECTED_HEAD}
+        return {"ok":True,"synthetic_qa":True,"schema_revision":EXPECTED_HEAD,
+            "server_utc":datetime.now(timezone.utc).isoformat()}
     return app
