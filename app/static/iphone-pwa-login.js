@@ -122,6 +122,10 @@
         language.value = locale;
         render();
       }
+      // Authentication is complete: an older pending Telegram flow cannot
+      // be resumed after the next logout or account switch.
+      sessionStorage.removeItem(telegramStorageKey);
+      stopTelegramPolling();
       actions.hidden = true;
       message("desktopAuth.linked", false);
     } catch (_) {
