@@ -174,3 +174,19 @@ The system SHALL optionally record an actual verified shadow reservation/refusal
 #### Scenario: Repeated reserve checks on the same scope
 - **WHEN** callers repeat the same observed outcome/reason within the same frozen scope
 - **THEN** capture does not increment anonymous totals again or extend the first observation's retention
+
+
+### Requirement: Preserve committed runtime guard reasons without changing dispatch
+The system SHALL retain reviewed original reasons for committed selected-job cancellation/expiry in analysis, using existing terminal stage identity/time and source ownership. It MUST NOT infer non-display from a cancellation reason, expose arbitrary source text, change delivery or count a retry twice.
+
+#### Scenario: Goal completed before native claim or Telegram send
+- **WHEN** current server learning causes a reviewed runtime job to commit a guard cancellation before authorized posting/provider IO
+- **THEN** optional post-commit capture can retain the original guard reason once and no additional grant, attempt or provider call is created by observation
+
+#### Scenario: Unknown or mismatched terminal reason
+- **WHEN** stored terminal text has no reviewed reason for the selected channel
+- **THEN** analysis retains only its fixed generic stage reason without copying arbitrary text or inventing display evidence
+
+#### Scenario: Transient refusal without terminal source evidence
+- **WHEN** auth, admission, not-due or another transient guard returns without a committed terminal decision
+- **THEN** that response does not become a measured terminal suppression or complete denominator
