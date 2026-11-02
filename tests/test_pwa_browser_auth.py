@@ -19,6 +19,7 @@ from app.api.native_oauth import create_native_oauth_router
 from app.api.pwa_auth import create_pwa_auth_router
 from app.api.course_tracks import create_course_tracks_router
 from app.api.miniapp_entitlements import create_miniapp_entitlements_router
+from app.api.miniapp_practice import create_miniapp_practice_router
 from app.db.base import Base
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from app.db.models.user import User
@@ -101,6 +102,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             session_factory=self.sessions, settings_obj=self.settings
         ))
         app.include_router(create_miniapp_entitlements_router(
+            session_factory=self.sessions, settings_obj=self.settings
+        ))
+        app.include_router(create_miniapp_practice_router(
             session_factory=self.sessions, settings_obj=self.settings
         ))
         self.client = AsyncClient(
@@ -320,6 +324,76 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             (await self.client.get("/api/v3/lesson/content/hsk1/1")).status_code,
             401,
         )
+
+    async def test_pwa_drill_words_and_report_reuse_canonical_owner_and_guards(self):
+        words_path = "/api/v3/pwa/practice/words"
+        report_path = "/api/v3/pwa/practice/report"
+        self.assertEqual((await self.client.post(
+            words_path, headers={"Origin": ORIGIN},
+            json={"feature": "recognition", "limit": 3},
+        )).status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        for forbidden in [
+            {"feature": "recognition", "limit": 3, "initData": "pretend-telegram"},
+            {"feature": "recognition", "limit": 3, "user_id": 999},
+        ]:
+            response = await self.client.post(words_path, headers=headers, json=forbidden)
+            self.assertEqual(response.status_code, 422, response.text)
+        self.assertEqual((await self.client.post(
+            words_path, headers={"Origin": "https://evil.test", "X-HSK-PWA-CSRF": csrf},
+            json={"feature": "recognition", "limit": 3},
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            words_path, headers={"Origin": ORIGIN},
+            json={"feature": "recognition", "limit": 3},
+        )).status_code, 403)
+        with patch(
+            "app.api.miniapp_practice.CourseWordMasteryService.drill_words",
+            new_callable=AsyncMock,
+        ) as words:
+            words.return_value = {"words": [{"hanzi": "你", "kind": "review"}]}
+            response = await self.client.post(
+                words_path, headers=headers,
+                json={"feature": "recognition", "limit": 3},
+            )
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertEqual(response.json()["words"][0]["hanzi"], "你")
+            self.assertEqual(response.headers.get("cache-control"), "no-store")
+            self.assertEqual(words.await_args.args[0].id, 1)
+            self.assertEqual(words.await_args.kwargs["limit"], 3)
+        self.assertEqual((await self.client.post(
+            "/api/v3/practice/words",
+            json={"feature": "recognition", "limit": 3},
+        )).status_code, 401)
+        report = {
+            "feature": "recognition", "level": "hsk1", "language": "uz",
+            "mistakes": [{"hanzi": "好", "selected": "坏"}],
+            "results": [{"hanzi": "好", "correct": False}],
+        }
+        self.assertEqual((await self.client.post(
+            report_path, headers={"Origin": ORIGIN}, json=report,
+        )).status_code, 403)
+        with patch(
+            "app.api.miniapp_practice.CourseDrillSignalService.record",
+            new_callable=AsyncMock,
+        ) as mistakes, patch(
+            "app.api.miniapp_practice.CourseWordMasteryService.record_drill",
+            new_callable=AsyncMock,
+        ) as mastery:
+            mistakes.return_value = 1
+            mastery.return_value = 1
+            result = await self.client.post(report_path, headers=headers, json=report)
+            self.assertEqual(result.status_code, 200, result.text)
+            self.assertEqual(result.json()["recorded"], 1)
+            self.assertEqual(result.json()["scheduled"], 1)
+            self.assertEqual(mistakes.await_args.args[0].id, 1)
+            self.assertEqual(mastery.await_args.args[0].id, 1)
+        self.assertEqual((await self.client.post(
+            "/api/v3/practice/report", json=report,
+        )).status_code, 401)
 
     async def test_pwa_course_track_routes_require_pwa_session_and_no_native_bypass(self):
         # Legacy Telegram route rejects a PWA cookie even after browser login.
