@@ -1,6 +1,9 @@
 """Security contract for PWA-only OAuth session, no native/Telegram bypass."""
 
 import unittest
+import json
+from pathlib import Path
+import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -158,6 +161,61 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("Telegram.WebApp.initData", script.text)
         providers = await self.client.get("/api/v3/pwa-auth/providers")
         self.assertEqual(providers.json(), {"ok": True, "providers": ["google"]})
+
+    async def test_android_login_visual_source_and_three_locale_copy(self):
+        """Login shell reuses Android entry components, not a second design."""
+        response = await self.client.get("/iphone-pwa")
+        self.assertEqual(response.status_code, 200)
+        html = response.text
+        for fragment in (
+            "/assets/characters/hsk-character-pack.js",
+            "/assets/characters/hsk-character-pack.css",
+            'id="panda"',
+            'class="hero-panda"',
+            "min-height:68px",
+            "border-radius:22px",
+            'class="tagline"',
+            "motif--left",
+            "motif--right",
+        ):
+            self.assertIn(fragment, html)
+        self.assertLess(html.index('data-provider="telegram"'),
+                        html.index('data-provider="google"'))
+        self.assertLess(html.index('data-provider="google"'),
+                        html.index('data-provider="apple"'))
+        self.assertEqual(html.count("provider__chevron"), 4)  # CSS + 3 cards
+        js = (Path("app/static") / "iphone-pwa-login.js").read_text(encoding="utf-8")
+        self.assertIn('window.HSKCharacters.mount', js)
+        self.assertIn('button.dataset.provider === "telegram"', js)
+        self.assertIn('message("pwaAuth.telegramPending"', js)
+        self.assertNotIn("Telegram.WebApp.initData", js)
+        # All new copy lives in one local-first owner; Android's frozen
+        # exact phrases are their source, not a second in-page dictionary.
+        source = {
+            "uz": "values",
+            "ru": "values-ru",
+            "tj": "values-tg",
+        }
+        keys = {
+            "pwaAuth.welcome": "auth_welcome_greeting",
+            "pwaAuth.choose": "auth_choose_method",
+            "pwaAuth.tagline": "auth_tagline",
+        }
+        for lang, folder in source.items():
+            with self.subTest(lang=lang):
+                catalog = json.loads((Path("localization/ui") / lang / "common.json").read_text(encoding="utf-8"))
+                native = ET.parse(Path("android/app/src/main/res") / folder / "strings.xml")
+                native_map = {x.attrib["name"]: x.text or "" for x in native.getroot().findall("string")}
+                for key, resource in keys.items():
+                    self.assertIn(key, catalog["messages"])
+                    self.assertEqual(
+                        catalog["messages"][key],
+                        native_map[resource].replace(r"\u2014", "—"),
+                    )
+                self.assertTrue(catalog["messages"]["pwaAuth.telegramPending"].strip())
+        bundle = (Path("app/static/course_v3_data") / "hsk-common-i18n.js").read_text(encoding="utf-8")
+        self.assertIn('"pwaAuth.welcome"', bundle)
+        self.assertIn('"pwaAuth.telegramPending"', bundle)
 
     async def test_pwa_callback_requires_same_browser_proof(self):
         state = await self.begin()
