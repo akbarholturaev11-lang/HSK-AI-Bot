@@ -180,6 +180,7 @@ from app.services.notification_delivery_service import (
 )
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
+from app.api.pwa_auth import create_pwa_auth_router
 from app.services.desktop_release_manifest_service import (
     resolve_desktop_latest_versions,
 )
@@ -979,6 +980,8 @@ app.include_router(
         settings_obj=settings,
     )
 )
+# Separate, default-OFF learner browser sessions; no legacy Mini App cookie bypass.
+app.include_router(create_pwa_auth_router(session_factory=async_session_maker, settings_obj=settings))
 app.include_router(
     create_android_course_router(
         session_factory=async_session_maker,
