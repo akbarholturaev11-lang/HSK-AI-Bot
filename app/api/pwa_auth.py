@@ -96,6 +96,34 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
         except PwaAuthError as exc:
             return _error(exc)
 
+    @router.get("/iphone-pwa/manifest.webmanifest")
+    async def learner_manifest():
+        try:
+            require_pwa_enabled(settings_obj)
+            # Reuse the existing published app brand asset and Pomp paper
+            # theme; no extra app identity or arbitrary install origin.
+            return JSONResponse(
+                {
+                    "name": "HSK AI",
+                    "short_name": "HSK AI",
+                    "start_url": "/iphone-pwa",
+                    "scope": "/iphone-pwa",
+                    "display": "standalone",
+                    "background_color": "#FDF9F0",
+                    "theme_color": "#FDF9F0",
+                    "icons": [{
+                        "src": "/assets/hsk-ai-logo-256.png",
+                        "sizes": "256x256",
+                        "type": "image/png",
+                        "purpose": "any",
+                    }],
+                },
+                media_type="application/manifest+json",
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
     @router.get("/iphone-pwa-login.js")
     async def login_script():
         try:
