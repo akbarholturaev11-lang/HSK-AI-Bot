@@ -227,6 +227,60 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
         self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
 
+    async def test_apple_form_post_requires_browser_proof_and_separate_cookie(self):
+        from app.services import apple_auth
+        self.settings.APPLE_OAUTH_ENABLED = True
+        self.settings.APPLE_SERVICE_ID = "apple.service.test"
+        self.settings.APPLE_TEAM_ID = "TESTTEAM"
+        self.settings.APPLE_KEY_ID = "TESTKEY"
+        self.settings.APPLE_PRIVATE_KEY = "unused-by-mocked-exchange"
+
+        response = await self.client.post(
+            "/api/v3/pwa-auth/start", headers={"Origin": ORIGIN},
+            json={"provider": "apple", "language": "uz"},
+        )
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertTrue(any("SameSite=none" in v for v in response.headers.get_list("set-cookie")))
+        state = parse_qs(urlparse(response.json()["authorize_url"]).query)["state"][0]
+        other = AsyncClient(transport=ASGITransport(app=self.client._transport.app), base_url=ORIGIN)
+        try:
+            denied = await other.post(
+                "/api/v3/native-auth/oauth/callback/apple",
+                data={"state": state, "code": "apple-code"},
+            )
+            self.assertIn("pwa_oauth_proof_invalid", denied.text)
+            self.assertNotIn(PWA_SESSION_COOKIE, denied.cookies)
+
+            verified = VerifiedIdentity(
+                provider="apple", subject="apple-linked-sub", email=None,
+                email_verified=False, display_name=None, audience="apple.service.test",
+            )
+            with patch.object(apple_auth, "exchange_code", return_value="apple-id-token"), patch.object(
+                apple_auth, "verify_id_token_for_service", return_value=verified,
+            ), patch.object(apple_auth, "merge_first_authorization_name", return_value=verified):
+                done = await self.client.post(
+                    "/api/v3/native-auth/oauth/callback/apple",
+                    data={"state": state, "code": "apple-code"},
+                )
+            self.assertEqual(done.status_code, 200)
+            self.assertIn(PWA_SESSION_COOKIE, done.cookies)
+            status = await self.client.get("/api/v3/pwa-auth/session")
+            self.assertEqual(status.status_code, 200)
+        finally:
+            await other.aclose()
+
+    async def test_oversized_login_rejected_without_reserving_oauth(self):
+        resp = await self.client.post(
+            "/api/v3/pwa-auth/start",
+            headers={"Origin": ORIGIN, "Content-Type": "application/json"},
+            content=b"x" * 2048,
+        )
+        self.assertEqual(resp.status_code, 413)
+        async with self.sessions() as db:
+            self.assertEqual((await db.execute(
+                select(DesktopLinkRequest).where(DesktopLinkRequest.platform == "pwa")
+            )).scalars().all(), [])
+
     async def test_native_and_telegram_routes_never_accept_pwa_cookie_as_auth(self):
         state = await self.begin()
         await self.callback(state)
