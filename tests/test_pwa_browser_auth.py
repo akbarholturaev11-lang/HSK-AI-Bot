@@ -166,6 +166,50 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             await db.commit()
         self.assertEqual((await self.client.get(path)).status_code, 401)
 
+    async def test_pwa_lesson_for_google_only_account_needs_no_fake_telegram_id(self):
+        state = await self.begin()
+        verified = VerifiedIdentity(
+            provider="google", subject="pwa-only-lesson-subject",
+            email="pwa-only@example.test", email_verified=True,
+            display_name="Browser learner",
+            audience="222-desktop.apps.googleusercontent.com",
+        )
+        from app.services import google_auth
+        with patch.object(google_auth, "exchange_code", return_value="pwa-only-token"), patch.object(
+            google_auth, "verify_desktop_id_token", return_value=verified,
+        ):
+            done = await self.client.get(
+                "/api/v3/native-auth/oauth/callback/google",
+                params={"state": state, "code": "pwa-only-code"},
+            )
+        self.assertEqual(done.status_code, 303, done.text)
+        actor = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        self.assertFalse(actor["telegram_linked"])
+        async with self.sessions() as db:
+            owner = await db.get(User, actor["user_id"])
+            self.assertIsNone(owner.telegram_id)
+            owner.level = "hsk1"
+            await db.commit()
+        with patch(
+            "app.api.miniapp_entitlements.LessonAccessService.status",
+            new_callable=AsyncMock,
+        ) as access, patch(
+            "app.api.miniapp_entitlements._read_course_lesson",
+            return_value={"ok": True, "lesson_order": 1},
+        ):
+            access.return_value = {"allowed": True, "idempotent": True}
+            response = await self.client.get(
+                "/api/v3/pwa/lesson/content/hsk1/1"
+            )
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertTrue(response.json()["ok"])
+            self.assertEqual(access.await_args.args[0].id, actor["user_id"])
+            self.assertIsNone(access.await_args.args[0].telegram_id)
+        self.assertEqual(
+            (await self.client.get("/api/v3/lesson/content/hsk1/1")).status_code,
+            401,
+        )
+
     async def test_pwa_course_track_routes_require_pwa_session_and_no_native_bypass(self):
         # Legacy Telegram route rejects a PWA cookie even after browser login.
         unauthed = await self.client.get("/api/v3/pwa/course-tracks")
