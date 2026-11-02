@@ -349,15 +349,20 @@ def create_native_oauth_router(
             logger.exception("OAuth assert failed")
             return _unavailable()
 
-    async def provider_callback_error(provider: str, state: str | None):
+    async def provider_callback_error(provider: str, state: str | None, request: Request):
         # Account deletion has its own browser-bound proof and nonce lifecycle.
         if not state or state.startswith(STATE_PREFIX):
             return _page("&#10005;", "oauth_cancelled")
         try:
             async with session_factory() as session:
+                # Even an OAuth cancellation cannot burn another browser's
+                # still-pending PWA row when a state value leaked to a referrer.
+                await PwaAuthService(session, settings_obj).before_callback(
+                    provider=provider, state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
+                )
                 await service_factory(session, settings_obj).cancel_callback(provider=provider, state=state)
             return _page("&#10005;", "oauth_cancelled")
-        except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
+        except (NativeOAuthError, IdentityLinkError, DesktopAuthError, PwaAuthError) as exc:
             return _page("&#10005;", exc.code)
         except Exception:
             logger.exception("Provider OAuth cancellation failed")
@@ -371,7 +376,7 @@ def create_native_oauth_router(
         error: str | None = None,
     ):
         if error:
-            return await provider_callback_error("google", state)
+            return await provider_callback_error("google", state, request)
         if not state or not code:
             return _page("&#10005;", "oauth_cancelled")
         try:
@@ -418,7 +423,7 @@ def create_native_oauth_router(
         state = form.get("state") or ""
         code = form.get("code") or ""
         if form.get("error"):
-            return await provider_callback_error("apple", state)
+            return await provider_callback_error("apple", state, request)
         if not state or not code:
             return _page("&#10005;", "oauth_cancelled")
         try:
