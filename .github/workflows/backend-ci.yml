@@ -216,6 +216,8 @@ jobs:
             tests.test_desktop_provider_accounts \
             tests.test_native_oauth_lifecycle \
             tests.test_identity_link_service
+      - name: Test isolated iPhone PWA browser and Telegram sign-in
+        run: python -m unittest tests.test_pwa_browser_auth tests.test_pwa_telegram_bot
       - name: Test 0108 native audit facts and personal discount account isolation
         run: |
           python -m unittest \
