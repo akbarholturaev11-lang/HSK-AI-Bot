@@ -130,7 +130,7 @@
     "navigation.subscription": "Obuna",
     "pwaAuth.choose": "Kirish yoki yangi hisob ochish usulini tanlang",
     "pwaAuth.tagline": "Yaxshiroq kelajak — bilim bilan",
-    "pwaAuth.telegramPending": "PWA’da Telegram orqali kirish hozircha mavjud emas. Avval botda Google yoki Apple hisobingizni ulang.",
+    "pwaAuth.telegramPending": "Telegram botida ushbu brauzerga kirishni tasdiqlang, so‘ng HSK AI sahifasiga qayting.",
     "pwaAuth.welcome": "Xush kelibsiz",
     "state.loading": "Yuklanmoqda…"
   }
