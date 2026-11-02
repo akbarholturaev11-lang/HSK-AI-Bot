@@ -226,6 +226,15 @@ def create_miniapp_entitlements_router(
             "X-Content-Type-Options": "nosniff",
         })
 
+    def _foundation_content():
+        lesson = _read_course_lesson("hsk1", 1)
+        foundation = lesson.get("foundation") if lesson else None
+        if not isinstance(foundation, dict) or not foundation.get("cards"):
+            return _private_content_response(
+                {"ok": False, "error": "foundation_unavailable"}, status_code=503,
+            )
+        return _private_content_response({"ok": True, "foundation": foundation})
+
     @router.get("/api/v3/lesson/foundation")
     async def v3_course_lesson_foundation(request: Request):
         telegram_id, _ = await _authenticated(request)
@@ -239,13 +248,20 @@ def create_miniapp_entitlements_router(
                 return _private_content_response(
                     {"ok": False, "error": "access_start_first"}, status_code=403,
                 )
-            lesson = _read_course_lesson("hsk1", 1)
-            foundation = lesson.get("foundation") if lesson else None
-            if not isinstance(foundation, dict) or not foundation.get("cards"):
-                return _private_content_response(
-                    {"ok": False, "error": "foundation_unavailable"}, status_code=503,
+            return _foundation_content()
+
+    @router.get("/api/v3/pwa/lesson/foundation")
+    async def pwa_course_lesson_foundation(request: Request):
+        async with session_factory() as session:
+            try:
+                await PwaAuthService(session, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _private_content_response({"ok": True, "foundation": foundation})
+            except PwaAuthError as exc:
+                return _private_content_response(
+                    {"ok": False, "error": exc.code}, status_code=exc.status_code,
+                )
+            return _foundation_content()
 
     async def _lesson_content_for_user(session, user, normalized_level: str, lesson_order: int):
         # One shared server-authoritative access policy for signed Telegram and
