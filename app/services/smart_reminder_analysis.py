@@ -508,8 +508,11 @@ class SmartReminderAnalysisObserver:
             raise ValueError("Positive bounded analysis worker settings required")
         self.settings = settings
         self.service = SmartReminderAnalysisService(sessions, clock=clock)
+        from app.services.smart_reminder_baseline import SmartReminderBaselineService
+        self.baseline = SmartReminderBaselineService(sessions, clock=clock)
         self.timeout, self.interval, self.batch = timeout, interval, batch
         self._reconcile_after = None  # Restart safely rescans the durable sources.
+        self._baseline_after = None
 
     @property
     def enabled(self):
@@ -581,4 +584,33 @@ class SmartReminderAnalysisObserver:
                 await self.reconcile_tick()
             except Exception:
                 logger.warning("Smart analysis reconciliation unavailable")
+            try:
+                await self.baseline_tick()
+            except Exception:
+                logger.warning("Smart baseline aggregation unavailable")
             await asyncio.sleep(self.interval)
+
+    async def baseline_tick(self):
+        if not self.enabled:
+            return None
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + self.timeout
+        owners, has_more = await asyncio.wait_for(self.baseline.aggregation_page(
+            after_user_id=self._baseline_after, limit=self.batch), timeout=self.timeout)
+        examined = updated = unavailable = 0
+        for user_id in owners:
+            remaining = deadline - loop.time()
+            if not self.enabled or remaining <= 0:
+                break
+            try:
+                updated += await asyncio.wait_for(self.baseline.observe_member(user_id), timeout=remaining)
+            except Exception:
+                logger.warning("Smart baseline observation unavailable")
+                unavailable += 1
+            self._baseline_after = user_id
+            examined += 1
+        finished = examined == len(owners) and not has_more
+        if finished:
+            self._baseline_after = None
+        return {"examined": examined, "updated_observations": updated,
+                "unavailable": unavailable, "pass_finished": finished}
