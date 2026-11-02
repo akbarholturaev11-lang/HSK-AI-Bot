@@ -20,6 +20,7 @@ def telegram_callback(action="approve", telegram_id=1001):
     message.edit_text = AsyncMock()
     return SimpleNamespace(
         from_user=SimpleNamespace(id=telegram_id),
+        chat=message.chat,  # Duck-typed fixture; actual aiogram CallbackQuery uses .message.
         message=message,
         data=f"pwa_link:{action}:12345678-1234-1234-1234-123456789abc",
         answer=AsyncMock(),
