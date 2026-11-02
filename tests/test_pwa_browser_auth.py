@@ -326,6 +326,28 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             401,
         )
 
+    def test_ios_writer_taps_do_not_trigger_browser_zoom_or_break_swipes(self):
+        login = (Path("app/static") / "iphone-pwa-login.html").read_text(encoding="utf-8")
+        dictionary = (Path("app/static") / "hsk-lugat.html").read_text(encoding="utf-8")
+        course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        phrases = (Path("app/static") / "hsk-gaplar.html").read_text(encoding="utf-8")
+        # A focused <select> below 16px causes Safari's accessibility
+        # auto-focus zoom, even when it is visually small.
+        self.assertIn("font:600 16px var(--hsk-font-ui)", login)
+        # Writing canvas must keep one-finger vertical scrolling, own horizontal
+        # pointer swipe between characters and accessible two-finger pinch-zoom.
+        # Omit the double-tap-to-zoom gesture instead of disabling page zoom.
+        self.assertIn("flex-shrink:0;touch-action:pan-y pinch-zoom}", dictionary)
+        self.assertIn("rgba(181,146,98,.28);touch-action:pan-y pinch-zoom}", dictionary)
+        self.assertIn("box.addEventListener('pointerup'", dictionary)
+        self.assertIn("charBoxLg.addEventListener('pointerup'", dictionary)
+        self.assertIn("#search{width:100%;padding:13px 84px 13px 44px;font-size:16px", dictionary)
+        self.assertIn("#vc-root .kb textarea{flex:1;min-height:46px;max-height:96px;resize:none;font-family:inherit;font-size:16px", course)
+        self.assertIn("color: var(--ink); font-size: 16px;", phrases)
+        for html in (login, dictionary, course, phrases):
+            self.assertNotIn("user-scalable=no", html)
+            self.assertNotIn("maximum-scale=1", html)
+
     async def test_pwa_manifest_is_feature_gated_and_source_brand_only(self):
         manifest_path = "/iphone-pwa/manifest.webmanifest"
         response = await self.client.get(manifest_path)
