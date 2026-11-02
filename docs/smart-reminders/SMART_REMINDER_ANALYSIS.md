@@ -1,6 +1,6 @@
 # Smart delivery analysis contract
 
-The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.66. This
+The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.67. This
 contract defines P6 6.1a, optional 6.1b integration, bounded 6.1c reconciliation,
 6.1d terminal shadow observations, 6.1e reservation observations and 6.1f
 committed runtime guard reasons, the 6.1g internal target-learning projection
@@ -511,8 +511,17 @@ production execution is implied. Source-time checks refuse expired replay after 
 deletion, and never recreate an old fact to increment totals again.
 
 No initializer is run against an existing database. The reviewed empty-QA
-initializer reviewed head is 0143 and leaves migration-owned tables to real migrations.
+initializer reviewed head is 0144 and leaves migration-owned tables to real migrations.
 Migration 0137 downgrade refuses either populated analysis table rather than
 deleting data; 0138 uses the new-stage preservation guard described above.
 Disabling capture changes no delivery authority; preserve all consent/day/grant
 guards and operational evidence during rollback.
+
+
+## First-ready baseline cohorts
+
+0144 adds separate minimal first-ready membership and original anonymous cohort
+denominators through the existing default-OFF source observer/reconciliation,
+retention and canonical purge. Source/metric boundaries, account-wide historical
+receipt checks and explicit unavailable/partial states are documented in
+`SMART_REMINDER_BASELINE.md`; no contact/open or delivery authority follows.

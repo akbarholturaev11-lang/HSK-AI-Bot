@@ -267,3 +267,19 @@ The system SHALL observe reviewed study strictly after an evidenced original con
 #### Scenario: Boundary or missing evidence
 - **WHEN** a result is at/before contact start, after 24 hours, in the future, unsupported, or absent from partial sources
 - **THEN** no false positive unit/contact or negative-learning claim is created; window elapsed is distinct from complete coverage and cannot authorize delivery
+
+
+### Requirement: First-ready canonical baseline cohorts
+The system SHALL optionally record one first reviewed policy-ready entry per canonical account/protocol independently of notification sending or opening, and measure observed learning over versioned frozen local-calendar windows. It MUST preserve original anonymous enrollment denominators through personal deletion/expiry and cannot treat the resulting partial observations as causal lift or delivery authority.
+
+#### Scenario: Existing learner first becomes policy ready
+- **WHEN** an existing learner obtains a reviewed committed base-policy-ready shadow reservation
+- **THEN** optional analysis may retain the earliest reviewed entry once and count subsequent verified learning without a contact/open requirement, while leaving consent and dispatch unchanged
+
+#### Scenario: Purged, immature or incomplete cohort
+- **WHEN** a member is purged/blocked, follow-up is unfinished, or bounded source coverage is unavailable
+- **THEN** the original anonymous denominator remains intact and unavailable/censored states are explicit; missing data cannot become a favorable exclusion, inactivity finding or model-ready result
+
+#### Scenario: Courses change and reminders are ignored
+- **WHEN** a member studies another canonical course or enters manually without touching a reminder
+- **THEN** original reviewed server-completed units and scored study can contribute account-wide without relying on notification clicks or mutable current-course progress
