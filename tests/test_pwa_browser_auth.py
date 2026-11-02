@@ -6,7 +6,7 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 from urllib.parse import parse_qs, urlparse
 
 from fastapi import FastAPI
@@ -17,6 +17,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.api.native_oauth import create_native_oauth_router
 from app.api.pwa_auth import create_pwa_auth_router
+from app.api.course_tracks import create_course_tracks_router
 from app.db.base import Base
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from app.db.models.user import User
@@ -95,6 +96,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         app.include_router(create_pwa_auth_router(
             session_factory=self.sessions, settings_obj=self.settings
         ))
+        app.include_router(create_course_tracks_router(
+            session_factory=self.sessions, settings_obj=self.settings
+        ))
         self.client = AsyncClient(
             transport=ASGITransport(app=app), base_url=ORIGIN
         )
@@ -123,6 +127,77 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 "/api/v3/native-auth/oauth/callback/google",
                 params={"state": state, "code": "auth-code"},
             )
+
+    async def test_pwa_course_track_routes_require_pwa_session_and_no_native_bypass(self):
+        # Legacy Telegram route rejects a PWA cookie even after browser login.
+        unauthed = await self.client.get("/api/v3/pwa/course-tracks")
+        self.assertEqual(unauthed.status_code, 401)
+        unauthed_switch = await self.client.post(
+            "/api/v3/pwa/course-tracks/switch",
+            headers={"Origin": ORIGIN},
+            json={"target_track": "hsk20", "level": "hsk1"},
+        )
+        self.assertEqual(unauthed_switch.status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        legacy = await self.client.get("/api/v3/course-tracks")
+        self.assertEqual(legacy.status_code, 401)
+        with patch("app.api.course_tracks._status_payload", new_callable=AsyncMock) as shared:
+            shared.return_value = {"ok": True, "active_track": "hsk20"}
+            response = await self.client.get("/api/v3/pwa/course-tracks")
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertEqual(response.json()["active_track"], "hsk20")
+            self.assertEqual(shared.await_args.args[1].id, 1)
+        self.assertEqual(response.headers.get("cache-control"), "no-store")
+
+    async def test_pwa_course_track_mutations_require_origin_csrf_and_canonical_actor(self):
+        state = await self.begin()
+        await self.callback(state)
+        owner = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        csrf = owner["csrf"]
+        path = "/api/v3/pwa/course-tracks/switch"
+        body = {"target_track": "hsk20", "level": "hsk1"}
+        self.assertEqual(
+            (await self.client.post(path, headers={"Origin": "https://evil.test",
+                                                   "X-HSK-PWA-CSRF": csrf}, json=body)).status_code,
+            403,
+        )
+        self.assertEqual(
+            (await self.client.post(path, headers={"Origin": ORIGIN}, json=body)).status_code,
+            403,
+        )
+        self.assertEqual(
+            (await self.client.post(path, headers={"Origin": ORIGIN,
+                                                  "X-HSK-PWA-CSRF": "bad"}, json=body)).status_code,
+            403,
+        )
+        self.assertEqual(
+            (await self.client.post(
+                path, headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf},
+                json={**body, "initData": "forged=telegram"},
+            )).status_code,
+            422,
+        )
+        with patch("app.api.course_tracks.CourseTrackService.switch", new_callable=AsyncMock) as switch, patch(
+            "app.api.course_tracks.CourseTrackService.change_level", new_callable=AsyncMock,
+        ) as change_level, patch(
+            "app.api.course_tracks.Hsk30UnlockService.payment_eligibility", new_callable=AsyncMock,
+        ) as eligibility:
+            change_level.return_value = {"active_track": "hsk20", "active_level": "hsk1"}
+            switch.return_value = {"active_track": "hsk20", "active_level": "hsk1"}
+            eligibility.return_value = {"payment_enabled": False}
+            passed = await self.client.post(
+                path, headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}, json=body,
+            )
+            self.assertEqual(passed.status_code, 200, passed.text)
+            self.assertTrue(passed.json()["ok"])
+            performed = change_level if change_level.await_count else switch
+            self.assertEqual(performed.await_count, 1)
+            self.assertEqual(performed.await_args.args[0].id, owner["user_id"])
+        self.assertEqual((await self.client.post(
+            "/api/v3/pwa/course-tracks/promo-shown",
+            headers={"Origin": ORIGIN}, json={},
+        )).status_code, 403)
 
     async def test_origin_required_and_pwa_disabled_fails_closed(self):
         no_origin = await self.client.post(
