@@ -10,8 +10,10 @@ from dataclasses import dataclass
 from datetime import datetime, time, timezone
 from types import SimpleNamespace
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import and_, func, or_, select
 
+from app.db.models.course_attempts import CourseAttempt
+from app.db.models.course_lessons import CourseLesson
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_progress import CourseProgress
@@ -95,6 +97,93 @@ def verified_studies(*, user_id, level, completed_parts, xp_rows, event_rows):
 class VerifiedLearningEvidence:
     studies: tuple[VerifiedStudy, ...] = ()
     coverage_limits: tuple[str, ...] = ("lesson_and_practice_sources_only",)
+
+
+@dataclass(frozen=True)
+class ScoredActivityEvidence:
+    times: tuple[datetime, ...] = ()
+    coverage_limits: tuple[str, ...] = (
+        "reviewed_scored_sources_only", "repeat_practice_and_voice_unavailable",
+    )
+
+
+def _scored_pair(payload, key):
+    correct, total = payload.get(key), payload.get("total")
+    return (type(correct) is int and type(total) is int and
+            0 <= correct <= total and 0 < total <= 1000)
+
+
+async def read_scored_activity(session, user_id, *, level, history_since, observed_at):
+    """Analysis-only positive study evidence; never complete/negative coverage.
+
+    These reviewed server writers grade real answers even without fresh XP or
+    a passing score. No answers, IDs or scores leave this bounded reader.
+    """
+    since, now = _aware_utc(history_since), _aware_utc(observed_at)
+    if since > now:
+        raise ValueError("Study history must not begin in the future")
+    limits = set(ScoredActivityEvidence().coverage_limits)
+    events = (await session.execute(select(
+        CourseMiniAppEvent.event_name, CourseMiniAppEvent.source, CourseMiniAppEvent.session_id,
+        CourseMiniAppEvent.dedupe_key, CourseMiniAppEvent.payload_json, CourseMiniAppEvent.created_at,
+        CourseMiniAppEvent.lesson_order, CourseLesson.level.label("lesson_level"),
+        CourseLesson.lesson_order.label("bound_order"),
+    ).outerjoin(CourseLesson, CourseLesson.id == CourseMiniAppEvent.lesson_id).where(
+        CourseMiniAppEvent.user_id == user_id, CourseMiniAppEvent.level == level,
+        or_(and_(CourseMiniAppEvent.event_name == "section_attempt_scored",
+                 CourseMiniAppEvent.source == "course_miniapp"),
+            and_(CourseMiniAppEvent.event_name == "test_completed",
+                 CourseMiniAppEvent.source == "course_hsk_exam")),
+        CourseMiniAppEvent.created_at >= since, CourseMiniAppEvent.created_at <= now,
+        func.length(CourseMiniAppEvent.payload_json) <= 8000,
+    ).order_by(CourseMiniAppEvent.created_at, CourseMiniAppEvent.id).limit(MAX_POLICY_ROWS + 1))).mappings().all()
+    times = set()
+    if len(events) > MAX_POLICY_ROWS:
+        limits.add("scored_events_over_limit")
+    else:
+        for event in events:
+            try:
+                payload = json.loads(event["payload_json"] or "{}")
+                if not isinstance(payload, dict):
+                    continue
+                if event["event_name"] == "section_attempt_scored":
+                    section, dedupe = payload.get("section_key"), event["dedupe_key"]
+                    if (event["lesson_level"] != level or type(event["bound_order"]) is not int or
+                            event["bound_order"] <= 0 or event["bound_order"] != event["lesson_order"] or
+                            not isinstance(section, str) or not 1 <= len(section) <= 128 or
+                            not isinstance(dedupe, str) or re.fullmatch(r"section-attempt:[0-9a-f]{32}", dedupe) is None or
+                            not _scored_pair(payload, "correct")):
+                        continue
+                else:
+                    sid = event["session_id"]
+                    if (not isinstance(sid, str) or re.fullmatch(
+                            rf"hsk-exam:{user_id}:{re.escape(level)}:v[1-9][0-9]*:[0-9a-f]{{24}}", sid) is None or
+                            event["dedupe_key"] != sid + ":completed" or not _scored_pair(payload, "score") or
+                            type(payload.get("material_version")) is not int or payload["material_version"] <= 0 or
+                            not isinstance(payload.get("material_id"), str) or not payload["material_id"]):
+                        continue
+                times.add(_utc(event["created_at"]))
+            except (ValueError, TypeError):
+                continue
+    quizzes = (await session.execute(select(CourseAttempt.created_at, CourseAttempt.answers_json)
+        .join(CourseLesson, CourseLesson.id == CourseAttempt.lesson_id).where(
+            CourseAttempt.user_id == user_id, CourseAttempt.attempt_type == "quiz",
+            CourseLesson.level == level, CourseLesson.lesson_order > 0,
+            CourseAttempt.created_at >= since, CourseAttempt.created_at <= now,
+            func.length(CourseAttempt.answers_json) <= 65536,
+        ).order_by(CourseAttempt.created_at, CourseAttempt.id).limit(MAX_POLICY_ROWS + 1))).all()
+    if len(quizzes) > MAX_POLICY_ROWS:
+        limits.add("scored_quizzes_over_limit")
+    else:
+        for quiz in quizzes:
+            try:
+                payload = json.loads(quiz.answers_json)
+                if (isinstance(payload, dict) and payload.get("source") == "miniapp_server_graded" and
+                        _scored_pair(payload, "score")):
+                    times.add(_utc(quiz.created_at))
+            except (ValueError, TypeError):
+                continue
+    return ScoredActivityEvidence(tuple(sorted(times)), tuple(sorted(limits)))
 
 
 async def read_verified_learning(session, user_id, *, level, history_since, observed_at):

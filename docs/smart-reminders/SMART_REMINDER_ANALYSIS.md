@@ -1,11 +1,11 @@
 # Smart delivery analysis contract
 
-The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.64. This
+The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.65. This
 contract defines P6 6.1a, optional 6.1b integration, bounded 6.1c reconciliation,
 6.1d terminal shadow observations, 6.1e reservation observations and 6.1f
 committed runtime guard reasons, the 6.1g internal target-learning projection
-6.1h authenticated client-reported opens and 6.1i verified temporal study
-outcomes, not a live rollout.
+6.1h authenticated client-reported opens, 6.1i verified temporal completed-unit
+outcomes and 6.1j scored active-study days, not a live rollout.
 
 `SmartReminderAnalysisService.capture_job(user_id, job_id)` is an internal,
 explicit operation over a committed owned job and its attempts/Android grants.
@@ -216,12 +216,12 @@ that never persisted, and incomplete reports are not a denominator.
 ## Internal target-learning source projection
 
 `SmartReminderAnalysisService.target_learning(user_id, job_id)` is an explicit
-internal non-persisting read, outside dispatch, capture/reconciliation, cadence
-and public/admin metrics. It validates a current owned reviewed v1 target job in
+internal non-persisting read, outside dispatch, cadence and public/admin
+metrics. Capture/reconciliation reuse its private validated source reader. It validates a current owned reviewed v1 target job in
 a separate User-first transaction, refusing blocked/submitted-deletion accounts.
-No source or analysis DML, new schema/stage/store, endpoint, flag or automatic
-hook is added. Source reads use existing finite row bounds and a PostgreSQL
-statement timeout. Disabling/removing this unused projection changes no delivery.
+The public projection performs no DML; source reads use finite row bounds and
+a PostgreSQL statement timeout. The later optional capture stages are described
+below. Removing the projection changes no delivery.
 
 Positive evidence requires an actual started/resolved Telegram provider-accepted
 attempt or Android posted-unverified attempt with matching immutable original
@@ -314,6 +314,57 @@ source facts can recover later, but incomplete coverage/causal/cohort policy and
 D09 calibration remain open. Disable analysis for rollback while retaining all
 operational and already recorded evidence.
 
+## Positive scored active-study days
+
+`0142_smart_activity_analysis` adds only `study_day_after_attempt` and
+`study_day_after_report` to existing raw/monthly stage constraints. These are
+positive activity-day facts, distinct from original-XP completed-unit counts.
+A failed graded attempt or genuine repeated study without fresh XP can prove
+activity; merely opening a client cannot. Notification tapping is optional.
+
+The analysis-only bounded reader covers server-only `section_attempt_scored`
+from `course_miniapp` (owned canonical lesson/course/order, server UUID key and
+strict correct/total), `test_completed` from `course_hsk_exam` (owned canonical
+session/dedupe/material and strict score/total), and owned `course_attempts`
+quiz rows joined to their course lesson, marked `miniapp_server_graded` with
+strict score/total. Boolean/string scores, zero/invalid totals, percent-only,
+client section completion, AI/homework, foreign sources and mismatched lessons
+are excluded. No passing threshold or fresh XP is required. The existing
+completed-unit reader/writers, grades, access, habit and cadence are unchanged.
+
+Union scored times with independently verified completed-unit times in the
+existing evidenced contact/frozen IANA local-day scope. Optional projection
+fields `first_active_study_at` and `first_active_study_after_report_at` remain
+`None` when unavailable. Each source query has a 512-row sentinel bound;
+over-limit classes are withheld, while an independently verified other class
+can still prove a positive day. Payload reads are finite (8K server events,
+64K quiz JSON); no answers, scores, source IDs or payloads persist in analysis.
+Deterministic repeat-practice completions do not emit a fresh graded-attempt
+source; `practice_attempt_scored` currently has no writer. Voice and other
+unreviewed sources remain unavailable. Absence never proves inactivity.
+
+The raw identity hashes owned job/day-stage, not individual attempts/questions;
+at most one primary and one secondary day fact exists per owned job's frozen
+day. Store original first-observed source time and D21 expiry, never rewrite it
+when earlier evidence arrives later. Monthly counts are observed job/day/stage/
+UTC-month/**reminder channel**, not all-account active days, unique learners,
+learning devices, a cohort denominator or causal returns. A first activity
+before a report does not prevent a later activity establishing the secondary
+day. Missing/late/invalid reports never suppress the primary day.
+
+Existing default-OFF capture/reconciliation, atomic insert/monthly dedupe,
+retention and canonical purge apply. Block/deletion guards prevent new detail.
+0142 preserves older facts and refuses raw or anonymous-only new-stage
+downgrade. The reviewed empty-QA head is 0142; no remote migration/initializer
+or activation follows. No new endpoint, flag, poller, grade writer or provider.
+Disable analysis for rollback while retaining operational and observed facts.
+
+The owner selected **24 hours after contact** for future return measurement,
+including midnight crossover. These local-day technical source facts are not
+yet that metric. 6.2 must separately implement/review the canonical cohort and
+overlapping-window dedupe protocol, without requiring clicks or attributing
+all temporally later learning causally to the reminder.
+
 ## Retention and privacy boundary
 
 | Class | Policy |
@@ -403,7 +454,7 @@ production execution is implied. Source-time checks refuse expired replay after 
 deletion, and never recreate an old fact to increment totals again.
 
 No initializer is run against an existing database. The reviewed empty-QA
-initializer advances to 0139 and leaves both new tables to real migrations.
+initializer reviewed head is 0142 and leaves migration-owned tables to real migrations.
 Migration 0137 downgrade refuses either populated analysis table rather than
 deleting data; 0138 uses the new-stage preservation guard described above.
 Disabling capture changes no delivery authority; preserve all consent/day/grant
