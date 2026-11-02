@@ -27,7 +27,7 @@ logger = logging.getLogger("uvicorn.error.public_analytics")
 STATIC = Path(__file__).resolve().parents[1] / "static"
 GOOGLE_VERIFICATION_FILENAME = "google4575dc78c69e5824.html"
 GOOGLE_VERIFICATION_CONTENT = b"google-site-verification: google4575dc78c69e5824.html"
-SITEMAP_PATHS = tuple(PAGES) + (DOWNLOAD_PATH, "/account-deletion") + tuple(GOOGLE_SIGNIN_PRIVACY_PAGES)
+SITEMAP_PATHS = tuple(PAGES) + (DOWNLOAD_PATH, "/privacy", "/account-deletion") + tuple(GOOGLE_SIGNIN_PRIVACY_PAGES)
 
 
 def indexnow_key(settings_obj):
@@ -133,41 +133,52 @@ def create_public_site_router(*, settings_obj, session_factory=None):
 
     @router.get("/privacy")
     async def privacy_policy():
+        # Public legal notice used by Android Settings and the Play store listing.
+        # It must not require authentication, JavaScript, or a database session.
         body = """<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>HSK AI Privacy Policy</title><meta name="robots" content="index,follow">
-<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.6;color:#211d17}h1,h2{line-height:1.2}small{color:#6c655c}</style></head>
-<body><h1>HSK AI Privacy Policy</h1><small>Effective: 17 October 2026</small>
-<p>HSK AI processes only the information needed to provide learning, account, security and subscription features.</p>
-<h2>Information we process</h2>
-<p>Account identifiers from the Telegram, Google or Apple method you choose; your in-app display name and avatar choice; course progress, XP, streaks, mistakes, learning settings, subscription state, invitations and service diagnostics. Google or Apple can create an account without Telegram.</p>
-<p>For the public website, we store daily aggregate counts of visits to the home or download page carrying campaign source labels such as Instagram, TikTok or YouTube. The counts do not include a cookie, visitor ID or account ID, and repeat visits are counted again.</p>
-<h2>Google and Apple sign-in</h2>
-<p>Provider subject identifiers are stored as keyed hashes. A provider may also supply an email address for display and account-security purposes. Email is not used to merge unrelated accounts.</p>
-<p>Additional sign-in methods are connected only from an authenticated HSK AI account. Progress and purchases belong to that HSK AI account. Using an unrelated sign-in method does not transfer another account's progress or purchases.</p>
-<h2>Payments and invitations</h2>
-<p>When you submit a manual payment, we process its amount, status and receipt for review. Invitations record the referring account and qualification needed for the existing reward rules. Some approved accounting records are retained after account deletion as described on the deletion page.</p>
-<h2>Microphone and voice features</h2>
-<p>Microphone permission is requested only when you use pronunciation or AI Voice. Audio you submit may be sent to HSK AI servers and service providers solely to transcribe, score or answer that voice interaction. Text prompts and photos you choose to submit to the AI assistant may likewise be processed to answer your learning question.</p>
-<h2>Notifications and device permissions</h2>
-<p>The Android app may request notification permission for optional study reminders and account or payment status notifications. You can turn reminders off in HSK AI settings and revoke notification permission in Android settings. The service may process a device notification token to deliver enabled notifications.</p>
-<h2>Sharing and sale</h2>
-<p>We do not sell personal data. Data may be processed by infrastructure, authentication, analytics or AI service providers only as needed to operate HSK AI, protect the service, or comply with law. If you submit a bug report or report an AI response, its description and any screenshot you explicitly choose to attach are sent for support and moderation review; please remove private details before sending.</p>
-<h2>Your choices</h2>
-<p>You can disconnect a sign-in method while another remains available, change your app profile, sign out, revoke device permissions, and <a href="/account-deletion">request deletion of your account and associated data</a> using any linked sign-in method.</p>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:32px auto;padding:0 20px 40px;line-height:1.65;color:#211d17;background:#fcfaf7}
+h1,h2{line-height:1.25}h1{font-size:clamp(1.7rem,5vw,2.2rem)}h2{font-size:1.25rem;margin-top:1.6em}
+a{color:#8b3929;overflow-wrap:anywhere}a:focus-visible{outline:2px solid #8b3929;outline-offset:3px}
+small{color:#59534c}li{margin:0.45em 0}
+</style></head><body><main>
+<h1>HSK AI Privacy Policy</h1>
+<p><small>Effective date: 3 November 2026</small></p>
+<h2>Who operates HSK AI</h2>
+<p>Pomp HSK AI operates HSK AI, a Chinese-learning service available through its Android app, Telegram bot and Mini App, desktop clients and website. This policy explains what information we process, why we use it, who may receive it, and how you can request deletion. Questions about privacy can be sent to <a href="mailto:hskaiapp@gmail.com">hskaiapp@gmail.com</a> or through <a href="https://t.me/darsi_chini_bot">the official HSK AI support bot</a>.</p>
+<h2>Information we collect and use</h2>
+<ul>
+<li><strong>Account and profile:</strong> Your chosen Telegram, Google or Apple sign-in identifier, linked identity information, any email and name supplied by that provider, profile display name or avatar choice, language and HSK level, and authentication or session records. Google or Apple can create an account without Telegram; equal email addresses do not merge unrelated accounts.</li>
+<li><strong>Learning activity:</strong> Lesson and quiz answers, scores, completed lessons, mistakes, XP, streaks, vocabulary practice, study preferences and progress. We use these records to provide lessons, feedback and progress across devices.</li>
+<li><strong>AI, images and speech:</strong> Text questions, photos, voice/audio you choose to submit, transcripts, learning feedback and any support or AI-response reports you submit. These inputs are processed to answer your questions, perform transcription or pronunciation evaluation, and handle reports. Please do not include passwords, identity documents or unnecessary sensitive details.</li>
+<li><strong>Subscription and payments:</strong> Plan and entitlement status, referrals, eligibility and usage limits, and, when you submit a manual payment, its amount, receipt and review status. The current Google Play build does not collect manual payment receipts in-app.</li>
+<li><strong>Devices and diagnostics:</strong> App/device and session identifiers, push notification tokens where enabled, app version, security or service logs, and error details or screenshots you voluntarily send for troubleshooting.</li>
+</ul>
+<p>The public website may count visits to the home or download pages by campaign source (for example Instagram or YouTube) in aggregate daily totals, without a visitor cookie or account identifier in those counts. Ordinary network requests may still generate technical hosting or security logs.</p>
+<h2>Microphone, photos and notifications</h2>
+<p>The microphone is used when you choose pronunciation practice or AI Voice. Photos and audio are submitted only when you initiate a feature that needs them; the feature may send them through HSK AI servers to an AI or speech-processing provider. Android may ask for notification permission for optional study reminders, account updates or payment status. You can change app reminder settings and revoke microphone or notification permission in Android settings.</p>
+<h2>Service providers and sharing</h2>
+<p>We do not sell personal data. To operate the service, necessary information may be processed by Google, Apple or Telegram for your selected sign-in method; by cloud hosting, database, storage, security and delivery providers; by AI or speech-processing providers for features you initiate; and by push notification services such as Firebase Cloud Messaging when enabled. Support staff may review user-submitted bug reports, payment receipts and AI-response reports. Information may also be disclosed where legally required or necessary to prevent abuse. These providers may process information in other countries. We do not use the daily aggregated website source counts to identify individual visitors.</p>
 <h2>Security</h2>
-<p>Authentication tokens are protected and sensitive provider identifiers are not exposed in public leaderboard data. No system can guarantee absolute security; HSK AI limits access and data exposure by design.</p>
-<h2>Contact</h2>
-<p>Use the Support item inside HSK AI or the official Telegram bot @darsi_chini_bot.</p>
-</body></html>"""
-        return HTMLResponse(
-            body,
-            headers={
-                "Cache-Control": "public, max-age=300",
-                "Referrer-Policy": "no-referrer",
-                "X-Content-Type-Options": "nosniff",
-            },
-        )
+<p>HSK AI uses HTTPS for supported network connections, access controls and account-bound authentication to limit access to user information. Provider account identifiers are protected through keyed hashing where supported by the account integration. No internet service can guarantee absolute security.</p>
+<h2>Retention and deletion</h2>
+<p>Account, learning and entitlement records are kept while needed to provide the service or until a verified account deletion request is processed, subject to the exceptions below. Transient AI or voice processing, delivery records and operational/security logs may have different technical lifetimes; we do not promise that every external processor deletes inputs immediately.</p>
+<p>You can request deletion inside HSK AI or from the public <a href="/account-deletion">account deletion page</a> without reinstalling the app. After identity verification and explicit confirmation, we aim to complete a request within 30 days. The request covers linked sign-in identities, profile, sessions/devices, learning progress, mistakes and voice activity across the shared HSK AI account. Uninstalling the app or unlinking a device does not delete the account.</p>
+<p>Pending and rejected manual-payment records are removed as part of account deletion. Approved payment and accounting records, and required partner-payout or ledger evidence, may be retained when needed for financial, legal, security or fraud-prevention obligations. These exceptions and any applicable periods are reviewed on request through support; they are not a reason to keep an otherwise deleted learning account active. External app-store subscriptions must be cancelled separately in the relevant store.</p>
+<h2>Your choices and questions</h2>
+<p>You can change your profile and study settings, stop using optional AI/voice features, disable reminders, revoke device permissions, sign out, or unlink a provider while another sign-in method remains. Contact <a href="mailto:hskaiapp@gmail.com">hskaiapp@gmail.com</a> for questions about access, correction, retention or deletion of your information; you can also use <a href="/account-deletion">the account deletion request page</a>.</p>
+<h2>Changes to this policy</h2>
+<p>We may revise this policy as the application changes. The effective date at the top identifies this version; material changes will be reflected here and communicated through the service when appropriate.</p>
+</main></body></html>"""
+        return HTMLResponse(body, headers={
+            "Cache-Control": "public, max-age=300",
+            "Referrer-Policy": "no-referrer",
+            "X-Content-Type-Options": "nosniff",
+        })
 
     @router.get("/account-deletion")
     async def account_deletion():
