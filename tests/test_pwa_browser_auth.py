@@ -686,6 +686,72 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         finally:
             await prior.aclose()
 
+    async def test_apple_cross_site_post_rotates_session_without_lax_cookie(self):
+        from app.services import apple_auth
+        state = await self.begin()
+        first_login = await self.callback(state)
+        original_cookie = first_login.cookies[PWA_SESSION_COOKIE]
+        async with self.sessions() as db:
+            old_session = (await db.execute(
+                select(DesktopSession).where(
+                    DesktopSession.refresh_token_hash
+                    == DesktopAuthService(db, self.settings)._hash(
+                        "pwa-cookie", original_cookie
+                    )
+                )
+            )).scalar_one()
+            prior_session_id = old_session.id
+
+        self.settings.APPLE_OAUTH_ENABLED = True
+        self.settings.APPLE_SERVICE_ID = "apple.service.test"
+        self.settings.APPLE_TEAM_ID = "TESTTEAM"
+        self.settings.APPLE_KEY_ID = "TESTKEY"
+        self.settings.APPLE_PRIVATE_KEY = "unused-by-mocked-exchange"
+        started = await self.client.post(
+            "/api/v3/pwa-auth/start", headers={"Origin": ORIGIN},
+            json={"provider": "apple", "language": "ru"},
+        )
+        self.assertEqual(started.status_code, 200, started.text)
+        apple_state = parse_qs(urlparse(started.json()["authorize_url"]).query)["state"][0]
+        async with self.sessions() as db:
+            pending = (await db.execute(
+                select(DesktopLinkRequest).where(
+                    DesktopLinkRequest.platform == "pwa",
+                    DesktopLinkRequest.flow == "apple",
+                )
+            )).scalar_one()
+            self.assertEqual(pending.bind_session_id, prior_session_id)
+
+        # A cross-site Apple form POST sends the OAuth SameSite=None cookie,
+        # but not the previous SameSite=Lax browser session cookie.
+        callback_browser = AsyncClient(
+            transport=ASGITransport(app=self.client._transport.app), base_url=ORIGIN,
+            cookies={PWA_OAUTH_COOKIE: started.cookies[PWA_OAUTH_COOKIE]},
+        )
+        try:
+            verified = VerifiedIdentity(
+                provider="apple", subject="apple-switch-sub", email=None,
+                email_verified=False, display_name=None, audience="apple.service.test",
+            )
+            with patch.object(apple_auth, "exchange_code", return_value="apple-id-token"), patch.object(
+                apple_auth, "verify_id_token_for_service", return_value=verified,
+            ), patch.object(apple_auth, "merge_first_authorization_name", return_value=verified):
+                done = await callback_browser.post(
+                    "/api/v3/native-auth/oauth/callback/apple",
+                    data={"state": apple_state, "code": "apple-code"},
+                )
+            self.assertEqual(done.status_code, 303, done.text)
+            self.assertIn(PWA_SESSION_COOKIE, done.cookies)
+            new_actor = await callback_browser.get("/api/v3/pwa-auth/session")
+            self.assertEqual(new_actor.status_code, 200, new_actor.text)
+            self.assertNotEqual(new_actor.json()["user_id"], 1)
+            self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
+            async with self.sessions() as db:
+                old = await db.get(DesktopSession, prior_session_id)
+                self.assertIsNotNone(old.revoked_at)
+        finally:
+            await callback_browser.aclose()
+
     async def test_apple_form_post_requires_browser_proof_and_separate_cookie(self):
         from app.services import apple_auth
         self.settings.APPLE_OAUTH_ENABLED = True
