@@ -508,6 +508,106 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             "/api/v3/practice/report", json=report,
         )).status_code, 401)
 
+    async def test_pwa_map_requires_browser_cookie_origin_csrf_and_locked_owner(self):
+        # Real map service is shared with Telegram; isolate just the transport
+        # to verify the correct canonical actor reaches the single map engine.
+        import app.main as main
+        from fastapi.responses import JSONResponse
+
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        cookie = self.client.cookies.get(PWA_SESSION_COOKIE)
+        app = FastAPI()
+        app.add_api_route("/api/v3/pwa/map", main.pwa_course_map, methods=["POST"])
+        with patch.object(main, "async_session_maker", self.sessions), patch.object(
+            main, "settings", self.settings,
+        ), patch.object(
+            main, "_course_v3_map_for_user", new_callable=AsyncMock,
+        ) as shared:
+            shared.return_value = JSONResponse({"ok": True, "level": "hsk1"})
+            client = AsyncClient(
+                transport=ASGITransport(app=app), base_url=ORIGIN,
+                cookies={PWA_SESSION_COOKIE: cookie},
+            )
+            try:
+                url = "/api/v3/pwa/map"
+                self.assertEqual((await client.get(url)).status_code, 405)
+                missing_csrf = await client.post(url, headers={"Origin": ORIGIN})
+                self.assertEqual(missing_csrf.status_code, 403, missing_csrf.text)
+                wrong_origin = await client.post(
+                    url, headers={
+                        "Origin": "https://attacker.test",
+                        "X-HSK-PWA-CSRF": csrf,
+                    },
+                )
+                self.assertEqual(wrong_origin.status_code, 403, wrong_origin.text)
+                forged_tg = await client.post(
+                    url, headers={
+                        "Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf,
+                        "X-Telegram-Init-Data": "fake",
+                    },
+                )
+                self.assertEqual(forged_tg.status_code, 422, forged_tg.text)
+                shared.assert_not_awaited()
+                good = await client.post(
+                    url + "?tz=480&source=pwa_course_v3",
+                    headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf},
+                )
+                self.assertEqual(good.status_code, 200, good.text)
+                self.assertEqual(good.headers["cache-control"], "no-store")
+                shared.assert_awaited_once()
+                args, kwargs = shared.await_args
+                self.assertEqual(args[2].id, 1)
+                self.assertEqual(kwargs["telegram_id"], 1001)
+                self.assertEqual(kwargs["default_source"], "pwa_course_v3")
+                self.assertEqual(args[0].query_params["tz"], "480")
+                # A fake owner in a JSON request body is never treated as actor.
+                shared.reset_mock()
+                again = await client.post(
+                    url, headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf},
+                    json={"user_id": 999},
+                )
+                self.assertEqual(again.status_code, 200, again.text)
+                self.assertEqual(shared.await_args.args[2].id, 1)
+            finally:
+                await client.aclose()
+            anonymous = AsyncClient(
+                transport=ASGITransport(app=app), base_url=ORIGIN,
+            )
+            try:
+                denied = await anonymous.post(
+                    "/api/v3/pwa/map",
+                    headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf},
+                )
+                self.assertEqual(denied.status_code, 401, denied.text)
+            finally:
+                await anonymous.aclose()
+
+    def test_pwa_map_and_legacy_map_share_single_full_policy_engine(self):
+        source = Path("app/main.py").read_text(encoding="utf-8")
+        start = source.index("async def _course_v3_map_for_user(")
+        stop = source.index('@app.get("/api/v3/invite")', start)
+        block = source[start:stop]
+        service = block[:block.index('@app.get("/api/v3/map")')]
+        self.assertIn("LessonAccessService(session).apply_map(", service)
+        self.assertIn("CourseTodayService(session).payload(", service)
+        self.assertIn("CourseSalesExperimentService(session).resolve_offer(", service)
+        self.assertIn("CourseTrackService(session).hsk30_access(user)", service)
+        self.assertIn("progress_repo.get_by_user_id(user.id, for_update=True)", service)
+        self.assertIn('data["progress"]', service)
+        self.assertIn('data["notifications"]', service)
+        self.assertIn("await session.commit()", service)
+        self.assertIn('default_source: str = "course_v3"', block)
+        self.assertEqual(block.count("return await _course_v3_map_for_user("), 2)
+        self.assertIn("get_by_telegram_id_for_update(telegram_id)", block)
+        self.assertIn("get_by_user_id(actor.id, lock=True)", block)
+        self.assertIn('raise PwaAuthError("pwa_session_required")', block)
+        self.assertIn("require_same_origin(request, settings)", block)
+        self.assertIn('request.headers.get("X-HSK-PWA-CSRF")', block)
+        self.assertIn('default_source="pwa_course_v3"', block)
+        self.assertNotIn("PWA_SESSION_COOKIE", service)
+
     async def test_pwa_course_track_routes_require_pwa_session_and_no_native_bypass(self):
         # Legacy Telegram route rejects a PWA cookie even after browser login.
         unauthed = await self.client.get("/api/v3/pwa/course-tracks")
