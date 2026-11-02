@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.first
  * server claims and a durable journal; fresh non-migrated links retain the
  * existing local policy. WidgetStore guards both paths across account changes.
  */
-class StudyReminderCoordinator(private val app: HskAiApplication, api: AndroidSmartReminderApi) {
+class StudyReminderCoordinator(private val app: HskAiApplication, private val api: AndroidSmartReminderApi) {
     private val smart = SmartStudyBridge(app.widgetStore, app.authRepository::authenticatedSession,
         app.authRepository::withCurrentSession,
         mode = { apiCall { api.mode(it) } }, capability = { apiCall { api.capability(it) } },
@@ -27,8 +27,16 @@ class StudyReminderCoordinator(private val app: HskAiApplication, api: AndroidSm
         claim = { bearer, job, body -> apiCall { api.claim(bearer, job, body) } },
         receipt = { bearer, job, body -> apiCall { api.receipt(bearer, job, body) } },
         permission = { StudyNotifications.canPost(app) },
-        post = { day -> StudyNotifications.postReminderOutcome(app, Reminder.DAILY_GOAL, ReminderDecision.variant(day)) },
+        post = { day, hint -> StudyNotifications.postReminderOutcome(app, Reminder.DAILY_GOAL,
+            ReminderDecision.variant(day), hint) },
         elapsed = SystemClock::elapsedRealtime)
+
+    private val openReporter = SmartStudyOpenReporter(app.widgetStore,
+        app.authRepository::authenticatedSession, app.authRepository::withCurrentSession,
+        report = { bearer, job, proof -> apiCall { api.opened(bearer, job,
+            com.pomp.hskai.data.api.SmartStudyOpen(proof = proof)) } })
+
+    suspend fun recordOpen(hint: SmartStudyOpenHint) = openReporter.run(hint)
 
     internal suspend fun receive(hint: SmartStudyHint): Outcome = when (smart.run(hint)) {
         SmartStudyBridge.Result.RETRY -> Outcome.RETRY

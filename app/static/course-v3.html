@@ -2171,6 +2171,29 @@ function syncCourseTelegramChrome(){
 }
 if(tg){try{tg.ready();tg.expand()}catch(e){}syncCourseTelegramChrome()}
 var INIT_DATA=(tg&&tg.initData)||"";
+// Smart reminder open observation: optional, authenticated and independent of navigation.
+(function observeSmartReminderOpen(){
+  try{
+    var q=new URLSearchParams(location.search),f=new URLSearchParams(location.hash.slice(1));
+    if(!INIT_DATA||q.getAll("source").length!==1||q.get("source")!=="smart_study"||
+       f.getAll("smart_job").length!==1||f.getAll("smart_proof").length!==1)return;
+    var job=f.get("smart_job"),proof=f.get("smart_proof"),sent=false;
+    if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(job)||
+       !/^[0-9a-f]{64}$/.test(proof))return;
+    function report(){
+      if(sent||document.visibilityState!=="visible")return;
+      sent=true;document.removeEventListener("visibilitychange",report);
+      try{fetch("/api/v3/smart-reminder/jobs/"+job+"/open",{
+        method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
+        body:JSON.stringify({version:1,proof:proof}),credentials:"omit",redirect:"error",
+        cache:"no-store",referrerPolicy:"no-referrer",keepalive:true
+      }).catch(function(){})}catch(e){}
+    }
+    document.addEventListener("visibilitychange",report);report();
+  }catch(e){}
+})();
+// End smart reminder open observation.
+
 /* Bot username yagona manba: serverdan (BOT_USERNAME) keladi. Map javobida
    bot_username bo'lsa yangilanadi; bo'lmasa xavfsiz default ishlaydi. */
 var BOT_USERNAME="darsi_chini_bot";

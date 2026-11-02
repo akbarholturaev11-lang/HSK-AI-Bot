@@ -10,7 +10,7 @@ from app.db.base import Base
 DELIVERY_STAGES = ("reserved", "in_flight", "provider_accepted", "client_posted_unverified",
           "confirmed_not_displayed", "outcome_unknown", "cancelled", "expired", "definite_failure")
 SHADOW_STAGES = ("shadow_candidate", "shadow_suppressed")
-STAGES = DELIVERY_STAGES + SHADOW_STAGES
+STAGES = DELIVERY_STAGES + SHADOW_STAGES + ("client_reported_open",)
 STAGE_CHECK = "stage IN (" + ", ".join(repr(s) for s in STAGES) + ")"
 RESERVATION_STAGES = ("shadow_reserved", "shadow_refused")
 RESERVATION_CHECK = "stage IN (" + ", ".join(repr(s) for s in RESERVATION_STAGES) + ")"
