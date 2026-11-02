@@ -218,3 +218,20 @@ The system SHALL optionally record a client-reported reminder open only with a v
 #### Scenario: Missing or disabled observation
 - **WHEN** analysis is disabled, metadata is absent, or best-effort reporting fails
 - **THEN** existing navigation and delivery continue and open/learning coverage remains unknown
+
+
+### Requirement: Source-verified temporal learning facts
+The system SHALL optionally count deduplicated original server-confirmed study units after an evidenced reminder attempt and, separately, after its retained client report. It MUST preserve original result time, partial coverage and account ownership without treating order as causal return, granting delivery or inferring inactivity.
+
+#### Scenario: Real lesson or practice result after contact and report
+- **WHEN** a canonical original positive XP result matches a reviewed server completion source after a confirmed contact within its frozen local day
+- **THEN** one temporal study fact may be recorded, with a separate after-report fact only when the same attempt's original server-received report precedes the result
+
+#### Scenario: Replayed, unsupported or missing evidence
+- **WHEN** an old result arrives again, source pairing fails, the report is missing/late/unrelated, or coverage exceeds finite bounds
+- **THEN** no false later completion or after-report fact is created, retries cannot inflate counts and missing coverage cannot authorize another message
+
+
+#### Scenario: Learner returns manually without tapping the reminder
+- **WHEN** a learner sees a reminder, opens the app independently and completes original server-confirmed study without any notification-open report
+- **THEN** the verified study-after-attempt result still counts; tapping/reporting is only an optional secondary sequence signal and must not gate actual learning or primary cohort KPIs
