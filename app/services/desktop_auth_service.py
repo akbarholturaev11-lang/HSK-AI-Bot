@@ -42,6 +42,8 @@ NATIVE_PLATFORMS = DESKTOP_PLATFORMS | MOBILE_PLATFORMS
 # so it is allowed only on intent="link" rows.
 WEB_PLATFORMS = frozenset({"miniapp"})
 LINK_ONLY_PLATFORMS = WEB_PLATFORMS
+# Browser sign-in gets an isolated HttpOnly session; never a native bearer.
+PWA_OAUTH_PLATFORMS = frozenset({"pwa"})
 
 # How a link request is approved. The Telegram bot may only ever touch a
 # "telegram" row, and an OAuth callback may only ever touch a provider row.
@@ -358,11 +360,13 @@ class DesktopAuthService:
         referral_code: str | None = None,
     ) -> dict[str, Any]:
         self._signing_secret()
-        if platform not in NATIVE_PLATFORMS | LINK_ONLY_PLATFORMS:
+        if platform not in NATIVE_PLATFORMS | LINK_ONLY_PLATFORMS | PWA_OAUTH_PLATFORMS:
             raise DesktopAuthError("desktop_platform_invalid", status_code=422)
         # A Mini App row exists only to attach an identity. Allowing it to sign
         # in would mean minting a session for a platform that owns no device.
         if platform in LINK_ONLY_PLATFORMS and intent != LINK_INTENT:
+            raise DesktopAuthError("desktop_platform_invalid", status_code=422)
+        if platform in PWA_OAUTH_PLATFORMS and (flow not in OAUTH_FLOWS or intent != SIGNIN_INTENT):
             raise DesktopAuthError("desktop_platform_invalid", status_code=422)
         if flow not in LINK_FLOWS:
             raise DesktopAuthError("desktop_link_flow_invalid", status_code=422)
@@ -994,6 +998,10 @@ class DesktopAuthService:
             self._hash("polling", polling_secret),
         ):
             raise DesktopAuthError("desktop_link_invalid", status_code=401)
+        # Browser OAuth proofs must only mint an HttpOnly PWA session through
+        # the owner-bound callback, never a native access/refresh token pair.
+        if link_request.platform in PWA_OAUTH_PLATFORMS:
+            raise DesktopAuthError("desktop_link_invalid", status_code=409)
         # THE critical guard of the provider-identity feature. A "link" row
         # exists only to attach a Google/Apple identity to an ALREADY
         # authenticated user. If one could be polled here it would mint a full
