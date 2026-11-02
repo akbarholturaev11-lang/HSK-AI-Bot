@@ -139,6 +139,24 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(disabled.status_code, 503)
         session = await self.client.get("/api/v3/pwa-auth/session")
         self.assertEqual(session.status_code, 503)
+        self.assertEqual((await self.client.get("/iphone-pwa")).status_code, 503)
+        self.assertEqual((await self.client.get("/iphone-pwa-login.js")).status_code, 503)
+        self.assertEqual((await self.client.get("/api/v3/pwa-auth/providers")).status_code, 503)
+
+    async def test_login_only_page_uses_source_tokens_and_existing_catalog(self):
+        page = await self.client.get("/iphone-pwa")
+        self.assertEqual(page.status_code, 200, page.text)
+        self.assertIn("text/html", page.headers["Content-Type"])
+        self.assertIn("script-src 'self'", page.headers["Content-Security-Policy"])
+        self.assertIn("/course_v3_data/design-tokens.css", page.text)
+        self.assertIn("/course_v3_data/hsk-common-i18n.js", page.text)
+        self.assertNotIn("Telegram.WebApp", page.text)
+        script = await self.client.get("/iphone-pwa-login.js")
+        self.assertEqual(script.status_code, 200)
+        self.assertIn("HSKAI_COMMON_I18N", script.text)
+        self.assertNotIn("Telegram.WebApp.initData", script.text)
+        providers = await self.client.get("/api/v3/pwa-auth/providers")
+        self.assertEqual(providers.json(), {"ok": True, "providers": ["google"]})
 
     async def test_pwa_callback_requires_same_browser_proof(self):
         state = await self.begin()
@@ -148,7 +166,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn(PWA_SESSION_COOKIE, missing_proof.cookies)
             self.assertIn("pwa_oauth_proof_invalid", missing_proof.text)
             good = await self.callback(state)
-            self.assertEqual(good.status_code, 200)
+            self.assertEqual(good.status_code, 303)
+            self.assertEqual(good.headers.get("location"), "/iphone-pwa")
             self.assertIn(PWA_SESSION_COOKIE, good.cookies)
             self.assertIn("HttpOnly", good.headers.get("set-cookie", ""))
             assert any("Secure" in item for item in good.headers.get_list("set-cookie"))
@@ -290,7 +309,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                     "/api/v3/native-auth/oauth/callback/apple",
                     data={"state": state, "code": "apple-code"},
                 )
-            self.assertEqual(done.status_code, 200)
+            self.assertEqual(done.status_code, 303)
+            self.assertEqual(done.headers.get("location"), "/iphone-pwa")
             self.assertIn(PWA_SESSION_COOKIE, done.cookies)
             status = await self.client.get("/api/v3/pwa-auth/session")
             self.assertEqual(status.status_code, 200)
