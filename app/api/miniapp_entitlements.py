@@ -40,6 +40,7 @@ from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.services.trial_risk_service import TrialRiskService
+from app.services.pwa_auth_service import PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService
 
 
 logger = logging.getLogger(__name__)
@@ -246,6 +247,58 @@ def create_miniapp_entitlements_router(
                 )
             return _private_content_response({"ok": True, "foundation": foundation})
 
+    async def _lesson_content_for_user(session, user, normalized_level: str, lesson_order: int):
+        # One shared server-authoritative access policy for signed Telegram and
+        # verified PWA actors; never trust caller-provided user or grade data.
+        if normalized_level not in COURSE_LEVELS or lesson_order < 1:
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+            )
+        user_level = content_level(getattr(user, "level", None))
+        if normalized_level != user_level:
+            return _private_content_response(
+                {"ok": False, "error": "course_level_not_allowed"}, status_code=403,
+            )
+        total = total_parts(normalized_level)
+        if not total or lesson_order > total:
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+            )
+        progress = await CourseProgressRepository(session).get_by_user_id(user.id)
+        completed = (
+            int(getattr(progress, "completed_lessons_count", 0) or 0)
+            if progress and getattr(progress, "level", None) == normalized_level
+            else 0
+        )
+        if lesson_order > completed + 1:
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_unlocked"}, status_code=403,
+            )
+        if await _foundation_is_blocked(session, user, normalized_level):
+            return _private_content_response(
+                {"ok": False, "error": "android_foundation_required"}, status_code=403,
+            )
+        access = await LessonAccessService(session).status(
+            user, level=normalized_level, lesson_order=lesson_order,
+            completed=completed, consume=False,
+        )
+        if not access.get("allowed"):
+            return _private_content_response(access, status_code=403)
+        unlimited_access = access.get("unlimited") or resolve_state(user) in {
+            EntitlementState.PRO_ACTIVE, EntitlementState.TEMP_ACCESS,
+        }
+        if (lesson_order > completed and not access.get("idempotent")
+                and not access.get("policy_free") and not unlimited_access):
+            return _private_content_response(
+                {"ok": False, "error": "lesson_start_required"}, status_code=403,
+            )
+        lesson = _read_course_lesson(normalized_level, lesson_order)
+        if not lesson:
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+            )
+        return _private_content_response(lesson)
+
     @router.get("/api/v3/lesson/content/{level}/{lesson_order}")
     async def v3_course_lesson_content(request: Request, level: str, lesson_order: int):
         telegram_id, _ = await _authenticated(request)
@@ -254,60 +307,30 @@ def create_miniapp_entitlements_router(
                 {"ok": False, "error": "invalid_telegram_init_data"}, status_code=401,
             )
         normalized_level = str(level or "").strip().lower()
-        if normalized_level not in COURSE_LEVELS or lesson_order < 1:
-            return _private_content_response(
-                {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
-            )
         async with session_factory() as session:
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             if not user:
                 return _private_content_response(
                     {"ok": False, "error": "access_start_first"}, status_code=403,
                 )
-            user_level = content_level(getattr(user, "level", None))
-            if normalized_level != user_level:
-                return _private_content_response(
-                    {"ok": False, "error": "course_level_not_allowed"}, status_code=403,
-                )
-            total = total_parts(normalized_level)
-            if not total or lesson_order > total:
-                return _private_content_response(
-                    {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
-                )
-            progress = await CourseProgressRepository(session).get_by_user_id(user.id)
-            completed = (
-                int(getattr(progress, "completed_lessons_count", 0) or 0)
-                if progress and getattr(progress, "level", None) == normalized_level
-                else 0
+            return await _lesson_content_for_user(
+                session, user, normalized_level, lesson_order,
             )
-            if lesson_order > completed + 1:
-                return _private_content_response(
-                    {"ok": False, "error": "course_lesson_not_unlocked"}, status_code=403,
+
+    @router.get("/api/v3/pwa/lesson/content/{level}/{lesson_order}")
+    async def pwa_course_lesson_content(request: Request, level: str, lesson_order: int):
+        async with session_factory() as session:
+            try:
+                user, _ = await PwaAuthService(session, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            if await _foundation_is_blocked(session, user, normalized_level):
+            except PwaAuthError as exc:
                 return _private_content_response(
-                    {"ok": False, "error": "android_foundation_required"}, status_code=403,
+                    {"ok": False, "error": exc.code}, status_code=exc.status_code,
                 )
-            access = await LessonAccessService(session).status(
-                user, level=normalized_level, lesson_order=lesson_order,
-                completed=completed, consume=False,
+            return await _lesson_content_for_user(
+                session, user, str(level or "").strip().lower(), lesson_order,
             )
-            if not access.get("allowed"):
-                return _private_content_response(access, status_code=403)
-            unlimited_access = access.get("unlimited") or resolve_state(user) in {
-                EntitlementState.PRO_ACTIVE, EntitlementState.TEMP_ACCESS,
-            }
-            if (lesson_order > completed and not access.get("idempotent")
-                    and not access.get("policy_free") and not unlimited_access):
-                return _private_content_response(
-                    {"ok": False, "error": "lesson_start_required"}, status_code=403,
-                )
-            lesson = _read_course_lesson(normalized_level, lesson_order)
-            if not lesson:
-                return _private_content_response(
-                    {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
-                )
-            return _private_content_response(lesson)
 
     @router.post("/api/v3/lesson/skip-test")
     async def v3_course_lesson_skip_test(request: Request):
