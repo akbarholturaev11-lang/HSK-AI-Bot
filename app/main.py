@@ -109,6 +109,7 @@ from app.api.android_update import create_android_update_router
 from app.api.android_push import create_android_push_router
 from app.api.smart_reminder import create_smart_reminder_router
 from app.services.smart_reminder_shadow_worker import SmartReminderShadowWorker
+from app.services.smart_reminder_analysis import SmartReminderAnalysisObserver
 from app.api.app_downloads import create_app_downloads_router
 from app.public_site.app_downloads_render import (
     downloads_section,
@@ -628,6 +629,8 @@ async def lifespan(app: FastAPI):
     # Disabled by default; no Smart producer or notification provider is wired.
     smart_shadow_task = (asyncio.create_task(SmartReminderShadowWorker(settings, async_session_maker).run())
                          if getattr(settings, "SMART_REMINDER_SHADOW_ENABLED", False) else None)
+    smart_analysis_task = (asyncio.create_task(SmartReminderAnalysisObserver(settings, async_session_maker).run_retention())
+                           if getattr(settings, "SMART_REMINDER_ANALYSIS_ENABLED", False) is True else None)
     desktop_auth_cleanup_task = asyncio.create_task(
         _desktop_auth_retention_scheduler()
     )
@@ -647,6 +650,8 @@ async def lifespan(app: FastAPI):
         scheduler_task.cancel()
         if smart_shadow_task is not None:
             smart_shadow_task.cancel()
+        if smart_analysis_task is not None:
+            smart_analysis_task.cancel()
         desktop_auth_cleanup_task.cancel()
         if apple_push_task is not None:
             apple_push_task.cancel()
@@ -662,6 +667,9 @@ async def lifespan(app: FastAPI):
         if smart_shadow_task is not None:
             with contextlib.suppress(asyncio.CancelledError):
                 await smart_shadow_task
+        if smart_analysis_task is not None:
+            with contextlib.suppress(asyncio.CancelledError):
+                await smart_analysis_task
         with contextlib.suppress(asyncio.CancelledError):
             await desktop_auth_cleanup_task
         if apple_push_task is not None:

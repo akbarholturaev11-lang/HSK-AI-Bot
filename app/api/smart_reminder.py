@@ -8,6 +8,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from sqlalchemy import select
+from starlette.background import BackgroundTask
 
 from app.api.desktop_auth import bearer_access_token, auth_error_response
 from app.db.models.user import User
@@ -18,6 +19,7 @@ from app.services.smart_reminder_preferences import (
 from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
 from app.services.smart_reminder_capabilities import SmartCapabilityPatch, SmartReminderCapabilityService
 from app.services.smart_reminder_android import AndroidStudyClaim, AndroidStudyReceipt, SmartReminderAndroidService
+from app.services.smart_reminder_analysis import SmartReminderAnalysisObserver
 
 logger = logging.getLogger(__name__)
 HEADERS = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff"}
@@ -47,8 +49,10 @@ async def _payload(request, model=SmartReminderPatch):
         raise SmartReminderError("smart_request_invalid", 422) from None
 
 
-def create_smart_reminder_router(*, session_factory, settings_obj, android_delivery_factory=None):
+def create_smart_reminder_router(*, session_factory, settings_obj, android_delivery_factory=None,
+                                 analysis_observer=None):
     router = APIRouter(tags=["smart-reminder"])
+    observer = analysis_observer if analysis_observer is not None else SmartReminderAnalysisObserver(settings_obj, session_factory)
 
     async def actor(session, request, android):
         if any(len(request.headers.getlist(key)) > 1 for key in ("Authorization", "X-Telegram-Init-Data")):
@@ -102,7 +106,13 @@ def create_smart_reminder_router(*, session_factory, settings_obj, android_deliv
                         service = SmartReminderCapabilityService(session) if capability else SmartReminderPreferencesService(session)
                         model = SmartCapabilityPatch if capability else SmartReminderPatch
                         result = await service.patch(current, await _payload(request, model)) if write else await service.read(current)
-            return JSONResponse(result, headers=HEADERS)
+            background = None
+            if (observer.enabled and result.get("ok") is True and
+                    (delivery == "receipt" or delivery == "claim" and result.get("dispatch_allowed") is True)):
+                # The source transaction/session closed; Starlette sends the
+                # entire response before starting observation. Never retain auth.
+                background = BackgroundTask(observer.capture_job, current.user_id, job_id)
+            return JSONResponse(result, headers=HEADERS, background=background)
         except SmartReminderError as exc:
             body = {"ok": False, "error": exc.code}
             if exc.revision is not None:
