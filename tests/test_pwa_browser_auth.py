@@ -190,20 +190,24 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
 
     async def test_browser_cannot_exchange_pwa_oauth_for_native_bearer(self):
-        state = await self.begin()
         async with self.sessions() as session:
-            row = (await session.execute(
-                select(DesktopLinkRequest).where(DesktopLinkRequest.platform == "pwa")
-            )).scalar_one()
-            # Polling secret is intentionally not returned to PWA; even if
-            # it somehow leaked, the native bearer endpoint must refuse.
+            service = DesktopAuthService(session, self.settings)
+            started = await service.start_link(
+                platform="pwa", app_version="1.0.0",
+                installation_key="p" * 48, flow="google", intent="signin",
+            )
+            row = await session.get(DesktopLinkRequest, started["link_request_id"])
             row.status = "approved"
             row.approved_user_id = 1
             await session.commit()
-            with self.assertRaises(DesktopAuthError):
-                await DesktopAuthService(session, self.settings).poll_link(
-                    link_request_id=row.id, polling_secret="x" * 40,
+            # Even a valid leaked polling secret MUST NOT mint native tokens.
+            with self.assertRaises(DesktopAuthError) as exc:
+                await service.poll_link(
+                    link_request_id=row.id, polling_secret=started["polling_secret"],
                 )
+            self.assertEqual(exc.exception.code, "desktop_link_invalid")
+            rows = (await session.execute(select(DesktopSession))).scalars().all()
+            self.assertEqual(rows, [])
 
     async def test_expiry_and_blocked_account_cannot_restore_session(self):
         state = await self.begin()
@@ -226,6 +230,30 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             owner.status = "blocked"
             await session.commit()
         self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
+
+    async def test_new_provider_identity_stays_browser_only_and_has_canonical_user(self):
+        state = await self.begin()
+        new_identity = VerifiedIdentity(
+            provider="google", subject="brand-new-provider-subject",
+            email="new@example.test", email_verified=True,
+            display_name="New student", audience="222-desktop.apps.googleusercontent.com",
+        )
+        from app.services import google_auth
+        with patch.object(google_auth, "exchange_code", return_value="fresh-token"), patch.object(
+            google_auth, "verify_desktop_id_token", return_value=new_identity,
+        ):
+            done = await self.client.get(
+                "/api/v3/native-auth/oauth/callback/google",
+                params={"state": state, "code": "new-provider-code"},
+            )
+        self.assertIn(PWA_SESSION_COOKIE, done.cookies)
+        me = await self.client.get("/api/v3/pwa-auth/session")
+        self.assertEqual(me.status_code, 200)
+        self.assertNotEqual(me.json()["user_id"], 1)
+        self.assertFalse(me.json()["telegram_linked"])
+        async with self.sessions() as db:
+            created = await db.get(User, me.json()["user_id"])
+            self.assertIsNone(created.telegram_id)
 
     async def test_apple_form_post_requires_browser_proof_and_separate_cookie(self):
         from app.services import apple_auth
