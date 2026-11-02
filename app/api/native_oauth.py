@@ -40,6 +40,10 @@ from app.repositories.user_repo import UserRepository
 from app.services.identity_link_service import IdentityLinkError, IdentityLinkService
 from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
 from app.services.account_deletion_service import AccountDeletionService, STATE_PREFIX, BROWSER_COOKIE
+from app.services.pwa_auth_service import (
+    PWA_OAUTH_COOKIE, PWA_SESSION_COOKIE, PWA_SESSION_AGE_SECONDS,
+    PwaAuthError, PwaAuthService,
+)
 from app.services.native_oauth_service import (
     BROWSER_REDIRECT_MODE,
     NATIVE_ID_TOKEN_MODE,
@@ -378,13 +382,27 @@ def create_native_oauth_router(
                         browser=request.cookies.get(BROWSER_COOKIE))
                     return _deletion_page()
                 else:
+                    browser = PwaAuthService(session, settings_obj)
+                    is_pwa = await browser.before_callback(
+                        provider="google", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
+                    )
                     completed = await service_factory(session, settings_obj).complete_callback(
                         provider="google", state=state, code=code
                     )
+                    if is_pwa:
+                        cookie = await browser.consume_callback(
+                            provider="google", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
+                        )
+            if completed.get("platform") == "pwa" and is_pwa:
+                page = _page("&#10003;", "ok")
+                page.set_cookie(PWA_SESSION_COOKIE, cookie, max_age=PWA_SESSION_AGE_SECONDS,
+                                secure=True, httponly=True, samesite="lax", path="/")
+                page.delete_cookie(PWA_OAUTH_COOKIE, path="/", secure=True, httponly=True, samesite="none")
+                return page
             return _page("&#10003;", "ok", return_scheme=(
                 getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
                 if completed.get("platform") in {"android", "macos", "windows"} else None))
-        except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
+        except (NativeOAuthError, IdentityLinkError, DesktopAuthError, PwaAuthError) as exc:
             return _page("&#10005;", exc.code)
         except Exception:
             logger.exception("Google OAuth callback failed")
@@ -410,16 +428,30 @@ def create_native_oauth_router(
                         browser=request.cookies.get(BROWSER_COOKIE))
                     return _deletion_page()
                 else:
+                    browser = PwaAuthService(session, settings_obj)
+                    is_pwa = await browser.before_callback(
+                        provider="apple", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
+                    )
                     completed = await service_factory(session, settings_obj).complete_callback(
                         provider="apple",
                         state=state,
                         code=code,
                         apple_user=form.get("user"),
                     )
+                    if is_pwa:
+                        cookie = await browser.consume_callback(
+                            provider="apple", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
+                        )
+            if completed.get("platform") == "pwa" and is_pwa:
+                page = _page("&#10003;", "ok")
+                page.set_cookie(PWA_SESSION_COOKIE, cookie, max_age=PWA_SESSION_AGE_SECONDS,
+                                secure=True, httponly=True, samesite="lax", path="/")
+                page.delete_cookie(PWA_OAUTH_COOKIE, path="/", secure=True, httponly=True, samesite="none")
+                return page
             return _page("&#10003;", "ok", return_scheme=(
                 getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
                 if completed.get("platform") in {"android", "macos", "windows"} else None))
-        except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
+        except (NativeOAuthError, IdentityLinkError, DesktopAuthError, PwaAuthError) as exc:
             return _page("&#10005;", exc.code)
         except Exception:
             logger.exception("Apple OAuth callback failed")
