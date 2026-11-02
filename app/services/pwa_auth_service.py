@@ -10,6 +10,7 @@ from __future__ import annotations
 import hmac
 import secrets
 from datetime import datetime, timedelta, timezone
+from uuid import uuid4
 
 from sqlalchemy import select
 
@@ -147,7 +148,7 @@ class PwaAuthService:
         # Existing DB models are reused; no schema migration and no bearer token.
         # Random per-login proof makes installation-key collisions improbable.
         device = DesktopDevice(
-            id=str(__import__("uuid").uuid4()), user_id=user.id,
+            id=str(uuid4()), user_id=user.id,
             telegram_id=user.telegram_id, installation_key_hash=row.installation_key_hash,
             platform=PWA_PLATFORM, app_version="1.0.0",
         )
@@ -155,7 +156,7 @@ class PwaAuthService:
         await self.session.flush()
         session_cookie = secrets.token_urlsafe(32)
         self.session.add(DesktopSession(
-            id=str(__import__("uuid").uuid4()), device_id=device.id,
+            id=str(uuid4()), device_id=device.id,
             refresh_token_hash=self.desktop._hash("pwa-cookie", session_cookie),
             expires_at=_now() + timedelta(seconds=PWA_SESSION_AGE_SECONDS),
             last_seen_at=_now(),
