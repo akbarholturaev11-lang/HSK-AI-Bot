@@ -311,7 +311,9 @@ class ReturnChecks:
         before=[await self.storage.rows(t) for t in tables]
         def cycle(c):
             with Operations.context(MigrationContext.configure(c)):
+                schema.baseline_migration.downgrade()
                 schema.return_migration.downgrade();schema.return_migration.upgrade()
+                schema.baseline_migration.upgrade()
         async with self.case.engine.begin() as c: await c.run_sync(cycle)
         self.assertEqual(before,[await self.storage.rows(t) for t in tables])
         self.assertEqual(await self.capture(),2)

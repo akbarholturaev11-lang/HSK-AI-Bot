@@ -24,11 +24,12 @@ QA_ENVIRONMENT = "qa"
 QA_HOST = "postgres.railway.internal"
 QA_DATABASE = "railway"
 EXPECTED_BASELINE = "0102_payment_review_preview"
-EXPECTED_HEAD = "0143_smart_return_analysis"
+EXPECTED_HEAD = "0144_smart_baseline"
 # These reviewed migrations create tables unconditionally. Defer their DDL
 # until after the empty ORM baseline is stamped; never precreate and then skip
 # their migrations. This list is reviewed alongside EXPECTED_HEAD.
 MIGRATION_CREATED_TABLES = frozenset({
+    "smart_reminder_baseline_members", "smart_reminder_baseline_totals",
     "smart_reminder_analysis_events", "smart_reminder_analysis_monthly",
     "smart_reminder_reservation_observations",
     "smart_reminder_android_grants",
