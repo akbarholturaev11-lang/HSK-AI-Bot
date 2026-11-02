@@ -58,6 +58,14 @@ return_migration = importlib.util.module_from_spec(spec_return)
 spec_return.loader.exec_module(return_migration)
 
 
+spec_baseline = importlib.util.spec_from_file_location("analysis_0144", Path(__file__).resolve().parents[1] /
+    "alembic/versions/0144_smart_baseline.py")
+baseline_migration = importlib.util.module_from_spec(spec_baseline)
+spec_baseline.loader.exec_module(baseline_migration)
+from app.db.models.smart_reminder_analysis import SmartReminderBaselineMember, SmartReminderBaselineTotal
+BASELINE_MEMBER, BASELINE_TOTAL = SmartReminderBaselineMember.__table__, SmartReminderBaselineTotal.__table__
+
+
 class AnalysisChecks:
     postgres = False
 
@@ -73,6 +81,8 @@ class AnalysisChecks:
         async with self.sessions.begin() as session:
             await session.execute(update(JOB).values(created_at=self.moment, updated_at=self.moment))
         async with self.engine.begin() as c:
+            await c.run_sync(BASELINE_MEMBER.drop)
+            await c.run_sync(BASELINE_TOTAL.drop)
             await c.run_sync(RESERVATION.drop)
             await c.run_sync(MONTHLY.drop)
             await c.run_sync(EVENT.drop)
@@ -93,7 +103,9 @@ class AnalysisChecks:
                 study_migration.upgrade()
                 activity_migration.upgrade()
                 return_migration.upgrade()
+                baseline_migration.upgrade()
             else:
+                baseline_migration.downgrade()
                 return_migration.downgrade()
                 activity_migration.downgrade()
                 study_migration.downgrade()
@@ -297,6 +309,7 @@ class AnalysisChecks:
         before = [await self.rows(table) for table in (EVENT, MONTHLY, JOB, ATTEMPT, GRANT)]
         def roundtrip(connection):
             with Operations.context(MigrationContext.configure(connection)):
+                baseline_migration.downgrade()
                 return_migration.downgrade()
                 activity_migration.downgrade()
                 study_migration.downgrade()
@@ -309,6 +322,7 @@ class AnalysisChecks:
                 study_migration.upgrade()
                 activity_migration.upgrade()
                 return_migration.upgrade()
+                baseline_migration.upgrade()
             return compare_metadata(MigrationContext.configure(connection), Base.metadata)
         async with self.engine.begin() as connection:
             self.assertEqual(await connection.run_sync(roundtrip), [])

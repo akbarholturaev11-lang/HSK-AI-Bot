@@ -272,12 +272,14 @@ class StudyChecks:
         before=await self.storage.rows(EVENT)
         def cycle(c):
             with Operations.context(MigrationContext.configure(c)):
+                storage_fixture.baseline_migration.downgrade()
                 storage_fixture.return_migration.downgrade()
                 storage_fixture.activity_migration.downgrade()
                 storage_fixture.study_migration.downgrade()
                 storage_fixture.study_migration.upgrade()
                 storage_fixture.activity_migration.upgrade()
                 storage_fixture.return_migration.upgrade()
+                storage_fixture.baseline_migration.upgrade()
         async with self.case.engine.begin() as c: await c.run_sync(cycle)
         self.assertEqual(await self.storage.rows(EVENT),before)
         await self.lesson()

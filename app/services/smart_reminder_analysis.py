@@ -332,6 +332,9 @@ class SmartReminderAnalysisService:
                 attempts = (await session.execute(select(SmartReminderAttempt.__table__).where(
                     SmartReminderAttempt.job_id == job_id).order_by(SmartReminderAttempt.id).with_for_update())).mappings().all()
                 if shadow:
+                    if not attempts and owner_row.status != "blocked":
+                        from app.services.smart_reminder_baseline import enroll_baseline
+                        await enroll_baseline(session, owner, self.now(), self._insert)
                     stage = _shadow_stage(job)
                     if attempts or stage is None:
                         return 0
@@ -410,6 +413,9 @@ class SmartReminderAnalysisService:
             now = self.now()
             if not now - RAW_RETENTION < at <= now:
                 return 0
+            if source.stage == "shadow_reserved":
+                from app.services.smart_reminder_baseline import enroll_baseline
+                await enroll_baseline(session, owner, now, self._insert)
             inserted = await session.scalar(self._insert(session, RESERVATION).values(user_id=owner,
                 event_key=source.event_key, stage=source.stage, reason_code=source.reason_code,
                 occurred_at=at, expires_at=at+RAW_RETENTION).on_conflict_do_nothing(
@@ -441,7 +447,8 @@ class SmartReminderAnalysisService:
             reviewed = or_(and_(job.selected_channel == "android", job.policy_version.startswith("smart-android-v1:")),
                 and_(job.selected_channel == "telegram", job.policy_version.startswith("smart-telegram-v1:")),
                 and_(job.policy_version == QUEUE_VERSION, job.selected_channel.is_(None), job.selected_device_id.is_(None),
-                    job.state.in_(("completed", "cancelled", "expired")), recent(job.updated_at)))
+                    or_(and_(job.state == "shadow", recent(job.created_at)),
+                        and_(job.state.in_(("completed", "cancelled", "expired")), recent(job.updated_at)))))
             fresh_source = or_(recent(job.created_at),
                 and_(job.state.in_(("cancelled", "expired")), recent(job.updated_at)),
                 and_(job.policy_version == QUEUE_VERSION, job.state == "completed", recent(job.updated_at)),
@@ -487,6 +494,8 @@ class SmartReminderAnalysisService:
                     tuple_(MONTHLY.c.month, MONTHLY.c.stage, MONTHLY.c.channel).in_(months)))).rowcount
                 counts["removed_reservations"] = (await session.execute(delete(RESERVATION).where(
                     tuple_(RESERVATION.c.user_id, RESERVATION.c.event_key).in_(reservations)))).rowcount
+            from app.services.smart_reminder_baseline import baseline_retention
+            counts.update(await baseline_retention(session, now, execute=execute, limit=limit))
             return counts
 
 

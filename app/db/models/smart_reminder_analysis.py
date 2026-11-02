@@ -67,3 +67,29 @@ class SmartReminderReservationObservation(Base):
     reason_code: Mapped[str] = mapped_column(String(64))
     occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class SmartReminderBaselineMember(Base):
+    __tablename__ = "smart_reminder_baseline_members"
+    __table_args__ = (
+        CheckConstraint("length(protocol_version) > 0", name="protocol"),
+        CheckConstraint("expires_at > entered_at", name="expiry"),
+        Index("ix_smart_baseline_expiry", "expires_at", "user_id"),
+        Index("ix_smart_baseline_entry", "protocol_version", "entered_at"),
+    )
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    protocol_version: Mapped[str] = mapped_column(String(32), primary_key=True)
+    source_job_id: Mapped[str] = mapped_column(String(36))
+    entered_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    timezone_name: Mapped[str] = mapped_column(String(64))
+    course_key: Mapped[str] = mapped_column(String(32))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class SmartReminderBaselineTotal(Base):
+    __tablename__ = "smart_reminder_baseline_totals"
+    __table_args__ = (CheckConstraint("enrolled_accounts >= 0", name="accounts"),)
+    protocol_version: Mapped[str] = mapped_column(String(32), primary_key=True)
+    cohort_month: Mapped[date] = mapped_column(Date, primary_key=True)
+    enrolled_accounts: Mapped[int] = mapped_column(BigInteger)
+    matures_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
