@@ -1,4 +1,4 @@
-"""Source-derived analysis only; never authority, learning or display proof.
+"""Source-derived analysis; never dispatch authority, causal or display proof.
 
 Capture owns a separate transaction after delivery commits. Optional source
 hooks/retention are disabled by default. Retention never deletes source evidence.
@@ -81,14 +81,22 @@ class AnalysisSourcePage:
 
 @dataclass(frozen=True)
 class TargetLearningEvidence:
-    """Partial temporal evidence; never an open, causal or inactivity finding."""
+    """Partial temporal study/report evidence; never causal or inactivity proof."""
     reason: str
     boundary_at: datetime | None = None
     learned_at: datetime | None = None
     coverage_limits: tuple[str, ...] = (
-        "native_android_lesson_results_only", "notification_open_unavailable",
+        "reviewed_learning_sources_only", "independent_open_unavailable",
         "causal_attribution_unavailable", "negative_learning_coverage_unknown",
     )
+    reported_open_at: datetime | None = None
+    first_study_at: datetime | None = None
+    first_study_after_report_at: datetime | None = None
+    verified_study_count: int | None = None
+
+
+def _event_key(source_id, stage):
+    return hashlib.sha256(("smart-analysis-v1:" + source_id + ":" + stage).encode()).hexdigest()
 
 
 def oldest_month(now):
@@ -107,14 +115,7 @@ class SmartReminderAnalysisService:
         return _aware_utc(self.clock())
 
     async def target_learning(self, user_id, job_id):
-        """Explicit internal read projection, outside capture/cadence/dispatch.
-
-        The frozen local day is a technical source scope, not an experiment
-        attribution window. Missing evidence never authorizes another send.
-        """
-        from app.services.smart_reminder_destination import read_native_lesson_destinations
-        from app.services.smart_reminder_policy_context import _LESSON_REF
-
+        """Internal partial source projection; never a policy or causal window."""
         if (type(user_id) is not int or user_id <= 0 or not isinstance(job_id, str) or
                 not 1 <= len(job_id) <= 36):
             raise ValueError("Owned Smart job identity required")
@@ -133,67 +134,79 @@ class SmartReminderAnalysisService:
                     SmartReminderJob.user_id == user_id, SmartReminderJob.id == job_id))).mappings().one_or_none()
                 if job is None:
                     return TargetLearningEvidence("learning_job_unavailable")
-                channel = job["selected_channel"]
-                if channel not in {"android", "telegram"} or not job["policy_version"].startswith(
-                        "smart-" + channel + "-v1:"):
-                    return TargetLearningEvidence("learning_source_unsupported")
-                reference = f"v3-part:{job['course_key']}:{job['lesson_order']}:complete"
-                if _LESSON_REF.fullmatch(reference) is None:
-                    return TargetLearningEvidence("learning_target_unavailable")
-                now = self.now()  # Fresh after waiting on the canonical owner.
-                try:
-                    start, end = day_window(job["timezone_name"], job["local_day"].isoformat())
-                except (KeyError, TypeError, ValueError):
-                    return TargetLearningEvidence("learning_window_unavailable")
-                if (start != _utc(job["day_start_utc"]) or end != _utc(job["day_end_utc"]) or
-                        end <= now - RAW_RETENTION or now < start):
-                    return TargetLearningEvidence("learning_window_unavailable")
                 attempts = (await session.execute(select(SmartReminderAttempt.__table__).where(
                     SmartReminderAttempt.job_id == job_id).order_by(SmartReminderAttempt.id)
                     .limit(MAX_BATCH + 1))).mappings().all()
                 grants = (await session.execute(select(SmartReminderAndroidGrant.__table__).where(
                     SmartReminderAndroidGrant.user_id == user_id, SmartReminderAndroidGrant.job_id == job_id)
-                    .limit(MAX_BATCH + 1))).mappings().all() if channel == "android" else []
-                if len(attempts) > MAX_BATCH or len(grants) > MAX_BATCH:
-                    return TargetLearningEvidence("learning_source_over_limit")
-                boundaries = []
-                for attempt in attempts:
-                    if (attempt["channel"] != channel or attempt["grant_epoch"] != job["grant_epoch"] or
-                            attempt["started_at"] is None or
-                            attempt["resolved_at"] is None):
-                        continue
-                    at, resolved = _utc(attempt["started_at"]), _utc(attempt["resolved_at"])
-                    if (not now - RAW_RETENTION < at <= resolved <= now or
-                            not _utc(job["scheduled_at"]) <= at < _utc(job["expires_at"]) or
-                            not _utc(job["created_at"]) <= _utc(attempt["prepared_at"]) <=
-                            at < _utc(attempt["expires_at"])):
-                        continue
-                    if channel == "telegram" and attempt["state"] == "provider_accepted":
-                        boundaries.append(at)
-                    elif channel == "android" and attempt["state"] == "client_posted_unverified":
-                        if any(g["attempt_id"] == attempt["id"] and
-                                g["device_id"] == attempt["device_id"] == job["selected_device_id"] and
-                                g["policy_version"] == job["policy_version"] and
-                                g["grant_epoch"] == job["grant_epoch"] and
-                                g["preference_revision"] == job["preference_revision"] and
-                                _utc(g["expires_at"]) == _utc(attempt["expires_at"]) and
-                                g["receipt_id"] is not None and g["receipt_outcome"] == "client_posted_unverified" and
-                                g["received_at"] is not None and at == _utc(g["issued_at"]) <=
-                                _utc(g["received_at"]) == resolved for g in grants):
-                            boundaries.append(at)
-                if not boundaries:
-                    return TargetLearningEvidence("learning_contact_unconfirmed")
-                boundary = min(boundaries)
-                evidence = await read_native_lesson_destinations(session, user_id, level=job["course_key"],
-                    history_since=boundary, observed_at=min(now, end))
-                unavailable = TargetLearningEvidence("target_learning_unavailable", boundary)
-                limits = tuple(sorted(set(unavailable.coverage_limits) | set(evidence.limits)))
-                # Original XP time, never a later replay/receipt arrival. The
-                # canonical result is counted once even with repeated receipts.
-                results = {s.accepted_at for s in evidence.studies if s.user_id == user_id and
-                    s.reference == reference and boundary < s.accepted_at < end and s.accepted_at <= now}
-                return TargetLearningEvidence("verified_target_learning_after_attempt" if results else
-                    "target_learning_unavailable", boundary, min(results) if results else None, limits)
+                    .limit(MAX_BATCH + 1))).mappings().all() if job["selected_channel"] == "android" else []
+                return (await self._learning_evidence(session, job, attempts, grants, self.now()))[0]
+
+    async def _learning_evidence(self, session, job, attempts, grants, now):
+        """Reuse the same owned, locked source scope for projection and capture."""
+        from app.services.smart_reminder_policy_context import _LESSON_REF, read_verified_learning
+        def unavailable(reason):
+            return TargetLearningEvidence(reason), ()
+        channel = job["selected_channel"]
+        if channel not in {"android", "telegram"} or not job["policy_version"].startswith("smart-" + channel + "-v1:"):
+            return unavailable("learning_source_unsupported")
+        reference = f"v3-part:{job['course_key']}:{job['lesson_order']}:complete"
+        if _LESSON_REF.fullmatch(reference) is None:
+            return unavailable("learning_target_unavailable")
+        try:
+            start, end = day_window(job["timezone_name"], job["local_day"].isoformat())
+        except (KeyError, TypeError, ValueError):
+            return unavailable("learning_window_unavailable")
+        if (start != _utc(job["day_start_utc"]) or end != _utc(job["day_end_utc"]) or
+                end <= now - RAW_RETENTION or now < start):
+            return unavailable("learning_window_unavailable")
+        if len(attempts) > MAX_BATCH or len(grants) > MAX_BATCH:
+            return unavailable("learning_source_over_limit")
+        boundaries = {}
+        for attempt in attempts:
+            if (attempt["channel"] != channel or attempt["grant_epoch"] != job["grant_epoch"] or
+                    attempt["started_at"] is None or attempt["resolved_at"] is None):
+                continue
+            at, resolved = _utc(attempt["started_at"]), _utc(attempt["resolved_at"])
+            if (not now - RAW_RETENTION < at <= resolved <= now or
+                    not _utc(job["scheduled_at"]) <= at < _utc(job["expires_at"]) or
+                    not _utc(job["created_at"]) <= _utc(attempt["prepared_at"]) <= at < _utc(attempt["expires_at"])):
+                continue
+            if channel == "telegram" and attempt["state"] == "provider_accepted":
+                boundaries[attempt["id"]] = at
+            elif channel == "android" and attempt["state"] == "client_posted_unverified":
+                if any(g["attempt_id"] == attempt["id"] and
+                        g["device_id"] == attempt["device_id"] == job["selected_device_id"] and
+                        g["policy_version"] == job["policy_version"] and g["grant_epoch"] == job["grant_epoch"] and
+                        g["preference_revision"] == job["preference_revision"] and
+                        _utc(g["expires_at"]) == _utc(attempt["expires_at"]) and g["receipt_id"] is not None and
+                        g["receipt_outcome"] == "client_posted_unverified" and g["received_at"] is not None and
+                        at == _utc(g["issued_at"]) <= _utc(g["received_at"]) == resolved for g in grants):
+                    boundaries[attempt["id"]] = at
+        if not boundaries:
+            return unavailable("learning_contact_unconfirmed")
+        boundary = min(boundaries.values())
+        evidence = await read_verified_learning(session, job["user_id"], level=job["course_key"],
+            history_since=start, observed_at=min(now, end))
+        studies = tuple(sorted((s for s in evidence.studies if boundary < s.accepted_at < end and
+            s.accepted_at <= now), key=lambda s: (s.accepted_at, s.reference)))
+        keys = {_event_key(aid, "client_reported_open"): at for aid, at in boundaries.items()}
+        reports = (await session.execute(select(EVENT.c.event_key, EVENT.c.occurred_at, EVENT.c.expires_at).where(
+            EVENT.c.user_id == job["user_id"], EVENT.c.job_id == job["id"], EVENT.c.stage == "client_reported_open",
+            EVENT.c.channel == channel, EVENT.c.reason_code == "authenticated_client_report",
+            EVENT.c.event_key.in_(tuple(keys)), EVENT.c.occurred_at >= boundary, EVENT.c.occurred_at < end,
+            EVENT.c.occurred_at <= now, EVENT.c.expires_at > now).limit(MAX_BATCH))).all()
+        valid_reports = [_utc(r.occurred_at) for r in reports if keys[r.event_key] <= _utc(r.occurred_at) and
+            _utc(r.expires_at) == _utc(r.occurred_at) + RAW_RETENTION]
+        reported = min(valid_reports) if valid_reports else None
+        targets = [s.accepted_at for s in studies if s.reference == reference]
+        after_report = [s.accepted_at for s in studies if reported is not None and s.accepted_at > reported]
+        limits = tuple(sorted(set(TargetLearningEvidence("").coverage_limits) | set(evidence.coverage_limits)))
+        return TargetLearningEvidence("verified_target_learning_after_attempt" if targets else
+            "target_learning_unavailable", boundary, min(targets) if targets else None, limits,
+            reported_open_at=reported, first_study_at=studies[0].accepted_at if studies else None,
+            first_study_after_report_at=min(after_report) if after_report else None,
+            verified_study_count=len(studies) if studies else None), studies
 
     @staticmethod
     def _insert(session, table):
@@ -208,7 +221,7 @@ class SmartReminderAnalysisService:
         at = _utc(at)
         if not now - RAW_RETENTION < at <= now:
             return 0  # Expired replay cannot resurrect detail or increment totals.
-        key = hashlib.sha256(("smart-analysis-v1:" + source_id + ":" + stage).encode()).hexdigest()
+        key = _event_key(source_id, stage)
         inserted = await session.scalar(self._insert(session, EVENT).values(user_id=job["user_id"],
             event_key=key, job_id=job["id"], stage=stage, channel=channel,
             reason_code=reason or "stored_" + stage, occurred_at=at, expires_at=at + RAW_RETENTION)
@@ -225,9 +238,11 @@ class SmartReminderAnalysisService:
         """Internal committed-source capture. No client event/outcome input."""
         async with self.sessions.begin() as session:
             with session.no_autoflush:
-                owner = await session.scalar(select(User.id).where(User.id == user_id).with_for_update())
-                if owner is None:
+                owner_row = (await session.execute(select(User.id, User.status).where(
+                    User.id == user_id).with_for_update())).one_or_none()
+                if owner_row is None:
                     return 0
+                owner = owner_row.id
                 pending = await session.scalar(select(AccountDeletionRequest.id).where(
                     AccountDeletionRequest.status == "submitted", or_(AccountDeletionRequest.user_id == owner,
                         AccountDeletionRequest.active_user_id == owner)).limit(1))
@@ -280,6 +295,15 @@ class SmartReminderAnalysisService:
                     if stage is not None:
                         count += await self._fact(session, job, attempt["id"], stage,
                             attempt["resolved_at"], attempt["channel"], now)
+                if owner_row.status != "blocked":
+                    evidence, studies = await self._learning_evidence(session, job, attempts, grants, now)
+                    for study in studies:
+                        source = "study:" + job_id + ":" + study.reference
+                        count += await self._fact(session, job, source, "verified_study_after_attempt",
+                            study.accepted_at, channel, now, reason="original_server_result")
+                        if evidence.reported_open_at is not None and study.accepted_at > evidence.reported_open_at:
+                            count += await self._fact(session, job, source, "verified_study_after_report",
+                                study.accepted_at, channel, now, reason="original_server_result")
                 return count
 
     async def capture_reservation(self, source):

@@ -6,6 +6,7 @@ The observation window is explicit; missing receipts never prove inactivity.
 """
 import json
 import re
+from dataclasses import dataclass
 from datetime import datetime, time, timezone
 from types import SimpleNamespace
 
@@ -25,7 +26,7 @@ from app.services.course_v3_parts import total_parts
 from app.services.daily_plan_service import DailyPlanService, TASK_CONTINUE_LESSON, plan_key
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.learning_signals import LEARNING_ACTIVITY_TYPES, LearningSignals
-from app.services.smart_reminder_policy import PolicyContext, VerifiedStudy
+from app.services.smart_reminder_policy import PolicyContext, VerifiedStudy, _aware_utc
 from app.services.smart_reminder_cadence import CadenceContext, StudyIntent
 from app.services.smart_reminder_preferences import SmartReminderPreferencesService
 
@@ -88,6 +89,85 @@ def verified_studies(*, user_id, level, completed_parts, xp_rows, event_rows):
         verified[ref] = VerifiedStudy(ref, kind, _utc(row["created_at"]),
                                      row["activity_date"].isoformat(), row["xp"])
     return tuple(verified.values()), tuple(sorted(limits))
+
+
+@dataclass(frozen=True)
+class VerifiedLearningEvidence:
+    studies: tuple[VerifiedStudy, ...] = ()
+    coverage_limits: tuple[str, ...] = ("lesson_and_practice_sources_only",)
+
+
+async def read_verified_learning(session, user_id, *, level, history_since, observed_at):
+    """Bounded original account results for analysis, never inactivity/policy.
+
+    Terminal events are server-only. Their reviewed producer/mode/result and
+    canonical XP/progress must agree; a generic open or reward is insufficient.
+    """
+    since, now = _aware_utc(history_since), _aware_utc(observed_at)
+    if since > now:
+        raise ValueError("Learning history must not begin in the future")
+    progress = (await session.execute(select(CourseProgress.level, CourseProgress.completed_lessons_count)
+        .where(CourseProgress.user_id == user_id))).mappings().one_or_none()
+    completed = progress["completed_lessons_count"] if progress and progress["level"] == level else 0
+    xp = (await session.execute(select(CourseXpEvent.__table__).where(CourseXpEvent.user_id == user_id,
+        CourseXpEvent.activity_type.in_(("lesson", "test", "training")), CourseXpEvent.created_at >= since,
+        CourseXpEvent.created_at <= now).order_by(CourseXpEvent.created_at.desc(), CourseXpEvent.id.desc())
+        .limit(MAX_POLICY_ROWS + 1))).mappings().all()
+    lesson_sources = ("course_v3", "android_course", "desktop_course")
+    events = (await session.execute(select(CourseMiniAppEvent.__table__).where(
+        CourseMiniAppEvent.user_id == user_id, CourseMiniAppEvent.level == level,
+        CourseMiniAppEvent.event_name.in_(TERMINAL_EVENTS),
+        CourseMiniAppEvent.source.in_((*lesson_sources, "course_miniapp")),
+        CourseMiniAppEvent.created_at >= since, CourseMiniAppEvent.created_at <= now)
+        .order_by(CourseMiniAppEvent.created_at.desc(), CourseMiniAppEvent.id.desc())
+        .limit(MAX_POLICY_ROWS + 1))).mappings().all()
+    limits = {"lesson_and_practice_sources_only"}
+    if len(xp) > MAX_POLICY_ROWS or len(events) > MAX_POLICY_ROWS:
+        return VerifiedLearningEvidence(coverage_limits=tuple(sorted(limits | {"learning_history_over_limit"})))
+    originals = {r["activity_ref"]: r for r in xp}
+    trusted = []
+    for event in events:
+        try:
+            payload = json.loads(event["payload_json"] or "{}")
+            if not isinstance(payload, dict):
+                continue
+            if event["event_name"] == "lesson_completed":
+                ref = f"v3-part:{level}:{event['lesson_order']}:complete"
+                original = originals.get(ref)
+                if (event["source"] not in lesson_sources or original is None or
+                        _utc(event["created_at"]) < _utc(original["created_at"])):
+                    continue
+                if event["source"] == "course_v3":
+                    if type(payload.get("lesson_order")) is not int or payload["lesson_order"] != event["lesson_order"]:
+                        continue
+                else:
+                    result = payload.get("result", {})
+                    game = result.get("gamification", {})
+                    device = payload.get("device_id")
+                    if (not isinstance(device, str) or not 1 <= len(device) <= 36 or
+                            result.get("ok") is not True or result.get("duplicate") is True or
+                            type(result.get("completed_lesson")) is not int or
+                            result["completed_lesson"] != event["lesson_order"] or
+                            game.get("duplicate") is not False or type(game.get("awarded_xp")) is not int or
+                            game["awarded_xp"] != original["xp"]):
+                        continue
+            else:
+                mode, sid = payload.get("mode"), event["session_id"]
+                if (event["source"] != "course_miniapp" or mode not in {"mock", "placement", "training"} or
+                        event["event_name"] != ("training_completed" if mode == "training" else "test_completed") or
+                        not isinstance(sid, str)):
+                    continue
+                parts = sid.split(":")
+                if (len(parts) != 6 or parts[:4] != ["practice", str(user_id),
+                        "placement" if mode == "placement" else "training_test", mode] or
+                        not parts[4] or re.fullmatch(r"v[1-9][0-9]*", parts[5]) is None):
+                    continue
+            trusted.append(event)
+        except (ValueError, TypeError, AttributeError):
+            continue
+    studies, missing = verified_studies(user_id=user_id, level=level, completed_parts=completed,
+        xp_rows=xp, event_rows=trusted)
+    return VerifiedLearningEvidence(studies, tuple(sorted(limits | set(missing))))
 
 
 class SmartReminderPolicyContextService:

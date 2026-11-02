@@ -89,7 +89,7 @@ class TargetLearningChecks:
         self.assertEqual(result.reason, "verified_target_learning_after_attempt")
         self.assertEqual((result.boundary_at, result.learned_at), (self.started, self.learned))
         self.assertIn("causal_attribution_unavailable", result.coverage_limits)
-        self.assertIn("notification_open_unavailable", result.coverage_limits)
+        self.assertIn("independent_open_unavailable", result.coverage_limits)
         self.assertEqual(before, [await self.fixture.rows(t) for t in tables])
         if self.postgres:
             user_lock = next(i for i,s in enumerate(statements) if "users" in s and "FOR UPDATE" in s)
@@ -211,7 +211,7 @@ class TargetLearningChecks:
                 payload_json="{}") for _ in range(513)])
         result = await self.read()
         self.assertIsNone(result.learned_at)
-        self.assertIn("destination_history_over_limit", result.coverage_limits)
+        self.assertIn("learning_history_over_limit", result.coverage_limits)
 
     async def test_native_result_can_follow_telegram_contact_without_same_device_or_causal_claim(self):
         await self.contact()

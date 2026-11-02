@@ -188,8 +188,10 @@ class NativeOpenChecks:
         before = [await self.fixture.rows(t) for t in tables]
         def cycle(c):
             with Operations.context(MigrationContext.configure(c)):
+                fixture.study_migration.downgrade()
                 fixture.open_migration.downgrade()
                 fixture.open_migration.upgrade()
+                fixture.study_migration.upgrade()
         async with self.case.engine.begin() as c:
             await c.run_sync(cycle)
         self.assertEqual(before,[await self.fixture.rows(t) for t in tables])
