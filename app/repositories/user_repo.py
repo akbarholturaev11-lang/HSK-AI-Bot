@@ -446,7 +446,7 @@ class UserRepository:
         from app.db.models.ad_campaign import AdCampaignDelivery
         from app.db.models.ai_usage import AIUsageBudget, AIUsageEvent
         from app.db.models.android_push import AndroidPushToken
-        from app.db.models.smart_reminder_analysis import SmartReminderAnalysisEvent, SmartReminderReservationObservation
+        from app.db.models.smart_reminder_analysis import SmartReminderAnalysisEvent, SmartReminderReservationObservation, SmartReminderBaselineMember
         from app.db.models.smart_reminder import (
             SmartReminderAndroidGrant, SmartReminderAttempt, SmartReminderCapability, SmartReminderConsent,
             SmartReminderJob, SmartReminderPreference, SmartReminderMutation, SmartReminderRouting,
@@ -594,6 +594,8 @@ class UserRepository:
             SmartReminderAnalysisEvent.user_id == uid))
         await self.session.execute(sql_delete(SmartReminderReservationObservation).where(
             SmartReminderReservationObservation.user_id == uid))
+        await self.session.execute(sql_delete(SmartReminderBaselineMember).where(
+            SmartReminderBaselineMember.user_id == uid))
         await self.session.execute(sql_delete(SmartReminderAndroidGrant).where(
             SmartReminderAndroidGrant.user_id == uid))
         await self.session.execute(sql_delete(SmartReminderAttempt).where(

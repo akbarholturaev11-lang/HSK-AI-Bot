@@ -1,11 +1,12 @@
 # Smart delivery analysis contract
 
-The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.65. This
+The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.67. This
 contract defines P6 6.1a, optional 6.1b integration, bounded 6.1c reconciliation,
 6.1d terminal shadow observations, 6.1e reservation observations and 6.1f
 committed runtime guard reasons, the 6.1g internal target-learning projection
 6.1h authenticated client-reported opens, 6.1i verified temporal completed-unit
-outcomes and 6.1j scored active-study days, not a live rollout.
+outcomes, 6.1j scored active-study days and the separate 6.1k 24-hour window,
+not a live rollout.
 
 `SmartReminderAnalysisService.capture_job(user_id, job_id)` is an internal,
 explicit operation over a committed owned job and its attempts/Android grants.
@@ -359,11 +360,67 @@ downgrade. The reviewed empty-QA head is 0142; no remote migration/initializer
 or activation follows. No new endpoint, flag, poller, grade writer or provider.
 Disable analysis for rollback while retaining operational and observed facts.
 
-The owner selected **24 hours after contact** for future return measurement,
-including midnight crossover. These local-day technical source facts are not
-yet that metric. 6.2 must separately implement/review the canonical cohort and
-overlapping-window dedupe protocol, without requiring clicks or attributing
-all temporally later learning causally to the reminder.
+The owner selected **24 hours after contact**, including midnight crossover.
+Local-day technical facts stay separate from the 24-hour contact/global-unit
+observation below. Real cohort measurement remains 6.2 work, without a click
+gate or timing-only causal attribution.
+
+## Owner-selected 24-hour temporal study window
+
+`return_learning(user_id, job_id)` is a separate internal read-only projection.
+It reuses the same User-first owner/block/deletion and original accepted/posted
+contact proof as the local-day reader. The contact start must lie inside its
+valid frozen IANA day. The interval is **(original attempt start, start + 24
+elapsed UTC hours]**, capped at the current observation time. A 23:50 contact
+can therefore include 00:10 study; DST's 23/25-hour local days do not alter the
+24-hour duration. This is a server-attempt boundary, not an independently
+verified display time. Clicking/reporting is never required, and open-proof
+validity and older local-day stages remain unchanged.
+
+The projection returns fixed reason, optional `contact_at`, `window_end_at`,
+`first_study_at`, `verified_study_count`, `window_elapsed` and coverage limits.
+A positive can appear before the window ends. `window_elapsed` describes time
+only; it never means complete coverage, zero study or a verified unsuccessful
+reminder. Missing results/counts remain None. Reuse reviewed completed-unit and
+scored-activity readers, with their separate finite source limits. For original
+completed units only, later server receipts observed by now may corroborate
+in-window original XP; the XP cutoff/time does not move. Other reader callers
+retain their original default evidence cutoff. No new grade/XP source writer,
+repeat-practice/voice coverage, cadence input or cohort is invented.
+
+0143 extends only the existing raw/monthly stage constraints:
+
+| Stage | Grain and interpretation |
+| --- | --- |
+| `contact_study_24h` | One evidenced owned job/contact window with reviewed positive study, including failed/repeated graded work without fresh XP |
+| `study_unit_24h` | One original canonical owner/activity-type/reference completed unit across **all** overlapping qualifying jobs/channels |
+
+Contact-window facts hash the original job/stage; global unit facts hash the
+canonical owner/type/reference/stage without the job or channel. Owner-first
+capture and the existing owner/key conflict guard atomically deduplicate units
+under reverse-order, concurrent or later-confirmed contacts. The first captured
+qualifying job/channel stays immutable descriptive provenance; it is neither
+latest-contact nor causal attribution. Per-window projections can each contain
+the same unit, but persisted global unit totals increment once. Two overlapping
+contacts may each have positive windows: that is two contact facts, **not two
+unique returns/learners or units**. Never sum these grains together, compare
+contact-channel counts as causal performance, or use them as a cohort denominator.
+Primary 6.2 learning/retention KPIs must independently deduplicate canonical
+account learning, including no-contact/control learners, without a click gate.
+
+Original first-observed study time controls raw expiry and anonymous UTC month;
+contact counts are bucketed by that study time, not a contact-cohort month. No
+plaintext reference, score, answer, payload, device or proof is added. Existing
+default-OFF capture/reconciliation, atomic monthly totals, D21 90-day detail and
+twelve-month buckets, block/deletion guards and canonical purge apply. Earlier
+captured rows/times are not rewritten. The 0143 populated downgrade refuses raw
+or anonymous-only new stages; old populated data/model parity survive a clean
+roundtrip. Reviewed empty local-QA head is 0143. Disable analysis for rollback,
+retain original operational proof/owner/day state, and never delete a contact
+source merely to reassign a global fact. No new endpoint, flag, scheduler,
+provider, send authority, client change or production activation is introduced.
+This implements bounded positive 24-hour source observation; real cohort
+baseline, complete coverage and causal benefit remain separate acceptance work.
 
 ## Retention and privacy boundary
 
@@ -454,8 +511,17 @@ production execution is implied. Source-time checks refuse expired replay after 
 deletion, and never recreate an old fact to increment totals again.
 
 No initializer is run against an existing database. The reviewed empty-QA
-initializer reviewed head is 0142 and leaves migration-owned tables to real migrations.
+initializer reviewed head is 0144 and leaves migration-owned tables to real migrations.
 Migration 0137 downgrade refuses either populated analysis table rather than
 deleting data; 0138 uses the new-stage preservation guard described above.
 Disabling capture changes no delivery authority; preserve all consent/day/grant
 guards and operational evidence during rollback.
+
+
+## First-ready baseline cohorts
+
+0144 adds separate minimal first-ready membership and original anonymous cohort
+denominators through the existing default-OFF source observer/reconciliation,
+retention and canonical purge. Source/metric boundaries, account-wide historical
+receipt checks and explicit unavailable/partial states are documented in
+`SMART_REMINDER_BASELINE.md`; no contact/open or delivery authority follows.

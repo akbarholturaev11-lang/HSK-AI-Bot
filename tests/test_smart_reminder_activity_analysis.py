@@ -103,7 +103,7 @@ class ActivityChecks:
         self.assertIsNone(result.first_active_study_after_report_at)
         self.assertIsNone(result.verified_study_count)
         self.assertIsNone(result.learned_at)
-        self.assertEqual(await self.capture(),1)
+        self.assertEqual(await self.capture(),2)
         self.assertEqual(await self.capture(),0)
         self.assertEqual({r["stage"] for r in await self.facts()},{"study_day_after_attempt"})
         self.assertEqual(before,[await self.storage.rows(t) for t in source_tables])
@@ -115,7 +115,7 @@ class ActivityChecks:
         await self.section()
         await self.quiz(at=self.at+timedelta(seconds=1))
         await self.exam(at=self.at+timedelta(seconds=2))
-        self.assertEqual(await self.capture(),2)
+        self.assertEqual(await self.capture(),3)
         before=await self.facts()
         await self.section(at=self.at+timedelta(seconds=3))
         self.assertEqual(await self.capture(),0)
@@ -163,7 +163,7 @@ class ActivityChecks:
             await s.execute(update(CourseMiniAppEvent).where(
                 CourseMiniAppEvent.event_name=="section_attempt_scored").values(created_at=self.at))
             await s.commit()
-        self.assertEqual(await self.capture(),1)
+        self.assertEqual(await self.capture(),2)
         self.assertEqual((await self.read()).first_active_study_at,self.at)
         self.assertIsNone((await self.read()).verified_study_count)
         self.assertEqual(await self.storage.rows(CourseXpEvent.__table__),original_xp)
@@ -181,7 +181,7 @@ class ActivityChecks:
         await self.episode.contact(report=False)
         early=self.episode.started+timedelta(seconds=5)
         await self.section(at=early)
-        self.assertEqual(await self.capture(),1)
+        self.assertEqual(await self.capture(),2)
         primary=await self.facts()
         grant=(await self.storage.rows(schema.GRANT))[0]
         from app.services.smart_reminder_preferences import SmartReminderActor
@@ -259,7 +259,7 @@ class ActivityChecks:
         self.assertIn("scored_events_over_limit",result.coverage_limits)
         await self.quiz()
         self.assertEqual((await self.read()).first_active_study_at,self.at)
-        self.assertEqual(await self.capture(),2)
+        self.assertEqual(await self.capture(),3)
 
     async def test_quiz_limit_does_not_create_fake_zero_or_hide_independent_exam(self):
         await self.episode.contact(report=False)
@@ -295,11 +295,17 @@ class ActivityChecks:
         before=[await self.storage.rows(t) for t in tables]
         def cycle(c):
             with Operations.context(MigrationContext.configure(c)):
+                schema.baseline_outcomes_migration.downgrade()
+                schema.baseline_migration.downgrade()
+                schema.return_migration.downgrade()
                 schema.activity_migration.downgrade()
                 schema.activity_migration.upgrade()
+                schema.return_migration.upgrade()
+                schema.baseline_migration.upgrade()
+                schema.baseline_outcomes_migration.upgrade()
         async with self.case.engine.begin() as c: await c.run_sync(cycle)
         self.assertEqual(before,[await self.storage.rows(t) for t in tables])
-        self.assertEqual(await self.capture(),2)
+        self.assertEqual(await self.capture(),3)
 
     async def test_new_raw_and_anonymous_only_stages_refuse_downgrade(self):
         await self.episode.contact()

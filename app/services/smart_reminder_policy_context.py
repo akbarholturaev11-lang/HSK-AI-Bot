@@ -21,7 +21,7 @@ from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderJob, SmartReminderPreference
 from app.db.models.user import User
 from app.services.course_daily_window import local_day_key
-from app.services.course_levels import content_level
+from app.services.course_levels import content_level, legacy_content_levels, hsk30_content_levels
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_today_service import CourseTodayService
 from app.services.course_v3_parts import total_parts
@@ -122,14 +122,15 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
     since, now = _aware_utc(history_since), _aware_utc(observed_at)
     if since > now:
         raise ValueError("Study history must not begin in the future")
+    levels = (level,) if level is not None else (*legacy_content_levels(), *hsk30_content_levels())
     limits = set(ScoredActivityEvidence().coverage_limits)
     events = (await session.execute(select(
         CourseMiniAppEvent.event_name, CourseMiniAppEvent.source, CourseMiniAppEvent.session_id,
         CourseMiniAppEvent.dedupe_key, CourseMiniAppEvent.payload_json, CourseMiniAppEvent.created_at,
-        CourseMiniAppEvent.lesson_order, CourseLesson.level.label("lesson_level"),
+        CourseMiniAppEvent.lesson_order, CourseMiniAppEvent.level, CourseLesson.level.label("lesson_level"),
         CourseLesson.lesson_order.label("bound_order"),
     ).outerjoin(CourseLesson, CourseLesson.id == CourseMiniAppEvent.lesson_id).where(
-        CourseMiniAppEvent.user_id == user_id, CourseMiniAppEvent.level == level,
+        CourseMiniAppEvent.user_id == user_id, CourseMiniAppEvent.level.in_(levels),
         or_(and_(CourseMiniAppEvent.event_name == "section_attempt_scored",
                  CourseMiniAppEvent.source == "course_miniapp"),
             and_(CourseMiniAppEvent.event_name == "test_completed",
@@ -146,9 +147,10 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
                 payload = json.loads(event["payload_json"] or "{}")
                 if not isinstance(payload, dict):
                     continue
+                event_level = event["level"]
                 if event["event_name"] == "section_attempt_scored":
                     section, dedupe = payload.get("section_key"), event["dedupe_key"]
-                    if (event["lesson_level"] != level or type(event["bound_order"]) is not int or
+                    if (event["lesson_level"] != event_level or type(event["bound_order"]) is not int or
                             event["bound_order"] <= 0 or event["bound_order"] != event["lesson_order"] or
                             not isinstance(section, str) or not 1 <= len(section) <= 128 or
                             not isinstance(dedupe, str) or re.fullmatch(r"section-attempt:[0-9a-f]{32}", dedupe) is None or
@@ -157,7 +159,7 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
                 else:
                     sid = event["session_id"]
                     if (not isinstance(sid, str) or re.fullmatch(
-                            rf"hsk-exam:{user_id}:{re.escape(level)}:v[1-9][0-9]*:[0-9a-f]{{24}}", sid) is None or
+                            rf"hsk-exam:{user_id}:{re.escape(event_level)}:v[1-9][0-9]*:[0-9a-f]{{24}}", sid) is None or
                             event["dedupe_key"] != sid + ":completed" or not _scored_pair(payload, "score") or
                             type(payload.get("material_version")) is not int or payload["material_version"] <= 0 or
                             not isinstance(payload.get("material_id"), str) or not payload["material_id"]):
@@ -168,7 +170,7 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
     quizzes = (await session.execute(select(CourseAttempt.created_at, CourseAttempt.answers_json)
         .join(CourseLesson, CourseLesson.id == CourseAttempt.lesson_id).where(
             CourseAttempt.user_id == user_id, CourseAttempt.attempt_type == "quiz",
-            CourseLesson.level == level, CourseLesson.lesson_order > 0,
+            CourseLesson.level.in_(levels), CourseLesson.lesson_order > 0,
             CourseAttempt.created_at >= since, CourseAttempt.created_at <= now,
             func.length(CourseAttempt.answers_json) <= 65536,
         ).order_by(CourseAttempt.created_at, CourseAttempt.id).limit(MAX_POLICY_ROWS + 1))).all()
@@ -186,15 +188,20 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
     return ScoredActivityEvidence(tuple(sorted(times)), tuple(sorted(limits)))
 
 
-async def read_verified_learning(session, user_id, *, level, history_since, observed_at):
+async def read_verified_learning(session, user_id, *, level, history_since, observed_at, evidence_at=None):
     """Bounded original account results for analysis, never inactivity/policy.
 
     Terminal events are server-only. Their reviewed producer/mode/result and
     canonical XP/progress must agree; a generic open or reward is insufficient.
+    An explicit later evidence_at can corroborate original in-window XP with
+    a late server receipt. It never moves the result cutoff or original time.
     """
     since, now = _aware_utc(history_since), _aware_utc(observed_at)
     if since > now:
         raise ValueError("Learning history must not begin in the future")
+    receipt_cutoff = now if evidence_at is None else _aware_utc(evidence_at)
+    if receipt_cutoff < now:
+        raise ValueError("Learning proof cannot precede the result cutoff")
     progress = (await session.execute(select(CourseProgress.level, CourseProgress.completed_lessons_count)
         .where(CourseProgress.user_id == user_id))).mappings().one_or_none()
     completed = progress["completed_lessons_count"] if progress and progress["level"] == level else 0
@@ -207,12 +214,20 @@ async def read_verified_learning(session, user_id, *, level, history_since, obse
         CourseMiniAppEvent.user_id == user_id, CourseMiniAppEvent.level == level,
         CourseMiniAppEvent.event_name.in_(TERMINAL_EVENTS),
         CourseMiniAppEvent.source.in_((*lesson_sources, "course_miniapp")),
-        CourseMiniAppEvent.created_at >= since, CourseMiniAppEvent.created_at <= now)
+        CourseMiniAppEvent.created_at >= since, CourseMiniAppEvent.created_at <= receipt_cutoff)
         .order_by(CourseMiniAppEvent.created_at.desc(), CourseMiniAppEvent.id.desc())
         .limit(MAX_POLICY_ROWS + 1))).mappings().all()
     limits = {"lesson_and_practice_sources_only"}
     if len(xp) > MAX_POLICY_ROWS or len(events) > MAX_POLICY_ROWS:
         return VerifiedLearningEvidence(coverage_limits=tuple(sorted(limits | {"learning_history_over_limit"})))
+    return corroborate_learning(user_id, level=level, completed=completed, xp=xp, events=events)
+
+
+def corroborate_learning(user_id, *, level, completed, xp, events):
+    """Shared strict server-receipt validator; SQL/auth/window stay with callers."""
+    lesson_sources = ("course_v3", "android_course", "desktop_course")
+    limits = {"lesson_and_practice_sources_only"}
+    events = [e for e in events if e["user_id"] == user_id and e["level"] == level]
     originals = {r["activity_ref"]: r for r in xp}
     trusted = []
     for event in events:

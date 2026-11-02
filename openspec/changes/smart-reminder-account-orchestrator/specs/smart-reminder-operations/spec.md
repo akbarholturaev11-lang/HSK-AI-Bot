@@ -251,3 +251,65 @@ The system SHALL optionally record separate temporal active-study-day evidence f
 #### Scenario: Untrusted or incomplete activity coverage
 - **WHEN** only client telemetry, AI/homework, malformed scores, foreign sources or unavailable source classes exist
 - **THEN** those rows do not prove a study day or inactivity; source gaps remain explicit and cannot authorize delivery
+
+
+### Requirement: A distinct 24-hour temporal study window
+The system SHALL observe reviewed study strictly after an evidenced original contact-attempt start and at or before 24 elapsed hours later, independently of local midnight, DST and notification tapping. It MUST preserve older local-day source facts and distinguish positive contact windows from globally deduplicated original completed units and future account-level cohort KPIs.
+
+#### Scenario: Manual return after midnight
+- **WHEN** an owning learner receives an evidenced contact at 23:50 and performs verified study at 00:10 within 24 elapsed hours without an open report
+- **THEN** the separate 24-hour projection and optional positive contact fact can count that study while older local-day facts keep their original scope
+
+#### Scenario: Overlapping contacts observe the same completed unit
+- **WHEN** two qualifying contact windows include the same original canonical study result and capture runs in either order or concurrently
+- **THEN** each contact may have a positive window but the canonical completed unit increments once globally; the first captured contact is immutable descriptive provenance, never causal or latest-contact attribution
+
+#### Scenario: Boundary or missing evidence
+- **WHEN** a result is at/before contact start, after 24 hours, in the future, unsupported, or absent from partial sources
+- **THEN** no false positive unit/contact or negative-learning claim is created; window elapsed is distinct from complete coverage and cannot authorize delivery
+
+
+### Requirement: First-ready canonical baseline cohorts
+The system SHALL optionally record one first reviewed policy-ready entry per canonical account/protocol independently of notification sending or opening, and measure observed learning over versioned frozen local-calendar windows. It MUST preserve original anonymous enrollment denominators through personal deletion/expiry and cannot treat the resulting partial observations as causal lift or delivery authority.
+
+#### Scenario: Existing learner first becomes policy ready
+- **WHEN** an existing learner obtains a reviewed committed base-policy-ready shadow reservation
+- **THEN** optional analysis may retain the earliest reviewed entry once and count subsequent verified learning without a contact/open requirement, while leaving consent and dispatch unchanged
+
+#### Scenario: Purged, immature or incomplete cohort
+- **WHEN** a member is purged/blocked, follow-up is unfinished, or bounded source coverage is unavailable
+- **THEN** the original anonymous denominator remains intact and unavailable/censored states are explicit; missing data cannot become a favorable exclusion, inactivity finding or model-ready result
+
+#### Scenario: Courses change and reminders are ignored
+- **WHEN** a member studies another canonical course or enters manually without touching a reminder
+- **THEN** original reviewed server-completed units and scored study can contribute account-wide without relying on notification clicks or mutable current-course progress
+
+### Requirement: Bounded durable mature baseline outcomes
+The system SHALL incrementally observe mature baseline members in bounded independent pages and atomically preserve anonymous monthly lower-bound outcomes beyond personal-detail expiry. Reports MUST retain the original denominator, disclose unobserved/limited coverage and remain independent of cohort size, contacts and taps.
+
+#### Scenario: A cohort exceeds one page
+- **WHEN** more than 128 accounts belong to a baseline month
+- **THEN** repeated bounded passes can observe them all without truncating the original denominator, while a read-only report uses aggregate counts rather than unbounded personal learning reads
+
+#### Scenario: Retry, later proof or concurrent observation
+- **WHEN** an account is observed again, including by concurrent workers or after a later retained server receipt
+- **THEN** anonymous totals add only newly proven nonnegative lower-bound deltas and count the mature observed account once, with snapshot/counter failure rolling back atomically
+
+#### Scenario: Personal detail is removed
+- **WHEN** observed membership expires or its account is purged
+- **THEN** original anonymous enrollment and already recorded outcomes survive their twelve-month retention without membership resurrection, personal learning reads or any claim of complete retention, causal lift or delivery authority
+
+### Requirement: Explicit read-only operator baseline report
+The system SHALL provide an explicit one-month anonymous operator report with database-enforced read-only connections, bounded execution and secret-free failures. It MUST preserve unavailable/partial baseline states and cannot initialize storage, aggregate personal outcomes or activate sending.
+
+#### Scenario: Explicit target and valid month
+- **WHEN** an authorized operator supplies a supported database target separately from command arguments and an exact cohort month
+- **THEN** the report returns only the existing anonymous projection through a dedicated read-only connection, preserving original denominators and false experiment/dispatch readiness
+
+#### Scenario: Missing target, schema or observation
+- **WHEN** target access, required storage or recorded cohort evidence is absent
+- **THEN** no application database fallback, migration, invented zero retention or success claim occurs; errors expose stable codes without URLs, credentials, SQL or tracebacks
+
+#### Scenario: Accidental write or interrupted report
+- **WHEN** a reporting operation attempts a database write, times out or is cancelled
+- **THEN** the read-only database policy refuses writes and the dedicated resources are released without changing operational or personal learning sources
