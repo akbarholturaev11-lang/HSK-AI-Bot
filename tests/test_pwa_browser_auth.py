@@ -325,6 +325,29 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             401,
         )
 
+    async def test_pwa_manifest_is_feature_gated_and_source_brand_only(self):
+        manifest_path = "/iphone-pwa/manifest.webmanifest"
+        response = await self.client.get(manifest_path)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertTrue(response.headers["content-type"].startswith(
+            "application/manifest+json"
+        ))
+        self.assertEqual(response.headers["cache-control"], "no-store")
+        manifest = response.json()
+        self.assertEqual(manifest["start_url"], "/iphone-pwa")
+        self.assertEqual(manifest["scope"], "/iphone-pwa")
+        self.assertEqual(manifest["display"], "standalone")
+        self.assertEqual(manifest["background_color"], "#FDF9F0")
+        self.assertEqual(manifest["icons"][0]["src"], "/assets/hsk-ai-logo-256.png")
+        html = (Path("app/static") / "iphone-pwa-login.html").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('rel="manifest" href="/iphone-pwa/manifest.webmanifest"', html)
+        self.assertIn('rel="apple-touch-icon" href="/assets/hsk-ai-logo-256.png"', html)
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.get(manifest_path)).status_code, 503)
+        self.assertEqual((await self.client.get("/iphone-pwa")).status_code, 503)
+
     async def test_pwa_inbox_uses_canonical_owner_and_does_not_invent_notices(self):
         url = "/api/v3/pwa/notifications"
         self.assertEqual((await self.client.get(url)).status_code, 401)
