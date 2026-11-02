@@ -124,7 +124,9 @@
       }
       // Authentication is complete: an older pending Telegram flow cannot
       // be resumed after the next logout or account switch.
-      sessionStorage.removeItem(telegramStorageKey);
+      // Storage permission failure must not turn a verified session into a
+      // misleading sign-in screen; server authority is the session cookie.
+      try { sessionStorage.removeItem(telegramStorageKey); } catch (_) { /* unavailable */ }
       stopTelegramPolling();
       actions.hidden = true;
       message("desktopAuth.linked", false);
