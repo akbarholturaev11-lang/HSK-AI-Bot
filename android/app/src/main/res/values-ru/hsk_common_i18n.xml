@@ -130,7 +130,7 @@
     <string name="hsk_common_navigation_subscription" formatted="false">Подписка</string>
     <string name="hsk_common_pwaAuth_choose" formatted="false">Выберите способ входа или создания аккаунта</string>
     <string name="hsk_common_pwaAuth_tagline" formatted="false">Лучшее будущее — со знаниями</string>
-    <string name="hsk_common_pwaAuth_telegramPending" formatted="false">Вход через Telegram в PWA пока недоступен. Сначала привяжите Google или Apple в боте.</string>
+    <string name="hsk_common_pwaAuth_telegramPending" formatted="false">Подтвердите вход для этого браузера в боте Telegram, затем вернитесь на страницу HSK AI.</string>
     <string name="hsk_common_pwaAuth_welcome" formatted="false">Добро пожаловать</string>
     <string name="hsk_common_state_loading" formatted="false">Загрузка…</string>
 </resources>

@@ -130,7 +130,7 @@ if (typeof window !== "undefined") {
   "navigation.subscription": "Obuna",
   "pwaAuth.choose": "Kirish yoki yangi hisob ochish usulini tanlang",
   "pwaAuth.tagline": "Yaxshiroq kelajak — bilim bilan",
-  "pwaAuth.telegramPending": "PWA’da Telegram orqali kirish hozircha mavjud emas. Avval botda Google yoki Apple hisobingizni ulang.",
+  "pwaAuth.telegramPending": "Telegram botida ushbu brauzerga kirishni tasdiqlang, so‘ng HSK AI sahifasiga qayting.",
   "pwaAuth.welcome": "Xush kelibsiz",
   "state.loading": "Yuklanmoqda…"
 }),
@@ -262,7 +262,7 @@ if (typeof window !== "undefined") {
   "navigation.subscription": "Подписка",
   "pwaAuth.choose": "Выберите способ входа или создания аккаунта",
   "pwaAuth.tagline": "Лучшее будущее — со знаниями",
-  "pwaAuth.telegramPending": "Вход через Telegram в PWA пока недоступен. Сначала привяжите Google или Apple в боте.",
+  "pwaAuth.telegramPending": "Подтвердите вход для этого браузера в боте Telegram, затем вернитесь на страницу HSK AI.",
   "pwaAuth.welcome": "Добро пожаловать",
   "state.loading": "Загрузка…"
 }),
@@ -394,7 +394,7 @@ if (typeof window !== "undefined") {
   "navigation.subscription": "Обуна",
   "pwaAuth.choose": "Усули вуруд ё сохтани ҳисоби навро интихоб кунед",
   "pwaAuth.tagline": "Ояндаи беҳтар — бо дониш",
-  "pwaAuth.telegramPending": "Воридшавӣ бо Telegram дар PWA ҳоло дастрас нест. Аввал ҳисоби Google ё Apple-ро дар бот пайваст кунед.",
+  "pwaAuth.telegramPending": "Дар боти Telegram воридшавиро барои ин браузер тасдиқ кунед ва ба саҳифаи HSK AI баргардед.",
   "pwaAuth.welcome": "Хуш омадед",
   "state.loading": "Боргирӣ…"
 })
