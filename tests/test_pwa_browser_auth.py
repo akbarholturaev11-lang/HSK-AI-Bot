@@ -341,6 +341,10 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("rgba(181,146,98,.28);touch-action:pan-y pinch-zoom}", dictionary)
         self.assertIn("box.addEventListener('pointerup'", dictionary)
         self.assertIn("charBoxLg.addEventListener('pointerup'", dictionary)
+        # The course's existing writing action still loads this exact shared
+        # writer iframe. No extra PWA-only writer implementation is needed.
+        self.assertIn('var url="/hsk-lugat.html?theme=light&fast=1&char="+encodeURIComponent(ch)', course)
+        self.assertIn('fr.src=url;', course)
         self.assertIn("#search{width:100%;padding:13px 84px 13px 44px;font-size:16px", dictionary)
         self.assertIn("#vc-root .kb textarea{flex:1;min-height:46px;max-height:96px;resize:none;font-family:inherit;font-size:16px", course)
         self.assertIn("color: var(--ink); font-size: 16px;", phrases)
