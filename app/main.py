@@ -2594,221 +2594,270 @@ async def v3_avatar(telegram_id: int):
     return FileResponse(img_path, media_type="image/jpeg", headers=_AVATAR_IMG_HEADERS)
 
 
-@app.get("/api/v3/map")
-async def v3_course_map(request: Request, lang: str = "uz", level: str | None = None):
+async def _course_v3_map_for_user(
+    request: Request, session, user, *, telegram_id: int | None,
+    default_source: str = "course_v3",
+):
+    """One locked canonical learner map for Telegram and verified PWA callers.
+
+    Both callers acquire the User row lock before this shared read/write. The
+    existing map owns level restoration, HSK30 access, XP, policy and analytics.
+    """
     import json as _json
     from pathlib import Path
 
+    dedupe_prefix = "course-v3" if default_source == "course_v3" else "pwa-course-v3"
+    # Yagona manba: foydalanuvchi botda (QA / onboarding) tanlagan daraja va til.
+    # Course Mini App doim user.level bandida va user.language tilida ochiladi —
+    # shunday qilib QA rejim va Kurs rejim hech qachon bir-biridan farq qilmaydi.
+    resolved_lang = _course_v3_user_lang(user)
+    target_band = _course_v3_user_level(user)
+
+    if target_band.startswith("nhsk"):
+        hsk30_access = await CourseTrackService(session).hsk30_access(user)
+        if not hsk30_access.allowed:
+            return JSONResponse(
+                status_code=403,
+                content={
+                    "ok": False,
+                    "error": hsk30_access.reason,
+                    "level": target_band,
+                    "hsk30_access": hsk30_access.payload(),
+                },
+            )
+
+    progress_repo = CourseProgressRepository(session)
+    progress = await progress_repo.get_by_user_id(user.id, for_update=True)
+    if not progress:
+        progress = await progress_repo.create(
+            user_id=user.id,
+            level=target_band,
+            current_lesson_id=None,
+            current_step="intro",
+            waiting_for="none",
+        )
+    elif _course_v3_level(progress.level) != target_band:
+        # Foydalanuvchi HSK bandini o'zgartirdi (botda darajani almashtirdi yoki
+        # avvalgi bandni tugatdi). Progress har bir band uchun alohida, shuning
+        # uchun yangi bandni noldan boshlaymiz.
+        progress.level = target_band
+        progress.completed_lessons_count = 0
+        progress.current_lesson_id = None
+        progress.current_step = "intro"
+        progress.waiting_for = "none"
+        progress.homework_status = "none"
+    elif progress.level != target_band:
+        # Band bir xil, lekin kanonik bo'lmagan nom bilan saqlangan
+        # (masalan "beginner") — kanonik bandga normallashtiramiz.
+        progress.level = target_band
+
+    profile_svc = CourseMiniAppProfileService(session)
+    profile = await profile_svc.get_or_create(user.id)
+    tz_raw = request.query_params.get("tz")
+    if tz_raw is not None:
+        try:
+            offset_minutes = max(-720, min(840, int(tz_raw)))
+        except (TypeError, ValueError):
+            pass
+        else:
+            profile.timezone_offset_minutes = offset_minutes
+            # Eslatmalar ham shu zonada yuborilsin — foydalanuvchidan
+            # vaqt zonasini so'ramaymiz, telefon aytganini olamiz.
+            progress.reminder_tz_offset = round(offset_minutes / 60)
+    gamification = await CourseGamificationService(session).snapshot(user, profile=profile)
+    # Dars gate'i uchun vaqtinchalik bonus ham (otziv 30 daqiqasi, release
+    # feedback "Sinab ko'rish", referral triali) obunachi kabi hisoblanadi —
+    # aks holda userga "limitsiz kirish ochildi" deyilib, darslar yopiq qolardi.
+    is_paid = StudyMiniAppService.has_unlimited_course_access(user)
+
+    resolved_level = target_band
+
+    map_path = Path(f"app/static/course_v3_data/{resolved_level}.json")
+    if not map_path.exists():
+        map_path = Path("app/static/course_v3_data/hsk1.json")
+    try:
+        data = _json.loads(map_path.read_text())
+    except Exception:
+        return JSONResponse(status_code=500, content={"ok": False, "error": "map_load_failed"})
+
+    completed = int(getattr(progress, "completed_lessons_count", 0) or 0)
+    display_name = str(
+        getattr(user, "full_name", None) or getattr(user, "username", None) or "HSK Student"
+    ).strip()[:60]
+    initials = "".join(p[:1].upper() for p in display_name.split()[:2]) or "阿"
+
+    data["authenticated"] = True
+    data["bot_username"] = bot_username_value()
+    data["level"] = resolved_level
+    data["progress"] = {
+        "xp": gamification["xp"],
+        "streak": gamification["streak"],
+        "longest_streak": gamification.get("longest_streak", 0),
+        "weekly_xp": gamification["weekly_xp"],
+        "league": gamification["league"],
+        "completed": completed,
+        "daily_xp": gamification.get("daily_xp", 0),
+        "last_activity_date": gamification.get("last_activity_date"),
+        "local_date": gamification.get("local_date"),
+        "week_start": gamification.get("week_start"),
+        "week_activity_dates": gamification.get("week_activity_dates", []),
+        "reward_chest": gamification.get("reward_chest"),
+    }
+    # Holat markaziy dvigateldan: profil ekrani "sinov muddati" (trial),
+    # "Pro faol" yoki "bepul" ni AYNI shu holatga qarab ko'rsatadi. Muddat
+    # ham shu yerdan — klient sanani o'zi taxmin qilmaydi.
+    access_state = resolve_state(user)
+    access_ends = access_expires_at(user, access_state)
+    data["user"] = {
+        "name": display_name,
+        "avatar": initials[:2],
+        "language": resolved_lang,
+        "is_paid": is_paid,
+        "state": access_state,
+        "plan": {
+            "PRO_ACTIVE": "pro",
+            "TRIAL_ACTIVE": "trial",
+            "TEMP_ACCESS": "temp",
+        }.get(access_state, "free"),
+        "access_ends_at": access_ends.isoformat() if access_ends else None,
+        "referral_code": getattr(user, "referral_code", None) or "",
+        "learner_level": str(getattr(user, "level", "") or "").strip().lower(),
+        "onboarding_completed": profile.onboarding_completed_at is not None,
+        "foundation": await profile_svc.foundation_status(user),
+    }
+    # Kunlik reja sozlamalari: XP maqsadi endi serverda saqlanadi (ilgari
+    # klientdagi `dailyGoal=50` o'zgaruvchi edi va har ochilganda
+    # yo'qolardi). `pending` — kunlik vaqt/fokus savoli hali so'ralmagan.
+    data["study_setup"] = CourseMiniAppProfileService.study_setup(
+        profile,
+        completed_parts=completed,
+    )
+    # Motivational reminders are ON by default until the user turns them off.
+    data["notify"] = {
+        "enabled": bool(getattr(profile, "notifications_enabled", True)),
+    }
+    data["notifications"] = await CourseNotificationService(session).list_for_user(user)
+    data["admin_contact"] = admin_contact_url(await BotSettingRepository(session).get(ADMIN_CONTACT_KEY))
+    access_policy = await CourseAccessPolicyService(session).get_policy()
+    data["access_policy"] = access_policy.public_payload()
+
+    # Bugungi reja. Mantiq CourseTodayService da — bu yerda faqat chaqiruv,
+    # shunda Desktop/Android map javobi ayni blokni kod o'zgartirmasdan
+    # oladi. Reja qurilmasa (xato) blok umuman qo'shilmaydi va ekran
+    # bugungidek qoladi.
+    today = await CourseTodayService(session).payload(
+        user,
+        profile=profile,
+        progress=progress,
+        level=resolved_level,
+        is_paid=is_paid,
+        access_policy=access_policy,
+    )
+    if today:
+        data["today"] = today
+
+    _apply_course_v3_progress_marks(data, completed=completed)
+    await LessonAccessService(session).apply_map(
+        data, user, level=resolved_level, completed=completed
+    )
+
+    # Mayda tushuntirish blokchalari. Ro'yxat bo'sh bo'lishi — normal
+    # holat; maslahat hech qachon oqimni to'xtatmaydi.
+    data["hints"] = await MiniAppHintService(session).hints_for(user)
+
+    entry_source = _checkout_text(
+        request.query_params.get("source") or default_source,
+        40,
+    )
+    course_session_id = _checkout_text(request.query_params.get("sid"), 80) or None
+
+    # Dars access oqimi admin policy orqali boshqariladi:
+    # subscription (eski paywall), ads (reklama bilan davom), yoki free_until.
+
+    await CourseMiniAppAnalyticsService(session).record_server_event(
+        event_name="miniapp_opened",
+        telegram_id=telegram_id,
+        user_id=getattr(user, "id", None),
+        source=entry_source,
+        level=resolved_level,
+        session_id=course_session_id,
+        dedupe_key=(
+            f"{dedupe_prefix}:miniapp-opened:{course_session_id}"
+            if course_session_id
+            else f"{dedupe_prefix}:miniapp-opened:{resolved_level}:{datetime.now(timezone.utc).date().isoformat()}"
+        ),
+    )
+    # Assignment analytics yozuvidan keyin reserve qilinadi. Aks holda
+    # umumiy analytics write rollback'i treatment contractini klientga
+    # qaytarib, uning server assignmentini yo'qotishi mumkin.
+    data["sales_offer"] = await CourseSalesExperimentService(session).resolve_offer(
+        user=user,
+        level=resolved_level,
+        access_policy=access_policy,
+        entry_source=entry_source,
+        session_id=course_session_id,
+    )
+    await session.commit()
+    return JSONResponse(content=data)
+
+
+@app.get("/api/v3/map")
+async def v3_course_map(request: Request, lang: str = "uz", level: str | None = None):
     init_data = request.headers.get("X-Telegram-Init-Data", "")
     telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
-
     async with async_session_maker() as session:
-        # The map can reset progress to the selected band. Serialize that write
-        # with level/track changes before reading either the user or progress.
+        # Keep the original signed-Telegram boundary and level-switch locking.
         user = await UserRepository(session).get_by_telegram_id_for_update(telegram_id) if telegram_id else None
-
         if not user:
-            # Botka real ulanmaganda (initData yo'q / token mos kelmadi / user topilmadi)
-            # default darajadagi "preview" KO'RSATILMAYDI. Mini app bot bilan bir xil
-            # daraja va tilda ochilishi shart, shuning uchun foydalanuvchidan botga
-            # qaytib /start bosib qaytadan kirishni so'raymiz.
             return JSONResponse(
                 status_code=401,
                 content={"ok": False, "authenticated": False, "error": "auth_required"},
             )
+        return await _course_v3_map_for_user(
+            request, session, user, telegram_id=telegram_id,
+        )
 
-        # Yagona manba: foydalanuvchi botda (QA / onboarding) tanlagan daraja va til.
-        # Course Mini App doim user.level bandida va user.language tilida ochiladi —
-        # shunday qilib QA rejim va Kurs rejim hech qachon bir-biridan farq qilmaydi.
-        resolved_lang = _course_v3_user_lang(user)
-        target_band = _course_v3_user_level(user)
 
-        if target_band.startswith("nhsk"):
-            hsk30_access = await CourseTrackService(session).hsk30_access(user)
-            if not hsk30_access.allowed:
-                return JSONResponse(
-                    status_code=403,
-                    content={
-                        "ok": False,
-                        "error": hsk30_access.reason,
-                        "level": target_band,
-                        "hsk30_access": hsk30_access.payload(),
-                    },
-                )
+@app.post("/api/v3/pwa/map")
+async def pwa_course_map(request: Request):
+    """POST only: loading a course map can write progress and timezone.
 
-        progress_repo = CourseProgressRepository(session)
-        progress = await progress_repo.get_by_user_id(user.id, for_update=True)
-        if not progress:
-            progress = await progress_repo.create(
-                user_id=user.id,
-                level=target_band,
-                current_lesson_id=None,
-                current_step="intro",
-                waiting_for="none",
+    A verified HttpOnly PWA cookie, same Origin and CSRF are mandatory.
+    Telegram signed initData and native bearer auth are not accepted.
+    """
+    from app.services.pwa_auth_service import (
+        PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, require_same_origin,
+    )
+    from app.services.user_access_state_service import UserAccessState, UserAccessStateService
+
+    try:
+        require_same_origin(request, settings)
+        if request.headers.get("X-Telegram-Init-Data"):
+            raise PwaAuthError("pwa_request_invalid", status_code=422)
+        async with async_session_maker() as session:
+            browser = PwaAuthService(session, settings)
+            actor, _ = await browser.mutation_actor(
+                request.cookies.get(PWA_SESSION_COOKIE),
+                request.headers.get("X-HSK-PWA-CSRF"),
             )
-        elif _course_v3_level(progress.level) != target_band:
-            # Foydalanuvchi HSK bandini o'zgartirdi (botda darajani almashtirdi yoki
-            # avvalgi bandni tugatdi). Progress har bir band uchun alohida, shuning
-            # uchun yangi bandni noldan boshlaymiz.
-            progress.level = target_band
-            progress.completed_lessons_count = 0
-            progress.current_lesson_id = None
-            progress.current_step = "intro"
-            progress.waiting_for = "none"
-            progress.homework_status = "none"
-        elif progress.level != target_band:
-            # Band bir xil, lekin kanonik bo'lmagan nom bilan saqlangan
-            # (masalan "beginner") — kanonik bandga normallashtiramiz.
-            progress.level = target_band
-
-        profile_svc = CourseMiniAppProfileService(session)
-        profile = await profile_svc.get_or_create(user.id)
-        tz_raw = request.query_params.get("tz")
-        if tz_raw is not None:
-            try:
-                offset_minutes = max(-720, min(840, int(tz_raw)))
-            except (TypeError, ValueError):
-                pass
-            else:
-                profile.timezone_offset_minutes = offset_minutes
-                # Eslatmalar ham shu zonada yuborilsin — foydalanuvchidan
-                # vaqt zonasini so'ramaymiz, telefon aytganini olamiz.
-                progress.reminder_tz_offset = round(offset_minutes / 60)
-        gamification = await CourseGamificationService(session).snapshot(user, profile=profile)
-        # Dars gate'i uchun vaqtinchalik bonus ham (otziv 30 daqiqasi, release
-        # feedback "Sinab ko'rish", referral triali) obunachi kabi hisoblanadi —
-        # aks holda userga "limitsiz kirish ochildi" deyilib, darslar yopiq qolardi.
-        is_paid = StudyMiniAppService.has_unlimited_course_access(user)
-
-        resolved_level = target_band
-
-        map_path = Path(f"app/static/course_v3_data/{resolved_level}.json")
-        if not map_path.exists():
-            map_path = Path("app/static/course_v3_data/hsk1.json")
-        try:
-            data = _json.loads(map_path.read_text())
-        except Exception:
-            return JSONResponse(status_code=500, content={"ok": False, "error": "map_load_failed"})
-
-        completed = int(getattr(progress, "completed_lessons_count", 0) or 0)
-        display_name = str(
-            getattr(user, "full_name", None) or getattr(user, "username", None) or "HSK Student"
-        ).strip()[:60]
-        initials = "".join(p[:1].upper() for p in display_name.split()[:2]) or "阿"
-
-        data["authenticated"] = True
-        data["bot_username"] = bot_username_value()
-        data["level"] = resolved_level
-        data["progress"] = {
-            "xp": gamification["xp"],
-            "streak": gamification["streak"],
-            "longest_streak": gamification.get("longest_streak", 0),
-            "weekly_xp": gamification["weekly_xp"],
-            "league": gamification["league"],
-            "completed": completed,
-            "daily_xp": gamification.get("daily_xp", 0),
-            "last_activity_date": gamification.get("last_activity_date"),
-            "local_date": gamification.get("local_date"),
-            "week_start": gamification.get("week_start"),
-            "week_activity_dates": gamification.get("week_activity_dates", []),
-            "reward_chest": gamification.get("reward_chest"),
-        }
-        # Holat markaziy dvigateldan: profil ekrani "sinov muddati" (trial),
-        # "Pro faol" yoki "bepul" ni AYNI shu holatga qarab ko'rsatadi. Muddat
-        # ham shu yerdan — klient sanani o'zi taxmin qilmaydi.
-        access_state = resolve_state(user)
-        access_ends = access_expires_at(user, access_state)
-        data["user"] = {
-            "name": display_name,
-            "avatar": initials[:2],
-            "language": resolved_lang,
-            "is_paid": is_paid,
-            "state": access_state,
-            "plan": {
-                "PRO_ACTIVE": "pro",
-                "TRIAL_ACTIVE": "trial",
-                "TEMP_ACCESS": "temp",
-            }.get(access_state, "free"),
-            "access_ends_at": access_ends.isoformat() if access_ends else None,
-            "referral_code": getattr(user, "referral_code", None) or "",
-            "learner_level": str(getattr(user, "level", "") or "").strip().lower(),
-            "onboarding_completed": profile.onboarding_completed_at is not None,
-            "foundation": await profile_svc.foundation_status(user),
-        }
-        # Kunlik reja sozlamalari: XP maqsadi endi serverda saqlanadi (ilgari
-        # klientdagi `dailyGoal=50` o'zgaruvchi edi va har ochilganda
-        # yo'qolardi). `pending` — kunlik vaqt/fokus savoli hali so'ralmagan.
-        data["study_setup"] = CourseMiniAppProfileService.study_setup(
-            profile,
-            completed_parts=completed,
+            # Recheck current owner under lock after validating session.
+            # Do not use Telegram ID lookup or infer identity from the body.
+            user = await UserRepository(session).get_by_user_id(actor.id, lock=True)
+            if user is None or UserAccessStateService.classify(user) == UserAccessState.BLOCKED:
+                raise PwaAuthError("pwa_session_required")
+            response = await _course_v3_map_for_user(
+                request, session, user,
+                telegram_id=int(user.telegram_id) if user.telegram_id else None,
+                default_source="pwa_course_v3",
+            )
+            response.headers["Cache-Control"] = "no-store"
+            return response
+    except PwaAuthError as exc:
+        return JSONResponse(
+            {"ok": False, "error": exc.code},
+            status_code=exc.status_code,
+            headers={"Cache-Control": "no-store"},
         )
-        # Motivational reminders are ON by default until the user turns them off.
-        data["notify"] = {
-            "enabled": bool(getattr(profile, "notifications_enabled", True)),
-        }
-        data["notifications"] = await CourseNotificationService(session).list_for_user(user)
-        data["admin_contact"] = admin_contact_url(await BotSettingRepository(session).get(ADMIN_CONTACT_KEY))
-        access_policy = await CourseAccessPolicyService(session).get_policy()
-        data["access_policy"] = access_policy.public_payload()
-
-        # Bugungi reja. Mantiq CourseTodayService da — bu yerda faqat chaqiruv,
-        # shunda Desktop/Android map javobi ayni blokni kod o'zgartirmasdan
-        # oladi. Reja qurilmasa (xato) blok umuman qo'shilmaydi va ekran
-        # bugungidek qoladi.
-        today = await CourseTodayService(session).payload(
-            user,
-            profile=profile,
-            progress=progress,
-            level=resolved_level,
-            is_paid=is_paid,
-            access_policy=access_policy,
-        )
-        if today:
-            data["today"] = today
-
-        _apply_course_v3_progress_marks(data, completed=completed)
-        await LessonAccessService(session).apply_map(
-            data, user, level=resolved_level, completed=completed
-        )
-
-        # Mayda tushuntirish blokchalari. Ro'yxat bo'sh bo'lishi — normal
-        # holat; maslahat hech qachon oqimni to'xtatmaydi.
-        data["hints"] = await MiniAppHintService(session).hints_for(user)
-
-        entry_source = _checkout_text(
-            request.query_params.get("source") or "course_v3",
-            40,
-        )
-        course_session_id = _checkout_text(request.query_params.get("sid"), 80) or None
-
-        # Dars access oqimi admin policy orqali boshqariladi:
-        # subscription (eski paywall), ads (reklama bilan davom), yoki free_until.
-
-        await CourseMiniAppAnalyticsService(session).record_server_event(
-            event_name="miniapp_opened",
-            telegram_id=telegram_id,
-            user_id=getattr(user, "id", None),
-            source=entry_source,
-            level=resolved_level,
-            session_id=course_session_id,
-            dedupe_key=(
-                f"course-v3:miniapp-opened:{course_session_id}"
-                if course_session_id
-                else f"course-v3:miniapp-opened:{resolved_level}:{datetime.now(timezone.utc).date().isoformat()}"
-            ),
-        )
-        # Assignment analytics yozuvidan keyin reserve qilinadi. Aks holda
-        # umumiy analytics write rollback'i treatment contractini klientga
-        # qaytarib, uning server assignmentini yo'qotishi mumkin.
-        data["sales_offer"] = await CourseSalesExperimentService(session).resolve_offer(
-            user=user,
-            level=resolved_level,
-            access_policy=access_policy,
-            entry_source=entry_source,
-            session_id=course_session_id,
-        )
-        await session.commit()
-        return JSONResponse(content=data)
 
 
 @app.get("/api/v3/invite")
