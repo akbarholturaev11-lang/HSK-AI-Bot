@@ -132,3 +132,40 @@ changing sending or deleting source evidence. Populated raw or anonymous-only
 anonymous-only observations; unobserved populated 0144 entries survive an empty-
 outcome 0145 roundtrip. Retain schema knowledge when rolling back. The reviewed empty local-QA initializer head is 0145. No existing remote
 initializer, operator-run migration/configuration or provider action is implied.
+
+## Explicit anonymous operator report
+
+`scripts/smart_reminder_baseline_report.py` reads one existing cohort month.
+Use the project Python environment and run from the repository root after
+supplying an explicitly authorized database
+URL in the secured `SMART_REMINDER_BASELINE_DATABASE_URL` environment variable:
+
+```sh
+python -m scripts.smart_reminder_baseline_report --month 2026-10
+```
+
+The URL is never a command argument and there is no application settings or
+`.env` fallback. PostgreSQL URLs (`postgres`, `postgresql` or
+`postgresql+asyncpg`) require an explicit host/database; the only optional URL
+query is `ssl=require`, `ssl=verify-ca` or `ssl=verify-full`. Non-loopback targets
+default to required TLS. SQLite requires an existing absolute file using the
+`sqlite+aiosqlite` driver and no caller-supplied URL options. It opens through
+driver `mode=ro` plus connection `query_only`. PostgreSQL uses startup read-only
+defaults plus the existing report transaction guard. OS/database access is the
+operator boundary; this command is not a public API.
+
+Connections use a dedicated unpooled engine and finite connect/statement/lock
+timeouts, with a ten-second operation timeout and cleanup on error/cancellation.
+Output is the existing anonymous JSON projection only. It reads baseline totals
+and SQL-counted membership/owner/deletion status; it never fetches individual
+learning, contact, device, token or answer records. Missing/immature/expired/
+limited/censored data keep their original unavailable/lower-bound meanings.
+No request IDs, member identities or source job IDs enter output. Generic
+failure codes replace raw URLs, driver exceptions, SQL and tracebacks.
+
+This command does not run aggregation, retention, initialization or migration;
+it cannot fill missing observations or create a cohort. Analysis/sender settings
+and source records remain untouched. A missing target or schema is an explicit
+measurement gap, not a measured zero or a reason to use synthetic results as
+production evidence. Real baseline, statistical calibration and activation
+remain separate acceptance steps in the Master Plan.
