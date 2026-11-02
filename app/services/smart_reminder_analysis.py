@@ -16,14 +16,15 @@ from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 
 from app.db.models.account_deletion import AccountDeletionRequest
 from app.db.models.smart_reminder import SmartReminderAndroidGrant, SmartReminderAttempt, SmartReminderJob
-from app.db.models.smart_reminder_analysis import SmartReminderAnalysisEvent, SmartReminderAnalysisMonthly
+from app.db.models.smart_reminder_analysis import SmartReminderAnalysisEvent, SmartReminderAnalysisMonthly, SmartReminderReservationObservation
 from app.db.models.user import User
 from app.services.smart_reminder_policy import _aware_utc
 from app.services.smart_reminder_preferences import _utc
-from app.services.smart_reminder_shadow_queue import QUEUE_VERSION
+from app.services.smart_reminder_shadow_queue import QUEUE_VERSION, ReservationObservation
 
 EVENT = SmartReminderAnalysisEvent.__table__
 MONTHLY = SmartReminderAnalysisMonthly.__table__
+RESERVATION = SmartReminderReservationObservation.__table__
 RAW_RETENTION = timedelta(days=90)  # Owner D21; not operational grant/day/OFF retention.
 MAX_BATCH = 128  # Bounded work, not product cadence or experiment calibration.
 UNAVAILABLE_OUTCOMES = ("verified_shown", "read", "opened", "attributed_server_learning")
@@ -48,6 +49,7 @@ SHADOW_REFUSAL_REASONS = frozenset({
     "d1_assignment_unknown", "d1_holdout_active", "study_off", "device_revoked", "session_logout", "refresh_reuse",
     "android_study_capability_lost",
 })
+RESERVATION_REFUSALS = SHADOW_REFUSAL_REASONS | {"queue_expiry_outside_day", "account_day_already_owned"}
 
 
 def _shadow_stage(job):
@@ -167,6 +169,36 @@ class SmartReminderAnalysisService:
                             attempt["resolved_at"], attempt["channel"], now)
                 return count
 
+    async def capture_reservation(self, source):
+        """Privileged post-commit reserve observation; never a client event."""
+        if (not isinstance(source, ReservationObservation) or type(source.user_id) is not int or source.user_id <= 0 or
+                not isinstance(source.event_key, str) or len(source.event_key) != 64 or
+                any(c not in "0123456789abcdef" for c in source.event_key) or
+                type(source.reason_code) is not str or type(source.stage) is not str or
+                not ((source.stage == "shadow_reserved" and source.reason_code == "shadow_reserved") or
+                     (source.stage == "shadow_refused" and source.reason_code in RESERVATION_REFUSALS))):
+            raise ValueError("Trusted reservation observation required")
+        at = _aware_utc(source.observed_at)
+        async with self.sessions.begin() as session:
+            owner = await session.scalar(select(User.id).where(User.id == source.user_id).with_for_update())
+            if owner is None or await session.scalar(select(AccountDeletionRequest.id).where(
+                    AccountDeletionRequest.status == "submitted", or_(AccountDeletionRequest.user_id == owner,
+                        AccountDeletionRequest.active_user_id == owner)).limit(1)) is not None:
+                return 0
+            now = self.now()
+            if not now - RAW_RETENTION < at <= now:
+                return 0
+            inserted = await session.scalar(self._insert(session, RESERVATION).values(user_id=owner,
+                event_key=source.event_key, stage=source.stage, reason_code=source.reason_code,
+                occurred_at=at, expires_at=at+RAW_RETENTION).on_conflict_do_nothing(
+                    index_elements=["user_id", "event_key"]).returning(RESERVATION.c.event_key))
+            if inserted is None:
+                return 0
+            await session.execute(self._insert(session, MONTHLY).values(month=at.date().replace(day=1),
+                stage=source.stage, channel="none", fact_count=1).on_conflict_do_update(
+                    index_elements=["month", "stage", "channel"], set_={"fact_count": MONTHLY.c.fact_count+1}))
+            return 1
+
     async def reconciliation_page(self, *, after_job_id=None, limit=128):
         """Read minimal committed-source IDs; close SQL before owner capture.
 
@@ -212,10 +244,12 @@ class SmartReminderAnalysisService:
                 await session.execute(text("SET LOCAL statement_timeout = '5000'"))
             now = self.now()
             expired = EVENT.c.expires_at <= now
+            expired_reservations = RESERVATION.c.expires_at <= now
             old_month = MONTHLY.c.month < oldest_month(now)
             counts = {"expired_raw": await session.scalar(select(func.count()).select_from(EVENT).where(expired)),
                 "expired_monthly": await session.scalar(select(func.count()).select_from(MONTHLY).where(old_month)),
-                "removed_raw": 0, "removed_monthly": 0, "mode": "purge" if execute else "count_only"}
+                "expired_reservations": await session.scalar(select(func.count()).select_from(RESERVATION).where(expired_reservations)),
+                "removed_raw": 0, "removed_reservations": 0, "removed_monthly": 0, "mode": "purge" if execute else "count_only"}
             if execute:
                 # Delete only selected expired analysis keys. No source rows,
                 # user lock or lock-order inversion with delivery/purge writers.
@@ -223,10 +257,14 @@ class SmartReminderAnalysisService:
                     EVENT.c.expires_at, EVENT.c.user_id, EVENT.c.event_key).limit(limit)
                 months = select(MONTHLY.c.month, MONTHLY.c.stage, MONTHLY.c.channel).where(old_month).order_by(
                     MONTHLY.c.month, MONTHLY.c.stage, MONTHLY.c.channel).limit(limit)
+                reservations = select(RESERVATION.c.user_id, RESERVATION.c.event_key).where(expired_reservations).order_by(
+                    RESERVATION.c.expires_at, RESERVATION.c.user_id, RESERVATION.c.event_key).limit(limit)
                 counts["removed_raw"] = (await session.execute(delete(EVENT).where(
                     tuple_(EVENT.c.user_id, EVENT.c.event_key).in_(keys)))).rowcount
                 counts["removed_monthly"] = (await session.execute(delete(MONTHLY).where(
                     tuple_(MONTHLY.c.month, MONTHLY.c.stage, MONTHLY.c.channel).in_(months)))).rowcount
+                counts["removed_reservations"] = (await session.execute(delete(RESERVATION).where(
+                    tuple_(RESERVATION.c.user_id, RESERVATION.c.event_key).in_(reservations)))).rowcount
             return counts
 
 
@@ -255,6 +293,15 @@ class SmartReminderAnalysisObserver:
             # No exception/SQL/actor/credential content; missing capture is not
             # a measured zero. Cancellation remains cancellation.
             logger.warning("Smart analysis capture unavailable")
+            return None
+
+    async def capture_reservation(self, source):
+        if not self.enabled:
+            return None
+        try:
+            return await asyncio.wait_for(self.service.capture_reservation(source), timeout=self.timeout)
+        except Exception:
+            logger.warning("Smart reservation analysis unavailable")
             return None
 
     async def tick(self):

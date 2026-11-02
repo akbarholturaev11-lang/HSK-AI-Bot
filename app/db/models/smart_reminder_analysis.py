@@ -12,6 +12,9 @@ DELIVERY_STAGES = ("reserved", "in_flight", "provider_accepted", "client_posted_
 SHADOW_STAGES = ("shadow_candidate", "shadow_suppressed")
 STAGES = DELIVERY_STAGES + SHADOW_STAGES
 STAGE_CHECK = "stage IN (" + ", ".join(repr(s) for s in STAGES) + ")"
+RESERVATION_STAGES = ("shadow_reserved", "shadow_refused")
+RESERVATION_CHECK = "stage IN (" + ", ".join(repr(s) for s in RESERVATION_STAGES) + ")"
+MONTHLY_CHECK = "stage IN (" + ", ".join(repr(s) for s in STAGES + RESERVATION_STAGES) + ")"
 
 
 class SmartReminderAnalysisEvent(Base):
@@ -37,7 +40,7 @@ class SmartReminderAnalysisEvent(Base):
 class SmartReminderAnalysisMonthly(Base):
     __tablename__ = "smart_reminder_analysis_monthly"
     __table_args__ = (
-        CheckConstraint(STAGE_CHECK, name="stage"),
+        CheckConstraint(MONTHLY_CHECK, name="stage"),
         CheckConstraint("channel IN ('none', 'telegram', 'android')", name="channel"),
         CheckConstraint("fact_count >= 0", name="fact_count"),
     )
@@ -45,3 +48,19 @@ class SmartReminderAnalysisMonthly(Base):
     stage: Mapped[str] = mapped_column(String(32), primary_key=True)
     channel: Mapped[str] = mapped_column(String(16), primary_key=True)
     fact_count: Mapped[int] = mapped_column(BigInteger)
+
+
+class SmartReminderReservationObservation(Base):
+    __tablename__ = "smart_reminder_reservation_observations"
+    __table_args__ = (
+        CheckConstraint(RESERVATION_CHECK, name="stage"),
+        CheckConstraint("length(event_key) = 64", name="event_key"),
+        CheckConstraint("expires_at > occurred_at", name="expiry"),
+        Index("ix_smart_reservation_expiry", "expires_at", "user_id", "event_key"),
+    )
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    event_key: Mapped[str] = mapped_column(String(64), primary_key=True)
+    stage: Mapped[str] = mapped_column(String(32))
+    reason_code: Mapped[str] = mapped_column(String(64))
+    occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))

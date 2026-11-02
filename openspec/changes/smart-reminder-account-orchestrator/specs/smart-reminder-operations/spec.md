@@ -158,3 +158,19 @@ The system SHALL record available committed terminal shadow decisions with their
 #### Scenario: Refusal occurred before any durable job
 - **WHEN** policy refuses a candidate before a source job exists
 - **THEN** missing shadow-job analysis remains unavailable and cannot be used as measured zero or a complete denominator
+
+
+### Requirement: Observe pre-reservation shadow refusals without creating a job
+The system SHALL optionally record an actual verified shadow reservation/refusal after the source transaction commits, using minimal finite-retention data and fixed server reasons. Observation MUST NOT create a study intent for a refusal, change the source result or authorize delivery.
+
+#### Scenario: OFF or D1 refuses before reservation
+- **WHEN** a verified owned reserve operation returns an actual OFF, D1 or other reviewed guard refusal before creating a job
+- **THEN** enabled analysis may retain that reason once in its documented account/day/revision/course grain with no job, attempt or provider operation
+
+#### Scenario: Analysis fails after reservation commits
+- **WHEN** optional observation fails or times out after a shadow job commits
+- **THEN** the original source result remains successful, no reserve retry occurs and missing capture remains unavailable
+
+#### Scenario: Repeated reserve checks on the same scope
+- **WHEN** callers repeat the same observed outcome/reason within the same frozen scope
+- **THEN** capture does not increment anonymous totals again or extend the first observation's retention

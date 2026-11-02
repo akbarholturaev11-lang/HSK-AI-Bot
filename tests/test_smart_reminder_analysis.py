@@ -16,7 +16,7 @@ from app.db.base import Base
 from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
 from app.services.smart_reminder_analysis import (
-    EVENT, MONTHLY, RAW_RETENTION, UNAVAILABLE_OUTCOMES, SmartReminderAnalysisService, oldest_month,
+    EVENT, MONTHLY, RESERVATION, RAW_RETENTION, UNAVAILABLE_OUTCOMES, SmartReminderAnalysisService, oldest_month,
 )
 from tests import test_smart_reminder_android as android
 
@@ -30,6 +30,10 @@ spec_shadow = importlib.util.spec_from_file_location("analysis_0138", Path(__fil
     "alembic/versions/0138_smart_shadow_analysis.py")
 shadow_migration = importlib.util.module_from_spec(spec_shadow)
 spec_shadow.loader.exec_module(shadow_migration)
+spec_reservation = importlib.util.spec_from_file_location("analysis_0139", Path(__file__).resolve().parents[1] /
+    "alembic/versions/0139_smart_reservation_analysis.py")
+reservation_migration = importlib.util.module_from_spec(spec_reservation)
+spec_reservation.loader.exec_module(reservation_migration)
 
 
 class AnalysisChecks:
@@ -47,6 +51,7 @@ class AnalysisChecks:
         async with self.sessions.begin() as session:
             await session.execute(update(JOB).values(created_at=self.moment, updated_at=self.moment))
         async with self.engine.begin() as c:
+            await c.run_sync(RESERVATION.drop)
             await c.run_sync(MONTHLY.drop)
             await c.run_sync(EVENT.drop)
             await c.run_sync(self.migrate, "upgrade")
@@ -61,7 +66,9 @@ class AnalysisChecks:
             if operation == "upgrade":
                 migration.upgrade()
                 shadow_migration.upgrade()
+                reservation_migration.upgrade()
             else:
+                reservation_migration.downgrade()
                 shadow_migration.downgrade()
                 migration.downgrade()
 
@@ -260,8 +267,10 @@ class AnalysisChecks:
         before = [await self.rows(table) for table in (EVENT, MONTHLY, JOB, ATTEMPT, GRANT)]
         def roundtrip(connection):
             with Operations.context(MigrationContext.configure(connection)):
+                reservation_migration.downgrade()
                 shadow_migration.downgrade()
                 shadow_migration.upgrade()
+                reservation_migration.upgrade()
             return compare_metadata(MigrationContext.configure(connection), Base.metadata)
         async with self.engine.begin() as connection:
             self.assertEqual(await connection.run_sync(roundtrip), [])

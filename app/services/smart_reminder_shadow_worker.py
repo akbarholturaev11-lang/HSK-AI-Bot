@@ -13,6 +13,7 @@ from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.user import User
 from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderError, _utc
 from app.services.smart_reminder_shadow_queue import SmartReminderShadowQueue
+from app.services.smart_reminder_analysis import SmartReminderAnalysisObserver
 
 
 logger = logging.getLogger(__name__)
@@ -24,7 +25,8 @@ class SmartReminderShadowWorker:
             raise ValueError("Positive bounded technical worker settings required")
         self.settings, self.sessions = settings, sessions
         self.clock = clock or (lambda: datetime.now(timezone.utc))
-        self.queue = SmartReminderShadowQueue(sessions, clock=self.clock)
+        self.queue = SmartReminderShadowQueue(sessions, clock=self.clock,
+            analysis_observer=SmartReminderAnalysisObserver(settings, sessions, clock=self.clock))
         self.interval, self.timeout, self.batch = interval, timeout, batch
 
     async def actor_for(self, user_id):
