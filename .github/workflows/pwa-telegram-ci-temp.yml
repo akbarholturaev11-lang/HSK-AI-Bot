@@ -10,6 +10,7 @@ on:
       - "app/bot/handlers/desktop_auth.py"
       - "app/static/iphone-pwa-login.js"
       - "tests/test_pwa_browser_auth.py"
+      - "tests/test_pwa_telegram_bot.py"
       - "localization/ui/**/common.json"
       - "localization/ui/**/bot.json"
 permissions:
@@ -43,7 +44,7 @@ jobs:
           node --check app/static/iphone-pwa-login.js
       - run: python -m pip install -r requirements.txt aiosqlite
       - name: Browser and Telegram owner-bound proof tests
-        run: python -m unittest -v tests.test_pwa_browser_auth
+        run: python -m unittest -v tests.test_pwa_browser_auth tests.test_pwa_telegram_bot
       - name: Existing native, Telegram device and provider regressions
         run: python -m unittest -q tests.test_desktop_auth_service tests.test_native_oauth_api tests.test_identity_link_service
       - name: Commit only generated catalogs to draft branch after successful tests
