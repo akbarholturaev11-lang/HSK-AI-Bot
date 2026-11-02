@@ -12,7 +12,7 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
-from sqlalchemy import select, update
+from sqlalchemy import select, update, or_
 
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from app.db.models.user import User
@@ -72,15 +72,30 @@ class PwaAuthService:
         self.native = NativeOAuthService(session, settings_obj)
         self.desktop = DesktopAuthService(session, settings_obj)
 
-    async def start(self, *, provider: str, language: str | None = None) -> tuple[str, str]:
+    async def start(
+        self, *, provider: str, language: str | None = None,
+        replace_cookie: str | None = None,
+    ) -> tuple[str, str]:
         require_pwa_enabled(self.settings)
         if provider not in {"google", "apple"}:
             raise PwaAuthError("pwa_provider_invalid", status_code=422)
+        # Apple returns via a cross-site POST. Safari omits SameSite=Lax
+        # session cookies there, so record the already-verified prior session
+        # server-side at OAuth *start*. The ID alone grants no authority: the
+        # callback still needs the one-use state and same-browser OAuth proof.
+        previous_session_id = None
+        if replace_cookie:
+            try:
+                _, previous = await self.actor(replace_cookie)
+                previous_session_id = previous.id
+            except PwaAuthError:
+                pass  # Stale/invalid session cannot bind a prior owner.
         proof = secrets.token_urlsafe(32)
         started = await self.native.start(
             provider=provider, mode="browser_redirect", platform=PWA_PLATFORM,
             app_version="1.0.0", installation_key=proof,
             language=language if language in {"uz", "ru", "tj"} else None,
+            bind_session_id=previous_session_id,
         )
         if not started.authorize_url:
             raise PwaAuthError("pwa_auth_unavailable", status_code=503)
@@ -172,12 +187,19 @@ class PwaAuthService:
         # Replace only this browser's previous PWA session. Never revoke other
         # installed/browser sessions, Telegram, Android, or Desktop sessions.
         # Do it in the same transaction as the newly minted session.
+        previous_sessions = []
+        if row.bind_session_id:
+            previous_sessions.append(DesktopSession.id == row.bind_session_id)
         if isinstance(replace_cookie, str) and 32 <= len(replace_cookie) <= 200:
+            previous_sessions.append(
+                DesktopSession.refresh_token_hash
+                == self.desktop._hash("pwa-cookie", replace_cookie)
+            )
+        if previous_sessions:
             await self.session.execute(
                 update(DesktopSession)
                 .where(
-                    DesktopSession.refresh_token_hash
-                    == self.desktop._hash("pwa-cookie", replace_cookie),
+                    or_(*previous_sessions),
                     DesktopSession.device_id.in_(
                         select(DesktopDevice.id).where(
                             DesktopDevice.platform == PWA_PLATFORM
