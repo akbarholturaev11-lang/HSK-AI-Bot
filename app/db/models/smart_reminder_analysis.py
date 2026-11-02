@@ -7,8 +7,10 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 
 
-STAGES = ("reserved", "in_flight", "provider_accepted", "client_posted_unverified",
+DELIVERY_STAGES = ("reserved", "in_flight", "provider_accepted", "client_posted_unverified",
           "confirmed_not_displayed", "outcome_unknown", "cancelled", "expired", "definite_failure")
+SHADOW_STAGES = ("shadow_candidate", "shadow_suppressed")
+STAGES = DELIVERY_STAGES + SHADOW_STAGES
 STAGE_CHECK = "stage IN (" + ", ".join(repr(s) for s in STAGES) + ")"
 
 

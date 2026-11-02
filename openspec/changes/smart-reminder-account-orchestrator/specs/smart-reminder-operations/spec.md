@@ -142,3 +142,19 @@ The system SHALL recover available committed Smart outcome facts after a missed 
 #### Scenario: Late outcome belongs to an old parent
 - **WHEN** a retained reviewed job has expired reservation detail but a recent valid original attempt outcome or receipt
 - **THEN** reconciliation considers that recent source and cannot recreate expired reservation detail or extend its retention
+
+
+### Requirement: Distinguish observed shadow decisions from delivery
+The system SHALL record available committed terminal shadow decisions with their fixed server reasons using explicit shadow stages. It MUST preserve existing source-stage deduplication and retention without treating a simulation as a real send, complete candidate denominator or permission to dispatch.
+
+#### Scenario: Repeated observation of a completed shadow candidate
+- **WHEN** multiple analysis workers observe the same committed unattempted shadow candidate
+- **THEN** its terminal shadow fact and anonymous stage total are counted once without recording a delivery stage or creating an attempt
+
+#### Scenario: Actual shadow refusal after scheduling
+- **WHEN** goal completion, OFF, access, cadence or another reviewed guard commits a terminal refusal on an owned shadow job
+- **THEN** analysis can record that original reason as shadow suppression without inventing a display/nonresponse outcome
+
+#### Scenario: Refusal occurred before any durable job
+- **WHEN** policy refuses a candidate before a source job exists
+- **THEN** missing shadow-job analysis remains unavailable and cannot be used as measured zero or a complete denominator

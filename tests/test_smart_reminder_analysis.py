@@ -26,6 +26,10 @@ spec = importlib.util.spec_from_file_location("analysis_0137", Path(__file__).re
     "alembic/versions/0137_smart_analysis.py")
 migration = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(migration)
+spec_shadow = importlib.util.spec_from_file_location("analysis_0138", Path(__file__).resolve().parents[1] /
+    "alembic/versions/0138_smart_shadow_analysis.py")
+shadow_migration = importlib.util.module_from_spec(spec_shadow)
+spec_shadow.loader.exec_module(shadow_migration)
 
 
 class AnalysisChecks:
@@ -54,7 +58,12 @@ class AnalysisChecks:
     @staticmethod
     def migrate(connection, operation):
         with Operations.context(MigrationContext.configure(connection)):
-            getattr(migration, operation)()
+            if operation == "upgrade":
+                migration.upgrade()
+                shadow_migration.upgrade()
+            else:
+                shadow_migration.downgrade()
+                migration.downgrade()
 
     async def rows(self, table):
         async with self.sessions() as session:
@@ -243,6 +252,20 @@ class AnalysisChecks:
         with self.assertRaisesRegex(RuntimeError, "Refusing populated"):
             async with self.engine.begin() as connection:
                 await connection.run_sync(self.migrate, "downgrade")
+
+    async def test_shadow_stage_upgrade_preserves_populated_delivery_analysis(self):
+        grant = await self.case.claim()
+        await self.case.receipt(grant)
+        await self.capture()
+        before = [await self.rows(table) for table in (EVENT, MONTHLY, JOB, ATTEMPT, GRANT)]
+        def roundtrip(connection):
+            with Operations.context(MigrationContext.configure(connection)):
+                shadow_migration.downgrade()
+                shadow_migration.upgrade()
+            return compare_metadata(MigrationContext.configure(connection), Base.metadata)
+        async with self.engine.begin() as connection:
+            self.assertEqual(await connection.run_sync(roundtrip), [])
+        self.assertEqual([await self.rows(table) for table in (EVENT, MONTHLY, JOB, ATTEMPT, GRANT)], before)
 
     async def test_postgres_independent_capture_race_counts_once(self):
         if not self.postgres:

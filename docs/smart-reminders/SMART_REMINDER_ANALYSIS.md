@@ -1,17 +1,18 @@
 # Smart delivery analysis contract
 
-The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.58. This
-contract defines P6 6.1a, optional 6.1b integration and bounded 6.1c reconciliation,
-not a live rollout.
+The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.59. This
+contract defines P6 6.1a, optional 6.1b integration, bounded 6.1c reconciliation
+and 6.1d terminal shadow observations, not a live rollout.
 
 `SmartReminderAnalysisService.capture_job(user_id, job_id)` is an internal,
 explicit operation over a committed owned job and its attempts/Android grants.
 It owns a separate User-first transaction. A delivery transaction never calls
 or depends on it; analytics failure cannot erase an already committed outcome.
 There is no capture endpoint, provider, learner input or automatic inventory
-scan. Source hooks, reconciliation and independent retention default OFF. Only current reviewed v1 Android/Telegram policy
-families with matching selected channels qualify; shadow/unknown policy jobs
-are excluded. Source timestamps must be neither future nor older than 90 days.
+scan. Source hooks, reconciliation and independent retention default OFF.
+Reviewed v1 Android/Telegram policy families require matching selected channels.
+Exact terminal shadow jobs have separate stages below; mutable/unknown policy
+jobs are excluded. Source timestamps must be neither future nor older than 90 days.
 
 | Analysis stage | Required source | Interpretation |
 | --- | --- | --- |
@@ -23,15 +24,18 @@ are excluded. Source timestamps must be neither future nor older than 90 days.
 | `outcome_unknown` | Resolved unknown attempt or matching unknown receipt | Uncertain; never infer failure, non-display or fallback eligibility |
 | `cancelled`, `expired` | Terminal job and transition time | Job state, not proof that an earlier external attempt disappeared |
 | `definite_failure` | Explicit resolved attempt state | Only the recorded boundary's failure |
+| `shadow_candidate` | Exact completed, unselected, unattempted shadow job with fixed `shadow_candidate` reason | Policy simulation only; no reserved/delivered/display/learning claim |
+| `shadow_suppressed` | Exact unselected/unattempted terminal shadow job with a reviewed reason | Its stored guard/cadence/expiry reason; no nonresponse or display inference |
 
 The existing attempt enum alone cannot prove `verified_shown` or a client post
 without its matching receipt. Shown, read, opened and attributed server learning
 remain **unavailable**; these counters are not fabricated zeros or inferred from
-FCM acceptance, widget/app opens or XP. Candidate/suppression instrumentation,
+FCM acceptance, widget/app opens or XP. Pre-reservation/real-dispatch candidate and suppression instrumentation,
 trusted open/learning linkage, complete coverage, denominator/experiment
 and model evaluation remain separate parent 6.1/6.2/P7 work.
 
-Migration `0137_smart_analysis` adds two tables:
+Migration `0137_smart_analysis` adds two tables; `0138_smart_shadow_analysis`
+extends only their stage constraints for explicit shadow observations:
 
 - `smart_reminder_analysis_events`: owner/job FKs, a hash of immutable
   source-and-stage identity, a fixed stage/reason/channel and source time/expiry.
@@ -41,6 +45,35 @@ Migration `0137_smart_analysis` adds two tables:
   only. An inserted raw fact increments its bucket in the same transaction;
   duplicate capture increments nothing. These are stage facts, not unique
   learners/messages, a causal learning effect or a denominator.
+
+## Committed terminal shadow decisions
+
+The same source capture/reconciliation records the already committed queue
+reason. Only exact `smart-queue-shadow-v1` jobs with no selected channel/device,
+lease or attempt qualify. Completed cadence `shadow_candidate` maps to that
+explicit shadow stage. Other reviewed completed cadence reasons, reviewed
+cancelled guard reasons and exact expiry map to `shadow_suppressed`. Each raw
+fact retains the original fixed server reason and terminal update timestamp,
+channel `none`, with no added personal fields or job mutation. Unknown codes,
+impossible state/reason combinations and selected/attempted jobs are withheld.
+
+Grain is one terminal shadow stage per canonical source job. Repeated scans,
+parallel workers and process restart cannot increment it again. Monthly counts
+retain the same month/stage/channel grain, not unique learners, attempts or a
+suppression rate; reasons remain only in private retained detail. Missing facts
+are unknown. Refusals before a durable job exists, D1 before reservation,
+auth/deletion refusals, real dispatch choices and unimplemented source coverage
+are not supplied by this adapter. Current normal runtime cadence is unconfigured
+and therefore cannot produce a positive cadence candidate. Positive candidate
+QA uses explicitly synthetic complete coverage/calibration; it is not evidence
+that runtime activation or ML admission is ready.
+
+Migration 0138 preserves all existing delivery/raw/monthly/source rows and FKs;
+it changes two CHECK constraints only. Downgrade keeps old-stage rows but refuses
+if either table contains new shadow stages, including anonymous-only retained
+counts. No remote migration or existing QA initializer is run by merging this
+source. Disabling analysis leaves original queue behavior and retained evidence
+unchanged.
 
 ## Retention and privacy boundary
 
@@ -61,7 +94,7 @@ cohort/experiment exposure requires its own reviewed read projection.
 ## Optional source integration
 
 `SMART_REMINDER_ANALYSIS_ENABLED=false` is the default. Setting it true requires
-the reviewed 0137 schema and enables observation/analysis-only retention, never
+the reviewed 0138 schema and enables observation/analysis-only retention, never
 study dispatch, admission, enrollment or a provider. Android's successful claim
 or receipt schedules only owner/job metadata in a Starlette background callback:
 the source transaction/session has closed and the complete HTTP body is sent
@@ -92,7 +125,7 @@ enabled merely by merging this source.
 
 The same default-false analysis switch starts a separate reconciliation task.
 Its source-page transaction reads only owner/job IDs from reviewed v1 selected
-Android/Telegram jobs, closes before any owner capture and holds no delivery
+Android/Telegram jobs or exact terminal shadow jobs, closes before any owner capture and holds no delivery
 lock. Pages use stable job-ID keyset ordering, a 128-job technical maximum and
 bounded SQL duration. A source qualifies within D21's original 90-day window:
 reservation, terminal cancel/expiry, attempt start/resolution or native receipt.
@@ -130,7 +163,8 @@ production execution is implied. Source-time checks refuse expired replay after 
 deletion, and never recreate an old fact to increment totals again.
 
 No initializer is run against an existing database. The reviewed empty-QA
-initializer advances to 0137 and leaves both new tables to real migrations.
-Downgrade refuses either populated analysis table rather than deleting data.
+initializer advances to 0138 and leaves both new tables to real migrations.
+Migration 0137 downgrade refuses either populated analysis table rather than
+deleting data; 0138 uses the new-stage preservation guard described above.
 Disabling capture changes no delivery authority; preserve all consent/day/grant
 guards and operational evidence during rollback.
