@@ -164,6 +164,7 @@ deletion, and never recreate an old fact to increment totals again.
 
 No initializer is run against an existing database. The reviewed empty-QA
 initializer advances to 0138 and leaves both new tables to real migrations.
-Downgrade refuses either populated analysis table rather than deleting data.
+Migration 0137 downgrade refuses either populated analysis table rather than
+deleting data; 0138 uses the new-stage preservation guard described above.
 Disabling capture changes no delivery authority; preserve all consent/day/grant
 guards and operational evidence during rollback.
