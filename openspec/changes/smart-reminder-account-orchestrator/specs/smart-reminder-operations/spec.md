@@ -283,3 +283,18 @@ The system SHALL optionally record one first reviewed policy-ready entry per can
 #### Scenario: Courses change and reminders are ignored
 - **WHEN** a member studies another canonical course or enters manually without touching a reminder
 - **THEN** original reviewed server-completed units and scored study can contribute account-wide without relying on notification clicks or mutable current-course progress
+
+### Requirement: Bounded durable mature baseline outcomes
+The system SHALL incrementally observe mature baseline members in bounded independent pages and atomically preserve anonymous monthly lower-bound outcomes beyond personal-detail expiry. Reports MUST retain the original denominator, disclose unobserved/limited coverage and remain independent of cohort size, contacts and taps.
+
+#### Scenario: A cohort exceeds one page
+- **WHEN** more than 128 accounts belong to a baseline month
+- **THEN** repeated bounded passes can observe them all without truncating the original denominator, while a read-only report uses aggregate counts rather than unbounded personal learning reads
+
+#### Scenario: Retry, later proof or concurrent observation
+- **WHEN** an account is observed again, including by concurrent workers or after a later retained server receipt
+- **THEN** anonymous totals add only newly proven nonnegative lower-bound deltas and count the mature observed account once, with snapshot/counter failure rolling back atomically
+
+#### Scenario: Personal detail is removed
+- **WHEN** observed membership expires or its account is purged
+- **THEN** original anonymous enrollment and already recorded outcomes survive their twelve-month retention without membership resurrection, personal learning reads or any claim of complete retention, causal lift or delivery authority

@@ -45,7 +45,8 @@ class BaselineChecks:
         async with self.q.engine.begin() as c:
             await c.run_sync(MEMBER.drop);await c.run_sync(TOTAL.drop)
             def migrate(sync):
-                with Operations.context(MigrationContext.configure(sync)): schema.baseline_migration.upgrade()
+                with Operations.context(MigrationContext.configure(sync)):
+                    schema.baseline_migration.upgrade();schema.baseline_outcomes_migration.upgrade()
             await c.run_sync(migrate)
 
     async def asyncTearDown(self):
@@ -59,7 +60,14 @@ class BaselineChecks:
         self.assertFalse(result.dispatch_allowed)
         return result.job_id
 
-    async def report(self): return await self.baseline.report(self.month)
+    async def report(self):
+        after=None
+        while True:
+            owners,more=await self.baseline.aggregation_page(after_user_id=after)
+            for uid in owners: await self.baseline.observe_member(uid)
+            if not more: break
+            after=owners[-1]
+        return await self.baseline.report(self.month)
 
     async def clone_job(self,job_id,*,uid=2,at=None):
         row=dict(await self.q.row(job_id))
@@ -278,8 +286,9 @@ class BaselineChecks:
             if prefix in {"INSERT","UPDATE","DELETE","CREATE","ALTER","DROP"}: raise AssertionError("report write")
             if any(name in statement.lower() for name in ("android_push_tokens","smart_reminder_attempts","smart_reminder_android_grants")):
                 raise AssertionError("contact-dependent baseline")
+        await self.report()
         event.listen(self.q.engine.sync_engine,"before_cursor_execute",inspect)
-        try: self.assertEqual(await self.report(),await self.report())
+        try: self.assertEqual(await self.baseline.report(self.month),await self.baseline.report(self.month))
         finally: event.remove(self.q.engine.sync_engine,"before_cursor_execute",inspect)
 
     async def test_populated_downgrade_refuses_raw_and_anonymous_only_data(self):
@@ -300,7 +309,8 @@ class BaselineChecks:
         before=[await self.rows(t) for t in tables]
         def cycle(c):
             with Operations.context(MigrationContext.configure(c)):
-                schema.baseline_migration.downgrade();schema.baseline_migration.upgrade()
+                schema.baseline_outcomes_migration.downgrade();schema.baseline_migration.downgrade()
+                schema.baseline_migration.upgrade();schema.baseline_outcomes_migration.upgrade()
             return compare_metadata(MigrationContext.configure(c),Base.metadata)
         async with self.q.engine.begin() as c: self.assertEqual(await c.run_sync(cycle),[])
         self.assertEqual(before,[await self.rows(t) for t in tables])
@@ -326,7 +336,7 @@ class BaselineChecks:
         self.assertIsNone(result["observed_units_lower_bound"])
         self.assertIsNone(result["observed_d7_percent_lower_bound"])
 
-    async def test_cohort_limit_never_silently_samples_a_denominator(self):
+    async def test_large_cohort_is_collected_across_bounded_pages_without_sampling(self):
         await self.enroll()
         _,end=windows(self.now,"Etc/UTC")
         async with self.q.sessions.begin() as s:
@@ -335,10 +345,14 @@ class BaselineChecks:
             await s.execute(insert(MEMBER),[dict(user_id=uid,protocol_version=VERSION,source_job_id=str(uuid4()),
                 entered_at=self.now,timezone_name="Etc/UTC",course_key="hsk1",expires_at=self.now+RAW_RETENTION) for uid in range(4,132)])
             await s.execute(update(TOTAL).values(enrolled_accounts=129,matures_at=end))
-        with patch("app.services.smart_reminder_baseline.read_account_learning",side_effect=AssertionError("truncated cohort")):
-            result=await self.report()
-        self.assertEqual((result["status"],result["cohort_accounts"]),("cohort_over_limit",129))
-        self.assertIsNone(result["observed_d7_percent_lower_bound"])
+        owners,more=await self.baseline.aggregation_page(limit=128)
+        self.assertEqual((len(owners),more),(128,True))
+        tail,more=await self.baseline.aggregation_page(after_user_id=owners[-1],limit=128)
+        self.assertEqual((len(tail),more),(1,False))
+        result=await self.report()
+        self.assertEqual((result["status"],result["cohort_accounts"]),("observed_lower_bounds",129))
+        self.assertEqual((result["observed_accounts"],result["aggregation_pending_accounts"]),(129,0))
+        self.assertEqual(result["observed_d7_percent_lower_bound"],0)
 
     async def test_current_timezone_changes_do_not_move_frozen_d7(self):
         await self.enroll()
