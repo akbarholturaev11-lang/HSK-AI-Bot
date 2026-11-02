@@ -1,0 +1,36 @@
+name: Temporary iPhone PWA OpenSpec validation
+on:
+  push:
+    branches:
+      - feat/iphone-course-pwa-planning-20261102
+    paths:
+      - ".github/workflows/iphone-pwa-validation-temp.yml"
+      - "openspec/changes/iphone-course-pwa/**"
+      - "docs/IPHONE_PWA_CONTEXT.md"
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      OPENSPEC_TELEMETRY: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Official OpenSpec CLI — validate learner iPhone PWA change
+        run: |
+          set -euo pipefail
+          npm install --global @fission-ai/openspec@latest
+          openspec --version
+          openspec context --json
+          openspec status --change iphone-course-pwa --json
+          openspec validate iphone-course-pwa
+      - name: Verify exact minimal scope
+        run: |
+          set -euo pipefail
+          test -f docs/IPHONE_PWA_CONTEXT.md
+          test -f openspec/changes/iphone-course-pwa/specs/iphone-pwa-messages-feedback/spec.md
+          git diff --exit-code -- AGENTS.md AI_RULES.md PROJECT_MEMORY.md
