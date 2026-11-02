@@ -9,10 +9,10 @@ from __future__ import annotations
 from typing import Literal
 
 from fastapi import APIRouter, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel, ConfigDict, ValidationError
 
-from app.services.native_oauth_service import NativeOAuthError
+from app.services.native_oauth_service import NativeOAuthError, available_providers
 from app.services.identity_link_service import IdentityLinkError
 from app.services.desktop_auth_service import DesktopAuthError
 from app.services.pwa_auth_service import (
@@ -23,6 +23,7 @@ from app.services.pwa_auth_service import (
     PwaAuthError,
     PwaAuthService,
     require_same_origin,
+    require_pwa_enabled,
 )
 
 _NO_STORE = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"}
@@ -47,6 +48,49 @@ def _clear_cookie(response: JSONResponse, name: str) -> None:
 
 def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
     router = APIRouter(tags=["pwa-auth"])
+
+    # A login-only source-aligned shell; protected course routes are P2.
+    # Do not serve it until a verified provider origin is configured.
+    @router.get("/iphone-pwa")
+    async def login_page():
+        try:
+            require_pwa_enabled(settings_obj)
+            return FileResponse(
+                "app/static/iphone-pwa-login.html", media_type="text/html",
+                headers={**_NO_STORE,
+                    "Content-Security-Policy": (
+                        "default-src 'none'; script-src 'self'; "
+                        "style-src 'self' 'unsafe-inline'; connect-src 'self'; "
+                        "img-src 'self'; frame-ancestors 'none'; form-action 'none'; "
+                        "base-uri 'none'"
+                    ),
+                    "X-Content-Type-Options": "nosniff",
+                },
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/iphone-pwa-login.js")
+    async def login_script():
+        try:
+            require_pwa_enabled(settings_obj)
+            return FileResponse(
+                "app/static/iphone-pwa-login.js", media_type="application/javascript",
+                headers={**_NO_STORE, "X-Content-Type-Options": "nosniff"},
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/api/v3/pwa-auth/providers")
+    async def providers():
+        try:
+            require_pwa_enabled(settings_obj)
+            return JSONResponse(
+                {"ok": True, "providers": available_providers(settings_obj, platform="miniapp")},
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
 
     @router.post("/api/v3/pwa-auth/start")
     async def start(request: Request):
