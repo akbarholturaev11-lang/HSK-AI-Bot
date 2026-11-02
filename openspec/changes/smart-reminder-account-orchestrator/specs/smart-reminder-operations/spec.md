@@ -298,3 +298,18 @@ The system SHALL incrementally observe mature baseline members in bounded indepe
 #### Scenario: Personal detail is removed
 - **WHEN** observed membership expires or its account is purged
 - **THEN** original anonymous enrollment and already recorded outcomes survive their twelve-month retention without membership resurrection, personal learning reads or any claim of complete retention, causal lift or delivery authority
+
+### Requirement: Explicit read-only operator baseline report
+The system SHALL provide an explicit one-month anonymous operator report with database-enforced read-only connections, bounded execution and secret-free failures. It MUST preserve unavailable/partial baseline states and cannot initialize storage, aggregate personal outcomes or activate sending.
+
+#### Scenario: Explicit target and valid month
+- **WHEN** an authorized operator supplies a supported database target separately from command arguments and an exact cohort month
+- **THEN** the report returns only the existing anonymous projection through a dedicated read-only connection, preserving original denominators and false experiment/dispatch readiness
+
+#### Scenario: Missing target, schema or observation
+- **WHEN** target access, required storage or recorded cohort evidence is absent
+- **THEN** no application database fallback, migration, invented zero retention or success claim occurs; errors expose stable codes without URLs, credentials, SQL or tracebacks
+
+#### Scenario: Accidental write or interrupted report
+- **WHEN** a reporting operation attempts a database write, times out or is cancelled
+- **THEN** the read-only database policy refuses writes and the dedicated resources are released without changing operational or personal learning sources
