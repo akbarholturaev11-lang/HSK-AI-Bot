@@ -304,9 +304,20 @@ class PwaAuthService:
     def csrf(self, cookie: str) -> str:
         return self.desktop._hash("pwa-csrf", cookie)
 
-    async def logout(self, cookie: str, csrf: str):
-        if not isinstance(csrf, str) or not hmac.compare_digest(self.csrf(cookie), csrf):
+    async def mutation_actor(self, cookie: str | None, csrf: str | None):
+        """Validate browser authority before any state-changing PWA route.
+
+        Callers must additionally enforce the configured same-origin check.
+        Telegram-signed and native bearer transports do not use this method.
+        """
+        user, session = await self.actor(cookie)
+        if not isinstance(csrf, str) or not hmac.compare_digest(
+            self.csrf(cookie), csrf
+        ):
             raise PwaAuthError("pwa_csrf_invalid", status_code=403)
-        _, session = await self.actor(cookie)
+        return user, session
+
+    async def logout(self, cookie: str, csrf: str):
+        _, session = await self.mutation_actor(cookie, csrf)
         session.revoked_at = _now()
         await self.session.commit()
