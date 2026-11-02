@@ -41,7 +41,7 @@ from app.services.identity_link_service import IdentityLinkError, IdentityLinkSe
 from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
 from app.services.account_deletion_service import AccountDeletionService, STATE_PREFIX, BROWSER_COOKIE
 from app.services.pwa_auth_service import (
-    PWA_OAUTH_COOKIE, PWA_SESSION_COOKIE, PWA_SESSION_AGE_SECONDS,
+    PWA_OAUTH_COOKIE, PWA_TELEGRAM_COOKIE, PWA_SESSION_COOKIE, PWA_SESSION_AGE_SECONDS,
     PwaAuthError, PwaAuthService,
 )
 from app.services.native_oauth_service import (
@@ -411,6 +411,7 @@ def create_native_oauth_router(
                 page.set_cookie(PWA_SESSION_COOKIE, cookie, max_age=PWA_SESSION_AGE_SECONDS,
                                 secure=True, httponly=True, samesite="lax", path="/")
                 page.delete_cookie(PWA_OAUTH_COOKIE, path="/", secure=True, httponly=True, samesite="none")
+                page.delete_cookie(PWA_TELEGRAM_COOKIE, path="/", secure=True, httponly=True, samesite="lax")
                 return page
             return _page("&#10003;", "ok", return_scheme=(
                 getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
@@ -462,6 +463,7 @@ def create_native_oauth_router(
                 page.set_cookie(PWA_SESSION_COOKIE, cookie, max_age=PWA_SESSION_AGE_SECONDS,
                                 secure=True, httponly=True, samesite="lax", path="/")
                 page.delete_cookie(PWA_OAUTH_COOKIE, path="/", secure=True, httponly=True, samesite="none")
+                page.delete_cookie(PWA_TELEGRAM_COOKIE, path="/", secure=True, httponly=True, samesite="lax")
                 return page
             return _page("&#10003;", "ok", return_scheme=(
                 getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
