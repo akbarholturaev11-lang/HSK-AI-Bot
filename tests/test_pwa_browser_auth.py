@@ -456,6 +456,86 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(ok.status_code, 200, ok.text)
         self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
 
+    async def test_reauthentication_revokes_only_previous_browser_session(self):
+        first_state = await self.begin()
+        first_login = await self.callback(first_state)
+        old_cookie = first_login.cookies[PWA_SESSION_COOKIE]
+
+        # A separate Safari/Home Screen container has an independently valid
+        # PWA session even when it belongs to the same canonical account.
+        other = AsyncClient(transport=self.client._transport, base_url=ORIGIN)
+        old = AsyncClient(
+            transport=self.client._transport, base_url=ORIGIN,
+            cookies={PWA_SESSION_COOKIE: old_cookie},
+        )
+        try:
+            independent_start = await other.post(
+                "/api/v3/pwa-auth/start", headers={"Origin": ORIGIN},
+                json={"provider": "google", "language": "ru"},
+            )
+            self.assertEqual(independent_start.status_code, 200, independent_start.text)
+            other_state = parse_qs(urlparse(
+                independent_start.json()["authorize_url"]
+            ).query)["state"][0]
+            other_login = await self.callback(other_state, client=other)
+            self.assertEqual(other_login.status_code, 303, other_login.text)
+            self.assertEqual((await other.get("/api/v3/pwa-auth/session")).status_code, 200)
+            self.assertEqual((await old.get("/api/v3/pwa-auth/session")).status_code, 200)
+
+            next_state = await self.begin()
+            replaced = await self.callback(next_state)
+            self.assertEqual(replaced.status_code, 303, replaced.text)
+            self.assertNotEqual(replaced.cookies[PWA_SESSION_COOKIE], old_cookie)
+            self.assertEqual((await old.get("/api/v3/pwa-auth/session")).status_code, 401)
+            self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 200)
+            self.assertEqual((await other.get("/api/v3/pwa-auth/session")).status_code, 200)
+            async with self.sessions() as db:
+                rows = (await db.execute(
+                    select(DesktopSession, DesktopDevice)
+                    .join(DesktopDevice, DesktopSession.device_id == DesktopDevice.id)
+                    .where(DesktopDevice.platform == "pwa")
+                )).all()
+                self.assertEqual(len(rows), 3)
+                self.assertEqual(sum(s.revoked_at is not None for s, _ in rows), 1)
+        finally:
+            await old.aclose()
+            await other.aclose()
+
+    async def test_telegram_approval_replaces_current_browser_session(self):
+        first_state = await self.begin()
+        first_login = await self.callback(first_state)
+        old_cookie = first_login.cookies[PWA_SESSION_COOKIE]
+        start = await self.client.post(
+            "/api/v3/pwa-auth/telegram/start",
+            headers={"Origin": ORIGIN}, json={"language": "uz"},
+        )
+        self.assertEqual(start.status_code, 200, start.text)
+        request_id = start.json()["link_request_id"]
+        async with self.sessions() as db:
+            service = DesktopAuthService(db, self.settings)
+            await service.link_request_confirmation(
+                link_request_id=request_id, telegram_id=1001, platform="pwa",
+            )
+            await service.approve_link_request(
+                link_request_id=request_id, telegram_id=1001, platform="pwa",
+            )
+        claim = await self.client.post(
+            "/api/v3/pwa-auth/telegram/claim",
+            headers={"Origin": ORIGIN}, json={"link_request_id": request_id},
+        )
+        self.assertEqual(claim.status_code, 200, claim.text)
+        self.assertEqual(claim.json()["status"], "complete")
+        self.assertNotEqual(claim.cookies[PWA_SESSION_COOKIE], old_cookie)
+        old = AsyncClient(
+            transport=self.client._transport, base_url=ORIGIN,
+            cookies={PWA_SESSION_COOKIE: old_cookie},
+        )
+        try:
+            self.assertEqual((await old.get("/api/v3/pwa-auth/session")).status_code, 401)
+            self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 200)
+        finally:
+            await old.aclose()
+
     async def test_browser_cannot_exchange_pwa_oauth_for_native_bearer(self):
         async with self.sessions() as session:
             service = DesktopAuthService(session, self.settings)
