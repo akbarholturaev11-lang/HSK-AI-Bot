@@ -373,6 +373,16 @@ class SmartReminderTelegramService:
             return TelegramResult("telegram_claimed", job_id, "claimed", token, until, cohort["generation"])
 
     async def dispatch(self, actor, lease, send, *, history_since):
+        result = await self._dispatch(actor, lease, send, history_since=history_since)
+        # Terminal guard SQL has committed/closed; provider paths already have
+        # their own observation after _finish and must not be observed twice.
+        if self.analysis_observer.enabled and result.state in {"cancelled", "expired"}:
+            from app.services.smart_reminder_analysis import TERMINAL_GUARD_REASONS
+            if result.job_id is not None and result.reason in TERMINAL_GUARD_REASONS["telegram"]:
+                await self.analysis_observer.capture_job(actor.user_id, result.job_id)
+        return result
+
+    async def _dispatch(self, actor, lease, send, *, history_since):
         if refused := self._gate(): return refused
         async with self.sessions.begin() as session:
             cohort = await self._cohort(session, actor)
