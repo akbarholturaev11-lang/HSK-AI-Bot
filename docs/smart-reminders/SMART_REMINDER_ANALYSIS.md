@@ -1,10 +1,11 @@
 # Smart delivery analysis contract
 
-The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.63. This
+The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.64. This
 contract defines P6 6.1a, optional 6.1b integration, bounded 6.1c reconciliation,
 6.1d terminal shadow observations, 6.1e reservation observations and 6.1f
 committed runtime guard reasons, the 6.1g internal target-learning projection
-and 6.1h authenticated client-reported opens, not a live rollout.
+6.1h authenticated client-reported opens and 6.1i verified temporal study
+outcomes, not a live rollout.
 
 `SmartReminderAnalysisService.capture_job(user_id, job_id)` is an internal,
 explicit operation over a committed owned job and its attempts/Android grants.
@@ -233,24 +234,85 @@ The source scope is **strictly after original attempt start and before the
 job's frozen IANA local-day end**, capped by current time and original 90-day
 analysis validity. Frozen boundaries are checked against the real IANA day.
 This is a technical positive-evidence scope, not an experiment attribution
-window or a product restart/cooldown rule. Current original XP, successful
-nonduplicate native server target-lesson receipt and matching canonical course
-progress must corroborate one another through the existing destination reader.
+window or a product restart/cooldown rule. Original positive XP and reviewed server completion receipts must corroborate
+one another through the bounded account-learning reader; lesson results also
+require matching canonical course progress. Native/Desktop lesson metadata must
+still prove successful nonduplicate awarding, Mini App lessons require their
+server target/order, and practice needs its canonical scored session/mode.
 Bonus XP, generic opens, another lesson/course, missing/malformed/unsupported
 receipts, future results and old XP replayed later do not qualify. Original XP
 time is retained; late receipt arrival cannot create a new completion. Repeated
 reads/receipts return the same target result without a new count or stored fact.
 
-The result contains only a fixed reason, optional original boundary/learning
-timestamps and explicit source limitations, with no device, lesson text, token
-or payload. Account-level learning may occur on a different endpoint from the
-contact; no same-device claim is made. Native lesson coverage is partial;
-Telegram/practice/general opens and complete negative outcomes remain unknown.
+The result contains only a fixed target-lesson reason, optional original
+boundary/learning/report timestamps, a partial verified-unit count and explicit
+source limitations, with no device, lesson text, token or payload. Account-level learning may occur on a different endpoint from the
+contact; no same-device claim is made. Reviewed lesson/practice coverage is partial; generic opens, unsupported
+study sources and complete negative outcomes remain unknown.
 Missing/over-limit evidence returns unavailable rather than zero, inactivity or
-permission to send again. This temporal link is not causal or notification-
-attributed learning, a funnel/cohort denominator, recovery rate or D09 ML gate.
+permission to send again. This temporal link is not causal or notification-attributed learning, a
+funnel/cohort denominator, recovery rate or D09 ML gate.
 Trustworthy job-bound opening, other learning sources, complete measurement
 and reviewed cohort/window policy remain parent 6.1/6.2 work.
+
+## Verified temporal study outcomes
+
+**Tapping a notification is never required to count actual study.** A learner
+may see a reminder and independently open the app: original verified study after
+the contact still counts. Client-report data is optional secondary evidence and
+cannot gate primary learning/retention cohort KPIs. An ordinary app open alone
+is not a completed study unit. Causal benefit requires the reviewed account-level
+control/treatment evaluation under D12, independently of clicks.
+
+The bounded account reader covers reviewed `course_v3`, `android_course` and
+`desktop_course` lesson completions, plus canonical `course_miniapp` mock,
+placement and training completions. Existing original positive unique XP must
+match trusted server terminal receipts by canonical account/course/reference.
+Lesson progress must corroborate completion; native result metadata must agree
+with the original award, and practice mode/session/score must be valid. Terminal
+completion events cannot be submitted through the client telemetry endpoint.
+Bonus XP, generic opens, unowned/unsupported sources, malformed or unpaired
+results, late old XP and over-limit windows do not become new completed units.
+Practice may record its server result before awarding XP; the original XP time
+remains authoritative. Existing learning writers, policy, habit and destination
+readers are unchanged. These sources remain incomplete, especially for repeated
+study with an already-deduplicated lifetime reference; absence never proves no
+study or permits another reminder.
+
+Migration `0141_smart_study_analysis` extends only existing raw/monthly stage
+constraints for two explicit temporal facts:
+
+| Stage | Meaning |
+| --- | --- |
+| `verified_study_after_attempt` | Original verified completed unit strictly after an evidenced accepted/posted contact and before its frozen local-day end; **no open report is required** |
+| `verified_study_after_report` | The same unit also follows that original attempt's retained authenticated client report, using the report's first server-received time |
+
+The original frozen IANA day and D21 age are technical source scopes, not an
+experiment attribution window. Facts use original XP time and an opaque hash of
+job/original canonical study reference/stage. Repeat capture cannot move time,
+extend expiry or increment again. Monthly grain is verified unit/stage/UTC month/
+**reminder contact channel**, not a unique learner, learning device, causal return
+or complete recovery rate. Store no XP amount, lesson/practice reference, result
+payload, device/session or report proof in analysis.
+
+The existing optional default-OFF source capture and bounded reconciliation call
+the same validated projection after delivery commits. No new learning-writer hook,
+producer, poller, endpoint, cadence input or provider is introduced. Missing/later
+or wrong-attempt/channel/reason/future report cannot create an after-report fact;
+it does not suppress the study-after-attempt fact. The projection keeps its old
+target-only `reason`/`learned_at`, and adds `reported_open_at`, `first_study_at`,
+`first_study_after_report_at`, and `verified_study_count`. Missing evidence is
+`None`, never a fabricated zero or negative-learning outcome.
+
+D21 original-time 90-day raw expiry, twelve-month anonymous totals, atomic
+increment and canonical purge cover both stages. Submitted deletion prevents
+recreation and blocked accounts gain no new study detail. Populated downgrade
+refuses either new raw or anonymous-only stage before changing constraints;
+old facts/source survive empty-new-stage roundtrips. The reviewed empty-QA head
+is 0141; no remote initializer/migration or activation is performed. Existing
+source facts can recover later, but incomplete coverage/causal/cohort policy and
+D09 calibration remain open. Disable analysis for rollback while retaining all
+operational and already recorded evidence.
 
 ## Retention and privacy boundary
 
@@ -271,7 +333,7 @@ cohort/experiment exposure requires its own reviewed read projection.
 ## Optional source integration
 
 `SMART_REMINDER_ANALYSIS_ENABLED=false` is the default. Setting it true requires
-the reviewed 0140 schema and enables observation/analysis-only retention, never
+the reviewed 0141 schema and enables observation/analysis-only retention, never
 study dispatch, admission, enrollment or a provider. Android's successful claim
 or receipt schedules only owner/job metadata in a Starlette background callback:
 the source transaction/session has closed and the complete HTTP body is sent
