@@ -599,7 +599,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('data["notifications"]', service)
         self.assertIn("await session.commit()", service)
         self.assertIn('default_source: str = "course_v3"', block)
-        self.assertEqual(block.count("return await _course_v3_map_for_user("), 2)
+        self.assertEqual(block.count("await _course_v3_map_for_user("), 2)
         self.assertIn("get_by_telegram_id_for_update(telegram_id)", block)
         self.assertIn("get_by_user_id(actor.id, lock=True)", block)
         self.assertIn('raise PwaAuthError("pwa_session_required")', block)
