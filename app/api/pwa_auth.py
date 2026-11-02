@@ -151,6 +151,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
                 status, token = await PwaAuthService(db, settings_obj).claim_telegram(
                     request_id=str(payload.link_request_id),
                     proof=request.cookies.get(PWA_TELEGRAM_COOKIE),
+                    replace_cookie=request.cookies.get(PWA_SESSION_COOKIE),
                 )
             response = JSONResponse({"ok": True, "status": status}, headers=_NO_STORE)
             if status == "complete":
