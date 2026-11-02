@@ -160,6 +160,12 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
                     path="/", secure=True, httponly=True, samesite="lax",
                 )
                 _clear_cookie(response, PWA_TELEGRAM_COOKIE)
+                # The other unfinished login provider must not replace an
+                # approved Telegram actor from a stale browser callback.
+                response.delete_cookie(
+                    PWA_OAUTH_COOKIE, path="/", secure=True,
+                    httponly=True, samesite="none",
+                )
             return response
         except PwaAuthError as exc:
             return _error(exc)
