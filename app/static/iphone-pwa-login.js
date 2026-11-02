@@ -11,6 +11,8 @@
   const oauthButtons = buttons.filter((button) => button.dataset.provider !== "telegram");
   let locale = new URLSearchParams(location.search).get("lang");
   if (!["uz", "ru", "tj"].includes(locale)) locale = "uz";
+  const telegramStorageKey = 'hskai.pwa.telegram.pending';
+  let telegramPolling = null;
   let statusKey = null;
   let statusError = false;
   language.value = locale;
@@ -45,6 +47,49 @@
     if (!response.ok || !payload.ok) throw new Error("request_failed");
     return payload;
   }
+  function uuid(value) {
+    return typeof value === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+  }
+  function stopTelegramPolling() {
+    if (telegramPolling !== null) window.clearInterval(telegramPolling);
+    telegramPolling = null;
+  }
+  async function claimTelegram() {
+    const linkId = sessionStorage.getItem(telegramStorageKey);
+    if (!uuid(linkId) || document.visibilityState === "hidden") return;
+    try {
+      const reply = await json("/api/v3/pwa-auth/telegram/claim", {
+        method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({link_request_id: linkId}),
+      });
+      if (reply.status === "complete") {
+        sessionStorage.removeItem(telegramStorageKey);
+        stopTelegramPolling();
+        actions.hidden = true;
+        message("desktopAuth.linked", false);
+      }
+    } catch (_) {
+      sessionStorage.removeItem(telegramStorageKey);
+      stopTelegramPolling();
+      message("desktopAuth.expired", true);
+      buttons.forEach((b) => { if (!b.hidden) b.disabled = false; });
+    }
+  }
+  function resumeTelegram() {
+    const linkId = sessionStorage.getItem(telegramStorageKey);
+    if (!uuid(linkId)) return;
+    actions.hidden = false;
+    message("pwaAuth.telegramPending", false);
+    if (telegramPolling === null) {
+      telegramPolling = window.setInterval(claimTelegram, 2500);
+    }
+    claimTelegram();
+  }
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") claimTelegram();
+  });
+  window.addEventListener("focus", claimTelegram);
+
   async function bootstrap() {
     render();
     if (window.HSKCharacters && typeof window.HSKCharacters.mount === "function") {
@@ -68,9 +113,7 @@
           button.disabled = false;
         });
         actions.hidden = false;
-        if (!oauthButtons.some((button) => !button.hidden)) {
-          message("desktopAuth.providerFailed", true);
-        }
+        resumeTelegram();
       } catch (_) {
         actions.hidden = true;
         message("desktopAuth.providerFailed", true);
@@ -79,9 +122,26 @@
   }
   async function start(button) {
     if (button.dataset.provider === "telegram") {
-      // Android has a proof-poll Telegram flow; PWA has not yet implemented it.
-      // Never substitute a Telegram deep-link for authenticated browser login.
-      message("pwaAuth.telegramPending", false);
+      buttons.forEach((b) => { b.disabled = true; });
+      message("desktopAuth.starting", false);
+      try {
+        const payload = await json("/api/v3/pwa-auth/telegram/start", {
+          method: "POST", headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({language: locale}),
+        });
+        const link = new URL(payload.authorize_url);
+        if (link.protocol !== "https:" || link.hostname !== "t.me" ||
+            !uuid(payload.link_request_id) ||
+            !link.searchParams.get("start")?.startsWith("pwa_link_" + payload.link_request_id)) {
+          throw new Error("invalid_bot_link");
+        }
+        sessionStorage.setItem(telegramStorageKey, payload.link_request_id);
+        message("pwaAuth.telegramPending", false);
+        location.assign(link.href);
+      } catch (_) {
+        message("desktopAuth.providerFailed", true);
+        buttons.forEach((b) => { if (!b.hidden) b.disabled = false; });
+      }
       return;
     }
     oauthButtons.forEach((b) => { b.disabled = true; });
