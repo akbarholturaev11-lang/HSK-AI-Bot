@@ -14,6 +14,9 @@ from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthServi
 from app.services.hsk30_unlock_service import Hsk30UnlockService
 from app.services.hsk30_promo_service import Hsk30PromoService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
+from app.services.pwa_auth_service import (
+    PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, require_same_origin,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -294,5 +297,90 @@ def create_course_tracks_router(*, session_factory, settings_obj) -> APIRouter:
             return _error(
                 CourseTrackRequestError("course_track_unavailable", status_code=503)
             )
+
+    # Independent browser transport for the same canonical learner. Do not
+    # make Telegram initData routes or native bearer endpoints accept PWA cookies.
+    # This minimal first P2 surface reuses the exact CourseTrack/Hsk30 services.
+    @router.get("/api/v3/pwa/course-tracks")
+    async def pwa_track_status(request: Request):
+        try:
+            async with session_factory() as session:
+                browser = PwaAuthService(session, settings_obj)
+                actor, _ = await browser.actor(request.cookies.get(PWA_SESSION_COOKIE))
+                result = await _status_payload(session, actor)
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (PwaAuthError, CourseTrackError) as exc:
+            return _error(exc)
+        except Exception:
+            logger.exception("PWA course track status failed")
+            return _error(CourseTrackRequestError(
+                "course_track_unavailable", status_code=503,
+            ))
+
+    @router.post("/api/v3/pwa/course-tracks/switch")
+    async def pwa_track_switch(request: Request):
+        try:
+            require_same_origin(request, settings_obj)
+            async with session_factory() as session:
+                browser = PwaAuthService(session, settings_obj)
+                actor, _ = await browser.mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                body = await _payload(request)
+                # A browser must not smuggle Telegram initData into a separate
+                # transport; only the verified cookie owner may be mutated.
+                if body.initData:
+                    raise CourseTrackRequestError("course_track_request_invalid", status_code=422)
+                track_service = CourseTrackService(session)
+                before_track = track_service.track_for_level(
+                    getattr(actor, "level", None)
+                )
+                if body.target_track == before_track and body.level:
+                    result = await track_service.change_level(actor, body.level)
+                else:
+                    result = await track_service.switch(
+                        actor, target_track=body.target_track,
+                        requested_level=body.level,
+                    )
+                await session.commit()
+                result = {
+                    "ok": True, **result,
+                    "hsk30_unlock": await Hsk30UnlockService(
+                        session
+                    ).payment_eligibility(actor),
+                }
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (PwaAuthError, CourseTrackRequestError, CourseTrackError) as exc:
+            return _error(exc)
+        except Exception:
+            logger.exception("PWA course track switch failed")
+            return _error(CourseTrackRequestError(
+                "course_track_unavailable", status_code=503,
+            ))
+
+    @router.post("/api/v3/pwa/course-tracks/promo-shown")
+    async def pwa_track_promo_shown(request: Request):
+        try:
+            require_same_origin(request, settings_obj)
+            async with session_factory() as session:
+                browser = PwaAuthService(session, settings_obj)
+                actor, _ = await browser.mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                promo = await Hsk30PromoService(session).mark_shown(actor)
+                await session.commit()
+            return JSONResponse(
+                content={"ok": True, "hsk30_promo": promo},
+                headers={"Cache-Control": "no-store"},
+            )
+        except (PwaAuthError, CourseTrackError) as exc:
+            return _error(exc)
+        except Exception:
+            logger.exception("PWA HSK 3.0 promo record failed")
+            return _error(CourseTrackRequestError(
+                "course_track_unavailable", status_code=503,
+            ))
 
     return router
