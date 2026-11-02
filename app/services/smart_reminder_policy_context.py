@@ -186,15 +186,20 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
     return ScoredActivityEvidence(tuple(sorted(times)), tuple(sorted(limits)))
 
 
-async def read_verified_learning(session, user_id, *, level, history_since, observed_at):
+async def read_verified_learning(session, user_id, *, level, history_since, observed_at, evidence_at=None):
     """Bounded original account results for analysis, never inactivity/policy.
 
     Terminal events are server-only. Their reviewed producer/mode/result and
     canonical XP/progress must agree; a generic open or reward is insufficient.
+    An explicit later evidence_at can corroborate original in-window XP with
+    a late server receipt. It never moves the result cutoff or original time.
     """
     since, now = _aware_utc(history_since), _aware_utc(observed_at)
     if since > now:
         raise ValueError("Learning history must not begin in the future")
+    receipt_cutoff = now if evidence_at is None else _aware_utc(evidence_at)
+    if receipt_cutoff < now:
+        raise ValueError("Learning proof cannot precede the result cutoff")
     progress = (await session.execute(select(CourseProgress.level, CourseProgress.completed_lessons_count)
         .where(CourseProgress.user_id == user_id))).mappings().one_or_none()
     completed = progress["completed_lessons_count"] if progress and progress["level"] == level else 0
@@ -207,7 +212,7 @@ async def read_verified_learning(session, user_id, *, level, history_since, obse
         CourseMiniAppEvent.user_id == user_id, CourseMiniAppEvent.level == level,
         CourseMiniAppEvent.event_name.in_(TERMINAL_EVENTS),
         CourseMiniAppEvent.source.in_((*lesson_sources, "course_miniapp")),
-        CourseMiniAppEvent.created_at >= since, CourseMiniAppEvent.created_at <= now)
+        CourseMiniAppEvent.created_at >= since, CourseMiniAppEvent.created_at <= receipt_cutoff)
         .order_by(CourseMiniAppEvent.created_at.desc(), CourseMiniAppEvent.id.desc())
         .limit(MAX_POLICY_ROWS + 1))).mappings().all()
     limits = {"lesson_and_practice_sources_only"}

@@ -26,6 +26,7 @@ EVENT = SmartReminderAnalysisEvent.__table__
 MONTHLY = SmartReminderAnalysisMonthly.__table__
 RESERVATION = SmartReminderReservationObservation.__table__
 RAW_RETENTION = timedelta(days=90)  # Owner D21; not operational grant/day/OFF retention.
+RETURN_WINDOW = timedelta(hours=24)  # Owner-selected elapsed measurement window, not cadence.
 MAX_BATCH = 128  # Bounded work, not product cadence or experiment calibration.
 UNAVAILABLE_OUTCOMES = ("verified_shown", "read", "opened", "attributed_server_learning")
 logger = logging.getLogger(__name__)
@@ -97,6 +98,21 @@ class TargetLearningEvidence:
     first_active_study_after_report_at: datetime | None = None
 
 
+@dataclass(frozen=True)
+class ReturnLearningEvidence:
+    """Positive temporal contact evidence; never causal or complete coverage."""
+    reason: str
+    contact_at: datetime | None = None
+    window_end_at: datetime | None = None
+    first_study_at: datetime | None = None
+    verified_study_count: int | None = None
+    window_elapsed: bool | None = None
+    coverage_limits: tuple[str, ...] = (
+        "reviewed_learning_sources_only", "negative_learning_coverage_unknown",
+        "causal_attribution_unavailable", "primary_cohort_metrics_unavailable",
+    )
+
+
 def _event_key(source_id, stage):
     return hashlib.sha256(("smart-analysis-v1:" + source_id + ":" + stage).encode()).hexdigest()
 
@@ -118,6 +134,14 @@ class SmartReminderAnalysisService:
 
     async def target_learning(self, user_id, job_id):
         """Internal partial source projection; never a policy or causal window."""
+        return await self._owned_learning(user_id, job_id, return_window=False)
+
+    async def return_learning(self, user_id, job_id):
+        """Internal 24-hour positive study projection, independent of tapping."""
+        return await self._owned_learning(user_id, job_id, return_window=True)
+
+    async def _owned_learning(self, user_id, job_id, *, return_window):
+        unavailable = ReturnLearningEvidence if return_window else TargetLearningEvidence
         if (type(user_id) is not int or user_id <= 0 or not isinstance(job_id, str) or
                 not 1 <= len(job_id) <= 36):
             raise ValueError("Owned Smart job identity required")
@@ -131,24 +155,26 @@ class SmartReminderAnalysisService:
                         select(AccountDeletionRequest.id).where(AccountDeletionRequest.status == "submitted",
                             or_(AccountDeletionRequest.user_id == user_id,
                                 AccountDeletionRequest.active_user_id == user_id)).limit(1)) is not None:
-                    return TargetLearningEvidence("learning_owner_unavailable")
+                    return unavailable("learning_owner_unavailable")
                 job = (await session.execute(select(SmartReminderJob.__table__).where(
                     SmartReminderJob.user_id == user_id, SmartReminderJob.id == job_id))).mappings().one_or_none()
                 if job is None:
-                    return TargetLearningEvidence("learning_job_unavailable")
+                    return unavailable("learning_job_unavailable")
                 attempts = (await session.execute(select(SmartReminderAttempt.__table__).where(
                     SmartReminderAttempt.job_id == job_id).order_by(SmartReminderAttempt.id)
                     .limit(MAX_BATCH + 1))).mappings().all()
                 grants = (await session.execute(select(SmartReminderAndroidGrant.__table__).where(
                     SmartReminderAndroidGrant.user_id == user_id, SmartReminderAndroidGrant.job_id == job_id)
                     .limit(MAX_BATCH + 1))).mappings().all() if job["selected_channel"] == "android" else []
-                return (await self._learning_evidence(session, job, attempts, grants, self.now()))[0]
+                reader = self._return_evidence if return_window else self._learning_evidence
+                return (await reader(session, job, attempts, grants, self.now()))[0]
 
-    async def _learning_evidence(self, session, job, attempts, grants, now):
-        """Reuse the same owned, locked source scope for projection and capture."""
-        from app.services.smart_reminder_policy_context import _LESSON_REF, read_scored_activity, read_verified_learning
+    @staticmethod
+    def _contact_scope(job, attempts, grants, now):
+        """Identical original contact proof for local-day and 24-hour analysis."""
+        from app.services.smart_reminder_policy_context import _LESSON_REF
         def unavailable(reason):
-            return TargetLearningEvidence(reason), ()
+            return None, None, {}, reason
         channel = job["selected_channel"]
         if channel not in {"android", "telegram"} or not job["policy_version"].startswith("smart-" + channel + "-v1:"):
             return unavailable("learning_source_unsupported")
@@ -171,6 +197,7 @@ class SmartReminderAnalysisService:
                 continue
             at, resolved = _utc(attempt["started_at"]), _utc(attempt["resolved_at"])
             if (not now - RAW_RETENTION < at <= resolved <= now or
+                    not start <= at < end or
                     not _utc(job["scheduled_at"]) <= at < _utc(job["expires_at"]) or
                     not _utc(job["created_at"]) <= _utc(attempt["prepared_at"]) <= at < _utc(attempt["expires_at"])):
                 continue
@@ -187,6 +214,16 @@ class SmartReminderAnalysisService:
                     boundaries[attempt["id"]] = at
         if not boundaries:
             return unavailable("learning_contact_unconfirmed")
+        return start, end, boundaries, None
+
+    async def _learning_evidence(self, session, job, attempts, grants, now):
+        """Reuse the same owned, locked source scope for projection and capture."""
+        from app.services.smart_reminder_policy_context import read_scored_activity, read_verified_learning
+        start, end, boundaries, reason = self._contact_scope(job, attempts, grants, now)
+        if reason is not None:
+            return TargetLearningEvidence(reason), ()
+        channel = job["selected_channel"]
+        reference = f"v3-part:{job['course_key']}:{job['lesson_order']}:complete"
         boundary = min(boundaries.values())
         evidence = await read_verified_learning(session, job["user_id"], level=job["course_key"],
             history_since=start, observed_at=min(now, end))
@@ -217,6 +254,29 @@ class SmartReminderAnalysisService:
             verified_study_count=len(studies) if studies else None,
             first_active_study_at=active[0] if active else None,
             first_active_study_after_report_at=active_after_report[0] if active_after_report else None), studies
+
+    async def _return_evidence(self, session, job, attempts, grants, now):
+        from app.services.smart_reminder_policy_context import read_scored_activity, read_verified_learning
+        start, _day_end, boundaries, reason = self._contact_scope(job, attempts, grants, now)
+        if reason is not None:
+            return ReturnLearningEvidence(reason), ()
+        boundary = min(boundaries.values())
+        end = boundary + RETURN_WINDOW
+        observed = min(now, end)
+        learning = await read_verified_learning(session, job["user_id"], level=job["course_key"],
+            history_since=start, observed_at=observed, evidence_at=now)
+        activity = await read_scored_activity(session, job["user_id"], level=job["course_key"],
+            history_since=boundary, observed_at=observed)
+        studies = tuple(sorted((s for s in learning.studies if boundary < s.accepted_at <= observed),
+            key=lambda s: (s.accepted_at, s.reference)))
+        active = sorted({s.accepted_at for s in studies} | {
+            at for at in activity.times if boundary < at <= observed})
+        limits = tuple(sorted(set(ReturnLearningEvidence("").coverage_limits) |
+            set(learning.coverage_limits) | set(activity.coverage_limits)))
+        return ReturnLearningEvidence("verified_study_within_24h" if active else "return_learning_unavailable",
+            contact_at=boundary, window_end_at=end, first_study_at=active[0] if active else None,
+            verified_study_count=len(studies) if studies else None, window_elapsed=now >= end,
+            coverage_limits=limits), studies
 
     @staticmethod
     def _insert(session, table):
@@ -320,6 +380,15 @@ class SmartReminderAnalysisService:
                         if evidence.reported_open_at is not None and study.accepted_at > evidence.reported_open_at:
                             count += await self._fact(session, job, source, "verified_study_after_report",
                                 study.accepted_at, channel, now, reason="original_server_result")
+                    returned, units = await self._return_evidence(session, job, attempts, grants, now)
+                    count += await self._fact(session, job, "return-contact-v1:" + job_id, "contact_study_24h",
+                        returned.first_study_at, channel, now, reason="verified_server_activity_24h")
+                    for study in units:
+                        # Owner/global canonical identity excludes job/channel:
+                        # overlapping contacts cannot count the same unit twice.
+                        source = "return-unit-v1:" + str(job["user_id"]) + ":" + study.activity_type + ":" + study.reference
+                        count += await self._fact(session, job, source, "study_unit_24h",
+                            study.accepted_at, channel, now, reason="original_server_result_24h")
                 return count
 
     async def capture_reservation(self, source):
