@@ -22,6 +22,7 @@ from app.api.miniapp_entitlements import create_miniapp_entitlements_router
 from app.api.miniapp_practice import create_miniapp_practice_router
 from app.db.base import Base
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
+from app.db.models.account_notice_delivery import AccountNoticeDelivery
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
@@ -347,6 +348,44 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.settings.PWA_AUTH_ENABLED = False
         self.assertEqual((await self.client.get(manifest_path)).status_code, 503)
         self.assertEqual((await self.client.get("/iphone-pwa")).status_code, 503)
+
+    async def test_pwa_account_notices_are_owned_and_cannot_ack_delivery(self):
+        url = "/api/v3/pwa/account-notices"
+        self.assertEqual((await self.client.get(url)).status_code, 401)
+        async with self.sessions() as db:
+            db.add(user(2, 2002))
+            db.add(AccountNoticeDelivery(
+                user_id=1, telegram_id=1001,
+                key="subscription_update", language="uz",
+                title="Account alert", body="Existing status",
+                action="subscription", status="android_pending",
+                android_targets=1, reason="account_notice",
+            ))
+            db.add(AccountNoticeDelivery(
+                user_id=2, telegram_id=2002,
+                key="private_notice", language="ru",
+                title="Different owner", body="Do not reveal",
+                action="course", status="telegram_sent",
+                android_targets=0, reason="account_notice",
+            ))
+            await db.commit()
+        state = await self.begin()
+        await self.callback(state)
+        response = await self.client.get(url)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.headers.get("cache-control"), "no-store")
+        rows = response.json()["notices"]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["title"], "Account alert")
+        self.assertNotIn("status", rows[0])
+        self.assertNotIn("telegram_payload", rows[0])
+        async with self.sessions() as db:
+            delivered = (await db.execute(
+                select(AccountNoticeDelivery).where(AccountNoticeDelivery.user_id == 1)
+            )).scalar_one()
+            self.assertEqual(delivered.status, "android_pending")
+            self.assertIsNone(delivered.android_shown_at)
+            self.assertIsNone(delivered.telegram_sent_at)
 
     async def test_pwa_inbox_uses_canonical_owner_and_does_not_invent_notices(self):
         url = "/api/v3/pwa/notifications"
