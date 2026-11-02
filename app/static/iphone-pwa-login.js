@@ -44,7 +44,7 @@
       credentials: "same-origin", cache: "no-store",
     }, options));
     const payload = await response.json();
-    if (!response.ok || !payload.ok) throw new Error("request_failed");
+    if (!response.ok || !payload.ok) throw new Error(typeof payload.error === "string" ? payload.error : "request_failed");
     return payload;
   }
   function uuid(value) {
@@ -68,10 +68,14 @@
         actions.hidden = true;
         message("desktopAuth.linked", false);
       }
-    } catch (_) {
+    } catch (error) {
       sessionStorage.removeItem(telegramStorageKey);
       stopTelegramPolling();
-      message("desktopAuth.expired", true);
+      const key = error.message === "pwa_telegram_not_approved"
+        ? "desktopAuth.cancelled"
+        : error.message === "pwa_telegram_expired"
+          ? "desktopAuth.expired" : "desktopAuth.providerFailed";
+      message(key, true);
       buttons.forEach((b) => { if (!b.hidden) b.disabled = false; });
     }
   }
