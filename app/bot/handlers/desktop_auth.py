@@ -306,7 +306,7 @@ def _pwa_copy(key: str, language: str) -> str:
 
 @router.message(
     CommandStart(deep_link=True),
-    F.text.regexp(r"^/start(?:@\\w+)?\\s+pwa_link_[0-9a-fA-F-]{36}(?:_(?:uz|ru|tj))?\\s*$"),
+    F.text.regexp(r"^/start(?:@\w+)?\s+pwa_link_[0-9a-fA-F-]{36}(?:_(?:uz|ru|tj))?\s*$"),
 )
 async def begin_pwa_telegram_login(message: Message, state: FSMContext, session) -> None:
     """Private Telegram approval for an iPhone PWA cookie, not native bearer auth."""
