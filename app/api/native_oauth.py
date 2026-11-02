@@ -402,7 +402,8 @@ def create_native_oauth_router(
                     )
                     if is_pwa:
                         cookie = await browser.consume_callback(
-                            provider="google", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
+                            provider="google", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE),
+                            replace_cookie=request.cookies.get(PWA_SESSION_COOKIE),
                         )
             if completed.get("platform") == "pwa" and is_pwa:
                 # Fixed same-origin path. Never redirect to caller-supplied URLs.
@@ -452,7 +453,8 @@ def create_native_oauth_router(
                     )
                     if is_pwa:
                         cookie = await browser.consume_callback(
-                            provider="apple", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
+                            provider="apple", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE),
+                            replace_cookie=request.cookies.get(PWA_SESSION_COOKIE),
                         )
             if completed.get("platform") == "pwa" and is_pwa:
                 # Fixed same-origin path. Never redirect to caller-supplied URLs.
