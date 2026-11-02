@@ -26,6 +26,7 @@ from app.db.models.smart_reminder import (
     SmartReminderJob, SmartReminderPreference,
 )
 from app.repositories.user_repo import UserRepository
+from app.db.models.smart_reminder_analysis import SmartReminderAnalysisEvent
 
 
 class AccountDeletionCleanupTests(unittest.IsolatedAsyncioTestCase):
@@ -66,12 +67,16 @@ class AccountDeletionCleanupTests(unittest.IsolatedAsyncioTestCase):
                     issued_at=start, expires_at=start+timedelta(minutes=1),
                     receipt_id=f"qa-receipt-{uid}", receipt_outcome="client_outcome_unknown",
                     received_at=start+timedelta(minutes=2)))
+                session.add(SmartReminderAnalysisEvent(user_id=uid, event_key=str(uid)*64,
+                    job_id=f"smart-job-{uid}", stage="outcome_unknown", channel="android",
+                    reason_code="stored_outcome_unknown", occurred_at=start,
+                    expires_at=start+timedelta(days=90)))
             await session.commit()
         async with self.sessions() as session:
             self.assertTrue(await UserRepository(session).delete_by_user_id(1))
             await session.commit()
             for model in (SmartReminderPreference, SmartReminderConsent, SmartReminderCapability,
-                          SmartReminderJob, SmartReminderAttempt, SmartReminderAndroidGrant):
+                          SmartReminderJob, SmartReminderAttempt, SmartReminderAndroidGrant, SmartReminderAnalysisEvent):
                 self.assertEqual(len(await self._rows(session, model)), 1)
             kept = await session.get(SmartReminderPreference, 2)
             self.assertFalse(kept.master_enabled)

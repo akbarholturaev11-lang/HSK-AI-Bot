@@ -46,6 +46,7 @@ from .smart_reminder import (
     SmartReminderJob, SmartReminderAttempt, SmartReminderMutation, SmartReminderRouting, SmartReminderAndroidGrant,
 )
 from .account_notice_delivery import AccountNoticeDelivery
+from .smart_reminder_analysis import SmartReminderAnalysisEvent, SmartReminderAnalysisMonthly
 from .entitlement_shadow_event import EntitlementShadowEvent
 from .trial_risk_event import TrialRiskEvent
 from .user_identity import UserIdentity
