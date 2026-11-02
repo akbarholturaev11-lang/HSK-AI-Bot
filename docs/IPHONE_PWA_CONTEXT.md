@@ -45,11 +45,19 @@ Produce a standalone, installable iPhone Home Screen **learner Course PWA** with
 7. Focused backend security, browser E2E, iPhone physical QA and release gates.
 
 ## Current state and next action
-- [x] Owner's target and scope captured.
-- [x] Key existing code, universal-account design and OpenSpec skill preliminarily audited from `main` above.
-- [ ] Run **official OpenSpec CLI on GitHub Actions**; record actual version, context, generated scaffold, and instructions.
-- [ ] Populate and validate `proposal.md`, `specs/`, `design.md` and `tasks.md` using CLI-provided instructions; record validation URL and exact pass/fail.
-- [ ] Review plan for unsupported assumptions and a credible implementation/test sequence.
-- [ ] Obtain owner decision on implementation; **do not mark code or device QA done based on planning validation**.
 
-If a new `main` HEAD appears, reconcile the related source/contracts before implementation instead of assuming this snapshot is current.
+- [x] Owner's goal and Telegram-independent iPhone learner-PWA scope locked.
+- [x] Existing Mini App/backend, shared identity, UI and OpenSpec constraints source-audited from baseline `main`.
+- [x] **Official OpenSpec CLI executed on GitHub Actions** and generated the `iphone-course-pwa` scaffold.
+- [x] Four new capability specifications, plus proposal, design and stage-by-stage tasks written on the isolated planning branch.
+- [x] `openspec validate iphone-course-pwa` completed successfully in the planning GitHub Actions workflow, using the committed artifacts.
+- [ ] Owner review of design/plan; future implementation deliberately not started.
+- [ ] Real OAuth/provider callback and physical iPhone tests remain unverified, as does deployment.
+
+**CLI validation evidence:** [GitHub Actions run #41446061294](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41446061294), outcome **success**, validated source commit `28df29f5bb14c17cf80e0f604346b006ab028508` (2026-11-02 UTC). That run executed `openspec context --json`, `openspec status --change iphone-course-pwa --json`, the official CLI artifact instructions and `openspec validate iphone-course-pwa`. A short-lived downloadable evidence artifact is attached to the run. **CLI success proves only spec structure, not backend tests, iPhone/browser QA or production readiness.**
+
+**Plan entry points:** [proposal](../openspec/changes/iphone-course-pwa/proposal.md), [design](../openspec/changes/iphone-course-pwa/design.md), [tasks](../openspec/changes/iphone-course-pwa/tasks.md), and [capability specs](../openspec/changes/iphone-course-pwa/specs/). This context is the only continuation navigator; task checkboxes are for future code/device work, not planning.
+
+**Next work when owner approves implementation:** refresh `origin/main`; run tasks P0 source/route inventory first; then P1 secure browser session and linking. Do not write runtime code, merge or deploy merely because this plan was validated.
+
+If a new `main` HEAD appears, reconcile the affected source/contracts before implementation instead of assuming this snapshot is current.
