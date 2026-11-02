@@ -468,6 +468,8 @@ class DesktopAuthService:
         bot_start_payload = (
             f"{ANDROID_LINK_PREFIX}{link_request.id}"
             if platform == "android"
+            else f"{PWA_LINK_PREFIX}{link_request.id}_{language}"
+            if platform == "pwa" and flow == TELEGRAM_FLOW and language in {"uz", "ru", "tj"}
             else f"{PWA_LINK_PREFIX}{link_request.id}"
             if platform == "pwa" and flow == TELEGRAM_FLOW
             else "desktop_link"
