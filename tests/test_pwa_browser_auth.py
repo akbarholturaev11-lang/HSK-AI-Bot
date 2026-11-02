@@ -325,6 +325,31 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             401,
         )
 
+    async def test_pwa_inbox_uses_canonical_owner_and_does_not_invent_notices(self):
+        url = "/api/v3/pwa/notifications"
+        self.assertEqual((await self.client.get(url)).status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        with patch(
+            "app.services.course_notification_service.CourseNotificationService.list_for_user",
+            new_callable=AsyncMock,
+        ) as inbox:
+            inbox.return_value = [
+                {"id": 5, "key": "course_progress", "body": "Existing notice"}
+            ]
+            response = await self.client.get(url)
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertEqual(response.json()["notifications"][0]["id"], 5)
+            self.assertEqual(response.headers.get("cache-control"), "no-store")
+            self.assertEqual(inbox.await_args.args[0].id, 1)
+            inbox.return_value = []
+            empty = await self.client.get(url)
+            self.assertEqual(empty.json()["notifications"], [])
+        # Read-only content must not manufacture Telegram/Android delivery state.
+        self.assertEqual(
+            (await self.client.get("/api/v3/native-auth/identities")).status_code, 401
+        )
+
     async def test_pwa_drill_words_and_report_reuse_canonical_owner_and_guards(self):
         words_path = "/api/v3/pwa/practice/words"
         report_path = "/api/v3/pwa/practice/report"
