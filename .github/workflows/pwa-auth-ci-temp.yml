@@ -52,9 +52,12 @@ jobs:
               raise SystemExit(1)
           PY
       - name: Full lifecycle JWT JWKS test (diagnostic only)
+        id: candidate_jwks
         continue-on-error: true
         run: python -m unittest -q tests.test_native_oauth_lifecycle.NativeOAuthLifecycleTests.test_signed_tokens_must_match_the_selected_nonce_domain
       - name: Check identical JWKS fixture on unchanged main
+        env:
+          CANDIDATE_JWKS: ${{ steps.candidate_jwks.outcome }}
         run: |
           set -euo pipefail
           git fetch --depth=1 origin main
@@ -66,14 +69,15 @@ jobs:
           code=$?
           set -e
           if [ "$code" -eq 0 ]; then
-            echo "Original main JWKS test PASSES; inspect candidate-specific failure."
+            echo "Unmodified main JWKS test passes."
+            if [ "$CANDIDATE_JWKS" != "success" ]; then
+              echo "Candidate failure with green baseline is a regression."
+              exit 1
+            fi
           elif grep -q "oidc_jwks_unavailable" /tmp/hsk-jwks-main.log; then
-            echo "Original main reproduces oidc_jwks_unavailable; this is a baseline/provider-JWKS fixture limitation."
+            echo "Unmodified main reproduces oidc_jwks_unavailable (intermittent JWKS fixture)."
           else
             tail -80 /tmp/hsk-jwks-main.log
-            echo "Original main failed for a different reason."
-            exit 1
-          fi
-          if [ "$code" -eq 0 ]; then
+            echo "Unmodified main failed for an unrelated reason."
             exit 1
           fi
