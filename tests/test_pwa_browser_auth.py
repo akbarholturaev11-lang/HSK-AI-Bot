@@ -592,6 +592,10 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
 
     async def test_new_provider_identity_stays_browser_only_and_has_canonical_user(self):
+        original_state = await self.begin()
+        original_login = await self.callback(original_state)
+        self.assertEqual(original_login.status_code, 303, original_login.text)
+        original_cookie = original_login.cookies[PWA_SESSION_COOKIE]
         state = await self.begin()
         new_identity = VerifiedIdentity(
             provider="google", subject="brand-new-provider-subject",
@@ -614,6 +618,17 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as db:
             created = await db.get(User, me.json()["user_id"])
             self.assertIsNone(created.telegram_id)
+        prior = AsyncClient(
+            transport=self.client._transport, base_url=ORIGIN,
+            cookies={PWA_SESSION_COOKIE: original_cookie},
+        )
+        try:
+            # A different Google subject must not leave the old learner's
+            # browser cookie usable or attribute their data to the new user.
+            self.assertEqual((await prior.get("/api/v3/pwa-auth/session")).status_code, 401)
+            self.assertNotEqual(me.json()["user_id"], 1)
+        finally:
+            await prior.aclose()
 
     async def test_apple_form_post_requires_browser_proof_and_separate_cookie(self):
         from app.services import apple_auth
