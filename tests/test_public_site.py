@@ -270,6 +270,38 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn("telegram-web-app.js", response.text)
             self.assertEqual(response.headers["content-language"], page["lang"])
 
+    async def test_android_privacy_policy_is_public_and_review_ready(self):
+        response = await self.client.get("/privacy")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.headers["content-type"].startswith("text/html"))
+        self.assertEqual(response.headers["referrer-policy"], "no-referrer")
+        self.assertNotIn("noindex", response.headers.get("x-robots-tag", "").lower())
+        self.assertNotIn("authorization", response.headers)
+        self.assertIn("HSK AI Privacy Policy", response.text)
+        self.assertIn("Pomp HSK AI", response.text)
+        self.assertIn("hskaiapp@gmail.com", response.text)
+        for section in (
+            "Information we collect and use",
+            "Microphone, photos and notifications",
+            "Service providers and sharing",
+            "Security",
+            "Retention and deletion",
+            "Your choices and questions",
+        ):
+            self.assertIn(section, response.text)
+        for disclosure in (
+            "Google or Apple can create an account without Telegram",
+            "Learning activity",
+            "AI, images and speech",
+            "Firebase Cloud Messaging",
+            "30 days",
+            "Approved payment and accounting records",
+            'href="/account-deletion"',
+        ):
+            self.assertIn(disclosure, response.text)
+        self.assertNotIn("telegram-web-app.js", response.text)
+        self.assertIn("/privacy", SITEMAP_PATHS)
+
     async def test_account_and_purchase_guides_cover_provider_only_accounts(self):
         for locale in ("uz", "ru", "tj"):
             response = await self.client.get(f"/{locale}/guide/subscription/")
