@@ -13,6 +13,7 @@
   if (!["uz", "ru", "tj"].includes(locale)) locale = "uz";
   const telegramStorageKey = 'hskai.pwa.telegram.pending';
   let telegramPolling = null;
+  let telegramClaimInFlight = false;
   let statusKey = null;
   let statusError = false;
   language.value = locale;
@@ -56,19 +57,32 @@
   }
   async function claimTelegram() {
     const linkId = sessionStorage.getItem(telegramStorageKey);
-    if (!uuid(linkId) || document.visibilityState === "hidden") return;
+    if (!uuid(linkId) || document.visibilityState === "hidden" || telegramClaimInFlight) return;
+    telegramClaimInFlight = true;
     try {
       const reply = await json("/api/v3/pwa-auth/telegram/claim", {
         method: "POST", headers: {"Content-Type": "application/json"},
         body: JSON.stringify({link_request_id: linkId}),
       });
-      if (reply.status === "complete") {
+      if (reply.status === "complete" && sessionStorage.getItem(telegramStorageKey) === linkId) {
         sessionStorage.removeItem(telegramStorageKey);
         stopTelegramPolling();
         actions.hidden = true;
         message("desktopAuth.linked", false);
       }
     } catch (error) {
+      if (sessionStorage.getItem(telegramStorageKey) !== linkId) return;
+      // A brief offline period or server error must not discard the
+      // browser-bound Telegram request; the next poll can still claim it.
+      const terminal = [
+        "pwa_telegram_not_approved", "pwa_telegram_expired",
+        "pwa_telegram_proof_invalid", "pwa_telegram_owner_invalid",
+        "pwa_telegram_invalid",
+      ].includes(error.message);
+      if (!terminal) {
+        message("desktopAuth.providerFailed", true);
+        return;
+      }
       sessionStorage.removeItem(telegramStorageKey);
       stopTelegramPolling();
       const key = error.message === "pwa_telegram_not_approved"
@@ -77,6 +91,8 @@
           ? "desktopAuth.expired" : "desktopAuth.providerFailed";
       message(key, true);
       buttons.forEach((b) => { if (!b.hidden) b.disabled = false; });
+    } finally {
+      telegramClaimInFlight = false;
     }
   }
   function resumeTelegram() {
@@ -118,6 +134,10 @@
         });
         actions.hidden = false;
         resumeTelegram();
+        if (new URLSearchParams(location.search).get("auth") === "cancelled" &&
+            !uuid(sessionStorage.getItem(telegramStorageKey))) {
+          message("desktopAuth.cancelled", true);
+        }
       } catch (_) {
         actions.hidden = true;
         message("desktopAuth.providerFailed", true);
