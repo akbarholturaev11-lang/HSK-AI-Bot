@@ -202,3 +202,19 @@ The system SHALL support an internal bounded source projection of original verif
 #### Scenario: Missing or replayed learning evidence
 - **WHEN** only generic app opens, bonus XP, a pre-attempt original result replayed later, another target or unsupported/missing sources exist
 - **THEN** the projection returns unavailable evidence rather than zero learning, an attributed completion or a reason to send again
+
+
+### Requirement: Authenticated job-bound client-reported opens
+The system SHALL optionally record a client-reported reminder open only with a valid original delivery-bound proof and current owning authentication. It MUST distinguish that report from independent display/open proof, server learning and causal return, preserve delivery authority and minimize retained data.
+
+#### Scenario: Owning native notification or Telegram link is opened
+- **WHEN** an authenticated owning client reports the original accepted/posted reminder proof within its frozen local day
+- **THEN** one explicit client-reported-open fact and anonymous bucket may be recorded without a new send, access grant or lesson completion
+
+#### Scenario: Repeated, forged or transferred proof
+- **WHEN** a proof is replayed, forged, used by another owner/native session, or lacks a confirmed contact source
+- **THEN** it cannot increase the count again, extend retention, cross account boundaries or authorize any delivery
+
+#### Scenario: Missing or disabled observation
+- **WHEN** analysis is disabled, metadata is absent, or best-effort reporting fails
+- **THEN** existing navigation and delivery continue and open/learning coverage remains unknown

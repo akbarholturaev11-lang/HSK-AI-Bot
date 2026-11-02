@@ -205,6 +205,13 @@ class MainActivity : ComponentActivity() {
         val id = if (source == "notification") intent.getStringExtra(WidgetIntents.EVENT_ID) ?: UUID.randomUUID().toString()
             else UUID.randomUUID().toString()
         lifecycleScope.launch { app.widgetCoordinator.event(name, id) }
+        if (source == "notification") {
+            com.pomp.hskai.core.notify.SmartStudyOpenHint.parse(
+                intent?.getStringExtra(WidgetIntents.SMART_JOB),
+                intent?.getStringExtra(WidgetIntents.SMART_PROOF),
+                intent?.getStringExtra(WidgetIntents.SMART_EPOCH),
+            )?.let { hint -> lifecycleScope.launch { app.studyReminderCoordinator.recordOpen(hint) } }
+        }
     }
 
     private fun deliverDestination(raw: String?) {

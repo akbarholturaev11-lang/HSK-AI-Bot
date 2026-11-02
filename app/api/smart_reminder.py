@@ -21,6 +21,8 @@ from app.services.smart_reminder_capabilities import SmartCapabilityPatch, Smart
 from app.services.smart_reminder_android import AndroidStudyClaim, AndroidStudyReceipt, SmartReminderAndroidService
 from app.services.smart_reminder_analysis import ANDROID_GUARD_CAPTURE, SmartReminderAnalysisObserver
 
+from app.services.smart_reminder_open import SmartOpenReport, SmartReminderOpenService
+
 logger = logging.getLogger(__name__)
 HEADERS = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff"}
 MAX_BYTES = 4096
@@ -50,9 +52,11 @@ async def _payload(request, model=SmartReminderPatch):
 
 
 def create_smart_reminder_router(*, session_factory, settings_obj, android_delivery_factory=None,
-                                 analysis_observer=None):
+                                 analysis_observer=None, open_service=None):
     router = APIRouter(tags=["smart-reminder"])
     observer = analysis_observer if analysis_observer is not None else SmartReminderAnalysisObserver(settings_obj, session_factory)
+
+    opens = open_service if open_service is not None else SmartReminderOpenService(settings_obj)
 
     async def actor(session, request, android):
         if any(len(request.headers.getlist(key)) > 1 for key in ("Authorization", "X-Telegram-Init-Data")):
@@ -96,7 +100,9 @@ def create_smart_reminder_router(*, session_factory, settings_obj, android_deliv
             async with session_factory() as session:
                 async with session.begin():
                     current = await actor(session, request, android)
-                    if delivery:
+                    if delivery == "open":
+                        result = await opens.record(session, current, job_id, await _payload(request, SmartOpenReport))
+                    elif delivery:
                         service = android_delivery_factory(session) if android_delivery_factory else SmartReminderAndroidService(session)
                         if delivery in {"due", "mode"}: result = await getattr(service, delivery)(current)
                         else:
@@ -106,6 +112,10 @@ def create_smart_reminder_router(*, session_factory, settings_obj, android_deliv
                         service = SmartReminderCapabilityService(session) if capability else SmartReminderPreferencesService(session)
                         model = SmartCapabilityPatch if capability else SmartReminderPatch
                         result = await service.patch(current, await _payload(request, model)) if write else await service.read(current)
+            if delivery == "claim" and result.get("dispatch_allowed") is True:
+                proof = opens.proof(current, job_id, result.get("grant_id"))
+                if proof is not None:
+                    result["open_proof"] = proof
             background = None
             if (observer.enabled and result.get("ok") is True and
                     (delivery == "receipt" or delivery == "claim" and (
@@ -167,5 +177,14 @@ def create_smart_reminder_router(*, session_factory, settings_obj, android_deliv
     @router.post("/api/v3/android/smart-reminder/jobs/{job_id}/receipt")
     async def android_study_receipt(job_id: str, request: Request):
         return await respond(request, android=True, write=True, delivery="receipt", job_id=job_id)
+
+
+    @router.post("/api/v3/android/smart-reminder/jobs/{job_id}/open")
+    async def android_open(request: Request, job_id: str):
+        return await respond(request, android=True, write=True, delivery="open", job_id=job_id)
+
+    @router.post("/api/v3/smart-reminder/jobs/{job_id}/open")
+    async def telegram_open(request: Request, job_id: str):
+        return await respond(request, android=False, write=True, delivery="open", job_id=job_id)
 
     return router

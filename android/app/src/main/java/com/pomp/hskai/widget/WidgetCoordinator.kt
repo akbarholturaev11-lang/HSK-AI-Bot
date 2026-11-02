@@ -114,6 +114,9 @@ class WidgetCoordinator(private val app: HskAiApplication, private val eventsApi
 object WidgetIntents {
     const val SOURCE = "native_entry_source"
     const val EVENT_ID = "native_entry_event_id"
+    const val SMART_JOB = "smart_study_open_job"
+    const val SMART_PROOF = "smart_study_open_proof"
+    const val SMART_EPOCH = "smart_study_open_epoch"
 
     fun open(context: Context, source: String, courseOnly: Boolean = false): Intent =
         Intent(context, MainActivity::class.java).apply {

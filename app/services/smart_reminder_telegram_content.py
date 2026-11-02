@@ -2,7 +2,8 @@
 from dataclasses import dataclass
 from pathlib import Path
 from string import Formatter
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qs, urlencode, urlsplit
+import re
 
 from aiogram.types import FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from sqlalchemy import select
@@ -29,7 +30,7 @@ class TelegramContent:
     media_path: str | None = None
 
 
-async def render_telegram_content(session, actor, job):
+async def render_telegram_content(session, actor, job, *, open_proof=None):
     """Called after current target/access policy under the canonical User lock."""
     user = (await session.execute(select(User.language).where(
         User.id == actor.user_id, User.telegram_id == actor.telegram_id))).one_or_none()
@@ -72,6 +73,8 @@ async def render_telegram_content(session, actor, job):
             parsed.fragment or set(query) != {*expected, "v"} or
             any(query.get(k) != [v] for k, v in expected.items())):
         raise SmartReminderError("telegram_content_target_invalid", 409)
+    if isinstance(open_proof, str) and re.fullmatch(r"[0-9a-f]{64}", open_proof):
+        url += "#" + urlencode({"smart_job": job["id"], "smart_proof": open_proof})
     markup = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(
         text=notification_message("reminder.continueLessonNumber", lang, lesson=lesson),
         web_app=WebAppInfo(url=url))]])

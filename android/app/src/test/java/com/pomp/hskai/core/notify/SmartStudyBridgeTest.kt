@@ -34,6 +34,7 @@ class SmartStudyBridgeTest {
         var generation = 1L
         var allowed = true
         var posts = 0
+        var openHint: SmartStudyOpenHint? = null
         var claims = 0
         var observations = 0
         var required = true
@@ -68,7 +69,50 @@ class SmartStudyBridgeTest {
                 if (claimFails) ApiResult.Failure(ApiError.Offline) else ApiResult.Success(change(grant))
             },
             receipt = { _, _, body -> receipts += body; ApiResult.Success(SmartStudyReceiptAck(ack,1)) },
-            permission = { allowed }, post = { posts++; onPost() }, clock = { now }, elapsed = { elapsed })
+            permission = { allowed }, post = { _, hint -> openHint = hint; posts++; onPost() }, clock = { now }, elapsed = { elapsed })
+    }
+
+    @Test fun `open reporting uses current auth outside locks and no posting path`() = runTest {
+        val f=Fixture(); f.setup(); var locked=false; var reports=0
+        val hint=SmartStudyOpenHint(f.job,"a".repeat(64),f.store.read().epoch)
+        val reporter=SmartStudyOpenReporter(f.store,
+            session={ ApiResult.Success(AuthRepository.AuthenticatedSession("synthetic",1)) },
+            commitCurrent={_,block -> locked=true;block();locked=false;true},
+            report={bearer,job,proof -> assertFalse(locked);assertEquals("Bearer synthetic",bearer)
+                assertEquals(hint.jobId,job);assertEquals(hint.proof,proof);reports++})
+        reporter.run(hint)
+        assertEquals(1,reports);assertEquals(0,f.posts);assertEquals(0,f.claims)
+        f.store.clear();f.store.linked();reporter.run(hint)
+        assertEquals(1,reports)
+    }
+
+    @Test fun `auth generation change and observation failure leave navigation free`() = runTest {
+        val f=Fixture();f.setup();var reports=0
+        val hint=SmartStudyOpenHint(f.job,"a".repeat(64),f.store.read().epoch)
+        SmartStudyOpenReporter(f.store,
+            session={ApiResult.Success(AuthRepository.AuthenticatedSession("synthetic",1))},
+            commitCurrent={_,_ -> false},report={_,_,_ -> reports++}).run(hint)
+        assertEquals(0,reports)
+        SmartStudyOpenReporter(f.store,
+            session={ApiResult.Success(AuthRepository.AuthenticatedSession("synthetic",1))},
+            commitCurrent={_,block -> block();true},
+            report={_,_,_ -> throw IllegalStateException("synthetic observation failure")}).run(hint)
+        assertEquals(0,f.posts)
+    }
+
+    @Test fun `only live optional proof reaches the notification with the current link`() = runTest {
+        val f=Fixture(); f.setup(); f.change = { it.copy(openProof="a".repeat(64)) }
+        f.bridge().run()
+        assertEquals(SmartStudyOpenHint(f.job,"a".repeat(64),f.store.read().epoch),f.openHint)
+        assertEquals(1,f.posts)
+    }
+
+    @Test fun `missing or malformed optional metadata does not alter posting`() = runTest {
+        for (proof in listOf(null,"bad","A".repeat(64),"a".repeat(65))) {
+            val f=Fixture(); f.setup(); f.change = { it.copy(openProof=proof) }; f.bridge().run()
+            assertEquals(1,f.posts); assertNull(f.openHint)
+        }
+        assertNull(SmartStudyOpenHint.parse("not-uuid","a".repeat(64),java.util.UUID.randomUUID().toString()))
     }
 
     @Test fun `FCM and worker race shares one persisted claim day and notification`() = runTest {
