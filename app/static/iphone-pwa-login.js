@@ -51,12 +51,18 @@
   function uuid(value) {
     return typeof value === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
   }
+  function pendingTelegramId() {
+    // Storage may be unavailable in restricted Safari contexts. OAuth sign-in
+    // must stay usable even if Telegram pending state cannot be restored.
+    try { return sessionStorage.getItem(telegramStorageKey); }
+    catch (_) { return null; }
+  }
   function stopTelegramPolling() {
     if (telegramPolling !== null) window.clearInterval(telegramPolling);
     telegramPolling = null;
   }
   async function claimTelegram() {
-    const linkId = sessionStorage.getItem(telegramStorageKey);
+    const linkId = pendingTelegramId();
     if (!uuid(linkId) || document.visibilityState === "hidden" || telegramClaimInFlight) return;
     telegramClaimInFlight = true;
     try {
@@ -64,14 +70,14 @@
         method: "POST", headers: {"Content-Type": "application/json"},
         body: JSON.stringify({link_request_id: linkId}),
       });
-      if (reply.status === "complete" && sessionStorage.getItem(telegramStorageKey) === linkId) {
+      if (reply.status === "complete" && pendingTelegramId() === linkId) {
         sessionStorage.removeItem(telegramStorageKey);
         stopTelegramPolling();
         actions.hidden = true;
         message("desktopAuth.linked", false);
       }
     } catch (error) {
-      if (sessionStorage.getItem(telegramStorageKey) !== linkId) return;
+      if (pendingTelegramId() !== linkId) return;
       // A brief offline period or server error must not discard the
       // browser-bound Telegram request; the next poll can still claim it.
       const terminal = [
@@ -96,7 +102,7 @@
     }
   }
   function resumeTelegram() {
-    const linkId = sessionStorage.getItem(telegramStorageKey);
+    const linkId = pendingTelegramId();
     if (!uuid(linkId)) return;
     actions.hidden = false;
     message("pwaAuth.telegramPending", false);
@@ -141,7 +147,7 @@
         actions.hidden = false;
         resumeTelegram();
         if (new URLSearchParams(location.search).get("auth") === "cancelled" &&
-            !uuid(sessionStorage.getItem(telegramStorageKey))) {
+            !uuid(pendingTelegramId())) {
           message("desktopAuth.cancelled", true);
         }
       } catch (_) {
