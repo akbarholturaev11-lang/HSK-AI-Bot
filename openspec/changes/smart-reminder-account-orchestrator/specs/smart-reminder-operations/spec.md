@@ -126,3 +126,19 @@ Eligible new and sparse-history learners SHALL receive useful deterministic rule
 #### Scenario: One prediction dimension is unproven
 - **WHEN** the selected model has no reliable personal prediction or validated advantage for a time/content/channel/cadence dimension
 - **THEN** that dimension keeps rules under the unchanged product guards, even if another dimension is eligible
+
+
+### Requirement: Reconcile committed analysis independently of delivery
+The system SHALL recover available committed Smart outcome facts after a missed observer callback through bounded source reconciliation and the existing source-stage deduplication. It MUST NOT resend, change delivery authority, erase original sources or infer complete coverage, display or learning from an analysis scan.
+
+#### Scenario: Process interruption after committed native receipt
+- **WHEN** a reviewed v1 receipt commits but its optional analysis callback is lost before capture
+- **THEN** enabled reconciliation can recover the original source-time fact once without issuing a new posting grant or incrementing an already captured stage
+
+#### Scenario: One owner is locked while other jobs await reconciliation
+- **WHEN** a source capture exceeds the bounded reconciliation tick budget
+- **THEN** its transaction is cancelled safely, later ticks can progress past that job, and a later pass can retry it without changing delivery or claiming the gap was measured
+
+#### Scenario: Late outcome belongs to an old parent
+- **WHEN** a retained reviewed job has expired reservation detail but a recent valid original attempt outcome or receipt
+- **THEN** reconciliation considers that recent source and cannot recreate expired reservation detail or extend its retention

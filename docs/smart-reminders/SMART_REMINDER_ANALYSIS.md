@@ -1,14 +1,15 @@
 # Smart delivery analysis contract
 
-The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.56. This
-contract defines P6 6.1a and the optional 6.1b integration, not a live rollout.
+The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.58. This
+contract defines P6 6.1a, optional 6.1b integration and bounded 6.1c reconciliation,
+not a live rollout.
 
 `SmartReminderAnalysisService.capture_job(user_id, job_id)` is an internal,
 explicit operation over a committed owned job and its attempts/Android grants.
 It owns a separate User-first transaction. A delivery transaction never calls
 or depends on it; analytics failure cannot erase an already committed outcome.
 There is no capture endpoint, provider, learner input or automatic inventory
-scan. Source hooks and the independent retention task default OFF. Only current reviewed v1 Android/Telegram policy
+scan. Source hooks, reconciliation and independent retention default OFF. Only current reviewed v1 Android/Telegram policy
 families with matching selected channels qualify; shadow/unknown policy jobs
 are excluded. Source timestamps must be neither future nor older than 90 days.
 
@@ -27,7 +28,7 @@ The existing attempt enum alone cannot prove `verified_shown` or a client post
 without its matching receipt. Shown, read, opened and attributed server learning
 remain **unavailable**; these counters are not fabricated zeros or inferred from
 FCM acceptance, widget/app opens or XP. Candidate/suppression instrumentation,
-trusted open/learning linkage, durable reconciliation, denominator/experiment
+trusted open/learning linkage, complete coverage, denominator/experiment
 and model evaluation remain separate parent 6.1/6.2/P7 work.
 
 Migration `0137_smart_analysis` adds two tables:
@@ -75,8 +76,8 @@ response or accepted/unknown Telegram outcome. Parent cancellation propagates.
 Disabled hooks make no analysis SQL; due/preference reads remain non-persisting.
 
 Capture is best-effort: interruption between commit/response and observation can
-miss a fact. Existing source evidence remains available for a later explicit
-idempotent reconciliation. No complete measurement coverage, non-display,
+miss a fact. Bounded idempotent reconciliation can recover available committed
+source facts as described below; source history is still not complete coverage. No complete measurement coverage, non-display,
 negative learning or learning lift follows from missing analysis. These gaps
 must be addressed before a meaningful cohort baseline or ML admission.
 
@@ -86,6 +87,39 @@ It processes one existing analysis page each technical interval (60 seconds by
 default), retries cleanup after failure and is cancelled/awaited on shutdown.
 It creates no jobs, attempts or alternate sends. No remote flag or schedule is
 enabled merely by merging this source.
+
+## Bounded source reconciliation
+
+The same default-false analysis switch starts a separate reconciliation task.
+Its source-page transaction reads only owner/job IDs from reviewed v1 selected
+Android/Telegram jobs, closes before any owner capture and holds no delivery
+lock. Pages use stable job-ID keyset ordering, a 128-job technical maximum and
+bounded SQL duration. A source qualifies within D21's original 90-day window:
+reservation, terminal cancel/expiry, attempt start/resolution or native receipt.
+A recent child outcome can therefore qualify even if its parent creation is
+older; expired parent facts cannot be recreated or extend their retention.
+
+Each tick has a total technical time budget (two seconds by default). It calls
+the existing User-first capture transaction for each source, preserving fresh
+ownership/deletion/policy and receipt validation. A failed/locked owner is
+cancelled safely and its cursor position advances so later jobs can progress
+on subsequent ticks. The next pass retries it. A page-query failure keeps the
+position; parent cancellation propagates and leaves unfinished capture for a
+safe retry. Fixed warnings contain no actor, SQL, exception or credential data.
+Retention and reconciliation do not await each other or the delivery scheduler;
+lifespan cancels and awaits both on shutdown. Disabled means zero scan SQL.
+
+The cursor is process-local scheduling state, never an authorization or
+measurement watermark. End-of-pass and restart rescan durable source records;
+existing source-stage uniqueness makes concurrent callbacks/replicas/restarts
+idempotent. Returned examined/inserted/unavailable counts describe that tick
+only; `pass_finished` is traversal progress, not evidence that all outcomes were
+captured or that a learner did not study. Source loss, mutation, expiry or
+unimplemented instrumentation can still leave gaps. There is no token/device
+inventory read, new metric stage, schema, provider, retry/fallback send or
+operational source write. No production flag or reconciliation run is enabled
+by this source change. Rollback uses the existing analysis boolean; retained
+delivery guards and original timestamps remain intact.
 
 `python -m scripts.smart_reminder_analysis_retention` returns anonymous expiry
 counts only. `--purge-expired --limit 128` explicitly removes at most one raw

@@ -629,8 +629,12 @@ async def lifespan(app: FastAPI):
     # Disabled by default; no Smart producer or notification provider is wired.
     smart_shadow_task = (asyncio.create_task(SmartReminderShadowWorker(settings, async_session_maker).run())
                          if getattr(settings, "SMART_REMINDER_SHADOW_ENABLED", False) else None)
-    smart_analysis_task = (asyncio.create_task(SmartReminderAnalysisObserver(settings, async_session_maker).run_retention())
-                           if getattr(settings, "SMART_REMINDER_ANALYSIS_ENABLED", False) is True else None)
+    smart_analysis_observer = (SmartReminderAnalysisObserver(settings, async_session_maker)
+                               if getattr(settings, "SMART_REMINDER_ANALYSIS_ENABLED", False) is True else None)
+    smart_analysis_task = (asyncio.create_task(smart_analysis_observer.run_retention())
+                           if smart_analysis_observer is not None else None)
+    smart_analysis_reconcile_task = (asyncio.create_task(smart_analysis_observer.run_reconciliation())
+                                     if smart_analysis_observer is not None else None)
     desktop_auth_cleanup_task = asyncio.create_task(
         _desktop_auth_retention_scheduler()
     )
@@ -652,6 +656,8 @@ async def lifespan(app: FastAPI):
             smart_shadow_task.cancel()
         if smart_analysis_task is not None:
             smart_analysis_task.cancel()
+        if smart_analysis_reconcile_task is not None:
+            smart_analysis_reconcile_task.cancel()
         desktop_auth_cleanup_task.cancel()
         if apple_push_task is not None:
             apple_push_task.cancel()
@@ -670,6 +676,9 @@ async def lifespan(app: FastAPI):
         if smart_analysis_task is not None:
             with contextlib.suppress(asyncio.CancelledError):
                 await smart_analysis_task
+        if smart_analysis_reconcile_task is not None:
+            with contextlib.suppress(asyncio.CancelledError):
+                await smart_analysis_reconcile_task
         with contextlib.suppress(asyncio.CancelledError):
             await desktop_auth_cleanup_task
         if apple_push_task is not None:
