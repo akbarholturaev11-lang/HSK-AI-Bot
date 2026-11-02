@@ -4,7 +4,7 @@
 **Branch/PR:** `feat/iphone-course-pwa-planning-20261102`, draft PR #256.
 **Verified source baseline:** `main@f791613c4377ffec2018cce3764cf81e80a6a765` (2026-11-02); re-read current `main` before implementation.
 **Plan authority:** `openspec/changes/iphone-course-pwa/` — proposal, four scoped capability specs, design, and **one tasks checklist**. This file only navigates; do not duplicate the checklist.
-**Validation:** official `openspec validate iphone-course-pwa` passed on [Actions run #41446061294](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41446061294) for the original plan. **A new run is required for later simplified commits.** Planning validation is not runtime/iPhone testing.
+**Validation:** the simplified OpenSpec plan passed official `openspec validate iphone-course-pwa` on [Actions run #41446957027](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41446957027), source commit `f34571535dbcc704cae672c8319cd33bf5f4179b`. The final branch change only removes the temporary validation workflow and updates this status note. The existing `OpenSpec planning integration` workflow also passed on [run #41446980476](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41446980476). Planning validation is not runtime/iPhone testing.
 
 ## Exact product goal
 
