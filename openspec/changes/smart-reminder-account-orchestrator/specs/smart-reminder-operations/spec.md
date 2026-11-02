@@ -235,3 +235,19 @@ The system SHALL optionally count deduplicated original server-confirmed study u
 #### Scenario: Learner returns manually without tapping the reminder
 - **WHEN** a learner sees a reminder, opens the app independently and completes original server-confirmed study without any notification-open report
 - **THEN** the verified study-after-attempt result still counts; tapping/reporting is only an optional secondary sequence signal and must not gate actual learning or primary cohort KPIs
+
+
+### Requirement: Scored activity days without fresh XP
+The system SHALL optionally record separate temporal active-study-day evidence from reviewed server-graded work, including failed or repeated attempts without fresh XP. It MUST preserve completed-unit semantics, source ownership, bounded partial coverage and existing delivery authority.
+
+#### Scenario: Manual return followed by repeated or failed study
+- **WHEN** an owning learner performs a reviewed server-graded attempt after an evidenced contact within the frozen source day, without tapping or earning new XP
+- **THEN** one primary study-day fact may be recorded without inventing a successful completed unit, and further attempts in the same job/day cannot inflate that day
+
+#### Scenario: Activity before and after the optional report
+- **WHEN** one verified activity precedes a retained owning report and another follows it
+- **THEN** the primary day remains independent of reporting and the later activity may establish one separate after-report day
+
+#### Scenario: Untrusted or incomplete activity coverage
+- **WHEN** only client telemetry, AI/homework, malformed scores, foreign sources or unavailable source classes exist
+- **THEN** those rows do not prove a study day or inactivity; source gaps remain explicit and cannot authorize delivery

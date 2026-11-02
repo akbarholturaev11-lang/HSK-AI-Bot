@@ -93,6 +93,8 @@ class TargetLearningEvidence:
     first_study_at: datetime | None = None
     first_study_after_report_at: datetime | None = None
     verified_study_count: int | None = None
+    first_active_study_at: datetime | None = None
+    first_active_study_after_report_at: datetime | None = None
 
 
 def _event_key(source_id, stage):
@@ -144,7 +146,7 @@ class SmartReminderAnalysisService:
 
     async def _learning_evidence(self, session, job, attempts, grants, now):
         """Reuse the same owned, locked source scope for projection and capture."""
-        from app.services.smart_reminder_policy_context import _LESSON_REF, read_verified_learning
+        from app.services.smart_reminder_policy_context import _LESSON_REF, read_scored_activity, read_verified_learning
         def unavailable(reason):
             return TargetLearningEvidence(reason), ()
         channel = job["selected_channel"]
@@ -199,14 +201,22 @@ class SmartReminderAnalysisService:
         valid_reports = [_utc(r.occurred_at) for r in reports if keys[r.event_key] <= _utc(r.occurred_at) and
             _utc(r.expires_at) == _utc(r.occurred_at) + RAW_RETENTION]
         reported = min(valid_reports) if valid_reports else None
+        activity = await read_scored_activity(session, job["user_id"], level=job["course_key"],
+            history_since=boundary, observed_at=min(now, end))
+        active = sorted({s.accepted_at for s in studies} | {
+            at for at in activity.times if boundary < at < end and at <= now})
+        active_after_report = [at for at in active if reported is not None and at > reported]
         targets = [s.accepted_at for s in studies if s.reference == reference]
         after_report = [s.accepted_at for s in studies if reported is not None and s.accepted_at > reported]
-        limits = tuple(sorted(set(TargetLearningEvidence("").coverage_limits) | set(evidence.coverage_limits)))
+        limits = tuple(sorted(set(TargetLearningEvidence("").coverage_limits) |
+            set(evidence.coverage_limits) | set(activity.coverage_limits)))
         return TargetLearningEvidence("verified_target_learning_after_attempt" if targets else
             "target_learning_unavailable", boundary, min(targets) if targets else None, limits,
             reported_open_at=reported, first_study_at=studies[0].accepted_at if studies else None,
             first_study_after_report_at=min(after_report) if after_report else None,
-            verified_study_count=len(studies) if studies else None), studies
+            verified_study_count=len(studies) if studies else None,
+            first_active_study_at=active[0] if active else None,
+            first_active_study_after_report_at=active_after_report[0] if active_after_report else None), studies
 
     @staticmethod
     def _insert(session, table):
@@ -297,6 +307,12 @@ class SmartReminderAnalysisService:
                             attempt["resolved_at"], attempt["channel"], now)
                 if owner_row.status != "blocked":
                     evidence, studies = await self._learning_evidence(session, job, attempts, grants, now)
+                    # One positive day per owned job's immutable local-day scope,
+                    # not one day per question/attempt/XP. Reports are secondary.
+                    for stage, at in (("study_day_after_attempt", evidence.first_active_study_at),
+                                      ("study_day_after_report", evidence.first_active_study_after_report_at)):
+                        count += await self._fact(session, job, "study-day:" + job_id, stage,
+                            at, channel, now, reason="verified_server_activity")
                     for study in studies:
                         source = "study:" + job_id + ":" + study.reference
                         count += await self._fact(session, job, source, "verified_study_after_attempt",
