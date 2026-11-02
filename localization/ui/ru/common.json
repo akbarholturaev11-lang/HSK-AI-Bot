@@ -130,7 +130,7 @@
     "navigation.subscription": "Подписка",
     "pwaAuth.choose": "Выберите способ входа или создания аккаунта",
     "pwaAuth.tagline": "Лучшее будущее — со знаниями",
-    "pwaAuth.telegramPending": "Вход через Telegram в PWA пока недоступен. Сначала привяжите Google или Apple в боте.",
+    "pwaAuth.telegramPending": "Подтвердите вход для этого браузера в боте Telegram, затем вернитесь на страницу HSK AI.",
     "pwaAuth.welcome": "Добро пожаловать",
     "state.loading": "Загрузка…"
   }
