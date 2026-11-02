@@ -307,6 +307,10 @@ def create_miniapp_entitlements_router(
                 {"ok": False, "error": "invalid_telegram_init_data"}, status_code=401,
             )
         normalized_level = str(level or "").strip().lower()
+        if normalized_level not in COURSE_LEVELS or lesson_order < 1:
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+            )
         async with session_factory() as session:
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             if not user:
