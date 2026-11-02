@@ -178,6 +178,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
             async with session_factory() as db:
                 url, proof = await PwaAuthService(db, settings_obj).start(
                     provider=payload.provider, language=payload.language,
+                    replace_cookie=request.cookies.get(PWA_SESSION_COOKIE),
                 )
             response = JSONResponse(
                 {"ok": True, "authorize_url": url},
