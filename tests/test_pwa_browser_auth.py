@@ -382,8 +382,12 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(cancelled.status_code, 303, cancelled.text)
         self.assertEqual(cancelled.headers["location"], "/iphone-pwa?auth=cancelled")
         self.assertNotIn(PWA_SESSION_COOKIE, cancelled.cookies)
-        self.assertIn(PWA_OAUTH_COOKIE, cancelled.cookies)
-        self.assertEqual(cancelled.cookies[PWA_OAUTH_COOKIE], "")
+        # HTTPX may normalize the expired Set-Cookie away from Response.cookies;
+        # the response must still instruct the browser to delete its proof.
+        self.assertTrue(any(
+            PWA_OAUTH_COOKIE in value and "Max-Age=0" in value
+            for value in cancelled.headers.get_list("set-cookie")
+        ))
         async with self.sessions() as db:
             row = (await db.execute(
                 select(DesktopLinkRequest).where(DesktopLinkRequest.platform == "pwa")
