@@ -46,6 +46,7 @@ class ReconciliationWorkerTests(unittest.IsolatedAsyncioTestCase):
     async def test_worker_query_failure_is_sanitized_and_retention_is_independent(self):
         observer = self.observer(interval=.001)
         observer.service.retention = AsyncMock(side_effect=AssertionError("unrelated retention"))
+        observer.baseline.aggregation_page = AsyncMock(return_value=((), False))
         async def tick():
             if observer.reconcile_tick.await_count == 1:
                 raise RuntimeError("synthetic-private-proof")
@@ -55,6 +56,7 @@ class ReconciliationWorkerTests(unittest.IsolatedAsyncioTestCase):
             await asyncio.wait_for(observer.run_reconciliation(), 1)
         self.assertEqual(logs.output, ["WARNING:app.services.smart_reminder_analysis:Smart analysis reconciliation unavailable"])
         self.assertEqual(observer.reconcile_tick.await_count, 2)
+        observer.baseline.aggregation_page.assert_awaited_once()
         observer.service.retention.assert_not_awaited()
 
     async def test_parent_cancellation_propagates_and_does_not_advance_unfinished_work(self):

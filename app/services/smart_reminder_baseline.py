@@ -2,7 +2,7 @@
 from datetime import date, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import case, delete, or_, select, text
+from sqlalchemy import case, delete, exists, func, or_, select, text, update
 
 from app.db.models.account_deletion import AccountDeletionRequest
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
@@ -99,10 +99,80 @@ async def read_account_learning(session,user_id,since,until,evidence_at):
 
 
 class SmartReminderBaselineService:
-    """Internal bounded readout; use protected operator auth before exposing it."""
+    """Internal observation/readout; no sender, assignment or public endpoint."""
     def __init__(self,sessions,*,clock=None):
         self.sessions=sessions
         self.clock=clock or (lambda:datetime.now(timezone.utc))
+
+    async def aggregation_page(self,*,after_user_id=None,limit=128):
+        if (type(limit) is not int or not 1<=limit<=MAX_BATCH or
+                (after_user_id is not None and (type(after_user_id) is not int or after_user_id<=0))):
+            raise ValueError("Bounded baseline cursor required")
+        now=_aware_utc(self.clock())
+        async with self.sessions() as s:
+            if s.bind.dialect.name=="postgresql":
+                await s.execute(text("SET TRANSACTION READ ONLY"))
+                await s.execute(text("SET LOCAL statement_timeout = '5000'"))
+            query=select(MEMBER.c.user_id).where(MEMBER.c.protocol_version==VERSION,MEMBER.c.expires_at>now)
+            if after_user_id is not None: query=query.where(MEMBER.c.user_id>after_user_id)
+            rows=(await s.scalars(query.order_by(MEMBER.c.user_id).limit(limit+1))).all()
+        return tuple(rows[:limit]),len(rows)>limit
+
+    async def observe_member(self,user_id):
+        if type(user_id) is not int or user_id<=0: raise ValueError("Canonical baseline owner required")
+        now=_aware_utc(self.clock())
+        async with self.sessions.begin() as s:
+            with s.no_autoflush:
+                if s.bind.dialect.name=="postgresql":
+                    await s.execute(text("SET LOCAL statement_timeout = '5000'"))
+                owner=(await s.execute(select(User.id,User.status,User.telegram_id).where(
+                    User.id==user_id).with_for_update())).one_or_none()
+                pending=await s.scalar(select(AccountDeletionRequest.id).where(
+                    AccountDeletionRequest.status=="submitted",or_(AccountDeletionRequest.user_id==user_id,
+                        AccountDeletionRequest.active_user_id==user_id)).limit(1))
+                if owner is None or owner.status=="blocked" or pending is not None: return 0
+                row=(await s.execute(select(MEMBER).where(MEMBER.c.user_id==user_id,
+                    MEMBER.c.protocol_version==VERSION).with_for_update())).mappings().first()
+                if row is None or _utc(row["expires_at"])<=now: return 0
+                entered=_utc(row["entered_at"])
+                try: week_end,d7_end=windows(entered,row["timezone_name"])
+                except (KeyError,TypeError,ValueError): return 0
+                if now<d7_end: return 0
+                learning=await read_account_learning(s,user_id,entered,d7_end,now)
+                scored=await read_scored_activity(s,user_id,level=None,history_since=entered,observed_at=d7_end)
+                limited=int(any("over_limit" in reason for reason in (*learning.coverage_limits,*scored.coverage_limits)))
+                times={t for t in scored.times if entered<=t<d7_end}
+                times.update(t.accepted_at for t in learning.studies if entered<=t.accepted_at<d7_end)
+                zone=ZoneInfo(row["timezone_name"])
+                d1=await s.scalar(select(CourseMiniAppEvent.id).where(
+                    _owner(CourseMiniAppEvent,user_id,owner.telegram_id),
+                    CourseMiniAppEvent.event_name==D1_RECOVERY_ASSIGNED_EVENT,
+                    CourseMiniAppEvent.source==D1_RECOVERY_EXPERIMENT,
+                    CourseMiniAppEvent.created_at>entered-D1_RECOVERY_HOLDOUT,
+                    CourseMiniAppEvent.created_at<d7_end).limit(1))
+                candidate=dict(observed_active_days=len({t.astimezone(zone).date() for t in times if t<week_end}),
+                    observed_units=len({(t.activity_type,t.reference) for t in learning.studies
+                        if entered<=t.accepted_at<week_end}),
+                    observed_d7=int(any(week_end<=t<d7_end for t in times)),
+                    d1_overlap=int(d1 is not None),source_limited=limited)
+                # These are monotonic conservative lower bounds. If old source
+                # rows disappear, max(count) does not invent their missing union.
+                fresh={key:max(row[key],value) for key,value in candidate.items()}
+                deltas={key:fresh[key]-row[key] for key in fresh}
+                first=int(row["observed_at"] is None)
+                if not first and not any(deltas.values()): return 0
+                mapping={"observed_active_days":"observed_active_days","observed_units":"observed_units",
+                    "observed_d7":"observed_d7_accounts","d1_overlap":"d1_overlap_accounts",
+                    "source_limited":"source_limited_accounts"}
+                increments={mapping[key]:TOTAL.c[mapping[key]]+value for key,value in deltas.items()}
+                increments["observed_accounts"]=TOTAL.c.observed_accounts+first
+                counter=await s.scalar(update(TOTAL).where(TOTAL.c.protocol_version==VERSION,
+                    TOTAL.c.cohort_month==entered.date().replace(day=1)).values(**increments)
+                    .returning(TOTAL.c.enrolled_accounts))
+                if counter is None: raise RuntimeError("Baseline denominator unavailable")
+                await s.execute(update(MEMBER).where(MEMBER.c.user_id==user_id,MEMBER.c.protocol_version==VERSION)
+                    .values(observed_at=row["observed_at"] or now,**fresh))
+                return 1
 
     async def report(self,cohort_month):
         if type(cohort_month) is not date or cohort_month.day!=1: raise ValueError("UTC cohort month required")
@@ -112,83 +182,55 @@ class SmartReminderBaselineService:
         end=datetime.combine(next_month,datetime.min.time(),timezone.utc)
         result=dict(version=VERSION,cohort_month=cohort_month.isoformat(),observed_at=now.isoformat(),
             scope="observed_base_policy_ready_accounts",status="no_recorded_cohort",cohort_accounts=None,
-            retained_members=None,censored_accounts=None,week_mature_accounts=0,d7_mature_accounts=0,
+            retained_members=None,censored_accounts=None,observed_accounts=0,unobserved_accounts=None,
+            aggregation_pending_accounts=None,week_mature_accounts=0,d7_mature_accounts=0,
             d1_overlap_accounts=None,source_limited_accounts=0,
             observed_active_days_lower_bound=None,observed_units_lower_bound=None,
             observed_d7_accounts_lower_bound=None,observed_d7_percent_lower_bound=None,
             observed_active_days_per_account_lower_bound=None,observed_units_per_account_lower_bound=None,
             d7_learning_retention=None,primary_kpis_available=False,experiment_ready=False,dispatch_allowed=False,
             coverage_limits=("optional_capture_not_census","reviewed_sources_only","negative_learning_unknown",
-                "no_randomized_assignment_or_causal_lift","unsupported_repeat_practice_and_voice"))
+                "no_randomized_assignment_or_causal_lift","unsupported_repeat_practice_and_voice",
+                "materialized_mature_lower_bounds"))
         if cohort_month<oldest_month(now): result["status"]="cohort_expired";return result
+        member_scope=(MEMBER.c.protocol_version==VERSION,MEMBER.c.entered_at>=start,MEMBER.c.entered_at<end)
+        valid=(MEMBER.c.expires_at>now,
+            exists(select(User.id).where(User.id==MEMBER.c.user_id,User.status!="blocked")),
+            ~exists(select(AccountDeletionRequest.id).where(AccountDeletionRequest.status=="submitted",
+                or_(AccountDeletionRequest.user_id==MEMBER.c.user_id,AccountDeletionRequest.active_user_id==MEMBER.c.user_id))))
+        def count(*conditions):
+            return select(func.count()).select_from(MEMBER).where(*member_scope,*conditions).scalar_subquery()
         async with self.sessions() as s:
             if s.bind.dialect.name=="postgresql":
                 await s.execute(text("SET TRANSACTION READ ONLY"))
                 await s.execute(text("SET LOCAL statement_timeout = '5000'"))
-            total=(await s.execute(select(TOTAL).where(TOTAL.c.protocol_version==VERSION,
-                TOTAL.c.cohort_month==cohort_month))).mappings().first()
-            if total is None: return result
-            rows=(await s.execute(select(MEMBER).where(MEMBER.c.protocol_version==VERSION,
-                MEMBER.c.entered_at>=start,MEMBER.c.entered_at<end).order_by(MEMBER.c.user_id)
-                .limit(MAX_BATCH+1))).mappings().all()
-        n=total["enrolled_accounts"]
+            # One statement gives counters and membership counts one snapshot;
+            # there are no per-owner learning/contact reads or cohort-size cap.
+            total=(await s.execute(select(TOTAL,count().label("retained"),count(*valid).label("valid"),
+                count(*valid,MEMBER.c.observed_at.is_(None)).label("pending")).where(
+                    TOTAL.c.protocol_version==VERSION,TOTAL.c.cohort_month==cohort_month))).mappings().first()
+        if total is None: return result
+        n=total["enrolled_accounts"];observed=total["observed_accounts"]
         result["cohort_accounts"]=n
-        if len(rows)>MAX_BATCH: result["status"]="cohort_over_limit";return result
-        if len(rows)>n: result["status"]="cohort_counter_conflict";return result
-        result["retained_members"]=len(rows)
-        result["censored_accounts"]=n-len(rows)
-        active_days=units=d7_accounts=readable=overlap=0
-        for row in rows:
-            try: week_end,d7_end=windows(_utc(row["entered_at"]),row["timezone_name"])
-            except (KeyError,TypeError,ValueError):
-                result["censored_accounts"]+=1;continue
-            week_mature,d7_mature=now>=week_end,now>=d7_end
-            result["week_mature_accounts"]+=int(week_mature)
-            result["d7_mature_accounts"]+=int(d7_mature)
-            if not week_mature: continue
-            async with self.sessions.begin() as s:
-                with s.no_autoflush:
-                    if s.bind.dialect.name=="postgresql":
-                        await s.execute(text("SET LOCAL statement_timeout = '5000'"))
-                    owner=(await s.execute(select(User.id,User.status,User.telegram_id).where(
-                        User.id==row["user_id"]).with_for_update())).one_or_none()
-                    pending=await s.scalar(select(AccountDeletionRequest.id).where(
-                        AccountDeletionRequest.status=="submitted",or_(AccountDeletionRequest.user_id==row["user_id"],
-                            AccountDeletionRequest.active_user_id==row["user_id"])).limit(1))
-                    if owner is None or owner.status=="blocked" or pending is not None or _utc(row["expires_at"])<=now:
-                        result["censored_accounts"]+=1;continue
-                    cutoff=d7_end if d7_mature else week_end
-                    learning=await read_account_learning(s,owner.id,_utc(row["entered_at"]),cutoff,now)
-                    scored=await read_scored_activity(s,owner.id,level=None,
-                        history_since=_utc(row["entered_at"]),observed_at=cutoff)
-                    if any("over_limit" in reason for reason in (*learning.coverage_limits,*scored.coverage_limits)):
-                        result["source_limited_accounts"]+=1
-                    times={t for t in scored.times if _utc(row["entered_at"])<=t<cutoff}
-                    times.update(t.accepted_at for t in learning.studies if _utc(row["entered_at"])<=t.accepted_at<cutoff)
-                    zone=ZoneInfo(row["timezone_name"])
-                    active_days+=len({t.astimezone(zone).date() for t in times if t<week_end})
-                    units+=len({(t.activity_type,t.reference) for t in learning.studies if t.accepted_at<week_end})
-                    d7_accounts+=int(d7_mature and any(week_end<=t<d7_end for t in times))
-                    readable+=1
-                    d1=await s.scalar(select(CourseMiniAppEvent.id).where(
-                        _owner(CourseMiniAppEvent,owner.id,owner.telegram_id),
-                        CourseMiniAppEvent.event_name==D1_RECOVERY_ASSIGNED_EVENT,
-                        CourseMiniAppEvent.source==D1_RECOVERY_EXPERIMENT,
-                        CourseMiniAppEvent.created_at>_utc(row["entered_at"])-D1_RECOVERY_HOLDOUT,
-                        CourseMiniAppEvent.created_at<cutoff).limit(1))
-                    overlap+=int(d1 is not None)
-        result["d1_overlap_accounts"]=overlap if readable else None
+        if total["retained"]>n or observed>n: result["status"]="cohort_counter_conflict";return result
+        result.update(retained_members=total["retained"],censored_accounts=n-total["valid"],
+            observed_accounts=observed,unobserved_accounts=n-observed,aggregation_pending_accounts=total["pending"],
+            week_mature_accounts=observed,d7_mature_accounts=observed,
+            d1_overlap_accounts=total["d1_overlap_accounts"] if observed else None,
+            source_limited_accounts=total["source_limited_accounts"])
         closed=now>=end and now>=_utc(total["matures_at"])
-        result["status"]="observed_lower_bounds" if closed and readable else "immature_or_unavailable"
-        if readable:
-            result.update(observed_active_days_lower_bound=active_days if active_days or not result["source_limited_accounts"] else None,
-                observed_units_lower_bound=units if units or not result["source_limited_accounts"] else None)
-        if closed and readable and n>0:
-            result["observed_d7_accounts_lower_bound"]=d7_accounts if d7_accounts or not result["source_limited_accounts"] else None
-            if not result["source_limited_accounts"]:
-                result.update(observed_d7_percent_lower_bound=100*d7_accounts/n,
-                    observed_active_days_per_account_lower_bound=active_days/n,
-                    observed_units_per_account_lower_bound=units/n)
+        result["status"]="observed_lower_bounds" if closed and observed else "immature_or_unavailable"
+        limited=total["source_limited_accounts"]
+        if observed:
+            result.update(observed_active_days_lower_bound=total["observed_active_days"] if total["observed_active_days"] or not limited else None,
+                observed_units_lower_bound=total["observed_units"] if total["observed_units"] or not limited else None)
+        if closed and observed and n>0:
+            d7=total["observed_d7_accounts"]
+            result["observed_d7_accounts_lower_bound"]=d7 if d7 or not limited else None
+            if not limited:
+                result.update(observed_d7_percent_lower_bound=100*d7/n,
+                    observed_active_days_per_account_lower_bound=total["observed_active_days"]/n,
+                    observed_units_per_account_lower_bound=total["observed_units"]/n)
             else: result["status"]="source_coverage_limited"
         return result
 

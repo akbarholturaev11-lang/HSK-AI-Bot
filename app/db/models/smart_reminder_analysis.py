@@ -1,7 +1,7 @@
 """Disposable analysis, separate from retained consent/day/issuance evidence."""
 from datetime import date, datetime
 
-from sqlalchemy import BigInteger, CheckConstraint, Date, DateTime, ForeignKey, Index, String
+from sqlalchemy import BigInteger, CheckConstraint, Date, DateTime, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -74,6 +74,10 @@ class SmartReminderBaselineMember(Base):
     __table_args__ = (
         CheckConstraint("length(protocol_version) > 0", name="protocol"),
         CheckConstraint("expires_at > entered_at", name="expiry"),
+        CheckConstraint("observed_active_days BETWEEN 0 AND 7 AND observed_units >= 0 "
+            "AND observed_d7 IN (0, 1) AND d1_overlap IN (0, 1) AND source_limited IN (0, 1)", name="outcomes"),
+        CheckConstraint("observed_at IS NOT NULL OR (observed_active_days = 0 AND observed_units = 0 "
+            "AND observed_d7 = 0 AND d1_overlap = 0 AND source_limited = 0)", name="observation"),
         Index("ix_smart_baseline_expiry", "expires_at", "user_id"),
         Index("ix_smart_baseline_entry", "protocol_version", "entered_at"),
     )
@@ -84,12 +88,29 @@ class SmartReminderBaselineMember(Base):
     timezone_name: Mapped[str] = mapped_column(String(64))
     course_key: Mapped[str] = mapped_column(String(32))
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    observed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    observed_active_days: Mapped[int] = mapped_column(Integer, server_default="0")
+    observed_units: Mapped[int] = mapped_column(BigInteger, server_default="0")
+    observed_d7: Mapped[int] = mapped_column(Integer, server_default="0")
+    d1_overlap: Mapped[int] = mapped_column(Integer, server_default="0")
+    source_limited: Mapped[int] = mapped_column(Integer, server_default="0")
 
 
 class SmartReminderBaselineTotal(Base):
     __tablename__ = "smart_reminder_baseline_totals"
-    __table_args__ = (CheckConstraint("enrolled_accounts >= 0", name="accounts"),)
+    __table_args__ = (CheckConstraint("enrolled_accounts >= 0", name="accounts"),
+        CheckConstraint("observed_accounts BETWEEN 0 AND enrolled_accounts "
+            "AND observed_active_days BETWEEN 0 AND observed_accounts * 7 AND observed_units >= 0 "
+            "AND observed_d7_accounts BETWEEN 0 AND observed_accounts "
+            "AND d1_overlap_accounts BETWEEN 0 AND observed_accounts "
+            "AND source_limited_accounts BETWEEN 0 AND observed_accounts", name="outcomes"))
     protocol_version: Mapped[str] = mapped_column(String(32), primary_key=True)
     cohort_month: Mapped[date] = mapped_column(Date, primary_key=True)
     enrolled_accounts: Mapped[int] = mapped_column(BigInteger)
     matures_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    observed_accounts: Mapped[int] = mapped_column(BigInteger, server_default="0")
+    observed_active_days: Mapped[int] = mapped_column(BigInteger, server_default="0")
+    observed_units: Mapped[int] = mapped_column(BigInteger, server_default="0")
+    observed_d7_accounts: Mapped[int] = mapped_column(BigInteger, server_default="0")
+    d1_overlap_accounts: Mapped[int] = mapped_column(BigInteger, server_default="0")
+    source_limited_accounts: Mapped[int] = mapped_column(BigInteger, server_default="0")

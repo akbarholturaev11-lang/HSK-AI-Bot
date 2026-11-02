@@ -62,6 +62,10 @@ spec_baseline = importlib.util.spec_from_file_location("analysis_0144", Path(__f
     "alembic/versions/0144_smart_baseline.py")
 baseline_migration = importlib.util.module_from_spec(spec_baseline)
 spec_baseline.loader.exec_module(baseline_migration)
+spec_baseline_outcomes = importlib.util.spec_from_file_location("analysis_0145", Path(__file__).resolve().parents[1] /
+    "alembic/versions/0145_smart_baseline_outcomes.py")
+baseline_outcomes_migration = importlib.util.module_from_spec(spec_baseline_outcomes)
+spec_baseline_outcomes.loader.exec_module(baseline_outcomes_migration)
 from app.db.models.smart_reminder_analysis import SmartReminderBaselineMember, SmartReminderBaselineTotal
 BASELINE_MEMBER, BASELINE_TOTAL = SmartReminderBaselineMember.__table__, SmartReminderBaselineTotal.__table__
 
@@ -104,7 +108,9 @@ class AnalysisChecks:
                 activity_migration.upgrade()
                 return_migration.upgrade()
                 baseline_migration.upgrade()
+                baseline_outcomes_migration.upgrade()
             else:
+                baseline_outcomes_migration.downgrade()
                 baseline_migration.downgrade()
                 return_migration.downgrade()
                 activity_migration.downgrade()
@@ -309,6 +315,7 @@ class AnalysisChecks:
         before = [await self.rows(table) for table in (EVENT, MONTHLY, JOB, ATTEMPT, GRANT)]
         def roundtrip(connection):
             with Operations.context(MigrationContext.configure(connection)):
+                baseline_outcomes_migration.downgrade()
                 baseline_migration.downgrade()
                 return_migration.downgrade()
                 activity_migration.downgrade()
@@ -323,6 +330,7 @@ class AnalysisChecks:
                 activity_migration.upgrade()
                 return_migration.upgrade()
                 baseline_migration.upgrade()
+                baseline_outcomes_migration.upgrade()
             return compare_metadata(MigrationContext.configure(connection), Base.metadata)
         async with self.engine.begin() as connection:
             self.assertEqual(await connection.run_sync(roundtrip), [])
