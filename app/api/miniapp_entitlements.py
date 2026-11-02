@@ -657,6 +657,12 @@ def create_miniapp_entitlements_router(
                 )
             return await _start_lesson_for_user(session, user, payload, order)
 
+    async def _limits_for_user(session, user, feature: str):
+        if feature == "mistake_review":
+            feature = "training_test"
+        result = await CourseMiniAppAccessService(session).configured_decision(user, feature)
+        return JSONResponse(content={**result, "ok": True}, headers={"Cache-Control": "no-store"})
+
     @router.post("/api/v3/limits/status")
     async def limits_status(request: Request):
         telegram_id, payload = await _authenticated(request)
@@ -669,10 +675,50 @@ def create_miniapp_entitlements_router(
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             if not user:
                 return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
-            if feature == "mistake_review":
-                feature = "training_test"
-            result = await CourseMiniAppAccessService(session).configured_decision(user, feature)
-            return JSONResponse(content={**result, "ok": True}, headers={"Cache-Control": "no-store"})
+            return await _limits_for_user(session, user, feature)
+
+    @router.post("/api/v3/pwa/limits/status")
+    async def pwa_limits_status(request: Request):
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
+                return _private_content_response(
+                    {"ok": False, "error": "invalid_feature"}, status_code=415,
+                )
+            body = bytearray()
+            async for chunk in request.stream():
+                body.extend(chunk)
+                if len(body) > 1024:
+                    return _private_content_response(
+                        {"ok": False, "error": "invalid_feature"}, status_code=413,
+                    )
+            payload = json.loads(bytes(body))
+            if not isinstance(payload, dict) or set(payload) - {"feature"}:
+                raise ValueError("unexpected field")
+            feature = str(payload.get("feature") or "lesson").strip()
+            if feature not in COURSE_AD_GATE_FEATURES | {"voice"}:
+                return _private_content_response(
+                    {"ok": False, "error": "invalid_feature"}, status_code=400,
+                )
+        except PwaAuthError as exc:
+            return _private_content_response(
+                {"ok": False, "error": exc.code}, status_code=exc.status_code,
+            )
+        except (TypeError, ValueError, UnicodeDecodeError, json.JSONDecodeError):
+            return _private_content_response(
+                {"ok": False, "error": "invalid_feature"}, status_code=400,
+            )
+        async with session_factory() as session:
+            try:
+                actor, _ = await PwaAuthService(session, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+            except PwaAuthError as exc:
+                return _private_content_response(
+                    {"ok": False, "error": exc.code}, status_code=exc.status_code,
+                )
+            return await _limits_for_user(session, actor, feature)
 
     @router.post("/api/v3/trial/start")
     async def v3_trial_start(request: Request):
