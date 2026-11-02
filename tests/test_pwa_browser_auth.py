@@ -584,6 +584,53 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             finally:
                 await anonymous.aclose()
 
+    async def test_pwa_map_accepts_verified_google_only_actor_without_telegram(self):
+        import app.main as main
+        from fastapi.responses import JSONResponse
+        from app.services import google_auth
+
+        state = await self.begin()
+        new_identity = VerifiedIdentity(
+            provider="google", subject="map-browser-only-subject",
+            email="map-browser@example.test", email_verified=True,
+            display_name="Browser learner",
+            audience="222-desktop.apps.googleusercontent.com",
+        )
+        with patch.object(google_auth, "exchange_code", return_value="browser-only-token"), patch.object(
+            google_auth, "verify_desktop_id_token", return_value=new_identity,
+        ):
+            callback = await self.client.get(
+                "/api/v3/native-auth/oauth/callback/google",
+                params={"state": state, "code": "browser-only-code"},
+            )
+        self.assertEqual(callback.status_code, 303, callback.text)
+        me = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        self.assertFalse(me["telegram_linked"])
+        app = FastAPI()
+        app.add_api_route("/api/v3/pwa/map", main.pwa_course_map, methods=["POST"])
+        with patch.object(main, "async_session_maker", self.sessions), patch.object(
+            main, "settings", self.settings,
+        ), patch.object(
+            main, "_course_v3_map_for_user", new_callable=AsyncMock,
+        ) as shared:
+            shared.return_value = JSONResponse({"ok": True, "level": "hsk1"})
+            client = AsyncClient(
+                transport=ASGITransport(app=app), base_url=ORIGIN,
+                cookies={PWA_SESSION_COOKIE: self.client.cookies.get(PWA_SESSION_COOKIE)},
+            )
+            try:
+                result = await client.post(
+                    "/api/v3/pwa/map", headers={
+                        "Origin": ORIGIN, "X-HSK-PWA-CSRF": me["csrf"],
+                    },
+                )
+                self.assertEqual(result.status_code, 200, result.text)
+                shared.assert_awaited_once()
+                self.assertEqual(shared.await_args.args[2].id, me["user_id"])
+                self.assertIsNone(shared.await_args.kwargs["telegram_id"])
+            finally:
+                await client.aclose()
+
     def test_pwa_map_and_legacy_map_share_single_full_policy_engine(self):
         source = Path("app/main.py").read_text(encoding="utf-8")
         start = source.index("async def _course_v3_map_for_user(")
