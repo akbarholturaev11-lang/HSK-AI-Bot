@@ -10,7 +10,7 @@
 *{box-sizing:border-box}
 html,body{min-height:100%;margin:0}
 body{font-family:var(--hsk-font-ui);background:var(--hsk-paper);color:var(--hsk-ink);-webkit-font-smoothing:antialiased}
-.shell{position:relative;isolation:isolate;min-height:100dvh;padding:calc(16px + env(safe-area-inset-top)) 24px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;overflow:hidden}
+.shell{position:relative;isolation:isolate;min-height:100dvh;padding:calc(16px + env(safe-area-inset-top)) 24px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;overflow-x:hidden;overflow-y:auto}
 .shell>:not(.motif):not(.fret){position:relative;z-index:1}
 .head{width:100%;max-width:430px;display:flex;align-items:center;justify-content:space-between;min-height:38px}
 .brand{margin:0;font-size:20px;font-weight:650;letter-spacing:-.3px}
