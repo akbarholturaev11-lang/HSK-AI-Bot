@@ -419,7 +419,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         script = (Path("app/static") / "iphone-pwa-login.js").read_text(encoding="utf-8")
         self.assertIn("telegramClaimInFlight", script)
         self.assertIn("if (!terminal)", script)
-        self.assertIn("The next poll can still claim it.", script)
+        self.assertIn("the next poll can still claim it.", script)
         self.assertIn("telegramClaimInFlight = false", script)
 
     async def test_existing_telegram_owner_retained_and_logout_is_csrf_protected(self):
