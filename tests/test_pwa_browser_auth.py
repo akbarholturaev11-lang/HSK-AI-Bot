@@ -132,6 +132,62 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 params={"state": state, "code": "auth-code"},
             )
 
+    async def test_pwa_lesson_start_retains_quota_proofs_and_csrf_guards(self):
+        path = "/api/v3/pwa/lesson/start"
+        payload = {"lesson_id": 1, "level": "hsk1"}
+        unauthenticated = await self.client.post(
+            path, headers={"Origin": ORIGIN}, json=payload,
+        )
+        self.assertEqual(unauthenticated.status_code, 401, unauthenticated.text)
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        for headers in [
+            {"Origin": "https://evil.test", "X-HSK-PWA-CSRF": csrf},
+            {"Origin": ORIGIN},
+            {"Origin": ORIGIN, "X-HSK-PWA-CSRF": "forged"},
+        ]:
+            rejected = await self.client.post(path, headers=headers, json=payload)
+            self.assertEqual(rejected.status_code, 403, rejected.text)
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        injected = await self.client.post(
+            path, headers=headers, json={**payload, "user_id": 999},
+        )
+        self.assertEqual(injected.status_code, 400, injected.text)
+        stale = await self.client.post(
+            path, headers=headers, json={"lesson_id": 1, "level": "hsk2"},
+        )
+        self.assertEqual(stale.status_code, 409, stale.text)
+        with patch(
+            "app.api.miniapp_entitlements.LessonAccessService.status",
+            new_callable=AsyncMock,
+        ) as status, patch(
+            "app.api.miniapp_entitlements.remember_authorized_lesson_start",
+            new_callable=AsyncMock,
+        ) as grant, patch(
+            "app.api.miniapp_entitlements.issue_lesson_completion_proof",
+            return_value="test-proof",
+        ) as proof:
+            status.return_value = {"ok": False, "allowed": False, "error": "limit_reached"}
+            denied = await self.client.post(path, headers=headers, json=payload)
+            self.assertEqual(denied.status_code, 403, denied.text)
+            grant.assert_not_awaited()
+            proof.assert_not_called()
+            status.return_value = {"ok": True, "allowed": True}
+            admitted = await self.client.post(path, headers=headers, json=payload)
+            self.assertEqual(admitted.status_code, 200, admitted.text)
+            self.assertEqual(admitted.json()["completion_proof"], "test-proof")
+            self.assertEqual(admitted.headers.get("cache-control"), "no-store")
+            self.assertEqual(status.await_args.args[0].id, 1)
+            self.assertEqual(status.await_args.kwargs["consume"], True)
+            grant.assert_awaited_once()
+            self.assertEqual(grant.await_args.kwargs["user"].id, 1)
+            self.assertEqual(proof.call_args.kwargs["user_id"], 1)
+        legacy = await self.client.post(
+            "/api/v3/lesson/start", json=payload,
+        )
+        self.assertEqual(legacy.status_code, 401, legacy.text)
+
     async def test_pwa_lesson_content_uses_exact_miniapp_policy_without_initdata(self):
         path = "/api/v3/pwa/lesson/content/hsk1/1"
         denied = await self.client.get(path)
