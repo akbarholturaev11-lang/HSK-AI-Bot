@@ -251,3 +251,19 @@ The system SHALL optionally record separate temporal active-study-day evidence f
 #### Scenario: Untrusted or incomplete activity coverage
 - **WHEN** only client telemetry, AI/homework, malformed scores, foreign sources or unavailable source classes exist
 - **THEN** those rows do not prove a study day or inactivity; source gaps remain explicit and cannot authorize delivery
+
+
+### Requirement: A distinct 24-hour temporal study window
+The system SHALL observe reviewed study strictly after an evidenced original contact-attempt start and at or before 24 elapsed hours later, independently of local midnight, DST and notification tapping. It MUST preserve older local-day source facts and distinguish positive contact windows from globally deduplicated original completed units and future account-level cohort KPIs.
+
+#### Scenario: Manual return after midnight
+- **WHEN** an owning learner receives an evidenced contact at 23:50 and performs verified study at 00:10 within 24 elapsed hours without an open report
+- **THEN** the separate 24-hour projection and optional positive contact fact can count that study while older local-day facts keep their original scope
+
+#### Scenario: Overlapping contacts observe the same completed unit
+- **WHEN** two qualifying contact windows include the same original canonical study result and capture runs in either order or concurrently
+- **THEN** each contact may have a positive window but the canonical completed unit increments once globally; the first captured contact is immutable descriptive provenance, never causal or latest-contact attribution
+
+#### Scenario: Boundary or missing evidence
+- **WHEN** a result is at/before contact start, after 24 hours, in the future, unsupported, or absent from partial sources
+- **THEN** no false positive unit/contact or negative-learning claim is created; window elapsed is distinct from complete coverage and cannot authorize delivery

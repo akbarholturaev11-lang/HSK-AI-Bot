@@ -112,7 +112,7 @@ class StudyChecks:
         self.assertEqual((result.learned_at,result.first_study_at,result.reported_open_at),
             (self.learned,self.learned,self.report_at))
         self.assertEqual((result.verified_study_count,result.first_study_after_report_at),(2,self.learned))
-        self.assertEqual(await self.capture(),6)
+        self.assertEqual(await self.capture(),9)
         raw=await self.facts()
         self.assertEqual(len(raw),4)
         self.assertEqual(await self.capture(),0)
@@ -133,7 +133,7 @@ class StudyChecks:
         result=await self.analysis.target_learning(1,self.case.job_id)
         self.assertEqual(result.verified_study_count,2)
         self.assertEqual(result.learned_at,self.learned)
-        self.assertEqual(await self.capture(),6)
+        self.assertEqual(await self.capture(),9)
 
     async def test_mock_placement_training_are_positive_units_without_faking_target_completion(self):
         await self.contact()
@@ -143,7 +143,7 @@ class StudyChecks:
         self.assertIsNone(result.learned_at)
         self.assertEqual(result.reason,"target_learning_unavailable")
         self.assertEqual(result.verified_study_count,3)
-        self.assertEqual(await self.capture(),8)
+        self.assertEqual(await self.capture(),12)
 
     async def test_manual_app_return_and_real_practice_counts_without_tapping_notification(self):
         await self.contact(report=False)
@@ -155,13 +155,13 @@ class StudyChecks:
         self.assertEqual(result.verified_study_count,1)
         self.assertIsNone(result.reported_open_at)
         self.assertIsNone(result.first_study_after_report_at)
-        self.assertEqual(await self.capture(),2)
+        self.assertEqual(await self.capture(),4)
         self.assertEqual({r["stage"] for r in await self.facts()},{"verified_study_after_attempt"})
 
     async def test_missing_or_later_report_never_turns_earlier_study_into_after_report(self):
         await self.contact(report=False)
         await self.lesson()
-        self.assertEqual(await self.capture(),2)
+        self.assertEqual(await self.capture(),4)
         result=await self.analysis.target_learning(1,self.case.job_id)
         self.assertIsNone(result.reported_open_at)
         self.assertIsNone(result.first_study_after_report_at)
@@ -177,7 +177,7 @@ class StudyChecks:
         self.assertEqual(await self.capture(),0)
         self.assertEqual({r["stage"] for r in await self.facts()},{"verified_study_after_attempt"})
         await self.practice(at=self.report_at+timedelta(seconds=2))
-        self.assertEqual(await self.capture(),3)
+        self.assertEqual(await self.capture(),4)
         self.assertEqual((await self.analysis.target_learning(1,self.case.job_id)).first_study_after_report_at,
             self.report_at+timedelta(seconds=2))
 
@@ -188,7 +188,7 @@ class StudyChecks:
             await s.execute(update(EVENT).where(EVENT.c.stage=="client_reported_open").values(channel="telegram"))
         result=await self.analysis.target_learning(1,self.case.job_id)
         self.assertIsNone(result.reported_open_at)
-        self.assertEqual(await self.capture(),2)
+        self.assertEqual(await self.capture(),4)
         async with self.case.sessions.begin() as s:
             await s.execute(update(EVENT).where(EVENT.c.stage=="client_reported_open").values(channel="android",
                 event_key="f"*64))
@@ -272,10 +272,12 @@ class StudyChecks:
         before=await self.storage.rows(EVENT)
         def cycle(c):
             with Operations.context(MigrationContext.configure(c)):
+                storage_fixture.return_migration.downgrade()
                 storage_fixture.activity_migration.downgrade()
                 storage_fixture.study_migration.downgrade()
                 storage_fixture.study_migration.upgrade()
                 storage_fixture.activity_migration.upgrade()
+                storage_fixture.return_migration.upgrade()
         async with self.case.engine.begin() as c: await c.run_sync(cycle)
         self.assertEqual(await self.storage.rows(EVENT),before)
         await self.lesson()

@@ -24,7 +24,7 @@ QA_ENVIRONMENT = "qa"
 QA_HOST = "postgres.railway.internal"
 QA_DATABASE = "railway"
 EXPECTED_BASELINE = "0102_payment_review_preview"
-EXPECTED_HEAD = "0142_smart_activity_analysis"
+EXPECTED_HEAD = "0143_smart_return_analysis"
 # These reviewed migrations create tables unconditionally. Defer their DDL
 # until after the empty ORM baseline is stamped; never precreate and then skip
 # their migrations. This list is reviewed alongside EXPECTED_HEAD.
