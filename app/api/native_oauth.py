@@ -357,10 +357,16 @@ def create_native_oauth_router(
             async with session_factory() as session:
                 # Even an OAuth cancellation cannot burn another browser's
                 # still-pending PWA row when a state value leaked to a referrer.
-                await PwaAuthService(session, settings_obj).before_callback(
+                is_pwa = await PwaAuthService(session, settings_obj).before_callback(
                     provider=provider, state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
                 )
                 await service_factory(session, settings_obj).cancel_callback(provider=provider, state=state)
+            if is_pwa:
+                # Return only the proven originating browser to the fixed login
+                # path; never follow a callback parameter or issue a session.
+                page = RedirectResponse("/iphone-pwa?auth=cancelled", status_code=303, headers=_NO_STORE)
+                page.delete_cookie(PWA_OAUTH_COOKIE, path="/", secure=True, httponly=True, samesite="none")
+                return page
             return _page("&#10005;", "oauth_cancelled")
         except (NativeOAuthError, IdentityLinkError, DesktopAuthError, PwaAuthError) as exc:
             return _page("&#10005;", exc.code)
