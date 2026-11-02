@@ -202,12 +202,16 @@ class SmartReminderRoutingService:
 
 
 class SmartReminderTelegramService:
-    def __init__(self, settings, sessions, *, calibration=None, coverage_reader=None, clock=None):
+    def __init__(self, settings, sessions, *, calibration=None, coverage_reader=None, clock=None,
+                 analysis_observer=None):
         self.settings, self.sessions, self.calibration = settings, sessions, calibration
         # A future reviewed read-only canonical feed; no production implementation
         # is installed. It must not own commit or perform provider/network IO.
         self.coverage_reader = coverage_reader
         self.clock = clock or (lambda: datetime.now(timezone.utc))
+        from app.services.smart_reminder_analysis import SmartReminderAnalysisObserver
+        self.analysis_observer = (analysis_observer if analysis_observer is not None else
+            SmartReminderAnalysisObserver(settings, sessions, clock=self.clock))
         self.queue = SmartReminderShadowQueue(sessions, clock=self.clock)
         digest = hashlib.sha256(json.dumps(asdict(calibration), sort_keys=True, default=str).encode()).hexdigest()[:12] if calibration else None
         self.policy_version = TELEGRAM_VERSION+":"+digest if digest else None
@@ -409,6 +413,12 @@ class SmartReminderTelegramService:
         return await self._finish(actor.user_id, lease.job_id, attempt_id, accepted=accepted, content=content)
 
     async def _finish(self, user_id, job_id, attempt_id, *, accepted, content=None):
+        result = await self._finish_committed(user_id, job_id, attempt_id, accepted=accepted, content=content)
+        if result.reason in {"telegram_provider_accepted", "telegram_unknown", "telegram_outcome_already_recorded"}:
+            await self.analysis_observer.capture_job(user_id, job_id)
+        return result
+
+    async def _finish_committed(self, user_id, job_id, attempt_id, *, accepted, content=None):
         # Record already-authorized external facts even after OFF/block/hold;
         # never run eligibility again to erase an uncertain provider boundary.
         async with self.sessions.begin() as session:
