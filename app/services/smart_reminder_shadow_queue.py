@@ -5,13 +5,17 @@ No API, scheduler, provider adapter or runtime calibration enables this queue.
 """
 from dataclasses import dataclass, field, replace
 from datetime import date, datetime, timedelta, timezone
+import hashlib
+import json
 from uuid import uuid4
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from sqlalchemy import insert, or_, select, update
 
 from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderJob
 from app.db.models.user import User
 from app.services.smart_reminder_cadence import evaluate_cadence
+from app.services.course_levels import content_level
 from app.services.smart_reminder_coordination import read_d1_scope
 from app.services.smart_reminder_lifecycle import EXTERNAL_ATTEMPTS
 from app.services.smart_reminder_policy import _aware_utc, day_window, evaluate
@@ -42,10 +46,33 @@ class ShadowResult:
     dispatch_allowed: bool = field(default=False, init=False)
 
 
+@dataclass(frozen=True)
+class ReservationObservation:
+    """Privileged source metadata only; no HTTP input or send authority."""
+    user_id: int
+    event_key: str
+    stage: str
+    reason_code: str
+    observed_at: datetime
+
+
+def _reservation_observation(user_id, revision, now, zone_name, course, reason):
+    try:
+        zone = ZoneInfo(zone_name) if zone_name else None
+    except (ZoneInfoNotFoundError, ValueError):
+        zone = None
+    scope = ["local_day", zone.key, now.astimezone(zone).date().isoformat()] if zone else ["utc_observation_day", now.date().isoformat()]
+    stage = "shadow_reserved" if reason == "shadow_reserved" else "shadow_refused"
+    identity = ["smart-reservation-v1", user_id, revision, scope, course, stage, reason]
+    key = hashlib.sha256(json.dumps(identity, separators=(",", ":")).encode()).hexdigest()
+    return ReservationObservation(user_id, key, stage, reason, now)
+
+
 class SmartReminderShadowQueue:
-    def __init__(self, sessions, *, clock=None):
+    def __init__(self, sessions, *, clock=None, analysis_observer=None):
         self.sessions = sessions
         self.clock = clock or (lambda: datetime.now(timezone.utc))
+        self.analysis_observer = analysis_observer
 
     def _now(self):
         return _aware_utc(self.clock())
@@ -89,30 +116,49 @@ class SmartReminderShadowQueue:
             return await self._close(session, row, "cancelled", "shadow_attempt_present", now)
 
     async def reserve(self, actor, *, history_since, expected_level, expires_at):
+        observations = []
+        enabled = self.analysis_observer is not None and self.analysis_observer.enabled is True
+        result = await self._reserve(actor, history_since=history_since, expected_level=expected_level,
+            expires_at=expires_at, observe=observations.append if enabled else None)
+        # Source transaction has committed/closed. Observation can never retry
+        # reservation or hold its locks across analysis IO.
+        if observations:
+            await self.analysis_observer.capture_reservation(observations[0])
+        return result
+
+    async def _reserve(self, actor, *, history_since, expected_level, expires_at, observe):
         expiry = _aware_utc(expires_at)
         since = _aware_utc(history_since)
         async with self.sessions.begin() as session:
-            await SmartReminderPreferencesService(session).read(actor)
+            pref = await SmartReminderPreferencesService(session).read(actor)
             now = self._now()  # The User lock may have waited: never reuse a pre-lock clock.
+            zone, course = pref["timezone_name"], ""
+            if observe is not None:
+                course = content_level(await session.scalar(select(User.level).where(User.id == actor.user_id)), default="")
+            def observed(result):
+                if observe is not None:
+                    observe(_reservation_observation(actor.user_id, pref["revision"], now, zone, course, result.reason))
+                return result
             d1 = await read_d1_scope(session, actor.user_id, now)
             if d1.reason(now):
-                return ShadowResult(d1.reason(now))
+                return observed(ShadowResult(d1.reason(now)))
             snapshot = await SmartReminderPolicyContextService(session).load_cadence(
                 actor, observed_at=now, history_since=since, expected_level=expected_level)
             decision = evaluate(snapshot.policy)
+            zone, course = snapshot.policy.timezone_name, snapshot.policy.level
             if not decision.candidate:
-                return ShadowResult(decision.reason)
+                return observed(ShadowResult(decision.reason))
             start, end = day_window(snapshot.policy.timezone_name, decision.local_day)
             if since > start:
-                return ShadowResult("queue_history_incomplete")
+                return observed(ShadowResult("queue_history_incomplete"))
             if not decision.scheduled_at < expiry <= end:
-                return ShadowResult("queue_expiry_outside_day")
+                return observed(ShadowResult("queue_expiry_outside_day"))
             existing_query = select(JOB).where(JOB.c.user_id == actor.user_id, JOB.c.category == "study", or_(
                 JOB.c.local_day == date.fromisoformat(decision.local_day),
                 (JOB.c.day_start_utc < end) & (JOB.c.day_end_utc > start)))
             existing = (await session.execute(existing_query.with_for_update().limit(1))).mappings().first()
             if existing is not None:
-                return self._result(existing, "account_day_already_owned")
+                return observed(self._result(existing, "account_day_already_owned"))
             cadence = evaluate_cadence(snapshot)
             values = dict(
                 id=str(uuid4()), user_id=actor.user_id, category="study",
@@ -128,7 +174,7 @@ class SmartReminderShadowQueue:
             # No savepoint as first write: SQLite legacy transaction control
             # could otherwise release it before the outer transaction commits.
             await session.execute(insert(JOB).values(**values))
-            return ShadowResult("shadow_reserved", values["id"], "shadow", cadence.reason)
+            return observed(ShadowResult("shadow_reserved", values["id"], "shadow", cadence.reason))
 
     async def due(self, *, limit):
         if type(limit) is not int or not 1 <= limit <= MAX_DUE_BATCH:
