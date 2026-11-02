@@ -373,6 +373,55 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         finally:
             await other.aclose()
 
+    async def test_google_cancel_returns_to_same_browser_without_session(self):
+        state = await self.begin()
+        cancelled = await self.client.get(
+            "/api/v3/native-auth/oauth/callback/google",
+            params={"state": state, "error": "access_denied"},
+        )
+        self.assertEqual(cancelled.status_code, 303, cancelled.text)
+        self.assertEqual(cancelled.headers["location"], "/iphone-pwa?auth=cancelled")
+        self.assertNotIn(PWA_SESSION_COOKIE, cancelled.cookies)
+        self.assertIn(PWA_OAUTH_COOKIE, cancelled.cookies)
+        self.assertEqual(cancelled.cookies[PWA_OAUTH_COOKIE], "")
+        async with self.sessions() as db:
+            row = (await db.execute(
+                select(DesktopLinkRequest).where(DesktopLinkRequest.platform == "pwa")
+            )).scalar_one()
+            self.assertEqual(row.status, "failed")
+        self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
+        script = (Path("app/static") / "iphone-pwa-login.js").read_text(encoding="utf-8")
+        self.assertIn('get("auth") === "cancelled"', script)
+        self.assertIn('message("desktopAuth.cancelled", true)', script)
+
+    async def test_apple_cancel_returns_to_same_browser_without_session(self):
+        self.settings.APPLE_OAUTH_ENABLED = True
+        self.settings.APPLE_SERVICE_ID = "apple.service.test"
+        self.settings.APPLE_TEAM_ID = "TESTTEAM"
+        self.settings.APPLE_KEY_ID = "TESTKEY"
+        self.settings.APPLE_PRIVATE_KEY = "unused-by-mocked-exchange"
+        started = await self.client.post(
+            "/api/v3/pwa-auth/start", headers={"Origin": ORIGIN},
+            json={"provider": "apple", "language": "ru"},
+        )
+        self.assertEqual(started.status_code, 200, started.text)
+        state = parse_qs(urlparse(started.json()["authorize_url"]).query)["state"][0]
+        cancelled = await self.client.post(
+            "/api/v3/native-auth/oauth/callback/apple",
+            data={"state": state, "error": "access_denied"},
+        )
+        self.assertEqual(cancelled.status_code, 303, cancelled.text)
+        self.assertEqual(cancelled.headers["location"], "/iphone-pwa?auth=cancelled")
+        self.assertNotIn(PWA_SESSION_COOKIE, cancelled.cookies)
+        self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
+
+    def test_telegram_poll_recovers_after_transient_error_and_is_single_flight(self):
+        script = (Path("app/static") / "iphone-pwa-login.js").read_text(encoding="utf-8")
+        self.assertIn("telegramClaimInFlight", script)
+        self.assertIn("if (!terminal)", script)
+        self.assertIn("The next poll can still claim it.", script)
+        self.assertIn("telegramClaimInFlight = false", script)
+
     async def test_existing_telegram_owner_retained_and_logout_is_csrf_protected(self):
         state = await self.begin()
         response = await self.callback(state)
