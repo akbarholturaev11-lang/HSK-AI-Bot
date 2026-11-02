@@ -30,6 +30,8 @@ MOBILE_PLATFORMS = {"android"}
 # receives the polling secret separately and the bot only sees this one-time
 # request identifier.
 ANDROID_LINK_PREFIX = "android_link_"
+# Separate bot proof for PWA, never routed through native Android polling.
+PWA_LINK_PREFIX = "pwa_link_"
 TELEGRAM_IDENTITY_LINK_PREFIX = "tg_identity_"
 TELEGRAM_APPROVAL_MODE = "telegram_approval"
 # Every native client allowed to open a Telegram device link. The desktop-only
@@ -366,7 +368,7 @@ class DesktopAuthService:
         # in would mean minting a session for a platform that owns no device.
         if platform in LINK_ONLY_PLATFORMS and intent != LINK_INTENT:
             raise DesktopAuthError("desktop_platform_invalid", status_code=422)
-        if platform in PWA_OAUTH_PLATFORMS and (flow not in OAUTH_FLOWS or intent != SIGNIN_INTENT):
+        if platform in PWA_OAUTH_PLATFORMS and (flow not in LINK_FLOWS or intent != SIGNIN_INTENT):
             raise DesktopAuthError("desktop_platform_invalid", status_code=422)
         if flow not in LINK_FLOWS:
             raise DesktopAuthError("desktop_link_flow_invalid", status_code=422)
@@ -466,6 +468,8 @@ class DesktopAuthService:
         bot_start_payload = (
             f"{ANDROID_LINK_PREFIX}{link_request.id}"
             if platform == "android"
+            else f"{PWA_LINK_PREFIX}{link_request.id}"
+            if platform == "pwa" and flow == TELEGRAM_FLOW
             else "desktop_link"
         )
         payload: dict[str, Any] = {
