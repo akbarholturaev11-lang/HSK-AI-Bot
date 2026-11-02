@@ -3,13 +3,14 @@
 Capture owns a separate transaction after delivery commits. Optional source
 hooks/retention are disabled by default. Retention never deletes source evidence.
 """
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 import asyncio
 import hashlib
 import logging
 import math
 
-from sqlalchemy import delete, func, or_, select, text, tuple_
+from sqlalchemy import and_, delete, func, or_, select, text, tuple_
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 
@@ -26,6 +27,12 @@ RAW_RETENTION = timedelta(days=90)  # Owner D21; not operational grant/day/OFF r
 MAX_BATCH = 128  # Bounded work, not product cadence or experiment calibration.
 UNAVAILABLE_OUTCOMES = ("verified_shown", "read", "opened", "attributed_server_learning")
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class AnalysisSourcePage:
+    sources: tuple[tuple[int, str], ...]
+    has_more: bool
 
 
 def oldest_month(now):
@@ -122,6 +129,37 @@ class SmartReminderAnalysisService:
                             attempt["resolved_at"], attempt["channel"], now)
                 return count
 
+    async def reconciliation_page(self, *, after_job_id=None, limit=128):
+        """Read minimal committed-source IDs; close SQL before owner capture.
+
+        Recent child facts qualify even when their parent's reservation expired.
+        A completed page/pass is not proof of complete outcome coverage.
+        """
+        if (type(limit) is not int or not 1 <= limit <= MAX_BATCH or
+                (after_job_id is not None and (not isinstance(after_job_id, str) or not 1 <= len(after_job_id) <= 36))):
+            raise ValueError("Bounded Smart analysis source page required")
+        async with self.sessions.begin() as session:
+            if session.bind.dialect.name == "postgresql":
+                await session.execute(text("SET TRANSACTION READ ONLY"))
+                await session.execute(text("SET LOCAL statement_timeout = '5000'"))
+            now = self.now()
+            def recent(column):
+                return and_(column > now - RAW_RETENTION, column <= now)
+            job, attempt, grant = SmartReminderJob, SmartReminderAttempt, SmartReminderAndroidGrant
+            reviewed = or_(and_(job.selected_channel == "android", job.policy_version.startswith("smart-android-v1:")),
+                and_(job.selected_channel == "telegram", job.policy_version.startswith("smart-telegram-v1:")))
+            fresh_source = or_(recent(job.created_at),
+                and_(job.state.in_(("cancelled", "expired")), recent(job.updated_at)),
+                select(attempt.id).where(attempt.job_id == job.id,
+                    or_(recent(attempt.started_at), recent(attempt.resolved_at))).exists(),
+                select(grant.id).where(grant.job_id == job.id, grant.user_id == job.user_id,
+                    recent(grant.received_at)).exists())
+            query = select(job.user_id, job.id).where(reviewed, fresh_source)
+            if after_job_id is not None:
+                query = query.where(job.id > after_job_id)
+            rows = (await session.execute(query.order_by(job.id).limit(limit + 1))).all()
+            return AnalysisSourcePage(tuple((r.user_id, r.id) for r in rows[:limit]), len(rows) > limit)
+
     async def retention(self, *, execute=False, limit=128):
         """One explicit bounded page; default returns anonymous counts only."""
         if type(execute) is not bool or type(limit) is not int or not 1 <= limit <= MAX_BATCH:
@@ -161,6 +199,7 @@ class SmartReminderAnalysisObserver:
         self.settings = settings
         self.service = SmartReminderAnalysisService(sessions, clock=clock)
         self.timeout, self.interval, self.batch = timeout, interval, batch
+        self._reconcile_after = None  # Restart safely rescans the durable sources.
 
     @property
     def enabled(self):
@@ -188,4 +227,39 @@ class SmartReminderAnalysisObserver:
                 await self.tick()
             except Exception:
                 logger.warning("Smart analysis retention unavailable")
+            await asyncio.sleep(self.interval)
+
+    async def reconcile_tick(self):
+        if not self.enabled:
+            return None
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + self.timeout
+        page = await asyncio.wait_for(self.service.reconciliation_page(
+            after_job_id=self._reconcile_after, limit=self.batch), timeout=self.timeout)
+        examined = inserted = unavailable = 0
+        for user_id, job_id in page.sources:
+            remaining = deadline - loop.time()
+            if not self.enabled or remaining <= 0:
+                break
+            try:
+                inserted += await asyncio.wait_for(self.service.capture_job(user_id, job_id), timeout=remaining)
+            except Exception:
+                logger.warning("Smart analysis reconciliation capture unavailable")
+                unavailable += 1
+            # A locked/failed owner must not starve later jobs. A later pass
+            # retries it; capture's source-stage key makes all replay safe.
+            self._reconcile_after = job_id
+            examined += 1
+        finished = examined == len(page.sources) and not page.has_more
+        if finished:
+            self._reconcile_after = None
+        return {"examined": examined, "inserted_facts": inserted,
+                "unavailable": unavailable, "pass_finished": finished}
+
+    async def run_reconciliation(self):
+        while self.enabled:
+            try:
+                await self.reconcile_tick()
+            except Exception:
+                logger.warning("Smart analysis reconciliation unavailable")
             await asyncio.sleep(self.interval)
