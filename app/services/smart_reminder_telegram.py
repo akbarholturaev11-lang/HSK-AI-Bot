@@ -27,6 +27,7 @@ from app.services.smart_reminder_policy_context import SmartReminderPolicyContex
 from app.services.smart_reminder_preferences import MAX_REVISION, SmartReminderError, SmartReminderPreferencesService, _utc
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION, SmartReminderShadowQueue
 from app.services.smart_reminder_telegram_content import TelegramContent, render_telegram_content
+from app.services.smart_reminder_open import SmartReminderOpenService
 
 
 ROUTING = SmartReminderRouting.__table__
@@ -398,7 +399,9 @@ class SmartReminderTelegramService:
                 return TelegramResult("telegram_attempt_not_replayable", lease.job_id)
             if refused := await self._fresh(session, actor, row, cohort, history_since): return refused
             try:
-                content = await render_telegram_content(session, actor, row)
+                open_proof = SmartReminderOpenService(self.settings).proof(actor, row["id"], attempts[0]["id"])
+                content = await render_telegram_content(session, actor, row,
+                    **({"open_proof": open_proof} if open_proof is not None else {}))
             except SmartReminderError as exc:
                 return await self._cancel(session, row, exc.code)
             # Template SQL may cross a quiet/day boundary even while the lease

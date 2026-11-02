@@ -1,10 +1,10 @@
 # Smart delivery analysis contract
 
-The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.62. This
+The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.63. This
 contract defines P6 6.1a, optional 6.1b integration, bounded 6.1c reconciliation,
 6.1d terminal shadow observations, 6.1e reservation observations and 6.1f
-committed runtime guard reasons and the 6.1g internal target-learning projection,
-not a live rollout.
+committed runtime guard reasons, the 6.1g internal target-learning projection
+and 6.1h authenticated client-reported opens, not a live rollout.
 
 `SmartReminderAnalysisService.capture_job(user_id, job_id)` is an internal,
 explicit operation over a committed owned job and its attempts/Android grants.
@@ -30,7 +30,7 @@ jobs are excluded. Source timestamps must be neither future nor older than 90 da
 | `shadow_suppressed` | Exact unselected/unattempted terminal shadow job with a reviewed reason | Its stored guard/cadence/expiry reason; no nonresponse or display inference |
 
 The existing attempt enum alone cannot prove `verified_shown` or a client post
-without its matching receipt. Shown, read, opened and attributed server learning
+without its matching receipt. Independently verified shown/read/opened and attributed server learning
 remain **unavailable**; these counters are not fabricated zeros or inferred from
 FCM acceptance, widget/app opens or XP. Transient real-dispatch guards without committed source evidence,
 trusted open/learning linkage, complete coverage, denominator/experiment
@@ -39,7 +39,8 @@ and model evaluation remain separate parent 6.1/6.2/P7 work.
 Migration `0137_smart_analysis` adds two tables; `0138_smart_shadow_analysis`
 extends only their stage constraints for explicit shadow observations. Migration
 `0139_smart_reservation_analysis` adds job-independent reservation detail and two
-explicit anonymous shadow-reservation stages:
+explicit anonymous shadow-reservation stages. `0140_smart_open_analysis` extends
+only raw/monthly stage constraints for the separate `client_reported_open` fact:
 
 - `smart_reminder_analysis_events`: owner/job FKs, a hash of immutable
   source-and-stage identity, a fixed stage/reason/channel and source time/expiry.
@@ -152,6 +153,65 @@ adds `expired_reservations`/`removed_reservations` counts while preserving old
 keys, and removes at most one bounded page per analysis class. Downgrade 0139
 refuses any reservation detail or retained new-stage monthly count.
 
+## Authenticated client-reported opens
+
+`client_reported_open` means an authenticated owning client reports opening an
+original accepted/posted reminder. It is neither independently verified human
+opening/OS display nor server learning or causal study return. It changes no
+job, attempt, grant, consent, budget, access, cadence or delivery state.
+
+The same strict default-false analysis flag enables optional opaque HMAC-SHA256
+metadata. Android's successful live claim response can include `open_proof`,
+bound to original grant/job/account/device/session. Telegram's authorized
+content can include job/proof **fragment** parameters on its existing validated
+course link, bound to original attempt/account. Separate domain/channel bindings
+reuse configured native-auth and bot signing keys; no new key or auth credential
+is exposed. Missing keys/metadata and metadata failures preserve delivery.
+Rotation can make an old report unavailable and grants no fallback authority.
+Proofs are not stored in SQL, URIs/queries for native intents, localStorage or
+logs. They never replace existing authentication or authorize a lesson/send.
+
+Only header-authenticated own-job JSON POST is accepted:
+`/api/v3/android/smart-reminder/jobs/{job_id}/open` uses native Android bearer;
+`/api/v3/smart-reminder/jobs/{job_id}/open` uses fresh signed Telegram init-data
+in `X-Telegram-Init-Data`. Cookie/query/body ownership and ambiguous headers are
+not accepted. Body contains only strict integer `version: 1` and a 64-character
+lowercase hex `proof`; no client timestamp, owner, stage, outcome or redirect.
+The existing bounded JSON parser and current User-first session/block/deletion
+checks apply, with a two-second PostgreSQL statement timeout for observation.
+
+Constant-time verification binds committed selected v1 source, original epoch/
+revision/device/session/policy and chronology. Android needs the matching
+immutable original posted-unverified receipt; Telegram needs its original
+provider-accepted attempt. Declined/unstarted/unknown or mismatched sources are
+unconfirmed. The server must receive the report within the original frozen IANA
+local day, checked against real boundaries. This is a technical proof-acceptance
+scope, not an experiment or causal-attribution window. Late/offline reports or
+reports arriving before a confirmed receipt can be lost; missing data stays
+unknown rather than proving no open or permitting a second send.
+
+Android passes optional proof only from the live grant into explicit notification
+Intent extras with the original local link epoch. Notification entry parses it
+strictly, validates current auth generation/link, and makes one best-effort API
+call outside auth/store locks. The original navigation does not await it; old,
+widget or malformed entries do not become reports. There is no cross-account
+persistence/retry. Telegram's visible signed Mini App entry sends one best-effort
+same-origin POST, with cookies omitted, redirects refused and no referrer. Its
+consumer rejects missing/duplicate/malformed metadata, preserves Telegram launch
+fragments and does not reinterpret generic Mini App opens as reminder opens.
+
+Migration 0140 adds no table or personal column. Existing owner/source-stage
+hash identity deduplicates one original attempt's first server-received report;
+raw fact and anonymous UTC-month increment commit atomically. Replay extends
+neither count nor expiry. Fixed reason is `authenticated_client_report`, with no
+proof/body/device/session/copy retained in analysis. Existing D21 raw 90-day,
+twelve-month aggregate retention and canonical purge cover this stage. Downgrade
+refuses raw or anonymous-only open facts before changing constraints. The empty
+QA initializer's reviewed head becomes 0140; no remote migration/initializer or
+flag is run by this task. Disable analysis for rollback, preserving operational
+and already recorded evidence. Source reconciliation cannot recreate a report
+that never persisted, and incomplete reports are not a denominator.
+
 ## Internal target-learning source projection
 
 `SmartReminderAnalysisService.target_learning(user_id, job_id)` is an explicit
@@ -211,7 +271,7 @@ cohort/experiment exposure requires its own reviewed read projection.
 ## Optional source integration
 
 `SMART_REMINDER_ANALYSIS_ENABLED=false` is the default. Setting it true requires
-the reviewed 0139 schema and enables observation/analysis-only retention, never
+the reviewed 0140 schema and enables observation/analysis-only retention, never
 study dispatch, admission, enrollment or a provider. Android's successful claim
 or receipt schedules only owner/job metadata in a Starlette background callback:
 the source transaction/session has closed and the complete HTTP body is sent

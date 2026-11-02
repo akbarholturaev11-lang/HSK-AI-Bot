@@ -119,7 +119,8 @@ object StudyNotifications {
     fun postReminder(context: Context, reminder: Reminder, variant: Int = 0): Boolean =
         postReminderOutcome(context, reminder, variant) == StudyPostOutcome.POSTED_UNVERIFIED
 
-    fun postReminderOutcome(context: Context, reminder: Reminder, variant: Int = 0): StudyPostOutcome {
+    fun postReminderOutcome(context: Context, reminder: Reminder, variant: Int = 0,
+                            openHint: SmartStudyOpenHint? = null): StudyPostOutcome {
         if (reminder == Reminder.NONE) return StudyPostOutcome.DECLINED_BEFORE_POST
         // Repeated inline rather than delegated: this is the guard that keeps
         // the notify() call below legal, and it has to be visible right here.
@@ -153,6 +154,11 @@ object StudyNotifications {
         // lesson renders.
         val intent = WidgetIntents.open(context, "notification").apply {
             putExtra(WidgetIntents.EVENT_ID, java.util.UUID.randomUUID().toString())
+            // Explicit nulls also clear prior optional metadata when a legacy
+            // notification replaces this PendingIntent. Never put proof in URI.
+            putExtra(WidgetIntents.SMART_JOB, openHint?.jobId)
+            putExtra(WidgetIntents.SMART_PROOF, openHint?.proof)
+            putExtra(WidgetIntents.SMART_EPOCH, openHint?.localEpoch)
         }
         val pending = PendingIntent.getActivity(
             context,

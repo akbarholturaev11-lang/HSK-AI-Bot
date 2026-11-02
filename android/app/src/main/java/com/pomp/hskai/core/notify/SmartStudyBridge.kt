@@ -27,6 +27,42 @@ internal data class SmartStudyHint(val jobId: String, val localDay: String) {
     }
 }
 
+
+/** Observation metadata only, bound locally to the original account link. */
+data class SmartStudyOpenHint(val jobId: String, val proof: String, val localEpoch: String) {
+    companion object {
+        fun parse(job: String?, proof: String?, epoch: String?): SmartStudyOpenHint? =
+            if (canonicalStudyUuid(job) && canonicalStudyUuid(epoch) &&
+                proof != null && Regex("[0-9a-f]{64}").matches(proof)) SmartStudyOpenHint(job!!, proof, epoch!!) else null
+    }
+}
+
+/** Best-effort observation with the same auth/link fences, never a study run. */
+internal class SmartStudyOpenReporter(
+    private val store: WidgetStore,
+    private val session: suspend () -> ApiResult<AuthRepository.AuthenticatedSession>,
+    private val commitCurrent: suspend (Long, suspend () -> Unit) -> Boolean,
+    private val report: suspend (String, String, String) -> Unit,
+) {
+    suspend fun run(hint: SmartStudyOpenHint) {
+        try {
+            if (store.read().let { !it.linked || it.epoch != hint.localEpoch }) return
+            val proof = (session() as? ApiResult.Success)?.value ?: return
+            var current = false
+            val committed = commitCurrent(proof.generation) {
+                current = store.read().let { it.linked && it.epoch == hint.localEpoch }
+            }
+            // Network IO is outside auth/store locks. No persistence or retry
+            // crosses account links; an absent report is unknown coverage.
+            if (committed && current) report("Bearer ${proof.token}", hint.jobId, hint.proof)
+        } catch (cancel: kotlinx.coroutines.CancellationException) {
+            throw cancel
+        } catch (_: Exception) {
+            // Observation cannot crash or block the existing navigation.
+        }
+    }
+}
+
 /** No bearer, account id, private lesson data or cached posting authority. */
 @Serializable data class SmartStudyOperation(
     val jobId: String,
@@ -56,7 +92,7 @@ internal class SmartStudyBridge(
     private val claim: suspend (String, String, SmartStudyClaim) -> ApiResult<SmartStudyGrant>,
     private val receipt: suspend (String, String, SmartStudyReceipt) -> ApiResult<SmartStudyReceiptAck>,
     private val permission: () -> Boolean,
-    private val post: (String) -> StudyPostOutcome,
+    private val post: (String, SmartStudyOpenHint?) -> StudyPostOutcome,
     private val clock: () -> ZonedDateTime = ZonedDateTime::now,
     private val elapsed: () -> Long,
 ) {
@@ -143,7 +179,8 @@ internal class SmartStudyBridge(
                             android.util.Log.i("SmartStudyQA","veto frame_error="+it.javaClass.simpleName)
                         false
                     }
-                }, post = { post(grant.localDay.orEmpty()) })
+                }, post = { post(grant.localDay.orEmpty(),
+                    SmartStudyOpenHint.parse(grant.jobId, grant.openProof, grant.localEpoch)) })
         }
         // Retry later from the immutable persisted outcome; never repeat notify on ACK failure.
         val saved = store.read().takeIf { it.epoch == local.epoch }?.studyOperations?.find { it.requestId == op.requestId }

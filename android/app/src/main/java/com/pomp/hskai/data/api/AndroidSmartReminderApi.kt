@@ -47,6 +47,8 @@ interface AndroidSmartReminderApi {
     suspend fun due(@Header("Authorization") bearer: String): Response<SmartStudyDue>
     @POST("api/v3/android/smart-reminder/jobs/{job}/claim")
     suspend fun claim(@Header("Authorization") bearer: String, @Path("job") job: String, @Body body: SmartStudyClaim): Response<SmartStudyGrant>
+    @POST("api/v3/android/smart-reminder/jobs/{job}/open")
+    suspend fun opened(@Header("Authorization") bearer: String, @Path("job") job: String, @Body body: SmartStudyOpen): Response<SmartStudyOpenAck>
     @POST("api/v3/android/smart-reminder/jobs/{job}/receipt")
     suspend fun receipt(@Header("Authorization") bearer: String, @Path("job") job: String, @Body body: SmartStudyReceipt): Response<SmartStudyReceiptAck>
 }
@@ -100,6 +102,7 @@ interface AndroidSmartReminderApi {
     @SerialName("timezone_name") val timezoneName: String? = null,
     @SerialName("course_key") val courseKey: String? = null,
     @SerialName("lesson_order") val lessonOrder: Int? = null,
+    @SerialName("open_proof") val openProof: String? = null,
 )
 @Serializable data class SmartStudyReceipt(
     @EncodeDefault val version: Int = 1,
@@ -109,3 +112,9 @@ interface AndroidSmartReminderApi {
     val outcome: String,
 )
 @Serializable data class SmartStudyReceiptAck(val ok: Boolean = false, val version: Int = 0)
+
+@Serializable data class SmartStudyOpen(
+    @EncodeDefault val version: Int = 1,
+    val proof: String,
+)
+@Serializable data class SmartStudyOpenAck(val ok: Boolean = false, val version: Int = 0)
