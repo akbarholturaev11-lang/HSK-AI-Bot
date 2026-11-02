@@ -2,43 +2,40 @@
 
 ## ADDED Requirements
 
-### Requirement: Installable independent learner application
-The system SHALL provide a dedicated HTTPS learner PWA entry, valid web manifest, install icons, standalone display metadata, correct scope/start URL and responsive iPhone safe-area behavior. It SHALL not reuse privileged Admin PWA scope, cookies or service worker authority.
+### Requirement: Independent installed learner surface
+The system SHALL provide an HTTPS learner Course PWA entry with suitable icon/app name/metadata and iPhone safe-area layout, reusing the existing Mini App screen UI. It SHALL NOT use privileged Admin PWA session or scope. A service worker, offline lessons and new push notifications are NOT required for the first version.
 
-#### Scenario: Safari install to Home Screen
-- **WHEN** a user adds the course site to their iPhone Home Screen
-- **THEN** the icon and standalone launch target open the learner course/sign-in shell rather than the bot, marketing site or Admin PWA
+#### Scenario: Add to Home Screen
+- **WHEN** a learner adds the course from iPhone Safari to their Home Screen and launches it
+- **THEN** it opens the independent learner course or login rather than Telegram or Admin PWA
+- **AND** bottom navigation and fixed controls remain usable within iPhone safe areas
 
-#### Scenario: Standalone layout
-- **WHEN** the PWA runs on supported notched and non-notched iPhones
-- **THEN** navigation, keyboard, scroll and fixed bottom controls remain usable within safe areas in portrait mode
+### Requirement: Browser and Home Screen session correctness
+The system SHALL ensure that normal Safari and installed Home Screen contexts individually verify session authority and safely handle OAuth return, cold launch, background/foreground, logout and session expiration. It SHALL clear account-specific state on identity change and use a fresh authenticated server read where appropriate.
 
-### Requirement: Private and versioned caching
-The system SHALL define a narrowly scoped service worker and asset-cache update strategy. Public, versioned, non-sensitive UI/assets MAY be cached as permitted; private/protected course responses, exam answers, auth/session, billing data and per-user payloads SHALL NOT be served cross-account or from an unrestricted public cache. Offline use SHALL be limited to explicitly tested supported features.
+#### Scenario: Return with expired credentials
+- **WHEN** the learner reopens an installed PWA after session expiry
+- **THEN** private account/course data is not displayed under stale authority
+- **AND** the user is directed through the secure sign-in flow
 
-#### Scenario: Offline entry
-- **WHEN** the Home Screen PWA is reopened without network access
-- **THEN** only demonstrably safe cached UI/content is available, or a clear offline state appears
-- **AND** the app does not claim full offline lessons, sync or grading that it cannot perform
+#### Scenario: Change user
+- **WHEN** a user logs out and another verified user logs in
+- **THEN** cached or retained UI state from the previous user cannot reveal their progress, payment or protected material
 
-#### Scenario: Login, logout and update
-- **WHEN** a learner changes account or a new PWA version activates
-- **THEN** stale private state is not exposed, cache versions do not trap the learner on a broken shell and a safe update/recovery path exists
+### Requirement: Safe minimal web assets
+The system SHALL version and serve only necessary learner shell assets. It SHALL NOT publicly cache private course/graded responses, auth tokens, payment records or account data. A service worker MAY be introduced later only for a demonstrated requirement and with a separate secure cache review; it is not a condition of iPhone Home Screen installation.
 
-### Requirement: iOS capabilities and graceful degradation
-The implementation SHALL explicitly test iOS Safari versus installed PWA restrictions for mic capture, audio playback, speech/voice, upload, external OAuth/payment redirects and optional Web Push. An unavailable OS capability SHALL have a supported fallback or a truthful localized disabled state; no untested push guarantee is allowed.
+#### Scenario: Network unavailable
+- **WHEN** network access is unavailable during a protected lesson or payment action
+- **THEN** the app shows an accurate network/offline error and does not simulate server grading or payment confirmation
 
-#### Scenario: Microphone denied
-- **WHEN** iOS denies microphone permission or voice capture is unsupported in the current context
-- **THEN** the app reports that limit and preserves available non-voice learning paths without corrupting lesson state
+### Requirement: Real iPhone capabilities
+The delivered PWA SHALL be verified on a real iPhone in both Safari and installed contexts for lesson navigation, audio playback, mic permission/denial, keyboard, provider sign-in and browser payment return. Unsupported iOS APIs SHALL degrade safely without corrupting learning state; new Web Push is outside initial scope.
 
-#### Scenario: Notification permission unsupported or refused
-- **WHEN** web push is unavailable, not installed, or permission is denied
-- **THEN** the system does not claim push was registered and does not substitute Telegram transport without a real linked Telegram account and consent
+#### Scenario: Microphone unavailable
+- **WHEN** voice permission is denied or a required browser capability is not supported
+- **THEN** an understandable localized error/fallback is shown and non-voice course actions remain available
 
-### Requirement: Measurable device acceptance
-Release acceptance SHALL use real-device iPhone Safari and installed-PWA checks, including initial install, cold launch, page reload, background/foreground, standalone login callback, session expiry, offline, voice permission and payment return, in addition to automated checks.
-
-#### Scenario: CI-only validation
-- **WHEN** OpenSpec validation or desktop-browser E2E succeeds but real iPhone verification has not been run
-- **THEN** the PWA is still marked not device-accepted and not production-ready
+#### Scenario: Planning-only validation
+- **WHEN** GitHub Actions OpenSpec validation passes without running on a real iPhone
+- **THEN** the product is still not considered device-accepted or production-ready
