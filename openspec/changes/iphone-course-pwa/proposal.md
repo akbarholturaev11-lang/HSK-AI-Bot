@@ -13,6 +13,9 @@ This is new cross-client, identity- and billing-sensitive behavior, so `$hsk-ai-
 - Plan a thin browser-vs-Telegram frontend platform adapter and authenticated backend transport that shares established course, progress, scoring, grading, trial/Pro, access, subscriptions and referral services without weakening Telegram signed-initData requirements.
 - Audit UI and learning parity across course tabs, HSK 2.0/3.0 tracks, lessons, tests, homework, practice, pronunciation/voice, mistakes, progress, settings, paywall and localized UZ/RU/TJ strings. Document any iOS differences and capability gating instead of promising unavailable features.
 - Plan focused auth/course/billing/iPhone physical-device tests and reversible rollback; do not deploy during planning.
+- Preserve important account/transactional notices and the existing course/ranking inbox as distinct from Smart study reminders; prepare a future **Smart Reminder V2 iPhone PWA channel** against its canonical policy without prematurely enabling Web Push.
+- Reuse existing bot feedback and release-feedback eligibility/reward records for small centered PWA dialogs; leave Telegram chat behavior intact.
+- Design **new** PWA UI in editable Figma components first; link them from the single context file rather than duplicating the Mini App screen designs.
 
 ## Capabilities
 
@@ -22,6 +25,7 @@ This is new cross-client, identity- and billing-sensitive behavior, so `$hsk-ai-
 - `iphone-pwa-course-parity`: shared course UI and user-scoped Mini App functionality via safe browser adapters, original backend authority and Telegram preservation.
 - `iphone-pwa-install-lifecycle`: iOS Home Screen learner entry, safe session/navigation recovery and media capability checks; no v1 offline cache, Service Worker or Web Push requirement.
 - `iphone-pwa-payments-entitlements`: canonical Pro/trial/payment/referral/receipt flows for browser users, without unauthorized commercial-policy changes.
+- `iphone-pwa-messages-feedback`: service notices/in-app inbox, future Smart Reminder adapter seam and compact original bot/release feedback flows; design-first review gate.
 
 ### Modified Capabilities
 
@@ -32,6 +36,8 @@ None proposed yet: the existing `openspec/specs/` inventory is admin-focused. Le
 - Source baseline: `main@f791613c4377ffec2018cce3764cf81e80a6a765` (2026-11-02). Revalidate newer HEAD before implementation.
 - Authoritative sources: `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, `docs/UNIVERSAL_NATIVE_ACCOUNTS.md`, `OAUTH_SETUP.md`, `localization/README.md`, `openspec/config.yaml`, `.agents/skills/hsk-ai-openspec-planning/SKILL.md`, `.agents/skills/hsk-ai-ui/SKILL.md`.
 - Current paths: `app/static/course-v3.html` plus `course_v3_*.html` and `app/static/course_v3_data/`; `app/main.py` and `app/api/miniapp_{entitlements,practice,preferences}.py`; `app/api/native_oauth.py`, existing identity/user/session repositories; course/payment/access services and focused tests.
+- Notification/feedback boundaries: `docs/smart-reminders/SMART_REMINDER_MASTER_PLAN.md` D10/P5; `app/services/notification_delivery_service.py` account notices; `app/services/course_notification_service.py` learner feed; `app/services/bot_feedback_service.py` and `app/services/release_feedback_service.py` campaign/reward state.
+- Figma source: [iPhone PWA notifications and feedback](https://www.figma.com/design/89fCM5GdjfBqcx0B9aQHOI), draft mockups requiring review before implementation.
 - Verified boundary: `app/api/native_oauth.py` OAuth start supports `android|macos|windows`, not browser PWA. Mini App identity-link support is **not** browser authentication. `docs/UNIVERSAL_NATIVE_ACCOUNTS.md` states learner PWA is not yet implemented.
 - Consumers: Telegram bot/Mini App, Android Direct/Play, Desktop, existing web/API clients must remain compatible; shared data stays keyed by canonical `users.id`.
 - Risks: fabricated Telegram IDs, forgery of browser actor/session, CSRF and OAuth callback/session fixation, cross-account state leaks, exposure of private or graded lesson responses, payment/receipt mistakes, duplicated sign-up benefits, broken Telegram SDK or lesson flow, Safari/Home Screen session isolation, unsupported media/notification capability.
