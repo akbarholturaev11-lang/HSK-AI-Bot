@@ -33,6 +33,47 @@ jobs:
           python -m py_compile app/api/pwa_auth.py app/services/pwa_auth_service.py app/api/native_oauth.py app/services/desktop_auth_service.py app/main.py app/config.py tests/test_pwa_browser_auth.py
       - name: New PWA cookie, proof, CSRF and native isolation tests
         run: python -m unittest -v tests.test_pwa_browser_auth
-      - name: Existing native OAuth and identity regression
+      - name: Existing native OAuth and identity regressions excluding known JWKS fixture
         run: |
-          python -m unittest -q tests.test_native_oauth_api tests.test_native_oauth_lifecycle tests.test_identity_link_service tests.test_desktop_auth_service
+          python -m unittest -q tests.test_native_oauth_api tests.test_identity_link_service tests.test_desktop_auth_service
+          python - <<'PY'
+          import unittest
+          suite = unittest.defaultTestLoader.loadTestsFromName("tests.test_native_oauth_lifecycle")
+          filtered = unittest.TestSuite()
+          def visit(t):
+              if isinstance(t, unittest.TestSuite):
+                  for child in t:
+                      visit(child)
+              elif "test_signed_tokens_must_match_the_selected_nonce_domain" not in t.id():
+                  filtered.addTest(t)
+          visit(suite)
+          result = unittest.TextTestRunner(verbosity=1).run(filtered)
+          if not result.wasSuccessful():
+              raise SystemExit(1)
+          PY
+      - name: Full lifecycle JWT JWKS test (diagnostic only)
+        continue-on-error: true
+        run: python -m unittest -q tests.test_native_oauth_lifecycle.NativeOAuthLifecycleTests.test_signed_tokens_must_match_the_selected_nonce_domain
+      - name: Check identical JWKS fixture on unchanged main
+        run: |
+          set -euo pipefail
+          git fetch --depth=1 origin main
+          mkdir -p /tmp/hsk-main-pwa-baseline
+          git archive origin/main | tar -x -C /tmp/hsk-main-pwa-baseline
+          cd /tmp/hsk-main-pwa-baseline
+          set +e
+          python -m unittest -q tests.test_native_oauth_lifecycle.NativeOAuthLifecycleTests.test_signed_tokens_must_match_the_selected_nonce_domain > /tmp/hsk-jwks-main.log 2>&1
+          code=$?
+          set -e
+          if [ "$code" -eq 0 ]; then
+            echo "Original main JWKS test PASSES; inspect candidate-specific failure."
+          elif grep -q "oidc_jwks_unavailable" /tmp/hsk-jwks-main.log; then
+            echo "Original main reproduces oidc_jwks_unavailable; this is a baseline/provider-JWKS fixture limitation."
+          else
+            tail -80 /tmp/hsk-jwks-main.log
+            echo "Original main failed for a different reason."
+            exit 1
+          fi
+          if [ "$code" -eq 0 ]; then
+            exit 1
+          fi
