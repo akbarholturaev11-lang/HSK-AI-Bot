@@ -128,6 +128,10 @@
     "navigation.profile": "Profil",
     "navigation.rating": "Reyting",
     "navigation.subscription": "Obuna",
+    "pwaAuth.choose": "Kirish yoki yangi hisob ochish usulini tanlang",
+    "pwaAuth.tagline": "Yaxshiroq kelajak — bilim bilan",
+    "pwaAuth.telegramPending": "PWA’da Telegram orqali kirish hozircha mavjud emas. Avval botda Google yoki Apple hisobingizni ulang.",
+    "pwaAuth.welcome": "Xush kelibsiz",
     "state.loading": "Yuklanmoqda…"
   }
 }
