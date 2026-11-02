@@ -274,4 +274,47 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
         except PwaAuthError as exc:
             return _error(exc)
 
+    @router.get("/api/v3/pwa/account-notices")
+    async def account_notices(request: Request):
+        """Stored account/service notices, separate from course feed.
+
+        Reading this route is never a push delivery acknowledgment and must
+        not alter Android->Telegram fallback or Smart Reminder policy.
+        """
+        try:
+            from sqlalchemy import select
+            from app.db.models.account_notice_delivery import AccountNoticeDelivery
+            from app.services.account_identity import owner_clause
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+                rows = (await db.execute(
+                    select(AccountNoticeDelivery)
+                    .where(owner_clause(
+                        AccountNoticeDelivery, actor, telegram_column="telegram_id",
+                    ))
+                    .order_by(
+                        AccountNoticeDelivery.created_at.desc(),
+                        AccountNoticeDelivery.id.desc(),
+                    )
+                    .limit(20)
+                )).scalars().all()
+                notices = [
+                    {
+                        "id": row.id,
+                        "key": row.key,
+                        "title": row.title,
+                        "body": row.body,
+                        "action": row.action if row.action in {"subscription", "course"} else "course",
+                        "created_at": row.created_at.isoformat() if row.created_at else "",
+                    }
+                    for row in rows
+                ]
+            return JSONResponse(
+                {"ok": True, "notices": notices}, headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
     return router
