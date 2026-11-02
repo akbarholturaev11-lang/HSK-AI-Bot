@@ -46,6 +46,7 @@ from app.services.course_miniapp_practice_service import (
     CourseMiniAppPracticeService,
 )
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
+from app.services.pwa_auth_service import PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, require_same_origin
 
 
 logger = logging.getLogger(__name__)
@@ -430,6 +431,100 @@ def create_miniapp_practice_router(
             )
         except Exception:
             logger.exception("Mini App drill words failed")
+            return _error_response(
+                MiniAppPracticeError("practice_unavailable", status_code=503)
+            )
+
+    # PWA-only practice adapters use the same mastery and mistake services.
+    # Never smuggle fake Telegram initData or treat a browser cookie as a
+    # Telegram/native credential. Limits and anti-forgery checks stay server-side.
+    @router.post("/api/v3/pwa/practice/words")
+    async def pwa_drill_words(request: Request):
+        try:
+            require_same_origin(request, settings_obj)
+            payload = await _validated_payload(request, DrillWordsRequest)
+            if payload.initData or request.headers.get("X-Telegram-Init-Data"):
+                raise MiniAppPracticeError("practice_request_invalid", status_code=422)
+            async with session_factory() as session:
+                user, _ = await PwaAuthService(session, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                plan = await mastery_service_factory(session).drill_words(
+                    user, skill=payload.feature, limit=payload.limit,
+                )
+                await session.commit()
+            return _service_response({"ok": True, **plan})
+        except PwaAuthError as exc:
+            return JSONResponse(
+                status_code=exc.status_code,
+                content={"ok": False, "error": exc.code},
+                headers={"Cache-Control": "no-store"},
+            )
+        except MiniAppPracticeError as exc:
+            return _error_response(exc)
+        except (TypeError, ValueError):
+            return _error_response(
+                MiniAppPracticeError("practice_request_invalid", status_code=422)
+            )
+        except Exception:
+            logger.exception("PWA drill words failed")
+            return _error_response(
+                MiniAppPracticeError("practice_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/pwa/practice/report")
+    async def pwa_drill_report(request: Request):
+        try:
+            require_same_origin(request, settings_obj)
+            payload = await _validated_payload(request, DrillReportRequest)
+            if payload.initData or request.headers.get("X-Telegram-Init-Data"):
+                raise MiniAppPracticeError("practice_request_invalid", status_code=422)
+            async with session_factory() as session:
+                user, _ = await PwaAuthService(session, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                recorded = 0
+                if payload.mistakes:
+                    recorded = await drill_service_factory(session).record(
+                        user,
+                        feature=payload.feature,
+                        level=payload.level,
+                        language=payload.language,
+                        entries=[
+                            {"hanzi": entry.hanzi, "selected": entry.selected}
+                            for entry in payload.mistakes
+                        ],
+                    )
+                scheduled = 0
+                if payload.results and payload.feature in MASTERY_FEATURES:
+                    scheduled = await mastery_service_factory(session).record_drill(
+                        user,
+                        skill=payload.feature,
+                        results=[
+                            {"hanzi": entry.hanzi, "correct": entry.correct}
+                            for entry in payload.results
+                        ],
+                    )
+                await session.commit()
+            return _service_response(
+                {"ok": True, "recorded": recorded, "scheduled": scheduled}
+            )
+        except PwaAuthError as exc:
+            return JSONResponse(
+                status_code=exc.status_code,
+                content={"ok": False, "error": exc.code},
+                headers={"Cache-Control": "no-store"},
+            )
+        except MiniAppPracticeError as exc:
+            return _error_response(exc)
+        except (TypeError, ValueError):
+            return _error_response(
+                MiniAppPracticeError("practice_request_invalid", status_code=422)
+            )
+        except Exception:
+            logger.exception("PWA drill report failed")
             return _error_response(
                 MiniAppPracticeError("practice_unavailable", status_code=503)
             )
