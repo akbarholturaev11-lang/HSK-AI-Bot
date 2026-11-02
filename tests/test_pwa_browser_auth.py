@@ -653,6 +653,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("require_same_origin(request, settings)", block)
         self.assertIn('request.headers.get("X-HSK-PWA-CSRF")', block)
         self.assertIn('default_source="pwa_course_v3"', block)
+        self.assertIn(
+            'request.query_params.get("source") if default_source == "course_v3" else None',
+            service,
+        )
+        self.assertIn('dedupe_prefix = "course-v3" if default_source == "course_v3"', service)
         self.assertNotIn("PWA_SESSION_COOKIE", service)
 
     async def test_pwa_course_track_routes_require_pwa_session_and_no_native_bypass(self):
