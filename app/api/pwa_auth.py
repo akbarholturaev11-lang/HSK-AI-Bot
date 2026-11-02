@@ -7,6 +7,7 @@ routes must explicitly resolve the actor and enforce CSRF on state mutation.
 from __future__ import annotations
 
 from typing import Literal
+from uuid import UUID
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, FileResponse
@@ -18,6 +19,7 @@ from app.services.desktop_auth_service import DesktopAuthError
 from app.services.pwa_auth_service import (
     PWA_OAUTH_AGE_SECONDS,
     PWA_OAUTH_COOKIE,
+    PWA_TELEGRAM_COOKIE,
     PWA_SESSION_COOKIE,
     PWA_SESSION_AGE_SECONDS,
     PwaAuthError,
@@ -33,6 +35,30 @@ class PwaLoginStart(BaseModel):
     model_config = ConfigDict(extra="forbid")
     provider: Literal["google", "apple"]
     language: Literal["uz", "ru", "tj"] | None = None
+
+
+class PwaTelegramStart(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    language: Literal["uz", "ru", "tj"] | None = None
+
+
+class PwaTelegramClaim(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    link_request_id: UUID
+
+
+async def _small_json(request: Request, model):
+    if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
+        raise PwaAuthError("pwa_request_invalid", status_code=415)
+    body = bytearray()
+    async for chunk in request.stream():
+        body.extend(chunk)
+        if len(body) > 1024:
+            raise PwaAuthError("pwa_request_invalid", status_code=413)
+    try:
+        return model.model_validate_json(bytes(body))
+    except ValidationError:
+        raise PwaAuthError("pwa_request_invalid", status_code=422)
 
 
 def _error(exc: PwaAuthError) -> JSONResponse:
@@ -92,20 +118,56 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
         except PwaAuthError as exc:
             return _error(exc)
 
+    @router.post("/api/v3/pwa-auth/telegram/start")
+    async def telegram_start(request: Request):
+        try:
+            require_same_origin(request, settings_obj)
+            payload = await _small_json(request, PwaTelegramStart)
+            async with session_factory() as db:
+                link_id, url, proof = await PwaAuthService(db, settings_obj).start_telegram(
+                    language=payload.language,
+                )
+            response = JSONResponse(
+                {"ok": True, "link_request_id": link_id, "authorize_url": url},
+                headers=_NO_STORE,
+            )
+            response.set_cookie(
+                PWA_TELEGRAM_COOKIE, proof, max_age=PWA_OAUTH_AGE_SECONDS,
+                path="/", secure=True, httponly=True, samesite="lax",
+            )
+            return response
+        except (PwaAuthError, DesktopAuthError) as exc:
+            return _error(PwaAuthError(
+                getattr(exc, "code", "pwa_telegram_unavailable"),
+                status_code=getattr(exc, "status_code", 503),
+            ))
+
+    @router.post("/api/v3/pwa-auth/telegram/claim")
+    async def telegram_claim(request: Request):
+        try:
+            require_same_origin(request, settings_obj)
+            payload = await _small_json(request, PwaTelegramClaim)
+            async with session_factory() as db:
+                status, token = await PwaAuthService(db, settings_obj).claim_telegram(
+                    request_id=str(payload.link_request_id),
+                    proof=request.cookies.get(PWA_TELEGRAM_COOKIE),
+                )
+            response = JSONResponse({"ok": True, "status": status}, headers=_NO_STORE)
+            if status == "complete":
+                response.set_cookie(
+                    PWA_SESSION_COOKIE, token, max_age=PWA_SESSION_AGE_SECONDS,
+                    path="/", secure=True, httponly=True, samesite="lax",
+                )
+                _clear_cookie(response, PWA_TELEGRAM_COOKIE)
+            return response
+        except PwaAuthError as exc:
+            return _error(exc)
+
     @router.post("/api/v3/pwa-auth/start")
     async def start(request: Request):
         try:
             require_same_origin(request, settings_obj)
-            if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
-                raise PwaAuthError("pwa_request_invalid", status_code=415)
-            # Enforce the request limit while streaming, not after loading
-            # attacker-sized bytes into process memory.
-            raw = bytearray()
-            async for chunk in request.stream():
-                raw.extend(chunk)
-                if len(raw) > 1024:
-                    raise PwaAuthError("pwa_request_invalid", status_code=413)
-            payload = PwaLoginStart.model_validate_json(bytes(raw))
+            payload = await _small_json(request, PwaLoginStart)
             async with session_factory() as db:
                 url, proof = await PwaAuthService(db, settings_obj).start(
                     provider=payload.provider, language=payload.language,
