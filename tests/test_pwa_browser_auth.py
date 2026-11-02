@@ -18,6 +18,7 @@ from sqlalchemy.pool import StaticPool
 from app.api.native_oauth import create_native_oauth_router
 from app.api.pwa_auth import create_pwa_auth_router
 from app.api.course_tracks import create_course_tracks_router
+from app.api.miniapp_entitlements import create_miniapp_entitlements_router
 from app.db.base import Base
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from app.db.models.user import User
@@ -99,6 +100,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         app.include_router(create_course_tracks_router(
             session_factory=self.sessions, settings_obj=self.settings
         ))
+        app.include_router(create_miniapp_entitlements_router(
+            session_factory=self.sessions, settings_obj=self.settings
+        ))
         self.client = AsyncClient(
             transport=ASGITransport(app=app), base_url=ORIGIN
         )
@@ -127,6 +131,40 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 "/api/v3/native-auth/oauth/callback/google",
                 params={"state": state, "code": "auth-code"},
             )
+
+    async def test_pwa_lesson_content_uses_exact_miniapp_policy_without_initdata(self):
+        path = "/api/v3/pwa/lesson/content/hsk1/1"
+        denied = await self.client.get(path)
+        self.assertEqual(denied.status_code, 401, denied.text)
+        self.assertEqual(denied.json()["error"], "pwa_session_required")
+        state = await self.begin()
+        await self.callback(state)
+        self.assertEqual((await self.client.get(
+            "/api/v3/lesson/content/hsk1/1"
+        )).status_code, 401)
+        wrong_level = await self.client.get("/api/v3/pwa/lesson/content/hsk2/1")
+        self.assertEqual(wrong_level.status_code, 403, wrong_level.text)
+        self.assertEqual(wrong_level.json()["error"], "course_level_not_allowed")
+        with patch(
+            "app.api.miniapp_entitlements.LessonAccessService.status",
+            new_callable=AsyncMock,
+        ) as access, patch(
+            "app.api.miniapp_entitlements._read_course_lesson",
+            return_value={"ok": True, "level": "hsk1", "lesson_order": 1},
+        ) as read_course:
+            access.return_value = {"allowed": True, "idempotent": True}
+            permitted = await self.client.get(path)
+            self.assertEqual(permitted.status_code, 200, permitted.text)
+            self.assertEqual(permitted.json()["lesson_order"], 1)
+            self.assertEqual(permitted.headers.get("cache-control"), "no-store")
+            read_course.assert_called_once_with("hsk1", 1)
+            self.assertEqual(access.await_args.args[0].id, 1)
+            self.assertEqual(access.await_args.kwargs["consume"], False)
+        async with self.sessions() as db:
+            user = await db.get(User, 1)
+            user.status = "blocked"
+            await db.commit()
+        self.assertEqual((await self.client.get(path)).status_code, 401)
 
     async def test_pwa_course_track_routes_require_pwa_session_and_no_native_bypass(self):
         # Legacy Telegram route rejects a PWA cookie even after browser login.
