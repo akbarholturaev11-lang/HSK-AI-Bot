@@ -333,15 +333,30 @@ def create_course_tracks_router(*, session_factory, settings_obj) -> APIRouter:
                 if body.initData:
                     raise CourseTrackRequestError("course_track_request_invalid", status_code=422)
                 track_service = CourseTrackService(session)
-                before_track = track_service.track_for_level(
-                    getattr(actor, "level", None)
-                )
+                before_level = str(getattr(actor, "level", "") or "")
+                before_track = track_service.track_for_level(before_level)
                 if body.target_track == before_track and body.level:
                     result = await track_service.change_level(actor, body.level)
                 else:
                     result = await track_service.switch(
                         actor, target_track=body.target_track,
                         requested_level=body.level,
+                    )
+                after_level = str(getattr(actor, "level", "") or "")
+                after_track = track_service.track_for_level(after_level)
+                if after_track == "hsk30" and (
+                    before_track != after_track or before_level != after_level
+                ):
+                    await CourseMiniAppAnalyticsService(session).record_server_event(
+                        event_name="course_track_switched",
+                        user_id=actor.id,
+                        telegram_id=int(actor.telegram_id) if actor.telegram_id else None,
+                        source="course_track_pwa",
+                        level=after_level,
+                        payload={
+                            "from_track": before_track, "to_track": after_track,
+                            "from_level": before_level, "to_level": after_level,
+                        },
                     )
                 await session.commit()
                 result = {
@@ -370,6 +385,15 @@ def create_course_tracks_router(*, session_factory, settings_obj) -> APIRouter:
                     request.headers.get("X-HSK-PWA-CSRF"),
                 )
                 promo = await Hsk30PromoService(session).mark_shown(actor)
+                if promo.get("recorded"):
+                    await CourseMiniAppAnalyticsService(session).record_server_event(
+                        event_name="hsk30_promo_shown",
+                        user_id=actor.id,
+                        telegram_id=int(actor.telegram_id) if actor.telegram_id else None,
+                        source="course_track_pwa",
+                        level=str(getattr(actor, "level", "") or ""),
+                        payload={"shown_count": int(promo.get("shown_count") or 0)},
+                    )
                 await session.commit()
             return JSONResponse(
                 content={"ok": True, "hsk30_promo": promo},
