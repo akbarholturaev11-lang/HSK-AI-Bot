@@ -230,4 +230,20 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
         except PwaAuthError as exc:
             return _error(exc)
 
+    # Read the existing canonical course inbox; a transactional Telegram/
+    # Android delivery is NOT automatically a persisted inbox item.
+    @router.get("/api/v3/pwa/notifications")
+    async def course_notifications(request: Request):
+        try:
+            from app.services.course_notification_service import CourseNotificationService
+            cookie = request.cookies.get(PWA_SESSION_COOKIE)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).actor(cookie)
+                items = await CourseNotificationService(db).list_for_user(actor)
+            return JSONResponse(
+                {"ok": True, "notifications": items}, headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
     return router
