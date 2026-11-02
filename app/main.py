@@ -2765,8 +2765,12 @@ async def _course_v3_map_for_user(
     # holat; maslahat hech qachon oqimni to'xtatmaydi.
     data["hints"] = await MiniAppHintService(session).hints_for(user)
 
+    # Browser source attribution is fixed until a verified Smart/deep-link
+    # handoff exists. Do not let a caller spoof Smart study or payment funnels.
+    # The original signed Telegram Mini App keeps its existing source behavior.
     entry_source = _checkout_text(
-        request.query_params.get("source") or default_source,
+        (request.query_params.get("source") if default_source == "course_v3" else None)
+        or default_source,
         40,
     )
     course_session_id = _checkout_text(request.query_params.get("sid"), 80) or None
