@@ -132,6 +132,42 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 params={"state": state, "code": "auth-code"},
             )
 
+    async def test_pwa_limits_reuses_canonical_user_and_rejects_forged_requests(self):
+        path = "/api/v3/pwa/limits/status"
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": ORIGIN}, json={"feature": "lesson"},
+        )).status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": ORIGIN}, json={"feature": "voice"},
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            path, headers={**headers, "Origin": "https://evil.test"},
+            json={"feature": "voice"},
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            path, headers=headers, json={"feature": "voice", "user_id": 999},
+        )).status_code, 400)
+        with patch(
+            "app.api.miniapp_entitlements.CourseMiniAppAccessService.configured_decision",
+            new_callable=AsyncMock,
+        ) as decision:
+            decision.return_value = {"allowed": False, "reason": "daily_limit"}
+            response = await self.client.post(
+                path, headers=headers, json={"feature": "mistake_review"},
+            )
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertEqual(response.json()["reason"], "daily_limit")
+            self.assertEqual(response.headers.get("cache-control"), "no-store")
+            self.assertEqual(decision.await_args.args[0].id, 1)
+            self.assertEqual(decision.await_args.args[1], "training_test")
+        self.assertEqual((await self.client.post(
+            "/api/v3/limits/status", json={"feature": "lesson"},
+        )).status_code, 401)
+
     async def test_pwa_foundation_is_server_authenticated_not_public_or_telegram(self):
         url = "/api/v3/pwa/lesson/foundation"
         self.assertEqual((await self.client.get(url)).status_code, 401)
