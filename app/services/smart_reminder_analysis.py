@@ -20,6 +20,7 @@ from app.db.models.smart_reminder_analysis import SmartReminderAnalysisEvent, Sm
 from app.db.models.user import User
 from app.services.smart_reminder_policy import _aware_utc
 from app.services.smart_reminder_preferences import _utc
+from app.services.smart_reminder_shadow_queue import QUEUE_VERSION
 
 EVENT = SmartReminderAnalysisEvent.__table__
 MONTHLY = SmartReminderAnalysisMonthly.__table__
@@ -27,6 +28,36 @@ RAW_RETENTION = timedelta(days=90)  # Owner D21; not operational grant/day/OFF r
 MAX_BATCH = 128  # Bounded work, not product cadence or experiment calibration.
 UNAVAILABLE_OUTCOMES = ("verified_shown", "read", "opened", "attributed_server_learning")
 logger = logging.getLogger(__name__)
+
+# Reviewed server reasons only. Unknown/new codes require a source review,
+# never persist arbitrary job text into analysis.
+SHADOW_CADENCE_REASONS = frozenset({
+    "shadow_candidate", "cadence_owner_unknown", "cadence_window_invalid", "cadence_owner_mismatch",
+    "cadence_ledger_conflict", "cadence_ledger_invalid", "account_day_already_owned", "cadence_ledger_incomplete",
+    "cadence_calibration_unconfigured", "weekly_budget_window_incomplete", "cadence_timezone_changed",
+    "weekly_study_budget", "cadence_source_coverage_limited", "sparse_learning_history", "learning_coverage_unknown",
+    "delivery_outcome_unknown", "outcome_window_incomplete", "outcome_observation_pending", "reactivation_stopped",
+    "cadence_time_out_of_range", "personal_cadence_cooldown",
+})
+SHADOW_REFUSAL_REASONS = frozenset({
+    "master_off", "channel_mode_unknown", "manual_channel_unavailable", "consent_or_permission_unavailable",
+    "course_context_changed", "paused", "timezone_unknown", "course_day_mismatch", "goal_completed", "plan_completed",
+    "progress_unknown", "course_completed", "foundation_required", "target_inaccessible", "personal_time_unknown",
+    "personal_quiet", "local_time_nonexistent", "local_time_ambiguous", "paused_at_personal_time", "personal_time_passed",
+    "queue_history_incomplete", "shadow_preference_changed", "shadow_context_changed",
+    "d1_assignment_unknown", "d1_holdout_active", "study_off", "device_revoked", "session_logout", "refresh_reuse",
+    "android_study_capability_lost",
+})
+
+
+def _shadow_stage(job):
+    if (job["selected_channel"] is not None or job["selected_device_id"] is not None or job["lease_token"] is not None):
+        return None
+    reason, state = job["reason_code"], job["state"]
+    if state == "completed" and reason in SHADOW_CADENCE_REASONS:
+        return "shadow_candidate" if reason == "shadow_candidate" else "shadow_suppressed"
+    if (state == "cancelled" and reason in SHADOW_REFUSAL_REASONS) or (state == "expired" and reason == "shadow_expired"):
+        return "shadow_suppressed"
 
 
 @dataclass(frozen=True)
@@ -57,7 +88,7 @@ class SmartReminderAnalysisService:
             raise RuntimeError("Unsupported Smart analysis dialect")
         return (pg_insert if dialect == "postgresql" else sqlite_insert)(table)
 
-    async def _fact(self, session, job, source_id, stage, at, channel, now):
+    async def _fact(self, session, job, source_id, stage, at, channel, now, *, reason=None):
         if at is None or channel not in {"none", "telegram", "android"}:
             return 0
         at = _utc(at)
@@ -66,7 +97,7 @@ class SmartReminderAnalysisService:
         key = hashlib.sha256(("smart-analysis-v1:" + source_id + ":" + stage).encode()).hexdigest()
         inserted = await session.scalar(self._insert(session, EVENT).values(user_id=job["user_id"],
             event_key=key, job_id=job["id"], stage=stage, channel=channel,
-            reason_code="stored_" + stage, occurred_at=at, expires_at=at + RAW_RETENTION)
+            reason_code=reason or "stored_" + stage, occurred_at=at, expires_at=at + RAW_RETENTION)
             .on_conflict_do_nothing(index_elements=["user_id", "event_key"]).returning(EVENT.c.event_key))
         if inserted is None:
             return 0
@@ -92,14 +123,21 @@ class SmartReminderAnalysisService:
                     SmartReminderJob.id == job_id, SmartReminderJob.user_id == owner).with_for_update())).mappings().one_or_none()
                 if job is None:
                     return 0
-                # Shadow evaluation is not real delivery. Unknown/new policy
-                # families require their own reviewed source adapter.
+                # Shadow terminal decisions have their own explicit stages;
+                # they never become delivery or negative-learning evidence.
                 channel = job["selected_channel"]
-                if channel not in {"android", "telegram"} or not job["policy_version"].startswith(
-                        "smart-" + channel + "-v1:"):
+                shadow = job["policy_version"] == QUEUE_VERSION
+                if not shadow and (channel not in {"android", "telegram"} or not job["policy_version"].startswith(
+                        "smart-" + channel + "-v1:")):
                     return 0
                 attempts = (await session.execute(select(SmartReminderAttempt.__table__).where(
                     SmartReminderAttempt.job_id == job_id).order_by(SmartReminderAttempt.id).with_for_update())).mappings().all()
+                if shadow:
+                    stage = _shadow_stage(job)
+                    if attempts or stage is None:
+                        return 0
+                    return await self._fact(session, job, job_id, stage, job["updated_at"], "none", self.now(),
+                        reason=job["reason_code"])
                 grants = (await session.execute(select(SmartReminderAndroidGrant.__table__).where(
                     SmartReminderAndroidGrant.job_id == job_id, SmartReminderAndroidGrant.user_id == owner))).mappings().all()
                 now = self.now()  # Resample after waiting on the canonical owner.
@@ -147,9 +185,12 @@ class SmartReminderAnalysisService:
                 return and_(column > now - RAW_RETENTION, column <= now)
             job, attempt, grant = SmartReminderJob, SmartReminderAttempt, SmartReminderAndroidGrant
             reviewed = or_(and_(job.selected_channel == "android", job.policy_version.startswith("smart-android-v1:")),
-                and_(job.selected_channel == "telegram", job.policy_version.startswith("smart-telegram-v1:")))
+                and_(job.selected_channel == "telegram", job.policy_version.startswith("smart-telegram-v1:")),
+                and_(job.policy_version == QUEUE_VERSION, job.selected_channel.is_(None), job.selected_device_id.is_(None),
+                    job.state.in_(("completed", "cancelled", "expired")), recent(job.updated_at)))
             fresh_source = or_(recent(job.created_at),
                 and_(job.state.in_(("cancelled", "expired")), recent(job.updated_at)),
+                and_(job.policy_version == QUEUE_VERSION, job.state == "completed", recent(job.updated_at)),
                 select(attempt.id).where(attempt.job_id == job.id,
                     or_(recent(attempt.started_at), recent(attempt.resolved_at))).exists(),
                 select(grant.id).where(grant.job_id == job.id, grant.user_id == job.user_id,
