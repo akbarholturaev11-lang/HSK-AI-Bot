@@ -160,7 +160,11 @@ installing any reviewed enabling factory. Do not run the initializer on an
 existing DB or treat local migration tests as a staging backup/restore drill.
 
 Rollback disables admission/dispatch while preserving schema, issuance,
-outcomes and P1 OFF/revision/epoch guards. D21 analysis-detail cleanup does not
+outcomes and P1 OFF/revision/epoch guards. Optional P6 source capture runs only
+after the successful claim/receipt HTTP body is sent and the source transaction
+closes; it never changes posting authority or client receipt meaning. See
+`SMART_REMINDER_ANALYSIS.md` for the default-OFF gate, failure isolation and
+incomplete observational coverage. D21 analysis-detail cleanup does not
 silently delete authority/dedup evidence. A claim loss/timeout/unknown receipt
 does not allow another device or Telegram attempt. Controlled same-job
 fallback is not implemented here; task 5.4 must separately prove any extension

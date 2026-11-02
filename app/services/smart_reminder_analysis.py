@@ -1,10 +1,13 @@
 """Source-derived analysis only; never authority, learning or display proof.
 
-Explicit capture owns a separate transaction after delivery commits. Nothing
-calls it from production yet. Retention never deletes operational evidence.
+Capture owns a separate transaction after delivery commits. Optional source
+hooks/retention are disabled by default. Retention never deletes source evidence.
 """
 from datetime import datetime, timedelta, timezone
+import asyncio
 import hashlib
+import logging
+import math
 
 from sqlalchemy import delete, func, or_, select, text, tuple_
 from sqlalchemy.dialects.postgresql import insert as pg_insert
@@ -22,6 +25,7 @@ MONTHLY = SmartReminderAnalysisMonthly.__table__
 RAW_RETENTION = timedelta(days=90)  # Owner D21; not operational grant/day/OFF retention.
 MAX_BATCH = 128  # Bounded work, not product cadence or experiment calibration.
 UNAVAILABLE_OUTCOMES = ("verified_shown", "read", "opened", "attributed_server_learning")
+logger = logging.getLogger(__name__)
 
 
 def oldest_month(now):
@@ -145,3 +149,43 @@ class SmartReminderAnalysisService:
                 counts["removed_monthly"] = (await session.execute(delete(MONTHLY).where(
                     tuple_(MONTHLY.c.month, MONTHLY.c.stage, MONTHLY.c.channel).in_(months)))).rowcount
             return counts
+
+
+class SmartReminderAnalysisObserver:
+    """Bounded optional observation; no caller transaction or provider IO."""
+
+    def __init__(self, settings, sessions, *, clock=None, timeout=2, interval=60, batch=128):
+        if (any(type(v) not in (int, float) or not math.isfinite(v) or v <= 0
+                for v in (timeout, interval)) or type(batch) is not int or not 1 <= batch <= MAX_BATCH):
+            raise ValueError("Positive bounded analysis worker settings required")
+        self.settings = settings
+        self.service = SmartReminderAnalysisService(sessions, clock=clock)
+        self.timeout, self.interval, self.batch = timeout, interval, batch
+
+    @property
+    def enabled(self):
+        return getattr(self.settings, "SMART_REMINDER_ANALYSIS_ENABLED", False) is True
+
+    async def capture_job(self, user_id, job_id):
+        if not self.enabled:
+            return None
+        try:
+            return await asyncio.wait_for(self.service.capture_job(user_id, job_id), timeout=self.timeout)
+        except Exception:
+            # No exception/SQL/actor/credential content; missing capture is not
+            # a measured zero. Cancellation remains cancellation.
+            logger.warning("Smart analysis capture unavailable")
+            return None
+
+    async def tick(self):
+        if not self.enabled:
+            return None
+        return await asyncio.wait_for(self.service.retention(execute=True, limit=self.batch), timeout=self.timeout)
+
+    async def run_retention(self):
+        while self.enabled:
+            try:
+                await self.tick()
+            except Exception:
+                logger.warning("Smart analysis retention unavailable")
+            await asyncio.sleep(self.interval)
