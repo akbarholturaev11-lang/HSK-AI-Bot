@@ -10,8 +10,11 @@ from typing import Literal
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, ValidationError
 
+from app.services.native_oauth_service import NativeOAuthError
+from app.services.identity_link_service import IdentityLinkError
+from app.services.desktop_auth_service import DesktopAuthError
 from app.services.pwa_auth_service import (
     PWA_OAUTH_AGE_SECONDS,
     PWA_OAUTH_COOKIE,
@@ -38,13 +41,6 @@ def _error(exc: PwaAuthError) -> JSONResponse:
     )
 
 
-def _session_cookie(response: JSONResponse, token: str) -> None:
-    response.set_cookie(
-        PWA_SESSION_COOKIE, token, max_age=PWA_SESSION_AGE_SECONDS,
-        path="/", secure=True, httponly=True, samesite="lax",
-    )
-
-
 def _clear_cookie(response: JSONResponse, name: str) -> None:
     response.delete_cookie(name, path="/", secure=True, httponly=True, samesite="lax")
 
@@ -56,10 +52,16 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
     async def start(request: Request):
         try:
             require_same_origin(request, settings_obj)
-            raw = await request.body()
-            if len(raw) > 1024 or request.headers.get("Content-Type", "").split(";")[0] != "application/json":
-                raise PwaAuthError("pwa_request_invalid", status_code=422)
-            payload = PwaLoginStart.model_validate_json(raw)
+            if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
+                raise PwaAuthError("pwa_request_invalid", status_code=415)
+            # Enforce the request limit while streaming, not after loading
+            # attacker-sized bytes into process memory.
+            raw = bytearray()
+            async for chunk in request.stream():
+                raw.extend(chunk)
+                if len(raw) > 1024:
+                    raise PwaAuthError("pwa_request_invalid", status_code=413)
+            payload = PwaLoginStart.model_validate_json(bytes(raw))
             async with session_factory() as db:
                 url, proof = await PwaAuthService(db, settings_obj).start(
                     provider=payload.provider, language=payload.language,
@@ -75,10 +77,14 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
             return response
         except PwaAuthError as exc:
             return _error(exc)
-        except Exception as exc:
-            # Never disclose provider configuration, cookie or server internals.
-            if exc.__class__.__name__ in {"ValidationError", "DesktopAuthError", "NativeOAuthError", "IdentityLinkError"}:
-                return _error(PwaAuthError("pwa_signin_unavailable", status_code=422))
+        except ValidationError:
+            return _error(PwaAuthError("pwa_request_invalid", status_code=422))
+        except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
+            return _error(PwaAuthError(
+                "pwa_signin_unavailable",
+                status_code=503 if getattr(exc, "status_code", 503) == 503 else 422,
+            ))
+        except Exception:
             return _error(PwaAuthError("pwa_signin_unavailable", status_code=503))
 
     @router.get("/api/v3/pwa-auth/session")
