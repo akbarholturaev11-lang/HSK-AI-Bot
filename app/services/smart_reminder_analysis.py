@@ -18,7 +18,7 @@ from app.db.models.account_deletion import AccountDeletionRequest
 from app.db.models.smart_reminder import SmartReminderAndroidGrant, SmartReminderAttempt, SmartReminderJob
 from app.db.models.smart_reminder_analysis import SmartReminderAnalysisEvent, SmartReminderAnalysisMonthly, SmartReminderReservationObservation
 from app.db.models.user import User
-from app.services.smart_reminder_policy import _aware_utc
+from app.services.smart_reminder_policy import _aware_utc, day_window
 from app.services.smart_reminder_preferences import _utc
 from app.services.smart_reminder_shadow_queue import QUEUE_VERSION, ReservationObservation
 
@@ -79,6 +79,18 @@ class AnalysisSourcePage:
     has_more: bool
 
 
+@dataclass(frozen=True)
+class TargetLearningEvidence:
+    """Partial temporal evidence; never an open, causal or inactivity finding."""
+    reason: str
+    boundary_at: datetime | None = None
+    learned_at: datetime | None = None
+    coverage_limits: tuple[str, ...] = (
+        "native_android_lesson_results_only", "notification_open_unavailable",
+        "causal_attribution_unavailable", "negative_learning_coverage_unknown",
+    )
+
+
 def oldest_month(now):
     """Current UTC month and eleven earlier buckets; never unbounded history."""
     serial = now.year * 12 + now.month - 1 - 11
@@ -93,6 +105,95 @@ class SmartReminderAnalysisService:
 
     def now(self):
         return _aware_utc(self.clock())
+
+    async def target_learning(self, user_id, job_id):
+        """Explicit internal read projection, outside capture/cadence/dispatch.
+
+        The frozen local day is a technical source scope, not an experiment
+        attribution window. Missing evidence never authorizes another send.
+        """
+        from app.services.smart_reminder_destination import read_native_lesson_destinations
+        from app.services.smart_reminder_policy_context import _LESSON_REF
+
+        if (type(user_id) is not int or user_id <= 0 or not isinstance(job_id, str) or
+                not 1 <= len(job_id) <= 36):
+            raise ValueError("Owned Smart job identity required")
+        async with self.sessions.begin() as session:
+            with session.no_autoflush:
+                if session.bind.dialect.name == "postgresql":
+                    await session.execute(text("SET LOCAL statement_timeout = '5000'"))
+                owner = (await session.execute(select(User.id, User.status).where(
+                    User.id == user_id).with_for_update())).one_or_none()
+                if owner is None or owner.status == "blocked" or await session.scalar(
+                        select(AccountDeletionRequest.id).where(AccountDeletionRequest.status == "submitted",
+                            or_(AccountDeletionRequest.user_id == user_id,
+                                AccountDeletionRequest.active_user_id == user_id)).limit(1)) is not None:
+                    return TargetLearningEvidence("learning_owner_unavailable")
+                job = (await session.execute(select(SmartReminderJob.__table__).where(
+                    SmartReminderJob.user_id == user_id, SmartReminderJob.id == job_id))).mappings().one_or_none()
+                if job is None:
+                    return TargetLearningEvidence("learning_job_unavailable")
+                channel = job["selected_channel"]
+                if channel not in {"android", "telegram"} or not job["policy_version"].startswith(
+                        "smart-" + channel + "-v1:"):
+                    return TargetLearningEvidence("learning_source_unsupported")
+                reference = f"v3-part:{job['course_key']}:{job['lesson_order']}:complete"
+                if _LESSON_REF.fullmatch(reference) is None:
+                    return TargetLearningEvidence("learning_target_unavailable")
+                now = self.now()  # Fresh after waiting on the canonical owner.
+                try:
+                    start, end = day_window(job["timezone_name"], job["local_day"].isoformat())
+                except (KeyError, TypeError, ValueError):
+                    return TargetLearningEvidence("learning_window_unavailable")
+                if (start != _utc(job["day_start_utc"]) or end != _utc(job["day_end_utc"]) or
+                        end <= now - RAW_RETENTION or now < start):
+                    return TargetLearningEvidence("learning_window_unavailable")
+                attempts = (await session.execute(select(SmartReminderAttempt.__table__).where(
+                    SmartReminderAttempt.job_id == job_id).order_by(SmartReminderAttempt.id)
+                    .limit(MAX_BATCH + 1))).mappings().all()
+                grants = (await session.execute(select(SmartReminderAndroidGrant.__table__).where(
+                    SmartReminderAndroidGrant.user_id == user_id, SmartReminderAndroidGrant.job_id == job_id)
+                    .limit(MAX_BATCH + 1))).mappings().all() if channel == "android" else []
+                if len(attempts) > MAX_BATCH or len(grants) > MAX_BATCH:
+                    return TargetLearningEvidence("learning_source_over_limit")
+                boundaries = []
+                for attempt in attempts:
+                    if (attempt["channel"] != channel or attempt["grant_epoch"] != job["grant_epoch"] or
+                            attempt["started_at"] is None or
+                            attempt["resolved_at"] is None):
+                        continue
+                    at, resolved = _utc(attempt["started_at"]), _utc(attempt["resolved_at"])
+                    if (not now - RAW_RETENTION < at <= resolved <= now or
+                            not _utc(job["scheduled_at"]) <= at < _utc(job["expires_at"]) or
+                            not _utc(job["created_at"]) <= _utc(attempt["prepared_at"]) <=
+                            at < _utc(attempt["expires_at"])):
+                        continue
+                    if channel == "telegram" and attempt["state"] == "provider_accepted":
+                        boundaries.append(at)
+                    elif channel == "android" and attempt["state"] == "client_posted_unverified":
+                        if any(g["attempt_id"] == attempt["id"] and
+                                g["device_id"] == attempt["device_id"] == job["selected_device_id"] and
+                                g["policy_version"] == job["policy_version"] and
+                                g["grant_epoch"] == job["grant_epoch"] and
+                                g["preference_revision"] == job["preference_revision"] and
+                                _utc(g["expires_at"]) == _utc(attempt["expires_at"]) and
+                                g["receipt_id"] is not None and g["receipt_outcome"] == "client_posted_unverified" and
+                                g["received_at"] is not None and at == _utc(g["issued_at"]) <=
+                                _utc(g["received_at"]) == resolved for g in grants):
+                            boundaries.append(at)
+                if not boundaries:
+                    return TargetLearningEvidence("learning_contact_unconfirmed")
+                boundary = min(boundaries)
+                evidence = await read_native_lesson_destinations(session, user_id, level=job["course_key"],
+                    history_since=boundary, observed_at=min(now, end))
+                unavailable = TargetLearningEvidence("target_learning_unavailable", boundary)
+                limits = tuple(sorted(set(unavailable.coverage_limits) | set(evidence.limits)))
+                # Original XP time, never a later replay/receipt arrival. The
+                # canonical result is counted once even with repeated receipts.
+                results = {s.accepted_at for s in evidence.studies if s.user_id == user_id and
+                    s.reference == reference and boundary < s.accepted_at < end and s.accepted_at <= now}
+                return TargetLearningEvidence("verified_target_learning_after_attempt" if results else
+                    "target_learning_unavailable", boundary, min(results) if results else None, limits)
 
     @staticmethod
     def _insert(session, table):
