@@ -456,6 +456,62 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(ok.status_code, 200, ok.text)
         self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
 
+    async def test_provider_login_clears_unfinished_telegram_browser_proof(self):
+        telegram_start = await self.client.post(
+            "/api/v3/pwa-auth/telegram/start",
+            headers={"Origin": ORIGIN}, json={"language": "uz"},
+        )
+        self.assertEqual(telegram_start.status_code, 200, telegram_start.text)
+        request_id = telegram_start.json()["link_request_id"]
+        state = await self.begin()
+        signed_in = await self.callback(state)
+        self.assertEqual(signed_in.status_code, 303, signed_in.text)
+        self.assertTrue(any(
+            "hskai-pwa-telegram" in value and "Max-Age=0" in value
+            for value in signed_in.headers.get_list("set-cookie")
+        ))
+        self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 200)
+        stale = await self.client.post(
+            "/api/v3/pwa-auth/telegram/claim", headers={"Origin": ORIGIN},
+            json={"link_request_id": request_id},
+        )
+        self.assertEqual(stale.status_code, 401)
+        self.assertEqual(stale.json()["error"], "pwa_telegram_proof_invalid")
+        script = (Path("app/static") / "iphone-pwa-login.js").read_text(encoding="utf-8")
+        self.assertIn("sessionStorage.removeItem(telegramStorageKey)", script)
+        self.assertIn("stopTelegramPolling()", script)
+
+    async def test_telegram_login_clears_unfinished_provider_browser_proof(self):
+        state = await self.begin()
+        started = await self.client.post(
+            "/api/v3/pwa-auth/telegram/start",
+            headers={"Origin": ORIGIN}, json={"language": "ru"},
+        )
+        self.assertEqual(started.status_code, 200, started.text)
+        request_id = started.json()["link_request_id"]
+        async with self.sessions() as db:
+            service = DesktopAuthService(db, self.settings)
+            await service.link_request_confirmation(
+                link_request_id=request_id, telegram_id=1001, platform="pwa",
+            )
+            await service.approve_link_request(
+                link_request_id=request_id, telegram_id=1001, platform="pwa",
+            )
+        claim = await self.client.post(
+            "/api/v3/pwa-auth/telegram/claim",
+            headers={"Origin": ORIGIN}, json={"link_request_id": request_id},
+        )
+        self.assertEqual(claim.status_code, 200, claim.text)
+        self.assertEqual(claim.json()["status"], "complete")
+        self.assertTrue(any(
+            PWA_OAUTH_COOKIE in value and "Max-Age=0" in value
+            for value in claim.headers.get_list("set-cookie")
+        ))
+        stale = await self.callback(state)
+        self.assertNotIn(PWA_SESSION_COOKIE, stale.cookies)
+        self.assertIn("pwa_oauth_proof_invalid", stale.text)
+        self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 200)
+
     async def test_reauthentication_revokes_only_previous_browser_session(self):
         first_state = await self.begin()
         first_login = await self.callback(first_state)
