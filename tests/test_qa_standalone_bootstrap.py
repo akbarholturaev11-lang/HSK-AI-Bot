@@ -81,6 +81,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
         metadata = mod._registered_model_metadata()
         initial = {table.name for table in mod._initial_schema_tables(metadata)}
         expected = {
+            "smart_reminder_analysis_events", "smart_reminder_analysis_monthly",
             "smart_reminder_android_grants", "smart_reminder_routing", "smart_reminder_mutations",
             "smart_reminder_preferences", "smart_reminder_consents", "smart_reminder_capabilities",
             "smart_reminder_jobs", "smart_reminder_attempts",
