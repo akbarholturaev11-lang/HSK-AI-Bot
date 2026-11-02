@@ -40,6 +40,11 @@ spec_open = importlib.util.spec_from_file_location("analysis_0140", Path(__file_
 open_migration = importlib.util.module_from_spec(spec_open)
 spec_open.loader.exec_module(open_migration)
 
+spec_study = importlib.util.spec_from_file_location("analysis_0141", Path(__file__).resolve().parents[1] /
+    "alembic/versions/0141_smart_study_analysis.py")
+study_migration = importlib.util.module_from_spec(spec_study)
+spec_study.loader.exec_module(study_migration)
+
 
 class AnalysisChecks:
     postgres = False
@@ -73,7 +78,9 @@ class AnalysisChecks:
                 shadow_migration.upgrade()
                 reservation_migration.upgrade()
                 open_migration.upgrade()
+                study_migration.upgrade()
             else:
+                study_migration.downgrade()
                 open_migration.downgrade()
                 reservation_migration.downgrade()
                 shadow_migration.downgrade()
@@ -274,12 +281,14 @@ class AnalysisChecks:
         before = [await self.rows(table) for table in (EVENT, MONTHLY, JOB, ATTEMPT, GRANT)]
         def roundtrip(connection):
             with Operations.context(MigrationContext.configure(connection)):
+                study_migration.downgrade()
                 open_migration.downgrade()
                 reservation_migration.downgrade()
                 shadow_migration.downgrade()
                 shadow_migration.upgrade()
                 reservation_migration.upgrade()
                 open_migration.upgrade()
+                study_migration.upgrade()
             return compare_metadata(MigrationContext.configure(connection), Base.metadata)
         async with self.engine.begin() as connection:
             self.assertEqual(await connection.run_sync(roundtrip), [])
