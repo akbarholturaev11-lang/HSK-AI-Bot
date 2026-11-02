@@ -177,6 +177,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             'class="tagline"',
             "motif--left",
             "motif--right",
+            "font-size:32px",
+            ".subtitle{font-size:16px",
+            ".provider__label{font-size:16px",
+            "color-mix(in srgb,var(--hsk-card-surface) 98%",
+            "overflow-y:auto",
         ):
             self.assertIn(fragment, html)
         self.assertLess(html.index('data-provider="telegram"'),
