@@ -19,7 +19,7 @@ from app.services.smart_reminder_preferences import (
 from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
 from app.services.smart_reminder_capabilities import SmartCapabilityPatch, SmartReminderCapabilityService
 from app.services.smart_reminder_android import AndroidStudyClaim, AndroidStudyReceipt, SmartReminderAndroidService
-from app.services.smart_reminder_analysis import SmartReminderAnalysisObserver
+from app.services.smart_reminder_analysis import ANDROID_GUARD_CAPTURE, SmartReminderAnalysisObserver
 
 logger = logging.getLogger(__name__)
 HEADERS = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff"}
@@ -108,7 +108,8 @@ def create_smart_reminder_router(*, session_factory, settings_obj, android_deliv
                         result = await service.patch(current, await _payload(request, model)) if write else await service.read(current)
             background = None
             if (observer.enabled and result.get("ok") is True and
-                    (delivery == "receipt" or delivery == "claim" and result.get("dispatch_allowed") is True)):
+                    (delivery == "receipt" or delivery == "claim" and (
+                        result.get("dispatch_allowed") is True or result.get("reason") in ANDROID_GUARD_CAPTURE))):
                 # The source transaction/session closed; Starlette sends the
                 # entire response before starting observation. Never retain auth.
                 background = BackgroundTask(observer.capture_job, current.user_id, job_id)

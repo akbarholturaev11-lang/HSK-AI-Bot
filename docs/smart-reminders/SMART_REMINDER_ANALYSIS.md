@@ -1,8 +1,9 @@
 # Smart delivery analysis contract
 
-The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.60. This
+The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.61. This
 contract defines P6 6.1a, optional 6.1b integration, bounded 6.1c reconciliation,
-6.1d terminal shadow observations and 6.1e reservation observations, not a live rollout.
+6.1d terminal shadow observations, 6.1e reservation observations and 6.1f
+committed runtime guard reasons, not a live rollout.
 
 `SmartReminderAnalysisService.capture_job(user_id, job_id)` is an internal,
 explicit operation over a committed owned job and its attempts/Android grants.
@@ -30,7 +31,7 @@ jobs are excluded. Source timestamps must be neither future nor older than 90 da
 The existing attempt enum alone cannot prove `verified_shown` or a client post
 without its matching receipt. Shown, read, opened and attributed server learning
 remain **unavailable**; these counters are not fabricated zeros or inferred from
-FCM acceptance, widget/app opens or XP. Real-dispatch candidate and suppression instrumentation,
+FCM acceptance, widget/app opens or XP. Transient real-dispatch guards without committed source evidence,
 trusted open/learning linkage, complete coverage, denominator/experiment
 and model evaluation remain separate parent 6.1/6.2/P7 work.
 
@@ -65,7 +66,7 @@ retain the same month/stage/channel grain, not unique learners, attempts or a
 suppression rate; reasons remain only in private retained detail. Missing facts
 are unknown. This job-bound adapter does not supply refusals before a durable
 job exists; the optional reservation adapter below covers actual reserve
-outcomes. Auth/deletion refusals, real dispatch choices and unimplemented
+outcomes. Auth/deletion refusals, uncommitted dispatch choices and unimplemented
 source coverage remain unavailable. Current normal runtime cadence is unconfigured
 and therefore cannot produce a positive cadence candidate. Positive candidate
 QA uses explicitly synthetic complete coverage/calibration; it is not evidence
@@ -77,6 +78,36 @@ if either table contains new shadow stages, including anonymous-only retained
 counts. No remote migration or existing QA initializer is run by merging this
 source. Disabling analysis leaves original queue behavior and retained evidence
 unchanged.
+
+## Committed runtime guard reasons
+
+Reviewed selected v1 Android/Telegram cancelled/expired jobs retain their fixed
+original source reason in the existing terminal analysis fact. Examples include
+verified goal completion, inaccessible target, D1, study OFF, source expiry,
+legacy-contact guard or invalid Telegram template. The source channel, terminal
+time, owner and policy still come from committed SQL under the User-first lock.
+No request-body/response text becomes a fact. A channel-specific reviewed catalog
+withholds arbitrary/unknown or wrong-channel text through the existing generic
+`stored_cancelled`/`stored_expired` reason.
+
+Native reviewed mutating claim refusals schedule the same bounded background
+capture after source commit/session close and after the HTTP response body.
+GET/auth/foreign/malformed requests and default-OFF, missing-calibration,
+capability/admission/not-due or other nonmutating guards do not gain a new
+capture path. Telegram captures a reviewed terminal dispatch refusal only after
+its source transaction closes; accepted/unknown provider hooks stay unchanged,
+with no analysis inside provider IO or a duplicate wrapper capture.
+
+These are the existing one-job/terminal-stage facts, with no schema, new stage,
+attempt, grant, provider call or retry. Existing captured facts remain immutable:
+old generic reasons are not rewritten from later mutable source text. Replays
+cannot increment counts or extend expiry. A cancellation reason alone never
+proves non-display, inactivity or learning; matching immutable receipt/attempt
+proof is still required for the separate outcome stages. Reconciliation can
+recover missed committed terminal facts. Transient refusals with no persisted
+terminal evidence remain unavailable, and do not form a complete denominator.
+Failure/timeout leaves source results unchanged; disabling analysis preserves
+normal protocol/provider behavior. Schema remains 0139 and no migration is run.
 
 ## Pre-reservation shadow observations
 

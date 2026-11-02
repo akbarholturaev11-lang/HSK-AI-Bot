@@ -50,6 +50,17 @@ SHADOW_REFUSAL_REASONS = frozenset({
     "android_study_capability_lost",
 })
 RESERVATION_REFUSALS = SHADOW_REFUSAL_REASONS | {"queue_expiry_outside_day", "account_day_already_owned"}
+COMMON_GUARD_REASONS = (SHADOW_REFUSAL_REASONS | SHADOW_CADENCE_REASONS | {
+    "legacy_contact_unknown", "legacy_study_already_attempted", "routing_held", "routing_review_expired",
+}) - {"shadow_candidate"}
+TERMINAL_GUARD_REASONS = {
+    "android": COMMON_GUARD_REASONS | {"android_job_expired", "android_study_unavailable",
+        "personal_quiet_clock_uncertain", "android_expired_before_response", "client_declined_before_post"},
+    "telegram": COMMON_GUARD_REASONS | {"telegram_expired", "telegram_content_owner_changed",
+        "telegram_content_target_invalid", "telegram_template_disabled", "telegram_template_invalid"},
+}
+# Missing-calibration is an early native gate, with no terminal source write.
+ANDROID_GUARD_CAPTURE = TERMINAL_GUARD_REASONS["android"] - {"cadence_calibration_unconfigured"}
 
 
 def _shadow_stage(job):
@@ -146,8 +157,9 @@ class SmartReminderAnalysisService:
                 count = await self._fact(session, job, job_id, "reserved", job["created_at"],
                     job["selected_channel"] or "none", now)
                 if job["state"] in {"cancelled", "expired"}:
+                    reason = job["reason_code"] if job["reason_code"] in TERMINAL_GUARD_REASONS[channel] else None
                     count += await self._fact(session, job, job_id, job["state"], job["updated_at"],
-                        job["selected_channel"] or "none", now)
+                        job["selected_channel"] or "none", now, reason=reason)
                 for attempt in attempts:
                     count += await self._fact(session, job, attempt["id"], "in_flight",
                         attempt["started_at"], attempt["channel"], now)
