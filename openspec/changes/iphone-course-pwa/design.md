@@ -30,12 +30,38 @@ Serve a dedicated learner HTTPS entry. Use existing branding, safe-area layout a
 
 Test Safari vs Home Screen, login return, audio and mic permission, backgrounding, navigation, paywall return and session expiry. If a browser API is unavailable, report the limitation without pretending parity. Reuse UZ/RU/TJ canonical localization rules for any new fixed copy.
 
+
+### 5. Preserve notification classes; defer only the Smart Web Push transport
+
+The Smart Reminder canonical [Master Plan](../../../docs/smart-reminders/SMART_REMINDER_MASTER_PLAN.md) D10/P5 expressly defines iPhone learner PWA as **future V2** over the shared `users.id` engine. Prepare an adapter boundary, NOT a second scheduler or premature study send:
+
+| Source/class | v1 PWA when open | Future background transport / policy |
+| --- | --- | --- |
+| `CourseUserNotification` course/ranking/motivation feed (`app/services/course_notification_service.py`) | Authenticated account-scoped inbox or existing safe read adapter; no inference that inbox read means push delivered | Existing category policy; Smart study coordination stays separate |
+| Subscription/payment/limit/account notices (`notification_delivery_service.py` and current server account state) | Show canonical status plus any verified in-app notice actually stored. **Audit source coverage**: not every transactional message is necessarily in the course inbox | Preserve existing Android acknowledgement and Telegram fallback semantics, independently of D03 daily study limit. Future PWA transactional delivery requires its own reviewed adapter and eligibility |
+| Smart study reminders | Settings may show the actual canonical account Smart preference and unsupported/not-registered iPhone channel; no PWA study sending in v1 | V2: installed Home Screen, genuine user-gesture OS permission, own subscription, service worker, server-owned job and chosen eligible channel; D01/D03/D05/D06/D07/D14 guards. No second scheduler, auto opt-in or fallback on unknown delivery |
+| Ordinary bot feedback and release-feedback rating | Small server-eligible center dialog while learner is in PWA; no background push requirement | Keep original Telegram bot chat send/response path; never duplicate campaign or grant |
+
+**Privacy/ownership:** A PWA cookie belongs to canonical `users.id`, but a Telegram bot DM requires a real linked `telegram_id`. Unsupported Safari/Web Push must remain unknown or unavailable, never silently selected by Smart. A PWA study adapter added in V2 must honor one logical account/day job, selection/dedup, explicit channel OFF, OS denial, revocation, verified target/deep link and existing conservative attempt/fallback ledger. Do not infer receipt/open from an inbox view.
+
+### 6. Compact feedback center modal — reuse existing bot rules
+
+Two separate **existing** families were reviewed: `app/services/bot_feedback_service.py` (feedback prompts, eligibility, bounded retries and one-time 30-minute access reward for eligible free accounts), and `app/services/release_feedback_service.py` (specific release campaign and 1–5 rating, optional comment and controlled reward/discount). These are not interchangeable.
+
+For a PWA user, first audit whether the current record is eligible via canonical user ID. Telegram's current sender filters on a genuine `telegram_id`; a browser-only account needs a **small shared eligibility/response bridge** if required, NOT a recreated prompt scheduler or artificial Telegram ID. A linked account cannot receive duplicate claims or duplicate rewards from answering in Telegram and PWA. Do not force a feedback overlay during an active quiz/payment/lesson, or open just because the bot already sent a chat message.
+
+The initial card stays centered, compact, dismissible and accessible (dialog role, focus restore, keyboard/escape, readable overlay and safe-area). Ordinary feedback first step offers appropriate positive/negative choices and moves to existing follow-up questions; release campaign uses actual rating and optional comment. Persist and rate-limit using current server services, observe paid-vs-free differences, and restore the course after dismissal/submission. New fixed copy still comes from canonical UZ/RU/TJ catalogs, not the sample Figma text.
+
+### 7. Figma-first for **new** UI only
+
+Editable [HSK AI PWA notifications and feedback Figma](https://www.figma.com/design/89fCM5GdjfBqcx0B9aQHOI) contains drafts of an inbox, settings presentation and both centered feedback dialogs with reusable `notification/item`, `setting/row`, `feedback/quick-question`, `feedback/release-rating` and button components. The palette comes from `app/static/course_v3_data/design-tokens.css`. **Figma used Inter because the system SF Pro font was unavailable in this editor; its font/copy/interaction samples need review before being used as code.** These Figma screens are NOT a separate app/UI redesign or approved runtime behavior. Use the exact approved component mapping saved in the single context handoff; reuse current Mini App screens with no redundant redraw. No Figma work counts as backend/code tests.
+
 ## Four implementation gates
 
-- **P0 — focused code inventory:** verify actual frontend API touchpoints and auth/account contracts, not a broad repo audit.
+- **P0 — focused code inventory:** verify actual frontend API, auth/account, notice/feedback source eligibility and Smart V2 policy boundaries, not a broad repo audit.
 - **P1 — browser identity:** verified OAuth and secure session bridge, explicit account linking where needed, auth/CSRF/logout/ownership regressions.
-- **P2 — frontend and API parity:** thin host adapter and only necessary browser routes; same business services, lessons, grading and Pro. Focused Mini App/PWA tests.
-- **P3 — iPhone and release QA:** Home Screen entry/icon/manifest, actual Safari/installed iPhone tests, voice/login/payment return, safe rollout/rollback.
+- **P2 — frontend and API parity:** thin host adapter and only necessary browser routes; same business services, lessons, grading, Pro, required inbox and eligible compact feedback. Review new Figma UI before code.
+- **P3 — iPhone and release QA:** Home Screen entry/icon/manifest, Safari/installed iPhone tests including in-app notifications, dialogs, voice/login/payment return; verify future Smart V2 channel remains OFF/unsupported and rollback works.
 
 Detailed bounded implementation tasks are solely in [tasks.md](tasks.md); this design does not create another task ledger.
 
