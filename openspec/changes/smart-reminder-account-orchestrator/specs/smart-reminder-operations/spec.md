@@ -190,3 +190,15 @@ The system SHALL retain reviewed original reasons for committed selected-job can
 #### Scenario: Transient refusal without terminal source evidence
 - **WHEN** auth, admission, not-due or another transient guard returns without a committed terminal decision
 - **THEN** that response does not become a measured terminal suppression or complete denominator
+
+
+### Requirement: Separate temporal server learning from notification attribution
+The system SHALL support an internal bounded source projection of original verified target learning after an evidenced study contact attempt, without representing temporal proximity as notification opening, display, causal return or complete negative-learning coverage.
+
+#### Scenario: Original target lesson completed after an evidenced contact
+- **WHEN** the same canonical account has a successful original server-confirmed target lesson result strictly after a reviewed accepted/posted contact attempt and within its frozen local day
+- **THEN** internal analysis may return the original result time with explicit partial source coverage and without changing or persisting delivery state
+
+#### Scenario: Missing or replayed learning evidence
+- **WHEN** only generic app opens, bonus XP, a pre-attempt original result replayed later, another target or unsupported/missing sources exist
+- **THEN** the projection returns unavailable evidence rather than zero learning, an attributed completion or a reason to send again
