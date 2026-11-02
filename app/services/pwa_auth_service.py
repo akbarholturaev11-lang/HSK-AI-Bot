@@ -24,6 +24,7 @@ from app.services.user_access_state_service import UserAccessState, UserAccessSt
 PWA_PLATFORM = "pwa"
 PWA_SESSION_COOKIE = "__Host-hskai-pwa"
 PWA_OAUTH_COOKIE = "__Host-hskai-pwa-oauth"
+PWA_TELEGRAM_COOKIE = "__Host-hskai-pwa-telegram"
 PWA_SESSION_AGE_SECONDS = 7 * 24 * 3600
 PWA_OAUTH_AGE_SECONDS = 600
 
@@ -86,6 +87,90 @@ class PwaAuthService:
         # The native polling secret never leaves the server in the PWA flow.
         return started.authorize_url, proof
 
+    async def start_telegram(self, *, language: str | None = None) -> tuple[str, str, str]:
+        """Browser proof is HttpOnly; bot sees only a one-use UUID deep link."""
+        require_pwa_enabled(self.settings)
+        proof = secrets.token_urlsafe(32)
+        started = await self.desktop.start_link(
+            platform=PWA_PLATFORM, app_version="1.0.0",
+            installation_key=proof, flow="telegram", intent="signin",
+            language=language if language in {"uz", "ru", "tj"} else None,
+        )
+        url = str(started.get("bot_deep_link") or "")
+        if not url.startswith("https://t.me/"):
+            raise PwaAuthError("pwa_telegram_unavailable", status_code=503)
+        return str(started["link_request_id"]), url, proof
+
+    async def claim_telegram(
+        self, *, request_id: str, proof: str | None,
+    ) -> tuple[str, str | None]:
+        """Status polling never issues native tokens and accepts no URL-only proof.
+
+        A DB row lock, browser-only cookie and confirmed Telegram owner are all
+        required before a one-time PWA cookie is created.
+        """
+        require_pwa_enabled(self.settings)
+        from uuid import UUID
+        try:
+            request_id = str(UUID(request_id))
+        except (ValueError, TypeError, AttributeError):
+            raise PwaAuthError("pwa_telegram_invalid", status_code=422)
+        if not isinstance(proof, str) or not 32 <= len(proof) <= 200:
+            raise PwaAuthError("pwa_telegram_proof_invalid")
+        row = (await self.session.execute(
+            select(DesktopLinkRequest).where(
+                DesktopLinkRequest.id == request_id
+            ).with_for_update().execution_options(populate_existing=True)
+        )).scalar_one_or_none()
+        if (
+            row is None or row.platform != PWA_PLATFORM
+            or row.intent != "signin" or row.flow != "telegram"
+            or not hmac.compare_digest(
+                str(row.installation_key_hash or ""),
+                self.desktop._hash("installation", proof),
+            )
+        ):
+            raise PwaAuthError("pwa_telegram_proof_invalid")
+        if (_aware(row.expires_at) or _now()) <= _now():
+            raise PwaAuthError("pwa_telegram_expired", status_code=410)
+        if row.status == "pending" and row.consumed_at is None:
+            return "pending", None
+        if (
+            row.status != "approved" or row.consumed_at is not None
+            or not row.approved_user_id or not row.approved_telegram_id
+        ):
+            raise PwaAuthError("pwa_telegram_not_approved")
+        user = (await self.session.execute(
+            select(User).where(User.id == row.approved_user_id).with_for_update()
+        )).scalar_one_or_none()
+        if (
+            user is None or UserAccessStateService.classify(user) == UserAccessState.BLOCKED
+            or int(user.telegram_id or 0) != int(row.approved_telegram_id)
+        ):
+            raise PwaAuthError("pwa_telegram_owner_invalid", status_code=403)
+        return "complete", await self._mint_session(user, row)
+
+    async def _mint_session(self, user: User, row: DesktopLinkRequest) -> str:
+        device = DesktopDevice(
+            id=str(uuid4()), user_id=user.id,
+            telegram_id=user.telegram_id,
+            installation_key_hash=row.installation_key_hash,
+            platform=PWA_PLATFORM, app_version="1.0.0",
+        )
+        self.session.add(device)
+        await self.session.flush()
+        session_cookie = secrets.token_urlsafe(32)
+        self.session.add(DesktopSession(
+            id=str(uuid4()), device_id=device.id,
+            refresh_token_hash=self.desktop._hash("pwa-cookie", session_cookie),
+            expires_at=_now() + timedelta(seconds=PWA_SESSION_AGE_SECONDS),
+            last_seen_at=_now(),
+        ))
+        row.status = "consumed"
+        row.consumed_at = _now()
+        await self.session.commit()
+        return session_cookie
+
     async def _verified_row(self, *, provider: str, state: str, proof: str, lock: bool = False):
         if not isinstance(proof, str) or not 32 <= len(proof) <= 200:
             raise PwaAuthError("pwa_oauth_proof_invalid")
@@ -145,26 +230,7 @@ class PwaAuthService:
         if owner_identity is None:
             raise PwaAuthError("pwa_identity_unavailable")
 
-        # Existing DB models are reused; no schema migration and no bearer token.
-        # Random per-login proof makes installation-key collisions improbable.
-        device = DesktopDevice(
-            id=str(uuid4()), user_id=user.id,
-            telegram_id=user.telegram_id, installation_key_hash=row.installation_key_hash,
-            platform=PWA_PLATFORM, app_version="1.0.0",
-        )
-        self.session.add(device)
-        await self.session.flush()
-        session_cookie = secrets.token_urlsafe(32)
-        self.session.add(DesktopSession(
-            id=str(uuid4()), device_id=device.id,
-            refresh_token_hash=self.desktop._hash("pwa-cookie", session_cookie),
-            expires_at=_now() + timedelta(seconds=PWA_SESSION_AGE_SECONDS),
-            last_seen_at=_now(),
-        ))
-        row.status = "consumed"
-        row.consumed_at = _now()
-        await self.session.commit()
-        return session_cookie
+        return await self._mint_session(user, row)
 
     async def actor(self, cookie: str | None):
         require_pwa_enabled(self.settings)
