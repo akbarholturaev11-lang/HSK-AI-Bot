@@ -1,6 +1,6 @@
 # Tasks — lean implementation plan for iPhone Course PWA
 
-**Planning checklist only.** Continue from [the single context](../../../docs/IPHONE_PWA_CONTEXT.md) and read the OpenSpec specs. P0.1–0.4 completed as source analysis (2026-11-02), **not runtime verification**. The P1 login-only prototype is in separate [draft PR #257](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/257), but P1.1–1.3 stay **unchecked until real iPhone/provider/security acceptance**. Before further code changes reconcile with current `main`; no runtime code, automatic merge, deploy or extra task ledger in this planning PR.
+**Planning checklist only.** Continue from [the single context](../../../docs/IPHONE_PWA_CONTEXT.md) and read the OpenSpec specs. P0.1–0.4 completed as source analysis (2026-11-02), **not runtime verification**. The P1 login-only prototype is in separate [draft PR #257](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/257). P1.1–1.3 stay **unchecked until code review and automated security/functional tests pass**; actual provider/device acceptance is the **last separate QA gate**, performed by the product owner only after P1/P2/P3 code and automated checks are complete. Before further code changes reconcile with current `main`; no runtime code, automatic merge, deploy or extra task ledger in this planning PR.
 
 ## P0 — small, targeted source audit (source review complete 2026-11-02; runtime tests not executed)
 - [x] 0.1 Trace the existing Mini App's API calls and Telegram-only assumptions from `app/static/course-v3.html`, related course pages, `app/main.py` and `app/api/miniapp_*.py`. Identify the **minimum** host-dependent browser/API adapter points; document the compact route-to-service map.
@@ -25,6 +25,8 @@
 - [ ] 2.5 Display available important account/service notices plus verified course/ranking messages inside authenticated PWA, reusing their canonical sources and server-confirmed subscription/limit state. Do not alter transactional delivery or treat inbox-read as push received; fill source gaps only after audit.
 - [ ] 2.6 Reuse **eligible** ordinary bot feedback and release-feedback prompts as compact centered PWA dialogs (positive/negative, 1–5 rating, required follow-up), dismiss/focus-safe; same server prompt limits and one-time rewards across bot and PWA. Keep Telegram chat UX and active lesson/checkout uninterrupted.
 - [ ] 2.7 Keep a future Smart PWA adapter boundary using canonical user, Smart preference/capability and safe target contracts. Unsupported iPhone channel stays disabled; no new sender/scheduler/subscription or consent request in v1.
+
+**Execution order:** finish all P1/P2/P3 implementation and automated tests before asking the product owner to perform real Safari and Home Screen device tests. Physical device acceptance is the **final gate**, not a prerequisite for starting P2/P3 development. Never deploy, enable the feature or merge to `main` before both code completion and explicit approval.
 
 ## P3 — iPhone install and real acceptance
 - [ ] 3.1 Add a dedicated learner HTTPS Home Screen entry, application name/icon/manifest as useful, responsive safe areas, mobile keyboard and standalone navigation. **Service Worker and offline lessons are not v1 requirements**; add caching only for a separately proven need and never cache private/graded content.
