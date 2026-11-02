@@ -28,7 +28,9 @@ class ObserverTests(unittest.IsolatedAsyncioTestCase):
             observer = SmartReminderAnalysisObserver(SimpleNamespace(SMART_REMINDER_ANALYSIS_ENABLED=value), factory)
             self.assertIsNone(await observer.capture_job(1, "job"))
             self.assertIsNone(await observer.tick())
+            self.assertIsNone(await observer.reconcile_tick())
             await observer.run_retention()
+            await observer.run_reconciliation()
         factory.assert_not_called()
 
     async def test_capture_failure_has_no_error_payload_or_fabricated_zero(self):
@@ -338,6 +340,7 @@ class LifespanObservationTests(unittest.IsolatedAsyncioTestCase):
         source = Path(__file__).resolve().parents[1] / "app/main.py"
         node = next(n for n in ast.parse(source.read_text()).body if isinstance(n, ast.AsyncFunctionDef) and n.name == "lifespan")
         started, cancelled = asyncio.Event(), asyncio.Event()
+        reconcile_started, reconcile_cancelled = asyncio.Event(), asyncio.Event()
         async def block(*args):
             await asyncio.Event().wait()
         async def retention():
@@ -346,7 +349,13 @@ class LifespanObservationTests(unittest.IsolatedAsyncioTestCase):
                 await asyncio.Event().wait()
             finally:
                 cancelled.set()
-        observer = Mock(return_value=SimpleNamespace(run_retention=retention))
+        async def reconciliation():
+            reconcile_started.set()
+            try:
+                await asyncio.Event().wait()
+            finally:
+                reconcile_cancelled.set()
+        observer = Mock(return_value=SimpleNamespace(run_retention=retention, run_reconciliation=reconciliation))
         namespace = {"asynccontextmanager": contextlib.asynccontextmanager, "FastAPI": object,
             "asyncio": asyncio, "contextlib": contextlib, "init_db": AsyncMock(), "_seed_lessons": block,
             "dp": SimpleNamespace(start_polling=block), "bot": SimpleNamespace(session=SimpleNamespace(close=AsyncMock())),
@@ -362,12 +371,14 @@ class LifespanObservationTests(unittest.IsolatedAsyncioTestCase):
         async with namespace["lifespan"](object()):
             if enabled is True:
                 await asyncio.wait_for(started.wait(), 1)
+                await asyncio.wait_for(reconcile_started.wait(), 1)
             else:
                 await asyncio.sleep(0)
                 observer.assert_not_called()
         if enabled is True:
             observer.assert_called_once()
             self.assertTrue(cancelled.is_set())
+            self.assertTrue(reconcile_cancelled.is_set())
         namespace["engine"].dispose.assert_awaited_once()
 
     async def test_actual_lifespan_starts_independent_task_and_awaits_cancellation(self):
