@@ -1,66 +1,30 @@
-# Tasks — iPhone learner Course PWA
+# Tasks — lean implementation plan for iPhone Course PWA
 
-All boxes below denote **future implementation and verified acceptance**, not completion of this OpenSpec planning task. Do not check any item merely because a file exists, GitHub Actions passed, or a mock ran. The single continuation context is [IPHONE_PWA_CONTEXT.md](../../../docs/IPHONE_PWA_CONTEXT.md). Refresh live `origin/main` and actual source/tests before each slice. Work on an isolated implementation branch, keep original Telegram Mini App usable, and do not merge/deploy without the repository's applicable security, Git and device QA gates.
+**Planning only.** All checkboxes are for later, evidence-backed implementation. Continue from [IPHONE_PWA_CONTEXT.md](../../../docs/IPHONE_PWA_CONTEXT.md); OpenSpec specs define acceptance. No separate progress log, no runtime code in this PR, and no automatic main merge/deploy. First refresh the current `main` code.
 
-## 0. P0 — architecture and route inventory (no runtime changes)
+## P0 — small, targeted source audit
+- [ ] 0.1 Trace the existing Mini App's API calls and Telegram-only assumptions from `app/static/course-v3.html`, related course pages, `app/main.py` and `app/api/miniapp_*.py`. Identify the **minimum** host-dependent browser/API adapter points; document the compact route-to-service map.
+- [ ] 0.2 Review existing Google/Apple/Telegram identity-linking, session services, account owner `users.id`, course/progress/Pro/payment services and focused test baseline. Reuse existing services; do not create new DB tables, endpoints, dependencies or screen rewrites unless a specific gap is verified.
 
-- [ ] 0.1 Refresh `origin/main`, existing feature handoffs, production/staging **documented** schema/Alembic head; inspect `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, `localization/README.md`, `OAUTH_SETUP.md`. Report changed assumptions and actual test baselines (no production credentials).
-- [ ] 0.2 Enumerate `app/static/course-v3.html`, `course_v3_*.html`, `course_v3_data/*`, direct `app/main.py` endpoints, `app/api/miniapp_*.py`, JavaScript fetch calls and Telegram SDK APIs. Record each path's auth, canonical owner, access/grade proof, consumer and PWA parity disposition.
-- [ ] 0.3 Audit current Google/Apple first-signin, identity linking, session, revocation, deletion, trial/referral, paywall/receipt, public lesson data and service worker exposures. Identify necessary new backend contracts and migration need, if any.
-- [ ] 0.4 Produce a signed-off source-backed parity grid: all course tabs/screens, HSK 2.0/3.0, lessons, quiz/homework, progress, AI/voice/practice, history/mistakes, profile, paywall, locale, notifications and deep links. Distinguish compatible parity, iOS capability-gated and non-goal features.
-- [ ] 0.5 Establish focused baseline unit/API/browser tests on a safe isolated environment, preserving Telegram/native behaviors; record commands and baseline failures (no claimed acceptance without evidence).
+## P1 — independent login and shared account
+- [ ] 1.1 Add the minimum safe browser login/session bridge using already verified identity services (Google/Apple only as supported by current configuration); Secure/HttpOnly cookie, CSRF protection, bounded session lifetime, logout/revocation and correct iPhone callback. Do **not** reuse a native bearer token in localStorage or an admin session.
+- [ ] 1.2 Reuse the existing **explicit** Telegram account-link path as needed to preserve the original learner's Pro and progress. No fake Telegram ID, automatic email match/merge, duplicate trial/referral or cross-account session.
+- [ ] 1.3 Test actual existing/new user flows, blocked/revoked/forged actor, CSRF and original Telegram/native login isolation before enabling any PWA course mutation.
 
-## 1. P1 — browser authentication, canonical owner and logout
+## P2 — same Mini App, browser-safe transport
+- [ ] 2.1 Reuse **the existing** course UI/JS/CSS. Introduce only a small Telegram-vs-PWA host adapter (navigation, auth headers, SDK-only actions). Avoid a parallel frontend, new UI framework or complete rewrite.
+- [ ] 2.2 Adapt only the Mini App API paths actually used by PWA. Resolve verified browser `users.id` and call current course/grade/progress/access services; leave signed Telegram initData endpoints secure and working.
+- [ ] 2.3 Preserve lesson/test/homework, HSK 2.0/3.0 track, XP/history, voice/practice where supported, profile, UZ/RU/TJ and current Pro/trial/subscription/receipt policies. Reuse existing checkout with browser-safe return and server payment confirmation; no billing redesign.
+- [ ] 2.4 Run focused Mini App and PWA regression checks: course result/grade/source protection, Pro/free/pending/paid states, linking, logout/account switch and no Telegram/native regression. Use canonical localization catalogs when new UI copy is required.
 
-- [ ] 1.1 Build reviewed learner-only browser auth/session service and persistence only if justified by the existing session model; define bounded cookie lifetime, Secure/HttpOnly/SameSite/Path, CSRF/origin/referer, session rotation and revocation. Preserve `users.id` owner and nullable real `telegram_id`.
-- [ ] 1.2 Integrate verified configured Google/Apple browser OAuth entry/callback with bound state, nonce/PKCE where applicable, exact redirect allowlist, rate limiting and provider unavailability UX. Never copy Android/Desktop token storage or use Admin PWA auth.
-- [ ] 1.3 Provide optional Telegram account linking via verified explicit consent/handoff with ownership conflict refusal. Test existing Telegram-only account, browser-only account, duplicate email/name and already-linked identity; never silently merge or re-credit rewards.
-- [ ] 1.4 Create browser `/me`/session/bootstrap/logout/refresh (actual names after route audit), with blocked/deleting-user and revoked session denial. Test cross-user reads/mutations, CSRF, session fixation/replay, stale cookie, multiple devices and account switching.
-- [ ] 1.5 Run original Telegram initData/Android/Desktop auth regressions; prove browser session is **not** accepted as Telegram initData and no fake Telegram ID is generated.
+## P3 — iPhone install and real acceptance
+- [ ] 3.1 Add a dedicated learner HTTPS Home Screen entry, application name/icon/manifest as useful, responsive safe areas, mobile keyboard and standalone navigation. **Service Worker and offline lessons are not v1 requirements**; add caching only for a separately proven need and never cache private/graded content.
+- [ ] 3.2 Test on a real iPhone in Safari **and** as a Home Screen app: first login, Google/Apple return as configured, existing Telegram account link, reopen/background/resume, expired session, lesson result, paywall/receipt return and audio/microphone behavior. Document any supported iOS limitation. No push/notification implementation in v1.
+- [ ] 3.3 Verify security, relevant focused backend tests, targeted browser E2E, locale and original Telegram Mini App. Provide a reversible PWA-only disable/rollback and release checklist; implementation/release approvals remain separate.
 
-## 2. P2 — one frontend UI, channel-specific adapters
-
-- [ ] 2.1 Add a minimal host transport adapter for Telegram vs standalone browser in/around `app/static/course-v3.html` and related pages; keep the existing Telegram WebApp SDK path intact and do not fork the UI/lesson engine.
-- [ ] 2.2 Add a dedicated learner PWA entry/auth shell and constrained course route, handling normal Safari and installed standalone navigation, deep link, error and sign-in-return states. Exclude Admin PWA and public marketing scope.
-- [ ] 2.3 Convert course API calls by audited route group to verified actor-backed browser endpoints/shared service calls, preserving Telegram signed-initData legacy routes. Implement by small groups: bootstrap/track/profile; lesson/content/start/result; practice/quiz/homework; history/mistakes/XP/AI.
-- [ ] 2.4 Make client-local draft/route/level/session state account-aware; clear on logout/switch and reject private stale responses. Test refresh, bfcache, deep link, expired browser session and no data from a previously signed-in user.
-- [ ] 2.5 Run target UI + course regressions, including `tests/test_course_miniapp_lesson_flow.py`, `tests/test_course_miniapp_practice.py`, `tests/test_course_miniapp_profile_preferences.py`, `tests/test_course_v3_mobile_practice_contract.py`, and live route/answer/score proof tests where actual source supports them.
-
-## 3. P3 — access, Pro, payments, trials and referrals
-
-- [ ] 3.1 Connect PWA learner actor to current server `entitlements`, access, course track and AI budget services; verify free/trial/paid/unlocked/inaccessible combinations and no public grade/answer exposure.
-- [ ] 3.2 Audit `subscription_miniapp_service.py`, QR/receipt/paywall UI and payment services for Telegram-only dependencies. Add only bounded browser checkout and receipt/return adapters with canonical owner and status refresh.
-- [ ] 3.3 Test pending receipt vs approved paid access, rejected/review/refund, duplicate receipt, URL return spoof, unexpected logout/reauth and differing Safari/Home Screen containers. Never treat a client callback as payment verification.
-- [ ] 3.4 Prove existing-account linking and PWA signup cannot duplicate trial/referral/feedback/HSK 3.0 unlock/XP bonus; actual Telegram messaging only when a genuine linked Telegram ID and consent exist.
-- [ ] 3.5 Run targeted existing billing/referral/progress/privacy tests and document any required backend schema migration with upgrade/downgrade safeguards.
-
-## 4. P4 — install, iOS lifecycle, audio and privacy-safe caching
-
-- [ ] 4.1 Add HTTPS learner PWA manifest, valid start/scope, properly sized icons, Apple-specific metadata where needed, install help and full iPhone safe-area/viewport/keyboard layout, preserving `hsk-ai-ui` visual rules.
-- [ ] 4.2 Build narrowly scoped, versioned service worker only after auditing public/static paid course assets, auth and user-response caching. Never public-cache protected lesson keys, session/receipt/grade/progress or other private responses. Verify safe update/unregister/recovery.
-- [ ] 4.3 Handle Safari vs Home Screen independent storage and redirect return; test cold launch, reinstall, background/foreground, account logout/switch, expiry, network loss and controlled restoration without cross-account leaks.
-- [ ] 4.4 Test microphone capture, TTS/voice playback, autoplay policy, file/camera upload, external provider/payment navigation and accessible non-voice fallbacks on real iOS devices. Promise push only if supported and deliberately permissioned.
-- [ ] 4.5 Run security checks for SW scope, cache headers, CSP, OAuth callback and XSS/CSRF/CORS as applicable; review static lesson access before any offline catalog expansion.
-
-## 5. P5 — localization, observability, privacy and rollout controls
-
-- [ ] 5.1 Reuse canonical UZ/RU/TJ UI keys per `localization/README.md`; run `python3 scripts/i18n_build_all_catalogs.py --write` and `--check`, commit canonical sources and generated consumer outputs together.
-- [ ] 5.2 Add minimally necessary real `pwa` source/session/funnel analytics with canonical account dedupe; never log OAuth tokens, initData, receipts or secrets. Ensure existing provider/platform metrics are not silently reclassified.
-- [ ] 5.3 Preserve account deletion, identity unlink, sign-out and legal/privacy notice semantics across all browser sessions and existing clients; test data boundaries and restoration policy.
-- [ ] 5.4 Implement an isolated learner-PWA release/enablement switch and safe rollback procedure (revoke PWA sessions; leave Telegram/native and canonical payments/progress intact); run disable/re-enable smoke checks.
-
-## 6. P6 — QA acceptance and release review (separate from OpenSpec validation)
-
-- [ ] 6.1 Automated auth/security and payment regression suite passes on the exact implementation branch, including error/negative cases and the original Telegram/native clients; record commands, commit and unaddressed failures.
-- [ ] 6.2 Browser E2E proves screen/route/lesson/quiz/homework/paywall/locale parity and no console/API errors, as well as logout, stale state and failed network recovery; include representative HSK 2.0/3.0 lessons.
-- [ ] 6.3 Real iPhone Safari + installed Home Screen QA passes fresh install, Google/Apple return, optional Telegram explicit link, navigation/safe areas, background/resume, session expire, lesson result, voice/microphone denial and payment return. Record device/iOS versions, screenshots/steps and any unsupported behavior.
-- [ ] 6.4 Reconcile required configuration, TLS/domain/redirect settings, database migration and change isolation; approve only a staged rollout with working disable/rollback, not automatic full production promotion.
-- [ ] 6.5 After user implementation/release approval, follow `AGENTS.md` Git/test/main policy. Recheck remote `main` and intended commit. Never equate this checklist, OpenSpec validation or PR creation to production success.
-
-## Planning-only completion gate (current task)
-
-The **planning task**, not the implementation tasks above, is complete when:
-1. `openspec status --change iphone-course-pwa --json` reports all four artifacts present.
-2. `openspec validate iphone-course-pwa` succeeds on the repository's actual GitHub Actions runner.
-3. The official CI run URL, branch HEAD and any limitations are noted in the canonical `docs/IPHONE_PWA_CONTEXT.md`.
-4. The user receives links to proposed OpenSpec files and the check outcome. **No runtime code changes, main merge, live production verification or iPhone device tests are claimed.**
+## Acceptance and scope boundary
+- Original Telegram Mini App must remain unchanged in behavior.
+- Browser-only verified learners must use the **same canonical account services**, not a duplicate dataset.
+- Existing account's progress, Pro, history and payment ownership must remain intact.
+- No separate Admin PWA, offline sync, Web Push, new analytics pipeline, new courses, Android/Desktop changes, forced migrations or major redesign.
+- Plan validation (GitHub Actions) confirms only OpenSpec document structure; real runtime/physical iPhone QA is unverified until P3 executes.
