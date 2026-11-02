@@ -17,7 +17,7 @@ import logging
 from typing import Annotated, Any, Callable, Literal
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 from app.api.desktop_auth import (
@@ -394,7 +394,8 @@ def create_native_oauth_router(
                             provider="google", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
                         )
             if completed.get("platform") == "pwa" and is_pwa:
-                page = _page("&#10003;", "ok")
+                # Fixed same-origin path. Never redirect to caller-supplied URLs.
+                page = RedirectResponse("/iphone-pwa", status_code=303, headers=_NO_STORE)
                 page.set_cookie(PWA_SESSION_COOKIE, cookie, max_age=PWA_SESSION_AGE_SECONDS,
                                 secure=True, httponly=True, samesite="lax", path="/")
                 page.delete_cookie(PWA_OAUTH_COOKIE, path="/", secure=True, httponly=True, samesite="none")
@@ -443,7 +444,8 @@ def create_native_oauth_router(
                             provider="apple", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
                         )
             if completed.get("platform") == "pwa" and is_pwa:
-                page = _page("&#10003;", "ok")
+                # Fixed same-origin path. Never redirect to caller-supplied URLs.
+                page = RedirectResponse("/iphone-pwa", status_code=303, headers=_NO_STORE)
                 page.set_cookie(PWA_SESSION_COOKIE, cookie, max_age=PWA_SESSION_AGE_SECONDS,
                                 secure=True, httponly=True, samesite="lax", path="/")
                 page.delete_cookie(PWA_OAUTH_COOKIE, path="/", secure=True, httponly=True, samesite="none")
