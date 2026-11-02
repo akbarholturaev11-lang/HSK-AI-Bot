@@ -1,8 +1,8 @@
 # Smart delivery analysis contract
 
-The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.59. This
-contract defines P6 6.1a, optional 6.1b integration, bounded 6.1c reconciliation
-and 6.1d terminal shadow observations, not a live rollout.
+The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.60. This
+contract defines P6 6.1a, optional 6.1b integration, bounded 6.1c reconciliation,
+6.1d terminal shadow observations and 6.1e reservation observations, not a live rollout.
 
 `SmartReminderAnalysisService.capture_job(user_id, job_id)` is an internal,
 explicit operation over a committed owned job and its attempts/Android grants.
@@ -30,12 +30,14 @@ jobs are excluded. Source timestamps must be neither future nor older than 90 da
 The existing attempt enum alone cannot prove `verified_shown` or a client post
 without its matching receipt. Shown, read, opened and attributed server learning
 remain **unavailable**; these counters are not fabricated zeros or inferred from
-FCM acceptance, widget/app opens or XP. Pre-reservation/real-dispatch candidate and suppression instrumentation,
+FCM acceptance, widget/app opens or XP. Real-dispatch candidate and suppression instrumentation,
 trusted open/learning linkage, complete coverage, denominator/experiment
 and model evaluation remain separate parent 6.1/6.2/P7 work.
 
 Migration `0137_smart_analysis` adds two tables; `0138_smart_shadow_analysis`
-extends only their stage constraints for explicit shadow observations:
+extends only their stage constraints for explicit shadow observations. Migration
+`0139_smart_reservation_analysis` adds job-independent reservation detail and two
+explicit anonymous shadow-reservation stages:
 
 - `smart_reminder_analysis_events`: owner/job FKs, a hash of immutable
   source-and-stage identity, a fixed stage/reason/channel and source time/expiry.
@@ -61,9 +63,10 @@ Grain is one terminal shadow stage per canonical source job. Repeated scans,
 parallel workers and process restart cannot increment it again. Monthly counts
 retain the same month/stage/channel grain, not unique learners, attempts or a
 suppression rate; reasons remain only in private retained detail. Missing facts
-are unknown. Refusals before a durable job exists, D1 before reservation,
-auth/deletion refusals, real dispatch choices and unimplemented source coverage
-are not supplied by this adapter. Current normal runtime cadence is unconfigured
+are unknown. This job-bound adapter does not supply refusals before a durable
+job exists; the optional reservation adapter below covers actual reserve
+outcomes. Auth/deletion refusals, real dispatch choices and unimplemented
+source coverage remain unavailable. Current normal runtime cadence is unconfigured
 and therefore cannot produce a positive cadence candidate. Positive candidate
 QA uses explicitly synthetic complete coverage/calibration; it is not evidence
 that runtime activation or ML admission is ready.
@@ -75,11 +78,53 @@ counts. No remote migration or existing QA initializer is run by merging this
 source. Disabling analysis leaves original queue behavior and retained evidence
 unchanged.
 
+## Pre-reservation shadow observations
+
+The actual `SmartReminderShadowQueue.reserve` source constructs immutable
+internal metadata only after verified owner/preference locking and actual
+policy/reservation execution. Its transaction commits and closes before the
+optional observer runs in a separate User-first transaction, rechecking owner
+existence and submitted deletion. A rollback or auth failure creates no
+observation. The existing strict default-false analysis flag gates the injected
+observer; the existing shadow worker supplies it to its queue. No producer,
+endpoint, cohort, sender or new background task is introduced.
+
+Migration 0139 adds `smart_reminder_reservation_observations`: owner FK, opaque
+deduplication key, stage, fixed actual reserve reason and original time/expiry
+only. There is no job FK, fake study intent, device/session/token identifier,
+message, arbitrary payload or personal feature column. `shadow_reserved` means
+an actual shadow reservation, not cadence eligibility or delivery.
+`shadow_refused` means its actual source reason, including OFF, D1, completed
+goal, access, unknown timezone or an already-owned day. An existing job's old
+cadence reason cannot replace the current reserve refusal reason. The existing
+job-bound event stages/constraints stay unchanged.
+
+Deduplication grain is distinct owner/source-version/current-preference-revision/
+canonical-course/day/outcome/reason, where available course comes from server
+state. A valid IANA local day survives UTC midnight; an unknown zone uses an
+explicit technical UTC observation day. Only the digest persists. Repeat checks
+do not extend the first observation's expiry or increment its monthly stage
+bucket again. A different revision, day or reason is a distinct condition;
+counts are not calls, unique learners, a send count or a complete denominator.
+
+The bounded observer logs only a fixed content-free warning on failure/timeout
+and preserves the original reservation/refusal without retrying it. Detail and
+anonymous increment commit atomically; parent cancellation propagates. Like
+other post-commit hooks, interruption before capture can lose an observation.
+Job reconciliation cannot recreate a pre-job observation that never persisted.
+Missing capture stays unknown. Initial auth/deletion errors and real dispatch/
+open/learning attribution remain outside this source. The raw class uses D21's
+original-time 90-day expiry, bounded retention and explicit canonical purge;
+monthly stage counts retain twelve buckets and have no owner link. Retention
+adds `expired_reservations`/`removed_reservations` counts while preserving old
+keys, and removes at most one bounded page per analysis class. Downgrade 0139
+refuses any reservation detail or retained new-stage monthly count.
+
 ## Retention and privacy boundary
 
 | Class | Policy |
 | --- | --- |
-| New analysis detail | D21: expires at original source time + 90 days |
+| New analysis / reservation detail | D21: expires at original source time + 90 days |
 | Anonymous monthly totals | D21: current UTC month and eleven preceding buckets |
 | Existing course progress, XP, canonical learning | Unchanged; analysis retention never deletes them |
 | Consent/OFF, account-day jobs, attempts, grant/receipt tombstones | Separate operational evidence; no new TTL or replay/reset authority |
@@ -94,7 +139,7 @@ cohort/experiment exposure requires its own reviewed read projection.
 ## Optional source integration
 
 `SMART_REMINDER_ANALYSIS_ENABLED=false` is the default. Setting it true requires
-the reviewed 0138 schema and enables observation/analysis-only retention, never
+the reviewed 0139 schema and enables observation/analysis-only retention, never
 study dispatch, admission, enrollment or a provider. Android's successful claim
 or receipt schedules only owner/job metadata in a Starlette background callback:
 the source transaction/session has closed and the complete HTTP body is sent
@@ -155,15 +200,15 @@ by this source change. Rollback uses the existing analysis boolean; retained
 delivery guards and original timestamps remain intact.
 
 `python -m scripts.smart_reminder_analysis_retention` returns anonymous expiry
-counts only. `--purge-expired --limit 128` explicitly removes at most one raw
-page and one monthly page; valid limits are 1–128. It never deletes a source
+counts only. `--purge-expired --limit 128` explicitly removes at most one job-detail page,
+one reservation-detail page and one monthly page; valid limits are 1–128. It never deletes a source
 job, attempt, grant, preference, course/XP record or another non-analysis class.
 The enabled task or operator must run enough pages to drain a backlog; no live
 production execution is implied. Source-time checks refuse expired replay after raw
 deletion, and never recreate an old fact to increment totals again.
 
 No initializer is run against an existing database. The reviewed empty-QA
-initializer advances to 0138 and leaves both new tables to real migrations.
+initializer advances to 0139 and leaves both new tables to real migrations.
 Migration 0137 downgrade refuses either populated analysis table rather than
 deleting data; 0138 uses the new-stage preservation guard described above.
 Disabling capture changes no delivery authority; preserve all consent/day/grant
