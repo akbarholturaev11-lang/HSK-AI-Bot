@@ -130,7 +130,7 @@
     "navigation.subscription": "Обуна",
     "pwaAuth.choose": "Усули вуруд ё сохтани ҳисоби навро интихоб кунед",
     "pwaAuth.tagline": "Ояндаи беҳтар — бо дониш",
-    "pwaAuth.telegramPending": "Воридшавӣ бо Telegram дар PWA ҳоло дастрас нест. Аввал ҳисоби Google ё Apple-ро дар бот пайваст кунед.",
+    "pwaAuth.telegramPending": "Дар боти Telegram воридшавиро барои ин браузер тасдиқ кунед ва ба саҳифаи HSK AI баргардед.",
     "pwaAuth.welcome": "Хуш омадед",
     "state.loading": "Боргирӣ…"
   }
