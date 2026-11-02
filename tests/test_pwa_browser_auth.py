@@ -222,6 +222,102 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"pwaAuth.welcome"', bundle)
         self.assertIn('"pwaAuth.telegramPending"', bundle)
 
+    async def test_telegram_bot_approval_claims_only_the_originating_browser(self):
+        from app.services.desktop_auth_service import DesktopAuthService
+        started = await self.client.post(
+            "/api/v3/pwa-auth/telegram/start",
+            headers={"Origin": ORIGIN},
+            json={"language": "uz"},
+        )
+        self.assertEqual(started.status_code, 200, started.text)
+        payload = started.json()
+        self.assertNotIn("polling_secret", payload)
+        self.assertNotIn("display_code", payload)
+        self.assertIn("pwa_link_", payload["authorize_url"])
+        link_id = payload["link_request_id"]
+        body = {"link_request_id": link_id}
+        before = await self.client.post(
+            "/api/v3/pwa-auth/telegram/claim",
+            headers={"Origin": ORIGIN}, json=body,
+        )
+        self.assertEqual(before.json(), {"ok": True, "status": "pending"})
+        stranger = AsyncClient(transport=ASGITransport(app=self.client._transport.app), base_url=ORIGIN)
+        try:
+            spoof = await stranger.post(
+                "/api/v3/pwa-auth/telegram/claim",
+                headers={"Origin": ORIGIN}, json=body,
+            )
+            self.assertEqual(spoof.status_code, 401)
+            bad_origin = await self.client.post(
+                "/api/v3/pwa-auth/telegram/claim",
+                headers={"Origin": "https://evil.example.test"}, json=body,
+            )
+            self.assertEqual(bad_origin.status_code, 403)
+            async with self.sessions() as db:
+                service = DesktopAuthService(db, self.settings)
+                await service.link_request_confirmation(
+                    link_request_id=link_id, telegram_id=1001, platform="pwa",
+                )
+                await service.approve_link_request(
+                    link_request_id=link_id, telegram_id=1001, platform="pwa",
+                )
+            claim = await self.client.post(
+                "/api/v3/pwa-auth/telegram/claim",
+                headers={"Origin": ORIGIN}, json=body,
+            )
+            self.assertEqual(claim.status_code, 200, claim.text)
+            self.assertEqual(claim.json()["status"], "complete")
+            self.assertIn(PWA_SESSION_COOKIE, claim.cookies)
+            self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).json()["user_id"], 1)
+            replay = await self.client.post(
+                "/api/v3/pwa-auth/telegram/claim",
+                headers={"Origin": ORIGIN}, json=body,
+            )
+            self.assertEqual(replay.status_code, 401)
+            self.assertNotIn(PWA_SESSION_COOKIE, replay.cookies)
+        finally:
+            await stranger.aclose()
+
+    async def test_telegram_pwa_and_android_bot_approvals_are_isolated(self):
+        started = await self.client.post(
+            "/api/v3/pwa-auth/telegram/start",
+            headers={"Origin": ORIGIN}, json={"language": "ru"},
+        )
+        rid = started.json()["link_request_id"]
+        async with self.sessions() as db:
+            service = DesktopAuthService(db, self.settings)
+            from app.services.desktop_auth_service import DesktopAuthError
+            with self.assertRaises(DesktopAuthError):
+                await service.link_request_confirmation(
+                    link_request_id=rid, telegram_id=1001, platform="android",
+                )
+            with self.assertRaises(DesktopAuthError):
+                await service.approve_link_request(
+                    link_request_id=rid, telegram_id=1001, platform="android",
+                )
+            row = await db.get(DesktopLinkRequest, rid)
+            self.assertEqual(row.status, "pending")
+            self.assertEqual(row.platform, "pwa")
+
+    async def test_telegram_approval_cannot_switch_canonical_account(self):
+        started = await self.client.post(
+            "/api/v3/pwa-auth/telegram/start",
+            headers={"Origin": ORIGIN}, json={"language": "uz"},
+        )
+        rid = started.json()["link_request_id"]
+        async with self.sessions() as db:
+            row = await db.get(DesktopLinkRequest, rid)
+            row.status = "approved"
+            row.approved_user_id = 1
+            row.approved_telegram_id = 2002  # Does not match canonical owner.
+            await db.commit()
+        attempt = await self.client.post(
+            "/api/v3/pwa-auth/telegram/claim",
+            headers={"Origin": ORIGIN}, json={"link_request_id": rid},
+        )
+        self.assertEqual(attempt.status_code, 403)
+        self.assertNotIn(PWA_SESSION_COOKIE, attempt.cookies)
+
     async def test_pwa_callback_requires_same_browser_proof(self):
         state = await self.begin()
         other = AsyncClient(transport=self.client._transport, base_url=ORIGIN)
