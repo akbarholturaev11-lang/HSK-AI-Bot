@@ -77,6 +77,14 @@ For each study intent, the system SHALL select one currently consented and reach
 - **WHEN** an account has permitted Telegram and two Android devices, and verified study/reachability evidence favors one phone
 - **THEN** only that eligible phone receives authority for the intent, without parallel Telegram or second-phone fanout
 
+#### Scenario: One eligible Android installation
+- **WHEN** an account has only one currently permitted, compatible and reachable Android installation and no competing eligible destination or conflicting manual channel lock
+- **THEN** that installation is the sole proposed destination without waiting for several study days; multiple sessions on the same installation do not create multiple destinations
+
+#### Scenario: Insufficient device-attributed history
+- **WHEN** multiple destinations are eligible but available study evidence is incomplete or tied
+- **THEN** any deterministic reachability fallback is labelled as such rather than claimed to prove the most-used device; opens, version strings, reward XP and provider acceptance are not verified learning votes
+
 #### Scenario: Preferred channel unavailable
 - **WHEN** a manually locked channel is blocked, permission-denied or unsupported
 - **THEN** the policy suppresses the intent rather than silently overriding the lock with an initial send elsewhere
