@@ -17,6 +17,7 @@ from app.api.pwa_auth import create_pwa_auth_router
 from app.db.base import Base
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from app.db.models.user import User
+from app.db.models.user_identity import UserIdentity
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 from app.services.identity_link_service import IdentityLinkService
 from app.services.oidc_verifier import VerifiedIdentity
@@ -165,6 +166,16 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             missing_proof = await self.callback(state, client=other)
             self.assertNotIn(PWA_SESSION_COOKIE, missing_proof.cookies)
             self.assertIn("pwa_oauth_proof_invalid", missing_proof.text)
+            denied_cancel = await other.get(
+                "/api/v3/native-auth/oauth/callback/google",
+                params={"state": state, "error": "access_denied"},
+            )
+            self.assertIn("pwa_oauth_proof_invalid", denied_cancel.text)
+            async with self.sessions() as db:
+                still_pending = (await db.execute(
+                    select(DesktopLinkRequest).where(DesktopLinkRequest.platform == "pwa")
+                )).scalar_one()
+                self.assertEqual(still_pending.status, "pending")
             good = await self.callback(state)
             self.assertEqual(good.status_code, 303)
             self.assertEqual(good.headers.get("location"), "/iphone-pwa")
@@ -248,6 +259,19 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             owner = await session.get(User, 1)
             owner.status = "blocked"
             await session.commit()
+        self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
+
+    async def test_identity_unlink_revokes_existing_pwa_sessions(self):
+        state = await self.begin()
+        await self.callback(state)
+        self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 200)
+        async with self.sessions() as db:
+            identity_ids = (await db.execute(
+                select(UserIdentity.id)
+            )).scalars().all()
+            self.assertEqual(len(identity_ids), 1)
+            await IdentityLinkService(db, self.settings).unlink(identity_ids[0], user_id=1)
+            await db.commit()
         self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
 
     async def test_new_provider_identity_stays_browser_only_and_has_canonical_user(self):
