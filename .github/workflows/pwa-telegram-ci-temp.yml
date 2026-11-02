@@ -1,0 +1,55 @@
+name: Temporary PWA Telegram approval security QA
+on:
+  push:
+    branches: [feat/iphone-pwa-browser-auth-p1-20261102]
+    paths:
+      - ".github/workflows/pwa-telegram-ci-temp.yml"
+      - "app/api/pwa_auth.py"
+      - "app/services/pwa_auth_service.py"
+      - "app/services/desktop_auth_service.py"
+      - "app/bot/handlers/desktop_auth.py"
+      - "app/static/iphone-pwa-login.js"
+      - "tests/test_pwa_browser_auth.py"
+      - "localization/ui/**/common.json"
+      - "localization/ui/**/bot.json"
+permissions:
+  contents: write
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - name: Generate only approved canonical locale outputs
+        run: |
+          set -euo pipefail
+          python scripts/i18n_build_local_catalogs.py --write
+          python scripts/i18n_build_local_catalogs.py --check
+          python scripts/i18n_build_bot_catalogs.py --write
+          python scripts/i18n_build_bot_catalogs.py --check
+          git diff --name-only | while read -r file; do
+            case "$file" in
+              "app/static/course_v3_data/hsk-common-i18n.js"|"desktop/ui/js/generated/hsk-common-i18n.js"|"app/bot/generated/common_i18n.py"|"app/bot/generated/bot_i18n.py"|"android/app/src/main/res/values/hsk_common_i18n.xml"|"android/app/src/main/res/values-ru/hsk_common_i18n.xml"|"android/app/src/main/res/values-tg/hsk_common_i18n.xml") ;;
+              *) echo "Unapproved generated mutation: $file" >&2; exit 1 ;;
+            esac
+          done
+      - name: Compile and JS syntax
+        run: |
+          python -m py_compile app/services/pwa_auth_service.py app/services/desktop_auth_service.py app/api/pwa_auth.py app/bot/handlers/desktop_auth.py app/api/native_oauth.py
+          node --check app/static/iphone-pwa-login.js
+      - run: python -m pip install -r requirements.txt aiosqlite
+      - name: Browser and Telegram owner-bound proof tests
+        run: python -m unittest -v tests.test_pwa_browser_auth
+      - name: Existing native, Telegram device and provider regressions
+        run: python -m unittest -q tests.test_desktop_auth_service tests.test_native_oauth_api tests.test_identity_link_service
+      - name: Commit only generated catalogs to draft branch after successful tests
+        run: |
+          set -euo pipefail
+          git add app/static/course_v3_data/hsk-common-i18n.js desktop/ui/js/generated/hsk-common-i18n.js app/bot/generated/common_i18n.py app/bot/generated/bot_i18n.py android/app/src/main/res/values/hsk_common_i18n.xml android/app/src/main/res/values-ru/hsk_common_i18n.xml android/app/src/main/res/values-tg/hsk_common_i18n.xml
+          if git diff --cached --quiet; then echo "Catalogs already current"; exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "i18n: generate audited PWA Telegram login copy in three languages"
+          git push origin HEAD:feat/iphone-pwa-browser-auth-p1-20261102
