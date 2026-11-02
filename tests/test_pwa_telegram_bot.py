@@ -1,5 +1,7 @@
 """PWA bot approval is private-chat, source localized and platform-isolated."""
 
+import inspect
+import re
 import unittest
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -28,6 +30,21 @@ def telegram_callback(action="approve", telegram_id=1001):
 
 
 class PwaTelegramBotTests(unittest.IsolatedAsyncioTestCase):
+    def test_real_bot_start_deep_link_matches_registered_pattern(self):
+        # Direct handler calls bypass the aiogram MagicFilter. Check the
+        # registered start-text regex against actual Telegram /start messages.
+        source = inspect.getsource(handler.begin_pwa_telegram_login)
+        expression = re.search(r'F\.text\.regexp\(r"([^"]+)"\)', source)
+        self.assertIsNotNone(expression)
+        start_pattern = re.compile(expression.group(1))
+        request_id = "12345678-1234-1234-1234-123456789abc"
+        self.assertIsNotNone(start_pattern.fullmatch(f"/start pwa_link_{request_id}_uz"))
+        self.assertIsNotNone(start_pattern.fullmatch(f"/start@pomp_test_bot pwa_link_{request_id}_ru"))
+        self.assertIsNotNone(start_pattern.fullmatch(f"/start pwa_link_{request_id}"))
+        self.assertIsNone(start_pattern.fullmatch(f"/start android_link_{request_id}_uz"))
+        self.assertIsNone(start_pattern.fullmatch("/start pwa_link_not-a-uuid_uz"))
+
+
     async def test_pwa_only_pending_bot_request_uses_exact_platform(self):
         message = telegram_message()
         state = SimpleNamespace(clear=AsyncMock())
