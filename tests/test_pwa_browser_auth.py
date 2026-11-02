@@ -132,6 +132,25 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 params={"state": state, "code": "auth-code"},
             )
 
+    async def test_pwa_foundation_is_server_authenticated_not_public_or_telegram(self):
+        url = "/api/v3/pwa/lesson/foundation"
+        self.assertEqual((await self.client.get(url)).status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        with patch(
+            "app.api.miniapp_entitlements._read_course_lesson",
+            return_value={"foundation": {"cards": [{"id": "first"}]}},
+        ) as source:
+            response = await self.client.get(url)
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertEqual(response.json()["foundation"]["cards"][0]["id"], "first")
+            self.assertEqual(response.headers.get("cache-control"), "no-store")
+            source.assert_called_once_with("hsk1", 1)
+        self.assertEqual(
+            (await self.client.get("/api/v3/lesson/foundation")).status_code,
+            401,
+        )
+
     async def test_pwa_lesson_start_retains_quota_proofs_and_csrf_guards(self):
         path = "/api/v3/pwa/lesson/start"
         payload = {"lesson_id": 1, "level": "hsk1"}
