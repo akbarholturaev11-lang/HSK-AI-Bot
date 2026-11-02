@@ -1,9 +1,10 @@
 # Smart delivery analysis contract
 
-The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.61. This
+The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.62. This
 contract defines P6 6.1a, optional 6.1b integration, bounded 6.1c reconciliation,
 6.1d terminal shadow observations, 6.1e reservation observations and 6.1f
-committed runtime guard reasons, not a live rollout.
+committed runtime guard reasons and the 6.1g internal target-learning projection,
+not a live rollout.
 
 `SmartReminderAnalysisService.capture_job(user_id, job_id)` is an internal,
 explicit operation over a committed owned job and its attempts/Android grants.
@@ -151,6 +152,46 @@ adds `expired_reservations`/`removed_reservations` counts while preserving old
 keys, and removes at most one bounded page per analysis class. Downgrade 0139
 refuses any reservation detail or retained new-stage monthly count.
 
+## Internal target-learning source projection
+
+`SmartReminderAnalysisService.target_learning(user_id, job_id)` is an explicit
+internal non-persisting read, outside dispatch, capture/reconciliation, cadence
+and public/admin metrics. It validates a current owned reviewed v1 target job in
+a separate User-first transaction, refusing blocked/submitted-deletion accounts.
+No source or analysis DML, new schema/stage/store, endpoint, flag or automatic
+hook is added. Source reads use existing finite row bounds and a PostgreSQL
+statement timeout. Disabling/removing this unused projection changes no delivery.
+
+Positive evidence requires an actual started/resolved Telegram provider-accepted
+attempt or Android posted-unverified attempt with matching immutable original
+grant/receipt, policy/revision/epoch/device and timestamps. Reservation, declined,
+unstarted, unknown or arbitrary attempt state is insufficient. Existing source
+contact facts remain accepted/posted-unverified; this projection proves neither
+OS display nor notification opening.
+
+The source scope is **strictly after original attempt start and before the
+job's frozen IANA local-day end**, capped by current time and original 90-day
+analysis validity. Frozen boundaries are checked against the real IANA day.
+This is a technical positive-evidence scope, not an experiment attribution
+window or a product restart/cooldown rule. Current original XP, successful
+nonduplicate native server target-lesson receipt and matching canonical course
+progress must corroborate one another through the existing destination reader.
+Bonus XP, generic opens, another lesson/course, missing/malformed/unsupported
+receipts, future results and old XP replayed later do not qualify. Original XP
+time is retained; late receipt arrival cannot create a new completion. Repeated
+reads/receipts return the same target result without a new count or stored fact.
+
+The result contains only a fixed reason, optional original boundary/learning
+timestamps and explicit source limitations, with no device, lesson text, token
+or payload. Account-level learning may occur on a different endpoint from the
+contact; no same-device claim is made. Native lesson coverage is partial;
+Telegram/practice/general opens and complete negative outcomes remain unknown.
+Missing/over-limit evidence returns unavailable rather than zero, inactivity or
+permission to send again. This temporal link is not causal or notification-
+attributed learning, a funnel/cohort denominator, recovery rate or D09 ML gate.
+Trustworthy job-bound opening, other learning sources, complete measurement
+and reviewed cohort/window policy remain parent 6.1/6.2 work.
+
 ## Retention and privacy boundary
 
 | Class | Policy |
@@ -174,8 +215,9 @@ the reviewed 0139 schema and enables observation/analysis-only retention, never
 study dispatch, admission, enrollment or a provider. Android's successful claim
 or receipt schedules only owner/job metadata in a Starlette background callback:
 the source transaction/session has closed and the complete HTTP body is sent
-before capture. GET, malformed/foreign/unauthenticated requests and refused
-claims schedule no capture. No request, bearer or claim body is retained.
+before capture. GET, malformed/foreign/unauthenticated requests and nonmutating
+refused claims schedule no capture; reviewed committed guard refusals use the
+bounded path described above. No request, bearer or claim body is retained.
 
 Telegram captures only after the terminal source transaction commits. Provider
 IO never calls analysis. The shared observer bounds work (two-second technical
