@@ -278,6 +278,31 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         finally:
             await stranger.aclose()
 
+    async def test_telegram_denial_reports_cancellation_without_fake_expiry(self):
+        started = await self.client.post(
+            "/api/v3/pwa-auth/telegram/start",
+            headers={"Origin": ORIGIN}, json={"language": "uz"},
+        )
+        self.assertEqual(started.status_code, 200, started.text)
+        rid = started.json()["link_request_id"]
+        async with self.sessions() as db:
+            service = DesktopAuthService(db, self.settings)
+            await service.link_request_confirmation(
+                link_request_id=rid, telegram_id=1001, platform="pwa",
+            )
+            await service.cancel_link_request(
+                link_request_id=rid, telegram_id=1001, platform="pwa",
+            )
+        denied = await self.client.post(
+            "/api/v3/pwa-auth/telegram/claim",
+            headers={"Origin": ORIGIN}, json={"link_request_id": rid},
+        )
+        self.assertEqual(denied.status_code, 401, denied.text)
+        self.assertEqual(denied.json()["error"], "pwa_telegram_not_approved")
+        script = (Path("app/static") / "iphone-pwa-login.js").read_text(encoding="utf-8")
+        self.assertIn('error.message === "pwa_telegram_not_approved"', script)
+        self.assertIn('"desktopAuth.cancelled"', script)
+
     async def test_telegram_pwa_and_android_bot_approvals_are_isolated(self):
         started = await self.client.post(
             "/api/v3/pwa-auth/telegram/start",
