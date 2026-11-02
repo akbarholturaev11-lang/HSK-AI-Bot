@@ -425,6 +425,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("if (!terminal)", script)
         self.assertIn("the next poll can still claim it.", script)
         self.assertIn("telegramClaimInFlight = false", script)
+        self.assertIn("function pendingTelegramId()", script)
+        self.assertIn("catch (_) { return null; }", script)
+        self.assertNotIn("const linkId = sessionStorage.getItem(", script)
 
     async def test_existing_telegram_owner_retained_and_logout_is_csrf_protected(self):
         state = await self.begin()
