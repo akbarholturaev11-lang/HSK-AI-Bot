@@ -1,0 +1,30 @@
+name: Temporary Android login localization generator check
+on:
+  push:
+    branches: [feat/iphone-pwa-browser-auth-p1-20261102]
+    paths:
+      - ".github/workflows/pwa-login-i18n-sync-temp.yml"
+      - "localization/ui/**/common.json"
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Generate all canonical local-first resources without committing
+        run: |
+          set -euo pipefail
+          python scripts/i18n_build_all_catalogs.py --write
+          python scripts/i18n_build_all_catalogs.py --check
+          echo "Updated artifacts, for mandatory diff inspection:"
+          git diff --stat
+          git diff --name-only
+          if git diff --name-only | grep -Ev '^(app/static/course_v3_data/hsk-common-i18n.js|desktop/ui/js/generated/hsk-common-i18n.js|app/bot/generated/common_i18n.py|android/app/src/main/res/values(-ru|-tg)?/hsk_common_i18n.xml|app/static/(course-v3.html|course_v3_.*.html|desktop-download.html|hsk-gaplar.html|hsk-lugat.html|subscription.html)|localization/baselines/reviewed_ui_changes.json)$'; then
+            echo "Unexpected artifact mutation" >&2
+            exit 1
+          fi
