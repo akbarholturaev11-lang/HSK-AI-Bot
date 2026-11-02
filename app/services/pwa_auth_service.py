@@ -12,7 +12,7 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from app.db.models.user import User
@@ -103,6 +103,7 @@ class PwaAuthService:
 
     async def claim_telegram(
         self, *, request_id: str, proof: str | None,
+        replace_cookie: str | None = None,
     ) -> tuple[str, str | None]:
         """Status polling never issues native tokens and accepts no URL-only proof.
 
@@ -148,9 +149,11 @@ class PwaAuthService:
             or int(user.telegram_id or 0) != int(row.approved_telegram_id)
         ):
             raise PwaAuthError("pwa_telegram_owner_invalid", status_code=403)
-        return "complete", await self._mint_session(user, row)
+        return "complete", await self._mint_session(user, row, replace_cookie=replace_cookie)
 
-    async def _mint_session(self, user: User, row: DesktopLinkRequest) -> str:
+    async def _mint_session(
+        self, user: User, row: DesktopLinkRequest, *, replace_cookie: str | None = None,
+    ) -> str:
         device = DesktopDevice(
             id=str(uuid4()), user_id=user.id,
             telegram_id=user.telegram_id,
@@ -166,6 +169,24 @@ class PwaAuthService:
             expires_at=_now() + timedelta(seconds=PWA_SESSION_AGE_SECONDS),
             last_seen_at=_now(),
         ))
+        # Replace only this browser's previous PWA session. Never revoke other
+        # installed/browser sessions, Telegram, Android, or Desktop sessions.
+        # Do it in the same transaction as the newly minted session.
+        if isinstance(replace_cookie, str) and 32 <= len(replace_cookie) <= 200:
+            await self.session.execute(
+                update(DesktopSession)
+                .where(
+                    DesktopSession.refresh_token_hash
+                    == self.desktop._hash("pwa-cookie", replace_cookie),
+                    DesktopSession.device_id.in_(
+                        select(DesktopDevice.id).where(
+                            DesktopDevice.platform == PWA_PLATFORM
+                        )
+                    ),
+                    DesktopSession.revoked_at.is_(None),
+                )
+                .values(revoked_at=_now())
+            )
         row.status = "consumed"
         row.consumed_at = _now()
         await self.session.commit()
@@ -210,7 +231,10 @@ class PwaAuthService:
             raise PwaAuthError("pwa_oauth_proof_invalid")
         return True
 
-    async def consume_callback(self, *, provider: str, state: str, proof: str | None) -> str:
+    async def consume_callback(
+        self, *, provider: str, state: str, proof: str | None,
+        replace_cookie: str | None = None,
+    ) -> str:
         require_pwa_enabled(self.settings)
         row = await self._verified_row(provider=provider, state=state, proof=proof or "", lock=True)
         if row.status != "approved" or row.consumed_at is not None or not row.approved_user_id:
@@ -230,7 +254,7 @@ class PwaAuthService:
         if owner_identity is None:
             raise PwaAuthError("pwa_identity_unavailable")
 
-        return await self._mint_session(user, row)
+        return await self._mint_session(user, row, replace_cookie=replace_cookie)
 
     async def actor(self, cookie: str | None):
         require_pwa_enabled(self.settings)
