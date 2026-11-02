@@ -600,6 +600,10 @@ def create_miniapp_entitlements_router(
     async def pwa_course_lesson_start(request: Request):
         try:
             require_same_origin(request, settings_obj)
+            if request.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
+                return _private_content_response(
+                    {"ok": False, "error": "invalid_lesson_payload"}, status_code=415,
+                )
             body = bytearray()
             async for chunk in request.stream():
                 body.extend(chunk)
@@ -631,7 +635,7 @@ def create_miniapp_entitlements_router(
                     {"ok": False, "error": exc.code}, status_code=exc.status_code,
                 )
             user = await UserRepository(session).get_by_user_id(actor.id, lock=True)
-            if not user:
+            if not user or str(user.status or "").strip().lower() == "blocked":
                 return _private_content_response(
                     {"ok": False, "error": "pwa_session_required"}, status_code=401,
                 )
