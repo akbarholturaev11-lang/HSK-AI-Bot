@@ -128,6 +128,10 @@ if (typeof window !== "undefined") {
   "navigation.profile": "Profil",
   "navigation.rating": "Reyting",
   "navigation.subscription": "Obuna",
+  "pwaAuth.choose": "Kirish yoki yangi hisob ochish usulini tanlang",
+  "pwaAuth.tagline": "Yaxshiroq kelajak — bilim bilan",
+  "pwaAuth.telegramPending": "PWA’da Telegram orqali kirish hozircha mavjud emas. Avval botda Google yoki Apple hisobingizni ulang.",
+  "pwaAuth.welcome": "Xush kelibsiz",
   "state.loading": "Yuklanmoqda…"
 }),
   "ru": Object.freeze({
@@ -256,6 +260,10 @@ if (typeof window !== "undefined") {
   "navigation.profile": "Профиль",
   "navigation.rating": "Рейтинг",
   "navigation.subscription": "Подписка",
+  "pwaAuth.choose": "Выберите способ входа или создания аккаунта",
+  "pwaAuth.tagline": "Лучшее будущее — со знаниями",
+  "pwaAuth.telegramPending": "Вход через Telegram в PWA пока недоступен. Сначала привяжите Google или Apple в боте.",
+  "pwaAuth.welcome": "Добро пожаловать",
   "state.loading": "Загрузка…"
 }),
   "tj": Object.freeze({
@@ -384,6 +392,10 @@ if (typeof window !== "undefined") {
   "navigation.profile": "Профил",
   "navigation.rating": "Рейтинг",
   "navigation.subscription": "Обуна",
+  "pwaAuth.choose": "Усули вуруд ё сохтани ҳисоби навро интихоб кунед",
+  "pwaAuth.tagline": "Ояндаи беҳтар — бо дониш",
+  "pwaAuth.telegramPending": "Воридшавӣ бо Telegram дар PWA ҳоло дастрас нест. Аввал ҳисоби Google ё Apple-ро дар бот пайваст кунед.",
+  "pwaAuth.welcome": "Хуш омадед",
   "state.loading": "Боргирӣ…"
 })
   });

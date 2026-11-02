@@ -128,5 +128,9 @@
     <string name="hsk_common_navigation_profile" formatted="false">Профил</string>
     <string name="hsk_common_navigation_rating" formatted="false">Рейтинг</string>
     <string name="hsk_common_navigation_subscription" formatted="false">Обуна</string>
+    <string name="hsk_common_pwaAuth_choose" formatted="false">Усули вуруд ё сохтани ҳисоби навро интихоб кунед</string>
+    <string name="hsk_common_pwaAuth_tagline" formatted="false">Ояндаи беҳтар — бо дониш</string>
+    <string name="hsk_common_pwaAuth_telegramPending" formatted="false">Воридшавӣ бо Telegram дар PWA ҳоло дастрас нест. Аввал ҳисоби Google ё Apple-ро дар бот пайваст кунед.</string>
+    <string name="hsk_common_pwaAuth_welcome" formatted="false">Хуш омадед</string>
     <string name="hsk_common_state_loading" formatted="false">Боргирӣ…</string>
 </resources>
