@@ -58,6 +58,8 @@ class Settings(BaseSettings):
     # yangilanadi. Default 0 — mahalliy yarim tun.
     COURSE_DAILY_RESET_HOUR_LOCAL: int = 0
     MINI_APP_BASE_URL: str = "https://telegram-chinese-bot-production.up.railway.app/course-v3.html"
+    # Dedicated learner browser OAuth; launch only after iPhone/login security QA.
+    PWA_AUTH_ENABLED: bool = False
 
     # Desktop release controls. Downloads remain hidden unless the flag is on
     # and at least one real, clean-machine-tested HTTPS artifact URL is set.
