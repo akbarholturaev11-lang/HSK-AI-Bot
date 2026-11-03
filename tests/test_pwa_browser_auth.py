@@ -951,7 +951,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 db, 1001, feedback.id,
             )
             self.assertIsNone(rejected)
-            self.assertEqual(rejected_user.id, 1)
+            self.assertIsNone(rejected_user)
             self.assertEqual(
                 (await _locked_telegram_feedback_user(db, 2002)).id, 2
             )

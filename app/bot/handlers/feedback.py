@@ -100,6 +100,8 @@ async def _load_feedback_context(session, telegram_id: int, feedback_id: int):
             BotFeedback.id == feedback_id, BotFeedback.user_id == user.id,
         ).with_for_update().execution_options(populate_existing=True)
     )).scalar_one_or_none()
+    if feedback is None:
+        return feedback_repo, None, None
     return feedback_repo, feedback, user
 
 
