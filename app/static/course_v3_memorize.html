@@ -509,8 +509,7 @@ function gateStart(newAttempt){
   SCRIPTS_READY.then(function(){
     if(preparing&&ref===ATTEMPT_REF)B.innerHTML=HSKStudyPreparing.render(LANG);
   });
-  Promise.all([LV_READY,runGate(ref)]).then(function(result){
-    var o=result[1];
+  LV_READY.then(function(){return runGate(ref)}).then(function(o){
     preparing=false;
     if(ref!==ATTEMPT_REF)return;
     if(o.status===403){showLimit(o.j);return}boot();
