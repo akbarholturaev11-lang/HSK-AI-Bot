@@ -5,6 +5,13 @@
 
 ## 0. Restart snapshot — 2026-11-03 (authoritative; all historical notes below are snapshots)
 
+### Continued implementation — Admin QR status race (2026-11-03; still WIP)
+
+- Reconfirmed `main=400ddb084b4c1d30510960caf6dbe5ae4e7a46fa`, planning HEAD initially `374cf069a114bd93573d996acb7d33648d7d24b7`, and implementation HEAD initially `648a74b9fd31ee3ef2c67c2e9847821868672498`; both #256/#257 open Draft. Latest exact 648a74b9 CI: 5 PASS, Admin PWA FAIL, Android and Smart Reminder in progress. Read the **new commit's** runs separately.
+- Admin fail root cause source-inspected: `app/static/admin-pwa/app.js::uploadPriceQrInline` displayed `paymentQrSet` immediately after HTTP save but before the `finally` block cleared `priceQrBusy` and `refreshPriceQrStatus()` re-read exact scope/price. The E2E waited on this premature label, then changed the second input while the upload handler could still reject changes as busy. Observed failure: `tests/e2e/admin_pwa_settings_browser.py:419`, 63 ¥ remained `O‘rnatilmagan`. This is a frontend race, not evidence to waive the real backend QR assertion.
+- **Feature branch only** commit `38e3c1711764cd72ee46a3c054c9e94a5fb09209` removed the optimistic installed label. Only the existing server-confirmed `refreshPriceQrStatus` can now display it after the handler releases its lock. No payment contract, Admin auth/proof, QR storage, localized text, or test assertion was weakened. The existing real ASGI/virtual WebAuthn browser QR E2E exercises two signed uploads; **new HEAD CI is not yet verified green**.
+- Next: inspect exact `38e3c171` workflow CI and browser E2E before claiming repair; check Android and Smart Reminder final outcomes from their own exact 648a74b9 runs, audit independent Smart `main` changes before considering branch-only sync; continue P1–P3 with Figma gate and no new UI invented. Keep #256/#257 Draft, backup intact, feature flag OFF, no main push/deploy/merge, physical iPhone QA last.
+
 **USER REQUEST AT HANDOFF:** Tidy up the GitHub PWA work, update this sole active context, and continue implementation from a new chat. This update documents and organizes the existing GitHub work only; it does **not** mean PWA is finished or released. Read this section first, then the exact OpenSpec checklist and original detailed analysis below. Never create a second PWA context file.
 
 ### GitHub roles, verified branches, release lock
