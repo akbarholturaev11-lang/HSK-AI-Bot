@@ -122,6 +122,25 @@ class IdentitiesViewModelTest {
 
     }
 
+    @Test fun failedHandoffCancelsOnlyTheCurrentLinkAndAllowsRetry() = runTest(dispatcher) {
+        val f = Fixture(false, listOf("google"))
+        f.load(); runCurrent()
+        f.model.connect(AuthProvider.TELEGRAM, null); runCurrent()
+        val oldUrl = requireNotNull(f.model.state.value.pendingBrowserUrl)
+        f.model.externalLaunchFailed(oldUrl); runCurrent()
+        assertEquals(ApiError.ProviderUnavailable, f.model.state.value.error)
+        assertNull(f.model.state.value.busyProvider)
+        assertNull(f.model.state.value.pendingBrowserUrl)
+        assertEquals(1, f.linkCancels)
+        val polls = f.linkPolls
+        advanceTimeBy(4_000); runCurrent()
+        assertEquals(polls, f.linkPolls)
+        f.model.connect(AuthProvider.APPLE, null); runCurrent()
+        f.model.externalLaunchFailed(oldUrl)
+        assertEquals(AuthProvider.APPLE, f.model.state.value.busyProvider)
+        f.model.cancelConnection(); runCurrent()
+    }
+
     @Test fun promosWaitForAnAuthoritativeReadAndHideAgainAfterARefreshFailure() = runTest(dispatcher) {
         val f = Fixture(false, listOf("google"))
         assertFalse(f.model.state.value.hasLoaded)

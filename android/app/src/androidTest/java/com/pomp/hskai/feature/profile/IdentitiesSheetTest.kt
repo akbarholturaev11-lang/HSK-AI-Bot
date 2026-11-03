@@ -1,5 +1,8 @@
 package com.pomp.hskai.feature.profile
 
+import android.content.ActivityNotFoundException
+import android.os.Bundle
+import android.content.Context
 import android.app.Activity
 import android.content.ContextWrapper
 import android.content.Intent
@@ -35,6 +38,33 @@ import org.junit.runner.RunWith
 class IdentitiesSheetTest {
     @get:Rule val compose = createComposeRule()
     private val strings = InstrumentationRegistry.getInstrumentation().targetContext.resources
+
+    @Test fun failedGoogleHandoffNeverConsumesTheUrlAsOpened() = failedHandoff(AuthProvider.GOOGLE)
+    @Test fun failedTelegramHandoffNeverConsumesTheUrlAsOpened() = failedHandoff(AuthProvider.TELEGRAM)
+
+    private fun failedHandoff(provider: AuthProvider) {
+        val url = if (provider == AuthProvider.TELEGRAM)
+            "https://t.me/HSKAI_bot?start=tg_identity_3f2504e0-4f89-11d3-9a0c-0305e82c3301"
+        else "https://accounts.google.com/o/oauth2/v2/auth?client_id=test"
+        var opened = 0
+        val failures = mutableListOf<String>()
+        compose.setContent {
+            val base = LocalContext.current
+            val failing = object : ContextWrapper(base) {
+                override fun startActivity(intent: Intent) { throw ActivityNotFoundException("Synthetic missing provider") }
+                override fun startActivity(intent: Intent, options: Bundle?) { throw ActivityNotFoundException("Synthetic missing provider") }
+            }
+            CompositionLocalProvider(LocalContext provides failing) {
+                PompHskAiTheme {
+                    IdentitiesSheet(state = IdentitiesUiState(busyProvider = provider, pendingBrowserUrl = url),
+                        profile = null, savingProfile = false, onSaveProfile = { _, _ -> },
+                        onConnect = { _, _ -> }, onDisconnect = {}, onBrowserUrlOpened = { opened++ },
+                        onDismiss = {}, onExternalLaunchFailed = failures::add)
+                }
+            }
+        }
+        compose.runOnIdle { assertEquals(0, opened); assertEquals(listOf(url), failures) }
+    }
 
     @Test fun browserProviderButtonRetainsTheActivityInsideNestedThemeContexts() {
         var selected: Activity? = null

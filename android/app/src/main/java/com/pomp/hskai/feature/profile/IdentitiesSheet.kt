@@ -1,10 +1,6 @@
 package com.pomp.hskai.feature.profile
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -60,6 +56,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pomp.hskai.feature.auth.openCustomTab
+import com.pomp.hskai.feature.auth.openTelegram
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.AuthProvider
 import com.pomp.hskai.core.auth.authActivity
@@ -88,6 +86,7 @@ fun IdentitiesSheet(
     onCancelConnection: () -> Unit = {},
     onReopenTelegram: () -> Unit = {},
     profileError: ApiError? = null,
+    onExternalLaunchFailed: (String) -> Unit = {},
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val context = LocalContext.current
@@ -101,10 +100,10 @@ fun IdentitiesSheet(
 
     LaunchedEffect(state.pendingBrowserUrl) {
         state.pendingBrowserUrl?.takeIf { it.isNotEmpty() }?.let {
-            if (state.busyProvider != AuthProvider.TELEGRAM || isTelegramIdentityLinkUrl(it)) {
-                openProviderTab(context, it)
-            }
-            onBrowserUrlOpened()
+            val opened = if (state.busyProvider == AuthProvider.TELEGRAM) {
+                isTelegramIdentityLinkUrl(it) && openTelegram(context, it)
+            } else openCustomTab(context, it)
+            if (opened) onBrowserUrlOpened() else onExternalLaunchFailed(it)
         }
     }
 
@@ -306,11 +305,4 @@ private fun profileAvatarDrawable(key: String): Int = when (key) {
     "panda_streak" -> R.drawable.widget_panda_streak
     "panda_worried" -> R.drawable.widget_panda_worried
     else -> R.drawable.widget_panda_cheer
-}
-
-private fun openProviderTab(context: Context, url: String) {
-    if (!url.startsWith("https://")) return
-    val intent = CustomTabsIntent.Builder().setShowTitle(true).build()
-    intent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    runCatching { intent.launchUrl(context, Uri.parse(url)) }
 }
