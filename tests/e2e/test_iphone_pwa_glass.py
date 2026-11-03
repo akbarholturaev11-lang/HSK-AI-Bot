@@ -187,3 +187,40 @@ def test_release_feedback_low_rating_requires_comment_and_csrf():
         }
         assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
         browser.close()
+
+
+def test_rejected_payment_never_interrupts_feedback():
+    """The important receipt cannot steal focus from a visible feedback dialog."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width": 320, "height": 568},
+            device_scale_factor=2, is_mobile=True, has_touch=True,
+        )
+        bootstrap(
+            page,
+            account={"ok": True, "notices": [], "payment_action": {
+                "payment_id": 91,
+                "status": "rejected",
+                "plan_type": "1_month",
+                "reviewed_at": "2026-11-03T13:00:00+00:00",
+            }},
+            release=[{"campaign_id": 19, "title": "Yangi kurs", "message_text": "Sinang"}],
+        )
+        page.evaluate("window.HskPwaFeedback.open()")
+        card = page.locator("#hsk-pwa-feedback-root .hsk-pwa-feedback-card")
+        assert card.is_visible()
+        page.locator(".hsk-pwa-feedback-field textarea").focus()
+        page.evaluate("window.dispatchEvent(new Event('load'))")
+        page.wait_for_timeout(2300)
+        assert card.is_visible()
+        assert not page.locator("#hsk-pwa-notice-root").is_visible()
+        assert page.evaluate(
+            "document.activeElement === document.querySelector('#hsk-pwa-feedback-root textarea')"
+        ), "payment recheck must not take keyboard focus"
+        page.locator(".hsk-pwa-feedback-close").click()
+        page.wait_for_timeout(1400)
+        assert not page.locator("#hsk-pwa-notice-root").is_visible(), (
+            "closing feedback must not reveal a queued surprise payment dialog"
+        )
+        browser.close()
