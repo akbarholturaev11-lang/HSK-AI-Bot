@@ -7506,7 +7506,7 @@ var RECOG=(function(){
   function close(){closeSection();App.show("mashq")}
 
   function showLimit(adAvailable){
-    if(window.CourseAds&&CourseAds.showLimitPromo){
+    if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
       CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||"",onSubscribe:premium,onTrial:function(){trialStart("paywall_practice")},onBack:close});return;
     }
     var t=L();
@@ -7674,7 +7674,7 @@ var PRON=(function(){
   function close(){releaseMic();closeSection();App.show("mashq")}
 
   function showLimit(adAvailable){
-    if(window.CourseAds&&CourseAds.showLimitPromo){
+    if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
       CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||"",onSubscribe:premium,onTrial:function(){trialStart("paywall_practice")},onBack:close});return;
     }
     var t=L(),d=el("pr-done");if(!d)return;
