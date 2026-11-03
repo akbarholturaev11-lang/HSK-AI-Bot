@@ -1,4 +1,4 @@
-"""Internal, read-only adapter for the unused Smart shadow policy.
+"""Internal, read-only evidence for Smart policy and observed rules.
 
 Call inside a caller-owned transaction with an already verified P1 actor.
 No public route, background job, consent import, plan initialization or send.
@@ -6,7 +6,7 @@ The observation window is explicit; missing receipts never prove inactivity.
 """
 import json
 import re
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from datetime import datetime, time, timedelta, timezone
 from types import SimpleNamespace
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
@@ -116,6 +116,30 @@ class ScoredActivityEvidence:
     coverage_limits: tuple[str, ...] = (
         "reviewed_server_activity_sources_only", "partial_practice_and_voice_unavailable",
     )
+
+
+@dataclass(frozen=True)
+class ObservedLearning:
+    """Owned positive observations, never a complete absence/failure feed."""
+    user_id: int
+    history_since: datetime
+    observed_at: datetime
+    latest_activity_at: datetime | None = None
+    coverage_limits: tuple[str, ...] = ('observed_sources_only',)
+    source_version: str = field(default='smart-observed-learning-v1', init=False)
+
+    def __post_init__(self):
+        if (type(self.user_id) is not int or self.user_id <= 0 or
+                _aware_utc(self.history_since) > _aware_utc(self.observed_at) or
+                self.latest_activity_at is not None and not _aware_utc(self.history_since) <=
+                    _aware_utc(self.latest_activity_at) <= _aware_utc(self.observed_at) or
+                not isinstance(self.coverage_limits, tuple) or
+                any(not isinstance(v, str) or not v for v in self.coverage_limits)):
+            raise ValueError('Owned bounded positive learning observations required')
+
+    @property
+    def limited(self):
+        return any(value.endswith('_over_limit') for value in self.coverage_limits)
 
 
 def _scored_pair(payload, key):
@@ -253,6 +277,28 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
                     type(voice.turn_count) is int and voice.turn_count > 0):
                 times.add(_utc(voice.ended_at))
     return ScoredActivityEvidence(tuple(sorted(times)), tuple(sorted(limits)))
+
+
+async def read_observed_learning(session, actor, history_since, observed_at):
+    """Current canonical positive XP/scored activity under P1, with zero writes.
+
+    Reuses reviewed source validation; no new traces, scores/transcripts in the
+    result, negative completeness, fresh unit or notification authority.
+    """
+    since, now = _aware_utc(history_since), _aware_utc(observed_at)
+    if since > now: raise ValueError('Learning observation window is invalid')
+    with session.no_autoflush:
+        await SmartReminderPreferencesService(session)._lock(actor)
+        scored = await read_scored_activity(session, actor.user_id, level=None,
+            history_since=since, observed_at=now)
+        xp = (await session.scalars(select(CourseXpEvent.created_at).where(
+            CourseXpEvent.user_id == actor.user_id, CourseXpEvent.activity_type.in_(LEARNING_ACTIVITY_TYPES),
+            CourseXpEvent.xp > 0, CourseXpEvent.created_at >= since, CourseXpEvent.created_at <= now)
+            .order_by(CourseXpEvent.created_at.desc(), CourseXpEvent.id.desc()).limit(MAX_POLICY_ROWS + 1))).all()
+        limits = set(scored.coverage_limits) | {'observed_sources_only'}
+        if len(xp) > MAX_POLICY_ROWS: limits.add('observed_xp_over_limit')
+        times = (*scored.times, *(_utc(value) for value in xp[:MAX_POLICY_ROWS]))
+        return ObservedLearning(actor.user_id, since, now, max(times) if times else None, tuple(sorted(limits)))
 
 
 async def read_verified_learning(session, user_id, *, level, history_since, observed_at, evidence_at=None):

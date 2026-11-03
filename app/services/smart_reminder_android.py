@@ -29,7 +29,7 @@ from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, _awar
 from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
 from app.services.smart_reminder_preferences import MAX_REVISION, SmartReminderError, SmartReminderPreferencesService, _utc
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION, SmartReminderShadowQueue
-from app.services.smart_reminder_telegram import LearningCoverage, _android_inventory, _android_binding, _read_routing
+from app.services.smart_reminder_telegram import _android_inventory, _android_binding, _read_routing, _with_learning
 
 GRANT = SmartReminderAndroidGrant.__table__
 CAP = SmartReminderCapability.__table__
@@ -298,14 +298,14 @@ class SmartReminderAndroidService:
             observed_at=self._now(), history_since=review.history_since, expected_level=row["course_key"], personal_time=True)
         observed = self._now()
         coverage = await self.coverage_reader(self.session, actor, review.history_since, observed)
-        if (not isinstance(coverage, LearningCoverage) or coverage.user_id != actor.user_id or
-                _aware_utc(coverage.observed_at) != observed):
+        snapshot = _with_learning(snapshot, coverage, actor, review.history_since, observed, self.calibration)
+        if snapshot is None:
             return None, denied("learning_coverage_unavailable")
         now = self._now()
         context = replace(context, observed_at=now)
         cadence = evaluate_cadence(replace(snapshot, policy=replace(snapshot.policy, observed_at=now),
-            intents=tuple(j for j in snapshot.intents if j.job_id != row["id"]),
-            learning_complete_since=coverage.complete_since), calibration=self.calibration, habit_calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
+            intents=tuple(j for j in snapshot.intents if j.job_id != row["id"])),
+            calibration=self.calibration, habit_calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
         final = evaluate(context, calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
         if not final.candidate: return None, await self._cancel(row, final.reason)
         if cadence.reason != "shadow_candidate": return None, await self._cancel(row, cadence.reason)
