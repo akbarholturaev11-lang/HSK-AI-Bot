@@ -746,6 +746,9 @@ private fun AppRoot(
             var ratingChallengesOpen by rememberSaveable { mutableStateOf(false) }
             var ratingUserOpen by remember { mutableStateOf<RatingEntryDto?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
+            // This flag is only valid while Profile is mounted. Do not restore it
+            // if Activity recreation returns to the Course tab instead.
+            var profileSettingsOpen by remember { mutableStateOf(false) }
             val bugReportRootView = LocalView.current
             // Start the sensor only after the saved preference has loaded, so a
             // previously disabled gesture cannot briefly activate at app startup.
@@ -1424,7 +1427,8 @@ private fun AppRoot(
                                 else -> selectedTab = it
                             }
                         },
-                        bottomBarVisible = !voiceCallActive && !practiceImmersive,
+                        bottomBarVisible = !voiceCallActive && !practiceImmersive &&
+                            !(selectedTab == MainTab.PROFILE && profileSettingsOpen),
                         topNotice = reconnect?.let { retry ->
                             { OfflineBanner(retrying = retry.retrying, onRetry = retry::retryNow) }
                         },
@@ -1583,6 +1587,7 @@ private fun AppRoot(
                                 onOpenSupport = { url -> openExternal(context, url) },
                                 onReportProblem = openBugReport,
                                 reportVisible = bugReportOpen || bugReportIntroVisible,
+                                onSettingsVisibilityChange = { profileSettingsOpen = it },
                                 onRefresh = {
                                     profileViewModel.load()
                                     courseViewModel.load()
