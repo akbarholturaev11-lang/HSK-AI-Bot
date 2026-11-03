@@ -554,9 +554,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             )
             wrong_band = await self.client.get(path)
             self.assertEqual(wrong_band.json()["completed_lessons"], 0)
-        self.assertEqual((await self.client.get(
-            "/api/voice-practice/me?initData="
-        )).status_code, 401)
+        # The legacy Telegram-only API is not mounted in this isolated
+        # router fixture, so it cannot be used to establish browser identity.
+        self.assertNotIn("telegram_id", response.json())
 
     def test_recognition_browser_requests_keep_server_quota_and_telegram_isolation(self):
         source = (Path("app/static") / "course_v3_recognition.html").read_text(encoding="utf-8")
