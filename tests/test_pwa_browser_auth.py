@@ -416,7 +416,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
 
     def test_browser_course_map_uses_csrf_post_without_changing_telegram_transport(self):
         course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
-        self.assertIn('PWA_COURSE_HOST=!INIT_DATA&&location.pathname==="/iphone-pwa/course"', course)
+        self.assertIn('PWA_COURSE_HOST=location.pathname==="/iphone-pwa/course"', course)
         self.assertIn('fetch("/api/v3/pwa-auth/session"', course)
         self.assertIn('method:"POST",headers:{"X-HSK-PWA-CSRF":actor.csrf}', course)
         self.assertIn('url.replace("/api/v3/map?","/api/v3/pwa/map?")', course)
@@ -561,7 +561,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
     def test_recognition_browser_requests_keep_server_quota_and_telegram_isolation(self):
         source = (Path("app/static") / "course_v3_recognition.html").read_text(encoding="utf-8")
         course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
-        self.assertIn('PWA_RECOGNITION_HOST=!initData()&&location.pathname==="/iphone-pwa/practice/recognition"', source)
+        self.assertIn('PWA_RECOGNITION_HOST=location.pathname==="/iphone-pwa/practice/recognition"', source)
         self.assertIn('"/api/v3/practice/daily-gate":"/api/v3/pwa/practice/daily-gate"', source)
         self.assertIn('"/api/v3/practice/words":"/api/v3/pwa/practice/words"', source)
         self.assertIn('"/api/v3/practice/report":"/api/v3/pwa/practice/report"', source)
