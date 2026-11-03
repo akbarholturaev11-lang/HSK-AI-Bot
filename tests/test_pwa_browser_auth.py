@@ -864,6 +864,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                     ))
                 with Operations.context(MigrationContext.configure(conn)):
                     revision.upgrade()
+                    revision.upgrade()  # Empty/latest QA and real legacy both supported
                 self.assertTrue(sa.inspect(conn).get_columns("bot_feedbacks"))
                 for table in ("release_feedback_deliveries", "release_feedback_responses"):
                     self.assertEqual(
@@ -889,6 +890,36 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                     "SELECT COUNT(*) FROM release_feedback_responses "
                     "WHERE user_telegram_id IS NULL"
                 )).scalar_one(), 2)
+        finally:
+            engine.dispose()
+
+    def test_0146_feedback_migration_accepts_empty_latest_orm_qa_baseline(self):
+        """The QA bootstrap uses latest empty ORM tables, not old 0145 DDL."""
+        import importlib.util
+        from alembic.migration import MigrationContext
+        from alembic.operations import Operations
+
+        path = Path("alembic/versions/0146_pwa_feedback_owner.py")
+        spec = importlib.util.spec_from_file_location("test_0146_current", path)
+        revision = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(revision)
+
+        engine = sa.create_engine("sqlite:///:memory:")
+        try:
+            with engine.begin() as conn:
+                # Register metadata in the existing module-level Base.
+                Base.metadata.create_all(conn)
+                with Operations.context(MigrationContext.configure(conn)):
+                    revision.upgrade()
+                    revision.upgrade()
+                for table in ("release_feedback_deliveries", "release_feedback_responses"):
+                    columns = {c["name"]: c for c in sa.inspect(conn).get_columns(table)}
+                    self.assertTrue(columns["user_telegram_id"]["nullable"])
+                    self.assertIn("user_id", columns)
+                    constraints = {item["name"] for item in sa.inspect(conn).get_unique_constraints(table)}
+                    self.assertIn(f"uq_{table}_campaign_account", constraints)
+                    indexes = {item["name"] for item in sa.inspect(conn).get_indexes(table)}
+                    self.assertIn(f"ix_{table}_user_id", indexes)
         finally:
             engine.dispose()
 
