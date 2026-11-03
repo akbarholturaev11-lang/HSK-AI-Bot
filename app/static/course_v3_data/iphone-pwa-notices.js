@@ -14,9 +14,9 @@
       '<div class="hsk-pwa-notice-head"><h2 id="hsk-pwa-notice-title"></h2>' +
         '<button type="button" class="hsk-pwa-close" data-pwa-close aria-label="Close">×</button></div>' +
       '<div class="hsk-pwa-notice-tabs" role="tablist">' +
-        '<button type="button" id="hsk-pwa-tab-course" role="tab" data-pwa-tab="course"></button>' +
-        '<button type="button" id="hsk-pwa-tab-account" role="tab" data-pwa-tab="account"></button></div>' +
-      '<div class="hsk-pwa-notice-list" id="hsk-pwa-notice-list" role="tabpanel"></div>' +
+      '<button type="button" id="hsk-pwa-tab-course" role="tab" data-pwa-tab="course" aria-controls="hsk-pwa-notice-list"></button>' +
+      '<button type="button" id="hsk-pwa-tab-account" role="tab" data-pwa-tab="account" aria-controls="hsk-pwa-notice-list"></button></div>' +
+      '<div class="hsk-pwa-notice-list" id="hsk-pwa-notice-list" role="tabpanel" tabindex="0"></div>' +
       '<div class="hsk-pwa-notice-urgent" hidden>' +
         '<div class="hsk-pwa-notice-icon" aria-hidden="true"><i class="ti ti-credit-card-off"></i></div>' +
         '<h2 id="hsk-pwa-urgent-title"></h2>' +
@@ -164,6 +164,8 @@
       tab.setAttribute("aria-selected", String(activeTab === kind));
       tab.tabIndex = activeTab === kind ? 0 : -1;
     });
+    list.setAttribute("aria-labelledby", activeTab === "account"
+      ? "hsk-pwa-tab-account" : "hsk-pwa-tab-course");
     list.replaceChildren();
     if (!latestData) {
       var loading = document.createElement("p");
@@ -310,6 +312,21 @@
       markDismissed();
       location.assign(checkoutPath());
     }
+  });
+  tabs.addEventListener("keydown", function (ev) {
+    if (["ArrowLeft", "ArrowRight", "Home", "End"].indexOf(ev.key) < 0) return;
+    var order = ["course", "account"];
+    var current = ev.target.closest("[data-pwa-tab]");
+    var selected = current ? current.dataset.pwaTab : activeTab;
+    var index = Math.max(0, order.indexOf(selected));
+    if (ev.key === "Home") index = 0;
+    else if (ev.key === "End") index = order.length - 1;
+    else if (ev.key === "ArrowRight") index = (index + 1) % order.length;
+    else index = (index + order.length - 1) % order.length;
+    ev.preventDefault();
+    activeTab = order[index];
+    render();
+    overlay.querySelector('[data-pwa-tab="' + activeTab + '"]').focus();
   });
   document.addEventListener("keydown", function (ev) {
     if (overlay.hidden) return;

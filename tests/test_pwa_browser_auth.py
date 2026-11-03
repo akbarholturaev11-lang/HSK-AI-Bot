@@ -3543,6 +3543,26 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
         self.assertEqual(ok.status_code, 200, ok.text)
         self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
 
+    async def test_existing_pwa_settings_expose_localized_csrf_logout_for_account_switch(self):
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        logout_action = course[
+            course.index("logoutPwa:function()") : course.index("openSocial:function(")
+        ]
+        logout_row = course[
+            course.index("function pwaLogoutSettingsRowHtml()") : course.index("function settingsSheetHtml()")
+        ]
+        self.assertIn('if(!PWA_COURSE_HOST)return "";', logout_row)
+        self.assertIn('+pwaLogoutSettingsRowHtml()', course)
+        self.assertIn('onclick="App.logoutPwa()"', logout_row)
+        self.assertIn('fetch("/api/v3/pwa-auth/logout"', logout_action)
+        self.assertIn('headers:{"X-HSK-PWA-CSRF":actor.csrf}', logout_action)
+        self.assertIn('location.replace("/iphone-pwa?lang="+encodeURIComponent(LANG))', logout_action)
+        for locale in ("uz", "ru", "tj"):
+            messages = json.loads(
+                Path(f"localization/ui/{locale}/common.json").read_text(encoding="utf-8")
+            )["messages"]
+            self.assertTrue(messages.get("action.logout"))
+
     async def test_provider_login_clears_unfinished_telegram_browser_proof(self):
         telegram_start = await self.client.post(
             "/api/v3/pwa-auth/telegram/start",

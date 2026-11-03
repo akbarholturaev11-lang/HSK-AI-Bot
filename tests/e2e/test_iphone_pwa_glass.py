@@ -120,6 +120,16 @@ def test_real_browser_inbox_glass_and_safe_width(width, height):
             "getComputedStyle(node).webkitBackdropFilter"
         )
         assert "blur(" in blur, "actual optical glass not applied"
+        course_tab = page.locator('[data-pwa-tab="course"]')
+        account_tab = page.locator('[data-pwa-tab="account"]')
+        course_tab.focus()
+        page.keyboard.press("ArrowRight")
+        assert account_tab.get_attribute("aria-selected") == "true"
+        assert account_tab.evaluate("node => document.activeElement === node")
+        assert page.locator("#hsk-pwa-notice-list").get_attribute("aria-labelledby") == "hsk-pwa-tab-account"
+        page.keyboard.press("ArrowLeft")
+        assert course_tab.get_attribute("aria-selected") == "true"
+        assert page.locator("#hsk-pwa-notice-list").get_attribute("aria-labelledby") == "hsk-pwa-tab-course"
         page.locator('[data-pwa-tab="account"]').click()
         assert page.get_by_text("Hisob xabari").is_visible()
         page.locator(".hsk-pwa-close").click()

@@ -2193,7 +2193,7 @@ if(PWA_COURSE_HOST){
 // An installed browser PWA never becomes a Telegram client, even if an SDK
 // shim injects initData. Identity is exclusively the verified PWA cookie.
 if(PWA_COURSE_HOST)INIT_DATA="";
-var PWA_COURSE_ACTOR_PROMISE=null,PWA_COURSE_USER_ID=null;
+var PWA_COURSE_ACTOR_PROMISE=null,PWA_COURSE_USER_ID=null,PWA_LOGOUT_PENDING=false;
 function pwaCourseActor(){
   if(!PWA_COURSE_HOST)return Promise.reject(new Error("pwa_host_required"));
   if(!PWA_COURSE_ACTOR_PROMISE){
@@ -3131,6 +3131,34 @@ var App={
     if(!COURSE_TRACK_STATE){
       courseTrackStatus(false).then(function(){if(SETTINGS_SHEET)App.openSheet(settingsSheetHtml())}).catch(function(){});
     }
+  },
+  logoutPwa:function(){
+    if(!PWA_COURSE_HOST||PWA_LOGOUT_PENDING)return;
+    PWA_LOGOUT_PENDING=true;
+    var button=document.activeElement;
+    if(button&&button.classList&&button.classList.contains("pwa-logout-row"))button.disabled=true;
+    pwaCourseActor().then(function(actor){
+      return fetch("/api/v3/pwa-auth/logout",{
+        method:"POST",credentials:"same-origin",cache:"no-store",redirect:"error",
+        headers:{"X-HSK-PWA-CSRF":actor.csrf}
+      }).then(function(response){
+        if(response.status===401||response.status===403){location.replace("/iphone-pwa");return null}
+        return response.json().then(function(data){
+          if(!response.ok||!data||data.ok!==true)throw new Error("pwa_logout_failed");
+          return data;
+        });
+      });
+    }).then(function(data){
+      if(!data)return;
+      PWA_COURSE_ACTOR_PROMISE=null;
+      PWA_COURSE_USER_ID=null;
+      try{sessionStorage.removeItem("hskai.pwa.telegram.pending")}catch(e){}
+      location.replace("/iphone-pwa?lang="+encodeURIComponent(LANG));
+    }).catch(function(){
+      PWA_LOGOUT_PENDING=false;
+      if(button&&button.isConnected)button.disabled=false;
+      toast(courseMessage("subscriptionPage.error",serverSaveErrorText()),2200);
+    });
   },
   openSocial:function(id){
     var item=null;
@@ -6998,6 +7026,11 @@ function courseVersionSettingsRowHtml(){
   return '<button class="srow" onclick="App.profileCourseVersionBook()"><i class="ti ti-switch-horizontal"></i> '+esc(t.courseVersion)
     +'<span class="sv">'+esc(track==="hsk30"?t.hsk30:t.hsk20)+' <i class="ti ti-chevron-right"></i></span></button>';
 }
+function pwaLogoutSettingsRowHtml(){
+  if(!PWA_COURSE_HOST)return "";
+  return '<button class="srow pwa-logout-row" type="button" onclick="App.logoutPwa()"><i class="ti ti-logout"></i> '
+    +esc(commonMessage("action.logout",""))+'</button>';
+}
 function settingsSheetHtml(){
   var t=T(),p=pl();
   return '<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(p.settings)+'</div></div>'
@@ -7008,6 +7041,7 @@ function settingsSheetHtml(){
     +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':'')
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
     +signInMethodsRowsHtml()
+    +pwaLogoutSettingsRowHtml()
     +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+courseMessage("help",t.help)+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button>'
     +'</div>'+socialLinksHtml();
 }
