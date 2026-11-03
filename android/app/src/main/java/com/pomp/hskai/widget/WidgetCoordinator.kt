@@ -45,7 +45,7 @@ class WidgetCoordinator(private val app: HskAiApplication, private val eventsApi
     private val bridge by lazy {
         WidgetRefreshBridge(app.widgetStore, app.authRepository::authenticatedSession,
             app.authRepository::withCurrentSession, app.authRepository::invalidateSessionIfCurrent,
-            fetch = { token, epoch, offset -> apiCall { eventsApi.widgetMap("Bearer $token", offset, 1, epoch) } })
+            fetch = { token, epoch, offset -> apiCall { eventsApi.widgetMap("Bearer $token", offset, 2, epoch) } })
     }
 
     suspend fun publish(snapshot: CourseMapSnapshot, epoch: String) {

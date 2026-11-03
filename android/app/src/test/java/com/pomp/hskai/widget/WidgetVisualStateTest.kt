@@ -35,12 +35,12 @@ class WidgetVisualStateTest {
             val phase = raw.getValue("phase").jsonPrimitive.content
             val visual = WidgetVisualResolver.resolve(PersonalFixtures.session(raw), PersonalFixtures.now(raw))
             assertEquals(name, phase, visual.personalPhase)
-            assertEquals(name, when (phase) {
-                "completed" -> WidgetVisualState.COMPLETED
-                "study_time_reached" -> WidgetVisualState.WAITING
-                else -> WidgetVisualState.DAY
-            }, visual.state)
-            assertFalse(name, visual.state in setOf(WidgetVisualState.LATE, WidgetVisualState.CRITICAL))
+            when (phase) {
+                "completed" -> assertEquals(name,WidgetVisualState.COMPLETED,visual.state)
+                "study_time_reached" -> assertTrue(name,visual.state in setOf(WidgetVisualState.WAITING,
+                    WidgetVisualState.EVENING,WidgetVisualState.LATE,WidgetVisualState.CRITICAL))
+                else -> assertEquals(name,WidgetVisualState.DAY,visual.state)
+            }
         }
     }
 

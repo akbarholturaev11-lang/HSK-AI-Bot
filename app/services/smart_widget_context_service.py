@@ -4,7 +4,9 @@ from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 
-from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService, _personal_history_start
+from app.services.smart_reminder_policy_context import (
+    SmartReminderPolicyContextService, _personal_history_start, read_last_observed_learning,
+)
 from app.services.smart_reminder_policy import (
     APPROVED_HABIT_CALIBRATION, _aware_utc,
 )
@@ -39,6 +41,8 @@ class SmartWidgetContextService:
             )
             if context.level != context.expected_level:
                 raise SmartReminderError("course_context_changed", 409)
+            last_observed = (await read_last_observed_learning(self.session, actor, self.clock())
+                             if request.version == 2 else None)
             finished = _aware_utc(self.clock())
             if finished >= authenticated_until:
                 raise SmartReminderError("widget_auth_expired", 401)
@@ -48,6 +52,10 @@ class SmartWidgetContextService:
                 ["smart-widget-context-v1", actor.user_id, actor.device_id, actor.session_id],
                 separators=(",", ":"),
             ).encode()).hexdigest()
-            return project_widget(replace(context, observed_at=finished), request=request,
+            projection = project_widget(replace(context, observed_at=finished), request=request,
                                   binding=binding, valid_until=authenticated_until,
-                                  calibration=APPROVED_HABIT_CALIBRATION).model_dump(mode="json")
+                                  calibration=APPROVED_HABIT_CALIBRATION)
+            if request.version == 2:
+                projection = type(projection).model_validate(
+                    projection.model_dump() | {'last_observed_study_at': last_observed}, strict=True)
+            return projection.model_dump(mode='json')

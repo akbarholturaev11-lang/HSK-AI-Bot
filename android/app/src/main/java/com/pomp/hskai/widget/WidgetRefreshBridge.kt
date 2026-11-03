@@ -21,6 +21,9 @@ internal fun widgetSnapshot(map: CourseMap, fetchedAt: Long, zoneId: String) = W
     foundationRequired = map.foundation?.mustComeFirst == true,
     dailyXp = map.progress.dailyXp,
     goalXp = map.today?.goalXp ?: 0,
+    streakRecordedToday = map.progress.localDate?.let { day ->
+        day == (map.today?.localDay ?: map.progress.localDate) && day in map.progress.weekActivityDates
+    } ?: false,
 )
 
 /** Live passive reads only: no Room replay, consent, notification or learning event. */

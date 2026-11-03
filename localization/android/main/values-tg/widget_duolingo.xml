@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_duo_practice_time">Вақти машқ?</string>
+    <string name="widget_duo_time_practice">Вақти машқ расид!</string>
+    <string name="widget_duo_ready">Ба омӯзиш тайёред?</string>
+    <string name="widget_duo_keep_going">Ҳамин тавр идома диҳед!</string>
+    <string name="widget_duo_three_minutes">3 дақиқа доред?</string>
+    <string name="widget_duo_practice_now">Ҳозир машқ мекунем?</string>
+    <string name="widget_duo_lets_practice">Биёед машқ кунем!</string>
+    <string name="widget_duo_please_practice">Лутфан, машқ кунед!</string>
+    <string name="widget_duo_save_streak">Силсиларо нигоҳ доред!</string>
+    <string name="widget_duo_dont_break">Силсила канда нашавад!</string>
+    <string name="widget_duo_getting_late">Дер шуда истодааст!</string>
+    <string name="widget_duo_last_chance">Имкони охирин!</string>
+    <string name="widget_duo_great_job">Офарин!</string>
+    <string name="widget_duo_done_today">Барои имрӯз басанда!</string>
+    <string name="widget_duo_streak_safe">Силсила нигоҳ дошта шуд!</string>
+    <string name="widget_duo_see_tomorrow">То пагоҳ!</string>
+    <string name="widget_duo_milestone">Силсилаи олӣ!</string>
+</resources>

@@ -22,13 +22,13 @@ POLICY_VERSION = "smart-widget-context-v1"
 
 class WidgetContextRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
-    version: Literal[1]
+    version: Literal[1, 2]
     epoch: str
 
     @field_validator("version", mode="before")
     @classmethod
     def exact_version(cls, value):
-        if type(value) is not int or value != VERSION:
+        if type(value) is not int or value not in (1, 2):
             raise ValueError("Unsupported widget context version")
         return value
 
@@ -132,6 +132,19 @@ class WidgetContext(BaseModel):
         return self
 
 
+class WidgetContextV2(WidgetContext):
+    """Optional positive-history presentation only; v1 shape stays unchanged."""
+    version: Literal[2] = 2
+    policy_version: Literal['smart-widget-context-v2'] = 'smart-widget-context-v2'
+    last_observed_study_at: AwareDatetime | None
+
+    @model_validator(mode='after')
+    def observed_history(self):
+        if self.last_observed_study_at is not None and self.last_observed_study_at > self.generated_at:
+            raise ValueError('Future learning cannot decorate a widget')
+        return self
+
+
 def project_widget(context, *, request, binding, valid_until, calibration=None):
     """A current passive view; notification eligibility never becomes access."""
     now, end = _aware_utc(context.observed_at), _aware_utc(valid_until)
@@ -161,6 +174,7 @@ def project_widget(context, *, request, binding, valid_until, calibration=None):
     if clock and (clock.second or clock.microsecond or clock.tzinfo):
         clock = None
     values = dict(
+        version=request.version, policy_version=f'smart-widget-context-v{request.version}',
         binding=binding, request_epoch=request.epoch, revision=context.revision,
         generated_at=now, valid_until=end, level=context.level,
         track="hsk30" if context.level.startswith("n") else "hsk20",
@@ -176,8 +190,11 @@ def project_widget(context, *, request, binding, valid_until, calibration=None):
         phase="neutral", reason="personal_time_unknown", action="course", lesson_order=None,
         coverage_limits=context.coverage_limits, calibration_version=decision.calibration_version,
     )
+    model = WidgetContextV2 if request.version == 2 else WidgetContext
+    if request.version == 2:
+        values['last_observed_study_at'] = None
     def result(phase, reason, **extra):
-        return WidgetContext(**(values | dict(phase=phase, reason=reason) | extra))
+        return model(**(values | dict(phase=phase, reason=reason) | extra))
     if not valid_course:
         return result("unavailable", "course_context_changed", action="none")
     if not valid_day:
@@ -220,7 +237,10 @@ def widget_cache_reason(payload, *, now, binding, epoch, level, local_day, timez
     The caller supplies CURRENT local bindings, never values read from payload.
     """
     try:
-        view = WidgetContext.model_validate_json(json.dumps(payload), strict=True)
+        if not isinstance(payload, dict):
+            return 'widget_context_invalid'
+        model = WidgetContextV2 if type(payload.get('version')) is int and payload['version'] == 2 else WidgetContext
+        view = model.model_validate_json(json.dumps(payload), strict=True)
     except (ValidationError, ValueError, TypeError, KeyError, ZoneInfoNotFoundError):
         return "widget_context_invalid"
     now = _aware_utc(now)
