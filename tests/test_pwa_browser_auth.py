@@ -359,6 +359,42 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn("user-scalable=no", html)
             self.assertNotIn("maximum-scale=1", html)
 
+    def test_pwa_stays_unsupported_as_smart_reminder_destination(self):
+        """An in-app inbox is not a Smart/Web Push delivery capability."""
+        from app.services.smart_reminder_destination import (
+            Destination, DestinationEvidence, choose_destination,
+        )
+
+        now = datetime.now(timezone.utc)
+        unsupported = choose_destination(
+            user_id=7,
+            destinations=[Destination(7, "pwa")],
+            evidence=DestinationEvidence(),
+            observed_at=now,
+            history_since=now - timedelta(days=7),
+        )
+        self.assertEqual(unsupported.reason, "no_eligible_destination")
+        self.assertIsNone(unsupported.channel)
+        self.assertFalse(unsupported.dispatch_allowed)
+
+        # Even when a valid native endpoint exists, an added PWA candidate
+        # cannot supersede Android or grant posting authority from this chooser.
+        eligible = choose_destination(
+            user_id=7,
+            destinations=[
+                Destination(7, "pwa"),
+                Destination(
+                    7, "android", device_id="device-7",
+                    valid_until=now + timedelta(hours=1),
+                ),
+            ],
+            evidence=DestinationEvidence(),
+            observed_at=now,
+            history_since=now - timedelta(days=7),
+        )
+        self.assertEqual(eligible.channel, "android")
+        self.assertFalse(eligible.dispatch_allowed)
+
     def test_browser_course_and_checkout_keep_standalone_identity_only_on_pwa(self):
         course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
         checkout = (Path("app/static") / "subscription.html").read_text(encoding="utf-8")
