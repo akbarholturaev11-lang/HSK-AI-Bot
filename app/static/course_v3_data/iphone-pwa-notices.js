@@ -236,7 +236,10 @@
   function canInterrupt() {
     if (document.visibilityState === "hidden" || !overlay.hidden) return false;
     // Never obscure lessons, other sheets, onboarding or browser restores.
-    if (document.querySelector("#flow.on,#sheet.on,#paywall.on,#secov.on,#tour.on,#upov.on,#writeov.on,#levelup.on")) return false;
+    if (document.querySelector("#flow.on,#sheet.on,#paywall.on,#secov.on,#tour.on,#upov.on,#writeov.on,#levelup.on,#hsk-pwa-feedback-root:not([hidden])")) return false;
+    // A payment alert must never steal the iOS keyboard or a learner's input focus.
+    if (document.activeElement && typeof document.activeElement.matches === "function" &&
+        document.activeElement.matches('input,textarea,select,[contenteditable="true"]')) return false;
     var splash = document.getElementById("hsk-launch-splash");
     if (splash && !splash.classList.contains("is-done")) return false;
     return true;
