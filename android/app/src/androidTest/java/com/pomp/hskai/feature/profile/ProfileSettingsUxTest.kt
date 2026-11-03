@@ -24,6 +24,7 @@ import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.AuthProvider
@@ -90,6 +91,18 @@ class ProfileSettingsUxTest {
         compose.onNodeWithContentDescription(text(R.string.hsk_common_action_back)).performClick()
         compose.waitUntil(5_000) { !fullScreenSettings }
         compose.onNodeWithTag("profile-settings-surface").assertDoesNotExist()
+    }
+
+    @Test fun systemBackNavigatesSettingsSubpageThenReturnsToProfile() {
+        compose.setContent { PompHskAiTheme { Profile() } }
+        compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).performClick()
+        compose.onNodeWithText(text(R.string.profile_appearance)).performClick()
+        compose.onNodeWithText(text(R.string.profile_theme_dark)).assertIsDisplayed()
+        Espresso.pressBack()
+        compose.onNodeWithText(text(R.string.hsk_course_lang)).assertIsDisplayed()
+        Espresso.pressBack()
+        compose.onNodeWithTag("profile-settings-surface").assertDoesNotExist()
+        compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).assertIsDisplayed()
     }
 
     @Test fun settingsExposePreferencesDirectlyAndBackReturnsToTheSameList() {
