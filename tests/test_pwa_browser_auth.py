@@ -804,6 +804,64 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('if(PWA_TEST_HOST){showEmpty();return}', standalone)
         self.assertIn('if(PWA_COURSE_HOST){showEmpty();return}', inline)
 
+    async def test_pwa_onboarding_uses_canonical_profile_service_and_real_actor(self):
+        page_url = "/iphone-pwa/onboarding"
+        api_url = "/api/v3/pwa/onboarding"
+        self.assertEqual((await self.client.get(
+            page_url, follow_redirects=False,
+        )).status_code, 303)
+        state = await self.begin()
+        await self.callback(state)
+        page = await self.client.get(page_url)
+        self.assertEqual(page.status_code, 200, page.text[:160])
+        self.assertEqual(page.headers.get("x-frame-options"), "DENY")
+        self.assertEqual(page.headers.get("cache-control"), "no-store")
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        payload = {
+            "level": "hsk1", "goal": "hsk_exam", "daily_minutes": 10,
+            "start_mode": "lesson_1", "language": "uz",
+            "timezone_offset_minutes": 480,
+            "activation_variant": "direct_start_v1",
+        }
+        self.assertEqual((await self.client.post(
+            api_url, headers={"Origin": ORIGIN}, json=payload,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            api_url, headers={**headers, "Origin": "https://attacker.example"},
+            json=payload,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            api_url, headers=headers,
+            json={**payload, "telegram_id": 1},
+        )).status_code, 422)
+        with patch(
+            "app.services.course_miniapp_onboarding_service.CourseMiniAppOnboardingService.complete",
+            new_callable=AsyncMock,
+        ) as complete:
+            complete.return_value = {
+                "ok": True, "level": "hsk1", "tab": "course",
+                "lesson": 1, "foundation_required": False,
+            }
+            result = await self.client.post(api_url, headers=headers, json=payload)
+            self.assertEqual(result.status_code, 200, result.text)
+            self.assertEqual(complete.await_args.args[0].id, 1)
+            self.assertEqual(complete.await_args.kwargs["level"], "hsk1")
+            self.assertEqual(complete.await_args.kwargs["language"], "uz")
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.get(page_url)).status_code, 503)
+
+    def test_pwa_original_onboarding_never_fakes_save_or_uses_shared_draft(self):
+        source = (Path("app/static") / "course_v3_onboarding.html").read_text(encoding="utf-8")
+        self.assertIn('PWA_ONBOARDING_HOST=location.pathname==="/iphone-pwa/onboarding"', source)
+        self.assertIn('"/api/v3/pwa/onboarding"', source)
+        self.assertIn('"/api/v3/pwa/onboarding/status?"', source)
+        self.assertIn('"/api/v3/pwa/course-tracks"', source)
+        self.assertIn('if(!INIT_DATA&&!PWA_ONBOARDING_HOST)', source)
+        self.assertIn('if(PWA_ONBOARDING_HOST)return;', source)
+        self.assertIn('"X-HSK-PWA-CSRF":actor.csrf', source)
+        self.assertIn('delete payload.initData;delete payload.user_id;delete payload.telegram_id;', source)
+
     async def test_pwa_recognition_profile_uses_real_owner_level_and_progress(self):
         path = "/api/v3/pwa/practice/profile"
         self.assertEqual((await self.client.get(path)).status_code, 401)
