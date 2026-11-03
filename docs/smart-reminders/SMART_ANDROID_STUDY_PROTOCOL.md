@@ -52,6 +52,22 @@ quoted Boolean/integer authority fields. Existing canonical notification copy
 and fresh-access open behavior are reused. The adapter makes no claim of
 shown/read/learning, actual provider delivery or two-device installed acceptance.
 
+## Shared rule time
+
+Queue reservation/fresh checks and Android/Telegram cadence/final checks use
+the same explicitly approved D16–D18 personal-time calibration as the passive
+widget. The shared reader adds recent 30-calendar-day history and, only when
+needed, the approved 90-day extension; it does not shorten requested cadence
+history, change ledger/complete-learning boundaries or override manual time.
+Existing verified pre-Smart history contributes immediately. Saved time remains
+the fallback for sparse/limited evidence.
+
+A newly different personal time never moves an existing frozen job: the current
+clock/target/day context guard cancels unattempted mismatches while preserving
+unique day ownership. Original issued/uncertain attempts and historical receipts
+retain their original behavior. Wire versions, cadence calibration, cohort
+admission, factories and default-disabled production behavior are unchanged.
+
 ## Authentication and admission
 
 The existing `smart_study` notification-template enabled flag is a shared

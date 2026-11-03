@@ -25,7 +25,7 @@ from app.services.course_reminder_service import reminder_tz_offset
 from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_cadence import evaluate_cadence
 from app.services.smart_reminder_coordination import read_d1_scope
-from app.services.smart_reminder_policy import _aware_utc, day_window, evaluate, local_time_instants
+from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, _aware_utc, day_window, evaluate, local_time_instants
 from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
 from app.services.smart_reminder_preferences import MAX_REVISION, SmartReminderError, SmartReminderPreferencesService, _utc
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, SmartReminderShadowQueue
@@ -262,7 +262,7 @@ class SmartReminderAndroidService:
             legacy = await self._legacy_contact(actor, row)
             if legacy: return await self._cancel(row, legacy)
             snapshot = await SmartReminderPolicyContextService(self.session).load_cadence(actor,
-                observed_at=self._now(), history_since=review.history_since, expected_level=row["course_key"])
+                observed_at=self._now(), history_since=review.history_since, expected_level=row["course_key"], personal_time=True)
             observed = self._now()
             coverage = await self.coverage_reader(self.session, actor, review.history_since, observed)
             if (not isinstance(coverage, LearningCoverage) or coverage.user_id != actor.user_id or
@@ -272,14 +272,14 @@ class SmartReminderAndroidService:
             context = replace(context, observed_at=now)
             cadence = evaluate_cadence(replace(snapshot, policy=replace(snapshot.policy, observed_at=now),
                 intents=tuple(j for j in snapshot.intents if j.job_id != job_id),
-                learning_complete_since=coverage.complete_since), calibration=self.calibration, allow_elapsed_time=True)
-            final = evaluate(context, allow_elapsed_time=True)
+                learning_complete_since=coverage.complete_since), calibration=self.calibration, habit_calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
+            final = evaluate(context, calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
             if not final.candidate: return await self._cancel(row, final.reason)
             if cadence.reason != "shadow_candidate": return await self._cancel(row, cadence.reason)
             d1 = await read_d1_scope(self.session, actor.user_id, now)
             now = self._now()
             if d1.reason(now): return await self._cancel(row, d1.reason(now))
-            final = evaluate(replace(context, observed_at=now), allow_elapsed_time=True)
+            final = evaluate(replace(context, observed_at=now), calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
             if not final.candidate: return await self._cancel(row, final.reason)
             until = min(_utc(row["expires_at"]), auth_until, _utc(cap["expires_at"]), _aware_utc(review.valid_until))
             zone = ZoneInfo(context.timezone_name)

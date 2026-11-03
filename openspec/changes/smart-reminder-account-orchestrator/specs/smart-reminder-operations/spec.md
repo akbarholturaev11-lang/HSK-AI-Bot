@@ -383,3 +383,14 @@ The system SHALL compare a versioned candidate with functioning personalized rul
 #### Scenario: Reproducible local diagnostic
 - **WHEN** an operator runs the same bounded reviewed snapshot and fixed candidate configuration
 - **THEN** the aggregate comparison is reproducible, model records remain transient, and no application data, settings or provider is changed
+
+### Requirement: Integrated rules use the approved personal clock consistently
+The system SHALL use the same approved personal-time rules and bounded calendar history for passive projection and integrated reminder validation, preserving manual locks and existing frozen day/clock ownership.
+
+#### Scenario: Reliable existing personal history
+- **WHEN** recent or approved extended verified history establishes a personal time different from the saved fallback
+- **THEN** new rule-path decisions and their transport rechecks use that personal time without granting cadence, consent, admission or dispatch authority
+
+#### Scenario: A pending job has a different frozen clock
+- **WHEN** fresh personal history changes an unattempted job's validated clock
+- **THEN** the existing context guard cancels it without moving its clock, refunding its day, replaying an externalized attempt or rejecting an original historical receipt

@@ -22,7 +22,7 @@ from app.db.models.user import User
 from app.services.course_reminder_service import reminder_tz_offset
 from app.services.smart_reminder_cadence import evaluate_cadence
 from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
-from app.services.smart_reminder_policy import _aware_utc
+from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, _aware_utc
 from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
 from app.services.smart_reminder_preferences import MAX_REVISION, SmartReminderError, SmartReminderPreferencesService, _utc
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION, SmartReminderShadowQueue
@@ -293,7 +293,7 @@ class SmartReminderTelegramService:
                     start < _utc(row["day_end_utc"]) and end > _utc(row["day_start_utc"])):
                 return await self._cancel(session, row, "legacy_study_already_attempted")
         snapshot = await SmartReminderPolicyContextService(session).load_cadence(
-            actor, observed_at=self._now(), history_since=since, expected_level=row["course_key"])
+            actor, observed_at=self._now(), history_since=since, expected_level=row["course_key"], personal_time=True)
         now = self._now()
         coverage = await self.coverage_reader(session, actor, since, now)
         if coverage is not None and (not isinstance(coverage, LearningCoverage) or
@@ -305,7 +305,7 @@ class SmartReminderTelegramService:
         snapshot = replace(snapshot, policy=replace(snapshot.policy, observed_at=now),
                            intents=tuple(j for j in snapshot.intents if j.job_id != row["id"]),
                            learning_complete_since=coverage.complete_since if coverage else None)
-        decision = evaluate_cadence(snapshot, calibration=self.calibration, allow_elapsed_time=True)
+        decision = evaluate_cadence(snapshot, calibration=self.calibration, habit_calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
         if now >= _utc(row["expires_at"]):
             return await self._cancel(session, row, "telegram_expired", "expired")
         if now >= _utc(cohort["verified_until"]):

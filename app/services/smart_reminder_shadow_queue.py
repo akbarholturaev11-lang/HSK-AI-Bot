@@ -19,7 +19,7 @@ from app.services.course_levels import content_level
 from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_coordination import read_d1_scope
 from app.services.smart_reminder_lifecycle import EXTERNAL_ATTEMPTS
-from app.services.smart_reminder_policy import _aware_utc, day_window, evaluate
+from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, _aware_utc, day_window, evaluate
 from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
 from app.services.smart_reminder_preferences import SmartReminderError, SmartReminderPreferencesService, _utc
 
@@ -144,8 +144,8 @@ class SmartReminderShadowQueue:
             if d1.reason(now):
                 return observed(ShadowResult(d1.reason(now)))
             snapshot = await SmartReminderPolicyContextService(session).load_cadence(
-                actor, observed_at=now, history_since=since, expected_level=expected_level)
-            decision = evaluate(snapshot.policy)
+                actor, observed_at=now, history_since=since, expected_level=expected_level, personal_time=True)
+            decision = evaluate(snapshot.policy, calibration=APPROVED_HABIT_CALIBRATION)
             zone, course = snapshot.policy.timezone_name, snapshot.policy.level
             if not decision.candidate:
                 return observed(ShadowResult(decision.reason))
@@ -160,7 +160,7 @@ class SmartReminderShadowQueue:
             existing = (await session.execute(existing_query.with_for_update().limit(1))).mappings().first()
             if existing is not None:
                 return observed(self._result(existing, "account_day_already_owned"))
-            cadence = evaluate_cadence(snapshot)
+            cadence = evaluate_cadence(snapshot, habit_calibration=APPROVED_HABIT_CALIBRATION)
             values = dict(
                 id=str(uuid4()), user_id=actor.user_id, category="study",
                 local_day=date.fromisoformat(decision.local_day), timezone_name=snapshot.policy.timezone_name,
@@ -221,12 +221,12 @@ class SmartReminderShadowQueue:
         if _aware_utc(since) > _utc(row["day_start_utc"]):
             return None, await self._close(session, row, "cancelled", "queue_history_incomplete", now)
         context = await SmartReminderPolicyContextService(session).load(
-            actor, observed_at=now, history_since=since, expected_level=row["course_key"])
+            actor, observed_at=now, history_since=since, expected_level=row["course_key"], personal_time=True)
         if (context.revision != row["preference_revision"] or context.grant_epoch != row["grant_epoch"]):
             return None, await self._close(session, row, "cancelled", "shadow_preference_changed", now)
         # Retain NOW's verified goal/activity, never rewind to the old clock to
         # make a late tick pass. Frozen expiry is checked by the caller.
-        decision = evaluate(context, allow_elapsed_time=True)
+        decision = evaluate(context, calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
         if not decision.candidate:
             return None, await self._close(session, row, "cancelled", decision.reason, now)
         if (context.timezone_name != row["timezone_name"] or decision.local_day != row["local_day"].isoformat()
@@ -262,7 +262,7 @@ class SmartReminderShadowQueue:
             now = self._now()  # Validation IO may also have crossed a deadline.
             if now >= _utc(row["expires_at"]):
                 return await self._close(session, row, "expired", "shadow_expired", now)
-            final = evaluate(replace(context, observed_at=now), allow_elapsed_time=True)
+            final = evaluate(replace(context, observed_at=now), calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
             if not final.candidate:
                 return await self._close(session, row, "cancelled", final.reason, now)
             token = str(uuid4())
@@ -297,7 +297,7 @@ class SmartReminderShadowQueue:
             if refused:
                 return refused
             snapshot = await SmartReminderPolicyContextService(session).load_cadence(
-                actor, observed_at=now, history_since=history_since, expected_level=row["course_key"])
+                actor, observed_at=now, history_since=history_since, expected_level=row["course_key"], personal_time=True)
             # Cadence gates creation of a NEW intent; this job already owns its
             # day. Exclude only itself for the observational cadence readout.
             snapshot = replace(snapshot, intents=tuple(j for j in snapshot.intents if j.job_id != job_id))
@@ -307,10 +307,10 @@ class SmartReminderShadowQueue:
             if _utc(row["lease_expires_at"]) <= now:
                 return self._result(row, "shadow_lease_lost")
             snapshot = replace(snapshot, policy=replace(snapshot.policy, observed_at=now))
-            final = evaluate(snapshot.policy, allow_elapsed_time=True)
+            final = evaluate(snapshot.policy, calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
             if not final.candidate:
                 return await self._close(session, row, "cancelled", final.reason, now)
-            cadence = evaluate_cadence(snapshot, allow_elapsed_time=True)
+            cadence = evaluate_cadence(snapshot, habit_calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
             closed = await self._close(session, row, "completed", cadence.reason, now)
             if closed.reason == "shadow_lease_lost":
                 return closed

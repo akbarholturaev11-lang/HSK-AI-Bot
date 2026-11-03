@@ -4,9 +4,9 @@ from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 
-from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
+from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService, _personal_history_start
 from app.services.smart_reminder_policy import (
-    APPROVED_HABIT_CALIBRATION, _aware_utc, habit_history_needs_extension,
+    APPROVED_HABIT_CALIBRATION, _aware_utc,
 )
 from app.services.smart_reminder_preferences import SmartReminderError, SmartReminderPreferencesService
 from app.services.smart_widget_context import project_widget
@@ -24,19 +24,19 @@ class SmartWidgetContextService:
             raise SmartReminderError("android_device_required", 403)
         authenticated_until = _aware_utc(authenticated_until)
         with self.session.no_autoflush:
-            await SmartReminderPreferencesService(self.session)._lock(actor)
+            pref = await SmartReminderPreferencesService(self.session).read(actor)
             now = _aware_utc(self.clock())  # Never freeze a pre-lock clock.
+            since = now - timedelta(days=APPROVED_HABIT_CALIBRATION.recent_calendar_days)
+            if pref["timezone_name"]:
+                try:
+                    since = _personal_history_start(now, pref["timezone_name"],
+                        APPROVED_HABIT_CALIBRATION.recent_calendar_days)
+                except (ValueError, KeyError):
+                    pass  # Unknown calendar/zone remains a policy veto.
             context = await SmartReminderPolicyContextService(self.session).load(
-                actor, observed_at=now,
-                history_since=now - timedelta(days=APPROVED_HABIT_CALIBRATION.recent_calendar_days),
-                expected_level=expected_level,
+                actor, observed_at=now, history_since=since,
+                expected_level=expected_level, personal_time=True,
             )
-            if habit_history_needs_extension(context, APPROVED_HABIT_CALIBRATION):
-                context = await SmartReminderPolicyContextService(self.session).load(
-                    actor, observed_at=now,
-                    history_since=now - timedelta(days=APPROVED_HABIT_CALIBRATION.extended_calendar_days),
-                    expected_level=expected_level,
-                )
             if context.level != context.expected_level:
                 raise SmartReminderError("course_context_changed", 409)
             finished = _aware_utc(self.clock())

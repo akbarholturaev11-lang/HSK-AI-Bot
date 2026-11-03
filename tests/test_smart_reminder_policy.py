@@ -207,8 +207,8 @@ class PolicyContextChecks:
                 history_since=self.moment-timedelta(days=7), expected_level=kwargs.pop("expected_level", "hsk1"), **kwargs)
 
     async def study(self, *, kind="lesson", days_ago=0, order=1, uid=1, xp=20,
-                    level="hsk1", receipt=True, source="course_v3", session="practice-fixture"):
-        moment = (self.moment - timedelta(days=days_ago)).replace(hour=2)
+                    level="hsk1", receipt=True, source="course_v3", session="practice-fixture", hour=2):
+        moment = (self.moment - timedelta(days=days_ago)).replace(hour=hour)
         ref = f"v3-part:{level}:{order}:complete" if kind == "lesson" else session+":completed"
         async with self.sessions.begin() as s:
             s.add(CourseXpEvent(user_id=uid, activity_type=kind, activity_ref=ref, xp=xp,
@@ -234,6 +234,62 @@ class PolicyContextChecks:
         self.assertTrue(evaluate(view).candidate)
         self.assertIsNone(view.plan_completed)
         self.assertFalse(any(q.lstrip().upper().startswith(("INSERT", "UPDATE", "DELETE")) for q in statements))
+
+    async def test_personal_history_extends_for_habit_without_changing_cadence_window(self):
+        from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION
+        for order,age in enumerate((35,36,37),1): await self.study(order=order,days_ago=age,xp=1)
+        since=self.moment-timedelta(days=7)
+        async with self.sessions.begin() as session:
+            plain=await SmartReminderPolicyContextService(session).load(self.actor,observed_at=self.moment,
+                history_since=since,expected_level='hsk1')
+            personal=await SmartReminderPolicyContextService(session).load_cadence(self.actor,observed_at=self.moment,
+                history_since=since,expected_level='hsk1',personal_time=True)
+        self.assertEqual(plain.studies,())
+        self.assertEqual(len(personal.policy.studies),3)
+        self.assertEqual(evaluate(personal.policy,calibration=APPROVED_HABIT_CALIBRATION,
+            allow_elapsed_time=True).time_local,time(2))
+        self.assertEqual(personal.history_since,since)
+        self.assertIsNone(personal.learning_complete_since)
+
+    async def test_personal_recent_window_includes_whole_oldest_iana_date_after_dst(self):
+        from zoneinfo import ZoneInfo
+        from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION
+        self.moment=datetime(2026,11,3,4,30,tzinfo=UTC)  # Nov 2, 23:30 after NY fallback.
+        async with self.sessions.begin() as session:
+            await session.execute(update(SmartReminderPreference).where(SmartReminderPreference.user_id==1)
+                .values(timezone_name='America/New_York'))
+        for order,day in enumerate((4,5,6),1):
+            await self.study(order=order,days_ago=order+25,xp=1)
+            at=datetime(2026,10,day,0,5,tzinfo=ZoneInfo('America/New_York')).astimezone(UTC)
+            async with self.sessions.begin() as session:
+                await session.execute(update(CourseXpEvent).where(CourseXpEvent.user_id==1,
+                    CourseXpEvent.activity_ref==f'v3-part:hsk1:{order}:complete').values(created_at=at,activity_date=at.date()))
+                await session.execute(update(CourseMiniAppEvent).where(CourseMiniAppEvent.user_id==1,
+                    CourseMiniAppEvent.lesson_order==order).values(created_at=at))
+        sql=[]
+        def capture(c,cursor,statement,parameters,ctx,many): sql.append(statement)
+        event.listen(self.engine.sync_engine,'before_cursor_execute',capture)
+        try: context=await self.load(personal_time=True)
+        finally: event.remove(self.engine.sync_engine,'before_cursor_execute',capture)
+        self.assertEqual(len(context.studies),3)
+        self.assertEqual(evaluate(context,calibration=APPROVED_HABIT_CALIBRATION,
+            allow_elapsed_time=True).time_local,time(0,5))
+        self.assertEqual(sum('FROM '+CourseXpEvent.__tablename__ in statement for statement in sql),1)
+        self.assertFalse(any(statement.lstrip().upper().startswith(('INSERT','UPDATE','DELETE')) for statement in sql))
+
+    async def test_personal_history_preserves_manual_clock_and_explicit_wider_history(self):
+        from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION
+        for order,age in enumerate((35,36,37),1): await self.study(order=order,days_ago=age,xp=1)
+        async with self.sessions.begin() as session:
+            await session.execute(update(SmartReminderPreference).where(SmartReminderPreference.user_id==1)
+                .values(time_mode='manual_locked',manual_time_local=time(15)))
+            manual=await SmartReminderPolicyContextService(session).load(self.actor,observed_at=self.moment,
+                history_since=self.moment-timedelta(days=7),expected_level='hsk1',personal_time=True)
+            wider=await SmartReminderPolicyContextService(session).load(self.actor,observed_at=self.moment,
+                history_since=self.moment-timedelta(days=60),expected_level='hsk1',personal_time=True)
+        self.assertEqual(manual.studies,())
+        self.assertEqual(len(wider.studies),3)
+        self.assertEqual(evaluate(manual,calibration=APPROVED_HABIT_CALIBRATION).time_local,time(15))
 
     async def test_reader_neither_flushes_pending_changes_nor_uses_stale_orm(self):
         async with self.sessions() as s:

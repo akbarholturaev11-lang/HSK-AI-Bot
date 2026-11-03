@@ -6,9 +6,10 @@ The observation window is explicit; missing receipts never prove inactivity.
 """
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, time, timedelta, timezone
 from types import SimpleNamespace
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from sqlalchemy import and_, func, or_, select
 
@@ -29,7 +30,10 @@ from app.services.course_v3_parts import total_parts
 from app.services.daily_plan_service import DailyPlanService, TASK_CONTINUE_LESSON, plan_key
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.learning_signals import LEARNING_ACTIVITY_TYPES, LearningSignals
-from app.services.smart_reminder_policy import PolicyContext, VerifiedStudy, _aware_utc
+from app.services.smart_reminder_policy import (
+    APPROVED_HABIT_CALIBRATION, PolicyContext, VerifiedStudy, _aware_utc,
+    day_window, habit_history_needs_extension,
+)
 from app.services.smart_reminder_cadence import CadenceContext, StudyIntent
 from app.services.smart_reminder_preferences import SmartReminderPreferencesService
 
@@ -47,6 +51,12 @@ def _utc(value):
 
 def _clock(value):
     return time.fromisoformat(value) if value is not None else None
+
+
+def _personal_history_start(now, zone_name, calendar_days):
+    zone = ZoneInfo(zone_name)
+    first = _aware_utc(now).astimezone(zone).date()-timedelta(days=calendar_days-1)
+    return day_window(zone_name, first.isoformat())[0]
 
 
 def verified_studies(*, user_id, level, completed_parts, xp_rows, event_rows):
@@ -335,16 +345,18 @@ class SmartReminderPolicyContextService:
     def __init__(self, session):
         self.session = session
 
-    async def load_cadence(self, actor, *, observed_at: datetime, history_since: datetime, expected_level: str):
+    async def load_cadence(self, actor, *, observed_at: datetime, history_since: datetime, expected_level: str,
+                           personal_time: bool = False):
         """Read new-intent budget/outcomes; legacy negative coverage is unknown.
 
         Call under the same verified-actor/caller-owned transaction as `load`.
         Correlated aggregates avoid loading attempts, endpoint IDs or tokens.
-        No public complete-coverage override is provided.
+        Personal-time history may extend; ledger/negative coverage keeps the
+        original caller window. No complete-coverage override is provided.
         """
         with self.session.no_autoflush:
             policy = await self.load(actor, observed_at=observed_at, history_since=history_since,
-                                     expected_level=expected_level)
+                                     expected_level=expected_level, personal_time=personal_time)
             external_fact = or_(SmartReminderAttempt.started_at.is_not(None), SmartReminderAttempt.state.in_(
                 ("in_flight", "provider_accepted", "client_posted_unverified", "verified_shown", "unknown")))
             external = select(SmartReminderAttempt.id).where(
@@ -384,11 +396,13 @@ class SmartReminderPolicyContextService:
                 learning_complete_since=None,  # Best-effort/replayed legacy activity is not complete coverage.
             )
 
-    async def load(self, actor, *, observed_at: datetime, history_since: datetime, expected_level: str):
+    async def load(self, actor, *, observed_at: datetime, history_since: datetime, expected_level: str,
+                   personal_time: bool = False):
         """Fresh account facts under P1's user lock, with zero writes/commit.
 
         This returns a simulation input, not a transferable auth or send grant.
-        `expected_level` refuses stale course work; window bounds are explicit.
+        `expected_level` refuses stale course work. Explicit personal_time opts
+        into approved calendar history without shortening the caller window.
         """
         if (observed_at.tzinfo is None or history_since.tzinfo is None or
                 history_since > observed_at):
@@ -396,6 +410,13 @@ class SmartReminderPolicyContextService:
         now, since = _utc(observed_at), _utc(history_since)
         with self.session.no_autoflush:
             pref = await SmartReminderPreferencesService(self.session).read(actor)
+            calendar_unknown = False
+            if personal_time and pref["time_mode"] == "auto" and pref["timezone_name"]:
+                try:
+                    since = min(since, _personal_history_start(now, pref["timezone_name"],
+                        APPROVED_HABIT_CALIBRATION.recent_calendar_days))
+                except (ValueError, ZoneInfoNotFoundError):
+                    calendar_unknown = True
             uid = actor.user_id
             # Fresh column projections avoid stale ORM progress/account state.
             columns = ("id", "telegram_id", "level", "language", "status", "payment_status",
@@ -436,6 +457,8 @@ class SmartReminderPolicyContextService:
                 xp_rows=xp_rows[:MAX_POLICY_ROWS], event_rows=event_rows[:MAX_POLICY_ROWS])
             if len(xp_rows) > MAX_POLICY_ROWS or len(event_rows) > MAX_POLICY_ROWS:
                 coverage = tuple(sorted(set(coverage) | {"observation_window_over_limit"}))
+            if calendar_unknown:
+                coverage = tuple(sorted(set(coverage) | {"habit_calendar_window_unknown"}))
             course_day = local_day_key(profile.timezone_offset_minutes, now=now) if profile else None
             daily_goal = CourseMiniAppProfileService.resolve_daily_goal_xp(profile) if profile else None
             plan_completed = None
@@ -481,7 +504,7 @@ class SmartReminderPolicyContextService:
             if (actor.kind == "android" and android["this_device_consent"] == "on" and
                     android["study_os_permission"] == "allowed"):
                 channels.append("android")
-            return PolicyContext(
+            context = PolicyContext(
                 observed_at=now, level=level, progress_level=progress_level,
                 expected_level=content_level(expected_level, default=""), completed_parts=completed,
                 total_parts=total, target_allowed=target_allowed, foundation_required=foundation_required,
@@ -495,3 +518,14 @@ class SmartReminderPolicyContextService:
                 quiet_end=_clock(pref["quiet_end"]),
                 pause_until=datetime.fromisoformat(pref["pause_until"]) if pref["pause_until"] else None,
             )
+            if personal_time and habit_history_needs_extension(context, APPROVED_HABIT_CALIBRATION):
+                try:
+                    extended = _personal_history_start(now, pref["timezone_name"],
+                        APPROVED_HABIT_CALIBRATION.extended_calendar_days)
+                except (ValueError, ZoneInfoNotFoundError):
+                    return replace(context, coverage_limits=tuple(sorted(
+                        set(context.coverage_limits) | {"habit_calendar_window_unknown"})))
+                if extended < since:
+                    return await self.load(actor, observed_at=now, history_since=extended,
+                                           expected_level=expected_level)
+            return context
