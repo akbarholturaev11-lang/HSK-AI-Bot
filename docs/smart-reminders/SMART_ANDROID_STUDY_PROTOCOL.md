@@ -9,6 +9,11 @@ alone cannot activate it. Android trigger integration is implemented within
 task 5.2's synthetic/isolated acceptance boundary; signed,
 mixed-build, actual fencing and canary acceptance remain tasks 5.3–5.4.
 
+The internal opt-in account planner can bind a reviewed pending destination
+using the same admission and fresh-policy checks as claim. It is unregistered
+in production and creates no grant/attempt or client authentication. See
+[destination contract](SMART_REMINDER_DESTINATION.md) and Master Plan §17.77.
+
 ## Android migration observation and triggers
 
 GET `/api/v3/android/smart-reminder/mode` uses the same native authentication,
