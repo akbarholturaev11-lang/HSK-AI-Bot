@@ -148,6 +148,12 @@ async function main(){
   assert(hsk30.navigation[0].includes("mode=hsk30_unlock&plan=hsk30_unlock"),
     "HSK3 rejection must reopen its exact unlock checkout");
 
+  const tenDay = harness({action:{payment_id:23,status:"rejected",plan_type:"10_days"}});
+  await tenDay.loadAndTick();
+  tenDay.root().listeners.click({target:{closest:(selector)=>selector==="[data-pwa-retry]"?{}:null}});
+  assert(tenDay.navigation[0].includes("&plan=10_days"),
+    "retry must preserve a rejected 10-day Pro plan");
+
   const superseded = harness({action:null});
   await superseded.loadAndTick();
   assert.equal(superseded.root().hidden,true,"old rejected receipts cannot create fresh urgency");
@@ -163,6 +169,6 @@ async function main(){
   await delayed.flushTimers();
   assert.equal(delayed.root().hidden,false,"show latest rejected payment after the splash ends");
 
-  console.log("PWA notice UI: 9 behavior/ownership/safety checks passed");
+  console.log("PWA notice UI: 10 behavior/ownership/safety checks passed");
 }
 main().catch((err)=>{console.error(err);process.exitCode=1;});
