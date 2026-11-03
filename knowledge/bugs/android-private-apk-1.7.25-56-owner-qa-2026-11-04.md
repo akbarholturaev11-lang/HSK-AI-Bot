@@ -1,7 +1,7 @@
 # Android 1.7.25 (56) — owner-only test APK: bug audit and phone findings
 
 **Recorded:** 2026-11-04  
-**Status:** CONFIRMED install-preview crash reproduced and fixed; bounded auth/locale fixes and private replacement **1.7.26/57** passed the automated/owned-emulator checks recorded below. Actual owner-device/provider acceptance remains open.
+**Status:** CONFIRMED install-preview crash and subsequent independent profile identity-handoff defect fixed. Latest private replacement **1.7.27/58** Direct and Play passed the automated/owned-emulator checks in Master Plan §17.91; original 56 identity stays below. Actual owner-device/provider acceptance remains open.
 **Scope:** This note records issues against the exact *private Direct* test APK below; it does **not** authorize public R2/Play publication.
 
 ## Exact APK identity (do not confuse with Google Play or public Direct)
@@ -78,3 +78,11 @@ D30 later explicitly authorized production server activation. The two startup/se
 - Private replacement: `hsk-ai-1.7.26-57-direct-release.apk`, 11,382,752 bytes, SHA-256 `ee09cd8444813043c4f1cc6628d6bbfff5798323f6e0958bc111a9b15738d84a`; existing certificate, production package, non-debuggable and Firebase/resource checks passed. It supersedes 56 for testing; neither artifact was publicly published by this work.
 - Automated acceptance: Direct/Play unit 657/606, both lints, affected instrumentation 34 per flavor; final-57 focused auth/locale/install-prompt/normal-signed-provider host 8 per flavor. Signed 57 offline cold start stays alive; crash buffers empty. The preview regression is explicitly included in both-flavor CI.
 - Physical Google/Telegram return, Xiaomi pin/render and real notification delivery remain to be checked with the owner when available. Do not equate source/fixture acceptance with the absent phone trace or actual successful delivery. Process-death polling-secret persistence was not added.
+
+
+## AUTH-05 — independent follow-up found in both Direct and Play
+
+- **Sabab:** authenticated `IdentitiesSheet` had a separate unconditional-NEW_TASK Custom Tab helper that swallowed launch failures, then always consumed the pending URL. The login-screen fix did not cover this consumer. A missing browser/Telegram handler could leave a busy connection polling invisibly.
+- **Fix:** reuse the existing Activity-aware Google/Apple browser and Telegram VIEW handoffs; keep strict Telegram identity-link validation. Only acknowledge successful launch. The current-URL-bound VM failure callback cancels the pending link and polling, clears busy state and shows the existing localized error, allowing retry while ignoring obsolete failures.
+- **Risk:** actual Google/Telegram app return, server-confirmed attachment and Play Store-managed install/update require real provider/device acceptance; synthetic missing-handler tests and locally signed Play APKs do not establish those facts. No new persisted proof, payment flow or consent is introduced.
+- **Prevention:** actual sheet regressions cover failed Google and Telegram launches; VM regression covers cancellation, stopped polling, retry and stale failure. Both CI flavors now include identities-sheet and promo-card consumers. Current build/owned-emulator/private 1.7.27/58 evidence is in Master Plan §17.91; private 58 supersedes 57 for follow-up testing.
