@@ -3,6 +3,15 @@
 **Updated:** 2026-11-03 · **Status:** WIP, NOT accepted, NOT released.
 **This is the single active context file.** Preserve prior detailed history through Git commits; do not create another context file or parallel plan. The only formal acceptance list is [OpenSpec tasks](../openspec/changes/iphone-course-pwa/tasks.md).
 
+## LATEST EXACT FEATURE-HEAD CI EVIDENCE — 2026-11-03
+
+- Feature Draft PR #257 exact HEAD **`f9aeb83ffb30aa27172049116e3202e6afb62db8`**, [Backend targeted run 41660363378](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41660363378). In latest inspection, **`miniapp-ui` job completed SUCCESS**: new actual Chromium iPhone PWA glass/feedback tests **5 passed**, unchanged main Mini App browser/nav regressions **19 passed**, critical course/checkout smoke **25 passed (82 deliberately deselected by existing -k selection)**. Existing UI test run succeeded and is not simulated-DOM-only evidence anymore, although it uses synthetic authenticated API responses and Chromium, **not physical Safari**.
+- Same exact run **`native-postgres` job completed SUCCESS**: **72 passed, 64 subtests passed, 0 skipped**, confirmed from GitHub job logs. `targeted-tests` completed the previously failing real HTTP static asset gate **PASS** after the exact allowlist repair; when last inspected, it was **still running** in PWA sign-in/browser tests. Do not call full Backend run passed until all targeted steps complete.
+- Previous run `baa1280` had failed precisely 3 public asset 404s; those have been fixed minimally by the allowlist commit `aacaf281` and new exact-asset test commit `f9aeb83`. Unknown and private lesson/answer assets still return 404 per the unchanged branch route/contract.
+- Both PRs Draft, no merge to production `main`, no flag enable/deploy. Feature/main divergence and owner-only final installed iPhone QA remain explicit blockers.
+
+---
+
 ## INDEPENDENT MAIN DRIFT — merge-safety inventory (2026-11-03; NO MERGE)
 
 - Read live `main=bb4c10ae98cc0269cde4cd17a1424264eed642a3` while implementation Draft PR #257 was at `f9aeb83ffb30aa27172049116e3202e6afb62db8`. Compared both against common base `df8e6de5dceb77284f2b361f760e8ee01f31d78c`: **23 main-only commits** and **349 feature-only commits**; main changed 107 paths and feature changed 86, with **7 overlapping paths** and **100 main-only changed paths absent from the feature diff**. This supersedes earlier historical handoffs' 3-overlap/22-ahead count.
