@@ -372,7 +372,17 @@ try{tg?.ready?.();tg?.expand?.();}catch(e){}
 try{tg?.setHeaderColor?.("#ffffff");tg?.setBackgroundColor?.("#ffffff");}catch(e){}
 
 const PWA_CHECKOUT_HOST=location.pathname==="/iphone-pwa/checkout";
-if(PWA_CHECKOUT_HOST)document.documentElement.classList.add("hsk-pwa-browser");
+if(PWA_CHECKOUT_HOST){
+  document.documentElement.classList.add("hsk-pwa-browser");
+  // Keep the original checkout; add only the browser-only installed-app
+  // identity so an iPhone can navigate between course and receipt safely.
+  (function(){
+    var meta=document.createElement("meta");meta.name="apple-mobile-web-app-title";meta.content="HSK AI";document.head.appendChild(meta);
+    meta=document.createElement("meta");meta.name="apple-mobile-web-app-status-bar-style";meta.content="default";document.head.appendChild(meta);
+    var touch=document.createElement("link");touch.rel="apple-touch-icon";touch.href="/assets/hsk-ai-logo-256.png";document.head.appendChild(touch);
+    var manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/iphone-pwa/manifest.webmanifest";document.head.appendChild(manifest);
+  })();
+}
 const API=PWA_CHECKOUT_HOST?{
   overview:"/api/v3/pwa/subscription/overview",
   paymentStatus:"/api/v3/pwa/subscription/payment-status",
