@@ -394,3 +394,18 @@ The system SHALL use the same approved personal-time rules and bounded calendar 
 #### Scenario: A pending job has a different frozen clock
 - **WHEN** fresh personal history changes an unattempted job's validated clock
 - **THEN** the existing context guard cancels it without moving its clock, refunding its day, replaying an externalized attempt or rejecting an original historical receipt
+
+### Requirement: Planning binds one existing account intent without issuing delivery authority
+The system SHALL reserve and bind one reviewed eligible destination using existing account-day ownership, personal rules and destination policy. Planning MUST NOT grant consent, enroll a cohort, send a provider request, create a posting grant or retarget selected/attempted work.
+
+#### Scenario: One eligible phone
+- **WHEN** current account rules and reviewed admission permit a single eligible Android endpoint
+- **THEN** the planner binds that device without a destination-history warm-up and only its authenticated claim may subsequently issue posting authority
+
+#### Scenario: Preferred endpoint or review changes
+- **WHEN** fresh selection, account intent, routing review or capability changes during planning
+- **THEN** no stale selection is bound and no alternate endpoint bypasses the existing review or consent gates
+
+#### Scenario: Concurrent planning and restart
+- **WHEN** planners race or repeat after a selected, attempted or terminal intent already owns the day
+- **THEN** the original single day/endpoint/attempt evidence stays intact without reranking, refunding ownership or replaying delivery

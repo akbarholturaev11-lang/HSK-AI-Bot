@@ -2,7 +2,7 @@
 
 `app/services/smart_reminder_destination.py` implements the D06 choice core.
 The authoritative decisions and executed acceptance remain in
-`SMART_REMINDER_MASTER_PLAN.md` §17.57. This is a component contract, not a
+`SMART_REMINDER_MASTER_PLAN.md` §§17.57, 17.77. This is a component contract, not a
 second progress tracker or evidence that production dispatch is enabled.
 
 ## One eligible destination
@@ -64,12 +64,26 @@ finite validity, reason and coverage limits, with `dispatch_allowed=False`.
 It is rechecked against the clock after history reading. It does not change the
 job's selected endpoint, create an attempt or issue an Android posting grant.
 
-The future producer/admission integration must freshly validate policy,
-completion/access, cohort/fencing, D1, day ownership, consent and capability
-under the existing delivery protocol. A proposal cannot bypass those guards or
-reissue/fan out an unknown attempted intent. No production flag, schema,
-retention store, client behavior or transactional notification route changes.
-Rollback consists of leaving the currently unwired selector unused.
+The internal default-disabled `SmartReminderPlanner` now joins reservation,
+selection and one pending destination. It accepts only already reviewed routing
+with current inventory/revision/epoch and explicit cadence/complete-learning
+readers. Android additionally requires the existing privileged job/device/session
+admission reader; Telegram requires its activated cohort and feature setting.
+No review or consent is inferred from a capability/client field.
+
+After the existing queue freezes account/day ownership, the planner locks User
+before its job, reuses transport policy/completion/access/cadence/D1 checks,
+then rechecks destination, context, review and expiry before an atomic pending
+binding. A repeated pending selection is acknowledged without reranking;
+leased/attempted/terminal work is never retargeted. Planning creates no attempt,
+grant, provider call or fallback to another endpoint. Only the existing native
+authenticated claim or committed Telegram attempt can proceed toward delivery.
+
+There is no production planner registration, admission/complete-learning factory,
+new flag, schema, poller, client behavior or transactional-notice change.
+Rollback leaves the planner disabled; existing pending ownership and the original
+claim/receipt guards stay intact. Local integration does not prove live fencing
+or provider/installed canary acceptance.
 
 ## Verification
 
@@ -80,3 +94,7 @@ single-endpoint history bypass and the lack of any claim authority or writes.
 The Smart regression workflow includes these paths and tests. Local test
 results do not establish production usage, physical display or provider
 delivery; exact executed results are recorded only in the Master Plan.
+`tests/test_smart_reminder_planner.py` also exercises real reservation/binding,
+native authenticated claim/receipt, committed Telegram claim with fake provider,
+most-used selection, concurrency, final-read changes and transactional rollback
+on SQLite/PostgreSQL. Disabled/missing configuration returns before SQL/IO.
