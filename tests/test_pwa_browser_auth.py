@@ -570,14 +570,19 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             await db.commit()
         rejected = await self.client.get(url)
         self.assertEqual(rejected.status_code, 200, rejected.text)
-        self.assertEqual(rejected.json()["payment_action"], {
-            "payment_id": 903,
-            "status": "rejected",
-            "plan_type": "10_days",
-            "reviewed_at": (now + timedelta(minutes=1)).replace(
-                tzinfo=timezone.utc,
-            ).isoformat().replace("+00:00", "+00:00"),
-        })
+        focus = rejected.json()["payment_action"]
+        self.assertEqual(
+            {k: v for k, v in focus.items() if k != "reviewed_at"},
+            {"payment_id": 903, "status": "rejected", "plan_type": "10_days"},
+        )
+        restored_date = datetime.fromisoformat(focus["reviewed_at"])
+        if restored_date.tzinfo is None:
+            # SQLite persists UTC timestamps without timezone information.
+            restored_date = restored_date.replace(tzinfo=timezone.utc)
+        self.assertEqual(
+            restored_date.astimezone(timezone.utc),
+            now + timedelta(minutes=1),
+        )
         self.assertNotIn("Do not expose rejection details", rejected.text)
 
         # New pending receipt takes precedence; older rejection remains in
