@@ -22,6 +22,7 @@ from app.db.models.course_progress import CourseProgress
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.smart_reminder import SmartReminderAndroidGrant, SmartReminderCapability, SmartReminderRouting
 from app.services.course_reminder_service import reminder_tz_offset
+from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_cadence import evaluate_cadence
 from app.services.smart_reminder_coordination import read_d1_scope
 from app.services.smart_reminder_policy import _aware_utc, day_window, evaluate, local_time_instants
@@ -289,6 +290,8 @@ class SmartReminderAndroidService:
                     if len(instants) != 1: return await self._cancel(row, "personal_quiet_clock_uncertain")
                     until = min([until] + [instant for instant in instants if instant > now])
             if until <= now: return denied("android_authority_expired")
+            if not await NotificationTemplateService(self.session).is_enabled(KEY_SMART_STUDY):
+                return await self._cancel(row, "admin_study_disabled")
             grant_id, attempt_id = str(uuid4()), str(uuid4())
             await self.session.execute(insert(ATTEMPT).values(id=attempt_id, job_id=job_id,
                 attempt_key=hashlib.sha256((job_id+":android:first").encode()).hexdigest(), channel="android",

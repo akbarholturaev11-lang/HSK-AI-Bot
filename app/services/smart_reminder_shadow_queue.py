@@ -16,6 +16,7 @@ from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderJob
 from app.db.models.user import User
 from app.services.smart_reminder_cadence import evaluate_cadence
 from app.services.course_levels import content_level
+from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_coordination import read_d1_scope
 from app.services.smart_reminder_lifecycle import EXTERNAL_ATTEMPTS
 from app.services.smart_reminder_policy import _aware_utc, day_window, evaluate
@@ -212,6 +213,8 @@ class SmartReminderShadowQueue:
         return tuple(results)
 
     async def _fresh(self, session, actor, row, now, since):
+        if not await NotificationTemplateService(session).is_enabled(KEY_SMART_STUDY):
+            return None, await self._close(session, row, "cancelled", "admin_study_disabled", now)
         d1 = await read_d1_scope(session, actor.user_id, now)
         if d1.reason(now):
             return None, await self._close(session, row, "cancelled", d1.reason(now), now)

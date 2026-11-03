@@ -22,6 +22,7 @@ from app.db.models.smart_reminder import SmartReminderRouting, SmartReminderPref
 from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
 from app.services.course_reminder_service import CourseReminderService
+from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
 from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderError, SmartReminderPatch, SmartReminderPreferencesService
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB
@@ -135,6 +136,41 @@ class TelegramChecks:
 
     async def rows(self,table):
         async with self.sessions() as s: return (await s.execute(select(table))).mappings().all()
+
+    async def test_admin_pause_after_prepare_stops_provider(self):
+        await self.active()
+        job=await self.prepare()
+        self.tick=self.tick.replace(hour=14)
+        lease=await self.claim(job.job_id)
+        self.assertEqual(lease.reason,'telegram_claimed')
+        async with self.sessions.begin() as s:
+            await NotificationTemplateService(s).update_text(KEY_SMART_STUDY,enabled=False,
+                text_uz='',text_ru='',text_tj='',updated_by=None)
+        result=await self.dispatch(lease)
+        self.assertEqual(result.reason,'admin_study_disabled')
+        self.bot.send_message.assert_not_called()
+
+    async def test_admin_pause_during_content_render_is_rechecked_before_provider(self):
+        from app.services.smart_reminder_telegram_content import render_telegram_content
+        await self.active()
+        job=await self.prepare()
+        self.tick=self.tick.replace(hour=14)
+        lease=await self.claim(job.job_id)
+        self.assertEqual(lease.reason,'telegram_claimed')
+        async def render_and_pause(session,*args,**kwargs):
+            content=await render_telegram_content(session,*args,**kwargs)
+            await NotificationTemplateService(session).update_text(KEY_SMART_STUDY,enabled=False,
+                text_uz='',text_ru='',text_tj='',updated_by=None)
+            return content
+        with patch('app.services.smart_reminder_telegram.render_telegram_content',render_and_pause):
+            self.assertEqual((await self.dispatch(lease)).reason,'admin_study_disabled')
+        self.bot.send_message.assert_not_called()
+        self.assertEqual((await self.rows(ATTEMPT))[0]['state'],'cancelled')
+        async with self.sessions.begin() as s:
+            await NotificationTemplateService(s).update_text(KEY_SMART_STUDY,enabled=True,
+                text_uz='',text_ru='',text_tj='',updated_by=None)
+        self.assertEqual((await self.dispatch(lease)).reason,'telegram_lease_lost')
+        self.bot.send_message.assert_not_called()
 
     async def off(self):
         async with self.sessions.begin() as s:

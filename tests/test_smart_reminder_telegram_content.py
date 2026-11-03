@@ -120,7 +120,7 @@ class ContentChecks:
         lease = await self.planned()
         async with self.sessions.begin() as s:
             s.add(NotificationTemplate(key=KEY_SMART_STUDY, enabled=False))
-        self.assertEqual((await self.dispatch(lease)).reason, "telegram_template_disabled")
+        self.assertEqual((await self.dispatch(lease)).reason, "admin_study_disabled")
         self.bot.send_message.assert_not_called()
         self.assertEqual((await self.rows(ATTEMPT))[0]["state"], "cancelled")
 

@@ -588,3 +588,27 @@ denominators through the existing default-OFF source observer/reconciliation,
 retention and canonical purge. Source/metric boundaries, account-wide historical
 receipt checks and explicit unavailable/partial states are documented in
 `SMART_REMINDER_BASELINE.md`; no contact/open or delivery authority follows.
+
+## Protected Admin readout
+
+System opens the existing `smart_study` editor directly, once; the generic
+notification list excludes this entry. Its existing authenticated, no-store
+`notifications/read` transaction returns `smart` only for this exact key:
+current UTC `month` (YYYY-MM), read-only `observation_enabled` from the existing
+analysis flag, and `counts` grouped over `SmartReminderAnalysisMonthly`. No raw
+learner/job/attempt/history source is read for this overview.
+
+- `study_day_after_attempt`: observed job/account-local study-day facts.
+- `contact_study_24h`: evidenced contact windows with actual study in 24 hours.
+- `study_unit_24h`: original canonical study units deduplicated across contacts.
+
+These are separate partial observational grains, not unique users, independent
+OS display/read, complete cohort metrics or causal benefit. Missing stage rows
+return null/dash; a stored zero stays zero. Retained counters remain visible
+when observation is OFF. There is no new aggregation job or live configuration
+mutation. Read failure uses the existing unavailable state.
+
+The existing exact-content passkey/CAS/audit editor also controls the shared
+Android/Telegram new-attempt permission through the template enabled field.
+It does not activate a producer, admission or provider. One dirty-state Save,
+X/swipe dismissal and confirmed-success animation remain the only edit flow.

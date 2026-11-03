@@ -26,6 +26,7 @@ from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.smart_reminder import SmartReminderCapability, SmartReminderConsent, SmartReminderPreference, SmartReminderRouting
 from app.db.models.user import User
 from app.services.desktop_auth_service import DesktopAuthService
+from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_android import AndroidAdmission, GRANT, SmartReminderAndroidService
 from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
 from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderPatch, SmartReminderPreferencesService
@@ -162,6 +163,46 @@ class AndroidChecks:
     async def no_grant(self):
         self.assertEqual(await self.rows(GRANT),[])
         self.assertEqual(await self.rows(ATTEMPT),[])
+
+    async def test_admin_pause_cancels_new_grant_and_resume_never_replays_cancelled_day(self):
+        async with self.sessions.begin() as s:
+            await NotificationTemplateService(s).update_text(KEY_SMART_STUDY,enabled=False,
+                text_uz='',text_ru='',text_tj='',updated_by=None)
+        self.assertEqual((await self.claim())['reason'],'admin_study_disabled')
+        await self.no_grant()
+        async with self.sessions.begin() as s:
+            await NotificationTemplateService(s).update_text(KEY_SMART_STUDY,enabled=True,
+                text_uz='',text_ru='',text_tj='',updated_by=None)
+        self.assertFalse((await self.claim())['dispatch_allowed'])
+        await self.no_grant()
+
+    async def test_admin_pause_after_initial_fresh_read_is_checked_before_issuance(self):
+        original=self.learning
+        async def pause(session,actor,since,now):
+            async def disable(db):
+                await NotificationTemplateService(db).update_text(KEY_SMART_STUDY,enabled=False,
+                    text_uz='',text_ru='',text_tj='',updated_by=None)
+            if self.postgres:
+                async with self.sessions.begin() as admin: await disable(admin)
+            else: await disable(session)
+            return await original(session,actor,since,now)
+        self.options['coverage_reader']=pause
+        self.assertEqual((await self.claim())['reason'],'admin_study_disabled')
+        await self.no_grant()
+
+    async def test_admin_pause_preserves_original_receipt_and_default_gate(self):
+        grant=await self.claim()
+        self.assertTrue(grant['dispatch_allowed'])
+        async with self.sessions.begin() as s:
+            await NotificationTemplateService(s).update_text(KEY_SMART_STUDY,enabled=False,
+                text_uz='',text_ru='',text_tj='',updated_by=None)
+        result,_=await self.receipt(grant)
+        self.assertEqual(result['outcome'],'client_posted_unverified')
+        self.enabled=False
+        async with self.sessions.begin() as s:
+            await NotificationTemplateService(s).update_text(KEY_SMART_STUDY,enabled=True,
+                text_uz='',text_ru='',text_tj='',updated_by=None)
+        self.assertFalse((await self.claim())['dispatch_allowed'])
 
     async def receipt(self, grant, outcome='client_posted_unverified', *, body=None,status=200,uid=1):
         data = dict(version=1,grant_id=grant['grant_id'],receipt_id=str(uuid4()),local_epoch=self.epoch,outcome=outcome)
