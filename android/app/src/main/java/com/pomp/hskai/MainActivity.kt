@@ -1629,6 +1629,7 @@ private fun AppRoot(
                                 onConnectIdentity = identitiesViewModel::connect,
                                 onDisconnectIdentity = identitiesViewModel::disconnect,
                                 onIdentitiesBrowserOpened = identitiesViewModel::browserUrlOpened,
+                                onIdentityExternalLaunchFailed = identitiesViewModel::externalLaunchFailed,
                                 onCancelIdentityConnection = identitiesViewModel::cancelConnection,
                                 onReopenIdentityTelegram = identitiesViewModel::reopenTelegram,
                                 onSaveProfile = profileViewModel::saveProfile,
