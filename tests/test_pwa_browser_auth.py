@@ -1069,6 +1069,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as db:
             person = await db.get(User, 1)
             person.language = "tj"
+            person.created_at = datetime.now(timezone.utc) - timedelta(days=3)
             row = await BotFeedbackRepository(db).create_pending(person)
             feedback_id = row.id
             await db.commit()
@@ -1098,6 +1099,48 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             prepared.json()["ordinary"]["choices"],
             _pwa_feedback_choices("tj", paid=False),
         )
+
+    async def test_pwa_feedback_get_and_prepare_share_original_eligibility(self):
+        """A stale or too-new owner cannot see an ordinary prompt via GET."""
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+
+        async with self.sessions() as db:
+            owner = await db.get(User, 1)
+            row = await BotFeedbackRepository(db).create_pending(owner)
+            feedback_id = row.id
+            await db.commit()
+
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        get_url = "/api/v3/pwa/feedback/available"
+        post_url = "/api/v3/pwa/feedback/ordinary/prepare"
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        self.assertIsNone((await self.client.get(get_url)).json()["ordinary"])
+        self.assertIsNone((await self.client.post(
+            post_url, headers=headers, json={},
+        )).json()["ordinary"])
+
+        async with self.sessions() as db:
+            owner = await db.get(User, 1)
+            owner.created_at = datetime.now(timezone.utc) - timedelta(days=3)
+            owner.last_active_at = datetime.now(timezone.utc) - timedelta(days=8)
+            await db.commit()
+        self.assertIsNone((await self.client.get(get_url)).json()["ordinary"])
+        self.assertIsNone((await self.client.post(
+            post_url, headers=headers, json={},
+        )).json()["ordinary"])
+
+        async with self.sessions() as db:
+            owner = await db.get(User, 1)
+            owner.last_active_at = datetime.now(timezone.utc)
+            await db.commit()
+        fetched = await self.client.get(get_url)
+        self.assertEqual(fetched.status_code, 200, fetched.text)
+        self.assertEqual(fetched.json()["ordinary"]["feedback_id"], feedback_id)
+        prepared = await self.client.post(post_url, headers=headers, json={})
+        self.assertEqual(prepared.status_code, 200, prepared.text)
+        self.assertEqual(prepared.json()["ordinary"]["feedback_id"], feedback_id)
 
     async def test_pwa_feedback_administrator_reply_uses_current_linked_account(self):
         """Admin reply never tries a provider-only NULL or historical TG ID."""

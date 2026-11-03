@@ -213,6 +213,25 @@ def _pwa_feedback_choices(language: str, *, paid: bool) -> dict:
     }
 
 
+def _pwa_feedback_prompt_eligible(user, service, now) -> bool:
+    """Share the original bot's join/activity gates across PWA read and prepare.
+
+    PWA deliberately does not require an active Telegram transport: a verified
+    Google/Apple-only learner has the same canonical eligibility.
+    """
+    from app.services.bot_feedback_service import (
+        FEEDBACK_ACTIVE_WINDOW, FEEDBACK_JOIN_DELAY,
+    )
+
+    joined = service._aware(user.created_at)
+    active = service._aware(user.last_active_at)
+    return bool(
+        user.status != "blocked"
+        and joined is not None and joined <= now - FEEDBACK_JOIN_DELAY
+        and active is not None and active >= now - FEEDBACK_ACTIVE_WINDOW
+    )
+
+
 async def _small_json(request: Request, model, *, max_bytes: int = 1024):
     if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
         raise PwaAuthError("pwa_request_invalid", status_code=415)
@@ -1592,7 +1611,10 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 service = BotFeedbackService(db)
                 feedback = await BotFeedbackRepository(db).get_latest_pending_by_user(actor.id)
                 now = datetime.now(timezone.utc)
-                if not feedback or not service._is_prompt_due(feedback, now):
+                if (
+                    not _pwa_feedback_prompt_eligible(actor, service, now)
+                    or not feedback or not service._is_prompt_due(feedback, now)
+                ):
                     feedback = None
                 ordinary = ({
                     "feedback_id": feedback.id,
@@ -1657,9 +1679,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
         from datetime import datetime, timezone
         from sqlalchemy import select
         from app.db.models.user import User
-        from app.services.bot_feedback_service import (
-            BotFeedbackService, FEEDBACK_ACTIVE_WINDOW, FEEDBACK_JOIN_DELAY,
-        )
+        from app.services.bot_feedback_service import BotFeedbackService
         from app.services.user_access_state_service import UserAccessStateService
 
         try:
@@ -1679,14 +1699,8 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 )).scalar_one()
                 now = datetime.now(timezone.utc)
                 service = BotFeedbackService(db)
-                joined = service._aware(learner.created_at)
-                active = service._aware(learner.last_active_at)
                 feedback = None
-                if (
-                    learner.status != "blocked"
-                    and joined and joined <= now - FEEDBACK_JOIN_DELAY
-                    and active and active >= now - FEEDBACK_ACTIVE_WINDOW
-                ):
+                if _pwa_feedback_prompt_eligible(learner, service, now):
                     feedback = await service._get_or_create_due_feedback(learner, now)
                     if feedback and not service._is_prompt_due(feedback, now):
                         feedback = None
