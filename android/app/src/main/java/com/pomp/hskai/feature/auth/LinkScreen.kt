@@ -65,6 +65,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
+import com.pomp.hskai.core.auth.authActivity
 import com.pomp.hskai.core.auth.AuthProvider
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
@@ -96,6 +97,7 @@ fun LinkScreen(
     onSignInWithApple: () -> Unit = {},
     onBrowserUrlOpened: () -> Unit = {},
     onTelegramUrlOpened: () -> Unit = {},
+    onExternalLaunchFailed: (String) -> Unit = {},
     onDismissWaiting: () -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -104,8 +106,8 @@ fun LinkScreen(
     LaunchedEffect(state.pendingBrowserUrl) {
         val url = state.pendingBrowserUrl
         if (!url.isNullOrEmpty()) {
-            openCustomTab(context, url)
-            onBrowserUrlOpened()
+            if (openCustomTab(context, url)) onBrowserUrlOpened()
+            else onExternalLaunchFailed(url)
         }
     }
     // Telegram is handed over the same way: the view model publishes the bot
@@ -114,8 +116,8 @@ fun LinkScreen(
     LaunchedEffect(state.pendingTelegramUrl) {
         val url = state.pendingTelegramUrl
         if (!url.isNullOrEmpty()) {
-            openTelegram(context, url)
-            onTelegramUrlOpened()
+            if (openTelegram(context, url)) onTelegramUrlOpened()
+            else onExternalLaunchFailed(url)
         }
     }
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
@@ -572,16 +574,18 @@ private fun Tagline() {
 }
 
 /** Opens a provider page in a Custom Tab; the URL is server-built, never user input. */
-private fun openCustomTab(context: Context, url: String) {
-    if (!url.startsWith("https://")) return
+internal fun openCustomTab(context: Context, url: String): Boolean {
+    if (!url.startsWith("https://")) return false
     val intent = CustomTabsIntent.Builder().setShowTitle(true).build()
-    intent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    runCatching { intent.launchUrl(context, Uri.parse(url)) }
+    // Keep the provider in the host task so returning to its singleTask
+    // activity does not leave another browser task above the signed-in app.
+    if (context.authActivity() == null) intent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    return runCatching { intent.launchUrl(context, Uri.parse(url)); true }.getOrDefault(false)
 }
 
-private fun openTelegram(context: Context, deepLink: String) {
-    if (deepLink.isEmpty()) return
+internal fun openTelegram(context: Context, deepLink: String): Boolean {
+    if (deepLink.isEmpty()) return false
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(deepLink))
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    runCatching { context.startActivity(intent) }
+    if (context.authActivity() == null) intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    return runCatching { context.startActivity(intent); true }.getOrDefault(false)
 }

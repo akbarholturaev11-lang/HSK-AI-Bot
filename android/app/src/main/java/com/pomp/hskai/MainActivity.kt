@@ -309,6 +309,7 @@ private fun AppRoot(
                 onSignInWithApple = { viewModel.signInWithApple(AppLocale.current(localeHost)) },
                 onBrowserUrlOpened = viewModel::browserUrlOpened,
                 onTelegramUrlOpened = viewModel::telegramUrlOpened,
+                onExternalLaunchFailed = viewModel::externalLaunchFailed,
                 onDismissWaiting = viewModel::dismissWaiting,
             )
         }

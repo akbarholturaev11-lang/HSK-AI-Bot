@@ -58,12 +58,15 @@ import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.core.content.ContextCompat
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
@@ -74,7 +77,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
@@ -94,7 +96,6 @@ import com.pomp.hskai.R
 import com.pomp.hskai.feature.assistant.AssistantHidden
 import java.time.ZonedDateTime
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
 /**
@@ -151,7 +152,9 @@ fun WidgetInstallPromptScreen(
         }
     }
     LaunchedEffect(Unit) {
-        HskAiWidgetReceiver.placements.drop(1).collect {
+        // A placement may already be the StateFlow's first value when this
+        // effect subscribes. Provider IDs, not skipping an event, decide truth.
+        HskAiWidgetReceiver.placements.collect {
             installed = WidgetScheduler.hasWidgets(context)
         }
     }
@@ -501,9 +504,20 @@ private fun PromptWidget(session: WidgetSession, modifier: Modifier = Modifier) 
     val visual = WidgetVisualResolver.resolve(session, now)
     val copy = widgetCopy(context, session, access, visual)
     val shape = RoundedCornerShape(20.dp)
+    val palette = WidgetPandaArt.palette(false, visual)
+    // These shared backgrounds are Android <shape> gradients. Compose's
+    // painterResource accepts vectors/bitmaps only and crashes on a shape.
+    val background = remember(context, palette.background) {
+        requireNotNull(ContextCompat.getDrawable(context, palette.background)).mutate()
+    }
     Column(modifier=modifier.shadow(10.dp,shape).clip(shape)
-        .paint(painterResource(WidgetPandaArt.palette(false,visual).background),contentScale=ContentScale.FillBounds),horizontalAlignment=Alignment.CenterHorizontally) {
-        val palette=WidgetPandaArt.palette(false,visual)
+        .testTag("widget-install-preview")
+        .drawBehind {
+            drawIntoCanvas { canvas ->
+                background.setBounds(0, 0, size.width.toInt(), size.height.toInt())
+                background.draw(canvas.nativeCanvas)
+            }
+        },horizontalAlignment=Alignment.CenterHorizontally) {
         androidx.compose.ui.viewinterop.AndroidView(
             factory={ widgetHeaderViews(context,copy,false,false,palette).apply(context,android.widget.FrameLayout(context)) },
             update={ widgetHeaderViews(context,copy,false,false,palette).reapply(context,it) },
