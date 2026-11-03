@@ -381,6 +381,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('meta.name="apple-mobile-web-app-title"', checkout)
         self.assertIn('manifest.rel="manifest"', course)
         self.assertIn('manifest.rel="manifest"', checkout)
+        self.assertIn('glass.href="/course_v3_data/iphone-pwa-glass.css', checkout)
 
     async def test_shared_course_entry_needs_valid_pwa_session_and_flag(self):
         path = "/iphone-pwa/course"
