@@ -9,6 +9,8 @@ on:
       - codex/p3-main-integration-20261020
       - feat/iphone-pwa-browser-auth-p1-20261102
     paths:
+      - ".github/workflows/backend-ci.yml"
+      - "localization/baselines/reviewed_ui_changes.json"
       - "app/main.py"
       - "app/bot/handlers/start.py"
       - "app/bot/handlers/commands.py"
