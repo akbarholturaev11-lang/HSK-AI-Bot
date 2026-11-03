@@ -98,7 +98,7 @@ def audit_source(sources: dict[str, str], registry: dict) -> dict:
     # Browser-only identity keying must not make dropped literal calls invisible
     # to this audit. Telegram's original literal fallback is retained.
     if (
-        'function accessRef(create){var k=PWA_COURSE_HOST?' not in sources["course"]
+        'function accessRef(create){var k=PWA_COURSE_HOST?("hsk_mistake_review_ref:pwa:"+String(PWA_COURSE_USER_ID||"unbound")):"hsk_mistake_review_ref"' not in sources["course"]
         or 'sessionStorage.removeItem(PWA_COURSE_HOST?("hsk_mistake_review_ref:pwa:"+String(PWA_COURSE_USER_ID||"unbound")):"hsk_mistake_review_ref")'
         not in sources["course"]
     ):
