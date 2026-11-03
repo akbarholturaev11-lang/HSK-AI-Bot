@@ -265,20 +265,71 @@ function adoptOnboardingOptionCopy(){
 adoptOnboardingOptionCopy();
 var step=0,track="hsk30",sel="nhsk1",goalSel="hsk_exam",submitting=false,hasSavedTrack=false,userSelectedTrack=false;
 var HSK30_STATUS=null;
-var INIT_DATA=(tg&&tg.initData)||"";
+var PWA_ONBOARDING_HOST=location.pathname==="/iphone-pwa/onboarding";
+var PWA_ONBOARDING_SESSION=null,PWA_ONBOARDING_PROMISE=null;
+var INIT_DATA=PWA_ONBOARDING_HOST?"":((tg&&tg.initData)||"");
+function onboardingPwaActor(){
+  if(!PWA_ONBOARDING_HOST)return Promise.reject(new Error("pwa_host_required"));
+  if(!PWA_ONBOARDING_PROMISE){
+    PWA_ONBOARDING_PROMISE=fetch("/api/v3/pwa-auth/session",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    }).then(function(r){
+      if(r.status===401){location.replace("/iphone-pwa");throw new Error("pwa_session_required")}
+      if(!r.ok)throw new Error("pwa_session_unavailable");
+      return r.json();
+    }).then(function(s){
+      if(!s||s.ok!==true||!Number.isSafeInteger(Number(s.user_id))||
+         Number(s.user_id)<=0||typeof s.csrf!=="string"||!s.csrf)
+        throw new Error("pwa_session_invalid");
+      if(PWA_ONBOARDING_SESSION&&PWA_ONBOARDING_SESSION.user_id!==s.user_id){
+        location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
+      }
+      PWA_ONBOARDING_SESSION=s;return s;
+    }).catch(function(e){PWA_ONBOARDING_PROMISE=null;throw e});
+  }
+  return PWA_ONBOARDING_PROMISE;
+}
+function onboardingTrackRequest(){
+  if(!PWA_ONBOARDING_HOST)return fetch("/api/v3/course-tracks",{
+    headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"
+  });
+  return onboardingPwaActor().then(function(){
+    return fetch("/api/v3/pwa/course-tracks",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    });
+  });
+}
 try{
+  if(!PWA_ONBOARDING_HOST){
   var savedTrack=localStorage.getItem("hsk_v3_onb_track");
   var savedLevel=localStorage.getItem("hsk_v3_onb_level");
   var savedGoal=localStorage.getItem("hsk_v3_onb_goal");
   if(savedTrack==="hsk30"||savedTrack==="hsk20"){track=savedTrack;hasSavedTrack=true}
   if(savedLevel)sel=savedLevel;
   if(savedGoal&&GOALS.some(function(o){return o.k===savedGoal}))goalSel=savedGoal;
+  }
 }catch(e){}
 var pendingHsk30Draft=INIT_DATA&&track==="hsk30"?{level:sel,restore:hasSavedTrack}:null;
 if(pendingHsk30Draft){track="hsk20";sel="beginner"}
 var ONB_SESSION_ID=(function(){try{var k="hsk_v3_onb_session_id",v=sessionStorage.getItem(k);if(!v){v="onb-"+Date.now()+"-"+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v}catch(e){return"onb-"+Date.now()}})();
 function apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
-function postJson(url,body,signal,keepalive){return fetch(url,{method:"POST",headers:apiHeaders(),body:JSON.stringify(body),keepalive:keepalive!==false,signal:signal})}
+function postJson(url,body,signal,keepalive){
+  if(!PWA_ONBOARDING_HOST)return fetch(url,{
+    method:"POST",headers:apiHeaders(),
+    body:JSON.stringify(body),keepalive:keepalive!==false,signal:signal
+  });
+  if(url!=="/api/miniapp/onboarding")return Promise.reject(new Error("pwa_route_unavailable"));
+  var payload=Object.assign({},body||{});
+  delete payload.daily_time;delete payload.start_point;
+  delete payload.initData;delete payload.user_id;delete payload.telegram_id;
+  return onboardingPwaActor().then(function(actor){
+    return fetch("/api/v3/pwa/onboarding",{
+      method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":actor.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",
+      body:JSON.stringify(payload),signal:signal
+    });
+  });
+}
 function trackOnboardingEvent(event,payload){
   if(!INIT_DATA)return Promise.resolve({ok:false,skipped:true});
   payload=payload||{};
@@ -496,11 +547,18 @@ function confirmSavedOnServer(payload){
   var timeout=setTimeout(function(){if(controller)controller.abort()},5000);
   var query=new URLSearchParams();
   query.set("_",String(Date.now()));
-  return fetch("/api/miniapp/onboarding/status?"+query.toString(),{
-    headers:{"X-Telegram-Init-Data":INIT_DATA},
-    cache:"no-store",
+  var url=PWA_ONBOARDING_HOST?"/api/v3/pwa/onboarding/status?"+query.toString()
+       :"/api/miniapp/onboarding/status?"+query.toString();
+  var req=PWA_ONBOARDING_HOST?onboardingPwaActor().then(function(){
+    return fetch(url,{
+      credentials:"same-origin",cache:"no-store",redirect:"error",
+      signal:controller?controller.signal:undefined
+    });
+  }):fetch(url,{
+    headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store",
     signal:controller?controller.signal:undefined
-  }).then(function(response){
+  });
+  return req.then(function(response){
     if(!response.ok)throw new Error("save_status_http_"+response.status);
     return response.json();
   }).then(function(data){
@@ -545,7 +603,7 @@ function finish(){
     var lesson=Number(launch.lesson||1);
     if(isHsk30Level(sel)){query.delete("lesson");query.delete("autostart")}
     else if(lesson>0&&!launch.placement){query.set("lesson",String(lesson));query.set("autostart","1")}
-    location.href="/course-v3.html?"+query.toString()+location.hash;
+    location.href=(PWA_ONBOARDING_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString()+location.hash;
   }
   function fail(reason){
     saveNeedsVerification=true;
@@ -597,7 +655,7 @@ function finish(){
         reconcile(reason);
       });
   }
-  if(!INIT_DATA){go({ok:true,level:sel==="beginner"?"hsk1":sel,lesson:1,tab:"course",foundation_required:sel==="beginner"});return}
+  if(!INIT_DATA&&!PWA_ONBOARDING_HOST){go({ok:true,level:sel==="beginner"?"hsk1":sel,lesson:1,tab:"course",foundation_required:sel==="beginner"});return}
   if(saveNeedsVerification){
     // "Try again" first rechecks persistence; don't immediately repeat a successful POST.
     confirmSavedOnServer(payload).then(function(saved){
@@ -607,8 +665,8 @@ function finish(){
   }else submit();
 }
 trackOnboardingEvent("onboarding_started",{dedupe_key:"started:"+ONB_SESSION_ID,event_id:"started:"+ONB_SESSION_ID});
-if(INIT_DATA){
-  fetch("/api/v3/course-tracks",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"})
+if(INIT_DATA||PWA_ONBOARDING_HOST){
+  onboardingTrackRequest()
     .then(function(r){return r.ok?r.json():null})
     .then(function(d){
       if(!d||!d.ok)throw new Error("course_track_unavailable");
