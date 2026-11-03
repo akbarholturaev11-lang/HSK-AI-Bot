@@ -99,6 +99,18 @@ time is an observation, not a claimed lesson-start timestamp. Missing, conflicti
 or incomplete history keeps manual/saved/neutral fallback. No cadence/send or
 retention purge is activated by this passive preset. No per-refresh LLM call is made.
 
+The context reader's explicit `personal_time=True` option now owns this history
+extension for the widget and integrated queue/Android/Telegram paths. Recent
+history starts at the oldest eligible IANA calendar midnight, including DST;
+manual time and default explicit-window readers remain unchanged. Cadence may
+retain a wider caller-requested positive-history window, while its original
+ledger/negative-coverage boundary remains separate and cannot become complete
+from the extension. All integrated evaluations explicitly pass the approved
+habit calibration. This connects existing rules; it creates no producer or
+dispatch authority. A changed personal clock cancels an unattempted mismatched
+frozen job instead of moving its time or restoring its daily ownership.
+
+
 ## Response acceptance and lifecycle
 
 `widget_cache_reason` is a reference contract validator, not an installed
