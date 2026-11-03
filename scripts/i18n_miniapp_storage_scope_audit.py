@@ -22,6 +22,7 @@ STORAGE_CALL = re.compile(
 REQUIRED_KEY_FUNCTIONS = {
     "lessonDataKey", "lessonResumeKey", "lessonMasteryKey",
     "foundationCacheKey", "studySetupTimeKey", "memorizationStateKey",
+    "memoPrefKey",
 }
 
 
@@ -50,7 +51,7 @@ def audit_source(sources: dict[str, str], registry: dict) -> dict:
             raise ValueError("Unknown storage source alias in registry")
         for op in row.get("expected_operations", []):
             expected[(row["source"], row["storage"], row["key"], op)] += 1
-    if len(registry.get("literal_key_classes", [])) != 10:
+    if len(registry.get("literal_key_classes", [])) != 8:
         raise ValueError("Missing literal key classification")
 
     regressions = []
@@ -93,6 +94,22 @@ def audit_source(sources: dict[str, str], registry: dict) -> dict:
     if ('localStorage.getItem(memorizationStateKey())' not in sources["memorize"]
             or 'localStorage.setItem(memorizationStateKey(),' not in sources["memorize"]):
         regressions.append({"kind": "memorization_dynamic_key_access_changed"})
+
+    # Browser-only identity keying must not make dropped literal calls invisible
+    # to this audit. Telegram's original literal fallback is retained.
+    if (
+        'function accessRef(create){var k=PWA_COURSE_HOST?' not in sources["course"]
+        or 'sessionStorage.removeItem(PWA_COURSE_HOST?("hsk_mistake_review_ref:pwa:"+String(PWA_COURSE_USER_ID||"unbound")):"hsk_mistake_review_ref")'
+        not in sources["course"]
+    ):
+        regressions.append({"kind": "pwa_mistake_review_ref_scope_missing"})
+    if (
+        'function memoPrefKey(){return PWA_MEMORIZE_HOST?("hsk_memo_pref:"+localUserScope()):"hsk_memo_pref"}'
+        not in sources["memorize"]
+        or 'localStorage.getItem(memoPrefKey())' not in sources["memorize"]
+        or 'localStorage.setItem(memoPrefKey(),v)' not in sources["memorize"]
+    ):
+        regressions.append({"kind": "pwa_memo_preference_scope_missing"})
 
     return {
         "schema_version": 1,
