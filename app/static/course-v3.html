@@ -7377,7 +7377,8 @@ var RESOURCE=(function(){
       // Only explicitly ported pages may open under a verified PWA session.
       var safePaths={
         "/course_v3_recognition.html":"/iphone-pwa/practice/recognition",
-        "/course_v3_memorize.html":"/iphone-pwa/practice/memorize"
+        "/course_v3_memorize.html":"/iphone-pwa/practice/memorize",
+        "/course_v3_pronunciation.html":"/iphone-pwa/practice/pronunciation"
       };
       if(!safePaths[path]){
         toast(courseMessage("courseLoadError.title",LANG==="ru"?"Курс не загрузился":LANG==="tj"?"Курс бор нашуд":"Kurs yuklanmadi"),2600);
