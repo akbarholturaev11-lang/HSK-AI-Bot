@@ -9,6 +9,8 @@
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <title>HSK AI Pro</title>
 <style>
+html.hsk-pwa-browser input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.hsk-pwa-browser textarea,html.hsk-pwa-browser select{font-size:16px!important}
 :root{
   color-scheme:light;
   --bg:var(--hsk-paper);
@@ -370,6 +372,7 @@ try{tg?.ready?.();tg?.expand?.();}catch(e){}
 try{tg?.setHeaderColor?.("#ffffff");tg?.setBackgroundColor?.("#ffffff");}catch(e){}
 
 const PWA_CHECKOUT_HOST=location.pathname==="/iphone-pwa/checkout";
+if(PWA_CHECKOUT_HOST)document.documentElement.classList.add("hsk-pwa-browser");
 const API=PWA_CHECKOUT_HOST?{
   overview:"/api/v3/pwa/subscription/overview",
   paymentStatus:"/api/v3/pwa/subscription/payment-status",
