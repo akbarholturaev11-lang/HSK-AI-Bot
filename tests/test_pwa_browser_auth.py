@@ -914,7 +914,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         )).status_code, 422)
         self.assertEqual((await self.client.post(
             msg_url, headers=headers,
-            data={"session_id": "voice-1", "telegram_id": 999, "text": "你好"},
+            files={
+                "session_id": (None, "voice-1"),
+                "telegram_id": (None, "999"),
+                "text": (None, "你好"),
+            },
         )).status_code, 422)
         with patch(
             "app.services.voice_practice_service.VoicePracticeService.start_session",
@@ -939,7 +943,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(start.await_args.kwargs["language"], "uz")
             self.assertEqual(start.await_args.kwargs["level"], "hsk1")
             typed = await self.client.post(
-                msg_url, headers=headers, data={"session_id": "voice-1", "text": "你好"},
+                msg_url, headers=headers,
+                files={
+                    "session_id": (None, "voice-1"),
+                    "text": (None, "你好"),
+                },
             )
             self.assertEqual(typed.status_code, 200, typed.text)
             self.assertEqual(message.await_args.args[0].id, 1)
