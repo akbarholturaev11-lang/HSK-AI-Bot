@@ -1189,6 +1189,48 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"/iphone-pwa/practice/voice"', html)
         self.assertIn('PWA_COURSE_HOST?"/iphone-pwa/checkout":"/subscription.html"', course)
 
+    async def test_pwa_language_updates_canonical_learner_only_with_csrf(self):
+        path = "/api/v3/pwa/language"
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": ORIGIN}, json={"language": "tj"},
+        )).status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": ORIGIN}, json={"language": "tj"},
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            path, headers={**headers, "Origin": "https://not-us.example"},
+            json={"language": "tj"},
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            path, headers=headers, json={"language": "tg"},
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            path, headers=headers, json={"language": "tj", "user_id": 999},
+        )).status_code, 422)
+        response = await self.client.post(
+            path, headers=headers, json={"language": "tj"},
+        )
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json(), {"ok": True, "language": "tj"})
+        async with self.sessions() as db:
+            owner = await db.get(User, 1)
+            self.assertEqual(owner.language, "tj")
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.post(
+            path, headers=headers, json={"language": "uz"},
+        )).status_code, 503)
+
+    def test_original_language_picker_uses_same_pwa_session_and_preserves_telegram(self):
+        page = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        self.assertIn('"/api/v3/language":"/api/v3/pwa/language"', page)
+        self.assertIn('if(!INIT_DATA&&!PWA_COURSE_HOST)return;', page)
+        self.assertIn('_apiPost("/api/v3/language",{language:l})', page)
+        self.assertIn('"X-HSK-PWA-CSRF":actor.csrf', page)
+
     async def test_pwa_recognition_profile_uses_real_owner_level_and_progress(self):
         path = "/api/v3/pwa/practice/profile"
         self.assertEqual((await self.client.get(path)).status_code, 401)
