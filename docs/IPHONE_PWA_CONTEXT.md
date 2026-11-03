@@ -5,6 +5,14 @@
 
 ## 0. Restart snapshot — 2026-11-03 (authoritative; all historical notes below are snapshots)
 
+### Last PWA feedback owner/link and no-transport guards — 2026-11-03 (unreleased)
+
+- **Latest implementation HEAD `4a729cbbef6a62d546234d58c25c1c6c2dacf640`** on open Draft PR #257. This continues the canonical owner migration `0146_pwa_feedback_owner` (23-character Alembic revision) and leaves original TG transport optional.
+- `ea6e8cb` fixed `app/bot/handlers/feedback.py::_load_feedback_context` to authorize the callback's verified Telegram user by matching `feedback.user_id == user.id`, **not** by comparing an old nullable/stale feedback Telegram ID. This enables a PWA-originated pending bot feedback to continue safely after that same account explicitly links Telegram, and rejects a different verified Telegram account. The focused PWA integration test exercises both directions.
+- `4a729cb` fixed `BotFeedbackService.send_due_price_discount_offers` to load only the recorded `BotFeedback.user_id` rather than calling Telegram lookup with `None`. Missing Telegram transport is handled by the original skipped/marked-sent branch; no DM is sent to a guessed account. The targeted test creates due price feedback for a provider-only account and asserts **no** Telegram send and terminal skip. It does **not** invent an iPhone discount/push channel.
+- Latest code commits also guard `ReleaseFeedbackDelivery` mixed owner lists and retry/legacy-link behavior; the SQLite rehearsal was isolated, not evidence of PostgreSQL success. **All exact `4a729cb` CI workflows need final verification**; check the new Backend targeted/PWA test, Admin, native PostgreSQL, Android, Smart, localization. Do not call P2.6 done: actual provider-only PWA eligibility/HTTP response and Figma-based modal are still missing.
+- Independent `main` advanced to `c9898f7e0ee055e0e50c333a145f616e40e4e6e4` at later inspection and remains UNSYNCED. Do not sync automatically, push/merge/deploy or enable `PWA_AUTH_ENABLED`; preserve both Draft PRs and backup. Owner's real iPhone QA last.
+
 ### Canonical feedback legacy-to-PWA duplicate-send safety (2026-11-03; newest)
 
 - **Latest work HEAD `82daa349aa3a114325735ca054119a40a6070928`** (Draft PR #257). A provider-only learner's recorded `ReleaseFeedbackDelivery(user_id=... , user_telegram_id=NULL)` must not crash the original TG campaign sender's `list_delivery_user_ids` or be sent a second time after a real Telegram ID is linked. The repository now lists only non-NULL real Telegram transport IDs and separately lists canonical delivered `user_id` accounts; `ReleaseFeedbackService.target_users` excludes either previously targeted ID. Both lists are owner-scoped to the campaign. Existing Telegram-only sending/filtering/metrics unchanged; new PWA send channel remains OFF/unimplemented.
