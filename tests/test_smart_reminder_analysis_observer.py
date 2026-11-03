@@ -13,7 +13,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import select, text
 
 from app.api.smart_reminder import create_smart_reminder_router
-from app.services.smart_reminder_runtime import registered_runtime
+from app.services.smart_reminder_runtime import registered_runtime, build_rules_runtime
 from app.db.models.user import User
 from app.services.smart_reminder_analysis import (
     EVENT, MONTHLY, RAW_RETENTION, SmartReminderAnalysisObserver,
@@ -358,7 +358,7 @@ class LifespanObservationTests(unittest.IsolatedAsyncioTestCase):
                 reconcile_cancelled.set()
         observer = Mock(return_value=SimpleNamespace(run_retention=retention, run_reconciliation=reconciliation))
         namespace = {"asynccontextmanager": contextlib.asynccontextmanager, "FastAPI": object,
-            "registered_runtime": registered_runtime,
+            "registered_runtime": registered_runtime, "build_rules_runtime": build_rules_runtime,
             "asyncio": asyncio, "contextlib": contextlib, "init_db": AsyncMock(), "_seed_lessons": block,
             "dp": SimpleNamespace(start_polling=block), "bot": SimpleNamespace(session=SimpleNamespace(close=AsyncMock())),
             "_background_scheduler": block, "_desktop_auth_retention_scheduler": block,

@@ -84,8 +84,8 @@ async def render_telegram_content(session, actor, job, *, open_proof=None):
 async def send_telegram_content(bot, envelope):
     """No SQL/eligibility/retries here. The caller must hold committed authority.
 
-    This helper is not registered with a runtime producer or scheduler. Tests
-    inject a fake Bot through the same authorized dispatch callback.
+    The opt-in rules runtime registers this only behind persisted cohort and
+    dispatch checks. Tests inject a fake Bot at the same committed boundary.
     """
     content = envelope.content
     if content is None:

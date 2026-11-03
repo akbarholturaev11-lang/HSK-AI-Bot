@@ -1,10 +1,11 @@
-"""Explicit internal host registration; absent by default in production.
+"""Explicit reviewed-cohort runtime; disabled by default in production.
 
 Supplied readers/transport are privileged dependencies, never client evidence.
 This module does not establish fencing, complete learning or live calibration.
 """
 import asyncio
 from datetime import datetime, timedelta, timezone
+from functools import partial
 import logging
 from zoneinfo import ZoneInfo
 
@@ -12,12 +13,15 @@ from sqlalchemy import and_, or_, select
 
 from app.db.models.smart_reminder import SmartReminderRouting
 from app.db.models.user import User
-from app.services.smart_reminder_android import SmartReminderAndroidService
+from app.services.smart_reminder_android import SmartReminderAndroidService, read_android_admission
+from app.services.smart_reminder_cadence import OBSERVED_RULES
 from app.services.smart_reminder_planner import PlanningResult, SmartReminderPlanner
 from app.services.smart_reminder_policy import _aware_utc, day_window
+from app.services.smart_reminder_policy_context import read_observed_learning
 from app.services.smart_reminder_preferences import SmartReminderPreferencesService, _utc
 from app.services.smart_reminder_shadow_queue import JOB
 from app.services.smart_reminder_shadow_worker import SmartReminderShadowWorker
+from app.services.smart_reminder_telegram_content import send_telegram_content
 
 
 logger = logging.getLogger(__name__)
@@ -167,6 +171,21 @@ def registered_runtime(app, settings, sessions):
     if (isinstance(runtime, SmartReminderRuntime) and runtime.settings is settings and
             runtime.sessions is sessions and (runtime._host is None or runtime._host is app)):
         return runtime
+
+
+def build_rules_runtime(settings, sessions, bot):
+    """D25 profile and actual readers; creates no consent, cohort or review.
+
+    A single shared startup switch selects the runtime. Existing persisted
+    cohort/fencing and the separate Telegram transport switch remain required.
+    """
+    if getattr(settings, 'SMART_REMINDER_ENABLED', False) is not True:
+        return None
+    window = timedelta(days=30)
+    return SmartReminderRuntime(settings, sessions, enabled=True, calibration=OBSERVED_RULES,
+        history_window=window, coverage_reader=read_observed_learning,
+        android_admission_reader=partial(read_android_admission, history_window=window),
+        telegram_send=partial(send_telegram_content, bot))
 
 
 def android_delivery(app, session, settings, sessions):

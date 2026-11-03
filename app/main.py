@@ -109,7 +109,7 @@ from app.api.android_update import create_android_update_router
 from app.api.android_push import create_android_push_router
 from app.api.smart_reminder import create_smart_reminder_router
 from app.services.smart_reminder_shadow_worker import SmartReminderShadowWorker
-from app.services.smart_reminder_runtime import registered_runtime, android_delivery
+from app.services.smart_reminder_runtime import registered_runtime, android_delivery, build_rules_runtime
 from app.services.smart_reminder_analysis import SmartReminderAnalysisObserver
 from app.api.app_downloads import create_app_downloads_router
 from app.public_site.app_downloads_render import (
@@ -626,8 +626,12 @@ async def lifespan(app: FastAPI):
     seed_task = asyncio.create_task(_seed_lessons())        # background seeding
     polling_task = asyncio.create_task(dp.start_polling(bot))
     scheduler_task = asyncio.create_task(_background_scheduler(bot))
-    # Explicit code-owned registration only; absent in production by default.
+    # Reviewed ordinary rules; startup remains disabled unless explicitly set.
     smart_runtime = registered_runtime(app, settings, async_session_maker)
+    if smart_runtime is None:
+        smart_runtime = build_rules_runtime(settings, async_session_maker, bot)
+        if smart_runtime is not None:
+            app.state.smart_reminder_runtime = smart_runtime
     if smart_runtime is not None:
         smart_runtime.bind(app)
     smart_runtime_task = (asyncio.create_task(smart_runtime.run())
