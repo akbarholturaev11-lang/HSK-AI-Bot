@@ -81,7 +81,8 @@ html.hsk-pwa-browser #paywall .si {
 .hsk-pwa-notice-scrim{position:absolute;inset:0;background:rgba(28,25,23,.36);
   -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
 .hsk-pwa-notice-card{position:relative;isolation:isolate;width:100%;max-width:420px;
-  max-height:min(690px,90dvh);display:flex;flex-direction:column;overflow:hidden;
+  max-height:min(690px,calc(100dvh - 44px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));
+  display:flex;flex-direction:column;overflow:hidden;
   padding:20px 16px 18px;border-radius:28px;border:1px solid rgba(255,255,255,.86);
   background:var(--hsk-paper);box-shadow:0 20px 60px rgba(33,29,23,.22),
   inset 0 1px 1px rgba(255,255,255,.95)}
@@ -147,7 +148,8 @@ html.hsk-pwa-browser .pwa-feedback-button i{font-size:21px}
 .hsk-pwa-feedback-scrim{position:absolute;inset:0;background:rgba(28,25,23,.36);
   -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
 .hsk-pwa-feedback-card{position:relative;width:100%;max-width:420px;
-  max-height:min(720px,90dvh);overflow-y:auto;overscroll-behavior:contain;
+  max-height:min(720px,calc(100dvh - 40px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));
+  overflow-y:auto;overscroll-behavior:contain;
   border:1px solid rgba(255,255,255,.83);border-radius:28px;
   background:var(--hsk-paper);padding:20px 18px 17px;
   box-shadow:0 20px 55px rgba(33,29,23,.2),inset 0 1px rgba(255,255,255,.94)}
