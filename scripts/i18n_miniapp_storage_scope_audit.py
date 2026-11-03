@@ -51,7 +51,7 @@ def audit_source(sources: dict[str, str], registry: dict) -> dict:
             raise ValueError("Unknown storage source alias in registry")
         for op in row.get("expected_operations", []):
             expected[(row["source"], row["storage"], row["key"], op)] += 1
-    if len(registry.get("literal_key_classes", [])) != 8:
+    if len(registry.get("literal_key_classes", [])) != 9:
         raise ValueError("Missing literal key classification")
 
     regressions = []

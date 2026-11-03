@@ -14,6 +14,21 @@ ROOT = Path(__file__).resolve().parents[1]
 REVIEW = ROOT / "localization/baselines/reviewed_ui_changes.json"
 
 
+def inline_course_locale_lines(html):
+    """Return the original inline display dictionaries by locale, independent of line numbers."""
+    start = html.index("var I18N={")
+    end = html.index("\n};", start)
+    region = html[start:end]
+    result = {}
+    for locale in ("ru", "uz", "tj"):
+        matches = [line for line in region.splitlines()
+                   if line.lstrip().startswith(locale + ":{")]
+        if len(matches) != 1:
+            raise AssertionError(f"Expected one inline {locale} course dictionary, found {len(matches)}")
+        result[locale] = matches[0]
+    return result
+
+
 class ReviewedCommonUIAdoptionTests(unittest.TestCase):
     def test_exact_approved_original_and_new_ui_blobs(self):
         approved = json.loads(REVIEW.read_text(encoding="utf-8"))
@@ -371,11 +386,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertNotIn('fetch("/api/i18n/', html)
         # Validate generated values against the actual original inline UI copy,
         # rather than relying on the extracted JSON alone.
-        legacy = {
-            "ru": html.splitlines()[1712],
-            "uz": html.splitlines()[1713],
-            "tj": html.splitlines()[1714],
-        }
+        legacy = inline_course_locale_lines(html)
         for locale, inline in legacy.items():
             catalog = json.loads(
                 (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
@@ -395,7 +406,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         expected_sites = {
         "dict": 2,
         "dictSub": 1,
@@ -426,8 +436,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             with self.subTest(ui_key=key):
                 self.assertEqual(html.count('courseMessage("' + key + '",'), count)
         # All selected values match the three current, unchanged inline catalogs.
-        lines = html.splitlines()
-        legacy = {"ru": lines[1712], "uz": lines[1713], "tj": lines[1714]}
+        legacy = inline_course_locale_lines(html)
         for locale, source in legacy.items():
             catalog = json.loads(
                 (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
@@ -452,7 +461,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         expected_counts = {
             "unit": 1, "lessons": 1, "cont": 6, "repeat": 1,
             "stage": 1, "completeOf": 1,
@@ -468,10 +476,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertEqual(
             html.count('courseMessage("nav."+s.dataset.i,T().nav[s.dataset.i])'), 1
         )
-        legacy = {
-            "ru": html.splitlines()[1712], "uz": html.splitlines()[1713],
-            "tj": html.splitlines()[1714],
-        }
+        legacy = inline_course_locale_lines(html)
         nav_keys = ("nav.course", "nav.mashq", "nav.profile",
                     "nav.rating", "nav.voice")
         for locale, source in legacy.items():
@@ -498,7 +503,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         source = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(source.split("\n")), 9294)
         selections = {
             "buildSent": 1, "dialog": 1, "listen": 2, "matchPairs": 1,
             "say": 6, "check": 2, "next": 2, "rightAns": 1,
@@ -515,9 +519,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                     'courseMessage("' + key + '",t.' + key + ')'
                 ), count)
 
-        old_copy = {"ru": source.splitlines()[1712],
-                    "uz": source.splitlines()[1713],
-                    "tj": source.splitlines()[1714]}
+        old_copy = inline_course_locale_lines(source)
         for locale, line in old_copy.items():
             reviewed = json.loads((ROOT / f"localization/ui/{locale}/course.json")
                                   .read_text(encoding="utf-8"))["messages"]
@@ -544,7 +546,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         expected = {
             "planTitle": 1, "planBody": 1, "planPay": 1, "planFree": 1,
             "trialOn": 1, "trialFail": 2, "trialCta": 2,
@@ -553,8 +554,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         for key, count in expected.items():
             with self.subTest(key=key):
                 self.assertEqual(html.count('courseMessage("' + key + '",'), count)
-        for locale, line_no in (("ru", 1712), ("uz", 1713), ("tj", 1714)):
-            old_copy = html.splitlines()[line_no]
+        for locale, old_copy in inline_course_locale_lines(html).items():
             catalog = json.loads((ROOT / f"localization/ui/{locale}/course.json")
                                  .read_text(encoding="utf-8"))["messages"]
             for key in expected:
@@ -577,7 +577,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         from_global = {"correct": 9, "wrong": 6}
         from_local = {
             "trialLeft": 1, "trialLeftHours": 1, "trialLeftSoon": 2,
@@ -593,8 +592,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                 self.assertEqual(html.count(
                     'courseMessage("' + key + '",t.' + key + ')'
                 ), count)
-        for locale, index in (("ru", 1712), ("uz", 1713), ("tj", 1714)):
-            inline = html.splitlines()[index]
+        for locale, inline in inline_course_locale_lines(html).items():
             msgs = json.loads(
                 (ROOT / f"localization/ui/{locale}/course.json").read_text(
                     encoding="utf-8")
@@ -629,7 +627,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         body = html.split("function profileCopy(){", 1)[1].split(
             "function loadProfileDetail(){", 1
         )[0]
@@ -664,7 +661,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         picker = html.split("function coursePickerCopy(){", 1)[1].split(
             "function coursePickerSavedLevel(", 1
         )[0]
@@ -709,7 +705,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         for function, prefix in (("authGateCopy", "authGate"),
                                  ("blockedGateCopy", "blockedGate")):
             view = html.split("function " + function + "(){", 1)[1].split(
@@ -752,7 +747,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         groups = (
             ("confirmNotifOff:function(){", "\n  avatarEdit:function()",
              "notificationsOff", ("title", "body", "keep", "off"), "w"),
@@ -795,7 +789,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         schedule = html.split("function notifTimesHtml(){", 1)[1].split(
             "\nvar SHEET_RETURN_FOCUS=", 1)[0]
         self.assertIn("var legacy=", schedule)
@@ -836,7 +829,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         cases = (
             ("showCourseLoadError(){", "\nfunction showCourseMapFailure(",
              "courseLoadError", ("title", "body", "btn"), "c"),
@@ -882,7 +874,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         view = html.split("  levelPicker:function(){", 1)[1].split(
             "\n  courseTrackPicker:function()", 1
         )[0]
@@ -921,7 +912,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         groups = (("GRT", "grammarTutor",
                    ("teacher", "structure", "negation", "next", "done", "intro")),
                   ("BST", "beginnerIntro",
@@ -965,7 +955,6 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.split("\n")), 9294)
         groups = (
             ("partSections", ("w","p","s","r","d","x"), "m", "function partSecs(l){", "var m=", ";m={"),
             ("levelUp", ("cont","lessonH","lessonP","cpH","cpP","acc","combo","levelH","levelP","opened","xpH","xpP","lvl","bonusXp","chest"), "lu", "showLevelUp:function(type,data,extra){", "var lu=", ";lu={"),

@@ -95,6 +95,16 @@
       ],
       "category": "navigation_return_flag",
       "account_data_review": false
+    },
+    {
+      "source": "course",
+      "storage": "sessionStorage",
+      "key": "hskai.pwa.telegram.pending",
+      "expected_operations": [
+        "removeItem"
+      ],
+      "category": "ephemeral_pwa_telegram_link_request_cleanup",
+      "account_data_review": true
     }
   ],
   "dynamic_key_contracts": [
@@ -158,13 +168,13 @@
   ],
   "limitations": "Source key inventory only. Does not prove data leak, browser origin shared between Telegram sessions, user authorization, expiry behavior, race conditions, or existing device artifacts; no sensitive contents or user identifiers emitted.",
   "pwa_dynamic_storage_review": {
-    "reason": "PWA branch moves mistake access_ref removal from a quoted literal to a user-scoped ternary and moves memorize preference from a quoted literal to memoPrefKey(). Neither is a dropped operation; both require explicit source guard and identity-switch QA.",
+    "reason": "PWA branch moves mistake access_ref removal from a quoted literal to a user-scoped ternary and moves memorize preference from a quoted literal to memoPrefKey(). Neither is a dropped operation; both require explicit source guard and identity-switch QA. PWA course logout also clears the pre-existing Telegram link request id from the same-tab session store; this explicit cleanup is separately classified.",
     "moved_literal_keys": [
       "course:sessionStorage:hsk_mistake_review_ref",
       "memorize:localStorage:hsk_memo_pref"
     ],
-    "remaining_literal_keys": 8,
-    "remaining_literal_calls": 17,
+    "remaining_literal_keys": 9,
+    "remaining_literal_calls": 18,
     "dynamic_functions": 7
   }
 }

@@ -15,6 +15,17 @@ from scripts.i18n_build_course_catalogs import (
 )
 
 
+def lines_containing(source: str, marker: str) -> list[str]:
+    return [line for line in source.splitlines() if marker in line]
+
+
+def unique_line_containing(source: str, marker: str) -> str:
+    matches = lines_containing(source, marker)
+    if len(matches) != 1:
+        raise AssertionError(f"Expected one source line containing {marker!r}, found {len(matches)}")
+    return matches[0]
+
+
 class CourseLocalCatalogTests(unittest.TestCase):
     def test_reviewed_978_keys_and_six_generated_targets(self):
         catalogs = read_sources(ROOT)
@@ -80,47 +91,56 @@ class CourseLocalCatalogTests(unittest.TestCase):
         """P2 recovery copy: bundled local texts, unchanged legacy fallbacks and anchors."""
         catalogs = read_sources(ROOT)
         source = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        lines = source.splitlines()
         anchors = {
-            4144: ("foundation.unavailable",),
-            4150: ("foundation.zeroTitle", "foundation.internetRetry"),
-            4151: ("foundation.retry",),
-            4455: ("lessonFlow.retry",),
-            4509: ("lessonFlow.notReady",),
+            'courseMessage("foundation.unavailable",': ("foundation.unavailable",),
+            'courseMessage("foundation.internetRetry",': (
+                "foundation.zeroTitle", "foundation.internetRetry",
+            ),
+            'courseMessage("foundation.retry",': ("foundation.retry",),
+            'courseMessage("lessonFlow.retry",': ("lessonFlow.retry",),
+            'courseMessage("lessonFlow.notReady",': ("lessonFlow.notReady",),
         }
-        for line, keys in anchors.items():
+        for marker, keys in anchors.items():
+            line = unique_line_containing(source, marker)
             for key in keys:
-                with self.subTest(line=line, key=key):
-                    self.assertIn('courseMessage("' + key + '",LANG==="ru"?', lines[line - 1])
+                with self.subTest(marker=marker, key=key):
+                    self.assertIn('courseMessage("' + key + '",LANG==="ru"?', line)
                     for locale in LOCALES:
-                        self.assertIn(catalogs[locale][key], lines[line - 1])
-        self.assertIn('esc(courseMessage("foundation.internetRetry"', lines[4150 - 1])
-        self.assertIn('esc(courseMessage("foundation.retry"', lines[4151 - 1])
-        self.assertIn("setLessonFlowControls();flowDone()", lines[4456 - 1])
+                        self.assertIn(catalogs[locale][key], line)
+        self.assertIn('esc(courseMessage("foundation.internetRetry"',
+                      unique_line_containing(source, 'courseMessage("foundation.internetRetry",'))
+        self.assertIn('esc(courseMessage("foundation.retry"',
+                      unique_line_containing(source, 'courseMessage("foundation.retry",'))
+        self.assertIn("setLessonFlowControls();flowDone()",
+                      unique_line_containing(source, "setLessonFlowControls();flowDone()"))
 
     def test_practice_preparing_foundation_save_and_resource_loading_copy(self):
         """Offline catalog keeps exact legacy UI fallback and stable result flow."""
         catalogs = read_sources(ROOT)
-        lines = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8").splitlines()
+        source = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         anchors = {
-            3570: "practice.preparing",
-            3576: "practice.checkingAccess",
-            4218: "foundation.saving",
-            4226: "foundation.retrySave",
-            4228: "foundation.saveFailed",
-            5332: "foundation.zeroTitle",
-            7380: "resourceFrame.loading",
+            'courseMessage("practice.preparing",': "practice.preparing",
+            'courseMessage("practice.checkingAccess",': "practice.checkingAccess",
+            'courseMessage("foundation.saving",': "foundation.saving",
+            'courseMessage("foundation.retrySave",': "foundation.retrySave",
+            'courseMessage("foundation.saveFailed",': "foundation.saveFailed",
+            'courseMessage("foundation.zeroTitle",': "foundation.zeroTitle",
+            'courseMessage("resourceFrame.loading",': "resourceFrame.loading",
         }
-        for line, key in anchors.items():
-            with self.subTest(line=line, key=key):
-                self.assertIn('courseMessage("' + key + '",LANG==="ru"?', lines[line - 1])
+        for marker, key in anchors.items():
+            matching_lines = lines_containing(source, marker)
+            self.assertTrue(matching_lines, f"Missing source marker: {marker}")
+            with self.subTest(marker=marker, key=key):
+                self.assertTrue(any('courseMessage("' + key + '",LANG==="ru"?' in line
+                                    for line in matching_lines))
                 for locale in LOCALES:
-                    self.assertIn(catalogs[locale][key], lines[line - 1])
+                    self.assertTrue(any(catalogs[locale][key] in line
+                                        for line in matching_lines))
         # The server-owned Foundation result decision and retry/timeout are unchanged.
-        self.assertIn('result.ok!==true', lines[4224 - 1])
-        self.assertIn('Foundation.finishing=false', lines[4225 - 1])
-        self.assertIn('2800);return;', lines[4228 - 1])
-        self.assertIn('esc(copy)', lines[3577 - 1])
+        self.assertIn('if(!result||result.ok!==true){\n      Foundation.finishing=false;', source)
+        self.assertIn('2800);return;',
+                      unique_line_containing(source, 'courseMessage("foundation.saveFailed",'))
+        self.assertIn('esc(copy)', unique_line_containing(source, 'esc(copy)'))
 
     def test_course_bundle_cache_version_is_content_addressed_on_every_page(self):
         """Every static consumer must invalidate its cache on generated content changes."""

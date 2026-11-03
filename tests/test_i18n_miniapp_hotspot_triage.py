@@ -20,6 +20,13 @@ COPY_CATEGORIES = {
 NONCOPY_CATEGORIES = {"locale_adapter", "locale_grammar", "tts_language_adapter"}
 
 
+def unique_source_line(lines, marker):
+    matches = [line for line in lines if marker in line]
+    if len(matches) != 1:
+        raise AssertionError(f"Expected one course source line containing {marker!r}, found {len(matches)}")
+    return matches[0]
+
+
 class CourseHotspotTriageTests(unittest.TestCase):
     def test_manually_reviewed_source_anchors_remain_current(self):
         triage = json.loads(TRIAGE.read_text(encoding="utf-8"))
@@ -115,7 +122,6 @@ class CourseHotspotTriageTests(unittest.TestCase):
                 for locale, value in (("uz", uz), ("ru", ru), ("tj", tj)):
                     self.assertEqual(catalogs[locale][key], value)
                     self.assertEqual(len(catalogs[locale]), 978)
-        self.assertEqual(len(html.split("\n")), 9294)
         self.assertIn("challengeSending=false", html)
         self.assertIn("ratingRetryText()", html)
 
@@ -170,7 +176,6 @@ class CourseHotspotTriageTests(unittest.TestCase):
                 for locale, value in zip(("uz", "ru", "tj"), values):
                     self.assertEqual(catalogs[locale][key], value)
                     self.assertEqual(len(catalogs[locale]), 978)
-        self.assertEqual(len(html.split("\n")), 9294)
 
     def test_remaining_shared_lesson_labels_use_local_first_catalog(self):
         """Keep exact inline translations as fallback for the remaining shared labels."""
@@ -186,29 +191,28 @@ class CourseHotspotTriageTests(unittest.TestCase):
             "say": ("Talaffuz qiling", "Произнесите", "Талаффуз кунед"),
             "today.go": ("Reja bo'yicha davom etish", "Продолжить по плану", "Идома аз рӯи нақша"),
         }
-        anchors = {
-            2913: 'cont:courseMessage("cont",T().cont)',
-            5134: 'courseMessage("cont",T().cont):courseMessage("check",T().check)',
-            5212: 'courseMessage("cont",T().cont)',
-            5403: 'courseMessage("cont",T().cont)',
-            5444: 'courseMessage("grammar",T().grammar)',
-            5608: 'esc(courseMessage("say",T().say))',
-            5034: 'esc(courseMessage("today.go",todayT().go))',
-        }
-        for line_no, anchor in anchors.items():
-            with self.subTest(line=line_no):
-                self.assertIn(anchor, lines[line_no - 1])
+        anchors = (
+            'cont:courseMessage("cont",T().cont)',
+            'courseMessage("cont",T().cont):courseMessage("check",T().check)',
+            'courseMessage("cont",T().cont)',
+            'courseMessage("grammar",T().grammar)',
+            'esc(courseMessage("say",T().say))',
+            'esc(courseMessage("today.go",todayT().go))',
+        )
+        for anchor in anchors:
+            with self.subTest(anchor=anchor):
+                self.assertTrue(any(anchor in line for line in lines),
+                                f"Missing source anchor: {anchor}")
         for key, values in expected.items():
             for lang, value in zip(("uz", "ru", "tj"), values):
                 with self.subTest(key=key, locale=lang):
                     self.assertEqual(catalogs[lang][key], value)
                     self.assertEqual(len(catalogs[lang]), 978)
-        self.assertEqual(len(lines), 9293)
 
     def test_foundation_pronunciation_labels_use_local_first_catalog(self):
         """Centralize the two labels while keeping Chinese and pinyin content intact."""
         lines = SOURCE.read_text(encoding="utf-8").splitlines()
-        source_line = lines[5423 - 1]
+        source_line = unique_source_line(lines, 'ex.pinyin||"nǐ hǎo"')
         expected = {
             "foundation.writtenForm": ("yozilishi", "на письме", "навишт"),
             "foundation.naturalPronunciation": (
@@ -227,7 +231,6 @@ class CourseHotspotTriageTests(unittest.TestCase):
                     self.assertEqual(len(catalog), 978)
         self.assertIn('ex.pinyin||"nǐ hǎo"', source_line)
         self.assertIn('c.natural_pinyin||"ní hǎo"', source_line)
-        self.assertEqual(len(lines), 9293)
 
 if __name__ == "__main__":
     unittest.main()
