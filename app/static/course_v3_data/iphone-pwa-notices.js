@@ -42,6 +42,7 @@
   var interruptRetries = 0;
   var checkGeneration = 0;
   var lastResumeCheck = 0;
+  var displayedPaymentId = null;
 
   // These strings are already authored in the shared UZ/RU/TJ catalogs.
   // Do not create a second per-page translation dictionary.
@@ -87,9 +88,10 @@
       ? url + "&plan=" + encodeURIComponent(pay.plan_type) : url;
   }
   function markDismissed() {
-    var payment = latestData && latestData.account && latestData.account.payment_action;
-    if (activeMode !== "urgent" || !payment || !owner) return;
-    var key = dismissedKey(payment.payment_id);
+    // Freeze the exact receipt the user actually saw. An async refresh may
+    // replace latestData with a newer receipt while this dialog remains open.
+    if (activeMode !== "urgent" || !displayedPaymentId || !owner) return;
+    var key = dismissedKey(displayedPaymentId);
     inMemoryDismissals.add(key);
     try { localStorage.setItem(key, "1"); } catch (_) { /* Safari private mode */ }
   }
@@ -99,11 +101,15 @@
     markDismissed();
     overlay.hidden = true;
     activeMode = null;
+    displayedPaymentId = null;
     if (lastFocus && lastFocus.isConnected && typeof lastFocus.focus === "function") lastFocus.focus();
   }
   function openMode(mode) {
     if (overlay.hidden) lastFocus = document.activeElement;
     activeMode = mode;
+    displayedPaymentId = mode === "urgent" && latestData && latestData.account &&
+      latestData.account.payment_action
+      ? latestData.account.payment_action.payment_id : null;
     overlay.hidden = false;
     var t = labels();
     var isUrgent = mode === "urgent";
@@ -264,6 +270,12 @@
       var data = await fetchData();
       if (check !== checkGeneration) return;
       var action = data.account && data.account.payment_action;
+      // If a newer pending/approved receipt supersedes the reviewed rejection,
+      // do not leave a stale payment dialog on screen after Safari resumes.
+      if (activeMode === "urgent" && (!action || action.payment_id !== displayedPaymentId ||
+          action.status !== "rejected")) {
+        close();
+      }
       if (action && action.status === "rejected" && owner &&
           !wasDismissed(action.payment_id)) {
         urgentPending = action;
