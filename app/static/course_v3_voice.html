@@ -345,6 +345,19 @@ function voiceMessage(fd){
     });
   });
 }
+// Re-authenticate on Home Screen resume/BFCache restore; never treat a
+// cached browser actor or app screenshot as proof of an active session.
+function verifyPwaReturn(){
+  if(!PWA_VOICE_HOST)return;
+  PWA_VOICE_PROMISE=null;
+  voicePwaActor().catch(function(){location.replace("/iphone-pwa")});
+}
+if(PWA_VOICE_HOST){
+  window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()});
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState==="visible")verifyPwaReturn();
+  });
+}
 var PERS={bao:{role:"friend",voice:"female",name:L.baoName},li:{role:"teacher_li",voice:"male",name:L.liName}};
 var persona="bao";
 var ME={level:"hsk1",language:LANG,is_paid:false};
