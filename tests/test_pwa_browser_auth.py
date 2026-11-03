@@ -629,6 +629,97 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"/course_v3_pronunciation.html":"/iphone-pwa/practice/pronunciation"', course)
         self.assertIn('if(!PWA_PRONUNCIATION_HOST&&window.CourseAds)', source)
 
+    async def test_pwa_mistakes_review_reuses_canonical_engine_and_scored_xp(self):
+        path = "/iphone-pwa/practice/mistakes"
+        self.assertEqual((await self.client.get(path, follow_redirects=False)).status_code, 303)
+        self.assertEqual((await self.client.get("/api/v3/pwa/mistakes")).status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        page = await self.client.get(path)
+        self.assertEqual(page.status_code, 200, page.text[:160])
+        self.assertEqual(page.headers.get("cache-control"), "no-store")
+        self.assertEqual(page.headers.get("x-frame-options"), "DENY")
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        with patch(
+            "app.services.course_mistake_service.CourseMistakeService.overview",
+            new_callable=AsyncMock,
+        ) as overview:
+            overview.return_value = {
+                "ok": True, "items": [], "targets": [],
+                "summary": {"total": 0, "categories": {}},
+            }
+            inline = await self.client.get("/api/v3/pwa/mistakes?limit=30&offset=0")
+            standalone = await self.client.get(
+                "/api/v3/pwa/mistakes?view=targets&lang=uz&limit=30",
+            )
+            self.assertEqual(inline.status_code, 200, inline.text)
+            self.assertEqual(standalone.status_code, 200, standalone.text)
+            self.assertEqual(overview.await_args.args[0].id, 1)
+            self.assertEqual(overview.await_args.kwargs["view"], "targets")
+
+        start_url = "/api/v3/pwa/mistakes/review/start"
+        payload = {"ad_supported": False, "access_ref": "pwa-review-1"}
+        self.assertEqual((await self.client.post(
+            start_url, headers={"Origin": ORIGIN}, json=payload,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            start_url, headers={**headers, "Origin": "https://attacker.test"}, json=payload,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            start_url, headers=headers, json={**payload, "telegram_id": 1001},
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            start_url, headers={**headers, "X-Telegram-Init-Data": "forged"},
+            json=payload,
+        )).status_code, 422)
+
+        with patch(
+            "app.services.course_mistake_service.CourseMistakeService.start_review",
+            new_callable=AsyncMock,
+        ) as start, patch(
+            "app.services.course_mistake_service.CourseMistakeService.answer_review_question",
+            new_callable=AsyncMock,
+        ) as answer, patch(
+            "app.services.course_mistake_service.CourseMistakeService.complete_review",
+            new_callable=AsyncMock,
+        ) as complete:
+            start.return_value = {"ok": True, "session": {"id": "review-1", "questions": [{}]}}
+            answer.return_value = {"ok": True, "selected_index": 1, "correct": True}
+            complete.return_value = {"ok": True, "score": 1, "reward": {"awarded_xp": 10}}
+            opened = await self.client.post(start_url, headers=headers, json=payload)
+            self.assertEqual(opened.status_code, 200, opened.text)
+            self.assertEqual(start.await_args.args[0].id, 1)
+            self.assertIs(start.await_args.kwargs["ad_supported"], False)
+            marked = await self.client.post(
+                "/api/v3/pwa/mistakes/review/answer", headers=headers,
+                json={"session_id": "review-1", "question_id": "q1", "selected_index": 1},
+            )
+            self.assertEqual(marked.status_code, 200, marked.text)
+            self.assertEqual(answer.await_args.args[0].id, 1)
+            graded = await self.client.post(
+                "/api/v3/pwa/mistakes/review/complete", headers=headers,
+                json={"session_id": "review-1", "answers": []},
+            )
+            self.assertEqual(graded.status_code, 200, graded.text)
+            self.assertEqual(graded.json()["reward"]["awarded_xp"], 10)
+            self.assertEqual(complete.await_args.args[0].id, 1)
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.get(path)).status_code, 503)
+
+    def test_mistakes_pwa_stays_in_original_course_and_reads_real_server_xp(self):
+        course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        child = (Path("app/static") / "course_v3_mistakes.html").read_text(encoding="utf-8")
+        self.assertIn('"/api/miniapp/mistakes":"/api/v3/pwa/mistakes"', course)
+        self.assertIn('"/api/miniapp/mistakes/review/start":"/api/v3/pwa/mistakes/review/start"', course)
+        self.assertIn('_apiGet(url).then(function(r)', course)
+        self.assertIn('_apiPost("/api/miniapp/mistakes/review/complete"', course)
+        self.assertIn('var t=L(),xp=(d.reward&&d.reward.awarded_xp)||0;', course)
+        self.assertIn('PWA_MISTAKES_HOST=location.pathname==="/iphone-pwa/practice/mistakes"', child)
+        self.assertIn('delete payload.initData;delete payload.user_id;delete payload.telegram_id;', child)
+        self.assertIn('"/api/v3/pwa/mistakes/review/answer"', child)
+        self.assertNotIn("maximum-scale=1", child)
+
     async def test_pwa_recognition_profile_uses_real_owner_level_and_progress(self):
         path = "/api/v3/pwa/practice/profile"
         self.assertEqual((await self.client.get(path)).status_code, 401)
