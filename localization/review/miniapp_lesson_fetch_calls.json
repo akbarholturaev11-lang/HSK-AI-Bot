@@ -2,12 +2,12 @@
   "schema_version": 1,
   "status": "PURPOSE_SPECIFIC_APIS_SOURCE_REVIEWED",
   "source": "app/static/course-v3.html",
-  "source_revision": "c70e4befd802133a8e6e18fe5501c59289715ce7",
+  "source_revision": "5928567a1d740e9b4a652229091d93b9f55a9143",
   "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route.",
   "read_calls": [
     {
       "ordinal": 1,
-      "line": 2419,
+      "line": 2561,
       "anchor": "loadLessonData(lv,n)",
       "owner": "warmLessonPreviewAudio",
       "intent": "audio_preload_before_continue",
@@ -17,7 +17,7 @@
     },
     {
       "ordinal": 2,
-      "line": 3238,
+      "line": 3382,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "prefetchNearbyLessons",
       "intent": "background_nearby_prefetch",
@@ -27,7 +27,7 @@
     },
     {
       "ordinal": 3,
-      "line": 4321,
+      "line": 4473,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "startLesson",
       "intent": "interactive_lesson_after_reservation",
@@ -38,17 +38,17 @@
   ],
   "additional_indirect_entrypoints": [
     {
-      "line": 3810,
+      "line": 3960,
       "name": "warmLessonPreviewAudio",
       "intent": "preview_on_sheet_open"
     },
     {
-      "line": 5646,
+      "line": 5826,
       "name": "prefetchNearbyLessons",
       "intent": "track_switch_background"
     },
     {
-      "line": 8819,
+      "line": 9017,
       "name": "prefetchNearbyLessons",
       "intent": "initial_course_boot_background"
     }
@@ -91,5 +91,12 @@
     "previous_source_lines": 8858,
     "merged_source_lines": 9095,
     "scope": "Exact unchanged localization anchor lines remapped after upstream CSS/nav and nonblocking Practice scheduling merge; no lesson, locale, auth or grading source changes approved by this line remap."
+  },
+  "pwa_source_review": {
+    "source_blob_sha": "5928567a1d740e9b4a652229091d93b9f55a9143",
+    "identity": "Telegram Mini App signed API and PWA account-bound content GET use separate server-authenticated transports; canonical entitlement and quota policies remain in shared service",
+    "direct_calls": 3,
+    "indirect_calls": 3,
+    "scope": "Source line remap of unchanged direct/indirect lesson access callsites; requires separately audited browser actor and real-account test."
   }
 }
