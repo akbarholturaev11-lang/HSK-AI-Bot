@@ -78,8 +78,12 @@
   function checkoutPath() {
     var pay = latestData && latestData.account && latestData.account.payment_action;
     var url = "/iphone-pwa/checkout?lang=" + encodeURIComponent(LANG);
-    return pay && pay.plan_type === "hsk30_unlock"
-      ? url + "&mode=hsk30_unlock&plan=hsk30_unlock" : url;
+    if (!pay) return url;
+    if (pay.plan_type === "hsk30_unlock") return url + "&mode=hsk30_unlock&plan=hsk30_unlock";
+    // Return to the original plan selector, keeping the learner's last choice
+    // without trusting arbitrary unvalidated query strings.
+    return ["10_days","1_month","3_months"].includes(pay.plan_type)
+      ? url + "&plan=" + encodeURIComponent(pay.plan_type) : url;
   }
   function markDismissed() {
     var payment = latestData && latestData.account && latestData.account.payment_action;
