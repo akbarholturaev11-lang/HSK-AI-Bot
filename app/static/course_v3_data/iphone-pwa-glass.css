@@ -185,3 +185,45 @@ html.hsk-pwa-browser .pwa-feedback-button i{font-size:21px}
 @media(prefers-reduced-transparency:reduce){.hsk-pwa-feedback-card,
   html.hsk-pwa-browser .pwa-feedback-button{background:var(--hsk-paper);
   -webkit-backdrop-filter:none;backdrop-filter:none}}
+
+/* Existing checkout's centered renewal confirmation, browser-only. The same
+   original copy/actions and payment decisions remain in subscription.html. */
+html.hsk-pwa-browser .renewal-modal {padding:
+  calc(20px + env(safe-area-inset-top,0px)) 16px
+  calc(20px + env(safe-area-inset-bottom,0px))}
+html.hsk-pwa-browser .renewal-backdrop {
+  background:rgba(28,25,23,.37);
+  -webkit-backdrop-filter:blur(5px);
+  backdrop-filter:blur(5px)
+}
+html.hsk-pwa-browser .renewal-card {
+  max-width:420px;max-height:88dvh;overflow-y:auto;
+  border-radius:26px;border:1px solid rgba(255,255,255,.84);
+  background:var(--hsk-paper);
+  box-shadow:0 20px 55px rgba(33,29,23,.19),inset 0 1px rgba(255,255,255,.92)
+}
+html.hsk-pwa-browser .renewal-card h3 {
+  font-size:19px;line-height:1.25;font-weight:750
+}
+html.hsk-pwa-browser .renewal-card p {
+  font-size:13px;line-height:1.45;max-width:100%
+}
+html.hsk-pwa-browser .renewal-actions button {
+  min-height:48px;border-radius:15px;
+  font-family:var(--hsk-font-ui);font-size:14px;font-weight:700
+}
+@supports ((-webkit-backdrop-filter:blur(2px)) or (backdrop-filter:blur(2px))){
+  html.hsk-pwa-browser .renewal-card {
+    background:linear-gradient(145deg,rgba(255,255,255,.85),
+      rgba(253,249,240,.78));
+    -webkit-backdrop-filter:blur(26px) saturate(155%);
+    backdrop-filter:blur(26px) saturate(155%)
+  }
+}
+@media(prefers-reduced-transparency:reduce){
+  html.hsk-pwa-browser .renewal-card{background:var(--hsk-paper);
+    -webkit-backdrop-filter:none;backdrop-filter:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html.hsk-pwa-browser .renewal-card{animation:none!important}
+}
