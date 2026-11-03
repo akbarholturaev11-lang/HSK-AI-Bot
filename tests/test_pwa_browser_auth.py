@@ -352,6 +352,40 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn("user-scalable=no", html)
             self.assertNotIn("maximum-scale=1", html)
 
+    async def test_shared_course_entry_needs_valid_pwa_session_and_flag(self):
+        path = "/iphone-pwa/course"
+        anonymous = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(anonymous.status_code, 303, anonymous.text)
+        self.assertEqual(anonymous.headers["location"], "/iphone-pwa")
+        self.assertEqual(anonymous.headers["cache-control"], "no-store")
+        state = await self.begin()
+        await self.callback(state)
+        page = await self.client.get(path)
+        self.assertEqual(page.status_code, 200, page.text[:200])
+        self.assertEqual(page.headers["cache-control"], "no-store")
+        self.assertEqual(page.headers["x-frame-options"], "DENY")
+        self.assertIn("var PWA_COURSE_HOST=", page.text)
+        self.assertIn('location.pathname==="/iphone-pwa/course"', page.text)
+        # It must serve the original course HTML, never a copied/parallel UI.
+        self.assertIn('var INIT_DATA=(tg&&tg.initData)||"";', page.text)
+        self.assertIn('id="s-course"', page.text)
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.get(path)).status_code, 503)
+
+    def test_browser_course_map_uses_csrf_post_without_changing_telegram_transport(self):
+        course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        self.assertIn('PWA_COURSE_HOST=!INIT_DATA&&location.pathname==="/iphone-pwa/course"', course)
+        self.assertIn('fetch("/api/v3/pwa-auth/session"', course)
+        self.assertIn('method:"POST",headers:{"X-HSK-PWA-CSRF":actor.csrf}', course)
+        self.assertIn('url.replace("/api/v3/map?","/api/v3/pwa/map?")', course)
+        self.assertIn('credentials:"same-origin",cache:"no-store"', course)
+        self.assertIn('location.replace("/iphone-pwa")', course)
+        self.assertIn('fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}', course)
+        self.assertIn('if(!INIT_DATA&&!PWA_COURSE_HOST)', course)
+        self.assertNotIn('PWA_COURSE_HOST=!!location.search', course)
+        self.assertNotIn('user-scalable=no', course)
+        self.assertNotIn('maximum-scale=1', course)
+
     async def test_pwa_manifest_is_feature_gated_and_source_brand_only(self):
         manifest_path = "/iphone-pwa/manifest.webmanifest"
         response = await self.client.get(manifest_path)
