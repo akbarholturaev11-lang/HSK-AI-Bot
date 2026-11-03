@@ -10,7 +10,7 @@ from typing import Literal
 from uuid import UUID
 
 from fastapi import APIRouter, Request
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse, RedirectResponse
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from app.services.native_oauth_service import NativeOAuthError, available_providers
@@ -94,6 +94,36 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
                 },
             )
         except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/iphone-pwa/course")
+    async def learner_course_page(request: Request):
+        """Reuse the original course HTML for browser learners, never a clone.
+
+        The source course scripts retain Telegram-only mutations until each
+        endpoint gets a dedicated canonical PWA adapter. A valid PWA session
+        is mandatory even to render this browser-only course entry.
+        """
+        try:
+            require_pwa_enabled(settings_obj)
+            async with session_factory() as db:
+                await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+            return FileResponse(
+                "app/static/course-v3.html",
+                media_type="text/html",
+                headers={
+                    **_NO_STORE,
+                    "X-Content-Type-Options": "nosniff",
+                    "X-Frame-Options": "DENY",
+                },
+            )
+        except PwaAuthError as exc:
+            if exc.code == "pwa_session_required":
+                return RedirectResponse(
+                    "/iphone-pwa", status_code=303, headers=_NO_STORE,
+                )
             return _error(exc)
 
     @router.get("/iphone-pwa/manifest.webmanifest")
