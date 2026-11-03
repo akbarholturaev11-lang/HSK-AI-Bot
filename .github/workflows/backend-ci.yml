@@ -218,8 +218,10 @@ jobs:
             tests.test_identity_link_service
       - name: Test isolated iPhone PWA browser and Telegram sign-in
         run: python -m unittest tests.test_pwa_browser_auth tests.test_pwa_telegram_bot
-      - name: Validate iPhone PWA inbox and payment dialog UX
-        run: node tests/test_pwa_notices_ui.js
+      - name: Validate iPhone PWA inbox, payment and feedback dialogs
+        run: |
+          node tests/test_pwa_notices_ui.js
+          node tests/test_pwa_feedback_ui.js
       - name: Test 0108 native audit facts and personal discount account isolation
         run: |
           python -m unittest \
