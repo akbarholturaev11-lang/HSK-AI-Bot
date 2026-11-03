@@ -100,6 +100,19 @@ function recognitionPwaSession(){
   }
   return PWA_RECOGNITION_PROMISE;
 }
+// A restored Home Screen/BFCache document must not keep an old browser actor.
+// Keep the owner snapshot so a different signed-in account fails closed.
+function verifyPwaReturn(){
+  if(!PWA_RECOGNITION_HOST)return;
+  PWA_RECOGNITION_PROMISE=null;
+  recognitionPwaSession().catch(function(){location.replace("/iphone-pwa")});
+}
+if(PWA_RECOGNITION_HOST){
+  window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()});
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState==="visible")verifyPwaReturn();
+  });
+}
 function recognitionPost(url,body,keepalive){
   if(!PWA_RECOGNITION_HOST)return fetch(url,{
     method:"POST",headers:{"Content-Type":"application/json"},
