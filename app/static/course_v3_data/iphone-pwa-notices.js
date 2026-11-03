@@ -37,10 +37,11 @@
   var latestData = null;
   var lastFocus = null;
   var inMemoryDismissals = new Set();
-  var autoRequested = false;
   var fetchInFlight = null;
   var urgentPending = null;
   var interruptRetries = 0;
+  var checkGeneration = 0;
+  var lastResumeCheck = 0;
 
   // These strings are already authored in the shared UZ/RU/TJ catalogs.
   // Do not create a second per-page translation dictionary.
@@ -255,10 +256,13 @@
     }
   }
   async function offerLatestRejection() {
-    if (autoRequested) return;
-    autoRequested = true;
+    if (document.visibilityState === "hidden") return;
+    var check = ++checkGeneration;
+    urgentPending = null;
+    interruptRetries = 0;
     try {
       var data = await fetchData();
+      if (check !== checkGeneration) return;
       var action = data.account && data.account.payment_action;
       if (action && action.status === "rejected" && owner &&
           !wasDismissed(action.payment_id)) {
@@ -266,6 +270,13 @@
         presentPendingRejection();
       }
     } catch (_) { /* Read failure must not block course. */ }
+  }
+  function scheduleRecheck(force) {
+    if (document.visibilityState === "hidden") return;
+    var now = Date.now();
+    if (!force && now - lastResumeCheck < 3000) return;
+    lastResumeCheck = now;
+    offerLatestRejection();
   }
   overlay.addEventListener("click", function (ev) {
     if (ev.target.closest("[data-pwa-close]")) close();
@@ -297,6 +308,14 @@
   // Only the latest actionable rejected receipt may interrupt, once per
   // verified owner + payment. Ordinary/new-content notices never pop up.
   window.addEventListener("load", function () {
-    window.setTimeout(offerLatestRejection, 1900);
+    window.setTimeout(function () { scheduleRecheck(true); }, 1900);
   }, {once:true});
+  // Installed iOS Home Screen apps and Safari may resume from BFCache without
+  // a new load event. Always re-read the latest *server-owned* payment action.
+  window.addEventListener("pageshow", function (ev) {
+    if (ev.persisted) scheduleRecheck(true);
+  });
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible") scheduleRecheck(false);
+  });
 }());
