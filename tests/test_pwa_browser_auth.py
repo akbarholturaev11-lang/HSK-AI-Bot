@@ -514,6 +514,75 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             (await self.client.get("/api/v3/native-auth/identities")).status_code, 401
         )
 
+    async def test_pwa_practice_lifetime_gate_shares_telegram_policy_and_owner(self):
+        path = "/api/v3/pwa/practice/daily-gate"
+        payload = {"feature": "recognition", "ref": "browser-attempt-1"}
+        unauthenticated = await self.client.post(
+            path, headers={"Origin": ORIGIN}, json=payload,
+        )
+        self.assertEqual(unauthenticated.status_code, 401, unauthenticated.text)
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        allowed_headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        for headers in [
+            {"Origin": ORIGIN},
+            {"Origin": "https://attacker.test", "X-HSK-PWA-CSRF": csrf},
+        ]:
+            denied = await self.client.post(path, headers=headers, json=payload)
+            self.assertEqual(denied.status_code, 403, denied.text)
+        forged = await self.client.post(
+            path, headers=allowed_headers,
+            json={**payload, "initData": "forged"},
+        )
+        self.assertEqual(forged.status_code, 400, forged.text)
+        self.assertEqual((await self.client.post(
+            path, headers={**allowed_headers, "X-Telegram-Init-Data": "forged"},
+            json=payload,
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            path, headers=allowed_headers,
+            json={**payload, "user_id": 2002},
+        )).status_code, 400)
+        with patch(
+            "app.api.miniapp_entitlements.CourseAccessPolicyService.get_policy",
+            new_callable=AsyncMock,
+        ) as policy, patch(
+            "app.api.miniapp_entitlements.CourseMiniAppAccessService.consume_daily_use",
+            new_callable=AsyncMock,
+        ) as consume, patch(
+            "app.api.miniapp_entitlements.shadow_compare_gate",
+            new_callable=AsyncMock,
+        ):
+            policy.return_value = SimpleNamespace(free_active=False)
+            consume.return_value = {
+                "allowed": True, "is_paid": False, "remaining": 0,
+            }
+            ok = await self.client.post(path, headers=allowed_headers, json=payload)
+            self.assertEqual(ok.status_code, 200, ok.text)
+            self.assertTrue(ok.json()["allowed"])
+            self.assertEqual(ok.headers["cache-control"], "no-store")
+            self.assertEqual(consume.await_args.args[0].id, 1)
+            self.assertEqual(consume.await_args.kwargs["feature_key"], "recognition")
+            self.assertEqual(consume.await_args.kwargs["ref"], "browser-attempt-1")
+            self.assertIs(consume.await_args.kwargs["lifetime"], True)
+            consume.return_value = {
+                "allowed": False, "is_paid": False,
+                "error": "free_feature_limit_reached",
+            }
+            denied = await self.client.post(
+                path, headers=allowed_headers,
+                json={"feature": "recognition", "ref": "new-attempt-2"},
+            )
+            self.assertEqual(denied.status_code, 403, denied.text)
+            self.assertEqual(denied.json()["ad"]["available"], False)
+            self.assertEqual(consume.await_count, 2)
+        # Legacy Telegram endpoint keeps signed initData as its only authority.
+        legacy = await self.client.post(
+            "/api/v3/practice/daily-gate", json=payload,
+        )
+        self.assertEqual(legacy.status_code, 401, legacy.text)
+
     async def test_pwa_drill_words_and_report_reuse_canonical_owner_and_guards(self):
         words_path = "/api/v3/pwa/practice/words"
         report_path = "/api/v3/pwa/practice/report"
