@@ -1,7 +1,7 @@
 # Android 1.7.25 (56) — owner-only test APK: bug audit and phone findings
 
 **Recorded:** 2026-11-04  
-**Status:** CONFIRMED install-preview crash reproduced; source fixes under verification. No replacement APK or owner-device acceptance is asserted yet.
+**Status:** CONFIRMED install-preview crash reproduced and fixed; bounded auth/locale fixes and private replacement **1.7.26/57** passed the automated/owned-emulator checks recorded below. Actual owner-device/provider acceptance remains open.
 **Scope:** This note records issues against the exact *private Direct* test APK below; it does **not** authorize public R2/Play publication.
 
 ## Exact APK identity (do not confuse with Google Play or public Direct)
@@ -19,7 +19,7 @@
 2. **WIDGET:** Attempting to place a home-screen widget closes/crashes the HSK AI app on the owner's Xiaomi/Redmi.
 3. **REMINDER:** Owner cannot find a separate Smart Reminder activation control.
 
-These observations are not interchangeable with a confirmed root cause. In particular, widget crash requires the crash stack trace from the exact signed APK.
+These observations are not interchangeable with a confirmed root cause. The initial audit lacked the widget stack; the follow-up below now records an independently reproduced install-preview crash, without claiming a collected physical-phone stack.
 
 ## Source-backed findings / bug candidates (against this build)
 
@@ -43,7 +43,8 @@ These observations are not interchangeable with a confirmed root cause. In parti
 
 - [ ] **Google:** On owner phone, sign in successfully; check Custom Tab → callback → app foreground transition and back stack; inspect whether the browser returns unexpectedly.
 - [ ] **Telegram:** Repeat sign-in; distinguish normal locale-driven `Activity.recreate()` from process death / crash. Verify account/session persistence and return path.
-- [ ] **Widget:** Capture crash log from the exact `1.7.25/56` private APK (e.g. `adb logcat -b crash -d -v time` immediately after reproduction); inspect the exception's class, stack and process. Then reproduce pin request, host placement and render on the actual Xiaomi/HyperOS launcher.
+- [x] **Widget source defect:** Independently reproduce the full install-prompt failure and add a regression; exact exception and consumer are recorded below.
+- [ ] **Widget phone acceptance:** With the replacement APK, verify prompt → pin request → placement/render on the actual Xiaomi/HyperOS launcher. If a different failure remains, collect its stack when the owner is available; do not keep requesting currently unavailable crash text.
 - [ ] **Notifications:** Test rapid toggles, denied Android notification permission, server master-OFF, device ON/OFF persistence and offline retry independently.
 - [ ] Re-run native unit/instrumentation and real-device regression checks after code changes. No public release until expressly approved by owner.
 
@@ -69,3 +70,11 @@ AUTH-03 remains a process-death resilience gap, not a confirmed explanation of t
 ### Current operations correction
 
 D30 later explicitly authorized production server activation. The two startup/send variables were set true and successfully deployed; the existing Admin PWA Smart-study control stops new issuance/sends. This supersedes the earlier source-default/permission observation above, not individual OFF/consent. Current runtime admission is still restricted to reviewed accounts: a global startup switch does not prove all-user enrollment or real delivery. Private APK distribution remains separate.
+
+
+## Verified private replacement and prevention
+
+- Source: `dd8f9bc7acff4fdc602cac5869254402c8953b3a`; Master Plan §17.90 holds the execution evidence and remaining acceptance scope.
+- Private replacement: `hsk-ai-1.7.26-57-direct-release.apk`, 11,382,752 bytes, SHA-256 `ee09cd8444813043c4f1cc6628d6bbfff5798323f6e0958bc111a9b15738d84a`; existing certificate, production package, non-debuggable and Firebase/resource checks passed. It supersedes 56 for testing; neither artifact was publicly published by this work.
+- Automated acceptance: Direct/Play unit 657/606, both lints, affected instrumentation 34 per flavor; final-57 focused auth/locale/install-prompt/normal-signed-provider host 8 per flavor. Signed 57 offline cold start stays alive; crash buffers empty. The preview regression is explicitly included in both-flavor CI.
+- Physical Google/Telegram return, Xiaomi pin/render and real notification delivery remain to be checked with the owner when available. Do not equate source/fixture acceptance with the absent phone trace or actual successful delivery. Process-death polling-secret persistence was not added.
