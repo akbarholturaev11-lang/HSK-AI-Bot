@@ -1264,6 +1264,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         ):
             self.assertIn(expression, course)
         self.assertNotIn('hidden=PWA_COURSE_HOST', course)
+        self.assertNotIn('if(window.CourseAds&&CourseAds.showLimitPromo){', course)
+        self.assertGreaterEqual(course.count('if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){'), 5)
         self.assertIn('PWA_COURSE_HOST?"/iphone-pwa/checkout":"/subscription.html"', course)
 
     def test_existing_checkout_ui_never_enters_fake_pwa_preview(self):
