@@ -1609,6 +1609,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   .nav::before,.nav::after { display:none; }
 }
 </style>
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261103-1">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261014-2" rel="stylesheet">
@@ -7122,6 +7123,7 @@ function renderProfile(){
   var showProLink=!paid&&!trialActive;
   var nickname=esc(PROF.name||courseMessage("you",t.you));
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(courseMessage("nav.profile",LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil"))+'</h1><div class="profile-head-actions">'
+    +(PWA_COURSE_HOST?'<button class="pwa-notices-button" type="button" aria-label="'+esc(commonMessage("desktopA11y.notifications",""))+'" onclick="window.HskPwaInbox&&window.HskPwaInbox.open()"><i class="ti ti-bell" aria-hidden="true"></i></button>':'')
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
     +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>'
     +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span></div>'
@@ -9289,5 +9291,6 @@ window.addEventListener("pageshow",function(ev){
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261021-c61abddcc057"></script>
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
+<script src="/course_v3_data/iphone-pwa-notices.js?v=20261103-1"></script>
 </body>
 </html>
