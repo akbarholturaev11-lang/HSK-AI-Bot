@@ -59,6 +59,7 @@ class ProfileSettingsUxTest {
         loading: Boolean = false,
         onSelectLanguage: ((AppLanguage) -> Unit)? = null,
         onSelectGoal: ((Int) -> Unit)? = null,
+        onSettingsVisibilityChange: (Boolean) -> Unit = {},
     ) {
         ProfileScreen(
             account = LinkedAccount("Test learner", AppLanguage.UZBEK, "hsk1", "pro", true),
@@ -71,10 +72,24 @@ class ProfileSettingsUxTest {
             onOpenWidget = {}, onOpenSupport = {}, onRefresh = onRefresh,
             onLogout = {}, onUnlinkDevice = {}, onSaveProfile = onSave,
             onSelectLanguage = onSelectLanguage, onSelectGoal = onSelectGoal,
+            onSettingsVisibilityChange = onSettingsVisibilityChange,
             identities = IdentitiesUiState(hasLoaded = true, telegramLinked = true,
                 identities = listOf(LinkedIdentity("test-google", AuthProvider.GOOGLE, "l***@example.com", "Learner")),
                 available = listOf(AuthProvider.GOOGLE, AuthProvider.APPLE)),
         )
+    }
+
+    @Test fun settingsNavigateInlineAndRestoreTheHostBottomBar() {
+        var fullScreenSettings = false
+        compose.setContent {
+            PompHskAiTheme { Profile(onSettingsVisibilityChange = { fullScreenSettings = it }) }
+        }
+        compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).performClick()
+        compose.waitUntil(5_000) { fullScreenSettings }
+        compose.onNodeWithTag("profile-settings-surface").assertIsDisplayed()
+        compose.onNodeWithContentDescription(text(R.string.hsk_common_action_back)).performClick()
+        compose.waitUntil(5_000) { !fullScreenSettings }
+        compose.onNodeWithTag("profile-settings-surface").assertDoesNotExist()
     }
 
     @Test fun settingsExposePreferencesDirectlyAndBackReturnsToTheSameList() {
@@ -173,8 +188,6 @@ class ProfileSettingsUxTest {
                     val config = Configuration(originalConfiguration).apply { setLocale(Locale.forLanguageTag(language)) }
                     // Recreate the screen even when the first locale repeats.
                     compose.runOnIdle {
-                        // Compose Dialog takes its Android window context from
-                        // the host View, outside the localized CompositionLocal.
                         host.resources.updateConfiguration(config, host.resources.displayMetrics)
                         locale.value = "en"
                     }
