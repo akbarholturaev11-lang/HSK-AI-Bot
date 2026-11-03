@@ -99,7 +99,9 @@ class AndroidChecks:
                 expires_at=self.expiry,state='pending',policy_version=self.service(s).policy_version,
                 preference_revision=2,grant_epoch=1,course_key='hsk1',lesson_order=5,
                 selected_channel='android',selected_device_id='device-1'))
-        for n in range(1,5): await self.study(order=n,days_ago=5-n,xp=1)
+        # Leave a full cadence interval before the due job at any UTC hour;
+        # the inherited study helper fixes history to 02:MM:SS.
+        for n in range(1,5): await self.study(order=n,days_ago=6-n,xp=1)
         async with self.sessions() as s: self.inventory,_=await _android_inventory(s,1,self.tick)
         app = FastAPI()
         app.include_router(create_smart_reminder_router(session_factory=self.sessions,settings_obj=self.settings,

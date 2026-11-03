@@ -1,11 +1,12 @@
 # Smart delivery analysis contract
 
-The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.67. This
+The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.71. This
 contract defines P6 6.1a, optional 6.1b integration, bounded 6.1c reconciliation,
 6.1d terminal shadow observations, 6.1e reservation observations and 6.1f
 committed runtime guard reasons, the 6.1g internal target-learning projection
 6.1h authenticated client-reported opens, 6.1i verified temporal completed-unit
-outcomes, 6.1j scored active-study days and the separate 6.1k 24-hour window,
+outcomes, 6.1j scored active-study days, the separate 6.1k 24-hour window and
+6.1l retained scored practice completions and 6.1m completed voice activity,
 not a live rollout.
 
 `SmartReminderAnalysisService.capture_job(user_id, job_id)` is an internal,
@@ -328,7 +329,16 @@ from `course_miniapp` (owned canonical lesson/course/order, server UUID key and
 strict correct/total), `test_completed` from `course_hsk_exam` (owned canonical
 session/dedupe/material and strict score/total), and owned `course_attempts`
 quiz rows joined to their course lesson, marked `miniapp_server_graded` with
-strict score/total. Boolean/string scores, zero/invalid totals, percent-only,
+strict score/total. It also covers retained `test_completed`/`training_completed`
+from the shared `CourseMiniAppPracticeService` used by Mini App, Android and
+both Desktop platforms. These require canonical owner/legacy course, exact
+`course_miniapp` source, matching mock/placement/training event/mode/skill,
+version-1 session scope and original writer dedupe, with strict score/total.
+No passing threshold or fresh XP is required for this activity source. It
+uses the original retained server result time; it does not create a new
+completed unit or alter existing XP/habit/progress verification. Future
+protocol versions and noncanonical session scopes remain unreviewed.
+Boolean/string scores, zero/invalid totals, percent-only,
 client section completion, AI/homework, foreign sources and mismatched lessons
 are excluded. No passing threshold or fresh XP is required. The existing
 completed-unit reader/writers, grades, access, habit and cadence are unchanged.
@@ -341,8 +351,30 @@ over-limit classes are withheld, while an independently verified other class
 can still prove a positive day. Payload reads are finite (8K server events,
 64K quiz JSON); no answers, scores, source IDs or payloads persist in analysis.
 Deterministic repeat-practice completions do not emit a fresh graded-attempt
-source; `practice_attempt_scored` currently has no writer. Voice and other
-unreviewed sources remain unavailable. Absence never proves inactivity.
+source; `practice_attempt_scored` currently has no writer. Other voice and
+unreviewed sources remain unavailable. A previously missing stored completion
+can establish activity when the actual grader later persists it even though
+the original award is older; an already deduplicated old result cannot move
+to a later retry time. This is retained-completion coverage, not complete
+repeat-practice history. Absence never proves inactivity.
+
+Completed voice activity additionally reads minimal fields of existing canonical
+`voice_practice_sessions`: exact owned `user_id`, UUID-v4 identity, reviewed HSK
+course, turn/live mode, completed status and positive server turn count. The
+shared service increments turns only after server replies or the authenticated
+server-side Live provider relay. It needs neither fresh XP nor the separate
+seven-turn UI milestone. The ordered start/end must both be inside the requested
+observation window; the original end is a conservative completion timestamp,
+not an exact turn time, passing grade or acoustic score. Closing an older
+pre-window conversation cannot create new in-window evidence. Canonical ownership
+wins over stale Telegram metadata; legacy NULL-owner/band/unfinished/abandoned
+sessions and standalone pronunciation remain unavailable. No history, correction,
+word, plan, audio, usage/billing or provider-session content is read. A separate
+512+1 sentinel sets `completed_voice_over_limit` and withholds that source only;
+other reviewed evidence may still prove activity. Internal coverage names now
+say `repeat_practice_and_partial_voice_unavailable`; this is partial coverage,
+never absence or inactivity. The existing day/24-hour/baseline/D21 consumers reuse
+these timestamps without adding a completed unit or changing habits/source writers.
 
 The raw identity hashes owned job/day-stage, not individual attempts/questions;
 at most one primary and one secondary day fact exists per owned job's frozen

@@ -20,6 +20,7 @@ from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderJob, SmartReminderPreference
 from app.db.models.user import User
+from app.db.models.voice_practice_session import VoicePracticeSession
 from app.services.course_daily_window import local_day_key
 from app.services.course_levels import content_level, legacy_content_levels, hsk30_content_levels
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
@@ -103,7 +104,7 @@ class VerifiedLearningEvidence:
 class ScoredActivityEvidence:
     times: tuple[datetime, ...] = ()
     coverage_limits: tuple[str, ...] = (
-        "reviewed_scored_sources_only", "repeat_practice_and_voice_unavailable",
+        "reviewed_server_activity_sources_only", "repeat_practice_and_partial_voice_unavailable",
     )
 
 
@@ -116,8 +117,8 @@ def _scored_pair(payload, key):
 async def read_scored_activity(session, user_id, *, level, history_since, observed_at):
     """Analysis-only positive study evidence; never complete/negative coverage.
 
-    These reviewed server writers grade real answers even without fresh XP or
-    a passing score. No answers, IDs or scores leave this bounded reader.
+    Reviewed scoring and nonempty completed voice need no fresh XP or passing
+    score. No answers, transcripts, IDs or scores leave this bounded reader.
     """
     since, now = _aware_utc(history_since), _aware_utc(observed_at)
     if since > now:
@@ -134,7 +135,9 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
         or_(and_(CourseMiniAppEvent.event_name == "section_attempt_scored",
                  CourseMiniAppEvent.source == "course_miniapp"),
             and_(CourseMiniAppEvent.event_name == "test_completed",
-                 CourseMiniAppEvent.source == "course_hsk_exam")),
+                 CourseMiniAppEvent.source == "course_hsk_exam"),
+            and_(CourseMiniAppEvent.event_name.in_(("test_completed", "training_completed")),
+                 CourseMiniAppEvent.source == "course_miniapp")),
         CourseMiniAppEvent.created_at >= since, CourseMiniAppEvent.created_at <= now,
         func.length(CourseMiniAppEvent.payload_json) <= 8000,
     ).order_by(CourseMiniAppEvent.created_at, CourseMiniAppEvent.id).limit(MAX_POLICY_ROWS + 1))).mappings().all()
@@ -156,13 +159,31 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
                             not isinstance(dedupe, str) or re.fullmatch(r"section-attempt:[0-9a-f]{32}", dedupe) is None or
                             not _scored_pair(payload, "correct")):
                         continue
-                else:
+                elif event["source"] == "course_hsk_exam":
                     sid = event["session_id"]
                     if (not isinstance(sid, str) or re.fullmatch(
                             rf"hsk-exam:{user_id}:{re.escape(event_level)}:v[1-9][0-9]*:[0-9a-f]{{24}}", sid) is None or
                             event["dedupe_key"] != sid + ":completed" or not _scored_pair(payload, "score") or
                             type(payload.get("material_version")) is not int or payload["material_version"] <= 0 or
                             not isinstance(payload.get("material_id"), str) or not payload["material_id"]):
+                        continue
+                else:
+                    # Shared Mini App/Android/Desktop writer, protocol v1.
+                    # This is its retained completion time, never a fresh
+                    # repeat-attempt time or another completed-unit award.
+                    mode, skill = payload.get("mode"), payload.get("skill")
+                    if (mode not in {"mock", "placement", "training"} or
+                            event_level not in {"hsk1", "hsk2", "hsk3", "hsk4"} or
+                            event["event_name"] != ("training_completed" if mode == "training" else "test_completed") or
+                            not _scored_pair(payload, "score")):
+                        continue
+                    if ((mode == "training" and skill not in {"listening", "writing", "characters", "pronunciation", "pinyin"}) or
+                            (mode != "training" and skill != "")):
+                        continue
+                    feature = "placement" if mode == "placement" else "training_test"
+                    scope = skill if mode == "training" else event_level
+                    if (event["session_id"] != f"practice:{user_id}:{feature}:{mode}:{scope}:v1" or
+                            event["dedupe_key"] != f"practice:{feature}:completed"):
                         continue
                 times.add(_utc(event["created_at"]))
             except (ValueError, TypeError):
@@ -185,6 +206,27 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
                     times.add(_utc(quiz.created_at))
             except (ValueError, TypeError):
                 continue
+    # Read no conversation content. Requiring the whole session inside the
+    # window prevents an old conversation's later closure becoming new study.
+    voices = (await session.execute(select(
+        VoicePracticeSession.id, VoicePracticeSession.turn_count, VoicePracticeSession.ended_at,
+    ).where(
+        VoicePracticeSession.user_id == user_id,
+        VoicePracticeSession.level.in_(levels),
+        VoicePracticeSession.level.in_(("hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3")),
+        VoicePracticeSession.mode.in_(("turn", "live")), VoicePracticeSession.status == "completed",
+        VoicePracticeSession.turn_count > 0, VoicePracticeSession.started_at >= since,
+        VoicePracticeSession.ended_at >= VoicePracticeSession.started_at,
+        VoicePracticeSession.ended_at <= now,
+    ).order_by(VoicePracticeSession.ended_at, VoicePracticeSession.id).limit(MAX_POLICY_ROWS + 1))).all()
+    if len(voices) > MAX_POLICY_ROWS:
+        limits.add("completed_voice_over_limit")
+    else:
+        for voice in voices:
+            if (isinstance(voice.id, str) and re.fullmatch(
+                    r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}", voice.id) and
+                    type(voice.turn_count) is int and voice.turn_count > 0):
+                times.add(_utc(voice.ended_at))
     return ScoredActivityEvidence(tuple(sorted(times)), tuple(sorted(limits)))
 
 
