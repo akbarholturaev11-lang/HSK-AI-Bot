@@ -77,7 +77,7 @@ class SmartStudyTwoDeviceTest {
                 due={ apiCall { api.due(it) } },claim={ bearer,job,body -> apiCall { api.claim(bearer,job,body) } },
                 receipt={ bearer,job,body -> apiCall { api.receipt(bearer,job,body) } },
                 permission={ StudyNotifications.canPost(context) },
-                post={
+                post={ _, _ ->
                     posts++
                     val saved=runBlocking { store.read() }
                     assertEquals(StudyPostOutcome.UNKNOWN.wire,saved.studyOperations.single().outcome)
