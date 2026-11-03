@@ -53,8 +53,11 @@ ham amal qiling. Bu hujjatdagi eski raqamlarni yangi release uchun ko‘chirmang
 
 Workflow faqat qo‘lda ishga tushadi. U statik tekshiruvlar, Android test/lint
 va emulator regressiyalarini bajaradi, APK imzosini tekshiradi va artifact
-yaratadi. `publish_to_r2` default `true`; uni `false` qilsangiz APK R2’ga
-chiqmaydi. Muvaffaqiyatli publish `android/latest.json` ni ham yangilaydi.
+yaratadi. `publish_to_r2` default `false`; ommaviy chiqarish faqat owner
+shaxsiy APK sinovidan keyin aniq ruxsat berganda `true` qilinadi. Oddiy
+«davom et» public release ruxsati emas. Faqat owner uchun APK lokal yig‘iladi
+va GitHub artifact/R2/Play’ga yuklanmaydi. Muvaffaqiyatli public publish
+`android/latest.json`ni ham yangilaydi.
 Run summary’da publish natijasini, Actions run’dagi Artifacts bo‘limida esa APK’ni
 tekshiring.
 
