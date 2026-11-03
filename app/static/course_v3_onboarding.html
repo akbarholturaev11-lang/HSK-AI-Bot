@@ -347,7 +347,7 @@ function onboardingPayload(){
   var dailyMinutes=10,startMode="lesson_1";
   /* V1 da placement/continue tanlovi yo'q. Eski cache beginner Starter'ni
      chetlab o'tkazmasligi uchun boshlanish nuqtasi qat'iy lesson_1. */
-  try{localStorage.removeItem("hsk_v3_start_mode")}catch(e){}
+  if(!PWA_ONBOARDING_HOST)try{localStorage.removeItem("hsk_v3_start_mode")}catch(e){}
   return {
     level:sel,
     goal:goalSel,
@@ -368,7 +368,7 @@ function hsk30Access(){
 }
 function hsk30Enabled(){
   var access=hsk30Access();
-  return !!access&&access.feature_enabled!==false||!INIT_DATA&&!HSK30_STATUS;
+  return !!access&&access.feature_enabled!==false||(!INIT_DATA&&!PWA_ONBOARDING_HOST&&!HSK30_STATUS);
 }
 function hsk30LiveLevels(){
   var row=hsk30TrackState(),raw=row&&Array.isArray(row.live_levels)?row.live_levels:["nhsk1"];
@@ -407,6 +407,7 @@ function updateTrackSwitcher(){
 }
 function isHsk30Level(value){return /^nhsk[1-3]$/.test(String(value||""))}
 function saveDraft(){
+  if(PWA_ONBOARDING_HOST)return;
   try{
     localStorage.setItem("hsk_v3_onb_track",track);
     localStorage.setItem("hsk_v3_onb_level",sel);
@@ -596,7 +597,7 @@ function finish(){
     if(moved)return;moved=true;saveNeedsVerification=false;
     var launch=result&&result.ok?result:{};
     var chosenLevel=isHsk30Level(sel)?sel:String(launch.level||(sel==="beginner"?"hsk1":sel));
-    try{localStorage.setItem("hsk_v3_onb","1");localStorage.setItem("hsk_v3_learner_level",sel);localStorage.setItem("hsk_v3_level",chosenLevel);localStorage.removeItem("hsk_v3_onb_track");localStorage.removeItem("hsk_v3_onb_level");localStorage.removeItem("hsk_v3_onb_goal")}catch(e){}
+    if(!PWA_ONBOARDING_HOST)try{localStorage.setItem("hsk_v3_onb","1");localStorage.setItem("hsk_v3_learner_level",sel);localStorage.setItem("hsk_v3_level",chosenLevel);localStorage.removeItem("hsk_v3_onb_track");localStorage.removeItem("hsk_v3_onb_level");localStorage.removeItem("hsk_v3_onb_goal")}catch(e){}
     var query=new URLSearchParams(params.toString());
     query.set("lang",LANG);query.set("level",chosenLevel);query.set("tab",String(launch.tab||"course"));query.set("onboarded","1");
     if(launch.foundation_required)query.set("foundation","1");else query.delete("foundation");
