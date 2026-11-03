@@ -4,7 +4,7 @@
   "source": "app/static/course-v3.html",
   "source_revision": "5928567a1d740e9b4a652229091d93b9f55a9143",
   "counting_note": "62 unique physical source lines cover all 130 current LANG ==/=== literal-locale predicates in course-v3.html after the reviewed PWA browser bridge. Multiple predicates per line remain one classification; source review only, not runtime UI verification.",
-  "coverage_note": "Current PWA implementation source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified; added PWA unavailable-practice error fallback is canonical; lesson/grade/Pro/auth unaffected. Other localized expressions, dynamic content and rendered UI require separate QA.",
+  "coverage_note": "Current PWA implementation source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified; added PWA unavailable-practice error fallback is canonical; lesson/grade/Pro/auth unaffected. All other localized source expressions, dynamic content and rendered UI require separate QA.",
   "classifications": [
     {
       "line": 1718,
