@@ -379,6 +379,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('if(PWA_COURSE_HOST)return "pwa:"+String(PWA_COURSE_USER_ID||"unbound")', course)
         self.assertIn('r.headers.get("X-HSK-PWA-User-ID")!==String(PWA_COURSE_USER_ID)', course)
         self.assertIn('throw new Error("pwa_actor_changed")', course)
+        self.assertIn('r.status===403&&d&&d.error==="pwa_csrf_invalid"', course)
         self.assertIn('response.headers["X-HSK-PWA-User-ID"] = str(user.id)', source)
         self.assertIn('function foundationCacheKey(id,version)', course)
         self.assertIn('function lessonResumeKey(level,lessonOrder)', course)
