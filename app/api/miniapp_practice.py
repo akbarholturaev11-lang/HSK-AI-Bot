@@ -38,6 +38,7 @@ from pydantic import (
 )
 
 from app.repositories.user_repo import UserRepository
+from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.course_drill_signal_service import CourseDrillSignalService
 from app.services.course_word_mastery_service import CourseWordMasteryService
 from app.services.course_miniapp_practice_service import (
@@ -433,6 +434,35 @@ def create_miniapp_practice_router(
             logger.exception("Mini App drill words failed")
             return _error_response(
                 MiniAppPracticeError("practice_unavailable", status_code=503)
+            )
+
+    @router.get("/api/v3/pwa/practice/profile")
+    async def pwa_practice_profile(request: Request):
+        """Canonical HSK band and completed-unit boundary for browser drills.
+
+        The legacy /api/voice-practice/me remains Telegram-signed. This
+        read-only route never accepts a client-supplied Telegram ID.
+        """
+        try:
+            async with session_factory() as session:
+                actor, _ = await PwaAuthService(session, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+                progress = await CourseProgressRepository(session).get_by_user_id(actor.id)
+                level = str(actor.level or "hsk1").strip().lower()
+                completed = (
+                    max(0, int(progress.completed_lessons_count or 0))
+                    if progress and str(progress.level or "").lower() == level else 0
+                )
+            return JSONResponse(
+                {"ok": True, "level": level, "completed_lessons": completed},
+                headers={"Cache-Control": "no-store"},
+            )
+        except PwaAuthError as exc:
+            return JSONResponse(
+                {"ok": False, "error": exc.code},
+                status_code=exc.status_code,
+                headers={"Cache-Control": "no-store"},
             )
 
     # PWA-only practice adapters use the same mastery and mistake services.
