@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "0073bcf6a5ebc76bcd5eb59fdb1af3a8639d843b",
+  "source_revision": "5928567a1d740e9b4a652229091d93b9f55a9143",
   "counting_note": "62 unique physical source lines cover all 130 current LANG ==/=== literal-locale predicates in course-v3.html after the reviewed PWA browser bridge. Multiple predicates per line remain one classification; source review only, not runtime UI verification.",
   "coverage_note": "Current PWA implementation source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified; added PWA unavailable-practice error fallback is canonical; lesson/grade/Pro/auth unaffected. Other localized expressions, dynamic content and rendered UI require separate QA.",
   "classifications": [
@@ -511,11 +511,11 @@
     "scope": "Exact unchanged localization anchor lines remapped after upstream CSS/nav and nonblocking Practice scheduling merge; no lesson, locale, auth or grading source changes approved by this line remap."
   },
   "pwa_anchor_review": {
-    "source_blob_sha": "0073bcf6a5ebc76bcd5eb59fdb1af3a8639d843b",
+    "source_blob_sha": "5928567a1d740e9b4a652229091d93b9f55a9143",
     "old_source_lines": 9095,
     "new_source_lines": 9293,
     "verified_predicates": 130,
     "verified_source_lines": 62,
-    "scope": "Re-read actual source line and exact anchor/predicate count for every prior classification; classify one newly introduced PWA-only fallback branch. Original result/grade/progress unchanged; no locale runtime verification claimed."
+    "scope": "Re-read actual source line and exact anchor/predicate count for every prior classification; classify one newly introduced PWA-only fallback branch. Original result/grade/progress unchanged; no locale runtime verification claimed. Generated common UI bundle token refreshed without changing predicate source lines."
   }
 }
