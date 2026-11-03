@@ -64,6 +64,7 @@
     kind = null;
     selected = null;
     busy = false;
+    submitButton.disabled = false;
     draft = {};
     if (lastFocus && lastFocus.isConnected && typeof lastFocus.focus === "function") {
       lastFocus.focus();
@@ -96,8 +97,11 @@
     return checked;
   }
 
-  async function request(path, payload) {
+  async function request(path, payload, isStillOpen) {
     var session = await ownedSession();
+    // The cookie check can take time. Never send a fresh mutation after
+    // the learner dismissed this instance of the dialog.
+    if (isStillOpen && !isStillOpen()) throw new Error("pwa_dialog_closed");
     var options = {
       credentials: "same-origin", cache: "no-store", redirect: "error"
     };
@@ -284,16 +288,18 @@
     heading.textContent = "HSK AI";
     form.replaceChildren();
     submitButton.hidden = true;
+    submitButton.disabled = false;
     closeButton.setAttribute("aria-label", course("subscriptionPage.close"));
     setStatus(course("subscriptionPage.loading"));
     panel.focus();
     try {
-      var data = await request("/api/v3/pwa/feedback/available");
+      var active = function () { return token === generation && !root.hidden; };
+      var data = await request("/api/v3/pwa/feedback/available", undefined, active);
       if (token !== generation || root.hidden) return;
       if (!data.ordinary && (!Array.isArray(data.release) || !data.release.length)) {
         // A user-initiated feedback tap may request the original, eligible
         // ordinary prompt. The server decides if a row can be prepared.
-        var prepared = await request("/api/v3/pwa/feedback/ordinary/prepare", {});
+        var prepared = await request("/api/v3/pwa/feedback/ordinary/prepare", {}, active);
         if (token !== generation || root.hidden) return;
         data.ordinary = prepared.ordinary;
       }
@@ -373,7 +379,7 @@
     setStatus(course("subscriptionPage.loading"));
     var token = generation;
     try {
-      await request(path, body);
+      await request(path, body, function () { return token === generation && !root.hidden; });
       if (token !== generation || root.hidden) return;
       kind = null;
       selected = null;
@@ -385,8 +391,11 @@
       if (token !== generation || root.hidden) return;
       setStatus(course("subscriptionPage.error"));
     } finally {
-      busy = false;
-      submitButton.disabled = false;
+      // A slow old submission must not unlock a newer reopened dialog.
+      if (token === generation) {
+        busy = false;
+        submitButton.disabled = false;
+      }
     }
   }
 
