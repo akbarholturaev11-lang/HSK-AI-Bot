@@ -3438,7 +3438,10 @@ async def v3_course_lesson_complete(request: Request):
             session, user, payload, lesson_order=lesson_order,
             lesson_session_id=lesson_session_id,
             lesson_mistakes=lesson_mistakes, telegram_id=telegram_id,
-        )@app.post("/api/v3/pwa/lesson/complete")
+        )
+
+
+@app.post("/api/v3/pwa/lesson/complete")
 async def pwa_v3_course_lesson_complete(request: Request):
     """PWA browser session transport for the exact Mini App V3 completion."""
     from app.services.pwa_auth_service import (
