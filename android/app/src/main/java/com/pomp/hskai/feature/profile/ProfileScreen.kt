@@ -235,7 +235,7 @@ fun ProfileScreen(
     val profileListState = rememberLazyListState()
 
     if (!settingsOpen) {
-    HskSceneSurface(modifier = modifier.fillMaxSize()) {
+        HskSceneSurface(modifier = modifier.fillMaxSize()) {
         PullToRefreshBox(
             isRefreshing = state.isLoading,
             onRefresh = { if (!state.isLoading && !profileSaving && identities.busyProvider == null) onRefresh() },
@@ -331,6 +331,7 @@ fun ProfileScreen(
                 }
             }
         }
+    }
     }
 
     if (settingsOpen) {
