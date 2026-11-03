@@ -7,6 +7,8 @@
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <style>
+html.hsk-pwa-browser input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.hsk-pwa-browser textarea,html.hsk-pwa-browser select{font-size:16px!important}
 /* HSK AI palette + course mascot; the reference supplies the screen hierarchy. */
 :root{--ink:var(--hsk-ink);--ink2:var(--hsk-ink-secondary);--paper:var(--hsk-paper);--card:var(--hsk-paper-raised);--line:var(--hsk-divider);--cin:var(--hsk-cinnabar);--cin2:var(--hsk-cinnabar-ink);--cinbg:var(--hsk-cinnabar-soft);--cin-ink:var(--hsk-on-cinnabar);--gold:var(--hsk-gold);--goldbg:var(--hsk-gold-soft);--jade:var(--hsk-jade);--safe-t:max(env(safe-area-inset-top,0px),var(--tg-top,0px));--safe-b:max(env(safe-area-inset-bottom,0px),var(--tg-bottom,0px));--display:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -266,6 +268,7 @@ adoptOnboardingOptionCopy();
 var step=0,track="hsk30",sel="nhsk1",goalSel="hsk_exam",submitting=false,hasSavedTrack=false,userSelectedTrack=false;
 var HSK30_STATUS=null;
 var PWA_ONBOARDING_HOST=location.pathname==="/iphone-pwa/onboarding";
+if(PWA_ONBOARDING_HOST)document.documentElement.classList.add("hsk-pwa-browser");
 var PWA_ONBOARDING_SESSION=null,PWA_ONBOARDING_PROMISE=null;
 var INIT_DATA=PWA_ONBOARDING_HOST?"":((tg&&tg.initData)||"");
 function onboardingPwaActor(){
