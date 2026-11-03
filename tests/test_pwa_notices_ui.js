@@ -45,17 +45,18 @@ class Element {
 }
 
 function harness({path = "/iphone-pwa/course", action = null, accountId = 7,
-                  alreadyBusy = false, splashReady = true, sharedStorage = new Map()} = {}) {
+                  alreadyBusy = false, feedbackOpen = false, inputFocused = false,
+                  splashReady = true, sharedStorage = new Map()} = {}) {
   let splashDone = splashReady, currentAction = action;
   const timers = [], callbacks = {}, requests = [], navigation = [];
   let root = null, redirects = 0;
   const document = {
     visibilityState: "visible",
-    activeElement: new Element("button"),
+    activeElement: Object.assign(new Element("button"), {matches: () => inputFocused}),
     body: {appendChild: (el) => {root = el;}},
     createElement: (tag) => new Element(tag),
     addEventListener: () => {},
-    querySelector: () => alreadyBusy ? new Element("lesson") : null,
+    querySelector: () => (alreadyBusy || feedbackOpen) ? new Element("lesson") : null,
     getElementById: () => {
       const e = new Element("splash");
       e.classList = {contains:(name)=>name==="is-done" && splashDone};
@@ -198,6 +199,16 @@ async function main(){
   latest.root().listeners.click({target:{closest:(selector)=>selector==="[data-pwa-close]"?{}:null}});
   assert.equal(resumeStorage.get("hskai:pwa:rejected:7:103"),"1");
 
-  console.log("PWA notice UI: 13 behavior/ownership/safety checks passed");
+  const feedbackOverlay = harness({action:{payment_id:105,status:"rejected",plan_type:"1_month"},
+    feedbackOpen:true});
+  await feedbackOverlay.loadAndTick();
+  assert.equal(feedbackOverlay.root().hidden,true,"active feedback dialog must not lose focus to payment alert");
+
+  const typingField = harness({action:{payment_id:106,status:"rejected",plan_type:"1_month"},
+    inputFocused:true});
+  await typingField.loadAndTick();
+  assert.equal(typingField.root().hidden,true,"focused iOS input keyboard must not lose focus");
+
+  console.log("PWA notice UI: 15 behavior/ownership/safety checks passed");
 }
 main().catch((err)=>{console.error(err);process.exitCode=1;});
