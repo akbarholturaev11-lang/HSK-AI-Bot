@@ -372,6 +372,21 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.settings.PWA_AUTH_ENABLED = False
         self.assertEqual((await self.client.get(path)).status_code, 503)
 
+    def test_pwa_course_cache_keys_are_per_verified_owner_not_preview(self):
+        course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        source = (Path("app/main.py")).read_text(encoding="utf-8")
+        self.assertIn('PWA_COURSE_USER_ID=ownerId;', course)
+        self.assertIn('if(PWA_COURSE_HOST)return "pwa:"+String(PWA_COURSE_USER_ID||"unbound")', course)
+        self.assertIn('r.headers.get("X-HSK-PWA-User-ID")!==String(PWA_COURSE_USER_ID)', course)
+        self.assertIn('throw new Error("pwa_actor_changed")', course)
+        self.assertIn('response.headers["X-HSK-PWA-User-ID"] = str(user.id)', source)
+        self.assertIn('function foundationCacheKey(id,version)', course)
+        self.assertIn('function lessonResumeKey(level,lessonOrder)', course)
+        self.assertIn('function lessonMasteryKey(level,lessonOrder)', course)
+        # User-scoped browser caches must not be sent as access credentials.
+        self.assertNotIn('localStorage.getItem("pwa_session"', course)
+        self.assertNotIn('localStorage.setItem("pwa_token"', course)
+
     def test_pwa_course_allowlist_routes_and_verified_login_forward(self):
         course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
         login = (Path("app/static") / "iphone-pwa-login.js").read_text(encoding="utf-8")
@@ -614,6 +629,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 )
                 self.assertEqual(good.status_code, 200, good.text)
                 self.assertEqual(good.headers["cache-control"], "no-store")
+                self.assertEqual(good.headers["x-hsk-pwa-user-id"], "1")
                 shared.assert_awaited_once()
                 args, kwargs = shared.await_args
                 self.assertEqual(args[2].id, 1)
@@ -685,6 +701,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                     },
                 )
                 self.assertEqual(result.status_code, 200, result.text)
+                self.assertEqual(result.headers["x-hsk-pwa-user-id"], str(me["user_id"]))
                 shared.assert_awaited_once()
                 self.assertEqual(shared.await_args.args[2].id, me["user_id"])
                 self.assertIsNone(shared.await_args.kwargs["telegram_id"])
