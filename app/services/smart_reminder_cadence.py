@@ -11,7 +11,7 @@ from statistics import median
 from zoneinfo import ZoneInfo
 
 from app.services.smart_reminder_policy import (
-    HabitCalibration, PolicyContext, PolicyDecision, _aware_utc, evaluate,
+    HabitCalibration, PolicyContext, PolicyDecision, _aware_utc, day_window, evaluate,
 )
 
 
@@ -172,10 +172,12 @@ def evaluate_cadence(context: CadenceContext, *, calibration: CadenceCalibration
         return result("learning_coverage_unknown")
     last_study = max(s.accepted_at for s in studies.values())
     abnormal = Fraction((today-days[-1]).days) > gap * calibration.abnormal_gap_multiplier
-    # An unknown actual exposure time cannot be cleared by comparing a newer
-    # study with the old *scheduled* time. Late delivery is still uncertain;
-    # reconciliation/expiry fencing belongs to the reservation protocol.
+    # Unknown exposure remains unknown and spends its original weekly budget.
+    # Its live frozen window may veto work, but an ended historical intent
+    # cannot suppress every later day. Same-day/overlap ownership was checked
+    # above; the reservation/transport protocols still forbid replay/fallback.
     if any(j.externally_attempted and j.verified_shown_at is None and not j.definite_non_display
+           and _aware_utc(j.day_end_utc) > now
            for j in jobs.values()):
         return result("delivery_outcome_unknown")
     series = [j for j in jobs.values() if j.verified_shown_at is not None and
@@ -192,9 +194,19 @@ def evaluate_cadence(context: CadenceContext, *, calibration: CadenceCalibration
             return result("reactivation_stopped")
         # Backoff is derived from the learner's own rhythm and actual shown
         # jobs; one alternate attempt never creates another unsuccessful job.
-        anchor = shown[-1] if shown else last_study
         interval = gap * calibration.backoff_factor ** misses
-        next_at = _after_days(anchor, interval)
+        if shown:
+            next_at = _after_days(shown[-1], interval)
+        elif gap.denominator == 1:
+            # Rhythm was measured in local calendar days, not elapsed 24h.
+            # This boundary permits that day; base policy keeps the actual
+            # personal clock, quiet hours and DST validity authoritative.
+            eligible_day = last_study.astimezone(zone).date() + timedelta(days=gap.numerator)
+            next_at = day_window(context.policy.timezone_name, eligible_day.isoformat())[0]
+        else:
+            # Preserve fractional-day rhythm (e.g. 3.5 days) without rounding
+            # it into a later date or changing its existing time-of-day anchor.
+            next_at = _after_days(last_study, gap)
     except OverflowError:
         return result("cadence_time_out_of_range")
     if base.scheduled_at < next_at:

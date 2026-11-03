@@ -424,3 +424,18 @@ The system SHALL run planning and existing transport protocols only with explici
 #### Scenario: Shutdown or runtime pause
 - **WHEN** the host stops or runtime permission is removed
 - **THEN** the runtime task is cancelled and awaited, new authority is suppressed at fresh boundaries, and original receipts and ambiguous attempt facts remain immutable
+
+### Requirement: Eligible early return is not blocked by ended unknown intents
+The system SHALL evaluate a new eligible local study day independently of an ended historical intent's unknown display outcome, preserving original intent ownership, weekly costs and evidence semantics.
+
+#### Scenario: Daily learner misses the next habitual session
+- **WHEN** verified daily learning history establishes a habitual local time and the next local day's learning is reliably absent
+- **THEN** ordinary eligibility can begin on that next day despite small prior completion-time jitter or a DST-shortened day, without waiting a week or bypassing consent, coverage, access or budgets
+
+#### Scenario: A prior day's delivery remains unknown
+- **WHEN** the prior frozen intent window has ended and a separate nonoverlapping day is eligible
+- **THEN** the original intent remains immutable and budget-counted, its unknown outcome is not an unsuccessful response, and it does not by itself veto the new intent
+
+#### Scenario: Original window or budget still forbids another contact
+- **WHEN** current/overlapping day ownership, a live unknown window or the rolling weekly ceiling applies
+- **THEN** no duplicate, alternate delivery or additional study intent bypasses that guard
