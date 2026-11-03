@@ -47,13 +47,35 @@ class PwaTelegramClaim(BaseModel):
     link_request_id: UUID
 
 
-async def _small_json(request: Request, model):
+class PwaMistakeStart(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    ad_supported: Literal[False] = False
+    access_ref: str
+    category: Literal["all", "word", "grammar", "character", "pronunciation"] | None = None
+    formats: list[str] | None = None
+    language: Literal["uz", "ru", "tj"] | None = None
+
+
+class PwaMistakeAnswer(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    session_id: str
+    question_id: str
+    selected_index: int | list[str]
+
+
+class PwaMistakeComplete(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    session_id: str
+    answers: list[dict]
+
+
+async def _small_json(request: Request, model, *, max_bytes: int = 1024):
     if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
         raise PwaAuthError("pwa_request_invalid", status_code=415)
     body = bytearray()
     async for chunk in request.stream():
         body.extend(chunk)
-        if len(body) > 1024:
+        if len(body) > max_bytes:
             raise PwaAuthError("pwa_request_invalid", status_code=413)
     try:
         return model.model_validate_json(bytes(body))
@@ -290,6 +312,146 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
                 {"ok": False, "code": exc.code, "message": exc.message},
                 status_code=exc.status_code, headers=_NO_STORE,
             )
+
+    @router.get("/iphone-pwa/practice/mistakes")
+    async def learner_mistakes_page(request: Request):
+        """Render the original Mistake Engine UI, never a browser clone."""
+        try:
+            require_pwa_enabled(settings_obj)
+            async with session_factory() as db:
+                await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+            return FileResponse(
+                "app/static/course_v3_mistakes.html", media_type="text/html",
+                headers={**_NO_STORE,
+                         "X-Content-Type-Options": "nosniff",
+                         "X-Frame-Options": "DENY"},
+            )
+        except PwaAuthError as exc:
+            if exc.code == "pwa_session_required":
+                return RedirectResponse(
+                    "/iphone-pwa", status_code=303, headers=_NO_STORE,
+                )
+            return _error(exc)
+
+    @router.get("/api/v3/pwa/mistakes")
+    async def pwa_mistakes_overview(request: Request):
+        from app.services.course_mistake_service import CourseMistakeService
+        try:
+            allowed = {"view", "lang", "limit", "offset", "category"}
+            if set(request.query_params.keys()) - allowed:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            if request.query_params.get("view", "targets") != "targets":
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+                result = await CourseMistakeService(db).overview(
+                    actor, view="targets",
+                    category=request.query_params.get("category"),
+                    limit=request.query_params.get("limit", "30"),
+                    offset=request.query_params.get("offset", "0"),
+                    language=request.query_params.get("lang"),
+                )
+            return JSONResponse(
+                result, status_code=200 if result.get("ok") else 400,
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/mistakes/review/start")
+    async def pwa_mistake_review_start(request: Request):
+        from app.services.course_mistake_service import CourseMistakeService
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaMistakeStart, max_bytes=4096)
+            if (not payload.access_ref or len(payload.access_ref) > 100
+                    or (payload.formats is not None and (
+                        len(payload.formats) > 10
+                        or any(not isinstance(v, str) or len(v) > 40
+                               for v in payload.formats)
+                    ))):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                result = await CourseMistakeService(db).start_review(
+                    actor, ad_supported=False,
+                    access_ref=payload.access_ref, category=payload.category,
+                    formats=payload.formats, language=payload.language,
+                )
+            err = result.get("error")
+            status = (200 if result.get("ok") else 403 if err in {
+                "free_feature_limit_reached", "ad_authorization_required",
+                "course_access_blocked",
+            } else 400)
+            return JSONResponse(result, status_code=status, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/mistakes/review/answer")
+    async def pwa_mistake_review_answer(request: Request):
+        from app.services.course_mistake_service import CourseMistakeService
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaMistakeAnswer, max_bytes=4096)
+            if (len(payload.session_id) > 160 or len(payload.question_id) > 160
+                    or (isinstance(payload.selected_index, list) and (
+                        len(payload.selected_index) > 40
+                        or any(len(value) > 60 for value in payload.selected_index)
+                    ))):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                result = await CourseMistakeService(db).answer_review_question(
+                    actor, session_id=payload.session_id,
+                    question_id=payload.question_id,
+                    selected_index=payload.selected_index,
+                )
+            return JSONResponse(
+                result, status_code=200 if result.get("ok") else 400,
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/mistakes/review/complete")
+    async def pwa_mistake_review_complete(request: Request):
+        from app.services.course_mistake_service import CourseMistakeService
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaMistakeComplete, max_bytes=16384)
+            if len(payload.session_id) > 160 or len(payload.answers) > 40:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                result = await CourseMistakeService(db).complete_review(
+                    actor, session_id=payload.session_id,
+                    answers=payload.answers,
+                )
+            return JSONResponse(
+                result, status_code=200 if result.get("ok") else 400,
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
 
     @router.get("/iphone-pwa/manifest.webmanifest")
     async def learner_manifest():
