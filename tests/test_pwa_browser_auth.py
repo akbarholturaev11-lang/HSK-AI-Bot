@@ -359,6 +359,29 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn("user-scalable=no", html)
             self.assertNotIn("maximum-scale=1", html)
 
+    def test_browser_course_and_checkout_keep_standalone_identity_only_on_pwa(self):
+        course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        checkout = (Path("app/static") / "subscription.html").read_text(encoding="utf-8")
+        login = (Path("app/static") / "iphone-pwa-login.html").read_text(encoding="utf-8")
+        # Reuse exact original Mini App and subscription pages; do not make a
+        # parallel PWA frontend or an unconditional Mini App install prompt.
+        self.assertIn('if(PWA_COURSE_HOST){', course)
+        self.assertIn('if(PWA_CHECKOUT_HOST){', checkout)
+        self.assertIn('document.documentElement.classList.add("hsk-pwa-browser")', course)
+        self.assertIn('document.documentElement.classList.add("hsk-pwa-browser")', checkout)
+        for page in (course, checkout, login):
+            self.assertIn('/iphone-pwa/manifest.webmanifest', page)
+            self.assertIn('/assets/hsk-ai-logo-256.png', page)
+            self.assertNotIn('user-scalable=no', page)
+            self.assertNotIn('maximum-scale=1', page)
+        # Apple standalone metadata is scoped by browser-only pathname in the
+        # two reused screens, preserving Telegram/native app behavior.
+        self.assertIn('meta.name="apple-mobile-web-app-capable"', course)
+        self.assertIn('meta.name="apple-mobile-web-app-status-bar-style"', course)
+        self.assertIn('meta.name="apple-mobile-web-app-title"', checkout)
+        self.assertIn('manifest.rel="manifest"', course)
+        self.assertIn('manifest.rel="manifest"', checkout)
+
     async def test_shared_course_entry_needs_valid_pwa_session_and_flag(self):
         path = "/iphone-pwa/course"
         anonymous = await self.client.get(path, follow_redirects=False)
