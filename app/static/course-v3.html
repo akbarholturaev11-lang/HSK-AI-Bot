@@ -2740,10 +2740,10 @@ var App={
     CHECKOUT_NAVIGATING=true;
     var source=src||PAY_SOURCE||"v3_paywall";
     SALES_PAYWALL_ACTIVE=false;SALES_PAYWALL_IMPRESSION="";
-    var url="/subscription.html?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription"
+    var url=(PWA_COURSE_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription"
       +"&"+courseCheckoutReturnParams().toString();
     var clickId=["checkout",COURSE_SESSION_ID,Date.now(),Math.random().toString(36).slice(2,8)].join(":");
-    trackCheckoutOpenedForRedirect(source,clickId);
+    if(!PWA_COURSE_HOST)trackCheckoutOpenedForRedirect(source,clickId);
     /* Same-origin subscription page: navigate inside the Telegram Mini App webview.
        This is not a Mini App exit, so pagehide must not notify the bot. */
     beginInternalNavigation();
