@@ -204,13 +204,14 @@ class LinkViewModel(
         if (!validReferral()) return
         val generation = cancelAttempt()
         val providers = _state.value.providers
-        _state.value = LinkUiState(isRequestingCode = true, providers = providers, providersLoaded = _state.value.providersLoaded, referralCode = authRepository.signupReferralCode.value)
+        val providersLoaded = _state.value.providersLoaded
+        _state.value = LinkUiState(isRequestingCode = true, providers = providers, providersLoaded = providersLoaded, referralCode = authRepository.signupReferralCode.value)
         startJob = viewModelScope.launch {
             val result = authRepository.startLink(language)
             if (attemptGeneration != generation) return@launch
             when (result) {
                 is ApiResult.Failure -> _state.value =
-                    LinkUiState(error = result.error, providers = providers, providersLoaded = true, referralCode = authRepository.signupReferralCode.value)
+                    LinkUiState(error = result.error, providers = providers, providersLoaded = providersLoaded, referralCode = authRepository.signupReferralCode.value)
 
                 is ApiResult.Success -> {
                     val pending = result.value
@@ -220,7 +221,7 @@ class LinkViewModel(
                         secondsRemaining = remainingSeconds(pending),
                         isWaitingForApproval = true,
                         providers = providers,
-                        providersLoaded = true,
+                        providersLoaded = providersLoaded,
                         busyProvider = AuthProvider.TELEGRAM.takeIf { openTelegram },
                         pendingTelegramUrl = pending.botDeepLink
                             .ifEmpty { null }
