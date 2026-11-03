@@ -2390,6 +2390,9 @@ COURSE_V3_PUBLIC_MAP_FILES = frozenset({
 async def course_v3_data_file(filename: str):
     public_assets = {
         "design-tokens.css": "text/css",
+        "iphone-pwa-glass.css": "text/css",
+        "iphone-pwa-notices.js": "application/javascript",
+        "iphone-pwa-feedback.js": "application/javascript",
         "desktop-download.css": "text/css",
         "desktop-download.js": "application/javascript",
         "profile-carousel.css": "text/css",
