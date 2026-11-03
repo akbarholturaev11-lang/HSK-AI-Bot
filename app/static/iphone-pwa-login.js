@@ -75,6 +75,7 @@
         stopTelegramPolling();
         actions.hidden = true;
         message("desktopAuth.linked", false);
+        location.replace("/iphone-pwa/course");
       }
     } catch (error) {
       if (pendingTelegramId() !== linkId) return;
@@ -136,6 +137,7 @@
       stopTelegramPolling();
       actions.hidden = true;
       message("desktopAuth.linked", false);
+      location.replace("/iphone-pwa/course");
     } catch (_) {
       try {
         const payload = await json("/api/v3/pwa-auth/providers");
