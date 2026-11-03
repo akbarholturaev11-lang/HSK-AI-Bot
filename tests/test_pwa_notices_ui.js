@@ -209,6 +209,16 @@ async function main(){
   await typingField.loadAndTick();
   assert.equal(typingField.root().hidden,true,"focused iOS input keyboard must not lose focus");
 
-  console.log("PWA notice UI: 15 behavior/ownership/safety checks passed");
+  const intentionalInbox = harness({
+    action:{payment_id:107,status:"rejected",plan_type:"1_month"}
+  });
+  await intentionalInbox.window.HskPwaInbox.open();
+  await intentionalInbox.callbacks.pageshow({persisted:true});
+  intentionalInbox.window.HskPwaInbox.close();
+  await intentionalInbox.flushTimers();
+  assert.equal(intentionalInbox.root().hidden,true,
+    "a learner-opened inbox must not queue a payment alert behind it");
+
+  console.log("PWA notice UI: 16 behavior/ownership/safety checks passed");
 }
 main().catch((err)=>{console.error(err);process.exitCode=1;});
