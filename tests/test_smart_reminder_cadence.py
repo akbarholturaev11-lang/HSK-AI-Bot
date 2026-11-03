@@ -55,6 +55,15 @@ class PureCadenceTests(unittest.TestCase):
     def test_unconfigured_calibration_cannot_enable_adaptation(self):
         self.check("cadence_calibration_unconfigured", calibration=None)
 
+    def test_approved_habit_is_explicit_and_independent_of_cadence_calibration(self):
+        from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION
+        ordinary=evaluate_cadence(context(),allow_elapsed_time=True)
+        personal=evaluate_cadence(context(),habit_calibration=APPROVED_HABIT_CALIBRATION,allow_elapsed_time=True)
+        self.assertEqual(ordinary.eligibility.time_source,'saved')
+        self.assertEqual(personal.eligibility.time_source,'habit')
+        self.assertEqual(personal.reason,'cadence_calibration_unconfigured')
+        self.assertFalse(personal.dispatch_allowed)
+
     def test_same_gap_differs_for_daily_and_twice_weekly_learners(self):
         daily = self.check("shadow_candidate")
         twice = self.check("shadow_candidate", context(studies=history((3, 6, 10, 13, 17))))

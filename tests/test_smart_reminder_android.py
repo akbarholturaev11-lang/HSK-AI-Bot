@@ -100,9 +100,9 @@ class AndroidChecks:
                 expires_at=self.expiry,state='pending',policy_version=self.service(s).policy_version,
                 preference_revision=2,grant_epoch=1,course_key='hsk1',lesson_order=5,
                 selected_channel='android',selected_device_id='device-1'))
-        # Leave a full cadence interval before the due job at any UTC hour;
-        # the inherited study helper fixes history to 02:MM:SS.
-        for n in range(1,5): await self.study(order=n,days_ago=6-n,xp=1)
+        # Align generic protocol history with its frozen due clock. Dedicated
+        # personalization tests separately distinguish learned and saved time.
+        for n in range(1,5): await self.study(order=n,days_ago=6-n,xp=1,hour=self.tick.hour)
         async with self.sessions() as s: self.inventory,_=await _android_inventory(s,1,self.tick)
         app = FastAPI()
         app.include_router(create_smart_reminder_router(session_factory=self.sessions,settings_obj=self.settings,
@@ -230,6 +230,38 @@ class AndroidChecks:
             self.assertNotIn('grant_id',result)
         self.assertEqual(len(await self.rows(GRANT)),1)
         self.assertEqual(len(await self.rows(ATTEMPT)),1)
+        self.assertNotIn('job_id',await self.due())
+
+    async def test_learned_due_clock_matches_widget_and_overrides_saved_fallback(self):
+        from app.services.smart_widget_context import WidgetContextRequest
+        from app.services.smart_widget_context_service import SmartWidgetContextService
+        async with self.sessions.begin() as session:
+            await session.execute(update(SmartReminderPreference).where(SmartReminderPreference.user_id==1)
+                .values(legacy_time_local=time((self.tick.hour+3)%24,self.tick.minute)))
+            widget=await SmartWidgetContextService(session,clock=lambda:self.tick).project(
+                SmartReminderActor(1,'android',device_id='device-1',session_id='session-1'),
+                WidgetContextRequest(version=1,epoch=self.epoch),authenticated_until=self.expiry,expected_level='hsk1')
+        self.assertEqual(widget['time_source'],'habit')
+        self.assertEqual(widget['time_local'],self.tick.strftime('%H:%M'))
+        self.assertTrue((await self.claim())['dispatch_allowed'])
+        self.assertEqual(len(await self.rows(GRANT)),1)
+
+    async def test_new_habit_cancels_mismatched_frozen_job_without_moving_or_reissuing(self):
+        frozen=(await self.rows(JOB))[0]
+        async with self.sessions.begin() as session:
+            for row in (await session.scalars(select(CourseXpEvent).where(CourseXpEvent.user_id==1))).all():
+                row.created_at=row.created_at+timedelta(minutes=30)
+                row.activity_date=row.created_at.date()
+            for row in (await session.scalars(select(CourseMiniAppEvent).where(CourseMiniAppEvent.user_id==1,
+                    CourseMiniAppEvent.event_name=='lesson_completed'))).all():
+                row.created_at=row.created_at+timedelta(minutes=30)
+        self.assertEqual((await self.claim())['reason'],'shadow_context_changed')
+        current=(await self.rows(JOB))[0]
+        self.assertEqual(current['scheduled_at'],frozen['scheduled_at'])
+        self.assertEqual(current['state'],'cancelled')
+        self.assertFalse((await self.claim())['dispatch_allowed'])
+        self.assertEqual(len(await self.rows(JOB)),1)
+        await self.no_grant()
         self.assertNotIn('job_id',await self.due())
 
     async def test_lost_response_and_expired_grant_never_authorize_reclaim(self):

@@ -11,7 +11,7 @@ from statistics import median
 from zoneinfo import ZoneInfo
 
 from app.services.smart_reminder_policy import (
-    PolicyContext, PolicyDecision, _aware_utc, evaluate,
+    HabitCalibration, PolicyContext, PolicyDecision, _aware_utc, evaluate,
 )
 
 
@@ -97,8 +97,9 @@ def _after_days(instant, days):
 
 
 def evaluate_cadence(context: CadenceContext, *, calibration: CadenceCalibration | None = None,
+                     habit_calibration: HabitCalibration | None = None,
                      allow_elapsed_time: bool = False) -> CadenceDecision:
-    base = evaluate(context.policy, allow_elapsed_time=allow_elapsed_time)
+    base = evaluate(context.policy, calibration=habit_calibration, allow_elapsed_time=allow_elapsed_time)
     gap = abnormal = misses = next_at = weekly = None
 
     def result(reason):
