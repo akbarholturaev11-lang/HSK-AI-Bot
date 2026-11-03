@@ -115,6 +115,18 @@ class LinkViewModel(
     /** The screen calls this once it has opened Telegram. */
     fun telegramUrlOpened() = _state.update { it.copy(pendingTelegramUrl = null) }
 
+    /** A failed or obsolete handoff must not consume a URL as a success. */
+    fun externalLaunchFailed(url: String) {
+        val current = _state.value
+        if (url != current.pendingBrowserUrl && url != current.pendingTelegramUrl) return
+        cancelAttempt()
+        _state.value = LinkUiState(
+            providers = current.providers,
+            referralCode = authRepository.signupReferralCode.value,
+            error = ApiError.ProviderUnavailable,
+        )
+    }
+
     /**
      * Opens the bot for the Telegram card.
      *

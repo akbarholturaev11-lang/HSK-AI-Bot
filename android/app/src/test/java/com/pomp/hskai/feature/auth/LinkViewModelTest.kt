@@ -39,6 +39,7 @@ import kotlinx.coroutines.withContext
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -50,6 +51,26 @@ class LinkViewModelTest {
     private val dispatcher = StandardTestDispatcher()
     @Before fun setUp() = Dispatchers.setMain(dispatcher)
     @After fun tearDown() = Dispatchers.resetMain()
+
+    @Test fun failedExternalLaunchStopsItsPollAndAllowsAnotherProvider() = runTest(dispatcher) {
+        val f = Fixture()
+        f.model.signInWithGoogle(null, AppLanguage.UZBEK); runCurrent()
+        val url = requireNotNull(f.model.state.value.pendingBrowserUrl)
+        f.model.externalLaunchFailed(url); runCurrent()
+        val stoppedAt = f.polls
+        advanceTimeBy(4_000); runCurrent()
+        assertEquals(stoppedAt, f.polls)
+        assertEquals(com.pomp.hskai.core.network.ApiError.ProviderUnavailable, f.model.state.value.error)
+        assertNull(f.model.state.value.busyProvider)
+        assertNull(f.model.state.value.pendingBrowserUrl)
+        assertNull(f.savedRefresh)
+        f.model.continueWithTelegram(AppLanguage.UZBEK); runCurrent()
+        assertEquals(AuthProvider.TELEGRAM, f.model.state.value.busyProvider)
+        f.model.externalLaunchFailed(url)
+        assertEquals(AuthProvider.TELEGRAM, f.model.state.value.busyProvider)
+        assertNotNull(f.model.state.value.pendingTelegramUrl)
+        f.model.dismissWaiting()
+    }
 
     @Test fun googleSigninUsesGoogleBrowserPageAndStopsOnTerminalStatus() = runTest(dispatcher) {
         val f = Fixture()

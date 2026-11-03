@@ -37,11 +37,11 @@ object AppLocale {
      * rebuilt: resources are read once per activity, so a language that
      * changed while the app is open only reaches the strings after a recreate.
      *
-     * Until the first sync the activity was never wrapped, and what is on
-     * screen is whatever Android resolved from the device locale — for a
-     * device set to a language the app does not translate that is the default
-     * resource folder, which cannot be derived from the locale. So the first
-     * sync always rebuilds rather than guessing what is already showing.
+     * On first sync a supported Activity locale can already be the account's
+     * language (for example Russian on a Russian phone). Recreating that
+     * Activity makes a successful sign-in appear to close/reopen unnecessarily.
+     * Unknown locales still rebuild: their resource-folder fallback must not
+     * be mistaken for a confirmed matching account language.
      */
     fun sync(context: Context, language: AppLanguage): Boolean {
         val current = stored(context)
@@ -53,7 +53,10 @@ object AppLocale {
             // no longer what decides the language.
             .remove(KEY_CHOSEN)
             .apply()
-        return current != language
+        val activityTag = context.resources.configuration.locales.let { locales ->
+            if (locales.isEmpty) null else locales[0].language
+        }
+        return current != language && activityTag != language.androidTag
     }
 
     /**
