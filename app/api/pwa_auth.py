@@ -107,6 +107,39 @@ class PwaVoiceEnd(BaseModel):
     session_id: str
 
 
+class PwaCheckoutContext(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    source: str | None = None
+    mode: str | None = "subscription"
+    plan: str | None = None
+    method: str | None = None
+    attempt_id: str | None = None
+    campaign_id: int | None = None
+    feedback_id: int | None = None
+
+
+class PwaCheckoutQuote(PwaCheckoutContext):
+    plan_type: str
+    payment_method: str
+    card_country: str | None = None
+    card_bank: str | None = None
+
+
+class PwaCheckoutSubmit(PwaCheckoutQuote):
+    screenshot_data_url: str
+
+
+class PwaCheckoutPaymentStatus(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    payment_id: int
+
+
+class PwaCheckoutEvent(PwaCheckoutContext):
+    stage: Literal["payment_instructions_viewed", "payment_receipt_selected"]
+    plan_type: str | None = None
+    payment_method: str | None = None
+
+
 async def _small_json(request: Request, model, *, max_bytes: int = 1024):
     if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
         raise PwaAuthError("pwa_request_invalid", status_code=415)
@@ -132,7 +165,7 @@ def _clear_cookie(response: JSONResponse, name: str) -> None:
     response.delete_cookie(name, path="/", secure=True, httponly=True, samesite="lax")
 
 
-def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
+def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRouter:
     router = APIRouter(tags=["pwa-auth"])
 
     # A login-only source-aligned shell; protected course routes are P2.
@@ -880,6 +913,230 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
                 {"ok": False, "code": exc.code, "message": exc.message},
                 status_code=exc.status_code, headers=_NO_STORE,
             )
+
+    @router.get("/iphone-pwa/checkout")
+    async def learner_checkout_page(request: Request):
+        """The original subscription.html, not a second payments UI."""
+        try:
+            require_pwa_enabled(settings_obj)
+            async with session_factory() as db:
+                await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+            return FileResponse(
+                "app/static/subscription.html", media_type="text/html",
+                headers={
+                    **_NO_STORE, "X-Content-Type-Options": "nosniff",
+                    "X-Frame-Options": "DENY",
+                },
+            )
+        except PwaAuthError as exc:
+            if exc.code == "pwa_session_required":
+                return RedirectResponse(
+                    "/iphone-pwa", status_code=303, headers=_NO_STORE,
+                )
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/subscription/overview")
+    async def pwa_checkout_overview(request: Request):
+        from app.services.subscription_miniapp_service import SubscriptionMiniAppService
+        from app.services.subscription_entry_analytics_service import (
+            SubscriptionEntryAnalyticsService,
+        )
+        from app.services.conversion_funnel_service import ConversionFunnelService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                data = await _small_json(request, PwaCheckoutContext, max_bytes=4096)
+                if (data.source is not None and len(data.source) > 80
+                    or data.mode is not None and len(data.mode) > 32
+                    or data.attempt_id is not None and len(data.attempt_id) > 96):
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                result = await SubscriptionMiniAppService(db).overview(
+                    actor, bot=bot, mode=data.mode,
+                    campaign_id=data.campaign_id,
+                    feedback_id=data.feedback_id,
+                )
+                if result.get("ok"):
+                    await SubscriptionEntryAnalyticsService(db).record_entry(
+                        user=actor, source=data.source or "iphone_pwa",
+                        mode=data.mode, plan_type=data.plan,
+                        payment_method=data.method,
+                        campaign_id=data.campaign_id,
+                        feedback_id=data.feedback_id,
+                    )
+                    # Retain the canonical funnel event. PWA users may have no
+                    # Telegram provider, so the accountable key is users.id.
+                    if not result.get("pending_payment") and data.attempt_id:
+                        await ConversionFunnelService().record(
+                            event_name="checkout_opened",
+                            user=actor,
+                            telegram_id=actor.telegram_id,
+                            source=(data.source or "iphone_pwa")[:80],
+                            payload={
+                                "attempt_id": data.attempt_id,
+                                "mode": data.mode or "",
+                                "campaign_id": data.campaign_id,
+                                "feedback_id": data.feedback_id,
+                                "transport": "iphone_pwa",
+                            },
+                        )
+            return JSONResponse(
+                result, status_code=200 if result.get("ok") else 400,
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/subscription/quote")
+    async def pwa_checkout_quote(request: Request):
+        from app.services.subscription_miniapp_service import SubscriptionMiniAppService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                data = await _small_json(request, PwaCheckoutQuote, max_bytes=4096)
+                if not (1 <= len(data.plan_type) <= 40 and 1 <= len(data.payment_method) <= 20):
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                result = await SubscriptionMiniAppService(db).quote(
+                    telegram_id=actor,
+                    plan_type=data.plan_type,
+                    payment_method=data.payment_method,
+                    card_country=data.card_country,
+                    card_bank=data.card_bank,
+                    bot=bot, mode=data.mode,
+                    campaign_id=data.campaign_id,
+                    feedback_id=data.feedback_id,
+                )
+            return JSONResponse(
+                result, status_code=200 if result.get("ok") else 400,
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/subscription/payment-status")
+    async def pwa_checkout_payment_status(request: Request):
+        from app.repositories.payment_repo import PaymentRepository
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                data = await _small_json(request, PwaCheckoutPaymentStatus)
+                if not 1 <= data.payment_id <= 2147483647:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                payment = await PaymentRepository(db).get_by_id(
+                    data.payment_id, actor=actor,
+                )
+            if payment is None:
+                return JSONResponse(
+                    {"ok": False, "error": "payment_not_found"},
+                    status_code=404, headers=_NO_STORE,
+                )
+            return JSONResponse({
+                "ok": True, "payment_id": int(payment.id),
+                "status": str(payment.payment_status or ""),
+                "plan_type": str(payment.plan_type or ""),
+            }, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/subscription/discount-start")
+    async def pwa_checkout_discount(request: Request):
+        from app.services.subscription_miniapp_service import SubscriptionMiniAppService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                await _small_json(request, PwaCheckoutContext, max_bytes=4096)
+                result = await SubscriptionMiniAppService(db).start_discount(
+                    actor, bot=bot,
+                )
+            return JSONResponse(
+                result, status_code=200 if result.get("ok") else 400,
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/subscription/submit")
+    async def pwa_checkout_submit(request: Request):
+        """Send the original checked receipt to admins before claiming pending."""
+        from app.services.subscription_miniapp_service import SubscriptionMiniAppService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            if bot is None:
+                raise PwaAuthError("checkout_delivery_unavailable", status_code=503)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                # The screenshot remains bounded by the canonical 8 MB decoded
+                # image check in SubscriptionMiniAppService, plus this transport
+                # bound for base64 JSON encoding.
+                if int(request.headers.get("Content-Length") or "0") > 12 * 1024 * 1024:
+                    raise PwaAuthError("pwa_request_invalid", status_code=413)
+                data = await _small_json(
+                    request, PwaCheckoutSubmit, max_bytes=12 * 1024 * 1024,
+                )
+                if (not 1 <= len(data.plan_type) <= 40
+                    or not 1 <= len(data.payment_method) <= 20
+                    or not data.screenshot_data_url.startswith("data:image/")
+                    or len(data.screenshot_data_url) > 11_500_000):
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                try:
+                    result = await SubscriptionMiniAppService(db).submit(
+                        telegram_id=actor,
+                        plan_type=data.plan_type,
+                        payment_method=data.payment_method,
+                        card_country=data.card_country,
+                        card_bank=data.card_bank,
+                        screenshot_data_url=data.screenshot_data_url,
+                        bot=bot, mode=data.mode,
+                        campaign_id=data.campaign_id,
+                        feedback_id=data.feedback_id,
+                        source="iphone_pwa",
+                    )
+                except Exception:
+                    await db.rollback()
+                    raise PwaAuthError("payment_submit_failed", status_code=503)
+            return JSONResponse(
+                result, status_code=200 if result.get("ok") else 400,
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+        except ValueError:
+            return _error(PwaAuthError("pwa_request_invalid", status_code=422))
 
     @router.get("/iphone-pwa/manifest.webmanifest")
     async def learner_manifest():
