@@ -5,6 +5,13 @@
 
 ## 0. Restart snapshot — 2026-11-03 (authoritative; all historical notes below are snapshots)
 
+### Canonical feedback follow-up — legacy linking and revision bound (2026-11-03; CI pending)
+
+- The implementation advanced to **`b9eb2e6b10f16f8ef1c45988c4b39ede49047649`** on Draft PR #257. `6045643` amended `ReleaseFeedbackRepository.get_delivery/get_response` to prefer a canonical `user_id` row over a matching historical `user_id=NULL` Telegram-only record if a formerly provider-only owner later links that genuine TG transport. Without this, `scalar_one_or_none()` could raise on two historically distinct records; do not silently apply a second campaign reward or return the wrong owner's row. Regression now exercises that linking edge. This is a compatibility guard, **not** a retroactive dedup/purge of legitimate historical records.
+- `b9eb2e6` shortens Alembic 0146 revision ID to `0146_pwa_feedback_owner` and renames the file to `alembic/versions/0146_pwa_feedback_owner.py`, updating the migration rehearsal in `tests/test_pwa_browser_auth.py`. The previous revision string was 33 characters, exceeding the usual 32-character `alembic_version.version_num` schema bound. The old version never deployed; no production migration was executed. The migration still follows `0145_smart_baseline_outcomes`.
+- An independent, isolated **SQLite migration smoke** in the working container successfully tested backfill of a linked TG row, retention of unmapped legacy transport and two distinct provider-only rows, with the unique constraint rejecting a duplicate `(campaign_id,user_id)`. This is NOT an exact repo CI nor PostgreSQL migration acceptance.
+- **Latest exact HEAD `b9eb2e6` CI still needs to finish before code acceptance.** Intermediate commits `e850aa6` and `6045643` ran CI but their statuses do not certify the newest revision; recheck new HEAD, inspect backend PWA test failures and Admin/Android/Smart regressions. Do not check OpenSpec P2.6 until eligible PWA HTTP adapters, existing Figma modal integration and full test evidence are actually present. Production main/flag/deploy/branch status unchanged.
+
 ### Canonical users.id feedback persistence — staged implementation (2026-11-03, NOT CI-accepted)
 
 - User explicitly confirmed feedback must identify each logical learner by unique `users.id` across iPhone PWA and Telegram; **never invent a Telegram ID for provider-only accounts**. Target remains OpenSpec P2.6; Figma-gated modal UI and actual PWA feedback routes are **not** yet implemented or accepted.
