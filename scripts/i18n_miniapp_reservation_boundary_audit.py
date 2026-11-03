@@ -78,8 +78,20 @@ def _server_checks(source: str) -> dict[str, bool]:
     fn = start_nodes[0]
     content_fn = content_nodes[0]
     skip_fn = skip_nodes[0]
-    pretty = ast.unparse(fn)
-    content_pretty = ast.unparse(content_fn)
+    # The Telegram and cookie/CSRF transports delegate to the same canonical
+    # policy helpers. Inspect both the verified wrapper AND its gated helper.
+    shared_starts = [n for n in ast.walk(tree)
+                     if isinstance(n, ast.AsyncFunctionDef)
+                     and n.name == "_start_lesson_for_user"]
+    shared_contents = [n for n in ast.walk(tree)
+                       if isinstance(n, ast.AsyncFunctionDef)
+                       and n.name == "_lesson_content_for_user"]
+    if len(shared_starts) != 1 or len(shared_contents) != 1:
+        raise ValueError("Canonical shared lesson gate identity changed")
+    shared_start = shared_starts[0]
+    shared_content = shared_contents[0]
+    pretty = ast.unparse(shared_start)
+    content_pretty = ast.unparse(shared_content)
     skip_pretty = ast.unparse(skip_fn)
     question_nodes = [
         n for n in ast.walk(tree)
@@ -119,14 +131,21 @@ def _server_checks(source: str) -> dict[str, bool]:
         and len(call.args) == 1
         and isinstance(call.args[0], ast.Name) and call.args[0].id == "telegram_id"
     ]
-    progress_and_quota = _calls(fn, "get_by_user_id") + _calls(fn, "status")
+    wrapper_unguarded_reads = _calls(fn, "get_by_user_id") + _calls(fn, "status")
+    progress_and_quota = _calls(shared_start, "get_by_user_id") + _calls(shared_start, "status")
+    shared_start_calls = _calls(fn, "_start_lesson_for_user")
+    content_lookup_calls = _calls(content_fn, "get_by_telegram_id")
+    shared_content_calls = _calls(content_fn, "_lesson_content_for_user")
     return {
         "verifies_telegram_init_data": bool(_calls(fn, "extract_verified_webapp_user_id")),
         "rejects_missing_identity_401": _guarded_unauthorized(fn),
         "uses_verified_account_lookup": bool(locked_accounts),
         "locks_account_before_progress_and_quota": (
-            len(locked_accounts) == 1 and bool(progress_and_quota)
-            and all(locked_accounts[0].lineno < call.lineno for call in progress_and_quota)
+            len(locked_accounts) == 1 and len(shared_start_calls) == 1
+            and locked_accounts[0].lineno < shared_start_calls[0].lineno
+            and bool(progress_and_quota)
+            and all(locked_accounts[0].lineno < call.lineno
+                    for call in wrapper_unguarded_reads)
         ),
         "rejects_out_of_sequence_lesson": (
             "order > completed + 1" in pretty
@@ -136,11 +155,15 @@ def _server_checks(source: str) -> dict[str, bool]:
             "order < 1" in pretty
             and "order > total_parts(level)" in pretty
         ),
-        "uses_lesson_access_consume_true": _shared_entitlement(fn, consume=True),
-        "commits_entitlement_result": bool(_calls(fn, "commit")),
+        "uses_lesson_access_consume_true": _shared_entitlement(shared_start, consume=True),
+        "commits_entitlement_result": bool(_calls(shared_start, "commit")),
         "content_uses_authenticated_identity_helper": bool(_calls(content_fn, "_authenticated")),
         "content_rejects_missing_identity_401": _guarded_unauthorized(content_fn),
         "content_uses_verified_account_lookup": bool(_calls(content_fn, "get_by_telegram_id")),
+        "content_calls_shared_gate_after_verified_lookup": (
+            len(content_lookup_calls) == 1 and len(shared_content_calls) == 1
+            and content_lookup_calls[0].lineno < shared_content_calls[0].lineno
+        ),
         "content_rejects_out_of_sequence_lesson": (
             "lesson_order > completed + 1" in content_pretty
             and "course_lesson_not_unlocked" in content_pretty
@@ -149,7 +172,7 @@ def _server_checks(source: str) -> dict[str, bool]:
             "lesson_order < 1" in content_pretty
             and "lesson_order > total" in content_pretty
         ),
-        "content_checks_non_consuming_entitlement": _shared_entitlement(content_fn, consume=False),
+        "content_checks_non_consuming_entitlement": _shared_entitlement(shared_content, consume=False),
         "content_uses_no_store_response": bool(_calls(content_fn, "_private_content_response")),
         "skip_test_uses_authenticated_identity_helper": bool(_calls(skip_fn, "_authenticated")),
         "skip_test_rejects_missing_identity_401": _guarded_unauthorized(skip_fn),
