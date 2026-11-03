@@ -2,7 +2,7 @@
 
 `app/services/smart_reminder_destination.py` implements the D06 choice core.
 The authoritative decisions and executed acceptance remain in
-`SMART_REMINDER_MASTER_PLAN.md` §§17.57, 17.77. This is a component contract, not a
+`SMART_REMINDER_MASTER_PLAN.md` §§17.57, 17.77–17.78. This is a component contract, not a
 second progress tracker or evidence that production dispatch is enabled.
 
 ## One eligible destination
@@ -79,7 +79,7 @@ leased/attempted/terminal work is never retargeted. Planning creates no attempt,
 grant, provider call or fallback to another endpoint. Only the existing native
 authenticated claim or committed Telegram attempt can proceed toward delivery.
 
-There is no production planner registration, admission/complete-learning factory,
+The production host has an explicit internal registration hook but no configured runtime or authoritative admission/complete-learning factory,
 new flag, schema, poller, client behavior or transactional-notice change.
 Rollback leaves the planner disabled; existing pending ownership and the original
 claim/receipt guards stay intact. Local integration does not prove live fencing
@@ -98,3 +98,34 @@ delivery; exact executed results are recorded only in the Master Plan.
 native authenticated claim/receipt, committed Telegram claim with fake provider,
 most-used selection, concurrency, final-read changes and transactional rollback
 on SQLite/PostgreSQL. Disabled/missing configuration returns before SQL/IO.
+
+## Reviewed runtime host
+
+`SmartReminderRuntime` connects the planner to the main lifespan and native
+factory only through an explicit server-owned `app.state.smart_reminder_runtime`
+object with the exact same settings and session factory. Production configures
+no such object. There is no HTTP registration, new environment flag or implicit
+cohort enrollment. Caller-supplied cadence calibration, positive history window
+and authoritative learning reader are required; Android also needs its existing
+reviewed admission callback, and Telegram its current switch and explicit trusted
+transport. No reader can turn partial legacy results into complete coverage.
+
+The bounded rotating loop scans already reviewed unexpired routing accounts,
+rechecks canonical actor/course/IANA calendar and uses the planner. Existing
+pending/claimed selected work is handled before new reservation: a due Telegram
+job can resume after its planning time through the original committed claim and
+dispatch. Started/unknown attempts never replay; only an expired unstarted lease
+can resume through the same attempt. Native requires no provider hint: its own
+authenticated polling/claim path uses the same runtime dependencies and guards.
+The injected Telegram callback receives the existing envelope and runs after
+SQL authorization commits, with no open runtime DB session.
+
+A ready registered runtime replaces the shadow-only evaluator in that host.
+Absent/incomplete/disabled registration starts no runtime polling; existing
+shadow configuration and disabled native defaults remain. Wrong settings/session
+identity cannot enable a host. Runtime pause/removal suppresses readers and new
+transport at fresh boundaries; shutdown cancels/awaits its independent task.
+Committed external IO cannot be recalled; original receipts and uncertain
+account/day ownership remain. Technical batch/timeout/cursor limits confer no
+product confidence or permission. Actual feed completeness, calibration,
+fencing and real provider/installed staging acceptance remain separate gates.

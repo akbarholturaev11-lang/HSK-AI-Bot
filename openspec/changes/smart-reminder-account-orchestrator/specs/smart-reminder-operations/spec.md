@@ -409,3 +409,18 @@ The system SHALL reserve and bind one reviewed eligible destination using existi
 #### Scenario: Concurrent planning and restart
 - **WHEN** planners race or repeat after a selected, attempted or terminal intent already owns the day
 - **THEN** the original single day/endpoint/attempt evidence stays intact without reranking, refunding ownership or replaying delivery
+
+### Requirement: Runtime registration preserves reviewed single-intent delivery boundaries
+The system SHALL run planning and existing transport protocols only with explicit server-owned reviewed runtime dependencies, preserving disabled defaults, finite work and original attempt/receipt ownership.
+
+#### Scenario: No ready registration
+- **WHEN** the host has no matching ready runtime or authoritative dependencies
+- **THEN** no runtime polling or provider IO starts, and native new posting authority stays disabled
+
+#### Scenario: A due selected intent survives restart
+- **WHEN** a reviewed selected intent is due after its original planning time
+- **THEN** native retrieval or the existing committed Telegram protocol processes that original intent without another reservation, retargeting or replaying a started attempt
+
+#### Scenario: Shutdown or runtime pause
+- **WHEN** the host stops or runtime permission is removed
+- **THEN** the runtime task is cancelled and awaited, new authority is suppressed at fresh boundaries, and original receipts and ambiguous attempt facts remain immutable
