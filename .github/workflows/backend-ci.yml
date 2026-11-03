@@ -20,6 +20,7 @@ on:
       - "app/static/course_v3_data/*.css"
       - "tests/test_pwa_*.py"
       - "tests/test_pwa_*.js"
+      - "localization/baselines/reviewed_ui_changes.json"
       - "tests/test_telegram_sdk_asset.py"
       - "app/api/miniapp_entitlements.py"
       - "app/api/desktop_course.py"
