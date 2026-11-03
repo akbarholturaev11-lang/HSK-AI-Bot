@@ -1237,6 +1237,100 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(owner.status, "active")
             self.assertIsNotNone(owner.end_date)
 
+    async def test_pwa_release_comment_after_rating_does_not_repeat_reward(self):
+        from app.db.models.release_feedback import (
+            ReleaseFeedbackCampaign, ReleaseFeedbackDelivery, ReleaseFeedbackResponse,
+        )
+        from app.db.models.discount_campaign import DiscountCampaign
+        from unittest.mock import patch, AsyncMock
+
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            db.add(user(2, None))
+            db.add(ReleaseFeedbackCampaign(
+                id=88, title="Optional rating comment", status="sent",
+                send_at=now - timedelta(days=1),
+            ))
+            db.add(ReleaseFeedbackCampaign(
+                id=89, title="Other account rating", status="sent",
+                send_at=now - timedelta(days=1),
+            ))
+            await db.flush()
+            db.add(ReleaseFeedbackDelivery(
+                campaign_id=88, user_id=1, user_telegram_id=1001,
+                status="clicked",
+            ))
+            db.add(ReleaseFeedbackDelivery(
+                campaign_id=89, user_id=2, user_telegram_id=None,
+                status="sent",
+            ))
+            await db.commit()
+        state = await self.begin()
+        await self.callback(state)
+        session = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": session["csrf"]}
+        url = "/api/v3/pwa/feedback/release/comment"
+        valid = {"campaign_id": 88, "comment_text": "Clearer lessons are useful"}
+        self.assertEqual((await self.client.post(
+            url, json=valid, headers={"Origin": ORIGIN},
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            url, json={**valid, "user_id": 2}, headers=headers,
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            url, json={**valid, "comment_text": " "}, headers=headers,
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            url, json={**valid, "campaign_id": 89}, headers=headers,
+        )).status_code, 404)
+        self.assertEqual((await self.client.post(
+            url, json=valid, headers=headers,
+        )).status_code, 409)
+        rated = await self.client.post(
+            "/api/v3/pwa/feedback/release/respond",
+            headers=headers, json={"campaign_id": 88, "rating": 5},
+        )
+        self.assertEqual(rated.status_code, 200, rated.text)
+        original_discount_id = rated.json()["discount_campaign_id"]
+        original_trial_until = rated.json()["trial_until"]
+        with patch("app.services.admin_notify_service.AdminNotifyService") as notify:
+            notify.return_value.notify_release_feedback_response = AsyncMock()
+            added = await self.client.post(url, json=valid, headers=headers)
+            self.assertEqual(added.status_code, 200, added.text)
+            self.assertTrue(added.json()["updated"])
+            notify.return_value.notify_release_feedback_response.assert_awaited_once()
+            self.assertEqual(
+                notify.return_value.notify_release_feedback_response.await_args.kwargs["event"],
+                "comment",
+            )
+            retry = await self.client.post(url, json=valid, headers=headers)
+            self.assertEqual(retry.status_code, 200, retry.text)
+            self.assertFalse(retry.json()["updated"])
+            notify.return_value.notify_release_feedback_response.assert_awaited_once()
+        async with self.sessions() as db:
+            response = (await db.execute(
+                select(ReleaseFeedbackResponse).where(
+                    ReleaseFeedbackResponse.campaign_id == 88,
+                )
+            )).scalar_one()
+            self.assertEqual(response.comment_text, valid["comment_text"])
+            self.assertEqual(response.rating, 5)
+            self.assertEqual(response.discount_campaign_id, original_discount_id)
+            self.assertEqual(response.user_id, 1)
+            discounts = (await db.execute(
+                select(DiscountCampaign).where(DiscountCampaign.target_user_id == 1)
+            )).scalars().all()
+            self.assertEqual(len(discounts), 1)
+            delivery = (await db.execute(
+                select(ReleaseFeedbackDelivery).where(
+                    ReleaseFeedbackDelivery.campaign_id == 88,
+                )
+            )).scalar_one()
+            self.assertEqual(
+                delivery.trial_granted_until.replace(tzinfo=timezone.utc).isoformat(),
+                original_trial_until,
+            )
+
     async def test_pwa_release_rating_requires_delivered_canonical_owner_and_one_reward(self):
         from app.db.models.release_feedback import (
             ReleaseFeedbackCampaign, ReleaseFeedbackDelivery, ReleaseFeedbackResponse,

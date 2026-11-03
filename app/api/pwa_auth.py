@@ -156,6 +156,12 @@ class PwaReleaseFeedbackReply(BaseModel):
     comment_text: str | None = None
 
 
+class PwaReleaseFeedbackComment(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    campaign_id: int
+    comment_text: str
+
+
 class PwaOrdinaryFeedbackSubmit(BaseModel):
     model_config = ConfigDict(extra="forbid")
     feedback_id: int
@@ -1808,6 +1814,85 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 {"ok": True, "feedback_id": data.feedback_id, "completed": True},
                 headers=_NO_STORE,
             )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/feedback/release/comment")
+    async def pwa_release_feedback_comment(request: Request):
+        """Add a later comment to an already owned release rating.
+
+        Telegram offers the same optional comment step. This path never
+        creates a second rating, trial or discount. Identical retries do
+        not emit another administrator notification.
+        """
+        from sqlalchemy import select
+        from app.db.models.user import User
+        from app.services.release_feedback_service import ReleaseFeedbackService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                data = await _small_json(
+                    request, PwaReleaseFeedbackComment, max_bytes=4096,
+                )
+                if not 1 <= data.campaign_id <= 2147483647:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                comment = data.comment_text.strip()
+                if not comment or len(comment) > 1000:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                learner = (await db.execute(
+                    select(User).where(User.id == actor.id)
+                    .with_for_update().execution_options(populate_existing=True)
+                )).scalar_one()
+                service = ReleaseFeedbackService(db)
+                campaign = await service.repo.get_campaign(data.campaign_id)
+                delivery = await service.repo.get_delivery(
+                    campaign_id=data.campaign_id, user=learner,
+                )
+                if (
+                    campaign is None or campaign.status != "sent"
+                    or delivery is None
+                    or delivery.status not in {"sent", "clicked"}
+                ):
+                    raise PwaAuthError("feedback_not_available", status_code=404)
+                response = await service.repo.get_response(
+                    campaign_id=data.campaign_id, user=learner,
+                )
+                if response is None:
+                    raise PwaAuthError("feedback_rating_required", status_code=409)
+                changed = (response.comment_text or "").strip() != comment
+                if changed:
+                    await service.repo.update_response_comment(
+                        response, comment_text=comment,
+                        # The PWA currently has no attachment editor. Preserve
+                        # a historical Telegram photo/document when adding text.
+                        attachment_file_id=response.attachment_file_id,
+                        attachment_type=response.attachment_type,
+                    )
+                    await db.commit()
+                response_id = response.id
+            if changed and bot is not None:
+                try:
+                    from app.services.admin_notify_service import AdminNotifyService
+                    await AdminNotifyService().notify_release_feedback_response(
+                        bot, campaign=campaign, response=response,
+                        user=learner, event="comment",
+                    )
+                except Exception:
+                    import logging
+                    logging.getLogger(__name__).exception(
+                        "PWA release feedback comment notice failed"
+                    )
+            return JSONResponse({
+                "ok": True, "response_id": response_id,
+                "updated": changed,
+            }, headers=_NO_STORE)
         except PwaAuthError as exc:
             return _error(exc)
 
