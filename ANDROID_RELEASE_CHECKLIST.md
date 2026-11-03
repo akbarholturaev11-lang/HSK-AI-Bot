@@ -6,11 +6,11 @@ Bu fayl esdan chiqmasligi uchun. Har safar ochib, ustidan yurib chiqing.
 
 ## 0. JORIY RELEASE HOLATINI TEKSHIRISH
 
-Universal akkaunt o‘zgarishlari `codex/universal-sign-in`da ushlab turiladi.
-Kod va `docs/UNIVERSAL_NATIVE_ACCOUNTS.md`dagi qabul tekshiruvlari tugamaguncha
-ularni `main`ga push/merge qilmang, production backend yoki yangi ilovani
-tarqatmang. Hozirgi Play release uchun xarid talab qilinmaydi: u mavjud
-entitlement’ni o‘qiydi; Direct APK chek/admin orqali xaridni qo‘llaydi.
+Universal akkauntning eski branch hold’i faol release cheklovi emas;
+joriy kontrakt va tarixiy qabul dalillari `docs/UNIVERSAL_NATIVE_ACCOUNTS.md`da.
+Har yangi release uchun joriy main va tegishli regression tekshiruvlaridan
+foydalaning. Play mavjud entitlement’ni o‘qiydi; Direct APK chek/admin orqali
+xaridni qo‘llaydi.
 
 Bu faylda jonli release holati saqlanmaydi. Release yoki muammoni tekshirishdan
 oldin:
@@ -39,9 +39,10 @@ Har ikki yo‘ldan keyin 1.3 dagi qurilma tekshiruvini bajaring.
 build versiyasining source of truth’i. Yangi release’da nomni yangilang va
 `appVersionCode` ni R2’dagi eng so‘nggi e’lon qilingan qiymatdan kattaroq
 qiling; aniq `+1` shart emas. Teng yoki past code bilan yangi artifact
-chiqarmang. Workflow past code’ni rad etadi, ammo teng code’li boshqa
-artifact’ni alohida to‘xtatmaydi — publishdan oldin `android/latest.json`
-bilan qo‘lda solishtiring. Aynan bir xil APK’ni rerun qilish mumkin.
+chiqarmang. Workflow past code’ni ham, teng code bilan URL/sha256/size/nomi
+boshqa artifact’ni ham rad etadi; immutable APK yo‘li ham boshqa baytlar bilan
+almashtirilmaydi. Publishdan oldin `android/latest.json`ni tekshiring.
+Aynan bir xil APK va manifest metadata’sini rerun qilish mumkin.
 Android’ning keyingi release uchun kattaroq qiymat talab qiladigan
 [rasmiy versiya qoidasiga](https://developer.android.com/studio/publish/versioning)
 ham amal qiling. Bu hujjatdagi eski raqamlarni yangi release uchun ko‘chirmang.
