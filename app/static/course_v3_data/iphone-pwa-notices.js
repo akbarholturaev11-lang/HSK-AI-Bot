@@ -223,6 +223,7 @@
     // If the learner intentionally opens the inbox, never reopen its alert
     // immediately after the inbox is closed.
     urgentPending = null;
+    ++checkGeneration;
     activeTab = "course";
     latestData = null;
     openMode("inbox");
@@ -265,7 +266,10 @@
     }
   }
   async function offerLatestRejection() {
-    if (document.visibilityState === "hidden") return;
+    // Browsing notices is an intentional user action, never interrupt it or
+    // queue a surprise payment modal when the learner closes this inbox.
+    if (document.visibilityState === "hidden" || activeMode === "inbox" ||
+        document.querySelector("#hsk-pwa-feedback-root:not([hidden])")) return;
     var check = ++checkGeneration;
     urgentPending = null;
     interruptRetries = 0;
