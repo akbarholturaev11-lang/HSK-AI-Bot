@@ -2251,7 +2251,9 @@ var PWA_COURSE_POST_PATHS={
   "/api/v3/lesson/start":"/api/v3/pwa/lesson/start",
   "/api/miniapp/mistakes/review/start":"/api/v3/pwa/mistakes/review/start",
   "/api/miniapp/mistakes/review/answer":"/api/v3/pwa/mistakes/review/answer",
-  "/api/miniapp/mistakes/review/complete":"/api/v3/pwa/mistakes/review/complete"
+  "/api/miniapp/mistakes/review/complete":"/api/v3/pwa/mistakes/review/complete",
+  "/api/v3/exams/start":"/api/v3/pwa/exams/start",
+  "/api/v3/exams/complete":"/api/v3/pwa/exams/complete"
 };
 function _apiGet(url){
   if(!PWA_COURSE_HOST)return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}});
@@ -8045,7 +8047,7 @@ var TEST=(function(){
   function examStem(q){return typeof q.prompt==="string"?q.prompt:(q.prompt&&(q.prompt[LANG]||q.prompt.ru||q.prompt.uz||q.prompt.tj))||""}
   function olang(o){return o[LANG]||o.ru}
   function shuffled(a){var out=a.slice();for(var i=out.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=out[i];out[i]=out[j];out[j]=x}return out}
-  function premium(){App.goPay("v3_test_limit")}
+  function premium(){if(PWA_COURSE_HOST){showHub();return}App.goPay("v3_test_limit")}
 
   function shell(){
     return '<div id="tc-root">'
@@ -8059,10 +8061,11 @@ var TEST=(function(){
 
   /* ---- gate ---- */
   function newRef(){try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID()}catch(e){}return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
-  function gateRef(key,create){var k="hsk_gate_"+key,v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=GATE_REFS[k]||""}if(!v&&create){v=newRef();GATE_REFS[k]=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
-  function clearGateRef(key){var k="hsk_gate_"+key;delete GATE_REFS[k];try{sessionStorage.removeItem(k)}catch(e){}}
+  function gateRef(key,create){var k=(PWA_COURSE_HOST?"hsk_gate_pwa:"+String(PWA_COURSE_USER_ID||"unbound")+":":"hsk_gate_")+key,v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=GATE_REFS[k]||""}if(!v&&create){v=newRef();GATE_REFS[k]=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
+  function clearGateRef(key){var k=(PWA_COURSE_HOST?"hsk_gate_pwa:"+String(PWA_COURSE_USER_ID||"unbound")+":":"hsk_gate_")+key;delete GATE_REFS[k];try{sessionStorage.removeItem(k)}catch(e){}}
   function runGate(feature,ref){
     if(window.CourseLimitStatus)CourseLimitStatus.invalidate(feature);
+    if(PWA_COURSE_HOST)return Promise.reject(new Error("pwa_placement_unavailable"));
     return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:INIT_DATA,feature:feature,ref:ref})})
       .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})}).then(validatePracticeGate);
   }
@@ -8074,6 +8077,7 @@ var TEST=(function(){
     el("tc-title").textContent=t.title;el("tc-sub").textContent=t.sub;
     el("tc-ptitle").textContent=t.pTitle;el("tc-psub").textContent=t.pSub;el("tc-pbtn").textContent=t.pBtn;
     el("tc-exhead").textContent=t.exHead;
+    if(PWA_COURSE_HOST){var placement=el("tc-hub").querySelector(".place");if(placement)placement.hidden=true}
     var myN=lvNum(),mine_t=courseMessage("testHub.mineLevel",MINE_T[LANG]||MINE_T.uz);
     var list=EXAMS.slice().sort(function(a,b){return (Number(b.lvl)===myN)-(Number(a.lvl)===myN)});
     el("tc-exlist").innerHTML=list.map(function(e){
@@ -8100,13 +8104,13 @@ var TEST=(function(){
   }
   function showLimit(adAvailable){
     var t=L();
-    if(window.CourseAds&&CourseAds.showLimitPromo){
+    if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
       CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||"",onSubscribe:premium,onTrial:function(){trialStart("paywall_test")},onBack:showHub});return;
     }
     el("tc-hub").style.display="none";el("tc-placement").classList.remove("on");el("tc-exam").classList.remove("on");
     var e=el("tc-empty");
     e.innerHTML='<div class="ic"><i class="ti ti-lock"></i></div><h3>'+esc(t.limTitle)+'</h3><p>'+esc(SECTION_LIMIT_TEXT||t.limSub)+'</p>'
-      +'<button onclick="TEST.premium()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--cin2)">'+esc(t.limPay)+'</button>'
+      +(PWA_COURSE_HOST?'':'<button onclick="TEST.premium()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--cin2)">'+esc(t.limPay)+'</button>')
       +'<button onclick="TEST.close()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--ink2)">'+esc(t.limBack)+'</button>';
     e.classList.add("on");
   }
@@ -8117,6 +8121,7 @@ var TEST=(function(){
     PENDING={which:which,feature:feature,accessRef:ref};
     showGateLoading();
     if(which!=="placement"){openExam2(which,false);return}
+    if(PWA_COURSE_HOST){showEmpty();return}
     runGate(feature,ref).then(function(o){
       if(!live())return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
@@ -8127,7 +8132,7 @@ var TEST=(function(){
   function openExam2(which,adSupported){
     if(which==="placement")return runPlacement();
     var ref=(PENDING&&PENDING.accessRef)||gateRef("training_test:"+which,true);
-    fetch("/api/v3/exams/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({level:which,lang:LANG,access_ref:ref,ad_supported:false})})
+    _apiPost("/api/v3/exams/start",{level:which,lang:LANG,access_ref:ref,ad_supported:false})
       .then(function(r){return r.json().then(function(d){return {ok:r.ok,status:r.status,d:d}})})
       .then(function(o){
         if(!live())return;
@@ -8185,7 +8190,7 @@ var TEST=(function(){
     if(EX_SUBMITTING)return;EX_SUBMITTING=true;
     var m=EM();
     el("tc-exam").innerHTML='<div class="res"><div class="lvl"><small>'+esc(m.result)+'</small><b><i class="ti ti-loader-2"></i></b></div><h3>'+esc(m.saving)+'</h3></div>';
-    fetch("/api/v3/exams/complete",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({session_id:EXD.id,answers:eans})})
+    _apiPost("/api/v3/exams/complete",{session_id:EXD.id,answers:eans})
       .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d}})})
       .then(function(o){
         if(!o.ok||!o.d||!o.d.ok)throw new Error("exam_complete");
@@ -8255,7 +8260,7 @@ var TEST=(function(){
     $("#secov").innerHTML=shell();
     openSection(API);
     PENDING=null;EXD=null;EQ=[];EX_SUBMITTING=false;
-    if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"training_test",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
+    if(!PWA_COURSE_HOST&&window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"training_test",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     renderHub();showHub();
   }
 
