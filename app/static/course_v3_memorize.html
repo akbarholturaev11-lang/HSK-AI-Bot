@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Tez eslab qolish</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
@@ -98,13 +98,13 @@ var DATA={},BASE={},UI={};
 
 function t(o){return !o?"":(typeof o==="string"?o:(o[LANG]||o.ru||o.uz||""))}
 function goBack(){
-  if(P.get("from")==="lugat"&&FOCUS){
+  if(!PWA_MEMORIZE_HOST&&P.get("from")==="lugat"&&FOCUS){
     var u="/hsk-lugat.html?lang="+LANG+"&char="+encodeURIComponent(FOCUS);
     if(P.get("theme")==="light")u+="&theme=light";
     var lv=P.get("level");if(lv)u+="&level="+encodeURIComponent(lv);
     location.href=u;return;
   }
-  location.href="/course-v3.html?lang="+LANG+"&tab=mashq";
+  location.href=(PWA_MEMORIZE_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq";
 }
 var _ttsAudio=null;
 function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tg&&tg.platform)||"",tgver:(tg&&tg.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}
@@ -160,20 +160,82 @@ var LIM={
   pay:{uz:"HSK AI Pro ⭐️ olish",ru:"Получить HSK AI Pro ⭐️",tj:"HSK AI Pro ⭐️ гирифтан"},
   back:{uz:"Orqaga",ru:"Назад",tj:"Бозгашт"}
 };
-var MEMORIZE_LIMIT_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};Object.keys(LIM).forEach(function(key){var value=MEMORIZE_LIMIT_UI["memorizeLimit."+key];if(typeof value==="string"&&value)LIM[key][LANG]=value});function memoMessage(key,fallback){var value=MEMORIZE_LIMIT_UI[key];return typeof value==="string"&&value?value:t(fallback)}function initData(){return (tg&&tg.initData)?tg.initData:""}
-function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_memorize_limit&mode=subscription&return_to=course&return_page=course_v3_memorize.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}document.querySelector(".top .ix").setAttribute("aria-label",t(LIM.back))
+var MEMORIZE_LIMIT_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};Object.keys(LIM).forEach(function(key){var value=MEMORIZE_LIMIT_UI["memorizeLimit."+key];if(typeof value==="string"&&value)LIM[key][LANG]=value});function memoMessage(key,fallback){var value=MEMORIZE_LIMIT_UI[key];return typeof value==="string"&&value?value:t(fallback)}var PWA_MEMORIZE_HOST=location.pathname==="/iphone-pwa/practice/memorize";
+var PWA_MEMORIZE_SESSION=null,PWA_MEMORIZE_PROMISE=null;
+function initData(){return PWA_MEMORIZE_HOST?"":((tg&&tg.initData)?tg.initData:"")}
+function memorizePwaSession(){
+  if(!PWA_MEMORIZE_HOST)return Promise.reject(new Error("pwa_host_required"));
+  if(!PWA_MEMORIZE_PROMISE){
+    PWA_MEMORIZE_PROMISE=fetch("/api/v3/pwa-auth/session",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    }).then(function(r){
+      if(r.status===401){location.replace("/iphone-pwa");throw new Error("pwa_session_required")}
+      if(!r.ok)throw new Error("pwa_session_unavailable");
+      return r.json();
+    }).then(function(s){
+      if(!s||s.ok!==true||!Number.isSafeInteger(Number(s.user_id))||
+         Number(s.user_id)<=0||typeof s.csrf!=="string"||!s.csrf)
+        throw new Error("pwa_session_invalid");
+      if(PWA_MEMORIZE_SESSION&&PWA_MEMORIZE_SESSION.user_id!==s.user_id){
+        location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
+      }
+      PWA_MEMORIZE_SESSION=s;return s;
+    }).catch(function(e){PWA_MEMORIZE_PROMISE=null;throw e});
+  }
+  return PWA_MEMORIZE_PROMISE;
+}
+function memorizePost(url,body,keepalive){
+  if(!PWA_MEMORIZE_HOST)return fetch(url,{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(body),keepalive:!!keepalive
+  });
+  var mapped={
+    "/api/v3/practice/daily-gate":"/api/v3/pwa/practice/daily-gate",
+    "/api/v3/practice/report":"/api/v3/pwa/practice/report"
+  }[url];
+  if(!mapped)return Promise.reject(new Error("pwa_route_unavailable"));
+  var payload=Object.assign({},body||{});
+  delete payload.initData;delete payload.user_id;delete payload.telegram_id;
+  return memorizePwaSession().then(function(s){
+    return fetch(mapped,{
+      method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":s.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",
+      body:JSON.stringify(payload),keepalive:!!keepalive
+    });
+  });
+}
+function goPremium(){if(PWA_MEMORIZE_HOST){goBack();return}location.href="/subscription.html?lang="+LANG+"&source=v3_memorize_limit&mode=subscription&return_to=course&return_page=course_v3_memorize.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}document.querySelector(".top .ix").setAttribute("aria-label",t(LIM.back))
 /* Foydalanuvchi darajasi: server (users.level) asosiy manba — kartalar userning
    haqiqiy HSK darajasidagi ierogliflardan tuziladi (lesson_gate xaritasi orqali).
    CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar belgilari chiqadi. */
 function normLv(v){v=String(v||"").toLowerCase();if(/^nhsk[1-3]$/.test(v))return v;if(v.indexOf("hsk4")===0)return "hsk4";return ["hsk1","hsk2","hsk3"].indexOf(v)>=0?v:""}
 var LV=normLv(P.get("level")),CUR=999;
-var LV_READY=(function(){var idt=initData();if(!idt)return Promise.resolve();
-  return fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)).then(function(r){return r.json()}).then(function(j){var s=normLv(j&&j.level);if(s)LV=s;if(j&&typeof j.completed_lessons==="number")CUR=Math.max(1,j.completed_lessons+1)}).catch(function(){})})();
+var LV_READY=(function(){
+  var idt=initData();
+  var req=PWA_MEMORIZE_HOST?memorizePwaSession().then(function(){
+    return fetch("/api/v3/pwa/practice/profile",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    });
+  }):idt?fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)):null;
+  if(!req)return Promise.resolve();
+  return req.then(function(r){
+    if(!r.ok)throw new Error("practice_profile_unavailable");
+    return r.json();
+  }).then(function(j){
+    var level=String(j&&j.level||"").toLowerCase();
+    var s=level==="beginner"?"hsk1":normLv(level);
+    if(PWA_MEMORIZE_HOST&&(!j||j.ok!==true||!s||
+       !Number.isSafeInteger(j.completed_lessons)||j.completed_lessons<0))
+      throw new Error("practice_profile_invalid");
+    if(s)LV=s;
+    if(j&&typeof j.completed_lessons==="number")CUR=Math.max(1,j.completed_lessons+1);
+  }).catch(function(e){if(PWA_MEMORIZE_HOST)throw e});
+})();
 function isHsk30(){return /^nhsk[1-3]$/.test(LV||"")}
 function lvNum(){var m=String(LV||"hsk1").match(/^(?:n)?hsk([1-4])$/);return m?parseInt(m[1],10):1}
 function charGate(h){return (isHsk30()?(window.HSK30_CHAR_GATE||{}):(window.HSK_CHAR_GATE||{}))[h]}
 /* Reklama moduli: kunlik bepul limit tugagach, reklama bilan yana 2 marta/kun. */
-SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"memorize",level:(P.get("level")||"hsk1"),onSubscribe:goPremium})});
+SCRIPTS_READY.then(function(){if(!PWA_MEMORIZE_HOST&&window.CourseAds)CourseAds.config({lang:LANG,initData:initData(),feature:"memorize",level:(P.get("level")||"hsk1"),onSubscribe:goPremium})});
 var ATTEMPT_REF="",LIMIT_REASON="";
 function gateRef(create){if(create||!ATTEMPT_REF)ATTEMPT_REF=Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12);return ATTEMPT_REF}
 function validatePracticeGate(o){
@@ -188,7 +250,7 @@ function practiceGateErrorCopy(){var copy=({
   tj:{body:"Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.",retry:"Боз кӯшиш кардан",back:"Бозгашт"}
 })[LANG];var dict=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};Object.keys(copy).forEach(function(key){var value=dict["practiceGate."+key];if(typeof value==="string"&&value)copy[key]=value});return copy}
 function runGate(ref){
-  return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"memorize",ref:ref})})
+  return memorizePost("/api/v3/practice/daily-gate",{initData:initData(),feature:"memorize",ref:ref})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})}).then(validatePracticeGate);
 }
 function showLimit(j){LIMIT_REASON=(j&&j.limit_text)||"";SCRIPTS_READY.then(showLimitNow)}
@@ -196,16 +258,16 @@ function showLimitNow(){
   if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:LIMIT_REASON,onSubscribe:goPremium,onBack:goBack});return}
   var adBtn="";
   var sub=gateEscape(LIMIT_REASON||t(LIM.sub));
-  B.innerHTML='<div class="done"><div class="st"><i class="ti ti-lock"></i></div><h3>'+t(LIM.title)+'</h3><p>'+sub+'</p>'+adBtn+'<button class="ghost" onclick="goPremium()">'+t(LIM.pay)+'</button><button class="ghost" onclick="goBack()">'+t(LIM.back)+'</button></div>';
+  B.innerHTML='<div class="done"><div class="st"><i class="ti ti-lock"></i></div><h3>'+t(LIM.title)+'</h3><p>'+sub+'</p>'+adBtn+(PWA_MEMORIZE_HOST?'':'<button class="ghost" onclick="goPremium()">'+t(LIM.pay)+'</button>')+'<button class="ghost" onclick="goBack()">'+t(LIM.back)+'</button></div>';
 }
 
 /* ---- mastery (localStorage) ---- */
-function localUserScope(){try{var u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;if(u&&u.id)return String(u.id)}catch(e){}return"preview"}function memorizationStateKey(){var scope=localUserScope();return scope==="preview"?"hsk_memo":"hsk_memo:v2:"+scope}function allM(){try{return JSON.parse(localStorage.getItem(memorizationStateKey())||"{}")}catch(e){return {}}}
+function localUserScope(){if(PWA_MEMORIZE_HOST){if(!PWA_MEMORIZE_SESSION)return "unbound";return "pwa:"+String(PWA_MEMORIZE_SESSION.user_id)}try{var u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;if(u&&u.id)return String(u.id)}catch(e){}return"preview"}function memorizationStateKey(){var scope=localUserScope();if(PWA_MEMORIZE_HOST&&scope==="unbound")throw new Error("pwa_session_required");return scope==="preview"?"hsk_memo":"hsk_memo:v2:"+scope}function allM(){try{return JSON.parse(localStorage.getItem(memorizationStateKey())||"{}")}catch(e){return {}}}
 function getM(h){return allM()[h]||{score:0,errors:{},seen:0}}
 function setM(h,o){var a=allM();a[h]=o;try{localStorage.setItem(memorizationStateKey(),JSON.stringify(a))}catch(e){}}
 function bump(h,d,err){var o=getM(h);o.score=Math.max(0,Math.min(4,(o.score||0)+d));if(err){o.errors=o.errors||{};o.errors[err]=(o.errors[err]||0)+1}o.seen=(o.seen||0)+1;o.ts=Date.now();setM(h,o)}
-function getPref(){try{return localStorage.getItem("hsk_memo_pref")||""}catch(e){return ""}}
-function setPref(v){try{localStorage.setItem("hsk_memo_pref",v)}catch(e){}}
+function memoPrefKey(){return PWA_MEMORIZE_HOST?("hsk_memo_pref:"+localUserScope()):"hsk_memo_pref"}function getPref(){try{return localStorage.getItem(memoPrefKey())||""}catch(e){return ""}}
+function setPref(v){try{localStorage.setItem(memoPrefKey(),v)}catch(e){}}
 
 /* ---- deck ---- */
 var KEYS=[],deck=[],DI=0;
@@ -245,8 +307,7 @@ function reportWrong(){
   var body={feature:"memorize",level:LV||"hsk1",language:LANG,mistakes:WRONG.slice(0,20),initData:initData()};
   WRONG=[];
   try{
-    fetch("/api/v3/practice/report",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(body),keepalive:true}).catch(function(){});
+    memorizePost("/api/v3/practice/report",body,true).catch(function(){});
   }catch(e){}
 }
 /* Mashqni yarmida tashlab ketsa ham xatolar yo'qolmasin. */
@@ -448,7 +509,8 @@ function gateStart(newAttempt){
   SCRIPTS_READY.then(function(){
     if(preparing&&ref===ATTEMPT_REF)B.innerHTML=HSKStudyPreparing.render(LANG);
   });
-  runGate(ref).then(function(o){
+  Promise.all([LV_READY,runGate(ref)]).then(function(result){
+    var o=result[1];
     preparing=false;
     if(ref!==ATTEMPT_REF)return;
     if(o.status===403){showLimit(o.j);return}boot();
