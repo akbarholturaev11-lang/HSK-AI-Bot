@@ -740,6 +740,23 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(pending_google.telegram_id)
             self.assertIsNone(pending_apple.telegram_id)
 
+            # A scheduled Telegram-only offer must never look up a NULL
+            # transport ID and accidentally target a different native owner.
+            from app.services.bot_feedback_service import BotFeedbackService
+            pending_google.status = "completed"
+            pending_google.disliked_code = "price"
+            pending_google.price_offer_due_at = (
+                datetime.now(timezone.utc) - timedelta(minutes=1)
+            )
+            class NoTelegramSend:
+                async def send_message(self, **_kwargs):
+                    raise AssertionError("Provider-only feedback must not send a Telegram DM")
+            sent = await BotFeedbackService(db).send_due_price_discount_offers(
+                NoTelegramSend(),
+            )
+            self.assertEqual(sent, 0)
+            self.assertIsNotNone(pending_google.price_offer_sent_at)
+
             # Account linking can expose an unmapped legacy Telegram record
             # beside a preexisting canonical PWA response. Prefer the real
             # user_id and never throw MultipleResultsFound or reward twice.

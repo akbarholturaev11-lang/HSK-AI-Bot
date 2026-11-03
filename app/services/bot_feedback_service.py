@@ -196,9 +196,13 @@ class BotFeedbackService:
 
         sent_count = 0
         for feedback in feedbacks:
-            user = await self.user_repo.get_by_telegram_id(feedback.telegram_id)
+            # An iPhone-only feedback has no Telegram transport; resolving
+            # telegram_id=None would match unrelated native-only accounts.
+            # Use the recorded canonical owner for every delayed offer.
+            user = await self.session.get(User, feedback.user_id)
             if (
                 not user
+                or user.telegram_id is None
                 or user.status == "blocked"
                 or UserAccessStateService.is_paid(user)
                 or BotBlockStatusService.is_bot_blocked(user)
