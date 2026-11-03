@@ -579,7 +579,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
 
         csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
         headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
-        sample = b"\\x00\\x00\\x00\\x14ftypisom" + b"\\x00" * 1300
+        sample = bytes.fromhex("000000146674797069736f6d") + bytes(1300)
         def params():
             return {
                 "data": {"target": "你", "target_pinyin": "nǐ"},
@@ -925,7 +925,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('delete payload.initData;delete payload.user_id;delete payload.telegram_id;', source)
         self.assertIn('"X-HSK-PWA-CSRF":s.csrf', source)
         self.assertIn('if(!PWA_RECOGNITION_HOST&&window.CourseAds)', source)
-        self.assertIn('src="/iphone-pwa/practice/recognition"+target.search;', course)
+        self.assertIn('"/course_v3_recognition.html":"/iphone-pwa/practice/recognition"', course)
+        self.assertIn("src=safePaths[path]+target.search;", course)
         self.assertIn('"/course_v3_recognition.html":"/iphone-pwa/practice/recognition"', course)
         self.assertIn('"/course_v3_memorize.html":"/iphone-pwa/practice/memorize"', course)
         self.assertIn("if(!safePaths[path])", course)
