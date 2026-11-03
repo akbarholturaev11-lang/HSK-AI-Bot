@@ -107,6 +107,11 @@ class PwaVoiceEnd(BaseModel):
     session_id: str
 
 
+class PwaLanguagePreference(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    language: Literal["uz", "ru", "tj"]
+
+
 class PwaCheckoutContext(BaseModel):
     model_config = ConfigDict(extra="forbid")
     source: str | None = None
@@ -1194,6 +1199,28 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             return _error(exc)
         except ValueError:
             return _error(PwaAuthError("pwa_request_invalid", status_code=422))
+
+    @router.post("/api/v3/pwa/language")
+    async def pwa_set_language(request: Request):
+        """Save the very same users.language consumed by Telegram course/QA."""
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            data = await _small_json(request, PwaLanguagePreference)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                # No new PWA preferences table; write the canonical user.
+                actor.language = data.language
+                await db.commit()
+            return JSONResponse(
+                {"ok": True, "language": data.language}, headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
 
     @router.get("/iphone-pwa/manifest.webmanifest")
     async def learner_manifest():
