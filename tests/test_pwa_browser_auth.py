@@ -2518,7 +2518,13 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         for name, flag in targets.items():
             with self.subTest(page=name):
                 html = (Path("app/static") / name).read_text(encoding="utf-8")
-                self.assertIn(f'if({flag})document.documentElement.classList.add("hsk-pwa-browser");', html)
+                # Preserve the exact browser-only host guard. A scoped
+                # multi-line block is equivalent to the older one-line guard,
+                # but an unconditional class assignment is never acceptable.
+                compact = "".join(html.split())
+                one_line = f'if({flag})document.documentElement.classList.add("hsk-pwa-browser");'
+                guarded_block = f'if({flag}){{document.documentElement.classList.add("hsk-pwa-browser");'
+                self.assertTrue(one_line in compact or guarded_block in compact, name)
                 self.assertIn('html.hsk-pwa-browser textarea,html.hsk-pwa-browser select{font-size:16px!important}', html)
                 self.assertIn('name="viewport"', html)
                 self.assertNotIn("user-scalable=no", html)
