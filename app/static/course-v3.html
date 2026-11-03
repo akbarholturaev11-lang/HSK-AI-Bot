@@ -2236,7 +2236,10 @@ var SALES_VALUE_STATE={outcome:null,nextOutcome:null,nextIdx:-1,bridgeAction:""}
 var SALES_PAYWALL_ACTIVE=false,SALES_PAYWALL_IMPRESSION="";
 var SALES_VALUE_PRIME_PROMISE=null,SALES_VALUE_PRIME_DONE=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
-var PWA_COURSE_GET_PATHS={"/api/v3/course-tracks":"/api/v3/pwa/course-tracks"};
+var PWA_COURSE_GET_PATHS={
+  "/api/v3/course-tracks":"/api/v3/pwa/course-tracks",
+  "/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation"
+};
 var PWA_COURSE_POST_PATHS={
   "/api/v3/course-tracks/switch":"/api/v3/pwa/course-tracks/switch",
   "/api/v3/course-tracks/promo-shown":"/api/v3/pwa/course-tracks/promo-shown",
@@ -2245,10 +2248,14 @@ var PWA_COURSE_POST_PATHS={
 };
 function _apiGet(url){
   if(!PWA_COURSE_HOST)return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}});
-  var mapped=PWA_COURSE_GET_PATHS[url];
+  var parsed=new URL(url,location.href);
+  if(parsed.origin!==location.origin)return Promise.reject(new Error("pwa_route_unavailable"));
+  var mapped=PWA_COURSE_GET_PATHS[parsed.pathname];
+  if(!mapped&&/^\/api\/v3\/lesson\/content\/(?:hsk[1-4]|nhsk[1-3])\/[1-9][0-9]*$/.test(parsed.pathname))
+    mapped=parsed.pathname.replace("/api/v3/lesson/content/","/api/v3/pwa/lesson/content/");
   if(!mapped)return Promise.reject(new Error("pwa_route_unavailable"));
   return pwaCourseActor().then(function(){
-    return fetch(mapped,{credentials:"same-origin",cache:"no-store",redirect:"error"});
+    return fetch(mapped+parsed.search,{credentials:"same-origin",cache:"no-store",redirect:"error"});
   });
 }
 function _apiPost(url,body,opts){
@@ -3217,7 +3224,9 @@ function loadLessonData(lv,n){
   var key=lessonDataKey(lv,n),scope=localUserScope();
   if(LESSON_DATA_CACHE[key])return Promise.resolve(cloneJson(LESSON_DATA_CACHE[key]));
   if(LESSON_DATA_PROMISES[key])return LESSON_DATA_PROMISES[key].then(cloneJson);
-  LESSON_DATA_PROMISES[key]=fetch(lessonDataUrl(lv,n),{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"}).then(function(r){
+  var lessonRequest=PWA_COURSE_HOST?_apiGet(lessonDataUrl(lv,n)):
+    fetch(lessonDataUrl(lv,n),{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"});
+  LESSON_DATA_PROMISES[key]=lessonRequest.then(function(r){
     if(!r.ok)throw new Error("not_found");
     return r.json();
   }).then(function(d){
@@ -4079,7 +4088,9 @@ Foundation.start=function(data,opts){
 };
 function startFoundationFromMap(restart,afterComplete){
   var s=foundationMapState(),required=!!((s.required||s.foundation_required)&&!foundationIsComplete());
-  return fetch("/api/v3/lesson/foundation",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("foundation_unavailable");return r.json()}).then(function(d){if(!d||!d.foundation)throw new Error("foundation_unavailable");Foundation.start(d.foundation,{restart:!!restart,required:required,afterComplete:afterComplete})}).catch(function(){
+  var foundationRequest=PWA_COURSE_HOST?_apiGet("/api/v3/lesson/foundation"):
+    fetch("/api/v3/lesson/foundation",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"});
+  return foundationRequest.then(function(r){if(!r.ok)throw new Error("foundation_unavailable");return r.json()}).then(function(d){if(!d||!d.foundation)throw new Error("foundation_unavailable");Foundation.start(d.foundation,{restart:!!restart,required:required,afterComplete:afterComplete})}).catch(function(){
     var unavailable=courseMessage("foundation.unavailable",LANG==="ru"?"Основы пока недоступны":LANG==="tj"?"Асосҳо ҳоло дастрас нестанд":"Asoslar hozircha ochilmadi");
     toast(unavailable,2600);
     if(required){
