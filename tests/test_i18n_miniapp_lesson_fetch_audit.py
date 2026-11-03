@@ -94,6 +94,7 @@ const env={
   normalizeLevel:x=>String(x||"hsk1"),
   cloneJson:x=>JSON.parse(JSON.stringify(x)),
   INIT_DATA:"signed-test-initdata",
+  PWA_COURSE_HOST:false,  // This fixture verifies the original signed Mini App transport.
   lessonDataUrl:(level,n)=>"/api/v3/lesson/content/"+level+"/"+n,
   fetch:(url,options)=>{
     if(url!=="/api/v3/lesson/content/nhsk2/16")throw new Error("unexpected lesson URL: "+url);
