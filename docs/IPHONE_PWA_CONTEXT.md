@@ -12,6 +12,17 @@
 
 ---
 
+## LATEST UPDATE — exact localization-baseline review and CI (2026-11-03)
+
+- Implementation Draft PR #257 HEAD on last read: `04edc5d2666df695f3229ea0840368127b9057af`; still Draft and unmerged. Current `main` advances independently; no main/production changes made by this PWA work. Original `PWA_AUTH_ENABLED=False`.
+- On prior exact `f784f24` run 41661653859, `native-postgres` and `miniapp-ui` both succeeded; `targeted-tests` failed at **localization source integrity guard**, not because translation values differed. The guard correctly reported **two unreviewed exact Git blobs**: `app/static/course-v3.html` and `app/static/subscription.html`.
+- We inspected the **previous approved blob vs current file** for both through GitHub `fetch_blob` and `fetch_file`: course had **4** PWA-only source hunks (glass stylesheet, PWA-conditional install identity, two PWA-conditional profile buttons, two browser modules); checkout had **1** PWA-conditional identity and glass stylesheet block. No Chinese/graded data, payment policy or existing Telegram logic changed. Wrote **exact approved current blob IDs** `cf0f4c65532699a251aab84af8e77c47ddce6266` and `4d138f1ca71551d376a05aace4cf4103fdf0c509` with file-specific review reasons to `localization/baselines/reviewed_ui_changes.json`; verified both exact file SHA matches. Did NOT rewrite frozen baseline or weaken the guard.
+- `.github/workflows/backend-ci.yml` now also watches exact reviewed UI manifest path and its own workflow file, allowing **new exact-HEAD run 41663587599** (pending/in_progress on last read). Prior `41663509771` was superseded/cancelled on new push, not a regression verdict. **Do not claim full final CI success before checking run 41663587599**.
+- Engineering code completeness is an **estimate (~80%)**, not the OpenSpec certified figure. OpenSpec checklist remained **4/18 checked and 14 unchecked** because completion requires real end-to-end auth, payment, compatibility, integration and final owner iPhone Safari/Home Screen acceptance. Key remaining engineering blocker: latest main-only Smart/Android/Admin changes diverged with **7 conflicting files** and must be reconciled on **feature only** using exact semantic audit + tests; no blind merge. Physical iPhone QA stays last.
+- No production merge/deploy/flag activation; Figma Starter MCP remains quota-limited and user authorized matching the original shipped Mini App style in code.
+
+---
+
 ## FOLLOW-UP: iPhone UX copy and strict scoped PWA guard — 2026-11-03
 
 - Current implementation Draft PR #257 HEAD `f784f242e1f96b9f31f923bb0781f3c87d79acba` (re-read before proceeding). Previous exact `f9aeb83` backend run had passed HTTP public-asset checks, 72 PostgreSQL regressions, and 49 real Chromium/Mini App browser cases, but targeted PWA auth failed **only two** source-format assertions: existing zoom guard test required a one-line PWA class guard, while valid browser-only metadata additions use a braced multi-line guard. `tests/test_pwa_browser_auth.py` now accepts both **only with original PWA_COURSE_HOST/PWA_CHECKOUT_HOST conditions**, retaining 16px/pinch/viewport assertions. Does not relax access or runtime policy.
