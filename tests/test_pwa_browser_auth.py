@@ -514,6 +514,66 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             (await self.client.get("/api/v3/native-auth/identities")).status_code, 401
         )
 
+    async def test_pwa_recognition_reuses_original_html_and_requires_browser_cookie(self):
+        path = "/iphone-pwa/practice/recognition"
+        anonymous = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(anonymous.status_code, 303, anonymous.text)
+        self.assertEqual(anonymous.headers["location"], "/iphone-pwa")
+        state = await self.begin()
+        await self.callback(state)
+        page = await self.client.get(path)
+        self.assertEqual(page.status_code, 200, page.text[:150])
+        self.assertEqual(page.headers["cache-control"], "no-store")
+        self.assertEqual(page.headers["x-frame-options"], "DENY")
+        self.assertIn('location.pathname==="/iphone-pwa/practice/recognition"', page.text)
+        self.assertIn('function initData()', page.text)
+        self.assertIn('recognitionPost("/api/v3/practice/daily-gate"', page.text)
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.get(path)).status_code, 503)
+
+    async def test_pwa_recognition_profile_uses_real_owner_level_and_progress(self):
+        path = "/api/v3/pwa/practice/profile"
+        self.assertEqual((await self.client.get(path)).status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        with patch(
+            "app.api.miniapp_practice.CourseProgressRepository.get_by_user_id",
+            new_callable=AsyncMock,
+        ) as progress:
+            progress.return_value = SimpleNamespace(
+                level="hsk1", completed_lessons_count=7,
+            )
+            response = await self.client.get(path)
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertEqual(response.json()["level"], "hsk1")
+            self.assertEqual(response.json()["completed_lessons"], 7)
+            self.assertEqual(response.headers["cache-control"], "no-store")
+            progress.assert_awaited_once_with(1)
+            progress.return_value = SimpleNamespace(
+                level="hsk2", completed_lessons_count=30,
+            )
+            wrong_band = await self.client.get(path)
+            self.assertEqual(wrong_band.json()["completed_lessons"], 0)
+        self.assertEqual((await self.client.get(
+            "/api/voice-practice/me?initData="
+        )).status_code, 401)
+
+    def test_recognition_browser_requests_keep_server_quota_and_telegram_isolation(self):
+        source = (Path("app/static") / "course_v3_recognition.html").read_text(encoding="utf-8")
+        course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        self.assertIn('PWA_RECOGNITION_HOST=!initData()&&location.pathname==="/iphone-pwa/practice/recognition"', source)
+        self.assertIn('"/api/v3/practice/daily-gate":"/api/v3/pwa/practice/daily-gate"', source)
+        self.assertIn('"/api/v3/practice/words":"/api/v3/pwa/practice/words"', source)
+        self.assertIn('"/api/v3/practice/report":"/api/v3/pwa/practice/report"', source)
+        self.assertIn('"/api/v3/pwa/practice/profile"', source)
+        self.assertIn('delete payload.initData;delete payload.user_id;delete payload.telegram_id;', source)
+        self.assertIn('"X-HSK-PWA-CSRF":s.csrf', source)
+        self.assertIn('if(!PWA_RECOGNITION_HOST&&window.CourseAds)', source)
+        self.assertIn('src="/iphone-pwa/practice/recognition"+target.search;', course)
+        self.assertIn('if(path!=="/course_v3_recognition.html")', course)
+        self.assertIn('if(!PWA_RECOGNITION_HOST)return fetch(url,{', source)
+        self.assertNotIn("user-scalable=no", source)
+
     async def test_pwa_practice_lifetime_gate_shares_telegram_policy_and_owner(self):
         path = "/api/v3/pwa/practice/daily-gate"
         payload = {"feature": "recognition", "ref": "browser-attempt-1"}
