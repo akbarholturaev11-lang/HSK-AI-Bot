@@ -1,7 +1,7 @@
 # Android 1.7.25 (56) — owner-only test APK: bug audit and phone findings
 
 **Recorded:** 2026-11-04  
-**Status:** CONFIRMED install-preview crash and subsequent independent profile identity-handoff defect fixed. Latest private replacement **1.7.27/58** Direct and Play passed the automated/owned-emulator checks in Master Plan §17.91; original 56 identity stays below. Actual owner-device/provider acceptance remains open.
+**Status:** CONFIRMED install-preview crash and subsequent independent profile identity-handoff defect fixed. Latest private replacement **1.7.28/59** Direct and Play passed the automated/owned-emulator checks in Master Plan §17.92; original 56 identity stays below. Actual owner-device/provider acceptance remains open.
 **Scope:** This note records issues against the exact *private Direct* test APK below; it does **not** authorize public R2/Play publication.
 
 ## Exact APK identity (do not confuse with Google Play or public Direct)
@@ -86,3 +86,13 @@ D30 later explicitly authorized production server activation. The two startup/se
 - **Fix:** reuse the existing Activity-aware Google/Apple browser and Telegram VIEW handoffs; keep strict Telegram identity-link validation. Only acknowledge successful launch. The current-URL-bound VM failure callback cancels the pending link and polling, clears busy state and shows the existing localized error, allowing retry while ignoring obsolete failures.
 - **Risk:** actual Google/Telegram app return, server-confirmed attachment and Play Store-managed install/update require real provider/device acceptance; synthetic missing-handler tests and locally signed Play APKs do not establish those facts. No new persisted proof, payment flow or consent is introduced.
 - **Prevention:** actual sheet regressions cover failed Google and Telegram launches; VM regression covers cancellation, stopped polling, retry and stale failure. Both CI flavors now include identities-sheet and promo-card consumers. Current build/owned-emulator/private 1.7.27/58 evidence is in Master Plan §17.91; private 58 supersedes 57 for follow-up testing.
+
+
+## AUTH-06 — terminal login attempts retained unopened launch URLs
+
+- **Sabab:** `LinkViewModel.startPolling` marked an attempt expired/refused/linked without clearing `pendingBrowserUrl`/`pendingTelegramUrl`. A later UI consumer could open a terminal attempt; this is separate from the handoff failure bugs.
+- **Fix:** clear both pending launch effects in all three terminal branches, preserving original error/session/token and transient-wait behavior.
+- **Risk:** this proves the queued-state defect; it does not establish that this was the sole cause of the owner's physical-phone video. Provider/device acceptance remains separate; the patch grants no authentication or consent.
+- **Prevention:** three actual VM/repository regressions first failed on old code for provider refusal and browser/Telegram local expiry; retain their clock/poll/token assertions. Current source/build/private replacement acceptance is recorded in Master Plan §17.92.
+
+**AUTH-06 acceptance:** source `9f756c32`, full unit Direct 661/Play 610 (including 3 red→green login regressions), both lints and current-version affected suites 26 per flavor. Both signed private 59 variants cold-start/render without a fatal crash on the owned fixture. Actual phone/Store/provider acceptance remains separate.
