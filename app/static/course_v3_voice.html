@@ -634,10 +634,10 @@ function showPaywall(){
   $("pwchar").innerHTML=chr("happy",persona);
   $("pwh").textContent=L.limitTitle;$("pwp").textContent=L.limitSub;
   if(L.limitWhy){$("pwwhyt").textContent=L.limitWhy;$("pwwhy").hidden=false}else{$("pwwhy").hidden=true}
-  $("pwb").textContent=L.premiumBtn;$("pwb").hidden=PWA_VOICE_HOST;$("pwb2").textContent=L.exit;
+  $("pwb").textContent=L.premiumBtn;$("pwb").hidden=false;$("pwb2").textContent=L.exit;
   $("paywall").classList.add("on");
 }
-function goPremium(){if(PWA_VOICE_HOST){goBack();return}location.href="/subscription.html?lang="+LANG+"&source=v3_voice_limit&mode=subscription&return_to=course&return_page=course_v3_voice.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
+function goPremium(){location.href=(PWA_VOICE_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_voice_limit&mode=subscription&return_to=course&return_page=course_v3_voice.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 function softReset(){
   started=false;sess=null;turn=0;lessonWords=[];reviewWords=[];
   closeKb();setName();setChar("happy");setStatus("");setHold(L.holdMic);chatClear();setCnt();
