@@ -199,7 +199,6 @@ class ReleaseFeedbackService:
             await self.repo.create_delivery(
                 campaign_id=campaign.id,
                 user=user,
-                user=user,
                 status=status,
                 message_id=message_id,
                 error=error,
