@@ -109,6 +109,7 @@ from app.api.android_update import create_android_update_router
 from app.api.android_push import create_android_push_router
 from app.api.smart_reminder import create_smart_reminder_router
 from app.services.smart_reminder_shadow_worker import SmartReminderShadowWorker
+from app.services.smart_reminder_runtime import registered_runtime, android_delivery
 from app.services.smart_reminder_analysis import SmartReminderAnalysisObserver
 from app.api.app_downloads import create_app_downloads_router
 from app.public_site.app_downloads_render import (
@@ -625,10 +626,15 @@ async def lifespan(app: FastAPI):
     seed_task = asyncio.create_task(_seed_lessons())        # background seeding
     polling_task = asyncio.create_task(dp.start_polling(bot))
     scheduler_task = asyncio.create_task(_background_scheduler(bot))
-    # Independent shadow task: Admin PWA/legacy scheduler stalls cannot hold it.
-    # Disabled by default; no Smart producer or notification provider is wired.
+    # Explicit code-owned registration only; absent in production by default.
+    smart_runtime = registered_runtime(app, settings, async_session_maker)
+    if smart_runtime is not None:
+        smart_runtime.bind(app)
+    smart_runtime_task = (asyncio.create_task(smart_runtime.run())
+                          if smart_runtime is not None and smart_runtime.ready else None)
+    # Do not compete with the runtime for its unselected shadow reservations.
     smart_shadow_task = (asyncio.create_task(SmartReminderShadowWorker(settings, async_session_maker).run())
-                         if getattr(settings, "SMART_REMINDER_SHADOW_ENABLED", False) else None)
+                         if smart_runtime_task is None and getattr(settings, "SMART_REMINDER_SHADOW_ENABLED", False) else None)
     smart_analysis_observer = (SmartReminderAnalysisObserver(settings, async_session_maker)
                                if getattr(settings, "SMART_REMINDER_ANALYSIS_ENABLED", False) is True else None)
     smart_analysis_task = (asyncio.create_task(smart_analysis_observer.run_retention())
@@ -652,6 +658,8 @@ async def lifespan(app: FastAPI):
         seed_task.cancel()
         polling_task.cancel()
         scheduler_task.cancel()
+        if smart_runtime_task is not None:
+            smart_runtime_task.cancel()
         if smart_shadow_task is not None:
             smart_shadow_task.cancel()
         if smart_analysis_task is not None:
@@ -670,6 +678,9 @@ async def lifespan(app: FastAPI):
             await polling_task
         with contextlib.suppress(asyncio.CancelledError):
             await scheduler_task
+        if smart_runtime_task is not None:
+            with contextlib.suppress(asyncio.CancelledError):
+                await smart_runtime_task
         if smart_shadow_task is not None:
             with contextlib.suppress(asyncio.CancelledError):
                 await smart_shadow_task
@@ -955,7 +966,8 @@ app.include_router(create_android_update_router(session_factory=async_session_ma
 app.include_router(
     create_android_push_router(session_factory=async_session_maker, settings_obj=settings)
 )
-app.include_router(create_smart_reminder_router(session_factory=async_session_maker, settings_obj=settings))
+app.include_router(create_smart_reminder_router(session_factory=async_session_maker, settings_obj=settings,
+    android_delivery_factory=lambda session: android_delivery(app, session, settings, async_session_maker)))
 app.include_router(
     create_app_downloads_router(
         session_factory=async_session_maker,
