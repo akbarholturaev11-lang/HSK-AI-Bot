@@ -511,7 +511,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
     async def test_pwa_map_requires_browser_cookie_origin_csrf_and_locked_owner(self):
         # Real map service is shared with Telegram; isolate just the transport
         # to verify the correct canonical actor reaches the single map engine.
-        import app.main as main
+        # app.main initializes aiogram at import time. The test needs only a
+        # syntactically valid fake token; do not change production validation.
+        from app.config import settings as main_settings
+        with patch.object(main_settings, "BOT_TOKEN", self.settings.BOT_TOKEN):
+            import app.main as main
         from fastapi.responses import JSONResponse
 
         state = await self.begin()
@@ -585,7 +589,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 await anonymous.aclose()
 
     async def test_pwa_map_accepts_verified_google_only_actor_without_telegram(self):
-        import app.main as main
+        from app.config import settings as main_settings
+        with patch.object(main_settings, "BOT_TOKEN", self.settings.BOT_TOKEN):
+            import app.main as main
         from fastapi.responses import JSONResponse
         from app.services import google_auth
 
