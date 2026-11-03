@@ -53,6 +53,9 @@ class TelegramSdkAssetTests(unittest.IsolatedAsyncioTestCase):
             "/course_v3_data/hsk-common-i18n.js",
             "/course_v3_data/hsk-course-i18n.js",
             "/course_v3_data/p3-grammar-reservation.js",
+            "/course_v3_data/iphone-pwa-glass.css",
+            "/course_v3_data/iphone-pwa-notices.js",
+            "/course_v3_data/iphone-pwa-feedback.js",
         }.issubset(paths))
 
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
