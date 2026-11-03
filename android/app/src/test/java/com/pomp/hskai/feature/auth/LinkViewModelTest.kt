@@ -52,6 +52,36 @@ class LinkViewModelTest {
     @Before fun setUp() = Dispatchers.setMain(dispatcher)
     @After fun tearDown() = Dispatchers.resetMain()
 
+    @Test fun rejectedProviderCannotLeaveAnUnopenedBrowserLaunchPending() = runTest(dispatcher) {
+        val f = Fixture()
+        f.linkStatus = { Response.success(LinkStatusResponse(ok = true, status = "denied")) }
+        f.model.signInWithGoogle(null, AppLanguage.UZBEK); runCurrent()
+        assertTrue(f.model.state.value.isExpired)
+        assertNull(f.model.state.value.busyProvider)
+        assertNull(f.model.state.value.pendingBrowserUrl)
+        assertNull(f.model.state.value.pendingTelegramUrl)
+        assertNull(f.savedRefresh)
+    }
+
+    @Test fun expiredTelegramCannotLeaveAnUnopenedLaunchPending() = expiredLaunch(true)
+    @Test fun expiredBrowserCannotLeaveAnUnopenedLaunchPending() = expiredLaunch(false)
+    private fun expiredLaunch(telegram: Boolean) = runTest(dispatcher) {
+        val f = Fixture()
+        if (telegram) f.model.continueWithTelegram(AppLanguage.UZBEK)
+        else f.model.signInWithGoogle(null, AppLanguage.UZBEK)
+        runCurrent()
+        assertNotNull(if (telegram) f.model.state.value.pendingTelegramUrl else f.model.state.value.pendingBrowserUrl)
+        f.clock = 600_001L
+        advanceTimeBy(2_000); runCurrent()
+        assertTrue(f.model.state.value.isExpired)
+        assertNull(f.model.state.value.pendingBrowserUrl)
+        assertNull(f.model.state.value.pendingTelegramUrl)
+        val polls = f.polls
+        advanceTimeBy(4_000); runCurrent()
+        assertEquals(polls, f.polls)
+        assertNull(f.savedRefresh)
+    }
+
     @Test fun failedExternalLaunchStopsItsPollAndAllowsAnotherProvider() = runTest(dispatcher) {
         val f = Fixture()
         f.model.signInWithGoogle(null, AppLanguage.UZBEK); runCurrent()
@@ -189,6 +219,7 @@ class LinkViewModelTest {
     }
 
     private class Fixture {
+        var clock = 0L
         var savedRefresh: String? = null
         var telegramStarts = 0
         var providerStarts = 0
@@ -243,7 +274,7 @@ class LinkViewModelTest {
 
             override suspend fun identityUnlink(authorization: String, body: IdentityUnlinkRequest): Response<IdentityUnlinkResponse> = error("Unexpected unlink")
         }
-        val model = LinkViewModel(AuthRepository(authApi, store, "test", oauthApi = oauthApi, now = { 0L }), now = { 0L })
+        val model = LinkViewModel(AuthRepository(authApi, store, "test", oauthApi = oauthApi, now = { clock }), now = { clock })
     }
 
     private companion object {
