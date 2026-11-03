@@ -23,6 +23,7 @@ from app.api.miniapp_practice import create_miniapp_practice_router
 from app.db.base import Base
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from app.db.models.account_notice_delivery import AccountNoticeDelivery
+from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
@@ -1124,6 +1125,55 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             )).status_code, 422)
         self.settings.PWA_AUTH_ENABLED = False
         self.assertEqual((await self.client.get(url)).status_code, 503)
+
+    async def test_pwa_checkout_stage_event_requires_same_owner_opened_attempt(self):
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        url = "/api/v3/pwa/subscription/event"
+        payload = {
+            "attempt_id": "sub-111-a1b2c3", "stage": "payment_receipt_selected",
+            "source": "iphone_pwa", "mode": "subscription",
+            "plan_type": "1_month", "payment_method": "visa",
+        }
+        self.assertEqual((await self.client.post(
+            url, headers={"Origin": ORIGIN}, json=payload,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            url, headers=headers, json={**payload, "user_id": 1},
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            url, headers=headers, json={**payload, "attempt_id": "bad';--"},
+        )).status_code, 422)
+        async with self.sessions() as db:
+            db.add(user(2, 1002))
+            db.add(ConversionFunnelEvent(
+                user_id=2, telegram_id=1002,
+                event_name="checkout_opened", source="iphone_pwa",
+                payload_json=json.dumps({"attempt_id": "sub-111-a1b2c3", "mode": "subscription"}),
+            ))
+            await db.commit()
+        self.assertEqual((await self.client.post(
+            url, headers=headers, json=payload,
+        )).status_code, 409)
+        async with self.sessions() as db:
+            db.add(ConversionFunnelEvent(
+                user_id=1, telegram_id=1001,
+                event_name="checkout_opened", source="iphone_pwa",
+                payload_json=json.dumps({"attempt_id": "sub-111-a1b2c3", "mode": "subscription"}),
+            ))
+            await db.commit()
+        with patch(
+            "app.services.conversion_funnel_service.ConversionFunnelService.record",
+            new_callable=AsyncMock,
+        ) as record:
+            record.return_value = True
+            response = await self.client.post(url, headers=headers, json=payload)
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertTrue(response.json()["ok"])
+            self.assertEqual(record.await_args.kwargs["user"].id, 1)
+            self.assertEqual(record.await_args.kwargs["payload"]["stage"], "payment_receipt_selected")
 
     def test_existing_checkout_ui_never_enters_fake_pwa_preview(self):
         html = (Path("app/static") / "subscription.html").read_text(encoding="utf-8")
