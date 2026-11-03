@@ -275,7 +275,12 @@ class ReleaseFeedbackService:
             campaign_id=campaign.id, user=user,
         )
         if previous and previous.trial_granted_until is not None:
-            return False, previous.trial_granted_until
+            # SQLite returns naive DateTime values even for timezone=True;
+            # stored grant times are UTC, as in the original grant path.
+            granted_until = previous.trial_granted_until
+            if granted_until.tzinfo is None:
+                granted_until = granted_until.replace(tzinfo=timezone.utc)
+            return False, granted_until
 
         if user.payment_status == "approved":
             await self.repo.mark_try_clicked(
