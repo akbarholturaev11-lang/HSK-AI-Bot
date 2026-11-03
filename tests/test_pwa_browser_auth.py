@@ -533,6 +533,34 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.settings.PWA_AUTH_ENABLED = False
         self.assertEqual((await self.client.get(path)).status_code, 503)
 
+    async def test_pwa_memorize_reuses_original_html_with_account_cookie(self):
+        path = "/iphone-pwa/practice/memorize"
+        anonymous = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(anonymous.status_code, 303)
+        self.assertEqual(anonymous.headers["location"], "/iphone-pwa")
+        state = await self.begin()
+        await self.callback(state)
+        page = await self.client.get(path)
+        self.assertEqual(page.status_code, 200, page.text[:160])
+        self.assertEqual(page.headers.get("cache-control"), "no-store")
+        self.assertEqual(page.headers.get("x-frame-options"), "DENY")
+        self.assertIn('PWA_MEMORIZE_HOST=location.pathname==="/iphone-pwa/practice/memorize"', page.text)
+        self.assertIn('LV_READY.then(function(){return runGate(ref)}).then', page.text)
+        self.assertNotIn("maximum-scale=1", page.text)
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.get(path)).status_code, 503)
+
+    def test_pwa_memorize_shares_gate_and_owner_scoped_local_mastery(self):
+        source = (Path("app/static") / "course_v3_memorize.html").read_text(encoding="utf-8")
+        self.assertIn('"/api/v3/practice/daily-gate":"/api/v3/pwa/practice/daily-gate"', source)
+        self.assertIn('"/api/v3/practice/report":"/api/v3/pwa/practice/report"', source)
+        self.assertIn('delete payload.initData;delete payload.user_id;delete payload.telegram_id;', source)
+        self.assertIn('"X-HSK-PWA-CSRF":s.csrf', source)
+        self.assertIn('"/api/v3/pwa/practice/profile"', source)
+        self.assertIn('return "pwa:"+String(PWA_MEMORIZE_SESSION.user_id)', source)
+        self.assertIn('if(!PWA_MEMORIZE_HOST&&window.CourseAds)', source)
+        self.assertNotIn("user-scalable=no", source)
+
     async def test_pwa_recognition_profile_uses_real_owner_level_and_progress(self):
         path = "/api/v3/pwa/practice/profile"
         self.assertEqual((await self.client.get(path)).status_code, 401)
@@ -572,7 +600,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"X-HSK-PWA-CSRF":s.csrf', source)
         self.assertIn('if(!PWA_RECOGNITION_HOST&&window.CourseAds)', source)
         self.assertIn('src="/iphone-pwa/practice/recognition"+target.search;', course)
-        self.assertIn('if(path!=="/course_v3_recognition.html")', course)
+        self.assertIn('"/course_v3_recognition.html":"/iphone-pwa/practice/recognition"', course)
+        self.assertIn('"/course_v3_memorize.html":"/iphone-pwa/practice/memorize"', course)
+        self.assertIn("if(!safePaths[path])", course)
         self.assertIn('if(!PWA_RECOGNITION_HOST)return fetch(url,{', source)
         self.assertNotIn("user-scalable=no", source)
 
