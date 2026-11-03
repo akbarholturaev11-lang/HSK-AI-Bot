@@ -3,6 +3,15 @@
 **Updated:** 2026-11-03 · **Status:** WIP, NOT accepted, NOT released.
 **This is the single active context file.** Preserve prior detailed history through Git commits; do not create another context file or parallel plan. The only formal acceptance list is [OpenSpec tasks](../openspec/changes/iphone-course-pwa/tasks.md).
 
+## LATEST VERIFIED EXACT-HEAD CI RESULT — 2026-11-03 (SUPERSEDES earlier pending entries)
+
+- Implementation Draft [PR #257](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/257) exact HEAD **`04edc5d2666df695f3229ea0840368127b9057af`**; GitHub Actions [run 41663587599](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41663587599) **COMPLETED SUCCESS — ALL 3 JOBS GREEN**: `targeted-tests`, `native-postgres`, `miniapp-ui`.
+- Grounded latest run logs: **localization baseline REVIEW BLOCKERS: 0** (812 frozen sources, 746 lessons), unchanged exact-source policy; PostgreSQL **72 passed, 64 subtests passed, 0 skipped**; actual Chromium iPhone PWA **5 passed**; legacy Mini App navigation **19 passed** and critical learning/checkout smoke **25 passed** (82 existing intentionally deselected by `-k`). Existing PWA Google/Apple/Telegram browser/session tests, real static HTTP asset allowlist and canonical backend regressions passed in `targeted-tests`. The earlier 404, exact guard assertion, and stale reviewed SHA failures are **resolved on this SHA**, not waived.
+- This is **the scoped Backend targeted workflow**, not proof that all other project workflows (Android CI, Smart Reminder storage/runtime, Admin PWA, localization full suite, Desktop) passed on this exact feature SHA. No full Android+Smart main integration was done. Formal [OpenSpec 4/18 checked](../openspec/changes/iphone-course-pwa/tasks.md) remains unchanged pending semantic integration, source-level P1–P3 acceptance and owner-only physical Safari/Home Screen end-to-end QA.
+- No merge to `main`, deploy, PWA flag enable, new Web Push/Smart sender, or change to either PR's Draft state. Keep rollback possible; avoid blind main sync given seven known conflict paths.
+
+---
+
 ## CURRENT SOURCE-REVIEW/CI RESOLUTION — 2026-11-03
 
 - Implementation Draft PR #257 is currently at `04edc5d2666df695f3229ea0840368127b9057af`. On prior exact `f784f24` [run 41661653859](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41661653859), **native-postgres SUCCESS** and **miniapp-ui SUCCESS**, including real Chromium iPhone UI checks. Targeted backend passed earlier PWA auth and static HTTP gates but failed in **`scripts/i18n_baseline_guard.py`** at two explicit `source_bytes_changed` records: `app/static/course-v3.html` and `app/static/subscription.html`. It is source-integrity provenance gating, not evidence of a payment/locale runtime failure; DO NOT disable or weaken the guard.
