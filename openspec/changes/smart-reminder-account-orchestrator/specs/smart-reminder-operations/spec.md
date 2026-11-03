@@ -454,3 +454,33 @@ The system SHALL bind native admission to current persisted operator-reviewed fe
 #### Scenario: Historical attempt remains irreversible
 - **WHEN** a later hold invalidates fresh work after an original native posting attempt
 - **THEN** its day/attempt/receipt facts remain immutable and no regrant or alternate follows
+
+### Requirement: Observed learning retains positive-only semantics
+The system SHALL expose bounded canonical positive study observations for an owned account/window without asserting complete negative coverage, fresh unit awards or notification authority.
+
+#### Scenario: Real study without new XP or notification tap
+- **WHEN** an existing reviewed server-scored or completed voice record establishes actual account study within the observation window
+- **THEN** its original positive activity time may contribute without a new XP award or notification tap, preserving existing source validation and private content
+
+#### Scenario: Missing or limited observations
+- **WHEN** retained sources are empty, partial, future, foreign or over the technical work bound
+- **THEN** no absence/failure/complete-coverage claim is inferred, limits remain explicit, and no new permission or provider operation follows
+
+### Requirement: Explicit ordinary reminder mode does not infer negative outcomes
+The system SHALL permit owner-approved ordinary opted-in reminders from current canonical progress and observed positive study activity through an explicit rules/source profile, retaining all permissions, reviewed cohort/device, daily/weekly, access, quiet and irreversible intent guards.
+
+#### Scenario: Complete negative history is unavailable
+- **WHEN** the explicit observed profile has reliable prior rhythm, valid current target/permission/review and no observed current-day study or completed goal
+- **THEN** a regular personal-time reminder may be prepared within the existing budgets without claiming abnormal inactivity or an unsuccessful response
+
+#### Scenario: Actual study returns without tapping or fresh XP
+- **WHEN** canonical learning XP or an existing reviewed server-scored/completed voice record proves recent actual account activity
+- **THEN** that original positive time can suppress return work without rewriting progress, awarding a unit or requiring a notification tap
+
+#### Scenario: Existing strict behavior and disabled deployment
+- **WHEN** ordinary mode is not explicitly selected or the shared runtime switch is disabled
+- **THEN** existing strict coverage behavior remains unchanged and no new runtime polling or posting authority is enabled
+
+#### Scenario: Day-one learner has a saved time
+- **WHEN** the explicit observed profile has a genuinely saved/manual clock and all current consent/review/target guards pass, but fewer than three verified active days exist
+- **THEN** ordinary reminders may use that existing clock immediately under the same daily/weekly limits, with no invented learned gap, inactivity or failed-response estimate; observed current-day learning still suppresses the return reminder

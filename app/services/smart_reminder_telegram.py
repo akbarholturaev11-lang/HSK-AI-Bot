@@ -23,7 +23,7 @@ from app.services.course_reminder_service import reminder_tz_offset
 from app.services.smart_reminder_cadence import evaluate_cadence
 from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
 from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, _aware_utc
-from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
+from app.services.smart_reminder_policy_context import ObservedLearning, SmartReminderPolicyContextService
 from app.services.smart_reminder_preferences import MAX_REVISION, SmartReminderError, SmartReminderPreferencesService, _utc
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION, SmartReminderShadowQueue
 from app.services.smart_reminder_telegram_content import TelegramContent, render_telegram_content
@@ -111,6 +111,19 @@ class LearningCoverage:
                 not isinstance(self.source_version, str) or not self.source_version.strip() or
                 _aware_utc(self.complete_since) > _aware_utc(self.observed_at)):
             raise ValueError("Typed authoritative learning coverage required")
+
+
+def _with_learning(snapshot, evidence, actor, since, observed, calibration):
+    """Trusted callback evidence only; old complete-feed semantics stay strict."""
+    if isinstance(evidence, LearningCoverage):
+        if evidence.user_id != actor.user_id or _aware_utc(evidence.observed_at) != observed:
+            return None
+        return replace(snapshot, learning_complete_since=evidence.complete_since)
+    if (isinstance(evidence, ObservedLearning) and calibration.observed_mode and
+            evidence.user_id == actor.user_id and _aware_utc(evidence.observed_at) == observed and
+            _aware_utc(evidence.history_since) == _aware_utc(since) and not evidence.limited):
+        return replace(snapshot, learning_complete_since=None, observed_sources=True,
+            observed_activity_at=evidence.latest_activity_at)
 
 
 async def _read_routing(session, actor, *, android=False):
@@ -333,15 +346,15 @@ class SmartReminderTelegramService:
             actor, observed_at=self._now(), history_since=since, expected_level=row["course_key"], personal_time=True)
         now = self._now()
         coverage = await self.coverage_reader(session, actor, since, now)
-        if coverage is not None and (not isinstance(coverage, LearningCoverage) or
-                coverage.user_id != actor.user_id or _aware_utc(coverage.observed_at) != now):
-            raise SmartReminderError("learning_coverage_invalid", 409)
+        if coverage is not None:
+            snapshot = _with_learning(snapshot, coverage, actor, since, now, self.calibration)
+            if snapshot is None:
+                raise SmartReminderError("learning_coverage_invalid", 409)
         # All canonical learning writers serialize on the held User lock. Recheck
         # the current clock after read IO; crossing day/quiet/expiry stays a veto.
         now = self._now()
         snapshot = replace(snapshot, policy=replace(snapshot.policy, observed_at=now),
-                           intents=tuple(j for j in snapshot.intents if j.job_id != row["id"]),
-                           learning_complete_since=coverage.complete_since if coverage else None)
+                           intents=tuple(j for j in snapshot.intents if j.job_id != row["id"]))
         decision = evaluate_cadence(snapshot, calibration=self.calibration, habit_calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
         if now >= _utc(row["expires_at"]):
             return await self._cancel(session, row, "telegram_expired", "expired")

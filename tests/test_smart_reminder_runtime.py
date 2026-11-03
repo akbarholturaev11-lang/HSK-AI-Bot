@@ -16,7 +16,7 @@ from sqlalchemy import insert, select, update
 from app.api.smart_reminder import create_smart_reminder_router
 from app.db.models.smart_reminder import SmartReminderRouting
 from app.services.smart_reminder_android import GRANT
-from app.services.smart_reminder_runtime import SmartReminderRuntime, android_delivery, registered_runtime
+from app.services.smart_reminder_runtime import SmartReminderRuntime, android_delivery, registered_runtime, build_rules_runtime
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB
 from tests import test_smart_reminder_planner as fixtures
 from tests.test_smart_reminder_cadence import QA
@@ -110,12 +110,19 @@ class HostTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(runtime._ticking.locked())
 
     async def test_actual_main_lifespan_starts_and_awaits_runtime_without_shadow_competitor(self):
+        await self.exercise_lifespan(configured=False)
+
+    async def test_actual_main_lifespan_builds_rules_runtime_from_explicit_switch(self):
+        await self.exercise_lifespan(configured=True)
+
+    async def exercise_lifespan(self, *, configured):
         settings=SimpleNamespace(SMART_REMINDER_SHADOW_ENABLED=True,SMART_REMINDER_ANALYSIS_ENABLED=False,
-            ADMIN_PWA_ENABLED=False,ADMIN_PWA_PUSH_ENABLED=False)
+            SMART_REMINDER_ENABLED=configured,ADMIN_PWA_ENABLED=False,ADMIN_PWA_PUSH_ENABLED=False)
         sessions=Mock()
         runtime=SmartReminderRuntime(settings,sessions,enabled=True,calibration=QA,
             history_window=timedelta(days=30),coverage_reader=AsyncMock(),android_admission_reader=AsyncMock())
-        host=FastAPI();host.state.smart_reminder_runtime=runtime
+        host=FastAPI()
+        if not configured: host.state.smart_reminder_runtime=runtime
         started,stopped=asyncio.Event(),asyncio.Event()
         async def block(*args): await asyncio.Event().wait()
         async def run():
@@ -123,19 +130,26 @@ class HostTests(unittest.IsolatedAsyncioTestCase):
             try: await block()
             finally: stopped.set()
         runtime.run=run
+        async def configured_run(self): await run()
         shadow=Mock(side_effect=AssertionError('competing shadow worker'))
         namespace=dict(asynccontextmanager=contextlib.asynccontextmanager,FastAPI=FastAPI,asyncio=asyncio,
             contextlib=contextlib,init_db=AsyncMock(),_seed_lessons=block,dp=SimpleNamespace(start_polling=block),
             bot=SimpleNamespace(session=SimpleNamespace(close=AsyncMock())),_background_scheduler=block,
             _desktop_auth_retention_scheduler=block,settings=settings,async_session_maker=sessions,
-            registered_runtime=registered_runtime,SmartReminderShadowWorker=shadow,sender_config=lambda s:None,
+            registered_runtime=registered_runtime,build_rules_runtime=build_rules_runtime,SmartReminderShadowWorker=shadow,sender_config=lambda s:None,
             _study_ai_tasks=set(),admin_pwa_due_campaigns=SimpleNamespace(close=AsyncMock()),
             engine=SimpleNamespace(dispose=AsyncMock()))
         for name in ('statistics','analytics','feedback'):
             namespace['admin_pwa_'+name+'_reader']=SimpleNamespace(aclose=AsyncMock())
         node=next(n for n in ast.parse(MAIN.read_text()).body if isinstance(n,ast.AsyncFunctionDef) and n.name=='lifespan')
         exec(compile(ast.Module(body=[node],type_ignores=[]),str(MAIN),'exec'),namespace)
-        async with namespace['lifespan'](host): await asyncio.wait_for(started.wait(),1)
+        with patch.object(SmartReminderRuntime,'run',configured_run):
+            async with namespace['lifespan'](host):
+                await asyncio.wait_for(started.wait(),1)
+                if configured:
+                    self.assertIs(host.state.smart_reminder_runtime.calibration,
+                        build_rules_runtime(settings,sessions,None).calibration)
+                    self.assertIs(host.state.smart_reminder_runtime._host,host)
         self.assertTrue(stopped.is_set());shadow.assert_not_called();sessions.assert_not_called()
 
 
