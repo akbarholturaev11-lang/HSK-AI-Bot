@@ -96,8 +96,10 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         app.include_router(create_native_oauth_router(
             session_factory=self.sessions, settings_obj=self.settings
         ))
+        self.receipt_bot = SimpleNamespace()
         app.include_router(create_pwa_auth_router(
-            session_factory=self.sessions, settings_obj=self.settings
+            session_factory=self.sessions, settings_obj=self.settings,
+            bot=self.receipt_bot,
         ))
         app.include_router(create_course_tracks_router(
             session_factory=self.sessions, settings_obj=self.settings
@@ -1020,6 +1022,122 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('courseVoiceMessage(fd).then(jr)', html)
         self.assertIn('_apiPost("/api/voice-practice/session/end"', html)
         self.assertIn('if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo)', html)
+
+    async def test_pwa_checkout_reuses_original_receipts_and_account_ownership(self):
+        url = "/iphone-pwa/checkout"
+        self.assertEqual((await self.client.get(
+            url, follow_redirects=False,
+        )).status_code, 303)
+        self.assertEqual((await self.client.post(
+            "/api/v3/pwa/subscription/quote", headers={"Origin": ORIGIN},
+            json={"plan_type": "1_month", "payment_method": "visa"},
+        )).status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        page = await self.client.get(url)
+        self.assertEqual(page.status_code, 200, page.text[:200])
+        self.assertIn("HSK AI Pro", page.text)
+        self.assertEqual(page.headers.get("cache-control"), "no-store")
+        self.assertEqual(page.headers.get("x-frame-options"), "DENY")
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        quote_url = "/api/v3/pwa/subscription/quote"
+        order = {"plan_type": "1_month", "payment_method": "visa"}
+        self.assertEqual((await self.client.post(
+            quote_url, headers={"Origin": ORIGIN}, json=order,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            quote_url, headers={**headers, "Origin": "https://attacker.example"},
+            json=order,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            quote_url, headers=headers, json={**order, "user_id": 2},
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            quote_url, headers={**headers, "X-Telegram-Init-Data": "fake"}, json=order,
+        )).status_code, 422)
+        with patch(
+            "app.services.subscription_miniapp_service.SubscriptionMiniAppService.overview",
+            new_callable=AsyncMock,
+        ) as overview, patch(
+            "app.services.subscription_miniapp_service.SubscriptionMiniAppService.quote",
+            new_callable=AsyncMock,
+        ) as quote, patch(
+            "app.services.subscription_miniapp_service.SubscriptionMiniAppService.submit",
+            new_callable=AsyncMock,
+        ) as submit, patch(
+            "app.services.subscription_entry_analytics_service.SubscriptionEntryAnalyticsService.record_entry",
+            new_callable=AsyncMock,
+        ) as entry, patch(
+            "app.services.conversion_funnel_service.ConversionFunnelService.record",
+            new_callable=AsyncMock,
+        ) as funnel, patch(
+            "app.repositories.payment_repo.PaymentRepository.get_by_id",
+            new_callable=AsyncMock,
+        ) as payment:
+            overview.return_value = {"ok": True, "mode": "subscription", "pending_payment": None}
+            quote.return_value = {"ok": True, "quote": {"pay_amount": 89, "pay_currency": "TJS"}}
+            submit.return_value = {
+                "ok": True, "status": "pending", "payment_id": 77,
+                "provisional_access": False,
+            }
+            entry.return_value = True
+            funnel.return_value = True
+            payment.return_value = SimpleNamespace(
+                id=77, payment_status="pending", plan_type="1_month",
+            )
+            ctx = {
+                "mode": "subscription", "source": "v3_paywall",
+                "plan": "1_month", "attempt_id": "sub-1000-abc",
+            }
+            opened = await self.client.post(
+                "/api/v3/pwa/subscription/overview", headers=headers, json=ctx,
+            )
+            self.assertEqual(opened.status_code, 200, opened.text)
+            self.assertEqual(overview.await_args.args[0].id, 1)
+            self.assertIs(overview.await_args.kwargs["bot"], self.receipt_bot)
+            self.assertEqual(entry.await_args.kwargs["user"].id, 1)
+            self.assertEqual(funnel.await_args.kwargs["user"].id, 1)
+            quoted = await self.client.post(quote_url, headers=headers, json={**ctx, **order})
+            self.assertEqual(quoted.status_code, 200, quoted.text)
+            self.assertEqual(quote.await_args.kwargs["telegram_id"].id, 1)
+            self.assertEqual(quoted.json()["quote"]["pay_amount"], 89)
+            submitted = await self.client.post(
+                "/api/v3/pwa/subscription/submit", headers=headers,
+                json={**ctx, **order, "screenshot_data_url": "data:image/png;base64,aGVsbG8="},
+            )
+            self.assertEqual(submitted.status_code, 200, submitted.text)
+            self.assertEqual(submit.await_args.kwargs["telegram_id"].id, 1)
+            self.assertIs(submit.await_args.kwargs["bot"], self.receipt_bot)
+            self.assertEqual(submit.await_args.kwargs["source"], "iphone_pwa")
+            self.assertEqual(submitted.json()["payment_id"], 77)
+            checked = await self.client.post(
+                "/api/v3/pwa/subscription/payment-status", headers=headers,
+                json={"payment_id": 77},
+            )
+            self.assertEqual(checked.status_code, 200, checked.text)
+            self.assertEqual(payment.await_args.kwargs["actor"].id, 1)
+            self.assertEqual(checked.json()["status"], "pending")
+            self.assertEqual((await self.client.post(
+                "/api/v3/pwa/subscription/payment-status", headers=headers,
+                json={"payment_id": 77, "user_id": 2},
+            )).status_code, 422)
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.get(url)).status_code, 503)
+
+    def test_existing_checkout_ui_never_enters_fake_pwa_preview(self):
+        html = (Path("app/static") / "subscription.html").read_text(encoding="utf-8")
+        course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        self.assertIn('PWA_CHECKOUT_HOST=location.pathname==="/iphone-pwa/checkout"', html)
+        self.assertIn('preview:!INIT_DATA&&!PWA_CHECKOUT_HOST', html)
+        self.assertIn('if(!INIT_DATA&&!PWA_CHECKOUT_HOST){', html)
+        self.assertIn('if(PWA_CHECKOUT_HOST)return "";', html)
+        self.assertIn('"/api/v3/pwa/subscription/submit"', html)
+        self.assertIn('"/api/v3/pwa/subscription/payment-status"', html)
+        self.assertIn('"X-HSK-PWA-CSRF":actor.csrf', html)
+        self.assertIn('const response=await checkoutTransport(API.event', html)
+        self.assertIn('"/iphone-pwa/practice/voice"', html)
+        self.assertIn('PWA_COURSE_HOST?"/iphone-pwa/checkout":"/subscription.html"', course)
 
     async def test_pwa_recognition_profile_uses_real_owner_level_and_progress(self):
         path = "/api/v3/pwa/practice/profile"
