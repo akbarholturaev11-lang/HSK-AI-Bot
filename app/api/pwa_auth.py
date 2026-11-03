@@ -1584,7 +1584,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                         telegram_column="user_telegram_id",
                     ))
                     .where(ReleaseFeedbackDelivery.status.in_(("sent", "clicked")))
-                    .where(ReleaseFeedbackCampaign.status == "sent")
+                    .where(ReleaseFeedbackCampaign.status.in_(("sending", "sent")))
                     .order_by(
                         ReleaseFeedbackDelivery.delivered_at.desc(),
                         ReleaseFeedbackDelivery.id.desc(),
@@ -1856,7 +1856,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     campaign_id=data.campaign_id, user=learner,
                 )
                 if (
-                    campaign is None or campaign.status != "sent"
+                    campaign is None or campaign.status not in {"sending", "sent"}
                     or delivery is None
                     or delivery.status not in {"sent", "clicked"}
                 ):
@@ -1934,7 +1934,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     campaign_id=data.campaign_id, user=learner,
                 )
                 if (
-                    campaign is None or campaign.status != "sent"
+                    campaign is None or campaign.status not in {"sending", "sent"}
                     or delivery is None or delivery.status not in {"sent", "clicked"}
                 ):
                     raise PwaAuthError("feedback_not_available", status_code=404)

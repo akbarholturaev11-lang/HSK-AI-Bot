@@ -1392,6 +1392,74 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 original_trial_until,
             )
 
+    async def test_pwa_release_sending_campaign_matches_delivered_telegram_recipient(self):
+        """One recipient can answer after delivery while the larger batch runs.
+
+        A merely queued/failed recipient does not gain a discount or trial.
+        """
+        from app.db.models.release_feedback import (
+            ReleaseFeedbackCampaign, ReleaseFeedbackDelivery, ReleaseFeedbackResponse,
+        )
+        from app.db.models.discount_campaign import DiscountCampaign
+
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            for cid in (95, 96):
+                db.add(ReleaseFeedbackCampaign(
+                    id=cid, title=f"Sending batch {cid}", status="sending",
+                    send_at=now - timedelta(hours=1),
+                ))
+            await db.flush()
+            db.add(ReleaseFeedbackDelivery(
+                campaign_id=95, user_id=1, user_telegram_id=1001, status="sent",
+            ))
+            db.add(ReleaseFeedbackDelivery(
+                campaign_id=96, user_id=1, user_telegram_id=1001, status="failed",
+            ))
+            await db.commit()
+
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        listed = (await self.client.get("/api/v3/pwa/feedback/available")).json()
+        self.assertEqual(
+            [item["campaign_id"] for item in listed["release"]], [95],
+        )
+        self.assertEqual((await self.client.post(
+            "/api/v3/pwa/feedback/release/respond", headers=headers,
+            json={"campaign_id": 96, "rating": 5},
+        )).status_code, 404)
+        accepted = await self.client.post(
+            "/api/v3/pwa/feedback/release/respond", headers=headers,
+            json={"campaign_id": 95, "rating": 5},
+        )
+        self.assertEqual(accepted.status_code, 200, accepted.text)
+        self.assertIsInstance(accepted.json()["discount_campaign_id"], int)
+        self.assertTrue(accepted.json()["trial_until"])
+        comment = await self.client.post(
+            "/api/v3/pwa/feedback/release/comment", headers=headers,
+            json={"campaign_id": 95, "comment_text": "Useful new lesson"},
+        )
+        self.assertEqual(comment.status_code, 200, comment.text)
+        self.assertTrue(comment.json()["updated"])
+        self.assertEqual((await self.client.post(
+            "/api/v3/pwa/feedback/release/respond", headers=headers,
+            json={"campaign_id": 95, "rating": 5},
+        )).status_code, 409)
+        async with self.sessions() as db:
+            replies = (await db.execute(
+                select(ReleaseFeedbackResponse)
+            )).scalars().all()
+            self.assertEqual(len(replies), 1)
+            self.assertEqual(replies[0].campaign_id, 95)
+            self.assertEqual(replies[0].comment_text, "Useful new lesson")
+            coupons = (await db.execute(
+                select(DiscountCampaign)
+            )).scalars().all()
+            self.assertEqual(len(coupons), 1)
+            self.assertEqual(coupons[0].target_user_id, 1)
+
     async def test_pwa_release_rating_requires_delivered_canonical_owner_and_one_reward(self):
         from app.db.models.release_feedback import (
             ReleaseFeedbackCampaign, ReleaseFeedbackDelivery, ReleaseFeedbackResponse,
@@ -1472,7 +1540,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as db:
             db.add(user(2, None))
             now = datetime.now(timezone.utc)
-            for cid, status in ((71, "sent"), (72, "scheduled"), (73, "sent"), (74, "sent")):
+            for cid, status in ((71, "sent"), (72, "scheduled"), (73, "sent"),
+                                (74, "sent"), (75, "sending"), (76, "sending")):
                 db.add(ReleaseFeedbackCampaign(
                     id=cid, title=f"Campaign {cid}", status=status,
                     send_at=now - timedelta(days=1),
@@ -1495,6 +1564,14 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 campaign_id=74, user_id=1, user_telegram_id=1001,
                 status="clicked",
             ))
+            db.add(ReleaseFeedbackDelivery(
+                campaign_id=75, user_id=1, user_telegram_id=1001,
+                status="sent",
+            ))
+            db.add(ReleaseFeedbackDelivery(
+                campaign_id=76, user_id=1, user_telegram_id=1001,
+                status="failed",
+            ))
             await db.commit()
         state = await self.begin()
         await self.callback(state)
@@ -1502,7 +1579,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         ready = await self.client.get(url)
         self.assertEqual(ready.status_code, 200, ready.text)
         self.assertEqual(
-            [item["campaign_id"] for item in ready.json()["release"]], [74, 71],
+            [item["campaign_id"] for item in ready.json()["release"]], [75, 74, 71],
         )
         self.assertNotIn("media_file_id", ready.text)
         async with self.sessions() as db:
@@ -1513,7 +1590,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             await db.commit()
         self.assertEqual(
             [item["campaign_id"] for item in (await self.client.get(url)).json()["release"]],
-            [74],
+            [75, 74],
         )
 
     async def test_pwa_inbox_uses_canonical_owner_and_does_not_invent_notices(self):
