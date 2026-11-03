@@ -862,6 +862,31 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"X-HSK-PWA-CSRF":actor.csrf', source)
         self.assertIn('delete payload.initData;delete payload.user_id;delete payload.telegram_id;', source)
 
+    def test_pwa_lesson_completion_reuses_one_signed_proof_and_one_xp_award(self):
+        source = (Path("app") / "main.py").read_text(encoding="utf-8")
+        course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(source.count(
+            'async def _v3_complete_lesson_for_canonical_actor(',
+        ), 1)
+        self.assertEqual(source.count(
+            'valid_proof = verify_lesson_completion_proof(',
+        ), 1)
+        self.assertEqual(source.count(
+            'activity_ref=f"v3-part:{resolved_level}:{lesson_order}:complete"',
+        ), 1)
+        self.assertIn('async def v3_course_lesson_complete(request: Request)', source)
+        self.assertIn('async def pwa_v3_course_lesson_complete(request: Request)', source)
+        self.assertIn('require_same_origin(request, settings)', source)
+        self.assertIn('PwaAuthService(session, settings).mutation_actor(', source)
+        self.assertIn('get_by_user_id(actor.id, lock=True)', source)
+        self.assertIn('return await _v3_complete_lesson_for_canonical_actor(', source)
+        self.assertIn('response = await _v3_complete_lesson_for_canonical_actor(', source)
+        self.assertIn('"/api/v3/lesson/complete":"/api/v3/pwa/lesson/complete"', course)
+        self.assertIn('_apiPost("/api/v3/lesson/complete"', course)
+        self.assertIn('completion_proof:LESSON_COMPLETION_PROOF', course)
+        self.assertIn('mistakes:(Flow.mistakes||[]).slice(0,50)', course)
+        self.assertIn('delete payload.initData;delete payload.telegram_id;', course)
+
     async def test_pwa_recognition_profile_uses_real_owner_level_and_progress(self):
         path = "/api/v3/pwa/practice/profile"
         self.assertEqual((await self.client.get(path)).status_code, 401)
