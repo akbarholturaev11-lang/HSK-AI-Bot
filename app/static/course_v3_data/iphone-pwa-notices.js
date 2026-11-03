@@ -276,6 +276,8 @@
           action.status !== "rejected")) {
         close();
       }
+      if (activeMode === "urgent" && action &&
+          action.status === "rejected" && action.payment_id === displayedPaymentId) return;
       if (action && action.status === "rejected" && owner &&
           !wasDismissed(action.payment_id)) {
         urgentPending = action;
@@ -284,11 +286,11 @@
     } catch (_) { /* Read failure must not block course. */ }
   }
   function scheduleRecheck(force) {
-    if (document.visibilityState === "hidden") return;
+    if (document.visibilityState === "hidden") return Promise.resolve();
     var now = Date.now();
-    if (!force && now - lastResumeCheck < 3000) return;
+    if (!force && now - lastResumeCheck < 3000) return Promise.resolve();
     lastResumeCheck = now;
-    offerLatestRejection();
+    return offerLatestRejection();
   }
   overlay.addEventListener("click", function (ev) {
     if (ev.target.closest("[data-pwa-close]")) close();
@@ -325,9 +327,9 @@
   // Installed iOS Home Screen apps and Safari may resume from BFCache without
   // a new load event. Always re-read the latest *server-owned* payment action.
   window.addEventListener("pageshow", function (ev) {
-    if (ev.persisted) scheduleRecheck(true);
+    if (ev.persisted) return scheduleRecheck(true);
   });
   document.addEventListener("visibilitychange", function () {
-    if (document.visibilityState === "visible") scheduleRecheck(false);
+    if (document.visibilityState === "visible") return scheduleRecheck(false);
   });
 }());
