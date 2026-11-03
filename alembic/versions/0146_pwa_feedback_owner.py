@@ -9,7 +9,7 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision = "0146_pwa_feedback_canonical_owner"
+revision = "0146_pwa_feedback_owner"
 down_revision = "0145_smart_baseline_outcomes"
 branch_labels = None
 depends_on = None

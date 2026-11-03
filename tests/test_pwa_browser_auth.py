@@ -777,7 +777,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         from alembic.migration import MigrationContext
         from alembic.operations import Operations
 
-        filename = Path("alembic/versions/0146_pwa_feedback_canonical_owner.py")
+        filename = Path("alembic/versions/0146_pwa_feedback_owner.py")
         spec = importlib.util.spec_from_file_location("test_0146_pwa_feedback", filename)
         revision = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(revision)
