@@ -2175,7 +2175,7 @@ var INIT_DATA=(tg&&tg.initData)||"";
 // This is not an identity signal: only the server-verified HttpOnly PWA
 // session + Origin/CSRF can authorize its read/write map endpoint.
 var PWA_COURSE_HOST=!INIT_DATA&&location.pathname==="/iphone-pwa/course";
-var PWA_COURSE_ACTOR_PROMISE=null;
+var PWA_COURSE_ACTOR_PROMISE=null,PWA_COURSE_USER_ID=null;
 function pwaCourseActor(){
   if(!PWA_COURSE_HOST)return Promise.reject(new Error("pwa_host_required"));
   if(!PWA_COURSE_ACTOR_PROMISE){
@@ -2186,8 +2186,15 @@ function pwaCourseActor(){
       if(!res.ok)throw new Error("pwa_session_unavailable");
       return res.json();
     }).then(function(data){
-      if(!data||data.ok!==true||typeof data.csrf!=="string"||!data.csrf)
+      if(!data||data.ok!==true||typeof data.csrf!=="string"||!data.csrf||
+         !Number.isSafeInteger(Number(data.user_id))||Number(data.user_id)<=0)
         throw new Error("pwa_session_invalid");
+      var ownerId=Number(data.user_id);
+      if(PWA_COURSE_USER_ID&&PWA_COURSE_USER_ID!==ownerId){
+        location.replace("/iphone-pwa");
+        throw new Error("pwa_actor_changed");
+      }
+      PWA_COURSE_USER_ID=ownerId;
       return data;
     }).catch(function(err){PWA_COURSE_ACTOR_PROMISE=null;throw err});
   }
@@ -3676,7 +3683,13 @@ function foundationMapState(){
   var s=(MAP&&MAP.foundation)||(PROF&&PROF.foundation)||{};
   return s&&typeof s==="object"?s:{};
 }
-function localUserScope(){try{var u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;if(u&&u.id)return String(u.id)}catch(e){}return"preview"}
+function localUserScope(){
+  // Never share a browser learner's resume/mastery/foundation cache with
+  // another canonical account or with the old anonymous "preview" scope.
+  if(PWA_COURSE_HOST)return "pwa:"+String(PWA_COURSE_USER_ID||"unbound");
+  try{var u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;if(u&&u.id)return String(u.id)}catch(e){}
+  return"preview"
+}
 function foundationCacheKey(id,version){return"hsk_v3_foundation:"+localUserScope()+":"+String(id||"starter0_hsk1")+":v"+Number(version||1)}
 function foundationCachedState(id,version){try{return JSON.parse(localStorage.getItem(foundationCacheKey(id,version))||"null")||{}}catch(e){return{}}}
 function foundationIsComplete(){
@@ -5692,9 +5705,18 @@ function _fetchCourseMap(lv,signal){
     });
   }):fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store",signal:signal});
   return request.then(function(r){
-    if(PWA_COURSE_HOST&&r.status===401){
-      PWA_COURSE_ACTOR_PROMISE=null;
-      location.replace("/iphone-pwa");
+    if(PWA_COURSE_HOST){
+      if(r.status===401){
+        PWA_COURSE_ACTOR_PROMISE=null;
+        location.replace("/iphone-pwa");
+      }else if(r.ok&&PWA_COURSE_USER_ID&&
+               r.headers.get("X-HSK-PWA-User-ID")!==String(PWA_COURSE_USER_ID)){
+        // Another tab may have replaced the HttpOnly account cookie. Never
+        // render the next user's map using the first user's local cache.
+        PWA_COURSE_ACTOR_PROMISE=null;
+        location.replace("/iphone-pwa");
+        throw new Error("pwa_actor_changed");
+      }
     }
     return r.json().then(function(d){d._status=r.status;return d}).catch(function(){return {_status:r.status,_parseFail:true}});
   });
