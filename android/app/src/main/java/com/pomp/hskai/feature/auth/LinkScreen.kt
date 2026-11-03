@@ -78,9 +78,9 @@ import kotlin.math.ceil
 /**
  * The way into the app: one card per sign-in provider.
  *
- * Telegram is always offered. Google reserves a disabled slot until server
- * discovery completes; Apple is shown only if the server actually offers it.
- * Unavailable providers never start a sign-in attempt.
+ * Telegram is always offered. Google is visible immediately but remains
+ * disabled until the server offers it. Apple keeps its availability-gated
+ * behavior; unavailable methods never initiate authorization.
  *
  * Invitation attribution comes from the launch link and stays outside this
  * screen; signing in must not ask the learner to type a code.
@@ -418,20 +418,16 @@ private fun ProviderCards(
             enabled = !state.isRequestingCode,
             onClick = onContinueWithTelegram,
         )
-        // Reserve only Google's slot while server discovery is pending.
-        // Apple retains its original availability-gated behavior.
-        val showGoogle = !state.providersLoaded || AuthProvider.GOOGLE in state.providers
-        val showApple = AuthProvider.APPLE in state.providers
-        if (showGoogle) {
-            Spacer(Modifier.height(12.dp))
-            ProviderCard(
-                iconRes = R.drawable.ic_brand_google,
-                label = stringResource(R.string.auth_continue_google_short),
-                enabled = AuthProvider.GOOGLE in state.providers && state.busyProvider == null,
-                onClick = onSignInWithGoogle,
-            )
-        }
-        if (showApple) {
+        // The Google card never moves or disappears after provider discovery.
+        // An unavailable Google OAuth backend leaves it visible but disabled.
+        Spacer(Modifier.height(12.dp))
+        ProviderCard(
+            iconRes = R.drawable.ic_brand_google,
+            label = stringResource(R.string.auth_continue_google_short),
+            enabled = AuthProvider.GOOGLE in state.providers && state.busyProvider == null,
+            onClick = onSignInWithGoogle,
+        )
+        if (AuthProvider.APPLE in state.providers) {
             Spacer(Modifier.height(12.dp))
             ProviderCard(
                 iconRes = R.drawable.ic_brand_apple,
