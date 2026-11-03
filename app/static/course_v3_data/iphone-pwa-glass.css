@@ -1,3 +1,42 @@
+/* Keep original cards and course hierarchy; give only the iPhone browser
+   host the approved warm-paper optical glass treatment. */
+html.hsk-pwa-browser .row-card,
+html.hsk-pwa-browser .card2,
+html.hsk-pwa-browser .mashq-group,
+html.hsk-pwa-browser .profile-quick-links {
+  border-color: rgba(234,224,204,.83);
+  background: rgba(255,255,255,.67);
+  box-shadow: 0 4px 12px rgba(33,29,23,.045), inset 0 1px 0 rgba(255,255,255,.78);
+}
+@supports ((-webkit-backdrop-filter:blur(2px)) or (backdrop-filter:blur(2px))) {
+  html.hsk-pwa-browser .row-card,
+  html.hsk-pwa-browser .card2,
+  html.hsk-pwa-browser .mashq-group,
+  html.hsk-pwa-browser .profile-quick-links {
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    backdrop-filter: blur(12px) saturate(120%);
+  }
+}
+html.hsk-pwa-browser .profile-head .profile-settings,
+html.hsk-pwa-browser .profile-head .pwa-notices-button,
+html.hsk-pwa-browser .profile-head .pwa-feedback-button {
+  flex:0 0 44px;
+  border-radius:16px;
+}
+@media (max-width:360px) {
+  html.hsk-pwa-browser .profile-head-actions {gap:4px}
+  html.hsk-pwa-browser .profile-title {font-size:21px}
+}
+@media (prefers-reduced-transparency: reduce) {
+  html.hsk-pwa-browser .row-card,
+  html.hsk-pwa-browser .card2,
+  html.hsk-pwa-browser .mashq-group,
+  html.hsk-pwa-browser .profile-quick-links {
+    background: var(--hsk-card-surface);
+    -webkit-backdrop-filter:none;backdrop-filter:none;
+  }
+}
+
 /* Browser PWA-only presentation. Reuses original course, tokens and native Mini App nav.
    It never changes Telegram/Android/Desktop UX, access rules, or notification delivery. */
 html.hsk-pwa-browser .nav {
