@@ -191,18 +191,20 @@ class CourseHotspotTriageTests(unittest.TestCase):
             "say": ("Talaffuz qiling", "Произнесите", "Талаффуз кунед"),
             "today.go": ("Reja bo'yicha davom etish", "Продолжить по плану", "Идома аз рӯи нақша"),
         }
-        anchors = (
-            'cont:courseMessage("cont",T().cont)',
-            'courseMessage("cont",T().cont):courseMessage("check",T().check)',
-            'courseMessage("cont",T().cont)',
-            'courseMessage("grammar",T().grammar)',
-            'esc(courseMessage("say",T().say))',
-            'esc(courseMessage("today.go",todayT().go))',
-        )
-        for anchor in anchors:
+        anchors = {
+            'cont:courseMessage("cont",T().cont)': 1,
+            'Flow.i<Flow.queue.length-1?courseMessage("cont",T().cont):courseMessage("check",T().check)': 1,
+            'var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML=\'<i class="ti ti-arrow-right"></i> \'+courseMessage("cont",T().cont);': 1,
+            'c.type==="result"?courseMessage("check",T().check):courseMessage("cont",T().cont)': 1,
+            'courseMessage("grammar",T().grammar)': 1,
+            'esc(courseMessage("say",T().say))': 2,
+            'esc(courseMessage("today.go",todayT().go))': 1,
+        }
+        for anchor, expected_lines in anchors.items():
+            matches = [line for line in lines if anchor in line]
             with self.subTest(anchor=anchor):
-                self.assertTrue(any(anchor in line for line in lines),
-                                f"Missing source anchor: {anchor}")
+                self.assertEqual(len(matches), expected_lines,
+                                 f"Unexpected course source anchor count for {anchor}")
         for key, values in expected.items():
             for lang, value in zip(("uz", "ru", "tj"), values):
                 with self.subTest(key=key, locale=lang):
