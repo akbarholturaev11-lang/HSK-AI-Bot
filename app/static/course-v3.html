@@ -2174,7 +2174,7 @@ var INIT_DATA=(tg&&tg.initData)||"";
 // Browser-only course host reuses the exact Mini App HTML and course map.
 // This is not an identity signal: only the server-verified HttpOnly PWA
 // session + Origin/CSRF can authorize its read/write map endpoint.
-var PWA_COURSE_HOST=!INIT_DATA&&location.pathname==="/iphone-pwa/course";
+var PWA_COURSE_HOST=location.pathname==="/iphone-pwa/course";
 var PWA_COURSE_ACTOR_PROMISE=null,PWA_COURSE_USER_ID=null;
 function pwaCourseActor(){
   if(!PWA_COURSE_HOST)return Promise.reject(new Error("pwa_host_required"));
@@ -2204,7 +2204,7 @@ function pwaCourseActor(){
 (function observeSmartReminderOpen(){
   try{
     var q=new URLSearchParams(location.search),f=new URLSearchParams(location.hash.slice(1));
-    if(!INIT_DATA||q.getAll("source").length!==1||q.get("source")!=="smart_study"||
+    if(PWA_COURSE_HOST||!INIT_DATA||q.getAll("source").length!==1||q.get("source")!=="smart_study"||
        f.getAll("smart_job").length!==1||f.getAll("smart_proof").length!==1)return;
     var job=f.get("smart_job"),proof=f.get("smart_proof"),sent=false;
     if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(job)||
