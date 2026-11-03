@@ -19,6 +19,8 @@
 <script src="/assets/characters/hsk-study-preparing.js?v=20261009-compact-1"></script>
 <script src="/assets/characters/hsk-lesson-presentation.js?v=20260921c"></script>
 <style>
+html.hsk-pwa-browser input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.hsk-pwa-browser textarea,html.hsk-pwa-browser select{font-size:16px!important}
 :root{
   --ink:var(--hsk-ink);--ink2:var(--hsk-ink-secondary);--ink3:var(--hsk-ink-disabled);--paper:var(--hsk-paper);--card:var(--hsk-paper-raised);--line:var(--hsk-divider);
   --cin:var(--hsk-cinnabar);--cin2:var(--hsk-cinnabar-ink);--cinbg:var(--hsk-cinnabar-soft);--cin-ink:var(--hsk-on-cinnabar);
@@ -2175,6 +2177,7 @@ var INIT_DATA=(tg&&tg.initData)||"";
 // This is not an identity signal: only the server-verified HttpOnly PWA
 // session + Origin/CSRF can authorize its read/write map endpoint.
 var PWA_COURSE_HOST=location.pathname==="/iphone-pwa/course";
+if(PWA_COURSE_HOST)document.documentElement.classList.add("hsk-pwa-browser");
 // An installed browser PWA never becomes a Telegram client, even if an SDK
 // shim injects initData. Identity is exclusively the verified PWA cookie.
 if(PWA_COURSE_HOST)INIT_DATA="";
