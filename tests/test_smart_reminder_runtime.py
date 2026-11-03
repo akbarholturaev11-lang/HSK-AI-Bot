@@ -7,10 +7,11 @@ from pathlib import Path
 from types import SimpleNamespace
 import unittest
 from unittest.mock import AsyncMock, Mock, patch
+from uuid import uuid4
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import select, update
+from sqlalchemy import insert, select, update
 
 from app.api.smart_reminder import create_smart_reminder_router
 from app.db.models.smart_reminder import SmartReminderRouting
@@ -23,6 +24,25 @@ from tests.test_smart_reminder_legacy_backfill import PG_URL
 
 
 MAIN = Path(__file__).resolve().parents[1] / 'app/main.py'
+
+
+async def historical_unknown(q, channel):
+    """Synthetic original prior-day source facts, never a new delivery claim."""
+    start=q.tick.replace(hour=0,minute=0,second=0,microsecond=0)-timedelta(days=1)
+    job_id,attempt_id=str(uuid4()),str(uuid4())
+    scheduled=start+timedelta(hours=14)
+    async with q.sessions.begin() as s:
+        await s.execute(insert(JOB).values(id=job_id,user_id=1,local_day=start.date(),timezone_name='Etc/UTC',
+            day_start_utc=start,day_end_utc=start+timedelta(days=1),scheduled_at=scheduled,
+            expires_at=start+timedelta(days=1),state='unknown',policy_version='synthetic-original',
+            preference_revision=2,grant_epoch=1,course_key='hsk1',lesson_order=5,
+            selected_channel=channel,selected_device_id='device-1' if channel=='android' else None))
+        await s.execute(insert(ATTEMPT).values(id=attempt_id,job_id=job_id,attempt_key=uuid4().hex,
+            channel=channel,device_id='device-1' if channel=='android' else None,grant_epoch=1,
+            state='client_posted_unverified' if channel=='android' else 'provider_accepted',
+            prepared_at=scheduled-timedelta(seconds=1),started_at=scheduled,
+            resolved_at=scheduled+timedelta(seconds=1),expires_at=start+timedelta(days=1)))
+    return job_id,attempt_id
 
 
 def attach_actual_main_router(host, sessions, settings):
@@ -161,6 +181,19 @@ class NativeRuntimeChecks:
         self.assertEqual((result.reason,result.job_id),('already_planned',original.job_id))
         self.assertEqual(len(await self.q.rows(JOB)),1);await self.p.no_delivery()
 
+    async def test_prior_day_posted_unknown_allows_new_native_plan_claim_without_replay(self):
+        old_id,attempt_id=await historical_unknown(self.q,'android')
+        original=(await self.q.rows(ATTEMPT))[0]
+        planned,=await self.runtime().tick()
+        self.assertEqual(planned.reason,'planned');self.assertNotEqual(planned.job_id,old_id)
+        self.q.job_id=planned.job_id;self.q.tick=self.p.due_clock
+        grant=await self.q.claim();self.assertTrue(grant['dispatch_allowed'])
+        await self.q.receipt(grant)
+        old=next(j for j in await self.q.rows(JOB) if j['id']==old_id)
+        attempt=next(a for a in await self.q.rows(ATTEMPT) if a['id']==attempt_id)
+        self.assertEqual(old['state'],'unknown');self.assertEqual(attempt,original)
+        self.assertEqual(len(await self.q.rows(GRANT)),1)
+
     async def test_unreviewed_or_expired_routing_is_not_polled(self):
         async with self.q.sessions.begin() as s:
             await s.execute(update(SmartReminderRouting).values(verified_at=None,verified_until=None,evidence_sha256=None))
@@ -243,6 +276,18 @@ class TelegramRuntimeChecks:
         await self.runtime(telegram_send=send).tick()
         self.assertEqual(send.await_count,1)
         self.assertEqual((await self.q.rows(ATTEMPT))[0]['state'],'unknown')
+
+    async def test_prior_day_accepted_unknown_allows_new_tg_intent_without_old_retry(self):
+        old_id,attempt_id=await historical_unknown(self.q,'telegram')
+        original=(await self.q.rows(ATTEMPT))[0]
+        planned,=await self.runtime().tick();self.assertEqual(planned.reason,'telegram_not_due')
+        self.q.tick=self.q.tick.replace(hour=14,minute=1)
+        result,=await self.runtime().tick()
+        self.assertEqual(result.reason,'telegram_provider_accepted')
+        self.assertEqual(self.q.bot.send_message.await_count,1)
+        self.assertEqual(len(await self.q.rows(ATTEMPT)),2)
+        self.assertEqual(next(j for j in await self.q.rows(JOB) if j['id']==old_id)['state'],'unknown')
+        self.assertEqual(next(a for a in await self.q.rows(ATTEMPT) if a['id']==attempt_id),original)
 
     async def test_unstarted_expired_lease_can_resume_without_another_attempt(self):
         await self.runtime().tick();self.q.tick=self.q.tick.replace(hour=14,minute=1)
