@@ -313,3 +313,14 @@ The system SHALL provide an explicit one-month anonymous operator report with da
 #### Scenario: Accidental write or interrupted report
 - **WHEN** a reporting operation attempts a database write, times out or is cancelled
 - **THEN** the read-only database policy refuses writes and the dedicated resources are released without changing operational or personal learning sources
+
+### Requirement: Existing graded practice can prove activity without fresh XP
+The system SHALL count a reviewed stored server-graded practice completion as positive study activity independently of a new XP award or notification tap. It MUST preserve original-unit/reward semantics, strict source/session validation and explicit incomplete repeat-practice coverage.
+
+#### Scenario: Graded completion after the original reward
+- **WHEN** canonical mock, placement or training completion is server-verified after contact while its original XP is older
+- **THEN** positive study-day/window evidence may be observed without inventing a new completed unit, rewriting the original result or requiring a click
+
+#### Scenario: Missing or untrusted practice evidence
+- **WHEN** only a deduplicated older completion, client telemetry, malformed score or mismatched owner/course/session exists
+- **THEN** it cannot create a new in-window positive result or prove inactivity, causal learning, complete practice coverage or dispatch readiness

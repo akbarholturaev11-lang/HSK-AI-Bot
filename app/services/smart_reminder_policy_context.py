@@ -134,7 +134,9 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
         or_(and_(CourseMiniAppEvent.event_name == "section_attempt_scored",
                  CourseMiniAppEvent.source == "course_miniapp"),
             and_(CourseMiniAppEvent.event_name == "test_completed",
-                 CourseMiniAppEvent.source == "course_hsk_exam")),
+                 CourseMiniAppEvent.source == "course_hsk_exam"),
+            and_(CourseMiniAppEvent.event_name.in_(("test_completed", "training_completed")),
+                 CourseMiniAppEvent.source == "course_miniapp")),
         CourseMiniAppEvent.created_at >= since, CourseMiniAppEvent.created_at <= now,
         func.length(CourseMiniAppEvent.payload_json) <= 8000,
     ).order_by(CourseMiniAppEvent.created_at, CourseMiniAppEvent.id).limit(MAX_POLICY_ROWS + 1))).mappings().all()
@@ -156,13 +158,31 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
                             not isinstance(dedupe, str) or re.fullmatch(r"section-attempt:[0-9a-f]{32}", dedupe) is None or
                             not _scored_pair(payload, "correct")):
                         continue
-                else:
+                elif event["source"] == "course_hsk_exam":
                     sid = event["session_id"]
                     if (not isinstance(sid, str) or re.fullmatch(
                             rf"hsk-exam:{user_id}:{re.escape(event_level)}:v[1-9][0-9]*:[0-9a-f]{{24}}", sid) is None or
                             event["dedupe_key"] != sid + ":completed" or not _scored_pair(payload, "score") or
                             type(payload.get("material_version")) is not int or payload["material_version"] <= 0 or
                             not isinstance(payload.get("material_id"), str) or not payload["material_id"]):
+                        continue
+                else:
+                    # Shared Mini App/Android/Desktop writer, protocol v1.
+                    # This is its retained completion time, never a fresh
+                    # repeat-attempt time or another completed-unit award.
+                    mode, skill = payload.get("mode"), payload.get("skill")
+                    if (mode not in {"mock", "placement", "training"} or
+                            event_level not in {"hsk1", "hsk2", "hsk3", "hsk4"} or
+                            event["event_name"] != ("training_completed" if mode == "training" else "test_completed") or
+                            not _scored_pair(payload, "score")):
+                        continue
+                    if ((mode == "training" and skill not in {"listening", "writing", "characters", "pronunciation", "pinyin"}) or
+                            (mode != "training" and skill != "")):
+                        continue
+                    feature = "placement" if mode == "placement" else "training_test"
+                    scope = skill if mode == "training" else event_level
+                    if (event["session_id"] != f"practice:{user_id}:{feature}:{mode}:{scope}:v1" or
+                            event["dedupe_key"] != f"practice:{feature}:completed"):
                         continue
                 times.add(_utc(event["created_at"]))
             except (ValueError, TypeError):
