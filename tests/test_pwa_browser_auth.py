@@ -923,6 +923,44 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         finally:
             engine.dispose()
 
+    async def test_pwa_feedback_administrator_reply_uses_current_linked_account(self):
+        """Admin reply never tries a provider-only NULL or historical TG ID."""
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+        from app.bot.handlers.feedback import _admin_feedback_reply_recipient, _load_feedback_context
+        from app.bot.handlers.release_feedback import _locked_telegram_feedback_user
+
+        async with self.sessions() as db:
+            db.add(user(2, None))
+            db.add(user(3, None))
+            await db.flush()
+            owner = await db.get(User, 2)
+            feedback = await BotFeedbackRepository(db).create_pending(owner)
+            self.assertIsNone(await _admin_feedback_reply_recipient(db, feedback))
+            owner.telegram_id = 2002
+            await db.flush()
+            linked = await _admin_feedback_reply_recipient(db, feedback)
+            self.assertEqual(linked.id, 2)
+            self.assertEqual(linked.telegram_id, 2002)
+            self.assertIsNone(feedback.telegram_id)
+            _, matched_feedback, matched_owner = await _load_feedback_context(
+                db, 2002, feedback.id,
+            )
+            self.assertEqual(matched_feedback.id, feedback.id)
+            self.assertEqual(matched_owner.id, 2)
+            _, rejected, rejected_user = await _load_feedback_context(
+                db, 1001, feedback.id,
+            )
+            self.assertIsNone(rejected)
+            self.assertEqual(rejected_user.id, 1)
+            self.assertEqual(
+                (await _locked_telegram_feedback_user(db, 2002)).id, 2
+            )
+            self.assertIsNone(await _locked_telegram_feedback_user(db, 0))
+            owner.telegram_id = None
+            await db.flush()
+            self.assertIsNone(await _admin_feedback_reply_recipient(db, feedback))
+            await db.rollback()
+
     async def test_pwa_feedback_prepare_preserves_bot_cooldown_and_canonical_owner(self):
         """Browser cannot manufacture recipients or repeatedly create due rows."""
         from app.db.models.bot_feedback import BotFeedback

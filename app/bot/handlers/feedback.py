@@ -4,6 +4,10 @@ from aiogram import F, Router
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
+from sqlalchemy import select
+
+from app.db.models.bot_feedback import BotFeedback
+from app.db.models.user import User
 
 from app.bot.fsm.feedback import FeedbackStates
 from app.bot.keyboards.feedback import (
@@ -27,7 +31,6 @@ from app.bot.keyboards.feedback import (
 from app.bot.utils.i18n import t
 from app.config import settings
 from app.repositories.bot_feedback_repo import BotFeedbackRepository
-from app.repositories.user_repo import UserRepository
 from app.services.admin_notify_service import AdminNotifyService
 from app.services.bot_feedback_service import BotFeedbackService
 from app.services.user_access_state_service import UserAccessStateService
@@ -82,17 +85,29 @@ def _combine_liked(feedback, sub_text: str) -> str:
 
 async def _load_feedback_context(session, telegram_id: int, feedback_id: int):
     feedback_repo = BotFeedbackRepository(session)
-    user_repo = UserRepository(session)
-    feedback = await feedback_repo.get_by_id(feedback_id)
-    user = await user_repo.get_by_telegram_id(telegram_id)
-    # The authenticated bot sender resolves to users.id. A pending feedback
-    # begun in a browser-only session may have no Telegram transport metadata
-    # even after the same learner explicitly links their Telegram account.
-    # Never accept a mismatched canonical owner merely because transport
-    # metadata happens to match.
-    if not feedback or not user or feedback.user_id != user.id:
+    # The browser submit path locks User -> BotFeedback. Use the same order
+    # for genuine Telegram callbacks and FSM text before checking or updating
+    # any reward/status. This serializes responses on PostgreSQL, including
+    # account linking, without trusting stale feedback.telegram_id metadata.
+    user = (await session.execute(
+        select(User).where(User.telegram_id == telegram_id)
+        .with_for_update().execution_options(populate_existing=True)
+    )).scalar_one_or_none()
+    if user is None:
         return feedback_repo, None, None
+    feedback = (await session.execute(
+        select(BotFeedback).where(
+            BotFeedback.id == feedback_id, BotFeedback.user_id == user.id,
+        ).with_for_update().execution_options(populate_existing=True)
+    )).scalar_one_or_none()
     return feedback_repo, feedback, user
+
+
+async def _admin_feedback_reply_recipient(session, feedback):
+    # PWA-created rows never fabricate a Telegram ID. Use the canonical
+    # current owner after an explicit link, not an old transport snapshot.
+    user = await session.get(User, feedback.user_id)
+    return user if user is not None and user.telegram_id is not None else None
 
 
 async def _edit_message(target, text: str, reply_markup=None) -> None:
@@ -461,8 +476,15 @@ async def admin_feedback_reply_text_handler(message: Message, state: FSMContext,
         await state.clear()
         return
 
-    user = await UserRepository(session).get_by_telegram_id(feedback.telegram_id)
-    lang = user.language if user and user.language else feedback.language or "ru"
+    user = await _admin_feedback_reply_recipient(session, feedback)
+    if user is None:
+        await delete_message_safely(message)
+        await _edit_admin_reply_block(
+            message, state, "❌ Userning Telegram akkaunti ulanmagan."
+        )
+        await state.clear()
+        return
+    lang = user.language if user.language else feedback.language or "ru"
     reply_text = text[:MAX_ADMIN_REPLY_TEXT]
     user_message = t(
         "feedback_admin_reply_user_message",
@@ -472,7 +494,7 @@ async def admin_feedback_reply_text_handler(message: Message, state: FSMContext,
 
     try:
         await message.bot.send_message(
-            chat_id=feedback.telegram_id,
+            chat_id=user.telegram_id,
             text=user_message,
             parse_mode="HTML",
         )

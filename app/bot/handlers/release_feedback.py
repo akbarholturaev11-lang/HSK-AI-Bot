@@ -6,6 +6,9 @@ from aiogram import F, Router
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
+from sqlalchemy import select
+
+from app.db.models.user import User
 
 from app.bot.fsm.release_feedback import ReleaseFeedbackAdminStates, ReleaseFeedbackUserStates
 from app.bot.keyboards.release_feedback import (
@@ -444,6 +447,18 @@ async def _edit_stored_user_message(
             await message.answer(text, reply_markup=reply_markup, parse_mode="HTML")
     if delete_input:
         await delete_message_safely(message)
+
+
+async def _locked_telegram_feedback_user(session, telegram_id: int):
+    """Share the canonical User row lock with iPhone PWA release replies.
+
+    Telegram's signed sender identity is authoritative; a feedback
+    transport identifier is not. Lock before a try-grant or response lookup.
+    """
+    return (await session.execute(
+        select(User).where(User.telegram_id == telegram_id)
+        .with_for_update().execution_options(populate_existing=True)
+    )).scalar_one_or_none()
 
 
 async def _complete_response(
@@ -1052,7 +1067,7 @@ async def release_feedback_user_callback(callback: CallbackQuery, state: FSMCont
 
     repo = ReleaseFeedbackRepository(session)
     campaign = await repo.get_campaign(campaign_id)
-    user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
+    user = await _locked_telegram_feedback_user(session, callback.from_user.id)
     lang = user.language if user and user.language else "ru"
     if not campaign or not user:
         await callback.answer(t("common.bot.releaseFeedback.notFoundAlert", lang), show_alert=True)
@@ -1158,7 +1173,7 @@ async def release_feedback_required_comment(message: Message, state: FSMContext,
     message_id = int(data.get("release_feedback_message_id") or message.message_id)
     repo = ReleaseFeedbackRepository(session)
     campaign = await repo.get_campaign(campaign_id)
-    user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
+    user = await _locked_telegram_feedback_user(session, message.from_user.id)
     lang = user.language if user and user.language else "ru"
     comment_text, attachment_file_id, attachment_type = _extract_comment(message)
     if not campaign or not user or rating not in {1, 2}:
@@ -1217,7 +1232,7 @@ async def release_feedback_optional_comment(message: Message, state: FSMContext,
     message_id = int(data.get("release_feedback_message_id") or message.message_id)
     repo = ReleaseFeedbackRepository(session)
     campaign = await repo.get_campaign(campaign_id)
-    user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
+    user = await _locked_telegram_feedback_user(session, message.from_user.id)
     response = await repo.get_response(campaign_id=campaign_id, user=user) if user else None
     lang = user.language if user and user.language else "ru"
     comment_text, attachment_file_id, attachment_type = _extract_comment(message)
