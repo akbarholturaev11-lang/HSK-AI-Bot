@@ -70,7 +70,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # Telegram still requires signed initData. The only alternative is
         # the exact, server-verified iPhone browser route; never a URL preview.
         self.assertIn('if(!INIT_DATA&&!PWA_COURSE_HOST){showAuthGate();finishHskLaunchSplash();return;}', html)
-        self.assertIn('PWA_COURSE_HOST=!INIT_DATA&&location.pathname==="/iphone-pwa/course"', html)
+        self.assertIn('PWA_COURSE_HOST=location.pathname==="/iphone-pwa/course"', html)
         self.assertIn('method:"POST",headers:{"X-HSK-PWA-CSRF":actor.csrf}', html)
         self.assertIn('url.replace("/api/v3/map?","/api/v3/pwa/map?")', html)
         self.assertIn("function lessonDataUrl(lv,n)", html)
