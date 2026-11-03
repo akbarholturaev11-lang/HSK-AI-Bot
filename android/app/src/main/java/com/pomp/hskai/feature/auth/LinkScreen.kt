@@ -78,10 +78,9 @@ import kotlin.math.ceil
 /**
  * The way into the app: one card per sign-in provider.
  *
- * Telegram is always offered. Google and Apple sign in or create an account
- * when the server reports them, so a
- * build or deployment without OAuth credentials shows a Telegram-only screen
- * rather than a button that fails when tapped.
+ * Telegram is always offered. Google and Apple reserve disabled slots while
+ * server discovery is pending; unavailable providers disappear after discovery
+ * rather than presenting a sign-in action that cannot succeed.
  *
  * Invitation attribution comes from the launch link and stays outside this
  * screen; signing in must not ask the learner to type a code.
@@ -165,9 +164,10 @@ fun LinkScreen(
                         onSignInWithApple = onSignInWithApple,
                     )
                 }
-                Spacer(Modifier.height(28.dp))
+                // Keep the closing line visibly below the three provider cards.
+                Spacer(Modifier.height(56.dp))
                 Tagline()
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(20.dp))
             }
         }
     }
@@ -418,28 +418,28 @@ private fun ProviderCards(
             enabled = !state.isRequestingCode,
             onClick = onContinueWithTelegram,
         )
-        state.providers.forEach { provider ->
+        // Reserve provider slots on the first frame. Server discovery only
+        // changes whether a card is enabled, not where Google/Apple sit.
+        val showGoogle = !state.providersLoaded || AuthProvider.GOOGLE in state.providers
+        val showApple = !state.providersLoaded || AuthProvider.APPLE in state.providers
+        if (showGoogle) {
             Spacer(Modifier.height(12.dp))
-            when (provider) {
-                AuthProvider.GOOGLE -> ProviderCard(
-                    iconRes = R.drawable.ic_brand_google,
-                    label = stringResource(R.string.auth_continue_google_short),
-                    enabled = state.busyProvider == null,
-                    onClick = onSignInWithGoogle,
-                )
-
-                AuthProvider.APPLE -> ProviderCard(
-                    iconRes = R.drawable.ic_brand_apple,
-                    label = stringResource(R.string.auth_continue_apple_short),
-                    enabled = state.busyProvider == null,
-                    onClick = onSignInWithApple,
-                    // Apple ships one mark in two colours; ink keeps it legible
-                    // on paper and in the dark theme alike.
-                    tint = PompColors.Ink,
-                )
-
-                AuthProvider.TELEGRAM -> Unit // Already the card above.
-            }
+            ProviderCard(
+                iconRes = R.drawable.ic_brand_google,
+                label = stringResource(R.string.auth_continue_google_short),
+                enabled = AuthProvider.GOOGLE in state.providers && state.busyProvider == null,
+                onClick = onSignInWithGoogle,
+            )
+        }
+        if (showApple) {
+            Spacer(Modifier.height(12.dp))
+            ProviderCard(
+                iconRes = R.drawable.ic_brand_apple,
+                label = stringResource(R.string.auth_continue_apple_short),
+                enabled = AuthProvider.APPLE in state.providers && state.busyProvider == null,
+                onClick = onSignInWithApple,
+                tint = PompColors.Ink,
+            )
         }
     }
 }
