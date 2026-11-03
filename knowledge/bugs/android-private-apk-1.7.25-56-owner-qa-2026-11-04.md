@@ -1,7 +1,7 @@
 # Android 1.7.25 (56) — owner-only test APK: bug audit and phone findings
 
 **Recorded:** 2026-11-04  
-**Status:** OPEN — owner-device QA; no fix or new APK is asserted  
+**Status:** CONFIRMED install-preview crash reproduced; source fixes under verification. No replacement APK or owner-device acceptance is asserted yet.
 **Scope:** This note records issues against the exact *private Direct* test APK below; it does **not** authorize public R2/Play publication.
 
 ## Exact APK identity (do not confuse with Google Play or public Direct)
@@ -31,7 +31,7 @@ These observations are not interchangeable with a confirmed root cause. In parti
 | AUTH-04 | **Expected lifecycle behavior, not automatically a defect** | `MainActivity.kt:327-333`, `core/i18n/AppLocale.kt:46-57`: after authenticated account language differs, `activity.recreate()` is deliberately invoked. | Can explain the apparent restart; **do not** label it crash without logs. Check whether it happens repeatedly / loses navigation. |
 | WIDGET-01 | **Event-timing race candidate** | `widget/WidgetInstallPromptScreen.kt:152-158`: `HskAiWidgetReceiver.placements.drop(1)` skips the StateFlow's first observed value. If placement happens before subscription, that value can already contain the new placement, so the event is missed. An ON_RESUME installed check exists as backup. | Can miss immediate success UI; **not** demonstrated as cause of launcher crash. |
 | WIDGET-02 | **Uncaught crash paths, root cause unconfirmed** | `widget/HskAiSmartWidget.kt:183-199`: `HskAiWidgetReceiver.onUpdate` calls WorkManager and WidgetScheduler without a local exception boundary. `widget/WidgetPandaArt.kt:78-103`: first render decodes/crops all 36 sprites without explicit decoder-null/memory fallback. | These are inspection targets, **not confirmed Xiaomi exceptions**. Obtain `AndroidRuntime/FATAL EXCEPTION` stack trace before choosing a fix. |
-| NOTIF-01 | **Confirmed UI state-guard defect** | `feature/profile/ProfileScreen.kt:945-955` notification toggle uses `enabled = !settings.isSavingLanguage` rather than `!settings.isSavingNotifications`; the latter is set during a pending study-notification write by `feature/profile/ProfileSettingsViewModel.kt:85-98`. | Repeated taps remain permitted while saving; potential overlapping writes and confusing switch state. |
+| NOTIF-01 | **Audit correction: intentional pending-OFF support** | The existing switch remains usable during a pending ON so the owner can immediately turn it OFF. D29 uses sequence-bound UI state and durable latest-intent / UUID-revision / epoch fences in `SmartPreferenceBridge`. | Do not disable it with `isSavingNotifications`: that would regress immediate OFF. Existing bridge race and `pendingStudyOnCanStillBeTurnedOffUsingTheExistingSwitch` checks cover the intended behavior. |
 
 ## Smart Reminder: confirmed distinction, not a source-code bug
 
@@ -48,3 +48,24 @@ These observations are not interchangeable with a confirmed root cause. In parti
 - [ ] Re-run native unit/instrumentation and real-device regression checks after code changes. No public release until expressly approved by owner.
 
 **Audit boundary:** This file documents real code observations and owner-reported symptoms; it is **not** a claim that all five previously discussed candidates explain the phone failures. Recording the audit changes no source behavior, APK, production flag, or user setting.
+
+
+## Follow-up from actual reproduction (2026-11-04)
+
+### WIDGET-03 — confirmed install-screen crash
+
+- **Sabab:** `PromptWidget` in `WidgetInstallPromptScreen.kt` passes shared Android `<shape>` gradient XML backgrounds to Compose `painterResource`. That loader supports vector/raster assets only. Opening the full install prompt—not merely rendering the Glance provider—throws `IllegalArgumentException: Only VectorDrawables and rasterized asset types are supported ex. PNG, JPG, WEBP` and crashes the main process.
+- **Evidence:** the new actual `WidgetInstallPromptSmokeTest` reproduced `FATAL EXCEPTION: main` / `Process crashed` at `PromptWidget` on the owned API-36 fixture before the fix. Independently hosting the original normal signed 56 provider passed, showing why previous Glance/layout acceptance missed this separate Compose consumer. The owner's Xiaomi image confirms a real app crash; its exact device stack was not available, so do not claim that a physical stack was collected.
+- **Fix:** draw the same Android gradient drawable into Compose's native canvas, preserving resource ownership/colors/corners and the original artwork. Consume the placements flow's first value too, checking actual provider IDs so a placement before subscription cannot be missed. Do not mask the failure with a broad receiver catch or claim the unproven OOM/WorkManager hypotheses were established.
+- **Risk:** regression at another resource, locale, pin/return or installed host remains subject to the affected smoke/host checks and final signed APK verification.
+- **Prevention:** CI includes the full install-prompt regression in both distributions. Keep the normal signed-provider host check distinct from this in-app preview. Private owner assets/frames remain outside Git.
+
+### AUTH-01 / AUTH-02 — bounded handoff fix
+
+The existing Activity is reused for browser/Telegram handoff; `NEW_TASK` is added only for a non-Activity context. Launch helpers report failure instead of consuming an unopened URL as success. A current-URL-bound VM callback stops that attempt, exposes the existing localized provider-unavailable error and permits retry; a stale failure cannot cancel another provider. Polling secrets remain in memory and existing late-token/account fences remain. Launcher failure/task-flag/real-screen callbacks have passed initial instrumentation; full flavor/signed and owner acceptance are recorded in the Master Plan when completed.
+
+AUTH-03 remains a process-death resilience gap, not a confirmed explanation of this video; no new persisted polling secret is introduced. AUTH-04 retains recreation when the account language differs or the activity locale is unsupported. First login now skips the unnecessary rebuild when the Activity already uses the same supported account language; three instrumentation regressions cover matching RU, real language change and unknown-locale fallback. The owner currently cannot retrieve additional Redmi crash text; do not repeat that request while the confirmed preview defect can be fixed and verified locally.
+
+### Current operations correction
+
+D30 later explicitly authorized production server activation. The two startup/send variables were set true and successfully deployed; the existing Admin PWA Smart-study control stops new issuance/sends. This supersedes the earlier source-default/permission observation above, not individual OFF/consent. Current runtime admission is still restricted to reviewed accounts: a global startup switch does not prove all-user enrollment or real delivery. Private APK distribution remains separate.
