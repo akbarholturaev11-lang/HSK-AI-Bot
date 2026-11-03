@@ -318,7 +318,9 @@ class AdminNotifyService:
                 "",
                 f"🧾 Otziv ID: <b>#{feedback.id}</b>",
                 f"👤 User: <b>{full_name}</b>",
-                f"🆔 Telegram ID: <code>{user.telegram_id}</code>",
+                f"🆔 Account ID: <code>{user.id}</code>",
+                f"🆔 Telegram ID: <code>{user.telegram_id}</code>"
+                if user.telegram_id is not None else "🆔 Telegram: ulanmagan",
                 f"🌐 Til: <b>{language}</b>",
                 f"📚 Urven: <b>{level}</b>",
                 f"🎛 Rejim: <b>{mode}</b>",
@@ -378,7 +380,10 @@ class AdminNotifyService:
                 f"🎯 Feature: <b>{feature}</b>",
                 "",
                 f"👤 User: <b>{full_name}</b>",
-                f"🆔 Telegram ID: <code>{getattr(user, 'telegram_id', '-')}</code>",
+                f"🆔 Account ID: <code>{user.id}</code>",
+                f"🆔 Telegram ID: <code>{user.telegram_id}</code>"
+                if getattr(user, "telegram_id", None) is not None
+                else "🆔 Telegram: ulanmagan",
                 f"🌐 Til: <b>{language}</b>",
                 f"📚 Urven: <b>{level}</b>",
                 f"🎛 Rejim: <b>{mode}</b>",
@@ -409,7 +414,11 @@ class AdminNotifyService:
 
         for chat_id in recipient_ids:
             try:
-                reply_markup = keyboard if chat_id in admin_id_set else None
+                # A PWA-only user has no Telegram chat to reply to.
+                reply_markup = (
+                    keyboard if chat_id in admin_id_set and
+                    getattr(user, "telegram_id", None) is not None else None
+                )
                 if attachment_file_id and attachment_type == "photo" and len(text) <= 1000:
                     await bot.send_photo(
                         chat_id=chat_id,

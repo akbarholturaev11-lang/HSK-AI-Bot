@@ -1747,6 +1747,19 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     )
                 await BotFeedbackService(db).finish_feedback(feedback, learner)
                 await db.commit()
+            if bot is not None:
+                # Like the Telegram handler, notify only after commit. Admin
+                # transport failure must never undo an accepted learner answer.
+                try:
+                    from app.services.admin_notify_service import AdminNotifyService
+                    await AdminNotifyService().notify_bot_feedback(
+                        bot=bot, feedback=feedback, user=learner,
+                    )
+                except Exception:
+                    import logging
+                    logging.getLogger(__name__).exception(
+                        "PWA ordinary feedback admin notice failed"
+                    )
             return JSONResponse(
                 {"ok": True, "feedback_id": data.feedback_id, "completed": True},
                 headers=_NO_STORE,
@@ -1814,6 +1827,18 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 )
                 response_id = response.id
                 await db.commit()
+            if bot is not None:
+                try:
+                    from app.services.admin_notify_service import AdminNotifyService
+                    await AdminNotifyService().notify_release_feedback_response(
+                        bot, campaign=campaign, response=response,
+                        user=learner, event="rating",
+                    )
+                except Exception:
+                    import logging
+                    logging.getLogger(__name__).exception(
+                        "PWA release feedback admin notice failed"
+                    )
             return JSONResponse({
                 "ok": True, "response_id": response_id,
                 "discount_campaign_id": discount_id,

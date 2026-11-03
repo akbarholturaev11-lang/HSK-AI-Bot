@@ -984,6 +984,98 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             url, headers=headers, json={},
         )).status_code, 503)
 
+    async def test_pwa_admin_feedback_notified_only_after_commit_and_once(self):
+        """Accepted PWA answers use existing Admin channel; replay does not."""
+        from app.db.models.release_feedback import (
+            ReleaseFeedbackCampaign, ReleaseFeedbackDelivery,
+        )
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+        from unittest.mock import patch, AsyncMock
+
+        async with self.sessions() as db:
+            db.add(ReleaseFeedbackCampaign(
+                id=86, title="PWA admin parity", status="sent",
+                send_at=datetime.now(timezone.utc) - timedelta(days=1),
+            ))
+            await db.flush()
+            db.add(ReleaseFeedbackDelivery(
+                campaign_id=86, user_id=1, user_telegram_id=1001,
+                status="sent",
+            ))
+            feedback = await BotFeedbackRepository(db).create_pending(await db.get(User, 1))
+            feedback_id = feedback.id
+            await db.commit()
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        with patch("app.services.admin_notify_service.AdminNotifyService") as admin:
+            instance = admin.return_value
+            instance.notify_bot_feedback = AsyncMock()
+            instance.notify_release_feedback_response = AsyncMock()
+            ordinary = await self.client.post(
+                "/api/v3/pwa/feedback/ordinary/submit",
+                headers=headers,
+                json={
+                    "feedback_id": feedback_id, "liked_code": "photo",
+                    "liked_sub_code": "translate", "disliked_code": "price",
+                },
+            )
+            self.assertEqual(ordinary.status_code, 200, ordinary.text)
+            instance.notify_bot_feedback.assert_awaited_once()
+            self.assertEqual(
+                instance.notify_bot_feedback.await_args.kwargs["user"].id, 1
+            )
+            self.assertEqual((await self.client.post(
+                "/api/v3/pwa/feedback/ordinary/submit", headers=headers,
+                json={"feedback_id": feedback_id, "liked_code": "photo",
+                      "liked_sub_code": "translate", "disliked_code": "price"},
+            )).status_code, 409)
+            instance.notify_bot_feedback.assert_awaited_once()
+
+            answer = await self.client.post(
+                "/api/v3/pwa/feedback/release/respond", headers=headers,
+                json={"campaign_id": 86, "rating": 5},
+            )
+            self.assertEqual(answer.status_code, 200, answer.text)
+            instance.notify_release_feedback_response.assert_awaited_once()
+            self.assertEqual(
+                instance.notify_release_feedback_response.await_args.kwargs["user"].id, 1
+            )
+            self.assertEqual((await self.client.post(
+                "/api/v3/pwa/feedback/release/respond", headers=headers,
+                json={"campaign_id": 86, "rating": 5},
+            )).status_code, 409)
+            instance.notify_release_feedback_response.assert_awaited_once()
+
+    async def test_pwa_admin_feedback_transport_failure_does_not_rollback_answer(self):
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+        from app.db.models.bot_feedback import BotFeedback
+        from unittest.mock import patch, AsyncMock
+
+        async with self.sessions() as db:
+            item = await BotFeedbackRepository(db).create_pending(await db.get(User, 1))
+            feedback_id = item.id
+            await db.commit()
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        with patch("app.services.admin_notify_service.AdminNotifyService") as admin:
+            admin.return_value.notify_bot_feedback = AsyncMock(
+                side_effect=RuntimeError("simulated admin outage")
+            )
+            accepted = await self.client.post(
+                "/api/v3/pwa/feedback/ordinary/submit",
+                headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf},
+                json={"feedback_id": feedback_id, "liked_code": "answers",
+                      "liked_sub_code": "speed", "disliked_code": "price"},
+            )
+            self.assertEqual(accepted.status_code, 200, accepted.text)
+        async with self.sessions() as db:
+            stored = await db.get(BotFeedback, feedback_id)
+            self.assertEqual(stored.status, "completed")
+            self.assertIsNotNone(stored.reward_granted_at)
+
     async def test_pwa_ordinary_feedback_submit_reuses_one_bot_reward_and_locked_owner(self):
         from app.db.models.bot_feedback import BotFeedback
         from app.repositories.bot_feedback_repo import BotFeedbackRepository
