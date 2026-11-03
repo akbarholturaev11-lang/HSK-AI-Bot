@@ -720,6 +720,90 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"/api/v3/pwa/mistakes/review/answer"', child)
         self.assertNotIn("maximum-scale=1", child)
 
+    async def test_pwa_hsk_exams_use_existing_server_grading_and_user_xp(self):
+        page_url = "/iphone-pwa/practice/test"
+        start_url = "/api/v3/pwa/exams/start"
+        complete_url = "/api/v3/pwa/exams/complete"
+        self.assertEqual(
+            (await self.client.get(page_url, follow_redirects=False)).status_code, 303,
+        )
+        self.assertEqual((await self.client.post(
+            start_url, headers={"Origin": ORIGIN},
+            json={"level": "hsk1", "lang": "uz", "access_ref": "exam-1"},
+        )).status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        page = await self.client.get(page_url)
+        self.assertEqual(page.status_code, 200, page.text[:180])
+        self.assertEqual(page.headers.get("cache-control"), "no-store")
+        self.assertEqual(page.headers.get("x-frame-options"), "DENY")
+        self.assertNotIn("maximum-scale=1", page.text)
+        session = await self.client.get("/api/v3/pwa-auth/session")
+        csrf = session.json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        payload = {"level": "hsk1", "lang": "uz", "access_ref": "exam-1"}
+        self.assertEqual((await self.client.post(
+            start_url, headers={"Origin": ORIGIN}, json=payload,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            start_url, headers={**headers, "Origin": "https://bad.example"}, json=payload,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            start_url, headers=headers,
+            json={**payload, "telegram_id": 1001},
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            start_url, headers={**headers, "X-Telegram-Init-Data": "bogus"},
+            json=payload,
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            start_url, headers=headers, json={**payload, "ad_supported": True},
+        )).status_code, 422)
+
+        with patch(
+            "app.services.course_hsk_exam_service.CourseHskExamService.start",
+            new_callable=AsyncMock,
+        ) as start, patch(
+            "app.services.course_hsk_exam_service.CourseHskExamService.complete",
+            new_callable=AsyncMock,
+        ) as complete:
+            start.return_value = {
+                "ok": True, "session": {"id": "exam-owner-one", "questions": [{}]},
+            }
+            complete.return_value = {
+                "ok": True, "score": 11, "reward": {"awarded_xp": 25},
+            }
+            opened = await self.client.post(start_url, headers=headers, json=payload)
+            self.assertEqual(opened.status_code, 200, opened.text)
+            self.assertEqual(start.await_args.args[0].id, 1)
+            self.assertIs(start.await_args.kwargs["ad_supported"], False)
+            completed = await self.client.post(
+                complete_url, headers=headers,
+                json={"session_id": "exam-owner-one",
+                      "answers": [{"question_id": "q1", "selected_index": 2}]},
+            )
+            self.assertEqual(completed.status_code, 200, completed.text)
+            self.assertEqual(completed.json()["reward"]["awarded_xp"], 25)
+            self.assertEqual(complete.await_args.args[0].id, 1)
+            self.assertEqual(complete.await_args.kwargs["session_id"], "exam-owner-one")
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.get(page_url)).status_code, 503)
+
+    def test_existing_exam_screens_use_pwa_server_results_without_forged_xp(self):
+        inline = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        standalone = (Path("app/static") / "course_v3_test.html").read_text(encoding="utf-8")
+        self.assertIn('"/api/v3/exams/start":"/api/v3/pwa/exams/start"', inline)
+        self.assertIn('"/api/v3/exams/complete":"/api/v3/pwa/exams/complete"', inline)
+        self.assertIn('_apiPost("/api/v3/exams/start"', inline)
+        self.assertIn('_apiPost("/api/v3/exams/complete"', inline)
+        self.assertIn("d.reward&&d.reward.awarded_xp", inline)
+        self.assertIn('PWA_TEST_HOST=location.pathname==="/iphone-pwa/practice/test"', standalone)
+        self.assertIn('"/api/v3/pwa/exams/start"', standalone)
+        self.assertIn('"/api/v3/pwa/exams/complete"', standalone)
+        self.assertIn('delete payload.initData;delete payload.user_id;delete payload.telegram_id;', standalone)
+        self.assertIn('if(PWA_TEST_HOST){showEmpty();return}', standalone)
+        self.assertIn('if(PWA_COURSE_HOST){showEmpty();return}', inline)
+
     async def test_pwa_recognition_profile_uses_real_owner_level_and_progress(self):
         path = "/api/v3/pwa/practice/profile"
         self.assertEqual((await self.client.get(path)).status_code, 401)
