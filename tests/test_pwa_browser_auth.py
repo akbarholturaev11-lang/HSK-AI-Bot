@@ -1175,6 +1175,26 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(record.await_args.kwargs["user"].id, 1)
             self.assertEqual(record.await_args.kwargs["payload"]["stage"], "payment_receipt_selected")
 
+    def test_ios_pwa_text_focus_does_not_disable_pinch_or_legacy_ui(self):
+        targets = {
+            "course-v3.html": "PWA_COURSE_HOST",
+            "subscription.html": "PWA_CHECKOUT_HOST",
+            "course_v3_voice.html": "PWA_VOICE_HOST",
+            "course_v3_onboarding.html": "PWA_ONBOARDING_HOST",
+        }
+        for name, flag in targets.items():
+            with self.subTest(page=name):
+                html = (Path("app/static") / name).read_text(encoding="utf-8")
+                self.assertIn(f'if({flag})document.documentElement.classList.add("hsk-pwa-browser");', html)
+                self.assertIn('html.hsk-pwa-browser textarea,html.hsk-pwa-browser select{font-size:16px!important}', html)
+                self.assertIn('name="viewport"', html)
+                self.assertNotIn("user-scalable=no", html)
+                self.assertNotIn("maximum-scale=1", html)
+        course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        self.assertIn("touch-action:manipulation", course)
+        standalone_voice = (Path("app/static") / "course_v3_voice.html").read_text(encoding="utf-8")
+        self.assertIn(".kb textarea{", standalone_voice)
+
     def test_existing_checkout_ui_never_enters_fake_pwa_preview(self):
         html = (Path("app/static") / "subscription.html").read_text(encoding="utf-8")
         course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
