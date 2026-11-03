@@ -39,6 +39,8 @@
   var inMemoryDismissals = new Set();
   var autoRequested = false;
   var fetchInFlight = null;
+  var urgentPending = null;
+  var interruptRetries = 0;
 
   // These strings are already authored in the shared UZ/RU/TJ catalogs.
   // Do not create a second per-page translation dictionary.
@@ -207,6 +209,9 @@
     return fetchInFlight;
   }
   async function open() {
+    // If the learner intentionally opens the inbox, never reopen its alert
+    // immediately after the inbox is closed.
+    urgentPending = null;
     activeTab = "course";
     latestData = null;
     openMode("inbox");
@@ -225,6 +230,26 @@
     if (splash && !splash.classList.contains("is-done")) return false;
     return true;
   }
+  function presentPendingRejection() {
+    var action = urgentPending;
+    if (!action || !owner || wasDismissed(action.payment_id)) {
+      urgentPending = null;
+      return;
+    }
+    if (canInterrupt()) {
+      urgentPending = null;
+      openMode("urgent");
+      return;
+    }
+    // Splash may outlast the initial delay on slower iPhones. Retry only
+    // the visual check: never refetch data, poll a provider or interrupt a
+    // lesson. The inbox remains accessible even if this window is missed.
+    if (interruptRetries++ < 12) {
+      window.setTimeout(presentPendingRejection, 1200);
+    } else {
+      urgentPending = null;
+    }
+  }
   async function offerLatestRejection() {
     if (autoRequested) return;
     autoRequested = true;
@@ -232,7 +257,10 @@
       var data = await fetchData();
       var action = data.account && data.account.payment_action;
       if (action && action.status === "rejected" && owner &&
-          !wasDismissed(action.payment_id) && canInterrupt()) openMode("urgent");
+          !wasDismissed(action.payment_id)) {
+        urgentPending = action;
+        presentPendingRejection();
+      }
     } catch (_) { /* Read failure must not block course. */ }
   }
   overlay.addEventListener("click", function (ev) {
