@@ -2,7 +2,6 @@ package com.pomp.hskai.feature.auth
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -101,14 +100,14 @@ class LinkScreenProviderTest {
     }
 
     @Test
-    fun beforeProvidersLoadGoogleAlreadyOccupiesItsFinalPositionButCannotSignIn() {
+    fun beforeProvidersLoadGoogleIsReservedButAppleRemainsHiddenUntilAvailable() {
         compose.setContent {
             PompHskAiTheme { LinkScreen(state = LinkUiState()) }
         }
         compose.onNodeWithText(strings.getString(R.string.auth_continue_google_short))
             .assertIsDisplayed().assertIsNotEnabled()
         compose.onNodeWithText(strings.getString(R.string.auth_continue_apple_short))
-            .assertIsDisplayed().assertIsNotEnabled()
+            .assertDoesNotExist()
     }
 
     @Test
