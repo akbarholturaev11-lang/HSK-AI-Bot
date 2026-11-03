@@ -3,13 +3,61 @@
 **Updated:** 2026-11-03 · **Status:** WIP, NOT accepted, NOT released.
 **This is the single active context file.** Preserve prior detailed history through Git commits; do not create another context file or parallel plan. The only formal acceptance list is [OpenSpec tasks](../openspec/changes/iphone-course-pwa/tasks.md).
 
+## 0. Restart snapshot — 2026-11-03 (authoritative; all historical notes below are snapshots)
+
+**USER REQUEST AT HANDOFF:** Tidy up the GitHub PWA work, update this sole active context, and continue implementation from a new chat. This update documents and organizes the existing GitHub work only; it does **not** mean PWA is finished or released. Read this section first, then the exact OpenSpec checklist and original detailed analysis below. Never create a second PWA context file.
+
+### GitHub roles, verified branches, release lock
+
+| GitHub object | Verified at this handoff | Scope |
+| --- | --- | --- |
+| Production `main` | `0f5fb45ef55989fa504337f5fa38a91affb82de2` | **Untouched by this handoff**; independent newer Smart Reminder work |
+| Work branch `feat/iphone-pwa-browser-auth-p1-20261102` | `b1456b23f0e380a45a628627f0908456626f4579` | **Only implementation branch**, [Draft PR #257](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/257) |
+| Plan branch `feat/iphone-course-pwa-planning-20261102` | updated with **this file only** in this handoff | **Only planning/context branch**, [Draft PR #256](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/256) |
+| Safety backup `backup/iphone-pwa-before-main-sync-20261103` | `d19acf7e562073326d77e733c869d22be6bfb097` | Preserve; **never delete/reset** |
+| Historical PR #186 | obsolete, **DO NOT MERGE** | Not an active task or alternate UI |
+
+Both PR #256 and PR #257 were verified **open, Draft, mergeable**; they intentionally have different responsibilities. Do not close, merge, retarget, delete or consolidate their branches merely to simplify the repository. **No direct `main` push, deploy, production auth flag activation, or force-push.** `PWA_AUTH_ENABLED` must remain disabled. No new context or redundant PWA PRs.
+
+**Main divergence:** Three-way diff from common merge-base `df8e6de5dceb77284f2b361f760e8ee01f31d78c` finds six newer `main` commits, 37 changed `main` paths, and 63 changed work-branch paths, with **zero overlapping file paths at inspection**. This is not blanket approval to merge: dependency/API behavior can still conflict. Carefully audit the new Smart Reminder and localization contracts, perform safe feature-branch-only sync if necessary after tests, **never** automatically promote to `main`.
+
+### Automated checks (verified for exact current work HEAD `b1456b2`)
+
+| GitHub Actions workflow | Run ID | Status at handoff |
+| --- | --- | --- |
+| Local-first localization P0 guards | [41592816882](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816882) | **PASS** |
+| Desktop auth and UI contracts | [41592816823](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816823) | **PASS** |
+| Mandarin lesson TTS regression | [41592816992](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816992) | **PASS** |
+| Mandarin persistent local TTS cache | [41592816836](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816836) | **PASS** |
+| Backend targeted tests | [41592816874](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816874) | In progress; miniapp-ui/native-postgres subjobs PASS at last inspection |
+| Admin PWA isolated security regressions | [41592816803](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816803) | In progress |
+| Android CI | [41592816813](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816813) | In progress |
+| Smart Reminder P0 regression | [41592816865](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816865) | In progress |
+
+**This is a point-in-time snapshot.** Before claiming all green, re-fetch the exact latest work HEAD **and all CI jobs**. Previous `3cd1d30` backend [#41591890249](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41591890249) failed just one `test_subscription_miniapp_submit.py` exact-string assertion for the original checkout AbortController; current HEAD `b1456b2` changed **only that test file** to check both Telegram and browser checkout transports. The current run must still validate this fix. Previous `3cd1d30` localization source-contract completed green in Python 3.11/3.14 after reducing >100 original failures to zero; current localization also passed. Previous Android [#41591890238](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41591890238) had one `VoiceViewModelTest.deliberateCloseAndLateEventsProduceOnlyOneReconnect` failure (`UncaughtExceptionsBeforeTest`) out of 632 unit tests; an isolated rerun was attempted, but then canceled while another newer run began. **Do not label the Android issue fixed or flaky without evidence.** Smart storage PostgreSQL tests are time-consuming and have previously failed/canceled; inspect current job evidence rather than suppressing it. Four passes are not release acceptance.
+
+### Product and release acceptance — still NOT DONE
+
+- **Only acceptance list:** `openspec/changes/iphone-course-pwa/tasks.md` in planning branch: **4/18 checked** (P0 4 source audits), **14 open** (P1 3, P2 7, P3 4). Code may exist for unchecked items; do **not** inflate checklist completion from number of commits or passing isolated source tests.
+- **Implementation already present:** original course HTML with verified browser owner `users.id`, Google/Apple/Telegram-link auth, HttpOnly/CSRF/Origin, original seven practice/voice/onboarding child routes, canonical server V3 lesson completion, grade/XP, limits/Pro, checkout/payment screenshot, profile language, and Safari font/foreground safeguards. All are partial or code-only until end-to-end acceptance. The **same existing Telegram Mini App/UI/business services** must remain the authority; no duplicate frontend or account system.
+- **Still outstanding:** confirm all automation green; full P1 account-link/actor lifecycle and P2 lesson/quiz/voice/paid/free/receipt parity; eligible ordinary/release-feedback dialog with exact existing eligibility/reward rules; canonical transactional account notices/inbox UI, without ACKing Smart Telegram delivery; P3 safe-area, keyboard, Home Screen session restore, rollback and regression checks.
+- **Figma gate:** existing design [file](https://www.figma.com/design/89fCM5GdjfBqcx0B9aQHOI) was found; metadata listed page `0:1`. Node inspection was blocked by **Starter MCP call quota**. Do not invent new notice/feedback components or claim Figma parity. Reuse original existing UI, or first obtain approved existing component details when Figma is accessible.
+- **Final owner QA only when coding and CI are done:** real iPhone Safari + Add to Home Screen for Google/Apple/Telegram, account switch, lesson, grading, microphone/audio, checkout, suspend/reopen, **no automatic input/writing zoom**, retained swipe/scroll/pinch. No V1 Web Push or second Smart scheduler. **Only after that and explicit user approval** can production promotion be considered.
+
+### Precise next-chat sequence
+
+1. Start by reading **the full file** `docs/IPHONE_PWA_CONTEXT.md` in the **planning branch**, plus `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, `openspec/changes/iphone-course-pwa/`, `.agents/skills/hsk-ai-openspec-planning/SKILL.md`, and available UI/unslop rules. **Do not read `main` as the PWA plan or assume implementation branch contains this context.**
+2. Re-fetch both Draft PRs, latest `main` and work HEAD and compare divergence. Finish pending current-head CI, fix **real** failures with bounded regression coverage. Do not silently waive tests, source SHAs, locale review or security gates; keep changes on **PR #257** only.
+3. With CI stable, complete the **remaining formal P1–P3 acceptance**, especially existing account notices and server-eligible feedback, checked against original Mini App and Figma components. No new UI before design source review. Finish browser E2E, account switching/payment/voice/grade and rollback; update the sole context after material work.
+4. **Only at the end**, ask the owner to run physical iPhone Safari/Home Screen acceptance and explicitly approve any promotion. Maintain both PRs in Draft and feature flag OFF until then. Do not start with iPhone device tests, do not merge to `main`.
+
 ## 1. Exact repository, branch and safety state
 
 | Item | Verified status |
 | --- | --- |
 | Repository | `akbarholturaev11-lang/HSK-AI-Bot` |
 | Production `main` | `0f5fb45ef55989fa504337f5fa38a91affb82de2` (advanced independently; 4 newer Smart Reminder commits not synced) |
-| Implementation | [Draft PR #257](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/257), `feat/iphone-pwa-browser-auth-p1-20261102`, verified HEAD `2289e53af8fceb001bcb46ee88e7f97bc9ddee48` (re-fetch before each edit) |
+| Implementation | [Draft PR #257](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/257), `feat/iphone-pwa-browser-auth-p1-20261102`, verified HEAD `b1456b23f0e380a45a628627f0908456626f4579` at handoff (always re-fetch before editing) |
 | Planning, OpenSpec, this file | [Draft PR #256](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/256), `feat/iphone-course-pwa-planning-20261102` |
 | Pre-main-sync backup | `backup/iphone-pwa-before-main-sync-20261103` -> `d19acf7e562073326d77e733c869d22be6bfb097`; preserve |
 | Historical only | [PR #186](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/186) marked DO NOT MERGE; old and stale |
@@ -35,7 +83,7 @@ Create an **independent iPhone Safari / Home Screen client for the existing HSK 
 
 **P0:** four source audits completed.
 
-**P1 partly accepted in code, not formally closed:** `app/api/pwa_auth.py`, `app/services/pwa_auth_service.py`, `app/static/iphone-pwa-login.{html,js}`, Google/Apple OAuth callback and Telegram private-bot verification. Browser-bound one-time proof, secure HttpOnly session cookie, CSRF+Origin checks, expiry/revoke, cancellation, cross-provider checks. Explicit existing-account linking and provider/device acceptance still open. Never merge identities by email.
+**P1 partly implemented in code, not formally accepted:** `app/api/pwa_auth.py`, `app/services/pwa_auth_service.py`, `app/static/iphone-pwa-login.{html,js}`, Google/Apple OAuth callback and Telegram private-bot verification. Browser-bound one-time proof, secure HttpOnly session cookie, CSRF+Origin checks, expiry/revoke, cancellation, cross-provider checks. Explicit existing-account linking and provider/device acceptance still open. Never merge identities by email.
 
 **P2 browser entry and course core, code present but not complete:**
 - `GET /iphone-pwa/course` is PWA-session-guarded and serves **the same** `course-v3.html`, rather than a rewritten second course.
@@ -77,7 +125,7 @@ Create an **independent iPhone Safari / Home Screen client for the existing HSK 
 
 ## 5. Next verified workflow (one branch, one context file)
 
-1. **Finish newest-head CI:** read real latest PR #257 and GitHub Actions results, fix all remaining i18n/admin/backend/Android/Smart regressions, use exact source evidence rather than source-contract waivers; do not resync main until the unsynced Smart diff is audited.
+1. **Current instruction:** follow Section 0's verified restart sequence and recheck the exact newest HEAD/CI; do not rely on older workflow run IDs in this historical plan.
 2. Complete recognition browser drill proof: free lifetime attempt, paid policy, actual profile band, results, audio and safe account/CSRF rotation. Paid checkout fallback remains incomplete; do not call recognition fully released.
 3. Verify full CI for shared V3 lesson completion, 7 child transports, checkout receipt, canonical language and P3 lifecycle. Repair exact failures, never skip or invent PASS. Complete eligible feedback and account notices with existing services; Figma-first for any new UI. No new Smart delivery channel.
 4. Review and repair authoritative i18n source-contracts (138 failures/6 errors on `987eaaf`) without weakening locale checks or blindly regenerating reviewed-hash approvals. Finish eligible feedback/notice UI with Figma gate, P3 safe area/keyboard/rollback and automated parity; keep this file current with SHA/CI; never enable PWA or main merge.
