@@ -1,6 +1,10 @@
 package com.pomp.hskai.widget
 
 import java.time.ZonedDateTime
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 
 /**
  * Operational projection: can the widget speak for this learner at all.
@@ -49,6 +53,10 @@ data class WidgetVisual(
     val special: WidgetSpecialState? = null,
     val personalPhase: String? = null,
     val completionReason: String? = null,
+    val streakTier: Int = 0,
+    val streakSecured: Boolean = false,
+    val streakAtRisk: Boolean = false,
+    val returnBand: Int = 0,
 )
 
 /** Personal semantics come only from the current authenticated shared projection. */
@@ -56,20 +64,53 @@ object WidgetVisualResolver {
     val MILESTONE_DAYS = listOf(7, 30, 50, 100, 365)
 
     fun resolve(session: WidgetSession, now: ZonedDateTime = ZonedDateTime.now()): WidgetVisual {
+        val access = WidgetStateResolver.resolve(session, now)
         val personal = WidgetPersonalContext.current(session, now)
+            ?.takeIf { access == WidgetAccess.ACTIVE || it.phase in setOf("neutral","quiet","paused","unavailable") }
         val phase = personal?.phase ?: "neutral"
+        val active = access == WidgetAccess.ACTIVE && personal != null
+        val streak = session.snapshot?.streak?.coerceAtLeast(0) ?: 0
+        val secured = active && (session.snapshot?.streakRecordedToday == true ||
+            personal!!.verifiedTodayXp?.let { it > 0 } == true ||
+            phase == "completed" && personal.reason != "course_completed")
         val state = when (phase) {
             "completed" -> WidgetVisualState.COMPLETED
             "before_study" -> WidgetVisualState.DAY
-            "study_time_reached" -> WidgetVisualState.WAITING
+            "study_time_reached" -> {
+                // Server validated this personal minute and local day. Quiet,
+                // unknown, stale and ambiguous-clock contexts never enter here.
+                val due = now.toLocalDate().atTime(LocalTime.parse(personal!!.timeLocal)).atZone(now.zone)
+                val end = now.toLocalDate().plusDays(1).atStartOfDay(now.zone)
+                val span = Duration.between(due, end).toMillis().coerceAtLeast(1)
+                val elapsed = Duration.between(due, now).toMillis().coerceAtLeast(0).toDouble() / span
+                when {
+                    secured || streak == 0 -> WidgetVisualState.WAITING
+                    elapsed >= .85 -> WidgetVisualState.CRITICAL
+                    elapsed >= .66 -> WidgetVisualState.LATE
+                    elapsed >= .33 -> WidgetVisualState.EVENING
+                    else -> WidgetVisualState.WAITING
+                }
+            }
             else -> WidgetVisualState.DAY
         }
-        val streak = session.snapshot?.streak ?: 0
+        val age = personal?.lastObservedStudyAt?.let {
+            ChronoUnit.DAYS.between(Instant.parse(it).atZone(now.zone).toLocalDate(), now.toLocalDate())
+        }
+        val returning = active && !secured && streak == 0 && phase in setOf("before_study", "study_time_reached")
+        val returnBand = when {
+            !returning || age == null -> 0
+            age >= 90 -> 3
+            age >= 30 -> 2
+            age >= 7 -> 1
+            else -> 0
+        }
         val special = if (phase == "completed" &&
             (personal?.goalState == "met" || personal?.planCompleted == true) && streak in MILESTONE_DAYS)
             WidgetSpecialState(WidgetSpecialKind.MILESTONE, streak) else null
+        val tier = when { !active || streak == 0 -> 0; streak <= 2 -> 1; streak < 30 -> 2; else -> 3 }
         return WidgetVisual(state, variantFor(state, session.epoch, now.toLocalDate().toString()), special,
-                            phase, personal?.reason)
+            phase, personal?.reason, tier, secured,
+            active && streak > 0 && !secured && phase == "study_time_reached", returnBand)
     }
 
     /** Legacy caches lack a confirmed binding and can only render neutral art. */

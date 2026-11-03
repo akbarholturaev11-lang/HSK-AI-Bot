@@ -78,3 +78,18 @@ Android Direct/Play SHALL share the same semantic contract. Later iOS and paired
 #### Scenario: Widget personalization rollback
 - **WHEN** the personalized renderer is disabled or an adapter is rolled back
 - **THEN** it returns to a neutral/compatible view while preserving study OFF, consent revisions and job ownership without restoring a second sender
+
+### Requirement: Full reference visual progression with truthful signals
+The final widget SHALL follow the owner-selected Duolingo reference for separate upper streak/flame/short caption and lower original-panda art, with beginner/growing/30-plus decorations, current-day moods, verified completion and playful long-break invitations. It MUST retain authenticated personal timing, quiet/pause/OFF and freshness precedence; artwork MUST NOT manufacture absence, failure, a completed unit or a broken/comeback event. Fixed captions MUST use canonical UZ/RU/TJ resources.
+
+#### Scenario: Partial progress after personal time
+- **WHEN** a fresh personal context is due but today's full goal is not yet confirmed
+- **THEN** daily mood can progress within the personal-time-to-local-day-end window, while reviewed positive learning keeps an already secured streak distinct from unfinished-goal encouragement
+
+#### Scenario: Last observed study was long ago
+- **WHEN** a fresh version-2 context supplies an original older positive-learning time and the current server-displayed streak is zero
+- **THEN** the widget can show playful return artwork and invitation text, without claiming a complete absence history or counting an ineffective reminder; missing/limited evidence remains neutral
+
+#### Scenario: Version-one adapter remains installed
+- **WHEN** an existing adapter requests version 1
+- **THEN** its exact existing context shape remains unchanged; the new adapter explicitly requests version 2 and validates either supported response without restoring stale or foreign-account data

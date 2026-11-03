@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_duo_practice_time">Mashq vaqti?</string>
+    <string name="widget_duo_time_practice">Mashq qilish vaqti!</string>
+    <string name="widget_duo_ready">O‘rganishga tayyormisiz?</string>
+    <string name="widget_duo_keep_going">Shunday davom eting!</string>
+    <string name="widget_duo_three_minutes">3 daqiqa bormi?</string>
+    <string name="widget_duo_practice_now">Hozir mashq qilamizmi?</string>
+    <string name="widget_duo_lets_practice">Keling, mashq qilamiz!</string>
+    <string name="widget_duo_please_practice">Iltimos, mashq qiling!</string>
+    <string name="widget_duo_save_streak">Seriyani saqlang!</string>
+    <string name="widget_duo_dont_break">Seriya uzilmasin!</string>
+    <string name="widget_duo_getting_late">Kech bo‘lyapti!</string>
+    <string name="widget_duo_last_chance">Oxirgi imkoniyat!</string>
+    <string name="widget_duo_great_job">Ajoyib ish!</string>
+    <string name="widget_duo_done_today">Buguncha yetarli!</string>
+    <string name="widget_duo_streak_safe">Seriya saqlandi!</string>
+    <string name="widget_duo_see_tomorrow">Ertaga ko‘rishamiz!</string>
+    <string name="widget_duo_milestone">Zo‘r davom etyapsiz!</string>
+</resources>

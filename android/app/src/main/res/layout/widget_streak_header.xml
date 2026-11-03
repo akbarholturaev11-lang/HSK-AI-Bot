@@ -48,7 +48,7 @@
         </FrameLayout>
     </LinearLayout>
     <TextView android:id="@+id/widget_streak_message" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:gravity="center" android:fontFamily="@font/widget_round" android:fontVariationSettings="'wght' 700"
+        android:gravity="center" android:fontFamily="@font/widget_round" android:fontVariationSettings="'wght' 500" android:shadowColor="#55000000" android:shadowDy="1" android:shadowRadius="1"
         android:textColor="#F0E8FF" android:textSize="10sp" android:includeFontPadding="false"
         android:maxLines="2" android:ellipsize="end" />
 </LinearLayout>

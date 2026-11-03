@@ -28,6 +28,8 @@ data class WidgetSnapshot(
     val goalXp: Int = 0,
     /** Strictly validated passive allowlist; never an auth or notification grant. */
     val personalContext: JsonElement? = null,
+    /** Canonical game-streak day from the live server map, separate from goal completion. */
+    val streakRecordedToday: Boolean = false,
 )
 
 /**

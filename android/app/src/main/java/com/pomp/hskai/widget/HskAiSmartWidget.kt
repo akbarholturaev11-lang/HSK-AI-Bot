@@ -109,7 +109,7 @@ internal fun widgetHeaderViews(context: Context,copy: WidgetCopy,compact: Boolea
         R.id.widget_streak_outline_sw,R.id.widget_streak_outline_w,R.id.widget_streak_outline_nw)
     return RemoteViews(context.packageName,R.layout.widget_streak_header).apply {
         setViewVisibility(R.id.widget_streak_flame,if(copy.counter=="HSK AI") android.view.View.GONE else android.view.View.VISIBLE)
-        setImageViewResource(R.id.widget_streak_flame,if(palette.outlined) R.drawable.widget_streak_flame else R.drawable.widget_streak_flame_calm)
+        setImageViewResource(R.id.widget_streak_flame,if(palette.outlined) R.drawable.widget_streak_flame else if(palette.warning) R.drawable.widget_streak_flame_risk else R.drawable.widget_streak_flame_calm)
         for(id in outlineIds+R.id.widget_streak_count) {
             setTextViewText(id,copy.counter)
             setTextViewTextSize(id,TypedValue.COMPLEX_UNIT_SP,if(compact) 15f else if(wide) 28f else 20f)
@@ -144,7 +144,7 @@ internal fun WidgetContent(
     val frame = GlanceModifier
         .fillMaxSize()
         .appWidgetBackground()
-        .background(ColorProvider(palette.background))
+        .background(ImageProvider(palette.background),contentScale=ContentScale.FillBounds)
         .cornerRadius(20.dp)
         .clickable(action)
 
@@ -159,7 +159,8 @@ internal fun WidgetContent(
         }
     } else {
         Column(modifier=frame,horizontalAlignment=Alignment.CenterHorizontally) {
-            AndroidRemoteViews(header,modifier=GlanceModifier.fillMaxWidth().height(54.dp))
+            AndroidRemoteViews(header,modifier=GlanceModifier.fillMaxWidth()
+                .height(if(visual.personalPhase==null) 54.dp else 44.dp))
             Image(provider=ImageProvider(panda),contentDescription=copy.message,
                 modifier=GlanceModifier.fillMaxWidth().defaultWeight(),contentScale=ContentScale.Fit)
         }

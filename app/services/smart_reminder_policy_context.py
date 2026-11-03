@@ -301,6 +301,25 @@ async def read_observed_learning(session, actor, history_since, observed_at):
         return ObservedLearning(actor.user_id, since, now, max(times) if times else None, tuple(sorted(limits)))
 
 
+async def read_last_observed_learning(session, actor, observed_at):
+    """Optional widget age hint from positive records, never absence proof.
+
+    Bounded reviewed no-XP activity uses the approved 90-day source window;
+    the latest retained canonical learning XP can be older. No record means
+    unknown, not a new learner or a measured inactive interval.
+    """
+    now = _aware_utc(observed_at)
+    with session.no_autoflush:
+        recent = await read_observed_learning(session, actor, now-timedelta(days=90), now)
+        if recent.limited: return None
+        xp = await session.scalar(select(CourseXpEvent.created_at).where(
+            CourseXpEvent.user_id == actor.user_id, CourseXpEvent.activity_type.in_(LEARNING_ACTIVITY_TYPES),
+            CourseXpEvent.xp > 0, CourseXpEvent.created_at <= now)
+            .order_by(CourseXpEvent.created_at.desc(), CourseXpEvent.id.desc()).limit(1))
+        positives = [value for value in (recent.latest_activity_at, _utc(xp) if xp else None) if value is not None]
+        return max(positives) if positives else None
+
+
 async def read_verified_learning(session, user_id, *, level, history_since, observed_at, evidence_at=None):
     """Bounded original account results for analysis, never inactivity/policy.
 

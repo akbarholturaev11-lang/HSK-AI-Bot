@@ -52,6 +52,20 @@ def view(context=None, **kwargs):
 
 
 class WidgetGoldenTests(unittest.TestCase):
+    def test_v2_positive_history_is_optional_bounded_and_preserves_no_send_contract(self):
+        context=fixture_context()
+        data=project_widget(context,request=WidgetContextRequest(version=2,epoch=EPOCH),
+            binding=BINDING,valid_until=context.observed_at+timedelta(hours=1)).model_dump(mode='json')
+        current=dict(now=context.observed_at,binding=BINDING,epoch=EPOCH,level=data['level'],
+            local_day=data['local_day'],timezone_name=data['timezone_name'])
+        self.assertIsNone(data['last_observed_study_at'])
+        self.assertEqual(widget_cache_reason(data,**current),'widget_context_current')
+        for changes in ({'last_observed_study_at':(context.observed_at+timedelta(seconds=1)).isoformat()},
+                {'last_observed_study_at':'2026-01-01T00:00:00'}, {'last_observed_study_at':123},
+                {'dispatch_allowed':0}, {'policy_version':'smart-widget-context-v1'}):
+            self.assertEqual(widget_cache_reason(data|changes,**current),'widget_context_invalid')
+        self.assertNotIn('last_observed_study_at',view(context).model_dump(mode='json'))
+
     def test_android_complete_envelopes_match_the_shared_backend_fixtures(self):
         from scripts.export_smart_widget_goldens import ROOT, TARGET, output
         self.assertEqual((ROOT / TARGET).read_text(), output())
@@ -69,7 +83,7 @@ class WidgetGoldenTests(unittest.TestCase):
                 self.assertFalse(set(data) & {"user_id", "device_id", "session_id", "token", "name", "studies"})
 
     def test_request_version_epoch_and_immutable_no_send_contract(self):
-        for version, epoch in ((True, EPOCH), (2, EPOCH), ("1", EPOCH), (1, "bad-epoch")):
+        for version, epoch in ((True, EPOCH), (3, EPOCH), ("1", EPOCH), (1, "bad-epoch")):
             with self.assertRaises(ValueError): WidgetContextRequest(version=version, epoch=epoch)
         value = view()
         with self.assertRaises(ValueError): value.dispatch_allowed = True
@@ -141,10 +155,10 @@ class WidgetSourceChecks:
                                  expires_at=self.now+timedelta(days=1)))
         self.actor = SmartReminderActor(1, "android", device_id="widget-device", session_id="widget-login")
 
-    async def load(self, *, actor=None, session=None, until=None, expected_level="hsk1", clock=None):
+    async def load(self, *, actor=None, session=None, until=None, expected_level="hsk1", clock=None, request=REQUEST):
         async def run(s):
             return await SmartWidgetContextService(s, clock=clock or (lambda:self.tick)).project(
-                actor or self.actor, REQUEST, authenticated_until=until or self.tick+timedelta(hours=1),
+                actor or self.actor, request, authenticated_until=until or self.tick+timedelta(hours=1),
                 expected_level=expected_level)
         if session is not None: return await run(session)
         async with self.sessions.begin() as s: return await run(s)
@@ -197,6 +211,32 @@ class WidgetSourceChecks:
         for order,age in enumerate((91,92,93),1): await self.study(days_ago=age,order=order)
         result=await self.load()
         self.assertEqual((result["time_source"],result["time_local"]),("saved","14:00"))
+
+    async def test_v2_last_positive_history_is_owned_original_read_only_and_not_an_absence_claim(self):
+        await self.study(order=1,days_ago=130,xp=1)
+        await self.study(kind="reward",days_ago=1,xp=100)
+        async with self.sessions() as session:
+            expected=await session.scalar(select(CourseXpEvent.created_at).where(
+                CourseXpEvent.user_id==1,CourseXpEvent.activity_type=="lesson"))
+        statements=[]
+        def capture(c,cursor,sql,parameters,ctx,many): statements.append(sql)
+        event.listen(self.engine.sync_engine,"before_cursor_execute",capture)
+        try: result=await self.load(request=WidgetContextRequest(version=2,epoch=EPOCH))
+        finally: event.remove(self.engine.sync_engine,"before_cursor_execute",capture)
+        observed=datetime.fromisoformat(result["last_observed_study_at"].replace("Z","+00:00"))
+        if expected.tzinfo is None: expected=expected.replace(tzinfo=UTC)
+        self.assertEqual(observed,expected)
+        self.assertEqual((result["version"],result["policy_version"]),(2,"smart-widget-context-v2"))
+        self.assertFalse(result["dispatch_allowed"])
+        self.assertFalse(any(x.lstrip().upper().startswith(("INSERT","UPDATE","DELETE")) for x in statements))
+        self.assertNotIn("last_observed_study_at",await self.load())
+
+    async def test_v2_missing_or_overflow_history_remains_unknown(self):
+        request=WidgetContextRequest(version=2,epoch=EPOCH)
+        self.assertIsNone((await self.load(request=request))["last_observed_study_at"])
+        await self.study(order=1,days_ago=1)
+        with patch("app.services.smart_reminder_policy_context.MAX_POLICY_ROWS",0):
+            self.assertIsNone((await self.load(request=request))["last_observed_study_at"])
 
     async def test_native_only_off_and_os_unknown_still_return_permitted_progress(self):
         async with self.sessions.begin() as s:
@@ -337,12 +377,23 @@ class WidgetMapTests(unittest.IsolatedAsyncioTestCase):
         headers=await self._bearer()
         normal=[("widget_context_version","1"),("widget_context_epoch",EPOCH)]
         bad=[normal[:1],normal[1:],[normal[0],("widget_context_epoch","bad")],
-             [("widget_context_version","2"),normal[1]],normal+[normal[0]],normal+[normal[1]],
+             [("widget_context_version","3"),normal[1]],normal+[normal[0]],normal+[normal[1]],
              normal+[("user_id","2")],normal+[("tz","0"),("tz","1")]]
         for params in bad:
             with self.subTest(params=params):
                 response=await self.client.get("/api/v3/android/course/map",headers=headers,params=params)
                 self.assertEqual(response.status_code,422,response.text)
+
+    async def test_explicit_v2_map_preserves_v1_and_adds_only_optional_positive_history(self):
+        headers=await self._bearer()
+        response=await self.client.get("/api/v3/android/course/map",headers=headers,
+            params=dict(widget_context_version="2",widget_context_epoch=EPOCH))
+        self.assertEqual(response.status_code,200,response.text)
+        context=response.json()["widget_context"]
+        self.assertEqual(context["version"],2)
+        self.assertEqual(context["policy_version"],"smart-widget-context-v2")
+        self.assertIn("last_observed_study_at",context)
+        self.assertFalse(context["dispatch_allowed"])
 
     async def test_opt_in_requires_real_native_auth_and_current_account(self):
         params=dict(widget_context_version="1",widget_context_epoch=EPOCH)

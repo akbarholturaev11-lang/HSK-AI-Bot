@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_duo_practice_time">Время учиться?</string>
+    <string name="widget_duo_time_practice">Пора заниматься!</string>
+    <string name="widget_duo_ready">Готовы учиться?</string>
+    <string name="widget_duo_keep_going">Так держать!</string>
+    <string name="widget_duo_three_minutes">Есть 3 минуты?</string>
+    <string name="widget_duo_practice_now">Позанимаемся сейчас?</string>
+    <string name="widget_duo_lets_practice">Давайте заниматься!</string>
+    <string name="widget_duo_please_practice">Пожалуйста, позанимайтесь!</string>
+    <string name="widget_duo_save_streak">Сохраните серию!</string>
+    <string name="widget_duo_dont_break">Не прерывайте серию!</string>
+    <string name="widget_duo_getting_late">Уже поздно!</string>
+    <string name="widget_duo_last_chance">Последний шанс!</string>
+    <string name="widget_duo_great_job">Отличная работа!</string>
+    <string name="widget_duo_done_today">На сегодня всё!</string>
+    <string name="widget_duo_streak_safe">Серия сохранена!</string>
+    <string name="widget_duo_see_tomorrow">До завтра!</string>
+    <string name="widget_duo_milestone">Прекрасная серия!</string>
+</resources>
