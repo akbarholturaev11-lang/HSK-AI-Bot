@@ -144,6 +144,11 @@ class PwaCheckoutEvent(PwaCheckoutContext):
     plan_type: str | None = None
     payment_method: str | None = None
 
+class PwaFeedbackPrepare(BaseModel):
+    """No user, identity or campaign selector is supplied by the browser."""
+    model_config = ConfigDict(extra="forbid")
+
+
 
 async def _small_json(request: Request, model, *, max_bytes: int = 1024):
     if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
@@ -1467,6 +1472,136 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             return JSONResponse(
                 {"ok": True, "notices": notices,
                  "payment_reviews": payment_reviews}, headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/api/v3/pwa/feedback/available")
+    async def pwa_feedback_available(request: Request):
+        """Read existing canonical prompts; reading creates no reward/delivery."""
+        from datetime import datetime, timezone
+        from sqlalchemy import select
+        from app.db.models.release_feedback import (
+            ReleaseFeedbackCampaign, ReleaseFeedbackDelivery,
+        )
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+        from app.repositories.release_feedback_repo import ReleaseFeedbackRepository
+        from app.services.account_identity import owner_clause
+        from app.services.bot_feedback_service import BotFeedbackService
+        from app.services.user_access_state_service import UserAccessStateService
+
+        try:
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+                service = BotFeedbackService(db)
+                feedback = await BotFeedbackRepository(db).get_latest_pending_by_user(actor.id)
+                now = datetime.now(timezone.utc)
+                if not feedback or not service._is_prompt_due(feedback, now):
+                    feedback = None
+                ordinary = ({
+                    "feedback_id": feedback.id,
+                    "paid": UserAccessStateService.is_paid(actor),
+                    "liked_code": feedback.liked_code,
+                    "disliked_code": feedback.disliked_code,
+                } if feedback else None)
+
+                deliveries = (await db.execute(
+                    select(ReleaseFeedbackDelivery, ReleaseFeedbackCampaign)
+                    .join(
+                        ReleaseFeedbackCampaign,
+                        ReleaseFeedbackDelivery.campaign_id == ReleaseFeedbackCampaign.id,
+                    )
+                    .where(owner_clause(
+                        ReleaseFeedbackDelivery, actor,
+                        telegram_column="user_telegram_id",
+                    ))
+                    .where(ReleaseFeedbackDelivery.status == "sent")
+                    .where(ReleaseFeedbackCampaign.status == "sent")
+                    .order_by(
+                        ReleaseFeedbackDelivery.delivered_at.desc(),
+                        ReleaseFeedbackDelivery.id.desc(),
+                    )
+                    .limit(20)
+                )).all()
+                release_repo = ReleaseFeedbackRepository(db)
+                release = []
+                seen = set()
+                for delivery, campaign in deliveries:
+                    if campaign.id in seen:
+                        continue
+                    seen.add(campaign.id)
+                    if await release_repo.get_response(campaign_id=campaign.id, user=actor):
+                        continue
+                    release.append({
+                        "campaign_id": campaign.id,
+                        "title": campaign.title,
+                        "message_text": campaign.message_text,
+                        "feature_key": campaign.feature_key,
+                        "content_type": campaign.content_type,
+                    })
+                    if len(release) == 5:
+                        break
+            return JSONResponse(
+                {"ok": True, "ordinary": ordinary, "release": release},
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/feedback/ordinary/prepare")
+    async def pwa_prepare_ordinary_feedback(request: Request):
+        """Reserve the existing bot feedback record for a verified learner.
+
+        This does not send/ack a Telegram prompt or grant a reward. The UI
+        will separately decide when to display a Figma-approved dialog.
+        """
+        from datetime import datetime, timezone
+        from sqlalchemy import select
+        from app.db.models.user import User
+        from app.services.bot_feedback_service import (
+            BotFeedbackService, FEEDBACK_ACTIVE_WINDOW, FEEDBACK_JOIN_DELAY,
+        )
+        from app.services.user_access_state_service import UserAccessStateService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                await _small_json(request, PwaFeedbackPrepare, max_bytes=256)
+                # Serialize prompt creation per canonical learner, including
+                # concurrent browser tabs or simultaneous provider sessions.
+                learner = (await db.execute(
+                    select(User).where(User.id == actor.id).with_for_update()
+                )).scalar_one()
+                now = datetime.now(timezone.utc)
+                service = BotFeedbackService(db)
+                joined = service._aware(learner.created_at)
+                active = service._aware(learner.last_active_at)
+                feedback = None
+                if (
+                    learner.status != "blocked"
+                    and joined and joined <= now - FEEDBACK_JOIN_DELAY
+                    and active and active >= now - FEEDBACK_ACTIVE_WINDOW
+                ):
+                    feedback = await service._get_or_create_due_feedback(learner, now)
+                    if feedback and not service._is_prompt_due(feedback, now):
+                        feedback = None
+                await db.commit()
+                payload = ({
+                    "feedback_id": feedback.id,
+                    "paid": UserAccessStateService.is_paid(learner),
+                    "liked_code": feedback.liked_code,
+                    "disliked_code": feedback.disliked_code,
+                } if feedback else None)
+            return JSONResponse(
+                {"ok": True, "ordinary": payload}, headers=_NO_STORE,
             )
         except PwaAuthError as exc:
             return _error(exc)

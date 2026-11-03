@@ -877,6 +877,113 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         finally:
             engine.dispose()
 
+    async def test_pwa_feedback_prepare_preserves_bot_cooldown_and_canonical_owner(self):
+        """Browser cannot manufacture recipients or repeatedly create due rows."""
+        from app.db.models.bot_feedback import BotFeedback
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+
+        url = "/api/v3/pwa/feedback/ordinary/prepare"
+        feed_url = "/api/v3/pwa/feedback/available"
+        self.assertEqual((await self.client.get(feed_url)).status_code, 401)
+        self.assertEqual((await self.client.post(
+            url, headers={"Origin": ORIGIN}, json={},
+        )).status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        session = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        csrf = session["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        self.assertEqual((await self.client.post(
+            url, headers={"Origin": ORIGIN}, json={},
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            url, headers=headers, json={"user_id": 2},
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            url, headers={**headers, "X-Telegram-Init-Data": "fake"}, json={},
+        )).status_code, 422)
+        young = await self.client.post(url, headers=headers, json={})
+        self.assertEqual(young.status_code, 200, young.text)
+        self.assertIsNone(young.json()["ordinary"])
+        async with self.sessions() as db:
+            owner = await db.get(User, 1)
+            owner.created_at = datetime.now(timezone.utc) - timedelta(days=3)
+            await db.commit()
+        ready = await self.client.post(url, headers=headers, json={})
+        self.assertEqual(ready.status_code, 200, ready.text)
+        feedback_id = ready.json()["ordinary"]["feedback_id"]
+        self.assertIsInstance(feedback_id, int)
+        again = await self.client.post(url, headers=headers, json={})
+        self.assertEqual(again.json()["ordinary"]["feedback_id"], feedback_id)
+        projected = (await self.client.get(feed_url)).json()
+        self.assertEqual(projected["ordinary"]["feedback_id"], feedback_id)
+        self.assertEqual(projected["release"], [])
+        async with self.sessions() as db:
+            pending = (await db.execute(
+                select(BotFeedback).where(BotFeedback.user_id == 1)
+            )).scalars().all()
+            self.assertEqual(len(pending), 1)
+            self.assertIsNone(pending[0].prompted_at)
+            # One account cannot bypass the existing two-attempt limit by
+            # fetching the same prompt in Safari or from the home screen.
+            pending[0].prompt_attempts = 2
+            await db.commit()
+        self.assertIsNone((await self.client.post(
+            url, headers=headers, json={},
+        )).json()["ordinary"])
+        self.assertIsNone((await self.client.get(feed_url)).json()["ordinary"])
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.get(feed_url)).status_code, 503)
+        self.assertEqual((await self.client.post(
+            url, headers=headers, json={},
+        )).status_code, 503)
+
+    async def test_pwa_release_feedback_availability_requires_existing_sent_delivery(self):
+        """No unrelated campaign, unsent draft or already answered release leaks."""
+        from app.db.models.release_feedback import (
+            ReleaseFeedbackCampaign, ReleaseFeedbackDelivery, ReleaseFeedbackResponse,
+        )
+        from app.repositories.release_feedback_repo import ReleaseFeedbackRepository
+
+        async with self.sessions() as db:
+            db.add(user(2, None))
+            now = datetime.now(timezone.utc)
+            for cid, status in ((71, "sent"), (72, "scheduled"), (73, "sent")):
+                db.add(ReleaseFeedbackCampaign(
+                    id=cid, title=f"Campaign {cid}", status=status,
+                    send_at=now - timedelta(days=1),
+                ))
+            await db.flush()
+            db.add(ReleaseFeedbackDelivery(
+                campaign_id=71, user_id=1, user_telegram_id=1001,
+                status="sent",
+            ))
+            db.add(ReleaseFeedbackDelivery(
+                campaign_id=72, user_id=1, user_telegram_id=1001,
+                status="sent",
+            ))
+            db.add(ReleaseFeedbackDelivery(
+                campaign_id=73, user_id=2, user_telegram_id=None,
+                status="sent",
+            ))
+            await db.commit()
+        state = await self.begin()
+        await self.callback(state)
+        url = "/api/v3/pwa/feedback/available"
+        ready = await self.client.get(url)
+        self.assertEqual(ready.status_code, 200, ready.text)
+        self.assertEqual(
+            [item["campaign_id"] for item in ready.json()["release"]], [71],
+        )
+        self.assertNotIn("media_file_id", ready.text)
+        async with self.sessions() as db:
+            owner = await db.get(User, 1)
+            await ReleaseFeedbackRepository(db).create_response(
+                campaign_id=71, user=owner, rating=5,
+            )
+            await db.commit()
+        self.assertEqual((await self.client.get(url)).json()["release"], [])
+
     async def test_pwa_inbox_uses_canonical_owner_and_does_not_invent_notices(self):
         url = "/api/v3/pwa/notifications"
         self.assertEqual((await self.client.get(url)).status_code, 401)
