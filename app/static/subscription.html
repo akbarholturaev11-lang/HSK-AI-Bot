@@ -427,6 +427,19 @@ function checkoutTransport(path,body,signal,keepalive){
     });
   });
 }
+// Re-authenticate on Home Screen resume/BFCache restore; never treat a
+// cached browser actor or app screenshot as proof of an active session.
+function verifyPwaReturn(){
+  if(!PWA_CHECKOUT_HOST)return;
+  PWA_CHECKOUT_PROMISE=null;
+  checkoutPwaActor().catch(function(){location.replace("/iphone-pwa")});
+}
+if(PWA_CHECKOUT_HOST){
+  window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()});
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState==="visible")verifyPwaReturn();
+  });
+}
 /* Course checkout runs in the same Telegram WebView. The Telegram header Back
    must return to Course V3, not close the Mini App or step through payment. */
 const RETURN_TO_COURSE=PARAMS.get("return_to")==="course";
