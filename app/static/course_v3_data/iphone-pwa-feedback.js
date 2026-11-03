@@ -247,6 +247,17 @@
     if (!kind && data.ordinary && numberId(data.ordinary.feedback_id)) {
       kind = "ordinary";
       selected = data.ordinary;
+      // Respect an unfinished answer already owned by the canonical bot flow.
+      // Replacing its recorded first choice would fail the original server guard.
+      if (selected.paid) {
+        draft.paid_code = typeof selected.liked_code === "string" &&
+          selected.liked_code.indexOf("paid_") === 0 ? selected.liked_code.slice(5) : "";
+        draft.paid_sub_code = typeof selected.disliked_code === "string" &&
+          selected.disliked_code.indexOf("paid_") === 0 ? selected.disliked_code.slice(5) : "";
+      } else {
+        draft.liked_code = typeof selected.liked_code === "string" ? selected.liked_code : "";
+        draft.disliked_code = typeof selected.disliked_code === "string" ? selected.disliked_code : "";
+      }
       heading.textContent = "HSK AI";
     }
     if (!kind) {
