@@ -417,6 +417,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
     def test_browser_course_map_uses_csrf_post_without_changing_telegram_transport(self):
         course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
         self.assertIn('PWA_COURSE_HOST=location.pathname==="/iphone-pwa/course"', course)
+        self.assertIn('if(PWA_COURSE_HOST)INIT_DATA="";', course)
+        self.assertIn('if(PWA_COURSE_HOST||!INIT_DATA||q.getAll("source")', course)
         self.assertIn('fetch("/api/v3/pwa-auth/session"', course)
         self.assertIn('method:"POST",headers:{"X-HSK-PWA-CSRF":actor.csrf}', course)
         self.assertIn('url.replace("/api/v3/map?","/api/v3/pwa/map?")', course)
