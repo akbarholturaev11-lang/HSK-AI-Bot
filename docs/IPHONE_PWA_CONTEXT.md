@@ -12,7 +12,7 @@
 | GitHub object | Verified at this handoff | Scope |
 | --- | --- | --- |
 | Production `main` | `0f5fb45ef55989fa504337f5fa38a91affb82de2` | **Untouched by this handoff**; independent newer Smart Reminder work |
-| Work branch `feat/iphone-pwa-browser-auth-p1-20261102` | `b1456b23f0e380a45a628627f0908456626f4579` | **Only implementation branch**, [Draft PR #257](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/257) |
+| Work branch `feat/iphone-pwa-browser-auth-p1-20261102` | `27e376dc278c0dd614c776f2f9482b5508ad27f5` | **Only implementation branch**, [Draft PR #257](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/257) |
 | Plan branch `feat/iphone-course-pwa-planning-20261102` | updated with **this file only** in this handoff | **Only planning/context branch**, [Draft PR #256](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/256) |
 | Safety backup `backup/iphone-pwa-before-main-sync-20261103` | `d19acf7e562073326d77e733c869d22be6bfb097` | Preserve; **never delete/reset** |
 | Historical PR #186 | obsolete, **DO NOT MERGE** | Not an active task or alternate UI |
@@ -21,20 +21,26 @@ Both PR #256 and PR #257 were verified **open, Draft, mergeable**; they intentio
 
 **Main divergence:** Three-way diff from common merge-base `df8e6de5dceb77284f2b361f760e8ee01f31d78c` finds six newer `main` commits, 37 changed `main` paths, and 63 changed work-branch paths, with **zero overlapping file paths at inspection**. This is not blanket approval to merge: dependency/API behavior can still conflict. Carefully audit the new Smart Reminder and localization contracts, perform safe feature-branch-only sync if necessary after tests, **never** automatically promote to `main`.
 
-### Automated checks (verified for exact current work HEAD `b1456b2`)
+### Latest work HEAD / concurrent code activity (source-inspected)
 
-| GitHub Actions workflow | Run ID | Status at handoff |
+After the initial handoff, **8 new commits advanced the implementation branch** from `b1456b23` to `27e376dc` without affecting `main`: exact PWA Safari foreground/BFCache session/owner revalidation guards were added to the **original** recognition, memorize, pronunciation, mistakes, HSK-test and onboarding pages; `tests/test_pwa_browser_auth.py` added lifecycle coverage; the reviewed i18n source hashes were pinned in `localization/baselines/reviewed_ui_changes.json`. These are **code/tests added, not a declaration of passed acceptance**. AI Voice/course/checkout lifecycle work from earlier commits remains subject to E2E and iPhone QA.
+
+**Newest CI at `27e376dc278c0dd614c776f2f9482b5508ad27f5`, inspected while jobs were queued or in progress:**
+
+| Workflow | GitHub Actions | Verified status at inspection |
 | --- | --- | --- |
-| Local-first localization P0 guards | [41592816882](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816882) | **PASS** |
-| Desktop auth and UI contracts | [41592816823](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816823) | **PASS** |
-| Mandarin lesson TTS regression | [41592816992](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816992) | **PASS** |
-| Mandarin persistent local TTS cache | [41592816836](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816836) | **PASS** |
-| Backend targeted tests | [41592816874](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816874) | In progress; miniapp-ui/native-postgres subjobs PASS at last inspection |
-| Admin PWA isolated security regressions | [41592816803](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816803) | In progress |
-| Android CI | [41592816813](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816813) | In progress |
-| Smart Reminder P0 regression | [41592816865](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816865) | In progress |
+| Backend targeted tests | [#41593466535](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41593466535) | Queued |
+| Desktop auth and UI contracts | [#41593466624](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41593466624) | Queued |
+| Admin PWA isolated security regressions | [#41593466536](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41593466536) | Pending |
+| Local-first localization P0 guards | [#41593466588](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41593466588) | Pending |
+| Android CI | [#41593466529](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41593466529) | Pending |
+| Mandarin persistent local TTS cache | [#41593466643](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41593466643) | Queued |
+| Mandarin lesson TTS regression | [#41593466704](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41593466704) | In progress |
+| Smart Reminder P0 regression | [#41593466562](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41593466562) | Queued |
 
-**This is a point-in-time snapshot.** Before claiming all green, re-fetch the exact latest work HEAD **and all CI jobs**. Previous `3cd1d30` backend [#41591890249](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41591890249) failed just one `test_subscription_miniapp_submit.py` exact-string assertion for the original checkout AbortController; current HEAD `b1456b2` changed **only that test file** to check both Telegram and browser checkout transports. The current run must still validate this fix. Previous `3cd1d30` localization source-contract completed green in Python 3.11/3.14 after reducing >100 original failures to zero; current localization also passed. Previous Android [#41591890238](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41591890238) had one `VoiceViewModelTest.deliberateCloseAndLateEventsProduceOnlyOneReconnect` failure (`UncaughtExceptionsBeforeTest`) out of 632 unit tests; an isolated rerun was attempted, but then canceled while another newer run began. **Do not label the Android issue fixed or flaky without evidence.** Smart storage PostgreSQL tests are time-consuming and have previously failed/canceled; inspect current job evidence rather than suppressing it. Four passes are not release acceptance.
+**Earlier verified predecessor `b1456b2` evidence (not evidence for `27e376d`):** [local-first localization #41592816882](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816882), [Desktop auth/UI #41592816823](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816823), [Mandarin TTS #41592816992](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816992), [Mandarin cache #41592816836](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41592816836) were green at inspection; backend, Admin, Android and Smart were not yet complete. Predecessor `3cd1d30` backend [#41591890249](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41591890249) failed one legacy checkout AbortController exact-string test, addressed on `b1456b2` in test-only commit; a green current-head result is still required. Predecessor Android `VoiceViewModelTest.deliberateCloseAndLateEventsProduceOnlyOneReconnect` failed once out of 632 tests; later isolated rerun was canceled when newer CI started. **Never infer a flaky or fixed cause from that one run.** Previous Smart storage PostgreSQL CI was canceled/failing; inspect exact current job.
+
+**All status labels here are historical as soon as `HEAD` moves.** First action in the next chat: query the latest PR #257 HEAD, then **that SHA's** workflow jobs and logs. No test waivers, source-approval shortcuts, or production flag changes.
 
 ### Product and release acceptance — still NOT DONE
 
@@ -57,7 +63,7 @@ Both PR #256 and PR #257 were verified **open, Draft, mergeable**; they intentio
 | --- | --- |
 | Repository | `akbarholturaev11-lang/HSK-AI-Bot` |
 | Production `main` | `0f5fb45ef55989fa504337f5fa38a91affb82de2` (advanced independently; 4 newer Smart Reminder commits not synced) |
-| Implementation | [Draft PR #257](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/257), `feat/iphone-pwa-browser-auth-p1-20261102`, verified HEAD `b1456b23f0e380a45a628627f0908456626f4579` at handoff (always re-fetch before editing) |
+| Implementation | [Draft PR #257](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/257), `feat/iphone-pwa-browser-auth-p1-20261102`, verified HEAD `27e376dc278c0dd614c776f2f9482b5508ad27f5` at context refresh (always re-fetch before editing) |
 | Planning, OpenSpec, this file | [Draft PR #256](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/256), `feat/iphone-course-pwa-planning-20261102` |
 | Pre-main-sync backup | `backup/iphone-pwa-before-main-sync-20261103` -> `d19acf7e562073326d77e733c869d22be6bfb097`; preserve |
 | Historical only | [PR #186](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/186) marked DO NOT MERGE; old and stale |
