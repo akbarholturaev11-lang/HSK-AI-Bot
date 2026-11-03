@@ -923,6 +923,82 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         finally:
             engine.dispose()
 
+    async def test_pwa_feedback_choices_reuse_existing_localized_bot_options(self):
+        """PWA option labels and follow-up codes are exactly the live bot catalog."""
+        from app.api.pwa_auth import _pwa_feedback_choices
+        from app.bot.keyboards.feedback import (
+            LIKED_OPTIONS, DISLIKED_OPTIONS, LIKE_SUB_OPTIONS,
+            PAID_OPTIONS, PAID_SUB_POSITIVE, PAID_SUB_NEGATIVE,
+            feedback_like_label, feedback_dislike_label, feedback_sub_label,
+            feedback_paid_label,
+        )
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+        for lang in ("uz", "ru", "tj"):
+            unpaid = _pwa_feedback_choices(lang, paid=False)
+            paid = _pwa_feedback_choices(lang, paid=True)
+            self.assertEqual(unpaid["liked"], [
+                {"code":code, "label":feedback_like_label(code, lang)}
+                for code in LIKED_OPTIONS
+            ])
+            self.assertEqual(unpaid["disliked"], [
+                {"code":code, "label":feedback_dislike_label(code, lang)}
+                for code in DISLIKED_OPTIONS
+            ])
+            for parent, codes in LIKE_SUB_OPTIONS.items():
+                self.assertEqual(unpaid["liked_sub"][parent], [
+                    {"code":code, "label":feedback_sub_label(code, lang)}
+                    for code in codes
+                ])
+            self.assertEqual(unpaid["disliked_detail_required"],
+                             ["other", "pace", "unclear"])
+            self.assertEqual(paid["paid"], [
+                {"code":code, "label":feedback_paid_label(code, lang)}
+                for code in PAID_OPTIONS
+            ])
+            self.assertEqual(
+                [choice["code"] for choice in paid["paid_sub_positive"]],
+                list(PAID_SUB_POSITIVE),
+            )
+            self.assertEqual(
+                [choice["code"] for choice in paid["paid_sub_negative"]],
+                list(PAID_SUB_NEGATIVE),
+            )
+            self.assertEqual(_pwa_feedback_choices("not-a-language", paid=False),
+                             _pwa_feedback_choices("ru", paid=False))
+
+        async with self.sessions() as db:
+            person = await db.get(User, 1)
+            person.language = "tj"
+            row = await BotFeedbackRepository(db).create_pending(person)
+            feedback_id = row.id
+            await db.commit()
+        state = await self.begin()
+        await self.callback(state)
+        response = await self.client.get("/api/v3/pwa/feedback/available")
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["ordinary"]["feedback_id"], feedback_id)
+        self.assertEqual(
+            response.json()["ordinary"]["choices"],
+            _pwa_feedback_choices("tj", paid=False),
+        )
+        # A prepared eligible account sees exactly the same server choices.
+        async with self.sessions() as db:
+            person = await db.get(User, 1)
+            person.created_at = datetime.now(timezone.utc) - timedelta(days=3)
+            await db.commit()
+        session = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        prepared = await self.client.post(
+            "/api/v3/pwa/feedback/ordinary/prepare",
+            json={}, headers={
+                "Origin": ORIGIN, "X-HSK-PWA-CSRF": session["csrf"],
+            },
+        )
+        self.assertEqual(prepared.status_code, 200, prepared.text)
+        self.assertEqual(
+            prepared.json()["ordinary"]["choices"],
+            _pwa_feedback_choices("tj", paid=False),
+        )
+
     async def test_pwa_feedback_administrator_reply_uses_current_linked_account(self):
         """Admin reply never tries a provider-only NULL or historical TG ID."""
         from app.repositories.bot_feedback_repo import BotFeedbackRepository

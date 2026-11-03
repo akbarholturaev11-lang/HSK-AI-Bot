@@ -170,6 +170,43 @@ class PwaOrdinaryFeedbackSubmit(BaseModel):
 
 
 
+
+def _pwa_feedback_choices(language: str, *, paid: bool) -> dict:
+    """Expose Telegram's existing localized choice contract, not a second UI catalog.
+
+    Read-only metadata; no callback payload, Telegram auth or reward authority.
+    The server still validates all submitted codes against the same dictionaries.
+    """
+    from app.bot.keyboards.feedback import (
+        LIKED_OPTIONS, DISLIKED_OPTIONS, LIKE_SUB_OPTIONS, PAID_OPTIONS,
+        PAID_SUB_POSITIVE, PAID_SUB_NEGATIVE,
+        feedback_like_label, feedback_dislike_label,
+        feedback_sub_label, feedback_paid_label,
+    )
+    from app.bot.handlers.feedback import DISLIKE_DETAIL_REQUIRED_CODES
+
+    lang = language if language in {"uz", "ru", "tj"} else "ru"
+
+    def choices(codes, label):
+        return [{"code":code, "label":label(code, lang)} for code in codes]
+
+    if paid:
+        return {
+            "paid": choices(PAID_OPTIONS, feedback_paid_label),
+            "paid_sub_positive": choices(PAID_SUB_POSITIVE, feedback_sub_label),
+            "paid_sub_negative": choices(PAID_SUB_NEGATIVE, feedback_sub_label),
+        }
+    return {
+        "liked": choices(LIKED_OPTIONS, feedback_like_label),
+        "liked_sub": {
+            code: choices(codes, feedback_sub_label)
+            for code, codes in LIKE_SUB_OPTIONS.items()
+        },
+        "disliked": choices(DISLIKED_OPTIONS, feedback_dislike_label),
+        "disliked_detail_required": sorted(DISLIKE_DETAIL_REQUIRED_CODES | {"other"}),
+    }
+
+
 async def _small_json(request: Request, model, *, max_bytes: int = 1024):
     if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
         raise PwaAuthError("pwa_request_invalid", status_code=415)
@@ -1525,6 +1562,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     "paid": UserAccessStateService.is_paid(actor),
                     "liked_code": feedback.liked_code,
                     "disliked_code": feedback.disliked_code,
+                    "choices": _pwa_feedback_choices(
+                        actor.language, paid=UserAccessStateService.is_paid(actor),
+                    ),
                 } if feedback else None)
 
                 deliveries = (await db.execute(
@@ -1619,6 +1659,10 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     "paid": UserAccessStateService.is_paid(learner),
                     "liked_code": feedback.liked_code,
                     "disliked_code": feedback.disliked_code,
+                    "choices": _pwa_feedback_choices(
+                        learner.language,
+                        paid=UserAccessStateService.is_paid(learner),
+                    ),
                 } if feedback else None)
             return JSONResponse(
                 {"ok": True, "ordinary": payload}, headers=_NO_STORE,
