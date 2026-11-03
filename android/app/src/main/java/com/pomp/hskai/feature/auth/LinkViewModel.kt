@@ -255,6 +255,8 @@ class LinkViewModel(
                             isWaitingForApproval = false,
                             isExpired = true,
                             busyProvider = null,
+                            pendingBrowserUrl = null,
+                            pendingTelegramUrl = null,
                         )
                     }
                     return@launch
@@ -268,6 +270,8 @@ class LinkViewModel(
                                 isWaitingForApproval = false,
                                 isLinked = true,
                                 busyProvider = null,
+                                pendingBrowserUrl = null,
+                                pendingTelegramUrl = null,
                             )
                         }
                         authRepository.bootstrap()
@@ -286,6 +290,8 @@ class LinkViewModel(
                                     isExpired = true,
                                     error = result.error,
                                     busyProvider = null,
+                                    pendingBrowserUrl = null,
+                                    pendingTelegramUrl = null,
                                 )
                             }
                             return@launch
