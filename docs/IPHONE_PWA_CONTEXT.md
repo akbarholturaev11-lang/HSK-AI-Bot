@@ -3,6 +3,14 @@
 **Updated:** 2026-11-03 · **Status:** WIP, NOT accepted, NOT released.
 **This is the single active context file.** Preserve prior detailed history through Git commits; do not create another context file or parallel plan. The only formal acceptance list is [OpenSpec tasks](../openspec/changes/iphone-course-pwa/tasks.md).
 
+## FOLLOW-UP: iPhone UX copy and strict scoped PWA guard — 2026-11-03
+
+- Current implementation Draft PR #257 HEAD `f784f242e1f96b9f31f923bb0781f3c87d79acba` (re-read before proceeding). Previous exact `f9aeb83` backend run had passed HTTP public-asset checks, 72 PostgreSQL regressions, and 49 real Chromium/Mini App browser cases, but targeted PWA auth failed **only two** source-format assertions: existing zoom guard test required a one-line PWA class guard, while valid browser-only metadata additions use a braced multi-line guard. `tests/test_pwa_browser_auth.py` now accepts both **only with original PWA_COURSE_HOST/PWA_CHECKOUT_HOST conditions**, retaining 16px/pinch/viewport assertions. Does not relax access or runtime policy.
+- Browser feedback previously used a canonical bot low-star hint promising **screenshot upload and conditional discounts**, though the PWA form sends only typed text and the server alone decides rewards. Changed the PWA-only fallback to existing canonical UZ/RU/TJ key `bot.releaseFeedback.commentButton` (brief 'Write comment'), keeping all business rules unchanged. Added a regression in `tests/test_pwa_feedback_ui.js` rejecting the misleading hint. Synthetic DOM run after this change: **13 notice + 8 feedback scenarios PASS**.
+- Exact HEAD [Backend targeted CI run 41661653859](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41661653859) had three jobs **IN_PROGRESS** at inspection. Do not claim all green before exact SHA full pass. No production merge/flag/deploy and Figma Starter MCP quota unchanged.
+
+---
+
 ## LATEST EXACT FEATURE-HEAD CI EVIDENCE — 2026-11-03
 
 - Feature Draft PR #257 exact HEAD **`f9aeb83ffb30aa27172049116e3202e6afb62db8`**, [Backend targeted run 41660363378](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41660363378). In latest inspection, **`miniapp-ui` job completed SUCCESS**: new actual Chromium iPhone PWA glass/feedback tests **5 passed**, unchanged main Mini App browser/nav regressions **19 passed**, critical course/checkout smoke **25 passed (82 deliberately deselected by existing -k selection)**. Existing UI test run succeeded and is not simulated-DOM-only evidence anymore, although it uses synthetic authenticated API responses and Chromium, **not physical Safari**.
