@@ -85,7 +85,12 @@ async def _load_feedback_context(session, telegram_id: int, feedback_id: int):
     user_repo = UserRepository(session)
     feedback = await feedback_repo.get_by_id(feedback_id)
     user = await user_repo.get_by_telegram_id(telegram_id)
-    if not feedback or not user or feedback.telegram_id != telegram_id:
+    # The authenticated bot sender resolves to users.id. A pending feedback
+    # begun in a browser-only session may have no Telegram transport metadata
+    # even after the same learner explicitly links their Telegram account.
+    # Never accept a mismatched canonical owner merely because transport
+    # metadata happens to match.
+    if not feedback or not user or feedback.user_id != user.id:
         return feedback_repo, None, None
     return feedback_repo, feedback, user
 

@@ -744,6 +744,18 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             # beside a preexisting canonical PWA response. Prefer the real
             # user_id and never throw MultipleResultsFound or reward twice.
             owners[1].telegram_id = 2002
+            await db.flush()
+            from app.bot.handlers.feedback import _load_feedback_context
+            _, permitted_feedback, linked_owner = await _load_feedback_context(
+                db, 2002, pending_google.id,
+            )
+            self.assertEqual(permitted_feedback.id, pending_google.id)
+            self.assertEqual(linked_owner.id, 2)
+            _, forbidden_feedback, forbidden_owner = await _load_feedback_context(
+                db, 1001, pending_google.id,
+            )
+            self.assertIsNone(forbidden_feedback)
+            self.assertIsNone(forbidden_owner)
             db.add(ReleaseFeedbackResponse(
                 campaign_id=77, user_id=None, user_telegram_id=2002,
                 rating=1,
