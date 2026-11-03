@@ -60,7 +60,11 @@ current-course progress does not invalidate an older server-confirmed result.
 Existing policy/target readers retain their current-progress corroboration.
 
 Reviewed server-graded section, legacy quiz and HSK exam activity counts without
-fresh XP or a passing score. Deduplicate original units and distinct frozen
+fresh XP or a passing score. Reviewed stored version-1 mock/placement/training
+completions from the shared canonical server grader also count at their original
+retained result time without a new award. Deterministic result dedupe still
+cannot establish later repeated attempts or move an old result to retry time.
+Deduplicate original units and distinct frozen
 local study dates per account. Generic app opens, reward XP, client terminal
 telemetry, malformed/boolean scores and unpaired/unsupported evidence do not
 prove study. Repeat-practice/voice and legacy capture gaps remain explicit.
