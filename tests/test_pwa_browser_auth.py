@@ -1203,7 +1203,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as db:
             db.add(user(2, None))
             now = datetime.now(timezone.utc)
-            for cid, status in ((71, "sent"), (72, "scheduled"), (73, "sent")):
+            for cid, status in ((71, "sent"), (72, "scheduled"), (73, "sent"), (74, "sent")):
                 db.add(ReleaseFeedbackCampaign(
                     id=cid, title=f"Campaign {cid}", status=status,
                     send_at=now - timedelta(days=1),
@@ -1221,6 +1221,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 campaign_id=73, user_id=2, user_telegram_id=None,
                 status="sent",
             ))
+            # A "try" click must not make a still-unanswered release vanish.
+            db.add(ReleaseFeedbackDelivery(
+                campaign_id=74, user_id=1, user_telegram_id=1001,
+                status="clicked",
+            ))
             await db.commit()
         state = await self.begin()
         await self.callback(state)
@@ -1228,7 +1233,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         ready = await self.client.get(url)
         self.assertEqual(ready.status_code, 200, ready.text)
         self.assertEqual(
-            [item["campaign_id"] for item in ready.json()["release"]], [71],
+            [item["campaign_id"] for item in ready.json()["release"]], [74, 71],
         )
         self.assertNotIn("media_file_id", ready.text)
         async with self.sessions() as db:
@@ -1237,7 +1242,10 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 campaign_id=71, user=owner, rating=5,
             )
             await db.commit()
-        self.assertEqual((await self.client.get(url)).json()["release"], [])
+        self.assertEqual(
+            [item["campaign_id"] for item in (await self.client.get(url)).json()["release"]],
+            [74],
+        )
 
     async def test_pwa_inbox_uses_canonical_owner_and_does_not_invent_notices(self):
         url = "/api/v3/pwa/notifications"

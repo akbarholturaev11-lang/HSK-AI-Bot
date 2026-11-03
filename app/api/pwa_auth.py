@@ -1537,7 +1537,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                         ReleaseFeedbackDelivery, actor,
                         telegram_column="user_telegram_id",
                     ))
-                    .where(ReleaseFeedbackDelivery.status == "sent")
+                    .where(ReleaseFeedbackDelivery.status.in_(("sent", "clicked")))
                     .where(ReleaseFeedbackCampaign.status == "sent")
                     .order_by(
                         ReleaseFeedbackDelivery.delivered_at.desc(),
