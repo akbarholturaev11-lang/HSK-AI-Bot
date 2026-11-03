@@ -5,6 +5,12 @@
 
 ## 0. Restart snapshot — 2026-11-03 (authoritative; all historical notes below are snapshots)
 
+### 2026-11-03 delivery-in-progress Telegram/PWA release parity — NOT RELEASED
+
+- Feature Draft PR #257 advanced from `165ccf0100e564e9f80a390901fc498671dc4a7c` to **`e688c8f2e8256dba3a6b0a41077a4d2b8913e6ee`** with a narrow fix in `app/api/pwa_auth.py`: PWA `feedback/available`, `release/respond`, and `release/comment` now accept campaign `sending` **or** `sent`, mirroring Telegram handlers. Eligibility still requires a real `ReleaseFeedbackDelivery` with status `sent` or `clicked` and canonical account match; `failed`, draft, undelivered and other-account campaigns remain forbidden. This fixes early batch recipients being denied on PWA while an ongoing Telegram broadcast is still being sent. A new `test_pwa_release_sending_campaign_matches_delivered_telegram_recipient` tests real delivered vs failed, rating once, optional comment and one canonical discount; original available regression includes both sending-success and sending-failure.
+- At last inspection, **prior `165ccf0` Backend/ Admin PWA/Mandarin/ Desktop/localization workflows were successful**, Android and Smart still in progress; current `e688c8f` full GitHub Actions are **running and not yet accepted**. Check this exact latest SHA's jobs and logs next; don't substitute older CI results. Do not begin a new code push merely to refresh the test run.
+- `main` still diverged independently (Smart Reminder); no feature merge or release. Both PRs Draft, PWA_AUTH_ENABLED false, Figma file `89fCM5GdjfBqcx0B9aQHOI` node `24:38` unavailable due Starter MCP quota. New modal/inbox UI remains unimplemented, formal P2.6 unchecked, real iPhone QA last.
+
 ### 2026-11-03 subsequent continuation: PWA release-comment parity and verified Telegram delivery guard
 
 - Latest implementation feature HEAD **`165ccf0100e564e9f80a390901fc498671dc4a7c`** (Draft PR #257); prior `6d5c663a8767f861865c8f892b903906bda57781` supplies canonical UZ/RU/TJ bot option labels in PWA feedback/available and ordinary/prepare, no new frontend copy or UI.
