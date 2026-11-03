@@ -7124,6 +7124,7 @@ function renderProfile(){
   var nickname=esc(PROF.name||courseMessage("you",t.you));
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(courseMessage("nav.profile",LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil"))+'</h1><div class="profile-head-actions">'
     +(PWA_COURSE_HOST?'<button class="pwa-notices-button" type="button" aria-label="'+esc(commonMessage("desktopA11y.notifications",""))+'" onclick="window.HskPwaInbox&&window.HskPwaInbox.open()"><i class="ti ti-bell" aria-hidden="true"></i></button>':'')
+    +(PWA_COURSE_HOST?'<button class="pwa-feedback-button" type="button" aria-label="'+esc(commonMessage("bot.releaseFeedback.commentButton",""))+'" onclick="window.HskPwaFeedback&&window.HskPwaFeedback.open()"><i class="ti ti-message-circle" aria-hidden="true"></i></button>':'')
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
     +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>'
     +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span></div>'
@@ -9292,5 +9293,6 @@ window.addEventListener("pageshow",function(ev){
 <script src="/course_v3_data/desktop-download.js?v=20261021-c61abddcc057"></script>
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
 <script src="/course_v3_data/iphone-pwa-notices.js?v=20261103-1"></script>
+<script src="/course_v3_data/iphone-pwa-feedback.js?v=20261103-1"></script>
 </body>
 </html>
