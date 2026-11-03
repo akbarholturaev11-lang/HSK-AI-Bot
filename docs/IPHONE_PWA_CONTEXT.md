@@ -3,6 +3,46 @@
 **Updated:** 2026-11-03 · **Status:** WIP, NOT accepted, NOT released.
 **This is the single active context file.** Preserve prior detailed history through Git commits; do not create another context file or parallel plan. The only formal acceptance list is [OpenSpec tasks](../openspec/changes/iphone-course-pwa/tasks.md).
 
+## NEW CHAT — verified handoff (2026-11-03, latest authoritative snapshot)
+
+> **Read this section first.** Historical snapshots below document earlier SHAs and are *not* the current state. Do not create another handoff file. Re-read GitHub refs and latest exact-HEAD CI on restart; these values are a point-in-time snapshot.
+
+| Item | Verified state |
+| --- | --- |
+| Repo | `akbarholturaev11-lang/HSK-AI-Bot` |
+| Production `main` | `a329ff5c639d7e9325ec7c02bb4b708e523926d9` — independently advanced; **never modify without explicit owner approval** |
+| Implementation branch / Draft PR [#257](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/257) | `feat/iphone-pwa-browser-auth-p1-20261102` @ `d5494acd64f60dad096bafedd407a49358d70f3b`, open Draft, not merged |
+| Planning branch / Draft PR [#256](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/256) | `feat/iphone-course-pwa-planning-20261102` @ `28d4352357c867307ae0412fd85e2df6f76ef8e6` **before this context-only commit**, open Draft, not merged |
+| Backup | `backup/iphone-pwa-before-main-sync-20261103` @ `d19acf7e562073326d77e733c869d22be6bfb097`; do not alter/delete |
+| OpenSpec checklist | **4/18 checked** (P0 source audit only). **14 P1–P3 acceptance gates remain unchecked** even if some backend code is already present |
+| Release | **NOT approved / NOT deployed / `PWA_AUTH_ENABLED` must stay OFF / physical iPhone QA not yet performed** |
+
+### Exact current implementation HEAD CI (not older-green substitution)
+
+As inspected on 2026-11-03, `d5494ac` has **7/8 full workflows SUCCESS**: Backend targeted tests [run 41624040956](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41624040956), Admin PWA security, Android CI, Desktop, localization and two Mandarin TTS workflows. Backend subjobs `targeted-tests`, `native-postgres` and `miniapp-ui` all completed successfully. **Smart Reminder [run 41624040730](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/41624040730) ended CANCELLED**, not PASS or FAIL: its Android JVM baseline and baseline/consent jobs passed; `Smart storage migration (SQLite and PostgreSQL)` was cancelled while compiling/testing storage. **Do not certify full CI**; rerun/complete the exact relevant Smart storage job after checking current branch/head and main drift.
+
+### What code exists vs what is NOT accepted
+
+- Original Mini App course and seven child screens use an initial browser bridge, Google/Apple/Telegram verified identity/session and explicit account linking, canonical `users.id`, HttpOnly cookie + Origin/CSRF, course/XP/progress/voice/practice, Pro/checkout/receipt, session lifecycle and PWA-only rollback. Backend/Android/Desktop regressions have been run. This is **not** an owner-accepted end-to-end device release.
+- Canonical ordinary and release feedback APIs, one-time reward/discount guards, locale choices and existing Admin notifications are staged. Real PostgreSQL cross-transport duplicate-grant tests passed on prior exact SHAs. The newest `d5494ac` further aligns authenticated `GET feedback/available` and CSRF `POST ordinary/prepare` with original nonblocked, join-delay, active-7-day and prompt eligibility; newest Backend checks are green.
+- In-app account-notice source and course-notice reads, owner-scoped payment history, `payment_action` for *only the latest reviewed rejected submitted receipt* exist at API level. Later pending or approved receipt suppresses stale rejection urgency. This is **data**, not a completed centered/modal presentation. No browser Web Push v1.
+- **Still OPEN:** inspect actual [Figma component node `24:38`](https://www.figma.com/design/89fCM5GdjfBqcx0B9aQHOI?node-id=24-38) using mandatory repo/Figma skills; previous `get_design_context` calls hit Figma Starter MCP quota. No fabricated feedback/rating dialog, important-payment modal, inbox or parallel frontend. Finish actual existing-UI integration, per-account dismiss-once state, source fidelity, localized copy and no-interruption behavior. Explicit P2.5/P2.6, P3.2/P3.3/P3.4 criteria remain unchecked until proven.
+- Final owner-only iPhone Safari **and** Home Screen QA LAST: login/link/account-switch, background/session/BFCache, safe-area, 16px focus zoom, accessible pinch/swipe, course/XP, voice/mic, Pro/free/pending/approved/rejected checkout/receipt, logout/rollback. Neither developer simulation nor CI substitutes for this.
+
+### New main / Smart Reminder reconciliation — mandatory before release, not a blind merge
+
+GitHub `compare(feature...main)` at these SHAs reports **diverged: main ahead 22 independent commits, feature ahead 310**. Main has Smart runtime, offline/planner, widget Android release and Admin PWA changes; feature carries PWA auth, feedback and 0146 canonical feedback migration. Prior overlap inventory found `app/config.py`, `app/main.py`, `app/static/admin-pwa/app.js` shared-changed paths; **re-diff at new refs** before reconciling, including Smart route toggles, delivery/permissions, migration heads and Android QA. GitHub PR mergeability is not a semantic safety proof. If safe, sync **only into implementation feature branch**, preserve both sides, tests and backup; do not merge into production `main`.
+
+### Exactly where the next chat should resume
+
+1. Fetch **current** three refs, both Draft PRs, original `docs/IPHONE_PWA_CONTEXT.md`, `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, OpenSpec specs/tasks and `$hsk-ai-openspec-planning`; check exact HEAD CI and cancelled Smart storage migration. No old-run assumptions.
+2. Audit Figma `24:38` and the existing Mini App/skill components before any new UI. If quota remains blocked, **continue non-UI tasks** (Smart branch reconciliation, payment/feedback idempotency, server tests, iOS layout/lifecycle tests) without speculative modal code.
+3. Complete P1–P3 **in the existing codebase and existing UI**, preserve eligibility/rewards/payment state, perform real cross-account/CSRF/locale/browser security regressions. P2.5/P2.6 in-app notice/rejection/feedback UX are still not finished; do not mark checkbox complete prematurely.
+4. Update **this exact file** after material commits with actual SHA + exact run outcomes and remaining blockers; retain checklist in the existing OpenSpec, no parallel context or duplicated UI/account/Smart/checkout systems.
+5. Leave #256/#257 **Draft**, `main` untouched, **no deploy**, `PWA_AUTH_ENABLED` OFF, no production merge/push/force push, no broken Telegram Mini App/Android/Desktop. Physical iPhone QA is the last gate performed by the owner; merging to `main` requires separate explicit owner approval.
+
+---
+
 ## 0. Restart snapshot — 2026-11-03 (authoritative; all historical notes below are snapshots)
 
 ### Source-level current-main integration overlap inventory (2026-11-03; NO MERGE)
