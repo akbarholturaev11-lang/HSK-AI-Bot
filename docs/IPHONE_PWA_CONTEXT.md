@@ -12,6 +12,14 @@
 - **Feature branch only** commit `38e3c1711764cd72ee46a3c054c9e94a5fb09209` removed the optimistic installed label. Only the existing server-confirmed `refreshPriceQrStatus` can now display it after the handler releases its lock. No payment contract, Admin auth/proof, QR storage, localized text, or test assertion was weakened. The existing real ASGI/virtual WebAuthn browser QR E2E exercises two signed uploads; **new HEAD CI is not yet verified green**.
 - Next: inspect exact `38e3c171` workflow CI and browser E2E before claiming repair; check Android and Smart Reminder final outcomes from their own exact 648a74b9 runs, audit independent Smart `main` changes before considering branch-only sync; continue P1–P3 with Figma gate and no new UI invented. Keep #256/#257 Draft, backup intact, feature flag OFF, no main push/deploy/merge, physical iPhone QA last.
 
+### Main Smart drift and design-source audit (2026-11-03, still NO SYNC)
+
+- Reviewed `df8e6de..400ddb0`: eight independent main commits covering Smart repeat-practice observation, Admin Smart control, offline diagnostic and approved personal study-time rule, with 44 changed paths. Compared those paths against feature branch `38e3c171`; `app/static/admin-pwa/app.js` now intersects (Smart Admin control versus QR race fix). There are additional behavioral dependencies through shared `course_miniapp_practice_service`, notification/cadence and localized Admin Smart copy even without direct path conflicts.
+- **Decision: no branch-only Smart merge yet.** An earlier Smart storage migration job in the `648a74b9` run was **cancelled**, not PASS; the later `38e3c171` Smart run must finish successfully, the intersecting JS must be manually combined, and the shared practice/consent/notification behavior must be regression-tested before any safe sync. Never overwrite the QR fix or select an unsupported PWA Smart channel.
+- `648a74b9` Android CI completed both jobs PASS. This says nothing about the new `38e3c171` Android run, which has its own result.
+- Figma session was attempted against the existing iPhone PWA design file; `get_metadata` returned the **Figma Starter MCP rate-limit** error. Component variants for the inbox and feedback dialogs remain unreadable. **No new UI added.** Preserve the Figma-first gate; do not pretend component approval or fabricate a dialog layout.
+
+
 **USER REQUEST AT HANDOFF:** Tidy up the GitHub PWA work, update this sole active context, and continue implementation from a new chat. This update documents and organizes the existing GitHub work only; it does **not** mean PWA is finished or released. Read this section first, then the exact OpenSpec checklist and original detailed analysis below. Never create a second PWA context file.
 
 ### GitHub roles, verified branches, release lock
