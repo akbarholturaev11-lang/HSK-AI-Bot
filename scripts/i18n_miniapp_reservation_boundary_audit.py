@@ -222,7 +222,7 @@ def _client_checks(source: str) -> dict[str, bool]:
             r"fetch\(lessonDataUrl\(lv,n\),", source,
         )),
         "permits_skip_of_reservation_without_init_data": bool(re.search(
-            r"if\(!INIT_DATA\|\|!l\|\|l\.status!==[\"']current[\"']\)"
+            r"if\(\(!INIT_DATA&&!PWA_COURSE_HOST\)\|\|!l\|\|l\.status!==[\"']current[\"']\)"
             r"return Promise\.resolve\(\{ok:true,allowed:true\}\)",
             source,
         )),
