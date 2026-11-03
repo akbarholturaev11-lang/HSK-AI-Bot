@@ -52,7 +52,8 @@
       close: courseLabel("subscriptionPage.close") || commonLabel("action.close"),
       loading: courseLabel("subscriptionPage.loading"),
       error: courseLabel("subscriptionPage.loadError"),
-      rejected: courseLabel("subscriptionPage.paymentRejectedTitle"),
+      rejected: courseLabel("subscriptionPage.proRejectedTitle"),
+      hsk30Rejected: courseLabel("subscriptionPage.paymentRejectedTitle"),
       retry: courseLabel("subscriptionPage.retryPayment")
     };
   }
@@ -67,6 +68,16 @@
     var key = dismissedKey(paymentId);
     if (inMemoryDismissals.has(key)) return true;
     try { return localStorage.getItem(key) === "1"; } catch (_) { return false; }
+  }
+  function rejectedTitle(payment) {
+    var t = labels();
+    return payment && payment.plan_type === "hsk30_unlock" ? t.hsk30Rejected : t.rejected;
+  }
+  function checkoutPath() {
+    var pay = latestData && latestData.account && latestData.account.payment_action;
+    var url = "/iphone-pwa/checkout?lang=" + encodeURIComponent(LANG);
+    return pay && pay.plan_type === "hsk30_unlock"
+      ? url + "&mode=hsk30_unlock&plan=hsk30_unlock" : url;
   }
   function markDismissed() {
     var payment = latestData && latestData.account && latestData.account.payment_action;
@@ -89,12 +100,13 @@
     overlay.hidden = false;
     var t = labels();
     var isUrgent = mode === "urgent";
+    panel.setAttribute("aria-labelledby", isUrgent ? "hsk-pwa-urgent-title" : "hsk-pwa-notice-title");
     overlay.querySelector(".hsk-pwa-notice-head").hidden = isUrgent;
     tabs.hidden = isUrgent;
     list.hidden = isUrgent;
     urgent.hidden = !isUrgent;
     if (isUrgent) {
-      overlay.querySelector("#hsk-pwa-urgent-title").textContent = t.rejected;
+      overlay.querySelector("#hsk-pwa-urgent-title").textContent = rejectedTitle(latestData && latestData.account && latestData.account.payment_action);
       overlay.querySelector("[data-pwa-retry]").textContent = t.retry;
       urgent.querySelector("[data-pwa-close]").textContent = t.close;
     } else {
@@ -125,7 +137,7 @@
   function navigate(action) {
     close();
     if (action === "subscription") {
-      location.assign("/iphone-pwa/checkout?lang=" + encodeURIComponent(LANG));
+      location.assign(checkoutPath());
     } else if (action === "rating" || action === "profile" || action === "course") {
       if (window.App && typeof App.show === "function") App.show(action);
     }
@@ -155,7 +167,7 @@
       ? latestData.course.notifications : latestData.account.notices;
     if (activeTab === "account" && latestData.account.payment_action &&
         latestData.account.payment_action.status === "rejected") {
-      putMessage(t.rejected, "", "subscription");
+      putMessage(rejectedTitle(latestData.account.payment_action), "", "subscription");
     }
     (Array.isArray(items) ? items : []).slice(0, 20).forEach(function (item) {
       if (item && typeof item === "object") putMessage(item.title, item.body, item.action);
@@ -232,7 +244,7 @@
     }
     if (ev.target.closest("[data-pwa-retry]")) {
       markDismissed();
-      location.assign("/iphone-pwa/checkout?lang=" + encodeURIComponent(LANG));
+      location.assign(checkoutPath());
     }
   });
   document.addEventListener("keydown", function (ev) {
