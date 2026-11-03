@@ -8969,9 +8969,11 @@ var finishHskLaunchSplash=(function(){
     var bootParams=new URLSearchParams(location.search);
     /* Server onboarding source of truth. localStorage faqat tez cache: boshqa
        qurilma yoki cache tozalanganda server holati noto'g'ri redirectni to'xtatadi. */
-    if(!PWA_COURSE_HOST&&d.user&&d.user.onboarding_completed===false){
+    if(d.user&&d.user.onboarding_completed===false){
       var onbQuery=new URLSearchParams(bootParams.toString());onbQuery.set("lang",LANG);
-      finishHskLaunchSplash();beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+onbQuery.toString()+location.hash);return;
+      var onboardingPath=PWA_COURSE_HOST?"/iphone-pwa/onboarding":"/course_v3_onboarding.html";
+      finishHskLaunchSplash();beginInternalNavigation();
+      location.replace(onboardingPath+"?"+onbQuery.toString()+location.hash);return;
     }
     if(!PWA_COURSE_HOST&&d.user&&typeof d.user.onboarding_completed!=="boolean"){
       var cachedOnboarding=false;try{cachedOnboarding=!!localStorage.getItem("hsk_v3_onb")}catch(e){}
@@ -8980,7 +8982,7 @@ var finishHskLaunchSplash=(function(){
         finishHskLaunchSplash();beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+fallbackQuery.toString()+location.hash);return;
       }
     }
-    if(d.user&&d.user.onboarding_completed===true){try{localStorage.setItem("hsk_v3_onb","1")}catch(e){}}
+    if(!PWA_COURSE_HOST&&d.user&&d.user.onboarding_completed===true){try{localStorage.setItem("hsk_v3_onb","1")}catch(e){}}
     renderAll();
     /* Oddiy startup trial eligibility'ni so'ramaydi: map joriy access holatini
        allaqachon beradi. Faqat onboardingdan qaytishda tanlov uchun darhol kerak. */
