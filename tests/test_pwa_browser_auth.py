@@ -1226,6 +1226,46 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         standalone_voice = (Path("app/static") / "course_v3_voice.html").read_text(encoding="utf-8")
         self.assertIn(".kb textarea{", standalone_voice)
 
+    def test_browser_practice_pro_ctas_use_shared_checkout_with_safe_return(self):
+        """Server-owned Pro paths are reachable without a fake Telegram actor."""
+        checkout = Path("app/static/subscription.html").read_text(encoding="utf-8")
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        cases = [
+            ("course_v3_recognition.html", "PWA_RECOGNITION_HOST", "goPremium", "v3_recognition_limit"),
+            ("course_v3_memorize.html", "PWA_MEMORIZE_HOST", "goPremium", "v3_memorize_limit"),
+            ("course_v3_pronunciation.html", "PWA_PRONUNCIATION_HOST", "goPremium", "v3_pronunciation_limit"),
+            ("course_v3_mistakes.html", "PWA_MISTAKES_HOST", "goPay", "v3_mistake_review"),
+            ("course_v3_test.html", "PWA_TEST_HOST", "goPremium", "v3_test_limit"),
+            ("course_v3_voice.html", "PWA_VOICE_HOST", "goPremium", "v3_voice_limit"),
+        ]
+        self.assertIn('const RETURN_TO_COURSE=PARAMS.get("return_to")==="course"', checkout)
+        self.assertIn('return map[requestedPage]+"?"+query.toString()', checkout)
+        for filename, host, handler, source in cases:
+            with self.subTest(page=filename):
+                html = (Path("app/static") / filename).read_text(encoding="utf-8")
+                self.assertIn(
+                    f'function {handler}(){{location.href=({host}?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG',
+                    html,
+                )
+                self.assertIn(f'&source={source}&', html)
+                self.assertIn(f'&return_page={filename}&', html)
+                self.assertIn(f'"{filename}":"/iphone-pwa/practice/', checkout)
+                self.assertNotIn(f'if({host}){{goBack();return}}', html)
+                self.assertNotIn(f'({host}?', html.split("function showLimitNow(){")[1].split("\n}")[0] if "function showLimitNow(){" in html else "")
+        mistakes = Path("app/static/course_v3_mistakes.html").read_text(encoding="utf-8")
+        standalone_voice = Path("app/static/course_v3_voice.html").read_text(encoding="utf-8")
+        self.assertIn('$("lim-btn").hidden=false;', mistakes)
+        self.assertIn('$("pwb").hidden=false;', standalone_voice)
+        for expression in (
+            'function premium(){App.goPay("v3_mistake_review")}',
+            'function premium(){App.goPay("v3_test_limit")}',
+            'function goPremium(){App.goPay("v3_voice_limit")}',
+            '$("pwb").hidden=false;',
+        ):
+            self.assertIn(expression, course)
+        self.assertNotIn('hidden=PWA_COURSE_HOST', course)
+        self.assertIn('PWA_COURSE_HOST?"/iphone-pwa/checkout":"/subscription.html"', course)
+
     def test_existing_checkout_ui_never_enters_fake_pwa_preview(self):
         html = (Path("app/static") / "subscription.html").read_text(encoding="utf-8")
         course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
