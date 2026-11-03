@@ -3181,6 +3181,233 @@ async def v3_course_lesson_unlock(request: Request):
         )
 
 
+async def _v3_complete_lesson_for_canonical_actor(
+    session, user, payload: dict, *, lesson_order: int,
+    lesson_session_id: str | None, lesson_mistakes: list[dict],
+    telegram_id: int | None,
+):
+    """Single existing V3 completion, entitlement, proof and XP transaction.
+
+    Telegram and browser PWA transports only differ in how they verify the
+    actor; neither transport has its own progress or grading implementation.
+    """
+    # Band yagona manbadan — user.level. Klient yuborgan level emas, server
+    # foydalanuvchining haqiqiy bandiga ishonadi (QA rejim bilan bir xil).
+    resolved_level = _course_v3_user_level(user)
+    if payload.get("level") is not None and str(payload["level"]).strip().lower() != resolved_level:
+        return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
+                            headers={"Cache-Control": "no-store"})
+    if await _course_v3_foundation_is_blocked(session, user, resolved_level):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "android_foundation_required"},
+                            headers={"Cache-Control": "no-store"})
+
+    total_parts = _course_v3_total_parts(resolved_level)
+    if total_parts and lesson_order > total_parts:
+        return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
+    # Legacy course_lessons qatori endi shart emas (qismlar flat raqamlanadi
+    # va jadvaldagi eski tartibdan ko'p) — topilsa bookkeeping uchun olamiz.
+    lesson_repo = CourseLessonRepository(session)
+    lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
+
+    access = CourseMiniAppAccessService(session)
+    # Analitika uchun kengroq course accessni saqlaymiz; darsga ruxsatni
+    # esa yuqoridagi LessonAccessService yagona manbadan hal qiladi.
+    is_paid = access.has_unlimited_course_access(user)
+    progress_repo = CourseProgressRepository(session)
+    progress = await progress_repo.get_by_user_id(user.id, for_update=True)
+    if progress and _course_v3_level(progress.level) != resolved_level:
+        return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
+                            headers={"Cache-Control": "no-store"})
+    if not progress:
+        progress = await progress_repo.create(
+            user_id=user.id,
+            level=resolved_level,
+            current_lesson_id=getattr(lesson, "id", None),
+            current_step="intro",
+            waiting_for="none",
+        )
+    progress.level = resolved_level
+
+    completed = int(getattr(progress, "completed_lessons_count", 0) or 0)
+    gamification = CourseGamificationService(session)
+    if lesson_order <= completed:
+        snapshot = await gamification.snapshot(user)
+        next_level = None
+        next_level_pending = None
+        if total_parts and lesson_order >= total_parts:
+            next_level, next_level_pending = await _course_v3_next_level_release(
+                session,
+                resolved_level,
+            )
+        await session.commit()
+        return JSONResponse(
+            content={
+                "ok": True,
+                "duplicate": True,
+                "completed_lesson": lesson_order,
+                "completed_lessons_count": completed,
+                "next_level": next_level,
+                "next_level_pending": next_level_pending,
+                "gamification": snapshot,
+            }
+        )
+    if lesson_order != completed + 1:
+        return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
+
+    # Signed proof is preferred for updated clients. Older cached Mini
+    # Apps omit the proof entirely, so consult ONLY the server-issued,
+    # recent authorized-start record (never client telemetry or a free
+    # allowance alone). A supplied bad proof must NOT use this fallback.
+    # Completed lessons remain idempotent even if proof/record expired.
+    valid_proof = verify_lesson_completion_proof(
+        payload.get("completion_proof"),
+        user_id=user.id, level=resolved_level, lesson_order=lesson_order,
+        secret=settings.BOT_TOKEN,
+    )
+    if not valid_proof and (
+        "completion_proof" in payload or not await has_recent_authorized_lesson_start(
+            session, user_id=user.id, level=resolved_level,
+            lesson_order=lesson_order,
+        )
+    ):
+        return JSONResponse(
+            status_code=403,
+            content={"ok": False, "error": "lesson_completion_proof_required"},
+            headers={"Cache-Control": "no-store"},
+        )
+
+    limit_status = await LessonAccessService(session).status(
+        user, level=resolved_level, lesson_order=lesson_order, completed=completed, consume=True,
+    )
+    if not limit_status["allowed"]:
+        await session.commit()
+        return JSONResponse(status_code=403, content=limit_status)
+
+    # Verify weekly rank before and after XP is awarded. Missing rating
+    # data must never prevent a successfully completed lesson.
+    rank_before = 0
+    try:
+        rank_before = int((await gamification.leaderboard(user)).get("rank") or 0)
+    except Exception:
+        logging.exception("Mini App rank_before lookup failed")
+
+    await progress_repo.mark_lesson_completed(progress)
+    snapshot = await gamification.award(
+        user,
+        activity_type="lesson",
+        activity_ref=f"v3-part:{resolved_level}:{lesson_order}:complete",
+        base_xp=20,
+        level=resolved_level,
+    )
+
+    rank_after = 0
+    rank_up_board = []
+    if rank_before:
+        try:
+            updated_rating = await gamification.leaderboard(user)
+            rank_after = int(updated_rating.get("rank") or 0)
+            if 0 < rank_after < rank_before:
+                # Include only the neighbouring leaderboard rows. The
+                # Mini App can celebrate immediately, without a second
+                # HTTP request or a stale local leaderboard.
+                leaderboard = updated_rating.get("leaderboard") or []
+                me_idx = next(
+                    (idx for idx, row in enumerate(leaderboard)
+                     if row.get("is_current_user")),
+                    None,
+                )
+                if me_idx is not None:
+                    rank_up_board = leaderboard[max(0, me_idx - 1):me_idx + 2]
+        except Exception:
+            logging.exception("Mini App rank_after lookup failed")
+
+    # Keyingi qism bormi — manifest chegarasidan (legacy jadvaldan emas).
+    # Manifest o'qilmasa (total_parts=0) band avto-o'tishi o'chiq qoladi.
+    has_next = bool(total_parts) and lesson_order < total_parts
+    next_order = lesson_order + 1 if has_next else None
+    next_level = None
+    next_level_pending = None
+    if total_parts and not has_next:
+        # Joriy band to'liq tugadi. Legacy HSK odatdagidek keyingi bandga
+        # o'tadi; HSK 3.0 esa faqat serverda live qilingan bandga o'tadi.
+        next_level, next_level_pending = await _course_v3_next_level_release(
+            session,
+            resolved_level,
+        )
+        if next_level:
+            user.level = next_level
+    if has_next:
+        await progress_repo.set_current_lesson_and_step(
+            progress=progress,
+            lesson_id=getattr(lesson, "id", None),
+            step="intro",
+            waiting_for="none",
+        )
+        await progress_repo.set_homework_status(progress, "none")
+    else:
+        await progress_repo.set_current_lesson_and_step(
+            progress=progress,
+            lesson_id=getattr(lesson, "id", None),
+            step="completed",
+            waiting_for="none",
+        )
+
+    await CourseMiniAppAnalyticsService(session).record_server_event(
+        event_name="lesson_completed",
+        telegram_id=telegram_id,
+        user_id=getattr(user, "id", None),
+        source="course_v3",
+        level=resolved_level,
+        lesson_id=getattr(lesson, "id", None),
+        lesson_order=lesson_order,
+        session_id=lesson_session_id,
+        dedupe_key=f"v3-part:{resolved_level}:{lesson_order}:completed",
+        payload={
+            "lesson_order": lesson_order,
+            "is_paid": is_paid,
+            "next_lesson": next_order,
+            "next_level": next_level,
+            "next_level_pending": next_level_pending,
+        },
+    )
+    if lesson_mistakes:
+        try:
+            lesson_mistakes = CourseLessonMistakeMaterialService.canonicalize_items(
+                level=resolved_level,
+                lesson_order=lesson_order,
+                lang=_course_v3_user_lang(user),
+                items=lesson_mistakes,
+            )
+        except CourseLessonMistakeMaterialError:
+            # Optional mistake telemetry must never block a valid lesson
+            # completion when checked-in material is unavailable/corrupt.
+            lesson_mistakes = []
+    if lesson_mistakes:
+        await CourseMistakeService(session).record_items(
+            user,
+            lesson_mistakes,
+            source="lesson",
+            level=resolved_level,
+            lesson_id=getattr(lesson, "id", None),
+            lesson_order=lesson_order,
+        )
+    await session.commit()
+    return JSONResponse(
+        content={
+            "ok": True,
+            "completed_lesson": lesson_order,
+            "next_lesson": next_order,
+            "next_level": next_level,
+            "next_level_pending": next_level_pending,
+            "completed_lessons_count": int(getattr(progress, "completed_lessons_count", 0) or 0),
+            "gamification": snapshot,
+            "rank_before": rank_before,
+            "rank_after": rank_after,
+            "rank_up_board": rank_up_board,
+        }
+    )
+
+
 @app.post("/api/v3/lesson/complete")
 async def v3_course_lesson_complete(request: Request):
     init_data = request.headers.get("X-Telegram-Init-Data", "")
@@ -3207,221 +3434,94 @@ async def v3_course_lesson_complete(request: Request):
         if not user:
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
 
-        # Band yagona manbadan — user.level. Klient yuborgan level emas, server
-        # foydalanuvchining haqiqiy bandiga ishonadi (QA rejim bilan bir xil).
-        resolved_level = _course_v3_user_level(user)
-        if payload.get("level") is not None and str(payload["level"]).strip().lower() != resolved_level:
-            return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
-                                headers={"Cache-Control": "no-store"})
-        if await _course_v3_foundation_is_blocked(session, user, resolved_level):
-            return JSONResponse(status_code=403, content={"ok": False, "error": "android_foundation_required"},
-                                headers={"Cache-Control": "no-store"})
+        return await _v3_complete_lesson_for_canonical_actor(
+            session, user, payload, lesson_order=lesson_order,
+            lesson_session_id=lesson_session_id,
+            lesson_mistakes=lesson_mistakes, telegram_id=telegram_id,
+        )@app.post("/api/v3/pwa/lesson/complete")
+async def pwa_v3_course_lesson_complete(request: Request):
+    """PWA browser session transport for the exact Mini App V3 completion."""
+    from app.services.pwa_auth_service import (
+        PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService,
+        require_same_origin,
+    )
 
-        total_parts = _course_v3_total_parts(resolved_level)
-        if total_parts and lesson_order > total_parts:
-            return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
-        # Legacy course_lessons qatori endi shart emas (qismlar flat raqamlanadi
-        # va jadvaldagi eski tartibdan ko'p) — topilsa bookkeeping uchun olamiz.
-        lesson_repo = CourseLessonRepository(session)
-        lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
-
-        access = CourseMiniAppAccessService(session)
-        # Analitika uchun kengroq course accessni saqlaymiz; darsga ruxsatni
-        # esa yuqoridagi LessonAccessService yagona manbadan hal qiladi.
-        is_paid = access.has_unlimited_course_access(user)
-        progress_repo = CourseProgressRepository(session)
-        progress = await progress_repo.get_by_user_id(user.id, for_update=True)
-        if progress and _course_v3_level(progress.level) != resolved_level:
-            return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
-                                headers={"Cache-Control": "no-store"})
-        if not progress:
-            progress = await progress_repo.create(
-                user_id=user.id,
-                level=resolved_level,
-                current_lesson_id=getattr(lesson, "id", None),
-                current_step="intro",
-                waiting_for="none",
-            )
-        progress.level = resolved_level
-
-        completed = int(getattr(progress, "completed_lessons_count", 0) or 0)
-        gamification = CourseGamificationService(session)
-        if lesson_order <= completed:
-            snapshot = await gamification.snapshot(user)
-            next_level = None
-            next_level_pending = None
-            if total_parts and lesson_order >= total_parts:
-                next_level, next_level_pending = await _course_v3_next_level_release(
-                    session,
-                    resolved_level,
-                )
-            await session.commit()
-            return JSONResponse(
-                content={
-                    "ok": True,
-                    "duplicate": True,
-                    "completed_lesson": lesson_order,
-                    "completed_lessons_count": completed,
-                    "next_level": next_level,
-                    "next_level_pending": next_level_pending,
-                    "gamification": snapshot,
-                }
-            )
-        if lesson_order != completed + 1:
-            return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
-
-        # Signed proof is preferred for updated clients. Older cached Mini
-        # Apps omit the proof entirely, so consult ONLY the server-issued,
-        # recent authorized-start record (never client telemetry or a free
-        # allowance alone). A supplied bad proof must NOT use this fallback.
-        # Completed lessons remain idempotent even if proof/record expired.
-        valid_proof = verify_lesson_completion_proof(
-            payload.get("completion_proof"),
-            user_id=user.id, level=resolved_level, lesson_order=lesson_order,
-            secret=settings.BOT_TOKEN,
-        )
-        if not valid_proof and (
-            "completion_proof" in payload or not await has_recent_authorized_lesson_start(
-                session, user_id=user.id, level=resolved_level,
-                lesson_order=lesson_order,
-            )
-        ):
-            return JSONResponse(
-                status_code=403,
-                content={"ok": False, "error": "lesson_completion_proof_required"},
-                headers={"Cache-Control": "no-store"},
-            )
-
-        limit_status = await LessonAccessService(session).status(
-            user, level=resolved_level, lesson_order=lesson_order, completed=completed, consume=True,
-        )
-        if not limit_status["allowed"]:
-            await session.commit()
-            return JSONResponse(status_code=403, content=limit_status)
-
-        # Verify weekly rank before and after XP is awarded. Missing rating
-        # data must never prevent a successfully completed lesson.
-        rank_before = 0
-        try:
-            rank_before = int((await gamification.leaderboard(user)).get("rank") or 0)
-        except Exception:
-            logging.exception("Mini App rank_before lookup failed")
-
-        await progress_repo.mark_lesson_completed(progress)
-        snapshot = await gamification.award(
-            user,
-            activity_type="lesson",
-            activity_ref=f"v3-part:{resolved_level}:{lesson_order}:complete",
-            base_xp=20,
-            level=resolved_level,
-        )
-
-        rank_after = 0
-        rank_up_board = []
-        if rank_before:
-            try:
-                updated_rating = await gamification.leaderboard(user)
-                rank_after = int(updated_rating.get("rank") or 0)
-                if 0 < rank_after < rank_before:
-                    # Include only the neighbouring leaderboard rows. The
-                    # Mini App can celebrate immediately, without a second
-                    # HTTP request or a stale local leaderboard.
-                    leaderboard = updated_rating.get("leaderboard") or []
-                    me_idx = next(
-                        (idx for idx, row in enumerate(leaderboard)
-                         if row.get("is_current_user")),
-                        None,
-                    )
-                    if me_idx is not None:
-                        rank_up_board = leaderboard[max(0, me_idx - 1):me_idx + 2]
-            except Exception:
-                logging.exception("Mini App rank_after lookup failed")
-
-        # Keyingi qism bormi — manifest chegarasidan (legacy jadvaldan emas).
-        # Manifest o'qilmasa (total_parts=0) band avto-o'tishi o'chiq qoladi.
-        has_next = bool(total_parts) and lesson_order < total_parts
-        next_order = lesson_order + 1 if has_next else None
-        next_level = None
-        next_level_pending = None
-        if total_parts and not has_next:
-            # Joriy band to'liq tugadi. Legacy HSK odatdagidek keyingi bandga
-            # o'tadi; HSK 3.0 esa faqat serverda live qilingan bandga o'tadi.
-            next_level, next_level_pending = await _course_v3_next_level_release(
-                session,
-                resolved_level,
-            )
-            if next_level:
-                user.level = next_level
-        if has_next:
-            await progress_repo.set_current_lesson_and_step(
-                progress=progress,
-                lesson_id=getattr(lesson, "id", None),
-                step="intro",
-                waiting_for="none",
-            )
-            await progress_repo.set_homework_status(progress, "none")
-        else:
-            await progress_repo.set_current_lesson_and_step(
-                progress=progress,
-                lesson_id=getattr(lesson, "id", None),
-                step="completed",
-                waiting_for="none",
-            )
-
-        await CourseMiniAppAnalyticsService(session).record_server_event(
-            event_name="lesson_completed",
-            telegram_id=telegram_id,
-            user_id=getattr(user, "id", None),
-            source="course_v3",
-            level=resolved_level,
-            lesson_id=getattr(lesson, "id", None),
-            lesson_order=lesson_order,
-            session_id=lesson_session_id,
-            dedupe_key=f"v3-part:{resolved_level}:{lesson_order}:completed",
-            payload={
-                "lesson_order": lesson_order,
-                "is_paid": is_paid,
-                "next_lesson": next_order,
-                "next_level": next_level,
-                "next_level_pending": next_level_pending,
-            },
-        )
-        if lesson_mistakes:
-            try:
-                lesson_mistakes = CourseLessonMistakeMaterialService.canonicalize_items(
-                    level=resolved_level,
-                    lesson_order=lesson_order,
-                    lang=_course_v3_user_lang(user),
-                    items=lesson_mistakes,
-                )
-            except CourseLessonMistakeMaterialError:
-                # Optional mistake telemetry must never block a valid lesson
-                # completion when checked-in material is unavailable/corrupt.
-                lesson_mistakes = []
-        if lesson_mistakes:
-            await CourseMistakeService(session).record_items(
-                user,
-                lesson_mistakes,
-                source="lesson",
-                level=resolved_level,
-                lesson_id=getattr(lesson, "id", None),
-                lesson_order=lesson_order,
-            )
-        await session.commit()
+    headers = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"}
+    try:
+        require_same_origin(request, settings)
+        if request.headers.get("X-Telegram-Init-Data"):
+            raise PwaAuthError("pwa_request_invalid", status_code=422)
+        if request.headers.get("Content-Type", "").split(";", 1)[0].lower().strip() != "application/json":
+            raise PwaAuthError("pwa_request_invalid", status_code=415)
+        content = bytearray()
+        async for chunk in request.stream():
+            content.extend(chunk)
+            if len(content) > 65536:
+                raise PwaAuthError("pwa_request_invalid", status_code=413)
+        import json
+        payload = json.loads(bytes(content))
+        if (not isinstance(payload, dict) or
+                set(payload) - {
+                    "lesson_id", "lesson_order", "level", "lang",
+                    "session_id", "completion_proof", "mistakes",
+                }):
+            raise ValueError("invalid_lesson_payload")
+        lesson_order = int(payload.get("lesson_id") or payload.get("lesson_order") or 0)
+        if not 1 <= lesson_order <= 500:
+            raise ValueError("invalid_lesson_payload")
+        if payload.get("level") is not None and (
+                not isinstance(payload["level"], str)
+                or len(payload["level"]) > 18):
+            raise ValueError("invalid_lesson_payload")
+        if payload.get("completion_proof") is not None and (
+                not isinstance(payload["completion_proof"], str)
+                or len(payload["completion_proof"]) > 2048):
+            raise ValueError("invalid_lesson_payload")
+        if payload.get("session_id") is not None and (
+                not isinstance(payload["session_id"], str)
+                or len(payload["session_id"]) > 80):
+            raise ValueError("invalid_lesson_payload")
+        lesson_mistakes = payload.get("mistakes", [])
+        if (not isinstance(lesson_mistakes, list) or len(lesson_mistakes) > 50
+                or any(not isinstance(item, dict) for item in lesson_mistakes)):
+            raise ValueError("invalid_lesson_payload")
+        lesson_session_id = _checkout_text(payload.get("session_id"), 80) or None
+    except PwaAuthError as exc:
         return JSONResponse(
-            content={
-                "ok": True,
-                "completed_lesson": lesson_order,
-                "next_lesson": next_order,
-                "next_level": next_level,
-                "next_level_pending": next_level_pending,
-                "completed_lessons_count": int(getattr(progress, "completed_lessons_count", 0) or 0),
-                "gamification": snapshot,
-                "rank_before": rank_before,
-                "rank_after": rank_after,
-                "rank_up_board": rank_up_board,
-            }
+            status_code=exc.status_code,
+            content={"ok": False, "error": exc.code}, headers=headers,
         )
+    except (TypeError, ValueError, UnicodeError):
+        return JSONResponse(
+            status_code=422,
+            content={"ok": False, "error": "invalid_lesson_payload"}, headers=headers,
+        )
+
+    try:
+        async with async_session_maker() as session:
+            actor, _ = await PwaAuthService(session, settings).mutation_actor(
+                request.cookies.get(PWA_SESSION_COOKIE),
+                request.headers.get("X-HSK-PWA-CSRF"),
+            )
+            user = await UserRepository(session).get_by_user_id(actor.id, lock=True)
+            if not user or str(user.status or "").strip().lower() == "blocked":
+                raise PwaAuthError("pwa_session_required", status_code=401)
+            response = await _v3_complete_lesson_for_canonical_actor(
+                session, user, payload, lesson_order=lesson_order,
+                lesson_session_id=lesson_session_id,
+                lesson_mistakes=lesson_mistakes,
+                telegram_id=int(user.telegram_id) if user.telegram_id else None,
+            )
+            response.headers["Cache-Control"] = "no-store"
+            response.headers["Referrer-Policy"] = "no-referrer"
+            return response
+    except PwaAuthError as exc:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"ok": False, "error": exc.code}, headers=headers,
+        )
+
+
 
 
 def _voice_practice_user_id(init_data: str) -> int | None:
