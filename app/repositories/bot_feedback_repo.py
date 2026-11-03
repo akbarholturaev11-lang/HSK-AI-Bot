@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.user import User
+from app.services.account_identity import owner_clause
 
 
 FEEDBACK_DISCOUNT_OFFER_CODES = ("price", "limits")
@@ -143,7 +144,11 @@ class BotFeedbackRepository:
         result = await self.session.execute(
             select(BotFeedback)
             .where(BotFeedback.id == feedback_id)
-            .where(BotFeedback.telegram_id == telegram_id)
+            # A provider-only record keeps telegram_id=NULL after explicit
+            # identity linking; its canonical users.id remains authoritative.
+            .where(owner_clause(
+                BotFeedback, telegram_id, telegram_column="telegram_id",
+            ))
             .where(BotFeedback.status == "completed")
             .where(BotFeedback.disliked_code.in_(FEEDBACK_DISCOUNT_OFFER_CODES))
             .where(BotFeedback.price_offer_sent_at.is_not(None))
@@ -155,7 +160,11 @@ class BotFeedbackRepository:
     async def get_latest_available_price_offer(self, telegram_id: int) -> Optional[BotFeedback]:
         result = await self.session.execute(
             select(BotFeedback)
-            .where(BotFeedback.telegram_id == telegram_id)
+            # A provider-only record keeps telegram_id=NULL after explicit
+            # identity linking; its canonical users.id remains authoritative.
+            .where(owner_clause(
+                BotFeedback, telegram_id, telegram_column="telegram_id",
+            ))
             .where(BotFeedback.status == "completed")
             .where(BotFeedback.disliked_code.in_(FEEDBACK_DISCOUNT_OFFER_CODES))
             .where(BotFeedback.price_offer_sent_at.is_not(None))

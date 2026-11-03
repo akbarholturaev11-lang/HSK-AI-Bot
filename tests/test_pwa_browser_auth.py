@@ -768,6 +768,21 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             )
             self.assertEqual(permitted_feedback.id, pending_google.id)
             self.assertEqual(linked_owner.id, 2)
+            # The delayed price-offer button must still resolve the same
+            # canonical feedback after a native-only learner links Telegram.
+            offered = await BotFeedbackRepository(db).get_available_price_offer(
+                feedback_id=pending_google.id, telegram_id=2002,
+            )
+            self.assertEqual(offered.user_id, 2)
+            self.assertIsNone(await BotFeedbackRepository(db).get_available_price_offer(
+                feedback_id=pending_google.id, telegram_id=1001,
+            ))
+            latest_offer = await BotFeedbackRepository(db).get_latest_available_price_offer(
+                telegram_id=2002,
+            )
+            self.assertEqual(latest_offer.id, pending_google.id)
+            await BotFeedbackRepository(db).mark_latest_price_offer_used(2002)
+            self.assertIsNotNone(pending_google.price_offer_used_at)
             _, forbidden_feedback, forbidden_owner = await _load_feedback_context(
                 db, 1001, pending_google.id,
             )
