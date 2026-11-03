@@ -963,6 +963,51 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             start_url, headers=headers, json=start_data,
         )).status_code, 503)
 
+    async def test_pwa_standalone_voice_keeps_original_page_without_telegram_session(self):
+        path = "/iphone-pwa/practice/voice"
+        self.assertEqual(
+            (await self.client.get(path, follow_redirects=False)).status_code, 303,
+        )
+        self.assertEqual(
+            (await self.client.get("/api/v3/pwa/voice/me")).status_code, 401,
+        )
+        state = await self.begin()
+        await self.callback(state)
+        page = await self.client.get(path)
+        self.assertEqual(page.status_code, 200, page.text[:150])
+        self.assertEqual(page.headers.get("cache-control"), "no-store")
+        self.assertEqual(page.headers.get("x-frame-options"), "DENY")
+        self.assertNotIn("maximum-scale=1", page.text)
+        self.assertIn('font-size:16px;line-height:1.35', page.text)
+        with patch(
+            "app.services.voice_practice_service.VoicePracticeService.user_status",
+            new_callable=AsyncMock,
+        ) as status:
+            status.return_value = {
+                "level": "hsk1", "language": "uz", "is_paid": False,
+                "remaining_voice_limit": 2,
+            }
+            result = await self.client.get("/api/v3/pwa/voice/me")
+            self.assertEqual(result.status_code, 200, result.text)
+            self.assertEqual(status.await_args.args[0].id, 1)
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.get(path)).status_code, 503)
+
+    def test_voice_standalone_ui_uses_pwa_actor_and_real_same_service(self):
+        html = (Path("app/static") / "course_v3_voice.html").read_text(encoding="utf-8")
+        self.assertIn('PWA_VOICE_HOST=location.pathname==="/iphone-pwa/practice/voice"', html)
+        self.assertIn('"/api/v3/pwa/voice/me"', html)
+        self.assertIn('"/api/v3/pwa/voice/session/start"', html)
+        self.assertIn('"/api/v3/pwa/voice/message"', html)
+        self.assertIn('"/api/v3/pwa/voice/session/end"', html)
+        self.assertIn('voiceMessage(fd).then(jr)', html)
+        self.assertIn('voicePost("/api/voice-practice/session/start"', html)
+        self.assertIn('voicePost("/api/voice-practice/session/end"', html)
+        self.assertIn('delete payload.initData;delete payload.user_id;delete payload.telegram_id;', html)
+        self.assertIn('fields.append("session_id",sid)', html)
+        self.assertIn('"X-HSK-PWA-CSRF":s.csrf', html)
+        self.assertIn('if(!PWA_VOICE_HOST&&window.CourseAds&&CourseAds.showLimitPromo)', html)
+
     def test_voice_inline_ui_uses_only_authenticated_browser_transport(self):
         html = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
         self.assertIn('"/api/voice-practice/session/start":"/api/v3/pwa/voice/session/start"', html)
