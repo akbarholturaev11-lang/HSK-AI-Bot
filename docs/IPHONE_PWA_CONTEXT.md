@@ -3,6 +3,15 @@
 **Updated:** 2026-11-03 · **Status:** WIP, NOT accepted, NOT released.
 **This is the single active context file.** Preserve prior detailed history through Git commits; do not create another context file or parallel plan. The only formal acceptance list is [OpenSpec tasks](../openspec/changes/iphone-course-pwa/tasks.md).
 
+## INDEPENDENT MAIN DRIFT — merge-safety inventory (2026-11-03; NO MERGE)
+
+- Read live `main=bb4c10ae98cc0269cde4cd17a1424264eed642a3` while implementation Draft PR #257 was at `f9aeb83ffb30aa27172049116e3202e6afb62db8`. Compared both against common base `df8e6de5dceb77284f2b361f760e8ee01f31d78c`: **23 main-only commits** and **349 feature-only commits**; main changed 107 paths and feature changed 86, with **7 overlapping paths** and **100 main-only changed paths absent from the feature diff**. This supersedes earlier historical handoffs' 3-overlap/22-ahead count.
+- Exact overlap list: `.github/workflows/smart-reminder-p0.yml`; `android/app/src/androidTest/java/com/pomp/hskai/core/notify/SmartStudyProtocolTest.kt`; `android/app/src/androidTest/java/com/pomp/hskai/core/notify/SmartStudyTwoDeviceTest.kt`; `app/config.py`; `app/main.py`; `app/static/admin-pwa/app.js`; `localization/baselines/reviewed_ui_changes.json`.
+- Risk: `app/config.py` must keep both default-OFF PWA and Smart flags; `app/main.py` must keep both independently added PWA account/lesson routes and main's Smart runtime lifecycle/routers; Smart job and Android protocol tests differ; Admin PWA and localization reviewed-change evidence must preserve both sources without incompatible generated artifacts. GitHub reports mergeable state only for Git; it does **not** prove app-level compatibility.
+- **No blind main→feature merge** was attempted. Before future feature-branch-only sync: inspect seven exact conflicts plus main-only Smart runtime and Android adapters, preserve rollback backup, build combined code with no silently dropped endpoint/flow, run Smart + Android + PWA auth/checkout + Admin security + localization + PostgreSQL and existing Mini App E2E at the merged HEAD. `main`, deployment and `PWA_AUTH_ENABLED` remain untouched.
+
+---
+
 ## LATEST FOLLOW-UP — real Chromium PASS and real HTTP routing repair (2026-11-03)
 
 - Implementation Draft PR #257 now at **`f9aeb83ffb30aa27172049116e3202e6afb62db8`**; planning Draft PR #256 remains separate, original Mini App and `main` unchanged. Browser-only flag remains disabled in `app/config.py`: `PWA_AUTH_ENABLED=False`.
