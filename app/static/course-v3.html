@@ -7368,7 +7368,19 @@ var RESOURCE=(function(){
   function openPractice(src){
     // Keep the established exercise gates and its return path unchanged.
     var allowed=["/course_v3_pronunciation.html","/course_v3_recognition.html","/course_v3_memorize.html"];
-    if(allowed.indexOf(String(src||"").split("?")[0])<0)return;
+    var path=String(src||"").split("?")[0];
+    if(allowed.indexOf(path)<0)return;
+    if(PWA_COURSE_HOST){
+      // Only recognition is wired end-to-end; the remaining practice pages
+      // must never silently fall back to unauthenticated Telegram preview.
+      if(path!=="/course_v3_recognition.html"){
+        toast(courseMessage("courseLoadError.title",LANG==="ru"?"Курс не загрузился":LANG==="tj"?"Курс бор нашуд":"Kurs yuklanmadi"),2600);
+        return;
+      }
+      var target=new URL(src,location.origin);
+      if(target.origin!==location.origin)return;
+      src="/iphone-pwa/practice/recognition"+target.search;
+    }
     close();beginInternalNavigation();location.href=src;
   }
   function warm(){
