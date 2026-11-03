@@ -2254,7 +2254,9 @@ var PWA_COURSE_POST_PATHS={
   "/api/miniapp/mistakes/review/answer":"/api/v3/pwa/mistakes/review/answer",
   "/api/miniapp/mistakes/review/complete":"/api/v3/pwa/mistakes/review/complete",
   "/api/v3/exams/start":"/api/v3/pwa/exams/start",
-  "/api/v3/exams/complete":"/api/v3/pwa/exams/complete"
+  "/api/v3/exams/complete":"/api/v3/pwa/exams/complete",
+  "/api/voice-practice/session/start":"/api/v3/pwa/voice/session/start",
+  "/api/voice-practice/session/end":"/api/v3/pwa/voice/session/end"
 };
 function _apiGet(url){
   if(!PWA_COURSE_HOST)return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}});
@@ -2284,7 +2286,28 @@ function _apiPost(url,body,opts){
   return pwaCourseActor().then(function(actor){
     return fetch(mapped,{
       method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":actor.csrf},
-      body:JSON.stringify(payload),credentials:"same-origin",cache:"no-store",redirect:"error"
+      body:JSON.stringify(payload),credentials:"same-origin",cache:"no-store",redirect:"error",
+      keepalive:!!(opts&&opts.keepalive)
+    });
+  });
+}
+// The original VOICE view stays intact; only its audio/text transport changes.
+// Never send a PWA session through Telegram initData or try to use Live RTC
+// until a canonical account-based live-voice authorization path is implemented.
+function courseVoiceMessage(fd){
+  if(!PWA_COURSE_HOST)return fetch("/api/voice-practice/message",{
+    method:"POST",body:fd
+  });
+  var fields=new FormData();
+  var sessionId=fd.get("session_id"),message=fd.get("text"),audio=fd.get("audio");
+  if(typeof sessionId!=="string"||!sessionId)return Promise.reject(new Error("voice_session_missing"));
+  fields.append("session_id",sessionId);
+  if(typeof message==="string"&&message)fields.append("text",message);
+  if(audio&&typeof audio!=="string")fields.append("audio",audio,typeof audio.name==="string"?audio.name:"voice.mp4");
+  return pwaCourseActor().then(function(actor){
+    return fetch("/api/v3/pwa/voice/message",{
+      method:"POST",headers:{"X-HSK-PWA-CSRF":actor.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",body:fields
     });
   });
 }
@@ -8498,8 +8521,7 @@ function init(){
 function startSession(){
   var epoch=voiceEpoch;
   busy=true;micBusy(true);setStatus(L.connecting);setChar("talk");
-  return fetch("/api/voice-practice/session/start",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({initData:initData(),role:PERS[persona].role,level:ME.level,language:ME.language,voice:PERS[persona].voice})}).then(jr)
+  return _apiPost("/api/voice-practice/session/start",{initData:initData(),role:PERS[persona].role,level:ME.level,language:ME.language,voice:PERS[persona].voice}).then(jr)
    .then(function(o){
       if(epoch!==voiceEpoch)return false;
       busy=false;micBusy(false);
@@ -8659,7 +8681,7 @@ function onStopped(){
   busy=true;micBusy(true);setChar("talk");setStatus(L.analyzing);addTyping();
   var _ext=extFromMime(blob.type||mt);
   var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("audio",blob,"voice."+_ext);
-  fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
+  courseVoiceMessage(fd).then(jr)
     .then(function(o){busy=false;micBusy(false);dropTyping();var heard=(o&&o.j&&o.j.transcription)||"";clog("mic_result",(o&&o.ok)?"ok":"fail",{mime:blob.type||mt,ext:_ext,size:blob.size,heard:(""+heard).slice(0,24)});if(!o.ok){onMsgError(o);return}renderReply(o.j)})
     .catch(function(){busy=false;micBusy(false);dropTyping();clog("mic_neterr","",{mime:blob.type||mt,ext:_ext,size:blob.size});setChar("happy");setStatus(L.sendErr);setHold(L.holdMic)});
 }
@@ -8675,7 +8697,7 @@ function sendMessage(txt){
   busy=true;micBusy(true);setChar("talk");setStatus(L.analyzing);
   addMe(txt,"");addTyping();
   var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("text",txt);
-  fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
+  courseVoiceMessage(fd).then(jr)
     .then(function(o){busy=false;micBusy(false);dropTyping();if(!o.ok){onMsgError(o);return}renderReply(o.j,true)})
     .catch(function(){busy=false;micBusy(false);dropTyping();setChar("happy");setStatus(L.sendErr)});
 }
@@ -8714,8 +8736,7 @@ function endCall(){
   closeSettings();closeHints();
   if(!started||!sess){showDoneResult({message_count:turn});return;}
   stopHard();stopSpeak();var sid=sess;started=false;sess=null;
-  fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},
-    keepalive:true,body:JSON.stringify({initData:initData(),session_id:sid})}).then(function(r){return r.json()})
+  _apiPost("/api/voice-practice/session/end",{initData:initData(),session_id:sid},{keepalive:true}).then(function(r){return r.json()})
    .then(function(j){if(j&&j.ok)refreshCourseProgress(true);showDoneResult(j||{})})
    .catch(function(){showDoneResult({message_count:turn})});
 }
@@ -8780,7 +8801,7 @@ function toggleDialog(){
   $("dtoggleic").className=on?"ti ti-chevron-up":"ti ti-messages";
 }
 function showPaywall(){
-  if(window.CourseAds&&CourseAds.showLimitPromo){
+  if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
     CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"voice",level:(MAP&&MAP.level)||"hsk1"});
     CourseAds.showLimitPromo({feature:"voice",reason:L.limitWhy||"",onSubscribe:function(){App.goPay("v3_voice_limit")},onBack:function(){$("paywall").classList.remove("on")}});
     return;
@@ -8788,10 +8809,10 @@ function showPaywall(){
   $("pwchar").innerHTML=chr("happy",persona);
   $("pwh").textContent=L.limitTitle;$("pwp").textContent=L.limitSub;
   if(L.limitWhy){$("pwwhyt").textContent=L.limitWhy;$("pwwhy").hidden=false}else{$("pwwhy").hidden=true}
-  $("pwb").textContent=L.premiumBtn;$("pwb2").textContent=L.exit;
+  $("pwb").textContent=L.premiumBtn;$("pwb").hidden=PWA_COURSE_HOST;$("pwb2").textContent=L.exit;
   $("paywall").classList.add("on");
 }
-function goPremium(){App.goPay("v3_voice_limit")}
+function goPremium(){if(PWA_COURSE_HOST){return}App.goPay("v3_voice_limit")}
 function softReset(){
   voiceEpoch++;stopLive();liveRecovering=false;liveAvailable=false;
   started=false;sess=null;turn=0;lessonWords=[];reviewWords=[];hintSug=[];scenarioInfo=null;
@@ -8801,7 +8822,7 @@ function reset(){$("done").classList.remove("on");softReset()}
 function swap(){
   if(busy)return;
   stopHard();stopSpeak();closeSettings();
-  if(sess){fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),session_id:sess})}).then(function(r){if(r.ok)refreshCourseProgress(true)}).catch(function(){})}
+  if(sess){_apiPost("/api/voice-practice/session/end",{initData:initData(),session_id:sess}).then(function(r){if(r.ok)refreshCourseProgress(true)}).catch(function(){})}
   persona=(persona==="bao"?"li":"bao");softReset();
 }
 
@@ -8861,7 +8882,7 @@ function leave(){
   try{stopHard()}catch(e){}try{stopSpeak()}catch(e){}
   if(vpOff){vpOff();vpOff=null}
   try{closeSettings();closeHints();closeKb()}catch(e){}
-  if(sess){try{fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:INIT_DATA,session_id:sess})}).then(function(r){if(r.ok)refreshCourseProgress(true)}).catch(function(){})}catch(e){}}
+  if(sess){try{_apiPost("/api/voice-practice/session/end",{initData:INIT_DATA,session_id:sess},{keepalive:true}).then(function(r){if(r.ok)refreshCourseProgress(true)}).catch(function(){})}catch(e){}}
   started=false;sess=null;
   if(window.CourseLimitStatus)CourseLimitStatus.invalidate("voice");
   closeSection();App.show("voice");
