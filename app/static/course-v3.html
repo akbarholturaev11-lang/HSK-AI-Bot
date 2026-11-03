@@ -2171,6 +2171,28 @@ function syncCourseTelegramChrome(){
 }
 if(tg){try{tg.ready();tg.expand()}catch(e){}syncCourseTelegramChrome()}
 var INIT_DATA=(tg&&tg.initData)||"";
+// Browser-only course host reuses the exact Mini App HTML and course map.
+// This is not an identity signal: only the server-verified HttpOnly PWA
+// session + Origin/CSRF can authorize its read/write map endpoint.
+var PWA_COURSE_HOST=!INIT_DATA&&location.pathname==="/iphone-pwa/course";
+var PWA_COURSE_ACTOR_PROMISE=null;
+function pwaCourseActor(){
+  if(!PWA_COURSE_HOST)return Promise.reject(new Error("pwa_host_required"));
+  if(!PWA_COURSE_ACTOR_PROMISE){
+    PWA_COURSE_ACTOR_PROMISE=fetch("/api/v3/pwa-auth/session",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    }).then(function(res){
+      if(res.status===401){location.replace("/iphone-pwa");throw new Error("pwa_session_required")}
+      if(!res.ok)throw new Error("pwa_session_unavailable");
+      return res.json();
+    }).then(function(data){
+      if(!data||data.ok!==true||typeof data.csrf!=="string"||!data.csrf)
+        throw new Error("pwa_session_invalid");
+      return data;
+    }).catch(function(err){PWA_COURSE_ACTOR_PROMISE=null;throw err});
+  }
+  return PWA_COURSE_ACTOR_PROMISE;
+}
 // Smart reminder open observation: optional, authenticated and independent of navigation.
 (function observeSmartReminderOpen(){
   try{
@@ -5630,7 +5652,17 @@ function _fetchCourseMap(lv,signal){
   var entrySource="";try{entrySource=new URLSearchParams(location.search||"").get("source")||""}catch(e){}
   var url="/api/v3/map?lang="+LANG+"&level="+lv+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset())
     +"&sid="+encodeURIComponent(COURSE_SESSION_ID)+"&source="+encodeURIComponent(entrySource);
-  return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store",signal:signal}).then(function(r){
+  var request=PWA_COURSE_HOST?pwaCourseActor().then(function(actor){
+    return fetch(url.replace("/api/v3/map?","/api/v3/pwa/map?"),{
+      method:"POST",headers:{"X-HSK-PWA-CSRF":actor.csrf},
+      credentials:"same-origin",cache:"no-store",signal:signal,redirect:"error"
+    });
+  }):fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store",signal:signal});
+  return request.then(function(r){
+    if(PWA_COURSE_HOST&&r.status===401){
+      PWA_COURSE_ACTOR_PROMISE=null;
+      location.replace("/iphone-pwa");
+    }
     return r.json().then(function(d){d._status=r.status;return d}).catch(function(){return {_status:r.status,_parseFail:true}});
   });
 }
@@ -5656,7 +5688,7 @@ function _retryCourseMap(lv,tries){return new Promise(function(res){setTimeout(r
 function loadLevel(lv){
   clearDeferredCourseUnlock();
   lv=setSelectedLevel(lv);
-  if(!INIT_DATA){hideCourseTrackSwitchPreparing();showAuthGate();return;}
+  if(!INIT_DATA&&!PWA_COURSE_HOST){hideCourseTrackSwitchPreparing();showAuthGate();return;}
   return loadCourseMap(lv).then(function(res){
     // On failure dismiss the loader before opening the error/paywall sheet.
     if(!res||!res.data)hideCourseTrackSwitchPreparing();
@@ -8804,7 +8836,7 @@ var finishHskLaunchSplash=(function(){
 })();
 (function(){
   var bootLevel=getSelectedLevel();
-  if(!INIT_DATA){showAuthGate();finishHskLaunchSplash();return;}
+  if(!INIT_DATA&&!PWA_COURSE_HOST){showAuthGate();finishHskLaunchSplash();return;}
   startHsk30AccessMonitor();
   loadCourseMap(bootLevel).then(function(res){
     if(showCourseMapFailure(res)){finishHskLaunchSplash();return;}
@@ -8813,11 +8845,11 @@ var finishHskLaunchSplash=(function(){
     var bootParams=new URLSearchParams(location.search);
     /* Server onboarding source of truth. localStorage faqat tez cache: boshqa
        qurilma yoki cache tozalanganda server holati noto'g'ri redirectni to'xtatadi. */
-    if(d.user&&d.user.onboarding_completed===false){
+    if(!PWA_COURSE_HOST&&d.user&&d.user.onboarding_completed===false){
       var onbQuery=new URLSearchParams(bootParams.toString());onbQuery.set("lang",LANG);
       finishHskLaunchSplash();beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+onbQuery.toString()+location.hash);return;
     }
-    if(d.user&&typeof d.user.onboarding_completed!=="boolean"){
+    if(!PWA_COURSE_HOST&&d.user&&typeof d.user.onboarding_completed!=="boolean"){
       var cachedOnboarding=false;try{cachedOnboarding=!!localStorage.getItem("hsk_v3_onb")}catch(e){}
       if(!cachedOnboarding&&!bootParams.get("onboarded")){
         var fallbackQuery=new URLSearchParams(bootParams.toString());fallbackQuery.set("lang",LANG);
