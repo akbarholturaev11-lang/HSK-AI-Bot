@@ -477,11 +477,11 @@ function showLimitNow(){
   if(window.PracticeCoach){PracticeCoach.hide();PracticeCoach.reset()}
   if(!PWA_MISTAKES_HOST&&window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:L.limitWhy,onSubscribe:goPay,onBack:function(){}});return}
   $("lim-text").textContent=L.limitText;
-  if(PWA_MISTAKES_HOST)$("lim-btn").hidden=true;
+  $("lim-btn").hidden=false;
   $("limit").hidden=false;
 }
 function closeLimit(){$("limit").hidden=true}
-function goPay(){if(PWA_MISTAKES_HOST){goBack();return}location.href="/subscription.html?lang="+LANG+"&mode=subscription&source=v3_mistake_review&return_to=course&return_page=course_v3_mistakes.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
+function goPay(){location.href=(PWA_MISTAKES_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&mode=subscription&source=v3_mistake_review&return_to=course&return_page=course_v3_mistakes.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 
 function loadMoreMistakes(){loadMistakes(true)}
 function loadMistakes(append){
