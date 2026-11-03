@@ -439,3 +439,18 @@ The system SHALL evaluate a new eligible local study day independently of an end
 #### Scenario: Original window or budget still forbids another contact
 - **WHEN** current/overlapping day ownership, a live unknown window or the rolling weekly ceiling applies
 - **THEN** no duplicate, alternate delivery or additional study intent bypasses that guard
+
+### Requirement: Native admission reads persisted privileged review
+The system SHALL bind native admission to current persisted operator-reviewed fencing and actual native account/job/device/session state, without inferring review from client observations or requiring a Telegram identity.
+
+#### Scenario: Native-only reviewed account
+- **WHEN** a trusted operator holds and reviews a native-only account under its current owned native context and finite external fencing evidence
+- **THEN** a read-only source may bind that stored review to an eligible owned native intent, without creating a Telegram identity, consent, attempt or posting grant
+
+#### Scenario: Review or destination has changed
+- **WHEN** review generation, inventory, permission, ownership, window or frozen intent is stale or incompatible
+- **THEN** the persisted source supplies no fresh admission and cannot renew or replace that evidence from a capability/client request
+
+#### Scenario: Historical attempt remains irreversible
+- **WHEN** a later hold invalidates fresh work after an original native posting attempt
+- **THEN** its day/attempt/receipt facts remain immutable and no regrant or alternate follows

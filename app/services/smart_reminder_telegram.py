@@ -45,6 +45,11 @@ def _binding(actor):
     return hashlib.sha256(json.dumps([actor.user_id, actor.telegram_id]).encode()).hexdigest()
 
 
+def _android_binding(actor):
+    # Account-wide native review, distinct from any Telegram transport binding.
+    return hashlib.sha256(json.dumps(['smart-native-review-v1', actor.user_id]).encode()).hexdigest()
+
+
 @dataclass(frozen=True)
 class RoutingReview:
     user_id: int
@@ -108,8 +113,11 @@ class LearningCoverage:
             raise ValueError("Typed authoritative learning coverage required")
 
 
-async def _read_routing(session, actor):
-    _telegram(actor)
+async def _read_routing(session, actor, *, android=False):
+    if android:
+        if actor.kind != 'android': raise SmartReminderError('android_device_required', 403)
+    else:
+        _telegram(actor)
     pref = await SmartReminderPreferencesService(session).read(actor)  # User first.
     row = (await session.execute(select(ROUTING).where(
         ROUTING.c.user_id == actor.user_id).with_for_update())).mappings().one_or_none()
@@ -165,13 +173,15 @@ class SmartReminderRoutingService:
         if type(expected_generation) is not int or not 0 <= expected_generation < MAX_REVISION-1:
             raise SmartReminderError("routing_generation_invalid")
         async with self.sessions.begin() as session:
-            pref, epoch, row = await _read_routing(session, actor)
+            native = actor.kind == 'android'
+            pref, epoch, row = await _read_routing(session, actor, android=native)
             if (row["generation"] if row else 0) != expected_generation:
                 raise SmartReminderError("routing_generation_conflict", 409)
             now = _aware_utc(self.clock())
             inventory, _ = await _android_inventory(session, actor.user_id, now)
             values = dict(state="held", generation=expected_generation+1,
-                preference_revision=pref["revision"], grant_epoch=epoch, telegram_binding=_binding(actor),
+                preference_revision=pref["revision"], grant_epoch=epoch,
+                telegram_binding=_android_binding(actor) if native else _binding(actor),
                 inventory_sha256=inventory, held_at=_aware_utc(self.clock()),
                 verified_at=None, verified_until=None, evidence_sha256=None)
             if row is None:
@@ -180,6 +190,33 @@ class SmartReminderRoutingService:
                 await session.execute(update(ROUTING).where(ROUTING.c.user_id == actor.user_id).values(**values))
             await SmartReminderLifecycleService(session).invalidate(actor.user_id, reason="routing_held", advance=False)
             return values["generation"]
+
+    async def review_android(self, actor, review: RoutingReview):
+        """Privileged external review only; no learner/API enrollment or send."""
+        if not isinstance(review, RoutingReview): raise SmartReminderError('routing_review_invalid')
+        async with self.sessions.begin() as session:
+            pref, epoch, row = await _read_routing(session, actor, android=True)
+            inventory, until = await _android_inventory(session, actor.user_id, _aware_utc(self.clock()))
+            now = _aware_utc(self.clock())
+            if (row is None or row['state'] != 'held' or row['telegram_binding'] != _android_binding(actor) or
+                    review.user_id != actor.user_id or review.generation != row['generation'] or
+                    row['preference_revision'] != pref['revision'] or row['grant_epoch'] != epoch or
+                    inventory is None or inventory != row['inventory_sha256'] or until is None or
+                    _aware_utc(review.verified_until) > until or
+                    not _utc(row['held_at']) <= _aware_utc(review.verified_at) <= now < _aware_utc(review.verified_until)):
+                raise SmartReminderError('routing_review_stale', 409)
+            if (pref['master_enabled'] is False or pref['channels']['android']['this_device_consent'] != 'on' or
+                    pref['channel_mode'] == 'manual_locked' and pref['preferred_channel'] != 'android'):
+                raise SmartReminderError('android_study_unavailable', 409)
+            if row['verified_at'] is not None:
+                if (_utc(row['verified_at']), _utc(row['verified_until']), row['evidence_sha256']) != (
+                        _aware_utc(review.verified_at), _aware_utc(review.verified_until), review.evidence_sha256):
+                    raise SmartReminderError('routing_review_stale', 409)
+                return row['generation']
+            await session.execute(update(ROUTING).where(ROUTING.c.user_id == actor.user_id).values(
+                verified_at=review.verified_at, verified_until=review.verified_until,
+                evidence_sha256=review.evidence_sha256))
+            return row['generation']
 
     async def activate(self, actor, review: RoutingReview):
         async with self.sessions.begin() as session:
