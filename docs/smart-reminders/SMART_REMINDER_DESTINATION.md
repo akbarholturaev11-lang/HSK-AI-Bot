@@ -2,7 +2,7 @@
 
 `app/services/smart_reminder_destination.py` implements the D06 choice core.
 The authoritative decisions and executed acceptance remain in
-`SMART_REMINDER_MASTER_PLAN.md` §§17.57, 17.77–17.78. This is a component contract, not a
+`SMART_REMINDER_MASTER_PLAN.md` §§17.57, 17.77–17.79. This is a component contract, not a
 second progress tracker or evidence that production dispatch is enabled.
 
 ## One eligible destination
@@ -129,3 +129,23 @@ Committed external IO cannot be recalled; original receipts and uncertain
 account/day ownership remain. Technical batch/timeout/cursor limits confer no
 product confidence or permission. Actual feed completeness, calibration,
 fencing and real provider/installed staging acceptance remain separate gates.
+
+## Early-return eligibility
+
+An ended historical unknown contact cannot veto a separate later nonoverlapping
+study day. Its original attempt, unknown evidence and weekly cost remain intact;
+it is neither retried/fallen back nor counted as an unsuccessful shown job.
+Current/overlapping account-day ownership and a still-live unknown window retain
+their veto. Shared rolling budgets remain authoritative, so three prior contacts
+can still suppress another intent within seven local days.
+
+Before a verified unsuccessful exposure, a whole-day learning rhythm permits the
+local date obtained from the last verified study date plus that rhythm. Its UTC
+midnight is a cadence eligibility boundary; the existing personal time is the
+actual notification clock. A daily ~20:20 learner can therefore be eligible on
+the first missed local day despite a previous 20:24 completion or a 23-hour DST
+day. Fractional-day medians retain their original elapsed-time anchor. Actual
+verified-shown observation/factor-two backoff and stop remain unchanged; unknown
+contacts are not failed responses. Authoritative learning coverage and all
+permission/goal/access/quiet/review guards are still required. No fixed week-long
+wait, new campaign, extra message budget or production activation is introduced.
