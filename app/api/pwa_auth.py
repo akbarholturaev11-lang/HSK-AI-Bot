@@ -83,6 +83,17 @@ class PwaExamComplete(BaseModel):
     answers: list[dict]
 
 
+class PwaOnboardingFinish(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    level: str
+    goal: str
+    daily_minutes: int
+    start_mode: str
+    language: Literal["uz", "ru", "tj"]
+    timezone_offset_minutes: int
+    activation_variant: str | None = None
+
+
 async def _small_json(request: Request, model, *, max_bytes: int = 1024):
     if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
         raise PwaAuthError("pwa_request_invalid", status_code=415)
@@ -544,6 +555,106 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
             return JSONResponse(result, status_code=status, headers=_NO_STORE)
         except PwaAuthError as exc:
             return _error(exc)
+
+    @router.get("/iphone-pwa/onboarding")
+    async def learner_onboarding_page(request: Request):
+        """The single original Mini App course onboarding UI."""
+        try:
+            require_pwa_enabled(settings_obj)
+            async with session_factory() as db:
+                await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+            return FileResponse(
+                "app/static/course_v3_onboarding.html", media_type="text/html",
+                headers={**_NO_STORE, "X-Content-Type-Options": "nosniff",
+                         "X-Frame-Options": "DENY"},
+            )
+        except PwaAuthError as exc:
+            if exc.code == "pwa_session_required":
+                return RedirectResponse(
+                    "/iphone-pwa", status_code=303, headers=_NO_STORE,
+                )
+            return _error(exc)
+
+    @router.get("/api/v3/pwa/onboarding/status")
+    async def pwa_onboarding_status(request: Request):
+        from sqlalchemy import select
+        from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+        from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+
+        try:
+            require_pwa_enabled(settings_obj)
+            if set(request.query_params.keys()) - {"_"}:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                user, _ = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+                result = await db.execute(
+                    select(CourseMiniAppProfile)
+                    .where(CourseMiniAppProfile.user_id == user.id)
+                )
+                profile = result.scalar_one_or_none()
+                completed = bool(profile and profile.onboarding_completed_at is not None)
+                foundation_required = False
+                if completed and str(user.level or "").strip().lower() == "beginner":
+                    foundation = await CourseMiniAppProfileService(db).foundation_status(user)
+                    foundation_required = bool(
+                        foundation["required"] and not foundation["completed"]
+                    )
+                return JSONResponse({
+                    "ok": True, "saved": completed,
+                    "level": str(user.level or "").strip().lower(),
+                    "profile": ({
+                        "goal": profile.goal,
+                        "daily_minutes": profile.daily_minutes,
+                        "start_mode": profile.start_mode,
+                    } if completed else None),
+                    "foundation_required": foundation_required,
+                }, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/onboarding")
+    async def pwa_onboarding_finish(request: Request):
+        from app.services.course_miniapp_onboarding_service import (
+            CourseMiniAppOnboardingService,
+        )
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaOnboardingFinish, max_bytes=4096)
+            if (not 1 <= len(payload.level) <= 16 or
+                not 1 <= len(payload.goal) <= 40 or
+                not 1 <= len(payload.start_mode) <= 32 or
+                not 1 <= payload.daily_minutes <= 240 or
+                not -840 <= payload.timezone_offset_minutes <= 840 or
+                (payload.activation_variant is not None and
+                 len(payload.activation_variant) > 32)):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                result = await CourseMiniAppOnboardingService(db).complete(
+                    actor, level=payload.level, goal=payload.goal,
+                    daily_minutes=payload.daily_minutes,
+                    start_mode=payload.start_mode, language=payload.language,
+                    timezone_offset_minutes=payload.timezone_offset_minutes,
+                    activation_variant=payload.activation_variant,
+                )
+            status = (200 if result.get("ok") else
+                      409 if result.get("error") == "course_level_change_requires_placement"
+                      else 400)
+            return JSONResponse(result, status_code=status, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+        except ValueError:
+            return _error(PwaAuthError("pwa_request_invalid", status_code=422))
 
     @router.get("/iphone-pwa/manifest.webmanifest")
     async def learner_manifest():
