@@ -63,11 +63,16 @@ def test_checkout_telemetry_requires_ack_and_retries_only_transient_failures():
     start = html.index("async function trackSubscriptionStage(stage){")
     end = html.index("/* Sekin internetda", start)
     snippet = html[start:end]
+    transport_start = html.index("function checkoutTransport(path,body,signal,keepalive){")
+    transport_end = html.index("\n}\n/* Course checkout runs", transport_start) + 2
+    transport = html[transport_start:transport_end]
     script = (
         'const state={preview:false,plan:"1_month",method:"visa"};'
-        'const INIT_DATA="signed-test";const API={event:"/api/subscription-miniapp/event"};'
+        'const INIT_DATA="signed-test";const PWA_CHECKOUT_HOST=false;'
+        'const API={event:"/api/subscription-miniapp/event"};'
         'function contextPayload(){return {attempt_id:"sub-test"}};'
         'const warnings=[];console.warn=(...parts)=>warnings.push(parts);'
+        + transport + "\n"
         + snippet
         + """
 async function check(items){
