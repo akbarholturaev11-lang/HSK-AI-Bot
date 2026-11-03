@@ -241,6 +241,12 @@ runs the same static checks and tests CI does, builds the signed `direct`
 release, uploads it to the same Cloudflare R2 bucket the desktop installers
 live in under `android/v<version>/`, and rewrites `android/latest.json`.
 
+`publish_to_r2` defaults to false. Public APK/manifest promotion requires
+explicit owner acceptance after personal device testing; a generic continuation
+is not that approval. Owner-only test APKs are built locally outside Git and
+are not uploaded to Actions artifacts, R2 or Play. Source pushes remain governed
+by the separate tested-main Git policy.
+
 That manifest is what makes a release take effect. With
 `ANDROID_RELEASE_MANIFEST_URL` set, the server reads the current build from it
 and nobody pastes a link per release — the same arrangement `desktop/latest.json`
