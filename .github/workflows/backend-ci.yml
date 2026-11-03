@@ -147,7 +147,9 @@ concurrency:
 jobs:
   targeted-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # The sequential browser-auth, course, checkout and migration regressions
+    # exceeded the old budget when the PR workflows ran concurrently.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
