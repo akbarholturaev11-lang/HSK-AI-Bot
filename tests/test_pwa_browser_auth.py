@@ -938,6 +938,53 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             url, headers=headers, json={},
         )).status_code, 503)
 
+    async def test_pwa_ordinary_feedback_submit_reuses_one_bot_reward_and_locked_owner(self):
+        from app.db.models.bot_feedback import BotFeedback
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+
+        url = "/api/v3/pwa/feedback/ordinary/submit"
+        async with self.sessions() as db:
+            actor = await db.get(User, 1)
+            feedback = await BotFeedbackRepository(db).create_pending(actor)
+            feedback_id = feedback.id
+            await db.commit()
+        state = await self.begin()
+        await self.callback(state)
+        session = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": session["csrf"]}
+        valid = {
+            "feedback_id": feedback_id,
+            "liked_code": "course", "liked_sub_code": "lessons",
+            "disliked_code": "unclear", "disliked_detail_text": "Need clearer examples",
+        }
+        self.assertEqual((await self.client.post(
+            url, headers={"Origin": ORIGIN}, json=valid,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            url, headers=headers, json={**valid, "user_id": 2},
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            url, headers=headers, json={**valid, "disliked_detail_text": None},
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            url, headers=headers, json={**valid, "feedback_id": feedback_id + 1},
+        )).status_code, 404)
+        accepted = await self.client.post(url, headers=headers, json=valid)
+        self.assertEqual(accepted.status_code, 200, accepted.text)
+        self.assertTrue(accepted.json()["completed"])
+        replay = await self.client.post(url, headers=headers, json=valid)
+        self.assertEqual(replay.status_code, 409, replay.text)
+        async with self.sessions() as db:
+            stored = await db.get(BotFeedback, feedback_id)
+            owner = await db.get(User, 1)
+            self.assertEqual(stored.status, "completed")
+            self.assertEqual(stored.liked_code, "course")
+            self.assertEqual(stored.disliked_code, "unclear")
+            self.assertEqual(stored.disliked_text, "Need clearer examples")
+            self.assertIsNotNone(stored.reward_granted_at)
+            self.assertEqual(owner.status, "active")
+            self.assertIsNotNone(owner.end_date)
+
     async def test_pwa_release_rating_requires_delivered_canonical_owner_and_one_reward(self):
         from app.db.models.release_feedback import (
             ReleaseFeedbackCampaign, ReleaseFeedbackDelivery, ReleaseFeedbackResponse,

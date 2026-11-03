@@ -156,6 +156,19 @@ class PwaReleaseFeedbackReply(BaseModel):
     comment_text: str | None = None
 
 
+class PwaOrdinaryFeedbackSubmit(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    feedback_id: int
+    liked_code: str | None = None
+    liked_sub_code: str | None = None
+    liked_other_text: str | None = None
+    disliked_code: str | None = None
+    disliked_detail_text: str | None = None
+    paid_code: str | None = None
+    paid_sub_code: str | None = None
+    paid_other_text: str | None = None
+
+
 
 async def _small_json(request: Request, model, *, max_bytes: int = 1024):
     if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
@@ -1609,6 +1622,134 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 } if feedback else None)
             return JSONResponse(
                 {"ok": True, "ordinary": payload}, headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/feedback/ordinary/submit")
+    async def pwa_ordinary_feedback_submit(request: Request):
+        """Commit one existing ordinary bot feedback using its canonical rules."""
+        from sqlalchemy import select
+        from app.bot.keyboards.feedback import (
+            LIKED_OPTIONS, DISLIKED_OPTIONS, LIKE_SUB_OPTIONS,
+            PAID_OPTIONS, PAID_SUB_POSITIVE, PAID_SUB_NEGATIVE,
+            feedback_like_label, feedback_dislike_label,
+            feedback_sub_label, feedback_paid_label,
+        )
+        from app.bot.handlers.feedback import DISLIKE_DETAIL_REQUIRED_CODES
+        from app.db.models.user import User
+        from app.db.models.bot_feedback import BotFeedback
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+        from app.services.bot_feedback_service import BotFeedbackService
+        from app.services.user_access_state_service import UserAccessStateService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                data = await _small_json(
+                    request, PwaOrdinaryFeedbackSubmit, max_bytes=8192,
+                )
+                if not 1 <= data.feedback_id <= 2147483647:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                # A verified account row serializes browser tabs and repeated
+                # submissions; existing bot records use the same users.id.
+                learner = (await db.execute(
+                    select(User).where(User.id == actor.id).with_for_update()
+                )).scalar_one()
+                feedback = (await db.execute(
+                    select(BotFeedback).where(
+                        BotFeedback.id == data.feedback_id,
+                        BotFeedback.user_id == learner.id,
+                    ).with_for_update()
+                )).scalar_one_or_none()
+                if feedback is None:
+                    raise PwaAuthError("feedback_not_available", status_code=404)
+                if feedback.status != "pending":
+                    raise PwaAuthError("feedback_already_completed", status_code=409)
+                repo = BotFeedbackRepository(db)
+                lang = learner.language if learner.language in {"uz", "ru", "tj"} else "ru"
+                if UserAccessStateService.is_paid(learner):
+                    if (
+                        data.paid_code not in PAID_OPTIONS
+                        or any((
+                            data.liked_code, data.liked_sub_code, data.liked_other_text,
+                            data.disliked_code, data.disliked_detail_text,
+                        ))
+                    ):
+                        raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    subs = (PAID_SUB_POSITIVE if data.paid_code in ("worth", "useful")
+                            else PAID_SUB_NEGATIVE)
+                    if data.paid_sub_code not in subs:
+                        raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    detail = (data.paid_other_text or "").strip()
+                    if (data.paid_sub_code == "other" and not detail) or len(detail) > 1000:
+                        raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    if feedback.liked_code and feedback.liked_code != "paid_" + data.paid_code:
+                        raise PwaAuthError("feedback_state_changed", status_code=409)
+                    await repo.save_liked(
+                        feedback, "paid_" + data.paid_code,
+                        feedback_paid_label(data.paid_code, lang),
+                    )
+                    await repo.save_disliked(
+                        feedback, "paid_" + data.paid_sub_code,
+                        detail if data.paid_sub_code == "other"
+                        else feedback_sub_label(data.paid_sub_code, lang),
+                    )
+                else:
+                    if (
+                        data.liked_code not in LIKED_OPTIONS
+                        or data.disliked_code not in DISLIKED_OPTIONS
+                        or data.paid_code is not None or data.paid_sub_code is not None
+                        or data.paid_other_text is not None
+                    ):
+                        raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    like_detail = (data.liked_other_text or "").strip()
+                    dislike_detail = (data.disliked_detail_text or "").strip()
+                    if len(like_detail) > 1000 or len(dislike_detail) > 1000:
+                        raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    if data.liked_code in LIKE_SUB_OPTIONS:
+                        if data.liked_sub_code not in LIKE_SUB_OPTIONS[data.liked_code]:
+                            raise PwaAuthError("pwa_request_invalid", status_code=422)
+                        if data.liked_sub_code == "other" and not like_detail:
+                            raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    elif data.liked_sub_code is not None:
+                        raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    if data.liked_code == "other" and not like_detail:
+                        raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    if data.disliked_code in DISLIKE_DETAIL_REQUIRED_CODES | {"other"}:
+                        if not dislike_detail:
+                            raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    if feedback.liked_code and feedback.liked_code != data.liked_code:
+                        raise PwaAuthError("feedback_state_changed", status_code=409)
+                    liked_text = (
+                        like_detail if data.liked_code == "other"
+                        else feedback_like_label(data.liked_code, lang)
+                    )
+                    if data.liked_sub_code:
+                        liked_text = (
+                            liked_text + " → " + (
+                                like_detail if data.liked_sub_code == "other"
+                                else feedback_sub_label(data.liked_sub_code, lang)
+                            )
+                        )[:1000]
+                    await repo.save_liked(feedback, data.liked_code, liked_text)
+                    await repo.save_disliked(
+                        feedback, data.disliked_code,
+                        dislike_detail if data.disliked_code in
+                        DISLIKE_DETAIL_REQUIRED_CODES | {"other"}
+                        else feedback_dislike_label(data.disliked_code, lang),
+                    )
+                await BotFeedbackService(db).finish_feedback(feedback, learner)
+                await db.commit()
+            return JSONResponse(
+                {"ok": True, "feedback_id": data.feedback_id, "completed": True},
+                headers=_NO_STORE,
             )
         except PwaAuthError as exc:
             return _error(exc)
