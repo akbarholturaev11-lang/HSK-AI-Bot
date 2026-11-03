@@ -5729,7 +5729,16 @@ function _fetchCourseMap(lv,signal){
         throw new Error("pwa_actor_changed");
       }
     }
-    return r.json().then(function(d){d._status=r.status;return d}).catch(function(){return {_status:r.status,_parseFail:true}});
+    return r.json().then(function(d){
+      if(PWA_COURSE_HOST&&r.status===403&&d&&d.error==="pwa_csrf_invalid"){
+        // A session cookie replaced in another tab changes its CSRF secret.
+        // Never keep rendering the previous learner's local browser state.
+        PWA_COURSE_ACTOR_PROMISE=null;
+        location.replace("/iphone-pwa");
+        throw new Error("pwa_actor_changed");
+      }
+      d._status=r.status;return d;
+    }).catch(function(){return {_status:r.status,_parseFail:true}});
   });
 }
 function loadCourseMap(lv,tries){
