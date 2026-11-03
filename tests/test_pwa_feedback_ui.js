@@ -35,7 +35,7 @@ class Element {
 function makeHarness({page = "/iphone-pwa/course",ordinary = null,release = [],
                       prepared = null,account = 11} = {}) {
   const requests=[], navigation=[];
-  let root;
+  let root, sessionGate = null, resumeSession = null;
   const doc={
     body:{appendChild:(node)=>{root=node;}},
     createElement:(tag)=>new Element(tag),
@@ -55,7 +55,10 @@ function makeHarness({page = "/iphone-pwa/course",ordinary = null,release = [],
     assert.equal(opt.credentials,"same-origin");
     assert.equal(opt.cache,"no-store");
     assert.equal(opt.redirect,"error");
-    if(url==="/api/v3/pwa-auth/session")return {ok:true,json:async()=>({ok:true,user_id:account,csrf:"csrf-token"})};
+    if(url==="/api/v3/pwa-auth/session"){
+      if(sessionGate) await sessionGate;
+      return {ok:true,json:async()=>({ok:true,user_id:account,csrf:"csrf-token"})};
+    }
     assert(routes[url],"unexpected route " + url);
     if(opt.method==="POST"){
       assert.equal(opt.headers["X-HSK-PWA-CSRF"],"csrf-token");
@@ -70,6 +73,8 @@ function makeHarness({page = "/iphone-pwa/course",ordinary = null,release = [],
     LANG:"uz",App:{},Number,Promise,Array,String,JSON,Set
   },{filename:"iphone-pwa-feedback.js",timeout:1000});
   return {root:()=>root,window,requests,navigation,
+    pauseSession(){sessionGate=new Promise(resolve=>{resumeSession=resolve;});},
+    releaseSession(){if(resumeSession)resumeSession();sessionGate=null;resumeSession=null;},
     form:()=>root.querySelector("#hsk-pwa-feedback-form"),
     status:()=>root.querySelector("#hsk-pwa-feedback-status").textContent,
     send:()=>root.querySelector("#hsk-pwa-feedback-submit").listeners.click(),
@@ -186,6 +191,28 @@ async function main(){
   assert.equal(JSON.parse(paidPost[0].opt.body).paid_sub_code,"other");
   assert.equal(JSON.parse(paidPost[0].opt.body).paid_other_text,"Slow");
 
-  console.log("PWA feedback UI: 8 authorization/ordinary/release/validation scenarios passed");
+  const cancellation = makeHarness({release:[{
+    campaign_id:55,title:"QA",message_text:"A real delivered release"
+  }]});
+  await cancellation.window.HskPwaFeedback.open();
+  cancellation.stars()[4].listeners.click();
+  cancellation.pauseSession();
+  const pendingSubmit = cancellation.send();
+  await Promise.resolve();
+  await Promise.resolve();
+  cancellation.window.HskPwaFeedback.close();
+  cancellation.releaseSession();
+  await pendingSubmit;
+  assert.equal(cancellation.requests.filter(r=>r.url.endsWith("/respond")).length,0,
+    "a closed dialog must not submit after delayed authenticated session");
+  await cancellation.window.HskPwaFeedback.open();
+  assert.equal(cancellation.root().querySelector("#hsk-pwa-feedback-submit").disabled,false,
+    "reopened dialog must not keep stale busy state");
+  cancellation.stars()[4].listeners.click();
+  await cancellation.send();
+  assert.equal(cancellation.requests.filter(r=>r.url.endsWith("/respond")).length,1,
+    "reopened dialog should still accept its authorized feedback");
+
+  console.log("PWA feedback UI: 9 authorization/ordinary/release/validation scenarios passed");
 }
 main().catch(err=>{console.error(err);process.exitCode=1;});
