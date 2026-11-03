@@ -372,9 +372,9 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         # Validate generated values against the actual original inline UI copy,
         # rather than relying on the extracted JSON alone.
         legacy = {
-            "ru": html.splitlines()[1710],
-            "uz": html.splitlines()[1711],
-            "tj": html.splitlines()[1712],
+            "ru": html.splitlines()[1712],
+            "uz": html.splitlines()[1713],
+            "tj": html.splitlines()[1714],
         }
         for locale, inline in legacy.items():
             catalog = json.loads(
@@ -427,7 +427,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                 self.assertEqual(html.count('courseMessage("' + key + '",'), count)
         # All selected values match the three current, unchanged inline catalogs.
         lines = html.splitlines()
-        legacy = {"ru": lines[1710], "uz": lines[1711], "tj": lines[1712]}
+        legacy = {"ru": lines[1712], "uz": lines[1713], "tj": lines[1714]}
         for locale, source in legacy.items():
             catalog = json.loads(
                 (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
@@ -469,8 +469,8 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             html.count('courseMessage("nav."+s.dataset.i,T().nav[s.dataset.i])'), 1
         )
         legacy = {
-            "ru": html.splitlines()[1710], "uz": html.splitlines()[1711],
-            "tj": html.splitlines()[1712],
+            "ru": html.splitlines()[1712], "uz": html.splitlines()[1713],
+            "tj": html.splitlines()[1714],
         }
         nav_keys = ("nav.course", "nav.mashq", "nav.profile",
                     "nav.rating", "nav.voice")
@@ -515,9 +515,9 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                     'courseMessage("' + key + '",t.' + key + ')'
                 ), count)
 
-        old_copy = {"ru": source.splitlines()[1710],
-                    "uz": source.splitlines()[1711],
-                    "tj": source.splitlines()[1712]}
+        old_copy = {"ru": source.splitlines()[1712],
+                    "uz": source.splitlines()[1713],
+                    "tj": source.splitlines()[1714]}
         for locale, line in old_copy.items():
             reviewed = json.loads((ROOT / f"localization/ui/{locale}/course.json")
                                   .read_text(encoding="utf-8"))["messages"]
@@ -553,7 +553,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         for key, count in expected.items():
             with self.subTest(key=key):
                 self.assertEqual(html.count('courseMessage("' + key + '",'), count)
-        for locale, line_no in (("ru", 1710), ("uz", 1711), ("tj", 1712)):
+        for locale, line_no in (("ru", 1712), ("uz", 1713), ("tj", 1714)):
             old_copy = html.splitlines()[line_no]
             catalog = json.loads((ROOT / f"localization/ui/{locale}/course.json")
                                  .read_text(encoding="utf-8"))["messages"]
@@ -593,7 +593,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                 self.assertEqual(html.count(
                     'courseMessage("' + key + '",t.' + key + ')'
                 ), count)
-        for locale, index in (("ru", 1710), ("uz", 1711), ("tj", 1712)):
+        for locale, index in (("ru", 1712), ("uz", 1713), ("tj", 1714)):
             inline = html.splitlines()[index]
             msgs = json.loads(
                 (ROOT / f"localization/ui/{locale}/course.json").read_text(
