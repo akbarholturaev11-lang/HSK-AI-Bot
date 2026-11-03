@@ -737,6 +737,27 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             )
             self.assertIsNone(pending_google.telegram_id)
             self.assertIsNone(pending_apple.telegram_id)
+
+            # Account linking can expose an unmapped legacy Telegram record
+            # beside a preexisting canonical PWA response. Prefer the real
+            # user_id and never throw MultipleResultsFound or reward twice.
+            owners[1].telegram_id = 2002
+            db.add(ReleaseFeedbackResponse(
+                campaign_id=77, user_id=None, user_telegram_id=2002,
+                rating=1,
+            ))
+            db.add(ReleaseFeedbackDelivery(
+                campaign_id=77, user_id=None, user_telegram_id=2002,
+                status="sent",
+            ))
+            await db.flush()
+            resolved = await repo.get_response(campaign_id=77, user=owners[1])
+            self.assertEqual(resolved.id, replies[1].id)
+            resolved_delivery = await repo.get_delivery(
+                campaign_id=77, user=owners[1],
+            )
+            self.assertEqual(resolved_delivery.user_id, 2)
+
             with self.assertRaises(IntegrityError):
                 async with db.begin_nested():
                     await repo.create_response(
@@ -746,8 +767,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             saved = (await db.execute(sa.select(ReleaseFeedbackResponse))).scalars().all()
             deliveries = (await db.execute(sa.select(ReleaseFeedbackDelivery))).scalars().all()
             pending = (await db.execute(sa.select(BotFeedback))).scalars().all()
-            self.assertEqual(len(saved), 3)
-            self.assertEqual(len(deliveries), 3)
+            self.assertEqual(len(saved), 4)
+            self.assertEqual(len(deliveries), 4)
             self.assertEqual(len(pending), 2)
 
     def test_0146_feedback_migration_backfills_real_owners_and_rejects_data_loss(self):

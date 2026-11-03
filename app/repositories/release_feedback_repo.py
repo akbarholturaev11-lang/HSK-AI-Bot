@@ -211,6 +211,13 @@ class ReleaseFeedbackRepository:
             .where(owner_clause(
                 ReleaseFeedbackDelivery, actor, telegram_column="user_telegram_id",
             ))
+            # An unowned historical TG row might be linked later to an
+            # account that already answered in the browser. Canonical wins.
+            .order_by(
+                ReleaseFeedbackDelivery.user_id.is_(None),
+                ReleaseFeedbackDelivery.id.desc(),
+            )
+            .limit(1)
         )
         return result.scalar_one_or_none()
 
@@ -259,6 +266,13 @@ class ReleaseFeedbackRepository:
             .where(owner_clause(
                 ReleaseFeedbackResponse, actor, telegram_column="user_telegram_id",
             ))
+            # An unowned historical TG row might be linked later to an
+            # account that already answered in the browser. Canonical wins.
+            .order_by(
+                ReleaseFeedbackResponse.user_id.is_(None),
+                ReleaseFeedbackResponse.id.desc(),
+            )
+            .limit(1)
         )
         return result.scalar_one_or_none()
 
