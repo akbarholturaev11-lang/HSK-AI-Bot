@@ -950,7 +950,7 @@ private fun ProfileSettingsScreen(
                                     Text(stringResource(R.string.profile_notifications_category_study), color = PompColors.Ink,
                                         style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
                                     Switch(checked = notificationsEnabled, onCheckedChange = onToggleNotifications,
-                                        enabled = !settings.isBusy)
+                                        enabled = !settings.isSavingLanguage)
                                 }
                                 Text(stringResource(R.string.profile_notifications_category_study_desc),
                                     color = PompColors.InkSecondary, style = MaterialTheme.typography.bodyMedium,

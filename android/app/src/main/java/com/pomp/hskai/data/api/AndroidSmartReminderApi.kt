@@ -37,6 +37,11 @@ internal object StrictStudyInt : KSerializer<Int> {
 
 /** Study authority is separate from account-notice ACKs and ordinary widget data. */
 interface AndroidSmartReminderApi {
+    @GET("api/v3/android/smart-reminder/preferences")
+    suspend fun preferences(@Header("Authorization") bearer: String): Response<SmartStudyPreferences>
+    @PATCH("api/v3/android/smart-reminder/preferences")
+    suspend fun preferences(@Header("Authorization") bearer: String,
+        @Body body: SmartStudyPreferencePatch): Response<SmartStudyPreferenceAck>
     @GET("api/v3/android/smart-reminder/mode")
     suspend fun mode(@Header("Authorization") bearer: String): Response<SmartStudyMode>
     @GET("api/v3/android/smart-reminder/capability")
@@ -52,6 +57,45 @@ interface AndroidSmartReminderApi {
     @POST("api/v3/android/smart-reminder/jobs/{job}/receipt")
     suspend fun receipt(@Header("Authorization") bearer: String, @Path("job") job: String, @Body body: SmartStudyReceipt): Response<SmartStudyReceiptAck>
 }
+
+@Serializable data class SmartStudyPreferences(
+    val ok: Boolean = false,
+    val revision: Int = -1,
+    @SerialName("master_enabled") val masterEnabled: Boolean? = null,
+    @SerialName("time_mode") val timeMode: String = "",
+    @SerialName("timezone_name") val timezoneName: String? = null,
+    val channels: SmartStudyPreferenceChannels? = null,
+) {
+    fun valid(): Boolean = ok && revision in 0 until Int.MAX_VALUE && timeMode in setOf("auto", "manual_locked") &&
+        (timeMode != "manual_locked" || timezoneName != null) &&
+        (timezoneName == null || timezoneName in java.time.ZoneId.getAvailableZoneIds()) &&
+        channels?.android?.thisDeviceConsent in setOf("on", "off", "unknown")
+
+    fun phoneEnabled(): Boolean? = when {
+        masterEnabled == false -> false
+        channels?.android?.thisDeviceConsent == "on" -> true
+        channels?.android?.thisDeviceConsent == "off" -> false
+        else -> null // A legacy local mirror is neither new consent nor an OFF.
+    }
+}
+@Serializable data class SmartStudyPreferenceChannels(val android: SmartStudyPhonePreference? = null)
+@Serializable data class SmartStudyPhonePreference(
+    @SerialName("this_device_consent") val thisDeviceConsent: String = "",
+)
+@Serializable data class SmartStudyPreferencePatch(
+    @SerialName("request_id") val requestId: String,
+    @SerialName("expected_revision") val expectedRevision: Int,
+    @EncodeDefault(EncodeDefault.Mode.NEVER)
+    @SerialName("study_enabled") val studyEnabled: Boolean? = null,
+    @EncodeDefault(EncodeDefault.Mode.NEVER)
+    @SerialName("timezone_name") val timezoneName: String? = null,
+)
+@Serializable data class SmartStudyPreferenceAck(
+    val ok: Boolean = false,
+    @SerialName("request_id") val requestId: String = "",
+    @SerialName("applied_revision") val appliedRevision: Int = -1,
+    @SerialName("dispatch_allowed") val dispatchAllowed: Boolean = true,
+)
 
 @Serializable data class SmartStudyMode(
     val ok: Boolean = false, val version: Int = 0,

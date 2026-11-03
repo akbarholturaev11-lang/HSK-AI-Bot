@@ -14,6 +14,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -61,15 +62,17 @@ class ProfileSettingsUxTest {
         onSelectLanguage: ((AppLanguage) -> Unit)? = null,
         onSelectGoal: ((Int) -> Unit)? = null,
         onSettingsVisibilityChange: (Boolean) -> Unit = {},
+        studySettings: ProfileSettingsState = ProfileSettingsState(),
+        onStudyToggle: (Boolean) -> Unit = {},
     ) {
         ProfileScreen(
             account = LinkedAccount("Test learner", AppLanguage.UZBEK, "hsk1", "pro", true),
             state = ProfileUiState(isLoading = loading, profile = AndroidProfileResponse(
                 ok = true, user = AndroidProfileUserDto(name = "Test learner", phone = "+998000000000"),
             )),
-            settings = ProfileSettingsState(), courseProgress = null, courseUser = null,
+            settings = studySettings, courseProgress = null, courseUser = null,
             dailyXp = 10, dailyGoal = 20, notificationsEnabled = true,
-            onOpenFriends = {}, onOpenGoal = {}, onOpenLanguage = {}, onToggleNotifications = {},
+            onOpenFriends = {}, onOpenGoal = {}, onOpenLanguage = {}, onToggleNotifications = onStudyToggle,
             onOpenWidget = {}, onOpenSupport = {}, onRefresh = onRefresh,
             onLogout = {}, onUnlinkDevice = {}, onSaveProfile = onSave,
             onSelectLanguage = onSelectLanguage, onSelectGoal = onSelectGoal,
@@ -78,6 +81,17 @@ class ProfileSettingsUxTest {
                 identities = listOf(LinkedIdentity("test-google", AuthProvider.GOOGLE, "l***@example.com", "Learner")),
                 available = listOf(AuthProvider.GOOGLE, AuthProvider.APPLE)),
         )
+    }
+
+    @Test fun pendingStudyOnCanStillBeTurnedOffUsingTheExistingSwitch() {
+        val choices = mutableListOf<Boolean>()
+        compose.setContent { PompHskAiTheme {
+            Profile(studySettings = ProfileSettingsState(isSavingNotifications = true), onStudyToggle = choices::add)
+        } }
+        compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).performClick()
+        compose.onNodeWithText(text(R.string.hsk_course_notif)).performClick()
+        compose.onNode(isToggleable()).assertIsEnabled().performClick()
+        compose.runOnIdle { assertEquals(listOf(false), choices) }
     }
 
     @Test fun settingsNavigateInlineAndRestoreTheHostBottomBar() {

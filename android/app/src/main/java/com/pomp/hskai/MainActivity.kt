@@ -417,6 +417,7 @@ private fun AppRoot(
                 factory = ProfileSettingsViewModel.Factory(
                     courseRepository = app.courseRepository,
                     authRepository = authRepository,
+                    writeStudyReminder = app::setStudyReminder,
                 ),
             )
             val settingsState by settingsViewModel.state.collectAsStateWithLifecycle()
@@ -443,6 +444,9 @@ private fun AppRoot(
             val widgetLifecycle = LocalLifecycleOwner.current.lifecycle
             val widgetSession by app.widgetStore.state.collectAsStateWithLifecycle(initialValue = WidgetSession())
             val widgetTheme by app.appSettings.themeMode.collectAsStateWithLifecycle(initialValue = com.pomp.hskai.core.settings.AppThemeMode.DEFAULT)
+            LaunchedEffect(widgetSession.epoch, widgetSession.linked, widgetForegroundTick, offline) {
+                if (widgetSession.linked && !offline) app.smartPreferenceBridge.sync(widgetSession.epoch)
+            }
             val sessionEpoch = remember { app.widgetStore.state }
             // Capture the account generation before the foreground request can publish anything.
             var widgetEpoch by remember { mutableStateOf<String?>(null) }
@@ -603,18 +607,19 @@ private fun AppRoot(
             }
 
             val context = LocalContext.current
+            var studyPermissionEpoch by rememberSaveable { mutableStateOf<String?>(null) }
             val notificationPermission = rememberLauncherForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { granted ->
-                scope.launch {
-                    app.widgetStore.setReminder(granted)
-                    if (granted) StudyReminderScheduler.schedule(context)
-                }
+                val requestedEpoch = studyPermissionEpoch
+                studyPermissionEpoch = null
+                if (granted && requestedEpoch != null)
+                    settingsViewModel.setStudyNotifications(true, requestedEpoch)
             }
 
-            val notificationsOn = widgetSession.reminderEnabled
-            LaunchedEffect(notificationsOn) {
-                when (notificationsOn) {
+            val notificationsOn = widgetSession.pendingStudyPreference?.enabled ?: widgetSession.reminderEnabled
+            LaunchedEffect(widgetSession.reminderEnabled) {
+                when (widgetSession.reminderEnabled) {
                     true -> if (StudyNotifications.canPost(context)) {
                         StudyReminderScheduler.schedule(context)
                     }
@@ -631,11 +636,12 @@ private fun AppRoot(
 
             val toggleLocalReminder: (Boolean) -> Unit = { enabled ->
                 if (enabled && android.os.Build.VERSION.SDK_INT >= 33 && !StudyNotifications.canPost(context)) {
+                    studyPermissionEpoch = widgetSession.epoch
                     notificationPermission.launch(android.Manifest.permission.POST_NOTIFICATIONS)
                 } else if (enabled && !StudyNotifications.canPost(context)) {
                     android.widget.Toast.makeText(context, R.string.widget_setup_permission, android.widget.Toast.LENGTH_LONG).show()
                 } else {
-                    scope.launch { app.widgetStore.setReminder(enabled) }
+                    settingsViewModel.setStudyNotifications(enabled, widgetSession.epoch)
                 }
             }
 

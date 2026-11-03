@@ -32,9 +32,11 @@ data class ProfileSettingsState(
 class ProfileSettingsViewModel(
     private val courseRepository: CourseRepository,
     private val authRepository: AuthRepository,
+    private val writeStudyReminder: suspend (Boolean, String?) -> ApiResult<Unit> = { _, _ -> ApiResult.Failure(ApiError.Unknown) },
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileSettingsState())
+    private var studyWriteSequence = 0L
     val state: StateFlow<ProfileSettingsState> = _state.asStateFlow()
 
     /** Emits when the server state changed and the screens must re-read it. */
@@ -80,6 +82,23 @@ class ProfileSettingsViewModel(
         }
     }
 
+    fun setStudyNotifications(enabled: Boolean, epoch: String) {
+        val sequence = ++studyWriteSequence
+        _state.update { it.copy(isSavingNotifications = true, error = null) }
+        viewModelScope.launch {
+            try {
+                when (val result = writeStudyReminder(enabled, epoch)) {
+                    is ApiResult.Success -> if (sequence == studyWriteSequence)
+                        _state.update { it.copy(isSavingNotifications = false) }
+                    is ApiResult.Failure -> if (sequence == studyWriteSequence)
+                        _state.update { it.copy(isSavingNotifications = false, error = result.error) }
+                }
+            } finally {
+                if (sequence == studyWriteSequence) _state.update { it.copy(isSavingNotifications = false) }
+            }
+        }
+    }
+
     fun clearError() {
         _state.update { it.copy(error = null) }
     }
@@ -87,9 +106,10 @@ class ProfileSettingsViewModel(
     class Factory(
         private val courseRepository: CourseRepository,
         private val authRepository: AuthRepository,
+        private val writeStudyReminder: suspend (Boolean, String?) -> ApiResult<Unit> = { _, _ -> ApiResult.Failure(ApiError.Unknown) },
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            ProfileSettingsViewModel(courseRepository, authRepository) as T
+            ProfileSettingsViewModel(courseRepository, authRepository, writeStudyReminder) as T
     }
 }

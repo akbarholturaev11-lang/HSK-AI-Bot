@@ -7,6 +7,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.workDataOf
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
@@ -18,6 +23,16 @@ import kotlinx.coroutines.launch
 class WidgetRefreshWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         val app = applicationContext as HskAiApplication
+        inputData.getString("preferences_epoch")?.let { epoch ->
+            val local = app.widgetStore.read()
+            if (!local.linked || local.epoch != epoch) return Result.success()
+            app.smartPreferenceBridge.sync(epoch)
+            val current = app.widgetStore.read()
+            if (current.epoch == epoch && current.reminderEnabled && com.pomp.hskai.core.notify.StudyNotifications.canPost(app))
+                StudyReminderScheduler.schedule(app)
+            return if (current.epoch == epoch && current.pendingStudyPreference != null) Result.retry()
+                else Result.success()
+        }
         inputData.getString("pin_event_id")?.let {
             app.widgetStore.enqueue(AndroidWidgetEvent("android_widget_pinned", it))
         }
@@ -32,6 +47,14 @@ object WidgetScheduler {
     const val WORK_NAME = "smart_widget_refresh"
     private const val PREFS = "smart_widget_schedule"
     private const val VERSION = "version"
+    /** Reuses the refresh worker, even when no widget/study timer is installed. */
+    fun syncPreferences(context: Context, epoch: String) {
+        WorkManager.getInstance(context).enqueueUniqueWork("smart_preferences_sync", ExistingWorkPolicy.REPLACE,
+            OneTimeWorkRequestBuilder<WidgetRefreshWorker>()
+                .setInputData(workDataOf("preferences_epoch" to epoch))
+                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                .build())
+    }
     fun hasWidgets(context: Context): Boolean = AppWidgetManager.getInstance(context)
         .getAppWidgetIds(ComponentName(context, HskAiWidgetReceiver::class.java)).isNotEmpty()
 

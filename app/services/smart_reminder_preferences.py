@@ -130,6 +130,20 @@ def _state(rows, source_key):
     return "on" if states and all(x == "on" for x in states) else "unknown"
 
 
+async def automatic_timezone_initialization_allowed(session, user_id, settings):
+    """Read-only browser exposure gate, never consent or dispatch authority.
+
+    Public HTML ships independently of the private APK. Keep automatic writes
+    dormant unless the runtime is explicitly enabled and this account is held.
+    """
+    if getattr(settings, "SMART_REMINDER_ENABLED", False) is not True:
+        return False
+    from app.db.models.smart_reminder import SmartReminderRouting
+    with session.no_autoflush:
+        return await session.scalar(select(SmartReminderRouting.user_id).where(
+            SmartReminderRouting.user_id == user_id)) is not None
+
+
 class SmartReminderPreferencesService:
     def __init__(self, session):
         self.session = session
