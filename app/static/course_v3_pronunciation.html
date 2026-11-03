@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Talaffuz mashqi</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -104,15 +104,34 @@ Object.keys(L).forEach(function(key){
   if(typeof v==="string"&&v)L[key]=v;
 });
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}document.querySelector(".top .ix").setAttribute("aria-label",L.back);document.querySelector(".mic").setAttribute("aria-label",PRONUNCIATION_UI.say||"Gapirish");
-function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
-function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription&return_to=course&return_page=course_v3_pronunciation.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
+function goBack(){location.href=(PWA_PRONUNCIATION_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq"}
+function goPremium(){if(PWA_PRONUNCIATION_HOST){goBack();return}location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription&return_to=course&return_page=course_v3_pronunciation.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 /* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)
    asosiy manba — mashq har doim userning haqiqiy HSK darajasiga mos chiqadi.
    CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar so'zlari chiqadi. */
 function normLv(v){v=String(v||"").toLowerCase();if(v.indexOf("hsk4")===0)return "hsk4";return ["hsk1","hsk2","hsk3","nhsk1","nhsk2","nhsk3"].indexOf(v)>=0?v:""}
 var LV=normLv(params.get("level")),CUR=999;
-var LV_READY=(function(){var idt=(tg&&tg.initData)||"";if(!idt)return Promise.resolve();
-  return fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)).then(function(r){return r.json()}).then(function(j){var s=normLv(j&&j.level);if(s)LV=s;if(j&&typeof j.completed_lessons==="number")CUR=Math.max(1,j.completed_lessons+1)}).catch(function(){})})();
+var LV_READY=(function(){
+  var idt=initData();
+  var req=PWA_PRONUNCIATION_HOST?pronunciationPwaSession().then(function(){
+    return fetch("/api/v3/pwa/practice/profile",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    });
+  }):idt?fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)):null;
+  if(!req)return Promise.resolve();
+  return req.then(function(r){
+    if(!r.ok)throw new Error("practice_profile_unavailable");
+    return r.json();
+  }).then(function(j){
+    var level=String(j&&j.level||"").toLowerCase();
+    var s=level==="beginner"?"hsk1":normLv(level);
+    if(PWA_PRONUNCIATION_HOST&&(!j||j.ok!==true||!s||
+       !Number.isSafeInteger(j.completed_lessons)||j.completed_lessons<0))
+      throw new Error("practice_profile_invalid");
+    if(s)LV=s;
+    if(j&&typeof j.completed_lessons==="number")CUR=Math.max(1,j.completed_lessons+1);
+  }).catch(function(e){if(PWA_PRONUNCIATION_HOST)throw e});
+})();
 function lvNum(){var m=String(LV||"hsk1").match(/(\d+)$/);return m?parseInt(m[1],10):1}
 function wordLvNum(w){return parseInt(String(w.lv||"").replace(/[^0-9]/g,"").slice(0,1),10)||0}
 function isHsk30(){return /^nhsk[1-3]$/.test(LV||"")}
@@ -120,7 +139,7 @@ function wordSource(){return isHsk30()?(window.HSK30_WORDS||[]):(typeof WORDS!==
 function wordGate(h){return (isHsk30()?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{}))[h]}
 /* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
    oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
-SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"pronunciation",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
+SCRIPTS_READY.then(function(){if(!PWA_PRONUNCIATION_HOST&&window.CourseAds)CourseAds.config({lang:LANG,initData:initData(),feature:"pronunciation",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
 /* Kunlik limit gate: bepulga kuniga 1 to'liq talaffuz sessiyasi (server tomonda). */
 var ATTEMPT_REF="",LIMIT_REASON="";
 function gateRef(create){if(create||!ATTEMPT_REF)ATTEMPT_REF=Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12);return ATTEMPT_REF}
@@ -136,7 +155,7 @@ function practiceGateErrorCopy(){var copy=({
   tj:{body:"Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.",retry:"Боз кӯшиш кардан",back:"Бозгашт"}
 })[LANG];var dict=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};Object.keys(copy).forEach(function(key){var value=dict["practiceGate."+key];if(typeof value==="string"&&value)copy[key]=value});return copy}
 function runGate(ref){
-  return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"pronunciation",ref:ref})})
+  return pronunciationPost("/api/v3/practice/daily-gate",{initData:initData(),feature:"pronunciation",ref:ref})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})}).then(validatePracticeGate);
 }
 function showLimit(j){LIMIT_REASON=(j&&j.limit_text)||"";SCRIPTS_READY.then(showLimitNow)}
@@ -144,11 +163,11 @@ function showLimitNow(){
   /* Murabbiy shu yerda QOLIB KETMASIN: limit ekrani boshqa holat,
      unda savol ham, personaj ham yo'q. */
   if(window.PracticeCoach){PracticeCoach.hide();PracticeCoach.reset()}
-  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:LIMIT_REASON,onSubscribe:goPremium,onBack:goBack});return}
+  if(!PWA_PRONUNCIATION_HOST&&window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:LIMIT_REASON,onSubscribe:goPremium,onBack:goBack});return}
   var d=document.getElementById('done');
   var adBtn="";
   var sub=gateEscape(LIMIT_REASON||L.limitSub);
-  d.innerHTML='<div class="st han" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+L.limitTitle+'</h3><p>'+sub+'</p>'+adBtn+'<button onclick="goPremium()" style="background:transparent;border:1px solid var(--line);color:var(--cin2);margin-top:8px">'+L.premiumBtn+'</button><button onclick="goBack()" style="background:transparent;border:1px solid var(--line);color:var(--ink2);margin-top:8px">'+L.back+'</button>';
+  d.innerHTML='<div class="st han" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+L.limitTitle+'</h3><p>'+sub+'</p>'+adBtn+(PWA_PRONUNCIATION_HOST?'':'<button onclick="goPremium()" style="background:transparent;border:1px solid var(--line);color:var(--cin2);margin-top:8px">'+L.premiumBtn+'</button>')+'<button onclick="goBack()" style="background:transparent;border:1px solid var(--line);color:var(--ink2);margin-top:8px">'+L.back+'</button>';
   document.getElementById('ctrl').style.display='none';d.classList.add('on');
 }
 function gateStart(newAttempt){
@@ -158,7 +177,7 @@ function gateStart(newAttempt){
   SCRIPTS_READY.then(function(){
     if(preparing&&ref===ATTEMPT_REF)document.getElementById("stage").innerHTML=HSKStudyPreparing.render(LANG);
   });
-  runGate(ref).then(function(o){
+  LV_READY.then(function(){return runGate(ref)}).then(function(o){
     preparing=false;
     if(ref!==ATTEMPT_REF)return;
     if(o.status===403){showLimit(o.j);return}start();
@@ -236,8 +255,7 @@ function reportResults(){
     results:RESULTS.slice(0,30),initData:initData()};
   RESULTS=[];
   try{
-    fetch("/api/v3/practice/report",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(body),keepalive:true}).catch(function(){});
+    pronunciationPost("/api/v3/practice/report",body,true).catch(function(){});
   }catch(e){}
 }
 try{window.addEventListener("pagehide",reportResults);
@@ -248,10 +266,9 @@ document.addEventListener("visibilitychange",function(){if(document.visibilitySt
 var PLAN=null;
 function fetchPlan(){
   var idt=initData();
-  if(!idt)return Promise.resolve(null);
+  if(!idt&&!PWA_PRONUNCIATION_HOST)return Promise.resolve(null);
   var body={feature:"pronunciation",limit:TOTAL,initData:idt};
-  var call=fetch("/api/v3/practice/words",{method:"POST",
-    headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
+  var call=pronunciationPost("/api/v3/practice/words",body)
     .then(function(r){return r.ok?r.json():null})
     .then(function(j){return (j&&j.ok&&j.words&&j.words.length)?j.words:null})
     .catch(function(){return null});
@@ -309,7 +326,64 @@ function load(){
 }
 function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},1100)}
 // Real pronunciation check: record mic -> server speech-to-text -> character-match score.
-function initData(){return (tg&&tg.initData)?tg.initData:""}
+var PWA_PRONUNCIATION_HOST=location.pathname==="/iphone-pwa/practice/pronunciation";
+var PWA_PRONUNCIATION_SESSION=null,PWA_PRONUNCIATION_PROMISE=null;
+function initData(){return PWA_PRONUNCIATION_HOST?"":((tg&&tg.initData)?tg.initData:"")}
+function pronunciationPwaSession(){
+  if(!PWA_PRONUNCIATION_HOST)return Promise.reject(new Error("pwa_host_required"));
+  if(!PWA_PRONUNCIATION_PROMISE){
+    PWA_PRONUNCIATION_PROMISE=fetch("/api/v3/pwa-auth/session",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    }).then(function(r){
+      if(r.status===401){location.replace("/iphone-pwa");throw new Error("pwa_session_required")}
+      if(!r.ok)throw new Error("pwa_session_unavailable");
+      return r.json();
+    }).then(function(s){
+      if(!s||s.ok!==true||!Number.isSafeInteger(Number(s.user_id))||
+         Number(s.user_id)<=0||typeof s.csrf!=="string"||!s.csrf)
+        throw new Error("pwa_session_invalid");
+      if(PWA_PRONUNCIATION_SESSION&&PWA_PRONUNCIATION_SESSION.user_id!==s.user_id){
+        location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
+      }
+      PWA_PRONUNCIATION_SESSION=s;return s;
+    }).catch(function(e){PWA_PRONUNCIATION_PROMISE=null;throw e});
+  }
+  return PWA_PRONUNCIATION_PROMISE;
+}
+function pronunciationPost(url,body,keepalive){
+  if(!PWA_PRONUNCIATION_HOST)return fetch(url,{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(body),keepalive:!!keepalive
+  });
+  var mapped={
+    "/api/v3/practice/daily-gate":"/api/v3/pwa/practice/daily-gate",
+    "/api/v3/practice/words":"/api/v3/pwa/practice/words",
+    "/api/v3/practice/report":"/api/v3/pwa/practice/report"
+  }[url];
+  if(!mapped)return Promise.reject(new Error("pwa_route_unavailable"));
+  var payload=Object.assign({},body||{});
+  delete payload.initData;delete payload.user_id;delete payload.telegram_id;
+  return pronunciationPwaSession().then(function(s){
+    return fetch(mapped,{
+      method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":s.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",
+      body:JSON.stringify(payload),keepalive:!!keepalive
+    });
+  });
+}
+function pronunciationUpload(fd){
+  if(!PWA_PRONUNCIATION_HOST)return fetch("/api/voice-practice/pronounce",{method:"POST",body:fd});
+  var payload=new FormData();
+  payload.append("target",fd.get("target")||"");
+  payload.append("target_pinyin",fd.get("target_pinyin")||"");
+  payload.append("audio",fd.get("audio"));
+  return pronunciationPwaSession().then(function(s){
+    return fetch("/api/v3/pwa/voice/pronounce",{
+      method:"POST",headers:{"X-HSK-PWA-CSRF":s.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",body:payload
+    });
+  });
+}
 var mediaStream=null,mediaRecorder=null,chunks=[],autoStop=null,MAX_REC_MS=4000,MIN_BYTES=1200;
 function setRec(on){var mw=document.getElementById('micwrap');if(on){mw.classList.add('rec');document.getElementById('mic').classList.add('rec')}else{mw.classList.remove('rec');document.getElementById('mic').classList.remove('rec')}}
 /* Murabbiyning gapi shu yerdan o'tadi: tinglash, tahlil, qayta urinish,
@@ -350,7 +424,7 @@ function onStopped(){
   if(blob.size<MIN_BYTES){setHint(L.retry);return;}
   busy=true;var w=list[i],fd=new FormData(),_ext=extFromMime(blob.type||mt);
   fd.append("initData",initData());fd.append("target",w.h);fd.append("target_pinyin",w.p||"");fd.append("language",LANG);fd.append("level",LV||params.get("level")||"");fd.append("audio",blob,"voice."+_ext);
-  fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
+  pronunciationUpload(fd)
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
     .then(function(o){busy=false;var heard=(o&&o.j&&o.j.heard)||"";clog("mic_result",(o&&o.j&&o.j.ok===true)?"ok":"fail",{mime:blob.type||mt,ext:_ext,size:blob.size,heard:heard.slice(0,24),code:(o&&o.j&&o.j.code)||""});if(!o.ok||!o.j||o.j.ok!==true){onErr(o);return;}applyScore(Number(o.j.score)||0,heard)})
     .catch(function(){busy=false;clog("mic_neterr","",{mime:blob.type||mt,ext:_ext,size:blob.size});setHint(L.netErr)});
@@ -360,7 +434,7 @@ function applyScore(score,heard){
   var ok=score>=60,word=document.getElementById('word'),fb=document.getElementById('fb');
   var he=document.getElementById('heard');if(he)he.textContent=heard?(L.heard+' '+heard):"";
   if(window.PracticeCoach)PracticeCoach.answer(COACH,ok);
-  if(ok){okCount++;word.classList.add('ok','pop');rain();toast('+10 XP · '+score+'%');beep([523,659,784]);haptic(true);fb.className='fb ok';fb.textContent='✓ '+L.ok+' '+score+'%';
+  if(ok){okCount++;word.classList.add('ok','pop');rain();toast((PWA_PRONUNCIATION_HOST?'':'+10 XP · ')+score+'%');beep([523,659,784]);haptic(true);fb.className='fb ok';fb.textContent='✓ '+L.ok+' '+score+'%';
     advance(1100);
   }else{
     word.classList.add('bad');beep([220,180]);haptic(false);fb.className='fb bad';
