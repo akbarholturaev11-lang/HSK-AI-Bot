@@ -11,6 +11,8 @@ assert(originalCourse.includes('src="/course_v3_data/iphone-pwa-feedback.js'));
 assert(originalCourse.includes('window.HskPwaFeedback&&window.HskPwaFeedback.open()'));
 assert(css.includes("#hsk-pwa-feedback-root[hidden]"));
 assert(!source.includes("X-Telegram-Init-Data"));
+assert(!source.includes("bot.releaseFeedback.lowRatingComment"),
+  "PWA text form must not promise screenshot or discount from validation hint");
 
 class Element {
   constructor(tag = "div") {
