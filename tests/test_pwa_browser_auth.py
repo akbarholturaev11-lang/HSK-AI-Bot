@@ -3355,6 +3355,98 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("catch (_) { return null; }", script)
         self.assertNotIn("const linkId = sessionStorage.getItem(", script)
 
+    def test_login_bfcache_rechecks_server_cookie_and_recovers_disabled_provider(self):
+        """A restored Safari login page cannot keep a stale auth or disabled UI."""
+        import subprocess
+
+        script = r"""
+const fs = require("fs");
+const vm = require("vm");
+const handlers = {};
+const elements = {};
+function el(id) {
+  if (!elements[id]) elements[id] = {
+    textContent: "", value: "", hidden: false, disabled: false,
+    addEventListener() {}, setAttribute() {}, removeAttribute() {},
+  };
+  return elements[id];
+}
+const buttons = ["telegram", "google", "apple"].map(provider => ({
+  dataset: {provider}, hidden: false, disabled: false,
+  addEventListener() {},
+}));
+el("actions").querySelectorAll = () => buttons;
+let signedIn = false;
+let sessionReads = 0;
+let providerReads = 0;
+const redirects = [];
+async function fakeFetch(path) {
+  if (path === "/api/v3/pwa-auth/session") {
+    sessionReads++;
+    return signedIn
+      ? {ok: true, json: async () => ({ok: true, user_id: 1, language: "uz", csrf: "test-csrf"})}
+      : {ok: false, json: async () => ({ok: false, error: "pwa_session_required"})};
+  }
+  if (path === "/api/v3/pwa-auth/providers") {
+    providerReads++;
+    return {ok: true, json: async () => ({ok: true, providers: ["google", "apple"]})};
+  }
+  throw new Error("Unexpected request: " + path);
+}
+const document = {
+  getElementById: el,
+  documentElement: {lang: "uz"},
+  visibilityState: "visible",
+  addEventListener() {},
+};
+const window = {
+  addEventListener(name, callback) {handlers[name] = callback;},
+  setInterval: () => 1,
+  clearInterval() {},
+  HSKCharacters: null,
+};
+const location = {
+  search: "", href: "https://example.test/iphone-pwa",
+  replace(url) {redirects.push(url);}, assign() {},
+};
+const saved = new Map();
+const sessionStorage = {
+  getItem: key => saved.get(key) || null,
+  setItem: (key, value) => saved.set(key, value),
+  removeItem: key => saved.delete(key),
+};
+vm.runInNewContext(fs.readFileSync("app/static/iphone-pwa-login.js", "utf8"), {
+  window, document, location, fetch: fakeFetch, sessionStorage,
+  URL, URLSearchParams, console,
+});
+const settle = () => new Promise(resolve => setImmediate(resolve));
+(async () => {
+  await settle();
+  // Simulate Safari retaining disabled controls after an external redirect.
+  buttons[0].disabled = true;
+  handlers.pageshow({persisted: false});
+  await settle();
+  const initialReads = sessionReads;
+  handlers.pageshow({persisted: true});
+  await settle();
+  const telegramRecovered = !buttons[0].disabled;
+  signedIn = true;
+  handlers.pageshow({persisted: true});
+  await settle();
+  process.stdout.write(JSON.stringify({
+    initialReads, sessionReads, providerReads, telegramRecovered,
+    redirects, actionsHidden: elements.actions.hidden,
+  }));
+})().catch(error => {console.error(error); process.exit(1);});
+"""
+        result = json.loads(subprocess.check_output(["node", "-e", script], text=True))
+        self.assertEqual(result["initialReads"], 1)
+        self.assertEqual(result["sessionReads"], 3)
+        self.assertGreaterEqual(result["providerReads"], 2)
+        self.assertTrue(result["telegramRecovered"])
+        self.assertEqual(result["redirects"], ["/iphone-pwa/course"])
+        self.assertTrue(result["actionsHidden"])
+
     async def test_existing_telegram_owner_retained_and_logout_is_csrf_protected(self):
         state = await self.begin()
         response = await self.callback(state)

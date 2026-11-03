@@ -147,6 +147,12 @@
           button.disabled = false;
         });
         actions.hidden = false;
+        // A stale disabled Telegram button must recover when Safari restores
+        // this page without an outstanding browser-bound link request.
+        if (!uuid(pendingTelegramId())) {
+          const telegramButton = buttons.find((button) => button.dataset.provider === "telegram");
+          if (telegramButton) telegramButton.disabled = false;
+        }
         resumeTelegram();
         if (new URLSearchParams(location.search).get("auth") === "cancelled" &&
             !uuid(pendingTelegramId())) {
@@ -202,5 +208,10 @@
     }
   }
   buttons.forEach((button) => button.addEventListener("click", () => start(button)));
+  // Safari can restore a stale login page from BFCache without re-running JS.
+  // The server cookie, never cached provider buttons, decides the next screen.
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) bootstrap();
+  });
   bootstrap();
 }());
