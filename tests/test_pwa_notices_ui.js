@@ -45,7 +45,8 @@ class Element {
 }
 
 function harness({path = "/iphone-pwa/course", action = null, accountId = 7,
-                  alreadyBusy = false, sharedStorage = new Map()} = {}) {
+                  alreadyBusy = false, splashReady = true, sharedStorage = new Map()} = {}) {
+  let splashDone = splashReady;
   const timers = [], callbacks = {}, requests = [], navigation = [];
   let root = null, redirects = 0;
   const document = {
@@ -55,7 +56,11 @@ function harness({path = "/iphone-pwa/course", action = null, accountId = 7,
     createElement: (tag) => new Element(tag),
     addEventListener: () => {},
     querySelector: () => alreadyBusy ? new Element("lesson") : null,
-    getElementById: () => new Element("splash")
+    getElementById: () => {
+      const e = new Element("splash");
+      e.classList = {contains:(name)=>name==="is-done" && splashDone};
+      return e;
+    }
   };
   const location = {
     pathname: path,
@@ -89,6 +94,8 @@ function harness({path = "/iphone-pwa/course", action = null, accountId = 7,
     }
   }, {filename:"iphone-pwa-notices.js",timeout:1000});
   return {root:()=>root, window, navigation, requests, timers, callbacks, redirects:()=>redirects,
+    setSplashDone(){splashDone = true;},
+    async flushTimers(){for(const fn of timers.splice(0))await fn();},
     async loadAndTick(){
       assert.equal(typeof callbacks.load, "function");
       callbacks.load();
@@ -149,6 +156,13 @@ async function main(){
   await busy.loadAndTick();
   assert.equal(busy.root().hidden,true,"never interrupt active lesson or sheet");
 
-  console.log("PWA notice UI: 8 behavior/ownership/safety checks passed");
+  const delayed = harness({action:{payment_id:90,status:"rejected",plan_type:"1_month"},splashReady:false});
+  await delayed.loadAndTick();
+  assert.equal(delayed.root().hidden,true,"do not overlay loading/splash screen");
+  delayed.setSplashDone();
+  await delayed.flushTimers();
+  assert.equal(delayed.root().hidden,false,"show latest rejected payment after the splash ends");
+
+  console.log("PWA notice UI: 9 behavior/ownership/safety checks passed");
 }
 main().catch((err)=>{console.error(err);process.exitCode=1;});
