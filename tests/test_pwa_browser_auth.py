@@ -1237,6 +1237,67 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(owner.status, "active")
             self.assertIsNotNone(owner.end_date)
 
+    async def test_telegram_release_reward_refuses_undelivered_or_failed_campaign(self):
+        """Telegram callback data alone must not grant another user's trial."""
+        from app.bot.handlers.release_feedback import release_feedback_user_callback
+        from app.db.models.release_feedback import (
+            ReleaseFeedbackCampaign, ReleaseFeedbackDelivery,
+        )
+        from unittest.mock import patch, AsyncMock
+
+        async with self.sessions() as db:
+            db.add(ReleaseFeedbackCampaign(
+                id=97, title="Private rating campaign", status="sent",
+                send_at=datetime.now(timezone.utc) - timedelta(hours=2),
+            ))
+            await db.commit()
+
+        callback = SimpleNamespace(
+            data="relfb:97:try",
+            from_user=SimpleNamespace(id=1001),
+            answer=AsyncMock(),
+            message=SimpleNamespace(message_id=15),
+        )
+        state = SimpleNamespace(set_state=AsyncMock(), update_data=AsyncMock())
+        with patch("app.services.release_feedback_service.ReleaseFeedbackService.grant_trial_access",
+                   new_callable=AsyncMock) as grant:
+            async with self.sessions() as db:
+                await release_feedback_user_callback(callback, state, db)
+            grant.assert_not_awaited()
+            self.assertTrue(callback.answer.await_args.kwargs["show_alert"])
+
+            async with self.sessions() as db:
+                db.add(ReleaseFeedbackDelivery(
+                    campaign_id=97, user_id=1, user_telegram_id=1001,
+                    status="failed",
+                ))
+                await db.commit()
+            callback.answer.reset_mock()
+            async with self.sessions() as db:
+                await release_feedback_user_callback(callback, state, db)
+            grant.assert_not_awaited()
+            self.assertTrue(callback.answer.await_args.kwargs["show_alert"])
+
+        # The actual sent delivery remains eligible for rating: the guard
+        # may not disable legitimate Telegram feedback during rollout.
+        async with self.sessions() as db:
+            delivery = (await db.execute(
+                select(ReleaseFeedbackDelivery).where(
+                    ReleaseFeedbackDelivery.campaign_id == 97,
+                )
+            )).scalar_one()
+            delivery.status = "sent"
+            await db.commit()
+        callback.data = "relfb:97:rate:1"
+        callback.answer.reset_mock()
+        with patch("app.bot.handlers.release_feedback._edit_user_feedback_message",
+                   new_callable=AsyncMock):
+            async with self.sessions() as db:
+                await release_feedback_user_callback(callback, state, db)
+            state.set_state.assert_awaited_once()
+            state.update_data.assert_awaited_once()
+            self.assertFalse(callback.answer.await_args.kwargs.get("show_alert", False))
+
     async def test_pwa_release_comment_after_rating_does_not_repeat_reward(self):
         from app.db.models.release_feedback import (
             ReleaseFeedbackCampaign, ReleaseFeedbackDelivery, ReleaseFeedbackResponse,
