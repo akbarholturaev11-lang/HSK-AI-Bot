@@ -2855,6 +2855,10 @@ async def pwa_course_map(request: Request):
                 default_source="pwa_course_v3",
             )
             response.headers["Cache-Control"] = "no-store"
+            # A browser may have had its HttpOnly session replaced in another
+            # tab between session bootstrap and map retrieval. Explicitly
+            # identify the verified response owner for client cache isolation.
+            response.headers["X-HSK-PWA-User-ID"] = str(user.id)
             return response
     except PwaAuthError as exc:
         return JSONResponse(
