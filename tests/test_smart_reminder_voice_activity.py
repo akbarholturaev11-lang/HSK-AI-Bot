@@ -179,7 +179,7 @@ class VoiceChecks:
         result=await self.analysis.return_learning(1,self.case.job_id)
         self.assertEqual(result.first_study_at,self.at)
         self.assertIsNone(result.verified_study_count)
-        self.assertIn("repeat_practice_and_partial_voice_unavailable",result.coverage_limits)
+        self.assertIn("partial_practice_and_voice_unavailable",result.coverage_limits)
 
     async def test_baseline_d7_counts_completed_voice_without_inventing_units(self):
         from tests import test_smart_reminder_baseline as baseline
