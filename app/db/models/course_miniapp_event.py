@@ -7,7 +7,14 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 
 
+SMART_PRACTICE_SOURCE = "smart_practice_v2"
+SMART_PRACTICE_STARTED = "smart_practice_attempt_started"
+SMART_PRACTICE_SCORED = "smart_practice_attempt_scored"
+
+
 COURSE_MINIAPP_EVENT_NAMES = (
+    SMART_PRACTICE_STARTED,
+    SMART_PRACTICE_SCORED,
     "section_attempt_scored",
     "practice_attempt_scored",
     "hint_dismissed",
