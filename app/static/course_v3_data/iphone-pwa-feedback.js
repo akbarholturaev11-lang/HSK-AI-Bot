@@ -355,7 +355,9 @@
         return;
       }
       if (draft.rating <= 2 && !draft.comment_text.trim()) {
-        setStatus(common("bot.releaseFeedback.lowRatingComment"));
+        // This browser form supports text only; do not promise screenshot upload
+        // or an eligibility-dependent discount in a validation hint.
+        setStatus(common("bot.releaseFeedback.commentButton"));
         return;
       }
       path = "/api/v3/pwa/feedback/release/respond";
