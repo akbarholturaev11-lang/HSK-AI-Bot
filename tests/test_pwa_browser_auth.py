@@ -885,7 +885,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('_apiPost("/api/v3/lesson/complete"', course)
         self.assertIn('completion_proof:LESSON_COMPLETION_PROOF', course)
         self.assertIn('mistakes:(Flow.mistakes||[]).slice(0,50)', course)
-        self.assertIn('delete payload.initData;delete payload.telegram_id;', course)
+        self.assertIn('delete payload.initData;delete payload.user_id;delete payload.telegram_id;', course)
 
     async def test_pwa_recognition_profile_uses_real_owner_level_and_progress(self):
         path = "/api/v3/pwa/practice/profile"
