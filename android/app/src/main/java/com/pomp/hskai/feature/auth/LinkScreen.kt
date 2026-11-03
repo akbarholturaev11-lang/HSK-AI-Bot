@@ -78,9 +78,9 @@ import kotlin.math.ceil
 /**
  * The way into the app: one card per sign-in provider.
  *
- * Telegram is always offered. Google and Apple reserve disabled slots while
- * server discovery is pending; unavailable providers disappear after discovery
- * rather than presenting a sign-in action that cannot succeed.
+ * Telegram is always offered. Google reserves a disabled slot until server
+ * discovery completes; Apple is shown only if the server actually offers it.
+ * Unavailable providers never start a sign-in attempt.
  *
  * Invitation attribution comes from the launch link and stays outside this
  * screen; signing in must not ask the learner to type a code.
@@ -418,10 +418,10 @@ private fun ProviderCards(
             enabled = !state.isRequestingCode,
             onClick = onContinueWithTelegram,
         )
-        // Reserve provider slots on the first frame. Server discovery only
-        // changes whether a card is enabled, not where Google/Apple sit.
+        // Reserve only Google's slot while server discovery is pending.
+        // Apple retains its original availability-gated behavior.
         val showGoogle = !state.providersLoaded || AuthProvider.GOOGLE in state.providers
-        val showApple = !state.providersLoaded || AuthProvider.APPLE in state.providers
+        val showApple = AuthProvider.APPLE in state.providers
         if (showGoogle) {
             Spacer(Modifier.height(12.dp))
             ProviderCard(
