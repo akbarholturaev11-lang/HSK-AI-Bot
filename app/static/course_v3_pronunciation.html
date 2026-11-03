@@ -105,7 +105,7 @@ Object.keys(L).forEach(function(key){
 });
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}document.querySelector(".top .ix").setAttribute("aria-label",L.back);document.querySelector(".mic").setAttribute("aria-label",PRONUNCIATION_UI.say||"Gapirish");
 function goBack(){location.href=(PWA_PRONUNCIATION_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq"}
-function goPremium(){if(PWA_PRONUNCIATION_HOST){goBack();return}location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription&return_to=course&return_page=course_v3_pronunciation.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
+function goPremium(){location.href=(PWA_PRONUNCIATION_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription&return_to=course&return_page=course_v3_pronunciation.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 var PWA_PRONUNCIATION_HOST=location.pathname==="/iphone-pwa/practice/pronunciation";
 var PWA_PRONUNCIATION_SESSION=null,PWA_PRONUNCIATION_PROMISE=null;
 /* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)
@@ -169,7 +169,7 @@ function showLimitNow(){
   var d=document.getElementById('done');
   var adBtn="";
   var sub=gateEscape(LIMIT_REASON||L.limitSub);
-  d.innerHTML='<div class="st han" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+L.limitTitle+'</h3><p>'+sub+'</p>'+adBtn+(PWA_PRONUNCIATION_HOST?'':'<button onclick="goPremium()" style="background:transparent;border:1px solid var(--line);color:var(--cin2);margin-top:8px">'+L.premiumBtn+'</button>')+'<button onclick="goBack()" style="background:transparent;border:1px solid var(--line);color:var(--ink2);margin-top:8px">'+L.back+'</button>';
+  d.innerHTML='<div class="st han" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+L.limitTitle+'</h3><p>'+sub+'</p>'+adBtn+'<button onclick="goPremium()" style="background:transparent;border:1px solid var(--line);color:var(--cin2);margin-top:8px">'+L.premiumBtn+'</button>'+'<button onclick="goBack()" style="background:transparent;border:1px solid var(--line);color:var(--ink2);margin-top:8px">'+L.back+'</button>';
   document.getElementById('ctrl').style.display='none';d.classList.add('on');
 }
 function gateStart(newAttempt){
