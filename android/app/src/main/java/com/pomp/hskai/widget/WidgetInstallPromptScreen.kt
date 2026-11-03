@@ -17,6 +17,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -57,6 +58,7 @@ import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
@@ -500,12 +502,12 @@ private fun PromptWidget(session: WidgetSession, modifier: Modifier = Modifier) 
     val copy = widgetCopy(context, session, access, visual)
     val shape = RoundedCornerShape(20.dp)
     Column(modifier=modifier.shadow(10.dp,shape).clip(shape)
-        .background(WidgetPandaArt.palette(false,visual).background),horizontalAlignment=Alignment.CenterHorizontally) {
+        .paint(painterResource(WidgetPandaArt.palette(false,visual).background),contentScale=ContentScale.FillBounds),horizontalAlignment=Alignment.CenterHorizontally) {
         val palette=WidgetPandaArt.palette(false,visual)
         androidx.compose.ui.viewinterop.AndroidView(
             factory={ widgetHeaderViews(context,copy,false,false,palette).apply(context,android.widget.FrameLayout(context)) },
             update={ widgetHeaderViews(context,copy,false,false,palette).reapply(context,it) },
-            modifier=Modifier.fillMaxWidth().height(54.dp),
+            modifier=Modifier.fillMaxWidth().height(44.dp),
         )
         Image(bitmap=WidgetPandaArt.bitmap(context,access,visual).asImageBitmap(),contentDescription=copy.message,
             contentScale=ContentScale.Fit,modifier=Modifier.fillMaxWidth().weight(1f))
@@ -525,7 +527,8 @@ private fun PromptPanda(motion: Boolean, modifier: Modifier = Modifier) {
     } else {
         null
     }
-    val painter = painterResource(R.drawable.widget_prompt_panda)
+    val context=LocalContext.current
+    val painter=remember(context) { BitmapPainter(WidgetPandaArt.portrait(context).asImageBitmap()) }
 
     Box(
         modifier = modifier.graphicsLayer {

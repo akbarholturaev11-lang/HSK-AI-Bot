@@ -25,6 +25,9 @@
       '</div>' +
     '</section>';
   document.body.appendChild(overlay);
+  overlay.querySelector(".hsk-pwa-close").setAttribute(
+    "aria-label", commonMessage("action.close", "Close")
+  );
 
   var panel = overlay.querySelector('[role="dialog"]');
   var list = overlay.querySelector("#hsk-pwa-notice-list");

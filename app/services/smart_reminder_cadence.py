@@ -11,7 +11,7 @@ from statistics import median
 from zoneinfo import ZoneInfo
 
 from app.services.smart_reminder_policy import (
-    PolicyContext, PolicyDecision, _aware_utc, evaluate,
+    HabitCalibration, PolicyContext, PolicyDecision, _aware_utc, day_window, evaluate,
 )
 
 
@@ -19,7 +19,7 @@ from app.services.smart_reminder_policy import (
 class CadenceCalibration:
     version: str
     minimum_learning_days: int
-    abnormal_gap_multiplier: Fraction
+    abnormal_gap_multiplier: Fraction | None
     observation_multiplier: Fraction
     backoff_factor: int
     maximum_unsuccessful: int
@@ -34,9 +34,28 @@ class CadenceCalibration:
                 raise ValueError("Explicit positive integer calibration required")
         if self.weekly_maximum > 7:
             raise ValueError("Weekly maximum cannot exceed the hard one-per-day bound")
-        if (not isinstance(self.abnormal_gap_multiplier, Fraction) or self.abnormal_gap_multiplier <= 1 or
+        if ((self.abnormal_gap_multiplier is None and not self.observed_mode) or
+                self.abnormal_gap_multiplier is not None and (
+                    not isinstance(self.abnormal_gap_multiplier, Fraction) or self.abnormal_gap_multiplier <= 1) or
                 not isinstance(self.observation_multiplier, Fraction) or self.observation_multiplier < 1):
             raise ValueError("Explicit rational gap/observation multipliers required")
+
+    @property
+    def observed_mode(self):
+        return False
+
+
+@dataclass(frozen=True)
+class ObservedCadenceCalibration(CadenceCalibration):
+    """D25 ordinary reminders; no complete-negative-history inference."""
+    @property
+    def observed_mode(self):
+        return True
+
+
+# D18/D19/D20/D25. No unapproved abnormal-inactivity threshold is supplied.
+# A distinct version changes only this explicit profile's transport digest.
+OBSERVED_RULES = ObservedCadenceCalibration('smart-rules-observed-v1', 3, None, Fraction(1), 2, 5, 3)
 
 
 @dataclass(frozen=True)
@@ -64,6 +83,8 @@ class CadenceContext:
     # Only a trustworthy authoritative outcome feed may assert this boundary.
     # The actual legacy reader always leaves it None, even for an empty query.
     learning_complete_since: datetime | None = None
+    observed_sources: bool = False
+    observed_activity_at: datetime | None = None
 
 
 @dataclass(frozen=True)
@@ -97,8 +118,9 @@ def _after_days(instant, days):
 
 
 def evaluate_cadence(context: CadenceContext, *, calibration: CadenceCalibration | None = None,
+                     habit_calibration: HabitCalibration | None = None,
                      allow_elapsed_time: bool = False) -> CadenceDecision:
-    base = evaluate(context.policy, allow_elapsed_time=allow_elapsed_time)
+    base = evaluate(context.policy, calibration=habit_calibration, allow_elapsed_time=allow_elapsed_time)
     gap = abnormal = misses = next_at = weekly = None
 
     def result(reason):
@@ -155,45 +177,80 @@ def evaluate_cadence(context: CadenceContext, *, calibration: CadenceCalibration
     for study in context.policy.studies:
         accepted = _aware_utc(study.accepted_at)
         if (study.activity_type not in {"lesson", "test", "training"} or
-                type(study.xp) is not int or study.xp <= 0 or not since <= accepted <= now):
+                type(study.xp) is not int or study.xp <= 0 or accepted > now or
+                accepted < since and not (calibration.observed_mode and context.observed_sources is True)):
             continue
         # The base evaluator has already rejected conflicting original refs.
         studies[study.reference] = study
     days = sorted({s.accepted_at.astimezone(zone).date() for s in studies.values()})
     if context.policy.coverage_limits:
         return result("cadence_source_coverage_limited")
-    if len(days) < calibration.minimum_learning_days:
+    observed = calibration.observed_mode and context.observed_sources is True
+    if len(days) < calibration.minimum_learning_days and not observed:
         return result("sparse_learning_history")
-    gap = median([Fraction((right-left).days) for left, right in zip(days, days[1:])])
+    if len(days) >= calibration.minimum_learning_days:
+        gap = median([Fraction((right-left).days) for left, right in zip(days, days[1:])])
     # Positive history can describe a rhythm. It cannot prove today's absence
     # or an unsuccessful reminder when legacy signals can undercount learning.
-    if context.learning_complete_since is None or _aware_utc(context.learning_complete_since) > since:
+    complete = context.learning_complete_since is not None and _aware_utc(context.learning_complete_since) <= since
+    if not complete and not observed:
         return result("learning_coverage_unknown")
-    last_study = max(s.accepted_at for s in studies.values())
-    abnormal = Fraction((today-days[-1]).days) > gap * calibration.abnormal_gap_multiplier
-    # An unknown actual exposure time cannot be cleared by comparing a newer
-    # study with the old *scheduled* time. Late delivery is still uncertain;
-    # reconciliation/expiry fencing belongs to the reservation protocol.
+    last_study = max((s.accepted_at for s in studies.values()), default=None)
+    if context.observed_activity_at is not None:
+        activity = _aware_utc(context.observed_activity_at)
+        if not observed or not since <= activity <= now:
+            return result('cadence_source_coverage_limited')
+        last_study = max(last_study, activity) if last_study is not None else activity
+    if complete and gap is not None and calibration.abnormal_gap_multiplier is not None:
+        abnormal = Fraction((today-days[-1]).days) > gap * calibration.abnormal_gap_multiplier
+    # Unknown exposure remains unknown and spends its original weekly budget.
+    # Its live frozen window may veto work, but an ended historical intent
+    # cannot suppress every later day. Same-day/overlap ownership was checked
+    # above; the reservation/transport protocols still forbid replay/fallback.
     if any(j.externally_attempted and j.verified_shown_at is None and not j.definite_non_display
+           and _aware_utc(j.day_end_utc) > now
            for j in jobs.values()):
         return result("delivery_outcome_unknown")
     series = [j for j in jobs.values() if j.verified_shown_at is not None and
-              _aware_utc(j.verified_shown_at) >= last_study]
+              (last_study is None or _aware_utc(j.verified_shown_at) >= last_study)]
     shown = sorted((_aware_utc(j.verified_shown_at) for j in series))
+    if shown and not complete:
+        # Do not restart or classify a known shown series from partial history.
+        return result('learning_coverage_unknown')
     if shown and shown[0] < since:
         return result("outcome_window_incomplete")
+    if gap is None:
+        # Day-one baseline at the actual saved/manual time. D18's three days
+        # qualify a learned rhythm, not permission to send an ordinary reminder.
+        # No invented default interval, inactivity or failed-response count.
+        if shown:
+            return result('sparse_learning_history')
+        if last_study is not None and last_study.astimezone(zone).date() == today:
+            return result('personal_cadence_cooldown')
+        return result('shadow_candidate')
     try:
         observation_days = gap * calibration.observation_multiplier
         if any(_after_days(instant, observation_days) > now for instant in shown):
             return result("outcome_observation_pending")
-        misses = len(shown)
-        if misses >= calibration.maximum_unsuccessful:
+        verified_misses = len(shown)
+        misses = verified_misses if complete else None
+        if complete and verified_misses >= calibration.maximum_unsuccessful:
             return result("reactivation_stopped")
         # Backoff is derived from the learner's own rhythm and actual shown
         # jobs; one alternate attempt never creates another unsuccessful job.
-        anchor = shown[-1] if shown else last_study
-        interval = gap * calibration.backoff_factor ** misses
-        next_at = _after_days(anchor, interval)
+        interval = gap * calibration.backoff_factor ** verified_misses
+        if shown:
+            next_at = _after_days(shown[-1], interval)
+        elif gap.denominator == 1:
+            # Rhythm was measured in local calendar days, not elapsed 24h.
+            # This boundary permits that day; base policy keeps the actual
+            # personal clock, quiet hours and DST validity authoritative.
+            eligible_day = last_study.astimezone(zone).date() + timedelta(days=gap.numerator)
+            next_at = day_window(context.policy.timezone_name, eligible_day.isoformat())[0]
+        else:
+            # Preserve fractional-day rhythm (e.g. 3.5 days) without rounding
+            # it into a later date or changing its existing time-of-day anchor.
+            next_at = _after_days(last_study, gap)
     except OverflowError:
         return result("cadence_time_out_of_range")
     if base.scheduled_at < next_at:

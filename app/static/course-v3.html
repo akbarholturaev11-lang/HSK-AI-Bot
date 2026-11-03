@@ -5795,6 +5795,36 @@ function adoptServerLang(d){
 /* Map yuklash — cold-start / tranzient server xatolarida ("birinchi ochkanda
    API yiqildi") darrov "ulanmagan" gate ko'rsatilmaydi, bir necha marta qayta
    uriniladi. Faqat haqiqiy 401 (auth) yoki initData yo'qligida gate chiqadi. */
+/* D29 Smart zone bootstrap: explicit authenticated metadata, never consent. */
+var _SMART_ZONE_READY="",_SMART_ZONE_PENDING=null;
+function _ensureSmartTimezone(){
+  var proof=INIT_DATA;
+  if(!proof||_SMART_ZONE_READY===proof)return Promise.resolve(false);
+  if(_SMART_ZONE_PENDING&&_SMART_ZONE_PENDING.proof===proof)return _SMART_ZONE_PENDING.promise;
+  var zone="";try{zone=Intl.DateTimeFormat().resolvedOptions().timeZone}catch(e){}
+  if(!zone||typeof zone!=="string"||zone.length>64||typeof AbortController!=="function"||!window.crypto||typeof window.crypto.randomUUID!=="function")return Promise.resolve(false);
+  var controller=new AbortController(),timer=setTimeout(function(){controller.abort()},6000);
+  var headers={"Content-Type":"application/json","X-Telegram-Init-Data":proof};
+  var task=fetch("/api/v3/smart-reminder/preferences",{headers:headers,cache:"no-store",credentials:"omit",redirect:"error",signal:controller.signal}).then(function(r){
+    if(!r.ok)throw new Error("smart_zone_unavailable");return r.json();
+  }).then(function(p){
+    if(INIT_DATA!==proof||!p||p.ok!==true||!Number.isInteger(p.revision)||p.revision<0||p.revision>=2147483647||["auto","manual_locked"].indexOf(p.time_mode)<0)return false;
+    if(typeof p.timezone_name==="string"&&p.timezone_name)return true;
+    if(p.timezone_name!==null||p.time_mode!=="auto")return false;
+    var id=window.crypto.randomUUID();
+    if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(id))return false;
+    return fetch("/api/v3/smart-reminder/preferences",{method:"PATCH",headers:headers,cache:"no-store",credentials:"omit",redirect:"error",signal:controller.signal,
+      body:JSON.stringify({request_id:id,expected_revision:p.revision,timezone_name:zone})}).then(function(r){
+      if(!r.ok)return false;return r.json().then(function(a){return INIT_DATA===proof&&a&&a.ok===true&&a.request_id===id&&a.applied_revision===p.revision+1&&a.dispatch_allowed===false});
+    });
+  }).catch(function(){return false}).then(function(ready){
+    clearTimeout(timer);if(ready&&INIT_DATA===proof)_SMART_ZONE_READY=proof;
+    if(_SMART_ZONE_PENDING&&_SMART_ZONE_PENDING.promise===task)_SMART_ZONE_PENDING=null;
+    return ready;
+  });
+  _SMART_ZONE_PENDING={proof:proof,promise:task};return task;
+}
+/* End D29 Smart zone bootstrap. */
 function _fetchCourseMap(lv,signal){
   var entrySource="";try{entrySource=new URLSearchParams(location.search||"").get("source")||""}catch(e){}
   var url="/api/v3/map?lang="+LANG+"&level="+lv+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset())
@@ -5843,6 +5873,7 @@ function loadCourseMap(lv,tries){
       return {error:true};
     }
     if(d._status>=400||!Array.isArray(d.units))return {error:true};
+    if(d.smart_preferences_available===true)_ensureSmartTimezone(); // Best effort; learning/navigation never waits for Smart metadata.
     return {data:d};
   }).catch(function(){
     if(tries<3)return _retryCourseMap(lv,tries);
@@ -9337,7 +9368,7 @@ window.addEventListener("pageshow",function(ev){
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261021-c61abddcc057"></script>
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
-<script src="/course_v3_data/iphone-pwa-notices.js?v=20261103-1"></script>
+<script src="/course_v3_data/iphone-pwa-notices.js?v=20261104-1"></script>
 <script src="/course_v3_data/iphone-pwa-feedback.js?v=20261103-1"></script>
 </body>
 </html>

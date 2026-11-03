@@ -98,6 +98,17 @@ class ShadowAnalysisChecks:
         await self.q.test_current_source_off_without_epoch_is_still_a_veto()
         await self.observe_reason("consent_or_permission_unavailable")
 
+    async def test_admin_pause_is_shadow_suppression_without_delivery_or_negative_learning(self):
+        from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
+        reserved=await self.q.reserve()
+        self.q.tick=self.q.tick.replace(hour=14)
+        lease=await self.q.claim(reserved.job_id)
+        async with self.q.sessions.begin() as session:
+            await NotificationTemplateService(session).update_text(KEY_SMART_STUDY,enabled=False,
+                text_uz='',text_ru='',text_tj='',updated_by=None)
+        self.assertEqual((await self.q.finish(lease)).reason,'admin_study_disabled')
+        await self.observe_reason('admin_study_disabled')
+
     async def test_actual_personal_quiet_is_observed(self):
         await self.q.test_current_quiet_hours_after_claim_suppress()
         await self.observe_reason("personal_quiet")

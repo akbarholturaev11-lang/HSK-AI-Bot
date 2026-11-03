@@ -113,7 +113,9 @@ class Settings(BaseSettings):
     ADMIN_PWA_ENABLED: bool = False
     # Observes existing Smart shadow reservations only; grants no delivery.
     SMART_REMINDER_SHADOW_ENABLED: bool = False
-    # Internal Telegram boundary only; no cohort enrollment or worker wiring.
+    # D25 ordinary runtime over persisted reviewed cohorts; no auto enrollment.
+    SMART_REMINDER_ENABLED: bool = False
+    # Separate Telegram send boundary; shared runtime/review still required.
     SMART_REMINDER_TELEGRAM_ENABLED: bool = False
     # Post-response/commit analysis and independent analysis-only retention.
     SMART_REMINDER_ANALYSIS_ENABLED: bool = False

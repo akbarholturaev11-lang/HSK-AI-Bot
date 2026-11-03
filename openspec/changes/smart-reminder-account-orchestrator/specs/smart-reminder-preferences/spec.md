@@ -128,3 +128,24 @@ An Android capability observation SHALL derive canonical owner, device and sessi
 #### Scenario: Study capability is lost
 - **WHEN** an authenticated observation loses a study prerequisite
 - **THEN** existing pending authority is invalidated while explicit intent, externalized outcomes and account-notice permission remain independent
+
+
+### Requirement: Existing clients reach canonical V1 settings
+Authenticated existing study controls SHALL persist only their actual channel/device intent using current revision checks. A real device/browser IANA observation MAY initialize a missing account zone separately, without granting study consent or overwriting a known zone or manual time.
+
+#### Scenario: First real native use without canonical settings
+- **WHEN** an authenticated legacy/native-only learner opens the client and canonical timezone is unknown
+- **THEN** the actual device zone may be initialized without a notification grant; an explicit phone study ON/OFF uses the canonical endpoint and preserves global/other-channel OFF and manual time
+
+#### Scenario: Offline OFF and delayed ON response
+- **WHEN** the learner turns phone study OFF while an older ON request or offline write is unresolved
+- **THEN** local posting stops immediately, the latest account-bound intent remains retryable with immutable mutation evidence, and an old response/account replacement cannot re-enable it
+
+#### Scenario: Global OFF races native ON
+- **WHEN** a native control submits ON from stale state or global OFF is current
+- **THEN** fresh-state recovery retains account OFF, shows the effective setting and never silently rebases ON or changes another channel
+
+
+#### Scenario: Public browser source precedes private acceptance
+- **WHEN** the updated browser is loaded while Smart runtime is disabled or the learner has no operator-held routing entry
+- **THEN** automatic timezone initialization is not exposed, no automatic settings write occurs, and disabled exposure evaluation performs no routing query; private source promotion creates no rollout authority

@@ -1,4 +1,4 @@
-# Shared passive widget context, version 1
+# Shared passive widget context, versions 1 and 2
 
 Canonical scope/progress: [Master Plan](SMART_REMINDER_MASTER_PLAN.md), D15 and
 latest checkpoint. This document defines the wire and cache contract, not a
@@ -10,7 +10,8 @@ separately validates launcher/installed lifecycle. iOS and paired macOS/Windows 
 ## Authenticated optional map field
 
 Existing Android bearer-authenticated `GET /api/v3/android/course/map` accepts
-the optional pair `widget_context_version=1` and
+the optional pair `widget_context_version=1` (unchanged legacy shape) or
+`widget_context_version=2` (current Android adapter) and
 `widget_context_epoch=<canonical UUID for the current local link>`.
 Existing `tz` remains the bounded coarse course offset; it does not choose an
 IANA zone. No pair means the original map contract and no new Smart reads.
@@ -36,12 +37,12 @@ consent import, study reservation or provider call.
 
 ## Envelope and minimal cache allowlist
 
-`WidgetContext` is the strict, immutable schema. These are the complete allowed
-fields; adapters do not copy the entire course map into widget storage.
+`WidgetContext` is the strict, immutable v1 schema; `WidgetContextV2` explicitly
+extends it. Adapters do not copy the entire course map into widget storage.
 
 | Fields | Meaning |
 |---|---|
-| `version=1`, `policy_version=smart-widget-context-v1` | Explicit contract/semantic version. Unknown versions require neutral/compatible rendering. |
+| `version=1` / `2`, matching `policy_version=smart-widget-context-v1` / `smart-widget-context-v2` | Explicit contract/semantic version. Unknown or mismatched versions require neutral rendering. Version 1 never adds the version-2 field. |
 | `binding`, `request_epoch` | Opaque SHA-256 correlation of the verified canonical owner/device/session and the captured per-link UUID. Neither authorizes an operation. No raw owner/session/device ID is stored. |
 | `revision`, `generated_at`, `valid_until` | Current preference revision and aware UTC validity window; equality with expiry is expired. |
 | `level`, `track`, `local_day`, `timezone_name` | Canonical content level/track and authoritative IANA day/zone. Missing zone gives NULL day/zone and neutral daily state; no offset-to-zone guess. |
@@ -49,6 +50,7 @@ fields; adapters do not copy the entire course map into widget storage.
 | `verified_today_xp`, `goal_xp`, `goal_state`, `plan_completed` | Corroborated learning XP, existing goal and stored-plan result. Unknown/mismatched day cannot assert completion. `not_proven` is not proof of no study; verified XP can undercount legacy activity. |
 | `time_local`, `time_source`, `time_reason`, `calibration_version` | Shared policy time and source (`manual`, `saved`, `habit`, `unknown`), with no new confidence default. A missing usable minute has unknown source. |
 | `phase`, `reason`, `action`, `lesson_order`, `coverage_limits` | Semantic presentation and a normal navigation suggestion. No layout/art/OS/size IDs or private lesson content. |
+| `last_observed_study_at` (v2 only, required nullable aware timestamp) | Latest observed owned positive learning at or before generation. Missing evidence is NULL, never proof of no study. |
 | `dispatch_allowed=false`, `action_requires_authorization=true` | Fixed real JSON booleans, including on retries; JSON 0/1 are rejected. No notification or access grant. |
 
 No credentials, names, raw learning history, message bodies or private lesson
@@ -65,6 +67,31 @@ If time advances while User is locked/validated, generated time is sampled
 again. Every draw, including an offline draw, rechecks expiry and uses neutral
 semantics once proof expires. The OS may keep a previously drawn frame until
 the next permitted redraw; this is not an extension of proof or an access grant.
+
+## Positive history and native reference presentation
+
+Version 2 reuses reviewed positive scored/voice activity within a bounded
+90-day source window and the latest retained owned positive canonical learning
+XP (which may be older). Reward XP, foreign/future records and unfinished
+activity cannot supply this hint; a limited source returns unknown. It reads
+under the existing owned User lock without autoflush, writes, new tables,
+transcripts or scheduler work. Version 1 performs no additional age query.
+This is partial positive history, not a complete inactivity interval, failed
+reminder outcome or a new learning unit.
+
+D27's Android presentation uses the actual displayed server streak for
+1–2 / 3–29 / 30+ decorative tiers. Current canonical game-streak activity or
+reviewed positive learning today secures the streak appearance without claiming
+a full lesson/goal; verified goal/plan completion still owns completion captions.
+Unsecured nonzero streak moods advance at .33/.66/.85 of the interval from the
+actual personal minute to local-day end. No universal urgency hour is added.
+With zero streak, no today security and a known older positive timestamp,
+7/30/90 local-calendar-day bands select playful return illustrations and generic
+invitations. Unknown, quiet, paused, inaccessible and stale frames stay calm.
+These local visual cutoffs are not claimed as Duolingo's private algorithm or
+proof the learner did not study elsewhere. They create no notifications,
+consent, failure/backoff events or access grant. See
+[art provenance and mappings](SMART_WIDGET_ART_ASSETS.md).
 
 ## Semantics and reason codes
 
@@ -98,6 +125,18 @@ immediately; no activation-date waiting period. The original accepted completion
 time is an observation, not a claimed lesson-start timestamp. Missing, conflicting
 or incomplete history keeps manual/saved/neutral fallback. No cadence/send or
 retention purge is activated by this passive preset. No per-refresh LLM call is made.
+
+The context reader's explicit `personal_time=True` option now owns this history
+extension for the widget and integrated queue/Android/Telegram paths. Recent
+history starts at the oldest eligible IANA calendar midnight, including DST;
+manual time and default explicit-window readers remain unchanged. Cadence may
+retain a wider caller-requested positive-history window, while its original
+ledger/negative-coverage boundary remains separate and cannot become complete
+from the extension. All integrated evaluations explicitly pass the approved
+habit calibration. This connects existing rules; it creates no producer or
+dispatch authority. A changed personal clock cancels an unattempted mismatched
+frozen job instead of moving its time or restoring its daily ownership.
+
 
 ## Response acceptance and lifecycle
 

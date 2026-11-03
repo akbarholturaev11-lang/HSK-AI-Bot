@@ -74,6 +74,26 @@ class HskAiApplication : Application() {
         PaymentDecisionMonitor(this, retrofit.create(AndroidPushApi::class.java))
     }
     val studyReminderCoordinator by lazy { StudyReminderCoordinator(this, retrofit.create(com.pomp.hskai.data.api.AndroidSmartReminderApi::class.java)) }
+    internal val smartPreferenceBridge by lazy {
+        val api = retrofit.create(com.pomp.hskai.data.api.AndroidSmartReminderApi::class.java)
+        com.pomp.hskai.core.notify.SmartPreferenceBridge(widgetStore,
+            authRepository::authenticatedSession, authRepository::withCurrentSession,
+            authRepository::invalidateSessionIfCurrent,
+            read = { com.pomp.hskai.core.network.apiCall { api.preferences(it) } },
+            patch = { bearer, body -> com.pomp.hskai.core.network.apiCall { api.preferences(bearer, body) } },
+            stopLocal = {
+                StudyReminderScheduler.cancel(this@HskAiApplication)
+                StudyNotifications.cancelReminder(this@HskAiApplication)
+            }, queueSync = { WidgetScheduler.syncPreferences(this, it) })
+    }
+
+    suspend fun setStudyReminder(enabled: Boolean, expectedEpoch: String?): com.pomp.hskai.core.network.ApiResult<Unit> {
+        val result = smartPreferenceBridge.setEnabled(enabled, expectedEpoch)
+        if (widgetStore.read().epoch == expectedEpoch) {
+            widgetCoordinator.render()
+        }
+        return result
+    }
     val accountNoticeMonitor by lazy {
         AccountNoticeMonitor(this, retrofit.create(AndroidPushApi::class.java))
     }
@@ -88,6 +108,8 @@ class HskAiApplication : Application() {
             // itself, and its flavour has an empty [UpdateWatch].
             UpdateWatch.schedule(this@HskAiApplication)
             if (widgetStore.read().linked) WidgetScheduler.schedule(this@HskAiApplication)
+            widgetStore.read().let { if (it.linked && it.pendingStudyPreference != null)
+                WidgetScheduler.syncPreferences(this@HskAiApplication, it.epoch) }
             // Migrate the old Telegram-coupled reminder: local reminders now default OFF.
             if (widgetStore.read().reminderEnabled) StudyReminderScheduler.schedule(this@HskAiApplication)
             else StudyReminderScheduler.cancel(this@HskAiApplication)

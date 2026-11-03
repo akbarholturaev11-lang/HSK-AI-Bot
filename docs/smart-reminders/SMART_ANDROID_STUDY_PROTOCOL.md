@@ -9,6 +9,11 @@ alone cannot activate it. Android trigger integration is implemented within
 task 5.2's synthetic/isolated acceptance boundary; signed,
 mixed-build, actual fencing and canary acceptance remain tasks 5.3–5.4.
 
+The internal opt-in account planner can bind a reviewed pending destination
+using the same admission and fresh-policy checks as claim. It is unregistered
+in production and creates no grant/attempt or client authentication. See
+[destination contract](SMART_REMINDER_DESTINATION.md) and Master Plan §17.77.
+
 ## Android migration observation and triggers
 
 GET `/api/v3/android/smart-reminder/mode` uses the same native authentication,
@@ -52,7 +57,32 @@ quoted Boolean/integer authority fields. Existing canonical notification copy
 and fresh-access open behavior are reused. The adapter makes no claim of
 shown/read/learning, actual provider delivery or two-device installed acceptance.
 
+## Shared rule time
+
+Queue reservation/fresh checks and Android/Telegram cadence/final checks use
+the same explicitly approved D16–D18 personal-time calibration as the passive
+widget. The shared reader adds recent 30-calendar-day history and, only when
+needed, the approved 90-day extension; it does not shorten requested cadence
+history, change ledger/complete-learning boundaries or override manual time.
+Existing verified pre-Smart history contributes immediately. Saved time remains
+the fallback for sparse/limited evidence.
+
+A newly different personal time never moves an existing frozen job: the current
+clock/target/day context guard cancels unattempted mismatches while preserving
+unique day ownership. Original issued/uncertain attempts and historical receipts
+retain their original behavior. Wire versions, cadence calibration, cohort
+admission, factories and default-disabled production behavior are unchanged.
+
 ## Authentication and admission
+
+The existing `smart_study` notification-template enabled flag is a shared
+Admin permission veto for Android and Telegram. A fresh read in common policy
+validation and a final Android read before issuance cancel new authority with
+`admin_study_disabled` when OFF. A missing template retains the existing enabled
+default. ON removes this veto only: dispatch factories, consent, admission,
+coverage and all other guards remain required. Already issued/externalized
+attempts cannot be recalled; their original receipts remain accepted and their
+day/attempt evidence cannot be replayed or refunded.
 
 Every route requires the existing Android native bearer. Cookie, query/body
 identity, Telegram proof, Desktop sessions and duplicate/mixed proof are
@@ -79,6 +109,39 @@ Issuance requires all of the following:
   trusted complete learning coverage. Existing best-effort history cannot
   prove no learning. Known overlapping legacy Telegram/Android contact vetoes
   issuance. Unknown old/offline installations still require external fencing.
+
+## Persisted native review source
+
+The existing privileged routing service accepts a currently owned native actor
+for `hold`, including accounts with no Telegram identity. A distinct account-wide
+native hash in the existing binding column keeps this review separate from
+Telegram activation. Hold increments generation, clears proof and invalidates
+unattempted work while preserving original externalized/day/receipt facts.
+
+`review_android` requires the existing typed `RoutingReview` with all three
+explicit external fencing attestations, exact held generation/revision/epoch,
+unchanged inventory and a finite valid window within capability coverage. It
+leaves the account held. An exact current retry does no rewrite; differing
+reviewed evidence needs another hold. These helpers have no learner/HTTP/admin UI
+entry and require trusted operator authorization before invocation. They do not
+perform or infer the actual external review.
+
+`read_android_admission(session, actor, job_id, now, history_window=...)` is a
+read-only dependency that may be explicitly supplied to the existing runtime and
+native factory. It accepts only that persisted native-reviewed binding and an
+owned unselected/unleased/unattempted shadow or matching selected pending native
+job. Current consent/manual/OFF, revision/epoch, owned active session, protocol
+capability and unchanged inventory are rechecked. Its deadline is capped by
+review, inventory, capability, session, job and frozen day. A positive explicit
+history window is required. No autoflush, commit, proof creation, token-value
+selection, new attempt/grant, Telegram identity or provider IO follows.
+
+The returned admission reflects the persisted privileged attestation; it is not
+a client proof or posting grant. Original native authentication, final policy and
+commit-before-response issuance remain mandatory. Production does not register
+this reader automatically. Authoritative learning coverage, approved calibration
+and actual fencing/canary acceptance remain separate. Rollback removes the
+callback or creates a new hold, preserving historical receipts/uncertain intent.
 
 ## Routes
 

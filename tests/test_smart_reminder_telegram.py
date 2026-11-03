@@ -22,6 +22,7 @@ from app.db.models.smart_reminder import SmartReminderRouting, SmartReminderPref
 from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
 from app.services.course_reminder_service import CourseReminderService
+from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
 from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderError, SmartReminderPatch, SmartReminderPreferencesService
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB
@@ -93,7 +94,7 @@ class TelegramChecks:
         async with self.sessions.begin() as s:
             await s.execute(update(User).where(User.id==1).values(
                 status="active",payment_status="approved",end_date=self.now+timedelta(days=2)))
-        for n in range(1,5): await self.study(order=n,days_ago=5-n,xp=1)
+        for n in range(1,5): await self.study(order=n,days_ago=5-n,xp=1,hour=14)
         self.routing=SmartReminderRoutingService(self.sessions,clock=lambda:self.tick)
         async def complete_fixture_feed(session,actor,since,now):
             # Every learning write in this synthetic fixture is known. This is
@@ -135,6 +136,75 @@ class TelegramChecks:
 
     async def rows(self,table):
         async with self.sessions() as s: return (await s.execute(select(table))).mappings().all()
+
+    async def test_admin_pause_after_prepare_stops_provider(self):
+        await self.active()
+        job=await self.prepare()
+        self.tick=self.tick.replace(hour=14)
+        lease=await self.claim(job.job_id)
+        self.assertEqual(lease.reason,'telegram_claimed')
+        async with self.sessions.begin() as s:
+            await NotificationTemplateService(s).update_text(KEY_SMART_STUDY,enabled=False,
+                text_uz='',text_ru='',text_tj='',updated_by=None)
+        result=await self.dispatch(lease)
+        self.assertEqual(result.reason,'admin_study_disabled')
+        self.bot.send_message.assert_not_called()
+
+    async def move_history_to(self,hour):
+        async with self.sessions.begin() as session:
+            for row in (await session.scalars(select(CourseXpEvent).where(CourseXpEvent.user_id==1))).all():
+                row.created_at=row.created_at.replace(hour=hour)
+            for row in (await session.scalars(select(CourseMiniAppEvent).where(CourseMiniAppEvent.user_id==1,
+                    CourseMiniAppEvent.event_name=='lesson_completed'))).all():
+                row.created_at=row.created_at.replace(hour=hour)
+
+    async def test_shared_personal_clock_survives_prepare_claim_and_dispatch(self):
+        await self.move_history_to(16)
+        await self.active()
+        planned=await self.prepare()
+        self.assertEqual(planned.reason,'telegram_planned')
+        frozen=(await self.rows(JOB))[0]
+        self.assertEqual(frozen['scheduled_at'].hour,16)
+        self.tick=self.tick.replace(hour=14)
+        self.assertEqual((await self.claim(planned.job_id)).reason,'telegram_not_due')
+        self.tick=self.tick.replace(hour=16)
+        lease=await self.claim(planned.job_id)
+        self.assertEqual(lease.reason,'telegram_claimed')
+        self.assertEqual((await self.dispatch(lease)).reason,'telegram_provider_accepted')
+        self.assertEqual(self.bot.send_message.await_count,1)
+
+    async def test_new_habit_cannot_move_existing_frozen_telegram_job(self):
+        await self.active()
+        planned=await self.prepare()
+        await self.move_history_to(16)
+        self.tick=self.tick.replace(hour=14)
+        self.assertEqual((await self.claim(planned.job_id)).reason,'shadow_context_changed')
+        self.bot.send_message.assert_not_called()
+        frozen=(await self.rows(JOB))[0]
+        self.assertEqual((frozen['state'],frozen['scheduled_at'].hour),('cancelled',14))
+        self.assertEqual(await self.rows(ATTEMPT),[])
+
+    async def test_admin_pause_during_content_render_is_rechecked_before_provider(self):
+        from app.services.smart_reminder_telegram_content import render_telegram_content
+        await self.active()
+        job=await self.prepare()
+        self.tick=self.tick.replace(hour=14)
+        lease=await self.claim(job.job_id)
+        self.assertEqual(lease.reason,'telegram_claimed')
+        async def render_and_pause(session,*args,**kwargs):
+            content=await render_telegram_content(session,*args,**kwargs)
+            await NotificationTemplateService(session).update_text(KEY_SMART_STUDY,enabled=False,
+                text_uz='',text_ru='',text_tj='',updated_by=None)
+            return content
+        with patch('app.services.smart_reminder_telegram.render_telegram_content',render_and_pause):
+            self.assertEqual((await self.dispatch(lease)).reason,'admin_study_disabled')
+        self.bot.send_message.assert_not_called()
+        self.assertEqual((await self.rows(ATTEMPT))[0]['state'],'cancelled')
+        async with self.sessions.begin() as s:
+            await NotificationTemplateService(s).update_text(KEY_SMART_STUDY,enabled=True,
+                text_uz='',text_ru='',text_tj='',updated_by=None)
+        self.assertEqual((await self.dispatch(lease)).reason,'telegram_lease_lost')
+        self.bot.send_message.assert_not_called()
 
     async def off(self):
         async with self.sessions.begin() as s:

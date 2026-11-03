@@ -202,10 +202,10 @@ def _widget_request(request: Request) -> WidgetContextRequest | None:
             len(request.query_params.getlist("tz")) > 1 or
             len(request.headers.getlist("Authorization")) > 1 or
             request.headers.get("X-Telegram-Init-Data") or
-            request.query_params.get(keys[0]) != "1"):
+            request.query_params.get(keys[0]) not in {"1", "2"}):
         raise DesktopCourseError("widget_context_request_invalid", status_code=422)
     try:
-        return WidgetContextRequest(version=1, epoch=request.query_params[keys[1]])
+        return WidgetContextRequest(version=int(request.query_params[keys[0]]), epoch=request.query_params[keys[1]])
     except ValueError:
         raise DesktopCourseError("widget_context_request_invalid", status_code=422) from None
 

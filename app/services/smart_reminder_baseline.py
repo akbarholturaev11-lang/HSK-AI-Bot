@@ -190,7 +190,7 @@ class SmartReminderBaselineService:
             observed_active_days_per_account_lower_bound=None,observed_units_per_account_lower_bound=None,
             d7_learning_retention=None,primary_kpis_available=False,experiment_ready=False,dispatch_allowed=False,
             coverage_limits=("optional_capture_not_census","reviewed_sources_only","negative_learning_unknown",
-                "no_randomized_assignment_or_causal_lift","unsupported_repeat_practice_and_partial_voice",
+                "no_randomized_assignment_or_causal_lift","partial_practice_and_voice",
                 "materialized_mature_lower_bounds"))
         if cohort_month<oldest_month(now): result["status"]="cohort_expired";return result
         member_scope=(MEMBER.c.protocol_version==VERSION,MEMBER.c.entered_at>=start,MEMBER.c.entered_at<end)

@@ -22,8 +22,8 @@ from app.db.models.user import User
 from app.services.course_reminder_service import reminder_tz_offset
 from app.services.smart_reminder_cadence import evaluate_cadence
 from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
-from app.services.smart_reminder_policy import _aware_utc
-from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
+from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, _aware_utc
+from app.services.smart_reminder_policy_context import ObservedLearning, SmartReminderPolicyContextService
 from app.services.smart_reminder_preferences import MAX_REVISION, SmartReminderError, SmartReminderPreferencesService, _utc
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION, SmartReminderShadowQueue
 from app.services.smart_reminder_telegram_content import TelegramContent, render_telegram_content
@@ -43,6 +43,11 @@ def _telegram(actor):
 
 def _binding(actor):
     return hashlib.sha256(json.dumps([actor.user_id, actor.telegram_id]).encode()).hexdigest()
+
+
+def _android_binding(actor):
+    # Account-wide native review, distinct from any Telegram transport binding.
+    return hashlib.sha256(json.dumps(['smart-native-review-v1', actor.user_id]).encode()).hexdigest()
 
 
 @dataclass(frozen=True)
@@ -108,8 +113,24 @@ class LearningCoverage:
             raise ValueError("Typed authoritative learning coverage required")
 
 
-async def _read_routing(session, actor):
-    _telegram(actor)
+def _with_learning(snapshot, evidence, actor, since, observed, calibration):
+    """Trusted callback evidence only; old complete-feed semantics stay strict."""
+    if isinstance(evidence, LearningCoverage):
+        if evidence.user_id != actor.user_id or _aware_utc(evidence.observed_at) != observed:
+            return None
+        return replace(snapshot, learning_complete_since=evidence.complete_since)
+    if (isinstance(evidence, ObservedLearning) and calibration.observed_mode and
+            evidence.user_id == actor.user_id and _aware_utc(evidence.observed_at) == observed and
+            _aware_utc(evidence.history_since) == _aware_utc(since) and not evidence.limited):
+        return replace(snapshot, learning_complete_since=None, observed_sources=True,
+            observed_activity_at=evidence.latest_activity_at)
+
+
+async def _read_routing(session, actor, *, android=False):
+    if android:
+        if actor.kind != 'android': raise SmartReminderError('android_device_required', 403)
+    else:
+        _telegram(actor)
     pref = await SmartReminderPreferencesService(session).read(actor)  # User first.
     row = (await session.execute(select(ROUTING).where(
         ROUTING.c.user_id == actor.user_id).with_for_update())).mappings().one_or_none()
@@ -165,13 +186,15 @@ class SmartReminderRoutingService:
         if type(expected_generation) is not int or not 0 <= expected_generation < MAX_REVISION-1:
             raise SmartReminderError("routing_generation_invalid")
         async with self.sessions.begin() as session:
-            pref, epoch, row = await _read_routing(session, actor)
+            native = actor.kind == 'android'
+            pref, epoch, row = await _read_routing(session, actor, android=native)
             if (row["generation"] if row else 0) != expected_generation:
                 raise SmartReminderError("routing_generation_conflict", 409)
             now = _aware_utc(self.clock())
             inventory, _ = await _android_inventory(session, actor.user_id, now)
             values = dict(state="held", generation=expected_generation+1,
-                preference_revision=pref["revision"], grant_epoch=epoch, telegram_binding=_binding(actor),
+                preference_revision=pref["revision"], grant_epoch=epoch,
+                telegram_binding=_android_binding(actor) if native else _binding(actor),
                 inventory_sha256=inventory, held_at=_aware_utc(self.clock()),
                 verified_at=None, verified_until=None, evidence_sha256=None)
             if row is None:
@@ -180,6 +203,33 @@ class SmartReminderRoutingService:
                 await session.execute(update(ROUTING).where(ROUTING.c.user_id == actor.user_id).values(**values))
             await SmartReminderLifecycleService(session).invalidate(actor.user_id, reason="routing_held", advance=False)
             return values["generation"]
+
+    async def review_android(self, actor, review: RoutingReview):
+        """Privileged external review only; no learner/API enrollment or send."""
+        if not isinstance(review, RoutingReview): raise SmartReminderError('routing_review_invalid')
+        async with self.sessions.begin() as session:
+            pref, epoch, row = await _read_routing(session, actor, android=True)
+            inventory, until = await _android_inventory(session, actor.user_id, _aware_utc(self.clock()))
+            now = _aware_utc(self.clock())
+            if (row is None or row['state'] != 'held' or row['telegram_binding'] != _android_binding(actor) or
+                    review.user_id != actor.user_id or review.generation != row['generation'] or
+                    row['preference_revision'] != pref['revision'] or row['grant_epoch'] != epoch or
+                    inventory is None or inventory != row['inventory_sha256'] or until is None or
+                    _aware_utc(review.verified_until) > until or
+                    not _utc(row['held_at']) <= _aware_utc(review.verified_at) <= now < _aware_utc(review.verified_until)):
+                raise SmartReminderError('routing_review_stale', 409)
+            if (pref['master_enabled'] is False or pref['channels']['android']['this_device_consent'] != 'on' or
+                    pref['channel_mode'] == 'manual_locked' and pref['preferred_channel'] != 'android'):
+                raise SmartReminderError('android_study_unavailable', 409)
+            if row['verified_at'] is not None:
+                if (_utc(row['verified_at']), _utc(row['verified_until']), row['evidence_sha256']) != (
+                        _aware_utc(review.verified_at), _aware_utc(review.verified_until), review.evidence_sha256):
+                    raise SmartReminderError('routing_review_stale', 409)
+                return row['generation']
+            await session.execute(update(ROUTING).where(ROUTING.c.user_id == actor.user_id).values(
+                verified_at=review.verified_at, verified_until=review.verified_until,
+                evidence_sha256=review.evidence_sha256))
+            return row['generation']
 
     async def activate(self, actor, review: RoutingReview):
         async with self.sessions.begin() as session:
@@ -293,19 +343,19 @@ class SmartReminderTelegramService:
                     start < _utc(row["day_end_utc"]) and end > _utc(row["day_start_utc"])):
                 return await self._cancel(session, row, "legacy_study_already_attempted")
         snapshot = await SmartReminderPolicyContextService(session).load_cadence(
-            actor, observed_at=self._now(), history_since=since, expected_level=row["course_key"])
+            actor, observed_at=self._now(), history_since=since, expected_level=row["course_key"], personal_time=True)
         now = self._now()
         coverage = await self.coverage_reader(session, actor, since, now)
-        if coverage is not None and (not isinstance(coverage, LearningCoverage) or
-                coverage.user_id != actor.user_id or _aware_utc(coverage.observed_at) != now):
-            raise SmartReminderError("learning_coverage_invalid", 409)
+        if coverage is not None:
+            snapshot = _with_learning(snapshot, coverage, actor, since, now, self.calibration)
+            if snapshot is None:
+                raise SmartReminderError("learning_coverage_invalid", 409)
         # All canonical learning writers serialize on the held User lock. Recheck
         # the current clock after read IO; crossing day/quiet/expiry stays a veto.
         now = self._now()
         snapshot = replace(snapshot, policy=replace(snapshot.policy, observed_at=now),
-                           intents=tuple(j for j in snapshot.intents if j.job_id != row["id"]),
-                           learning_complete_since=coverage.complete_since if coverage else None)
-        decision = evaluate_cadence(snapshot, calibration=self.calibration, allow_elapsed_time=True)
+                           intents=tuple(j for j in snapshot.intents if j.job_id != row["id"]))
+        decision = evaluate_cadence(snapshot, calibration=self.calibration, habit_calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
         if now >= _utc(row["expires_at"]):
             return await self._cancel(session, row, "telegram_expired", "expired")
         if now >= _utc(cohort["verified_until"]):

@@ -1,7 +1,7 @@
 """Dormant selected-job protocol. Caller commits before returning any grant.
 
-No producer, trusted admission/learning readers or enabled production factory
-are installed. Client capability is never admission or consent. Issuance is
+No production producer, trusted admission/learning readers or enabled factory
+are registered. Client capability is never admission or consent. Issuance is
 irreversible evidence of possible IO: lost responses are not re-granted.
 """
 from dataclasses import asdict, dataclass, replace
@@ -22,13 +22,14 @@ from app.db.models.course_progress import CourseProgress
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.smart_reminder import SmartReminderAndroidGrant, SmartReminderCapability, SmartReminderRouting
 from app.services.course_reminder_service import reminder_tz_offset
+from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_cadence import evaluate_cadence
 from app.services.smart_reminder_coordination import read_d1_scope
-from app.services.smart_reminder_policy import _aware_utc, day_window, evaluate, local_time_instants
+from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, _aware_utc, day_window, evaluate, local_time_instants
 from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
 from app.services.smart_reminder_preferences import MAX_REVISION, SmartReminderError, SmartReminderPreferencesService, _utc
-from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, SmartReminderShadowQueue
-from app.services.smart_reminder_telegram import LearningCoverage, _android_inventory
+from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION, SmartReminderShadowQueue
+from app.services.smart_reminder_telegram import _android_inventory, _android_binding, _read_routing, _with_learning
 
 GRANT = SmartReminderAndroidGrant.__table__
 CAP = SmartReminderCapability.__table__
@@ -90,6 +91,62 @@ class AndroidAdmission:
 
 def denied(reason):
     return {"ok": True, "version": 1, "dispatch_allowed": False, "reason": reason}
+
+
+async def read_android_admission(session, actor, job_id, now, *, history_window):
+    """Read actual privileged native proof under User; no flush/commit/IO.
+
+    Only review_android's native binding is accepted. A capability or ordinary
+    hold cannot stand in for an external operator review. No factory registers
+    this callback automatically and it creates no posting authority.
+    """
+    if not isinstance(history_window, timedelta) or history_window <= timedelta(0):
+        raise ValueError('Explicit positive admission history window required')
+    now = _aware_utc(now)
+    if actor.kind != 'android' or not isinstance(job_id, str) or not re.fullmatch(UUID_PATTERN, job_id):
+        return None
+    with session.no_autoflush:
+        pref, epoch, routing = await _read_routing(session, actor, android=True)
+        if (routing is None or routing['state'] != 'held' or
+                routing['telegram_binding'] != _android_binding(actor) or
+                routing['preference_revision'] != pref['revision'] or routing['grant_epoch'] != epoch or
+                routing['verified_at'] is None or routing['verified_until'] is None or
+                not re.fullmatch(r'[0-9a-f]{64}', routing['evidence_sha256'] or '') or
+                not _utc(routing['held_at']) <= _utc(routing['verified_at']) <= now < _utc(routing['verified_until']) or
+                now - history_window > _utc(routing['verified_at']) or pref['master_enabled'] is False or
+                pref['channels']['android']['this_device_consent'] != 'on' or
+                pref['channel_mode'] == 'manual_locked' and pref['preferred_channel'] != 'android'):
+            return None
+        row = (await session.execute(select(JOB).where(JOB.c.id == job_id,
+            JOB.c.user_id == actor.user_id, JOB.c.category == 'study').with_for_update())).mappings().one_or_none()
+        if (row is None or (row['preference_revision'], row['grant_epoch']) != (pref['revision'], epoch) or
+                row['lease_token'] is not None or row['lease_expires_at'] is not None or
+                not _utc(row['day_start_utc']) <= now < min(_utc(row['expires_at']), _utc(row['day_end_utc'])) or
+                not (row['state'] == 'shadow' and row['policy_version'] == QUEUE_VERSION and
+                     row['selected_channel'] is None and row['selected_device_id'] is None or
+                     row['state'] == 'pending' and row['selected_channel'] == 'android' and
+                     row['selected_device_id'] == actor.device_id) or
+                await session.scalar(select(ATTEMPT.c.id).where(ATTEMPT.c.job_id == job_id).limit(1))):
+            return None
+        inventory, fenced_until = await _android_inventory(session, actor.user_id, now)
+        if inventory is None or inventory != routing['inventory_sha256'] or fenced_until is None:
+            return None
+        service = SmartReminderAndroidService(session, clock=lambda: now)
+        cap = await service._capability(actor)
+        session_until = await session.scalar(select(DesktopSession.expires_at).join(DesktopDevice,
+            DesktopDevice.id == DesktopSession.device_id).where(DesktopSession.id == actor.session_id,
+            DesktopSession.device_id == actor.device_id, DesktopSession.revoked_at.is_(None),
+            DesktopDevice.user_id == actor.user_id, DesktopDevice.platform == 'android',
+            DesktopDevice.revoked_at.is_(None), DesktopSession.expires_at > now))
+        if cap is None or session_until is None: return None
+        until = min(_utc(routing['verified_until']), fenced_until, _utc(cap['expires_at']),
+            _utc(session_until), _utc(row['expires_at']), _utc(row['day_end_utc']))
+        if until <= now: return None
+        # The native binding selects persisted review_android provenance. Its
+        # writer required all three attestations; no capability inferred them.
+        return AndroidAdmission(actor.user_id, job_id, actor.device_id, actor.session_id,
+            routing['generation'], pref['revision'], epoch, _utc(routing['verified_at']), until,
+            now-history_window, routing['evidence_sha256'], inventory, True, True, True)
 
 
 class SmartReminderAndroidService:
@@ -228,6 +285,37 @@ class SmartReminderAndroidService:
             except (ValueError, KeyError, TypeError): return "legacy_contact_unknown"
             if lower < end and upper > start: return "legacy_study_already_attempted"
 
+    async def _fresh(self, actor, row, review):
+        """Shared planning/claim validation; never creates a grant or commits."""
+        context, refused = await self.queue._fresh(self.session, actor, row, self._now(), review.history_since)
+        if refused: return None, denied(refused.reason)
+        if ("android" not in context.permitted_channels or
+                context.channel_mode == "manual_locked" and context.preferred_channel != "android"):
+            return None, await self._cancel(row, "android_study_unavailable")
+        legacy = await self._legacy_contact(actor, row)
+        if legacy: return None, await self._cancel(row, legacy)
+        snapshot = await SmartReminderPolicyContextService(self.session).load_cadence(actor,
+            observed_at=self._now(), history_since=review.history_since, expected_level=row["course_key"], personal_time=True)
+        observed = self._now()
+        coverage = await self.coverage_reader(self.session, actor, review.history_since, observed)
+        snapshot = _with_learning(snapshot, coverage, actor, review.history_since, observed, self.calibration)
+        if snapshot is None:
+            return None, denied("learning_coverage_unavailable")
+        now = self._now()
+        context = replace(context, observed_at=now)
+        cadence = evaluate_cadence(replace(snapshot, policy=replace(snapshot.policy, observed_at=now),
+            intents=tuple(j for j in snapshot.intents if j.job_id != row["id"])),
+            calibration=self.calibration, habit_calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
+        final = evaluate(context, calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
+        if not final.candidate: return None, await self._cancel(row, final.reason)
+        if cadence.reason != "shadow_candidate": return None, await self._cancel(row, cadence.reason)
+        d1 = await read_d1_scope(self.session, actor.user_id, now)
+        now = self._now()
+        if d1.reason(now): return None, await self._cancel(row, d1.reason(now))
+        final = evaluate(replace(context, observed_at=now), calibration=APPROVED_HABIT_CALIBRATION, allow_elapsed_time=True)
+        if not final.candidate: return None, await self._cancel(row, final.reason)
+        return context, None
+
     async def claim(self, actor, job_id, body):
         with self.session.no_autoflush:
             auth_until = await self._auth(actor)
@@ -253,33 +341,9 @@ class SmartReminderAndroidService:
                 raise SmartReminderError("android_claim_context_changed", 409)
             review = await self._admission(actor, row)
             if review is None: return denied("android_admission_unavailable")
-            context, refused = await self.queue._fresh(self.session, actor, row, self._now(), review.history_since)
-            if refused: return denied(refused.reason)
-            if ("android" not in context.permitted_channels or
-                    context.channel_mode == "manual_locked" and context.preferred_channel != "android"):
-                return await self._cancel(row, "android_study_unavailable")
-            legacy = await self._legacy_contact(actor, row)
-            if legacy: return await self._cancel(row, legacy)
-            snapshot = await SmartReminderPolicyContextService(self.session).load_cadence(actor,
-                observed_at=self._now(), history_since=review.history_since, expected_level=row["course_key"])
-            observed = self._now()
-            coverage = await self.coverage_reader(self.session, actor, review.history_since, observed)
-            if (not isinstance(coverage, LearningCoverage) or coverage.user_id != actor.user_id or
-                    _aware_utc(coverage.observed_at) != observed):
-                return denied("learning_coverage_unavailable")
+            context, refused = await self._fresh(actor, row, review)
+            if refused: return refused
             now = self._now()
-            context = replace(context, observed_at=now)
-            cadence = evaluate_cadence(replace(snapshot, policy=replace(snapshot.policy, observed_at=now),
-                intents=tuple(j for j in snapshot.intents if j.job_id != job_id),
-                learning_complete_since=coverage.complete_since), calibration=self.calibration, allow_elapsed_time=True)
-            final = evaluate(context, allow_elapsed_time=True)
-            if not final.candidate: return await self._cancel(row, final.reason)
-            if cadence.reason != "shadow_candidate": return await self._cancel(row, cadence.reason)
-            d1 = await read_d1_scope(self.session, actor.user_id, now)
-            now = self._now()
-            if d1.reason(now): return await self._cancel(row, d1.reason(now))
-            final = evaluate(replace(context, observed_at=now), allow_elapsed_time=True)
-            if not final.candidate: return await self._cancel(row, final.reason)
             until = min(_utc(row["expires_at"]), auth_until, _utc(cap["expires_at"]), _aware_utc(review.valid_until))
             zone = ZoneInfo(context.timezone_name)
             day = now.astimezone(zone).date().isoformat()
@@ -289,6 +353,8 @@ class SmartReminderAndroidService:
                     if len(instants) != 1: return await self._cancel(row, "personal_quiet_clock_uncertain")
                     until = min([until] + [instant for instant in instants if instant > now])
             if until <= now: return denied("android_authority_expired")
+            if not await NotificationTemplateService(self.session).is_enabled(KEY_SMART_STUDY):
+                return await self._cancel(row, "admin_study_disabled")
             grant_id, attempt_id = str(uuid4()), str(uuid4())
             await self.session.execute(insert(ATTEMPT).values(id=attempt_id, job_id=job_id,
                 attempt_key=hashlib.sha256((job_id+":android:first").encode()).hexdigest(), channel="android",

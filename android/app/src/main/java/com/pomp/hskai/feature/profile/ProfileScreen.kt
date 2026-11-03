@@ -9,6 +9,7 @@ import android.view.View
 import android.provider.Settings
 import com.pomp.hskai.core.auth.authActivity
 import androidx.compose.foundation.BorderStroke
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,9 +27,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -71,6 +72,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.rememberCoroutineScope
@@ -92,9 +94,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.DialogWindowProvider
-import androidx.core.view.WindowCompat
 import coil.compose.AsyncImage
 import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.R
@@ -163,6 +162,7 @@ fun ProfileScreen(
     onOpenSupport: (String) -> Unit,
     onReportProblem: (Bitmap?) -> Unit = {},
     reportVisible: Boolean = false,
+    onSettingsVisibilityChange: (Boolean) -> Unit = {},
     onRefresh: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
@@ -199,10 +199,19 @@ fun ProfileScreen(
     var settingsOpen by rememberSaveable { mutableStateOf(false) }
     var languageOpen by rememberSaveable { mutableStateOf(false) }
     var goalOpen by rememberSaveable { mutableStateOf(false) }
-    // Shake-triggered reporting must not remain hidden behind the full-screen
-    // Settings Dialog, which owns a separate Android window.
+    // Settings shares the Profile tab's Activity window, with no Dialog.
+    // Notify the parent immediately so its floating navigation never covers it.
+    val currentVisibilityCallback by rememberUpdatedState(onSettingsVisibilityChange)
+    val setSettingsOpen: (Boolean) -> Unit = { open ->
+        settingsOpen = open
+        currentVisibilityCallback(open)
+    }
+    LaunchedEffect(settingsOpen) { currentVisibilityCallback(settingsOpen) }
+    DisposableEffect(Unit) {
+        onDispose { currentVisibilityCallback(false) }
+    }
     LaunchedEffect(reportVisible) {
-        if (reportVisible) settingsOpen = false
+        if (reportVisible) setSettingsOpen(false)
     }
     var profileHsk30BookOpen by remember { mutableStateOf(false) }
     var profileHsk30LevelOpen by remember { mutableStateOf(false) }
@@ -220,10 +229,13 @@ fun ProfileScreen(
     // Mistakes remains available from Practice; it is no longer a profile entry.
     val openSettings = {
         widgetInstalled = WidgetScheduler.hasWidgets(context)
-        settingsOpen = true
+        setSettingsOpen(true)
     }
+    // Preserve the Profile scroll position when its Settings child replaces it.
+    val profileListState = rememberLazyListState()
 
-    HskSceneSurface(modifier = modifier.fillMaxSize()) {
+    if (!settingsOpen) {
+        HskSceneSurface(modifier = modifier.fillMaxSize()) {
         PullToRefreshBox(
             isRefreshing = state.isLoading,
             onRefresh = { if (!state.isLoading && !profileSaving && identities.busyProvider == null) onRefresh() },
@@ -231,6 +243,7 @@ fun ProfileScreen(
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
+                state = profileListState,
                 contentPadding = PaddingValues(
                     start = 16.dp,
                     end = 16.dp,
@@ -319,6 +332,7 @@ fun ProfileScreen(
             }
         }
     }
+    }
 
     if (settingsOpen) {
         ProfileSettingsScreen(
@@ -330,13 +344,13 @@ fun ProfileScreen(
             notificationsEnabled = notificationsEnabled,
             courseTrack = courseTrack,
             showCourseVersion = hsk30Enabled || courseTrack == "hsk30",
-            onDismiss = { settingsOpen = false },
+            onDismiss = { setSettingsOpen(false) },
             onOpenLanguage = {
                 if (onSelectLanguage != null) languageOpen = true
-                else { settingsOpen = false; onOpenLanguage() }
+                else { setSettingsOpen(false); onOpenLanguage() }
             },
             onOpenCourseVersion = {
-                settingsOpen = false
+                setSettingsOpen(false)
                 profileHsk30BookOpen = true
             },
             onSetThemeMode = { mode -> scope.launch { appSettings.setThemeMode(mode) } },
@@ -344,20 +358,19 @@ fun ProfileScreen(
             widgetInstalled = widgetInstalled,
             onOpenWidget = {
                 widgetInstalled = WidgetScheduler.hasWidgets(context)
-                settingsOpen = false
+                setSettingsOpen(false)
                 onOpenWidget()
             },
             onOpenGoal = {
                 if (onSelectGoal != null) goalOpen = true
-                else { settingsOpen = false; onOpenGoal() }
+                else { setSettingsOpen(false); onOpenGoal() }
             },
             onOpenSupport = onOpenSupport,
             onReportProblem = { visibleDialogView ->
-                // Keep the Settings Dialog attached until PixelCopy has captured
-                // the actual visible window; then dismiss it and open the report.
+                // Capture the visible inline Settings page before leaving it.
                 scope.launch {
                     val screenshot = captureReportScreen(visibleDialogView)
-                    settingsOpen = false
+                    setSettingsOpen(false)
                     onReportProblem(screenshot)
                 }
             },
@@ -371,13 +384,13 @@ fun ProfileScreen(
             },
             onTerms = { onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/terms") },
             onPrivacyPolicy = { onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/privacy") },
-            onDeleteAccount = { settingsOpen = false; onRequestAccountDeletion() },
+            onDeleteAccount = { setSettingsOpen(false); onRequestAccountDeletion() },
             onPermissions = {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))
                 runCatching { context.startActivity(intent) }
             },
-            onLogout = { settingsOpen = false; onLogout() },
-            onUnlinkDevice = { settingsOpen = false; onUnlinkDevice() },
+            onLogout = { setSettingsOpen(false); onLogout() },
+            onUnlinkDevice = { setSettingsOpen(false); onUnlinkDevice() },
         )
     }
 
@@ -796,188 +809,171 @@ private fun ProfileSettingsScreen(
     var confirmUnlink by remember { mutableStateOf(false) }
     var page by rememberSaveable { mutableStateOf(ProfileSettingsPage.ROOT) }
     val pageState = rememberSaveableStateHolder()
-    Dialog(
-        onDismissRequest = {
-            if (page == ProfileSettingsPage.ROOT) onDismiss()
-            else page = ProfileSettingsPage.ROOT
-        },
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            decorFitsSystemWindows = false,
-        ),
-    ) {
-        val view = LocalView.current
-        DisposableEffect(view, PompColors.IsDark) {
-            val window = (view.parent as? DialogWindowProvider)?.window
-            window?.let { dialogWindow ->
-                dialogWindow.statusBarColor = android.graphics.Color.TRANSPARENT
-                dialogWindow.navigationBarColor = android.graphics.Color.TRANSPARENT
-                WindowCompat.getInsetsController(dialogWindow, view).apply {
-                    isAppearanceLightStatusBars = !PompColors.IsDark
-                    isAppearanceLightNavigationBars = !PompColors.IsDark
+    // This is a normal child page of Profile, so it shares the Activity window
+    // and its already-applied status bar inset instead of spawning a Dialog.
+    BackHandler {
+        if (page == ProfileSettingsPage.ROOT) onDismiss()
+        else page = ProfileSettingsPage.ROOT
+    }
+    val view = LocalView.current
+    Surface(modifier = Modifier.fillMaxSize().testTag("profile-settings-surface"), color = PompColors.Paper) {
+        Column(Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Surface(
+                    color = PompColors.CardSurface,
+                    shape = CircleShape,
+                    border = BorderStroke(1.dp, PompColors.Divider),
+                    modifier = Modifier.size(48.dp).clickable(role = Role.Button) {
+                        if (page == ProfileSettingsPage.ROOT) onDismiss()
+                        else page = ProfileSettingsPage.ROOT
+                    },
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.hsk_common_action_back),
+                            tint = PompColors.Ink,
+                            modifier = Modifier.size(22.dp),
+                        )
+                    }
+                }
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        stringResource(when (page) {
+                            ProfileSettingsPage.ROOT -> R.string.profile_mini_settings
+                            ProfileSettingsPage.APPEARANCE -> R.string.profile_appearance
+                            ProfileSettingsPage.NOTIFICATIONS -> R.string.hsk_course_notif
+                            ProfileSettingsPage.PRIVACY -> R.string.profile_privacy_security
+                        }),
+                        color = PompColors.Ink,
+                        fontSize = 21.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+
                 }
             }
-            onDispose { }
-        }
-        Surface(modifier = Modifier.fillMaxSize().testTag("profile-settings-surface"), color = PompColors.Paper) {
-            Column(Modifier.fillMaxSize().statusBarsPadding()) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+            Box(Modifier.fillMaxWidth().height(1.dp).background(PompColors.Divider))
+            pageState.SaveableStateProvider(page) {
+                LazyColumn(
+                    modifier = Modifier.weight(1f).fillMaxWidth().navigationBarsPadding()
+                        .testTag("profile-settings-scroll"),
+                    contentPadding = PaddingValues(start = 18.dp, top = 16.dp, end = 18.dp, bottom = 28.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    Surface(
-                        color = PompColors.CardSurface,
-                        shape = CircleShape,
-                        border = BorderStroke(1.dp, PompColors.Divider),
-                        modifier = Modifier.size(48.dp).clickable(role = Role.Button) {
-                            if (page == ProfileSettingsPage.ROOT) onDismiss()
-                            else page = ProfileSettingsPage.ROOT
-                        },
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.hsk_common_action_back),
-                                tint = PompColors.Ink,
-                                modifier = Modifier.size(22.dp),
-                            )
+                    if (page == ProfileSettingsPage.ROOT) {
+                        item {
+                            SettingsGroup(stringResource(R.string.profile_settings_section_learning)) {
+                                ProfileSettingsItem(Icons.Filled.Language, stringResource(R.string.hsk_course_lang),
+                                    stringResource(account.language.labelRes()), !settings.isBusy, onOpenLanguage)
+                                if (showCourseVersion) {
+                                    ProfileSettingsDivider()
+                                    ProfileSettingsItem(Icons.Filled.TrackChanges, stringResource(R.string.hsk_course_course_picker_version),
+                                        if (courseTrack == "hsk30") "HSK 3.0" else "HSK 2.0", true, onOpenCourseVersion)
+                                }
+                                ProfileSettingsDivider()
+                                ProfileSettingsItem(Icons.Filled.TrackChanges, stringResource(R.string.profile_mini_daily_goal),
+                                    "$dailyGoal XP", true, onOpenGoal)
+                            }
+                        }
+                        item {
+                            SettingsGroup(stringResource(R.string.profile_settings_section_app)) {
+                                ProfileSettingsItem(Icons.Filled.Settings, stringResource(R.string.profile_appearance),
+                                    stringResource(themeMode.labelRes()), true) { page = ProfileSettingsPage.APPEARANCE }
+                                ProfileSettingsDivider()
+                                ProfileSettingsItem(Icons.Filled.Notifications, stringResource(R.string.hsk_course_notif),
+                                    stringResource(if (notificationsEnabled) R.string.profile_notifications_status_on else R.string.profile_notifications_status_off),
+                                    true) { page = ProfileSettingsPage.NOTIFICATIONS }
+                                ProfileSettingsDivider()
+                                ProfileSettingsItem(Icons.Filled.Widgets, stringResource(R.string.profile_widgets),
+                                    stringResource(if (widgetInstalled) R.string.profile_widget_installed else R.string.profile_widget_not_installed),
+                                    true, onOpenWidget)
+                            }
+                        }
+                        item {
+                            SettingsGroup(stringResource(R.string.profile_settings_section_account)) {
+                                ProfileSettingsItem(Icons.Filled.PersonOutline, stringResource(R.string.profile_account_title), null, true, onOpenAccount)
+                                ProfileSettingsDivider()
+                                ProfileSettingsItem(Icons.Filled.Lock, stringResource(R.string.profile_privacy_security), null, true) {
+                                    page = ProfileSettingsPage.PRIVACY
+                                }
+                            }
+                        }
+                        item {
+                            SettingsGroup(stringResource(R.string.hsk_course_help)) {
+                                ProfileSettingsItem(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.profile_support),
+                                    null, supportUrl.isNotBlank()) { onOpenSupport(supportUrl) }
+                                ProfileSettingsDivider()
+                                ProfileSettingsItem(Icons.Filled.WarningAmber, stringResource(R.string.bug_report_title), null, true) { onReportProblem(view) }
+                                ProfileSettingsDivider()
+                                Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    Text(stringResource(R.string.bug_report_shake), color = PompColors.Ink,
+                                        style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+                                    Switch(checked = shakeToReport, onCheckedChange = onSetShakeToReport)
+                                }
+                            }
+                        }
+                        item { settings.error?.let { ErrorPill(stringResource(it.messageRes)) } }
+                        item {
+                            OutlinedButton(onClick = onLogout, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
+                                shape = RoundedCornerShape(16.dp)) {
+                                Text(stringResource(R.string.hsk_common_action_logout), color = PompColors.Ink)
+                            }
+                        }
+                        item { SocialLinksRow(onOpen = onOpenSupport) }
+                        item {
+                            Text(stringResource(R.string.profile_app_version) + " " + BuildConfig.VERSION_NAME,
+                                color = PompColors.InkSecondary, style = MaterialTheme.typography.labelMedium,
+                                modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                         }
                     }
-                    Column(Modifier.weight(1f)) {
-                        Text(
-                            stringResource(when (page) {
-                                ProfileSettingsPage.ROOT -> R.string.profile_mini_settings
-                                ProfileSettingsPage.APPEARANCE -> R.string.profile_appearance
-                                ProfileSettingsPage.NOTIFICATIONS -> R.string.hsk_course_notif
-                                ProfileSettingsPage.PRIVACY -> R.string.profile_privacy_security
-                            }),
-                            color = PompColors.Ink,
-                            fontSize = 21.sp,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-
+                    if (page == ProfileSettingsPage.APPEARANCE) {
+                        item {
+                            SettingsRows {
+                                AppThemeMode.entries.forEach { mode ->
+                                    MiniSettingsRow(Icons.Filled.Settings, stringResource(mode.labelRes()), true, { onSetThemeMode(mode) }) {
+                                        if (mode == themeMode) Text("✓", color = PompColors.Cinnabar, fontSize = 20.sp)
+                                    }
+                                    if (mode != AppThemeMode.entries.last()) ProfileSettingsDivider()
+                                }
+                            }
+                        }
                     }
-                }
-                Box(Modifier.fillMaxWidth().height(1.dp).background(PompColors.Divider))
-                pageState.SaveableStateProvider(page) {
-                    LazyColumn(
-                        modifier = Modifier.weight(1f).fillMaxWidth().navigationBarsPadding()
-                            .testTag("profile-settings-scroll"),
-                        contentPadding = PaddingValues(start = 18.dp, top = 16.dp, end = 18.dp, bottom = 28.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        if (page == ProfileSettingsPage.ROOT) {
-                            item {
-                                SettingsGroup(stringResource(R.string.profile_settings_section_learning)) {
-                                    ProfileSettingsItem(Icons.Filled.Language, stringResource(R.string.hsk_course_lang),
-                                        stringResource(account.language.labelRes()), !settings.isBusy, onOpenLanguage)
-                                    if (showCourseVersion) {
-                                        ProfileSettingsDivider()
-                                        ProfileSettingsItem(Icons.Filled.TrackChanges, stringResource(R.string.hsk_course_course_picker_version),
-                                            if (courseTrack == "hsk30") "HSK 3.0" else "HSK 2.0", true, onOpenCourseVersion)
-                                    }
-                                    ProfileSettingsDivider()
-                                    ProfileSettingsItem(Icons.Filled.TrackChanges, stringResource(R.string.profile_mini_daily_goal),
-                                        "$dailyGoal XP", true, onOpenGoal)
+                    if (page == ProfileSettingsPage.NOTIFICATIONS) {
+                        item {
+                            SettingsRows {
+                                Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    Text(stringResource(R.string.profile_notifications_category_study), color = PompColors.Ink,
+                                        style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+                                    Switch(checked = notificationsEnabled, onCheckedChange = onToggleNotifications,
+                                        enabled = !settings.isSavingLanguage)
                                 }
-                            }
-                            item {
-                                SettingsGroup(stringResource(R.string.profile_settings_section_app)) {
-                                    ProfileSettingsItem(Icons.Filled.Settings, stringResource(R.string.profile_appearance),
-                                        stringResource(themeMode.labelRes()), true) { page = ProfileSettingsPage.APPEARANCE }
-                                    ProfileSettingsDivider()
-                                    ProfileSettingsItem(Icons.Filled.Notifications, stringResource(R.string.hsk_course_notif),
-                                        stringResource(if (notificationsEnabled) R.string.profile_notifications_status_on else R.string.profile_notifications_status_off),
-                                        true) { page = ProfileSettingsPage.NOTIFICATIONS }
-                                    ProfileSettingsDivider()
-                                    ProfileSettingsItem(Icons.Filled.Widgets, stringResource(R.string.profile_widgets),
-                                        stringResource(if (widgetInstalled) R.string.profile_widget_installed else R.string.profile_widget_not_installed),
-                                        true, onOpenWidget)
-                                }
-                            }
-                            item {
-                                SettingsGroup(stringResource(R.string.profile_settings_section_account)) {
-                                    ProfileSettingsItem(Icons.Filled.PersonOutline, stringResource(R.string.profile_account_title), null, true, onOpenAccount)
-                                    ProfileSettingsDivider()
-                                    ProfileSettingsItem(Icons.Filled.Lock, stringResource(R.string.profile_privacy_security), null, true) {
-                                        page = ProfileSettingsPage.PRIVACY
-                                    }
-                                }
-                            }
-                            item {
-                                SettingsGroup(stringResource(R.string.hsk_course_help)) {
-                                    ProfileSettingsItem(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.profile_support),
-                                        null, supportUrl.isNotBlank()) { onOpenSupport(supportUrl) }
-                                    ProfileSettingsDivider()
-                                    ProfileSettingsItem(Icons.Filled.WarningAmber, stringResource(R.string.bug_report_title), null, true) { onReportProblem(view) }
-                                    ProfileSettingsDivider()
-                                    Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                        Text(stringResource(R.string.bug_report_shake), color = PompColors.Ink,
-                                            style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-                                        Switch(checked = shakeToReport, onCheckedChange = onSetShakeToReport)
-                                    }
-                                }
-                            }
-                            item { settings.error?.let { ErrorPill(stringResource(it.messageRes)) } }
-                            item {
-                                OutlinedButton(onClick = onLogout, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
-                                    shape = RoundedCornerShape(16.dp)) {
-                                    Text(stringResource(R.string.hsk_common_action_logout), color = PompColors.Ink)
-                                }
-                            }
-                            item { SocialLinksRow(onOpen = onOpenSupport) }
-                            item {
-                                Text(stringResource(R.string.profile_app_version) + " " + BuildConfig.VERSION_NAME,
-                                    color = PompColors.InkSecondary, style = MaterialTheme.typography.labelMedium,
-                                    modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                                Text(stringResource(R.string.profile_notifications_category_study_desc),
+                                    color = PompColors.InkSecondary, style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp))
                             }
                         }
-                        if (page == ProfileSettingsPage.APPEARANCE) {
-                            item {
-                                SettingsRows {
-                                    AppThemeMode.entries.forEach { mode ->
-                                        MiniSettingsRow(Icons.Filled.Settings, stringResource(mode.labelRes()), true, { onSetThemeMode(mode) }) {
-                                            if (mode == themeMode) Text("✓", color = PompColors.Cinnabar, fontSize = 20.sp)
-                                        }
-                                        if (mode != AppThemeMode.entries.last()) ProfileSettingsDivider()
-                                    }
-                                }
+                        item { settings.error?.let { ErrorPill(stringResource(it.messageRes)) } }
+                    }
+                    if (page == ProfileSettingsPage.PRIVACY) {
+                        item {
+                            SettingsRows {
+                                ProfileSettingsItem(Icons.Filled.Lock, stringResource(R.string.profile_terms_of_use), null, true, onTerms)
+                                ProfileSettingsDivider()
+                                ProfileSettingsItem(Icons.Filled.Lock, stringResource(R.string.profile_privacy_policy), null, true, onPrivacyPolicy)
+                                ProfileSettingsDivider()
+                                ProfileSettingsItem(Icons.Filled.Settings, stringResource(R.string.profile_app_permissions), null, true, onPermissions)
                             }
                         }
-                        if (page == ProfileSettingsPage.NOTIFICATIONS) {
-                            item {
-                                SettingsRows {
-                                    Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                        Text(stringResource(R.string.profile_notifications_category_study), color = PompColors.Ink,
-                                            style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-                                        Switch(checked = notificationsEnabled, onCheckedChange = onToggleNotifications,
-                                            enabled = !settings.isBusy)
-                                    }
-                                    Text(stringResource(R.string.profile_notifications_category_study_desc),
-                                        color = PompColors.InkSecondary, style = MaterialTheme.typography.bodyMedium,
-                                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp))
-                                }
-                            }
-                            item { settings.error?.let { ErrorPill(stringResource(it.messageRes)) } }
-                        }
-                        if (page == ProfileSettingsPage.PRIVACY) {
-                            item {
-                                SettingsRows {
-                                    ProfileSettingsItem(Icons.Filled.Lock, stringResource(R.string.profile_terms_of_use), null, true, onTerms)
-                                    ProfileSettingsDivider()
-                                    ProfileSettingsItem(Icons.Filled.Lock, stringResource(R.string.profile_privacy_policy), null, true, onPrivacyPolicy)
-                                    ProfileSettingsDivider()
-                                    ProfileSettingsItem(Icons.Filled.Settings, stringResource(R.string.profile_app_permissions), null, true, onPermissions)
-                                }
-                            }
-                            item {
-                                SettingsRows {
-                                    ProfileSettingsItem(Icons.Filled.PersonOutline, stringResource(R.string.profile_unlink_device), null, true) { confirmUnlink = true }
-                                    ProfileSettingsDivider()
-                                    ProfileSettingsItem(Icons.Filled.PersonOutline, stringResource(R.string.profile_delete_account), null, true, onDeleteAccount)
-                                }
+                        item {
+                            SettingsRows {
+                                ProfileSettingsItem(Icons.Filled.PersonOutline, stringResource(R.string.profile_unlink_device), null, true) { confirmUnlink = true }
+                                ProfileSettingsDivider()
+                                ProfileSettingsItem(Icons.Filled.PersonOutline, stringResource(R.string.profile_delete_account), null, true, onDeleteAccount)
                             }
                         }
                     }

@@ -98,6 +98,22 @@ class QueueChecks:
         self.assertIsNone(before["selected_device_id"])
         self.assertEqual(await self.counts(), (1,0))
 
+    async def test_reservation_and_claim_use_learned_clock_instead_of_saved_fallback(self):
+        for order in range(1,4):
+            await fixtures.PolicyContextChecks.study(self,order=order,days_ago=order,xp=1,hour=21)
+        self.expiry=self.tick.replace(hour=23)
+        reserved=await self.reserve()
+        self.assertEqual(reserved.reason,'shadow_reserved')
+        frozen=await self.row(reserved.job_id)
+        self.assertEqual(frozen['scheduled_at'].hour,21)
+        self.tick=self.tick.replace(hour=14)
+        self.assertEqual((await self.claim(reserved.job_id)).reason,'shadow_not_due')
+        self.tick=self.tick.replace(hour=21)
+        lease=await self.claim(reserved.job_id)
+        self.assertEqual(lease.reason,'shadow_claimed')
+        self.assertEqual((await self.finish(lease)).reason,'shadow_evaluated')
+        self.assertEqual((await self.row(reserved.job_id))['scheduled_at'],frozen['scheduled_at'])
+
     async def test_no_implicit_expiry_or_zone_or_cold_start_time_is_invented(self):
         self.assertEqual((await self.reserve(expires_at=self.tick.replace(hour=14))).reason, "queue_expiry_outside_day")
         self.assertEqual((await self.reserve(expires_at=self.tick+timedelta(days=1))).reason, "queue_expiry_outside_day")

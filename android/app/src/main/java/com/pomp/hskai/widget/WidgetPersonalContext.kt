@@ -41,6 +41,7 @@ data class WidgetPersonalContext(
     @SerialName("calibration_version") val calibrationVersion: String?,
     @SerialName("dispatch_allowed") val dispatchAllowed: Boolean,
     @SerialName("action_requires_authorization") val actionRequiresAuthorization: Boolean,
+    @SerialName("last_observed_study_at") val lastObservedStudyAt: String? = null,
 ) {
     val generatedMillis: Long get() = Instant.parse(generatedAt).toEpochMilli()
 
@@ -63,7 +64,9 @@ data class WidgetPersonalContext(
         /** Malformed personalization never breaks decoding the older linked session. */
         fun parse(raw: JsonElement?): WidgetPersonalContext? = runCatching {
             val obj = raw as? JsonObject ?: error("Missing context")
-            require(obj.keys == keys)
+            val protocol = (obj["version"] as? JsonPrimitive)?.intOrNull
+            require(protocol in setOf(1, 2))
+            require(obj.keys == if (protocol == 2) keys + "last_observed_study_at" else keys)
             for (key in listOf("policy_version", "binding", "request_epoch", "generated_at", "valid_until",
                 "level", "track", "local_day", "timezone_name", "goal_state", "time_local", "time_source",
                 "time_reason", "phase", "reason", "action", "calibration_version")) {
@@ -72,6 +75,10 @@ data class WidgetPersonalContext(
             }
             require(obj["coverage_limits"] is JsonArray && (obj.getValue("coverage_limits") as JsonArray)
                 .all { it is JsonPrimitive && it.isString })
+            if (protocol == 2) {
+                val observed = obj.getValue("last_observed_study_at")
+                require(observed == JsonNull || observed is JsonPrimitive && observed.isString)
+            }
             for (key in listOf("version", "revision", "completed_parts", "total_parts",
                 "verified_today_xp", "goal_xp", "lesson_order")) {
                 val value = obj.getValue(key)
@@ -82,7 +89,7 @@ data class WidgetPersonalContext(
                 if (value != JsonNull) require(value is JsonPrimitive && !value.isString && value.booleanOrNull != null)
             }
             val c = json.decodeFromJsonElement(serializer(), obj)
-            require(c.version == 1 && c.policyVersion == "smart-widget-context-v1")
+            require(c.policyVersion == "smart-widget-context-v${c.version}")
             require(!c.dispatchAllowed && c.actionRequiresAuthorization)
             require(c.binding.matches(Regex("[0-9a-f]{64}")))
             require(UUID.fromString(c.requestEpoch).toString() == c.requestEpoch && c.revision >= 0)
@@ -91,6 +98,7 @@ data class WidgetPersonalContext(
             val generated = Instant.parse(c.generatedAt)
             val until = Instant.parse(c.validUntil)
             require(generated < until)
+            c.lastObservedStudyAt?.let { require(Instant.parse(it) <= generated) }
             require((c.localDay == null) == (c.timezoneName == null))
             if (c.localDay != null) {
                 require(c.timezoneName in ZoneId.getAvailableZoneIds())

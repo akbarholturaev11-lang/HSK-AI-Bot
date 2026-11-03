@@ -55,6 +55,15 @@ class PureCadenceTests(unittest.TestCase):
     def test_unconfigured_calibration_cannot_enable_adaptation(self):
         self.check("cadence_calibration_unconfigured", calibration=None)
 
+    def test_approved_habit_is_explicit_and_independent_of_cadence_calibration(self):
+        from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION
+        ordinary=evaluate_cadence(context(),allow_elapsed_time=True)
+        personal=evaluate_cadence(context(),habit_calibration=APPROVED_HABIT_CALIBRATION,allow_elapsed_time=True)
+        self.assertEqual(ordinary.eligibility.time_source,'saved')
+        self.assertEqual(personal.eligibility.time_source,'habit')
+        self.assertEqual(personal.reason,'cadence_calibration_unconfigured')
+        self.assertFalse(personal.dispatch_allowed)
+
     def test_same_gap_differs_for_daily_and_twice_weekly_learners(self):
         daily = self.check("shadow_candidate")
         twice = self.check("shadow_candidate", context(studies=history((3, 6, 10, 13, 17))))
@@ -131,16 +140,54 @@ class PureCadenceTests(unittest.TestCase):
         self.check("cadence_source_coverage_limited", replace(snapshot, policy=replace(snapshot.policy,
                     coverage_limits=("uncorroborated_study",))))
 
-    def test_provider_acceptance_or_post_without_display_is_not_ignored(self):
+    def test_ended_unknown_delivery_spends_budget_without_becoming_a_miss(self):
         studies = history((10, 11, 12, 13))
         for state in ("provider_accepted", "unknown", "cancelled"):
-            d = self.check("delivery_outcome_unknown", context(studies=studies,
+            d = self.check("shadow_candidate", context(studies=studies,
                     intents=(intent(3, state=state, external=True),)))
-            self.assertIsNone(d.unsuccessful_count)
+            self.assertEqual((d.unsuccessful_count,d.weekly_intents),(0,1))
 
     def test_new_learning_does_not_guess_when_an_unknown_job_was_displayed(self):
         snapshot=context(intents=(intent(12, external=True, state="unknown"),))
-        self.check("delivery_outcome_unknown", snapshot)
+        d=self.check("shadow_candidate", snapshot)
+        self.assertEqual(d.unsuccessful_count,0)
+
+    def test_first_missed_personal_day_ignores_minute_jitter_and_dst_day_length(self):
+        from zoneinfo import ZoneInfo
+        from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, day_window
+        for name,month,day in (('Etc/UTC',11,3),('America/New_York',3,8),('America/New_York',11,1)):
+            with self.subTest(zone=name,month=month):
+                zone=ZoneInfo(name)
+                local=datetime(2026,month,day,20,19,tzinfo=zone)
+                observed=local.astimezone(NOW.tzinfo)
+                studies=tuple(VerifiedStudy(f'daily-{n}','lesson',
+                    (local-timedelta(days=n)).replace(hour=20,minute=24 if n==1 else 20).astimezone(NOW.tzinfo),
+                    (local-timedelta(days=n)).date().isoformat(),1) for n in range(1,6))
+                base=policy_tests.context(observed_at=observed,timezone_name=name,
+                    course_day=local.date().isoformat(),saved_time=time(14),studies=studies)
+                snapshot=context(policy=base,history_since=observed-timedelta(days=30),
+                    learning_complete_since=observed-timedelta(days=30))
+                d=evaluate_cadence(snapshot,calibration=QA,habit_calibration=APPROVED_HABIT_CALIBRATION)
+                self.assertEqual(d.reason,'shadow_candidate')
+                self.assertEqual(d.eligibility.time_local,time(20,20))
+                self.assertEqual(d.next_eligible_at,day_window(name,local.date().isoformat())[0])
+
+    def test_early_daily_contacts_keep_unknown_outcomes_and_stop_at_three_per_week(self):
+        original=history((1,2,3,4,5));jobs=[]
+        calibration=replace(QA,weekly_maximum=3,maximum_unsuccessful=5)
+        for n in range(4):
+            observed=NOW+timedelta(days=n)
+            base=policy_tests.context(observed_at=observed,course_day=observed.date().isoformat(),studies=original)
+            snapshot=context(policy=base,intents=tuple(jobs))
+            d=evaluate_cadence(snapshot,calibration=calibration)
+            self.assertEqual(d.reason,'shadow_candidate' if n<3 else 'weekly_study_budget')
+            self.assertEqual(d.weekly_intents,n)
+            if n<3:
+                self.assertEqual(d.unsuccessful_count,0)
+                start=observed.replace(hour=0,minute=0,second=0,microsecond=0)
+                jobs.append(StudyIntent(f'early-{n}',1,start.date(),'Etc/UTC',start,
+                    start+timedelta(days=1),d.eligibility.scheduled_at,'unknown',True))
+        self.assertTrue(all(j.state=='unknown' and j.verified_shown_at is None for j in jobs))
 
     def test_definite_non_display_is_not_an_unsuccessful_user_response(self):
         job=replace(intent(3, external=True, state="cancelled"), definite_non_display=True)
@@ -172,6 +219,16 @@ class PureCadenceTests(unittest.TestCase):
         self.check("reactivation_stopped", context(studies=studies, intents=jobs))
         d=self.check("shadow_candidate", context(studies=studies, intents=(jobs[0],)*20))
         self.assertEqual(d.unsuccessful_count, 1)
+
+    def test_five_verified_failures_still_stop_with_an_ended_unknown_contact(self):
+        studies=history((20,21,22,23))
+        jobs=tuple(intent(n,shown=True) for n in (19,15,11,7,3))+(intent(2,external=True,state='unknown'),)
+        calibration=replace(QA,weekly_maximum=3,maximum_unsuccessful=5)
+        d=self.check('reactivation_stopped',context(studies=studies,intents=jobs),calibration=calibration)
+        self.assertEqual(d.unsuccessful_count,5)
+        fresh=VerifiedStudy('manual-entry-real-study','training',NOW-timedelta(days=1),'old',1)
+        d=self.check('shadow_candidate',context(studies=studies+(fresh,),intents=jobs),calibration=calibration)
+        self.assertEqual((d.unsuccessful_count,d.weekly_intents),(0,2))
 
     def test_original_verified_learning_restarts_after_stop_without_resetting_budget(self):
         studies=history((20, 21, 22, 23))
@@ -266,6 +323,26 @@ class CadenceReaderChecks:
         await self.job(3, attempts=("client_posted_unverified", "unknown"))
         snapshot=await self.load()
         self.assertTrue(all(j.externally_attempted for j in snapshot.intents))
+        self.assertTrue(all(j.verified_shown_at is None for j in snapshot.intents))
+
+    async def test_real_historical_unknowns_allow_a_new_day_but_keep_weekly_cost(self):
+        for n in range(1,5):await self.study(days_ago=5-n,order=n,xp=1)
+        first=await self.job(1,state='unknown',attempts=('client_posted_unverified',))
+        second=await self.job(2,state='provider_accepted',attempts=('provider_accepted',))
+        snapshot=await self.load()
+        # Only this complete synthetic fixture can attest absence. The reader
+        # itself still returns unknown negative coverage, including now.
+        self.assertIsNone(snapshot.learning_complete_since)
+        complete=replace(snapshot,learning_complete_since=snapshot.history_since)
+        calibration=replace(QA,weekly_maximum=3,maximum_unsuccessful=5)
+        d=evaluate_cadence(complete,calibration=calibration)
+        self.assertEqual((d.reason,d.weekly_intents,d.unsuccessful_count),('shadow_candidate',2,0))
+        await self.job(3,state='unknown',attempts=('unknown',))
+        snapshot=await self.load()
+        d=evaluate_cadence(replace(snapshot,learning_complete_since=snapshot.history_since),calibration=calibration)
+        self.assertEqual((d.reason,d.weekly_intents),('weekly_study_budget',3))
+        by_id={j.job_id:j for j in snapshot.intents}
+        self.assertEqual((by_id[first.id].state,by_id[second.id].state),('unknown','provider_accepted'))
         self.assertTrue(all(j.verified_shown_at is None for j in snapshot.intents))
 
     async def test_definite_rejections_are_separate_from_unknown_and_shown(self):

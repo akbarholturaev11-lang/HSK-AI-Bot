@@ -417,6 +417,7 @@ private fun AppRoot(
                 factory = ProfileSettingsViewModel.Factory(
                     courseRepository = app.courseRepository,
                     authRepository = authRepository,
+                    writeStudyReminder = app::setStudyReminder,
                 ),
             )
             val settingsState by settingsViewModel.state.collectAsStateWithLifecycle()
@@ -443,6 +444,9 @@ private fun AppRoot(
             val widgetLifecycle = LocalLifecycleOwner.current.lifecycle
             val widgetSession by app.widgetStore.state.collectAsStateWithLifecycle(initialValue = WidgetSession())
             val widgetTheme by app.appSettings.themeMode.collectAsStateWithLifecycle(initialValue = com.pomp.hskai.core.settings.AppThemeMode.DEFAULT)
+            LaunchedEffect(widgetSession.epoch, widgetSession.linked, widgetForegroundTick, offline) {
+                if (widgetSession.linked && !offline) app.smartPreferenceBridge.sync(widgetSession.epoch)
+            }
             val sessionEpoch = remember { app.widgetStore.state }
             // Capture the account generation before the foreground request can publish anything.
             var widgetEpoch by remember { mutableStateOf<String?>(null) }
@@ -603,18 +607,19 @@ private fun AppRoot(
             }
 
             val context = LocalContext.current
+            var studyPermissionEpoch by rememberSaveable { mutableStateOf<String?>(null) }
             val notificationPermission = rememberLauncherForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { granted ->
-                scope.launch {
-                    app.widgetStore.setReminder(granted)
-                    if (granted) StudyReminderScheduler.schedule(context)
-                }
+                val requestedEpoch = studyPermissionEpoch
+                studyPermissionEpoch = null
+                if (granted && requestedEpoch != null)
+                    settingsViewModel.setStudyNotifications(true, requestedEpoch)
             }
 
-            val notificationsOn = widgetSession.reminderEnabled
-            LaunchedEffect(notificationsOn) {
-                when (notificationsOn) {
+            val notificationsOn = widgetSession.pendingStudyPreference?.enabled ?: widgetSession.reminderEnabled
+            LaunchedEffect(widgetSession.reminderEnabled) {
+                when (widgetSession.reminderEnabled) {
                     true -> if (StudyNotifications.canPost(context)) {
                         StudyReminderScheduler.schedule(context)
                     }
@@ -631,11 +636,12 @@ private fun AppRoot(
 
             val toggleLocalReminder: (Boolean) -> Unit = { enabled ->
                 if (enabled && android.os.Build.VERSION.SDK_INT >= 33 && !StudyNotifications.canPost(context)) {
+                    studyPermissionEpoch = widgetSession.epoch
                     notificationPermission.launch(android.Manifest.permission.POST_NOTIFICATIONS)
                 } else if (enabled && !StudyNotifications.canPost(context)) {
                     android.widget.Toast.makeText(context, R.string.widget_setup_permission, android.widget.Toast.LENGTH_LONG).show()
                 } else {
-                    scope.launch { app.widgetStore.setReminder(enabled) }
+                    settingsViewModel.setStudyNotifications(enabled, widgetSession.epoch)
                 }
             }
 
@@ -746,6 +752,9 @@ private fun AppRoot(
             var ratingChallengesOpen by rememberSaveable { mutableStateOf(false) }
             var ratingUserOpen by remember { mutableStateOf<RatingEntryDto?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
+            // This flag is only valid while Profile is mounted. Do not restore it
+            // if Activity recreation returns to the Course tab instead.
+            var profileSettingsOpen by remember { mutableStateOf(false) }
             val bugReportRootView = LocalView.current
             // Start the sensor only after the saved preference has loaded, so a
             // previously disabled gesture cannot briefly activate at app startup.
@@ -1424,7 +1433,8 @@ private fun AppRoot(
                                 else -> selectedTab = it
                             }
                         },
-                        bottomBarVisible = !voiceCallActive && !practiceImmersive,
+                        bottomBarVisible = !voiceCallActive && !practiceImmersive &&
+                            !(selectedTab == MainTab.PROFILE && profileSettingsOpen),
                         topNotice = reconnect?.let { retry ->
                             { OfflineBanner(retrying = retry.retrying, onRetry = retry::retryNow) }
                         },
@@ -1583,6 +1593,7 @@ private fun AppRoot(
                                 onOpenSupport = { url -> openExternal(context, url) },
                                 onReportProblem = openBugReport,
                                 reportVisible = bugReportOpen || bugReportIntroVisible,
+                                onSettingsVisibilityChange = { profileSettingsOpen = it },
                                 onRefresh = {
                                     profileViewModel.load()
                                     courseViewModel.load()

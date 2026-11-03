@@ -12,10 +12,10 @@ on:
   workflow_dispatch:
     inputs:
       publish_to_r2:
-        description: Upload the signed APK to Cloudflare R2
+        description: Publish to R2 only after explicit owner acceptance of the test APK
         required: true
         type: boolean
-        default: true
+        default: false
 
 permissions:
   contents: read

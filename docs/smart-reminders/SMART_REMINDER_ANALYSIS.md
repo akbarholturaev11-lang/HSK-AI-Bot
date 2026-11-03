@@ -1,12 +1,13 @@
 # Smart delivery analysis contract
 
-The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.71. This
+The execution ledger is `SMART_REMINDER_MASTER_PLAN.md`, §§17.55–17.72. This
 contract defines P6 6.1a, optional 6.1b integration, bounded 6.1c reconciliation,
 6.1d terminal shadow observations, 6.1e reservation observations and 6.1f
 committed runtime guard reasons, the 6.1g internal target-learning projection
 6.1h authenticated client-reported opens, 6.1i verified temporal completed-unit
 outcomes, 6.1j scored active-study days, the separate 6.1k 24-hour window and
-6.1l retained scored practice completions and 6.1m completed voice activity,
+6.1l retained scored practice completions, 6.1m completed voice activity and
+6.1n optional server-bound repeats,
 not a live rollout.
 
 `SmartReminderAnalysisService.capture_job(user_id, job_id)` is an internal,
@@ -350,13 +351,42 @@ fields `first_active_study_at` and `first_active_study_after_report_at` remain
 over-limit classes are withheld, while an independently verified other class
 can still prove a positive day. Payload reads are finite (8K server events,
 64K quiz JSON); no answers, scores, source IDs or payloads persist in analysis.
-Deterministic repeat-practice completions do not emit a fresh graded-attempt
-source; `practice_attempt_scored` currently has no writer. Other voice and
+Untraced deterministic v1 repeat completions still lack fresh-attempt proof;
+the general profile event `practice_attempt_scored` still has no writer. Other voice and
 unreviewed sources remain unavailable. A previously missing stored completion
 can establish activity when the actual grader later persists it even though
 the original award is older; an already deduplicated old result cannot move
 to a later retry time. This is retained-completion coverage, not complete
 repeat-practice history. Absence never proves inactivity.
+
+Optional repeat capture reuses `SMART_REMINDER_ANALYSIS_ENABLED=false` without
+adding a flag or enabling delivery. With explicit true, the shared Mini App,
+Android and paired Desktop grader records server-only
+`smart_practice_attempt_started` / `smart_practice_attempt_scored`, exact source
+`smart_practice_v2`. A persisted start returns compact opaque
+`practice:{owner}:v2:{32 lowercase hex nonce}`; failed capture returns existing v1.
+Disabled new starts do no trace SQL. The receipt binds canonical owner, source,
+mode/course/skill, frozen language/max-part (including unrestricted None), question
+count/digest and original start time. Completion rejects foreign/missing/future,
+90-day-expired or changed-material receipts and regrades server questions. Existing
+ad/daily gates, canonical v1 terminal/reward references and XP dedupe remain intact.
+An outstanding v2 completion may read its receipt after flag OFF for normal grading;
+no new trace is captured then. Current clients roundtrip opaque IDs unchanged.
+
+Scored traces require exact source/event/owner/course, v2 nonce/dedupe, integer
+protocol 2, reviewed mode/skill, strict score/total and aware ordered start/score
+within the receipt lifetime. Stored same-nonce retries preserve original retained
+time/score; actual new starts can establish activity despite zero new XP. Scored
+capture remains best effort and cannot undo learning. Missing first capture cannot
+reconstruct a first human-attempt timestamp; a later successful server-grading
+capture is the first retained proof, and global practice history stays partial.
+These names never enter the general profile-accuracy event set. The new minimal
+payload contains no questions, submitted answers, mistake text, job or provider
+secrets. Both technical trace types expire after D21's 90 days in narrowly scoped
+bounded pages of existing analysis retention, including the explicit count-only /
+purge operator path. Original learning, XP, anonymous totals and operational
+consent/day evidence remain protected; canonical account purge removes own traces.
+No schema, client field, UI text, polling loop or source-stage constraint is added.
 
 Completed voice activity additionally reads minimal fields of existing canonical
 `voice_practice_sessions`: exact owned `user_id`, UUID-v4 identity, reviewed HSK
@@ -372,7 +402,7 @@ sessions and standalone pronunciation remain unavailable. No history, correction
 word, plan, audio, usage/billing or provider-session content is read. A separate
 512+1 sentinel sets `completed_voice_over_limit` and withholds that source only;
 other reviewed evidence may still prove activity. Internal coverage names now
-say `repeat_practice_and_partial_voice_unavailable`; this is partial coverage,
+say `partial_practice_and_voice_unavailable`; this is partial coverage,
 never absence or inactivity. The existing day/24-hour/baseline/D21 consumers reuse
 these timestamps without adding a completed unit or changing habits/source writers.
 
@@ -458,6 +488,7 @@ baseline, complete coverage and causal benefit remain separate acceptance work.
 
 | Class | Policy |
 | --- | --- |
+| Optional Smart practice start/scored traces | D21: original trace time + 90 days; source/version/name scoped bounded cleanup, hard start expiry, no canonical learning deletion |
 | New analysis / reservation detail | D21: expires at original source time + 90 days |
 | Anonymous monthly totals | D21: current UTC month and eleven preceding buckets |
 | Existing course progress, XP, canonical learning | Unchanged; analysis retention never deletes them |
@@ -557,3 +588,27 @@ denominators through the existing default-OFF source observer/reconciliation,
 retention and canonical purge. Source/metric boundaries, account-wide historical
 receipt checks and explicit unavailable/partial states are documented in
 `SMART_REMINDER_BASELINE.md`; no contact/open or delivery authority follows.
+
+## Protected Admin readout
+
+System opens the existing `smart_study` editor directly, once; the generic
+notification list excludes this entry. Its existing authenticated, no-store
+`notifications/read` transaction returns `smart` only for this exact key:
+current UTC `month` (YYYY-MM), read-only `observation_enabled` from the existing
+analysis flag, and `counts` grouped over `SmartReminderAnalysisMonthly`. No raw
+learner/job/attempt/history source is read for this overview.
+
+- `study_day_after_attempt`: observed job/account-local study-day facts.
+- `contact_study_24h`: evidenced contact windows with actual study in 24 hours.
+- `study_unit_24h`: original canonical study units deduplicated across contacts.
+
+These are separate partial observational grains, not unique users, independent
+OS display/read, complete cohort metrics or causal benefit. Missing stage rows
+return null/dash; a stored zero stays zero. Retained counters remain visible
+when observation is OFF. There is no new aggregation job or live configuration
+mutation. Read failure uses the existing unavailable state.
+
+The existing exact-content passkey/CAS/audit editor also controls the shared
+Android/Telegram new-attempt permission through the template enabled field.
+It does not activate a producer, admission or provider. One dirty-state Save,
+X/swipe dismissal and confirmed-success animation remain the only edit flow.

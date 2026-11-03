@@ -103,16 +103,34 @@ object WidgetArt {
     }
 
     private fun active(visual: WidgetVisual): WidgetAsset {
+        val variant = visual.variant.coerceIn(0,visual.state.variants-1)
         val drawn = variants(visual.state)[visual.variant.coerceIn(0, visual.state.variants - 1)]
+        val invitations = listOf(R.string.widget_duo_practice_time,R.string.widget_duo_time_practice,
+            R.string.widget_duo_ready,R.string.widget_duo_keep_going,R.string.widget_duo_three_minutes)
         val copy = when (visual.personalPhase) {
-            "before_study" -> R.string.widget_personal_before
-            "study_time_reached" -> R.string.widget_personal_reached
+            "before_study" -> if(visual.streakSecured) R.string.widget_duo_keep_going
+                else invitations[variant % invitations.size]
+            "study_time_reached" -> when {
+                visual.returnBand > 0 -> R.string.widget_duo_time_practice
+                visual.streakSecured -> R.string.widget_duo_keep_going
+                visual.streakAtRisk && visual.state == WidgetVisualState.CRITICAL ->
+                    if(variant % 2 == 0) R.string.widget_duo_last_chance else R.string.widget_duo_save_streak
+                visual.streakAtRisk && visual.state == WidgetVisualState.LATE ->
+                    if(variant % 2 == 0) R.string.widget_duo_getting_late else R.string.widget_duo_dont_break
+                else -> listOf(R.string.widget_duo_practice_now,R.string.widget_duo_lets_practice,
+                    R.string.widget_duo_please_practice,R.string.widget_duo_three_minutes)[variant % 4]
+            }
             "completed" -> when (visual.completionReason) {
                 "course_completed" -> R.string.widget_personal_course_completed
-                "plan_completed" -> R.string.widget_personal_plan_completed
-                else -> R.string.widget_personal_goal_completed
+                else -> when(variant % 4) {
+                    0 -> R.string.widget_duo_great_job
+                    1 -> R.string.widget_duo_done_today
+                    2 -> if(visual.streakTier > 0 && visual.streakSecured) R.string.widget_duo_streak_safe
+                        else R.string.widget_duo_great_job
+                    else -> R.string.widget_duo_see_tomorrow
+                }
             }
-            "neutral", "paused", "quiet", "unavailable" -> R.string.widget_personal_neutral
+            "neutral", "paused", "quiet", "unavailable" -> R.string.widget_duo_ready
             else -> drawn.text
         }
         val personal = drawn.copy(text = copy)
@@ -121,7 +139,7 @@ object WidgetArt {
         // The four kinds with no producer never arrive here; they borrow the
         // nearest family so adding one later is a row, not a redesign.
         return when (special.kind) {
-            WidgetSpecialKind.MILESTONE -> personal.copy(text = R.string.widget_milestone)
+            WidgetSpecialKind.MILESTONE -> personal.copy(text = R.string.widget_duo_milestone)
             WidgetSpecialKind.STREAK_BROKEN,
             WidgetSpecialKind.COMEBACK,
             WidgetSpecialKind.NEW_USER,

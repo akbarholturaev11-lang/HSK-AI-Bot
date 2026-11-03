@@ -8,7 +8,7 @@ const vm = require("node:vm");
 const source = fs.readFileSync("app/static/course_v3_data/iphone-pwa-notices.js", "utf8");
 const shell = fs.readFileSync("app/static/course-v3.html", "utf8");
 const css = fs.readFileSync("app/static/course_v3_data/iphone-pwa-glass.css", "utf8");
-assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js'));
+assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261104-1"'));
 assert(shell.includes('href="/course_v3_data/iphone-pwa-glass.css'));
 assert(shell.includes('PWA_COURSE_HOST?\'<button class="pwa-notices-button"'));
 assert(css.includes("#hsk-pwa-notice-root [hidden] {display:none!important}"));
@@ -113,6 +113,8 @@ async function main(){
   const standard = harness();
   assert(standard.root(), "PWA module mounted");
   assert(standard.root().hidden, "inbox hidden until requested");
+  assert.equal(standard.root().querySelector(".hsk-pwa-close").attrs["aria-label"], "action.close",
+    "dismiss button uses the canonical localized accessibility label");
   await standard.window.HskPwaInbox.open();
   const list = standard.root().querySelector("#hsk-pwa-notice-list");
   assert.equal(list.children.length, 1);
@@ -219,6 +221,6 @@ async function main(){
   assert.equal(intentionalInbox.root().hidden,true,
     "a learner-opened inbox must not queue a payment alert behind it");
 
-  console.log("PWA notice UI: 16 behavior/ownership/safety checks passed");
+  console.log("PWA notice UI: 17 behavior/ownership/safety checks passed");
 }
 main().catch((err)=>{console.error(err);process.exitCode=1;});

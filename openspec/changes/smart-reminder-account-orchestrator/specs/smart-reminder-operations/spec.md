@@ -100,6 +100,14 @@ Before enabling a Smart experiment, operations MUST measure actual eligible traf
 - **WHEN** a registered treatment/control experiment reaches its planned observation point
 - **THEN** reporting uses all assigned eligible accounts, server-confirmed learning outcomes, real denominators and uncertainty; delivered-only responder selection is labeled diagnostic
 
+#### Scenario: Technical personal-device canary
+- **WHEN** an owner-selected account/device passes delivery, navigation and duplicate checks
+- **THEN** operations records technical acceptance only; efficacy still requires a preregistered stable account-level randomized comparison and original all-assigned learning denominators
+
+#### Scenario: Device changes during an A/B experiment
+- **WHEN** an assigned canonical account reinstalls, changes devices or uses another eligible channel
+- **THEN** its original arm/entry/version remain fixed, a protected holdout cannot receive treatment through an alternate or legacy sender, and unknown/absent response does not remove it from the denominator
+
 ### Requirement: Safe automatic optimizer progression
 Eligible new and sparse-history learners SHALL receive useful deterministic rules immediately. ML decisions SHALL activate automatically for a user only after a globally validated model is safely enabled and that user's evidence satisfies a versioned quality gate. Stale evidence, model failure, regression or any conflict with consent, access, day budget or manual override MUST revert to rules without an extra notification.
 
@@ -336,3 +344,151 @@ The system SHALL recognize reviewed nonempty canonical server voice completions 
 #### Scenario: Empty or ambiguous conversation
 - **WHEN** a session is empty, unfinished, foreign, legacy ownerless, outside the window or exceeds the finite source bound
 - **THEN** it cannot establish fresh in-window activity, inactivity or delivery readiness and no transcript/audio is read or persisted by analysis
+
+
+### Requirement: Repeat study activity preserves original rewards
+The system SHALL optionally distinguish a newly server-started and server-graded practice attempt from a retained retry without granting another original reward. New observation must remain private, bounded and separate from existing learning/profile/delivery contracts.
+
+#### Scenario: Genuine repeat after the original reward
+- **WHEN** the owner starts another supported practice and the server verifies its bound questions and answers
+- **THEN** positive study activity may be observed once for that attempt while original terminal/XP identity and access checks remain intact
+
+#### Scenario: Disabled, untrusted or expired attempt
+- **WHEN** optional capture is disabled or fails, or a supplied attempt is foreign, missing, expired or mismatched
+- **THEN** capture cannot create consent, delivery, another reward or a false complete-history claim, and invalid identities cannot establish fresh verified activity
+
+#### Scenario: Technical trace retention
+- **WHEN** an owned technical practice trace reaches its ninety-day lifetime or its account is purged
+- **THEN** only that scoped detail is removed without deleting canonical course, XP or anonymous retained analysis totals
+
+
+### Requirement: One protected Admin Smart control
+The system SHALL provide one protected Smart editor using existing template consent, passkey, revision and audit rules. Disabling it MUST veto new Android and Telegram Smart attempts without erasing existing outcomes or enabling another sender.
+
+#### Scenario: Fresh disabled permission
+- **WHEN** a prepared Smart attempt encounters the current disabled admin permission before externalization
+- **THEN** new issuance/send is refused while original receipts, account OFF, day ownership and unknown outcomes remain protected
+
+#### Scenario: Anonymous partial readout
+- **WHEN** an authenticated admin opens Smart management
+- **THEN** only reviewed anonymous month counters and observation status are shown, missing values stay unknown, real zero stays zero and no display, unique-user, causal or activation claim is invented
+
+#### Scenario: Minimal editor interaction
+- **WHEN** the persisted permission or copy changes
+- **THEN** the existing single Save performs exact passkey verification and audit, reversion disables Save, and only confirmed success dismisses after the existing success animation
+
+### Requirement: Offline model comparison preserves temporal and product boundaries
+The system SHALL compare a versioned candidate with functioning personalized rules using only earlier available features and training labels, and report later held-out observations as private aggregate diagnostics. It MUST preserve product guards and unknown outcomes and cannot grant model or dispatch authority.
+
+#### Scenario: Later proof cannot improve an earlier prediction
+- **WHEN** a study proof or target label becomes available after the snapshot or training cutoff
+- **THEN** it cannot enter that earlier feature/training set, and later evaluation is not refit using its outcomes
+
+#### Scenario: Sparse or unsupported coverage
+- **WHEN** data is expired, limited, manual, unobserved, too small or absent for a platform/language cohort
+- **THEN** exclusions and unknown metrics remain explicit without identifying learners, inventing inactivity, lifting guards or claiming validated learning benefit
+
+#### Scenario: Reproducible local diagnostic
+- **WHEN** an operator runs the same bounded reviewed snapshot and fixed candidate configuration
+- **THEN** the aggregate comparison is reproducible, model records remain transient, and no application data, settings or provider is changed
+
+### Requirement: Integrated rules use the approved personal clock consistently
+The system SHALL use the same approved personal-time rules and bounded calendar history for passive projection and integrated reminder validation, preserving manual locks and existing frozen day/clock ownership.
+
+#### Scenario: Reliable existing personal history
+- **WHEN** recent or approved extended verified history establishes a personal time different from the saved fallback
+- **THEN** new rule-path decisions and their transport rechecks use that personal time without granting cadence, consent, admission or dispatch authority
+
+#### Scenario: A pending job has a different frozen clock
+- **WHEN** fresh personal history changes an unattempted job's validated clock
+- **THEN** the existing context guard cancels it without moving its clock, refunding its day, replaying an externalized attempt or rejecting an original historical receipt
+
+### Requirement: Planning binds one existing account intent without issuing delivery authority
+The system SHALL reserve and bind one reviewed eligible destination using existing account-day ownership, personal rules and destination policy. Planning MUST NOT grant consent, enroll a cohort, send a provider request, create a posting grant or retarget selected/attempted work.
+
+#### Scenario: One eligible phone
+- **WHEN** current account rules and reviewed admission permit a single eligible Android endpoint
+- **THEN** the planner binds that device without a destination-history warm-up and only its authenticated claim may subsequently issue posting authority
+
+#### Scenario: Preferred endpoint or review changes
+- **WHEN** fresh selection, account intent, routing review or capability changes during planning
+- **THEN** no stale selection is bound and no alternate endpoint bypasses the existing review or consent gates
+
+#### Scenario: Concurrent planning and restart
+- **WHEN** planners race or repeat after a selected, attempted or terminal intent already owns the day
+- **THEN** the original single day/endpoint/attempt evidence stays intact without reranking, refunding ownership or replaying delivery
+
+### Requirement: Runtime registration preserves reviewed single-intent delivery boundaries
+The system SHALL run planning and existing transport protocols only with explicit server-owned reviewed runtime dependencies, preserving disabled defaults, finite work and original attempt/receipt ownership.
+
+#### Scenario: No ready registration
+- **WHEN** the host has no matching ready runtime or authoritative dependencies
+- **THEN** no runtime polling or provider IO starts, and native new posting authority stays disabled
+
+#### Scenario: A due selected intent survives restart
+- **WHEN** a reviewed selected intent is due after its original planning time
+- **THEN** native retrieval or the existing committed Telegram protocol processes that original intent without another reservation, retargeting or replaying a started attempt
+
+#### Scenario: Shutdown or runtime pause
+- **WHEN** the host stops or runtime permission is removed
+- **THEN** the runtime task is cancelled and awaited, new authority is suppressed at fresh boundaries, and original receipts and ambiguous attempt facts remain immutable
+
+### Requirement: Eligible early return is not blocked by ended unknown intents
+The system SHALL evaluate a new eligible local study day independently of an ended historical intent's unknown display outcome, preserving original intent ownership, weekly costs and evidence semantics.
+
+#### Scenario: Daily learner misses the next habitual session
+- **WHEN** verified daily learning history establishes a habitual local time and the next local day's learning is reliably absent
+- **THEN** ordinary eligibility can begin on that next day despite small prior completion-time jitter or a DST-shortened day, without waiting a week or bypassing consent, coverage, access or budgets
+
+#### Scenario: A prior day's delivery remains unknown
+- **WHEN** the prior frozen intent window has ended and a separate nonoverlapping day is eligible
+- **THEN** the original intent remains immutable and budget-counted, its unknown outcome is not an unsuccessful response, and it does not by itself veto the new intent
+
+#### Scenario: Original window or budget still forbids another contact
+- **WHEN** current/overlapping day ownership, a live unknown window or the rolling weekly ceiling applies
+- **THEN** no duplicate, alternate delivery or additional study intent bypasses that guard
+
+### Requirement: Native admission reads persisted privileged review
+The system SHALL bind native admission to current persisted operator-reviewed fencing and actual native account/job/device/session state, without inferring review from client observations or requiring a Telegram identity.
+
+#### Scenario: Native-only reviewed account
+- **WHEN** a trusted operator holds and reviews a native-only account under its current owned native context and finite external fencing evidence
+- **THEN** a read-only source may bind that stored review to an eligible owned native intent, without creating a Telegram identity, consent, attempt or posting grant
+
+#### Scenario: Review or destination has changed
+- **WHEN** review generation, inventory, permission, ownership, window or frozen intent is stale or incompatible
+- **THEN** the persisted source supplies no fresh admission and cannot renew or replace that evidence from a capability/client request
+
+#### Scenario: Historical attempt remains irreversible
+- **WHEN** a later hold invalidates fresh work after an original native posting attempt
+- **THEN** its day/attempt/receipt facts remain immutable and no regrant or alternate follows
+
+### Requirement: Observed learning retains positive-only semantics
+The system SHALL expose bounded canonical positive study observations for an owned account/window without asserting complete negative coverage, fresh unit awards or notification authority.
+
+#### Scenario: Real study without new XP or notification tap
+- **WHEN** an existing reviewed server-scored or completed voice record establishes actual account study within the observation window
+- **THEN** its original positive activity time may contribute without a new XP award or notification tap, preserving existing source validation and private content
+
+#### Scenario: Missing or limited observations
+- **WHEN** retained sources are empty, partial, future, foreign or over the technical work bound
+- **THEN** no absence/failure/complete-coverage claim is inferred, limits remain explicit, and no new permission or provider operation follows
+
+### Requirement: Explicit ordinary reminder mode does not infer negative outcomes
+The system SHALL permit owner-approved ordinary opted-in reminders from current canonical progress and observed positive study activity through an explicit rules/source profile, retaining all permissions, reviewed cohort/device, daily/weekly, access, quiet and irreversible intent guards.
+
+#### Scenario: Complete negative history is unavailable
+- **WHEN** the explicit observed profile has reliable prior rhythm, valid current target/permission/review and no observed current-day study or completed goal
+- **THEN** a regular personal-time reminder may be prepared within the existing budgets without claiming abnormal inactivity or an unsuccessful response
+
+#### Scenario: Actual study returns without tapping or fresh XP
+- **WHEN** canonical learning XP or an existing reviewed server-scored/completed voice record proves recent actual account activity
+- **THEN** that original positive time can suppress return work without rewriting progress, awarding a unit or requiring a notification tap
+
+#### Scenario: Existing strict behavior and disabled deployment
+- **WHEN** ordinary mode is not explicitly selected or the shared runtime switch is disabled
+- **THEN** existing strict coverage behavior remains unchanged and no new runtime polling or posting authority is enabled
+
+#### Scenario: Day-one learner has a saved time
+- **WHEN** the explicit observed profile has a genuinely saved/manual clock and all current consent/review/target guards pass, but fewer than three verified active days exist
+- **THEN** ordinary reminders may use that existing clock immediately under the same daily/weekly limits, with no invented learned gap, inactivity or failed-response estimate; observed current-day learning still suppresses the return reminder

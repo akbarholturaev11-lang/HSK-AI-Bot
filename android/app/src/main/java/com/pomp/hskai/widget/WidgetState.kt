@@ -28,6 +28,8 @@ data class WidgetSnapshot(
     val goalXp: Int = 0,
     /** Strictly validated passive allowlist; never an auth or notification grant. */
     val personalContext: JsonElement? = null,
+    /** Canonical game-streak day from the live server map, separate from goal completion. */
+    val streakRecordedToday: Boolean = false,
 )
 
 /**
@@ -92,4 +94,16 @@ data class WidgetSession(
     val contextRequestGeneration: Long = 0,
     val serverStudyOnly: Boolean = false,
     val studyOperations: List<com.pomp.hskai.core.notify.SmartStudyOperation> = emptyList(),
+    val pendingStudyPreference: StudyPreferenceIntent? = null,
+    val studyPreferenceRevision: Int = 0,
+)
+
+/** Latest explicit phone intent; no token or account identifiers are persisted. */
+@Serializable
+data class StudyPreferenceIntent(
+    val requestId: String = java.util.UUID.randomUUID().toString(),
+    val enabled: Boolean,
+    val previousEnabled: Boolean = false,
+    val expectedRevision: Int? = null,
+    val timezoneName: String? = null,
 )

@@ -14,6 +14,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -24,6 +25,7 @@ import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.AuthProvider
@@ -59,22 +61,62 @@ class ProfileSettingsUxTest {
         loading: Boolean = false,
         onSelectLanguage: ((AppLanguage) -> Unit)? = null,
         onSelectGoal: ((Int) -> Unit)? = null,
+        onSettingsVisibilityChange: (Boolean) -> Unit = {},
+        studySettings: ProfileSettingsState = ProfileSettingsState(),
+        onStudyToggle: (Boolean) -> Unit = {},
     ) {
         ProfileScreen(
             account = LinkedAccount("Test learner", AppLanguage.UZBEK, "hsk1", "pro", true),
             state = ProfileUiState(isLoading = loading, profile = AndroidProfileResponse(
                 ok = true, user = AndroidProfileUserDto(name = "Test learner", phone = "+998000000000"),
             )),
-            settings = ProfileSettingsState(), courseProgress = null, courseUser = null,
+            settings = studySettings, courseProgress = null, courseUser = null,
             dailyXp = 10, dailyGoal = 20, notificationsEnabled = true,
-            onOpenFriends = {}, onOpenGoal = {}, onOpenLanguage = {}, onToggleNotifications = {},
+            onOpenFriends = {}, onOpenGoal = {}, onOpenLanguage = {}, onToggleNotifications = onStudyToggle,
             onOpenWidget = {}, onOpenSupport = {}, onRefresh = onRefresh,
             onLogout = {}, onUnlinkDevice = {}, onSaveProfile = onSave,
             onSelectLanguage = onSelectLanguage, onSelectGoal = onSelectGoal,
+            onSettingsVisibilityChange = onSettingsVisibilityChange,
             identities = IdentitiesUiState(hasLoaded = true, telegramLinked = true,
                 identities = listOf(LinkedIdentity("test-google", AuthProvider.GOOGLE, "l***@example.com", "Learner")),
                 available = listOf(AuthProvider.GOOGLE, AuthProvider.APPLE)),
         )
+    }
+
+    @Test fun pendingStudyOnCanStillBeTurnedOffUsingTheExistingSwitch() {
+        val choices = mutableListOf<Boolean>()
+        compose.setContent { PompHskAiTheme {
+            Profile(studySettings = ProfileSettingsState(isSavingNotifications = true), onStudyToggle = choices::add)
+        } }
+        compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).performClick()
+        compose.onNodeWithText(text(R.string.hsk_course_notif)).performClick()
+        compose.onNode(isToggleable()).assertIsEnabled().performClick()
+        compose.runOnIdle { assertEquals(listOf(false), choices) }
+    }
+
+    @Test fun settingsNavigateInlineAndRestoreTheHostBottomBar() {
+        var fullScreenSettings = false
+        compose.setContent {
+            PompHskAiTheme { Profile(onSettingsVisibilityChange = { fullScreenSettings = it }) }
+        }
+        compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).performClick()
+        compose.waitUntil(5_000) { fullScreenSettings }
+        compose.onNodeWithTag("profile-settings-surface").assertIsDisplayed()
+        compose.onNodeWithContentDescription(text(R.string.hsk_common_action_back)).performClick()
+        compose.waitUntil(5_000) { !fullScreenSettings }
+        compose.onNodeWithTag("profile-settings-surface").assertDoesNotExist()
+    }
+
+    @Test fun systemBackNavigatesSettingsSubpageThenReturnsToProfile() {
+        compose.setContent { PompHskAiTheme { Profile() } }
+        compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).performClick()
+        compose.onNodeWithText(text(R.string.profile_appearance)).performClick()
+        compose.onNodeWithText(text(R.string.profile_theme_dark)).assertIsDisplayed()
+        Espresso.pressBack()
+        compose.onNodeWithText(text(R.string.hsk_course_lang)).assertIsDisplayed()
+        Espresso.pressBack()
+        compose.onNodeWithTag("profile-settings-surface").assertDoesNotExist()
+        compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).assertIsDisplayed()
     }
 
     @Test fun settingsExposePreferencesDirectlyAndBackReturnsToTheSameList() {
@@ -173,8 +215,6 @@ class ProfileSettingsUxTest {
                     val config = Configuration(originalConfiguration).apply { setLocale(Locale.forLanguageTag(language)) }
                     // Recreate the screen even when the first locale repeats.
                     compose.runOnIdle {
-                        // Compose Dialog takes its Android window context from
-                        // the host View, outside the localized CompositionLocal.
                         host.resources.updateConfiguration(config, host.resources.displayMetrics)
                         locale.value = "en"
                     }

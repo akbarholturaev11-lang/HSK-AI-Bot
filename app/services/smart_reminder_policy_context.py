@@ -1,4 +1,4 @@
-"""Internal, read-only adapter for the unused Smart shadow policy.
+"""Internal, read-only evidence for Smart policy and observed rules.
 
 Call inside a caller-owned transaction with an already verified P1 actor.
 No public route, background job, consent import, plan initialization or send.
@@ -6,15 +6,16 @@ The observation window is explicit; missing receipts never prove inactivity.
 """
 import json
 import re
-from dataclasses import dataclass
-from datetime import datetime, time, timezone
+from dataclasses import dataclass, field, replace
+from datetime import datetime, time, timedelta, timezone
 from types import SimpleNamespace
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from sqlalchemy import and_, func, or_, select
 
 from app.db.models.course_attempts import CourseAttempt
 from app.db.models.course_lessons import CourseLesson
-from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_miniapp_event import CourseMiniAppEvent, SMART_PRACTICE_SOURCE, SMART_PRACTICE_SCORED
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
@@ -29,7 +30,10 @@ from app.services.course_v3_parts import total_parts
 from app.services.daily_plan_service import DailyPlanService, TASK_CONTINUE_LESSON, plan_key
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.learning_signals import LEARNING_ACTIVITY_TYPES, LearningSignals
-from app.services.smart_reminder_policy import PolicyContext, VerifiedStudy, _aware_utc
+from app.services.smart_reminder_policy import (
+    APPROVED_HABIT_CALIBRATION, PolicyContext, VerifiedStudy, _aware_utc,
+    day_window, habit_history_needs_extension,
+)
 from app.services.smart_reminder_cadence import CadenceContext, StudyIntent
 from app.services.smart_reminder_preferences import SmartReminderPreferencesService
 
@@ -47,6 +51,12 @@ def _utc(value):
 
 def _clock(value):
     return time.fromisoformat(value) if value is not None else None
+
+
+def _personal_history_start(now, zone_name, calendar_days):
+    zone = ZoneInfo(zone_name)
+    first = _aware_utc(now).astimezone(zone).date()-timedelta(days=calendar_days-1)
+    return day_window(zone_name, first.isoformat())[0]
 
 
 def verified_studies(*, user_id, level, completed_parts, xp_rows, event_rows):
@@ -104,8 +114,32 @@ class VerifiedLearningEvidence:
 class ScoredActivityEvidence:
     times: tuple[datetime, ...] = ()
     coverage_limits: tuple[str, ...] = (
-        "reviewed_server_activity_sources_only", "repeat_practice_and_partial_voice_unavailable",
+        "reviewed_server_activity_sources_only", "partial_practice_and_voice_unavailable",
     )
+
+
+@dataclass(frozen=True)
+class ObservedLearning:
+    """Owned positive observations, never a complete absence/failure feed."""
+    user_id: int
+    history_since: datetime
+    observed_at: datetime
+    latest_activity_at: datetime | None = None
+    coverage_limits: tuple[str, ...] = ('observed_sources_only',)
+    source_version: str = field(default='smart-observed-learning-v1', init=False)
+
+    def __post_init__(self):
+        if (type(self.user_id) is not int or self.user_id <= 0 or
+                _aware_utc(self.history_since) > _aware_utc(self.observed_at) or
+                self.latest_activity_at is not None and not _aware_utc(self.history_since) <=
+                    _aware_utc(self.latest_activity_at) <= _aware_utc(self.observed_at) or
+                not isinstance(self.coverage_limits, tuple) or
+                any(not isinstance(v, str) or not v for v in self.coverage_limits)):
+            raise ValueError('Owned bounded positive learning observations required')
+
+    @property
+    def limited(self):
+        return any(value.endswith('_over_limit') for value in self.coverage_limits)
 
 
 def _scored_pair(payload, key):
@@ -137,7 +171,9 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
             and_(CourseMiniAppEvent.event_name == "test_completed",
                  CourseMiniAppEvent.source == "course_hsk_exam"),
             and_(CourseMiniAppEvent.event_name.in_(("test_completed", "training_completed")),
-                 CourseMiniAppEvent.source == "course_miniapp")),
+                 CourseMiniAppEvent.source == "course_miniapp"),
+            and_(CourseMiniAppEvent.event_name == SMART_PRACTICE_SCORED,
+                 CourseMiniAppEvent.source == SMART_PRACTICE_SOURCE)),
         CourseMiniAppEvent.created_at >= since, CourseMiniAppEvent.created_at <= now,
         func.length(CourseMiniAppEvent.payload_json) <= 8000,
     ).order_by(CourseMiniAppEvent.created_at, CourseMiniAppEvent.id).limit(MAX_POLICY_ROWS + 1))).mappings().all()
@@ -167,6 +203,19 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
                             type(payload.get("material_version")) is not int or payload["material_version"] <= 0 or
                             not isinstance(payload.get("material_id"), str) or not payload["material_id"]):
                         continue
+                elif event["event_name"] == SMART_PRACTICE_SCORED:
+                    mode, skill = payload.get("mode"), payload.get("skill")
+                    sid = event["session_id"]
+                    match = re.fullmatch(rf"practice:{user_id}:v2:([0-9a-f]{{32}})", sid) if isinstance(sid, str) else None
+                    started = datetime.fromisoformat(payload["started_at"])
+                    if (match is None or event["dedupe_key"] != f"smart-practice:{match[1]}:scored" or
+                            type(payload.get("attempt_protocol")) is not int or payload["attempt_protocol"] != 2 or
+                            mode not in {"mock", "placement", "training"} or
+                            event_level not in {"hsk1", "hsk2", "hsk3", "hsk4"} or not _scored_pair(payload, "score") or
+                            (mode == "training" and skill not in {"listening", "writing", "characters", "pronunciation", "pinyin"}) or
+                            (mode != "training" and skill != "") or started.tzinfo is None or
+                            not _utc(event["created_at"]) - timedelta(days=90) < started <= _utc(event["created_at"])):
+                        continue
                 else:
                     # Shared Mini App/Android/Desktop writer, protocol v1.
                     # This is its retained completion time, never a fresh
@@ -186,7 +235,7 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
                             event["dedupe_key"] != f"practice:{feature}:completed"):
                         continue
                 times.add(_utc(event["created_at"]))
-            except (ValueError, TypeError):
+            except (ValueError, TypeError, KeyError):
                 continue
     quizzes = (await session.execute(select(CourseAttempt.created_at, CourseAttempt.answers_json)
         .join(CourseLesson, CourseLesson.id == CourseAttempt.lesson_id).where(
@@ -228,6 +277,47 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
                     type(voice.turn_count) is int and voice.turn_count > 0):
                 times.add(_utc(voice.ended_at))
     return ScoredActivityEvidence(tuple(sorted(times)), tuple(sorted(limits)))
+
+
+async def read_observed_learning(session, actor, history_since, observed_at):
+    """Current canonical positive XP/scored activity under P1, with zero writes.
+
+    Reuses reviewed source validation; no new traces, scores/transcripts in the
+    result, negative completeness, fresh unit or notification authority.
+    """
+    since, now = _aware_utc(history_since), _aware_utc(observed_at)
+    if since > now: raise ValueError('Learning observation window is invalid')
+    with session.no_autoflush:
+        await SmartReminderPreferencesService(session)._lock(actor)
+        scored = await read_scored_activity(session, actor.user_id, level=None,
+            history_since=since, observed_at=now)
+        xp = (await session.scalars(select(CourseXpEvent.created_at).where(
+            CourseXpEvent.user_id == actor.user_id, CourseXpEvent.activity_type.in_(LEARNING_ACTIVITY_TYPES),
+            CourseXpEvent.xp > 0, CourseXpEvent.created_at >= since, CourseXpEvent.created_at <= now)
+            .order_by(CourseXpEvent.created_at.desc(), CourseXpEvent.id.desc()).limit(MAX_POLICY_ROWS + 1))).all()
+        limits = set(scored.coverage_limits) | {'observed_sources_only'}
+        if len(xp) > MAX_POLICY_ROWS: limits.add('observed_xp_over_limit')
+        times = (*scored.times, *(_utc(value) for value in xp[:MAX_POLICY_ROWS]))
+        return ObservedLearning(actor.user_id, since, now, max(times) if times else None, tuple(sorted(limits)))
+
+
+async def read_last_observed_learning(session, actor, observed_at):
+    """Optional widget age hint from positive records, never absence proof.
+
+    Bounded reviewed no-XP activity uses the approved 90-day source window;
+    the latest retained canonical learning XP can be older. No record means
+    unknown, not a new learner or a measured inactive interval.
+    """
+    now = _aware_utc(observed_at)
+    with session.no_autoflush:
+        recent = await read_observed_learning(session, actor, now-timedelta(days=90), now)
+        if recent.limited: return None
+        xp = await session.scalar(select(CourseXpEvent.created_at).where(
+            CourseXpEvent.user_id == actor.user_id, CourseXpEvent.activity_type.in_(LEARNING_ACTIVITY_TYPES),
+            CourseXpEvent.xp > 0, CourseXpEvent.created_at <= now)
+            .order_by(CourseXpEvent.created_at.desc(), CourseXpEvent.id.desc()).limit(1))
+        positives = [value for value in (recent.latest_activity_at, _utc(xp) if xp else None) if value is not None]
+        return max(positives) if positives else None
 
 
 async def read_verified_learning(session, user_id, *, level, history_since, observed_at, evidence_at=None):
@@ -320,16 +410,18 @@ class SmartReminderPolicyContextService:
     def __init__(self, session):
         self.session = session
 
-    async def load_cadence(self, actor, *, observed_at: datetime, history_since: datetime, expected_level: str):
+    async def load_cadence(self, actor, *, observed_at: datetime, history_since: datetime, expected_level: str,
+                           personal_time: bool = False):
         """Read new-intent budget/outcomes; legacy negative coverage is unknown.
 
         Call under the same verified-actor/caller-owned transaction as `load`.
         Correlated aggregates avoid loading attempts, endpoint IDs or tokens.
-        No public complete-coverage override is provided.
+        Personal-time history may extend; ledger/negative coverage keeps the
+        original caller window. No complete-coverage override is provided.
         """
         with self.session.no_autoflush:
             policy = await self.load(actor, observed_at=observed_at, history_since=history_since,
-                                     expected_level=expected_level)
+                                     expected_level=expected_level, personal_time=personal_time)
             external_fact = or_(SmartReminderAttempt.started_at.is_not(None), SmartReminderAttempt.state.in_(
                 ("in_flight", "provider_accepted", "client_posted_unverified", "verified_shown", "unknown")))
             external = select(SmartReminderAttempt.id).where(
@@ -369,11 +461,13 @@ class SmartReminderPolicyContextService:
                 learning_complete_since=None,  # Best-effort/replayed legacy activity is not complete coverage.
             )
 
-    async def load(self, actor, *, observed_at: datetime, history_since: datetime, expected_level: str):
+    async def load(self, actor, *, observed_at: datetime, history_since: datetime, expected_level: str,
+                   personal_time: bool = False):
         """Fresh account facts under P1's user lock, with zero writes/commit.
 
         This returns a simulation input, not a transferable auth or send grant.
-        `expected_level` refuses stale course work; window bounds are explicit.
+        `expected_level` refuses stale course work. Explicit personal_time opts
+        into approved calendar history without shortening the caller window.
         """
         if (observed_at.tzinfo is None or history_since.tzinfo is None or
                 history_since > observed_at):
@@ -381,6 +475,13 @@ class SmartReminderPolicyContextService:
         now, since = _utc(observed_at), _utc(history_since)
         with self.session.no_autoflush:
             pref = await SmartReminderPreferencesService(self.session).read(actor)
+            calendar_unknown = False
+            if personal_time and pref["time_mode"] == "auto" and pref["timezone_name"]:
+                try:
+                    since = min(since, _personal_history_start(now, pref["timezone_name"],
+                        APPROVED_HABIT_CALIBRATION.recent_calendar_days))
+                except (ValueError, ZoneInfoNotFoundError):
+                    calendar_unknown = True
             uid = actor.user_id
             # Fresh column projections avoid stale ORM progress/account state.
             columns = ("id", "telegram_id", "level", "language", "status", "payment_status",
@@ -421,6 +522,8 @@ class SmartReminderPolicyContextService:
                 xp_rows=xp_rows[:MAX_POLICY_ROWS], event_rows=event_rows[:MAX_POLICY_ROWS])
             if len(xp_rows) > MAX_POLICY_ROWS or len(event_rows) > MAX_POLICY_ROWS:
                 coverage = tuple(sorted(set(coverage) | {"observation_window_over_limit"}))
+            if calendar_unknown:
+                coverage = tuple(sorted(set(coverage) | {"habit_calendar_window_unknown"}))
             course_day = local_day_key(profile.timezone_offset_minutes, now=now) if profile else None
             daily_goal = CourseMiniAppProfileService.resolve_daily_goal_xp(profile) if profile else None
             plan_completed = None
@@ -466,7 +569,7 @@ class SmartReminderPolicyContextService:
             if (actor.kind == "android" and android["this_device_consent"] == "on" and
                     android["study_os_permission"] == "allowed"):
                 channels.append("android")
-            return PolicyContext(
+            context = PolicyContext(
                 observed_at=now, level=level, progress_level=progress_level,
                 expected_level=content_level(expected_level, default=""), completed_parts=completed,
                 total_parts=total, target_allowed=target_allowed, foundation_required=foundation_required,
@@ -480,3 +583,14 @@ class SmartReminderPolicyContextService:
                 quiet_end=_clock(pref["quiet_end"]),
                 pause_until=datetime.fromisoformat(pref["pause_until"]) if pref["pause_until"] else None,
             )
+            if personal_time and habit_history_needs_extension(context, APPROVED_HABIT_CALIBRATION):
+                try:
+                    extended = _personal_history_start(now, pref["timezone_name"],
+                        APPROVED_HABIT_CALIBRATION.extended_calendar_days)
+                except (ValueError, ZoneInfoNotFoundError):
+                    return replace(context, coverage_limits=tuple(sorted(
+                        set(context.coverage_limits) | {"habit_calendar_window_unknown"})))
+                if extended < since:
+                    return await self.load(actor, observed_at=now, history_since=extended,
+                                           expected_level=expected_level)
+            return context

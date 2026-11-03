@@ -1,7 +1,8 @@
 """Source-derived analysis; never dispatch authority, causal or display proof.
 
 Capture owns a separate transaction after delivery commits. Optional source
-hooks/retention are disabled by default. Retention never deletes source evidence.
+hooks/retention are disabled by default. Canonical learning/delivery sources
+are retained; only explicitly Smart-owned technical traces use D21 expiry.
 """
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -15,6 +16,9 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 
 from app.db.models.account_deletion import AccountDeletionRequest
+from app.db.models.course_miniapp_event import (
+    CourseMiniAppEvent, SMART_PRACTICE_SOURCE, SMART_PRACTICE_STARTED, SMART_PRACTICE_SCORED,
+)
 from app.db.models.smart_reminder import SmartReminderAndroidGrant, SmartReminderAttempt, SmartReminderJob
 from app.db.models.smart_reminder_analysis import SmartReminderAnalysisEvent, SmartReminderAnalysisMonthly, SmartReminderReservationObservation
 from app.db.models.user import User
@@ -42,6 +46,7 @@ SHADOW_CADENCE_REASONS = frozenset({
     "cadence_time_out_of_range", "personal_cadence_cooldown",
 })
 SHADOW_REFUSAL_REASONS = frozenset({
+    "admin_study_disabled",
     "master_off", "channel_mode_unknown", "manual_channel_unavailable", "consent_or_permission_unavailable",
     "course_context_changed", "paused", "timezone_unknown", "course_day_mismatch", "goal_completed", "plan_completed",
     "progress_unknown", "course_completed", "foundation_required", "target_inaccessible", "personal_time_unknown",
@@ -474,13 +479,19 @@ class SmartReminderAnalysisService:
             now = self.now()
             expired = EVENT.c.expires_at <= now
             expired_reservations = RESERVATION.c.expires_at <= now
+            traces = CourseMiniAppEvent.__table__
+            expired_traces = and_(traces.c.source == SMART_PRACTICE_SOURCE,
+                traces.c.event_name.in_((SMART_PRACTICE_STARTED, SMART_PRACTICE_SCORED)),
+                traces.c.created_at <= now - RAW_RETENTION)
             old_month = MONTHLY.c.month < oldest_month(now)
             counts = {"expired_raw": await session.scalar(select(func.count()).select_from(EVENT).where(expired)),
                 "expired_monthly": await session.scalar(select(func.count()).select_from(MONTHLY).where(old_month)),
                 "expired_reservations": await session.scalar(select(func.count()).select_from(RESERVATION).where(expired_reservations)),
                 "removed_raw": 0, "removed_reservations": 0, "removed_monthly": 0, "mode": "purge" if execute else "count_only"}
+            counts["expired_practice_traces"] = await session.scalar(select(func.count()).select_from(traces).where(expired_traces))
+            counts["removed_practice_traces"] = 0
             if execute:
-                # Delete only selected expired analysis keys. No source rows,
+                # Delete only selected expired Smart-owned keys. No canonical source rows,
                 # user lock or lock-order inversion with delivery/purge writers.
                 keys = select(EVENT.c.user_id, EVENT.c.event_key).where(expired).order_by(
                     EVENT.c.expires_at, EVENT.c.user_id, EVENT.c.event_key).limit(limit)
@@ -494,6 +505,8 @@ class SmartReminderAnalysisService:
                     tuple_(MONTHLY.c.month, MONTHLY.c.stage, MONTHLY.c.channel).in_(months)))).rowcount
                 counts["removed_reservations"] = (await session.execute(delete(RESERVATION).where(
                     tuple_(RESERVATION.c.user_id, RESERVATION.c.event_key).in_(reservations)))).rowcount
+                trace_ids = select(traces.c.id).where(expired_traces).order_by(traces.c.created_at, traces.c.id).limit(limit)
+                counts["removed_practice_traces"] = (await session.execute(delete(traces).where(traces.c.id.in_(trace_ids)))).rowcount
             from app.services.smart_reminder_baseline import baseline_retention
             counts.update(await baseline_retention(session, now, execute=execute, limit=limit))
             return counts
