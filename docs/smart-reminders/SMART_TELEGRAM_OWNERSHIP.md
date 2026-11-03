@@ -30,7 +30,11 @@ server protocol cannot prove global physical exactly-once delivery.
 
 `SmartReminderRoutingService` owns short User-first transactions. Its callers
 must already have trusted operator authorization and a real canonical Telegram
-actor; it is not a learner/client API.
+actor for Telegram activation; it is not a learner/client API. Native hold and
+`review_android` also accept a current owned native actor, including native-only
+accounts, using a distinct native account binding. Native review leaves held
+ownership and cannot activate Telegram. Its persisted read-only admission source
+is documented in [Android protocol](SMART_ANDROID_STUDY_PROTOCOL.md).
 
 1. Deploy the guard to **every** relevant backend replica. Call `hold` with the
    exact current generation (0 for absent). It commits sticky suppression,

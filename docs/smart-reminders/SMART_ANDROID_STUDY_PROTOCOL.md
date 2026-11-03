@@ -110,6 +110,39 @@ Issuance requires all of the following:
   prove no learning. Known overlapping legacy Telegram/Android contact vetoes
   issuance. Unknown old/offline installations still require external fencing.
 
+## Persisted native review source
+
+The existing privileged routing service accepts a currently owned native actor
+for `hold`, including accounts with no Telegram identity. A distinct account-wide
+native hash in the existing binding column keeps this review separate from
+Telegram activation. Hold increments generation, clears proof and invalidates
+unattempted work while preserving original externalized/day/receipt facts.
+
+`review_android` requires the existing typed `RoutingReview` with all three
+explicit external fencing attestations, exact held generation/revision/epoch,
+unchanged inventory and a finite valid window within capability coverage. It
+leaves the account held. An exact current retry does no rewrite; differing
+reviewed evidence needs another hold. These helpers have no learner/HTTP/admin UI
+entry and require trusted operator authorization before invocation. They do not
+perform or infer the actual external review.
+
+`read_android_admission(session, actor, job_id, now, history_window=...)` is a
+read-only dependency that may be explicitly supplied to the existing runtime and
+native factory. It accepts only that persisted native-reviewed binding and an
+owned unselected/unleased/unattempted shadow or matching selected pending native
+job. Current consent/manual/OFF, revision/epoch, owned active session, protocol
+capability and unchanged inventory are rechecked. Its deadline is capped by
+review, inventory, capability, session, job and frozen day. A positive explicit
+history window is required. No autoflush, commit, proof creation, token-value
+selection, new attempt/grant, Telegram identity or provider IO follows.
+
+The returned admission reflects the persisted privileged attestation; it is not
+a client proof or posting grant. Original native authentication, final policy and
+commit-before-response issuance remain mandatory. Production does not register
+this reader automatically. Authoritative learning coverage, approved calibration
+and actual fencing/canary acceptance remain separate. Rollback removes the
+callback or creates a new hold, preserving historical receipts/uncertain intent.
+
 ## Routes
 
 ### GET `/api/v3/android/smart-reminder/due`

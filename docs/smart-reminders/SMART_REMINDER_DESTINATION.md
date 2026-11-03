@@ -2,7 +2,7 @@
 
 `app/services/smart_reminder_destination.py` implements the D06 choice core.
 The authoritative decisions and executed acceptance remain in
-`SMART_REMINDER_MASTER_PLAN.md` §§17.57, 17.77–17.79. This is a component contract, not a
+`SMART_REMINDER_MASTER_PLAN.md` §§17.57, 17.77–17.80. This is a component contract, not a
 second progress tracker or evidence that production dispatch is enabled.
 
 ## One eligible destination
@@ -107,7 +107,8 @@ object with the exact same settings and session factory. Production configures
 no such object. There is no HTTP registration, new environment flag or implicit
 cohort enrollment. Caller-supplied cadence calibration, positive history window
 and authoritative learning reader are required; Android also needs its existing
-reviewed admission callback, and Telegram its current switch and explicit trusted
+reviewed admission callback (including the explicit persisted native review
+source in the Android protocol), and Telegram its current switch and explicit trusted
 transport. No reader can turn partial legacy results into complete coverage.
 
 The bounded rotating loop scans already reviewed unexpired routing accounts,
