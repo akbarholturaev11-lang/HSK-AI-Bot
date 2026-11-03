@@ -1,11 +1,18 @@
 import json
+import hashlib
+import re
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from uuid import uuid4
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from app.db.models.user import User
 
-from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.config import settings
+from app.db.models.course_miniapp_event import (
+    CourseMiniAppEvent, SMART_PRACTICE_SOURCE, SMART_PRACTICE_STARTED, SMART_PRACTICE_SCORED,
+)
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
@@ -58,6 +65,62 @@ class CourseMiniAppPracticeService:
         self.access = CourseMiniAppAccessService(session)
         self.mistakes = CourseMistakeService(session)
         self.gamification = CourseGamificationService(session)
+
+    @staticmethod
+    def _trace_enabled():
+        return getattr(settings, "SMART_REMINDER_ANALYSIS_ENABLED", False) is True
+
+    @staticmethod
+    def _question_digest(questions):
+        return hashlib.sha256(json.dumps(questions, ensure_ascii=False, sort_keys=True,
+            separators=(",", ":")).encode()).hexdigest()
+
+    async def _attempt_start(self, analytics, user, *, mode, level, lang, skill, max_part, questions):
+        if not self._trace_enabled() or lang not in STATIC_LOCALE_KEYS or (mode != "training" and skill):
+            return None
+        try:
+            digest = self._question_digest(questions)
+        except (ValueError, TypeError):
+            return None  # Optional observation must not prevent learning.
+        nonce = uuid4().hex
+        sid = f"practice:{user.id}:v2:{nonce}"
+        saved = await analytics.record_server_event(event_name=SMART_PRACTICE_STARTED,
+            source=SMART_PRACTICE_SOURCE, user_id=user.id, telegram_id=actual_telegram_id(user),
+            level=level, session_id=sid, dedupe_key=f"smart-practice:{nonce}:started",
+            payload=dict(attempt_protocol=2, mode=mode, skill=skill, language=lang,
+                max_part=max_part, question_count=len(questions), question_sha256=digest))
+        return sid if saved.get("recorded") is True else None
+
+    async def _attempt_receipt(self, user, sid, *, mode, level, skill):
+        match = re.fullmatch(rf"practice:{user.id}:v2:([0-9a-f]{{32}})", sid)
+        if match is None:
+            return None
+        row = (await self.session.execute(select(CourseMiniAppEvent.payload_json, CourseMiniAppEvent.created_at).where(
+            CourseMiniAppEvent.user_id == user.id, CourseMiniAppEvent.event_name == SMART_PRACTICE_STARTED,
+            CourseMiniAppEvent.source == SMART_PRACTICE_SOURCE, CourseMiniAppEvent.level == level,
+            CourseMiniAppEvent.session_id == sid, CourseMiniAppEvent.dedupe_key == f"smart-practice:{match[1]}:started",
+            func.length(CourseMiniAppEvent.payload_json) <= 8000,
+        ))).one_or_none()
+        if row is None:
+            return None
+        started = row.created_at.replace(tzinfo=timezone.utc) if row.created_at.tzinfo is None else row.created_at.astimezone(timezone.utc)
+        now = datetime.now(timezone.utc)
+        if not now - timedelta(days=90) < started <= now:
+            return None
+        try:
+            payload = json.loads(row.payload_json or "{}")
+            if (not isinstance(payload, dict) or type(payload.get("attempt_protocol")) is not int or
+                    payload["attempt_protocol"] != 2 or payload.get("mode") != mode or payload.get("skill") != skill or
+                    payload.get("language") not in STATIC_LOCALE_KEYS or
+                    "max_part" not in payload or
+                    not (payload.get("max_part") is None or type(payload["max_part"]) is int and payload["max_part"] > 0) or
+                    type(payload.get("question_count")) is not int or not 0 < payload["question_count"] <= 1000 or
+                    not isinstance(payload.get("question_sha256"), str) or
+                    re.fullmatch(r"[0-9a-f]{64}", payload["question_sha256"]) is None):
+                return None
+        except (ValueError, TypeError, KeyError):
+            return None
+        return payload | {"nonce": match[1], "started_at": started.isoformat()}
 
     @staticmethod
     def _level(value: str) -> str:
@@ -565,8 +628,11 @@ class CourseMiniAppPracticeService:
         if not questions:
             return {"ok": False, "error": "practice_questions_not_found"}
         session_id = f"practice:{user.id}:{feature}:{mode}:{session_scope}:v{PRACTICE_VERSION}"
+        analytics = CourseMiniAppAnalyticsService(self.session)
+        attempt_id = await self._attempt_start(analytics, user, mode=mode, level=level,
+            lang=lang, skill=skill, max_part=max_part, questions=questions)
         event_name = "training_started" if mode == "training" else "test_started"
-        await CourseMiniAppAnalyticsService(self.session).record_server_event(
+        await analytics.record_server_event(
             event_name=event_name,
             telegram_id=actual_telegram_id(user),
             user_id=user.id,
@@ -588,7 +654,7 @@ class CourseMiniAppPracticeService:
         return {
             "ok": True,
             "session": {
-                "id": session_id,
+                "id": attempt_id or session_id,
                 "mode": mode,
                 "skill": skill,
                 "level": level,
@@ -623,8 +689,11 @@ class CourseMiniAppPracticeService:
         feature = self._feature(mode)
         session_scope = skill or level
         expected_session = f"practice:{user.id}:{feature}:{mode}:{session_scope}:v{PRACTICE_VERSION}"
+        attempt = None
         if str(session_id or "") != expected_session:
-            return {"ok": False, "error": "invalid_practice_session"}
+            attempt = await self._attempt_receipt(user, str(session_id or ""), mode=mode, level=level, skill=skill)
+            if attempt is None:
+                return {"ok": False, "error": "invalid_practice_session"}
         # Start'da band qilingan kunlik sessiya bilan bir xil ref — idempotent,
         # ya'ni yakunlash qo'shimcha slot egallamaydi. Sessiya reklama bilan
         # ochilgan bo'lsa yakunlash ham reklama yo'lidan borishi SHART: aks
@@ -645,10 +714,16 @@ class CourseMiniAppPracticeService:
             if not access.get("allowed"):
                 return {"ok": False, "error": access.get("error") or "free_feature_limit_reached"}
 
-        max_part = await self._started_max_part(user, expected_session, mode)
-        if max_part is None:
-            max_part = await self._current_part(user, level)
+        if attempt is not None:
+            max_part, lang = attempt["max_part"], attempt["language"]
+        else:
+            max_part = await self._started_max_part(user, expected_session, mode)
+            if max_part is None:
+                max_part = await self._current_part(user, level)
         questions = await self._questions(mode, level, lang, skill, max_part=max_part)
+        if attempt is not None and (len(questions) != attempt["question_count"] or
+                self._question_digest(questions) != attempt["question_sha256"]):
+            return {"ok": False, "error": "invalid_practice_session"}
         submitted = {
             str(item.get("question_id") or ""): item
             for item in answers if isinstance(item, dict) and item.get("question_id")
@@ -746,6 +821,12 @@ class CourseMiniAppPracticeService:
             base_xp=8 if mode == "training" else 10,
             level=level,
         )
+        if attempt is not None and self._trace_enabled():
+            await analytics.record_server_event(event_name=SMART_PRACTICE_SCORED,
+                source=SMART_PRACTICE_SOURCE, user_id=user.id, telegram_id=actual_telegram_id(user),
+                level=level, session_id=session_id, dedupe_key=f"smart-practice:{attempt['nonce']}:scored",
+                payload=dict(attempt_protocol=2, mode=mode, skill=skill, score=score, total=total,
+                    started_at=attempt["started_at"]))
         await self.session.commit()
         return {
             "ok": True,

@@ -336,3 +336,19 @@ The system SHALL recognize reviewed nonempty canonical server voice completions 
 #### Scenario: Empty or ambiguous conversation
 - **WHEN** a session is empty, unfinished, foreign, legacy ownerless, outside the window or exceeds the finite source bound
 - **THEN** it cannot establish fresh in-window activity, inactivity or delivery readiness and no transcript/audio is read or persisted by analysis
+
+
+### Requirement: Repeat study activity preserves original rewards
+The system SHALL optionally distinguish a newly server-started and server-graded practice attempt from a retained retry without granting another original reward. New observation must remain private, bounded and separate from existing learning/profile/delivery contracts.
+
+#### Scenario: Genuine repeat after the original reward
+- **WHEN** the owner starts another supported practice and the server verifies its bound questions and answers
+- **THEN** positive study activity may be observed once for that attempt while original terminal/XP identity and access checks remain intact
+
+#### Scenario: Disabled, untrusted or expired attempt
+- **WHEN** optional capture is disabled or fails, or a supplied attempt is foreign, missing, expired or mismatched
+- **THEN** capture cannot create consent, delivery, another reward or a false complete-history claim, and invalid identities cannot establish fresh verified activity
+
+#### Scenario: Technical trace retention
+- **WHEN** an owned technical practice trace reaches its ninety-day lifetime or its account is purged
+- **THEN** only that scoped detail is removed without deleting canonical course, XP or anonymous retained analysis totals

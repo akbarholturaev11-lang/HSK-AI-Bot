@@ -7,14 +7,14 @@ The observation window is explicit; missing receipts never prove inactivity.
 import json
 import re
 from dataclasses import dataclass
-from datetime import datetime, time, timezone
+from datetime import datetime, time, timedelta, timezone
 from types import SimpleNamespace
 
 from sqlalchemy import and_, func, or_, select
 
 from app.db.models.course_attempts import CourseAttempt
 from app.db.models.course_lessons import CourseLesson
-from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_miniapp_event import CourseMiniAppEvent, SMART_PRACTICE_SOURCE, SMART_PRACTICE_SCORED
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
@@ -104,7 +104,7 @@ class VerifiedLearningEvidence:
 class ScoredActivityEvidence:
     times: tuple[datetime, ...] = ()
     coverage_limits: tuple[str, ...] = (
-        "reviewed_server_activity_sources_only", "repeat_practice_and_partial_voice_unavailable",
+        "reviewed_server_activity_sources_only", "partial_practice_and_voice_unavailable",
     )
 
 
@@ -137,7 +137,9 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
             and_(CourseMiniAppEvent.event_name == "test_completed",
                  CourseMiniAppEvent.source == "course_hsk_exam"),
             and_(CourseMiniAppEvent.event_name.in_(("test_completed", "training_completed")),
-                 CourseMiniAppEvent.source == "course_miniapp")),
+                 CourseMiniAppEvent.source == "course_miniapp"),
+            and_(CourseMiniAppEvent.event_name == SMART_PRACTICE_SCORED,
+                 CourseMiniAppEvent.source == SMART_PRACTICE_SOURCE)),
         CourseMiniAppEvent.created_at >= since, CourseMiniAppEvent.created_at <= now,
         func.length(CourseMiniAppEvent.payload_json) <= 8000,
     ).order_by(CourseMiniAppEvent.created_at, CourseMiniAppEvent.id).limit(MAX_POLICY_ROWS + 1))).mappings().all()
@@ -167,6 +169,19 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
                             type(payload.get("material_version")) is not int or payload["material_version"] <= 0 or
                             not isinstance(payload.get("material_id"), str) or not payload["material_id"]):
                         continue
+                elif event["event_name"] == SMART_PRACTICE_SCORED:
+                    mode, skill = payload.get("mode"), payload.get("skill")
+                    sid = event["session_id"]
+                    match = re.fullmatch(rf"practice:{user_id}:v2:([0-9a-f]{{32}})", sid) if isinstance(sid, str) else None
+                    started = datetime.fromisoformat(payload["started_at"])
+                    if (match is None or event["dedupe_key"] != f"smart-practice:{match[1]}:scored" or
+                            type(payload.get("attempt_protocol")) is not int or payload["attempt_protocol"] != 2 or
+                            mode not in {"mock", "placement", "training"} or
+                            event_level not in {"hsk1", "hsk2", "hsk3", "hsk4"} or not _scored_pair(payload, "score") or
+                            (mode == "training" and skill not in {"listening", "writing", "characters", "pronunciation", "pinyin"}) or
+                            (mode != "training" and skill != "") or started.tzinfo is None or
+                            not _utc(event["created_at"]) - timedelta(days=90) < started <= _utc(event["created_at"])):
+                        continue
                 else:
                     # Shared Mini App/Android/Desktop writer, protocol v1.
                     # This is its retained completion time, never a fresh
@@ -186,7 +201,7 @@ async def read_scored_activity(session, user_id, *, level, history_since, observ
                             event["dedupe_key"] != f"practice:{feature}:completed"):
                         continue
                 times.add(_utc(event["created_at"]))
-            except (ValueError, TypeError):
+            except (ValueError, TypeError, KeyError):
                 continue
     quizzes = (await session.execute(select(CourseAttempt.created_at, CourseAttempt.answers_json)
         .join(CourseLesson, CourseLesson.id == CourseAttempt.lesson_id).where(

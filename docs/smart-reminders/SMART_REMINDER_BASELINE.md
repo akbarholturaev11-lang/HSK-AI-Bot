@@ -73,7 +73,11 @@ pronunciation stay unknown; voice overflow marks the source limited.
 Deduplicate original units and distinct frozen
 local study dates per account. Generic app opens, reward XP, client terminal
 telemetry, malformed/boolean scores and unpaired/unsupported evidence do not
-prove study. Repeat-practice/partial voice and legacy capture gaps remain explicit.
+prove study. Optional server-bound Smart repeat traces also prove activity at their first
+retained scored time without another canonical XP/unit. Their source, nonce,
+mode/course/skill, strict score/protocol and original start lifetime are reviewed
+as described in `SMART_REMINDER_ANALYSIS.md` §6.1n. Capture is default OFF and best
+effort; missing/untraced repeats, other voice and legacy capture remain partial.
 
 ## Denominators and unavailable values
 
