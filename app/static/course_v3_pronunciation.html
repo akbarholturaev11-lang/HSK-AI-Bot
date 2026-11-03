@@ -106,6 +106,8 @@ Object.keys(L).forEach(function(key){
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}document.querySelector(".top .ix").setAttribute("aria-label",L.back);document.querySelector(".mic").setAttribute("aria-label",PRONUNCIATION_UI.say||"Gapirish");
 function goBack(){location.href=(PWA_PRONUNCIATION_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq"}
 function goPremium(){if(PWA_PRONUNCIATION_HOST){goBack();return}location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription&return_to=course&return_page=course_v3_pronunciation.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
+var PWA_PRONUNCIATION_HOST=location.pathname==="/iphone-pwa/practice/pronunciation";
+var PWA_PRONUNCIATION_SESSION=null,PWA_PRONUNCIATION_PROMISE=null;
 /* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)
    asosiy manba — mashq har doim userning haqiqiy HSK darajasiga mos chiqadi.
    CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar so'zlari chiqadi. */
@@ -326,8 +328,6 @@ function load(){
 }
 function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},1100)}
 // Real pronunciation check: record mic -> server speech-to-text -> character-match score.
-var PWA_PRONUNCIATION_HOST=location.pathname==="/iphone-pwa/practice/pronunciation";
-var PWA_PRONUNCIATION_SESSION=null,PWA_PRONUNCIATION_PROMISE=null;
 function initData(){return PWA_PRONUNCIATION_HOST?"":((tg&&tg.initData)?tg.initData:"")}
 function pronunciationPwaSession(){
   if(!PWA_PRONUNCIATION_HOST)return Promise.reject(new Error("pwa_host_required"));
