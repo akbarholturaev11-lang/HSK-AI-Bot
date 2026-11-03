@@ -57,7 +57,7 @@ class SmartStudyProtocolTest {
             },
             receipt={ _, _, body -> receipts+=body; ApiResult.Success(SmartStudyReceiptAck(true,1)) },
             permission={ StudyNotifications.canPost(context) },
-            post={
+            post={ _, _ ->
                 posts++
                 val persisted=runBlocking { store.read() }
                 assertEquals(StudyPostOutcome.UNKNOWN.wire,persisted.studyOperations.single().outcome)
