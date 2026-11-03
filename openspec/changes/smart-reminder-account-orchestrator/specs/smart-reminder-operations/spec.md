@@ -100,6 +100,14 @@ Before enabling a Smart experiment, operations MUST measure actual eligible traf
 - **WHEN** a registered treatment/control experiment reaches its planned observation point
 - **THEN** reporting uses all assigned eligible accounts, server-confirmed learning outcomes, real denominators and uncertainty; delivered-only responder selection is labeled diagnostic
 
+#### Scenario: Technical personal-device canary
+- **WHEN** an owner-selected account/device passes delivery, navigation and duplicate checks
+- **THEN** operations records technical acceptance only; efficacy still requires a preregistered stable account-level randomized comparison and original all-assigned learning denominators
+
+#### Scenario: Device changes during an A/B experiment
+- **WHEN** an assigned canonical account reinstalls, changes devices or uses another eligible channel
+- **THEN** its original arm/entry/version remain fixed, a protected holdout cannot receive treatment through an alternate or legacy sender, and unknown/absent response does not remove it from the denominator
+
 ### Requirement: Safe automatic optimizer progression
 Eligible new and sparse-history learners SHALL receive useful deterministic rules immediately. ML decisions SHALL activate automatically for a user only after a globally validated model is safely enabled and that user's evidence satisfies a versioned quality gate. Stale evidence, model failure, regression or any conflict with consent, access, day budget or manual override MUST revert to rules without an extra notification.
 

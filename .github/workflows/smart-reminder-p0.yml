@@ -110,6 +110,9 @@ on:
       - "android/app/src/main/res/font/widget_round.ttf"
       - "android/app/src/main/assets/licenses/widget-round-OFL.txt"
       - "android/app/src/main/res/drawable-nodpi/widget_panda_flat_sheet.png"
+      - "android/app/src/main/res/drawable-nodpi/widget_panda_duo_sheet.png"
+      - "android/app/src/main/res/drawable/widget_bg_*.xml"
+      - "android/app/src/main/res/**/widget_duolingo.xml"
       - "app/services/smart_widget_context*.py"
       - "app/services/android_course_service.py"
       - "app/api/android_course.py"
@@ -278,6 +281,9 @@ on:
       - "android/app/src/main/res/font/widget_round.ttf"
       - "android/app/src/main/assets/licenses/widget-round-OFL.txt"
       - "android/app/src/main/res/drawable-nodpi/widget_panda_flat_sheet.png"
+      - "android/app/src/main/res/drawable-nodpi/widget_panda_duo_sheet.png"
+      - "android/app/src/main/res/drawable/widget_bg_*.xml"
+      - "android/app/src/main/res/**/widget_duolingo.xml"
       - "app/services/smart_widget_context*.py"
       - "app/services/android_course_service.py"
       - "app/api/android_course.py"
@@ -437,6 +443,9 @@ jobs:
             --tests "com.pomp.hskai.widget.*" \
             --tests "com.pomp.hskai.core.auth.AuthRepository*" \
             --tests "com.pomp.hskai.data.repository.CourseRepositoryTest"
+
+      - name: Compile native Smart and widget instrumentation adapters
+        run: ./gradlew --no-daemon :app:assembleDirectDebugAndroidTest :app:assemblePlayDebugAndroidTest
 
   smart-storage:
     name: Smart storage migration (SQLite and PostgreSQL)

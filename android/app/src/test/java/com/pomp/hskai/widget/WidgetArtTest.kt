@@ -114,7 +114,7 @@ class WidgetArtTest {
         val visual = WidgetVisual(WidgetVisualState.COMPLETED, 1, WidgetSpecialState(WidgetSpecialKind.MILESTONE, 30))
         val asset = WidgetArt.assetFor(WidgetAccess.ACTIVE, visual)
         assertEquals(R.drawable.widget_panda_ok02, asset.image)
-        assertEquals(R.string.widget_milestone, asset.text)
+        assertEquals(R.string.widget_duo_milestone, asset.text)
     }
 
     @Test fun `an out of range variant cannot crash a home screen`() {

@@ -233,7 +233,7 @@ class WidgetLauncherTest {
         val ticket = requireNotNull(app.widgetStore.beginRefresh(session.epoch))
         if (future) {
             // A future wire version is refused without losing the linked session.
-            val unknown = kotlinx.serialization.json.JsonObject(raw.jsonObject + ("version" to JsonPrimitive(2)))
+            val unknown = kotlinx.serialization.json.JsonObject(raw.jsonObject + ("version" to JsonPrimitive(3)))
             assertFalse(app.widgetStore.savePersonal(snapshot, unknown, ticket, now))
             assertTrue(app.widgetStore.read().linked)
         } else assertTrue(app.widgetStore.savePersonal(snapshot, raw, ticket, now))
