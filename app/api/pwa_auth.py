@@ -1635,7 +1635,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     request.headers.get("X-HSK-PWA-CSRF"),
                 )
                 data = await _small_json(
-                    request, PwaReleaseFeedbackReply, max_bytes=2048,
+                    request, PwaReleaseFeedbackReply, max_bytes=4096,
                 )
                 if not 1 <= data.campaign_id <= 2147483647 or not 1 <= data.rating <= 5:
                     raise PwaAuthError("pwa_request_invalid", status_code=422)
@@ -1652,7 +1652,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 )
                 if (
                     campaign is None or campaign.status != "sent"
-                    or delivery is None or delivery.status != "sent"
+                    or delivery is None or delivery.status not in {"sent", "clicked"}
                 ):
                     raise PwaAuthError("feedback_not_available", status_code=404)
                 if await service.repo.get_response(
@@ -1671,9 +1671,10 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 _, trial_until = await service.grant_trial_access(
                     campaign=campaign, user=learner,
                 )
+                response_id = response.id
                 await db.commit()
             return JSONResponse({
-                "ok": True, "response_id": response.id,
+                "ok": True, "response_id": response_id,
                 "discount_campaign_id": discount_id,
                 "trial_until": trial_until.isoformat() if trial_until else None,
             }, headers=_NO_STORE)
