@@ -11,7 +11,9 @@ from urllib.parse import parse_qs, urlparse
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
+import sqlalchemy as sa
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
@@ -647,6 +649,181 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             )).scalar_one()
             self.assertEqual(old_delivery.status, "android_pending")
             self.assertIsNone(old_delivery.android_shown_at)
+
+    async def test_canonical_feedback_owner_dedupes_telegram_and_provider_accounts(self):
+        """One users.id per campaign, including two distinct NULL TG learners."""
+        from app.db.models.bot_feedback import BotFeedback
+        from app.db.models.release_feedback import (
+            ReleaseFeedbackCampaign, ReleaseFeedbackDelivery, ReleaseFeedbackResponse,
+        )
+        from app.db.models.discount_campaign import DiscountCampaign
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+        from app.repositories.release_feedback_repo import ReleaseFeedbackRepository
+        from app.services.release_feedback_service import ReleaseFeedbackService
+
+        async with self.sessions() as db:
+            db.add_all([user(2, None), user(3, None)])
+            campaign = ReleaseFeedbackCampaign(
+                id=77, title="Verified course update", status="sent",
+                send_at=datetime.now(timezone.utc),
+            )
+            db.add(campaign)
+            await db.flush()
+            owners = [await db.get(User, account) for account in (1, 2, 3)]
+            repo = ReleaseFeedbackRepository(db)
+            replies = [
+                await repo.create_response(
+                    campaign_id=77, user=owner, rating=4,
+                ) for owner in owners
+            ]
+            self.assertEqual([row.user_id for row in replies], [1, 2, 3])
+            self.assertEqual(
+                [row.user_telegram_id for row in replies],
+                [1001, None, None],
+            )
+            for owner, reply in zip(owners, replies):
+                existing = await repo.get_response(campaign_id=77, user=owner)
+                self.assertEqual(existing.id, reply.id)
+            via_telegram = await repo.get_response(
+                campaign_id=77, user_telegram_id=1001,
+            )
+            self.assertEqual(via_telegram.user_id, 1)
+            self.assertIsNone(await repo.get_response(
+                campaign_id=77, user_telegram_id=None,
+            ))
+            with self.assertRaisesRegex(ValueError, "feedback_transport_owner_mismatch"):
+                await repo.create_response(
+                    campaign_id=77, user=owners[1],
+                    user_telegram_id=1001, rating=4,
+                )
+
+            await repo.create_delivery(
+                campaign_id=77, user=owners[1], status="clicked",
+            )
+            await repo.create_delivery(
+                campaign_id=77, user=owners[2], status="clicked",
+            )
+            linked = await repo.create_delivery(
+                campaign_id=77, user_telegram_id=1001, status="sent",
+            )
+            self.assertEqual(linked.user_id, 1)
+            self.assertEqual(
+                (await repo.get_delivery(
+                    campaign_id=77, user=owners[2],
+                )).user_id, 3,
+            )
+            first, until = await ReleaseFeedbackService(db).grant_trial_access(
+                campaign=campaign, user=owners[1],
+            )
+            self.assertTrue(first)
+            again, same_until = await ReleaseFeedbackService(db).grant_trial_access(
+                campaign=campaign, user=owners[1],
+            )
+            self.assertFalse(again)
+            self.assertEqual(same_until, until)
+            self.assertIsNone(owners[1].telegram_id)
+
+            discount_id = await ReleaseFeedbackService(db).create_discount_for_response(
+                campaign=campaign, response=replies[2], user=owners[2],
+            )
+            discount = await db.get(DiscountCampaign, discount_id)
+            self.assertEqual(discount.target_user_id, 3)
+            self.assertIsNone(discount.target_telegram_id)
+
+            pending_google = await BotFeedbackRepository(db).create_pending(owners[1])
+            pending_apple = await BotFeedbackRepository(db).create_pending(owners[2])
+            self.assertEqual(
+                (pending_google.user_id, pending_apple.user_id), (2, 3),
+            )
+            self.assertIsNone(pending_google.telegram_id)
+            self.assertIsNone(pending_apple.telegram_id)
+            with self.assertRaises(IntegrityError):
+                async with db.begin_nested():
+                    await repo.create_response(
+                        campaign_id=77, user=owners[1], rating=3,
+                    )
+            await db.commit()
+            saved = (await db.execute(sa.select(ReleaseFeedbackResponse))).scalars().all()
+            deliveries = (await db.execute(sa.select(ReleaseFeedbackDelivery))).scalars().all()
+            pending = (await db.execute(sa.select(BotFeedback))).scalars().all()
+            self.assertEqual(len(saved), 3)
+            self.assertEqual(len(deliveries), 3)
+            self.assertEqual(len(pending), 2)
+
+    def test_0146_feedback_migration_backfills_real_owners_and_rejects_data_loss(self):
+        """Legacy Telegram IDs are backfilled; provider rows never fake TG IDs."""
+        import importlib.util
+        from alembic.migration import MigrationContext
+        from alembic.operations import Operations
+
+        filename = Path("alembic/versions/0146_pwa_feedback_canonical_owner.py")
+        spec = importlib.util.spec_from_file_location("test_0146_pwa_feedback", filename)
+        revision = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(revision)
+
+        engine = sa.create_engine("sqlite:///:memory:")
+        meta = sa.MetaData()
+        sa.Table(
+            "users", meta, sa.Column("id", sa.Integer, primary_key=True),
+            sa.Column("telegram_id", sa.BigInteger, unique=True, nullable=True),
+        )
+        sa.Table(
+            "bot_feedbacks", meta, sa.Column("id", sa.Integer, primary_key=True),
+            sa.Column("user_id", sa.Integer, nullable=False),
+            sa.Column("telegram_id", sa.BigInteger, nullable=False),
+        )
+        sa.Table(
+            "release_feedback_campaigns", meta,
+            sa.Column("id", sa.Integer, primary_key=True),
+        )
+        for table in ("release_feedback_deliveries", "release_feedback_responses"):
+            sa.Table(
+                table, meta, sa.Column("id", sa.Integer, primary_key=True),
+                sa.Column("campaign_id", sa.Integer, nullable=False),
+                sa.Column("user_telegram_id", sa.BigInteger, nullable=False),
+                sa.UniqueConstraint("campaign_id", "user_telegram_id",
+                    name=f"uq_{table}_campaign_user"),
+            )
+        meta.create_all(engine)
+        try:
+            with engine.begin() as conn:
+                conn.execute(sa.text("INSERT INTO users VALUES (1,1001),(2,NULL),(3,NULL)"))
+                conn.execute(sa.text("INSERT INTO bot_feedbacks VALUES (1,1,1001)"))
+                conn.execute(sa.text("INSERT INTO release_feedback_campaigns VALUES (77)"))
+                for table in ("release_feedback_deliveries", "release_feedback_responses"):
+                    conn.execute(sa.text(
+                        f"INSERT INTO {table} (id,campaign_id,user_telegram_id) "
+                        "VALUES (1,77,1001),(2,77,9999)"
+                    ))
+                with Operations.context(MigrationContext.configure(conn)):
+                    revision.upgrade()
+                self.assertTrue(sa.inspect(conn).get_columns("bot_feedbacks"))
+                for table in ("release_feedback_deliveries", "release_feedback_responses"):
+                    self.assertEqual(
+                        conn.execute(sa.text(
+                            f"SELECT user_id FROM {table} ORDER BY id"
+                        )).scalars().all(), [1, None],
+                    )
+                    conn.execute(sa.text(
+                        f"INSERT INTO {table} (id,campaign_id,user_id,user_telegram_id) "
+                        "VALUES (3,77,2,NULL),(4,77,3,NULL)"
+                    ))
+                    with self.assertRaises(IntegrityError):
+                        with conn.begin_nested():
+                            conn.execute(sa.text(
+                                f"INSERT INTO {table} "
+                                "(id,campaign_id,user_id,user_telegram_id) "
+                                "VALUES (5,77,2,NULL)"
+                            ))
+                with self.assertRaisesRegex(RuntimeError, "Refusing downgrade"):
+                    with Operations.context(MigrationContext.configure(conn)):
+                        revision.downgrade()
+                self.assertEqual(conn.execute(sa.text(
+                    "SELECT COUNT(*) FROM release_feedback_responses "
+                    "WHERE user_telegram_id IS NULL"
+                )).scalar_one(), 2)
+        finally:
+            engine.dispose()
 
     async def test_pwa_inbox_uses_canonical_owner_and_does_not_invent_notices(self):
         url = "/api/v3/pwa/notifications"
