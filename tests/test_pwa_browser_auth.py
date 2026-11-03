@@ -1188,6 +1188,12 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             "course-v3.html": ("PWA_COURSE_HOST", "PWA_COURSE_ACTOR_PROMISE", "pwaCourseActor"),
             "subscription.html": ("PWA_CHECKOUT_HOST", "PWA_CHECKOUT_PROMISE", "checkoutPwaActor"),
             "course_v3_voice.html": ("PWA_VOICE_HOST", "PWA_VOICE_PROMISE", "voicePwaActor"),
+            "course_v3_recognition.html": ("PWA_RECOGNITION_HOST", "PWA_RECOGNITION_PROMISE", "recognitionPwaSession"),
+            "course_v3_memorize.html": ("PWA_MEMORIZE_HOST", "PWA_MEMORIZE_PROMISE", "memorizePwaSession"),
+            "course_v3_pronunciation.html": ("PWA_PRONUNCIATION_HOST", "PWA_PRONUNCIATION_PROMISE", "pronunciationPwaSession"),
+            "course_v3_mistakes.html": ("PWA_MISTAKES_HOST", "PWA_MISTAKES_PROMISE", "mistakesPwaSession"),
+            "course_v3_test.html": ("PWA_TEST_HOST", "PWA_TEST_PROMISE", "testPwaActor"),
+            "course_v3_onboarding.html": ("PWA_ONBOARDING_HOST", "PWA_ONBOARDING_PROMISE", "onboardingPwaActor"),
         }
         for name, (host, cache, verifier) in pages.items():
             with self.subTest(page=name):
