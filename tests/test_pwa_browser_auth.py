@@ -372,6 +372,26 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.settings.PWA_AUTH_ENABLED = False
         self.assertEqual((await self.client.get(path)).status_code, 503)
 
+    def test_pwa_course_allowlist_routes_and_verified_login_forward(self):
+        course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        login = (Path("app/static") / "iphone-pwa-login.js").read_text(encoding="utf-8")
+        self.assertIn('"/api/v3/course-tracks":"/api/v3/pwa/course-tracks"', course)
+        self.assertIn('"/api/v3/course-tracks/switch":"/api/v3/pwa/course-tracks/switch"', course)
+        self.assertIn('"/api/v3/course-tracks/promo-shown":"/api/v3/pwa/course-tracks/promo-shown"', course)
+        self.assertIn('"/api/v3/limits/status":"/api/v3/pwa/limits/status"', course)
+        self.assertIn('"/api/v3/lesson/start":"/api/v3/pwa/lesson/start"', course)
+        self.assertIn('if(!mapped)return Promise.reject(new Error("pwa_route_unavailable"));', course)
+        self.assertIn('delete payload.user_id;delete payload.telegram_id;', course)
+        self.assertIn('if(url==="/api/v3/lesson/start")delete payload.lang;', course)
+        self.assertIn('credentials:"same-origin",cache:"no-store",redirect:"error"', course)
+        self.assertIn('if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.reject(new Error("auth"));', course)
+        self.assertIn('if((!INIT_DATA&&!PWA_COURSE_HOST)||!l||l.status!=="current")', course)
+        # Only a server-confirmed sign-in may enter the authenticated course.
+        self.assertEqual(login.count('location.replace("/iphone-pwa/course");'), 2)
+        self.assertIn('await json("/api/v3/pwa-auth/session")', login)
+        self.assertIn('reply.status === "complete"', login)
+        self.assertNotIn('localStorage.setItem("pwa', login)
+
     def test_browser_course_map_uses_csrf_post_without_changing_telegram_transport(self):
         course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
         self.assertIn('PWA_COURSE_HOST=!INIT_DATA&&location.pathname==="/iphone-pwa/course"', course)
