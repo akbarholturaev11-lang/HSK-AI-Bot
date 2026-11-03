@@ -1532,9 +1532,40 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     }
                     for review in reviews
                 ]
+                # A historical rejected receipt must not be presented as an
+                # *active* failure after the learner submitted a new pending
+                # receipt or an approval superseded it. Focus only the newest
+                # submitted (not draft) transaction, scoped to this actor.
+                latest = (await db.execute(
+                    select(
+                        Payment.id, Payment.payment_status,
+                        Payment.plan_type, Payment.reviewed_at,
+                    )
+                    .where(owner_clause(
+                        Payment, actor, telegram_column="user_telegram_id",
+                    ))
+                    .where(Payment.payment_status.in_((
+                        "pending", "approved", "rejected",
+                    )))
+                    .order_by(Payment.submitted_at.desc(), Payment.id.desc())
+                    .limit(1)
+                )).one_or_none()
+                payment_action = (
+                    {
+                        "payment_id": int(latest.id),
+                        "status": "rejected",
+                        "plan_type": latest.plan_type,
+                        "reviewed_at": latest.reviewed_at.isoformat(),
+                    }
+                    if latest is not None
+                    and latest.payment_status == "rejected"
+                    and latest.reviewed_at is not None
+                    else None
+                )
             return JSONResponse(
                 {"ok": True, "notices": notices,
-                 "payment_reviews": payment_reviews}, headers=_NO_STORE,
+                 "payment_reviews": payment_reviews,
+                 "payment_action": payment_action}, headers=_NO_STORE,
             )
         except PwaAuthError as exc:
             return _error(exc)

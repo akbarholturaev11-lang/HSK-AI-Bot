@@ -498,6 +498,101 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(delivered.android_shown_at)
             self.assertIsNone(delivered.telegram_sent_at)
 
+    async def test_pwa_payment_action_ignores_stale_rejection_after_retry_or_approval(self):
+        """Modal eligibility reflects only the owner's latest submitted receipt.
+
+        Review history stays available, but a pending retry or approval must
+        not resurrect an old rejection as a mandatory centered warning.
+        """
+        url = "/api/v3/pwa/account-notices"
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            db.add(user(2, None))
+            db.add(Payment(
+                id=901, user_id=1, user_telegram_id=1001,
+                plan_type="1_month", amount=89, currency="somoni",
+                payment_status="rejected",
+                submitted_at=now - timedelta(days=4),
+                reviewed_at=now - timedelta(days=3),
+                admin_comment="Internal-only reviewer note",
+            ))
+            db.add(Payment(
+                id=902, user_id=1, user_telegram_id=1001,
+                plan_type="1_month", amount=89, currency="somoni",
+                payment_status="pending",
+                submitted_at=now - timedelta(days=2),
+            ))
+            db.add(Payment(
+                id=909, user_id=2, user_telegram_id=None,
+                plan_type="1_month", amount=89, currency="somoni",
+                payment_status="rejected",
+                submitted_at=now + timedelta(days=1),
+                reviewed_at=now,
+                admin_comment="Other user's private data",
+            ))
+            await db.commit()
+
+        state = await self.begin()
+        await self.callback(state)
+        pending = await self.client.get(url)
+        self.assertEqual(pending.status_code, 200, pending.text)
+        self.assertIsNone(pending.json()["payment_action"])
+        self.assertEqual(
+            [(x["payment_id"], x["status"]) for x in pending.json()["payment_reviews"]],
+            [(901, "rejected")],
+        )
+        self.assertNotIn("Internal-only reviewer note", pending.text)
+        self.assertNotIn("Other user's private data", pending.text)
+        self.assertNotIn('"payment_id":909', pending.text)
+
+        async with self.sessions() as db:
+            retry = await db.get(Payment, 902)
+            retry.payment_status = "approved"
+            retry.reviewed_at = now - timedelta(days=1)
+            await db.commit()
+        approved = await self.client.get(url)
+        self.assertEqual(approved.status_code, 200, approved.text)
+        self.assertIsNone(approved.json()["payment_action"])
+        self.assertEqual(
+            [(x["payment_id"], x["status"]) for x in approved.json()["payment_reviews"]],
+            [(902, "approved"), (901, "rejected")],
+        )
+
+        async with self.sessions() as db:
+            db.add(Payment(
+                id=903, user_id=1, user_telegram_id=1001,
+                plan_type="10_days", amount=29, currency="somoni",
+                payment_status="rejected",
+                submitted_at=now,
+                reviewed_at=now + timedelta(minutes=1),
+                admin_comment="Do not expose rejection details",
+            ))
+            await db.commit()
+        rejected = await self.client.get(url)
+        self.assertEqual(rejected.status_code, 200, rejected.text)
+        self.assertEqual(rejected.json()["payment_action"], {
+            "payment_id": 903,
+            "status": "rejected",
+            "plan_type": "10_days",
+            "reviewed_at": (now + timedelta(minutes=1)).replace(
+                tzinfo=timezone.utc,
+            ).isoformat().replace("+00:00", "+00:00"),
+        })
+        self.assertNotIn("Do not expose rejection details", rejected.text)
+
+        # New pending receipt takes precedence; older rejection remains in
+        # historical payment_reviews but cannot trigger an active modal.
+        async with self.sessions() as db:
+            db.add(Payment(
+                id=904, user_id=1, user_telegram_id=1001,
+                plan_type="10_days", amount=29, currency="somoni",
+                payment_status="pending", submitted_at=now + timedelta(days=1),
+            ))
+            await db.commit()
+        latest = await self.client.get(url)
+        self.assertEqual(latest.status_code, 200, latest.text)
+        self.assertIsNone(latest.json()["payment_action"])
+
     async def test_account_switch_keeps_dual_inbox_and_receipt_owner_isolated(self):
         """Verified Google account switching must not leak either notification
         feed or a rejected receipt to a browser-only learner with no TG ID.
