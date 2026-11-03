@@ -23,6 +23,8 @@ from app.api.miniapp_practice import create_miniapp_practice_router
 from app.db.base import Base
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from app.db.models.account_notice_delivery import AccountNoticeDelivery
+from app.db.models.course_user_notification import CourseUserNotification
+from app.db.models.payment import Payment
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
@@ -493,6 +495,140 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(delivered.status, "android_pending")
             self.assertIsNone(delivered.android_shown_at)
             self.assertIsNone(delivered.telegram_sent_at)
+
+    async def test_account_switch_keeps_dual_inbox_and_receipt_owner_isolated(self):
+        """Verified Google account switching must not leak either notification
+        feed or a rejected receipt to a browser-only learner with no TG ID.
+        """
+        notices_url = "/api/v3/pwa/account-notices"
+        course_url = "/api/v3/pwa/notifications"
+        payment_url = "/api/v3/pwa/subscription/payment-status"
+        async with self.sessions() as db:
+            db.add(AccountNoticeDelivery(
+                user_id=1, telegram_id=1001,
+                key="subscription_update", language="uz",
+                title="First owner service notice", body="Private receipt message",
+                action="subscription", status="android_pending",
+                android_targets=1, reason="account_notice",
+            ))
+            db.add(CourseUserNotification(
+                user_id=1, telegram_id=1001, key="lesson_time",
+                source="telegram_reminder", language="uz",
+                title="First owner course notice", body="Private lesson",
+                action="course",
+            ))
+            db.add(Payment(
+                id=801, user_id=1, user_telegram_id=1001,
+                plan_type="1_month", amount=89, currency="somoni",
+                payment_status="rejected",
+            ))
+            await db.commit()
+
+        state = await self.begin()
+        first = await self.callback(state)
+        self.assertEqual(first.status_code, 303, first.text)
+        old_cookie = first.cookies[PWA_SESSION_COOKIE]
+        self.assertEqual(
+            [row["title"] for row in (await self.client.get(notices_url)).json()["notices"]],
+            ["First owner service notice"],
+        )
+        self.assertEqual(
+            [row["title"] for row in (await self.client.get(course_url)).json()["notifications"]],
+            ["First owner course notice"],
+        )
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        self.assertEqual((await self.client.post(
+            payment_url,
+            headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf},
+            json={"payment_id": 801},
+        )).json()["status"], "rejected")
+
+        # A new verified provider subject creates a separate canonical user.
+        # It must not inherit the Telegram owner or read old receipts.
+        state = await self.begin()
+        second_identity = VerifiedIdentity(
+            provider="google", subject="independent-pwa-learner",
+            email="second-pwa@example.test", email_verified=True,
+            display_name="Independent learner",
+            audience="222-desktop.apps.googleusercontent.com",
+        )
+        from app.services import google_auth
+        with patch.object(google_auth, "exchange_code", return_value="second-id-token"), patch.object(
+            google_auth, "verify_desktop_id_token", return_value=second_identity,
+        ):
+            second = await self.client.get(
+                "/api/v3/native-auth/oauth/callback/google",
+                params={"state": state, "code": "second-provider-code"},
+            )
+        self.assertEqual(second.status_code, 303, second.text)
+        own_session = await self.client.get("/api/v3/pwa-auth/session")
+        self.assertEqual(own_session.status_code, 200, own_session.text)
+        second_user_id = own_session.json()["user_id"]
+        self.assertNotEqual(second_user_id, 1)
+        self.assertFalse(own_session.json()["telegram_linked"])
+        async with self.sessions() as db:
+            second_user = await db.get(User, second_user_id)
+            self.assertIsNone(second_user.telegram_id)
+            db.add(AccountNoticeDelivery(
+                user_id=second_user_id, telegram_id=None,
+                key="subscription_update", language="uz",
+                title="Native-only service notice", body="Private native-only",
+                action="subscription", status="telegram_failed",
+                android_targets=0, reason="account_notice",
+            ))
+            db.add(CourseUserNotification(
+                user_id=second_user_id, telegram_id=None,
+                key="lesson_time", source="course_notification",
+                language="uz", title="Native-only course notice",
+                body="Private native-only lesson", action="course",
+            ))
+            db.add(Payment(
+                id=802, user_id=second_user_id, user_telegram_id=None,
+                plan_type="1_month", amount=89, currency="somoni",
+                payment_status="pending",
+            ))
+            await db.commit()
+
+        second_account_notices = await self.client.get(notices_url)
+        second_course_notices = await self.client.get(course_url)
+        self.assertEqual(second_account_notices.status_code, 200, second_account_notices.text)
+        self.assertEqual(second_course_notices.status_code, 200, second_course_notices.text)
+        self.assertEqual(
+            [row["title"] for row in second_account_notices.json()["notices"]],
+            ["Native-only service notice"],
+        )
+        self.assertEqual(
+            [row["title"] for row in second_course_notices.json()["notifications"]],
+            ["Native-only course notice"],
+        )
+        second_csrf = own_session.json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": second_csrf}
+        self.assertEqual((await self.client.post(
+            payment_url, headers=headers, json={"payment_id": 801},
+        )).status_code, 404)
+        own_payment = await self.client.post(
+            payment_url, headers=headers, json={"payment_id": 802},
+        )
+        self.assertEqual(own_payment.status_code, 200, own_payment.text)
+        self.assertEqual(own_payment.json()["status"], "pending")
+        self.assertEqual(own_payment.headers.get("cache-control"), "no-store")
+
+        prior = AsyncClient(
+            transport=self.client._transport, base_url=ORIGIN,
+            cookies={PWA_SESSION_COOKIE: old_cookie},
+        )
+        try:
+            self.assertEqual((await prior.get(notices_url)).status_code, 401)
+            self.assertEqual((await prior.get(course_url)).status_code, 401)
+        finally:
+            await prior.aclose()
+        # Browsing a PWA inbox is not an Android shown/delivery receipt.
+        async with self.sessions() as db:
+            old_delivery = (await db.execute(
+                select(AccountNoticeDelivery).where(AccountNoticeDelivery.user_id == 1)
+            )).scalar_one()
+            self.assertEqual(old_delivery.status, "android_pending")
+            self.assertIsNone(old_delivery.android_shown_at)
 
     async def test_pwa_inbox_uses_canonical_owner_and_does_not_invent_notices(self):
         url = "/api/v3/pwa/notifications"
