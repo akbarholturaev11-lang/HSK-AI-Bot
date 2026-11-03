@@ -46,7 +46,7 @@ class Element {
 
 function harness({path = "/iphone-pwa/course", action = null, accountId = 7,
                   alreadyBusy = false, splashReady = true, sharedStorage = new Map()} = {}) {
-  let splashDone = splashReady;
+  let splashDone = splashReady, currentAction = action;
   const timers = [], callbacks = {}, requests = [], navigation = [];
   let root = null, redirects = 0;
   const document = {
@@ -80,7 +80,7 @@ function harness({path = "/iphone-pwa/course", action = null, accountId = 7,
       ? {ok:true, user_id:accountId}
       : url.endsWith("/account-notices")
         ? {ok:true, notices:[{id:2, title:"Account notice", body:"Stored on server", action:"course"}],
-           payment_action:action}
+           payment_action:currentAction}
         : {ok:true, notifications:[{id:1,title:"Lesson available",body:"HSK 3",action:"course"}]};
     return {ok:true,json:async()=>response};
   };
@@ -95,6 +95,7 @@ function harness({path = "/iphone-pwa/course", action = null, accountId = 7,
   }, {filename:"iphone-pwa-notices.js",timeout:1000});
   return {root:()=>root, window, navigation, requests, timers, callbacks, redirects:()=>redirects,
     setSplashDone(){splashDone = true;},
+    setAction(value){currentAction = value;},
     async flushTimers(){for(const fn of timers.splice(0))await fn();},
     async loadAndTick(){
       assert.equal(typeof callbacks.load, "function");
@@ -169,6 +170,34 @@ async function main(){
   await delayed.flushTimers();
   assert.equal(delayed.root().hidden,false,"show latest rejected payment after the splash ends");
 
-  console.log("PWA notice UI: 10 behavior/ownership/safety checks passed");
+  const resumed = harness({action:null});
+  await resumed.loadAndTick();
+  assert.equal(resumed.root().hidden,true,"no initial payment action");
+  resumed.setAction({payment_id:101,status:"rejected",plan_type:"1_month"});
+  assert.equal(typeof resumed.callbacks.pageshow,"function");
+  await resumed.callbacks.pageshow({persisted:true});
+  assert.equal(resumed.root().hidden,false,"new reviewed rejection appears after BFCache resume");
+
+  const resumeStorage = new Map();
+  const latest = harness({
+    action:{payment_id:102,status:"rejected",plan_type:"1_month"},
+    sharedStorage:resumeStorage
+  });
+  await latest.loadAndTick();
+  latest.setAction(null);
+  await latest.callbacks.pageshow({persisted:true});
+  assert.equal(latest.root().hidden,true,"newer pending/approved payment closes stale rejection");
+  assert.equal(resumeStorage.get("hskai:pwa:rejected:7:102"),"1");
+  latest.setAction({payment_id:103,status:"rejected",plan_type:"hsk30_unlock"});
+  await latest.callbacks.pageshow({persisted:true});
+  assert.equal(latest.root().hidden,false,"subsequent rejection remains actionable");
+  assert.equal(latest.root().querySelector("#hsk-pwa-urgent-title").textContent,
+    "subscriptionPage.paymentRejectedTitle");
+  assert.equal(resumeStorage.get("hskai:pwa:rejected:7:103"),undefined,
+    "newer payment must never be silently marked as displayed");
+  latest.root().listeners.click({target:{closest:(selector)=>selector==="[data-pwa-close]"?{}:null}});
+  assert.equal(resumeStorage.get("hskai:pwa:rejected:7:103"),"1");
+
+  console.log("PWA notice UI: 13 behavior/ownership/safety checks passed");
 }
 main().catch((err)=>{console.error(err);process.exitCode=1;});
