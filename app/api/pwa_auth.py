@@ -126,6 +126,31 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
                 )
             return _error(exc)
 
+    @router.get("/iphone-pwa/practice/recognition")
+    async def learner_recognition_page(request: Request):
+        """Re-use the original recognition screen after canonical login."""
+        try:
+            require_pwa_enabled(settings_obj)
+            async with session_factory() as db:
+                await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+            return FileResponse(
+                "app/static/course_v3_recognition.html",
+                media_type="text/html",
+                headers={
+                    **_NO_STORE,
+                    "X-Content-Type-Options": "nosniff",
+                    "X-Frame-Options": "DENY",
+                },
+            )
+        except PwaAuthError as exc:
+            if exc.code == "pwa_session_required":
+                return RedirectResponse(
+                    "/iphone-pwa", status_code=303, headers=_NO_STORE,
+                )
+            return _error(exc)
+
     @router.get("/iphone-pwa/manifest.webmanifest")
     async def learner_manifest():
         try:
