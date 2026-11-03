@@ -322,7 +322,7 @@
   // Only the latest actionable rejected receipt may interrupt, once per
   // verified owner + payment. Ordinary/new-content notices never pop up.
   window.addEventListener("load", function () {
-    window.setTimeout(function () { scheduleRecheck(true); }, 1900);
+    window.setTimeout(function () { return scheduleRecheck(true); }, 1900);
   }, {once:true});
   // Installed iOS Home Screen apps and Safari may resume from BFCache without
   // a new load event. Always re-read the latest *server-owned* payment action.
