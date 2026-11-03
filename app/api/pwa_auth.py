@@ -1410,6 +1410,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
         try:
             from sqlalchemy import select
             from app.db.models.account_notice_delivery import AccountNoticeDelivery
+            from app.db.models.payment import Payment
             from app.services.account_identity import owner_clause
             async with session_factory() as db:
                 actor, _ = await PwaAuthService(db, settings_obj).actor(
@@ -1437,8 +1438,35 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     }
                     for row in rows
                 ]
+                # Android/Telegram account notice rows are not a complete
+                # record of browser checkout outcomes. Read the authoritative
+                # reviewed payments separately, without changing delivery
+                # acknowledgements, entitlements or exposing admin comments.
+                reviews = (await db.execute(
+                    select(
+                        Payment.id, Payment.payment_status,
+                        Payment.plan_type, Payment.reviewed_at,
+                    )
+                    .where(owner_clause(
+                        Payment, actor, telegram_column="user_telegram_id",
+                    ))
+                    .where(Payment.payment_status.in_(("approved", "rejected")))
+                    .where(Payment.reviewed_at.is_not(None))
+                    .order_by(Payment.reviewed_at.desc(), Payment.id.desc())
+                    .limit(10)
+                )).all()
+                payment_reviews = [
+                    {
+                        "payment_id": int(review.id),
+                        "status": review.payment_status,
+                        "plan_type": review.plan_type,
+                        "reviewed_at": review.reviewed_at.isoformat(),
+                    }
+                    for review in reviews
+                ]
             return JSONResponse(
-                {"ok": True, "notices": notices}, headers=_NO_STORE,
+                {"ok": True, "notices": notices,
+                 "payment_reviews": payment_reviews}, headers=_NO_STORE,
             )
         except PwaAuthError as exc:
             return _error(exc)
