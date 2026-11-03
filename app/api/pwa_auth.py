@@ -176,6 +176,121 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
                 )
             return _error(exc)
 
+    @router.get("/iphone-pwa/practice/pronunciation")
+    async def learner_pronunciation_page(request: Request):
+        """Re-use the canonical pronunciation UI with browser-only identity."""
+        try:
+            require_pwa_enabled(settings_obj)
+            async with session_factory() as db:
+                await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+            return FileResponse(
+                "app/static/course_v3_pronunciation.html",
+                media_type="text/html",
+                headers={**_NO_STORE,
+                         "X-Content-Type-Options": "nosniff",
+                         "X-Frame-Options": "DENY"},
+            )
+        except PwaAuthError as exc:
+            if exc.code == "pwa_session_required":
+                return RedirectResponse(
+                    "/iphone-pwa", status_code=303, headers=_NO_STORE,
+                )
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/voice/pronounce")
+    async def pwa_pronunciation_score(request: Request):
+        """Canonical voice scoring for a verified PWA actor, never fake initData.
+
+        MediaRecorder's Safari audio/mp4 and supported Telegram browser formats
+        use the existing server VoicePracticeService and its real AI budget.
+        """
+        from app.services.voice_practice_service import (
+            MAX_AUDIO_BYTES, VoicePracticeError, VoicePracticeService,
+        )
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            mime = request.headers.get("Content-Type", "").split(";", 1)[0].lower()
+            if mime != "multipart/form-data":
+                raise PwaAuthError("pwa_request_invalid", status_code=415)
+            # Enforce an upload ceiling BEFORE running Starlette's form parser,
+            # including requests with no explicit Content-Length.
+            try:
+                length = int(request.headers.get("Content-Length", ""))
+            except (TypeError, ValueError):
+                raise PwaAuthError("pwa_request_invalid", status_code=411)
+            if length < 1 or length > MAX_AUDIO_BYTES + 16384:
+                raise PwaAuthError("pwa_request_invalid", status_code=413)
+
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                try:
+                    form = await request.form(
+                        max_files=1, max_fields=4, max_part_size=2048,
+                    )
+                except Exception as exc:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422) from exc
+                if set(form.keys()) - {"target", "target_pinyin", "audio"}:
+                    # Level and language are read from the verified account,
+                    # never from an anonymous browser field.
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                if any(len(form.getlist(key)) != 1 for key in ("target", "audio")):
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                target = form.get("target")
+                pinyin = form.get("target_pinyin", "")
+                audio = form.get("audio")
+                if (not isinstance(target, str) or not (1 <= len(target) <= 120)
+                        or not isinstance(pinyin, str) or len(pinyin) > 240
+                        or not audio or not hasattr(audio, "read")):
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+
+                kind = (getattr(audio, "content_type", "") or "").split(";", 1)[0].lower()
+                extensions = {
+                    "audio/webm": "webm", "audio/mp4": "mp4",
+                    "audio/ogg": "ogg", "audio/mpeg": "mp3",
+                    "audio/wav": "wav",
+                }
+                ext = extensions.get(kind)
+                if not ext:
+                    raise PwaAuthError("pwa_request_invalid", status_code=415)
+                audio_bytes = await audio.read(MAX_AUDIO_BYTES + 1)
+                if not audio_bytes or len(audio_bytes) > MAX_AUDIO_BYTES:
+                    raise PwaAuthError("pwa_request_invalid", status_code=413)
+                signatures = {
+                    "webm": audio_bytes.startswith(b"\x1a\x45\xdf\xa3"),
+                    "mp4": len(audio_bytes) >= 12 and audio_bytes[4:8] == b"ftyp",
+                    "ogg": audio_bytes.startswith(b"OggS"),
+                    "mp3": audio_bytes.startswith(b"ID3") or audio_bytes[:2] in (
+                        b"\xff\xfb", b"\xff\xf3", b"\xff\xf2",
+                    ),
+                    "wav": (len(audio_bytes) >= 12 and audio_bytes[:4] == b"RIFF"
+                            and audio_bytes[8:12] == b"WAVE"),
+                }
+                if not signatures.get(ext):
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+
+                result = await VoicePracticeService(db).score_pronunciation(
+                    actor, target=target, target_pinyin=pinyin,
+                    audio_bytes=audio_bytes, filename="voice." + ext,
+                    language=str(actor.language or "ru"),
+                    level=str(actor.level or "hsk1"),
+                )
+            return JSONResponse(result, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+        except VoicePracticeError as exc:
+            return JSONResponse(
+                {"ok": False, "code": exc.code, "message": exc.message},
+                status_code=exc.status_code, headers=_NO_STORE,
+            )
+
     @router.get("/iphone-pwa/manifest.webmanifest")
     async def learner_manifest():
         try:
