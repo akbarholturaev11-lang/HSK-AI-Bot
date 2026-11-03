@@ -7,6 +7,7 @@ on:
     branches:
       - codex/i18n-local-first-foundation-20261017
       - codex/p3-main-integration-20261020
+      - feat/iphone-pwa-browser-auth-p1-20261102
     paths:
       - "app/main.py"
       - "app/bot/handlers/start.py"
@@ -15,6 +16,8 @@ on:
       - "app/static/*.html"
       - "app/static/course_v3_data/*.js"
       - "app/static/course_v3_data/*.css"
+      - "tests/test_pwa_*.py"
+      - "tests/test_pwa_*.js"
       - "tests/test_telegram_sdk_asset.py"
       - "app/api/miniapp_entitlements.py"
       - "app/api/desktop_course.py"
