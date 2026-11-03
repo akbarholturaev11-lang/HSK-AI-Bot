@@ -25,28 +25,28 @@
     },
     "app/static/course_v3_onboarding.html": {
       "baseline_sha1": "321c28c34cf4ed0550bb5187d8f6b680654ea51e",
-      "reviewed_sha1": "76267a638f4131daab8cf79cb246dd0a329e9af1",
-      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending"
+      "reviewed_sha1": "136e20fe95032ae73c88429c92fdc741bdb215b0",
+      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending; 2026-11-03 reviewed Safari BFCache/foreground PWA-session owner revalidation only; original Mini App branch and course/grade/UI text unchanged"
     },
     "app/static/course_v3_test.html": {
       "baseline_sha1": "2962e807b81cc5059dd2bf8ae2b344479d3cd19b",
-      "reviewed_sha1": "15a2065f9e75d55f31ebd0c744ad882700494bc7",
-      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending"
+      "reviewed_sha1": "68ceee38a58036fbe90708335b3e2fe3b23a60c4",
+      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending; 2026-11-03 reviewed Safari BFCache/foreground PWA-session owner revalidation only; original Mini App branch and course/grade/UI text unchanged"
     },
     "app/static/course_v3_recognition.html": {
       "baseline_sha1": "22c2e10c99a243b9eb9992f99de0de0709c7f819",
-      "reviewed_sha1": "b2dd11eb7b88f5d2d0536cd19ebf7b35fc5b3ea6",
-      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending"
+      "reviewed_sha1": "16b9615786029d309661e04d9d64b8c9a7658a0d",
+      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending; 2026-11-03 reviewed Safari BFCache/foreground PWA-session owner revalidation only; original Mini App branch and course/grade/UI text unchanged"
     },
     "app/static/course_v3_mistakes.html": {
       "baseline_sha1": "b273a6dbf85884b99ab3c194546a6b9d4b0eecbf",
-      "reviewed_sha1": "3f78edf20c491e1e4894e1220fd66953f87a5230",
-      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending"
+      "reviewed_sha1": "842015893bff2157e09fd9402339cdd9f8df9135",
+      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending; 2026-11-03 reviewed Safari BFCache/foreground PWA-session owner revalidation only; original Mini App branch and course/grade/UI text unchanged"
     },
     "app/static/course_v3_pronunciation.html": {
       "baseline_sha1": "d05f5dd02da2befc4db9bc07db343a19bd1c0e32",
-      "reviewed_sha1": "6cdd28cc01aa6ae0e8e461bc0d577247bf8a0aaa",
-      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending"
+      "reviewed_sha1": "697ddac6d2506ba7ffcb9a5b1eaa156b95411783",
+      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending; 2026-11-03 reviewed Safari BFCache/foreground PWA-session owner revalidation only; original Mini App branch and course/grade/UI text unchanged"
     },
     "app/static/course_v3_voice.html": {
       "baseline_sha1": "ddbca0976c0c1d25c86383653ab274129f33dcd7",
@@ -55,8 +55,8 @@
     },
     "app/static/course_v3_memorize.html": {
       "baseline_sha1": "c0ec27bbeb8e8dd3aaf25f345548b0135fefc96e",
-      "reviewed_sha1": "a141bc1921f7205e3f99a4d80e53c4525159c1ce",
-      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending"
+      "reviewed_sha1": "be245aff5c02e2f8fee6ffa282d1c248929000a6",
+      "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending; 2026-11-03 reviewed Safari BFCache/foreground PWA-session owner revalidation only; original Mini App branch and course/grade/UI text unchanged"
     },
     "app/static/hsk-lugat.html": {
       "baseline_sha1": "b0bebb8df10bfe6ec91f928a48676d76adab91df",
