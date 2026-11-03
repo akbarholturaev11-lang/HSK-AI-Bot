@@ -9,6 +9,7 @@ import android.view.View
 import android.provider.Settings
 import com.pomp.hskai.core.auth.authActivity
 import androidx.compose.foundation.BorderStroke
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -163,6 +164,7 @@ fun ProfileScreen(
     onOpenSupport: (String) -> Unit,
     onReportProblem: (Bitmap?) -> Unit = {},
     reportVisible: Boolean = false,
+    onSettingsVisibilityChange: (Boolean) -> Unit = {},
     onRefresh: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
@@ -199,8 +201,12 @@ fun ProfileScreen(
     var settingsOpen by rememberSaveable { mutableStateOf(false) }
     var languageOpen by rememberSaveable { mutableStateOf(false) }
     var goalOpen by rememberSaveable { mutableStateOf(false) }
-    // Shake-triggered reporting must not remain hidden behind the full-screen
-    // Settings Dialog, which owns a separate Android window.
+    // Settings is an inline destination in the Profile tab, not a separate window.
+    // Keep the tab bar hidden while it is open, and restore it on any exit.
+    LaunchedEffect(settingsOpen) { onSettingsVisibilityChange(settingsOpen) }
+    DisposableEffect(Unit) {
+        onDispose { onSettingsVisibilityChange(false) }
+    }
     LaunchedEffect(reportVisible) {
         if (reportVisible) settingsOpen = false
     }
@@ -223,7 +229,8 @@ fun ProfileScreen(
         settingsOpen = true
     }
 
-    HskSceneSurface(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
+    HskSceneSurface(modifier = Modifier.fillMaxSize()) {
         PullToRefreshBox(
             isRefreshing = state.isLoading,
             onRefresh = { if (!state.isLoading && !profileSaving && identities.busyProvider == null) onRefresh() },
@@ -353,8 +360,7 @@ fun ProfileScreen(
             },
             onOpenSupport = onOpenSupport,
             onReportProblem = { visibleDialogView ->
-                // Keep the Settings Dialog attached until PixelCopy has captured
-                // the actual visible window; then dismiss it and open the report.
+                // Capture the visible inline Settings page before leaving it.
                 scope.launch {
                     val screenshot = captureReportScreen(visibleDialogView)
                     settingsOpen = false
@@ -379,6 +385,7 @@ fun ProfileScreen(
             onLogout = { settingsOpen = false; onLogout() },
             onUnlinkDevice = { settingsOpen = false; onUnlinkDevice() },
         )
+    }
     }
 
     // Profile and Settings share the native book-cover entry. The course-path
@@ -796,31 +803,15 @@ private fun ProfileSettingsScreen(
     var confirmUnlink by remember { mutableStateOf(false) }
     var page by rememberSaveable { mutableStateOf(ProfileSettingsPage.ROOT) }
     val pageState = rememberSaveableStateHolder()
-    Dialog(
-        onDismissRequest = {
-            if (page == ProfileSettingsPage.ROOT) onDismiss()
-            else page = ProfileSettingsPage.ROOT
-        },
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            decorFitsSystemWindows = false,
-        ),
-    ) {
-        val view = LocalView.current
-        DisposableEffect(view, PompColors.IsDark) {
-            val window = (view.parent as? DialogWindowProvider)?.window
-            window?.let { dialogWindow ->
-                dialogWindow.statusBarColor = android.graphics.Color.TRANSPARENT
-                dialogWindow.navigationBarColor = android.graphics.Color.TRANSPARENT
-                WindowCompat.getInsetsController(dialogWindow, view).apply {
-                    isAppearanceLightStatusBars = !PompColors.IsDark
-                    isAppearanceLightNavigationBars = !PompColors.IsDark
-                }
-            }
-            onDispose { }
-        }
+    // This is a normal child page of Profile, so it shares the Activity window
+    // and its already-applied status bar inset instead of spawning a Dialog.
+    BackHandler {
+        if (page == ProfileSettingsPage.ROOT) onDismiss()
+        else page = ProfileSettingsPage.ROOT
+    }
+    val view = LocalView.current
         Surface(modifier = Modifier.fillMaxSize().testTag("profile-settings-surface"), color = PompColors.Paper) {
-            Column(Modifier.fillMaxSize().statusBarsPadding()) {
+            Column(Modifier.fillMaxSize()) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -984,7 +975,6 @@ private fun ProfileSettingsScreen(
                 }
             }
         }
-    }
     if (confirmUnlink) {
         AlertDialog(
             onDismissRequest = { confirmUnlink = false },
