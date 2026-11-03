@@ -94,6 +94,19 @@ class PwaOnboardingFinish(BaseModel):
     activation_variant: str | None = None
 
 
+class PwaVoiceStart(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    role: str
+    voice: Literal["female", "male"] = "female"
+    level: str | None = None
+    language: Literal["uz", "ru", "tj"] | None = None
+
+
+class PwaVoiceEnd(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    session_id: str
+
+
 async def _small_json(request: Request, model, *, max_bytes: int = 1024):
     if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
         raise PwaAuthError("pwa_request_invalid", status_code=415)
@@ -655,6 +668,218 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
             return _error(exc)
         except ValueError:
             return _error(PwaAuthError("pwa_request_invalid", status_code=422))
+
+    @router.get("/iphone-pwa/practice/voice")
+    async def learner_voice_page(request: Request):
+        """Original AI Voice Mini App page, protected by PWA session."""
+        try:
+            require_pwa_enabled(settings_obj)
+            async with session_factory() as db:
+                await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+            return FileResponse(
+                "app/static/course_v3_voice.html", media_type="text/html",
+                headers={**_NO_STORE, "X-Content-Type-Options": "nosniff",
+                         "X-Frame-Options": "DENY"},
+            )
+        except PwaAuthError as exc:
+            if exc.code == "pwa_session_required":
+                return RedirectResponse(
+                    "/iphone-pwa", status_code=303, headers=_NO_STORE,
+                )
+            return _error(exc)
+
+    @router.get("/api/v3/pwa/voice/me")
+    async def pwa_voice_status(request: Request):
+        from app.services.voice_practice_service import VoicePracticeService, VoicePracticeError
+        try:
+            require_pwa_enabled(settings_obj)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+                result = await VoicePracticeService(db).user_status(actor)
+            return JSONResponse(result, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+        except VoicePracticeError as exc:
+            return JSONResponse(
+                {"ok": False, "code": exc.code, "message": exc.message},
+                status_code=exc.status_code, headers=_NO_STORE,
+            )
+
+    @router.post("/api/v3/pwa/voice/session/start")
+    async def pwa_voice_start(request: Request):
+        from app.services.voice_practice_service import VoicePracticeService, VoicePracticeError
+        from app.services.course_miniapp_analytics_service import (
+            CourseMiniAppAnalyticsService,
+        )
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaVoiceStart, max_bytes=2048)
+            if not 1 <= len(payload.role) <= 45:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                result = await VoicePracticeService(db).start_session(
+                    actor, role=payload.role, level=str(actor.level or "beginner"),
+                    language=str(actor.language or "ru"), voice=payload.voice,
+                    mode="turn",
+                )
+                result["live_available"] = False  # Browser PWA turn-based flow only.
+                await CourseMiniAppAnalyticsService(db).record_server_event(
+                    event_name="voice_started",
+                    telegram_id=int(actor.telegram_id) if actor.telegram_id else None,
+                    user_id=actor.id, source="course_voice",
+                    level=str(actor.level or ""), session_id=result.get("session_id"),
+                    dedupe_key=result.get("session_id"),
+                    payload={
+                        "role": payload.role,
+                        "course_context": result.get("course_context"),
+                        "scenario_id": (result.get("scenario") or {}).get("id"),
+                        "transport": "iphone_pwa",
+                    },
+                )
+                await db.commit()
+            return JSONResponse(result, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+        except VoicePracticeError as exc:
+            return JSONResponse(
+                {"ok": False, "code": exc.code, "message": exc.message},
+                status_code=exc.status_code, headers=_NO_STORE,
+            )
+
+    @router.post("/api/v3/pwa/voice/message")
+    async def pwa_voice_message(request: Request):
+        from app.services.voice_practice_service import (
+            MAX_AUDIO_BYTES, MAX_TEXT_CHARS, VoicePracticeError,
+            VoicePracticeService,
+        )
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            if request.headers.get("Content-Type", "").split(";", 1)[0].lower() != "multipart/form-data":
+                raise PwaAuthError("pwa_request_invalid", status_code=415)
+            try:
+                length = int(request.headers.get("Content-Length", ""))
+            except (TypeError, ValueError):
+                raise PwaAuthError("pwa_request_invalid", status_code=411)
+            if length < 1 or length > MAX_AUDIO_BYTES + 16384:
+                raise PwaAuthError("pwa_request_invalid", status_code=413)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                try:
+                    form = await request.form(
+                        max_files=1, max_fields=4, max_part_size=MAX_TEXT_CHARS + 1024,
+                    )
+                except Exception as exc:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422) from exc
+                if set(form.keys()) - {"session_id", "text", "audio"}:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                if len(form.getlist("session_id")) != 1 or len(form.getlist("text")) > 1 or len(form.getlist("audio")) > 1:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                session_id = form.get("session_id")
+                text_value = form.get("text", "")
+                media = form.get("audio")
+                if (not isinstance(session_id, str) or not (1 <= len(session_id) <= 160)
+                    or not isinstance(text_value, str)
+                    or len(text_value) > MAX_TEXT_CHARS):
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                audio_bytes = b""
+                filename = "voice.webm"
+                if media is not None:
+                    if not hasattr(media, "read") or not hasattr(media, "content_type"):
+                        raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    kind = (media.content_type or "").split(";", 1)[0].lower()
+                    extension = {
+                        "audio/webm": "webm", "audio/mp4": "mp4",
+                        "audio/ogg": "ogg", "audio/mpeg": "mp3",
+                        "audio/wav": "wav", "audio/x-m4a": "mp4",
+                    }.get(kind)
+                    if not extension:
+                        raise PwaAuthError("pwa_request_invalid", status_code=415)
+                    audio_bytes = await media.read(MAX_AUDIO_BYTES + 1)
+                    if len(audio_bytes) > MAX_AUDIO_BYTES:
+                        raise PwaAuthError("pwa_request_invalid", status_code=413)
+                    valid = {
+                        "webm": audio_bytes.startswith(b"\x1a\x45\xdf\xa3"),
+                        "mp4": len(audio_bytes) >= 12 and audio_bytes[4:8] == b"ftyp",
+                        "ogg": audio_bytes.startswith(b"OggS"),
+                        "mp3": audio_bytes.startswith(b"ID3") or audio_bytes[:2] in (
+                            b"\xff\xfb", b"\xff\xf3", b"\xff\xf2",
+                        ),
+                        "wav": len(audio_bytes) >= 12 and audio_bytes[:4] == b"RIFF"
+                               and audio_bytes[8:12] == b"WAVE",
+                    }.get(extension)
+                    if not valid:
+                        raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    filename = "voice." + extension
+                if not audio_bytes and not text_value.strip():
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                result = await VoicePracticeService(db).process_message(
+                    actor, session_id=session_id, audio_bytes=audio_bytes,
+                    filename=filename, text=text_value.strip(),
+                )
+            return JSONResponse(result, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+        except VoicePracticeError as exc:
+            return JSONResponse(
+                {"ok": False, "code": exc.code, "message": exc.message},
+                status_code=exc.status_code, headers=_NO_STORE,
+            )
+
+    @router.post("/api/v3/pwa/voice/session/end")
+    async def pwa_voice_end(request: Request):
+        from app.services.voice_practice_service import VoicePracticeService, VoicePracticeError
+        from app.services.course_miniapp_analytics_service import (
+            CourseMiniAppAnalyticsService,
+        )
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaVoiceEnd, max_bytes=1024)
+            if not (1 <= len(payload.session_id) <= 160):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                result = await VoicePracticeService(db).end_session(
+                    actor, payload.session_id,
+                )
+                await CourseMiniAppAnalyticsService(db).record_server_event(
+                    event_name="voice_completed",
+                    telegram_id=int(actor.telegram_id) if actor.telegram_id else None,
+                    user_id=actor.id, source="course_voice",
+                    session_id=payload.session_id, dedupe_key=payload.session_id,
+                    payload={
+                        "duration_seconds": result.get("duration_seconds", 0),
+                        "transport": "iphone_pwa",
+                    },
+                )
+                await db.commit()
+            return JSONResponse(result, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+        except VoicePracticeError as exc:
+            return JSONResponse(
+                {"ok": False, "code": exc.code, "message": exc.message},
+                status_code=exc.status_code, headers=_NO_STORE,
+            )
 
     @router.get("/iphone-pwa/manifest.webmanifest")
     async def learner_manifest():
