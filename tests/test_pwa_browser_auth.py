@@ -1175,6 +1175,23 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(record.await_args.kwargs["user"].id, 1)
             self.assertEqual(record.await_args.kwargs["payload"]["stage"], "payment_receipt_selected")
 
+    def test_home_screen_resume_revalidates_server_actor_in_existing_pages(self):
+        pages = {
+            "course-v3.html": ("PWA_COURSE_HOST", "PWA_COURSE_ACTOR_PROMISE", "pwaCourseActor"),
+            "subscription.html": ("PWA_CHECKOUT_HOST", "PWA_CHECKOUT_PROMISE", "checkoutPwaActor"),
+            "course_v3_voice.html": ("PWA_VOICE_HOST", "PWA_VOICE_PROMISE", "voicePwaActor"),
+        }
+        for name, (host, cache, verifier) in pages.items():
+            with self.subTest(page=name):
+                html = (Path("app/static") / name).read_text(encoding="utf-8")
+                self.assertIn('function verifyPwaReturn(){', html)
+                self.assertIn(f'  if(!{host})return;', html)
+                self.assertIn(f'  {cache}=null;', html)
+                self.assertIn(f'  {verifier}().catch(function(){{location.replace("/iphone-pwa")}});', html)
+                self.assertIn('window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()})', html)
+                self.assertIn('document.visibilityState==="visible"', html)
+                self.assertNotIn("user-scalable=no", html)
+
     def test_ios_pwa_text_focus_does_not_disable_pinch_or_legacy_ui(self):
         targets = {
             "course-v3.html": "PWA_COURSE_HOST",
