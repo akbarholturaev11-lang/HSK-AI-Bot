@@ -226,7 +226,7 @@ function testPost(url,body){
 function goBack(){location.href=(PWA_TEST_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq"}
 /* Access gate: bepul userga bir martalik test sessiyasi (server tomonda). */
 function initData(){return PWA_TEST_HOST?"":((tg&&tg.initData)?tg.initData:"")}
-function goPremium(){if(PWA_TEST_HOST){goBack();return}location.href="/subscription.html?lang="+LANG+"&source=v3_test_limit&mode=subscription&return_to=course&return_page=course_v3_test.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
+function goPremium(){location.href=(PWA_TEST_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_test_limit&mode=subscription&return_to=course&return_page=course_v3_test.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 /* Foydalanuvchi darajasi: server (users.level) asosiy manba — user darajasidagi
    imtihon ro'yxatda birinchi va belgilangan holda chiqadi. */
 var MINE_T={ru:"Ваш уровень",uz:"Sizning darajangiz",tj:"Дараҷаи шумо"}[LANG]||"Sizning darajangiz";MINE_T=testUiLabel("testHub.mineLevel",MINE_T);
@@ -273,7 +273,7 @@ function showLimitNow(){
   var e=$("empty");
   var adBtn="";
   var sub=gateEscape(LIMIT_REASON||L.limSub);
-  e.innerHTML='<div class="ic"><i class="ti ti-lock"></i></div><h3>'+L.limTitle+'</h3><p>'+sub+'</p>'+adBtn+(PWA_TEST_HOST?'':'<button onclick="goPremium()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--cin2)">'+L.limPay+'</button>')+'<button onclick="goBack()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--ink2)">'+L.limBack+'</button>';
+  e.innerHTML='<div class="ic"><i class="ti ti-lock"></i></div><h3>'+L.limTitle+'</h3><p>'+sub+'</p>'+adBtn+'<button onclick="goPremium()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--cin2)">'+L.limPay+'</button>'+'<button onclick="goBack()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--ink2)">'+L.limBack+'</button>';
   e.classList.add("on");
 }
 function $(id){return document.getElementById(id)}
