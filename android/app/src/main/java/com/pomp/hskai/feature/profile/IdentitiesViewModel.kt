@@ -128,6 +128,13 @@ class IdentitiesViewModel(
 
     fun browserUrlOpened() = _state.update { it.copy(pendingBrowserUrl = null) }
 
+    /** Failed handoff must stop invisible polling without affecting a newer attempt. */
+    fun externalLaunchFailed(url: String) {
+        if (_state.value.pendingBrowserUrl != url) return
+        cancelConnection()
+        _state.update { it.copy(error = ApiError.ProviderUnavailable) }
+    }
+
     fun reopenTelegram() {
         if (_state.value.busyProvider == AuthProvider.TELEGRAM) {
             _state.update { it.copy(pendingBrowserUrl = it.telegramApprovalUrl) }
