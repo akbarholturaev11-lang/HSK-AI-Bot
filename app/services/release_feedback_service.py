@@ -138,6 +138,7 @@ class ReleaseFeedbackService:
         )
         admin_ids = set(settings.admin_id_list)
         already_done = await self.repo.list_delivery_user_ids(campaign.id)
+        already_accounts = await self.repo.list_delivery_account_ids(campaign.id)
         return [
             user for user in users
             if actual_telegram_id(user) is not None
@@ -145,6 +146,7 @@ class ReleaseFeedbackService:
             and not BotBlockStatusService.is_bot_blocked(user)
             and user.telegram_id not in admin_ids
             and user.telegram_id not in already_done
+            and user.id not in already_accounts
         ]
 
     async def send_due_campaigns(self, bot: Bot) -> list[ReleaseFeedbackSendResult]:

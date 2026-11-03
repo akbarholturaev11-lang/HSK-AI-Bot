@@ -149,9 +149,22 @@ class ReleaseFeedbackRepository:
         await self.session.flush()
 
     async def list_delivery_user_ids(self, campaign_id: int) -> set[int]:
+        """Only real Telegram transport IDs; PWA-only deliveries have NULL."""
         result = await self.session.execute(
             select(ReleaseFeedbackDelivery.user_telegram_id)
             .where(ReleaseFeedbackDelivery.campaign_id == campaign_id)
+            .where(ReleaseFeedbackDelivery.user_telegram_id.is_not(None))
+        )
+        return {int(item) for item in result.scalars().all()}
+
+    async def list_delivery_account_ids(self, campaign_id: int) -> set[int]:
+        """An already-targeted native owner must not be sent the same
+        campaign again just because a Telegram identity was later linked.
+        """
+        result = await self.session.execute(
+            select(ReleaseFeedbackDelivery.user_id)
+            .where(ReleaseFeedbackDelivery.campaign_id == campaign_id)
+            .where(ReleaseFeedbackDelivery.user_id.is_not(None))
         )
         return {int(item) for item in result.scalars().all()}
 

@@ -707,6 +707,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 campaign_id=77, user_telegram_id=1001, status="sent",
             )
             self.assertEqual(linked.user_id, 1)
+            self.assertEqual(await repo.list_delivery_user_ids(77), {1001})
+            self.assertEqual(await repo.list_delivery_account_ids(77), {1, 2, 3})
             self.assertEqual(
                 (await repo.get_delivery(
                     campaign_id=77, user=owners[2],
