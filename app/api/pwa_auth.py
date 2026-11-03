@@ -342,14 +342,14 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
             allowed = {"view", "lang", "limit", "offset", "category"}
             if set(request.query_params.keys()) - allowed:
                 raise PwaAuthError("pwa_request_invalid", status_code=422)
-            if request.query_params.get("view", "targets") != "targets":
+            if request.query_params.get("view", "") not in {"", "targets"}:
                 raise PwaAuthError("pwa_request_invalid", status_code=422)
             async with session_factory() as db:
                 actor, _ = await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
                 result = await CourseMistakeService(db).overview(
-                    actor, view="targets",
+                    actor, view=request.query_params.get("view") or None,
                     category=request.query_params.get("category"),
                     limit=request.query_params.get("limit", "30"),
                     offset=request.query_params.get("offset", "0"),
