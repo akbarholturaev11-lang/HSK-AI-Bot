@@ -2178,7 +2178,18 @@ var INIT_DATA=(tg&&tg.initData)||"";
 // This is not an identity signal: only the server-verified HttpOnly PWA
 // session + Origin/CSRF can authorize its read/write map endpoint.
 var PWA_COURSE_HOST=location.pathname==="/iphone-pwa/course";
-if(PWA_COURSE_HOST)document.documentElement.classList.add("hsk-pwa-browser");
+if(PWA_COURSE_HOST){
+  document.documentElement.classList.add("hsk-pwa-browser");
+  // Original Mini App document, with Home Screen identity only for the
+  // canonical iPhone PWA route. Telegram never gets an install manifest.
+  (function(){
+    var meta=document.createElement("meta");meta.name="apple-mobile-web-app-capable";meta.content="yes";document.head.appendChild(meta);
+    meta=document.createElement("meta");meta.name="apple-mobile-web-app-status-bar-style";meta.content="default";document.head.appendChild(meta);
+    meta=document.createElement("meta");meta.name="apple-mobile-web-app-title";meta.content="HSK AI";document.head.appendChild(meta);
+    var touch=document.createElement("link");touch.rel="apple-touch-icon";touch.href="/assets/hsk-ai-logo-256.png";document.head.appendChild(touch);
+    var manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/iphone-pwa/manifest.webmanifest";document.head.appendChild(manifest);
+  })();
+}
 // An installed browser PWA never becomes a Telegram client, even if an SDK
 // shim injects initData. Identity is exclusively the verified PWA cookie.
 if(PWA_COURSE_HOST)INIT_DATA="";
