@@ -149,6 +149,22 @@ async function main(){
   assert.equal(JSON.parse(freePost[0].opt.body).feedback_id,41);
   assert.equal(JSON.parse(freePost[0].opt.body).disliked_detail_text,"Better exercises");
 
+  const partial=makeHarness({ordinary:{
+    feedback_id:43,paid:false,liked_code:"course",disliked_code:"price",choices:{
+      liked:choices([["course","Course"],["other","Other"]]),
+      liked_sub:{course:choices([["lessons","Lessons"]])},
+      disliked:choices([["price","Price"],["other","Other"]]),
+      disliked_detail_required:["other"]
+    }
+  }});
+  await partial.window.HskPwaFeedback.open();
+  assert.equal(partial.selects().find(f=>f.symbol==="👍").input.value,"course");
+  assert.equal(partial.selects().find(f=>f.symbol==="👎").input.value,"price");
+  partial.choose("›","lessons");
+  await partial.send();
+  assert.equal(partial.requests.filter(r=>r.url.endsWith("/ordinary/submit")).length,1,
+    "previous canonical selections should remain selectable without forcing a change");
+
   const paid=makeHarness({ordinary:{
     feedback_id:42,paid:true,choices:{
       paid:choices([["worth","Worth it"],["regret","Regret"]]),
@@ -168,6 +184,6 @@ async function main(){
   assert.equal(JSON.parse(paidPost[0].opt.body).paid_sub_code,"other");
   assert.equal(JSON.parse(paidPost[0].opt.body).paid_other_text,"Slow");
 
-  console.log("PWA feedback UI: 7 authorization/ordinary/release/validation scenarios passed");
+  console.log("PWA feedback UI: 8 authorization/ordinary/release/validation scenarios passed");
 }
 main().catch(err=>{console.error(err);process.exitCode=1;});
