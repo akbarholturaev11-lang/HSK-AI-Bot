@@ -1,6 +1,9 @@
 package com.pomp.hskai.feature.auth
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -98,7 +101,18 @@ class LinkScreenProviderTest {
     }
 
     @Test
-    fun withoutProvidersTheScreenIsTelegramOnly() {
+    fun beforeProvidersLoadGoogleIsFixedButAppleRemainsHiddenUntilAvailable() {
+        compose.setContent {
+            PompHskAiTheme { LinkScreen(state = LinkUiState()) }
+        }
+        compose.onNodeWithText(strings.getString(R.string.auth_continue_google_short))
+            .assertIsDisplayed().assertIsNotEnabled()
+        compose.onNodeWithText(strings.getString(R.string.auth_continue_apple_short))
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun withoutProvidersGoogleStaysInPlaceDisabledAndAppleIsNotShown() {
         show(providers = emptyList())
 
         compose.onNodeWithText(strings.getString(R.string.auth_choose_method))
@@ -106,7 +120,33 @@ class LinkScreenProviderTest {
         compose.onNodeWithText(strings.getString(R.string.auth_continue_telegram))
             .assertIsDisplayed()
         compose.onNodeWithText(strings.getString(R.string.auth_continue_google_short))
+            .assertIsDisplayed().assertIsNotEnabled()
+        compose.onNodeWithText(strings.getString(R.string.auth_continue_apple_short))
             .assertDoesNotExist()
+    }
+
+    @Test
+    fun discoveryEnablesGoogleInPlaceAndShowsAppleOnlyWhenOffered() {
+        val providers = mutableStateOf(LinkUiState())
+        compose.setContent {
+            PompHskAiTheme { LinkScreen(state = providers.value) }
+        }
+        compose.onNodeWithText(strings.getString(R.string.auth_continue_google_short))
+            .assertIsDisplayed().assertIsNotEnabled()
+        compose.onNodeWithText(strings.getString(R.string.auth_continue_apple_short))
+            .assertDoesNotExist()
+
+        compose.runOnIdle {
+            providers.value = LinkUiState(providers = listOf(AuthProvider.GOOGLE, AuthProvider.APPLE))
+        }
+        compose.onNodeWithText(strings.getString(R.string.auth_continue_google_short))
+            .assertIsDisplayed().assertIsEnabled()
+        compose.onNodeWithText(strings.getString(R.string.auth_continue_apple_short))
+            .assertIsDisplayed()
+
+        compose.runOnIdle { providers.value = LinkUiState(providers = emptyList()) }
+        compose.onNodeWithText(strings.getString(R.string.auth_continue_google_short))
+            .assertIsDisplayed().assertIsNotEnabled()
         compose.onNodeWithText(strings.getString(R.string.auth_continue_apple_short))
             .assertDoesNotExist()
     }

@@ -1,8 +1,8 @@
 # Smart preference API contract
 
 This is the P1 task 2.3 interface; execution evidence belongs only to the
-[Master Plan](SMART_REMINDER_MASTER_PLAN.md). No client settings screen uses it
-yet. `dispatch_allowed` and channel `eligible` remain false;
+[Master Plan](SMART_REMINDER_MASTER_PLAN.md). The existing native study switch consumes it under D29; no separate Smart
+settings screen is introduced. `dispatch_allowed` and channel `eligible` remain false;
 Server OFF/lifecycle guards are implemented, but `legacy_delivery_controlled`
 remains false until compatible-client/cutover acceptance. Backend suppression
 does not establish control of unknown offline Android installations.
@@ -64,6 +64,35 @@ a later OFF; changed content or actor conflicts and cannot restore old state.
 A fresh intentional endpoint ON can resolve its own legacy mirror, while
 independent unknown/OFF sources remain conservative. Master ON never rewrites
 channel consent or capability.
+
+## Current native and Mini App consumers (D29)
+
+The existing Android study toggle writes only this authenticated device's
+`study_enabled`; it never writes master consent or another endpoint. The
+permission callback must belong to the captured current account/link epoch;
+OS denial alone creates no OFF intent. Known server device state reconciles
+on foreground and refresh. Unknown legacy consent neither grants Smart ON nor
+erases the existing legacy local state. Explicit global OFF always wins.
+
+Local OFF cancels pending native posting immediately, including offline. The
+existing local session stores the latest explicit pending command and freezes
+its UUID/body/revision before IO. Existing refresh work retries it even without
+a widget or study timer; startup resumes it. An uncertain response retries the
+same body, stale ON is never rebased, and a definite OFF revision refusal allows
+one bounded fresh-command retry. ON cannot enable local posting before an exact
+acknowledgement. Account generation/link fences reject obsolete callbacks;
+known settings revisions also invalidate older widget context frames.
+
+Native first use can fill a missing IANA zone from `ZoneId.systemDefault()`;
+Mini App uses the actual `Intl` observation with the existing signed header.
+Both preserve known zones and manual clocks and never initialize consent from
+an OS permission, offset, token or app open. Browser initialization is best
+effort, coalesced and nonblocking. Its map exposure must be exactly true,
+derived from the existing enabled runtime and an owned operator-held routing
+row. Disabled mode performs no new routing query; ordinary public accounts
+perform no automatic settings write. This marker authorizes no dispatch or
+cohort enrollment. Native code is delivered in the owner-only APK until the
+owner accepts practical testing and explicitly authorizes public release.
 
 ## Errors and bot compatibility
 
