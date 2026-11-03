@@ -521,6 +521,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 id=801, user_id=1, user_telegram_id=1001,
                 plan_type="1_month", amount=89, currency="somoni",
                 payment_status="rejected",
+                admin_comment="Private admin-only rejection note",
+                reviewed_at=datetime.now(timezone.utc),
             ))
             await db.commit()
 
@@ -528,10 +530,16 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         first = await self.callback(state)
         self.assertEqual(first.status_code, 303, first.text)
         old_cookie = first.cookies[PWA_SESSION_COOKIE]
+        first_notices = (await self.client.get(notices_url)).json()
         self.assertEqual(
-            [row["title"] for row in (await self.client.get(notices_url)).json()["notices"]],
+            [row["title"] for row in first_notices["notices"]],
             ["First owner service notice"],
         )
+        self.assertEqual(
+            [(row["payment_id"], row["status"]) for row in first_notices["payment_reviews"]],
+            [(801, "rejected")],
+        )
+        self.assertNotIn("admin_comment", first_notices["payment_reviews"][0])
         self.assertEqual(
             [row["title"] for row in (await self.client.get(course_url)).json()["notifications"]],
             ["First owner course notice"],
@@ -587,6 +595,12 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 plan_type="1_month", amount=89, currency="somoni",
                 payment_status="pending",
             ))
+            db.add(Payment(
+                id=803, user_id=second_user_id, user_telegram_id=None,
+                plan_type="1_month", amount=89, currency="somoni",
+                payment_status="approved",
+                reviewed_at=datetime.now(timezone.utc),
+            ))
             await db.commit()
 
         second_account_notices = await self.client.get(notices_url)
@@ -596,6 +610,10 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(
             [row["title"] for row in second_account_notices.json()["notices"]],
             ["Native-only service notice"],
+        )
+        self.assertEqual(
+            [(row["payment_id"], row["status"]) for row in second_account_notices.json()["payment_reviews"]],
+            [(803, "approved")],
         )
         self.assertEqual(
             [row["title"] for row in second_course_notices.json()["notifications"]],
