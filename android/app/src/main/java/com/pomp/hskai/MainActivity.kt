@@ -746,6 +746,7 @@ private fun AppRoot(
             var ratingChallengesOpen by rememberSaveable { mutableStateOf(false) }
             var ratingUserOpen by remember { mutableStateOf<RatingEntryDto?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
+            var profileSettingsOpen by rememberSaveable { mutableStateOf(false) }
             val bugReportRootView = LocalView.current
             // Start the sensor only after the saved preference has loaded, so a
             // previously disabled gesture cannot briefly activate at app startup.
@@ -1424,7 +1425,7 @@ private fun AppRoot(
                                 else -> selectedTab = it
                             }
                         },
-                        bottomBarVisible = !voiceCallActive && !practiceImmersive,
+                        bottomBarVisible = !voiceCallActive && !practiceImmersive && !profileSettingsOpen,
                         topNotice = reconnect?.let { retry ->
                             { OfflineBanner(retrying = retry.retrying, onRetry = retry::retryNow) }
                         },
@@ -1583,6 +1584,7 @@ private fun AppRoot(
                                 onOpenSupport = { url -> openExternal(context, url) },
                                 onReportProblem = openBugReport,
                                 reportVisible = bugReportOpen || bugReportIntroVisible,
+                                onSettingsVisibilityChange = { profileSettingsOpen = it },
                                 onRefresh = {
                                     profileViewModel.load()
                                     courseViewModel.load()
