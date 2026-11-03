@@ -55,7 +55,7 @@
       account: courseLabel("nav.profile"),
       close: courseLabel("subscriptionPage.close") || commonLabel("action.close"),
       loading: courseLabel("subscriptionPage.loading"),
-      error: courseLabel("subscriptionPage.loadError"),
+      error: courseLabel("subscriptionPage.error"),
       rejected: courseLabel("subscriptionPage.proRejectedTitle"),
       hsk30Rejected: courseLabel("subscriptionPage.paymentRejectedTitle"),
       retry: courseLabel("subscriptionPage.retryPayment")
