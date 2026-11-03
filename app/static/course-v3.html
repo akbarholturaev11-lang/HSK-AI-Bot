@@ -2206,6 +2206,19 @@ function pwaCourseActor(){
   }
   return PWA_COURSE_ACTOR_PROMISE;
 }
+// Re-authenticate on Home Screen resume/BFCache restore; never treat a
+// cached browser actor or app screenshot as proof of an active session.
+function verifyPwaReturn(){
+  if(!PWA_COURSE_HOST)return;
+  PWA_COURSE_ACTOR_PROMISE=null;
+  pwaCourseActor().catch(function(){location.replace("/iphone-pwa")});
+}
+if(PWA_COURSE_HOST){
+  window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()});
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState==="visible")verifyPwaReturn();
+  });
+}
 // Smart reminder open observation: optional, authenticated and independent of navigation.
 (function observeSmartReminderOpen(){
   try{
