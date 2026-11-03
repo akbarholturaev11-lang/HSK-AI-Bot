@@ -368,3 +368,18 @@ The system SHALL provide one protected Smart editor using existing template cons
 #### Scenario: Minimal editor interaction
 - **WHEN** the persisted permission or copy changes
 - **THEN** the existing single Save performs exact passkey verification and audit, reversion disables Save, and only confirmed success dismisses after the existing success animation
+
+### Requirement: Offline model comparison preserves temporal and product boundaries
+The system SHALL compare a versioned candidate with functioning personalized rules using only earlier available features and training labels, and report later held-out observations as private aggregate diagnostics. It MUST preserve product guards and unknown outcomes and cannot grant model or dispatch authority.
+
+#### Scenario: Later proof cannot improve an earlier prediction
+- **WHEN** a study proof or target label becomes available after the snapshot or training cutoff
+- **THEN** it cannot enter that earlier feature/training set, and later evaluation is not refit using its outcomes
+
+#### Scenario: Sparse or unsupported coverage
+- **WHEN** data is expired, limited, manual, unobserved, too small or absent for a platform/language cohort
+- **THEN** exclusions and unknown metrics remain explicit without identifying learners, inventing inactivity, lifting guards or claiming validated learning benefit
+
+#### Scenario: Reproducible local diagnostic
+- **WHEN** an operator runs the same bounded reviewed snapshot and fixed candidate configuration
+- **THEN** the aggregate comparison is reproducible, model records remain transient, and no application data, settings or provider is changed

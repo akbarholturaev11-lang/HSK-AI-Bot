@@ -76,7 +76,7 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 
 ## 7. P7 — evidence-gated optimizer
 
-- [ ] 7.1 Build privacy-minimized, versioned model features and offline validation against the functioning rule baseline; verify stale/low-quality signals, leakage and underrepresented platform/locale cohorts in reproducible evaluation artifacts. Record approved eligibility, retention and experiment gates before ML can dispatch.
+- [ ] 7.1 Build privacy-minimized, versioned model features and offline validation against the functioning rule baseline; verify stale/low-quality signals, leakage and underrepresented platform/locale cohorts in reproducible evaluation artifacts. Record approved eligibility, retention and experiment gates before ML can dispatch. Current offline implementation scope is Master Plan §17.75; real validation remains pending and no trace expansion is required.
 - [ ] 7.2 Add automatic per-user rules-to-validated-ML selection with reversible fallback under all consent, access, manual lock and account-day guards; verify threshold crossing, model outage/regression and reserved-job replay in focused tests. Report actual randomized lift and safety evidence, or keep rules active if unproven.
 
 ## 8. P5 — later learner PWA and desktop adapters
