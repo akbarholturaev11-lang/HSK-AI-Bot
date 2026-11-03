@@ -198,7 +198,8 @@ class ReleaseFeedbackService:
 
             await self.repo.create_delivery(
                 campaign_id=campaign.id,
-                user_telegram_id=user.telegram_id,
+                user=user,
+                user=user,
                 status=status,
                 message_id=message_id,
                 error=error,
@@ -243,7 +244,8 @@ class ReleaseFeedbackService:
             percent=percent,
             starts_at=now,
             ends_at=now + timedelta(hours=hours),
-            target_telegram_id=user.telegram_id,
+            target_user_id=user.id,
+            target_telegram_id=actual_telegram_id(user),
             quota_total=1,
             repeat_interval_days=None,
             notify_enabled=False,
@@ -258,17 +260,26 @@ class ReleaseFeedbackService:
         campaign: ReleaseFeedbackCampaign,
         user,
     ) -> tuple[bool, datetime | None]:
-        if not user or user.status == "blocked":
+        if not user:
+            return False, None
+        if user.status == "blocked":
             await self.repo.mark_try_clicked(
-                campaign_id=campaign.id,
-                user_telegram_id=getattr(user, "telegram_id", 0) or 0,
+                campaign_id=campaign.id, user=user,
             )
             return False, None
+
+        # One campaign can grant its try-access once per canonical account,
+        # regardless of whether the same learner returned from bot or PWA.
+        previous = await self.repo.get_delivery(
+            campaign_id=campaign.id, user=user,
+        )
+        if previous and previous.trial_granted_until is not None:
+            return False, previous.trial_granted_until
 
         if user.payment_status == "approved":
             await self.repo.mark_try_clicked(
                 campaign_id=campaign.id,
-                user_telegram_id=user.telegram_id,
+                user=user,
             )
             return False, getattr(user, "end_date", None)
 
@@ -280,7 +291,7 @@ class ReleaseFeedbackService:
         if user.status == "active" and current_end and current_end > until:
             await self.repo.mark_try_clicked(
                 campaign_id=campaign.id,
-                user_telegram_id=user.telegram_id,
+                user=user,
                 trial_granted_until=current_end,
             )
             return False, current_end
@@ -295,11 +306,13 @@ class ReleaseFeedbackService:
         user.selected_plan_type = None
         user.pending_checkout_msg_id = None
 
-        await AIUsageBudgetService(self.session).expire_active_budgets(user.telegram_id)
+        await AIUsageBudgetService(self.session).expire_active_budgets(
+            user.telegram_id, user_id=user.id,
+        )
 
         await self.repo.mark_try_clicked(
             campaign_id=campaign.id,
-            user_telegram_id=user.telegram_id,
+            user=user,
             trial_granted_until=until,
         )
         await self.session.flush()

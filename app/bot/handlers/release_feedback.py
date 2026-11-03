@@ -458,7 +458,7 @@ async def _complete_response(
 ):
     service = ReleaseFeedbackService(session)
     repo = service.repo
-    existing = await repo.get_response(campaign_id=campaign.id, user_telegram_id=user.telegram_id)
+    existing = await repo.get_response(campaign_id=campaign.id, user=user)
     if existing:
         if comment_text or attachment_file_id:
             await repo.update_response_comment(
@@ -471,7 +471,7 @@ async def _complete_response(
     else:
         response = await repo.create_response(
             campaign_id=campaign.id,
-            user_telegram_id=user.telegram_id,
+            user=user,
             rating=rating,
             comment_text=comment_text,
             attachment_file_id=attachment_file_id,
@@ -1058,7 +1058,7 @@ async def release_feedback_user_callback(callback: CallbackQuery, state: FSMCont
         await callback.answer(t("common.bot.releaseFeedback.notFoundAlert", lang), show_alert=True)
         return
 
-    existing = await repo.get_response(campaign_id=campaign.id, user_telegram_id=user.telegram_id)
+    existing = await repo.get_response(campaign_id=campaign.id, user=user)
     if action == "try":
         granted, until = await ReleaseFeedbackService(session).grant_trial_access(
             campaign=campaign,
@@ -1216,9 +1216,9 @@ async def release_feedback_optional_comment(message: Message, state: FSMContext,
     campaign_id = int(data.get("release_feedback_campaign_id") or 0)
     message_id = int(data.get("release_feedback_message_id") or message.message_id)
     repo = ReleaseFeedbackRepository(session)
-    response = await repo.get_response(campaign_id=campaign_id, user_telegram_id=message.from_user.id)
     campaign = await repo.get_campaign(campaign_id)
     user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
+    response = await repo.get_response(campaign_id=campaign_id, user=user) if user else None
     lang = user.language if user and user.language else "ru"
     comment_text, attachment_file_id, attachment_type = _extract_comment(message)
     if not response:

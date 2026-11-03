@@ -45,6 +45,7 @@ class BotFeedbackRepository:
         now = datetime.now(timezone.utc)
         feedback = BotFeedback(
             user_id=user.id,
+            # A provider-only PWA learner has no Telegram transport.
             telegram_id=user.telegram_id,
             language=user.language or "ru",
             status="pending",
