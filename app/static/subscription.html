@@ -369,7 +369,15 @@ const tg=window.Telegram?.WebApp;
 try{tg?.ready?.();tg?.expand?.();}catch(e){}
 try{tg?.setHeaderColor?.("#ffffff");tg?.setBackgroundColor?.("#ffffff");}catch(e){}
 
-const API={
+const PWA_CHECKOUT_HOST=location.pathname==="/iphone-pwa/checkout";
+const API=PWA_CHECKOUT_HOST?{
+  overview:"/api/v3/pwa/subscription/overview",
+  paymentStatus:"/api/v3/pwa/subscription/payment-status",
+  discountStart:"/api/v3/pwa/subscription/discount-start",
+  quote:"/api/v3/pwa/subscription/quote",
+  event:"/api/v3/pwa/subscription/event",
+  submit:"/api/v3/pwa/subscription/submit"
+}:{
   overview:"/api/subscription-miniapp/overview",
   paymentStatus:"/api/subscription-miniapp/payment-status",
   discountStart:"/api/subscription-miniapp/discount-start",
@@ -378,7 +386,44 @@ const API={
   submit:"/api/subscription-miniapp/submit"
 };
 const PARAMS=new URLSearchParams(window.location.search);
-const INIT_DATA=tg?.initData||"";
+const INIT_DATA=PWA_CHECKOUT_HOST?"":(tg?.initData||"");
+let PWA_CHECKOUT_ACTOR=null,PWA_CHECKOUT_PROMISE=null;
+function checkoutPwaActor(){
+  if(!PWA_CHECKOUT_HOST)return Promise.reject(new Error("pwa_host_required"));
+  if(!PWA_CHECKOUT_PROMISE){
+    PWA_CHECKOUT_PROMISE=fetch("/api/v3/pwa-auth/session",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    }).then(async function(r){
+      if(r.status===401){location.replace("/iphone-pwa");throw new Error("pwa_session_required")}
+      if(!r.ok)throw new Error("pwa_session_unavailable");
+      return r.json();
+    }).then(function(a){
+      if(!a||a.ok!==true||!Number.isSafeInteger(Number(a.user_id))||
+         Number(a.user_id)<=0||typeof a.csrf!=="string"||!a.csrf)
+        throw new Error("pwa_session_invalid");
+      if(PWA_CHECKOUT_ACTOR&&PWA_CHECKOUT_ACTOR.user_id!==a.user_id){
+        location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
+      }
+      PWA_CHECKOUT_ACTOR=a;return a;
+    }).catch(function(err){PWA_CHECKOUT_PROMISE=null;throw err});
+  }
+  return PWA_CHECKOUT_PROMISE;
+}
+function checkoutTransport(path,body,signal,keepalive){
+  if(!PWA_CHECKOUT_HOST)return fetch(path,{
+    method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
+    body,signal:signal,keepalive:!!keepalive
+  });
+  if(Object.values(API).indexOf(path)<0)return Promise.reject(new Error("pwa_route_unavailable"));
+  return checkoutPwaActor().then(function(actor){
+    return fetch(path,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":actor.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",
+      body,signal:signal,keepalive:!!keepalive
+    });
+  });
+}
 /* Course checkout runs in the same Telegram WebView. The Telegram header Back
    must return to Course V3, not close the Mini App or step through payment. */
 const RETURN_TO_COURSE=PARAMS.get("return_to")==="course";
@@ -393,9 +438,20 @@ function courseReturnUrl(){
   const practicePages=["course_v3_voice.html","course_v3_recognition.html","course_v3_memorize.html","course_v3_pronunciation.html","course_v3_mistakes.html","course_v3_test.html"];
   if(practicePages.includes(requestedPage)){
     query.delete("tab");
+    if(PWA_CHECKOUT_HOST){
+      const map={
+        "course_v3_voice.html":"/iphone-pwa/practice/voice",
+        "course_v3_recognition.html":"/iphone-pwa/practice/recognition",
+        "course_v3_memorize.html":"/iphone-pwa/practice/memorize",
+        "course_v3_pronunciation.html":"/iphone-pwa/practice/pronunciation",
+        "course_v3_mistakes.html":"/iphone-pwa/practice/mistakes",
+        "course_v3_test.html":"/iphone-pwa/practice/test"
+      };
+      return map[requestedPage]+"?"+query.toString();
+    }
     return "/"+requestedPage+"?"+query.toString();
   }
-  return "/course-v3.html?"+query.toString();
+  return (PWA_CHECKOUT_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString();
 }
 function returnToCourseFromCheckout(){
   /* replace avoids a course -> checkout -> course -> checkout browser-history loop. */
@@ -426,12 +482,14 @@ const CARD_BANK_NAMES={dc_city:"Dushanbe City",alif:"Alif"};
    «Orqaga» orqali o'zgartirish mumkin — yangi tanlov ham shu yerga yoziladi. */
 const REGION_STORAGE_KEY="hsk_sub_region_v1:"+String(tg?.initDataUnsafe?.user?.id||"guest");
 function savedRegion(){
+  if(PWA_CHECKOUT_HOST)return "";
   try{
     const region=localStorage.getItem(REGION_STORAGE_KEY)||"";
     return REGION_ORDER.includes(region)?region:"";
   }catch(e){return ""}
 }
 function saveRegion(region){
+  if(PWA_CHECKOUT_HOST)return;
   try{if(REGION_ORDER.includes(region))localStorage.setItem(REGION_STORAGE_KEY,region)}catch(e){}
 }
 /* Havola Xitoy usulini so'rasa (method=alipay/wechat) — havola ustun. */
@@ -439,6 +497,7 @@ const REMEMBERED_REGION=CHINA_METHODS.includes(PARAMS.get("method"))?"":savedReg
 const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount","hsk30_unlock"];
 const CHECKOUT_ATTEMPT_ID=(function(){
   const key="hsk_subscription_attempt_v1",now=Date.now();
+  if(PWA_CHECKOUT_HOST)return "sub-"+now+"-"+Math.random().toString(36).slice(2,10);
   try{
     const saved=JSON.parse(sessionStorage.getItem(key)||"null");
     if(saved&&saved.id&&now-Number(saved.at||0)<2*60*60*1000)return String(saved.id);
@@ -912,13 +971,13 @@ const I18N={
 
 const HSK30_UNLOCK_MODE=PARAMS.get("mode")==="hsk30_unlock"||PARAMS.get("plan")==="hsk30_unlock";
 const state={
-  lang:normalizeLang(tg?.initDataUnsafe?.user?.language_code||"uz"),
+  lang:normalizeLang(PARAMS.get("lang")||tg?.initDataUnsafe?.user?.language_code||"uz"),
   source:String(PARAMS.get("source")||"").trim(),
   attemptId:CHECKOUT_ATTEMPT_ID,
   mode:HSK30_UNLOCK_MODE?"hsk30_unlock":normalizeMode(PARAMS.get("mode")),
   campaignId:positiveParam(PARAMS.get("campaign_id")),
   feedbackId:positiveParam(PARAMS.get("feedback_id")),
-  preview:!INIT_DATA,
+  preview:!INIT_DATA&&!PWA_CHECKOUT_HOST,
   overview:null,
   plan:HSK30_UNLOCK_MODE?"hsk30_unlock":(PLAN_ORDER.includes(PARAMS.get("plan"))?PARAMS.get("plan"):"1_month"),
   method:METHOD_ORDER.includes(PARAMS.get("method"))?PARAMS.get("method"):"visa",
@@ -1097,7 +1156,7 @@ function focusContent(text){
   return key&&text.focus?text.focus[key]||null:null;
 }
 async function trackSubscriptionStage(stage){
-  if(state.preview||!INIT_DATA)return false;
+  if(state.preview||(!INIT_DATA&&!PWA_CHECKOUT_HOST))return false;
   const body=JSON.stringify({
     ...contextPayload(),stage,
     plan_type:state.plan,
@@ -1108,11 +1167,7 @@ async function trackSubscriptionStage(stage){
   for(let attempt=0;attempt<2;attempt++){
     let status=0;
     try{
-      const response=await fetch(API.event,{
-        method:"POST",
-        headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
-        body,keepalive:true
-      });
+      const response=await checkoutTransport(API.event,body,undefined,true);
       status=response.status;
       if(response.ok){
         const result=await response.json();
@@ -1139,12 +1194,7 @@ function api(path,body,timeoutMs){
   const controller=typeof AbortController==="function"?new AbortController():null;
   const timer=controller?setTimeout(()=>controller.abort(),limit):null;
   const clear=()=>{if(timer)clearTimeout(timer)};
-  return fetch(path,{
-    method:"POST",
-    headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
-    body:JSON.stringify(body||{}),
-    signal:controller?controller.signal:undefined
-  }).catch(error=>{
+  return checkoutTransport(path,JSON.stringify(body||{}),controller?controller.signal:undefined,false).catch(error=>{
     clear();
     /* Tarmoq xatosi brauzerdan inglizcha keladi ("Failed to fetch") —
        foydalanuvchiga o'z tilidagi sabab ko'rsatiladi. */
@@ -1318,7 +1368,7 @@ async function loadOverview(){
       state.loadError=false;
     }
   }catch(error){
-    if(!INIT_DATA){
+    if(!INIT_DATA&&!PWA_CHECKOUT_HOST){
       state.preview=true;
       applyOverview(mockOverview());
     }else{
@@ -1843,6 +1893,7 @@ async function copyReferralLink(link){
   }
 }
 function closeMiniApp(){
+  if(PWA_CHECKOUT_HOST){returnToCourseFromCheckout();return}
   if(tg&&typeof tg.close==="function"){
     tg.close();
     return;
@@ -1937,7 +1988,7 @@ async function submitPayment(){
 }
 async function refreshPaymentStatus(){
   const paymentId=Number(state.pendingPayment?.id||0);
-  if(!INIT_DATA||paymentId<=0||state.paymentStatusChecking)return;
+  if((!INIT_DATA&&!PWA_CHECKOUT_HOST)||paymentId<=0||state.paymentStatusChecking)return;
   state.paymentStatusChecking=true;
   state.paymentStillPending=false;
   render();
@@ -1962,7 +2013,7 @@ async function refreshPaymentStatus(){
 }
 function openHsk30Course(){
   const query=new URLSearchParams({lang:state.lang,level:"nhsk1",tab:"course",source:"hsk30_payment"});
-  window.location.assign("/course-v3.html?"+query.toString());
+  window.location.assign((PWA_CHECKOUT_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString());
 }
 document.addEventListener("click",event=>{
   const retryQuote=event.target.closest("[data-retry-quote]");
