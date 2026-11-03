@@ -255,7 +255,7 @@ function runGate(ref){
 }
 function showLimit(j){LIMIT_REASON=(j&&j.limit_text)||"";SCRIPTS_READY.then(showLimitNow)}
 function showLimitNow(){
-  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:LIMIT_REASON,onSubscribe:goPremium,onBack:goBack});return}
+  if(!PWA_MEMORIZE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:LIMIT_REASON,onSubscribe:goPremium,onBack:goBack});return}
   var adBtn="";
   var sub=gateEscape(LIMIT_REASON||t(LIM.sub));
   B.innerHTML='<div class="done"><div class="st"><i class="ti ti-lock"></i></div><h3>'+t(LIM.title)+'</h3><p>'+sub+'</p>'+adBtn+(PWA_MEMORIZE_HOST?'':'<button class="ghost" onclick="goPremium()">'+t(LIM.pay)+'</button>')+'<button class="ghost" onclick="goBack()">'+t(LIM.back)+'</button></div>';
