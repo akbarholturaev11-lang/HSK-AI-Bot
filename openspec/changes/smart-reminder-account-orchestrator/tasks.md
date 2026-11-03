@@ -76,7 +76,7 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 
 ## 7. P7 — evidence-gated optimizer
 
-- [ ] 7.1 Build privacy-minimized, versioned model features and offline validation against the functioning rule baseline; verify stale/low-quality signals, leakage and underrepresented platform/locale cohorts in reproducible evaluation artifacts. Record approved eligibility, retention and experiment gates before ML can dispatch.
+- [ ] 7.1 Build privacy-minimized, versioned model features and offline validation against the functioning rule baseline; verify stale/low-quality signals, leakage and underrepresented platform/locale cohorts in reproducible evaluation artifacts. Record approved eligibility, retention and experiment gates before ML can dispatch. Offline implementation and 69-case bounded acceptance are recorded in Master Plan §17.75; this checkbox remains open for actual as-of data/model validation, not more speculative trace/framework expansion.
 - [ ] 7.2 Add automatic per-user rules-to-validated-ML selection with reversible fallback under all consent, access, manual lock and account-day guards; verify threshold crossing, model outage/regression and reserved-job replay in focused tests. Report actual randomized lift and safety evidence, or keep rules active if unproven.
 
 ## 8. P5 — later learner PWA and desktop adapters
@@ -92,7 +92,7 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 - [ ] 9.2 Drill kill-switch rollback during pending, accepted-unknown and explicit-OFF states; verify pending grants expire, no ambiguous replay or blind legacy resume, consent revisions persist and a destructive schema downgrade is refused. Record observed provider/device behavior and remaining limitations.
 - [ ] 9.3 Complete monitored staged canary and real Telegram/two-Android-device acceptance, reconcile all old study senders, experiment guardrails and owner acceptance; record exact commit, CI, staging, device and rollout evidence in the Master Plan before marking P8 or the feature complete.
 
-- [ ] 9.4 **D24 — LAST finishing task:** expand the selected modern panda into truthful beginner/growing/30+ streak/milestone and playful impatient/anxious/recovery/celebration variants after the other functional work. Keep streak age separate from personal daily phase; completed/quiet/unknown states remain calm, and broken-streak/comeback requires real evidence. Add canonical UZ/RU/TJ copy and affected client/renderer checks before final product signoff. Next active work is P7 7.1 offline validation after protected Admin acceptance §17.74 and owner scope simplification §17.73; no extra art generation during functional work.
+- [ ] 9.4 **D24 — LAST finishing task:** expand the selected modern panda into truthful beginner/growing/30+ streak/milestone and playful impatient/anxious/recovery/celebration variants after the other functional work. Keep streak age separate from personal daily phase; completed/quiet/unknown states remain calm, and broken-streak/comeback requires real evidence. Add canonical UZ/RU/TJ copy and affected client/renderer checks before final product signoff. Next active work is existing current-rule integration/release readiness (9.1) after bounded offline comparator acceptance §17.75; real model validation remains open; no extra art generation during functional work.
 
 ## Workflow follow-up
 
