@@ -149,6 +149,13 @@ class PwaFeedbackPrepare(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+class PwaReleaseFeedbackReply(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    campaign_id: int
+    rating: int
+    comment_text: str | None = None
+
+
 
 async def _small_json(request: Request, model, *, max_bytes: int = 1024):
     if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
@@ -1603,6 +1610,73 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             return JSONResponse(
                 {"ok": True, "ordinary": payload}, headers=_NO_STORE,
             )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/feedback/release/respond")
+    async def pwa_release_feedback_respond(request: Request):
+        """Answer only a campaign previously delivered to this canonical owner.
+
+        Shared release feedback response/discount/trial services, with one
+        per-account campaign decision regardless of Telegram/PWA transport.
+        """
+        from sqlalchemy import select
+        from app.db.models.user import User
+        from app.repositories.release_feedback_repo import ReleaseFeedbackRepository
+        from app.services.release_feedback_service import ReleaseFeedbackService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                data = await _small_json(
+                    request, PwaReleaseFeedbackReply, max_bytes=2048,
+                )
+                if not 1 <= data.campaign_id <= 2147483647 or not 1 <= data.rating <= 5:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                comment = (data.comment_text or "").strip()
+                if len(comment) > 1000 or (data.rating <= 2 and not comment):
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                learner = (await db.execute(
+                    select(User).where(User.id == actor.id).with_for_update()
+                )).scalar_one()
+                service = ReleaseFeedbackService(db)
+                campaign = await service.repo.get_campaign(data.campaign_id)
+                delivery = await service.repo.get_delivery(
+                    campaign_id=data.campaign_id, user=learner,
+                )
+                if (
+                    campaign is None or campaign.status != "sent"
+                    or delivery is None or delivery.status != "sent"
+                ):
+                    raise PwaAuthError("feedback_not_available", status_code=404)
+                if await service.repo.get_response(
+                    campaign_id=campaign.id, user=learner,
+                ):
+                    raise PwaAuthError("feedback_already_completed", status_code=409)
+                response = await service.repo.create_response(
+                    campaign_id=campaign.id,
+                    user=learner,
+                    rating=data.rating,
+                    comment_text=comment or None,
+                )
+                discount_id = await service.create_discount_for_response(
+                    campaign=campaign, response=response, user=learner,
+                )
+                _, trial_until = await service.grant_trial_access(
+                    campaign=campaign, user=learner,
+                )
+                await db.commit()
+            return JSONResponse({
+                "ok": True, "response_id": response.id,
+                "discount_campaign_id": discount_id,
+                "trial_until": trial_until.isoformat() if trial_until else None,
+            }, headers=_NO_STORE)
         except PwaAuthError as exc:
             return _error(exc)
 
