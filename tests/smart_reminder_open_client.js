@@ -10,12 +10,12 @@ const code = html.slice(start, end);
 const job = '11111111-2222-3333-4444-555555555555';
 const proof = 'a'.repeat(64);
 let checks = 0;
-function run({source='smart_study', fragment=`smart_job=${job}&smart_proof=${proof}`, auth='signed-synthetic', visible=true, fail=false}={}) {
+function run({source='smart_study', fragment=`smart_job=${job}&smart_proof=${proof}`, auth='signed-synthetic', visible=true, fail=false, pwa=false}={}) {
   const calls = [], listeners = new Set();
   const document = {visibilityState:visible?'visible':'hidden',
     addEventListener:(_,fn)=>listeners.add(fn), removeEventListener:(_,fn)=>listeners.delete(fn)};
   const location = {search:'?source='+source, hash:'#'+fragment};
-  vm.runInNewContext(code, {URLSearchParams, INIT_DATA:auth, location, document,
+  vm.runInNewContext(code, {URLSearchParams, INIT_DATA:auth, PWA_COURSE_HOST:pwa, location, document,
     fetch:(url, options)=>{calls.push({url,options}); return fail?Promise.reject(new Error('synthetic network')):Promise.resolve({ok:true})}});
   return {calls,document,location,listeners,show(){document.visibilityState='visible';for(const fn of [...listeners])fn()}};
 }
@@ -30,7 +30,7 @@ live.show(); live.show(); assert.equal(live.calls.length,1); checks++;
 assert.equal(live.location.hash,`#smart_job=${job}&smart_proof=${proof}`); checks++;
 const hidden = run({visible:false}); assert.equal(hidden.calls.length,0); hidden.show();assert.equal(hidden.calls.length,1);checks++;
 for(const options of [
-  {auth:''}, {source:'widget'}, {fragment:''}, {source:'smart_study&source=smart_study'},
+  {auth:''}, {pwa:true}, {source:'widget'}, {fragment:''}, {source:'smart_study&source=smart_study'},
   {fragment:`smart_job=${job}&smart_job=${job}&smart_proof=${proof}`},
   {fragment:`smart_job=${job}&smart_proof=${proof}&smart_proof=${proof}`},
   {fragment:`smart_job=invalid&smart_proof=${proof}`}, {fragment:`smart_job=${job}&smart_proof=${proof.toUpperCase()}`},
