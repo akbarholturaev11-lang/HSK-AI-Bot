@@ -887,6 +887,95 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('mistakes:(Flow.mistakes||[]).slice(0,50)', course)
         self.assertIn('delete payload.initData;delete payload.user_id;delete payload.telegram_id;', course)
 
+    async def test_pwa_voice_session_text_audio_and_end_keep_canonical_owner(self):
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        start_url = "/api/v3/pwa/voice/session/start"
+        msg_url = "/api/v3/pwa/voice/message"
+        end_url = "/api/v3/pwa/voice/session/end"
+        start_data = {"role": "teacher", "voice": "female"}
+        self.assertEqual((await self.client.post(
+            start_url, headers={"Origin": ORIGIN}, json=start_data,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            start_url, headers={**headers, "Origin": "https://attacker.invalid"}, json=start_data,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            start_url, headers=headers, json={**start_data, "user_id": 999},
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            start_url, headers={**headers, "X-Telegram-Init-Data": "fake"},
+            json=start_data,
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            msg_url, headers=headers,
+            data={"session_id": "voice-1", "telegram_id": 999, "text": "你好"},
+        )).status_code, 422)
+        with patch(
+            "app.services.voice_practice_service.VoicePracticeService.start_session",
+            new_callable=AsyncMock,
+        ) as start, patch(
+            "app.services.voice_practice_service.VoicePracticeService.process_message",
+            new_callable=AsyncMock,
+        ) as message, patch(
+            "app.services.voice_practice_service.VoicePracticeService.end_session",
+            new_callable=AsyncMock,
+        ) as end, patch(
+            "app.services.course_miniapp_analytics_service.CourseMiniAppAnalyticsService.record_server_event",
+            new_callable=AsyncMock,
+        ) as record:
+            start.return_value = {"ok": True, "session_id": "voice-1", "remaining_limit": 2}
+            message.return_value = {"ok": True, "chinese_reply": "你好"}
+            end.return_value = {"ok": True, "reward": {"xp_awarded": 12}}
+            opened = await self.client.post(start_url, headers=headers, json=start_data)
+            self.assertEqual(opened.status_code, 200, opened.text)
+            self.assertEqual(opened.json()["live_available"], False)
+            self.assertEqual(start.await_args.args[0].id, 1)
+            self.assertEqual(start.await_args.kwargs["language"], "uz")
+            self.assertEqual(start.await_args.kwargs["level"], "hsk1")
+            typed = await self.client.post(
+                msg_url, headers=headers, data={"session_id": "voice-1", "text": "你好"},
+            )
+            self.assertEqual(typed.status_code, 200, typed.text)
+            self.assertEqual(message.await_args.args[0].id, 1)
+            self.assertEqual(message.await_args.kwargs["text"], "你好")
+            audio = bytes.fromhex("000000146674797069736f6d") + bytes(1300)
+            spoken = await self.client.post(
+                msg_url, headers=headers,
+                data={"session_id": "voice-1"},
+                files={"audio": ("voice.mp4", audio, "audio/mp4")},
+            )
+            self.assertEqual(spoken.status_code, 200, spoken.text)
+            self.assertEqual(message.await_args.args[0].id, 1)
+            self.assertEqual(message.await_args.kwargs["audio_bytes"], audio)
+            self.assertEqual(message.await_args.kwargs["filename"], "voice.mp4")
+            finished = await self.client.post(
+                end_url, headers=headers, json={"session_id": "voice-1"},
+            )
+            self.assertEqual(finished.status_code, 200, finished.text)
+            self.assertEqual(finished.json()["reward"]["xp_awarded"], 12)
+            self.assertEqual(end.await_args.args[0].id, 1)
+            self.assertEqual(record.await_args.kwargs["user_id"], 1)
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.post(
+            start_url, headers=headers, json=start_data,
+        )).status_code, 503)
+
+    def test_voice_inline_ui_uses_only_authenticated_browser_transport(self):
+        html = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        self.assertIn('"/api/voice-practice/session/start":"/api/v3/pwa/voice/session/start"', html)
+        self.assertIn('"/api/voice-practice/session/end":"/api/v3/pwa/voice/session/end"', html)
+        self.assertIn('function courseVoiceMessage(fd)', html)
+        self.assertIn('"/api/v3/pwa/voice/message"', html)
+        self.assertIn('fields.append("session_id",sessionId)', html)
+        self.assertIn('headers:{"X-HSK-PWA-CSRF":actor.csrf}', html)
+        self.assertIn('_apiPost("/api/voice-practice/session/start"', html)
+        self.assertIn('courseVoiceMessage(fd).then(jr)', html)
+        self.assertIn('_apiPost("/api/voice-practice/session/end"', html)
+        self.assertIn('if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo)', html)
+
     async def test_pwa_recognition_profile_uses_real_owner_level_and_progress(self):
         path = "/api/v3/pwa/practice/profile"
         self.assertEqual((await self.client.get(path)).status_code, 401)
