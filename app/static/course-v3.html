@@ -1773,10 +1773,10 @@ function trackUi(){return TRACK_UI[LANG]||TRACK_UI.uz}
 function currentCourseTrack(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"hsk30":"hsk20"}
 var COURSE_TRACK_STATE=null,COURSE_TRACK_PROMISE=null,COURSE_TRACK_CHECKED_AT=0;
 function courseTrackStatus(force){
-  if(!INIT_DATA)return Promise.reject(new Error("auth"));
+  if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.reject(new Error("auth"));
   if(COURSE_TRACK_STATE&&!force)return Promise.resolve(COURSE_TRACK_STATE);
   if(COURSE_TRACK_PROMISE)return COURSE_TRACK_PROMISE;
-  COURSE_TRACK_PROMISE=fetch("/api/v3/course-tracks",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"})
+  COURSE_TRACK_PROMISE=_apiGet("/api/v3/course-tracks")
     .then(function(r){return r.json().then(function(d){if(!r.ok||!d.ok)throw new Error(d.error||"course_track_failed");return d})})
     .then(function(d){COURSE_TRACK_STATE=d;COURSE_TRACK_CHECKED_AT=Date.now();COURSE_TRACK_PROMISE=null;return d})
     .catch(function(e){COURSE_TRACK_PROMISE=null;throw e});
@@ -1808,7 +1808,7 @@ function prepareHsk30AccessBoundary(status){
   ["s-course","s-mashq"].forEach(function(id){document.getElementById(id).innerHTML=html});
 }
 function refreshHsk30Access(){
-  if(!INIT_DATA||!MAP||currentCourseTrack()!=="hsk30"||document.visibilityState==="hidden"||CHECKOUT_NAVIGATING||internalNavigationActive())return Promise.resolve(false);
+  if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP||currentCourseTrack()!=="hsk30"||document.visibilityState==="hidden"||CHECKOUT_NAVIGATING||internalNavigationActive())return Promise.resolve(false);
   if(HSK30_ACCESS_CHECK)return HSK30_ACCESS_CHECK;
   var level=MAP.level;
   HSK30_ACCESS_CHECK=courseTrackStatus(true).then(function(status){
@@ -1827,7 +1827,7 @@ function refreshHsk30Access(){
   return HSK30_ACCESS_CHECK;
 }
 function startHsk30AccessMonitor(){
-  if(!INIT_DATA||HSK30_ACCESS_TIMER)return;
+  if((!INIT_DATA&&!PWA_COURSE_HOST)||HSK30_ACCESS_TIMER)return;
   HSK30_ACCESS_TIMER=setInterval(function(){
     var access=COURSE_TRACK_STATE&&COURSE_TRACK_STATE.tracks&&COURSE_TRACK_STATE.tracks.hsk30&&COURSE_TRACK_STATE.tracks.hsk30.access;
     // Only pending review needs foreground polling. Paid/free users keep
@@ -2229,8 +2229,41 @@ var SALES_VALUE_STATE={outcome:null,nextOutcome:null,nextIdx:-1,bridgeAction:""}
 var SALES_PAYWALL_ACTIVE=false,SALES_PAYWALL_IMPRESSION="";
 var SALES_VALUE_PRIME_PROMISE=null,SALES_VALUE_PRIME_DONE=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
-function _apiGet(url){return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}})}
-function _apiPost(url,body,opts){var init={method:"POST",headers:_apiHeaders(),body:JSON.stringify(body)};if(opts&&opts.keepalive)init.keepalive=true;return fetch(url,init)}
+var PWA_COURSE_GET_PATHS={"/api/v3/course-tracks":"/api/v3/pwa/course-tracks"};
+var PWA_COURSE_POST_PATHS={
+  "/api/v3/course-tracks/switch":"/api/v3/pwa/course-tracks/switch",
+  "/api/v3/course-tracks/promo-shown":"/api/v3/pwa/course-tracks/promo-shown",
+  "/api/v3/limits/status":"/api/v3/pwa/limits/status",
+  "/api/v3/lesson/start":"/api/v3/pwa/lesson/start"
+};
+function _apiGet(url){
+  if(!PWA_COURSE_HOST)return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}});
+  var mapped=PWA_COURSE_GET_PATHS[url];
+  if(!mapped)return Promise.reject(new Error("pwa_route_unavailable"));
+  return pwaCourseActor().then(function(){
+    return fetch(mapped,{credentials:"same-origin",cache:"no-store",redirect:"error"});
+  });
+}
+function _apiPost(url,body,opts){
+  if(!PWA_COURSE_HOST){
+    var init={method:"POST",headers:_apiHeaders(),body:JSON.stringify(body)};
+    if(opts&&opts.keepalive)init.keepalive=true;
+    return fetch(url,init);
+  }
+  // Never let a new browser transport call the legacy Telegram mutation
+  // endpoints or accept identity from initData, language, or user_id payloads.
+  var mapped=PWA_COURSE_POST_PATHS[url];
+  if(!mapped)return Promise.reject(new Error("pwa_route_unavailable"));
+  var payload=Object.assign({},body||{});
+  delete payload.initData;delete payload.user_id;delete payload.telegram_id;
+  if(url==="/api/v3/lesson/start")delete payload.lang;
+  return pwaCourseActor().then(function(actor){
+    return fetch(mapped,{
+      method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":actor.csrf},
+      body:JSON.stringify(payload),credentials:"same-origin",cache:"no-store",redirect:"error"
+    });
+  });
+}
 /* Mini App yopilganda botga signal: chatdagi menyu bar tiklanadi. Telegram
    yopilish haqida botga xabar bermaydi, shuning uchun signal shu yerdan ketadi.
    sendBeacon custom header qo'ya olmaydi (init-data kerak) — keepalive'li
@@ -4315,7 +4348,7 @@ function setLessonFlowControls(){
   var close=document.querySelector("#flow .fx");if(close)close.style.visibility="visible";
 }
 function reserveLessonStart(l){P3_RESERVED_GRAMMAR=null;LESSON_COMPLETION_PROOF="";if(INIT_DATA&&l&&l.status==="done"&&normalizeLevel((MAP&&MAP.level)||getSelectedLevel())==="nhsk2")return reserveCompletedP3Grammar(l);
-  if(!INIT_DATA||!l||l.status!=="current")return Promise.resolve({ok:true,allowed:true});
+  if((!INIT_DATA&&!PWA_COURSE_HOST)||!l||l.status!=="current")return Promise.resolve({ok:true,allowed:true});
   return _apiPost("/api/v3/lesson/start",{lesson_id:l.n,level:(MAP&&MAP.level)||"hsk1",lang:LANG})
     .then(function(r){return r.json().catch(function(){return{}}).then(function(d){
       d._status=r.status;
