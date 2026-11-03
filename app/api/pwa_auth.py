@@ -69,6 +69,20 @@ class PwaMistakeComplete(BaseModel):
     answers: list[dict]
 
 
+class PwaExamStart(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    level: str
+    lang: Literal["uz", "ru", "tj"]
+    access_ref: str
+    ad_supported: Literal[False] = False
+
+
+class PwaExamComplete(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    session_id: str
+    answers: list[dict]
+
+
 async def _small_json(request: Request, model, *, max_bytes: int = 1024):
     if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
         raise PwaAuthError("pwa_request_invalid", status_code=415)
@@ -450,6 +464,84 @@ def create_pwa_auth_router(*, session_factory, settings_obj) -> APIRouter:
                 result, status_code=200 if result.get("ok") else 400,
                 headers=_NO_STORE,
             )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/iphone-pwa/practice/test")
+    async def learner_test_page(request: Request):
+        """Use the existing test-centre page with PWA cookie authority."""
+        try:
+            require_pwa_enabled(settings_obj)
+            async with session_factory() as db:
+                await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+            return FileResponse(
+                "app/static/course_v3_test.html", media_type="text/html",
+                headers={**_NO_STORE,
+                         "X-Content-Type-Options": "nosniff",
+                         "X-Frame-Options": "DENY"},
+            )
+        except PwaAuthError as exc:
+            if exc.code == "pwa_session_required":
+                return RedirectResponse(
+                    "/iphone-pwa", status_code=303, headers=_NO_STORE,
+                )
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/exams/start")
+    async def pwa_exam_start(request: Request):
+        from app.services.course_hsk_exam_service import CourseHskExamService
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaExamStart, max_bytes=2048)
+            if not (1 <= len(payload.level) <= 16) or not (1 <= len(payload.access_ref) <= 100):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                result = await CourseHskExamService(db).start(
+                    actor,
+                    level=payload.level, lang=payload.lang,
+                    access_ref=payload.access_ref, ad_supported=False,
+                )
+            err = result.get("error")
+            status = (200 if result.get("ok") else 403 if err in {
+                "free_feature_limit_reached", "ad_authorization_required",
+                "course_access_blocked",
+            } else 400)
+            return JSONResponse(result, status_code=status, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+        except ValueError:
+            return _error(PwaAuthError("pwa_request_invalid", status_code=422))
+
+    @router.post("/api/v3/pwa/exams/complete")
+    async def pwa_exam_complete(request: Request):
+        from app.services.course_hsk_exam_service import CourseHskExamService
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaExamComplete, max_bytes=32768)
+            if not (1 <= len(payload.session_id) <= 160) or len(payload.answers) > 120:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                result = await CourseHskExamService(db).complete(
+                    actor, session_id=payload.session_id,
+                    answers=payload.answers,
+                )
+            status = (200 if result.get("ok") else
+                      409 if result.get("error") == "hsk_exam_material_changed" else 400)
+            return JSONResponse(result, status_code=status, headers=_NO_STORE)
         except PwaAuthError as exc:
             return _error(exc)
 
