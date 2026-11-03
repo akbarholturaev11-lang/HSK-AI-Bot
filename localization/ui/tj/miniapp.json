@@ -1148,7 +1148,15 @@
     "ui.admin_pwa.androidVersion2": "2 версияи охирин",
     "ui.admin_pwa.androidVersion3": "3 версияи охирин",
     "ui.admin_pwa.androidVersion4": "4 версияи охирин",
-    "ui.admin_pwa.noticeSmartStudy": "Ёдрасонии ҳушманди дарс"
+    "ui.admin_pwa.noticeSmartStudy": "Ёдрасонии ҳушманди дарс",
+    "ui.admin_pwa.smartPermission": "Иҷозати ёдрасониҳои нави Smart",
+    "ui.admin_pwa.smartPermissionHint": "Ҳангоми хомӯш кардан паёмҳои нави Smart дар Android ва Telegram қатъ мешаванд. Танҳо фаъол кардан фиристодани паёмҳоро оғоз намекунад.",
+    "ui.admin_pwa.smartObservation": "Ҷамъоварии натиҷаҳои мушоҳидашуда",
+    "ui.admin_pwa.smartMonth": "Давраи ҳисоб",
+    "ui.admin_pwa.smartStudyDays": "Рӯзҳои омӯзиш пас аз паёмҳо",
+    "ui.admin_pwa.smartContactReturns": "Паёмҳо бо омӯзиш дар давоми 24 соат",
+    "ui.admin_pwa.smartStudyUnits": "Воҳидҳои аслии омӯзиш дар 24 соат",
+    "ui.admin_pwa.smartPartialHint": "Танҳо натиҷаҳои сабтшуда. «—» — маълумот нест. Ҳисобҳо шумораи корбарон нестанд ва хондани паём ё таъсири онро ба омӯзиш исбот намекунанд."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

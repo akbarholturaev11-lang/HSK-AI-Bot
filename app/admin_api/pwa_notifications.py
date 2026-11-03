@@ -10,7 +10,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from pydantic import Field, ValidationError, field_validator, model_validator
-from sqlalchemy import select, text
+from sqlalchemy import func, select, text
 
 from app.admin_api.pwa_access_grants import CommandError, StepId
 from app.admin_api.pwa_approval import _utc
@@ -24,10 +24,11 @@ from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.notification_template import NotificationTemplate
+from app.db.models.smart_reminder_analysis import SmartReminderAnalysisMonthly
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.notification_template_service import (
-    TEMPLATE_KEYS,TEMPLATE_META,CAPTION_MAX,TEXT_MAX,NotificationTemplateService,default_text,
+    KEY_SMART_STUDY,TEMPLATE_KEYS,TEMPLATE_META,CAPTION_MAX,TEXT_MAX,NotificationTemplateService,default_text,
 )
 
 logger=logging.getLogger(__name__)
@@ -136,6 +137,15 @@ async def read_notices(db,*,session_cookie,request,settings_obj):
         await _authenticate(db,session_cookie,settings_obj)
         if request.key is not None:
             result={'template':_preview(request.key,await _row(db,request.key))}
+            if request.key == KEY_SMART_STUDY:
+                month=datetime.now(timezone.utc).date().replace(day=1)
+                stages=('study_day_after_attempt','contact_study_24h','study_unit_24h')
+                table=SmartReminderAnalysisMonthly
+                counts={stage:int(count) for stage,count in (await db.execute(select(table.stage,func.sum(table.fact_count))
+                    .where(table.month==month,table.stage.in_(stages)).group_by(table.stage))).all()}
+                result['smart']={'month':month.strftime('%Y-%m'),
+                    'observation_enabled':getattr(settings_obj,'SMART_REMINDER_ANALYSIS_ENABLED',False) is True,
+                    'counts':{stage:counts.get(stage) for stage in stages}}
         else:
             rows=(await db.execute(select(NotificationTemplate.key,NotificationTemplate.enabled)
                 .where(NotificationTemplate.key.in_(TEMPLATE_KEYS)).limit(len(TEMPLATE_KEYS)))).all()

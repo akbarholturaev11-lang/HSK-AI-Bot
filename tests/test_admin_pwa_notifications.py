@@ -3,6 +3,7 @@ import asyncio
 import json
 import os
 import unittest
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 from fastapi import FastAPI
@@ -15,6 +16,7 @@ from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.notification_template import NotificationTemplate
+from app.db.models.smart_reminder_analysis import SmartReminderAnalysisMonthly
 from app.services.notification_template_service import NotificationTemplateService, default_text
 from app.repositories.bot_setting_repo import BotSettingRepository
 from tests import test_admin_pwa_payment_review as fixtures
@@ -26,6 +28,48 @@ class NotificationTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
     asyncSetUp = fixtures.AdminPwaPaymentReviewTests.asyncSetUp
     asyncTearDown = fixtures.AdminPwaPaymentReviewTests.asyncTearDown
     proof = proofs.AdminPwaSettingsTests.proof
+
+    async def test_smart_readout_only_uses_current_anonymous_month_and_preserves_missing_vs_zero(self):
+        month = datetime.now(timezone.utc).date().replace(day=1)
+        async with self.sessions.begin() as db:
+            db.add_all([SmartReminderAnalysisMonthly(month=month,stage='contact_study_24h',channel=channel,fact_count=count)
+                        for channel,count in [('telegram',2),('android',3)]])
+            db.add(SmartReminderAnalysisMonthly(month=month,stage='study_day_after_attempt',channel='android',fact_count=0))
+            db.add(SmartReminderAnalysisMonthly(month=month-timedelta(days=1),stage='study_unit_24h',channel='android',fact_count=99))
+            db.add(SmartReminderAnalysisMonthly(month=month,stage='client_reported_open',channel='android',fact_count=88))
+        statements=[]
+        def collect(_, __, statement, *args): statements.append(statement.lower())
+        event.listen(self.engine.sync_engine,'before_cursor_execute',collect)
+        try:
+            async with self.sessions() as db:
+                result=await api.read_notices(db,session_cookie=fixtures.COOKIE,
+                    request=api.NoticeRead(key='smart_study'),settings_obj=self.settings)
+        finally: event.remove(self.engine.sync_engine,'before_cursor_execute',collect)
+        self.assertEqual(result['smart'],dict(month=month.strftime('%Y-%m'),observation_enabled=False,
+            counts=dict(study_day_after_attempt=0,contact_study_24h=5,study_unit_24h=None)))
+        self.assertTrue(result['template']['enabled'])
+        json.dumps(result)  # PostgreSQL SUM(bigint) must also be JSON-safe.
+        self.assertFalse(any('smart_reminder_jobs' in q or 'smart_reminder_analysis_events' in q for q in statements))
+        self.assertFalse(any(q.lstrip().startswith(('insert ','update ','delete ')) for q in statements))
+        self.settings.SMART_REMINDER_ANALYSIS_ENABLED=True
+        async with self.sessions() as db:
+            on=await api.read_notices(db,session_cookie=fixtures.COOKIE,request=api.NoticeRead(key='smart_study'),settings_obj=self.settings)
+        self.assertTrue(on['smart']['observation_enabled'])
+
+    async def test_smart_pause_uses_real_signed_cas_and_cannot_be_replayed_or_bypass_revocation(self):
+        command=await self.prepare(key='smart_study',enabled=False,text_uz='',text_ru='',text_tj='')
+        proof=await self.proof(command,signed=True)
+        result=await self.execute(command,proof)
+        self.assertFalse(result['template']['enabled'])
+        async with self.sessions() as db:
+            self.assertFalse(await NotificationTemplateService(db).is_enabled('smart_study'))
+        with self.assertRaises(api.CommandError): await self.execute(command,proof)
+        command=await self.prepare(key='smart_study',text_uz='',text_ru='',text_tj='')
+        proof=await self.proof(command)
+        self.settings.admin_id_list=[]
+        with self.assertRaises(api.CommandError): await self.execute(command,proof)
+        async with self.sessions() as db:
+            self.assertFalse(await NotificationTemplateService(db).is_enabled('smart_study'))
 
     async def test_smart_template_uses_existing_signed_editor_without_becoming_motivation_trigger(self):
         from app.services.notification_template_service import KEY_SMART_STUDY, MOTIVATION_KEYS, TEMPLATE_KEYS
@@ -159,6 +203,7 @@ class NotificationPostgresTests(fixtures.PaymentFixtures, unittest.IsolatedAsync
     prepare = NotificationTests.prepare
     proof = NotificationTests.proof
     execute = NotificationTests.execute
+    test_smart_readout_only_uses_current_anonymous_month_and_preserves_missing_vs_zero = NotificationTests.test_smart_readout_only_uses_current_anonymous_month_and_preserves_missing_vs_zero
 
     async def test_legacy_first_insert_serializes_and_rejects_old_absent_snapshot(self):
         command = await self.prepare(); proof = await self.proof(command)

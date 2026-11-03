@@ -1148,7 +1148,15 @@
     "ui.admin_pwa.androidVersion2": "Энг охирги 2 та версия",
     "ui.admin_pwa.androidVersion3": "Энг охирги 3 та версия",
     "ui.admin_pwa.androidVersion4": "Энг охирги 4 та версия",
-    "ui.admin_pwa.noticeSmartStudy": "Smart dars eslatmasi"
+    "ui.admin_pwa.noticeSmartStudy": "Smart dars eslatmasi",
+    "ui.admin_pwa.smartPermission": "Yangi Smart eslatmalariga ruxsat",
+    "ui.admin_pwa.smartPermissionHint": "O‘chirilsa, Android va Telegram’da yangi Smart xabarlari to‘xtaydi. Yoqishning o‘zi xabar yuborishni ishga tushirmaydi.",
+    "ui.admin_pwa.smartObservation": "Natijalarni kuzatish",
+    "ui.admin_pwa.smartMonth": "Hisob davri",
+    "ui.admin_pwa.smartStudyDays": "Xabardan keyingi o‘qish kunlari",
+    "ui.admin_pwa.smartContactReturns": "24 soatda o‘qish kuzatilgan xabarlar",
+    "ui.admin_pwa.smartStudyUnits": "24 soatdagi asl o‘quv birliklari",
+    "ui.admin_pwa.smartPartialHint": "Faqat qayd etilgan natijalar. «—» — ma’lumot yo‘q. Sonlar foydalanuvchilar soni emas va xabar o‘qilganini yoki o‘qishga aynan xabar sabab bo‘lganini isbotlamaydi."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
