@@ -7929,7 +7929,7 @@ var MIST=(function(){
   function newRef(){try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID()}catch(e){}return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
   function accessRef(create){var k=PWA_COURSE_HOST?("hsk_mistake_review_ref:pwa:"+String(PWA_COURSE_USER_ID||"unbound")):"hsk_mistake_review_ref",v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=REF_MEM}if(!v&&create){v=newRef();REF_MEM=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
   function clearRef(){REF_MEM="";try{sessionStorage.removeItem(PWA_COURSE_HOST?("hsk_mistake_review_ref:pwa:"+String(PWA_COURSE_USER_ID||"unbound")):"hsk_mistake_review_ref")}catch(e){}}
-  function premium(){if(PWA_COURSE_HOST){closeLimit();return}App.goPay("v3_mistake_review")}
+  function premium(){App.goPay("v3_mistake_review")}
   function reviewOpen(){return !!(el("mk-review")&&!el("mk-review").hidden)}
   function openReview(){el("mk-review").hidden=false}
   function closeReview(){var r=el("mk-review");if(r)r.hidden=true;RV=null}
@@ -8024,7 +8024,7 @@ var MIST=(function(){
     if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
       CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||t.limitWhy,onSubscribe:premium,onTrial:function(){trialStart("paywall_pronunciation")},onBack:function(){}});return;
     }
-    if(PWA_COURSE_HOST){var buy=el("mk-limit").querySelector(".go");if(buy)buy.hidden=true}
+    // PWA and Telegram both retain the original Pro CTA with server-owned checkout.
     el("mk-lim-text").textContent=SECTION_LIMIT_TEXT||t.limitText;
     el("mk-limit").hidden=false;
   }
@@ -8088,7 +8088,7 @@ var TEST=(function(){
   function examStem(q){return typeof q.prompt==="string"?q.prompt:(q.prompt&&(q.prompt[LANG]||q.prompt.ru||q.prompt.uz||q.prompt.tj))||""}
   function olang(o){return o[LANG]||o.ru}
   function shuffled(a){var out=a.slice();for(var i=out.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=out[i];out[i]=out[j];out[j]=x}return out}
-  function premium(){if(PWA_COURSE_HOST){showHub();return}App.goPay("v3_test_limit")}
+  function premium(){App.goPay("v3_test_limit")}
 
   function shell(){
     return '<div id="tc-root">'
@@ -8151,7 +8151,7 @@ var TEST=(function(){
     el("tc-hub").style.display="none";el("tc-placement").classList.remove("on");el("tc-exam").classList.remove("on");
     var e=el("tc-empty");
     e.innerHTML='<div class="ic"><i class="ti ti-lock"></i></div><h3>'+esc(t.limTitle)+'</h3><p>'+esc(SECTION_LIMIT_TEXT||t.limSub)+'</p>'
-      +(PWA_COURSE_HOST?'':'<button onclick="TEST.premium()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--cin2)">'+esc(t.limPay)+'</button>')
+      +'<button onclick="TEST.premium()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--cin2)">'+esc(t.limPay)+'</button>'
       +'<button onclick="TEST.close()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--ink2)">'+esc(t.limBack)+'</button>';
     e.classList.add("on");
   }
@@ -8826,10 +8826,10 @@ function showPaywall(){
   $("pwchar").innerHTML=chr("happy",persona);
   $("pwh").textContent=L.limitTitle;$("pwp").textContent=L.limitSub;
   if(L.limitWhy){$("pwwhyt").textContent=L.limitWhy;$("pwwhy").hidden=false}else{$("pwwhy").hidden=true}
-  $("pwb").textContent=L.premiumBtn;$("pwb").hidden=PWA_COURSE_HOST;$("pwb2").textContent=L.exit;
+  $("pwb").textContent=L.premiumBtn;$("pwb").hidden=false;$("pwb2").textContent=L.exit;
   $("paywall").classList.add("on");
 }
-function goPremium(){if(PWA_COURSE_HOST){return}App.goPay("v3_voice_limit")}
+function goPremium(){App.goPay("v3_voice_limit")}
 function softReset(){
   voiceEpoch++;stopLive();liveRecovering=false;liveAvailable=false;
   started=false;sess=null;turn=0;lessonWords=[];reviewWords=[];hintSug=[];scenarioInfo=null;
