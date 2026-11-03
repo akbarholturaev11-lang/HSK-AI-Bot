@@ -416,6 +416,84 @@ def create_miniapp_entitlements_router(
                 "questions": questions,
             })
 
+    async def _practice_gate_for_user(session, user, feature: str, ref: str | None, telegram_id: int | None):
+        # One shared lifetime-limit policy for signed Telegram and verified
+        # browser actors: caller authentication must happen BEFORE consumption.
+        access = CourseMiniAppAccessService(session)
+        # Admin "vaqtincha free" rejimini yoqqan bo'lsa Mashq bo'limlari ham
+        # ochiq bo'lishi kerak — ilgari policy faqat kurs darslariga ta'sir
+        # qilardi va user baribir "obuna kerak" devoriga urilardi.
+        # Umrlik bepul foydalanish SARFLANMAYDI: rejim tugagach user o'z
+        # bepul urinishini yo'qotmasin.
+        if getattr(user, "status", "") != "blocked" and (await CourseAccessPolicyService(session).get_policy()).free_active:
+            return JSONResponse(
+                content={
+                    "ok": True,
+                    "allowed": True,
+                    "is_paid": access.is_paid_user(user),
+                    "remaining": None,
+                    "policy_free": True,
+                }
+            )
+        # Bepul: UMRDA 1 marta (lifetime=True — kunlik yangilanmaydi).
+        result = await access.consume_daily_use(
+            user, feature_key=feature, ref=ref, lifetime=True
+        )
+        # Asosiy limit qarori avval saqlanadi. Shadow — faqat diagnostika;
+        # sekin DB yoki yangi dvigatel mashqni boshlashni ushlab turmasin.
+        await session.commit()
+        try:
+            await asyncio.wait_for(
+                shadow_compare_gate(
+                    session, user=user, feature=feature, legacy=result, client=CLIENT
+                ),
+                timeout=SHADOW_COMPARE_TIMEOUT_SECONDS,
+            )
+        except asyncio.TimeoutError:
+            logger.warning(
+                "Skipping slow entitlement shadow comparison for %s/%s",
+                telegram_id,
+                feature,
+            )
+
+        if not result.get("allowed"):
+            # Bepul tugadi — endi faqat obuna yoki 7 kunlik trial.
+            #
+            # Ilgari bu yerda "reklama bor" deb javob qaytardi va AI
+            # bo'limi bo'lmasa u DOIM `available: true` edi. Mashq
+            # reklamalari olib tashlangan bo'lsa ham klientlar shu
+            # bayroqqa qarab "Reklama bilan davom etish" tugmasini
+            # ko'rsatishda davom etardi — foydalanuvchi aynan shuni
+            # ko'rgan.
+            #
+            # Kalit SAQLANADI va doim "yo'q" deydi: mustaqil mashq
+            # sahifalari (`course_v3_recognition.html` va boshqalar)
+            # o'sha kalitni o'qiydi, va ular yangilanmasidan oldin ham
+            # to'g'ri ishlashi kerak.
+            ad_info = {"available": False, "limited": False}
+            return JSONResponse(
+                status_code=403,
+                content={
+                    "ok": False,
+                    "error": result.get("error") or "free_feature_limit_reached",
+                    "is_paid": bool(result.get("is_paid", False)),
+                    "ad": ad_info,
+                    # Mini App ilgari buni OLMASDI, Android esa olardi.
+                    # Endi ikkala klient bir xil javob ko'radi.
+                    **result,
+                    "reset_at": result.get("reset_at"),
+                },
+            )
+        return JSONResponse(
+            content={
+                "ok": True,
+                "allowed": True,
+                "is_paid": bool(result.get("is_paid", False)),
+                **result,
+                "remaining": result.get("remaining"),
+            }
+        )
+
     @router.post("/api/v3/practice/daily-gate")
     async def v3_practice_daily_gate(request: Request):
         """Mashq bo'limining BEPUL foydalanishi (bepul userga UMRDA 1 marta,
@@ -442,79 +520,62 @@ def create_miniapp_entitlements_router(
                 return JSONResponse(
                     status_code=403, content={"ok": False, "error": "access_start_first"}
                 )
-            access = CourseMiniAppAccessService(session)
-            # Admin "vaqtincha free" rejimini yoqqan bo'lsa Mashq bo'limlari ham
-            # ochiq bo'lishi kerak — ilgari policy faqat kurs darslariga ta'sir
-            # qilardi va user baribir "obuna kerak" devoriga urilardi.
-            # Umrlik bepul foydalanish SARFLANMAYDI: rejim tugagach user o'z
-            # bepul urinishini yo'qotmasin.
-            if getattr(user, "status", "") != "blocked" and (await CourseAccessPolicyService(session).get_policy()).free_active:
-                return JSONResponse(
-                    content={
-                        "ok": True,
-                        "allowed": True,
-                        "is_paid": access.is_paid_user(user),
-                        "remaining": None,
-                        "policy_free": True,
-                    }
-                )
-            # Bepul: UMRDA 1 marta (lifetime=True — kunlik yangilanmaydi).
-            result = await access.consume_daily_use(
-                user, feature_key=feature, ref=ref, lifetime=True
-            )
-            # Asosiy limit qarori avval saqlanadi. Shadow — faqat diagnostika;
-            # sekin DB yoki yangi dvigatel mashqni boshlashni ushlab turmasin.
-            await session.commit()
-            try:
-                await asyncio.wait_for(
-                    shadow_compare_gate(
-                        session, user=user, feature=feature, legacy=result, client=CLIENT
-                    ),
-                    timeout=SHADOW_COMPARE_TIMEOUT_SECONDS,
-                )
-            except asyncio.TimeoutError:
-                logger.warning(
-                    "Skipping slow entitlement shadow comparison for %s/%s",
-                    telegram_id,
-                    feature,
-                )
+            return await _practice_gate_for_user(session, user, feature, ref, telegram_id)
 
-            if not result.get("allowed"):
-                # Bepul tugadi — endi faqat obuna yoki 7 kunlik trial.
-                #
-                # Ilgari bu yerda "reklama bor" deb javob qaytardi va AI
-                # bo'limi bo'lmasa u DOIM `available: true` edi. Mashq
-                # reklamalari olib tashlangan bo'lsa ham klientlar shu
-                # bayroqqa qarab "Reklama bilan davom etish" tugmasini
-                # ko'rsatishda davom etardi — foydalanuvchi aynan shuni
-                # ko'rgan.
-                #
-                # Kalit SAQLANADI va doim "yo'q" deydi: mustaqil mashq
-                # sahifalari (`course_v3_recognition.html` va boshqalar)
-                # o'sha kalitni o'qiydi, va ular yangilanmasidan oldin ham
-                # to'g'ri ishlashi kerak.
-                ad_info = {"available": False, "limited": False}
-                return JSONResponse(
-                    status_code=403,
-                    content={
-                        "ok": False,
-                        "error": result.get("error") or "free_feature_limit_reached",
-                        "is_paid": bool(result.get("is_paid", False)),
-                        "ad": ad_info,
-                        # Mini App ilgari buni OLMASDI, Android esa olardi.
-                        # Endi ikkala klient bir xil javob ko'radi.
-                        **result,
-                        "reset_at": result.get("reset_at"),
-                    },
+    @router.post("/api/v3/pwa/practice/daily-gate")
+    async def pwa_practice_daily_gate(request: Request):
+        """Consume the same lifetime free attempt through verified PWA actor.
+
+        POST-only and CSRF-protected: this is not a free read endpoint.
+        """
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                return _private_content_response(
+                    {"ok": False, "error": "invalid_feature"}, status_code=422,
                 )
-            return JSONResponse(
-                content={
-                    "ok": True,
-                    "allowed": True,
-                    "is_paid": bool(result.get("is_paid", False)),
-                    **result,
-                    "remaining": result.get("remaining"),
-                }
+            if request.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
+                return _private_content_response(
+                    {"ok": False, "error": "invalid_feature"}, status_code=415,
+                )
+            body = bytearray()
+            async for chunk in request.stream():
+                body.extend(chunk)
+                if len(body) > 1024:
+                    return _private_content_response(
+                        {"ok": False, "error": "invalid_feature"}, status_code=413,
+                    )
+            payload = json.loads(bytes(body))
+            if not isinstance(payload, dict) or set(payload) - {"feature", "ref"}:
+                raise ValueError("unexpected field")
+            feature = str(payload.get("feature") or "").strip().lower()
+            if feature not in COURSE_DAILY_GATE_FEATURES:
+                return _private_content_response(
+                    {"ok": False, "error": "invalid_feature"}, status_code=400,
+                )
+            ref = _ref(payload)
+            async with session_factory() as session:
+                browser = PwaAuthService(session, settings_obj)
+                actor, _ = await browser.mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                user = await UserRepository(session).get_by_user_id(actor.id, lock=True)
+                if not user or str(user.status or "").lower() == "blocked":
+                    raise PwaAuthError("pwa_session_required")
+                response = await _practice_gate_for_user(
+                    session, user, feature, ref,
+                    int(user.telegram_id) if user.telegram_id else None,
+                )
+                response.headers["Cache-Control"] = "no-store"
+                return response
+        except PwaAuthError as exc:
+            return _private_content_response(
+                {"ok": False, "error": exc.code}, status_code=exc.status_code,
+            )
+        except (TypeError, ValueError, UnicodeDecodeError, json.JSONDecodeError):
+            return _private_content_response(
+                {"ok": False, "error": "invalid_feature"}, status_code=400,
             )
 
     async def _start_lesson_for_user(session, user, payload: dict, order: int):
