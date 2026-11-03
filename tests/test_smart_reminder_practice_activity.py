@@ -120,7 +120,7 @@ class PracticeChecks:
         self.assertEqual(await self.storage.rows(CourseMiniAppEvent.__table__),before)
         evidence=await self.scored()
         self.assertEqual(evidence.times,())
-        self.assertIn("repeat_practice_and_voice_unavailable",evidence.coverage_limits)
+        self.assertIn("repeat_practice_and_partial_voice_unavailable",evidence.coverage_limits)
 
     async def test_all_five_supported_training_skills_match_actual_protocol(self):
         for uid,skill in enumerate(sorted(TRAINING_SKILLS),start=10):
