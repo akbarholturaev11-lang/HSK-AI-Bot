@@ -1084,6 +1084,63 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
         except PwaAuthError as exc:
             return _error(exc)
 
+    @router.post("/api/v3/pwa/subscription/event")
+    async def pwa_checkout_event(request: Request):
+        """Only recorded checkout attempts can receive receipt-stage events."""
+        from sqlalchemy import select
+        from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+        from app.services.account_identity import owner_clause
+        from app.services.conversion_funnel_service import ConversionFunnelService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                data = await _small_json(request, PwaCheckoutEvent, max_bytes=4096)
+                attempt = str(data.attempt_id or "").strip()
+                allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-:."
+                if not (1 <= len(attempt) <= 80) or any(c not in allowed for c in attempt):
+                    raise PwaAuthError("invalid_checkout_attempt", status_code=422)
+                opened = (await db.execute(
+                    select(ConversionFunnelEvent.id).where(
+                        owner_clause(
+                            ConversionFunnelEvent, actor,
+                            telegram_column="telegram_id",
+                        ),
+                        ConversionFunnelEvent.event_name == "checkout_opened",
+                        ConversionFunnelEvent.payload_json.like(
+                            f'%"attempt_id": "{attempt}"%'
+                        ),
+                        ConversionFunnelEvent.payload_json.not_like('%"stage":%'),
+                    ).limit(1)
+                )).scalar_one_or_none()
+                if not opened:
+                    raise PwaAuthError("checkout_attempt_not_opened", status_code=409)
+                recorded = await ConversionFunnelService().record(
+                    event_name="checkout_opened", user=actor,
+                    telegram_id=actor.telegram_id,
+                    source=(data.source or "iphone_pwa")[:80],
+                    payload={
+                        "attempt_id": attempt,
+                        "stage": data.stage,
+                        "plan_type": (data.plan_type or "")[:32],
+                        "payment_method": (data.payment_method or "")[:32],
+                        "mode": (data.mode or "")[:32],
+                        "transport": "iphone_pwa",
+                    },
+                )
+            return JSONResponse(
+                {"ok": bool(recorded)}, status_code=200 if recorded else 503,
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
     @router.post("/api/v3/pwa/subscription/submit")
     async def pwa_checkout_submit(request: Request):
         """Send the original checked receipt to admins before claiming pending."""
