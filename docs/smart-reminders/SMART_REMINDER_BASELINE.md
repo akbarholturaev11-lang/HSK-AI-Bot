@@ -64,10 +64,16 @@ fresh XP or a passing score. Reviewed stored version-1 mock/placement/training
 completions from the shared canonical server grader also count at their original
 retained result time without a new award. Deterministic result dedupe still
 cannot establish later repeated attempts or move an old result to retry time.
+Canonically owned reviewed completed voice sessions with positive server turns
+also count at their original end time when start/end are wholly inside the
+observation window. No transcript/audio is read, neither fresh XP nor a seven-turn milestone
+is required, and these activity markers add no completed units. Loose levels,
+legacy NULL ownership, unfinished/pre-window conversations and standalone
+pronunciation stay unknown; voice overflow marks the source limited.
 Deduplicate original units and distinct frozen
 local study dates per account. Generic app opens, reward XP, client terminal
 telemetry, malformed/boolean scores and unpaired/unsupported evidence do not
-prove study. Repeat-practice/voice and legacy capture gaps remain explicit.
+prove study. Repeat-practice/partial voice and legacy capture gaps remain explicit.
 
 ## Denominators and unavailable values
 

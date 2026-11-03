@@ -324,3 +324,15 @@ The system SHALL count a reviewed stored server-graded practice completion as po
 #### Scenario: Missing or untrusted practice evidence
 - **WHEN** only a deduplicated older completion, client telemetry, malformed score or mismatched owner/course/session exists
 - **THEN** it cannot create a new in-window positive result or prove inactivity, causal learning, complete practice coverage or dispatch readiness
+
+
+### Requirement: Completed server voice activity remains private and partial
+The system SHALL recognize reviewed nonempty canonical server voice completions as positive activity without a notification tap or fresh XP. It MUST use original conservative completion times, preserve source/reward rules and leave incomplete voice coverage explicit without exposing conversation content.
+
+#### Scenario: Nonempty server conversation completed inside the window
+- **WHEN** the owned reviewed session has verified server turns and ordered start/end entirely inside the observation window
+- **THEN** positive day/window evidence may be observed without inventing a completed unit, passing grade or exact per-turn timestamp
+
+#### Scenario: Empty or ambiguous conversation
+- **WHEN** a session is empty, unfinished, foreign, legacy ownerless, outside the window or exceeds the finite source bound
+- **THEN** it cannot establish fresh in-window activity, inactivity or delivery readiness and no transcript/audio is read or persisted by analysis
