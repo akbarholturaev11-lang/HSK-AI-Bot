@@ -2241,13 +2241,17 @@ var SALES_VALUE_PRIME_PROMISE=null,SALES_VALUE_PRIME_DONE=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 var PWA_COURSE_GET_PATHS={
   "/api/v3/course-tracks":"/api/v3/pwa/course-tracks",
-  "/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation"
+  "/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation",
+  "/api/miniapp/mistakes":"/api/v3/pwa/mistakes"
 };
 var PWA_COURSE_POST_PATHS={
   "/api/v3/course-tracks/switch":"/api/v3/pwa/course-tracks/switch",
   "/api/v3/course-tracks/promo-shown":"/api/v3/pwa/course-tracks/promo-shown",
   "/api/v3/limits/status":"/api/v3/pwa/limits/status",
-  "/api/v3/lesson/start":"/api/v3/pwa/lesson/start"
+  "/api/v3/lesson/start":"/api/v3/pwa/lesson/start",
+  "/api/miniapp/mistakes/review/start":"/api/v3/pwa/mistakes/review/start",
+  "/api/miniapp/mistakes/review/answer":"/api/v3/pwa/mistakes/review/answer",
+  "/api/miniapp/mistakes/review/complete":"/api/v3/pwa/mistakes/review/complete"
 };
 function _apiGet(url){
   if(!PWA_COURSE_HOST)return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}});
@@ -7869,7 +7873,7 @@ var MIST=(function(){
     var t=L(),offset=append?ITEMS.length:0;
     if(!append)el("mk-content").innerHTML='<div class="state"><i class="ti ti-loader-2"></i><div>'+esc(t.loading)+'</div></div>';
     var url="/api/miniapp/mistakes?limit=30&offset="+offset+(CAT!=="all"?"&category="+encodeURIComponent(CAT):"");
-    fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}}).then(function(r){if(!r.ok)throw new Error("load");return r.json()}).then(function(d){
+    _apiGet(url).then(function(r){if(!r.ok)throw new Error("load");return r.json()}).then(function(d){
       LOADING=false;if(!live())return;
       var incoming=(d&&d.items)||[];ITEMS=append?ITEMS.concat(incoming):incoming;
       SUM=(d&&d.summary)||{total:ITEMS.length,categories:{}};
@@ -7880,9 +7884,9 @@ var MIST=(function(){
 
   /* ---- review ---- */
   function newRef(){try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID()}catch(e){}return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
-  function accessRef(create){var k="hsk_mistake_review_ref",v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=REF_MEM}if(!v&&create){v=newRef();REF_MEM=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
-  function clearRef(){REF_MEM="";try{sessionStorage.removeItem("hsk_mistake_review_ref")}catch(e){}}
-  function premium(){App.goPay("v3_mistake_review")}
+  function accessRef(create){var k=PWA_COURSE_HOST?("hsk_mistake_review_ref:pwa:"+String(PWA_COURSE_USER_ID||"unbound")):"hsk_mistake_review_ref",v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=REF_MEM}if(!v&&create){v=newRef();REF_MEM=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
+  function clearRef(){REF_MEM="";try{sessionStorage.removeItem(PWA_COURSE_HOST?("hsk_mistake_review_ref:pwa:"+String(PWA_COURSE_USER_ID||"unbound")):"hsk_mistake_review_ref")}catch(e){}}
+  function premium(){if(PWA_COURSE_HOST){closeLimit();return}App.goPay("v3_mistake_review")}
   function reviewOpen(){return !!(el("mk-review")&&!el("mk-review").hidden)}
   function openReview(){el("mk-review").hidden=false}
   function closeReview(){var r=el("mk-review");if(r)r.hidden=true;RV=null}
@@ -7891,7 +7895,7 @@ var MIST=(function(){
     if(busy())return;RV={loading:true};
     if(window.CourseLimitStatus)CourseLimitStatus.invalidate("mistake_review");
     var ref=accessRef(true);
-    fetch("/api/miniapp/mistakes/review/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({ad_supported:false,access_ref:ref})})
+    _apiPost("/api/miniapp/mistakes/review/start",{ad_supported:false,access_ref:ref})
     .then(function(r){return r.json().then(function(d){return{status:r.status,d:d}})})
     .then(function(res){
       if(!live()){RV=null;return}
@@ -7925,8 +7929,7 @@ var MIST=(function(){
     var t=L(),q=RV.questions[RV.idx];
     var btns=el("mk-rv-opts").querySelectorAll(".rv-opt");
     for(var k=0;k<btns.length;k++)btns[k].disabled=true;
-    fetch("/api/miniapp/mistakes/review/answer",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},
-      body:JSON.stringify({session_id:RV.session,question_id:q.id,selected_index:i})})
+    _apiPost("/api/miniapp/mistakes/review/answer",{session_id:RV.session,question_id:q.id,selected_index:i})
     .then(function(r){return r.json()}).then(function(d){
       if(!live()||!RV)return;
       if(!d||!d.ok)throw new Error("answer_failed");
@@ -7956,8 +7959,7 @@ var MIST=(function(){
     var t=L();RV.loading=true;
     el("mk-rv-fill").style.width="100%";
     el("mk-rv-foot").innerHTML='<button disabled>'+esc(t.loading)+'</button>';
-    fetch("/api/miniapp/mistakes/review/complete",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},
-      body:JSON.stringify({session_id:RV.session,answers:RV.answers})})
+    _apiPost("/api/miniapp/mistakes/review/complete",{session_id:RV.session,answers:RV.answers})
     .then(function(r){return r.json()}).then(function(d){
       if(d&&d.ok)refreshCourseProgress(true);
       if(!live())return;
@@ -7976,9 +7978,10 @@ var MIST=(function(){
 
   function showLimit(adAvailable){
     var t=L();
-    if(window.CourseAds&&CourseAds.showLimitPromo){
+    if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
       CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||t.limitWhy,onSubscribe:premium,onTrial:function(){trialStart("paywall_pronunciation")},onBack:function(){}});return;
     }
+    if(PWA_COURSE_HOST){var buy=el("mk-limit").querySelector(".go");if(buy)buy.hidden=true}
     el("mk-lim-text").textContent=SECTION_LIMIT_TEXT||t.limitText;
     el("mk-limit").hidden=false;
   }
@@ -7994,7 +7997,7 @@ var MIST=(function(){
     $("#secov").innerHTML=shell();
     openSection(API);
     RV=null;CAT="all";ITEMS=[];
-    if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"mistake_review",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
+    if(!PWA_COURSE_HOST&&window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"mistake_review",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     load(false);
   }
 
