@@ -109,6 +109,50 @@ async function check(items){
     }
 
 
+def test_browser_checkout_returns_only_to_original_allowlisted_practice_pages():
+    """Exercise the actual checkout return URL builder in both browser hosts."""
+    html = _html()
+    start = html.index('const RETURN_TO_COURSE=PARAMS.get("return_to")==="course"')
+    end = html.index("function initTelegramCourseReturn(){", start)
+    return_source = html[start:end]
+    script = (
+        'let PARAMS=new URLSearchParams();let PWA_CHECKOUT_HOST=true;'
+        'const window={location:{replace:(url)=>{window.result=url}}};'
+        + return_source
+        + """
+const paths=[
+  ["course_v3_voice.html","voice"],
+  ["course_v3_recognition.html","recognition"],
+  ["course_v3_memorize.html","memorize"],
+  ["course_v3_pronunciation.html","pronunciation"],
+  ["course_v3_mistakes.html","mistakes"],
+  ["course_v3_test.html","test"],
+];
+const actual=[];
+for(const [page,slug] of paths){
+  PARAMS=new URLSearchParams({lang:"tj",return_to:"course",return_page:page,return_level:"nhsk2"});
+  PWA_CHECKOUT_HOST=true;
+  const pwa=courseReturnUrl();
+  returnToCourseFromCheckout();
+  const replaced=window.result;
+  PWA_CHECKOUT_HOST=false;
+  const telegram=courseReturnUrl();
+  actual.push({page,slug,pwa,telegram,replaced});
+}
+PARAMS=new URLSearchParams({lang:"evil",return_to:"course",return_page:"https://evil.test",return_level:"../../",return_tab:"mashq"});
+PWA_CHECKOUT_HOST=true;
+const forged=courseReturnUrl();
+process.stdout.write(JSON.stringify({actual,forged}));
+"""
+    )
+    result = json.loads(subprocess.check_output(["node", "-e", script], text=True))
+    for case in result["actual"]:
+        assert case["pwa"] == f'/iphone-pwa/practice/{case["slug"]}?lang=tj&level=nhsk2'
+        assert case["telegram"] == f'/{case["page"]}?lang=tj&level=nhsk2'
+        assert case["replaced"] == case["pwa"]
+    assert result["forged"] == "/iphone-pwa/course?lang=uz&tab=mashq"
+
+
 def test_server_reports_failed_checkout_event_write_as_503():
     # Guard the exact event route, without changing payment or submit responses.
     source = Path("app/main.py").read_text(encoding="utf-8")
