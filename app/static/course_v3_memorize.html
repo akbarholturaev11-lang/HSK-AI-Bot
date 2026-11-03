@@ -217,7 +217,7 @@ function memorizePost(url,body,keepalive){
     });
   });
 }
-function goPremium(){if(PWA_MEMORIZE_HOST){goBack();return}location.href="/subscription.html?lang="+LANG+"&source=v3_memorize_limit&mode=subscription&return_to=course&return_page=course_v3_memorize.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}document.querySelector(".top .ix").setAttribute("aria-label",t(LIM.back))
+function goPremium(){location.href=(PWA_MEMORIZE_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_memorize_limit&mode=subscription&return_to=course&return_page=course_v3_memorize.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}document.querySelector(".top .ix").setAttribute("aria-label",t(LIM.back))
 /* Foydalanuvchi darajasi: server (users.level) asosiy manba — kartalar userning
    haqiqiy HSK darajasidagi ierogliflardan tuziladi (lesson_gate xaritasi orqali).
    CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar belgilari chiqadi. */
@@ -271,7 +271,7 @@ function showLimitNow(){
   if(!PWA_MEMORIZE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:LIMIT_REASON,onSubscribe:goPremium,onBack:goBack});return}
   var adBtn="";
   var sub=gateEscape(LIMIT_REASON||t(LIM.sub));
-  B.innerHTML='<div class="done"><div class="st"><i class="ti ti-lock"></i></div><h3>'+t(LIM.title)+'</h3><p>'+sub+'</p>'+adBtn+(PWA_MEMORIZE_HOST?'':'<button class="ghost" onclick="goPremium()">'+t(LIM.pay)+'</button>')+'<button class="ghost" onclick="goBack()">'+t(LIM.back)+'</button></div>';
+  B.innerHTML='<div class="done"><div class="st"><i class="ti ti-lock"></i></div><h3>'+t(LIM.title)+'</h3><p>'+sub+'</p>'+adBtn+'<button class="ghost" onclick="goPremium()">'+t(LIM.pay)+'</button>'+'<button class="ghost" onclick="goBack()">'+t(LIM.back)+'</button></div>';
 }
 
 /* ---- mastery (localStorage) ---- */
