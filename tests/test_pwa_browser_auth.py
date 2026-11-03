@@ -561,6 +561,74 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('if(!PWA_MEMORIZE_HOST&&window.CourseAds)', source)
         self.assertNotIn("user-scalable=no", source)
 
+    async def test_pwa_pronunciation_uses_existing_html_and_verified_voice_actor(self):
+        page_url = "/iphone-pwa/practice/pronunciation"
+        score_url = "/api/v3/pwa/voice/pronounce"
+        anonymous = await self.client.get(page_url, follow_redirects=False)
+        self.assertEqual(anonymous.status_code, 303)
+        self.assertEqual(anonymous.headers["location"], "/iphone-pwa")
+        state = await self.begin()
+        await self.callback(state)
+        page = await self.client.get(page_url)
+        self.assertEqual(page.status_code, 200, page.text[:150])
+        self.assertEqual(page.headers.get("cache-control"), "no-store")
+        self.assertEqual(page.headers.get("x-frame-options"), "DENY")
+        self.assertIn('PWA_PRONUNCIATION_HOST=location.pathname==="/iphone-pwa/practice/pronunciation"', page.text)
+        self.assertIn('LV_READY.then(function(){return runGate(ref)})', page.text)
+        self.assertNotIn("maximum-scale=1", page.text)
+
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        sample = b"\\x00\\x00\\x00\\x14ftypisom" + b"\\x00" * 1300
+        def params():
+            return {
+                "data": {"target": "你", "target_pinyin": "nǐ"},
+                "files": {"audio": ("speech.mp4", sample, "audio/mp4")},
+            }
+
+        missing_csrf = await self.client.post(
+            score_url, headers={"Origin": ORIGIN}, **params(),
+        )
+        self.assertEqual(missing_csrf.status_code, 403)
+        foreign = await self.client.post(
+            score_url, headers={**headers, "Origin": "https://attacker.test"},
+            **params(),
+        )
+        self.assertEqual(foreign.status_code, 403)
+        extra = await self.client.post(
+            score_url, headers=headers,
+            data={"target": "你", "user_id": "999"},
+            files={"audio": ("speech.mp4", sample, "audio/mp4")},
+        )
+        self.assertEqual(extra.status_code, 422)
+        with patch(
+            "app.services.voice_practice_service.VoicePracticeService.score_pronunciation",
+            new_callable=AsyncMock,
+        ) as scorer:
+            scorer.return_value = {"ok": True, "score": 81, "passed": True, "heard": "你"}
+            good = await self.client.post(score_url, headers=headers, **params())
+            self.assertEqual(good.status_code, 200, good.text)
+            self.assertEqual(good.json()["score"], 81)
+            self.assertEqual(good.headers.get("cache-control"), "no-store")
+            self.assertEqual(scorer.await_args.args[0].id, 1)
+            self.assertEqual(scorer.await_args.kwargs["language"], "uz")
+            self.assertEqual(scorer.await_args.kwargs["level"], "hsk1")
+            self.assertEqual(scorer.await_args.kwargs["filename"], "voice.mp4")
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.get(page_url)).status_code, 503)
+
+    def test_pronunciation_pwa_client_does_not_inject_telegram_identity(self):
+        source = (Path("app/static") / "course_v3_pronunciation.html").read_text(encoding="utf-8")
+        course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        self.assertIn('"/api/v3/practice/daily-gate":"/api/v3/pwa/practice/daily-gate"', source)
+        self.assertIn('"/api/v3/practice/words":"/api/v3/pwa/practice/words"', source)
+        self.assertIn('"/api/v3/practice/report":"/api/v3/pwa/practice/report"', source)
+        self.assertIn('"/api/v3/pwa/voice/pronounce"', source)
+        self.assertIn('delete payload.initData;delete payload.user_id;delete payload.telegram_id;', source)
+        self.assertIn('payload.append("audio",fd.get("audio"))', source)
+        self.assertIn('"/course_v3_pronunciation.html":"/iphone-pwa/practice/pronunciation"', course)
+        self.assertIn('if(!PWA_PRONUNCIATION_HOST&&window.CourseAds)', source)
+
     async def test_pwa_recognition_profile_uses_real_owner_level_and_progress(self):
         path = "/api/v3/pwa/practice/profile"
         self.assertEqual((await self.client.get(path)).status_code, 401)
