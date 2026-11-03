@@ -1763,6 +1763,74 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.client.get("/iphone-pwa-login.js")).status_code, 503)
         self.assertEqual((await self.client.get("/api/v3/pwa-auth/providers")).status_code, 503)
 
+    async def test_pwa_only_rollback_fences_existing_sessions_without_account_deletion(self):
+        """Feature OFF must close both browser HTML and API routes, not Telegram.
+
+        Turning it back ON in an isolated test preserves the canonical user's
+        existing verified session and progress ownership; no database cleanup
+        or native/Telegram token invalidation is a legitimate PWA rollback.
+        """
+        state = await self.begin()
+        await self.callback(state)
+        session_url = "/api/v3/pwa-auth/session"
+        actor = (await self.client.get(session_url)).json()
+        self.assertEqual(actor["user_id"], 1)
+        paths = (
+            "/iphone-pwa",
+            "/iphone-pwa/manifest.webmanifest",
+            "/iphone-pwa/course",
+            "/iphone-pwa/practice/recognition",
+            "/iphone-pwa/practice/memorize",
+            "/iphone-pwa/practice/pronunciation",
+            "/iphone-pwa/practice/mistakes",
+            "/iphone-pwa/practice/test",
+            "/iphone-pwa/practice/voice",
+            "/iphone-pwa/onboarding",
+            "/api/v3/pwa/account-notices",
+        )
+        for url in paths:
+            with self.subTest(enabled=url):
+                result = await self.client.get(url, follow_redirects=False)
+                self.assertEqual(result.status_code, 200, (url, result.text[:160]))
+
+        self.settings.PWA_AUTH_ENABLED = False
+        for url in (session_url, *paths, "/api/v3/pwa/notifications"):
+            with self.subTest(disabled=url):
+                result = await self.client.get(url, follow_redirects=False)
+                self.assertEqual(result.status_code, 503, (url, result.text[:160]))
+                self.assertEqual(result.headers.get("cache-control"), "no-store")
+
+        csrf_headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": actor["csrf"]}
+        forbidden = await self.client.post(
+            "/api/v3/pwa/practice/daily-gate",
+            headers=csrf_headers,
+            json={"feature": "recognition", "ref": "rollback-must-not-consume"},
+        )
+        self.assertEqual(forbidden.status_code, 503, forbidden.text)
+        no_logout = await self.client.post(
+            "/api/v3/pwa-auth/logout", headers=csrf_headers,
+        )
+        self.assertEqual(no_logout.status_code, 503, no_logout.text)
+        # Legacy Telegram API is still protected by signed initData, not by
+        # the browser feature flag or a valid PWA cookie.
+        legacy = await self.client.post(
+            "/api/v3/practice/daily-gate",
+            json={"feature": "recognition", "ref": "rollback-legacy"},
+        )
+        self.assertEqual(legacy.status_code, 401, legacy.text)
+
+        self.settings.PWA_AUTH_ENABLED = True
+        restored = await self.client.get(session_url)
+        self.assertEqual(restored.status_code, 200, restored.text)
+        self.assertEqual(restored.json()["user_id"], 1)
+        self.assertEqual(restored.json()["csrf"], actor["csrf"])
+        async with self.sessions() as db:
+            original = await db.get(User, 1)
+            self.assertEqual((original.telegram_id, original.status), (1001, "free"))
+            self.assertIsNotNone(await db.scalar(
+                select(UserIdentity.id).where(UserIdentity.user_id == 1)
+            ))
+
     async def test_login_only_page_uses_source_tokens_and_existing_catalog(self):
         page = await self.client.get("/iphone-pwa")
         self.assertEqual(page.status_code, 200, page.text)
