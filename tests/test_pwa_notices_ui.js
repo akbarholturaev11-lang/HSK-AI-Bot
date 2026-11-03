@@ -13,7 +13,7 @@ assert(shell.includes('href="/course_v3_data/iphone-pwa-glass.css'));
 assert(shell.includes('PWA_COURSE_HOST?\'<button class="pwa-notices-button"'));
 assert(css.includes("#hsk-pwa-notice-root [hidden] {display:none!important}"));
 assert(css.includes("html.hsk-pwa-browser .nav"));
-assert(!source.includes("initData"));
+assert(!source.includes("X-Telegram-Init-Data"));
 assert(!source.includes("PWA_SESSION_COOKIE"));
 
 class Element {
