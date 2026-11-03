@@ -28,8 +28,8 @@ from app.services.smart_reminder_coordination import read_d1_scope
 from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, _aware_utc, day_window, evaluate, local_time_instants
 from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
 from app.services.smart_reminder_preferences import MAX_REVISION, SmartReminderError, SmartReminderPreferencesService, _utc
-from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, SmartReminderShadowQueue
-from app.services.smart_reminder_telegram import LearningCoverage, _android_inventory
+from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION, SmartReminderShadowQueue
+from app.services.smart_reminder_telegram import LearningCoverage, _android_inventory, _android_binding, _read_routing
 
 GRANT = SmartReminderAndroidGrant.__table__
 CAP = SmartReminderCapability.__table__
@@ -91,6 +91,62 @@ class AndroidAdmission:
 
 def denied(reason):
     return {"ok": True, "version": 1, "dispatch_allowed": False, "reason": reason}
+
+
+async def read_android_admission(session, actor, job_id, now, *, history_window):
+    """Read actual privileged native proof under User; no flush/commit/IO.
+
+    Only review_android's native binding is accepted. A capability or ordinary
+    hold cannot stand in for an external operator review. No factory registers
+    this callback automatically and it creates no posting authority.
+    """
+    if not isinstance(history_window, timedelta) or history_window <= timedelta(0):
+        raise ValueError('Explicit positive admission history window required')
+    now = _aware_utc(now)
+    if actor.kind != 'android' or not isinstance(job_id, str) or not re.fullmatch(UUID_PATTERN, job_id):
+        return None
+    with session.no_autoflush:
+        pref, epoch, routing = await _read_routing(session, actor, android=True)
+        if (routing is None or routing['state'] != 'held' or
+                routing['telegram_binding'] != _android_binding(actor) or
+                routing['preference_revision'] != pref['revision'] or routing['grant_epoch'] != epoch or
+                routing['verified_at'] is None or routing['verified_until'] is None or
+                not re.fullmatch(r'[0-9a-f]{64}', routing['evidence_sha256'] or '') or
+                not _utc(routing['held_at']) <= _utc(routing['verified_at']) <= now < _utc(routing['verified_until']) or
+                now - history_window > _utc(routing['verified_at']) or pref['master_enabled'] is False or
+                pref['channels']['android']['this_device_consent'] != 'on' or
+                pref['channel_mode'] == 'manual_locked' and pref['preferred_channel'] != 'android'):
+            return None
+        row = (await session.execute(select(JOB).where(JOB.c.id == job_id,
+            JOB.c.user_id == actor.user_id, JOB.c.category == 'study').with_for_update())).mappings().one_or_none()
+        if (row is None or (row['preference_revision'], row['grant_epoch']) != (pref['revision'], epoch) or
+                row['lease_token'] is not None or row['lease_expires_at'] is not None or
+                not _utc(row['day_start_utc']) <= now < min(_utc(row['expires_at']), _utc(row['day_end_utc'])) or
+                not (row['state'] == 'shadow' and row['policy_version'] == QUEUE_VERSION and
+                     row['selected_channel'] is None and row['selected_device_id'] is None or
+                     row['state'] == 'pending' and row['selected_channel'] == 'android' and
+                     row['selected_device_id'] == actor.device_id) or
+                await session.scalar(select(ATTEMPT.c.id).where(ATTEMPT.c.job_id == job_id).limit(1))):
+            return None
+        inventory, fenced_until = await _android_inventory(session, actor.user_id, now)
+        if inventory is None or inventory != routing['inventory_sha256'] or fenced_until is None:
+            return None
+        service = SmartReminderAndroidService(session, clock=lambda: now)
+        cap = await service._capability(actor)
+        session_until = await session.scalar(select(DesktopSession.expires_at).join(DesktopDevice,
+            DesktopDevice.id == DesktopSession.device_id).where(DesktopSession.id == actor.session_id,
+            DesktopSession.device_id == actor.device_id, DesktopSession.revoked_at.is_(None),
+            DesktopDevice.user_id == actor.user_id, DesktopDevice.platform == 'android',
+            DesktopDevice.revoked_at.is_(None), DesktopSession.expires_at > now))
+        if cap is None or session_until is None: return None
+        until = min(_utc(routing['verified_until']), fenced_until, _utc(cap['expires_at']),
+            _utc(session_until), _utc(row['expires_at']), _utc(row['day_end_utc']))
+        if until <= now: return None
+        # The native binding selects persisted review_android provenance. Its
+        # writer required all three attestations; no capability inferred them.
+        return AndroidAdmission(actor.user_id, job_id, actor.device_id, actor.session_id,
+            routing['generation'], pref['revision'], epoch, _utc(routing['verified_at']), until,
+            now-history_window, routing['evidence_sha256'], inventory, True, True, True)
 
 
 class SmartReminderAndroidService:
