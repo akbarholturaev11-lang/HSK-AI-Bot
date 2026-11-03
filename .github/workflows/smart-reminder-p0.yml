@@ -46,6 +46,7 @@ on:
       - "tests/test_smart_reminder_return_analysis.py"
       - "tests/test_smart_reminder_activity_analysis.py"
       - "tests/smart_reminder_open_client.js"
+      - "tests/smart_preferences_client.js"
       - "app/services/smart_reminder_open.py"
       - "alembic/versions/0140_smart_open_analysis.py"
       - "app/static/course-v3.html"
@@ -93,6 +94,7 @@ on:
       - "android/app/src/main/java/com/pomp/hskai/core/notify/**"
       - "android/app/src/main/java/com/pomp/hskai/data/api/AndroidSmartReminderApi.kt"
       - "android/app/src/test/java/com/pomp/hskai/core/notify/SmartStudyBridgeTest.kt"
+      - "android/app/src/test/java/com/pomp/hskai/core/notify/SmartPreferenceBridgeTest.kt"
       - "android/app/src/test/java/com/pomp/hskai/data/api/AndroidSmartReminderApiTest.kt"
       - "android/app/src/androidTest/java/com/pomp/hskai/core/notify/**"
       - "android/app/src/main/java/com/pomp/hskai/widget/**"
@@ -217,6 +219,7 @@ on:
       - "tests/test_smart_reminder_return_analysis.py"
       - "tests/test_smart_reminder_activity_analysis.py"
       - "tests/smart_reminder_open_client.js"
+      - "tests/smart_preferences_client.js"
       - "app/services/smart_reminder_open.py"
       - "alembic/versions/0140_smart_open_analysis.py"
       - "app/static/course-v3.html"
@@ -264,6 +267,7 @@ on:
       - "android/app/src/main/java/com/pomp/hskai/core/notify/**"
       - "android/app/src/main/java/com/pomp/hskai/data/api/AndroidSmartReminderApi.kt"
       - "android/app/src/test/java/com/pomp/hskai/core/notify/SmartStudyBridgeTest.kt"
+      - "android/app/src/test/java/com/pomp/hskai/core/notify/SmartPreferenceBridgeTest.kt"
       - "android/app/src/test/java/com/pomp/hskai/data/api/AndroidSmartReminderApiTest.kt"
       - "android/app/src/androidTest/java/com/pomp/hskai/core/notify/**"
       - "android/app/src/main/java/com/pomp/hskai/widget/**"
@@ -425,6 +429,7 @@ jobs:
         run: |
           ./gradlew --no-daemon testPlayDebugUnitTest \
             --tests "com.pomp.hskai.core.notify.SmartStudyBridgeTest" \
+            --tests "com.pomp.hskai.core.notify.SmartPreferenceBridgeTest" \
             --tests "com.pomp.hskai.data.api.AndroidSmartReminderApiTest" \
             --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
             --tests "com.pomp.hskai.core.notify.ReminderScheduleTest" \
@@ -436,6 +441,7 @@ jobs:
         run: |
           ./gradlew --no-daemon testDirectDebugUnitTest \
             --tests "com.pomp.hskai.core.notify.SmartStudyBridgeTest" \
+            --tests "com.pomp.hskai.core.notify.SmartPreferenceBridgeTest" \
             --tests "com.pomp.hskai.data.api.AndroidSmartReminderApiTest" \
             --tests "com.pomp.hskai.core.notify.ReminderDecisionTest" \
             --tests "com.pomp.hskai.core.notify.ReminderScheduleTest" \
@@ -486,7 +492,9 @@ jobs:
           python -m unittest -v tests.test_smart_reminder_observed_rules tests.test_smart_reminder_native_admission tests.test_smart_reminder_runtime tests.test_smart_reminder_planner tests.test_smart_reminder_offline tests.test_smart_reminder_storage tests.test_smart_reminder_legacy_backfill tests.test_smart_reminder_preferences tests.test_smart_reminder_capabilities tests.test_smart_reminder_destination tests.test_smart_reminder_android tests.test_smart_reminder_analysis tests.test_smart_reminder_shadow_analysis tests.test_smart_reminder_reservation_analysis tests.test_smart_reminder_analysis_reconciliation tests.test_smart_reminder_analysis_observer tests.test_smart_reminder_dispatch_analysis tests.test_smart_reminder_learning_analysis tests.test_smart_reminder_open tests.test_smart_reminder_study_analysis tests.test_smart_reminder_activity_analysis tests.test_smart_reminder_practice_activity tests.test_smart_reminder_voice_activity tests.test_smart_reminder_repeat_practice tests.test_smart_reminder_return_analysis tests.test_smart_reminder_baseline tests.test_smart_reminder_baseline_outcomes tests.test_smart_reminder_baseline_report tests.test_smart_reminder_qa tests.test_qa_standalone_bootstrap tests.test_smart_reminder_lifecycle tests.test_smart_reminder_policy tests.test_smart_reminder_cadence tests.test_smart_reminder_shadow_queue tests.test_smart_reminder_coordination tests.test_smart_widget_context tests.test_smart_reminder_telegram tests.test_smart_reminder_telegram_content tests.test_course_notification_language tests.test_notification_catalog_runtime tests.test_admin_pwa_notifications tests.test_i18n_notification_catalog_adoption tests.test_telegram_identity_link tests.test_native_oauth_lifecycle
 
       - name: Check Smart Mini App open consumer
-        run: node tests/smart_reminder_open_client.js
+        run: |
+          node tests/smart_reminder_open_client.js
+          node tests/smart_preferences_client.js
 
       - name: Validate canonical notification and PWA catalogs
         run: |

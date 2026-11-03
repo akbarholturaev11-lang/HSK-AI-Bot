@@ -52,6 +52,7 @@ class StudyReminderCoordinator(private val app: HskAiApplication, private val ap
 
     suspend fun run(expectedLocalDay: String? = null): Outcome {
         val triggerEpoch = app.widgetStore.read().epoch
+        app.smartPreferenceBridge.sync(triggerEpoch)
         when (smart.run(legacyHint = expectedLocalDay != null)) {
             SmartStudyBridge.Result.DONE -> return Outcome.DONE
             SmartStudyBridge.Result.RETRY -> return Outcome.RETRY

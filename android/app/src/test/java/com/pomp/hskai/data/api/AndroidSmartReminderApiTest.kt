@@ -15,6 +15,29 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 class AndroidSmartReminderApiTest {
     private val json=Json { ignoreUnknownKeys=true; explicitNulls=false }
 
+    @Test fun `canonical settings HTTP contains only current-device intent and explicit revision`() = runTest {
+        val server=MockWebServer();server.start()
+        try {
+            val api=Retrofit.Builder().baseUrl(server.url("/"))
+                .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+                .build().create(AndroidSmartReminderApi::class.java)
+            server.enqueue(MockResponse().setBody("""{"ok":true,"revision":0,"master_enabled":null,"time_mode":"auto","timezone_name":null,"channels":{"android":{"this_device_consent":"unknown"}}}"""))
+            assertTrue(api.preferences("Bearer synthetic").body()!!.valid())
+            assertEquals("/api/v3/android/smart-reminder/preferences",server.takeRequest().path)
+            server.enqueue(MockResponse().setBody("""{"ok":true,"request_id":"test","applied_revision":1,"dispatch_allowed":false}"""))
+            api.preferences("Bearer synthetic",SmartStudyPreferencePatch("test",0,studyEnabled=false))
+            val call=server.takeRequest()
+            assertEquals("PATCH",call.method);assertEquals("Bearer synthetic",call.getHeader("Authorization"))
+            val body=json.parseToJsonElement(call.body.readUtf8()).jsonObject
+            assertEquals(setOf("request_id","expected_revision","study_enabled"),body.keys)
+            assertFalse(body["study_enabled"]!!.jsonPrimitive.boolean)
+            server.enqueue(MockResponse().setBody("""{"ok":true,"revision":"0"}"""))
+            assertTrue(apiCall { api.preferences("Bearer synthetic") } is ApiResult.Failure)
+            server.enqueue(MockResponse().setBody("""{"ok":true,"revision":0,"master_enabled":1}"""))
+            assertTrue(apiCall { api.preferences("Bearer synthetic") } is ApiResult.Failure)
+        } finally {server.shutdown()}
+    }
+
     @Test fun `real HTTP uses exact native study paths and required default fields`() = runTest {
         val server=MockWebServer(); server.start()
         try {

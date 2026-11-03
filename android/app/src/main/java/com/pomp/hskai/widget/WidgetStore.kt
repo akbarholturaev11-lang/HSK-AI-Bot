@@ -111,6 +111,46 @@ class WidgetStore(private val dataStore: DataStore<Preferences>) {
         change { it.copy(reminderEnabled = enabled && it.linked) }
     }
 
+    internal suspend fun requestStudyPreference(epoch: String, enabled: Boolean): StudyPreferenceIntent? = mutex.withLock {
+        var pending: StudyPreferenceIntent? = null
+        change { old ->
+            if (!old.linked || old.epoch != epoch) old else {
+                pending = StudyPreferenceIntent(enabled = enabled, previousEnabled = old.reminderEnabled)
+                old.copy(reminderEnabled = if (enabled) old.reminderEnabled else false, pendingStudyPreference = pending)
+            }
+        }
+        pending
+    }
+
+    internal suspend fun freezeStudyPreference(epoch: String, id: String, revision: Int,
+                                               timezoneName: String?): StudyPreferenceIntent? = mutex.withLock {
+        var frozen: StudyPreferenceIntent? = null
+        change { old ->
+            val pending = old.pendingStudyPreference
+            if (!old.linked || old.epoch != epoch || pending?.requestId != id) old else {
+                frozen = if (pending.expectedRevision == null) pending.copy(
+                    expectedRevision = revision, timezoneName = timezoneName) else pending
+                old.copy(pendingStudyPreference = frozen)
+            }
+        }
+        frozen
+    }
+
+    internal suspend fun finishStudyPreference(epoch: String, id: String, enabled: Boolean? = null) = mutex.withLock {
+        change { old -> if (old.linked && old.epoch == epoch && old.pendingStudyPreference?.requestId == id)
+            old.copy(pendingStudyPreference = null, reminderEnabled = enabled ?: old.reminderEnabled) else old }
+    }
+
+    internal suspend fun reconcileStudyPreference(epoch: String, revision: Int, enabled: Boolean?) = mutex.withLock {
+        change { old ->
+            if (!old.linked || old.epoch != epoch || revision < old.studyPreferenceRevision) old
+            else old.copy(studyPreferenceRevision = revision,
+                contextRevision = maxOf(old.contextRevision, revision),
+                reminderEnabled = if (old.pendingStudyPreference == null && enabled != null) enabled else old.reminderEnabled,
+                snapshot = if (revision > old.contextRevision) null else old.snapshot)
+        }
+    }
+
     suspend fun markOffered() = mutex.withLock { change { it.copy(onboardingOffered = true) } }
 
     suspend fun markInstallPromptShown(localDay: String) = mutex.withLock {

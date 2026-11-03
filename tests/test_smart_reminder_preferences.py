@@ -120,6 +120,68 @@ class PreferenceChecks:
         for model in (SmartReminderJob, SmartReminderAttempt):
             self.assertEqual(await self._rows(model.__table__), [])
 
+    async def test_browser_auto_initialization_is_private_held_and_default_off_without_routing_sql(self):
+        from app.db.models.smart_reminder import SmartReminderRouting
+        from app.services.smart_reminder_preferences import automatic_timezone_initialization_allowed
+        for enabled in (None,False,1,'true'):
+            session=AsyncMock()
+            self.assertFalse(await automatic_timezone_initialization_allowed(session,2,
+                SimpleNamespace(SMART_REMINDER_ENABLED=enabled)))
+            session.scalar.assert_not_called()
+        active=SimpleNamespace(SMART_REMINDER_ENABLED=True)
+        async with self.sessions.begin() as s:
+            self.assertFalse(await automatic_timezone_initialization_allowed(s,2,active))
+            s.add(SmartReminderRouting(user_id=2,state='held',generation=1,
+                preference_revision=0,grant_epoch=0,telegram_binding='a'*64,held_at=self.now))
+            await s.flush()
+            self.assertTrue(await automatic_timezone_initialization_allowed(s,2,active))
+            self.assertFalse(await automatic_timezone_initialization_allowed(s,3,active))
+        self.assertEqual(await self._rows(PREF),[])
+        await self.assert_no_grants()
+
+    async def test_real_native_first_use_zone_then_phone_intent_without_preseeded_preferences(self):
+        first=await self.read()
+        self.assertEqual(first['revision'],0)
+        self.assertIsNone(first['timezone_name'])
+        self.assertEqual(first['channels']['android']['this_device_consent'],'unknown')
+        zone=self.body(timezone_name='Asia/Tashkent')
+        ack=await self.send(zone)
+        current=await self.read()
+        self.assertEqual(current['timezone_name'],'Asia/Tashkent')
+        self.assertIsNone(current['master_enabled'])
+        self.assertEqual(current['channels']['android']['this_device_consent'],'unknown')
+        self.assertEqual(await self.send(zone),ack)
+        self.assertEqual((await self.read())['revision'],ack['applied_revision'])
+        on=await self.send(self.body(revision=ack['applied_revision'],study_enabled=True))
+        self.assertEqual((await self.read())['channels']['android']['this_device_consent'],'on')
+        await self.send(self.body(revision=on['applied_revision'],study_enabled=False))
+        self.assertEqual((await self.read())['channels']['android']['this_device_consent'],'off')
+        self.assertIsNone((await self.read())['master_enabled'])
+        self.assertEqual((await self.read(uid=3))['revision'],0)
+        await self.assert_no_grants()
+
+    async def test_real_browser_zone_bootstrap_retains_saved_time_and_original_channel_choice(self):
+        before=await self.read(tg=True)
+        ack=await self.send(self.body(timezone_name='Asia/Tashkent'),tg=True)
+        after=await self.read(tg=True)
+        self.assertEqual(after['timezone_name'],'Asia/Tashkent')
+        self.assertEqual(after['legacy_time_local'],before['legacy_time_local'])
+        self.assertEqual(after['channels']['telegram']['consent'],before['channels']['telegram']['consent'])
+        self.assertEqual(after['channels']['android']['consent'],before['channels']['android']['consent'])
+        self.assertIsNone(after['master_enabled'])
+        self.assertEqual(after['revision'],ack['applied_revision'])
+        await self.assert_no_grants()
+
+    async def test_zone_bootstrap_cannot_turn_global_off_or_release_a_stale_native_on(self):
+        off=await self.send(self.body(master_enabled=False))
+        zone=await self.send(self.body(revision=off['applied_revision'],timezone_name='Asia/Tashkent'))
+        await self.send(self.body(study_enabled=True),status=409)
+        after=await self.read()
+        self.assertFalse(after['master_enabled'])
+        self.assertEqual(after['revision'],zone['applied_revision'])
+        self.assertEqual(after['channels']['android']['this_device_consent'],'unknown')
+        await self.assert_no_grants()
+
     async def test_reads_are_read_only_dual_views_and_native_has_no_telegram_enrollment(self):
         await self._progress()
         tg=await self.read(tg=True)

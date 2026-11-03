@@ -33,6 +33,18 @@ class WidgetPersonalContextTest {
     private fun changed(raw: JsonObject = PersonalFixtures.raw(), vararg pairs: Pair<String, JsonElement>) =
         JsonObject(raw.toMutableMap().apply { putAll(pairs) })
 
+    @Test fun `confirmed settings revision rejects a late pre-change widget response`() = runTest {
+        val store = WidgetStore(ContextPreferences()); store.linked()
+        val epoch = store.read().epoch
+        val raw = changed(pairs = arrayOf("request_epoch" to JsonPrimitive(epoch)))
+        val ticket = store.beginRefresh(epoch)!!
+        val revision = raw.getValue("revision").jsonPrimitive.int
+        store.reconcileStudyPreference(epoch, revision + 1, null)
+        assertFalse(store.savePersonal(PersonalFixtures.snapshot(raw), raw, ticket, PersonalFixtures.now(raw)))
+        assertNull(store.read().snapshot)
+        assertEquals(revision + 1, store.read().contextRevision)
+    }
+
     @Test fun `the real Retrofit adapter sends only passive protocol fields and bearer header`() = runTest {
         val server=MockWebServer()
         try {

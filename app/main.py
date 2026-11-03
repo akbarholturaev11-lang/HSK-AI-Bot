@@ -2611,6 +2611,7 @@ async def v3_avatar(telegram_id: int):
 async def v3_course_map(request: Request, lang: str = "uz", level: str | None = None):
     import json as _json
     from pathlib import Path
+    from app.services.smart_reminder_preferences import automatic_timezone_initialization_allowed
 
     init_data = request.headers.get("X-Telegram-Init-Data", "")
     telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
@@ -2710,6 +2711,7 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         initials = "".join(p[:1].upper() for p in display_name.split()[:2]) or "阿"
 
         data["authenticated"] = True
+        data["smart_preferences_available"] = await automatic_timezone_initialization_allowed(session, user.id, settings)
         data["bot_username"] = bot_username_value()
         data["level"] = resolved_level
         data["progress"] = {

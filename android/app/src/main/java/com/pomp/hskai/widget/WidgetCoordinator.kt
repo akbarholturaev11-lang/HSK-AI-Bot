@@ -76,6 +76,7 @@ class WidgetCoordinator(private val app: HskAiApplication, private val eventsApi
     suspend fun refresh() = refreshMutex.withLock {
         val session = app.widgetStore.read()
         if (session.linked) {
+            app.smartPreferenceBridge.sync(session.epoch)
             bridge.refresh()
             render()
             flushEvents()
