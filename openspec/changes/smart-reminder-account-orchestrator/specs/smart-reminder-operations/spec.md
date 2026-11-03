@@ -352,3 +352,19 @@ The system SHALL optionally distinguish a newly server-started and server-graded
 #### Scenario: Technical trace retention
 - **WHEN** an owned technical practice trace reaches its ninety-day lifetime or its account is purged
 - **THEN** only that scoped detail is removed without deleting canonical course, XP or anonymous retained analysis totals
+
+
+### Requirement: One protected Admin Smart control
+The system SHALL provide one protected Smart editor using existing template consent, passkey, revision and audit rules. Disabling it MUST veto new Android and Telegram Smart attempts without erasing existing outcomes or enabling another sender.
+
+#### Scenario: Fresh disabled permission
+- **WHEN** a prepared Smart attempt encounters the current disabled admin permission before externalization
+- **THEN** new issuance/send is refused while original receipts, account OFF, day ownership and unknown outcomes remain protected
+
+#### Scenario: Anonymous partial readout
+- **WHEN** an authenticated admin opens Smart management
+- **THEN** only reviewed anonymous month counters and observation status are shown, missing values stay unknown, real zero stays zero and no display, unique-user, causal or activation claim is invented
+
+#### Scenario: Minimal editor interaction
+- **WHEN** the persisted permission or copy changes
+- **THEN** the existing single Save performs exact passkey verification and audit, reversion disables Save, and only confirmed success dismisses after the existing success animation

@@ -54,6 +54,15 @@ shown/read/learning, actual provider delivery or two-device installed acceptance
 
 ## Authentication and admission
 
+The existing `smart_study` notification-template enabled flag is a shared
+Admin permission veto for Android and Telegram. A fresh read in common policy
+validation and a final Android read before issuance cancel new authority with
+`admin_study_disabled` when OFF. A missing template retains the existing enabled
+default. ON removes this veto only: dispatch factories, consent, admission,
+coverage and all other guards remain required. Already issued/externalized
+attempts cannot be recalled; their original receipts remain accepted and their
+day/attempt evidence cannot be replayed or refunded.
+
 Every route requires the existing Android native bearer. Cookie, query/body
 identity, Telegram proof, Desktop sessions and duplicate/mixed proof are
 refused. User-first locking rechecks current account/status/submitted deletion,

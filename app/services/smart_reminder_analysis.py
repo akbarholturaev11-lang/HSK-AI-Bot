@@ -46,6 +46,7 @@ SHADOW_CADENCE_REASONS = frozenset({
     "cadence_time_out_of_range", "personal_cadence_cooldown",
 })
 SHADOW_REFUSAL_REASONS = frozenset({
+    "admin_study_disabled",
     "master_off", "channel_mode_unknown", "manual_channel_unavailable", "consent_or_permission_unavailable",
     "course_context_changed", "paused", "timezone_unknown", "course_day_mismatch", "goal_completed", "plan_completed",
     "progress_unknown", "course_completed", "foundation_required", "target_inaccessible", "personal_time_unknown",

@@ -165,6 +165,12 @@ class NotificationTemplateService:
     def __init__(self, session: AsyncSession):
         self.session = session
 
+    async def is_enabled(self, key: str) -> bool:
+        """Fresh permission read; absent templates retain their enabled default."""
+        enabled = await self.session.scalar(
+            select(NotificationTemplate.enabled).where(NotificationTemplate.key == key))
+        return True if enabled is None else bool(enabled)
+
     async def _get_row(self, key: str, *, lock: bool = False) -> NotificationTemplate | None:
         query=select(NotificationTemplate).where(NotificationTemplate.key==key).execution_options(populate_existing=True)
         return (

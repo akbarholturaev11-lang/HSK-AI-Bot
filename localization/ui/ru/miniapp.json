@@ -1148,7 +1148,15 @@
     "ui.admin_pwa.androidVersion2": "Последние 2 версии",
     "ui.admin_pwa.androidVersion3": "Последние 3 версии",
     "ui.admin_pwa.androidVersion4": "Последние 4 версии",
-    "ui.admin_pwa.noticeSmartStudy": "Умное напоминание об уроке"
+    "ui.admin_pwa.noticeSmartStudy": "Умное напоминание об уроке",
+    "ui.admin_pwa.smartPermission": "Разрешить новые Smart-напоминания",
+    "ui.admin_pwa.smartPermissionHint": "При отключении новые Smart-сообщения в Android и Telegram останавливаются. Включение само по себе не запускает отправку.",
+    "ui.admin_pwa.smartObservation": "Сбор наблюдаемых результатов",
+    "ui.admin_pwa.smartMonth": "Период учёта",
+    "ui.admin_pwa.smartStudyDays": "Дни учёбы после сообщений",
+    "ui.admin_pwa.smartContactReturns": "Сообщения с учёбой в течение 24 часов",
+    "ui.admin_pwa.smartStudyUnits": "Исходные учебные единицы за 24 часа",
+    "ui.admin_pwa.smartPartialHint": "Только зарегистрированные результаты. «—» — данных нет. Счётчики не равны числу пользователей и не доказывают прочтение или влияние сообщения на учёбу."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
