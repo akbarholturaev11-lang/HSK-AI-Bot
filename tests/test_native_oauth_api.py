@@ -524,6 +524,37 @@ class OAuthCallbackTests(_Base):
             self.assertNotIn(forbidden, response.text)
         self.assertEqual(response.headers["Cache-Control"], "no-store")
 
+    async def test_android_device_conflict_returns_localized_error_and_no_session(self):
+        await self._bearer(1001)
+        async with self.sessions() as session:
+            await IdentityLinkService(session, self.settings).link_to_user(_verified(), user_id=2)
+            await session.commit()
+        for language, expected in (("ru", "Этот телефон связан"), ("uz", "Bu telefon"), ("tj", "Ин телефон")):
+            with self.subTest(language=language):
+                started = await self.client.post("/api/v3/native-auth/oauth/start", json=self._start_body(
+                    mode="browser_redirect", language=language))
+                self.assertEqual(started.status_code, 200)
+                payload = started.json()
+                async with self.sessions() as session:
+                    state = NativeOAuthService(session, self.settings).state(payload["link_request_id"])
+                with patch("app.services.google_auth.exchange_code", return_value="id-token"), patch(
+                    "app.services.google_auth.verify_desktop_id_token", return_value=_verified()
+                ):
+                    result = await self.client.get("/api/v3/native-auth/oauth/callback/google",
+                                                   params={"state": state, "code": "auth-code"})
+                self.assertIn(expected, result.text)
+                self.assertIn('href="pomp-hsk-ai://oauth-return"', result.text)
+                for raw in (state, "auth-code", "id-token", "desktop_device_bound_to_other_user"):
+                    self.assertNotIn(raw, result.text)
+                async with self.sessions() as session:
+                    with self.assertRaises(DesktopAuthError) as refused:
+                        await DesktopAuthService(session, self.settings).poll_link(
+                            link_request_id=payload["link_request_id"], polling_secret=payload["polling_secret"])
+                    self.assertEqual(refused.exception.code, "desktop_device_bound_to_other_user")
+                    row = await session.get(DesktopLinkRequest, payload["link_request_id"])
+                    self.assertEqual(row.status, "failed")
+                    self.assertIsNone(row.approved_user_id)
+
     async def test_tampered_state_is_refused(self):
         payload, state = await self._browser_start()
         link_id, _, mac = state.partition(".")

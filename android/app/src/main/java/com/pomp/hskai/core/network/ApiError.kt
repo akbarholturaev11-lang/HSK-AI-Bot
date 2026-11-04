@@ -63,6 +63,7 @@ sealed interface ApiError {
         val UNRECOVERABLE_SESSION_CODES = setOf(
             "desktop_access_invalid",
             "desktop_session_revoked",
+            "smart_session_revoked",
             "desktop_refresh_invalid",
             "desktop_refresh_reuse_detected",
             "desktop_user_not_found",
@@ -81,7 +82,8 @@ sealed interface ApiError {
                 "signup_referral_invalid" -> R.string.hsk_common_desktopAuth_referralInvalid
 
                 "desktop_link_rate_limited" -> R.string.error_link_rate_limited
-                "desktop_device_bound_to_other_user" -> R.string.error_device_bound
+                "desktop_device_bound_to_other_user" -> R.string.hsk_common_desktopAuth_deviceBound
+                "smart_account_deletion_pending" -> R.string.hsk_common_smartPreferences_deletionPending
 
                 "payment_telegram_required",
                 "referral_telegram_required",
@@ -174,6 +176,7 @@ sealed interface ApiError {
                 // approval step while blocked; a provider flow is refused here
                 // instead, so the reason must be stated rather than shown as a
                 // generic failure.
+                "smart_account_blocked",
                 "user_blocked" -> R.string.error_account_blocked
 
                 "desktop_request_invalid",
@@ -184,6 +187,7 @@ sealed interface ApiError {
                 "android_request_invalid",
                 "android_request_too_large",
                 "course_context_changed",
+                "smart_revision_conflict",
                 -> R.string.error_unknown
 
                 else -> return Unknown

@@ -53,6 +53,18 @@ internal class SmartPreferenceBridge(
         }
         suspend fun failed(error: ApiError): ApiResult<Unit> {
             if (error is ApiError.SessionExpired) invalidate(proof.generation)
+            if ((error as? ApiError.Server)?.code == "smart_account_deletion_pending") {
+                commitCurrent(proof.generation) {
+                    val latest = store.read()
+                    if (latest.epoch == local.epoch) {
+                        latest.pendingStudyPreference?.takeIf { it.enabled }?.let {
+                            store.finishStudyPreference(local.epoch, it.requestId, false)
+                        }
+                        store.reconcileStudyPreference(local.epoch, latest.studyPreferenceRevision, false)
+                        stopLocal()
+                    }
+                }
+            }
             return ApiResult.Failure(error)
         }
         suspend fun stopIfCurrent() {
