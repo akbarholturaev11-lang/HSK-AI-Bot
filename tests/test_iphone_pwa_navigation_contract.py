@@ -78,6 +78,16 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn('_apiPost("/api/v3/preferences",body)', COURSE)
         self.assertIn('if(!saved||saved.ok!==true){dailyGoal=previous;', COURSE)
 
+    def test_slow_network_cannot_restore_an_older_hsk_level(self):
+        logic = COURSE.split("function loadLevel(lv){", 1)[1].split(
+            "function applyLessonDone(", 1
+        )[0]
+        self.assertIn("var PWA_LEVEL_REQUEST_SEQ=0;", COURSE)
+        self.assertIn("++PWA_LEVEL_REQUEST_SEQ", logic)
+        self.assertIn("requestId!==PWA_LEVEL_REQUEST_SEQ", logic)
+        self.assertGreaterEqual(logic.count("requestId!==PWA_LEVEL_REQUEST_SEQ"), 2)
+        self.assertIn("setSelectedLevel(MAP.level||lv)", logic)
+
     def test_course_tab_paints_before_expensive_trails(self):
         open_course = COURSE.split('if(s==="course"){', 1)[1].split(
             'if(s==="course"&&previous!=="course")', 1
