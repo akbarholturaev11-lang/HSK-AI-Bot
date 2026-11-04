@@ -383,7 +383,7 @@ if(PWA_CHECKOUT_HOST){
     meta=document.createElement("meta");meta.name="apple-mobile-web-app-status-bar-style";meta.content="default";document.head.appendChild(meta);
     var touch=document.createElement("link");touch.rel="apple-touch-icon";touch.href="/assets/hsk-ai-logo-256.png";document.head.appendChild(touch);
     var manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/iphone-pwa/manifest.webmanifest";document.head.appendChild(manifest);
-    var glass=document.createElement("link");glass.rel="stylesheet";glass.href="/course_v3_data/iphone-pwa-glass.css?v=20261103-1";document.head.appendChild(glass);
+    var glass=document.createElement("link");glass.rel="stylesheet";glass.href="/course_v3_data/iphone-pwa-glass.css?v=20261105-5421046cea3a";document.head.appendChild(glass);
   })();
 }
 const API=PWA_CHECKOUT_HOST?{
@@ -491,6 +491,8 @@ function returnToCourseFromCheckout(){
   if(PWA_CHECKOUT_EMBEDDED){
     try{if(window.parent.App?.closePwaCheckout(window))return}catch(e){}
   }
+  /* A direct checkout and Telegram never navigate to an unknown previous
+     website. The fallback remains deterministic. */
   /* replace avoids a course -> checkout -> course -> checkout browser-history loop. */
   window.location.replace(courseReturnUrl());
 }

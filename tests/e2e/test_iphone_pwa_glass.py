@@ -132,11 +132,13 @@ def test_real_browser_inbox_is_one_full_screen_feed(width, height):
         assert rows.first.get_by_text("Hisob xabari").is_visible()
         assert rows.nth(1).get_by_text("Dars tayyor").is_visible()
         assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
+        assert page.locator("#hsk-pwa-notice-root").get_attribute("data-mode") == "inbox"
         box = dialog.bounding_box()
         assert box and box["x"] == box["y"] == 0
         assert box["width"] == width
         assert box["height"] == page.evaluate("innerHeight")
         assert page.get_by_role("tab").count() == 0
+        assert page.locator("#hsk-pwa-notice-list").get_attribute("role") == "region"
         assert page.locator('[data-payment-status="approved"]').evaluate(
             "node => node.classList.contains('is-approved')"
         )
@@ -148,6 +150,67 @@ def test_real_browser_inbox_is_one_full_screen_feed(width, height):
         context.close()
         browser.close()
 
+
+
+def test_browser_qa_profiler_collects_only_coarse_tab_timing():
+    """The optional profiler observes real Chromium paint, never account data."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width":390, "height":844})
+        bootstrap(page)
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-perf.js"))
+        page.evaluate("window.App.show('rating')")
+        page.wait_for_function(
+            "window.HskPwaPerf && window.HskPwaPerf.snapshot().samples.some(x => x.kind === 'tab-paint')"
+        )
+        report = page.evaluate("window.HskPwaPerf.snapshot()")
+        assert report["samples"]
+        assert any(x["name"] == "rating" and x["kind"] == "tab-paint" for x in report["samples"])
+        assert all("user_id" not in str(item) and "initData" not in str(item)
+                   for item in report["samples"])
+        browser.close()
+
+
+
+def test_iphone_share_uses_public_referral_link_not_telegram_identity():
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width": 390, "height": 844})
+        bootstrap(page)
+        page.evaluate("""() => {
+          window.App.openSheet = html => {window.__inviteHtml = html;};
+        }""")
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-invite.js"))
+        page.evaluate("""() => window.HskPwaInvite.open({
+          link: 'https://hskai.app/apps?ref=abcd1234&mode=trial',
+          joined_count: 3, active_count: 1, required: 5
+        })""")
+        html = page.evaluate("window.__inviteHtml")
+        assert "hskai.app/apps?ref=abcd1234" in html
+        assert "Telegram" not in html
+        assert "telegram_id" not in html
+        assert "window.HskPwaInvite.share()" in html
+        browser.close()
+
+
+def test_pwa_read_only_avatar_has_no_telegram_edit_affordance():
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width":390, "height":844},is_mobile=True)
+        bootstrap(page)
+        page.evaluate("""() => {
+          const div=document.createElement('div');
+          div.className='phero';
+          div.innerHTML='<div class="pav"><span class="ed">Edit</span></div>';
+          document.body.appendChild(div);
+        }""")
+        assert page.locator(".phero .pav .ed").evaluate(
+            "el=>getComputedStyle(el).display"
+        ) == "none"
+        assert page.locator(".phero .pav").evaluate(
+            "el=>getComputedStyle(el).pointerEvents"
+        ) == "none"
+        browser.close()
 
 def test_rejected_receipt_centered_with_original_locale_and_one_action():
     with sync_playwright() as playwright:

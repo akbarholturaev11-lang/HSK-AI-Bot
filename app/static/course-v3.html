@@ -1628,7 +1628,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   .nav::before,.nav::after { display:none; }
 }
 </style>
-<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261104-175a0ec6f920">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261105-5421046cea3a">
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261104-2">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
@@ -2312,8 +2312,8 @@ var SALES_VALUE_PRIME_PROMISE=null,SALES_VALUE_PRIME_DONE=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 var PWA_COURSE_GET_PATHS={
   "/api/v3/course-tracks":"/api/v3/pwa/course-tracks",
-  "/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation",
-  "/api/miniapp/mistakes":"/api/v3/pwa/mistakes"
+  "/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation","/api/v3/invite":"/api/v3/pwa/invite",
+  "/api/miniapp/mistakes":"/api/v3/pwa/mistakes", "/api/miniapp/profile":"/api/v3/pwa/profile"
 };
 var PWA_COURSE_POST_PATHS={
   "/api/v3/course-tracks/switch":"/api/v3/pwa/course-tracks/switch",
@@ -2412,11 +2412,11 @@ try{
     syncCourseTelegramChrome();
     if(!e||!e.persisted)return;
     INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;clearDeferredCourseUnlock();
-    if(!INIT_DATA||!MAP)return;
+CHECKOUT_NAVIGATING=false; if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP)return;
     _fetchCourseMap(MAP.level||getSelectedLevel()).then(function(d){
       if(isHsk30AccessError(d,MAP.level||getSelectedLevel())){showCourseMapFailure({hsk30Gate:true,level:d.level||MAP.level});return}
-      if(!d||d._parseFail||d.authenticated===false||!d.units)return;
-      MAP=rememberLimitText(d);if(d.user)PROF=d.user;syncNotify();renderAll();
+      if(!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units)return;
+      MAP=rememberLimitText(d);if(d.user)PROF=d.user;adoptStudySetup(d);syncNotify();renderAll();
     }).catch(function(){});
   });
 }catch(e){}
@@ -2781,7 +2781,7 @@ var App={
     document.querySelectorAll("#nav button").forEach(function(b){var selected=b.dataset.s===s;b.classList.toggle("on",selected);if(selected)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
     renderFloatHint(s);
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
-    if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
+    if(s==="course"){       if(PWA_COURSE_HOST&&typeof requestAnimationFrame==="function"){         requestAnimationFrame(function(){requestAnimationFrame(function(){           if(SCREEN!=="course")return;           drawTrails();scrollToCurrentNode();         })});       }else{drawTrails();scrollToCurrentNode()}     }else{window.scrollTo(0,0)}
     if(s==="course"&&previous!=="course"){refreshCourseProgress();queueHsk30PromoCheck()}
     if(s==="mashq"){
       /* The bundled Practice cards do not depend on local preloads finishing.
@@ -3367,9 +3367,9 @@ var App={
       }).finally(function(){App._goalSavePending=null});
       return;
     }
-    var back=SETTINGS_SHEET;dailyGoal=v;renderProfile();
+    var back=SETTINGS_SHEET,previous=dailyGoal;dailyGoal=v;renderProfile();
     if(back)App.openSettings();else App.closeSheet();
-    savePreferences({daily_goal_xp:v}).then(function(){renderProfile();if(SETTINGS_SHEET)App.openSettings()})},
+    savePreferences({daily_goal_xp:v}).then(function(saved){       if(!saved||saved.ok!==true){dailyGoal=previous;toast(serverSaveErrorText(),2200)}       renderProfile();if(SETTINGS_SHEET)App.openSettings()     })},
   /* Birinchi darsdan keyingi ikki savol: vaqt -> fokus. Ikkinchi savol
      birinchisi saqlangach ochiladi, shunda bir vaqtda bitta savol turadi. */
   pickStudyGoal:function(k){App.closeSheet();
@@ -3494,7 +3494,7 @@ function schedulePracticeBackgroundLoad(){
         PRACTICE_BACKGROUND_SCHEDULED=false;
         if(SCREEN!=="mashq")return;
         prefetchPracticeAssets();
-        if(window.RESOURCE)RESOURCE.warm();
+        if(!PWA_COURSE_HOST){if(window.RESOURCE)RESOURCE.warm();}
       };
       if(typeof requestIdleCallback==="function")
         requestIdleCallback(warmInIdle,{timeout:1800});
@@ -6005,10 +6005,14 @@ function refreshPwaCheckoutMap(){
     return true;
   }).finally(function(){clearTimeout(timer)});
 }
-function loadCourseMap(lv,tries){
+function loadCourseMap(lv,tries,signal){
+  if(signal&&signal.aborted)return Promise.resolve({cancelled:true});
   tries=tries||0;
-  var controller=PWA_COURSE_HOST?new AbortController():null,timer;
-  var request=_fetchCourseMap(lv,controller?controller.signal:undefined);
+  // PWA: one bounded attempt. A newer level choice aborts this request
+  // through `signal`; a stalled connection aborts it after 8 s.
+  var controller=PWA_COURSE_HOST&&window.AbortController?new AbortController():null,timer,onAbort;
+  if(controller&&signal){onAbort=function(){controller.abort()};signal.addEventListener("abort",onAbort)}
+  var request=_fetchCourseMap(lv,controller?controller.signal:signal);
   if(controller)request=Promise.race([request,new Promise(function(resolve){
     timer=setTimeout(function(){controller.abort();resolve({_parseFail:true})},8000);
   })]);
@@ -6018,23 +6022,23 @@ function loadCourseMap(lv,tries){
     if(isHsk30AccessError(d,d.level||lv))return {hsk30Gate:true,error:d.error,level:d.level||lv};
     if(d&&(d.authenticated===false||d._status===401))return {auth:false};
     if(!d||d._parseFail||(d._status&&d._status>=500)){
-      if(!PWA_COURSE_HOST&&tries<3)return _retryCourseMap(lv,tries);
+      if(signal&&signal.aborted)return {cancelled:true};if(!PWA_COURSE_HOST&&tries<3)return _retryCourseMap(lv,tries,signal);
       return {error:true};
     }
     if(d._status>=400||!Array.isArray(d.units))return {error:true};
     if(d.smart_preferences_available===true)_ensureSmartTimezone(); // Best effort; learning/navigation never waits for Smart metadata.
     return {data:d};
   }).catch(function(){
-    if(!PWA_COURSE_HOST&&tries<3)return _retryCourseMap(lv,tries);
+    if(signal&&signal.aborted)return {cancelled:true};if(!PWA_COURSE_HOST&&tries<3)return _retryCourseMap(lv,tries,signal);
     return {error:true};
-  }).finally(function(){clearTimeout(timer)});
+  }).finally(function(){clearTimeout(timer);if(onAbort)signal.removeEventListener("abort",onAbort)});
 }
-function _retryCourseMap(lv,tries){return new Promise(function(res){setTimeout(res,500*(tries+1))}).then(function(){return loadCourseMap(lv,tries+1)})}
-function loadLevel(lv){
+function _retryCourseMap(lv,tries,signal){return new Promise(function(res){setTimeout(res,500*(tries+1))}).then(function(){return signal&&signal.aborted?{cancelled:true}:loadCourseMap(lv,tries+1,signal)})}
+var PWA_LEVEL_REQUEST_SEQ=0,PWA_LEVEL_ABORT=null; function loadLevel(lv){if(PWA_COURSE_HOST&&PWA_LEVEL_ABORT)PWA_LEVEL_ABORT.abort();PWA_LEVEL_ABORT=PWA_COURSE_HOST&&window.AbortController?new AbortController():null;var reqSignal=PWA_LEVEL_ABORT?PWA_LEVEL_ABORT.signal:undefined,requestId=PWA_COURSE_HOST?++PWA_LEVEL_REQUEST_SEQ:0;
   clearDeferredCourseUnlock();
   lv=setSelectedLevel(lv);
   if(!INIT_DATA&&!PWA_COURSE_HOST){hideCourseTrackSwitchPreparing();showAuthGate();return;}
-  return loadCourseMap(lv).then(function(res){
+  return loadCourseMap(lv,0,reqSignal).then(function(res){if(PWA_COURSE_HOST&&requestId!==PWA_LEVEL_REQUEST_SEQ)return;
     // On failure dismiss the loader before opening the error/paywall sheet.
     if(!res||!res.data)hideCourseTrackSwitchPreparing();
     if(showCourseMapFailure(res))return;
@@ -6044,7 +6048,7 @@ function loadLevel(lv){
     hideAuthGate();MAP=rememberLimitText(d);adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");
     hideCourseTrackSwitchPreparing();
     prefetchNearbyLessons();
-  }).catch(function(){
+  }).catch(function(){if(PWA_COURSE_HOST&&requestId!==PWA_LEVEL_REQUEST_SEQ)return;
     hideCourseTrackSwitchPreparing();
     showCourseLoadError();
   });
@@ -6681,7 +6685,7 @@ function _renderRatingContent(){
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
   var h=ratingTabCur==="friends"?'<h1 class="rating-friends-heading">'+esc(r.friends)+'</h1>':'<h1 class="section-title rating-title">'+esc(commonMessage("navigation.rating",LANG==="ru"?"Рейтинг":LANG==="tj"?"Рейтинг":"Reyting"))+'</h1>';
 	  if(ratingTabCur==="friends"){
-	    if(!referralMeta.loaded&&INIT_DATA){
+	    if(!referralMeta.loaded&&(INIT_DATA||PWA_COURSE_HOST)){
 	      referralMeta.loaded=true;
 	      $("#s-rating").innerHTML=h+'<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
 	      loadReferrals().then(function(){_renderRatingContent()}).catch(function(){referralMeta={loaded:true,error:true,joined:0,active:0,required:0};referralUsers=[];_renderRatingContent()});
@@ -6948,7 +6952,7 @@ function finishChallengeRound(){
 /* ---------- Invite friend sheet ---------- */
 var _invitePayload=null;
 function renderInviteSheet(d){
-  _invitePayload=d;
+  _invitePayload=d;if(PWA_COURSE_HOST&&window.HskPwaInvite){HskPwaInvite.open(d);return}
   var sendLbl=courseMessage("rating.inviteSend",LANG==="ru"?"Отправить сообщение":LANG==="tj"?"Паём фиристодан":"Xabar yuborish");
   var title=courseMessage("rating.inviteTitle",LANG==="ru"?"Пригласить друга":LANG==="tj"?"Дӯстро даъват кардан":"Do'st chaqirish");
   var hint=courseMessage("rating.inviteHint",LANG==="ru"?"Готовый текст откроется в Telegram. Выберите друга и отправьте.":LANG==="tj"?"Матни тайёр дар Telegram кушода мешавад. Дӯстро интихоб кунед ва фиристед.":"Tayyor matn Telegramda ochiladi. Do'stni tanlab yuboring.");
@@ -6961,7 +6965,7 @@ function renderInviteSheet(d){
 function openInviteSheet(){
   var loading=courseMessage("rating.inviteLoading",LANG==="ru"?"Готовим ссылку…":LANG==="tj"?"Силка омода мешавад…":"Link tayyorlanyapti…");
 	  App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">友</div><div class="tr">'+loading+'</div></div>');
-	  if(INIT_DATA){
+	  if(INIT_DATA||PWA_COURSE_HOST){
 	    _apiGet(invitePayloadUrl()).then(function(r){return r.json()}).then(function(d){
 	      if(d&&d.ok){renderInviteSheet(d);return}
 	      throw new Error("invite_failed");
@@ -7393,7 +7397,7 @@ function renderProfile(){
     +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'"'+(PWA_COURSE_HOST?'':' onclick="App.avatarEdit()"')+'>'+esc(PROF.avatar||"阿")+(PWA_COURSE_HOST?'':myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span>')+'</div>'
     +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span></div>'
     +(goalLabel()?'<div class="profile-goal-row"><span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span></div>':'')+'</div></div>'
-    +(PWA_COURSE_HOST?'':'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>')
+    +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
     +profileAccuracyHtml()
     +'<div id="pomp-desktop-profile-root"></div>'
     +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+courseMessage("streak",t.streak)+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
@@ -8666,7 +8670,7 @@ var LIVE_TEXT={
   tj:{startLive:"Барои гуфтугӯи зинда пахш кунед",stopLive:"Микрофон фаъол · Барои анҷом пахш кунед",liveFallback:"Live дастрас нест. Барои гап задан микрофонро нигоҳ доред."}
 };
 Object.keys(LIVE_TEXT).forEach(function(k){Object.assign(LD[k],LIVE_TEXT[k])});var COURSE_VOICE_CATALOG=window.HSKAI_COURSE_I18N||{};Object.keys(LD).forEach(function(locale){var messages=COURSE_VOICE_CATALOG[locale]||{};Object.keys(LD[locale]).forEach(function(key){var value=messages["courseVoiceInline."+key];if(typeof value==="string"&&value)LD[locale][key]=value})});
-var L=LD[LANG]||LD.ru;
+var L=LD[LANG]||LD.ru;if(PWA_COURSE_HOST)Object.keys(LD).forEach(function(locale){var copy=(COURSE_VOICE_CATALOG[locale]||{});LD[locale].micDeny=copy["pronunciation.micDeny"]||LD[locale].micDeny});
 var tg=window.Telegram&&window.Telegram.WebApp;
 var $=function(id){return document.getElementById("vc-"+id)};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})}
@@ -9314,7 +9318,7 @@ window.VOICE=VOICE;
 
 function renderAll(){
   document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=courseMessage("nav."+s.dataset.i,T().nav[s.dataset.i])});
-  if(MAP){renderCourse();renderMashq();if(SCREEN==="rating")renderRating();renderProfile();if(SCREEN==="voice")renderVoice()}
+  if(MAP){renderCourse();renderMashq();if(SCREEN==="rating")renderRating();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();if(SCREEN==="voice")renderVoice()}
 }
 navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
@@ -9695,7 +9699,7 @@ var NavBack={
     NavBack.sync();
   }
 };
-NavBack.init();
+window.NavBack=NavBack; NavBack.init();
 window.addEventListener("pageshow",function(ev){
   if(!ev.persisted)return;
   try{sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
@@ -9704,8 +9708,8 @@ window.addEventListener("pageshow",function(ev){
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261021-c61abddcc057"></script>
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
-<script src="/course_v3_data/iphone-pwa-notices.js?v=20261104-b2923983a5a6"></script>
+<script src="/course_v3_data/iphone-pwa-notices.js?v=20261105-0022e1e89b2f"></script>
 <script src="/course_v3_data/iphone-pwa-feedback.js?v=20261103-1"></script>
-<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261104-2"></script>
+<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261104-2"></script><script>if(location.pathname==="/iphone-pwa/course"){var hskPwaInvite=document.createElement("script");hskPwaInvite.src="/course_v3_data/iphone-pwa-invite.js?v=20261105-f6bf81e66fe4";document.head.appendChild(hskPwaInvite)}</script><script>if(location.pathname==="/iphone-pwa/course"&&new URLSearchParams(location.search).get("pwa_perf")==="1"){var hskPwaPerfScript=document.createElement("script");hskPwaPerfScript.src="/course_v3_data/iphone-pwa-perf.js?v=20261105-0dbef5d08a9d";document.head.appendChild(hskPwaPerfScript)}</script>
 </body>
 </html>

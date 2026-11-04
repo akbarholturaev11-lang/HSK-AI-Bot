@@ -315,16 +315,22 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
     async def login_page(request: Request):
         try:
             require_pwa_enabled(settings_obj)
+            # A returning learner already has an authenticated browser session.
+            # Redirect on the server so the login welcome screen never flashes
+            # before its JavaScript notices the valid HttpOnly cookie.
             cookie = request.cookies.get(PWA_SESSION_COOKIE)
             if cookie:
                 try:
                     async with session_factory() as db:
                         await PwaAuthService(db, settings_obj).actor(cookie)
-                except PwaAuthError as exc:
-                    if exc.code != "pwa_session_required":
-                        raise
+                except PwaAuthError:
+                    # Expired/revoked sessions still see the real login page;
+                    # never treat an unverified cookie as a signed-in learner.
+                    pass
                 else:
-                    return RedirectResponse("/iphone-pwa/course", status_code=303, headers=_NO_STORE)
+                    return RedirectResponse(
+                        "/iphone-pwa/course", status_code=303, headers=_NO_STORE,
+                    )
             return FileResponse(
                 "app/static/iphone-pwa-login.html", media_type="text/html",
                 headers={**_NO_STORE,
@@ -736,6 +742,87 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             status = (200 if result.get("ok") else
                       409 if result.get("error") == "hsk_exam_material_changed" else 400)
             return JSONResponse(result, status_code=status, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/api/v3/pwa/invite")
+    async def pwa_invite(request: Request):
+        """Read canonical referrals for this verified PWA account only.
+
+        The legacy Mini App includes Telegram IDs and usernames; the browser
+        UI needs neither. Do not export either identifier or trust client
+        language/level as an identity claim.
+        """
+        from app.services.referral_service import (
+            ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE, public_apps_url,
+        )
+
+        try:
+            require_pwa_enabled(settings_obj)
+            if set(request.query_params) - {"lang", "tz"}:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            lang = str(request.query_params.get("lang") or "uz").lower()
+            if lang not in {"uz", "ru", "tj"}:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            tz_str = request.query_params.get("tz")
+            tz = 0 if tz_str is None else int(tz_str)
+            if not -720 <= tz <= 840:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+                service = ReferralService(db)
+                await service.user_repo.ensure_referral_code(actor)
+                joined = await service.referral_repo.count_by_referrer(actor)
+                active = await service.get_trial_activation_progress(actor)
+                source = await service.list_miniapp_referrals(
+                    actor, timezone_offset_minutes=tz, limit=30,
+                )
+                code = str(actor.referral_code or "")
+                await db.commit()
+            public = [{
+                "rank": int(item.get("rank") or 0),
+                "name": str(item.get("name") or "").strip()[:40],
+                "status": str(item.get("status") or "pending")[:20],
+                "xp": int(item.get("xp") or 0),
+                "total_xp": int(item.get("total_xp") or 0),
+                "course_level": str(item.get("course_level") or "")[:32],
+                "completed_lessons": int(item.get("completed_lessons") or 0),
+                "is_paid": bool(item.get("is_paid")),
+                "is_current_user": False,
+            } for item in source if isinstance(item, dict)]
+            return JSONResponse({
+                "ok": True,
+                "link": public_apps_url(settings_obj, code, trial=True),
+                "joined_count": int(joined),
+                "active_count": int(active),
+                "required": int(REFERRAL_TRIAL_REQUIRED_ACTIVE),
+                "referrals": public,
+            }, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+        except (TypeError, ValueError):
+            return _error(PwaAuthError("pwa_request_invalid", status_code=422))
+
+    @router.get("/api/v3/pwa/profile")
+    async def pwa_profile(request: Request):
+        """Account-owned profile analytics without a Telegram client identity."""
+        from app.services.study_miniapp_service import StudyMiniAppService
+
+        try:
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                )
+                result = await StudyMiniAppService(db).get_profile_payload(actor)
+                if result.get("ok"):
+                    # Provider usernames are not PWA profile identities.
+                    if isinstance(result.get("user"), dict):
+                        result["user"].pop("telegram_username", None)
+                    await db.commit()
+            return JSONResponse(result, status_code=200 if result.get("ok") else 404,
+                                headers=_NO_STORE)
         except PwaAuthError as exc:
             return _error(exc)
 
