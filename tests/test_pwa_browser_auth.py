@@ -2,16 +2,21 @@
 
 import unittest
 import json
+import base64
 from pathlib import Path
 import xml.etree.ElementTree as ET
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 from urllib.parse import parse_qs, urlparse
+from uuid import uuid4
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 import sqlalchemy as sa
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -24,16 +29,22 @@ from app.api.miniapp_entitlements import create_miniapp_entitlements_router
 from app.api.miniapp_practice import create_miniapp_practice_router
 from app.db.base import Base
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
+from app.db.models.learner_pwa_push import LearnerPwaPushOutbox, LearnerPwaPushSubscription
 from app.db.models.account_notice_delivery import AccountNoticeDelivery
 from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.payment import Payment
+from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderConsent, SmartReminderJob, SmartReminderPreference
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
+from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.identity_link_service import IdentityLinkService
 from app.services.oidc_verifier import VerifiedIdentity
 from app.services.pwa_auth_service import PWA_OAUTH_COOKIE, PWA_SESSION_COOKIE
+from app.services.learner_pwa_push import enqueue_event, dispatch_batch
+from app.services.payment_notify_service import PaymentNotifyService
+from app.services.notification_delivery_service import NotificationDeliveryService, TelegramNotice
 
 
 ORIGIN = "https://api.example.test"
@@ -692,6 +703,29 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         first = await self.callback(state)
         self.assertEqual(first.status_code, 303, first.text)
         old_cookie = first.cookies[PWA_SESSION_COOKIE]
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            old_device_id = await db.scalar(
+                select(DesktopSession.device_id)
+                .join(DesktopDevice, DesktopDevice.id == DesktopSession.device_id)
+                .where(DesktopDevice.user_id == 1, DesktopDevice.platform == "pwa",
+                       DesktopSession.revoked_at.is_(None))
+            )
+            push_subscription_id = str(uuid4())
+            push_event_id = str(uuid4())
+            db.add(LearnerPwaPushSubscription(
+                id=push_subscription_id, device_id=old_device_id,
+                endpoint_hash="e"*64, encrypted_payload="encrypted-test-only",
+                created_at=now, updated_at=now,
+            ))
+            await db.flush()
+            db.add(LearnerPwaPushOutbox(
+                id=push_event_id, user_id=1, subscription_id=push_subscription_id,
+                event_key="f"*64, source="account", source_id=999,
+                language="uz", state="pending", attempts=0,
+                created_at=now, updated_at=now, next_attempt_at=now,
+            ))
+            await db.commit()
         first_notices = (await self.client.get(notices_url)).json()
         self.assertEqual(
             [row["title"] for row in first_notices["notices"]],
@@ -737,6 +771,10 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotEqual(second_user_id, 1)
         self.assertFalse(own_session.json()["telegram_linked"])
         async with self.sessions() as db:
+            old_subscription = await db.get(LearnerPwaPushSubscription, push_subscription_id)
+            old_event = await db.get(LearnerPwaPushOutbox, push_event_id)
+            self.assertIsNotNone(old_subscription.revoked_at)
+            self.assertEqual(old_event.state, "cancelled")
             second_user = await db.get(User, second_user_id)
             self.assertIsNone(second_user.telegram_id)
             db.add(AccountNoticeDelivery(
@@ -3913,6 +3951,354 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
             self.assertEqual((await db.execute(
                 select(DesktopLinkRequest).where(DesktopLinkRequest.platform == "pwa")
             )).scalars().all(), [])
+
+    async def test_learner_push_is_device_bound_encrypted_csrf_protected_and_reversible(self):
+        self.settings.PWA_PUSH_ENABLED = True
+        self.settings.PWA_PUSH_SEND_ENABLED = False
+        self.settings.PWA_PUSH_STORAGE_KEY = Fernet.generate_key().decode("ascii")
+        vapid_private = ec.generate_private_key(ec.SECP256R1())
+        private_bytes = vapid_private.private_numbers().private_value.to_bytes(32, "big")
+        public_bytes = vapid_private.public_key().public_bytes(Encoding.X962, PublicFormat.UncompressedPoint)
+        encode = lambda value: base64.urlsafe_b64encode(value).rstrip(b"=").decode("ascii")
+        self.settings.PWA_PUSH_VAPID_PRIVATE_KEY = encode(private_bytes)
+        self.settings.PWA_PUSH_VAPID_PUBLIC_KEY = encode(public_bytes)
+        self.settings.PWA_PUSH_VAPID_SUBJECT = "mailto:security@example.test"
+
+        self.assertEqual((await self.client.get("/api/v3/pwa/push/status")).status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        status = await self.client.get("/api/v3/pwa/push/status")
+        self.assertEqual(status.status_code, 200, status.text)
+        self.assertTrue(status.json()["enabled"])
+        self.assertFalse(status.json()["subscribed"])
+
+        subscription_key = ec.generate_private_key(ec.SECP256R1()).public_key().public_bytes(
+            Encoding.X962, PublicFormat.UncompressedPoint,
+        )
+        subscription = {
+            "endpoint": "https://web.push.apple.com/example/opaque-endpoint-token",
+            "keys": {"p256dh": encode(subscription_key), "auth": encode(b"a" * 16)},
+        }
+        path = "/api/v3/pwa/push/subscribe"
+        self.assertEqual((await self.client.post(path, headers={"Origin": ORIGIN}, json=subscription)).status_code, 403)
+        self.assertEqual((await self.client.post(path, headers={
+            "Origin": "https://evil.test", "X-HSK-PWA-CSRF": csrf,
+        }, json=subscription)).status_code, 403)
+        self.assertEqual((await self.client.post(path, headers={
+            "Origin": ORIGIN, "X-HSK-PWA-CSRF": "forged",
+        }, json=subscription)).status_code, 403)
+        self.assertEqual((await self.client.post(path, headers={
+            "Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf,
+        }, json={**subscription, "user_id": 999})).status_code, 422)
+
+        oversized = await self.client.post(path, headers={
+            "Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf,
+            "Content-Type": "application/json",
+        }, content=b"{" + b" " * 5000 + b"}")
+        self.assertEqual(oversized.status_code, 413, oversized.text)
+        for endpoint in (
+            "https://fcm.googleapis.com/fcm/send/device-token",
+            "https://web.push.apple.com.evil.test/device-token",
+            "http://web.push.apple.com/device-token",
+        ):
+            rejected = await self.client.post(path, headers={
+                "Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf,
+            }, json={**subscription, "endpoint": endpoint})
+            self.assertEqual(rejected.status_code, 422, endpoint)
+        accepted = await self.client.post(path, headers={
+            "Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf,
+        }, json=subscription)
+        self.assertEqual(accepted.status_code, 200, accepted.text)
+        status = await self.client.get("/api/v3/pwa/push/status")
+        self.assertTrue(status.json()["subscribed"])
+        subscription_id = status.json()["subscription_id"]
+        async with self.sessions() as db:
+            stored = await db.get(LearnerPwaPushSubscription, subscription_id)
+            self.assertIsNotNone(stored)
+            self.assertNotIn("opaque-endpoint-token", stored.encrypted_payload)
+            decoded = Fernet(self.settings.PWA_PUSH_STORAGE_KEY.encode("ascii")).decrypt(
+                stored.encrypted_payload.encode("ascii")
+            )
+            self.assertIn(b"opaque-endpoint-token", decoded)
+            self.assertEqual(stored.device_id, (await db.scalar(
+                select(DesktopSession.device_id).where(DesktopSession.revoked_at.is_(None))
+            )))
+            payment = Payment(
+                id=901, user_id=1, user_telegram_id=1001, plan_type="1_month",
+                amount=89, currency="TJS", payment_status="rejected", reviewed_at=datetime.now(timezone.utc),
+            )
+            db.add(payment)
+            await db.commit()
+            with patch("app.services.payment_notify_service.settings", SimpleNamespace(
+                PWA_AUTH_ENABLED=True, PWA_PUSH_ENABLED=True,
+            )), patch("app.services.payment_notify_service.AndroidPaymentPushService.notify",
+                     new_callable=AsyncMock):
+                await PaymentNotifyService(db)._android_push(payment, "rejected", user=await db.get(User, 1))
+            payment_events = (await db.scalars(select(LearnerPwaPushOutbox).where(
+                LearnerPwaPushOutbox.source == "payment",
+                LearnerPwaPushOutbox.source_id == payment.id,
+            ))).all()
+            self.assertEqual(len(payment_events), 1)
+            self.assertEqual(payment_events[0].user_id, 1)
+            current_user = await db.get(User, 1)
+            account_service = NotificationDeliveryService(db, SimpleNamespace(
+                ANDROID_PUSH_NOTICES_ENABLED=False,
+                PWA_AUTH_ENABLED=True, PWA_PUSH_ENABLED=True,
+            ))
+            bot = SimpleNamespace(send_message=AsyncMock())
+            with patch.object(BotBlockStatusService, "is_bot_blocked", return_value=False), \
+                 patch.object(BotBlockStatusService, "handle_send_success", new_callable=AsyncMock):
+                outcome = await account_service.deliver(
+                    bot, current_user, key="subscription_update", lang="uz",
+                    telegram=TelegramNotice(text="Subscription status changed"),
+                    reason="qa_pwa_push", title="Subscription update", body="Renewal details",
+                    action="subscription",
+                )
+            self.assertEqual(outcome, "telegram")
+            account_events = (await db.scalars(select(LearnerPwaPushOutbox).where(
+                LearnerPwaPushOutbox.source == "account",
+            ))).all()
+            self.assertEqual(len(account_events), 1)
+            # Browser-only provider accounts have no Telegram chat ID. Their
+            # existing account notice still persists for the PWA without
+            # inventing a Telegram recipient or rejecting the PWA delivery.
+            with patch("app.services.notification_delivery_service.actual_telegram_id", return_value=None):
+                browser_only_outcome = await account_service.deliver(
+                    bot, current_user, key="subscription_update", lang="uz",
+                    telegram=TelegramNotice(text="Browser-only subscription update"),
+                    reason="qa_browser_only_pwa_push", title="Browser-only notice",
+                    body="Available in the signed-in PWA", action="subscription",
+                )
+            self.assertEqual(browser_only_outcome, "skipped")
+            account_events = (await db.scalars(select(LearnerPwaPushOutbox).where(
+                LearnerPwaPushOutbox.source == "account",
+            ))).all()
+            self.assertEqual(len(account_events), 2)
+
+        account_feed = await self.client.get("/api/v3/pwa/account-notices")
+        self.assertEqual(account_feed.status_code, 200, account_feed.text)
+        self.assertTrue(any(
+            item["title"] == "Browser-only notice"
+            for item in account_feed.json()["notices"]
+        ))
+
+        revoked = await self.client.post("/api/v3/pwa/push/revoke", headers={
+            "Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf,
+        }, json={"subscription_id": subscription_id})
+        self.assertEqual(revoked.status_code, 200, revoked.text)
+        self.assertFalse((await self.client.get("/api/v3/pwa/push/status")).json()["subscribed"])
+        async with self.sessions() as db:
+            stored = await db.get(LearnerPwaPushSubscription, subscription_id)
+            self.assertIsNotNone(stored.revoked_at)
+            events = (await db.scalars(select(LearnerPwaPushOutbox))).all()
+            self.assertCountEqual([event.source for event in events], ["payment", "account", "account"])
+            self.assertTrue(all(event.state == "cancelled" for event in events))
+
+        # A subsequent logout revokes an active server subscription and its queue.
+        reenabled = await self.client.post(path, headers={
+            "Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf,
+        }, json=subscription)
+        self.assertEqual(reenabled.status_code, 200, reenabled.text)
+        session_status = await self.client.get("/api/v3/pwa-auth/session")
+        logged_out = await self.client.post("/api/v3/pwa-auth/logout", headers={
+            "Origin": ORIGIN, "X-HSK-PWA-CSRF": session_status.json()["csrf"],
+        })
+        self.assertEqual(logged_out.status_code, 200, logged_out.text)
+        self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
+        async with self.sessions() as db:
+            stored = await db.get(LearnerPwaPushSubscription, subscription_id)
+            self.assertIsNotNone(stored.revoked_at)
+
+    async def test_push_outbox_deduplicates_and_sends_content_free_payload_with_bounded_cleanup(self):
+        self.settings.PWA_PUSH_ENABLED = True
+        self.settings.PWA_PUSH_SEND_ENABLED = True
+        self.settings.PWA_PUSH_STORAGE_KEY = Fernet.generate_key().decode("ascii")
+        vapid_private = ec.generate_private_key(ec.SECP256R1())
+        private_bytes = vapid_private.private_numbers().private_value.to_bytes(32, "big")
+        public_bytes = vapid_private.public_key().public_bytes(Encoding.X962, PublicFormat.UncompressedPoint)
+        encode = lambda value: base64.urlsafe_b64encode(value).rstrip(b"=").decode("ascii")
+        self.settings.PWA_PUSH_VAPID_PRIVATE_KEY = encode(private_bytes)
+        self.settings.PWA_PUSH_VAPID_PUBLIC_KEY = encode(public_bytes)
+        self.settings.PWA_PUSH_VAPID_SUBJECT = "mailto:security@example.test"
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        subscription_key = ec.generate_private_key(ec.SECP256R1()).public_key().public_bytes(
+            Encoding.X962, PublicFormat.UncompressedPoint,
+        )
+        subscription = {
+            "endpoint": "https://web.push.apple.com/example/opaque-delivery-token",
+            "keys": {"p256dh": encode(subscription_key), "auth": encode(b"b" * 16)},
+        }
+        response = await self.client.post("/api/v3/pwa/push/subscribe", headers={
+            "Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf,
+        }, json=subscription)
+        self.assertEqual(response.status_code, 200, response.text)
+
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            notices = [CourseUserNotification(
+                user_id=1, telegram_id=1001, key="daily_goal", source="pwa_push_test",
+                language="uz", title="Private title", body="Private answer text must never reach push",
+                action="course", created_at=now,
+            ) for _ in range(2)]
+            db.add_all(notices)
+            await db.flush()
+            self.assertEqual(await enqueue_event(db, user_id=1, source="course",
+                source_id=notices[0].id, language="uz", now=now), 1)
+            self.assertEqual(await enqueue_event(db, user_id=1, source="course",
+                source_id=notices[0].id, language="uz", now=now), 0)
+            self.assertEqual(await enqueue_event(db, user_id=1, source="course",
+                source_id=notices[1].id, language="uz", now=now), 1)
+            await db.commit()
+
+        delivered = []
+        async def accepted_sender(payload, public_payload, private_key, subject, source):
+            delivered.append((payload, json.loads(public_payload), source))
+            return 201
+        first = await dispatch_batch(self.sessions, settings_obj=self.settings, sender=accepted_sender, now=now, limit=1)
+        self.assertEqual(first["accepted"], 1)
+        self.assertEqual(delivered[0][0]["endpoint"], subscription["endpoint"])
+        self.assertEqual(delivered[0][2], "course")
+        self.assertNotIn("Private", delivered[0][1]["title"] + delivered[0][1]["body"])
+        self.assertNotIn("answer", json.dumps(delivered[0][1]))
+        self.assertEqual(delivered[0][1]["url"], "/iphone-pwa/course?notice=1")
+
+        async def gone_sender(*_):
+            return 410
+        second = await dispatch_batch(self.sessions, settings_obj=self.settings, sender=gone_sender, now=now, limit=1)
+        self.assertEqual(second["dead"], 1)
+        async with self.sessions() as db:
+            rows = (await db.scalars(select(LearnerPwaPushOutbox).order_by(LearnerPwaPushOutbox.created_at))).all()
+            self.assertCountEqual([row.state for row in rows], ["accepted", "dead"])
+            subscription_row = (await db.scalars(select(LearnerPwaPushSubscription))).one()
+            self.assertIsNotNone(subscription_row.revoked_at)
+
+    async def test_smart_reminder_push_requires_original_consent_and_accepted_terminal_event(self):
+        from app.services.learner_pwa_push import _smart_study_event_allowed
+
+        now = datetime.now(timezone.utc)
+        start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        job_id = str(uuid4())
+        async with self.sessions() as db:
+            db.add(SmartReminderPreference(
+                user_id=1, master_enabled=True, revision=3, grant_epoch=2,
+                migration_version=1, time_mode="auto", channel_mode="auto",
+            ))
+            consent = SmartReminderConsent(
+                user_id=1, channel="telegram", source_key="intent:telegram",
+                device_id=None, state="on", source="user_intent", revision=3,
+                evidence_version=1, action_at=now, observed_at=now,
+            )
+            job = SmartReminderJob(
+                id=job_id, user_id=1, category="study", local_day=date.today(),
+                timezone_name="Etc/UTC", day_start_utc=start,
+                day_end_utc=start+timedelta(days=1), scheduled_at=start+timedelta(hours=8),
+                expires_at=start+timedelta(hours=20), state="provider_accepted",
+                preference_revision=3, grant_epoch=2, policy_version="test",
+                selected_channel="telegram", course_key="hsk1", lesson_order=1,
+                created_at=now, updated_at=now,
+            )
+            notice = CourseUserNotification(
+                user_id=1, telegram_id=1001, key="smart_study", source="smart_telegram",
+                language="uz", title="Darsni davom ettiring", body="Private lesson content",
+                action="course", level="hsk1", lesson_order=1, dedupe_key="job:"+job_id,
+                created_at=now,
+            )
+            db.add_all([consent, job, notice])
+            await db.flush()
+            db.add(SmartReminderAttempt(
+                id=str(uuid4()), job_id=job_id, attempt_key="a"*64, channel="telegram",
+                device_id=None, grant_epoch=2, state="provider_accepted",
+                prepared_at=now-timedelta(minutes=1), started_at=now-timedelta(seconds=30),
+                resolved_at=now, expires_at=now+timedelta(hours=1), reason_code="accepted",
+            ))
+            await db.flush()
+            self.assertTrue(await _smart_study_event_allowed(db, notice))
+
+            # Turning the original channel consent off suppresses a queued push.
+            consent.state = "off"
+            consent.revision = 4
+            await db.flush()
+            self.assertFalse(await _smart_study_event_allowed(db, notice))
+
+            # Re-enabling after this job was planned never revives its old push.
+            consent.state = "on"
+            await db.flush()
+            self.assertFalse(await _smart_study_event_allowed(db, notice))
+
+            consent.revision = 3
+            job.state = "unknown"
+            await db.flush()
+            self.assertFalse(await _smart_study_event_allowed(db, notice))
+
+    async def test_android_smart_push_requires_the_selected_android_consent(self):
+        from app.services.learner_pwa_push import _smart_study_event_allowed
+
+        now = datetime.now(timezone.utc)
+        start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        job_id, device_id = str(uuid4()), str(uuid4())
+        async with self.sessions() as db:
+            device = DesktopDevice(
+                id=device_id, user_id=1, telegram_id=1001,
+                installation_key_hash="d"*64, platform="android", app_version="2.0.0",
+            )
+            db.add(device)
+            await db.flush()
+            preference = SmartReminderPreference(
+                user_id=1, master_enabled=True, revision=3, grant_epoch=2,
+                migration_version=1, time_mode="auto", channel_mode="auto",
+            )
+            consent = SmartReminderConsent(
+                user_id=1, channel="android", source_key="intent:android:"+device_id,
+                device_id=device_id, state="on", source="user_intent", revision=3,
+                evidence_version=1, action_at=now, observed_at=now,
+            )
+            job = SmartReminderJob(
+                id=job_id, user_id=1, category="study", local_day=date.today(),
+                timezone_name="Etc/UTC", day_start_utc=start,
+                day_end_utc=start+timedelta(days=1), scheduled_at=start+timedelta(hours=8),
+                expires_at=start+timedelta(hours=20), state="unknown",
+                preference_revision=3, grant_epoch=2, policy_version="test",
+                selected_channel="android", selected_device_id=device_id,
+                course_key="hsk1", lesson_order=1, created_at=now, updated_at=now,
+            )
+            notice = CourseUserNotification(
+                user_id=1, telegram_id=1001, key="smart_study", source="smart_android",
+                language="uz", title="Darsni davom ettiring", body="Darsni davom ettiring",
+                action="course", level="hsk1", lesson_order=1, dedupe_key="job:"+job_id,
+                created_at=now,
+            )
+            db.add_all([preference, consent, job, notice])
+            await db.flush()
+            db.add(SmartReminderAttempt(
+                id=str(uuid4()), job_id=job_id, attempt_key="c"*64, channel="android",
+                device_id=device_id, grant_epoch=2, state="client_posted_unverified",
+                prepared_at=now-timedelta(minutes=1), started_at=now-timedelta(seconds=30),
+                resolved_at=now, expires_at=now+timedelta(hours=1), reason_code="client_posted_unverified",
+            ))
+            await db.flush()
+            self.assertTrue(await _smart_study_event_allowed(db, notice))
+            consent.state = "off"
+            consent.revision = 4
+            await db.flush()
+            self.assertFalse(await _smart_study_event_allowed(db, notice))
+
+    async def test_push_endpoints_fail_closed_when_sender_or_push_is_disabled(self):
+        state = await self.begin()
+        await self.callback(state)
+        status = await self.client.get("/api/v3/pwa/push/status")
+        self.assertEqual(status.status_code, 200)
+        self.assertFalse(status.json()["enabled"])
+        self.assertIsNone(status.json()["public_key"])
+        worker = await self.client.get("/iphone-pwa/sw.js")
+        self.assertEqual(worker.status_code, 200)
+        self.assertEqual(worker.headers.get("service-worker-allowed"), "/iphone-pwa/")
+        self.assertIn('addEventListener("push"', worker.text)
+        self.assertIn('addEventListener("notificationclick"', worker.text)
+        self.assertNotRegex(worker.text, r'addEventListener\(\s*["\']fetch["\']')
+        self.assertNotIn("caches.open", worker.text)
 
     async def test_native_and_telegram_routes_never_accept_pwa_cookie_as_auth(self):
         state = await self.begin()

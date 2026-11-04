@@ -8,6 +8,7 @@ from dataclasses import asdict, dataclass, replace
 from datetime import datetime, time, timedelta, timezone
 import hashlib
 import json
+import logging
 import re
 from types import SimpleNamespace
 from typing import Annotated, Literal
@@ -35,6 +36,7 @@ GRANT = SmartReminderAndroidGrant.__table__
 CAP = SmartReminderCapability.__table__
 UUID_PATTERN = r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 UUIDText = Annotated[StrictStr, Field(pattern="^" + UUID_PATTERN + "$")]
+logger = logging.getLogger(__name__)
 Counter = Annotated[StrictInt, Field(ge=0, le=MAX_REVISION)]
 VERSION = "smart-android-v1"
 
@@ -415,4 +417,31 @@ class SmartReminderAndroidService:
                 await self.session.execute(update(JOB).where(JOB.c.id == job_id).values(
                     state="cancelled" if state == "confirmed_not_displayed" else "unknown",
                     lease_token=None, lease_expires_at=None, updated_at=now, reason_code=body.outcome))
+                if state == "client_posted_unverified":
+                    # Persist the already-posted Android Smart reminder in the
+                    # shared course inbox so an opted-in PWA can open the same
+                    # canonical notice. This does not trigger a second Android
+                    # or Telegram delivery and the push worker rechecks consent.
+                    from app.db.models.user import User
+                    from app.services.course_notification_service import CourseNotificationService, notification_title
+                    from app.services.notification_template_service import KEY_SMART_STUDY
+                    from app.config import settings
+                    user = await self.session.get(User, actor.user_id)
+                    if (user is not None and settings.PWA_AUTH_ENABLED is True
+                            and settings.PWA_PUSH_ENABLED is True):
+                        try:
+                            from app.services.learner_pwa_push import active_subscriptions
+                            if await active_subscriptions(self.session, actor.user_id):
+                                language = user.language if user.language in {"uz", "ru", "tj"} else "ru"
+                                await CourseNotificationService(self.session).record(
+                                    user, key=KEY_SMART_STUDY, lang=language,
+                                    title=notification_title(KEY_SMART_STUDY, language),
+                                    body=notification_title(KEY_SMART_STUDY, language),
+                                    action="course", source="smart_android", level=row["course_key"],
+                                    lesson_order=row["lesson_order"], dedupe_key="job:" + job_id,
+                                    params={"template_service": KEY_SMART_STUDY, "lesson": row["lesson_order"]},
+                                    pwa_push_authorized=True,
+                                )
+                        except Exception:  # noqa: BLE001 - optional PWA Push must not reject an Android receipt
+                            logger.warning("Learner PWA Smart push enqueue unavailable")
             return denied("android_receipt_recorded") | {"receipt_id": body.receipt_id, "outcome": body.outcome}

@@ -196,6 +196,16 @@ class PwaAuthService:
                 == self.desktop._hash("pwa-cookie", replace_cookie)
             )
         if previous_sessions:
+            previous_device_ids = (await self.session.scalars(
+                select(DesktopSession.device_id)
+                .join(DesktopDevice, DesktopSession.device_id == DesktopDevice.id)
+                .where(or_(*previous_sessions), DesktopDevice.platform == PWA_PLATFORM)
+                .distinct()
+            )).all()
+            if previous_device_ids:
+                from app.services.learner_pwa_push import revoke_device_subscriptions
+                for previous_device_id in previous_device_ids:
+                    await revoke_device_subscriptions(self.session, previous_device_id)
             await self.session.execute(
                 update(DesktopSession)
                 .where(
@@ -319,5 +329,7 @@ class PwaAuthService:
 
     async def logout(self, cookie: str, csrf: str):
         _, session = await self.mutation_actor(cookie, csrf)
+        from app.services.learner_pwa_push import revoke_device_subscriptions
+        await revoke_device_subscriptions(self.session, session.device_id)
         session.revoked_at = _now()
         await self.session.commit()

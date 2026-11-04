@@ -43,6 +43,10 @@ from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
 from app.admin_api.pwa_inbox_attachments import create_admin_pwa_inbox_attachment_router
 from app.admin_api.pwa_push import create_admin_pwa_push_router
 from app.services.admin_pwa_push_dispatch import dispatch_batch, sender_config
+from app.services.learner_pwa_push import (
+    dispatch_batch as dispatch_learner_pwa_push_batch,
+    sender_config as learner_pwa_sender_config,
+)
 from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader
 from app.admin_api.pwa_manual_aggregate_refresh import create_manual_aggregate_refresh_router
 from app.admin_api.pwa_mcp_http import create_admin_pwa_mcp_http_router
@@ -568,25 +572,42 @@ async def _background_scheduler(bot: Bot) -> None:
 
 
 async def _admin_pwa_apple_push_scheduler() -> None:
-    """Independent opt-in sender; never couples push failure to bot/payments."""
-    # Enabling only subscription enrollment NEVER initiates a send.
-    if sender_config(settings) is None:
+    """Run existing Admin and learner push outboxes without coupling delivery."""
+    # Enrollment flags alone never initiate sending; each sender has its own
+    # independently validated flag/configuration and identity boundary.
+    admin_ready = sender_config(settings) is not None
+    learner_ready = learner_pwa_sender_config(settings) is not None
+    if not admin_ready and not learner_ready:
         return
     while True:
-        try:
-            result = await dispatch_batch(async_session_maker, settings_obj=settings, limit=10)
-            if result["claimed"]:
-                # Delivery status only: never log user, event, endpoint or content.
-                logger.info(
-                    "Admin PWA Apple Push batch: claimed=%d accepted=%d retry=%d dead=%d",
-                    result["claimed"], result["accepted"], result["retry"], result["dead"],
+        if admin_ready:
+            try:
+                result = await dispatch_batch(async_session_maker, settings_obj=settings, limit=10)
+                if result["claimed"]:
+                    # Delivery status only: never log user, event, endpoint or content.
+                    logger.info(
+                        "Admin PWA Apple Push batch: claimed=%d accepted=%d retry=%d dead=%d",
+                        result["claimed"], result["accepted"], result["retry"], result["dead"],
+                    )
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                # Provider exceptions may contain endpoints or keys.
+                logger.error("Admin PWA Apple Push worker batch unavailable")
+        if learner_ready:
+            try:
+                result = await dispatch_learner_pwa_push_batch(
+                    async_session_maker, settings_obj=settings, limit=10,
                 )
-        except asyncio.CancelledError:
-            raise
-        except Exception:
-            # Provider exceptions may contain endpoints or keys. Do not include
-            # exception text, SQL parameters or private payloads in logs.
-            logger.error("Admin PWA Apple Push worker batch unavailable")
+                if result["claimed"]:
+                    logger.info(
+                        "Learner PWA push batch: claimed=%d accepted=%d retry=%d dead=%d",
+                        result["claimed"], result["accepted"], result["retry"], result["dead"],
+                    )
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                logger.error("Learner PWA push worker batch unavailable")
         await asyncio.sleep(60)
 
 
@@ -649,8 +670,10 @@ async def lifespan(app: FastAPI):
     desktop_auth_cleanup_task = asyncio.create_task(
         _desktop_auth_retention_scheduler()
     )
-    push_ready = sender_config(settings) is not None
-    if push_ready:
+    admin_push_ready = sender_config(settings) is not None
+    learner_push_ready = learner_pwa_sender_config(settings) is not None
+    push_ready = admin_push_ready or learner_push_ready
+    if admin_push_ready:
         logger.info("Admin PWA Apple Push sender started (provider delivery unverified)")
     elif settings.ADMIN_PWA_ENABLED and settings.ADMIN_PWA_PUSH_ENABLED:
         # Operator signal only. Never log key material or subscription endpoints.

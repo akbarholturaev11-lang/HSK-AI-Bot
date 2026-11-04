@@ -3,6 +3,8 @@
   "namespace": "notifications",
   "locale": "tj",
   "messages": {
+    "pwa.push.body": "Огоҳии нав доред. HSK AI-ро кушоед.",
+    "pwa.push.title": "HSK AI",
     "course.title.d1_lesson_recovery": "Ба дарс баргаштан",
     "course.title.daily_goal": "Ҳадафи имрӯз",
     "course.title.lesson_time": "Вақти дарс расид",

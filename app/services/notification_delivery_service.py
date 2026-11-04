@@ -183,7 +183,74 @@ class NotificationDeliveryService:
         """
         if actual_telegram_id(user) and not BotBlockStatusService.is_bot_blocked(user):
             return True
-        return bool(await self._android_targets(user))
+        if await self._android_targets(user):
+            return True
+        if (
+            getattr(self.settings, "PWA_AUTH_ENABLED", False) is True
+            and getattr(self.settings, "PWA_PUSH_ENABLED", False) is True
+            and type(getattr(user, "id", None)) is int
+        ):
+            try:
+                from app.services.learner_pwa_push import active_subscriptions
+                return bool(await active_subscriptions(self.session, user.id))
+            except Exception:  # noqa: BLE001 - push reachability cannot block current delivery policy
+                logger.warning("Learner PWA push reachability unavailable")
+        return False
+
+    async def _deliver_without_android(self, bot, user, *, key, lang, telegram,
+                                       reason, title, body, action, release_before_io):
+        """Persist the existing account notice only for an active PWA subscriber."""
+        if not (
+            getattr(self.settings, "PWA_AUTH_ENABLED", False) is True
+            and getattr(self.settings, "PWA_PUSH_ENABLED", False) is True
+            and type(getattr(user, "id", None)) is int
+        ):
+            return await self._send_telegram(
+                bot, user, telegram, reason=reason, release_before_io=release_before_io,
+            )
+        row = None
+        try:
+            from app.services.learner_pwa_push import active_subscriptions, enqueue_event
+            async with self.session.begin_nested():
+                if await active_subscriptions(self.session, user.id, limit=1):
+                    lang = lang if lang in ("uz", "ru", "tj") else "ru"
+                    phone_title, phone_body = phone_copy(key, lang, telegram.text)
+                    now = datetime.now(timezone.utc)
+                    row = AccountNoticeDelivery(
+                        user_id=user.id, telegram_id=actual_telegram_id(user), key=str(key)[:64],
+                        language=lang,
+                        title=clean_notification_text(title, 160) if title else phone_title,
+                        body=clean_notification_text(body) if body else phone_body,
+                        action=action if action in ACTIONS else "subscription",
+                        status=STATUS_PENDING, android_targets=0, android_blocked=0,
+                        telegram_payload=telegram.to_payload(),
+                        reason=str(reason or "account_notice")[:40], created_at=now,
+                        fallback_due_at=None,
+                    )
+                    self.session.add(row)
+                    await self.session.flush()
+                    await enqueue_event(
+                        self.session, user_id=user.id, source="account",
+                        source_id=row.id, language=lang, now=now,
+                    )
+        except Exception:  # noqa: BLE001 - Telegram behavior remains available if Push storage fails
+            logger.warning("Learner PWA push account notice persistence unavailable")
+            return await self._send_telegram(
+                bot, user, telegram, reason=reason, release_before_io=release_before_io,
+            )
+        if row is None:
+            return await self._send_telegram(
+                bot, user, telegram, reason=reason, release_before_io=release_before_io,
+            )
+        await self.session.commit()
+
+        outcome = await self._send_telegram(
+            bot, user, telegram, reason=reason, release_before_io=release_before_io,
+        )
+        row.status = STATUS_TELEGRAM if outcome == OUTCOME_TELEGRAM else STATUS_FAILED
+        row.telegram_sent_at = datetime.now(timezone.utc) if outcome == OUTCOME_TELEGRAM else None
+        await self.session.commit()
+        return outcome
 
     async def deliver(
         self,
@@ -208,7 +275,11 @@ class NotificationDeliveryService:
         targets = (await self._android_targets(user, limit=8) if release_before_io
                    else await self._android_targets(user))
         if not targets:
-            return await self._send_telegram(bot, user, telegram, reason=reason, release_before_io=release_before_io)
+            return await self._deliver_without_android(
+                bot, user, key=key, lang=lang, telegram=telegram, reason=reason,
+                title=title, body=body, action=action,
+                release_before_io=release_before_io,
+            )
 
         lang = lang if lang in ("uz", "ru", "tj") else "ru"
         phone_title, phone_body = phone_copy(key, lang, telegram.text)
@@ -230,6 +301,21 @@ class NotificationDeliveryService:
             fallback_due_at=None if release_before_io else now + ANDROID_CONFIRM_TIMEOUT,
         )
         self.session.add(row)
+        await self.session.flush()
+        if (
+            getattr(self.settings, "PWA_AUTH_ENABLED", False) is True
+            and getattr(self.settings, "PWA_PUSH_ENABLED", False) is True
+            and type(row.user_id) is int
+        ):
+            try:
+                from app.services.learner_pwa_push import enqueue_event
+                async with self.session.begin_nested():
+                    await enqueue_event(
+                        self.session, user_id=row.user_id, source="account",
+                        source_id=row.id, language=lang, now=now,
+                    )
+            except Exception:  # noqa: BLE001 - never block Android/Telegram delivery
+                logger.warning("Learner PWA push enqueue unavailable for account notice")
         # The phone reads the notice back as soon as the push lands, which can
         # be before the caller finishes its loop, so the row is committed now.
         await self.session.commit()

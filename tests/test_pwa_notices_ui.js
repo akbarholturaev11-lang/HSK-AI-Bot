@@ -8,8 +8,8 @@ const vm = require("node:vm");
 const source = fs.readFileSync("app/static/course_v3_data/iphone-pwa-notices.js", "utf8");
 const shell = fs.readFileSync("app/static/course-v3.html", "utf8");
 const css = fs.readFileSync("app/static/course_v3_data/iphone-pwa-glass.css", "utf8");
-assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261104-1"'));
-assert(shell.includes('href="/course_v3_data/iphone-pwa-glass.css'));
+assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261104-9aaae52d1860"'));
+assert(shell.includes('href="/course_v3_data/iphone-pwa-glass.css?v=20261104-175a0ec6f920'));
 assert(shell.includes('PWA_COURSE_HOST?\'<button class="pwa-notices-button"'));
 assert(css.includes("#hsk-pwa-notice-root [hidden] {display:none!important}"));
 assert(css.includes("html.hsk-pwa-browser .nav"));
@@ -44,12 +44,32 @@ class Element {
   focus() {}
 }
 
-function harness({path = "/iphone-pwa/course", action = null, accountId = 7,
+function harness({path = "/iphone-pwa/course", href = null, action = null, accountId = 7,
                   alreadyBusy = false, feedbackOpen = false, inputFocused = false,
-                  splashReady = true, sharedStorage = new Map()} = {}) {
+                  splashReady = true, sharedStorage = new Map(), standalone = false,
+                  vendor = "Apple Computer, Inc.",
+                  pushEnabled = true, initiallySubscribed = false, permission = "default"} = {}) {
   let splashDone = splashReady, currentAction = action;
-  const timers = [], callbacks = {}, requests = [], navigation = [];
-  let root = null, redirects = 0;
+  const timers = [], callbacks = {}, requests = [], navigation = [], pushCalls = [];
+  let root = null, redirects = 0, serverSubscribed = initiallySubscribed, localSubscription = null;
+  let notificationPermission = permission, permissionFetchCount = null;
+  const key = "B".repeat(87);
+  const subscription = {
+    toJSON: () => ({endpoint:"https://web.push.apple.com/example/token",keys:{p256dh:key,auth:"A".repeat(22)}}),
+    unsubscribe: async () => {pushCalls.push("unsubscribe"); localSubscription = null; return true;}
+  };
+  const registration = {pushManager:{
+    getSubscription:async()=>localSubscription,
+    subscribe:async(options)=>{pushCalls.push(["subscribe",options.userVisibleOnly]);localSubscription=subscription;return subscription;}
+  }};
+  const navigator = {standalone,vendor,serviceWorker:{
+    register:async(url,options)=>{pushCalls.push(["register",url,options.scope]);return registration;},
+    ready:Promise.resolve(registration),
+    getRegistration:async(scope)=>{pushCalls.push(["getRegistration",scope]);return registration;}
+  }};
+  const Notification = {get permission(){return notificationPermission;},
+    requestPermission:()=>{permissionFetchCount=requests.length;pushCalls.push("permission");notificationPermission="granted";return Promise.resolve("granted");}};
+  const historyCalls = [];
   const document = {
     visibilityState: "visible",
     activeElement: Object.assign(new Element("button"), {matches: () => inputFocused}),
@@ -64,29 +84,36 @@ function harness({path = "/iphone-pwa/course", action = null, accountId = 7,
     }
   };
   const location = {
-    pathname: path,
+    pathname: path, href: href || ("https://app.example.test" + path),
     assign: (url) => navigation.push(url),
     replace: (url) => {redirects++; navigation.push("replace:" + url);}
   };
   const window = {
     addEventListener: (type, handler) => {callbacks[type] = handler;},
     setTimeout: (callback) => timers.push(callback),
-    App: {show: (screen) => navigation.push("show:" + screen)}
+    App: {show: (screen) => navigation.push("show:" + screen)},
+    navigator, isSecureContext: true, matchMedia: () => ({matches:standalone}), Notification, PushManager: {}
   };
+  const history = {state:{route:"course"},replaceState:(state,title,url)=>historyCalls.push({state,title,url})};
   const fetch = async (url, options) => {
     requests.push({url, options});
     assert.equal(options.credentials, "same-origin");
     assert.equal(options.cache, "no-store");
-    const response = url.endsWith("/session")
+    const response = url.endsWith("/push/status")
+      ? {ok:true, enabled:pushEnabled, public_key:pushEnabled?key:null, subscribed:serverSubscribed,
+         subscription_id:serverSubscribed?"11111111-1111-4111-8111-111111111111":null, user_id:accountId}
+      : url.endsWith("/session")
       ? {ok:true, user_id:accountId}
       : url.endsWith("/account-notices")
         ? {ok:true, notices:[{id:2, title:"Account notice", body:"Stored on server", action:"course"}],
            payment_action:currentAction}
         : {ok:true, notifications:[{id:1,title:"Lesson available",body:"HSK 3",action:"course"}]};
+    if (url.endsWith("/push/subscribe")) serverSubscribed = true;
+    if (url.endsWith("/push/revoke")) serverSubscribed = false;
     return {ok:true,json:async()=>response};
   };
   vm.runInNewContext(source, {
-    document, window, location, fetch, pwaCourseActor: async()=>({user_id:accountId}),
+    document, window, location, history, URL, navigator, Notification, atob, Uint8Array, fetch, pwaCourseActor: async()=>({user_id:accountId,csrf:"csrf-token"}),
     courseMessage: (key) => key, commonMessage: (key) => key,
     LANG:"uz", App:window.App, Set, Number, Promise, Array, String,
     encodeURIComponent, localStorage:{
@@ -95,6 +122,7 @@ function harness({path = "/iphone-pwa/course", action = null, accountId = 7,
     }
   }, {filename:"iphone-pwa-notices.js",timeout:1000});
   return {root:()=>root, window, navigation, requests, timers, callbacks, redirects:()=>redirects,
+    pushCalls, historyCalls, permissionFetchCount:()=>permissionFetchCount,
     setSplashDone(){splashDone = true;},
     setAction(value){currentAction = value;},
     async flushTimers(){for(const fn of timers.splice(0))await fn();},
@@ -211,6 +239,61 @@ async function main(){
   await typingField.loadAndTick();
   assert.equal(typingField.root().hidden,true,"focused iOS input keyboard must not lose focus");
 
+  const browserTab = harness({standalone:false});
+  await browserTab.window.HskPwaInbox.open();
+  assert.equal(browserTab.root().querySelector("#hsk-pwa-push-control").hidden,true,
+    "push consent control is hidden outside installed standalone mode");
+  assert(!browserTab.requests.some((request)=>request.url.endsWith("/push/status")),
+    "ordinary Safari tab does not query for push subscription state");
+
+  const androidPwa = harness({standalone:true,vendor:"Google Inc."});
+  await androidPwa.window.HskPwaInbox.open();
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(androidPwa.root().querySelector("#hsk-pwa-push-control").hidden,true,
+    "Apple-only Web Push consent is hidden in installed Android PWA");
+  assert(!androidPwa.requests.some((request)=>request.url.endsWith("/push/status")),
+    "installed Android PWA does not request Apple push configuration");
+
+  const installed = harness({standalone:true});
+  await installed.window.HskPwaInbox.open();
+  await new Promise(resolve=>setImmediate(resolve));
+  const pushControl = installed.root().querySelector("#hsk-pwa-push-control");
+  assert.equal(pushControl.hidden,false,"installed PWA can manage push consent");
+  assert.equal(installed.permissionFetchCount(),null,"permission is not requested before the learner taps");
+  installed.root().listeners.click({target:{closest:(selector)=>selector==="#hsk-pwa-push-action"?{}:null}});
+  for(let i=0;i<8 && !installed.requests.some((request)=>request.url.endsWith("/push/subscribe"));i++)
+    await new Promise(resolve=>setImmediate(resolve));
+  assert.deepEqual(installed.pushCalls[0],"permission","permission prompt starts in the trusted button gesture");
+  assert.equal(installed.permissionFetchCount(),4,"permission starts before any network request for subscription");
+  assert(installed.pushCalls.some((call)=>Array.isArray(call)&&call[0]==="register"&&call[2]==="/iphone-pwa/"),
+    "service worker is scoped only to the iPhone PWA");
+  assert(installed.requests.some((request)=>request.url.endsWith("/push/subscribe")&&request.options.headers["X-HSK-PWA-CSRF"]==="csrf-token"),
+    "subscription is sent through the existing CSRF-protected account session");
+  for(let i=0;i<8 && installed.root().querySelector("#hsk-pwa-push-action").textContent!=="pwaPush.disable";i++)
+    await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(installed.root().querySelector("#hsk-pwa-push-action").textContent,"pwaPush.disable",
+    "server-confirmed subscription exposes one disable action");
+  installed.root().listeners.click({target:{closest:(selector)=>selector==="#hsk-pwa-push-action"?{}:null}});
+  for(let i=0;i<8 && !installed.requests.some((request)=>request.url.endsWith("/push/revoke"));i++)
+    await new Promise(resolve=>setImmediate(resolve));
+  assert(installed.requests.some((request)=>request.url.endsWith("/push/revoke")&&request.options.headers["X-HSK-PWA-CSRF"]==="csrf-token"),
+    "disable revokes the server-owned device subscription with CSRF");
+  assert(installed.pushCalls.includes("unsubscribe"),"disable also removes the local browser subscription");
+
+  const denied = harness({standalone:true,permission:"denied"});
+  await denied.window.HskPwaInbox.open();
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(denied.root().querySelector("#hsk-pwa-push-status").textContent,"pwaPush.blocked",
+    "blocked browser permission is announced accessibly without a fake retry button");
+  assert.equal(denied.root().querySelector("#hsk-pwa-push-action").hidden,true);
+
+  const pushRoute = harness({href:"https://app.example.test/iphone-pwa/course?notice=1&lang=uz#lesson",
+    action:{payment_id:120,status:"rejected",plan_type:"1_month"}});
+  await pushRoute.loadAndTick();
+  assert.deepEqual(pushRoute.historyCalls[0].url,"/iphone-pwa/course?lang=uz#lesson",
+    "push deep link is removed while language and fragment are preserved");
+  assert.equal(pushRoute.root().hidden,false,"push click opens the server-owned latest rejection");
+
   const intentionalInbox = harness({
     action:{payment_id:107,status:"rejected",plan_type:"1_month"}
   });
@@ -221,6 +304,6 @@ async function main(){
   assert.equal(intentionalInbox.root().hidden,true,
     "a learner-opened inbox must not queue a payment alert behind it");
 
-  console.log("PWA notice UI: 17 behavior/ownership/safety checks passed");
+  console.log("PWA notice UI: 28 behavior/ownership/safety checks passed");
 }
 main().catch((err)=>{console.error(err);process.exitCode=1;});

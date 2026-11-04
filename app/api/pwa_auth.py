@@ -260,6 +260,15 @@ def _clear_cookie(response: JSONResponse, name: str) -> None:
 def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRouter:
     router = APIRouter(tags=["pwa-auth"])
 
+    @router.get("/iphone-pwa/sw.js")
+    async def iphone_pwa_service_worker():
+        # The worker controls only the learner PWA's same-origin route subtree.
+        return FileResponse(
+            "app/static/iphone-pwa-sw.js", media_type="application/javascript",
+            headers={**_NO_STORE, "Service-Worker-Allowed": "/iphone-pwa/",
+                     "X-Content-Type-Options": "nosniff"},
+        )
+
     # A login-only source-aligned shell; protected course routes are P2.
     # Do not serve it until a verified provider origin is configured.
     @router.get("/iphone-pwa")
@@ -1484,6 +1493,103 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             return JSONResponse(
                 {"ok": True, "notifications": items}, headers=_NO_STORE,
             )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/api/v3/pwa/push/status")
+    async def pwa_push_status(request: Request):
+        try:
+            from app.services.learner_pwa_push import subscription_config, subscription_status
+            async with session_factory() as db:
+                actor, browser_session = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+                configured = subscription_config(settings_obj)
+                row = None
+                if configured is not None:
+                    row = await subscription_status(db, device_id=browser_session.device_id)
+            return JSONResponse({
+                "ok": True,
+                "enabled": configured is not None,
+                "public_key": configured[0] if configured is not None else None,
+                "subscribed": row is not None,
+                "subscription_id": row.id if row is not None else None,
+                "user_id": actor.id,
+            }, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/push/subscribe")
+    async def pwa_push_subscribe(request: Request):
+        try:
+            from app.services.learner_pwa_push import SubscribeRequest, subscribe, subscription_config
+            require_same_origin(request, settings_obj)
+            async with session_factory() as db:
+                actor, browser_session = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                configured = subscription_config(settings_obj)
+                if configured is None:
+                    return JSONResponse(
+                        {"ok": False, "error": "push_unavailable"},
+                        status_code=503, headers=_NO_STORE,
+                    )
+                try:
+                    command = await _small_json(request, SubscribeRequest, max_bytes=4096)
+                except (ValidationError, ValueError, TypeError):
+                    return JSONResponse(
+                        {"ok": False, "error": "invalid_subscription"},
+                        status_code=422, headers=_NO_STORE,
+                    )
+                try:
+                    result = await subscribe(
+                        db, user_id=actor.id, device_id=browser_session.device_id,
+                        command=command, fernet=configured[1],
+                    )
+                except ValueError:
+                    return JSONResponse(
+                        {"ok": False, "error": "invalid_subscription"},
+                        status_code=422, headers=_NO_STORE,
+                    )
+                except OverflowError:
+                    return JSONResponse(
+                        {"ok": False, "error": "push_device_limit"},
+                        status_code=409, headers=_NO_STORE,
+                    )
+                if result is None:
+                    return JSONResponse(
+                        {"ok": False, "error": "push_device_conflict"},
+                        status_code=409, headers=_NO_STORE,
+                    )
+                await db.commit()
+            return JSONResponse({"ok": True, "subscribed": True}, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/push/revoke")
+    async def pwa_push_revoke(request: Request):
+        try:
+            from app.services.learner_pwa_push import RevokeRequest, revoke
+            require_same_origin(request, settings_obj)
+            async with session_factory() as db:
+                _actor, browser_session = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                try:
+                    command = await _small_json(request, RevokeRequest, max_bytes=512)
+                except (ValidationError, ValueError, TypeError):
+                    return JSONResponse(
+                        {"ok": False, "error": "invalid_subscription"},
+                        status_code=422, headers=_NO_STORE,
+                    )
+                found = await revoke(
+                    db, device_id=browser_session.device_id,
+                    subscription_id=command.subscription_id,
+                )
+                await db.commit()
+            return JSONResponse({"ok": True, "subscribed": False, "found": found}, headers=_NO_STORE)
         except PwaAuthError as exc:
             return _error(exc)
 

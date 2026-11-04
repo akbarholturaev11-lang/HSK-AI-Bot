@@ -9,6 +9,7 @@ from app.bot.utils.i18n import t
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.android_payment_push_service import AndroidPaymentPushService
 from app.services.account_identity import actual_telegram_id
+from app.config import settings
 
 HSK30_UNLOCK_APPROVED_TEXT = bot_locale_map('inline.services.payment_notify_service.module.copy1')
 
@@ -45,7 +46,7 @@ class PaymentNotifyService:
         if self.session is not None:
             await BotBlockStatusService(self.session).handle_send_exception(user.telegram_id, exc, reason=source)
 
-    async def _android_push(self, payment, status: str) -> None:
+    async def _android_push(self, payment, status: str, *, user=None) -> None:
         if self.session is None or payment is None:
             return
         try:
@@ -62,6 +63,27 @@ class PaymentNotifyService:
             import logging
 
             logging.getLogger(__name__).exception("Android payment notification failed")
+        if (
+            getattr(settings, "PWA_AUTH_ENABLED", False) is True
+            and getattr(settings, "PWA_PUSH_ENABLED", False) is True
+            and type(getattr(payment, "user_id", None)) is int
+            and type(getattr(payment, "id", None)) is int
+        ):
+            try:
+                from app.services.learner_pwa_push import enqueue_event
+                async with self.session.begin_nested():
+                    queued = await enqueue_event(
+                        self.session, user_id=payment.user_id, source="payment",
+                        source_id=payment.id,
+                        language=getattr(user, "language", None) or "ru",
+                    )
+                if queued:
+                    await self.session.commit()
+            except Exception:  # noqa: BLE001 - payment decision and current channels already succeeded
+                import logging
+                logging.getLogger(__name__).warning(
+                    "Learner PWA payment push enqueue unavailable",
+                )
 
     async def notify_payment_approved(self, bot: Bot, user, payment=None) -> None:
         try:
@@ -84,7 +106,7 @@ class PaymentNotifyService:
             except Exception as exc:
                 await self._failure(user, exc, "payment_approved")
         finally:
-            await self._android_push(payment, "approved")
+            await self._android_push(payment, "approved", user=user)
 
     async def notify_hsk30_unlock_approved(self, bot: Bot, user, payment=None) -> None:
         try:
@@ -119,7 +141,7 @@ class PaymentNotifyService:
             except Exception as exc:
                 await self._failure(user, exc, "hsk30_unlock_approved")
         finally:
-            await self._android_push(payment, "approved")
+            await self._android_push(payment, "approved", user=user)
 
     async def notify_hsk30_unlock_rejected(
         self,
@@ -157,7 +179,7 @@ class PaymentNotifyService:
             except Exception as exc:
                 await self._failure(user, exc, "hsk30_unlock_rejected")
         finally:
-            await self._android_push(payment, "rejected")
+            await self._android_push(payment, "rejected", user=user)
 
     async def notify_payment_rejected(self, bot: Bot, user, reason: str = None, plan_type: str = None, payment=None) -> None:
         try:
@@ -198,4 +220,4 @@ class PaymentNotifyService:
             except Exception as exc:
                 await self._failure(user, exc, "payment_rejected")
         finally:
-            await self._android_push(payment, "rejected")
+            await self._android_push(payment, "rejected", user=user)

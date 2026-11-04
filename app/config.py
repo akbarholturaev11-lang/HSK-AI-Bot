@@ -60,6 +60,13 @@ class Settings(BaseSettings):
     MINI_APP_BASE_URL: str = "https://telegram-chinese-bot-production.up.railway.app/course-v3.html"
     # Dedicated learner browser OAuth; launch only after iPhone/login security QA.
     PWA_AUTH_ENABLED: bool = False
+    # Learner iPhone Web Push stays independently disabled until explicit QA/release gates pass.
+    PWA_PUSH_ENABLED: bool = False
+    PWA_PUSH_SEND_ENABLED: bool = False
+    PWA_PUSH_VAPID_PUBLIC_KEY: str = ""
+    PWA_PUSH_VAPID_PRIVATE_KEY: str = ""
+    PWA_PUSH_VAPID_SUBJECT: str = ""
+    PWA_PUSH_STORAGE_KEY: str = ""
 
     # Desktop release controls. Downloads remain hidden unless the flag is on
     # and at least one real, clean-machine-tested HTTPS artifact URL is set.
