@@ -18,6 +18,7 @@ data class ProfileSettingsState(
     val isSavingLanguage: Boolean = false,
     val isSavingNotifications: Boolean = false,
     val error: ApiError? = null,
+    val studyError: ApiError? = null,
 ) {
     val isBusy: Boolean get() = isSavingLanguage || isSavingNotifications
 }
@@ -84,14 +85,14 @@ class ProfileSettingsViewModel(
 
     fun setStudyNotifications(enabled: Boolean, epoch: String) {
         val sequence = ++studyWriteSequence
-        _state.update { it.copy(isSavingNotifications = true, error = null) }
+        _state.update { it.copy(isSavingNotifications = true, studyError = null) }
         viewModelScope.launch {
             try {
                 when (val result = writeStudyReminder(enabled, epoch)) {
                     is ApiResult.Success -> if (sequence == studyWriteSequence)
                         _state.update { it.copy(isSavingNotifications = false) }
                     is ApiResult.Failure -> if (sequence == studyWriteSequence)
-                        _state.update { it.copy(isSavingNotifications = false, error = result.error) }
+                        _state.update { it.copy(isSavingNotifications = false, studyError = result.error) }
                 }
             } finally {
                 if (sequence == studyWriteSequence) _state.update { it.copy(isSavingNotifications = false) }
@@ -100,7 +101,7 @@ class ProfileSettingsViewModel(
     }
 
     fun clearError() {
-        _state.update { it.copy(error = null) }
+        _state.update { it.copy(error = null, studyError = null) }
     }
 
     class Factory(

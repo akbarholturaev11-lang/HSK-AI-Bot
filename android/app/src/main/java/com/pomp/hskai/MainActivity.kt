@@ -282,10 +282,11 @@ private fun AppRoot(
             )
             val linkState by viewModel.state.collectAsStateWithLifecycle()
             val localeHost = LocalContext.current
+            var loginLanguage by remember { mutableStateOf(AppLocale.current(localeHost)) }
             LaunchedEffect(Unit) {
                 app.clearLocalData()
                 if (AppLocale.clear(localeHost)) {
-                    (localeHost as? Activity)?.recreate()
+                    localeHost.authActivity()?.recreate()
                 } else {
                     // The link itself is reserved only when a provider is
                     // tapped, so switching language here costs no link row.
@@ -294,10 +295,11 @@ private fun AppRoot(
             }
             LinkScreen(
                 state = linkState,
-                language = AppLocale.current(localeHost),
+                language = loginLanguage,
                 onLanguageSelected = { language ->
+                    loginLanguage = language
                     if (AppLocale.choose(localeHost, language)) {
-                        (localeHost as? Activity)?.recreate()
+                        localeHost.authActivity()?.recreate()
                     }
                 },
                 onContinueWithTelegram = {

@@ -54,10 +54,12 @@ STATE_MAC_CHARS = 43
 
 
 class NativeOAuthError(RuntimeError):
-    def __init__(self, code: str, *, status_code: int):
+    def __init__(self, code: str, *, status_code: int, platform: str | None = None, language: str | None = None):
         super().__init__(code)
         self.code = code
         self.status_code = status_code
+        self.platform = platform
+        self.language = language
 
 
 @dataclass(frozen=True)
@@ -318,9 +320,10 @@ class NativeOAuthService:
             return await coroutine
         except (OidcVerificationError, IdentityLinkError, DesktopAuthError) as exc:
             code = getattr(exc, "code", "oauth_token_invalid")
+            platform, language = row.platform, row.language
             await self._fail(row, code)
             status_code = getattr(exc, "status_code", None) or 401
-            raise NativeOAuthError(code, status_code=status_code) from exc
+            raise NativeOAuthError(code, status_code=status_code, platform=platform, language=language) from exc
 
     # --- Android: Credential Manager ID token ----------------------------
     async def assert_id_token(

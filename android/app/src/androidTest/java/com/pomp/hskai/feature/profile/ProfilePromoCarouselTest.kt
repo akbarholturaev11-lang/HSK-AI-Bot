@@ -81,6 +81,17 @@ class ProfilePromoCarouselTest {
         compose.onNodeWithTag("profile-promo-dot-google").assertIsSelected()
     }
 
+    @Test fun settledCardsKeepTheSameHeightAcrossProviders() {
+        show()
+        val cards = listOf("hsk30", "telegram", "google", "apple")
+        val heights = cards.map { key ->
+            compose.onNodeWithTag("profile-promo-dot-$key").performClick()
+            compose.onNodeWithTag("profile-promo-card-$key").assertIsDisplayed()
+                .fetchSemanticsNode().layoutInfo.coordinates.size.height
+        }
+        assertEquals(1, heights.distinct().size)
+    }
+
     @Test fun keyboardArrowsSlideBetweenPagesAndDotsExposeTheSelection() {
         show()
         compose.onNodeWithTag("profile-promo-pager")

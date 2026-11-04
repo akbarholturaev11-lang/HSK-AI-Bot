@@ -100,6 +100,7 @@
     <string name="hsk_common_desktopAuth_copied" formatted="false">Рамз нусхабардорӣ шуд</string>
     <string name="hsk_common_desktopAuth_copyCode" formatted="false">Нусхабардории рамз</string>
     <string name="hsk_common_desktopAuth_description" formatted="false">Бо Google, Apple ё Telegram идома диҳед. Барои корбари нав ҳисоб худкор сохта мешавад.</string>
+    <string name="hsk_common_desktopAuth_deviceBound" formatted="false">Ин телефон ба ҳисоби дигари HSK AI пайваст аст. Ба ҳисоби қаблан пайвастшуда ворид шавед ва телефонро аз он ҷудо кунед.</string>
     <string name="hsk_common_desktopAuth_expired" formatted="false">Муҳлати тасдиқи вуруд гузашт. Боз кӯшиш кунед.</string>
     <string name="hsk_common_desktopAuth_googleContinue" formatted="false">Бо Google идома додан</string>
     <string name="hsk_common_desktopAuth_linked" formatted="false">Ҳисоб бо муваффақият пайваст шуд.</string>
@@ -128,5 +129,6 @@
     <string name="hsk_common_navigation_profile" formatted="false">Профил</string>
     <string name="hsk_common_navigation_rating" formatted="false">Рейтинг</string>
     <string name="hsk_common_navigation_subscription" formatted="false">Обуна</string>
+    <string name="hsk_common_smartPreferences_deletionPending" formatted="false">Дархости ҳазфи ҳисоб баррасӣ мешавад. Ҳоло танзими ёдрасониҳои дарсро тағйир додан мумкин нест.</string>
     <string name="hsk_common_state_loading" formatted="false">Боргирӣ…</string>
 </resources>

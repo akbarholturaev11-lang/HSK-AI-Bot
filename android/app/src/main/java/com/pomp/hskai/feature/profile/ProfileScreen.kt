@@ -959,7 +959,7 @@ private fun ProfileSettingsScreen(
                                     modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp))
                             }
                         }
-                        item { settings.error?.let { ErrorPill(stringResource(it.messageRes)) } }
+                        item { settings.studyError?.let { ErrorPill(stringResource(it.messageRes)) } }
                     }
                     if (page == ProfileSettingsPage.PRIVACY) {
                         item {
