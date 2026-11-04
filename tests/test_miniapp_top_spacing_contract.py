@@ -19,7 +19,8 @@ def test_embedded_resources_do_not_duplicate_telegram_top_inset():
     assert "html.hsk-embedded body { padding-top: 0; }" in phrases
     assert "html.hsk-embedded .page { padding-top: 8px; }" in phrases
     assert "html.hsk-embedded .view{top:0}" in dictionary
-    assert "html.hsk-embedded .hsk-native-back-duplicate" in dictionary
+    assert "html.hsk-embedded:not(.hsk-pwa-embedded) .hsk-native-back-duplicate" in dictionary
+    assert "html.hsk-pwa-embedded .hsk-native-back-duplicate" in dictionary
 
 def test_liquid_glass_navigation_is_inline_and_keeps_existing_routes():
     """The Mini App glass effect must not depend on a new CSS HTTP route."""
