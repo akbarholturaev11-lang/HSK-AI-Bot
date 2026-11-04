@@ -992,3 +992,11 @@ Master Plan §17.83 replaces the limited atlas-only D24 draft with the owner's f
 ### D29 actual V1 client preference integration
 
 Master Plan §17.87 records the source audit and owner code-first instruction. Reuse P1 GET/PATCH through one native epoch/auth-generation-fenced adapter; explicit current-device intent never changes global or another channel's OFF. Unknown legacy state is not imported as ON. Missing IANA initialization is a separate authenticated explicit write from actual OS/browser zone, without consent and without overwriting existing zone/manual time. Retain exact UUID/body retries and revision CAS; uncertain ON cannot rebase over intervening OFF. Durable latest intent/local immediate OFF survives offline refresh and is erased on account replacement. Existing native profile/primer controls and foreground/widget refresh share the adapter; OS denial remains capability rather than intent. Mini App initializes only a missing zone using verified Telegram headers. Test real uninitialized consumer flows before final private APK; no new schema/worker, A/B, public rollout or provider authority.
+
+### Operator-controlled production dispatch and public cutover
+
+The existing signed Smart editor remains the runtime permission surface. Show live runtime registration for Android and Telegram and an anonymous count of unexpired routing reviews. A routing count describes review records only. Effective account delivery still requires fresh consent, destination and fencing checks.
+
+Serialize final Android grant and Telegram attempt authorization with the existing template setting transaction lock. Readers share the lock. The admin writer acquires it exclusively. Once the save commits, a later authorization must observe the new value. Previously committed authorizations remain governed by their original attempt and expiry.
+
+Public cutover requires a server-owned barrier covering every competing study sender, followed by a drain of outstanding legacy delivery and a verifiable migration condition for older Android clients. A version string, missing device rows or a startup flag alone supplies no proof. Reuse the existing review and account-day ledger only after those conditions are established. Preserve explicit learner OFF and keep unknown outcomes in their original day budget.

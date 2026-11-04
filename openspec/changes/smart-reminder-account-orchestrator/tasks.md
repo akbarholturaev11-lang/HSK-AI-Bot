@@ -101,3 +101,9 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 ## Workflow follow-up
 
 - Archive this OpenSpec change only after implementation and the project's acceptance gates have actually passed. Update `PROJECT_MEMORY.md` only for durable implemented architecture, schema and business invariants.
+
+### Production operator follow-up
+
+- [x] Display live runtime registration and anonymous unexpired review count in the existing Smart Admin editor. Check UZ/RU/TJ, the existing signed save and missing/zero values.
+- [x] Test PostgreSQL ordering between the signed pause and final delivery authorization. Verify both Android and Telegram guard paths and original receipt behavior.
+- [ ] Establish a real legacy sender barrier, drain and verified Android migration condition before broader account admission. Verify production-selected delivery, pause/resume and absence of duplicate study sends before reporting public activation.
