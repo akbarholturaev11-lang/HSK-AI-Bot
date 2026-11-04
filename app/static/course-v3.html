@@ -2793,8 +2793,18 @@ var App={
     CHECKOUT_NAVIGATING=true;
     var source=src||PAY_SOURCE||"v3_paywall";
     SALES_PAYWALL_ACTIVE=false;SALES_PAYWALL_IMPRESSION="";
+    // Course has Referrer-Policy:no-referrer. A one-time same-tab nonce,
+    // not document.referrer, proves that checkout has a Course history entry.
+    var pwaReturnToken="";
+    if(PWA_COURSE_HOST){
+      try{
+        pwaReturnToken=Date.now().toString(36)+"-"+Math.random().toString(36).slice(2);
+        sessionStorage.setItem("hskai.pwa.checkout.return",JSON.stringify({token:pwaReturnToken,at:Date.now()}));
+      }catch(e){pwaReturnToken=""}
+    }
     var url=(PWA_COURSE_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription"
-      +"&"+courseCheckoutReturnParams().toString();
+      +"&"+courseCheckoutReturnParams().toString()
+      +(pwaReturnToken?"&pwa_return="+encodeURIComponent(pwaReturnToken):"");
     var clickId=["checkout",COURSE_SESSION_ID,Date.now(),Math.random().toString(36).slice(2,8)].join(":");
     if(!PWA_COURSE_HOST)trackCheckoutOpenedForRedirect(source,clickId);
     /* Same-origin subscription page: navigate inside the Telegram Mini App webview.
