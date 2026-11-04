@@ -148,6 +148,42 @@ html.hsk-pwa-browser #paywall .si {
 }
 @media(prefers-reduced-motion:reduce){#hsk-pwa-notice-root *{animation:none!important;transition:none!important}}
 
+/* A real full-height Inbox page, not a floating card. Urgent payment and
+   explicit push-permission prompts remain separate dialog modes. */
+#hsk-pwa-notice-root[data-mode="inbox"] {
+  padding:0;
+  align-items:stretch;
+  justify-content:stretch;
+  background:var(--hsk-paper);
+}
+#hsk-pwa-notice-root[data-mode="inbox"] .hsk-pwa-notice-scrim {display:none}
+#hsk-pwa-notice-root[data-mode="inbox"] .hsk-pwa-notice-card {
+  width:100%;
+  max-width:none;
+  height:100dvh;
+  min-height:100dvh;
+  max-height:none;
+  border:0;
+  border-radius:0;
+  padding:calc(14px + env(safe-area-inset-top,0px)) 18px
+    calc(14px + env(safe-area-inset-bottom,0px));
+  background:var(--hsk-paper);
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  box-shadow:none;
+}
+#hsk-pwa-notice-root[data-mode="inbox"] .hsk-pwa-notice-head {
+  flex:0 0 auto;
+  min-height:54px;
+}
+#hsk-pwa-notice-root[data-mode="inbox"] .hsk-pwa-notice-head h2 {font-size:22px}
+#hsk-pwa-notice-root[data-mode="inbox"] .hsk-pwa-notice-list {
+  flex:1 1 auto;
+  min-height:0;
+  padding-bottom:20px;
+  overflow-y:auto;
+}
+
 #hsk-pwa-feedback-root[hidden],#hsk-pwa-feedback-root [hidden]{display:none!important}
 #hsk-pwa-feedback-root{position:fixed;z-index:19001;inset:0;display:grid;place-items:center;
   padding:calc(20px + env(safe-area-inset-top,0px)) 16px
