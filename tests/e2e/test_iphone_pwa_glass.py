@@ -147,6 +147,45 @@ def test_real_browser_inbox_glass_and_safe_width(width, height):
         browser.close()
 
 
+
+def test_browser_qa_profiler_collects_only_coarse_tab_timing():
+    """The optional profiler observes real Chromium paint, never account data."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width":390, "height":844})
+        bootstrap(page)
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-perf.js"))
+        page.evaluate("window.App.show('rating')")
+        page.wait_for_function(
+            "window.HskPwaPerf && window.HskPwaPerf.snapshot().samples.some(x => x.kind === 'tab-paint')"
+        )
+        report = page.evaluate("window.HskPwaPerf.snapshot()")
+        assert report["samples"]
+        assert any(x["name"] == "rating" and x["kind"] == "tab-paint" for x in report["samples"])
+        assert all("user_id" not in str(item) and "initData" not in str(item)
+                   for item in report["samples"])
+        browser.close()
+
+
+def test_pwa_read_only_avatar_has_no_telegram_edit_affordance():
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width":390, "height":844},is_mobile=True)
+        bootstrap(page)
+        page.evaluate("""() => {
+          const div=document.createElement('div');
+          div.className='phero';
+          div.innerHTML='<div class="pav"><span class="ed">Edit</span></div>';
+          document.body.appendChild(div);
+        }""")
+        assert page.locator(".phero .pav .ed").evaluate(
+            "el=>getComputedStyle(el).display"
+        ) == "none"
+        assert page.locator(".phero .pav").evaluate(
+            "el=>getComputedStyle(el).pointerEvents"
+        ) == "none"
+        browser.close()
+
 def test_rejected_receipt_centered_with_original_locale_and_one_action():
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
