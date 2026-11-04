@@ -2270,7 +2270,7 @@ var SALES_VALUE_PRIME_PROMISE=null,SALES_VALUE_PRIME_DONE=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 var PWA_COURSE_GET_PATHS={
   "/api/v3/course-tracks":"/api/v3/pwa/course-tracks",
-  "/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation",
+  "/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation","/api/v3/invite":"/api/v3/pwa/invite",
   "/api/miniapp/mistakes":"/api/v3/pwa/mistakes"
 };
 var PWA_COURSE_POST_PATHS={
@@ -6543,7 +6543,7 @@ function _renderRatingContent(){
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
   var h=ratingTabCur==="friends"?'<h1 class="rating-friends-heading">'+esc(r.friends)+'</h1>':'<h1 class="section-title rating-title">'+esc(commonMessage("navigation.rating",LANG==="ru"?"Рейтинг":LANG==="tj"?"Рейтинг":"Reyting"))+'</h1>';
 	  if(ratingTabCur==="friends"){
-	    if(!referralMeta.loaded&&INIT_DATA){
+	    if(!referralMeta.loaded&&(INIT_DATA||PWA_COURSE_HOST)){
 	      referralMeta.loaded=true;
 	      $("#s-rating").innerHTML=h+'<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
 	      loadReferrals().then(function(){_renderRatingContent()}).catch(function(){referralMeta={loaded:true,error:true,joined:0,active:0,required:0};referralUsers=[];_renderRatingContent()});
