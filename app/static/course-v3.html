@@ -2704,7 +2704,17 @@ var App={
     document.querySelectorAll("#nav button").forEach(function(b){var selected=b.dataset.s===s;b.classList.toggle("on",selected);if(selected)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
     renderFloatHint(s);
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
-    if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
+    if(s==="course"){
+      // The PWA should paint its tab immediately before the synchronous
+      // geometry pass. Two frames keep trail layout off the tap's first paint.
+      // Mini App/Telegram rendering and course layout remain unchanged.
+      if(PWA_COURSE_HOST&&typeof requestAnimationFrame==="function"){
+        requestAnimationFrame(function(){requestAnimationFrame(function(){
+          if(SCREEN!=="course")return;
+          drawTrails();scrollToCurrentNode();
+        })});
+      }else{drawTrails();scrollToCurrentNode()}
+    }else{window.scrollTo(0,0)}
     if(s==="course"&&previous!=="course"){refreshCourseProgress();queueHsk30PromoCheck()}
     if(s==="mashq"){
       /* The bundled Practice cards do not depend on local preloads finishing.
