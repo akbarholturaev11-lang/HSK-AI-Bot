@@ -53,11 +53,13 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         action = CHECKOUT.split("function returnToCourseFromCheckout()", 1)[1].split(
             "function initTelegramCourseReturn()", 1
         )[0]
-        self.assertIn('from.origin===location.origin', action)
-        self.assertIn('from.pathname==="/iphone-pwa/course"', action)
+        self.assertIn('stored.token===token', action)
+        self.assertIn('Number(stored.at)>0', action)
         self.assertIn('window.history.back()', action)
         self.assertIn('window.location.replace(courseReturnUrl())', action)
         self.assertIn('PWA_CHECKOUT_HOST', action)
+        self.assertIn('sessionStorage.setItem("hskai.pwa.checkout.return"', COURSE)
+        self.assertIn('&pwa_return=', COURSE)
 
     def test_checkout_does_not_block_on_external_telegram_sdk(self):
         self.assertIn('/assets/telegram-web-app.js?v=20261019-1', CHECKOUT)
