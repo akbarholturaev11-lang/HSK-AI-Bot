@@ -125,27 +125,15 @@ def test_real_browser_inbox_glass_and_safe_width(width, height):
         page.evaluate("window.HskPwaInbox.open()")
         dialog = page.locator("#hsk-pwa-notice-root .hsk-pwa-notice-card")
         assert dialog.is_visible()
-        assert page.locator("#hsk-pwa-notice-list .hsk-pwa-notice-row").count() == 1
+        assert page.locator("#hsk-pwa-notice-list .hsk-pwa-notice-row").count() == 4
         assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
+        assert page.locator("#hsk-pwa-notice-root").get_attribute("data-mode") == "inbox"
         box = dialog.bounding_box()
-        assert box and abs(box["x"] + box["width"] / 2 - width / 2) < 3
-        assert box["x"] >= 0 and box["x"] + box["width"] <= width + 1
-        blur = dialog.evaluate(
-            "(node) => getComputedStyle(node).backdropFilter || "
-            "getComputedStyle(node).webkitBackdropFilter"
-        )
-        assert "blur(" in blur, "actual optical glass not applied"
-        course_tab = page.locator('[data-pwa-tab="course"]')
-        account_tab = page.locator('[data-pwa-tab="account"]')
-        course_tab.focus()
-        page.keyboard.press("ArrowRight")
-        assert account_tab.get_attribute("aria-selected") == "true"
-        assert account_tab.evaluate("node => document.activeElement === node")
-        assert page.locator("#hsk-pwa-notice-list").get_attribute("aria-labelledby") == "hsk-pwa-tab-account"
-        page.keyboard.press("ArrowLeft")
-        assert course_tab.get_attribute("aria-selected") == "true"
-        assert page.locator("#hsk-pwa-notice-list").get_attribute("aria-labelledby") == "hsk-pwa-tab-course"
-        page.locator('[data-pwa-tab="account"]').click()
+        assert box and box["x"] <= 1 and box["width"] >= width - 1
+        assert box["y"] <= 1 and box["height"] >= height - 1
+        assert page.locator('[data-pwa-tab]').count() == 0
+        assert page.locator("#hsk-pwa-notice-list").get_attribute("role") == "region"
+        assert page.get_by_text("Dars tayyor").is_visible()
         assert page.get_by_text("Hisob xabari").is_visible()
         assert page.locator('[data-payment-status="approved"]').evaluate(
             "node => node.classList.contains('is-approved')"
