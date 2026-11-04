@@ -9,7 +9,7 @@ const source = fs.readFileSync("app/static/course_v3_data/iphone-pwa-notices.js"
 const shell = fs.readFileSync("app/static/course-v3.html", "utf8");
 const css = fs.readFileSync("app/static/course_v3_data/iphone-pwa-glass.css", "utf8");
 assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261104-0a68a6704a78"'));
-assert(shell.includes('href="/course_v3_data/iphone-pwa-glass.css?v=20261104-d221e8ac4fae'));
+assert(shell.includes('href="/course_v3_data/iphone-pwa-glass.css?v=20261105-5421046cea3a'));
 assert(shell.includes('PWA_COURSE_HOST?\'<button class="pwa-notices-button"'));
 assert(shell.includes('pwaPushSettingsRowHtml()'));
 assert(!shell.includes('class="pwa-feedback-button"'),"profile feedback shortcut is removed");
