@@ -13,7 +13,7 @@
   var permissionRequired = true, listening = false, busy = false, epoch = 0;
   var sampleReady = false, gx = 0, gy = 0, gz = 0, above = false;
   var firstPeak = null, lastShake = -100000, snapshot = null;
-  var stage = "", submitting = false, reportScreen = "course";
+  var stage = "", submitting = false, reportScreen = "course", reportDescription = "";
   var lastFocus = null;
   var root = document.createElement("div");
   root.id = "hsk-pwa-shake-root";
@@ -71,6 +71,7 @@
     root.hidden = true;
     stage = "";
     snapshot = null;
+    reportDescription = "";
     busy = false;
     epoch += 1;
     if (wasIntro) { seen = true; savePreference(); }
@@ -190,10 +191,7 @@
     if (rendererPromise) return rendererPromise;
     rendererPromise = new Promise(function (resolve, reject) {
       var script = document.createElement("script");
-      script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
-      script.integrity = "sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==";
-      script.crossOrigin = "anonymous";
-      script.referrerPolicy = "no-referrer";
+      script.src = "/course_v3_data/vendor/html2canvas.min.js?v=1";
       script.onload = function () {
         if (typeof window.html2canvas === "function") resolve(window.html2canvas);
         else reject(Error("renderer_unavailable"));
@@ -245,6 +243,7 @@
     stopListening();
     var generation = ++epoch;
     reportScreen = typeof SCREEN === "string" ? SCREEN.slice(0,80) : "course";
+    reportDescription = "";
     captureViewport().catch(function () { return null; }).then(function (image) {
       if (generation !== epoch || !owner || !desired) return;
       snapshot = image;
@@ -317,6 +316,10 @@
     return wrap;
   }
   function formReport() {
+    if (stage === "form") {
+      var previous = root.querySelector("#hsk-shake-description");
+      if (previous) reportDescription = previous.value;
+    }
     renderShell("formTitle");
     var label = document.createElement("label");
     label.textContent = l("description");
@@ -325,6 +328,8 @@
     textarea.maxLength = 2000;
     textarea.rows = 4;
     textarea.placeholder = l("hint");
+    textarea.value = reportDescription;
+    textarea.addEventListener("input", function () { reportDescription = textarea.value; });
     label.appendChild(textarea);
     body.appendChild(label);
     body.appendChild(imagePreview());
