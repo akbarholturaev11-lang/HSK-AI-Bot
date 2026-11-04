@@ -67,3 +67,26 @@ Status **NEEDS DEVICE QA** means code path identified but not exercised on a rea
 **Priority next:** P1 real iPhone checkout back perf and freeze; P1 all-screen navigation/back regression; P1 verify Settings API on staging; P2 verify unified full-screen Inbox and push delivery; P2 Live voice independent design; P2 provider identity/avatar UI and Telegram-only text cleanup; P2 event-specific push classification with privacy and blocked-account policy.
 
 **Syntax review:** V8 parsed the modified Inbox JS and inline Course/Checkout scripts with no syntax errors. This is not execution, correctness or iOS performance proof.
+
+
+## Follow-up findings, 2026-11-05
+
+**CI correction:** Prior PR #262 runs found a return-path assertion still expecting HTTP 200 for authenticated `/iphone-pwa`, and review-source hashes/anchors made stale by added HTML lines. The verified redirect test is now explicitly HTTP 303, all 9454 original source line positions preserved, and the exact reviewed SHA plus new storage-key inventory are maintained. CI status must be checked on the newest commit, not older canceled runs.
+
+**PWA Web Push 422 root-cause candidate strongly supported by source:** Web standard `PushSubscription.toJSON()` may include `expirationTime:null`, while the server's `SubscribeRequest` sets Pydantic `extra="forbid"` and only allows `endpoint`/`keys`. The original client posted `subscription.toJSON()` unmodified. Production Railway HTTP logs contained one `/api/v3/pwa/push/subscribe` HTTP 422; its request body was not available, so the precise cause of that historical request cannot be proven. Client now sends only `endpoint` and `keys.{p256dh,auth}`, retaining strict server validation. The JS smoke harness now simulates Safari's extra `expirationTime` and rejects forwarding it. iOS user opt-in, VAPID settings, Apple's 201/202 provider acceptance and lock-screen delivery must still be verified end-to-end.
+
+**Browser-only Telegram copy:** AI Voice now reuses the already-authored UZ/RU/TJ `pronunciation.micDeny` localized message (neutral microphone permission), not its Telegram-specific settings text. Unsupported PWA avatar editing is hidden rather than directing learners to their Telegram profile. The linked canonical user account and real avatar are never deleted or rewritten by this UI-only change. Linked identity management and other Telegram-specific flows require separate account-level design.
+
+**QA-only client profiler:** `/iphone-pwa/course?pwa_perf=1` loads `iphone-pwa-perf.js` and makes `window.HskPwaPerf.snapshot()` available locally. It captures bounded tab handler/paint, long tasks and coarse same-origin resource timings, dropping URL query strings, all IDs and auth state; it never sends telemetry. It is disabled on normal navigation. No iOS measurements have been performed with it yet.
+
+**Observed baseline from Railway HTTP proxy (sample, 2026-11-04, up to 500 recent records):**
+
+| Endpoint | n | Proxy median (approximately ms, transport only) |
+|---|---:|---:|
+| `/api/v3/pwa/map` | 6 | 92 |
+| `/iphone-pwa/course` | 6 | 46 |
+| `/api/v3/pwa/notifications` | 10 | 20 |
+| `/api/v3/pwa/account-notices` | 10 | 21 |
+| `/api/v3/pwa/subscription/overview` | 1 | 221 |
+
+These are not iPhone first-paint, RTT, JS parse, media, layout, page freeze or true user-visible load times. Do not infer frontend speed from them, particularly with n=1 for checkout. The observed rejected push subscribe was one request, not a confirmed universal failure.
