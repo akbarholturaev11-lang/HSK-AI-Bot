@@ -443,7 +443,11 @@ function checkoutTransport(path,body,signal,keepalive){
 function verifyPwaReturn(){
   if(!PWA_CHECKOUT_HOST)return;
   PWA_CHECKOUT_PROMISE=null;
-  checkoutPwaActor().catch(function(){location.replace("/iphone-pwa")});
+  checkoutPwaActor().catch(function(error){
+    // A connectivity/5xx failure is not a logout. 401 or an account change
+    // already redirects inside the session verifier; malformed actors fail closed.
+    if(error&&error.message==="pwa_session_invalid")location.replace("/iphone-pwa");
+  });
 }
 if(PWA_CHECKOUT_HOST){
   window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()});
