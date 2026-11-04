@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#FDF9F0">
 <script>if(location.pathname==="/iphone-pwa/course")document.documentElement.classList.add("hsk-pwa-browser");</script>
 <title>HSK AI</title>
-<link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
+<link rel="icon" href="/assets/hsk-ai-logo-256.png" type="image/png">
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <!-- Fast static Mandarin MP3 index; cached across Mini App visits. -->
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
@@ -61,7 +61,6 @@ html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-book{animation-du
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-title{animation-duration:360ms;animation-delay:520ms}
 #pwa-checkout-layer{position:fixed;inset:0;z-index:9700;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b);display:flex;flex-direction:column;overscroll-behavior:contain}
 #pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
-#pwa-checkout-back{margin:5px 12px;flex:none;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink);display:grid;place-items:center;touch-action:manipulation}
 html.hsk-pwa-browser:has(#pwa-checkout-layer){overflow:hidden}
 .hsk-launch-stage{position:relative;display:flex;flex-direction:column;align-items:center}
 .hsk-launch-halo{position:absolute;top:48px;left:50%;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle,rgba(224,74,64,.24),rgba(224,74,64,0));opacity:.1;transform:translate(-50%,-50%) scale(.84);animation:hsk-launch-halo-breathe 1.45s ease-in-out infinite alternate}
@@ -1628,7 +1627,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   .nav::before,.nav::after { display:none; }
 }
 </style>
-<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261105-b4b9a9cbc312">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261105-907e01548850">
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261105-83778161c05b">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
@@ -2740,16 +2739,13 @@ var App={
     if(!PWA_COURSE_HOST||PWA_CHECKOUT_FRAME)return;
     if($("#paywall").classList.contains("on"))App.closePaywall();
     if($("#sheet").classList.contains("on"))App.closeSheet();
-    var layer=document.createElement("section"),back=document.createElement("button"),frame=document.createElement("iframe");
+    var layer=document.createElement("section"),frame=document.createElement("iframe");
     layer.id="pwa-checkout-layer";layer.setAttribute("role","dialog");layer.setAttribute("aria-modal","true");
     layer.setAttribute("aria-label","HSK AI Pro");
-    back.type="button";back.id="pwa-checkout-back";back.setAttribute("aria-label",commonMessage("action.back",""));
-    back.innerHTML='<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>';
-    back.onclick=pwaCheckoutBack;
     frame.title="HSK AI Pro";query.set("embedded","1");frame.src="/iphone-pwa/checkout?"+query.toString();
     PWA_CHECKOUT_FRAME=frame;PWA_CHECKOUT_RETURN_FOCUS=document.activeElement;
-    layer.append(back,frame);document.body.appendChild(layer);$(".wrap").inert=true;
-    back.focus({preventScroll:true});NavBack.sync();
+    layer.append(frame);document.body.appendChild(layer);$(".wrap").inert=true;
+    NavBack.sync();
   },
   closePwaCheckout:function(child){
     if(!PWA_CHECKOUT_FRAME||PWA_CHECKOUT_FRAME.contentWindow!==child)return false;
@@ -9723,7 +9719,7 @@ window.addEventListener("pageshow",function(ev){
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261021-c61abddcc057"></script>
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
-<script src="/course_v3_data/iphone-pwa-notices.js?v=20261105-5d418875fa00"></script>
+<script src="/course_v3_data/iphone-pwa-notices.js?v=20261105-1543794df819"></script>
 <script src="/course_v3_data/iphone-pwa-feedback.js?v=20261105-b0984f8ed9a6"></script>
 <script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-e878b00bfc8a"></script><script>if(location.pathname==="/iphone-pwa/course"){var hskPwaInvite=document.createElement("script");hskPwaInvite.src="/course_v3_data/iphone-pwa-invite.js?v=20261105-f6bf81e66fe4";document.head.appendChild(hskPwaInvite)}</script><script>if(location.pathname==="/iphone-pwa/course"&&new URLSearchParams(location.search).get("pwa_perf")==="1"){var hskPwaPerfScript=document.createElement("script");hskPwaPerfScript.src="/course_v3_data/iphone-pwa-perf.js?v=20261105-0dbef5d08a9d";document.head.appendChild(hskPwaPerfScript)}</script>
 </body>

@@ -46,6 +46,7 @@ button:active{transform:scale(.98)}
 h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .top-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
 #pwaCheckoutBackBtn[hidden]{display:none}
+#pwaCheckoutBackBtn{border:0;background:transparent}
 .help-btn{display:grid;place-items:center;width:44px;height:44px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--accent-ink)}
 .status{display:none;margin:0 0 12px;border:1px solid var(--gold-line);border-radius:var(--radius-sm);background:var(--gold-soft);padding:11px 13px;color:var(--gold-ink);font-size:12px;line-height:1.4;font-weight:750}
 .status.show{display:block}
@@ -383,7 +384,7 @@ if(PWA_CHECKOUT_HOST){
     meta=document.createElement("meta");meta.name="apple-mobile-web-app-status-bar-style";meta.content="default";document.head.appendChild(meta);
     var touch=document.createElement("link");touch.rel="apple-touch-icon";touch.href="/assets/hsk-ai-logo-256.png";document.head.appendChild(touch);
     var manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/iphone-pwa/manifest.webmanifest";document.head.appendChild(manifest);
-    var glass=document.createElement("link");glass.rel="stylesheet";glass.href="/course_v3_data/iphone-pwa-glass.css?v=20261105-b4b9a9cbc312";document.head.appendChild(glass);
+    var glass=document.createElement("link");glass.rel="stylesheet";glass.href="/course_v3_data/iphone-pwa-glass.css?v=20261105-907e01548850";document.head.appendChild(glass);
   })();
 }
 const API=PWA_CHECKOUT_HOST?{
@@ -1506,7 +1507,7 @@ function render(){
   renderRenewalDialog(text);
   renderQrPreview(text);
   $("#backBtn").textContent=text.back;
-  $("#pwaCheckoutBackBtn").hidden=!PWA_CHECKOUT_HOST||PWA_CHECKOUT_EMBEDDED;
+  $("#pwaCheckoutBackBtn").hidden=!PWA_CHECKOUT_HOST;
   $("#pwaCheckoutBackBtn").setAttribute("aria-label",text.back);
   $("#nextBtn").textContent=nextCtaText(text,screen);
   $("#backBtn").classList.toggle("hide",PWA_CHECKOUT_HOST||state.step===0);

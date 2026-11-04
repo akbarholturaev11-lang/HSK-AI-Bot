@@ -283,3 +283,13 @@ html.hsk-pwa-browser .renewal-actions button {
 @media(prefers-reduced-motion:reduce){
   html.hsk-pwa-browser .renewal-card{animation:none!important}
 }
+
+/* Back controls are bare icons: no white card or ring behind the arrow. */
+html.hsk-pwa-browser .hsk-pwa-close,
+html.hsk-pwa-browser .pwa-practice-back,
+html.hsk-pwa-browser .rc-ix.hsk-native-back-duplicate,
+html.hsk-pwa-browser .pr-ix.hsk-native-back-duplicate,
+html.hsk-pwa-browser #mk-root .ix,html.hsk-pwa-browser #tc-root .ix,
+html.hsk-pwa-browser .hsk-native-back-duplicate{
+  background:transparent;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;
+}

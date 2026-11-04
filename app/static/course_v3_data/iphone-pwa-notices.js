@@ -541,6 +541,31 @@
       ev.preventDefault(); first.focus();
     }
   });
+  // Ask for notification permission once per device on the first tap after the
+  // app opens. iOS only shows the system prompt from a trusted gesture, so the
+  // request cannot run on load. Later changes stay in Settings.
+  var AUTO_PUSH_KEY = "hsk_pwa_push_asked_v1";
+  function autoPushAsked() {
+    try { return window.localStorage.getItem(AUTO_PUSH_KEY) === "1"; }
+    catch (_) { return true; }
+  }
+  function armAutoPushPrompt() {
+    if (autoPushAsked() || !pushSupported() || Notification.permission !== "default") return;
+    refreshPushStatus().then(function () {
+      if (!pushState || !pushState.enabled || pushState.subscribed) return;
+      function onGesture() {
+        document.removeEventListener("pointerup", onGesture, true);
+        if (autoPushAsked() || Notification.permission !== "default") return;
+        if (!pushState || !pushState.enabled || pushState.subscribed) return;
+        try { window.localStorage.setItem(AUTO_PUSH_KEY, "1"); } catch (_) { return; }
+        changePushSubscription();
+      }
+      document.addEventListener("pointerup", onGesture, true);
+    }).catch(function () {});
+  }
+  window.addEventListener("load", function () {
+    window.setTimeout(armAutoPushPrompt, 2500);
+  }, {once:true});
   window.HskPwaInbox = {open:open,close:close,openPushSettings:openPushSettings,
     back:close,backTarget:function () { return overlay.hidden ? null : panel; },
     refreshPushStatus:refreshPushStatus,updateSettingsPushStatus:updateSettingsPushStatus};

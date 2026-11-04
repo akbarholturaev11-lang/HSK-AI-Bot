@@ -50,3 +50,7 @@ html.hsk-pwa-practice #hsk-pwa-practice-loader .hsk-study-preparing-panda{max-wi
     height:100vh;max-height:100vh;min-height:100vh;
   }
 }
+/* Back controls are bare icons: no white card or ring behind the arrow. */
+html.hsk-pwa-practice .ix,html.hsk-pwa-practice .hsk-native-back-duplicate{
+  background:transparent;border:0;box-shadow:none;
+}
