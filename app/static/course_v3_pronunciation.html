@@ -163,7 +163,7 @@ function runGate(ref){
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})}).then(validatePracticeGate);
 }
 function showLimit(j){LIMIT_REASON=(j&&j.limit_text)||"";SCRIPTS_READY.then(showLimitNow)}
-function showLimitNow(){
+function showLimitNow(){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();
   /* Murabbiy shu yerda QOLIB KETMASIN: limit ekrani boshqa holat,
      unda savol ham, personaj ham yo'q. */
   if(window.PracticeCoach){PracticeCoach.hide();PracticeCoach.reset()}
@@ -188,6 +188,7 @@ function gateStart(newAttempt){
   }).catch(function(){
     preparing=false;
     if(ref!==ATTEMPT_REF)return;
+    if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();
     var t=practiceGateErrorCopy();
     document.getElementById("stage").innerHTML='<div class="done on"><p>'+gateEscape(t.body)+'</p><button onclick="gateStart(false)">'+gateEscape(t.retry)+'</button><button class="ghost" onclick="goBack()">'+gateEscape(t.back)+'</button></div>';
   });
@@ -510,7 +511,7 @@ function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function
     if(pool.length<8)pool=all.filter(function(w){var l=wordLvNum(w);return l&&l<=n});
     if(pool.length<8)pool=all;
   }
-  if(!pool.length){document.getElementById('stage').innerHTML='<div class="loading">'+practiceMessage("practice.dataNotLoaded",(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3_pronunciation.start.copy1",{uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"}))+'</div>';return}
+  if(!pool.length){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();document.getElementById('stage').innerHTML='<div class="loading">'+practiceMessage("practice.dataNotLoaded",(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3_pronunciation.start.copy1",{uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"}))+'</div>';return}
   /* Server tartibi birinchi; qolgani mavjud pooldan to'ldiriladi.
      Ro'yxat SHU YERDA qotadi va sessiya davomida o'zgarmaydi — reklama
      oralig'i `list.length` ga tayanadi. */
@@ -521,6 +522,7 @@ function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function
   document.getElementById('done').classList.remove('on');document.getElementById('ctrl').style.display='flex';document.getElementById('prog').style.width='0';
   document.getElementById('skiptxt').textContent=L.skip;
   load();
+  if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();
 })}
 gateStart();
 </script>
