@@ -407,7 +407,14 @@
             applicationServerKey: base64UrlBytes(pushState.public_key)
           });
         }
-        await pushRequest("/api/v3/pwa/push/subscribe", "POST", subscription.toJSON(), actor);
+        // PushSubscription.toJSON() includes expirationTime on Safari. The
+        // strict API owns only endpoint + two public subscription keys;
+        // sending the extra field causes a deterministic HTTP 422.
+        var raw = subscription.toJSON(), keys = raw && raw.keys;
+        if (!raw || !keys) throw new Error("pwa_push_subscription_invalid");
+        await pushRequest("/api/v3/pwa/push/subscribe", "POST", {
+          endpoint:raw.endpoint, keys:{p256dh:keys.p256dh,auth:keys.auth}
+        }, actor);
       }
       await refreshPushStatus();
     } catch (_) {
