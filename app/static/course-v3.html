@@ -1609,7 +1609,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   .nav::before,.nav::after { display:none; }
 }
 </style>
-<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261104-175a0ec6f920">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261104-0242c58f7fb7">
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261104-2">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
@@ -9281,6 +9281,11 @@ var NavBack={
   blocked:function(){for(var i=0;i<NavBack.BLOCK.length;i++)if(document.querySelector(NavBack.BLOCK[i]))return true;return false},
   top:function(){
     if(NavBack.blocked())return null;
+    // Inbox and push preference are browser-only independent navigation
+    // surfaces; their visible state is [hidden], not Mini App .on classes.
+    var notice=document.getElementById("hsk-pwa-notice-root");
+    if(PWA_COURSE_HOST&&notice&&!notice.hidden&&window.HskPwaInbox)
+      return {id:"hsk-pwa-notice-root",close:function(){window.HskPwaInbox.close()}};
     for(var i=0;i<NavBack.LAYERS.length;i++)if(NavBack._on(NavBack.LAYERS[i].id))return NavBack.LAYERS[i];
     return null;
   },
@@ -9444,6 +9449,7 @@ var NavBack={
     NavBack.sync();
   }
 };
+window.NavBack=NavBack;
 NavBack.init();
 window.addEventListener("pageshow",function(ev){
   if(!ev.persisted)return;
@@ -9453,7 +9459,7 @@ window.addEventListener("pageshow",function(ev){
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261021-c61abddcc057"></script>
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
-<script src="/course_v3_data/iphone-pwa-notices.js?v=20261104-b2923983a5a6"></script>
+<script src="/course_v3_data/iphone-pwa-notices.js?v=20261104-dbecc7d0d720"></script>
 <script src="/course_v3_data/iphone-pwa-feedback.js?v=20261103-1"></script>
 <script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261104-2"></script>
 </body>
