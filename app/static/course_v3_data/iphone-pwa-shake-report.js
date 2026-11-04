@@ -9,6 +9,13 @@
   var standalone = !!(navigator.standalone ||
     (window.matchMedia && matchMedia("(display-mode: standalone)").matches));
   if (!standalone) return;
+  // Every independent practice/checkout HTML document needs the dialog skin.
+  if (!document.querySelector('link[href*="iphone-pwa-shake-report.css"]')) {
+    var reportCss = document.createElement("link");
+    reportCss.rel = "stylesheet";
+    reportCss.href = "/course_v3_data/iphone-pwa-shake-report.css?v=260-1";
+    document.head.appendChild(reportCss);
+  }
 
   var owner = null, desired = true, seen = false, permitted = false, previouslyGranted = false;
   var permissionRequired = true, listening = false, busy = false, epoch = 0;
