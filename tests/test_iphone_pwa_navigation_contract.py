@@ -49,6 +49,16 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         # On-demand dictionary entry remains available in both hosts.
         self.assertIn('openDict:function(){RESOURCE.open("dict")}', COURSE)
 
+    def test_checkout_returns_to_same_origin_course_without_forcing_reload(self):
+        action = CHECKOUT.split("function returnToCourseFromCheckout()", 1)[1].split(
+            "function initTelegramCourseReturn()", 1
+        )[0]
+        self.assertIn('from.origin===location.origin', action)
+        self.assertIn('from.pathname==="/iphone-pwa/course"', action)
+        self.assertIn('window.history.back()', action)
+        self.assertIn('window.location.replace(courseReturnUrl())', action)
+        self.assertIn('PWA_CHECKOUT_HOST', action)
+
     def test_checkout_does_not_block_on_external_telegram_sdk(self):
         self.assertIn('/assets/telegram-web-app.js?v=20261019-1', CHECKOUT)
         self.assertNotIn("https://telegram.org/js/telegram-web-app.js", CHECKOUT)
