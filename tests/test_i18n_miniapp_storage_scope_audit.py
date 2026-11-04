@@ -20,9 +20,10 @@ class MiniAppStorageScopeTests(unittest.TestCase):
     def test_current_key_classification_is_complete_for_literal_calls(self):
         report = audit()
         self.assertEqual(report["status"], "SOURCE_IDENTITY_SCOPE_RUNTIME_QA_REQUIRED")
-        self.assertEqual(report["classified_literal_keys"], 9)
-        self.assertEqual(report["literal_storage_calls"], 18)
+        self.assertEqual(report["classified_literal_keys"], 10)
+        self.assertEqual(report["literal_storage_calls"], 19)
         self.assertEqual(report["regressions"], [])
+        self.assertIn('sessionStorage.setItem("hskai.pwa.checkout.return"', self.sources["course"])
         self.assertEqual(set(report["dynamic_cache_key_functions"]), {
             "lessonDataKey", "lessonResumeKey", "lessonMasteryKey",
             "foundationCacheKey", "studySetupTimeKey", "memorizationStateKey",
