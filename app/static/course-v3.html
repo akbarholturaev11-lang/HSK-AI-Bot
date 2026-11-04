@@ -6810,7 +6810,7 @@ function finishChallengeRound(){
 /* ---------- Invite friend sheet ---------- */
 var _invitePayload=null;
 function renderInviteSheet(d){
-  _invitePayload=d;
+  _invitePayload=d;if(PWA_COURSE_HOST&&window.HskPwaInvite){HskPwaInvite.open(d);return}
   var sendLbl=courseMessage("rating.inviteSend",LANG==="ru"?"Отправить сообщение":LANG==="tj"?"Паём фиристодан":"Xabar yuborish");
   var title=courseMessage("rating.inviteTitle",LANG==="ru"?"Пригласить друга":LANG==="tj"?"Дӯстро даъват кардан":"Do'st chaqirish");
   var hint=courseMessage("rating.inviteHint",LANG==="ru"?"Готовый текст откроется в Telegram. Выберите друга и отправьте.":LANG==="tj"?"Матни тайёр дар Telegram кушода мешавад. Дӯстро интихоб кунед ва фиристед.":"Tayyor matn Telegramda ochiladi. Do'stni tanlab yuboring.");
@@ -6823,7 +6823,7 @@ function renderInviteSheet(d){
 function openInviteSheet(){
   var loading=courseMessage("rating.inviteLoading",LANG==="ru"?"Готовим ссылку…":LANG==="tj"?"Силка омода мешавад…":"Link tayyorlanyapti…");
 	  App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">友</div><div class="tr">'+loading+'</div></div>');
-	  if(INIT_DATA){
+	  if(INIT_DATA||PWA_COURSE_HOST){
 	    _apiGet(invitePayloadUrl()).then(function(r){return r.json()}).then(function(d){
 	      if(d&&d.ok){renderInviteSheet(d);return}
 	      throw new Error("invite_failed");
@@ -6864,7 +6864,7 @@ function openInviteSheet(){
 	      +'<div class="note">'+esc(rivNote)+'</div></div>';
 	  }
 
-	  var acts=u.me?""
+	  var acts=(u.me||PWA_COURSE_HOST)?""
 	    :'<div class="upacts">'
 	    +'<button class="b-ch" onclick="friendChallenge('+i+',\''+src+'\')"><i class="ti ti-swords"></i> '+r.ch+'</button>'
 	    +'<button class="b-tg" aria-label="'+esc(r.msg)+'" title="'+esc(r.msg)+'" onclick="openUserChat('+i+',\''+src+'\')"><i class="ti ti-message-circle"></i></button>'
@@ -9449,6 +9449,6 @@ window.addEventListener("pageshow",function(ev){
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
 <script src="/course_v3_data/iphone-pwa-notices.js?v=20261105-0022e1e89b2f"></script>
 <script src="/course_v3_data/iphone-pwa-feedback.js?v=20261103-1"></script>
-<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261104-2"></script><script>if(location.pathname==="/iphone-pwa/course"&&new URLSearchParams(location.search).get("pwa_perf")==="1"){var hskPwaPerfScript=document.createElement("script");hskPwaPerfScript.src="/course_v3_data/iphone-pwa-perf.js?v=20261105-0dbef5d08a9d";document.head.appendChild(hskPwaPerfScript)}</script>
+<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261104-2"></script><script>if(location.pathname==="/iphone-pwa/course"){var hskPwaInvite=document.createElement("script");hskPwaInvite.src="/course_v3_data/iphone-pwa-invite.js?v=20261105-f6bf81e66fe4";document.head.appendChild(hskPwaInvite)}</script><script>if(location.pathname==="/iphone-pwa/course"&&new URLSearchParams(location.search).get("pwa_perf")==="1"){var hskPwaPerfScript=document.createElement("script");hskPwaPerfScript.src="/course_v3_data/iphone-pwa-perf.js?v=20261105-0dbef5d08a9d";document.head.appendChild(hskPwaPerfScript)}</script>
 </body>
 </html>
