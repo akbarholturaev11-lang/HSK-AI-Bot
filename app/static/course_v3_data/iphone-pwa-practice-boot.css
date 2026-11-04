@@ -14,6 +14,23 @@ html.hsk-pwa-practice .ctrl {
   flex:0 0 auto;padding:8px 0 calc(14px + env(safe-area-inset-bottom,0px));
 }
 html.hsk-pwa-practice .wrap .done {max-height:100%;overflow-y:auto}
+/* The exam and mistakes pages are lists, not a flex "body" exercise.
+   Keep their main panels scrollable rather than clipping rows at 100dvh. */
+html.hsk-pwa-practice .wrap > #hub,
+html.hsk-pwa-practice .wrap > #exam,
+html.hsk-pwa-practice .wrap > #placement,
+html.hsk-pwa-practice .wrap > #empty,
+html.hsk-pwa-practice .wrap > #content {
+  flex:1 1 auto;min-height:0;max-width:100%;
+  overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+html.hsk-pwa-practice .wrap > #exam:not(.on),
+html.hsk-pwa-practice .wrap > #placement:not(.on) {display:none}
+html.hsk-pwa-practice .rv {height:100dvh;max-height:100dvh}
+html.hsk-pwa-practice .rv-top {flex:0 0 auto}
+html.hsk-pwa-practice .rv-body {flex:1 1 auto;min-height:0;overflow-y:auto}
+html.hsk-pwa-practice .rv-foot {flex:0 0 auto}
 html.hsk-pwa-practice .wrap .pbar {min-width:0}
 html.hsk-pwa-practice #hsk-pwa-practice-loader[hidden]{display:none!important}
 html.hsk-pwa-practice #hsk-pwa-practice-loader{
