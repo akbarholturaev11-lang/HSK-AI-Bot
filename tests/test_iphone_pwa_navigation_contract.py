@@ -65,6 +65,25 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn("PWA_CHECKOUT_HOST", CHECKOUT)
         self.assertIn("/api/v3/pwa/subscription/overview", CHECKOUT)
 
+    def test_settings_is_fullscreen_and_preferences_are_pwa_authorized(self):
+        css = Path("app/static/course_v3_data/iphone-pwa-glass.css").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('"/api/v3/preferences":"/api/v3/pwa/preferences"', COURSE)
+        self.assertIn('if(PWA_COURSE_HOST)$("#sheet").classList.add("pwa-settings-page")', COURSE)
+        self.assertIn('#sheet.pwa-settings-page .si', css)
+        self.assertIn('if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.resolve(null)', COURSE)
+        self.assertIn('_apiPost("/api/v3/preferences",body)', COURSE)
+        self.assertIn('if(!saved||saved.ok!==true){dailyGoal=previous;', COURSE)
+
+    def test_course_tab_paints_before_expensive_trails(self):
+        open_course = COURSE.split('if(s==="course"){', 1)[1].split(
+            'if(s==="course"&&previous!=="course")', 1
+        )[0]
+        self.assertIn('if(PWA_COURSE_HOST&&typeof requestAnimationFrame==="function")', open_course)
+        self.assertIn('if(SCREEN!=="course")return', open_course)
+        self.assertIn('drawTrails();scrollToCurrentNode()', open_course)
+
     def test_push_stays_bound_to_authenticated_inbox(self):
         self.assertIn('/iphone-pwa/course?notice=1', PUSH)
         self.assertNotIn("payment_status", PUSH)
