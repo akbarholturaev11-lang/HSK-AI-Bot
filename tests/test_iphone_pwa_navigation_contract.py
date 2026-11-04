@@ -86,6 +86,30 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn('if(SCREEN!=="course")return', open_course)
         self.assertIn('drawTrails();scrollToCurrentNode()', open_course)
 
+    def test_production_telemetry_disabled_by_default_and_no_user_identifiers(self):
+        profiler = Path("app/static/course_v3_data/iphone-pwa-perf.js").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('get("pwa_perf")==="1"', COURSE)
+        self.assertIn('iphone-pwa-perf.js?v=20261105-0dbef5d08a9d', COURSE)
+        self.assertIn("window", profiler)
+        self.assertIn("snapshot:function()", profiler)
+        self.assertNotIn("localStorage", profiler)
+        self.assertNotIn("fetch(", profiler)
+        self.assertNotIn("user_id", profiler)
+        self.assertNotIn("initData", profiler)
+
+    def test_browser_voice_permission_uses_local_microphone_copy(self):
+        self.assertIn('LD[locale].micDeny=copy["pronunciation.micDeny"]', COURSE)
+        self.assertIn('if(PWA_COURSE_HOST)Object.keys(LD)', COURSE)
+
+    def test_telegram_avatar_edit_not_advertised_on_iphone(self):
+        css = Path("app/static/course_v3_data/iphone-pwa-glass.css").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('html.hsk-pwa-browser .phero .pav .ed {display:none!important}', css)
+        self.assertIn('html.hsk-pwa-browser .phero .pav {cursor:default;pointer-events:none}', css)
+
     def test_push_stays_bound_to_authenticated_inbox(self):
         self.assertIn('/iphone-pwa/course?notice=1', PUSH)
         self.assertNotIn("payment_status", PUSH)
