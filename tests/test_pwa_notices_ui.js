@@ -57,7 +57,7 @@ function harness({path = "/iphone-pwa/course", href = null, action = null, accou
   let notificationPermission = permission, permissionFetchCount = null;
   const key = "B".repeat(87);
   const subscription = {
-    toJSON: () => ({endpoint:"https://web.push.apple.com/example/token",keys:{p256dh:key,auth:"A".repeat(22)}}),
+    toJSON: () => ({endpoint:"https://web.push.apple.com/example/token",expirationTime:null,keys:{p256dh:key,auth:"A".repeat(22)}}),
     unsubscribe: async () => {pushCalls.push("unsubscribe"); localSubscription = null; return true;}
   };
   const registration = {pushManager:{
@@ -312,6 +312,11 @@ async function main(){
     "push manager is warmed only under the iPhone PWA scope");
   assert(installed.requests.some((request)=>request.url.endsWith("/push/subscribe")&&request.options.headers["X-HSK-PWA-CSRF"]==="csrf-token"),
     "subscription is sent through the existing CSRF-protected account session");
+  const safariBody = JSON.parse(installed.requests.find((request)=>request.url.endsWith("/push/subscribe")).options.body);
+  assert.deepEqual(Object.keys(safariBody).sort(), ["endpoint","keys"],
+    "Safari expirationTime must be removed before strict PWA API validation");
+  assert.deepEqual(Object.keys(safariBody.keys).sort(), ["auth","p256dh"]);
+  assert(!Object.hasOwn(safariBody, "expirationTime"),"native Safari toJSON extra field is stripped");
   for(let i=0;i<8 && installed.root().querySelector("#hsk-pwa-push-action").textContent!=="pwaPush.disable";i++)
     await new Promise(resolve=>setImmediate(resolve));
   assert.equal(installed.root().querySelector("#hsk-pwa-push-action").textContent,"pwaPush.disable",
