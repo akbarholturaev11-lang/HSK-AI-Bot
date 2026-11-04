@@ -7551,6 +7551,26 @@ var RESOURCE=(function(){
       if(target.origin!==location.origin)return;
       src=safePaths[path]+target.search;
     }
+    if(PWA_COURSE_HOST){
+      // Paint the same panda preparing state at the tap site. Waiting until
+      // the next HTML document parses is the visible blank/half-cut gap.
+      var oldOverlay=document.getElementById("pwa-practice-navigation-overlay");
+      if(oldOverlay)oldOverlay.remove();
+      var overlay=document.createElement("div");
+      overlay.id="pwa-practice-navigation-overlay";
+      overlay.setAttribute("role","status");
+      overlay.setAttribute("aria-live","polite");
+      overlay.style.cssText="position:fixed;inset:0;z-index:20000;display:flex;align-items:center;justify-content:center;box-sizing:border-box;background:var(--paper,#FDF9F0);padding:env(safe-area-inset-top,0px) 18px env(safe-area-inset-bottom,0px);text-align:center";
+      overlay.innerHTML=renderStudyPreparing();
+      document.body.appendChild(overlay);
+      close();beginInternalNavigation();
+      // One paint turn for the overlay; no change to the gated destination.
+      setTimeout(function(){location.href=src},32);
+      // A failed navigation must not leave the learner trapped on an overlay.
+      setTimeout(function(){if(overlay.isConnected)overlay.remove()},15000);
+      window.addEventListener("pageshow",function(){if(overlay.isConnected)overlay.remove()},{once:true});
+      return;
+    }
     close();beginInternalNavigation();location.href=src;
   }
   function warm(){
