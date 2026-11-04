@@ -2295,3 +2295,13 @@ Both APKs assembled and passed local signature, manifest, embedded Firebase and 
 - Play APK `hsk-ai-1.7.29-60-play-release.apk` SHA-256 `1fcf6a64ceefbba4ab24f2997ddfdd02a9be258564fd52b83e99a6232ef0799e`.
 
 These are locally signed private test APKs. Physical Redmi, real OAuth/push delivery and Play Store-managed installation remain open. The existing signed Admin PWA Smart study reminder control is verified. D30 server startup is enabled, and the all-user admission/cutover limitation remains in §17.89.
+
+### 17.94 Admin ownership and current public-cutover boundary (2026-11-04)
+
+The owner renewed authorization to open Smart Reminder for all eligible learners and manage it in Admin PWA. The existing signed Smart study editor now shows live runtime readiness by transport and the anonymous count of unexpired routing reviews. A review count describes records within their time window. Each send still rechecks consent, device and other current conditions. The single protected Save controls new Android and Telegram Smart authorizations and localized copy.
+
+Final Android grant and Telegram attempt authorization now acquire the same template transaction lock in shared mode. The signed editor acquires it exclusively. A later authorization observes a committed pause, including the first insert of a previously absent setting. Already authorized attempts retain their original expiry, receipt and dedupe rules. Tests exercise the signed save, PostgreSQL lock ordering and the actual Android and Telegram pause paths.
+
+Public admission remains open. The production scan still requires current reviewed routing. The legacy Telegram lesson-time and Android FCM senders check the sticky per-account veto. Other legacy study producers and already queued work require a shared barrier and drain. An older Android worker can still produce its own reminder from a fresh course map. Forced update in the foreground and a missing or old device row do not prove that background sender stopped. Establish a verified migration condition before expanding the cohort. Preserve individual OFF and all day, expiry and outcome evidence.
+
+Acceptance used the actual Admin PWA browser at 390 and 1440 pixels in UZ/RU/TJ with a signed save, along with 194 backend checks on SQLite/PostgreSQL (8 fixture-dependent skips). The dedicated signed-pause race observed the pending shared advisory lock in PostgreSQL. Syntax, strict OpenSpec, all 75 generated catalogs and the frozen-content guard passed. Production public admission remains a separate open task.

@@ -1401,8 +1401,14 @@ async function noticeEditor(key=null){
     const template=data.template;
     managementDraft={type:'notice',noticeKey:key,template,texts:{...template.custom_texts},textLanguage:locale};
     const smart=key==='smart_study',overview=smart&&data.smart;
+    const serviceState=value=>value==null?null:t(value?'hsk30On':'hsk30Off');
+    const routing=overview?profileFields([
+      ['smartAndroidService',serviceState(overview.android_ready)],
+      ['smartTelegramService',serviceState(overview.telegram_ready)],
+      ['smartReviewedRoutes',overview.current_reviews],
+    ])+`<p class="source-note">${esc(t('smartReviewedHint'))}</p>`:'';
     const summary=overview?profileFields([['smartObservation',t(overview.observation_enabled?'hsk30On':'hsk30Off')],['smartMonth',overview.month+' · UTC'],['smartStudyDays',overview.counts.study_day_after_attempt],['smartContactReturns',overview.counts.contact_study_24h],['smartStudyUnits',overview.counts.study_unit_24h]])+`<p class="source-note">${esc(t('smartPartialHint'))}</p>`:'';
-    const body=summary+boolSelect('noticeEnabled',smart?'smartPermission':'status',template.enabled)+(smart?`<p class="source-note">${esc(t('smartPermissionHint'))}</p>`:'')+`<p class="source-note">${esc(t('noticeDefaultHint'))}</p><p class="source-note">${esc(t('noticePlaceholders'))}: ${template.placeholders.map(esc).join(' ')}</p><div class="form-field"><label for="noticeLanguage">${esc(t('language'))}</label><select class="input" id="noticeLanguage">${['uz','ru','tj'].map(lang=>`<option value="${lang}" ${lang===locale?'selected':''}>${lang.toUpperCase()}</option>`).join('')}</select></div><div class="form-field"><label for="noticeText">${esc(t('noticeText'))}</label><textarea class="input setting-value" id="noticeText" maxlength="${template.text_max}">${esc(template.custom_texts[locale])}</textarea></div><p id="noticeValidation" class="alert" role="alert" hidden></p>`;
+    const body=boolSelect('noticeEnabled',smart?'smartPermission':'status',template.enabled)+(smart?`<p class="source-note">${esc(t('smartPermissionHint'))}</p>`:'')+routing+summary+`<p class="source-note">${esc(t('noticeDefaultHint'))}</p><p class="source-note">${esc(t('noticePlaceholders'))}: ${template.placeholders.map(esc).join(' ')}</p><div class="form-field"><label for="noticeLanguage">${esc(t('language'))}</label><select class="input" id="noticeLanguage">${['uz','ru','tj'].map(lang=>`<option value="${lang}" ${lang===locale?'selected':''}>${lang.toUpperCase()}</option>`).join('')}</select></div><div class="form-field"><label for="noticeText">${esc(t('noticeText'))}</label><textarea class="input setting-value" id="noticeText" maxlength="${template.text_max}">${esc(template.custom_texts[locale])}</textarea></div><p id="noticeValidation" class="alert" role="alert" hidden></p>`;
     drawer(noticeLabels[key],`<form id="managementForm">${body}</form>`,btn('saveChanges','managementPrepare','primary'));
     $('noticeText').placeholder=template.defaults[locale];
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('notices',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','noticeList'));}
