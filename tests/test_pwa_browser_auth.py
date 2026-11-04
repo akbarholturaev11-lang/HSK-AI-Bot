@@ -499,6 +499,12 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         login = (Path("app/static") / "iphone-pwa-login.js").read_text(encoding="utf-8")
         self.assertIn('"/api/v3/course-tracks":"/api/v3/pwa/course-tracks"', course)
         self.assertIn('"/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation"', course)
+        self.assertIn('"/api/miniapp/gamification":"/api/v3/pwa/gamification"', course)
+        self.assertIn('if(!ratingLoaded&&(INIT_DATA||PWA_COURSE_HOST)){', course)
+        self.assertIn('_apiPost("/api/miniapp/gamification",{timezone_offset_minutes:timezoneOffset})', course)
+        self.assertIn('_apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(timezoneOffset))', course)
+        get_paths = course.split("var PWA_COURSE_GET_PATHS={", 1)[1].split("};", 1)[0]
+        self.assertNotIn('"/api/miniapp/gamification"', get_paths)
         self.assertIn('mapped=parsed.pathname.replace("/api/v3/lesson/content/","/api/v3/pwa/lesson/content/")', course)
         self.assertIn("parsed.origin!==location.origin", course)
         self.assertIn("var lessonRequest=PWA_COURSE_HOST?_apiGet(lessonDataUrl(lv,n))", course)
@@ -3065,6 +3071,51 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(shared.await_args.args[1].id, 1)
         self.assertEqual(response.headers.get("cache-control"), "no-store")
 
+    async def test_pwa_rating_uses_verified_actor_and_shared_leaderboard(self):
+        path = "/api/v3/pwa/gamification"
+        body = {"timezone_offset_minutes": 330}
+        anonymous = await self.client.post(
+            path, headers={"Origin": ORIGIN}, json=body,
+        )
+        self.assertEqual(anonymous.status_code, 401)
+
+        state = await self.begin()
+        await self.callback(state)
+        owner = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        self.assertEqual(
+            (await self.client.post(
+                path, headers={"Origin": "https://attacker.test",
+                               "X-HSK-PWA-CSRF": owner["csrf"]}, json=body,
+            )).status_code,
+            403,
+        )
+        self.assertEqual(
+            (await self.client.post(
+                path, headers={"Origin": ORIGIN}, json=body,
+            )).status_code,
+            403,
+        )
+        self.assertEqual(
+            (await self.client.post(
+                path, headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": owner["csrf"],
+                               "X-Telegram-Init-Data": "forged=telegram"}, json=body,
+            )).status_code,
+            422,
+        )
+        response = await self.client.post(
+            path,
+            headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": owner["csrf"]},
+            json=body,
+        )
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.headers.get("cache-control"), "no-store")
+        payload = response.json()
+        self.assertTrue(payload["ok"])
+        self.assertEqual(payload["league_size"], 1)
+        self.assertEqual(len(payload["leaderboard"]), 1)
+        self.assertEqual(payload["leaderboard"][0]["user_id"], 1)
+        self.assertTrue(payload["leaderboard"][0]["is_current_user"])
+
     async def test_pwa_course_track_mutations_require_origin_csrf_and_canonical_actor(self):
         state = await self.begin()
         await self.callback(state)
@@ -3136,6 +3187,10 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.client.get("/iphone-pwa")).status_code, 503)
         self.assertEqual((await self.client.get("/iphone-pwa-login.js")).status_code, 503)
         self.assertEqual((await self.client.get("/api/v3/pwa-auth/providers")).status_code, 503)
+        self.assertEqual((await self.client.post(
+            "/api/v3/pwa/gamification", headers={"Origin": ORIGIN},
+            json={"timezone_offset_minutes": 330},
+        )).status_code, 503)
 
     async def test_pwa_site_origin_is_separate_from_oauth_callback_origin(self):
         site_origin = "https://pwa.example.test"

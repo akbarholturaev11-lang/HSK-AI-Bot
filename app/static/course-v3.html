@@ -2275,6 +2275,7 @@ var PWA_COURSE_GET_PATHS={
 var PWA_COURSE_POST_PATHS={
   "/api/v3/course-tracks/switch":"/api/v3/pwa/course-tracks/switch",
   "/api/v3/course-tracks/promo-shown":"/api/v3/pwa/course-tracks/promo-shown",
+  "/api/miniapp/gamification":"/api/v3/pwa/gamification",
   "/api/v3/limits/status":"/api/v3/pwa/limits/status",
   "/api/v3/lesson/start":"/api/v3/pwa/lesson/start",
   "/api/v3/lesson/complete":"/api/v3/pwa/lesson/complete",
@@ -6434,7 +6435,11 @@ function applyRatingPayload(d){
 	}
 	function invitePayloadUrl(){return "/api/v3/invite?lang="+LANG+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset())}
 	function loadLatestRating(){
-	  return _apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(-new Date().getTimezoneOffset())).then(function(r){return r.json()}).then(function(d){
+	  var timezoneOffset=-new Date().getTimezoneOffset();
+	  var request=PWA_COURSE_HOST
+	    ? _apiPost("/api/miniapp/gamification",{timezone_offset_minutes:timezoneOffset})
+	    : _apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(timezoneOffset));
+	  return request.then(function(r){return r.json()}).then(function(d){
 	    if(!d||!d.ok)throw new Error("rating_failed");
 	    applyRatingPayload(d);
 	    return d;
@@ -6454,7 +6459,7 @@ function applyRatingPayload(d){
 function renderRating(){
   // Friends fetches referrals directly; it must not wait for a leaderboard request.
   if(ratingTabCur==="friends"){_renderRatingContent();return}
-  if(!ratingLoaded&&INIT_DATA){
+  if(!ratingLoaded&&(INIT_DATA||PWA_COURSE_HOST)){
     ratingLoaded=true;
     var t=T();
     $("#s-rating").innerHTML='<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';

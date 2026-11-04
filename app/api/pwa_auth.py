@@ -112,6 +112,11 @@ class PwaLanguagePreference(BaseModel):
     language: Literal["uz", "ru", "tj"]
 
 
+class PwaGamificationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    timezone_offset_minutes: int
+
+
 class PwaCheckoutContext(BaseModel):
     model_config = ConfigDict(extra="forbid")
     source: str | None = None
@@ -1493,6 +1498,30 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             return JSONResponse(
                 {"ok": True, "notifications": items}, headers=_NO_STORE,
             )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/gamification")
+    async def pwa_gamification(request: Request):
+        """Reuse the canonical course league for the verified browser account."""
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaGamificationRequest)
+            from app.services.course_gamification_service import CourseGamificationService
+
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                result = await CourseGamificationService(db).leaderboard(
+                    actor,
+                    timezone_offset_minutes=payload.timezone_offset_minutes,
+                )
+                await db.commit()
+            return JSONResponse({"ok": True, **result}, headers=_NO_STORE)
         except PwaAuthError as exc:
             return _error(exc)
 
