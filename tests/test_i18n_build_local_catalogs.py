@@ -17,9 +17,9 @@ class CommonLocalCatalogTests(unittest.TestCase):
     def test_all_existing_reviewed_desktop_copy_is_ported(self):
         catalogs = read_sources(ROOT)
         self.assertEqual(set(catalogs), set(LANGUAGES))
-        self.assertEqual(len(catalogs["uz"]), 130)
+        self.assertEqual(len(catalogs["uz"]), 132)
         for locale in LANGUAGES:
-            self.assertEqual(len(catalogs[locale]), 130)
+            self.assertEqual(len(catalogs[locale]), 132)
             for key in ("pwaAuth.choose", "pwaAuth.tagline",
                         "pwaAuth.telegramPending", "pwaAuth.welcome"):
                 self.assertTrue(catalogs[locale][key].strip())

@@ -355,7 +355,7 @@ class SmartReminderAndroidService:
                     if len(instants) != 1: return await self._cancel(row, "personal_quiet_clock_uncertain")
                     until = min([until] + [instant for instant in instants if instant > now])
             if until <= now: return denied("android_authority_expired")
-            if not await NotificationTemplateService(self.session).is_enabled(KEY_SMART_STUDY):
+            if not await NotificationTemplateService(self.session).is_enabled(KEY_SMART_STUDY, authorize=True):
                 return await self._cancel(row, "admin_study_disabled")
             grant_id, attempt_id = str(uuid4()), str(uuid4())
             await self.session.execute(insert(ATTEMPT).values(id=attempt_id, job_id=job_id,

@@ -98,6 +98,7 @@ class DiscountNotificationService:
                     action="subscription",
                     source="discount_notification",
                     dedupe_key=f"discount_campaign:{campaign.id}",
+                    pwa_push_suppressed=True,
                 )
                 sent_count += 1
             else:

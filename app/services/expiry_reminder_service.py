@@ -61,6 +61,7 @@ class ExpiryReminderService:
                 source="expiry_reminder",
                 dedupe_key=f"subscription_expiring:{tomorrow.isoformat()}",
                 params={"template": "subscription_expires_tomorrow"},
+                pwa_push_suppressed=True,
             )
             user.expiry_reminder_sent_at = datetime.now(timezone.utc)
             sent_count += 1

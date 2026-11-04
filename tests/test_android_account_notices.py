@@ -23,6 +23,7 @@ from app.db.models.account_notice_delivery import AccountNoticeDelivery
 from app.db.models.android_push import AndroidPushToken
 from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.user import User
+from app.services.course_notification_service import CourseNotificationService
 from app.services.android_push_service import AndroidPushResult, AndroidPushService
 from app.services.admin_feedback_resolution import enqueue_android_fix_notice, fixed_notice_copy, published_version_is_newer
 from app.services.desktop_auth_service import DesktopAuthService
@@ -488,7 +489,15 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
 
         bot = _Bot()
+        record_from_text = CourseNotificationService.record_from_text
+        course_notice_calls = []
+
+        async def record_course_notice(service, *args, **kwargs):
+            course_notice_calls.append(kwargs.copy())
+            return await record_from_text(service, *args, **kwargs)
+
         with (
+            patch.object(CourseNotificationService, "record_from_text", record_course_notice),
             patch.object(
                 NotificationDeliveryService, "android_enabled",
                 new_callable=PropertyMock, return_value=True,
@@ -504,6 +513,7 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(0, await ExpiryReminderService(session).send_expiry_reminders(bot))
 
         self.assertEqual([], bot.messages)
+        self.assertTrue(course_notice_calls[0]["pwa_push_suppressed"])
         [row] = await self._rows()
         self.assertEqual(("Obuna tugayapti", "Obunangiz ertaga tugaydi."), (row.title, row.body))
         async with self.sessions() as session:

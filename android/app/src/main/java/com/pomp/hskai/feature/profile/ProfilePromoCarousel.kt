@@ -1,5 +1,6 @@
 package com.pomp.hskai.feature.profile
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +24,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -111,6 +113,7 @@ internal fun ProfilePromoCarousel(
             state = pager,
             key = { pages[it].key },
             pageSpacing = 10.dp,
+            beyondViewportPageCount = 1,
             modifier = Modifier.fillMaxWidth().testTag("profile-promo-pager")
                 .onPreviewKeyEvent { event ->
                     val direction = when (event.key) {
@@ -141,16 +144,18 @@ internal fun ProfilePromoCarousel(
             ) {
                 pages.forEachIndexed { index, page ->
                     val label = stringResource(R.string.profile_promo_page, index + 1, pages.size)
+                    val active = pager.settledPage == index
+                    val width by animateDpAsState(if (active) 19.dp else 6.dp, label = "promo indicator")
                     Box(
                         modifier = Modifier.size(48.dp)
-                            .semantics { contentDescription = label; selected = pager.currentPage == index }
+                            .semantics { contentDescription = label; selected = active }
                             .testTag("profile-promo-dot-${page.key}")
                             .clickable(role = Role.Tab) { scope.launch { pager.animateScrollToPage(index) } },
                         contentAlignment = Alignment.Center,
                     ) {
                         Box(
-                            Modifier.size(width = if (pager.currentPage == index) 19.dp else 6.dp, height = 6.dp)
-                                .background(if (pager.currentPage == index) PromoGold else Color(0xFFB7AA98), CircleShape),
+                            Modifier.size(width = width, height = 6.dp)
+                                .background(if (active) PromoGold else Color(0xFFB7AA98), CircleShape),
                         )
                     }
                 }
@@ -279,10 +284,11 @@ private fun ProfilePromoCard(
                         else Text(mark, fontSize = 23.sp, fontWeight = FontWeight.Medium, color = PromoGold)
                     }
                     Column(Modifier.weight(1f)) {
-                        Text(title, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(title, fontSize = 16.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold,
+                            color = Color.White, minLines = 2, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         Text(
                             summary, fontSize = 12.sp, lineHeight = 16.sp,
-                            color = Color.White.copy(alpha = 0.82f), maxLines = 3, overflow = TextOverflow.Ellipsis,
+                            color = Color.White.copy(alpha = 0.82f), minLines = 3, maxLines = 3, overflow = TextOverflow.Ellipsis,
                         )
                     }
                     Text("›", color = Color.White.copy(alpha = 0.65f), fontSize = 24.sp)
@@ -294,7 +300,8 @@ private fun ProfilePromoCard(
                     shape = RoundedCornerShape(11.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = PromoGold, contentColor = PromoPaper),
                 ) {
-                    Text(action, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 2)
+                    Text(action, fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.SemiBold,
+                        minLines = 2, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
             }
         }

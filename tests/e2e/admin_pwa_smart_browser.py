@@ -78,9 +78,9 @@ async def check(output):
                     await expect(save).to_be_disabled()
                     await expect(page.locator('#drawerFoot button')).to_have_count(1)
                     await expect(page.locator('.drawer-close')).to_have_count(1)
-                    await expect(page.locator('.review-summary dd')).to_have_text([
-                        await page.evaluate('(lang)=>HSKAI_ADMIN_I18N[lang].hsk30Off',lang),
-                        datetime.now(timezone.utc).strftime('%Y-%m')+' · UTC','—','7','—'])
+                    off=await page.evaluate('(lang)=>HSKAI_ADMIN_I18N[lang].hsk30Off',lang)
+                    await expect(page.locator('.review-summary dd')).to_have_text(
+                        [off,off,'0',off,datetime.now(timezone.utc).strftime('%Y-%m')+' · UTC','—','7','—'])
                     await page.locator('#noticeEnabled').select_option('false')
                     await expect(save).to_be_enabled()
                     await page.locator('#noticeEnabled').select_option('true')

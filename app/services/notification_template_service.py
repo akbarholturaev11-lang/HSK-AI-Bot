@@ -165,8 +165,10 @@ class NotificationTemplateService:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def is_enabled(self, key: str) -> bool:
+    async def is_enabled(self, key: str, *, authorize: bool = False) -> bool:
         """Fresh permission read; absent templates retain their enabled default."""
+        if authorize:
+            await BotSettingRepository(self.session).lock_key("notification_template:" + key, shared=True)
         enabled = await self.session.scalar(
             select(NotificationTemplate.enabled).where(NotificationTemplate.key == key))
         return True if enabled is None else bool(enabled)

@@ -100,6 +100,7 @@ if (typeof window !== "undefined") {
   "desktopAuth.copied": "Kod nusxalandi",
   "desktopAuth.copyCode": "Kodni nusxalash",
   "desktopAuth.description": "Google, Apple yoki Telegram bilan davom eting. Yangi foydalanuvchi uchun hisob avtomatik yaratiladi.",
+  "desktopAuth.deviceBound": "Bu telefon boshqa HSK AI hisobiga ulangan. Avval ulangan hisobingizga kiring va telefonni o‘sha hisobdan uzing.",
   "desktopAuth.expired": "Kirishni tasdiqlash muddati tugadi. Qayta urinib ko‘ring.",
   "desktopAuth.googleContinue": "Google bilan davom etish",
   "desktopAuth.linked": "Akkaunt muvaffaqiyatli ulandi.",
@@ -132,6 +133,7 @@ if (typeof window !== "undefined") {
   "pwaAuth.tagline": "Yaxshiroq kelajak — bilim bilan",
   "pwaAuth.telegramPending": "Telegram botida ushbu brauzerga kirishni tasdiqlang, so‘ng HSK AI sahifasiga qayting.",
   "pwaAuth.welcome": "Xush kelibsiz",
+  "smartPreferences.deletionPending": "Hisobni o‘chirish so‘rovi ko‘rib chiqilmoqda. Hozir dars eslatmalarini o‘zgartirib bo‘lmaydi.",
   "state.loading": "Yuklanmoqda…"
 }),
   "ru": Object.freeze({
@@ -232,6 +234,7 @@ if (typeof window !== "undefined") {
   "desktopAuth.copied": "Код скопирован",
   "desktopAuth.copyCode": "Скопировать код",
   "desktopAuth.description": "Продолжите с Google, Apple или Telegram. Для нового пользователя аккаунт создаётся автоматически.",
+  "desktopAuth.deviceBound": "Этот телефон связан с другим аккаунтом HSK AI. Войдите в ранее подключённый аккаунт и отвяжите телефон в нём.",
   "desktopAuth.expired": "Время подтверждения входа истекло. Попробуйте снова.",
   "desktopAuth.googleContinue": "Продолжить с Google",
   "desktopAuth.linked": "Аккаунт успешно подключён.",
@@ -264,6 +267,7 @@ if (typeof window !== "undefined") {
   "pwaAuth.tagline": "Лучшее будущее — со знаниями",
   "pwaAuth.telegramPending": "Подтвердите вход для этого браузера в боте Telegram, затем вернитесь на страницу HSK AI.",
   "pwaAuth.welcome": "Добро пожаловать",
+  "smartPreferences.deletionPending": "Запрос на удаление аккаунта рассматривается. Сейчас изменить учебные напоминания нельзя.",
   "state.loading": "Загрузка…"
 }),
   "tj": Object.freeze({
@@ -364,6 +368,7 @@ if (typeof window !== "undefined") {
   "desktopAuth.copied": "Рамз нусхабардорӣ шуд",
   "desktopAuth.copyCode": "Нусхабардории рамз",
   "desktopAuth.description": "Бо Google, Apple ё Telegram идома диҳед. Барои корбари нав ҳисоб худкор сохта мешавад.",
+  "desktopAuth.deviceBound": "Ин телефон ба ҳисоби дигари HSK AI пайваст аст. Ба ҳисоби қаблан пайвастшуда ворид шавед ва телефонро аз он ҷудо кунед.",
   "desktopAuth.expired": "Муҳлати тасдиқи вуруд гузашт. Боз кӯшиш кунед.",
   "desktopAuth.googleContinue": "Бо Google идома додан",
   "desktopAuth.linked": "Ҳисоб бо муваффақият пайваст шуд.",
@@ -396,6 +401,7 @@ if (typeof window !== "undefined") {
   "pwaAuth.tagline": "Ояндаи беҳтар — бо дониш",
   "pwaAuth.telegramPending": "Дар боти Telegram воридшавиро барои ин браузер тасдиқ кунед ва ба саҳифаи HSK AI баргардед.",
   "pwaAuth.welcome": "Хуш омадед",
+  "smartPreferences.deletionPending": "Дархости ҳазфи ҳисоб баррасӣ мешавад. Ҳоло танзими ёдрасониҳои дарсро тағйир додан мумкин нест.",
   "state.loading": "Боргирӣ…"
 })
   });

@@ -100,6 +100,7 @@
     "desktopAuth.copied": "Код скопирован",
     "desktopAuth.copyCode": "Скопировать код",
     "desktopAuth.description": "Продолжите с Google, Apple или Telegram. Для нового пользователя аккаунт создаётся автоматически.",
+    "desktopAuth.deviceBound": "Этот телефон связан с другим аккаунтом HSK AI. Войдите в ранее подключённый аккаунт и отвяжите телефон в нём.",
     "desktopAuth.expired": "Время подтверждения входа истекло. Попробуйте снова.",
     "desktopAuth.googleContinue": "Продолжить с Google",
     "desktopAuth.linked": "Аккаунт успешно подключён.",
@@ -132,6 +133,7 @@
     "pwaAuth.tagline": "Лучшее будущее — со знаниями",
     "pwaAuth.telegramPending": "Подтвердите вход для этого браузера в боте Telegram, затем вернитесь на страницу HSK AI.",
     "pwaAuth.welcome": "Добро пожаловать",
+    "smartPreferences.deletionPending": "Запрос на удаление аккаунта рассматривается. Сейчас изменить учебные напоминания нельзя.",
     "state.loading": "Загрузка…"
   }
 }

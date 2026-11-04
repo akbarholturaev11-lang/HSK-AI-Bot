@@ -282,6 +282,7 @@ class CourseNotificationService:
         dedupe_key: str | None = None,
         params: dict[str, Any] | None = None,
         pwa_push_authorized: bool = False,
+        pwa_push_suppressed: bool = False,
     ) -> bool:
         key = str(key or "").strip()[:64]
         if not key:
@@ -320,7 +321,8 @@ class CourseNotificationService:
             # the opt-in transport is temporarily unavailable.
             from app.config import settings
             if (
-                getattr(settings, "PWA_AUTH_ENABLED", False) is True
+                not pwa_push_suppressed
+                and getattr(settings, "PWA_AUTH_ENABLED", False) is True
                 and getattr(settings, "PWA_PUSH_ENABLED", False) is True
                 and (row.key != KEY_SMART_STUDY or pwa_push_authorized
                      and row.source in {"smart_telegram", "smart_android"})
@@ -353,6 +355,7 @@ class CourseNotificationService:
         dedupe_key: str | None = None,
         params: dict[str, Any] | None = None,
         pwa_push_authorized: bool = False,
+        pwa_push_suppressed: bool = False,
     ) -> bool:
         title, body = notification_copy(key, lang, text)
         return await self.record(
@@ -368,4 +371,5 @@ class CourseNotificationService:
             dedupe_key=dedupe_key,
             params=params,
             pwa_push_authorized=pwa_push_authorized,
+            pwa_push_suppressed=pwa_push_suppressed,
         )

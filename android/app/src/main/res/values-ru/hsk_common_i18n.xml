@@ -100,6 +100,7 @@
     <string name="hsk_common_desktopAuth_copied" formatted="false">Код скопирован</string>
     <string name="hsk_common_desktopAuth_copyCode" formatted="false">Скопировать код</string>
     <string name="hsk_common_desktopAuth_description" formatted="false">Продолжите с Google, Apple или Telegram. Для нового пользователя аккаунт создаётся автоматически.</string>
+    <string name="hsk_common_desktopAuth_deviceBound" formatted="false">Этот телефон связан с другим аккаунтом HSK AI. Войдите в ранее подключённый аккаунт и отвяжите телефон в нём.</string>
     <string name="hsk_common_desktopAuth_expired" formatted="false">Время подтверждения входа истекло. Попробуйте снова.</string>
     <string name="hsk_common_desktopAuth_googleContinue" formatted="false">Продолжить с Google</string>
     <string name="hsk_common_desktopAuth_linked" formatted="false">Аккаунт успешно подключён.</string>
@@ -132,5 +133,6 @@
     <string name="hsk_common_pwaAuth_tagline" formatted="false">Лучшее будущее — со знаниями</string>
     <string name="hsk_common_pwaAuth_telegramPending" formatted="false">Подтвердите вход для этого браузера в боте Telegram, затем вернитесь на страницу HSK AI.</string>
     <string name="hsk_common_pwaAuth_welcome" formatted="false">Добро пожаловать</string>
+    <string name="hsk_common_smartPreferences_deletionPending" formatted="false">Запрос на удаление аккаунта рассматривается. Сейчас изменить учебные напоминания нельзя.</string>
     <string name="hsk_common_state_loading" formatted="false">Загрузка…</string>
 </resources>

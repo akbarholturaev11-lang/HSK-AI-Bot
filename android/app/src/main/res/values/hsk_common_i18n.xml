@@ -100,6 +100,7 @@ Yangilikni sinab ko\'ring va 1-5 ball bering. Fikr qoldirsangiz, obunangiz bo\'l
     <string name="hsk_common_desktopAuth_copied" formatted="false">Kod nusxalandi</string>
     <string name="hsk_common_desktopAuth_copyCode" formatted="false">Kodni nusxalash</string>
     <string name="hsk_common_desktopAuth_description" formatted="false">Google, Apple yoki Telegram bilan davom eting. Yangi foydalanuvchi uchun hisob avtomatik yaratiladi.</string>
+    <string name="hsk_common_desktopAuth_deviceBound" formatted="false">Bu telefon boshqa HSK AI hisobiga ulangan. Avval ulangan hisobingizga kiring va telefonni o‘sha hisobdan uzing.</string>
     <string name="hsk_common_desktopAuth_expired" formatted="false">Kirishni tasdiqlash muddati tugadi. Qayta urinib ko‘ring.</string>
     <string name="hsk_common_desktopAuth_googleContinue" formatted="false">Google bilan davom etish</string>
     <string name="hsk_common_desktopAuth_linked" formatted="false">Akkaunt muvaffaqiyatli ulandi.</string>
@@ -132,5 +133,6 @@ Yangilikni sinab ko\'ring va 1-5 ball bering. Fikr qoldirsangiz, obunangiz bo\'l
     <string name="hsk_common_pwaAuth_tagline" formatted="false">Yaxshiroq kelajak — bilim bilan</string>
     <string name="hsk_common_pwaAuth_telegramPending" formatted="false">Telegram botida ushbu brauzerga kirishni tasdiqlang, so‘ng HSK AI sahifasiga qayting.</string>
     <string name="hsk_common_pwaAuth_welcome" formatted="false">Xush kelibsiz</string>
+    <string name="hsk_common_smartPreferences_deletionPending" formatted="false">Hisobni o‘chirish so‘rovi ko‘rib chiqilmoqda. Hozir dars eslatmalarini o‘zgartirib bo‘lmaydi.</string>
     <string name="hsk_common_state_loading" formatted="false">Yuklanmoqda…</string>
 </resources>

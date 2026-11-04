@@ -14,12 +14,14 @@ from __future__ import annotations
 import base64
 import hashlib
 import logging
+from html import escape
 from typing import Annotated, Any, Callable, Literal
 
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
+from app.bot.generated.common_i18n import COMMON_MESSAGES
 from app.api.desktop_auth import (
     AppVersion,
     InstallationKey,
@@ -141,7 +143,7 @@ def _deletion_page():
         '<p>Return to the original HSK AI account-deletion tab to review the account and confirm your request. '
         'No deletion request has been submitted yet.</p>', headers=_PAGE_HEADERS)
 _PAGE_TEMPLATE = """<!doctype html>
-<html lang="en"><head><meta charset="utf-8">
+<html lang="{language}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>HSK AI</title>
@@ -153,8 +155,7 @@ background:#faf8f5;color:#1a1a1a}}
 @media(prefers-color-scheme:dark){{body{{background:#14110f;color:#f2efe9}}}}
 .card{{text-align:center;padding:32px 24px;max-width:320px}}
 .mark{{font-size:44px;line-height:1}}
-.code{{margin-top:12px;font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.55;
-word-break:break-all}}
+.code{{margin-top:12px}}
 a{{display:inline-block;margin-top:18px;padding:12px 18px;border-radius:12px;
 background:#c63b33;color:#fff;text-decoration:none;font-weight:600}}
 </style></head>
@@ -164,12 +165,16 @@ background:#c63b33;color:#fff;text-decoration:none;font-weight:600}}
 
 # Static handoff only: no state, code, identity or token ever enters this URL.
 # Browsers may block automatic external-app launch; the visible link is an
-# explicit-gesture fallback. Mini App, deletion and failed callbacks never hand off.
+# explicit-gesture fallback. A verified Android device conflict can return
+# to the same in-app error after the server has persisted the refusal.
 _NATIVE_RETURN_SCHEMES = {"pomp-hsk-ai", "pomp-hsk-ai-qa"}
 
 
-def _page(mark: str, code: str, *, return_scheme: str | None = None) -> HTMLResponse:
+def _page(mark: str, code: str, *, return_scheme: str | None = None, language: str | None = None) -> HTMLResponse:
     safe = "".join(ch for ch in str(code or "") if ch.isalnum() or ch in "_-")[:64]
+    locale = language if language in COMMON_MESSAGES else "uz"
+    if code == "desktop_device_bound_to_other_user":
+        safe = escape(COMMON_MESSAGES[locale]["desktopAuth.deviceBound"])
     return_link = ""
     headers = _PAGE_HEADERS
     if isinstance(return_scheme, str) and return_scheme in _NATIVE_RETURN_SCHEMES:
@@ -190,7 +195,7 @@ def _page(mark: str, code: str, *, return_scheme: str | None = None) -> HTMLResp
             ),
         }
     return HTMLResponse(
-        content=_PAGE_TEMPLATE.format(mark=mark, code=safe, return_link=return_link),
+        content=_PAGE_TEMPLATE.format(mark=mark, code=safe, return_link=return_link, language=locale),
         status_code=200,
         headers=headers,
     )
@@ -374,6 +379,13 @@ def create_native_oauth_router(
             logger.exception("Provider OAuth cancellation failed")
             return _page("&#10005;", "oauth_unavailable")
 
+    def callback_failure(exc):
+        if isinstance(exc, NativeOAuthError) and exc.code == "desktop_device_bound_to_other_user":
+            scheme = (getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
+                      if exc.platform == "android" else None)
+            return _page("&#10005;", exc.code, language=exc.language, return_scheme=scheme)
+        return _page("&#10005;", exc.code)
+
     @router.get("/api/v3/native-auth/oauth/callback/google")
     async def google_callback(
         request: Request,
@@ -416,8 +428,10 @@ def create_native_oauth_router(
             return _page("&#10003;", "ok", return_scheme=(
                 getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
                 if completed.get("platform") in {"android", "macos", "windows"} else None))
-        except (NativeOAuthError, IdentityLinkError, DesktopAuthError, PwaAuthError) as exc:
+        except PwaAuthError as exc:
             return _page("&#10005;", exc.code)
+        except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
+            return callback_failure(exc)
         except Exception:
             logger.exception("Google OAuth callback failed")
             return _page("&#10005;", "oauth_unavailable")
@@ -468,8 +482,10 @@ def create_native_oauth_router(
             return _page("&#10003;", "ok", return_scheme=(
                 getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
                 if completed.get("platform") in {"android", "macos", "windows"} else None))
-        except (NativeOAuthError, IdentityLinkError, DesktopAuthError, PwaAuthError) as exc:
+        except PwaAuthError as exc:
             return _page("&#10005;", exc.code)
+        except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
+            return callback_failure(exc)
         except Exception:
             logger.exception("Apple OAuth callback failed")
             return _page("&#10005;", "oauth_unavailable")

@@ -20,6 +20,7 @@ from app.db.models.android_push import AndroidPushToken
 from app.db.models.smart_reminder import SmartReminderRouting, SmartReminderPreference, SmartReminderCapability
 from app.db.models.user import User
 from app.services.course_reminder_service import reminder_tz_offset
+from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_cadence import evaluate_cadence
 from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
 from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, _aware_utc
@@ -456,6 +457,8 @@ class SmartReminderTelegramService:
                 return await self._cancel(session, row, exc.code)
             # Template SQL may cross a quiet/day boundary even while the lease
             # is valid. Re-sample all policy at the actual authorization clock.
+            if not await NotificationTemplateService(session).is_enabled(KEY_SMART_STUDY, authorize=True):
+                return await self._cancel(session, row, "admin_study_disabled")
             if refused := await self._fresh(session, actor, row, cohort, history_since): return refused
             now = self._now()
             if _utc(row["lease_expires_at"]) <= now:
@@ -502,7 +505,6 @@ class SmartReminderTelegramService:
                 await session.execute(update(CourseProgress).where(CourseProgress.user_id == user_id).values(last_reminder_sent_at=now))
                 if content is not None:
                     from app.services.course_notification_service import CourseNotificationService
-                    from app.services.notification_template_service import KEY_SMART_STUDY
                     user = await session.get(User, user_id)
                     job = (await session.execute(select(JOB).where(JOB.c.id == job_id))).mappings().one()
                     await CourseNotificationService(session).record_from_text(user,
