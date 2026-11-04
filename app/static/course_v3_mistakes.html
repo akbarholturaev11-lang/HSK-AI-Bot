@@ -125,6 +125,7 @@ h1{font-size:23px}
 <script defer src="/assets/characters/hsk-study-preparing.js?v=20261009-compact-1"></script>
 <script defer src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
 <script defer src="/assets/characters/hsk-practice-coach.js?v=20260921a"></script>
+<script src="/course_v3_data/iphone-pwa-fx.js?v=20261105-3f4db4191370"></script>
 <script src="/course_v3_data/iphone-pwa-practice-boot.js?v=20261105-08ffb7481617"></script>
 <script>
 /* Og'ir skriptlar (`defer`) HTML parse tugagach ishga tushadi. Server
@@ -299,7 +300,7 @@ function renderLoadError(){$("content").innerHTML='<div class="state"><i class="
 // ---- Review flow (Mistake Engine) ----
 $("lim-title").textContent=L.limitTitle;$("lim-text").textContent=L.limitText;$("lim-btn").textContent=L.limitBtn;$("lim-later").textContent=L.later;
 var RV=null;function busy(){return RV&&RV.loading}
-function haptic(t){try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(t)}catch(e){}}
+function haptic(t){if(!(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)&&window.HskPwaFx){HskPwaFx.feedback(t);return}try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(t)}catch(e){}}
 function LETTERS(i){return["A","B","C","D"][i]||(i+1)}
 /* Bir martalik bepul urinish tugagach bu AI bo'lmagan mashq reklama bilan
    davom etadi; server access qoidasi o'zgartirilmaydi. */
